@@ -1,0 +1,371 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder 
+  	xmlns:ui="urn:ui:com.google.gwt.uibinder"
+  	xmlns:g="urn:import:com.google.gwt.user.client.ui">
+	
+	<ui:style>
+		.title {
+			background-color: #D0DBEC;
+		}
+		.gridLabel {
+			font-weight: bold;
+		}
+		.canvasPanel {
+			border-left: 1px solid white;
+			border-top: 1px solid white;
+			border-right: 1px solid white;
+			border-bottom: 1px solid white;
+			width: 100%;
+		}	
+		.criterionStack {
+			font-size: 8pt;
+		}
+		.right {
+			position: absolute;
+			right: 0;
+			text-align: right;
+			height: 100%;
+		}
+		
+		.link {
+			cursor: default;
+		}
+		.propertyEditor {
+			background-color: white;
+			border-left: 1px solid black;
+			border-top: 1px solid black;
+			border-right: 1px solid black;
+			width: 100%;
+			margin-left: auto;
+			margin-right: auto;
+		}
+		.userDefinedPastedCriterion {
+			background-color: white;
+			border-left: 1px solid black;
+			border-top: 1px solid black;
+			border-right: 1px solid black;
+			border-bottom: 1px solid black;
+			margin-left: auto;
+			margin-right: auto;			
+		}		
+		.propertyEditorTitle {
+			background-color: #DEE4FE;
+			border-top: 1px solid black;
+			border-left: 1px solid black;
+			border-right: 1px solid black;
+			border-bottom: 0px;
+			width: 100%;
+			font-size: large;
+			font-weight: bold;
+			text-align: left;
+		}
+		.toolbarTitle {
+			background-color: #F3F5F7;
+			border-left: 1px solid black;
+			border-top: 0px;
+			border-right: 1px solid black;
+			border-bottom: 0px;
+			width: 100%;
+			font-size: large;
+			font-weight: bold;
+			text-align: left;			
+		}
+		.phraseNamePanel {
+			background-color: #F3F5F7;
+			border-left: 1px solid black;
+			border-top: 0px;
+			border-right: 1px solid black;
+			border-bottom: 0px;
+			width: 100%;
+			font-size: large;
+			font-weight: bold;
+			text-align: left;		
+		}
+		.phraseNameLabel {
+			font-size: large;
+			text-align: left;		
+		}
+		.toolbar {
+			background-color: #F3F5F7;
+			border-left: 1px solid black;
+			border-top: 0px;
+			border-right: 1px solid black;
+			border-bottom: 1px solid black;
+			width: 100%;
+			margin-left: 0px;
+			padding: 0px;
+		}
+		.propertyEditorButton {
+			padding: 5px;
+			margin: 5px;
+		}
+		
+		.saveButton {
+			 background: url("images/bg-btn.png");
+   			 background-repeat:repeat-x;
+    		font-weight: bold;
+		}
+		
+		.whiteSpace{
+		    padding-top: 10px;
+		}
+		.measurePhraseTextArea {
+			font-weight: bold;
+			font-size: 16px;
+		}
+		.diagramTree {
+			color: black;
+			font-weight: bold;
+			background-color: white;
+		}
+		.diagramTreeCanvasPanel {
+			border-left: 1px solid white;
+			border-top: 1px solid white;
+			border-right: 1px solid white;
+			border-bottom: 1px solid white;
+			width: 100%;
+			background-color: white;
+		}
+	</ui:style>
+
+   <g:FocusPanel ui:field="diagramFocus">
+	<g:VerticalPanel ui:width="1000px">
+		<g:HorizontalPanel ui:width="100%" addStyleNames="{style.canvasPanel}">
+			<g:HorizontalPanel ui:width="240px">
+				<g:VerticalPanel ui:width="240px">
+					<g:SimplePanel ui:height="240px" ui:field="qdsElementPanel" />
+					<g:VerticalPanel ui:field="libraryVerticalPanel">
+					</g:VerticalPanel>
+					<g:HorizontalPanel ui:field="buttonHolder">
+						<g:Button ui:field="cloneButton" ui:text="Clone" ui:title="Clone"/>
+					</g:HorizontalPanel>
+				</g:VerticalPanel>
+			</g:HorizontalPanel>
+			
+			<g:HorizontalPanel ui:width="760px">
+				<g:VerticalPanel ui:field="canvasViewPanel" ui:width="100%">
+					<g:FocusPanel ui:field="stackFocusPanel"></g:FocusPanel>
+					<!-- insert stack layout panel here -->
+					
+					<g:HorizontalPanel ui:field="page1Buttons" ui:width="80%" ui:height="100%" 
+					horizontalAlignment="ALIGN_RIGHT">
+					
+					</g:HorizontalPanel>
+					
+					<g:VerticalPanel ui:field="userDefinedPastedCriterionPanel" ui:width="100%"
+						addStyleNames="{style.userDefinedPastedCriterion}"
+						visible="false">
+							<g:Label ui:field="userDefinedPastedCriterionCaption" text="" title="" />
+							<g:TextBox ui:field="userDefinedPastedCriterionTextBox" />
+							<g:HorizontalPanel>
+								<g:Button ui:field="userDefinedPastedCriterionOkButton" text="Ok" title="Ok" />
+								<g:Button ui:field="userDefinedPastedCriterionCancelButton" text="Cancel" title="Cancel" />
+							</g:HorizontalPanel>
+						</g:VerticalPanel>
+						
+					<g:VerticalPanel ui:field="propertyEditor1Top" >
+						<g:HorizontalPanel ui:width="100%" ui:field="propertyEditor1Panel"
+						addStyleNames="{style.propertyEditorTitle}">
+
+						</g:HorizontalPanel>
+						<g:HorizontalPanel ui:width="100%"
+						addStyleNames="{style.toolbarTitle}">
+							<g:Label ui:field="toolbarTitle1" text="Insert" title="Insert" />
+						</g:HorizontalPanel>
+						<g:HorizontalPanel ui:field="attributePhraseNamePanel1" ui:width="100%" 
+						addStyleNames="{style.phraseNamePanel}" visible="false">
+						  <g:Label ui:field="attributePhraseNameLabel1" visible="false"/>
+						</g:HorizontalPanel>
+						<g:HorizontalPanel ui:field="errorMessageHolder" ui:width="100%"
+							addStyleNames="{style.toolbar}">
+						</g:HorizontalPanel>
+						<g:HorizontalPanel ui:field="canvasViewToolbar" ui:width="100%"
+							addStyleNames="{style.toolbar}">
+							<g:Button ui:field="criterionButton1" text="" title=""  addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="pasteCloneButton1" text="Paste Clone" title="Paste Clone" addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="qdselButton1" text="Phrase Element" title="Phrase Element" addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="andButton1" text="And" title="And" addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="orButton1" text="Or" title="Or" addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="timingButton1" text="Timing" title="Timing" addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="addPhraseButton1" text="New Phrase" title="Add a new phrase" addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="insertPhraseButton1" text="Existing Phrase" title="Insert existing phrase" addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="cutButton1" text="Cut" title=""
+								visible="false"
+								addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="copyButton1" text="Copy" title=""
+								visible="false"
+								addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="pasteButton1" text="Paste" title=""
+								visible="false"
+								addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="deleteButton1" text="Delete" title="Delete"
+								visible="false"
+								addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="editButton1" text="Edit" title="Edit hilighted diagram object" 
+							addStyleNames="{style.propertyEditorButton}" 
+								visible="false" />
+						</g:HorizontalPanel>
+						
+						<g:HorizontalPanel ui:field="propertyEditor1" ui:width="100%" ui:height="100%"
+						addStyleNames="{style.propertyEditor}" visible="false">
+							<g:ScrollPanel ui:field="propertyEditorScrollPanel1" ui:width="760px" ui:height="350px" 
+								addStyleNames="{style.canvasPanel}"/>
+						</g:HorizontalPanel>
+						
+						<g:HorizontalPanel ui:field="attributeEditorPanel1" ui:width="100%" ui:height="30%"
+							addStyleNames="{style.propertyEditor}" visible="false">
+							<g:VerticalPanel>
+								<g:VerticalPanel ui:field="attributeTablePanel1">
+									<g:Label ui:text="Attribute" ui:title="Attribute" />
+								</g:VerticalPanel>
+								<g:HorizontalPanel  ui:field="attributeEditorHorizontalPanel1">
+									
+									<g:HTML ui:field="attributeList1Label"/>
+									<g:ListBox ui:field="attributeList1" />
+									<g:Button ui:field="addAttributeButton1" 
+										text="Add Attribute" title="Add Attribute" />
+
+									<g:HTML ui:field="attributeTypeList1Label"/>
+									<g:ListBox ui:field="attributeTypeList1" visible="false" />
+									<g:Button ui:field="attributeUpdateTypeButton1" visible="false"
+										text="Update Attribute" title="Update Attribute" />
+
+									<g:HTML ui:field="attributeComparisonList1Label"/>
+									<g:ListBox ui:field="attributeComparisonList1" visible="false" />
+									<g:HTML ui:field="attributeQuantity1Label"/>
+									<g:TextBox ui:field="attributeQuantity1" visible="false" />
+									<g:HTML ui:field="attributeUnit1Label"/>
+									<g:ListBox ui:field="attributeUnit1" visible="false" />
+									
+									<g:Button ui:field="attributeComparisonUpdateButton1" visible="false"
+										text="Update Attribute" title="Update Attribute" />
+									
+									<g:HTML ui:field="attributeQDSElementList1Label" />	
+									<!-- 
+									<g:SimplePanel ui:field="attributeQDSElementList1Panel" visible="true" />
+									 -->
+									<g:Button ui:field="attributeQDSElementUpdateButton1" 
+										visible="false"
+										text="Update Attribute" title="Update Attribute" />	
+								</g:HorizontalPanel>		
+								
+								<g:HorizontalPanel>
+									<g:Button ui:field="attributeEditorSaveButton1" text="Save" title="Save" 
+										visible="false" />
+									<g:Button ui:field="attributeEditorCancelButton1" text="Cancel" title="Cancel" />
+								</g:HorizontalPanel>
+							</g:VerticalPanel>
+						</g:HorizontalPanel>
+						
+							
+					</g:VerticalPanel>
+				</g:VerticalPanel>
+						
+				<g:VerticalPanel ui:field="textViewPanel" ui:width="100%" visible="false">
+					<g:VerticalPanel>
+						<g:Button ui:field="diagramTreeExpandButton" text="+" title="Expand diagram tree" />
+						<g:Button ui:field="diagramTreeCollapseButton" text="-" title="Collapse diagram tree" 
+							visible="false" />
+					</g:VerticalPanel>
+					<g:ScrollPanel ui:field="textScrollPanel" ui:width="760px" ui:height="460px" 
+					addStyleNames="{style.diagramTreeCanvasPanel}" >
+					<!-- 
+						<g:Tree ui:field="diagramTree" ui:width="760px" ui:height="240px" 
+						addStyleNames="{style.diagramTree}" />
+					 -->
+					</g:ScrollPanel>
+					<g:Label ui:field="measurePhraseTextArea2" ui:width="760px" ui:height="100px" 
+						visible="false"
+						addStyleNames="{style.measurePhraseTextArea}"
+					/>
+					
+					<g:HorizontalPanel ui:field="page2Buttons" ui:width="80%" ui:height="100%" 
+					horizontalAlignment="ALIGN_RIGHT">
+					
+					</g:HorizontalPanel>
+
+					<g:VerticalPanel ui:field="propertyEditor2Top">
+						<g:HorizontalPanel ui:width="100%" ui:field="propertyEditor2Panel"
+						addStyleNames="{style.propertyEditorTitle}">
+
+						</g:HorizontalPanel>
+
+						<g:HorizontalPanel ui:width="100%"
+						addStyleNames="{style.toolbarTitle}">
+							<g:Label ui:field="toolbarTitle2" text="Insert" title="Insert" />
+						</g:HorizontalPanel>
+						<g:HorizontalPanel ui:field="attributePhraseNamePanel2" ui:width="100%" 
+						addStyleNames="{style.phraseNamePanel}" visible="false">
+							<g:Label ui:field="attributePhraseNameLabel2" visible="false"/>
+						</g:HorizontalPanel>						
+						<g:HorizontalPanel ui:field="textViewToolbar" ui:width="100%"
+							addStyleNames="{style.toolbar}">
+							<g:Button ui:field="criterionButton2" text="" title=""  addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="addPhraseButton2" text="New Phrase" title="Add a new phrase" addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="insertPhraseButton2" text="Existing Phrase" title="Insert existing phrase" addStyleNames="{style.propertyEditorButton}" />
+							<g:Button ui:field="deleteButton2" text="Delete" title="Delete" addStyleNames="{style.propertyEditorButton}"  visible="false"/>
+							<g:Button ui:field="editButton2" text="Edit" title="Edit hilighted diagram object" addStyleNames="{style.propertyEditorButton}" visible="false" />
+						</g:HorizontalPanel>
+						
+						<g:HorizontalPanel ui:field="propertyEditor2" ui:width="100%" ui:height="100%"
+						addStyleNames="{style.propertyEditor}" visible="false">
+							<g:ScrollPanel ui:field="propertyEditorScrollPanel2" ui:width="760px" ui:height="170px" 
+								addStyleNames="{style.canvasPanel}"/>
+						</g:HorizontalPanel>
+						
+						<g:HorizontalPanel ui:field="attributeEditorPanel2" ui:width="100%" ui:height="30%"
+							addStyleNames="{style.propertyEditor}" visible="false">
+							<g:VerticalPanel>
+								<g:VerticalPanel ui:field="attributeTablePanel2">
+									<g:Label ui:text="Attribute" ui:title="Attribute" />
+								</g:VerticalPanel>
+								<g:HorizontalPanel ui:field="attributeEditorHorizontalPanel2">
+									<g:HTML ui:field="attributeList2Label" />
+									<g:ListBox ui:field="attributeList2" />
+									<g:Button ui:field="addAttributeButton2" 
+										text="Add Attribute" title="Add Attribute" />
+										
+									<g:HTML ui:field="attributeTypeList2Label" />
+									<g:ListBox ui:field="attributeTypeList2" visible="false" />
+									<g:Button ui:field="attributeUpdateTypeButton2" visible="false"
+										text="Update Attribute" title="Update Attribute" />
+										
+									<g:HTML ui:field="attributeComparisonList2Label" />
+									<g:ListBox ui:field="attributeComparisonList2" visible="false" />
+									<g:HTML ui:field="attributeQuantity2Label" />
+									<g:TextBox ui:field="attributeQuantity2" visible="false" />
+									<g:HTML ui:field="attributeUnit2Label" />
+									<g:ListBox ui:field="attributeUnit2" visible="false" />
+									<g:Button ui:field="attributeComparisonUpdateButton2" visible="false"
+										text="Update Attribute" title="Update Attribute" />
+										
+									<g:HTML ui:field="attributeQDSElementList2Label" />
+									<!-- 
+									<g:SimplePanel ui:field="attributeQDSElementList2Panel" visible="true" />
+									 -->
+									<g:Button ui:field="attributeQDSElementUpdateButton2" 
+										visible="false"
+										text="Update Attribute" title="Update Attribute" />	
+								</g:HorizontalPanel>		
+								
+								<g:HorizontalPanel>
+									<g:Button ui:field="attributeEditorSaveButton2" text="Save" title="Save" 
+										visible="false" />
+									<g:Button ui:field="attributeEditorCancelButton2" text="Cancel" title="Cancel" />
+								</g:HorizontalPanel>
+							</g:VerticalPanel>
+						</g:HorizontalPanel>						
+					</g:VerticalPanel>		
+				</g:VerticalPanel>
+			</g:HorizontalPanel>
+		</g:HorizontalPanel>
+		
+		<g:VerticalPanel ui:field="saveHolder">	
+		    <g:SimplePanel addStyleNames= "{style.whiteSpace}" />
+		    <g:SimplePanel ui:field="messageHolder"></g:SimplePanel>
+	    </g:VerticalPanel>
+	</g:VerticalPanel>
+	</g:FocusPanel>
+	
+	 
+</ui:UiBinder> 

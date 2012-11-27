@@ -1,0 +1,1 @@
+update mat_app.user_password set initial_pwd=0 where user_id='Admin';

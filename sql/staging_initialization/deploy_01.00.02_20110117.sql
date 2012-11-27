@@ -1,0 +1,2 @@
+/* Add a column for holding a custom name. */
+ALTER TABLE `MAT_APP_STAGING`.`CLAUSE` ADD COLUMN `CUSTOM_NAME` VARCHAR(100) NULL DEFAULT NULL  AFTER `NAME`;

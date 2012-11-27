@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE web-app
+    PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+    "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+  
+  
+  <!-- Default page to serve -->
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            /WEB-INF/applicationContext-*.xml
+            /WEB-INF/mat-persistence.xml
+        </param-value>
+    </context-param>
+    <filter>
+        <filter-name>hibernateStatsFilter</filter-name>
+        <filter-class>org.ifmc.mat.server.HibernateStatisticsFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter>
+        <filter-name>hibernateFilter</filter-name>
+        <filter-class>org.springframework.orm.hibernate3.support.OpenSessionInViewFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+      <filter-name>springSecurityFilterChain</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>  
+
+    <filter-mapping>
+      <filter-name>hibernateStatsFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>hibernateFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping> 
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.ifmc.mat.server.MatSessionListener</listener-class>
+    </listener>
+    
+  <servlet>
+    <servlet-name>adminServlet</servlet-name>
+    <servlet-class>org.ifmc.mat.server.AdminServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>measureLibraryServlet</servlet-name>
+    <servlet-class>org.ifmc.mat.server.MeasureLibraryServiceImpl</servlet-class>
+  </servlet>  
+  <servlet>
+    <servlet-name>sessionManagementServlet</servlet-name>
+    <servlet-class>org.ifmc.mat.server.SessionManagementServImpl</servlet-class>
+  </servlet>    
+  <servlet>
+    <servlet-name>myAccountServlet</servlet-name>
+    <servlet-class>org.ifmc.mat.server.MyAccountServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>loginServiceImpl</servlet-name>
+  	<servlet-class>org.ifmc.mat.server.LoginServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>logoutServiceImpl</servlet-name>
+  	<servlet-class>org.ifmc.mat.server.LoginServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>codelistServiceImpl</servlet-name>
+    <servlet-class>org.ifmc.mat.server.CodeListServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>clauseServiceImpl</servlet-name>
+    <servlet-class>org.ifmc.mat.server.clause.ClauseServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>clauseCloningServiceImpl</servlet-name>
+    <servlet-class>org.ifmc.mat.server.clause.ClauseCloningServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>packageServiceImpl</servlet-name>
+    <servlet-class>org.ifmc.mat.server.PackageServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>qDSAttributesServiceImpl</servlet-name>
+    <servlet-class>org.ifmc.mat.server.clause.QDSAttributesServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>measureCloningServiceImpl</servlet-name>
+    <servlet-class>org.ifmc.mat.server.clause.MeasureCloningServiceImpl</servlet-class>
+  </servlet>
+  <servlet>
+    <servlet-name>exportServlet</servlet-name>
+    <servlet-class>org.ifmc.mat.server.ExportServlet</servlet-class>
+  </servlet>
+   <servlet>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <servlet-class>org.ifmc.mat.server.servlet.FileUploadServlet</servlet-class>
+  </servlet>
+  <servlet>
+  	<servlet-name>auditServiceImpl</servlet-name>
+  	<servlet-class>org.ifmc.mat.server.AuditServiceImpl</servlet-class>
+  </servlet>  
+  
+  <servlet-mapping>
+    <servlet-name>FileUploadServlet</servlet-name>
+    <url-pattern>/mat/uploadFormHandler</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping>
+    <servlet-name>exportServlet</servlet-name>
+    <url-pattern>/mat/export</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>adminServlet</servlet-name>
+    <url-pattern>/mat/admin</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>sessionManagementServlet</servlet-name>
+    <url-pattern>/mat/sessionService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>measureLibraryServlet</servlet-name>
+    <url-pattern>/mat/measureLibrary</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>myAccountServlet</servlet-name>
+    <url-pattern>/mat/myAccount</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping>
+  	<servlet-name>loginServiceImpl</servlet-name>
+  	<url-pattern>/login/loginService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>logoutServiceImpl</servlet-name>
+  	<url-pattern>/mat/loginService</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>codelistServiceImpl</servlet-name>
+    <url-pattern>/mat/codelist</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>clauseServiceImpl</servlet-name>
+    <url-pattern>/mat/clause</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>clauseCloningServiceImpl</servlet-name>
+    <url-pattern>/mat/clauseCloning</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>packageServiceImpl</servlet-name>
+    <url-pattern>/mat/package</url-pattern>
+  </servlet-mapping>  
+  <servlet-mapping>
+    <servlet-name>qDSAttributesServiceImpl</servlet-name>
+    <url-pattern>/mat/qdsattributes</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>measureCloningServiceImpl</servlet-name>
+    <url-pattern>/mat/measureCloning</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>auditServiceImpl</servlet-name>
+  	<url-pattern>/mat/auditService</url-pattern>
+  </servlet-mapping>  
+    <session-config>
+        <session-timeout>70</session-timeout>
+    </session-config>
+
+</web-app>
+
+

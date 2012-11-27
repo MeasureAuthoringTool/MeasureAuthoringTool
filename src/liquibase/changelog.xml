@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+	<databaseChangeLog
+		xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog 
+			http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-2.0.xsd">
+
+		<include file="classpath:/liquibase/deploy_01.00.01_20110114.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.02_20110117.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.03_20110225.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.04_20110225.xml"/>
+		 
+		<include file="classpath:/liquibase/deploy_01.00.05_20110303.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.06_20110308.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.07_20110308.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.08_20110315.xml"/>
+		
+		<include file="classpath:/liquibase/deploy_01.00.09_20110322.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.10_20110414.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.11_20110426.xml"/>
+		
+		<include file="classpath:/liquibase/deploy_01.00.12_20110513.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.13_20110503.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.14_20110621.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.15_20110624.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.16_20110628.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.17_20110701.xml"/> 
+		<include file="classpath:/liquibase/deploy_01.00.18_20110803.xml"/> 
+		<include file="classpath:/liquibase/deploy_01.00.19_20110805.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.20_20110802.xml"/> 
+		<include file="classpath:/liquibase/deploy_01.00.21_20110816.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.22_20110817.xml"/>		
+		<include file="classpath:/liquibase/deploy_01.00.23_20110818.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.24_20110819.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.25_20110819.xml"/>		
+		<include file="classpath:/liquibase/deploy_01.00.26_20110825.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.27_20110826.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.28_20110831.xml"/>		
+		<include file="classpath:/liquibase/deploy_01.00.29_20110831.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.30_20110831.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.31_20110831.xml"/>		
+		<include file="classpath:/liquibase/deploy_01.00.34_20110906.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.36_20110908.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.32_20110831.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.35_20110906.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.33_20110905.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.37_20110909.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.38_20110909.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.39_20110910.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.40_20110914.xml"/>				
+		<include file="classpath:/liquibase/deploy_01.00.41_20110914.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.42_20110928.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.43_20111002.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.44_20111031.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.45_20111031.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.46_20111101.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.47_20111103.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.48_20111109.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.49_20111129.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.50_20111201.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.51_20111202.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.52_20111202.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.53_20111207.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.54_20111213.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.55_20111213.xml"/> 
+		<include file="classpath:/liquibase/deploy_01.00.56_20111214.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.57_20111214.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.58_20111216.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.59_20111216.xml"/> 
+		<include file="classpath:/liquibase/deploy_01.00.60_20111220.xml"/> 
+		<include file="classpath:/liquibase/deploy_01.00.61_20111223.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.64_20120112.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.63_20120112.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.62_20120110.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.65_20120124.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.66_20120125.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.67_20120126.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.68_20120130.xml"/>
+		<include file="classpath:/liquibase/deploy_01.00.69_20120130.xml"/>
+		<include file="classpath:/liquibase/deploy_01.02.01_Sprint-20_US4.xml"/>
+		<include file="classpath:/liquibase/deploy_01.02.02_Sprint-20_US6.xml"/>
+		<include file="classpath:/liquibase/deploy_01.02.03_Sprint-20_US6.xml"/>
+		<include file="classpath:/liquibase/deploy_01.02.04_Sprint-20_US6.xml"/>
+		<include file="classpath:/liquibase/deploy_01.02.05_Sprint-20_US141.xml"/>
+		<include file="classpath:/liquibase/deploy_01.02.06_Sprint-20_US5.xml"/>
+		<include file="classpath:/liquibase/deploy_01.02.07_Sprint-20_US5.xml"/>
+		<include file="classpath:/liquibase/deploy_01.02.08_Sprint-20_US5.xml"/>
+		<include file="classpath:/liquibase/deploy_01.02.09_Sprint-20_US5.xml"/>
+		
+		<include file="classpath:/liquibase/deploy_01.02.10_Sprint-21_US137.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-21_US147.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-21_US148.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-21_US151.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-21_US138_US139.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-21_US144.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-21_US154.xml"/>
+		
+		<include file="classpath:/liquibase/deploy_Sprint-22_US156.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-22_US171.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-22_US161.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-23_US185.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-23_US182.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-23_US185_b.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-23_US203.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-23_US203_b.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-23_US185_c.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-23_US203_c.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-23_US214.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-23_US204.xml"/>
+		<include file="classpath:/liquibase/deploy_SprintOandM_US230.xml"/>
+		<include file="classpath:/liquibase/deploy_SprintOandM_US231.xml"/>
+		<include file="classpath:/liquibase/deploy_SprintOandM_US233.xml"/>
+		<include file="classpath:/liquibase/deploy_SprintOandM_US236_US237.xml"/>
+	</databaseChangeLog>

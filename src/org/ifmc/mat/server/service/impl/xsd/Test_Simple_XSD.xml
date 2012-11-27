@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="ISO-8859-1"?> 
+<measure xmlns="mns"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="mns SimpleXML.xsd">
+  <headers>
+    <uuid>8a4d8f81-3400-844c-0134-00a6d4640047</uuid>
+    <title>A Date Diff Test</title>
+    <period uuid="ece786df-6be8-461d-99e9-b2fc929aafa0">
+      <startdate uuid="01f27666-d8bb-448f-b8c8-371a9e5c9996">00000101</startdate>
+      <stopdate uuid="5fbef525-01a7-4868-84e1-7b812bf63040">00001231</stopdate>
+    </period>
+    <description>d</description>
+    <copyright>(c)d</copyright>
+    <setid>971a014e-f245-49d7-87c1-f799df033c8f</setid>
+    <status>Complete</status>
+    <authors>
+      <author id="2.16.840.1.113883.3.797">American Board of Internal Medicine</author>
+    </authors>
+    <custodian id="2.16.840.1.113883.3.797">American Board of Internal Medicine</custodian>
+    <verifiers>
+      <verifier id="2.16.840.1.113883.3.560">National Quality Forum</verifier>
+    </verifiers>
+    <scores>
+      <score id="CONTVAR">Continuous Variable</score>
+    </scores>
+    <types>
+      <type id="PROCESS">Process</type>
+    </types>
+    <stratification>d</stratification>
+    <guidance>d</guidance>
+    <transmissionFormat>d</transmissionFormat>
+    <rationales>
+      <rationale>d</rationale>
+    </rationales>
+    <recommendations>
+      <recommendation>d</recommendation>
+    </recommendations>
+    <references>
+      <reference>d</reference>
+    </references>
+    <improvementNotation>d</improvementNotation>
+    <definitions>
+      <definition>d</definition>
+    </definitions>
+    <qualityMeasureSet uuid="cf77deb2-e236-4a77-bc7a-9252e37242cc">d</qualityMeasureSet>
+    <supplementalData>d</supplementalData>
+    <disclaimer>d</disclaimer>
+    <riskAdjustment>d</riskAdjustment>
+    <aggregation>d</aggregation>
+    <initialPatientPopDescription>d</initialPatientPopDescription>
+    <denominatorExclusionsDescription>d</denominatorExclusionsDescription>
+    <numeratorDescription>dd</numeratorDescription>
+    <numeratorExclusionsDescription>d</numeratorExclusionsDescription>
+    <denominatorExceptionsDescription>d</denominatorExceptionsDescription>
+    <measurePopulationDescription>d</measurePopulationDescription>
+    <measureObservationsDescription>d</measureObservationsDescription>
+    <denominatorDescription>d</denominatorDescription>
+    <!-- Can we change the nqfid@root attribute name to be 'id'. Needs to be root for HQMF, but if we ever get away from
+    -->
+    <nqfid root="2.16.840.1.113883.3.560.1" extension="0125"/>
+    <emeasureid>999999</emeasureid>    
+    <version>0</version>
+  </headers>  
+  <elementlookup>
+<!-- Can we rename qdsel@codesystemname? This seems to be capturing the measure steward that is entered for the value set. -->
+
+    <qdsel id="4106" codesystemname="HL7" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.1.11.1" name="Gender" uuid="4d766f18-1af9-4d63-bd99-ac92b302f1ef" datatype="Patient Characteristic Gender" taxonomy="HL7 (2.16.840.1.113883.5.1)" /> 
+    <qdsel id="4107" codesystemname="CDC NCHS" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.114222.4.11.836" name="Race" uuid="1ab5bd19-8a53-4cfd-bd72-49d89737bec1" datatype="Patient Characteristic Race" taxonomy="CDC" /> 
+    <qdsel id="4108" codesystemname="CDC NCHS" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.114222.4.11.837" name="Ethnicity" uuid="9ed50881-f293-45b4-aa9b-a6790383bab1" datatype="Patient Characteristic Ethnicity" taxonomy="CDC" /> 
+    <qdsel id="4109" codesystemname="PHDSC" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.221.5" name="Payer" uuid="dad8672b-a723-43d9-9ad9-02042d445e65" datatype="Patient Characteristic Payer" taxonomy="Source of Payment Typology" /> 
+    <qdsel id="4110" codesystemname="National Quality Forum" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.560.100.2" name="Administrative Gender Female" uuid="ef176372-bfad-469c-ad35-a11c1082e8cc" datatype="Patient Characteristic Gender" taxonomy="HL7 (2.16.840.1.113883.5.1)" /> 
+    <qdsel id="4111" codesystemname="National Quality Forum" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.560.100.1" name="Administrative Gender Male" uuid="3342a840-5c29-4b48-baae-c1e0d2735663" datatype="Patient Characteristic Gender" taxonomy="HL7 (2.16.840.1.113883.5.1)" /> 
+    <qdsel id="4112" codesystemname="National Quality Forum" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.560.100.3" name="Administrative Gender Undifferentiated" uuid="234d9962-6eba-4e7c-927c-ddc0fb0c0517" datatype="Patient Characteristic Gender" taxonomy="HL7 (2.16.840.1.113883.5.1)" /> 
+    <qdsel id="4113" codesystemname="Telligen" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.461" name="Angioplasty" uuid="babeb713-8b0a-466a-a278-57c2868a9166" datatype="Procedure, Performed" taxonomy="ICD-10" /> 
+    <qdsel id="4115" codesystemname="Telligen" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.528" name="AVB" uuid="d58aee63-1f00-419a-b397-26cda068865b" datatype="Diagnosis, Active" taxonomy="SNOMED-CT" /> 
+    <qdsel id="4117" codesystemname="National Quality Forum" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.560.100.4" name="birth date" uuid="8cc21332-6f08-4edb-a5cd-102e10fd5c08" datatype="Patient Characteristic Birthdate" taxonomy="LOINC" /> 
+    <qdsel id="4118" codesystemname="American Board of Internal Medicine" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.474" name="Care Experience" uuid="e2827a23-ecc0-44ff-b822-8609fd3bea44" datatype="Patient Care Experience" taxonomy="SNOMED-CT" /> 
+    <qdsel id="4119" codesystemname="American Board of Internal Medicine" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.48" name="Care Goal" uuid="da4beb1f-2e7e-4aab-8e59-25d2c5f89657" datatype="Care Goal" taxonomy="SNOMED-CT" /> 
+    <qdsel id="4120" codesystemname="American Board of Internal Medicine" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.13" name="Characteristic" uuid="dcbf56b3-c12f-471a-8bb6-45f45108d764" datatype="Patient Characteristic" taxonomy="HL7" /> 
+    <qdsel id="4121" codesystemname="Telligen" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.525" name="Chronic Heart Failure" uuid="43e1e309-8375-49de-90aa-a4a6fe4f704a" datatype="Diagnosis, Active" taxonomy="SNOMED-CT" /> 
+    <qdsel id="4122" codesystemname="Oklahoma Foundation for Medical Quality" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.485" name="Clinical Trial Participant" uuid="3f207f12-5e94-4cea-8b47-3700c7fcb225" datatype="Patient Characteristic" taxonomy="SNOMED-CT" /> 
+    <qdsel id="4123" codesystemname="American Board of Internal Medicine" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.7" name="Communication" uuid="5961fc85-f6f5-4029-b3e5-13a27dcf4929" datatype="Communication: From Patient to Provider" taxonomy="CPT" /> 
+    <qdsel id="4124" codesystemname="American Board of Internal Medicine" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.7" name="Communication" uuid="7552692d-1d26-45e9-8c1d-0c378301381a" datatype="Communication: From Provider to Patient" taxonomy="CPT" /> 
+    <qdsel id="4125" codesystemname="American Board of Internal Medicine" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.7" name="Communication" uuid="8e432f20-0e6a-4e16-83f2-88652cee4a6f" datatype="Communication: From Provider to Provider" taxonomy="CPT" /> 
+    <qdsel id="4126" codesystemname="Telligen" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.497" name="Coronary Heart Disease" uuid="06262728-0c8e-413e-9c59-dbc701d5d0bd" datatype="Diagnosis, Active" taxonomy="SNOMED-CT" /> 
+    <qdsel id="4127" codesystemname="Telligen" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.497" name="Coronary Heart Disease" uuid="6c7f303e-b4ca-42b5-98d5-7ad0e82b5fd9" datatype="Diagnosis, Family History" taxonomy="SNOMED-CT" /> 
+    <qdsel id="2-4116" codesystemname="American Medical Association - Physician Consortium for Performance Improvement" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.3.67.1.101.3.476" name="Bipolar Disorder" uuid="544ac84b-98de-41b6-8b53-9634fcf87376" datatype="Diagnosis, Active" taxonomy="Grouping" /> 
+    <iqdsel id="4116" refid="2-4116" iname="Occurrence A" name="Bipolar Disorder" datatype="Occurrence A of Diagnosis, Active" uuid="1abe65ad-8f64-4c49-9faf-095238d020c6"/> 
+    <measureel id="4128" oid="2.16.840.1.113883.3.67.1.101.1.53" name="Measurement Period" uuid="95027ce3-a6fb-4015-90aa-52194a7bee79" datatype="Timing Element" taxonomy="NQF"/> 
+    <measurecalc id="1-0" uuid="d675dad8-3dd5-425a-8a32-513e07dfa03f" datatype="derivation expression" origText="Difference between dates" name="DATEDIFF">
+        <args>
+            <qdsel id="4119" to="4128" highnum="5" highinclusive="false" highunit="hours" rel="EBS" /> 
+          </args>
+      </measurecalc>
+    <measurecalc id="1-1" uuid="76039161-0de7-448d-b8d1-1e99d3559909" datatype="derivation expression" origText="Difference between dates" name="DATEDIFF">
+        <args>
+              <qdsel id="4119" to="4128" highnum="5" highinclusive="false" highunit="hours" rel="EBS" /> 
+          </args>
+      </measurecalc>
+    <measurecalc id="1-2" uuid="a02c41ea-46f6-464e-9c69-e8814f677a22" datatype="derivation expression" origText="Difference between dates" name="DATEDIFF">
+        <args>
+             <qdsel id="4119" to="4128" highnum="5" highinclusive="false" highunit="hours" rel="EBS" /> 
+          </args>
+      </measurecalc>
+    <measurecalc id="1-3" uuid="9e37f7c8-73e6-4bb1-b307-331f08012619" datatype="derivation expression" origText="Difference between dates" name="DATEDIFF">
+        <args>
+          <qdsel id="4119" to="4128" highnum="5" highinclusive="false" highunit="hours" rel="EBS" /> 
+        </args>
+    </measurecalc>
+    <measurecalc id="1-4" uuid="d7ea305c-8fed-4556-b89f-55de5357b711" datatype="derivation expression" origText="Difference between dates" name="DATEDIFF">
+        <args>
+            <qdsel id="4119" to="4128" highnum="5" highinclusive="false" highunit="hours" rel="EBS" /> 
+        </args>
+    </measurecalc>
+    <measurecalc id="1-5" uuid="d7a32f59-911d-4c6f-b0b1-4cb4cde0c30f" datatype="derivation expression" origText="Difference between dates" name="DATEDIFF">
+        <args>
+            <qdsel id="4119" to="4128" highnum="5" highinclusive="false" highunit="hours" rel="EBS" /> 
+        </args>
+    </measurecalc>
+    <measurecalc id="1-6" uuid="e3debb3d-d7cc-48a3-bcea-b6db6f58c51e" datatype="derivation expression" origText="Difference between dates" name="DATEDIFF">
+        <args>
+            <qdsel id="4119" to="4128" highnum="5" highinclusive="false" highunit="hours" rel="EBS" /> 
+        </args>
+    </measurecalc>
+  </elementlookup>
+  <population uuid="85210DF5-313F-4EE2-ABA0-F4E04DB37A3F">
+    <and>
+      <qdsel id="4110" /> 
+      <qdsel id="4111" /> 
+      <or>
+        <qdsel id="4112" /> 
+        <qdsel id="4113" to="4121" rel="DURING" /> 
+        <qdsel id="4115" to="4126" rel="SAS"/> 
+        <and>
+          <qdsel id="4125" rel="SAS">
+            <to>
+              <qdsel id="4115" to="4126" rel="SAS" /> 
+            </to>
+          </qdsel>
+          <qdsel id="4125" rel="SAS">
+            <to>
+              <qdsel id="4115" to="4126" rel="SAS" /> 
+            </to>
+          </qdsel>
+          <or>
+            <qdsel id="4124" rel="SAS">
+              <to>
+                <qdsel id="4115" to="4126" rel="SAS" /> 
+              </to>
+            </qdsel>
+            <qdsel id="4127" to="4128" rel="EDU" /> 
+          </or>
+        </and>
+      </or>
+    </and>
+  </population>
+  <denominator uuid="907AA3FF-AD1C-40DF-ACBA-3BEC167F25D8">
+    <and/> 
+    <attachments>
+      <attachment uuid="85210DF5-313F-4EE2-ABA0-F4E04DB37A3F" title="Initial Patient Population" clause="SDLT_Population1" /> 
+    </attachments>
+  </denominator>
+  <numerator uuid="A9210AFA-657D-4915-8BD8-DB22B9482190">
+    <and>
+      <qdsel id="4126" highnum="30" highinclusive="false" highunit="minutes" rel="SBOD">
+        <to>
+          <qdsel id="4127" to="4128" rel="EDU" /> 
+        </to>
+      </qdsel>
+      <qdsel id="1-0"/> 
+      <and>
+        <qdsel id="4120" rel="EDU">
+          <to>
+            <qdsel id="4119" rel="EAS">
+              <to>
+                <or rel="EBOD">
+                  <qdsel id="4115"/> 
+                  <qdsel id="4116"/> 
+                  <qdsel id="4126"/> 
+                  <qdsel id="4127"/> 
+                  <to>
+                    <qdsel id="4121" rel="EBS">
+                      <to>
+                        <qdsel id="1-4" /> 
+                      </to>
+                    </qdsel>
+                  </to>
+                </or>
+              </to>
+            </qdsel>
+          </to>
+        </qdsel>
+        <or>
+        <qdsel id="4122" rel="SBS">
+        <to>
+        <qdsel id="4120" rel="EDU">
+        <to>
+        <qdsel id="4119" rel="EAS">
+        + <to>
+        <or rel="EBOD">
+          <qdsel id="4115" /> 
+          <qdsel id="4116" /> 
+          <qdsel id="4126" /> 
+          <qdsel id="4127" /> 
+        <to>
+        <qdsel id="4121" rel="EBS">
+        <to>
+          <qdsel id="1-5" /> 
+          </to>
+          </qdsel>
+          </to>
+          </or>
+          </to>
+          </qdsel>
+          </to>
+          </qdsel>
+          </to>
+          </qdsel>
+        <qdsel id="4113" highnum="5" highinclusive="false" highunit="hours" rel="SAE">
+        <to>
+        <qdsel id="4122" rel="SBS">
+        <to>
+        <qdsel id="4120" rel="EDU">
+        <to>
+        <qdsel id="4119" rel="EAS">
+        <to>
+        <or rel="EBOD">
+          <qdsel id="4115" /> 
+          <qdsel id="4116" /> 
+          <qdsel id="4126" /> 
+          <qdsel id="4127" /> 
+        <to>
+        <qdsel id="4121" rel="EBS">
+        <to>
+          <qdsel id="1-6" /> 
+          </to>
+          </qdsel>
+          </to>
+          </or>
+          </to>
+          </qdsel>
+          </to>
+          </qdsel>
+          </to>
+          </qdsel>
+          </to>
+          </qdsel>
+          </or>
+        </and>
+      <or>
+        <qdsel id="4123" highnum="5" highinclusive="false" highunit="hours" rel="SAS">
+          <to>
+            <qdsel id="4124" rel="SAS">
+              <to>
+                <qdsel id="4115" to="4126" rel="SAS" /> 
+              </to>
+            </qdsel>
+          </to>
+        </qdsel>
+        <qdsel id="4121" rel="EBS">
+          <to>
+            <qdsel id="1-1" /> 
+          </to>
+        </qdsel>
+        <and>
+          <qdsel id="4113" to="4121" rel="DURING" /> 
+          <qdsel id="4125" rel="SAS">
+            <to>
+              <qdsel id="4115" to="4126" rel="SAS" /> 
+            </to>
+          </qdsel>
+        </and>
+      </or>
+      <or>
+        <qdsel id="4119" rel="EAS">
+          <to>
+            <or rel="EBOD">
+              <qdsel id="4115"/> 
+              <qdsel id="4116"/> 
+              <qdsel id="4126"/> 
+              <qdsel id="4127"/> 
+                <to>
+                  <qdsel id="4121" rel="EBS">
+                    <to>
+                      <qdsel id="1-3" /> 
+                    </to>
+                  </qdsel>
+                </to>
+            </or>
+          </to>
+        </qdsel>
+        <or>
+          <qdsel id="4115"/> 
+          <qdsel id="4116"/> 
+          <qdsel id="4126"/> 
+          <qdsel id="4127"/> 
+        </or>
+        <or rel="EBOD">
+          <qdsel id="4115"/> 
+          <qdsel id="4116"/> 
+          <qdsel id="4126"/> 
+          <qdsel id="4127"/> 
+            <to>
+              <qdsel id="4121" rel="EBS">
+                <to>
+                  <qdsel id="1-2" /> 
+                </to>
+              </qdsel>
+            </to>
+        </or>
+      </or>
+    </and>
+  </numerator>
+  <exceptions uuid="A3AD2E80-0A56-40D6-8F89-58C9A931554F">
+    <and>
+      <qdsel id="4115" /> 
+    </and>
+  </exceptions>
+  <stratification uuid="41CFA427-6FC8-4768-A1EC-97781358E905">
+    <and/> 
+  </stratification>
+  <supplementalDataElements>
+    <qdsel id="4106" codesystemname="HL7" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.1.11.1" name="Gender" uuid="363f963d-3d33-4ff2-a240-ee6262162868" datatype="Patient Characteristic Gender" taxonomy="HL7 (2.16.840.1.113883.5.1)" /> 
+    <qdsel id="4107" codesystemname="CDC NCHS" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.114222.4.11.836" name="Race" uuid="ad4007d1-2a1c-430e-a13c-c4442c9e8e75" datatype="Patient Characteristic Race" taxonomy="CDC" /> 
+    <qdsel id="4108" codesystemname="CDC NCHS" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.114222.4.11.837" name="Ethnicity" uuid="23c2f69b-ad12-408e-8bf5-2ff7f7b8a502" datatype="Patient Characteristic Ethnicity" taxonomy="CDC" /> 
+    <qdsel id="4109" codesystemname="PHDSC" codesystem="2.16.840.1.113883.3.67.1.101" oid="2.16.840.1.113883.221.5" name="Payer" uuid="988acf86-2e2c-4eee-9aae-95c365f9ec8c" datatype="Patient Characteristic Payer" taxonomy="Source of Payment Typology" /> 
+  </supplementalDataElements>
+</measure>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task-3.0.xsd"
+>
+	
+	<bean id="loginService" class="org.ifmc.mat.server.service.impl.LoginCredentialServiceImpl">
+    </bean>
+	
+    <bean id="userService" class="org.ifmc.mat.server.service.impl.UserServiceImpl">
+    </bean>
+    
+    <bean id="codeListService" class="org.ifmc.mat.server.service.impl.ManageCodeListServiceImpl">
+    </bean>
+    
+	<bean id="hibernateuserService" class="org.ifmc.mat.server.hibernate.HibernateUserDetailService">
+	</bean>
+	
+    <bean id="measurePackageService" class="org.ifmc.mat.server.service.impl.MeasurePackageServiceImpl">
+    </bean>
+    
+    <bean id="clauseService" class="org.ifmc.mat.server.clause.ClauseServiceImpl">
+    </bean>    
+     
+    <bean id="packagerService" class="org.ifmc.mat.server.service.impl.PackagerServiceImpl">
+    </bean>
+    <bean id="qDSAttributesService" class="org.ifmc.mat.server.clause.QDSAttributesServiceImpl">
+    </bean>
+    <bean id="eMeasureService" class="org.ifmc.mat.server.service.impl.SimpleEMeasureServiceImpl">
+    </bean>
+    <bean id="elementLookupGenerator" class="org.ifmc.mat.server.export.ElementLookupGenerator">
+    </bean>
+    <bean id="headerInfoGenerator" class="org.ifmc.mat.server.export.HeaderInfoGenerator">
+    </bean>
+    <bean id="attachmentGenerator" class="org.ifmc.mat.server.export.AttachmentGenerator">
+    </bean>
+    <bean id="clauseBusinessService" class="org.ifmc.mat.server.clause.ClauseBusinessServiceImpl">
+    </bean>
+    <bean id="clauseCloningService" class="org.ifmc.mat.server.clause.ClauseCloningServiceImpl">
+    </bean>
+    <bean id="measureAuditService" class="org.ifmc.mat.server.service.impl.MeasureAuditServiceImpl">
+    </bean>
+    <bean id="codeListAuditService" class="org.ifmc.mat.server.service.impl.CodeListAuditServiceImpl">
+    </bean>
+    <bean id="suppDataElementsGenerator" class="org.ifmc.mat.server.export.SuppDataElementsGenerator">
+    </bean>
+    <!-- US154 -->
+    <bean id="transactionAuditService" class="org.ifmc.mat.server.service.impl.TransactionAuditServiceImpl">
+    </bean>    
+</beans>

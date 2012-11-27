@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<HealthRecordMapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<health-record code="18617-1" healthRecordName="Discharge Summary"/>
+</HealthRecordMapping>

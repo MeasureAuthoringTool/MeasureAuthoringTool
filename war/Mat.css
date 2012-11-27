@@ -1,0 +1,917 @@
+body#main * {
+	font-family:Arial;
+}
+body#main {
+	font-family:Arial;
+	color:black;
+    font-size:medium;
+    line-height:1.25;
+    text-align:left;
+    text-transform:none;
+    width:960px;
+    margin: 0 auto;
+}
+
+body#main input  {
+    color: black;
+    height:15px;
+    padding:0px;
+}
+
+body#main textarea {
+    color: black;
+    height:30px;
+    padding:0px;
+    vertical-align: top;
+}
+body#main select, body#main input, body#main textarea {
+    font-size:small;
+}
+
+.gwt-Anchor, .gwt-Anchor:visited {
+    text-decoration: none;
+}
+
+.codeListHeader{
+	background: #D3DEF6;
+	border-color:#BBBBBB;
+	border-style:solid solid none;
+	border-width:1px 1px 0;
+	padding:3px;
+	font-size:1.0em;
+	font-weight:bold;
+	
+}
+
+.labelStyling{
+	font-weight:bold;
+}
+.decorator{
+	border: 1px solid #C0C0C0;
+	}
+
+.rightSideForm{
+	margin-top: 5%;
+	}
+.leftSideForm{
+    padding-right : 2%;
+	height: 100%;
+	width: 100%;
+}
+
+.manageCodeLeftForm{
+	padding-right : 5%;
+	margin-left: 1%;
+	height: 100%;
+}
+
+.manageCodeRightForm{
+	margin-top: 5%;
+	border: 1px solid;
+	background-color:rgb(243,247,245);
+	padding: 10px;
+	overflow: auto;
+}
+
+
+/** Most GWT widgets already have a style name defined */
+
+
+.gwt-DialogBox {
+  width: 400px;
+}
+
+.dialogVPanel {
+  margin: 5px;
+}
+
+.serverResponseLabelError {
+  color: red;
+}
+
+/** Set ids using widget.getElement().setId("idOfElement") */
+#closeButton {
+  margin: 15px 6px 6px;
+}
+
+.mainContentPanel {
+    vertical-align: middle;
+    text-align: center;
+}
+	
+.greySecondaryButton {
+    background: url("images/bg_btnGrey-secondary.png");
+    background-repeat:repeat-x;
+    font-weight: bold;
+    border:1px solid #C0C0C0;
+    -moz-box-sizing:border-box;
+    height: 25px;
+    width: 30px;
+    text-align: center;
+    vertical-align: middle;
+    padding:5px;
+    cursor: pointer;
+}
+.greySecondaryButton img {
+	padding:1px;
+}
+.primaryButton {
+    background: url("images/bg-btn.png");
+    background-repeat:repeat-x;
+    font-weight: bold;
+}
+.secondaryButton {
+    background: url("images/bg_btnGrey-secondary.png");
+    background-repeat:repeat-x;
+}
+
+.AddCodeButton{
+	float:right;
+	border: 1px solid;
+	font-weight: bold;
+}
+
+.invisible{
+			position:absolute;
+			left:-10000px;
+			top:auto;
+			width:1px;
+			height:1px;
+			visibility:hidden;
+			overflow:hidden;
+}
+.RemoveButton{
+	float:left;
+	border: 1px solid;
+	font-weight: bold;
+}
+.ReadOnlyStyle{
+	 border: none;
+	 overflow: hidden;
+}
+
+.continueButton{
+	float: right;
+	}
+
+.topBanner {
+	/*
+    position: absolute; 
+	: 0pt; 
+	top: 0pt;
+	*/ 
+	overflow: visible; 
+	height: 60px; 
+	border: 1px solid rgb(160, 160, 160); 
+	background-image: url('images/bg_header.gif'); 
+	background-position: left top; 
+    padding-left:25px;
+    padding-right:25px;
+    -moz-box-sizing: border-box; 
+	text-align: left;
+    margin-top: 2px; 
+	margin-left: 2px; 
+    margin-right: 2px; 
+    margin-bottom: 10px; 
+    width: 100%;
+    
+    
+}
+
+.footer {
+    border: 1px solid rgb(160, 160, 160);
+    padding-left:25px;
+    padding-right:25px;
+    height: 50px;
+    margin: 2px;
+    width:100%;
+    text-align: left;
+    /* 
+    position: absolute;
+    text-align: left;
+    -moz-box-sizing: border-box;
+    vertical-align: bottom;
+    */
+}
+
+.footerLink {
+	-moz-box-sizing:border-box;
+background-color:#FFFFFF;
+/* font-color: #000000; */
+font-size:small;
+text-decoration: none;
+text-align: left;
+}
+
+.footerLinkRight {
+	-moz-box-sizing:border-box;
+background-color:#FFFFFF;
+font-color: #000000;
+font-size:small;
+text-decoration: none;
+text-align: right;
+float:right;
+}
+
+.alertMessage {
+	/*color: red;*/
+	
+	 background: /*url('images/error.png')*/ no-repeat scroll 6px 50% #FFDDDD;
+    border: 1px solid #FF0000;
+    color: #000000;
+    display: block;
+    font-weight: bold;
+    margin: 2px auto 14px;
+    padding: 6px 6px 6px 30px;
+    text-align: left;
+	
+	
+}
+
+
+.successMessage {
+	/*color: green;
+	font-size: .8em;
+	font-weight: bold;*/
+	  background: /*url('images/success.png')*/ no-repeat scroll 6px 50% #F4FDEF;
+    border: 1px solid #ACDFA7;
+    color: #000000;
+    display: block;
+    font-weight: bold;
+    margin: 2px auto 14px;
+    padding: 6px 6px 6px 30px;
+    text-align: left;
+	
+	
+	
+}
+
+.loginInfoMessageContainer {
+	-moz-box-sizing:border-box;
+    background-color:#E3F3D8;
+    border-color:#006A33;
+    border-style:solid;
+    border-width:1px 1px 1px 4px;
+}
+
+.loginSpacer {
+	padding: 10px;
+}
+.loginInfoMessageHeader {
+	font-size: 1.1em;
+	font-weight: bold;
+}
+.loginInfoMessageContainer table {
+	padding: 5px;
+}
+.login {
+
+}
+.noWrap {
+	white-space: nowrap;
+}
+.centered {
+	margin-top: 5%;
+    margin-bottom: 10%;
+	margin-left:auto; 
+	margin-right:auto;
+}
+.footerInfo {
+    vertical-align: middle;
+    position:relative;
+}
+.topBannerImage {
+	padding: 4px 4px 4px 4px;
+    vertical-align: middle;
+}
+
+.loginForgotInstructions {
+	font-weight: bold;
+	white-space: nowrap;
+	padding-bottom: 5px;
+}
+
+.loginBlueTitleHolder {
+    background-image: url("images/bg_box_header.png");
+    color:#FFFFFF;
+    width:300px;
+    margin-left:auto; 
+    margin-right:auto;
+    font-weight: bold;
+}
+.loginBlueTitle {
+	padding: 5px;
+	width: 290px;
+}
+
+.loginContentPanel {
+    /*
+    position: absolute; 
+    left: 349px; 
+    top: 124px; 
+    overflow: auto; 
+    width: 275px; 
+    height: 25px; 
+    */
+    border: 1px solid #0964A2;
+    -moz-box-sizing: border-box;
+    background-image: url("images/bg_box-blue.png");
+    background-repeat:repeat-x;
+    vertical-align: middle;
+    text-align: left;
+    width:300px;
+    padding: 10px;
+    font-size:.8em;
+    margin-left:auto; 
+    margin-right:auto;
+}
+.loginHeader {
+    font-size:1.2em;
+    border-bottom:10px;
+    text-align: center;
+    font-weight: bold;
+}
+.leftAligned {
+	text-align: left;
+}
+
+.returnLink{
+	text-align : left;
+	padding-top: 10px;
+}
+.bold {
+	font-weight: bold;
+}
+
+.myAccountButtonLayout td {
+	padding: 2px;
+}
+.myAccountHeader {
+    font-size:1.2em;
+    font-weight:bold;
+}
+.myAccountPanel {
+    -moz-box-sizing:border-box;
+    background-color:white;
+    border:1px solid #C0C0C0;
+    width:98%;
+    height:98%;
+    padding:6px;
+    overflow:auto;
+}
+.myAccountPanelContent {
+    -moz-box-sizing:border-box;
+    background-color:#F0F0F0;
+    border:1px solid #C0C0C0;
+    background-color: white;
+}
+
+
+/*
+* TAB PANELS
+*/
+#matMainTabPanel {
+	width: 100%;
+	overflow: visible;
+	height:auto;
+}
+
+
+#matMainTabPanel .gwt-TabBarItem {
+    background-image: url("images/bg_tabs.png");
+    background-repeat:repeat-x;
+    border-width: 1px 1px 0px;
+    border-color: #C0C0C0;
+    border-style: solid;
+    margin-left: 3px;
+    font-weight: normal;
+} 
+
+#matMainTabPanel .gwt-TabBarItem-selected {
+    background-repeat: no-repeat;
+    background-color: #0964A2;
+    color: #ffffff;
+    border: none;
+    font-weight: bold;
+}
+
+#matMainTabPanel .gwt-TabPanelBottom {
+	border-width: 4px 0px 0px;
+	border-color:#0964A2;
+	padding: 0px;
+}
+#matMainTabPanel .gwt-TabPanel {
+	width: 100%;
+}
+
+/****************************************
+* Measure Composer Sub Tabs
+*****************************************/
+#matMainTabPanel #measureComposerTabLayout .gwt-TabBar {
+
+}
+#measureComposerTabLayout #criterionPanel .gwt-TabBarItem {
+    background-image: url("images/bg_btnGrey-secondary.png");
+    background-repeat:repeat-x;
+	background-color: #E0E0E0;
+    border-width: 1px 1px 0px;
+    border-color: #C0C0C0;
+    border-style: solid;
+    margin-right: 2px;
+    margin-left: 0px;
+    font-weight: normal;
+}
+#matMainTabPanel #measureComposerTabLayout .gwt-TabBarItem-wrapper,
+#matMainTabPanel #measureComposerTabLayout .gwt-TabBarRest-wrapper {
+    border-width: 0px 0px 1px;
+    border-style: solid;
+    border-color:#C0C0C0;
+}
+#matMainTabPanel #measureComposerTabLayout .gwt-TabBarItem-wrapper-selected {
+	border-width: 0px;
+}
+#matMainTabPanel #measureComposerTabLayout .gwt-TabPanelBottom {
+	border:none;
+}
+
+#matMainTabPanel #measureComposerTabLayout #criterionPanel .gwt-TabBarItem-selected {
+    background-image: none;
+    background-repeat:repeat-x;
+    background-position: center bottom;
+    background-color: #0964A2;
+    color: #ffffff;
+    border: none;
+	font-weight: bold;
+}
+
+#matMainTabPanel #measureComposerTabLayout .gwt-TabPanelBottom {
+    padding: 0px;
+    border:none;
+}
+
+#matMainTabPanel #measureComposerTabLayout .contentPanel {
+    border-top-width: 0px;
+   
+}
+#matMainTabPanel #measureComposerTabLayout  .gwt-TabBarFirst-wrapper {
+	display:none;
+}
+
+/****************************************
+* My Account Sub Tabs
+*****************************************/
+
+ #matMainTabPanel #myAccountTabLayout .gwt-TabBarItem {
+	background-image: url("images/bg_btnGrey-secondary.png");
+    background-repeat:repeat-x;
+	background-color: #E0E0E0;
+    border-width: 1px 1px 0px;
+    border-color: #C0C0C0;
+    border-style: solid;
+    margin-right: 2px;
+    margin-left: 0px;
+    font-weight: normal;
+} 
+#matMainTabPanel #myAccountTabLayout .gwt-TabBarItem-selected {
+	background-image: none;
+	background-repeat:repeat-x;
+    background-position: center bottom;
+    background-color: #0964A2;
+    color: #ffffff;
+    border: none;
+    font-weight: bold; 
+} 
+ #matMainTabPanel #myAccountTabLayout .gwt-TabPanelBottom {
+    border:none;
+} 
+/****************************************
+* clause and measure library tabs
+*****************************************/
+
+#matMainTabPanel .gwt-TabLayoutPanelTab {
+	background-color: #E0E0E0;
+	border: 1px solid #C0C0C0;
+    padding-left: 5px;
+    padding-top: 3px;
+    /*width:100px;*/
+    margin-left:0px;
+}
+#matMainTabPanel .gwt-TabLayoutPanelTab-selected {
+    background-color: #DEE4FE;
+}
+#matMainTabPanel .gwt-TabLayoutPanelContent {
+	border: 1px solid #C0C0C0;
+}
+
+.searchResultsTable {
+	border:1px solid #C0C0C0;
+    border-collapse:collapse;
+    text-align: left;
+} 
+
+.searchResultsTable td {
+	border:1px solid #C0C0C0;
+	padding: 3px;
+}
+.searchResultsTable tr.header {
+    background-color:#DCE9F5;
+    font-weight: bold;
+}
+
+.searchResultsTable tr.odd {
+	background-color:#EBEBEB;
+}
+
+.searchResultsTable tr.even {
+    background-color:white;
+}
+.searchResultsTable td.historycol{
+    border:0px;
+}
+
+.searchResultsTable tr.historyrow{
+    border-left:1px solid #C0C0C0;
+    border-right:1px solid #C0C0C0;
+   /* border-top: blank; */
+    border-bottom:1px solid #C0C0C0;
+}
+
+.searchResultsPageSize {
+	position: relative;
+	float:right;
+}
+
+.QDSsearchResults{
+	position: relative;
+	float:left;
+}
+.searchResultsPageSize *, .zipPanel *, .floatLeft {
+	float:left;
+}
+.floatRight {
+	float:right;
+}
+.marginLeft20px {
+	margin-left: 20px;
+}
+.searchResultsContainer {
+    margin-left: 1px;
+	overflow: auto;
+}
+.searchResultsPageSelector {
+	text-align: left;
+	padding: 2px;
+}
+.searchResultsPageSelector .gwt-Label, .searchResultsPageSelector .gwt-Anchor {
+	-moz-box-sizing:border-box;
+background-color:#FFFFFF;
+border:1px solid #0964A2;
+height:22px;
+padding: 2px;
+}
+
+.searchResultsPageSelector div, .searchResultsPageSelector a, .measureLabel, .measureName {
+    float: left;
+}
+.measureName {
+	width: 465px;
+}
+.searchResultsPageSelector div.spacer {
+    width: 5px;
+}   
+
+.logoutPanel{
+	float: right;
+	position: relative;
+	padding-top: 12px;
+	cursor: pointer;
+	font-size:small;
+}
+
+.grid {
+  width: 150px;
+  height: 50px;
+  padding: 5px;
+  position: absolute; 
+  left:50%;
+  top:50%;
+}
+
+
+.tableCell-even {
+  padding: 5px;
+  background: #008AB8;
+  border: 1px solid #ffffff;
+}
+
+.tableCell-odd {
+  padding: 5px;
+  background: #FFCC33;
+  border: 1px solid #ffffff;
+}
+
+
+.panel {
+  background-color: #C3D9FF;
+  border: 1px solid #000000;
+  padding: 3px;
+  margin: 3px;
+  font-weight: normal;  
+}
+
+
+.codeListCodeSystemPanel {
+	padding-left:20px;
+}
+.codeListSearchRightPanel {
+	float: right;
+	width: 50%;
+	border: solid;
+}
+.codeListSearchLeftPanel {
+	float: left;
+	width: 50%;
+}
+.shoppingCart{
+	float: right;
+	border: 1px solid #C0C0C0
+}
+
+.codesSummary, .manageCodes {
+	 float: right;
+	}
+.elementSummary{
+      padding: 4px;	
+	}
+
+.codeListMenuPanel {
+    color:#FFFFFF;
+    margin-left:auto; 
+    margin-right:auto;
+    font-weight: bold;
+    
+     border-bottom:1px solid #C0C0C0;
+    border-left:1px solid #C0C0C0;
+    border-right:1px solid #C0C0C0;
+    -moz-box-sizing:border-box;
+    
+    margin: 5px;
+}
+
+.codeListStyle{
+     margin-left: 30%	
+}
+.codeListLink{
+	  padding-right: 15%;
+	}
+
+.manageCodesLink{
+	 padding-right: 92.8%;
+}
+
+
+
+.manageCodesHeader{
+	margin: 5px;
+	font-weight: bold;
+	border-bottom:1px solid #C0C0C0;
+	padding-right: 5px;
+}
+
+.codeListMenuPanelMenuItem * {
+	padding: 2px;
+	vertical-align: top;
+}
+
+.addCodeTab{
+	 padding: 5px;
+	}
+.mainContent{
+	 width: 100%;
+	 height: 100%;
+	}
+
+.codeListMenuPanelHeader {
+	 background-image: url("images/bg_box_header.png");
+    padding: 5px;
+}
+.codeListSearchClearBoth, .clearBoth {
+	clear: both;
+}
+
+.noBorder, .noBorder td {
+	border: none;
+}
+.columnHeaderSortImage {
+	padding-left: 4px;
+}
+.measureSearchResultIcon {
+    cursor: pointer;
+}
+.currentMeasure {
+	font-weight: bold;
+	font-size: 1.2em;
+	text-align: left;
+}
+.measureComposerTab {
+	background-color:#F0F0F0;
+    border:1px solid #C0C0C0;
+    height:100%;
+    width:100%;
+}
+.searchTableCenteredHolder {
+	text-align: center;
+	width: 100%;
+}
+.measurePackageAddButtonHolder {
+	width: 100%;
+	text-align: right;
+}
+.measurePackageAddButtonPanel {
+	padding-top: 20px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+.measurePackageAddButton, .userSearchButton {
+    margin: 10px;
+}
+.measurePackageLeftRightPanel {
+	border:1px solid #A0A0A0;
+	-moz-box-sizing:border-box;
+	padding:5px;
+}
+.measurePackageLeftRightPanel .column {
+	float: left;
+}
+
+.contentWithHeadingHeader {
+     position: relative;
+}
+.contentWithHeadingHeader h1 {
+	font-size:1.2em;
+    font-weight:bold;
+}
+.contentWithHeadingPanel {
+    -moz-box-sizing:border-box;
+    background-color:#F0F0F0;
+    border:1px solid #C0C0C0;
+    height:98%;
+    overflow:auto;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-bottom:5px;
+    margin: 6px;
+}
+
+
+.contentPanel {
+    padding: 5px;
+	-moz-box-sizing:border-box;
+    background-color:white;
+    border:1px solid #C0C0C0;
+}
+
+.qdsContentPanel{
+	padding: 5px;
+	position: relative;
+	overflow: hidden;
+	-moz-box-sizing:border-box;
+    background-color:white;
+    border:1px solid #C0C0C0;
+}
+.qdsScroll{
+	overflow-x: hidden; 
+	overflow-y: auto; 
+}
+
+.block {
+	display: block;
+}
+.myAccountPasswordRules {
+	padding-left: 40px;
+}
+.myAccountPasswordRules div {
+	padding-bottom: 10px;
+}
+.securityQuestions div {
+	padding-bottom: 5px;
+}
+
+.manageUserRightPanel {
+	padding-left: 10px;
+    margin-left: 20px;
+    border-left: 1px solid #C0C0C0
+}
+
+.DisableImg {
+	  cursor:default;
+	  opacity: 0.4;
+	  -moz-opacity: 0.4;
+	  filter: alpha(opacity=40);
+}
+
+.measureExportButtonContainer button {
+    margin-right:10px;
+}
+.measureExportButtonContainer .cancelButton {
+	margin-left:15px;
+}
+.listBox {
+    height: 300px;
+    overflow:auto;
+    padding-bottom:5px;
+}
+
+.tabPanel {
+    
+    overflow:visible;
+    padding-top:5px;
+    padding-bottom:5px;
+}
+
+.sortAnchor {
+	text-decoration: none;
+    color: black;
+}
+
+.padLeft5px {
+	padding-left:5px;
+	margin-left:5px;
+}
+
+
+.canvasPanelDVI {
+	border-left: 1px solid white;
+	border-top: 1px solid white;
+	border-right: 1px solid white;
+	border-bottom: 1px solid white;
+	width: 100%;
+}
+
+.measurePhraseTextAreaDVI {
+	font-weight: bold;
+	font-size: 16px;
+}
+
+.msg-alert {
+ /*background: #FFC url("images/alert.png") no-repeat 6px 20%;*/
+ background-image: url("images/alert.png");
+ background-repeat: no-repeat;
+ background-position: 6px;
+ background-color: #FFC;
+ border: 1px solid #FFFFCC;
+ display: block;
+ font-weight: bold;
+ margin: 2px auto 14px;
+ padding: 6px 6px 6px 30px;
+ text-align: left;
+}
+
+
+/*For boxed page navigation */
+.page-numbers {
+    border: 1px solid #0964A2;
+    color: #808185;
+    display: block;
+    float: left;
+    background-color: #FFFFFF;
+    font-size: 100%;
+    font-weight:bold;
+    margin-right: 3px;
+    padding: 4px 4px 3px;
+    text-decoration: none;
+}
+
+.page-numbers-current {
+    background-color: #FFFFF;
+    font-weight: bold;
+    margin-right: 3px;
+    padding: 4px 4px 3px;
+    text-decoration: none;
+}
+.page-numbers.next, .page-numbers.prev {
+    border: 1px solid #FFFFFF;
+}
+
+.pad-right5px{
+	padding-right:5px;
+}
+
+.pad-left21px{
+	padding-left:21px;
+}
+
+.generate-emeasureid-button{
+	color: #666666;
+}
+
+/* =SKIPLIST CODE AND =508 COMPLIANCE  */
+/*_____________________________________________________________*/
+.skiplist {margin: 0 0 0 5px; padding: 0} 
+.skip {display: none; font-family: verdana, sans-serif; text-align: center; margin: 0; padding: 0; position: absolute} /*All incl Opera*/
+/* * html */ .skip {display: block} /*Seen by IE*/
+:root .skip {display: block} /*Seen by Moz, FF and Safari*/
+.skip a {padding: 0 0.5em; display: inline; z-index: 2; text-decoration:none; position: absolute; width: 14em; left: -200em;}
+.skip a:focus, .skip a:active {position: absolute; left: 0.5em; border: solid #333 2px; color: #333; background: #D3DEF6;}
+.skip a:hover {cursor: default}
+

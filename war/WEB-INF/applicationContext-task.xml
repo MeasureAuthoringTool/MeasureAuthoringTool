@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:task="http://www.springframework.org/schema/task"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-2.5.xsd 
+       http://www.springframework.org/schema/task
+       http://www.springframework.org/schema/task/spring-task-3.0.xsd"
+>
+
+	<bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor">
+    </bean>
+
+    <bean id="unlockUserTask" class="org.ifmc.mat.server.service.impl.UnlockUserTask">
+        <constructor-arg ref="taskExecutor" />
+    </bean>
+    <bean id="expireTempPasswordTask" class="org.ifmc.mat.server.service.impl.ExpireTempPasswordTask">
+        <constructor-arg ref="taskExecutor" />
+    </bean>
+    <task:scheduler id="scheduler" pool-size="1"/>
+	<task:scheduled-tasks scheduler="scheduler">
+	<!--  every hour -->
+        <task:scheduled ref="unlockUserTask" method="unlockUsers" fixed-delay="216000000"/>
+    <!--  every four hours -->
+        <task:scheduled ref="expireTempPasswordTask" method="expireTempPassword" fixed-delay="86400000"/>
+    </task:scheduled-tasks>
+
+
+<!-- Bean Details for Email Scheduler Start -->
+
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:MAT.properties"/>
+	</bean>
+	
+	<bean id="sendEmailTask" class="org.ifmc.mat.server.service.jobs.CheckUserLastLoginTask" >
+		<property name="userDAO" ref="userDAO"/>
+		<property name ="mailSender" ref="mailSender"/>
+		<property name ="simpleMailMessage" ref="userLastLoginTemplateMessage"/>
+		<property name ="warningDayLimit" value="${mat.warning.dayLimit}"/>
+		<property name ="expiryDayLimit" value="${mat.expiry.dayLimit}"/>
+		<property name="warningMailTemplate" value="${mat.warning.email.template}"/>
+		<property name="warningMailSubject" value="${mat.warning.email.subject}"/>
+		<property name="expiryMailTemplate" value="${mat.expiry.email.template}"/>
+		<property name="expiryMailSubject" value="${mat.expiry.email.subject}"/>
+		<property name="velocityEngine" ref="velocityEngine"/>
+	</bean>
+	
+	<bean id="userLastLoginTemplateMessage" class="org.springframework.mail.SimpleMailMessage">
+      <property name="from" value="${mat.from.emailAddress}"/>
+    </bean>
+	
+    <bean id="sendEmailTaskDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+ 		<property name="targetObject" ref="sendEmailTask" />
+		<property name="targetMethod" value="checkUserLastLogin" />
+ 	</bean>
+	
+	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+ 		<property name="jobDetail" ref="sendEmailTaskDetail" />
+		<property name="cronExpression" value="0 0 0 * * ?" />
+		 <!-- <property name="cronExpression" value="0 10 15 * * ?" />-->
+ 	</bean> 
+	
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="cronTrigger" />
+			</list>
+		</property>
+	</bean>
+<!-- Bean Details for Email Scheduler End -->
+
+</beans>

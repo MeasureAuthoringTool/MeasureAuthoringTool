@@ -1,10 +1,11 @@
 package org.ifmc.mat.sprint20.junit;
 
+import mat.dao.clause.MeasureExportDAO;
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureExport;
+import mat.server.service.impl.SimpleEMeasureServiceImpl;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.dao.clause.MeasureExportDAO;
-import org.ifmc.mat.model.clause.Measure;
-import org.ifmc.mat.model.clause.MeasureExport;
-import org.ifmc.mat.server.service.impl.SimpleEMeasureServiceImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

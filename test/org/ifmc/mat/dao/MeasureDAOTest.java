@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.ifmc.mat.dao.impl.clause.ConditionalDAO;
-import org.ifmc.mat.dao.impl.clause.MeasureDAO;
-import org.ifmc.mat.model.clause.Clause;
-import org.ifmc.mat.model.clause.Decision;
-import org.ifmc.mat.model.clause.Measure;
-import org.ifmc.mat.shared.model.MeasurementTerm;
-import org.ifmc.mat.shared.model.QDSTerm;
+import mat.dao.impl.clause.ConditionalDAO;
+import mat.dao.impl.clause.MeasureDAO;
+import mat.model.clause.Clause;
+import mat.model.clause.Decision;
+import mat.model.clause.Measure;
+import mat.shared.model.MeasurementTerm;
+import mat.shared.model.QDSTerm;
+
 import org.junit.Test;
 
 public class MeasureDAOTest extends SpringInitializationTest {
@@ -36,8 +37,8 @@ public class MeasureDAOTest extends SpringInitializationTest {
 		Decision decision = getService().getDecisionDAO().find(decisionId);
 		
 		
-		org.ifmc.mat.shared.model.Decision sharedDecision = conditionalDAO.load(decision.getId());
-		List<org.ifmc.mat.shared.model.Decision> decisions = new ArrayList<org.ifmc.mat.shared.model.Decision>();
+		mat.shared.model.Decision sharedDecision = conditionalDAO.load(decision.getId());
+		List<mat.shared.model.Decision> decisions = new ArrayList<mat.shared.model.Decision>();
 		decisions.add(sharedDecision);
 
 		//conditionalDAO.save(conditional);

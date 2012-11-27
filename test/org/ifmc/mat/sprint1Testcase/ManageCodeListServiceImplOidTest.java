@@ -4,18 +4,19 @@ import java.util.List;
 
 import junit.framework.AssertionFailedError;
 
-import org.ifmc.mat.client.codelist.ManageCodeListDetailModel;
-import org.ifmc.mat.client.codelist.service.SaveUpdateCodeListResult;
-import org.ifmc.mat.dao.CodeListDAO;
-import org.ifmc.mat.dao.ListObjectDAO;
+import mat.client.codelist.ManageCodeListDetailModel;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.dao.CodeListDAO;
+import mat.dao.ListObjectDAO;
+import mat.dao.UserDAO;
+import mat.model.ListObject;
+import mat.model.SecurityRole;
+import mat.model.User;
+import mat.server.LoggedInUserUtil;
+import mat.server.service.CodeListOidNotUniqueException;
+import mat.server.service.impl.ManageCodeListServiceImpl;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.dao.UserDAO;
-import org.ifmc.mat.model.ListObject;
-import org.ifmc.mat.model.SecurityRole;
-import org.ifmc.mat.model.User;
-import org.ifmc.mat.server.LoggedInUserUtil;
-import org.ifmc.mat.server.service.CodeListOidNotUniqueException;
-import org.ifmc.mat.server.service.impl.ManageCodeListServiceImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;

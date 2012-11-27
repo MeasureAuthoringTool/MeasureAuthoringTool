@@ -2,11 +2,12 @@ package org.ifmc.mat.sprint20.junit;
 
 import java.util.UUID;
 
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureSet;
+import mat.server.MeasureLibraryServiceImpl;
+import mat.server.service.MeasurePackageService;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.model.clause.Measure;
-import org.ifmc.mat.model.clause.MeasureSet;
-import org.ifmc.mat.server.MeasureLibraryServiceImpl;
-import org.ifmc.mat.server.service.MeasurePackageService;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

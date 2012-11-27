@@ -1,6 +1,7 @@
 package org.ifmc.mat.util;
 
-import org.ifmc.mat.server.util.UuidUtility;
+import mat.server.util.UuidUtility;
+
 import org.junit.Test;
 
 import junit.framework.TestCase;

@@ -1,11 +1,12 @@
 package org.ifmc.mat.server.service.impl;
 
+import mat.model.SecurityRole;
+import mat.model.User;
+import mat.model.UserPassword;
+import mat.server.model.MatUserDetails;
+import mat.server.service.UserIDNotUnique;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.model.SecurityRole;
-import org.ifmc.mat.model.User;
-import org.ifmc.mat.model.UserPassword;
-import org.ifmc.mat.server.model.MatUserDetails;
-import org.ifmc.mat.server.service.UserIDNotUnique;
 import org.junit.Test;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 

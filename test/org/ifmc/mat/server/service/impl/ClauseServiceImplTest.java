@@ -2,10 +2,11 @@ package org.ifmc.mat.server.service.impl;
 
 import java.util.List;
 
+import mat.dao.clause.ClauseDAO;
+import mat.model.clause.Clause;
+import mat.server.clause.ClauseServiceImpl;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.dao.clause.ClauseDAO;
-import org.ifmc.mat.model.clause.Clause;
-import org.ifmc.mat.server.clause.ClauseServiceImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;

@@ -3,12 +3,14 @@ package org.ifmc.mat.server.service.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.client.measurepackage.MeasurePackageClauseDetail;
+import mat.client.measurepackage.MeasurePackageOverview;
+import mat.dao.clause.ClauseDAO;
+import mat.dao.clause.PackagerDAO;
+import mat.model.clause.Clause;
+import mat.server.service.impl.PackagerServiceImpl;
+
 import org.easymock.EasyMock;
-import org.ifmc.mat.client.measurepackage.MeasurePackageClauseDetail;
-import org.ifmc.mat.client.measurepackage.MeasurePackageOverview;
-import org.ifmc.mat.dao.clause.ClauseDAO;
-import org.ifmc.mat.dao.clause.PackagerDAO;
-import org.ifmc.mat.model.clause.Clause;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

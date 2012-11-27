@@ -2,7 +2,7 @@ package org.ifmc.mat.shared;
 
 import junit.framework.TestCase;
 
-import org.ifmc.mat.shared.SecurityQuestionVerifier;
+import mat.shared.SecurityQuestionVerifier;
 
 public class SecurityQuestionVerifierTest extends TestCase {
 	public void testValid() {

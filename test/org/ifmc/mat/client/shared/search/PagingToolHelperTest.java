@@ -2,6 +2,9 @@ package org.ifmc.mat.client.shared.search;
 
 import junit.framework.TestCase;
 
+import mat.client.shared.search.PagingToolHelper;
+import mat.client.shared.search.SearchResults;
+
 import org.junit.Test;
 
 import com.google.gwt.user.client.ui.Widget;

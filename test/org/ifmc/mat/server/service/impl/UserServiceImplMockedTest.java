@@ -2,14 +2,15 @@ package org.ifmc.mat.server.service.impl;
 
 import java.util.Date;
 
+import mat.dao.UserDAO;
+import mat.dao.impl.StatusDAO;
+import mat.model.Status;
+import mat.model.User;
+import mat.model.UserPassword;
+import mat.server.service.UserIDNotUnique;
+import mat.server.service.UserService;
+
 import org.easymock.EasyMock;
-import org.ifmc.mat.dao.UserDAO;
-import org.ifmc.mat.dao.impl.StatusDAO;
-import org.ifmc.mat.model.Status;
-import org.ifmc.mat.model.User;
-import org.ifmc.mat.model.UserPassword;
-import org.ifmc.mat.server.service.UserIDNotUnique;
-import org.ifmc.mat.server.service.UserService;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

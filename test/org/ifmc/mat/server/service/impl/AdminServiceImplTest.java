@@ -2,13 +2,14 @@ package org.ifmc.mat.server.service.impl;
 
 import java.util.List;
 
-import org.ifmc.mat.client.admin.ManageUsersDetailModel;
-import org.ifmc.mat.client.admin.service.SaveUpdateUserResult;
+import mat.client.admin.ManageUsersDetailModel;
+import mat.client.admin.service.SaveUpdateUserResult;
+import mat.dao.ListObjectDAO;
+import mat.dao.UserDAO;
+import mat.model.CodeListSearchDTO;
+import mat.model.User;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.dao.UserDAO;
-import org.ifmc.mat.dao.ListObjectDAO;
-import org.ifmc.mat.model.CodeListSearchDTO;
-import org.ifmc.mat.model.User;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;

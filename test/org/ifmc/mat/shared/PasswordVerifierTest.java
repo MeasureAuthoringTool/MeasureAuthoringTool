@@ -1,6 +1,6 @@
 package org.ifmc.mat.shared;
 
-import org.ifmc.mat.shared.PasswordVerifier;
+import mat.shared.PasswordVerifier;
 
 import junit.framework.TestCase;
 

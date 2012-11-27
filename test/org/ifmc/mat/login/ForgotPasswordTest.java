@@ -1,7 +1,8 @@
 package org.ifmc.mat.login;
 
+import mat.shared.ForgottenPasswordResult;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.shared.ForgottenPasswordResult;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

@@ -5,17 +5,18 @@ import java.util.List;
 
 import junit.framework.AssertionFailedError;
 
-import org.ifmc.mat.client.codelist.ManageCodeListDetailModel;
-import org.ifmc.mat.client.codelist.service.SaveUpdateCodeListResult;
-import org.ifmc.mat.dao.CodeListDAO;
-import org.ifmc.mat.dao.ListObjectDAO;
+import mat.client.codelist.ManageCodeListDetailModel;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.dao.CodeListDAO;
+import mat.dao.ListObjectDAO;
+import mat.dao.StewardDAO;
+import mat.model.Code;
+import mat.model.MeasureSteward;
+import mat.server.exception.ExcelParsingException;
+import mat.server.service.impl.ManageCodeListServiceImpl;
+import mat.shared.ConstantMessages;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.dao.StewardDAO;
-import org.ifmc.mat.model.Code;
-import org.ifmc.mat.model.MeasureSteward;
-import org.ifmc.mat.server.exception.ExcelParsingException;
-import org.ifmc.mat.server.service.impl.ManageCodeListServiceImpl;
-import org.ifmc.mat.shared.ConstantMessages;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;

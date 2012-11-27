@@ -2,8 +2,9 @@ package org.ifmc.mat.server.service.impl;
 
 import junit.framework.TestCase;
 
-import org.ifmc.mat.model.User;
-import org.ifmc.mat.server.service.UserService;
+import mat.model.User;
+import mat.server.service.UserService;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.FileSystemXmlApplicationContext;
 

@@ -3,13 +3,14 @@ package org.ifmc.mat.server.service.impl;
 import java.util.List;
 import java.util.ListIterator;
 
+import mat.DTO.DataTypeDTO;
+import mat.client.codelist.HasListBox;
+import mat.dao.CategoryDAO;
+import mat.dao.CodeListDAO;
+import mat.dao.ListObjectDAO;
+
 import org.easymock.EasyMock;
 
-import org.ifmc.mat.DTO.DataTypeDTO;
-import org.ifmc.mat.client.codelist.HasListBox;
-import org.ifmc.mat.dao.CategoryDAO;
-import org.ifmc.mat.dao.CodeListDAO;
-import org.ifmc.mat.dao.ListObjectDAO;
 import org.ifmc.mat.dao.SpringInitializationTest;
 import org.junit.After;
 import org.junit.Before;

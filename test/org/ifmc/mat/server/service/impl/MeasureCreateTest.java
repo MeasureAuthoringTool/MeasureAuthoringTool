@@ -3,11 +3,12 @@ package org.ifmc.mat.server.service.impl;
 
 import java.util.UUID;
 
+import mat.dao.clause.MeasureSetDAO;
+import mat.model.User;
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureSet;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.dao.clause.MeasureSetDAO;
-import org.ifmc.mat.model.User;
-import org.ifmc.mat.model.clause.Measure;
-import org.ifmc.mat.model.clause.MeasureSet;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;

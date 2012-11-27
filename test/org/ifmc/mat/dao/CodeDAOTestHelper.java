@@ -3,17 +3,17 @@ package org.ifmc.mat.dao;
 import java.util.HashSet;
 import java.util.List;
 
-import org.ifmc.mat.model.Category;
-import org.ifmc.mat.model.Code;
-import org.ifmc.mat.model.CodeList;
-import org.ifmc.mat.model.CodeSystem;
-import org.ifmc.mat.model.DataType;
-import org.ifmc.mat.model.GroupedCodeList;
-import org.ifmc.mat.model.ListObject;
-import org.ifmc.mat.model.MeasureSteward;
-import org.ifmc.mat.model.QualityDataSet;
-import org.ifmc.mat.model.User;
-import org.ifmc.mat.model.clause.Measure;
+import mat.model.Category;
+import mat.model.Code;
+import mat.model.CodeList;
+import mat.model.CodeSystem;
+import mat.model.DataType;
+import mat.model.GroupedCodeList;
+import mat.model.ListObject;
+import mat.model.MeasureSteward;
+import mat.model.QualityDataSet;
+import mat.model.User;
+import mat.model.clause.Measure;
 
 
 public class CodeDAOTestHelper {

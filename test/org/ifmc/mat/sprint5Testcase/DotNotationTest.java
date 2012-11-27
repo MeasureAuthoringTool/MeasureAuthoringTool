@@ -4,7 +4,8 @@ package org.ifmc.mat.sprint5Testcase;
 
 import junit.framework.AssertionFailedError;
 
-import org.ifmc.mat.server.service.impl.DotCompare;
+import mat.server.service.impl.DotCompare;
+
 import org.junit.Test;
 
 //import java.lang.reflect.Field;

@@ -2,12 +2,13 @@ package org.ifmc.mat.login;
 
 import java.util.Date;
 
-import org.ifmc.mat.client.login.LoginModel;
+import mat.client.login.LoginModel;
+import mat.model.SecurityRole;
+import mat.model.User;
+import mat.server.model.MatUserDetails;
+import mat.server.service.UserIDNotUnique;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.model.SecurityRole;
-import org.ifmc.mat.model.User;
-import org.ifmc.mat.server.model.MatUserDetails;
-import org.ifmc.mat.server.service.UserIDNotUnique;
 import org.junit.Test;
 import static org.junit.Assert.*;
 

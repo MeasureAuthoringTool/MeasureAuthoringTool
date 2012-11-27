@@ -1,6 +1,7 @@
 package org.ifmc.mat.util;
 
-import org.ifmc.mat.simplexml.model.Version;
+import mat.simplexml.model.Version;
+
 import org.junit.Test;
 
 import junit.framework.TestCase;

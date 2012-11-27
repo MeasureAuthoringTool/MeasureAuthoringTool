@@ -2,10 +2,11 @@ package org.ifmc.mat.server.service.impl;
 
 import java.util.List;
 
+import mat.dao.clause.QDSAttributesDAO;
+import mat.model.clause.QDSAttributes;
+import mat.server.clause.QDSAttributesServiceImpl;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.dao.clause.QDSAttributesDAO;
-import org.ifmc.mat.model.clause.QDSAttributes;
-import org.ifmc.mat.server.clause.QDSAttributesServiceImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

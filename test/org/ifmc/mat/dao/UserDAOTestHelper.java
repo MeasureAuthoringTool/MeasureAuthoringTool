@@ -5,12 +5,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.ifmc.mat.model.AuditLog;
-import org.ifmc.mat.model.SecurityRole;
-import org.ifmc.mat.model.Status;
-import org.ifmc.mat.model.User;
-import org.ifmc.mat.model.UserPassword;
-import org.ifmc.mat.model.UserSecurityQuestion;
+import mat.model.AuditLog;
+import mat.model.SecurityRole;
+import mat.model.Status;
+import mat.model.User;
+import mat.model.UserPassword;
+import mat.model.UserSecurityQuestion;
 
 public class UserDAOTestHelper{
 

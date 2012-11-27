@@ -2,7 +2,8 @@ package org.ifmc.mat.util;
 
 import junit.framework.TestCase;
 
-import org.ifmc.mat.client.codelist.ManageCodeListDetailModel;
+import mat.client.codelist.ManageCodeListDetailModel;
+
 import org.junit.Test;
 
 

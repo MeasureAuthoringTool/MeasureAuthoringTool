@@ -4,8 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
-import org.ifmc.mat.server.exception.ExcelParsingException;
-import org.ifmc.mat.server.servlet.ExcelSheetParser;
+import mat.server.exception.ExcelParsingException;
+import mat.server.servlet.ExcelSheetParser;
+
 import org.junit.Before;
 import org.junit.Test;
 

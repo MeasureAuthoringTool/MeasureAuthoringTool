@@ -1,9 +1,10 @@
 package org.ifmc.mat.sprint2Testcase;
 
+import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.ManageMeasureDetailView;
+import mat.client.measure.ManageMeasurePresenter;
+
 import org.easymock.EasyMock;
-import org.ifmc.mat.client.measure.ManageMeasureDetailModel;
-import org.ifmc.mat.client.measure.ManageMeasureDetailView;
-import org.ifmc.mat.client.measure.ManageMeasurePresenter;
 import org.junit.Test;
 
 import junit.framework.TestCase;

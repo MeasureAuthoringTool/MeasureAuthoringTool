@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.ifmc.mat.model.clause.Clause;
-import org.ifmc.mat.model.clause.Decision;
-import org.ifmc.mat.shared.model.MeasurementTerm;
-import org.ifmc.mat.shared.model.QDSTerm;
+import mat.model.clause.Clause;
+import mat.model.clause.Decision;
+import mat.shared.model.MeasurementTerm;
+import mat.shared.model.QDSTerm;
+
 import org.junit.Test;
 
 public class ClauseDAOTest extends SpringInitializationTest {

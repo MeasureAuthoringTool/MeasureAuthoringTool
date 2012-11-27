@@ -7,9 +7,10 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
-import org.ifmc.mat.dao.ListObjectDAO;
+import mat.dao.ListObjectDAO;
+import mat.model.ListObject;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.model.ListObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;

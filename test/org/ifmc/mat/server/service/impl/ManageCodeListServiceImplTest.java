@@ -1,9 +1,11 @@
 package org.ifmc.mat.server.service.impl;
 
-import org.ifmc.mat.client.codelist.ManageCodeListDetailModel;
-import org.ifmc.mat.client.codelist.service.SaveUpdateCodeListResult;
-import org.ifmc.mat.dao.CodeListDAO;
-import org.ifmc.mat.dao.ListObjectDAO;
+import mat.client.codelist.ManageCodeListDetailModel;
+import mat.client.codelist.service.SaveUpdateCodeListResult;
+import mat.dao.CodeListDAO;
+import mat.dao.ListObjectDAO;
+import mat.server.service.impl.ManageCodeListServiceImpl;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
 import org.ifmc.mat.sprint1Testcase.TestCaseUtil;
 import org.junit.Test;

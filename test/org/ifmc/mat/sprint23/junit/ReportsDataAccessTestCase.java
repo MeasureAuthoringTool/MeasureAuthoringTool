@@ -2,7 +2,8 @@ package org.ifmc.mat.sprint23.junit;
 
 
 
-import org.ifmc.mat.reports.dataaccess.DataAccess;
+import mat.reports.dataaccess.DataAccess;
+
 import org.junit.Before;
 import org.junit.Test;
 

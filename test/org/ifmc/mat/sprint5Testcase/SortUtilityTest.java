@@ -7,10 +7,11 @@ import java.util.SortedSet;
 
 import junit.framework.AssertionFailedError;
 
+import mat.model.ListObject;
+import mat.model.QualityDataSet;
+import mat.shared.comparators.SortUtility;
+
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.ifmc.mat.model.ListObject;
-import org.ifmc.mat.model.QualityDataSet;
-import org.ifmc.mat.shared.comparators.SortUtility;
 import org.junit.Test;
 
 public class SortUtilityTest {

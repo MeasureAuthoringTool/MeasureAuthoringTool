@@ -1,6 +1,7 @@
 package org.ifmc.mat.sprint23.junit;
 
-import org.ifmc.mat.reports.generator.ReportGenerator;
+import mat.reports.generator.ReportGenerator;
+
 import org.junit.Before;
 import org.junit.Test;
 

@@ -3,15 +3,17 @@ package org.ifmc.mat.server.service.impl;
 import java.util.HashSet;
 import java.util.Set;
 
+import mat.client.codelist.ManageCodeListDetailModel;
+import mat.dao.CodeListDAO;
+import mat.dao.ListObjectDAO;
+import mat.model.Category;
+import mat.model.CodeList;
+import mat.model.GroupedCodeList;
+import mat.model.ListObject;
+import mat.server.LoggedInUserUtil;
+import mat.server.service.impl.ManageCodeListServiceImpl;
+
 import org.easymock.EasyMock;
-import org.ifmc.mat.client.codelist.ManageCodeListDetailModel;
-import org.ifmc.mat.dao.CodeListDAO;
-import org.ifmc.mat.dao.ListObjectDAO;
-import org.ifmc.mat.model.Category;
-import org.ifmc.mat.model.CodeList;
-import org.ifmc.mat.model.GroupedCodeList;
-import org.ifmc.mat.model.ListObject;
-import org.ifmc.mat.server.LoggedInUserUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

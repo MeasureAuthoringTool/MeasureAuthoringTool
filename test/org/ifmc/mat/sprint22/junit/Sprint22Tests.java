@@ -6,15 +6,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.ifmc.mat.client.measure.ManageMeasureDetailModel;
-import org.ifmc.mat.client.measure.service.SaveMeasureResult;
+import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.service.SaveMeasureResult;
+import mat.dao.clause.MeasureDAO;
+import mat.dao.clause.MeasureExportDAO;
+import mat.model.clause.Measure;
+import mat.model.clause.MeasureExport;
+import mat.server.MeasureLibraryServiceImpl;
+import mat.server.service.impl.SimpleEMeasureServiceImpl;
+
 import org.ifmc.mat.dao.SpringInitializationTest;
-import org.ifmc.mat.dao.clause.MeasureDAO;
-import org.ifmc.mat.dao.clause.MeasureExportDAO;
-import org.ifmc.mat.model.clause.Measure;
-import org.ifmc.mat.model.clause.MeasureExport;
-import org.ifmc.mat.server.MeasureLibraryServiceImpl;
-import org.ifmc.mat.server.service.impl.SimpleEMeasureServiceImpl;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;

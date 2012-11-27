@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
-import org.ifmc.mat.client.codelist.ManageCodeListDetailModel;
-import org.ifmc.mat.model.clause.Clause;
-import org.ifmc.mat.model.clause.Measure;
+import mat.client.codelist.ManageCodeListDetailModel;
+import mat.model.clause.Clause;
+import mat.model.clause.Measure;
 
 public class TestCaseUtil {
 

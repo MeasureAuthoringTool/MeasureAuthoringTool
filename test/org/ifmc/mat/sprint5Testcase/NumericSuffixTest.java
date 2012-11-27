@@ -3,7 +3,8 @@ package org.ifmc.mat.sprint5Testcase;
 
 import junit.framework.AssertionFailedError;
 
-import org.ifmc.mat.dao.impl.clause.*;
+import mat.dao.impl.clause.*;
+
 import org.junit.Test;
 
 public class NumericSuffixTest {

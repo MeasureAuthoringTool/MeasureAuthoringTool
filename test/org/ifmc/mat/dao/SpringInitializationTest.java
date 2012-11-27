@@ -4,13 +4,14 @@ package org.ifmc.mat.dao;
 
 import junit.framework.TestCase;
 
-import org.ifmc.mat.dao.service.DAOService;
-import org.ifmc.mat.model.User;
-import org.ifmc.mat.server.LoggedInUserUtil;
-import org.ifmc.mat.server.hibernate.HibernateUserDetailService;
-import org.ifmc.mat.server.service.CodeListService;
-import org.ifmc.mat.server.service.LoginCredentialService;
-import org.ifmc.mat.server.service.UserService;
+import mat.dao.service.DAOService;
+import mat.model.User;
+import mat.server.LoggedInUserUtil;
+import mat.server.hibernate.HibernateUserDetailService;
+import mat.server.service.CodeListService;
+import mat.server.service.LoginCredentialService;
+import mat.server.service.UserService;
+
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

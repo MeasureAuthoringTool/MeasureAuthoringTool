@@ -1,0 +1,50 @@
+package mat.client.measure;
+
+import mat.client.history.HistoryBaseView;
+
+import com.google.gwt.event.dom.client.HasClickHandlers;
+
+public class ManageMeasureHistoryView  extends HistoryBaseView implements ManageMeasurePresenter.HistoryDisplay{
+
+	
+	private String measureId;
+	private String measureName;
+	
+	@Override
+	public void setMeasureName(String name) {
+		this.measureName = name;
+		nameText.setText("Measure: " + name);
+	}
+
+
+	@Override
+	public void setMeasureId(String id) {
+		this.measureId = id;
+	}
+
+
+	@Override
+	public String getMeasureId() {
+		return measureId;
+	}
+
+
+
+	@Override
+	public String getMeasureName() {
+		return measureName;
+	}
+
+
+	@Override
+	public HasClickHandlers getReturnToLink() {
+		return goBackLink;
+	}
+
+
+	@Override
+	public void setReturnToLinkText(String s) {
+		goBackLink.setText(s);
+	}
+	
+}

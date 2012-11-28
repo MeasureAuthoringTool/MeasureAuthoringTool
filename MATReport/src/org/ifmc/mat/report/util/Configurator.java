@@ -1,4 +1,4 @@
-package org.ifmc.mat.report.util;
+package mat.report.util;
 
 import java.io.File;
 import java.io.FileInputStream;

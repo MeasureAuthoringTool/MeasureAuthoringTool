@@ -1,4 +1,4 @@
-package MATReport.src.org.ifmc.mat.report;
+package MATReport.src.mat.report;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import MATReport.src.org.ifmc.mat.report.generator.ReportGenerator;
+import MATReport.src.mat.report.generator.ReportGenerator;
 
 public class ReportRunner {
 

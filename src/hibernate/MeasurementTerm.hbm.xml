@@ -4,14 +4,14 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.shared.model.MeasurementTerm" table="MEASUREMENT_TERM" lazy="false">
+  <class name="mat.shared.model.MeasurementTerm" table="MEASUREMENT_TERM" lazy="false">
 	<id name="id" column="ID"/>
 	<property name="unit" column="UNIT" />
 	<property name="quantity" column="QUANTITY" />
 	<property name="decisionId" column="DECISION_ID" />
 
 <!--  
-    <many-to-one name="decisionId" class="org.ifmc.mat.model.clause.Decision"
+    <many-to-one name="decisionId" class="mat.model.clause.Decision"
            column="DECISION_ID" cascade="all" insert="false" update="false"/>
 -->
   </class>

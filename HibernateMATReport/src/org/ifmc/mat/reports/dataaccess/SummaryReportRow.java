@@ -1,4 +1,4 @@
-package org.ifmc.mat.reports.dataaccess;
+package mat.reports.dataaccess;
 
 
 import java.util.ArrayList;

@@ -40,7 +40,7 @@ public class PackagerDAO extends GenericDAO<Packager, String> implements mat.dao
 	public void deletePackage(String measureId, String sequence) {
 		logger.info("Deleting package " + sequence + " for measure " + measureId);
 		Session session = getSessionFactory().getCurrentSession();
-        String hql = "delete from org.ifmc.mat.model.clause.Packager p where p.measure.id=:measureId and p.sequence=:seq";
+        String hql = "delete from mat.model.clause.Packager p where p.measure.id=:measureId and p.sequence=:seq";
         Query query = session.createQuery(hql);
         query.setString("measureId", measureId);
         query.setInteger("seq", Integer.parseInt(sequence));
@@ -52,7 +52,7 @@ public class PackagerDAO extends GenericDAO<Packager, String> implements mat.dao
 	public void deleteAllPackages(String measureId) {
 		logger.info("Deleting All existing packages for measure " + measureId);
 		Session session = getSessionFactory().getCurrentSession();
-        String hql = "delete from org.ifmc.mat.model.clause.Packager p where p.measure.id=:measureId";
+        String hql = "delete from mat.model.clause.Packager p where p.measure.id=:measureId";
         Query query = session.createQuery(hql);
         query.setString("measureId", measureId);
         query.executeUpdate();

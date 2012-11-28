@@ -126,7 +126,7 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	}
 
 	/* (non-Javadoc)
-	 * @see org.ifmc.mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedOption()
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedOption()
 	 */
 	@Override
 	public String getSelectedOption() {

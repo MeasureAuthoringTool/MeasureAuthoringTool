@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.model.clause.Decision" table="DECISION" lazy="false">
+  <class name="mat.model.clause.Decision" table="DECISION" lazy="false">
 	<id name="id" column="ID" >
 		<!--  
 		<generator class="uuid"/>
@@ -18,13 +18,13 @@
 	<property name="attributeId" column="ATTRIBUTE_ID" /> <!--  FK is missing -->
 
 	<!--  
-    <many-to-one name="parentId" class="org.ifmc.mat.model.clause.Decision"
+    <many-to-one name="parentId" class="mat.model.clause.Decision"
            column="PARENT_ID" cascade="all" insert="false" update="false"/>
     
 
 	<set name="childDecisions" cascade="all" lazy="true" inverse="true">
            <key column="ID"/>
-           <one-to-many class="org.ifmc.mat.model.clause.Decision"/>
+           <one-to-many class="mat.model.clause.Decision"/>
     </set>
     -->
   </class>

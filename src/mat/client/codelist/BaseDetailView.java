@@ -234,7 +234,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	
 	//US 413
 	/* Returns the text value for the Steward selection. 
-	 * @see org.ifmc.mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardValue()
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardValue()
 	 */
 	@Override
 	public String getStewardValue() {
@@ -243,7 +243,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 
 	//US 413
 	/* Returns the Steward Other TextBox object.
-	 * @see org.ifmc.mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardOther()
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardOther()
 	 */
 	@Override
 	public TextBox getStewardOther() {
@@ -252,7 +252,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 
 	//US 413
 	/* Returns the Steward Other value.
-	 * @see org.ifmc.mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardOtherValue()
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardOtherValue()
 	 */
 	@Override
 	public String getStewardOtherValue() {
@@ -405,7 +405,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	
 	//US 413
 	/* Clears out the Steward Other panel and re-draw the Steward Other input components
-	 * @see org.ifmc.mat.client.codelist.BaseDetailPresenter.BaseDisplay#showOtherTextBox()
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#showOtherTextBox()
 	 */
 	@Override
 	public void showOtherTextBox() {
@@ -418,7 +418,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 
 	//US 413
 	/* Clears out the Steward Other panel by calling local method .
-	 * @see org.ifmc.mat.client.codelist.BaseDetailPresenter.BaseDisplay#hideOtherTextBox()
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#hideOtherTextBox()
 	 */
 	@Override
 	public void hideOtherTextBox() {

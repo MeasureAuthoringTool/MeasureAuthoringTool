@@ -269,10 +269,10 @@ public class ClauseDAOTest extends SpringInitializationTest {
 		getService().getClauseDAO().save(clause);
 		
 
-//		org.ifmc.mat.shared.model.Decision sharedDecision = new org.ifmc.mat.shared.model.Decision();
+//		mat.shared.model.Decision sharedDecision = new mat.shared.model.Decision();
 //		
 //		sharedDecision.
-//		List<org.ifmc.mat.shared.model.Decision> decisions = new ArrayList<org.ifmc.mat.shared.model.Decision>();
+//		List<mat.shared.model.Decision> decisions = new ArrayList<mat.shared.model.Decision>();
 //		decisions.add(parent);
 //		Clause clause = new Clause();
 //		clause.setDecisions(decisions);

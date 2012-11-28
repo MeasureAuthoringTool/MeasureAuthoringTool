@@ -24,7 +24,7 @@ import org.hibernate.criterion.Restrictions;
 public class MeasureAuditLogDAO extends GenericDAO<MeasureAuditLog, String> implements mat.dao.MeasureAuditLogDAO{
 	
 	/* Records the custom measure event to the MeasureAuditLog table 
-	 * @see org.ifmc.mat.dao.MeasureAuditLogDAO#recordMeasureEvent(org.ifmc.mat.model.clause.Measure, java.lang.String, java.lang.String)
+	 * @see mat.dao.MeasureAuditLogDAO#recordMeasureEvent(mat.model.clause.Measure, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean recordMeasureEvent(Measure measure, String event, String additionalInfo){
@@ -48,7 +48,7 @@ public class MeasureAuditLogDAO extends GenericDAO<MeasureAuditLog, String> impl
 	}
 	
 	/* Search and returns the list of events starts with the start index and the given number of rows
-	 * @see org.ifmc.mat.dao.MeasureAuditLogDAO#searchHistory(java.lang.String, int, int)
+	 * @see mat.dao.MeasureAuditLogDAO#searchHistory(java.lang.String, int, int)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")

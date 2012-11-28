@@ -20,7 +20,7 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	
 	
 	private String getQDSQueryString(boolean showSDEs, String measureId){
-		String query = "select q.id from org.ifmc.mat.model.QualityDataSet q, org.ifmc.mat.model.ListObject l " +
+		String query = "select q.id from mat.model.QualityDataSet q, mat.model.ListObject l " +
 				"where q.measureId.id = '"+measureId+"' " + "and l.id = q.listObject.id ";
 		if(!showSDEs){
 				query +="and  l.oid not in (" +

@@ -504,7 +504,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.ifmc.mat.dao.clause.MeasureDAO#resetLockDate(org.ifmc.mat.model.clause.Measure)
+	 * @see mat.dao.clause.MeasureDAO#resetLockDate(mat.model.clause.Measure)
 	 * This method opens a new Session and new transaction to update only the lockedDate column in the database.
 	 * After updating the table,transaction has been committed and session has been closed.
 	 */
@@ -513,7 +513,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	public void resetLockDate(Measure m){
 		Session session = getSessionFactory().openSession();
 		org.hibernate.Transaction tx = session.beginTransaction();
-		String sql = "update org.ifmc.mat.model.clause.Measure m set lockedOutDate  = :lockDate, lockedUser = :lockedUserId  where id = :measureId";
+		String sql = "update mat.model.clause.Measure m set lockedOutDate  = :lockDate, lockedUser = :lockedUserId  where id = :measureId";
 		Query query = session.createQuery(sql);
 		query.setString("lockDate",null);
 		query.setString("lockedUserId", null);
@@ -564,7 +564,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	}
 
 	/* (non-Javadoc)
-	 * @see org.ifmc.mat.dao.clause.MeasureDAO#getMeasuresForDraft(org.ifmc.mat.model.User, int, int)
+	 * @see mat.dao.clause.MeasureDAO#getMeasuresForDraft(mat.model.User, int, int)
 	 */
 	@Override
 	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex, int pageSize) {
@@ -720,7 +720,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	@Override
 	public boolean isMeasureLocked(String measureId) {
 		Session session = getSessionFactory().openSession();
-		String sql = "select lockedOutDate from org.ifmc.mat.model.clause.Measure m  where id = '"+measureId+"'";
+		String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = '"+measureId+"'";
 		Query query = session.createQuery(sql);
 		List<Timestamp> result = query.list();
 		session.close();
@@ -737,7 +737,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	@Override
 	public int getMaxEMeasureId() {
 		Session session = getSessionFactory().openSession();
-		String sql = "select max(eMeasureId) from org.ifmc.mat.model.clause.Measure";
+		String sql = "select max(eMeasureId) from mat.model.clause.Measure";
 		Query query = session.createQuery(sql);
 		List<Integer> result = query.list();
 		if(!result.isEmpty()){

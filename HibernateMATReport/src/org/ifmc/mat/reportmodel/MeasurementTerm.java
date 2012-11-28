@@ -1,4 +1,4 @@
-package org.ifmc.mat.reportmodel;
+package mat.reportmodel;
 
 
 @SuppressWarnings("serial")

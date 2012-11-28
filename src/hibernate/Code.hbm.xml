@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.model.Code" table="CODE" lazy="false">
+  <class name="mat.model.Code" table="CODE" lazy="false">
 	<id name="id" column="CODE_ID" >
 		<generator class="uuid"/>
 	</id>

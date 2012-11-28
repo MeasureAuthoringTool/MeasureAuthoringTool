@@ -571,7 +571,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.ifmc.mat.server.service.MeasurePackageService#searchMeasuresForDraft(int, int)
+	 * @see mat.server.service.MeasurePackageService#searchMeasuresForDraft(int, int)
 	 */
 	@Override
 	public List<MeasureShareDTO> searchMeasuresForDraft(int startIndex,
@@ -581,7 +581,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.ifmc.mat.server.service.MeasurePackageService#searchMeasuresForVersion(int, int)
+	 * @see mat.server.service.MeasurePackageService#searchMeasuresForVersion(int, int)
 	 */
 	@Override
 	public List<MeasureShareDTO> searchMeasuresForVersion(int startIndex,
@@ -596,7 +596,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 
 	/* (non-Javadoc)
-	 * @see org.ifmc.mat.server.service.MeasurePackageService#countMeasuresForDraft()
+	 * @see mat.server.service.MeasurePackageService#countMeasuresForDraft()
 	 */
 	@Override
 	public long countMeasuresForDraft() {

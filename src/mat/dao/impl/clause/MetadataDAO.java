@@ -57,7 +57,7 @@ public class MetadataDAO extends GenericDAO<Metadata, String> implements mat.dao
 	@Override
 	public void deleteAllMetaData(List<Metadata> metadataList){
 		Session session = getSessionFactory().getCurrentSession();
-	                String hql = "delete from org.ifmc.mat.model.clause.Metadata m where m in (:metadataList)";
+	                String hql = "delete from mat.model.clause.Metadata m where m in (:metadataList)";
 	    	        Query query = session.createQuery(hql);
 	    	        query.setParameterList("metadataList", metadataList);
 	    	        int row = query.executeUpdate();
@@ -74,7 +74,7 @@ public class MetadataDAO extends GenericDAO<Metadata, String> implements mat.dao
 		Session session = getSessionFactory().getCurrentSession(); 
 		for(Author author:authorList){
 			String authorname = author.getAuthorName();
-			String hql = "delete from org.ifmc.mat.model.clause.Metadata m where m.measure.id = :id and m.value = :value)";
+			String hql = "delete from mat.model.clause.Metadata m where m.measure.id = :id and m.value = :value)";
 			Query query = session.createQuery(hql);
 			query.setParameter("id", measureId);
 			query.setParameter("value", authorname);
@@ -92,7 +92,7 @@ public class MetadataDAO extends GenericDAO<Metadata, String> implements mat.dao
 		Session session = getSessionFactory().getCurrentSession(); 
 		for(MeasureType mt:measureTypeList){
 			String measureTypeDescription = mt.getDescription();
-			String hql = "delete from org.ifmc.mat.model.clause.Metadata m where m.measure.id = :id and m.value = :value)";
+			String hql = "delete from mat.model.clause.Metadata m where m.measure.id = :id and m.value = :value)";
 			Query query = session.createQuery(hql);
 			query.setParameter("id", measureId);
 			query.setParameter("value", measureTypeDescription);

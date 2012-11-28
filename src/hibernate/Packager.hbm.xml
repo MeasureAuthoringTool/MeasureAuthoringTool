@@ -4,14 +4,14 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.model.clause.Packager" table="PACKAGER" >
+  <class name="mat.model.clause.Packager" table="PACKAGER" >
 	<id name="id" column="PACKAGER_ID">
         <generator class="uuid"/>
     </id>
 	 <many-to-one name="measure" column="MEASURE_ID" 
-        class="org.ifmc.mat.model.clause.Measure"  cascade="none"/>
+        class="mat.model.clause.Measure"  cascade="none"/>
     <many-to-one name="clause" column="CLAUSE_ID" 
-        class="org.ifmc.mat.model.clause.Clause"  cascade="none"/>     
+        class="mat.model.clause.Clause"  cascade="none"/>     
     <property name="sequence" column="SEQUENCE" />   
   </class>
 </hibernate-mapping>

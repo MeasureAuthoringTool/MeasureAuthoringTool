@@ -4,14 +4,14 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.reportmodel.Metadata" table="METADATA" lazy="false">
+  <class name="mat.reportmodel.Metadata" table="METADATA" lazy="false">
 	<id name="id" column="METADATA_ID">
 		<generator class="uuid"/>
 	</id>
 	<property name="name" column="NAME" />
 	<property name="value" column="VALUE" />
 
-	<many-to-one name="measure" column="MEASURE_ID" class="org.ifmc.mat.reportmodel.Measure" unique="true" lazy="false" cascade="all" />
+	<many-to-one name="measure" column="MEASURE_ID" class="mat.reportmodel.Measure" unique="true" lazy="false" cascade="all" />
 					
   </class>
 </hibernate-mapping>

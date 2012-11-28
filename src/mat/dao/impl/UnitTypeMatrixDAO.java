@@ -21,7 +21,7 @@ public class UnitTypeMatrixDAO extends GenericDAO<UnitMatrix, String> implements
 	private static final Log logger = LogFactory.getLog(UnitTypeMatrixDAO.class);
 	
 	/* Retrieves all the unit and type matrix
-	 * @see org.ifmc.mat.dao.UnitTypeMatrixDAO#getAllUnitMatrix()
+	 * @see mat.dao.UnitTypeMatrixDAO#getAllUnitMatrix()
 	 */
 	public List<UnitMatrixDTO> getAllUnitMatrix(){
 		

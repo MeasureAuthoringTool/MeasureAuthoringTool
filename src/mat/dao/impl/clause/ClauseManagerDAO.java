@@ -786,7 +786,7 @@ private String getId() {
 //		//do not strip if it is conditional
 //		if (dec instanceof Conditional) {
 //			Conditional temp = (Conditional)clonedClause.getDecisions().get(0);
-//			for (org.ifmc.mat.shared.model.Decision decisionPojo : temp.getDecisions()) {
+//			for (mat.shared.model.Decision decisionPojo : temp.getDecisions()) {
 //				saveChildDecision(decisionPojo, dbTopLevelParent, terms, lfOrder);			
 //			}
 //		} else if (dec instanceof Clause) {
@@ -794,7 +794,7 @@ private String getId() {
 //			//add child to parent
 //			//this will add child rows into decision table
 //			//cloning only works off of the save, new child Id's are created during the save
-//			for (org.ifmc.mat.shared.model.Decision decisionPojo : temp.getDecisions()) {
+//			for (mat.shared.model.Decision decisionPojo : temp.getDecisions()) {
 //				saveChildDecision(decisionPojo, dbTopLevelParent, terms, lfOrder);			
 //			}
 //		}	

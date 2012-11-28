@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.model.Status" table="STATUS" mutable="false" lazy="false">
+  <class name="mat.model.Status" table="STATUS" mutable="false" lazy="false">
 	<cache usage="read-only"/>
 	<id name="id" column="STATUS_ID"/>	
 	<property name="description" column="DESCRIPTION"/>	

@@ -157,7 +157,7 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 
 	/*US537*/
 	/* (non-Javadoc)
-	 * @see org.ifmc.mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedOption()
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedOption()
 	 */
 	@Override
 	public String getSelectedOption() {

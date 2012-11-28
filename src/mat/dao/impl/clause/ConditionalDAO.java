@@ -134,7 +134,7 @@ private String getId() {
 //}
 //
 ////load child
-//private void createChild(org.ifmc.mat.shared.model.Decision currentTopLevelCentralPojo, Decision topLevelDBDecision) {
+//private void createChild(mat.shared.model.Decision currentTopLevelCentralPojo, Decision topLevelDBDecision) {
 //	List<Decision> listOfChildren = getDecisionDAO().findByParentId(topLevelDBDecision.getId());
 //	
 //	if (listOfChildren.isEmpty()) return;
@@ -289,7 +289,7 @@ private String getId() {
 //				
 //				Decision innerClauseDecision = getDecisionDAO().find(decisionId);
 //				Conditional cn = load(innerClauseDecision);
-//				List<org.ifmc.mat.shared.model.Decision> decisions = new ArrayList<org.ifmc.mat.shared.model.Decision>();
+//				List<mat.shared.model.Decision> decisions = new ArrayList<mat.shared.model.Decision>();
 //				decisions.add(cn);
 //				clause.setDecisions(decisions);
 //				

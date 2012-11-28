@@ -4,14 +4,14 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.server.model.MatUserDetails" table="USER" lazy="false">
+  <class name="mat.server.model.MatUserDetails" table="USER" lazy="false">
 	<id name="id" column="USER_ID"/>
 	<property name="username" column="FIRST_NAME" />
-	<one-to-one name="userPassword" class="org.ifmc.mat.model.UserPassword"  property-ref="user"  cascade="all"/>
+	<one-to-one name="userPassword" class="mat.model.UserPassword"  property-ref="user"  cascade="all"/>
 	<many-to-one name="roles" column="SECURITY_ROLE_ID" 
-		class="org.ifmc.mat.model.SecurityRole" unique="false" lazy="false" cascade="none" />
+		class="mat.model.SecurityRole" unique="false" lazy="false" cascade="none" />
 	<many-to-one name="status" column="STATUS_ID" 
-		class="org.ifmc.mat.model.Status" unique="false" lazy="false" cascade="none" />
+		class="mat.model.Status" unique="false" lazy="false" cascade="none" />
 	<property name="signInDate" column="SIGN_IN_DATE" type="timestamp"/>
 	<property name="signOutDate" column="SIGN_OUT_DATE" type="timestamp"/>
 	<property name="lockedOutDate" column="LOCKED_OUT_DATE" type="timestamp"/>

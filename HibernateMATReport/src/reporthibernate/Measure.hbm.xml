@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.reportmodel.Measure" table="MEASURE" lazy="false">
+  <class name="mat.reportmodel.Measure" table="MEASURE" lazy="false">
     <id name="id" column="ID" >
         <generator class="uuid"/>
     </id>
@@ -16,11 +16,11 @@
     <property name="exportedDate" column="EXPORT_TS" type="timestamp" />
     <property name="lockedOutDate" column="LOCKED_OUT_DATE" type="timestamp" />
     <many-to-one name="owner" column="MEASURE_OWNER_ID" 
-        class="org.ifmc.mat.reportmodel.User" unique="false" cascade="none" />
+        class="mat.reportmodel.User" unique="false" cascade="none" />
     <list name="clauses" cascade="all" lazy="false" inverse="true">
            <key column="ID"/>
            <list-index column="MEASURE_ID"/>
-           <one-to-many class="org.ifmc.mat.reportmodel.Clause"/>
+           <one-to-many class="mat.reportmodel.Clause"/>
     </list>
    </class>
 </hibernate-mapping>

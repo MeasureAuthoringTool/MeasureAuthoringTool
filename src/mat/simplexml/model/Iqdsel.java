@@ -65,7 +65,7 @@ public class Iqdsel extends FunctionHolder implements IPhrase{
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.ifmc.mat.simplexml.model.IPhrase#setTo(org.ifmc.mat.simplexml.model.To)
+	 * @see mat.simplexml.model.IPhrase#setTo(mat.simplexml.model.To)
 	 */
 	@Override
 	public void setTo(To to) {
@@ -73,7 +73,7 @@ public class Iqdsel extends FunctionHolder implements IPhrase{
 		
 	}
 	/* (non-Javadoc)
-	 * @see org.ifmc.mat.simplexml.model.IPhrase#setToAttr(java.lang.String)
+	 * @see mat.simplexml.model.IPhrase#setToAttr(java.lang.String)
 	 */
 	@Override
 	public void setToAttr(String toAttr) {

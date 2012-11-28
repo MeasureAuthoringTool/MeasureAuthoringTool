@@ -1,7 +1,7 @@
 /**
  * 
  */
-package org.ifmc.mat.reportmodel;
+package mat.reportmodel;
 
 /**
  * @author vandavar

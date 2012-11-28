@@ -1,4 +1,4 @@
-package MATReport.src.org.ifmc.mat.report.common;
+package MATReport.src.mat.report.common;
 
 public class CommonConstants {
 

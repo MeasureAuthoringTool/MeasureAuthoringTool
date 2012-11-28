@@ -152,7 +152,7 @@ public class ManageMeasureDetailView
 	}
 	
 	/* Returns the text value of Measure Scoring choice.
-	 * @see org.ifmc.mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMeasScoringValue()
+	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMeasScoringValue()
 	 */
 	@Override
 	public String getMeasScoringValue() {
@@ -160,7 +160,7 @@ public class ManageMeasureDetailView
 	}
 	
 	/* Returns the Measure Scoring ListBox object.
-	 * @see org.ifmc.mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMeasScoringChoice()
+	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#getMeasScoringChoice()
 	 */
 	@Override
 	public ListBoxMVP getMeasScoringChoice() {
@@ -169,7 +169,7 @@ public class ManageMeasureDetailView
 	
 	//US 421
 	/* Set the value list for Measure Scoring choice list box.
-	 * @see org.ifmc.mat.client.measure.ManageMeasurePresenter.DetailDisplay#setScoringChoices(java.util.List)
+	 * @see mat.client.measure.ManageMeasurePresenter.DetailDisplay#setScoringChoices(java.util.List)
 	 */
 	@Override
 	public void setScoringChoices(List<? extends HasListBox> texts) {

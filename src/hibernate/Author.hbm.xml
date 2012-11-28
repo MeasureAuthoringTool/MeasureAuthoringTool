@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.model.Author" table="AUTHOR" mutable="false" lazy="false">
+  <class name="mat.model.Author" table="AUTHOR" mutable="false" lazy="false">
 	<cache usage="read-only"/>
 	<id name="id" column="ID"/>	
 	<property name="authorName" column="AUTHOR_NAME"/>	

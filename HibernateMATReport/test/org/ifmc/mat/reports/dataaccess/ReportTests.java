@@ -1,11 +1,11 @@
-package org.ifmc.mat.reports.dataaccess;
+package mat.reports.dataaccess;
 
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.ifmc.mat.reports.generator.ReportGenerator;
+import mat.reports.generator.ReportGenerator;
 import org.junit.Before;
 import org.junit.Test;
 

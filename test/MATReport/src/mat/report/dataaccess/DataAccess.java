@@ -1,4 +1,4 @@
-package MATReport.src.org.ifmc.mat.report.dataaccess;
+package MATReport.src.mat.report.dataaccess;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import MATReport.src.org.ifmc.mat.report.common.CommonConstants;
+import MATReport.src.mat.report.common.CommonConstants;
 
 public class DataAccess {
 	private Connection connect = null;

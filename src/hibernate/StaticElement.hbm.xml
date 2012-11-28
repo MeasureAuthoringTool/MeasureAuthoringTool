@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.model.clause.StaticElement" table="STATIC_ELEMENT" lazy="false">
+  <class name="mat.model.clause.StaticElement" table="STATIC_ELEMENT" lazy="false">
 	<id name="id" column="STATIC_ELEMENT_ID" >
 		<generator class="uuid"/>
 	</id>

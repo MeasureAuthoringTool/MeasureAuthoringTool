@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.model.ListObjectLT" table="LIST_OBJECT" lazy="false" polymorphism="implicit">
+  <class name="mat.model.ListObjectLT" table="LIST_OBJECT" lazy="false" polymorphism="implicit">
 	<id name="id" column="LIST_OBJECT_ID" >
 		<generator class="uuid"/>
 	</id>
@@ -13,7 +13,7 @@
 	<property name="lastModified" column="LAST_MODIFIED"/>
 	<property name="name" column="NAME"/>
 	<many-to-one name="steward" column="STEWARD" 
-        class="org.ifmc.mat.model.MeasureSteward" lazy="false" cascade="none" />  
+        class="mat.model.MeasureSteward" lazy="false" cascade="none" />  
         <property name="stewardOther" column="STEWARD_OTHER"/>
 	<property name="oid" column="OID"/>
 	<property name="rationale" column="RATIONALE"/>
@@ -23,11 +23,11 @@
     <property name="codeListContext" column="CODE_LIST_CONTEXT"/>
 	<property name="codeSystemVersion" column="CODE_SYS_VERSION"/>
     <many-to-one name="codeSystem" column="CODE_SYSTEM_ID" 
-        class="org.ifmc.mat.model.CodeSystem"  cascade="none" />    
+        class="mat.model.CodeSystem"  cascade="none" />    
 	<many-to-one name="objectOwner" column="OBJECT_OWNER" 
-		class="org.ifmc.mat.model.User"  cascade="none"/>		
+		class="mat.model.User"  cascade="none"/>		
 	<many-to-one name="category" column="CATEGORY_ID" 
-			class="org.ifmc.mat.model.Category" lazy="false" cascade="none"/>
+			class="mat.model.Category" lazy="false" cascade="none"/>
 
   </class>
 </hibernate-mapping>

@@ -351,7 +351,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	/*
 	 * (non-Javadoc)
-	 * @see org.ifmc.mat.client.measure.service.MeasureService#updateLockedDate(java.lang.String, java.lang.String)
+	 * @see mat.client.measure.service.MeasureService#updateLockedDate(java.lang.String, java.lang.String)
 	 * This method has been added to update the measureLock Date. This method first gets the exisitingMeasure and then adds the lockedOutDate 
 	 * if it is not there. 
 	 */
@@ -392,7 +392,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
     
     /*
      * (non-Javadoc)
-     * @see org.ifmc.mat.client.measure.service.MeasureService#resetLockedDate(java.lang.String, java.lang.String)
+     * @see mat.client.measure.service.MeasureService#resetLockedDate(java.lang.String, java.lang.String)
      * This method has been added to release the Measure lock. It gets the existingMeasureLock and checks
      * the loggedinUserId and the LockedUserid to release the lock.
      */

@@ -4,17 +4,17 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.reportmodel.QDMTerm" table="QDM_TERM" lazy="false">
+  <class name="mat.reportmodel.QDMTerm" table="QDM_TERM" lazy="false">
 	<id name="id" column="ID" />
 	
 	<property name="qDSRef" column="QDM_ELEMENT_ID" />
 	<property name="decisionId" column="DECISION_ID" />
 	
 	<!--  
-    <many-to-one name="qDSRef" class="org.ifmc.mat.reportmodel.QDSElement"
+    <many-to-one name="qDSRef" class="mat.reportmodel.QDSElement"
            column="QDS_ELEMENT_ID" cascade="all" insert="false" update="false"/>
 	
-    <many-to-one name="decisionId" class="org.ifmc.mat.reportmodel.Decision"
+    <many-to-one name="decisionId" class="mat.reportmodel.Decision"
            column="DECISION_ID" cascade="all" insert="false" update="false"/>
 	-->
   </class>

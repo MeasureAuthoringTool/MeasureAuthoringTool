@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.reportmodel.SecurityRole" table="SECURITY_ROLE" mutable="false" lazy="false">
+  <class name="mat.reportmodel.SecurityRole" table="SECURITY_ROLE" mutable="false" lazy="false">
 	<cache usage="read-only"/>
 	<id name="id" column="SECURITY_ROLE_ID"/>	
 	<property name="description" column="DESCRIPTION"/>	

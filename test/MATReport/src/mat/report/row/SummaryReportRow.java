@@ -1,4 +1,4 @@
-package MATReport.src.org.ifmc.mat.report.row;
+package MATReport.src.mat.report.row;
 
 import java.util.ArrayList;
 import java.util.HashMap;

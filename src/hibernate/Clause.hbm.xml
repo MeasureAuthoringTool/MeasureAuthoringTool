@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.model.clause.Clause" table="CLAUSE" lazy="false">
+  <class name="mat.model.clause.Clause" table="CLAUSE" lazy="false">
 	<id name="id" column="ID" >
         <generator class="uuid"/>
     </id>
@@ -14,12 +14,12 @@
 	<property name="contextId" column="CONTEXT_ID" />
 	<property name="clauseTypeId" column="CLAUSE_TYPE_ID" />
 	<many-to-one name="statusId" column="STATUS_ID" 
-		class="org.ifmc.mat.model.ObjectStatus"  cascade="none"/>
+		class="mat.model.ObjectStatus"  cascade="none"/>
 	<property name="version" column="VERSION" />
 	<property name="customName" column="CUSTOM_NAME"/>
-	<many-to-one name="decision" column="DECISION_ID" class="org.ifmc.mat.model.clause.Decision"  unique="true" lazy="false" cascade="all"/>
+	<many-to-one name="decision" column="DECISION_ID" class="mat.model.clause.Decision"  unique="true" lazy="false" cascade="all"/>
     
-    <!-- many-to-one name="measure" column="MEASURE_ID" class="org.ifmc.mat.model.clause.Measure"  unique="true" lazy="false" cascade="all"/> -->
+    <!-- many-to-one name="measure" column="MEASURE_ID" class="mat.model.clause.Measure"  unique="true" lazy="false" cascade="all"/> -->
   
     
   </class>

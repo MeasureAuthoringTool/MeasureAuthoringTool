@@ -12,10 +12,10 @@
 	<bean id="taskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor">
     </bean>
 
-    <bean id="unlockUserTask" class="org.ifmc.mat.server.service.impl.UnlockUserTask">
+    <bean id="unlockUserTask" class="mat.server.service.impl.UnlockUserTask">
         <constructor-arg ref="taskExecutor" />
     </bean>
-    <bean id="expireTempPasswordTask" class="org.ifmc.mat.server.service.impl.ExpireTempPasswordTask">
+    <bean id="expireTempPasswordTask" class="mat.server.service.impl.ExpireTempPasswordTask">
         <constructor-arg ref="taskExecutor" />
     </bean>
     <task:scheduler id="scheduler" pool-size="1"/>
@@ -33,7 +33,7 @@
 		<property name="location" value="classpath:MAT.properties"/>
 	</bean>
 	
-	<bean id="sendEmailTask" class="org.ifmc.mat.server.service.jobs.CheckUserLastLoginTask" >
+	<bean id="sendEmailTask" class="mat.server.service.jobs.CheckUserLastLoginTask" >
 		<property name="userDAO" ref="userDAO"/>
 		<property name ="mailSender" ref="mailSender"/>
 		<property name ="simpleMailMessage" ref="userLastLoginTemplateMessage"/>

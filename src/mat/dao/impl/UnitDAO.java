@@ -23,7 +23,7 @@ public class UnitDAO extends GenericDAO<Unit, String> implements mat.dao.UnitDAO
 	private static final Log logger = LogFactory.getLog(UnitDAO.class);
 	
 	/* Retrieve all units from the UNIT table
-	 * @see org.ifmc.mat.dao.UnitDAO#getAllUnits()
+	 * @see mat.dao.UnitDAO#getAllUnits()
 	 */
 	public List<UnitDTO> getAllUnits(){
 		

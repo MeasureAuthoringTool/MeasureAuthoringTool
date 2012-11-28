@@ -1,4 +1,4 @@
-package org.ifmc.mat.reportmodel;
+package mat.reportmodel;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package org.ifmc.mat.reports;
+package mat.reports;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -14,7 +14,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.IndexedColors;
-import org.ifmc.mat.report.common.CommonConstants;
+import mat.report.common.CommonConstants;
 
 /**
  * 

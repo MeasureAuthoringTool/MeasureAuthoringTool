@@ -1,4 +1,4 @@
-package org.ifmc.mat.reportmodel;
+package mat.reportmodel;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

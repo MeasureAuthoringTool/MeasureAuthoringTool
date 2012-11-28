@@ -29,7 +29,7 @@
         <mkdir dir="build/jar"/>
         <jar destfile="build/jar/MATReport.jar" basedir="build/classes">
             <manifest>
-                <attribute name="Main-Class" value="org.ifmc.mat.report.ReportRunner"/>
+                <attribute name="Main-Class" value="mat.report.ReportRunner"/>
             	 <attribute name="Class-Path" value="${manifest.classpath}"/> 
             </manifest>
         </jar>

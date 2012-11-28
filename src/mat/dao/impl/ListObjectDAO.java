@@ -168,7 +168,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String>
 	
 	public String generateUniqueOid(User user) {
 		Session session = getSessionFactory().getCurrentSession();
-		List<String> oids = (List<String>)session.createQuery("SELECT oid FROM org.ifmc.mat.model.ListObject").list();
+		List<String> oids = (List<String>)session.createQuery("SELECT oid FROM mat.model.ListObject").list();
 		HashSet<Integer> values = new HashSet<Integer>();
 		for(String oid : oids){
 			String suffix = oid.substring(oid.lastIndexOf(".")+1);
@@ -290,7 +290,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String>
 			return 0;
 		
 		Session session = getSessionFactory().getCurrentSession();
-		Long count = (Long) session.createQuery("SELECT COUNT(*) FROM org.ifmc.mat.model.ListObject L WHERE L.oid='"+oid+"' AND NOT L.id='"+id+"'").uniqueResult();
+		Long count = (Long) session.createQuery("SELECT COUNT(*) FROM mat.model.ListObject L WHERE L.oid='"+oid+"' AND NOT L.id='"+id+"'").uniqueResult();
 		return count.intValue();
 	}
 	
@@ -346,7 +346,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String>
 	}
 	
 	/* (non-Javadoc)
-	 * @see org.ifmc.mat.dao.ListObjectDAO#searchByMeasureOwner(java.lang.String, java.lang.String, int, int, java.lang.String, boolean, boolean)
+	 * @see mat.dao.ListObjectDAO#searchByMeasureOwner(java.lang.String, java.lang.String, int, int, java.lang.String, boolean, boolean)
 	 */
 	@Override
 	public List<CodeListSearchDTO> searchByMeasureOwner(String searchText,
@@ -538,8 +538,8 @@ public class ListObjectDAO extends GenericDAO<ListObject, String>
 	
 	private Criteria buildCriteriaForAppliedByUser(String searchText, String loggedInUserid, boolean showdefaultCodeList) {
 		Session session = getSessionFactory().getCurrentSession();
-		List<String> loids = session.createQuery("select q.listObject.oid from org.ifmc.mat.model.QualityDataSet q where q.measureId.id in " +
-				"(select m.id from org.ifmc.mat.model.clause.Measure m where m.owner.id ='"+loggedInUserid+"')").list();
+		List<String> loids = session.createQuery("select q.listObject.oid from mat.model.QualityDataSet q where q.measureId.id in " +
+				"(select m.id from mat.model.clause.Measure m where m.owner.id ='"+loggedInUserid+"')").list();
 
 		
 		
@@ -682,7 +682,7 @@ public class ListObjectDAO extends GenericDAO<ListObject, String>
 	
 	private boolean isUniqueName(String name, User u){
 		Session session = getSessionFactory().openSession();
-		String sql = "select count(*) from org.ifmc.mat.model.ListObject where objectOwner.id='"+u.getId()+"' and name='"+name+"'";
+		String sql = "select count(*) from mat.model.ListObject where objectOwner.id='"+u.getId()+"' and name='"+name+"'";
 		Query query = session.createQuery(sql);
 		List<Long> list  = query.list();
 		session.close();

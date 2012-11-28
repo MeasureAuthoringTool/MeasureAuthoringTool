@@ -37,7 +37,7 @@ public class MeasureAuditServiceImpl implements MeasureAuditService{
 	private QualityDataSetDAO qualityDataSetDAO; 
 	
 	/* Records the custom measure event to the MeasureAuditLog table.
-	 * @see org.ifmc.mat.server.service.MeasureAuditService#recordMeasureEvent(java.lang.String, java.lang.String, java.lang.String)
+	 * @see mat.server.service.MeasureAuditService#recordMeasureEvent(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean recordMeasureEvent(String measureId, String event, String additionalInfo, boolean isChildLogRequired){
@@ -59,7 +59,7 @@ public class MeasureAuditServiceImpl implements MeasureAuditService{
 	}
 
 	/* Search and returns the list of events starts with the start index and the given number of rows
-	 * @see org.ifmc.mat.server.service.MeasureAuditService#executeSearch(java.lang.String, int, int)
+	 * @see mat.server.service.MeasureAuditService#executeSearch(java.lang.String, int, int)
 	 */
 	@Override
 	public SearchHistoryDTO executeSearch(String measureId, int startIndex, int numberOfRows,List<String> filterList){

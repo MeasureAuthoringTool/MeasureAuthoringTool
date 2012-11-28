@@ -112,8 +112,8 @@ public class ClauseDAO extends GenericDAO<Clause, String> implements mat.dao.cla
 		clause = find(clauseId);
 		
 		ClauseManagerDAO cm = new ClauseManagerDAO(context);
-		org.ifmc.mat.shared.model.Decision sharedDecision = cm.loadClause(clause.getDecisionId());
-		List<org.ifmc.mat.shared.model.Decision> decisions = new ArrayList<org.ifmc.mat.shared.model.Decision>();
+		mat.shared.model.Decision sharedDecision = cm.loadClause(clause.getDecisionId());
+		List<mat.shared.model.Decision> decisions = new ArrayList<mat.shared.model.Decision>();
 		decisions.add(sharedDecision);
 		clause.setDecisions(decisions);
 		

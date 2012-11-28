@@ -17,7 +17,7 @@
     </context-param>
     <filter>
         <filter-name>hibernateStatsFilter</filter-name>
-        <filter-class>org.ifmc.mat.server.HibernateStatisticsFilter</filter-class>
+        <filter-class>mat.server.HibernateStatisticsFilter</filter-class>
     </filter>
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -45,68 +45,68 @@
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
-        <listener-class>org.ifmc.mat.server.MatSessionListener</listener-class>
+        <listener-class>mat.server.MatSessionListener</listener-class>
     </listener>
     
   <servlet>
     <servlet-name>adminServlet</servlet-name>
-    <servlet-class>org.ifmc.mat.server.AdminServiceImpl</servlet-class>
+    <servlet-class>mat.server.AdminServiceImpl</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>measureLibraryServlet</servlet-name>
-    <servlet-class>org.ifmc.mat.server.MeasureLibraryServiceImpl</servlet-class>
+    <servlet-class>mat.server.MeasureLibraryServiceImpl</servlet-class>
   </servlet>  
   <servlet>
     <servlet-name>sessionManagementServlet</servlet-name>
-    <servlet-class>org.ifmc.mat.server.SessionManagementServImpl</servlet-class>
+    <servlet-class>mat.server.SessionManagementServImpl</servlet-class>
   </servlet>    
   <servlet>
     <servlet-name>myAccountServlet</servlet-name>
-    <servlet-class>org.ifmc.mat.server.MyAccountServiceImpl</servlet-class>
+    <servlet-class>mat.server.MyAccountServiceImpl</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>loginServiceImpl</servlet-name>
-  	<servlet-class>org.ifmc.mat.server.LoginServiceImpl</servlet-class>
+  	<servlet-class>mat.server.LoginServiceImpl</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>logoutServiceImpl</servlet-name>
-  	<servlet-class>org.ifmc.mat.server.LoginServiceImpl</servlet-class>
+  	<servlet-class>mat.server.LoginServiceImpl</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>codelistServiceImpl</servlet-name>
-    <servlet-class>org.ifmc.mat.server.CodeListServiceImpl</servlet-class>
+    <servlet-class>mat.server.CodeListServiceImpl</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>clauseServiceImpl</servlet-name>
-    <servlet-class>org.ifmc.mat.server.clause.ClauseServiceImpl</servlet-class>
+    <servlet-class>mat.server.clause.ClauseServiceImpl</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>clauseCloningServiceImpl</servlet-name>
-    <servlet-class>org.ifmc.mat.server.clause.ClauseCloningServiceImpl</servlet-class>
+    <servlet-class>mat.server.clause.ClauseCloningServiceImpl</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>packageServiceImpl</servlet-name>
-    <servlet-class>org.ifmc.mat.server.PackageServiceImpl</servlet-class>
+    <servlet-class>mat.server.PackageServiceImpl</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>qDSAttributesServiceImpl</servlet-name>
-    <servlet-class>org.ifmc.mat.server.clause.QDSAttributesServiceImpl</servlet-class>
+    <servlet-class>mat.server.clause.QDSAttributesServiceImpl</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>measureCloningServiceImpl</servlet-name>
-    <servlet-class>org.ifmc.mat.server.clause.MeasureCloningServiceImpl</servlet-class>
+    <servlet-class>mat.server.clause.MeasureCloningServiceImpl</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>exportServlet</servlet-name>
-    <servlet-class>org.ifmc.mat.server.ExportServlet</servlet-class>
+    <servlet-class>mat.server.ExportServlet</servlet-class>
   </servlet>
    <servlet>
     <servlet-name>FileUploadServlet</servlet-name>
-    <servlet-class>org.ifmc.mat.server.servlet.FileUploadServlet</servlet-class>
+    <servlet-class>mat.server.servlet.FileUploadServlet</servlet-class>
   </servlet>
   <servlet>
   	<servlet-name>auditServiceImpl</servlet-name>
-  	<servlet-class>org.ifmc.mat.server.AuditServiceImpl</servlet-class>
+  	<servlet-class>mat.server.AuditServiceImpl</servlet-class>
   </servlet>  
   
   <servlet-mapping>

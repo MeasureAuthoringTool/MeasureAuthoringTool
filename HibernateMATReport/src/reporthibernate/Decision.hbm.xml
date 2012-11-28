@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.reportmodel.Decision" table="DECISION" lazy="false">
+  <class name="mat.reportmodel.Decision" table="DECISION" lazy="false">
 	<id name="id" column="ID" >
 	</id>
 	<property name="parentId" column="PARENT_ID" />	

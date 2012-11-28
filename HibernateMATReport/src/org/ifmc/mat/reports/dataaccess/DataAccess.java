@@ -1,4 +1,4 @@
-package org.ifmc.mat.reports.dataaccess;
+package mat.reports.dataaccess;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -19,21 +19,21 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Disjunction;
 import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Restrictions;
-import org.ifmc.mat.report.common.CommonConstants;
-import org.ifmc.mat.reportmodel.Category;
-import org.ifmc.mat.reportmodel.Clause;
-import org.ifmc.mat.reportmodel.CodeListAuditLog;
-import org.ifmc.mat.reportmodel.DataType;
-import org.ifmc.mat.reportmodel.Decision;
-import org.ifmc.mat.reportmodel.ListObject;
-import org.ifmc.mat.reportmodel.Measure;
-import org.ifmc.mat.reportmodel.MeasureAuditLog;
-import org.ifmc.mat.reportmodel.Metadata;
-import org.ifmc.mat.reportmodel.QDMTerm;
-import org.ifmc.mat.reportmodel.QDSAttributes;
-import org.ifmc.mat.reportmodel.QualityDataSet;
-import org.ifmc.mat.reportmodel.SecurityRole;
-import org.ifmc.mat.reportmodel.User;
+import mat.report.common.CommonConstants;
+import mat.reportmodel.Category;
+import mat.reportmodel.Clause;
+import mat.reportmodel.CodeListAuditLog;
+import mat.reportmodel.DataType;
+import mat.reportmodel.Decision;
+import mat.reportmodel.ListObject;
+import mat.reportmodel.Measure;
+import mat.reportmodel.MeasureAuditLog;
+import mat.reportmodel.Metadata;
+import mat.reportmodel.QDMTerm;
+import mat.reportmodel.QDSAttributes;
+import mat.reportmodel.QualityDataSet;
+import mat.reportmodel.SecurityRole;
+import mat.reportmodel.User;
 
 public class DataAccess {
 	Session session = null;
@@ -99,19 +99,19 @@ public class DataAccess {
 		 List<MeasureAuditLog> results = (List<MeasureAuditLog>)logCriteria.list();
 		 LinkedHashMap<String, Object> msrAndQDMMatrix = new LinkedHashMap<String, Object>();
 		 System.out.println("Measures that are packaged during the given time period are:-" + results.size());
-		 for(org.ifmc.mat.reportmodel.MeasureAuditLog auditLog: results){
+		 for(mat.reportmodel.MeasureAuditLog auditLog: results){
 			 ArrayList<String> QDMKeysList = new ArrayList<String>();
 			 String measure_desc = auditLog.getMeasure().getDescription();
 			 String measure_id = auditLog.getMeasure().getId();
 			 
 			 
-			 Criteria clauseCriteria = session.createCriteria(org.ifmc.mat.reportmodel.Clause.class);
+			 Criteria clauseCriteria = session.createCriteria(mat.reportmodel.Clause.class);
 			
 			 clauseCriteria.add(Restrictions.eq("measureId",measure_id));
 			 clauseCriteria.add(Restrictions.ne("contextId", "11"));
-			 List<org.ifmc.mat.reportmodel.Clause> clauses = clauseCriteria.list();
+			 List<mat.reportmodel.Clause> clauses = clauseCriteria.list();
 			
-			 for(org.ifmc.mat.reportmodel.Clause cl : clauses){
+			 for(mat.reportmodel.Clause cl : clauses){
 				
 				 ArrayList<Decision> listofKidsAttachedwithTopLevelAnds =  getChildrenofAND(cl.getDecision().getId());
 				 for(Decision attachedDecision: listofKidsAttachedwithTopLevelAnds){
@@ -157,9 +157,9 @@ public class DataAccess {
 private  ArrayList<Decision> getChildrenofAND(String decision_id){
 	    ArrayList<Decision> listofChildren = new ArrayList<Decision>();
 		do{
-			Criteria decisionCriteria = session.createCriteria(org.ifmc.mat.reportmodel.Decision.class);
+			Criteria decisionCriteria = session.createCriteria(mat.reportmodel.Decision.class);
 			decisionCriteria.add(Restrictions.eq("parentId", decision_id));
-			List<org.ifmc.mat.reportmodel.Decision> decisionsList = decisionCriteria.list();
+			List<mat.reportmodel.Decision> decisionsList = decisionCriteria.list();
 			for(Decision d : decisionsList){
 				if(d != null){
 					decision_id = d.getId();
@@ -177,9 +177,9 @@ private  ArrayList<Decision> getChildrenofAND(String decision_id){
 
 private  HashMap<String, ArrayList<Decision>> getChildrenofMeasurePhrase(String decision_id){
 	    ArrayList<Decision> listofChildren  = new ArrayList<Decision>();
-		Criteria decisionCriteria = session.createCriteria(org.ifmc.mat.reportmodel.Decision.class);
+		Criteria decisionCriteria = session.createCriteria(mat.reportmodel.Decision.class);
 		decisionCriteria.add(Restrictions.eq("parentId", decision_id));
-		List<org.ifmc.mat.reportmodel.Decision> decisionsList = decisionCriteria.list();
+		List<mat.reportmodel.Decision> decisionsList = decisionCriteria.list();
 		listofChildren.addAll(decisionsList);
 		mapofChildren.put(decision_id, listofChildren);
 		for(Decision d : decisionsList){
@@ -195,9 +195,9 @@ private  HashMap<String, ArrayList<Decision>> getChildrenofMeasurePhrase(String 
 }
 
 private  ArrayList<Decision> getChildrenOfQDSTerm(String qdm_dec_id){
-	      	Criteria decisionCriteria = session.createCriteria(org.ifmc.mat.reportmodel.Decision.class);
+	      	Criteria decisionCriteria = session.createCriteria(mat.reportmodel.Decision.class);
 			decisionCriteria.add(Restrictions.eq("parentId", qdm_dec_id));
-			List<org.ifmc.mat.reportmodel.Decision> decisionsList = decisionCriteria.list();
+			List<mat.reportmodel.Decision> decisionsList = decisionCriteria.list();
 			for(Decision d : decisionsList){
 				if(d != null){
 					qdm_dec_id = d.getId();
@@ -211,7 +211,7 @@ private  ArrayList<Decision> getChildrenOfQDSTerm(String qdm_dec_id){
 }
 
 private Clause findOutMeasurePhraseClause(String measurePhraseClauseId){
-	Criteria measurePhraseClauseCriteria = session.createCriteria(org.ifmc.mat.reportmodel.Clause.class);
+	Criteria measurePhraseClauseCriteria = session.createCriteria(mat.reportmodel.Clause.class);
 	Clause measurePhraseClause = (Clause) measurePhraseClauseCriteria.add(Restrictions.eq("id", measurePhraseClauseId)).list().get(0);
 	return measurePhraseClause;
 }
@@ -225,10 +225,10 @@ private HashMap<String, ArrayList<Decision>> processMeasurePhraseDecision(String
 
 private String processQDMInformation(String decId, String measure_id){
 	String key = null;
-	Criteria QDMTermCriteria = session.createCriteria(org.ifmc.mat.reportmodel.QDMTerm.class);
+	Criteria QDMTermCriteria = session.createCriteria(mat.reportmodel.QDMTerm.class);
 	List<QDMTerm> listOfQDMTerm = QDMTermCriteria.add(Restrictions.eq("decisionId", decId)).list();
 	for(QDMTerm qdmTerm : listOfQDMTerm){
-		Criteria QualtiyDataModelCriteria = session.createCriteria(org.ifmc.mat.reportmodel.QualityDataSet.class);
+		Criteria QualtiyDataModelCriteria = session.createCriteria(mat.reportmodel.QualityDataSet.class);
 		QualtiyDataModelCriteria.add(Restrictions.eq("id", qdmTerm.getqDSRef()));
 		QualtiyDataModelCriteria.add(Restrictions.eq("measureId.id",  measure_id));
 		List<QualityDataSet> qdsList = QualtiyDataModelCriteria.list();
@@ -244,7 +244,7 @@ private String processQDMInformation(String decId, String measure_id){
 
 private LinkedHashMap<String,LinkedHashMap<String,Object>>  loadPossibeCatDatAttrCombination(){
 	LinkedHashMap<String,LinkedHashMap<String,Object>> excelKeys = new LinkedHashMap<String,LinkedHashMap<String,Object>>();
-	Criteria categoryCriteria = session.createCriteria(org.ifmc.mat.reportmodel.Category.class);
+	Criteria categoryCriteria = session.createCriteria(mat.reportmodel.Category.class);
 	categoryCriteria.add(Restrictions.ne("description", "Attribute"));
     List<Category> categoryList = categoryCriteria.list();
     String rootkey = null;
@@ -255,7 +255,7 @@ private LinkedHashMap<String,LinkedHashMap<String,Object>>  loadPossibeCatDatAtt
     	System.out.println("set of datatypes"+ dataTypes);
     	for(DataType dt : dataTypes){
     		 rootkey = cat.getId()+ "-" + dt.getId();
-    		 Criteria QualityDataAttributes = session.createCriteria(org.ifmc.mat.reportmodel.QDSAttributes.class);
+    		 Criteria QualityDataAttributes = session.createCriteria(mat.reportmodel.QDSAttributes.class);
 			 QualityDataAttributes.add(Restrictions.eq("dataTypeId", dt.getId()));
 			 List<QDSAttributes> qdsAttributeList = QualityDataAttributes.list();
 			 LinkedHashMap<String,Object> qdsAttributeNameMap = new LinkedHashMap<String,Object>();
@@ -272,7 +272,7 @@ private LinkedHashMap<String,LinkedHashMap<String,Object>>  loadPossibeCatDatAtt
 				 qdsAttributeNameMap.put(CommonConstants.ATTRIBUTE , qdsAttr.getName());
 				 excelKeys.put(rootkey + "/" + qdsAttr.getId(), qdsAttributeNameMap);
 			 }
-			 Criteria QualityDataFlowAttributes = session.createCriteria(org.ifmc.mat.reportmodel.QDSAttributes.class);
+			 Criteria QualityDataFlowAttributes = session.createCriteria(mat.reportmodel.QDSAttributes.class);
 			 QualityDataFlowAttributes.add(Restrictions.eq("qDSAttributeType", "Data Flow"));
 			 List<QDSAttributes> dataFlowAttributeList = QualityDataFlowAttributes.list();
 			 for(QDSAttributes dataFlowAttributes : dataFlowAttributeList){
@@ -307,7 +307,7 @@ public HashMap<String, Object> runSummaryOfTrendsOverTimeReport(String startDate
 		//Statement st = connect.createStatement();
 		//ResultSet mResultSet = st.executeQuery(sql);
 				
-		Criteria categoryCriteria = session.createCriteria(org.ifmc.mat.reportmodel.User.class);
+		Criteria categoryCriteria = session.createCriteria(mat.reportmodel.User.class);
 		
 		categoryCriteria.add(Restrictions.sqlRestriction("DATE(ACTIVATION_DATE) between DATE('" + startDate + "') and DATE('" + endDate + "')"));
 	
@@ -322,7 +322,7 @@ public HashMap<String, Object> runSummaryOfTrendsOverTimeReport(String startDate
 		
 		newUserAccounts = userList.size();
 		
-		categoryCriteria = session.createCriteria(org.ifmc.mat.reportmodel.User.class);
+		categoryCriteria = session.createCriteria(mat.reportmodel.User.class);
 		userList = categoryCriteria.list();
 		for( User u: userList){
 			if(u.getActivationDate().after(eDate))
@@ -335,7 +335,7 @@ public HashMap<String, Object> runSummaryOfTrendsOverTimeReport(String startDate
 		//Statement st = connect.createStatement();
 		//ResultSet metaResultSet = st.executeQuery(sql);
 		
-		categoryCriteria = session.createCriteria(org.ifmc.mat.reportmodel.Measure.class);
+		categoryCriteria = session.createCriteria(mat.reportmodel.Measure.class);
 		categoryCriteria.add(Expression.eq("measureStatus", "Complete"));
 		
 		
@@ -404,7 +404,7 @@ public HashMap<String, HashMap<String, Object>> runSummaryOfAccountsReport(Strin
 		//Statement st = connect.createStatement();
 		//ResultSet mResultSet = st.executeQuery(sql);
 		
-		Criteria securityCriteria = session.createCriteria(org.ifmc.mat.reportmodel.SecurityRole.class);
+		Criteria securityCriteria = session.createCriteria(mat.reportmodel.SecurityRole.class);
 		
 	
 		List<SecurityRole> securityList = securityCriteria.list();
@@ -429,7 +429,7 @@ public HashMap<String, HashMap<String, Object>> runSummaryOfAccountsReport(Strin
 		//	securityRole.put(roleID, description);
 		//}
 		
-		Criteria userCriteria = session.createCriteria(org.ifmc.mat.reportmodel.User.class);
+		Criteria userCriteria = session.createCriteria(mat.reportmodel.User.class);
 		List<User> userList = userCriteria.list();
 		
 		
@@ -483,7 +483,7 @@ public HashMap<String, HashMap<String, Object>> runSummaryOfAccountsReport(Strin
 //		}
 		//Measures created
 
-		Criteria measureCriteria = session.createCriteria(org.ifmc.mat.reportmodel.Measure.class);
+		Criteria measureCriteria = session.createCriteria(mat.reportmodel.Measure.class);
 		List<Measure> measureList = measureCriteria.list();
 		
 		
@@ -506,7 +506,7 @@ public HashMap<String, HashMap<String, Object>> runSummaryOfAccountsReport(Strin
 		
 		
 		
-		Criteria auditLogCriteria = session.createCriteria(org.ifmc.mat.reportmodel.MeasureAuditLog.class);
+		Criteria auditLogCriteria = session.createCriteria(mat.reportmodel.MeasureAuditLog.class);
 		
 		auditLogCriteria.add(Restrictions.sqlRestriction("DATE(TIMESTAMP) between DATE('" + startDate + "') and DATE('" + endDate + "')"));
 		auditLogCriteria.add(Restrictions.eq("activityType", "Measure Created"));
@@ -584,7 +584,7 @@ public HashMap<String, HashMap<String, Object>> runSummaryOfAccountsReport(Strin
 //		}
 
 		
-		Criteria codeListAuditCriteria = session.createCriteria(org.ifmc.mat.reportmodel.CodeListAuditLog.class);
+		Criteria codeListAuditCriteria = session.createCriteria(mat.reportmodel.CodeListAuditLog.class);
 		
 		
 		//codeListAuditCriteria.add(Restrictions.eq("activityType", "Code List Created"));
@@ -615,7 +615,7 @@ public HashMap<String, HashMap<String, Object>> runSummaryOfAccountsReport(Strin
 		}
 		
 		
-		Criteria listObjectCriteria = session.createCriteria(org.ifmc.mat.reportmodel.ListObject.class);
+		Criteria listObjectCriteria = session.createCriteria(mat.reportmodel.ListObject.class);
 		disjunction = Restrictions.disjunction();
 		for(String u : uniqueCodeLists){
 			disjunction.add(Restrictions.eq("id", u));
@@ -705,7 +705,7 @@ public LinkedHashMap<String, Object> retrieveSummaryReportData(String startDate,
 		
 		ArrayList<LinkedHashMap<String, Object>> measureRows = new ArrayList<LinkedHashMap<String,Object>>();
 		
-		Criteria auditLogCriteria = session.createCriteria(org.ifmc.mat.reportmodel.MeasureAuditLog.class);
+		Criteria auditLogCriteria = session.createCriteria(mat.reportmodel.MeasureAuditLog.class);
 		auditLogCriteria.add(Restrictions.sqlRestriction("DATE(TIMESTAMP) between DATE('" + startDate + "') and DATE('" + endDate + "')"));
 		auditLogCriteria.add(Restrictions.eq("activityType", "Measure Created"));
 		auditLogCriteria.add(Restrictions.sqlRestriction("MEASURE_ID IN (SELECT ID FROM MEASURE)"));
@@ -722,7 +722,7 @@ public LinkedHashMap<String, Object> retrieveSummaryReportData(String startDate,
 		//mResultSet = mPreparedStmt.executeQuery();
 		
 		
-		//Criteria measureCriteria = session.createCriteria(org.ifmc.mat.model.Measure.class);
+		//Criteria measureCriteria = session.createCriteria(mat.model.Measure.class);
 		//List<Measure> measureList = measureCriteria.list();
 		
 		for(MeasureAuditLog mal : auditLogList){
@@ -732,7 +732,7 @@ public LinkedHashMap<String, Object> retrieveSummaryReportData(String startDate,
 			mRow.put("measureId", id);
 			mRow.put("scoring", mal.getMeasure().getMeasureScoring());
 			
-			Criteria metaCriteria = session.createCriteria(org.ifmc.mat.reportmodel.Metadata.class);
+			Criteria metaCriteria = session.createCriteria(mat.reportmodel.Metadata.class);
 			//ASK ABOUT THIS
 			//metaCriteria.add(Restrictions.eq( "measure.getID()", id));
 			metaCriteria.add(Restrictions.sqlRestriction("MEASURE_ID = '" + id + "'"));
@@ -745,7 +745,7 @@ public LinkedHashMap<String, Object> retrieveSummaryReportData(String startDate,
 			mRow.put("measureType", measureType);
 			
 			
-			Criteria userCriteria = session.createCriteria(org.ifmc.mat.reportmodel.User.class);
+			Criteria userCriteria = session.createCriteria(mat.reportmodel.User.class);
 			userCriteria.add(Restrictions.eq( "id", measureOwner));
 			List<User> userList = userCriteria.list();
 			
@@ -803,11 +803,11 @@ public LinkedHashMap<String, Object> retrieveSummaryReportData(String startDate,
 		
 		ArrayList<LinkedHashMap<String, Object>> valueSetRows = new ArrayList<LinkedHashMap<String,Object>>();
 		
-	//	Criteria loCriteria = session.createCriteria(org.ifmc.mat.model.ListObject.class);
+	//	Criteria loCriteria = session.createCriteria(mat.model.ListObject.class);
 		//metaCriteria.add(Restrictions.eq( "id", measureOwner));
 		//List<ListObject> loList = loCriteria.list();
 		
-		Criteria calCriteria = session.createCriteria(org.ifmc.mat.reportmodel.CodeListAuditLog.class);
+		Criteria calCriteria = session.createCriteria(mat.reportmodel.CodeListAuditLog.class);
 		//metaCriteria.add(Restrictions.eq( "id", measureOwner));
 		
 		Criterion cOne = Restrictions.eq("activityType", "Code List Created");
@@ -893,7 +893,7 @@ public HashMap<String, HashMap<String, Object>> runSummaryOfMeasuresReport(Strin
 	
 	try{
 		
-		Criteria malCriteria = session.createCriteria(org.ifmc.mat.reportmodel.MeasureAuditLog.class);
+		Criteria malCriteria = session.createCriteria(mat.reportmodel.MeasureAuditLog.class);
 	
 		malCriteria.add(Restrictions.sqlRestriction("DATE(TIMESTAMP) between DATE('" + startDate + "') and DATE('" + endDate + "')"));
 		malCriteria.add(Restrictions.eq("activityType", "Measure Created"));
@@ -934,7 +934,7 @@ public HashMap<String, HashMap<String, Object>> runSummaryOfMeasuresReport(Strin
 			
 			ArrayList<String> measureType = new ArrayList<String>();
 		
-			Criteria metaCriteria = session.createCriteria(org.ifmc.mat.reportmodel.Metadata.class);
+			Criteria metaCriteria = session.createCriteria(mat.reportmodel.Metadata.class);
 			
 //			metaCriteria.add(Restrictions.eq("name", "version"));
 //			metaCriteria.add(Restrictions.eq("name", "MeasureSteward"));

@@ -1,4 +1,4 @@
-package MATReport.src.org.ifmc.mat.report.generator;
+package MATReport.src.mat.report.generator;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -21,7 +21,7 @@ public class MeasureScoreDAO extends GenericDAO<MeasureScore, String> implements
 	private static final Log logger = LogFactory.getLog(MeasureScoreDAO.class);
 	
 	/* Retrieves all the measure scores configured in the table
-	 * @see org.ifmc.mat.dao.MeasureScoreDAO#getAllMeasureScores()
+	 * @see mat.dao.MeasureScoreDAO#getAllMeasureScores()
 	 */
 	public List<MeasureScoreDTO> getAllMeasureScores(){
 		

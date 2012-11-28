@@ -24,7 +24,7 @@ import org.hibernate.criterion.Restrictions;
 public class CodeListAuditLogDAO extends GenericDAO<CodeListAuditLog, String> implements mat.dao.CodeListAuditLogDAO{
 	
 	/* Records the custom code list event to the CodeListAuditLog table
-	 * @see org.ifmc.mat.dao.CodeListAuditLogDAO#recordCodeListEvent(org.ifmc.mat.model.ListObject, java.lang.String, java.lang.String)
+	 * @see mat.dao.CodeListAuditLogDAO#recordCodeListEvent(mat.model.ListObject, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean recordCodeListEvent(ListObject codeList, String event, String additionalInfo){
@@ -49,7 +49,7 @@ public class CodeListAuditLogDAO extends GenericDAO<CodeListAuditLog, String> im
 	}
 	
 	/* Search and returns the list of events starts with the start index and the given number of rows
-	 * @see org.ifmc.mat.dao.CodeListAuditLogDAO#searchHistory(java.lang.String, int, int)
+	 * @see mat.dao.CodeListAuditLogDAO#searchHistory(java.lang.String, int, int)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -90,7 +90,7 @@ public class CodeListAuditLogDAO extends GenericDAO<CodeListAuditLog, String> im
 	
 
 	/* Returns the number of page count for a given code list and the total number of rows
-	 * @see org.ifmc.mat.dao.CodeListAuditLogDAO#numberOfPages(java.lang.String, int)
+	 * @see mat.dao.CodeListAuditLogDAO#numberOfPages(java.lang.String, int)
 	 */
 	@SuppressWarnings("rawtypes")
 	private void setPagesAndRows(String codeListId, int numberOfRows, List<String> filterList, SearchHistoryDTO searchHistoryDTO){

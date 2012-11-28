@@ -18,7 +18,7 @@ public class CodeDAO extends GenericDAO<Code, String> implements mat.dao.CodeDAO
 	
 	public void deleteCodes(List<Code> codes){
 		Session session = getSessionFactory().getCurrentSession();
-	                String hql = "delete from org.ifmc.mat.model.Code c where c in (:codesList)";
+	                String hql = "delete from mat.model.Code c where c in (:codesList)";
 	    	        Query query = session.createQuery(hql);
 	    	        query.setParameterList("codesList", codes);
 	    	        int row = query.executeUpdate();

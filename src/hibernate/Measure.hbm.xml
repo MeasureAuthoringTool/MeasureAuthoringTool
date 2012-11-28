@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.model.clause.Measure" table="MEASURE" lazy="false">
+  <class name="mat.model.clause.Measure" table="MEASURE" lazy="false">
     <id name="id" column="ID" >
         <generator class="uuid"/>
     </id>
@@ -16,25 +16,25 @@
 	<property name="measureScoring" column="SCORING" />	
 	<property name="eMeasureId" column="EMEASURE_ID" />
     <many-to-one name="owner" column="MEASURE_OWNER_ID" 
-        class="org.ifmc.mat.model.User" unique="false" cascade="none" lazy="proxy"/>
+        class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
 	<list name="clauses" cascade="all" lazy="true" inverse="true">
            <key column="ID"/>
            <list-index column="MEASURE_ID"/>
-           <one-to-many class="org.ifmc.mat.model.clause.Clause"/>
+           <one-to-many class="mat.model.clause.Clause"/>
     </list>
 	<set name="shares" cascade="all" lazy="true" inverse="true">
 	      <key column="MEASURE_ID"/>
-           <one-to-many class="org.ifmc.mat.model.clause.MeasureShare"/>
+           <one-to-many class="mat.model.clause.MeasureShare"/>
     </set>
     <property name="exportedDate" column="EXPORT_TS" type="timestamp" />
     <property name="lockedOutDate" column="LOCKED_OUT_DATE" type="timestamp" />
     <many-to-one name="lockedUser" column="LOCKED_USER_ID" 
-        class="org.ifmc.mat.model.User" unique="false" cascade="none" lazy="proxy"/>
+        class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
         
 	<property name="draft" column="DRAFT" />
 	<property name="finalizedDate" column="FINALIZED_DATE" type="timestamp"/>
 	<many-to-one name="measureSet" column="MEASURE_SET_ID" 
-        class="org.ifmc.mat.model.clause.MeasureSet" cascade="none" lazy="proxy"/>
+        class="mat.model.clause.MeasureSet" cascade="none" lazy="proxy"/>
         
   </class>
 </hibernate-mapping>

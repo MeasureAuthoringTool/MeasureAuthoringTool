@@ -27,7 +27,7 @@ public class CodeListAuditServiceImpl implements CodeListAuditService{
 	
 	
 	/* (non-Javadoc)Records the custom code list event to the CodeListAuditLog table.
-	 * @see org.ifmc.mat.server.service.CodeListAuditService#recordCodeListEvent(java.lang.String, java.lang.String, java.lang.String)
+	 * @see mat.server.service.CodeListAuditService#recordCodeListEvent(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean recordCodeListEvent(String codeListId, String event, String additionalInfo){
@@ -37,7 +37,7 @@ public class CodeListAuditServiceImpl implements CodeListAuditService{
 	
 	
 	/* Search and returns the list of events starts with the start index and the given number of rows
-	 * @see org.ifmc.mat.server.service.CodeListAuditService#executeSearch(java.lang.String, int, int)
+	 * @see mat.server.service.CodeListAuditService#executeSearch(java.lang.String, int, int)
 	 */
 	@Override
 	public SearchHistoryDTO executeSearch(String codeListId, int startIndex, int numberOfRows,List<String> filterList){

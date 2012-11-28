@@ -432,7 +432,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 
 	/* Returns the Measure Scoring choice value.
-	 * @see org.ifmc.mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureScoring()
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureScoring()
 	 */
 	@Override
 	public Label getMeasureScoring(){
@@ -538,7 +538,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 
 	//US 413
 	/* Returns the Steward Other text box object
-	 * @see org.ifmc.mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardOther()
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardOther()
 	 */
 	@Override
 	public TextBox getMeasureStewardOther() {
@@ -834,7 +834,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 
 	//US 413
 	/* Returns the text value of Measure Steward
-	 * @see org.ifmc.mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardValue()
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardValue()
 	 */
 	@Override
 	public String getMeasureStewardValue() {
@@ -843,7 +843,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	//US 413
 	/* Returns the index value of Measure Steward listbox
-	 * @see org.ifmc.mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardListBox()
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardListBox()
 	 */
 	@Override
 	public HasValue<String> getMeasureStewardListBox(){
@@ -852,7 +852,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 
 	//US 413
 	/* Returns the Measure Steward Other value.
-	 * @see org.ifmc.mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardOtherValue()
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasureStewardOtherValue()
 	 */
 	@Override
 	public String getMeasureStewardOtherValue() {
@@ -878,7 +878,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	//US 413
 	/* Clears out the Steward Other panel and re-draw the Steward Other input components
-	 * @see org.ifmc.mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#showOtherTextBox()
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#showOtherTextBox()
 	 */
 	@Override
 	public void showOtherTextBox() {
@@ -890,7 +890,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 
 	//US 413
 	/* Clears out the Steward Other panel by calling local method .
-	 * @see org.ifmc.mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#hideOtherTextBox()
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#hideOtherTextBox()
 	 */
 	@Override
 	public void hideOtherTextBox() {
@@ -951,7 +951,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 
 
 	/* (non-Javadoc)
-	 * @see org.ifmc.mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setSaveButtonVisible(boolean)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setSaveButtonVisible(boolean)
 	 */
 	@Override
 	public void setSaveButtonEnabled(boolean b) {

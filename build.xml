@@ -148,8 +148,8 @@
         <java classpathref="build.classpath" classname="com.google.gwt.dev.Compiler" fork="true" maxmemory="256m">
         	<arg value="-war" />
             <arg value="${web.output.dir}" />
-            <arg value="org.ifmc.mat.Mat" />
-            <arg value="org.ifmc.mat.Login" />
+            <arg value="mat.Mat" />
+            <arg value="mat.Login" />
         </java>
     </target>
     

@@ -51,7 +51,7 @@
 			</list>
 		</property>
 		<property name="entityInterceptor">
-		  <bean class="org.ifmc.mat.dao.impl.AuditInterceptor"/>
+		  <bean class="mat.dao.impl.AuditInterceptor"/>
 		</property>
 	</bean>
     <bean id="txManager" class="org.springframework.orm.hibernate3.HibernateTransactionManager">
@@ -64,211 +64,211 @@
 	<bean id="auditLogDAO"
 		class="org.easymock.EasyMock" factory-method="createNiceMock" parent="baseDAO">
 		    <qualifier value="mock"/>
-            <constructor-arg index="0" value="org.ifmc.mat.dao.impl.AuditLogDAO" />
+            <constructor-arg index="0" value="mat.dao.impl.AuditLogDAO" />
 	</bean>
 		
 	<bean id="securityRoleDAO"
 		class="org.easymock.EasyMock" factory-method="createNiceMock" parent="baseDAO">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.SecurityRoleDAO" />
+            <constructor-arg value="mat.dao.impl.SecurityRoleDAO" />
 	</bean>
 		
 	<bean id="statusDAO"
 		class="org.easymock.EasyMock" factory-method="createNiceMock" parent="baseDAO">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.StatusDAO" />
+            <constructor-arg value="mat.dao.impl.StatusDAO" />
 	</bean>
 	
 	<bean id="userDAO"
 		class="org.easymock.EasyMock" factory-method="createNiceMock" >
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.UserDAO" />
+            <constructor-arg value="mat.dao.UserDAO" />
 	</bean>
 	   
 	 <bean id="listObjectDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" >
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.ListObjectDAO" />
+            <constructor-arg value="mat.dao.ListObjectDAO" />
     </bean>
     
     <bean id="codeListDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" >
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.CodeListDAO" />
+            <constructor-arg value="mat.dao.CodeListDAO" />
     </bean>
     
       <bean id="operatorDAO"
-        class="org.ifmc.mat.dao.impl.clause.OperatorDAO" parent="baseDAO">
+        class="mat.dao.impl.clause.OperatorDAO" parent="baseDAO">
     </bean>  
     
     <bean id="objectStatusDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" >
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.ObjectStatusDAO" />
+            <constructor-arg value="mat.dao.ObjectStatusDAO" />
     </bean>
     <bean id="codeSystemDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" >
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.CodeSystemDAO" />
+            <constructor-arg value="mat.dao.CodeSystemDAO" />
     </bean>
     <bean id="categoryDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" >
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.CategoryDAO" />
+            <constructor-arg value="mat.dao.CategoryDAO" />
     </bean>
     <bean id="qualityDataSetDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" >
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.QualityDataSetDAO" />
+            <constructor-arg value="mat.dao.QualityDataSetDAO" />
     </bean>
     <bean id="codeDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" >
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.CodeDAO" />
+            <constructor-arg value="mat.dao.CodeDAO" />
     </bean>    
     <bean id="dataTypeDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" >
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.DataTypeDAO" />
+            <constructor-arg value="mat.dao.DataTypeDAO" />
     </bean>
 	<bean id="userPasswordDAO"
 		class="org.easymock.EasyMock" factory-method="createNiceMock" parent="baseDAO">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.UserPasswordDAO" />
+            <constructor-arg value="mat.dao.impl.UserPasswordDAO" />
 	</bean>
 	
 	<bean id="userSecurityQuestionDAO"
 		class="org.easymock.EasyMock" factory-method="createNiceMock" parent="baseDAO">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.UserSecurityQuestionDAO" />
+            <constructor-arg value="mat.dao.impl.UserSecurityQuestionDAO" />
 	</bean>
 	
 	
 	<bean id="measureDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" parent="baseDAO">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.clause.MeasureDAO" />
+            <constructor-arg value="mat.dao.impl.clause.MeasureDAO" />
     </bean>
     <bean id="measurementTermDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" parent="baseDAO">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.clause.MeasurementTermDAO" />
+            <constructor-arg value="mat.dao.impl.clause.MeasurementTermDAO" />
     </bean>
 	<bean id="qDSTermDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" parent="baseDAO">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.clause.QDSTermDAO" />
+            <constructor-arg value="mat.dao.impl.clause.QDSTermDAO" />
     </bean>
 	<bean id="clauseDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" parent="baseDAO">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.clause.ClauseDAO" />
+            <constructor-arg value="mat.dao.impl.clause.ClauseDAO" />
     </bean>
 	<bean id="decisionDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock" parent="baseDAO">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.clause.DecisionDAO" />
+            <constructor-arg value="mat.dao.impl.clause.DecisionDAO" />
     </bean>
     <bean id="shareLevelDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.clause.ShareLevelDAO" />
+            <constructor-arg value="mat.dao.clause.ShareLevelDAO" />
     </bean>
     <bean id="measureShareDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.clause.MeasureShareDAO" />
+            <constructor-arg value="mat.dao.clause.MeasureShareDAO" />
     </bean>
     <bean id="packagerDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.clause.PackagerDAO" />
+            <constructor-arg value="mat.dao.clause.PackagerDAO" />
     </bean> 
     <bean id="stewardDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.StewardDAO" />
+            <constructor-arg value="mat.dao.StewardDAO" />
     </bean>  
     <bean id="authorDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.AuthorDAO" />
+            <constructor-arg value="mat.dao.AuthorDAO" />
     </bean> 
     <bean id="measureTypeDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.MeasureTypeDAO" />
+            <constructor-arg value="mat.dao.MeasureTypeDAO" />
     </bean>   
     <bean id="metadataDAO"
         class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.MetadataDAO" />
+            <constructor-arg value="mat.dao.MetadataDAO" />
     </bean>  
     <bean id="qDSAttributesDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.clause.QDSAttributesDAO" />
+            <constructor-arg value="mat.dao.clause.QDSAttributesDAO" />
     </bean>   
      
     <bean id="measureExportDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.clause.MeasureExportDAO"/>
+            <constructor-arg value="mat.dao.impl.clause.MeasureExportDAO"/>
     </bean>
     
     <bean id="contextDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.clause.ContextDAO" />
+            <constructor-arg value="mat.dao.clause.ContextDAO" />
     </bean> 
 
     <bean id="listObjectLTDAO" class="org.easymock.EasyMock" factory-method="createNiceMock" >
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.ListObjectLTDAO" />
+            <constructor-arg value="mat.dao.ListObjectLTDAO" />
     </bean>
     
     <bean id="measureScoreDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.MeasureScoreDAO"/>
+            <constructor-arg value="mat.dao.MeasureScoreDAO"/>
     </bean>
     
     <bean id="unitDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.UnitDAO"/>
+            <constructor-arg value="mat.dao.UnitDAO"/>
     </bean>
     
     <bean id="unitTypeDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.UnitTypeDAO"/>
+            <constructor-arg value="mat.dao.UnitTypeDAO"/>
     </bean>
     
     <bean id="unitTypeMatrixDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.UnitTypeMatrixDAO"/>
+            <constructor-arg value="mat.dao.UnitTypeMatrixDAO"/>
     </bean>
     
     <bean id="codeListAuditLogDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.CodeListAuditLogDAO"/>
+            <constructor-arg value="mat.dao.CodeListAuditLogDAO"/>
     </bean>
     
     <bean id="measureAuditLogDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.MeasureAuditLogDAO"/>
+            <constructor-arg value="mat.dao.MeasureAuditLogDAO"/>
     </bean>
     
     <bean id="measureValidationLogDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.impl.MeasureValidationLogDAO"/>
+            <constructor-arg value="mat.dao.impl.MeasureValidationLogDAO"/>
     </bean>
     
     <bean id="measureSetDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.clause.MeasureSetDAO"/>
+            <constructor-arg value="mat.dao.clause.MeasureSetDAO"/>
     </bean>
          
     <bean id="transactionAuditLogDAO" class="org.easymock.EasyMock" factory-method="createNiceMock">
             <qualifier value="mock"/>
-            <constructor-arg value="org.ifmc.mat.dao.TransactionAuditLogDAO"/>
+            <constructor-arg value="mat.dao.TransactionAuditLogDAO"/>
     </bean>
-	<bean id="daoService" class="org.ifmc.mat.dao.service.DAOService" >
+	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>
 		<property name="statusDAO" ref="statusDAO"/>

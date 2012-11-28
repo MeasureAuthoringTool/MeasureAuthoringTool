@@ -37,7 +37,7 @@ public class AuditServiceImpl extends SpringRemoteServiceServlet implements Audi
 	}
 	
 	/* Records an measure event
-	 * @see org.ifmc.mat.client.audit.service.AuditService#recordMeasureEvent(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 * @see mat.client.audit.service.AuditService#recordMeasureEvent(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean recordMeasureEvent(String measureId, String event, String additionalInfo, boolean isChildLogRequired) {
@@ -45,7 +45,7 @@ public class AuditServiceImpl extends SpringRemoteServiceServlet implements Audi
 	}
 	
 	/* Records an code list event
-	 * @see org.ifmc.mat.client.audit.service.AuditService#recordCodeListEvent(java.lang.String, java.lang.String, java.lang.String)
+	 * @see mat.client.audit.service.AuditService#recordCodeListEvent(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
 	public boolean recordCodeListEvent(String codeListId, String event, String additionalInfo) {
@@ -53,7 +53,7 @@ public class AuditServiceImpl extends SpringRemoteServiceServlet implements Audi
 	}
 	
 	/* Returns the code list log search result for a given code list id
-	 * @see org.ifmc.mat.client.audit.service.AuditService#executeCodeListLogSearch(java.lang.String, int, int)
+	 * @see mat.client.audit.service.AuditService#executeCodeListLogSearch(java.lang.String, int, int)
 	 */
 	@Override
 	public SearchHistoryDTO executeCodeListLogSearch(String codeListId, int startIndex, int numberOfRows,List<String> filterList){
@@ -63,7 +63,7 @@ public class AuditServiceImpl extends SpringRemoteServiceServlet implements Audi
 	
 	
 	/* Returns the measure log search result for a given code list id
-	 * @see org.ifmc.mat.client.audit.service.AuditService#executeMeasureLogSearch(java.lang.String, int, int)
+	 * @see mat.client.audit.service.AuditService#executeMeasureLogSearch(java.lang.String, int, int)
 	 */
 	@Override
 	public SearchHistoryDTO executeMeasureLogSearch(String measureId, int startIndex, int numberOfRows,List<String> filterList){

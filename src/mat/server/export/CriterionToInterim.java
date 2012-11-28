@@ -148,11 +148,11 @@ public class CriterionToInterim {
 				 if (cl.getDecisions().get(0) instanceof Conditional) {
 					 cond = (Conditional)cl.getDecisions().get(0);
 			 		 LogicOp op = doCond(cond);
-			 		LogicOp and = LogicOp.logicOpFactory(org.ifmc.mat.shared.model.Conditional.Operator.AND);
+			 		LogicOp and = LogicOp.logicOpFactory(mat.shared.model.Conditional.Operator.AND);
 			 		and.addLogicOp(op);
 			 		return and;
 				 } else {
-					 cond.setOperator(org.ifmc.mat.shared.model.Conditional.Operator.AND);
+					 cond.setOperator(mat.shared.model.Conditional.Operator.AND);
 					 for(Decision d : cl.getDecisions())
 						 cond.addDecision(d);
 					 return doCond(cond);

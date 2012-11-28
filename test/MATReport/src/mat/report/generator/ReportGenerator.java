@@ -1,4 +1,4 @@
-package MATReport.src.org.ifmc.mat.report.generator;
+package MATReport.src.mat.report.generator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,9 +9,9 @@ import java.util.Set;
 
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 
-import MATReport.src.org.ifmc.mat.report.common.CommonConstants;
-import MATReport.src.org.ifmc.mat.report.dataaccess.DataAccess;
-import MATReport.src.org.ifmc.mat.report.row.SummaryReportRow;
+import MATReport.src.mat.report.common.CommonConstants;
+import MATReport.src.mat.report.dataaccess.DataAccess;
+import MATReport.src.mat.report.row.SummaryReportRow;
 
 public class ReportGenerator {
 	private DataAccess dataAccess = new DataAccess();

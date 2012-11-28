@@ -14,10 +14,10 @@
 	<set-property name="log_WindowLogger" value="DISABLED" /> 
     <set-property name="log_DivLogger" value="DISABLED" />
     -->
-	<entry-point class="org.ifmc.mat.client.Login" />
+	<entry-point class="mat.client.Login" />
     <source path='client' />
     <source path='model'/>
     <source path='shared' /> 
-    <source path='org.ifmc.mat.shared.diagramObject'/>
+    <source path='mat.shared.diagramObject'/>
     <source path='DTO' />
 </module>

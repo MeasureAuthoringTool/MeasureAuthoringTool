@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.reportmodel.User" table="USER" lazy="false">
+  <class name="mat.reportmodel.User" table="USER" lazy="false">
     <id name="id" column="USER_ID" >
         <generator class="uuid"/>
     </id>
@@ -23,32 +23,32 @@
 	<property name="orgOID" column="ORG_OID"/>
 	<property name="rootOID" column="ROOT_OID"/>
 	<many-to-one name="securityRole" column="SECURITY_ROLE_ID" 
-		class="org.ifmc.mat.reportmodel.SecurityRole" unique="false" lazy="false" cascade="none" />
+		class="mat.reportmodel.SecurityRole" unique="false" lazy="false" cascade="none" />
 	
 	
 	<!-- 
-	<one-to-one name="password" class="org.ifmc.mat.reportmodel.UserPassword" lazy="proxy" property-ref="user"  cascade="all"/>
+	<one-to-one name="password" class="mat.reportmodel.UserPassword" lazy="proxy" property-ref="user"  cascade="all"/>
 	
 	<many-to-one name="status" column="STATUS_ID" 
-		class="org.ifmc.mat.reportmodel.Status" unique="false" cascade="none" />
+		class="mat.reportmodel.Status" unique="false" cascade="none" />
 	<many-to-one name="auditLog" column="AUDIT_ID" 
-		class="org.ifmc.mat.reportmodel.AuditLog" unique="true" cascade="all" />
+		class="mat.reportmodel.AuditLog" unique="true" cascade="all" />
 	<list name="securityQuestions" table="USER_SECURITY_QUESTIONS" cascade="all-delete-orphan" lazy="true">
 		<key column="USER_ID" not-null="true" update="false"/>
 		<index column="ROW_ID" type="integer"/>
 		
-		<composite-element class="org.ifmc.mat.reportmodel.UserSecurityQuestion">
+		<composite-element class="mat.reportmodel.UserSecurityQuestion">
 			<property name="securityQuestion" column="QUESTION"/>
 			<property name="securityAnswer" column="ANSWER"/>
 		</composite-element>
 	</list>	
 	<set name="measureShares" table="MEASURE_SHARE" cascade="all-delete-orphan" inverse="true" >
         <key column="SHARE_USER_ID" not-null="true" update="false"/>
-        <one-to-many class="org.ifmc.mat.reportmodel.MeasureShare" />
+        <one-to-many class="mat.reportmodel.MeasureShare" />
     </set>  
     <set name="ownedMeasureShares" table="MEASURE_SHARE" cascade="all-delete-orphan" inverse="true">
         <key column="MEASURE_OWNER_USER_ID" not-null="true" update="false"/>
-        <one-to-many class="org.ifmc.mat.reportmodel.MeasureShare" />
+        <one-to-many class="mat.reportmodel.MeasureShare" />
     </set>
     -->
   </class>

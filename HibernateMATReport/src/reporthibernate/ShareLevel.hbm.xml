@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.reportmodel.ShareLevel" table="SHARE_LEVEL" mutable="false" lazy="false">
+  <class name="mat.reportmodel.ShareLevel" table="SHARE_LEVEL" mutable="false" lazy="false">
 	<cache usage="read-only"/>
 	<id name="id" column="SHARE_LEVEL_ID"/>	
 	<property name="description" column="DESCRIPTION"/>	

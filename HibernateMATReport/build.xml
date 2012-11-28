@@ -36,7 +36,7 @@
         <mkdir dir="build/jar"/>
         <jar destfile="build/jar/HibernateMATReport.jar" basedir="build/classes">
             <manifest>
-                <attribute name="Main-Class" value="org.ifmc.mat.reports.ReportRunner"/>
+                <attribute name="Main-Class" value="mat.reports.ReportRunner"/>
             	 <attribute name="Class-Path" value="${manifest.classpath}"/> 
             </manifest>
         </jar>

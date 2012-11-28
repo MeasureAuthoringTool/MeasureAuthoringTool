@@ -25,12 +25,12 @@
 	<set-property name="log_DivLogger" value="DISABLED" />
 	-->
 	<!-- Specify the app entry point class.                         -->
-	<entry-point class='org.ifmc.mat.client.Mat' />
+	<entry-point class='mat.client.Mat' />
 
 	<!-- Specify the paths for translatable code                    -->
 	<source path='client' />
 	<source path='shared'/>
-	<source path='org.ifmc.mat.shared.diagramObject'/>
+	<source path='mat.shared.diagramObject'/>
 	<source path='model'/>
 	<source path='DTO'/>
 	

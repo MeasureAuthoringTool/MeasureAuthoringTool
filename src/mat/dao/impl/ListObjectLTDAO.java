@@ -191,8 +191,8 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 	
 	private Criteria buildCriteriaForAppliedByUser(String searchText, String loggedInUserid, boolean showdefaultCodeList) {
 		Session session = getSessionFactory().getCurrentSession();
-		List<String> loids = session.createQuery("select q.listObject.oid from org.ifmc.mat.model.QualityDataSet q where q.measureId.id in " +
-				"(select m.id from org.ifmc.mat.model.clause.Measure m where m.owner.id ='"+loggedInUserid+"')").list();
+		List<String> loids = session.createQuery("select q.listObject.oid from mat.model.QualityDataSet q where q.measureId.id in " +
+				"(select m.id from mat.model.clause.Measure m where m.owner.id ='"+loggedInUserid+"')").list();
 
 		if(loids.isEmpty() && !showdefaultCodeList){
 			return null;

@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="org.ifmc.mat.model.clause.Context" table="CONTEXT" lazy="false">
+  <class name="mat.model.clause.Context" table="CONTEXT" lazy="false">
 	<id name="id" column="CONTEXT_ID"/>
 	<property name="description" column="DESCRIPTION" />		
   </class>

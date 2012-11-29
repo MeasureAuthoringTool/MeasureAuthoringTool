@@ -138,7 +138,7 @@ public abstract class MainLayout {
 					if(!MatContext.get().getCurrentModule().equalsIgnoreCase(ConstantMessages.LOGIN_MODULE)){
 						MatContext.get().restartTimeoutWarning();
 					}
-					MatContext.get().openURL("http://www.hhs.gov/");
+					MatContext.get().openURL(ClientConstants.EXT_LINK_HHS_Site);
 				}
 			}
 		);

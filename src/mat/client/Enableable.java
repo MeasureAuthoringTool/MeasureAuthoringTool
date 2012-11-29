@@ -6,5 +6,5 @@ package mat.client;
  */
 public interface Enableable {
 
-	public void setEnabled(boolean enabled);
+	 void setEnabled(boolean enabled);
 }

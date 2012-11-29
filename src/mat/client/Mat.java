@@ -36,6 +36,7 @@ import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.ui.MATTabPanel;
+import mat.client.util.ClientConstants;
 import mat.model.SecurityRole;
 import mat.shared.ConstantMessages;
 
@@ -70,37 +71,37 @@ import com.google.gwt.user.client.ui.Widget;
  * Entry point classes define <code>onModuleLoad()</code>.
  */
 public class Mat extends MainLayout implements EntryPoint, Enableable{
-	
-	private ListBoxCodeProvider listBoxCodeProvider = new ListBoxCodeProvider();
+	final private ListBoxCodeProvider listBoxCodeProvider = new ListBoxCodeProvider();
 	private MatTabLayoutPanel mainTabLayout;
-	private String MAIN_TAB_LAYOUT_ID;
+	private String mainTabLayoutID;
 	private MeasureComposerPresenter measureComposer;
 	private ManageMeasurePresenter measureLibrary;
 	private	MatPresenter adminPresenter;
 	private CodeListController codeListController;
 	
 	
-	String CurrentUserRole = "NotLoggedInYet";
+	String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
 	
 	@SuppressWarnings("rawtypes")
 	private  final AsyncCallback<SessionManagementService.Result> userRoleCallback = new AsyncCallback<SessionManagementService.Result>(){
 
 		@Override
-		public void onFailure(Throwable caught) {
+		public void onFailure(final Throwable caught) {
 			redirectToLogin();
 //			Window.alert("User Role is not set in the session");
 		}
 
-		public void onSuccess(SessionManagementService.Result result) {
+		public void onSuccess(final SessionManagementService.Result result) {
 			if(result == null){
 				redirectToLogin();
 			}else{
-				Date lastSignIn = result.signInDate;
-				Date lastSignOut = result.signOutDate;
-				Date current = new Date();
-				boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
-				if(isAlreadySignedIn)
+				final Date lastSignIn = result.signInDate;
+				final Date lastSignOut = result.signOutDate;
+				final Date current = new Date();
+				final boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
+				if(isAlreadySignedIn){
 					redirectToLogin();
+				}
 				else{
 					MatContext.get().setUserSignInDate(result.userId);
 					MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole);
@@ -115,7 +116,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		showLoadingMessage();
 		MatContext.get().setListBoxCodeProvider(listBoxCodeProvider);
 		MatContext.get().getCurrentUserRole(userRoleCallback);
-		MAIN_TAB_LAYOUT_ID = ConstantMessages.MAIN_TAB_LAYOUT_ID; 
+		mainTabLayoutID = ConstantMessages.MAIN_TAB_LAYOUT_ID; 
 		/*
 		 * logic used to process history for registered TabPanels 
 		 * See field MatContext.tabRegistry 
@@ -131,11 +132,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		 */
 		
 		History.addValueChangeHandler(new ValueChangeHandler<String>() {
-			public void onValueChange(ValueChangeEvent<String> event) {
-				String historyToken = event.getValue();
+			public void onValueChange(final ValueChangeEvent<String> event) {
+				final String historyToken = event.getValue();
 				
 				    if(historyToken == null || historyToken.isEmpty()){
-				    	History.newItem(MAIN_TAB_LAYOUT_ID + 0, false);
+				    	History.newItem(mainTabLayoutID + 0, false);
 					}
 				    else if(!MatContext.get().isLoading())   {
 				        // Parse the history token
@@ -145,19 +146,19 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 								if(key instanceof String){
 									String k = (String) key;
 									  if(historyToken.contains(k)){
-										  String tabIndexToken = historyToken.substring(k.length());
-										  int tabIndex = Integer.parseInt(tabIndexToken);
+										  final String tabIndexToken = historyToken.substring(k.length());
+										  final int tabIndex = Integer.parseInt(tabIndexToken);
 										  MATTabPanel tp = (MATTabPanel) MatContext.get().tabRegistry.get(key);
 										  /* Suppressing selection of MAIN_TAB_LAYOUT_ID+mainTabLayout.selectedIndex
 										   * if already selected
 										   */
-										  if(!History.getToken().equals(MAIN_TAB_LAYOUT_ID+mainTabLayout.getSelectedIndex()))
+										  if(!History.getToken().equals(mainTabLayoutID+mainTabLayout.getSelectedIndex()))
 											  tp.selectTab(tabIndex);
 									}
 								}
 							}
 				        } catch (IndexOutOfBoundsException e) {
-				        	History.newItem(MAIN_TAB_LAYOUT_ID + 0, false);
+				        	History.newItem(mainTabLayoutID + 0, false);
 				        }
 					}else{
 						MatContext.get().fireLoadingAlert();
@@ -170,7 +171,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		
 		MatContext.get().getEventBus().addHandler(MeasureEditEvent.TYPE, new MeasureEditEvent.Handler() {
 			@Override
-			public void onMeasureEdit(MeasureEditEvent event) {
+			final public void onMeasureEdit(MeasureEditEvent event) {
 //				currentMeasure.setText(event.getMeasureName());
 				mainTabLayout.selectTab(measureComposer);
 				focusSkipLists("MeasureComposer");
@@ -215,14 +216,14 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		mainTabLayout.getElement().setAttribute("id", "matMainTabPanel");
 		mainTabLayout.getElement().setAttribute("aria-role", "TabList");
 		
-		MatContext.get().tabRegistry.put(MAIN_TAB_LAYOUT_ID,mainTabLayout);
-		MatContext.get().enableRegistry.put(MAIN_TAB_LAYOUT_ID,this);
+		MatContext.get().tabRegistry.put(mainTabLayoutID,mainTabLayout);
+		MatContext.get().enableRegistry.put(mainTabLayoutID,this);
 		mainTabLayout.addSelectionHandler(new SelectionHandler<Integer>(){
 			@Override
-			public void onSelection(SelectionEvent<Integer> event) {
-				int index = ((SelectionEvent<Integer>) event).getSelectedItem();
+			public void onSelection(final SelectionEvent<Integer> event) {
+				final int index = ((SelectionEvent<Integer>) event).getSelectedItem();
 				// suppressing token dup
-				String newToken = MAIN_TAB_LAYOUT_ID + index;
+				final String newToken = mainTabLayoutID + index;
 				if(!History.getToken().equals(newToken)){
 					MatContext.get().recordTransactionEvent(null, null, "MAIN_TAB_EVENT", newToken, 1);
 					History.newItem(newToken, false);
@@ -231,44 +232,44 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 
 			});
 		
-		String title = "The Title";			
+		String title = ClientConstants.TEXT_THE_TITLE;			
 		int tabIndex =0;
 		
-		CurrentUserRole = MatContext.get().getLoggedInUserRole();
-		if(!CurrentUserRole.equalsIgnoreCase("Administrator")){
+		currentUserRole = MatContext.get().getLoggedInUserRole();
+		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			
 			
 			codeListController = new CodeListController();
-			title = "Value Set Library";	
+			title = ClientConstants.TITLE_VALUE_SET_LIB;	
 			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));
 		
 			measureLibrary = buildMeasureLibraryWidget(); 
-			title = "Measure Library";	
+			title = ClientConstants.TITLE_MEASURE_LIB;	
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
 			
 			measureComposer= buildMeasureComposer();
-			title = "Measure Composer";	
+			title = ClientConstants.TITLE_MEASURE_COMPOSER;	
 			tabIndex = mainTabLayout.addPresenter(measureComposer, mainTabLayout.fmt.normalTitle(title));
 		}
-		else if(CurrentUserRole.equalsIgnoreCase("Administrator"))
+		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
 		{
 			adminPresenter = buildAdminPresenter();
 			
-			title = "Admin";	
+			title = ClientConstants.TITLE_ADMIN;	
 			
 			tabIndex = mainTabLayout.addPresenter(adminPresenter, mainTabLayout.fmt.normalTitle(title));
 		}
 		else {
-			Window.alert("Unrecognized user role " + CurrentUserRole);
+			Window.alert("Unrecognized user role " + currentUserRole);
 			MatContext.get().getEventBus().fireEvent(new LogoffEvent());
 		}
 			
-		title = "My Account";	
+		title = ClientConstants.TITLE_MY_ACCOUNT;	
 		tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 	
 		mainTabLayout.setHeight("100%");
 		
-		Anchor signout = new Anchor("Sign Out");
+		Anchor signout = new Anchor(ClientConstants.ANCHOR_SIGN_OUT);
 		signout.addClickHandler(new MATClickHandler() {
 			
 			@Override
@@ -286,11 +287,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		
 		// delaying these invocation until after hideLoadingMessage() so these selections are not ignored
 		// TODO consider using a forced tab selection
-		if(!CurrentUserRole.equalsIgnoreCase("Administrator")){
+		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			//mainTabLayout.selectTab(measureLibrary);
 			mainTabLayout.selectTab(codeListController);
 		}
-		else if(CurrentUserRole.equalsIgnoreCase("Administrator")){
+		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			mainTabLayout.selectTab(adminPresenter);
 		}
 		
@@ -316,7 +317,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		 * This block adds a special generic handler for any mouse clicks in the mainContent for ie browser.
 		 * Need to add this handler in order to keep track of the user activity in IE8 Browser.
 		 */
-		if(getUserAgent().contains("msie")){
+		if(getUserAgent().contains(ClientConstants.MSIE)){
 			getContentPanel().addMouseUpHandler(new MouseUpHandler() {
 				
 				@Override
@@ -405,13 +406,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		 * Added a timer to have a delay before redirect since 
 		 * this was causing the firefox javascript exception.
 		 */
-		Timer t = new Timer() {
+		final Timer timer = new Timer() {
 			@Override
 			public void run() {
-				MatContext.get().redirectToHtmlPage("/Login.html");
+				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
 			}
 		};
-		t.schedule(1000);
+		timer.schedule(1000);
 		
 	}
 	
@@ -457,21 +458,16 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	}-*/;
 	
 	private MatPresenter buildMyAccountWidget() {
-		PersonalInformationView piv = 
-			new PersonalInformationView();
-		PersonalInformationPresenter pip = 
-			new PersonalInformationPresenter(piv);
+		PersonalInformationView informationView = new PersonalInformationView();
+		PersonalInformationPresenter personalInfoPrsnter = new PersonalInformationPresenter(informationView);
+		SecurityQuestionsPresenter quesPresenter = new SecurityQuestionsPresenter(new SecurityQuestionsView());
 		
-		SecurityQuestionsPresenter sqp = 
-			new SecurityQuestionsPresenter(new SecurityQuestionsView());
-		
-		ChangePasswordPresenter cpp = 
-			new ChangePasswordPresenter(new ChangePasswordView());
+		ChangePasswordPresenter passwordPresenter = new ChangePasswordPresenter(new ChangePasswordView());
 		
 		
-		MyAccountPresenter p = 
-			new MyAccountPresenter(new MyAccountView(pip, sqp, cpp));
-		return p;
+		MyAccountPresenter accountPresenter = new MyAccountPresenter(new MyAccountView(personalInfoPrsnter, 
+																		quesPresenter, passwordPresenter));
+		return accountPresenter;
 	}
 	
 	private MatPresenter buildAdminPresenter() {
@@ -484,39 +480,41 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	}
 	
 	private ManageMeasurePresenter buildMeasureLibraryWidget() {
-		ManageMeasureSearchView musd = new ManageMeasureSearchView();
-		ManageMeasureDetailView mudd = new ManageMeasureDetailView();
-		ManageMeasureVersionView mmVV = new ManageMeasureVersionView();
-		ManageMeasureDraftView mmDV = new ManageMeasureDraftView();
-		ManageMeasureShareView mmsv = new ManageMeasureShareView();
-		ManageMeasureHistoryView mmhv = new ManageMeasureHistoryView();
-		ManageMeasureExportView mmev;
-		if (CurrentUserRole.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE))
-			 mmev = new ManageMeasureExportView(true);
-		else 
-			mmev = new ManageMeasureExportView(false);
-		ManageMeasurePresenter mup = 
-			new ManageMeasurePresenter(musd, mudd, mmsv, mmev,mmhv,mmVV,mmDV);
+		ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
+		ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
+		ManageMeasureVersionView versionView = new ManageMeasureVersionView();
+		ManageMeasureDraftView measureDraftView = new ManageMeasureDraftView();
+		ManageMeasureShareView measureShareView = new ManageMeasureShareView();
+		ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
+		ManageMeasureExportView measureExportView;
+		if (currentUserRole.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)){
+			measureExportView = new ManageMeasureExportView(true);
+		}else{ 
+			measureExportView = new ManageMeasureExportView(false);
+		}
+		ManageMeasurePresenter measurePresenter = 
+			new ManageMeasurePresenter(measureSearchView, measureDetailView, measureShareView, measureExportView,
+					historyView,versionView,measureDraftView);
 		
-		return mup;
+		return measurePresenter;
 		
 	}
 		public static void focusSkipLists(String skipstr){
-		Widget w = SkipListBuilder.buildSkipList(skipstr);
+		Widget widget = SkipListBuilder.buildSkipList(skipstr);
 		getSkipList().clear();
-		getSkipList().add(w);
+		getSkipList().add(widget);
 		getSkipList().setFocus(true);
 	}
 	
 	class EnterKeyDownHandler implements KeyDownHandler {
-		private int i = 0;
+		final private int counter;
 		public EnterKeyDownHandler(int index){
-			i = index;
+			counter = index;
 		}
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-				mainTabLayout.selectTab(i);
+				mainTabLayout.selectTab(counter);
 			}
 		}
 	}

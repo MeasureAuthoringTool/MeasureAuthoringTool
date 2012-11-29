@@ -2,13 +2,16 @@ package mat.client;
 
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.FocusableWidget;
+import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.VerticalFlowPanel;
+import mat.client.util.ClientConstants;
+import mat.client.util.FooterLinksUtility;
 import mat.shared.ConstantMessages;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
@@ -23,31 +26,29 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public abstract class MainLayout {
+	
 	private FocusPanel content;
-	
 	private static Panel loadingPanel;
-	
 	private SimplePanel logOutPanel;
 	
-	private Anchor policyAnchor;
-	private Anchor linkAnchor;
+	
 	
 	protected static FocusableWidget skipListHolder;
 	
-	private static HTML loadingWidget = new HTML("Loading Please Wait...");
+	private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
 	private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
-	private static String alertTitle = "Informational Alert";
-	private static final int DEFAULT_LOADING_MESSAGE_DELAY_IN_MILLISECONDS = 500;
+	private static String alertTitle = ClientConstants.MAINLAYOUT_ALERT_TITLE;
+	private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
 	
 	public final void onModuleLoad() {
 		
-		Panel skipContent = buildSkipContent();
+		final Panel skipContent = buildSkipContent();
 		
-		Panel topBanner = buildTopPanel();
-		Panel footerPanel = buildFooterPanel();
-		Panel contentPanel = buildContentPanel();
-		Panel loadingPanel = buildLoadingPanel();
-		FlowPanel container = new FlowPanel();
+		final Panel topBanner = buildTopPanel();
+		final Panel footerPanel = buildFooterPanel();
+		final Panel contentPanel = buildContentPanel();
+		final Panel loadingPanel = buildLoadingPanel();
+		final FlowPanel container = new FlowPanel();
 		container.add(new SpacerWidget());
 		container.add(new SpacerWidget());
 		container.add(topBanner);
@@ -109,59 +110,65 @@ public abstract class MainLayout {
 	 * @return Panel
 	 */
 	private Panel buildFooterPanel() {
-		HorizontalPanel footerPanel = new HorizontalPanel();
-		footerPanel.setStylePrimaryName("footer");		
-		policyAnchor = new Anchor("Accessibility Policy");
-		policyAnchor.setTitle("Accessibility Policy");
-		policyAnchor.setStyleName("footerLink");
-		policyAnchor.getElement().setAttribute("alt", "Accessibility Policy");
+		//final HorizontalPanel footerMainPanel = new HorizontalPanel();
+		FlowPanel footerMainPanel = new FlowPanel();
+		footerMainPanel.setStylePrimaryName("footer");		
 		
-		policyAnchor.addClickHandler(
-			new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					if(!MatContext.get().getCurrentModule().equalsIgnoreCase(ConstantMessages.LOGIN_MODULE)){
-						MatContext.get().restartTimeoutWarning();
-					}
-					String htmlPage = "/accessibilityPolicy.html";
-					MatContext.get().openNewHtmlPage(htmlPage);
-				}
-			}); 
-		footerPanel.add(policyAnchor);
+		final HorizontalFlowPanel footerLogoPanel = new HorizontalFlowPanel();
 		
+		footerLogoPanel.setStylePrimaryName("footerLogo");
 		
-		linkAnchor = new Anchor("User Guide");
-		linkAnchor.setTitle("User Guide");
-		linkAnchor.setStyleName("footerLinkRight");
-		linkAnchor.getElement().setAttribute("alt", "User Guide");
+		FocusableImageButton logo = new FocusableImageButton(ImageResources.INSTANCE.cms_gov_footer(),"CMS.gov");
+		footerLogoPanel.add(logo);
+		footerMainPanel.add(footerLogoPanel);
 		
-		linkAnchor.addClickHandler(
-			new ClickHandler() {
-				@Override
-				public void onClick(ClickEvent event) {
-					if(!MatContext.get().getCurrentModule().equalsIgnoreCase(ConstantMessages.LOGIN_MODULE)){
-						MatContext.get().restartTimeoutWarning();
-					}
-					// ### MatContext.get().openURL("http://www.qualityforum.org/WorkArea/linkit.aspx?LinkIdentifier=id&ItemID=68493");
-					//To Do : Temporary link - Above line has to be uncommented with new link.
-					MatContext.get().openURL("###");
-				}
-			}); 
-		footerPanel.add(linkAnchor);
+		HTML desc = new HTML("A federal government website managed by the Centers for Medicare & Medicaid Services <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+				"7500 Security Boulevard, Baltimore, MD 21244");
+		desc.setStylePrimaryName("footer-address-text");
+		footerLogoPanel.add(desc);
+		
+		FocusableImageButton rightlogo = new FocusableImageButton(ImageResources.INSTANCE.hhslogo(),"Link to Health and Human Services home page");
+		rightlogo.setStylePrimaryName("footerLogo-Right");
+		footerLogoPanel.add(rightlogo);
+		footerMainPanel.add(footerLogoPanel);
 		
 		
-		return footerPanel;
+		final VerticalFlowPanel footerLinksPanel = new VerticalFlowPanel();
+		HTML helpFullLinks = new HTML("&nbsp;&nbsp;Helpful Links");
+		helpFullLinks.setStylePrimaryName("footer-nav_h2");
+		footerLinksPanel.add(helpFullLinks);
+		
+		footerLinksPanel.setStylePrimaryName("footer-nav");
+		final Anchor policyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, "footer_Links", ConstantMessages.LOGIN_MODULE, 
+									ClientConstants.HTML_ACCESSIBILITY_POLICY,null);
+		footerLinksPanel.add(policyAnchor);
+		
+		
+		final Anchor termsOfUseAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_TermsOfUse, "footer_Links", ConstantMessages.LOGIN_MODULE, 
+			       ClientConstants.HTML_TermsOfUse,null);
+		footerLinksPanel.add(termsOfUseAnchor);
+		
+		final Anchor privacyPolicyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_PrivacyPolicy, "footer_Links", ConstantMessages.LOGIN_MODULE, 
+			       ClientConstants.HTML_PrivacyPolicy,null);
+		footerLinksPanel.add(privacyPolicyAnchor);
+		
+		final Anchor linkAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, "footer_Links", ConstantMessages.LOGIN_MODULE, 
+			       null,"###");
+		footerLinksPanel.add(linkAnchor);
+		
+		footerMainPanel.add(footerLinksPanel);
+		return footerMainPanel;
 	}
 	
 	private Panel buildTopPanel() {
-		HorizontalPanel topBanner = new HorizontalPanel();
+		final HorizontalPanel topBanner = new HorizontalPanel();
 		setId(topBanner, "title");
 		topBanner.setStylePrimaryName("topBanner");
 		//To Do Add logo 
 		//FocusableImageButton logo = new FocusableImageButton(ImageResources.INSTANCE.logo_###(),"MAT");
 		//logo.setStylePrimaryName("topBannerImage");
 		//topBanner.add(logo);
-		FocusableImageButton titleImage= new FocusableImageButton(ImageResources.INSTANCE.g_header_title(),"Measure Authoring Tool");
+		final FocusableImageButton titleImage= new FocusableImageButton(ImageResources.INSTANCE.g_header_title(),"Measure Authoring Tool");
 		titleImage.setStylePrimaryName("topBannerImage");
 		topBanner.add(titleImage);
 		logOutPanel = new SimplePanel();
@@ -184,18 +191,17 @@ public abstract class MainLayout {
 		return skipListHolder;
 	}
 	
-	protected void setId(Widget widget, String id) {
+	protected void setId(final Widget widget, final String id) {
 		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}
 	
-	protected void setLogout(SimplePanel logOutPanel){
+	protected void setLogout(final SimplePanel logOutPanel){
 		this.logOutPanel = logOutPanel;
 	}
 	
 	protected SimplePanel getLogoutPanel(){
 		return logOutPanel;
 	}
-
 	protected Widget getNavigationList(){
 		return null;
 	}
@@ -213,7 +219,7 @@ public abstract class MainLayout {
 	 * no arg method adds default delay to loading message hide op
 	 */
 	public static void hideLoadingMessage(){
-		hideLoadingMessage(DEFAULT_LOADING_MESSAGE_DELAY_IN_MILLISECONDS);
+		hideLoadingMessage(DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS);
 	}
 	
 	/**
@@ -221,18 +227,19 @@ public abstract class MainLayout {
 	 * NOTE delay cannot be <= 0 else exception is thrown
 	 * public method to allow setting of delay
 	 */
-	public static void hideLoadingMessage(int delay){
+	public static void hideLoadingMessage(final int delay){
 		if(delay > 0){
-			Timer t = new Timer() {
+			final Timer timer = new Timer() {
 				@Override
 				public void run() {
 					delegateHideLoadingMessage();
 				}
 			};
-			t.schedule(delay);
+			timer.schedule(delay);
 		}
-		else
+		else{
 			delegateHideLoadingMessage();
+		}
 	}
 	
 	/**

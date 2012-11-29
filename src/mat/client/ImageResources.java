@@ -29,86 +29,90 @@ public interface ImageResources extends ClientBundle {
 	
 	
 	@Source("images/addAllLeft.png")
-	public ImageResource addAllLeft();
+	 ImageResource addAllLeft();
 	
 	
 	@Source("images/addAllRight.png")
-	public ImageResource addAllRight();
+	 ImageResource addAllRight();
 	
 	@Source("images/addImage.png")
-	public ImageResource addImage();
+	 ImageResource addImage();
 	
 	@Source("images/addLeft.png")
-	public ImageResource addLeft();
+	 ImageResource addLeft();
 	
 	@Source("images/addRight.png")
-	public ImageResource addRight();
+	 ImageResource addRight();
 	
 	@Source("images/calendar.gif")
-	public ImageResource calendar();
+	 ImageResource calendar();
 	
 	@Source("images/collapsed.gif")
-	public ImageResource collapsed();
+	 ImageResource collapsed();
 	
 	@Source("images/expanded.gif")
-	public ImageResource expanded();
+	 ImageResource expanded();
 	
 	@Source("images/g_delete.png")
-	public ImageResource g_delete();
-	
+	 ImageResource g_delete();
 	
 	@Source("images/g_header_title.gif")
-	public ImageResource g_header_title();
+	ImageResource g_header_title();
 	
 	
 	@Source("images/g_lock.gif")
-	public ImageResource g_lock();
+	ImageResource g_lock();
 	
 	
 	@Source("images/g_package_edit.png")
-	public ImageResource g_package_edit();
+	 ImageResource g_package_edit();
 	
 	
 	@Source("images/g_package_go.gif")
-	public ImageResource g_package_go();
+	ImageResource g_package_go();
 	
 	@Source("images/g_package_share.png")
-	public ImageResource g_package_share();
+	ImageResource g_package_share();
 	
 	
 	@Source("images/g_page_copy.gif")
-	public ImageResource g_page_copy();
+	ImageResource g_page_copy();
 	
 	@Source("images/error.png")
-	public ImageResource msg_error();
+	ImageResource msg_error();
 	
 	@Source("images/success.png")
-	public ImageResource msg_success();
+	ImageResource msg_success();
 	
 	@Source("images/help.gif")
-	public ImageResource help();
+	ImageResource help();
 	
 	@Source("images/icon_newWindow.gif")
-	public ImageResource icon_newWindow();
+	ImageResource icon_newWindow();
 	
 	@Source("images/icon_success_sm.gif")
-	public ImageResource icon_success_sm();
+	ImageResource icon_success_sm();
 	
 	@Source("images/logo_ifmc_power.gif")
-	public ImageResource logo_ifmc_power();
+	ImageResource logo_ifmc_power();
 	
 	/* ### New Logo to be added @Source("images/###_logo.gif")
 	public ImageResource ###_logo();*/
+	@Source("images/cms_gov_footer.png")
+	ImageResource cms_gov_footer();
+	
+	@Source("images/hhslogo.png")
+	ImageResource hhslogo();
 	
 	@Source("images/application_view_detail_1.png")
-	public ImageResource ReadOnly();
+	ImageResource ReadOnly();
 	
 	@Source("images/alert.png")
-	public ImageResource alert();
+	ImageResource alert();
 	
 	@Source("images/clock.png")
-	public ImageResource clock();
+	ImageResource clock();
 	
 	@Source("images/application_cascade.png")
-	public ImageResource application_cascade();
+	ImageResource application_cascade();
 }

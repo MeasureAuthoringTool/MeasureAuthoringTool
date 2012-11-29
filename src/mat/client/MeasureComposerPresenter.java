@@ -40,7 +40,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	private ContentWithHeadingWidget measureComposerContent = new ContentWithHeadingWidget();
 	private PreviousContinueButtonBar buttonBar = new PreviousContinueButtonBar();
     private static SimplePanel subSkipContentHolder = new SimplePanel();  
-    private String MEASURE_COMPOSER_TAB;
+    private String measureComposerTab;
     
 	public MeasureComposerPresenter() {
 		
@@ -55,14 +55,14 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.setHeight("98%");
 		//measureComposerTabLayout.selectTab(metaDataPresenter.getWidget());
 		
-		MEASURE_COMPOSER_TAB = ConstantMessages.MEASURE_COMPOSER_TAB;
-		MatContext.get().tabRegistry.put(MEASURE_COMPOSER_TAB,measureComposerTabLayout);
-		MatContext.get().enableRegistry.put(MEASURE_COMPOSER_TAB,this);
+		measureComposerTab = ConstantMessages.MEASURE_COMPOSER_TAB;
+		MatContext.get().tabRegistry.put(measureComposerTab,measureComposerTabLayout);
+		MatContext.get().enableRegistry.put(measureComposerTab,this);
 		measureComposerTabLayout.addSelectionHandler(new SelectionHandler<Integer>(){
-			public void onSelection(SelectionEvent event) {
+			public void onSelection(final SelectionEvent event) {
 				int index = ((SelectionEvent<Integer>) event).getSelectedItem();
 				// suppressing token dup
-				String newToken = MEASURE_COMPOSER_TAB + index;
+				String newToken = measureComposerTab + index;
 				if(!History.getToken().equals(newToken)){
 					MeasureSelectedEvent mse = MatContext.get().getCurrentMeasureInfo();
 					String msg = " [measure] "+mse.getMeasureName()+" [version] "+mse.getMeasureVersion();

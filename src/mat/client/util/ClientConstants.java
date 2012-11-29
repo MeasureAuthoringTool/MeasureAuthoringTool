@@ -22,7 +22,7 @@ public class ClientConstants {
 	public final static String HTML_LOGIN ="/Login.html";
 	public final static String HTML_MAT ="/Mat.html";
 	public static final String HTML_PrivacyPolicy = "/privacyPolicy.html";
-	
+	public final static String EXT_LINK_HHS_Site ="http://www.hhs.gov/";
 	
 	public final static String TEXT_ACCESSIBILITY_POLICY ="Accessibility Policy";
 	public final static String TEXT_TermsOfUse ="Terms Of Use";

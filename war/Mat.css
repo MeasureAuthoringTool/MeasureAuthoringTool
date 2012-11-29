@@ -201,19 +201,19 @@ body#main select, body#main input, body#main textarea {
     
 }
 .footer-nav {
-	background: url('/images/hpgradient.jpg') repeat-x scroll 0 0 #FFFFFF;
+	background: url('/images/hpgradient.jpg') repeat scroll 0 0 #FFFFFF;
      margin: 0;
-     padding: 0;
      line-height: 20px;
      list-style: none outside none;
+     padding: 30px 20px;
 }
 
 .footer_Links {
     font: 0.7em sans-serif;
     color: #105191;
     padding-left: 10px;
-     padding-top: 2px;
-    padding-bottom: 2px; 
+    padding-top: 5px;
+    padding-bottom: 5px; 
     text-decoration: none;
     
 }
@@ -238,8 +238,8 @@ body#main select, body#main input, body#main textarea {
     color: #000044;
     font: bold 0.8em sans-serif;
     margin: 0;
-    padding-top: 10px;
-    
+   /*  padding-top: 5px;*/
+    padding-bottom: 5px; 
 }
 .footerLink {
 	-moz-box-sizing:border-box;

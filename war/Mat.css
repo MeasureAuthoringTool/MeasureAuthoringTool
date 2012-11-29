@@ -28,8 +28,11 @@ body#main select, body#main input, body#main textarea {
     font-size:small;
 }
 
-.gwt-Anchor, .gwt-Anchor:visited {
+.gwt-Anchor,.gwt-Anchor:visited {
     text-decoration: none;
+}
+.gwt-Anchor:hover {
+	color:#cccc;
 }
 
 .codeListHeader{
@@ -179,38 +182,82 @@ body#main select, body#main input, body#main textarea {
 }
 
 .footer {
-    border: 1px solid rgb(160, 160, 160);
-    padding-left:25px;
-    padding-right:25px;
-    height: 50px;
-    margin: 2px;
-    width:100%;
-    text-align: left;
-    /* 
-    position: absolute;
-    text-align: left;
-    -moz-box-sizing: border-box;
-    vertical-align: bottom;
-    */
+	background-color: #D0D6DB;
+	clear: both;
+    margin: auto;
+    width: 990px;
+    
+}
+.footerLogo{
+	background: none repeat scroll left center #A8B0B3;
+    padding: 20px;
+    padding-top: 30px;	
+	
+}
+.footerLogo-Right {
+    float: right;
+    position:relative;
+    top:-50px;
+    
+}
+.footer-nav {
+	background: url('/images/hpgradient.jpg') repeat-x scroll 0 0 #FFFFFF;
+     margin: 0;
+     padding: 0;
+     line-height: 20px;
+     list-style: none outside none;
 }
 
+.footer_Links {
+    font: 0.7em sans-serif;
+    color: #105191;
+    padding-left: 10px;
+     padding-top: 2px;
+    padding-bottom: 2px; 
+    text-decoration: none;
+    
+}
+.footer_Links:hover,.footer_Links:focus {
+   color: #C00000;
+   text-decoration: underline;
+}
+.footer_Links:visited{
+    color: #002280;
+}
+.footer-address-text {
+	font: 0.8em/1.5em sans-serif;
+    color: #000000;
+    margin-left: 20px;
+    margin-top: 5px;
+    padding-left: 12px;
+    padding-top: 5px;
+    
+}
+.footer-nav_h2 {
+	background: none repeat scroll 0 center transparent;
+    color: #000044;
+    font: bold 0.8em sans-serif;
+    margin: 0;
+    padding-top: 10px;
+    
+}
 .footerLink {
 	-moz-box-sizing:border-box;
-background-color:#FFFFFF;
-/* font-color: #000000; */
-font-size:small;
-text-decoration: none;
-text-align: left;
+	background-color:#FFFFFF;
+	/* font-color: #000000; */
+	font-size:small;
+	text-decoration: none;
+	text-align: left;
 }
 
 .footerLinkRight {
 	-moz-box-sizing:border-box;
-background-color:#FFFFFF;
-font-color: #000000;
-font-size:small;
-text-decoration: none;
-text-align: right;
-float:right;
+	background-color:#FFFFFF;
+	font-color: #000000;
+	font-size:small;
+	text-decoration: none;
+	text-align: right;
+	float:right;
 }
 
 .alertMessage {

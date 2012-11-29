@@ -12,6 +12,8 @@ import mat.client.util.FooterLinksUtility;
 import mat.shared.ConstantMessages;
 
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
@@ -119,6 +121,7 @@ public abstract class MainLayout {
 		footerLogoPanel.setStylePrimaryName("footerLogo");
 		
 		FocusableImageButton logo = new FocusableImageButton(ImageResources.INSTANCE.cms_gov_footer(),"CMS.gov");
+		//logo.addClickHandler(handler);
 		footerLogoPanel.add(logo);
 		footerMainPanel.add(footerLogoPanel);
 		
@@ -129,6 +132,16 @@ public abstract class MainLayout {
 		
 		FocusableImageButton rightlogo = new FocusableImageButton(ImageResources.INSTANCE.hhslogo(),"Link to Health and Human Services home page");
 		rightlogo.setStylePrimaryName("footerLogo-Right");
+		rightlogo.addClickHandler(new ClickHandler() {
+				@Override
+				public void onClick(final ClickEvent event) {
+					if(!MatContext.get().getCurrentModule().equalsIgnoreCase(ConstantMessages.LOGIN_MODULE)){
+						MatContext.get().restartTimeoutWarning();
+					}
+					MatContext.get().openURL("http://www.hhs.gov/");
+				}
+			}
+		);
 		footerLogoPanel.add(rightlogo);
 		footerMainPanel.add(footerLogoPanel);
 		

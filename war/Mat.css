@@ -201,7 +201,7 @@ body#main select, body#main input, body#main textarea {
     
 }
 .footer-nav {
-	background: url('/images/hpgradient.jpg') repeat scroll 0 0 #FFFFFF;
+	background: url('images/hpgradient.jpg') repeat scroll 0 0 #FFFFFF;
      margin: 0;
      line-height: 20px;
      list-style: none outside none;

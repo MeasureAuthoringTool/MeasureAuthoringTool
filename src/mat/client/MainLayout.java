@@ -138,26 +138,19 @@ public abstract class MainLayout {
 		final Anchor footerRightAnchor = new Anchor();
 		footerRightAnchor.setStylePrimaryName("footerLogo-Right");
 		final FocusableImageButton rightlogo = new FocusableImageButton(ImageResources.INSTANCE.hhslogo(),"Link to Health and Human Services home page");
-		//rightlogo.setStylePrimaryName("footerLogo-Right");
+		
 		footerRightAnchor.addMouseOverHandler(new MouseOverHandler(){
-
 			@Override
 			public void onMouseOver(MouseOverEvent event) {
-				// TODO Auto-generated method stub
 				DOM.setStyleAttribute(rightlogo.getElement(), "cursor", "pointer");
 			}
-		
-		}
-		);
+		 });
 		footerRightAnchor.addMouseOutHandler(new MouseOutHandler() {
-		    
 		    @Override
 		    public void onMouseOut(MouseOutEvent event) {
 		        DOM.setStyleAttribute(rightlogo.getElement(), "cursor", "default");                        
 		    }
 		});
-		
-		
 		footerRightAnchor.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(final ClickEvent event) {
@@ -169,7 +162,6 @@ public abstract class MainLayout {
 			}
 		);
 		footerRightAnchor.getElement().appendChild(rightlogo.getElement());
-		//footerLogoPanel.add(rightlogo);
 		footerLogoPanel.add(footerRightAnchor);
 		footerMainPanel.add(footerLogoPanel);
 		

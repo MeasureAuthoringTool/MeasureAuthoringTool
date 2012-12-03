@@ -25,7 +25,7 @@ public class ExternalLinkDisclaimerView implements ManageCodeListDetailPresenter
 		mainPanel.addStyleName("leftAligned");
 		VerticalPanel mainContentVP = new VerticalPanel();
 		HTML header = new HTML("<b>External Link Disclaimer</b>");
-		HTML disclaimer = new HTML("<p>You are leaving the ### Measure Authoring Tool and entering another Web site. ### cannot attest to the accuracy of information provided by linked sites. You will be subject to the destination site's Privacy Policy when you leave the  ### Measure Authoring Tool.</p>");
+		HTML disclaimer = new HTML("<p>You are leaving the eMeasure Measure Authoring Tool and entering another Web site. ### cannot attest to the accuracy of information provided by linked sites. You will be subject to the destination site's Privacy Policy when you leave the  ### Measure Authoring Tool.</p>");
 		mainContentVP.add(new SpacerWidget());
 		mainContentVP.add(header);
 		mainContentVP.add(new SpacerWidget());

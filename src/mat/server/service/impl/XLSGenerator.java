@@ -45,7 +45,7 @@ public abstract class XLSGenerator {
 	protected final int code = 7;
 	protected final int codedescription = 8;
 	
-	protected final String AUTHOR = "###";
+	protected final String AUTHOR = "eMeasureTool";
 	protected final String TITLE = "Value Set Export";
 	protected final String SUBJECT = "Value Set Export";
 	protected final String KEYWORDS = "Value Set, OID, Export, Measure, Code, Descriptor";
@@ -274,7 +274,7 @@ public abstract class XLSGenerator {
 	}
 	
 	public void createMetaData(HSSFWorkbook wkbk){
-		//Author: ###, Title: Value Set Export, Subject: Value Set Export, Keywords: Value Set, OID, Export, Measure, Code, Descriptor
+		//Author: eMeasureTool, Title: Value Set Export, Subject: Value Set Export, Keywords: Value Set, OID, Export, Measure, Code, Descriptor
 		wkbk.createInformationProperties();
 		SummaryInformation si = wkbk.getSummaryInformation();
 		si.setAuthor(AUTHOR);

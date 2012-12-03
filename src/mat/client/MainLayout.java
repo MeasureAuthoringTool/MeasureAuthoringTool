@@ -14,6 +14,10 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.ui.Anchor;
@@ -25,6 +29,7 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public abstract class MainLayout {
@@ -116,7 +121,7 @@ public abstract class MainLayout {
 		FlowPanel footerMainPanel = new FlowPanel();
 		footerMainPanel.setStylePrimaryName("footer");		
 		
-		final HorizontalFlowPanel footerLogoPanel = new HorizontalFlowPanel();
+		final HorizontalPanel footerLogoPanel = new HorizontalPanel();
 		
 		footerLogoPanel.setStylePrimaryName("footerLogo");
 		
@@ -125,14 +130,35 @@ public abstract class MainLayout {
 		footerLogoPanel.add(logo);
 		footerMainPanel.add(footerLogoPanel);
 		
-		HTML desc = new HTML("A federal government website managed by the Centers for Medicare & Medicaid Services <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" +
+		HTML desc = new HTML("A federal government website managed by the Centers for Medicare & Medicaid Services <br>" +
 				"7500 Security Boulevard, Baltimore, MD 21244");
 		desc.setStylePrimaryName("footer-address-text");
 		footerLogoPanel.add(desc);
 		
-		FocusableImageButton rightlogo = new FocusableImageButton(ImageResources.INSTANCE.hhslogo(),"Link to Health and Human Services home page");
-		rightlogo.setStylePrimaryName("footerLogo-Right");
-		rightlogo.addClickHandler(new ClickHandler() {
+		final Anchor footerRightAnchor = new Anchor();
+		footerRightAnchor.setStylePrimaryName("footerLogo-Right");
+		final FocusableImageButton rightlogo = new FocusableImageButton(ImageResources.INSTANCE.hhslogo(),"Link to Health and Human Services home page");
+		//rightlogo.setStylePrimaryName("footerLogo-Right");
+		footerRightAnchor.addMouseOverHandler(new MouseOverHandler(){
+
+			@Override
+			public void onMouseOver(MouseOverEvent event) {
+				// TODO Auto-generated method stub
+				DOM.setStyleAttribute(rightlogo.getElement(), "cursor", "pointer");
+			}
+		
+		}
+		);
+		footerRightAnchor.addMouseOutHandler(new MouseOutHandler() {
+		    
+		    @Override
+		    public void onMouseOut(MouseOutEvent event) {
+		        DOM.setStyleAttribute(rightlogo.getElement(), "cursor", "default");                        
+		    }
+		});
+		
+		
+		footerRightAnchor.addClickHandler(new ClickHandler() {
 				@Override
 				public void onClick(final ClickEvent event) {
 					if(!MatContext.get().getCurrentModule().equalsIgnoreCase(ConstantMessages.LOGIN_MODULE)){
@@ -142,16 +168,20 @@ public abstract class MainLayout {
 				}
 			}
 		);
-		footerLogoPanel.add(rightlogo);
+		footerRightAnchor.getElement().appendChild(rightlogo.getElement());
+		//footerLogoPanel.add(rightlogo);
+		footerLogoPanel.add(footerRightAnchor);
 		footerMainPanel.add(footerLogoPanel);
 		
 		
-		final VerticalFlowPanel footerLinksPanel = new VerticalFlowPanel();
+		final VerticalPanel footerLinksPanel = new VerticalPanel();
+		footerLinksPanel.setStylePrimaryName("footer-nav");
+		
 		HTML helpFullLinks = new HTML("&nbsp;&nbsp;Helpful Links");
 		helpFullLinks.setStylePrimaryName("footer-nav_h2");
 		footerLinksPanel.add(helpFullLinks);
 		
-		footerLinksPanel.setStylePrimaryName("footer-nav");
+		
 		final Anchor policyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, "footer_Links", ConstantMessages.LOGIN_MODULE, 
 									ClientConstants.HTML_ACCESSIBILITY_POLICY,null);
 		footerLinksPanel.add(policyAnchor);

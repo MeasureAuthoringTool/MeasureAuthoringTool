@@ -46,7 +46,7 @@ public class LogToChart {
     "</script>\n"+
     "</head>\n"+
     "<body>\n"+
-    "### MAT SERVER USAGE\n"+
+    "eMeasure MAT SERVER USAGE\n"+
     "<div id='chart_div' style='width: 700px; height: 240px;'></div>\n"+
     "</body>\n"+ 
     "</html>\n";

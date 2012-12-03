@@ -222,7 +222,7 @@ body#main select, body#main input, body#main textarea {
     margin: 0;
     line-height: 20px;
     list-style: none outside none;
-    padding:20px 87.5% 30px 5.5px;
+    padding:20px 87% 30px 5.5px;
     overflow:auto;
 }
 

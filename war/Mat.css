@@ -182,36 +182,55 @@ body#main select, body#main input, body#main textarea {
 }
 
 .footer {
-	background-color: #D0D6DB;
+	background-color: #A8B0B3;
 	clear: both;
     margin: auto;
-    width: 990px;
+    width: 100%;
     
 }
 .footerLogo{
 	background: none repeat scroll left center #A8B0B3;
-    padding: 20px;
-    padding-top: 30px;	
+    /*  padding: 10px; 
+    padding-top: 40px;	 */
+    padding:40px 40px 10px;
 	
 }
 .footerLogo-Right {
     float: right;
     position:relative;
-    top:-50px;
+    top:-12px ;
+    /*left:50px;*/
+    left:110px;
+    padding-right: 15%;
+    padding-left: 25px; 
+    /* padding-right: 81px; */ 
+    
+}
+.footer-address-text {
+	font: 0.8em/1.5em Arial;
+    color: #000000;
+    font-size:small;
+    margin-left: 20px;
+    margin-top: -2px;
+    /* padding-right: 50px;*/
+    padding-left: 5px;
+    /* padding-top: 5px; */
     
 }
 .footer-nav {
 	background: url('images/hpgradient.jpg') repeat scroll 0 0 #FFFFFF;
-     margin: 0;
-     line-height: 20px;
-     list-style: none outside none;
-     padding: 30px 20px;
+    margin: 0;
+    line-height: 20px;
+    list-style: none outside none;
+    padding:20px 87% 30px 5.5px;
+    overflow:auto;
 }
 
 .footer_Links {
-    font: 0.7em sans-serif;
+    font:  0.75em sans-serif;
+    font-size:small;
     color: #105191;
-    padding-left: 10px;
+    padding-left: 5px;
     padding-top: 5px;
     padding-bottom: 5px; 
     text-decoration: none;
@@ -224,21 +243,14 @@ body#main select, body#main input, body#main textarea {
 .footer_Links:visited{
     color: #002280;
 }
-.footer-address-text {
-	font: 0.8em/1.5em sans-serif;
-    color: #000000;
-    margin-left: 20px;
-    margin-top: 5px;
-    padding-left: 12px;
-    padding-top: 5px;
-    
-}
+
 .footer-nav_h2 {
 	background: none repeat scroll 0 center transparent;
     color: #000044;
-    font: bold 0.8em sans-serif;
+    font: 1em Arial,Helvetica,sans-serif;
+    font-size:small;
     margin: 0;
-   /*  padding-top: 5px;*/
+    padding-top: 1px; 
     padding-bottom: 5px; 
 }
 .footerLink {

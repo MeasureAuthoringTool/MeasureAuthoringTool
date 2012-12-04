@@ -18,7 +18,7 @@ public class FooterLinksUtility {
 	public static Anchor createFooterLink(final String text,final String styleName,final String module,final String htmlPage,final String URL){
 		final Anchor anchor = new Anchor(text);
 		anchor.setTitle(text);
-		anchor.setStyleName(styleName);
+		//anchor.setStyleName(styleName);
 		anchor.getElement().setAttribute("alt", text);
 		
 		anchor.addClickHandler(

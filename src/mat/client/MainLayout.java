@@ -169,25 +169,24 @@ public abstract class MainLayout {
 		final VerticalPanel footerLinksPanel = new VerticalPanel();
 		footerLinksPanel.setStylePrimaryName("footer-nav");
 		
-		HTML helpFullLinks = new HTML("&nbsp;&nbsp;Helpful Links");
-		helpFullLinks.setStylePrimaryName("footer-nav_h2");
+		HTML helpFullLinks = new HTML("&nbsp;&nbsp;<h2>Helpful Links</h2>");
 		footerLinksPanel.add(helpFullLinks);
 		
 		
-		final Anchor policyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, "footer_Links", ConstantMessages.LOGIN_MODULE, 
+		final Anchor policyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, null, ConstantMessages.LOGIN_MODULE, 
 									ClientConstants.HTML_ACCESSIBILITY_POLICY,null);
 		footerLinksPanel.add(policyAnchor);
 		
 		
-		final Anchor termsOfUseAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_TermsOfUse, "footer_Links", ConstantMessages.LOGIN_MODULE, 
+		final Anchor termsOfUseAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_TermsOfUse, null, ConstantMessages.LOGIN_MODULE, 
 			       ClientConstants.HTML_TermsOfUse,null);
 		footerLinksPanel.add(termsOfUseAnchor);
 		
-		final Anchor privacyPolicyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_PrivacyPolicy, "footer_Links", ConstantMessages.LOGIN_MODULE, 
+		final Anchor privacyPolicyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_PrivacyPolicy, null, ConstantMessages.LOGIN_MODULE, 
 			       ClientConstants.HTML_PrivacyPolicy,null);
 		footerLinksPanel.add(privacyPolicyAnchor);
 		
-		final Anchor linkAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, "footer_Links", ConstantMessages.LOGIN_MODULE, 
+		final Anchor linkAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
 			       null,"###");
 		footerLinksPanel.add(linkAnchor);
 		

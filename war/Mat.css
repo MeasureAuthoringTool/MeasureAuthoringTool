@@ -222,37 +222,37 @@ body#main select, body#main input, body#main textarea {
     margin: 0;
     line-height: 20px;
     list-style: none outside none;
-    padding:20px 87% 30px 5.5px;
+    /* padding:10px 87% 30px 5.5px; */
+    width:100%;
     overflow:auto;
 }
-
-.footer_Links {
-    font:  0.75em sans-serif;
-    font-size:small;
+.footer-nav h2 {
+	background: none repeat scroll 0 center transparent;
+    color: #000044;
+    font: 1em Arial,Helvetica,sans-serif;
+    /* font-size:small; */
+    margin: 0;
+    padding-top: 1px; 
+    padding-left:10px;
+    padding-bottom: 5px; 
+}
+.footer-nav a {
+    font:  0.8em sans-serif;
     color: #105191;
-    padding-left: 5px;
+    padding-left: 10px;
     padding-top: 5px;
     padding-bottom: 5px; 
     text-decoration: none;
     
 }
-.footer_Links:hover,.footer_Links:focus {
+.footer-nav a:hover,.footer-nav a:focus {
    color: #C00000;
    text-decoration: underline;
 }
-.footer_Links:visited{
+.footer-nav a:visited{
     color: #002280;
 }
 
-.footer-nav_h2 {
-	background: none repeat scroll 0 center transparent;
-    color: #000044;
-    font: 1em Arial,Helvetica,sans-serif;
-    font-size:small;
-    margin: 0;
-    padding-top: 1px; 
-    padding-bottom: 5px; 
-}
 .footerLink {
 	-moz-box-sizing:border-box;
 	background-color:#FFFFFF;

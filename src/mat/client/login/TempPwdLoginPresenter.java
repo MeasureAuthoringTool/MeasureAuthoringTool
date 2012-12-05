@@ -40,47 +40,43 @@ public class TempPwdLoginPresenter {
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			
 			public void onClick(ClickEvent event) {
-				submitTempChangePassword();
+					submitTempChangePassword();
 			}
 		});
 	}
 	
-	
-	private void submitTempChangePassword(){
+	private void submitTempChangePassword() {
 		display.getErrorMessageDisplay().clear();
-		PasswordVerifier verifier = new PasswordVerifier(
-				MatContext.get().getLoggedInUserEmail(), 
-				display.getPassword().getValue(), 
-				display.getConfirmPassword().getValue());
+		PasswordVerifier verifier = new PasswordVerifier(MatContext.get().getLoggedInUserEmail(),display.getPassword().getValue(), 
+										display.getConfirmPassword().getValue());
 
 		if(!verifier.isValid()) {
 			display.getErrorMessageDisplay().setMessages(verifier.getMessages());
 		}else {
+			
 			MatContext.get().getLoginService().changeTempPassword(MatContext.get().getLoggedInUserEmail(),
-					display.getPassword().getValue(), 
-					new AsyncCallback<LoginModel>() {
-						
-						public void onSuccess(LoginModel result) {
-							 loginModel = result;
-							  if(loginModel.isInitialPassword()){
-								  MatContext.get().getEventBus().fireEvent(new FirstLoginPageEvent());
-							  }else if(loginModel.isLoginFailedEvent()){
-								  display.getErrorMessageDisplay().setMessage(loginModel.getErrorMessage());
-							  }else{
-								  MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
-							  }
-						}
-
-						@Override
-						public void onFailure(Throwable caught) {
-							caught.printStackTrace();
-							display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
-						}
-					});
-		}
-		
+																				display.getPassword().getValue(), 
+																				new AsyncCallback<LoginModel>() {
+			public void onSuccess(LoginModel result) {
+				loginModel = result;
+				if(loginModel.isInitialPassword()){
+					  MatContext.get().getEventBus().fireEvent(new FirstLoginPageEvent());
+				 }else if(loginModel.isLoginFailedEvent()){
+					  display.getErrorMessageDisplay().setMessage(loginModel.getErrorMessage());
+				 }else{
+					  MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
+				 }
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			    display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+				}
+			}
+		);
 	}
+}
 	public Widget getWidget() {
 		return display.asWidget();
 	}

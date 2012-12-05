@@ -1,5 +1,6 @@
 package mat.client.login;
 
+
 import java.util.List;
 
 import mat.client.event.ReturnToLoginEvent;
@@ -59,40 +60,55 @@ public class FirstLoginPresenter {
 
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				PasswordVerifier verifier = new PasswordVerifier(
-						MatContext.get().getLoggedInUserEmail(), 
-						display.getPassword().getValue(), 
-						display.getConfirmPassword().getValue());
+				
+					PasswordVerifier verifier = null;
+					
+						verifier = new PasswordVerifier(
+								MatContext.get().getLoggedInUserEmail(), 
+								display.getPassword().getValue(), 
+								display.getConfirmPassword().getValue());
+					
 
-				if(!verifier.isValid()) {
-					display.getPasswordErrorMessageDisplay().setMessages(verifier.getMessages());
-				}else{
-					display.getPasswordErrorMessageDisplay().clear();
-				}
+					if(!verifier.isValid()) {
+						display.getPasswordErrorMessageDisplay().setMessages(verifier.getMessages());
+					}else{
+						display.getPasswordErrorMessageDisplay().clear();
+					}
 
-				SecurityQuestionVerifier sverifier = 
-					new SecurityQuestionVerifier(display.getQuestion1Text().getValue(),
-							display.getQuestion1Answer().getValue(),
-							display.getQuestion2Text().getValue(),
-							display.getQuestion2Answer().getValue(),
-							display.getQuestion3Text().getValue(),
-							display.getQuestion3Answer().getValue());
-				if(!sverifier.isValid()) {
-					display.getSecurityErrorMessageDisplay().setMessages(sverifier.getMessages());
-				}else{
-					display.getSecurityErrorMessageDisplay().clear();
-				}
+					SecurityQuestionVerifier sverifier = 
+													new SecurityQuestionVerifier(display.getQuestion1Text().getValue(),
+																display.getQuestion1Answer().getValue(),
+																display.getQuestion2Text().getValue(),
+																display.getQuestion2Answer().getValue(),
+																display.getQuestion3Text().getValue(),
+																display.getQuestion3Answer().getValue());
+					if(!sverifier.isValid()) {
+						display.getSecurityErrorMessageDisplay().setMessages(sverifier.getMessages());
+					}else{
+						display.getSecurityErrorMessageDisplay().clear();
+					}
 
-				if(verifier.isValid() && sverifier.isValid()) {
-					MatContext.get().changePasswordSecurityQuestions(getValues(), new AsyncCallback<Void>() {
-						public void onFailure(Throwable caught) {
-							display.getSecurityErrorMessageDisplay().setMessage(caught.getMessage());
-						}
+					if(verifier.isValid() && sverifier.isValid()) {
+						
+						MatContext.get().changePasswordSecurityQuestions(getValues(), new AsyncCallback<Boolean>() {
 
-						public void onSuccess(Void result) {
-							MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
-						}
-					});
+							@Override
+							public void onFailure(Throwable caught) {
+								display.getSecurityErrorMessageDisplay().setMessage(caught.getMessage());
+								
+							}
+							@Override
+							public void onSuccess(Boolean result) {
+								if(result){
+									MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
+								}
+								else{
+									display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+								}
+
+							}
+						});
+					
 				}
 
 			}

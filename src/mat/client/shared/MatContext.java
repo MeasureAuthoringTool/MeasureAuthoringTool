@@ -266,8 +266,8 @@ public class MatContext implements IsSerializable {
 	public String getLoggedInUserEmail() {
 		return userEmail;
 	}
-	public void changePasswordSecurityQuestions(LoginModel model, AsyncCallback<Void> callback) {
-		getLoginService().changePasswordSecurityAnswers(model, callback);
+	public void changePasswordSecurityQuestions(LoginModel model, AsyncCallback<Boolean> asyncCallback) {
+		getLoginService().changePasswordSecurityAnswers(model, asyncCallback);
 	}
 	
 	public void isValidUser(String username, String Password,AsyncCallback<LoginModel> callback){

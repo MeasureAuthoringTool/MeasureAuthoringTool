@@ -10,6 +10,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import edu.vt.middleware.dictionary.AbstractWordList;
 import edu.vt.middleware.dictionary.WordListDictionary;
 import edu.vt.middleware.dictionary.WordLists;
@@ -25,9 +28,10 @@ import edu.vt.middleware.dictionary.sort.ArraysSort;
  *
  */
 public class CheckDictionaryWordInPassword {
-	
+	private static final Log logger = LogFactory.getLog(CheckDictionaryWordInPassword.class);
 	public static boolean containsDictionaryWords(String passWord) throws FileNotFoundException, IOException{
-		
+		File file = new File("abc.xml");
+		logger.info("file path ==="+file.getPath());
 		AbstractWordList awl = WordLists.createFromReader(new FileReader[] {new FileReader("en_US.dic")},false,new ArraysSort());
 	// 	create a dictionary for searching
 		WordListDictionary dict = new WordListDictionary(awl);

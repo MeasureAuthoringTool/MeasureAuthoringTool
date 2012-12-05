@@ -60,17 +60,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 				 loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getAccountRevokedMessage());
 				 loginModel.setUserId(userId);
 				 loginModel.setEmail(userDetails.getEmailAddress());
-			}/*else if ((userDetails.getTerminationDate()!=null &&
-					userDetails.getTerminationDate().after(userDetails.getActivationDate())))
-			{
-				logger.info("User Not Active from past 180 days, Terminated USER userDetails.getTerminationDate() ::::" + userDetails.getTerminationDate());
-				logger.info("User Not Active from past 180 days, Terminated USER   :::: " + userDetails.getTerminationDate().after(userDetails.getActivationDate()));
-				 loginModel.setLoginFailedEvent(true);
-				 loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getAccountTermination());
-				 loginModel.setUserId(userId);
-				 loginModel.setEmail(userDetails.getEmailAddress());
-				
-			}*/else if(hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())
+			}else if(hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())
 					&& userDetails.getUserPassword().getPasswordlockCounter() < 3 && userDetails.getUserPassword().getForgotPwdlockCounter() < 3){
 				
 				Date lastSignIn = userDetails.getSignInDate();

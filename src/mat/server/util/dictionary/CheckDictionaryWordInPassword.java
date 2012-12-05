@@ -3,7 +3,6 @@
  */
 package mat.server.util.dictionary;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -30,9 +29,7 @@ import edu.vt.middleware.dictionary.sort.ArraysSort;
 public class CheckDictionaryWordInPassword {
 	private static final Log logger = LogFactory.getLog(CheckDictionaryWordInPassword.class);
 	public static boolean containsDictionaryWords(String passWord) throws FileNotFoundException, IOException{
-		File file = new File("abc.xml");
-		logger.info("file path ==="+file.getCanonicalPath());
-		logger.info("file path ==="+file.getAbsolutePath());
+		
 		AbstractWordList awl = WordLists.createFromReader(new FileReader[] {new FileReader("../applications/MeasureAuthoringTool/en_US.dic")},false,new ArraysSort());
 	// 	create a dictionary for searching
 		WordListDictionary dict = new WordListDictionary(awl);

@@ -32,7 +32,8 @@ public class CheckDictionaryWordInPassword {
 	public static boolean containsDictionaryWords(String passWord) throws FileNotFoundException, IOException{
 		File file = new File("abc.xml");
 		logger.info("file path ==="+file.getCanonicalPath());
-		AbstractWordList awl = WordLists.createFromReader(new FileReader[] {new FileReader("en_US.dic")},false,new ArraysSort());
+		logger.info("file path ==="+file.getAbsolutePath());
+		AbstractWordList awl = WordLists.createFromReader(new FileReader[] {new FileReader("../applications/MeasureAuthoringTool/en_US.dic")},false,new ArraysSort());
 	// 	create a dictionary for searching
 		WordListDictionary dict = new WordListDictionary(awl);
 		DictionarySubstringRule dictRule = new DictionarySubstringRule(dict);

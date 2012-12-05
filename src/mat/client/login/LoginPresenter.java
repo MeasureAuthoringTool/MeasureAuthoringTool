@@ -57,7 +57,8 @@ public class LoginPresenter {
 		@Override
 		public void onFailure(Throwable cause) {
 			cause.printStackTrace();
-			display.getErrorMessageDisplay().setMessage(cause.getMessage());
+//			display.getErrorMessageDisplay().setMessage(cause.getMessage());
+			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		}
 
 		@Override

@@ -1,10 +1,15 @@
 package mat.server;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
+import mat.client.shared.MatContext;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
+import mat.server.util.dictionary.CheckDictionaryWordInPassword;
 import mat.shared.ForgottenPasswordResult;
 
 import org.apache.commons.logging.Log;
@@ -48,16 +53,55 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	}
 
 	@Override
-	public void changePasswordSecurityAnswers(LoginModel model) {
-		getLoginCredentialService().changePasswordSecurityAnswers(model);
+	public Boolean changePasswordSecurityAnswers(LoginModel model) {
+		boolean result =false;
+		LoginModel loginModel = model;
+		try {
+			result = CheckDictionaryWordInPassword.containsDictionaryWords(loginModel.getPassword());
+		} catch (FileNotFoundException e) {
+			loginModel.setLoginFailedEvent(true);
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			loginModel.setLoginFailedEvent(true);
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			e.printStackTrace();
+		}
+		if(result){
+			getLoginCredentialService().changePasswordSecurityAnswers(model);
+			result=true;
+		}else{
+			result=false;
+		}
+		return result;
+		
 	}
 
 	@Override
 	public LoginModel changeTempPassword(String email, String changedpassword) {
-		return getLoginCredentialService().changeTempPassword(email, changedpassword);
+		boolean result = false;
+		LoginModel loginModel = new LoginModel();
+		try {
+			result = CheckDictionaryWordInPassword.containsDictionaryWords(changedpassword);
+		} catch (FileNotFoundException e) {
+			loginModel.setLoginFailedEvent(true);
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			e.printStackTrace();
+		} catch (IOException e) {
+			loginModel.setLoginFailedEvent(true);
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			e.printStackTrace();
+		}
+		if(result){
+			loginModel= getLoginCredentialService().changeTempPassword(email, changedpassword);
+		}else{
+			
+			loginModel.setLoginFailedEvent(true);
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+		}
+		return loginModel;
 	}
 
-	
 }
 
 

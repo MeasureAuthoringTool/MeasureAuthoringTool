@@ -18,18 +18,18 @@ public class ClientConstants {
 	
 	
 	public final static String HTML_ACCESSIBILITY_POLICY ="/accessibilityPolicy.html";
-	public final static String HTML_TermsOfUse ="/termsOfUse.html";
+	public final static String HTML_TERMSOFUSE ="/termsOfUse.html";
 	public final static String HTML_LOGIN ="/Login.html";
 	public final static String HTML_MAT ="/Mat.html";
-	public static final String HTML_PrivacyPolicy = "/privacyPolicy.html";
+	public static final String HTML_PRIVACYPOLICY = "/privacyPolicy.html";
 	public final static String EXT_LINK_HHS_Site ="http://www.hhs.gov/";
 	
 	public final static String TEXT_ACCESSIBILITY_POLICY ="Accessibility Policy";
-	public final static String TEXT_TermsOfUse ="Terms Of Use";
+	public final static String TEXT_TERMSOFUSE ="Terms Of Use";
 	public final static String TEXT_USER_GUIDE ="User Guide";
 	public final static String TEXT_THE_TITLE ="The Title";
-	public static final String TEXT_PrivacyPolicy = "Privacy Policy";
-	
+	public static final String TEXT_PRIVACYPOLICY = "Privacy Policy";
+	public static final String TEXT_HHS_LINK = "Link to Health and Human Services home page";
 	
 	
 	public final static String TITLE_VALUE_SET_LIB ="Value Set Library";
@@ -37,6 +37,7 @@ public class ClientConstants {
 	public final static String TITLE_MEASURE_COMPOSER ="Measure Composer";
 	public final static String TITLE_ADMIN ="Admin";
 	public final static String TITLE_MY_ACCOUNT="My Account";
+	public final static String TITLE_CMS_GOV_LOGO="CMS.gov";
 
 	
 	public final static String MAINLAYOUT_LOADING_WIDGET_MSG ="Loading Please Wait...";

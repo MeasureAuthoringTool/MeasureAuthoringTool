@@ -377,6 +377,10 @@ public class MessageDelegate {
 		return MUST_NOT_CONTAIN_RUNS;
 	}
 
+	private final String MUST_NOT_CONTAIN_DICTIONAY_WORD = "Passwords must not contain Dictionay Words.";
+	public String getMustNotContainDictionaryWordMessage(){
+		return MUST_NOT_CONTAIN_DICTIONAY_WORD;
+	}
 	private final String MUST_NOT_CONTAIN_EMAIL = "Passwords must not contain your E-mail Address.";
 	public String getMustNotContainEmailMessage(){
 		return MUST_NOT_CONTAIN_EMAIL;

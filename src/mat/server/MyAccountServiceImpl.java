@@ -1,5 +1,7 @@
 package mat.server;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import mat.client.myAccount.MyAccountModel;
@@ -8,6 +10,7 @@ import mat.client.myAccount.service.MyAccountService;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.UserService;
+import mat.server.util.dictionary.CheckDictionaryWordInPassword;
 import mat.shared.MyAccountModelValidator;
 
 import org.apache.commons.logging.Log;
@@ -119,14 +122,29 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		userService.saveExisting(user);
 	}
 	
-	public void changePassword(String password) {
+	public boolean changePassword(String password) {
 		logger.info("Changing password to " + password);
+		boolean result = false;
 		
-		UserService userService = getUserService();
-		User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
+		try {
+			result =  CheckDictionaryWordInPassword.containsDictionaryWords(password);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		if(result){
+		
+			UserService userService = getUserService();
+			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
 
-		userService.setUserPassword(user, password, false);
-		userService.saveExisting(user);
+			userService.setUserPassword(user, password, false);
+			userService.saveExisting(user);
+		}
+		return result;
 	}
 	/**
 	 * Escape an html string. Escaping data received from the client helps to

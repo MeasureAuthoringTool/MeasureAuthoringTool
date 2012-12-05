@@ -1,5 +1,7 @@
 package mat.client.myAccount;
 
+import java.io.IOException;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -43,13 +45,18 @@ public class ChangePasswordPresenter implements MatPresenter {
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			
 			public void onClick(ClickEvent event) {
-				submitChangePassword();
+				try {
+					submitChangePassword();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 		});
 	}
 	
 	@Override
-	public Widget getWidget() {
+	public Widget getWidget() {;
 		return display.asWidget();
 	}
 	
@@ -83,7 +90,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 		display.getErrorMessageDisplay().clear();
 		display.getSuccessMessageDisplay().clear();
 	}
-	private void submitChangePassword() {
+	private void submitChangePassword() throws IOException {
 
 		PasswordVerifier verifier = new PasswordVerifier(
 				myAccountModel.getEmailAddress(), 
@@ -96,16 +103,24 @@ public class ChangePasswordPresenter implements MatPresenter {
 		else {
 			display.getErrorMessageDisplay().clear();
 			MatContext.get().getMyAccountService().changePassword(display.getPassword().getValue(), 
-					new AsyncCallback<Void>() {
-						
-						public void onSuccess(Void result) {
-							clearValues();
-							display.getSuccessMessageDisplay().setMessage( MatContext.get().getMessageDelegate().getPasswordSavedMessage());							
-						}
+					new AsyncCallback<Boolean>() {
 						
 						public void onFailure(Throwable caught) {
 							display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+						}
+
+						@Override
+						public void onSuccess(Boolean result) {
+							if(result){
+								clearValues();
+								display.getSuccessMessageDisplay().setMessage( MatContext.get().getMessageDelegate().getPasswordSavedMessage());
+							}else{
+								display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+								
+							}
+								
+							
 						}
 					});
 		}

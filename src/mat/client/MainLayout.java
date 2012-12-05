@@ -2,11 +2,11 @@ package mat.client;
 
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.FocusableWidget;
-import mat.client.shared.HorizontalFlowPanel;
+
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.VerticalFlowPanel;
+
 import mat.client.util.ClientConstants;
 import mat.client.util.FooterLinksUtility;
 import mat.shared.ConstantMessages;
@@ -14,6 +14,9 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.dom.client.MouseOutEvent;
 import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.dom.client.MouseOverEvent;
@@ -113,11 +116,11 @@ public abstract class MainLayout {
 	
 	/**
 	 * Builds the Footer Panel for the Login and Mat View. Currently, it displays the 
-	 * 'Accessibility Policy' link.
+	 * 'Accessibility Policy' , 'Terms Of Use' , 'Privacy Policy' 'User Guide' links with CMS LOGO.
 	 * @return Panel
 	 */
 	private Panel buildFooterPanel() {
-		//final HorizontalPanel footerMainPanel = new HorizontalPanel();
+	
 		FlowPanel footerMainPanel = new FlowPanel();
 		footerMainPanel.setStylePrimaryName("footer");		
 		
@@ -125,8 +128,9 @@ public abstract class MainLayout {
 		
 		footerLogoPanel.setStylePrimaryName("footerLogo");
 		
-		FocusableImageButton logo = new FocusableImageButton(ImageResources.INSTANCE.cms_gov_footer(),"CMS.gov");
-		//logo.addClickHandler(handler);
+		final Image logo = new Image(ImageResources.INSTANCE.cms_gov_footer());
+		logo.setTitle(ClientConstants.TITLE_CMS_GOV_LOGO);
+		
 		footerLogoPanel.add(logo);
 		footerMainPanel.add(footerLogoPanel);
 		
@@ -137,30 +141,44 @@ public abstract class MainLayout {
 		
 		final Anchor footerRightAnchor = new Anchor();
 		footerRightAnchor.setStylePrimaryName("footerLogo-Right");
-		final FocusableImageButton rightlogo = new FocusableImageButton(ImageResources.INSTANCE.hhslogo(),"Link to Health and Human Services home page");
+		footerRightAnchor.setTitle(ClientConstants.TEXT_HHS_LINK);
 		
-		footerRightAnchor.addMouseOverHandler(new MouseOverHandler(){
-			@Override
-			public void onMouseOver(MouseOverEvent event) {
-				DOM.setStyleAttribute(rightlogo.getElement(), "cursor", "pointer");
-			}
-		 });
-		footerRightAnchor.addMouseOutHandler(new MouseOutHandler() {
-		    @Override
-		    public void onMouseOut(MouseOutEvent event) {
-		        DOM.setStyleAttribute(rightlogo.getElement(), "cursor", "default");                        
-		    }
-		});
+		final Image rightlogo = new Image(ImageResources.INSTANCE.hhslogo());
+		
 		footerRightAnchor.addClickHandler(new ClickHandler() {
-				@Override
-				public void onClick(final ClickEvent event) {
+			@Override
+			public void onClick(final ClickEvent event) {
+				if(!MatContext.get().getCurrentModule().equalsIgnoreCase(ConstantMessages.LOGIN_MODULE)){
+					MatContext.get().restartTimeoutWarning();
+				}
+				MatContext.get().openURL(ClientConstants.EXT_LINK_HHS_Site);
+			}
+		  }
+		);
+		footerRightAnchor.addKeyPressHandler(new KeyPressHandler() {
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				if(event.getCharCode() == KeyCodes.KEY_ENTER){
 					if(!MatContext.get().getCurrentModule().equalsIgnoreCase(ConstantMessages.LOGIN_MODULE)){
 						MatContext.get().restartTimeoutWarning();
 					}
 					MatContext.get().openURL(ClientConstants.EXT_LINK_HHS_Site);
 				}
 			}
-		);
+		});
+		footerRightAnchor.addMouseOverHandler(new MouseOverHandler(){
+			@Override
+			public void onMouseOver(MouseOverEvent event) {
+				DOM.setStyleAttribute(rightlogo.getElement(), "cursor", "pointer");
+			}
+		 });
+		
+		footerRightAnchor.addMouseOutHandler(new MouseOutHandler() {
+		    @Override
+		    public void onMouseOut(MouseOutEvent event) {
+		        DOM.setStyleAttribute(rightlogo.getElement(), "cursor", "default");                        
+		    }
+		});
 		footerRightAnchor.getElement().appendChild(rightlogo.getElement());
 		footerLogoPanel.add(footerRightAnchor);
 		footerMainPanel.add(footerLogoPanel);
@@ -178,12 +196,12 @@ public abstract class MainLayout {
 		footerLinksPanel.add(policyAnchor);
 		
 		
-		final Anchor termsOfUseAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_TermsOfUse, null, ConstantMessages.LOGIN_MODULE, 
-			       ClientConstants.HTML_TermsOfUse,null);
+		final Anchor termsOfUseAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_TERMSOFUSE, null, ConstantMessages.LOGIN_MODULE, 
+			       ClientConstants.HTML_TERMSOFUSE,null);
 		footerLinksPanel.add(termsOfUseAnchor);
 		
-		final Anchor privacyPolicyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_PrivacyPolicy, null, ConstantMessages.LOGIN_MODULE, 
-			       ClientConstants.HTML_PrivacyPolicy,null);
+		final Anchor privacyPolicyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_PRIVACYPOLICY, null, ConstantMessages.LOGIN_MODULE, 
+			       ClientConstants.HTML_PRIVACYPOLICY,null);
 		footerLinksPanel.add(privacyPolicyAnchor);
 		
 		final Anchor linkAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
@@ -192,7 +210,7 @@ public abstract class MainLayout {
 		
 		footerMainPanel.add(footerLinksPanel);
 		return footerMainPanel;
-	}
+}
 	
 	private Panel buildTopPanel() {
 		final HorizontalPanel topBanner = new HorizontalPanel();

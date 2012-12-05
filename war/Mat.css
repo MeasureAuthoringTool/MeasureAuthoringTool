@@ -237,12 +237,23 @@ body#main select, body#main input, body#main textarea {
     text-decoration: none;
     
 }
-.footer-nav a:hover,.footer-nav a:focus {
+/* .footer-nav a:hover,.footer-nav a:focus {
    color: #C00000;
    text-decoration: underline;
-}
+} */
+
+.footer-nav a:hover {
+   color: #C00000;
+   text-decoration: underline;
+} 
 .footer-nav a:visited{
-    color: #002280;
+    font:  0.85em sans-serif;
+    /* color: #105191; */
+    color:#002280;
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px; 
+    text-decoration: none;
 }
 
 .footerLink {

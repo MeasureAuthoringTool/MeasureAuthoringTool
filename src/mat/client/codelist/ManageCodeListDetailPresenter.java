@@ -589,7 +589,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 		});
 		/*USTod*/
@@ -802,7 +802,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 		});
 	}

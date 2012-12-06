@@ -64,7 +64,7 @@ public class BaseMetaDataPresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert(caught.getMessage());
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override

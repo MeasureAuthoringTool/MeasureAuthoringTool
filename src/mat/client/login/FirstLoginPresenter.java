@@ -94,7 +94,7 @@ public class FirstLoginPresenter {
 
 							@Override
 							public void onFailure(Throwable caught) {
-								display.getSecurityErrorMessageDisplay().setMessage(caught.getMessage());
+								display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 								
 							}
 							@Override

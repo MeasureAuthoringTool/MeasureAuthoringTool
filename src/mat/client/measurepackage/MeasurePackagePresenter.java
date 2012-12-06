@@ -497,7 +497,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				view.getPackageErrorMessageDisplay().setMessage(caught.getMessage());
+				view.getPackageErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 		});
 		view.setSelectionHandler(new MeasurePackageSelectionHandler() {
@@ -527,7 +527,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				view.getPackageErrorMessageDisplay().setMessage(caught.getMessage());
+				view.getPackageErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 		});
 		
@@ -538,7 +538,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				view.getPackageErrorMessageDisplay().setMessage(caught.getMessage());
+				view.getPackageErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override

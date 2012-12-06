@@ -377,7 +377,7 @@ public class MessageDelegate {
 		return MUST_NOT_CONTAIN_RUNS;
 	}
 
-	private final String MUST_NOT_CONTAIN_DICTIONAY_WORD = "Passwords must not contain Single Dictionay Words.";
+	private final String MUST_NOT_CONTAIN_DICTIONAY_WORD = "Passwords must not contain Single Dictionay Word.";
 	public String getMustNotContainDictionaryWordMessage(){
 		return MUST_NOT_CONTAIN_DICTIONAY_WORD;
 	}

@@ -29,8 +29,10 @@ import edu.vt.middleware.dictionary.sort.ArraysSort;
 public class CheckDictionaryWordInPassword {
 	private static final Log logger = LogFactory.getLog(CheckDictionaryWordInPassword.class);
 	public static boolean containsDictionaryWords(String passWord) throws FileNotFoundException, IOException{
-		
+		//TODO - Load this file from classpathLoader.
 		AbstractWordList awl = WordLists.createFromReader(new FileReader[] {new FileReader("../applications/MeasureAuthoringTool/en_US.dic")},false,new ArraysSort());
+		//Use this line for dev box
+		//AbstractWordList awl = WordLists.createFromReader(new FileReader[] {new FileReader("en_US.dic")},false,new ArraysSort());
 	// 	create a dictionary for searching
 		WordListDictionary dict = new WordListDictionary(awl);
 		DictionarySubstringRule dictRule = new DictionarySubstringRule(dict);

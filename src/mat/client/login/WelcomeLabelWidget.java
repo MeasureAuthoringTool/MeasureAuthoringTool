@@ -5,7 +5,7 @@ import com.google.gwt.user.client.ui.Label;
 
 class WelcomeLabelWidget extends Composite {
 	public WelcomeLabelWidget() {
-		Label welcome = new Label("Welcome to the eMeasure Measure Authoring Tool");
+		Label welcome = new Label("Welcome to the Measure Authoring Tool");
 		welcome.addStyleName("loginHeader");
 		initWidget(welcome);
 	}

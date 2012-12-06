@@ -57,7 +57,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 					MatContext.get().getMyAccountService().saveMyAccount(currentModel, new AsyncCallback<Void>() {
 	
 						public void onFailure(Throwable caught) {
-							Window.alert(caught.getMessage());
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						}
 	
 						public void onSuccess(Void result) {

@@ -857,7 +857,7 @@ public class MessageDelegate {
 		return SUPPLEMENTAL_DATA_REQUIRED;
 	}
 
-	private final String GENERIC_ERROR_MESSAGE = "The eMeasure Measure Authoring Tool has experienced a problem. If the problem persists, please contact your system administrator.";
+	private final String GENERIC_ERROR_MESSAGE = "The Measure Authoring Tool was unable to process the request. Please try again. If the problem persists please contact the Help Desk.";
 	public String getGenericErrorMessage(){
 		return GENERIC_ERROR_MESSAGE;
 	}

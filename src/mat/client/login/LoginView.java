@@ -89,8 +89,8 @@ public class LoginView implements LoginPresenter.Display  {
 		forgotPassword = new Anchor("Forgot Password?");
 		forgotPassword.setTitle("Forgot Password");
 		forgotPassword.getElement().setAttribute("alt", "Forgot Password");
-		FocusableImageButton questionMark = new FocusableImageButton(ImageResources.INSTANCE.help(),"help");
-		hPanel.add(questionMark);
+		//FocusableImageButton questionMark = new FocusableImageButton(ImageResources.INSTANCE.help(),"help");
+		//hPanel.add(questionMark);
 		hPanel.add(forgotPassword);
 		loginPanel.add(hPanel);
 		

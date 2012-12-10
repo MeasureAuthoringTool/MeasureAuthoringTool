@@ -50,8 +50,8 @@ public abstract class MainLayout {
 		final Panel contentPanel = buildContentPanel();
 		final Panel loadingPanel = buildLoadingPanel();
 		final FlowPanel container = new FlowPanel();
-		container.add(new SpacerWidget());
-		container.add(new SpacerWidget());
+		//container.add(new SpacerWidget());
+		//container.add(new SpacerWidget());
 		container.add(topBanner);
 		container.add(loadingPanel);
 		container.add(contentPanel);

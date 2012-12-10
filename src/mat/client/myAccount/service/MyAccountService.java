@@ -17,7 +17,7 @@ public interface MyAccountService extends RemoteService {
 	SecurityQuestionsModel getSecurityQuestions();
 	void saveSecurityQuestions(SecurityQuestionsModel model);
 	
-	boolean changePassword(String password);
+	String changePassword(String password);
 	//US212
 	public void setUserSignInDate(String userid);
 	public void setUserSignOutDate(String userid);

@@ -16,7 +16,7 @@ public interface MyAccountServiceAsync {
 	void getSecurityQuestions(AsyncCallback<SecurityQuestionsModel> callback);
 	void saveSecurityQuestions(SecurityQuestionsModel model, AsyncCallback<Void> callback);
 	
-	void changePassword(String password, AsyncCallback<Boolean> callback);
+	void changePassword(String password, AsyncCallback<String> asyncCallback);
 	public void setUserSignInDate(String userid, AsyncCallback<Void> callback);
 	public void setUserSignOutDate(String userid, AsyncCallback<Void> asyncCallback);
 }

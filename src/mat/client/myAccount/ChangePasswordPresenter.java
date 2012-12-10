@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.event.SuccessfulLoginEvent;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -103,14 +104,13 @@ public class ChangePasswordPresenter implements MatPresenter {
 		else {
 			display.getErrorMessageDisplay().clear();
 			MatContext.get().getMyAccountService().changePassword(display.getPassword().getValue(), 
-					new AsyncCallback<Boolean>() {
-						
+					new AsyncCallback<String>() {
+
 						public void onFailure(Throwable caught) {
 							display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 						}
-
-						@Override
+						/*@Override
 						public void onSuccess(Boolean result) {
 							if(result){
 								clearValues();
@@ -119,8 +119,17 @@ public class ChangePasswordPresenter implements MatPresenter {
 								display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
 								
 							}
-								
-							
+						}*/
+						@Override
+						public void onSuccess(String result) {
+							if(result.equalsIgnoreCase("SUCCESS")){
+								clearValues();
+								display.getSuccessMessageDisplay().setMessage( MatContext.get().getMessageDelegate().getPasswordSavedMessage());
+							}else if(result.equalsIgnoreCase("EXCEPTION")){
+								display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+							}else{
+								display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+							}
 						}
 					});
 		}

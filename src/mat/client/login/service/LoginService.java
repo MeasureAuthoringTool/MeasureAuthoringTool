@@ -13,7 +13,7 @@ public interface LoginService extends RemoteService {
 	public LoginModel  isValidUser(String username, String password); 
 	public ForgottenPasswordResult forgotPassword(String email, 
 			String securityQuestion, String securityAnswer);
-	public Boolean changePasswordSecurityAnswers(LoginModel model);
+	String changePasswordSecurityAnswers(LoginModel model);
 	public void signOut();
 	public LoginModel changeTempPassword(String email, String password);
 	

@@ -122,11 +122,11 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		userService.saveExisting(user);
 	}
 	
-	public boolean changePassword(String password) {
+	public String changePassword(String password) {
 		logger.info("Changing password to " + password);
 		boolean result = false;
 		
-		try {
+		/*try {
 			result =  CheckDictionaryWordInPassword.containsDictionaryWords(password);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -143,8 +143,41 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 
 			userService.setUserPassword(user, password, false);
 			userService.saveExisting(user);
+		}*/
+		String resultMessage = callCheckDictionaryWordInPassword(password);
+	    if(resultMessage.equalsIgnoreCase("SUCCESS")){
+			UserService userService = getUserService();
+			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
+
+			userService.setUserPassword(user, password, false);
+			userService.saveExisting(user);
 		}
-		return result;
+		return resultMessage;
+		
+	}
+	
+	private String callCheckDictionaryWordInPassword(String changedpassword){
+		String returnMessage = "FAILURE";
+		try {
+			boolean result = CheckDictionaryWordInPassword.containsDictionaryWords(changedpassword);
+			if(result)
+				returnMessage = "SUCCESS";
+				
+		} catch (FileNotFoundException e) {
+			returnMessage="EXCEPTION";
+			//loginModel.setLoginFailedEvent(true);
+			//loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			e.printStackTrace();
+			
+		} catch (IOException e) {
+			returnMessage="EXCEPTION";
+			//loginModel.setLoginFailedEvent(true);
+			//loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			e.printStackTrace();
+		}
+		return returnMessage;
+		
+		
 	}
 	/**
 	 * Escape an html string. Escaping data received from the client helps to

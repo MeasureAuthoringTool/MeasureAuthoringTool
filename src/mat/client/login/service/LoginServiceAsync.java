@@ -15,7 +15,7 @@ public interface LoginServiceAsync extends AsynchronousService{
 			AsyncCallback<ForgottenPasswordResult> callback);
 	void signOut(AsyncCallback<Void> callback);
 	void changePasswordSecurityAnswers(LoginModel model,
-			AsyncCallback<Boolean> callback);
+			AsyncCallback<String> callback);
 	void  changeTempPassword(String email, String password, AsyncCallback<LoginModel> callback);
 	void getSecurityQuestionOptions(String userid, AsyncCallback<SecurityQuestionOptions> callback);
 	

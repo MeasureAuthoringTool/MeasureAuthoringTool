@@ -53,10 +53,10 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	}
 
 	@Override
-	public Boolean changePasswordSecurityAnswers(LoginModel model) {
-		boolean result =false;
+	public String changePasswordSecurityAnswers(LoginModel model) {
+		//boolean result =false;
 		LoginModel loginModel = model;
-		try {
+		/*try {
 			result = CheckDictionaryWordInPassword.containsDictionaryWords(loginModel.getPassword());
 		} catch (FileNotFoundException e) {
 			loginModel.setLoginFailedEvent(true);
@@ -72,16 +72,21 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 			result=true;
 		}else{
 			result=false;
+		}*/
+		
+		String resultMessage = callCheckDictionaryWordInPassword(loginModel.getPassword());
+		if(resultMessage.equalsIgnoreCase("SUCCESS")){
+			getLoginCredentialService().changePasswordSecurityAnswers(model);
 		}
-		return result;
+		return resultMessage;
 		
 	}
 
 	@Override
 	public LoginModel changeTempPassword(String email, String changedpassword) {
-		boolean result = false;
+		//boolean result = false;
 		LoginModel loginModel = new LoginModel();
-		try {
+		/*try {
 			result = CheckDictionaryWordInPassword.containsDictionaryWords(changedpassword);
 		} catch (FileNotFoundException e) {
 			loginModel.setLoginFailedEvent(true);
@@ -98,8 +103,44 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 			
 			loginModel.setLoginFailedEvent(true);
 			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+		}*/
+		String resultMessage = callCheckDictionaryWordInPassword(changedpassword);
+		
+		if(resultMessage.equalsIgnoreCase("EXCEPTION")){
+			loginModel.setLoginFailedEvent(true);
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+		}else if(resultMessage.equalsIgnoreCase("SUCCESS")){
+			loginModel= getLoginCredentialService().changeTempPassword(email, changedpassword);
+		}else{
+			loginModel.setLoginFailedEvent(true);
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
 		}
+		
 		return loginModel;
+	}
+	
+	private String callCheckDictionaryWordInPassword(String changedpassword){
+		String returnMessage = "FAILURE";
+		try {
+			boolean result = CheckDictionaryWordInPassword.containsDictionaryWords(changedpassword);
+			if(result)
+				returnMessage = "SUCCESS";
+				
+		} catch (FileNotFoundException e) {
+			returnMessage="EXCEPTION";
+			//loginModel.setLoginFailedEvent(true);
+			//loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			e.printStackTrace();
+			
+		} catch (IOException e) {
+			returnMessage="EXCEPTION";
+			//loginModel.setLoginFailedEvent(true);
+			//loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			e.printStackTrace();
+		}
+		return returnMessage;
+		
+		
 	}
 
 }

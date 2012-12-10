@@ -90,14 +90,14 @@ public class FirstLoginPresenter {
 
 					if(verifier.isValid() && sverifier.isValid()) {
 						
-						MatContext.get().changePasswordSecurityQuestions(getValues(), new AsyncCallback<Boolean>() {
+						MatContext.get().changePasswordSecurityQuestions(getValues(), new AsyncCallback<String>() {
 
 							@Override
 							public void onFailure(Throwable caught) {
 								display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 								
 							}
-							@Override
+							/*@Override
 							public void onSuccess(Boolean result) {
 								if(result){
 									MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
@@ -106,6 +106,17 @@ public class FirstLoginPresenter {
 									display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
 								}
 
+							}*/
+							@Override
+							public void onSuccess(String result) {
+								if(result.equalsIgnoreCase("SUCCESS")){
+									MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
+								}else if(result.equalsIgnoreCase("EXCEPTION")){
+									display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								}else{
+									display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+								}
+								
 							}
 						});
 					

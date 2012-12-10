@@ -12,11 +12,18 @@ public class DictionarySubstringRule extends AbstractDictionaryRule
   /** Default word length. */
   public static final int DEFAULT_WORD_LENGTH = 8;
 
+  /** Default word length. */
+  public static final int DEFAULT_MIN_WORD_LENGTH = 3;
+
   /**
    * Minimum substring size to consider as a possible word within the password.
    */
-  private int wordLength = DEFAULT_WORD_LENGTH;
+  private int minWordLength = DEFAULT_MIN_WORD_LENGTH;
 
+  /**
+   * Maximum substring size to consider as a possible word within the password.
+   */
+  private int wordLength = DEFAULT_WORD_LENGTH;
 
   /**
    * Creates a new dictionary substring rule. The dictionary should be set using
@@ -42,12 +49,12 @@ public class DictionarySubstringRule extends AbstractDictionaryRule
    * use when passed to this constructor. See {@link #setWordLength(int)}.
    *
    * @param  dict  to use for searching
-   * @param  n  number of characters to check in each dictionary word
+   * @param  maxWordLength number of characters to check in each dictionary word
    */
-  public DictionarySubstringRule(final Dictionary dict, final int n)
+  public DictionarySubstringRule(final Dictionary dict, final int maxWordLength)
   {
-    setDictionary(dict);
-    setWordLength(n);
+    super.setDictionary(dict);
+    super.setWordLength(maxWordLength);
   }
 
 
@@ -59,10 +66,10 @@ public class DictionarySubstringRule extends AbstractDictionaryRule
    *
    * @param  n  minimum number of characters to check in each dictionary word
    */
-  public void setWordLength(final int n)
+  public void setWordLength(final int maxWordLength)
   {
-    if (n >= 1) {
-      wordLength = n;
+    if (maxWordLength >= 1) {
+      wordLength = maxWordLength;
     } else {
       throw new IllegalArgumentException("wordLength must be >= 1");
     }
@@ -80,22 +87,27 @@ public class DictionarySubstringRule extends AbstractDictionaryRule
   }
 
 
-  /** {@inheritDoc} */
+  /**
+   * Returns Largest matched Dictionary word found in Password.
+   *
+   * @return  Largest Dictionary word found.
+   */
   @Override
   protected String doWordSearch(final String text)
   {
 	String largestWord = null;
-    for (int i = wordLength; i >= 3; i--) {
-      for (int j = 0; j + i <= text.length();j=j+1) {
-	    final String s = text.substring(j, j+i);
-	    if (dictionary.search(s))
+	
+    for (int maxWordLength = wordLength; maxWordLength >= minWordLength; maxWordLength--) {
+      for (int j = 0; j + maxWordLength <= text.length();j=j+1) {
+	    final String subStringInPwd = text.substring(j, j+maxWordLength);
+	    if (dictionary.search(subStringInPwd))
         {
         	// check largest word.
 	    	if(largestWord == null)
-		    		largestWord = s;
+		    		largestWord = subStringInPwd;
 	       
-	    	if(s.length() >= largestWord.length()){
-        		largestWord=s;
+	    	if(subStringInPwd.length() >= largestWord.length()){
+        		largestWord=subStringInPwd;
         	}
         }
       }

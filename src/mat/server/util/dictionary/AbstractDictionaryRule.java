@@ -2,10 +2,6 @@
 package mat.server.util.dictionary;
 
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -19,16 +15,20 @@ import edu.vt.middleware.password.RuleResult;
 public abstract class AbstractDictionaryRule implements Rule
 {
 	
-	private static final Log logger = LogFactory.getLog(AbstractDictionaryRule.class);
+	private static final Log LOGGER = LogFactory.getLog(AbstractDictionaryRule.class);
 	
   /** Error code for matching dictionary word. */
 	public static final String ERROR_CODE = "ILLEGAL_WORD";
 
-  /** Error code for matching reversed dictionary word. */
-	public static final String ERROR_CODE_REVERSED = "ILLEGAL_WORD_REVERSED";
-
+ 
   /** Dictionary of words. */
 	protected Dictionary dictionary;
+  /** Default word length. */
+    public static final int DEFAULT_WORD_LENGTH = 8;
+  /**
+   * Minimum substring size to consider as a possible word within the password.
+  */
+   private int wordLength = DEFAULT_WORD_LENGTH;
 
   /**
    * Sets the dictionary used to search for passwords.
@@ -42,10 +42,26 @@ public abstract class AbstractDictionaryRule implements Rule
 
 
   /**
-   * Returns the dictionary used to search for passwords.
-   *
-   * @return  dictionary used for searching
+   * @param wordLength the wordLength to set
    */
+	public void setWordLength(int wordLength) {
+		this.wordLength = wordLength;
+	}
+
+
+	/**
+	 * @return the wordLength
+	 */
+	public int getWordLength() {
+		return wordLength;
+	}
+
+
+	/**
+	 * Returns the dictionary used to search for passwords.
+	 *
+	 * @return  dictionary used for searching
+	 */
 	public Dictionary getDictionary()
 	{
 		return dictionary;
@@ -58,72 +74,59 @@ public abstract class AbstractDictionaryRule implements Rule
   	{
 	  
 	  final RuleResult result = new RuleResult(true);
-	  String text = passwordData.getPassword().getText();
+	  final String passwordText = passwordData.getPassword().getText();
     
-	  String matchingWord = doWordSearch(text);
-	  if(matchingWord != null && matchingWord.length()>0){
-		  	logger.info("Dictionay word found in Password :"+matchingWord);
-    	  
-		  //Add code to remove special characters and number in password.
-    	  	String[] allPrefixAndSuffix = text.split(matchingWord);
-    	  	boolean isPreFixAWord = false;
-    	  	boolean isSufFixAWord = false;
-    	  	for(int index=0;index < allPrefixAndSuffix.length; index++){
-    	  		
-    	  		boolean foundWord = checkSuffixPrefix(allPrefixAndSuffix[index]);
-    	  		if(index == 0){
-    	  			isPreFixAWord =foundWord;
-    	  		}
-    	  		else{
-    	  			isSufFixAWord=foundWord;
-    	  		}
-    	  			
-    	  	}
-    	  	logger.info("Dictionay word found in Prefix  :"+isPreFixAWord);
-    	  	logger.info("Dictionay word found in Suffix  :"+isSufFixAWord);
-    	  	
-    	  	if(isPreFixAWord == false && isSufFixAWord == false) {
-    	  		result.setValid(false);
-    	  	}else{
+	  final String dictionaryWord = doWordSearch(passwordText);
+	  
+	  if(dictionaryWord != null && dictionaryWord.length()>0){
+		  LOGGER.info("Dictionay word found in Password :"+dictionaryWord);
+    	  final String[] wordsPreFixSuffix = passwordText.split(dictionaryWord);
+    	  boolean isPreFixAWord = false;
+    	  boolean isSufFixAWord = false;
+    	 
+    	  for(int index=0;index < wordsPreFixSuffix.length; index++){
+    		  final boolean foundWord = checkSuffixPrefix(wordsPreFixSuffix[index]);
+    	  	  if(index == 0){
+    	  		isPreFixAWord =foundWord;
+    	  	  }
+    	  	  else{
+    	  		isSufFixAWord=foundWord;
+    	  	  }
+    	  }
+    	  LOGGER.info("Dictionay word found in Prefix  :"+isPreFixAWord);
+    	  LOGGER.info("Dictionay word found in Suffix  :"+isSufFixAWord);
+    	  if(isPreFixAWord || isSufFixAWord ) {
     	  		result.setValid(true);
-    	  	}
+    	  }else{
+    	  		result.setValid(false);
+    	  }
+      }else{
+    	  LOGGER.info("No Dictionay word is found in Password :"+passwordData.getPassword());
       }
-    
-	  return result;
+     return result;
   }
-
-  /**
-   * Creates the parameter data for the rule result detail.
-   *
-   * @param  word  matching word
-   *
-   * @return  map of parameter name to value
-   */
-  protected Map<String, ?> createRuleResultDetailParameters(final String word)
-  {
-	  final Map<String, Object> m = new LinkedHashMap<String, Object>();
-	  m.put("matchingWord", word);
-	  return m;
-  }
+ 
   protected boolean checkSuffixPrefix(final String text)
   {
-	  logger.info("Inside checkSuffixPrefix");
-	  logger.info("checkSuffixPrefix - Word to Be Validated : "+ text);
+	  LOGGER.info("checkSuffixPrefix - Word to Be Validated : "+ text);
 	  boolean foundWord = false;
-	  for (int i = 8; i >= 3; i--) {
-		  for (int j = 0; j + i <= text.length();j=j+1) {
-		     final String subString = text.substring(j, j+i);
-    	 	  if (dictionary.search(subString))
-			  {
-    	 		 logger.info("checkSuffixPrefix - SubString Found in Dictionary : "+ subString );
-    	 		 foundWord = true;
-				  break;
-			  }
-      		}
-		  if(foundWord)
-			  break;
-	  }
 	  
+	  int maxWordLength = 8;
+	  //for (maxWordLength = 8; maxWordLength >= 3; maxWordLength--) {
+	    while(maxWordLength >=3 && !foundWord){
+		 // if(!foundWord){
+			  for (int j = 0; j + maxWordLength <= text.length();j=j+1) {
+				  final String subString = text.substring(j, j+maxWordLength);
+				  if (dictionary.search(subString))
+				  {
+					  LOGGER.info("checkSuffixPrefix - SubString Found in Dictionary : "+ subString );
+					  foundWord = true;
+					  break;
+				  }
+      			}
+		  	//}
+		  maxWordLength--;
+ 	  }
 	  return foundWord;
   	}
 

@@ -6,6 +6,7 @@ package mat.server.util.dictionary;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,12 +46,9 @@ public class CheckDictionaryWordInPassword {
 
 		RuleResult result = validator.validate(passwordData);
 		if (result.isValid()) {
-			System.out.println("Valid password");
+			logger.info("Password Supplied Is Valid password");
 		} else {
-			System.out.println("Invalid password:");
-			for (String msg : validator.getMessages(result)) {
-				System.out.println(msg);
-			}
+			logger.info("Password Supplied Is Invalid password:");
 		}
 		return result.isValid();
 	}

@@ -11,7 +11,8 @@ public class PasswordRules extends Composite {
 		FlowPanel fPanel = new FlowPanel();
 		Label rules = new Label("Password Rules");
 		rules.addStyleName("bold");
-		HTML desc = new HTML("Passwords must not consist of a single dictionary word with letters, numbers and symbols. <br><br> Passwords must be between 8 and 16 characters and contain each one the following:");
+		HTML desc = new HTML("Passwords must not consist of a single dictionary word with letters, numbers and symbols. <br><br> Passwords must be between 8 and 16 characters and contain at least one of each of  the following:"
+							);
 		desc.addStyleName("passwordRulesDescription");
 		HTML b1 = new HTML("<img src='images/bullet.png'/> Upper case character");
 		HTML b2 = new HTML("<img src='images/bullet.png'/> Lower case character");

@@ -35,7 +35,7 @@ public class MatUserDetails  implements IsSerializable, UserDetails {
     private boolean accountNonLocked;
     private boolean credentialsNonExpired;
     private boolean enabled;
-    
+    private String loginId;
     
     public MatUserDetails() {
     }
@@ -259,6 +259,28 @@ public Collection<GrantedAuthority> getAuthorities() {
 	 */
 	public Timestamp getActivationDate() {
 		return activationDate;
+	}
+
+
+
+
+
+	/**
+	 * @param loginId the loginId to set
+	 */
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+
+
+
+
+
+	/**
+	 * @return the loginId
+	 */
+	public String getLoginId() {
+		return loginId;
 	}
 
 

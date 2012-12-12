@@ -33,7 +33,7 @@ public class User  {
 	private List<UserSecurityQuestion> securityQuestions = new ArrayList<UserSecurityQuestion>();
 	private Set<MeasureShare> measureShares = new HashSet<MeasureShare>();
 	private Set<MeasureShare> ownedMeasureShares = new HashSet<MeasureShare>();
-	
+	private String loginId;
 
 	public String getId() {
 		return id;
@@ -179,6 +179,18 @@ public class User  {
 	}
 	public void setOwnedMeasureShares(Set<MeasureShare> ownedMeasureShares) {
 		this.ownedMeasureShares = ownedMeasureShares;
+	}
+	/**
+	 * @param loginId the loginId to set
+	 */
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+	/**
+	 * @return the loginId
+	 */
+	public String getLoginId() {
+		return loginId;
 	}
 
 }

@@ -11,6 +11,8 @@ public class LoginModel implements IsSerializable{
 	private SecurityRole Role;
 	
 	private String userId;
+	
+	private String loginId;
 
 	private String email;
 	
@@ -82,6 +84,20 @@ public class LoginModel implements IsSerializable{
 		return userId;
 	}
 	
+	/**
+	 * @param loginId the loginId to set
+	 */
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+
+	/**
+	 * @return the loginId
+	 */
+	public String getLoginId() {
+		return loginId;
+	}
+
 	public String getQuestion1() {
 		return question1;
 	}

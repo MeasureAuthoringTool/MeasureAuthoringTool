@@ -47,14 +47,14 @@ public class TempPwdLoginPresenter {
 	
 	private void submitTempChangePassword() {
 		display.getErrorMessageDisplay().clear();
-		PasswordVerifier verifier = new PasswordVerifier(MatContext.get().getLoggedInUserEmail(),display.getPassword().getValue(), 
+		PasswordVerifier verifier = new PasswordVerifier(MatContext.get().getLoggedinLoginId(),display.getPassword().getValue(), 
 										display.getConfirmPassword().getValue());
 
 		if(!verifier.isValid()) {
 			display.getErrorMessageDisplay().setMessages(verifier.getMessages());
 		}else {
 			
-			MatContext.get().getLoginService().changeTempPassword(MatContext.get().getLoggedInUserEmail(),
+			MatContext.get().getLoginService().changeTempPassword(MatContext.get().getLoggedinLoginId(),
 																				display.getPassword().getValue(), 
 																				new AsyncCallback<LoginModel>() {
 			public void onSuccess(LoginModel result) {

@@ -14,6 +14,7 @@ public interface SessionManagementService extends RemoteService{
 		public String userRole;
 		public Date signInDate;
 		public Date signOutDate;
+		public String loginId;
 	}
 	
 	public SessionManagementService.Result getCurrentUserRole();

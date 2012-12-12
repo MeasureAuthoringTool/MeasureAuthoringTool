@@ -25,7 +25,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class ForgottenPasswordPresenter {
 
 	public static interface Display {
-		public HasValue<String> getEmail();
+	//	public HasValue<String> getEmail();
+		public HasValue<String> getLoginId();
 		public HasValue<String> getSecurityQuestion();
 		public HasValue<String> getSecurityAnswer();
 		
@@ -58,7 +59,7 @@ public class ForgottenPasswordPresenter {
 			}
 		});
 		
-		display.getEmail().addValueChangeHandler(new ValueChangeHandler<String>() {
+		display.getLoginId().addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> arg0) {
 				display.setFocus(true);
@@ -72,7 +73,7 @@ public class ForgottenPasswordPresenter {
 	}
 	
 	private void reset() {
-		display.getEmail().setValue("");
+		display.getLoginId().setValue("");
 		display.getSecurityAnswer().setValue("");
 		display.getErrorMessageDisplay().clear();
 	}
@@ -101,7 +102,7 @@ public class ForgottenPasswordPresenter {
 		});
 	}
 	private void requestForgottenPassword() {
-		MatContext.get().getLoginService().forgotPassword(display.getEmail().getValue(), 
+		MatContext.get().getLoginService().forgotPassword(display.getLoginId().getValue(), 
 				display.getSecurityQuestion().getValue(), 
 				display.getSecurityAnswer().getValue(), 
 				new AsyncCallback<ForgottenPasswordResult>() {

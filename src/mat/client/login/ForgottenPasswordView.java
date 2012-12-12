@@ -23,6 +23,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display {
 	private Panel mainPanel;
 	private TextBox email;
+	private TextBox loginId;
 	private ListBoxMVP securityQuestion;
 	private TextBox securityAnswer;
 	private SaveCancelButtonBar buttonBar;
@@ -51,9 +52,9 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		
 		bluePanel.add(errorMessages);
 		
-		email = new EmailAddressTextBox();
-		bluePanel.add(LabelBuilder.buildLabel(email, "E-mail Address"));
-		bluePanel.add(email);
+		loginId = new EmailAddressTextBox();
+		bluePanel.add(LabelBuilder.buildLabel(loginId, "User Id"));
+		bluePanel.add(loginId);
 		bluePanel.add(new SpacerWidget());
 		
 		securityQuestion = new ListBoxMVP();
@@ -74,10 +75,10 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		
 	}	
 
-	@Override
+	/*@Override
 	public HasValue<String> getEmail() {
 		return email;
-	}
+	}*/
 
 	@Override
 	public HasValue<String> getSecurityQuestion() {
@@ -123,6 +124,11 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	@Override
 	public void setFocus(boolean focus) {
 		securityQuestion.setFocus(focus);
+	}
+
+	@Override
+	public HasValue<String> getLoginId() {
+		return loginId;
 	}
 	
 }

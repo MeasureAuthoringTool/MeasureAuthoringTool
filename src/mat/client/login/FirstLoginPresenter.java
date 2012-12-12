@@ -64,7 +64,7 @@ public class FirstLoginPresenter {
 					PasswordVerifier verifier = null;
 					
 						verifier = new PasswordVerifier(
-								MatContext.get().getLoggedInUserEmail(), 
+								MatContext.get().getLoggedinLoginId(), 
 								display.getPassword().getValue(), 
 								display.getConfirmPassword().getValue());
 					
@@ -150,6 +150,7 @@ public class FirstLoginPresenter {
 		LoginModel model = new LoginModel();
 		model.setUserId(MatContext.get().getLoggedinUserId());
 		model.setEmail(MatContext.get().getLoggedInUserEmail());
+		model.setLoginId(MatContext.get().getLoggedinLoginId());
 		model.setPassword(display.getPassword().getValue());
 		model.setQuestion1(display.getQuestion1Text().getValue());
 		model.setQuestion1Answer(display.getQuestion1Answer().getValue());

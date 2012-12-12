@@ -26,7 +26,7 @@ public class PasswordVerifier {
 	private List<String> message = new ArrayList<String>();
 	
 	public PasswordVerifier(String userId, String password, String confirmPassword) {
-		validPassword = isPasswordValid(userId, password, confirmPassword);
+		validPassword = isPasswordValid(userId,password, confirmPassword);
 	
 		message.add(MatContext.get().getMessageDelegate().getDoesntFollowRulesMessage());
 		if(!confirmed) {
@@ -72,6 +72,7 @@ public class PasswordVerifier {
 	}
 	
 	private boolean isPasswordValid(String userid, String pwd, String confirm) {
+	//private boolean isPasswordValid(String pwd, String confirm) {
 		confirmed = pwd.equals(confirm);
 		notTooLong = pwd.length() <= MAX_LENGTH;
 		notTooShort = pwd.length() >= MIN_LENGTH;
@@ -96,7 +97,7 @@ public class PasswordVerifier {
 				&& containsLower && containsSpecial && containsNumber
 				&& noRepeatedChar && noRepeatedChar && confirmed;
 		
-	}
+		}
 	
 	private boolean checkForRepeatedChar(String pwd) {
 		for(int i = 0; i < pwd.length() - 2; i++) {
@@ -109,13 +110,13 @@ public class PasswordVerifier {
 		return true;
 	}
 
-	boolean isNotUserid() {
+	/*boolean isNotUserid() {
 		return notUserid;
 	}
 
 	void setNotUserid(boolean notUserid) {
 		this.notUserid = notUserid;
-	}
+	}*/
 
 	boolean isNoRepeatedChar() {
 		return noRepeatedChar;

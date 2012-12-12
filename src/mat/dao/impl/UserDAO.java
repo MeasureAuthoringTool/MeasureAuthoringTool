@@ -10,6 +10,7 @@ import mat.server.model.MatUserDetails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -112,7 +113,8 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 	public UserDetails getUser(String userId){
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(MatUserDetails.class);
-		List results = criteria.add(Restrictions.ilike("emailAddress",userId)).list();
+		//List results = criteria.add(Restrictions.ilike("emailAddress",userId)).list();
+		List results = criteria.add(Restrictions.ilike("loginId",userId)).list();
 		if(results.size() <1){
 			return null;
 		}
@@ -125,6 +127,16 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(User.class);
 		criteria.add(Restrictions.ilike("emailAddress", userid));
+		criteria.setProjection(Projections.rowCount());
+		return ((Long)criteria.uniqueResult()) > 0;
+	}
+	
+	
+	@Override
+	public boolean findUniqueLoginId(String loginId) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.ilike("loginId", loginId));
 		criteria.setProjection(Projections.rowCount());
 		return ((Long)criteria.uniqueResult()) > 0;
 	}
@@ -144,6 +156,23 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 			return null;
 		}
 	}
+	
+	@SuppressWarnings("unchecked")
+	@Override
+	public User findByLoginId(String loginId) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.ilike("loginId", loginId));
+		List<User> results = criteria.list();
+		if(results.size() > 0) {
+			return results.get(0);
+		}
+		else {
+			return null;
+		}
+	}
+	
+	
 	public void saveUserDetails(MatUserDetails userdetails) {
 		if(isEmpty(userdetails)) return;
 		

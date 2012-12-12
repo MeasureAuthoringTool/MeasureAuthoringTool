@@ -46,6 +46,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		model.setMiddleInitial(user.getMiddleInit());
 		model.setTitle(user.getTitle());
 		model.setEmailAddress(user.getEmailAddress());
+		
 		model.setPhoneNumber(user.getPhoneNumber());
 		model.setActive(getIsActive(user.getStatus()));
 		model.setExistingUser(true);

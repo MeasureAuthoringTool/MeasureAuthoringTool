@@ -36,6 +36,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		model.setOrganisation(user.getOrganizationName());
 		model.setOid(user.getOrgOID());
 		model.setRootoid(user.getRootOID());
+		model.setLoginId(user.getLoginId());
 		return model;
 	}
 	private void setModelFieldsOnUser(User user, MyAccountModel model) {
@@ -48,6 +49,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		user.setOrganizationName(model.getOrganisation());
 		user.setOrgOID(model.getOid());
 		user.setRootOID(model.getRootoid());
+		user.setLoginId(model.getLoginId());
 		
 	}
 	private UserService getUserService() {
@@ -124,26 +126,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 	
 	public String changePassword(String password) {
 		logger.info("Changing password to " + password);
-		boolean result = false;
 		
-		/*try {
-			result =  CheckDictionaryWordInPassword.containsDictionaryWords(password);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		if(result){
-		
-			UserService userService = getUserService();
-			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-
-			userService.setUserPassword(user, password, false);
-			userService.saveExisting(user);
-		}*/
 		String resultMessage = callCheckDictionaryWordInPassword(password);
 	    if(resultMessage.equalsIgnoreCase("SUCCESS")){
 			UserService userService = getUserService();

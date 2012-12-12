@@ -49,7 +49,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		user.setOrganizationName(model.getOrganisation());
 		user.setOrgOID(model.getOid());
 		user.setRootOID(model.getRootoid());
-		user.setLoginId(model.getLoginId());
+		//user.setLoginId(model.getLoginId());
 		
 	}
 	private UserService getUserService() {

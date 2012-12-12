@@ -446,8 +446,19 @@ public class UserServiceImpl implements UserService {
 	 * 
 	 * */
 	private String generateUniqueLoginId(String firstName, String lastName){
-		StringBuilder generatedId = new StringBuilder(); 
-		generatedId = generatedId.append(firstName.substring(0,2)).append(lastName.substring(0, 6)).append((ID.nextInt(9000) + 1000));
+		StringBuilder generatedId = new StringBuilder();
+		int firstNameLastIndex = 2;
+		int lastNameLastIndex = 6;
+		//Check if First Name length us less than 2 then set endIndex to length
+		if(firstName.length()< 2){
+			firstNameLastIndex = lastName.length();
+		}
+		//Check if last Name length us less than 6 then set endIndex to length
+		if(lastName.length()< 6){
+			lastNameLastIndex = lastName.length();
+		}
+		
+		generatedId = generatedId.append(firstName.substring(0,firstNameLastIndex)).append(lastName.substring(0, lastNameLastIndex)).append((ID.nextInt(9000) + 1000));
 		return generatedId.toString();
 	}
 	

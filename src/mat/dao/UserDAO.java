@@ -19,4 +19,7 @@ public interface UserDAO extends IDAO<User, String> {
 	public void saveUserDetails(MatUserDetails userdetails);
 	public void setUserSignInDate(String userid);
 	public void setUserSignOutDate(String userid);
+	public User findByLoginId(String loginId);
+	public boolean findUniqueLoginId(String loginId);
+	
 }

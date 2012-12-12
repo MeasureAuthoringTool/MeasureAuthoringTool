@@ -89,6 +89,7 @@ public class MatContext implements IsSerializable {
 	
 	private String userId;
 	private String userEmail;
+	private String loginId;
 	private String userRole;
 	
 	
@@ -142,10 +143,11 @@ public class MatContext implements IsSerializable {
 		this.listBoxCodeProvider = listBoxCodeProvider;
 	}
 
-	public void setUserInfo(String userId, String userEmail, String userRole) {
+	public void setUserInfo(String userId, String userEmail, String userRole,String loginId) {
 		this.userId = userId;
 		this.userEmail = userEmail;
 		this.userRole = userRole;
+		this.loginId=loginId;
 		//setUserSignInDate(userId);
 	}
 	protected MatContext(){
@@ -262,6 +264,9 @@ public class MatContext implements IsSerializable {
 	
 	public String getLoggedinUserId(){
 		return userId;
+	}
+	public String getLoggedinLoginId(){
+		return loginId;
 	}
 	public String getLoggedInUserEmail() {
 		return userEmail;

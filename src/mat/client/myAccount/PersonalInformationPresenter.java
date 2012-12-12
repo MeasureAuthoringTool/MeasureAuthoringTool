@@ -25,6 +25,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		HasValue<String> getLastName();
 		HasValue<String> getTitle();
 		HasValue<String> getEmailAddress();
+		HasValue<String> getLoginId();
 		HasValue<String> getPhoneNumber();
 		HasValue<String> getOrganisation();
 		HasValue<String> getOID();
@@ -100,6 +101,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getLastName().setValue(model.getLastName());
 		display.getTitle().setValue(model.getTitle());
 		display.getEmailAddress().setValue(model.getEmailAddress());
+		display.getLoginId().setValue(model.getLoginId());
 		display.getPhoneNumber().setValue(model.getPhoneNumber());
 		display.getOrganisation().setValue(model.getOrganisation());
 		display.getOID().setValue(model.getOid());

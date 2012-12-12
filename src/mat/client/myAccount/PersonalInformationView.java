@@ -29,6 +29,8 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	
 	private TextBox title = new TextBox();
 	private TextBox emailAddress = new EmailAddressTextBox();
+	private TextBox loginId = new TextBox();
+	
 	private TextBox oid = new TextBox();
 	private TextBox rootOid = new TextBox();
 	private TextBox organization = new TextBox();
@@ -51,6 +53,10 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		vPanel.add(errorMessages);
 		vPanel.add(successMessages);
 		vPanel.add(nameWidget);
+		vPanel.add(new SpacerWidget());
+		
+		loginId.setEnabled(false);
+		vPanel.add(buildCell("User ID", loginId, false));
 		vPanel.add(new SpacerWidget());
 		
 		vPanel.add(buildCell("Title", title, false));
@@ -165,6 +171,11 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	@Override
 	public HasValue<String> getRootOID() {
 		return rootOid;
+	}
+
+	@Override
+	public HasValue<String> getLoginId() {
+		return loginId;
 	}
 
 

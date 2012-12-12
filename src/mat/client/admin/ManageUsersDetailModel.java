@@ -9,6 +9,7 @@ public class ManageUsersDetailModel implements IsSerializable{
 	private String middleInitial;
 	private String title;
 	private String emailAddress;
+	private String loginId;
 	private String phoneNumber;
 	private String organization;
 	private String oid;
@@ -127,6 +128,18 @@ public class ManageUsersDetailModel implements IsSerializable{
 			return str;
 		else
 			return str.trim();
+	}
+	/**
+	 * @param loginId the loginId to set
+	 */
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+	/**
+	 * @return the loginId
+	 */
+	public String getLoginId() {
+		return loginId;
 	}
 	
 }

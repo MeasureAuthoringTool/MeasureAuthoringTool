@@ -43,6 +43,7 @@ public class ManageUsersDetailView
 	
 	private HorizontalPanel lockedLabel = new HorizontalPanel();
 	private FocusableImageButton lock = new FocusableImageButton(ImageResources.INSTANCE.g_lock(),"Account Locked");
+	private String userIdLabel = "User ID";
 	private String titleLabel = "Title";
 	private String emailAddressLabel = "E-mail Address";
 	private String roleLabel = "Role";
@@ -50,6 +51,8 @@ public class ManageUsersDetailView
 	private String statusLabel = "Status";
 	private String oidLabel = "OID";
 	private String rootOidLabel = "Root OID";
+	
+	private TextBox loginId = new TextBox();
 	
 	private TextBox title = new TextBox();
 	private TextBox emailAddress = new EmailAddressTextBox();
@@ -101,6 +104,11 @@ public class ManageUsersDetailView
 
 		
 		leftPanel.add(nameWidget);
+		leftPanel.add(new SpacerWidget());
+		
+		loginId.setEnabled(false);
+		leftPanel.add(LabelBuilder.buildLabel(loginId, userIdLabel));
+		leftPanel.add(loginId);
 		leftPanel.add(new SpacerWidget());
 		
 		leftPanel.add(LabelBuilder.buildLabel(title, titleLabel));
@@ -358,6 +366,11 @@ public class ManageUsersDetailView
 	@Override
 	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
 		return successMessages;
+	}
+
+	@Override
+	public HasValue<String> getLoginId() {
+		return loginId;
 	}
 	
 	

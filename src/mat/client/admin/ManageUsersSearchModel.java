@@ -15,6 +15,7 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		private String firstName;
 		private String lastName;
 		private String orgName;
+		private String loginId;
 		public String getKey() {
 			return key;
 		}
@@ -39,6 +40,18 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		}
 		public void setOrgName(String orgName) {
 			this.orgName = orgName;
+		}
+		/**
+		 * @param loginId the loginId to set
+		 */
+		public void setLoginId(String loginId) {
+			this.loginId = loginId;
+		}
+		/**
+		 * @return the loginId
+		 */
+		public String getLoginId() {
+			return loginId;
 		}
 		
 	}

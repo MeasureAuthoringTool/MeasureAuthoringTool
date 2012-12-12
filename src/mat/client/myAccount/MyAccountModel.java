@@ -14,6 +14,7 @@ public class MyAccountModel implements IsSerializable {
 	private String organisation;
 	private String oid;
 	private String rootoid;
+	private String loginId;
 	public String getOrganisation() {
 		return organisation;
 	}
@@ -31,6 +32,18 @@ public class MyAccountModel implements IsSerializable {
 	}
 	public void setRootoid(String rootoid) {
 		this.rootoid = rootoid;
+	}
+	/**
+	 * @param loginId the loginId to set
+	 */
+	public void setLoginId(String loginId) {
+		this.loginId = loginId;
+	}
+	/**
+	 * @return the loginId
+	 */
+	public String getLoginId() {
+		return loginId;
 	}
 	public String getFirstName() {
 		return firstName;

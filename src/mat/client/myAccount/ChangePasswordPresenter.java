@@ -94,7 +94,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 	private void submitChangePassword() throws IOException {
 
 		PasswordVerifier verifier = new PasswordVerifier(
-				myAccountModel.getEmailAddress(), 
+				myAccountModel.getLoginId(), 
 				display.getPassword().getValue(), 
 				display.getConfirmPassword().getValue());
 		

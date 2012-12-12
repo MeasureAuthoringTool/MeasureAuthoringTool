@@ -47,11 +47,13 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		MatUserDetails userDetails =(MatUserDetails )hibernateUserService.loadUserByUsername(userId);
 		Date currentDate = new Date();
 		Timestamp currentTimeStamp = new Timestamp(currentDate.getTime());
-		
+		logger.debug("userDetails ===== "+userDetails);
 		if(userDetails != null)
 		{
 			String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), password);
-		    
+			logger.debug("userDetails ===== "+userDetails);
+			
+			logger.debug("hashPassword ===== "+hashPassword);
 			if(userDetails.getStatus().getId().equals("2"))
 			{
 				//REVOKED USER NO
@@ -59,7 +61,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 				 loginModel.setLoginFailedEvent(true);
 				 loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getAccountRevokedMessage());
 				 loginModel.setUserId(userId);
-				 loginModel.setEmail(userDetails.getEmailAddress());
+				 //loginModel.setEmail(userDetails.getEmailAddress());
+				 loginModel.setLoginId(userDetails.getLoginId());
 			}else if(hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())
 					&& userDetails.getUserPassword().getPasswordlockCounter() < 3 && userDetails.getUserPassword().getForgotPwdlockCounter() < 3){
 				
@@ -227,6 +230,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	@Override
 	public LoginModel changeTempPassword(String email, String changedpassword) {
 		logger.info("Changing the temporary Password");
+		logger.info("Changing the temporary Password for user " +email );
 		LoginModel loginModel = new LoginModel();
 		
 		MatUserDetails userDetails = (MatUserDetails)hibernateUserService.loadUserByUsername(email);
@@ -267,6 +271,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		loginModel.setTemporaryPassword(userDetails.getUserPassword().isTemporaryPassword());
 		loginModel.setUserId(userDetails.getId());
 		loginModel.setEmail(userDetails.getEmailAddress());
+		loginModel.setLoginId(userDetails.getLoginId());
 		return loginModel;
 	}
 
@@ -303,8 +308,12 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		user.setSecurityQuestions(secQuestions);
 		userService.saveExisting(user);
 		
-		MatUserDetails userDetails = (MatUserDetails)hibernateUserService.loadUserByUsername(user.getEmailAddress());
-		setAuthenticationToken(userDetails);
+		MatUserDetails userDetails = (MatUserDetails)hibernateUserService.loadUserByUsername(user.getLoginId());
+		if(userDetails != null)
+			setAuthenticationToken(userDetails);
+		else
+			model.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+	
 		
 	}
 	

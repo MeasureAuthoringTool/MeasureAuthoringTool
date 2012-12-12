@@ -44,6 +44,8 @@ public class UserServiceImpl implements UserService {
 	
 	private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 	private static final String NUMERIC = "1234567890";
+	//private static Random ID = new Random(99999);
+	private static Random ID = new Random(System.currentTimeMillis());
 	
 	//US 440
 	TemplateUtil templateUtil = TemplateUtil.getInstance();
@@ -137,13 +139,15 @@ public class UserServiceImpl implements UserService {
 	
 	
 	
-	public ForgottenPasswordResult requestForgottenPassword(String email, 
+	public ForgottenPasswordResult requestForgottenPassword(String loginId, 
 			String securityQuestion, String securityAnswer) {
 		ForgottenPasswordResult result = new ForgottenPasswordResult();
 		result.setEmailSent(false);
+		//logger.info(" requestForgottenPassword   Login Id ====" + loginId);
 		User user = null;
 		try {
-			user = userDAO.findByEmail(email);
+			//user = userDAO.findByEmail(email);
+			user = userDAO.findByLoginId(loginId);
 		}
 		catch(ObjectNotFoundException exc) { }
 		
@@ -180,7 +184,7 @@ public class UserServiceImpl implements UserService {
 				String newPassword = generateRandomPassword();
 				setUserPassword(user, newPassword, true);
 				result.setEmailSent(true);
-				sendResetPassword(email, newPassword);
+				sendResetPassword(user.getEmailAddress(), newPassword);
 				userDAO.save(user);
 			}
 		}
@@ -250,6 +254,19 @@ public class UserServiceImpl implements UserService {
 		setUserPassword(user, newPassword, false);
 		user.getPassword().setInitial(true);
 		user.setStatus(statusDAO.find("1"));
+		
+		String newLoginId = generateUniqueLoginId(user.getFirstName(), user.getLastName());
+		boolean isUniqueLoginId = false;
+		
+		while(!isUniqueLoginId){
+			if(!userDAO.findUniqueLoginId(newLoginId)){
+				isUniqueLoginId = true;
+				user.setLoginId(newLoginId);
+			}
+			else{
+				newLoginId = generateUniqueLoginId(user.getFirstName(), user.getLastName());
+			}
+		}
 		userDAO.save(user);
 		notifyUserOfNewAccount(user);
 		notifyUserOfTemporaryPassword(user, newPassword);
@@ -258,10 +275,11 @@ public class UserServiceImpl implements UserService {
 	private void notifyUserOfNewAccount(User user) {
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
 		msg.setSubject("MAT application access.");
-		msg.setTo(user.getEmailAddress());
+		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
+		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
+		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_WELCOME, paramsMap);
 		
-		//US 440. Re-factored to use template based framework
-		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_WELCOME, null);
+		msg.setTo(user.getEmailAddress());
 		msg.setText(text);
 
 		try {
@@ -310,9 +328,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override 
-	public SecurityQuestionOptions getSecurityQuestionOptions(String email) {
-		User user = userDAO.findByEmail(email);
-		
+	public SecurityQuestionOptions getSecurityQuestionOptions(String loginId) {
+		//User user = userDAO.findByEmail(email);
+		User user = userDAO.findByLoginId(loginId);
 		SecurityQuestionOptions options = new SecurityQuestionOptions();
 		options.setSecurityQuestions(new ArrayList<NameValuePair>());
 		if(user != null) {
@@ -346,6 +364,7 @@ public class UserServiceImpl implements UserService {
 		}
 		
 		setModelFieldsOnUser(model, user);
+		
 		try {
 			if(model.isExistingUser()) {
 				if(reactivatingUser) {
@@ -417,6 +436,19 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void setUserSignOutDate(String userid) {		
 		userDAO.setUserSignOutDate(userid);
+	}
+	/*
+	 * 
+	 * Algorithm to Generated Unique login ID for new User
+	 * First Name - 2 characters
+	 * Last Name - 6 characters
+	 * Four Digit - Random number
+	 * 
+	 * */
+	private String generateUniqueLoginId(String firstName, String lastName){
+		StringBuilder generatedId = new StringBuilder(); 
+		generatedId = generatedId.append(firstName.substring(0,2)).append(lastName.substring(0, 6)).append((ID.nextInt(9000) + 1000));
+		return generatedId.toString();
 	}
 	
 }

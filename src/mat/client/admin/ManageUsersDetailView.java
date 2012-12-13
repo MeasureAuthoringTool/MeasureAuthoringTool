@@ -43,7 +43,7 @@ public class ManageUsersDetailView
 	
 	private HorizontalPanel lockedLabel = new HorizontalPanel();
 	private FocusableImageButton lock = new FocusableImageButton(ImageResources.INSTANCE.g_lock(),"Account Locked");
-	private String userIdLabel = "User ID";
+	
 	private String titleLabel = "Title";
 	private String emailAddressLabel = "E-mail Address";
 	private String roleLabel = "Role";
@@ -52,7 +52,7 @@ public class ManageUsersDetailView
 	private String oidLabel = "OID";
 	private String rootOidLabel = "Root OID";
 	
-	private TextBox loginId = new TextBox();
+	private Label loginId = new Label();
 	
 	private TextBox title = new TextBox();
 	private TextBox emailAddress = new EmailAddressTextBox();
@@ -83,7 +83,14 @@ public class ManageUsersDetailView
 		fPanel.setHeight("100%");
 		fPanel.add(required);
 		fPanel.add(new SpacerWidget());
-
+		HorizontalPanel hPanel = new HorizontalPanel();
+		HTML userId = new HTML("&nbsp; User ID :&nbsp; ");
+		hPanel.add(userId);
+		hPanel.add(loginId);
+		fPanel.add(hPanel);
+		fPanel.add(new SpacerWidget());
+		
+		
 		fPanel.add(successMessages);
 		fPanel.add(errorMessages);
 		
@@ -104,11 +111,6 @@ public class ManageUsersDetailView
 
 		
 		leftPanel.add(nameWidget);
-		leftPanel.add(new SpacerWidget());
-		
-		loginId.setEnabled(false);
-		leftPanel.add(LabelBuilder.buildLabel(loginId, userIdLabel));
-		leftPanel.add(loginId);
 		leftPanel.add(new SpacerWidget());
 		
 		leftPanel.add(LabelBuilder.buildLabel(title, titleLabel));
@@ -369,7 +371,7 @@ public class ManageUsersDetailView
 	}
 
 	@Override
-	public HasValue<String> getLoginId() {
+	public Label getLoginId() {
 		return loginId;
 	}
 	

@@ -17,6 +17,8 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -24,12 +26,13 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class PersonalInformationView implements PersonalInformationPresenter.Display {
 	private FlowPanel vPanel;
+	
 	private ContentWithHeadingWidget headingPanel;
 	private UserNameWidget nameWidget = new UserNameWidget();
 	
 	private TextBox title = new TextBox();
 	private TextBox emailAddress = new EmailAddressTextBox();
-	private TextBox loginId = new TextBox();
+	private Label loginId = new Label();
 	
 	private TextBox oid = new TextBox();
 	private TextBox rootOid = new TextBox();
@@ -45,9 +48,15 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		vPanel = new FlowPanel();
 
 		vPanel.addStyleName("leftAligned");
-		
+		HorizontalPanel hPanel = new HorizontalPanel();
 		HTML required = new HTML(RequiredIndicator.get() + " indicates required field");
 		vPanel.add(required);
+		vPanel.add(new SpacerWidget());
+		
+		HTML userId = new HTML("&nbsp; User ID :&nbsp; ");
+		hPanel.add(userId);
+		hPanel.add(loginId);
+		vPanel.add(hPanel);
 		vPanel.add(new SpacerWidget());
 		
 		vPanel.add(errorMessages);
@@ -55,9 +64,9 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		vPanel.add(nameWidget);
 		vPanel.add(new SpacerWidget());
 		
-		loginId.setEnabled(false);
-		vPanel.add(buildCell("User ID", loginId, false));
-		vPanel.add(new SpacerWidget());
+		//loginId.setEnabled(false);
+		//vPanel.add(buildCell("User ID", loginId, false));
+		//vPanel.add(new SpacerWidget());
 		
 		vPanel.add(buildCell("Title", title, false));
 		vPanel.add(new SpacerWidget());
@@ -174,7 +183,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	}
 
 	@Override
-	public HasValue<String> getLoginId() {
+	public Label getLoginId() {
 		return loginId;
 	}
 

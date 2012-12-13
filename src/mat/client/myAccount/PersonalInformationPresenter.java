@@ -15,6 +15,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PersonalInformationPresenter implements MatPresenter {
@@ -25,7 +26,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		HasValue<String> getLastName();
 		HasValue<String> getTitle();
 		HasValue<String> getEmailAddress();
-		HasValue<String> getLoginId();
+		Label getLoginId();
 		HasValue<String> getPhoneNumber();
 		HasValue<String> getOrganisation();
 		HasValue<String> getOID();
@@ -101,7 +102,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getLastName().setValue(model.getLastName());
 		display.getTitle().setValue(model.getTitle());
 		display.getEmailAddress().setValue(model.getEmailAddress());
-		display.getLoginId().setValue(model.getLoginId());
+		display.getLoginId().setText(model.getLoginId());
 		display.getPhoneNumber().setValue(model.getPhoneNumber());
 		display.getOrganisation().setValue(model.getOrganisation());
 		display.getOID().setValue(model.getOid());

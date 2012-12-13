@@ -50,7 +50,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		public HasValue<String> getFirstName();
 		public HasValue<String> getLastName();
 		public HasValue<String> getMiddleInitial();
-		public HasValue<String> getLoginId();
+		public Label getLoginId();
 		public HasValue<String> getTitle();
 		public HasValue<String> getEmailAddress();
 		public HasValue<String> getPhoneNumber();
@@ -316,7 +316,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
 		detailDisplay.getLastName().setValue(currentDetails.getLastName());
 		detailDisplay.getMiddleInitial().setValue(currentDetails.getMiddleInitial());
-		detailDisplay.getLoginId().setValue(currentDetails.getLoginId());
+		detailDisplay.getLoginId().setText(currentDetails.getLoginId());
 		detailDisplay.getTitle().setValue(currentDetails.getTitle());
 		detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
 		detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());

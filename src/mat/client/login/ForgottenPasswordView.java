@@ -53,7 +53,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		bluePanel.add(errorMessages);
 		
 		loginId = new EmailAddressTextBox();
-		bluePanel.add(LabelBuilder.buildLabel(loginId, "User Id"));
+		bluePanel.add(LabelBuilder.buildLabel(loginId, "User ID"));
 		bluePanel.add(loginId);
 		bluePanel.add(new SpacerWidget());
 		

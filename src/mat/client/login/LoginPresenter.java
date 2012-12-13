@@ -116,7 +116,7 @@ public class LoginPresenter {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
 		if(display.getUserid().getValue().isEmpty()) {
-			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getEmailRequiredMessage());
+			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 		}else if(display.getPassword().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
 		}else{

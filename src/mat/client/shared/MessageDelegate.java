@@ -381,9 +381,9 @@ public class MessageDelegate {
 	public String getMustNotContainDictionaryWordMessage(){
 		return MUST_NOT_CONTAIN_DICTIONAY_WORD;
 	}
-	private final String MUST_NOT_CONTAIN_EMAIL = "Passwords must not contain your E-mail Address.";
-	public String getMustNotContainEmailMessage(){
-		return MUST_NOT_CONTAIN_EMAIL;
+	private final String MUST_NOT_CONTAIN_LOGIN_ID = "Passwords must not contain your User ID.";
+	public String getMustNotContainLoginIdMessage(){
+		return MUST_NOT_CONTAIN_LOGIN_ID;
 	}
 
 	private final String MUST_CONTAIN_SPECIAL = "Must contain a special character.";
@@ -673,9 +673,9 @@ public class MessageDelegate {
 	}
 
 
-	public static final String EMAIL_REQUIRED = "E-mail Address is required.";
-	public String getEmailRequiredMessage(){
-		return EMAIL_REQUIRED;
+	public static final String LOGIN_ID_REQUIRED = "User ID is required.";
+	public String getLoginIDRequiredMessage(){
+		return LOGIN_ID_REQUIRED;
 	}
 
 	public static final String LAST_NAME_REQUIRED = "Last Name is required.";

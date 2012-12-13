@@ -364,7 +364,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			message.add(MatContext.get().getMessageDelegate().getLastNameRequiredMessage());
 		}
 		if("".equals(model.getEmailAddress().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getEmailRequiredMessage());
+			message.add(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 		}
 		if("".equals(model.getPhoneNumber().trim())) {
 			

@@ -33,7 +33,7 @@ public class MyAccountModelValidator {
 			message.add(MatContext.get().getMessageDelegate().getRootOIDRequiredMessage());
 		}
 		if("".equals(model.getEmailAddress().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getEmailRequiredMessage());
+			message.add(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 		}
 		if("".equals(model.getPhoneNumber().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getPhoneRequiredMessage());

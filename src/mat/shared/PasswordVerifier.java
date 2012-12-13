@@ -48,7 +48,7 @@ public class PasswordVerifier {
 			message.add(MatContext.get().getMessageDelegate().getMustContainSpecialMessage());
 		}
 		if(!notUserid) {
-			message.add(MatContext.get().getMessageDelegate().getMustNotContainEmailMessage());
+			message.add(MatContext.get().getMessageDelegate().getMustNotContainLoginIdMessage());
 		}
 		if(!noRepeatedChar) {
 			message.add(MatContext.get().getMessageDelegate().getMustNotContainRunsMessage());

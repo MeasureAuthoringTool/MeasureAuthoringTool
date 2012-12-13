@@ -95,7 +95,7 @@ public class ForgottenPasswordPresenter {
 					display.addSecurityQuestionOptions(qs);
 				}
 				else {
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUserNotFoundMessage());
+					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 				}
 			}
 			

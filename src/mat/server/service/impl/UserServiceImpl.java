@@ -299,8 +299,8 @@ public class UserServiceImpl implements UserService {
 			if(s == null) {
 				s = "";
 			}
-			MessageDigest m=MessageDigest.getInstance("MD5");
-			//MessageDigest m=MessageDigest.getInstance("SHA-256");
+			//MessageDigest m=MessageDigest.getInstance("MD5");
+			MessageDigest m=MessageDigest.getInstance("SHA-256");
 			m.update(s.getBytes(),0,s.length());
 			return new BigInteger(1,m.digest()).toString(16);
 		}

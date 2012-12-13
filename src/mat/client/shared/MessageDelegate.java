@@ -426,7 +426,7 @@ public class MessageDelegate {
 		return UNKNOWN_FAIL;
 	}
 
-	private final String USER_NOT_FOUND_MSG = "E-mail Address is required.";
+	private final String USER_NOT_FOUND_MSG = "User ID Not Found.";
 	public String getUserNotFoundMessage(){
 		return USER_NOT_FOUND_MSG;
 	}

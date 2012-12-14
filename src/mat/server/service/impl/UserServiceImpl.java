@@ -205,7 +205,7 @@ public class UserServiceImpl implements UserService {
 		
 	private void sendResetPassword(String email, String newPassword) {		
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
-		msg.setSubject("MAT password reset request.");
+		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
 		msg.setTo(email);
 		//US 440. Re-factored to use template based framework
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();

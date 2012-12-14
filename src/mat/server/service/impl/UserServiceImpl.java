@@ -26,6 +26,7 @@ import mat.model.UserSecurityQuestion;
 import mat.server.service.CodeListService;
 import mat.server.service.UserIDNotUnique;
 import mat.server.service.UserService;
+import mat.server.util.ServerConstants;
 import mat.server.util.TemplateUtil;
 import mat.shared.ConstantMessages;
 import mat.shared.ForgottenPasswordResult;
@@ -107,7 +108,7 @@ public class UserServiceImpl implements UserService {
 	
 	private void notifyUserOfTemporaryPassword(User user, String newPassword) {
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
-		msg.setSubject("MAT password reset request.");
+		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
 		msg.setTo(user.getEmailAddress());
 
 		//US 440. Re-factored to use template based framework
@@ -274,7 +275,7 @@ public class UserServiceImpl implements UserService {
 	
 	private void notifyUserOfNewAccount(User user) {
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
-		msg.setSubject("MAT application access.");
+		msg.setSubject(ServerConstants.NEW_ACCESS_SUBJECT);
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_WELCOME, paramsMap);

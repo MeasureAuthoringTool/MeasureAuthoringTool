@@ -54,25 +54,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 
 	@Override
 	public String changePasswordSecurityAnswers(LoginModel model) {
-		//boolean result =false;
 		LoginModel loginModel = model;
-		/*try {
-			result = CheckDictionaryWordInPassword.containsDictionaryWords(loginModel.getPassword());
-		} catch (FileNotFoundException e) {
-			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			e.printStackTrace();
-		}
-		if(result){
-			getLoginCredentialService().changePasswordSecurityAnswers(model);
-			result=true;
-		}else{
-			result=false;
-		}*/
 		
 		String resultMessage = callCheckDictionaryWordInPassword(loginModel.getPassword());
 		if(resultMessage.equalsIgnoreCase("SUCCESS")){
@@ -82,28 +64,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		
 	}
 
-	@Override
-	public LoginModel changeTempPassword(String email, String changedpassword) {
-		//boolean result = false;
+	//@Override
+	/*public LoginModel changeTempPassword(String email, String changedpassword) {
 		LoginModel loginModel = new LoginModel();
-		/*try {
-			result = CheckDictionaryWordInPassword.containsDictionaryWords(changedpassword);
-		} catch (FileNotFoundException e) {
-			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			e.printStackTrace();
-		} catch (IOException e) {
-			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			e.printStackTrace();
-		}
-		if(result){
-			loginModel= getLoginCredentialService().changeTempPassword(email, changedpassword);
-		}else{
-			
-			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
-		}*/
 		String resultMessage = callCheckDictionaryWordInPassword(changedpassword);
 		
 		if(resultMessage.equalsIgnoreCase("EXCEPTION")){
@@ -117,7 +80,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		}
 		
 		return loginModel;
-	}
+	}*/
 	
 	private String callCheckDictionaryWordInPassword(String changedpassword){
 		String returnMessage = "FAILURE";
@@ -128,14 +91,10 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 				
 		} catch (FileNotFoundException e) {
 			returnMessage="EXCEPTION";
-			//loginModel.setLoginFailedEvent(true);
-			//loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			e.printStackTrace();
 			
 		} catch (IOException e) {
 			returnMessage="EXCEPTION";
-			//loginModel.setLoginFailedEvent(true);
-			//loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			e.printStackTrace();
 		}
 		return returnMessage;

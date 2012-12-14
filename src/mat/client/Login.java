@@ -1,21 +1,22 @@
 package mat.client;
 
 import mat.client.event.BackToLoginPageEvent;
-import mat.client.event.FirstLoginPageEvent;
+import mat.client.event.ChangePaswwordSecurityQnsLoginPageEvent;
 import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.LogoffEvent;
 import mat.client.event.PasswordEmailSentEvent;
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.event.SuccessfulLoginEvent;
-import mat.client.event.TemporaryPasswordLoginEvent;
-import mat.client.login.FirstLoginPresenter;
-import mat.client.login.FirstLoginView;
+
+import mat.client.login.ChangePaswwordSecurityQnsLoginPresenter;
+import mat.client.login.ChangePaswwordSecurityQnsLoginView;
+
 import mat.client.login.ForgottenPasswordPresenter;
 import mat.client.login.ForgottenPasswordView;
 import mat.client.login.LoginPresenter;
 import mat.client.login.LoginView;
-import mat.client.login.TempPwdLoginPresenter;
-import mat.client.login.TempPwdView;
+//import mat.client.login.TempPwdLoginPresenter;
+//import mat.client.login.TempPwdView;
 import mat.client.shared.MatContext;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
@@ -30,8 +31,8 @@ public class Login extends MainLayout implements EntryPoint {
 	private Panel content;
 	private LoginPresenter loginPresenter;
 	private ForgottenPasswordPresenter forgottenPwdPresenter;
-	private FirstLoginPresenter securityQuestionsPresenter;
-	private TempPwdLoginPresenter tempPwdLogingPresenter;
+	private ChangePaswwordSecurityQnsLoginPresenter securityQuestionsPresenter;
+	//private TempPwdLoginPresenter tempPwdLogingPresenter;
 
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.LOGIN_MODULE);
@@ -79,16 +80,16 @@ public class Login extends MainLayout implements EntryPoint {
 			}
 		});
         
-		MatContext.get().getEventBus().addHandler(FirstLoginPageEvent.TYPE, new FirstLoginPageEvent.Handler() {
+		MatContext.get().getEventBus().addHandler(ChangePaswwordSecurityQnsLoginPageEvent.TYPE, new ChangePaswwordSecurityQnsLoginPageEvent.Handler() {
 			
 			@Override
-			public void onFirstLogin(final FirstLoginPageEvent event) {
+			public void onFirstLogin(final ChangePaswwordSecurityQnsLoginPageEvent event) {
 				content.clear();
 				securityQuestionsPresenter.go(content);
 			}
 		});
 		
-		MatContext.get().getEventBus().addHandler(TemporaryPasswordLoginEvent.TYPE, new TemporaryPasswordLoginEvent.Handler() {
+		/*MatContext.get().getEventBus().addHandler(TemporaryPasswordLoginEvent.TYPE, new TemporaryPasswordLoginEvent.Handler() {
 
 			@Override
 			public void onTempPasswordLogin(final TemporaryPasswordLoginEvent event) {
@@ -97,7 +98,7 @@ public class Login extends MainLayout implements EntryPoint {
 			}
 			
 			
-		});
+		});*/
 		
 		//US 439. Call signout when logoff event fired. 
 		MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, new LogoffEvent.Handler() {
@@ -150,14 +151,14 @@ public class Login extends MainLayout implements EntryPoint {
 		final LoginView unamePasswordView = new LoginView();
 		loginPresenter = new LoginPresenter(unamePasswordView);
 		
-		final FirstLoginView securityQuesView = new FirstLoginView();
-		securityQuestionsPresenter = new FirstLoginPresenter(securityQuesView);
+		final ChangePaswwordSecurityQnsLoginView securityQuesView = new ChangePaswwordSecurityQnsLoginView();
+		securityQuestionsPresenter = new ChangePaswwordSecurityQnsLoginPresenter(securityQuesView);
 		
 		final ForgottenPasswordView forgottenPwdView = new ForgottenPasswordView();
 		forgottenPwdPresenter = new ForgottenPasswordPresenter(forgottenPwdView);
 		
-		final TempPwdView temPwdview = new TempPwdView();
-		tempPwdLogingPresenter = new TempPwdLoginPresenter(temPwdview);
+		//final TempPwdView temPwdview = new TempPwdView();
+		//tempPwdLogingPresenter = new TempPwdLoginPresenter(temPwdview);
 		
 	}
 	

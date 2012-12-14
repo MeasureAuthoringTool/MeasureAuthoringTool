@@ -1,10 +1,11 @@
 package mat.client.login;
 
 import mat.client.Login;
-import mat.client.event.FirstLoginPageEvent;
+import mat.client.event.ChangePaswwordSecurityQnsLoginPageEvent;
+
 import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.SuccessfulLoginEvent;
-import mat.client.event.TemporaryPasswordLoginEvent;
+
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 
@@ -57,7 +58,6 @@ public class LoginPresenter {
 		@Override
 		public void onFailure(Throwable cause) {
 			cause.printStackTrace();
-//			display.getErrorMessageDisplay().setMessage(cause.getMessage());
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		}
 
@@ -69,15 +69,14 @@ public class LoginPresenter {
 				if(result.getRole() != null) {
 					secRole = result.getRole().getDescription();
 				}
-				//MatContext.get().setUserInfo(result.getUserId(), result.getEmail(), secRole);
 				MatContext.get().setUserInfo(result.getUserId(), result.getEmail(), secRole,result.getLoginId());
-				if(loginModel.isInitialPassword()){
-					MatContext.get().getEventBus().fireEvent(new FirstLoginPageEvent());
+				if(loginModel.isInitialPassword() || loginModel.isTemporaryPassword()){
+					MatContext.get().getEventBus().fireEvent(new ChangePaswwordSecurityQnsLoginPageEvent());
 				}else if(loginModel.isLoginFailedEvent()){
 					display.getErrorMessageDisplay().setMessage(loginModel.getErrorMessage());
-				}else if(loginModel.isTemporaryPassword()){
+				}/*else if(loginModel.isTemporaryPassword()){
 					MatContext.get().getEventBus().fireEvent(new TemporaryPasswordLoginEvent());
-				}else{
+				}*/else{
 					MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
 				}
 			}

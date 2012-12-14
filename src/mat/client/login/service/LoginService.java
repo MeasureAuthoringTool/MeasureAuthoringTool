@@ -15,7 +15,7 @@ public interface LoginService extends RemoteService {
 			String securityQuestion, String securityAnswer);
 	String changePasswordSecurityAnswers(LoginModel model);
 	public void signOut();
-	public LoginModel changeTempPassword(String email, String password);
+	//public LoginModel changeTempPassword(String email, String password);
 	
 	public SecurityQuestionOptions getSecurityQuestionOptions(String userid);
 	

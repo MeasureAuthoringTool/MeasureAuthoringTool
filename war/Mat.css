@@ -398,6 +398,11 @@ body#main select, body#main input, body#main textarea {
 	text-align: left;
 }
 
+.leftAligned_small_text {
+	font-size: 0.75em;
+	padding-left:5%;
+}
+
 .returnLink{
 	text-align : left;
 	padding-top: 10px;

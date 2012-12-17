@@ -82,7 +82,7 @@ public class ForgottenPasswordPresenter {
 
 			@Override
 			public void onFailure(Throwable exc) {
-				display.getErrorMessageDisplay().setMessage(exc.getMessage());
+				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override
@@ -157,7 +157,8 @@ public class ForgottenPasswordPresenter {
 				display.addSecurityQuestionOptions(values);
 			}
 			public void onFailure(Throwable t) {
-				Window.alert(t.getMessage());
+				//Window.alert(t.getMessage());
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 		});
 		

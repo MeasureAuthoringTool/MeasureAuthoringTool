@@ -47,7 +47,7 @@ public class ChangePaswwordSecurityQnsLoginPresenter {
 				display.addSecurityQuestionTexts(values);
 			}
 			public void onFailure(Throwable t) {
-				display.getSecurityErrorMessageDisplay().setMessage(t.getMessage());
+				display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 		});
 

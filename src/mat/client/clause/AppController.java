@@ -171,7 +171,8 @@ public class AppController {
 		}catch (Exception e) {
 			hideLoadingMessage();
 			e.printStackTrace();
-			Window.alert(e.getMessage());
+			//Window.alert(e.getMessage());
+			Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		}
 	}
 

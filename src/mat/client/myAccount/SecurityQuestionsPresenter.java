@@ -46,7 +46,8 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				display.addQuestionTexts(values);
 			}
 			public void onFailure(Throwable t) {
-				Window.alert(t.getMessage());
+				//Window.alert(t.getMessage());
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 		});
 		

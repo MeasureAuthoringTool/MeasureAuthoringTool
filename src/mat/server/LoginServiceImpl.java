@@ -2,11 +2,18 @@ package mat.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
+import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.shared.MatContext;
+import mat.model.User;
+import mat.model.UserSecurityQuestion;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
@@ -64,9 +71,11 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		
 	}
 
-	//@Override
-	/*public LoginModel changeTempPassword(String email, String changedpassword) {
+	@Override
+	public LoginModel changeTempPassword(String email, String changedpassword) {
+		
 		LoginModel loginModel = new LoginModel();
+		
 		String resultMessage = callCheckDictionaryWordInPassword(changedpassword);
 		
 		if(resultMessage.equalsIgnoreCase("EXCEPTION")){
@@ -80,7 +89,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		}
 		
 		return loginModel;
-	}*/
+	}
 	
 	private String callCheckDictionaryWordInPassword(String changedpassword){
 		String returnMessage = "FAILURE";
@@ -100,6 +109,14 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		return returnMessage;
 		
 		
+	}
+	
+	public List<UserSecurityQuestion> getSecurityQuestionsAnswers(String userID) {
+		UserService userService = (UserService)context.getBean("userService");
+		User user = userService.getById(userID);
+		List<UserSecurityQuestion> secQuestions = new ArrayList<UserSecurityQuestion>(user.getSecurityQuestions()); 
+		logger.info("secQuestions Length "+ secQuestions.size());
+		return secQuestions;
 	}
 
 }

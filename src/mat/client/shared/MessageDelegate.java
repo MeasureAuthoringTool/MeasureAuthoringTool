@@ -266,7 +266,7 @@ public class MessageDelegate {
     }
 
 
-    private final String ACCOUNT_LOCKED2 = "Your account has been locked. Please contact the administrator.";
+    private final String ACCOUNT_LOCKED2 = "Your account has been locked. Please contact the Helpdesk.";
 	public String getAccountLocked2Message(){
 		return ACCOUNT_LOCKED2;
 	}
@@ -603,8 +603,6 @@ public class MessageDelegate {
 		public String getMeasureNameRequiredMessage(){
 		return MEASURE_NAME_REQUIRED;
 	}
-
-
 
 	private final String PLEASE_SELECT_CLAUSE = "Please select a clause from the clause library in order to clone.";
 	public String getPleaseSelectClauseMessage(){

@@ -1,8 +1,10 @@
 package mat.model;
 
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 
-public class UserSecurityQuestion  {
+
+public class UserSecurityQuestion  implements IsSerializable {
 
 	private String securityQuestion;
 	private String securityAnswer;

@@ -1,7 +1,10 @@
 package mat.client.login.service;
 
 
+import java.util.List;
+
 import mat.client.login.LoginModel;
+import mat.model.UserSecurityQuestion;
 import mat.shared.ForgottenPasswordResult;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -15,8 +18,8 @@ public interface LoginService extends RemoteService {
 			String securityQuestion, String securityAnswer);
 	String changePasswordSecurityAnswers(LoginModel model);
 	public void signOut();
-	//public LoginModel changeTempPassword(String email, String password);
+	public LoginModel changeTempPassword(String email, String password);
 	
 	public SecurityQuestionOptions getSecurityQuestionOptions(String userid);
-	
+	public List<UserSecurityQuestion> getSecurityQuestionsAnswers(String userid);
 }

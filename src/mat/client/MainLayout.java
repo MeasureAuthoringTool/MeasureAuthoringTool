@@ -141,23 +141,27 @@ public abstract class MainLayout {
 		HTML helpFullLinks = new HTML("&nbsp;&nbsp;<h2>Helpful Links</h2>");
 		footerLinksPanel.add(helpFullLinks);
 		
-		
+		final HorizontalPanel footerLinks = new HorizontalPanel();
 		final Anchor policyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, null, ConstantMessages.LOGIN_MODULE, 
 									ClientConstants.HTML_ACCESSIBILITY_POLICY,null);
-		footerLinksPanel.add(policyAnchor);
-		
+		footerLinks.add(policyAnchor);
+		HTML pipe = new HTML("&nbsp;&nbsp;<b>|</b>");
+		footerLinks.add(pipe);
 		
 		final Anchor termsOfUseAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_TERMSOFUSE, null, ConstantMessages.LOGIN_MODULE, 
 			       ClientConstants.HTML_TERMSOFUSE,null);
-		footerLinksPanel.add(termsOfUseAnchor);
-		
+		footerLinks.add(termsOfUseAnchor);
+		HTML pipe_2 = new HTML("&nbsp;&nbsp;<b>|</b>");
+		footerLinks.add(pipe_2);
 		final Anchor privacyPolicyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_PRIVACYPOLICY, null, ConstantMessages.LOGIN_MODULE, 
 			       ClientConstants.HTML_PRIVACYPOLICY,null);
-		footerLinksPanel.add(privacyPolicyAnchor);
-		
+		footerLinks.add(privacyPolicyAnchor);
+		HTML pipe_3 = new HTML("&nbsp;&nbsp;<b>|</b>");
+		footerLinks.add(pipe_3);
 		final Anchor linkAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
 			       null,"###");
-		footerLinksPanel.add(linkAnchor);
+		footerLinks.add(linkAnchor);
+		footerLinksPanel.add(footerLinks);
 		
 		footerMainPanel.add(footerLinksPanel);
 		return footerMainPanel;

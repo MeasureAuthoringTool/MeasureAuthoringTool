@@ -23,13 +23,14 @@ public class ClientConstants {
 	public final static String HTML_MAT ="/Mat.html";
 	public static final String HTML_PRIVACYPOLICY = "/privacyPolicy.html";
 	public final static String EXT_LINK_HHS_Site ="http://www.hhs.gov/";
-	
+	public final static String EXT_LINK_FOIA =" http://cms.gov/center/freedom-of-information-act-center.html";
 	public final static String TEXT_ACCESSIBILITY_POLICY ="Accessibility Policy";
 	public final static String TEXT_TERMSOFUSE ="Terms Of Use";
 	public final static String TEXT_USER_GUIDE ="User Guide";
 	public final static String TEXT_THE_TITLE ="The Title";
 	public static final String TEXT_PRIVACYPOLICY = "Privacy Policy";
 	public static final String TEXT_HHS_LINK = "Link to Health and Human Services home page";
+	public static final String TEXT_FOIA ="Freedom Of Information Act (FOIA)";
 	
 	
 	public final static String TITLE_VALUE_SET_LIB ="Value Set Library";

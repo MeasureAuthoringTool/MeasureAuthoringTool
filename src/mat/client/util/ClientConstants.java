@@ -30,7 +30,7 @@ public class ClientConstants {
 	public final static String TEXT_THE_TITLE ="The Title";
 	public static final String TEXT_PRIVACYPOLICY = "Privacy Policy";
 	public static final String TEXT_HHS_LINK = "Link to Health and Human Services home page";
-	public static final String TEXT_FOIA ="Freedom Of Information Act (FOIA)";
+	public static final String TEXT_FOIA ="Freedom of Information Act";
 	
 	
 	public final static String TITLE_VALUE_SET_LIB ="Value Set Library";

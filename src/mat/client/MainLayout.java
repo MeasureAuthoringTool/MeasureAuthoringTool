@@ -153,11 +153,20 @@ public abstract class MainLayout {
 		footerLinks.add(termsOfUseAnchor);
 		HTML pipe_2 = new HTML("&nbsp;&nbsp;<b>|</b>");
 		footerLinks.add(pipe_2);
+		
 		final Anchor privacyPolicyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_PRIVACYPOLICY, null, ConstantMessages.LOGIN_MODULE, 
 			       ClientConstants.HTML_PRIVACYPOLICY,null);
 		footerLinks.add(privacyPolicyAnchor);
 		HTML pipe_3 = new HTML("&nbsp;&nbsp;<b>|</b>");
 		footerLinks.add(pipe_3);
+		
+		final Anchor foiaAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_FOIA, null, ConstantMessages.LOGIN_MODULE, 
+			       														null,ClientConstants.EXT_LINK_FOIA);
+		footerLinks.add(foiaAnchor);
+		HTML pipe_4 = new HTML("&nbsp;&nbsp;<b>|</b>");
+		footerLinks.add(pipe_4);
+		
+		
 		final Anchor linkAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
 			       null,"###");
 		footerLinks.add(linkAnchor);

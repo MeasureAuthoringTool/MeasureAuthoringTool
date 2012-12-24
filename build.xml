@@ -105,7 +105,7 @@
 		 		
 		 		<fileset dir="${web.output.dir}/test-classes" includes="**/CodeListRequiredFieldTest.class" />
 		 		<fileset dir="${web.output.dir}/test-classes" includes="**/SimpleEMeasureServiceImplTest.class" />
-		 		<fileset dir="${web.output.dir}/test-classes" includes="**/ResetUserPasswordTest.class" />
+		 		<!--<fileset dir="${web.output.dir}/test-classes" includes="**/ResetUserPasswordTest.class" />-->
 		 		<fileset dir="${web.output.dir}/test-classes" includes="**/UserServiceImplTest.class" />
 		 		<fileset dir="${web.output.dir}/test-classes" includes="**/ManageQDSImplTest.class" />
 		 		

@@ -93,7 +93,7 @@
 		 		
 		 		<fileset dir="${web.output.dir}/test-classes" includes="**/CodeListExportTest.class" />
 		 		<fileset dir="${web.output.dir}/test-classes" includes="**/AdminServiceImplTest.class" />
-		 		<fileset dir="${web.output.dir}/test-classes" includes="**/LoginServiceImplTest.class" />
+		 		<!--<fileset dir="${web.output.dir}/test-classes" includes="**/LoginServiceImplTest.class" />-->
 		 		<fileset dir="${web.output.dir}/test-classes" includes="**/PasswordVerifierTest.class" />
 		 		<fileset dir="${web.output.dir}/test-classes" includes="**/SecurityQuestionVerifierTest.class" />
 
@@ -189,7 +189,7 @@
     	<mkdir dir="${output.war.dir}"/>
         <jar destfile="${output.file}" basedir="${web.output.dir}" manifest="${web.output.dir}/META-INF/MANIFEST.MF"></jar>
 
-    	<!--<antcall target="JUnit-report" />-->
+    	<antcall target="JUnit-report" />
     	<antcall target="checksum"/>
     </target>
 	

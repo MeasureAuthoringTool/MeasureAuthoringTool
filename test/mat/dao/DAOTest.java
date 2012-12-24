@@ -192,11 +192,11 @@ public class DAOTest extends SpringInitializationTest {
 	@Test
 	public void emailAddressCaseInsensitiveTest() {
 		assertTrue(userDAO.userExists("Admin").equals(Boolean.TRUE));
-		assertTrue(userDAO.findByEmail("Admin") != null);
+		assertTrue(userDAO.findByLoginId("Admin") != null);
 		assertTrue(userDAO.getUser("Admin") != null);
 		
 		assertTrue(userDAO.userExists("admin").equals(Boolean.TRUE));
-		assertTrue(userDAO.findByEmail("admin") != null);
+		assertTrue(userDAO.findByLoginId("admin") != null);
 		assertTrue(userDAO.getUser("admin") != null);
 	}
 }

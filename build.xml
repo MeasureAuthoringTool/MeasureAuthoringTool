@@ -19,7 +19,7 @@
 	
 	<property name="PMD.home" location="war/WEB-INF"/>
 	<property name="pmddoc" location="${output.dir}/pmddoc" />
-	<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+	<taskdef name="pmd-1" classname="net.sourceforge.pmd.ant.PMDTask">
 	    <classpath>
 	        <fileset dir="${PMD.home}">
 	            <include name="lib/*.jar"/>    
@@ -217,10 +217,10 @@
 	    <mkdir dir="${pmddoc}" />
 	</target>
 	
-	<target name="pmd" depends="init">
+	<target name="pmd-1" depends="init">
 		<pmd>
 		<formatter type="html" toFile="${pmddoc}/pmd_src_report.html" toConsole="true"/>
-	    <ruleset>rulesets/basic.xml</ruleset> 
+	    <ruleset>rulesets/java/basic.xml</ruleset> 
         <fileset dir="src/mat">
             <include name="**/*.java"/>     
         </fileset>

@@ -219,6 +219,7 @@ body#main select, body#main input, body#main textarea {
     list-style: none outside none;
     width:100%;
     overflow:auto;
+    padding-bottom:15px;
 }
 .footer-nav h2 {
 	background: none repeat scroll 0 center transparent;
@@ -229,6 +230,7 @@ body#main select, body#main input, body#main textarea {
     padding-left:10px;
     padding-bottom: 5px; 
 }
+
 .footer-nav a:link,a:active {
     font:  0.85em sans-serif;
     /* color: #105191; */

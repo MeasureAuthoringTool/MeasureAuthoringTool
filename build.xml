@@ -17,7 +17,7 @@
         <fileset dir="war/WEB-INF/lib" includes="*.jar" />
     </path>
 	
-	<property name="PMD.home" location="war/WEB-INF/PMD"/>
+	<property name="PMD.home" location="war/WEB-INF"/>
 	<property name="pmddoc" location="${output.dir}/pmddoc" />
 	<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
 	    <classpath>

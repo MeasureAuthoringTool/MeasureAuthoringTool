@@ -202,8 +202,8 @@
          </manifest>
     	<mkdir dir="${output.war.dir}"/>
         <jar destfile="${output.file}" basedir="${web.output.dir}" manifest="${web.output.dir}/META-INF/MANIFEST.MF"></jar>
-    	<antcall target="pmd"/>
-    	<!--<antcall target="JUnit-report" /> -->
+    	<!--<antcall target="pmd"/>
+    	<antcall target="JUnit-report" /> -->
     	<antcall target="checksum"/>
     	
     </target>
@@ -220,7 +220,7 @@
 	<target name="pmd" depends="init">
 		<pmd>
 		<formatter type="html" toFile="${pmddoc}/pmd_src_report.html" toConsole="true"/>
-	    <ruleset>rulesets/java/basic.xml,java-imports,java-basic,java-j2ee</ruleset> 
+	    <ruleset>rulesets/basic.xml</ruleset> 
         <fileset dir="src/mat">
             <include name="**/*.java"/>     
         </fileset>

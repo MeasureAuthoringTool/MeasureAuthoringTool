@@ -202,7 +202,7 @@
          </manifest>
     	<mkdir dir="${output.war.dir}"/>
         <jar destfile="${output.file}" basedir="${web.output.dir}" manifest="${web.output.dir}/META-INF/MANIFEST.MF"></jar>
-    	<antcall target="pmd"/>
+    	<antcall target="pmd-1"/>
     	<!--<antcall target="JUnit-report" /> -->
     	<antcall target="checksum"/>
     	

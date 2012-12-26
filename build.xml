@@ -8,13 +8,25 @@
     <property name="web.lib.dir" value="${output.dir}/WEB-INF/lib"/>
 	<property name="java.src.dir" value="src" /> 
 	<property name="test.src.dir" value="test" /> 
-		              
+	
+	
     <path id="build.classpath">
         <pathelement location="${web.output.dir}/WEB-INF/classes"/>
         <pathelement location="src"/>
         <pathelement location="war/WEB-INF/lib"/>
         <fileset dir="war/WEB-INF/lib" includes="*.jar" />
     </path>
+	
+	<property name="PMD.home" location="war/WEB-INF/PMD"/>
+	<property name="pmddoc" location="${output.dir}/pmddoc" />
+	<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
+	    <classpath>
+	        <fileset dir="${PMD.home}">
+	            <include name="lib/*.jar"/>    
+	        </fileset>
+	    </classpath>
+	</taskdef>
+	
 	
 	<path id="test.classpath">
 	  <pathelement path="${web.output.dir}/test-classes" />
@@ -151,6 +163,7 @@
             <arg value="mat.Mat" />
             <arg value="mat.Login" />
         </java>
+    	
     </target>
     
 	<!-- compile for server side code -->
@@ -161,6 +174,7 @@
                fork="true"
                debug="true"
         />
+    	
     </target>
 
 	<!-- get latest code from SVN -->
@@ -188,14 +202,29 @@
          </manifest>
     	<mkdir dir="${output.war.dir}"/>
         <jar destfile="${output.file}" basedir="${web.output.dir}" manifest="${web.output.dir}/META-INF/MANIFEST.MF"></jar>
-
-    	<antcall target="JUnit-report" />
+    	<antcall target="pmd"/>
+    	<!--<antcall target="JUnit-report" /> -->
     	<antcall target="checksum"/>
+    	
     </target>
 	
 	<!-- Save Checksum of war file after creating war file  -->
 	<target name="checksum">
 			<checksum file="${output.war.dir}/${war.name}.war" algorithm="${output.checksum.algo}" fileext=".checksum.${output.checksum.algo}"/>
+	</target>
+	
+	<target name="init">
+	    <mkdir dir="${pmddoc}" />
+	</target>
+	
+	<target name="pmd" depends="init">
+		<pmd>
+		<formatter type="html" toFile="${pmddoc}/pmd_src_report.html" toConsole="true"/>
+	    <ruleset>rulesets/java/basic.xml,java-imports,java-basic,java-j2ee</ruleset> 
+        <fileset dir="src/mat">
+            <include name="**/*.java"/>     
+        </fileset>
+	  </pmd>
 	</target>
 	
 </project>

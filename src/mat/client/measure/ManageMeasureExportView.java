@@ -25,24 +25,17 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	private PrimaryButton saveButton = new PrimaryButton("Save");
 	private SecondaryButton cancelButton = new SecondaryButton("Cancel");
 	private SecondaryButton openButton = new SecondaryButton("Open");
-	private boolean isTopLevelUser = false;
 	
 
 	public ManageMeasureExportView(boolean isTopLevelUser) {
-		//this.isTopLevelUser=isTopLevelUser;
-		//if(this.isTopLevelUser)
+		
 		simpleXMLRadio.setValue(Boolean.TRUE);
-		//else
-		//	eMeasureRadio.setValue(Boolean.TRUE);
 		content.setStylePrimaryName("contentPanel");
 		content.addStyleName("leftAligned");
-		
 		content.add(measureNameLabel);
-		
 		content.add(new Label("Select an export option"));
 		content.add(new SpacerWidget());
 
-		//if(isTopLevelUser)
 		content.add(wrapRadioButton(simpleXMLRadio));
 		content.add(wrapRadioButton(eMeasureRadio));
 		content.add(wrapRadioButton(codeListRadio));

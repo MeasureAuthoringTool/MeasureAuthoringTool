@@ -15,7 +15,7 @@ import mat.client.shared.search.PageSizeSelectionEvent;
 import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
-
+import mat.client.util.ClientConstants;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -25,6 +25,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -284,8 +285,42 @@ public class ManageUsersPresenter implements MatPresenter {
 				detailDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 				showSearchingBusy(false);
+//				if(caught instanceof mat.shared.exception.InCorrectUserRoleException){
+//					callSignOut();
+//				}
 			}
 		});
+	}
+	
+	private void callSignOut(){
+		 MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
+
+				@Override
+				public void onFailure(Throwable arg0) {
+					redirectToLogin();
+				}
+
+				@Override
+				public void onSuccess(Void arg0) {
+					redirectToLogin();
+				}
+			});
+	}
+	
+	private void redirectToLogin() {
+		
+		/*
+		 * Added a timer to have a delay before redirect since 
+		 * this was causing the firefox javascript exception.
+		 */
+		final Timer timer = new Timer() {
+			@Override
+			public void run() {
+				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+			}
+		};
+		timer.schedule(1000);
+		
 	}
 	
 	private void showSearchingBusy(boolean busy){

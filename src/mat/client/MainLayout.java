@@ -1,5 +1,7 @@
 package mat.client;
 
+import java.util.List;
+
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.FocusableWidget;
 
@@ -14,6 +16,7 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -105,13 +108,14 @@ public abstract class MainLayout {
 		return loadingPanel;
 	}
 	
+	
 	/**
 	 * Builds the Footer Panel for the Login and Mat View. Currently, it displays the 
 	 * 'Accessibility Policy' , 'Terms Of Use' , 'Privacy Policy' 'User Guide' links with CMS LOGO.
 	 * @return Panel
 	 */
 	private Panel buildFooterPanel() {
-	
+		
 		FlowPanel footerMainPanel = new FlowPanel();
 		footerMainPanel.setStylePrimaryName("footer");		
 		
@@ -134,7 +138,7 @@ public abstract class MainLayout {
 		footerLogoPanel.add(footerRightAnchor);
 		footerMainPanel.add(footerLogoPanel);
 		
-		
+				
 		final VerticalPanel footerLinksPanel = new VerticalPanel();
 		footerLinksPanel.setStylePrimaryName("footer-nav");
 		
@@ -142,40 +146,72 @@ public abstract class MainLayout {
 		footerLinksPanel.add(helpFullLinks);
 		
 		final HorizontalPanel footerLinks = new HorizontalPanel();
-		final Anchor policyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, null, ConstantMessages.LOGIN_MODULE, 
-									ClientConstants.HTML_ACCESSIBILITY_POLICY,null);
-		footerLinks.add(policyAnchor);
-		HTML pipe = new HTML("&nbsp;&nbsp;<b>|</b>");
-		footerLinks.add(pipe);
-		
-		final Anchor privacyPolicyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_PRIVACYPOLICY, null, ConstantMessages.LOGIN_MODULE, 
-			       ClientConstants.HTML_PRIVACYPOLICY,null);
-		footerLinks.add(privacyPolicyAnchor);
-		HTML pipe_2 = new HTML("&nbsp;&nbsp;<b>|</b>");
-		footerLinks.add(pipe_2);
-		
-		final Anchor termsOfUseAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_TERMSOFUSE, null, ConstantMessages.LOGIN_MODULE, 
-			       ClientConstants.HTML_TERMSOFUSE,null);
-		footerLinks.add(termsOfUseAnchor);
-		HTML pipe_3 = new HTML("&nbsp;&nbsp;<b>|</b>");
-		footerLinks.add(pipe_3);
-		
-		final Anchor foiaAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_FOIA, null, ConstantMessages.LOGIN_MODULE, 
-			       														null,ClientConstants.EXT_LINK_FOIA);
-		footerLinks.add(foiaAnchor);
-		HTML pipe_4 = new HTML("&nbsp;&nbsp;<b>|</b>");
-		footerLinks.add(pipe_4);
+		fetchAndcreateFooterLinks(footerLinks);
 		
 		
-		final Anchor linkAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
-			       null,"###");
-		footerLinks.add(linkAnchor);
 		footerLinksPanel.add(footerLinks);
 		
 		footerMainPanel.add(footerLinksPanel);
 		return footerMainPanel;
 }
 	
+	private void fetchAndcreateFooterLinks(final HorizontalPanel footerLinks) {
+		MatContext.get().getLoginService().getFooterURLs(new AsyncCallback<List<String>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				//This will create Footer links with default values.
+				createFooterLinks(footerLinks);				
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				//Set the Footer URL's on the ClientConstants for use by the app in various locations.
+				ClientConstants.ACCESSIBILITY_POLICY_URL = result.get(0);
+				ClientConstants.PRIVACYPOLICY_URL = result.get(1);
+				ClientConstants.TERMSOFUSE_URL = result.get(2);
+				//This will create Footer links with values from server.
+				createFooterLinks(footerLinks);
+			}
+		
+		});
+		
+	}
+
+	private void createFooterLinks(HorizontalPanel footerLinks) {
+		
+		final String pipeHTML = "&nbsp;&nbsp;<b>|</b>";
+		
+		final Anchor policyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, null, ConstantMessages.LOGIN_MODULE, 
+				null,ClientConstants.ACCESSIBILITY_POLICY_URL);
+		footerLinks.add(policyAnchor);
+		HTML pipe = new HTML(pipeHTML);
+		footerLinks.add(pipe);
+		
+		final Anchor privacyPolicyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_PRIVACYPOLICY, null, ConstantMessages.LOGIN_MODULE, 
+		null,ClientConstants.PRIVACYPOLICY_URL);
+		footerLinks.add(privacyPolicyAnchor);
+		HTML pipe_2 = new HTML(pipeHTML);
+		footerLinks.add(pipe_2);
+		
+		final Anchor termsOfUseAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_TERMSOFUSE, null, ConstantMessages.LOGIN_MODULE, 
+		null,ClientConstants.TERMSOFUSE_URL);
+		footerLinks.add(termsOfUseAnchor);
+		HTML pipe_3 = new HTML(pipeHTML);
+		footerLinks.add(pipe_3);
+		
+		final Anchor foiaAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_FOIA, null, ConstantMessages.LOGIN_MODULE, 
+																null,ClientConstants.EXT_LINK_FOIA);
+		footerLinks.add(foiaAnchor);
+		HTML pipe_4 = new HTML(pipeHTML);
+		footerLinks.add(pipe_4);
+		
+		
+		final Anchor linkAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
+		null,"###");
+		footerLinks.add(linkAnchor);
+		
+	}
+
 	private Panel buildTopPanel() {
 		final HorizontalPanel topBanner = new HorizontalPanel();
 		setId(topBanner, "title");

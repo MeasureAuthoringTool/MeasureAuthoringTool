@@ -12,6 +12,7 @@ import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.shared.MatContext;
+import mat.client.util.ClientConstants;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.LoginCredentialService;
@@ -25,7 +26,6 @@ import org.apache.commons.logging.LogFactory;
 @SuppressWarnings("serial")
 public class LoginServiceImpl extends SpringRemoteServiceServlet implements LoginService{
 	private static final Log logger = LogFactory.getLog(LoginServiceImpl.class);
-	
 	
 	private LoginCredentialService getLoginCredentialService(){
 		return (LoginCredentialService)context.getBean("loginService");
@@ -89,6 +89,13 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		}
 		
 		return loginModel;
+	}
+	
+	@Override
+	public List<String> getFooterURLs(){
+		UserService userService = (UserService)context.getBean("userService");
+		List<String> footerURLs = userService.getFooterURLs();
+		return footerURLs;
 	}
 	
 	private String callCheckDictionaryWordInPassword(String changedpassword){

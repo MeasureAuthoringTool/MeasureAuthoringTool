@@ -22,4 +22,5 @@ public interface LoginService extends RemoteService {
 	
 	public SecurityQuestionOptions getSecurityQuestionOptions(String userid);
 	public List<UserSecurityQuestion> getSecurityQuestionsAnswers(String userid);
+	List<String> getFooterURLs();
 }

@@ -29,4 +29,5 @@ public interface UserService {
 	//US212
 	public void setUserSignInDate(String userid);
 	public void setUserSignOutDate(String userid);
+	List<String> getFooterURLs();
 }

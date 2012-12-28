@@ -68,6 +68,12 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private CodeListService codeListService;
+
+	private String accessibilityUrl;
+
+	private String termsOfUseUrl;
+
+	private String privacyPolicyUseUrl;
 	
 	 public String generateRandomPassword() {
 		String password = null;
@@ -391,6 +397,15 @@ public class UserServiceImpl implements UserService {
 		return result;
 	}
 	
+	@Override
+	public List<String> getFooterURLs(){
+		List<String> footerUrls = new ArrayList<String>();
+		footerUrls.add(accessibilityUrl);
+		footerUrls.add(privacyPolicyUseUrl);
+		footerUrls.add(termsOfUseUrl);
+		return footerUrls;
+	}
+	
 	private void setModelFieldsOnUser(ManageUsersDetailModel model, User user) {
 		user.setFirstName(model.getFirstName());
 		user.setLastName(model.getLastName());
@@ -461,6 +476,40 @@ public class UserServiceImpl implements UserService {
 		
 		generatedId = generatedId.append(firstName.substring(0,firstNameLastIndex)).append(lastName.substring(0, lastNameLastIndex)).append((ID.nextInt(9000) + 1000));
 		return generatedId.toString();
+	}
+	
+	public void setAccessibilityUrl(String accessibilityUrl) {
+		this.accessibilityUrl = accessibilityUrl;
+	}
+
+
+
+	public String getAccessibilityUrl() {
+		return accessibilityUrl;
+	}
+
+
+
+	public void setTermsOfUseUrl(String termsOfUseUrl) {
+		this.termsOfUseUrl = termsOfUseUrl;
+	}
+
+
+
+	public String getTermsOfUseUrl() {
+		return termsOfUseUrl;
+	}
+
+
+
+	public void setPrivacyPolicyUseUrl(String privacyPolicyUseUrl) {
+		this.privacyPolicyUseUrl = privacyPolicyUseUrl;
+	}
+
+
+
+	public String getPrivacyPolicyUseUrl() {
+		return privacyPolicyUseUrl;
 	}
 	
 }

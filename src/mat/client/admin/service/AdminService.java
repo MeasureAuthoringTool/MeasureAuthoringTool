@@ -11,7 +11,7 @@ public interface AdminService extends RemoteService {
 	public ManageUsersDetailModel getUser(String key);
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model);
 	
-	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize);
+	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws Exception;
 	public void deleteUser(String userId);
 	public void resetUserPassword(String userid);
 }

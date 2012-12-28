@@ -10,7 +10,6 @@ import mat.client.admin.service.SaveUpdateUserResult;
 import mat.model.Status;
 import mat.model.User;
 import mat.server.service.UserService;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -68,7 +67,15 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	
 	
 	@Override
-	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) {
+	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws Exception {
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		logger.info("userRole actual:"+userRole);
+		if(!("Adminstrator".equalsIgnoreCase(userRole))){
+			logger.info("Non Administrator user tried to access Administrator data");
+			//throw new mat.shared.exception.InCorrectUserRoleException("Non Administrator user tried to access Administrator data.");
+			return null;
+		}
+		
 		UserService userService = getUserService();
 		List<User> searchResults = userService.searchForUsersByName(key, startIndex, pageSize);
 		logger.info("User search returned " + searchResults.size());

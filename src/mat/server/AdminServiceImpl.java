@@ -72,8 +72,8 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		logger.info("userRole actual:"+userRole);
 		if(!("Adminstrator".equalsIgnoreCase(userRole))){
 			logger.info("Non Administrator user tried to access Administrator data");
-			//throw new mat.shared.exception.InCorrectUserRoleException("Non Administrator user tried to access Administrator data.");
-			return null;
+			throw new mat.shared.InCorrectUserRoleException("Non Administrator user tried to access Administrator data.");
+			//return null;
 		}
 		
 		UserService userService = getUserService();

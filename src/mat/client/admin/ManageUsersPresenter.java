@@ -16,6 +16,8 @@ import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
+import mat.shared.InCorrectUserRoleException;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -285,9 +287,9 @@ public class ManageUsersPresenter implements MatPresenter {
 				detailDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 				showSearchingBusy(false);
-//				if(caught instanceof mat.shared.exception.InCorrectUserRoleException){
-//					callSignOut();
-//				}
+				if(caught instanceof InCorrectUserRoleException){
+					callSignOut();
+				}
 			}
 		});
 	}

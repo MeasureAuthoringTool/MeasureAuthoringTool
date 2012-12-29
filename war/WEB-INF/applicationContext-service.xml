@@ -8,11 +8,17 @@
        http://www.springframework.org/schema/task
        http://www.springframework.org/schema/task/spring-task-3.0.xsd"
 >
+	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:MAT.properties"/>
+	</bean>
 	
 	<bean id="loginService" class="mat.server.service.impl.LoginCredentialServiceImpl">
-    </bean>
+	</bean>
 	
     <bean id="userService" class="mat.server.service.impl.UserServiceImpl">
+        <property name="accessibilityUrl" value="${mat.accessibilitypolicy.url}"/>
+	    <property name="termsOfUseUrl" value="${mat.termsofuse.url}"/>
+	    <property name="privacyPolicyUseUrl" value="${mat.privacypolicy.url}"/>	
     </bean>
     
     <bean id="codeListService" class="mat.server.service.impl.ManageCodeListServiceImpl">

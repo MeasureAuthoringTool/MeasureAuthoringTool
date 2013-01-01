@@ -12,6 +12,7 @@ import mat.model.User;
 import mat.server.service.UserService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @SuppressWarnings("serial")
 public class AdminServiceImpl extends SpringRemoteServiceServlet implements AdminService{
@@ -68,10 +69,13 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	
 	@Override
 	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws Exception {
+		
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		logger.info("userRole actual:"+userRole);
 		if(!("Adminstrator".equalsIgnoreCase(userRole))){
 			logger.info("Non Administrator user tried to access Administrator data");
+			//This should sign out the user & invalidate the session.
+			SecurityContextHolder.clearContext();
 			throw new mat.shared.InCorrectUserRoleException("Non Administrator user tried to access Administrator data.");
 			//return null;
 		}

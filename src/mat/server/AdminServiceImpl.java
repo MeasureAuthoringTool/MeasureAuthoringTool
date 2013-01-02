@@ -10,6 +10,8 @@ import mat.client.admin.service.SaveUpdateUserResult;
 import mat.model.Status;
 import mat.model.User;
 import mat.server.service.UserService;
+import mat.shared.InCorrectUserRoleException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,14 +22,16 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	
 
 	@Override
-	public ManageUsersDetailModel getUser(String key) {
+	public ManageUsersDetailModel getUser(String key) throws InCorrectUserRoleException {
+		checkAdminUser();
 		logger.info("Retrieving user " + key);
 		User user= getUserService().getById(key);
 		return extractUserModel(user);
 	}
 
 	@Override
-	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) {
+	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException {
+		checkAdminUser();
 		SaveUpdateUserResult result = getUserService().saveUpdateUser(model);
 		return result;
 	}
@@ -65,21 +69,19 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		return getUserService().isAdminForUser(adminUser, user);
 	}
 	
-	
-	
-	@Override
-	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws Exception {
-		
+	private void checkAdminUser() throws InCorrectUserRoleException{
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		logger.info("userRole actual:"+userRole);
 		if(!("Adminstrator".equalsIgnoreCase(userRole))){
-			logger.info("Non Administrator user tried to access Administrator data");
-			//This should sign out the user & invalidate the session.
 			SecurityContextHolder.clearContext();
 			throw new mat.shared.InCorrectUserRoleException("Non Administrator user tried to access Administrator data.");
-			//return null;
 		}
-		
+	}
+	
+	@Override
+	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws InCorrectUserRoleException {
+		checkAdminUser();
+				
 		UserService userService = getUserService();
 		List<User> searchResults = userService.searchForUsersByName(key, startIndex, pageSize);
 		logger.info("User search returned " + searchResults.size());
@@ -109,7 +111,8 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	}
 
 	@Override
-	public void deleteUser(String userId) {
+	public void deleteUser(String userId) throws InCorrectUserRoleException  {
+		checkAdminUser();
 		getUserService().deleteUser(userId);
 	}
 

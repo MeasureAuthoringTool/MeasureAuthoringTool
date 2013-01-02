@@ -105,7 +105,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				else{
 					MatContext.get().setUserSignInDate(result.userId);
 					MatContext.get().setUserInfo(result.userId, result.userEmail, result.userRole,result.loginId);
-//					MatContext.get().setUserInfo(result.userId, result.userEmail, ClientConstants.ADMINISTRATOR,result.loginId);
 					loadMatWidgets();
 				}
 			}

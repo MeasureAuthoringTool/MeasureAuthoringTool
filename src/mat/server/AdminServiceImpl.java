@@ -10,6 +10,8 @@ import mat.client.admin.service.SaveUpdateUserResult;
 import mat.model.Status;
 import mat.model.User;
 import mat.server.service.UserService;
+import mat.shared.AdminManageUserModelValidator;
+
 import mat.shared.InCorrectUserRoleException;
 
 import org.apache.commons.logging.Log;
@@ -32,7 +34,18 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	@Override
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException {
 		checkAdminUser();
-		SaveUpdateUserResult result = getUserService().saveUpdateUser(model);
+		AdminManageUserModelValidator test = new AdminManageUserModelValidator();
+		List<String>  message= test.isValidUsersDetail(model);
+		SaveUpdateUserResult result = new SaveUpdateUserResult();
+		if(message.size()!=0){
+			for(String messages: message){
+				logger.info("Server-Side Validation for SaveUpdateUserResult for Login ID: "+model.getLoginId()+ messages);
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
+			}
+		}else{
+			 result = getUserService().saveUpdateUser(model);
+		}
 		return result;
 	}
 

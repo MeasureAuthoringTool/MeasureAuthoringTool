@@ -1,11 +1,12 @@
 package mat.client.admin;
 
-import java.util.ArrayList;
+
 import java.util.List;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.admin.service.SaveUpdateUserResult;
+
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -16,7 +17,10 @@ import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
+import mat.shared.AdminManageUserModelValidator;
+
 import mat.shared.InCorrectUserRoleException;
+
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -211,7 +215,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void update() {
 		resetMessages();
 		updateUserDetailsFromView();
-		if(isValidUsersDetail(currentDetails)) {
+		if(isValid(currentDetails)) {
 			MatContext.get().getAdminService().saveUpdateUser(currentDetails, new AsyncCallback<SaveUpdateUserResult>() {
 				
 				@Override
@@ -225,6 +229,9 @@ public class ManageUsersPresenter implements MatPresenter {
 						
 							case SaveUpdateUserResult.ID_NOT_UNIQUE:
 								message = MatContext.get().getMessageDelegate().getEmailAlreadyExistsMessage();
+								break;
+							case SaveUpdateUserResult.SERVER_SIDE_VALIDATION:
+								message = MatContext.get().getMessageDelegate().getServerSideValidationMessage();
 								break;
 							default:
 								message = MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason());
@@ -391,63 +398,6 @@ public class ManageUsersPresenter implements MatPresenter {
 		currentDetails.setRole(detailDisplay.getRole().getValue());
 	}
 	
-	private boolean isValidUsersDetail(ManageUsersDetailModel model) {
-		List<String> message = new ArrayList<String>();
-		
-		if("".equals(model.getFirstName().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getFirstNameRequiredMessage());
-		}
-		if("".equals(model.getLastName().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getLastNameRequiredMessage());
-		}
-		if("".equals(model.getEmailAddress().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
-		}
-		if("".equals(model.getPhoneNumber().trim())) {
-			
-			message.add(MatContext.get().getMessageDelegate().getPhoneRequiredMessage());
-		}
-		
-		String phoneNum = model.getPhoneNumber();
-		int i, numCount;
-		numCount=0;
-		for(i=0;i<phoneNum.length(); i++){
-			if(Character.isDigit(phoneNum.charAt(i)))
-				numCount++;
-		}
-		if(numCount != 10) {
-			message.add(MatContext.get().getMessageDelegate().getPhoneTenDigitMessage());
-		}	
-		
-		if("".equals(model.getOrganization().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getOrgRequiredMessage());
-		}
-		if("".equals(model.getOid().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getOIDRequiredMessage());
-		}
-		if("".equals(model.getRootOid().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getRootOIDRequiredMessage());
-		}
-		if(model.getFirstName().length() < 2) {
-			message.add(MatContext.get().getMessageDelegate().getFirstMinMessage());
-		}
-		if(model.getOid().length() > 50) {
-			message.add(MatContext.get().getMessageDelegate().getOIDTooLongMessage());
-		}
-		if(model.getRootOid().length() > 50) {
-			message.add(MatContext.get().getMessageDelegate().getRootOIDTooLongMessage());
-		}
-		
-		boolean valid = message.size() == 0;
-		if(!valid) {
-			detailDisplay.getErrorMessageDisplay().setMessages(message);
-		}
-		else {
-			detailDisplay.getErrorMessageDisplay().clear();
-		}
-		return valid;
-	}
-	
 	public Widget getWidgetWithHeading(Widget widget, String heading) {
 		FlowPanel vPanel = new FlowPanel();
 		Label h = new Label(heading);
@@ -458,5 +408,20 @@ public class ManageUsersPresenter implements MatPresenter {
 		vPanel.addStyleName("myAccountPanel");
 		widget.addStyleName("myAccountPanelContent");
 		return vPanel;
+	}
+	
+	private boolean isValid(ManageUsersDetailModel model) {
+		
+		AdminManageUserModelValidator test = new AdminManageUserModelValidator();
+		List<String>  message= test.isValidUsersDetail(model);
+		
+		boolean valid = message.size() == 0;
+		if(!valid) {
+			detailDisplay.getErrorMessageDisplay().setMessages(message);
+		}
+		else {
+			detailDisplay.getErrorMessageDisplay().clear();
+		}
+		return valid;
 	}
 }

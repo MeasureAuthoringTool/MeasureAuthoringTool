@@ -1,6 +1,7 @@
 package mat.client.admin;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.Mat;
@@ -224,19 +225,18 @@ public class ManageUsersPresenter implements MatPresenter {
 						displaySearch();
 					}
 					else {
-						String message = null;
+						List<String> messages = new ArrayList<String>();
 						switch(result.getFailureReason()) {
-						
 							case SaveUpdateUserResult.ID_NOT_UNIQUE:
-								message = MatContext.get().getMessageDelegate().getEmailAlreadyExistsMessage();
+								messages.add(MatContext.get().getMessageDelegate().getEmailAlreadyExistsMessage());
 								break;
 							case SaveUpdateUserResult.SERVER_SIDE_VALIDATION:
-								message = MatContext.get().getMessageDelegate().getServerSideValidationMessage();
+								messages = result.getMessages();
 								break;
 							default:
-								message = MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason());
+								messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
 						}
-						detailDisplay.getErrorMessageDisplay().setMessage(message);
+						detailDisplay.getErrorMessageDisplay().setMessages(messages);
 					}
 				}
 				

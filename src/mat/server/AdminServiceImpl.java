@@ -72,7 +72,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	private void checkAdminUser() throws InCorrectUserRoleException{
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		logger.info("userRole actual:"+userRole);
-		if(!("Adminstrator".equalsIgnoreCase(userRole))){
+		if(!("Administrator".equalsIgnoreCase(userRole))){
 			SecurityContextHolder.clearContext();
 			throw new mat.shared.InCorrectUserRoleException("Non Administrator user tried to access Administrator data.");
 		}

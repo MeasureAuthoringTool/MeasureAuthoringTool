@@ -35,14 +35,15 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException {
 		checkAdminUser();
 		AdminManageUserModelValidator test = new AdminManageUserModelValidator();
-		List<String>  message= test.isValidUsersDetail(model);
+		List<String>  messages= test.isValidUsersDetail(model);
 		SaveUpdateUserResult result = new SaveUpdateUserResult();
-		if(message.size()!=0){
-			for(String messages: message){
-				logger.info("Server-Side Validation for SaveUpdateUserResult for Login ID: "+model.getLoginId()+ messages);
-				result.setSuccess(false);
-				result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
+		if(messages.size()!=0){
+			for(String message: messages){
+				logger.info("Server-Side Validation failed for SaveUpdateUserResult for Login ID: "+model.getLoginId()+ " And failure Message is :"+ message);
 			}
+			result.setSuccess(false);
+			result.setMessages(messages);
+			result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
 		}else{
 			 result = getUserService().saveUpdateUser(model);
 		}

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import mat.client.login.LoginModel;
+import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.myAccount.SecurityQuestionsModel;
@@ -19,6 +20,8 @@ import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
 import mat.shared.ForgottenPasswordResult;
+import mat.shared.PasswordVerifier;
+import mat.shared.SecurityQuestionVerifier;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -60,15 +63,50 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	}
 
 	@Override
-	public String changePasswordSecurityAnswers(LoginModel model) {
+	public LoginResult changePasswordSecurityAnswers(LoginModel model) {
 		LoginModel loginModel = model;
+		LoginResult result = new LoginResult();
+		PasswordVerifier verifier  = new PasswordVerifier(MatContext.get().getLoggedinLoginId(), 
+														model.getPassword(), model.getPassword());
 		
-		String resultMessage = callCheckDictionaryWordInPassword(loginModel.getPassword());
-		if(resultMessage.equalsIgnoreCase("SUCCESS")){
-			getLoginCredentialService().changePasswordSecurityAnswers(model);
+		if(verifier.isValid()){
+			SecurityQuestionVerifier sverifier = new SecurityQuestionVerifier(model.getQuestion1(),
+					model.getQuestion1Answer(),
+					model.getQuestion2(),
+					model.getQuestion2Answer(),
+					model.getQuestion3(),
+					model.getQuestion3Answer());
+
+			if(sverifier.isValid()){
+				String resultMessage = callCheckDictionaryWordInPassword(loginModel.getPassword());
+				if(resultMessage.equalsIgnoreCase("SUCCESS")){
+					boolean isSuccessful = getLoginCredentialService().changePasswordSecurityAnswers(model);
+					if(isSuccessful){
+						result.setSuccess(true);
+					}else{
+						result.setSuccess(false);
+					}
+				}else{
+					logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:"+LoggedInUserUtil.getLoggedInUser() );
+					result.setSuccess(false);
+					result.setFailureReason(LoginResult.DICTIONARY_EXCEPTION);
+				}
+			}else{
+				logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:"+LoggedInUserUtil.getLoggedInUser() );
+				result.setSuccess(false);
+				result.setMessages(sverifier.getMessages());
+				result.setFailureReason(LoginResult.SERVER_SIDE_VALIDATION_SECURITY_QUESTIONS);
+			}
+			
 		}
-		return resultMessage;
-		
+		else{
+			logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:"+LoggedInUserUtil.getLoggedInUser() );
+			result.setSuccess(false);
+			result.setMessages(verifier.getMessages());
+			result.setFailureReason(LoginResult.SERVER_SIDE_VALIDATION_PASSWORD);
+			
+		}
+		return result;
 	}
 
 	@Override

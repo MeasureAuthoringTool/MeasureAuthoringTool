@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import mat.client.login.LoginModel;
+import mat.client.login.service.LoginResult;
 import mat.client.shared.MatContext;
 import mat.model.User;
 import mat.model.UserPassword;
@@ -282,10 +283,10 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	}
 
 	@Override
-	public void changePasswordSecurityAnswers(LoginModel model) {
+	public boolean changePasswordSecurityAnswers(LoginModel model) {
 		logger.info("First time login, changing password and security answers");
 		logger.info("Changing password");
-		
+		boolean result = false;
 		User user = userService.getById(model.getUserId());
 		userService.setUserPassword(user, model.getPassword(),false);
 		user.getPassword().setInitial(false);
@@ -309,10 +310,15 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		userService.saveExisting(user);
 		
 		MatUserDetails userDetails = (MatUserDetails)hibernateUserService.loadUserByUsername(user.getLoginId());
-		if(userDetails != null)
+		if(userDetails != null){
 			setAuthenticationToken(userDetails);
-		else
+			result = true;
+		}
+		else{
 			model.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			result = false;
+		}
+		return result;
 	
 		
 	}

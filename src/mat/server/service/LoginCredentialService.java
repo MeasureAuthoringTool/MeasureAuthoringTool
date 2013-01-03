@@ -1,6 +1,7 @@
 package mat.server.service;
 
 import mat.client.login.LoginModel;
+import mat.client.login.service.LoginResult;
 import mat.shared.ForgottenPasswordResult;
 
 public interface LoginCredentialService {
@@ -9,5 +10,5 @@ public interface LoginCredentialService {
 	public LoginModel changeTempPassword(String userid, String changedpassword);
 	public ForgottenPasswordResult forgotPassword(String userid, String email, 
 			String securityQuestion, String securityAnswer);
-	public void changePasswordSecurityAnswers(LoginModel model);
+	public boolean changePasswordSecurityAnswers(LoginModel model);
 }

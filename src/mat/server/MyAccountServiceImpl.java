@@ -7,11 +7,14 @@ import java.util.List;
 import mat.client.myAccount.MyAccountModel;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.myAccount.service.MyAccountService;
+import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.UserService;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
 import mat.shared.MyAccountModelValidator;
+import mat.shared.PasswordVerifier;
+import mat.shared.SecurityQuestionVerifier;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -62,12 +65,15 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		return extractModel(user);
 	}
 	
-	public void saveMyAccount(MyAccountModel model) {		
+	public SaveMyAccountResult saveMyAccount(MyAccountModel model) {		
+		SaveMyAccountResult result = new SaveMyAccountResult();
 		MyAccountModelValidator validator = new MyAccountModelValidator();
 		List<String> messages = validator.validate(model);
 		if(messages.size()!=0){
-			for(String message: messages)
-				System.out.println("Server-Side Validation for saveMyAccount"+ message);
+			logger.info("Server-Side Validation for saveMyAccount Failed for User :: "+ LoggedInUserUtil.getLoggedInUser());
+			result.setSuccess(false);
+			result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
+			result.setMessages(messages);
 		}else{
 			//If there is no validation error messages then proceed to save.
 			//TODO Add database constraint for OID to be non-nullable
@@ -75,7 +81,9 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
 			setModelFieldsOnUser(user, model);
 			userService.saveExisting(user);
+			result.setSuccess(true);
 		}
+		return result;
 	}
 	
 	public SecurityQuestionsModel getSecurityQuestions() {
@@ -100,42 +108,78 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		return model;
 	}
 	
-	public void saveSecurityQuestions(SecurityQuestionsModel model) {
+	public SaveMyAccountResult saveSecurityQuestions(SecurityQuestionsModel model) {
 		logger.info("Saving security questions");
-		UserService userService = getUserService();
-		User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
-		List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
-		while(secQuestions.size() < 3) {
-			UserSecurityQuestion newQuestion = new UserSecurityQuestion();
-			secQuestions.add(newQuestion);
+		SaveMyAccountResult result = new SaveMyAccountResult();
+		SecurityQuestionVerifier sverifier = 
+			new SecurityQuestionVerifier(model.getQuestion1(),
+					model.getQuestion1Answer(),
+					model.getQuestion2(),
+					model.getQuestion2Answer(),
+					model.getQuestion3(),
+					model.getQuestion3Answer());
+		if(!sverifier.isValid()) {
+			logger.info("Server Side Validation Failed in saveSecurityQuestions for User:"+LoggedInUserUtil.getLoggedInUser() );
+			result.setSuccess(false);
+			result.setMessages(sverifier.getMessages());
+			result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
 		}
-		
-		user.setSecurityQuestions(secQuestions);
-		
-		secQuestions.get(0).setSecurityQuestion(model.getQuestion1());
-		secQuestions.get(0).setSecurityAnswer(model.getQuestion1Answer());
-
-		secQuestions.get(1).setSecurityQuestion(model.getQuestion2());
-		secQuestions.get(1).setSecurityAnswer(model.getQuestion2Answer());
-
-		secQuestions.get(2).setSecurityQuestion(model.getQuestion3());
-		secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
-		
-		userService.saveExisting(user);
-	}
-	
-	public String changePassword(String password) {
-		logger.info("Changing password to " + password);
-		
-		String resultMessage = callCheckDictionaryWordInPassword(password);
-	    if(resultMessage.equalsIgnoreCase("SUCCESS")){
+		else {
 			UserService userService = getUserService();
 			User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
+			List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
+			while(secQuestions.size() < 3) {
+				UserSecurityQuestion newQuestion = new UserSecurityQuestion();
+				secQuestions.add(newQuestion);
+			}
+		
+			user.setSecurityQuestions(secQuestions);
+		
+			secQuestions.get(0).setSecurityQuestion(model.getQuestion1());
+			secQuestions.get(0).setSecurityAnswer(model.getQuestion1Answer());
 
-			userService.setUserPassword(user, password, false);
+			secQuestions.get(1).setSecurityQuestion(model.getQuestion2());
+			secQuestions.get(1).setSecurityAnswer(model.getQuestion2Answer());
+
+			secQuestions.get(2).setSecurityQuestion(model.getQuestion3());
+			secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
+		
 			userService.saveExisting(user);
+			result.setSuccess(true);
 		}
-		return resultMessage;
+		return result;
+	}
+	
+	public SaveMyAccountResult changePassword(String password) {
+		logger.info("Changing password to " + password);
+		SaveMyAccountResult result = new SaveMyAccountResult();
+		PasswordVerifier verifier = new PasswordVerifier(
+				LoggedInUserUtil.getLoggedInLoginId(),password,password);
+		
+		if(!verifier.isValid()) {
+			logger.info("Server Side Validation Failed in changePassword for User:"+LoggedInUserUtil.getLoggedInUser() );
+			result.setSuccess(false);
+			result.setMessages(verifier.getMessages());
+			result.setFailureReason(SaveMyAccountResult.SERVER_SIDE_VALIDATION);
+		}
+		else {
+			String resultMessage = callCheckDictionaryWordInPassword(password);
+			if(resultMessage.equalsIgnoreCase("SUCCESS")){
+				UserService userService = getUserService();
+				User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
+
+				userService.setUserPassword(user, password, false);
+				userService.saveExisting(user);
+				result.setSuccess(true);
+			}
+			else if(resultMessage.equalsIgnoreCase("FAILURE")){
+				result.setSuccess(false);
+				result.setFailureReason(SaveMyAccountResult.DICTIONARY_EXCEPTION);
+			}else{
+				result.setSuccess(false);
+			}
+		}
+		return result;
 		
 	}
 	

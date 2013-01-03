@@ -14,6 +14,7 @@ public class LoggedInUserUtil {
 	private static final Log logger = LogFactory.getLog(LoggedInUserUtil.class);
 	private static String loggedInUser;
 	private static String loggedInUserEmail;
+	private static String loggedInLoginId;
 	
 	private static UsernamePasswordAuthenticationToken getToken() {
 		//re-factored to support Anonymous user US 439
@@ -48,6 +49,23 @@ public class LoggedInUserUtil {
 				userName = token.getName();
 			}
 			return userName;
+		}
+	}
+	public static void setLoggedInLoginId(String loginid) {
+		loggedInLoginId = loginid;
+	}
+	
+	public static String getLoggedInLoginId() {
+		if(loggedInLoginId != null) {
+			return loggedInLoginId;
+		}
+		else {
+			UsernamePasswordAuthenticationToken token = getToken();
+			String loginId = null;
+			if(token != null) {
+				loginId = ((MatUserDetails) token.getDetails()).getLoginId();
+			}
+			return loginId;
 		}
 	}
 	public static void setLoggedInUserEmail(String e) {

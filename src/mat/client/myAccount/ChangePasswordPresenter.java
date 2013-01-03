@@ -1,10 +1,12 @@
 package mat.client.myAccount;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
-import mat.client.event.SuccessfulLoginEvent;
+import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -104,31 +106,32 @@ public class ChangePasswordPresenter implements MatPresenter {
 		else {
 			display.getErrorMessageDisplay().clear();
 			MatContext.get().getMyAccountService().changePassword(display.getPassword().getValue(), 
-					new AsyncCallback<String>() {
+					new AsyncCallback<SaveMyAccountResult>() {
 
 						public void onFailure(Throwable caught) {
 							display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 						}
-						/*@Override
-						public void onSuccess(Boolean result) {
-							if(result){
-								clearValues();
-								display.getSuccessMessageDisplay().setMessage( MatContext.get().getMessageDelegate().getPasswordSavedMessage());
-							}else{
-								display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
-								
-							}
-						}*/
+						
 						@Override
-						public void onSuccess(String result) {
-							if(result.equalsIgnoreCase("SUCCESS")){
+						public void onSuccess(SaveMyAccountResult result) {
+							if(result.isSuccess()){
 								clearValues();
 								display.getSuccessMessageDisplay().setMessage( MatContext.get().getMessageDelegate().getPasswordSavedMessage());
-							}else if(result.equalsIgnoreCase("EXCEPTION")){
-								display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							}else{
-								display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+								List<String> messages = new ArrayList<String>();
+								switch(result.getFailureReason()) {
+									case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
+										messages = result.getMessages();
+										break;
+									case SaveMyAccountResult.DICTIONARY_EXCEPTION:
+										messages.add(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+										break;
+									default:
+										messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+								}
+								display.getErrorMessageDisplay().setMessages(messages);
+								
 							}
 						}
 					});

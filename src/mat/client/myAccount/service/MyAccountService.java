@@ -12,12 +12,12 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("myAccount")
 public interface MyAccountService extends RemoteService {
 	MyAccountModel getMyAccount() throws IllegalArgumentException;
-	void saveMyAccount(MyAccountModel model);
+	SaveMyAccountResult saveMyAccount(MyAccountModel model);
 	
 	SecurityQuestionsModel getSecurityQuestions();
-	void saveSecurityQuestions(SecurityQuestionsModel model);
+	SaveMyAccountResult saveSecurityQuestions(SecurityQuestionsModel model);
 	
-	String changePassword(String password);
+	SaveMyAccountResult changePassword(String password);
 	//US212
 	public void setUserSignInDate(String userid);
 	public void setUserSignOutDate(String userid);

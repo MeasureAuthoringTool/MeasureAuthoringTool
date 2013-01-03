@@ -48,7 +48,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	}
 	
 	public ForgottenPasswordResult forgotPassword(String loginId, 
-			String securityQuestion, String securityAnswer) {
+		String securityQuestion, String securityAnswer) {
 
 		UserService userService = (UserService)context.getBean("userService");
 		return userService.requestForgottenPassword(loginId, securityQuestion, securityAnswer);

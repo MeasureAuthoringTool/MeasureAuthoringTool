@@ -1,9 +1,9 @@
 package mat.client.codelist.service;
 
 import mat.client.codelist.ManageCodeListDetailModel;
-import mat.client.shared.SuccessFailureHolder;
+import mat.client.shared.GenericResult;
 
-public class SaveUpdateCodeListResult extends SuccessFailureHolder {
+public class SaveUpdateCodeListResult extends GenericResult {
 	public static final int NOT_UNIQUE = 1;
 	public static final int CODES_NOT_UNIQUE = 2;
 	public static final int OID_NOT_UNIQUE = 3;

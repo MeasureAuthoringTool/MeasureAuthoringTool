@@ -2,12 +2,12 @@ package mat.client.measure.service;
 
 import java.util.List;
 
-import mat.client.shared.SuccessFailureHolder;
+import mat.client.shared.GenericResult;
 import mat.model.Author;
 import mat.model.MeasureType;
 import mat.shared.ConstantMessages;
 
-public class SaveMeasureResult extends SuccessFailureHolder {
+public class SaveMeasureResult extends GenericResult {
 	public static final int ID_NOT_UNIQUE = ConstantMessages.ID_NOT_UNIQUE;
 	public static final int REACHED_MAXIMUM_VERSION = ConstantMessages.REACHED_MAXIMUM_VERSION;
 	public static final int REACHED_MAXIMUM_MAJOR_VERSION = ConstantMessages.REACHED_MAXIMUM_MAJOR_VERSION;

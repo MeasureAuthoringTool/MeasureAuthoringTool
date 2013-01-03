@@ -1,9 +1,11 @@
 package mat.client.myAccount;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
@@ -79,15 +81,28 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				}
 				else {
 					currentValues = getValues();
-					MatContext.get().getMyAccountService().saveSecurityQuestions(currentValues, new AsyncCallback<Void>() {
+					MatContext.get().getMyAccountService().saveSecurityQuestions(currentValues, new AsyncCallback<SaveMyAccountResult>() {
 						public void onFailure(Throwable caught) {
 							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 						}
-	
-						public void onSuccess(Void result) {
-							display.getErrorMessageDisplay().clear();
-							display.getSuccessMessageDisplay().clear();
-							display.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getSecurityQuestionsUpdatedMessage());
+						@Override
+						public void onSuccess(SaveMyAccountResult result) {
+							if(result.isSuccess()){
+								display.getErrorMessageDisplay().clear();
+								display.getSuccessMessageDisplay().clear();
+								display.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getSecurityQuestionsUpdatedMessage());
+							}else{
+								List<String> messages = new ArrayList<String>();
+								switch(result.getFailureReason()) {
+									case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
+										messages = result.getMessages();
+										break;
+									default:
+										messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+								}
+								display.getSuccessMessageDisplay().clear();
+								display.getErrorMessageDisplay().setMessages(messages);
+							}
 						}
 					});
 				}

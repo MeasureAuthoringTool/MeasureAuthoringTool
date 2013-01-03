@@ -140,7 +140,7 @@ public class LoginPresenter {
 	public void displayForgottenPasswordMessage() {
 		display.setWelcomeVisible(false);
 		display.setInfoMessageVisible(true);
-		display.getInfoMessage().setHTML("A temporary password has been sent to the e-mail address you provided . Please<br> check your e-mail and continue to sign in.");
+		display.getInfoMessage().setHTML("A temporary password has been sent to the e-mail address associated with the User Id you provided. Please<br> check your e-mail and continue to sign in.");
 	}
 
 	public void reset() {

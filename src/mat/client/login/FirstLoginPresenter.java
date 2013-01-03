@@ -1,10 +1,13 @@
 package mat.client.login;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.event.SuccessfulLoginEvent;
+import mat.client.login.service.LoginResult;
+
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
@@ -90,23 +93,31 @@ public class FirstLoginPresenter {
 
 					if(verifier.isValid() && sverifier.isValid()) {
 						
-						MatContext.get().changePasswordSecurityQuestions(getValues(), new AsyncCallback<String>() {
-
+						MatContext.get().changePasswordSecurityQuestions(getValues(), new AsyncCallback<LoginResult>() {
 							@Override
 							public void onFailure(Throwable caught) {
 								display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-								
 							}
 							@Override
-							public void onSuccess(String result) {
-								if(result.equalsIgnoreCase("SUCCESS")){
+							public void onSuccess(LoginResult result) {
+								if(result.isSuccess()){
 									MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
-								}else if(result.equalsIgnoreCase("EXCEPTION")){
-									display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-								}else{
-									display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+								}else {
+									switch(result.getFailureReason()) {
+										case LoginResult.SERVER_SIDE_VALIDATION_SECURITY_QUESTIONS:
+											display.getPasswordErrorMessageDisplay().setMessages(result.getMessages());
+											break;
+										case LoginResult.SERVER_SIDE_VALIDATION_PASSWORD:
+											display.getSecurityErrorMessageDisplay().setMessages(result.getMessages());
+											break;
+										case LoginResult.DICTIONARY_EXCEPTION:
+											display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+											break;
+										default:
+											display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+									}
+									
 								}
-								
 							}
 						});
 					

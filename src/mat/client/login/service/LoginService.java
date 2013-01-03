@@ -16,7 +16,7 @@ public interface LoginService extends RemoteService {
 	public LoginModel  isValidUser(String username, String password); 
 	public ForgottenPasswordResult forgotPassword(String email, 
 			String securityQuestion, String securityAnswer);
-	String changePasswordSecurityAnswers(LoginModel model);
+	LoginResult changePasswordSecurityAnswers(LoginModel model);
 	public void signOut();
 	public LoginModel changeTempPassword(String email, String password);
 	

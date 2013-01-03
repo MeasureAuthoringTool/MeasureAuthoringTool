@@ -20,6 +20,7 @@ import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.login.LoginModel;
+import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.login.service.SessionManagementService;
@@ -271,7 +272,7 @@ public class MatContext implements IsSerializable {
 	public String getLoggedInUserEmail() {
 		return userEmail;
 	}
-	public void changePasswordSecurityQuestions(LoginModel model, AsyncCallback<String> asyncCallback) {
+	public void changePasswordSecurityQuestions(LoginModel model, AsyncCallback<LoginResult> asyncCallback) {
 		getLoginService().changePasswordSecurityAnswers(model, asyncCallback);
 	}
 	

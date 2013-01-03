@@ -69,7 +69,6 @@ public class LoginPresenter {
 				if(result.getRole() != null) {
 					secRole = result.getRole().getDescription();
 				}
-				//MatContext.get().setUserInfo(result.getUserId(), result.getEmail(), secRole);
 				MatContext.get().setUserInfo(result.getUserId(), result.getEmail(), secRole,result.getLoginId());
 				if(loginModel.isInitialPassword()){
 					MatContext.get().getEventBus().fireEvent(new FirstLoginPageEvent());

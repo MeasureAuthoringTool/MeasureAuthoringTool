@@ -169,6 +169,7 @@ public abstract class MainLayout {
 				ClientConstants.ACCESSIBILITY_POLICY_URL = result.get(0);
 				ClientConstants.PRIVACYPOLICY_URL = result.get(1);
 				ClientConstants.TERMSOFUSE_URL = result.get(2);
+				ClientConstants.USERGUIDE_URL = result.get(3);
 				//This will create Footer links with values from server.
 				createFooterLinks(footerLinks);
 			}
@@ -207,7 +208,7 @@ public abstract class MainLayout {
 		
 		
 		final Anchor linkAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
-		null,"###");
+		null,ClientConstants.USERGUIDE_URL);
 		footerLinks.add(linkAnchor);
 		
 	}

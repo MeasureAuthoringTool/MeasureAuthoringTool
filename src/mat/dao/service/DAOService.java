@@ -9,6 +9,7 @@ import mat.dao.CodeSystemDAO;
 import mat.dao.DataTypeDAO;
 import mat.dao.ListObjectDAO;
 import mat.dao.ListObjectLTDAO;
+import mat.dao.MatFlagDAO;
 import mat.dao.MeasureAuditLogDAO;
 import mat.dao.MeasureScoreDAO;
 import mat.dao.MeasureValidationLogDAO;
@@ -76,6 +77,7 @@ public class DAOService {
 	private TransactionAuditLogDAO transactionAuditLogDAO;
 	//US 171
 	private OperatorDAO operatorDAO;
+	private MatFlagDAO matFlagDAO;
 	
 	
 	public MetadataDAO getMetadataDAO() {
@@ -336,6 +338,14 @@ public class DAOService {
 
 	public void setOperatorDAO(OperatorDAO operatorDAO) {
 		this.operatorDAO = operatorDAO;
+	}
+
+	public void setMatFlagDAO(MatFlagDAO matFlagDAO) {
+		this.matFlagDAO = matFlagDAO;
+	}
+
+	public MatFlagDAO getMatFlagDAO() {
+		return matFlagDAO;
 	}
 
 }

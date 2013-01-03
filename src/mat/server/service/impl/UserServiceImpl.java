@@ -75,6 +75,8 @@ public class UserServiceImpl implements UserService {
 
 	private String privacyPolicyUseUrl;
 	
+	private String userGuideUrl;
+	
 	 public String generateRandomPassword() {
 		String password = null;
 		Random r = new Random(System.currentTimeMillis());
@@ -112,7 +114,7 @@ public class UserServiceImpl implements UserService {
 		notifyUserOfTemporaryPassword(user, newPassword);
 	}
 	
-	private void notifyUserOfTemporaryPassword(User user, String newPassword) {
+	public void notifyUserOfTemporaryPassword(User user, String newPassword) {
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
 		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
 		msg.setTo(user.getEmailAddress());
@@ -279,7 +281,7 @@ public class UserServiceImpl implements UserService {
 		notifyUserOfTemporaryPassword(user, newPassword);
 	}
 	
-	private void notifyUserOfNewAccount(User user) {
+	public void notifyUserOfNewAccount(User user) {
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
 		msg.setSubject(ServerConstants.NEW_ACCESS_SUBJECT);
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
@@ -402,6 +404,7 @@ public class UserServiceImpl implements UserService {
 		footerUrls.add(accessibilityUrl);
 		footerUrls.add(privacyPolicyUseUrl);
 		footerUrls.add(termsOfUseUrl);
+		footerUrls.add(userGuideUrl);
 		return footerUrls;
 	}
 	
@@ -509,6 +512,14 @@ public class UserServiceImpl implements UserService {
 
 	public String getPrivacyPolicyUseUrl() {
 		return privacyPolicyUseUrl;
+	}
+
+	public void setUserGuideUrl(String userGuideUrl) {
+		this.userGuideUrl = userGuideUrl;
+	}
+
+	public String getUserGuideUrl() {
+		return userGuideUrl;
 	}
 	
 }

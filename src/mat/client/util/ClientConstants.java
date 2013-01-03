@@ -23,6 +23,7 @@ public class ClientConstants {
 	public static String ACCESSIBILITY_POLICY_URL="https://nqf-dev-app01.telligen.org:8181/web/guest/accessibility-statement";
 	public static String TERMSOFUSE_URL="https://nqf-dev-app01.telligen.org:8181/web/guest/terms-of-use";
 	public static String PRIVACYPOLICY_URL="https://nqf-dev-app01.telligen.org:8181/web/guest/privacy-policy";
+	public static String USERGUIDE_URL="https://nqf-dev-app01.telligen.org:8181/documents/10179/13108/MAT+User+Guide/c50cc2fb-01ee-4b97-9cd1-2e33feca8763";
 	public final static String HTML_LOGIN ="/Login.html";
 	public final static String HTML_MAT ="/Mat.html";
 	public final static String EXT_LINK_HHS_Site ="http://www.hhs.gov/";

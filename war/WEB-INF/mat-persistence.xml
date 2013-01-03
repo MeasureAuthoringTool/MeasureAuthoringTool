@@ -29,7 +29,7 @@
 		<property name="changeLog" value="classpath:/liquibase/changelog.xml"  />
 		<property name="contexts" value="prod" />
 	</bean>
-	
+
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
 		<!-- dev db server -->
@@ -266,6 +266,10 @@
     <bean id="transactionAuditLogDAO"
 		class="mat.dao.impl.TransactionAuditLogDAO" parent="baseDAO">
 	</bean>
+	
+    <bean id="matFlagDAO"
+		class="mat.dao.impl.MatFlagDAO" parent="baseDAO">
+	</bean>
 
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
@@ -304,6 +308,7 @@
 		<property name="measureExportDAO" ref="measureExportDAO"/>
 		<property name="attributeDetailsDAO" ref="attributeDetailsDAO"/>
 		<property name="transactionAuditLogDAO" ref="transactionAuditLogDAO"/>
+		<property name="matFlagDAO" ref="matFlagDAO"/>
 	</bean>
 	 
 </beans>

@@ -19,6 +19,7 @@
         <property name="accessibilityUrl" value="${mat.accessibilitypolicy.url}"/>
 	    <property name="termsOfUseUrl" value="${mat.termsofuse.url}"/>
 	    <property name="privacyPolicyUseUrl" value="${mat.privacypolicy.url}"/>	
+	    <property name="userGuideUrl" value="${mat.userguide.url}"/>
     </bean>
     
     <bean id="codeListService" class="mat.server.service.impl.ManageCodeListServiceImpl">

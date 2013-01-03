@@ -66,9 +66,34 @@
 		<property name="triggers">
 			<list>
 				<ref bean="cronTrigger" />
+				<ref bean="simpleTrigger" />
 			</list>
 		</property>
 	</bean>
 <!-- Bean Details for Email Scheduler End -->
+
+	<!-- One time scheduled task for sending emails. -->
+	
+	<bean id="onetimeUserNotificationTask" class="mat.server.service.jobs.OnetimeUserNotificationTask">
+	    <property name="userDAO" ref="userDAO"/>
+	    <property name="userService" ref="userService"/>
+		<property name="matFlagDAO" ref="matFlagDAO"/>
+	</bean>
+	
+	<bean id="oneTimeUserNotificationJob" 
+ 	class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+	 	<property name="targetObject" ref="onetimeUserNotificationTask" />
+		<property name="targetMethod" value="sendOnetimeUserNotificationEmails" />
+ 	</bean>
+ 	
+	<bean id="simpleTrigger" 
+                class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+ 		<property name="jobDetail" ref="oneTimeUserNotificationJob" />
+		<property name="repeatCount" value="0" />
+		<property name="startDelay" value="120000" />
+		
+ 	</bean>
+	
+	<!-- One time scheduled task for sending emails end. -->
 
 </beans>

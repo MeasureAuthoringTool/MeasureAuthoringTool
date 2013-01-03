@@ -336,7 +336,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override 
 	public SecurityQuestionOptions getSecurityQuestionOptions(String loginId) {
-		//User user = userDAO.findByEmail(email);
 		User user = userDAO.findByLoginId(loginId);
 		SecurityQuestionOptions options = new SecurityQuestionOptions();
 		options.setSecurityQuestions(new ArrayList<NameValuePair>());

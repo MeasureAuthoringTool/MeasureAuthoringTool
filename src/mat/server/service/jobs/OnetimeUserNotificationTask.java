@@ -1,8 +1,5 @@
 package mat.server.service.jobs;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
 import mat.dao.MatFlagDAO;
@@ -37,9 +34,9 @@ public class OnetimeUserNotificationTask {
 	private void sendUserLoginIdEmail(List<User> users) {
 	
 		for(User user:users){
-			user.setEmailAddress("cbajikar@ifmc.org");
+//			user.setEmailAddress("cbajikar@ifmc.org");
 			((UserServiceImpl)userService).notifyUserOfNewAccount(user);
-			break;
+//			break;
 			
 		}
 		
@@ -47,10 +44,10 @@ public class OnetimeUserNotificationTask {
 	
 	private void sendUserNewTempPasswordEmail(List<User> users) {
 		for(User user:users){
-			user.setEmailAddress("cbajikar@ifmc.org");
+//			user.setEmailAddress("cbajikar@ifmc.org");
 			String newPassword = userService.generateRandomPassword();
 			((UserServiceImpl)userService).notifyUserOfTemporaryPassword(user, newPassword);
-			break;
+//			break;
 		}
 		
 	}

@@ -268,7 +268,7 @@
 	</bean>
 	
     <bean id="matFlagDAO"
-		class="mat.dao.impl.MatFlagDAO" parent="baseDAO">
+		class="mat.dao.impl.MatFlagDAO" parent="baseDAO"> 
 	</bean>
 
 	<bean id="daoService" class="mat.dao.service.DAOService" >

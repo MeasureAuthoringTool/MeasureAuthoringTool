@@ -4,14 +4,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 
-/**
- * @author skarunakaran
- *
- */
-/**
- * @author skarunakaran
- *
- */
+
 public class ResourceLoader {
 	
 	/**

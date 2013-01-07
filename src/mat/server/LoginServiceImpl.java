@@ -66,7 +66,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	public LoginResult changePasswordSecurityAnswers(LoginModel model) {
 		LoginModel loginModel = model;
 		LoginResult result = new LoginResult();
-		PasswordVerifier verifier  = new PasswordVerifier(MatContext.get().getLoggedinLoginId(), 
+		PasswordVerifier verifier  = new PasswordVerifier(LoggedInUserUtil.getLoggedInLoginId(), 
 														model.getPassword(), model.getPassword());
 		
 		if(verifier.isValid()){

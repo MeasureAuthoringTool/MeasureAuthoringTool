@@ -66,21 +66,24 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	public LoginResult changePasswordSecurityAnswers(LoginModel model) {
 		LoginModel loginModel = model;
 		LoginResult result = new LoginResult();
+		logger.info("LoggedInUserUtil.getLoggedInLoginId() ::::"+ LoggedInUserUtil.getLoggedInLoginId());
+		logger.info("loginModel.getPassword()() ::::"+ loginModel.getPassword());
+		
 		PasswordVerifier verifier  = new PasswordVerifier(LoggedInUserUtil.getLoggedInLoginId(), 
-														model.getPassword(), model.getPassword());
+												loginModel.getPassword(), loginModel.getPassword());
 		
 		if(verifier.isValid()){
-			SecurityQuestionVerifier sverifier = new SecurityQuestionVerifier(model.getQuestion1(),
-					model.getQuestion1Answer(),
-					model.getQuestion2(),
-					model.getQuestion2Answer(),
-					model.getQuestion3(),
-					model.getQuestion3Answer());
+			SecurityQuestionVerifier sverifier = new SecurityQuestionVerifier(loginModel.getQuestion1(),
+					loginModel.getQuestion1Answer(),
+					loginModel.getQuestion2(),
+					loginModel.getQuestion2Answer(),
+					loginModel.getQuestion3(),
+					loginModel.getQuestion3Answer());
 
 			if(sverifier.isValid()){
 				String resultMessage = callCheckDictionaryWordInPassword(loginModel.getPassword());
 				if(resultMessage.equalsIgnoreCase("SUCCESS")){
-					boolean isSuccessful = getLoginCredentialService().changePasswordSecurityAnswers(model);
+					boolean isSuccessful = getLoginCredentialService().changePasswordSecurityAnswers(loginModel);
 					if(isSuccessful){
 						result.setSuccess(true);
 					}else{

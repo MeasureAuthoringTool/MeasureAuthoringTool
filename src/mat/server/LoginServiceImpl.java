@@ -69,7 +69,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		logger.info("LoggedInUserUtil.getLoggedInLoginId() ::::"+ LoggedInUserUtil.getLoggedInLoginId());
 		logger.info("loginModel.getPassword()() ::::"+ loginModel.getPassword());
 		
-		PasswordVerifier verifier  = new PasswordVerifier(LoggedInUserUtil.getLoggedInLoginId(), 
+		PasswordVerifier verifier  = new PasswordVerifier(loginModel.getLoginId(), 
 												loginModel.getPassword(), loginModel.getPassword());
 		
 		if(verifier.isValid()){

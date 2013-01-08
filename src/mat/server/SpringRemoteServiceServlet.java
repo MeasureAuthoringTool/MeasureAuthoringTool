@@ -42,7 +42,7 @@ public class SpringRemoteServiceServlet extends RemoteServiceServlet {
 		}
 		catch(Exception exc) {
 			System.out.println("moduleBaseURL:"+moduleBaseURL);
-			String uri = request.getRequestURI();
+			String uri = request.getRequestURI().substring(1);
 			System.out.println("uri:"+uri);
 			String base = request.getScheme() + "://" + request.getServerName() + uri;
 			System.out.println("base 1:"+base);

@@ -14,7 +14,7 @@ import com.google.gwt.user.server.rpc.SerializationPolicy;
 
 public class SpringRemoteServiceServlet extends RemoteServiceServlet {
 	private static final Log logger = LogFactory.getLog(SpringRemoteServiceServlet.class);
-	private static String BASE_URL = "/MeasureAuthoringTool";
+	private static String BASE_URL = "/mat/MeasureAuthoringTool";
 	private static final long serialVersionUID = 8359364426336388916L;
 	protected ApplicationContext context;
 	

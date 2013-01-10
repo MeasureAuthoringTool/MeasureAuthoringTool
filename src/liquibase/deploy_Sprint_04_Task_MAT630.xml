@@ -9,8 +9,8 @@
 		
 	    <changeSet author="mat_dev_user" id="1" context="prod">
 	        <sql> 
-				  CREATE TABLE MAT_APP.MAT_FLAG (ID VARCHAR(32) NOT NULL DEFAULT 1, FLAG VARCHAR(1) NOT NULL DEFAULT 1);
-				  INSERT INTO MAT_APP.MAT_FLAG VALUES ('1','1');
+				  CREATE TABLE MAT_FLAG (ID VARCHAR(32) NOT NULL DEFAULT 1, FLAG VARCHAR(1) NOT NULL DEFAULT 1);
+				  INSERT INTO MAT_FLAG VALUES ('1','1');
 			</sql>
 	    </changeSet>
     

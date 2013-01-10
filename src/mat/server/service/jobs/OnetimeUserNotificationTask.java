@@ -6,6 +6,7 @@ import mat.dao.MatFlagDAO;
 import mat.dao.UserDAO;
 import mat.model.MatFlag;
 import mat.model.User;
+import mat.model.UserPassword;
 import mat.server.service.UserService;
 import mat.server.service.impl.UserServiceImpl;
 
@@ -44,9 +45,10 @@ public class OnetimeUserNotificationTask {
 	
 	private void sendUserNewTempPasswordEmail(List<User> users) {
 		for(User user:users){
+			userService.requestResetLockedPassword(user.getLoginId());
 //			user.setEmailAddress("cbajikar@ifmc.org");
-			String newPassword = userService.generateRandomPassword();
-			((UserServiceImpl)userService).notifyUserOfTemporaryPassword(user, newPassword);
+//			String newPassword = userService.generateRandomPassword();
+//			((UserServiceImpl)userService).notifyUserOfTemporaryPassword(user, newPassword);
 //			break;
 		}
 		

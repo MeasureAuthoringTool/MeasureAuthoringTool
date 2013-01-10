@@ -16,18 +16,14 @@ public class ClientConstants {
 	
 	public final static String ANCHOR_SIGN_OUT = "Sign Out";
 	
-	
-//	public final static String HTML_ACCESSIBILITY_POLICY ="/accessibilityPolicy.html";
-//	public final static String HTML_TERMSOFUSE ="/termsOfUse.html";
-//	public static final String HTML_PRIVACYPOLICY = "/privacyPolicy.html";
-	public static String ACCESSIBILITY_POLICY_URL="https://nqf-dev-app01.telligen.org:8181/web/guest/accessibility-statement";
-	public static String TERMSOFUSE_URL="https://nqf-dev-app01.telligen.org:8181/web/guest/terms-of-use";
-	public static String PRIVACYPOLICY_URL="https://nqf-dev-app01.telligen.org:8181/web/guest/privacy-policy";
-	public static String USERGUIDE_URL="https://nqf-dev-app01.telligen.org:8181/documents/10179/13108/MAT+User+Guide/c50cc2fb-01ee-4b97-9cd1-2e33feca8763";
+	public static String ACCESSIBILITY_POLICY_URL="https://www.emeasuretool.cms.gov/web/guest/accessibility-statement";
+	public static String TERMSOFUSE_URL="https://www.emeasuretool.cms.gov/web/guest/terms-of-use";
+	public static String PRIVACYPOLICY_URL="https://www.emeasuretool.cms.gov/web/guest/privacy-policy";
+	public static String USERGUIDE_URL="https://www.emeasuretool.cms.gov/documents/10179/13108/MAT+User+Guide/c50cc2fb-01ee-4b97-9cd1-2e33feca8763";
 	public final static String HTML_LOGIN ="/Login.html";
 	public final static String HTML_MAT ="/Mat.html";
 	public final static String EXT_LINK_HHS_Site ="http://www.hhs.gov/";
-	public final static String EXT_LINK_FOIA =" http://cms.gov/center/freedom-of-information-act-center.html";
+	public final static String EXT_LINK_FOIA ="https://www.cms.gov/center/freedom-of-information-act-center.html";
 	public final static String TEXT_ACCESSIBILITY_POLICY ="Accessibility Policy";
 	public final static String TEXT_TERMSOFUSE ="Terms Of Use";
 	public final static String TEXT_USER_GUIDE ="User Guide";

@@ -42,14 +42,19 @@ public class SpringRemoteServiceServlet extends RemoteServiceServlet {
 			return super.doGetSerializationPolicy(request, moduleBaseURL, strongName);
 		}
 		catch(Exception exc) {	
-			exc.printStackTrace();
+			/*exc.printStackTrace();
 			System.out.println("moduleBaseURL:"+moduleBaseURL);
-			String uri = request.getRequestURI().substring(1);
+			String uri = request.getRequestURI();
 			System.out.println("uri:"+uri);
 			String base = request.getScheme() + "://" + request.getServerName() + uri;
 			System.out.println("base 1:"+base);
 			base = base.substring(0,base.lastIndexOf("/") + 1);
 			System.out.println("base 2:"+base);
+			return super.doGetSerializationPolicy(request, base, strongName);*/
+			
+			String uri = request.getRequestURI();
+			String base = request.getScheme() + "://" + request.getServerName() + uri;
+			base = base.substring(0,base.lastIndexOf("/") + 1);
 			return super.doGetSerializationPolicy(request, base, strongName);
 		}
 	}

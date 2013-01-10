@@ -50,6 +50,7 @@
             	<!-- do not copy the file from this location, get from conf/deploy -->
                 <exclude name="WEB-INF/${persistence.file}"/>
             	<exclude name="WEB-INF/${security.file}"/>
+            	<exclude name="WEB-INF/${mail.file}"/>
             	<!-- uncomment when ivy.resolve is ready
                 <exclude name="WEB-INF/lib/**"/>
                 -->

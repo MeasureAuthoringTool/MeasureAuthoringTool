@@ -45,7 +45,7 @@ public class OnetimeUserNotificationTask {
 	
 	private void sendUserNewTempPasswordEmail(List<User> users) {
 		for(User user:users){
-			userService.requestResetLockedPassword(user.getLoginId());
+			userService.requestResetLockedPassword(user.getId());
 //			user.setEmailAddress("cbajikar@ifmc.org");
 //			String newPassword = userService.generateRandomPassword();
 //			((UserServiceImpl)userService).notifyUserOfTemporaryPassword(user, newPassword);

@@ -60,7 +60,7 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		
 		mainPanel.add(view.asWidget());
 		mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
-		mainPanel.add(buildBulkExportWidget());
+//		mainPanel.add(buildBulkExportWidget());
 	}
 	
 	private Widget buildSearchWidget(){

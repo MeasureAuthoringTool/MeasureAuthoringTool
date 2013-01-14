@@ -100,6 +100,10 @@
     <servlet-name>exportServlet</servlet-name>
     <servlet-class>mat.server.ExportServlet</servlet-class>
   </servlet>
+  <servlet>
+    <servlet-name>bulkExportServlet</servlet-name>
+    <servlet-class>mat.server.BulkExportServlet</servlet-class>
+  </servlet>
    <servlet>
     <servlet-name>FileUploadServlet</servlet-name>
     <servlet-class>mat.server.servlet.FileUploadServlet</servlet-class>
@@ -117,6 +121,10 @@
   <servlet-mapping>
     <servlet-name>exportServlet</servlet-name>
     <url-pattern>/mat/export</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>bulkExportServlet</servlet-name>
+    <url-pattern>/mat/bulkExport</url-pattern>
   </servlet-mapping>
   <servlet-mapping>
     <servlet-name>adminServlet</servlet-name>

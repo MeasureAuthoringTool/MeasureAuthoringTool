@@ -23,4 +23,5 @@ public interface SimpleEMeasureService {
 	public ExportResult getEMeasureXLS(String measureId) throws Exception;
 	public ExportResult getEMeasureZIP(String measureId) throws Exception;
 	public ExportResult getValueSetXLS(String valueSetId) throws Exception;
+	public ExportResult getBulkExportZIP(String[] measureIds) throws Exception;
 }

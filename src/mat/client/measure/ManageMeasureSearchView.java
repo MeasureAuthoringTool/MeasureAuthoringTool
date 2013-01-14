@@ -37,6 +37,8 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView("Measures");
 	private Button createButton = new SecondaryButton("Create");
 	private ListBoxMVP options = new ListBoxMVP();
+	private Button bulkExportButton = new PrimaryButton("Bulk Export");
+	
 	
 	public ManageMeasureSearchView() {
 		mainPanel.setStyleName("contentPanel");
@@ -57,6 +59,8 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(view.asWidget());
+		mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
+		mainPanel.add(buildBulkExportWidget());
 	}
 	
 	private Widget buildSearchWidget(){
@@ -71,6 +75,13 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		hp.add(sp2);
 		return hp;
 	}
+	
+	private Widget buildBulkExportWidget(){
+		SimplePanel simplePanel = new SimplePanel();		
+		simplePanel.add(bulkExportButton);
+		return simplePanel;
+	}
+	
 	
 	@Override
 	public HasClickHandlers getSearchButton() {
@@ -118,6 +129,11 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		return errorMessages;
 	}
 	
+	@Override
+	public HasClickHandlers getBulkExportButton() {
+		return bulkExportButton;
+	}
+	
 	private void loadListBoxOptions(){
 		options.addItem(ConstantMessages.DEFAULT_SELECT);
 		options.addItem(ConstantMessages.CREATE_NEW_MEASURE);
@@ -138,4 +154,8 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	public void clearSelections() {
 		options.setSelectedIndex(0);
 	}
+
+
+	
+	
 }

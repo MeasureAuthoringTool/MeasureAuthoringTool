@@ -36,6 +36,7 @@ import mat.model.clause.MeasureShareDTO;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -75,6 +76,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public int getPageSize();
 		public HasClickHandlers getSearchButton();
 		public HasValue<String> getSearchString();
+		public HasClickHandlers getBulkExportButton();
+		
+		
 	}
 	public static interface DetailDisplay extends BaseDisplay {
 		public HasValue<String> getName();
@@ -179,6 +183,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private int shareStartIndex = 1;
 	List<ManageMeasureSearchModel.Result> listofMeasures = new ArrayList<ManageMeasureSearchModel.Result>();
 	private boolean isClone;
+	private List<String> bulkExportMeasureIds;
 	
 	private HistoryModel historyModel;
 	private ClickHandler cancelClickHandler = new ClickHandler() {
@@ -478,6 +483,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 				int startIndex = 1;
 				search(searchDisplay.getSearchString().getValue(),
 						startIndex, searchDisplay.getPageSize());
+			}
+		});
+		
+		searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				ManageLoadingView.showLoadingMessage();		
+				List<String> selectedMeasureIds = new ArrayList<String>();
+				for(int i = 0; i < searchResults.getNumberOfRows(); i++) {
+					if(searchResults.get(i).isBulkExportchecked()){
+						selectedMeasureIds.add(searchResults.getKey(i));
+					}
+				}
+				bulkExport(selectedMeasureIds);
 			}
 		});
 		
@@ -801,7 +820,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		search(searchDisplay.getSearchString().getValue(), 1, searchDisplay.getPageSize());
 		panel.setHeading("My Measures","MainContent");
 		//panel.setEmbeddedLink("MainContent");
-		panel.setContent(searchDisplay.asWidget());
+		panel.setContent(searchDisplay.asWidget());		
 		Mat.focusSkipLists("MainContent");
 	}
 	
@@ -1136,9 +1155,37 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private String buildExportURL() {
 		String url = GWT.getModuleBaseURL() + "export?id=" + currentExportId + "&format=";
 		url += (exportDisplay.isEMeasure() ? "emeasure" : exportDisplay.isSimpleXML() ? "simplexml" : exportDisplay.isCodeList() ? "codelist" : "zip");
-		
 		return url;
 	}
+	
+	private void bulkExport(List<String> ids){
+		String measureId = "";
+		for (String id : ids) {			
+			measureId += id+"&id="; 
+		}
+		measureId = measureId.substring(0,measureId.lastIndexOf("&"));
+		String url = GWT.getModuleBaseURL() + "bulkExport?id=" + measureId; 
+		url += "&type=open";
+		
+		final JavaScriptObject window = openWindow(url);
+        registerHandlers(ManageMeasurePresenter.this, window);
+	}
+	
+	native JavaScriptObject openWindow(String url) /*-{
+    	return $wnd.open(url, 'blank');
+  	}-*/;
+   
+	  native JavaScriptObject registerHandlers(ManageMeasurePresenter jsni, JavaScriptObject window) /*-{
+	    window.onbeforeunload = doOnbeforeunload;
+	    function doOnbeforeunload() {
+	      jsni.@mat.client.measure.ManageMeasurePresenter::onWindowClosed()();
+	    }
+	  }-*/;
+   
+	  private void onWindowClosed() {
+		  ManageLoadingView.hideLoadingMessage(10);
+	  }
+	
 	
 	/**
 	 * Verifies the valid value required for the list box
@@ -1153,6 +1200,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 		versionDisplay.getMajorRadioButton().setValue(false);
 		versionDisplay.getMinorRadioButton().setValue(false);
 	}
-	
 
+	/**
+	 * @return the bulkExportMeasureIds
+	 */
+	public List<String> getBulkExportMeasureIds() {
+		return bulkExportMeasureIds;
+	}
+
+	/**
+	 * @param bulkExportMeasureIds the bulkExportMeasureIds to set
+	 */
+	public void setBulkExportMeasureIds(List<String> bulkExportMeasureIds) {
+		this.bulkExportMeasureIds = bulkExportMeasureIds;
+	}
 }

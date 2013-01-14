@@ -1137,8 +1137,11 @@ public class SimpleStatement extends DiagramObject {
 
 		inProgressCompleteListBox = new ListBox();
 		inProgressCompleteListBox.addFocusHandler(new SimpleStatementFocusHandler());
-		descriptionPanel.add(LabelBuilder.buildRequiredLabel(inProgressCompleteListBox, "Status"));
+		/*
+		 * MAT-286 - Removing Status Field from Measure Phrase. 01/2013		
+  		descriptionPanel.add(LabelBuilder.buildRequiredLabel(inProgressCompleteListBox, "Status"));
 		addListBox(descriptionPanel, inProgressCompleteListBox, statusArray);
+		 */
 		inProgressCompleteListBox.setSelectedIndex(1);//default select inProgress for New Phrase.
 		inProgressCompleteListBox.setEnabled(view.isEditable());
 		grid.setWidget(DESCRIPTION_PANEL_ROW, DESCRIPTION_PANEL_COL, descriptionPanel);

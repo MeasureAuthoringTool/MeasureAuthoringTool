@@ -17,7 +17,7 @@ public class Clause extends IQDSTerm implements IsSerializable {
 	private String contextId;
 	private List<mat.shared.model.Decision> decisions;
 	private String clauseTypeId;
-	private ObjectStatus statusId;
+//	private ObjectStatus statusId; MAT-286 - Removing Status Field from Measure Phrase. 01/2013		
 	
 	//Not used in the DB, but currently used for storing the version prefix
 	//for the Clause Library.
@@ -89,12 +89,13 @@ public class Clause extends IQDSTerm implements IsSerializable {
 	}
 	
 	
-	public ObjectStatus getStatusId() {
+	/* MAT-286 - Removing Status Field from Measure Phrase. 01/2013		
+	 * public ObjectStatus getStatusId() {
 		return statusId;
 	}
 	public void setStatusId(ObjectStatus statusId) {
 		this.statusId = statusId;
-	}
+	}*/
 	public String getVersion() {
 		return version;
 	}

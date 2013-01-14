@@ -47,9 +47,11 @@ public class SimpleStatementBuilder {
 		stmt.setmPhraseUniqueIdentity(cl.getId());
 		stmt.setChangedName(cl.getName());
 		//US 601 retaining status value
-		if(cl.getStatusId()!= null){
-			stmt.setStatus(cl.getStatusId().getDescription());
-		}
+		
+		 /* MAT-286 - Removing Status Field from Measure Phrase. 01/2013		
+		  * if(cl.getStatusId()!= null){
+				stmt.setStatus(cl.getStatusId().getDescription());
+		 	} */
 		Decision dummy = cl.getDecisions().get(0);
 		
 		if(dummy.getDecisions().size()<1) return;

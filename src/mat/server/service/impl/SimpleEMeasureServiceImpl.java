@@ -2,9 +2,14 @@ package mat.server.service.impl;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
+import java.util.zip.ZipException;
 
 import mat.dao.ListObjectDAO;
 import mat.dao.MeasureValidationLogDAO;
@@ -23,12 +28,12 @@ import mat.model.clause.MeasureExport;
 import mat.server.LoggedInUserUtil;
 import mat.server.clause.ClauseBusinessService;
 import mat.server.export.AttachmentGenerator;
+import mat.server.export.AttachmentGenerator.PackageInfo;
 import mat.server.export.CriterionToInterim;
 import mat.server.export.ElementLookupGenerator;
 import mat.server.export.HeaderInfoGenerator;
 import mat.server.export.SimpleXMLWriter;
 import mat.server.export.SuppDataElementsGenerator;
-import mat.server.export.AttachmentGenerator.PackageInfo;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.shared.ConstantMessages;
@@ -47,11 +52,15 @@ import mat.simplexml.model.Propel;
 import mat.simplexml.model.Qdsel;
 import mat.simplexml.model.SupplementalDataElements;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.tools.zip.ZipOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+
+import com.google.gwt.dev.util.collect.HashMap;
 
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	
@@ -107,6 +116,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private UserDAO userDAO;
 	
 	private HSSFWorkbook wkbk = null;
+	
+	
 	
 	public QualityDataSetDAO getQDSDAO() {
 		return qdsDAO;
@@ -427,7 +438,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	public ExportResult getEMeasureZIP(String measureId) throws Exception {
 		ExportResult result = new ExportResult();
 		result.measureName = getMeasureName(measureId).getaBBRName();
-		MeasureExport me = getMeasureExport(measureId);
+		MeasureExport me = getMeasureExport(measureId);		
 		result.zipbarr = getZipBarr(measureId, me);
 		return result;
 	}
@@ -447,12 +458,15 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		String repor = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+su.nl+"<?xml-stylesheet type=\"text/xsl\" href=\"xslt/eMeasure.xsl\"?>";
 		emeasureXMLStr = repor+emeasureXMLStr.substring(repee.length());
 		String emeasureHTMLStr = emeasureXMLToEmeasureHTML(emeasureXMLStr);
+		String simpleXmlStr = me.getSimpleXML();
 		XMLUtility xmlUtility = new XMLUtility();
 		String emeasureXSLUrl = xmlUtility.getXMLResource(CONVERSION_FILE_HTML);
-		ZipPackager zp = new ZipPackager();
 		
-		return zp.getZipBarr(emeasureName, wkbkbarr, emeasureXMLStr, emeasureHTMLStr,emeasureXSLUrl,me.getMeasure().getValueSetDate().toString());
+		ZipPackager zp = new ZipPackager();
+		return zp.getZipBarr(emeasureName, wkbkbarr, emeasureXMLStr, emeasureHTMLStr,emeasureXSLUrl,me.getMeasure().getValueSetDate().toString(), simpleXmlStr);
 	}
+	
+	
 	
 	private boolean isRatioMeasure(Measure m){
 		boolean hasScoringType = m.getHeaders().getScores() == null ? false :
@@ -527,5 +541,63 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	
 	public HSSFWorkbook getWkbk(){
 		return wkbk;
+	}
+
+	@Override
+	public ExportResult getBulkExportZIP(String[] measureIds) throws Exception {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+	    ZipOutputStream zip = new ZipOutputStream(baos);
+	    Map<String, byte[]> filesMap = new HashMap<String, byte[]>();
+	    ExportResult result = null;
+	    int fileNameCounter = 1;
+	    DecimalFormat format = new DecimalFormat("#00");
+		
+	    for (String measureId : measureIds) {
+			result = new ExportResult();
+			result.measureName = getMeasureName(measureId).getaBBRName();
+			MeasureExport me = getMeasureExport(measureId);		
+			createFilesInBulkZip(measureId, me, filesMap,  format.format(fileNameCounter++));
+		}
+		
+		ZipPackager zp = new ZipPackager();
+		double size = 1024 * 1000 * 100;
+		Set<Entry<String, byte[]>> set = filesMap.entrySet();		
+		for (Entry<String, byte[]> fileArr : set) {
+			if(baos.size() < size){
+				zp.addBytesToZip(fileArr.getKey(), fileArr.getValue(), zip);
+			}else{
+				zip.close();
+				throw new ZipException("Exceeded Limit...");
+			}
+		}
+		System.err.println(baos.size());
+		zip.close();
+		result.zipbarr = baos.toByteArray();
+		return result;
+	}
+	
+	
+	public void createFilesInBulkZip(String measureId, MeasureExport me, Map<String, byte[]> filesMap, String seqNum) throws Exception{
+		byte[] wkbkbarr = null;
+		if(me.getCodeList()==null)
+			wkbkbarr = getHSSFWorkbookBytes(createErrorEMeasureXLS());
+		else
+			wkbkbarr = me.getCodeListBarr();
+		
+		StringUtility su = new StringUtility();
+		ExportResult emeasureXMLResult = getEMeasureXML(measureId);
+		String emeasureName = emeasureXMLResult.measureName;
+		String emeasureXMLStr = emeasureXMLResult.export;
+		String repee = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+		String repor = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"+su.nl+"<?xml-stylesheet type=\"text/xsl\" href=\"xslt/eMeasure.xsl\"?>";
+		emeasureXMLStr = repor+emeasureXMLStr.substring(repee.length());
+		String emeasureHTMLStr = emeasureXMLToEmeasureHTML(emeasureXMLStr);
+		String simpleXmlStr = me.getSimpleXML();
+		XMLUtility xmlUtility = new XMLUtility();
+		String emeasureXSLUrl = xmlUtility.getXMLResource(CONVERSION_FILE_HTML);
+		
+		ZipPackager zp = new ZipPackager();
+		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr, emeasureHTMLStr,
+				emeasureXSLUrl,me.getMeasure().getValueSetDate().toString(), simpleXmlStr, filesMap, seqNum);
 	}
 }

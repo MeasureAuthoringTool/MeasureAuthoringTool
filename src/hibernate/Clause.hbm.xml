@@ -13,8 +13,8 @@
 	<property name="measureId" column="MEASURE_ID" /> <!-- Table has got the measure Foreign key relationship, but the mapping is missing in the mapping file.  -->
 	<property name="contextId" column="CONTEXT_ID" />
 	<property name="clauseTypeId" column="CLAUSE_TYPE_ID" />
-	<many-to-one name="statusId" column="STATUS_ID" 
-		class="mat.model.ObjectStatus"  cascade="none"/>
+	<!-- <many-to-one name="statusId" column="STATUS_ID" 
+		class="mat.model.ObjectStatus"  cascade="none"/> --> <!-- MAT-286 - Removing Status Field from Measure Phrase. 01/2013 -->
 	<property name="version" column="VERSION" />
 	<property name="customName" column="CUSTOM_NAME"/>
 	<many-to-one name="decision" column="DECISION_ID" class="mat.model.clause.Decision"  unique="true" lazy="false" cascade="all"/>

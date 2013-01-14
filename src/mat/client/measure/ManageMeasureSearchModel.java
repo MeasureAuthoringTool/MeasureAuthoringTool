@@ -23,6 +23,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		private String shortName;
 		private boolean isMeasureLocked;
 		private LockedUserInfo lockedUserInfo;
+		private boolean isBulkExportchecked;
 		
 		/*US501*/
 		private String version;
@@ -155,6 +156,12 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		}
 		public void setMeasureSetId(String measureSetId) {
 			this.measureSetId = measureSetId;
+		}
+		public boolean isBulkExportchecked() {
+			return isBulkExportchecked;
+		}
+		public void setBulkExportchecked(boolean isBulkExportchecked) {
+			this.isBulkExportchecked = isBulkExportchecked;
 		}
 		
 		

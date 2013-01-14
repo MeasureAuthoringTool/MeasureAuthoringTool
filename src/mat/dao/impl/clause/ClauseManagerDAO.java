@@ -385,7 +385,7 @@ private String getId() {
 			}
 			
 			if(foundClause != null){
-				foundClause.setStatusId(clausePojo.getStatusId());//US 601 persisting status value
+//				foundClause.setStatusId(clausePojo.getStatusId());//US 601 persisting status value//MAT-286 - Removing Status Field from Measure Phrase. 01/2013		
 				if(changedName != null && !changedName.equalsIgnoreCase(clauseName))//Change the name to the new Changed Name
 					foundClause.setName(changedName);
 			}
@@ -905,7 +905,7 @@ private String getId() {
 			clone.setClauseTypeId(SYSTEM_CLAUSE);				
 		}
 		if (originalClause.getProperty()!=null) clone.setProperties(originalClause.getProperty());
-		if (originalClause.getStatusId()!=null) clone.setStatusId(originalClause.getStatusId());
+//		if (originalClause.getStatusId()!=null) clone.setStatusId(originalClause.getStatusId());//MAT-286 - Removing Status Field from Measure Phrase. 01/2013		
 		if (originalClause.getVersion()!=null) clone.setVersion(originalClause.getVersion());
 		return clone;
 	}

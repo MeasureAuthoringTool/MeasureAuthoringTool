@@ -77,11 +77,13 @@ public class SimpleStatementToCentralPojoFactory {
 		//fixing the description persisting problem
 		clause.setDescription(measurePhrase.getDescription());
 		clause.setId(measurePhrase.getmPhraseUniqueIdentity());
-		//US 602 Fix for Status dropdown persisting problem
-		ObjectStatus obj = new ObjectStatus();
-		obj.setId(measurePhrase.getStatusSelectedValue());
-		obj.setDescription(measurePhrase.getStatusItemText());
-		clause.setStatusId(obj);
+		
+		//US 602 Fix for Status dropdown persisting problem		
+		/* MAT-286 - Removing Status Field from Measure Phrase. 01/2013				 
+		 *	ObjectStatus obj = new ObjectStatus();
+			obj.setId(measurePhrase.getStatusSelectedValue());
+			obj.setDescription(measurePhrase.getStatusItemText());
+			clause.setStatusId(obj);*/
 		clause.setChangedName(measurePhrase.getChangedName());
 		decisions = clause.getDecisions();
 		switch (measurePhrase.mode) {

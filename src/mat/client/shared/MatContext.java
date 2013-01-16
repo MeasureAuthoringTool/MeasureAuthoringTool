@@ -26,6 +26,7 @@ import mat.client.login.service.LoginServiceAsync;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementServiceAsync;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.ManageMeasureSearchView;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measurepackage.service.PackageService;
@@ -105,6 +106,8 @@ public class MatContext implements IsSerializable {
 	
 	private ErrorMessageDisplay errorMessage1;
 	private ErrorMessageDisplay errorMessage2;
+	
+	private ManageMeasureSearchView manageMeasureSearchView;
 	
 	private SynchronizationDelegate synchronizationDelegate = new SynchronizationDelegate();
 	
@@ -674,6 +677,23 @@ public class MatContext implements IsSerializable {
 				(current.getTime() - lastSignIn.getTime() < (3*60*1000)) : 
 					false;
 		return alreadySignedIn;
+	}
+
+
+	/**
+	 * @return the manageMeasureSearchView
+	 */
+	public ManageMeasureSearchView getManageMeasureSearchView() {
+		return manageMeasureSearchView;
+	}
+
+
+	/**
+	 * @param manageMeasureSearchView the manageMeasureSearchView to set
+	 */
+	public void setManageMeasureSearchView(
+			ManageMeasureSearchView manageMeasureSearchView) {
+		this.manageMeasureSearchView = manageMeasureSearchView;
 	}
 	
 }

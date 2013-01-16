@@ -560,18 +560,17 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		}
 		
 		ZipPackager zp = new ZipPackager();
-		double size = 1024 * 1000 * 100;
+		double size = 1024 * 1024 * 100;
 		Set<Entry<String, byte[]>> set = filesMap.entrySet();		
 		for (Entry<String, byte[]> fileArr : set) {
-			if(baos.size() < size){
-				zp.addBytesToZip(fileArr.getKey(), fileArr.getValue(), zip);
-			}else{
-				zip.close();
-				throw new ZipException("Exceeded Limit...");
-			}
+			zp.addBytesToZip(fileArr.getKey(), fileArr.getValue(), zip);
 		}
-		System.err.println(baos.size());
+		if(baos.size() > size){
+			zip.close();	
+			throw new ZipException("Exceeded Limit :" + baos.size());
+		}
 		zip.close();
+		System.err.println(baos.size());
 		result.zipbarr = baos.toByteArray();
 		return result;
 	}

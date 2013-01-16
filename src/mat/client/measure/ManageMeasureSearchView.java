@@ -5,6 +5,7 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
@@ -18,6 +19,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -37,8 +39,10 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView("Measures");
 	private Button createButton = new SecondaryButton("Create");
 	private ListBoxMVP options = new ListBoxMVP();
-	private Button bulkExportButton = new PrimaryButton("Bulk Export");
+	private Button bulkExportButton = new PrimaryButton("Export Selected");
+	final FormPanel form = new FormPanel();
 	
+	private ErrorMessageDisplay errorMessagesForBulkExport = new ErrorMessageDisplay();
 	
 	public ManageMeasureSearchView() {
 		mainPanel.setStyleName("contentPanel");
@@ -60,8 +64,10 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		
 		mainPanel.add(view.asWidget());
 		mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
-//		mainPanel.add(buildBulkExportWidget());
+		mainPanel.add(buildBulkExportWidget());
+		MatContext.get().setManageMeasureSearchView(this);
 	}
+	
 	
 	private Widget buildSearchWidget(){
 		HorizontalPanel hp = new HorizontalPanel();
@@ -77,9 +83,12 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	}
 	
 	private Widget buildBulkExportWidget(){
-		SimplePanel simplePanel = new SimplePanel();		
-		simplePanel.add(bulkExportButton);
-		return simplePanel;
+		FlowPanel flowPanel = new FlowPanel();
+		flowPanel.add(errorMessagesForBulkExport);
+		flowPanel.setStyleName("rightAlignButton");
+		flowPanel.add(bulkExportButton);
+		form.setWidget(flowPanel);
+		return form;
 	}
 	
 	
@@ -130,8 +139,18 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	}
 	
 	@Override
+	public ErrorMessageDisplayInterface getErrorMessageDisplayForBulkExport() {
+		return errorMessagesForBulkExport;
+	}
+	
+	@Override
 	public HasClickHandlers getBulkExportButton() {
 		return bulkExportButton;
+	}
+	
+	@Override
+	public FormPanel getForm() {
+		return form;
 	}
 	
 	private void loadListBoxOptions(){

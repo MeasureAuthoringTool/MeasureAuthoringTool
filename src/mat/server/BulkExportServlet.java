@@ -1,6 +1,9 @@
 package mat.server;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.DecimalFormat;
+import java.util.zip.ZipException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -42,18 +45,26 @@ public class BulkExportServlet extends HttpServlet {
 				export.zipbarr = null;
 				
 			} catch (Exception e) {
-				// TODO Auto-generated catch block
-				throw new ServletException(e);
+				if(e instanceof ZipException){
+					resp.setContentType("text/html");
+					PrintWriter out = resp.getWriter();
+					out.println(humanReadableByteCount(new Long(e.getMessage().split(":")[1])));
+				}else
+					throw new ServletException(e);
 			}
-	}
-
-	@Override
-	protected void service(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException { 
-		doPost(req, resp);
 	}
 	
 	private SimpleEMeasureService getService(){
 		SimpleEMeasureService service = (SimpleEMeasureService) context.getBean("eMeasureService");
 		return service;
+	}
+	
+	private String humanReadableByteCount(long bytes) {
+	    int unit = 1024;
+	    if (bytes < unit) return bytes + " B";
+	    int exp = (int) (Math.log(bytes) / Math.log(unit));
+	    String pre = "KMGTPE".charAt(exp-1) +  "";
+	    DecimalFormat decimalFormat = new DecimalFormat("###.#" + " " + pre + "B");
+	    return decimalFormat.format(bytes / Math.pow(unit, exp));
 	}
 }

@@ -13,6 +13,9 @@ import mat.client.shared.SpacerWidget;
 import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
 
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -391,6 +394,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 	
 	protected void buildSearchResultsColumnHeaders(int numRows,int numColumns,SearchResults<T> results, boolean isAscending,boolean isChecked){
+		boolean isExportClear = false;
 		for(int i = 0; i < numColumns; i++) {
 			Panel headerPanel = new FlowPanel();
 			Widget columnHeader = null;
@@ -449,17 +453,45 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 				columnHeader.setTitle(title);
 			}
 			else{
-				columnHeader = new Label(results.getColumnHeader(i));
-				columnHeader.setTitle(results.getColumnHeader(i));
-				//Need to do this for IE or it centers them
-				columnHeader.setStyleName("leftAligned");
+				if("ExportClear".equals(results.getColumnHeader(i))){
+					isExportClear = true;
+					HorizontalPanel panel = new HorizontalPanel();
+//					SimplePanel sp1 = new SimplePanel();
+//					SimplePanel sp2 = new SimplePanel();
+					panel.add(new Label("Export"));
+					Anchor clearAnchor = new Anchor("Clear");
+					clearAnchor.addClickHandler(new ClickHandler() {
+						@Override
+						public void onClick(ClickEvent event) {
+							MatContext.get().getManageMeasureSearchView().getErrorMessageDisplayForBulkExport().clear();
+							NodeList<Element> nl =
+								 Document.get().getElementsByTagName("input");
+							 for (int i = 0; i < nl.getLength(); i++) {
+							       Element el = nl.getItem(i);
+							       if (el.getTagName().toUpperCase().equals("INPUT")) {
+							            if (el.getPropertyString("title").equals("bulkExport")) {
+					            			el.setPropertyBoolean("checked", false);
+							            }
+							       }
+							 }
+						}
+					});
+					
+					panel.add(clearAnchor);
+//					panel.add(sp1);
+//					panel.add(sp2);
+					headerPanel.add(panel);
+				}else{
+					columnHeader = new Label(results.getColumnHeader(i));
+					columnHeader.setTitle(results.getColumnHeader(i));
+					//Need to do this for IE or it centers them
+					columnHeader.setStyleName("leftAligned");
+				}
+				
 			}
-			
-			
-			
-			
 			headerPanel.setStylePrimaryName("noBorder");
-			headerPanel.add(columnHeader);
+			if(!isExportClear) 
+				headerPanel.add(columnHeader);
 			dataTable.setWidget(0, i,headerPanel);
 			dataTable.getColumnFormatter().setWidth(i, results.getColumnWidth(i));
 			dataTable.getColumnFormatter().addStyleName(i, "noWrap");

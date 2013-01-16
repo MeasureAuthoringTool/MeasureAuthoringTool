@@ -37,6 +37,9 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptObject;
+import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -53,6 +56,8 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -64,6 +69,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	public static interface BaseDisplay{
 		public Widget asWidget();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
 	}
 	public static interface SearchDisplay extends BaseDisplay {
 		public HasClickHandlers getCreateButton();
@@ -77,7 +83,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public HasClickHandlers getSearchButton();
 		public HasValue<String> getSearchString();
 		public HasClickHandlers getBulkExportButton();
-		
+		public FormPanel getForm();
+		public ErrorMessageDisplayInterface getErrorMessageDisplayForBulkExport();
 		
 	}
 	public static interface DetailDisplay extends BaseDisplay {
@@ -297,6 +304,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}else if(searchDisplay.getSelectedOption().equalsIgnoreCase(ConstantMessages.CREATE_NEW_VERSION)){
 					createVersion();
 				}else{
+					searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 					searchDisplay.getErrorMessageDisplay().setMessage("Please select an option from the Create list box.");
 				}
 			}
@@ -489,16 +497,48 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				ManageLoadingView.showLoadingMessage();		
 				List<String> selectedMeasureIds = new ArrayList<String>();
-				for(int i = 0; i < searchResults.getNumberOfRows(); i++) {
-					if(searchResults.get(i).isBulkExportchecked()){
-						selectedMeasureIds.add(searchResults.getKey(i));
-					}
+				 NodeList<Element> nl =
+					 Document.get().getElementsByTagName("input");
+					 for (int i = 0; i < nl.getLength(); i++) {
+					       Element el = nl.getItem(i);
+					       if (el.getTagName().toUpperCase().equals("INPUT")) {
+					            if (el.getPropertyString("title").equals("bulkExport")) {
+					            		if(el.getPropertyBoolean("checked")){
+					            			selectedMeasureIds.add(el.getPropertyString("value"));
+					            			el.setPropertyBoolean("checked", false);
+					            		}
+					                    
+					            }
+					       }
+					 }
+				
+				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+				searchDisplay.getErrorMessageDisplay().clear();
+				versionDisplay.getErrorMessageDisplay().clear();
+				draftDisplay.getErrorMessageDisplay().clear();
+				detailDisplay.getErrorMessageDisplay().clear();
+				historyDisplay.getErrorMessageDisplay().clear();
+				exportDisplay.getErrorMessageDisplay().clear();
+				shareDisplay.getErrorMessageDisplay().clear();
+				if(!selectedMeasureIds.isEmpty()){
+					bulkExport(selectedMeasureIds);
+				}else{
+					searchDisplay.getErrorMessageDisplayForBulkExport().setMessage(MatContext.get().getMessageDelegate().getMeasureSelectionError());
 				}
-				bulkExport(selectedMeasureIds);
 			}
 		});
+			FormPanel form = searchDisplay.getForm();
+		    form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+		      public void onSubmitComplete(SubmitCompleteEvent event) {
+		    	  String errorMsg = event.getResults();
+		    	  List<String> err = new ArrayList<String>();
+		    	  err.add("Export file size is " + errorMsg);
+		    	  err.add("File size limit is 100 MB");
+		    	  searchDisplay.getErrorMessageDisplayForBulkExport().setMessages(err);
+		      }
+		    });
+
 		
 		versionDisplay.getSaveButton().addClickHandler(new ClickHandler(){
 			@Override
@@ -721,6 +761,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		int startIndex = pageSize * (pageNumber - 1);
 		searchMeasuresForVersion(startIndex,versionDisplay.getPageSize());
 		versionDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		panel.setHeading("My Measures > Create Measure Version of Draft","MainContent");
  	    panel.setContent(versionDisplay.asWidget());
     	Mat.focusSkipLists("MainContent");
@@ -733,6 +774,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		int startIndex = pageSize * (pageNumber - 1);
     	searchMeasuresForDraft(startIndex,draftDisplay.getPageSize());
     	draftDisplay.getErrorMessageDisplay().clear();
+    	searchDisplay.getErrorMessageDisplayForBulkExport().clear();
     	panel.setHeading("My Measures > Create Draft of Existing Measure","MainContent");
  	    panel.setContent(draftDisplay.asWidget());
     	Mat.focusSkipLists("MainContent");
@@ -916,6 +958,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	private void createNew() {
 		detailDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		currentDetails = new ManageMeasureDetailModel();
 		displayDetailForAdd();
 		Mat.focusSkipLists("MainContent");
@@ -938,6 +981,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 		currentExportId = id;
 		exportDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		panel.setHeading("My Measures > Export","MainContent");
 		panel.setContent(exportDisplay.asWidget());
 		exportDisplay.setMeasureName(name);
@@ -965,6 +1009,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	private void edit(String name) {
 		detailDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		MatContext.get().getMeasureService().getMeasure(name, new AsyncCallback<ManageMeasureDetailModel>() {
 			
 			@Override
@@ -983,6 +1028,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void editClone(String id) {
 		detailDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		MatContext.get().getMeasureService().getMeasure(id, new AsyncCallback<ManageMeasureDetailModel>() {
 			
 			@Override
@@ -1054,6 +1100,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
 				}else{
 					searchDisplay.getErrorMessageDisplay().clear();
+					searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 				}
 				SearchResultUpdate sru = new SearchResultUpdate();
 				sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchText);
@@ -1130,6 +1177,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 		else {
 			detailDisplay.getErrorMessageDisplay().clear();
+			searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		}
 		return valid;
 	}
@@ -1158,34 +1206,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 		return url;
 	}
 	
-	private void bulkExport(List<String> ids){
+	private void bulkExport(List<String> selectedMeasureIds){
 		String measureId = "";
-		for (String id : ids) {			
+		for (String id : selectedMeasureIds) {			
 			measureId += id+"&id="; 
 		}
 		measureId = measureId.substring(0,measureId.lastIndexOf("&"));
 		String url = GWT.getModuleBaseURL() + "bulkExport?id=" + measureId; 
 		url += "&type=open";
-		
-		final JavaScriptObject window = openWindow(url);
-        registerHandlers(ManageMeasurePresenter.this, window);
+		FormPanel form = searchDisplay.getForm();
+		form.setAction(url);
+		form.setEncoding(FormPanel.ENCODING_MULTIPART);
+		form.setMethod(FormPanel.METHOD_POST);
+		form.submit();
 	}
-	
-	native JavaScriptObject openWindow(String url) /*-{
-    	return $wnd.open(url, 'blank');
-  	}-*/;
-   
-	  native JavaScriptObject registerHandlers(ManageMeasurePresenter jsni, JavaScriptObject window) /*-{
-	    window.onbeforeunload = doOnbeforeunload;
-	    function doOnbeforeunload() {
-	      jsni.@mat.client.measure.ManageMeasurePresenter::onWindowClosed()();
-	    }
-	  }-*/;
-   
-	  private void onWindowClosed() {
-		  ManageLoadingView.hideLoadingMessage(10);
-	  }
-	
 	
 	/**
 	 * Verifies the valid value required for the list box

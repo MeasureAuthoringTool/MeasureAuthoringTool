@@ -859,4 +859,9 @@ public class MessageDelegate {
 	public String getGenericErrorMessage(){
 		return GENERIC_ERROR_MESSAGE;
 	}
+	
+	private final String MEASURE_SELECTION_ERROR = "Please select alteast one measure";
+	public String getMeasureSelectionError(){
+		return MEASURE_SELECTION_ERROR;
+	}
 }

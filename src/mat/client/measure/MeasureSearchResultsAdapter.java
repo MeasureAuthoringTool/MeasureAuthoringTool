@@ -18,8 +18,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchModel.Result> {
 	
-	private static String[] headers = new String[] { "Measure Name", "Version", "Finalized Date", "Status", "History" ,"Edit","Share", "Clone", "Export"};
-	private static String[] widths = new String[] { "35%", "16%", "16", "8%", "5%","5%", "5%", "5%", "5%" };
+	private static String[] headers = new String[] { "Measure Name", "Version", "Finalized Date", "Status", "History" ,"Edit","Share", "Clone", "ExportClear"};
+	private static String[] widths = new String[] { "35%", "16%", "16%", "8%", "5%","5%", "5%", "5%", "5%", "12%" };
 
 	public static interface Observer {
 		public void onEditClicked(ManageMeasureSearchModel.Result result);
@@ -157,18 +157,18 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	
 	private Widget getImageAndCheckBox(String action, ImageResource url, String key){
 		HorizontalPanel hPanel = new HorizontalPanel();
-		hPanel.setStyleName("searchTableCenteredHolder");
+		hPanel.setStyleName("searchTableCenteredHolder rightAligned");
 		FocusableImageButton image = new FocusableImageButton(url,action);
 		setImageStyle(image);
 		setId(image, action, key);
 		addListener(image);
 		hPanel.add(image);
 				
-		CustomCheckBox checkBox = new CustomCheckBox("bulkExport", false);
-		checkBox.setFormValue(key);		
+		CustomCheckBox checkBox = new CustomCheckBox("bulkExport", false);	
+		checkBox.setStyleName("centerAligned");
+		checkBox.setFormValue(key);
 		hPanel.add(checkBox);	
 		checkBox.getElement().setId("bulkExport_" + key);
-		checkBox.getElement().setPropertyBoolean("bulkExport" ,checkBox.getValue());
 		checkBox.addClickHandler(clickHandler);
 		return hPanel;
 	}

@@ -134,6 +134,11 @@ body#main select, body#main input, body#main textarea {
 	border: 1px solid;
 	font-weight: bold;
 }
+.rightAlignButton{
+	text-align:right;
+	width:98%;
+	padding-right:10px;
+}
 
 .invisible{
 			position:absolute;

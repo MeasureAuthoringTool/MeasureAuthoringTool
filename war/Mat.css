@@ -987,6 +987,11 @@ padding: 2px;
 	color: #666666;
 }
 
+.searchTableCenteredHolder td {
+	border:0px;
+	vertical-align: top;
+}
+
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________*/
 .skiplist {margin: 0 0 0 5px; padding: 0} 

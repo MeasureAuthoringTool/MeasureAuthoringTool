@@ -157,7 +157,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	
 	private Widget getImageAndCheckBox(String action, ImageResource url, String key){
 		HorizontalPanel hPanel = new HorizontalPanel();
-		hPanel.setStyleName("searchTableCenteredHolder rightAligned");
+		hPanel.setStyleName("searchTableCenteredHolder");
 		FocusableImageButton image = new FocusableImageButton(url,action);
 		setImageStyle(image);
 		setId(image, action, key);
@@ -178,7 +178,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		image.addClickHandler(clickHandler);
 	}
 	private void setImageStyle(FocusableImageButton image) {
-		image.setStylePrimaryName("measureSearchResultIcon");
+		image.setStylePrimaryName("measureSearchResultIcon rightAligned");
 	}
 	private void setId(FocusableImageButton image, String action, String key) {
 		String id = action + "_" + key;

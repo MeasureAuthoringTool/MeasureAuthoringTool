@@ -196,12 +196,11 @@ body#main select, body#main input, body#main textarea {
 }
 .footerLogo-Right {
     float: right;
-    left:60px;
-    padding-right: 15%;
     position:relative;
-    margin-top:-12px ;
-    margin-bottom:20px;
-    padding-left: 100px; 
+    top:-12px ;
+    left:110px;
+    padding-right: 15%;
+    padding-left: 25px; 
     
 }
 .footer-address-text {

@@ -137,7 +137,6 @@ body#main select, body#main input, body#main textarea {
 .rightAlignButton{
 	text-align:right;
 	width:98%;
-	padding-right:10px;
 }
 
 .invisible{
@@ -403,6 +402,13 @@ body#main select, body#main input, body#main textarea {
 }
 .leftAligned {
 	text-align: left;
+}
+
+.rightAligned {
+	text-align: right;
+}
+.centerAligned {
+	text-align: center;
 }
 
 .leftAligned_small_text {

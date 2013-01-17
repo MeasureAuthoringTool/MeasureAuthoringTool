@@ -38,19 +38,21 @@ public class BulkExportServlet extends HttpServlet {
 		FileNameUtility fnu = new FileNameUtility();
 		try {
 				export = getService().getBulkExportZIP(measureIds);
-				resp.setHeader("Content-Disposition", "attachment; filename="+ fnu.getZipName(export.measureName));
+				resp.setHeader("Content-Disposition", "attachment; filename="+ fnu.getBulkZipName("Export"));
 				resp.setContentType("application/zip");
 				resp.getOutputStream().write(export.zipbarr);
 				resp.getOutputStream().close();
 				export.zipbarr = null;
 				
 			} catch (Exception e) {
-				if(e instanceof ZipException){
+				if(e instanceof ZipException && null != e.getMessage() && e.getMessage().contains("Exceeded Limit")){
 					resp.setContentType("text/html");
 					PrintWriter out = resp.getWriter();
-					out.println(humanReadableByteCount(new Long(e.getMessage().split(":")[1])));
-				}else
+					out.println("Exceeded Limit: " + humanReadableByteCount(new Long(e.getMessage().split(":")[1])));
+				}else{
 					throw new ServletException(e);
+				}
+					
 			}
 	}
 	

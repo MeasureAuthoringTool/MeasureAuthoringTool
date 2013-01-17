@@ -37,4 +37,7 @@ public class FileNameUtility {
 			lastModifiedDate = lastModifiedDate.replace(':', '.');
 		return name.replaceAll("\\W","") + "_"+lastModifiedDate+".xls";
 	}
+	public String getBulkZipName(String name) {
+		return name.replaceAll("\\W","") + "_Artifacts.zip";
+	}
 }

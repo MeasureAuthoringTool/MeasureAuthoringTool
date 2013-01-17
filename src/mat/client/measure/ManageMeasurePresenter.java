@@ -14,6 +14,8 @@ import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.history.HistoryModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.measure.metadata.Grid508;
 import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
@@ -36,10 +38,6 @@ import mat.model.clause.MeasureShareDTO;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.JavaScriptObject;
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -59,6 +57,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormPanel.SubmitCompleteEvent;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
@@ -85,6 +84,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public HasClickHandlers getBulkExportButton();
 		public FormPanel getForm();
 		public ErrorMessageDisplayInterface getErrorMessageDisplayForBulkExport();
+		public Grid508 getMeasureDataTable();
 		
 	}
 	public static interface DetailDisplay extends BaseDisplay {
@@ -497,22 +497,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				List<String> selectedMeasureIds = new ArrayList<String>();
-				 NodeList<Element> nl =
-					 Document.get().getElementsByTagName("input");
-					 for (int i = 0; i < nl.getLength(); i++) {
-					       Element el = nl.getItem(i);
-					       if (el.getTagName().toUpperCase().equals("INPUT")) {
-					            if (el.getPropertyString("title").equals("bulkExport")) {
-					            		if(el.getPropertyBoolean("checked")){
-					            			selectedMeasureIds.add(el.getPropertyString("value"));
-					            			el.setPropertyBoolean("checked", false);
-					            		}
-					                    
-					            }
-					       }
-					 }
-				
+				List<String> selectedMeasureIds = getCheckBoxValues();
 				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 				searchDisplay.getErrorMessageDisplay().clear();
 				versionDisplay.getErrorMessageDisplay().clear();
@@ -532,10 +517,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 		    form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
 		      public void onSubmitComplete(SubmitCompleteEvent event) {
 		    	  String errorMsg = event.getResults();
-		    	  List<String> err = new ArrayList<String>();
-		    	  err.add("Export file size is " + errorMsg);
-		    	  err.add("File size limit is 100 MB");
-		    	  searchDisplay.getErrorMessageDisplayForBulkExport().setMessages(err);
+		    	  if(null != errorMsg && errorMsg.contains("Exceeded Limit")){
+		    		  List<String> err = new ArrayList<String>();
+			    	  err.add("Export file size is " + errorMsg);
+			    	  err.add("File size limit is 100 MB");
+			    	  searchDisplay.getErrorMessageDisplayForBulkExport().setMessages(err);  
+		    	  }else{
+		    		  Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+		    	  }
 		      }
 		    });
 
@@ -1221,6 +1210,32 @@ public class ManageMeasurePresenter implements MatPresenter {
 		form.submit();
 	}
 	
+	private List<String> getCheckBoxValues(){
+		List<String> values = new ArrayList<String>();
+		int rows = searchDisplay.getMeasureDataTable().getRowCount();
+		int cols = searchDisplay.getMeasureDataTable().getColumnCount();
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
+				Widget w = searchDisplay.getMeasureDataTable().getWidget(i, j);
+				if(w instanceof HorizontalPanel){
+					HorizontalPanel hPanel = (HorizontalPanel)w;
+					int count = hPanel.getWidgetCount();
+					for (int k = 0; k < count; k++) {
+						Widget widget = hPanel.getWidget(k);
+						if(widget instanceof CustomCheckBox){
+							CustomCheckBox checkBox = ((CustomCheckBox)widget);
+							if(checkBox.getValue()){
+								values.add(checkBox.getFormValue());
+								checkBox.setValue(false);										
+							}
+						}
+					}
+				}
+			}
+		}
+		return values;
+	}
+	
 	/**
 	 * Verifies the valid value required for the list box
 	 * @param value
@@ -1248,4 +1263,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	public void setBulkExportMeasureIds(List<String> bulkExportMeasureIds) {
 		this.bulkExportMeasureIds = bulkExportMeasureIds;
 	}
+	
+	
 }

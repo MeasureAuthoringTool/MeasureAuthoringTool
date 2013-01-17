@@ -456,30 +456,17 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 				if("ExportClear".equals(results.getColumnHeader(i))){
 					isExportClear = true;
 					HorizontalPanel panel = new HorizontalPanel();
-//					SimplePanel sp1 = new SimplePanel();
-//					SimplePanel sp2 = new SimplePanel();
 					panel.add(new Label("Export"));
-					Anchor clearAnchor = new Anchor("Clear");
+					Anchor clearAnchor = new Anchor("(Clear)");
+					clearAnchor.setStyleName("clearAnchorStyle");
 					clearAnchor.addClickHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
 							MatContext.get().getManageMeasureSearchView().getErrorMessageDisplayForBulkExport().clear();
-							NodeList<Element> nl =
-								 Document.get().getElementsByTagName("input");
-							 for (int i = 0; i < nl.getLength(); i++) {
-							       Element el = nl.getItem(i);
-							       if (el.getTagName().toUpperCase().equals("INPUT")) {
-							            if (el.getPropertyString("title").equals("bulkExport")) {
-					            			el.setPropertyBoolean("checked", false);
-							            }
-							       }
-							 }
+							clearCheckBoxes();
 						}
 					});
-					
 					panel.add(clearAnchor);
-//					panel.add(sp1);
-//					panel.add(sp2);
 					headerPanel.add(panel);
 				}else{
 					columnHeader = new Label(results.getColumnHeader(i));
@@ -497,6 +484,27 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 			dataTable.getColumnFormatter().addStyleName(i, "noWrap");
 		}
 		dataTable.getRowFormatter().addStyleName(0, "header");
+	}
+	
+	private void clearCheckBoxes(){
+		int rows = dataTable.getRowCount();
+		int cols = dataTable.getColumnCount();
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
+				Widget w = dataTable.getWidget(i, j);
+				if(w instanceof HorizontalPanel){
+					HorizontalPanel hPanel = (HorizontalPanel)w;
+					int count = hPanel.getWidgetCount();
+					for (int k = 0; k < count; k++) {
+						Widget widget = hPanel.getWidget(k);
+						if(widget instanceof CustomCheckBox){
+							CustomCheckBox checkBox = ((CustomCheckBox)widget);
+								checkBox.setValue(false);										
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<T> results){		
@@ -733,5 +741,17 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 			}
 		}
 		
+	}
+	/**
+	 * @return the dataTable
+	 */
+	public Grid508 getDataTable() {
+		return dataTable;
+	}
+	/**
+	 * @param dataTable the dataTable to set
+	 */
+	public void setDataTable(Grid508 dataTable) {
+		this.dataTable = dataTable;
 	}
 }

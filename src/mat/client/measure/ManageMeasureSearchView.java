@@ -1,5 +1,6 @@
 package mat.client.measure;
 
+import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableWidget;
@@ -175,6 +176,9 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	}
 
 
-	
+	@Override
+	public Grid508 getMeasureDataTable() {
+		return view.getDataTable();
+	}
 	
 }

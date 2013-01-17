@@ -1,11 +1,19 @@
 package mat.client.measure.metadata;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * @author skarunakaran
+ *
+ */
 public class Grid508 extends Grid{
 
 	private final String SCOPE = "scope";
@@ -134,5 +142,48 @@ public class Grid508 extends Grid{
 					}
 				}
 			}
+	  }
+	  
+	  
+	 /**
+	  * clears all checkboxes in Grid 
+	  * @param name must nut be null. checkBox name.
+	 */
+	public void clearCheckBoxesInGrid(String name){
+			int rows = getRowCount();
+			int cols = getColumnCount();
+			for(int i = 0; i < rows; i++){
+				for(int j = 0; j < cols; j++){
+					Widget w = getWidget(i, j);
+					if(w instanceof CheckBox &&
+							w.getTitle().equals(name)){						
+						((CheckBox)w).setValue(false);
+					}
+				}
+			}
+	  }
+	  
+	
+	 /**
+	  * Returns checkbox values that are checked and in Grid
+	 * @param name must not be null. CheckBox name
+	 * @return List for checkbox formValue
+	 */
+	public List<String> getCheckBoxValuesInGrid(String name){
+		  List<String> values = new ArrayList<String>();
+		  int rows = getRowCount();
+			int cols = getColumnCount();
+			for(int i = 0; i < rows; i++){
+				for(int j = 0; j < cols; j++){
+					Widget w = getWidget(i, j);
+					if(w instanceof CheckBox){
+						CheckBox checkBox = ((CheckBox) w);
+						if(checkBox.getTitle().equals(name) && checkBox.getValue()){						
+							values.add(checkBox.getFormValue());
+						}
+					}
+				}
+			}
+			return values;
 	  }
 }

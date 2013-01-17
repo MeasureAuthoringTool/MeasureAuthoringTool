@@ -992,6 +992,11 @@ padding: 2px;
 	vertical-align: top;
 }
 
+.clearAnchorStyle {
+	font-size:.84em;
+	font-weight: normal;
+}
+
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________*/
 .skiplist {margin: 0 0 0 5px; padding: 0} 

@@ -26,6 +26,7 @@ import mat.client.login.service.LoginServiceAsync;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementServiceAsync;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchView;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -108,6 +109,8 @@ public class MatContext implements IsSerializable {
 	private ErrorMessageDisplay errorMessage2;
 	
 	private ManageMeasureSearchView manageMeasureSearchView;
+	
+	private ManageMeasureSearchModel manageMeasureSearchModel;
 	
 	private SynchronizationDelegate synchronizationDelegate = new SynchronizationDelegate();
 	
@@ -694,6 +697,23 @@ public class MatContext implements IsSerializable {
 	public void setManageMeasureSearchView(
 			ManageMeasureSearchView manageMeasureSearchView) {
 		this.manageMeasureSearchView = manageMeasureSearchView;
+	}
+
+
+	/**
+	 * @return the manageMeasureSearchModel
+	 */
+	public ManageMeasureSearchModel getManageMeasureSearchModel() {
+		return manageMeasureSearchModel;
+	}
+
+
+	/**
+	 * @param manageMeasureSearchModel the manageMeasureSearchModel to set
+	 */
+	public void setManageMeasureSearchModel(
+			ManageMeasureSearchModel manageMeasureSearchModel) {
+		this.manageMeasureSearchModel = manageMeasureSearchModel;
 	}
 	
 }

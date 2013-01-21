@@ -27,6 +27,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		public void onShareClicked(ManageMeasureSearchModel.Result result);
 		public void onExportClicked(ManageMeasureSearchModel.Result result);
 		public void onHistoryClicked(ManageMeasureSearchModel.Result result);		
+		public void onExportSelectedClicked(CustomCheckBox checkBox);
 	}
 		
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
@@ -48,6 +49,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	}
 	public void setData(ManageMeasureSearchModel data) {
 		this.data = data;
+		
 	}
 	
 	
@@ -159,7 +161,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.setStyleName("searchTableCenteredHolder");
 		FocusableImageButton image = new FocusableImageButton(url,action);
-		setImageStyle(image);
+		image.setStylePrimaryName("measureSearchResultIcon rightAligned");
 		setId(image, action, key);
 		addListener(image);
 		hPanel.add(image);
@@ -178,7 +180,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		image.addClickHandler(clickHandler);
 	}
 	private void setImageStyle(FocusableImageButton image) {
-		image.setStylePrimaryName("measureSearchResultIcon rightAligned");
+		image.setStylePrimaryName("measureSearchResultIcon");
 	}
 	private void setId(FocusableImageButton image, String action, String key) {
 		String id = action + "_" + key;
@@ -209,8 +211,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 					else if("history".equals(action)){
 						observer.onHistoryClicked(result);
 					}else if("bulkExport".equals(action)){
-						CustomCheckBox checkBox = (CustomCheckBox)event.getSource();
-						result.setBulkExportchecked(checkBox.getValue());
+						observer.onExportSelectedClicked((CustomCheckBox)event.getSource());
 					}
 				}
 			}

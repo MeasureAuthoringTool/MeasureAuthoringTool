@@ -1,5 +1,6 @@
 package mat.client.measure;
 
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -67,6 +68,7 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
 		mainPanel.add(buildBulkExportWidget());
 		MatContext.get().setManageMeasureSearchView(this);
+		
 	}
 	
 	
@@ -179,6 +181,34 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	@Override
 	public Grid508 getMeasureDataTable() {
 		return view.getDataTable();
+	}
+	
+	@Override
+	public Button getExportSelectedButton(){
+		return bulkExportButton;
+	}
+
+
+	@Override
+	public void clearBulkExportCheckBoxes(Grid508 dataTable){
+		int rows = dataTable.getRowCount();
+		int cols = dataTable.getColumnCount();
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
+				Widget w = dataTable.getWidget(i, j);
+				if(w instanceof HorizontalPanel){
+					HorizontalPanel hPanel = (HorizontalPanel)w;
+					int count = hPanel.getWidgetCount();
+					for (int k = 0; k < count; k++) {
+						Widget widget = hPanel.getWidget(k);
+						if(widget instanceof CustomCheckBox){
+							CustomCheckBox checkBox = ((CustomCheckBox)widget);
+								checkBox.setValue(false);										
+						}
+					}
+				}
+			}
+		}
 	}
 	
 }

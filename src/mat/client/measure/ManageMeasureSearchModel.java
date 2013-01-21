@@ -23,7 +23,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		private String shortName;
 		private boolean isMeasureLocked;
 		private LockedUserInfo lockedUserInfo;
-		private boolean isBulkExportchecked;
 		
 		/*US501*/
 		private String version;
@@ -157,13 +156,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		public void setMeasureSetId(String measureSetId) {
 			this.measureSetId = measureSetId;
 		}
-		public boolean isBulkExportchecked() {
-			return isBulkExportchecked;
-		}
-		public void setBulkExportchecked(boolean isBulkExportchecked) {
-			this.isBulkExportchecked = isBulkExportchecked;
-		}
-		
 		
 	}
 	
@@ -171,6 +163,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	private int startIndex;
 	private int resultsTotal;
 	private int pageCount;
+	private List<String> selectedExportIds;
 	
 	public void setData(List<Result> data) {
 		this.data = data;
@@ -261,7 +254,21 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	public Widget getValue(int row, int column) {
 		return null;
 	}
-	
-	
+
+	/**
+	 * @return the selectedExportIds
+	 */
+	public List<String> getSelectedExportIds() {
+		return selectedExportIds;
+	}
+
+	/**
+	 * @param selectedExportIds the selectedExportIds to set
+	 */
+	public void setSelectedExportIds(List<String> selectedExportIds) {
+		this.selectedExportIds = selectedExportIds;
+	}
+
+
 	
 }

@@ -11,9 +11,14 @@ import mat.client.shared.SpacerWidget;
 
 import mat.client.util.ClientConstants;
 import mat.client.util.FooterLinksUtility;
-import mat.client.util.FooterRightSideAnchor;
+import mat.client.util.FooterLogoPanelBuilder;
 import mat.shared.ConstantMessages;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -118,26 +123,7 @@ public abstract class MainLayout {
 		
 		FlowPanel footerMainPanel = new FlowPanel();
 		footerMainPanel.setStylePrimaryName("footer");		
-		
-		final HorizontalPanel footerLogoPanel = new HorizontalPanel();
-		
-		footerLogoPanel.setStylePrimaryName("footerLogo");
-		
-		final Image logo = new Image(ImageResources.INSTANCE.cms_gov_footer());
-		logo.setTitle(ClientConstants.TITLE_CMS_GOV_LOGO);
-		
-		footerLogoPanel.add(logo);
-		footerMainPanel.add(footerLogoPanel);
-		
-		HTML desc = new HTML("A federal government website managed by the Centers for Medicare & Medicaid Services <br>" +
-				"7500 Security Boulevard, Baltimore, MD 21244");
-		desc.setStylePrimaryName("footer-address-text");
-		footerLogoPanel.add(desc);
-		
-		final Anchor footerRightAnchor = FooterRightSideAnchor.rightSideAnchorMatFooter();
-		footerLogoPanel.add(footerRightAnchor);
-		footerMainPanel.add(footerLogoPanel);
-		
+		footerMainPanel.add(FooterLogoPanelBuilder.buildFooterLogoPanel());
 				
 		final VerticalPanel footerLinksPanel = new VerticalPanel();
 		footerLinksPanel.setStylePrimaryName("footer-nav");
@@ -147,7 +133,6 @@ public abstract class MainLayout {
 		
 		final HorizontalPanel footerLinks = new HorizontalPanel();
 		fetchAndcreateFooterLinks(footerLinks);
-		
 		
 		footerLinksPanel.add(footerLinks);
 		

@@ -264,6 +264,32 @@ body#main select, body#main input, body#main textarea {
     text-decoration: none;
 }
 
+.cms-address-bar {
+    background: none repeat scroll 0 0 #A8B0B3;
+    overflow: auto;
+    padding: 20px;
+}
+
+#footer-address-text {
+    color: #000000;
+    float: left;
+    margin-left: 20px;
+    margin-top: 15px;
+    padding-left: 12px;
+    font-size:0.8em;
+}
+
+#footer-cms-logo {
+    float: right;
+}
+
+#footer-address-img {
+    float: left;
+    margin-left: 20px;
+    margin-top: 20px;
+    border: 0 none;
+}
+
 .footerLink {
 	-moz-box-sizing:border-box;
 	background-color:#FFFFFF;

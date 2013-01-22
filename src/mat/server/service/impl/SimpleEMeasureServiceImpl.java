@@ -570,7 +570,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 			throw new ZipException("Exceeded Limit :" + baos.size());
 		}
 		zip.close();
-		System.err.println(baos.size());
+		logger.debug(baos.size());
 		result.zipbarr = baos.toByteArray();
 		return result;
 	}

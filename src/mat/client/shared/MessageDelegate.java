@@ -860,7 +860,7 @@ public class MessageDelegate {
 		return GENERIC_ERROR_MESSAGE;
 	}
 	
-	private final String MEASURE_SELECTION_ERROR = "Please select atleast one measure";
+	private final String MEASURE_SELECTION_ERROR = "Please select at least one measure";
 	public String getMeasureSelectionError(){
 		return MEASURE_SELECTION_ERROR;
 	}

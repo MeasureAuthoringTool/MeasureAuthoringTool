@@ -540,7 +540,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			    	  err.add("File size limit is 100 MB");
 			    	  searchDisplay.getErrorMessageDisplayForBulkExport().setMessages(err);  
 		    	  }else{
-		    		  searchDisplay.getErrorMessageDisplayForBulkExport().setMessage(errorMsg);  
 		    		  Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 		    	  }
 		      }

@@ -135,7 +135,7 @@ class TimeoutManager {
 	private void showTimeOutWarning(){
 		   clearTimeOutWarning();
 		   warningBannerWidget = new HTML("Warning! Your session is about to expire at " + formattedTime +
-				   ". Click on the screen or press any key to continue.");
+				   ". Please click on the screen or press any key to continue. Unsaved changes will not be retained if the session is allowed to time out.");
 		   RootPanel.get("timeOutWarning").add(buildTimeOutWarningPanel());
 		   RootPanel.get("timeOutWarning").getElement().setAttribute("role", "alert");
 	}

@@ -373,11 +373,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			@Override
 			public void onTimedOut(TimedOutEvent event) {
 				if(measureComposer != null){//This if check will prevent admin user getting null pointer exception while timing out
-					mainTabLayout.close();
+//					mainTabLayout.close(); // User Story change - Removing AutoSave when Timeout.
 					//Note: This will select the measureLibrary tab just before the time out Warning.
 					//mainTabLayout.selectTab(measureLibrary);
-					mainTabLayout.selectTab(codeListController);
-					
+//					mainTabLayout.selectTab(codeListController);//User Story change - Removing AutoSave when Timeout.
+					Mat.focusSkipLists("MainContent");
 				}
 			}
 		});

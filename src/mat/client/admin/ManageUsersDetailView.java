@@ -49,7 +49,7 @@ public class ManageUsersDetailView
 	private String roleLabel = "Role";
 	private String organizationLabel = "Organization";
 	private String statusLabel = "Status";
-	private String oidLabel = "OID";
+	private String oidLabel = "Organization OID";
 	private String rootOidLabel = "Root OID";
 	
 	private Label loginId = new Label();

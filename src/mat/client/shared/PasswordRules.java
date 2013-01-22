@@ -16,7 +16,7 @@ public class PasswordRules extends Composite {
 		desc.addStyleName("passwordRulesDescription");
 		HTML b1 = new HTML("<img src='images/bullet.png'/> Upper case character");
 		HTML b2 = new HTML("<img src='images/bullet.png'/> Lower case character");
-		HTML b3 = new HTML("<img src='images/bullet.png'/> Special character such as % &nbsp; # &nbsp; * &nbsp; + &nbsp; , &nbsp; ; &nbsp; = &nbsp; ? &nbsp; _");
+		HTML b3 = new HTML("<img src='images/bullet.png'/> One of the following special characters % &nbsp; # &nbsp; * &nbsp; + &nbsp; , &nbsp; ; &nbsp; = &nbsp; ? &nbsp; _");
 		HTML b4 = new HTML("<img src='images/bullet.png'/> Numeric character");
 		
 		fPanel.add(rules);

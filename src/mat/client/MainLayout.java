@@ -10,8 +10,7 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 
 import mat.client.util.ClientConstants;
-import mat.client.util.FooterLinksUtility;
-import mat.client.util.FooterLogoPanelBuilder;
+import mat.client.util.FooterPanelBuilderUtility;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -123,7 +122,7 @@ public abstract class MainLayout {
 		
 		FlowPanel footerMainPanel = new FlowPanel();
 		footerMainPanel.setStylePrimaryName("footer");		
-		footerMainPanel.add(FooterLogoPanelBuilder.buildFooterLogoPanel());
+		footerMainPanel.add(FooterPanelBuilderUtility.buildFooterLogoPanel());
 				
 		final VerticalPanel footerLinksPanel = new VerticalPanel();
 		footerLinksPanel.setStylePrimaryName("footer-nav");
@@ -167,32 +166,32 @@ public abstract class MainLayout {
 		
 		final String pipeHTML = "&nbsp;&nbsp;<b>|</b>";
 		
-		final Anchor policyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, null, ConstantMessages.LOGIN_MODULE, 
+		final Anchor policyAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, null, ConstantMessages.LOGIN_MODULE, 
 				null,ClientConstants.ACCESSIBILITY_POLICY_URL);
 		footerLinks.add(policyAnchor);
 		HTML pipe = new HTML(pipeHTML);
 		footerLinks.add(pipe);
 		
-		final Anchor privacyPolicyAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_PRIVACYPOLICY, null, ConstantMessages.LOGIN_MODULE, 
+		final Anchor privacyPolicyAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_PRIVACYPOLICY, null, ConstantMessages.LOGIN_MODULE, 
 		null,ClientConstants.PRIVACYPOLICY_URL);
 		footerLinks.add(privacyPolicyAnchor);
 		HTML pipe_2 = new HTML(pipeHTML);
 		footerLinks.add(pipe_2);
 		
-		final Anchor termsOfUseAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_TERMSOFUSE, null, ConstantMessages.LOGIN_MODULE, 
+		final Anchor termsOfUseAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_TERMSOFUSE, null, ConstantMessages.LOGIN_MODULE, 
 		null,ClientConstants.TERMSOFUSE_URL);
 		footerLinks.add(termsOfUseAnchor);
 		HTML pipe_3 = new HTML(pipeHTML);
 		footerLinks.add(pipe_3);
 		
-		final Anchor foiaAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_FOIA, null, ConstantMessages.LOGIN_MODULE, 
+		final Anchor foiaAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_FOIA, null, ConstantMessages.LOGIN_MODULE, 
 																null,ClientConstants.EXT_LINK_FOIA);
 		footerLinks.add(foiaAnchor);
 		HTML pipe_4 = new HTML(pipeHTML);
 		footerLinks.add(pipe_4);
 		
 		
-		final Anchor linkAnchor = FooterLinksUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
+		final Anchor linkAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
 		null,ClientConstants.USERGUIDE_URL);
 		footerLinks.add(linkAnchor);
 		

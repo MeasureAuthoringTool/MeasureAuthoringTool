@@ -439,11 +439,13 @@ public class ManageCodeListSearchPresenter {
 			@Override
 			public void onSelection(SelectionEvent<CodeListSearchDTO> event) {
 				searchDisplay.getSearchString().setValue("");
-				if(event.getSelectedItem().isGroupedCodeList()) {
-					MatContext.get().getEventBus().fireEvent(new EditGroupedCodeListEvent(event.getSelectedItem().getId()));
-				}
-				else {
-					MatContext.get().getEventBus().fireEvent(new EditCodeListEvent(event.getSelectedItem().getId()));
+				if(!ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
+					if(event.getSelectedItem().isGroupedCodeList()) {
+						MatContext.get().getEventBus().fireEvent(new EditGroupedCodeListEvent(event.getSelectedItem().getId()));
+					}
+					else {
+						MatContext.get().getEventBus().fireEvent(new EditCodeListEvent(event.getSelectedItem().getId()));
+					}
 				}
 			}
 		});

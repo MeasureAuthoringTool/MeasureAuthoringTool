@@ -368,7 +368,10 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getIsActive().setValue(currentDetails.isActive());
 		if(!currentDetails.isActive()){
 			detailDisplay.getIsRevoked().setValue(true);
+		}else{// added else to fix default Revoked radio check in Mozilla (User Story 755)
+			detailDisplay.getIsRevoked().setValue(false);
 		}
+		
 		detailDisplay.setUserLocked(currentDetails.isLocked());
 		if(currentDetails.isExistingUser()){
 		    detailDisplay.setShowRevokedStatus(currentDetails.isCurrentUserCanChangeAccountStatus());

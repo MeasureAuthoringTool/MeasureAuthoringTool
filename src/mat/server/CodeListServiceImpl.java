@@ -4,26 +4,33 @@ package mat.server;
 import java.util.ArrayList;
 import java.util.List;
 
+
+import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
+import mat.client.codelist.TransferOwnerShipModel;
+
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.model.Code;
 import mat.model.CodeListSearchDTO;
 import mat.model.GroupedCodeListDTO;
 import mat.model.QualityDataSetDTO;
+import mat.model.User;
 import mat.server.exception.ExcelParsingException;
 import mat.server.service.CodeListNotUniqueException;
 import mat.server.service.CodeListOidNotUniqueException;
 import mat.server.service.CodeListService;
 import mat.server.service.InvalidLastModifiedDateException;
+import mat.server.service.UserService;
 import mat.server.service.ValueSetLastModifiedDateNotUniqueException;
 import mat.shared.ConstantMessages;
 import mat.shared.ListObjectModelValidator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 
 import edu.emory.mathcs.backport.java.util.Collections;
 
@@ -33,6 +40,8 @@ implements mat.client.codelist.service.CodeListService {
 	private static final Log logger = LogFactory.getLog(CodeListServiceImpl.class);
 
 
+	
+	
 	
 	@Override
 	public ManageCodeListSearchModel search(String searchText,
@@ -277,6 +286,52 @@ implements mat.client.codelist.service.CodeListService {
 		CodeListService cls = getCodeListService();
 		ManageValueSetSearchModel model = cls.createClone(id);
 		return model;
+	}
+
+	@Override
+	public AdminManageCodeListSearchModel searchForAdmin(String searchText,
+			int startIndex, int pageSize, String sortColumn, boolean isAsc,
+			boolean defaultCodeList, int filter) {
+		
+		AdminManageCodeListSearchModel result = new AdminManageCodeListSearchModel();
+		result.setData(getCodeListService().search(searchText,
+				startIndex, pageSize, sortColumn, isAsc,defaultCodeList, filter));
+		result.setResultsTotal(getCodeListService().countSearchResultsWithFilter(searchText, defaultCodeList, filter));
+		result.setStartIndex(startIndex);
+		return result;
+	}
+	
+	@Override
+	public TransferOwnerShipModel searchUser() {
+		
+		UserService userService = getUserService();
+		List<User> searchResults = userService.searchNonAdminUsers("",1, -1);
+		logger.info("User search returned " + searchResults.size());
+		
+		TransferOwnerShipModel result = new TransferOwnerShipModel();
+		List<TransferOwnerShipModel.Result> detailList = new ArrayList<TransferOwnerShipModel.Result>();  
+		for(User user : searchResults) {
+			TransferOwnerShipModel.Result r = new TransferOwnerShipModel.Result();
+			r.setFirstName(user.getFirstName());
+			r.setLastName(user.getLastName());
+			r.setEmailId(user.getEmailAddress());
+			r.setKey(user.getId());
+			detailList.add(r);
+		}
+		result.setData(detailList);
+		result.setStartIndex(1);
+		result.setResultsTotal(getUserService().countSearchResults(""));
+		
+		return result;
+	}
+	@Override
+	public void transferOwnerShipToUser(List<String> list, String toEmail){
+		CodeListService cls = getCodeListService();
+		cls.transferOwnerShipToUser(list, toEmail);
+	}
+	
+	private UserService getUserService() {
+		return (UserService)context.getBean("userService");
 	}
 	
 }

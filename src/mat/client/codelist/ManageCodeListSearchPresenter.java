@@ -446,6 +446,9 @@ public class ManageCodeListSearchPresenter {
 				int startIndex = 1;
 				currentSortColumn = getSortKey(0);
 				sortIsAscending = true;
+				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
+					 filter = searchDisplay.getValueSetSearchFilterPanel().ALL_VALUE_SETS;
+				}
 				search(searchDisplay.getSearchString().getValue(),
 						startIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
@@ -457,6 +460,9 @@ public class ManageCodeListSearchPresenter {
 			public void onPageSelection(PageSelectionEvent event) {
 				int startIndex = searchDisplay.getPageSize() * (event.getPageNumber() - 1) + 1;
 				int filter = searchDisplay.getValueSetSearchFilterPanel().getSelectedIndex();
+				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
+					 filter = searchDisplay.getValueSetSearchFilterPanel().ALL_VALUE_SETS;
+				}
 				search(lastSearchText, startIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
 		});
@@ -465,6 +471,9 @@ public class ManageCodeListSearchPresenter {
 			public void onPageSizeSelection(PageSizeSelectionEvent event) {
 				searchDisplay.getSearchString().setValue("");
 				int filter = searchDisplay.getValueSetSearchFilterPanel().getSelectedIndex();
+				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
+					 filter = searchDisplay.getValueSetSearchFilterPanel().ALL_VALUE_SETS;
+				}
 				search(searchDisplay.getSearchString().getValue(), lastStartIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
 		});
@@ -481,6 +490,9 @@ public class ManageCodeListSearchPresenter {
 					sortIsAscending = true;
 				}
 				int filter = searchDisplay.getValueSetSearchFilterPanel().getSelectedIndex();
+				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
+					 filter = searchDisplay.getValueSetSearchFilterPanel().ALL_VALUE_SETS;
+				}
 				search(lastSearchText, lastStartIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
 		});

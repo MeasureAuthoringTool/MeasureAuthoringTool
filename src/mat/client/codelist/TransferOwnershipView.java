@@ -99,7 +99,9 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 						dataTable.setWidget(i+1, j,results.getValue(i, j));
 					}
 				}
-				dataTable.getRowFormatter().addStyleName(i + 1, "odd");
+				if(i % 2 == 0) {
+					dataTable.getRowFormatter().addStyleName(i + 1, "odd");
+				}
 			}
 		}
 	@Override

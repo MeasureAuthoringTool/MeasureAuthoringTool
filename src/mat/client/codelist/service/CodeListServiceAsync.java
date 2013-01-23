@@ -69,8 +69,9 @@ public interface CodeListServiceAsync {
 			String sortColumn, boolean isAsc, boolean defaultCodeList,
 			int filter, AsyncCallback<AdminManageCodeListSearchModel> callback);
 
-	void searchUser(AsyncCallback<TransferOwnerShipModel> callback);
-
-	void transferOwnerShipToUser(List<String> list, String toEmail,
+		void transferOwnerShipToUser(List<String> list, String toEmail,
 			AsyncCallback<Void> callback);
+
+	void searchUsers(int startIndex, int pageSize,
+			AsyncCallback<TransferOwnerShipModel> callback);
 }

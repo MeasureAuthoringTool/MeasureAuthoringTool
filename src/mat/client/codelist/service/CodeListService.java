@@ -193,7 +193,7 @@ public interface CodeListService extends RemoteService {
 	//US193
 	public ManageValueSetSearchModel createClone(String id);
 
-	public TransferOwnerShipModel searchUser();
-
 	public void transferOwnerShipToUser(List<String> list, String toEmail);
+
+	public TransferOwnerShipModel searchUsers(int startIndex, int pageSize);
 }

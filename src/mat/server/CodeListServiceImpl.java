@@ -302,10 +302,10 @@ implements mat.client.codelist.service.CodeListService {
 	}
 	
 	@Override
-	public TransferOwnerShipModel searchUser() {
+	public TransferOwnerShipModel searchUsers(int startIndex, int pageSize) {
 		
 		UserService userService = getUserService();
-		List<User> searchResults = userService.searchNonAdminUsers("",1, -1);
+		List<User> searchResults = userService.searchNonAdminUsers("",startIndex, pageSize);
 		logger.info("User search returned " + searchResults.size());
 		
 		TransferOwnerShipModel result = new TransferOwnerShipModel();
@@ -319,7 +319,7 @@ implements mat.client.codelist.service.CodeListService {
 			detailList.add(r);
 		}
 		result.setData(detailList);
-		result.setStartIndex(1);
+		result.setStartIndex(startIndex);
 		result.setResultsTotal(getUserService().countSearchResults(""));
 		
 		return result;

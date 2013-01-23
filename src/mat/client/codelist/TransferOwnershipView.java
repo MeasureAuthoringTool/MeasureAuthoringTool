@@ -11,6 +11,8 @@ import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.shared.search.HasPageSelectionHandler;
+import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
 import mat.model.CodeListSearchDTO;
@@ -175,6 +177,18 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	@Override
 	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
 		return successMessages;
+	}
+	@Override
+	public HasPageSelectionHandler getPageSelectionTool() {
+		return view;
+	}
+	@Override
+	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
+		return view;
+	}
+	@Override
+	public int getPageSize() {
+		return view.getPageSize();
 	}
 	
 }

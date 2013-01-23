@@ -117,6 +117,9 @@ public class ManageCodeListSearchPresenter {
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
 		void buildHTMLForValueSets(List<CodeListSearchDTO> codeListIDs);
+		public HasPageSelectionHandler getPageSelectionTool();
+		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
+		public int getPageSize();
 	}
 	
 	
@@ -245,6 +248,20 @@ public class ManageCodeListSearchPresenter {
 				searchModel.getLisObjectId().clear();
 				searchModel.getTransferValueSetIDs().clear();
 				displaySearch();
+			}
+		});
+		
+		transferDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
+			@Override
+			public void onPageSelection(PageSelectionEvent event) {
+				int startIndex = transferDisplay.getPageSize() * (event.getPageNumber() - 1) + 1;
+				displayTransferView(startIndex, transferDisplay.getPageSize());
+			}
+		});
+		transferDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
+			@Override
+			public void onPageSizeSelection(PageSizeSelectionEvent event) {
+				displayTransferView(startIndex, transferDisplay.getPageSize());
 			}
 		});
 	}
@@ -434,7 +451,7 @@ public class ManageCodeListSearchPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.clearAllCheckBoxes(searchDisplay.getDataTable());
-				displayTransferView();
+				displayTransferView(1,searchDisplay.getPageSize());
 			}
 		});
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
@@ -542,14 +559,14 @@ public class ManageCodeListSearchPresenter {
 		resetPanel(searchDisplay.asWidget(), MY_VALUE_SETS);
 	}
 	
-	private void displayTransferView(){
+	private void displayTransferView(int startInex, int pageSize){
 		final ArrayList<CodeListSearchDTO> transferValueSetIDs = searchModel.getTransferValueSetIDs();
 		if(transferValueSetIDs.size() !=0){
 			searchDisplay.getErrorMessageDisplay().clear();
 			searchDisplay.getTransferErrorMessageDisplay().clear();
 			transferDisplay.getErrorMessageDisplay().clear();
 			showSearchingBusy(true);
-			MatContext.get().getCodeListService().searchUser(new AsyncCallback<TransferOwnerShipModel>(){
+			MatContext.get().getCodeListService().searchUsers(startInex,pageSize,new AsyncCallback<TransferOwnerShipModel>(){
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -570,7 +587,6 @@ public class ManageCodeListSearchPresenter {
 		}
 		
 	}
-
 	
 	private void history() {		
 		

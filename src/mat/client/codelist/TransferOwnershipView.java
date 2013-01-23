@@ -1,11 +1,9 @@
 package mat.client.codelist;
 
 import java.util.List;
-
-
 import mat.client.codelist.TransferOwnerShipModel.Result;
+import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ContentWithHeadingWidget;
-
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.HorizontalFlowPanel;
@@ -16,9 +14,7 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
 import mat.model.CodeListSearchDTO;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
-
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -26,7 +22,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -40,10 +35,9 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	private SearchView<Result> view = new SearchView<TransferOwnerShipModel.Result>("Users");
 	HorizontalPanel valueSetNamePanel = new HorizontalPanel();
+	public Grid508 dataTable = view.getDataTable();
 	public TransferOwnershipView() {
-		
 		mainPanel.add(new SpacerWidget());
-		
 		mainPanel.add(successMessages);
 		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
@@ -75,13 +69,14 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 		}
 		int numRows = results.getNumberOfRows();
 		int numColumns = results.getNumberOfColumns();
-		view.dataTable.clear();
-		view.dataTable.resize((int)numRows + 1, (int)numColumns);
+		dataTable.clear();
+		dataTable.resize((int)numRows + 1, (int)numColumns);
 		view.buildSearchResultsColumnHeaders(numRows,numColumns,results, false,false);
 		buildSearchResults(numRows,numColumns,results);
         view.setViewingRange(results.getStartIndex(),results.getStartIndex() + numRows - 1,results.getResultsTotal());
 		view.buildPageSizeSelector();
 	}
+	
 	
 	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<TransferOwnerShipModel.Result> results){
 		for(int i = 0; i < numRows; i++) {
@@ -96,13 +91,13 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 						innerPanel.setStylePrimaryName("pad-left21px");
 						innerPanel.add(a);
 						holder.add(innerPanel);
-						view.dataTable.setWidget(i+1, j, holder);
+						dataTable.setWidget(i+1, j, holder);
 					}
 					else {
-						view.dataTable.setWidget(i+1, j,results.getValue(i, j));
+						dataTable.setWidget(i+1, j,results.getValue(i, j));
 					}
 				}
-				view.dataTable.getRowFormatter().addStyleName(i + 1, "odd");
+				dataTable.getRowFormatter().addStyleName(i + 1, "odd");
 			}
 		}
 	@Override
@@ -151,7 +146,12 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 			return sb.toString();
 	}
 	
-	
+	public Grid508 getDataTable() {
+		return dataTable;
+	}
+	public void setDataTable(Grid508 dataTable) {
+		this.dataTable = dataTable;
+	}
 	
 	@Override
 	public HasClickHandlers getSaveButton() {

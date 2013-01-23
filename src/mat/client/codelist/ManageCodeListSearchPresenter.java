@@ -6,9 +6,6 @@ import java.util.List;
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
-import mat.client.codelist.ManageCodeListSearchPresenter.TransferDisplay;
-import mat.client.codelist.TransferOwnerShipModel.Result;
-
 import mat.client.codelist.events.CancelEditCodeListEvent;
 import mat.client.codelist.events.CreateNewCodeListEvent;
 import mat.client.codelist.events.CreateNewGroupedCodeListEvent;
@@ -16,14 +13,12 @@ import mat.client.codelist.events.EditCodeListEvent;
 import mat.client.codelist.events.EditGroupedCodeListEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.history.HistoryModel;
-import mat.client.measure.ManageMeasurePresenter.BaseDisplay;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.HasVisible;
 import mat.client.shared.MatContext;
 import mat.client.shared.PreviousContinueButtonBar;
-import mat.client.shared.PrimaryButton;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
@@ -54,7 +49,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
@@ -83,6 +77,9 @@ public class ManageCodeListSearchPresenter {
 		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
 		public int getPageSize();
 		public ValueSetSearchFilterPanel getValueSetSearchFilterPanel();
+		public Grid508 getDataTable();
+		
+		void clearAllCheckBoxes(Grid508 dataTable);
 	}
 	
 	public static interface HistoryDisplay {
@@ -153,10 +150,8 @@ public class ManageCodeListSearchPresenter {
 	private ManageCodeListDetailModel currentDetails;
 	private int startIndex = 1;
 	
-	
-	private ArrayList<CodeListSearchDTO> transferValueSetIDs = new ArrayList<CodeListSearchDTO>();
-	private ArrayList <String> lisObjectId = new ArrayList<String>();
 	private TransferOwnerShipModel model = null;
+	private AdminManageCodeListSearchModel searchModel;
 	
 	private ClickHandler cancelClickHandler = new ClickHandler() {
 		@Override
@@ -222,19 +217,19 @@ public class ManageCodeListSearchPresenter {
 				for(int i=0;i<model.getData().size();i=i+1){
 					if(model.getData().get(i).isSelected()){
 						final String emailTo =model.getData().get(i).getEmailId();
-						MatContext.get().getCodeListService().transferOwnerShipToUser(lisObjectId,emailTo ,
+						MatContext.get().getCodeListService().transferOwnerShipToUser(searchModel.getLisObjectId(),emailTo ,
 								new AsyncCallback<Void>(){
 									@Override
 									public void onFailure(Throwable caught) {
 										Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-										transferValueSetIDs.removeAll(transferValueSetIDs);
-										lisObjectId.removeAll(lisObjectId);
+										searchModel.getTransferValueSetIDs().clear();;
+										searchModel.getLisObjectId().clear();
 									}
 									@Override
 									public void onSuccess(Void result) {
-										transferDisplay.getSuccessMessageDisplay().setMessage("Successfully Transfered OwnerShip to user "+emailTo);
-										transferValueSetIDs.removeAll(transferValueSetIDs);
-										lisObjectId.removeAll(lisObjectId);
+										transferDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getTransferOwnershipSuccess()+emailTo);
+										searchModel.getTransferValueSetIDs().clear();
+										searchModel.getLisObjectId().clear();
 										
 									}
 						});
@@ -246,10 +241,13 @@ public class ManageCodeListSearchPresenter {
 		transferDisplay.getCancelButton().addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
+				searchModel.getLisObjectId().clear();
+				searchModel.getTransferValueSetIDs().clear();
 				displaySearch();
 			}
 		});
 	}
+
 
 	private void historyDisplayHandlers(final HistoryDisplay historyDisplay) {
 			historyDisplay.getSaveButton().addClickHandler(new ClickHandler(){
@@ -431,14 +429,13 @@ public class ManageCodeListSearchPresenter {
 				}
 			}
 		});
-		
 		searchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.clearAllCheckBoxes(searchDisplay.getDataTable());
 				displayTransferView();
 			}
 		});
-		
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -453,9 +450,7 @@ public class ManageCodeListSearchPresenter {
 						startIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
 		});
-		
 		searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
-			
 			@Override
 			public void onPageSelection(PageSelectionEvent event) {
 				int startIndex = searchDisplay.getPageSize() * (event.getPageNumber() - 1) + 1;
@@ -477,7 +472,6 @@ public class ManageCodeListSearchPresenter {
 				search(searchDisplay.getSearchString().getValue(), lastStartIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
 		});
-		
 		searchDisplay.getPageSortTool().addPageSortHandler(new PageSortEventHandler() {
 			@Override
 			public void onPageSort(PageSortEvent event) {
@@ -496,13 +490,10 @@ public class ManageCodeListSearchPresenter {
 				search(lastSearchText, lastStartIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
 		});
-		
 		/*US537*/
 		searchDisplay.getCreateButton().addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
-				
 				if(searchDisplay.getSelectedOption().equalsIgnoreCase(ConstantMessages.CREATE_NEW_GROUPED_VALUE_SET)){
 					MatContext.get().getEventBus().fireEvent(new CreateNewGroupedCodeListEvent());
 				}else if(searchDisplay.getSelectedOption().equalsIgnoreCase(ConstantMessages.CREATE_NEW_VALUE_SET)){
@@ -517,7 +508,6 @@ public class ManageCodeListSearchPresenter {
 		
 		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
-			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
@@ -525,7 +515,6 @@ public class ManageCodeListSearchPresenter {
 	            }
 			}
 		});
-		
 	}
 
 	@SuppressWarnings("static-access")
@@ -553,15 +542,16 @@ public class ManageCodeListSearchPresenter {
 	}
 	
 	private void displayTransferView(){
+		final ArrayList<CodeListSearchDTO> transferValueSetIDs = searchModel.getTransferValueSetIDs();
 		if(transferValueSetIDs.size() !=0){
 			searchDisplay.getErrorMessageDisplay().clear();
 			transferDisplay.getErrorMessageDisplay().clear();
 			showSearchingBusy(true);
 			MatContext.get().getCodeListService().searchUser(new AsyncCallback<TransferOwnerShipModel>(){
-				
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					showSearchingBusy(false);
 				}
 				@Override
 				public void onSuccess(TransferOwnerShipModel result) {
@@ -574,7 +564,7 @@ public class ManageCodeListSearchPresenter {
 			});
 			
 		}else{
-			searchDisplay.getErrorMessageDisplay().setMessage("Please Select At Least One Transfer Check Box");
+			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getTransferCheckBoxError());
 		}
 		
 	}
@@ -636,23 +626,28 @@ public class ManageCodeListSearchPresenter {
 						}
 						@Override
 						public void onSuccess(AdminManageCodeListSearchModel result) {
+							result.setTransferValueSetIDs(new ArrayList<CodeListSearchDTO>());
+							result.setLisObjectId(new ArrayList<String>());
+							searchModel = result;
+							MatContext.get().setManageCodeListSearcModel(searchModel);
 							isObserverBusy = false;
 							AdminCodeListSearchResultsAdapter adapter = new AdminCodeListSearchResultsAdapter();
 							adapter.setData(result);
 							adapter.setObserver(new AdminCodeListSearchResultsAdapter.Observer() {
 								@Override
-								public void onHistoryClicked(CodeListSearchDTO result) {
-									historyDisplay.setCodeListId(result.getId());
-									historyDisplay.setCodeListName(result.getName());
+								public void onHistoryClicked(CodeListSearchDTO codeList) {
+									historyDisplay.setCodeListId(codeList.getId());
+									historyDisplay.setCodeListName(codeList.getName());
 									historyDisplay.reset();
 									historyDisplay.setReturnToLinkText("<< Return to Value Set Ownership");
-									historyDisplay.setUserCommentsReadOnly(!result.isDraft());
+									historyDisplay.setUserCommentsReadOnly(!codeList.isDraft());
 									history();
 								}
 
 								@Override
-								public void onTransferClicked(CodeListSearchDTO result) {
-										updateTransferIDs(result);
+								public void onTransferClicked(CodeListSearchDTO codeList) {
+										searchDisplay.getErrorMessageDisplay().clear();
+										updateTransferIDs(codeList,searchModel);
 								}
 
 							});
@@ -747,15 +742,15 @@ public class ManageCodeListSearchPresenter {
 		}
 	}
 	
-	private void updateTransferIDs(CodeListSearchDTO result) {
-		if(result.isTransferable()){
-			transferValueSetIDs.add(result);
-			lisObjectId.add(result.getId());
+	private void updateTransferIDs(CodeListSearchDTO codeList,AdminManageCodeListSearchModel model) {
+		if(codeList.isTransferable()){
+			model.getTransferValueSetIDs().add(codeList);
+			model.getLisObjectId().add(codeList.getId());
 		}else{
-			for(int i=0 ;i< transferValueSetIDs.size();i++){
-				if(result.getId() == transferValueSetIDs.get(i).getId()){
-						transferValueSetIDs.remove(i);
-						lisObjectId.remove(i);
+			for(int i=0 ;i< model.getTransferValueSetIDs().size();i++){
+				if(codeList.getId() == model.getTransferValueSetIDs().get(i).getId()){
+					model.getTransferValueSetIDs().remove(i);
+					model.getLisObjectId().remove(i);
 				}
 			}
 		}

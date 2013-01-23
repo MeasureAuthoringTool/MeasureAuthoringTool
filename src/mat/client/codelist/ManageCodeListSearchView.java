@@ -1,5 +1,7 @@
 package mat.client.codelist;
 
+import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
@@ -35,15 +37,19 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.ValueSetSearchDisplay {
 	private FlowPanel searchCriteriaPanel = new FlowPanel();
-	/*private Anchor createNewAnchor = new Anchor("Create Value Set");
-	private Anchor createNewGroupedAnchor = new Anchor("Create Grouped Value Set");*/
+	private Panel createNewPanel;
 	private Button searchButton = new PrimaryButton("Search");
 	private TextBox searchInput = new TextBox();
 	Button transferButton = new PrimaryButton("Transfer");
 	
+	
 	private SearchView<CodeListSearchDTO> view;
+	
+	
+	public Grid508 getDataTable() {
+		return view.getDataTable();
+	}
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
-	private Panel createNewPanel;
 	
 	private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
 	
@@ -90,7 +96,7 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 			searchCriteriaPanel.add(buildTransferWidget());
 			searchCriteriaPanel.add(new SpacerWidget()); 
 		}
-		
+		MatContext.get().setManageCodeListSearchView(this);
 		
 	}
 	
@@ -98,7 +104,23 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
-
+	
+	@Override	
+	public void clearAllCheckBoxes(Grid508 dataTable){
+			int rows = dataTable.getRowCount();
+			int cols = dataTable.getColumnCount();
+			for(int i = 0; i < rows; i++){
+				for(int j = 0; j < cols; j++){
+					Widget w = getDataTable().getWidget(i, j);
+					if(w instanceof CustomCheckBox){
+						CustomCheckBox checkBox = ((CustomCheckBox)w);	
+						if(checkBox.getValue()){
+							checkBox.setValue(false);										
+						}
+					}
+				}
+			}
+	}
 
 	private Widget buildSearchWidget(){
 		HorizontalPanel hp = new HorizontalPanel();

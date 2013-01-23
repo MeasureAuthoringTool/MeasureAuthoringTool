@@ -1,5 +1,6 @@
 package mat.client.codelist;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.model.CodeListSearchDTO;
@@ -11,7 +12,7 @@ public class AdminManageCodeListSearchModel extends ManageCodeListSearchModel im
 		IsSerializable {
 	//US538 --adding new column Last Modified in the value set workspace
 	//US190, US192
-	private static String[] headers = new String[] { "Name","Last Modified","Steward","Category","Code System","History","Transfer"};
+	private static String[] headers = new String[] { "Name","Last Modified","Steward","Category","Code System","History","TransferClear"};
 	private static boolean[] sortable = new boolean[]{true,false,true, true, true,false,false}; //US 385
 	private static String[] widths = new String[] { "25%","15%","20%", "10%", "10%","5%","5%"};
 	
@@ -19,7 +20,8 @@ public class AdminManageCodeListSearchModel extends ManageCodeListSearchModel im
 	private int startIndex;
 	private int resultsTotal;
 	private int pageCount;
-	
+	private ArrayList<CodeListSearchDTO> transferValueSetIDs ;
+	private ArrayList <String> lisObjectId ;
 	public void setData(List<CodeListSearchDTO> data) {
 		this.data = data;
 	}
@@ -98,6 +100,30 @@ public class AdminManageCodeListSearchModel extends ManageCodeListSearchModel im
 	}
 	public void setPageCount(int pageCount) {
 		this.pageCount = pageCount;
+	}
+	/**
+	 * @param transferValueSetIDs the transferValueSetIDs to set
+	 */
+	public void setTransferValueSetIDs(ArrayList<CodeListSearchDTO> transferValueSetIDs) {
+		this.transferValueSetIDs = transferValueSetIDs;
+	}
+	/**
+	 * @return the transferValueSetIDs
+	 */
+	public ArrayList<CodeListSearchDTO> getTransferValueSetIDs() {
+		return transferValueSetIDs;
+	}
+	/**
+	 * @param lisObjectId the lisObjectId to set
+	 */
+	public void setLisObjectId(ArrayList <String> lisObjectId) {
+		this.lisObjectId = lisObjectId;
+	}
+	/**
+	 * @return the lisObjectId
+	 */
+	public ArrayList <String> getLisObjectId() {
+		return lisObjectId;
 	}
 	
 	

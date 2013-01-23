@@ -1,21 +1,10 @@
 package mat.client.codelist;
 
 import java.util.List;
-
-import mat.client.codelist.AdminCodeListSearchResultsAdapter.Observer;
-import mat.client.codelist.events.OnChangeValueSetDraftOptionsEvent;
-import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
-import mat.model.CodeListSearchDTO;
-
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.IsSerializable;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
@@ -40,7 +29,6 @@ public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipMo
 		public void setKey(String key) {
 			this.key = key;
 		}
-
 		public String getFirstName() {
 			return firstName;
 		}
@@ -59,13 +47,8 @@ public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipMo
 		public void setSelected(boolean isSelected) {
 			this.isSelected = isSelected;
 		}
-	
-		
-	
 	}
-	public static interface Observer {
-		public void onSelectClicked(TransferOwnerShipModel.Result result);
-	}
+	
 	private static String[] headers = new String[] { "Name", "email address", "Select" };
 	private static String[] widths = new String[] { "40%", "40%" ,"20%"};
 	
@@ -181,7 +164,6 @@ public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipMo
 	
 	private RadioButton getSelectedRadioBox(final Result result){
 		final RadioButton transferRB = new RadioButton("selected",null,false);	
-		//transferRB.setFormValue(result.getEmailId());
 		transferRB.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> e) {
@@ -197,6 +179,5 @@ public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipMo
 			} 
          );
 		return transferRB;
-		
 	}
 }

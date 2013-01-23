@@ -250,22 +250,35 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			measureComposer= buildMeasureComposer();
 			title = ClientConstants.TITLE_MEASURE_COMPOSER;	
 			tabIndex = mainTabLayout.addPresenter(measureComposer, mainTabLayout.fmt.normalTitle(title));
+			
+			title = ClientConstants.TITLE_MY_ACCOUNT;	
+			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
 		{
 			adminPresenter = buildAdminPresenter();
-			
 			title = ClientConstants.TITLE_ADMIN;	
-			
 			tabIndex = mainTabLayout.addPresenter(adminPresenter, mainTabLayout.fmt.normalTitle(title));
+			
+			title = ClientConstants.TITLE_MY_ACCOUNT;	
+			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
+			
+			codeListController = new CodeListController(currentUserRole);
+			title = ClientConstants.TITLE_VALUE_SET_CHANGE_OWNERSHIP;	
+			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));
+		
+			/*measureLibrary = buildMeasureLibraryWidget(); 
+			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;	
+			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));*/
+			
+			
 		}
 		else {
 			Window.alert("Unrecognized user role " + currentUserRole);
 			MatContext.get().getEventBus().fireEvent(new LogoffEvent());
 		}
 			
-		title = ClientConstants.TITLE_MY_ACCOUNT;	
-		tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
+		
 	
 		mainTabLayout.setHeight("100%");
 		

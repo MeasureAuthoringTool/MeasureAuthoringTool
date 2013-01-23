@@ -40,6 +40,8 @@ public class ClientConstants {
 	public final static String TITLE_MY_ACCOUNT="My Account";
 	public final static String TITLE_CMS_GOV_LOGO="CMS.gov";
 
+	public final static String TITLE_VALUE_SET_CHANGE_OWNERSHIP ="Value Set Ownership";
+	public final static String TITLE_MEASURE_LIB_CHANGE_OWNERSHIP ="Measure Library Ownership";
 	
 	public final static String MAINLAYOUT_LOADING_WIDGET_MSG ="Loading Please Wait...";
 	public final static String MAINLAYOUT_ALERT_TITLE ="Informational Alert";

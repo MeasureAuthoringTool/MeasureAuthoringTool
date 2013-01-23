@@ -41,16 +41,13 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 	private Button searchButton = new PrimaryButton("Search");
 	private TextBox searchInput = new TextBox();
 	Button transferButton = new PrimaryButton("Transfer");
-	
-	
 	private SearchView<CodeListSearchDTO> view;
-	
 	
 	public Grid508 getDataTable() {
 		return view.getDataTable();
 	}
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
-	
+	protected ErrorMessageDisplay transferErrorMessages = new ErrorMessageDisplay();
 	private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
 	
 	/*US537*/
@@ -93,6 +90,8 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 			
 			searchCriteriaPanel.add(view.asWidget());
 			searchCriteriaPanel.setStyleName("contentPanel");
+			searchCriteriaPanel.add(transferErrorMessages);
+			searchCriteriaPanel.add(new SpacerWidget());
 			searchCriteriaPanel.add(buildTransferWidget());
 			searchCriteriaPanel.add(new SpacerWidget()); 
 		}
@@ -229,6 +228,11 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 	@Override
 	public ValueSetSearchFilterPanel getValueSetSearchFilterPanel() {
 		return vssfp;
+	}
+
+	@Override
+	public ErrorMessageDisplayInterface getTransferErrorMessageDisplay() {
+		return transferErrorMessages;
 	}
 
 	

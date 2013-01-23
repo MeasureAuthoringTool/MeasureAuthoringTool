@@ -13,9 +13,6 @@ import mat.client.shared.SpacerWidget;
 import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
 
-import com.google.gwt.dom.client.Document;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -54,7 +51,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	protected Panel pageSizeSelector = new FlowPanel();
 	protected Panel pageSelector = new HorizontalPanel();
 	private HTML viewingNumber = new HTML();
-	public Grid508 dataTable = new Grid508();
+	protected Grid508 dataTable = new Grid508();
 	private Grid508 QDSDataTable = new Grid508();
 	//private FlexTable flexTable = new FlexTable();
 	
@@ -387,7 +384,9 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		dataTable.resize((int)numRows + 1, (int)numColumns);
 		buildSearchResultsColumnHeaders(numRows,numColumns,results, isAscending,isChecked);
 		buildSearchResults(numRows,numColumns,results);
-        setViewingRange(results.getStartIndex(),results.getStartIndex() + numRows - 1,results.getResultsTotal());
+        setViewingRange(results.getStartIndex(), 
+				results.getStartIndex() + numRows - 1, 
+				results.getResultsTotal());
 		buildPageSizeSelector();
 	}
 	
@@ -405,7 +404,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					public void onClick(ClickEvent event) {
 					
 						MatContext.get().clearDVIMessages();
-					
+						
 						sortColumnIndex = columnIndex;
 						PageSortEvent evt = new PageSortEvent(columnIndex);
 						SearchView.this.fireEvent(evt);
@@ -460,8 +459,11 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					clearAnchor.addClickHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
+							if(MatContext.get().getManageMeasureSearchModel().getSelectedExportIds() != null){
+								MatContext.get().getManageMeasureSearchModel().getSelectedExportIds().clear();
+							}
+							MatContext.get().getManageMeasureSearchView().clearBulkExportCheckBoxes(dataTable);
 							MatContext.get().getManageMeasureSearchView().getErrorMessageDisplayForBulkExport().clear();
-							clearCheckBoxes();
 						}
 					});
 					panel.add(clearAnchor);
@@ -482,27 +484,6 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 			dataTable.getColumnFormatter().addStyleName(i, "noWrap");
 		}
 		dataTable.getRowFormatter().addStyleName(0, "header");
-	}
-	
-	private void clearCheckBoxes(){
-		int rows = dataTable.getRowCount();
-		int cols = dataTable.getColumnCount();
-		for(int i = 0; i < rows; i++){
-			for(int j = 0; j < cols; j++){
-				Widget w = dataTable.getWidget(i, j);
-				if(w instanceof HorizontalPanel){
-					HorizontalPanel hPanel = (HorizontalPanel)w;
-					int count = hPanel.getWidgetCount();
-					for (int k = 0; k < count; k++) {
-						Widget widget = hPanel.getWidget(k);
-						if(widget instanceof CustomCheckBox){
-							CustomCheckBox checkBox = ((CustomCheckBox)widget);
-								checkBox.setValue(false);										
-						}
-					}
-				}
-			}
-		}
 	}
 	
 	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<T> results){		

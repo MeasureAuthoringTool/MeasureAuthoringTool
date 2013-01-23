@@ -15,6 +15,7 @@ public class CodeListSearchDTO implements IsSerializable {
 	private String abbreviatedCodeSystem;
 	private String lastModified;
 	private boolean isGroupedCodeList;
+	private boolean isTransferable;
 	
 	public boolean isDraft(){
 		if(lastModified.equalsIgnoreCase("Draft"))
@@ -88,5 +89,13 @@ public class CodeListSearchDTO implements IsSerializable {
 	}
 	public void setLastModified(String lastModified) {
 		this.lastModified = lastModified;
+	}
+
+	public void setTransferable(boolean isTransferable) {
+		this.isTransferable = isTransferable;
+	}
+
+	public boolean isTransferable() {
+		return isTransferable;
 	}
 }

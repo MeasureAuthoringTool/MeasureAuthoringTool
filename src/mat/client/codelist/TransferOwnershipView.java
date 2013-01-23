@@ -32,7 +32,7 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 	private FlowPanel mainPanel = new FlowPanel();
 	private Button saveButton = new PrimaryButton("Save");
-	private Button Cancel = new PrimaryButton("Cancel");
+	private Button Cancel = new Button("Cancel");
 	protected SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	private SearchView<Result> view = new SearchView<TransferOwnerShipModel.Result>("Users");

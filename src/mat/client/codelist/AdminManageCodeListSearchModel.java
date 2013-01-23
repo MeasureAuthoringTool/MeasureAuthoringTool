@@ -2,44 +2,19 @@ package mat.client.codelist;
 
 import java.util.List;
 
-import mat.client.shared.MatContext;
-import mat.client.shared.search.SearchResults;
-import mat.client.util.ClientConstants;
 import mat.model.CodeListSearchDTO;
-import mat.server.LoggedInUserUtil;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ManageCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
+public class AdminManageCodeListSearchModel extends ManageCodeListSearchModel implements 
 		IsSerializable {
 	//US538 --adding new column Last Modified in the value set workspace
 	//US190, US192
+	private static String[] headers = new String[] { "Name","Last Modified","Steward","Category","Code System","History","Transfer"};
+	private static boolean[] sortable = new boolean[]{true,false,true, true, true,false,false}; //US 385
+	private static String[] widths = new String[] { "25%","15%","20%", "10%", "10%","5%","5%"};
 	
-	
-	private String[] headers = new String[] { "Name","Last Modified","Steward","Category","Code System", "History","Clone","Export"};
-	private boolean[] sortable = new boolean[]{true,false,true, true, true, false,false,false}; //US 385
-	private String[] widths = new String[] { "25%","15%","20%", "10%", "10%", "5%","5%","5%"};
-	
-
-	public String[] getHeaders() {
-		return headers;
-	}
-	public void setHeaders(String[] headers) {
-		this.headers = headers;
-	}
-	public boolean[] getSortable() {
-		return sortable;
-	}
-	public void setSortable(boolean[] sortable) {
-		this.sortable = sortable;
-	}
-	public String[] getWidths() {
-		return widths;
-	}
-	public void setWidths(String[] widths) {
-		this.widths = widths;
-	}
 	private List<CodeListSearchDTO> data;
 	private int startIndex;
 	private int resultsTotal;

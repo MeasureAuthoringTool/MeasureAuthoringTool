@@ -2,10 +2,12 @@ package mat.client.codelist.service;
 
 import java.util.List;
 
+import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
+import mat.client.codelist.TransferOwnerShipModel;
 import mat.model.Code;
 import mat.model.CodeListSearchDTO;
 import mat.model.QualityDataSetDTO;
@@ -62,4 +64,13 @@ public interface CodeListServiceAsync {
 	public void createDraft(String id, String oid, AsyncCallback<ManageValueSetSearchModel> asyncCallback);
 	//US193
 	public void createClone(String id, AsyncCallback<ManageValueSetSearchModel> asyncCallback);
+
+	void searchForAdmin(String searchText, int startIndex, int pageSize,
+			String sortColumn, boolean isAsc, boolean defaultCodeList,
+			int filter, AsyncCallback<AdminManageCodeListSearchModel> callback);
+
+	void searchUser(AsyncCallback<TransferOwnerShipModel> callback);
+
+	void transferOwnerShipToUser(List<String> list, String toEmail,
+			AsyncCallback<Void> callback);
 }

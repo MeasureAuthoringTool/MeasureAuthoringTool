@@ -2,10 +2,12 @@ package mat.client.codelist.service;
 
 import java.util.List;
 
+import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
+import mat.client.codelist.TransferOwnerShipModel;
 import mat.model.Code;
 import mat.model.CodeListSearchDTO;
 import mat.model.QualityDataSetDTO;
@@ -153,6 +155,9 @@ public interface CodeListService extends RemoteService {
 			int startIndex, int pageSize, String sortColumn, boolean isAsc, boolean defaultCodeList, int filter,
 			String categoryId);
 	
+	public AdminManageCodeListSearchModel searchForAdmin(String searchText,
+			int startIndex, int pageSize, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter);
+	
 	public ListBoxData getListBoxData();
 	
 	public List<? extends HasListBox> getCodeSystemsForCategory(String category);
@@ -187,4 +192,8 @@ public interface CodeListService extends RemoteService {
 
 	//US193
 	public ManageValueSetSearchModel createClone(String id);
+
+	public TransferOwnerShipModel searchUser();
+
+	public void transferOwnerShipToUser(List<String> list, String toEmail);
 }

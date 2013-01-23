@@ -4,6 +4,7 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.codelist.ManageCodeListSearchPresenter.DraftDisplay;
+
 import mat.client.codelist.events.AddCodeToCodeListEvent;
 import mat.client.codelist.events.AddQDSElementEvent;
 import mat.client.codelist.events.CancelAddCodeEvent;
@@ -14,9 +15,11 @@ import mat.client.codelist.events.EditCodeListEvent;
 import mat.client.codelist.events.EditGroupedCodeListEvent;
 import mat.client.codelist.events.ExternalViewerEvent;
 import mat.client.codelist.events.OnChangeValueSetDraftOptionsEvent;
+
 import mat.client.event.UploadRefreshViewEvent;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
+import mat.client.util.ClientConstants;
 
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.DOM;
@@ -33,9 +36,12 @@ public class CodeListController implements MatPresenter {
 	public static final String MY_VALUE_SETS_MANAGE_VALUE_SETS_ADD_CODES = "My Value Sets  > Manage Value Set  >  Add Codes";
 	public static final String MY_VALUE_SETS_VALUE_SET_UPDATE = "My Value Sets  > Update a Value Set";
 	
+	private String type = MatContext.get().getLoggedInUserRole();;
+	
 	private SimplePanel contents = new SimplePanel();
 	
 	private ManageCodeListSearchPresenter codeListSearchPresenter;
+	
 	private ManageCodeListDetailPresenter codeListDetailPresenter;
 	private ManageGroupedCodeListPresenter groupedCodeListPresenter;
 	private ListBoxCodeProvider listBoxCodeProvider;
@@ -61,6 +67,30 @@ public class CodeListController implements MatPresenter {
 		displayEmpty();
 		
 		HandlerManager eventBus = MatContext.get().getEventBus();
+		addingHandlersOnEvent(eventBus);
+		DOM.setElementAttribute(contents.getElement(), "id", "CodeListControler.contents");
+		beforeDisplay();
+	}
+	
+	
+	public CodeListController(String type) {
+		if(type.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
+			emptyWidget.add(new Label("No Measure Selected line 150"));
+			ManageCodeListSearchView mclsv = new ManageCodeListSearchView();
+			draftDisplay = new ManageValueSetDraftView();
+			CodeListHistoryView historyView = new CodeListHistoryView();
+			TransferOwnershipView transferOS = new TransferOwnershipView();
+			codeListSearchPresenter = new ManageCodeListSearchPresenter(mclsv, historyView, null, draftDisplay,transferOS);
+			displayEmpty();
+			HandlerManager eventBus = MatContext.get().getEventBus();
+			addingHandlersOnEvent(eventBus);
+			DOM.setElementAttribute(contents.getElement(), "id", "CodeListControler.contents");
+			beforeDisplay();
+		}
+	}
+	
+	private void addingHandlersOnEvent(HandlerManager eventBus){
+		
 		eventBus.addHandler(CancelEditCodeListEvent.TYPE, new CancelEditCodeListEvent.Handler() {
 			@Override
 			public void onCancelEditCodeList(CancelEditCodeListEvent event) {
@@ -70,14 +100,14 @@ public class CodeListController implements MatPresenter {
 				Mat.focusSkipLists("MainContent");
 			}
 		});
-		
+	
 		eventBus.addHandler(CancelAddCodeEvent.TYPE, new CancelAddCodeEvent.Handler() {
 			@Override
 			public void onCancelAddCode(CancelAddCodeEvent event) {
 				displayDetail(MY_VALUE_SETS_VALUE_SET_UPDATE);
 			}
 		});
-		
+	
 		eventBus.addHandler(CreateNewCodeListEvent.TYPE, new CreateNewCodeListEvent.Handler() {
 			@Override
 			public void onCreateNewCodeList(CreateNewCodeListEvent event) {
@@ -92,7 +122,7 @@ public class CodeListController implements MatPresenter {
 				codeListDetailPresenter.refreshUploadedCodes();//This will refresh table with the new uploaded codes.
 			}
 		});
-		
+	
 		eventBus.addHandler(CreateNewGroupedCodeListEvent.TYPE, new CreateNewGroupedCodeListEvent.Handler() {
 			@Override
 			public void onCreateNewGroupedCodeList(CreateNewGroupedCodeListEvent event) {
@@ -100,6 +130,17 @@ public class CodeListController implements MatPresenter {
 				displayGroupedDetail();
 			}
 		});
+		
+		/*eventBus.addHandler(TransferCodeListOwnershipEvent.TYPE, new TransferCodeListOwnershipEvent.Handler() {
+			@Override
+			public void onTransferCodeListOwnership(TransferCodeListOwnershipEvent event) {
+				TransferOwnershipView transferOS = new TransferOwnershipView();
+				TransferCodeListOwnershipPresenter transferCLOPresenter = new TransferCodeListOwnershipPresenter(transferOS);
+				groupedCodeListPresenter.createNewGroupedCodeList();
+				displayGroupedDetail();
+			}
+		});*/
+		
 		
 		eventBus.addHandler(EditCodeListEvent.TYPE, new EditCodeListEvent.Handler() {
 			@Override
@@ -115,35 +156,35 @@ public class CodeListController implements MatPresenter {
 				displayGroupedDetail();
 			}
 		});
-		
+	
 		eventBus.addHandler(AddQDSElementEvent.TYPE, new AddQDSElementEvent.Handler() {
 			@Override
 			public void onAddQDSElement(AddQDSElementEvent event) {
 				displayQDSView();
 			}
 		});
-		
+	
 		eventBus.addHandler(AddCodeToCodeListEvent.TYPE, new AddCodeToCodeListEvent.Handler(){
 
 			@Override
 			public void onAddCodeToCodeList(AddCodeToCodeListEvent event) {
 				displayAddCodes();
-				
-			}
 			
-		});
+			}
 		
+		});
+	
 		eventBus.addHandler(ExternalViewerEvent.TYPE, new ExternalViewerEvent.Handler(){
 
 			@Override
-			public void onExternalView(ExternalViewerEvent event) {
-			//	buttonBar.setContinueButtonVisible(false);
-			//	buttonBar.setPreviousButtonVisible(false);
+		public void onExternalView(ExternalViewerEvent event) {
+				//	buttonBar.setContinueButtonVisible(false);
+				//buttonBar.setPreviousButtonVisible(false);
 				contents.clear();
 				contents.add(codeListDetailPresenter.getExternalLinkDisclaimer());
 			}		
 		});
-		
+	
 		eventBus.addHandler(OnChangeValueSetDraftOptionsEvent.TYPE, new OnChangeValueSetDraftOptionsEvent.Handler() {
 			@Override
 			public void onChangeOptions(OnChangeValueSetDraftOptionsEvent event) {
@@ -151,9 +192,7 @@ public class CodeListController implements MatPresenter {
 				button.setFocus(true);
 			}
 		});
-		
-		DOM.setElementAttribute(contents.getElement(), "id", "CodeListControler.contents");
-		beforeDisplay();
+
 	}
 	
 	
@@ -200,15 +239,17 @@ public class CodeListController implements MatPresenter {
 
 	@Override
 	public void beforeDisplay() {
-	  MeasureComposerPresenter.setSubSkipEmbeddedLink("CodeList");
-	 // Mat.focusSkipLists("MainContent");
-	  displaySearch();
+	 MeasureComposerPresenter.setSubSkipEmbeddedLink("CodeList");
+	 Mat.focusSkipLists("MainContent");
+	 displaySearch();
 	}
 
 	@Override
 	public void beforeClosingDisplay() {
-		codeListDetailPresenter.clearMessages();
-		groupedCodeListPresenter.clearMessages();
+		if(!type.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
+			codeListDetailPresenter.clearMessages();
+			groupedCodeListPresenter.clearMessages();
+		}
 	}
 	
 }

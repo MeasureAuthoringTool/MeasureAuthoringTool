@@ -68,6 +68,7 @@ public class ManageCodeListSearchPresenter {
 		public void buildDataTable(SearchResults<CodeListSearchDTO> results, boolean isAsc);
 		public HasSortHandler getPageSortTool();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		public ErrorMessageDisplayInterface getTransferErrorMessageDisplay();
 		public HasClickHandlers getTransferButton();
 		/*US537*/
 		public HasClickHandlers getCreateButton();
@@ -545,6 +546,7 @@ public class ManageCodeListSearchPresenter {
 		final ArrayList<CodeListSearchDTO> transferValueSetIDs = searchModel.getTransferValueSetIDs();
 		if(transferValueSetIDs.size() !=0){
 			searchDisplay.getErrorMessageDisplay().clear();
+			searchDisplay.getTransferErrorMessageDisplay().clear();
 			transferDisplay.getErrorMessageDisplay().clear();
 			showSearchingBusy(true);
 			MatContext.get().getCodeListService().searchUser(new AsyncCallback<TransferOwnerShipModel>(){
@@ -564,7 +566,7 @@ public class ManageCodeListSearchPresenter {
 			});
 			
 		}else{
-			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getTransferCheckBoxError());
+			searchDisplay.getTransferErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getTransferCheckBoxError());
 		}
 		
 	}

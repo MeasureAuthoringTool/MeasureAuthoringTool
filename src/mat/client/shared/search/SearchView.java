@@ -51,7 +51,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	protected Panel pageSizeSelector = new FlowPanel();
 	protected Panel pageSelector = new HorizontalPanel();
 	private HTML viewingNumber = new HTML();
-	protected Grid508 dataTable = new Grid508();
+	public Grid508 dataTable = new Grid508();
 	private Grid508 QDSDataTable = new Grid508();
 	//private FlexTable flexTable = new FlexTable();
 	

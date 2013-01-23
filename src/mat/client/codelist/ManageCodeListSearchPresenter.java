@@ -649,6 +649,7 @@ public class ManageCodeListSearchPresenter {
 								@Override
 								public void onTransferClicked(CodeListSearchDTO codeList) {
 										searchDisplay.getErrorMessageDisplay().clear();
+										searchDisplay.getTransferErrorMessageDisplay().clear();
 										updateTransferIDs(codeList,searchModel);
 								}
 

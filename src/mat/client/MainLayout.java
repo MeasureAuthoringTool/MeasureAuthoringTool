@@ -124,27 +124,27 @@ public abstract class MainLayout {
 		footerMainPanel.setStylePrimaryName("footer");		
 		footerMainPanel.add(FooterPanelBuilderUtility.buildFooterLogoPanel());
 				
-		final VerticalPanel footerLinksPanel = new VerticalPanel();
-		footerLinksPanel.setStylePrimaryName("footer-nav");
+//		final VerticalPanel footerLinksPanel = new VerticalPanel();
+//		footerLinksPanel.setStylePrimaryName("footer-nav");
+//		
+//		HTML helpFullLinks = new HTML("&nbsp;&nbsp;<h2>Helpful Links</h2>");
+//		footerLinksPanel.add(helpFullLinks);
+//		
+//		final HorizontalPanel footerLinks = new HorizontalPanel();
+//		fetchAndcreateFooterLinks(footerLinks);
+//		
+//		footerLinksPanel.add(footerLinks);
 		
-		HTML helpFullLinks = new HTML("&nbsp;&nbsp;<h2>Helpful Links</h2>");
-		footerLinksPanel.add(helpFullLinks);
-		
-		final HorizontalPanel footerLinks = new HorizontalPanel();
-		fetchAndcreateFooterLinks(footerLinks);
-		
-		footerLinksPanel.add(footerLinks);
-		
-		footerMainPanel.add(footerLinksPanel);
+		footerMainPanel.add(fetchAndcreateFooterLinks());
 		return footerMainPanel;
 }
 	
-	private void fetchAndcreateFooterLinks(final HorizontalPanel footerLinks) {
+	private HTML fetchAndcreateFooterLinks() {
 		MatContext.get().getLoginService().getFooterURLs(new AsyncCallback<List<String>>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				//This will create Footer links with default values.
-				createFooterLinks(footerLinks);				
+				//createFooterLinks(footerLinks);				
 			}
 
 			@Override
@@ -155,47 +155,47 @@ public abstract class MainLayout {
 				ClientConstants.TERMSOFUSE_URL = result.get(2);
 				ClientConstants.USERGUIDE_URL = result.get(3);
 				//This will create Footer links with values from server.
-				createFooterLinks(footerLinks);
+				//createFooterLinks(footerLinks);
 			}
 		
 		});
-		
+		return FooterPanelBuilderUtility.buildFooterLinksPanel();
 	}
 
-	private void createFooterLinks(HorizontalPanel footerLinks) {
-		
-		final String pipeHTML = "&nbsp;&nbsp;<b>|</b>";
-		
-		final Anchor policyAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, null, ConstantMessages.LOGIN_MODULE, 
-				null,ClientConstants.ACCESSIBILITY_POLICY_URL);
-		footerLinks.add(policyAnchor);
-		HTML pipe = new HTML(pipeHTML);
-		footerLinks.add(pipe);
-		
-		final Anchor privacyPolicyAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_PRIVACYPOLICY, null, ConstantMessages.LOGIN_MODULE, 
-		null,ClientConstants.PRIVACYPOLICY_URL);
-		footerLinks.add(privacyPolicyAnchor);
-		HTML pipe_2 = new HTML(pipeHTML);
-		footerLinks.add(pipe_2);
-		
-		final Anchor termsOfUseAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_TERMSOFUSE, null, ConstantMessages.LOGIN_MODULE, 
-		null,ClientConstants.TERMSOFUSE_URL);
-		footerLinks.add(termsOfUseAnchor);
-		HTML pipe_3 = new HTML(pipeHTML);
-		footerLinks.add(pipe_3);
-		
-		final Anchor foiaAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_FOIA, null, ConstantMessages.LOGIN_MODULE, 
-																null,ClientConstants.EXT_LINK_FOIA);
-		footerLinks.add(foiaAnchor);
-		HTML pipe_4 = new HTML(pipeHTML);
-		footerLinks.add(pipe_4);
-		
-		
-		final Anchor linkAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
-		null,ClientConstants.USERGUIDE_URL);
-		footerLinks.add(linkAnchor);
-		
-	}
+//	private void createFooterLinks(HorizontalPanel footerLinks) {
+//		
+//		final String pipeHTML = "&nbsp;&nbsp;<b>|</b>";
+//		
+//		final Anchor policyAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, null, ConstantMessages.LOGIN_MODULE, 
+//				null,ClientConstants.ACCESSIBILITY_POLICY_URL);
+//		footerLinks.add(policyAnchor);
+//		HTML pipe = new HTML(pipeHTML);
+//		footerLinks.add(pipe);
+//		
+//		final Anchor privacyPolicyAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_PRIVACYPOLICY, null, ConstantMessages.LOGIN_MODULE, 
+//		null,ClientConstants.PRIVACYPOLICY_URL);
+//		footerLinks.add(privacyPolicyAnchor);
+//		HTML pipe_2 = new HTML(pipeHTML);
+//		footerLinks.add(pipe_2);
+//		
+//		final Anchor termsOfUseAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_TERMSOFUSE, null, ConstantMessages.LOGIN_MODULE, 
+//		null,ClientConstants.TERMSOFUSE_URL);
+//		footerLinks.add(termsOfUseAnchor);
+//		HTML pipe_3 = new HTML(pipeHTML);
+//		footerLinks.add(pipe_3);
+//		
+//		final Anchor foiaAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_FOIA, null, ConstantMessages.LOGIN_MODULE, 
+//																null,ClientConstants.EXT_LINK_FOIA);
+//		footerLinks.add(foiaAnchor);
+//		HTML pipe_4 = new HTML(pipeHTML);
+//		footerLinks.add(pipe_4);
+//		
+//		
+//		final Anchor linkAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
+//		null,ClientConstants.USERGUIDE_URL);
+//		footerLinks.add(linkAnchor);
+//		
+//	}
 
 	private Panel buildTopPanel() {
 		final HorizontalPanel topBanner = new HorizontalPanel();

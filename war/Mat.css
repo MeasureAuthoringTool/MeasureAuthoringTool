@@ -308,6 +308,54 @@ body#main select, body#main input, body#main textarea {
 	float:right;
 }
 
+.custom-footer-nav {
+    background: url("images/hpgradient.jpg") repeat-x scroll 0 0 #FFFFFF;
+    overflow: auto;
+    padding: 20px;
+}
+
+.custom-footer-nav h2 {
+    background: none repeat scroll 0 center transparent;
+    color: #000044;
+    font-size: small;
+    margin: 0;
+    padding-bottom: 4px;
+} 
+
+.custom-footer-nav ul {
+    margin: 0;
+    padding: 0;
+}
+.custom-footer-nav ul li {
+    line-height: 20px;
+    list-style: none outside none;
+}
+.custom-footer-nav ul li a {
+    font-size: 0.7em;
+    text-decoration: none;
+    color:#002280;
+}
+.custom-footer-nav ul li a:active {
+    color:#002280;
+}
+.custom-footer-nav ul li a:hover {
+    color:#C00000;
+    text-decoration: underline;
+}
+
+.custom-footer-nav ul li b {
+    font-size: small;
+}
+
+.customLinkDisclaimer {
+    height: 0;
+    left: -10000px;
+    overflow: hidden;
+    position: absolute;
+    top: auto;
+    width: 1px;
+}
+
 .alertMessage {
 	/*color: red;*/
 	

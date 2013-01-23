@@ -134,7 +134,7 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 	}
 	
 	private Widget buildTransferWidget(){
-		HorizontalPanel hpT = new HorizontalPanel();
+		FlowPanel hpT = new FlowPanel();
 		hpT.setStylePrimaryName("rightAlignButton");
 		hpT.add(transferButton);
 		return hpT;

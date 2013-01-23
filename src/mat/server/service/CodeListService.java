@@ -51,4 +51,5 @@ public interface CodeListService {
 	public boolean isCodeAlreadyExists(String codeListId, Code code);
 	//US193
 	public ManageValueSetSearchModel createClone(String id);
+	void transferOwnerShipToUser(List<String> list, String toEmail);
 }

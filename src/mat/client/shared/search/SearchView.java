@@ -391,7 +391,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 	
 	public void buildSearchResultsColumnHeaders(int numRows,int numColumns,SearchResults<T> results, boolean isAscending,boolean isChecked){
-		boolean isExportClear = false;
+		boolean isClearAll = false;
 		for(int i = 0; i < numColumns; i++) {
 			Panel headerPanel = new FlowPanel();
 			Widget columnHeader = null;
@@ -451,7 +451,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 			}
 			else{
 				if("ExportClear".equals(results.getColumnHeader(i))){
-					isExportClear = true;
+					isClearAll = true;
 					HorizontalPanel panel = new HorizontalPanel();
 					panel.add(new Label("Export"));
 					Anchor clearAnchor = new Anchor("(Clear)");
@@ -468,7 +468,27 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					});
 					panel.add(clearAnchor);
 					headerPanel.add(panel);
-				}else{
+				}else if("TransferClear".equals(results.getColumnHeader(i))){
+					isClearAll = true;
+					HorizontalPanel panel = new HorizontalPanel();
+					panel.add(new Label("Transfer"));
+					Anchor clearAnchor = new Anchor("(Clear)");
+					clearAnchor.setStyleName("clearAnchorStyle");
+					clearAnchor.addClickHandler(new ClickHandler() {
+						@Override
+						public void onClick(ClickEvent event) {
+							if(MatContext.get().getManageCodeListSearchModel().getTransferValueSetIDs() != null){
+								MatContext.get().getManageCodeListSearchModel().getTransferValueSetIDs().clear();
+								MatContext.get().getManageCodeListSearchModel().getLisObjectId().clear();
+							}
+							MatContext.get().getManageCodeListSearchView().clearAllCheckBoxes(dataTable);
+							MatContext.get().getManageCodeListSearchView().getErrorMessageDisplay().clear();
+						}
+					});
+					panel.add(clearAnchor);
+					headerPanel.add(panel);
+				}
+				else{
 					columnHeader = new Label(results.getColumnHeader(i));
 					columnHeader.setTitle(results.getColumnHeader(i));
 					//Need to do this for IE or it centers them
@@ -477,7 +497,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 				
 			}
 			headerPanel.setStylePrimaryName("noBorder");
-			if(!isExportClear) 
+			if(!isClearAll) 
 				headerPanel.add(columnHeader);
 			dataTable.setWidget(0, i,headerPanel);
 			dataTable.getColumnFormatter().setWidth(i, results.getColumnWidth(i));

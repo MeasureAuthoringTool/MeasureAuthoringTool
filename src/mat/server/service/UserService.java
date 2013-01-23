@@ -30,4 +30,6 @@ public interface UserService {
 	public void setUserSignInDate(String userid);
 	public void setUserSignOutDate(String userid);
 	List<String> getFooterURLs();
+	public List<User> searchNonAdminUsers(String string, int i, int j);
+	User findByEmailID(String emailId);
 }

@@ -14,7 +14,10 @@ import mat.client.clause.ClauseService;
 import mat.client.clause.ClauseServiceAsync;
 import mat.client.clause.QDSCodeListSearchView;
 import mat.client.clause.view.DiagramViewImpl;
+import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.ListBoxCodeProvider;
+import mat.client.codelist.ManageCodeListSearchModel;
+import mat.client.codelist.ManageCodeListSearchView;
 import mat.client.codelist.service.CodeListService;
 import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.event.ForgottenPasswordEvent;
@@ -111,6 +114,11 @@ public class MatContext implements IsSerializable {
 	private ManageMeasureSearchView manageMeasureSearchView;
 	
 	private ManageMeasureSearchModel manageMeasureSearchModel;
+	
+	private ManageCodeListSearchView manageCodeListSearchView;
+	
+	private AdminManageCodeListSearchModel manageCodeListSearchModel;
+	
 	
 	private SynchronizationDelegate synchronizationDelegate = new SynchronizationDelegate();
 	
@@ -714,6 +722,38 @@ public class MatContext implements IsSerializable {
 	public void setManageMeasureSearchModel(
 			ManageMeasureSearchModel manageMeasureSearchModel) {
 		this.manageMeasureSearchModel = manageMeasureSearchModel;
+	}
+
+
+	/**
+	 * @param manageCodeListSearchView the manageCodeListSearchView to set
+	 */
+	public void setManageCodeListSearchView(ManageCodeListSearchView manageCodeListSearchView) {
+		this.manageCodeListSearchView = manageCodeListSearchView;
+	}
+
+
+	/**
+	 * @return the manageCodeListSearchView
+	 */
+	public ManageCodeListSearchView getManageCodeListSearchView() {
+		return manageCodeListSearchView;
+	}
+
+
+	/**
+	 * @param manageCodeListSearcModel the manageCodeListSearcModel to set
+	 */
+	public void setManageCodeListSearcModel(AdminManageCodeListSearchModel manageCodeListSearchModel) {
+		this.manageCodeListSearchModel =  manageCodeListSearchModel;
+	}
+
+
+	/**
+	 * @return the manageCodeListSearcModel
+	 */
+	public AdminManageCodeListSearchModel getManageCodeListSearchModel() {
+		return manageCodeListSearchModel;
 	}
 	
 }

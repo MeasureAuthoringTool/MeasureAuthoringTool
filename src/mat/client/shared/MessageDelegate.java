@@ -864,4 +864,14 @@ public class MessageDelegate {
 	public String getMeasureSelectionError(){
 		return MEASURE_SELECTION_ERROR;
 	}
+	
+	private final String TRANSFER_CHECKBOX_ERROR = "Please Select at least one Transfer Check Box";
+	public String getTransferCheckBoxError(){
+		return TRANSFER_CHECKBOX_ERROR;
+	}
+	
+	private final String TRANSFER_OWNERSHIP_SUCCESS = "Value Sets Ownership Successfully transfered to ";
+	public String getTransferOwnershipSuccess(){
+		return TRANSFER_OWNERSHIP_SUCCESS;
+	}
 }

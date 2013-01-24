@@ -598,6 +598,7 @@ public class ManageCodeListSearchPresenter {
 		searchHistory(historyDisplay.getCodeListId(), startIndex, pageSize);		
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
 			MY_VALUE_SETS_HISTORY = "Value Sets Ownership  > History";
+			searchDisplay.getTransferErrorMessageDisplay().clear();
 		}
 		resetPanel(historyDisplay.asWidget(), MY_VALUE_SETS_HISTORY);
 		Mat.focusSkipLists("MainContent");
@@ -633,6 +634,7 @@ public class ManageCodeListSearchPresenter {
 		final boolean isAscending = isAsc;
 		showSearchingBusy(true);
 		searchDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getTransferErrorMessageDisplay().clear();
 		if(MatContext.get().getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			MatContext.get().getCodeListService().searchForAdmin(searchText,
 																 startIndex, pageSize, 

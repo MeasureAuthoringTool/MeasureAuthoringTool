@@ -865,7 +865,7 @@ public class MessageDelegate {
 		return MEASURE_SELECTION_ERROR;
 	}
 	
-	private final String TRANSFER_CHECKBOX_ERROR = "Please select at least one Value Set check box to transfer";
+	private final String TRANSFER_CHECKBOX_ERROR = "Please select at least one Value Set to transfer ownership.";
 	public String getTransferCheckBoxError(){
 		return TRANSFER_CHECKBOX_ERROR;
 	}

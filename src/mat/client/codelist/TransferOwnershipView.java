@@ -8,6 +8,7 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -31,8 +32,9 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 	private FlowPanel mainPanel = new FlowPanel();
-	private Button saveButton = new PrimaryButton("Save");
-	private Button Cancel = new Button("Cancel");
+	//private Button saveButton = new PrimaryButton("Save");
+	//private Button Cancel = new Button("Cancel");
+	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
 	protected SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	private SearchView<Result> view = new SearchView<TransferOwnerShipModel.Result>("Users");
@@ -50,8 +52,10 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 		HorizontalPanel hp = new HorizontalPanel();
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
-		hp.add(saveButton);
-		hp.add(Cancel);
+		buttons.getCancelButton().setTitle("Cancel");
+		buttons.getCancelButton().setText("Cancel");
+		buttons.getSaveButton().setTitle("Save");
+		hp.add(buttons);
 		mainPanel.add(hp);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
@@ -159,12 +163,12 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	
 	@Override
 	public HasClickHandlers getSaveButton() {
-		return saveButton;
+		return buttons.getSaveButton();
 	}
 	@Override
 	public HasClickHandlers getCancelButton() {
 		
-		return Cancel;
+		return buttons.getCancelButton();
 	}
 	
 	

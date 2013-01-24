@@ -453,7 +453,7 @@ public class ManageCodeListSearchPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.clearAllCheckBoxes(searchDisplay.getDataTable());
-				displayTransferView(1,searchDisplay.getPageSize());
+				displayTransferView(startIndex,transferDisplay.getPageSize());
 			}
 		});
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
@@ -561,14 +561,14 @@ public class ManageCodeListSearchPresenter {
 		resetPanel(searchDisplay.asWidget(), MY_VALUE_SETS);
 	}
 	
-	private void displayTransferView(int startInex, int pageSize){
+	private void displayTransferView(int startIndex, int pageSize){
 		final ArrayList<CodeListSearchDTO> transferValueSetIDs = searchModel.getTransferValueSetIDs();
 		if(transferValueSetIDs.size() !=0){
 			searchDisplay.getErrorMessageDisplay().clear();
 			searchDisplay.getTransferErrorMessageDisplay().clear();
 			transferDisplay.getErrorMessageDisplay().clear();
 			showSearchingBusy(true);
-			MatContext.get().getCodeListService().searchUsers(startInex,pageSize,new AsyncCallback<TransferOwnerShipModel>(){
+			MatContext.get().getCodeListService().searchUsers(1,pageSize,new AsyncCallback<TransferOwnerShipModel>(){
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());

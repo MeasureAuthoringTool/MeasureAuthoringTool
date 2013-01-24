@@ -870,7 +870,7 @@ public class MessageDelegate {
 		return TRANSFER_CHECKBOX_ERROR;
 	}
 	
-	private final String TRANSFER_OWNERSHIP_SUCCESS = "Value Sets Ownership Successfully transfered to ";
+	private final String TRANSFER_OWNERSHIP_SUCCESS = "Ownership successfully transferred to ";
 	public String getTransferOwnershipSuccess(){
 		return TRANSFER_OWNERSHIP_SUCCESS;
 	}

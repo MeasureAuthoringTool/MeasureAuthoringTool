@@ -264,11 +264,11 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 			
 			codeListController = new CodeListController(currentUserRole);
-			title = ClientConstants.TITLE_VALUE_SET_CHANGE_OWNERSHIP;	
+			title = ClientConstants.TITLE_VALUE_SET_LIB;	
 			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));
 		
 			/*measureLibrary = buildMeasureLibraryWidget(); 
-			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;	
+			title = ClientConstants.TITLE_MEASURE_LIB;	
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));*/
 			
 			

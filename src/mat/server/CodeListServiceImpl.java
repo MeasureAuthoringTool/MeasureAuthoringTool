@@ -320,7 +320,7 @@ implements mat.client.codelist.service.CodeListService {
 		}
 		result.setData(detailList);
 		result.setStartIndex(startIndex);
-		result.setResultsTotal(getUserService().countSearchResults(""));
+		result.setResultsTotal(getUserService().countSearchResultsNonAdmin(""));
 		
 		return result;
 	}

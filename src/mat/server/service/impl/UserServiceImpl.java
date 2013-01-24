@@ -257,6 +257,12 @@ public class UserServiceImpl implements UserService {
 	public int countSearchResults(String text) {
 		return userDAO.countSearchResults(text);
 	}
+	
+	@Override
+	public int countSearchResultsNonAdmin(String text) {
+		return userDAO.countSearchResultsNonAdmin(text);
+	}
+	
 	@Override
 	public User getById(String id) {
 		return userDAO.find(id);

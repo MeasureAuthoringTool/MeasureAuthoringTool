@@ -32,4 +32,5 @@ public interface UserService {
 	List<String> getFooterURLs();
 	public List<User> searchNonAdminUsers(String string, int i, int j);
 	User findByEmailID(String emailId);
+	public int countSearchResultsNonAdmin(String string);
 }

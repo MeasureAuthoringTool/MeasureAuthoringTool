@@ -126,8 +126,15 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 		return criteria.list();
 		
 	}
+	
 	public int countSearchResults(String text) {
 		Criteria criteria = createSearchCriteria(text);
+		criteria.setProjection(Projections.rowCount());
+		return ((Long)criteria.uniqueResult()).intValue();
+	}
+	
+	public int countSearchResultsNonAdmin(String text) {
+		Criteria criteria = createSearchCriteriaNonAdminUser(text);
 		criteria.setProjection(Projections.rowCount());
 		return ((Long)criteria.uniqueResult()).intValue();
 	}

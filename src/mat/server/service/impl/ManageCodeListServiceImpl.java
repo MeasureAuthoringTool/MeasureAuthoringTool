@@ -1164,7 +1164,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				String additionalInfo = "Value Set Owner transferred from "+allCodes.get(j).getObjectOwner().getEmailAddress()+" to "+ toEmail;
 				allCodes.get(j).setObjectOwner(userTo);
 				listObjectDAO.save(allCodes.get(j));
-				codeListAuditLogDAO.recordCodeListEvent(codeList,"Value Set Ownership Changed " ,additionalInfo);
+				codeListAuditLogDAO.recordCodeListEvent(allCodes.get(j),"Value Set Ownership Changed " ,additionalInfo);
 				additionalInfo = "";
 			}
 			

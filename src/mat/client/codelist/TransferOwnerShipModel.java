@@ -171,6 +171,7 @@ public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipMo
                 if(e.getValue() == true)
                 {
                     result.setSelected(true);
+                    
                 }
                 else
                 {

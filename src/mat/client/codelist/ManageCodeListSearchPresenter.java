@@ -120,6 +120,8 @@ public class ManageCodeListSearchPresenter {
 		public HasPageSelectionHandler getPageSelectionTool();
 		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
 		public int getPageSize();
+		void clearAllRadioButtons(Grid508 dataTable);
+		public Grid508 getDataTable();
 	}
 	
 	
@@ -218,9 +220,14 @@ public class ManageCodeListSearchPresenter {
 		transferDisplay.getSaveButton().addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
+				transferDisplay.getErrorMessageDisplay().clear();
+				transferDisplay.getSuccessMessageDisplay().clear();
+				boolean userSelected = false;
 				for(int i=0;i<model.getData().size();i=i+1){
 					if(model.getData().get(i).isSelected()){
+						userSelected = true;
 						final String emailTo =model.getData().get(i).getEmailId();
+						final int rowIndex = i;
 						MatContext.get().getCodeListService().transferOwnerShipToUser(searchModel.getLisObjectId(),emailTo ,
 								new AsyncCallback<Void>(){
 									@Override
@@ -228,19 +235,27 @@ public class ManageCodeListSearchPresenter {
 										Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 										searchModel.getTransferValueSetIDs().clear();;
 										searchModel.getLisObjectId().clear();
+										model.getData().get(rowIndex).setSelected(false);
 									}
 									@Override
 									public void onSuccess(Void result) {
 										transferDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getTransferOwnershipSuccess()+emailTo);
 										searchModel.getTransferValueSetIDs().clear();
 										searchModel.getLisObjectId().clear();
-										
+										model.getData().get(rowIndex).setSelected(false);
 									}
 						});
 					}
 				}
-				
+				if(userSelected==false){
+					transferDisplay.getSuccessMessageDisplay().clear();
+					//transferDisplay.getErrorMessageDisplay().setMessage("Please select at least one user to transfer ownership.");
+					
+				}
+					
+				transferDisplay.clearAllRadioButtons(transferDisplay.getDataTable());
 			}
+			
 		});
 		transferDisplay.getCancelButton().addClickHandler(new ClickHandler(){
 			@Override

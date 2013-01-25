@@ -2,6 +2,7 @@ package mat.client.codelist;
 
 import java.util.List;
 import mat.client.codelist.TransferOwnerShipModel.Result;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
@@ -22,6 +23,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RadioButton;
 
 import com.google.gwt.user.client.ui.Widget;
 
@@ -127,6 +129,24 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	public int getPageSize() {
 		return view.getPageSize();
 	}
+	@Override
+	public void clearAllRadioButtons(Grid508 dataTable){
+		int rows = dataTable.getRowCount();
+		int cols = dataTable.getColumnCount();
+		for(int i = 0; i < rows; i++){
+			for(int j = 0; j < cols; j++){
+				Widget w = getDataTable().getWidget(i, j);
+				if(w instanceof RadioButton){
+					RadioButton rb = ((RadioButton)w);	
+					if(rb.getValue()){
+						rb.setValue(false);										
+					}
+				}
+			}
+		}
+	}
+	
+	
 	/**
 	 * Method to build User Results
 	 * 
@@ -151,7 +171,7 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	}
 	
 	public Grid508 getDataTable() {
-		return dataTable;
+		return view.getDataTable();
 	}
 	public void setDataTable(Grid508 dataTable) {
 		this.dataTable = dataTable;

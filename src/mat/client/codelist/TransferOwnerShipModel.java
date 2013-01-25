@@ -50,7 +50,7 @@ public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipMo
 	}
 	
 	private static String[] headers = new String[] { "Name", "email address", "Select" };
-	private static String[] widths = new String[] { "40%", "40%" ,"20%"};
+	private static String[] widths = new String[] { "45%", "45%" ,"10%"};
 	
 	
 	private List<Result> data;
@@ -155,6 +155,7 @@ public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipMo
 			break;
 		case 2:
 			value = getSelectedRadioBox(data.get(row)); 
+			value.addStyleName("searchTableCenteredHolder");
 			break;
 		default: 
 			value = new Label("Unknown Column Index");

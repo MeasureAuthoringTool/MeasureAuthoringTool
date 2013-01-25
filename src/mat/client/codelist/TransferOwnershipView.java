@@ -18,6 +18,7 @@ import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
 import mat.model.CodeListSearchDTO;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -84,30 +85,25 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	}
 	
 	
-	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<TransferOwnerShipModel.Result> results){
+	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<TransferOwnerShipModel.Result> results){		
 		for(int i = 0; i < numRows; i++) {
 			for(int j = 0; j < numColumns; j++) {
-					if(results.isColumnFiresSelection(j)) {
-						String innerText = results.getValue(i, j).getElement().getInnerText();
-						innerText = addSpaces(innerText, 27);
-						Label a = new Label();
-						a.setText(innerText);
-						Panel holder = new HorizontalFlowPanel();
-						SimplePanel innerPanel = new SimplePanel();
-						innerPanel.setStylePrimaryName("pad-left21px");
-						innerPanel.add(a);
-						holder.add(innerPanel);
-						dataTable.setWidget(i+1, j, holder);
-					}
-					else {
-						dataTable.setWidget(i+1, j,results.getValue(i, j));
-					}
+				if(results.isColumnFiresSelection(j)) {
+					String innerText = results.getValue(i, j).getElement().getInnerText();
+					Label a = new Label();
+					a.setText(innerText);
+					dataTable.setWidget(i+1, j, a);
 				}
-				if(i % 2 == 0) {
-					dataTable.getRowFormatter().addStyleName(i + 1, "odd");
+				else {
+					dataTable.setWidget(i+1, j,results.getValue(i, j));
 				}
 			}
+			if(i % 2 == 0) {
+				dataTable.getRowFormatter().addStyleName(i + 1, "odd");
+			}
 		}
+	}
+	
 	@Override
 	public void buildHTMLForValueSets(List<CodeListSearchDTO> codeListIDs){
 		valueSetNamePanel.clear();

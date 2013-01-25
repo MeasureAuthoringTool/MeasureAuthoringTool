@@ -48,17 +48,13 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		MatUserDetails userDetails =(MatUserDetails )hibernateUserService.loadUserByUsername(userId);
 		Date currentDate = new Date();
 		Timestamp currentTimeStamp = new Timestamp(currentDate.getTime());
-		logger.debug("userDetails ===== "+userDetails);
 		if(userDetails != null)
 		{
 			String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), password);
-			logger.debug("userDetails ===== "+userDetails);
-			
-			logger.debug("hashPassword ===== "+hashPassword);
 			if(userDetails.getStatus().getId().equals("2"))
 			{
 				//REVOKED USER NO
-				logger.debug("User status is 2, revoked");
+				logger.info("User status is 2, revoked");
 				 loginModel.setLoginFailedEvent(true);
 				 loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getAccountRevokedMessage());
 				 loginModel.setUserId(userId);
@@ -156,6 +152,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 		
 		if(!loginModel.isLoginFailedEvent()){
+			logger.info(userDetails.getLoginId()+" has logged in.");
 			String s = "\nlogin_success\n";
 
 			String chartReport ="CHARTREPORT";
@@ -202,7 +199,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			
 			chartReport +=" "+System.currentTimeMillis();
 			
-			Log logger = LogFactory.getLog(PreventCachingFilter.class);
+//			Log logger = LogFactory.getLog(PreventCachingFilter.class);
 			chartReport +="\n";
 			s+= "/login_success\n" + chartReport;
 			logger.info(s);

@@ -124,6 +124,7 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		case 6:
 			if(model.get(row).isTransferable()){
 				value = getTransferCheckBox(model.get(row).getId());
+				value.addStyleName("searchTableCenteredHolder");
 			}else
 				value = new Label();
 			break;	    

@@ -247,6 +247,8 @@ public class ManageCodeListSearchPresenter {
 			public void onClick(ClickEvent event) {
 				searchModel.getLisObjectId().clear();
 				searchModel.getTransferValueSetIDs().clear();
+				transferDisplay.getSuccessMessageDisplay().clear();
+				transferDisplay.getErrorMessageDisplay().clear();
 				displaySearch();
 			}
 		});
@@ -563,10 +565,11 @@ public class ManageCodeListSearchPresenter {
 	
 	private void displayTransferView(int startIndex, int pageSize){
 		final ArrayList<CodeListSearchDTO> transferValueSetIDs = searchModel.getTransferValueSetIDs();
+		searchDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getTransferErrorMessageDisplay().clear();
+		transferDisplay.getErrorMessageDisplay().clear();
 		if(transferValueSetIDs.size() !=0){
-			searchDisplay.getErrorMessageDisplay().clear();
-			searchDisplay.getTransferErrorMessageDisplay().clear();
-			transferDisplay.getErrorMessageDisplay().clear();
+			
 			showSearchingBusy(true);
 			MatContext.get().getCodeListService().searchUsers(1,pageSize,new AsyncCallback<TransferOwnerShipModel>(){
 				@Override

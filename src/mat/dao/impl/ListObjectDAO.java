@@ -688,5 +688,16 @@ public class ListObjectDAO extends GenericDAO<ListObject, String>
 		session.close();
 		return list.get(0) == 0;
 	}
+
+	@Override
+	public List<ListObject> getListObject(String Oid) {
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(ListObject.class);
+		criteria.add(Restrictions.eq("oid", Oid));
+		
+		List<ListObject> los = criteria.list();
+		return los;
+		
+	}
 	
 }

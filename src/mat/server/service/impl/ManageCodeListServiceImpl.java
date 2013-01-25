@@ -1159,11 +1159,15 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		
 		for(int i=0;i<list.size();i++){
 			ListObject codeList = listObjectDAO.find(list.get(i));
-			String additionalInfo = "Value Set Owner transferred from "+codeList.getObjectOwner().getEmailAddress()+" to "+ toEmail;
-			codeList.setObjectOwner(userTo);
-			listObjectDAO.save(codeList);
-			codeListAuditLogDAO.recordCodeListEvent(codeList,"Value Set Ownership Changed " ,additionalInfo);
-			additionalInfo = "";
+			List <ListObject> allCodes = (List<ListObject>) listObjectDAO.getListObject(codeList.getOid());
+			for(int j =0;j<allCodes.size();j++){
+				String additionalInfo = "Value Set Owner transferred from "+allCodes.get(j).getObjectOwner().getEmailAddress()+" to "+ toEmail;
+				allCodes.get(j).setObjectOwner(userTo);
+				listObjectDAO.save(allCodes.get(j));
+				codeListAuditLogDAO.recordCodeListEvent(codeList,"Value Set Ownership Changed " ,additionalInfo);
+				additionalInfo = "";
+			}
+			
 		}
 		
 	}

@@ -22,6 +22,7 @@ public interface ListObjectDAO extends IDAO<ListObject, String> {
 	public ListObject getListObject(String name, String steward, String categoryCd, String userid);
 	public List<ListObject> loadAllCodeListPerUser(String user);
 	public ListObject findMostRecentValueSet(ListObject loFamily, Timestamp vsPackageDate);
+	public List<ListObject> getListObject(String Oid);
 	public String generateUniqueOid(User user);
 	
 	/**

@@ -1,5 +1,6 @@
 package mat.client.codelist;
 
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.search.SearchResults;
 import mat.model.CodeListSearchDTO;
@@ -30,7 +31,9 @@ public class AdminValueSetSearchView extends ValueSetSearchView{
 				odd = false;
 				addImage = true;
 			}
-			
+			if(addImage){
+				((CodeListSearchDTO)results.get(i)).setTransferable(true);
+			}
 			for(int j = 0; j < numColumns; j++) {
 				if(results.isColumnFiresSelection(j)) {
 					String innerText = results.getValue(i, j).getElement().getInnerText();

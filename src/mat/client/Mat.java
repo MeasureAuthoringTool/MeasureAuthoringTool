@@ -355,7 +355,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				MatContext.get().stopUserLockUpdate();
 				//US154 SIGN_OUT_EVENT
 				MatContext.get().recordTransactionEvent(null, null, "SIGN_OUT_EVENT", null, 1);
-				mainTabLayout.close();
+//				mainTabLayout.close(); // Removing auto save for measure details and clause workspace 01/2013
 				Command isSavingCmd = new Command() {
 			    	   public void execute() {
 			    		   //CallSignout only if the clauses and measureDetails are not in the process of saving or 
@@ -403,8 +403,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 					//US212 no longer update user sign in time and record user sign out time
 					MatContext.get().stopUserLockUpdate();
 					MatContext.get().recordTransactionEvent(null, null, "WINDOW_CLOSE_EVENT", null, ConstantMessages.DB_LOG);
-					if(MatContext.get().getCurrentMeasureInfo()!= null)
-					    mainTabLayout.close();
+//					if(MatContext.get().getCurrentMeasureInfo()!= null)
+//					    mainTabLayout.close(); // Removing auto save for measure details and clause workspace 01/2013
 					callSignOutWithoutRedirect();
 				}
 			}

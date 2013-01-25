@@ -122,7 +122,10 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 			value = getImage("history", ImageResources.INSTANCE.clock(),model.getData().get(row).getId());
 			break;
 		case 6:
-			value = getTransferCheckBox(model.get(row).getId());
+			if(model.get(row).isTransferable()){
+				value = getTransferCheckBox(model.get(row).getId());
+			}else
+				value = new Label();
 			break;	    
 		default: 
 			value = new Label("Unknown Column Index");

@@ -6,8 +6,7 @@ import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.HorizontalFlowPanel;
-import mat.client.shared.PrimaryButton;
+
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -18,8 +17,7 @@ import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
 import mat.model.CodeListSearchDTO;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;

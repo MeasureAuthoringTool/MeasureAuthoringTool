@@ -33,8 +33,6 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 	private FlowPanel mainPanel = new FlowPanel();
-	//private Button saveButton = new PrimaryButton("Save");
-	//private Button Cancel = new Button("Cancel");
 	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
 	protected SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
@@ -84,79 +82,20 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 		view.buildPageSizeSelector();
 	}
 	
-	
-	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<TransferOwnerShipModel.Result> results){		
-		for(int i = 0; i < numRows; i++) {
-			for(int j = 0; j < numColumns; j++) {
-				if(results.isColumnFiresSelection(j)) {
-					String innerText = results.getValue(i, j).getElement().getInnerText();
-					Label a = new Label();
-					a.setText(innerText);
-					dataTable.setWidget(i+1, j, a);
-				}
-				else {
-					dataTable.setWidget(i+1, j,results.getValue(i, j));
-				}
-			}
-			if(i % 2 == 0) {
-				dataTable.getRowFormatter().addStyleName(i + 1, "odd");
-			}
-		}
-	}
-	
 	@Override
 	public void buildHTMLForValueSets(List<CodeListSearchDTO> codeListIDs){
 		valueSetNamePanel.clear();
-//		Label headingVS = new Label("Value Sets :");
-//		headingVS.addStyleName("bold");
-//		valueSetNamePanel.add(headingVS);
-//		VerticalPanel vp = new VerticalPanel();
 		StringBuilder paragraph = new StringBuilder("<p><b>Value Sets :</b>");
 		for(int i=0;i<codeListIDs.size();i++){
 			paragraph.append(codeListIDs.get(i).getName());
 			if(i < codeListIDs.size()-1){
 				paragraph.append(",");
 			}
-//			HTML desc = new HTML(codeListIDs.get(i).getName());
-//			vp.add(desc);
-//			HTML descBR = new HTML("</br>");
-//			vp.add(descBR);
 		}
 		paragraph.append("</p>");
 		HTML paragraphHtml = new HTML(paragraph.toString());
 		valueSetNamePanel.add(paragraphHtml);
 	}
-	
-	
-	protected String addSpaces(String in, int frequency){
-			
-			if(in.length() <= frequency)
-				return in;
-			
-			char[] inArr = in.toCharArray();
-			StringBuffer sb = new StringBuffer();
-			int i = 0;
-			for(char c : inArr){
-				if(i == frequency){
-					sb.append(' ');
-					i = 0;
-				}else if(c == ' ')
-					i = 0;
-				else
-					i++;
-				sb.append(c);
-			}
-				
-			return sb.toString();
-	}
-	
-	public Grid508 getDataTable() {
-		return dataTable;
-	}
-	public void setDataTable(Grid508 dataTable) {
-		this.dataTable = dataTable;
-	}
-	
 	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttons.getSaveButton();
@@ -166,7 +105,6 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 		
 		return buttons.getCancelButton();
 	}
-	
 	
 	@Override
 	public String getSelectedValue() {
@@ -191,6 +129,35 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	@Override
 	public int getPageSize() {
 		return view.getPageSize();
+	}
+	/**
+	 * Method to build User Results
+	 * 
+	 * */
+	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<TransferOwnerShipModel.Result> results){		
+		for(int i = 0; i < numRows; i++) {
+			for(int j = 0; j < numColumns; j++) {
+				if(results.isColumnFiresSelection(j)) {
+					String innerText = results.getValue(i, j).getElement().getInnerText();
+					Label a = new Label();
+					a.setText(innerText);
+					dataTable.setWidget(i+1, j, a);
+				}
+				else {
+					dataTable.setWidget(i+1, j,results.getValue(i, j));
+				}
+			}
+			if(i % 2 == 0) {
+				dataTable.getRowFormatter().addStyleName(i + 1, "odd");
+			}
+		}
+	}
+	
+	public Grid508 getDataTable() {
+		return dataTable;
+	}
+	public void setDataTable(Grid508 dataTable) {
+		this.dataTable = dataTable;
 	}
 	
 }

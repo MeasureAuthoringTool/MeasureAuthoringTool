@@ -23,6 +23,7 @@ import mat.client.measure.ManageMeasurePresenter;
 import mat.client.measure.ManageMeasureSearchView;
 import mat.client.measure.ManageMeasureShareView;
 import mat.client.measure.ManageMeasureVersionView;
+import mat.client.measure.TransferMeasureOwnershipView;
 import mat.client.myAccount.ChangePasswordPresenter;
 import mat.client.myAccount.ChangePasswordView;
 import mat.client.myAccount.MyAccountPresenter;
@@ -267,9 +268,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			title = ClientConstants.TITLE_VALUE_SET_CHANGE_OWNERSHIP;	
 			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));
 		
-			/*measureLibrary = buildMeasureLibraryWidget(); 
-			title = ClientConstants.TITLE_MEASURE_LIB;	
-			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));*/
+			measureLibrary = buildMeasureLibraryWidget(); 
+			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;	
+			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
 			
 			
 		}
@@ -497,6 +498,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
 		ManageMeasureVersionView versionView = new ManageMeasureVersionView();
 		ManageMeasureDraftView measureDraftView = new ManageMeasureDraftView();
+		TransferMeasureOwnershipView transferOS = new TransferMeasureOwnershipView();
 		ManageMeasureShareView measureShareView = new ManageMeasureShareView();
 		ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
 		ManageMeasureExportView measureExportView;
@@ -507,7 +509,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		}
 		ManageMeasurePresenter measurePresenter = 
 			new ManageMeasurePresenter(measureSearchView, measureDetailView, measureShareView, measureExportView,
-					historyView,versionView,measureDraftView);
+					historyView,versionView,measureDraftView,transferOS);
 		
 		return measurePresenter;
 		

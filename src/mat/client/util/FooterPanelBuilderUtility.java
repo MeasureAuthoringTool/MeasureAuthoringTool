@@ -24,7 +24,8 @@ import com.google.gwt.user.client.ui.Image;
 
 /**
  * @author cbajikar
- *
+ * This is a utility class for building the Footer.
+ * It uses direct HTML from the MAT Public Website footer.
  */
 public class FooterPanelBuilderUtility {
 	

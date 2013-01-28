@@ -644,4 +644,33 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		packagerDAO.deleteAllPackages(measureId);
 		
 	}
+	@Override
+	
+	public void transferMeasureOwnerShipToUser(List<String> list, String toEmail){
+		
+		User userTo = userDAO.findByEmail(toEmail);
+		
+		for(int i=0;i<list.size();i++){
+			Measure measure = measureDAO.find(list.get(i));
+			List<Measure> ms = new ArrayList <Measure>();
+			ms.add(measure);
+			//Get All Family Measures for each Measure
+			List<Measure> allMeasures = measureDAO.getAllMeasuresInSet(ms);
+			for(int j =0;j<allMeasures.size();j++){
+				String additionalInfo = "Measure Owner transferred from "+allMeasures.get(j).getOwner().getEmailAddress()+" to "+ toEmail;
+				allMeasures.get(j).setOwner(userTo);
+				measureDAO.saveMeasure(allMeasures.get(j));
+				measureAuditLogDAO.recordMeasureEvent(allMeasures.get(j), "Measure Ownership Changed", additionalInfo);
+				additionalInfo="";
+				
+			}
+			List<MeasureShare> measureShareInfo = measureDAO.getMeasureShareForMeasure(list.get(i));
+			for(int k =0;k<measureShareInfo.size();k++){
+				measureShareInfo.get(k).setOwner(userTo);
+				measureShareDAO.save(measureShareInfo.get(k));
+			}
+				
+		}
+		
+	}
 }

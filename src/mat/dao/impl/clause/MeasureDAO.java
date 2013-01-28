@@ -267,6 +267,10 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		return ((Long)criteria.uniqueResult()).intValue();
 	}
 
+	/**
+	 * This method returns a List of MeasureShareDTO objects which have userId,firstname,lastname
+	 * and sharelevel for the given measureId.
+	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForMeasure(
 			String measureId, int startIndex, int pageSize) {
@@ -307,15 +311,28 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		else
 			return orderedDTOList;
 	}
-		
+	
+	
+	@Override
+	public List<MeasureShare> getMeasureShareForMeasure(String measureId) {
+		List<MeasureShare> measureShare = new ArrayList<MeasureShare>();
+		if(measureId==null)
+			return null;
+		Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureShare.class);
+		shareCriteria.add(Restrictions.eq("measure.id", measureId));
+		measureShare = shareCriteria.list();
+		return measureShare;
+	}
+	
 	
 	private Criteria buildMeasureShareForUserCriteria(User user) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-		if(!user.getSecurityRole().getId().equals("2")) { 
+		if(user.getSecurityRole().getId().equals("3")) { 
 			mCriteria.add(Restrictions.or(Restrictions.eq("owner.id", user.getId()),
 					Restrictions.eq("share.shareUser.id", user.getId())));
 			mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
 		}
+		
 		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return mCriteria;
 	}
@@ -716,6 +733,8 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		}
 		return ms;
 	}
+	
+	
 
 	@Override
 	public boolean isMeasureLocked(String measureId) {

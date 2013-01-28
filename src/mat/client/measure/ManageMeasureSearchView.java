@@ -15,6 +15,7 @@ import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
+import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -42,31 +43,45 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	private Button createButton = new SecondaryButton("Create");
 	private ListBoxMVP options = new ListBoxMVP();
 	private Button bulkExportButton = new PrimaryButton("Export Selected");
+	private Button transferButton = new PrimaryButton("Transfer");
 	final FormPanel form = new FormPanel();
 	
 	private ErrorMessageDisplay errorMessagesForBulkExport = new ErrorMessageDisplay();
+	private ErrorMessageDisplay errorMessagesForTransferOS = new ErrorMessageDisplay();
+	String currentUserRole = MatContext.get().getLoggedInUserRole();
+	
 	
 	public ManageMeasureSearchView() {
 		mainPanel.setStyleName("contentPanel");
 		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
-		loadListBoxOptions();
-		mainPanel.add(new Label("Create:"));
-		mainPanel.add(options);
-		options.setName("Create:");
-		mainPanel.add(createButton);
-		createButton.setTitle("Create");
-		mainPanel.add(new SpacerWidget());
+		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
+			loadListBoxOptions();
+			mainPanel.add(new Label("Create:"));
+			mainPanel.add(options);
+			options.setName("Create:");
+			mainPanel.add(createButton);
+			createButton.setTitle("Create");
+			mainPanel.add(new SpacerWidget());
+			Widget searchText = LabelBuilder.buildLabel(searchInput, "Search for a Measure");
+			searchFocusHolder = new FocusableWidget(searchText);
+			mainPanel.add(searchFocusHolder);
+			mainPanel.add(buildSearchWidget());
+			mainPanel.add(new SpacerWidget());
+			mainPanel.add(view.asWidget());
+			mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
+			mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,errorMessagesForBulkExport));
+		}else{
+			mainPanel.add(new SpacerWidget());
+			Widget searchText = LabelBuilder.buildLabel(searchInput, "Search for a Measure");
+			searchFocusHolder = new FocusableWidget(searchText);
+			mainPanel.add(searchFocusHolder);
+			mainPanel.add(buildSearchWidget());
+			mainPanel.add(new SpacerWidget());
+			mainPanel.add(view.asWidget());
+			mainPanel.add(buildBottomButtonWidget((PrimaryButton) transferButton,errorMessagesForTransferOS));
+		}
 		
-		Widget searchText = LabelBuilder.buildLabel(searchInput, "Search for a Measure");
-		searchFocusHolder = new FocusableWidget(searchText);
-		mainPanel.add(searchFocusHolder);
-		mainPanel.add(buildSearchWidget());
-		mainPanel.add(new SpacerWidget());
-		
-		mainPanel.add(view.asWidget());
-		mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
-		mainPanel.add(buildBulkExportWidget());
 		MatContext.get().setManageMeasureSearchView(this);
 		
 	}
@@ -85,11 +100,11 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		return hp;
 	}
 	
-	private Widget buildBulkExportWidget(){
+	private Widget buildBottomButtonWidget(PrimaryButton button, ErrorMessageDisplay errorMessageDisplay){
 		FlowPanel flowPanel = new FlowPanel();
-		flowPanel.add(errorMessagesForBulkExport);
+		flowPanel.add(errorMessageDisplay);
 		flowPanel.setStyleName("rightAlignButton");
-		flowPanel.add(bulkExportButton);
+		flowPanel.add(button);
 		form.setWidget(flowPanel);
 		return form;
 	}
@@ -209,6 +224,26 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 				}
 			}
 		}
+	}
+
+
+	@Override
+	public HasClickHandlers getTransferButton() {
+		return transferButton;
+	}
+
+
+	/**
+	 * @param errorMessagesForTransferOS the errorMessagesForTransferOS to set
+	 */
+	public void setErrorMessagesForTransferOS(ErrorMessageDisplay errorMessagesForTransferOS) {
+		this.errorMessagesForTransferOS = errorMessagesForTransferOS;
+	}
+
+
+	@Override
+	public ErrorMessageDisplay getErrorMessagesForTransferOS() {
+		return errorMessagesForTransferOS;
 	}
 	
 }

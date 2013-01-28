@@ -2,9 +2,11 @@ package mat.client.measure.service;
 
 import java.util.List;
 
+import mat.client.codelist.TransferOwnerShipModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
+import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.model.Author;
 import mat.model.MeasureType;
 
@@ -28,4 +30,8 @@ public interface MeasureServiceAsync {
 	public void isMeasureLocked(String id, AsyncCallback<Boolean> isLocked);
 	public void getMaxEMeasureId(AsyncCallback<Integer> callback);
 	public void generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId, AsyncCallback<Integer> callback);
-}
+	void searchUsers(int startIndex, int pageSize,
+			AsyncCallback<TransferMeasureOwnerShipModel> callback);
+	void transferOwnerShipToUser(List<String> list, String toEmail,
+			AsyncCallback<Void> callback);
+	}

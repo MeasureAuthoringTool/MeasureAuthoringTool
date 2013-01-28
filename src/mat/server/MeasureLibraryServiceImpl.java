@@ -11,6 +11,7 @@ import java.util.UUID;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
+import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -40,6 +41,8 @@ import mat.shared.DateUtility;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+
 
 
 public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implements MeasureService{
@@ -768,6 +771,35 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return service.saveAndReturnMaxEMeasureId(meas);
 	}
 
+	@Override
+	public TransferMeasureOwnerShipModel searchUsers(int startIndex, int pageSize) {
+		UserService userService = getUserService();
+		List<User> searchResults = userService.searchNonAdminUsers("",startIndex, pageSize);
+		logger.info("User search returned " + searchResults.size());
+		
+		TransferMeasureOwnerShipModel result = new TransferMeasureOwnerShipModel();
+		List<TransferMeasureOwnerShipModel.Result> detailList = new ArrayList<TransferMeasureOwnerShipModel.Result>();  
+		for(User user : searchResults) {
+			TransferMeasureOwnerShipModel.Result r = new TransferMeasureOwnerShipModel.Result();
+			r.setFirstName(user.getFirstName());
+			r.setLastName(user.getLastName());
+			r.setEmailId(user.getEmailAddress());
+			r.setKey(user.getId());
+			detailList.add(r);
+		}
+		result.setData(detailList);
+		result.setStartIndex(startIndex);
+		result.setResultsTotal(getUserService().countSearchResultsNonAdmin(""));
+		
+		return result;
+		
+	}
+	
+	@Override
+	public void transferOwnerShipToUser(List<String> list, String toEmail){
+		MeasurePackageService service = getService();
+		service.transferMeasureOwnerShipToUser(list, toEmail);
+	}
 	
 	
 }

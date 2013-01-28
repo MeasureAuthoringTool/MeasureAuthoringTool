@@ -23,7 +23,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		private String shortName;
 		private boolean isMeasureLocked;
 		private LockedUserInfo lockedUserInfo;
-		
+		private boolean isTransferable;
 		/*US501*/
 		private String version;
 		private Timestamp finalizedDate;
@@ -156,6 +156,18 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		public void setMeasureSetId(String measureSetId) {
 			this.measureSetId = measureSetId;
 		}
+		/**
+		 * @param isTransferable the isTransferable to set
+		 */
+		public void setTransferable(boolean isTransferable) {
+			this.isTransferable = isTransferable;
+		}
+		/**
+		 * @return the isTransferable
+		 */
+		public boolean isTransferable() {
+			return isTransferable;
+		}
 		
 	}
 	
@@ -164,6 +176,8 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	private int resultsTotal;
 	private int pageCount;
 	private List<String> selectedExportIds;
+	private List<String> selectedTransferIds;
+	private List<Result> selectedTransferResults;
 	
 	public void setData(List<Result> data) {
 		this.data = data;
@@ -267,6 +281,34 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	 */
 	public void setSelectedExportIds(List<String> selectedExportIds) {
 		this.selectedExportIds = selectedExportIds;
+	}
+
+	/**
+	 * @param selectedTranferIds the selectedTranferIds to set
+	 */
+	public void setSelectedTransferIds(List<String> selectedTranferIds) {
+		this.selectedTransferIds = selectedTranferIds;
+	}
+
+	/**
+	 * @return the selectedTranferIds
+	 */
+	public List<String> getSelectedTransferIds() {
+		return selectedTransferIds;
+	}
+
+	/**
+	 * @param selectedTransferResults the selectedTransferResults to set
+	 */
+	public void setSelectedTransferResults(List<Result> selectedTransferResults) {
+		this.selectedTransferResults = selectedTransferResults;
+	}
+
+	/**
+	 * @return the selectedTransferResults
+	 */
+	public List<Result> getSelectedTransferResults() {
+		return selectedTransferResults;
 	}
 
 

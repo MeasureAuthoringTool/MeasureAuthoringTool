@@ -2,13 +2,17 @@ package mat.client.measure;
 
 import mat.client.ImageResources;
 import mat.client.shared.HorizontalFlowPanel;
+import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
+import mat.client.util.ClientConstants;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.Widget;
 
 /**
  * 
@@ -40,6 +44,7 @@ public class MeasureSearchView extends SearchView<ManageMeasureSearchModel.Resul
 				if(!currentMid.equalsIgnoreCase(previousMid)){
 					odd = !odd;
 					addImage = true;
+					result.setTransferable(true);
 				}else{
 					addImage = false;
 				}
@@ -47,20 +52,29 @@ public class MeasureSearchView extends SearchView<ManageMeasureSearchModel.Resul
 				odd = false;
 				addImage = true;
 			}
-			
+			if(addImage){
+				((ManageMeasureSearchModel.Result)results.get(i)).setTransferable(true);
+			}
+				
 			for(int j = 0; j < numColumns; j++) {
 				if(results.isColumnFiresSelection(j)) {
 					String innerText = results.getValue(i, j).getElement().getInnerText();
 					innerText = addSpaces(innerText, 27);
-					
-			    	Anchor a = new Anchor(innerText);
+					Widget a = null;
 					final int rowIndex = i;
-					addClickHandler(a, results, rowIndex);
+					String currentUserRole = MatContext.get().getLoggedInUserRole();
+					if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
+						Anchor anchor = new Anchor(innerText);
+						addClickHandler(anchor, results, rowIndex);
+						a = anchor;
+					}else{
+						Label label = new Label(innerText);
+						a= label;
+					}
 					
 					Panel holder = new HorizontalFlowPanel();
 					SimplePanel innerPanel = new SimplePanel();
 					if(addImage){
-						
 						innerPanel.setStylePrimaryName("pad-right5px");
 						Image image = createImage(rowIndex, results, innerText);
 						innerPanel.add(image);

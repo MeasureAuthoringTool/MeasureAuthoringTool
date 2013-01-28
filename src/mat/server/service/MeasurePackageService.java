@@ -49,4 +49,5 @@ public interface MeasurePackageService {
 	public boolean isMeasureLocked(String id);
 	public int getMaxEMeasureId();
 	public int saveAndReturnMaxEMeasureId(Measure measure);
+	void transferMeasureOwnerShipToUser(List<String> list, String toEmail);
 }

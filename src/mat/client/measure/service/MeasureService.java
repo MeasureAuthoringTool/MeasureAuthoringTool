@@ -2,13 +2,16 @@ package mat.client.measure.service;
 
 import java.util.List;
 
+import mat.client.codelist.TransferOwnerShipModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
+import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
 import mat.model.Author;
 import mat.model.MeasureType;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -32,6 +35,8 @@ public interface MeasureService extends RemoteService {
 	public boolean isMeasureLocked(String id);
 	public int getMaxEMeasureId();
 	public int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
+	public TransferMeasureOwnerShipModel searchUsers(int startIndex, int pageSize);
+	void transferOwnerShipToUser(List<String> list, String toEmail);
 	
 	
 }

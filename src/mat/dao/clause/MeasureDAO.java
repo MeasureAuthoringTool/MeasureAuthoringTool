@@ -7,6 +7,7 @@ import mat.dao.IDAO;
 import mat.dao.MetadataDAO;
 import mat.model.User;
 import mat.model.clause.Measure;
+import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 
 import org.springframework.context.ApplicationContext;
@@ -33,4 +34,5 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	public int getMaxEMeasureId();
 	public int saveandReturnMaxEMeasureId(Measure measure);
 	public List<Measure> getAllMeasuresInSet(List<Measure> ms);
+	List<MeasureShare> getMeasureShareForMeasure(String measureId);
 }

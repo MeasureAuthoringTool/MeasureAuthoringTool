@@ -570,6 +570,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 						}
 						currentMeasureDetail.setAuthorList(result.getAuthorList());
 						currentMeasureDetail.setMeasureTypeList(result.getMeasureTypeList());
+						setDbAuthorList(result.getAuthorList());
+						setDbMeasureTypeList(result.getMeasureTypeList());					
 						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
 					}
 					else{

@@ -7,4 +7,5 @@ public interface ErrorMessageDisplayInterface {
 	public void setMessages(List<String> messages);
 	public void setMessage(String message);
 	public void setFocus();
+	public void setMessageWithButtons(String message, List<String> buttonNames);
 }

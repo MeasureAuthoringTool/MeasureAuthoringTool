@@ -6,6 +6,7 @@ import mat.client.codelist.HasListBox;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.measure.metadata.MetaDataPresenter.AddEditAuthorsDisplay;
 import mat.client.measure.metadata.MetaDataPresenter.AddEditMeasureTypeDisplay;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -80,6 +81,7 @@ public class BaseMetaDataPresenter {
 		public void setObjectStatusOptions(List<? extends HasListBox> texts);
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		public ErrorMessageDisplay  getSaveErrorMsg();
 	}
 	
 	protected static interface BaseAddEditDisplay<T>{

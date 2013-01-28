@@ -1,5 +1,6 @@
 package mat.client.shared;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.ImageResources;
@@ -18,6 +19,7 @@ public class ErrorMessageDisplay extends Composite implements ErrorMessageDispla
 	
 	private FlowPanel imagePanel;
 	private FlowPanel msgPanel;
+	private List<SecondaryButton> buttons = new ArrayList<SecondaryButton>();
 	
 	
 	public ErrorMessageDisplay() {
@@ -34,6 +36,12 @@ public class ErrorMessageDisplay extends Composite implements ErrorMessageDispla
 		msgPanel.clear();
 		hPanel.remove(imagePanel);
 		hPanel.remove(msgPanel);
+		if(!buttons.isEmpty()){
+			for (SecondaryButton button : buttons) {
+				hPanel.remove(button);
+			}
+			buttons.clear();
+		}
 		//Turn off images
 		
 	}
@@ -78,4 +86,38 @@ public class ErrorMessageDisplay extends Composite implements ErrorMessageDispla
 			//do nothing.
 		}
 	}
+
+	@Override
+	public void setMessageWithButtons(String message, List<String> buttonNames) {
+		hPanel.addStyleName("alertMessage");
+		msgPanel.clear();
+		hPanel.add(imagePanel);
+		hPanel.add(msgPanel);
+		for (String btnName : buttonNames) {
+			SecondaryButton button1 = new SecondaryButton(btnName);
+			buttons.add(button1);
+			hPanel.add(button1);
+		}
+		msgPanel.add(wrap(message));
+		msgPanel.add(new SpacerWidget());
+		setFocus();
+		
+	}
+
+
+	/**
+	 * @return the buttons
+	 */
+	public List<SecondaryButton> getButtons() {
+		return buttons;
+	}
+
+	/**
+	 * @param buttons the buttons to set
+	 */
+	public void setButtons(List<SecondaryButton> buttons) {
+		this.buttons = buttons;
+	}
+	
+	
 }

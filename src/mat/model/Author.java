@@ -26,6 +26,9 @@ public class Author implements IsSerializable{
 		this.authorName = authorName.trim();
 	}
 	
+	public int compare(Author o1, Author o2) {
+		return o1.getAuthorName().compareTo(o2.getAuthorName());
+	}
 	
 
 }

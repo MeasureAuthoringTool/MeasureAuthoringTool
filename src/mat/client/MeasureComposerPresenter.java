@@ -48,7 +48,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
 		measureComposerTabLayout = new MatTabLayoutPanel(true);
 		measureComposerTabLayout.setId("measureComposerTabLayout");
-		measureComposerTabLayout.addPresenter(buildMeasureMetaDataPresenter(),"Measure Details");		
+		measureComposerTabLayout.addPresenter(metaDataPresenter,"Measure Details");	
 		measureComposerTabLayout.addPresenter(clauseWorkspace,"Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 	
@@ -248,6 +248,35 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	public void setEnabled(boolean enabled) {
 		buttonBar.setEnabled(enabled);
 		measureComposerTabLayout.setEnabled(enabled);
+	}
+
+	/**
+	 * @return the metaDataPresenter
+	 */
+	public MetaDataPresenter getMetaDataPresenter() {
+		return metaDataPresenter;
+	}
+
+	/**
+	 * @param metaDataPresenter the metaDataPresenter to set
+	 */
+	public void setMetaDataPresenter(MetaDataPresenter metaDataPresenter) {
+		this.metaDataPresenter = metaDataPresenter;
+	}
+
+	/**
+	 * @return the measureComposerTabLayout
+	 */
+	public MatTabLayoutPanel getMeasureComposerTabLayout() {
+		return measureComposerTabLayout;
+	}
+
+	/**
+	 * @param measureComposerTabLayout the measureComposerTabLayout to set
+	 */
+	public void setMeasureComposerTabLayout(
+			MatTabLayoutPanel measureComposerTabLayout) {
+		this.measureComposerTabLayout = measureComposerTabLayout;
 	}
 	
 }

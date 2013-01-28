@@ -29,4 +29,9 @@ public class MeasureType implements IsSerializable{
 	public void setDescription(String description) {
 		this.description = description.trim();
 	}
+	
+	public int compare(MeasureType o1, MeasureType o2) {
+		return o1.getDescription().compareTo(o2.getDescription());
+	}
+
 }

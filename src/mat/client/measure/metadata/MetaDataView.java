@@ -20,10 +20,16 @@ import mat.client.shared.TextAreaWithMaxLength;
 import mat.model.Author;
 import mat.model.MeasureType;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -121,6 +127,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	private final FlexTable referenceTable = new FlexTable();
 	
+	private ErrorMessageDisplay saveErrorDisplay = new ErrorMessageDisplay();
+	
 	
 	public MetaDataView(){
 		//referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
@@ -130,7 +138,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		mainPanel.addStyleName("leftAligned");
 		
 		mainContent.add(buildLeftSideForm());
-		
+		mainPanel.add(saveErrorDisplay);
 		mainPanel.add(mainContent);
 		mainPanel.setStyleName("contentPanel");
 		DOM.setElementAttribute(mainPanel.getElement(), "id", "MetaDataView.containerPanel");
@@ -142,12 +150,43 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	
 	private Widget buildLeftSideForm(){
+		ChangeHandler changeHandler = new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				clearErrorMsg();
+				
+			}
+		};
+		KeyDownHandler keyDownHandler = new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				clearErrorMsg();
+				
+			}
+		};
+		
+		ClickHandler clickHandler = new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				clearErrorMsg();
+				
+			}
+		};
+		
 		authorListBox.setVisibleItemCount(5);
+		authorListBox.addChangeHandler(changeHandler);		
+		
 		measureTypeListBox.setVisibleItemCount(5);
+		measureTypeListBox.addChangeHandler(changeHandler);
+		
 		FlowPanel fPanel = new FlowPanel();
 		
 		fPanel.setStyleName("leftSideForm");
 
+		  
+		
 		fPanel.add(new Label("All fields are required except where noted as optional."));
 		fPanel.add(new SpacerWidget());
 
@@ -156,7 +195,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
         fPanel.add(LabelBuilder.buildLabel(nameInput, "eMeasure Title"));
 		fPanel.add(nameInput);
 		fPanel.add(new SpacerWidget());
-				
+		
 		fPanel.add(LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title"));
 		fPanel.add(abbrInput);
 		fPanel.add(new SpacerWidget());
@@ -170,6 +209,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				
 		fPanel.add(eMeasureIdentifierInput);
 		fPanel.add(generateeMeasureIDButton);
+		generateeMeasureIDButton.addClickHandler(clickHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(finalizedDate, "Finalized Date"));
@@ -186,10 +226,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		fPanel.add(LabelBuilder.buildLabel(objectStatusInput, "Measure Status"));
 		fPanel.add(objectStatusInput);
+		objectStatusInput.addChangeHandler(changeHandler);
 		fPanel.add(new SpacerWidget());
-		
+				
 		fPanel.add(LabelBuilder.buildLabel(NQFIDInput, "NQF Number"));
 		fPanel.add(NQFIDInput);
+		NQFIDInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		HorizontalPanel measurePeriodPanel = new HorizontalPanel();
@@ -197,7 +239,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	    measurePeriodPanel.add(measurePeriodFromInput);
 	    measurePeriodPanel.add(new Label("To"));
 	    measurePeriodPanel.add(measurePeriodToInput);
-		
+	    measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
+	    measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);
+	    measurePeriodFromInput.getCalendar().addClickHandler(clickHandler);
+	    measurePeriodToInput.getCalendar().addClickHandler(clickHandler);
 		fPanel.add(LabelBuilder.buildLabel(measurePeriodFromInput, "Measurement Period"));
 		fPanel.add(measurePeriodPanel);
 		fPanel.add(new SpacerWidget());
@@ -208,6 +253,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		verStewardPanel.add(measureStewardInput);
 		verStewardPanel.add(new SpacerWidget());
 		verStewardPanel.add(emptyTextBoxHolder);
+		measureStewardInput.addChangeHandler(changeHandler);
 		fPanel.add(verStewardPanel);
 		fPanel.add(new SpacerWidget());
 		
@@ -223,15 +269,18 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		fPanel.add(LabelBuilder.buildLabel(descriptionInput, "Description"));
 		fPanel.add(descriptionInput);
+		descriptionInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(copyrightInput, "Copyright"));
 		fPanel.add(copyrightInput);
+		copyrightInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		//Disclaimer
 		fPanel.add(LabelBuilder.buildLabel(disclaimerInput, "Disclaimer"));
 		fPanel.add(disclaimerInput);
+		disclaimerInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		//US 421. Measure Scoring choice is now part of Measure creation process. So just display here. 
@@ -246,33 +295,40 @@ public class MetaDataView implements MetaDataDetailDisplay{
 
 		fPanel.add(LabelBuilder.buildLabel(stratificationInput , "Stratification"));
 		fPanel.add(stratificationInput );
+		stratificationInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(riskAdjustmentInput, "Risk Adjustment"));
 		fPanel.add(riskAdjustmentInput);
+		riskAdjustmentInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		 
 		//Rate Aggregation riskAggregationInput
 		fPanel.add(LabelBuilder.buildLabel(rateAggregationInput, "Rate Aggregation"));
 		fPanel.add(rateAggregationInput);
+		rateAggregationInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		
 		fPanel.add(LabelBuilder.buildLabel(rationaleInput, "Rationale"));
 		fPanel.add(rationaleInput);
+		rationaleInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(clinicalStmtInput, "Clinical Recommendation Statement"));
 		fPanel.add(clinicalStmtInput);
+		clinicalStmtInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(improvementNotationInput, "Improvement Notation"));
 		fPanel.add(improvementNotationInput);
+		improvementNotationInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		referenceInput.setSize("500px", "100px");
 	    referenceInput.setMaxLength(2000);
-	    buildReferenceTable(referenceInput);
+	    referenceInput.addKeyDownHandler(keyDownHandler);
+	    buildReferenceTable(referenceInput);	   
 	    referencePlaceHolder.add(referenceTable);
 	    fPanel.add(LabelBuilder.buildLabel(referencePlaceHolder, "Reference(s)"));
 		fPanel.add(referencePlaceHolder);
@@ -280,54 +336,67 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		fPanel.add(LabelBuilder.buildLabel(definitionsInput, "Definition"));
 		fPanel.add(definitionsInput);
+		definitionsInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 	
 		fPanel.add(LabelBuilder.buildLabel(guidanceInput, "Guidance"));
 		fPanel.add(guidanceInput);
+		guidanceInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(transmissionFormatInput, "Transmission Format"));
 		fPanel.add(transmissionFormatInput);
+		transmissionFormatInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		
 		fPanel.add(LabelBuilder.buildLabel(initialPatientPopInput, "Initial Patient Population"));
 		fPanel.add(initialPatientPopInput);
+		initialPatientPopInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(denominatorInput, "Denominator"));
 		fPanel.add(denominatorInput);
+		denominatorInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(denominatorExclusionsInput, "Denominator Exclusions"));
 		fPanel.add(denominatorExclusionsInput);
+		denominatorExclusionsInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(numeratorInput, "Numerator"));
 		fPanel.add(numeratorInput);
+		numeratorInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(numeratorExclusionsInput, "Numerator Exclusions"));
 		fPanel.add(numeratorExclusionsInput);
+		numeratorExclusionsInput.addKeyDownHandler(keyDownHandler);
 		
 		fPanel.add(LabelBuilder.buildLabel(denominatorExceptionsInput, "Denominator Exceptions"));
 		fPanel.add(denominatorExceptionsInput);
+		denominatorExceptionsInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(measurePopulationInput, "Measure Population"));
 		fPanel.add(measurePopulationInput);
+		measurePopulationInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(measureObservationsInput, "Measure Observations"));
 		fPanel.add(measureObservationsInput);
+		measureObservationsInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(supplementalDataInput, "Supplemental Data Elements"));
 		fPanel.add(supplementalDataInput);
+		supplementalDataInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(setNameInput, "Measure Set"));
 		fPanel.add(setNameInput);
+		setNameInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		
@@ -335,11 +404,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			@Override
 			public void onClick(ClickEvent event) {
 				addRow(referenceTable);
-				
+				clearErrorMsg();
 			}
 	       });
 	   
-	       
+	    
 	 	fPanel.add(errorMessages);
 		fPanel.add(successMessages);
 		saveButton.setTitle("Save     Ctrl+Alt+s");
@@ -410,7 +479,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	private Widget wrapRadioButton(RadioButton w) {
 		SimplePanel p = new SimplePanel();
-		p.add(w);
+		p.add(w);	
+		w.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				clearErrorMsg();
+			}
+		});
 		return p;
 	}
 	
@@ -708,6 +784,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		DOM.setElementAttribute(newReferenceBox.getElement(), "id", "Reference");
 		newReferenceBox.setSize("500px", "100px");
 		newReferenceBox.setMaxLength(2000);
+		newReferenceBox.addKeyDownHandler(new KeyDownHandler() {
+			
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				clearErrorMsg();
+				
+			}
+		});
 		return newReferenceBox;   
 	}
 	
@@ -726,6 +810,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				clearErrorMsg();
 				Cell cell = referenceTable.getCellForEvent(event); 
                 int clickedRowIndex = cell.getRowIndex();
 				removeRow(referenceTable,clickedRowIndex);
@@ -782,7 +867,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 									Cell cell = referenceTable.getCellForEvent(event); 
 					                int clickedRowIndex = cell.getRowIndex();
 									removeRow(referenceTable,clickedRowIndex);
-									
 								}
 							   });
 						referenceTable.setWidget(i, 1, newremoveButton);
@@ -807,7 +891,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	    referenceTable.setWidget(0, 0,referenceInput);
 	    referenceArrayList.add(referenceInput);
 	    referenceTable.setWidget(0, 1, new SimplePanel());
-	    referenceTable.setWidget(0, 2, AddRowButton);
+	    referenceTable.setWidget(0, 2, AddRowButton);	    
    }
 	
    
@@ -958,4 +1042,23 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		saveButton.setEnabled(b);
 		
 	}
+
+
+	@Override
+	public ErrorMessageDisplay getSaveErrorMsg() {
+		// TODO Auto-generated method stub
+		return saveErrorDisplay;
+	}
+
+
+	
+	@Override
+	public Button getSaveBtn() {
+		return saveButton;
+	}
+	
+	private void clearErrorMsg(){
+			getSaveErrorMsg().clear();
+	}
+	
 }

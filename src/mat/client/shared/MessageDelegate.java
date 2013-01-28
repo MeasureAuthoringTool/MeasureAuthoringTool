@@ -874,4 +874,13 @@ public class MessageDelegate {
 	public String getTransferOwnershipSuccess(){
 		return TRANSFER_OWNERSHIP_SUCCESS;
 	}
+	
+	private final String SAVE_ERROR_MSG = "You have unsaved changes that will be discarded if you continue. " +
+	"Do you want to continue and lose any unsaved changes?";
+	/**
+	 * @return the sAVE_ERROR_MSG
+	 */
+	public String getSaveErrorMsg() {
+		return SAVE_ERROR_MSG;
+	}
 }

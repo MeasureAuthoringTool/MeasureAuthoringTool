@@ -313,4 +313,19 @@ public class DateBoxWithCalendar extends Composite{
 		return dateBox.addKeyDownHandler(handler);
 	}
 
+	/**
+	 * @return the dateBox
+	 */
+	public TextBox getDateBox() {
+		return dateBox;
+	}
+
+	/**
+	 * @return the calendar
+	 */
+	public FocusableImageButton getCalendar() {
+		return calendar;
+	}
+
+
 }

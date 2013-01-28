@@ -492,10 +492,15 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
       selectedTab = null;
       return true;
     }
-
-    selectedTab = panel.getWidget(index + 1);
-    setSelectionStyle(selectedTab, true);
-    SelectionEvent.fire(this, index);
+    if(!MatContext.get().isErrorTab()){// if there is any error to be thrown, do not fire Event.
+    	selectedTab = panel.getWidget(index + 1);
+    	setSelectionStyle(selectedTab, true);
+    	SelectionEvent.fire(this, index);
+    }else{
+    	selectedTab = panel.getWidget(MatContext.get().getErrorTabIndex() + 1);
+    	setSelectionStyle(selectedTab, true);
+    	MatContext.get().setErrorTab(false);
+    }
     return true;
   }
 

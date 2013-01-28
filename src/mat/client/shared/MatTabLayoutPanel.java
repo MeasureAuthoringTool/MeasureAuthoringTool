@@ -1,17 +1,25 @@
 package mat.client.shared;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mat.client.Enableable;
 import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
+import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.metadata.MetaDataPresenter;
 import mat.client.shared.ui.MATTabPanel;
 import mat.shared.DynamicTabBarFormatter;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHandler<Integer>, Enableable {
@@ -19,6 +27,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	private int selectedIndex = 0;
 	public DynamicTabBarFormatter fmt = new DynamicTabBarFormatter();
 	private boolean updateHeaderTitle = false;
+	boolean isError = false;
+	private int currentSelection;
+	private ErrorMessageDisplay saveErrorMessage;
+	private Button saveButton;
 	
 	/**
 	 * NOTE: do not use this constructor
@@ -73,16 +85,25 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	}
 	@Override
 	public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
-		if(!getSelectedIndex().equals(event.getItem())) {
-			updateHeaderSelection(event.getItem());
-			//Mat.showLoadingMessage();
-			notifyCurrentTabOfClosing();
-			setSelectedIndex(event.getItem());
-			MatPresenter presenter = presenterMap.get(selectedIndex);
-			if(presenter != null) {
-				MatContext.get().setAriaHidden(presenter.getWidget(),  "false");
-				presenter.beforeDisplay();
+		currentSelection =  event.getItem();
+		if(!getSelectedIndex().equals(currentSelection)) {
+			if(!isSaveMeasureDetails(getSelectedIndex(), currentSelection)){
+				updateOnBeforeSelection();
+			}else{
+				setSelectedIndex(getSelectedIndex());
 			}
+			
+		}
+	}
+
+	private void updateOnBeforeSelection() {
+		updateHeaderSelection(currentSelection);	
+		notifyCurrentTabOfClosing();
+		setSelectedIndex(currentSelection);
+		MatPresenter presenter = presenterMap.get(selectedIndex);
+		if(presenter != null) {
+			MatContext.get().setAriaHidden(presenter.getWidget(),  "false");
+			presenter.beforeDisplay();
 		}
 	}
 	
@@ -169,5 +190,126 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			getTabBar().setTabHTML(index, fmt.getSelectedTitle(index));
 		}
 	}
+	
+	
+	/**
+	 * On Tab Change, before the tab change happens, this method will be checked to see, 
+	 * if the selected tab is  "Measure Composer" Tab and sub Tab is "Measure Details" Tab
+	 * 	
+	 * @param selectedIndex
+	 * @param currentIndex
+	 * @return
+	 */
+	private boolean isSaveMeasureDetails(int selectedIndex, int currentIndex){
+		MatContext.get().setErrorTabIndex(-1);		
+		MatPresenter previousPresenter = presenterMap.get(selectedIndex);
+		if(selectedIndex == 2 && previousPresenter instanceof MeasureComposerPresenter){				
+			MeasureComposerPresenter composerPresenter = (MeasureComposerPresenter)previousPresenter;
+			if(composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 0){
+				MetaDataPresenter metaDataPresenter = composerPresenter.getMetaDataPresenter();
+				processMeasureDetails(selectedIndex, metaDataPresenter);
+			}
+		}else if(selectedIndex == 0 && previousPresenter instanceof MetaDataPresenter){
+			MetaDataPresenter metaDataPresenter = (MetaDataPresenter)previousPresenter;
+			processMeasureDetails(selectedIndex, metaDataPresenter);
+		}
+		return isError;
+	}
+
+	/**
+	 * checks if the Measure Details Page data and the Measure Details DB data are the same.
+	 * If Not Same shows Error Message with Buttons
+	 * @param selectedIndex
+	 * @param metaDataPresenter
+	 */
+	private void processMeasureDetails(int selectedIndex,
+			MetaDataPresenter metaDataPresenter) {		
+		if(MatContext.get().getCurrentMeasureId() != null && !MatContext.get().getCurrentMeasureId().equals("") 
+				&&!isMeasureDetailsSame(metaDataPresenter)){
+			saveErrorMessage = metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg();
+			saveErrorMessage.clear();
+			saveButton = metaDataPresenter.getMetaDataDisplay().getSaveBtn();
+			showErrorMessage(metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg());
+			metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons().get(0).setFocus(true);
+			callClickEventsOnMsg(selectedIndex, metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons());
+		}else{
+			isError = false;
+		}
+	}
+
+	
+	/**
+	 * On Click Events.
+	 * @param selIndex
+	 * @param btns
+	 */
+	private void callClickEventsOnMsg(int selIndex, List<SecondaryButton> btns) {
+		isError = true;
+			ClickHandler clickHandler = new ClickHandler() {
+				@Override
+				public void onClick(ClickEvent event) {
+					isError = false;
+					SecondaryButton button = (SecondaryButton)event.getSource();
+					if("Yes".equals(button.getText())){// navigate to the tab select
+						saveErrorMessage.clear();
+						updateOnBeforeSelection();
+						selectTab(selectedIndex);
+					}else if("No".equals(button.getText())){// do not navigate, set focus to the Save button on the Page
+						saveErrorMessage.clear();
+						saveButton.setFocus(true);
+					}
+				}
+			};
+			for (SecondaryButton secondaryButton : btns) {
+				secondaryButton.addClickHandler(clickHandler);
+			}
+			
+			if(isError){
+				MatContext.get().setErrorTabIndex(selIndex);
+				MatContext.get().setErrorTab(true);
+			}
+	}
+	
+	 
+	private void showErrorMessage(ErrorMessageDisplay errorMessageDisplay){
+		String msg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
+		List<String> btn = new ArrayList<String>();
+		btn.add("Yes");
+		btn.add("No");
+		errorMessageDisplay.setMessageWithButtons(msg, btn);
+	}
+	
+	
+	/**
+	 * Checked to see if the Measure Details page Data and the DB data are the same.
+	 * @param metaDataPresenter
+	 * @return
+	 */
+	private boolean isMeasureDetailsSame(MetaDataPresenter metaDataPresenter){
+		ManageMeasureDetailModel pageData = new ManageMeasureDetailModel();
+		metaDataPresenter.updateModelDetailsFromView(pageData, metaDataPresenter.getMetaDataDisplay());
+		ManageMeasureDetailModel dbData = metaDataPresenter.getCurrentMeasureDetail();
+		pageData.setToCompareAuthor(pageData.getAuthorList());
+		pageData.setToCompareMeasure(pageData.getMeasureTypeList());
+		dbData.setToCompareAuthor(metaDataPresenter.getDbAuthorList());
+		dbData.setToCompareMeasure(metaDataPresenter.getDbMeasureTypeList());
+		return pageData.equals(dbData);
+	}
+
+	
+	/**
+	 * @return the saveErrorMessage
+	 */
+	public ErrorMessageDisplay getSaveErrorMessage() {
+		return saveErrorMessage;
+	}
+
+	/**
+	 * @param saveErrorMessage the saveErrorMessage to set
+	 */
+	public void setSaveErrorMessage(ErrorMessageDisplay saveErrorMessage) {
+		this.saveErrorMessage = saveErrorMessage;
+	}
+	
 	
 }

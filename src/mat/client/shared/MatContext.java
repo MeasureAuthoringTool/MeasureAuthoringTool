@@ -16,7 +16,6 @@ import mat.client.clause.QDSCodeListSearchView;
 import mat.client.clause.view.DiagramViewImpl;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.ListBoxCodeProvider;
-import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageCodeListSearchView;
 import mat.client.codelist.service.CodeListService;
 import mat.client.codelist.service.CodeListServiceAsync;
@@ -121,6 +120,11 @@ public class MatContext implements IsSerializable {
 	
 	
 	private SynchronizationDelegate synchronizationDelegate = new SynchronizationDelegate();
+	
+	private int errorTabIndex;
+	
+	private boolean isErrorTab;
+	
 	
 	public void clearDVIMessages(){
 		if(dviWindow != null){
@@ -722,6 +726,41 @@ public class MatContext implements IsSerializable {
 	public void setManageMeasureSearchModel(
 			ManageMeasureSearchModel manageMeasureSearchModel) {
 		this.manageMeasureSearchModel = manageMeasureSearchModel;
+	}
+
+
+
+
+
+	/**
+	 * @return the isErrorTab
+	 */
+	public boolean isErrorTab() {
+		return isErrorTab;
+	}
+
+
+	/**
+	 * @param isErrorTab the isErrorTab to set
+	 */
+	public void setErrorTab(boolean isErrorTab) {
+		this.isErrorTab = isErrorTab;
+	}
+
+
+	/**
+	 * @return the errorTabIndex
+	 */
+	public int getErrorTabIndex() {
+		return errorTabIndex;
+	}
+
+
+	/**
+	 * @param errorTabIndex the errorTabIndex to set
+	 */
+	public void setErrorTabIndex(int errorTabIndex) {
+		this.errorTabIndex = errorTabIndex;
 	}
 
 

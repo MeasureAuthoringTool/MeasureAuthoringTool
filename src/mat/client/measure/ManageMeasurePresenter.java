@@ -307,11 +307,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.clearBulkExportCheckBoxes(searchDisplay.getMeasureDataTable());
 				displayTransferView(startIndex,transferDisplay.getPageSize());
-				for(int i=0;i<manageMeasureSearchModel.getSelectedTransferIds().size();i++){
-					System.out.println("getSelectedTransferIds ======" + manageMeasureSearchModel.getSelectedTransferIds().get(i));
-					System.out.println("getSelectedTransferResults ======" + manageMeasureSearchModel.getSelectedTransferResults().get(i));
-				}
-				
 			}
 		});
 		searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
@@ -781,7 +776,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 			});
 		}else{
-			searchDisplay.getErrorMessagesForTransferOS().setMessage(MatContext.get().getMessageDelegate().getTransferCheckBoxError());
+			searchDisplay.getErrorMessagesForTransferOS().setMessage(MatContext.get().getMessageDelegate().getTransferCheckBoxErrorMeasure());
 		}
 		
 	}
@@ -1231,6 +1226,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 						@Override
 						public void onTransferSelectedClicked(Result result) {
+							searchDisplay.getErrorMessageDisplay().clear();
+							searchDisplay.getErrorMessagesForTransferOS().clear();
 							updateTransferID(result);
 						}
 						

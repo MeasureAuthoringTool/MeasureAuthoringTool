@@ -19,7 +19,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeasureSearchModel.Result> {
 	
-	private static String[] headers = new String[] { "Measure Name", "Version", "Finalized Date", "Status", "History" ,"TransferClear"};
+	private static String[] headers = new String[] { "Measure Name", "Version", "Finalized Date", "Status", "History" ,"TransferMeasureClear"};
 	private static String[] widths = new String[] { "35%", "16%", "16%", "8%", "5%","5%","10%" };
 
 	public static interface Observer {

@@ -870,6 +870,11 @@ public class MessageDelegate {
 		return TRANSFER_CHECKBOX_ERROR;
 	}
 	
+	private final String TRANSFER_CHECKBOX_ERROR_MEASURE = "Please select at least one Measure to transfer ownership.";
+	public String getTransferCheckBoxErrorMeasure(){
+		return TRANSFER_CHECKBOX_ERROR_MEASURE;
+	}
+	
 	private final String TRANSFER_OWNERSHIP_SUCCESS = "Ownership successfully transferred to ";
 	public String getTransferOwnershipSuccess(){
 		return TRANSFER_OWNERSHIP_SUCCESS;

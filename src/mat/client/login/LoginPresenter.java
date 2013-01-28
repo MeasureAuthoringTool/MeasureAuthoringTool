@@ -114,14 +114,13 @@ public class LoginPresenter {
 	private void submit() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
-		MatContext.get().isValidUser("sakaruna8221","Je_sus123", contextcallback);
-		/*if(display.getUserid().getValue().isEmpty()) {
+		if(display.getUserid().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 		}else if(display.getPassword().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
 		}else{
 			MatContext.get().isValidUser(display.getUserid().getValue(),display.getPassword().getValue(), contextcallback);
-		}*/
+		}
 	}
 
 	public void go(HasWidgets container) {

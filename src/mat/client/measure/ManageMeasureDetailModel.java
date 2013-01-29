@@ -706,7 +706,9 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	
 	private String trimToNull(String value){
 		if(null != value){
+			value = value.replaceAll("[\r\n]", "");
 			value = value.equals("") ? null : value.trim();
+			
 		}
 		return value;
 	}

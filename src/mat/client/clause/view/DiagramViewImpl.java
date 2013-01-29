@@ -576,7 +576,7 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 		// even consider showing the saved message whether dirty or not
 		MatContext.get().clearDVIMessages();
 		//Auto Save Commented for Canvas Sub Tabs
-		//appController.saveMainPhrases();
+		appController.saveMainPhrases();
 		Command waitForSave = new Command(){
 			@Override
 			public void execute() {
@@ -3219,7 +3219,8 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 	private void doPhraseChangeHandlerBehavior(ListBox listBox){
 		/* performing save op because there may have been changes in the property editor
 		   prior to making a selection in the measure phrase library */
-		doSave(false);
+		//Auto Save Commented
+		//doSave(false);
 		
 		MatContext.get().clearDVIMessages();
 		String itemValue = listBox.getValue(listBox.getSelectedIndex());

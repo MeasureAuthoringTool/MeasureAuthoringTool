@@ -163,6 +163,11 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 	@UiField HorizontalPanel buttonHolder;
 	@UiField VerticalPanel saveHolder;
 	@UiField SimplePanel messageHolder;
+	public @UiField HorizontalPanel saveErrorMessageHolder;
+
+	public HorizontalPanel getSaveErrorMessageHolder() {
+		return saveErrorMessageHolder;
+	}
 
 	@UiField VerticalPanel libraryVerticalPanel;
 	MatTabLayoutPanel libraryTabPanel;
@@ -235,7 +240,11 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 	@UiField Button attributeEditorCancelButton2;
 
 
-	Button saveButton = new Button("Save");
+	public Button saveButton = new Button("Save");
+	public Button getSaveButton() {
+		return saveButton;
+	}
+
 	@UiField VerticalPanel userDefinedPastedCriterionPanel;
 	@UiField Label userDefinedPastedCriterionCaption;
 	@UiField TextBox userDefinedPastedCriterionTextBox;

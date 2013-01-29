@@ -26,6 +26,7 @@ import mat.client.diagramObject.SimpleStatement;
 import mat.client.diagramObject.SimpleStatementBuilder;
 import mat.client.diagramObject.SimpleStatementToCentralPojoFactory;
 import mat.client.diagramObject.clickHandler.PlaceholderClickHandler;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.model.QualityDataSetDTO;
 import mat.model.clause.Clause;
@@ -59,6 +60,14 @@ public class AppController {
 	private List<Context> allContexts = new ArrayList<Context>();
 	//private Map<String, QualityDataSetDTO> qdsMap = new HashMap<String, QualityDataSetDTO>();
 	private List<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+	ErrorMessageDisplay saveErrorMessages = new ErrorMessageDisplay();
+	public ErrorMessageDisplay getSaveErrorMessages() {
+		return saveErrorMessages;
+	}
+
+	public void setSaveErrorMessages(ErrorMessageDisplay saveErrorMessages) {
+		this.saveErrorMessages = saveErrorMessages;
+	}
 
 	public final static List<String> criterionNames = Arrays.asList(
 			new String[] {ConstantMessages.POPULATION_CONTEXT_DESC,
@@ -99,6 +108,8 @@ public class AppController {
 		this.rpcService = rpcService;
 		this.eventBus = eventBus;
 		diagramView = new DiagramViewImpl<Diagram>(this, clauseController);
+		saveErrorMessages.clear();
+		diagramView.getSaveErrorMessageHolder().add(saveErrorMessages);
 	}
 
 	public String[] getQDSElements() {
@@ -146,7 +157,9 @@ public class AppController {
 	}
 	
 	void open(String measureID,final HasWidgets container) { 
+		saveErrorMessages.clear();
 		new DiagramPresenter(this, eventBus, diagramView).go(container);
+		
 		clauseController.displaySearch();
 		showLoadingMessage();
 		//control selection of phrase and clause libraries
@@ -627,6 +640,23 @@ public class AppController {
 			e.printStackTrace();
 		} 
 	}
+	/**
+	 * Method to identify if canvas has any changes.
+	 * */
+	public boolean isCanvasModified(){
+		boolean isCanvasChanged =false;
+		Diagram[] criteriaTypes = getDiagrams();
+		for (Diagram criterion: criteriaTypes) {
+			if (criterion.isDirty()) {
+				isCanvasChanged = true;
+				break;
+			}
+			
+		}
+		return isCanvasChanged;
+		
+	}
+	
 	
 	/*
 	 * save one phrase at a time
@@ -665,7 +695,9 @@ public class AppController {
 	   return outerLayerClause;
 	  }
 	}
-
+	
+	
+	
 	private void criterionToModel(SimpleStatementToCentralPojoFactory sstcpf, List<Clause> clauses) throws Exception {
 		Diagram[] criteriaTypes = getDiagrams();
 		for (Diagram criterion: criteriaTypes) {

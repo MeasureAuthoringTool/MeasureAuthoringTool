@@ -8,6 +8,7 @@ import java.util.Map;
 import mat.client.Enableable;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.clause.MatClausePresenter;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.metadata.MetaDataPresenter;
 import mat.client.shared.ui.MATTabPanel;
@@ -208,10 +209,17 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			if(composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 0){
 				MetaDataPresenter metaDataPresenter = composerPresenter.getMetaDataPresenter();
 				processMeasureDetails(selectedIndex, metaDataPresenter);
+			}else if(composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 1){
+				MatClausePresenter matClausePresenter = composerPresenter.getClauseWorkspace();
+				createErrorMessageForClauseWorkSpace(matClausePresenter);
 			}
 		}else if(selectedIndex == 0 && previousPresenter instanceof MetaDataPresenter){
 			MetaDataPresenter metaDataPresenter = (MetaDataPresenter)previousPresenter;
 			processMeasureDetails(selectedIndex, metaDataPresenter);
+		}
+		else if(selectedIndex == 1 && previousPresenter instanceof MatClausePresenter){
+			MatClausePresenter matClausePresenter = (MatClausePresenter)previousPresenter;
+			createErrorMessageForClauseWorkSpace(matClausePresenter);
 		}
 		return isError;
 	}
@@ -231,19 +239,33 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			saveButton = metaDataPresenter.getMetaDataDisplay().getSaveBtn();
 			showErrorMessage(metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg());
 			metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons().get(0).setFocus(true);
-			callClickEventsOnMsg(selectedIndex, metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons());
+			callClickEventsOnMsg(selectedIndex, metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons(),metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg() );
 		}else{
 			isError = false;
 		}
 	}
-
+	
+	private void createErrorMessageForClauseWorkSpace(MatClausePresenter matClausePresenter ){
+		if(matClausePresenter.getAppController().isCanvasModified()){
+			saveErrorMessage = matClausePresenter.getAppController().getSaveErrorMessages();
+			saveErrorMessage.setMessage("");
+			saveButton = matClausePresenter.getAppController().getDiagramView().getSaveButton();
+			showErrorMessage(matClausePresenter.getAppController().getSaveErrorMessages());
+			matClausePresenter.getAppController().getSaveErrorMessages().getButtons().get(0).setFocus(true);
+			callClickEventsOnMsg(selectedIndex, matClausePresenter.getAppController().getSaveErrorMessages().getButtons(),matClausePresenter.getAppController().getSaveErrorMessages());
+		}else{
+			isError = false;
+		}
+		
+		
+	}
 	
 	/**
 	 * On Click Events.
 	 * @param selIndex
 	 * @param btns
 	 */
-	private void callClickEventsOnMsg(int selIndex, List<SecondaryButton> btns) {
+	private void callClickEventsOnMsg(int selIndex, List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage) {
 		isError = true;
 			ClickHandler clickHandler = new ClickHandler() {
 				@Override

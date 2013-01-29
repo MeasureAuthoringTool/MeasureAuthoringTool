@@ -56,7 +56,8 @@ public class MatClausePresenter implements MatPresenter {
 	@Override 
 	public void beforeClosingDisplay() {
 		if (appController.isLoaded()) {
-			appController.saveMainPhrases();
+			//Auto Save Commented for Main Tabs and ClauseWorkspace sub tabs  
+			//appController.saveMainPhrases();
 		}else{
 			MatContext.get().getSynchronizationDelegate().setSavingClauses(false);
 		}

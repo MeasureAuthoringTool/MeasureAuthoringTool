@@ -403,7 +403,8 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 				if (!MatContext.get().getSynchronizationDelegate().isSavingClauses()){
 					clearPropEditMessages();
 					if (appController.isLoaded()) {
-						appController.saveMainPhrases();
+						//Auto Save Commented for Canvas Sub Tabs
+						//appController.saveMainPhrases();
 					} else {
 						MatContext.get().getSynchronizationDelegate().setSavingClauses(false);
 					}
@@ -574,7 +575,8 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 		// TODO perform dirty check before saving 
 		// even consider showing the saved message whether dirty or not
 		MatContext.get().clearDVIMessages();
-		appController.saveMainPhrases();
+		//Auto Save Commented for Canvas Sub Tabs
+		//appController.saveMainPhrases();
 		Command waitForSave = new Command(){
 			@Override
 			public void execute() {
@@ -783,8 +785,6 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 			break;
 		}
 		setLibraryStyle();
-		
-
 	}
 
 	private void setLibraryStyle() {
@@ -1955,7 +1955,8 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 				fireAlert(item.getElement());
 			}
 		}
-		appController.saveMainPhrases();
+		//Auto Save Commented for Canvas Sub Tabs
+		//appController.saveMainPhrases();
 	}
 
 	@UiHandler("pasteCloneButton1")
@@ -1976,7 +1977,8 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 			String measureID = clauseToBeCloned.getMeasureID();
 			appController.cloneSystemClause(name, criterionNameToClone, measureID);
 			clauseToBeCloned = null;
-			appController.saveMainPhrases();
+			//Auto Save Commented for Canvas Sub Tabs
+			//appController.saveMainPhrases();
 			moveFocusToPropertyEditor();
 		}
 	}
@@ -2130,8 +2132,9 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 		updateEditButtons(false);
 		
 		//******************
-		if(doSave)
-			appController.saveMainPhrases();		
+		//Auto Save Commented for Canvas Sub Tabs
+		/*if(doSave)
+			appController.saveMainPhrases();	*/	
 		//******************
 	}
 
@@ -2180,7 +2183,8 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 			libraryTabPanel.selectTab(CLAUSE_LIBRARY_TAB);
 			
 			//******************
-			appController.saveMainPhrases();		
+			//Auto Save Commented for Canvas Sub Tabs
+		//	appController.saveMainPhrases();		
 		//******************
 		}
 	}
@@ -2458,7 +2462,8 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 		//Control-Alt-s
 		MatContext.get().clearDVIMessages();
 		if(event.isAltKeyDown() && event.isControlKeyDown() && event.getNativeKeyCode()==83  && editable){
-		    appController.saveMainPhrases();
+			//Auto Save Commented for Canvas Sub Tabs
+			// appController.saveMainPhrases();
 		    Command waitForSave = new Command(){
 		    	@Override
 		    	public void execute() {

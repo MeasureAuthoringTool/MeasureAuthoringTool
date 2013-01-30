@@ -175,21 +175,27 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		MatContext.get().getMeasureLockService().releaseMeasureLock();
 		Command waitForUnlock = new Command(){
 			public void execute() {
+			  System.out.println("Executing waitForUnlock Command:"+MatContext.get().getMeasureLockService().isResettingLock());	
 	 		  if(!MatContext.get().getMeasureLockService().isResettingLock()){
 	 			  measureComposerTabLayout.close();
+	 			  measureComposerTabLayout.setSelectedIndex(0);
 	 			  buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 	 			  buttonBar.setPageNamesOnState();
+	 			  System.out.println("Closing measureComposerTabLayout...");
 	 		  }else{
 	 			  DeferredCommand.addCommand(this);
 	 		  }
 	 	   }
 	 	};
-	 	if(MatContext.get().getMeasureLockService().isResettingLock())
+	 	if(MatContext.get().getMeasureLockService().isResettingLock()){
 	 		waitForUnlock.execute();
+	 	}
 	 	else{
 	 	    measureComposerTabLayout.close();
-		  	buttonBar.state = measureComposerTabLayout.getSelectedIndex();
+	 	    measureComposerTabLayout.setSelectedIndex(0);
+	 	    buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 		  	buttonBar.setPageNamesOnState();
+	 	    System.out.println("Closing measureComposerTabLayout...");
 	 	}
 		
 	}

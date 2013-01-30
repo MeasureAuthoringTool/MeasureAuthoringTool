@@ -881,7 +881,7 @@ public class MessageDelegate {
 	}
 	
 	private final String SAVE_ERROR_MSG = "You have unsaved changes that will be discarded if you continue. " +
-	"Do you want to continue and lose any unsaved changes?";
+	"Do you want to continue without saving?";
 	/**
 	 * @return the sAVE_ERROR_MSG
 	 */

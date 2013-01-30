@@ -248,7 +248,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	private void createErrorMessageForClauseWorkSpace(MatClausePresenter matClausePresenter ){
 		if(matClausePresenter.getAppController().isCanvasModified()){
 			saveErrorMessage = matClausePresenter.getAppController().getSaveErrorMessages();
-			saveErrorMessage.setMessage("");
+			saveErrorMessage.clear();
 			saveButton = matClausePresenter.getAppController().getDiagramView().getSaveButton();
 			showErrorMessage(matClausePresenter.getAppController().getSaveErrorMessages());
 			matClausePresenter.getAppController().getSaveErrorMessages().getButtons().get(0).setFocus(true);

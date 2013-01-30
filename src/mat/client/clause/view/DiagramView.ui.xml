@@ -130,7 +130,7 @@
 
    <g:FocusPanel ui:field="diagramFocus">
    	<g:VerticalPanel ui:width="1000px">
-   		<g:HorizontalPanel ui:field="saveErrorMessageHolder" ui:width="100%" addStyleNames="{style.toolbar}">
+   		<g:HorizontalPanel ui:field="saveErrorMessageHolder" ui:width="100%">
 		</g:HorizontalPanel>
    		<g:HorizontalPanel ui:width="100%" addStyleNames="{style.canvasPanel}">
 			<g:HorizontalPanel ui:width="240px">

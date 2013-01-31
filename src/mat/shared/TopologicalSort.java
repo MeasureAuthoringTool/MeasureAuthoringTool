@@ -16,8 +16,9 @@ public class TopologicalSort {
 	private int matrix[][]; // adjacency matrix
 	private int numVerts; // current number of vertices
 	private String sortedArray[];
+	private String phrase1Text;
 
-	public TopologicalSort(MeasurePhrases measurePhrases, List<String> names) throws Exception {
+	public TopologicalSort(MeasurePhrases measurePhrases, List<String> names) {
 		this.measurePhrases = measurePhrases;
 		this.names = names;
 		setVertices();
@@ -42,17 +43,20 @@ public class TopologicalSort {
 		}
 	}
 
-	private void addEdges() throws Exception {
+	private void addEdges() {
 		for (String name : names) {
 			SimpleStatement measurePhrase = (SimpleStatement)(measurePhrases.getItem(name));
-			if (names.contains(measurePhrase.getPhrase1Text()))
+			if (names.contains(measurePhrase.getPhrase1Text())){
 				addEdge(measurePhrase.getPhrase1Text(), name);
+			}
 			if (measurePhrase.getPhrase2() != null && measurePhrase.getPhrase2Text() != null &&
-					names.contains(measurePhrase.getPhrase2Text()))
+					names.contains(measurePhrase.getPhrase2Text())){
 				addEdge(measurePhrase.getPhrase2Text(), name);
+			}
 			for (Phrase additionalPhrase : measurePhrase.getAdditionalPhraseList()) {
-				if (names.contains(additionalPhrase.getText()))
+				if (names.contains(additionalPhrase.getText())){
 					addEdge(additionalPhrase.getText(), name);
+				}
 			}
 		}
 	}
@@ -61,18 +65,22 @@ public class TopologicalSort {
 		matrix[start][end] = 1;
 	}
 
-	public void topologicalSort() throws Exception {
-		while (numVerts > 0) { // while vertices remain,
-			// get a vertex with no successors, or -1
-			int currentVertex = noSuccessors();
-			if (currentVertex == -1)  // CYCLE FOUND - RECURSION!!!
-				throw new IllegalRecursionException();
-			// insert vertex label in sorted array (start at end)
-			sortedArray[numVerts - 1] = vertexList[currentVertex].label;
-
-			deleteVertex(currentVertex); // delete vertex
-		}
+	public int topologicalSort(){
+		  while (numVerts > 0) { // while vertices remain,
+		   // get a vertex with no successors, or -1
+		   int currentVertex = noSuccessors();
+		   if (currentVertex == -1)  {// CYCLE FOUND - RECURSION!!!
+		    return -1;
+		   }
+		   // insert vertex label in sorted array (start at end)
+		   sortedArray[numVerts - 1] = vertexList[currentVertex].label;
+		 
+		   deleteVertex(currentVertex); // delete vertex
+		   
+		  }
+		  return 1;
 	}
+
 
 	public String[] getSortedArray() {
 		return sortedArray;
@@ -119,11 +127,26 @@ public class TopologicalSort {
 			matrix[row][col] = matrix[row][col + 1];
 	}
 
-	public void addEdge(String a, String b) throws Exception {
+	public void addEdge(String a, String b){
 		Integer ia = vertexMap.get(a);
 		Integer ib = vertexMap.get(b);
-		if (ia == null || ib == null)
-			throw new IllegalArgumentException(a + " and " + b + " must both be on the initial list.");
+		if (ia == null || ib == null){
+			System.out.println("TopologicalSort INIT ERROR:"+a + " and " + b + " must both be on the initial list.");
+		}
 		addEdge(ia.intValue(), ib.intValue());
+	}
+
+	/**
+	 * @return the phrase1Text
+	 */
+	public String getPhrase1Text() {
+		return phrase1Text;
+	}
+
+	/**
+	 * @param phrase1Text the phrase1Text to set
+	 */
+	public void setPhrase1Text(String phrase1Text) {
+		this.phrase1Text = phrase1Text;
 	}
 }

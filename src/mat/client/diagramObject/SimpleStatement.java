@@ -2,6 +2,7 @@ package mat.client.diagramObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -440,45 +441,27 @@ public class SimpleStatement extends DiagramObject {
 		List<String> phraseNames = appController.getMeasurePhraseList();
 		Set<String> availablePhrases = new LinkedHashSet<String>();
 
+		SimpleStatement test = new SimpleStatement(appController);
+		test.setIdentity(this.identity);
+		test.setDescription(this.description);
+		test.phrase1 = new Phrase(appController);
 		// need to use phrase1's text for recursion testing; save it and restore later
 		String phrase1Text = phrase1.text; 
 
 		for (String name : phraseNames) {
-			try {
-				SimpleStatement test = new SimpleStatement(appController);
-				test.setIdentity(this.identity);
-				test.setDescription(this.description);
-				test.phrase1 = new Phrase(appController);
-				phrase1.setText(name);	
-
-				measurePhrases.put(RECURSION_TEST_STATEMENT, test);
-				List<String>testNames = new ArrayList<String>();
-				testNames.addAll(phraseNames);
-				testNames.add("!__TEST__!");
-
-				TopologicalSort g = new TopologicalSort(measurePhrases, phraseNames);
-				g.topologicalSort();
-				availablePhrases.add(name);
+			
+			phrase1.text = name; 	// do not use phrase1.setText() method. this causes the latency 
+			measurePhrases.put(RECURSION_TEST_STATEMENT, test);
+			TopologicalSort g = new TopologicalSort(measurePhrases, phraseNames);
+			int ret = g.topologicalSort();
+			if(ret > 0){
+			   	availablePhrases.add(name);
 			}
-			catch (IllegalRecursionException re) {
-				re.printStackTrace();
-			}	
-			catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+		 }
 
 		if (availablePhrases.size() > 0) {
-			Object[] objArray = availablePhrases.toArray();
-			String[] strArray = new String[objArray.length];
-			int index = 0;
-			for (Object obj : objArray)
-				strArray[index++] = (String)obj;
-			Arrays.sort(strArray);
-			availablePhrases.addAll(Arrays.asList(strArray));
-//			availablePhrases.add("-----");	
+			Collections.sort(new ArrayList<String>(availablePhrases));
 		}
-//		availablePhrases.addAll(elements);
 
 		phrase1.setText(phrase1Text);
 		return availablePhrases;

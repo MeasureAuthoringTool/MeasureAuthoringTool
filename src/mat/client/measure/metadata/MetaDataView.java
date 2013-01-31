@@ -123,6 +123,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	private ArrayList<TextAreaWithMaxLength> referenceArrayList = new ArrayList<TextAreaWithMaxLength>(); 
 	
+	private ArrayList<TextAreaWithMaxLength> removedReferenceArrayList = new ArrayList<TextAreaWithMaxLength>(); 
+		
 	private SimplePanel referencePlaceHolder = new SimplePanel();
 	
 	private final FlexTable referenceTable = new FlexTable();
@@ -826,10 +828,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	private void removeRow(FlexTable reference,int rowIndex){
 		  int numRows = reference.getRowCount();
-		  referenceArrayList.remove(referenceTable.getWidget(rowIndex, 0));
+		  if(referenceTable.getWidget(rowIndex, 0) instanceof HorizontalPanel){
+			  HorizontalPanel horizontalPanel =  (HorizontalPanel) referenceTable.getWidget(rowIndex, 0);	 
+			  TextAreaWithMaxLength areaWithMaxLength = (TextAreaWithMaxLength) horizontalPanel.getWidget(1);
+			  referenceArrayList.remove(areaWithMaxLength);
+		  }else if (referenceTable.getWidget(rowIndex, 0) instanceof TextAreaWithMaxLength){
+			  referenceArrayList.remove(referenceTable.getWidget(rowIndex, 0));  
+		  }
 		  referenceTable.removeRow(rowIndex);
 		  referenceTable.getFlexCellFormatter().setRowSpan(0, 1, numRows - 1);
-		   
 	}
 
 

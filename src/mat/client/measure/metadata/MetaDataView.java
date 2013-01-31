@@ -123,8 +123,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	private ArrayList<TextAreaWithMaxLength> referenceArrayList = new ArrayList<TextAreaWithMaxLength>(); 
 	
-	private ArrayList<TextAreaWithMaxLength> removedReferenceArrayList = new ArrayList<TextAreaWithMaxLength>(); 
-		
 	private SimplePanel referencePlaceHolder = new SimplePanel();
 	
 	private final FlexTable referenceTable = new FlexTable();

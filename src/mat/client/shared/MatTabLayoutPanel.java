@@ -182,7 +182,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		setSelectedIndex(index);
 	}
 	
-	private void updateHeaderSelection(int index){
+	public void updateHeaderSelection(int index){
 		if(updateHeaderTitle){
 			//Strip arrow off of the tab we are leaving
 			int currentTab = selectedIndex;

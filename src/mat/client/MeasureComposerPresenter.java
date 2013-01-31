@@ -178,6 +178,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 			  System.out.println("Executing waitForUnlock Command:"+MatContext.get().getMeasureLockService().isResettingLock());	
 	 		  if(!MatContext.get().getMeasureLockService().isResettingLock()){
 	 			  measureComposerTabLayout.close();
+	 			  measureComposerTabLayout.updateHeaderSelection(0);
 	 			  measureComposerTabLayout.setSelectedIndex(0);
 	 			  buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 	 			  buttonBar.setPageNamesOnState();
@@ -192,6 +193,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	 	}
 	 	else{
 	 	    measureComposerTabLayout.close();
+	 	    measureComposerTabLayout.updateHeaderSelection(0);
 	 	    measureComposerTabLayout.setSelectedIndex(0);
 	 	    buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 		  	buttonBar.setPageNamesOnState();

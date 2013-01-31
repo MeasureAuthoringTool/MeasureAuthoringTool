@@ -1,6 +1,8 @@
 package mat.client.codelist;
 
 import java.util.List;
+
+import mat.client.measure.TransferMeasureOwnerShipModel.Result;
 import mat.client.shared.search.SearchResults;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -154,7 +156,7 @@ public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipMo
 			value = new Label(data.get(row).getEmailId());
 			break;
 		case 2:
-			value = getSelectedRadioBox(data.get(row)); 
+			value = getSelectedRadioBox(data,row); 
 			value.addStyleName("searchTableCenteredHolder");
 			break;
 		default: 
@@ -163,20 +165,27 @@ public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipMo
 		return value;
 	}
 	
-	private RadioButton getSelectedRadioBox(final Result result){
-		final RadioButton transferRB = new RadioButton("selected",null,false);	
+	private RadioButton getSelectedRadioBox(final List<Result> data,final int row){
+		final RadioButton transferRB = new RadioButton("selected",null,false);
 		transferRB.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> e) {
                 if(e.getValue() == true)
                 {
-                    result.setSelected(true);
-                    
+                    //result.setSelected(true);
+                	/**
+                	 * Reset all radio buttons to false
+                	 */
+                    for(Result result:data){
+                    	result.setSelected(false);
+                    }
+                    //Set the one just selected to true
+                    data.get(row).setSelected(true);
                 }
-                else
-                {
-                	result.setSelected(false);
-                }
+//                else
+//                {
+//                	result.setSelected(false);
+//                }
                }
 			} 
          );

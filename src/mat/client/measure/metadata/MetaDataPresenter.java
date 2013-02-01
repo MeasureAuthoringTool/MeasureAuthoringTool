@@ -149,6 +149,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	private long lastRequestTime;
 	private int maxEmeasureId;
 	private boolean editable = false;
+	private boolean isSubView = false;
 	
 	
 	
@@ -185,6 +186,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		addEditAuthorsDisplay.getReturnButton().addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
+				isSubView = false;
 				backToDetail();
 			}
 		});
@@ -462,7 +464,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		panel.add(metaDataDisplay.asWidget());
 	}
 	
-	private void backToDetail(){
+	public void backToDetail(){
 		previousContinueButtons.setVisible(true);
 		panel.clear();
 		panel.add(metaDataDisplay.asWidget());
@@ -660,17 +662,19 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	
 	
 	private void displayAddEditAuthors(){
+		isSubView = true;
 		addEditAuthorsDisplay.setReturnToLink("Return to Previous");
 		currentAuthorsList = new ManageAuthorsModel(currentMeasureDetail.getAuthorList());
 		currentAuthorsList.setPageSize(SearchView.PAGE_SIZE_ALL);
 		addEditAuthorsDisplay.buildDataTable(currentAuthorsList);
-		panel.clear();
+		panel.clear();		
 		panel.add(addEditAuthorsDisplay.asWidget());
 		previousContinueButtons.setVisible(false);
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	
 	private void displayAddEditMeasureType(){
+		isSubView = true;
 		addEditMeasureTypeDisplay.setReturnToLink("Return to Previous");
 		currentMeasureTypeList = new ManageMeasureTypeModel(currentMeasureDetail.getMeasureTypeList());
 		currentMeasureTypeList.setPageSize(SearchView.PAGE_SIZE_ALL);
@@ -847,6 +851,49 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	
 	public void setFocusForSave(){
 		getMetaDataDisplay().getSaveBtn().setFocus(true);
+	}
+
+	/**
+	 * @return the addEditAuthorsDisplay
+	 */
+	public AddEditAuthorsDisplay getAddEditAuthorsDisplay() {
+		return addEditAuthorsDisplay;
+	}
+
+	/**
+	 * @param addEditAuthorsDisplay the addEditAuthorsDisplay to set
+	 */
+	public void setAddEditAuthorsDisplay(AddEditAuthorsDisplay addEditAuthorsDisplay) {
+		this.addEditAuthorsDisplay = addEditAuthorsDisplay;
+	}
+
+	/**
+	 * @return the addEditMeasureTypeDisplay
+	 */
+	public AddEditMeasureTypeDisplay getAddEditMeasureTypeDisplay() {
+		return addEditMeasureTypeDisplay;
+	}
+
+	/**
+	 * @param addEditMeasureTypeDisplay the addEditMeasureTypeDisplay to set
+	 */
+	public void setAddEditMeasureTypeDisplay(
+			AddEditMeasureTypeDisplay addEditMeasureTypeDisplay) {
+		this.addEditMeasureTypeDisplay = addEditMeasureTypeDisplay;
+	}
+
+	/**
+	 * @return the isSubView
+	 */
+	public boolean isSubView() {
+		return isSubView;
+	}
+
+	/**
+	 * @param isSubView the isSubView to set
+	 */
+	public void setSubView(boolean isSubView) {
+		this.isSubView = isSubView;
 	}
 
 }

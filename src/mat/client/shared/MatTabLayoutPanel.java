@@ -236,7 +236,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 				&&!isMeasureDetailsSame(metaDataPresenter)){
 			saveErrorMessage = metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg();
 			saveErrorMessage.clear();
-			saveButton = metaDataPresenter.getMetaDataDisplay().getSaveBtn();
+			saveButton = metaDataPresenter.getMetaDataDisplay().getSaveBtn();		
+			if(metaDataPresenter.isSubView()){
+				metaDataPresenter.backToDetail();
+			}
 			showErrorMessage(metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg());
 			metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons().get(0).setFocus(true);
 			callClickEventsOnMsg(selectedIndex, metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons(),metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg() );

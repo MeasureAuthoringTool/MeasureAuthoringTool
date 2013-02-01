@@ -216,7 +216,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	}
 	private MatPresenter buildMeasureMetaDataPresenter(){
 		MetaDataView mdV = new MetaDataView();
-		AddEditAuthorsView aeaV = new AddEditAuthorsView();
+		AddEditAuthorsView aeaV = new AddEditAuthorsView();		
 		AddEditMeasureTypeView aemtV = new AddEditMeasureTypeView();
 		MetaDataPresenter mdP = new MetaDataPresenter(mdV,aeaV,aemtV,buttonBar,MatContext.get().getListBoxCodeProvider());
 		return mdP;

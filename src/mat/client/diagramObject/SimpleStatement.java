@@ -490,7 +490,7 @@ public class SimpleStatement extends DiagramObject {
 		return availablePhrases;
 	}
 	
-	private Set<String> getMeasurePhraseList_old() {
+	/*private Set<String> getMeasurePhraseList_old() {
 		  long startTime = System.currentTimeMillis();
 		  MeasurePhrases measurePhrases = appController.getMeasurePhrases().clone();
 		  List<String> phraseNames = appController.getMeasurePhraseList();
@@ -581,7 +581,7 @@ public class SimpleStatement extends DiagramObject {
 		  long endTime = System.currentTimeMillis();
 		  System.out.println("total time for simpleStatement.getMeasurePhraseList():"+(endTime - startTime));
 		  return availablePhrases;
-		 }
+		 }*/
 		 
 	protected void setupNameTextBox(String top, boolean objectExists) {
 		final boolean isNewPhrase = ((top == null || top.equalsIgnoreCase(this.EMPTY)) && !objectExists);

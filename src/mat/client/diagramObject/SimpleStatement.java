@@ -1,11 +1,8 @@
 package mat.client.diagramObject;
 
-import gwt.g2d.client.math.Matrix;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,10 +18,7 @@ import mat.client.shared.MATRadioButton;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.shared.ConstantMessages;
-import mat.shared.IllegalRecursionException;
 import mat.shared.StringUtility;
-import mat.shared.TopologicalSort;
-import mat.shared.Vertex;
 import mat.shared.diagramObject.InProgress_Complete;
 import mat.shared.model.StatementTerm;
 import mat.shared.model.StatementTerm.Operator;
@@ -39,7 +33,6 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -447,9 +440,8 @@ public class SimpleStatement extends DiagramObject {
 		MeasurePhrases measurePhrases = appController.getMeasurePhrases().clone();
 		List<String> phraseNames = appController.getMeasurePhraseList();
 		Set<String> availablePhrases = new LinkedHashSet<String>();
-		
-		for(String name:phraseNames){
-			String currentPhraseName = this.identity;
+		String currentPhraseName = this.identity;
+		for(String name:phraseNames){			
 //			System.out.println("looking for cycle for:"+this.identity);
 //			System.out.println("evaluating:"+name);
 			if(name.equals(this.identity)){
@@ -458,7 +450,7 @@ public class SimpleStatement extends DiagramObject {
 			SimpleStatement measurePhrase = (SimpleStatement)measurePhrases.getItem(name);
 			
 //			System.out.println(name + " has measurePhrase.getPhrase1Text():"+measurePhrase.getPhrase1Text());
-			if(measurePhrase.getPhrase1Text().equals(currentPhraseName)){
+			if(null != measurePhrase.getPhrase1Text() && measurePhrase.getPhrase1Text().equals(currentPhraseName)){
 				continue;
 			}else if(measurePhrase.getPhrase2() != null && measurePhrase.getPhrase2Text() != null && measurePhrase.getPhrase2Text().equals(currentPhraseName)){
 				continue;
@@ -476,6 +468,17 @@ public class SimpleStatement extends DiagramObject {
 			availablePhrases.add(measurePhrase.getIdentity());
 		}
 		
+		//Find indirect cycles
+		Set<String> unavailablePhrases = new HashSet<String>();
+		for(String availPhrase:availablePhrases){			
+			SimpleStatement stmt = (SimpleStatement)appController.getMeasurePhrases().getItem(availPhrase);
+			Set<String> connections = stmt.getConnectedPhrases(currentPhraseName);
+			if(connections.contains(currentPhraseName)){
+				unavailablePhrases.add(availPhrase);
+			}
+		}
+		availablePhrases.removeAll(unavailablePhrases);
+		
 		if (availablePhrases.size() > 0) {
 			Object[] objArray = availablePhrases.toArray();
 			String[] strArray = new String[objArray.length];
@@ -488,6 +491,41 @@ public class SimpleStatement extends DiagramObject {
 		}
 		
 		return availablePhrases;
+	}
+	
+	/**
+	 * This will give you all the direct/indirect connections to other Phrases.
+	 */
+	private Set<String> getConnectedPhrases(String mainPhraseName){
+		Set<String> connectedPhrases = new LinkedHashSet<String>();
+		
+		if(appController.isMeasurePhrase(this.getPhrase1Text())){
+			connectedPhrases.add(this.getPhrase1Text());
+		}
+		
+		if(this.phrase2 != null && appController.isMeasurePhrase(this.getPhrase2Text())){
+			if(this.getPhrase2Text() != null && this.getPhrase2Text().trim().length() > 0){
+				connectedPhrases.add(this.getPhrase2Text());
+			}
+		}
+		
+		for (Phrase additionalPhrase : this.getAdditionalPhraseList()) {
+			if(appController.isMeasurePhrase(additionalPhrase.getText())){
+				connectedPhrases.add(additionalPhrase.getText());
+			}
+		}
+		
+		if(connectedPhrases.size() > 0 && (!connectedPhrases.contains(mainPhraseName))){
+			for(String phrase:connectedPhrases){
+				SimpleStatement stmt = (SimpleStatement)appController.getMeasurePhrases().getItem(phrase);
+				Set<String> connections = stmt.getConnectedPhrases(mainPhraseName);
+				if(connections.contains(mainPhraseName)){
+					connectedPhrases.add(mainPhraseName);
+					break;
+				}
+			}
+		}
+		return connectedPhrases;
 	}
 	
 	/*private Set<String> getMeasurePhraseList_old() {

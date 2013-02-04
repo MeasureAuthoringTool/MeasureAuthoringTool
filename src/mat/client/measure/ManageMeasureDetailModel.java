@@ -511,8 +511,6 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				return false;
 		} else if (!trimToNull(disclaimer).equals(trimToNull(other.disclaimer)))
 			return false;
-		if (draft != other.draft)
-			return false;
 		if (eMeasureId != other.eMeasureId)
 			return false;
 		endorseByNQF = endorseByNQF == null ? false : endorseByNQF.booleanValue();

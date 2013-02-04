@@ -1488,17 +1488,22 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 	public void onCloneButtonClicked(ClickEvent event) {
 		MatContext.get().clearDVIMessages();
 		if(!isLoading(true)){
-			int selected = clauseLibraryListBox.getSelectedIndex();
-			if (selected >= 0) {
-				String text = clauseLibraryListBox.getItemTitle(selected);
-				String value = clauseLibraryListBox.getValue(selected);
-				clauseToBeCloned = new ClauseLT();
-				clauseToBeCloned.setText(text);
-				clauseToBeCloned.setMeasureID(value);
-			} else {
-				//Write to an error message box.
-				clearPropEditMessages();
-				propEditErrorMessages.setMessage(MatContext.get().getMessageDelegate().getPleaseSelectClauseMessage());
+			if(!appController.isCanvasModified()){
+				int selected = clauseLibraryListBox.getSelectedIndex();
+				if (selected >= 0) {
+					String text = clauseLibraryListBox.getItemTitle(selected);
+					String value = clauseLibraryListBox.getValue(selected);
+					clauseToBeCloned = new ClauseLT();
+					clauseToBeCloned.setText(text);
+					clauseToBeCloned.setMeasureID(value);
+				}else {
+					//Write to an error message box.
+					clearPropEditMessages();
+					propEditErrorMessages.setMessage(MatContext.get().getMessageDelegate().getPleaseSelectClauseMessage());
+				}
+			}else{
+				String msg = MatContext.get().getMessageDelegate().getUnsavedChangesinCanvasClone();
+				appController.getSaveErrorMessages().setMessage(msg);
 			}
 		}
 	}
@@ -1991,7 +1996,33 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 			moveFocusToPropertyEditor();
 		}
 	}
-
+	
+	/*private void addErrorMessageOnPasteClone(){
+		String msg = "You have unsaved changes. Please save your changes and then Clone.";
+		appController.getSaveErrorMessages().setMessage(msg);
+		List<String> btn = new ArrayList<String>();
+		btn.add("Yes");
+		btn.add("No");
+		appController.getSaveErrorMessages().setMessageWithButtons(msg, btn);
+		ClickHandler clickHandler = new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				SecondaryButton button = (SecondaryButton)event.getSource();
+				if("Yes".equals(button.getText())){
+					appController.getSaveErrorMessages().clear();
+					createCloneOnCanvas();
+				}else if("No".equals(button.getText())){
+					appController.getSaveErrorMessages().clear();
+					saveButton.setFocus(true);
+				}
+			}
+		};
+		for (SecondaryButton secondaryButton : getAppController().getSaveErrorMessages().getButtons()) {
+			secondaryButton.addClickHandler(clickHandler);
+		}
+		
+	}*/
+	
 	@UiHandler("andButton1")
 	public void onClickAndButton1(ClickEvent event) {
 		if(!isLoading(true))

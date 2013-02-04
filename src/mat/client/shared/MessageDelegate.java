@@ -879,6 +879,10 @@ public class MessageDelegate {
 	public String getTransferOwnershipSuccess(){
 		return TRANSFER_OWNERSHIP_SUCCESS;
 	}
+	private final String UNSAVED_CHANGES_IN_CANVAS_CLONE="You have unsaved changes. Please save your changes and then Clone.";
+	public String getUnsavedChangesinCanvasClone(){
+		return UNSAVED_CHANGES_IN_CANVAS_CLONE;
+	}
 	
 	private final String SAVE_ERROR_MSG = "You have unsaved changes that will be discarded if you continue. " +
 	"Do you want to continue without saving?";

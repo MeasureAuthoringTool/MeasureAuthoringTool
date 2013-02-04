@@ -684,7 +684,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	    		if(measureType.compare(measureType, otherMeasureType) != 0){
 	    			return false;
 	    		}
-	    	}else if(listA.get(i) instanceof String){
+	    	}else if(listA.get(i) instanceof String){	    		
 	    		String val1 = (String)listA.get(i);
 	    		String val2 = (String)listB.get(i);
 	    		if(val1.compareTo(val2) != 0){
@@ -698,8 +698,9 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	private List<String> getTrimmedList(List<String> listA){
 		ArrayList<String> newAList = new ArrayList<String>();
 		for (String aStr : listA) {
-			if(null != trimToNull(aStr)){
-				newAList.add(aStr);
+			String val = trimToNull(aStr);
+			if(null != val){
+				newAList.add(val);
 			}
 		}
 		return newAList;

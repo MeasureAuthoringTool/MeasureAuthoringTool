@@ -460,6 +460,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		if (getClass() != obj.getClass())
 			return false;
 		ManageMeasureDetailModel other = (ManageMeasureDetailModel) obj;
+		System.out.println("");
 		if (toCompareAuthor == null) {
 			if (other.toCompareAuthor != null)
 				return false;
@@ -561,13 +562,15 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		if (trimToNull(measSteward) == null) {
 			if (trimToNull(other.measSteward) != null)
 				return false;
-		} else if (!trimToNull(measSteward).equals(trimToNull(other.measSteward)))
+		} else if (!trimToNull(measSteward).equals(trimToNull(other.measSteward))){
 			return false;
-		/*if (measStewardOther == null) {
-			if (other.measStewardOther != null)
+		} else if(trimToNull(measSteward).equals("Other")){
+			if (trimToNull(measStewardOther) == null) {
+				if (trimToNull(other.measStewardOther) != null)
+					return false;
+			} else if (!trimToNull(measStewardOther).equals(trimToNull(other.measStewardOther)))
 				return false;
-		} else if (!measStewardOther.equals(other.measStewardOther))
-			return false;*/
+		}
 		if (trimToNull(measToPeriod) == null) {
 			if (trimToNull(other.measToPeriod) != null)
 				return false;

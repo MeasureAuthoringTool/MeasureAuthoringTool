@@ -3314,8 +3314,8 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 	private void doPhraseChangeHandlerBehavior(ListBox listBox){
 		/* performing save op because there may have been changes in the property editor
 		   prior to making a selection in the measure phrase library */
-		//Auto Save Commented
-		//doSave(false);
+		//Auto Save uncommented - On Save Phrase, Canvas changes are getting refreshed.(date:2/5/2013) 
+		doSave(false);
 		
 		MatContext.get().clearDVIMessages();
 		appController.getSaveErrorMessages().clear();

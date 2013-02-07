@@ -327,11 +327,11 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	
 	private Criteria buildMeasureShareForUserCriteria(User user) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
-		if(user.getSecurityRole().getId().equals("3")) { 
+		/*if(user.getSecurityRole().getId().equals("3")) { 
 			mCriteria.add(Restrictions.or(Restrictions.eq("owner.id", user.getId()),
 					Restrictions.eq("share.shareUser.id", user.getId())));
 			mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
-		}
+		}*/
 		
 		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return mCriteria;

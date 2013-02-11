@@ -546,15 +546,15 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	@Override
-	public ManageMeasureSearchModel search(String searchText, int startIndex,
-			int pageSize) {
+	public ManageMeasureSearchModel search(String searchText, int startIndex,int pageSize, int filter) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-		List<MeasureShareDTO> measureList = getService().search(searchText, startIndex, pageSize);
+		List<MeasureShareDTO> measureList = getService().searchWithFilter(searchText, startIndex, pageSize,filter);
 		searchModel.setStartIndex(startIndex);
-		searchModel.setResultsTotal((int)getService().count());
+		//searchModel.setResultsTotal((int)getService().count());
+		searchModel.setResultsTotal((int)getService().count(filter));
 
 		List<ManageMeasureSearchModel.Result> detailModelList =
 			new ArrayList<ManageMeasureSearchModel.Result>();

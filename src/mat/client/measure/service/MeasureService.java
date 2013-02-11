@@ -21,7 +21,8 @@ public interface MeasureService extends RemoteService {
 	public SaveMeasureResult save(ManageMeasureDetailModel model);
 	public SaveMeasureResult saveFinalizedVersion(String measureId,boolean isMajor,String version) ;
 	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model);
-	public ManageMeasureSearchModel search(String searchText, int startIndex, int pageSize);
+	ManageMeasureSearchModel search(String searchText, int startIndex,
+			int pageSize, int filter);
 	public ManageMeasureShareModel getUsersForShare(String measureId, int startIndex, int pageSize);
 	public void updateUsersShare(ManageMeasureShareModel model);
 	public ManageMeasureDetailModel deleteAuthors(String measureId,List<Author> selectedAuthorsList);

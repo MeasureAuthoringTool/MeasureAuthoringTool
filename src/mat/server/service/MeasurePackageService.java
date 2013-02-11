@@ -50,4 +50,7 @@ public interface MeasurePackageService {
 	public int getMaxEMeasureId();
 	public int saveAndReturnMaxEMeasureId(Measure measure);
 	void transferMeasureOwnerShipToUser(List<String> list, String toEmail);
+	List<MeasureShareDTO> searchWithFilter(String searchText, int startIndex,
+			int numResults, int filter);
+	long count(int filter);
 }

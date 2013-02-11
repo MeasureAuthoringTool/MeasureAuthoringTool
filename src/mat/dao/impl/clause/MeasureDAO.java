@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.MetadataDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.UserDAO;
@@ -337,6 +338,20 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		return mCriteria;
 	}
 	
+	
+	private Criteria buildMeasureShareForUserCriteriaWithFilter(User user, int filter) {
+		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
+		if(filter == MeasureSearchFilterPanel.MY_MEASURES){
+			mCriteria.add(Restrictions.or(Restrictions.eq("owner.id", user.getId()),
+					Restrictions.eq("share.shareUser.id", user.getId())));
+			mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
+		}
+		
+		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return mCriteria;
+	}
+	
+	
 	@Override
 	public int countMeasureShareInfoForUser(User user) {
 		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
@@ -419,13 +434,95 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		return criteria.list();
 	}
 	
+	
+	
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUser(String searchText, mat.dao.MetadataDAO metadataDAO,
 			User user, int startIndex, int pageSize) {
-		
+	
 		String searchTextLC = searchText.toLowerCase().trim();
 		
 		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
+		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
+		mCriteria.setFirstResult(startIndex);
+		
+		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
+		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
+		List<Measure> measureResultList = mCriteria.list();
+		
+		if(!user.getSecurityRole().getId().equals("2")) { 
+			measureResultList = getAllMeasuresInSet(measureResultList);
+		}
+		measureResultList = sortMeasureList(measureResultList);
+		
+		StringUtility su = new StringUtility();
+		for(Measure measure : measureResultList) {
+			
+			boolean matchesSearch = su.isEmptyOrNull(searchTextLC) ? true : 
+				//measure name
+				measure.getDescription().toLowerCase().contains(searchTextLC) ? true :
+					//abbreviated measure name
+					measure.getaBBRName().toLowerCase().contains(searchTextLC) ? true :
+						//measure owner first name
+						measure.getOwner().getFirstName().toLowerCase().contains(searchTextLC) ? true :
+							//measure owner last name
+							measure.getOwner().getLastName().toLowerCase().contains(searchTextLC) ? true :
+								false;
+			
+			//measure steward (only check if necessary)
+			if(!matchesSearch && !su.isEmptyOrNull(searchTextLC)){
+				List<Metadata> mdList = metadataDAO.getMeasureDetails(measure.getId(), "MeasureSteward");
+				for(Metadata md : mdList)
+					if(md.getName().equalsIgnoreCase("MeasureSteward") && md.getValue().toLowerCase().contains(searchTextLC)){
+						matchesSearch = true;
+						break;
+					}
+			}
+			
+			if(matchesSearch){
+				MeasureShareDTO dto = extractDTOFromMeasure(measure);
+				measureIdDTOMap.put(measure.getId(), dto);
+				orderedDTOList.add(dto);
+			}
+		}
+		
+		if(orderedDTOList.size() > 0) {
+			Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureShare.class);
+			shareCriteria.add(Restrictions.eq("shareUser.id", user.getId()));
+			shareCriteria.add(Restrictions.in("measure.id", measureIdDTOMap.keySet()));
+			List<MeasureShare> shareList = shareCriteria.list();
+			//get share level for each measure set and set it on each dto
+			HashMap<String, String> measureSetIdToShareLevel = new HashMap<String,String>();
+			for(MeasureShare share : shareList) {
+				String msid = share.getMeasure().getMeasureSet().getId();
+				String shareLevel = share.getShareLevel().getId();
+				
+				String existingShareLevel = measureSetIdToShareLevel.get(msid);
+				if(existingShareLevel == null || ShareLevel.VIEW_ONLY_ID.equals(existingShareLevel))				
+					measureSetIdToShareLevel.put(msid, shareLevel);
+			}
+			for(MeasureShareDTO dto : orderedDTOList){
+				String msid = dto.getMeasureSetId();
+				String shareLevel = measureSetIdToShareLevel.get(msid);
+				if(shareLevel != null){
+					dto.setShareLevel(shareLevel);
+				}
+			}
+		}
+		if(pageSize < orderedDTOList.size())
+			return orderedDTOList.subList(0, pageSize);
+		else
+			return orderedDTOList;
+	}
+	
+	@Override
+	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText, mat.dao.MetadataDAO metadataDAO,
+			User user, int startIndex, int pageSize ,int filter) {
+	
+		String searchTextLC = searchText.toLowerCase().trim();
+		
+		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, filter);
+		
 		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
 		mCriteria.setFirstResult(startIndex);
 		
@@ -517,6 +614,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 				count++;
 		}
 		return count;
+	}
+	
+	@Override
+	public int countMeasureShareInfoForUser(int filter, User user) {
+		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, filter);
+		List<Measure> ms = mCriteria.list();
+		ms = getAllMeasuresInSet(ms);
+		return ms.size();
 	}
 	
 	/*

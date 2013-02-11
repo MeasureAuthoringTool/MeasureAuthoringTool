@@ -15,7 +15,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 public interface MeasureServiceAsync {
 	public void getMeasure(String key, AsyncCallback<ManageMeasureDetailModel> callback);
 	public void save(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
-	public void search(String searchText, int startIndex, int pageSize, AsyncCallback<ManageMeasureSearchModel> callback);
+	public void search(String searchText, int startIndex, int pageSize,int filter, AsyncCallback<ManageMeasureSearchModel> callback);
 	public void searchMeasuresForVersion(int startIndex, int pageSize, AsyncCallback<ManageMeasureSearchModel> callback);
 	public void searchMeasuresForDraft(int startIndex, int pageSize, AsyncCallback<ManageMeasureSearchModel> callback);
 	public void getUsersForShare(String measureId, int startIndex, int pageSize, AsyncCallback<ManageMeasureShareModel> callback);

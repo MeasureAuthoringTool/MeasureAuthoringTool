@@ -35,4 +35,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	public int saveandReturnMaxEMeasureId(Measure measure);
 	public List<Measure> getAllMeasuresInSet(List<Measure> ms);
 	List<MeasureShare> getMeasureShareForMeasure(String measureId);
+	List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText, MetadataDAO metadataDAO, User user,
+			int startIndex, int pageSize, int filter);
+	int countMeasureShareInfoForUser(int filter, User user);
 }

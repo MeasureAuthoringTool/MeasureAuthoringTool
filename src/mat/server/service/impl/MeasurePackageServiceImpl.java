@@ -97,6 +97,12 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 	
 	@Override
+	public long count(int filter) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.countMeasureShareInfoForUser(filter, user);
+	}
+	
+	@Override
 	public List<MeasureShareDTO> search(int startIndex,
 			int numResults) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
@@ -553,10 +559,15 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 
 	@Override
-	public List<MeasureShareDTO> search(String searchText, int startIndex,
-			int numResults) {
+	public List<MeasureShareDTO> search(String searchText, int startIndex,int numResults) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measurePackageDAO.getMeasureShareInfoForUser(searchText, metaDataDAO, user, startIndex-1, numResults);
+	}
+	
+	@Override
+	public List<MeasureShareDTO> searchWithFilter(String searchText, int startIndex,int numResults,int filter) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText, metaDataDAO, user, startIndex-1, numResults,filter);
 	}
 
 	

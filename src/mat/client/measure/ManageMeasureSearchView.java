@@ -42,6 +42,7 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView("Measures");
 	private Button createButton = new SecondaryButton("Create");
 	private ListBoxMVP options = new ListBoxMVP();
+	private MeasureSearchFilterPanel msfp = new MeasureSearchFilterPanel();
 	private Button bulkExportButton = new PrimaryButton("Export Selected");
 	private Button transferButton = new PrimaryButton("Transfer");
 	final FormPanel form = new FormPanel();
@@ -62,6 +63,10 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 			options.setName("Create:");
 			mainPanel.add(createButton);
 			createButton.setTitle("Create");
+			mainPanel.add(new SpacerWidget());
+			Label searchMeasureText =new Label("Search For Measure");
+			mainPanel.add(searchMeasureText);
+			mainPanel.add(msfp.getPanel());
 			mainPanel.add(new SpacerWidget());
 			Widget searchText = LabelBuilder.buildLabel(searchInput, "Search for a Measure");
 			searchFocusHolder = new FocusableWidget(searchText);
@@ -226,7 +231,11 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		}
 	}
 
-
+	@Override
+	public MeasureSearchFilterPanel getMeasureSearchFilterPanel() {
+		return msfp;
+	}
+	
 	@Override
 	public HasClickHandlers getTransferButton() {
 		return transferButton;

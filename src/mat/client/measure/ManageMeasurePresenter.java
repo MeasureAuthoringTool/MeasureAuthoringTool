@@ -93,7 +93,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public Button getExportSelectedButton();
 		public void clearBulkExportCheckBoxes(Grid508 dataTable);
 		public HasClickHandlers getTransferButton();
-		
+		public MeasureSearchFilterPanel getMeasureSearchFilterPanel();
 		
 	}
 	public static interface DetailDisplay extends BaseDisplay {
@@ -313,14 +313,22 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onPageSelection(PageSelectionEvent event) {
+				int filter = searchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
+				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
+					 filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+				}
 				startIndex = searchDisplay.getPageSize() * (event.getPageNumber() - 1) + 1;
-				search(searchDisplay.getSearchString().getValue(), startIndex, searchDisplay.getPageSize());
+				search(searchDisplay.getSearchString().getValue(), startIndex, searchDisplay.getPageSize(),filter);
 			}
 		});
 		searchDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
 			@Override
 			public void onPageSizeSelection(PageSizeSelectionEvent event) {
-				search(searchDisplay.getSearchString().getValue(), startIndex, searchDisplay.getPageSize());
+				int filter = searchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
+				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
+					 filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+				}
+				search(searchDisplay.getSearchString().getValue(), startIndex, searchDisplay.getPageSize(),filter);
 			}
 		});
 		
@@ -489,8 +497,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				int startIndex = 1;
-				search(searchDisplay.getSearchString().getValue(),
-						startIndex, searchDisplay.getPageSize());
+				int filter = searchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
+				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
+					 filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+				}
+				search(searchDisplay.getSearchString().getValue(),startIndex, searchDisplay.getPageSize(),filter);
 			}
 		});
 		
@@ -946,11 +957,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void displaySearch() {
-		search(searchDisplay.getSearchString().getValue(), 1, searchDisplay.getPageSize());
+		
 		String heading ="My Measures";
+		int filter;
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
 			heading ="Measures";
+			filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+		}else{
+			filter = searchDisplay.getMeasureSearchFilterPanel().getDefaultFilter();
 		}
+		searchDisplay.getMeasureSearchFilterPanel().resetFilter();
+		search(searchDisplay.getSearchString().getValue(), 1, searchDisplay.getPageSize(),filter);
 		panel.setHeading(heading,"MainContent");
 		//panel.setEmbeddedLink("MainContent");
 		panel.setContent(searchDisplay.asWidget());		
@@ -1180,11 +1197,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 	}
 	
-	private void search(String searchText, int startIndex, int pageSize) {
+	private void search(String searchText, int startIndex, int pageSize , int filter) {
 		final String lastSearchText = searchText;
 		showSearchingBusy(true);
 		
-		MatContext.get().getMeasureService().search(searchText, startIndex, pageSize, 
+		MatContext.get().getMeasureService().search(searchText, startIndex, pageSize,filter, 
 				new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override
 			public void onSuccess(ManageMeasureSearchModel result) {

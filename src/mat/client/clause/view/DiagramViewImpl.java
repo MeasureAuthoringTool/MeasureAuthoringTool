@@ -1311,6 +1311,8 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 					    	}
 						};
 						waitSavingCmd.execute();
+					}else{
+						enableLibraries(CLASS_NAME);
 					}
 					if(diagramObject instanceof SimpleStatement){	
 						//Don't just grab. Iterate through this as it may be empty

@@ -655,6 +655,9 @@ public class SimpleStatement extends DiagramObject {
 			//nameTextBox.setFocus(true);
 			errorMsgList.add(MatContext.get().getMessageDelegate().getEnterNameMessage());
 			return false;
+		}else if(qdmElements == null || qdmElements.isEmpty()){
+			errorMsgList.add(MatContext.get().getMessageDelegate().getNoQdmSelectedMessage());
+			return false;
 		}
 		//identity = name;//do not do this, instead change it to the changedName
 		changedName = name;

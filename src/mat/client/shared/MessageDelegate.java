@@ -892,4 +892,9 @@ public class MessageDelegate {
 	public String getSaveErrorMsg() {
 		return SAVE_ERROR_MSG;
 	}
+	
+	private final String NO_QDM_SELECTED="Please select a QDM element.";
+	public String getNoQdmSelectedMessage(){
+		return NO_QDM_SELECTED;
+	}
 }

@@ -112,49 +112,69 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	@Override
 	public void updateUsersShare(ManageMeasureShareModel model) {
 		StringBuffer auditLogAdditionlInfo = new StringBuffer("Measure shared with ");
+		StringBuffer auditLogForModifyRemove = new StringBuffer("Measure shared status revoked with ");
 		MeasureShare measureShare = null;
 		boolean first = true;
+		boolean firstRemove = true;
+		boolean recordShareEvent = false;
+		boolean recordRevokeShareEvent = false;
 		for(int i = 0; i < model.getNumberOfRows(); i++) {
 			MeasureShareDTO dto = model.get(i);
 			if(dto.getShareLevel() != null && !"".equals(dto.getShareLevel())) {
 				User user = userDAO.find(dto.getUserId());
-				ShareLevel sLevel = shareLevelDAO.find(dto.getShareLevel());				
-				measureShare = null;
-				for(MeasureShare ms : user.getMeasureShares()) {
-					if(ms.getMeasure().getId().equals(model.getMeasureId())) {
-						measureShare = ms;
-						break;
+				ShareLevel sLevel = shareLevelDAO.find(dto.getShareLevel());		
+					measureShare = null;
+					for(MeasureShare ms : user.getMeasureShares()) {
+						if(ms.getMeasure().getId().equals(model.getMeasureId())) {
+							measureShare = ms;
+							break;
+						}
+					}
+					
+					if(measureShare == null && ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
+						recordShareEvent = true;
+						measureShare = new MeasureShare();
+						measureShare.setMeasure(measurePackageDAO.find(model.getMeasureId()));
+						measureShare.setShareUser(user);
+						User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+						measureShare.setOwner(currentUser);
+						user.getMeasureShares().add(measureShare);
+						currentUser.getOwnedMeasureShares().add(measureShare);
+						logger.info("Sharing " + measureShare.getMeasure().getId() + " with " + user.getId() + 
+								" at level " + sLevel.getDescription());
+						if(!first){ //first time, don't add the comma.
+							auditLogAdditionlInfo.append(", ");
+						}
+						first = false;
+						auditLogAdditionlInfo.append(user.getEmailAddress());
+
+						measureShare.setShareLevel(sLevel);
+						measureShareDAO.save(measureShare);
+					}else if(!ShareLevel.MODIFY_ID.equals(dto.getShareLevel())){
+						recordRevokeShareEvent = true;
+						measureShareDAO.delete(measureShare.getId());
+						logger.info("Removing Sharing " + measureShare.getMeasure().getId() + " with " + user.getId() + 
+								" at level " + sLevel.getDescription());
+						System.out.println("Removing Sharing " + measureShare.getMeasure().getId() + " with " + user.getId() + 
+								" at level " + sLevel.getDescription());
+						if(!firstRemove){ //first time, don't add the comma.
+							auditLogForModifyRemove.append(", ");
+						}
+						firstRemove = false;
+						auditLogForModifyRemove.append(user.getEmailAddress());
 					}
 				}
-				
-				if(measureShare == null) {
-					measureShare = new MeasureShare();
-					measureShare.setMeasure(measurePackageDAO.find(model.getMeasureId()));
-					measureShare.setShareUser(user);
-					User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-					measureShare.setOwner(currentUser);
-					user.getMeasureShares().add(measureShare);
-					currentUser.getOwnedMeasureShares().add(measureShare);
-				}
-
-				logger.info("Sharing " + measureShare.getMeasure().getId() + " with " + user.getId() + 
-						" at level " + sLevel.getDescription());
-				
-				if(!first){ //first time, don't add the comma.
-					auditLogAdditionlInfo.append(", ");
-				}
-				first = false;
-				auditLogAdditionlInfo.append(user.getEmailAddress() + ":" + sLevel.getDescription());
-
-				measureShare.setShareLevel(sLevel);
-				measureShareDAO.save(measureShare);
 			}
-		}
 		
-		//US 170. Log share event
-		if(measureShare != null){
-			measureAuditLogDAO.recordMeasureEvent(measureShare.getMeasure(), "Measure Shared", auditLogAdditionlInfo.toString());
-		}
+			//US 170. Log share event
+			if(recordShareEvent || recordRevokeShareEvent){
+				if(recordShareEvent && recordRevokeShareEvent){
+					auditLogAdditionlInfo.append("\n").append(auditLogForModifyRemove);
+				}else if(recordRevokeShareEvent){
+					auditLogAdditionlInfo = new StringBuffer(auditLogForModifyRemove);
+				}
+				measureAuditLogDAO.recordMeasureEvent(measureShare.getMeasure(), "Measure Shared", auditLogAdditionlInfo.toString());
+			}
 	}
 
 	@Override

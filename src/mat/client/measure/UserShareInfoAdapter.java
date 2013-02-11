@@ -2,17 +2,18 @@ package mat.client.measure;
 
 import mat.client.shared.search.SearchResults;
 import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.ShareLevel;
 
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
 class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
-	private static String[] headers = new String[] { "User", "Sharing Mode" };
-	private static String[] widths = new String[] { "50%", "50%" };
+	private static String[] headers = new String[] { "User", "Modify Share" };
+	private static String[] widths = new String[] { "50%", "20%" };
 
 	private ManageMeasureShareModel data = new ManageMeasureShareModel();
 	public void setData(ManageMeasureShareModel data) {
@@ -72,30 +73,27 @@ class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
 	private Widget buildShareRadioPanel(final MeasureShareDTO dto) {
 		FlowPanel fPanel = new FlowPanel();
 		String currentShare = dto.getShareLevel();
-		final RadioButton viewOnlyRadio = new RadioButton("share" + dto.getUserId(), "View Only");
-		final RadioButton editRadio = new RadioButton("share" + dto.getUserId(), "Modify");
-		if("1".equals(currentShare)) {
-			viewOnlyRadio.setValue(Boolean.TRUE);
-		}
-		else if("2".equals(currentShare)) {
-			editRadio.setValue(Boolean.TRUE);
+		final CheckBox modifyCheckBox = new CheckBox();
+		modifyCheckBox.setFormValue("share" + dto.getUserId());
+		modifyCheckBox.setValue(false);
+		if(ShareLevel.VIEW_ONLY_ID.equals(currentShare)) {
+			modifyCheckBox.setValue(false);
+		}else if(ShareLevel.MODIFY_ID.equals(currentShare)) {
+			modifyCheckBox.setValue(true);
 		}
 		
 		ValueChangeHandler<Boolean> changeHandler = new ValueChangeHandler<Boolean>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				if(viewOnlyRadio.getValue().equals(Boolean.TRUE)){
-					dto.setShareLevel("1");
-				}
-				else if(editRadio.getValue().equals(Boolean.TRUE)) {
-					dto.setShareLevel("2");
+				if(modifyCheckBox.getValue()){
+					dto.setShareLevel(ShareLevel.MODIFY_ID);
+				}else{
+					dto.setShareLevel(ShareLevel.VIEW_ONLY_ID);
 				}
 			}
 		};
-		viewOnlyRadio.addValueChangeHandler(changeHandler);
-		editRadio.addValueChangeHandler(changeHandler);
-		fPanel.add(viewOnlyRadio);
-		fPanel.add(editRadio);
+		modifyCheckBox.addValueChangeHandler(changeHandler);
+		fPanel.add(modifyCheckBox);
 		return fPanel;
 	}
 

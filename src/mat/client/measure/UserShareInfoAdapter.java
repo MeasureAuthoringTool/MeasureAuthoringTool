@@ -12,8 +12,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
-	private static String[] headers = new String[] { "User", "Modify Share" };
-	private static String[] widths = new String[] { "50%", "20%" };
+	private static String[] headers = new String[] { "User", "Share" };
+	private static String[] widths = new String[] { "40%", "4%" };
 
 	private ManageMeasureShareModel data = new ManageMeasureShareModel();
 	public void setData(ManageMeasureShareModel data) {
@@ -72,6 +72,7 @@ class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
 	
 	private Widget buildShareRadioPanel(final MeasureShareDTO dto) {
 		FlowPanel fPanel = new FlowPanel();
+		fPanel.setStyleName("centerAligned");
 		String currentShare = dto.getShareLevel();
 		final CheckBox modifyCheckBox = new CheckBox();
 		modifyCheckBox.setFormValue("share" + dto.getUserId());

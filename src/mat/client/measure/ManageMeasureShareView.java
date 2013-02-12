@@ -32,7 +32,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		
 		content.add(measureNameLabel);
 		
-		content.add(new Label("Sharing Mode settings for this measure."));
+		content.add(new Label("Select users with whom you wish to share modify access:"));
 		content.add(new SpacerWidget());
 		
 		Widget searchViewWidget = searchView.asWidget();

@@ -135,7 +135,7 @@
    		<g:HorizontalPanel ui:width="100%" addStyleNames="{style.canvasPanel}">
 			<g:HorizontalPanel ui:width="240px">
 				<g:VerticalPanel ui:width="240px">
-					<g:SimplePanel ui:height="240px" ui:field="qdsElementPanel" />
+					<!-- <g:SimplePanel ui:height="240px" ui:field="qdsElementPanel" /> -->
 					<g:VerticalPanel ui:field="libraryVerticalPanel">
 					</g:VerticalPanel>
 					<g:HorizontalPanel ui:field="buttonHolder">

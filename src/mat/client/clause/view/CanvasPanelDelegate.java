@@ -15,7 +15,7 @@ public class CanvasPanelDelegate {
 		if(canvasPanel == null)
 			canvasPanel = new ScrollPanel();
 		canvasPanel.setWidth("800px");
-		canvasPanel.setHeight("240px");
+		canvasPanel.setHeight("100%");
 		canvasPanel.setStylePrimaryName("canvasPanelDVI");
 		vp.add(canvasPanel);
 		criterionPanel.add(vp, header);

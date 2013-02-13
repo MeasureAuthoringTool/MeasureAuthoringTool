@@ -159,7 +159,7 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 	int currentStackIndex = 0;
 	SelectionHandler<Integer> criterionStackSelectionHandler;
 
-	@UiField SimplePanel qdsElementPanel; 
+	//@UiField SimplePanel qdsElementPanel; 
 	@UiField HorizontalPanel buttonHolder;
 	@UiField VerticalPanel saveHolder;
 	@UiField SimplePanel messageHolder;
@@ -373,7 +373,7 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 		this.appController = appController;
 		this.clauseController = clauseController;
 		initWidget(uiBinder.createAndBindUi(this));	
-		qdsElementPanel.add(clauseController.getWidget());
+		//qdsElementPanel.add(clauseController.getWidget());
  
 		attributeQDSElementList1 = new ListBoxMVP();
 		attributeQDSElementList1.setVisible(false);

@@ -38,12 +38,12 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	HasPageSelectionHandler, HasPageSizeSelectionHandler, HasSortHandler,HasSelectAllHandler, Enableable {
 	
 	public static final int PAGE_SIZE_ALL = Integer.MAX_VALUE;
-	private static final int[] PAGE_SIZES= new int[] {10, 50, 100, PAGE_SIZE_ALL};
+	private static final int[] PAGE_SIZES= new int[] {50, PAGE_SIZE_ALL};
 	private static final int[] HISTORY_PAGE_SIZES = new int[] {10, 50, 100};
 	private static final String ARROW_DOWN = "\u25bc";
 	private static final String ARROW_UP = "\u25b2";
 	public static final int DEFAULT_PAGE = 1;
-	public static final int DEFAULT_PAGE_SIZE = 10;
+	public static final int DEFAULT_PAGE_SIZE = 50;
 	
 	private Panel mainPanel;
 	private HandlerManager handlerManager = new HandlerManager(this);
@@ -52,7 +52,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	protected Panel pageSelector = new HorizontalPanel();
 	private HTML viewingNumber = new HTML();
 	public Grid508 dataTable = new Grid508();
-	private Grid508 QDSDataTable = new Grid508();
+	private Grid508 qdsDataTable = new Grid508();
 	//private FlexTable flexTable = new FlexTable();
 	
 	private int currentPageSize = DEFAULT_PAGE_SIZE;
@@ -67,7 +67,6 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 	public SearchView() {
 		dataTable.setCellPadding(5);
-		
 		dataTable.setStylePrimaryName("searchResultsTable");
 		viewingNumber.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		
@@ -90,13 +89,16 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	public SearchView(boolean QDSCodeListView){
 		mainPanel = new SimplePanel();
 		FlowPanel fPanel = new FlowPanel();
-		QDSDataTable.setWidth("40%");
+		qdsDataTable.setWidth("40%");
+		qdsDataTable.setStylePrimaryName("searchResultsTable");
+		qdsDataTable.setCellPadding(5);
 		mainPanel.add(fPanel);
-		
 		fPanel.add(pageSizeSelector);
 		pageSizeSelector.setStylePrimaryName("searchResultsPageSize");
 		fPanel.add(viewingNumber);
-		fPanel.add(QDSDataTable);
+		fPanel.add(new SpacerWidget());
+		fPanel.add(new SpacerWidget());
+		fPanel.add(qdsDataTable);
 	}
 
 	public void setPageSizeVisible(boolean visible) {
@@ -335,10 +337,29 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		}
 		int numRows = results.getNumberOfRows();
 		int numColumns = results.getNumberOfColumns();
-		QDSDataTable.clear();
-		QDSDataTable.resize((int)numRows + 1, (int)numColumns);
+		qdsDataTable.clear();
+		qdsDataTable.resize((int)numRows + 1, (int)numColumns);
+		buildQDSColumnHeaders(numRows,numColumns,results);
 		buildQDSSearchResults(numRows,numColumns,results);
 		buildPageSizeSelector();
+	}
+	
+	public void buildQDSColumnHeaders(int numRows,int numColumns,SearchResults<T> results){
+		boolean isClearAll = false;
+		for(int i = 0; i < numColumns; i++) {
+			Panel headerPanel = new FlowPanel();
+			Widget columnHeader = null;
+			columnHeader = new Label(results.getColumnHeader(i));
+			columnHeader.setTitle(results.getColumnHeader(i));
+			columnHeader.setStyleName("leftAligned");
+			headerPanel.setStylePrimaryName("noBorder");
+			if(!isClearAll) 
+				headerPanel.add(columnHeader);
+			qdsDataTable.setWidget(0, i,headerPanel);
+			qdsDataTable.getColumnFormatter().setWidth(i, results.getColumnWidth(i));
+			qdsDataTable.getColumnFormatter().addStyleName(i, "noWrap");
+		}
+		qdsDataTable.getRowFormatter().addStyleName(0, "header");
 	}
 	
 	//build data table for user search
@@ -594,39 +615,39 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		for(int i = 0; i < numRows; i++) {
 			for(int j = 0; j < numColumns; j++) {
 				Widget widget = null;
-				if(results.isColumnFiresSelection(j)) {
-					String hyperLinkText = results.getValue(i,j).getElement().getInnerText();
-					String shortText;
-					Label codeListLabel = new Label("");
-					if(hyperLinkText.length() > 15){
-						shortText = hyperLinkText.substring(0,15);
-						codeListLabel = new Label(shortText);
-						codeListLabel.setTitle(results.getValue(i, j).getElement().getInnerText());
-					}else{
-						codeListLabel = new Label(results.getValue(i, j).getElement().getInnerText());
+				
+				if(j == 0){
+					CodeListSearchDTO clsdto = (CodeListSearchDTO) results.get(i);
+					StringBuilder title = new StringBuilder();
+					String steward = clsdto.getSteward();
+					if(steward.equalsIgnoreCase("Other")){
+						steward = clsdto.getStewardOthers();
 					}
-					widget = codeListLabel;
-				}
-				else {
+					
+					title.append("Name : ").append(clsdto.getName()).append("\n").append("OID : ").append(clsdto.getOid()).append("\n").append("Steward : ").append(steward);
+					widget = results.getValue(i, j);
+					widget.getElement().setAttribute("title", title.toString());
+				}else{
 					widget = results.getValue(i, j);
 				}
-				//US209 set tooltip to the oid value for the column containing the value set name only
-				if(j==0){
-					CodeListSearchDTO clsdto = (CodeListSearchDTO) results.get(i);
-					String oid = clsdto.getOid();
-					widget.getElement().setAttribute("title", oid);
-				}
-				QDSDataTable.setWidget(i+1, j,widget);
-				QDSDataTable.getColumnFormatter().setWidth(j, results.getColumnWidth(j));
+				widget.setStylePrimaryName("pad-leftRight5px");
+				qdsDataTable.setWidget(i+1, j,widget);
+				qdsDataTable.getColumnFormatter().setWidth(j, results.getColumnWidth(j));
 				
 			}
 			if(i % 2 == 0) {
-				QDSDataTable.getRowFormatter().addStyleName(i + 1, "odd");
+				qdsDataTable.getRowFormatter().removeStyleName(i + 1, "odd");
+				qdsDataTable.getRowFormatter().addStyleName(i+1,"noWrap");
+				
+			}else{
+				qdsDataTable.getRowFormatter().addStyleName(i + 1, "odd");
+				qdsDataTable.getRowFormatter().addStyleName(i+1,"noWrap");
 			}
-			QDSDataTable.getRowFormatter().addStyleName(i+1,"noWrap");
+			//
 			
 		}
 	}
+	
 	
 	private Widget buildPageSelectionAnchor(String label, final int page) {
 		Anchor a = new Anchor(label);
@@ -748,7 +769,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		dataTable.setEnabled(enabled);
 		
 		//qdsDataTable (radio buttons)
-		QDSDataTable.setEnabled(enabled);
+		qdsDataTable.setEnabled(enabled);
 		
 		//page size anchors 10|50|100|All
 		Iterator<Widget> iter = pageSizeSelector.iterator();

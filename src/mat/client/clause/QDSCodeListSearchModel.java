@@ -17,8 +17,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,IsSerializable {
 
-	private static String[] headers = new String[] {"","",""};
-	private static String[] widths = new String[] {"1px","5px", "2px"};
+	private static String[] headers = new String[] {"QDM","CATEGORY","CODE"};
+	private static String[] widths = new String[] {"25%","25%","25%"};
 	
 	private HashMap<CodeListSearchDTO, RadioButton> radioButtonMap = new HashMap<CodeListSearchDTO, RadioButton>();
 	private List<CodeListSearchDTO> data;
@@ -57,7 +57,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 	
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
-		return true;
+		return false;
 	}
 
 
@@ -93,17 +93,38 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 		case 0:
 			if(!editable){
 				RadioButton r = radioButtonMap.get(codeList);
+				String rbLabel = r.getText();
+				System.out.println("label if ============== "+rbLabel);
+				if(rbLabel.length() > 20){
+					rbLabel = rbLabel.substring(0,19);
+					StringBuffer rbLbl = new StringBuffer();
+					rbLbl = rbLbl.append(rbLabel).append("...");
+					r.setText(rbLbl.toString());
+				}
+				
 				r.setEnabled(editable);
 				value = r;
 			}else{
-				value = radioButtonMap.get(codeList);
+				RadioButton r = radioButtonMap.get(codeList);
+				String rbLabel = r.getText();
+				System.out.println("label Else ============== "+rbLabel);
+				if(rbLabel.length() > 20){
+					rbLabel = rbLabel.substring(0,19);
+					StringBuffer rbLbl = new StringBuffer();
+					rbLbl = rbLbl.append(rbLabel).append("...");
+					r.setText(rbLbl.toString());
+				}
+				
+				value = r;
 			}
+			
 			break;
 		case 1:
-			value = new Label(codeList.getAbbreviatedCodeSystem());
+			value = new Label(codeList.getCategoryDisplay());
+			value.setTitle(codeList.getCategoryDisplay());
 			break;
 		case 2:
-			value = new Label(codeList.getAbbreviatedCategory());
+			value = new Label(codeList.getCodeSystem());
 			break;
 		default:
 			value = new Label("Unknown Column Index");

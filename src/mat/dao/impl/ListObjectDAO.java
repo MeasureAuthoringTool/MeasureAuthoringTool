@@ -205,6 +205,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String>
 		}else{
 		    dto.setLastModified(DateUtility.convertDateToString(cl.getLastModified()));
 		}
+		if("Other".equalsIgnoreCase(cl.getSteward().getOrgName())){
+			dto.setStewardOthers(cl.getStewardOther());
+		}
 		
 	}
 	final void setPaging(Criteria criteria, int startIndex, int pageSize) {

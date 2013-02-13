@@ -1422,6 +1422,10 @@ public class AppController {
 	public void hideLoadingMessage(){
 		Mat.hideLoadingMessage();
 	}
+	
+	public ClauseController getClauseController() {
+		return clauseController;
+	}
 }	
 
 

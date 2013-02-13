@@ -1,6 +1,7 @@
 package mat.client;
 
 import mat.client.clause.MatClausePresenter;
+import mat.client.clause.QDMPresenter;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.metadata.AddEditAuthorsView;
@@ -32,6 +33,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	private MatClausePresenter clauseWorkspace = new MatClausePresenter();
+	private QDMPresenter qdmPresenter;
 	private Widget measurePackageWidget;
 	private SimplePanel emptyWidget = new SimplePanel();
 	private MetaDataPresenter metaDataPresenter ;
@@ -46,9 +48,11 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
+		qdmPresenter = (QDMPresenter) buildQDMPresenter();
 		measureComposerTabLayout = new MatTabLayoutPanel(true);
 		measureComposerTabLayout.setId("measureComposerTabLayout");
 		measureComposerTabLayout.addPresenter(metaDataPresenter,"Measure Details");	
+		measureComposerTabLayout.addPresenter(qdmPresenter,"QDM Element");
 		measureComposerTabLayout.addPresenter(clauseWorkspace,"Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 	
@@ -175,14 +179,12 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		MatContext.get().getMeasureLockService().releaseMeasureLock();
 		Command waitForUnlock = new Command(){
 			public void execute() {
-			  System.out.println("Executing waitForUnlock Command:"+MatContext.get().getMeasureLockService().isResettingLock());	
-	 		  if(!MatContext.get().getMeasureLockService().isResettingLock()){
+			  if(!MatContext.get().getMeasureLockService().isResettingLock()){
 	 			  measureComposerTabLayout.close();
 	 			  measureComposerTabLayout.updateHeaderSelection(0);
 	 			  measureComposerTabLayout.setSelectedIndex(0);
 	 			  buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 	 			  buttonBar.setPageNamesOnState();
-	 			  System.out.println("Closing measureComposerTabLayout...");
 	 		  }else{
 	 			  DeferredCommand.addCommand(this);
 	 		  }
@@ -197,7 +199,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	 	    measureComposerTabLayout.setSelectedIndex(0);
 	 	    buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 		  	buttonBar.setPageNamesOnState();
-	 	    System.out.println("Closing measureComposerTabLayout...");
+	 	    
 	 	}
 		
 	}
@@ -221,6 +223,14 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		MetaDataPresenter mdP = new MetaDataPresenter(mdV,aeaV,aemtV,buttonBar,MatContext.get().getListBoxCodeProvider());
 		return mdP;
 	}
+	
+	private MatPresenter buildQDMPresenter(){
+		QDMPresenter qdmP = new QDMPresenter(clauseWorkspace.getAppController().getClauseController());
+		return qdmP;
+		
+	}
+	
+	
 	public MatClausePresenter getClauseWorkspace() {
 		return clauseWorkspace;
 	}

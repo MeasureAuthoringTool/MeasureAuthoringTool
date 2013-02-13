@@ -54,8 +54,10 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
 	private ListBoxMVP dataTypeInput = new ListBoxMVP();
+	private ListBox appliedQDM = new ListBox();
 	private FocusableWidget messageFocus;
-    private ScrollPanel sp;
+	private Button removeButton = new Button("Remove");
+   // private ScrollPanel sp;
     
     private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
 	
@@ -105,18 +107,40 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		searchCriteriaPanel.add(vssfp.getPanel());
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(searchWidget);
+		searchCriteriaPanel.add(new SpacerWidget());
+		searchCriteriaPanel.add(new SpacerWidget());
+		
+		VerticalPanel hp = new VerticalPanel();
+		//hp.setStylePrimaryName("qdmListBox");
+		appliedQDM.setVisibleItemCount(20);
+		appliedQDM.setWidth("200px");
+		hp.add(appliedQDM);
+		
 		searchCriteriaPanel.add(view.asWidget());
 		searchCriteriaPanel.add(messageFocus);
 		searchCriteriaPanel.add(buildInitialDisabledWidget());
 		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(addToMeasure);
-		sp = new ScrollPanel(searchCriteriaPanel);
-		sp.setHeight("200px");
+		//sp = new ScrollPanel(searchCriteriaPanel);
+		//sp.setHeight("200px");
+		
 		vp.add(SkipListBuilder.buildEmbeddedLinkHolder("ClauseWorkspace"));
 		vp.add(header);
-		vp.add(sp);
-		containerPanel.add(vp);
+		//vp.add(sp);
+		vp.add(searchCriteriaPanel);
+		vp.add(new SpacerWidget());
+		
+		HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.add(vp);
+		hp.setStyleName("qdmListBox");
+		hPanel.add(hp);
+		hp.add(new SpacerWidget());
+		hp.add(new SpacerWidget());
+		hp.add(removeButton);
+		containerPanel.add(hPanel);
+		//containerPanel.add(vp);
+		
 		containerPanel.setStyleName("qdsContentPanel");
 		
 		MatContext.get().setQDSView(this);
@@ -265,7 +289,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	
 	@Override
 	public void scrollToBottom(){
-		sp.scrollToBottom();
+	//	sp.scrollToBottom();
 	}
     
 	

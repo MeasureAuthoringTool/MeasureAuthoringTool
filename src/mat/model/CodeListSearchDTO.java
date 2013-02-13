@@ -16,7 +16,16 @@ public class CodeListSearchDTO implements IsSerializable {
 	private String lastModified;
 	private boolean isGroupedCodeList;
 	private boolean isTransferable;
+	private String stewardOthers;
 	
+	public String getStewardOthers() {
+		return stewardOthers;
+	}
+
+	public void setStewardOthers(String stewardOthers) {
+		this.stewardOthers = stewardOthers;
+	}
+
 	public boolean isDraft(){
 		if(lastModified.equalsIgnoreCase("Draft"))
 				return true;

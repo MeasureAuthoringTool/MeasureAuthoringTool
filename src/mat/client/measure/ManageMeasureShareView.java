@@ -36,7 +36,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		content.add(new SpacerWidget());
 		
 		Widget searchViewWidget = searchView.asWidget();
-		searchViewWidget.setWidth("40%");
+		searchViewWidget.setWidth("60%");
 		content.add(searchViewWidget);
 		content.add(new SpacerWidget());
 		content.add(buttonBar);

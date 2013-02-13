@@ -20,6 +20,7 @@ public class MeasureShareDTO implements IsSerializable {
 	private boolean locked;
 	private String shortName;
 	private LockedUserInfo lockedUserInfo;
+	private String organizationName;
 	
 	/*US501*/
 	private boolean draft;
@@ -132,6 +133,18 @@ public class MeasureShareDTO implements IsSerializable {
 	}
 	public void setMeasureSetId(String measureSetId) {
 		this.measureSetId = measureSetId;
+	}
+	/**
+	 * @return the organizationName
+	 */
+	public String getOrganizationName() {
+		return organizationName;
+	}
+	/**
+	 * @param organizationName the organizationName to set
+	 */
+	public void setOrganizationName(String organizationName) {
+		this.organizationName = organizationName;
 	}
 		
 }

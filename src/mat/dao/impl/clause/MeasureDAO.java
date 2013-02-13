@@ -292,6 +292,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			dto.setUserId(user.getId());
 			dto.setFirstName(user.getFirstName());
 			dto.setLastName(user.getLastName());
+			dto.setOrganizationName(user.getOrganizationName());
 			userIdDTOMap.put(user.getId(), dto);
 			orderedDTOList.add(dto);
 		}

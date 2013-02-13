@@ -12,8 +12,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
 class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
-	private static String[] headers = new String[] { "User", "Share" };
-	private static String[] widths = new String[] { "40%", "4%" };
+	private static String[] headers = new String[] { "User", "Organization", "Share" };
+	private static String[] widths = new String[] { "40%", "40%", "12%" };
 
 	private ManageMeasureShareModel data = new ManageMeasureShareModel();
 	public void setData(ManageMeasureShareModel data) {
@@ -60,11 +60,17 @@ class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
 			value = new Label(data.get(row).getFirstName() + " " + data.get(row).getLastName());
 			break;
 		case 1:
+			String orgName = data.get(row).getOrganizationName();
+			String editOrgName = orgName.length() > 35 ? orgName.substring(0,34).concat("...") : orgName;
+			value = new Label(editOrgName);
+			
+			value.setTitle(orgName);
+			break;
+		case 2:
 			value = buildShareRadioPanel(data.get(row));
 			break;
 		
 		default: 
-			//value = new Label("Unknown Column Index");
 			value = new Label();
 		}
 		return value;

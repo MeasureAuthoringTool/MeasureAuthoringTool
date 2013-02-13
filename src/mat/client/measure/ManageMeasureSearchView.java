@@ -68,7 +68,7 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 			mainPanel.add(searchMeasureText);
 			mainPanel.add(msfp.getPanel());
 			mainPanel.add(new SpacerWidget());
-			Widget searchText = LabelBuilder.buildLabel(searchInput, "Search for a Measure");
+			Widget searchText = LabelBuilder.buildLabel(searchInput, "");
 			searchFocusHolder = new FocusableWidget(searchText);
 			mainPanel.add(searchFocusHolder);
 			mainPanel.add(buildSearchWidget());
@@ -78,7 +78,7 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 			mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,errorMessagesForBulkExport));
 		}else{
 			mainPanel.add(new SpacerWidget());
-			Widget searchText = LabelBuilder.buildLabel(searchInput, "Search for a Measure");
+			Widget searchText = LabelBuilder.buildLabel(searchInput, "");
 			searchFocusHolder = new FocusableWidget(searchText);
 			mainPanel.add(searchFocusHolder);
 			mainPanel.add(buildSearchWidget());

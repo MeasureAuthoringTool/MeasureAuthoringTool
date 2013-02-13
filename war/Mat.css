@@ -520,7 +520,11 @@ body#main select, body#main input, body#main textarea {
     border:1px solid #C0C0C0;
     background-color: white;
 }
-
+.qdmListBox{
+	/* padding:40px 30px 4px 50px;	 */
+	margin-left:100px;
+	margin-top:140px;
+}
 
 /*
 * TAB PANELS
@@ -1055,6 +1059,11 @@ padding: 2px;
 
 .pad-left21px{
 	padding-left:21px;
+}
+
+.pad-leftRight5px{
+	padding-left:5px;
+	padding-right:5px;
 }
 
 .generate-emeasureid-button{

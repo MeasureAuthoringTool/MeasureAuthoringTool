@@ -94,8 +94,8 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			if(!editable){
 				RadioButton r = radioButtonMap.get(codeList);
 				String rbLabel = r.getText();
-				if(rbLabel.length() > 50){
-					rbLabel = rbLabel.substring(0,50);
+				if(rbLabel.length() > 25){
+					rbLabel = rbLabel.substring(0,25);
 					StringBuffer rbLbl = new StringBuffer();
 					rbLbl = rbLbl.append(rbLabel).append("...");
 					r.setText(rbLbl.toString());
@@ -106,8 +106,8 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			}else{
 				RadioButton r = radioButtonMap.get(codeList);
 				String rbLabel = r.getText();
-				if(rbLabel.length() > 50){
-					rbLabel = rbLabel.substring(0,50);
+				if(rbLabel.length() > 25){
+					rbLabel = rbLabel.substring(0,25);
 					StringBuffer rbLbl = new StringBuffer();
 					rbLbl = rbLbl.append(rbLabel).append("...");
 					r.setText(rbLbl.toString());
@@ -118,7 +118,13 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			
 			break;
 		case 1:
-			value = new Label(codeList.getCategoryDisplay());
+			String labelValue= codeList.getCategoryDisplay();
+			if(labelValue.length() >20){
+				labelValue = labelValue.substring(0, 20);
+				StringBuffer lblValue = new StringBuffer(labelValue);
+				labelValue = lblValue.append("...").toString();
+			}
+			value = new Label(labelValue);
 			value.setTitle(codeList.getCategoryDisplay());
 			break;
 		case 2:

@@ -1061,16 +1061,6 @@ padding: 2px;
 	padding-left:21px;
 }
 
-.pad-left5Right55px{
-	padding-left:5px;
-	padding-right:55px;
-}
-
-.pad-left5Right21px{
-	padding-left:5px;
-	padding-right:21px;
-}
-
 .generate-emeasureid-button{
 	color: #666666;
 }
@@ -1084,6 +1074,32 @@ padding: 2px;
 	font-size:.84em;
 	font-weight: normal;
 }
+
+.div-wrapper{
+	width: 900px;
+	position: relative;
+	overflow: hidden; 
+}
+
+.div-first{
+	width: 600px; 
+	overflow:hidden; 
+	float: left;
+}
+
+.div-second{
+	widtrh:300px;
+	overflow:hidden;
+}
+
+.leftpadding4px{
+	padding-left:4px;
+}
+
+.bottomPadding10px{
+	padding-bottom:10px;
+}
+
 
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________*/

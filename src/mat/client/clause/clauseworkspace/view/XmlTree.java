@@ -4,6 +4,7 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.Iterator;
 
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkspacePresenter.XmlTreeDisplay;
+import mat.client.shared.LabelBuilder;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -93,16 +94,16 @@ public class XmlTree implements XmlTreeDisplay {
 		
 		buttonPanel.add(new HTML("</br>"));
 		HorizontalPanel attrPanel = new HorizontalPanel();
-		attrPanel.setSpacing(5);
+		attrPanel.setSpacing(3);
 		Label addAttribute = new Label("Add Attribute");
 		addAttribute.setStyleName("leftAligned leftpadding4px bottomPadding10px labelStyling");
 		buttonPanel.add(addAttribute);
 		
-		attrPanel.add(new HTML("Name"));
+		attrPanel.add(LabelBuilder.buildRequiredLabel(new HTML(), "Name"));
 		attrPanel.add(attrName);
 		attrName.setSize("50px", "20px");
 		
-		attrPanel.add(new HTML("Value"));
+		attrPanel.add(LabelBuilder.buildRequiredLabel(new HTML(), "Value"));
 		attrPanel.add(attrValue);
 		attrValue.setSize("90px", "20px");
 		

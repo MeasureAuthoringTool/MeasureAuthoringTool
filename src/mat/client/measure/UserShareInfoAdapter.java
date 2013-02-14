@@ -60,14 +60,10 @@ class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
 			value = new Label(data.get(row).getFirstName() + " " + data.get(row).getLastName());
 			break;
 		case 1:
-			String orgName = data.get(row).getOrganizationName();
-			String editOrgName = orgName.length() > 35 ? orgName.substring(0,34).concat("...") : orgName;
-			value = new Label(editOrgName);
-			
-			value.setTitle(orgName);
+			value = new Label(data.get(row).getOrganizationName());
 			break;
 		case 2:
-			value = buildShareRadioPanel(data.get(row));
+			value = buildShareCheckboxPanel(data.get(row));
 			break;
 		
 		default: 
@@ -76,11 +72,12 @@ class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
 		return value;
 	}
 	
-	private Widget buildShareRadioPanel(final MeasureShareDTO dto) {
+	private Widget buildShareCheckboxPanel(final MeasureShareDTO dto) {
 		FlowPanel fPanel = new FlowPanel();
 		fPanel.setStyleName("centerAligned");
 		String currentShare = dto.getShareLevel();
 		final CheckBox modifyCheckBox = new CheckBox();
+		modifyCheckBox.setTitle("Share");
 		modifyCheckBox.setFormValue("share" + dto.getUserId());
 		modifyCheckBox.setValue(false);
 		if(ShareLevel.VIEW_ONLY_ID.equals(currentShare)) {

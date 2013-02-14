@@ -17,8 +17,8 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,IsSerializable {
 
-	private static String[] headers = new String[] {"QDM","CATEGORY","CODE"};
-	private static String[] widths = new String[] {"25%","25%","25%"};
+	private static String[] headers = new String[] {"QDM","Category","Code System"};
+	private static String[] widths = new String[] {"50%","25%","25%"};
 	
 	private HashMap<CodeListSearchDTO, RadioButton> radioButtonMap = new HashMap<CodeListSearchDTO, RadioButton>();
 	private List<CodeListSearchDTO> data;
@@ -94,9 +94,8 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			if(!editable){
 				RadioButton r = radioButtonMap.get(codeList);
 				String rbLabel = r.getText();
-				System.out.println("label if ============== "+rbLabel);
-				if(rbLabel.length() > 20){
-					rbLabel = rbLabel.substring(0,19);
+				if(rbLabel.length() > 50){
+					rbLabel = rbLabel.substring(0,50);
 					StringBuffer rbLbl = new StringBuffer();
 					rbLbl = rbLbl.append(rbLabel).append("...");
 					r.setText(rbLbl.toString());
@@ -107,9 +106,8 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			}else{
 				RadioButton r = radioButtonMap.get(codeList);
 				String rbLabel = r.getText();
-				System.out.println("label Else ============== "+rbLabel);
-				if(rbLabel.length() > 20){
-					rbLabel = rbLabel.substring(0,19);
+				if(rbLabel.length() > 50){
+					rbLabel = rbLabel.substring(0,50);
 					StringBuffer rbLbl = new StringBuffer();
 					rbLbl = rbLbl.append(rbLabel).append("...");
 					r.setText(rbLbl.toString());
@@ -125,6 +123,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			break;
 		case 2:
 			value = new Label(codeList.getCodeSystem());
+			value.setTitle(codeList.getCodeSystem());
 			break;
 		default:
 			value = new Label("Unknown Column Index");

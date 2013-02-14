@@ -89,7 +89,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	public SearchView(boolean QDSCodeListView){
 		mainPanel = new SimplePanel();
 		FlowPanel fPanel = new FlowPanel();
-		qdsDataTable.setWidth("40%");
+		qdsDataTable.setWidth("100%");
 		qdsDataTable.setStylePrimaryName("searchResultsTable");
 		qdsDataTable.setCellPadding(5);
 		mainPanel.add(fPanel);
@@ -627,10 +627,12 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					title.append("Name : ").append(clsdto.getName()).append("\n").append("OID : ").append(clsdto.getOid()).append("\n").append("Steward : ").append(steward);
 					widget = results.getValue(i, j);
 					widget.getElement().setAttribute("title", title.toString());
+					widget.setStylePrimaryName("pad-left5Right55px");
 				}else{
 					widget = results.getValue(i, j);
+					widget.setStylePrimaryName("pad-left5Right21px");
 				}
-				widget.setStylePrimaryName("pad-leftRight5px");
+				
 				qdsDataTable.setWidget(i+1, j,widget);
 				qdsDataTable.getColumnFormatter().setWidth(j, results.getColumnWidth(j));
 				

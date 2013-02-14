@@ -125,7 +125,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		//sp = new ScrollPanel(searchCriteriaPanel);
 		//sp.setHeight("200px");
 		
-		vp.add(SkipListBuilder.buildEmbeddedLinkHolder("ClauseWorkspace"));
+		/*vp.add(SkipListBuilder.buildEmbeddedLinkHolder("ClauseWorkspace"));*/
 		vp.add(header);
 		//vp.add(sp);
 		vp.add(searchCriteriaPanel);

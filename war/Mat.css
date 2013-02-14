@@ -1061,9 +1061,14 @@ padding: 2px;
 	padding-left:21px;
 }
 
-.pad-leftRight5px{
+.pad-left5Right55px{
 	padding-left:5px;
-	padding-right:5px;
+	padding-right:55px;
+}
+
+.pad-left5Right21px{
+	padding-left:5px;
+	padding-right:21px;
 }
 
 .generate-emeasureid-button{

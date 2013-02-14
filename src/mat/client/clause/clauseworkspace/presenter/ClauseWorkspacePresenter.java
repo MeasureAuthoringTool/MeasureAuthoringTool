@@ -120,9 +120,13 @@ public class ClauseWorkspacePresenter implements MatPresenter{
 		Tree xmlTree = new Tree();
 		Document xmlDocument = XMLParser.parse(xml);
 		String name = xmlDocument.getFirstChild().getNodeName();
-		Node root = xmlDocument.getElementsByTagName(name).item(0);
-		xmlTree.addItem(getTreeItem(root));
-		xmlTree.setTitle("xml tree");
+		if("xml".equalsIgnoreCase(name)){
+			name = xmlDocument.getFirstChild().getNextSibling().getNodeName();
+		}
+			Node root = xmlDocument.getElementsByTagName(name).item(0);
+			xmlTree.addItem(getTreeItem(root));
+			xmlTree.setTitle("xml tree");	
+				
 		return xmlTree;
 	}
 	

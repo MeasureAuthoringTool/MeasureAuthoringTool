@@ -10,7 +10,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -20,8 +19,9 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class XmlTree extends Composite implements XmlTreeDisplay {
+public class XmlTree implements XmlTreeDisplay {
 	
 	private FlowPanel  mainPanel = new FlowPanel(); 
 	
@@ -125,7 +125,7 @@ public class XmlTree extends Composite implements XmlTreeDisplay {
 		mainPanel.add(rightPanel);
 		mainPanel.add(bottomSavePanel);		
 	
-		initWidget(mainPanel);
+//		initWidget(mainPanel);
 		
 		tree.addSelectionHandler(new TreeSelectionHandler());
 		saveBtn.setEnabled(tree.getItemCount() > 0 ? true :false);
@@ -328,5 +328,10 @@ public class XmlTree extends Composite implements XmlTreeDisplay {
 	@Override
 	public Button getSaveButton() {
 		return saveBtn;
+	}
+	
+	@Override
+	public Widget asWidget() {
+		return mainPanel;
 	}
 }

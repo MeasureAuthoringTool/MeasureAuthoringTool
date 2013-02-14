@@ -74,10 +74,10 @@ class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
 	
 	private Widget buildShareCheckboxPanel(final MeasureShareDTO dto) {
 		FlowPanel fPanel = new FlowPanel();
+		fPanel.setTitle("Share");
 		fPanel.setStyleName("centerAligned");
 		String currentShare = dto.getShareLevel();
 		final CheckBox modifyCheckBox = new CheckBox();
-		modifyCheckBox.setTitle("Share");
 		modifyCheckBox.setFormValue("share" + dto.getUserId());
 		modifyCheckBox.setValue(false);
 		if(ShareLevel.VIEW_ONLY_ID.equals(currentShare)) {

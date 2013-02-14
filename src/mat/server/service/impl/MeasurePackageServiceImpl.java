@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mat.client.clause.clauseworkspace.modal.MeasureExportModal;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -677,8 +678,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 	@Override
 	
-	public void transferMeasureOwnerShipToUser(List<String> list, String toEmail){
-		
+	public void transferMeasureOwnerShipToUser(List<String> list, String toEmail){		
 		User userTo = userDAO.findByEmail(toEmail);
 		
 		for(int i=0;i<list.size();i++){
@@ -703,5 +703,32 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 				
 		}
 		
+	}
+
+	@Override
+	public MeasureExportModal getMeasureExoportForMeasure(String measureId) {
+		MeasureExport export = measureExportDAO.findForMeasure(measureId);
+		if(export != null){
+			MeasureExportModal exportModal = new MeasureExportModal();
+			exportModal.setMeasureId(export.getMeasure().getId());
+			exportModal.setMeausreExportId(export.getId());
+			exportModal.setXml(export.getSimpleXML());
+			return exportModal;
+		}
+		return null;
+	}
+
+	@Override
+	public void saveMeasureExport(MeasureExportModal measureExportModal) {
+		MeasureExport export = measureExportDAO.findForMeasure(measureExportModal.getMeasureId());
+		if(export != null){
+			export.setSimpleXML(measureExportModal.getXml());
+		}else{
+			Measure measure = measureDAO.find(measureExportModal.getMeasureId());
+			export = new MeasureExport();
+			export.setMeasure(measure);
+			export.setSimpleXML(measureExportModal.getXml());
+		}
+		measureExportDAO.save(export);
 	}
 }

@@ -2,7 +2,7 @@ package mat.client.measure.service;
 
 import java.util.List;
 
-import mat.client.codelist.TransferOwnerShipModel;
+import mat.client.clause.clauseworkspace.modal.MeasureExportModal;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -11,7 +11,6 @@ import mat.client.shared.MatException;
 import mat.model.Author;
 import mat.model.MeasureType;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -38,6 +37,7 @@ public interface MeasureService extends RemoteService {
 	public int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
 	public TransferMeasureOwnerShipModel searchUsers(int startIndex, int pageSize);
 	void transferOwnerShipToUser(List<String> list, String toEmail);
-	
+	public MeasureExportModal getMeasureExoportForMeasure(String measureId);
+	public void saveMeasureExport(MeasureExportModal measureExportModal);
 	
 }

@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
+import mat.client.clause.clauseworkspace.modal.MeasureExportModal;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -799,6 +800,16 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	public void transferOwnerShipToUser(List<String> list, String toEmail){
 		MeasurePackageService service = getService();
 		service.transferMeasureOwnerShipToUser(list, toEmail);
+	}
+
+	@Override
+	public MeasureExportModal getMeasureExoportForMeasure(String measureId) {
+		return getService().getMeasureExoportForMeasure(measureId);
+	}
+
+	@Override
+	public void saveMeasureExport(MeasureExportModal measureExportModal) {
+		getService().saveMeasureExport(measureExportModal);
 	}
 	
 	

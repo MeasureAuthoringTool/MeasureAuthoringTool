@@ -2,6 +2,7 @@ package mat.server.service;
 
 import java.util.List;
 
+import mat.client.clause.clauseworkspace.modal.MeasureExportModal;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -53,4 +54,6 @@ public interface MeasurePackageService {
 	List<MeasureShareDTO> searchWithFilter(String searchText, int startIndex,
 			int numResults, int filter);
 	long count(int filter);
+	public MeasureExportModal getMeasureExoportForMeasure(String measureId);
+	public void saveMeasureExport(MeasureExportModal measureExportModal);
 }

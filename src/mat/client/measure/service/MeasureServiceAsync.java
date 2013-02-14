@@ -2,7 +2,7 @@ package mat.client.measure.service;
 
 import java.util.List;
 
-import mat.client.codelist.TransferOwnerShipModel;
+import mat.client.clause.clauseworkspace.modal.MeasureExportModal;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -33,5 +33,9 @@ public interface MeasureServiceAsync {
 	void searchUsers(int startIndex, int pageSize,
 			AsyncCallback<TransferMeasureOwnerShipModel> callback);
 	void transferOwnerShipToUser(List<String> list, String toEmail,
+			AsyncCallback<Void> callback);
+	void getMeasureExoportForMeasure(String measureId,
+			AsyncCallback<MeasureExportModal> callback);
+	void saveMeasureExport(MeasureExportModal measureExportModal,
 			AsyncCallback<Void> callback);
 	}

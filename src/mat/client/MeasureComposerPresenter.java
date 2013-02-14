@@ -1,6 +1,7 @@
 package mat.client;
 
 import mat.client.clause.MatClausePresenter;
+import mat.client.clause.clauseworkspace.presenter.ClauseWorkspacePresenter;
 import mat.client.clause.QDMPresenter;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
@@ -43,6 +44,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	private PreviousContinueButtonBar buttonBar = new PreviousContinueButtonBar();
     private static SimplePanel subSkipContentHolder = new SimplePanel();  
     private String measureComposerTab;
+    private ClauseWorkspacePresenter clauseWorkspacePresenter = new ClauseWorkspacePresenter();
     
 	public MeasureComposerPresenter() {
 		
@@ -54,6 +56,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.addPresenter(metaDataPresenter,"Measure Details");	
 		measureComposerTabLayout.addPresenter(qdmPresenter,"QDM Element");
 		measureComposerTabLayout.addPresenter(clauseWorkspace,"Clause Workspace");
+		measureComposerTabLayout.addPresenter(clauseWorkspacePresenter, "Clause Workspace Tree");
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 	
 		measureComposerTabLayout.setHeight("98%");

@@ -524,6 +524,8 @@ body#main select, body#main input, body#main textarea {
 	/* padding:40px 30px 4px 50px;	 */
 	margin-left:100px;
 	margin-top:140px;
+	margin-right:30px;
+	position:relative;
 }
 
 /*
@@ -1059,6 +1061,16 @@ padding: 2px;
 
 .pad-left21px{
 	padding-left:21px;
+}
+
+.pad-left5Right55px{
+	padding-left:5px;
+	padding-right:40px;
+}
+
+.pad-left5Right21px{
+	padding-left:5px;
+	padding-right:21px;
 }
 
 .generate-emeasureid-button{

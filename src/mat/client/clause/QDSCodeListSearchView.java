@@ -90,7 +90,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		VerticalPanel vp = new VerticalPanel();
 		FlowPanel header = new FlowPanel();
 		header.addStyleName("codeListHeader");
-		Label codeListLabel = new Label("Value Sets");
+		Label codeListLabel = new Label("QDM");
 		FocusableWidget  labelFocus = new FocusableWidget(codeListLabel);
 		header.add(labelFocus);
 		dataTypeInput.addValueChangeHandler(dataTypeChangeHandler);

@@ -113,7 +113,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 	public void buildPageSizeSelector() {
 		pageSizeSelector.clear();
-		pageSelector.setHeight("20px");
+		pageSelector.setHeight("30px");
 		pageSizeSelector.add(new HTML("View:&nbsp; "));
 		for(int i = 0; i < PAGE_SIZES.length; i++) {
 			pageSizeSelector.add(buildPageSizeLink(PAGE_SIZES[i]));

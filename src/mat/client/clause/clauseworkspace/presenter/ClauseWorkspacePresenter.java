@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.Tree;
 import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
-import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
@@ -135,16 +134,23 @@ public class ClauseWorkspacePresenter implements MatPresenter{
 	
 	private TreeItem getTreeItem(Node root){
 		if(root.getNodeName().equalsIgnoreCase("#text")){
-			return new TreeItem(new Label(root.getNodeValue()));
+			String val = root.getNodeValue().replaceAll("\n\r", "").trim();
+			if(val.length() > 0){
+				return new TreeItem(root.getNodeValue());
+			}else{
+				return null;
+			}
 		}
-		
-		TreeItem ti = new TreeItem(new Label(root.getNodeName()));
+		TreeItem ti = new TreeItem(root.getNodeName());
 		NodeList nodes = root.getChildNodes();
 		for(int i = 0; i < nodes.getLength(); i++){
 			Node node = nodes.item(i);
-			
-			if(!(node.getNodeName().equalsIgnoreCase("#text") && node.getNodeValue().isEmpty())){
-				ti.addItem(getTreeItem(node));
+			String name = node.getNodeName().replaceAll("\n\r", "").trim();
+			if(!(name.equalsIgnoreCase("#text") && name.isEmpty())){	
+				TreeItem item = getTreeItem(node);
+				if(null != item){
+					ti.addItem(item);
+				}
 			}
 		}
 		return ti;

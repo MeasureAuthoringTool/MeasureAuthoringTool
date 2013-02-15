@@ -110,11 +110,11 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
 		
-		VerticalPanel hp = new VerticalPanel();
-		//hp.setStylePrimaryName("qdmListBox");
+		VerticalPanel listBoxVPanel = new VerticalPanel();
+		
 		appliedQDM.setVisibleItemCount(20);
 		appliedQDM.setWidth("200px");
-		hp.add(appliedQDM);
+		listBoxVPanel.add(appliedQDM);
 		
 		searchCriteriaPanel.add(view.asWidget());
 		searchCriteriaPanel.add(messageFocus);
@@ -133,11 +133,11 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.add(vp);
-		hp.setStyleName("qdmListBox");
-		hPanel.add(hp);
-		hp.add(new SpacerWidget());
-		hp.add(new SpacerWidget());
-		hp.add(removeButton);
+		listBoxVPanel.setStyleName("qdmListBox");
+		hPanel.add(listBoxVPanel);
+		listBoxVPanel.add(new SpacerWidget());
+		listBoxVPanel.add(new SpacerWidget());
+		listBoxVPanel.add(removeButton);
 		containerPanel.add(hPanel);
 		//containerPanel.add(vp);
 		

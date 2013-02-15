@@ -159,7 +159,7 @@ public class XmlTree implements XmlTreeDisplay {
 			public void onClick(ClickEvent event) {
 				if(attrName.getValue().trim().length() > 0 && attrValue.getValue().trim().length() > 0){
 					TreeItem treeItem = tree.getSelectedItem();
-					Label label = new Label(attrName.getValue()+" = " + attrValue.getValue());
+					String label = attrName.getValue()+" = " + attrValue.getValue();
 					if(treeItem != null){
 						if(trimSelectionIndicator(treeItem.getText()).equals("attributes")){
 							treeItem.addItem(label);

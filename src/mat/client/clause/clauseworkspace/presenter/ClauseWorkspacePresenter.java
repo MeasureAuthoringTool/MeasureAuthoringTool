@@ -52,7 +52,7 @@ public class ClauseWorkspacePresenter implements MatPresenter{
 				@Override
 				public void onSuccess(MeasureExportModal result) {
 					XmlTree xmlTree;
-					if(null != result){
+					if(null != result && result.getXml().length() > 0){
 						setMeasureExportModal(result);
 						xmlTree = new XmlTree(createTreeFromXml(result.getXml()));
 					}else{
@@ -126,17 +126,27 @@ public class ClauseWorkspacePresenter implements MatPresenter{
 			name = xmlDocument.getFirstChild().getNextSibling().getNodeName();
 		}
 			Node root = xmlDocument.getElementsByTagName(name).item(0);
-			xmlTree.addItem(getTreeItem(root));
+			xmlTree.addItem(getTreeItem(root, null));
 			xmlTree.setTitle("xml tree");	
 				
 		return xmlTree;
 	}
 	
-	private TreeItem getTreeItem(Node root){
+	private TreeItem getTreeItem(Node root, TreeItem treeItem){
 		if(root.getNodeName().equalsIgnoreCase("#text")){
 			String val = root.getNodeValue().replaceAll("\n\r", "").trim();
 			if(val.length() > 0){
-				return new TreeItem(root.getNodeValue());
+				if(root.getParentNode() != null && root.getParentNode().getNodeName().equals("attributes")){
+					String[] vals = val.split(",");
+					TreeItem item = new TreeItem(vals[0]);
+					for (int i = 0; i < vals.length; i++) {
+						treeItem.addItem(vals[i]);
+					}
+					return null;
+				}else{
+					return new TreeItem(root.getNodeValue());
+				}
+				
 			}else{
 				return null;
 			}
@@ -147,7 +157,7 @@ public class ClauseWorkspacePresenter implements MatPresenter{
 			Node node = nodes.item(i);
 			String name = node.getNodeName().replaceAll("\n\r", "").trim();
 			if(!(name.equalsIgnoreCase("#text") && name.isEmpty())){	
-				TreeItem item = getTreeItem(node);
+				TreeItem item = getTreeItem(node, ti);
 				if(null != item){
 					ti.addItem(item);
 				}
@@ -183,7 +193,11 @@ public class ClauseWorkspacePresenter implements MatPresenter{
 		if(treeItem.getChildCount() == 0){
 			if(nodetext.trim().length() > 0){
 				nodetext = nodetext.replaceAll("&", "&amp;");
-				xmlBuilder.append(indent).append(nodetext+newline);
+				if(treeItem.getParentItem() != null && treeItem.getParentItem().getText().equals("attributes")){
+					xmlBuilder.append(indent).append(nodetext+","+newline);
+				}else{
+					xmlBuilder.append(indent).append(nodetext +newline);
+				}
 			}
 			return;
 		}else{
@@ -192,7 +206,7 @@ public class ClauseWorkspacePresenter implements MatPresenter{
 			}
 		}
 		for (int i = 0; i < treeItem.getChildCount(); i++) {
-			getChildren(treeItem.getChild(i),xmlBuilder,indent+"    ");
+			getChildren(treeItem.getChild(i),xmlBuilder,indent);
 		}
 		if(nodetext.trim().length() > 0){
 			xmlBuilder.append(indent).append("</"+nodetext+">"+newline);

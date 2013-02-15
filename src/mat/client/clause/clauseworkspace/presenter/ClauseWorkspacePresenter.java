@@ -93,13 +93,16 @@ public class ClauseWorkspacePresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {				
 				TreeItem treeItem = xmlTreeDisplay.getXmlTree().getSelectedItem();
 				String nodetext = null;
-				if(treeItem.getWidget() != null){
-					nodetext = ((Label)treeItem.getWidget()).getText().replaceFirst("\u25ba", "").trim();
-					treeItem.setWidget(new Label(nodetext));
-				}else{
-					nodetext = treeItem.getText().replaceFirst("\u25ba", "").trim();
-					treeItem.setText(nodetext);
+				if(treeItem != null){
+					if(treeItem.getWidget() != null){
+						nodetext = ((Label)treeItem.getWidget()).getText().replaceFirst("\u25ba", "").trim();
+						treeItem.setWidget(new Label(nodetext));
+					}else{
+						nodetext = treeItem.getText().replaceFirst("\u25ba", "").trim();
+						treeItem.setText(nodetext);
+					}
 				}
+				
 				measureExportModal.setXml(createXmlFromTree().toString());
 				service.saveMeasureExport(measureExportModal, new AsyncCallback<Void>() {
 
@@ -131,30 +134,11 @@ public class ClauseWorkspacePresenter implements MatPresenter{
 	}
 	
 	private TreeItem getTreeItem(Node root){
-		boolean isAttr = false;
 		if(root.getNodeName().equalsIgnoreCase("#text")){
 			return new TreeItem(new Label(root.getNodeValue()));
 		}
-		NamedNodeMap namedNodeMap = null;
-		try{
-			namedNodeMap =  root.getAttributes();
-			if(namedNodeMap.getLength() > 0){
-				isAttr = true;
-			}
-		}catch(Exception e){}
-		TreeItem ti = null;
-		/*if(isAttr){
-			HorizontalPanel horizontalPanel = new HorizontalPanel();
-			horizontalPanel.add(new Label(root.getNodeName()));	
-			horizontalPanel.setStyleName("treeItem td");
-			for (int i = 0; i < namedNodeMap.getLength(); i++) {
-				horizontalPanel.add(new Label(namedNodeMap.item(i).getNodeName() +" = \""+ namedNodeMap.item(i).getNodeValue()+"\" "));
-			}
-			ti = new TreeItem(horizontalPanel);
-		}else{
-			 ti = new TreeItem(new Label(root.getNodeName()));	
-		}*/
-		ti = new TreeItem(new Label(root.getNodeName()));
+		
+		TreeItem ti = new TreeItem(new Label(root.getNodeName()));
 		NodeList nodes = root.getChildNodes();
 		for(int i = 0; i < nodes.getLength(); i++){
 			Node node = nodes.item(i);
@@ -182,7 +166,7 @@ public class ClauseWorkspacePresenter implements MatPresenter{
 	}
 	
 	private void getChildren(TreeItem treeItem, StringBuilder xmlBuilder,String indent){
-		String newline = "\r\n";
+		String newline = "";
 		String nodetext = null;
 		if(treeItem.getWidget() != null){
 			nodetext = ((Label)treeItem.getWidget()).getText().trim().replaceAll("/n", "");

@@ -55,8 +55,8 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.setId("measureComposerTabLayout");
 		measureComposerTabLayout.addPresenter(metaDataPresenter,"Measure Details");	
 		measureComposerTabLayout.addPresenter(qdmPresenter,"QDM Element");
-		measureComposerTabLayout.addPresenter(clauseWorkspace,"Clause Workspace");
-		measureComposerTabLayout.addPresenter(clauseWorkspacePresenter, "XML Tree");
+		measureComposerTabLayout.addPresenter(clauseWorkspace,"Old CW");//name changed 
+		measureComposerTabLayout.addPresenter(clauseWorkspacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 	
 		measureComposerTabLayout.setHeight("98%");

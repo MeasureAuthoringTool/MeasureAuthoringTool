@@ -89,11 +89,11 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	public SearchView(boolean QDSCodeListView){
 		mainPanel = new SimplePanel();
 		FlowPanel fPanel = new FlowPanel();
-		fPanel.setHeight("20px");
-		qdsDataTable.setWidth("100%");
+		qdsDataTable.setWidth("40%");
 		qdsDataTable.setStylePrimaryName("searchResultsTable");
 		qdsDataTable.setCellPadding(5);
 		mainPanel.add(fPanel);
+		pageSizeSelector.setHeight("20px");
 		fPanel.add(pageSizeSelector);
 		pageSizeSelector.setStylePrimaryName("searchResultsPageSize");
 		fPanel.add(viewingNumber);
@@ -275,6 +275,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	
 	private Widget buildPageSizeLink(final int size) {
 		String label = (size != PAGE_SIZE_ALL) ? Integer.toString(size) : "All";
+	
 		if(currentPageSize != size) {
 			MATAnchor a = new MATAnchor(label);
 			a.addClickHandler(new MATClickHandler() {
@@ -303,6 +304,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		else {
 			Widget w = new HTML("<b>" + label + "</b>");
 			FocusPanel fp = new FocusPanel();
+			fp.setHeight("20px");
 			fp.add(w);
 			fp.setTitle("Currently displaying a maximum of "+label+" records.");
 			return fp;

@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -60,7 +61,7 @@ import org.apache.tools.zip.ZipOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
-import com.google.gwt.dev.util.collect.HashMap;
+
 
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	

@@ -67,10 +67,12 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		public void onValueChange(ValueChangeEvent<String> event) {
 			specificOccurrence.setValue(false);
 			String selectedValue = event.getValue();
-		    if(!selectedValue.isEmpty()&& !selectedValue.equals(""))
+		    if(!selectedValue.isEmpty()&& !selectedValue.equals("")){
 		    	addToMeasure.setEnabled(true);
-		    else
+		    }
+		    else{
 		    	addToMeasure.setEnabled(false);
+		    }
 		}
 	};
     
@@ -122,11 +124,14 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(addToMeasure);
+	
+		// Commneted this portion as a part of MAT-892  New Tab for QDM
 		//sp = new ScrollPanel(searchCriteriaPanel);
 		//sp.setHeight("200px");
 		
 		/*vp.add(SkipListBuilder.buildEmbeddedLinkHolder("ClauseWorkspace"));*/
-		vp.add(header);
+	
+		//vp.add(header);
 		//vp.add(sp);
 		vp.add(searchCriteriaPanel);
 		vp.add(new SpacerWidget());

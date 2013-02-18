@@ -270,6 +270,10 @@
     <bean id="matFlagDAO"
 		class="mat.dao.impl.MatFlagDAO" parent="baseDAO"> 
 	</bean>
+	
+    <bean id="measureXMLDAO"
+        class="mat.dao.impl.clause.MeasureXMLDAO" parent="baseDAO">
+    </bean>
 
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
@@ -309,6 +313,7 @@
 		<property name="attributeDetailsDAO" ref="attributeDetailsDAO"/>
 		<property name="transactionAuditLogDAO" ref="transactionAuditLogDAO"/>
 		<property name="matFlagDAO" ref="matFlagDAO"/>
+		<property name="measureXMLDAO" ref="measureXMLDAO"/>
 	</bean>
 	 
 </beans>

@@ -33,6 +33,7 @@ import mat.dao.clause.DecisionDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
+import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.MeasurementTermDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributeDetailsDAO;
@@ -78,6 +79,7 @@ public class DAOService {
 	//US 171
 	private OperatorDAO operatorDAO;
 	private MatFlagDAO matFlagDAO;
+	private MeasureXMLDAO measureXMLDAO;
 	
 	
 	public MetadataDAO getMetadataDAO() {
@@ -346,6 +348,14 @@ public class DAOService {
 
 	public MatFlagDAO getMatFlagDAO() {
 		return matFlagDAO;
+	}
+
+	public void setMeasureXMLDAO(MeasureXMLDAO measureXMLDAO) {
+		this.measureXMLDAO = measureXMLDAO;
+	}
+
+	public MeasureXMLDAO getMeasureXMLDAO() {
+		return measureXMLDAO;
 	}
 
 }

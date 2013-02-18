@@ -21,6 +21,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureShareDAO;
+import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.PackagerDAO;
 import mat.dao.clause.ShareLevelDAO;
 import mat.model.Author;
@@ -33,6 +34,7 @@ import mat.model.clause.MeasureExport;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.MeasureXML;
 import mat.model.clause.Metadata;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
@@ -80,6 +82,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	
 	@Autowired
 	private DataTypeDAO dataTypeDAO;
+	
+	@Autowired
+	private MeasureXMLDAO measureXMLDAO;
+	
 //	@Override
 //	public void clone(Measure measurePackage, String newCloneName) {
 //		measurePackageDAO.clone(measurePackage, newCloneName);
@@ -707,12 +713,12 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
 	@Override
 	public MeasureExportModal getMeasureExoportForMeasure(String measureId) {
-		MeasureExport export = measureExportDAO.findForMeasure(measureId);
-		if(export != null){
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
+		if(measureXML != null){
 			MeasureExportModal exportModal = new MeasureExportModal();
-			exportModal.setMeasureId(export.getMeasure().getId());
-			exportModal.setMeausreExportId(export.getId());
-			exportModal.setXml(export.getSimpleXML());
+			exportModal.setMeasureId(measureXML.getMeasure_id());
+			exportModal.setMeausreExportId(measureXML.getId());
+			exportModal.setXml(measureXML.getMeasureXMLAsString());
 			return exportModal;
 		}
 		return null;
@@ -720,15 +726,18 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
 	@Override
 	public void saveMeasureExport(MeasureExportModal measureExportModal) {
-		MeasureExport export = measureExportDAO.findForMeasure(measureExportModal.getMeasureId());
-		if(export != null){
-			export.setSimpleXML(measureExportModal.getXml());
-		}else{
-			Measure measure = measureDAO.find(measureExportModal.getMeasureId());
-			export = new MeasureExport();
-			export.setMeasure(measure);
-			export.setSimpleXML(measureExportModal.getXml());
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureExportModal.getMeasureId());
+		if(measureXML != null){
+			measureXML.setMeasureXMLAsString(measureExportModal.getXml());
 		}
-		measureExportDAO.save(export);
+		else{
+			Measure measure = measureDAO.find(measureExportModal.getMeasureId());
+			measureXML = new MeasureXML();
+			measureXML.setMeasure_id(measureExportModal.getMeasureId());
+			measureXML.setMeasureXMLAsString(measureExportModal.getXml());
+		}
+		measureXMLDAO.save(measureXML);
 	}
+
+
 }

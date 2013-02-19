@@ -63,6 +63,7 @@ public class XmlTree implements XmlTreeDisplay {
 	
 	private SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
 	
+	boolean enabled;
 	
 	
 	/*
@@ -324,14 +325,16 @@ public class XmlTree implements XmlTreeDisplay {
 			resetTreeItemSelectionIndicators();// removing the selection indicator from the previous selected item
 			item.setText(addSelectionIndicator(item.getText())); // adding the selection indicator to the current selected item
 			nodeTex.setValue(trimSelectionIndicator(item.getText()));// the text box value is updated with the selected item value without the selection indicator 
-			createNodeBtn.setEnabled(true);
-			editNode.setEnabled(true);
 			attrName.setValue("");
 			attrValue.setValue("");
-			createNodeBtn.setEnabled(true);
-			createAttrBtn.setEnabled(true);
+			if(enabled){
+				createNodeBtn.setEnabled(true);
+				editNode.setEnabled(true);
+				createNodeBtn.setEnabled(true);
+				createAttrBtn.setEnabled(true);	
+			}
 			
-			if(nodeTex.getValue().equals("attributes")){// not allowing the user to update the "attributes" tree item
+			if(nodeTex.getValue().equals("attributes")){// not allowing the user to update the "attributes" tree item				
 				editNode.setEnabled(false);
 				createNodeBtn.setEnabled(false);
 				nodeTex.setValue("");
@@ -416,5 +419,19 @@ public class XmlTree implements XmlTreeDisplay {
 		successMessageDisplay.clear();
 		errorMessageDisplay.clear();
 		
+	}
+
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		nodeTex.setEnabled(enabled);
+		createAttrBtn.setEnabled(enabled);
+		createNodeBtn.setEnabled(enabled);
+		attrName.setEnabled(enabled);
+		attrValue.setEnabled(enabled);
+		editNode.setEnabled(enabled);
+		removeNode.setEnabled(enabled);
+		saveBtn.setEnabled(enabled);
+		this.enabled = enabled;
 	}
 }

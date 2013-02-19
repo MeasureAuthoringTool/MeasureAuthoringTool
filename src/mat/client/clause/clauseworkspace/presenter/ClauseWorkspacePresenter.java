@@ -40,6 +40,8 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		public ErrorMessageDisplay getErrorMessageDisplay();
 		
 		public void clearMessages();
+		
+		public void setEnabled(boolean enable);
 	}
 
 	private SimplePanel emptyWidget = new SimplePanel();
@@ -77,9 +79,9 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 								setMeasureExportModal(createMeasureExportModal()); 
 								xmlTree = new XmlTree(new Tree());
 							}
-
 							panel.add(xmlTree.asWidget());
 							xmlTreeDisplay = (XmlTreeDisplay) xmlTree;
+							xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 							processXmlTreeHandlers();
 						}
 

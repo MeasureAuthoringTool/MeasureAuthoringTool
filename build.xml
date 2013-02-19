@@ -158,7 +158,7 @@
 
     <!-- compile gwt (client side code)-->
     <target name="compile.gwt" depends="compile.java,copy.web,ivy.resolve">
-        <java classpathref="build.classpath" classname="com.google.gwt.dev.Compiler" fork="true" maxmemory="256m">
+        <java classpathref="build.classpath" classname="com.google.gwt.dev.Compiler" fork="true" maxmemory="1024m">
         	<arg value="-war" />
             <arg value="${web.output.dir}" />
             <arg value="mat.Mat" />

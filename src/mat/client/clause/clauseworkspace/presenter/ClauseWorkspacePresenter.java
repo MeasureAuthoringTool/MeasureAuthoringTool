@@ -162,16 +162,22 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		return xmlTree;
 	}
 	
+
 	/**
 	 * Iterating through DOM object to create the GWT Tree
 	 * @param root
 	 * @return
 	 */
-	public TreeItem getTreeItem(Node root){
+	private TreeItem getTreeItem(Node root){
 		if(root.getNodeName().equalsIgnoreCase("#text")){
-			return new TreeItem(root.getNodeValue());
+			String val = root.getNodeValue().replaceAll("\n\r", "").trim();
+			if(val.length() > 0){
+					return new TreeItem(root.getNodeValue());
+			}else{
+				return null;
+			}
 		}
-			
+				
 		TreeItem ti = new TreeItem(root.getNodeName());
 		NamedNodeMap namedNodeMap = root.getAttributes();
 		if(namedNodeMap != null && namedNodeMap.getLength() > 0){
@@ -183,12 +189,16 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		NodeList nodes = root.getChildNodes();
 		for(int i = 0; i < nodes.getLength(); i++){
 			Node node = nodes.item(i);
-			if(!(node.getNodeName().equalsIgnoreCase("#text") && node.getNodeValue().isEmpty()))
-				ti.addItem(getTreeItem(node));
+			String name = node.getNodeName().replaceAll("\n\r", "").trim();
+			if(!(name.equalsIgnoreCase("#text") && name.isEmpty())){	
+				TreeItem item = getTreeItem(node);
+				if(null != item){
+					ti.addItem(item);
+				}
+			}
 		}
 		return ti;
 	}
-
 	
 	/**
 	 * Creating XML from GWT tree using GWT Document object

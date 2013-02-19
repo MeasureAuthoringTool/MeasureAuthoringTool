@@ -39,7 +39,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	
 	public static final int PAGE_SIZE_ALL = Integer.MAX_VALUE;
 	private static final int[] PAGE_SIZES= new int[] {50, PAGE_SIZE_ALL};
-	private static final int[] HISTORY_PAGE_SIZES = new int[] {10, 50, 100};
+	private static final int[] HISTORY_PAGE_SIZES = new int[] {50, PAGE_SIZE_ALL};
 	private static final String ARROW_DOWN = "\u25bc";
 	private static final String ARROW_UP = "\u25b2";
 	public static final int DEFAULT_PAGE = 1;

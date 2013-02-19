@@ -211,6 +211,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		if(tree != null){
 			for (int i = 0; i < tree.getItemCount(); i++) {
 				xml = createXmlFromTree(xmlTreeDisplay.getXmlTree().getItem(i), doc, null, null);
+				xml = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\r\n" + xml;
 			}
 		}
 		return xml;

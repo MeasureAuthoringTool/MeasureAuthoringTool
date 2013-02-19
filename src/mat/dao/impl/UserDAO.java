@@ -100,6 +100,7 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 		criteria.add(Restrictions.or(Restrictions.ilike("firstName",  "%" + text + "%"),
 									Restrictions.ilike("lastName",  "%" + text + "%")));
 		criteria.add(Restrictions.ne("securityRole.id", "1"));
+		criteria.add(Restrictions.ne("status.id", "2"));
 		return criteria;
 	}
 	

@@ -4,7 +4,9 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.Iterator;
 
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkspacePresenter.XmlTreeDisplay;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.SuccessMessageDisplay;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -15,6 +17,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Tree;
@@ -22,6 +25,10 @@ import com.google.gwt.user.client.ui.TreeItem;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * @author skarunakaran
+ *
+ */
 public class XmlTree implements XmlTreeDisplay {
 	
 	private FlowPanel  mainPanel = new FlowPanel(); 
@@ -46,6 +53,16 @@ public class XmlTree implements XmlTreeDisplay {
 	
 	private TextBox attrValue = new TextBox();
 	
+	private TreeItem previousSelectedItem;
+	
+	private Button expand = new Button("+");
+	
+	private Button collapse = new Button("-");
+	
+	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
+	
+	private SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
+	
 	
 	
 	/*
@@ -60,23 +77,28 @@ public class XmlTree implements XmlTreeDisplay {
 
 	
 	public XmlTree(Tree xmltree) {		
+		clearMessages();
 		this.tree = xmltree;
-		mainPanel.setStyleName("div-wrapper");
+		mainPanel.setStyleName("div-wrapper");//main div
 		
 		SimplePanel leftPanel = new SimplePanel();
-		leftPanel.setStyleName("div-first bottomPadding10px");
+		leftPanel.setStyleName("div-first bottomPadding10px");//left side div which will  have tree
 		
 		SimplePanel rightPanel = new SimplePanel();
-		rightPanel.setStyleName("div-second");
+		rightPanel.setStyleName("div-second");//right div having tree creation inputs.
 		
-		HorizontalPanel treePanel =  new HorizontalPanel();
-		HTML space = new HTML("&nbsp;");
-		treePanel.add(space);
-
+		ScrollPanel scrollPanel =  new ScrollPanel();//tree rendered in scroll panel
+		VerticalPanel treePanel =  new VerticalPanel();
+		expand.setSize("25px", "25px");
+		collapse.setSize("25px", "25px");
+		collapse.setVisible(false);
+		treePanel.add(expand);
+		treePanel.add(collapse);
 		treePanel.add(tree);
-		leftPanel.add(treePanel);
+		scrollPanel.add(treePanel);		
+		leftPanel.add(scrollPanel);
 		
-		VerticalPanel buttonPanel =  new VerticalPanel();
+		VerticalPanel buttonPanel =  new VerticalPanel();// has all inputs and buttons which is in right div
 		buttonPanel.add(new HTML("</br>"));
 		Label addNode = new Label("Add Node");
 		addNode.setStyleName("leftAligned leftpadding4px bottomPadding10px labelStyling");
@@ -120,31 +142,40 @@ public class XmlTree implements XmlTreeDisplay {
 		
 		SimplePanel bottomSavePanel = new SimplePanel();
 		bottomSavePanel.setStyleName("div-first");
-		bottomSavePanel.add(saveBtn);
+		VerticalPanel savePanel = new VerticalPanel();
+		savePanel.add(errorMessageDisplay);
+		savePanel.add(successMessageDisplay);
+		savePanel.add(saveBtn);
+		
+		bottomSavePanel.add(savePanel);
 		
 		mainPanel.add(leftPanel);
 		mainPanel.add(rightPanel);
 		mainPanel.add(bottomSavePanel);		
 	
-//		initWidget(mainPanel);
+		tree.addSelectionHandler(new TreeSelectionHandler());		
+		addhandlers();
 		
-		tree.addSelectionHandler(new TreeSelectionHandler());
-		saveBtn.setEnabled(tree.getItemCount() > 0 ? true :false);
-		
-		createNodeBtn.addClickHandler(new ClickHandler() {
+	}
+
+	
+	/**
+	 * has click handlers
+	 */
+	private void addhandlers() {
+		createNodeBtn.addClickHandler(new ClickHandler() {// create node button on click 
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				saveBtn.setEnabled(true);
-				if(nodeTex.getValue().trim().length() > 0 && !nodeTex.getValue().trim().equals("attributes")){
-					if(tree.getItemCount() > 0){
+				clearMessages();
+				if(nodeTex.getValue().trim().length() > 0 && !nodeTex.getValue().trim().equals("attributes")){// checking if input text is not null and has some value
+					if(tree.getItemCount() > 0){// if tree already having children, then add item below the selected child item.
 						treeItem = tree.getSelectedItem();					
-						Label label = new Label(nodeTex.getValue());
-						treeItem.addItem(label);		
+						treeItem.addItem(nodeTex.getValue());		
 						treeItem.setSelected(false);
 						TreeItem  childItem = treeItem.getChild(treeItem.getChildCount()-1);
 						selectDiagramTreeItem(childItem);
-					}else{
+					}else{// first time adding the child to the main Tree
 						treeItem = new TreeItem(new Label(nodeTex.getValue()));
 						tree.addItem(treeItem);		
 						selectDiagramTreeItem(treeItem);
@@ -153,18 +184,19 @@ public class XmlTree implements XmlTreeDisplay {
 			}
 		});
 		
-		createAttrBtn.addClickHandler(new ClickHandler() {
+		createAttrBtn.addClickHandler(new ClickHandler() {// atrribute creation
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				if(attrName.getValue().trim().length() > 0 && attrValue.getValue().trim().length() > 0){
+				clearMessages();
+				if(attrName.getValue().trim().length() > 0 && attrValue.getValue().trim().length() > 0){// if name and value not null
 					TreeItem treeItem = tree.getSelectedItem();
-					String label = attrName.getValue()+" = " + attrValue.getValue();
+					String label = attrName.getValue()+" = " + attrValue.getValue();// concat attributes name and value with "=" symbol 
 					if(treeItem != null){
-						if(trimSelectionIndicator(treeItem.getText()).equals("attributes")){
+						if(trimSelectionIndicator(treeItem.getText()).equals("attributes")){// if selected child item was "attributes" then add item below this child
 							treeItem.addItem(label);
 							selectDiagramTreeItem(treeItem);
-						}else{
+						}else{//if iterate the selected tree item and check if there is an atrribute item, if yes then add the attribute values below this node, else create a new treeItem "attributes" and add the values below this
 							boolean isAttrfound = false;
 							int chCnt = treeItem.getChildCount();
 							if(chCnt > 0){
@@ -178,7 +210,7 @@ public class XmlTree implements XmlTreeDisplay {
 								}
 							}
 							if(!isAttrfound){
-								TreeItem attr = new TreeItem(new Label("attributes"));
+								TreeItem attr = new TreeItem("attributes");
 								attr.addItem(label);								
 								treeItem.addItem(attr);
 								selectDiagramTreeItem(attr);
@@ -189,51 +221,81 @@ public class XmlTree implements XmlTreeDisplay {
 			}
 		});
 		
-		removeNode.addClickHandler(new ClickHandler() {
+		removeNode.addClickHandler(new ClickHandler() {// romove button on click
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				treeItem = tree.getSelectedItem();
+				clearMessages();
+				treeItem = tree.getSelectedItem();// get the selected item 
 				TreeItem parentItem = treeItem.getParentItem();
-				treeItem.remove();
+				treeItem.remove();// remove
+				if(parentItem  != null && parentItem.getText().equalsIgnoreCase("attributes") 
+						&& parentItem.getChildCount() == 0){
+					TreeItem parentParentItem = parentItem.getParentItem();
+					parentItem.remove();
+					parentItem = parentParentItem;
+				}
 				if(parentItem != null){
-					selectDiagramTreeItem(parentItem);
-				}else{
-					saveBtn.setEnabled(false);
+					selectDiagramTreeItem(parentItem);// change the selected node to parent node of removed node.
 				}
 			}
 		});
 		
-		editNode.addClickHandler(new ClickHandler() {
+		editNode.addClickHandler(new ClickHandler() {// Edit button on click
 			
 			@Override
 			public void onClick(ClickEvent event) {	
+				clearMessages();
 				TreeItem item = tree.getSelectedItem();
-				if(item.getParentItem() != null && item.getParentItem().getText().equals("attributes")){
-					if(attrName.getValue().trim().length() > 0 || attrValue.getValue().trim().length() > 0){
+				previousSelectedItem = item;
+				if(item != null){
+					if(item.getParentItem() != null && item.getParentItem().getText().equals("attributes")){// if selected item is attribute name value
+						if(attrName.getValue().trim().length() > 0 || attrValue.getValue().trim().length() > 0){
+							TreeItem treeItem = tree.getSelectedItem();
+							if(treeItem != null){
+								treeItem.setText(attrName.getValue()+" = "+attrValue.getValue());
+								selectDiagramTreeItem(treeItem);
+							}
+						}
+					}else if(nodeTex.getValue().trim().length() > 0){// if selected item is child item
 						TreeItem treeItem = tree.getSelectedItem();
 						if(treeItem != null){
-							treeItem.setWidget(new Label(attrName.getValue()+" = "+attrValue.getValue()));
+							treeItem.setText(nodeTex.getText());
 							selectDiagramTreeItem(treeItem);
 						}
 					}
-				}else if(nodeTex.getValue().trim().length() > 0){
-					TreeItem treeItem = tree.getSelectedItem();
-					if(treeItem != null){
-						treeItem.setWidget(new Label(nodeTex.getText()));
-						selectDiagramTreeItem(treeItem);
-					}
 				}
-				
+			}
+		});
+		
+		expand.addClickHandler(new ClickHandler() {// when expand "+" button clicked
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				clearMessages();
+				collapse.setVisible(true);
+				expand.setVisible(false);
+				expandDiagramTree();	
+			}
+		});
+		
+		collapse.addClickHandler(new ClickHandler() {// when collapse "-" button clicked
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				clearMessages();
+				collapse.setVisible(false);
+				expand.setVisible(true);
+				collapseDiagramTree();	
 			}
 		});
 	}
 
-	private void selectDiagramTreeItem(TreeItem item) {
+
+	private void selectDiagramTreeItem(TreeItem item) {// selection style of a Tree Item
 		tree.setFocus(true);
 		item.setVisible(true);
 		item.setState(true);
-//		expandDiagramTree();
 		item.getTree().setSelectedItem(item, true);
 		tree.ensureSelectedItemVisible();
 	}
@@ -242,31 +304,39 @@ public class XmlTree implements XmlTreeDisplay {
 		for (Iterator<TreeItem> treeItemIterator = tree.treeItemIterator(); treeItemIterator.hasNext(); ) {
 			TreeItem next = treeItemIterator.next();
 			next.setState(true);
-			
 		}
 	}
+	
+	private void collapseDiagramTree() {
+		for (Iterator<TreeItem> treeItemIterator = tree.treeItemIterator(); treeItemIterator.hasNext(); ) {
+			TreeItem next = treeItemIterator.next();
+			next.setState(false);
+		}
+	}
+
 	
 	class TreeSelectionHandler implements SelectionHandler<TreeItem>{
 		
 		@Override
-		public void onSelection(SelectionEvent<TreeItem> event) {
-			
-			TreeItem item = event.getSelectedItem();			
-			resetTreeItemSelectionIndicators(getRoot(item));
-			item.setText(addSelectionIndicator(item.getText()));
-			nodeTex.setValue(trimSelectionIndicator(item.getText()));
+		public void onSelection(SelectionEvent<TreeItem> event) {// on selection of Tree Item
+			clearMessages();
+			TreeItem item = event.getSelectedItem();	
+			resetTreeItemSelectionIndicators();// removing the selection indicator from the previous selected item
+			item.setText(addSelectionIndicator(item.getText())); // adding the selection indicator to the current selected item
+			nodeTex.setValue(trimSelectionIndicator(item.getText()));// the text box value is updated with the selected item value without the selection indicator 
 			createNodeBtn.setEnabled(true);
 			editNode.setEnabled(true);
 			attrName.setValue("");
 			attrValue.setValue("");
 			createNodeBtn.setEnabled(true);
 			createAttrBtn.setEnabled(true);
-			if(nodeTex.getValue().equals("attributes")){
+			
+			if(nodeTex.getValue().equals("attributes")){// not allowing the user to update the "attributes" tree item
 				editNode.setEnabled(false);
 				createNodeBtn.setEnabled(false);
 				nodeTex.setValue("");
 			}
-			if((item.getParentItem() != null && item.getParentItem().getText().equals("attributes"))){
+			if((item.getParentItem() != null && item.getParentItem().getText().equals("attributes"))){// if attribute value selected, splitting the values and setting it to the textboxes 
 				createNodeBtn.setEnabled(false);
 				createAttrBtn.setEnabled(false);
 				String[] attrs = nodeTex.getValue().split("=");
@@ -274,22 +344,14 @@ public class XmlTree implements XmlTreeDisplay {
 				attrValue.setText(attrs[1].trim());
 				nodeTex.setValue("");
 			}
+			previousSelectedItem = item;
 		}
 		
-		private TreeItem getRoot(TreeItem item){
-			while(item.getParentItem() != null)
-				item = item.getParentItem();
-			return item;
-		}
-		
-		private void resetTreeItemSelectionIndicators(TreeItem root){
-			if(root.getText().startsWith(INDICATOR)){
-				root.setText(trimSelectionIndicator(root.getText()));
+		private void resetTreeItemSelectionIndicators(){
+			if(previousSelectedItem != null){
+				previousSelectedItem.setText(trimSelectionIndicator(previousSelectedItem.getText()));
 			}
-			for(int i = 0; i < root.getChildCount(); i++){
-				resetTreeItemSelectionIndicators(root.getChild(i));
-			}
-		}
+		} 
 		
 	}
 	
@@ -334,5 +396,25 @@ public class XmlTree implements XmlTreeDisplay {
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
+	}
+
+
+	@Override
+	public SuccessMessageDisplay getSuccessMessageDisplay() {
+		return successMessageDisplay;
+	}
+
+
+	@Override
+	public ErrorMessageDisplay getErrorMessageDisplay() {
+		return errorMessageDisplay;
+	}
+
+
+	@Override
+	public void clearMessages() {
+		successMessageDisplay.clear();
+		errorMessageDisplay.clear();
+		
 	}
 }

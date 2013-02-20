@@ -1,6 +1,7 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ValueSetSearchFilterPanel;
@@ -144,7 +145,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		
 	private void buildVerticalPanelWithCheckBox(List<QualityDataSetDTO> appliedQDMs){
 		
-		List<QualityDataSetDTO> qdmList =  appliedQDMs;
+		ArrayList<QualityDataSetDTO> qdmList =  (ArrayList<QualityDataSetDTO>) appliedQDMs;
 		listBoxVPanel.clear();
 		CheckBox cbAth[] = null;
 		if(qdmList==null){
@@ -152,13 +153,14 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			listBoxVPanel.add(new SpacerWidget());
 			listBoxVPanel.add(new SpacerWidget());
 		}else{
+			
 			cbAth = new CheckBox[qdmList.size()];
 			listBoxVPanel.setSize("200px", "100px");
 			boolean isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
 			// hard coding this - till deletion story is implemented showing all applied qdm elements in list as disabled.
 			isEditable = false;
 			for(int i=0;i<qdmList.size();i++){
-				String lbl = qdmList.get(i).getCodeListName();
+				String lbl = qdmList.get(i).getQDMElement();
 				cbAth[i] = new CheckBox(lbl);
 				cbAth[i].setEnabled(isEditable);
 				listBoxVPanel.add(cbAth[i]);

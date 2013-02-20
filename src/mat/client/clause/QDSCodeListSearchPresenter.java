@@ -1,5 +1,6 @@
 package mat.client.clause;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,6 +10,8 @@ import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.codelist.events.OnChangeOptionsEvent;
+import mat.client.codelist.service.CodeListService;
+import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -23,9 +26,11 @@ import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.model.CodeListSearchDTO;
+import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -33,6 +38,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -49,7 +55,7 @@ public class QDSCodeListSearchPresenter {
 	private boolean showdefaultCodeList = true;
 	private String lastSearchText;
 	private int lastStartIndex;
-	
+	List<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
 	private QDSCodeListSearchModel currentCodeListResults;
 
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
@@ -71,14 +77,13 @@ public class QDSCodeListSearchPresenter {
 		public String getDataTypeText();
 		public ValueSetSearchFilterPanel getValueSetSearchFilterPanel();
 		public void setEnabled(boolean enabled);
+		public void setAppliedQDMs(List<QualityDataSetDTO> appliedQDMs);
 	}
 
 	public QDSCodeListSearchPresenter(SearchDisplay sDisplayArg) {
 		this.searchDisplay = sDisplayArg;
-		
-
+		showAppliedQDMsInMeasure(MatContext.get().getCurrentMeasureId());
 	    searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
-			
 			@Override
 			public void onPageSelection(PageSelectionEvent event) {
 				int startIndex = searchDisplay.getPageSize() * (event.getPageNumber() - 1) + 1;
@@ -127,7 +132,7 @@ public class QDSCodeListSearchPresenter {
 						   searchDisplay.getSpecificOccurrenceInput().setEnabled(true);
 						   searchDisplay.getDataTypeInput().setFocus(true);
 					 	   searchDisplay.getApplyToMeasure().setEnabled(false);
-				       }
+					   }
 				}
 			}
 		});
@@ -182,8 +187,8 @@ public class QDSCodeListSearchPresenter {
 				SearchResultUpdate sru = new SearchResultUpdate();
 				sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchText);
 				sru = null;
-				
 				searchDisplay.buildQDSDataTable(QDSSearchResult);
+				
 				displaySearch();
 				searchDisplay.getErrorMessageDisplay().setFocus();
 				showSearchingBusy(false);
@@ -208,9 +213,12 @@ public class QDSCodeListSearchPresenter {
 	void loadCodeListData(){
 //		int filter = searchDisplay.getValueSetSearchFilterPanel().getSelectedIndex();
 		//reverting to default search filter when navigating to Clause Workspace 
+		panel.clear();
+		showAppliedQDMsInMeasure(MatContext.get().getCurrentMeasureId());
 		searchDisplay.getValueSetSearchFilterPanel().resetFilter();
 		int filter = searchDisplay.getValueSetSearchFilterPanel().getDefaultFilter();
 		search("", 1, searchDisplay.getPageSize(), currentSortColumn, sortIsAscending,showdefaultCodeList,filter);
+		panel.add(searchDisplay.asWidget());
 	}
 	
 	private void displaySearch() {
@@ -264,6 +272,7 @@ public class QDSCodeListSearchPresenter {
 							searchDisplay.getApplyToMeasureSuccessMsg().setMessage(message);
 							searchDisplay.getMsgFocusWidget().getElement().setAttribute("role", "alert");//This line adds the aria-alert 
 							searchDisplay.getMsgFocusWidget().setFocus(true);
+							showAppliedQDMsInMeasure(MatContext.get().getCurrentMeasureId());
 						}
 					}
 					@Override
@@ -294,6 +303,7 @@ public class QDSCodeListSearchPresenter {
        });
 		
 	}
+	
 	
 	public Widget getWidget() {
 		return panel;
@@ -349,5 +359,31 @@ public class QDSCodeListSearchPresenter {
 		//select data type
 		searchDisplay.getDataTypeInput().setEnabled(dataTypeInput);
 	}
+/**
+ * Method for fetching all applied Value Sets in a measure which is loaded in context.
+ * 
+ * */	
+	public void showAppliedQDMsInMeasure(String measureId){
+		measureId = MatContext.get().getCurrentMeasureId();
+		CodeListServiceAsync codeListService= (CodeListServiceAsync) GWT.create(CodeListService.class);
+		if(measureId!=null && measureId != ""){
+			codeListService.getQDSElements(measureId, null, new AsyncCallback<List<QualityDataSetDTO>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				}
+
+				@Override
+				public void onSuccess(List<QualityDataSetDTO> result) {
+					qdsList = result;
+					searchDisplay.setAppliedQDMs(qdsList);
+				}
+			});
+		}
+	}
+		
+		
+
 
 }

@@ -522,7 +522,7 @@ body#main select, body#main input, body#main textarea {
 }
 .qdmListBox{
 	/* padding:40px 30px 4px 50px;	 */
-	margin-left:100px;
+	margin-left:50px;
 	margin-top:140px;
 	margin-right:30px;
 	position:relative;

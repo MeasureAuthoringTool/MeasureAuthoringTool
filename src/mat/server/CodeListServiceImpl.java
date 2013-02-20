@@ -2,6 +2,7 @@ package mat.server;
 
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -218,6 +219,12 @@ implements mat.client.codelist.service.CodeListService {
 			}
 				
 		}
+		Collections.sort(filteredQDSElements, new Comparator<QualityDataSetDTO>() {
+			@Override
+			public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
+				return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
+			}
+		});
 		return filteredQDSElements;
 	}
 

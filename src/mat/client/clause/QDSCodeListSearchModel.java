@@ -7,6 +7,7 @@ import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
 import mat.model.CodeListSearchDTO;
+import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -17,11 +18,12 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,IsSerializable {
 
-	private static String[] headers = new String[] {"QDM","Category","Code System"};
-	private static String[] widths = new String[] {"50%","25%","25%"};
+	private static String[] headers = new String[] {"Value Set","Category","Code System"};
+	private static String[] widths = new String[] {"50%","40%","10%"};
 	
 	private HashMap<CodeListSearchDTO, RadioButton> radioButtonMap = new HashMap<CodeListSearchDTO, RadioButton>();
 	private List<CodeListSearchDTO> data;
+	private List<QualityDataSetDTO> appliedQDMs;
 	private int startIndex;
 	private int resultsTotal;
 	private boolean editable;
@@ -119,11 +121,11 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			break;
 		case 1:
 			String labelValue= codeList.getCategoryDisplay();
-			if(labelValue.length() >20){
+			/*if(labelValue.length() >20){
 				labelValue = labelValue.substring(0, 20);
 				StringBuffer lblValue = new StringBuffer(labelValue);
 				labelValue = lblValue.append("...").toString();
-			}
+			}*/
 			value = new Label(labelValue);
 			value.setTitle(codeList.getCategoryDisplay());
 			break;
@@ -192,6 +194,20 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 	@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return false;
+	}
+
+	/**
+	 * @param appliedQDMs the appliedQDMs to set
+	 */
+	public void setAppliedQDMs(List<QualityDataSetDTO> appliedQDMs) {
+		this.appliedQDMs = appliedQDMs;
+	}
+
+	/**
+	 * @return the appliedQDMs
+	 */
+	public List<QualityDataSetDTO> getAppliedQDMs() {
+		return appliedQDMs;
 	}
 	
 }

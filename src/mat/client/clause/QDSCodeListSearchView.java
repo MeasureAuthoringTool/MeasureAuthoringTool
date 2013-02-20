@@ -1,7 +1,7 @@
 package mat.client.clause;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -12,7 +12,6 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -21,6 +20,7 @@ import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
 import mat.model.CodeListSearchDTO;
+import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -30,6 +30,7 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -54,14 +55,14 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
 	private ListBoxMVP dataTypeInput = new ListBoxMVP();
-	private ListBox appliedQDM = new ListBox();
 	private FocusableWidget messageFocus;
 	private Button removeButton = new Button("Remove");
+	VerticalPanel listBoxVPanel = new VerticalPanel();
+	private ScrollPanel checkboxScrollPanel  = new ScrollPanel(listBoxVPanel);	
+	private List<QualityDataSetDTO> appliedQDMs = new ArrayList<QualityDataSetDTO>();
    // private ScrollPanel sp;
-    
     private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
-	
-    private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
+	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
 		
 		@Override
 		public void onValueChange(ValueChangeEvent<String> event) {
@@ -75,6 +76,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		    }
 		}
 	};
+	
     
 	public SuccessMessageDisplay getSuccessMessagePanel(){
 		return successMessagePanel;
@@ -85,7 +87,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	}
 	
 	public QDSCodeListSearchView() {
-		
 		successMessagePanel = new SuccessMessageDisplay();
 		successMessagePanel.clear();
 		messageFocus = new FocusableWidget(successMessagePanel);
@@ -111,13 +112,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		searchCriteriaPanel.add(searchWidget);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
-		
-		VerticalPanel listBoxVPanel = new VerticalPanel();
-		
-		appliedQDM.setVisibleItemCount(20);
-		appliedQDM.setWidth("200px");
-		listBoxVPanel.add(appliedQDM);
-		
 		searchCriteriaPanel.add(view.asWidget());
 		searchCriteriaPanel.add(messageFocus);
 		searchCriteriaPanel.add(buildInitialDisabledWidget());
@@ -125,30 +119,62 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(addToMeasure);
 	
-		// Commneted this portion as a part of MAT-892  New Tab for QDM
-		//sp = new ScrollPanel(searchCriteriaPanel);
-		//sp.setHeight("200px");
-		
-		/*vp.add(SkipListBuilder.buildEmbeddedLinkHolder("ClauseWorkspace"));*/
-	
-		//vp.add(header);
-		//vp.add(sp);
 		vp.add(searchCriteriaPanel);
 		vp.add(new SpacerWidget());
 		
-		HorizontalPanel hPanel = new HorizontalPanel();
-		hPanel.add(vp);
-		listBoxVPanel.setStyleName("qdmListBox");
-		hPanel.add(listBoxVPanel);
-		listBoxVPanel.add(new SpacerWidget());
-		listBoxVPanel.add(new SpacerWidget());
-		listBoxVPanel.add(removeButton);
-		containerPanel.add(hPanel);
-		//containerPanel.add(vp);
+		HorizontalPanel mainPanel = new HorizontalPanel();
+		mainPanel.add(vp);
+		VerticalPanel vPanel = new VerticalPanel();
+		vPanel.setStyleName("qdmListBox");
+		checkboxScrollPanel.setSize("200px", "300px");
+		checkboxScrollPanel.setHorizontalScrollPosition(2);
+		checkboxScrollPanel.setAlwaysShowScrollBars(true);
+		vPanel.add(checkboxScrollPanel);
+		vPanel.add(new SpacerWidget());
+		vPanel.add(new SpacerWidget());
+		// Till the deletion story is implemented, showing remove button as disabled.
+		removeButton.setEnabled(false);
+		vPanel.add(removeButton);
 		
+		mainPanel.add(vPanel);
+		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("qdsContentPanel");
-		
 		MatContext.get().setQDSView(this);
+	}
+		
+	private void buildVerticalPanelWithCheckBox(List<QualityDataSetDTO> appliedQDMs){
+		
+		List<QualityDataSetDTO> qdmList =  appliedQDMs;
+		listBoxVPanel.clear();
+		CheckBox cbAth[] = null;
+		if(qdmList==null){
+			listBoxVPanel.setSize("200px", "100px");
+			listBoxVPanel.add(new SpacerWidget());
+			listBoxVPanel.add(new SpacerWidget());
+		}else{
+			cbAth = new CheckBox[qdmList.size()];
+			listBoxVPanel.setSize("200px", "100px");
+			boolean isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
+			// hard coding this - till deletion story is implemented showing all applied qdm elements in list as disabled.
+			isEditable = false;
+			for(int i=0;i<qdmList.size();i++){
+				String lbl = qdmList.get(i).getCodeListName();
+				cbAth[i] = new CheckBox(lbl);
+				cbAth[i].setEnabled(isEditable);
+				listBoxVPanel.add(cbAth[i]);
+			}
+			listBoxVPanel.add(new SpacerWidget());
+			listBoxVPanel.add(new SpacerWidget());
+		}
+		
+		/*ScrollPanel checkboxScrollPanel = new ScrollPanel();
+		checkboxScrollPanel.add(listBoxVPanel);
+		checkboxScrollPanel.setSize("200px", "500px");*/
+		
+	//	checkboxScrollPanel.scrollToRight();
+		//checkboxScrollPanel.setBorderWidth(1);
+		//return checkboxScrollPanel;
+		//return listBoxVPanel;
 	}
 	
 	
@@ -359,6 +385,11 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	@Override
 	public ValueSetSearchFilterPanel getValueSetSearchFilterPanel() {
 		return vssfp;
+	}
+	@Override
+	public void setAppliedQDMs(List<QualityDataSetDTO> appliedQDMs) {
+		this.appliedQDMs = appliedQDMs;
+		buildVerticalPanelWithCheckBox(appliedQDMs);
 	}
 	
 	public void setEnabled(boolean enabled){

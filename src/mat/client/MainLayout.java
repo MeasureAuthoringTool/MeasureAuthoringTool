@@ -252,6 +252,13 @@ public abstract class MainLayout {
 		MatContext.get().getLoadingQueue().add("node");
 	}
 	
+	
+	
+	public static void showSignOutMessage(){
+		loadingWidget = new HTML(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG); 
+		showLoadingMessage();
+	}
+	
 	/**
 	 * no arg method adds default delay to loading message hide op
 	 */

@@ -348,68 +348,34 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				}
 		});
 		MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, new LogoffEvent.Handler() {
-
 			@Override
 			public void onLogoff(LogoffEvent event) {
+				Mat.hideLoadingMessage();
+				Mat.showSignOutMessage();
 				MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-				//US212 no longer update user sign in time and record user sign out time
-				MatContext.get().stopUserLockUpdate();
-				//US154 SIGN_OUT_EVENT
-				MatContext.get().recordTransactionEvent(null, null, "SIGN_OUT_EVENT", null, 1);
-//				mainTabLayout.close(); // Removing auto save for measure details and clause workspace 01/2013
-				Command isSavingCmd = new Command() {
-			    	   public void execute() {
-			    		   //CallSignout only if the clauses and measureDetails are not in the process of saving or 
-			    		   //if we are on some other tabs,then just call signout without any wait.
-			    		   SynchronizationDelegate synchDel = MatContext.get().getSynchronizationDelegate();
-			    		  if((!synchDel.isSavingClauses() && !synchDel.isSavingMeasureDetails() 
-			    				  && !MatContext.get().getMeasureLockService().isResettingLock()) || 
-			    				  !measureComposer.getClauseWorkspace().getAppController().isLoaded()){
-			    			  MatContext.get().setCurrentMeasureInfo(null);//This will prevent getting database error after the user has been signed out.
-			    			  callSignOut();
-			    		  }else{
-			    			  DeferredCommand.addCommand(this);
-			    		  }
-			    	   }
-			    	 };
-			    	 if(measureComposer != null){ 
-			    		 isSavingCmd.execute();
-			    	 }else{
-			    		 // If you login as Admin, then clicking signout need not have to wait.
-			    		 MatContext.get().setCurrentMeasureInfo(null);//This will prevent getting database error after the user has been signed out.
-			    		 callSignOut();
-			    	 }
+				MatContext.get().updateOnSignOut("SIGN_OUT_EVENT", true);
 				}
 		});
 		
+		Window.addCloseHandler(new CloseHandler<Window>() {
+			@Override
+			public void onClose(CloseEvent<Window> arg0) {
+				if(!MatContext.get().getSynchronizationDelegate().getLogOffFlag()){
+					MatContext.get().updateOnSignOut("WINDOW_CLOSE_EVENT", false);
+				}
+			}
+		});
+		
 		MatContext.get().getEventBus().addHandler(TimedOutEvent.TYPE,new TimedOutEvent.Handler() {
-			
 			@Override
 			public void onTimedOut(TimedOutEvent event) {
-				if(measureComposer != null){//This if check will prevent admin user getting null pointer exception while timing out
-//					mainTabLayout.close(); // User Story change - Removing AutoSave when Timeout.
-					//Note: This will select the measureLibrary tab just before the time out Warning.
-					//mainTabLayout.selectTab(measureLibrary);
-//					mainTabLayout.selectTab(codeListController);//User Story change - Removing AutoSave when Timeout.
+				if(measureComposer != null){
 					Mat.focusSkipLists("MainContent");
 				}
 			}
 		});
 			
-		Window.addCloseHandler(new CloseHandler<Window>() {
-			
-			@Override
-			public void onClose(CloseEvent<Window> arg0) {
-				if(!MatContext.get().getSynchronizationDelegate().getLogOffFlag()){
-					//US212 no longer update user sign in time and record user sign out time
-					MatContext.get().stopUserLockUpdate();
-					MatContext.get().recordTransactionEvent(null, null, "WINDOW_CLOSE_EVENT", null, ConstantMessages.DB_LOG);
-//					if(MatContext.get().getCurrentMeasureInfo()!= null)
-//					    mainTabLayout.close(); // Removing auto save for measure details and clause workspace 01/2013
-					callSignOutWithoutRedirect();
-				}
-			}
-		});
+		
 		
 		MatContext.get().restartTimeoutWarning();
 	}
@@ -541,4 +507,5 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	public void setEnabled(boolean enabled){
 		mainTabLayout.setEnabled(enabled);
 	}
+	
 }

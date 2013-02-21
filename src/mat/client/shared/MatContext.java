@@ -36,6 +36,7 @@ import mat.client.measurepackage.service.PackageService;
 import mat.client.measurepackage.service.PackageServiceAsync;
 import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.MyAccountServiceAsync;
+import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;
@@ -793,6 +794,30 @@ public class MatContext implements IsSerializable {
 	 */
 	public AdminManageCodeListSearchModel getManageCodeListSearchModel() {
 		return manageCodeListSearchModel;
+	}
+	
+	/**
+	 * Method is called on SignOut/ X out / Time Out
+	 */
+	public void updateOnSignOut(String activityType, final boolean isRedirect){		
+		MatContext.get().getSynchronizationDelegate().setLogOffFlag();
+		MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(), 
+			MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
+				
+				@Override
+				public void onSuccess(String result) {
+					if(isRedirect){
+						MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+					}
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					if(isRedirect){
+						MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+					}
+				}
+			});
 	}
 	
 }

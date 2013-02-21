@@ -44,6 +44,7 @@ public class ClientConstants {
 	public final static String TITLE_MEASURE_LIB_CHANGE_OWNERSHIP ="Measure Library Ownership";
 	
 	public final static String MAINLAYOUT_LOADING_WIDGET_MSG ="Loading Please Wait...";
+	public final static String MAINLAYOUT_SIGNOUT_WIDGET_MSG =" Signing Out Please Wait...";
 	public final static String MAINLAYOUT_ALERT_TITLE ="Informational Alert";
 	public final static String USER_STATUS_NOT_LOGGEDIN ="NotLoggedInYet";
 	

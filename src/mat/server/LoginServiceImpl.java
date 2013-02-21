@@ -25,6 +25,7 @@ import mat.shared.SecurityQuestionVerifier;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 @SuppressWarnings("serial")
 public class LoginServiceImpl extends SpringRemoteServiceServlet implements LoginService{
@@ -165,6 +166,14 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		List<UserSecurityQuestion> secQuestions = new ArrayList<UserSecurityQuestion>(user.getSecurityQuestions()); 
 		logger.info("secQuestions Length "+ secQuestions.size());
 		return secQuestions;
+	}
+	
+	public String updateOnSignOut(String userId, String emailId, String activityType){
+		UserService userService = (UserService)context.getBean("userService");
+		String resultStr = userService.updateOnSignOut(userId, emailId, activityType);
+		SecurityContextHolder.clearContext();
+		logger.info("In UserServiceImpl Signout Update " + resultStr);
+		return resultStr;
 	}
 
 }

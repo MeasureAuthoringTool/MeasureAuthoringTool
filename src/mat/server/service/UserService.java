@@ -33,4 +33,5 @@ public interface UserService {
 	public List<User> searchNonAdminUsers(String string, int i, int j);
 	User findByEmailID(String emailId);
 	public int countSearchResultsNonAdmin(String string);
+	public String updateOnSignOut(String userId, String email, String activityType);
 }

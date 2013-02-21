@@ -4,7 +4,7 @@ package mat.client.shared;
 import java.util.Date;
 
 import mat.client.ImageResources;
-import mat.client.event.LogoffEvent;
+import mat.client.Mat;
 import mat.client.event.TimedOutEvent;
 import mat.shared.ConstantMessages;
 
@@ -152,11 +152,11 @@ class TimeoutManager {
 	}
 	
 	private void fireLogOffEvent(){
-		MatContext.get().stopUserLockUpdate();
-		MatContext.get().recordTransactionEvent(null, null, "TIMEOUT_EVENT", null, 1);
+		Mat.hideLoadingMessage();
+		Mat.showSignOutMessage();
 		timeoutWarning.cancel();
 		repeatedWarning.cancel();
 		clearTimeOutWarning();
-		MatContext.get().getEventBus().fireEvent(new LogoffEvent());
+		MatContext.get().updateOnSignOut("TIMEOUT_EVENT", true);
 	}
 }

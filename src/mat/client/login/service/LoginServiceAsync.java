@@ -24,5 +24,8 @@ public interface LoginServiceAsync extends AsynchronousService{
 	void getSecurityQuestionsAnswers(String userid,
 			AsyncCallback<List<UserSecurityQuestion>> callback);
 	void getFooterURLs(AsyncCallback<List<String>> callback);
+	void updateOnSignOut(String userId, String email, String activityType,
+			AsyncCallback<String> callback);
+	
 	
 }

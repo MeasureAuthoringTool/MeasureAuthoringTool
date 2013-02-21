@@ -17,9 +17,11 @@ import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
 import mat.dao.SecurityRoleDAO;
 import mat.dao.StatusDAO;
+import mat.dao.TransactionAuditLogDAO;
 import mat.dao.UserDAO;
 import mat.model.SecurityRole;
 import mat.model.Status;
+import mat.model.TransactionAuditLog;
 import mat.model.User;
 import mat.model.UserPassword;
 import mat.model.UserSecurityQuestion;
@@ -65,6 +67,9 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private SecurityRoleDAO securityRoleDAO;
+	
+	@Autowired
+	private TransactionAuditLogDAO transactionAuditLogDAO;
 	
 	@Autowired
 	private CodeListService codeListService;
@@ -541,6 +546,27 @@ public class UserServiceImpl implements UserService {
 
 	public String getUserGuideUrl() {
 		return userGuideUrl;
+	}
+
+	@Override
+	public String updateOnSignOut(String userId, String email, String activityType) {
+		TransactionAuditLog auditLog = new TransactionAuditLog();
+		auditLog.setActivityType(activityType);
+		auditLog.setUserId(userId);
+		auditLog.setAdditionalInfo("["+email+"]");
+		
+		Date signoutDate = new Date(); 
+		User user = userDAO.find(userId);
+		user.setSignOutDate(signoutDate);	
+		try{
+			userDAO.save(user);
+			transactionAuditLogDAO.save(auditLog);
+			logger.info("SignOut Successful" + signoutDate.toString());
+			return "SUCCESS";
+		}catch (Exception e) {
+			logger.info("SignOut Unsuccessful "+ "("+ signoutDate.toString() +")"+ e.getMessage());
+			return e.getMessage();
+		}
 	}
 
 	

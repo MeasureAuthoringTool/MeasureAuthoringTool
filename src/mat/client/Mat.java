@@ -64,6 +64,7 @@ import com.google.gwt.user.client.DeferredCommand;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.ClosingEvent;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Widget;
@@ -277,9 +278,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		else {
 			Window.alert("Unrecognized user role " + currentUserRole);
 			MatContext.get().getEventBus().fireEvent(new LogoffEvent());
-		}
-			
-		
+		}		
 	
 		mainTabLayout.setHeight("100%");
 		
@@ -357,9 +356,19 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				}
 		});
 		
-		Window.addCloseHandler(new CloseHandler<Window>() {
+//		Window.addCloseHandler(new CloseHandler<Window>() {
+//			@Override
+//			public void onClose(CloseEvent<Window> arg0) {
+//				if(!MatContext.get().getSynchronizationDelegate().getLogOffFlag()){
+//					MatContext.get().updateOnSignOut("WINDOW_CLOSE_EVENT", false);
+//				}
+//			}
+//		});
+		
+		Window.addWindowClosingHandler(new Window.ClosingHandler() {
+			
 			@Override
-			public void onClose(CloseEvent<Window> arg0) {
+			public void onWindowClosing(ClosingEvent event) {
 				if(!MatContext.get().getSynchronizationDelegate().getLogOffFlag()){
 					MatContext.get().updateOnSignOut("WINDOW_CLOSE_EVENT", false);
 				}

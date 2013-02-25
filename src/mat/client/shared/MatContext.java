@@ -799,7 +799,7 @@ public class MatContext implements IsSerializable {
 	/**
 	 * Method is called on SignOut/ X out / Time Out
 	 */
-	public void updateOnSignOut(String activityType, final boolean isRedirect){		
+	public void handleSignOut(String activityType, final boolean isRedirect){		
 		MatContext.get().getSynchronizationDelegate().setLogOffFlag();
 		MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(), 
 			MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {

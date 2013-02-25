@@ -352,7 +352,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				Mat.hideLoadingMessage();
 				Mat.showSignOutMessage();
 				MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-				MatContext.get().updateOnSignOut("SIGN_OUT_EVENT", true);
+				MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
 				}
 		});
 		
@@ -370,7 +370,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			@Override
 			public void onWindowClosing(ClosingEvent event) {
 				if(!MatContext.get().getSynchronizationDelegate().getLogOffFlag()){
-					MatContext.get().updateOnSignOut("WINDOW_CLOSE_EVENT", false);
+					MatContext.get().handleSignOut("WINDOW_CLOSE_EVENT", false);
 				}
 			}
 		});

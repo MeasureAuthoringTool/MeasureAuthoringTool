@@ -157,6 +157,6 @@ class TimeoutManager {
 		timeoutWarning.cancel();
 		repeatedWarning.cancel();
 		clearTimeOutWarning();
-		MatContext.get().updateOnSignOut("TIMEOUT_EVENT", true);
+		MatContext.get().handleSignOut("TIMEOUT_EVENT", true);
 	}
 }

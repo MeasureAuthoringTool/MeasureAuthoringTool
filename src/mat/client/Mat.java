@@ -43,6 +43,7 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -80,6 +81,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	private ManageMeasurePresenter measureLibrary;
 	private	MatPresenter adminPresenter;
 	private CodeListController codeListController;
+	private ClosingEvent closingEvent;
 	
 	
 	String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
@@ -349,6 +351,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, new LogoffEvent.Handler() {
 			@Override
 			public void onLogoff(LogoffEvent event) {
+				event = null;
 				Mat.hideLoadingMessage();
 				Mat.showSignOutMessage();
 				MatContext.get().getSynchronizationDelegate().setLogOffFlag();
@@ -356,24 +359,34 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				}
 		});
 		
-//		Window.addCloseHandler(new CloseHandler<Window>() {
-//			@Override
-//			public void onClose(CloseEvent<Window> arg0) {
-//				if(!MatContext.get().getSynchronizationDelegate().getLogOffFlag()){
-//					MatContext.get().updateOnSignOut("WINDOW_CLOSE_EVENT", false);
-//				}
-//			}
-//		});
-		
-		Window.addWindowClosingHandler(new Window.ClosingHandler() {
-			
+		Window.addCloseHandler(new CloseHandler<Window>() {
 			@Override
-			public void onWindowClosing(ClosingEvent event) {
+			public void onClose(CloseEvent<Window> arg0) {
 				if(!MatContext.get().getSynchronizationDelegate().getLogOffFlag()){
 					MatContext.get().handleSignOut("WINDOW_CLOSE_EVENT", false);
 				}
 			}
 		});
+		
+		/*Window.addWindowClosingHandler(new Window.ClosingHandler() {
+			
+			@Override
+			public void onWindowClosing(ClosingEvent closeEvent) {
+				closingEvent = closeEvent;
+				showLoadingMessage();
+				if(!MatContext.get().getSynchronizationDelegate().getLogOffFlag()){
+					
+					final Timer timer = new Timer() {
+						@Override
+						public void run() {
+							MatContext.get().handleSignOut("WINDOW_CLOSE_EVENT", false);
+						}
+					};
+					timer.schedule(3000);					
+					
+				}
+			}
+		});*/
 		
 		MatContext.get().getEventBus().addHandler(TimedOutEvent.TYPE,new TimedOutEvent.Handler() {
 			@Override

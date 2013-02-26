@@ -29,9 +29,9 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 	 * An html string representation of an unchecked radio button.
 	 */
 	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" />");
- 
+	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" disabled=\"disabled\" />");
 	//private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"choices\"/>");
-	private boolean dependsOnSelection, handlesSelection;
+	private boolean dependsOnSelection, handlesSelection,isEnabled;
  
 	/**
 	 * Constructs a new {@link RadioButtonCell} that does not depend on
@@ -56,6 +56,7 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 		this();
 		this.dependsOnSelection = dependsOnSelection;
 		this.handlesSelection = handlesSelection;
+		//this.isEnabled =  
 		
 	}
 	
@@ -153,13 +154,21 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 			clearViewData(context.getKey());
 			viewData = null;
 		}
-		    
-		if (value != null && ((viewData != null) ? viewData : value)) {
-			sb.append(INPUT_CHECKED);
-		} else {
-			sb.append(INPUT_UNCHECKED);
+		if(checkForEnable()){    
+			if (value != null && ((viewData != null) ? viewData : value)) {
+				sb.append(INPUT_CHECKED);
+			} else {
+				sb.append(INPUT_UNCHECKED);
+			}
+		}else{
+			sb.append(INPUT_UNCHECKED_DISABLED);
+			
 		}
+	}
+	
+	private boolean checkForEnable(){
 		
+		return MatContext.get().getMeasureLockService().checkForEditPermission();
 	}
  
 }

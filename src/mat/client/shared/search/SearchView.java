@@ -385,6 +385,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
         SimplePager spager;
         SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
         spager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
+        spager.setRangeLimited(false);
         spager.setDisplay(table);
 		vPanelForQDMTable.clear();
 		vPanelForQDMTable.add(table);

@@ -11,6 +11,10 @@ import mat.model.CodeListSearchDTO;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -74,9 +78,22 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			radioButtonMap.put(codeList, rb);
 		}*/
 	}
+	
+	private SafeHtml getColumnToolTip(String columnText, StringBuilder title) {
+
+		String htmlConstant = "<html>" + "<head><style>" 
+		+ "A.tip { TEXT-DECORATION: none;}" + "A.tip:hover  {CURSOR:default;}" + "A.tip span   {DISPLAY:none}" + "A.tip span p " +
+		"{font-weight:500;border-radius:5px;padding:5px;font-size:12px}" + "A.tip:hover " +
+		"span {border:1px solid #e6e3e5;DISPLAY: block;Z-INDEX: 1000; PADDING: 0px 10px 0px 10px;" + "POSITION:absolute;float:left;background:#ffffd1;   TEXT-DECORATION: none}" + 
+		"</style></head>" + "<body>" + "<a href=\"#\" class=\"tip\">" + columnText  + "<span>" + title + "</span></a>" + "</body>" + "</html>";
+		
+		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
+
+	}
+	
 	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table){
 		
-		if(table.getColumnCount() !=4){	
+		if(table.getColumnCount() !=5){	
 			Column<CodeListSearchDTO, Boolean> radioButtonColumn = new Column<CodeListSearchDTO, Boolean>(new RadioButtonCell(true,true)) {  
 				public Boolean getValue(CodeListSearchDTO CodeListSearchDTO) {  
 					return table.getSelectionModel().isSelected(CodeListSearchDTO);  
@@ -89,13 +106,24 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 				}  
 			});  
 			table.addColumn(radioButtonColumn);  
-			TextColumn<CodeListSearchDTO > nameColumn = new TextColumn<CodeListSearchDTO >() {
+			
+			 Column< CodeListSearchDTO , SafeHtml> nameColumn;
+			nameColumn = new Column< CodeListSearchDTO  , SafeHtml>(new SafeHtmlCell()) {
+
 				@Override
-				public String getValue(CodeListSearchDTO object) {
-					return object.getName();
+				public SafeHtml getValue( CodeListSearchDTO   object ) {
+					
+					StringBuilder title = new StringBuilder();
+					String steward = object.getSteward();
+					if(steward.equalsIgnoreCase("Other")){
+						steward = object.getStewardOthers();
+					}
+					title =title.append("OID : ").append(object.getOid());
+					return getColumnToolTip(object.getName(), title);
 				}
 			};
 			table.addColumn(nameColumn, "Value Set");
+			
 			TextColumn<CodeListSearchDTO > category = new TextColumn<CodeListSearchDTO >() {
 				@Override
 				public String getValue(CodeListSearchDTO object) {
@@ -110,6 +138,18 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 				}
 			};
 			table.addColumn(codeSystem, "Code System");
+			
+			TextColumn<CodeListSearchDTO > stewardCol = new TextColumn<CodeListSearchDTO >() {
+				@Override
+				public String getValue(CodeListSearchDTO object) {
+					String steward = object.getSteward();
+					if(steward.equalsIgnoreCase("Other")){
+						steward = object.getStewardOthers();
+					}
+					return steward;
+				}
+			};
+			table.addColumn(stewardCol, "Steward");
 		}
 		return table;
 		

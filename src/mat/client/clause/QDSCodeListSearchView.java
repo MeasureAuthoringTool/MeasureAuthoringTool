@@ -1,8 +1,9 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+
+
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -18,7 +19,6 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
-import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
 import mat.model.CodeListSearchDTO;
 import mat.model.QualityDataSetDTO;
@@ -63,6 +63,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private List<QualityDataSetDTO> appliedQDMs = new ArrayList<QualityDataSetDTO>();
    // private ScrollPanel sp;
     private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
+    
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
 		
 		@Override
@@ -100,7 +101,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		dataTypeInput.addValueChangeHandler(dataTypeChangeHandler);
 		specificOccurrence.setEnabled(false);
 		addToMeasure.setEnabled(false);
-		view.buildQDSDataTable(new QDSCodeListSearchModel());
+		//view.buildQDSDataTable();
 		FlowPanel searchCriteriaPanel = new FlowPanel();
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.addStyleName("leftAligned");
@@ -125,7 +126,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		
 		HorizontalPanel mainPanel = new HorizontalPanel();
 		mainPanel.add(vp);
-		VerticalPanel vPanel = new VerticalPanel();
+		/*VerticalPanel vPanel = new VerticalPanel();
 		vPanel.setStyleName("qdmListBox");
 		checkboxScrollPanel.setSize("200px", "300px");
 		checkboxScrollPanel.setHorizontalScrollPosition(2);
@@ -137,7 +138,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		removeButton.setEnabled(false);
 		vPanel.add(removeButton);
 		
-		mainPanel.add(vPanel);
+		mainPanel.add(vPanel);*/
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("qdsContentPanel");
 		MatContext.get().setQDSView(this);
@@ -254,11 +255,10 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		return searchButton;
 	}
 	
-	@Override
-	public void buildQDSDataTable(SearchResults<CodeListSearchDTO> results) {
-		view.buildQDSDataTable(results);
-	}
+	
 
+	
+	
 	@Override
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return view;
@@ -403,5 +403,10 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		getValueSetSearchFilterPanel().setEnabled(enabled);
 		//data type radios
 		view.setEnabled(enabled);
+	}
+
+	@Override
+	public void buildQDSDataTable(QDSCodeListSearchModel results) {
+		view.buildQDSDataTable(results);
 	}
 }

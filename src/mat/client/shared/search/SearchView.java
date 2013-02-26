@@ -3,8 +3,12 @@ package mat.client.shared.search;
 
 
 import java.util.Iterator;
+import java.util.List;
 
 import mat.client.Enableable;
+
+import mat.client.clause.QDSCodeListSearchModel;
+
 import mat.client.event.MATClickHandler;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
@@ -13,6 +17,7 @@ import mat.client.shared.SpacerWidget;
 import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -22,6 +27,9 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.SimplePager;
+import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -32,7 +40,11 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.ProvidesKey;
+
 
 public class SearchView<T> implements HasSelectionHandlers<T>, 
 	HasPageSelectionHandler, HasPageSizeSelectionHandler, HasSortHandler,HasSelectAllHandler, Enableable {
@@ -52,7 +64,9 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	protected Panel pageSelector = new HorizontalPanel();
 	private HTML viewingNumber = new HTML();
 	public Grid508 dataTable = new Grid508();
-	private Grid508 qdsDataTable = new Grid508();
+	//private Grid508 qdsDataTable = new Grid508();
+	public CellTable<CodeListSearchDTO > qdsDataTable = new CellTable<CodeListSearchDTO>();
+	public VerticalPanel vPanelForQDMTable = new VerticalPanel();
 	//private FlexTable flexTable = new FlexTable();
 	
 	private int currentPageSize = DEFAULT_PAGE_SIZE;
@@ -89,9 +103,9 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	public SearchView(boolean QDSCodeListView){
 		mainPanel = new SimplePanel();
 		FlowPanel fPanel = new FlowPanel();
-		qdsDataTable.setWidth("100%");
-		qdsDataTable.setStylePrimaryName("searchResultsTable");
-		qdsDataTable.setCellPadding(5);
+		//qdsDataTable.setWidth("100%");
+		//qdsDataTable.setStylePrimaryName("searchResultsTable");
+		//qdsDataTable.setCellPadding(5);
 		mainPanel.add(fPanel);
 		pageSizeSelector.setHeight("20px");
 		fPanel.add(pageSizeSelector);
@@ -99,7 +113,8 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		fPanel.add(viewingNumber);
 		fPanel.add(new SpacerWidget());
 		fPanel.add(new SpacerWidget());
-		fPanel.add(qdsDataTable);
+		//buildQDSDataTable();
+		fPanel.add(vPanelForQDMTable);
 	}
 
 	public void setPageSizeVisible(boolean visible) {
@@ -334,18 +349,50 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		return pageSize * (currentPage - 1) + 1;	
 	}
 	
-	public void buildQDSDataTable(final SearchResults<T> results){
+	public void  buildQDSDataTable(QDSCodeListSearchModel results){
 		if(results == null) {
 			return;
 		}
-		int numRows = results.getNumberOfRows();
+		/*int numRows = results.getNumberOfRows();
 		int numColumns = results.getNumberOfColumns();
 		qdsDataTable.clear();
 		qdsDataTable.resize((int)numRows + 1, (int)numColumns);
 		buildQDSColumnHeaders(numRows,numColumns,results);
-		buildQDSSearchResults(numRows,numColumns,results);
+		buildQDSSearchResults(numRows,numColumns,results);*/
 		buildPageSizeSelector();
+		buildTableQDS(qdsDataTable,results);
 	}
+	
+	public void buildTableQDS(CellTable<CodeListSearchDTO> qdsDataTable, QDSCodeListSearchModel results){
+		 CellTable<CodeListSearchDTO> table = qdsDataTable;
+		  List<CodeListSearchDTO> codeListResults = results.getData(); 
+		 
+		// Display 50 rows in one page
+		 table.setPageSize(50);
+		
+		 table.setSelectionModel(results.addSelectionHandlerOnTable());
+		 table = results.addColumnToTable(table);
+		//just a keyProvider for the records in my list
+        ProvidesKey<CodeListSearchDTO> keyProvider = new ProvidesKey<CodeListSearchDTO>() {
+          public Object getKey(CodeListSearchDTO item) {
+            return (item == null) ? null : item.getName();
+          }
+        };
+		final ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>(keyProvider);
+        sortProvider.setList(codeListResults);
+		
+        sortProvider.addDataDisplay(table);
+        SimplePager spager;
+        SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
+        spager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
+        spager.setDisplay(table);
+		vPanelForQDMTable.clear();
+		vPanelForQDMTable.add(table);
+		vPanelForQDMTable.add(spager);
+
+	}
+	
+	
 	
 	public void buildQDSColumnHeaders(int numRows,int numColumns,SearchResults<T> results){
 		boolean isClearAll = false;
@@ -358,11 +405,11 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 			headerPanel.setStylePrimaryName("noBorder");
 			if(!isClearAll) 
 				headerPanel.add(columnHeader);
-			qdsDataTable.setWidget(0, i,headerPanel);
+			/*qdsDataTable.setWidget(0, i,headerPanel);
 			qdsDataTable.getColumnFormatter().setWidth(i, results.getColumnWidth(i));
-			qdsDataTable.getColumnFormatter().addStyleName(i, "noWrap");
+			qdsDataTable.getColumnFormatter().addStyleName(i, "noWrap")*/;
 		}
-		qdsDataTable.getRowFormatter().addStyleName(0, "header");
+		/*qdsDataTable.getRowFormatter().addStyleName(0, "header");*/
 	}
 	
 	//build data table for user search
@@ -636,17 +683,17 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					widget.setStylePrimaryName("pad-left5Right21px");
 				}
 				
-				qdsDataTable.setWidget(i+1, j,widget);
-				qdsDataTable.getColumnFormatter().setWidth(j, results.getColumnWidth(j));
+				/*qdsDataTable.setWidget(i+1, j,widget);
+				qdsDataTable.getColumnFormatter().setWidth(j, results.getColumnWidth(j));*/
 				
 			}
 			if(i % 2 == 0) {
-				qdsDataTable.getRowFormatter().removeStyleName(i + 1, "odd");
-				qdsDataTable.getRowFormatter().addStyleName(i+1,"noWrap");
+				/*qdsDataTable.getRowFormatter().removeStyleName(i + 1, "odd");
+				qdsDataTable.getRowFormatter().addStyleName(i+1,"noWrap");*/
 				
 			}else{
-				qdsDataTable.getRowFormatter().addStyleName(i + 1, "odd");
-				qdsDataTable.getRowFormatter().addStyleName(i+1,"noWrap");
+				/*qdsDataTable.getRowFormatter().addStyleName(i + 1, "odd");
+				qdsDataTable.getRowFormatter().addStyleName(i+1,"noWrap");*/
 			}
 			//
 			
@@ -774,7 +821,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		dataTable.setEnabled(enabled);
 		
 		//qdsDataTable (radio buttons)
-		qdsDataTable.setEnabled(enabled);
+		//qdsDataTable.setEnabled(enabled);
 		
 		//page size anchors 10|50|100|All
 		Iterator<Widget> iter = pageSizeSelector.iterator();
@@ -797,5 +844,10 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	 */
 	public void setDataTable(Grid508 dataTable) {
 		this.dataTable = dataTable;
+	}
+	
+
+	public CellTable<CodeListSearchDTO> getQdsDataTable() {
+		return qdsDataTable;
 	}
 }

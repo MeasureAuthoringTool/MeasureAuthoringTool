@@ -61,7 +61,7 @@ public class QDSCodeListSearchPresenter {
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption();
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement();
-		public void buildQDSDataTable(SearchResults<CodeListSearchDTO> results);
+		public void buildQDSDataTable(QDSCodeListSearchModel results);
 		public HasClickHandlers getAddToMeasureButton();
 		public void setAddToMeasureButtonEnabled(boolean visible);
 		public Widget getDataTypeWidget();
@@ -146,7 +146,7 @@ public class QDSCodeListSearchPresenter {
 				sortIsAscending = true;
 				int filter = searchDisplay.getValueSetSearchFilterPanel().getSelectedIndex();
 				search(searchDisplay.getSearchString().getValue(),
-						startIndex, searchDisplay.getPageSize(), currentSortColumn, sortIsAscending,showdefaultCodeList,filter);
+						startIndex, Integer.MAX_VALUE, currentSortColumn, sortIsAscending,showdefaultCodeList,filter);
 			}
 		});
 		
@@ -168,8 +168,9 @@ public class QDSCodeListSearchPresenter {
 		lastSearchText = searchText;
 		lastStartIndex = startIndex;
 		showSearchingBusy(true);
+		displaySearch();
 		MatContext.get().getCodeListService().search(searchText,
-				startIndex, pageSize, 
+				startIndex, Integer.MAX_VALUE, 
 				sortColumn, isAsc, defaultCodeList, filter,
 				new AsyncCallback<ManageCodeListSearchModel>() {
 			@Override
@@ -182,13 +183,13 @@ public class QDSCodeListSearchPresenter {
 				QDSCodeListSearchModel QDSSearchResult = new QDSCodeListSearchModel();
 				QDSSearchResult.setData(result.getData());
 				QDSSearchResult.setResultsTotal(result.getResultsTotal());
-				currentCodeListResults = QDSSearchResult;
+				
 				
 				SearchResultUpdate sru = new SearchResultUpdate();
 				sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchText);
 				sru = null;
 				searchDisplay.buildQDSDataTable(QDSSearchResult);
-				
+				currentCodeListResults = QDSSearchResult;
 				displaySearch();
 				searchDisplay.getErrorMessageDisplay().setFocus();
 				showSearchingBusy(false);
@@ -218,7 +219,7 @@ public class QDSCodeListSearchPresenter {
 		searchDisplay.getValueSetSearchFilterPanel().resetFilter();
 		int filter = searchDisplay.getValueSetSearchFilterPanel().getDefaultFilter();
 		search("", 1, searchDisplay.getPageSize(), currentSortColumn, sortIsAscending,showdefaultCodeList,filter);
-		panel.add(searchDisplay.asWidget());
+		//panel.add(searchDisplay.asWidget());
 	}
 	
 	private void displaySearch() {

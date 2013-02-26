@@ -3,18 +3,23 @@ package mat.client.clause;
 import java.util.HashMap;
 import java.util.List;
 
+import mat.client.shared.RadioButtonCell;
 import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
 import mat.model.CodeListSearchDTO;
 import mat.model.QualityDataSetDTO;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,IsSerializable {
 
@@ -28,9 +33,18 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 	private int resultsTotal;
 	private boolean editable;
 	
+	public List<CodeListSearchDTO> getData() {
+		return data;
+	}
+
 	private CodeListSearchDTO lastSelectedCodeList;
 	
-  
+	private CodeListSearchDTO selectedCodeList;
+	
+	public CodeListSearchDTO getSelectedCodeList() {
+		return selectedCodeList;
+	}
+
 	public CodeListSearchDTO getLastSelectedCodeList() {
 		return lastSelectedCodeList;
 	}
@@ -39,10 +53,14 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 		this.lastSelectedCodeList = lastSelectedCodeList;
 	}
 
+	public void setSelectedCodeList(CodeListSearchDTO selectedCodeList) {
+		this.selectedCodeList = selectedCodeList;
+	}
+
 	public void setData(List<CodeListSearchDTO> data) {
 		this.data = data;
 		this.editable = MatContext.get().getMeasureLockService().checkForEditPermission();
-		for(final CodeListSearchDTO codeList : data) {
+		/*for(final CodeListSearchDTO codeList : data) {
 			RadioButton rb = new RadioButton("codeListgroup","");
 			rb.setText(codeList.getName());
 			rb.addClickHandler(new ClickHandler() {
@@ -54,8 +72,88 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 				}
 			});
 			radioButtonMap.put(codeList, rb);
-		}
+		}*/
 	}
+	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table){
+		
+		if(table.getColumnCount() !=4){	
+			Column<CodeListSearchDTO, Boolean> radioButtonColumn = new Column<CodeListSearchDTO, Boolean>(new RadioButtonCell(true,true)) {  
+				public Boolean getValue(CodeListSearchDTO CodeListSearchDTO) {  
+					return table.getSelectionModel().isSelected(CodeListSearchDTO);  
+				}  
+			};  
+			radioButtonColumn.setFieldUpdater(new FieldUpdater<CodeListSearchDTO, Boolean>() {
+				@Override
+				public void update(int index, CodeListSearchDTO object, Boolean value) {
+					table.getSelectionModel().setSelected(object, true); 
+				}  
+			});  
+			table.addColumn(radioButtonColumn);  
+			TextColumn<CodeListSearchDTO > nameColumn = new TextColumn<CodeListSearchDTO >() {
+				@Override
+				public String getValue(CodeListSearchDTO object) {
+					return object.getName();
+				}
+			};
+			table.addColumn(nameColumn, "Value Set");
+			TextColumn<CodeListSearchDTO > category = new TextColumn<CodeListSearchDTO >() {
+				@Override
+				public String getValue(CodeListSearchDTO object) {
+					return object.getCategoryDisplay();
+				}
+			};
+			table.addColumn(category, "Category");
+			TextColumn<CodeListSearchDTO > codeSystem = new TextColumn<CodeListSearchDTO >() {
+				@Override
+				public String getValue(CodeListSearchDTO object) {
+					return object.getCodeSystem();
+				}
+			};
+			table.addColumn(codeSystem, "Code System");
+		}
+		return table;
+		
+	}
+	
+	public SingleSelectionModel<CodeListSearchDTO> addSelectionHandlerOnTable(){
+		final SingleSelectionModel<CodeListSearchDTO> selectionModel = new  SingleSelectionModel<CodeListSearchDTO>();
+		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				CodeListSearchDTO codeListObject = selectionModel.getSelectedObject();
+				if(codeListObject !=null){
+					//lastSelectedCodeList = codeListObject;
+					System.out.println("===== Trapped Object ===== "+ codeListObject.getName() );
+					MatContext.get().clearDVIMessages();
+					setLastSelectedCodeList(codeListObject);
+					setSelectedCodeList(codeListObject);
+					MatContext.get().getEventBus().fireEvent( new OnChangeOptionsEvent());
+
+				}else{
+					System.out.println("=============Nothing is trapped================");
+				}
+			}
+		});
+		return selectionModel;
+	}
+	
+	/*public CodeListSearchDTO getSelectedCodeList() {
+		CodeListSearchDTO codeList = null;
+		for(int i = 0; i < data.size(); i++) {
+			codeList = data.get(i);
+			RadioButton rb = radioButtonMap.get(codeList);
+			if(rb.getValue().equals(Boolean.TRUE)) {
+				return codeList;
+			}else{
+				codeList = null;
+			}
+		}
+		return codeList;
+		
+	}*/
+	
+	
+	
 	
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
@@ -172,20 +270,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 		return columnIndex == 1;
 	}
 	
-	public CodeListSearchDTO getSelectedCodeList() {
-		CodeListSearchDTO codeList = null;
-		for(int i = 0; i < data.size(); i++) {
-			codeList = data.get(i);
-			RadioButton rb = radioButtonMap.get(codeList);
-			if(rb.getValue().equals(Boolean.TRUE)) {
-				return codeList;
-			}else{
-				codeList = null;
-			}
-		}
-		return codeList;
-		
-	}
+	
 
 	public boolean isEditable() {
 		return editable;

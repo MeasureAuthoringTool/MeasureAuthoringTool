@@ -1,5 +1,7 @@
 package mat.server;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -8,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import mat.client.clause.clauseworkspace.modal.MeasureExportModal;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -39,9 +41,15 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
 
 
 
@@ -292,7 +300,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			//creating a new measure.
 			isNewMeasure = true;
 			pkg = new Measure();
-			pkg.setMeasureStatus("In Progress");
+			model.setMeasureStatus("In Progress");
+			pkg.setMeasureStatus(model.getMeasureStatus());
 			measureSet = new MeasureSet();
 			measureSet.setId(UUID.randomUUID().toString());
 			getService().save(measureSet);
@@ -305,6 +314,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			getAndValidateValueSetDate(model.getValueSetDate());
 			pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
 			getService().save(pkg);
+			getService().saveMeasureXml(createMeasureXmlModal(model, pkg.getId()));
 		}catch(InvalidValueSetDateException e){
 			result.setSuccess(false);
 			result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
@@ -319,6 +329,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			//Create Default SupplimentalQDM if it is a new Measure.
 			createSupplimentalQDM(pkg);
 		}
+		model.setId(result.getId());
 		return result;
 	}
 
@@ -485,6 +496,40 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return result;
 	}
 	
+	
+	public String createMeasureDetailsXml(ManageMeasureDetailModel measureDetailModel){
+		logger.info("creating XML from Measure Details Model");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping("../src/mat/server/model/MeasureDetailsModelMapping.xml");
+//			Writer writer = new FileWriter("../src/mat/server/xmlTree.xml");
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+//			marshaller.setWriter(writer);
+	        marshaller.setMapping(mapping);
+	        marshaller.marshal(measureDetailModel);
+	        logger.info("Marshalling of ManageMeasureDetailsModel is successful..");
+//	        Unmarshaller unmar = new Unmarshaller(mapping);
+//            ManageMeasureDetailModel details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new FileReader("../src/mat/server/xmlTree.xml")));
+            
+		} catch (MarshalException e) {
+			logger.info(e.getStackTrace());
+		} catch (ValidationException e) {
+			logger.info(e.getStackTrace());
+		} catch (IOException e) {
+			logger.info(e.getStackTrace());
+		} catch (MappingException e) {
+			logger.info(e.getStackTrace());
+		}
+		return stream.toString();
+	}
+	
+	private MeasureXmlModel createMeasureXmlModal(ManageMeasureDetailModel manageMeasureDetailModel, String measureId){
+		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
+		measureXmlModel.setMeasureId(measureId);
+		measureXmlModel.setXml(createMeasureDetailsXml(manageMeasureDetailModel));
+		return measureXmlModel;
+	}
 
 	@Override
 	public ManageMeasureShareModel getUsersForShare(String measureId, int startIndex, int pageSize) {
@@ -803,14 +848,15 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	@Override
-	public MeasureExportModal getMeasureExoportForMeasure(String measureId) {
-		return getService().getMeasureExoportForMeasure(measureId);
+	public MeasureXmlModel getMeasureXmlForMeasure(String measureId) {
+		return getService().getMeasureXmlForMeasure(measureId);
 	}
 
 	@Override
-	public void saveMeasureExport(MeasureExportModal measureExportModal) {
-		getService().saveMeasureExport(measureExportModal);
+	public void saveMeasureXml(MeasureXmlModel measureXmlModel) {
+		getService().saveMeasureXml(measureXmlModel);
 	}
+	
 	
 	
 }

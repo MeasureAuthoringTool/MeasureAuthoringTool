@@ -2,7 +2,7 @@ package mat.client.measure.service;
 
 import java.util.List;
 
-import mat.client.clause.clauseworkspace.modal.MeasureExportModal;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -34,8 +34,8 @@ public interface MeasureServiceAsync {
 			AsyncCallback<TransferMeasureOwnerShipModel> callback);
 	void transferOwnerShipToUser(List<String> list, String toEmail,
 			AsyncCallback<Void> callback);
-	void getMeasureExoportForMeasure(String measureId,
-			AsyncCallback<MeasureExportModal> callback);
-	void saveMeasureExport(MeasureExportModal measureExportModal,
+	void getMeasureXmlForMeasure(String measureId,
+			AsyncCallback<MeasureXmlModel> callback);
+	void saveMeasureXml(MeasureXmlModel measureXmlModel,
 			AsyncCallback<Void> callback);
 	}

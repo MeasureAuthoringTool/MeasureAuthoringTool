@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.client.clause.clauseworkspace.modal.MeasureExportModal;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -712,10 +712,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 
 	@Override
-	public MeasureExportModal getMeasureExoportForMeasure(String measureId) {
+	public MeasureXmlModel getMeasureXmlForMeasure(String measureId) {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		if(measureXML != null){
-			MeasureExportModal exportModal = new MeasureExportModal();
+			MeasureXmlModel exportModal = new MeasureXmlModel();
 			exportModal.setMeasureId(measureXML.getMeasure_id());
 			exportModal.setMeausreExportId(measureXML.getId());
 			exportModal.setXml(measureXML.getMeasureXMLAsString());
@@ -725,16 +725,15 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 
 	@Override
-	public void saveMeasureExport(MeasureExportModal measureExportModal) {
-		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureExportModal.getMeasureId());
+	public void saveMeasureXml(MeasureXmlModel measureXmlModel) {
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureXmlModel.getMeasureId());
 		if(measureXML != null){
-			measureXML.setMeasureXMLAsString(measureExportModal.getXml());
+			measureXML.setMeasureXMLAsByteArray(measureXmlModel.getXml());
 		}
 		else{
-			Measure measure = measureDAO.find(measureExportModal.getMeasureId());
 			measureXML = new MeasureXML();
-			measureXML.setMeasure_id(measureExportModal.getMeasureId());
-			measureXML.setMeasureXMLAsString(measureExportModal.getXml());
+			measureXML.setMeasure_id(measureXmlModel.getMeasureId());
+			measureXML.setMeasureXMLAsByteArray(measureXmlModel.getXml());
 		}
 		measureXMLDAO.save(measureXML);
 	}

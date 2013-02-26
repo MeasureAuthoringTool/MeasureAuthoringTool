@@ -2,7 +2,7 @@ package mat.client.clause.clauseworkspace.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class MeasureExportModal implements IsSerializable{
+public class MeasureXmlModel implements IsSerializable{
 	
 	private String meausreExportId;
 	

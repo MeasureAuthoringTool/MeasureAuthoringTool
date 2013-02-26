@@ -8,8 +8,6 @@ import mat.model.MeasureType;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-import edu.emory.mathcs.backport.java.util.Collections;
-
 public class ManageMeasureDetailModel implements IsSerializable{
 	private String id;
 	private String name;
@@ -197,7 +195,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		return riskAdjustment;
 	}
 	public void setRiskAdjustment(String riskAdjustment) {
-		this.riskAdjustment = riskAdjustment;
+		this.riskAdjustment = doTrim(riskAdjustment);
 	}
 	public String getId() {
 		return id;
@@ -239,11 +237,9 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	}
 	
 	private String doTrim(String str){
-		if(str == null)
-			return str;
-		else
-			return str.trim();
+		return str != null && str.trim().length() > 0 ? str.trim() : null;
 	}
+
 	public String getMeasureSetId() {
 		return measureSetId;
 	}
@@ -261,76 +257,76 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		return copyright;
 	}
 	public void setCopyright(String copyright) {
-		this.copyright = copyright;
+		this.copyright = doTrim(copyright);
 	}
 	public String getTransmissionFormat() {
 		return transmissionFormat;
 	}
 	public void setTransmissionFormat(String transmissionFormat) {
-		this.transmissionFormat = transmissionFormat;
+		this.transmissionFormat = doTrim(transmissionFormat);
 	}
 	public String getSupplementalData() {
 		return supplementalData;
 	}
 	public void setSupplementalData(String supplementalData) {
-		this.supplementalData = supplementalData;
+		this.supplementalData = doTrim(supplementalData);
 	}
 	public void setDisclaimer(String disclaimer) {
-		this.disclaimer = disclaimer;
+		this.disclaimer = doTrim(disclaimer);
 	}
 	public String getDisclaimer() {
 		return disclaimer;
 	}
 	public void setRateAggregation(String rateAggregation) {
-		this.rateAggregation = rateAggregation;
+		this.rateAggregation = doTrim(rateAggregation);
 	}
 	public String getRateAggregation() {
 		return rateAggregation;
 	}
 	public void setInitialPatientPop(String initialPatientPop) {
-		this.initialPatientPop = initialPatientPop;
+		this.initialPatientPop = doTrim(initialPatientPop);
 	}
 	public String getInitialPatientPop() {
 		return initialPatientPop;
 	}
 	public void setDenominator(String denominator) {
-		this.denominator = denominator;
+		this.denominator = doTrim(denominator);
 	}
 	public String getDenominator() {
 		return denominator;
 	}
 	public void setDenominatorExclusions(String denominatorExclusions) {
-		this.denominatorExclusions = denominatorExclusions;
+		this.denominatorExclusions = doTrim(denominatorExclusions);
 	}
 	public String getDenominatorExclusions() {
 		return denominatorExclusions;
 	}
 	public void setNumerator(String numerator) {
-		this.numerator = numerator;
+		this.numerator = doTrim(numerator);
 	}
 	public String getNumerator() {
 		return numerator;
 	}
 	public void setNumeratorExclusions(String numeratorExclusions) {
-		this.numeratorExclusions = numeratorExclusions;
+		this.numeratorExclusions = doTrim(numeratorExclusions);
 	}
 	public String getNumeratorExclusions() {
 		return numeratorExclusions;
 	}
 	public void setDenominatorExceptions(String denominatorExceptions) {
-		this.denominatorExceptions = denominatorExceptions;
+		this.denominatorExceptions = doTrim(denominatorExceptions);
 	}
 	public String getDenominatorExceptions() {
 		return denominatorExceptions;
 	}
 	public void setMeasurePopulation(String measurePopulation) {
-		this.measurePopulation = measurePopulation;
+		this.measurePopulation = doTrim(measurePopulation);
 	}
 	public String getMeasurePopulation() {
 		return measurePopulation;
 	}
 	public void setMeasureObservations(String measureObservations) {
-		this.measureObservations = measureObservations;
+		this.measureObservations = doTrim(measureObservations);
 	}
 	public String getMeasureObservations() {
 		return measureObservations;
@@ -341,6 +337,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	public void seteMeasureId(int eMeasureId) {
 		this.eMeasureId = eMeasureId;
 	}
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -738,6 +735,5 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	public void setToCompareMeasure(List<MeasureType> toCompareMeasure) {
 		this.toCompareMeasure = toCompareMeasure;
 	}
-	
-	
+
 }

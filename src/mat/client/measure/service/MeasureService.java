@@ -2,7 +2,7 @@ package mat.client.measure.service;
 
 import java.util.List;
 
-import mat.client.clause.clauseworkspace.modal.MeasureExportModal;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -37,7 +37,7 @@ public interface MeasureService extends RemoteService {
 	public int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
 	public TransferMeasureOwnerShipModel searchUsers(int startIndex, int pageSize);
 	void transferOwnerShipToUser(List<String> list, String toEmail);
-	public MeasureExportModal getMeasureExoportForMeasure(String measureId);
-	public void saveMeasureExport(MeasureExportModal measureExportModal);
+	public MeasureXmlModel getMeasureXmlForMeasure(String measureId);
+	public void saveMeasureXml(MeasureXmlModel measureXmlModel);
 	
 }

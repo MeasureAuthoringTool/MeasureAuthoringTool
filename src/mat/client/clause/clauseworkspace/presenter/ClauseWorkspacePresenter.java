@@ -3,7 +3,7 @@ package mat.client.clause.clauseworkspace.presenter;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
-import mat.client.clause.clauseworkspace.modal.MeasureExportModal;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.view.XmlTree;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplay;
@@ -48,7 +48,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	private SimplePanel panel = new SimplePanel();
 	private XmlTreeDisplay xmlTreeDisplay;
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
-	MeasureExportModal measureExportModal;
+	MeasureXmlModel measureXmlModel;
 
 	public ClauseWorkspacePresenter() {
 		emptyWidget.add(new Label("No Measure Selected"));
@@ -61,12 +61,12 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		if (MatContext.get().getCurrentMeasureId() != null
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
 			panel.clear();
-			service.getMeasureExoportForMeasure(MatContext.get()
+			service.getMeasureXmlForMeasure(MatContext.get()
 					.getCurrentMeasureId(),
-					new AsyncCallback<MeasureExportModal>() {// Loading the measure's SimpleXML from the Measure_XML table 
+					new AsyncCallback<MeasureXmlModel>() {// Loading the measure's SimpleXML from the Measure_XML table 
 
 						@Override
-						public void onSuccess(MeasureExportModal result) {
+						public void onSuccess(MeasureXmlModel result) {
 							XmlTree xmlTree;
 							if (null != result && result.getXml().length() > 0) {// if xml not null
 								setMeasureExportModal(result);
@@ -100,8 +100,8 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		Mat.focusSkipLists("MeasureComposer");
 	}
 
-	private MeasureExportModal createMeasureExportModal() {
-		MeasureExportModal exportModal = new MeasureExportModal();
+	private MeasureXmlModel createMeasureExportModal() {
+		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
 		return exportModal;
 	}
@@ -122,14 +122,14 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 				}
 				
 //				try{
-					measureExportModal.setXml(createXmlFromTree());	
+					measureXmlModel.setXml(createXmlFromTree());	
 //				}catch (Exception e) {
 //					System.out.println(e.getCause().getMessage().contains("InvalidCharacterError"));
 //					xmlTreeDisplay.getErrorMessageDisplay().setMessage("Invalid Character added");
 //				}
 				
 				
-				service.saveMeasureExport(measureExportModal,
+				service.saveMeasureXml(measureXmlModel,
 						new AsyncCallback<Void>() {
 
 							@Override
@@ -281,16 +281,16 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	/**
 	 * @return the measureExportModal
 	 */
-	public MeasureExportModal getMeasureExportModal() {
-		return measureExportModal;
+	public MeasureXmlModel getMeasureExportModal() {
+		return measureXmlModel;
 	}
 
 	/**
-	 * @param measureExportModal
+	 * @param measureXmlModel
 	 *            the measureExportModal to set
 	 */
-	public void setMeasureExportModal(MeasureExportModal measureExportModal) {
-		this.measureExportModal = measureExportModal;
+	public void setMeasureExportModal(MeasureXmlModel measureXmlModel) {
+		this.measureXmlModel = measureXmlModel;
 	}
 
 }

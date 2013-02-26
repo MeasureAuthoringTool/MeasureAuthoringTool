@@ -351,7 +351,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		MatContext.get().getEventBus().addHandler(LogoffEvent.TYPE, new LogoffEvent.Handler() {
 			@Override
 			public void onLogoff(LogoffEvent event) {
-				event = null;
 				Mat.hideLoadingMessage();
 				Mat.showSignOutMessage();
 				MatContext.get().getSynchronizationDelegate().setLogOffFlag();

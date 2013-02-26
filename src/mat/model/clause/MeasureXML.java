@@ -42,7 +42,7 @@ public class MeasureXML {
 		return xml;
 	}
 	
-	public void setMeasureXMLAsString(String xml){
+	public void setMeasureXMLAsByteArray(String xml){
 		if(null != xml){
 			byte[] xmlByteArr = xml.getBytes();
 			this.measureXML = Hibernate.createBlob(xmlByteArr);	

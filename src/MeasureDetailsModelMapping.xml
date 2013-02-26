@@ -4,119 +4,119 @@
 
 <mapping>
 	<class name="mat.client.measure.ManageMeasureDetailModel">
-    <map-to xml="MeasureDetails"/>
-
+    <map-to xml="measure" />
+	
     <field name="id"
            type="java.lang.String">
-      <bind-xml name="uuid" node="element"/>
+      <bind-xml name="uuid" node="element" location="measureDetails"/>
     </field>
 
     <field name="name"
            type="java.lang.String">
-      <bind-xml name="title" node="element"/>
+      <bind-xml name="title" node="element" location="measureDetails"/>
     </field>
     
     <field name="shortName"
            type="java.lang.String">
-      <bind-xml name="shortTitle" node="element"/>
+      <bind-xml name="shortTitle" node="element" location="measureDetails"/>
     </field>
     
     <field name="measFromPeriod"
            type="java.lang.String">
-      <bind-xml name="startDate" node="element" location="period"/>
+      <bind-xml name="startDate" node="element" location="measureDetails/period"/>
     </field>
     
     <field name="measToPeriod"
            type="java.lang.String">
-      <bind-xml name="stopDate" node="element" location="period"/>
+      <bind-xml name="stopDate" node="element" location="measure/period"/>
     </field>
     
      <field name="description"
            type="java.lang.String">
-      <bind-xml name="description" node="element"/>
+      <bind-xml name="description" node="element" location="measureDetails"/>
     </field>
    
     <field name="copyright"
            type="java.lang.String">
-      <bind-xml name="copyright" node="element"/>
+      <bind-xml name="copyright" node="element" location="measureDetails"/>
     </field>
     
     <field name="measureSetId"
            type="java.lang.String">
-      <bind-xml name="guid" node="element"/>
+      <bind-xml name="guid" node="element" location="measureDetails"/>
     </field>
    
     <field name="versionNumber"
            type="java.lang.String">
-      <bind-xml name="version" node="element"/>
+      <bind-xml name="version" node="element" location="measureDetails"/>
     </field> 
        
     <field name="measureStatus"
            type="java.lang.String">
-      <bind-xml name="status" node="element"/>
+      <bind-xml name="status" node="element" location="measureDetails"/>
     </field>
    
     <field name="authorList"
            type="mat.model.Author"
               collection="arraylist">
-      <bind-xml name="authors"/>
+      <bind-xml name="authors" location="measureDetails"/>
     </field>
     
     <field name="measSteward"
            type="java.lang.String">
-      <bind-xml name="steward" node="element"/>
+      <bind-xml name="steward" node="element" location="measureDetails"/>
     </field>
 
 	<field name="measScoring"
            type="java.lang.String">
-      <bind-xml name="scoring" node="element"/>
+      <bind-xml name="scoring" node="element" location="measureDetails"/>
     </field>
 	    
     <field name="measureTypeList"
            type="mat.model.MeasureType"
               collection="arraylist">
-      <bind-xml name="types"/>
+      <bind-xml name="types" location="measureDetails"/>
     </field>
     
     <field name="stratification"
            type="java.lang.String">
-      <bind-xml name="stratification" node="element"/>
+      <bind-xml name="stratification" node="element" location="measureDetails"/>
     </field>
 
 	<field name="guidance"
            type="java.lang.String">
-      <bind-xml name="guidance" node="element"/>
+      <bind-xml name="guidance" node="element" location="measureDetails"/>
     </field>
 
     <field name="transmissionFormat"
            type="java.lang.String">
-      <bind-xml name="transmissionFormat" node="element"/>
+      <bind-xml name="transmissionFormat" node="element" location="measureDetails"/>
     </field>
     
     <field name="rationale"
            type="java.lang.String">
-      <bind-xml name="rationale" node="element"/>
+      <bind-xml name="rationale" node="element" location="measureDetails"/>
     </field>
     
     <field name="clinicalRecomms"
            type="java.lang.String">
-      <bind-xml name="recommendations" node="element"/>
+      <bind-xml name="recommendations" node="element" location="measureDetails"/>
     </field>
 
     <field name="referencesList"
            type="java.lang.String"
            collection="arraylist">
-      <bind-xml name="reference" node="element" location="references"/>
+      <bind-xml name="reference" node="element" location="measureDetails/references"/>
     </field>
     
     <field name="improvNotations"
            type="java.lang.String">
-      <bind-xml name="improvementNotations" node="element"/>
+      <bind-xml name="improvementNotations" node="element" location="measureDetails"/>
     </field>
     
     <field name="definitions"
            type="java.lang.String">
-      <bind-xml name="definitions" node="element"/>
+      <bind-xml name="definitions" node="element" location="measureDetails"/>
     </field>
     
   <!--   <field name="measureSetId"
@@ -126,72 +126,72 @@
     
     <field name="supplementalData"
            type="java.lang.String">
-      <bind-xml name="supplementalData" node="element"/>
+      <bind-xml name="supplementalData" node="element" location="measureDetails"/>
     </field>
     
      <field name="disclaimer"
            type="java.lang.String">
-      <bind-xml name="disclaimer" node="element"/>
+      <bind-xml name="disclaimer" node="element" location="measureDetails"/>
     </field>
     
     <field name="riskAdjustment"
            type="java.lang.String">
-      <bind-xml name="riskAdjustment" node="element"/>
+      <bind-xml name="riskAdjustment" node="element" location="measureDetails" />
     </field>
     
     <field name="rateAggregation"
            type="java.lang.String">
-      <bind-xml name="aggregation" node="element"/>
+      <bind-xml name="aggregation" node="element" location="measureDetails"/>
     </field>
     
     <field name="initialPatientPop"
            type="java.lang.String">
-      <bind-xml name="initialPatientPopDescription" node="element"/>
+      <bind-xml name="initialPatientPopDescription" node="element" location="measureDetails"/>
     </field>
     
     <field name="denominatorExclusions"
            type="java.lang.String">
-      <bind-xml name="denominatorExclusionsDescription" node="element"/>
+      <bind-xml name="denominatorExclusionsDescription" node="element" location="measureDetails"/>
     </field>
     
 	<field name="numerator"
            type="java.lang.String">
-      <bind-xml name="numeratorDescription" node="element"/>
+      <bind-xml name="numeratorDescription" node="element" location="measureDetails"/>
     </field>
     
     <field name="numeratorExclusions"
            type="java.lang.String">
-      <bind-xml name="numeratorExclusionsDescription" node="element"/>
+      <bind-xml name="numeratorExclusionsDescription" node="element" location="measureDetails"/>
     </field>
     
     <field name="denominatorExceptions"
            type="java.lang.String">
-      <bind-xml name="denominatorExceptionsDescription" node="element"/>
+      <bind-xml name="denominatorExceptionsDescription" node="element" location="measureDetails"/>
     </field>
     
     <field name="measurePopulation"
            type="java.lang.String">
-      <bind-xml name="measurePopulationDescription" node="element"/>
+      <bind-xml name="measurePopulationDescription" node="element" location="measureDetails"/>
     </field>
     
     <field name="measureObservations"
            type="java.lang.String">
-      <bind-xml name="measureObservationsDescription" node="element"/>
+      <bind-xml name="measureObservationsDescription" node="element" location="measureDetails"/>
     </field>
     
     <field name="denominator"
            type="java.lang.String">
-      <bind-xml name="denominatorDescription" node="element"/>
+      <bind-xml name="denominatorDescription" node="element" location="measureDetails"/>
     </field>
     
     <field name="nqfId"
            type="java.lang.String">
-      <bind-xml name="nqfid" node="element"/>
+      <bind-xml name="nqfid" node="element" location="measureDetails"/>
     </field>
 
 	<field name="eMeasureId"
            type="integer" get-method="geteMeasureId" set-method="seteMeasureId" handler="mat.server.model.MeasureDetailsHandler">
-      <bind-xml name="eMeasureid" node="element"/>
+      <bind-xml name="eMeasureid" node="element" location="measureDetails"/>
     </field>    
       
   </class>

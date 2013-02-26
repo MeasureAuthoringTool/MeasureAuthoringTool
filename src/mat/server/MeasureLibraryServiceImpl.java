@@ -37,6 +37,7 @@ import mat.server.service.InvalidValueSetDateException;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
 import mat.server.util.MeasureUtility;
+import mat.server.util.ResourceLoader;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
@@ -502,7 +503,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		Mapping mapping = new Mapping();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		try {
-			mapping.loadMapping("../src/mat/server/model/MeasureDetailsModelMapping.xml");
+//			mapping.loadMapping("../src/mat/server/model/MeasureDetailsModelMapping.xml");
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
 //			Writer writer = new FileWriter("../src/mat/server/xmlTree.xml");
 			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
 //			marshaller.setWriter(writer);

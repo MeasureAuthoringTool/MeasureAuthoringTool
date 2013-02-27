@@ -315,7 +315,6 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			getAndValidateValueSetDate(model.getValueSetDate());
 			pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
 			getService().save(pkg);
-			getService().saveMeasureXml(createMeasureXmlModal(model, pkg.getId()));
 		}catch(InvalidValueSetDateException e){
 			result.setSuccess(false);
 			result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
@@ -331,6 +330,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			createSupplimentalQDM(pkg);
 		}
 		model.setId(result.getId());
+		model.setMeasureSetId(pkg.getMeasureSet() != null ? pkg.getMeasureSet().getId() : null);
+		model.setVersionNumber(MeasureUtility.getVersionText(pkg.getVersion(), pkg.isDraft()));
+		getService().saveMeasureXml(createMeasureXmlModal(model, pkg.getId()));
 		return result;
 	}
 
@@ -459,6 +461,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
     
 	@Override
 	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) {
+		createMeasureDetailsXml(model);
 		Measure measure = null;
 		if(model.getId() != null){
 			measure = getService().getById(model.getId());
@@ -498,6 +501,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 	
+	
 	public String createMeasureDetailsXml(ManageMeasureDetailModel measureDetailModel){
 		logger.info("creating XML from Measure Details Model");
 		Mapping mapping = new Mapping();
@@ -514,15 +518,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 //	        Unmarshaller unmar = new Unmarshaller(mapping);
 //            ManageMeasureDetailModel details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new FileReader("../src/mat/server/xmlTree.xml")));
             
-		} catch (MarshalException e) {
+		} catch (Exception e) {
 			logger.info(e.getStackTrace());
-		} catch (ValidationException e) {
-			logger.info(e.getStackTrace());
-		} catch (IOException e) {
-			logger.info(e.getStackTrace());
-		} catch (MappingException e) {
-			logger.info(e.getStackTrace());
-		}
+			e.printStackTrace();
+		} 
+		System.out.println(stream.toString());
 		return stream.toString();
 	}
 	

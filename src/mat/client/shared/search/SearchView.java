@@ -65,7 +65,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	private HTML viewingNumber = new HTML();
 	public Grid508 dataTable = new Grid508();
 	//private Grid508 qdsDataTable = new Grid508();
-	public CellTable<CodeListSearchDTO > qdsDataTable = new CellTable<CodeListSearchDTO>();
+	//public CellTable<CodeListSearchDTO > qdsDataTable = new CellTable<CodeListSearchDTO>();
 	public VerticalPanel vPanelForQDMTable = new VerticalPanel();
 	//private FlexTable flexTable = new FlexTable();
 	
@@ -360,33 +360,51 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		buildQDSColumnHeaders(numRows,numColumns,results);
 		buildQDSSearchResults(numRows,numColumns,results);*/
 		buildPageSizeSelector();
-		buildTableQDS(qdsDataTable,results);
+		buildTableQDS(results);
 	}
 	
-	public void buildTableQDS(CellTable<CodeListSearchDTO> qdsDataTable, QDSCodeListSearchModel results){
-		 CellTable<CodeListSearchDTO> table = qdsDataTable;
-		  List<CodeListSearchDTO> codeListResults = results.getData(); 
+	public void buildTableQDS( QDSCodeListSearchModel results){
 		 
+		CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
+		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
+		// List<CodeListSearchDTO> codeListResults = results.getData(); 
+		 /*
+		  if (sortProvider.getDataDisplays() != null && sortProvider.getDataDisplays().isEmpty() == false) { 
+			  	sortProvider.removeDataDisplay(table); 
+		  }*/ 
+		//clearTableColumns();
+		  if(table.getColumnCount()==5){
+			  table.flush();
+			  /*table.removeColumn(0);
+			  table.removeColumn(1);
+			  table.removeColumn(2);
+			  table.removeColumn(3);
+			  table.removeColumn(4);*/
+			  
+		  }
+		  
 		// Display 50 rows in one page
 		 table.setPageSize(50);
 		
 		 table.setSelectionModel(results.addSelectionHandlerOnTable());
 		 table = results.addColumnToTable(table);
-		//just a keyProvider for the records in my list
+		/*//just a keyProvider for the records in my list
         ProvidesKey<CodeListSearchDTO> keyProvider = new ProvidesKey<CodeListSearchDTO>() {
           public Object getKey(CodeListSearchDTO item) {
             return (item == null) ? null : item.getName();
           }
-        };
-		final ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>(keyProvider);
-        sortProvider.setList(codeListResults);
-		
-        sortProvider.addDataDisplay(table);
-        SimplePager spager;
-        SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
-        spager = new SimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
+        };*/
+		table.redraw();
+		sortProvider.refresh();
+		sortProvider.setList(results.getData());
+	
+		sortProvider.addDataDisplay(table);
+        
+        SimplePager spager = new SimplePager(TextLocation.CENTER, false, 0, true);
         spager.setRangeLimited(false);
+        //spager.firstPage();
         spager.setDisplay(table);
+        spager.setPageStart(0);
 		vPanelForQDMTable.clear();
 		vPanelForQDMTable.add(table);
 		vPanelForQDMTable.add(spager);
@@ -848,7 +866,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 	
 
-	public CellTable<CodeListSearchDTO> getQdsDataTable() {
+	/*public CellTable<CodeListSearchDTO> getQdsDataTable() {
 		return qdsDataTable;
-	}
+	}*/
 }

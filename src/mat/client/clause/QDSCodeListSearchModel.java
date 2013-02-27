@@ -94,6 +94,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table){
 		
 		if(table.getColumnCount() !=5){	
+			
 			Column<CodeListSearchDTO, Boolean> radioButtonColumn = new Column<CodeListSearchDTO, Boolean>(new RadioButtonCell(true,true)) {  
 				public Boolean getValue(CodeListSearchDTO CodeListSearchDTO) {  
 					return table.getSelectionModel().isSelected(CodeListSearchDTO);  
@@ -114,10 +115,6 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 				public SafeHtml getValue( CodeListSearchDTO   object ) {
 					
 					StringBuilder title = new StringBuilder();
-					String steward = object.getSteward();
-					if(steward.equalsIgnoreCase("Other")){
-						steward = object.getStewardOthers();
-					}
 					title =title.append("OID : ").append(object.getOid());
 					return getColumnToolTip(object.getName(), title);
 				}
@@ -151,6 +148,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			};
 			table.addColumn(stewardCol, "Steward");
 		}
+		
 		return table;
 		
 	}
@@ -163,14 +161,11 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 				CodeListSearchDTO codeListObject = selectionModel.getSelectedObject();
 				if(codeListObject !=null){
 					//lastSelectedCodeList = codeListObject;
-					System.out.println("===== Trapped Object ===== "+ codeListObject.getName() );
 					MatContext.get().clearDVIMessages();
 					setLastSelectedCodeList(codeListObject);
 					setSelectedCodeList(codeListObject);
 					MatContext.get().getEventBus().fireEvent( new OnChangeOptionsEvent());
 
-				}else{
-					System.out.println("=============Nothing is trapped================");
 				}
 			}
 		});

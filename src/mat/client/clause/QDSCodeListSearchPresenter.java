@@ -61,7 +61,7 @@ public class QDSCodeListSearchPresenter {
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption();
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement();
-		public void buildQDSDataTable(QDSCodeListSearchModel results);
+		public void buildQDSDataTable(QDSCodeListSearchModel results, int pageSize);
 		public HasClickHandlers getAddToMeasureButton();
 		public void setAddToMeasureButtonEnabled(boolean visible);
 		public Widget getDataTypeWidget();
@@ -146,7 +146,7 @@ public class QDSCodeListSearchPresenter {
 				sortIsAscending = true;
 				int filter = searchDisplay.getValueSetSearchFilterPanel().getSelectedIndex();
 				search(searchDisplay.getSearchString().getValue(),
-						startIndex, Integer.MAX_VALUE, currentSortColumn, sortIsAscending,showdefaultCodeList,filter);
+						startIndex, searchDisplay.getPageSize(), currentSortColumn, sortIsAscending,showdefaultCodeList,filter);
 			}
 		});
 		
@@ -163,7 +163,7 @@ public class QDSCodeListSearchPresenter {
 		
 	}
 	
-	private void search(String searchText, int startIndex, int pageSize,
+	private void search(String searchText, int startIndex, final int pageSize,
 			String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
 		lastSearchText = searchText;
 		lastStartIndex = startIndex;
@@ -188,7 +188,7 @@ public class QDSCodeListSearchPresenter {
 				SearchResultUpdate sru = new SearchResultUpdate();
 				sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchText);
 				sru = null;
-				searchDisplay.buildQDSDataTable(QDSSearchResult);
+				searchDisplay.buildQDSDataTable(QDSSearchResult, pageSize);
 				currentCodeListResults = QDSSearchResult;
 				displaySearch();
 				searchDisplay.getErrorMessageDisplay().setFocus();

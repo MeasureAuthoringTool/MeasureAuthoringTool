@@ -349,7 +349,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		return pageSize * (currentPage - 1) + 1;	
 	}
 	
-	public void  buildQDSDataTable(QDSCodeListSearchModel results){
+	public void  buildQDSDataTable(QDSCodeListSearchModel results, int pageSize){
 		if(results == null) {
 			return;
 		}
@@ -360,17 +360,20 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		buildQDSColumnHeaders(numRows,numColumns,results);
 		buildQDSSearchResults(numRows,numColumns,results);*/
 		buildPageSizeSelector();
-		buildTableQDS(results);
+		buildTableQDS(results,pageSize);
 	}
 	
-	public void buildTableQDS( QDSCodeListSearchModel results){
+	public void buildTableQDS( QDSCodeListSearchModel results, int pageSize){
 		 
 		CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
 		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
 		  
-		// Display 50 rows in one page
-		table.setPageSize(50);
-		
+		// Display 50 rows in one page or all records.
+		if(pageSize != Integer.MAX_VALUE){
+			table.setPageSize(50);
+		}else{
+			table.setPageSize(results.getData().size());
+		}
 		table.setSelectionModel(results.addSelectionHandlerOnTable());
 		table = results.addColumnToTable(table);
 		

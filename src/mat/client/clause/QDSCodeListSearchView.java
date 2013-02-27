@@ -406,7 +406,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	}
 
 	@Override
-	public void buildQDSDataTable(QDSCodeListSearchModel results) {
-		view.buildQDSDataTable(results);
+	public void buildQDSDataTable(QDSCodeListSearchModel results, int pageSize) {
+		view.buildQDSDataTable(results, pageSize);
 	}
 }

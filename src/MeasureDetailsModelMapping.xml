@@ -28,7 +28,7 @@
     
     <field name="measToPeriod"
            type="java.lang.String">
-      <bind-xml name="stopDate" node="element" location="measure/period"/>
+      <bind-xml name="stopDate" node="element" location="measureDetails/period"/>
     </field>
     
      <field name="description"
@@ -58,8 +58,20 @@
    
     <field name="authorList"
            type="mat.model.Author"
-              collection="arraylist">
-      <bind-xml name="authors" location="measureDetails"/>
+           collection="arraylist">
+      <bind-xml name="author" location="measureDetails/authors">
+      	<class name="mat.model.Author">
+		    <field name="id"
+		           type="java.lang.String" >
+		      <bind-xml name="id" node="attribute"/>
+		    </field>    
+		    
+		    <field name="authorName"
+		           type="java.lang.String">
+		      <bind-xml node="text"/>
+		    </field>
+  		</class>
+      </bind-xml>
     </field>
     
     <field name="measSteward"
@@ -72,11 +84,30 @@
       <bind-xml name="scoring" node="element" location="measureDetails"/>
     </field>
 	    
-    <field name="measureTypeList"
+    <!-- <field name="measureTypeList"
            type="mat.model.MeasureType"
               collection="arraylist">
       <bind-xml name="types" location="measureDetails"/>
+    </field> -->
+    
+    <field name="measureTypeList"
+           type="mat.model.MeasureType"
+           collection="arraylist">
+      <bind-xml name="type" location="measureDetails/types">
+      	<class name="mat.model.MeasureType">
+		    <field name="id"
+		           type="java.lang.String" >
+		      <bind-xml name="id" node="attribute"/>
+		    </field>    
+		    
+		    <field name="description"
+		           type="java.lang.String">
+		      <bind-xml node="text"/>
+		    </field>
+  		</class>
+      </bind-xml>
     </field>
+    
     
     <field name="stratification"
            type="java.lang.String">
@@ -196,21 +227,8 @@
       
   </class>
 
-  <class name="mat.model.Author">
-	<map-to xml="Author"/>
-    <field name="id"
-           type="java.lang.String" >
-      <bind-xml name="id" node="attribute"/>
-    </field>    
-    
-    <field name="authorName"
-           type="java.lang.String">
-      <bind-xml name="author" node="element"/>
-    </field>
-  </class>
-
-  <class name="mat.model.MeasureType">
-    <map-to xml="type"/>
+  
+  <!-- <class name="mat.model.MeasureType">
    <field name="id"
           type="java.lang.String" >
      <bind-xml name="id" node="attribute"/>
@@ -220,5 +238,5 @@
           type="java.lang.String">
      <bind-xml name="description" node="element"/>
    </field>
-  </class>
+  </class> -->
 </mapping>

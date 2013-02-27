@@ -367,33 +367,13 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		 
 		CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
 		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
-		// List<CodeListSearchDTO> codeListResults = results.getData(); 
-		 /*
-		  if (sortProvider.getDataDisplays() != null && sortProvider.getDataDisplays().isEmpty() == false) { 
-			  	sortProvider.removeDataDisplay(table); 
-		  }*/ 
-		//clearTableColumns();
-		  if(table.getColumnCount()==5){
-			  table.flush();
-			  /*table.removeColumn(0);
-			  table.removeColumn(1);
-			  table.removeColumn(2);
-			  table.removeColumn(3);
-			  table.removeColumn(4);*/
-			  
-		  }
 		  
 		// Display 50 rows in one page
-		 table.setPageSize(50);
+		table.setPageSize(50);
 		
-		 table.setSelectionModel(results.addSelectionHandlerOnTable());
-		 table = results.addColumnToTable(table);
-		/*//just a keyProvider for the records in my list
-        ProvidesKey<CodeListSearchDTO> keyProvider = new ProvidesKey<CodeListSearchDTO>() {
-          public Object getKey(CodeListSearchDTO item) {
-            return (item == null) ? null : item.getName();
-          }
-        };*/
+		table.setSelectionModel(results.addSelectionHandlerOnTable());
+		table = results.addColumnToTable(table);
+		
 		table.redraw();
 		sortProvider.refresh();
 		sortProvider.setList(results.getData());
@@ -402,7 +382,6 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
         
         SimplePager spager = new SimplePager(TextLocation.CENTER, false, 0, true);
         spager.setRangeLimited(false);
-        //spager.firstPage();
         spager.setDisplay(table);
         spager.setPageStart(0);
 		vPanelForQDMTable.clear();

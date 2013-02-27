@@ -302,7 +302,6 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			isNewMeasure = true;
 			pkg = new Measure();
 			model.setMeasureStatus("In Progress");
-			pkg.setMeasureStatus(model.getMeasureStatus());
 			measureSet = new MeasureSet();
 			measureSet.setId(UUID.randomUUID().toString());
 			getService().save(measureSet);
@@ -851,7 +850,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 
 	@Override
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId) {
-		return getService().getMeasureXmlForMeasure(measureId);
+		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);		
+		logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure() --> " + measureXmlModel.getXml());
+		return measureXmlModel;
 	}
 
 	@Override

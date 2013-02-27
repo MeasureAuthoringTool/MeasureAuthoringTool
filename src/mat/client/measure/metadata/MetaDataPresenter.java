@@ -7,6 +7,7 @@ import java.util.List;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
@@ -150,6 +151,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	private int maxEmeasureId;
 	private boolean editable = false;
 	private boolean isSubView = false;
+	private MeasureXmlModel measureXmlModel;// will hold the measure xml. 02/2013
 	
 	
 	
@@ -743,13 +745,32 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			public void onSuccess(ManageMeasureDetailModel result) {
 				if(callbackRequestTime == lastRequestTime) {
 					currentMeasureDetail = result;
+					loadMeasureXml(result.getId());
 					displayDetail();
 					fireMeasureEditEvent();
 				}
-//				else {
-//					// A new request for details has been made, ignore this one
-//					Window.alert("Callback for old request");
-//				}
+			}
+		});
+	}
+	
+	
+	/**
+	 * Added on FEB 2013
+	 * Method loads the MeasureXml from Measure_XML table using the Measure ID.	 
+	 * Sets the measureXmlModel field.
+	 * @param id
+	 */
+	private void loadMeasureXml(String id) {
+		MatContext.get().getMeasureService().getMeasureXmlForMeasure(id, new AsyncCallback<MeasureXmlModel>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+
+			@Override
+			public void onSuccess(MeasureXmlModel result) {
+				setMeasureXmlModel(result);
 			}
 		});
 	}
@@ -894,6 +915,20 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	 */
 	public void setSubView(boolean isSubView) {
 		this.isSubView = isSubView;
+	}
+
+	/**
+	 * @return the measureXmlModel
+	 */
+	public MeasureXmlModel getMeasureXmlModel() {
+		return measureXmlModel;
+	}
+
+	/**
+	 * @param measureXmlModel the measureXmlModel to set
+	 */
+	public void setMeasureXmlModel(MeasureXmlModel measureXmlModel) {
+		this.measureXmlModel = measureXmlModel;
 	}
 
 }

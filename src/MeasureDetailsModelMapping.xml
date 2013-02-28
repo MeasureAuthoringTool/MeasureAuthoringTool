@@ -21,14 +21,71 @@
       <bind-xml name="shortTitle" node="element" location="measureDetails"/>
     </field>
     
+    <field name="eMeasureId"
+           type="integer" get-method="geteMeasureId" set-method="seteMeasureId" handler="mat.server.model.MeasureDetailsHandler">
+      <bind-xml name="emeasureid" node="element" location="measureDetails"/>
+    </field>    
+    
+    <field name="finalizedDate"
+           type="java.lang.String">
+      <bind-xml name="finalizedDate" node="element" location="measureDetails"/>
+    </field>
+    
+     <field name="measureSetId"
+           type="java.lang.String">
+      <bind-xml name="guid" node="element" location="measureDetails"/>
+    </field>
+   
+    <field name="versionNumberInt"
+           type="integer">
+      <bind-xml name="version" node="element" location="measureDetails"/>
+    </field>
+       
+    <field name="measureStatus"
+           type="java.lang.String">
+      <bind-xml name="status" node="element" location="measureDetails"/>
+    </field> 
+    
+    <field name="nqfElementTag"
+           type="java.lang.String">
+      <bind-xml name="nqfid" node="element" location="measureDetails" required="true">
+      
+      </bind-xml>
+    </field> 
+        
+    <field name="nqfIdRoot"
+           type="java.lang.String">
+      <bind-xml name="root" node="attribute" location="nqfid"/>
+    </field>
+    
+    <field name="nqfId"
+           type="java.lang.String">
+      <bind-xml name="extension" node="attribute" location="nqfid"/>
+    </field>
+    
     <field name="measFromPeriod"
            type="java.lang.String">
       <bind-xml name="startDate" node="element" location="measureDetails/period"/>
     </field>
     
+    <field name="periodRandomUuid"
+           type="java.lang.String">
+      <bind-xml name="uuid"  node="attribute" location="measureDetails/period" transient="true"/>
+    </field>
+    
+    <field name="startDateRandomUuid"
+           type="java.lang.String">
+      <bind-xml name="uuid"  node="attribute" location="startDate" transient="true"/>
+    </field>
+    
     <field name="measToPeriod"
            type="java.lang.String">
       <bind-xml name="stopDate" node="element" location="measureDetails/period"/>
+    </field>
+    
+    <field name="stopDateRandomUuid"
+           type="java.lang.String">
+      <bind-xml name="uuid"  node="attribute" location="stopDate" transient="true"/>
     </field>
     
      <field name="description"
@@ -41,20 +98,7 @@
       <bind-xml name="copyright" node="element" location="measureDetails"/>
     </field>
     
-    <field name="measureSetId"
-           type="java.lang.String">
-      <bind-xml name="guid" node="element" location="measureDetails"/>
-    </field>
    
-    <field name="versionNumber"
-           type="java.lang.String">
-      <bind-xml name="version" node="element" location="measureDetails"/>
-    </field> 
-       
-    <field name="measureStatus"
-           type="java.lang.String">
-      <bind-xml name="status" node="element" location="measureDetails"/>
-    </field>
    
     <field name="authorList"
            type="mat.model.Author"
@@ -84,12 +128,6 @@
       <bind-xml name="scoring" node="element" location="measureDetails"/>
     </field>
 	    
-    <!-- <field name="measureTypeList"
-           type="mat.model.MeasureType"
-              collection="arraylist">
-      <bind-xml name="types" location="measureDetails"/>
-    </field> -->
-    
     <field name="measureTypeList"
            type="mat.model.MeasureType"
            collection="arraylist">
@@ -150,11 +188,6 @@
       <bind-xml name="definitions" node="element" location="measureDetails"/>
     </field>
     
-  <!--   <field name="measureSetId"
-           type="java.lang.String">
-      <bind-xml name="qualityMeasureSet" node="element"/>
-    </field> -->
-    
     <field name="supplementalData"
            type="java.lang.String">
       <bind-xml name="supplementalData" node="element" location="measureDetails"/>
@@ -214,29 +247,7 @@
            type="java.lang.String">
       <bind-xml name="denominatorDescription" node="element" location="measureDetails"/>
     </field>
-    
-    <field name="nqfId"
-           type="java.lang.String">
-      <bind-xml name="nqfid" node="element" location="measureDetails"/>
-    </field>
-
-	<field name="eMeasureId"
-           type="integer" get-method="geteMeasureId" set-method="seteMeasureId" handler="mat.server.model.MeasureDetailsHandler">
-      <bind-xml name="eMeasureid" node="element" location="measureDetails"/>
-    </field>    
       
   </class>
 
-  
-  <!-- <class name="mat.model.MeasureType">
-   <field name="id"
-          type="java.lang.String" >
-     <bind-xml name="id" node="attribute"/>
-   </field>    
-   
-   <field name="description"
-          type="java.lang.String">
-     <bind-xml name="description" node="element"/>
-   </field>
-  </class> -->
 </mapping>

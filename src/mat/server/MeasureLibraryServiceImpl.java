@@ -851,7 +851,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	@Override
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId) {
 		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);		
-		logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure() --> " + measureXmlModel.getXml());
+		logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure() --> " + measureXmlModel != null ? measureXmlModel.getXml() : "Measure XML is null");
 		return measureXmlModel;
 	}
 

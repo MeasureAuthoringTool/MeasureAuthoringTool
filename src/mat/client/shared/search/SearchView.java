@@ -13,6 +13,7 @@ import mat.client.event.MATClickHandler;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
@@ -353,12 +354,6 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		if(results == null) {
 			return;
 		}
-		/*int numRows = results.getNumberOfRows();
-		int numColumns = results.getNumberOfColumns();
-		qdsDataTable.clear();
-		qdsDataTable.resize((int)numRows + 1, (int)numColumns);
-		buildQDSColumnHeaders(numRows,numColumns,results);
-		buildQDSSearchResults(numRows,numColumns,results);*/
 		buildPageSizeSelector();
 		buildTableQDS(results,pageSize);
 	}
@@ -382,12 +377,15 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		sortProvider.setList(results.getData());
 	
 		sortProvider.addDataDisplay(table);
-        
-        SimplePager spager = new SimplePager(TextLocation.CENTER, false, 0, true);
-        spager.setRangeLimited(false);
+		//Used custom pager class - for disabling next/last button when on last page and for showing correct pagination number.
+		MatSimplePager spager;
+		SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
+	    spager = new MatSimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
+       // SimplePager spager = new SimplePager(TextLocation.CENTER, false, 0, true);
+        //spager.setRangeLimited(false);
         spager.setDisplay(table);
         spager.setPageStart(0);
-		vPanelForQDMTable.clear();
+       vPanelForQDMTable.clear();
 		vPanelForQDMTable.add(table);
 		vPanelForQDMTable.add(spager);
 

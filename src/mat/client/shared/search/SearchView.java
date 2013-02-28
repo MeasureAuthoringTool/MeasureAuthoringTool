@@ -3,12 +3,8 @@ package mat.client.shared.search;
 
 
 import java.util.Iterator;
-import java.util.List;
-
 import mat.client.Enableable;
-
 import mat.client.clause.QDSCodeListSearchModel;
-
 import mat.client.event.MATClickHandler;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
@@ -44,7 +40,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.ProvidesKey;
 
 
 public class SearchView<T> implements HasSelectionHandlers<T>, 

@@ -59,6 +59,14 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	private String measureObservations;
 	private int eMeasureId;
 	
+	//Below fields are added for Castor mapping XML generation purpose
+	private String nqfIdRoot = "2.16.840.1.113883.3.560.1";
+	private String nqfElementTag = "";
+	private String periodRandomUuid;
+	private String startDateRandomUuid;
+	private String stopDateRandomUuid;
+	private int versionNumberInt;
+	
 	
 	public boolean isDraft() {
 		return draft;
@@ -115,7 +123,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		return finalizedDate;
 	}
 	public void setFinalizedDate(String finalizedDate) {
-		this.finalizedDate = finalizedDate;
+		this.finalizedDate = doTrim(finalizedDate);
 	}
 	public String getMeasFromPeriod() {
 		return measFromPeriod;
@@ -734,6 +742,83 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 */
 	public void setToCompareMeasure(List<MeasureType> toCompareMeasure) {
 		this.toCompareMeasure = toCompareMeasure;
+	}
+	/**
+	 * @return the nqfIdRoot
+	 */
+	public String getNqfIdRoot() {
+		return nqfIdRoot;
+	}
+	/**
+	 * @param nqfIdRoot the nqfIdRoot to set
+	 */
+	public void setNqfIdRoot(String nqfIdRoot) {
+		this.nqfIdRoot = nqfIdRoot;
+	}
+	/**
+	 * @return the nqfElementTag
+	 */
+	public String getNqfElementTag() {
+		return nqfElementTag;
+	}
+	/**
+	 * @param nqfElementTag the nqfElementTag to set
+	 */
+	public void setNqfElementTag(String nqfElementTag) {
+		this.nqfElementTag = nqfElementTag;
+	}
+
+	/**
+	 * @return the periodRandomUuid
+	 */
+	public String getPeriodRandomUuid() {
+		return periodRandomUuid;
+	}
+	/**
+	 * @param periodRandomUuid the periodRandomUuid to set
+	 */
+	public void setPeriodRandomUuid(String periodRandomUuid) {
+		this.periodRandomUuid = periodRandomUuid;
+	}
+	/**
+	 * @return the startDateRandomUuid
+	 */
+	public String getStartDateRandomUuid() {
+		return startDateRandomUuid;
+	}
+	/**
+	 * @param startDateRandomUuid the startDateRandomUuid to set
+	 */
+	public void setStartDateRandomUuid(String startDateRandomUuid) {
+		this.startDateRandomUuid = startDateRandomUuid;
+	}
+	/**
+	 * @return the stopDateRandomUuid
+	 */
+	public String getStopDateRandomUuid() {
+		return stopDateRandomUuid;
+	}
+	/**
+	 * @param stopDateRandomUuid the stopDateRandomUuid to set
+	 */
+	public void setStopDateRandomUuid(String stopDateRandomUuid) {
+		this.stopDateRandomUuid = stopDateRandomUuid;
+	}
+	/**
+	 * @return the versionNumberInt
+	 */
+	public int getVersionNumberInt() {
+		try{
+			versionNumberInt = Integer.parseInt(versionNumber);	
+		}catch(Exception e){}
+	
+		return versionNumberInt;
+	}
+	/**
+	 * @param versionNumberInt the versionNumberInt to set
+	 */
+	public void setVersionNumberInt(int versionNumberInt) {
+		this.versionNumberInt = versionNumberInt;
 	}
 
 }

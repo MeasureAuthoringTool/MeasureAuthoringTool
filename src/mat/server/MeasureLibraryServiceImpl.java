@@ -459,8 +459,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
     */
     
 	@Override
-	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) {
-		createMeasureDetailsXml(model);
+	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) {		
 		Measure measure = null;
 		if(model.getId() != null){
 			measure = getService().getById(model.getId());
@@ -492,7 +491,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			result.setAuthorList(detailmodel.getAuthorList());
 			result.setMeasureTypeList(detailmodel.getMeasureTypeList());
 		}
-		
+//		getService().saveMeasureXml(createMeasureXmlModal(detailmodel, model.getId()));
 		//Example of setting an error condition.
 		//result.setSuccess(false);
 		//result.setFailureReason(ConstantMessages.ID_NOT_UNIQUE);
@@ -502,6 +501,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	
 	public String createMeasureDetailsXml(ManageMeasureDetailModel measureDetailModel){
+		measureDetailModel.setPeriodRandomUuid(UUID.randomUUID().toString());
+		measureDetailModel.setStartDateRandomUuid(UUID.randomUUID().toString());
+		measureDetailModel.setStopDateRandomUuid(UUID.randomUUID().toString());
 		logger.info("creating XML from Measure Details Model");
 		Mapping mapping = new Mapping();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();

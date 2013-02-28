@@ -27,20 +27,16 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,IsSerializable {
 
-	private static String[] headers = new String[] {"Value Set","Category","Code System"};
+	private static String[] headers = new String[] {"Value Set","Category","Code System","Steward"};
 	private static String[] widths = new String[] {"50%","40%","10%"};
 	
 	private HashMap<CodeListSearchDTO, RadioButton> radioButtonMap = new HashMap<CodeListSearchDTO, RadioButton>();
 	private List<CodeListSearchDTO> data;
-	private List<QualityDataSetDTO> appliedQDMs;
+	//private List<QualityDataSetDTO> appliedQDMs;
 	private int startIndex;
 	private int resultsTotal;
 	private boolean editable;
 	
-	public List<CodeListSearchDTO> getData() {
-		return data;
-	}
-
 	private CodeListSearchDTO lastSelectedCodeList;
 	
 	private CodeListSearchDTO selectedCodeList;
@@ -59,6 +55,10 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 
 	public void setSelectedCodeList(CodeListSearchDTO selectedCodeList) {
 		this.selectedCodeList = selectedCodeList;
+	}
+	
+	public List<CodeListSearchDTO> getData() {
+		return data;
 	}
 
 	public void setData(List<CodeListSearchDTO> data) {
@@ -80,15 +80,8 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 	}
 	
 	private SafeHtml getColumnToolTip(String columnText, StringBuilder title) {
-
-		String htmlConstant = "<html>" + "<head><style>" 
-		+ "A.tip { TEXT-DECORATION: none;}" + "A.tip:hover  {CURSOR:default;}" + "A.tip span   {DISPLAY:none}" + "A.tip span p " +
-		"{font-weight:500;border-radius:5px;padding:5px;font-size:12px}" + "A.tip:hover " +
-		"span {border:1px solid #e6e3e5;DISPLAY: block;Z-INDEX: 1000; PADDING: 0px 10px 0px 10px;" + "POSITION:absolute;float:left;background:#ffffd1;   TEXT-DECORATION: none}" + 
-		"</style></head>" + "<body>" + "<a href=\"#\" class=\"tip\">" + columnText  + "<span>" + title + "</span></a>" + "</body>" + "</html>";
-		
+		String htmlConstant = "<html>" + "<head> </head> <Body><span title='"+title + "'>"+columnText+ "</span></body>" + "</html>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
-
 	}
 	
 	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table){
@@ -110,7 +103,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			
 			 Column< CodeListSearchDTO , SafeHtml> nameColumn;
 			nameColumn = new Column< CodeListSearchDTO  , SafeHtml>(new SafeHtmlCell()) {
-
+				
 				@Override
 				public SafeHtml getValue( CodeListSearchDTO   object ) {
 					
@@ -119,7 +112,8 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 					return getColumnToolTip(object.getName(), title);
 				}
 			};
-			table.addColumn(nameColumn, "Value Set");
+		
+			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Value Sets'>"+headers[0]+"</span>"));
 			
 			TextColumn<CodeListSearchDTO > category = new TextColumn<CodeListSearchDTO >() {
 				@Override
@@ -127,14 +121,14 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 					return object.getCategoryDisplay();
 				}
 			};
-			table.addColumn(category, "Category");
+			table.addColumn(category, SafeHtmlUtils.fromSafeConstant("<span title='Category'>"+headers[1]+"</span>"));
 			TextColumn<CodeListSearchDTO > codeSystem = new TextColumn<CodeListSearchDTO >() {
 				@Override
 				public String getValue(CodeListSearchDTO object) {
 					return object.getCodeSystem();
 				}
 			};
-			table.addColumn(codeSystem, "Code System");
+			table.addColumn(codeSystem, SafeHtmlUtils.fromSafeConstant("<span title='Code System'>"+headers[2]+"</span>"));
 			
 			TextColumn<CodeListSearchDTO > stewardCol = new TextColumn<CodeListSearchDTO >() {
 				@Override
@@ -146,7 +140,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 					return steward;
 				}
 			};
-			table.addColumn(stewardCol, "Steward");
+			table.addColumn(stewardCol, SafeHtmlUtils.fromSafeConstant("<span title='Steward'>"+headers[3]+"</span>"));
 		}
 		
 		return table;
@@ -171,23 +165,6 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 		});
 		return selectionModel;
 	}
-	
-	/*public CodeListSearchDTO getSelectedCodeList() {
-		CodeListSearchDTO codeList = null;
-		for(int i = 0; i < data.size(); i++) {
-			codeList = data.get(i);
-			RadioButton rb = radioButtonMap.get(codeList);
-			if(rb.getValue().equals(Boolean.TRUE)) {
-				return codeList;
-			}else{
-				codeList = null;
-			}
-		}
-		return codeList;
-		
-	}*/
-	
-	
 	
 	
 	@Override
@@ -318,16 +295,16 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 
 	/**
 	 * @param appliedQDMs the appliedQDMs to set
-	 */
+	 *//*
 	public void setAppliedQDMs(List<QualityDataSetDTO> appliedQDMs) {
 		this.appliedQDMs = appliedQDMs;
 	}
 
-	/**
+	*//**
 	 * @return the appliedQDMs
-	 */
+	 *//*
 	public List<QualityDataSetDTO> getAppliedQDMs() {
 		return appliedQDMs;
-	}
+	}*/
 	
 }

@@ -15,6 +15,8 @@ import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -380,7 +382,8 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
         //spager.setRangeLimited(false);
         spager.setDisplay(table);
         spager.setPageStart(0);
-       vPanelForQDMTable.clear();
+        spager.setToolTipAndTabIndex(spager);
+        vPanelForQDMTable.clear();
 		vPanelForQDMTable.add(table);
 		vPanelForQDMTable.add(spager);
 

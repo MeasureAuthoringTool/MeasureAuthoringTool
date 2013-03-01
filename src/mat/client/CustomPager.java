@@ -170,12 +170,7 @@ public class CustomPager extends AbstractPager {
       if (disabled) {
         return;
       }
-
       super.onBrowserEvent(event);
-      String type = event.getType();
-     /* boolean enterPressed = "keydown".equals(type)
-		        && event.getKeyCode() == KeyCodes.KEY_ENTER;*/
-      System.out.println("Event Type ======>>>>>>>>>>> "+ type);
     }
 
     public void setDisabled(boolean isDisabled) {
@@ -258,7 +253,6 @@ public class CustomPager extends AbstractPager {
    * @param fastForwardRows the number of rows to jump when fast forwarding
    * @param showLastPageButton if true, show a button to go the the last page
    */
-  @SuppressWarnings("deprecation")
 public CustomPager(TextLocation location, Resources resources,
       boolean showFastForwardButton, final int fastForwardRows,
       boolean showLastPageButton) {
@@ -282,7 +276,7 @@ public CustomPager(TextLocation location, Resources resources,
     firstPageAnchor.addKeyDownHandler(new KeyDownHandler(){
 	@Override
 	public void onKeyDown(KeyDownEvent event) {
-		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && !firstPage.isDisabled()) {
 			firstPage();
 		}
 	}
@@ -290,7 +284,8 @@ public CustomPager(TextLocation location, Resources resources,
     firstPageAnchor.addClickHandler(new ClickHandler() {
 		@Override
 		public void onClick(final ClickEvent event) {
-			firstPage();
+			if(!firstPage.isDisabled())
+				firstPage();
 		}
 	  }
 	);
@@ -309,15 +304,16 @@ public CustomPager(TextLocation location, Resources resources,
     });
     nextPageAnchor.addClickHandler(new ClickHandler() {
 		@Override
-		public void onClick(final ClickEvent event) {
-			nextPage();
+		public void onClick(final ClickEvent event ) {
+			if(!nextPage.isDisabled())
+				nextPage();
 		}
 	  }
 	);
     nextPageAnchor.addKeyDownHandler(new KeyDownHandler(){
     	@Override
     	public void onKeyDown(KeyDownEvent event) {
-    		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+    		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && !nextPage.isDisabled()) {
     			nextPage();
     		}
     	}
@@ -328,7 +324,7 @@ public CustomPager(TextLocation location, Resources resources,
     final Anchor prevPageAnchor = new Anchor();
     prevPageAnchor.setTabIndex(0);
     prevPage = new ImageButton(resources.simplePagerPreviousPage(),
-        resources.simplePagerPreviousPageDisabled(), disabledStyle);
+    								resources.simplePagerPreviousPageDisabled(), disabledStyle);
     prevPage.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         previousPage();
@@ -337,14 +333,15 @@ public CustomPager(TextLocation location, Resources resources,
     prevPageAnchor.addClickHandler(new ClickHandler() {
 		@Override
 		public void onClick(final ClickEvent event) {
-			previousPage();
+			if(!prevPage.isDisabled())
+				previousPage();
 		}
 	  }
 	);
     prevPageAnchor.addKeyDownHandler(new KeyDownHandler(){
     	@Override
     	public void onKeyDown(KeyDownEvent event) {
-    		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+    		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && !prevPage.isDisabled()) {
     			previousPage();
     		}
     	}
@@ -365,14 +362,15 @@ public CustomPager(TextLocation location, Resources resources,
     	lastPageAnchor.addClickHandler(new ClickHandler() {
     		@Override
     		public void onClick(final ClickEvent event) {
-    			lastPage();
+    			if(!lastPage.isDisabled())
+    				lastPage();
     		}
     	  }
     	);
     	lastPageAnchor.addKeyDownHandler(new KeyDownHandler(){
     		@Override
     		public void onKeyDown(KeyDownEvent event) {
-    			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+    			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && !lastPage.isDisabled()) {
     				lastPage();
     			}
     		}

@@ -80,7 +80,7 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 		String type = event.getType();
 		Object key = context.getKey();
 		boolean enterPressed = "keydown".equals(type)
-		        && event.getKeyCode() == KeyCodes.KEY_ENTER;
+		        && event.getKeyCode() == 32;//Radio button is checked on space bar
 		
 		if ("change".equals(type) || enterPressed) {
 			InputElement input = parent.getFirstChild().cast();

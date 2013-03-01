@@ -3,6 +3,8 @@ package mat.client.shared.search;
 
 
 import java.util.Iterator;
+
+import mat.client.CustomPager;
 import mat.client.Enableable;
 import mat.client.clause.QDSCodeListSearchModel;
 import mat.client.event.MATClickHandler;
@@ -27,6 +29,7 @@ import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.SimplePager;
 import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.ui.Anchor;
@@ -358,6 +361,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	public void buildTableQDS( QDSCodeListSearchModel results, int pageSize){
 		 
 		CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
+		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
 		  
 		// Display 50 rows in one page or all records.
@@ -376,8 +380,9 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		sortProvider.addDataDisplay(table);
 		//Used custom pager class - for disabling next/last button when on last page and for showing correct pagination number.
 		MatSimplePager spager;
-		SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
-	    spager = new MatSimplePager(TextLocation.CENTER, pagerResources, false, 0, true);
+		//SimplePager.Resources pagerResources = GWT.create(SimplePager.Resources.class);
+		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+	    spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
        // SimplePager spager = new SimplePager(TextLocation.CENTER, false, 0, true);
         //spager.setRangeLimited(false);
         spager.setDisplay(table);

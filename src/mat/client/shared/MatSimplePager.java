@@ -1,12 +1,11 @@
 package mat.client.shared;
 
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.user.cellview.client.SimplePager;
+import mat.client.CustomPager;
+
 import com.google.gwt.view.client.Range;
 
-public class MatSimplePager extends SimplePager {
-
+//public class MatSimplePager extends SimplePager {
+public class MatSimplePager extends CustomPager {
 	public MatSimplePager() {
 		this.setRangeLimited(true);
 	}
@@ -16,6 +15,7 @@ public class MatSimplePager extends SimplePager {
 		this.setRangeLimited(true);
 	}
 
+	
 	public void setPageStart(int index) {
 
 		if (this.getDisplay() != null) {
@@ -36,19 +36,19 @@ public class MatSimplePager extends SimplePager {
 	 * */
 	
 	public void setToolTipAndTabIndex(MatSimplePager spager ){
-		final NodeList<Element> tdElems = spager.getElement().getElementsByTagName("td");
+		/*final NodeList<Element> tdElems = spager.getElement().getElementsByTagName("td");
 		for (int i = 0; i < tdElems.getLength(); i++) {
 			final String toolTipText;
 			if (i == 0){
 				toolTipText = "First page";
-				tdElems.getItem(i).setTabIndex(0);
+				//tdElems.getItem(i).setTabIndex(0);
 			}
 			else if (i == 1){
 				toolTipText = "Previous page";
 				tdElems.getItem(i).setTabIndex(0);
 			}
 			else if (i == 2){
-				continue; /* This is the middle td - no button */
+				continue;  This is the middle td - no button 
 			}
 			else if (i == 3){
 				toolTipText = "Next page";
@@ -62,6 +62,12 @@ public class MatSimplePager extends SimplePager {
 				continue;
 			tdElems.getItem(i).setTitle(toolTipText);
 		}
+		final NodeList<Element> imgElems = spager.getElement().getElementsByTagName("img");
+		for (int j = 0; j < imgElems.getLength(); j++) {
+			System.out.println("Image Name ::: " + imgElems.getItem(j).getId());
+			Element img = imgElems.getItem(j);
+			
+		}*/
 
 	}
 

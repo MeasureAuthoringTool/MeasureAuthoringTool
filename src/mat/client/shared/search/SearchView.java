@@ -390,6 +390,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
         spager.setToolTipAndTabIndex(spager);
         vPanelForQDMTable.clear();
 		vPanelForQDMTable.add(table);
+		vPanelForQDMTable.add(new SpacerWidget());
 		vPanelForQDMTable.add(spager);
 
 	}

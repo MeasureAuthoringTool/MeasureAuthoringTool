@@ -56,4 +56,5 @@ public interface MeasurePackageService {
 	long count(int filter);
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId);
 	public void saveMeasureXml(MeasureXmlModel measureXmlModel);
+	public String retrieveStewardOID(String stewardName);
 }

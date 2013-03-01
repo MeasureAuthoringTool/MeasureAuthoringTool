@@ -12,6 +12,7 @@ public class MeasureType implements IsSerializable{
 		
 	}
 	private String id;
+	private String abbrDesc;//Added for XML conversion.
 	public String getId() {
 		return id;
 	}
@@ -32,6 +33,20 @@ public class MeasureType implements IsSerializable{
 	
 	public int compare(MeasureType o1, MeasureType o2) {
 		return o1.getDescription().compareTo(o2.getDescription());
+	}
+
+	/**
+	 * @return the abbrDesc
+	 */
+	public String getAbbrDesc() {
+		return abbrDesc;
+	}
+
+	/**
+	 * @param abbrDesc the abbrDesc to set
+	 */
+	public void setAbbrDesc(String abbrDesc) {
+		this.abbrDesc = abbrDesc;
 	}
 
 }

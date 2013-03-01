@@ -13,6 +13,8 @@ public class Author implements IsSerializable{
 	}
 	private String id;
 	private String authorName;
+	private String orgId;
+	
 	public String getId() {
 		return id;
 	}
@@ -29,6 +31,17 @@ public class Author implements IsSerializable{
 	public int compare(Author o1, Author o2) {
 		return o1.getAuthorName().compareTo(o2.getAuthorName());
 	}
+	/**
+	 * @return the orgId
+	 */
+	public String getOrgId() {
+		return orgId;
+	}
+	/**
+	 * @param orgId the orgId to set
+	 */
+	public void setOrgId(String orgId) {
+		this.orgId = orgId;
+	}
 	
-
 }

@@ -1,6 +1,5 @@
 package mat.server;
 
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -14,6 +13,7 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
+import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
@@ -38,19 +38,18 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
+import mat.server.util.UuidUtility;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
+import mat.shared.model.util.MeasureDetailsUtil;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
-import org.exolab.castor.mapping.MappingException;
-import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
-import org.exolab.castor.xml.ValidationException;
 
 
 
@@ -70,6 +69,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		model.setName(measure.getDescription());
 		model.setShortName(measure.getaBBRName());
 		model.setMeasScoring(measure.getMeasureScoring());
+		Double version = Double.parseDouble(measure.getVersion());
+		model.setVersionNumberInt(version.intValue());
 		model.setVersionNumber(MeasureUtility.getVersionText(measure.getVersion(), measure.isDraft()));
 		model.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
 		model.setDraft(measure.isDraft());
@@ -491,7 +492,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			result.setAuthorList(detailmodel.getAuthorList());
 			result.setMeasureTypeList(detailmodel.getMeasureTypeList());
 		}
-//		getService().saveMeasureXml(createMeasureXmlModal(detailmodel, model.getId()));
+		getService().saveMeasureXml(createMeasureXmlModal(detailmodel, model.getId()));
 		//Example of setting an error condition.
 		//result.setSuccess(false);
 		//result.setFailureReason(ConstantMessages.ID_NOT_UNIQUE);
@@ -501,9 +502,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	
 	public String createMeasureDetailsXml(ManageMeasureDetailModel measureDetailModel){
-		measureDetailModel.setPeriodRandomUuid(UUID.randomUUID().toString());
-		measureDetailModel.setStartDateRandomUuid(UUID.randomUUID().toString());
-		measureDetailModel.setStopDateRandomUuid(UUID.randomUUID().toString());
+		setAdditionalAttrsForMeasureXml(measureDetailModel);
 		logger.info("creating XML from Measure Details Model");
 		Mapping mapping = new Mapping();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -518,7 +517,13 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	        logger.info("Marshalling of ManageMeasureDetailsModel is successful..");
 //	        Unmarshaller unmar = new Unmarshaller(mapping);
 //            ManageMeasureDetailModel details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new FileReader("../src/mat/server/xmlTree.xml")));
+	        
+//	        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+//	        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+//	        Document doc = docBuilder.parse("/path/to/file.xml");
+	        
             
+	        
 		} catch (Exception e) {
 			logger.info(e.getStackTrace());
 			e.printStackTrace();
@@ -527,6 +532,50 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return stream.toString();
 	}
 	
+	private void setAdditionalAttrsForMeasureXml(ManageMeasureDetailModel measureDetailModel){
+		measureDetailModel.setId(UuidUtility.idToUuid(measureDetailModel.getId()));// have to change on unmarshalling.
+		if(StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod()) || StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())){
+			PeriodModel periodModel = new PeriodModel();
+			periodModel.setUuid(UUID.randomUUID().toString());
+			if(StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod())){
+				periodModel.setStartDate(measureDetailModel.getMeasFromPeriod());
+				periodModel.setStartDateUuid(UUID.randomUUID().toString());	
+			}
+			if(StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())){
+				periodModel.setStopDate(measureDetailModel.getMeasToPeriod());
+				periodModel.setStopDateUuid(UUID.randomUUID().toString());	
+			}
+			measureDetailModel.setPeriodModel(periodModel);
+		}
+		
+		if(StringUtils.isNotBlank(measureDetailModel.getMeasSteward()) && !StringUtils.equalsIgnoreCase(measureDetailModel.getMeasSteward(), "Other")){
+			String oid = getService().retrieveStewardOID(measureDetailModel.getMeasSteward().trim());
+			measureDetailModel.setStewardUuid(oid);
+		}else if(StringUtils.equalsIgnoreCase(measureDetailModel.getMeasSteward(), "Other") && StringUtils.isNotBlank(measureDetailModel.getMeasStewardOther())){
+			measureDetailModel.setStewardUuid(UUID.randomUUID().toString());	
+		}
+		
+		if(StringUtils.isNotBlank(measureDetailModel.getGroupName())){
+			measureDetailModel.setQltyMeasureSetUuid(UUID.randomUUID().toString());	
+		}
+		
+		setOrgIdInAuthor(measureDetailModel.getAuthorList());
+		setMeasureTypeAbbreviation(measureDetailModel.getMeasureTypeList());
+		measureDetailModel.setScoringAbbr(setScoringAbbreviation(measureDetailModel.getMeasScoring()));
+	}
+	
+	private String setScoringAbbreviation(String measScoring) {
+		return MeasureDetailsUtil.getScoringAbbr(measScoring);
+	}
+
+	private void setMeasureTypeAbbreviation(List<MeasureType> measureTypeList) {
+		if(measureTypeList != null){
+			for (MeasureType measureType : measureTypeList) {
+				measureType.setAbbrDesc(MeasureDetailsUtil.getMeasureTypeAbbr(measureType.getDescription()));
+			}
+		}
+	}
+
 	private MeasureXmlModel createMeasureXmlModal(ManageMeasureDetailModel manageMeasureDetailModel, String measureId){
 		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
 		measureXmlModel.setMeasureId(measureId);
@@ -534,6 +583,15 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return measureXmlModel;
 	}
 
+	
+	private void setOrgIdInAuthor(List<Author> authors){
+		for (Author author : authors) {
+			String oid = getService().retrieveStewardOID(author.getAuthorName().trim());
+			author.setOrgId(oid != null && !oid.equals("") ? oid : UUID.randomUUID().toString());
+		}
+	}
+	
+	
 	@Override
 	public ManageMeasureShareModel getUsersForShare(String measureId, int startIndex, int pageSize) {
 		ManageMeasureShareModel model = new ManageMeasureShareModel();

@@ -6,8 +6,12 @@ public class MeasureDetailsHandler extends GeneralizedFieldHandler{
 
 	@Override
 	public Object convertUponGet(Object value) {
-		if((Integer)value == 0){
-			return null;
+		if(value instanceof Integer){
+			if((Integer)value == 0){
+				return null;
+			}
+		}else if (value instanceof Boolean){
+			return ((Boolean)value) ? "Yes" : "No";
 		}
 		return value;
 	}

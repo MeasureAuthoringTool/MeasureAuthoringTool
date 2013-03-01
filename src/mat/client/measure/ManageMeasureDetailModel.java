@@ -59,14 +59,15 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	private String measureObservations;
 	private int eMeasureId;
 	
+	
 	//Below fields are added for Castor mapping XML generation purpose
 	private String nqfIdRoot = "2.16.840.1.113883.3.560.1";
 	private String nqfElementTag = "";
-	private String periodRandomUuid;
-	private String startDateRandomUuid;
-	private String stopDateRandomUuid;
 	private int versionNumberInt;
-	
+	private String qltyMeasureSetUuid;
+	private String stewardUuid;
+	private String scoringAbbr;
+	private PeriodModel periodModel;
 	
 	public boolean isDraft() {
 		return draft;
@@ -769,49 +770,9 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	}
 
 	/**
-	 * @return the periodRandomUuid
-	 */
-	public String getPeriodRandomUuid() {
-		return periodRandomUuid;
-	}
-	/**
-	 * @param periodRandomUuid the periodRandomUuid to set
-	 */
-	public void setPeriodRandomUuid(String periodRandomUuid) {
-		this.periodRandomUuid = periodRandomUuid;
-	}
-	/**
-	 * @return the startDateRandomUuid
-	 */
-	public String getStartDateRandomUuid() {
-		return startDateRandomUuid;
-	}
-	/**
-	 * @param startDateRandomUuid the startDateRandomUuid to set
-	 */
-	public void setStartDateRandomUuid(String startDateRandomUuid) {
-		this.startDateRandomUuid = startDateRandomUuid;
-	}
-	/**
-	 * @return the stopDateRandomUuid
-	 */
-	public String getStopDateRandomUuid() {
-		return stopDateRandomUuid;
-	}
-	/**
-	 * @param stopDateRandomUuid the stopDateRandomUuid to set
-	 */
-	public void setStopDateRandomUuid(String stopDateRandomUuid) {
-		this.stopDateRandomUuid = stopDateRandomUuid;
-	}
-	/**
 	 * @return the versionNumberInt
 	 */
 	public int getVersionNumberInt() {
-		try{
-			versionNumberInt = Integer.parseInt(versionNumber);	
-		}catch(Exception e){}
-	
 		return versionNumberInt;
 	}
 	/**
@@ -820,5 +781,60 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	public void setVersionNumberInt(int versionNumberInt) {
 		this.versionNumberInt = versionNumberInt;
 	}
+	/**
+	 * @return the qltyMeasureSetUuid
+	 */
+	public String getQltyMeasureSetUuid() {
+		return qltyMeasureSetUuid;
+	}
+	/**
+	 * @param qltyMeasureSetUuid the qltyMeasureSetUuid to set
+	 */
+	public void setQltyMeasureSetUuid(String qltyMeasureSetUuid) {
+		this.qltyMeasureSetUuid = qltyMeasureSetUuid;
+	}
 
+	public String getSteward(){
+		if(this.measSteward != null && this.measSteward.equalsIgnoreCase("Other")){
+			return null;
+		}
+		return this.measSteward;
+	}
+	/**
+	 * @return the stewardUuid
+	 */
+	public String getStewardUuid() {
+		return stewardUuid;
+	}
+	/**
+	 * @param stewardUuid the stewardUuid to set
+	 */
+	public void setStewardUuid(String stewardUuid) {
+		this.stewardUuid = stewardUuid;
+	}
+	/**
+	 * @return the scoringAbbr
+	 */
+	public String getScoringAbbr() {
+		return scoringAbbr;
+	}
+	/**
+	 * @param scoringAbbr the scoringAbbr to set
+	 */
+	public void setScoringAbbr(String scoringAbbr) {
+		this.scoringAbbr = scoringAbbr;
+	}
+	/**
+	 * @return the periodModel
+	 */
+	public PeriodModel getPeriodModel() {
+		return periodModel;
+	}
+	/**
+	 * @param periodModel the periodModel to set
+	 */
+	public void setPeriodModel(PeriodModel periodModel) {
+		this.periodModel = periodModel;
+	}
+	
 }

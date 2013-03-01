@@ -15,7 +15,9 @@ import mat.client.shared.MetaDataConstants;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureAuditLogDAO;
 import mat.dao.MetadataDAO;
+import mat.dao.PropertyOperator;
 import mat.dao.QualityDataSetDAO;
+import mat.dao.StewardDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
@@ -24,8 +26,11 @@ import mat.dao.clause.MeasureShareDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.PackagerDAO;
 import mat.dao.clause.ShareLevelDAO;
+import mat.dao.search.CriteriaQuery;
+import mat.dao.search.SearchCriteria;
 import mat.model.Author;
 import mat.model.DataType;
+import mat.model.MeasureSteward;
 import mat.model.MeasureType;
 import mat.model.QualityDataSet;
 import mat.model.User;
@@ -85,6 +90,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	
 	@Autowired
 	private MeasureXMLDAO measureXMLDAO;
+	
+	@Autowired
+	private StewardDAO stewardDAO;
 	
 //	@Override
 //	public void clone(Measure measurePackage, String newCloneName) {
@@ -738,5 +746,19 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		measureXMLDAO.save(measureXML);
 	}
 
+	public String retrieveStewardOID(String stewardName) {
+		String oid = null;
+		SearchCriteria criteria = new SearchCriteria("orgName", 
+				stewardName.trim(), PropertyOperator.EQ, null);
+		CriteriaQuery query = new CriteriaQuery(criteria);
+		List<MeasureSteward> stewards = stewardDAO.find(query);
+
+	    if (stewards != null && !stewards.isEmpty()) {
+	    	MeasureSteward stw = stewards.get(0);
+	    	 oid = stw.getOrgOid();
+	    }
+
+	    return oid;
+	}
 
 }

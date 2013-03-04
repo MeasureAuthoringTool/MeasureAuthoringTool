@@ -39,11 +39,13 @@ import mat.server.service.UserService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
+import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -514,6 +516,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 //			marshaller.setWriter(writer);
 	        marshaller.setMapping(mapping);
 	        marshaller.marshal(measureDetailModel);
+	        marshaller.setNamespaceMapping("", "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
 	        logger.info("Marshalling of ManageMeasureDetailsModel is successful..");
 //	        Unmarshaller unmar = new Unmarshaller(mapping);
 //            ManageMeasureDetailModel details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new FileReader("../src/mat/server/xmlTree.xml")));
@@ -528,6 +531,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			logger.info(e.getStackTrace());
 			e.printStackTrace();
 		} 
+		
 		System.out.println(stream.toString());
 		return stream.toString();
 	}
@@ -585,9 +589,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 
 	
 	private void setOrgIdInAuthor(List<Author> authors){
-		for (Author author : authors) {
-			String oid = getService().retrieveStewardOID(author.getAuthorName().trim());
-			author.setOrgId(oid != null && !oid.equals("") ? oid : UUID.randomUUID().toString());
+		if(CollectionUtils.isNotEmpty(authors)){
+			for (Author author : authors) {
+				String oid = getService().retrieveStewardOID(author.getAuthorName().trim());
+				author.setOrgId(oid != null && !oid.equals("") ? oid : UUID.randomUUID().toString());
+			}
 		}
 	}
 	
@@ -912,7 +918,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId) {
 		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);		
 		if( measureXmlModel != null){
-			logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure() --> " + measureXmlModel.getXml());	
+			logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure() --> " + measureXmlModel.getXml());
+//			new XmlProcessor(measureXmlModel.getXml()).updateNode("title", "ABCEDEF");
 		}
 		
 		return measureXmlModel;

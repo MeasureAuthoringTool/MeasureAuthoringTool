@@ -516,7 +516,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 //			marshaller.setWriter(writer);
 	        marshaller.setMapping(mapping);
 	        marshaller.marshal(measureDetailModel);
-	        marshaller.setNamespaceMapping("", "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
+//	        marshaller.setNamespaceMapping("", "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
 	        logger.info("Marshalling of ManageMeasureDetailsModel is successful..");
 //	        Unmarshaller unmar = new Unmarshaller(mapping);
 //            ManageMeasureDetailModel details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new FileReader("../src/mat/server/xmlTree.xml")));

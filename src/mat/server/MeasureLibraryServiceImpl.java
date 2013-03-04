@@ -39,7 +39,6 @@ import mat.server.service.UserService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
-import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
@@ -919,7 +918,6 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);		
 		if( measureXmlModel != null){
 			logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure() --> " + measureXmlModel.getXml());
-//			new XmlProcessor(measureXmlModel.getXml()).updateNode("title", "ABCEDEF");
 		}
 		
 		return measureXmlModel;

@@ -138,7 +138,7 @@ public class ForgottenLoginIdPresenter {
 				message = MatContext.get().getMessageDelegate().getAccountLockedMessage();
 				break;
 			case ForgottenLoginIDResult.EMAIL_NOT_FOUND_MSG:
-				message = MatContext.get().getMessageDelegate().getUserNotFoundMessage();
+				message = MatContext.get().getMessageDelegate().getEmailNotFoundMessage();
 				break;
 			case ForgottenLoginIDResult.USER_ALREADY_LOGGED_IN:
 				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();

@@ -19,6 +19,7 @@ import mat.model.UserSecurityQuestion;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
+import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
@@ -43,6 +44,11 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		return  userService.getSecurityQuestionOptions(userid);
 	}
 
+	@Override
+	public SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email) {
+		UserService userService = (UserService)context.getBean("userService");
+		return  userService.getSecurityQuestionOptionsForEmail(email);
+	}
 
 
 	@Override
@@ -58,6 +64,13 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		return userService.requestForgottenPassword(loginId, securityQuestion, securityAnswer);
 	}
 
+
+	@Override
+	public ForgottenLoginIDResult forgotLoginID(String email,
+			String securityQuestion, String securityAnswer) {
+		UserService userService = (UserService)context.getBean("userService");
+		return userService.requestForgottenLoginID(email, securityQuestion, securityAnswer);
+	}
 	@Override
 	public void signOut() {
 		 getLoginCredentialService().signOut();

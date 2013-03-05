@@ -6,6 +6,7 @@ import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.model.User;
+import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 
 public interface UserService {
@@ -34,4 +35,7 @@ public interface UserService {
 	User findByEmailID(String emailId);
 	public int countSearchResultsNonAdmin(String string);
 	public String updateOnSignOut(String userId, String email, String activityType);
+	public ForgottenLoginIDResult requestForgottenLoginID(String email,
+			String securityQuestion, String securityAnswer);
+	SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email);
 }

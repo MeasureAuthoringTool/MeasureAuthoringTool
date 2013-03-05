@@ -31,6 +31,7 @@ import mat.server.service.UserService;
 import mat.server.util.ServerConstants;
 import mat.server.util.TemplateUtil;
 import mat.shared.ConstantMessages;
+import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.PasswordVerifier;
 
@@ -116,6 +117,7 @@ public class UserServiceImpl implements UserService {
 		}
 		setUserPassword(user, newPassword, true);
 		userDAO.save(user);
+		System.out.println("newPassword ==============="+newPassword);
 		notifyUserOfTemporaryPassword(user, newPassword);
 	}
 	
@@ -204,6 +206,62 @@ public class UserServiceImpl implements UserService {
 		}
 		return result;
 	}
+	
+	public ForgottenLoginIDResult requestForgottenLoginID(String email, 
+			String securityQuestion, String securityAnswer) {
+		ForgottenLoginIDResult result = new ForgottenLoginIDResult();
+		result.setEmailSent(false);
+		logger.info(" requestForgottenLoginID   email ====" + email);
+		User user = null;
+		try {
+			user = userDAO.findByEmail(email);
+		}
+		catch(ObjectNotFoundException exc) { }
+		
+		if(user == null) {
+			result.setFailureReason(ForgottenLoginIDResult.EMAIL_NOT_FOUND_MSG);
+			logger.info(" requestForgottenLoginID   user not found for email ::" +email );
+		}
+		else if(user.getSecurityQuestions().size() != 3) {
+			logger.info(" requestForgottenLoginID :: Security Questions Not Set  ");
+			result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTIONS_NOT_SET);
+		}
+		else if(user.getLockedOutDate() != null) {
+			logger.info(" requestForgottenLoginID :: Security Questions Not Set  ");
+			result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTIONS_LOCKED);
+		}
+		else if(!securityQuestionMatch(user, securityQuestion, securityAnswer)) {
+			result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTION_MISMATCH);
+			int lockCounter = user.getPassword().getForgotPwdlockCounter() + 1;
+			if(lockCounter == 3) {
+				result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTIONS_LOCKED);
+				user.setLockedOutDate(new Date());
+			}
+			user.getPassword().setForgotPwdlockCounter(lockCounter);
+			userDAO.save(user);
+		}
+		else {	
+			
+			Date lastSignIn = user.getSignInDate();
+			Date lastSignOut = user.getSignOutDate();
+			Date current = new Date();
+			
+			boolean isAlreadySignedIn = MatContext.get().isAlreadySignedIn(lastSignOut, lastSignIn, current);
+			
+			if(isAlreadySignedIn){
+				result.setFailureReason(ForgottenLoginIDResult.USER_ALREADY_LOGGED_IN);
+			}else{
+				//String newPassword = generateRandomPassword();
+				//setUserPassword(user, newPassword, true);
+				result.setEmailSent(true);
+				notifyUserOfForgottenLoginId(user);
+				//userDAO.save(user);
+			}
+		}
+		return result;
+	}
+	
+	
 	private boolean securityQuestionMatch(User user, 
 			String securityQuestion, String securityAnswer) {
 		for(UserSecurityQuestion usq : user.getSecurityQuestions()) {
@@ -225,7 +283,7 @@ public class UserServiceImpl implements UserService {
 		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_RESET_PASSWORD, paramsMap);
 		msg.setText(text);
-
+		System.out.println("newPassword ==============="+newPassword);
 		logger.info("Sending email to " + email);
 		try {
 			this.mailSender.send(msg);
@@ -324,7 +382,25 @@ public class UserServiceImpl implements UserService {
 			logger.error(exc);
 		}
 	}
+	
+	public void notifyUserOfForgottenLoginId(User user) {
+		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
+		msg.setSubject(ServerConstants.FORGOT_LOGINID_SUBJECT);
+		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
+		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
+		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_FORGOT_LOGINID, paramsMap);
+		
+		msg.setTo(user.getEmailAddress());
+		msg.setText(text);
 
+		try {
+			this.mailSender.send(msg);
+		}
+		catch(MailException exc) {
+			logger.error(exc);
+		}
+	}
+	
 	public String getPasswordHash(String salt, String password) {
 		String hashed = hash(salt + password);
 		return hashed;
@@ -365,6 +441,25 @@ public class UserServiceImpl implements UserService {
 	@Override 
 	public SecurityQuestionOptions getSecurityQuestionOptions(String loginId) {
 		User user = userDAO.findByLoginId(loginId);
+		SecurityQuestionOptions options = new SecurityQuestionOptions();
+		options.setSecurityQuestions(new ArrayList<NameValuePair>());
+		if(user != null) {
+			options.setUserFound(true);
+			for(UserSecurityQuestion q : user.getSecurityQuestions()) {
+				NameValuePair nvp = 
+					new NameValuePair(q.getSecurityQuestion(), q.getSecurityQuestion());
+				options.getSecurityQuestions().add(nvp);
+			}
+		}
+		else {
+			options.setUserFound(false);
+		}
+		return options;
+	}
+	
+	@Override 
+	public SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email) {
+		User user = userDAO.findByEmail(email);
 		SecurityQuestionOptions options = new SecurityQuestionOptions();
 		options.setSecurityQuestions(new ArrayList<NameValuePair>());
 		if(user != null) {

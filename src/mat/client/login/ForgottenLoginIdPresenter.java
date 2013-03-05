@@ -96,7 +96,7 @@ public class ForgottenLoginIdPresenter {
 					display.addSecurityQuestionOptions(qs);
 				}
 				else {
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
+					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getEmailNotFoundMessage());
 				}
 			}
 			

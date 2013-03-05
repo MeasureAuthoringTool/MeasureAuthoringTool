@@ -4,21 +4,15 @@ package mat.client.shared.search;
 
 import java.util.Iterator;
 
-import mat.client.CustomPager;
 import mat.client.Enableable;
-import mat.client.clause.QDSCodeListSearchModel;
 import mat.client.event.MATClickHandler;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -28,10 +22,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.event.shared.HandlerRegistration;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.cellview.client.SimplePager;
-import com.google.gwt.user.cellview.client.SimplePager.TextLocation;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
@@ -44,7 +34,6 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 
 
 public class SearchView<T> implements HasSelectionHandlers<T>, 
@@ -64,11 +53,19 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	protected Panel pageSizeSelector = new FlowPanel();
 	protected Panel pageSelector = new HorizontalPanel();
 	private HTML viewingNumber = new HTML();
+	public HTML getViewingNumber() {
+		return viewingNumber;
+	}
+	public void setViewingNumber(HTML viewingNumber) {
+		this.viewingNumber = viewingNumber;
+	}
+
 	public Grid508 dataTable = new Grid508();
 	//private Grid508 qdsDataTable = new Grid508();
 	//public CellTable<CodeListSearchDTO > qdsDataTable = new CellTable<CodeListSearchDTO>();
 	public VerticalPanel vPanelForQDMTable = new VerticalPanel();
 	//private FlexTable flexTable = new FlexTable();
+	
 	
 	private int currentPageSize = DEFAULT_PAGE_SIZE;
 	private int currentPage = DEFAULT_PAGE;
@@ -104,17 +101,10 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	public SearchView(boolean QDSCodeListView){
 		mainPanel = new SimplePanel();
 		FlowPanel fPanel = new FlowPanel();
-		//qdsDataTable.setWidth("100%");
-		//qdsDataTable.setStylePrimaryName("searchResultsTable");
-		//qdsDataTable.setCellPadding(5);
 		mainPanel.add(fPanel);
-		pageSizeSelector.setHeight("20px");
-		fPanel.add(pageSizeSelector);
-		pageSizeSelector.setStylePrimaryName("searchResultsPageSize");
-		fPanel.add(viewingNumber);
-		fPanel.add(new SpacerWidget());
-		fPanel.add(new SpacerWidget());
-		//buildQDSDataTable();
+		//fPanel.add(viewingNumber);
+		/*fPanel.add(new SpacerWidget());
+		fPanel.add(new SpacerWidget());*/
 		fPanel.add(vPanelForQDMTable);
 	}
 
@@ -350,26 +340,23 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		return pageSize * (currentPage - 1) + 1;	
 	}
 	
-	public void  buildQDSDataTable(QDSCodeListSearchModel results, int pageSize){
+	/*public void  buildQDSDataTable(QDSCodeListSearchModel results){
 		if(results == null) {
 			return;
 		}
-		buildPageSizeSelector();
-		buildTableQDS(results,pageSize);
-	}
+		//buildPageSizeSelector();
+		buildTableQDS(results);
+	}*/
 	
-	public void buildTableQDS( QDSCodeListSearchModel results, int pageSize){
+	/*public void buildTableQDS( QDSCodeListSearchModel results){
 		 
 		CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
 		  
 		// Display 50 rows in one page or all records.
-		if(pageSize != Integer.MAX_VALUE){
-			table.setPageSize(50);
-		}else{
-			table.setPageSize(results.getData().size());
-		}
+		
+		table.setPageSize(50);
 		table.setSelectionModel(results.addSelectionHandlerOnTable());
 		table = results.addColumnToTable(table);
 		
@@ -388,32 +375,14 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
         spager.setDisplay(table);
         spager.setPageStart(0);
         spager.setToolTipAndTabIndex(spager);
+        VerticalPanel vp = new VerticalPanel();
+        vp.add(spager);
         vPanelForQDMTable.clear();
 		vPanelForQDMTable.add(table);
 		vPanelForQDMTable.add(new SpacerWidget());
-		vPanelForQDMTable.add(spager);
+		vPanelForQDMTable.add(vp);
 
-	}
-	
-	
-	
-	public void buildQDSColumnHeaders(int numRows,int numColumns,SearchResults<T> results){
-		boolean isClearAll = false;
-		for(int i = 0; i < numColumns; i++) {
-			Panel headerPanel = new FlowPanel();
-			Widget columnHeader = null;
-			columnHeader = new Label(results.getColumnHeader(i));
-			columnHeader.setTitle(results.getColumnHeader(i));
-			columnHeader.setStyleName("leftAligned");
-			headerPanel.setStylePrimaryName("noBorder");
-			if(!isClearAll) 
-				headerPanel.add(columnHeader);
-			/*qdsDataTable.setWidget(0, i,headerPanel);
-			qdsDataTable.getColumnFormatter().setWidth(i, results.getColumnWidth(i));
-			qdsDataTable.getColumnFormatter().addStyleName(i, "noWrap")*/;
-		}
-		/*qdsDataTable.getRowFormatter().addStyleName(0, "header");*/
-	}
+	}*/
 	
 	//build data table for user search
 	public void buildDataTable(final SearchResults<T> results){		
@@ -849,8 +818,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		this.dataTable = dataTable;
 	}
 	
-
-	/*public CellTable<CodeListSearchDTO> getQdsDataTable() {
-		return qdsDataTable;
-	}*/
+	public VerticalPanel getvPanelForQDMTable() {
+		return vPanelForQDMTable;
+	}
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -13,6 +14,7 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -24,12 +26,15 @@ import mat.model.CodeListSearchDTO;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -42,6 +47,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
 
 
 public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.SearchDisplay {
@@ -57,15 +63,14 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private SuccessMessageDisplay successMessagePanel;
 	private ListBoxMVP dataTypeInput = new ListBoxMVP();
 	private FocusableWidget messageFocus;
-	private Button removeButton = new Button("Remove");
+	//private Button removeButton = new Button("Remove");
 	VerticalPanel listBoxVPanel = new VerticalPanel();
-	private ScrollPanel checkboxScrollPanel  = new ScrollPanel(listBoxVPanel);	
+	//private ScrollPanel checkboxScrollPanel  = new ScrollPanel(listBoxVPanel);	
 	private List<QualityDataSetDTO> appliedQDMs = new ArrayList<QualityDataSetDTO>();
    // private ScrollPanel sp;
     private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
     
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
-		
 		@Override
 		public void onValueChange(ValueChangeEvent<String> event) {
 			specificOccurrence.setValue(false);
@@ -406,7 +411,38 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	}
 
 	@Override
-	public void buildQDSDataTable(QDSCodeListSearchModel results, int pageSize) {
-		view.buildQDSDataTable(results, pageSize);
+	public void buildQDSDataTable(QDSCodeListSearchModel results) {
+		//buildQDSDataTable(results);
+		buildTableQDS(results);
+	}
+	
+	private void buildTableQDS( QDSCodeListSearchModel results){
+		 
+		CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
+		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
+		  
+		// Display 50 rows in one page or all records.
+		table.setPageSize(50);
+		table.setSelectionModel(results.addSelectionHandlerOnTable());
+		table = results.addColumnToTable(table);
+		
+		table.redraw();
+		sortProvider.refresh();
+		sortProvider.setList(results.getData());
+	
+		sortProvider.addDataDisplay(table);
+		//Used custom pager class - for disabling next/last button when on last page and for showing correct pagination number.
+		MatSimplePager spager;
+		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+	    spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+        spager.setDisplay(table);
+        spager.setPageStart(0);
+        spager.setToolTipAndTabIndex(spager);
+        view.getvPanelForQDMTable().clear();
+        view.getvPanelForQDMTable().add(table);
+		view.getvPanelForQDMTable().add(new SpacerWidget());
+		view.getvPanelForQDMTable().add(spager);
+
 	}
 }

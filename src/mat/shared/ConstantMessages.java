@@ -136,6 +136,7 @@ public  class ConstantMessages {
 		public static final String TEMPLATE_WELCOME = "welcomeTemplate.vm";
 		public static final String TEMPLATE_TEMP_PASSWORD = "tempPasswordTemplate.vm";
 		public static final String TEMPLATE_RESET_PASSWORD = "resetPasswordTemplate.vm";
+		public static final String TEMPLATE_FORGOT_LOGINID = "forgotLoginIDTemplate.vm";
 		
 		
 		//events

@@ -430,7 +430,12 @@ public class MessageDelegate {
 	public String getUserNotFoundMessage(){
 		return USER_NOT_FOUND_MSG;
 	}
-
+	
+	private final String EMAIL_NOT_FOUND_MSG = "Email Address is required.";
+	public String getEMAILNotFoundMessage(){
+		return EMAIL_NOT_FOUND_MSG;
+	}
+	
 	private final String ACCOUNT_LOCKED = "Your account has been locked.";
 	
 	

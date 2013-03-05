@@ -37,6 +37,7 @@ public class LoginView implements LoginPresenter.Display  {
 	private TextBox userid;
 	private TextBox password;
 	private Button submitButton;
+	private Anchor forgotLoginId;
 	private Anchor forgotPassword;
 	private VerticalPanel mainPanel = new VerticalPanel();
 	
@@ -87,11 +88,17 @@ public class LoginView implements LoginPresenter.Display  {
 		loginPanel.add(new SpacerWidget());
 		
 		HorizontalPanel hPanel = new HorizontalPanel();
-		forgotPassword = new Anchor("Forgot Password?");
+		HTML desc = new HTML("Forgot your &nbsp;");
+		HTML or = new HTML("&nbsp;or&nbsp;");
+		forgotLoginId = new Anchor("User ID");
+		forgotLoginId.setTitle("Forgot LoginId");
+		forgotLoginId.getElement().setAttribute("alt", "User ID");
+		forgotPassword = new Anchor("Password ?");
 		forgotPassword.setTitle("Forgot Password");
-		forgotPassword.getElement().setAttribute("alt", "Forgot Password");
-		//FocusableImageButton questionMark = new FocusableImageButton(ImageResources.INSTANCE.help(),"help");
-		//hPanel.add(questionMark);
+		forgotPassword.getElement().setAttribute("alt", "Password");
+		hPanel.add(desc);
+		hPanel.add(forgotLoginId);
+		hPanel.add(or);
 		hPanel.add(forgotPassword);
 		loginPanel.add(hPanel);
 		
@@ -165,6 +172,12 @@ public class LoginView implements LoginPresenter.Display  {
 	@Override
 	public void setInitialFocus() {
 		userid.setFocus(false);
+	}
+
+	@Override
+	public HasClickHandlers getForgotLoginId() {
+		// TODO Auto-generated method stub
+		return forgotLoginId;
 	}
 	
 }

@@ -2,6 +2,7 @@ package mat.client.login;
 
 import mat.client.Login;
 import mat.client.event.FirstLoginPageEvent;
+import mat.client.event.ForgotLoginIDEvent;
 import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.SuccessfulLoginEvent;
 import mat.client.event.TemporaryPasswordLoginEvent;
@@ -34,6 +35,7 @@ public class LoginPresenter {
 		public void setWelcomeVisible(boolean value);
 		public void setInfoMessageVisible(boolean value);
 		public HasClickHandlers getForgotPassword();
+		public HasClickHandlers getForgotLoginId();
 		public Widget asWidget();
 
 		public HasKeyDownHandlers getUseridField();
@@ -107,6 +109,14 @@ public class LoginPresenter {
 				MatContext.get().getEventBus().fireEvent(new ForgottenPasswordEvent());
 			}
 		});
+		
+		display.getForgotLoginId().addClickHandler(new ClickHandler() {
+
+			public void onClick(ClickEvent event) {
+				reset();
+				MatContext.get().getEventBus().fireEvent(new ForgotLoginIDEvent());
+			}
+		});
 		display.getUseridField().addKeyDownHandler(submitOnEnterHandler);
 		display.getPasswordField().addKeyDownHandler(submitOnEnterHandler);
 	}
@@ -140,6 +150,11 @@ public class LoginPresenter {
 		display.setWelcomeVisible(false);
 		display.setInfoMessageVisible(true);
 		display.getInfoMessage().setHTML("A temporary password has been sent to the e-mail address associated with the User Id you provided. Please<br> check your e-mail and continue to sign in.");
+	}
+	public void displayForgottenLoginIDMessage() {
+		display.setWelcomeVisible(false);
+		display.setInfoMessageVisible(true);
+		display.getInfoMessage().setHTML("Measure Authoring Tool just sent your User ID to the e-mail address provided by you. Please<br> check your e-mail and continue to sign in. ");
 	}
 
 	public void reset() {

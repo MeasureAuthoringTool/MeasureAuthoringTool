@@ -2,6 +2,8 @@ package mat.client;
 
 import mat.client.event.BackToLoginPageEvent;
 import mat.client.event.FirstLoginPageEvent;
+import mat.client.event.ForgotLoginIDEmailSentEvent;
+import mat.client.event.ForgotLoginIDEvent;
 import mat.client.event.ForgottenPasswordEvent;
 import mat.client.event.LogoffEvent;
 import mat.client.event.PasswordEmailSentEvent;
@@ -10,6 +12,8 @@ import mat.client.event.SuccessfulLoginEvent;
 import mat.client.event.TemporaryPasswordLoginEvent;
 import mat.client.login.FirstLoginPresenter;
 import mat.client.login.FirstLoginView;
+import mat.client.login.ForgottenLoginIdPresenter;
+import mat.client.login.ForgottenLoginIdView;
 import mat.client.login.ForgottenPasswordPresenter;
 import mat.client.login.ForgottenPasswordView;
 import mat.client.login.LoginPresenter;
@@ -30,6 +34,7 @@ public class Login extends MainLayout implements EntryPoint {
 	private Panel content;
 	private LoginPresenter loginPresenter;
 	private ForgottenPasswordPresenter forgottenPwdPresenter;
+	private ForgottenLoginIdPresenter forgottenLoginIdPresenter;
 	private FirstLoginPresenter securityQuestionsPresenter;
 	private TempPwdLoginPresenter tempPwdLogingPresenter;
 
@@ -48,11 +53,29 @@ public class Login extends MainLayout implements EntryPoint {
 				loginPresenter.displayForgottenPasswordMessage();
 			}
 		});
+		
+		MatContext.get().getEventBus().addHandler(ForgotLoginIDEmailSentEvent.TYPE, new ForgotLoginIDEmailSentEvent.Handler() {
+			
+			public void onForgotLoginIdEmailSent(final ForgotLoginIDEmailSentEvent event) {
+				content.clear();
+				loginPresenter.go(content);
+				loginPresenter.displayForgottenLoginIDMessage();
+			}
+		});
 		MatContext.get().getEventBus().addHandler(ForgottenPasswordEvent.TYPE, new ForgottenPasswordEvent.Handler() {
 			
 			public void onForgottenPassword(final ForgottenPasswordEvent event) {
 				content.clear();
 				forgottenPwdPresenter.go(content);
+			}
+		});
+		
+		// Forgot LoginId
+		MatContext.get().getEventBus().addHandler(ForgotLoginIDEvent.TYPE, new ForgotLoginIDEvent.Handler() {
+			
+			public void onForgottenLoginID(final ForgotLoginIDEvent event) {
+				content.clear();
+				forgottenLoginIdPresenter.go(content);
 			}
 		});
 		
@@ -155,6 +178,9 @@ public class Login extends MainLayout implements EntryPoint {
 		
 		final ForgottenPasswordView forgottenPwdView = new ForgottenPasswordView();
 		forgottenPwdPresenter = new ForgottenPasswordPresenter(forgottenPwdView);
+		
+		final ForgottenLoginIdView forgottenLoginIdView = new ForgottenLoginIdView();
+		forgottenLoginIdPresenter = new ForgottenLoginIdPresenter(forgottenLoginIdView);
 		
 		final TempPwdView temPwdview = new TempPwdView();
 		tempPwdLogingPresenter = new TempPwdLoginPresenter(temPwdview);

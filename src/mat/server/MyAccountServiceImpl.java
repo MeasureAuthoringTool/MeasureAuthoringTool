@@ -40,6 +40,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		model.setOid(user.getOrgOID());
 		model.setRootoid(user.getRootOID());
 		model.setLoginId(user.getLoginId());
+		logger.info("Model Object for User " + user.getLoginId() +" is updated and returned with Organisation ::: " + model.getOrganisation());
 		return model;
 	}
 	private void setModelFieldsOnUser(User user, MyAccountModel model) {
@@ -62,6 +63,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 	public MyAccountModel getMyAccount() throws IllegalArgumentException {
 		UserService userService = getUserService();
 		User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
+		logger.info("Fetched User ....."+ user.getLoginId());
 		return extractModel(user);
 	}
 	

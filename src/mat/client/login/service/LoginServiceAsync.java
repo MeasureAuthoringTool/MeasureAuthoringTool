@@ -5,6 +5,7 @@ import java.util.List;
 
 import mat.client.login.LoginModel;
 import mat.model.UserSecurityQuestion;
+import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -26,6 +27,11 @@ public interface LoginServiceAsync extends AsynchronousService{
 	void getFooterURLs(AsyncCallback<List<String>> callback);
 	void updateOnSignOut(String userId, String email, String activityType,
 			AsyncCallback<String> callback);
+	void forgotLoginID(String email, String securityQuestion,
+			String securityAnswer,
+			AsyncCallback<ForgottenLoginIDResult> callback);
+	void getSecurityQuestionOptionsForEmail(String email,
+			AsyncCallback<SecurityQuestionOptions> callback);
 	
 	
 }

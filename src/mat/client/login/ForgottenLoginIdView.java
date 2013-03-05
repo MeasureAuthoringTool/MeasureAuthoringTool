@@ -35,7 +35,7 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 		
 		
 		SimplePanel titleHolder = new SimplePanel();
-		Label titlePanel = new Label("Request your Login ID");
+		Label titlePanel = new Label("Request your User ID");
 		titleHolder.add(titlePanel);
 		titleHolder.setStylePrimaryName("loginBlueTitleHolder");
 		titleHolder.setWidth("100%");

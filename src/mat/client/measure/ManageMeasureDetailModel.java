@@ -68,6 +68,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	private String stewardUuid;
 	private String scoringAbbr;
 	private PeriodModel periodModel;
+	private String endorsement;
+	private String endorsementId;
 	
 	public boolean isDraft() {
 		return draft;
@@ -836,5 +838,59 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	public void setPeriodModel(PeriodModel periodModel) {
 		this.periodModel = periodModel;
 	}
+	public String getEndorsement() {
+		return endorsement;
+	}
+	public void setEndorsement(String endorsement) {
+		this.endorsement = endorsement;
+	}
+	public String getEndorsementId() {
+		return endorsementId;
+	}
+	public void setEndorsementId(String endorsementId) {
+		this.endorsementId = endorsementId;
+	}
+	@Override
+	public String toString() {
+		return "ManageMeasureDetailModel [id=" + id + ", name=" + name
+				+ ", shortName=" + shortName + ", versionNumber="
+				+ versionNumber + ", measureId=" + measureId + ", groupName="
+				+ groupName + ", groupId=" + groupId + ", finalizedDate="
+				+ finalizedDate + ", measFromPeriod=" + measFromPeriod
+				+ ", measToPeriod=" + measToPeriod + ", measScoring="
+				+ measScoring + ", measSteward=" + measSteward
+				+ ", measStewardOther=" + measStewardOther + ", endorseByNQF="
+				+ endorseByNQF + ", measureStatus=" + measureStatus
+				+ ", nqfId=" + nqfId + ", description=" + description
+				+ ", copyright=" + copyright + ", clinicalRecomms="
+				+ clinicalRecomms + ", definitions=" + definitions
+				+ ", guidance=" + guidance + ", transmissionFormat="
+				+ transmissionFormat + ", rationale=" + rationale
+				+ ", improvNotations=" + improvNotations + ", stratification="
+				+ stratification + ", referencesList=" + referencesList
+				+ ", authorList=" + authorList + ", measureTypeList="
+				+ measureTypeList + ", toCompareAuthor=" + toCompareAuthor
+				+ ", toCompareMeasure=" + toCompareMeasure + ", draft=" + draft
+				+ ", measureSetId=" + measureSetId + ", valueSetDate="
+				+ valueSetDate + ", supplementalData=" + supplementalData
+				+ ", disclaimer=" + disclaimer + ", riskAdjustment="
+				+ riskAdjustment + ", rateAggregation=" + rateAggregation
+				+ ", initialPatientPop=" + initialPatientPop + ", denominator="
+				+ denominator + ", denominatorExclusions="
+				+ denominatorExclusions + ", numerator=" + numerator
+				+ ", numeratorExclusions=" + numeratorExclusions
+				+ ", denominatorExceptions=" + denominatorExceptions
+				+ ", measurePopulation=" + measurePopulation
+				+ ", measureObservations=" + measureObservations
+				+ ", eMeasureId=" + eMeasureId + ", nqfIdRoot=" + nqfIdRoot
+				+ ", nqfElementTag=" + nqfElementTag + ", versionNumberInt="
+				+ versionNumberInt + ", qltyMeasureSetUuid="
+				+ qltyMeasureSetUuid + ", stewardUuid=" + stewardUuid
+				+ ", scoringAbbr=" + scoringAbbr + ", periodModel="
+				+ periodModel + ", endorsement=" + endorsement
+				+ ", endorsementId=" + endorsementId + "]";
+	}
+	
+	
 	
 }

@@ -1,6 +1,11 @@
 package mat.server;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.StringReader;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -50,7 +55,12 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.Unmarshaller;
+import org.exolab.castor.xml.ValidationException;
+import org.xml.sax.InputSource;
 
 
 
@@ -510,15 +520,16 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		try {
 //			mapping.loadMapping("../src/mat/server/model/MeasureDetailsModelMapping.xml");
 			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
-//			Writer writer = new FileWriter("../src/mat/server/xmlTree.xml");
+//			Writer writer = new FileWriter("../src/mat/server/xmlTree1.xml");
 			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+//			Marshaller marshaller = new Marshaller();
 //			marshaller.setWriter(writer);
 	        marshaller.setMapping(mapping);
 	        marshaller.marshal(measureDetailModel);
 //	        marshaller.setNamespaceMapping("", "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
 	        logger.info("Marshalling of ManageMeasureDetailsModel is successful..");
 //	        Unmarshaller unmar = new Unmarshaller(mapping);
-//            ManageMeasureDetailModel details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new FileReader("../src/mat/server/xmlTree.xml")));
+//            ManageMeasureDetailModel details = (ManageMeasureDetailModel)unmar.unmarshal(new FileReader("../src/mat/server/xmlTree1.xml"));
 	        
 //	        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 //	        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
@@ -565,7 +576,13 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		setOrgIdInAuthor(measureDetailModel.getAuthorList());
 		setMeasureTypeAbbreviation(measureDetailModel.getMeasureTypeList());
 		measureDetailModel.setScoringAbbr(setScoringAbbreviation(measureDetailModel.getMeasScoring()));
+		
+		if(measureDetailModel.getEndorseByNQF() != null && measureDetailModel.getEndorseByNQF()){
+			measureDetailModel.setEndorsement("National Quality Forum");
+			measureDetailModel.setEndorsementId("2.16.840.1.113883.3.560");
+		}
 	}
+	
 	
 	private String setScoringAbbreviation(String measScoring) {
 		return MeasureDetailsUtil.getScoringAbbr(measScoring);
@@ -928,6 +945,28 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		getService().saveMeasureXml(measureXmlModel);
 	}
 	
-	
+	private ManageMeasureDetailModel convertXmltoModel(String xml){
+		ManageMeasureDetailModel details = null;
+		try {
+			Mapping mapping = new Mapping();
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
+			Unmarshaller unmar = new Unmarshaller(mapping);
+            details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new StringReader(xml)));
+            System.out.println(details.toString());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MarshalException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ValidationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return details;
+	}
 	
 }

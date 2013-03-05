@@ -103,10 +103,16 @@
       </bind-xml>
     </field>
     
-    <field name="endorseByNQF"
-           type="java.lang.String" handler="mat.server.model.MeasureDetailsHandler">
+    <field name="endorsement"
+           type="java.lang.String">
       <bind-xml name="endorsement" node="element" location="measureDetails" />
     </field>
+    
+     <field name="endorsementId"
+           type="java.lang.String">
+      <bind-xml name="id" node="attribute" location="endorsement" />
+    </field>
+    
     
     <field name="description"
            type="java.lang.String">

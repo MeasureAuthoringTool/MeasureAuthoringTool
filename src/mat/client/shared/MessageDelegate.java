@@ -432,11 +432,11 @@ public class MessageDelegate {
 	}
 	
 	private final String EMAIL_NOT_FOUND_MSG = "Email Address is required.";
-	public String getEMAILNotFoundMessage(){
+	public String getEmailNotFoundMessage(){
 		return EMAIL_NOT_FOUND_MSG;
 	}
 	
-	private final String ACCOUNT_LOCKED = "Your account has been locked.";
+	private final String ACCOUNT_LOCKED = "Your account has been locked.Please Contact Helpdesk.";
 	
 	
 	public String getAccountLockedMessage(){

@@ -661,13 +661,13 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	public String findMaxOfMinVersion(String measureSetId, String version){
 		logger.info("In MeasureDao.findMaxOfMinVersion()");
 		String maxOfMinVersion = version;
-		int minVal = 0;
-		int maxVal = 0;
+		double minVal = 0;
+		double maxVal = 0;
 		if(StringUtils.isNotBlank(version)){
 			int decimalIndex = version.indexOf('.');
 			minVal = Integer.valueOf(version.substring(0, decimalIndex)).intValue();
 			logger.info("Min value: "+ minVal);
-			maxVal = minVal+1;
+			maxVal = minVal + 1;
 			logger.info("Max value: "+ maxVal);
 		}
 		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
@@ -683,7 +683,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			logger.info("Finding max of min version from the Measure List. Size:" + measureList.size());
 			for(Measure measure : measureList){
 				logger.info("Looping through Measures Id: "+ measure.getId() +" Version: " + measure.getVersion());
-				if(measure.getVersionNumber()>minVal && measure.getVersionNumber()<maxVal){
+				if(measure.getVersionNumber() > minVal && measure.getVersionNumber() < maxVal){
 					if(tempVersion < measure.getVersionNumber()){
 						logger.info(tempVersion + "<" + measure.getVersionNumber()+"="+ (tempVersion < measure.getVersionNumber()));
 						maxOfMinVersion = measure.getVersion();

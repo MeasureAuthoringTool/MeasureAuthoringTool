@@ -632,8 +632,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		draftDisplay.getSaveButton().addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
+				Mat.showLoadingMessage();
 				//O&M 17
 				((Button)draftDisplay.getSaveButton()).setEnabled(false);
+				((Button)draftDisplay.getCancelButton()).setEnabled(false);
 				
 				ManageMeasureSearchModel.Result selectedMeasure =  draftMeasureResults.getSelectedMeasure();
 				if(selectedMeasure.getId() != null){
@@ -649,7 +651,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						public void onFailure(Throwable caught) {
 							//O&M 17
 							((Button)draftDisplay.getSaveButton()).setEnabled(true);
-							
+							((Button)draftDisplay.getCancelButton()).setEnabled(true);
 							draftDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 						}
@@ -657,6 +659,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}else{
 					//O&M 17
 					((Button)draftDisplay.getSaveButton()).setEnabled(true);
+					((Button)draftDisplay.getCancelButton()).setEnabled(true);
 					draftDisplay.getErrorMessageDisplay().setMessage("Please select a Measure Version to create a Draft.");
 				}
 				
@@ -794,9 +797,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	
 	private void  saveFinalizedVersion(final String measureId,final boolean isMajor, final String version){
+		Mat.showLoadingMessage();
 		MatContext.get().getMeasureService().saveFinalizedVersion(measureId,isMajor,version, new AsyncCallback<SaveMeasureResult>() {
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
+				Mat.hideLoadingMessage();
 				if(result.isSuccess()){
 					searchDisplay.clearSelections();
 					displaySearch();					
@@ -818,6 +823,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
+				Mat.hideLoadingMessage();
 				versionDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);	
 			}

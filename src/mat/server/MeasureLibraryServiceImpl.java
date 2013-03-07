@@ -760,36 +760,42 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	@Override
 	public SaveMeasureResult saveFinalizedVersion(String measureId,boolean isMajor,String version) {
-		   Measure m = getService().getById(measureId);
-		   String versionNumber = null;
-		   if(isMajor){
-			   versionNumber =   findOutMaximumVersionNumber(m.getMeasureSet().getId());
-		   } else {
-			   int versionIndex = version.indexOf('v');
-			   String selectedVersion = version.substring(versionIndex+1);
-			   versionNumber =   findOutVersionNumber(m.getMeasureSet().getId(),selectedVersion); 
-		   }
-		   ManageMeasureDetailModel mDetail = getMeasureDetail(measureId, m);
-		   SaveMeasureResult rs = new SaveMeasureResult();
-		   int endIndex = versionNumber.indexOf('.');
-		   String majorVersionNumber = versionNumber.substring(0, endIndex);
-		   if(!versionNumber.equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_VERSION)){
-			   String[] versionArr = versionNumber.split("\\.");
-			   if(isMajor){
-				    if(!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION))
-				    	return incrementVersionNumberAndSave(majorVersionNumber,"1",mDetail,m);
-					else
-						return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
-				    
-				}else{
-					if(!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION))
-						return incrementVersionNumberAndSave(versionNumber,"0.001",mDetail,m);
-					else
-						return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
-				}
-		   }else
-			   return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
-	}
+		  logger.info("In MeasureLibraryServiceImpl.saveFinalizedVersion() method..");
+		     Measure m = getService().getById(measureId);
+		     logger.info("Measure Loaded for: " + measureId);   
+		     String versionNumber = null;
+		     if(isMajor){
+		      versionNumber =   findOutMaximumVersionNumber(m.getMeasureSet().getId());
+		      logger.info("Max Version Number loaded from DB: " + versionNumber);   
+		     } else {
+		      int versionIndex = version.indexOf('v');
+		      logger.info("Min Version number passed from Page Model: " + versionIndex);
+		      String selectedVersion = version.substring(versionIndex+1);
+		      logger.info("Min Version number after trim: " + selectedVersion);
+		      versionNumber =   findOutVersionNumber(m.getMeasureSet().getId(),selectedVersion); 
+		      
+		     }
+		     ManageMeasureDetailModel mDetail = getMeasureDetail(measureId, m);
+		     SaveMeasureResult rs = new SaveMeasureResult();
+		     int endIndex = versionNumber.indexOf('.');
+		     String majorVersionNumber = versionNumber.substring(0, endIndex);
+		     if(!versionNumber.equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_VERSION)){
+		      String[] versionArr = versionNumber.split("\\.");
+		      if(isMajor){
+		        if(!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION))
+		         return incrementVersionNumberAndSave(majorVersionNumber,"1",mDetail,m);
+		     else
+		      return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
+		        
+		    }else{
+		     if(!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION))
+		      return incrementVersionNumberAndSave(versionNumber,"0.001",mDetail,m);
+		     else
+		      return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
+		    }
+		     }else
+		      return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
+		 }
 	
 	
 	

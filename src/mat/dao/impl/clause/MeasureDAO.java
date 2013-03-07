@@ -684,9 +684,12 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 				logger.info("Looping through Measures Id: "+ measure.getId() +" Version: " + measure.getVersion());
 				if(measure.getVersionNumber()>minVal && measure.getVersionNumber()<maxVal){
 					if(tempVersion < measure.getVersionNumber()){
+						logger.info(tempVersion + "<" + measure.getVersionNumber()+"="+ (tempVersion < measure.getVersionNumber()));
 						maxOfMinVersion = measure.getVersion();
+						logger.info("maxOfMinVersion: "+ maxOfMinVersion);
 					}
 					tempVersion = measure.getVersionNumber();
+					logger.info("tempVersion: "+ tempVersion);
 				}
 			}
 		}

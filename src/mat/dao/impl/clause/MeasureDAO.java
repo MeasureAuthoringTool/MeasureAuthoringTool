@@ -35,6 +35,8 @@ import mat.shared.StringUtility;
 import mat.shared.model.Decision;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
@@ -45,7 +47,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
 public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.clause.MeasureDAO {
-	
+	private static final Log logger = LogFactory.getLog(MeasureDAO.class);
 	private final long lockThreshold = 3*60*1000; //3 minutes   
 	
 	private DAOService dAOService = null;
@@ -657,24 +659,29 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	}
 	
 	public String findMaxOfMinVersion(String measureSetId, String version){
-		
+		logger.info("In MeasureDao.findMaxOfMinVersion()");
 		String maxOfMinVersion = version;
 		int minVal = 0;
 		int maxVal = 0;
 		if(StringUtils.isNotBlank(version)){
 			int decimalIndex = version.indexOf('.');
 			minVal = Integer.valueOf(version.substring(0, decimalIndex)).intValue();
+			logger.info("Min value: "+ minVal);
 			maxVal = minVal+1;
+			logger.info("Max value: "+ maxVal);
 		}
 		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
 		//mCriteria.add(Restrictions.and(Restrictions.eq("measureSet.id", measureSetId),
 		//		Restrictions.and(Restrictions.sizeGt("version", minVal),Restrictions.sizeLt("version", maxVal))));
 		//mCriteria.setProjection(Projections.max("version")); 
+		logger.info("Query Using Measure Set Id:" + measureSetId);
 		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
 		List<Measure> measureList = mCriteria.list();
 		double tempVersion = 0;
 		if(measureList != null && measureList.size() > 0){
+			logger.info("Finding max of min version from the Measure List. Size:" + measureList.size());
 			for(Measure measure : measureList){
+				logger.info("Looping through Measures Id: "+ measure.getId() +" Version: " + measure.getVersion());
 				if(measure.getVersionNumber()>minVal && measure.getVersionNumber()<maxVal){
 					if(tempVersion < measure.getVersionNumber()){
 						maxOfMinVersion = measure.getVersion();
@@ -683,6 +690,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 				}
 			}
 		}
+		logger.info("Returned maxOfMinVersion: " +  maxOfMinVersion);
 		return maxOfMinVersion;
 	}
 

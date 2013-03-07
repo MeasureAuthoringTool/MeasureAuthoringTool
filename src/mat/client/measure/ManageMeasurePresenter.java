@@ -632,10 +632,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		draftDisplay.getSaveButton().addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
-				Mat.showLoadingMessage();
 				//O&M 17
 				((Button)draftDisplay.getSaveButton()).setEnabled(false);
-				((Button)draftDisplay.getCancelButton()).setEnabled(false);
 				
 				ManageMeasureSearchModel.Result selectedMeasure =  draftMeasureResults.getSelectedMeasure();
 				if(selectedMeasure.getId() != null){
@@ -651,7 +649,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 						public void onFailure(Throwable caught) {
 							//O&M 17
 							((Button)draftDisplay.getSaveButton()).setEnabled(true);
-							((Button)draftDisplay.getCancelButton()).setEnabled(true);
 							draftDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
 						}
@@ -659,7 +656,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}else{
 					//O&M 17
 					((Button)draftDisplay.getSaveButton()).setEnabled(true);
-					((Button)draftDisplay.getCancelButton()).setEnabled(true);
 					draftDisplay.getErrorMessageDisplay().setMessage("Please select a Measure Version to create a Draft.");
 				}
 				

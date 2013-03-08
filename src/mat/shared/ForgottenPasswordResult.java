@@ -9,6 +9,7 @@ public class ForgottenPasswordResult implements IsSerializable {
 	public static final int SECURITY_QUESTIONS_LOCKED = 4;
 	public static final int USER_NOT_FOUND = 5;
 	public static final int USER_ALREADY_LOGGED_IN = 6;
+	public static final int SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT = 7;
 	
 	private boolean emailSent;
 	private int failureReason;

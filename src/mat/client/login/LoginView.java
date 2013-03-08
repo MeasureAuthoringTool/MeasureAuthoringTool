@@ -88,7 +88,7 @@ public class LoginView implements LoginPresenter.Display  {
 		loginPanel.add(new SpacerWidget());
 		
 		HorizontalPanel hPanel = new HorizontalPanel();
-		HTML desc = new HTML("Forgot your &nbsp;");
+		HTML desc = new HTML("Forgot your&nbsp;");
 		HTML or = new HTML("&nbsp;or&nbsp;");
 		forgotLoginId = new Anchor("User ID");
 		forgotLoginId.setTitle("Forgot LoginId");

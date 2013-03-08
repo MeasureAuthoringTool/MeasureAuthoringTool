@@ -1,11 +1,8 @@
 package mat.server;
 
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
-import java.io.Writer;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -18,6 +15,7 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
+import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.MeasureService;
@@ -44,6 +42,7 @@ import mat.server.service.UserService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
+import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
@@ -70,7 +69,13 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
 	
 	
-	
+	/**
+	 * This method is no longer used as we are loding all the measure details from XML  in Measure_Xml table 
+	 * @param measure
+	 * @param measureDetailsList
+	 * @return
+	 */
+	@Deprecated
 	private ManageMeasureDetailModel extractModel(Measure measure,List<Metadata> measureDetailsList) {
 		ManageMeasureDetailModel model = new ManageMeasureDetailModel();
 		List<Author> authorList = new ArrayList<Author>(); 
@@ -287,9 +292,12 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 
 	@Override
 	public ManageMeasureDetailModel getMeasure(String key) {
-		Measure pkg = getService().getById(key);
-		List<Metadata> measureDetails = getService().getMeasureDetailsById(key);
-		return extractModel(pkg,measureDetails);
+		logger.info("In MeasureLibraryServiceImpl.getMeasure() method..");
+		logger.info("Loading Measure for MeasueId: " + key);
+		Measure measure = getService().getById(key);
+		MeasureXmlModel xml = getMeasureXmlForMeasure(key);
+		return convertXmltoModel(xml, measure);	
+		
 	}
 
 	@Override
@@ -340,10 +348,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			//Create Default SupplimentalQDM if it is a new Measure.
 			createSupplimentalQDM(pkg);
 		}
-		model.setId(result.getId());
-		model.setMeasureSetId(pkg.getMeasureSet() != null ? pkg.getMeasureSet().getId() : null);
-		model.setVersionNumber(MeasureUtility.getVersionText(pkg.getVersion(), pkg.isDraft()));
-		getService().saveMeasureXml(createMeasureXmlModal(model, pkg.getId()));
+		getService().saveMeasureXml(createMeasureXmlModal(model, pkg));		
+		
 		return result;
 	}
 
@@ -453,25 +459,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
     	return existingMeasure.getLockedUser();
     }
     
-    /*
-    private String goodChars = "`~1!2@3#4$5%6^7&8*9(0)-_=+qwertyuiop[]\\QWERTYUIOP{}|asdfghjkl;'ASDFGHJKL:\"zxcvbnm,./ZXCVBNM<>?";
-    private Set<Character> allowedChars = new HashSet<Character>();
-	private void initValidation(){
-		for(int i=0;i<goodChars.length();i++){
-			allowedChars.add(goodChars.charAt(i));
-		}
-	}
-	private boolean isGoodChars(String s){
-		for(int i=0;i<s.length();i++){
-			if(!allowedChars.contains(s.charAt(i)))
-				return false;
-		}
-		return true;
-	}
-    */
-    
 	@Override
-	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) {		
+	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) {	
+		logger.info("In MeasureLibraryServiceImpl.saveMeasureDetails() method..");
 		Measure measure = null;
 		if(model.getId() != null){
 			measure = getService().getById(model.getId());
@@ -484,69 +474,68 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			getService().saveMeasureDetails(measureDetails);
 		}else{
 			getService().deleteALLDetailsForMeasureId(existingDetails);
-			int emid1 = model.geteMeasureId();
-			int emid2 = measure.geteMeasureId();
 			setValueFromModel(model, measureDetails,measure,existingDetails);
-			//Remove the following block of saving emeasureid , since we can save the emeasureIdentifer when we click the generateEmeasureIdentifier Button
-//			if(emid1 != emid2){
-//				getService().saveEMeasureId(measure);
-//			}
 			getService().saveMeasureDetails(measureDetails);
 		}
-
-		List<Metadata> metaDetails = getService().getMeasureDetailsById(model.getId());
-		ManageMeasureDetailModel detailmodel = extractModel(measure,metaDetails);
-
+		logger.info("Saving Measure_Xml");
+		getService().saveMeasureXml(createMeasureXmlModal(model, measure));
 		SaveMeasureResult result = new SaveMeasureResult();
-		result.setSuccess(true);
-		if(detailmodel != null){
-			result.setAuthorList(detailmodel.getAuthorList());
-			result.setMeasureTypeList(detailmodel.getMeasureTypeList());
-		}
-		getService().saveMeasureXml(createMeasureXmlModal(detailmodel, model.getId()));
-		//Example of setting an error condition.
-		//result.setSuccess(false);
-		//result.setFailureReason(ConstantMessages.ID_NOT_UNIQUE);
+		result.setSuccess(true);	
+		logger.info("Saving of Measure Details Success");
 		return result;
 	}
 	
 	
 	
-	public String createMeasureDetailsXml(ManageMeasureDetailModel measureDetailModel){
-		setAdditionalAttrsForMeasureXml(measureDetailModel);
+	public String createMeasureDetailsXml(ManageMeasureDetailModel measureDetailModel, Measure measure){
+		logger.info("In MeasureLibraryServiceImpl.createMeasureDetailsXml()");
+		setAdditionalAttrsForMeasureXml(measureDetailModel, measure);
 		logger.info("creating XML from Measure Details Model");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-//			mapping.loadMapping("../src/mat/server/model/MeasureDetailsModelMapping.xml");
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
-//			Writer writer = new FileWriter("../src/mat/server/xmlTree1.xml");
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-//			Marshaller marshaller = new Marshaller();
-//			marshaller.setWriter(writer);
-	        marshaller.setMapping(mapping);
-	        marshaller.marshal(measureDetailModel);
-//	        marshaller.setNamespaceMapping("", "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>");
-	        logger.info("Marshalling of ManageMeasureDetailsModel is successful..");
-//	        Unmarshaller unmar = new Unmarshaller(mapping);
-//            ManageMeasureDetailModel details = (ManageMeasureDetailModel)unmar.unmarshal(new FileReader("../src/mat/server/xmlTree1.xml"));
-	        
-//	        DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-//	        DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-//	        Document doc = docBuilder.parse("/path/to/file.xml");
-	        
-            
-	        
-		} catch (Exception e) {
-			logger.info(e.getStackTrace());
-			e.printStackTrace();
-		} 
-		
+		ByteArrayOutputStream stream = createXml(measureDetailModel); 
 		System.out.println(stream.toString());
 		return stream.toString();
 	}
+
+	private ByteArrayOutputStream createXml(
+			ManageMeasureDetailModel measureDetailModel) {
+		logger.info("In MeasureLibraryServiceImpl.createXml()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+	        marshaller.marshal(measureDetailModel);
+	        logger.info("Marshalling of ManageMeasureDetailsModel is successful.." + stream.toString());
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load MeasureDetailsModelMapping.xml" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed" + e);
+			}else if(e instanceof ValidationException){
+				logger.info("Validation Exception" + e);
+			}else{
+				logger.info("Other Exception" + e);
+			}
+		} 
+		logger.info("Exiting MeasureLibraryServiceImpl.createXml()");
+		return stream;
+	}
 	
-	private void setAdditionalAttrsForMeasureXml(ManageMeasureDetailModel measureDetailModel){
+	/**
+	 * Setting Additional Attributes for Measure Xml.
+	 * @param measureDetailModel
+	 */
+	private void setAdditionalAttrsForMeasureXml(ManageMeasureDetailModel measureDetailModel, Measure measure){
+		logger.info("In MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()");
+		measureDetailModel.setId(measure.getId());
+		measureDetailModel.setMeasureSetId(measure.getMeasureSet() != null ? measure.getMeasureSet().getId() : null);
+		measureDetailModel.setOrgVersionNumber(measure.getVersion());
+		measureDetailModel.setVersionNumber(MeasureUtility.getVersionText(measureDetailModel.getOrgVersionNumber(), measure.isDraft()));
+		Double version = Double.parseDouble(measureDetailModel.getOrgVersionNumber());
+		measureDetailModel.setVersionNumberInt(version.intValue());
 		measureDetailModel.setId(UuidUtility.idToUuid(measureDetailModel.getId()));// have to change on unmarshalling.
 		if(StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod()) || StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())){
 			PeriodModel periodModel = new PeriodModel();
@@ -581,6 +570,32 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			measureDetailModel.setEndorsement("National Quality Forum");
 			measureDetailModel.setEndorsementId("2.16.840.1.113883.3.560");
 		}
+		NqfModel nqfModel = new NqfModel();
+		nqfModel.setExtension(measureDetailModel.getNqfId());
+		nqfModel.setRoot("2.16.840.1.113883.3.560.1");
+		measureDetailModel.setNqfModel(nqfModel);
+		logger.info("Exiting MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()..");
+	}
+	
+	/**
+	 * Adding additonal fields in model from measure table
+	 * @param manageMeasureDetailModel
+	 * @param measure
+	 */
+	private void convertAddlXmlElementsToModel(ManageMeasureDetailModel manageMeasureDetailModel, Measure measure){
+		logger.info("In easureLibraryServiceImpl.convertAddlXmlElementsToModel()");
+		manageMeasureDetailModel.setId(measure.getId());
+		manageMeasureDetailModel.setMeasFromPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel.getPeriodModel().getStartDate() : null);
+		manageMeasureDetailModel.setMeasToPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel.getPeriodModel().getStopDate() : null);
+		manageMeasureDetailModel.setEndorseByNQF((StringUtils.isNotBlank(manageMeasureDetailModel.getEndorsement()) ? true : false));
+		manageMeasureDetailModel.setOrgVersionNumber(measure.getVersion());
+		manageMeasureDetailModel.setVersionNumber(MeasureUtility.getVersionText(manageMeasureDetailModel.getOrgVersionNumber(), measure.isDraft()));
+		manageMeasureDetailModel.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
+		manageMeasureDetailModel.setDraft(measure.isDraft());
+		manageMeasureDetailModel.setValueSetDate(DateUtility.convertDateToStringNoTime(measure.getValueSetDate()));
+		manageMeasureDetailModel.setNqfId(manageMeasureDetailModel.getNqfModel() != null ? manageMeasureDetailModel.getNqfModel().getExtension() : null);
+		manageMeasureDetailModel.seteMeasureId(measure.geteMeasureId());
+		logger.info("Exiting easureLibraryServiceImpl.convertAddlXmlElementsToModel() method..");
 	}
 	
 	
@@ -596,10 +611,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		}
 	}
 
-	private MeasureXmlModel createMeasureXmlModal(ManageMeasureDetailModel manageMeasureDetailModel, String measureId){
+	private MeasureXmlModel createMeasureXmlModal(ManageMeasureDetailModel manageMeasureDetailModel, Measure measure){
 		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
-		measureXmlModel.setMeasureId(measureId);
-		measureXmlModel.setXml(createMeasureDetailsXml(manageMeasureDetailModel));
+		measureXmlModel.setMeasureId(measure.getId());
+		measureXmlModel.setXml(createMeasureDetailsXml(manageMeasureDetailModel, measure));
 		return measureXmlModel;
 	}
 
@@ -760,42 +775,46 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	@Override
 	public SaveMeasureResult saveFinalizedVersion(String measureId,boolean isMajor,String version) {
-		  logger.info("In MeasureLibraryServiceImpl.saveFinalizedVersion() method..");
-		     Measure m = getService().getById(measureId);
-		     logger.info("Measure Loaded for: " + measureId);   
-		     String versionNumber = null;
-		     if(isMajor){
-		      versionNumber =   findOutMaximumVersionNumber(m.getMeasureSet().getId());
-		      logger.info("Max Version Number loaded from DB: " + versionNumber);   
-		     } else {
-		      int versionIndex = version.indexOf('v');
-		      logger.info("Min Version number passed from Page Model: " + versionIndex);
-		      String selectedVersion = version.substring(versionIndex+1);
-		      logger.info("Min Version number after trim: " + selectedVersion);
-		      versionNumber =   findOutVersionNumber(m.getMeasureSet().getId(),selectedVersion); 
-		      
-		     }
-		     ManageMeasureDetailModel mDetail = getMeasureDetail(measureId, m);
-		     SaveMeasureResult rs = new SaveMeasureResult();
-		     int endIndex = versionNumber.indexOf('.');
-		     String majorVersionNumber = versionNumber.substring(0, endIndex);
-		     if(!versionNumber.equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_VERSION)){
-		      String[] versionArr = versionNumber.split("\\.");
-		      if(isMajor){
-		        if(!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION))
-		         return incrementVersionNumberAndSave(majorVersionNumber,"1",mDetail,m);
-		     else
-		      return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
-		        
-		    }else{
-		     if(!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION))
-		      return incrementVersionNumberAndSave(versionNumber,"0.001",mDetail,m);
-		     else
-		      return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
-		    }
-		     }else
-		      return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
-		 }
+		logger.info("In MeasureLibraryServiceImpl.saveFinalizedVersion() method..");
+		   Measure m = getService().getById(measureId);
+		   logger.info("Measure Loaded for: " + measureId);   
+		   String versionNumber = null;
+		   if(isMajor){
+			   versionNumber =   findOutMaximumVersionNumber(m.getMeasureSet().getId());
+			   logger.info("Max Version Number loaded from DB: " + versionNumber);   
+		   } else {
+			   int versionIndex = version.indexOf('v');
+			   logger.info("Min Version number passed from Page Model: " + versionIndex);
+			   String selectedVersion = version.substring(versionIndex+1);
+			   logger.info("Min Version number after trim: " + selectedVersion);
+			   versionNumber =   findOutVersionNumber(m.getMeasureSet().getId(),selectedVersion); 
+			   
+		   }
+		   ManageMeasureDetailModel mDetail = getMeasure(measureId);
+		   SaveMeasureResult rs = new SaveMeasureResult();
+		   int endIndex = versionNumber.indexOf('.');
+		   String majorVersionNumber = versionNumber.substring(0, endIndex);
+		   if(!versionNumber.equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_VERSION)){
+			   String[] versionArr = versionNumber.split("\\.");
+			   if(isMajor){
+					if(!versionArr[0].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MAJOR_VERSION)){
+						return incrementVersionNumberAndSave(majorVersionNumber,"1",mDetail,m);
+					}else{
+						return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MAJOR_VERSION);
+					}
+				    
+				}else{
+					if(!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)){
+						SaveMeasureResult saveMeasureResult = incrementVersionNumberAndSave(versionNumber,"0.001",mDetail,m);
+						System.out.println(m.getVersion());
+						return saveMeasureResult;
+					}
+					else
+						return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
+				}
+		   }else
+			   return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
+	}
 	
 	
 	
@@ -820,13 +839,14 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		mDetail.setDraft(false);
 		setValueFromModel(mDetail, meas);
 		getService().save(meas);
+		getService().saveMeasureXml(createMeasureXmlModal(mDetail, meas));
 		getClauseBusinessService().setClauseNameForMeasure(mDetail.getId(), mDetail.getShortName());
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);
 		result.setId(meas.getId());
 		String versionStr = meas.getMajorVersionStr()+"."+meas.getMinorVersionStr();
-		result.setVersionStr(versionStr);
-		
+		result.setVersionStr(versionStr);		
+		logger.info("Result passed for Version Number " + versionStr);
 		return result;
 	}
 	
@@ -839,11 +859,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		rs.setSuccess(false);
 		return rs;
 	}
-	
+	/*
 	private  ManageMeasureDetailModel getMeasureDetail(String mId,Measure m){
 		List<Metadata> measureDetails = getService().getMeasureDetailsById(mId);
 		return extractModel(m,measureDetails);
-	}
+	}*/
 	
 	private void setDTOtoModel(List<ManageMeasureSearchModel.Result> detailModelList,MeasureShareDTO dto ,String currentUserId, boolean isSuperUser){
 		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
@@ -938,11 +958,13 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 
 	@Override
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId) {
+		logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure()");
 		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);		
 		if( measureXmlModel != null){
-			logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure() --> " + measureXmlModel.getXml());
+			logger.info("Measure XML: " + measureXmlModel.getXml());
+		}else{
+			logger.info("Measure XML is null");
 		}
-		
 		return measureXmlModel;
 	}
 
@@ -951,28 +973,69 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		getService().saveMeasureXml(measureXmlModel);
 	}
 	
-	private ManageMeasureDetailModel convertXmltoModel(String xml){
+	/**
+	 * Method unmarshalls MeasureXML into ManageMeasureDetailModel object
+	 * @param xmlModel
+	 * @param measure
+	 * @return
+	 */
+	private ManageMeasureDetailModel convertXmltoModel(MeasureXmlModel xmlModel, Measure measure){
+		logger.info("In MeasureLibraryServiceImpl.convertXmltoModel()");
 		ManageMeasureDetailModel details = null;
+		String xml = xmlModel != null ? xmlModel.getXml() : null;
 		try {
-			Mapping mapping = new Mapping();
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
-			Unmarshaller unmar = new Unmarshaller(mapping);
-            details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new StringReader(xml)));
-            System.out.println(details.toString());
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MarshalException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ValidationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			if(xml == null || !xml.contains("<measureDetails>")){// TODO : this check should be removed before prod.
+				logger.info("xml is null or xml doesn't contain measureDetails tag");
+				details = new ManageMeasureDetailModel();
+				createMeasureDetailsModelFromMeasure(details, measure);
+			}else{
+				logger.info("unmarshalling..");
+				Mapping mapping = new Mapping();
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
+				Unmarshaller unmar = new Unmarshaller(mapping);
+				unmar.setClass(ManageMeasureDetailModel.class);
+	            details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new StringReader(xml)));
+	            logger.info("unmarshalling complete.." + details.toString());
+	            convertAddlXmlElementsToModel(details, measure);
+			}
+		
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load MeasureDetailsModelMapping.xml" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed" + e);
+			}else{
+				logger.info("Other Exception" + e);
+			}
+		} 
 		return details;
+	}
+	
+	/**
+	 * This should be removed when we do a batch save in Measure_XML on production 
+	 * @param model
+	 * @param measure
+	 * @return
+	 */
+	private void createMeasureDetailsModelFromMeasure(ManageMeasureDetailModel model, Measure measure){
+		logger.info("In MeasureLibraryServiceImpl.createMeasureDetailsModelFromMeasure()");
+		model.setId(measure.getId());
+		model.setName(measure.getDescription());
+		model.setShortName(measure.getaBBRName());
+		model.setMeasScoring(measure.getMeasureScoring());
+		Double version = Double.parseDouble(measure.getVersion());
+		model.setVersionNumberInt(version.intValue());		
+		model.setOrgVersionNumber(measure.getVersion());
+		model.setVersionNumber(MeasureUtility.getVersionText(model.getOrgVersionNumber(), measure.isDraft()));
+		model.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
+		model.setDraft(measure.isDraft());
+		model.setMeasureSetId(measure.getMeasureSet().getId());
+		model.setValueSetDate(DateUtility.convertDateToStringNoTime(measure.getValueSetDate()));
+		model.seteMeasureId(measure.geteMeasureId());
+		model.setMeasureStatus(measure.getMeasureStatus());
+		logger.info("Exiting MeasureLibraryServiceImpl.createMeasureDetailsModelFromMeasure()");
 	}
 	
 }

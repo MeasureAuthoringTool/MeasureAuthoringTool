@@ -152,6 +152,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	private boolean editable = false;
 	private boolean isSubView = false;
 	private MeasureXmlModel measureXmlModel;// will hold the measure xml. 02/2013
+	private boolean isMeasureDetailsLoaded = false;
 	
 	
 	
@@ -329,7 +330,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		eventBus.addHandler(MeasureSelectedEvent.TYPE, new MeasureSelectedEvent.Handler() {
 			@Override
 			public void onMeasureSelected(MeasureSelectedEvent event) {
+				isMeasureDetailsLoaded = false;
 				if(event.getMeasureId() != null) {
+					isMeasureDetailsLoaded = true;
 				    getMeasureDetail();
 				}
 				else {
@@ -503,6 +506,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		}else{
 			metaDataDisplay.getNotEndorsebyNQF().setValue(true);
 		}
+		if("In Progress".equalsIgnoreCase(currentMeasureDetail.getMeasureStatus())){
+			currentMeasureDetail.setMeasureStatus("InProgress");
+		}
 		metaDataDisplay.getMeasureStatus().setValueMetadata(currentMeasureDetail.getMeasureStatus());
 		metaDataDisplay.getGuidance().setValue(currentMeasureDetail.getGuidance());
 		metaDataDisplay.getTransmissionFormat().setValue(currentMeasureDetail.getTransmissionFormat());
@@ -530,19 +536,29 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		metaDataDisplay.getRiskAdjustment().setValue(currentMeasureDetail.getRiskAdjustment());
 		if(currentMeasureDetail.getAuthorList() != null){
 			metaDataDisplay.setAuthorsList(currentMeasureDetail.getAuthorList());
-			dbAuthorList.clear();
-			dbAuthorList.addAll(currentMeasureDetail.getAuthorList());
+		}else{
+			List<Author> authorList = new ArrayList<Author>();
+			metaDataDisplay.setAuthorsList(authorList);
+			currentMeasureDetail.setAuthorList(authorList);
 		}
+		dbAuthorList.clear();
+		dbAuthorList.addAll(currentMeasureDetail.getAuthorList());
 		authorList = currentMeasureDetail.getAuthorList();
 		if(currentMeasureDetail.getMeasureTypeList()!= null){
 			metaDataDisplay.setMeasureTypeList(currentMeasureDetail.getMeasureTypeList());
-			dbMeasureTypeList.clear();
-			dbMeasureTypeList.addAll(currentMeasureDetail.getMeasureTypeList());
+		}else{
+			List<MeasureType> measureTypeList = new ArrayList<MeasureType>();
+			metaDataDisplay.setMeasureTypeList(measureTypeList);
+			currentMeasureDetail.setMeasureTypeList(measureTypeList);
 		}
+		dbMeasureTypeList.clear();
+		dbMeasureTypeList.addAll(currentMeasureDetail.getMeasureTypeList());
 		measureTypeList = currentMeasureDetail.getMeasureTypeList();
 		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		if(currentMeasureDetail.getReferencesList()!= null){
 			metaDataDisplay.setReferenceValues(currentMeasureDetail.getReferencesList(), editable);
+		}else{
+			metaDataDisplay.setReferenceValues(new ArrayList<String>(), editable);
 		}
 		metaDataDisplay.setAddEditButtonsVisible(editable);
 		ReadOnlyHelper.setReadOnlyForCurrentMeasure(metaDataDisplay.asWidget(),editable);
@@ -572,17 +588,35 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 						if(dispSuccessMsg){
 							metaDataDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getChangesSavedMessage());
 						}
-						currentMeasureDetail.setAuthorList(result.getAuthorList());
+						
+						/*currentMeasureDetail.setAuthorList(result.getAuthorList());
 						currentMeasureDetail.setMeasureTypeList(result.getMeasureTypeList());
 						setDbAuthorList(result.getAuthorList());
-						setDbMeasureTypeList(result.getMeasureTypeList());					
+						setDbMeasureTypeList(result.getMeasureTypeList());					*/
 						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
+						MatContext.get().getMeasureService().getMeasure(MatContext.get().getCurrentMeasureId(), 
+								new AsyncCallback<ManageMeasureDetailModel>(){
+
+									@Override
+									public void onFailure(Throwable caught) {
+										
+									}
+
+									@Override
+									public void onSuccess(
+											ManageMeasureDetailModel result) {
+										currentMeasureDetail = result;
+										displayDetail();
+										
+									}
+							
+						});
 					}
 					else{
 						//Window.alert("I FAIL1");
 						Mat.hideLoadingMessage();
 						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
-						metaDataDisplay.getErrorMessageDisplay().setMessage(MessageDelegate.getMeasureSaveServerErrorMessage(  result.getFailureReason()));
+						metaDataDisplay.getErrorMessageDisplay().setMessage(MessageDelegate.getMeasureSaveServerErrorMessage( result.getFailureReason()));
 					}
 				}
 				
@@ -715,9 +749,13 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			displayEmpty();
 		}
 		else {
-			currentMeasureDetail = null;
-			lastRequestTime = System.currentTimeMillis();
-			getMeasureDetail();
+			if(!isMeasureDetailsLoaded){// this check is made so that when measure is clicked from Measure library, its not called twice.
+				currentMeasureDetail = null;
+				lastRequestTime = System.currentTimeMillis();
+				getMeasureDetail();
+			}else{
+				isMeasureDetailsLoaded = false;
+			}
 		}
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MetaData");
 		Mat.focusSkipLists("MeasureComposer");
@@ -745,7 +783,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			public void onSuccess(ManageMeasureDetailModel result) {
 				if(callbackRequestTime == lastRequestTime) {
 					currentMeasureDetail = result;
-					loadMeasureXml(result.getId());
+//					loadMeasureXml(result.getId());
 					displayDetail();
 					fireMeasureEditEvent();
 				}

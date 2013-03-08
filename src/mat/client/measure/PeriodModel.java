@@ -83,5 +83,12 @@ public class PeriodModel implements IsSerializable{
 	public void setStopDateUuid(String stopDateUuid) {
 		this.stopDateUuid = stopDateUuid;
 	}
+
+	@Override
+	public String toString() {
+		return "PeriodModel [uuid=" + uuid + ", startDate=" + startDate
+				+ ", stopDate=" + stopDate + ", startDateUuid=" + startDateUuid
+				+ ", stopDateUuid=" + stopDateUuid + "]";
+	}
 	
 }

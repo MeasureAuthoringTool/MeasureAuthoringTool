@@ -58,18 +58,17 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	private String measurePopulation;
 	private String measureObservations;
 	private int eMeasureId;
-	
+	private String orgVersionNumber;
 	
 	//Below fields are added for Castor mapping XML generation purpose
-	private String nqfIdRoot = "2.16.840.1.113883.3.560.1";
-	private String nqfElementTag = "";
-	private int versionNumberInt;
+	private int versionNumberInt;	
 	private String qltyMeasureSetUuid;
 	private String stewardUuid;
 	private String scoringAbbr;
 	private PeriodModel periodModel;
 	private String endorsement;
 	private String endorsementId;
+	private NqfModel nqfModel;
 	
 	public boolean isDraft() {
 		return draft;
@@ -468,17 +467,11 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		if (getClass() != obj.getClass())
 			return false;
 		ManageMeasureDetailModel other = (ManageMeasureDetailModel) obj;
-		System.out.println("");
 		if (toCompareAuthor == null) {
 			if (other.toCompareAuthor != null)
 				return false;
-		} else if (!isEqual(toCompareAuthor, other.toCompareAuthor))//(!authorList.equals(other.authorList))
+		} else if (!isEqual(toCompareAuthor, other.toCompareAuthor))
 			return false;
-		/*if (authorList == null) {
-			if (other.authorList != null)
-				return false;
-		} else if (!isEqual(authorList, other.authorList))//(!authorList.equals(other.authorList))
-			return false;*/
 		if (trimToNull(clinicalRecomms) == null) {
 			if (trimToNull(other.clinicalRecomms) != null)
 				return false;
@@ -545,11 +538,6 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				return false;
 		} else if (!trimToNull(guidance).equals(trimToNull(other.guidance)))
 			return false;
-/*		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;*/
 		if (trimToNull(improvNotations) == null) {
 			if (trimToNull(other.improvNotations) != null)
 				return false;
@@ -705,10 +693,12 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	
 	private List<String> getTrimmedList(List<String> listA){
 		ArrayList<String> newAList = new ArrayList<String>();
-		for (String aStr : listA) {
-			String val = trimToNull(aStr);
-			if(null != val){
-				newAList.add(val);
+		if(listA != null && listA.size() > 0){
+			for (String aStr : listA) {
+				String val = trimToNull(aStr);
+				if(null != val){
+					newAList.add(val);
+				}
 			}
 		}
 		return newAList;
@@ -745,30 +735,6 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 */
 	public void setToCompareMeasure(List<MeasureType> toCompareMeasure) {
 		this.toCompareMeasure = toCompareMeasure;
-	}
-	/**
-	 * @return the nqfIdRoot
-	 */
-	public String getNqfIdRoot() {
-		return nqfIdRoot;
-	}
-	/**
-	 * @param nqfIdRoot the nqfIdRoot to set
-	 */
-	public void setNqfIdRoot(String nqfIdRoot) {
-		this.nqfIdRoot = nqfIdRoot;
-	}
-	/**
-	 * @return the nqfElementTag
-	 */
-	public String getNqfElementTag() {
-		return nqfElementTag;
-	}
-	/**
-	 * @param nqfElementTag the nqfElementTag to set
-	 */
-	public void setNqfElementTag(String nqfElementTag) {
-		this.nqfElementTag = nqfElementTag;
 	}
 
 	/**
@@ -882,13 +848,25 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				+ ", denominatorExceptions=" + denominatorExceptions
 				+ ", measurePopulation=" + measurePopulation
 				+ ", measureObservations=" + measureObservations
-				+ ", eMeasureId=" + eMeasureId + ", nqfIdRoot=" + nqfIdRoot
-				+ ", nqfElementTag=" + nqfElementTag + ", versionNumberInt="
+				+ ", eMeasureId=" + eMeasureId + ", versionNumberInt="
 				+ versionNumberInt + ", qltyMeasureSetUuid="
 				+ qltyMeasureSetUuid + ", stewardUuid=" + stewardUuid
 				+ ", scoringAbbr=" + scoringAbbr + ", periodModel="
-				+ periodModel + ", endorsement=" + endorsement
-				+ ", endorsementId=" + endorsementId + "]";
+				+ (periodModel != null ? periodModel.toString() : null) + ", endorsement=" + endorsement
+				+ ", endorsementId=" + endorsementId + ", nqfModel="
+				+ (nqfModel != null ? nqfModel.toString() : null) +"]";
+	}
+	public NqfModel getNqfModel() {
+		return nqfModel;
+	}
+	public void setNqfModel(NqfModel nqfModel) {
+		this.nqfModel = nqfModel;
+	}
+	public String getOrgVersionNumber() {
+		return orgVersionNumber;
+	}
+	public void setOrgVersionNumber(String orgVersionNumber) {
+		this.orgVersionNumber = orgVersionNumber;
 	}
 	
 	

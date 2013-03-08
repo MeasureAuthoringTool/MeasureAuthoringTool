@@ -154,7 +154,7 @@ public class LoginPresenter {
 	public void displayForgottenLoginIDMessage() {
 		display.setWelcomeVisible(false);
 		display.setInfoMessageVisible(true);
-		display.getInfoMessage().setHTML("Measure Authoring Tool just sent your User ID to the e-mail address provided by you. Please<br> check your e-mail and continue to sign in. ");
+		display.getInfoMessage().setHTML("Measure Authoring Tool just sent your User ID to the e-mail address you provided. Please<br> check your e-mail and continue to sign in. ");
 	}
 
 	public void reset() {

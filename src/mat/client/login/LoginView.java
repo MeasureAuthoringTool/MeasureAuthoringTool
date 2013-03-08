@@ -93,7 +93,7 @@ public class LoginView implements LoginPresenter.Display  {
 		forgotLoginId = new Anchor("User ID");
 		forgotLoginId.setTitle("Forgot LoginId");
 		forgotLoginId.getElement().setAttribute("alt", "User ID");
-		forgotPassword = new Anchor("Password ?");
+		forgotPassword = new Anchor("Password?");
 		forgotPassword.setTitle("Forgot Password");
 		forgotPassword.getElement().setAttribute("alt", "Password");
 		hPanel.add(desc);

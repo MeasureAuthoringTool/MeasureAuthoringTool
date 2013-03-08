@@ -1,10 +1,10 @@
 package mat.client.measure;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mat.model.Author;
 import mat.model.MeasureType;
+import mat.shared.model.util.MeasureDetailsUtil;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -633,7 +633,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		if (referencesList == null) {
 			if (other.referencesList != null)
 				return false;
-		} else if (!isEqual(getTrimmedList(referencesList),getTrimmedList(other.referencesList)))
+		} else if (!isEqual(MeasureDetailsUtil.getTrimmedList(referencesList),MeasureDetailsUtil.getTrimmedList(other.referencesList)))
 			return false;
 		if (trimToNull(riskAdjustment) == null) {
 			if (trimToNull(other.riskAdjustment) != null)
@@ -691,18 +691,6 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	    return true;
 	}
 	
-	private List<String> getTrimmedList(List<String> listA){
-		ArrayList<String> newAList = new ArrayList<String>();
-		if(listA != null && listA.size() > 0){
-			for (String aStr : listA) {
-				String val = trimToNull(aStr);
-				if(null != val){
-					newAList.add(val);
-				}
-			}
-		}
-		return newAList;
-	}
 	
 	private String trimToNull(String value){
 		if(null != value){
@@ -868,7 +856,6 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	public void setOrgVersionNumber(String orgVersionNumber) {
 		this.orgVersionNumber = orgVersionNumber;
 	}
-	
 	
 	
 }

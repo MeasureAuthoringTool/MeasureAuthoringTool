@@ -885,6 +885,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		mcs.clone(currentDetails,loggedinUserId,isDraftCreation, new AsyncCallback<ManageMeasureSearchModel.Result>() {
 			public void onSuccess(ManageMeasureSearchModel.Result result) {
+				MatContext.get().getMeasureService().cloneMeasureXml(isDraftCreation, currentDetails.getId(), result.getId(), new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {}
+
+					@Override
+					public void onSuccess(Void result) {}
+					
+				});
 				fireMeasureSelectedEvent(result.getId(), result.getVersion(),
 						result.getName(), result.getShortName(), result.getScoringType(), result.isEditable(),result.isMeasureLocked(),
 						result.getLockedUserId(result.getLockedUserInfo()));
@@ -893,22 +902,22 @@ public class ManageMeasurePresenter implements MatPresenter {
 				
 				//LOGIT
 				if(isDraftCreation){					
-					MatContext.get().getAuditService().recordMeasureEvent(result.getId(), "Draft Created", "Draft created based on Version "+result.getVersionValue(),false, new AsyncCallback<Boolean>(){
-
-					@Override
-					public void onFailure(Throwable caught) {
-						//O&M 17
-						((Button)draftDisplay.getSaveButton()).setEnabled(true);
-					}
-
-					@Override
-					public void onSuccess(Boolean result) {
-						//O&M 17
-						((Button)draftDisplay.getSaveButton()).setEnabled(true);
-					}
-				});
+						MatContext.get().getAuditService().recordMeasureEvent(result.getId(), "Draft Created", "Draft created based on Version "+result.getVersionValue(),false, new AsyncCallback<Boolean>(){
+	
+						@Override
+						public void onFailure(Throwable caught) {
+							//O&M 17
+							((Button)draftDisplay.getSaveButton()).setEnabled(true);
+						}
+	
+						@Override
+						public void onSuccess(Boolean result) {
+							//O&M 17
+							((Button)draftDisplay.getSaveButton()).setEnabled(true);
+						}
+					});
 				
-			}
+				}
 			}
 			public void onFailure(Throwable caught) {
 				//O&M 17

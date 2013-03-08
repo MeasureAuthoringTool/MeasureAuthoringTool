@@ -70,7 +70,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	
 	/**
-	 * This method is no longer used as we are loding all the measure details from XML  in Measure_Xml table 
+	 * This method is no longer used as we are loading all the measure details from XML  in Measure_Xml table 
+	 * TODO: This should be used only once before the Prod move to Convert all measure to model and marshall as xml and persist in measure_xml table. 
 	 * @param measure
 	 * @param measureDetailsList
 	 * @return
@@ -574,12 +575,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		nqfModel.setExtension(measureDetailModel.getNqfId());
 		nqfModel.setRoot("2.16.840.1.113883.3.560.1");
 		measureDetailModel.setNqfModel(nqfModel);
+		if(CollectionUtils.isEmpty(MeasureDetailsUtil.getTrimmedList(measureDetailModel.getReferencesList()))){
+			measureDetailModel.setReferencesList(null);
+		}
 		logger.info("Exiting MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()..");
-	}
-	
-	public static void main(String[] args) {
-		DecimalFormat dec = new DecimalFormat("#.000");
-		System.out.println( Double.valueOf(2).doubleValue());
 	}
 	
 	/**
@@ -997,6 +996,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
 				Unmarshaller unmar = new Unmarshaller(mapping);
 				unmar.setClass(ManageMeasureDetailModel.class);
+				unmar.setWhitespacePreserve(true);
 	            details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new StringReader(xml)));
 	            logger.info("unmarshalling complete.." + details.toString());
 	            convertAddlXmlElementsToModel(details, measure);
@@ -1041,4 +1041,27 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		logger.info("Exiting MeasureLibraryServiceImpl.createMeasureDetailsModelFromMeasure()");
 	}
 	
+	
+	/**
+	 * Method called when Measure Details Clone operation is done or Drafting of a version measure is done.
+	 * TODO: Sangeethaa This method will have to change when we get all the page items captued as XML
+	 * 		1) The MeasureDAO.clone() method should be re written in here
+	 * 		
+	 */
+	public void cloneMeasureXml(boolean creatingDraft, String oldMeasureId, String clonedMeasureId){
+		logger.info("In MeasureLibraryServiceImpl.cloneMeasureXml() method. Clonig for Measure: "+ oldMeasureId);
+		ManageMeasureDetailModel measureDetailModel = null;
+		if(creatingDraft){			
+			measureDetailModel = getMeasure(oldMeasureId);// get the measureDetailsmodel object for which draft have to be created..
+			Measure measure = getService().getById(clonedMeasureId);//get the Cloned version of the Measure. 
+			createMeasureDetailsModelFromMeasure(measureDetailModel, measure); // apply measure values in the created MeasureDetailsModel.
+		}else{
+			measureDetailModel = getMeasure(clonedMeasureId);
+		}
+		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
+		measureXmlModel.setMeasureId(measureDetailModel.getId());
+		measureXmlModel.setXml(createXml(measureDetailModel).toString());		
+		saveMeasureXml(measureXmlModel);
+		logger.info("Clone of Measure_xml is Successful");
+	}
 }

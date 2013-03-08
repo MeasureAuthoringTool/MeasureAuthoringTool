@@ -38,4 +38,6 @@ public interface MeasureServiceAsync {
 			AsyncCallback<MeasureXmlModel> callback);
 	void saveMeasureXml(MeasureXmlModel measureXmlModel,
 			AsyncCallback<Void> callback);
+	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
+			String clonedMeasureId, AsyncCallback<Void> callback);
 	}

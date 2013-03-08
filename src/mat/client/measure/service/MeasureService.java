@@ -39,5 +39,5 @@ public interface MeasureService extends RemoteService {
 	void transferOwnerShipToUser(List<String> list, String toEmail);
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId);
 	public void saveMeasureXml(MeasureXmlModel measureXmlModel);
-	
+	public void cloneMeasureXml(boolean creatingDraft, String oldMeasureId, String clonedMeasureId);
 }

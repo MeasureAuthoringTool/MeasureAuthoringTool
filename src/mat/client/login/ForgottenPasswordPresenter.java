@@ -146,6 +146,9 @@ public class ForgottenPasswordPresenter {
 			case ForgottenPasswordResult.USER_ALREADY_LOGGED_IN:
 				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
 				break;
+			case ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT:
+				message = MatContext.get().getMessageDelegate().getSecondAttemptFailedMessage();
+				break;
 			default: message = MatContext.get().getMessageDelegate().getUnknownFailMessage();
 		}
 		return message;

@@ -8,6 +8,7 @@ public class ForgottenLoginIDResult implements IsSerializable {
 	public static final int SECURITY_QUESTIONS_LOCKED = 3;
 	public static final int EMAIL_NOT_FOUND_MSG = 4;
 	public static final int USER_ALREADY_LOGGED_IN = 5;
+	public static final int SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT = 6;
 	
 	private boolean emailSent;
 	private int failureReason;

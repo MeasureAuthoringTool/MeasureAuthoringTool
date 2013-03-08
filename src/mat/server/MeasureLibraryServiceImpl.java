@@ -5,6 +5,7 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -531,7 +532,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		logger.info("In MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()");
 		measureDetailModel.setId(measure.getId());
 		measureDetailModel.setMeasureSetId(measure.getMeasureSet() != null ? measure.getMeasureSet().getId() : null);
-		measureDetailModel.setOrgVersionNumber(measure.getVersion());
+		measureDetailModel.setOrgVersionNumber(String.valueOf(measure.getVersionNumber()));	
 		measureDetailModel.setVersionNumber(MeasureUtility.getVersionText(measureDetailModel.getOrgVersionNumber(), measure.isDraft()));
 		Double version = Double.parseDouble(measureDetailModel.getOrgVersionNumber());
 		measureDetailModel.setVersionNumberInt(version.intValue());
@@ -574,6 +575,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		nqfModel.setRoot("2.16.840.1.113883.3.560.1");
 		measureDetailModel.setNqfModel(nqfModel);
 		logger.info("Exiting MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()..");
+	}
+	
+	public static void main(String[] args) {
+		DecimalFormat dec = new DecimalFormat("#.000");
+		System.out.println( Double.valueOf(2).doubleValue());
 	}
 	
 	/**
@@ -804,9 +810,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 				    
 				}else{
 					if(!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)){
-						SaveMeasureResult saveMeasureResult = incrementVersionNumberAndSave(versionNumber,"0.001",mDetail,m);
-						System.out.println(m.getVersion());
-						return saveMeasureResult;
+						return incrementVersionNumberAndSave(versionNumber,"0.001",mDetail,m);
 					}
 					else
 						return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);

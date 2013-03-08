@@ -179,6 +179,10 @@ public class UserServiceImpl implements UserService {
 		else if(!securityQuestionMatch(user, securityQuestion, securityAnswer)) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
 			int lockCounter = user.getPassword().getForgotPwdlockCounter() + 1;
+			if(lockCounter == 2) {
+				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT);
+				user.setLockedOutDate(new Date());
+			}
 			if(lockCounter == 3) {
 				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
 				user.setLockedOutDate(new Date());
@@ -233,6 +237,10 @@ public class UserServiceImpl implements UserService {
 		else if(!securityQuestionMatch(user, securityQuestion, securityAnswer)) {
 			result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTION_MISMATCH);
 			int lockCounter = user.getPassword().getForgotPwdlockCounter() + 1;
+			if(lockCounter == 2) {
+				result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT);
+				user.setLockedOutDate(new Date());
+			}
 			if(lockCounter == 3) {
 				result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTIONS_LOCKED);
 				user.setLockedOutDate(new Date());

@@ -93,7 +93,7 @@ public class AppController {
 	
 	private String measureName;
 	private DiagramObject currentDiagramObject = null;
-	private ClauseController clauseController = new ClauseController();
+	//private ClauseController clauseController = new ClauseController();
 	private Clause criterionModel = null;
 	private String measureId;
 	private Map<String, Clause> clauses = new HashMap<String, Clause>();
@@ -107,7 +107,7 @@ public class AppController {
 		measurePhrases = new MeasurePhrases(this);
 		this.rpcService = rpcService;
 		this.eventBus = eventBus;
-		diagramView = new DiagramViewImpl<Diagram>(this, clauseController);
+		diagramView = new DiagramViewImpl<Diagram>(this);
 		saveErrorMessages.clear();
 		diagramView.getSaveErrorMessageHolder().add(saveErrorMessages);
 	}
@@ -160,7 +160,7 @@ public class AppController {
 		saveErrorMessages.clear();
 		new DiagramPresenter(this, eventBus, diagramView).go(container);
 		
-		clauseController.displaySearch();
+		//clauseController.displaySearch();
 		showLoadingMessage();
 		//control selection of phrase and clause libraries
 		disableLibraries();
@@ -1423,9 +1423,9 @@ public class AppController {
 		Mat.hideLoadingMessage();
 	}
 	
-	public ClauseController getClauseController() {
+	/*public ClauseController getClauseController() {
 		return clauseController;
-	}
+	}*/
 }	
 
 

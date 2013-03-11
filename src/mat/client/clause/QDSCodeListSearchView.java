@@ -65,11 +65,9 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private FocusableWidget messageFocus;
 	//private Button removeButton = new Button("Remove");
 	VerticalPanel listBoxVPanel = new VerticalPanel();
-	//private ScrollPanel checkboxScrollPanel  = new ScrollPanel(listBoxVPanel);	
-	private List<QualityDataSetDTO> appliedQDMs = new ArrayList<QualityDataSetDTO>();
    // private ScrollPanel sp;
     private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
-    
+   
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
 		@Override
 		public void onValueChange(ValueChangeEvent<String> event) {
@@ -106,7 +104,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		dataTypeInput.addValueChangeHandler(dataTypeChangeHandler);
 		specificOccurrence.setEnabled(false);
 		addToMeasure.setEnabled(false);
-		//view.buildQDSDataTable();
 		FlowPanel searchCriteriaPanel = new FlowPanel();
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.addStyleName("leftAligned");
@@ -131,61 +128,11 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		
 		HorizontalPanel mainPanel = new HorizontalPanel();
 		mainPanel.add(vp);
-		/*VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setStyleName("qdmListBox");
-		checkboxScrollPanel.setSize("200px", "300px");
-		checkboxScrollPanel.setHorizontalScrollPosition(2);
-		checkboxScrollPanel.setAlwaysShowScrollBars(true);
-		vPanel.add(checkboxScrollPanel);
-		vPanel.add(new SpacerWidget());
-		vPanel.add(new SpacerWidget());
-		// Till the deletion story is implemented, showing remove button as disabled.
-		removeButton.setEnabled(false);
-		vPanel.add(removeButton);
-		
-		mainPanel.add(vPanel);*/
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("qdsContentPanel");
 		MatContext.get().setQDSView(this);
 	}
 		
-	private void buildVerticalPanelWithCheckBox(List<QualityDataSetDTO> appliedQDMs){
-		
-		ArrayList<QualityDataSetDTO> qdmList =  (ArrayList<QualityDataSetDTO>) appliedQDMs;
-		listBoxVPanel.clear();
-		CheckBox cbAth[] = null;
-		if(qdmList==null){
-			listBoxVPanel.setSize("200px", "100px");
-			listBoxVPanel.add(new SpacerWidget());
-			listBoxVPanel.add(new SpacerWidget());
-		}else{
-			
-			cbAth = new CheckBox[qdmList.size()];
-			listBoxVPanel.setSize("200px", "100px");
-			boolean isEditable = MatContext.get().getMeasureLockService().checkForEditPermission();
-			// hard coding this - till deletion story is implemented showing all applied qdm elements in list as disabled.
-			isEditable = false;
-			for(int i=0;i<qdmList.size();i++){
-				String lbl = qdmList.get(i).getQDMElement();
-				cbAth[i] = new CheckBox(lbl);
-				cbAth[i].setEnabled(isEditable);
-				listBoxVPanel.add(cbAth[i]);
-			}
-			listBoxVPanel.add(new SpacerWidget());
-			listBoxVPanel.add(new SpacerWidget());
-		}
-		
-		/*ScrollPanel checkboxScrollPanel = new ScrollPanel();
-		checkboxScrollPanel.add(listBoxVPanel);
-		checkboxScrollPanel.setSize("200px", "500px");*/
-		
-	//	checkboxScrollPanel.scrollToRight();
-		//checkboxScrollPanel.setBorderWidth(1);
-		//return checkboxScrollPanel;
-		//return listBoxVPanel;
-	}
-	
-	
 	private Widget buildInitialDisabledWidget(){
 		dataTypeInput.addItem(MatContext.PLEASE_SELECT);
 		dataTypeInput.setEnabled(false);
@@ -393,11 +340,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	public ValueSetSearchFilterPanel getValueSetSearchFilterPanel() {
 		return vssfp;
 	}
-	@Override
-	public void setAppliedQDMs(List<QualityDataSetDTO> appliedQDMs) {
-		this.appliedQDMs = appliedQDMs;
-		buildVerticalPanelWithCheckBox(appliedQDMs);
-	}
 	
 	public void setEnabled(boolean enabled){
 		//search button
@@ -412,7 +354,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 
 	@Override
 	public void buildQDSDataTable(QDSCodeListSearchModel results) {
-		//buildQDSDataTable(results);
 		buildTableQDS(results);
 	}
 	

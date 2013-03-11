@@ -12,6 +12,7 @@ import mat.client.audit.service.AuditService;
 import mat.client.audit.service.AuditServiceAsync;
 import mat.client.clause.ClauseService;
 import mat.client.clause.ClauseServiceAsync;
+import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSCodeListSearchView;
 import mat.client.clause.view.DiagramViewImpl;
 import mat.client.codelist.AdminManageCodeListSearchModel;
@@ -105,6 +106,8 @@ public class MatContext implements IsSerializable {
 	
 	private QDSCodeListSearchView qdsView;
 	
+	private QDSAppliedListView qdsAppliedListView;
+	
 	private SuccessMessageDisplay successMessage1;
 	private SuccessMessageDisplay successMessage2;
 	
@@ -142,6 +145,9 @@ public class MatContext implements IsSerializable {
 		qdsView=view;
 	}
 	
+	public void setQdsAppliedListView(QDSAppliedListView qdsAppliedListView) {
+		this.qdsAppliedListView = qdsAppliedListView;
+	}
 	
 	//register the Value Set search messages
 	//register the property editor messages
@@ -819,5 +825,8 @@ public class MatContext implements IsSerializable {
 				}
 			});
 	}
+
+
+	
 	
 }

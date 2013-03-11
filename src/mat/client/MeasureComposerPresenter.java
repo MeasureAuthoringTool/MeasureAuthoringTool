@@ -227,8 +227,8 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		return mdP;
 	}
 	
-	private MatPresenter buildQDMPresenter(){
-		QDMPresenter qdmP = new QDMPresenter(clauseWorkspace.getAppController().getClauseController());
+	private QDMPresenter buildQDMPresenter(){
+		QDMPresenter qdmP = new QDMPresenter();
 		return qdmP;
 		
 	}

@@ -366,12 +366,12 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 	
 	
 	
-	public DiagramViewImpl(final AppController appController, final ClauseController clauseController) {
+	public DiagramViewImpl(final AppController appController) {
 		me = this;
 		MatContext.get().setDVIWindow(this);
 		
 		this.appController = appController;
-		this.clauseController = clauseController;
+		//this.clauseController = clauseController;
 		initWidget(uiBinder.createAndBindUi(this));	
 		//qdsElementPanel.add(clauseController.getWidget());
  
@@ -2814,9 +2814,9 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 			((Enableable)MatContext.get().enableRegistry.get(ConstantMessages.MEASURE_COMPOSER_TAB)).setEnabled(false);
 		}
 		criterionPanel.setEnabled(false);
-		if(clauseController.getQDSCodeListSearchPresenter() != null){
+		/*if(clauseController.getQDSCodeListSearchPresenter() != null){
 			clauseController.getQDSCodeListSearchPresenter().setEnabled(false);
-		}
+		}*/
 		
 		saveButton.setEnabled(false);
 		cloneButton.setEnabled(false);
@@ -2848,7 +2848,7 @@ public class DiagramViewImpl<T> extends Composite implements DiagramView<T> {
 		((Enableable)MatContext.get().enableRegistry.get(ConstantMessages.MAIN_TAB_LAYOUT_ID)).setEnabled(true);
 		((Enableable)MatContext.get().enableRegistry.get(ConstantMessages.MEASURE_COMPOSER_TAB)).setEnabled(true);
 		criterionPanel.setEnabled(true);
-		clauseController.getQDSCodeListSearchPresenter().setEnabled(true);
+		//clauseController.getQDSCodeListSearchPresenter().setEnabled(true);
 		
 		saveButton.setEnabled(true);
 		cloneButton.setEnabled(true);

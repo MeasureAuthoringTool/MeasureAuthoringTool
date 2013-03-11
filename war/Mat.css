@@ -307,7 +307,16 @@ body#main select, body#main input, body#main textarea {
 	text-align: right;
 	float:right;
 }
-
+ .scrollable {
+      height: 400px;
+      width: 250px;
+      border: 1px solid #ccc;
+      text-align: left;
+ }
+ .qdmCellList{
+ 	margin-top:-12px;
+ 	margin-left:10px;
+ }
 .custom-footer-nav {
     background: url("images/hpgradient.jpg") repeat-x scroll 0 0 #FFFFFF;
     overflow: auto;
@@ -527,7 +536,6 @@ body#main select, body#main input, body#main textarea {
 	margin-right:30px;
 	position:relative;
 }
-
 /*
 * TAB PANELS
 */

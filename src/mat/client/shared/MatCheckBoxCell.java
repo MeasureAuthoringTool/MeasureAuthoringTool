@@ -110,7 +110,6 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 	@Override
 	public boolean isEditing(com.google.gwt.cell.client.Cell.Context context,
 			Element parent, Boolean value) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 	

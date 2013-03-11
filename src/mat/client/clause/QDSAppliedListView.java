@@ -69,6 +69,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(new SpacerWidget());
 		vp.add(rangeLabelPager);
 		vp.add(new SpacerWidget());
+		removeButton.setEnabled(checkForEnable());
 		vp.add(removeButton);
 		vp.add(new SpacerWidget());
 		containerPanel.add(vp);

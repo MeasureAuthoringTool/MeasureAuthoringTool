@@ -134,8 +134,9 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 	}
 
 	private boolean checkForEnable(){
-
-		return MatContext.get().getMeasureLockService().checkForEditPermission();
+		//Uncomment when Remove functionality is implemented.
+		//return MatContext.get().getMeasureLockService().checkForEditPermission();
+		return false;
 	}
 }
 

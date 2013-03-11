@@ -26,7 +26,6 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	public static interface SearchDisplay {
 		public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		//public void setAppliedQDMs(List<QualityDataSetDTO> appliedQDMs);
 		public  void buildCellListWidget(QDSAppliedListModel appliedListModel);
 		public Widget asWidget();
 	}

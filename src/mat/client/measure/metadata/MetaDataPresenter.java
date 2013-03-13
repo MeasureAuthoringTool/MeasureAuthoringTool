@@ -506,9 +506,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		}else{
 			metaDataDisplay.getNotEndorsebyNQF().setValue(true);
 		}
-		if("In Progress".equalsIgnoreCase(currentMeasureDetail.getMeasureStatus())){
-			currentMeasureDetail.setMeasureStatus("InProgress");
-		}
+		
 		metaDataDisplay.getMeasureStatus().setValueMetadata(currentMeasureDetail.getMeasureStatus());
 		metaDataDisplay.getGuidance().setValue(currentMeasureDetail.getGuidance());
 		metaDataDisplay.getTransmissionFormat().setValue(currentMeasureDetail.getTransmissionFormat());

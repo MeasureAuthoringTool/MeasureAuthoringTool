@@ -143,7 +143,12 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 			@Override
 			public String getValue(QualityDataSetDTO object) {
-				return object.getCodeListName();
+				String value;
+				if(object.getOccurrenceText()!= null && !object.getOccurrenceText().equals(""))
+					value = object.getOccurrenceText() + " of "+object.getCodeListName() + ": " + object.getDataType() ;
+				else
+					value= object.getCodeListName() + ": " + object.getDataType() ;
+				return value;
 			}});
 
 

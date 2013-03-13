@@ -172,7 +172,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			{
 				// this renders each of the cells inside the composite cell in a new table cell
 				Cell<X> cell = hasCell.getCell();
-				sb.appendHtmlConstant("<td>");
+				sb.appendHtmlConstant("<td style='font-size:95%;'>");
 				cell.render(context, hasCell.getValue(value), sb);
 				sb.appendHtmlConstant("</td>");
 			}

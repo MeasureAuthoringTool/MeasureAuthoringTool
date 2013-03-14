@@ -1411,10 +1411,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	public boolean isValid(ManageMeasureDetailModel model) {
 		List<String> message = new ArrayList<String>();
-		if("".equals(model.getName().trim())) {
+		if(model.getName() == null || "".equals(model.getName().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getMeasureNameRequiredMessage());
 		}
-		if("".equals(model.getShortName().trim())) {
+		if(model.getShortName()  == null || "".equals(model.getShortName().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getAbvNameRequiredMessage());
 		}
 		
@@ -1429,6 +1429,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		boolean valid = message.size() == 0;
 		if(!valid) {
 			detailDisplay.getErrorMessageDisplay().setMessages(message);
+			Mat.hideLoadingMessage();
 		}
 		else {
 			detailDisplay.getErrorMessageDisplay().clear();

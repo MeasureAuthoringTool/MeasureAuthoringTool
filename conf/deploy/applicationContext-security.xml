@@ -18,7 +18,7 @@
         <intercept-url pattern="/Mat.html" access="isAuthenticated()" requires-channel="https" />
          <intercept-url pattern="/mat/**" access="isAuthenticated()"  requires-channel="https" />
         <form-login default-target-url="/Mat.html" login-page="/Login.html"/>
-        <logout />
+        <logout logout-url="/j_spring_security_logout"/>
       
        
         <session-management invalid-session-url="/Login.html">

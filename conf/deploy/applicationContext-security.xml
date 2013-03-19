@@ -18,14 +18,14 @@
         <intercept-url pattern="/Mat.html" access="isAuthenticated()" requires-channel="https" />
          <intercept-url pattern="/mat/**" access="isAuthenticated()"  requires-channel="https" />
         <form-login default-target-url="/Mat.html" login-page="/Login.html"/>
-        <logout logout-url="/j_spring_security_logout"/>
-      
+        <!-- <logout invalidate-session="true" success-handler-ref="logoutSuccessHandler" /> -->
+         <logout/>
        
         <session-management invalid-session-url="/Login.html">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
         </session-management>
          <custom-filter after="SECURITY_CONTEXT_FILTER" ref="preventCachingFilter"/>
-       
+       	
     </http>
 	
 	<authentication-manager>
@@ -36,8 +36,9 @@
        </user-service>
 	</authentication-provider>    
    </authentication-manager>
+   <!-- <beans:bean id="logoutSuccessHandler" class="mat.server.GWTLogoutSuccessHandler"/> -->
    
-    <beans:bean id="preventCachingFilter" class="mat.server.PreventCachingFilter">
+     <beans:bean id="preventCachingFilter" class="mat.server.PreventCachingFilter">
     </beans:bean>
    
 </beans:beans>

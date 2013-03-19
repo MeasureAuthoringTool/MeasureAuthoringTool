@@ -18,8 +18,8 @@
         <intercept-url pattern="/Mat.html" access="isAuthenticated()"  />
         <intercept-url pattern="/mat/**" access="isAuthenticated()"  />
         <form-login default-target-url="/Mat.html?gwt.codesvr=127.0.0.1:9997" login-page="/Login.html?gwt.codesvr=127.0.0.1:9997"/>
-        <logout />
-      
+        <!-- <logout invalidate-session="true"  success-handler-ref="logoutSuccessHandler"/> -->
+      	<logout/>
        
         <session-management invalid-session-url="/Login.html?gwt.codesvr=127.0.0.1:9997">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
@@ -36,8 +36,8 @@
        </user-service>
 	</authentication-provider>    
    </authentication-manager>
-   
+  <!--  <beans:bean id="logoutSuccessHandler" class="mat.server.GWTLogoutSuccessHandler"/> -->
     <beans:bean id="preventCachingFilter" class="mat.server.PreventCachingFilter">
-    </beans:bean>
+    </beans:bean> 
 </beans:beans>
 

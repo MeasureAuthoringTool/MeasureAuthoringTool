@@ -28,6 +28,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.google.gwt.http.client.Request;
+import com.google.gwt.http.client.RequestBuilder;
+import com.google.gwt.http.client.RequestCallback;
+import com.google.gwt.http.client.RequestException;
+import com.google.gwt.http.client.Response;
+
 @SuppressWarnings("serial")
 public class LoginServiceImpl extends SpringRemoteServiceServlet implements LoginService{
 	private static final Log logger = LogFactory.getLog(LoginServiceImpl.class);
@@ -185,10 +191,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		UserService userService = (UserService)context.getBean("userService");
 		String resultStr = userService.updateOnSignOut(userId, emailId, activityType);
 		SecurityContextHolder.clearContext();
+		getThreadLocalRequest().getSession().invalidate();
 		logger.info("In UserServiceImpl Signout Update " + resultStr);
 		return resultStr;
 	}
 
+	
 }
 
 

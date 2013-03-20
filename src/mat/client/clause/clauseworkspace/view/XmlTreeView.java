@@ -233,6 +233,11 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 			@Override
 			public void onClose(CloseEvent<TreeNode> event) {
 				TreeModel node = (TreeModel)event.getTarget().getValue();
+				if(node.hasChildrens()){
+					for (TreeModel child : node.getChilds()) {
+						nodeOpenMap.put(child, false);
+					}
+				}
 				nodeOpenMap.put((TreeModel) node, false);// map holds the node object key with boolean value as false. 
 				clearMessages();
 			}

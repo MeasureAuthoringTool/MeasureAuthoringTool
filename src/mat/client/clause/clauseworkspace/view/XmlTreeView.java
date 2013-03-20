@@ -12,11 +12,7 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.SuccessMessageDisplay;
 
 import com.google.gwt.cell.client.AbstractCell;
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.BrowserEvents;
-import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -26,7 +22,6 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -117,6 +112,7 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 		
 		ScrollPanel scrollPanel =  new ScrollPanel();//tree rendered in scroll panel
 		VerticalPanel treePanel =  new VerticalPanel();
+//		scrollPanel.setSize("600px","600px");
 		expand.setSize("25px", "25px");
 		collapse.setSize("25px", "25px");
 		collapse.setVisible(false);
@@ -378,8 +374,13 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
-				if(selectedNode != null &&  nodeTex.getValue() != null && nodeTex.getValue().trim().length() > 0){
-                     selectedNode.setName(nodeTex.getValue());
+				if(selectedNode != null){
+					if(selectedNode.getParent() != null && selectedNode.getParent().getName().equals("attributes")
+							&& attrName.getValue().trim().length() > 0 && attrValue.getValue().trim().length() > 0){
+						selectedNode.setName(attrName.getValue() + " = " + attrValue.getValue());
+					}else{
+						selectedNode.setName(nodeTex.getValue());
+					}
 				}
 				 closeParentOpenNodes(cellTree.getRootTreeNode());
 				 nodeDataProvider.refresh();

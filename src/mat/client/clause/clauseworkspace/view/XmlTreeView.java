@@ -12,7 +12,11 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.SuccessMessageDisplay;
 
 import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.BrowserEvents;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -22,6 +26,7 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -93,7 +98,6 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 	 */
 	private void createRootNode(TreeModel treeModel) {
 		nodeDataProvider = new ListDataProvider<TreeModel>(treeModel.getChilds());
-		mapDataProvider.put(treeModel, nodeDataProvider);
 	}
 
 
@@ -257,9 +261,48 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 	}
 	
 	/**
-	 * Open nodes based on the nodeOpenMap values.
+	 * this method is called only after removing the node.
 	 * @param treeNode
 	 */
+	private void closeParentOpenNodes(TreeNode treeNode) {
+		if(treeNode != null){
+	      	 for (int i = 0; i < treeNode.getChildCount(); i++) {
+	      		TreeNode subTree = null;
+	      		 if(treeNode.getChildValue(i).equals(selectedNode.getParent())){// this check is performed since IE was giving JavaScriptError after removing a node and closing all nodes.
+	      			 															// to avoid that we are closing the parent of the removed node.
+	      			subTree = treeNode.setChildOpen(i, false, false);
+	      		 }
+	      		  subTree = treeNode.setChildOpen(i, nodeOpenMap.get(treeNode.getChildValue(i)) != null  && nodeOpenMap.get(treeNode.getChildValue(i)) ? true : false );
+	      		 if (subTree != null && subTree.getChildCount() > 0){
+	      			closeParentOpenNodes(subTree);
+	      		 }
+		     }  
+	    }
+	}
+	
+	
+	private void closeSelectedOpenNodes(TreeNode treeNode) {
+		if(treeNode != null){
+	      	 for (int i = 0; i < treeNode.getChildCount(); i++) {
+	      		TreeNode subTree = null;
+	      		 if(treeNode.getChildValue(i).equals(selectedNode)){// this check is performed since IE was giving JavaScriptError after removing a node and closing all nodes.
+	      			 															// to avoid that we are closing the parent of the removed node.
+	      			subTree = treeNode.setChildOpen(i, false, false);
+	      		 }
+	      		  subTree = treeNode.setChildOpen(i, nodeOpenMap.get(treeNode.getChildValue(i)) != null  && nodeOpenMap.get(treeNode.getChildValue(i)) ? true : false );
+	      		 if (subTree != null && subTree.getChildCount() > 0){
+	      			closeSelectedOpenNodes(subTree);
+	      		 }
+		     }  
+	    }
+	}
+	
+	/**
+	 * Open nodes based on the nodeOpenMap values. This is no longer used. 
+	 * @param treeNode
+	 * 
+	 */
+	@Deprecated
 	private void openNodes(TreeNode treeNode){
 		if(treeNode != null){
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
@@ -301,12 +344,15 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 			public void onClick(ClickEvent event) {
 				clearMessages();
 				if(selectedNode != null &&  nodeTex.getValue() != null && nodeTex.getValue().trim().length() > 0){//if nodeTex textbox is not empty
-				 	TreeModel child = new TreeModel(nodeTex.getValue()); //Create a TreeModel child Object
+					ListDataProvider<TreeModel> dataprovider = mapDataProvider.get(selectedNode);
+				 	TreeModel child = new TreeModel(); //Create a TreeModel child Object
+				 	child.setName(nodeTex.getValue());
                     addChild(selectedNode, child);
                     nodeOpenMap.put(selectedNode, true);
-	                closeNodes(cellTree.getRootTreeNode(), false);
-	                openNodes(cellTree.getRootTreeNode());
-					selectionModel.setSelected(selectedNode, true);
+                	dataprovider.refresh(); // this will work some times,
+                	getNodeInfo(selectedNode); // to update the mapDataProvider we are calling this.
+                	closeSelectedOpenNodes(cellTree.getRootTreeNode());
+					selectionModel.setSelected(selectedNode, true);					
 				}
 			}
 
@@ -321,8 +367,7 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
                     dataprovider.getList().remove(selectedNode);// remove the selected Object from ListDataProvider and Refresh
                     dataprovider.refresh();
                     dataprovider.flush();
-                    closeNodes(cellTree.getRootTreeNode(), false);
-                    openNodes(cellTree.getRootTreeNode());
+                    closeParentOpenNodes(cellTree.getRootTreeNode());
 					selectionModel.setSelected(selectedNode.getParent(), true);
 				}
 				
@@ -336,8 +381,7 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 				if(selectedNode != null &&  nodeTex.getValue() != null && nodeTex.getValue().trim().length() > 0){
                      selectedNode.setName(nodeTex.getValue());
 				}
-				 closeNodes(cellTree.getRootTreeNode(), false);
-				 openNodes(cellTree.getRootTreeNode());
+				 closeParentOpenNodes(cellTree.getRootTreeNode());
 				 nodeDataProvider.refresh();
 				 selectionModel.setSelected(selectedNode, true);
 				 
@@ -351,7 +395,8 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 				clearMessages();
 				if(selectedNode != null && attrName.getValue() != null
 						&& attrName.getValue().trim().length() > 0 && attrValue.getValue().trim().length() > 0){//if the Attribute name and Attribute value text box is not empty
-					TreeModel child = new TreeModel(attrName.getValue() + " = " + attrValue.getValue());// creating TreeModel Object with name and value concatenated with "="
+					TreeModel child = new TreeModel();// creating TreeModel Object with name and value concatenated with "="
+					child.setName(attrName.getValue() + " = " + attrValue.getValue());
 					if(selectedNode.getName().equals("attributes")){// if the selected node name is attributes, add child directly to it
 						addChild(selectedNode, child);
 					}else if(selectedNode.getChilds() == null || selectedNode.getChilds().size() == 0 ||
@@ -362,7 +407,8 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 						}else{
 							treeChild = selectedNode.getChilds();
 						}
-						TreeModel attr = new TreeModel("attributes");// create a child node named Attribute under the selected node
+						TreeModel attr = new TreeModel();// create a child node named Attribute under the selected node
+						attr.setName("attributes");
 						treeChild.add(0, attr);//setting attribute node as the first node.
 						selectedNode.setChilds(treeChild);
 						attr.setParent(selectedNode);
@@ -373,9 +419,8 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 					}
 					 nodeOpenMap.put(selectedNode, true);
 					 nodeOpenMap.put(selectedNode.getChilds().get(0), true);// opening Attribute node
-					 closeNodes(cellTree.getRootTreeNode(), false);
-					 openNodes(cellTree.getRootTreeNode());
-					 
+					 closeSelectedOpenNodes(cellTree.getRootTreeNode());
+					 selectionModel.setSelected(selectedNode, true);
 				}
 			}
 		});
@@ -427,7 +472,10 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 	public <T> NodeInfo<?> getNodeInfo(T value) {
 		
         if (value == null) { 
-        	NodeCell nodeCell = new NodeCell();
+        	NodeCell nodeCell = new NodeCell();    
+        	for (TreeModel treeModel : nodeDataProvider.getList()) {
+        		 mapDataProvider.put(treeModel, nodeDataProvider);
+			}
             return new DefaultNodeInfo<TreeModel>(nodeDataProvider, nodeCell, selectionModel, null);
         } else {
         	TreeModel myValue = (TreeModel) value;
@@ -462,7 +510,6 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
            if (value == null) {
              return;
            }
-                        
            sb.appendEscaped(value.getName());
          }
         
@@ -477,8 +524,9 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
      		}
 
      	}*/
-
  } 
+	 
+		
 
 	@Override
 	public CellTree getXmlTree() {

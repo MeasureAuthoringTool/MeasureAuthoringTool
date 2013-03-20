@@ -78,6 +78,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 							}
 							XmlTreeView xmlTreeView = new XmlTreeView(createTreeModel(xml));
 							CellTree cellTree = new CellTree(xmlTreeView, null);
+							cellTree.setDefaultNodeSize(500);// this will get rid of the show more link on the bottom of the Tree
 							xmlTreeView.createPageView(cellTree);
 							panel.add(xmlTreeView.asWidget());
 							xmlTreeDisplay = (XmlTreeDisplay) xmlTreeView;
@@ -173,11 +174,13 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		TreeModel child = new TreeModel();//child Object
 		String name = null;
 		if(root.getNodeName().equalsIgnoreCase("#text")){//if node is an Value node
-			name = root.getNodeValue();
+			name = root.getNodeValue().replaceAll("\n\r", "").trim();
 		}else{//Element node
 			name = root.getNodeName();
 		}
-		createChildObject(parent, child, name, childs);// Create complete child Object with parent and sub Childs
+		if(name.length() > 0){
+			createChildObject(parent, child, name, childs);// Create complete child Object with parent and sub Childs
+		}
 		
 		if(root.getNodeType() == root.ELEMENT_NODE && root.hasAttributes()){// if Attribute node
 			ArrayList<TreeModel> attrChilds = new ArrayList<TreeModel>();// List will contain only one Object with name as "attribute"

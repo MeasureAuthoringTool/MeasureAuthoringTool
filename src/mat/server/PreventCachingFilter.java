@@ -1,6 +1,7 @@
 package mat.server;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -43,7 +44,12 @@ public class PreventCachingFilter implements Filter{
 			//
 			// prevent the mat.html file from being cached somewhere
 			//
-			httpResponse.addHeader("Cache-Control", "no-store");
+			Date now = new Date();
+			httpResponse.setDateHeader("Date", now.getTime());
+			// one day old
+			httpResponse.setDateHeader("Expires", 0);
+			httpResponse.setHeader("Pragma", "no-cache");
+			httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate");
 			if(LoggedInUserUtil.getLoggedInUser() == null) {
 				logger.info("Redirecting request for " + httpRequest.getRequestURI() + " to Login in session " + httpRequest.getSession().getId());
 				httpResponse.setStatus(302);
@@ -56,6 +62,14 @@ public class PreventCachingFilter implements Filter{
 			else {
 				chain.doFilter(request, response);
 			}
+		}else if (requestURI.contains(".nocache.")) {
+			   Date now = new Date();
+			   httpResponse.setDateHeader("Date", now.getTime());
+			   // one day old
+			   httpResponse.setDateHeader("Expires", 0);
+			   httpResponse.setHeader("Pragma", "no-cache");
+			   httpResponse.setHeader("Cache-control", "no-cache, no-store, must-revalidate");
+				chain.doFilter(request, response);
 		}
 		else {
 			chain.doFilter(request, response);

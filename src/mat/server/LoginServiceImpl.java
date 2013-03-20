@@ -3,9 +3,12 @@ package mat.server;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
@@ -59,6 +62,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 
 	@Override
 	public LoginModel  isValidUser(String userId, String password) {
+		//Code to create New session ID everytime user log's in. Story Ref - MAT1222
+		HttpSession session = getThreadLocalRequest().getSession(false);
+		if (session!=null && !session.isNew()) {
+		    session.invalidate();
+		}
+		session = getThreadLocalRequest().getSession(true);
 		LoginModel loginModel = getLoginCredentialService().isValidUser(userId, password);
 		return loginModel;
 	}
@@ -192,6 +201,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		String resultStr = userService.updateOnSignOut(userId, emailId, activityType);
 		SecurityContextHolder.clearContext();
 		getThreadLocalRequest().getSession().invalidate();
+		logger.info("User Session Invalidated at :::: " +new Date());
 		logger.info("In UserServiceImpl Signout Update " + resultStr);
 		return resultStr;
 	}

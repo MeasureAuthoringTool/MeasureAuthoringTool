@@ -24,7 +24,7 @@
         <session-management invalid-session-url="/Login.html">
             <concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
         </session-management>
-         <custom-filter after="SECURITY_CONTEXT_FILTER" ref="preventCachingFilter"/>
+        <!--  <custom-filter after="SECURITY_CONTEXT_FILTER" ref="preventCachingFilter"/> -->
        	
     </http>
 	
@@ -38,8 +38,8 @@
    </authentication-manager>
    <!-- <beans:bean id="logoutSuccessHandler" class="mat.server.GWTLogoutSuccessHandler"/> -->
    
-     <beans:bean id="preventCachingFilter" class="mat.server.PreventCachingFilter">
-    </beans:bean>
+    <!--  <beans:bean id="preventCachingFilter" class="mat.server.PreventCachingFilter">
+    </beans:bean> -->
    
 </beans:beans>
 

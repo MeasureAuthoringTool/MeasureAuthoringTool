@@ -189,10 +189,12 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				selectedNode = selectionModel.getSelectedObject();
-				createAttrBtn.setEnabled(true);
-				createNodeBtn.setEnabled(true);
-				editNode.setEnabled(true);
-				removeNode.setEnabled(true);
+				if(enabled){
+					createAttrBtn.setEnabled(true);
+					createNodeBtn.setEnabled(true);
+					editNode.setEnabled(true);
+					removeNode.setEnabled(true);
+				}
 				clearMessages();
 				if(selectedNode != null){
 					

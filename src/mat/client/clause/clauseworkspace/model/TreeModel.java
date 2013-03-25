@@ -11,11 +11,11 @@ public class TreeModel {
 	
 	private TreeModel parent;
 
-	public TreeModel(String name) {
+	/*public TreeModel(String name) {
 	    parent = null;
         this.name = name;
         childs = new ArrayList<TreeModel>();
-	}
+	}*/
 
 	public TreeModel() {
 	}

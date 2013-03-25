@@ -12,7 +12,10 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.SuccessMessageDisplay;
 
 import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.BrowserEvents;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
@@ -22,12 +25,18 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
+import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.MenuBar;
+import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -37,7 +46,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 
-public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
+public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel{
 	
 	private FlowPanel  mainPanel = new FlowPanel();
 	
@@ -80,6 +89,7 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 	private Map<TreeModel, Boolean> nodeOpenMap = new HashMap<TreeModel, Boolean>();
 	
 	
+	
 	public XmlTreeView(TreeModel treeModel) {
 		clearMessages();
 		createRootNode(treeModel);
@@ -101,6 +111,7 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 	 * @param cellTree
 	 */
 	public void createPageView(CellTree cellTree) {
+//		 createPopupMenu();
 		this.cellTree = cellTree;
 		mainPanel.setStyleName("div-wrapper");//main div
 		
@@ -110,17 +121,18 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 		SimplePanel rightPanel = new SimplePanel();
 		rightPanel.setStyleName("div-second");//right div having tree creation inputs.
 		
-		ScrollPanel scrollPanel =  new ScrollPanel();//tree rendered in scroll panel
 		VerticalPanel treePanel =  new VerticalPanel();
-//		scrollPanel.setSize("600px","600px");
+		
+		FlowPanel expandCollapse  = new FlowPanel();
+		expandCollapse.setStyleName("leftAndTopPadding");
+		expandCollapse.add(expand);
+		expandCollapse.add(collapse);
 		expand.setSize("25px", "25px");
 		collapse.setSize("25px", "25px");
 		collapse.setVisible(false);
-		treePanel.add(expand);
-		treePanel.add(collapse);
+		treePanel.add(expandCollapse);
 		treePanel.add(cellTree);
-		scrollPanel.add(treePanel);		
-		leftPanel.add(scrollPanel);
+		leftPanel.add(treePanel);
 		
 		VerticalPanel buttonPanel =  new VerticalPanel();// has all inputs and buttons which is in right div
 		buttonPanel.add(new HTML("</br>"));
@@ -509,10 +521,10 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
 
 	
 	 public class NodeCell extends AbstractCell<TreeModel> {
-         public NodeCell() {
+		 
+         /*public NodeCell() {
            super(BrowserEvents.CONTEXTMENU);
-           
-         }
+         }*/
          @Override
          public void render(Context context, TreeModel value, SafeHtmlBuilder sb) {
            if (value == null) {
@@ -526,7 +538,8 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
         	      NativeEvent event, ValueUpdater<TreeModel> valueUpdater) {
      		if(event.getType().equals(BrowserEvents.CONTEXTMENU)){
      			 event.preventDefault();
-     			Window.alert("Right click happened at:"+value.getName());
+     			 event.stopPropagation();
+     			 onRightClick(value, (Event)event, parent);
      		}else{
      			super.onBrowserEvent(context, parent, value, event, valueUpdater);
      		}
@@ -534,8 +547,88 @@ public class XmlTreeView implements XmlTreeDisplay, TreeViewModel{
      	}*/
  } 
 	 
+	 
+	 public void onRightClick(TreeModel value, Event event, Element element) {
+		 selectedNode = value;
+		 selectionModel.setSelected(selectedNode, true);
+		 
+			int x = element.getAbsoluteRight() - 10;
+			  int y = element.getAbsoluteBottom() + 5;
+			  
+			  System.out.println("CLIENT --" + element.getAbsoluteRight() + " "+ element.getAbsoluteTop());
+			  System.out.println("SCREEN --" +  DOM.eventGetScreenX(event) + " "+ DOM.eventGetScreenY(event));
+			  
+			  popupPanel.setPopupPosition(x, y);
+			  popupPanel.show();
+			
+	}
 		
-
+	 Command showAddNode = new Command() {
+		  public void execute( ) {
+			  popupPanel.hide();
+			  if(selectedNode != null &&  nodeTex.getValue() != null && nodeTex.getValue().trim().length() > 0){//if nodeTex textbox is not empty
+					ListDataProvider<TreeModel> dataprovider = mapDataProvider.get(selectedNode);
+				 	TreeModel child = new TreeModel(); //Create a TreeModel child Object
+				 	child.setName(nodeTex.getValue());
+                  addChild(selectedNode, child);
+                  nodeOpenMap.put(selectedNode, true);
+              	dataprovider.refresh(); // this will work some times,
+              	getNodeInfo(selectedNode); // to update the mapDataProvider we are calling this.
+              	closeSelectedOpenNodes(cellTree.getRootTreeNode());
+					selectionModel.setSelected(selectedNode, true);					
+				}
+		  }
+	};
+	
+	Command showRemoveNode = new Command() {
+		  public void execute( ) {
+			  popupPanel.hide();
+			  if(selectedNode != null){
+					ListDataProvider<TreeModel> dataprovider = mapDataProvider.get(selectedNode);
+                  dataprovider.getList().remove(selectedNode);// remove the selected Object from ListDataProvider and Refresh
+                  dataprovider.refresh();
+                  dataprovider.flush();
+                  closeParentOpenNodes(cellTree.getRootTreeNode());
+					selectionModel.setSelected(selectedNode.getParent(), true);
+				}
+		  }
+	};
+	
+	Command showEditNode = new Command() {
+		  public void execute( ) {
+			  popupPanel.hide();
+			  if(selectedNode != null){
+					if(selectedNode.getParent() != null && selectedNode.getParent().getName().equals("attributes")
+							&& attrName.getValue().trim().length() > 0 && attrValue.getValue().trim().length() > 0){
+						selectedNode.setName(attrName.getValue() + " = " + attrValue.getValue());
+					}else{
+						selectedNode.setName(nodeTex.getValue());
+					}
+				}
+				 closeParentOpenNodes(cellTree.getRootTreeNode());
+				 nodeDataProvider.refresh();
+				 selectionModel.setSelected(selectedNode, true);
+		  }
+	};
+		
+	
+	 final PopupPanel popupPanel = new PopupPanel(true);
+	 private void createPopupMenu() {
+		  MenuBar popupMenuBar = new MenuBar(true);
+		  MenuItem addNode = new MenuItem("Add Node", true, showAddNode);
+		  MenuItem removeNode = new MenuItem("Remove Node", true, showRemoveNode);
+		  MenuItem editNode = new MenuItem("Edit Node", true, showEditNode);
+		 
+		  popupPanel.setStyleName("popup");
+		 
+		  popupMenuBar.addItem(addNode);
+		  popupMenuBar.addItem(removeNode);
+		  popupMenuBar.addItem(editNode);
+		 
+		  popupMenuBar.setVisible(true);
+		  popupPanel.add(popupMenuBar);
+	}
+	
 	@Override
 	public CellTree getXmlTree() {
 		return cellTree;

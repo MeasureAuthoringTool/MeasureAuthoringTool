@@ -9,6 +9,12 @@ public class MeasureXmlModel implements IsSerializable{
 	private String measureId;
 	
 	private String xml;
+	
+	private String toReplaceNode;
+	
+	private String parentNode;
+
+	
 
 	/**
 	 * @return the meausreExportId
@@ -50,6 +56,28 @@ public class MeasureXmlModel implements IsSerializable{
 	 */
 	public void setXml(String xml) {
 		this.xml = xml;
+	}
+	
+	public String getToReplaceNode() {
+		return toReplaceNode;
+	}
+
+	public void setToReplaceNode(String toReplaceNode) {
+		this.toReplaceNode = toReplaceNode;
+	}
+
+	/**
+	 * @return the parentNode
+	 */
+	public String getParentNode() {
+		return parentNode;
+	}
+
+	/**
+	 * @param parentNode the parentNode to set
+	 */
+	public void setParentNode(String parentNode) {
+		this.parentNode = parentNode;
 	}
 
 }

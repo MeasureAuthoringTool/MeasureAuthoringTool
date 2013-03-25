@@ -5,7 +5,6 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -43,6 +42,7 @@ import mat.server.service.UserService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UuidUtility;
+import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
@@ -67,7 +67,8 @@ import org.xml.sax.InputSource;
 public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implements MeasureService{
 	private static final long serialVersionUID = 2280421300224680146L;
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
-	
+	private static final String MEASURE_DETAILS = "measureDetails";
+	private static final String MEASURE = "measure";
 	
 	/**
 	 * This method is no longer used as we are loading all the measure details from XML  in Measure_Xml table 
@@ -349,7 +350,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			//Create Default SupplimentalQDM if it is a new Measure.
 			createSupplimentalQDM(pkg);
 		}
-		getService().saveMeasureXml(createMeasureXmlModal(model, pkg));		
+		saveMeasureXml(createMeasureXmlModal(model, pkg, MEASURE_DETAILS, MEASURE));		
 		
 		return result;
 	}
@@ -479,7 +480,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			getService().saveMeasureDetails(measureDetails);
 		}
 		logger.info("Saving Measure_Xml");
-		getService().saveMeasureXml(createMeasureXmlModal(model, measure));
+		saveMeasureXml(createMeasureXmlModal(model, measure, MEASURE_DETAILS, MEASURE));
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);	
 		logger.info("Saving of Measure Details Success");
@@ -615,10 +616,12 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		}
 	}
 
-	private MeasureXmlModel createMeasureXmlModal(ManageMeasureDetailModel manageMeasureDetailModel, Measure measure){
+	private MeasureXmlModel createMeasureXmlModal(ManageMeasureDetailModel manageMeasureDetailModel, Measure measure, String replaceNode, String parentNode){
 		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
 		measureXmlModel.setMeasureId(measure.getId());
 		measureXmlModel.setXml(createMeasureDetailsXml(manageMeasureDetailModel, measure));
+		measureXmlModel.setToReplaceNode(replaceNode);
+		measureXmlModel.setParentNode(parentNode);
 		return measureXmlModel;
 	}
 
@@ -841,7 +844,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		mDetail.setDraft(false);
 		setValueFromModel(mDetail, meas);
 		getService().save(meas);
-		getService().saveMeasureXml(createMeasureXmlModal(mDetail, meas));
+		saveMeasureXml(createMeasureXmlModal(mDetail, meas, MEASURE_DETAILS, MEASURE));
 		getClauseBusinessService().setClauseNameForMeasure(mDetail.getId(), mDetail.getShortName());
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);
@@ -961,7 +964,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	@Override
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId) {
 		logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure()");
-		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);		
+		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);	
 		if( measureXmlModel != null){
 			logger.info("Measure XML: " + measureXmlModel.getXml());
 		}else{
@@ -972,6 +975,15 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 
 	@Override
 	public void saveMeasureXml(MeasureXmlModel measureXmlModel) {
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
+		if(xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())){
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			String newXml = xmlProcessor.replaceNode(measureXmlModel.getXml(), measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
+			measureXmlModel.setXml(newXml);
+		}else{
+			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
+			measureXmlModel.setXml(processor.addParentNode(MEASURE));
+		}
 		getService().saveMeasureXml(measureXmlModel);
 	}
 	
@@ -984,19 +996,23 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	private ManageMeasureDetailModel convertXmltoModel(MeasureXmlModel xmlModel, Measure measure){
 		logger.info("In MeasureLibraryServiceImpl.convertXmltoModel()");
 		ManageMeasureDetailModel details = null;
-		String xml = xmlModel != null ? xmlModel.getXml() : null;
+		String xml = null;
+		if(xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())){
+			xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName(MEASURE_DETAILS);
+		}
 		try {
-			if(xml == null || !xml.contains("<measureDetails>")){// TODO : this check should be removed before prod.
+			if(xml == null){// TODO: This Check should be replaced when the DataConversion is complete.
 				logger.info("xml is null or xml doesn't contain measureDetails tag");
 				details = new ManageMeasureDetailModel();
 				createMeasureDetailsModelFromMeasure(details, measure);
 			}else{
-				logger.info("unmarshalling..");
 				Mapping mapping = new Mapping();
 				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasureDetailsModelMapping.xml"));
 				Unmarshaller unmar = new Unmarshaller(mapping);
 				unmar.setClass(ManageMeasureDetailModel.class);
 				unmar.setWhitespacePreserve(true);
+				xml = new XmlProcessor(xml).getXmlByTagName(MEASURE_DETAILS);
+				logger.info("unmarshalling xml.. " + xml);
 	            details = (ManageMeasureDetailModel)unmar.unmarshal(new InputSource(new StringReader(xml)));
 	            logger.info("unmarshalling complete.." + details.toString());
 	            convertAddlXmlElementsToModel(details, measure);
@@ -1060,7 +1076,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		}
 		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
 		measureXmlModel.setMeasureId(measureDetailModel.getId());
-		measureXmlModel.setXml(createXml(measureDetailModel).toString());		
+		measureXmlModel.setXml(createXml(measureDetailModel).toString());	
+		measureXmlModel.setToReplaceNode(MEASURE_DETAILS);
 		saveMeasureXml(measureXmlModel);
 		logger.info("Clone of Measure_xml is Successful");
 	}

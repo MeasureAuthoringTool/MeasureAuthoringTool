@@ -107,7 +107,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 
 				@Override
 				public void onSuccess(String result) {
-					Window.alert(result);
+					//Window.alert(result);
 					extractJSONObject(result);
 					searchDisplay.buildCellList(codeListQDSEL);
 				}});
@@ -156,8 +156,10 @@ public class QDSAppliedListPresenter implements MatPresenter {
 
 			}
 		}
+		
 		/*JSONObject[] arr = new JSONObject[codeListQDSEL.size()]; 
 		codeListQDSEL.toArray(arr);
+		
 		
 		String container = "{container: {\"qdselArr\": [ \r\n";
 		for(JSONObject jObj: codeListQDSEL){

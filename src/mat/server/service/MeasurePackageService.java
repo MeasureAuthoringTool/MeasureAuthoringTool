@@ -2,6 +2,8 @@ package mat.server.service;
 
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureShareModel;
@@ -57,4 +59,5 @@ public interface MeasurePackageService {
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId);
 	public void saveMeasureXml(MeasureXmlModel measureXmlModel);
 	public String retrieveStewardOID(String stewardName);
+	String getJSONObjectFromXML(String measureId);
 }

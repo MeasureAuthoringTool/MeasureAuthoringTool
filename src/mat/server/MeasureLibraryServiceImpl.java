@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +48,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
+import net.sf.json.JSONObject;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -60,6 +62,8 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 
 
@@ -1081,4 +1085,13 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		saveMeasureXml(measureXmlModel);
 		logger.info("Clone of Measure_xml is Successful");
 	}
+	
+	@Override
+	public String getJSONObjectFromXML(String measureId){
+		MeasurePackageService service = getService();
+		String jsonToXML = service.getJSONObjectFromXML(measureId);
+		return jsonToXML;
+		
+	}
+	
 }

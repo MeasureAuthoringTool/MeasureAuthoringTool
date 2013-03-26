@@ -40,4 +40,5 @@ public interface MeasureServiceAsync {
 			AsyncCallback<Void> callback);
 	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
 			String clonedMeasureId, AsyncCallback<Void> callback);
+	void getJSONObjectFromXML(String measureId, AsyncCallback<String> callback);
 	}

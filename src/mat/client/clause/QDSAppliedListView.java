@@ -1,7 +1,7 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -20,6 +20,8 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Element;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
@@ -37,16 +39,19 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 
 
 public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDisplay {
-
 	private SimplePanel containerPanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
 	private Button removeButton = new Button("Remove");
-
+	private Button removeButtonJSON = new Button("Remove");
 	private CellList<QualityDataSetDTO> cellList;
+	private CellList<JSONObject> cellListJSON;
 	
 	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
 	RangeLabelPager rangeLabelPager = new RangeLabelPager();
+
+	ShowMorePagerPanel pagerPanelJSON = new ShowMorePagerPanel();
+	RangeLabelPager rangeLabelPagerJSON = new RangeLabelPager();
 	public SuccessMessageDisplay getSuccessMessagePanel(){
 		return successMessagePanel;
 	}
@@ -58,21 +63,40 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	public QDSAppliedListView() {
 		successMessagePanel = new SuccessMessageDisplay();
 		successMessagePanel.clear();
+		HorizontalPanel mainPanel = new HorizontalPanel();
 		VerticalPanel vp = new VerticalPanel();
 		vp.setStylePrimaryName("qdmCellList");
-		HorizontalPanel mainPanel = new HorizontalPanel();
-		mainPanel.add(pagerPanel);
+		HorizontalPanel mainPanelNormal = new HorizontalPanel();
+		mainPanelNormal.add(pagerPanel);
 		vp.add(new SpacerWidget());
 		vp.add(new HTML("<h4> Applied QDM Elements </h4>"));
 		vp.add(new SpacerWidget());
-		vp.add(mainPanel);
+		vp.add(mainPanelNormal);
 		vp.add(new SpacerWidget());
 		vp.add(rangeLabelPager);
 		vp.add(new SpacerWidget());
 		removeButton.setEnabled(checkForEnable());
 		vp.add(removeButton);
 		vp.add(new SpacerWidget());
-		containerPanel.add(vp);
+
+		VerticalPanel vpJson = new VerticalPanel();
+		vpJson.setStylePrimaryName("qdmCellList");
+		HorizontalPanel mainPanelJson = new HorizontalPanel();
+		mainPanelJson.add(pagerPanelJSON);
+		vpJson.add(new SpacerWidget());
+		vpJson.add(new HTML("<h4> Applied QDM Elements from SimpleXML </h4>"));
+		vpJson.add(new SpacerWidget());
+		vpJson.add(mainPanelJson);
+		vpJson.add(new SpacerWidget());
+		vpJson.add(rangeLabelPagerJSON);
+		vpJson.add(new SpacerWidget());
+		removeButtonJSON.setEnabled(checkForEnable());
+		vpJson.add(removeButtonJSON);
+		vpJson.add(new SpacerWidget());
+
+		mainPanel.add(vp);
+		mainPanel.add(vpJson);
+		containerPanel.add(mainPanel);
 
 		containerPanel.setStyleName("qdsContentPanel");
 		MatContext.get().setQdsAppliedListView(this);
@@ -111,8 +135,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>();
 		final MultiSelectionModel<QualityDataSetDTO> selectionModel = new MultiSelectionModel<QualityDataSetDTO>();
 		hasCells.add(new HasCell<QualityDataSetDTO, Boolean>(){
-			//private CheckboxCell cbCell = new CheckboxCell(true, false);
-			
+
 			private MatCheckBoxCell cbCell = new MatCheckBoxCell();
 			@Override
 			public Cell<Boolean> getCell() {
@@ -190,11 +213,109 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		cellList.setSelectionModel(selectionModel, DefaultSelectionEventManager.<QualityDataSetDTO> createCheckboxManager());
 		return cellList;
 	}
-	
+
 	private boolean checkForEnable(){
 		//			return MatContext.get().getMeasureLockService().checkForEditPermission();
 		// uncomment above line once remove button action is active and implemented.
 		return false;
 	}
+
+	@Override
+	public  void buildCellList(List<JSONObject> codeListQDSEL) {
+		
+		cellListJSON = initializeCellList(cellListJSON);
+		cellListJSON.setPageSize(15);
+		cellListJSON.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
+		ListDataProvider<JSONObject> dataProvider = new ListDataProvider<JSONObject>(codeListQDSEL); 
+		dataProvider.addDataDisplay(cellListJSON); 
+		pagerPanelJSON.addStyleName("scrollableJSON");
+		pagerPanelJSON.setDisplay(cellListJSON);
+		rangeLabelPagerJSON.setDisplay(cellListJSON);
+
+	}
+
+	private CellList<JSONObject> initializeCellList(CellList<JSONObject> cellList){
+
+		ArrayList<HasCell<JSONObject, ?>> hasCells = new ArrayList<HasCell<JSONObject, ?>>();
+		final MultiSelectionModel<JSONObject> selectionModel = new MultiSelectionModel<JSONObject>();
+		hasCells.add(new HasCell<JSONObject, Boolean>(){
+
+			private MatCheckBoxCell cbCell = new MatCheckBoxCell();
+			@Override
+			public Cell<Boolean> getCell() {
+				return cbCell;
+			}
+
+			@Override
+			public FieldUpdater<JSONObject, Boolean> getFieldUpdater() {
+				return null;
+			}
+
+			@Override
+			public Boolean getValue(JSONObject object) {
+				return selectionModel.isSelected(object);
+			} });
+
+		hasCells.add(new HasCell<JSONObject, String>(){
+			private TextCell cell = new TextCell();
+			@Override
+			public Cell<String> getCell() {
+				return (Cell)cell;
+			}
+
+			@Override
+			public FieldUpdater<JSONObject, String> getFieldUpdater() {
+				return null;
+			}
+
+			@Override
+			public String getValue(JSONObject object) {
+				JSONValue name = object.isObject().get("@name");
+				JSONValue dataType = object.isObject().get("@datatype");
+				String value = name.toString()+" : "+dataType.toString();
+				value = value.replaceAll("\"", "");
+				return value;
+			}});
+
+
+		Cell<JSONObject> myClassCell = new CompositeCell<JSONObject>(hasCells){
+			@Override
+			public void render(Context context, JSONObject value, SafeHtmlBuilder sb)
+			{
+				sb.appendHtmlConstant("<table><tbody><tr>");
+				super.render(context, value, sb);
+				sb.appendHtmlConstant("</tr></tbody></table>");
+			}
+			@Override
+			protected Element getContainerElement(Element parent)
+			{
+				// Return the first TR element in the table.
+				return parent.getFirstChildElement().getFirstChildElement().getFirstChildElement();
+			}
+
+			@Override
+			protected <X> void render(Context context, JSONObject value, SafeHtmlBuilder sb, HasCell<JSONObject, X> hasCell)
+			{
+				// this renders each of the cells inside the composite cell in a new table cell
+				Cell<X> cell = hasCell.getCell();
+				sb.appendHtmlConstant("<td style='font-size:95%;'>");
+				cell.render(context, hasCell.getValue(value), sb);
+				sb.appendHtmlConstant("</td>");
+			}
+
+		};
+
+		cellList =  new CellList<JSONObject>(myClassCell);
+		/*selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				appliedListModel.setRemoveQDMs(selectionModel.getSelectedSet());
+				System.out.println("appliedListModel Remove QDS Set Size =======>>>>" + appliedListModel.getRemoveQDMs().size());
+			}
+		});*/
+		cellList.setSelectionModel(selectionModel, DefaultSelectionEventManager.<JSONObject> createCheckboxManager());
+		return cellList;
+	}
+
 
 }

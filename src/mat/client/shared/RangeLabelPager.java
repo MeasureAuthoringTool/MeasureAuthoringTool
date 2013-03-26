@@ -46,7 +46,7 @@ public class RangeLabelPager extends AbstractPager {
     Range range = display.getVisibleRange();
     int start = range.getStart();
     int end = start + range.getLength();
-    label.setText(start + " - " + end + " : " + display.getRowCount(),
+    label.setText("( "+start + " - " + end + " ) of " + display.getRowCount(),
         HasDirection.Direction.LTR);
   }
 }

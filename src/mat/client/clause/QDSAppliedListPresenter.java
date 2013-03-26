@@ -31,7 +31,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	List<JSONObject> codeListQDSEL = new ArrayList<JSONObject>();
 	List<String> codeListString = new ArrayList<String>();
-//	Map<String,List<JSONObject>> codeMap = new HashMap<String,List<JSONObject>>();
+	//	Map<String,List<JSONObject>> codeMap = new HashMap<String,List<JSONObject>>();
 	public static interface SearchDisplay {
 		public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
@@ -73,26 +73,26 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	public void showAppliedQDMsInMeasure(String measureId) {
 		measureId = MatContext.get().getCurrentMeasureId();
 		CodeListServiceAsync codeListService = (CodeListServiceAsync) GWT
-				.create(CodeListService.class);
+		.create(CodeListService.class);
 		if (measureId != null && measureId != "") {
 			codeListService.getQDSElements(measureId, null,
 					new AsyncCallback<List<QualityDataSetDTO>>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							Window.alert(MatContext.get().getMessageDelegate()
-									.getGenericErrorMessage());
-						}
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+				}
 
-						@Override
-						public void onSuccess(List<QualityDataSetDTO> result) {
-							QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-							appliedListModel.setAppliedQDMs(result);
-							searchDisplay.buildCellListWidget(appliedListModel);
-						}
-					});
+				@Override
+				public void onSuccess(List<QualityDataSetDTO> result) {
+					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+					appliedListModel.setAppliedQDMs(result);
+					searchDisplay.buildCellListWidget(appliedListModel);
+				}
+			});
 		}
 	}
-	
+
 	public void getXMLForAppliedQDM(){
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if (measureId != null && measureId != "") {
@@ -102,65 +102,76 @@ public class QDSAppliedListPresenter implements MatPresenter {
 				public void onFailure(Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate()
 							.getGenericErrorMessage());
-					
+
 				}
 
 				@Override
 				public void onSuccess(String result) {
-					//Window.alert(result);
+					Window.alert(result);
 					extractJSONObject(result);
 					searchDisplay.buildCellList(codeListQDSEL);
 				}});
-			
+
 		}
-		
+
 	}
-		
+
 	private void extractJSONObject(String jsonString){
 		codeListQDSEL.removeAll(codeListQDSEL);
 		if(jsonString != null){
 			JSONValue jsonValue = JSONParser.parse(jsonString);
 			if(jsonValue.isObject()!=null){
 				JSONObject jsonObject = (JSONObject) jsonValue.isObject().get("measure");
-				if(jsonObject.get("elementlookup").isArray() !=null){
-					JSONArray arrayObject = jsonObject.get("elementlookup").isArray();
-					for(int i=0;i<arrayObject.size();i++){
-						codeListQDSEL.add(arrayObject.get(i).isObject());
-					}
-				}else if (jsonObject.get("elementlookup").isObject() !=null){
-					JSONObject elementLookUpObject = jsonObject.get("elementlookup").isObject();
-					if(elementLookUpObject.get("qdsel").isArray()!=null){
-						for(int i=0;i<elementLookUpObject.get("qdsel").isArray().size();i++){
-							codeListQDSEL.add(elementLookUpObject.get("qdsel").isArray().get(i).isObject());
+				
+				if(jsonObject.containsKey("elementlookup")){//check if json object contains elementLookup node
+					if(jsonObject.get("elementlookup").isArray() !=null){//check if elementLookup contains only 1 type of nodes
+						JSONArray arrayObject = jsonObject.get("elementlookup").isArray();
+						for(int i=0;i<arrayObject.size();i++){
+							codeListQDSEL.add(arrayObject.get(i).isObject());
 						}
-					}else if(elementLookUpObject.get("qdsel").isObject()!=null){
-						codeListQDSEL.add(elementLookUpObject.get("qdsel").isObject());
-					}
+					}else if (jsonObject.get("elementlookup").isObject() !=null){//elementLookup contains more than 1 type of node
+						JSONObject elementLookUpObject = jsonObject.get("elementlookup").isObject();
+						
+						if(elementLookUpObject.containsKey("qdsel")){//check if qdsel type sub node is present under elementLookup
+							if(elementLookUpObject.get("qdsel").isArray()!=null){
+								for(int i=0;i<elementLookUpObject.get("qdsel").isArray().size();i++){
+									codeListQDSEL.add(elementLookUpObject.get("qdsel").isArray().get(i).isObject());
+								}
+							}else if(elementLookUpObject.get("qdsel").isObject()!=null){
+								codeListQDSEL.add(elementLookUpObject.get("qdsel").isObject());
+							}
 
-					if(elementLookUpObject.get("iqdsel").isArray()!=null){
-						for(int i=0;i<elementLookUpObject.get("iqdsel").isArray().size();i++){
-							codeListQDSEL.add(elementLookUpObject.get("iqdsel").isArray().get(i).isObject());
 						}
-					}else if(elementLookUpObject.get("iqdsel").isObject()!=null){
-						codeListQDSEL.add(elementLookUpObject.get("iqdsel").isObject());
-					}
+						if(elementLookUpObject.containsKey("iqdsel")){//check if "iqdsel" type sub node is present under elementLookup
+							if(elementLookUpObject.get("iqdsel").isArray()!=null){
+								for(int i=0;i<elementLookUpObject.get("iqdsel").isArray().size();i++){
+									codeListQDSEL.add(elementLookUpObject.get("iqdsel").isArray().get(i).isObject());
+								}
+							}else if(elementLookUpObject.get("iqdsel").isObject()!=null){
+								codeListQDSEL.add(elementLookUpObject.get("iqdsel").isObject());
+							}
 
-					if(elementLookUpObject.get("measureel").isArray()!=null){
-						for(int i=0;i<elementLookUpObject.get("measureel").isArray().size();i++){
-							codeListQDSEL.add(elementLookUpObject.get("measureel").isArray().get(i).isObject());
 						}
-					}else if(elementLookUpObject.get("measureel").isObject()!=null){
-						codeListQDSEL.add(elementLookUpObject.get("measureel").isObject());
+						if(elementLookUpObject.containsKey("measureel")){//check if measureel type sub node is present under elementLookup
+							if(elementLookUpObject.get("measureel").isArray()!=null){
+								for(int i=0;i<elementLookUpObject.get("measureel").isArray().size();i++){
+									codeListQDSEL.add(elementLookUpObject.get("measureel").isArray().get(i).isObject());
+								}
+							}else if(elementLookUpObject.get("measureel").isObject()!=null){
+								codeListQDSEL.add(elementLookUpObject.get("measureel").isObject());
+							}
+
+						}
 					}
 				}
 
 			}
 		}
-		
+
 		/*JSONObject[] arr = new JSONObject[codeListQDSEL.size()]; 
 		codeListQDSEL.toArray(arr);
-		
-		
+
+
 		String container = "{container: {\"qdselArr\": [ \r\n";
 		for(JSONObject jObj: codeListQDSEL){
 			container += jObj.toString() + " ,";
@@ -171,24 +182,24 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		JSONValue value = (JSONValue) JSONParser.parse(container);
 		JSONObject jsonObject = (JSONObject) value.isObject();
 		Window.alert(jsonObject.getJavaScriptObject().createArray().toString());
-		
+
 		JsArray<JavaScriptObject> jarr = JavaScriptObject.createArray().cast();
 		jarr.set(0, codeListQDSEL.get(0).getJavaScriptObject());
 		Window.alert(jarr.toSource());
-		*/
+		 */
 	}
-	
-	
+
+
 	@Override
 	public void beforeDisplay() {
 		resetQDSFields();
 		loadCodeListData();
-		
+
 	}
 
 	@Override
 	public void beforeClosingDisplay() {
 	}
 
-	
+
 }

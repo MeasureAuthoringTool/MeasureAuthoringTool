@@ -46,7 +46,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	private Button removeButtonJSON = new Button("Remove");
 	private CellList<QualityDataSetDTO> cellList;
 	private CellList<JSONObject> cellListJSON;
-	
+
 	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
 	RangeLabelPager rangeLabelPager = new RangeLabelPager();
 
@@ -222,7 +222,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 	@Override
 	public  void buildCellList(List<JSONObject> codeListQDSEL) {
-		
+
 		cellListJSON = initializeCellList(cellListJSON);
 		cellListJSON.setPageSize(15);
 		cellListJSON.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
@@ -270,9 +270,17 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 			@Override
 			public String getValue(JSONObject object) {
-				JSONValue name = object.isObject().get("@name");
-				JSONValue dataType = object.isObject().get("@datatype");
-				String value = name.toString()+" : "+dataType.toString();
+				String name = null;
+				String value ="";
+				if(object.isObject().containsKey("@name")){
+					name = object.isObject().get("@name").toString();
+				}
+				String dataType = object.isObject().get("@datatype").toString();
+				if(name !=null){
+					value= name +" : "+dataType;
+				}else{
+					value= dataType;
+				}
 				value = value.replaceAll("\"", "");
 				return value;
 			}});

@@ -115,7 +115,7 @@
 		<include file="classpath:/liquibase/deploy_Sprint_04_Task_MAT630.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_06_US_MAT786.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_05_Task_MAT286.xml"/>
-		<include file="classpath:/liquibase/deploy_Sprint_08_Task_MAT996.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint_08_Task_MAT996_1.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_09_US_MAT1155.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_09_US_MAT1155_UPDATE.xml"/>
 		

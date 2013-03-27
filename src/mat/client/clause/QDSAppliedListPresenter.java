@@ -107,7 +107,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 
 				@Override
 				public void onSuccess(String result) {
-					Window.alert(result);
+					//Window.alert(result);
 					extractJSONObject(result);
 					searchDisplay.buildCellList(codeListQDSEL);
 				}});

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.clause.clauseworkspace.model.TreeModel;
+import mat.client.shared.MatContext;
 
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
@@ -16,6 +17,8 @@ public class XmlConversionlHelper {
 
 	private static final String NAMESPACE_XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\r\n";
 	
+	private static String measureTitle = null;
+	
 	
 	/**
 	 * Creates TreeModel object which has list of children objects and a parent object from the XML
@@ -25,6 +28,8 @@ public class XmlConversionlHelper {
 	public static TreeModel createTreeModel(String xml, String tagName){
 		TreeModel parentParent = new TreeModel();
 		Node node = null;
+		String shortTitle = MatContext.get().getCurrentShortName();
+		measureTitle = shortTitle;
 		if(xml != null && xml.trim().length() > 0){
 			Document document = XMLParser.parse(xml);
 			NodeList nodeList = document.getElementsByTagName(tagName);
@@ -47,14 +52,52 @@ public class XmlConversionlHelper {
 		}
 		if(node == null){
 			parentParent.setName(tagName);
+			parentParent.setEditable(false);
+			parentParent.setRemovable(false);
 			TreeModel child = new TreeModel();
+			child.setEditable(false);
 			List<TreeModel> childs = new ArrayList<TreeModel>();
-			createChildObject(parentParent, child, tagName, childs);
+			setChildObject(parentParent, child, tagName, childs);
+			createStaticChilds(tagName, child);
 			parentParent.setChilds(childs);
 		}
 		return parentParent;
 	}
 	
+	
+	private static void createStaticChilds(String tagName, TreeModel parent){
+		List<TreeModel> childs = new ArrayList<TreeModel>();
+		if("populations".equals(tagName)){
+			for (int i = 0; i < ClauseConstants.getPopulationsChildren().length; i++) {
+				TreeModel child = createChild(ClauseConstants.getPopulationsChildren()[i], parent, false, false);
+				childs.add(child);
+				String key = ClauseConstants.getPopulationsChildren()[i] + "" + 1;				
+				List<TreeModel> subChilds = new ArrayList<TreeModel>();
+				subChilds.add(createChild(key, child, false, false));
+				child.setChilds(subChilds);
+			}
+			parent.setChilds(childs);
+		}else if("measureObservations".equals(tagName)){
+			String key = "measureObservations1";		
+			childs.add(createChild(key, parent, false, false));
+			parent.setChilds(childs);
+		}else if("stratification".equals(tagName)){
+			String key = "stratification1";		
+			childs.add(createChild(key, parent, false, false));
+			parent.setChilds(childs);
+		}
+		
+	}
+	
+	private static TreeModel createChild(String name, TreeModel parent, boolean isEditable, boolean isRemovable){
+		TreeModel child = new TreeModel();
+		child.setName(name);
+		child.setLabel(ClauseConstants.get(name));
+		child.setParent(parent);
+		child.setEditable(isEditable);
+		child.setRemovable(isRemovable);
+		return child;
+	}
 	
 	/**
 	 * Creating all TreeModel Child Objects
@@ -72,13 +115,15 @@ public class XmlConversionlHelper {
 			name = root.getNodeName();
 		}
 		if(name.length() > 0){
-			createChildObject(parent, child, name, childs);// Create complete child Object with parent and sub Childs
+			
+			setChildObject(parent, child, name, childs);// Create complete child Object with parent and sub Childs
 		}
 		
 		if(root.getNodeType() == root.ELEMENT_NODE && root.hasAttributes()){// if Attribute node
 			ArrayList<TreeModel> attrChilds = new ArrayList<TreeModel>();// List will contain only one Object with name as "attribute"
 			TreeModel attr = new TreeModel();
-			createChildObject(child, attr, "attributes", attrChilds);// create attribute child for top child
+			attr.setEditable(false);
+			setChildObject(child, attr, "attributes", attrChilds);// create attribute child for top child
 			NamedNodeMap namedNodeMap = root.getAttributes();
 			ArrayList<TreeModel> attrChildChilds = null;
 			for (int j = 0; j < namedNodeMap.getLength(); j++) {// iterate through All Attribute values
@@ -87,7 +132,7 @@ public class XmlConversionlHelper {
 				}
 				TreeModel attrModel = new TreeModel();
 				String attrValue = namedNodeMap.item(j).getNodeName() +" = " +namedNodeMap.item(j).getNodeValue();				
-				createChildObject(attr, attrModel, attrValue, attrChildChilds); // create childs for AttributeChild
+				setChildObject(attr, attrModel, attrValue, attrChildChilds); // create childs for AttributeChild
 			}
 			attr.setChilds(attrChildChilds);// set the attribute value childs to attribute child
 			if(child.getChilds() != null ){
@@ -116,10 +161,15 @@ public class XmlConversionlHelper {
 		}
 	}
 	
-	private static void createChildObject(TreeModel parent, TreeModel child, String name, List<TreeModel> childs){
+	private static void setChildObject(TreeModel parent, TreeModel child, String name, List<TreeModel> childs){
 		child.setName(name);//set the name to Child
+		child.setLabel(ClauseConstants.get(name));
 		childs.add(child);// add child to child list
 		child.setParent(parent);// set parent in child 
+		if(child.getLabel() != null){
+			child.setRemovable(false);
+			child.setEditable(false);
+		}
 	}
 	
 	

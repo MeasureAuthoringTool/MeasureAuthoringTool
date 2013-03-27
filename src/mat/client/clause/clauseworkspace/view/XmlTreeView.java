@@ -111,7 +111,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param cellTree
 	 */
 	public void createPageView(CellTree cellTree) {
-//		 createPopupMenu();
+//		createPopupMenu();
 		this.cellTree = cellTree;
 		mainPanel.setStyleName("div-wrapper");//main div
 		
@@ -209,22 +209,24 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				clearMessages();
 				if(selectedNode != null){
+					editNode.setEnabled(selectedNode.isEditable());
+					removeNode.setEnabled(selectedNode.isRemovable());
 					
 					if(selectedNode.getName().equals("attributes")){// if selected node is Attribute, disable Editing or creating child Element Node for this
-						editNode.setEnabled(false);
 						createNodeBtn.setEnabled(false);
 					}
 					
 					if(selectedNode.getParent().getParent() == null){// if Root node is selected disable remove button.
 						removeNode.setEnabled(false);
-					}else if(selectedNode.getParent().getName().equals("attributes")){// if selected value is a attribute value, set the text boxes with the value
+					}
+					if(selectedNode.getParent().getName().equals("attributes")){// if selected value is a attribute value, set the text boxes with the value
 						attrName.setText(selectedNode.getName().split("=")[0]);
 						attrValue.setText(selectedNode.getName().split("=")[1]);
 						nodeTex.setText(null);
 						createAttrBtn.setEnabled(false);
 						createNodeBtn.setEnabled(false);
 					}else{// set the nodeText text box with the selected Tree node.
-						nodeTex.setText(selectedNode.getName());
+						nodeTex.setText(selectedNode.getLabel() != null ? selectedNode.getLabel() : selectedNode.getName());
 						attrName.setText(null);
 						attrValue.setText(null);
 					}
@@ -502,7 +504,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
             ListDataProvider<TreeModel> dataProvider = new ListDataProvider<TreeModel>(myValue.getChilds());
             NodeCell nodeCell = new NodeCell();
                 for(TreeModel currentNode : myValue.getChilds()){
-                        mapDataProvider.put(currentNode, dataProvider);
+                    mapDataProvider.put(currentNode, dataProvider);
                 }
             return new DefaultNodeInfo<TreeModel>(dataProvider, nodeCell, selectionModel, null);
         }
@@ -522,7 +524,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	 public class NodeCell extends AbstractCell<TreeModel> {
 		 
-         /*public NodeCell() {
+        /* public NodeCell() {
            super(BrowserEvents.CONTEXTMENU);
          }*/
          @Override
@@ -530,10 +532,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
            if (value == null) {
              return;
            }
-           sb.appendEscaped(value.getName());
+           sb.appendEscaped(value.getLabel() != null ? value.getLabel() : value.getName());
          }
         
-        /* @Override
+         /*@Override
          public void onBrowserEvent(Context context, Element parent, TreeModel value,
         	      NativeEvent event, ValueUpdater<TreeModel> valueUpdater) {
      		if(event.getType().equals(BrowserEvents.CONTEXTMENU)){

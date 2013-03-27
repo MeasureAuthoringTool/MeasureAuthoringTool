@@ -1,6 +1,5 @@
 package mat.client.clause.clauseworkspace.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class TreeModel {
@@ -10,15 +9,15 @@ public class TreeModel {
 	private List<TreeModel> childs;
 	
 	private TreeModel parent;
+	
+	private String label;
+	
+	private boolean isEditable = true;
+	
+	private boolean isRemovable = true;
 
-	/*public TreeModel(String name) {
-	    parent = null;
-        this.name = name;
-        childs = new ArrayList<TreeModel>();
-	}*/
 
-	public TreeModel() {
-	}
+	public TreeModel() {}
 	
 	public boolean hasChildrens() {
         return childs != null && childs.size()>0;
@@ -46,5 +45,47 @@ public class TreeModel {
 
 	public void setParent(TreeModel parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * @param label the label to set
+	 */
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	/**
+	 * @return the isEditable
+	 */
+	public boolean isEditable() {
+		return isEditable;
+	}
+
+	/**
+	 * @param isEditable the isEditable to set
+	 */
+	public void setEditable(boolean isEditable) {
+		this.isEditable = isEditable;
+	}
+
+	/**
+	 * @return the isRemovable
+	 */
+	public boolean isRemovable() {
+		return isRemovable;
+	}
+
+	/**
+	 * @param isRemovable the isRemovable to set
+	 */
+	public void setRemovable(boolean isRemovable) {
+		this.isRemovable = isRemovable;
 	}
 }

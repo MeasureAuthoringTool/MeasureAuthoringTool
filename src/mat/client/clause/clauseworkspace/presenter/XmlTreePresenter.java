@@ -1,5 +1,7 @@
 package mat.client.clause.clauseworkspace.presenter;
 
+import mat.client.Mat;
+import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.model.TreeModel;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkspacePresenter.XmlTreeDisplay;
@@ -11,7 +13,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.SimplePanel;
 
 public class XmlTreePresenter {
 	
@@ -20,16 +22,39 @@ public class XmlTreePresenter {
 	private static final String MEASURE = "measure";
 	private String rootNode;
 	
-	public Widget loadXmlTree(MeasureXmlModel result){
-		String xml = result != null ? result.getXml() : null;
-		XmlTreeView xmlTreeView = new XmlTreeView(XmlConversionlHelper.createTreeModel(xml, rootNode));
-		CellTree cellTree = new CellTree(xmlTreeView, null);
-		cellTree.setDefaultNodeSize(500);// this will get rid of the show more link on the bottom of the Tree
-		xmlTreeView.createPageView(cellTree);
-		xmlTreeDisplay = (XmlTreeDisplay) xmlTreeView;
-		xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
-		invokeSaveHandler();
-		return xmlTreeView.asWidget();
+	public void loadXmlTree(final SimplePanel panel){
+		if (MatContext.get().getCurrentMeasureId() != null
+				&& !MatContext.get().getCurrentMeasureId().equals("")) {
+			
+			service.getMeasureXmlForMeasure(MatContext.get()
+					.getCurrentMeasureId(),
+					new AsyncCallback<MeasureXmlModel>() {// Loading the measure's SimpleXML from the Measure_XML table 
+
+						@Override
+						public void onSuccess(MeasureXmlModel result) {
+							panel.clear();
+							String xml = result != null ? result.getXml() : null;
+							XmlTreeView xmlTreeView = new XmlTreeView(XmlConversionlHelper.createTreeModel(xml, rootNode));
+							CellTree cellTree = new CellTree(xmlTreeView, null);
+							cellTree.setDefaultNodeSize(500);// this will get rid of the show more link on the bottom of the Tree
+							xmlTreeView.createPageView(cellTree);
+							xmlTreeDisplay = (XmlTreeDisplay) xmlTreeView;
+							xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
+							panel.add(xmlTreeDisplay.asWidget());
+							invokeSaveHandler();
+						}
+
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+						}
+					});
+		} else {
+			Mat.hideLoadingMessage();
+		}
+		MeasureComposerPresenter.setSubSkipEmbeddedLink("ClauseWorkspaceTree");
+		Mat.focusSkipLists("MeasureComposer");
+		
 	}
 	
 	private MeasureXmlModel createMeasureExportModel(String xml) {

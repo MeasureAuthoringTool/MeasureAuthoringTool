@@ -1,5 +1,8 @@
 package mat.client.clause.clauseworkspace.presenter;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import mat.client.MatPresenter;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplay;
@@ -34,10 +37,12 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		
 	}
 
+		
 	private SimplePanel emptyWidget = new SimplePanel();
 	private SimplePanel simplepanel = new SimplePanel();
 	FlowPanel flowPanel = new FlowPanel();
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
+	
 	
 	private MatTabLayoutPanel clauseWorkspaceTabs;
 	private PopulationClausePresenter populationClausePresenter = new PopulationClausePresenter();
@@ -50,12 +55,13 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		clauseWorkspaceTabs = new MatTabLayoutPanel(true);
 		clauseWorkspaceTabs.setId("clauseWorkspce");
 		clauseWorkspaceTabs.addPresenter(populationClausePresenter, "Populations");
-		clauseWorkspaceTabs.addPresenter(measureObsClausePresenter, "Measure Observation");
+		clauseWorkspaceTabs.addPresenter(measureObsClausePresenter, "Measure Observations");
 		clauseWorkspaceTabs.addPresenter(stratificationClausePresenter, "Stratification");
 		flowPanel.add(new SpacerWidget());
 		flowPanel.add(clauseWorkspaceTabs);
 		simplepanel.add(flowPanel);
 	}
+
 
 	@Override
 	public void beforeDisplay() {

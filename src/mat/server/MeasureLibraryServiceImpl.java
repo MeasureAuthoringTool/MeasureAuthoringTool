@@ -27,7 +27,9 @@ import mat.client.shared.MetaDataConstants;
 import mat.model.Author;
 import mat.model.ListObject;
 import mat.model.MeasureType;
+import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSet;
+import mat.model.QualityDataSetDTO;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -81,6 +83,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * @param measureDetailsList
 	 * @return
 	 */
+	@SuppressWarnings("unused")
 	@Deprecated
 	private ManageMeasureDetailModel extractModel(Measure measure,List<Metadata> measureDetailsList) {
 		ManageMeasureDetailModel model = new ManageMeasureDetailModel();
@@ -1087,11 +1090,80 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 	@Override
-	public String getJSONObjectFromXML(String measureId){
-		MeasurePackageService service = getService();
-		String jsonToXML = service.getJSONObjectFromXML(measureId);
-		return jsonToXML;
+	public ArrayList<QualityDataSetDTO> getJSONObjectFromXML(String measureId){
+		//MeasurePackageService service = getService();
+		//String jsonToXML = service.getJSONObjectFromXML(measureId);
+		ArrayList<QualityDataSetDTO> list = getAppliedQualityDTOList(measureId);
+		return list;
 		
 	}
 	
+	public ArrayList<QualityDataSetDTO> getAppliedQualityDTOList(String measureId){
+		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
+		logger.info("MeasureXML fetched ==== " + measureXmlModel.getXml());
+		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
+		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
+		
+		if(details.getQualityDataDTO()!=null && details.getQualityDataDTO().size()!=0){
+			System.out.println("==============  details.getQualityDataDTO().size() ================"+ details.getQualityDataDTO().size());
+			for(QualityDataSetDTO dataSetDTO: details.getQualityDataDTO()){
+				if(dataSetDTO.getCodeListName() !=null)
+					finalList.add(dataSetDTO);
+			}
+			//finalList.addAll(details.getQualityDataDTO());
+		}
+		if(details.getQualityDataDTOList_I()!=null && details.getQualityDataDTOList_I().size()!=0){
+			System.out.println("==============  details.getQualityDataDTOList_I.size() ================"+ details.getQualityDataDTOList_I().size());
+			finalList.addAll(details.getQualityDataDTOList_I());
+		}
+		if(details.getQualityDataDTOList_M()!=null && details.getQualityDataDTOList_M().size()!=0){
+			finalList.addAll(details.getQualityDataDTOList_M());
+			System.out.println("==============  details.getQualityDataDTOList_M.size() ================"+ details.getQualityDataDTOList_M().size());
+		}
+		Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
+			@Override
+			public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
+				return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
+			}
+		});
+		System.out.println("==============  finalList() ================"+ finalList.size());
+		return finalList;
+	}
+	
+	private QualityDataModelWrapper convertXmltoQualityDataDTOModel(MeasureXmlModel xmlModel){
+		logger.info("In MeasureLibraryServiceImpl.convertXmltoQualityDataDTOModel()");
+		QualityDataModelWrapper details = null;
+		String xml = null;
+		if(xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())){
+			xml = new XmlProcessor(xmlModel.getXml()).getXmlByTagName("measure");
+			logger.info("xml by tag name elementlookup" + xml);
+		}
+		try {
+			if(xml == null){// TODO: This Check should be replaced when the DataConversion is complete.
+				logger.info("xml is null or xml doesn't contain elementlookup tag");
+				
+			}else{
+				Mapping mapping = new Mapping();
+				mapping.loadMapping(new ResourceLoader().getResourceAsURL("QualityDataModelMapping.xml"));
+				Unmarshaller unmar = new Unmarshaller(mapping);
+				unmar.setClass(QualityDataModelWrapper.class);
+				unmar.setWhitespacePreserve(true);
+				logger.info("unmarshalling xml..elementlookup " + xml);
+	            details = (QualityDataModelWrapper)unmar.unmarshal(new InputSource(new StringReader(xml)));
+	            logger.info("unmarshalling complete..elementlookup" + details.getQualityDataDTO().get(0).getCodeListName());
+	        }
+		
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load QualityDataModelMapping.xml" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed" + e);
+			}else{
+				logger.info("Other Exception" + e);
+			}
+		} 
+		return details;
+	}
 }

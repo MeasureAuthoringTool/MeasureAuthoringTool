@@ -1,5 +1,6 @@
 package mat.client.measure.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -9,6 +10,7 @@ import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.model.Author;
 import mat.model.MeasureType;
+import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -40,5 +42,6 @@ public interface MeasureServiceAsync {
 			AsyncCallback<Void> callback);
 	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
 			String clonedMeasureId, AsyncCallback<Void> callback);
-	void getJSONObjectFromXML(String measureId, AsyncCallback<String> callback);
+	void getJSONObjectFromXML(String measureId,
+			AsyncCallback<ArrayList<QualityDataSetDTO>> callback);
 	}

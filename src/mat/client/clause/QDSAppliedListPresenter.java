@@ -31,13 +31,13 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	List<JSONObject> codeListQDSEL = new ArrayList<JSONObject>();
 	List<String> codeListString = new ArrayList<String>();
-	//	Map<String,List<JSONObject>> codeMap = new HashMap<String,List<JSONObject>>();
+	
 	public static interface SearchDisplay {
 		public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		public  void buildCellListWidget(QDSAppliedListModel appliedListModel);
 		public Widget asWidget();
-		void buildCellList(List<JSONObject> codeListQDSEL);
+		void buildCellList(QDSAppliedListModel appliedListModel);
 	}
 
 	public QDSAppliedListPresenter(SearchDisplay sDisplayArg) {
@@ -96,9 +96,26 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	public void getXMLForAppliedQDM(){
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if (measureId != null && measureId != "") {
-			service.getJSONObjectFromXML(measureId, new AsyncCallback<String>(){
+			service.getJSONObjectFromXML(measureId, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
 
 				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+				}
+
+				@Override
+				public void onSuccess(ArrayList<QualityDataSetDTO> result) {
+					if(result.size()==0){
+						Window.alert("Check SimpleXML. There is no elements for Applied QDM's Cell List");
+						
+					}
+					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+					appliedListModel.setAppliedQDMs(result);
+					searchDisplay.buildCellList(appliedListModel);
+				}
+
+			/*	@Override
 				public void onFailure(Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate()
 							.getGenericErrorMessage());
@@ -110,7 +127,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					//Window.alert(result);
 					extractJSONObject(result);
 					searchDisplay.buildCellList(codeListQDSEL);
-				}});
+				}*/});
 
 		}
 
@@ -121,6 +138,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		if(jsonString != null){
 			JSONValue jsonValue = JSONParser.parse(jsonString);
 			if(jsonValue.isObject()!=null){
+				
 				JSONObject jsonObject = (JSONObject) jsonValue.isObject().get("measure");
 				
 				if(jsonObject.containsKey("elementlookup")){//check if json object contains elementLookup node

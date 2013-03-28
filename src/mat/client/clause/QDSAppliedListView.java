@@ -45,7 +45,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	private Button removeButton = new Button("Remove");
 	private Button removeButtonJSON = new Button("Remove");
 	private CellList<QualityDataSetDTO> cellList;
-	private CellList<JSONObject> cellListJSON;
+	private CellList<QualityDataSetDTO> cellListJSON;
 
 	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
 	RangeLabelPager rangeLabelPager = new RangeLabelPager();
@@ -221,109 +221,19 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	}
 
 	@Override
-	public  void buildCellList(List<JSONObject> codeListQDSEL) {
-
-		cellListJSON = initializeCellList(cellListJSON);
-		cellListJSON.setPageSize(15);
-		cellListJSON.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-		ListDataProvider<JSONObject> dataProvider = new ListDataProvider<JSONObject>(codeListQDSEL); 
-		dataProvider.addDataDisplay(cellListJSON); 
-		pagerPanelJSON.addStyleName("scrollableJSON");
-		pagerPanelJSON.setDisplay(cellListJSON);
-		rangeLabelPagerJSON.setDisplay(cellListJSON);
-
+	public  void buildCellList(QDSAppliedListModel appliedListModel) {
+		if(appliedListModel.getAppliedQDMs()!=null){
+			cellListJSON = initializeCellListContent(cellListJSON,appliedListModel);
+			cellListJSON.setPageSize(15);
+			cellListJSON.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
+			ListDataProvider<QualityDataSetDTO> dataProvider = new ListDataProvider<QualityDataSetDTO>(appliedListModel.getAppliedQDMs()); 
+			dataProvider.addDataDisplay(cellListJSON); 
+			pagerPanelJSON.addStyleName("scrollableJSON");
+			pagerPanelJSON.setDisplay(cellListJSON);
+			rangeLabelPagerJSON.setDisplay(cellListJSON);
+		}
 	}
 
-	private CellList<JSONObject> initializeCellList(CellList<JSONObject> cellList){
-
-		ArrayList<HasCell<JSONObject, ?>> hasCells = new ArrayList<HasCell<JSONObject, ?>>();
-		final MultiSelectionModel<JSONObject> selectionModel = new MultiSelectionModel<JSONObject>();
-		hasCells.add(new HasCell<JSONObject, Boolean>(){
-
-			private MatCheckBoxCell cbCell = new MatCheckBoxCell();
-			@Override
-			public Cell<Boolean> getCell() {
-				return cbCell;
-			}
-
-			@Override
-			public FieldUpdater<JSONObject, Boolean> getFieldUpdater() {
-				return null;
-			}
-
-			@Override
-			public Boolean getValue(JSONObject object) {
-				return selectionModel.isSelected(object);
-			} });
-
-		hasCells.add(new HasCell<JSONObject, String>(){
-			private TextCell cell = new TextCell();
-			@Override
-			public Cell<String> getCell() {
-				return (Cell)cell;
-			}
-
-			@Override
-			public FieldUpdater<JSONObject, String> getFieldUpdater() {
-				return null;
-			}
-
-			@Override
-			public String getValue(JSONObject object) {
-				String name = null;
-				String value ="";
-				if(object.isObject().containsKey("@name")){
-					name = object.isObject().get("@name").toString();
-				}
-				String dataType = object.isObject().get("@datatype").toString();
-				if(name !=null){
-					value= name +" : "+dataType;
-				}else{
-					value= dataType;
-				}
-				value = value.replaceAll("\"", "");
-				return value;
-			}});
-
-
-		Cell<JSONObject> myClassCell = new CompositeCell<JSONObject>(hasCells){
-			@Override
-			public void render(Context context, JSONObject value, SafeHtmlBuilder sb)
-			{
-				sb.appendHtmlConstant("<table><tbody><tr>");
-				super.render(context, value, sb);
-				sb.appendHtmlConstant("</tr></tbody></table>");
-			}
-			@Override
-			protected Element getContainerElement(Element parent)
-			{
-				// Return the first TR element in the table.
-				return parent.getFirstChildElement().getFirstChildElement().getFirstChildElement();
-			}
-
-			@Override
-			protected <X> void render(Context context, JSONObject value, SafeHtmlBuilder sb, HasCell<JSONObject, X> hasCell)
-			{
-				// this renders each of the cells inside the composite cell in a new table cell
-				Cell<X> cell = hasCell.getCell();
-				sb.appendHtmlConstant("<td style='font-size:95%;'>");
-				cell.render(context, hasCell.getValue(value), sb);
-				sb.appendHtmlConstant("</td>");
-			}
-
-		};
-
-		cellList =  new CellList<JSONObject>(myClassCell);
-		/*selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				appliedListModel.setRemoveQDMs(selectionModel.getSelectedSet());
-				System.out.println("appliedListModel Remove QDS Set Size =======>>>>" + appliedListModel.getRemoveQDMs().size());
-			}
-		});*/
-		cellList.setSelectionModel(selectionModel, DefaultSelectionEventManager.<JSONObject> createCheckboxManager());
-		return cellList;
-	}
 
 
 }

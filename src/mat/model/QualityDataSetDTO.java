@@ -6,6 +6,19 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class QualityDataSetDTO implements IsSerializable {
 	
+
+	private String id;
+
+	private String dataType;
+	
+	private String codeListName;
+	
+	private String occurrenceText;
+	
+	private boolean suppDataElement;
+	
+	private String oid;
+	
 	public static class Comparator implements java.util.Comparator<QualityDataSetDTO>, IsSerializable {
 
 		@Override
@@ -39,19 +52,6 @@ public class QualityDataSetDTO implements IsSerializable {
 	public void setCodeListName(String codeListName) {
 		this.codeListName = codeListName;
 	}
-
-	private String id;
-
-	private String dataType;
-	
-	private String codeListName;
-	
-	private String occurrenceText;
-	
-	private boolean suppDataElement;
-	
-	private String oid;
-	
 	public String toString() {
 		if(occurrenceText!= null && !occurrenceText.equals(""))
 			return occurrenceText + " of "+codeListName + ": " + dataType + "-" +getOid();

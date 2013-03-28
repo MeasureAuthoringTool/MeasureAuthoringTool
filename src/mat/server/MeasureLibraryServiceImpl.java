@@ -94,8 +94,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		model.setName(measure.getDescription());
 		model.setShortName(measure.getaBBRName());
 		model.setMeasScoring(measure.getMeasureScoring());
-		Double version = Double.parseDouble(measure.getVersion());
-		model.setVersionNumberInt(version.intValue());
+		model.setVersionNumberInt(MeasureUtility.formatVersionText(measure.getVersion()));
 		model.setVersionNumber(MeasureUtility.getVersionText(measure.getVersion(), measure.isDraft()));
 		model.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
 		model.setDraft(measure.isDraft());
@@ -543,8 +542,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		measureDetailModel.setMeasureSetId(measure.getMeasureSet() != null ? measure.getMeasureSet().getId() : null);
 		measureDetailModel.setOrgVersionNumber(String.valueOf(measure.getVersionNumber()));	
 		measureDetailModel.setVersionNumber(MeasureUtility.getVersionText(measureDetailModel.getOrgVersionNumber(), measure.isDraft()));
-		Double version = Double.parseDouble(measureDetailModel.getOrgVersionNumber());
-		measureDetailModel.setVersionNumberInt(version.intValue());
+		measureDetailModel.setVersionNumberInt(MeasureUtility.formatVersionText(measure.getVersion()));
 		measureDetailModel.setId(UuidUtility.idToUuid(measureDetailModel.getId()));// have to change on unmarshalling.
 		if(StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod()) || StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())){
 			PeriodModel periodModel = new PeriodModel();
@@ -1051,8 +1049,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		model.setName(measure.getDescription());
 		model.setShortName(measure.getaBBRName());
 		model.setMeasScoring(measure.getMeasureScoring());
-		Double version = Double.parseDouble(measure.getVersion());
-		model.setVersionNumberInt(version.intValue());		
+		model.setVersionNumberInt(MeasureUtility.formatVersionText(measure.getVersion()));		
 		model.setOrgVersionNumber(measure.getVersion());
 		model.setVersionNumber(MeasureUtility.getVersionText(model.getOrgVersionNumber(), measure.isDraft()));
 		model.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));

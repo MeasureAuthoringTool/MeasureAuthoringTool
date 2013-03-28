@@ -37,7 +37,7 @@
     </field>
    
     <field name="versionNumberInt"
-           type="integer">
+           type="java.lang.String">
       <bind-xml name="version" node="element"/>
     </field>
        

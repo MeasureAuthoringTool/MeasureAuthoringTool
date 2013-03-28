@@ -29,7 +29,7 @@ public class MeasureUtility {
 			return "(v"+mVersion+")";
 	}
 	
-	private static String formatVersionText(String version){
+	public static String formatVersionText(String version){
 		StringUtility su = new StringUtility();
 		String[] versionArr = version.split("\\.");
 		String majorVersion = su.trimLeadingZeros(versionArr[0]);

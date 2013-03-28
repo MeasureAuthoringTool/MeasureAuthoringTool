@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                         "http://castor.org/mapping.dtd">
+
+<mapping>
+	<class name="mat.model.QualityDataModelWrapper">
+		<map-to xml="measure" />
+
+		<field name="qualityDataDTOList" type="mat.model.QualityDataSetDTO"
+			get-method="getQualityDataDTO" set-method="setQualityDataDTO"
+			collection="arraylist">
+			<bind-xml name="qdsel" location="elementlookup">
+				<class name="mat.model.QualityDataSetDTO">
+
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+
+					<field name="dataType" type="java.lang.String">
+						<bind-xml name="datatype" node="attribute" />
+					</field>
+					<field name="codeListName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
+					</field>
+					<field name="oid" type="java.lang.String">
+						<bind-xml name="oid" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+		<field name="qualityDataDTOList_I" type="mat.model.QualityDataSetDTO" get-method="getQualityDataDTOList_I" set-method="setQualityDataDTOList_I"
+			collection="arraylist">
+			<bind-xml name="iqdsel" location="elementlookup">
+				<class name="mat.model.QualityDataSetDTO">
+
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+
+					<field name="dataType" type="java.lang.String">
+						<bind-xml name="datatype" node="attribute" />
+					</field>
+					<field name="codeListName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
+					</field>
+					<field name="oid" type="java.lang.String">
+						<bind-xml name="oid" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+		<field name="qualityDataDTOList_M" type="mat.model.QualityDataSetDTO" get-method="getQualityDataDTOList_M" set-method="setQualityDataDTOList_M"
+			collection="arraylist">
+			<bind-xml name="measureel" location="elementlookup">
+				<class name="mat.model.QualityDataSetDTO">
+
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+
+					<field name="dataType" type="java.lang.String">
+						<bind-xml name="datatype" node="attribute" />
+					</field>
+					<field name="codeListName" type="java.lang.String">
+						<bind-xml name="name" node="attribute" />
+					</field>
+					<field name="oid" type="java.lang.String">
+						<bind-xml name="oid" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+		
+	</class>
+
+</mapping>

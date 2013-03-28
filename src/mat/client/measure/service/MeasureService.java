@@ -42,6 +42,6 @@ public interface MeasureService extends RemoteService {
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId);
 	public void saveMeasureXml(MeasureXmlModel measureXmlModel);
 	public void cloneMeasureXml(boolean creatingDraft, String oldMeasureId, String clonedMeasureId);
-	ArrayList<QualityDataSetDTO> getJSONObjectFromXML(String measureId);
+	ArrayList<QualityDataSetDTO> getMeasureXMLForAppliedQDM(String measureId);
 
 }

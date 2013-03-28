@@ -10,10 +10,6 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.json.client.JSONArray;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONParser;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -29,7 +25,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	private SearchDisplay searchDisplay;
 	List<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
-	List<JSONObject> codeListQDSEL = new ArrayList<JSONObject>();
+	//List<JSONObject> codeListQDSEL = new ArrayList<JSONObject>();
 	List<String> codeListString = new ArrayList<String>();
 	
 	public static interface SearchDisplay {
@@ -96,7 +92,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	public void getXMLForAppliedQDM(){
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if (measureId != null && measureId != "") {
-			service.getJSONObjectFromXML(measureId, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
+			service.getMeasureXMLForAppliedQDM(measureId, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -133,7 +129,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 
 	}
 
-	private void extractJSONObject(String jsonString){
+	/*private void extractJSONObject(String jsonString){
 		codeListQDSEL.removeAll(codeListQDSEL);
 		if(jsonString != null){
 			JSONValue jsonValue = JSONParser.parse(jsonString);
@@ -186,7 +182,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			}
 		}
 
-		/*JSONObject[] arr = new JSONObject[codeListQDSEL.size()]; 
+		JSONObject[] arr = new JSONObject[codeListQDSEL.size()]; 
 		codeListQDSEL.toArray(arr);
 
 
@@ -204,9 +200,9 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		JsArray<JavaScriptObject> jarr = JavaScriptObject.createArray().cast();
 		jarr.set(0, codeListQDSEL.get(0).getJavaScriptObject());
 		Window.alert(jarr.toSource());
-		 */
+		 
 	}
-
+*/
 
 	@Override
 	public void beforeDisplay() {

@@ -42,6 +42,6 @@ public interface MeasureServiceAsync {
 			AsyncCallback<Void> callback);
 	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
 			String clonedMeasureId, AsyncCallback<Void> callback);
-	void getJSONObjectFromXML(String measureId,
+	void getMeasureXMLForAppliedQDM(String measureId,
 			AsyncCallback<ArrayList<QualityDataSetDTO>> callback);
 	}

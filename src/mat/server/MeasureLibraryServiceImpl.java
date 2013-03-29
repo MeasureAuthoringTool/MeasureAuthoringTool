@@ -94,7 +94,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		model.setName(measure.getDescription());
 		model.setShortName(measure.getaBBRName());
 		model.setMeasScoring(measure.getMeasureScoring());
-		model.setVersionNumberInt(MeasureUtility.formatVersionText(measure.getVersion()));
+		model.setOrgVersionNumber(MeasureUtility.formatVersionText(String.valueOf(measure.getVersionNumber())));
 		model.setVersionNumber(MeasureUtility.getVersionText(measure.getVersion(), measure.isDraft()));
 		model.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
 		model.setDraft(measure.isDraft());
@@ -540,9 +540,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		logger.info("In MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()");
 		measureDetailModel.setId(measure.getId());
 		measureDetailModel.setMeasureSetId(measure.getMeasureSet() != null ? measure.getMeasureSet().getId() : null);
-		measureDetailModel.setOrgVersionNumber(String.valueOf(measure.getVersionNumber()));	
+		measureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(String.valueOf(measure.getVersionNumber())));	
 		measureDetailModel.setVersionNumber(MeasureUtility.getVersionText(measureDetailModel.getOrgVersionNumber(), measure.isDraft()));
-		measureDetailModel.setVersionNumberInt(MeasureUtility.formatVersionText(measure.getVersion()));
 		measureDetailModel.setId(UuidUtility.idToUuid(measureDetailModel.getId()));// have to change on unmarshalling.
 		if(StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod()) || StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())){
 			PeriodModel periodModel = new PeriodModel();
@@ -598,7 +597,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		manageMeasureDetailModel.setMeasFromPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel.getPeriodModel().getStartDate() : null);
 		manageMeasureDetailModel.setMeasToPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel.getPeriodModel().getStopDate() : null);
 		manageMeasureDetailModel.setEndorseByNQF((StringUtils.isNotBlank(manageMeasureDetailModel.getEndorsement()) ? true : false));
-		manageMeasureDetailModel.setOrgVersionNumber(measure.getVersion());
+		manageMeasureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(String.valueOf(measure.getVersionNumber())));
 		manageMeasureDetailModel.setVersionNumber(MeasureUtility.getVersionText(manageMeasureDetailModel.getOrgVersionNumber(), measure.isDraft()));
 		manageMeasureDetailModel.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
 		manageMeasureDetailModel.setDraft(measure.isDraft());
@@ -1049,8 +1048,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		model.setName(measure.getDescription());
 		model.setShortName(measure.getaBBRName());
 		model.setMeasScoring(measure.getMeasureScoring());
-		model.setVersionNumberInt(MeasureUtility.formatVersionText(measure.getVersion()));		
-		model.setOrgVersionNumber(measure.getVersion());
+		model.setOrgVersionNumber(MeasureUtility.formatVersionText(String.valueOf(measure.getVersionNumber())));
 		model.setVersionNumber(MeasureUtility.getVersionText(model.getOrgVersionNumber(), measure.isDraft()));
 		model.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
 		model.setDraft(measure.isDraft());

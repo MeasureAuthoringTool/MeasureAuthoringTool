@@ -61,7 +61,6 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	private String orgVersionNumber;
 	
 	//Below fields are added for Castor mapping XML generation purpose
-	private String versionNumberInt;	
 	private String qltyMeasureSetUuid;
 	private String stewardUuid;
 	private String scoringAbbr;
@@ -726,18 +725,6 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	}
 
 	/**
-	 * @return the versionNumberInt
-	 */
-	public String getVersionNumberInt() {
-		return versionNumberInt;
-	}
-	/**
-	 * @param versionNumberInt the versionNumberInt to set
-	 */
-	public void setVersionNumberInt(String versionNumberInt) {
-		this.versionNumberInt = versionNumberInt;
-	}
-	/**
 	 * @return the qltyMeasureSetUuid
 	 */
 	public String getQltyMeasureSetUuid() {
@@ -837,7 +824,6 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				+ ", measurePopulation=" + measurePopulation
 				+ ", measureObservations=" + measureObservations
 				+ ", eMeasureId=" + eMeasureId + ", versionNumberInt="
-				+ versionNumberInt + ", qltyMeasureSetUuid="
 				+ qltyMeasureSetUuid + ", stewardUuid=" + stewardUuid
 				+ ", scoringAbbr=" + scoringAbbr + ", periodModel="
 				+ (periodModel != null ? periodModel.toString() : null) + ", endorsement=" + endorsement

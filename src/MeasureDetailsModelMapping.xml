@@ -36,7 +36,7 @@
       <bind-xml name="guid" node="element"/>
     </field>
    
-    <field name="versionNumberInt"
+    <field name="orgVersionNumber"
            type="java.lang.String">
       <bind-xml name="version" node="element"/>
     </field>

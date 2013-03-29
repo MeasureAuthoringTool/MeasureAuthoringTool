@@ -1097,33 +1097,34 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	public ArrayList<QualityDataSetDTO> getAppliedQualityDTOList(String measureId){
 		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
-		logger.info("MeasureXML fetched ==== " + measureXmlModel.getXml());
 		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
 		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
 		
-		if(details.getQualityDataDTO()!=null && details.getQualityDataDTO().size()!=0){
-			System.out.println("==============  details.getQualityDataDTO().size() ================"+ details.getQualityDataDTO().size());
-			for(QualityDataSetDTO dataSetDTO: details.getQualityDataDTO()){
-				if(dataSetDTO.getCodeListName() !=null)
-					finalList.add(dataSetDTO);
+		if(details !=null ){
+		
+			if(details.getQualityDataDTO()!=null && details.getQualityDataDTO().size()!=0){
+				logger.info(" details.getQualityDataDTO().size() :"+ details.getQualityDataDTO().size());
+				for(QualityDataSetDTO dataSetDTO: details.getQualityDataDTO()){
+					if(dataSetDTO.getCodeListName() !=null)
+						finalList.add(dataSetDTO);
+				}
 			}
-			//finalList.addAll(details.getQualityDataDTO());
-		}
-		if(details.getQualityDataDTOList_I()!=null && details.getQualityDataDTOList_I().size()!=0){
-			System.out.println("==============  details.getQualityDataDTOList_I.size() ================"+ details.getQualityDataDTOList_I().size());
-			finalList.addAll(details.getQualityDataDTOList_I());
-		}
-		if(details.getQualityDataDTOList_M()!=null && details.getQualityDataDTOList_M().size()!=0){
-			finalList.addAll(details.getQualityDataDTOList_M());
-			System.out.println("==============  details.getQualityDataDTOList_M.size() ================"+ details.getQualityDataDTOList_M().size());
-		}
-		Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
-			@Override
-			public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
-				return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
+			if(details.getQualityDataDTOList_I()!=null && details.getQualityDataDTOList_I().size()!=0){
+				logger.info(" details.getQualityDataDTOList_I.size() ::"+ details.getQualityDataDTOList_I().size());
+				finalList.addAll(details.getQualityDataDTOList_I());
 			}
-		});
-		System.out.println("==============  finalList() ================"+ finalList.size());
+			if(details.getQualityDataDTOList_M()!=null && details.getQualityDataDTOList_M().size()!=0){
+				finalList.addAll(details.getQualityDataDTOList_M());
+				logger.info(" details.getQualityDataDTOList_M.size() ::"+ details.getQualityDataDTOList_M().size());
+			}
+			Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
+				@Override
+				public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
+					return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
+				}
+			});
+		}
+		logger.info("finalList()of QualityDataSetDTO ::"+ finalList.size());
 		return finalList;
 	}
 	

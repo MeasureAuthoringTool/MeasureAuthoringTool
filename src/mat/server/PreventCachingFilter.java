@@ -62,7 +62,8 @@ public class PreventCachingFilter implements Filter{
 			else {
 				chain.doFilter(request, response);
 			}
-		}else if (requestURI.contains(".nocache.")) {
+		}
+		else if (requestURI.contains("mat.nocache.")) {
 			   Date now = new Date();
 			   httpResponse.setDateHeader("Date", now.getTime());
 			   // one day old

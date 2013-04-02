@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -65,7 +66,6 @@ import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 
 
@@ -631,7 +631,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 
 	
 	private void setOrgIdInAuthor(List<Author> authors){
-		if(CollectionUtils.isNotEmpty(authors)){
+		//if(CollectionUtils.isNotEmpty(authors)){
+		if(authors != null && authors.size() > 0){
 			for (Author author : authors) {
 				String oid = getService().retrieveStewardOID(author.getAuthorName().trim());
 				author.setOrgId(oid != null && !oid.equals("") ? oid : UUID.randomUUID().toString());

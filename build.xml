@@ -17,6 +17,16 @@
         <fileset dir="war/WEB-INF/lib" includes="*.jar" />
     </path>
 	
+	<pathconvert property="manifest.classpath" pathsep=" ">
+			  <path refid="build.classpath"/>
+			  <mapper>
+			    <chainedmapper>
+			       <flattenmapper/>
+			       <globmapper from="*.jar" to="MeasureAuthoringTool/WEB-INF/lib/*.jar"/>
+			    </chainedmapper>
+			  </mapper>
+	</pathconvert>
+	
 	<property name="PMD.home" location="war/WEB-INF"/>
 	<property name="pmddoc" location="${output.dir}/pmddoc" />
 	<taskdef name="pmd" classname="net.sourceforge.pmd.ant.PMDTask">
@@ -200,6 +210,7 @@
         <mkdir dir="${web.output.dir}/META-INF"/>
         <manifest file="${web.output.dir}/META-INF/MANIFEST.MF">
             <attribute name="Built-By" value="${user.name}"/>
+        	<attribute name="Class-Path" value="${manifest.classpath}"/>
          </manifest>
     	<mkdir dir="${output.war.dir}"/>
         <jar destfile="${output.file}" basedir="${web.output.dir}" manifest="${web.output.dir}/META-INF/MANIFEST.MF"></jar>

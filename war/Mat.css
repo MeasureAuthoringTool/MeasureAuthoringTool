@@ -1031,8 +1031,8 @@ padding: 2px;
 }
 
 .msg-alert {
- /*background: #FFC url("images/alert.png") no-repeat 6px 20%;*/
- background-image: url("images/alert.png");
+ /*background: #FFC url("images/alert.png") no-repeat 6px 20%;
+ background-image: url('images/alert.png');*/
  background-repeat: no-repeat;
  background-position: 6px;
  background-color: #FFC;

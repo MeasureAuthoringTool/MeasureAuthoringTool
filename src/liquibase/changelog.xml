@@ -118,5 +118,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint_08_Task_MAT996.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_09_US_MAT1155.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_09_US_MAT1155_UPDATE.xml"/>
-		
+		<include file="classpath:/liquibase/deploy_Sprint_11_US_MAT1053.xml"/>
 	</databaseChangeLog>

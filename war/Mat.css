@@ -1127,14 +1127,47 @@ padding: 2px;
 	padding-bottom:10px;
 }
 
-.leftAndTopPadding{
+.leftAndTopPadding{	
 	padding-left: 12px;
 	padding-top: 10px;
 }
 
+.popupMenuBar{
+	background: #888888;
+	box-shadow: 2px 2px 4px #888888; 
+	font-weight: normal;
+	font-size: 0.75em;
+	padding: 2px;
+}
+
+.popup {
+  background-color: #D4D0C8;
+  border-color: #D4D0C8 #D4D0C8 #D4D0C8 #D4D0C8;
+  border-width: 1px 3px 3px 1px;
+  border-style: solid solid solid solid;
+}
+ 
+.gwt-MenuBar {
+  cursor: default !important;
+}
+.gwt-MenuBar .gwt-MenuItem {
+  cursor: default !important;
+  font-size: 75% !important;
+  padding: 1px 2px 2px 2px !important;
+}
+.gwt-MenuBar .gwt-MenuItem-selected {
+  background: #D4D0C8 !important;
+}
+
+.gwt-MenuBar-vertical {
+  margin-top: 0px;
+  margin-left: 0px;
+  background: #F0F0F0 !important;
+  fontsoze
+}
 
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
-/*_____________________________________________________________*/
+/*_____________________________________________________________
 .skiplist {margin: 0 0 0 5px; padding: 0} 
 .skip {display: none; font-family: verdana, sans-serif; text-align: center; margin: 0; padding: 0; position: absolute} /*All incl Opera*/
 /* * html */ .skip {display: block} /*Seen by IE*/

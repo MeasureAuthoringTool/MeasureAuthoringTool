@@ -28,7 +28,7 @@ public class XmlTreePresenter {
 	    @Source("mat/client/images/addAllRight.png")
 	    ImageResource cellTreeOpenItem();
 */
-	    @Source("mat/client/images/MyCellTree.css")
+	    @Source("mat/client/images/CwCellTree.css")
 	    CellTree.Style cellTreeStyle();
 	    
 	    /*@Source("mat/client/images/cms_gov_footer.png")

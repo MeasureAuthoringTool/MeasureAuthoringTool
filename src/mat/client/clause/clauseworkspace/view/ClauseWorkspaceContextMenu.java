@@ -31,7 +31,6 @@ public class ClauseWorkspaceContextMenu {
 	public ClauseWorkspaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		this.xmlTreeDisplay = treeDisplay;
 		this.popupPanel = popPanel;
-		
 		Command copyCmd = new Command() {
 			  public void execute( ) {
 				  popupPanel.hide();
@@ -40,13 +39,6 @@ public class ClauseWorkspaceContextMenu {
 		};
 		copyMenu = new MenuItem("Copy", true, copyCmd);
 		
-		Command pasteCmd = new Command() {
-			  public void execute( ) {
-				  popupPanel.hide();
-				  xmlTreeDisplay.paste("","");
-			  }
-		};
-		pasteMenu = new MenuItem("Paste", true, pasteCmd);
 		
 		Command deleteCmd = new Command() {
 			  public void execute( ) {
@@ -63,7 +55,8 @@ public class ClauseWorkspaceContextMenu {
 		popupPanel.clear();
 		copyMenu.setEnabled(false);
 		deleteMenu.setEnabled(false);
-		pasteMenu.setEnabled(false);
+		
+		
 		switch (selectedNode.getNodeType()) {
 		
 		case CellTreeNode.ROOT_NODE:
@@ -71,22 +64,39 @@ public class ClauseWorkspaceContextMenu {
 				  public void execute( ) {
 					  popupPanel.hide();
 					  String clauseNodeName = ClauseConstants.getClauseTypeNodeName(selectedNode.getName());
-					  String name = clauseNodeName + getNextHighestSequence(selectedNode) ;
-					  String label = ClauseConstants.get(clauseNodeName) +" "+ getNextHighestSequence(selectedNode) ;
-					  xmlTreeDisplay.addNode(name, label, CellTreeNode.CLAUSE_NODE);
+					  int seqNumber = getNextHighestSequence(selectedNode);
+					  String name = clauseNodeName + seqNumber ;
+					  String label = ClauseConstants.get(clauseNodeName) +" "+ seqNumber ;
+					  CellTreeNode clauseNode = xmlTreeDisplay.addNode(name, label, CellTreeNode.CLAUSE_NODE, xmlTreeDisplay.getSelectedNode());					  
+//					  clauseNode.createChild(ClauseConstants.AND, ClauseConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
 				  }
 			};
 			addMenu = new MenuItem(getAddMenuName(selectedNode) , true, addNodeCmd);
+			Command pasteCmd = new Command() {
+				  public void execute( ) {
+					  popupPanel.hide();
+					  String clauseNodeName = ClauseConstants.getClauseTypeNodeName(selectedNode.getName());
+					  int seqNumber = getNextHighestSequence(selectedNode);
+					  String name = clauseNodeName + seqNumber ;
+					  String label = ClauseConstants.get(clauseNodeName) +" "+ seqNumber ;
+					  xmlTreeDisplay.paste(name, label);
+				  }
+			};
+			pasteMenu = new MenuItem("Paste", true, pasteCmd);
 			popupMenuBar.addItem(addMenu);
+			
 			addCommonMenus();
 			addMenu.setEnabled(true);
 			copyMenu.setEnabled(false);
 			deleteMenu.setEnabled(false);
 			pasteMenu.setEnabled(canShowPaste());
+			
 			break;
 		
 		case CellTreeNode.CLAUSE_NODE:
 			copyMenu.setEnabled(true);
+			pasteMenu.setEnabled(false);
+			deleteMenu.setEnabled(true);//with options
 			addCommonMenus();
 			break;
 		

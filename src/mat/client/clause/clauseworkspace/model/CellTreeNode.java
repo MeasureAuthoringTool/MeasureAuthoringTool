@@ -11,6 +11,8 @@ public interface CellTreeNode {
 	
 	short CLAUSE_NODE = 3;
 	
+	short LOGICAL_OP_NODE = 4;
+	
 	public CellTreeNode appendChild(CellTreeNode child);
 	
 	public CellTreeNode removeChild(CellTreeNode child);
@@ -40,15 +42,7 @@ public interface CellTreeNode {
 	public String getLabel();
 	
 	public void setLabel(String label);
-	
-	public boolean isRemovable();
-	
-	public void setRemovable(boolean isRemovable);
-	
-	public boolean isEditable();
-	
-	public boolean setEditable(boolean isEditable);
-	
+		
 	public List<CellTreeNode> getChilds();
 	
 	public void setChilds(List<CellTreeNode> childs);

@@ -26,7 +26,7 @@ public interface XmlTreeDisplay {
 		
 		public CellTreeNode getSelectedNode();
 		
-		public void addNode(String name, String label, short nodeType);
+		public CellTreeNode addNode(String name, String label, short nodeType, CellTreeNode cellTreeNode);
 
 		public void removeNode();
 		

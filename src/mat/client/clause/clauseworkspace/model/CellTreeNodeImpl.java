@@ -14,11 +14,7 @@ public class CellTreeNodeImpl implements CellTreeNode{
 	private String label;
 	
 	private boolean isOpen;
-	
-	private boolean isEditable = true;// this should not be used once we have the complete celltree functionality
-	
-	private boolean isRemovable = true;
-	
+
 	private short nodeType;
 
 
@@ -62,8 +58,6 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		cellTreeNode.setLabel(label);
 		cellTreeNode.setNodeType(CellTreeNode.CLAUSE_NODE);
 		cellTreeNode.setOpen(true);
-		cellTreeNode.setRemovable(true);
-		cellTreeNode.setEditable(true);
 		this.setOpen(true);//open parent
 		return appendChild(cellTreeNode);
 	}
@@ -123,10 +117,9 @@ public class CellTreeNodeImpl implements CellTreeNode{
 
 	private CellTreeNode createCopyOfTreeModel(CellTreeNode model) {
 		CellTreeNode copyModel = new CellTreeNodeImpl();
-		copyModel.setEditable(model.isEditable());
 		copyModel.setLabel(model.getLabel());
 		copyModel.setName(model.getName());
-		copyModel.setRemovable(model.isRemovable());
+		copyModel.setNodeType(model.getNodeType());
 		return copyModel;
 	}
 
@@ -164,28 +157,4 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		this.label = label;
 	}
 
-	@Override
-	public boolean isRemovable() {
-		return this.isRemovable;
-	}
-
-
-	@Override
-	public void setRemovable(boolean isRemovable) {
-		this.isRemovable = isRemovable;
-		
-	}
-
-
-	@Override
-	public boolean isEditable() {
-		return this.isEditable;
-	}
-
-
-	@Override
-	public boolean setEditable(boolean isEditable) {
-		return this.isEditable = isEditable;
-	}
-	
 }

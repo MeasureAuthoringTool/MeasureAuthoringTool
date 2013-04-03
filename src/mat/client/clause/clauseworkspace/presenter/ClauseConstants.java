@@ -11,7 +11,13 @@ public class ClauseConstants {
 	
 	private static final String[] POPULATIONS = {"initialPatientPopulations", "numerators", "numeratorExclusions", "denominators", "denominatorExclusions", "denominatorExceptions", "measurePopulations"};
 	
-	private static final String AND = "<logOp type=\"AND\">";
+	public static final String LOG_OP = "logicalOp";
+	
+	public static final String STRATA = "strata";
+	
+	public static final String CLAUSE_TYPE = "clause";
+	
+	public static final String AND = "AND";
 	
 	
 	static{

@@ -1,13 +1,9 @@
 package mat.client.clause.clauseworkspace.view;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.LabelBuilder;
+import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 
 import com.google.gwt.cell.client.AbstractCell;
@@ -24,19 +20,12 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
-import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.MenuBar;
-import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -52,20 +41,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	private Button saveBtn = new Button("Save");
 	
-	private Button createNodeBtn = new Button("Submit");
-	
-	private Button createAttrBtn = new Button("Submit");
-	
-	private Button removeNode = new Button("remove");
-	
-	private Button editNode = new Button("Edit");
-	
-	private TextBox nodeTex = new TextBox();
-	
-	private TextBox attrName = new TextBox();
-	
-	private TextBox attrValue = new TextBox();
-	
 	private Button expand = new Button("+");
 	
 	private Button collapse = new Button("-");
@@ -73,8 +48,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 	
 	private SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
-	
-	boolean enabled;
 	
 	private ListDataProvider<CellTreeNode> nodeDataProvider;
 	
@@ -87,6 +60,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	PopupPanel popupPanel = new PopupPanel(true);
 	
 	ClauseWorkspaceContextMenu clauseWorkspaceContextMenu = new ClauseWorkspaceContextMenu(this, popupPanel);
+	
+	boolean enabled;
 	
 	public XmlTreeView(CellTreeNode cellTreeNode) {
 		clearMessages();
@@ -109,8 +84,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param cellTree
 	 */
 	public void createPageView(CellTree cellTree) {
-//		createPopupMenu();
-//		createContextMenu();
 		this.cellTree = cellTree;
 		mainPanel.setStyleName("div-wrapper");//main div
 		
@@ -129,55 +102,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		expand.setSize("25px", "25px");
 		collapse.setSize("25px", "25px");
 		collapse.setVisible(false);
+		
 		treePanel.add(expandCollapse);
 		treePanel.add(cellTree);
 		leftPanel.add(treePanel);
-		
-		VerticalPanel buttonPanel =  new VerticalPanel();// has all inputs and buttons which is in right div
-		buttonPanel.add(new HTML("</br>"));
-		Label addNode = new Label("Add Node");
-		addNode.setStyleName("leftAligned leftpadding4px bottomPadding10px labelStyling");
-		buttonPanel.add(addNode);
-		
-		HorizontalPanel nodePanel = new HorizontalPanel();
-		nodePanel.setSize("60%", "100%");
-		nodePanel.setSpacing(2);
-		nodeTex.setWidth("100px");
-		nodeTex.setHeight("20px");
-		nodePanel.add(nodeTex);
-		
-		nodePanel.add(createNodeBtn);
-		buttonPanel.add(nodePanel);
-		
-		buttonPanel.add(new HTML("</br>"));
-		HorizontalPanel attrPanel = new HorizontalPanel();
-		attrPanel.setSpacing(3);
-		Label addAttribute = new Label("Add Attribute");
-		addAttribute.setStyleName("leftAligned leftpadding4px bottomPadding10px labelStyling");
-		buttonPanel.add(addAttribute);
-		
-		attrPanel.add(LabelBuilder.buildRequiredLabel(new HTML(), "Name"));
-		attrPanel.add(attrName);
-		attrName.setSize("50px", "20px");
-		
-		attrPanel.add(LabelBuilder.buildRequiredLabel(new HTML(), "Value"));
-		attrPanel.add(attrValue);
-		attrValue.setSize("90px", "20px");
-		
-		attrPanel.add(createAttrBtn);
-		buttonPanel.add(attrPanel);
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.setSpacing(5);
-		
-		horizontalPanel.add(editNode);			
-		horizontalPanel.add(removeNode);		
-		buttonPanel.add(horizontalPanel);
-		
-		rightPanel.add(buttonPanel);
-		
+
 		SimplePanel bottomSavePanel = new SimplePanel();
 		bottomSavePanel.setStyleName("div-first");
 		VerticalPanel savePanel = new VerticalPanel();
+		savePanel.add(new SpacerWidget());
 		savePanel.add(errorMessageDisplay);
 		savePanel.add(successMessageDisplay);
 		savePanel.add(saveBtn);
@@ -200,36 +133,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				selectedNode = selectionModel.getSelectedObject();
-				if(enabled){
-					createAttrBtn.setEnabled(true);
-					createNodeBtn.setEnabled(true);
-					editNode.setEnabled(true);
-					removeNode.setEnabled(true);
-				}
-				clearMessages();
-				if(selectedNode != null){
-					editNode.setEnabled(selectedNode.isEditable());
-					removeNode.setEnabled(selectedNode.isRemovable());
-					
-					if(selectedNode.getName().equals("attributes")){// if selected node is Attribute, disable Editing or creating child Element Node for this
-						createNodeBtn.setEnabled(false);
-					}
-					
-					if(selectedNode.getParent().getParent() == null){// if Root node is selected disable remove button.
-						removeNode.setEnabled(false);
-					}
-					if(selectedNode.getParent().getName().equals("attributes")){// if selected value is a attribute value, set the text boxes with the value
-						attrName.setText(selectedNode.getName().split("=")[0]);
-						attrValue.setText(selectedNode.getName().split("=")[1]);
-						nodeTex.setText(null);
-						createAttrBtn.setEnabled(false);
-						createNodeBtn.setEnabled(false);
-					}else{// set the nodeText text box with the selected Tree node.
-						nodeTex.setText(selectedNode.getLabel() != null ? selectedNode.getLabel() : selectedNode.getName());
-						attrName.setText(null);
-						attrValue.setText(null);
-					}
-				}
 			}
 		});
 		
@@ -334,82 +237,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	private void addHandlers(){
 		
-		createNodeBtn.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				clearMessages();
-				addNode(nodeTex.getValue(), nodeTex.getValue(), CellTreeNode.CLAUSE_NODE); //NodeType have to be changed.. Temprorily setting
-			}
-
-		});
-		
-		removeNode.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				clearMessages();
-				removeNode();
-			}
-		});
-		
-		editNode.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				clearMessages();
-				if(selectedNode != null){
-					if(selectedNode.getParent() != null && selectedNode.getParent().getName().equals("attributes")
-							&& attrName.getValue().trim().length() > 0 && attrValue.getValue().trim().length() > 0){
-						selectedNode.setName(attrName.getValue() + " = " + attrValue.getValue());
-						selectedNode.setLabel(attrName.getValue() + " = " + attrValue.getValue());
-					}else{
-						selectedNode.setName(nodeTex.getValue());
-						selectedNode.setLabel(nodeTex.getValue());
-					}
-				}
-				 closeParentOpenNodes(cellTree.getRootTreeNode());
-				 nodeDataProvider.refresh();
-				 selectionModel.setSelected(selectedNode, true);
-			}
-		});
-		
-		createAttrBtn.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				clearMessages();
-				if(selectedNode != null && attrName.getValue() != null
-						&& attrName.getValue().trim().length() > 0 && attrValue.getValue().trim().length() > 0){//if the Attribute name and Attribute value text box is not empty
-					CellTreeNode child = new CellTreeNodeImpl();// creating TreeModel Object with name and value concatenated with "="
-					child.setName(attrName.getValue() + " = " + attrValue.getValue());
-					if(selectedNode.getName().equals("attributes")){// if the selected node name is attributes, add child directly to it
-						addChild(selectedNode, child);
-					}else if(selectedNode.getChilds() == null || selectedNode.getChilds().size() == 0 ||
-							!(selectedNode.getChilds().get(0).getName().equals("attributes"))){// if selected node is not having any childs or having other childs which are not Attributes
-						List<CellTreeNode> treeChild = null;
-						if(selectedNode.getChilds() == null){
-							treeChild = new ArrayList<CellTreeNode>();
-						}else{
-							treeChild = selectedNode.getChilds();
-						}
-						CellTreeNode attr = new CellTreeNodeImpl();// create a child node named Attribute under the selected node
-						attr.setName("attributes");
-						treeChild.add(0, attr);//setting attribute node as the first node.
-						selectedNode.setChilds(treeChild);
-						attr.setParent(selectedNode);
-						addChild(attr, child);
-						attr.setOpen(true);
-					}else if(selectedNode.getChilds().get(0).getName().equals("attributes")){// if selected node has Attribute node
-						addChild(selectedNode.getChilds().get(0), child);
-					}
-					 selectedNode.setOpen(true);
-					 selectedNode.getChilds().get(0).setOpen(true);
-					 closeSelectedOpenNodes(cellTree.getRootTreeNode());
-					 selectionModel.setSelected(selectedNode, true);
-				}
-			}
-		});
-		
 		expand.addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
@@ -419,9 +247,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}
 		});
 		
-		
 		collapse.addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
@@ -430,24 +256,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				collapse.setVisible(false);
 			}
 		});
-	}
-	
-	
-	/**
-	 * Adding child object to the list and setting it to the Parent object
-	 * @param parent
-	 * @param child
-	 */
-	private void addChild(CellTreeNode parent, CellTreeNode child){
-		if(parent.getChilds() == null){// if parent has no child
-        	ArrayList<CellTreeNode> treeChild = new ArrayList<CellTreeNode>();//create child list
-        	treeChild.add(child);//add child
-        	parent.setChilds(treeChild);//set child list to parent
-        	child.setParent(parent);// set parent to child
-	     }else{// if parent has children
-        	parent.getChilds().add(child);// add child to the existing childern
-        	child.setParent(parent);//set parent to child
-	     }
 	}
 	
 	
@@ -506,13 +314,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 
 	 
 	 @Override
-		public void addNode(String value, String label, short nodeType) {
+		public CellTreeNode addNode(String value, String label, short nodeType, CellTreeNode selectedNode) {
+		 CellTreeNode childNode = null;
 			if(selectedNode != null &&  value != null && value.trim().length() > 0){//if nodeTex textbox is not empty
-				selectedNode.createChild(value, label, nodeType);
+				childNode = selectedNode.createChild(value, label, nodeType);
 	        	closeSelectedOpenNodes(cellTree.getRootTreeNode());
 				selectionModel.setSelected(selectedNode, true);					
 			}
-			
+			return childNode;
 		}
 
 
@@ -531,120 +340,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 public void onRightClick(CellTreeNode value, Event event, Element element) {
 		 selectedNode = value;
 		 selectionModel.setSelected(selectedNode, true);
-		 
-			int x = element.getAbsoluteRight() - 10;
-			  int y = element.getAbsoluteBottom() + 5;
-			  popupPanel.setPopupPosition(x, y);
-			  popupPanel.show();
-			  popupPanel.setStyleName("popup");
-			  clauseWorkspaceContextMenu.displayMenuItems(selectedNode, popupPanel);
+		 int x = element.getAbsoluteRight() - 10;
+		 int y = element.getAbsoluteBottom() + 5;
+		 popupPanel.setPopupPosition(x, y);
+		 popupPanel.show();
+		 popupPanel.setStyleName("popup");
+		 clauseWorkspaceContextMenu.displayMenuItems(selectedNode, popupPanel);
 	}
 		
-	 Command copy = new Command() {
-		  public void execute( ) {
-			  popupPanel.hide();
-			  if(selectedNode != null ){
-	             copiedNode = selectedNode;
-			 }
-		  }
-	};
-	
-	Command paste = new Command() {
-		  public void execute( ) {
-			  popupPanel.hide();
-			  if(selectedNode != null){//if nodeTex textbox is not empty
-//					CellTreeNode pasteNode = XmlConversionlHelper.copyCellTreeNode(copiedNode);
-					CellTreeNode pasteNode = copiedNode.cloneNode();
-					selectedNode.appendChild(pasteNode);
-					closeSelectedOpenNodes(cellTree.getRootTreeNode());
-					selectionModel.setSelected(selectedNode, true);					
-					/*if(selectedNode.getChilds() != null){
-						selectedNode.getChilds().add(pasteNode);
-					}else{
-						List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
-						childs.add(pasteNode);
-						selectedNode.setChilds(childs);
-					}*/
-//				pasteNode.setParent(selectedNode);
-//				selectedNode.setOpen(true);
-            	closeSelectedOpenNodes(cellTree.getRootTreeNode());
-					selectionModel.setSelected(selectedNode, true);					
-				}
-		  }
-	};
-	 
-	 
-	 Command showAddNode = new Command() {
-		  public void execute( ) {
-			  popupPanel.hide();
-			  if(selectedNode != null &&  nodeTex.getValue() != null && nodeTex.getValue().trim().length() > 0){//if nodeTex textbox is not empty
-//					ListDataProvider<CellTreeNode> dataprovider = mapDataProvider.get(selectedNode);
-					CellTreeNode child = new CellTreeNodeImpl(); //Create a TreeModel child Object
-				 	child.setName(nodeTex.getValue());
-                  addChild(selectedNode, child);
-                  selectedNode.setOpen(true);
-//              	dataprovider.refresh(); // this will work some times,
-              	getNodeInfo(selectedNode); // to update the mapDataProvider we are calling this.
-              	closeSelectedOpenNodes(cellTree.getRootTreeNode());
-					selectionModel.setSelected(selectedNode, true);					
-				}
-		  }
-	};
-	
-	/*Command showRemoveNode = new Command() {
-		  public void execute( ) {
-			  popupPanel.hide();
-			  if(selectedNode != null){
-//					ListDataProvider<CellTreeNode> dataprovider = mapDataProvider.get(selectedNode);
-                  dataprovider.getList().remove(selectedNode);// remove the selected Object from ListDataProvider and Refresh
-                  dataprovider.refresh();
-                  dataprovider.flush();
-                  closeParentOpenNodes(cellTree.getRootTreeNode());
-					selectionModel.setSelected(selectedNode.getParent(), true);
-				}
-		  }
-	};*/
-	
-	Command showEditNode = new Command() {
-		  public void execute( ) {
-			  popupPanel.hide();
-			  if(selectedNode != null){
-					if(selectedNode.getParent() != null && selectedNode.getParent().getName().equals("attributes")
-							&& attrName.getValue().trim().length() > 0 && attrValue.getValue().trim().length() > 0){
-						selectedNode.setName(attrName.getValue() + " = " + attrValue.getValue());
-					}else{
-						selectedNode.setName(nodeTex.getValue());
-					}
-				}
-				 closeParentOpenNodes(cellTree.getRootTreeNode());
-				 nodeDataProvider.refresh();
-				 selectionModel.setSelected(selectedNode, true);
-		  }
-	};
-		
-	
-	 private void createPopupMenu() {
-		  MenuBar popupMenuBar = new MenuBar(true);
-		  MenuItem addNode = new MenuItem("Add Node", true, showAddNode);
-//		  MenuItem removeNode = new MenuItem("Remove Node", true, showRemoveNode);
-		  MenuItem editNode = new MenuItem("Edit Node", true, showEditNode);
-		  MenuItem copyNode = new MenuItem("Copy", true, copy);
-		  MenuItem pasteNode = new MenuItem("Paste", true, paste);
-		  
-		 
-		  popupPanel.setStyleName("popup");
-		  
-		  popupMenuBar.addItem(addNode);
-//		  popupMenuBar.addItem(removeNode);
-		  popupMenuBar.addItem(editNode);
-		  popupMenuBar.addItem(copyNode);
-		  popupMenuBar.addItem(pasteNode);
-		 
-		  popupMenuBar.setVisible(true);
-		  
-		  popupPanel.add(popupMenuBar);
-	}
-	
 	 
 	 
 	@Override
@@ -687,28 +390,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	@Override
 	public void setEnabled(boolean enabled) {
-		nodeTex.setEnabled(enabled);
-		createAttrBtn.setEnabled(enabled);
-		createNodeBtn.setEnabled(enabled);
-		attrName.setEnabled(enabled);
-		attrValue.setEnabled(enabled);
-		editNode.setEnabled(enabled);
-		removeNode.setEnabled(enabled);
 		saveBtn.setEnabled(enabled);
 		this.enabled = enabled;
 	}
 
-
-	public CellTree getCellTree() {
-		return cellTree;
-	}
-
-
-	public void setCellTree(CellTree cellTree) {
-		this.cellTree = cellTree;
-	}
-
-
+	
 	@Override
 	public CellTreeNode getSelectedNode() {
 		return this.selectedNode;
@@ -739,5 +425,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return this.copiedNode;
 	}
 
+
+	public CellTree getCellTree() {
+		return cellTree;
+	}
+
+
+	public void setCellTree(CellTree cellTree) {
+		this.cellTree = cellTree;
+	}
+
+
+	
 
 }

@@ -93,7 +93,7 @@ public class ClauseWorkspaceContextMenu {
 			addCommonMenus();
 			copyMenu.setEnabled(true);
 			pasteMenu.setEnabled(false);
-			deleteMenu.setEnabled(true);//with options
+			deleteMenu.setEnabled(canShowDelete());//with options
 			break;
 		
 		case CellTreeNode.LOGICAL_OP_NODE:	
@@ -179,5 +179,12 @@ public class ClauseWorkspaceContextMenu {
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean canShowDelete(){
+		 if(xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1){
+			 return true;
+		 }
+		 return false;
 	}
 }

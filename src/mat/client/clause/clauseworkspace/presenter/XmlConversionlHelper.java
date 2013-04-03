@@ -193,7 +193,7 @@ public class XmlConversionlHelper {
 			cellTreeNodeName = nodeName;
 			cellTreeNodeLabel = ClauseConstants.get(nodeName);			
 		}else if(type.equalsIgnoreCase(ClauseConstants.CLAUSE_TYPE)){
-			cellTreeNodeType =  CellTreeNode.ROOT_NODE;
+			cellTreeNodeType =  CellTreeNode.CLAUSE_NODE;
 			cellTreeNodeName = nodeName;
 			cellTreeNodeLabel = splitAndGetLabel(nodeName, node.getParentNode().getNodeName());
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.LOG_OP)){

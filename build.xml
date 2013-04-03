@@ -232,7 +232,7 @@
 	<target name="pmd" depends="init">
 		<pmd>
 		<formatter type="html" toFile="${pmddoc}/pmd_src_report.html" toConsole="true"/>
-	    <ruleset>rulesets/java/basic.xml</ruleset> 
+	    <ruleset>rulesets/basic.xml</ruleset> 
         <fileset dir="src/mat">
             <include name="**/*.java"/>     
         </fileset>

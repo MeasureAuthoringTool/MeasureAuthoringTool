@@ -56,7 +56,7 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		CellTreeNode cellTreeNode = new CellTreeNodeImpl();
 		cellTreeNode.setName(name);
 		cellTreeNode.setLabel(label);
-		cellTreeNode.setNodeType(CellTreeNode.CLAUSE_NODE);
+		cellTreeNode.setNodeType(nodeType);
 		cellTreeNode.setOpen(true);
 		this.setOpen(true);//open parent
 		return appendChild(cellTreeNode);

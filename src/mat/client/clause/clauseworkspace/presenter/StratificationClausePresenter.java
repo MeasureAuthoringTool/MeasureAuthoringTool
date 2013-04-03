@@ -11,7 +11,7 @@ public class StratificationClausePresenter extends XmlTreePresenter implements M
 	
 	SimplePanel panel = new SimplePanel();
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
-	private static final String STRATIFICATION = "stratification";
+	private static final String STRATIFICATION = "strata";
 	
 	public StratificationClausePresenter() {
 		setRootNode(STRATIFICATION);

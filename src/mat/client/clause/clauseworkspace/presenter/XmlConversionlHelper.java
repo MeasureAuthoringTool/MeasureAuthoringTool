@@ -3,7 +3,8 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.client.clause.clauseworkspace.model.TreeModel;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.shared.MatContext;
 
 import com.google.gwt.xml.client.Document;
@@ -21,12 +22,12 @@ public class XmlConversionlHelper {
 	
 	
 	/**
-	 * Creates TreeModel object which has list of children objects and a parent object from the XML
+	 * Creates CellTreeNode object which has list of children objects and a parent object from the XML
 	 * @param xml
-	 * @return TreeModel
+	 * @return CellTreeNode
 	 */ 
-	public static TreeModel createTreeModel(String xml, String tagName){
-		TreeModel parentParent = new TreeModel();
+	public static CellTreeNode createCellTreeNode(String xml, String tagName){
+		CellTreeNode parentParent = new CellTreeNodeImpl();
 		Node node = null;
 		String shortTitle = MatContext.get().getCurrentShortName();
 		measureTitle = shortTitle;
@@ -45,7 +46,7 @@ public class XmlConversionlHelper {
 			
 			if(node != null){
 				parentParent.setName(node.getNodeName());
-				List<TreeModel> childs = new ArrayList<TreeModel>();
+				List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
 				createChilds(parentParent, node, childs);
 			}
 			
@@ -54,10 +55,11 @@ public class XmlConversionlHelper {
 			parentParent.setName(tagName);
 			parentParent.setEditable(false);
 			parentParent.setRemovable(false);
-			TreeModel child = new TreeModel();
+			CellTreeNode child = new CellTreeNodeImpl();
 			child.setEditable(false);
-			List<TreeModel> childs = new ArrayList<TreeModel>();
+			List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
 			setChildObject(parentParent, child, tagName, childs);
+			child.setNodeType(CellTreeNode.ROOT_NODE);
 			createStaticChilds(tagName, child);
 			parentParent.setChilds(childs);
 		}
@@ -65,14 +67,14 @@ public class XmlConversionlHelper {
 	}
 	
 	
-	private static void createStaticChilds(String tagName, TreeModel parent){
-		List<TreeModel> childs = new ArrayList<TreeModel>();
+	private static void createStaticChilds(String tagName, CellTreeNode parent){
+		List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
 		if("populations".equals(tagName)){
 			for (int i = 0; i < ClauseConstants.getPopulationsChildren().length; i++) {
-				TreeModel child = createChild(ClauseConstants.getPopulationsChildren()[i], parent, false, false);
+				CellTreeNode child = createChild(ClauseConstants.getPopulationsChildren()[i], parent, false, false);
 				childs.add(child);
 				String key = ClauseConstants.getPopulationsChildren()[i] + "" + 1;				
-				List<TreeModel> subChilds = new ArrayList<TreeModel>();
+				List<CellTreeNode> subChilds = new ArrayList<CellTreeNode>();
 				subChilds.add(createChild(key, child, false, false));
 				child.setChilds(subChilds);
 			}
@@ -81,16 +83,16 @@ public class XmlConversionlHelper {
 			String key = "measureObservations1";		
 			childs.add(createChild(key, parent, false, false));
 			parent.setChilds(childs);
-		}else if("stratification".equals(tagName)){
-			String key = "stratification1";		
-			childs.add(createChild(key, parent, false, false));
-			parent.setChilds(childs);
+		}else if("strata".equals(tagName)){
+//			String key = "stratification1";		
+//			childs.add(createChild(key, parent, false, false));
+//			parent.setChilds(childs);
 		}
 		
 	}
 	
-	private static TreeModel createChild(String name, TreeModel parent, boolean isEditable, boolean isRemovable){
-		TreeModel child = new TreeModel();
+	private static CellTreeNode createChild(String name, CellTreeNode parent, boolean isEditable, boolean isRemovable){
+		CellTreeNode child = new CellTreeNodeImpl();
 		child.setName(name);
 		child.setLabel(ClauseConstants.get(name));
 		child.setParent(parent);
@@ -100,14 +102,14 @@ public class XmlConversionlHelper {
 	}
 	
 	/**
-	 * Creating all TreeModel Child Objects
-	 * @param treeModel Parent Object
+	 * Creating all CellTreeNode Child Objects
+	 * @param cellTreeNode Parent Object
 	 * @param root Xml Node
-	 * @param childs List of Childs for @TreeModel
+	 * @param childs List of Childs for @CellTreeNode
 	 */
-	private static void createChilds(TreeModel parent, Node root, List<TreeModel> childs){
+	private static void createChilds(CellTreeNode parent, Node root, List<CellTreeNode> childs){
 		
-		TreeModel child = new TreeModel();//child Object
+		CellTreeNode child = new CellTreeNodeImpl();//child Object
 		String name = null;
 		if(root.getNodeName().equalsIgnoreCase("#text")){//if node is an Value node
 			name = root.getNodeValue().replaceAll("\n\r", "").trim();
@@ -120,17 +122,17 @@ public class XmlConversionlHelper {
 		}
 		
 		if(root.getNodeType() == root.ELEMENT_NODE && root.hasAttributes()){// if Attribute node
-			ArrayList<TreeModel> attrChilds = new ArrayList<TreeModel>();// List will contain only one Object with name as "attribute"
-			TreeModel attr = new TreeModel();
+			ArrayList<CellTreeNode> attrChilds = new ArrayList<CellTreeNode>();// List will contain only one Object with name as "attribute"
+			CellTreeNode attr = new CellTreeNodeImpl();
 			attr.setEditable(false);
 			setChildObject(child, attr, "attributes", attrChilds);// create attribute child for top child
 			NamedNodeMap namedNodeMap = root.getAttributes();
-			ArrayList<TreeModel> attrChildChilds = null;
+			ArrayList<CellTreeNode> attrChildChilds = null;
 			for (int j = 0; j < namedNodeMap.getLength(); j++) {// iterate through All Attribute values
 				if(j == 0){
-					attrChildChilds = new ArrayList<TreeModel>();
+					attrChildChilds = new ArrayList<CellTreeNode>();
 				}
-				TreeModel attrModel = new TreeModel();
+				CellTreeNode attrModel = new CellTreeNodeImpl();
 				String attrValue = namedNodeMap.item(j).getNodeName() +" = " +namedNodeMap.item(j).getNodeValue();				
 				setChildObject(attr, attrModel, attrValue, attrChildChilds); // create childs for AttributeChild
 			}
@@ -148,7 +150,7 @@ public class XmlConversionlHelper {
 		for(int i = 0; i < nodes.getLength(); i++){
 			if(i == 0){
 				if(child.getChilds() == null){ 
-					childs = new ArrayList<TreeModel>();
+					childs = new ArrayList<CellTreeNode>();
 				}else{
 					childs  = child.getChilds();
 				}
@@ -161,7 +163,7 @@ public class XmlConversionlHelper {
 		}
 	}
 	
-	private static void setChildObject(TreeModel parent, TreeModel child, String name, List<TreeModel> childs){
+	private static void setChildObject(CellTreeNode parent, CellTreeNode child, String name, List<CellTreeNode> childs){
 		child.setName(name);//set the name to Child
 		child.setLabel(ClauseConstants.get(name));
 		childs.add(child);// add child to child list
@@ -177,7 +179,7 @@ public class XmlConversionlHelper {
 	 * Creating XML from GWT tree using GWT Document object
 	 * @return XML String
 	 */
-	public static String createXmlFromTree(TreeModel model){
+	public static String createXmlFromTree(CellTreeNode model){
 		Document doc = XMLParser.createDocument();
 		if(model != null){
 			return NAMESPACE_XML + createXmlFromTree(model, doc, null, null);
@@ -196,26 +198,26 @@ public class XmlConversionlHelper {
 	 * @param element
 	 * @return
 	 */
-	private static String createXmlFromTree(TreeModel treeModel, Document doc, Node node,
+	private static String createXmlFromTree(CellTreeNode cellTreeNode, Document doc, Node node,
 			Element element) {
-		String nodetext = treeModel.getName();
+		String nodetext = cellTreeNode.getName();
 
 		if (null == element) {//First Node creation. Executed for the First time
 			element = doc.createElement(nodetext);
 			node = doc.appendChild(element);
 		} else {// if nodeText is not null
 			if (nodetext.equalsIgnoreCase("attributes")) {// if Attributes
-				if(treeModel.getChilds() != null){
-					for (TreeModel attrChild : treeModel.getChilds()) {
+				if(cellTreeNode.getChilds() != null){
+					for (CellTreeNode attrChild : cellTreeNode.getChilds()) {
 						String[] attrPair = attrChild.getName()
 								.split("=");// concat with "="
 						element.setAttribute(attrPair[0].trim(), attrPair[1].trim());// set it to the element as Attribute.
 					}	
 				}
 				
-			} else if (treeModel.getParent() == null	|| !treeModel.getParent().getName()
+			} else if (cellTreeNode.getParent() == null	|| !cellTreeNode.getParent().getName()
 							.equalsIgnoreCase("attributes")) {		// if not atrributes 		 
-				if (treeModel.getChilds() == null || treeModel.getChilds().size() == 0) {// if child count is 0 then consider this as XML value text, else it will be node.
+				if (cellTreeNode.getChilds() == null || cellTreeNode.getChilds().size() == 0) {// if child count is 0 then consider this as XML value text, else it will be node.
 					node.appendChild(doc.createTextNode(nodetext));
 				} else {
 					element = doc.createElement(nodetext);
@@ -224,11 +226,48 @@ public class XmlConversionlHelper {
 			}
 		}
 
-		if(treeModel.getChilds() != null && treeModel.getChilds().size() > 0){
-			for (TreeModel model : treeModel.getChilds()) {
+		if(cellTreeNode.getChilds() != null && cellTreeNode.getChilds().size() > 0){
+			for (CellTreeNode model : cellTreeNode.getChilds()) {
 				createXmlFromTree(model, doc, node, element);
 			}
 		}
 		return doc.toString();
 	}
+	
+	
+	
+	public static CellTreeNode copyCellTreeNode(CellTreeNode model){
+		CellTreeNode copyModel = createCopyOfCellTreeNode(model);
+		if(model.getChilds() != null){			
+			createCopyChilds(model.getChilds(), copyModel);
+		}
+		return copyModel;
+	}
+
+
+	private static void createCopyChilds(List<CellTreeNode> childs,
+			CellTreeNode parent) {
+		List<CellTreeNode> newChilds = new ArrayList<CellTreeNode>();
+		for (CellTreeNode cellTreeNode : childs) {
+			CellTreeNode child = createCopyOfCellTreeNode(cellTreeNode);
+			child.setParent(parent);
+			newChilds.add(child);
+			parent.setChilds(newChilds);
+			if(cellTreeNode.getChilds() != null && cellTreeNode.getChilds().size() > 0){
+				createCopyChilds(cellTreeNode.getChilds(), child);
+			}
+		}
+	}
+
+
+	private static CellTreeNode createCopyOfCellTreeNode(CellTreeNode model) {
+		CellTreeNode copyModel = new CellTreeNodeImpl();
+		copyModel.setEditable(model.isEditable());
+		copyModel.setLabel(model.getLabel());
+		copyModel.setName(model.getName());
+		copyModel.setRemovable(model.isRemovable());
+		return copyModel;
+	}
+	
+	
 }

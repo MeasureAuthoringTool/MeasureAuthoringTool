@@ -15,6 +15,8 @@ public class TreeModel {
 	private boolean isEditable = true;
 	
 	private boolean isRemovable = true;
+	
+	private boolean isOpen;
 
 
 	public TreeModel() {}
@@ -87,5 +89,19 @@ public class TreeModel {
 	 */
 	public void setRemovable(boolean isRemovable) {
 		this.isRemovable = isRemovable;
+	}
+
+	/**
+	 * @return the isOpen
+	 */
+	public boolean isOpen() {
+		return isOpen;
+	}
+
+	/**
+	 * @param isOpen the isOpen to set
+	 */
+	public void setOpen(boolean isOpen) {
+		this.isOpen = isOpen;
 	}
 }

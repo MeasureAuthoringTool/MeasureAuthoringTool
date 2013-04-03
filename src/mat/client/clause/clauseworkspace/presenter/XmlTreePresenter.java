@@ -2,21 +2,40 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.clause.clauseworkspace.model.TreeModel;
-import mat.client.clause.clauseworkspace.presenter.ClauseWorkspacePresenter.XmlTreeDisplay;
 import mat.client.clause.clauseworkspace.view.XmlTreeView;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.resources.client.ImageResource.ImageOptions;
+import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 public class XmlTreePresenter {
 	
+	
+	interface TreeResources extends CellTree.Resources {
+	    @Source("mat/client/images/addAllLeft.png")
+	    ImageResource cellTreeClosedItem();
+
+	    @Source("mat/client/images/addAllRight.png")
+	    ImageResource cellTreeOpenItem();
+
+	    @Source("mat/client/images/MyCellTree.css")
+	    CellTree.Style cellTreeStyle();
+	    
+	    @Source("mat/client/images/cms_gov_footer.png")
+	    @ImageOptions(repeatStyle = RepeatStyle.Horizontal, flipRtl = true)
+	    ImageResource cellTreeSelectedBackground();
+	} 
+
 	XmlTreeDisplay xmlTreeDisplay;
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	private static final String MEASURE = "measure";
@@ -34,10 +53,12 @@ public class XmlTreePresenter {
 						public void onSuccess(MeasureXmlModel result) {
 							panel.clear();
 							String xml = result != null ? result.getXml() : null;
-							XmlTreeView xmlTreeView = new XmlTreeView(XmlConversionlHelper.createTreeModel(xml, rootNode));
-							CellTree cellTree = new CellTree(xmlTreeView, null);
+							XmlTreeView xmlTreeView = new XmlTreeView(XmlConversionlHelper.createCellTreeNode(xml, rootNode));//converts XML to TreeModel Object and sets to XmlTreeView
+//							CellTree cellTree = new CellTree(xmlTreeView, null);
+							CellTree.Resources resource = GWT.create(TreeResources.class); 
+							CellTree cellTree = new CellTree(xmlTreeView, null, resource);// CellTree Creation
 							cellTree.setDefaultNodeSize(500);// this will get rid of the show more link on the bottom of the Tree
-							xmlTreeView.createPageView(cellTree);
+							xmlTreeView.createPageView(cellTree); // Page Layout
 							xmlTreeDisplay = (XmlTreeDisplay) xmlTreeView;
 							xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 							panel.add(xmlTreeDisplay.asWidget());
@@ -71,8 +92,8 @@ public class XmlTreePresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
-				TreeModel model = (TreeModel) xmlTreeDisplay.getXmlTree().getRootTreeNode().getChildValue(0);
-				MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper.createXmlFromTree(model));
+				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay.getXmlTree().getRootTreeNode().getChildValue(0);
+				MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper.createXmlFromTree(cellTreeNode));
 				
 				service.saveMeasureXml(measureXmlModel,
 					new AsyncCallback<Void>() {

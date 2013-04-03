@@ -22,18 +22,18 @@ public class XmlTreePresenter {
 	
 	
 	interface TreeResources extends CellTree.Resources {
-	    @Source("mat/client/images/addAllLeft.png")
+	   /* @Source("mat/client/images/addAllLeft.png")
 	    ImageResource cellTreeClosedItem();
 
 	    @Source("mat/client/images/addAllRight.png")
 	    ImageResource cellTreeOpenItem();
-
+*/
 	    @Source("mat/client/images/MyCellTree.css")
 	    CellTree.Style cellTreeStyle();
 	    
-	    @Source("mat/client/images/cms_gov_footer.png")
+	    /*@Source("mat/client/images/cms_gov_footer.png")
 	    @ImageOptions(repeatStyle = RepeatStyle.Horizontal, flipRtl = true)
-	    ImageResource cellTreeSelectedBackground();
+	    ImageResource cellTreeSelectedBackground();*/
 	} 
 
 	XmlTreeDisplay xmlTreeDisplay;

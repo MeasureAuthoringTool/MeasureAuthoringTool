@@ -314,7 +314,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 
 	 
 	 @Override
-		public CellTreeNode addNode(String value, String label, short nodeType, CellTreeNode selectedNode) {
+		public CellTreeNode addNode(String value, String label, short nodeType) {
 		 CellTreeNode childNode = null;
 			if(selectedNode != null &&  value != null && value.trim().length() > 0){//if nodeTex textbox is not empty
 				childNode = selectedNode.createChild(value, label, nodeType);
@@ -324,7 +324,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			return childNode;
 		}
 
+	   @Override
+	 	public void refreshCellTreeAfterAdding(CellTreeNode selectedNode){
+	 		closeSelectedOpenNodes(cellTree.getRootTreeNode());
+			selectionModel.setSelected(selectedNode, true);			
+	 	}
+	 
 
+	   
 		@Override
 		public void removeNode() {
 			if(selectedNode != null){
@@ -345,7 +352,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		 popupPanel.setPopupPosition(x, y);
 		 popupPanel.show();
 		 popupPanel.setStyleName("popup");
-		 clauseWorkspaceContextMenu.displayMenuItems(selectedNode, popupPanel);
+		 clauseWorkspaceContextMenu.displayMenuItems(popupPanel);
 	}
 		
 	 
@@ -408,11 +415,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 
 	@Override
-	public void paste(String name, String label) {
+	public void paste() {
 		if(selectedNode != null){
 			CellTreeNode pasteNode = copiedNode.cloneNode();
-			pasteNode.setName(name);
-			pasteNode.setLabel(label);
 			selectedNode.appendChild(pasteNode);
 			closeSelectedOpenNodes(cellTree.getRootTreeNode());
 			selectionModel.setSelected(selectedNode, true);		

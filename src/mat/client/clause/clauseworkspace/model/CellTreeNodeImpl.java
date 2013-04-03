@@ -120,6 +120,7 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		copyModel.setLabel(model.getLabel());
 		copyModel.setName(model.getName());
 		copyModel.setNodeType(model.getNodeType());
+		copyModel.setOpen(model.isOpen());		
 		return copyModel;
 	}
 

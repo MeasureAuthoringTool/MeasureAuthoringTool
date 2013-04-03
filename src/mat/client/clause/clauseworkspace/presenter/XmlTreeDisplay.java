@@ -26,14 +26,16 @@ public interface XmlTreeDisplay {
 		
 		public CellTreeNode getSelectedNode();
 		
-		public CellTreeNode addNode(String name, String label, short nodeType, CellTreeNode cellTreeNode);
+		public CellTreeNode addNode(String name, String label, short nodeType);
 
 		public void removeNode();
 		
 		public void copy();
 		
-		public void paste(String name, String label);
+		public void paste();
 		
 		public CellTreeNode getCopiedNode();
+
+		void refreshCellTreeAfterAdding(CellTreeNode selectedNode);
 		
 	}

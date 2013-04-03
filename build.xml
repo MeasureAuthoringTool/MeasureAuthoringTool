@@ -17,7 +17,7 @@
         <fileset dir="war/WEB-INF/lib" includes="*.jar" />
     </path>
 	
-	<pathconvert property="manifest.classpath" pathsep=" ">
+	<!--<pathconvert property="manifest.classpath" pathsep=" ">
 			  <path refid="build.classpath"/>
 			  <mapper>
 			    <chainedmapper>
@@ -25,7 +25,7 @@
 			       <globmapper from="*.jar" to="MeasureAuthoringTool/WEB-INF/lib/*.jar"/>
 			    </chainedmapper>
 			  </mapper>
-	</pathconvert>
+	</pathconvert>-->
 	
 	<property name="PMD.home" location="war/WEB-INF"/>
 	<property name="pmddoc" location="${output.dir}/pmddoc" />
@@ -210,14 +210,14 @@
         <mkdir dir="${web.output.dir}/META-INF"/>
         <manifest file="${web.output.dir}/META-INF/MANIFEST.MF">
             <attribute name="Built-By" value="${user.name}"/>
-        	<attribute name="Class-Path" value="${manifest.classpath}"/>
+        	<!--<attribute name="Class-Path" value="${manifest.classpath}"/>-->
          </manifest>
     	<mkdir dir="${output.war.dir}"/>
+    	<delete file="${web.output.dir}/WEB-INF/lib/gwt-dev.jar"/>
         <jar destfile="${output.file}" basedir="${web.output.dir}" manifest="${web.output.dir}/META-INF/MANIFEST.MF"></jar>
     	<antcall target="pmd"/>
     	<!--<antcall target="JUnit-report" /> -->
     	<antcall target="checksum"/>
-    	
     </target>
 	
 	<!-- Save Checksum of war file after creating war file  -->
@@ -232,11 +232,10 @@
 	<target name="pmd" depends="init">
 		<pmd>
 		<formatter type="html" toFile="${pmddoc}/pmd_src_report.html" toConsole="true"/>
-	    <ruleset>rulesets/basic.xml</ruleset> 
+	    <ruleset>rulesets/java/basic.xml</ruleset> 
         <fileset dir="src/mat">
             <include name="**/*.java"/>     
         </fileset>
 	  </pmd>
 	</target>
-	
 </project>

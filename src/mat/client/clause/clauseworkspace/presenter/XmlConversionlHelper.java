@@ -39,7 +39,8 @@ public class XmlConversionlHelper {
 			}
 			if(node != null){
 				parentParent.setName(tagName);
-				createChilds(parentParent, node, childs);
+//				createChilds(parentParent, node, childs);
+				createCellTreeNodeChilds(parentParent, node, childs);
 			}
 		}
 		if(node == null){
@@ -71,12 +72,17 @@ public class XmlConversionlHelper {
 			parent.setName(tagName);
 			parent.setLabel(ClauseConstants.get(tagName));
 			parent.setNodeType(CellTreeNode.ROOT_NODE);
+			CellTreeNode clauseNode = createChild("measureObservation", "Stratum 1", CellTreeNode.CLAUSE_NODE, parent);
+			childs.add(clauseNode);
 			parent.setChilds(childs);
+			List<CellTreeNode> logicalOp = new ArrayList<CellTreeNode>();
+			logicalOp.add(createChild("AND", "AND", CellTreeNode.LOGICAL_OP_NODE, clauseNode));
+			clauseNode.setChilds(logicalOp);
 		}else if("strata".equalsIgnoreCase(tagName)){
-			parent.setName(tagName);
+			parent.setName(ClauseConstants.get(tagName));
 			parent.setLabel(ClauseConstants.get(tagName));
 			parent.setNodeType(CellTreeNode.ROOT_NODE);
-			CellTreeNode clauseNode = createChild("stratum1", "Stratum 1", CellTreeNode.CLAUSE_NODE, parent);
+			CellTreeNode clauseNode = createChild("Stratum 1", "Stratum 1", CellTreeNode.CLAUSE_NODE, parent);
 			childs.add(clauseNode);
 			parent.setChilds(childs);
 			List<CellTreeNode> logicalOp = new ArrayList<CellTreeNode>();
@@ -85,7 +91,6 @@ public class XmlConversionlHelper {
 		}
 		return parent;
 	}
-	
 	
 	
 	private static CellTreeNode createChild(String name, String label, short nodeType, CellTreeNode parent){
@@ -103,7 +108,7 @@ public class XmlConversionlHelper {
 	 * @param root Xml Node
 	 * @param childs List of Childs for @CellTreeNode
 	 */
-	private static void createChilds(CellTreeNode parent, Node root, List<CellTreeNode> childs){
+	/*private static void createChilds(CellTreeNode parent, Node root, List<CellTreeNode> childs){
 		
 		CellTreeNode child = new CellTreeNodeImpl();//child Object
 		String name = null;
@@ -135,6 +140,37 @@ public class XmlConversionlHelper {
 			}
 		}
 	}
+	*/
+	
+	private static void createCellTreeNodeChilds(CellTreeNode parent, Node root, List<CellTreeNode> childs){
+		String nodeName = root.getNodeName();
+		String nodeValue = root.hasAttributes() ? root.getAttributes().getNamedItem("displayName").getNodeValue() : nodeName;
+		
+		CellTreeNode child = new CellTreeNodeImpl();//child Object
+		if(nodeValue.length() > 0){
+			setCellTreeNodeValues(root, parent, child, childs);// Create complete child Object with parent and sub Childs
+		}
+
+		
+		
+		parent.setChilds(childs);// set parent's childs
+		NodeList nodes = root.getChildNodes();// get Child nodes for the Processed node and repeat the process
+		for(int i = 0; i < nodes.getLength(); i++){
+			if(i == 0){
+				if(child.getChilds() == null){ 
+					childs = new ArrayList<CellTreeNode>();
+				}else{
+					childs  = child.getChilds();
+				}
+			}
+			Node node = nodes.item(i);
+			String name = node.getNodeName().replaceAll("\n\r", "").trim();
+			if(!(name.equalsIgnoreCase("#text") && name.isEmpty())){	
+				createCellTreeNodeChilds(child, node, childs);
+			}
+		}
+		
+	}
 	
 	
 	/**
@@ -144,7 +180,8 @@ public class XmlConversionlHelper {
 	public static String createXmlFromTree(CellTreeNode model){
 		Document doc = XMLParser.createDocument();
 		if(model != null){
-			return NAMESPACE_XML + createXmlFromTree(model, doc, null);
+			String returnXml = NAMESPACE_XML + createXmlFromTree(model, doc, null);
+			return returnXml;
 		}
 		
 		return null;
@@ -168,7 +205,7 @@ public class XmlConversionlHelper {
 		}else{
 			node = doc.appendChild(element);
 		}
-
+		
 		if(cellTreeNode.getChilds() != null && cellTreeNode.getChilds().size() > 0){
 			for (CellTreeNode model : cellTreeNode.getChilds()) {
 				createXmlFromTree(model, doc, node);
@@ -182,26 +219,19 @@ public class XmlConversionlHelper {
 	
 	private static void setCellTreeNodeValues(Node node, CellTreeNode parent, CellTreeNode child, List<CellTreeNode> childs){
 		String nodeName = node.getNodeName();
-		String type = node.hasAttributes() ? node.getAttributes().getNamedItem("type").getNodeValue() : null;
-		String cellTreeNodeName = null;
-		String cellTreeNodeLabel = null;
+		String nodeValue = node.hasAttributes() ? node.getAttributes().getNamedItem("displayName").getNodeValue() : nodeName;
 		short cellTreeNodeType = 0;
 		
 		if(nodeName.equalsIgnoreCase(ClauseConstants.STRATA)){
-			cellTreeNodeType =  CellTreeNode.ROOT_NODE;
-			cellTreeNodeName = nodeName;
-			cellTreeNodeLabel = ClauseConstants.get(nodeName);			
-		}else if(null != type && type.equalsIgnoreCase(ClauseConstants.CLAUSE_TYPE)){
+			cellTreeNodeType =  CellTreeNode.ROOT_NODE;				
+		}else if(nodeName.equalsIgnoreCase(ClauseConstants.CLAUSE_TYPE)){
 			cellTreeNodeType =  CellTreeNode.CLAUSE_NODE;
-			cellTreeNodeName = nodeName;
-			cellTreeNodeLabel = splitAndGetLabel(nodeName, node.getParentNode().getNodeName());
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.LOG_OP)){
-			cellTreeNodeType = CellTreeNode.LOGICAL_OP_NODE;
-			cellTreeNodeName = node.getAttributes().getNamedItem("type").getNodeValue();
-			cellTreeNodeLabel = cellTreeNodeName;
+			cellTreeNodeType = CellTreeNode.LOGICAL_OP_NODE;			
 		}
-		child.setName(cellTreeNodeName);//set the name to Child
-		child.setLabel(cellTreeNodeLabel);
+		
+		child.setName(nodeValue);//set the name to Child
+		child.setLabel(nodeValue);
 		child.setNodeType(cellTreeNodeType);		
 		child.setParent(parent);// set parent in child
 		childs.add(child);// add child to child list
@@ -212,14 +242,17 @@ public class XmlConversionlHelper {
 		Element element = null;
 		switch (cellTreeNode.getNodeType()) {
 		case CellTreeNode.ROOT_NODE:
-			element = document.createElement(cellTreeNode.getName());
+			element = document.createElement(ClauseConstants.get(cellTreeNode.getName()));
+			element.setAttribute("displayName", cellTreeNode.getName());
 			break;
 		case CellTreeNode.CLAUSE_NODE:
-			element = document.createElement(cellTreeNode.getName());
-			element.setAttribute("type", ClauseConstants.CLAUSE_TYPE);
+			element = document.createElement(ClauseConstants.CLAUSE_TYPE);
+			element.setAttribute("displayName", cellTreeNode.getName());
+			element.setAttribute("type", cellTreeNode.getName().split(" ")[0]);
 			break;
 		case CellTreeNode.LOGICAL_OP_NODE:
 			element = document.createElement(ClauseConstants.LOG_OP);
+			element.setAttribute("displayName", cellTreeNode.getName());
 			element.setAttribute("type", cellTreeNode.getName());
 			break;
 		default:

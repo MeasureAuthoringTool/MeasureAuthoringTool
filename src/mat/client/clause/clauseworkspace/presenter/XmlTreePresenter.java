@@ -83,6 +83,7 @@ public class XmlTreePresenter {
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
 		exportModal.setToReplaceNode(rootNode);
 		exportModal.setParentNode(MEASURE);
+		System.out.println("XML "+xml);
 		exportModal.setXml(xml);
 		return exportModal;
 	}

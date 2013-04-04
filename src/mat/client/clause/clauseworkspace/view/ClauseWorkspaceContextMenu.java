@@ -67,7 +67,7 @@ public class ClauseWorkspaceContextMenu {
 					  
 				  }
 			};
-			addMenu = new MenuItem(getAddMenuName(xmlTreeDisplay.getSelectedNode()) , true, addNodeCmd);
+			addMenu = new MenuItem(getAddMenuName(xmlTreeDisplay.getSelectedNode().getChilds().get(0)) , true, addNodeCmd);
 			Command pasteCmd = new Command() {
 				  public void execute( ) {
 					  popupPanel.hide();
@@ -106,26 +106,23 @@ public class ClauseWorkspaceContextMenu {
 	}
 	
 	protected void pasteItem() {
-		String clauseNodeName = ClauseConstants.getClauseTypeNodeName(xmlTreeDisplay.getSelectedNode().getName());
+		String clauseNodeName = xmlTreeDisplay.getCopiedNode().getName();
 	    int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
-	    String name = clauseNodeName + seqNumber ;
-	    String label = ClauseConstants.get(clauseNodeName) +" "+ seqNumber ;
-	  
+	    String name = clauseNodeName.split(" ")[0] + " " + seqNumber ;
 	    CellTreeNode pasteNode = xmlTreeDisplay.getCopiedNode().cloneNode();
 	    pasteNode.setName(name);
-	    pasteNode.setLabel(label);
+	    pasteNode.setLabel(name);
 	    xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);
 	    xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}
 
 
 	protected void addItem() {
-	    String clauseNodeName = ClauseConstants.getClauseTypeNodeName(xmlTreeDisplay.getSelectedNode().getName());
+	    String clauseNodeName = xmlTreeDisplay.getSelectedNode().getChilds().get(0).getName();
 	    int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
-	    String name = clauseNodeName + seqNumber ;
-	    String label = ClauseConstants.get(clauseNodeName) +" "+ seqNumber ;
+	    String name = clauseNodeName.split(" ")[0] + " " + seqNumber ;
 	  
-	    CellTreeNode clauseNode  = xmlTreeDisplay.getSelectedNode().createChild(name, label, CellTreeNode.CLAUSE_NODE);
+	    CellTreeNode clauseNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.CLAUSE_NODE);
 	    clauseNode.createChild(ClauseConstants.AND, ClauseConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
 	    xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}
@@ -141,8 +138,8 @@ public class ClauseWorkspaceContextMenu {
 	
 	
 	private String getAddMenuName(CellTreeNode selectedNode){
-		 String clauseNodeName = ClauseConstants.getClauseTypeNodeName(selectedNode.getName());
-		return "Add" + " " + ClauseConstants.get(clauseNodeName);
+		 String clauseNodeName = selectedNode.getName();
+		return "Add" + " " +  clauseNodeName.split(" ")[0];
 	}
 	
 	
@@ -153,8 +150,7 @@ public class ClauseWorkspaceContextMenu {
 		if(selectedNode.getNodeType() == CellTreeNode.ROOT_NODE){
 			if(selectedNode.hasChildren()){
 				for (CellTreeNode treeNode : selectedNode.getChilds()) {
-					String name = treeNode.getName();
-					String clauseNodeName = name.replace(ClauseConstants.getClauseTypeNodeName(selectedNode.getName()), "");
+					String clauseNodeName = treeNode.getName().split(" ")[1];
 					try {
 						lastInt = Integer.parseInt(clauseNodeName);
 					} catch (Exception e) {

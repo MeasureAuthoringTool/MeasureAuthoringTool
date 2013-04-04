@@ -19,6 +19,9 @@ public class ClauseConstants {
 	
 	public static final String AND = "AND";
 	
+	public static final String TYPE_STRATUM = "stratum";
+	
+	
 	
 	static{
 		constantsMap.put("populations", "Populations");
@@ -32,6 +35,7 @@ public class ClauseConstants {
 		constantsMap.put("denominatorExceptions", "Denominator Exceptions");
 		constantsMap.put("measurePopulations", "Measure Populations");
 		constantsMap.put("stratum", "Stratum");
+		constantsMap.put("Stratification", "strata");
 		createDefaultChildren();
 		createClauseTypeNodeNameMap();
 	}
@@ -42,6 +46,7 @@ public class ClauseConstants {
 	
 	private static void createClauseTypeNodeNameMap() {
 		childMap.put("strata", "stratum");
+		childMap.put("measureObservations", "measureObservation");
 	}
 
 	public static String getClauseTypeNodeName(String key){

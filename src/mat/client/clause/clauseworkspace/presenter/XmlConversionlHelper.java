@@ -111,7 +111,7 @@ public class XmlConversionlHelper {
 	
 	private static void createCellTreeNodeChilds(CellTreeNode parent, Node root, List<CellTreeNode> childs){
 		String nodeName = root.getNodeName();
-		String nodeValue = root.hasAttributes() ? root.getAttributes().getNamedItem("displayName").getNodeValue() : nodeName;
+		String nodeValue = root.hasAttributes() ? root.getAttributes().getNamedItem(ClauseConstants.DISPLAY_NAME).getNodeValue() : nodeName;
 		
 		CellTreeNode child = new CellTreeNodeImpl();//child Object
 		if(nodeValue.length() > 0){
@@ -187,7 +187,7 @@ public class XmlConversionlHelper {
 	
 	private static void setCellTreeNodeValues(Node node, CellTreeNode parent, CellTreeNode child, List<CellTreeNode> childs){
 		String nodeName = node.getNodeName();
-		String nodeValue = node.hasAttributes() ? node.getAttributes().getNamedItem("displayName").getNodeValue() : nodeName;
+		String nodeValue = node.hasAttributes() ? node.getAttributes().getNamedItem(ClauseConstants.DISPLAY_NAME).getNodeValue() : nodeName;
 		short cellTreeNodeType = 0;
 		if(nodeName.equalsIgnoreCase(ClauseConstants.MASTER_ROOT_NODE_POPULATION)){
 			cellTreeNodeType =  CellTreeNode.MASTER_ROOT_NODE;				
@@ -212,21 +212,21 @@ public class XmlConversionlHelper {
 		switch (cellTreeNode.getNodeType()) {
 		case CellTreeNode.MASTER_ROOT_NODE:
 			element = document.createElement(ClauseConstants.get(cellTreeNode.getName()));
-			element.setAttribute("displayName", cellTreeNode.getName());
+			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 			break;
 		case CellTreeNode.ROOT_NODE:
 			element = document.createElement(ClauseConstants.get(cellTreeNode.getName()));
-			element.setAttribute("displayName", cellTreeNode.getName());
+			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 			break;
 		case CellTreeNode.CLAUSE_NODE:
 			element = document.createElement(ClauseConstants.CLAUSE_TYPE);
-			element.setAttribute("displayName", cellTreeNode.getName());
-			element.setAttribute("type", cellTreeNode.getName().substring(0, cellTreeNode.getName().lastIndexOf(" ")));
+			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
+			element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName().substring(0, cellTreeNode.getName().lastIndexOf(" "))));
 			break;
 		case CellTreeNode.LOGICAL_OP_NODE:
 			element = document.createElement(ClauseConstants.LOG_OP);
-			element.setAttribute("displayName", cellTreeNode.getName());
-			element.setAttribute("type", cellTreeNode.getName());
+			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
+			element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
 			break;
 		default:
 			element = document.createElement(cellTreeNode.getName());
@@ -237,8 +237,20 @@ public class XmlConversionlHelper {
 	
 	
 	
-	private static String splitAndGetLabel(String nodeName, String parentName){
-		String clauseName = nodeName.replace(ClauseConstants.getClauseTypeNodeName(parentName), "");
-		return ClauseConstants.get(ClauseConstants.getClauseTypeNodeName(parentName)) + " " + clauseName;
+	private static String toCamelCase(String name){
+	   name = name.toLowerCase();
+	   String[] parts = name.split(" ");
+	   String camelCaseString = parts[0].substring(0,1).toLowerCase() + parts[0].substring(1);
+	   for (int i = 1; i < parts.length; i++) {		   
+	      camelCaseString = camelCaseString + toProperCase(parts[i]);
+	   }
+	   return camelCaseString;
 	}
+
+	private static String toProperCase(String s) {
+	    return s.substring(0, 1).toUpperCase() +
+	               s.substring(1).toLowerCase();
+	}
+	
+	
 }

@@ -8,7 +8,6 @@ import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
-import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
@@ -192,7 +191,7 @@ public class XmlConversionlHelper {
 			cellTreeNodeType =  CellTreeNode.ROOT_NODE;
 			cellTreeNodeName = nodeName;
 			cellTreeNodeLabel = ClauseConstants.get(nodeName);			
-		}else if(type.equalsIgnoreCase(ClauseConstants.CLAUSE_TYPE)){
+		}else if(null != type && type.equalsIgnoreCase(ClauseConstants.CLAUSE_TYPE)){
 			cellTreeNodeType =  CellTreeNode.CLAUSE_NODE;
 			cellTreeNodeName = nodeName;
 			cellTreeNodeLabel = splitAndGetLabel(nodeName, node.getParentNode().getNodeName());

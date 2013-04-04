@@ -59,6 +59,9 @@ public class ClauseWorkspaceContextMenu {
 		
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 		
+		case CellTreeNode.MASTER_ROOT_NODE:
+			 popupPanel.hide();
+		     break;
 		case CellTreeNode.ROOT_NODE:
 			Command addNodeCmd = new Command() {
 				  public void execute( ) {
@@ -98,9 +101,9 @@ public class ClauseWorkspaceContextMenu {
 		
 		case CellTreeNode.LOGICAL_OP_NODE:	
 			 popupPanel.hide();
-			 
+			 break;
+		
 		default:
-			
 			break;
 		}
 	}
@@ -170,7 +173,8 @@ public class ClauseWorkspaceContextMenu {
 	
 	private boolean canShowPaste(){
 		if(xmlTreeDisplay.getCopiedNode() != null 
-				&& xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.CLAUSE_NODE){
+				&& xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.CLAUSE_NODE
+				&& xmlTreeDisplay.getCopiedNode().getParent().equals(xmlTreeDisplay.getSelectedNode())){
 			return true;
 		}
 		return false;

@@ -3,46 +3,38 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ClauseConstants {
+public class ClauseConstants{
 
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
 	
 	private static Map<String, String> childMap = new HashMap<String, String>();
 	
-	private static final String[] POPULATIONS = {"initialPatientPopulations", "numerators", "numeratorExclusions", "denominators", "denominatorExclusions", "denominatorExceptions", "measurePopulations"};
+	private static final String[] POPULATIONS = {"Initial Patient Populations", "Numerators", "Numerator Exclusions", "Denominators", "Denominator Exclusions", "Denominator Exceptions", "Measure Populations"};
 	
 	public static final String LOG_OP = "logicalOp";
-	
-	public static final String STRATA = "strata";
 	
 	public static final String CLAUSE_TYPE = "clause";
 	
 	public static final String AND = "AND";
+	public static final String MASTER_ROOT_NODE_POPULATION = "Populations";
 	
-	public static final String TYPE_STRATUM = "stratum";
-	
-	public static final String ROOT_NODES = "|strata|measureObservations|";
-	
-	
-	
-	
-	
+	public static final String ROOT_NODES = "|strata|measureObservations|numerators|denominators|numeratorExclusions|denominatorExclusions|denominatorExceptions|initialPatientPopulations|measurePopulations";
 	static{
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");
 		constantsMap.put("strata", "Stratification");
-		constantsMap.put("initialPatientPopulations", "Initial Patient Populations");
-		constantsMap.put("numerators", "Numerators");
-		constantsMap.put("numeratorExclusions", "Numerator Exclusions");
-		constantsMap.put("denominators", "Denominators");
-		constantsMap.put("denominatorExclusions", "Denominator Exclusions");
-		constantsMap.put("denominatorExceptions", "Denominator Exceptions");
-		constantsMap.put("measurePopulations", "Measure Populations");
-		constantsMap.put("stratum", "Stratum");
 		constantsMap.put("Stratification", "strata");
 		constantsMap.put("Measure Observations", "measureObservations");
-		createDefaultChildren();
-		createClauseTypeNodeNameMap();
+		constantsMap.put("Initial Patient Populations", "initialPatientPopulations");
+		constantsMap.put("Numerators", "numerators");
+		constantsMap.put("Denominators", "denominators");
+		constantsMap.put("Denominator Exclusions", "denominatorExclusions");
+		constantsMap.put("Denominator Exceptions", "denominatorExceptions");
+		constantsMap.put("Measure Populations", "measurePopulations");
+		constantsMap.put("Numerator Exclusions", "numeratorExclusions");
+		constantsMap.put("Populations", "populations");
+		//createDefaultChildren();
+		//createClauseTypeNodeNameMap();
 	}
 	
 	public static String get(String key){
@@ -50,7 +42,14 @@ public class ClauseConstants {
 	}
 	
 	private static void createClauseTypeNodeNameMap() {
-		childMap.put("strata", "stratum");
+		childMap.put("strata", "stratum");		
+		childMap.put("numerators", "numerator");
+		childMap.put("initialPatientPopulations", "initialPatientPopulation");
+		childMap.put("numeratorExclusions", "numeratorExclusion");
+		childMap.put("denominators", "denominator");
+		childMap.put("denominatorExclusions", "denominatorExclusion");
+		childMap.put("denominatorExceptions", "denominatorException");
+		childMap.put("measurePopulations", "measurePopulation");
 		childMap.put("measureObservations", "measureObservation");
 	}
 

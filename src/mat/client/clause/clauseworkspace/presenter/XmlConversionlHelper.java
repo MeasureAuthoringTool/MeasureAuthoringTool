@@ -39,7 +39,6 @@ public class XmlConversionlHelper {
 			}
 			if(node != null){
 				parentParent.setName(tagName);
-//				createChilds(parentParent, node, childs);
 				createCellTreeNodeChilds(parentParent, node, childs);
 			}
 		}
@@ -69,10 +68,10 @@ public class XmlConversionlHelper {
 			}*/
 			parent.setChilds(childs);
 		}else if("measureObservations".equals(tagName)){
-			parent.setName(tagName);
+			parent.setName(ClauseConstants.get(tagName));
 			parent.setLabel(ClauseConstants.get(tagName));
 			parent.setNodeType(CellTreeNode.ROOT_NODE);
-			CellTreeNode clauseNode = createChild("measureObservation", "Stratum 1", CellTreeNode.CLAUSE_NODE, parent);
+			CellTreeNode clauseNode = createChild("Measure Observation 1", "Measure Observation 1", CellTreeNode.CLAUSE_NODE, parent);
 			childs.add(clauseNode);
 			parent.setChilds(childs);
 			List<CellTreeNode> logicalOp = new ArrayList<CellTreeNode>();
@@ -102,45 +101,6 @@ public class XmlConversionlHelper {
 		return child;
 	}
 	
-	/**
-	 * Creating all CellTreeNode Child Objects
-	 * @param cellTreeNode Parent Object
-	 * @param root Xml Node
-	 * @param childs List of Childs for @CellTreeNode
-	 */
-	/*private static void createChilds(CellTreeNode parent, Node root, List<CellTreeNode> childs){
-		
-		CellTreeNode child = new CellTreeNodeImpl();//child Object
-		String name = null;
-		
-		if(root.getNodeName().equalsIgnoreCase("#text")){//if node is an Value node
-			name = root.getNodeValue().replaceAll("\n\r", "").trim();
-		}else{//Element node
-			name = root.getNodeName();
-		}
-		if(name.length() > 0){
-			setCellTreeNodeValues(root, parent, child, childs);// Create complete child Object with parent and sub Childs
-		}
-
-		parent.setChilds(childs);// set parent's childs
-		
-		NodeList nodes = root.getChildNodes();// get Child nodes for the Processed node and repeat the process
-		for(int i = 0; i < nodes.getLength(); i++){
-			if(i == 0){
-				if(child.getChilds() == null){ 
-					childs = new ArrayList<CellTreeNode>();
-				}else{
-					childs  = child.getChilds();
-				}
-			}
-			Node node = nodes.item(i);
-			String nodeName = node.getNodeName().replaceAll("\n\r", "").trim();
-			if(!(nodeName.equalsIgnoreCase("#text") && nodeName.isEmpty())){	
-				createChilds(child, node, childs);
-			}
-		}
-	}
-	*/
 	
 	private static void createCellTreeNodeChilds(CellTreeNode parent, Node root, List<CellTreeNode> childs){
 		String nodeName = root.getNodeName();
@@ -222,7 +182,7 @@ public class XmlConversionlHelper {
 		String nodeValue = node.hasAttributes() ? node.getAttributes().getNamedItem("displayName").getNodeValue() : nodeName;
 		short cellTreeNodeType = 0;
 		
-		if(nodeName.equalsIgnoreCase(ClauseConstants.STRATA)){
+		if(ClauseConstants.ROOT_NODES.contains(nodeName)){
 			cellTreeNodeType =  CellTreeNode.ROOT_NODE;				
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.CLAUSE_TYPE)){
 			cellTreeNodeType =  CellTreeNode.CLAUSE_NODE;

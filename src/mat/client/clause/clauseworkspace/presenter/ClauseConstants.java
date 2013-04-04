@@ -21,6 +21,10 @@ public class ClauseConstants {
 	
 	public static final String TYPE_STRATUM = "stratum";
 	
+	public static final String ROOT_NODES = "|strata|measureObservations|";
+	
+	
+	
 	
 	
 	static{
@@ -36,6 +40,7 @@ public class ClauseConstants {
 		constantsMap.put("measurePopulations", "Measure Populations");
 		constantsMap.put("stratum", "Stratum");
 		constantsMap.put("Stratification", "strata");
+		constantsMap.put("Measure Observations", "measureObservations");
 		createDefaultChildren();
 		createClauseTypeNodeNameMap();
 	}

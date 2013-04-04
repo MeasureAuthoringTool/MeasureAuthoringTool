@@ -108,7 +108,7 @@ public class ClauseWorkspaceContextMenu {
 	protected void pasteItem() {
 		String clauseNodeName = xmlTreeDisplay.getCopiedNode().getName();
 	    int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
-	    String name = clauseNodeName.split(" ")[0] + " " + seqNumber ;
+	    String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber ;
 	    CellTreeNode pasteNode = xmlTreeDisplay.getCopiedNode().cloneNode();
 	    pasteNode.setName(name);
 	    pasteNode.setLabel(name);
@@ -120,7 +120,7 @@ public class ClauseWorkspaceContextMenu {
 	protected void addItem() {
 	    String clauseNodeName = xmlTreeDisplay.getSelectedNode().getChilds().get(0).getName();
 	    int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
-	    String name = clauseNodeName.split(" ")[0] + " " + seqNumber ;
+	    String name =clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber ;
 	  
 	    CellTreeNode clauseNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.CLAUSE_NODE);
 	    clauseNode.createChild(ClauseConstants.AND, ClauseConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
@@ -138,8 +138,7 @@ public class ClauseWorkspaceContextMenu {
 	
 	
 	private String getAddMenuName(CellTreeNode selectedNode){
-		 String clauseNodeName = selectedNode.getName();
-		return "Add" + " " +  clauseNodeName.split(" ")[0];
+		return "Add" + " " +  selectedNode.getName().substring(0, selectedNode.getName().lastIndexOf(" "));
 	}
 	
 	
@@ -150,7 +149,7 @@ public class ClauseWorkspaceContextMenu {
 		if(selectedNode.getNodeType() == CellTreeNode.ROOT_NODE){
 			if(selectedNode.hasChildren()){
 				for (CellTreeNode treeNode : selectedNode.getChilds()) {
-					String clauseNodeName = treeNode.getName().split(" ")[1];
+					String clauseNodeName = treeNode.getName().substring(treeNode.getName().lastIndexOf(" ")).trim();
 					try {
 						lastInt = Integer.parseInt(clauseNodeName);
 					} catch (Exception e) {

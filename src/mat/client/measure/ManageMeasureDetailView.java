@@ -44,8 +44,10 @@ public class ManageMeasureDetailView
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	protected HTML instructions = new HTML("Enter a measure name and abbreviated name. Then continue to the Measure Composer.");
-	//US 195.
-	private String cautionMsgStr = "CAUTION: Changing the 'Measure Scoring' should be avoided unless absolutely necessary. Under most circumstances the 'Measure Scoring' should only be changed when a correction is needed. Changing the 'Measure Scoring' will remove any existing groupings from your measure packager.";
+	//User Story # 1391 Sprint 11
+	private String cautionMsgStr = "WARNING: Changing the 'Measure Scoring' will have the following impacts:<br/>" +
+								   "- Populations in the Clause Workspace that do not apply to the 'Measure Scoring' selected will &nbsp; be deleted<br/>" +
+                                   "- Existing Groupings in the Measure Packager will be deleted.";
     protected HTML cautionMsgPlaceHolder = new HTML();
     protected HTML requiredInstructions = new HTML("All fields are required.");
 	

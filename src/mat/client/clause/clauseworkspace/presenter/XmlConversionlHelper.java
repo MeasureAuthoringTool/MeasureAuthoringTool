@@ -58,7 +58,7 @@ public class XmlConversionlHelper {
 			parent.setName(ClauseConstants.get(tagName));
 			parent.setLabel(ClauseConstants.get(tagName));
 			parent.setNodeType(CellTreeNode.MASTER_ROOT_NODE);
-			/*for (int i = 0; i < ClauseConstants.getPopulationsChildren().length; i++) {
+			for (int i = 0; i < ClauseConstants.getPopulationsChildren().length; i++) {
 				String nodeValue =ClauseConstants.getPopulationsChildren()[i];
 				CellTreeNode child = createChild(nodeValue,nodeValue,CellTreeNode.ROOT_NODE,parent);
 				childs.add(child);
@@ -72,7 +72,7 @@ public class XmlConversionlHelper {
 					subChilds.get(j).setChilds(logicalOp);
 				}
 				child.setChilds(subChilds);
-			}*/
+			}
 			parent.setChilds(childs);
 		}else if("measureObservations".equals(tagName)){
 			parent.setName(ClauseConstants.get(tagName));

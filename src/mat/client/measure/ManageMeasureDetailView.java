@@ -45,9 +45,10 @@ public class ManageMeasureDetailView
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	protected HTML instructions = new HTML("Enter a measure name and abbreviated name. Then continue to the Measure Composer.");
 	//User Story # 1391 Sprint 11
-	private String cautionMsgStr = "WARNING: Changing the 'Measure Scoring' will have the following impacts:<br/>" +
-								   "- Populations in the Clause Workspace that do not apply to the 'Measure Scoring' selected will &nbsp; be deleted<br/>" +
-                                   "- Existing Groupings in the Measure Packager will be deleted.";
+	private String cautionMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Measure Scoring' will have the following impacts:<br/>" +
+								   "<img src='images/bullet.png'/> Populations in the Clause Workspace that do not apply to the 'Measure Scoring' selected will be deleted.<br/>" +
+                                   "<img src='images/bullet.png'/> Existing Groupings in the Measure Packager will be deleted.</div>";
+	
     protected HTML cautionMsgPlaceHolder = new HTML();
     protected HTML requiredInstructions = new HTML("All fields are required.");
 	
@@ -59,7 +60,7 @@ public class ManageMeasureDetailView
 
 
 		FlowPanel fPanel = new FlowPanel();
-		fPanel.setWidth("75%");	
+		fPanel.setWidth("90%");	
 		fPanel.setHeight("100%");
 		fPanel.add(measureNameLabel);
 		fPanel.add(instructions);

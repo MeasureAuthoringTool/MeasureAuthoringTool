@@ -10,6 +10,7 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
+import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 public class ClauseWorkspaceContextMenu {
@@ -25,6 +26,8 @@ public class ClauseWorkspaceContextMenu {
 	MenuItem deleteMenu;
 
 	MenuBar popupMenuBar = new MenuBar(true);
+	
+	MenuItemSeparator separator = new MenuItemSeparator();
 
 	PopupPanel popupPanel;
 
@@ -38,8 +41,7 @@ public class ClauseWorkspaceContextMenu {
 			}
 		};
 		copyMenu = new MenuItem("Copy", true, copyCmd);
-
-
+		copyMenu.setWidth("175px");
 		Command deleteCmd = new Command() {
 			public void execute( ) {
 				popupPanel.hide();
@@ -47,6 +49,7 @@ public class ClauseWorkspaceContextMenu {
 			}
 		};
 		deleteMenu = new MenuItem("Delete", true, deleteCmd);
+		deleteMenu.setWidth("175px");
 	}
 
 
@@ -71,6 +74,7 @@ public class ClauseWorkspaceContextMenu {
 				}
 			};
 			addMenu = new MenuItem(getAddMenuName(xmlTreeDisplay.getSelectedNode().getChilds().get(0)) , true, addNodeCmd);
+			addMenu.setWidth("175px");
 			Command pasteCmd = new Command() {
 				public void execute( ) {
 					popupPanel.hide();
@@ -78,7 +82,9 @@ public class ClauseWorkspaceContextMenu {
 				}
 			};
 			pasteMenu = new MenuItem("Paste", true, pasteCmd);
+			pasteMenu.setWidth("175px");
 			popupMenuBar.addItem(addMenu);
+			popupMenuBar.addSeparator(separator);
 			addCommonMenus();
 			addMenu.setEnabled(true);
 			copyMenu.setEnabled(false);
@@ -93,6 +99,7 @@ public class ClauseWorkspaceContextMenu {
 				}
 			};
 			pasteMenu = new MenuItem("Paste", true, pasteClause);
+			pasteMenu.setWidth("175px");
 			addCommonMenus();
 			copyMenu.setEnabled(true);
 			pasteMenu.setEnabled(false);

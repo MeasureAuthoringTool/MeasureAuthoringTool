@@ -62,13 +62,12 @@ public class XmlConversionlHelper {
 				String nodeValue =ClauseConstants.getPopulationsChildren()[i];
 				CellTreeNode child = createChild(nodeValue,nodeValue,CellTreeNode.ROOT_NODE,parent);
 				childs.add(child);
-				//String nodeName =   ClauseConstants.getClauseTypeNodeName(ClauseConstants.getPopulationsChildren()[i]);
 				String name = nodeValue.substring(0,nodeValue.lastIndexOf('s')) + " "  + 1;
 				List<CellTreeNode> subChilds = new ArrayList<CellTreeNode>();
 				subChilds.add(createChild(name, name, CellTreeNode.CLAUSE_NODE, child));
 				for(int j=0;j<subChilds.size();j++){
 					List<CellTreeNode> logicalOp = new ArrayList<CellTreeNode>();
-					logicalOp.add(createChild("AND", "AND", CellTreeNode.LOGICAL_OP_NODE, subChilds.get(j)));
+					logicalOp.add(createChild(ClauseConstants.AND, ClauseConstants.AND, CellTreeNode.LOGICAL_OP_NODE, subChilds.get(j)));
 					subChilds.get(j).setChilds(logicalOp);
 				}
 				child.setChilds(subChilds);
@@ -235,7 +234,11 @@ public class XmlConversionlHelper {
 		return element;
 	}
 	
-	
+	/**
+	 * 
+	 * Method to convert case of string into camel case.
+	 * 
+	 * */
 	
 	private static String toCamelCase(String name){
 	   name = name.toLowerCase();

@@ -22,7 +22,7 @@ public class ClauseConstants{
 	public static final String AND = "AND";
 	public static final String MASTER_ROOT_NODE_POPULATION = "Populations";
 
-	public static final String ROOT_NODES = "|strata|measureObservations|numerators|denominators|numeratorExclusions|denominatorExclusions|denominatorExceptions|initialPatientPopulations|measurePopulations";
+	public static final String ROOT_NODES = "|strata|measureObservations|numerators|denominators|numeratorExclusions|initialPatientPopulations|denominatorExclusions";//|denominatorExceptions|measurePopulations";
 	static{
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");

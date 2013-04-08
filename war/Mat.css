@@ -1156,7 +1156,9 @@ padding: 2px;
   padding: 1px 2px 2px 2px !important;
 }
 .gwt-MenuBar .gwt-MenuItem-selected {
-  background: #D4D0C8 !important;
+  /*background: #D4D0C8 !important;*/
+  background: #162473 !important;
+  color:#FFFFFF !important;
 }
 
 .gwt-MenuBar-vertical {

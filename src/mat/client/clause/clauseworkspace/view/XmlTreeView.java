@@ -351,6 +351,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		int y = element.getAbsoluteBottom() + 5;
 		popupPanel.setPopupPosition(x, y);
 		popupPanel.setAnimationEnabled(true);
+		popupPanel.setSize("175px", "75px");
 		popupPanel.show();
 		popupPanel.setStyleName("popup");
 		clauseWorkspaceContextMenu.displayMenuItems(popupPanel);

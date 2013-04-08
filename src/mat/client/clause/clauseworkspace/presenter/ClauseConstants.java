@@ -15,14 +15,15 @@ public class ClauseConstants{
 
 	public static final String CLAUSE_TYPE = "clause";
 
-	public static final String TYPE="type";
+	public static final String TYPE = "type";
 
-	public static final String DISPLAY_NAME="displayName";
+	public static final String DISPLAY_NAME = "displayName";
 
 	public static final String AND = "AND";
+
 	public static final String MASTER_ROOT_NODE_POPULATION = "Populations";
 
-	public static final String ROOT_NODES = "|strata|measureObservations|numerators|denominators|numeratorExclusions|initialPatientPopulations|denominatorExclusions";//|denominatorExceptions|measurePopulations";
+	public static final String ROOT_NODES = "|strata|measureObservations|numerators|denominators|numeratorExclusions|initialPatientPopulations|denominatorExclusions|denominatorExceptions|measurePopulations";
 	static{
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");

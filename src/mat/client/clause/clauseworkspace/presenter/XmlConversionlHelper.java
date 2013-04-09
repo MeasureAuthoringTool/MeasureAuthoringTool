@@ -80,13 +80,13 @@ public class XmlConversionlHelper {
 		}else if("measureObservations".equals(tagName)){
 			parent.setName(ClauseConstants.get(tagName));
 			parent.setLabel(ClauseConstants.get(tagName));
-			parent.setNodeType(CellTreeNode.MASTER_ROOT_NODE);//change back to root node
-			/*CellTreeNode clauseNode = createChild("Measure Observation 1", "Measure Observation 1", CellTreeNode.CLAUSE_NODE, parent);
+			parent.setNodeType(CellTreeNode.ROOT_NODE);
+			CellTreeNode clauseNode = createChild("Measure Observation 1", "Measure Observation 1", CellTreeNode.CLAUSE_NODE, parent);
 			childs.add(clauseNode);
 			parent.setChilds(childs);
 			List<CellTreeNode> logicalOp = new ArrayList<CellTreeNode>();
 			logicalOp.add(createChild(ClauseConstants.AND,ClauseConstants.AND, CellTreeNode.LOGICAL_OP_NODE, clauseNode));
-			clauseNode.setChilds(logicalOp);*/
+			clauseNode.setChilds(logicalOp);
 		}else if("strata".equalsIgnoreCase(tagName)){
 			parent.setName(ClauseConstants.get(tagName));
 			parent.setLabel(ClauseConstants.get(tagName));

@@ -21,7 +21,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 class TimeoutManager {
 	
-	private static final int WARNING_TIME = 15 * 60 * 1000;
+	private static final int WARNING_TIME = 50 * 60 * 1000;
 	private static final int WARNING_INTERVAL = 5 * 60 * 1000;
 	private static final int REPEATED_WARNING_INTERVAL = 2 * 60 * 1000;
 	private static final int TIMEOUTTHRESHOLD_TIME = WARNING_TIME+WARNING_INTERVAL;

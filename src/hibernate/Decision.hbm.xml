@@ -5,6 +5,7 @@
 	
 <hibernate-mapping auto-import="false">
   <class name="mat.model.clause.Decision" table="DECISION" lazy="false">
+  <cache usage="read-write"/>
 	<id name="id" column="ID" >
 		<!--  
 		<generator class="uuid"/>

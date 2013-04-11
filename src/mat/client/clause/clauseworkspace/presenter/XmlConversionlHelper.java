@@ -50,7 +50,7 @@ public class XmlConversionlHelper {
 		}
 		
 		//Process mainNode for Scoring Type.
-		if(document != null){
+		if(document != null && "populations".equals(tagName)){
 			checkScoringType(mainNode,document);
 		}
 		
@@ -266,9 +266,13 @@ public class XmlConversionlHelper {
 		s.substring(1).toLowerCase();
 	}
 	
+	/**
+	 * Should be called only for the Populations tab.
+	 * @param mainNode
+	 * @param document
+	 */
 	private static void checkScoringType(CellTreeNode mainNode,
 			Document document) {
-		
 		/*
 		 * Find out the Scoring type for the measure by searching for the
 		 * 'scoring' element and checking the id attribute.

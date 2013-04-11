@@ -25,10 +25,11 @@ public class XmlConversionlHelper {
 	 */ 
 	public static CellTreeNode createCellTreeNode(String xml, String tagName){
 		Node node = null;
-		CellTreeNode parentParent = new CellTreeNodeImpl();
+		CellTreeNode mainNode = new CellTreeNodeImpl();
 		List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
+		Document document = null;
 		if(xml != null && xml.trim().length() > 0){
-			Document document = XMLParser.parse(xml);
+			document = XMLParser.parse(xml);
 			NodeList nodeList = document.getElementsByTagName(tagName);
 			if(nodeList.getLength() > 0){
 				for (int i = 0; i < nodeList.getLength(); i++) {
@@ -38,16 +39,22 @@ public class XmlConversionlHelper {
 				}
 			}
 			if(node != null){
-				parentParent.setName(tagName);
-				createCellTreeNodeChilds(parentParent, node, childs);
+				mainNode.setName(tagName);
+				createCellTreeNodeChilds(mainNode, node, childs);
 			}
 		}
 		if(node == null){
-			parentParent.setName(tagName);
+			mainNode.setName(tagName);
 			childs.add(createRootNode(tagName));
-			parentParent.setChilds(childs);
+			mainNode.setChilds(childs);
 		}
-		return parentParent;
+		
+		//Process mainNode for Scoring Type.
+		if(document != null){
+			checkScoringType(mainNode,document);
+		}
+		
+		return mainNode;
 	}
 
 
@@ -258,6 +265,52 @@ public class XmlConversionlHelper {
 		return s.substring(0, 1).toUpperCase() +
 		s.substring(1).toLowerCase();
 	}
-
+	
+	private static void checkScoringType(CellTreeNode mainNode,
+			Document document) {
+		
+		/*
+		 * Find out the Scoring type for the measure by searching for the
+		 * 'scoring' element and checking the id attribute.
+		 * ex: <scoring id="CONTVAR"> or <scoring id="PROPOR"> or <scoring id="RATIO">
+		 */
+		
+		NodeList nodeList = document.getElementsByTagName("scoring");
+		
+		if(nodeList != null && nodeList.getLength() > 0){
+			Node scoringNode = nodeList.item(0);
+			Node scoringIdAttribute = scoringNode.getAttributes().getNamedItem("id");
+			String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
+			List<CellTreeNode> nodesToBeRemoved = new ArrayList<CellTreeNode>();
+			CellTreeNode populationsNode = mainNode.getChilds().get(0);
+			
+			if("CONTVAR".equals(scoringIdAttributeValue)){
+				for(CellTreeNode childNode : populationsNode.getChilds()){
+					String nodeName = childNode.getName();
+					if(!("Initial Patient Populations".equals(nodeName)) && !("Measure Populations".equals(nodeName))){
+						nodesToBeRemoved.add(childNode);
+					}
+				}
+			}else if ("PROPOR".equals(scoringIdAttributeValue)){
+				for(CellTreeNode childNode : populationsNode.getChilds()){
+					String nodeName = childNode.getName();
+					if("Numerator Exclusions".equals(nodeName) || "Measure Populations".equals(nodeName)){
+						nodesToBeRemoved.add(childNode);
+					}
+				}
+			}else if ("RATIO".equals(scoringIdAttributeValue)){
+				for(CellTreeNode childNode : populationsNode.getChilds()){
+					String nodeName = childNode.getName();
+					if("Denominator Exceptions".equals(nodeName) || "Measure Populations".equals(nodeName)){
+						nodesToBeRemoved.add(childNode);
+					}
+				}
+			}
+			
+			for(CellTreeNode removeNode:nodesToBeRemoved){
+				populationsNode.removeChild(removeNode);
+			}
+		}
+	}
 
 }

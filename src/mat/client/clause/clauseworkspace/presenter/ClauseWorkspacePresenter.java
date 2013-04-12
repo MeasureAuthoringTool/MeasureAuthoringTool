@@ -31,16 +31,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	public ClauseWorkspacePresenter() {
 		emptyWidget.add(new Label("No Measure Selected"));
 		simplepanel.setStyleName("contentPanel");
-//		clauseWorkspaceTabs = new MatTabLayoutPanel(true);
-//		clauseWorkspaceTabs.setId("clauseWorkspce");
-//		clauseWorkspaceTabs.addPresenter(populationClausePresenter, "Populations");
-//		clauseWorkspaceTabs.addPresenter(measureObsClausePresenter, "Measure Observations");
-//		clauseWorkspaceTabs.addPresenter(stratificationClausePresenter, "Stratification");
-//		flowPanel.add(new SpacerWidget());
-//		flowPanel.add(clauseWorkspaceTabs);
 		simplepanel.add(flowPanel);
-		
-		
 	}
 
 
@@ -68,13 +59,6 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 									clauseWorkspaceTabs.setId("clauseWorkspce");
 									clauseWorkspaceTabs.addPresenter(populationClausePresenter, "Populations");
 									clauseWorkspaceTabs.addPresenter(stratificationClausePresenter, "Stratification");
-									
-									NodeList nodes = document.getElementsByTagName("measureObservations");
-									if(nodes != null && nodes.getLength() > 0){
-										Node measureObs = nodes.item(0);
-										Node parentNode = measureObs.getParentNode();
-										parentNode.removeChild(measureObs);
-									}
 								}else{
 									clauseWorkspaceTabs = new MatTabLayoutPanel(true);
 									clauseWorkspaceTabs.setId("clauseWorkspce");
@@ -111,14 +95,6 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	@Override
 	public void beforeDisplay() {
 		setXMLOnTabs();
-//		String currentMeasureId = MatContext.get().getCurrentMeasureId();	
-//		if(currentMeasureId != null && !"".equals(currentMeasureId)) {
-//			clauseWorkspaceTabs.selectTab(populationClausePresenter);
-//			populationClausePresenter.beforeDisplay();
-//		}else{
-//			displayEmpty();
-//		}
-		
 	}
 	
 	@Override

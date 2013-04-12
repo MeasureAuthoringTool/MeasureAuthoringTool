@@ -40,6 +40,14 @@ public class XmlTreePresenter {
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	private static final String MEASURE = "measure";
 	private String rootNode;
+	
+	/**
+	 * This member variable is used to pass the original measure XML to XmlTreePresenter class
+	 * which will then be used to construct the CellTree.
+	 * Tree construction is done using loadXmlTree(..) method.
+	 * Once the loadXmlTree(..) method is done executing, originalXML should not be used.
+	 * Please refrain from using it anywhere other that the loadXmlTree(...) method.
+	 */
 	private String originalXML = "";
 	
 	public void loadXmlTree(final SimplePanel panel){
@@ -57,35 +65,7 @@ public class XmlTreePresenter {
 			xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 			panel.add(xmlTreeDisplay.asWidget());
 			invokeSaveHandler();
-		}else if (MatContext.get().getCurrentMeasureId() != null
-				&& !MatContext.get().getCurrentMeasureId().equals("")) {
-			
-			service.getMeasureXmlForMeasure(MatContext.get()
-					.getCurrentMeasureId(),
-					new AsyncCallback<MeasureXmlModel>() {// Loading the measure's SimpleXML from the Measure_XML table 
-
-						@Override
-						public void onSuccess(MeasureXmlModel result) {
-							panel.clear();
-							String xml = result != null ? result.getXml() : null;
-							XmlTreeView xmlTreeView = new XmlTreeView(XmlConversionlHelper.createCellTreeNode(xml, rootNode));//converts XML to TreeModel Object and sets to XmlTreeView
-//							CellTree cellTree = new CellTree(xmlTreeView, null);
-							CellTree.Resources resource = GWT.create(TreeResources.class); 
-							CellTree cellTree = new CellTree(xmlTreeView, null, resource);// CellTree Creation
-							cellTree.setDefaultNodeSize(500);// this will get rid of the show more link on the bottom of the Tree
-							xmlTreeView.createPageView(cellTree); // Page Layout
-							xmlTreeDisplay = (XmlTreeDisplay) xmlTreeView;
-							xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
-							panel.add(xmlTreeDisplay.asWidget());
-							invokeSaveHandler();
-						}
-
-						@Override
-						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
-						}
-					});
-		} else {
+		}else {
 			Mat.hideLoadingMessage();
 		}
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("ClauseWorkspaceTree");

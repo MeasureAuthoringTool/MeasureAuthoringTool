@@ -56,7 +56,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 
 public class MeasurePackageServiceImpl implements MeasurePackageService {
 	private static final Log logger = LogFactory.getLog(MeasurePackageServiceImpl.class);

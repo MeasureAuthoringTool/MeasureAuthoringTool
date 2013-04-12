@@ -51,7 +51,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
-import net.sf.json.JSONObject;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -356,7 +355,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			//Create Default SupplimentalQDM if it is a new Measure.
 			createSupplimentalQDM(pkg);
 		}
-		saveMeasureXml(createMeasureXmlModal(model, pkg, MEASURE_DETAILS, MEASURE));		
+		saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));		
 		
 		return result;
 	}
@@ -486,7 +485,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			getService().saveMeasureDetails(measureDetails);
 		}
 		logger.info("Saving Measure_Xml");
-		saveMeasureXml(createMeasureXmlModal(model, measure, MEASURE_DETAILS, MEASURE));
+		saveMeasureXml(createMeasureXmlModel(model, measure, MEASURE_DETAILS, MEASURE));
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);	
 		logger.info("Saving of Measure Details Success");
@@ -620,7 +619,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		}
 	}
 
-	private MeasureXmlModel createMeasureXmlModal(ManageMeasureDetailModel manageMeasureDetailModel, Measure measure, String replaceNode, String parentNode){
+	private MeasureXmlModel createMeasureXmlModel(ManageMeasureDetailModel manageMeasureDetailModel, Measure measure, String replaceNode, String parentNode){
 		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
 		measureXmlModel.setMeasureId(measure.getId());
 		measureXmlModel.setXml(createMeasureDetailsXml(manageMeasureDetailModel, measure));
@@ -631,8 +630,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 
 	
 	private void setOrgIdInAuthor(List<Author> authors){
-		//if(CollectionUtils.isNotEmpty(authors)){
-		if(authors != null && authors.size() > 0){
+		if(CollectionUtils.isNotEmpty(authors)){
 			for (Author author : authors) {
 				String oid = getService().retrieveStewardOID(author.getAuthorName().trim());
 				author.setOrgId(oid != null && !oid.equals("") ? oid : UUID.randomUUID().toString());
@@ -849,7 +847,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		mDetail.setDraft(false);
 		setValueFromModel(mDetail, meas);
 		getService().save(meas);
-		saveMeasureXml(createMeasureXmlModal(mDetail, meas, MEASURE_DETAILS, MEASURE));
+		saveMeasureXml(createMeasureXmlModel(mDetail, meas, MEASURE_DETAILS, MEASURE));
 		getClauseBusinessService().setClauseNameForMeasure(mDetail.getId(), mDetail.getShortName());
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);
@@ -984,9 +982,12 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		if(xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())){
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			String newXml = xmlProcessor.replaceNode(measureXmlModel.getXml(), measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
+			newXml = xmlProcessor.checkForScoringType();
+			
 			measureXmlModel.setXml(newXml);
 		}else{
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
+			processor.checkForScoringType();
 			measureXmlModel.setXml(processor.addParentNode(MEASURE));
 		}
 		getService().saveMeasureXml(measureXmlModel);

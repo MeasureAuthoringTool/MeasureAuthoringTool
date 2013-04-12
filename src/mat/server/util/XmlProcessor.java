@@ -11,6 +11,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import net.sf.saxon.TransformerFactoryImpl;
 
@@ -201,7 +204,63 @@ public class XmlProcessor {
 			logger.info("Generic Exception: "+ e.getStackTrace());
 		}
 	}
-	
 
+	public String checkForScoringType() {
+		
+		if (this.originalDoc == null){
+			return "";
+		}
+		
+		//Get the scoring type from originalDoc
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		try {
+			String scoringType = (String) xPath.evaluate("/measure/measureDetails/scoring/@id", originalDoc.getDocumentElement(), XPathConstants.STRING);
+			System.out.println("scoringType:"+scoringType);
+			
+			if("RATIO".equals(scoringType.toUpperCase())){
+				//Denominator Exceptions, Measure Populations
+				
+				Node denominatorExceptionsNode = findNode(this.originalDoc,"/measure/populations/denominatorExceptions");
+				removeFromParent(denominatorExceptionsNode);
+				Node measurePopulationsNode = findNode(this.originalDoc,"/measure/populations/measurePopulations");
+				removeFromParent(measurePopulationsNode);
+				
+				Node measureObservationsNode = findNode(this.originalDoc,"/measure/measureObservations");
+				removeFromParent(measureObservationsNode);
+			}else if("PROPOR".equals(scoringType.toUpperCase())){
+				//Numerator Exclusions, Measure Populations
+			
+				Node numeratorExclusionsNode = findNode(this.originalDoc, "/measure/populations/numeratorExclusions");
+				removeFromParent(numeratorExclusionsNode);
+				
+				Node measurePopulationsNode = findNode(originalDoc, "/measure/populations/measurePopulations");
+				removeFromParent(measurePopulationsNode);
+				
+				Node measureObservationsNode = findNode(this.originalDoc,"/measure/measureObservations");
+				removeFromParent(measureObservationsNode);
+			}else if("CONTVAR".equals(scoringType.toUpperCase())){
+				
+				Node numeratorNode = findNode(this.originalDoc,"/measure/populations/numerators");
+				removeFromParent(numeratorNode);
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return transform(originalDoc);
+	}
+	
+	private void removeFromParent(Node node) {
+		if(node != null){
+			Node parentNode = node.getParentNode();
+			parentNode.removeChild(node);
+		}
+	}
+
+	private Node findNode(Document document, String xPathString) throws XPathExpressionException{
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		Node node = (Node)xPath.evaluate(xPathString, document.getDocumentElement(), XPathConstants.NODE);
+		return node;
+	}
 	
 }

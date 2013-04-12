@@ -40,9 +40,24 @@ public class XmlTreePresenter {
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	private static final String MEASURE = "measure";
 	private String rootNode;
+	private String originalXML = "";
 	
 	public void loadXmlTree(final SimplePanel panel){
-		if (MatContext.get().getCurrentMeasureId() != null
+		
+		if(originalXML.length() > 0){
+			panel.clear();
+			String xml = originalXML;
+			XmlTreeView xmlTreeView = new XmlTreeView(XmlConversionlHelper.createCellTreeNode(xml, rootNode));//converts XML to TreeModel Object and sets to XmlTreeView
+//			CellTree cellTree = new CellTree(xmlTreeView, null);
+			CellTree.Resources resource = GWT.create(TreeResources.class); 
+			CellTree cellTree = new CellTree(xmlTreeView, null, resource);// CellTree Creation
+			cellTree.setDefaultNodeSize(500);// this will get rid of the show more link on the bottom of the Tree
+			xmlTreeView.createPageView(cellTree); // Page Layout
+			xmlTreeDisplay = (XmlTreeDisplay) xmlTreeView;
+			xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
+			panel.add(xmlTreeDisplay.asWidget());
+			invokeSaveHandler();
+		}else if (MatContext.get().getCurrentMeasureId() != null
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
 			
 			service.getMeasureXmlForMeasure(MatContext.get()
@@ -124,6 +139,14 @@ public class XmlTreePresenter {
 	 */
 	public void setRootNode(String rootNode) {
 		this.rootNode = rootNode;
+	}
+
+	public void setOriginalXML(String originalXML) {
+		this.originalXML = originalXML;
+	}
+
+	public String getOriginalXML() {
+		return originalXML;
 	}
 	
 }

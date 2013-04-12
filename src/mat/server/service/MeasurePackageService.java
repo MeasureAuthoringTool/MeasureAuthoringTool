@@ -1,9 +1,6 @@
 package mat.server.service;
 
 import java.util.List;
-
-import net.sf.json.JSONObject;
-
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureShareModel;

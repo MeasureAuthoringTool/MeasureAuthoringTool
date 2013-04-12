@@ -82,6 +82,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 									clauseWorkspaceTabs.addPresenter(measureObsClausePresenter, "Measure Observations");
 									clauseWorkspaceTabs.addPresenter(stratificationClausePresenter, "Stratification");
 								}
+								flowPanel.clear();
 								flowPanel.add(new SpacerWidget());
 								flowPanel.add(clauseWorkspaceTabs);
 								

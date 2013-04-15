@@ -13,6 +13,8 @@ import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyDownEvent;
+import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -86,7 +88,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void createPageView(CellTree cellTree) {
 		this.cellTree = cellTree;
 		mainPanel.setStyleName("div-wrapper");//main div
-
+		//Image expandButtonImage = new Image(ImageResources.INSTANCE.alert());
+		//expand.getElement().appendChild(expandButtonImage.getElement());
 		SimplePanel leftPanel = new SimplePanel();
 		leftPanel.setStyleName("div-first bottomPadding10px");//left side div which will  have tree
 
@@ -99,6 +102,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		expandCollapse.setStyleName("leftAndTopPadding");
 		expandCollapse.add(expand);
 		expandCollapse.add(collapse);
+		expand.setFocus(true);
 		expand.setSize("25px", "25px");
 		collapse.setSize("25px", "25px");
 		collapse.setVisible(false);
@@ -236,17 +240,51 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * Click Handlers
 	 */
 	private void addHandlers(){
+		//HotKey for expand - CTRL + ALT+ E
+		expand.addKeyDownHandler(new KeyDownHandler() {
 
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if(event.isControlKeyDown() &&event.isAltKeyDown()&& event.getNativeKeyCode()==69){
+					clearMessages();
+					openAllNodes(cellTree.getRootTreeNode());
+					expand.setVisible(false);
+					collapse.setVisible(true);
+					collapse.setFocus(true);
+					
+				}
+				
+			}
+            
+        });
 		expand.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
 				openAllNodes(cellTree.getRootTreeNode());
 				expand.setVisible(false);
+				expand.setFocus(true);
 				collapse.setVisible(true);
+				collapse.setFocus(true);
 			}
 		});
+		
+		//HotKey for expand - CTRL + ALT+ R
+		collapse.addKeyDownHandler(new KeyDownHandler() {
 
+			@Override
+			public void onKeyDown(KeyDownEvent event) {
+				if(event.isControlKeyDown() &&event.isAltKeyDown() && event.getNativeKeyCode()==82){
+					clearMessages();
+					closeNodes(cellTree.getRootTreeNode(), true);
+					expand.setVisible(true);
+					expand.setFocus(true);
+					collapse.setVisible(false);
+				}
+			}
+            
+        });
+		
 		collapse.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

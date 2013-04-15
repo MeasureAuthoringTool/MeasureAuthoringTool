@@ -24,13 +24,29 @@ public class ClauseWorkspaceContextMenu {
 	MenuItem pasteMenu;
 
 	MenuItem deleteMenu;
-
+	
+	MenuItem cutMenu;
+	
+	MenuItem andMenu;
+	
+	MenuItem orMenu;
+	
+	MenuItem qdmMenu;
+	
+	MenuItem timingMenu;
+	
+	MenuItem functionMenu;
+	
 	MenuBar popupMenuBar = new MenuBar(true);
+	
+	MenuBar subMenuBar = new MenuBar(true);
 	
 	MenuItemSeparator separator = new MenuItemSeparator();
 
 	PopupPanel popupPanel;
-
+	
+	Command pasteCmd;
+	
 	public ClauseWorkspaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		this.xmlTreeDisplay = treeDisplay;
 		this.popupPanel = popPanel;
@@ -41,7 +57,7 @@ public class ClauseWorkspaceContextMenu {
 			}
 		};
 		copyMenu = new MenuItem("Copy", true, copyCmd);
-		copyMenu.setWidth("175px");
+		
 		Command deleteCmd = new Command() {
 			public void execute( ) {
 				popupPanel.hide();
@@ -49,12 +65,32 @@ public class ClauseWorkspaceContextMenu {
 			}
 		};
 		deleteMenu = new MenuItem("Delete", true, deleteCmd);
-		deleteMenu.setWidth("175px");
+		Command cutCmd = new Command() {
+			public void execute( ) {
+				popupPanel.hide();
+				xmlTreeDisplay.copy();
+				xmlTreeDisplay.removeNode();
+			}
+		};
+		cutMenu = new MenuItem("Cut", true, cutCmd);
+		
+		Command pasteCmd = new Command() {
+			public void execute() {
+				popupPanel.hide();
+				if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.ROOT_NODE){
+					pasteRootNodeTypeItem();
+				}else{
+					xmlTreeDisplay.paste();	
+				}
+			}
+		};
+		pasteMenu = new MenuItem("Paste", true, pasteCmd);
 	}
 
 
 	public void displayMenuItems( final PopupPanel popupPanel){
 		popupMenuBar.clearItems();
+		subMenuBar.clearItems();
 		popupPanel.clear();
 		copyMenu.setEnabled(false);
 		deleteMenu.setEnabled(false);
@@ -69,20 +105,11 @@ public class ClauseWorkspaceContextMenu {
 			Command addNodeCmd = new Command() {
 				public void execute( ) {
 					popupPanel.hide();
-					addItem();
+					addRootNodeTypeItem();
 
 				}
 			};
 			addMenu = new MenuItem(getAddMenuName(xmlTreeDisplay.getSelectedNode().getChilds().get(0)) , true, addNodeCmd);
-			addMenu.setWidth("175px");
-			Command pasteCmd = new Command() {
-				public void execute( ) {
-					popupPanel.hide();
-					pasteItem();
-				}
-			};
-			pasteMenu = new MenuItem("Paste", true, pasteCmd);
-			pasteMenu.setWidth("175px");
 			popupMenuBar.addItem(addMenu);
 			popupMenuBar.addSeparator(separator);
 			addCommonMenus();
@@ -90,24 +117,42 @@ public class ClauseWorkspaceContextMenu {
 			copyMenu.setEnabled(false);
 			deleteMenu.setEnabled(false);
 			pasteMenu.setEnabled(canShowPaste());
+			cutMenu.setEnabled(false);
 			break;
 
 		case CellTreeNode.CLAUSE_NODE:
-			Command pasteClause = new Command() {
-				public void execute( ) {
-					popupPanel.hide();
-				}
-			};
-			pasteMenu = new MenuItem("Paste", true, pasteClause);
-			pasteMenu.setWidth("175px");
 			addCommonMenus();
 			copyMenu.setEnabled(true);
 			pasteMenu.setEnabled(false);
 			deleteMenu.setEnabled(canShowDelete());//with options
+			cutMenu.setEnabled(false);
 			break;
 
 		case CellTreeNode.LOGICAL_OP_NODE:	
-			popupPanel.hide();
+			addMenu = new MenuItem("Add", subMenuBar);
+			Command andOpCmd = new Command() {
+				public void execute( ) {
+					popupPanel.hide();
+					xmlTreeDisplay.addNode("AND", "AND", CellTreeNode.LOGICAL_OP_NODE);
+				}
+			};
+			
+			Command orOpCmd = new Command() {
+				public void execute( ) {
+					popupPanel.hide();
+					xmlTreeDisplay.addNode("OR", "OR", CellTreeNode.LOGICAL_OP_NODE);
+				}
+			};
+			popupMenuBar.setAutoOpen(true);
+			subMenuBar.addItem("And", true, andOpCmd);
+			subMenuBar.addItem("Or", true, orOpCmd);
+			popupMenuBar.addItem(addMenu);
+			popupMenuBar.addSeparator(separator);
+			copyMenu.setEnabled(true);
+			pasteMenu.setEnabled(canShowPaste());
+			cutMenu.setEnabled(canShowCut());
+			deleteMenu.setEnabled(canShowDelete());
+			addCommonMenus();
 			break;
 
 		default:
@@ -115,7 +160,8 @@ public class ClauseWorkspaceContextMenu {
 		}
 	}
 
-	protected void pasteItem() {
+
+	protected void pasteRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getCopiedNode().getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber ;
@@ -127,7 +173,7 @@ public class ClauseWorkspaceContextMenu {
 	}
 
 
-	protected void addItem() {
+	protected void addRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getSelectedNode().getChilds().get(0).getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name =clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber ;
@@ -141,6 +187,7 @@ public class ClauseWorkspaceContextMenu {
 	private void addCommonMenus(){
 		popupMenuBar.addItem(copyMenu);
 		popupMenuBar.addItem(pasteMenu);
+		popupMenuBar.addItem(cutMenu);
 		popupMenuBar.addItem(deleteMenu);
 		popupMenuBar.setVisible(true);		  
 		popupPanel.add(popupMenuBar);
@@ -179,17 +226,57 @@ public class ClauseWorkspaceContextMenu {
 
 
 	private boolean canShowPaste(){
-		if(xmlTreeDisplay.getCopiedNode() != null 
-				&& xmlTreeDisplay.getCopiedNode().getNodeType() == CellTreeNode.CLAUSE_NODE
-				&& xmlTreeDisplay.getCopiedNode().getParent().equals(xmlTreeDisplay.getSelectedNode())){
-			return true;
+		if(xmlTreeDisplay.getCopiedNode() != null){
+			switch (xmlTreeDisplay.getCopiedNode().getNodeType()) {
+			
+			case CellTreeNode.CLAUSE_NODE:
+				if(xmlTreeDisplay.getCopiedNode().getParent().equals(xmlTreeDisplay.getSelectedNode())){
+					return true;
+				}
+				break;
+			case CellTreeNode.LOGICAL_OP_NODE:
+				if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE){
+					return true;
+				}
+				break;
+			default:
+				break;
+			}
 		}
 		return false;
 	}
 
 	private boolean canShowDelete(){
-		if(xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1){
-			return true;
+		
+		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
+		
+		case CellTreeNode.ROOT_NODE:
+			if(xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1){
+				return true;
+			}
+			break;
+		case CellTreeNode.LOGICAL_OP_NODE:
+			if(xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE){
+				return true;
+			}
+		default:
+			break;
+		}
+		return false;
+	}
+	
+
+	private boolean canShowCut() {
+		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
+		
+		case CellTreeNode.LOGICAL_OP_NODE:
+			if(xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE
+					&& xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE){
+				return true;
+			}
+			break;
+		default:
+			break;
 		}
 		return false;
 	}

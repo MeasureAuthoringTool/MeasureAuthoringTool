@@ -250,7 +250,7 @@ public class ClauseWorkspaceContextMenu {
 		
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 		
-		case CellTreeNode.ROOT_NODE:
+		case CellTreeNode.CLAUSE_NODE:
 			if(xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1){
 				return true;
 			}

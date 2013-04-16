@@ -23,6 +23,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -43,9 +44,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	private Button saveBtn = new Button("Save");
 
-	private Button expand = new Button("+");
-
-	private Button collapse = new Button("-");
+	private Anchor anchorExpand = new Anchor("+ Expand All");
+	private Anchor anchorCollapse = new Anchor("- Collapse All");
 
 	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 
@@ -100,12 +100,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 		FlowPanel expandCollapse  = new FlowPanel();
 		expandCollapse.setStyleName("leftAndTopPadding");
-		expandCollapse.add(expand);
-		expandCollapse.add(collapse);
-		expand.setFocus(true);
-		expand.setSize("25px", "25px");
-		collapse.setSize("25px", "25px");
-		collapse.setVisible(false);
+		expandCollapse.setSize("100px", "20px");
+		expandCollapse.add(anchorExpand);
+		expandCollapse.add(anchorCollapse);
+		anchorExpand.setFocus(true);
+		anchorCollapse.setVisible(false);
 
 		treePanel.add(expandCollapse);
 		treePanel.add(cellTree);
@@ -172,14 +171,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param treeNode
 	 * @param fireEvents
 	 */
-	private void closeNodes(TreeNode treeNode, boolean fireEvents) {
-		if(treeNode != null){
-			for (int i = 0; i < treeNode.getChildCount(); i++) {
-				TreeNode subTree = treeNode.setChildOpen(i, false, fireEvents);  
-				if (subTree != null && subTree.getChildCount() > 0){
-					closeNodes(subTree, fireEvents);
+	private void closeNodes(TreeNode node) {
+		if(node != null){
+			for (int i = 0; i < node.getChildCount(); i++) {
+				TreeNode subTree  = null;
+				if (((CellTreeNode)node.getChildValue(i)).getNodeType() == CellTreeNode.MASTER_ROOT_NODE){
+					subTree =  node.setChildOpen(i, true, true);
+				}else{
+					subTree =  node.setChildOpen(i, false, true);
 				}
-			}  
+
+				if (subTree != null && ((TreeNode) subTree).getChildCount() > 0){
+					closeNodes(subTree);
+				}
+			}
+
 		}
 	}
 
@@ -237,61 +243,59 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 
 	/**
-	 * Click Handlers
+	 * Expand / Collapse Link - Click Handlers
 	 */
 	private void addHandlers(){
 		//HotKey for expand - CTRL + ALT+ E
-		expand.addKeyDownHandler(new KeyDownHandler() {
-
+		anchorExpand.addKeyDownHandler(new KeyDownHandler() {
+			
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				if(event.isControlKeyDown() &&event.isAltKeyDown()&& event.getNativeKeyCode()==69){
 					clearMessages();
 					openAllNodes(cellTree.getRootTreeNode());
-					expand.setVisible(false);
-					collapse.setVisible(true);
-					collapse.setFocus(true);
+					anchorExpand.setVisible(false);
+					anchorCollapse.setVisible(true);
+					anchorCollapse.setFocus(true);
 					
 				}
 				
 			}
-            
-        });
-		expand.addClickHandler(new ClickHandler() {
+		});
+		anchorExpand.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
 				openAllNodes(cellTree.getRootTreeNode());
-				expand.setVisible(false);
-				expand.setFocus(true);
-				collapse.setVisible(true);
-				collapse.setFocus(true);
+				anchorExpand.setVisible(false);
+				anchorCollapse.setVisible(true);
+				anchorCollapse.setFocus(true);
 			}
 		});
-		
 		//HotKey for expand - CTRL + ALT+ R
-		collapse.addKeyDownHandler(new KeyDownHandler() {
+		anchorCollapse.addKeyDownHandler(new KeyDownHandler() {
 
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				if(event.isControlKeyDown() &&event.isAltKeyDown() && event.getNativeKeyCode()==82){
 					clearMessages();
-					closeNodes(cellTree.getRootTreeNode(), true);
-					expand.setVisible(true);
-					expand.setFocus(true);
-					collapse.setVisible(false);
+					closeNodes(cellTree.getRootTreeNode());
+					anchorExpand.setVisible(true);
+					anchorExpand.setFocus(true);
+					anchorCollapse.setVisible(false);
 				}
 			}
             
         });
 		
-		collapse.addClickHandler(new ClickHandler() {
+		anchorCollapse.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
-				closeNodes(cellTree.getRootTreeNode(), true);
-				expand.setVisible(true);
-				collapse.setVisible(false);
+				closeNodes(cellTree.getRootTreeNode());
+				anchorExpand.setVisible(true);
+				anchorExpand.setFocus(true);
+				anchorCollapse.setVisible(false);
 			}
 		});
 	}

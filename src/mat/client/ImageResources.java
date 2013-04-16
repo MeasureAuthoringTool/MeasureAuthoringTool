@@ -115,4 +115,10 @@ public interface ImageResources extends ClientBundle {
 	
 	@Source("images/application_cascade.png")
 	ImageResource application_cascade();
+	
+	@Source("images/Collapse.PNG")
+	ImageResource collapse_all();
+	
+	@Source("images/ExpandIcon.png")
+	ImageResource expand_all();
 }

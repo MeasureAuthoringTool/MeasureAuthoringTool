@@ -119,6 +119,6 @@ public interface ImageResources extends ClientBundle {
 	@Source("images/Collapse.PNG")
 	ImageResource collapse_all();
 	
-	@Source("images/ExpandIcon.png")
+	@Source("images/ExpandIcon.PNG")
 	ImageResource expand_all();
 }

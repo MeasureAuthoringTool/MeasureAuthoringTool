@@ -178,8 +178,7 @@ public class XmlConversionlHelper {
 
 		if(node != null){
 			node = node.appendChild(element);
-		}
-		else{
+		}else{
 			node = doc.appendChild(element);
 		}
 
@@ -206,6 +205,8 @@ public class XmlConversionlHelper {
 			cellTreeNodeType =  CellTreeNode.CLAUSE_NODE;
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.LOG_OP)){
 			cellTreeNodeType = CellTreeNode.LOGICAL_OP_NODE;			
+		}else if(nodeName.equalsIgnoreCase(ClauseConstants.RELATIONAL_OP)){
+			cellTreeNodeType = CellTreeNode.TIMING_NODE;			
 		}
 
 		child.setName(nodeValue);//set the name to Child

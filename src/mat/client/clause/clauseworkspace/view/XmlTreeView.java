@@ -1,5 +1,6 @@
 package mat.client.clause.clauseworkspace.view;
 
+import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.ErrorMessageDisplay;
@@ -27,6 +28,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -44,8 +46,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	private Button saveBtn = new Button("Save");
 
-	private Anchor anchorExpand = new Anchor("+ Expand All");
-	private Anchor anchorCollapse = new Anchor("- Collapse All");
+	private Anchor anchorExpand = new Anchor();
+	private Anchor anchorCollapse = new Anchor();
 
 	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 
@@ -96,12 +98,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		rightPanel.setStyleName("div-second");//right div having tree creation inputs.
 
 		VerticalPanel treePanel =  new VerticalPanel();
-
+		
 		FlowPanel expandCollapse  = new FlowPanel();
 		expandCollapse.setStyleName("leftAndTopPadding");
 		expandCollapse.setSize("100px", "20px");
+		
+		Image expandIconImage = new Image(ImageResources.INSTANCE.expand_all());
+		Image collapseIconImage = new Image(ImageResources.INSTANCE.collapse_all());
+		anchorExpand.getElement().appendChild(expandIconImage.getElement());
+		anchorCollapse.getElement().appendChild(collapseIconImage.getElement());
+		
 		expandCollapse.add(anchorExpand);
 		expandCollapse.add(anchorCollapse);
+		
 		anchorExpand.setFocus(true);
 		anchorCollapse.setVisible(false);
 

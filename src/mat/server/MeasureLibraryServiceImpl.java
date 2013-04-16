@@ -983,12 +983,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			String newXml = xmlProcessor.replaceNode(measureXmlModel.getXml(), measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
 			newXml = xmlProcessor.checkForScoringType();
-			
 			measureXmlModel.setXml(newXml);
 		}else{
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
-			processor.checkForScoringType();
-			measureXmlModel.setXml(processor.addParentNode(MEASURE));
+			processor.addParentNode(MEASURE);			
+			measureXmlModel.setXml(processor.checkForScoringType());
 		}
 		getService().saveMeasureXml(measureXmlModel);
 	}

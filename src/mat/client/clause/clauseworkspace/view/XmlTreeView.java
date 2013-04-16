@@ -88,8 +88,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void createPageView(CellTree cellTree) {
 		this.cellTree = cellTree;
 		mainPanel.setStyleName("div-wrapper");//main div
-		//Image expandButtonImage = new Image(ImageResources.INSTANCE.alert());
-		//expand.getElement().appendChild(expandButtonImage.getElement());
+		
 		SimplePanel leftPanel = new SimplePanel();
 		leftPanel.setStyleName("div-first bottomPadding10px");//left side div which will  have tree
 

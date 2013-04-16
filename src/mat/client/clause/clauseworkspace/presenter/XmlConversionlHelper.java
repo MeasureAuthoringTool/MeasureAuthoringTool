@@ -46,12 +46,6 @@ public class XmlConversionlHelper {
 			childs.add(createRootNode(tagName));
 			mainNode.setChilds(childs);
 		}
-		
-		//Process mainNode for Scoring Type.
-		if(document != null && "populations".equals(tagName)){
-			checkScoringType(mainNode,document);
-		}
-		
 		return mainNode;
 	}
 
@@ -271,103 +265,5 @@ public class XmlConversionlHelper {
 		s.substring(1).toLowerCase();
 	}
 	
-	/**
-	 * Should be called only for the Populations tab.
-	 * @param mainNode
-	 * @param document
-	 */
-	private static void checkScoringType(CellTreeNode mainNode,
-			Document document) {
-		/*
-		 * Find out the Scoring type for the measure by searching for the
-		 * 'scoring' element and checking the id attribute.
-		 * ex: <scoring id="CONTVAR"> or <scoring id="PROPOR"> or <scoring id="RATIO">
-		 */
-		
-		NodeList nodeList = document.getElementsByTagName("scoring");
-		
-		if(nodeList != null && nodeList.getLength() > 0){
-			Node scoringNode = nodeList.item(0);
-			Node scoringIdAttribute = scoringNode.getAttributes().getNamedItem("id");
-			String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
-			List<CellTreeNode> nodesToBeRemoved = new ArrayList<CellTreeNode>();
-			CellTreeNode populationsNode = mainNode.getChilds().get(0);
-			
-			if("CONTVAR".equals(scoringIdAttributeValue)){
-				for(CellTreeNode childNode : populationsNode.getChilds()){
-					String nodeName = childNode.getName();
-					if(!("Initial Patient Populations".equals(nodeName)) && !("Measure Populations".equals(nodeName))){
-						nodesToBeRemoved.add(childNode);
-					}
-				}
-			}else if ("PROPOR".equals(scoringIdAttributeValue)){
-				for(CellTreeNode childNode : populationsNode.getChilds()){
-					String nodeName = childNode.getName();
-					if("Numerator Exclusions".equals(nodeName) || "Measure Populations".equals(nodeName)){
-						nodesToBeRemoved.add(childNode);
-					}
-				}
-			}else if ("RATIO".equals(scoringIdAttributeValue)){
-				for(CellTreeNode childNode : populationsNode.getChilds()){
-					String nodeName = childNode.getName();
-					if("Denominator Exceptions".equals(nodeName) || "Measure Populations".equals(nodeName)){
-						nodesToBeRemoved.add(childNode);
-					}
-				}
-			}
-			
-			for(CellTreeNode removeNode:nodesToBeRemoved){
-				populationsNode.removeChild(removeNode);
-			}
-			createNewNodes(scoringIdAttributeValue,populationsNode);
-		}
-	}
-
-
-	private static void createNewNodes(String scoringType,
-			CellTreeNode populationsNode) {
-		List<String> scoreBasedNodes = new ArrayList<String>();
-		
-		if("CONTVAR".equals(scoringType)){
-			scoreBasedNodes.add("Initial Patient Populations");
-			scoreBasedNodes.add("Measure Populations");
-		}else if("PROPOR".equals(scoringType)){
-			scoreBasedNodes.add("Initial Patient Populations");
-			scoreBasedNodes.add("Numerators");
-			scoreBasedNodes.add("Denominators");
-			scoreBasedNodes.add("Denominator Exclusions");
-			scoreBasedNodes.add("Denominator Exceptions");
-		}else if("RATIO".equals(scoringType)){
-			scoreBasedNodes.add("Initial Patient Populations");
-			scoreBasedNodes.add("Numerators");
-			scoreBasedNodes.add("Numerator Exclusions");
-			scoreBasedNodes.add("Denominators");
-			scoreBasedNodes.add("Denominator Exclusions");
-		}
-		
-		for(String nodeName:scoreBasedNodes){
-			boolean isNodePresent = false;
-			for(CellTreeNode childNode : populationsNode.getChilds()){
-				String childNodeName = childNode.getName();
-				if(childNodeName.equals(nodeName)){
-					isNodePresent = true;
-					break;
-				}
-			}
-				
-			if(!isNodePresent){
-				CellTreeNode child = createChild(nodeName,nodeName,CellTreeNode.ROOT_NODE,populationsNode);
-				populationsNode.appendChild(child);
-				
-				String clauseName = nodeName.substring(0,nodeName.length()-1) + " 1";
-				CellTreeNode clauseNode = createChild(clauseName, clauseName, CellTreeNode.CLAUSE_NODE, child);
-				child.appendChild(clauseNode);
-					
-				CellTreeNode logicalOpNode = createChild(ClauseConstants.AND, ClauseConstants.AND, CellTreeNode.LOGICAL_OP_NODE, clauseNode);
-				clauseNode.appendChild(logicalOpNode);
-				
-			}
-		}
-	}
-
+	
 }

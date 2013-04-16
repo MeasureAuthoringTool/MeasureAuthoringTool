@@ -24,6 +24,14 @@ public class ClauseConstants{
 	public static final String MASTER_ROOT_NODE_POPULATION = "Populations";
 
 	public static final String ROOT_NODES = "|strata|measureObservations|numerators|denominators|numeratorExclusions|initialPatientPopulations|denominatorExclusions|denominatorExceptions|measurePopulations";
+	
+	/** Constants added for RighClick SubMenus  */
+	
+	public static final String[] LOGICAL_OPS = {"AND","OR"};
+	
+	public static final String RELATIONAL_OP = "relationalOp";
+	
+	
 	static{
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");

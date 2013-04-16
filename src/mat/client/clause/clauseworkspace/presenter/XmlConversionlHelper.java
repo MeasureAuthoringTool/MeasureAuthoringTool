@@ -2,6 +2,7 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
@@ -16,6 +17,7 @@ public class XmlConversionlHelper {
 
 	private static final String NAMESPACE_XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\r\n";
 
+	public static Map<String, String> timingOperators; 
 
 
 	/**
@@ -234,6 +236,11 @@ public class XmlConversionlHelper {
 			element = document.createElement(ClauseConstants.LOG_OP);
 			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 			element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
+			break;
+		case CellTreeNode.TIMING_NODE:
+			element = document.createElement(ClauseConstants.RELATIONAL_OP);
+			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
+			element.setAttribute(ClauseConstants.TYPE, toCamelCase(timingOperators.get(cellTreeNode.getName())));
 			break;
 		default:
 			element = document.createElement(cellTreeNode.getName());

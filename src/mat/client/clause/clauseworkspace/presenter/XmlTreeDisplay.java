@@ -38,4 +38,6 @@ public interface XmlTreeDisplay {
 
 		void refreshCellTreeAfterAdding(CellTreeNode selectedNode);
 		
+		public void editNode(String name, String label);
+		
 	}

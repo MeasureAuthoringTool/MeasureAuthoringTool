@@ -1,5 +1,6 @@
 package mat.client.clause.clauseworkspace.view;
 
+import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -27,25 +28,19 @@ public class ClauseWorkspaceContextMenu {
 	
 	MenuItem cutMenu;
 	
-	MenuItem andMenu;
-	
-	MenuItem orMenu;
-	
-	MenuItem qdmMenu;
-	
-	MenuItem timingMenu;
-	
-	MenuItem functionMenu;
+	MenuItem editMenu;
 	
 	MenuBar popupMenuBar = new MenuBar(true);
 	
-	MenuBar subMenuBar = new MenuBar(true);
+	MenuBar subMenuBar;
 	
 	MenuItemSeparator separator = new MenuItemSeparator();
 
 	PopupPanel popupPanel;
 	
 	Command pasteCmd;
+	
+	private Map<String, String> timingOperators;
 	
 	public ClauseWorkspaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		this.xmlTreeDisplay = treeDisplay;
@@ -88,19 +83,24 @@ public class ClauseWorkspaceContextMenu {
 	}
 
 
+	/**
+	 * Method displays the rightClick options based on the nodeType of the node selected on CellTree
+	 * @param popupPanel
+	 */
 	public void displayMenuItems( final PopupPanel popupPanel){
 		popupMenuBar.clearItems();
-		subMenuBar.clearItems();
 		popupPanel.clear();
 		copyMenu.setEnabled(false);
 		deleteMenu.setEnabled(false);
-
+		pasteMenu.setEnabled(false);
+		cutMenu.setEnabled(false);
 
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 
 		case CellTreeNode.MASTER_ROOT_NODE:
 			popupPanel.hide();
 			break;
+			
 		case CellTreeNode.ROOT_NODE:
 			Command addNodeCmd = new Command() {
 				public void execute( ) {
@@ -116,7 +116,10 @@ public class ClauseWorkspaceContextMenu {
 			addMenu.setEnabled(true);
 			copyMenu.setEnabled(false);
 			deleteMenu.setEnabled(false);
-			pasteMenu.setEnabled(canShowPaste());
+			if(xmlTreeDisplay.getCopiedNode() != null && 
+					xmlTreeDisplay.getCopiedNode().getParent().equals(xmlTreeDisplay.getSelectedNode())){
+				pasteMenu.setEnabled(true);
+			}
 			cutMenu.setEnabled(false);
 			break;
 
@@ -124,35 +127,42 @@ public class ClauseWorkspaceContextMenu {
 			addCommonMenus();
 			copyMenu.setEnabled(true);
 			pasteMenu.setEnabled(false);
-			deleteMenu.setEnabled(canShowDelete());//with options
+			if(xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1){
+				deleteMenu.setEnabled(true);
+			}
 			cutMenu.setEnabled(false);
 			break;
 
 		case CellTreeNode.LOGICAL_OP_NODE:	
-			addMenu = new MenuItem("Add", subMenuBar);
-			Command andOpCmd = new Command() {
-				public void execute( ) {
-					popupPanel.hide();
-					xmlTreeDisplay.addNode("AND", "AND", CellTreeNode.LOGICAL_OP_NODE);
-				}
-			};
-			
-			Command orOpCmd = new Command() {
-				public void execute( ) {
-					popupPanel.hide();
-					xmlTreeDisplay.addNode("OR", "OR", CellTreeNode.LOGICAL_OP_NODE);
-				}
-			};
+			subMenuBar = new MenuBar(true);
 			popupMenuBar.setAutoOpen(true);
-			subMenuBar.addItem("And", true, andOpCmd);
-			subMenuBar.addItem("Or", true, orOpCmd);
+			subMenuBar.setAutoOpen(true);
+			createAddMenus(ClauseConstants.LOGICAL_OPS, CellTreeNode.LOGICAL_OP_NODE, subMenuBar);// creating logical Operators Menu 2nd level
+			MenuBar timingMenuBar = new MenuBar(true); 
+			subMenuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level
+			createAddMenus(timingOperators.keySet().toArray(new String[0]), CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
+			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 			popupMenuBar.addItem(addMenu);
 			popupMenuBar.addSeparator(separator);
-			copyMenu.setEnabled(true);
-			pasteMenu.setEnabled(canShowPaste());
-			cutMenu.setEnabled(canShowCut());
-			deleteMenu.setEnabled(canShowDelete());
 			addCommonMenus();
+			copyMenu.setEnabled(true);
+			if(xmlTreeDisplay.getCopiedNode() != null 
+					&& xmlTreeDisplay.getCopiedNode().getNodeType() == xmlTreeDisplay.getSelectedNode().getNodeType()){
+				pasteMenu.setEnabled(true);
+			}
+			
+			if(xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE){
+				deleteMenu.setEnabled(true);
+			}
+			
+			if(xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE
+					&& xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE){
+				cutMenu.setEnabled(true);
+				subMenuBar = new MenuBar(true);
+				createEditMenus(ClauseConstants.LOGICAL_OPS, subMenuBar);
+				editMenu = new MenuItem("Edit", true, subMenuBar);
+				popupMenuBar.addItem(editMenu);				
+			}
 			break;
 
 		default:
@@ -160,6 +170,51 @@ public class ClauseWorkspaceContextMenu {
 		}
 	}
 
+	/**
+	 * Method iterates through the menuNames and creates MenuItems, 
+	 * on selection of a MenuItem , a child node is created and added to the selected node 
+	 * with the name and label set to selected menuItem's name and the nodeType set to the passed nodeType value.
+	 * 
+	 * and @param nodeType passed  
+	 * @param menuNames
+	 * @param nodeType
+	 * @param menuBar
+	 */
+	private void createAddMenus(String[] menuNames, final short nodeType, MenuBar menuBar){
+		for (final String name : menuNames) {
+			Command addCmd = new Command() {
+				public void execute( ) {
+					popupPanel.hide();
+					xmlTreeDisplay.addNode(name, name, nodeType);
+				}
+			};
+			MenuItem menu = new MenuItem(name, true, addCmd);
+			menuBar.addItem(menu);
+		}
+	}
+	
+	
+	/**
+	 * Method iterates through the editMenuNames and creates MenuItems, 
+	 * on selection of a MenuItem, the selected node's name and label is updated with the selected menuItem's name.
+	 * @param editMenuNames
+	 * @param subMenuBar
+	 */
+	private void createEditMenus(String[] editMenuNames, MenuBar subMenuBar){
+		for (final String editMenuName : editMenuNames) {
+			Command timingCmd = new Command() {
+				
+				@Override
+				public void execute() {
+					popupPanel.hide();
+					xmlTreeDisplay.editNode(editMenuName, editMenuName);
+				}
+			};
+			MenuItem timingMenus = new MenuItem(editMenuName, true, timingCmd);
+			subMenuBar.addItem(timingMenus);
+		}
+	}
+	
 
 	protected void pasteRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getCopiedNode().getName();
@@ -225,59 +280,19 @@ public class ClauseWorkspaceContextMenu {
 	}
 
 
-	private boolean canShowPaste(){
-		if(xmlTreeDisplay.getCopiedNode() != null){
-			switch (xmlTreeDisplay.getCopiedNode().getNodeType()) {
-			
-			case CellTreeNode.CLAUSE_NODE:
-				if(xmlTreeDisplay.getCopiedNode().getParent().equals(xmlTreeDisplay.getSelectedNode())){
-					return true;
-				}
-				break;
-			case CellTreeNode.LOGICAL_OP_NODE:
-				if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE){
-					return true;
-				}
-				break;
-			default:
-				break;
-			}
-		}
-		return false;
+
+	/**
+	 * @return the timingOperators
+	 */
+	public Map<String, String> getTimingOperators() {
+		return timingOperators;
 	}
 
-	private boolean canShowDelete(){
-		
-		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
-		
-		case CellTreeNode.CLAUSE_NODE:
-			if(xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1){
-				return true;
-			}
-			break;
-		case CellTreeNode.LOGICAL_OP_NODE:
-			if(xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE){
-				return true;
-			}
-		default:
-			break;
-		}
-		return false;
-	}
-	
 
-	private boolean canShowCut() {
-		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
-		
-		case CellTreeNode.LOGICAL_OP_NODE:
-			if(xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE
-					&& xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE){
-				return true;
-			}
-			break;
-		default:
-			break;
-		}
-		return false;
+	/**
+	 * @param timingOperators the timingOperators to set
+	 */
+	public void setTimingOperators(Map<String, String> timingOperators) {
+		this.timingOperators = timingOperators;
 	}
 }

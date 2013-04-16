@@ -494,5 +494,32 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 
 
+	@Override
+	public void editNode(String name, String label) {
+		if(selectedNode != null){
+			selectedNode.setName(name);
+			selectedNode.setLabel(label);
+			closeParentOpenNodes(cellTree.getRootTreeNode());
+		}
+	}
+
+
+	/**
+	 * @return the clauseWorkspaceContextMenu
+	 */
+	public ClauseWorkspaceContextMenu getClauseWorkspaceContextMenu() {
+		return clauseWorkspaceContextMenu;
+	}
+
+
+	/**
+	 * @param clauseWorkspaceContextMenu the clauseWorkspaceContextMenu to set
+	 */
+	public void setClauseWorkspaceContextMenu(
+			ClauseWorkspaceContextMenu clauseWorkspaceContextMenu) {
+		this.clauseWorkspaceContextMenu = clauseWorkspaceContextMenu;
+	}
+
+
 
 }

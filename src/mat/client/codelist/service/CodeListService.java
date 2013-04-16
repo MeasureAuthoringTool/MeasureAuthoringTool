@@ -1,6 +1,7 @@
 package mat.client.codelist.service;
 
 import java.util.List;
+import java.util.Map;
 
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
@@ -12,7 +13,6 @@ import mat.model.Code;
 import mat.model.CodeListSearchDTO;
 import mat.model.QualityDataSetDTO;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -196,4 +196,6 @@ public interface CodeListService extends RemoteService {
 	public void transferOwnerShipToUser(List<String> list, String toEmail);
 
 	public TransferOwnerShipModel searchUsers(int startIndex, int pageSize);
+	
+	public Map<String, String> getTimingOperators(); 
 }

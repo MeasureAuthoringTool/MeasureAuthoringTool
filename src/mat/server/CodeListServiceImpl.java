@@ -3,9 +3,12 @@ package mat.server;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
+import mat.DTO.OperatorDTO;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
@@ -339,6 +342,16 @@ implements mat.client.codelist.service.CodeListService {
 	
 	private UserService getUserService() {
 		return (UserService)context.getBean("userService");
+	}
+
+	@Override
+	public Map<String, String> getTimingOperators() {
+		List<OperatorDTO> operators = getCodeListService().getTimingOperators();
+		Map<String, String> timingOpsMap = new HashMap<String, String>();
+		for (OperatorDTO operatorDTO : operators) {
+			timingOpsMap.put(operatorDTO.getId(), operatorDTO.getItem());
+		}
+		return timingOpsMap;
 	}
 	
 }

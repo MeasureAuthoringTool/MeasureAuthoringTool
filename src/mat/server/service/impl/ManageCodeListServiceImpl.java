@@ -12,6 +12,7 @@ import java.util.Set;
 import mat.DTO.CodeSystemDTO;
 import mat.DTO.DataTypeDTO;
 import mat.DTO.HasListBoxDTO;
+import mat.DTO.OperatorDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageValueSetSearchModel;
@@ -1170,6 +1171,11 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			
 		}
 		
+	}
+
+	@Override
+	public List<OperatorDTO> getTimingOperators() {
+		return operatorDAO.getRelTimingperators();
 	}
 	
 }

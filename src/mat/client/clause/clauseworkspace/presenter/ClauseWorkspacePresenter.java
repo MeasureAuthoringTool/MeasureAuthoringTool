@@ -1,11 +1,15 @@
 package mat.client.clause.clauseworkspace.presenter;
 
+import java.util.Map;
+
 import mat.client.MatPresenter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SpacerWidget;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -32,6 +36,24 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		emptyWidget.add(new Label("No Measure Selected"));
 		simplepanel.setStyleName("contentPanel");
 		simplepanel.add(flowPanel);
+		loadTimingOperators();
+	}
+
+
+	private void loadTimingOperators() {
+		CodeListServiceAsync codeListServiceAsync = MatContext.get().getCodeListService();
+		codeListServiceAsync.getTimingOperators(new AsyncCallback<Map<String,String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {}
+
+			@Override
+			public void onSuccess(Map<String, String> result) {
+				populationClausePresenter.setTimingOperators(result);
+				measureObsClausePresenter.setTimingOperators(result);
+				stratificationClausePresenter.setTimingOperators(result);
+			}
+		});
 	}
 
 

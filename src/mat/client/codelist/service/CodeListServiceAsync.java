@@ -1,6 +1,7 @@
 package mat.client.codelist.service;
 
 import java.util.List;
+import java.util.Map;
 
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
@@ -74,4 +75,8 @@ public interface CodeListServiceAsync {
 
 	void searchUsers(int startIndex, int pageSize,
 			AsyncCallback<TransferOwnerShipModel> callback);
+
+	void getTimingOperators(AsyncCallback<Map<String, String>> callback);
+	
+	
 }

@@ -13,6 +13,8 @@ public interface CellTreeNode {
 	
 	short LOGICAL_OP_NODE = 4;
 	
+	short TIMING_NODE = 5;
+	
 	public CellTreeNode appendChild(CellTreeNode child);
 	
 	public CellTreeNode removeChild(CellTreeNode child);

@@ -46,8 +46,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	private Button saveBtn = new Button("Save");
 
-	private Anchor anchorExpand = new Anchor();
-	private Anchor anchorCollapse = new Anchor();
+	private Anchor anchorExpand = new Anchor(" ");
+	private Anchor anchorCollapse = new Anchor(" ");
 
 	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 
@@ -103,14 +103,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		expandCollapse.setStyleName("leftAndTopPadding");
 		expandCollapse.setSize("100px", "20px");
 		
-		Image expandIconImage = new Image(ImageResources.INSTANCE.expand_all());
-		Image collapseIconImage = new Image(ImageResources.INSTANCE.collapse_all());
-		anchorExpand.getElement().appendChild(expandIconImage.getElement());
-		anchorCollapse.getElement().appendChild(collapseIconImage.getElement());
-		
 		expandCollapse.add(anchorExpand);
 		expandCollapse.add(anchorCollapse);
-		
+		anchorExpand.setSize("100px", "20px");
 		anchorExpand.setFocus(true);
 		anchorCollapse.setVisible(false);
 
@@ -306,6 +301,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				anchorCollapse.setVisible(false);
 			}
 		});
+		
+		Image expandIconImage = new Image(ImageResources.INSTANCE.expand_all());
+		Image collapseIconImage = new Image(ImageResources.INSTANCE.collapse_all());
+		anchorExpand.getElement().appendChild(expandIconImage.getElement());
+		anchorCollapse.getElement().appendChild(collapseIconImage.getElement());
 	}
 
 

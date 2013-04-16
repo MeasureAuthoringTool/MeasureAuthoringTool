@@ -1088,8 +1088,6 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	@Override
 	public ArrayList<QualityDataSetDTO> getMeasureXMLForAppliedQDM(String measureId){
-		//MeasurePackageService service = getService();
-		//String jsonToXML = service.getJSONObjectFromXML(measureId);
 		ArrayList<QualityDataSetDTO> list = getAppliedQualityDTOList(measureId);
 		return list;
 		

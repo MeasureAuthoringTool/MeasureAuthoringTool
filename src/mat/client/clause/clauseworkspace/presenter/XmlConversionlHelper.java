@@ -32,11 +32,7 @@ public class XmlConversionlHelper {
 			document = XMLParser.parse(xml);
 			NodeList nodeList = document.getElementsByTagName(tagName);
 			if(nodeList.getLength() > 0){
-				for (int i = 0; i < nodeList.getLength(); i++) {
-					if("measure".equals(nodeList.item(i).getParentNode().getNodeName())){//Gets the node based on tag name passed and the parent is Measure
-						node = nodeList.item(i);
-					}
-				}
+				node = nodeList.item(0);
 			}
 			if(node != null){
 				mainNode.setName(tagName);
@@ -180,7 +176,8 @@ public class XmlConversionlHelper {
 
 		if(node != null){
 			node = node.appendChild(element);
-		}else{
+		}
+		else{
 			node = doc.appendChild(element);
 		}
 

@@ -1128,8 +1128,10 @@ padding: 2px;
 }
 
 .leftAndTopPadding{	
-	padding-left: 12px;
-	padding-top: 10px;
+	background: none repeat scroll 0 0 #BFD2DE;
+    margin-top: 10px;
+    padding-left: 12px;
+    padding-top: 7px;
 }
 
 .popupMenuBar{

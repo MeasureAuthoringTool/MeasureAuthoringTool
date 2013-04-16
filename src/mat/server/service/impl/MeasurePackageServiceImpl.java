@@ -48,9 +48,7 @@ import mat.server.LoggedInUserUtil;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.shared.ValidationUtility;
-import net.sf.json.JSON;
-import net.sf.json.JSONObject;
-import net.sf.json.xml.XMLSerializer;
+
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -598,31 +596,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		measureDAO.save(measure);
 		measureExportDAO.save(export);
 	}
-	@Override
-	//Temporary till updating a fragment of node in measureXML is not done.
-	public String getJSONObjectFromXML(String measureId){
-		String result = null;
-		try {
-			SimpleEMeasureService.ExportResult exportResult = 
-				eMeasureService.getSimpleXML(measureId);
-			result = exportResult.export;
-			logger.info("XML ==================>>" + result);
-			XMLSerializer xmlSerializer = new XMLSerializer();  
-			xmlSerializer.setForceTopLevelObject(true);
-			xmlSerializer.setTypeHintsEnabled(false);
-			JSON json = xmlSerializer.read(result);
-			JSONObject jsonObject = JSONObject.fromObject(json.toString()); 
-			result = jsonObject.toString(4);
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-
-		}
-		logger.info("JSON to String ==================>>" + result);
-		return result;
-	}
-
-	
 	
 	@Override
 	public List<MeasureShareDTO> search(String searchText, int startIndex,int numResults) {

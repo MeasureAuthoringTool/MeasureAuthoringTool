@@ -11,9 +11,6 @@ import mat.client.shared.MatContext;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.resources.client.ImageResource.ImageOptions;
-import com.google.gwt.resources.client.ImageResource.RepeatStyle;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -89,7 +86,7 @@ public class XmlTreePresenter {
 			public void onClick(ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
 				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay.getXmlTree().getRootTreeNode().getChildValue(0);
-				MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper.createXmlFromTree(cellTreeNode));
+				final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper.createXmlFromTree(cellTreeNode));
 				
 				service.saveMeasureXml(measureXmlModel,
 					new AsyncCallback<Void>() {
@@ -101,6 +98,8 @@ public class XmlTreePresenter {
 						@Override
 						public void onSuccess(Void result) {
 							xmlTreeDisplay.getSuccessMessageDisplay().setMessage("Changes are successfully saved.");
+							setOriginalXML(measureXmlModel.getXml());
+							System.out.println("originalXML is:"+getOriginalXML());
 						}
 				});
 			}

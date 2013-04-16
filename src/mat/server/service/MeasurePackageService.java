@@ -56,5 +56,5 @@ public interface MeasurePackageService {
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId);
 	public void saveMeasureXml(MeasureXmlModel measureXmlModel);
 	public String retrieveStewardOID(String stewardName);
-	String getJSONObjectFromXML(String measureId);
+	
 }

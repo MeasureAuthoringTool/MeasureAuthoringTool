@@ -138,6 +138,7 @@ public class ClauseWorkspaceContextMenu {
 			popupMenuBar.setAutoOpen(true);
 			subMenuBar.setAutoOpen(true);
 			createAddMenus(ClauseConstants.LOGICAL_OPS, CellTreeNode.LOGICAL_OP_NODE, subMenuBar);// creating logical Operators Menu 2nd level
+			createAddQDM_MenuItem(subMenuBar);
 			MenuBar timingMenuBar = new MenuBar(true); 
 			subMenuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level
 			createAddMenus(timingOperators.keySet().toArray(new String[0]), CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
@@ -169,6 +170,22 @@ public class ClauseWorkspaceContextMenu {
 			break;
 		}
 	}
+
+	private void createAddQDM_MenuItem(MenuBar menuBar) {
+		Command addQDMCmd = new Command() {
+			public void execute() {
+				showQDMPopup();
+			}
+		};
+		MenuItem item = new MenuItem("QDM Element",true,addQDMCmd);		
+		menuBar.addItem(item);
+	}
+
+
+	protected void showQDMPopup() {
+		QDMDialogBox.showQDMDialogBox();
+	}
+
 
 	/**
 	 * Method iterates through the menuNames and creates MenuItems, 

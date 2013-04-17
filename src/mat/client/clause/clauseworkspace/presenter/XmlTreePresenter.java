@@ -14,6 +14,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTree;
+import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -61,6 +62,15 @@ public class XmlTreePresenter {
 			CellTree cellTree = new CellTree(xmlTreeView, null, resource);// CellTree Creation
 			cellTree.setDefaultNodeSize(500);// this will get rid of the show more link on the bottom of the Tree
 			xmlTreeView.createPageView(cellTree); // Page Layout
+			// This is Open Population Node by default in Population Tab.
+			TreeNode treeNode = cellTree.getRootTreeNode();
+			for (int i = 0; i < treeNode.getChildCount(); i++) {
+				if (((CellTreeNode)treeNode.getChildValue(i)).getNodeType() == CellTreeNode.MASTER_ROOT_NODE){
+					//((CellTreeNode)treeNode.getChildValue(i)).setOpen(true);
+					 treeNode.setChildOpen(i, true,true);
+				}
+			}  
+
 			if(timingOperators != null){
 				xmlTreeView.getClauseWorkspaceContextMenu().setTimingOperators(timingOperators);
 			}			

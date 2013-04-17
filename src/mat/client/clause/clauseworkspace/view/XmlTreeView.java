@@ -28,6 +28,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -99,7 +100,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 		VerticalPanel treePanel =  new VerticalPanel();
 		
-		FlowPanel expandCollapse  = new FlowPanel();
+		HorizontalPanel expandCollapse  = new HorizontalPanel();
 		expandCollapse.setStyleName("leftAndTopPadding");
 		expandCollapse.setSize("100px", "20px");
 		
@@ -107,7 +108,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		expandCollapse.add(anchorCollapse);
 		anchorExpand.setSize("100px", "20px");
 		anchorExpand.setFocus(true);
-		anchorCollapse.setVisible(false);
+		anchorCollapse.setVisible(true);
 
 		treePanel.add(expandCollapse);
 		treePanel.add(cellTree);
@@ -257,7 +258,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if(event.isControlKeyDown() &&event.isAltKeyDown()&& event.getNativeKeyCode()==69){
 					clearMessages();
 					openAllNodes(cellTree.getRootTreeNode());
-					anchorExpand.setVisible(false);
+					anchorExpand.setVisible(true);
 					anchorCollapse.setVisible(true);
 					anchorCollapse.setFocus(true);
 					
@@ -270,7 +271,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			public void onClick(ClickEvent event) {
 				clearMessages();
 				openAllNodes(cellTree.getRootTreeNode());
-				anchorExpand.setVisible(false);
+				anchorExpand.setVisible(true);
 				anchorCollapse.setVisible(true);
 				anchorCollapse.setFocus(true);
 			}
@@ -285,7 +286,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					closeNodes(cellTree.getRootTreeNode());
 					anchorExpand.setVisible(true);
 					anchorExpand.setFocus(true);
-					anchorCollapse.setVisible(false);
+					anchorCollapse.setVisible(true);
 				}
 			}
             
@@ -298,7 +299,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				closeNodes(cellTree.getRootTreeNode());
 				anchorExpand.setVisible(true);
 				anchorExpand.setFocus(true);
-				anchorCollapse.setVisible(false);
+				anchorCollapse.setVisible(true);
 			}
 		});
 		

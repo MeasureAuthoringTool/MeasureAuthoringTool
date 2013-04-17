@@ -28,6 +28,7 @@
   cursor: hand;
   cursor: pointer;
   zoom: 1;
+  font-size: 12px;
 }
 
 .cellTreeItemImage {

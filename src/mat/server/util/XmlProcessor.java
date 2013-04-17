@@ -394,7 +394,7 @@ public class XmlProcessor {
 		Node measureStratificationsNode = findNode(this.originalDoc,XPATH_MEASURE_STRATIFICATIONS);
 		if(measureStratificationsNode == null){
 			String stratificationsNodeName = "strata";
-			String clauseDisplayName = "stratum";
+			String clauseDisplayName = "Stratum";
 			Element stratificationElement = createTemplateNode(stratificationsNodeName, clauseDisplayName);
 			measureStratificationsNode = stratificationElement;
 			//insert measureObservations element after populations element

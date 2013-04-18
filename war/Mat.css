@@ -1128,7 +1128,7 @@ padding: 2px;
 }
 
 .leftAndTopPadding {
-	margin-top: 10px;
+	/*margin-top: 10px;*/
     padding-left: 12px;
     padding-top: 7px;
 }

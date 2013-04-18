@@ -129,8 +129,8 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 						name = qdms.item(i).getAttributes().getNamedItem("occurrenceText").getNodeValue() + " of " + name;
 					}
 					
-					if(qdms.item(i).getAttributes().getNamedItem("dataType") != null){
-						name = name + ": " + qdms.item(i).getAttributes().getNamedItem("dataType").getNodeValue();
+					if(qdms.item(i).getAttributes().getNamedItem("datatype") != null){
+						name = name + ": " + qdms.item(i).getAttributes().getNamedItem("datatype").getNodeValue();
 					}
 					
 					qdmElementLookUps.put(name, qdms.item(i));

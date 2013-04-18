@@ -7,6 +7,8 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -144,6 +146,14 @@ public class QDMDialogBox{
 		for (String qdm : keys) {
 			listBox.addItem(qdm);
 		}
+		
+		//Set tooltips for each element in listbox
+		SelectElement selectElement = SelectElement.as(listBox.getElement());
+		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
+		for (int i = 0; i < options.getLength(); i++) {
+			OptionElement optionElement = options.getItem(i);
+	        optionElement.setTitle(optionElement.getInnerText());
+	    }
 	}
 	
 	

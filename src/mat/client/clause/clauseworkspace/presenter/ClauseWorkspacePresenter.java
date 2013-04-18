@@ -1,5 +1,6 @@
 package mat.client.clause.clauseworkspace.presenter;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import mat.client.MatPresenter;
@@ -15,6 +16,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
@@ -49,9 +51,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(Map<String, String> result) {
-				populationClausePresenter.setTimingOperators(result);
-				measureObsClausePresenter.setTimingOperators(result);
-				stratificationClausePresenter.setTimingOperators(result);
+				ClauseConstants.timingOperators = result;
 			}
 		});
 	}
@@ -97,11 +97,12 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 								populationClausePresenter.setOriginalXML(newXML);
 								measureObsClausePresenter.setOriginalXML(newXML);
 								stratificationClausePresenter.setOriginalXML(newXML);
-								
+								setQdmElementsMap(xml);
 								clauseWorkspaceTabs.selectTab(populationClausePresenter);
 								populationClausePresenter.beforeDisplay();
 							}
 						}
+						
 						@Override
 						public void onFailure(Throwable caught) {
 							System.out.println("Server call failed in ClauseWorkspacePresenter.setXMLOnTabs() in service.getMeasureXmlForMeasure");
@@ -113,6 +114,31 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		
 	}
 
+	
+	private void setQdmElementsMap(String xml) {
+		Map<String, Node> qdmElementLookUps = new HashMap<String, Node>();
+		Document document = XMLParser.parse(xml);
+		NodeList nodeList = document.getElementsByTagName("elementLookUp");
+		if(null != nodeList && nodeList.getLength() > 0){
+			NodeList qdms = nodeList.item(0).getChildNodes();
+			for (int i = 0; i < qdms.getLength() ; i++) {
+				if("qdm".equals(qdms.item(i).getNodeName())){
+					String name = qdms.item(i).getAttributes().getNamedItem("name").getNodeValue();
+						
+					if(qdms.item(i).getAttributes().getNamedItem("occurrenceText") != null){
+						name = qdms.item(i).getAttributes().getNamedItem("occurrenceText").getNodeValue() + " of " + name;
+					}
+					
+					if(qdms.item(i).getAttributes().getNamedItem("dataType") != null){
+						name = name + ": " + qdms.item(i).getAttributes().getNamedItem("dataType").getNodeValue();
+					}
+					
+					qdmElementLookUps.put(name, qdms.item(i));
+				}
+			}
+		}
+		ClauseConstants.elementLookUps = qdmElementLookUps;
+	}
 
 	@Override
 	public void beforeDisplay() {

@@ -349,7 +349,7 @@ implements mat.client.codelist.service.CodeListService {
 		List<OperatorDTO> operators = getCodeListService().getTimingOperators();
 		Map<String, String> timingOpsMap = new HashMap<String, String>();
 		for (OperatorDTO operatorDTO : operators) {
-			timingOpsMap.put(operatorDTO.getId(), operatorDTO.getItem());
+			timingOpsMap.put(operatorDTO.getItem(), operatorDTO.getId());
 		}
 		return timingOpsMap;
 	}

@@ -3,6 +3,8 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.gwt.xml.client.Node;
+
 public class ClauseConstants{
 
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
@@ -30,6 +32,15 @@ public class ClauseConstants{
 	public static final String[] LOGICAL_OPS = {"AND","OR"};
 	
 	public static final String RELATIONAL_OP = "relationalOp";
+	
+	public static Map<String, String> timingOperators;
+	
+	public static Map<String, Node> elementLookUps;
+	
+	public static final String ELEMENT_REF = "elementRef";
+	
+	public static final String ID = "id";
+	
 	
 	
 	static{
@@ -65,5 +76,23 @@ public class ClauseConstants{
 	public static void put(String key, String value){
 		constantsMap.put(key, value);
 	}
+
+
+
+	/**
+	 * @return the timingOperators
+	 */
+	public static Map<String, String> getTimingOperators() {
+		return timingOperators;
+	}
+
+
+	/**
+	 * @return the qdmElementLookupNode
+	 */
+	public static Map<String, Node> getElementLookUps() {
+		return elementLookUps;
+	}
+
 
 }

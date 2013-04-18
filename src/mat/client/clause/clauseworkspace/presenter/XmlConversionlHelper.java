@@ -17,9 +17,7 @@ public class XmlConversionlHelper {
 
 	private static final String NAMESPACE_XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\r\n";
 
-	public static Map<String, String> timingOperators; 
-
-
+	
 	/**
 	 * Creates CellTreeNode object which has list of children objects and a parent object from the XML
 	 * @param xml
@@ -167,7 +165,6 @@ public class XmlConversionlHelper {
 	 * @return
 	 */
 	private static String createXmlFromTree(CellTreeNode cellTreeNode, Document doc, Node node) {
-		System.out.println(cellTreeNode.getName());
 		Element element = getNodeName(cellTreeNode, doc);
 
 		if(node != null){
@@ -191,6 +188,7 @@ public class XmlConversionlHelper {
 		String nodeName = node.getNodeName();
 		String nodeValue = node.hasAttributes() ? node.getAttributes().getNamedItem(ClauseConstants.DISPLAY_NAME).getNodeValue() : nodeName;
 		short cellTreeNodeType = 0;
+		
 		if(nodeName.equalsIgnoreCase(ClauseConstants.MASTER_ROOT_NODE_POPULATION)){
 			cellTreeNodeType =  CellTreeNode.MASTER_ROOT_NODE;				
 		}else if(ClauseConstants.ROOT_NODES.contains(nodeName)){
@@ -201,6 +199,8 @@ public class XmlConversionlHelper {
 			cellTreeNodeType = CellTreeNode.LOGICAL_OP_NODE;			
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.RELATIONAL_OP)){
 			cellTreeNodeType = CellTreeNode.TIMING_NODE;			
+		}else if(nodeName.equalsIgnoreCase(ClauseConstants.ELEMENT_REF)){
+			cellTreeNodeType = CellTreeNode.ELEMENT_REF_NODE;			
 		}
 
 		child.setName(nodeValue);//set the name to Child
@@ -235,7 +235,15 @@ public class XmlConversionlHelper {
 		case CellTreeNode.TIMING_NODE:
 			element = document.createElement(ClauseConstants.RELATIONAL_OP);
 			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
-			element.setAttribute(ClauseConstants.TYPE, toCamelCase(timingOperators.get(cellTreeNode.getName())));
+			element.setAttribute(ClauseConstants.TYPE, toCamelCase(ClauseConstants.getTimingOperators().get(cellTreeNode.getName())));
+			break;
+		case CellTreeNode.ELEMENT_REF_NODE:
+			element = document.createElement(ClauseConstants.ELEMENT_REF);
+			Node idNode = ClauseConstants.getElementLookUps().get(cellTreeNode.getName()).getAttributes().getNamedItem("id");
+			element.setAttribute(ClauseConstants.ID, idNode != null ? idNode.getNodeValue() : "");// TBD if we need this
+			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
+			element.setAttribute(ClauseConstants.TYPE, "qdm");//this can change
+			
 			break;
 		default:
 			element = document.createElement(cellTreeNode.getName());

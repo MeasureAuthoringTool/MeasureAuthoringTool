@@ -1,6 +1,5 @@
 package mat.client.clause.clauseworkspace.view;
 
-import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -39,8 +38,6 @@ public class ClauseWorkspaceContextMenu {
 	PopupPanel popupPanel;
 	
 	Command pasteCmd;
-	
-	private Map<String, String> timingOperators;
 	
 	public ClauseWorkspaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		this.xmlTreeDisplay = treeDisplay;
@@ -141,7 +138,7 @@ public class ClauseWorkspaceContextMenu {
 			createAddQDM_MenuItem(subMenuBar);
 			MenuBar timingMenuBar = new MenuBar(true); 
 			subMenuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level
-			createAddMenus(timingOperators.keySet().toArray(new String[0]), CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
+			createAddMenus(ClauseConstants.getTimingOperators().keySet().toArray(new String[0]), CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 			popupMenuBar.addItem(addMenu);
 			popupMenuBar.addSeparator(separator);
@@ -174,6 +171,7 @@ public class ClauseWorkspaceContextMenu {
 	private void createAddQDM_MenuItem(MenuBar menuBar) {
 		Command addQDMCmd = new Command() {
 			public void execute() {
+				popupPanel.hide();
 				showQDMPopup();
 			}
 		};
@@ -183,7 +181,7 @@ public class ClauseWorkspaceContextMenu {
 
 
 	protected void showQDMPopup() {
-		QDMDialogBox.showQDMDialogBox();
+		QDMDialogBox.showQDMDialogBox(xmlTreeDisplay);
 	}
 
 
@@ -298,18 +296,6 @@ public class ClauseWorkspaceContextMenu {
 
 
 
-	/**
-	 * @return the timingOperators
-	 */
-	public Map<String, String> getTimingOperators() {
-		return timingOperators;
-	}
 
-
-	/**
-	 * @param timingOperators the timingOperators to set
-	 */
-	public void setTimingOperators(Map<String, String> timingOperators) {
-		this.timingOperators = timingOperators;
-	}
+	
 }

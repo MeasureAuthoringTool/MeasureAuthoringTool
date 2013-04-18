@@ -40,7 +40,6 @@ public class XmlTreePresenter {
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	private static final String MEASURE = "measure";
 	private String rootNode;
-	private Map<String, String> timingOperators;
 	
 	/**
 	 * This member variable is used to pass the original measure XML to XmlTreePresenter class
@@ -71,9 +70,6 @@ public class XmlTreePresenter {
 				}
 			}  
 
-			if(timingOperators != null){
-				xmlTreeView.getClauseWorkspaceContextMenu().setTimingOperators(timingOperators);
-			}			
 			xmlTreeDisplay = (XmlTreeDisplay) xmlTreeView;
 			xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 			panel.add(xmlTreeDisplay.asWidget());
@@ -102,7 +98,6 @@ public class XmlTreePresenter {
 			public void onClick(ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
 				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay.getXmlTree().getRootTreeNode().getChildValue(0);
-				XmlConversionlHelper.timingOperators = timingOperators;
 				final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper.createXmlFromTree(cellTreeNode));
 				
 				service.saveMeasureXml(measureXmlModel,
@@ -145,18 +140,4 @@ public class XmlTreePresenter {
 		return originalXML;
 	}
 
-	/**
-	 * @return the timingOperators
-	 */
-	public Map<String, String> getTimingOperators() {
-		return timingOperators;
-	}
-
-	/**
-	 * @param timingOperators the timingOperators to set
-	 */
-	public void setTimingOperators(Map<String, String> timingOperators) {
-		this.timingOperators = timingOperators;
-	}
-	
 }

@@ -15,6 +15,8 @@ public interface CellTreeNode {
 	
 	short TIMING_NODE = 5;
 	
+	short ELEMENT_REF_NODE = 6;
+	
 	public CellTreeNode appendChild(CellTreeNode child);
 	
 	public CellTreeNode removeChild(CellTreeNode child);

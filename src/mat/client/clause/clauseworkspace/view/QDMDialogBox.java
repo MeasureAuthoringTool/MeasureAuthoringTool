@@ -1,26 +1,37 @@
 package mat.client.clause.clauseworkspace.view;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
+import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DoubleClickEvent;
+import com.google.gwt.event.dom.client.DoubleClickHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
-import com.google.gwt.user.client.ui.SuggestionEvent;
-import com.google.gwt.user.client.ui.SuggestionHandler;
+import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.xml.client.Node;
 
-@SuppressWarnings("deprecation")
-public class QDMDialogBox {
-
-	public static void showQDMDialogBox() {
-		final DialogBox dialogBox = new DialogBox(false,true);
+public class QDMDialogBox{
+	
+	 public static DialogBox dialogBox = new DialogBox(true,true);
+	
+	 
+	 public static void showQDMDialogBox(final XmlTreeDisplay xmlTreeDisplay) {
+		
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.setWidth("20em");
@@ -35,47 +46,59 @@ public class QDMDialogBox {
 	    dialogBox.setWidget(dialogContents);
 	    
 	    //Create Search box
-	    SuggestBox suggestBox = new SuggestBox(createSuggestOracle());
+	    final SuggestBox suggestBox = new SuggestBox(createSuggestOracle(ClauseConstants.getElementLookUps()));
 	    suggestBox.setWidth("18em");
 	    suggestBox.setText("Search");
+	    suggestBox.getValueBox().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				if("Search".equals(suggestBox.getText())){
+					suggestBox.setText("");
+				}
+			}
+		});
+
 	    
 	    dialogContents.add(suggestBox);
 	    dialogContents.setCellHorizontalAlignment(
 	    		suggestBox, HasHorizontalAlignment.ALIGN_CENTER);
-	    
 	    	    	    
 	    //Create ListBox
-	    ListBox listBox = new ListBox();
+	    final ListBox listBox = new ListBox();
 	    listBox.setWidth("18em");
 	    listBox.setVisibleItemCount(10);
-	    addQDMNamesToListBox(listBox);
+	    addQDMNamesToListBox(listBox, ClauseConstants.getElementLookUps());
 	    
 	    //Add listbox to vertical panel and align it in center.
 	    dialogContents.add(listBox);
 	    dialogContents.setCellHorizontalAlignment(
 	    		listBox, HasHorizontalAlignment.ALIGN_CENTER);
-	    
 	    // Add a Close button at the bottom of the dialog
 	    Button closeButton = new Button("Close", new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
-				dialogBox.hide();				
+				/*if(listBox.getSelectedIndex() != -1){
+					String value = listBox.getItemText(listBox.getSelectedIndex());
+					xmlTreeDisplay.addNode(value, value, CellTreeNode.ELEMENT_REF_NODE);
+				}*/
+				dialogBox.hide();		
+				
 			}
 		});
-	  	    
+	  	  
 	    dialogContents.add(closeButton);
 	    dialogContents.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
 	    
 	    addSuggestHandler(suggestBox,listBox);
-	    addListBoxHandler(listBox,suggestBox);
+	    addListBoxHandler(listBox,suggestBox,xmlTreeDisplay);
 	    
 	    dialogBox.center();
 	    dialogBox.show();
 		
 	}
-
-	private static void addListBoxHandler(final ListBox listBox, final SuggestBox suggestBox) {
+	 
+	private static void addListBoxHandler(final ListBox listBox, final SuggestBox suggestBox, final XmlTreeDisplay xmlTreeDisplay) {
 		listBox.addChangeHandler(new ChangeHandler() {
 			
 			@Override
@@ -84,16 +107,27 @@ public class QDMDialogBox {
 				String selectedItem = listBox.getItemText(selectedIndex);
 				suggestBox.setText(selectedItem);
 			}
-		});		
-	}
-
-	@SuppressWarnings("deprecation")
-	private static void addSuggestHandler(final SuggestBox suggestBox, final ListBox listBox) {
-		suggestBox.addEventHandler(new SuggestionHandler() {
+		});
+		listBox.addDoubleClickHandler(new DoubleClickHandler() {
 			
 			@Override
-			public void onSuggestionSelected(SuggestionEvent event) {
-				String selectedQDMName = event.getSelectedSuggestion().getReplacementString();
+			public void onDoubleClick(DoubleClickEvent event) {
+				String value = listBox.getItemText(listBox.getSelectedIndex());
+				xmlTreeDisplay.addNode(value, value, CellTreeNode.ELEMENT_REF_NODE);
+				dialogBox.hide();
+			}
+		});
+		
+		
+		
+	}
+
+	private static void addSuggestHandler(final SuggestBox suggestBox, final ListBox listBox) {
+		suggestBox.addSelectionHandler(new SelectionHandler<Suggestion>() {
+			
+			@Override
+			public void onSelection(SelectionEvent<Suggestion> event) {
+				String selectedQDMName = event.getSelectedItem().getReplacementString();
 				for(int i=0;i<listBox.getItemCount();i++){
 					if(selectedQDMName.equals(listBox.getItemText(i))){
 						listBox.setItemSelected(i, true);
@@ -101,44 +135,23 @@ public class QDMDialogBox {
 					}
 				}
 			}
-		});
-		
+		});;
 	}
 
-	private static void addQDMNamesToListBox(ListBox listBox) {
-		List<String> qdmNamesList = getQDMNames();
-		for(String qdmName:qdmNamesList){
-			listBox.addItem(qdmName);
+	
+	private static void addQDMNamesToListBox(ListBox listBox, Map<String, Node> qdmElementLookupNode) {
+		Set<String> keys = qdmElementLookupNode.keySet();
+		for (String qdm : keys) {
+			listBox.addItem(qdm);
 		}
 	}
 	
-	private static List<String> getQDMNames(){
-		List<String> qdmNamesList = new ArrayList<String>();
-		
-		qdmNamesList.add("Sample QDM1");
-		qdmNamesList.add("Sample QDM2");
-		qdmNamesList.add("Sample QDM3");
-		qdmNamesList.add("Sample QDM4");
-		qdmNamesList.add("Sample QDM5");
-		qdmNamesList.add("Sample QDM6");
-		qdmNamesList.add("Sample QDM7");
-		qdmNamesList.add("Sample QDM8");
-		qdmNamesList.add("Sample QDM9");
-		qdmNamesList.add("Sample QDM10");
-		qdmNamesList.add("Sample QDM12");
-		qdmNamesList.add("Sample QDM13");
-		qdmNamesList.add("Sample QDM14");
-		qdmNamesList.add("Sample QDM15");
-		qdmNamesList.add("Sample QDM16");
-		
-		return qdmNamesList;
-	}
 	
-	private static MultiWordSuggestOracle createSuggestOracle(){
+	private static MultiWordSuggestOracle createSuggestOracle(Map<String, Node> qdmElementLookupNode){
 		MultiWordSuggestOracle multiWordSuggestOracle = new MultiWordSuggestOracle();
-		List<String> qdmNamesList = getQDMNames();
-		multiWordSuggestOracle.addAll(qdmNamesList);
+		multiWordSuggestOracle.addAll(qdmElementLookupNode.keySet());
 		return multiWordSuggestOracle;
 	}
+
 
 }

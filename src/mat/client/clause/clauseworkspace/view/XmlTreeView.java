@@ -24,12 +24,10 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -47,8 +45,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	private Button saveBtn = new Button("Save");
 
-	private Anchor anchorExpand = new Anchor(" ");
-	private Anchor anchorCollapse = new Anchor(" ");
+	private Button buttonExpand = new Button();
+	private Button buttonCollapse = new Button();
 
 	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 
@@ -103,12 +101,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		HorizontalPanel expandCollapse  = new HorizontalPanel();
 		expandCollapse.setStyleName("leftAndTopPadding");
 		expandCollapse.setSize("100px", "20px");
-		
-		expandCollapse.add(anchorExpand);
-		expandCollapse.add(anchorCollapse);
-		anchorExpand.setSize("100px", "20px");
-		anchorExpand.setFocus(true);
-		anchorCollapse.setVisible(true);
+		buttonExpand.setStylePrimaryName("expandAllButton");
+		buttonCollapse.setStylePrimaryName("collapseAllButton");
+		buttonExpand.setTitle("Expand All");
+		buttonCollapse.setTitle("Collapse All");
+		expandCollapse.add(buttonExpand);
+		expandCollapse.add(buttonCollapse);
+		buttonExpand.setFocus(true);
+		buttonCollapse.setVisible(true);
 
 		treePanel.add(expandCollapse);
 		treePanel.add(cellTree);
@@ -251,62 +251,57 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	private void addHandlers(){
 		//HotKey for expand - CTRL + ALT+ E
-		anchorExpand.addKeyDownHandler(new KeyDownHandler() {
+		buttonExpand.addKeyDownHandler(new KeyDownHandler() {
 			
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				if(event.isControlKeyDown() &&event.isAltKeyDown()&& event.getNativeKeyCode()==69){
 					clearMessages();
 					openAllNodes(cellTree.getRootTreeNode());
-					anchorExpand.setVisible(true);
-					anchorCollapse.setVisible(true);
-					anchorCollapse.setFocus(true);
+					buttonExpand.setVisible(true);
+					buttonCollapse.setVisible(true);
+					buttonCollapse.setFocus(true);
 					
 				}
 				
 			}
 		});
-		anchorExpand.addClickHandler(new ClickHandler() {
+		buttonExpand.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
 				openAllNodes(cellTree.getRootTreeNode());
-				anchorExpand.setVisible(true);
-				anchorCollapse.setVisible(true);
-				anchorCollapse.setFocus(true);
+				buttonExpand.setVisible(true);
+				buttonCollapse.setVisible(true);
+				buttonCollapse.setFocus(true);
 			}
 		});
 		//HotKey for expand - CTRL + ALT+ R
-		anchorCollapse.addKeyDownHandler(new KeyDownHandler() {
+		buttonCollapse.addKeyDownHandler(new KeyDownHandler() {
 
 			@Override
 			public void onKeyDown(KeyDownEvent event) {
 				if(event.isControlKeyDown() &&event.isAltKeyDown() && event.getNativeKeyCode()==82){
 					clearMessages();
 					closeNodes(cellTree.getRootTreeNode());
-					anchorExpand.setVisible(true);
-					anchorExpand.setFocus(true);
-					anchorCollapse.setVisible(true);
+					buttonExpand.setVisible(true);
+					buttonExpand.setFocus(true);
+					buttonCollapse.setVisible(true);
 				}
 			}
             
         });
 		
-		anchorCollapse.addClickHandler(new ClickHandler() {
+		buttonCollapse.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
 				closeNodes(cellTree.getRootTreeNode());
-				anchorExpand.setVisible(true);
-				anchorExpand.setFocus(true);
-				anchorCollapse.setVisible(true);
+				buttonExpand.setVisible(true);
+				buttonExpand.setFocus(true);
+				buttonCollapse.setVisible(true);
 			}
 		});
-		
-		Image expandIconImage = new Image(ImageResources.INSTANCE.expand_all());
-		Image collapseIconImage = new Image(ImageResources.INSTANCE.collapse_all());
-		anchorExpand.getElement().appendChild(expandIconImage.getElement());
-		anchorCollapse.getElement().appendChild(collapseIconImage.getElement());
 	}
 
 

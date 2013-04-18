@@ -1127,11 +1127,31 @@ padding: 2px;
 	padding-bottom:10px;
 }
 
-.leftAndTopPadding{	
+.leftAndTopPadding {
 	margin-top: 10px;
     padding-left: 12px;
     padding-top: 7px;
 }
+.expandAllButton {
+   background-color:white; 
+   background: url("images/expandall.png") no-repeat;
+   height:30px;
+   width:30px ;
+   border:none;
+   outline-color:white;
+   margin-top: 10px;
+}
+.collapseAllButton {
+   background: url("images/collapseall.png") no-repeat scroll 0 0 transparent;
+    border: medium none;
+    height: 30px;
+    margin-left: -70px;
+    margin-top: 10px;
+    outline-color: white;
+    width: 30px;
+   
+}
+
 
 .popupMenuBar{
 	background: #888888;

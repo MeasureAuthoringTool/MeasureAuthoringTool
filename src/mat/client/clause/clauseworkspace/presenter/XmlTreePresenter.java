@@ -13,6 +13,7 @@ import mat.client.shared.MatContext;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -22,12 +23,12 @@ public class XmlTreePresenter {
 	
 	
 	interface TreeResources extends CellTree.Resources {
-	   /* @Source("mat/client/images/addAllLeft.png")
+	    @Source("mat/client/images/plus.png")
 	    ImageResource cellTreeClosedItem();
 
-	    @Source("mat/client/images/addAllRight.png")
+	    @Source("mat/client/images/minus.png")
 	    ImageResource cellTreeOpenItem();
-*/
+
 	    @Source("mat/client/images/CwCellTree.css")
 	    CellTree.Style cellTreeStyle();
 	    

@@ -9,13 +9,11 @@
 		<field name="qualityDataDTOList" type="mat.model.QualityDataSetDTO"
 			get-method="getQualityDataDTO" set-method="setQualityDataDTO"
 			collection="arraylist">
-			<bind-xml name="qdsel" location="elementlookup">
+			<bind-xml name="qdm" location="elementLookUp">
 				<class name="mat.model.QualityDataSetDTO">
-
 					<field name="id" type="java.lang.String">
 						<bind-xml name="id" node="attribute" />
 					</field>
-
 					<field name="dataType" type="java.lang.String">
 						<bind-xml name="datatype" node="attribute" />
 					</field>
@@ -25,52 +23,26 @@
 					<field name="oid" type="java.lang.String">
 						<bind-xml name="oid" node="attribute" />
 					</field>
-				</class>
-			</bind-xml>
-		</field>
-		<field name="qualityDataDTOList_I" type="mat.model.QualityDataSetDTO" get-method="getQualityDataDTOList_I" set-method="setQualityDataDTOList_I"
-			collection="arraylist">
-			<bind-xml name="iqdsel" location="elementlookup">
-				<class name="mat.model.QualityDataSetDTO">
-
-					<field name="id" type="java.lang.String">
-						<bind-xml name="id" node="attribute" />
+					<field name="occurrenceText" type="java.lang.String">
+						<bind-xml name="occurrenceText" node="attribute" />
 					</field>
-
-					<field name="dataType" type="java.lang.String">
-						<bind-xml name="datatype" node="attribute" />
+					<field name="version" type="java.lang.String">
+						<bind-xml name="version" node="attribute" />
 					</field>
-					<field name="codeListName" type="java.lang.String">
-						<bind-xml name="name" node="attribute" />
+					<field name="codeListId" type="java.lang.String">
+						<bind-xml name="codeListId" node="attribute" />
 					</field>
-					<field name="oid" type="java.lang.String">
-						<bind-xml name="oid" node="attribute" />
+					<field name="codeSystemName" type="java.lang.String">
+						<bind-xml name="codeSystemName" node="attribute" />
+					</field>
+					<field name="taxonomy" type="java.lang.String">
+						<bind-xml name="Taxonomy" node="attribute" />
+					</field>
+					<field name="uuid" type="java.lang.String">
+						<bind-xml name="UUID" node="attribute" />
 					</field>
 				</class>
 			</bind-xml>
 		</field>
-		<field name="qualityDataDTOList_M" type="mat.model.QualityDataSetDTO" get-method="getQualityDataDTOList_M" set-method="setQualityDataDTOList_M"
-			collection="arraylist">
-			<bind-xml name="measureel" location="elementlookup">
-				<class name="mat.model.QualityDataSetDTO">
-
-					<field name="id" type="java.lang.String">
-						<bind-xml name="id" node="attribute" />
-					</field>
-
-					<field name="dataType" type="java.lang.String">
-						<bind-xml name="datatype" node="attribute" />
-					</field>
-					<field name="codeListName" type="java.lang.String">
-						<bind-xml name="name" node="attribute" />
-					</field>
-					<field name="oid" type="java.lang.String">
-						<bind-xml name="oid" node="attribute" />
-					</field>
-				</class>
-			</bind-xml>
-		</field>
-		
 	</class>
-
 </mapping>

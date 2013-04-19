@@ -24,22 +24,19 @@
 						<bind-xml name="oid" node="attribute" />
 					</field>
 					<field name="occurrenceText" type="java.lang.String">
-						<bind-xml name="occurrenceText" node="attribute" />
+						<bind-xml name="instance" node="attribute" />
 					</field>
 					<field name="version" type="java.lang.String">
 						<bind-xml name="version" node="attribute" />
-					</field>
-					<field name="codeListId" type="java.lang.String">
-						<bind-xml name="codeListId" node="attribute" />
 					</field>
 					<field name="codeSystemName" type="java.lang.String">
 						<bind-xml name="codeSystemName" node="attribute" />
 					</field>
 					<field name="taxonomy" type="java.lang.String">
-						<bind-xml name="Taxonomy" node="attribute" />
+						<bind-xml name="taxonomy" node="attribute" />
 					</field>
 					<field name="uuid" type="java.lang.String">
-						<bind-xml name="UUID" node="attribute" />
+						<bind-xml name="uuid" node="attribute" />
 					</field>
 				</class>
 			</bind-xml>

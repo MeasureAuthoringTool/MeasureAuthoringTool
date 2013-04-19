@@ -825,7 +825,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 			if(codeList != null){
 				ListObject listObject = listObjectDAO.find(codeList.getId());
-				qds.setCodeListId(listObject.getId());
 				qds.setOid(listObject.getOid());
 				qds.setUuid(listObject.getId());
 				qds.setCodeListName(listObject.getName());
@@ -888,7 +887,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 			if(codeList != null){
 				ListObject listObject = listObjectDAO.find(codeList.getId());
-				qds.setCodeListId(listObject.getId());
 				qds.setOid(listObject.getOid());
 				qds.setUuid(listObject.getId());
 				qds.setCodeListName(listObject.getName());
@@ -923,7 +921,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     	//List<QualityDataSetDTO> existingQDSList = qualityDataSetDAO.getQDSElementsFor(measureId, codeList.getId());
     	List<QualityDataSetDTO> existingQDSList = appliedQDM;
     	for(QualityDataSetDTO QDTO : existingQDSList){
-    		if(dt.getDescription().equalsIgnoreCase(QDTO.getDataType())&&(QDTO.getCodeListId().equalsIgnoreCase(codeList.getId())) && QDTO.getOccurrenceText() == null){
+    		if(dt.getDescription().equalsIgnoreCase(QDTO.getDataType())&&(QDTO.getUuid().equalsIgnoreCase(codeList.getId())) && QDTO.getOccurrenceText() == null){
     			//if the same dataType exists and the occurrenceText is also null 
     			//then there is a any occurrence exists for that dataType.
     			isQDSExist = true;

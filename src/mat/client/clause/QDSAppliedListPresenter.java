@@ -31,21 +31,23 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	public static interface SearchDisplay {
 		public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		public  void buildCellListWidget(QDSAppliedListModel appliedListModel);
+	//	public  void buildCellListWidget(QDSAppliedListModel appliedListModel);
 		public Widget asWidget();
 		void buildCellList(QDSAppliedListModel appliedListModel);
 	}
 
 	public QDSAppliedListPresenter(SearchDisplay sDisplayArg) {
 		this.searchDisplay = sDisplayArg;
-		showAppliedQDMsInMeasure(MatContext.get().getCurrentMeasureId());
+		//showAppliedQDMsInMeasure(MatContext.get().getCurrentMeasureId());
+		getXMLForAppliedQDM();
 	}
 
 	void loadCodeListData() {
 		panel.clear();
-		showAppliedQDMsInMeasure(MatContext.get().getCurrentMeasureId());
-		displaySearch();
 		getXMLForAppliedQDM();
+		//showAppliedQDMsInMeasure(MatContext.get().getCurrentMeasureId());
+		displaySearch();
+		
 	}
 
 	public Widget getWidget() {
@@ -66,7 +68,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	 * in context.
 	 * 
 	 * */
-	public void showAppliedQDMsInMeasure(String measureId) {
+/*	public void showAppliedQDMsInMeasure(String measureId) {
 		measureId = MatContext.get().getCurrentMeasureId();
 		CodeListServiceAsync codeListService = (CodeListServiceAsync) GWT
 		.create(CodeListService.class);
@@ -87,7 +89,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 				}
 			});
 		}
-	}
+	}*/
 
 	public void getXMLForAppliedQDM(){
 		String measureId = MatContext.get().getCurrentMeasureId();

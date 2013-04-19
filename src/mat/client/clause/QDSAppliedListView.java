@@ -43,15 +43,15 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
 	private Button removeButton = new Button("Remove");
-	private Button removeButtonJSON = new Button("Remove");
+	//private Button removeButtonJSON = new Button("Remove");
 	private CellList<QualityDataSetDTO> cellList;
-	private CellList<QualityDataSetDTO> cellListJSON;
+	//private CellList<QualityDataSetDTO> cellListJSON;
 
 	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
 	RangeLabelPager rangeLabelPager = new RangeLabelPager();
 
-	ShowMorePagerPanel pagerPanelJSON = new ShowMorePagerPanel();
-	RangeLabelPager rangeLabelPagerJSON = new RangeLabelPager();
+	/*ShowMorePagerPanel pagerPanelJSON = new ShowMorePagerPanel();
+	RangeLabelPager rangeLabelPagerJSON = new RangeLabelPager();*/
 	public SuccessMessageDisplay getSuccessMessagePanel(){
 		return successMessagePanel;
 	}
@@ -79,7 +79,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(removeButton);
 		vp.add(new SpacerWidget());
 
-		VerticalPanel vpJson = new VerticalPanel();
+		/*VerticalPanel vpJson = new VerticalPanel();
 		vpJson.setStylePrimaryName("qdmCellList");
 		HorizontalPanel mainPanelJson = new HorizontalPanel();
 		mainPanelJson.add(pagerPanelJSON);
@@ -92,10 +92,10 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vpJson.add(new SpacerWidget());
 		removeButtonJSON.setEnabled(checkForEnable());
 		vpJson.add(removeButtonJSON);
-		vpJson.add(new SpacerWidget());
+		vpJson.add(new SpacerWidget());*/
 
 		mainPanel.add(vp);
-		mainPanel.add(vpJson);
+		//mainPanel.add(vpJson);
 		containerPanel.add(mainPanel);
 
 		containerPanel.setStyleName("qdsContentPanel");
@@ -117,7 +117,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		return successMessagePanel;
 	}
 
-	@Override
+	/*@Override
 	public  void buildCellListWidget(QDSAppliedListModel appliedListModel) {
 		cellList = initializeCellListContent(cellList,appliedListModel);
 		cellList.setPageSize(15);
@@ -128,7 +128,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		pagerPanel.setDisplay(cellList);
 		rangeLabelPager.setDisplay(cellList);
 
-	}
+	}*/
 
 	private CellList<QualityDataSetDTO> initializeCellListContent(CellList<QualityDataSetDTO> cellList,final QDSAppliedListModel appliedListModel){
 
@@ -223,14 +223,14 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	@Override
 	public  void buildCellList(QDSAppliedListModel appliedListModel) {
 		if(appliedListModel.getAppliedQDMs()!=null){
-			cellListJSON = initializeCellListContent(cellListJSON,appliedListModel);
-			cellListJSON.setPageSize(15);
-			cellListJSON.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
+			cellList = initializeCellListContent(cellList,appliedListModel);
+			cellList.setPageSize(15);
+			cellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 			ListDataProvider<QualityDataSetDTO> dataProvider = new ListDataProvider<QualityDataSetDTO>(appliedListModel.getAppliedQDMs()); 
-			dataProvider.addDataDisplay(cellListJSON); 
-			pagerPanelJSON.addStyleName("scrollableJSON");
-			pagerPanelJSON.setDisplay(cellListJSON);
-			rangeLabelPagerJSON.setDisplay(cellListJSON);
+			dataProvider.addDataDisplay(cellList); 
+			pagerPanel.addStyleName("scrollable");
+			pagerPanel.setDisplay(cellList);
+			rangeLabelPager.setDisplay(cellList);
 		}
 	}
 

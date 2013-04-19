@@ -201,8 +201,8 @@ implements mat.client.codelist.service.CodeListService {
 
 	@Override
 	public SaveUpdateCodeListResult addCodeListToMeasure(String measureId,String dataType,
-			CodeListSearchDTO codeList,boolean isSpecificOccurrence) {
-		return getCodeListService().saveQDStoMeasure(measureId,dataType,codeList,isSpecificOccurrence);
+			CodeListSearchDTO codeList,boolean isSpecificOccurrence,ArrayList<QualityDataSetDTO> appliedQDM) {
+		return getCodeListService().saveQDStoMeasure(measureId,dataType,codeList,isSpecificOccurrence,appliedQDM);
 	}
 
 	

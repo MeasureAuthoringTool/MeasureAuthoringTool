@@ -18,6 +18,15 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	private boolean isAllCodesDups;
 	private String occurrenceMessage;
 	private String lastModifiedDate;
+	private String xmlString;
+	public String getXmlString() {
+		return xmlString;
+	}
+
+	public void setXmlString(String xmlString) {
+		this.xmlString = xmlString;
+	}
+
 	private ManageCodeListDetailModel codeListDetailModel;
 	
 	private int duplicateCount;

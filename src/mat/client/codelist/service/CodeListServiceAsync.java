@@ -1,5 +1,6 @@
 package mat.client.codelist.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ public interface CodeListServiceAsync {
 	void deleteCodes(String codeListID, List<Code> Codes,
 			AsyncCallback<ManageCodeListDetailModel> callback);
 
-	void addCodeListToMeasure(String measureId, String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence,
+	void addCodeListToMeasure(String measureId, String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence,ArrayList<QualityDataSetDTO> appliedQDMs,
 			AsyncCallback<SaveUpdateCodeListResult> callback);
 
 	public void getQDSElements(String measureId, String vertsion, AsyncCallback<List<QualityDataSetDTO>> callback);

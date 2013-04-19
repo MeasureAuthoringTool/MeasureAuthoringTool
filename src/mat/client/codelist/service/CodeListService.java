@@ -1,5 +1,6 @@
 package mat.client.codelist.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -165,7 +166,10 @@ public interface CodeListService extends RemoteService {
 	
 	public ManageCodeListDetailModel getCodeList(String key);
 	public ManageCodeListDetailModel deleteCodes(String codeListID,List<Code> Codes);
-	public SaveUpdateCodeListResult addCodeListToMeasure(String measureId,String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence);
+	SaveUpdateCodeListResult addCodeListToMeasure(String measureId,
+			String dataType, CodeListSearchDTO codeList,
+			boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDMs);
 	public ManageCodeListDetailModel getGroupedCodeList(String key);
 	
 	

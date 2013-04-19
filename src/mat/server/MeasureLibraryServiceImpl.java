@@ -64,6 +64,7 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 
 
@@ -992,6 +993,27 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		getService().saveMeasureXml(measureXmlModel);
 	}
 	
+	@Override
+	public void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName){
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
+		if((xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) && (nodeName != null && StringUtils.isNotBlank(nodeName))){
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			try {
+				String result = xmlProcessor.appendNode(measureXmlModel.getXml(),nodeName);
+				measureXmlModel.setXml(result);
+				getService().saveMeasureXml(measureXmlModel);
+			} catch (SAXException e) {
+
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		
+	}
+	
 	/**
 	 * Method unmarshalls MeasureXML into ManageMeasureDetailModel object
 	 * @param xmlModel
@@ -1105,14 +1127,6 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 					if(dataSetDTO.getCodeListName() !=null)
 						finalList.add(dataSetDTO);
 				}
-			}
-			if(details.getQualityDataDTOList_I()!=null && details.getQualityDataDTOList_I().size()!=0){
-				logger.info(" details.getQualityDataDTOList_I.size() ::"+ details.getQualityDataDTOList_I().size());
-				finalList.addAll(details.getQualityDataDTOList_I());
-			}
-			if(details.getQualityDataDTOList_M()!=null && details.getQualityDataDTOList_M().size()!=0){
-				finalList.addAll(details.getQualityDataDTOList_M());
-				logger.info(" details.getQualityDataDTOList_M.size() ::"+ details.getQualityDataDTOList_M().size());
 			}
 			Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
 				@Override

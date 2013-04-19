@@ -1,5 +1,6 @@
 package mat.server.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.DTO.OperatorDTO;
@@ -39,7 +40,7 @@ public interface CodeListService {
 		throws CodeListNotUniqueException, CodeListOidNotUniqueException, InvalidLastModifiedDateException, ValueSetLastModifiedDateNotUniqueException;	
 	
 	public List<ListObject> getSupplimentalCodeList();
-	public SaveUpdateCodeListResult saveQDStoMeasure(String measureId,String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence);
+	public SaveUpdateCodeListResult saveQDStoMeasure(String measureId,String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDM);
 	public List<? extends HasListBox> getCodeSystemsForCategory(String category);
 	public List<? extends HasListBox> getQDSDataTypeForCategory(String category);
 	public List<QualityDataSetDTO> getQDSElements(String measureId, String verision);

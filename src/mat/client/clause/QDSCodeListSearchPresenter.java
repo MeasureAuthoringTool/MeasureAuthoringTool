@@ -1,10 +1,12 @@
 package mat.client.clause;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListSearchModel;
@@ -12,6 +14,7 @@ import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
@@ -23,6 +26,7 @@ import mat.client.shared.search.PageSizeSelectionEvent;
 import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.model.CodeListSearchDTO;
+import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -32,6 +36,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -49,7 +54,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	private String lastSearchText;
 	private int lastStartIndex;
 	private QDSCodeListSearchModel currentCodeListResults;
-
+	MeasureServiceAsync service = MatContext.get().getMeasureService();
+	ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
+	
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption();
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement();
@@ -145,9 +152,30 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				MatContext.get().clearDVIMessages();
 				searchDisplay.scrollToBottom();
-				addSelectedCodeListtoMeasure();
+				getListOfAppliedQDMs();
 			}
 		});
+	}
+	
+	private void getListOfAppliedQDMs(){
+		String measureId = MatContext.get().getCurrentMeasureId();
+		if (measureId != null && measureId != "") {
+			service.getMeasureXMLForAppliedQDM(measureId, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
+
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+				}
+
+				@Override
+				public void onSuccess(ArrayList<QualityDataSetDTO> result) {
+					appliedQDMList = result;
+					addSelectedCodeListtoMeasure();
+				}
+			});
+
+		}
 	}
 	
 	private void search(String searchText, int startIndex, final int pageSize,
@@ -244,10 +272,12 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		        isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
 		        String measureID = MatContext.get().getCurrentMeasureId();
 				if(!dataType.isEmpty() && !dataType.equals("")){
-					MatContext.get().getCodeListService().addCodeListToMeasure(measureID,dataType, codeList, isSpecificOccurrence, new AsyncCallback<SaveUpdateCodeListResult>(){
+					MatContext.get().getCodeListService().addCodeListToMeasure(measureID,dataType, codeList, isSpecificOccurrence,appliedQDMList, new AsyncCallback<SaveUpdateCodeListResult>(){
 					@Override
 					public void onSuccess(SaveUpdateCodeListResult result) {
 						String message="";
+						if(result.getXmlString() !=null)
+							saveMeasureXML(result.getXmlString());
 						searchDisplay.getSpecificOccurrenceInput().setValue(false);//OnSuccess() uncheck the specific occurrence and deselect the radio options 
 						if(result.isSuccess()) {
 							if(result.getOccurrenceMessage()!= null && !result.getOccurrenceMessage().equals("")){
@@ -257,12 +287,17 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 							}
 							MatContext.get().getEventBus().fireEvent(new QDSElementCreatedEvent(codeList.getName()));
 							searchDisplay.getApplyToMeasureSuccessMsg().setMessage(message);
-							searchDisplay.getMsgFocusWidget().getElement().setAttribute("role", "alert");//This line adds the aria-alert 
+						//	searchDisplay.getMsgFocusWidget().getElement().setAttribute("role", "alert");//This line adds the aria-alert 
 							searchDisplay.getMsgFocusWidget().setFocus(true);
+							if(appliedQDMList.size()>0)
+								appliedQDMList.removeAll(appliedQDMList);
+							
 						}
 					}
 					@Override
 					public void onFailure(Throwable caught) {
+						if(appliedQDMList.size()>0)
+							appliedQDMList.removeAll(appliedQDMList);
 						searchDisplay.getErrorMessageDisplay().setMessage("problem while saving the QDM to Measure");
 					}
 				});
@@ -271,6 +306,29 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		}
 			
 		
+	}
+	
+	private void saveMeasureXML(String qdmXMLString){
+		final String nodeName ="qdm";
+		MeasureXmlModel exportModal = new MeasureXmlModel();
+		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
+		exportModal.setParentNode("elementLookUp");
+		exportModal.setToReplaceNode("qdm");
+		System.out.println("XML "+qdmXMLString);
+		exportModal.setXml(qdmXMLString);
+		
+		service.appendAndSaveNode(exportModal,nodeName,
+				new AsyncCallback<Void>() {
+	
+					@Override
+					public void onFailure(Throwable caught) {
+					}
+	
+					@Override
+					public void onSuccess(Void result) {
+				
+					}
+			});
 	}
 	
 	private void populateQDSDataType(String category){

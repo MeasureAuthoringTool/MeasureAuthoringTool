@@ -8,16 +8,28 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 
 	private String id;
-
 	private String dataType;
-	
 	private String codeListName;
-	
 	private String occurrenceText;
-	
 	private boolean suppDataElement;
-	
 	private String oid;
+	private String type;
+	private String codeListId;
+	private String taxonomy; 
+	private String codeSystemName;
+	private String version;
+	private String uuid;
+	
+	
+	public String getCodeListId() {
+		return codeListId;
+	}
+
+	public void setCodeListId(String codeListId) {
+		this.codeListId = codeListId;
+	}
+
+	
 	
 	public static class Comparator implements java.util.Comparator<QualityDataSetDTO>, IsSerializable {
 
@@ -92,8 +104,53 @@ public class QualityDataSetDTO implements IsSerializable {
 
 	public void setOid(String oid) {
 		this.oid = oid;
-	}	
-	
+	}
+
+	/**
+	 * @param type the type to set
+	 */
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	/**
+	 * @return the type
+	 */
+	public String getType() {
+		return type;
+	}
+
+	public String getTaxonomy() {
+		return taxonomy;
+	}
+
+	public void setTaxonomy(String taxonomy) {
+		this.taxonomy = taxonomy;
+	}
+
+	public String getCodeSystemName() {
+		return codeSystemName;
+	}
+
+	public void setCodeSystemName(String codeSystemName) {
+		this.codeSystemName = codeSystemName;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getUuid() {
+		return uuid;
+	}
+
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
+	}
 	
 	
 	

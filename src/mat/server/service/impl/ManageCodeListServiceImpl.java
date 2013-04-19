@@ -1,5 +1,7 @@
 package mat.server.service.impl;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,7 +51,7 @@ import mat.model.ListObject;
 import mat.model.ListObjectLT;
 import mat.model.MeasureSteward;
 import mat.model.ObjectStatus;
-import mat.model.QualityDataSet;
+import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.User;
 import mat.server.LoggedInUserUtil;
@@ -58,15 +60,21 @@ import mat.server.service.CodeListNotUniqueException;
 import mat.server.service.CodeListOidNotUniqueException;
 import mat.server.service.CodeListService;
 import mat.server.service.InvalidLastModifiedDateException;
-import mat.server.service.UserService;
 import mat.server.service.ValueSetLastModifiedDateNotUniqueException;
+import mat.server.util.ResourceLoader;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -798,38 +806,60 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	@Override
-	public SaveUpdateCodeListResult saveQDStoMeasure(String measureId,String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence) {
+	public SaveUpdateCodeListResult saveQDStoMeasure(String measureId,String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence,ArrayList<QualityDataSetDTO> appliedQDM) {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+		wrapper.setQualityDataDTO(qdsList);
 //		US 445
 		if(dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)){
-			return  saveAttributeOrMeasurementTiming(measureId, dataType, codeList);
+			return  saveAttributeOrMeasurementTiming(measureId, dataType, codeList,appliedQDM);
 		}else{
-			QualityDataSet qds = new QualityDataSet();
-			if(measureId != null){
-				qds.setMeasureId(measureDAO.find(measureId));
-			}
+			QualityDataSetDTO qds = new QualityDataSetDTO();
+			/*if(measureId != null){
+				qds.setMeasureId(measureId);
+			}*/
 			if(dataType != null){
-					qds.setDataType(dataTypeDAO.find(dataType));
+					DataType dt = dataTypeDAO.find(dataType);
+					qds.setDataType(dt.getDescription());
 			}
 			if(codeList != null){
-				qds.setListObject(listObjectDAO.find(codeList.getId()));
+				ListObject listObject = listObjectDAO.find(codeList.getId());
+				qds.setCodeListId(listObject.getId());
+				qds.setOid(listObject.getOid());
+				qds.setUuid(listObject.getId());
+				qds.setCodeListName(listObject.getName());
+				qds.setTaxonomy(listObject.getCodeSystem().getDescription());
+				if(listObject.getStewardOther() !=null && ((listObject.getStewardOther()).equalsIgnoreCase("Other"))){
+					qds.setCodeSystemName("Others");
+				}else{
+					qds.setCodeSystemName(listObject.getSteward().getOrgName());
+				}
 			}
-			qds.setOid(qualityDataSetDAO.generateUniqueOid());
-			qds.setVersion("1");
+			
+			qds.setId(qualityDataSetDAO.generateUniqueOid());
+			qds.setVersion("1.0");
+			
 			if(isSpecificOccurrence){
-				int occurrenceCount = checkForOccurrenceCount(measureId, qds.getDataType().getId(), codeList);
+				DataType dt = dataTypeDAO.find(dataType);
+				int occurrenceCount = checkForOccurrenceCount(measureId, dt.getId(), codeList,appliedQDM);
 				if(occurrenceCount < 26){//Alphabet are 26 characters.
 					String alphaOccurrence = findAlphabet(occurrenceCount);
-					qds.setOccurrence("Occurrence" + " " +alphaOccurrence);
-					qualityDataSetDAO.save(qds);
-					result.setOccurrenceMessage(qds.getOccurrence());
+					qds.setOccurrenceText("Occurrence" + " " +alphaOccurrence);
+					wrapper.getQualityDataDTO().add(qds);
+					result.setOccurrenceMessage(qds.getOccurrenceText());
+					String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 					result.setSuccess(true);
+					result.setXmlString(qdmXMLString);
 				}
 			}else{//Treat as regular QDM
-				if(!checkForDuplicates(measureId, qds.getDataType().getId(), codeList)){
-					qualityDataSetDAO.save(qds);
-					result.setOccurrenceMessage(qds.getOccurrence());
+				DataType dt = dataTypeDAO.find(dataType);
+				if(!checkForDuplicates(measureId,  dt.getId(), codeList, appliedQDM)){
+					wrapper.getQualityDataDTO().add(qds);
+					result.setOccurrenceMessage(qds.getOccurrenceText());
+					String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 					result.setSuccess(true);
+					result.setXmlString(qdmXMLString);
 				}
 			}
 		}
@@ -841,29 +871,46 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return alphabetArray[occurrenceCount];
 	}
 
-	private SaveUpdateCodeListResult saveAttributeOrMeasurementTiming(String measureId,String dataType,CodeListSearchDTO codeList){
-		boolean duplicateQDS = checkForDuplicates(measureId,dataType,codeList);
+	private SaveUpdateCodeListResult saveAttributeOrMeasurementTiming(String measureId,String dataType,CodeListSearchDTO codeList, ArrayList<QualityDataSetDTO> appliedQDM){
+		boolean duplicateQDS = checkForDuplicates(measureId,dataType,codeList, appliedQDM);
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+		wrapper.setQualityDataDTO(qdsList);
 		if(!duplicateQDS){
-			QualityDataSet qds = new QualityDataSet();
-			if(measureId != null){
-				qds.setMeasureId(measureDAO.find(measureId));
-			}
+			QualityDataSetDTO qds = new QualityDataSetDTO();
+			/*if(measureId != null){
+				qds.setMeasureId(measureId);
+			}*/
 			if(dataType != null){
-					qds.setDataType(dataTypeDAO.findByDataTypeName(dataType));
+				DataType dt = dataTypeDAO.findByDataTypeName(dataType);
+				qds.setDataType(dt.getDescription());
 			}
 			if(codeList != null){
-				qds.setListObject(listObjectDAO.find(codeList.getId()));
+				ListObject listObject = listObjectDAO.find(codeList.getId());
+				qds.setCodeListId(listObject.getId());
+				qds.setOid(listObject.getOid());
+				qds.setUuid(listObject.getId());
+				qds.setCodeListName(listObject.getName());
+				qds.setTaxonomy(listObject.getCodeSystem().getDescription());
+				if(listObject.getStewardOther() !=null && listObject.getStewardOther().equalsIgnoreCase("Other") ){
+					qds.setCodeSystemName("Others");
+				}else{
+					qds.setCodeSystemName(listObject.getSteward().getOrgName());
+				}
 			}
-			qds.setOid(qualityDataSetDAO.generateUniqueOid());
-			qds.setVersion("1");
-			qualityDataSetDAO.save(qds);
+			qds.setId(qualityDataSetDAO.generateUniqueOid());
+			qds.setVersion("1.0");
+			wrapper.getQualityDataDTO().add(qds);
+			String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 			result.setSuccess(true);
+			result.setXmlString(qdmXMLString);
 		}
 		return result;
 	}
 	
-    private boolean checkForDuplicates(String measureId,String dataType,CodeListSearchDTO codeList){
+    private boolean checkForDuplicates(String measureId,String dataType,CodeListSearchDTO codeList,ArrayList<QualityDataSetDTO> appliedQDM){
+    	logger.info("checkForDuplicates Method Call Start.");
     	boolean isQDSExist = false;
     	DataType dt = null;
     	if(dataType != null){
@@ -873,34 +920,80 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				dt = dataTypeDAO.find(dataType);
 			}
 		}
-    	List<QualityDataSetDTO> existingQDSList = qualityDataSetDAO.getQDSElementsFor(measureId, codeList.getId());
+    	//List<QualityDataSetDTO> existingQDSList = qualityDataSetDAO.getQDSElementsFor(measureId, codeList.getId());
+    	List<QualityDataSetDTO> existingQDSList = appliedQDM;
     	for(QualityDataSetDTO QDTO : existingQDSList){
-    		if(dt.getDescription().equalsIgnoreCase(QDTO.getDataType()) && QDTO.getOccurrenceText() == null){
+    		if(dt.getDescription().equalsIgnoreCase(QDTO.getDataType())&&(QDTO.getCodeListId().equalsIgnoreCase(codeList.getId())) && QDTO.getOccurrenceText() == null){
     			//if the same dataType exists and the occurrenceText is also null 
     			//then there is a any occurrence exists for that dataType.
     			isQDSExist = true;
+    			break;
     		}
     	}
+    	logger.info("checkForDuplicates Method Call End.Check resulted in :" + isQDSExist);
     	return isQDSExist;
     	
     }
-
+    /**
+     * Method to extract qdm element node created after marshalling of QualityDataModelWrapper object.
+     * */
+    private String addAppliedQDMInMeasureXML(QualityDataModelWrapper qualityDataSetDTOWrapper) {
+    	logger.info("addAppliedQDMInMeasureXML Method Call Start.");
+		ByteArrayOutputStream stream = createXML(qualityDataSetDTOWrapper);
+		int startIndex = stream.toString().indexOf("<qdm", 0);
+		int lastIndex = stream.toString().indexOf("/>", startIndex);
+		String xmlString = stream.toString().substring(startIndex, lastIndex+2);
+		logger.info("addAppliedQDMInMeasureXML Method Call xmlString :: " + xmlString);
+		return xmlString;
+	}
+    
+    /**
+     * Method to create XML from QualityDataModelWrapper object.
+     * */
+    private ByteArrayOutputStream createXML(QualityDataModelWrapper qualityDataSetDTO) {
+		logger.info("In ManageCodeLiseServiceImpl.createXml()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("QualityDataModelMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+	        marshaller.marshal(qualityDataSetDTO);
+	        logger.info("Marshalling of QualityDataSetDTO is successful.." + stream.toString());
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load QualityDataModelMapping.xml" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed" + e);
+			}else if(e instanceof ValidationException){
+				logger.info("Validation Exception" + e);
+			}else{
+				logger.info("Other Exception" + e);
+			}
+		} 
+		logger.info("Exiting ManageCodeLiseServiceImpl.createXml()");
+		return stream;
+	}
+    
     /*
      * This method is used to find the number of occurrences that exist for the given measure ,codeList and datType.
      * null can be passed to getQDSElementsFor()...since the whole purpose of this measure is to find how many occurrence exists for 
      * the given dataType not for the specific occurrence.
      */
-    private int checkForOccurrenceCount(String measureId,String dataTypeId,CodeListSearchDTO codeList){
+    private int checkForOccurrenceCount(String measureId,String dataTypeId,CodeListSearchDTO codeList,ArrayList<QualityDataSetDTO> appliedQDM){
     	int occurrenceCount = 0;
-    	List<QualityDataSet> existingQDSList = qualityDataSetDAO.getQDSElementsFor(measureId, codeList.getId(),dataTypeId, null);
-    	ListIterator<QualityDataSet> qdsIterator = existingQDSList.listIterator();
+    	//List<QualityDataSet> existingQDSList = qualityDataSetDAO.getQDSElementsFor(measureId, codeList.getId(),dataTypeId, null);
+    	ListIterator<QualityDataSetDTO> qdsIterator = appliedQDM.listIterator();
+    	DataType dt = null;
+    	dt = dataTypeDAO.find(dataTypeId);
     	while(qdsIterator.hasNext()){
-    		QualityDataSet qds = qdsIterator.next();
-    		if(qds.getOccurrence()== null){
-    			qdsIterator.remove();
+    		QualityDataSetDTO qds = qdsIterator.next();
+    		if(dt.getDescription().equalsIgnoreCase(qds.getDataType()) && qds.getOccurrenceText() != null){
+    			occurrenceCount++;
     		}
     	}
-    	occurrenceCount = existingQDSList.size();
     	return occurrenceCount;
     	
     }

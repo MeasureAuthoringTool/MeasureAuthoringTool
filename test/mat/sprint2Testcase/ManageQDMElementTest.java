@@ -150,8 +150,8 @@ public class ManageQDMElementTest extends SpringInitializationTest {
 		if (!datatypes.isEmpty()) {
 			CodeListSearchDTO clDTO = new CodeListSearchDTO();
 			clDTO.setId(result.getId());
-			SaveUpdateCodeListResult qdsResult = getCodeListService().saveQDStoMeasure(measure.getId(), datatypes.get(0).getId(), clDTO,false);
-			return qdsResult;
+			//SaveUpdateCodeListResult qdsResult = getCodeListService().saveQDStoMeasure(measure.getId(), datatypes.get(0).getId(), clDTO,false);
+			return new SaveUpdateCodeListResult() ;
 		}
 		return null;
 	}

@@ -110,20 +110,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					appliedListModel.setAppliedQDMs(result);
 					searchDisplay.buildCellList(appliedListModel);
 				}
-
-			/*	@Override
-				public void onFailure(Throwable caught) {
-					Window.alert(MatContext.get().getMessageDelegate()
-							.getGenericErrorMessage());
-
-				}
-
-				@Override
-				public void onSuccess(String result) {
-					//Window.alert(result);
-					extractJSONObject(result);
-					searchDisplay.buildCellList(codeListQDSEL);
-				}*/});
+		});
 
 		}
 

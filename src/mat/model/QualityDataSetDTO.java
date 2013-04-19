@@ -14,23 +14,13 @@ public class QualityDataSetDTO implements IsSerializable {
 	private boolean suppDataElement;
 	private String oid;
 	private String type;
-	private String codeListId;
 	private String taxonomy; 
 	private String codeSystemName;
 	private String version;
 	private String uuid;
 	
 	
-	public String getCodeListId() {
-		return codeListId;
-	}
-
-	public void setCodeListId(String codeListId) {
-		this.codeListId = codeListId;
-	}
-
-	
-	
+		
 	public static class Comparator implements java.util.Comparator<QualityDataSetDTO>, IsSerializable {
 
 		@Override

@@ -115,7 +115,11 @@ public class QDMDialogBox{
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
 				String value = listBox.getItemText(listBox.getSelectedIndex());
-				xmlTreeDisplay.addNode(value, value, CellTreeNode.ELEMENT_REF_NODE);
+				String label = value;
+				if(label.length() > ClauseConstants.LABEL_MAX_LENGTH){
+					label = label.substring(0,  ClauseConstants.LABEL_MAX_LENGTH -1).concat("...");
+				}
+				xmlTreeDisplay.addNode(value, label, CellTreeNode.ELEMENT_REF_NODE);
 				dialogBox.hide();
 			}
 		});

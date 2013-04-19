@@ -201,10 +201,16 @@ public class XmlConversionlHelper {
 			cellTreeNodeType = CellTreeNode.TIMING_NODE;			
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.ELEMENT_REF)){
 			cellTreeNodeType = CellTreeNode.ELEMENT_REF_NODE;			
+		}else if(nodeName.equalsIgnoreCase(ClauseConstants.FUNC_NAME)){
+			cellTreeNodeType = CellTreeNode.FUNCTIONS_NODE;			
 		}
 
 		child.setName(nodeValue);//set the name to Child
-		child.setLabel(nodeValue);
+		String nodeLabel = nodeValue;
+		if(nodeLabel.length() > ClauseConstants.LABEL_MAX_LENGTH){
+			nodeLabel = nodeLabel.substring(0,  ClauseConstants.LABEL_MAX_LENGTH - 1).concat("...");
+		}
+		child.setLabel(nodeLabel);
 		child.setNodeType(cellTreeNodeType);		
 		child.setParent(parent);// set parent in child
 		childs.add(child);// add child to child list
@@ -243,7 +249,11 @@ public class XmlConversionlHelper {
 			element.setAttribute(ClauseConstants.ID, idNode != null ? idNode.getNodeValue() : "");// TBD if we need this
 			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 			element.setAttribute(ClauseConstants.TYPE, "qdm");//this can change
-			
+			break;
+		case CellTreeNode.FUNCTIONS_NODE:
+			element = document.createElement(ClauseConstants.FUNC_NAME);
+			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
+			element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
 			break;
 		default:
 			element = document.createElement(cellTreeNode.getName());

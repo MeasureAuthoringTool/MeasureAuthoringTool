@@ -139,6 +139,9 @@ public class ClauseWorkspaceContextMenu {
 			MenuBar timingMenuBar = new MenuBar(true); 
 			subMenuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level
 			createAddMenus(ClauseConstants.getTimingOperators().keySet().toArray(new String[0]), CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
+			MenuBar functionsMenuBar = new MenuBar(true); 
+			subMenuBar.addItem("Functions", functionsMenuBar);//functions menu 2nd level
+			createAddMenus(ClauseConstants.FUNCTIONS, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar);// functions sub menus 3rd level			
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 			popupMenuBar.addItem(addMenu);
 			popupMenuBar.addSeparator(separator);

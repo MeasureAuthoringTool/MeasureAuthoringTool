@@ -1,6 +1,5 @@
 package mat.client.clause.clauseworkspace.view;
 
-import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.ErrorMessageDisplay;
@@ -9,6 +8,7 @@ import mat.client.shared.SuccessMessageDisplay;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
@@ -20,6 +20,9 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
@@ -39,6 +42,13 @@ import com.google.gwt.view.client.TreeViewModel;
 
 public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel{
 
+	interface Template extends SafeHtmlTemplates {
+	    @Template("<div class=\"{0}\" title=\"{1}\">{2}</div>")
+	    SafeHtml outerDiv(String classes, String title, String content);
+	}
+	
+	private static final Template template = GWT.create(Template.class);
+	 
 	private FlowPanel  mainPanel = new FlowPanel();
 
 	CellTree cellTree;
@@ -340,8 +350,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		public void render(Context context, CellTreeNode value, SafeHtmlBuilder sb) {
 			if (value == null) {
 				return;
-			}
-			sb.appendEscaped(value.getLabel() != null ? value.getLabel() : value.getName());
+			}			
+			//TODO :  We can add classes based on the NodeType with the specified image. The classes will be picked up from Mat.css
+			sb.append(template.outerDiv("", value.getName(), value.getLabel() != null ? value.getLabel() : value.getName()));
 		}
 
 		@Override
@@ -376,8 +387,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		selectionModel.setSelected(selectedNode, true);			
 	}
 
-
-
 	@Override
 	public void removeNode() {
 		if(selectedNode != null){
@@ -387,8 +396,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			selectionModel.setSelected(parent, true);
 		}
 	}
-
-
 
 	public void onRightClick(CellTreeNode value, Event event, Element element) {
 		selectedNode = value;

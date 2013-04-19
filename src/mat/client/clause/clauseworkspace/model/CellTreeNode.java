@@ -17,6 +17,8 @@ public interface CellTreeNode {
 	
 	short ELEMENT_REF_NODE = 6;
 	
+	short FUNCTIONS_NODE = 7;
+	
 	public CellTreeNode appendChild(CellTreeNode child);
 	
 	public CellTreeNode removeChild(CellTreeNode child);

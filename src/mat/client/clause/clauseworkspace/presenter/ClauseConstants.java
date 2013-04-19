@@ -41,8 +41,14 @@ public class ClauseConstants{
 	
 	public static final String ID = "id";
 	
+	public static final int LABEL_MAX_LENGTH = 30;
 	
+	public static final String[] FUNCTIONS = {"AVG", "COUNT", "DATEDIFF", "MAX", "MIN", "MEDIAN", "SUM", "TIMEDIFF", "FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "MOST RECENT", "NOT"};
 	
+	public static Map<String, String> functions = new HashMap<String, String>();
+	
+	public static final String FUNC_NAME = "functionalOp"; 
+		
 	static{
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");
@@ -62,8 +68,6 @@ public class ClauseConstants{
 	public static String get(String key){
 		return constantsMap.get(key);
 	}
-
-
 
 	public static String getClauseTypeNodeName(String key){
 		return childMap.get(key);
@@ -92,6 +96,24 @@ public class ClauseConstants{
 	 */
 	public static Map<String, Node> getElementLookUps() {
 		return elementLookUps;
+	}
+
+
+
+	/**
+	 * @return the functions
+	 */
+	public static Map<String, String> getFunctions() {
+		return functions;
+	}
+
+
+
+	/**
+	 * @param functions the functions to set
+	 */
+	public static void setFunctions(Map<String, String> functions) {
+		ClauseConstants.functions = functions;
 	}
 
 

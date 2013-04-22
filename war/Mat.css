@@ -1131,12 +1131,13 @@ padding: 2px;
 	/*margin-top: 10px;*/
     padding-left: 12px;
     padding-top: 7px;
+    margin-bottom:-10px;
 }
 .expandAllButton {
    background-color:white; 
    background: url("images/expandall.png") no-repeat;
    height:30px;
-   width:30px ;
+   width:20px ;
    border:none;
    outline-color:white;
    margin-top: 10px;
@@ -1148,7 +1149,7 @@ padding: 2px;
     margin-left: -70px;
     margin-top: 10px;
     outline-color: white;
-    width: 30px;
+    width: 20px;
    
 }
 

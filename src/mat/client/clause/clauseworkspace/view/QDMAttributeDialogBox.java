@@ -42,6 +42,35 @@ import com.google.gwt.xml.client.Node;
 public class QDMAttributeDialogBox {
 	
 	
+	private static final class DeleteSelectedClickHandler implements
+			ClickHandler {
+		private final Grid grid;
+
+		private DeleteSelectedClickHandler(Grid grid) {
+			this.grid = grid;
+		}
+
+		@Override
+		public void onClick(ClickEvent event) {
+			int rowCount = grid.getRowCount();
+			List<Integer> selectedRowNums = new ArrayList<Integer>();
+			//collect all the row nums for checked rows.
+			for(int i=0;i<rowCount;i++){
+				CheckBox checkBox = (CheckBox)grid.getWidget(i, 0);
+				if(checkBox.getValue()){
+					selectedRowNums.add(i);
+				}
+			}
+			System.out.println("Selected Rows:"+selectedRowNums);
+			//Iterate through the selected row nums backwards so that we delete the higher rows before the lower ones.
+			for(int i=selectedRowNums.size()-1;i>=0;i--){
+				int rowNum = selectedRowNums.get(i);
+				System.out.println("deleting rowNum:"+rowNum);
+				grid.removeRow(rowNum);
+			}
+		}
+	}
+
 	private static final class QDMAttributeGridClickHandler implements
 			ClickHandler {
 		private final Grid grid;
@@ -287,7 +316,9 @@ public class QDMAttributeDialogBox {
 		final Grid grid = new Grid(rows,4);
 		grid.addClickHandler(new QDMAttributeGridClickHandler(grid));
 		
+		//Handler to Add New rows to the attribute table.
 		addNewButton.addClickHandler(new AddNewQDMAttributeClickHandler(attributeList, mode, grid));
+		deleteSelectedButton.addClickHandler(new DeleteSelectedClickHandler(grid));
 		
 		if(rows == 0){
 			//Add a blank attribute row to the table for the user to fill in.

@@ -235,7 +235,7 @@ public class QDMAttributeDialogBox {
 	    qdmAttributeDialogBox.setWidget(dialogContents);
 	    
 	    HorizontalPanel horizontalPanel = new HorizontalPanel();
-	    horizontalPanel.setWidth("20em");
+	    horizontalPanel.setSpacing(5);
 	    
 	    //Add a Delete Selected button
 	    Button deleteSelectedButton = new Button("Delete Selected");
@@ -288,6 +288,7 @@ public class QDMAttributeDialogBox {
 		grid.addClickHandler(new QDMAttributeGridClickHandler(grid));
 		
 		addNewButton.addClickHandler(new AddNewQDMAttributeClickHandler(attributeList, mode, grid));
+		
 		if(rows == 0){
 			//Add a blank attribute row to the table for the user to fill in.
 			DomEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), addNewButton);

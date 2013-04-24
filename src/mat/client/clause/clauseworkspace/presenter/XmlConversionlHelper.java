@@ -2,7 +2,6 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;

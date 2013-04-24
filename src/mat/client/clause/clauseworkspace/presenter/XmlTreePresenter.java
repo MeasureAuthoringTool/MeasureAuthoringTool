@@ -1,7 +1,5 @@
 package mat.client.clause.clauseworkspace.presenter;
 
-import java.util.Map;
-
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -62,6 +60,7 @@ public class XmlTreePresenter {
 			CellTree cellTree = new CellTree(xmlTreeView, null, resource);// CellTree Creation
 			cellTree.setDefaultNodeSize(500);// this will get rid of the show more link on the bottom of the Tree
 			xmlTreeView.createPageView(cellTree); // Page Layout
+			cellTree.setTabIndex(0);
 			// This is Open Population Node by default in Population Tab.
 			TreeNode treeNode = cellTree.getRootTreeNode();
 			for (int i = 0; i < treeNode.getChildCount(); i++) {

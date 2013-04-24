@@ -40,4 +40,6 @@ public interface XmlTreeDisplay {
 		
 		public void editNode(String name, String label);
 		
+		public void setCopiedNode(CellTreeNode cellTreeNode);
+		
 	}

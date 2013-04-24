@@ -8,6 +8,10 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -15,6 +19,13 @@ import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.PopupPanel;
 
 public class ClauseWorkspaceContextMenu {
+	
+	interface Template extends SafeHtmlTemplates {
+	    @Template("<table width=\"100%\"><tr><td>{0}</td><td align=\"right\">{1}</td></tr></table>")
+	    SafeHtml menuTable(String name, String shortCut);
+	}
+	
+	private static final Template template = GWT.create(Template.class);
 
 	XmlTreeDisplay xmlTreeDisplay;
 
@@ -53,7 +64,7 @@ public class ClauseWorkspaceContextMenu {
 				xmlTreeDisplay.copy();
 			}
 		};
-		copyMenu = new MenuItem("Copy", true, copyCmd);
+		copyMenu = new MenuItem(template.menuTable("Copy", "Ctrl+C"), copyCmd);
 		
 		Command deleteCmd = new Command() {
 			public void execute( ) {
@@ -61,7 +72,7 @@ public class ClauseWorkspaceContextMenu {
 				xmlTreeDisplay.removeNode();
 			}
 		};
-		deleteMenu = new MenuItem("Delete", true, deleteCmd);
+		deleteMenu = new MenuItem(template.menuTable("Delete", "Delete"), deleteCmd);
 		Command cutCmd = new Command() {
 			public void execute( ) {
 				popupPanel.hide();
@@ -69,7 +80,7 @@ public class ClauseWorkspaceContextMenu {
 				xmlTreeDisplay.removeNode();
 			}
 		};
-		cutMenu = new MenuItem("Cut", true, cutCmd);
+		cutMenu = new MenuItem(template.menuTable("Cut", "Ctrl+X"), cutCmd);
 		
 		Command pasteCmd = new Command() {
 			public void execute() {
@@ -81,7 +92,7 @@ public class ClauseWorkspaceContextMenu {
 				}
 			}
 		};
-		pasteMenu = new MenuItem("Paste", true, pasteCmd);
+		pasteMenu = new MenuItem(template.menuTable("Paste", "Ctrl+V"), pasteCmd);
 	}
 
 
@@ -143,11 +154,7 @@ public class ClauseWorkspaceContextMenu {
 			createAddQDM_MenuItem(subMenuBar);
 			MenuBar timingMenuBar = new MenuBar(true); 
 			subMenuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level
-			//Sort TimingOperators.
-			String[] key = ClauseConstants.getTimingOperators().keySet().toArray(new String[0]);
-			Arrays.sort(key);
-			
-			createAddMenus(key, CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
+			createAddMenus(ClauseConstants.getTimingOperators().keySet().toArray(new String[0]), CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
 			MenuBar functionsMenuBar = new MenuBar(true); 
 			subMenuBar.addItem("Functions", functionsMenuBar);//functions menu 2nd level
 			createAddMenus(ClauseConstants.FUNCTIONS, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar);// functions sub menus 3rd level			
@@ -157,8 +164,7 @@ public class ClauseWorkspaceContextMenu {
 			addCommonMenus();
 			copyMenu.setEnabled(true);
 			if(xmlTreeDisplay.getCopiedNode() != null 
-					&& (xmlTreeDisplay.getCopiedNode().getNodeType() == xmlTreeDisplay.getSelectedNode().getNodeType() ||
-						xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)){
+					&& xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE){//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
 				pasteMenu.setEnabled(true);
 			}
 			
@@ -201,7 +207,8 @@ public class ClauseWorkspaceContextMenu {
 			addCommonMenus();
 			copyMenu.setEnabled(true);
 			if(xmlTreeDisplay.getCopiedNode() != null 
-					&& (xmlTreeDisplay.getCopiedNode().getNodeType() == xmlTreeDisplay.getSelectedNode().getNodeType())){
+					&& (xmlTreeDisplay.getCopiedNode().getNodeType() == xmlTreeDisplay.getSelectedNode().getNodeType())
+					&& (addMenuLHS.isEnabled() || addMenuRHS.isEnabled())){
 				pasteMenu.setEnabled(true);
 			}
 			
@@ -229,6 +236,18 @@ public class ClauseWorkspaceContextMenu {
 			}
 			break;
 
+		case CellTreeNode.FUNCTIONS_NODE:
+			subMenuBar = new MenuBar(true);
+			popupMenuBar.setAutoOpen(true);
+			subMenuBar.setAutoOpen(true);
+			addCommonMenus();
+			copyMenu.setEnabled(true);
+			if(xmlTreeDisplay.getCopiedNode() != null 
+					&& xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE){//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
+				pasteMenu.setEnabled(true);
+			}
+			cutMenu.setEnabled(true);
+			deleteMenu.setEnabled(true);
 		default:
 			break;
 		}
@@ -244,8 +263,7 @@ public class ClauseWorkspaceContextMenu {
 		menuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level
 		//Sort TimingOperators.
 		String[] key = ClauseConstants.getTimingOperators().keySet().toArray(new String[0]);
-		Arrays.sort(key);
-		
+//		Arrays.sort(key);
 		createAddMenus(key, CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
 		MenuBar functionsMenuBar = new MenuBar(true); 
 		menuBar.addItem("Functions", functionsMenuBar);//functions menu 2nd level
@@ -325,6 +343,7 @@ public class ClauseWorkspaceContextMenu {
 		pasteNode.setLabel(name);
 		xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
+		xmlTreeDisplay.setCopiedNode(pasteNode);//make the new pasted node as the copied node
 	}
 
 

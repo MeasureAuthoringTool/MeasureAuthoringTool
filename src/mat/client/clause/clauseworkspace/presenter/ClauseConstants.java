@@ -49,6 +49,26 @@ public class ClauseConstants{
 	
 	public static final String FUNC_NAME = "functionalOp"; 
 		
+	public static final int MINUS_NUMPAD = 109;
+
+	public static final int MINUS_IE = 189;
+
+	public static final int MINUS_FF = 173;
+
+	public static final int PLUS_NUMPAD = 107;
+
+	public static final int PLUS_IE = 187;
+
+	public static final int PLUS_FF = 61;
+
+	public static final int DELETE_DELETE = 46;
+
+	public static final int CUT_X = 88;
+
+	public static final int PASTE_V = 86;
+
+	public static final int COPY_C = 67;
+	
 	static{
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");

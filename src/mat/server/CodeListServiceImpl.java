@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 
 import mat.DTO.OperatorDTO;
@@ -347,7 +348,7 @@ implements mat.client.codelist.service.CodeListService {
 	@Override
 	public Map<String, String> getTimingOperators() {
 		List<OperatorDTO> operators = getCodeListService().getTimingOperators();
-		Map<String, String> timingOpsMap = new HashMap<String, String>();
+		Map<String, String> timingOpsMap = new TreeMap<String, String>();
 		for (OperatorDTO operatorDTO : operators) {
 			timingOpsMap.put(operatorDTO.getItem(), operatorDTO.getId());
 		}

@@ -1,6 +1,7 @@
 package mat.client.clause.clauseworkspace.view;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SpacerWidget;
@@ -30,6 +31,7 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -40,7 +42,9 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 
-public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel{
+public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel, KeyDownHandler{
+
+
 
 	interface Template extends SafeHtmlTemplates {
 	    @Template("<div class=\"{0}\" title=\"{1}\">{2}</div>")
@@ -50,12 +54,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private static final Template template = GWT.create(Template.class);
 	 
 	private FlowPanel  mainPanel = new FlowPanel();
+	
+	FocusPanel focusPanel = new FocusPanel(mainPanel);
 
 	CellTree cellTree;
 
 	private Button saveBtn = new Button("Save");
 
 	private Button buttonExpand = new Button();
+	
 	private Button buttonCollapse = new Button();
 
 	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
@@ -137,7 +144,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		mainPanel.add(leftPanel);
 		mainPanel.add(rightPanel);
 		mainPanel.add(bottomSavePanel);	
-
+		focusPanel.addKeyDownHandler(this);
 		cellTreeHandlers();
 	}
 
@@ -150,6 +157,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				selectedNode = selectionModel.getSelectedObject();
+				focusPanel.setFocus(true);
 			}
 		});
 
@@ -157,7 +165,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 			@Override
 			public void onOpen(OpenEvent<TreeNode> event) {
-
 				CellTreeNode node = (CellTreeNode)event.getTarget().getValue();
 				node.setOpen(true);
 				clearMessages();
@@ -260,22 +267,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * Expand / Collapse Link - Click Handlers
 	 */
 	private void addHandlers(){
-		//HotKey for expand - CTRL + ALT+ E
-		buttonExpand.addKeyDownHandler(new KeyDownHandler() {
-			
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if(event.isControlKeyDown() &&event.isAltKeyDown()&& event.getNativeKeyCode()==69){
-					clearMessages();
-					openAllNodes(cellTree.getRootTreeNode());
-					buttonExpand.setVisible(true);
-					buttonCollapse.setVisible(true);
-					buttonCollapse.setFocus(true);
-					
-				}
-				
-			}
-		});
+		
 		buttonExpand.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -283,32 +275,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				openAllNodes(cellTree.getRootTreeNode());
 				buttonExpand.setVisible(true);
 				buttonCollapse.setVisible(true);
-				buttonCollapse.setFocus(true);
 			}
 		});
-		//HotKey for expand - CTRL + ALT+ R
-		buttonCollapse.addKeyDownHandler(new KeyDownHandler() {
 
-			@Override
-			public void onKeyDown(KeyDownEvent event) {
-				if(event.isControlKeyDown() &&event.isAltKeyDown() && event.getNativeKeyCode()==82){
-					clearMessages();
-					closeNodes(cellTree.getRootTreeNode());
-					buttonExpand.setVisible(true);
-					buttonExpand.setFocus(true);
-					buttonCollapse.setVisible(true);
-				}
-			}
-            
-        });
-		
 		buttonCollapse.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
 				closeNodes(cellTree.getRootTreeNode());
 				buttonExpand.setVisible(true);
-				buttonExpand.setFocus(true);
 				buttonCollapse.setVisible(true);
 			}
 		});
@@ -317,7 +292,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	@Override
 	public <T> NodeInfo<?> getNodeInfo(T value) {
-
 		if (value == null) { 
 			NodeCell nodeCell = new NodeCell();    
 			return new DefaultNodeInfo<CellTreeNode>(nodeDataProvider, nodeCell, selectionModel, null);
@@ -352,7 +326,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				return;
 			}			
 			//TODO :  We can add classes based on the NodeType with the specified image. The classes will be picked up from Mat.css
-			sb.append(template.outerDiv("", value.getName(), value.getLabel() != null ? value.getLabel() : value.getName()));
+			sb.append(template.outerDiv(getStyleClass(value), value.getName(), value.getLabel() != null ? value.getLabel() : value.getName()));
 		}
 
 		@Override
@@ -369,6 +343,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 	} 
 
+	
+	private String getStyleClass(CellTreeNode cellTreeNode){
+		switch (cellTreeNode.getNodeType()) {
+		case CellTreeNode.ROOT_NODE:
+			return "cellTreeRootNode";
+		default:
+			break;
+		}
+		return "";
+	}
 
 	@Override
 	public CellTreeNode addNode(String value, String label, short nodeType) {
@@ -426,7 +410,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	@Override
 	public Widget asWidget() {
-		return mainPanel;
+		return focusPanel;
 	}
 
 
@@ -476,6 +460,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			selectedNode.appendChild(pasteNode);
 			closeSelectedOpenNodes(cellTree.getRootTreeNode());
 			selectionModel.setSelected(selectedNode, true);		
+			this.copiedNode = pasteNode;
 		}
 	}
 
@@ -521,6 +506,80 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void setClauseWorkspaceContextMenu(
 			ClauseWorkspaceContextMenu clauseWorkspaceContextMenu) {
 		this.clauseWorkspaceContextMenu = clauseWorkspaceContextMenu;
+	}
+
+
+	@Override
+	public void onKeyDown(KeyDownEvent event) {
+//		System.out.println(event.getNativeKeyCode());
+		int keyCode = event.getNativeKeyCode();
+		if(selectedNode != null){
+			short nodeType = selectedNode.getNodeType();
+			if(event.isControlKeyDown()){
+				if(keyCode == ClauseConstants.COPY_C){//COPY 
+					if(nodeType != CellTreeNode.MASTER_ROOT_NODE && nodeType != CellTreeNode.ROOT_NODE){
+						copy();	
+					}
+					
+				}else if(keyCode == ClauseConstants.PASTE_V){//PASTE
+					boolean canPaste = false;
+					if(copiedNode != null){
+						switch (selectedNode.getNodeType()) {
+						case CellTreeNode.ROOT_NODE:
+							if(selectedNode.equals(copiedNode.getParent())){
+								clauseWorkspaceContextMenu.pasteRootNodeTypeItem();
+							}
+							break;
+						case CellTreeNode.LOGICAL_OP_NODE: case CellTreeNode.FUNCTIONS_NODE:
+							if(copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE){
+								canPaste = true;
+							}
+							break;
+						case CellTreeNode.TIMING_NODE:
+							if(copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE
+									&& (selectedNode.getChilds() == null || selectedNode.getChilds().size() < 2)){
+								canPaste = true;
+							}
+							break;
+						default:
+							break;
+						}
+						if(canPaste){
+							paste();
+						}
+					}
+					
+				}else if(keyCode == ClauseConstants.CUT_X){//CUT
+					if(selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE
+								&& selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE 
+								&& selectedNode.getNodeType() != CellTreeNode.ROOT_NODE 
+								&& selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE){
+						copy();
+						removeNode();
+					}
+				}
+			}else if(keyCode == ClauseConstants.DELETE_DELETE){//DELETE
+				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE
+						&& selectedNode.getNodeType() != CellTreeNode.ROOT_NODE 
+						&& selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE
+						&& selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
+						|| (selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE && selectedNode.getParent().getChilds().size() > 1 )){
+					removeNode();
+				}
+			}
+		}
+		if((event.isShiftKeyDown() && (keyCode == ClauseConstants.PLUS_FF || keyCode == ClauseConstants.PLUS_IE))
+					||(keyCode == ClauseConstants.PLUS_NUMPAD)){//EXPAND/COLLAPSE (+(Shift +) Expand| - Collapse)
+			openAllNodes(cellTree.getRootTreeNode());
+		}else if((!event.isShiftKeyDown()) && keyCode == ClauseConstants.MINUS_FF || keyCode == ClauseConstants.MINUS_IE ||keyCode == ClauseConstants.MINUS_NUMPAD){
+			closeNodes(cellTree.getRootTreeNode());
+		}
+	}
+
+
+	@Override
+	public void setCopiedNode(CellTreeNode cellTreeNode) {
+		this.copiedNode = cellTreeNode;
 	}
 
 

@@ -207,8 +207,8 @@ public class ClauseWorkspaceContextMenu {
 			addCommonMenus();
 			copyMenu.setEnabled(true);
 			if(xmlTreeDisplay.getCopiedNode() != null 
-					&& (xmlTreeDisplay.getCopiedNode().getNodeType() == xmlTreeDisplay.getSelectedNode().getNodeType())
-					&& (addMenuLHS.isEnabled() || addMenuRHS.isEnabled())){
+					&& xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE
+							&& (xmlTreeDisplay.getSelectedNode().getChilds() == null || xmlTreeDisplay.getSelectedNode().getChilds().size() < 2)){
 				pasteMenu.setEnabled(true);
 			}
 			

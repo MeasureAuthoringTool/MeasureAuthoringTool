@@ -17,6 +17,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
@@ -123,16 +124,16 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 			NodeList qdms = nodeList.item(0).getChildNodes();
 			for (int i = 0; i < qdms.getLength() ; i++) {
 				if("qdm".equals(qdms.item(i).getNodeName())){
-					String name = qdms.item(i).getAttributes().getNamedItem("name").getNodeValue();
+					NamedNodeMap namedNodeMap = qdms.item(i).getAttributes();
+					String name = namedNodeMap.getNamedItem("name").getNodeValue();
 						
-					if(qdms.item(i).getAttributes().getNamedItem("occurrenceText") != null){
-						name = qdms.item(i).getAttributes().getNamedItem("occurrenceText").getNodeValue() + " of " + name;
+					if(namedNodeMap.getNamedItem("instance") != null){
+						name = namedNodeMap.getNamedItem("instance").getNodeValue() + " of " + name;
 					}
 					
-					if(qdms.item(i).getAttributes().getNamedItem("datatype") != null){
-						name = name + ": " + qdms.item(i).getAttributes().getNamedItem("datatype").getNodeValue();
+					if(namedNodeMap.getNamedItem("datatype") != null){
+						name = name + ": " + namedNodeMap.getNamedItem("datatype").getNodeValue();
 					}
-					
 					qdmElementLookUps.put(name, qdms.item(i));
 				}
 			}

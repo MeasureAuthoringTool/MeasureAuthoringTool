@@ -1,7 +1,9 @@
 package mat.client.clause.clauseworkspace.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class CellTreeNodeImpl implements CellTreeNode{
 
@@ -16,6 +18,8 @@ public class CellTreeNodeImpl implements CellTreeNode{
 	private boolean isOpen;
 
 	private short nodeType;
+	
+	Map<String,Object> extraInformationMap = new HashMap<String, Object>();
 
 
 	@Override
@@ -156,6 +160,18 @@ public class CellTreeNodeImpl implements CellTreeNode{
 	@Override
 	public void setLabel(String label){
 		this.label = label;
+	}
+
+
+	@Override
+	public void setExtraInformation(String key, Object value) {
+		this.extraInformationMap.put(key, value);		
+	}
+
+
+	@Override
+	public Object getExtraInformation(String key) {
+		return this.extraInformationMap.get(key);
 	}
 
 }

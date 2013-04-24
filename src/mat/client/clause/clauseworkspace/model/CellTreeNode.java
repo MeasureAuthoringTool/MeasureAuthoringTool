@@ -53,4 +53,8 @@ public interface CellTreeNode {
 	
 	public void setChilds(List<CellTreeNode> childs);
 	
+	public void setExtraInformation(String key, Object value);
+	
+	public Object getExtraInformation(String key);
+	
 }

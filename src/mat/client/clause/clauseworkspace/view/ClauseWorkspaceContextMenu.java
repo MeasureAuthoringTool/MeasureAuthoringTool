@@ -235,7 +235,17 @@ public class ClauseWorkspaceContextMenu {
 				popupMenuBar.addItem(editMenu);				
 			}
 			break;
-
+		
+		case CellTreeNode.ELEMENT_REF_NODE:
+			createQDMAttributeMenuItem(popupMenuBar,xmlTreeDisplay.getSelectedNode());
+			addCommonMenus();
+			copyMenu.setEnabled(true);
+			pasteMenu.setEnabled(true);
+			cutMenu.setEnabled(true);
+			deleteMenu.setEnabled(true);
+			
+			break;
+			
 		case CellTreeNode.FUNCTIONS_NODE:
 			subMenuBar = new MenuBar(true);
 			popupMenuBar.setAutoOpen(true);
@@ -252,6 +262,22 @@ public class ClauseWorkspaceContextMenu {
 			break;
 		}
 	}
+
+	private void createQDMAttributeMenuItem(MenuBar menuBar, final CellTreeNode cellTreeNode) {
+		Command addQDMAttributeCmd = new Command() {
+			public void execute() {
+				popupPanel.hide();
+				showQDMAttributePopup(cellTreeNode);
+			}
+		};
+		MenuItem item = new MenuItem("Attribute",true,addQDMAttributeCmd);		
+		menuBar.addItem(item);		
+	}
+
+	protected void showQDMAttributePopup(CellTreeNode cellTreeNode) {
+		QDMAttributeDialogBox.showQDMAttributeDialogBox(xmlTreeDisplay,cellTreeNode);
+	}
+
 
 	private MenuBar createMenuBarWithTimingFuncAndQDM(){
 		MenuBar menuBar = new MenuBar(true);
@@ -282,11 +308,9 @@ public class ClauseWorkspaceContextMenu {
 		menuBar.addItem(item);
 	}
 
-
 	protected void showQDMPopup() {
 		QDMDialogBox.showQDMDialogBox(xmlTreeDisplay);
 	}
-
 
 	/**
 	 * Method iterates through the menuNames and creates MenuItems, 

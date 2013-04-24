@@ -27,23 +27,19 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Node;
 
-public class QDMDialogBox{
-	
-	 public static DialogBox dialogBox = new DialogBox(true,true);
-	
+public class QDMDialogBox{	
 	 
 	 public static void showQDMDialogBox(final XmlTreeDisplay xmlTreeDisplay) {
-		
+		final DialogBox dialogBox = new DialogBox(false,true);
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
-		dialogBox.setWidth("20em");
-	    dialogBox.setHeight("15em");
-	    dialogBox.setText("Select QDM Element");
-	    dialogBox.setTitle("Select QDM Element");
+	    dialogBox.setText("Double Click to Select QDM Element.");
+	    dialogBox.setTitle("Double Click to Select QDM Element.");
 		
 		// Create a table to layout the content
 	    VerticalPanel dialogContents = new VerticalPanel();
-	    dialogContents.setWidth("100%");
+	    dialogContents.setWidth("20em");
+	    dialogContents.setHeight("15em");
 	    dialogContents.setSpacing(8);
 	    dialogBox.setWidget(dialogContents);
 	    
@@ -60,7 +56,6 @@ public class QDMDialogBox{
 				}
 			}
 		});
-
 	    
 	    dialogContents.add(suggestBox);
 	    dialogContents.setCellHorizontalAlignment(
@@ -80,12 +75,7 @@ public class QDMDialogBox{
 	    Button closeButton = new Button("Close", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				/*if(listBox.getSelectedIndex() != -1){
-					String value = listBox.getItemText(listBox.getSelectedIndex());
-					xmlTreeDisplay.addNode(value, value, CellTreeNode.ELEMENT_REF_NODE);
-				}*/
 				dialogBox.hide();		
-				
 			}
 		});
 	  	  
@@ -93,16 +83,13 @@ public class QDMDialogBox{
 	    dialogContents.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
 	    
 	    addSuggestHandler(suggestBox,listBox);
-	    addListBoxHandler(listBox,suggestBox,xmlTreeDisplay);
+	    addListBoxHandler(listBox,suggestBox,xmlTreeDisplay, dialogBox);
 	    
-	    dialogBox.center();
-	    dialogBox.show();
-		
+	    dialogBox.center();	    		
 	}
 	 
-	private static void addListBoxHandler(final ListBox listBox, final SuggestBox suggestBox, final XmlTreeDisplay xmlTreeDisplay) {
-		listBox.addChangeHandler(new ChangeHandler() {
-			
+	private static void addListBoxHandler(final ListBox listBox, final SuggestBox suggestBox, final XmlTreeDisplay xmlTreeDisplay, final DialogBox dialogBox) {
+		listBox.addChangeHandler(new ChangeHandler() {			
 			@Override
 			public void onChange(ChangeEvent event) {
 				int selectedIndex = listBox.getSelectedIndex();
@@ -110,8 +97,7 @@ public class QDMDialogBox{
 				suggestBox.setText(selectedItem);
 			}
 		});
-		listBox.addDoubleClickHandler(new DoubleClickHandler() {
-			
+		listBox.addDoubleClickHandler(new DoubleClickHandler() {			
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
 				String value = listBox.getItemText(listBox.getSelectedIndex());
@@ -122,10 +108,7 @@ public class QDMDialogBox{
 				xmlTreeDisplay.addNode(value, label, CellTreeNode.ELEMENT_REF_NODE);
 				dialogBox.hide();
 			}
-		});
-		
-		
-		
+		});		
 	}
 
 	private static void addSuggestHandler(final SuggestBox suggestBox, final ListBox listBox) {
@@ -166,6 +149,4 @@ public class QDMDialogBox{
 		multiWordSuggestOracle.addAll(qdmElementLookupNode.keySet());
 		return multiWordSuggestOracle;
 	}
-
-
 }

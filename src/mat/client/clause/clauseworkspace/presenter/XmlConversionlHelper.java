@@ -117,8 +117,6 @@ public class XmlConversionlHelper {
 			setCellTreeNodeValues(root, parent, child, childs);// Create complete child Object with parent and sub Childs
 		}
 
-
-
 		parent.setChilds(childs);// set parent's childs
 		NodeList nodes = root.getChildNodes();// get Child nodes for the Processed node and repeat the process
 		for(int i = 0; i < nodes.getLength(); i++){
@@ -131,8 +129,21 @@ public class XmlConversionlHelper {
 			}
 			Node node = nodes.item(i);
 			String name = node.getNodeName().replaceAll("\n\r", "").trim();
-			if(!(name.equalsIgnoreCase("#text") && name.isEmpty())){	
+			//if(!(name.equalsIgnoreCase("#text") && name.isEmpty())){
+			if(name.length() >0 && !name.equalsIgnoreCase("#text") || !name.equalsIgnoreCase("attribute")){
 				createCellTreeNodeChilds(child, node, childs);
+			}
+			/**
+			 * This part for QDM node attributes. The attribute XML node is not to be displayed on the CellTree.
+			 */
+			else if(name.equalsIgnoreCase("attribute")){
+				Object attributes = child.getExtraInformation("attributes");
+				if(attributes == null){
+					attributes = new ArrayList<Node>();
+					child.setExtraInformation("attributes", attributes);
+				}
+				List<Node> attributeList = (List<Node>) attributes;
+				attributeList.add(node);
 			}
 		}
 
@@ -248,6 +259,7 @@ public class XmlConversionlHelper {
 			element.setAttribute(ClauseConstants.ID, idNode != null ? idNode.getNodeValue() : "");// TBD if we need this
 			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 			element.setAttribute(ClauseConstants.TYPE, "qdm");//this can change
+			
 			break;
 		case CellTreeNode.FUNCTIONS_NODE:
 			element = document.createElement(ClauseConstants.FUNC_NAME);

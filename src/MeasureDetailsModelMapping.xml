@@ -84,7 +84,7 @@
     
     <field name="measStewardOther"
            type="java.lang.String">
-      <bind-xml name="steward" node="element"/>
+     <bind-xml name="steward" node="element"/>
     </field>
     
      <field name="authorList"

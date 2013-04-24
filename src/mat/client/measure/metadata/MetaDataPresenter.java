@@ -518,8 +518,13 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		metaDataDisplay.getVersionNumber().setText(currentMeasureDetail.getVersionNumber());
 		
 		//US 413. Populate Steward and Steward Other value if any.
-		String steward= currentMeasureDetail.getMeasSteward();
+		String steward = currentMeasureDetail.getMeasSteward();
 		metaDataDisplay.getMeasureSteward().setValueMetadata(currentMeasureDetail.getMeasSteward());
+		if(metaDataDisplay.getMeasureSteward().getSelectedIndex() == 0 && steward != null && !steward.equals("")){
+			steward = "Other";
+			currentMeasureDetail.setMeasStewardOther(currentMeasureDetail.getMeasSteward());
+			metaDataDisplay.getMeasureSteward().setValueMetadata(steward);
+		}
 		boolean setSteward = steward != null && steward.equalsIgnoreCase("Other"); 
 		if(setSteward){
 			metaDataDisplay.showOtherTextBox();			

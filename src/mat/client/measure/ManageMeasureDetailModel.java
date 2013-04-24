@@ -555,15 +555,15 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		if (trimToNull(measSteward) == null) {
 			if (trimToNull(other.measSteward) != null)
 				return false;
-		} else if (!trimToNull(measSteward).equals(trimToNull(other.measSteward))){
-			return false;
 		} else if(trimToNull(measSteward).equals("Other")){
 			if (trimToNull(measStewardOther) == null) {
 				if (trimToNull(other.measStewardOther) != null)
 					return false;
 			} else if (!trimToNull(measStewardOther).equals(trimToNull(other.measStewardOther)))
 				return false;
-		}
+		}else if (!trimToNull(measSteward).equals(trimToNull(other.measSteward))){
+			return false;
+		} 
 		if (trimToNull(measToPeriod) == null) {
 			if (trimToNull(other.measToPeriod) != null)
 				return false;

@@ -518,11 +518,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			if(event.isControlKeyDown()){
 				if(keyCode == ClauseConstants.COPY_C){//COPY 
 					if(nodeType != CellTreeNode.MASTER_ROOT_NODE && nodeType != CellTreeNode.ROOT_NODE){
+						popupPanel.hide();
 						copy();	
 					}
 					
 				}else if(keyCode == ClauseConstants.PASTE_V){//PASTE
 					boolean canPaste = false;
+					popupPanel.hide();
 					if(copiedNode != null){
 						switch (selectedNode.getNodeType()) {
 						case CellTreeNode.ROOT_NODE:
@@ -550,6 +552,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					}
 					
 				}else if(keyCode == ClauseConstants.CUT_X){//CUT
+					popupPanel.hide();
 					if(selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE
 								&& selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE 
 								&& selectedNode.getNodeType() != CellTreeNode.ROOT_NODE 
@@ -559,6 +562,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					}
 				}
 			}else if(keyCode == ClauseConstants.DELETE_DELETE){//DELETE
+				popupPanel.hide();
 				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE
 						&& selectedNode.getNodeType() != CellTreeNode.ROOT_NODE 
 						&& selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE
@@ -570,8 +574,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 		if((event.isShiftKeyDown() && (keyCode == ClauseConstants.PLUS_FF || keyCode == ClauseConstants.PLUS_IE))
 					||(keyCode == ClauseConstants.PLUS_NUMPAD)){//EXPAND/COLLAPSE (+(Shift +) Expand| - Collapse)
+			popupPanel.hide();
 			openAllNodes(cellTree.getRootTreeNode());
 		}else if((!event.isShiftKeyDown()) && keyCode == ClauseConstants.MINUS_FF || keyCode == ClauseConstants.MINUS_IE ||keyCode == ClauseConstants.MINUS_NUMPAD){
+			popupPanel.hide();
 			closeNodes(cellTree.getRootTreeNode());
 		}
 	}

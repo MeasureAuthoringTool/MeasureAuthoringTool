@@ -240,10 +240,9 @@ public class ClauseWorkspaceContextMenu {
 			createQDMAttributeMenuItem(popupMenuBar,xmlTreeDisplay.getSelectedNode());
 			addCommonMenus();
 			copyMenu.setEnabled(true);
-			pasteMenu.setEnabled(true);
+			pasteMenu.setEnabled(false);
 			cutMenu.setEnabled(true);
 			deleteMenu.setEnabled(true);
-			
 			break;
 			
 		case CellTreeNode.FUNCTIONS_NODE:

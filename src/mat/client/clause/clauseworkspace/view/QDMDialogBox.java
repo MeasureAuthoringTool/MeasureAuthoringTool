@@ -7,12 +7,14 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.DoubleClickEvent;
 import com.google.gwt.event.dom.client.DoubleClickHandler;
 import com.google.gwt.event.logical.shared.SelectionEvent;
@@ -20,6 +22,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestBox;
@@ -78,9 +81,22 @@ public class QDMDialogBox{
 				dialogBox.hide();		
 			}
 		});
-	  	  
-	    dialogContents.add(closeButton);
-	    dialogContents.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	  	
+	    Button selectButton = new Button("Select", new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+			    DomEvent.fireNativeEvent(Document.get().createDblClickEvent(0, 0, 0, 0, 0, false, false, false, false), listBox);				
+			}
+		});
+	    HorizontalPanel horizontalButtonPanel = new HorizontalPanel();
+	    horizontalButtonPanel.setSpacing(5);
+	    horizontalButtonPanel.add(selectButton);
+	    horizontalButtonPanel.setCellHorizontalAlignment(selectButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    horizontalButtonPanel.add(closeButton);
+	    horizontalButtonPanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    
+	    dialogContents.add(horizontalButtonPanel);
+	    dialogContents.setCellHorizontalAlignment(horizontalButtonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 	    
 	    addSuggestHandler(suggestBox,listBox);
 	    addListBoxHandler(listBox,suggestBox,xmlTreeDisplay, dialogBox);
@@ -100,6 +116,9 @@ public class QDMDialogBox{
 		listBox.addDoubleClickHandler(new DoubleClickHandler() {			
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
+				if(listBox.getSelectedIndex() == -1){
+					return;
+				}
 				String value = listBox.getItemText(listBox.getSelectedIndex());
 				String label = value;
 				if(label.length() > ClauseConstants.LABEL_MAX_LENGTH){

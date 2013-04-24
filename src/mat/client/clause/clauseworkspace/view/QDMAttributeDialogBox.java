@@ -263,18 +263,18 @@ public class QDMAttributeDialogBox {
 	        
 	    qdmAttributeDialogBox.setWidget(dialogContents);
 	    
-	    HorizontalPanel horizontalPanel = new HorizontalPanel();
-	    horizontalPanel.setSpacing(5);
+	    HorizontalPanel horizontalDeleteAddNewPanel = new HorizontalPanel();
+	    horizontalDeleteAddNewPanel.setSpacing(5);
 	    
 	    //Add a Delete Selected button
 	    Button deleteSelectedButton = new Button("Delete Selected");
-	    horizontalPanel.add(deleteSelectedButton);
-	    horizontalPanel.setCellHorizontalAlignment(deleteSelectedButton, HasHorizontalAlignment.ALIGN_LEFT);
+	    horizontalDeleteAddNewPanel.add(deleteSelectedButton);
+	    horizontalDeleteAddNewPanel.setCellHorizontalAlignment(deleteSelectedButton, HasHorizontalAlignment.ALIGN_LEFT);
 	    
 	    //Add a Add New button
 	    Button addNewButton = new Button("Add New");
-	    horizontalPanel.add(addNewButton);
-	    horizontalPanel.setCellHorizontalAlignment(addNewButton, HasHorizontalAlignment.ALIGN_LEFT);
+	    horizontalDeleteAddNewPanel.add(addNewButton);
+	    horizontalDeleteAddNewPanel.setCellHorizontalAlignment(addNewButton, HasHorizontalAlignment.ALIGN_LEFT);
 	    	    
 	    //Add a Close button at the bottom of the dialog
 	    Button closeButton = new Button("Close", new ClickHandler() {
@@ -284,14 +284,31 @@ public class QDMAttributeDialogBox {
 				
 			}
 		});
+	    
+	    //Add a Save button at the bottom of the dialog
+	    Button saveButton = new Button("Save", new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				//TODO				
+			}
+		});
+	    
+	    HorizontalPanel horizontalSaveClosePanel = new HorizontalPanel();
+	    horizontalSaveClosePanel.setSpacing(5);
+	    
+	    horizontalSaveClosePanel.add(saveButton);
+	    horizontalSaveClosePanel.setCellHorizontalAlignment(saveButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    
+	    horizontalSaveClosePanel.add(closeButton);
+	    horizontalSaveClosePanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
 	  	  
 	    addTableToPanel(dialogContents,attributeList,mode,xmlTreeDisplay, cellTreeNode,deleteSelectedButton,addNewButton);
 	    
-	    dialogContents.add(horizontalPanel);
-	    dialogContents.setCellHorizontalAlignment(horizontalPanel, HasHorizontalAlignment.ALIGN_LEFT);
+	    dialogContents.add(horizontalDeleteAddNewPanel);
+	    dialogContents.setCellHorizontalAlignment(horizontalDeleteAddNewPanel, HasHorizontalAlignment.ALIGN_LEFT);
 	    
-	    dialogContents.add(closeButton);
-	    dialogContents.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    dialogContents.add(horizontalSaveClosePanel);
+	    dialogContents.setCellHorizontalAlignment(horizontalSaveClosePanel, HasHorizontalAlignment.ALIGN_RIGHT);
 	    
 	    dialogContents.setHeight("21em");
 	    qdmAttributeDialogBox.center();	    

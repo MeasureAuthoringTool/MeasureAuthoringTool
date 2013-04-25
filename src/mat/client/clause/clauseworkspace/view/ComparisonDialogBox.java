@@ -1,8 +1,8 @@
 package mat.client.clause.clauseworkspace.view;
 
-import java.util.Arrays;
 
-import org.apache.poi.ss.format.CellNumberFormatter;
+import java.util.HashMap;
+import java.util.Map;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
@@ -11,6 +11,7 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -19,12 +20,13 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+
 public class ComparisonDialogBox{
 	
 	 public static DialogBox dialogBox = new DialogBox(true,true);
 	
 	 
-	 public static void showComparisonDialogBox(final XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode) {
+	 public static void showComparisonDialogBox(final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
 		
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
@@ -40,22 +42,45 @@ public class ComparisonDialogBox{
 	   // dialogContents.setHeight("100%");
 	    dialogContents.setSpacing(5);
 	    dialogBox.setWidget(dialogContents);
-
-	    ListBoxMVP listAllTimeOrFunction = new ListBoxMVP();
-	    listAllTimeOrFunction.addItem("--Select--");
+	    @SuppressWarnings("unchecked")
+		HashMap<String,String> extraAttributesMap = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+cellTreeNode.getNodeType());
+	    //List for Timing or Function based on Node Type.
+	    final ListBoxMVP listAllTimeOrFunction = new ListBoxMVP();
+	    String timingMethod ="--Select--";
+	    String operatorMethod="--Select--";
+	    String quantityValue ="";
+	    String unitType ="--Select--";
+	 
+	    if(extraAttributesMap!=null){
+		   timingMethod = extraAttributesMap.get("displayName");
+		   operatorMethod = extraAttributesMap.containsKey("operatorType") ? extraAttributesMap.get("operatorType") : operatorMethod;
+		   quantityValue = extraAttributesMap.containsKey("quantity") ? extraAttributesMap.get("quantity") : quantityValue;
+		   unitType = extraAttributesMap.containsKey("unit") ? extraAttributesMap.get("unit") : unitType;
+	   }else{
+		   timingMethod = cellTreeNode.getLabel();
+	   }
 	    String labelForListBox = null;
 	    if(cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE){
 	    	String[] timeRelationKey = ClauseConstants.getTimingOperators().keySet().toArray(new String[0]);
-		
+	    	if(timingMethod.contains("Select"))
+	    		listAllTimeOrFunction.addItem(timingMethod);
 	    	for(int i=0;i<timeRelationKey.length;i++){
 	    		listAllTimeOrFunction.addItem(timeRelationKey[i]);
+	    		if(timeRelationKey[i].equalsIgnoreCase(timingMethod)){
+	    			listAllTimeOrFunction.setSelectedIndex(i);
+	    		}
 	    	}
 	    	listAllTimeOrFunction.setWidth("150px");
 	    	labelForListBox = "Timing";
 	    }else{
 	    	String[] functionKeys = ClauseConstants.FUNCTIONS;
+	    	if(timingMethod.contains("Select"))
+	    		listAllTimeOrFunction.addItem(timingMethod);
 			for(int i=0;i<functionKeys.length;i++){
 				listAllTimeOrFunction.addItem(functionKeys[i]);
+				if(functionKeys[i].equalsIgnoreCase(timingMethod)){
+	    			listAllTimeOrFunction.setSelectedIndex(i);
+	    		}
 			}
 			listAllTimeOrFunction.setWidth("150px");
 			labelForListBox = "Functions";
@@ -67,12 +92,17 @@ public class ComparisonDialogBox{
 		dialogContents.add(listAllTimeOrFunction);
 		dialogContents.setCellHorizontalAlignment(listAllTimeOrFunction, HasHorizontalAlignment.ALIGN_LEFT);
 		
-	    ListBoxMVP listAllOperator = new ListBoxMVP();
-	    listAllOperator.addItem("--Select--");
+		//List of Operators.
+	    final ListBoxMVP listAllOperator = new ListBoxMVP();
+	   // listAllOperator.addItem("--Select--");
 	    String[] comparisonOpKeys = ClauseConstants.comparisonOperators;
-		
+	    if(operatorMethod.contains("Select"))
+	    	listAllOperator.addItem(operatorMethod);
 		for(int i=0;i<comparisonOpKeys.length;i++){
 			listAllOperator.addItem(comparisonOpKeys[i]);
+			if(comparisonOpKeys[i].equalsIgnoreCase(operatorMethod)){
+				listAllOperator.setSelectedIndex(i);
+    		}
 		}
 		listAllOperator.setWidth("150px");
 		Label lableOperator = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Operators");
@@ -81,7 +111,11 @@ public class ComparisonDialogBox{
 		dialogContents.add(listAllOperator);
 		dialogContents.setCellHorizontalAlignment(listAllOperator, HasHorizontalAlignment.ALIGN_LEFT);
 		
-		TextBox quantity = new TextBox();
+		//Qunatity Text Box.
+		final TextBox quantity = new TextBox();
+		if(quantityValue!=null){
+			quantity.setValue(quantityValue);
+		}
 		quantity.setWidth("150px");
 		Label lableQuantity = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Quantity");
 		dialogContents.add(lableQuantity);
@@ -89,11 +123,16 @@ public class ComparisonDialogBox{
 		dialogContents.add(quantity);
 		dialogContents.setCellHorizontalAlignment(quantity, HasHorizontalAlignment.ALIGN_LEFT);
 		
-		ListBoxMVP listAllUnits = new ListBoxMVP();
-		listAllUnits.addItem("--Select--");
-	  
+		//List of Units.
+		final ListBoxMVP listAllUnits = new ListBoxMVP();
+		//listAllUnits.addItem("--Select--");
+		if(unitType.contains("Select"))
+			listAllUnits.addItem(unitType);
 		for(int i=0;i<ClauseConstants.units.size();i++){
 			listAllUnits.addItem(ClauseConstants.units.get(i));
+			if((ClauseConstants.units.get(i)).equalsIgnoreCase(unitType)){
+				listAllUnits.setSelectedIndex(i);
+			}
 		}
 		listAllUnits.setWidth("150px");
 		Label lableUnits = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Units");;
@@ -105,7 +144,8 @@ public class ComparisonDialogBox{
 	    Button save = new Button("Save", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				dialogBox.hide();		
+				dialogBox.hide();
+				saveAttributesToNode(listAllTimeOrFunction.getValue(), listAllOperator.getValue(),quantity.getValue(),listAllUnits.getValue(),xmlTreeDisplay);
 			}
 		});
 	    // Add a Close button at the bottom of the dialog
@@ -126,6 +166,23 @@ public class ComparisonDialogBox{
 	    dialogBox.center();
 	    dialogBox.show();
 		
+	}
+	 
+	private static void saveAttributesToNode(String functionOrTiming, String operator, String quantity, String unit, XmlTreeDisplay xmlTreeDisplay){
+		Map<String,String> extraAttributes = new HashMap<String,String>();
+		if(!operator.contains("Select")){
+			extraAttributes.put("operatorType", operator);
+		}
+		if(!functionOrTiming.contains("Select")){
+			extraAttributes.put("displayName", functionOrTiming);
+			xmlTreeDisplay.editNode(functionOrTiming, functionOrTiming);
+		}
+		if(!unit.contains("Select")){
+			extraAttributes.put("unit", unit);
+		}
+		extraAttributes.put("quantity", quantity);
+		
+		xmlTreeDisplay.getSelectedNode().setExtraInformation("extraAttributes_"+xmlTreeDisplay.getSelectedNode().getNodeType(), extraAttributes);
 	}
 
 }

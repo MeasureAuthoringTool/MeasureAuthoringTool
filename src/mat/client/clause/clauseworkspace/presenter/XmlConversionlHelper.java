@@ -1,6 +1,7 @@
 package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -8,6 +9,7 @@ import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
+import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
@@ -208,11 +210,32 @@ public class XmlConversionlHelper {
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.LOG_OP)){
 			cellTreeNodeType = CellTreeNode.LOGICAL_OP_NODE;			
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.RELATIONAL_OP)){
-			cellTreeNodeType = CellTreeNode.TIMING_NODE;			
+			cellTreeNodeType = CellTreeNode.TIMING_NODE;	
+			HashMap<String,String> map = new HashMap<String,String>();
+			if(node.hasAttributes()){
+				NamedNodeMap nodeMap = node.getAttributes();
+				for(int i=0;i< nodeMap.getLength() ;i++){
+					String key = nodeMap.item(i).getNodeName();
+					String value = nodeMap.item(i).getNodeValue();
+					map.put(key, value);
+				}
+			}
+			child.setExtraInformation("extraAttributes_"+cellTreeNodeType, map);
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.ELEMENT_REF)){
 			cellTreeNodeType = CellTreeNode.ELEMENT_REF_NODE;			
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.FUNC_NAME)){
-			cellTreeNodeType = CellTreeNode.FUNCTIONS_NODE;			
+			cellTreeNodeType = CellTreeNode.FUNCTIONS_NODE;
+			HashMap<String,String> map = new HashMap<String,String>();
+			if(node.hasAttributes()){
+				NamedNodeMap nodeMap = node.getAttributes();
+				for(int i=0;i< nodeMap.getLength() ;i++){
+					String key = nodeMap.item(i).getNodeName();
+					String value = nodeMap.item(i).getNodeValue();
+					map.put(key, value);
+				}
+			}
+			
+			child.setExtraInformation("extraAttributes_"+cellTreeNodeType, map);
 		}
 
 		child.setName(nodeValue);//set the name to Child
@@ -252,6 +275,21 @@ public class XmlConversionlHelper {
 			element = document.createElement(ClauseConstants.RELATIONAL_OP);
 			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 			element.setAttribute(ClauseConstants.TYPE, toCamelCase(ClauseConstants.getTimingOperators().get(cellTreeNode.getName())));
+			@SuppressWarnings("unchecked")
+			HashMap<String,String> map = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+CellTreeNode.TIMING_NODE);
+			if(map!=null){
+				element.setAttribute(ClauseConstants.DISPLAY_NAME, map.get("displayName"));
+				element.setAttribute(ClauseConstants.TYPE, toCamelCase(map.get("displayName")));
+				if(map.containsKey("operatorType")){
+					element.setAttribute("operatorType", map.get("operatorType"));	
+				}
+				if(map.containsKey("quantity")){
+					element.setAttribute("quantity", map.get("quantity"));
+				}
+				if(map.containsKey("unit")){
+					element.setAttribute("unit", map.get("unit"));
+				}
+			}
 			break;
 		case CellTreeNode.ELEMENT_REF_NODE:
 			element = document.createElement(ClauseConstants.ELEMENT_REF);
@@ -265,6 +303,21 @@ public class XmlConversionlHelper {
 			element = document.createElement(ClauseConstants.FUNC_NAME);
 			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 			element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
+			@SuppressWarnings("unchecked")
+			HashMap<String,String> functionMap = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+CellTreeNode.FUNCTIONS_NODE);
+			if(functionMap!=null){
+				element.setAttribute(ClauseConstants.DISPLAY_NAME, functionMap.get("displayName"));
+				element.setAttribute(ClauseConstants.TYPE, toCamelCase(functionMap.get("displayName")));
+				if(functionMap.containsKey("operatorType")){
+					element.setAttribute("operatorType", functionMap.get("operatorType"));	
+				}
+				if(functionMap.containsKey("quantity")){
+					element.setAttribute("quantity", functionMap.get("quantity"));
+				}
+				if(functionMap.containsKey("unit")){
+					element.setAttribute("unit", functionMap.get("unit"));
+				}
+			}
 			break;
 		default:
 			element = document.createElement(cellTreeNode.getName());

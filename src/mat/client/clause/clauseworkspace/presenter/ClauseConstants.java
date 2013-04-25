@@ -1,6 +1,8 @@
 package mat.client.clause.clauseworkspace.presenter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gwt.xml.client.Node;
@@ -34,6 +36,10 @@ public class ClauseConstants{
 	public static final String RELATIONAL_OP = "relationalOp";
 	
 	public static Map<String, String> timingOperators;
+	
+	public static ArrayList<String> units;
+	
+	public static final String[] comparisonOperators = {"Less Than","Greater Than","Less Than or Equal To","Greater Than or Equal To","Equal To"};
 	
 	public static Map<String, Node> elementLookUps;
 	
@@ -136,5 +142,12 @@ public class ClauseConstants{
 		ClauseConstants.functions = functions;
 	}
 
+	public static String[] getComparisonoperators() {
+		return comparisonOperators;
+	}
+
+	public static ArrayList<String> getUnits() {
+		return units;
+	}
 
 }

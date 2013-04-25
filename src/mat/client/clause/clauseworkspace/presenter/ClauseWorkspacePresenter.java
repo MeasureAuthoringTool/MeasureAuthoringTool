@@ -1,6 +1,8 @@
 package mat.client.clause.clauseworkspace.presenter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mat.client.MatPresenter;
@@ -11,6 +13,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SpacerWidget;
 
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -40,8 +43,27 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		simplepanel.setStyleName("contentPanel");
 		simplepanel.add(flowPanel);
 		loadTimingOperators();
+		loadAllUnits();
 	}
 
+
+	private void loadAllUnits() {
+		CodeListServiceAsync codeListServiceAsync = MatContext.get().getCodeListService();
+		codeListServiceAsync.getAllUnits(new AsyncCallback<List<String>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("Unable to Load Units ");
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				ClauseConstants.units = (ArrayList<String>) result;
+				
+			}
+			
+			});
+	}
 
 	private void loadTimingOperators() {
 		CodeListServiceAsync codeListServiceAsync = MatContext.get().getCodeListService();
@@ -56,7 +78,6 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 			}
 		});
 	}
-
 
 	private void setXMLOnTabs() {
 		String currentMeasureId = MatContext.get().getCurrentMeasureId();

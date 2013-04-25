@@ -224,6 +224,7 @@ public class ClauseWorkspaceContextMenu {
 				Command editCmd = new Command() {
 					public void execute() {
 						popupPanel.hide();
+						ComparisonDialogBox.showComparisonDialogBox(xmlTreeDisplay,xmlTreeDisplay.getSelectedNode());
 						/*if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.ROOT_NODE){
 							pasteRootNodeTypeItem();
 						}else{

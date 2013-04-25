@@ -10,6 +10,7 @@ import java.util.TreeMap;
 
 
 import mat.DTO.OperatorDTO;
+import mat.DTO.UnitDTO;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
@@ -96,6 +97,20 @@ implements mat.client.codelist.service.CodeListService {
 		data = getCodeListService().getListBoxData();
 		return data;
 	}
+	
+	@Override
+	public List<String> getAllUnits() {
+		
+		logger.info("getAllUnits");
+		List<String> units = new ArrayList<String>();
+		List<UnitDTO> data =  getCodeListService().getAllUnits();
+		for(int i=0;i<data.size();i++){
+			units.add(data.get(i).getUnit());
+			
+		}
+		return units;
+	}
+	
 
 	@Override
 	public SaveUpdateCodeListResult saveorUpdateCodeList(

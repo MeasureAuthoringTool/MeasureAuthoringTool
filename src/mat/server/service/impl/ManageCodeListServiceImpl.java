@@ -15,6 +15,7 @@ import mat.DTO.CodeSystemDTO;
 import mat.DTO.DataTypeDTO;
 import mat.DTO.HasListBoxDTO;
 import mat.DTO.OperatorDTO;
+import mat.DTO.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageValueSetSearchModel;
@@ -221,6 +222,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		data.setRelAssocOperatorList(operatorDAO.getRelAssociationsOperators());
 		return data;
 	}
+	
+	@Override
+	public List<UnitDTO> getAllUnits(){
+		List<UnitDTO> data = unitDAO.getAllUnits();
+		return data;
+	}
+	
 	
 	//US 413. Added Steward Other parameter
 	public boolean isCodeListUnique(ManageCodeListDetailModel currentDetails) {

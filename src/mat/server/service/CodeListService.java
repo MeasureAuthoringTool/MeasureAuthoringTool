@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.DTO.OperatorDTO;
+import mat.DTO.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageValueSetSearchModel;
@@ -55,7 +56,8 @@ public interface CodeListService {
 	public ManageValueSetSearchModel createClone(String id);
 	void transferOwnerShipToUser(List<String> list, String toEmail);
 	
-	public List<OperatorDTO> getTimingOperators(); 
+	public List<OperatorDTO> getTimingOperators();
+	List<UnitDTO> getAllUnits(); 
 	
 	
 }

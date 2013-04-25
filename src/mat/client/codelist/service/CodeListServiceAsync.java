@@ -78,6 +78,8 @@ public interface CodeListServiceAsync {
 			AsyncCallback<TransferOwnerShipModel> callback);
 
 	void getTimingOperators(AsyncCallback<Map<String, String>> callback);
+
+	void getAllUnits(AsyncCallback<List<String>> callback);
 	
 	
 }

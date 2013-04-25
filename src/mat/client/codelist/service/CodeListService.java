@@ -201,5 +201,7 @@ public interface CodeListService extends RemoteService {
 
 	public TransferOwnerShipModel searchUsers(int startIndex, int pageSize);
 	
-	public Map<String, String> getTimingOperators(); 
+	public Map<String, String> getTimingOperators();
+
+	List<String> getAllUnits(); 
 }

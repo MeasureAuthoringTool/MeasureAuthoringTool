@@ -33,6 +33,21 @@ public class QDSAttributesDAO extends GenericDAO<QDSAttributes, String> implemen
 		return criteria.list();
 	}
 	
+	public List<QDSAttributes> findByDataTypeName(String dataTypeName, ApplicationContext context){
+		DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
+		DataType dataType = getDataTypeFromName(dataTypeName, dataTypeDAO);
+		
+		if(dataType == null){
+			System.out.println("In QDSAttributesDAO.findByDataTypeName...no data type by name:"+dataTypeName+" found. Returning blank list.");
+			return new ArrayList<QDSAttributes>();
+		}
+		
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(QDSAttributes.class);
+		criteria.add(Restrictions.eq("dataTypeId", dataType.getId()));
+		return criteria.list();
+	}
+	
 	public List<QDSAttributes> getAllDataFlowAttributeName() {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(QDSAttributes.class);
@@ -104,6 +119,11 @@ public class QDSAttributesDAO extends GenericDAO<QDSAttributes, String> implemen
 				idx --;	
 			}
 		}
+		return dataType;
+	}
+	
+	private DataType getDataTypeFromName(String dataTypeName,DataTypeDAO dataTypeDAO){
+		DataType dataType = dataTypeDAO.findByDataTypeName(dataTypeName);
 		return dataType;
 	}
 }

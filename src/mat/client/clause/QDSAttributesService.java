@@ -14,6 +14,6 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface QDSAttributesService extends RemoteService {
 	List<QDSAttributes> getAllDataTypeAttributes(String dataTypeName);
 	List<QDSAttributes> getAllDataFlowAttributeName();
-
+	public List<QDSAttributes> getAllAttributesByDataType(String dataTypeName);
 }
 

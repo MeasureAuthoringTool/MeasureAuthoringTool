@@ -22,4 +22,5 @@ public interface QDSAttributesDAO extends IDAO<QDSAttributes, String> {
 	 */
 	public QDSAttributes findByNameAndDataType(String attributeName, String dataTypeName);
 	public DataType getDataTypeFromQDMName(String qdmname, DataTypeDAO dataTypeDAO);
+	public List<QDSAttributes> findByDataTypeName(String dataTypeName, ApplicationContext context);
 }

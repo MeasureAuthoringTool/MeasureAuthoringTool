@@ -1191,6 +1191,12 @@ padding: 2px;
   fontsoze
 }
 
+.focusPanel{
+	outline: none;
+}
+
+
+
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________
 .skiplist {margin: 0 0 0 5px; padding: 0} 

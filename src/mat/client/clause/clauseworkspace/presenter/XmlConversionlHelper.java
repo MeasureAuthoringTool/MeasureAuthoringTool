@@ -278,16 +278,16 @@ public class XmlConversionlHelper {
 			@SuppressWarnings("unchecked")
 			HashMap<String,String> map = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+CellTreeNode.TIMING_NODE);
 			if(map!=null){
-				element.setAttribute(ClauseConstants.DISPLAY_NAME, map.get("displayName"));
-				element.setAttribute(ClauseConstants.TYPE, toCamelCase(map.get("displayName")));
-				if(map.containsKey("operatorType")){
-					element.setAttribute("operatorType", map.get("operatorType"));	
+				element.setAttribute(ClauseConstants.DISPLAY_NAME, map.get(ClauseConstants.DISPLAY_NAME));
+				element.setAttribute(ClauseConstants.TYPE, toCamelCase(map.get(ClauseConstants.DISPLAY_NAME)));
+				if(map.containsKey(ClauseConstants.OPERATOR_TYPE)){
+					element.setAttribute(ClauseConstants.OPERATOR_TYPE, map.get(ClauseConstants.OPERATOR_TYPE));	
 				}
-				if(map.containsKey("quantity")){
-					element.setAttribute("quantity", map.get("quantity"));
+				if(map.containsKey(ClauseConstants.QUANTITY)){
+					element.setAttribute(ClauseConstants.QUANTITY, map.get(ClauseConstants.QUANTITY));
 				}
-				if(map.containsKey("unit")){
-					element.setAttribute("unit", map.get("unit"));
+				if(map.containsKey(ClauseConstants.UNIT)){
+					element.setAttribute(ClauseConstants.UNIT, map.get(ClauseConstants.UNIT));
 				}
 			}
 			break;
@@ -306,16 +306,16 @@ public class XmlConversionlHelper {
 			@SuppressWarnings("unchecked")
 			HashMap<String,String> functionMap = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+CellTreeNode.FUNCTIONS_NODE);
 			if(functionMap!=null){
-				element.setAttribute(ClauseConstants.DISPLAY_NAME, functionMap.get("displayName"));
-				element.setAttribute(ClauseConstants.TYPE, toCamelCase(functionMap.get("displayName")));
-				if(functionMap.containsKey("operatorType")){
-					element.setAttribute("operatorType", functionMap.get("operatorType"));	
+				element.setAttribute(ClauseConstants.DISPLAY_NAME, functionMap.get(ClauseConstants.DISPLAY_NAME));
+				element.setAttribute(ClauseConstants.TYPE, toCamelCase(functionMap.get(ClauseConstants.DISPLAY_NAME)));
+				if(functionMap.containsKey(ClauseConstants.OPERATOR_TYPE)){
+					element.setAttribute(ClauseConstants.OPERATOR_TYPE, functionMap.get(ClauseConstants.OPERATOR_TYPE));	
 				}
-				if(functionMap.containsKey("quantity")){
-					element.setAttribute("quantity", functionMap.get("quantity"));
+				if(functionMap.containsKey(ClauseConstants.QUANTITY)){
+					element.setAttribute(ClauseConstants.QUANTITY, functionMap.get(ClauseConstants.QUANTITY));
 				}
-				if(functionMap.containsKey("unit")){
-					element.setAttribute("unit", functionMap.get("unit"));
+				if(functionMap.containsKey(ClauseConstants.UNIT)){
+					element.setAttribute(ClauseConstants.UNIT, functionMap.get(ClauseConstants.UNIT));
 				}
 			}
 			break;

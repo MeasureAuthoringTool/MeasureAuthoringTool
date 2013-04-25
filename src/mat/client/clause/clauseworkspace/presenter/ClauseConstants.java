@@ -22,7 +22,13 @@ public class ClauseConstants{
 	public static final String TYPE = "type";
 
 	public static final String DISPLAY_NAME = "displayName";
-
+	
+	public static final String OPERATOR_TYPE = "operatorType";
+	
+	public static final String QUANTITY = "quantity";
+	
+	public static final String UNIT = "unit";
+	
 	public static final String AND = "AND";
 
 	public static final String MASTER_ROOT_NODE_POPULATION = "Populations";

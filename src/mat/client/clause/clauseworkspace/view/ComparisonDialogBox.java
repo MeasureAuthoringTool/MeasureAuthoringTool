@@ -30,21 +30,16 @@ public class ComparisonDialogBox{
 		
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
-		//dialogBox.setWidth("22em");
-	    //dialogBox.setHeight("15em");
 	    dialogBox.setText("Edit");
 	    dialogBox.setTitle("Edit");
 		// Create a table to layout the content
 	    VerticalPanel dialogContents = new VerticalPanel();
-	    //dialogContents.setWidth("100%");
-//	    dialogContents.setHeight("21em");
 	    dialogContents.setWidth("20em");
-	   // dialogContents.setHeight("100%");
 	    dialogContents.setSpacing(5);
 	    dialogBox.setWidget(dialogContents);
 	    @SuppressWarnings("unchecked")
 		HashMap<String,String> extraAttributesMap = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+cellTreeNode.getNodeType());
-	    //List for Timing or Function based on Node Type.
+	
 	    final ListBoxMVP listAllTimeOrFunction = new ListBoxMVP();
 	    String timingMethod ="--Select--";
 	    String operatorMethod="--Select--";
@@ -52,14 +47,15 @@ public class ComparisonDialogBox{
 	    String unitType ="--Select--";
 	 
 	    if(extraAttributesMap!=null){
-		   timingMethod = extraAttributesMap.get("displayName");
-		   operatorMethod = extraAttributesMap.containsKey("operatorType") ? extraAttributesMap.get("operatorType") : operatorMethod;
-		   quantityValue = extraAttributesMap.containsKey("quantity") ? extraAttributesMap.get("quantity") : quantityValue;
-		   unitType = extraAttributesMap.containsKey("unit") ? extraAttributesMap.get("unit") : unitType;
+		   timingMethod = extraAttributesMap.get(ClauseConstants.DISPLAY_NAME);
+		   operatorMethod = extraAttributesMap.containsKey(ClauseConstants.OPERATOR_TYPE) ? extraAttributesMap.get(ClauseConstants.OPERATOR_TYPE) : operatorMethod;
+		   quantityValue = extraAttributesMap.containsKey(ClauseConstants.QUANTITY) ? extraAttributesMap.get(ClauseConstants.QUANTITY) : quantityValue;
+		   unitType = extraAttributesMap.containsKey(ClauseConstants.UNIT) ? extraAttributesMap.get(ClauseConstants.UNIT) : unitType;
 	   }else{
 		   timingMethod = cellTreeNode.getLabel();
 	   }
 	    String labelForListBox = null;
+	  //List for Timing or Function based on Node Type.
 	    if(cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE){
 	    	String[] timeRelationKey = ClauseConstants.getTimingOperators().keySet().toArray(new String[0]);
 	    	if(timingMethod.contains("Select"))
@@ -125,14 +121,24 @@ public class ComparisonDialogBox{
 		
 		//List of Units.
 		final ListBoxMVP listAllUnits = new ListBoxMVP();
-		//listAllUnits.addItem("--Select--");
 		if(unitType.contains("Select"))
 			listAllUnits.addItem(unitType);
-		for(int i=0;i<ClauseConstants.units.size();i++){
-			listAllUnits.addItem(ClauseConstants.units.get(i));
-			if((ClauseConstants.units.get(i)).equalsIgnoreCase(unitType)){
-				listAllUnits.setSelectedIndex(i);
-			}
+		 if(cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE){
+			 //Show list starting from seconds till Year for Timing. Since list is reterived in sorted order, Year comes at 7th index.
+			 for(int i=0;i<7;i++){
+				 listAllUnits.addItem(ClauseConstants.units.get(i));
+				 if((ClauseConstants.units.get(i)).equalsIgnoreCase(unitType)){
+					 listAllUnits.setSelectedIndex(i);
+				 }
+			 }
+		}else{
+			 for(int i=0;i<ClauseConstants.units.size();i++){
+				 listAllUnits.addItem(ClauseConstants.units.get(i));
+				 if((ClauseConstants.units.get(i)).equalsIgnoreCase(unitType)){
+					 listAllUnits.setSelectedIndex(i);
+				 }
+			 }
+			
 		}
 		listAllUnits.setWidth("150px");
 		Label lableUnits = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Units");;
@@ -171,16 +177,16 @@ public class ComparisonDialogBox{
 	private static void saveAttributesToNode(String functionOrTiming, String operator, String quantity, String unit, XmlTreeDisplay xmlTreeDisplay){
 		Map<String,String> extraAttributes = new HashMap<String,String>();
 		if(!operator.contains("Select")){
-			extraAttributes.put("operatorType", operator);
+			extraAttributes.put(ClauseConstants.OPERATOR_TYPE, operator);
 		}
 		if(!functionOrTiming.contains("Select")){
-			extraAttributes.put("displayName", functionOrTiming);
+			extraAttributes.put(ClauseConstants.DISPLAY_NAME, functionOrTiming);
 			xmlTreeDisplay.editNode(functionOrTiming, functionOrTiming);
 		}
 		if(!unit.contains("Select")){
-			extraAttributes.put("unit", unit);
+			extraAttributes.put(ClauseConstants.UNIT, unit);
 		}
-		extraAttributes.put("quantity", quantity);
+		extraAttributes.put(ClauseConstants.QUANTITY, quantity);
 		
 		xmlTreeDisplay.getSelectedNode().setExtraInformation("extraAttributes_"+xmlTreeDisplay.getSelectedNode().getNodeType(), extraAttributes);
 	}

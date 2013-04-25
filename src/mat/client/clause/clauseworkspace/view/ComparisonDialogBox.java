@@ -2,6 +2,8 @@ package mat.client.clause.clauseworkspace.view;
 
 import java.util.Arrays;
 
+import org.apache.poi.ss.format.CellNumberFormatter;
+
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
@@ -13,6 +15,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
@@ -33,72 +36,70 @@ public class ComparisonDialogBox{
 	    VerticalPanel dialogContents = new VerticalPanel();
 	    //dialogContents.setWidth("100%");
 //	    dialogContents.setHeight("21em");
-//	    dialogContents.setWidth("25em");
+	    dialogContents.setWidth("20em");
 	   // dialogContents.setHeight("100%");
 	    dialogContents.setSpacing(5);
 	    dialogBox.setWidget(dialogContents);
 
-	    ListBoxMVP listAllTimeRelations = new ListBoxMVP();
-	    listAllTimeRelations.addItem("--Select--");
-	    String[] timeRelationKey = ClauseConstants.getTimingOperators().keySet().toArray(new String[0]);
-		//Arrays.sort(key);
-		for(int i=0;i<timeRelationKey.length;i++){
-			listAllTimeRelations.addItem(timeRelationKey[i]);
-		}
-		listAllTimeRelations.setWidth("150px");
-		dialogContents.add(LabelBuilder.buildLabel(listAllTimeRelations, "Timing"));
-		dialogContents.add(listAllTimeRelations);
-			    	    
-	    ListBoxMVP listAllLogicalOps = new ListBoxMVP();
-	    listAllLogicalOps.addItem("--Select--");
-	    String[] logicalOpsKey = ClauseConstants.LOGICAL_OPS;
-		//Arrays.sort(key1);
-		for(int i=0;i<logicalOpsKey.length;i++){
-			listAllLogicalOps.addItem(logicalOpsKey[i]);
-		}
-		listAllLogicalOps.setWidth("150px");
-		dialogContents.add(LabelBuilder.buildLabel(listAllLogicalOps, "Logical Operator"));
-		dialogContents.add(listAllLogicalOps);
+	    ListBoxMVP listAllTimeOrFunction = new ListBoxMVP();
+	    listAllTimeOrFunction.addItem("--Select--");
+	    String labelForListBox = null;
+	    if(cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE){
+	    	String[] timeRelationKey = ClauseConstants.getTimingOperators().keySet().toArray(new String[0]);
 		
+	    	for(int i=0;i<timeRelationKey.length;i++){
+	    		listAllTimeOrFunction.addItem(timeRelationKey[i]);
+	    	}
+	    	listAllTimeOrFunction.setWidth("150px");
+	    	labelForListBox = "Timing";
+	    }else{
+	    	String[] functionKeys = ClauseConstants.FUNCTIONS;
+			for(int i=0;i<functionKeys.length;i++){
+				listAllTimeOrFunction.addItem(functionKeys[i]);
+			}
+			labelForListBox = "Functions";
+	    	
+	    }
+	    Label lableListBoxTimingOrFunction = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, labelForListBox);
+		dialogContents.add(lableListBoxTimingOrFunction);
+		dialogContents.setCellHorizontalAlignment(lableListBoxTimingOrFunction, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents.add(listAllTimeOrFunction);
+		dialogContents.setCellHorizontalAlignment(listAllTimeOrFunction, HasHorizontalAlignment.ALIGN_LEFT);
 		
 	    ListBoxMVP listAllOperator = new ListBoxMVP();
 	    listAllOperator.addItem("--Select--");
 	    String[] comparisonOpKeys = ClauseConstants.comparisonOperators;
-		//Arrays.sort(key2);
+		
 		for(int i=0;i<comparisonOpKeys.length;i++){
 			listAllOperator.addItem(comparisonOpKeys[i]);
 		}
 		listAllOperator.setWidth("150px");
-		dialogContents.add(LabelBuilder.buildLabel(listAllOperator, "Operators"));
+		Label lableOperator = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Operators");
+		dialogContents.add(lableOperator);
+		dialogContents.setCellHorizontalAlignment(lableOperator, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(listAllOperator);
-		
-		ListBoxMVP listAllFunctions = new ListBoxMVP();
-		listAllFunctions.addItem("--Select--");
-	    String[] functionKeys = ClauseConstants.FUNCTIONS;
-		//Arrays.sort(key2);
-		for(int i=0;i<functionKeys.length;i++){
-			listAllFunctions.addItem(functionKeys[i]);
-		}
-		listAllFunctions.setWidth("150px");
-		dialogContents.add(LabelBuilder.buildLabel(listAllFunctions, "Functions"));
-		dialogContents.add(listAllFunctions);
+		dialogContents.setCellHorizontalAlignment(listAllOperator, HasHorizontalAlignment.ALIGN_LEFT);
 		
 		TextBox quantity = new TextBox();
 		quantity.setWidth("150px");
-		dialogContents.add(LabelBuilder.buildLabel(quantity, "Quantity"));
+		Label lableQuantity = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Quantity");
+		dialogContents.add(lableQuantity);
+		dialogContents.setCellHorizontalAlignment(lableQuantity, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(quantity);
+		dialogContents.setCellHorizontalAlignment(quantity, HasHorizontalAlignment.ALIGN_LEFT);
 		
 		ListBoxMVP listAllUnits = new ListBoxMVP();
 		listAllUnits.addItem("--Select--");
-	    //String[] unitsKeys = (String[]) ClauseConstants.units.toArray();
-		//Arrays.sort(key2);
+	  
 		for(int i=0;i<ClauseConstants.units.size();i++){
 			listAllUnits.addItem(ClauseConstants.units.get(i));
 		}
 		listAllUnits.setWidth("150px");
-		dialogContents.add(LabelBuilder.buildLabel(listAllUnits, "Units"));
+		Label lableUnits = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Units");;
+		dialogContents.add(lableUnits);
+		dialogContents.setCellHorizontalAlignment(lableUnits, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(listAllUnits);
-
+		dialogContents.setCellHorizontalAlignment(listAllUnits, HasHorizontalAlignment.ALIGN_LEFT);
 		// Add a Save button at the bottom of the dialog
 	    Button save = new Button("Save", new ClickHandler() {
 			@Override
@@ -116,9 +117,9 @@ public class ComparisonDialogBox{
 	    HorizontalPanel buttonPanel = new HorizontalPanel();
 	    buttonPanel.setSpacing(10);
 	    buttonPanel.add(save);
-	    buttonPanel.setCellHorizontalAlignment(save, HasHorizontalAlignment.ALIGN_CENTER);
+	    buttonPanel.setCellHorizontalAlignment(save, HasHorizontalAlignment.ALIGN_RIGHT);
 	    buttonPanel.add(closeButton);
-	    buttonPanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_CENTER);
+	    buttonPanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
 	    
 	    dialogContents.add(buttonPanel);
 	    dialogBox.center();

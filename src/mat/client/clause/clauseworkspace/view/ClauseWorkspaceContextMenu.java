@@ -258,6 +258,26 @@ public class ClauseWorkspaceContextMenu {
 			}
 			cutMenu.setEnabled(true);
 			deleteMenu.setEnabled(true);
+			if(xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE
+					&& xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+				cutMenu.setEnabled(true);
+				//subMenuBar = new MenuBar(true);
+				//createEditMenus(ClauseConstants.getTimingOperators().keySet().toArray(new String[0]), subMenuBar);
+				Command editCmd = new Command() {
+					public void execute() {
+						popupPanel.hide();
+						ComparisonDialogBox.showComparisonDialogBox(xmlTreeDisplay,xmlTreeDisplay.getSelectedNode());
+						/*if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.ROOT_NODE){
+							pasteRootNodeTypeItem();
+						}else{
+							xmlTreeDisplay.paste();	
+						}*/
+					}
+				};
+				editMenu = new MenuItem("Edit", true, editCmd);
+				popupMenuBar.addItem(editMenu);	
+			}
+				break;
 		default:
 			break;
 		}

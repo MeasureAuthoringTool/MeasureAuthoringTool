@@ -57,6 +57,7 @@ public class ComparisonDialogBox{
 			for(int i=0;i<functionKeys.length;i++){
 				listAllTimeOrFunction.addItem(functionKeys[i]);
 			}
+			listAllTimeOrFunction.setWidth("150px");
 			labelForListBox = "Functions";
 	    	
 	    }

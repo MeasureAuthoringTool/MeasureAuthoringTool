@@ -17,13 +17,22 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet impleme
 	private QDSAttributesDAO qDSAttributesDAO;
 
 	@Override
-	public List<QDSAttributes> getAllDataTypeAttributes(String dataTypeName) {
-		List<QDSAttributes> attrs = getDAO().findByDataType(dataTypeName, context);
+	public List<QDSAttributes> getAllDataTypeAttributes(String qdmName) {
+		List<QDSAttributes> attrs = getDAO().findByDataType(qdmName, context);
 		List<QDSAttributes> attrs1 = getAllDataFlowAttributeName();
 		Collections.sort(attrs, attributeComparator);
 		Collections.sort(attrs1, attributeComparator);
 		attrs.addAll(attrs1);
 		//Collections.sort(attrs, attributeComparator);
+		return attrs;
+	}
+	
+	public List<QDSAttributes> getAllAttributesByDataType(String dataTypeName){
+		List<QDSAttributes> attrs = getDAO().findByDataTypeName(dataTypeName,context);
+		List<QDSAttributes> attrs1 = getAllDataFlowAttributeName();
+		Collections.sort(attrs, attributeComparator);
+		attrs.addAll(attrs1);
+		System.out.println("Returning from QDSAttributesServiceImpl.getAllAttributesByDataType() with:"+attrs+" for dataType "+dataTypeName);
 		return attrs;
 	}
 

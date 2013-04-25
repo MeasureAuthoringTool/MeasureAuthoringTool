@@ -279,7 +279,7 @@ public class XmlConversionlHelper {
 			HashMap<String,String> map = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+CellTreeNode.TIMING_NODE);
 			if(map!=null){
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, map.get(ClauseConstants.DISPLAY_NAME));
-				element.setAttribute(ClauseConstants.TYPE, toCamelCase(map.get(ClauseConstants.DISPLAY_NAME)));
+				element.setAttribute(ClauseConstants.TYPE, toCamelCase(ClauseConstants.getTimingOperators().get(map.get(ClauseConstants.DISPLAY_NAME))));
 				if(map.containsKey(ClauseConstants.OPERATOR_TYPE)){
 					element.setAttribute(ClauseConstants.OPERATOR_TYPE, map.get(ClauseConstants.OPERATOR_TYPE));	
 				}

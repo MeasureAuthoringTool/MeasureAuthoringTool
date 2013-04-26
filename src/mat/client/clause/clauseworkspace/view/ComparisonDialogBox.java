@@ -47,7 +47,7 @@ public class ComparisonDialogBox{
 	    String unitType ="--Select--";
 	 
 	    if(extraAttributesMap!=null){
-		   timingMethod = extraAttributesMap.get(ClauseConstants.DISPLAY_NAME);
+		   timingMethod = extraAttributesMap.get(ClauseConstants.TYPE);
 		   operatorMethod = extraAttributesMap.containsKey(ClauseConstants.OPERATOR_TYPE) ? extraAttributesMap.get(ClauseConstants.OPERATOR_TYPE) : operatorMethod;
 		   quantityValue = extraAttributesMap.containsKey(ClauseConstants.QUANTITY) ? extraAttributesMap.get(ClauseConstants.QUANTITY) : quantityValue;
 		   unitType = extraAttributesMap.containsKey(ClauseConstants.UNIT) ? extraAttributesMap.get(ClauseConstants.UNIT) : unitType;

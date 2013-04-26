@@ -280,7 +280,7 @@ public class ClauseWorkspaceContextMenu {
 				showQDMAttributePopup(cellTreeNode);
 			}
 		};
-		MenuItem item = new MenuItem("Attribute",true,addQDMAttributeCmd);		
+		MenuItem item = new MenuItem(template.menuTable("Edit Attributes", ""),addQDMAttributeCmd);
 		menuBar.addItem(item);		
 	}
 

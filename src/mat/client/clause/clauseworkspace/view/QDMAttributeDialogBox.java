@@ -22,6 +22,7 @@ import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -44,6 +45,7 @@ import com.google.gwt.xml.client.Node;
 public class QDMAttributeDialogBox {
 	private static final List<String> qdmNames = new ArrayList<String>();
 	private static final List<String> unitNames = new ArrayList<String>();
+	private static Grid grid;
 	
 	private static final class DeleteSelectedClickHandler implements
 			ClickHandler {
@@ -144,11 +146,12 @@ public class QDMAttributeDialogBox {
 						    }
 
 						    Character charCode = event.getCharCode();
-						    
+						    int unicodeCharacter = event.getUnicodeCharCode();
 						    // allow digits, '.' and non-characters
 						    //if (!(Character.isDigit(charCode) || charCode == '.' || unicodeCharCode == 0))
 						    //allow only digits
-						    if (!(Character.isDigit(charCode))){
+						    if (!(Character.isDigit(charCode)) && (charCode != KeyCodes.KEY_BACKSPACE) && (charCode != KeyCodes.KEY_DELETE)){
+						    //if (!(Character.isDigit(charCode))){
 						        sender.cancelKey();
 						    }
 						}
@@ -234,7 +237,6 @@ public class QDMAttributeDialogBox {
 	}
 
 	public static void showQDMAttributeDialogBox(XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode) {
-		
 		//If the CellTreeNode type isn't CellTreeNode.ELEMENT_REF_NODE then return without doing anything.
 		if(cellTreeNode.getNodeType() != CellTreeNode.ELEMENT_REF_NODE){
 			return;
@@ -247,6 +249,9 @@ public class QDMAttributeDialogBox {
 		}
 		
 		String qdmDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+		
+		qdmNames.clear();
+		unitNames.clear();
 		qdmNames.addAll(getQDMElementNames());
 		unitNames.addAll(getUnitNameList());
 		
@@ -256,7 +261,7 @@ public class QDMAttributeDialogBox {
 	}
 	
 	private static void buildAndDisplayDialogBox(String qdmDataType,
-			List<String> mode, XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode) {
+			List<String> mode, final XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode) {
 		
 		final DialogBox qdmAttributeDialogBox = new DialogBox(false,true);
 		qdmAttributeDialogBox.getElement().setId("qdmAttributeDialog");
@@ -295,8 +300,29 @@ public class QDMAttributeDialogBox {
 	    Button saveButton = new Button("Save", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//Pick the rows and make Node object from them.
-				
+				//TODO:Validate the table rows.
+									
+				int rowCount = grid.getRowCount();
+				for(int i=0;i<rowCount;i++){
+					CellTreeNode attributeNode = xmlTreeDisplay.addNode("Test", "test", (short)100);
+					
+					String attributeName = grid.getText(i, 0);
+					attributeNode.setExtraInformation("name", attributeName);
+					
+					String modeName = grid.getText(i, 1);
+					if("Check if Present".equals(modeName) || "Value Set".equals(modeName)){
+						attributeNode.setExtraInformation("mode", modeName);
+					}else{
+						attributeNode.setExtraInformation("mode", modeName);
+						
+						HorizontalPanel hPanel = (HorizontalPanel) grid.getWidget(i, 2);
+						TextBox valueBox = (TextBox) hPanel.getWidget(0);
+						ListBox unitBox =  (ListBox) hPanel.getWidget(1);
+						
+						attributeNode.setExtraInformation("comparisonValue", valueBox.getText());
+						attributeNode.setExtraInformation("unit", unitBox.getItemText(unitBox.getSelectedIndex()));
+					}					
+				}				
 				qdmAttributeDialogBox.hide();
 			}
 		});
@@ -338,7 +364,7 @@ public class QDMAttributeDialogBox {
 		List<Node> attributeNodeList = (List<Node>) cellTreeNode.getExtraInformation("attributes");
 		int rows = (attributeNodeList == null)?0:attributeNodeList.size();
 	    
-		final Grid grid = new Grid(rows,4);
+		grid = new Grid(rows,4);
 		grid.addClickHandler(new QDMAttributeGridClickHandler(grid));
 		
 		//Handler to Add New rows to the attribute table.
@@ -375,6 +401,7 @@ public class QDMAttributeDialogBox {
 		modeList.add("Comparison");
 		modeList.add("-- Less Than");
 		modeList.add("-- Greater Than");
+		modeList.add("-- Equal To");
 		modeList.add("-- Less Than Or Equal To");
 		modeList.add("-- Greater Than Or Equal To");
 		modeList.add("Value Set");

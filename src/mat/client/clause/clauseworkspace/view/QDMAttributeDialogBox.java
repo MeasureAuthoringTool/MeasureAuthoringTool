@@ -146,11 +146,11 @@ public class QDMAttributeDialogBox {
 						    }
 
 						    Character charCode = event.getCharCode();
-						    int unicodeCharacter = event.getUnicodeCharCode();
+						    int unicodeCharCode = event.getUnicodeCharCode();
 						    // allow digits, '.' and non-characters
-						    //if (!(Character.isDigit(charCode) || charCode == '.' || unicodeCharCode == 0))
+						    if (!(Character.isDigit(charCode) || unicodeCharCode == 0)){
 						    //allow only digits
-						    if (!(Character.isDigit(charCode)) && (charCode != KeyCodes.KEY_BACKSPACE) && (charCode != KeyCodes.KEY_DELETE)){
+						    //if (!(Character.isDigit(charCode)) && (unicodeCharacter != KeyCodes.KEY_BACKSPACE) && (unicodeCharacter != KeyCodes.KEY_DELETE)){
 						    //if (!(Character.isDigit(charCode))){
 						        sender.cancelKey();
 						    }

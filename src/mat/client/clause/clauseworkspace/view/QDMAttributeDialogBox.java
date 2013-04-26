@@ -401,8 +401,7 @@ public class QDMAttributeDialogBox {
 				}
 				setToolTipForEachElementInListbox(qdmAttributeListBox);
 			}
-		});	
-	
+		});		
 	}
 	
 	/**

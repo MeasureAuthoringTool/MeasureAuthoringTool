@@ -178,14 +178,31 @@ public class ComparisonDialogBox{
 		Map<String,String> extraAttributes = new HashMap<String,String>();
 		if(!operator.contains("Select")){
 			extraAttributes.put(ClauseConstants.OPERATOR_TYPE, operator);
-		}
-		if(!functionOrTiming.contains("Select")){
-			extraAttributes.put(ClauseConstants.DISPLAY_NAME, functionOrTiming);
-			xmlTreeDisplay.editNode(functionOrTiming, functionOrTiming);
+		}else{
+			operator="";
 		}
 		if(!unit.contains("Select")){
 			extraAttributes.put(ClauseConstants.UNIT, unit);
 		}
+		else{
+			unit="";
+		}
+		if(!functionOrTiming.contains("Select")){
+			extraAttributes.put(ClauseConstants.TYPE, functionOrTiming);
+			if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.TIMING_NODE){
+				String operatorType = ClauseConstants.getComparisonOperatorMap().containsKey(operator) ? ClauseConstants.getComparisonOperatorMap().get(operator) : " ";
+				StringBuilder operatorTypeKey = new StringBuilder(operatorType);
+				functionOrTiming = (operatorTypeKey.append(" ").append(quantity).append(" ").append(unit).append(" ").append(functionOrTiming)).toString();
+			}
+			else if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+				String operatorType = ClauseConstants.getComparisonOperatorMap().containsKey(operator) ? ClauseConstants.getComparisonOperatorMap().get(operator) : " ";
+				StringBuilder functionOrTimingKey = new StringBuilder(functionOrTiming);
+				functionOrTiming = (functionOrTimingKey.append(" ").append(operatorType).append(" ").append(quantity).append(" ").append(unit)).toString();
+			}
+			extraAttributes.put(ClauseConstants.DISPLAY_NAME, functionOrTiming);
+			xmlTreeDisplay.editNode(functionOrTiming, functionOrTiming);
+		}
+		
 		extraAttributes.put(ClauseConstants.QUANTITY, quantity);
 		
 		xmlTreeDisplay.getSelectedNode().setExtraInformation("extraAttributes_"+xmlTreeDisplay.getSelectedNode().getNodeType(), extraAttributes);

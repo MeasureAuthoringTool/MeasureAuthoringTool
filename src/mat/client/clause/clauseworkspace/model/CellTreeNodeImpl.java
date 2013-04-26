@@ -124,7 +124,8 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		copyModel.setLabel(model.getLabel());
 		copyModel.setName(model.getName());
 		copyModel.setNodeType(model.getNodeType());
-		copyModel.setOpen(model.isOpen());		
+		copyModel.setOpen(model.isOpen());	
+		((CellTreeNodeImpl)copyModel).setExtraInformationMap(((CellTreeNodeImpl)model).getExtraInformationMap());
 		return copyModel;
 	}
 
@@ -172,6 +173,22 @@ public class CellTreeNodeImpl implements CellTreeNode{
 	@Override
 	public Object getExtraInformation(String key) {
 		return this.extraInformationMap.get(key);
+	}
+
+
+	/**
+	 * @return the extraInformationMap
+	 */
+	public Map<String, Object> getExtraInformationMap() {
+		return extraInformationMap;
+	}
+
+
+	/**
+	 * @param extraInformationMap the extraInformationMap to set
+	 */
+	public void setExtraInformationMap(Map<String, Object> extraInformationMap) {
+		this.extraInformationMap = extraInformationMap;
 	}
 
 }

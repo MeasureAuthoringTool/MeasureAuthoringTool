@@ -291,7 +291,7 @@ public class XmlConversionlHelper {
 				}
 			}else{
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
-				element.setAttribute(ClauseConstants.TYPE, toCamelCase(ClauseConstants.getTimingOperators().get(cellTreeNode.getName())));
+				element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
 			}
 			break;
 		case CellTreeNode.ELEMENT_REF_NODE:

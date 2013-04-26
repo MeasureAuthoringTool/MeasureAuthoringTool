@@ -273,13 +273,13 @@ public class XmlConversionlHelper {
 			break;
 		case CellTreeNode.TIMING_NODE:
 			element = document.createElement(ClauseConstants.RELATIONAL_OP);
-			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
-			element.setAttribute(ClauseConstants.TYPE, toCamelCase(ClauseConstants.getTimingOperators().get(cellTreeNode.getName())));
+			
 			@SuppressWarnings("unchecked")
 			HashMap<String,String> map = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+CellTreeNode.TIMING_NODE);
 			if(map!=null){
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, map.get(ClauseConstants.DISPLAY_NAME));
-				element.setAttribute(ClauseConstants.TYPE, toCamelCase(ClauseConstants.getTimingOperators().get(map.get(ClauseConstants.DISPLAY_NAME))));
+				String typeValue = ClauseConstants.getTimingOperators().containsKey(map.get(ClauseConstants.TYPE))?ClauseConstants.getTimingOperators().get(map.get(ClauseConstants.TYPE)):map.get(ClauseConstants.DISPLAY_NAME);
+				element.setAttribute(ClauseConstants.TYPE, toCamelCase(typeValue));
 				if(map.containsKey(ClauseConstants.OPERATOR_TYPE)){
 					element.setAttribute(ClauseConstants.OPERATOR_TYPE, map.get(ClauseConstants.OPERATOR_TYPE));	
 				}
@@ -289,6 +289,9 @@ public class XmlConversionlHelper {
 				if(map.containsKey(ClauseConstants.UNIT)){
 					element.setAttribute(ClauseConstants.UNIT, map.get(ClauseConstants.UNIT));
 				}
+			}else{
+				element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
+				element.setAttribute(ClauseConstants.TYPE, toCamelCase(ClauseConstants.getTimingOperators().get(cellTreeNode.getName())));
 			}
 			break;
 		case CellTreeNode.ELEMENT_REF_NODE:
@@ -301,13 +304,12 @@ public class XmlConversionlHelper {
 			break;
 		case CellTreeNode.FUNCTIONS_NODE:
 			element = document.createElement(ClauseConstants.FUNC_NAME);
-			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
-			element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
+			
 			@SuppressWarnings("unchecked")
 			HashMap<String,String> functionMap = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+CellTreeNode.FUNCTIONS_NODE);
 			if(functionMap!=null){
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, functionMap.get(ClauseConstants.DISPLAY_NAME));
-				element.setAttribute(ClauseConstants.TYPE, toCamelCase(functionMap.get(ClauseConstants.DISPLAY_NAME)));
+				element.setAttribute(ClauseConstants.TYPE, toCamelCase(functionMap.get(ClauseConstants.TYPE)));
 				if(functionMap.containsKey(ClauseConstants.OPERATOR_TYPE)){
 					element.setAttribute(ClauseConstants.OPERATOR_TYPE, functionMap.get(ClauseConstants.OPERATOR_TYPE));	
 				}
@@ -317,6 +319,10 @@ public class XmlConversionlHelper {
 				if(functionMap.containsKey(ClauseConstants.UNIT)){
 					element.setAttribute(ClauseConstants.UNIT, functionMap.get(ClauseConstants.UNIT));
 				}
+			}else{
+				element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
+				element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
+				
 			}
 			break;
 		default:

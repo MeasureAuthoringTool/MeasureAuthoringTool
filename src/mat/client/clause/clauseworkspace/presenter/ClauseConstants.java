@@ -2,8 +2,10 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.gwt.xml.client.Node;
 
@@ -46,6 +48,8 @@ public class ClauseConstants{
 	public static ArrayList<String> units;
 	
 	public static final String[] comparisonOperators = {"Less Than","Greater Than","Less Than or Equal To","Greater Than or Equal To","Equal To"};
+	
+	public static Map<String,String> comparisonOperatorMap = new HashMap<String,String>();
 	
 	public static Map<String, Node> elementLookUps;
 	
@@ -97,6 +101,14 @@ public class ClauseConstants{
 		constantsMap.put("Populations", "populations");
 	}
 
+	static{
+		comparisonOperatorMap.put("Less Than","<");
+		comparisonOperatorMap.put("Greater Than",">");
+		comparisonOperatorMap.put("Less Than or Equal To","<=");
+		comparisonOperatorMap.put("Greater Than or Equal To",">=");
+		comparisonOperatorMap.put("Equal To","=");
+	}
+	
 	public static String get(String key){
 		return constantsMap.get(key);
 	}
@@ -155,5 +167,10 @@ public class ClauseConstants{
 	public static ArrayList<String> getUnits() {
 		return units;
 	}
+	
+	public static Map<String, String> getComparisonOperatorMap() {
+		return comparisonOperatorMap;
+	}
+
 
 }

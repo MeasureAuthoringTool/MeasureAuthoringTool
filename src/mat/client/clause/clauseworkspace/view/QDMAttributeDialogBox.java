@@ -9,9 +9,16 @@ import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.codelist.HasListBox;
+import mat.client.shared.MatContext;
+import mat.client.shared.MessageDelegate;
 import mat.model.clause.QDSAttributes;
+import mat.shared.ConstantMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -35,7 +42,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Node;
 
 public class QDMAttributeDialogBox {
-	
+	private static final List<String> qdmNames = new ArrayList<String>();
+	private static final List<String> unitNames = new ArrayList<String>();
 	
 	private static final class DeleteSelectedClickHandler implements
 			ClickHandler {
@@ -69,7 +77,7 @@ public class QDMAttributeDialogBox {
 	private static final class QDMAttributeGridClickHandler implements
 			ClickHandler {
 		private final Grid grid;
-
+		
 		private QDMAttributeGridClickHandler(Grid grid) {
 			this.grid = grid;
 		}
@@ -88,7 +96,7 @@ public class QDMAttributeDialogBox {
 				
 				if("Select".equalsIgnoreCase(text)){
 					ListBox modeListBox = (ListBox)grid.getWidget(rowNum, 2);
-					modeListBox.setSelectedIndex(1);
+					modeListBox.setSelectedIndex(0);
 					DomEvent.fireNativeEvent(Document.get().createChangeEvent(), modeListBox);
 					modeListBox.setEnabled(false);
 				}else{
@@ -115,11 +123,10 @@ public class QDMAttributeDialogBox {
 					qdmListBox.setVisibleItemCount(1);
 					qdmListBox.setWidth("8em");
 					
-					//demo only..remove later
-					qdmListBox.addItem("QDM 1");
-					qdmListBox.addItem("QDM 2");
-					qdmListBox.addItem("QDM 3");
-					
+					for(String qdmName:qdmNames){
+						qdmListBox.addItem(qdmName);
+					}
+					setToolTipForEachElementInListbox(qdmListBox);
 					grid.setWidget(rowNum, 3, qdmListBox);
 				}else {
 					HorizontalPanel panel = new HorizontalPanel();
@@ -137,8 +144,7 @@ public class QDMAttributeDialogBox {
 						    }
 
 						    Character charCode = event.getCharCode();
-						    int unicodeCharCode = event.getUnicodeCharCode();
-
+						    
 						    // allow digits, '.' and non-characters
 						    //if (!(Character.isDigit(charCode) || charCode == '.' || unicodeCharCode == 0))
 						    //allow only digits
@@ -147,16 +153,17 @@ public class QDMAttributeDialogBox {
 						    }
 						}
 					});
-					textBox.setWidth("4em");
+					textBox.setWidth("3em");
 					textBox.setHeight("19");
 					
 					ListBox units = new ListBox(false);
 					units.setVisibleItemCount(1);
-					units.setWidth("4em");
+					units.setWidth("5em");
 					
-					units.addItem("Days");
-					units.addItem("hours");
-					units.addItem("mg");
+					for(String unitName:unitNames){
+						units.addItem(unitName);
+					}
+					setToolTipForEachElementInListbox(units);
 					
 					panel.add(textBox);
 					panel.add(units);
@@ -198,10 +205,11 @@ public class QDMAttributeDialogBox {
 				for(String attributeName:attributeList){
 					attributeListBox.addItem(attributeName);
 				}
+				setToolTipForEachElementInListbox(attributeListBox);
 			}else{
 				fetchAtttributesByDataType(this.qdmDataTypeName, attributeListBox, attributeList);
-			}
-
+			}			
+			
 			grid.setWidget(i, 1, attributeListBox);
 			//If needed, attributeListBox can have a ChangeHandler here.
 			
@@ -213,6 +221,7 @@ public class QDMAttributeDialogBox {
 				modeListBox.addItem(modeValue, ""+i);
 			}
 			modeListBox.setEnabled(false);
+			setToolTipForEachElementInListbox(modeListBox);
 			grid.setWidget(i, 2, modeListBox);
 			
 			//If needed, modeListBox can have a ChangeHandler here.
@@ -226,7 +235,7 @@ public class QDMAttributeDialogBox {
 
 	public static void showQDMAttributeDialogBox(XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode) {
 		
-		//If the CellTreeNode type isnt CellTreeNode.ELEMENT_REF_NODE then return without doing anything.
+		//If the CellTreeNode type isn't CellTreeNode.ELEMENT_REF_NODE then return without doing anything.
 		if(cellTreeNode.getNodeType() != CellTreeNode.ELEMENT_REF_NODE){
 			return;
 		}
@@ -238,10 +247,12 @@ public class QDMAttributeDialogBox {
 		}
 		
 		String qdmDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+		qdmNames.addAll(getQDMElementNames());
+		unitNames.addAll(getUnitNameList());
 		
 		List<String> mode = getModeList();
 		buildAndDisplayDialogBox(qdmDataType, mode,xmlTreeDisplay, cellTreeNode);
-		
+	
 	}
 	
 	private static void buildAndDisplayDialogBox(String qdmDataType,
@@ -252,7 +263,6 @@ public class QDMAttributeDialogBox {
 		qdmAttributeDialogBox.setGlassEnabled(true);
 		qdmAttributeDialogBox.setAnimationEnabled(true);
 	    qdmAttributeDialogBox.setText("QDM Attributes.");
-	    qdmAttributeDialogBox.setTitle("QDM Attributes.");
 	    
 		// Create a table to layout the content
 	    VerticalPanel dialogContents = new VerticalPanel();
@@ -285,7 +295,8 @@ public class QDMAttributeDialogBox {
 	    Button saveButton = new Button("Save", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//TODO	
+				//Pick the rows and make Node object from them.
+				
 				qdmAttributeDialogBox.hide();
 			}
 		});
@@ -372,7 +383,6 @@ public class QDMAttributeDialogBox {
 	}
 
 	private static void fetchAtttributesByDataType(String qdmDataType, final ListBox qdmAttributeListBox, final List<String> attributeList) {
-		System.out.println("In QDMAttributeDialogBox.fetchAtttributesByDataType() for dataType:"+qdmDataType);
 			
 		QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT.create(QDSAttributesService.class);
 		attributeService.getAllAttributesByDataType(qdmDataType, new AsyncCallback<List<QDSAttributes>>() {
@@ -385,14 +395,32 @@ public class QDMAttributeDialogBox {
 
 			@Override
 			public void onSuccess(List<QDSAttributes> result) {
-				System.out.println("In QDMAttributeDialogBox.fetchAtttributesByDataType() onSuccess():"+result);
 				for(QDSAttributes qdsAttributes:result){
 					qdmAttributeListBox.addItem(qdsAttributes.getName());
 					attributeList.add(qdsAttributes.getName());
 				}
+				setToolTipForEachElementInListbox(qdmAttributeListBox);
 			}
 		});	
 	
+	}
+	
+	/**
+	 * This method will check all the QDM elements in ElementLookup node
+	 * and return the names of QDM elements of datatype 'attribute'.
+	 * @return
+	 */
+	private static List<String> getQDMElementNames(){
+		List<String> qdmNameList = new ArrayList<String>();
+		Set<String> qdmNames = ClauseConstants.getElementLookUps().keySet();
+		for(String qdmName:qdmNames){
+			com.google.gwt.xml.client.Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName);
+			String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+			if("attribute".equals(dataType)){
+				qdmNameList.add(qdmName);
+			}
+		}
+		return qdmNameList;
 	}
 
 	private static Node findElementLookUpNode(String name) {
@@ -404,7 +432,31 @@ public class QDMAttributeDialogBox {
 			}
 		}
 		return null;
-		
 	}
-
+	
+	private static List<String> getUnitNameList(){
+		final List<String> unitNameList = new ArrayList<String>();		
+		MatContext.get().getListBoxCodeProvider().getUnitMatrixListByCategory(ConstantMessages.UNIT_ATTRIBUTE, new AsyncCallback<List<? extends HasListBox>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+			}
+			@Override
+			public void onSuccess(List<? extends HasListBox> result) {				
+				for(HasListBox hasListBox:result){
+					unitNameList.add(hasListBox.getItem());
+				}
+			}
+       });
+	   return unitNameList;
+	}
+	private static void setToolTipForEachElementInListbox(ListBox listBox){
+		//Set tooltips for each element in listbox
+		SelectElement selectElement = SelectElement.as(listBox.getElement());
+		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
+		for (int i = 0; i < options.getLength(); i++) {
+			OptionElement optionElement = options.getItem(i);
+	        optionElement.setTitle(optionElement.getInnerText());
+	    }
+	}
 }

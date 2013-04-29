@@ -220,7 +220,7 @@ public class XmlConversionlHelper {
 					map.put(key, value);
 				}
 			}
-			child.setExtraInformation("extraAttributes_"+cellTreeNodeType, map);
+			child.setExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES, map);
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.ELEMENT_REF)){
 			cellTreeNodeType = CellTreeNode.ELEMENT_REF_NODE;			
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.FUNC_NAME)){
@@ -235,7 +235,7 @@ public class XmlConversionlHelper {
 				}
 			}
 			
-			child.setExtraInformation("extraAttributes_"+cellTreeNodeType, map);
+			child.setExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES, map);
 		}
 
 		child.setName(nodeValue);//set the name to Child
@@ -275,7 +275,7 @@ public class XmlConversionlHelper {
 			element = document.createElement(ClauseConstants.RELATIONAL_OP);
 			
 			@SuppressWarnings("unchecked")
-			HashMap<String,String> map = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+CellTreeNode.TIMING_NODE);
+			HashMap<String,String> map = (HashMap<String, String>) cellTreeNode.getExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES);
 			if(map!=null){
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, map.get(ClauseConstants.DISPLAY_NAME));
 				String typeValue = ClauseConstants.getTimingOperators().containsKey(map.get(ClauseConstants.TYPE))?ClauseConstants.getTimingOperators().get(map.get(ClauseConstants.TYPE)):map.get(ClauseConstants.DISPLAY_NAME);
@@ -306,7 +306,7 @@ public class XmlConversionlHelper {
 			element = document.createElement(ClauseConstants.FUNC_NAME);
 			
 			@SuppressWarnings("unchecked")
-			HashMap<String,String> functionMap = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+CellTreeNode.FUNCTIONS_NODE);
+			HashMap<String,String> functionMap = (HashMap<String, String>) cellTreeNode.getExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES);
 			if(functionMap!=null){
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, functionMap.get(ClauseConstants.DISPLAY_NAME));
 				element.setAttribute(ClauseConstants.TYPE, toCamelCase(functionMap.get(ClauseConstants.TYPE)));

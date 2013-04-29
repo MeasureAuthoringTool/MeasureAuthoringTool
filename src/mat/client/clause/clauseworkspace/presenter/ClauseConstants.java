@@ -2,10 +2,7 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import com.google.gwt.xml.client.Node;
 
@@ -84,6 +81,8 @@ public class ClauseConstants{
 	public static final int PASTE_V = 86;
 
 	public static final int COPY_C = 67;
+	
+	public static final String EXTRA_ATTRIBUTES = "extraAttributes";
 	
 	static{
 		constantsMap.put("populations", "Populations");

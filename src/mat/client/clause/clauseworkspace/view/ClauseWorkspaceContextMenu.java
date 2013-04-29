@@ -276,15 +276,15 @@ public class ClauseWorkspaceContextMenu {
 			MenuBar subMenuBarRelLHS = createMenuBarWithTimingFuncAndQDM();			
 			
 			MenuBar RelAssociationMenuBar = new MenuBar(true); 
-			subMenuBarRelLHS.addItem("Relationship", RelAssociationMenuBar);//Timing menu 2nd level
+			subMenuBarRelLHS.addItem("Relationship", RelAssociationMenuBar);//Relationship menu 2nd level
 			String[] keyRel = ClauseConstants.getRelAssociationOperators().keySet().toArray(new String[0]);
-			createAddMenus(keyRel, CellTreeNode.RELATIONSHIP_NODE, RelAssociationMenuBar);// Timing sub menus 3rd level
+			createAddMenus(keyRel, CellTreeNode.RELATIONSHIP_NODE, RelAssociationMenuBar);// Relationship sub menus 3rd level
 			addMenuLHS = new MenuItem("Add LHS", subMenuBarRelLHS); //LHS Sub Menu
 			
 			MenuBar subMenuBarRelRHS = createMenuBarWithTimingFuncAndQDM();
 			MenuBar RelAssociationMenuBarRHS = new MenuBar(true); 
-			subMenuBarRelRHS.addItem("Relationship", RelAssociationMenuBar);//Timing menu 2nd level
-			createAddMenus(keyRel, CellTreeNode.RELATIONSHIP_NODE, RelAssociationMenuBarRHS);// Timing sub menus 3rd level
+			subMenuBarRelRHS.addItem("Relationship", RelAssociationMenuBar);//Relationship menu 2nd level
+			createAddMenus(keyRel, CellTreeNode.RELATIONSHIP_NODE, RelAssociationMenuBarRHS);// Relationship sub menus 3rd level
 			addMenuRHS = new MenuItem("Add RHS", subMenuBarRelRHS);//RHS Sub Menu
 			
 			//Disable  RHS by default.

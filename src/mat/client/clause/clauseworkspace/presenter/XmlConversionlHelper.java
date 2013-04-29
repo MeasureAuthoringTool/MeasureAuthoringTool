@@ -220,7 +220,9 @@ public class XmlConversionlHelper {
 					map.put(key, value);
 				}
 			}
-			child.setExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES, map);
+			cellTreeNodeType = ClauseConstants.getRelAssociationOperators().containsKey(map.get(ClauseConstants.TYPE))?CellTreeNode.RELATIONSHIP_NODE:cellTreeNodeType;
+			if(cellTreeNodeType == CellTreeNode.TIMING_NODE)
+				child.setExtraInformation("extraAttributes_"+cellTreeNodeType, map);
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.ELEMENT_REF)){
 			cellTreeNodeType = CellTreeNode.ELEMENT_REF_NODE;			
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.FUNC_NAME)){
@@ -293,6 +295,11 @@ public class XmlConversionlHelper {
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 				element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
 			}
+			break;
+		case CellTreeNode.RELATIONSHIP_NODE:
+			element = document.createElement(ClauseConstants.RELATIONAL_OP);
+			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
+			element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
 			break;
 		case CellTreeNode.ELEMENT_REF_NODE:
 			element = document.createElement(ClauseConstants.ELEMENT_REF);

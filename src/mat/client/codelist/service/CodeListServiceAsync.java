@@ -80,6 +80,8 @@ public interface CodeListServiceAsync {
 	void getTimingOperators(AsyncCallback<Map<String, String>> callback);
 
 	void getAllUnits(AsyncCallback<List<String>> callback);
+
+	void getRelAssociationsOperators(AsyncCallback<Map<String, String>> callback);
 	
 	
 }

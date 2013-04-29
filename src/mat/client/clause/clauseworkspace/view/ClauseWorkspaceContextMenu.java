@@ -9,7 +9,7 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
+
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -156,7 +156,11 @@ public class ClauseWorkspaceContextMenu {
 			createAddMenus(ClauseConstants.getTimingOperators().keySet().toArray(new String[0]), CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
 			MenuBar functionsMenuBar = new MenuBar(true); 
 			subMenuBar.addItem("Functions", functionsMenuBar);//functions menu 2nd level
-			createAddMenus(ClauseConstants.FUNCTIONS, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar);// functions sub menus 3rd level			
+			createAddMenus(ClauseConstants.FUNCTIONS, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar);// functions sub menus 3rd level	
+			MenuBar relMenuBar = new MenuBar(true); 
+			subMenuBar.addItem("Relationship", relMenuBar);//functions menu 2nd level
+			String[] key = ClauseConstants.getRelAssociationOperators().keySet().toArray(new String[0]);
+			createAddMenus(key, CellTreeNode.RELATIONSHIP_NODE, relMenuBar);// Timing sub menus 3rd level
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 			popupMenuBar.addItem(addMenu);
 			popupMenuBar.addSeparator(separator);
@@ -268,6 +272,54 @@ public class ClauseWorkspaceContextMenu {
 			popupMenuBar.addItem(editMenu);	
 			
 			break;
+		case CellTreeNode.RELATIONSHIP_NODE:
+			MenuBar subMenuBarRelLHS = createMenuBarWithTimingFuncAndQDM();			
+			
+			MenuBar RelAssociationMenuBar = new MenuBar(true); 
+			subMenuBarRelLHS.addItem("Relationship", RelAssociationMenuBar);//Timing menu 2nd level
+			String[] keyRel = ClauseConstants.getRelAssociationOperators().keySet().toArray(new String[0]);
+			createAddMenus(keyRel, CellTreeNode.RELATIONSHIP_NODE, RelAssociationMenuBar);// Timing sub menus 3rd level
+			addMenuLHS = new MenuItem("Add LHS", subMenuBarRelLHS); //LHS Sub Menu
+			
+			MenuBar subMenuBarRelRHS = createMenuBarWithTimingFuncAndQDM();
+			MenuBar RelAssociationMenuBarRHS = new MenuBar(true); 
+			subMenuBarRelRHS.addItem("Relationship", RelAssociationMenuBar);//Timing menu 2nd level
+			createAddMenus(keyRel, CellTreeNode.RELATIONSHIP_NODE, RelAssociationMenuBarRHS);// Timing sub menus 3rd level
+			addMenuRHS = new MenuItem("Add RHS", subMenuBarRelRHS);//RHS Sub Menu
+			
+			//Disable  RHS by default.
+			if(xmlTreeDisplay.getSelectedNode().getChilds()==null){
+				addMenuRHS.setEnabled(false);
+			}
+			//Disable LHS when One element is added and disable RHS when two elements are added.
+			if(xmlTreeDisplay.getSelectedNode().getChilds()!=null){
+				if(xmlTreeDisplay.getSelectedNode().getChilds().size()>=1){
+					addMenuLHS.setEnabled(false);
+				}
+				if(xmlTreeDisplay.getSelectedNode().getChilds().size()==0 || xmlTreeDisplay.getSelectedNode().getChilds().size()>=2){
+					addMenuRHS.setEnabled(false);
+				}
+			}
+			popupMenuBar.addItem(addMenuLHS);
+			popupMenuBar.addItem(addMenuRHS);
+			popupMenuBar.addSeparator(separator);
+			addCommonMenus();
+			copyMenu.setEnabled(true);
+			if(xmlTreeDisplay.getCopiedNode() != null 
+					&& xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE
+							&& (xmlTreeDisplay.getSelectedNode().getChilds() == null || xmlTreeDisplay.getSelectedNode().getChilds().size() < 2)){
+				pasteMenu.setEnabled(true);
+			}
+			
+			if(xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE){
+				deleteMenu.setEnabled(true);
+			}
+			MenuBar subMenuBarEdit = new MenuBar(true);
+			createEditMenus(keyRel, subMenuBarEdit);
+			editMenu = new MenuItem("Edit", true, subMenuBarEdit);
+			popupMenuBar.addItem(editMenu);	
+			cutMenu.setEnabled(true);
+		break;
 		default:
 			break;
 		}
@@ -297,9 +349,7 @@ public class ClauseWorkspaceContextMenu {
 		createAddQDM_MenuItem(menuBar);
 		MenuBar timingMenuBar = new MenuBar(true); 
 		menuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level
-		//Sort TimingOperators.
 		String[] key = ClauseConstants.getTimingOperators().keySet().toArray(new String[0]);
-//		Arrays.sort(key);
 		createAddMenus(key, CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
 		MenuBar functionsMenuBar = new MenuBar(true); 
 		menuBar.addItem("Functions", functionsMenuBar);//functions menu 2nd level

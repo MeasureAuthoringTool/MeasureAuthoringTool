@@ -370,4 +370,14 @@ implements mat.client.codelist.service.CodeListService {
 		return timingOpsMap;
 	}
 	
+	@Override
+	public Map<String, String> getRelAssociationsOperators() {
+		List<OperatorDTO> operators = getCodeListService().getRelAssociationsOperators();
+		Map<String, String> relOpsMap = new TreeMap<String, String>();
+		for (OperatorDTO operatorDTO : operators) {
+			relOpsMap.put(operatorDTO.getItem(), operatorDTO.getId());
+		}
+		return relOpsMap;
+	}
+	
 }

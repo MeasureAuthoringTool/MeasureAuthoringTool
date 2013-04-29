@@ -57,7 +57,8 @@ public interface CodeListService {
 	void transferOwnerShipToUser(List<String> list, String toEmail);
 	
 	public List<OperatorDTO> getTimingOperators();
-	List<UnitDTO> getAllUnits(); 
+	List<UnitDTO> getAllUnits();
+	public List<OperatorDTO> getRelAssociationsOperators(); 
 	
 	
 }

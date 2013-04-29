@@ -44,6 +44,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		simplepanel.add(flowPanel);
 		loadTimingOperators();
 		loadAllUnits();
+		loadRelAssociationOperators();
 	}
 
 
@@ -75,6 +76,21 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(Map<String, String> result) {
 				ClauseConstants.timingOperators = result;
+			}
+		});
+	}
+	
+	
+	private void loadRelAssociationOperators() {
+		CodeListServiceAsync codeListServiceAsync = MatContext.get().getCodeListService();
+		codeListServiceAsync.getRelAssociationsOperators(new AsyncCallback<Map<String,String>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {}
+
+			@Override
+			public void onSuccess(Map<String, String> result) {
+				ClauseConstants.relAssociationOperators = result;
 			}
 		});
 	}

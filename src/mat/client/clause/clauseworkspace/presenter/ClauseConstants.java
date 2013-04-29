@@ -41,6 +41,7 @@ public class ClauseConstants{
 	public static final String RELATIONAL_OP = "relationalOp";
 	
 	public static Map<String, String> timingOperators;
+	public static Map<String, String> relAssociationOperators;
 	
 	public static ArrayList<String> units;
 	
@@ -151,6 +152,15 @@ public class ClauseConstants{
 	}
 
 
+
+	public static Map<String, String> getRelAssociationOperators() {
+		return relAssociationOperators;
+	}
+
+	public static void setRelAssociationOperators(
+			Map<String, String> relAssociationOperators) {
+		ClauseConstants.relAssociationOperators = relAssociationOperators;
+	}
 
 	/**
 	 * @param functions the functions to set

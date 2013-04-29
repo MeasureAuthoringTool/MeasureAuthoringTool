@@ -203,5 +203,7 @@ public interface CodeListService extends RemoteService {
 	
 	public Map<String, String> getTimingOperators();
 
-	List<String> getAllUnits(); 
+	List<String> getAllUnits();
+
+	Map<String, String> getRelAssociationsOperators(); 
 }

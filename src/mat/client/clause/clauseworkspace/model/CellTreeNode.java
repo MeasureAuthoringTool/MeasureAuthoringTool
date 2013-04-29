@@ -19,6 +19,8 @@ public interface CellTreeNode {
 	
 	short FUNCTIONS_NODE = 7;
 	
+	short RELATIONSHIP_NODE = 8;
+	
 	public CellTreeNode appendChild(CellTreeNode child);
 	
 	public CellTreeNode removeChild(CellTreeNode child);

@@ -1277,4 +1277,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return operatorDAO.getRelTimingperators();
 	}
 	
+	@Override
+	public List<OperatorDTO> getRelAssociationsOperators() {
+		return operatorDAO.getRelAssociationsOperators();
+	}
+	
 }

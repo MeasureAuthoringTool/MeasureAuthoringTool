@@ -42,7 +42,7 @@ public class ComparisonDialogBox{
 		dialogContents.setSpacing(5);
 		dialogBox.setWidget(dialogContents);
 		@SuppressWarnings("unchecked")
-		HashMap<String,String> extraAttributesMap = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes_"+cellTreeNode.getNodeType());
+		HashMap<String,String> extraAttributesMap = (HashMap<String, String>) cellTreeNode.getExtraInformation("extraAttributes");
 
 		final ListBoxMVP listAllTimeOrFunction = new ListBoxMVP();
 		String timingMethod ="--Select--";
@@ -215,7 +215,7 @@ public class ComparisonDialogBox{
 
 		extraAttributes.put(ClauseConstants.QUANTITY, quantity);
 
-		xmlTreeDisplay.getSelectedNode().setExtraInformation("extraAttributes_"+xmlTreeDisplay.getSelectedNode().getNodeType(), extraAttributes);
+		xmlTreeDisplay.getSelectedNode().setExtraInformation("extraAttributes", extraAttributes);
 	}
 
 	/**

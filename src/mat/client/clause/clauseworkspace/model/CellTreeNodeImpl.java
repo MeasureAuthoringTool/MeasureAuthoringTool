@@ -125,7 +125,9 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		copyModel.setName(model.getName());
 		copyModel.setNodeType(model.getNodeType());
 		copyModel.setOpen(model.isOpen());	
-		((CellTreeNodeImpl)copyModel).setExtraInformationMap(((CellTreeNodeImpl)model).getExtraInformationMap());
+		Map<String, Object> extraInfos = new HashMap<String, Object>();
+		extraInfos.putAll(((CellTreeNodeImpl)model).getExtraInformationMap());
+		((CellTreeNodeImpl)copyModel).setExtraInformationMap(extraInfos);
 		return copyModel;
 	}
 

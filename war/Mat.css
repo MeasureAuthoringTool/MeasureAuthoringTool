@@ -1191,6 +1191,19 @@ padding: 2px;
   fontsoze
 }
 
+.qdm_attribute_invalidRow {
+	border-top: 1px dashed #FF0000 ;
+	border-bottom: 1px dashed #FF0000 ;
+}
+
+.qdm_attribute_invalidRow_left{
+	border-left: 1px dashed #FF0000 ;
+}
+
+.qdm_attribute_invalidRow_right{
+	border-right: 1px dashed #FF0000 ;
+}
+
 .focusPanel{
 	outline: none;
 }

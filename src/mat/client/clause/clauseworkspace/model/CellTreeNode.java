@@ -19,6 +19,8 @@ public interface CellTreeNode {
 	
 	short FUNCTIONS_NODE = 7;
 	
+	short ATTRIBUTE_NODE = 9;
+	
 	short RELATIONSHIP_NODE = 8;
 	
 	public CellTreeNode appendChild(CellTreeNode child);

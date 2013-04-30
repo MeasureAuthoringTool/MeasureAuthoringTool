@@ -55,7 +55,7 @@ public class ClauseConstants{
 	
 	public static final String ID = "id";
 	
-	public static final int LABEL_MAX_LENGTH = 30;
+	public static final int LABEL_MAX_LENGTH = 50;
 	
 	public static final String[] FUNCTIONS = {"AVG", "COUNT", "DATEDIFF", "MAX", "MIN", "MEDIAN", "SUM", "TIMEDIFF", "FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "MOST RECENT", "NOT"};
 	

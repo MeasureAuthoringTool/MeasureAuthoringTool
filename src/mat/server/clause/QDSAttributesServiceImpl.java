@@ -32,7 +32,6 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet impleme
 		List<QDSAttributes> attrs1 = getAllDataFlowAttributeName();
 		Collections.sort(attrs, attributeComparator);
 		attrs.addAll(attrs1);
-		System.out.println("Returning from QDSAttributesServiceImpl.getAllAttributesByDataType() with:"+attrs+" for dataType "+dataTypeName);
 		return attrs;
 	}
 

@@ -2,6 +2,7 @@ package mat.client.clause.clauseworkspace.view;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -9,6 +10,8 @@ import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatContext;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -45,47 +48,41 @@ public class ComparisonDialogBox{
 		HashMap<String,String> extraAttributesMap = (HashMap<String, String>) cellTreeNode.getExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES);
 
 		final ListBoxMVP listAllTimeOrFunction = new ListBoxMVP();
-		String timingMethod ="--Select--";
+		String timingOrFuncMethod ="--Select--";
 		String operatorMethod="--Select--";
 		String quantityValue ="";
 		String unitType ="--Select--";
 
 		if(extraAttributesMap!=null){
-			timingMethod = extraAttributesMap.get(ClauseConstants.TYPE);
+			timingOrFuncMethod =  extraAttributesMap.get(ClauseConstants.TYPE);
+			timingOrFuncMethod =  MatContext.get().operatorMapKeyShort.get(timingOrFuncMethod);
 			operatorMethod = extraAttributesMap.containsKey(ClauseConstants.OPERATOR_TYPE) ? extraAttributesMap.get(ClauseConstants.OPERATOR_TYPE) : operatorMethod;
 			quantityValue = extraAttributesMap.containsKey(ClauseConstants.QUANTITY) ? extraAttributesMap.get(ClauseConstants.QUANTITY) : quantityValue;
 			unitType = extraAttributesMap.containsKey(ClauseConstants.UNIT) ? extraAttributesMap.get(ClauseConstants.UNIT) : unitType;
 		}else{
-			timingMethod = cellTreeNode.getLabel();
+			timingOrFuncMethod = cellTreeNode.getLabel();
 		}
 		String labelForListBox = null;
+		List<String> keys = null;
 		//List for Timing or Function based on Node Type.
 		if(cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE){
-			String[] timeRelationKey = ClauseConstants.getTimingOperators().keySet().toArray(new String[0]);
-			if(timingMethod.contains("Select"))
-				listAllTimeOrFunction.addItem(timingMethod);
-			for(int i=0;i<timeRelationKey.length;i++){
-				listAllTimeOrFunction.addItem(timeRelationKey[i]);
-				if(timeRelationKey[i].equalsIgnoreCase(timingMethod)){
-					listAllTimeOrFunction.setSelectedIndex(i);
-				}
-			}
-			listAllTimeOrFunction.setWidth("150px");
+			keys = MatContext.get().timings;
 			labelForListBox = "Timing";
 		}else{
-			String[] functionKeys = ClauseConstants.FUNCTIONS;
-			if(timingMethod.contains("Select"))
-				listAllTimeOrFunction.addItem(timingMethod);
-			for(int i=0;i<functionKeys.length;i++){
-				listAllTimeOrFunction.addItem(functionKeys[i]);
-				if(functionKeys[i].equalsIgnoreCase(timingMethod)){
-					listAllTimeOrFunction.setSelectedIndex(i);
-				}
-			}
-			listAllTimeOrFunction.setWidth("150px");
+			keys = MatContext.get().functions;
 			labelForListBox = "Functions";
-
 		}
+		
+		if(timingOrFuncMethod.contains("Select"))
+			listAllTimeOrFunction.addItem(timingOrFuncMethod);
+		for(int i=0; i < keys.size(); i++){
+			listAllTimeOrFunction.addItem(keys.get(i));
+			if(keys.get(i).equalsIgnoreCase(timingOrFuncMethod)){
+				listAllTimeOrFunction.setSelectedIndex(i);
+			}
+		}
+		listAllTimeOrFunction.setWidth("150px");
+		
 		Label lableListBoxTimingOrFunction = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, labelForListBox);
 		dialogContents.add(lableListBoxTimingOrFunction);
 		dialogContents.setCellHorizontalAlignment(lableListBoxTimingOrFunction, HasHorizontalAlignment.ALIGN_LEFT);
@@ -95,12 +92,12 @@ public class ComparisonDialogBox{
 		//List of Operators.
 		final ListBoxMVP listAllOperator = new ListBoxMVP();
 		// listAllOperator.addItem("--Select--");
-		String[] comparisonOpKeys = ClauseConstants.comparisonOperators;
+		List<String> comparisonOpKeys = MatContext.get().comparisonOps;
 		if(operatorMethod.contains("Select"))
 			listAllOperator.addItem(operatorMethod);
-		for(int i=0;i<comparisonOpKeys.length;i++){
-			listAllOperator.addItem(comparisonOpKeys[i]);
-			if(comparisonOpKeys[i].equalsIgnoreCase(operatorMethod)){
+		for(int i=0; i < comparisonOpKeys.size(); i++){
+			listAllOperator.addItem(comparisonOpKeys.get(i));
+			if(comparisonOpKeys.get(i).equalsIgnoreCase(operatorMethod)){
 				listAllOperator.setSelectedIndex(i);
 			}
 		}
@@ -198,19 +195,20 @@ public class ComparisonDialogBox{
 			unit="";
 		}
 		if(!functionOrTiming.contains("Select")){
-			extraAttributes.put(ClauseConstants.TYPE, functionOrTiming);
+			extraAttributes.put(ClauseConstants.TYPE, MatContext.get().operatorMapKeyLong.get(functionOrTiming));
+			StringBuilder displayName = new StringBuilder();
 			if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.TIMING_NODE){
-				String operatorType = ClauseConstants.getComparisonOperatorMap().containsKey(operator) ? ClauseConstants.getComparisonOperatorMap().get(operator) : " ";
-				StringBuilder operatorTypeKey = new StringBuilder(operatorType);
-				functionOrTiming = (operatorTypeKey.append(" ").append(quantity).append(" ").append(unit).append(" ").append(functionOrTiming)).toString();
+//				String operatorType = ClauseConstants.getComparisonOperatorMap().containsKey(operator) ? ClauseConstants.getComparisonOperatorMap().get(operator) : " ";
+				String operatorType = MatContext.get().operatorMapKeyLong.containsKey(operator) ? MatContext.get().operatorMapKeyLong.get(operator) : " ";
+//				StringBuilder operatorTypeKey = new StringBuilder(operatorType);
+				displayName.append(operatorType).append(" ").append(quantity).append(" ").append(unit).append(" ").append(functionOrTiming);
 			}
 			else if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-				String operatorType = ClauseConstants.getComparisonOperatorMap().containsKey(operator) ? ClauseConstants.getComparisonOperatorMap().get(operator) : " ";
-				StringBuilder functionOrTimingKey = new StringBuilder(functionOrTiming);
-				functionOrTiming = (functionOrTimingKey.append(" ").append(operatorType).append(" ").append(quantity).append(" ").append(unit)).toString();
+				String operatorType = MatContext.get().operatorMapKeyLong.containsKey(operator) ? MatContext.get().operatorMapKeyLong.get(operator) : " ";
+				displayName.append(functionOrTiming).append(" ").append(operatorType).append(" ").append(quantity).append(" ").append(unit);
 			}
-			extraAttributes.put(ClauseConstants.DISPLAY_NAME, functionOrTiming);
-			xmlTreeDisplay.editNode(functionOrTiming, functionOrTiming);
+			extraAttributes.put(ClauseConstants.DISPLAY_NAME, displayName.toString());
+			xmlTreeDisplay.editNode(displayName.toString(), displayName.toString());
 		}
 
 		extraAttributes.put(ClauseConstants.QUANTITY, quantity);

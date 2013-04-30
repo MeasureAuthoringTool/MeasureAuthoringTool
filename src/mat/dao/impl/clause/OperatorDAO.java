@@ -76,4 +76,23 @@ private static final Log logger = LogFactory.getLog(OperatorDAO.class);
 		}
 		return OperatorDTOList;
 	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<OperatorDTO> getAllOperators() {
+		List<OperatorDTO> OperatorDTOList = new ArrayList<OperatorDTO>();
+		logger.info("Getting all  Operators from the Operator table");
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(Operator.class);	
+		criteria.addOrder(Order.asc("longName"));
+		List<Operator> OperatorList = criteria.list();
+		for (Operator operator : OperatorList) {
+			OperatorDTO OperatorDTO =  new OperatorDTO();
+			OperatorDTO.setId(operator.getShortName());//Long Name goes as List Box Text and Short Name goes as value.
+			OperatorDTO.setOperator(operator.getLongName());
+			OperatorDTO.setOperatorType(operator.getOperatorType().getId());
+			OperatorDTOList.add(OperatorDTO);
+		}
+		return OperatorDTOList;
+	}
 }

@@ -59,6 +59,7 @@ public interface CodeListService {
 	public List<OperatorDTO> getTimingOperators();
 	List<UnitDTO> getAllUnits();
 	public List<OperatorDTO> getRelAssociationsOperators(); 
+	public List<OperatorDTO> getAllOperators();
 	
 	
 }

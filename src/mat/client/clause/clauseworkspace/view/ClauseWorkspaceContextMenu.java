@@ -1,15 +1,17 @@
 package mat.client.clause.clauseworkspace.view;
 
+import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.shared.MatContext;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
@@ -53,6 +55,7 @@ public class ClauseWorkspaceContextMenu {
 	PopupPanel popupPanel;
 	
 	Command pasteCmd;
+	
 	
 	public ClauseWorkspaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		this.xmlTreeDisplay = treeDisplay;
@@ -149,18 +152,17 @@ public class ClauseWorkspaceContextMenu {
 			subMenuBar = new MenuBar(true);
 			popupMenuBar.setAutoOpen(true);
 			subMenuBar.setAutoOpen(true);
-			createAddMenus(ClauseConstants.LOGICAL_OPS, CellTreeNode.LOGICAL_OP_NODE, subMenuBar);// creating logical Operators Menu 2nd level
+			createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE, subMenuBar);// creating logical Operators Menu 2nd level
 			createAddQDM_MenuItem(subMenuBar);
 			MenuBar timingMenuBar = new MenuBar(true); 
 			subMenuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level
-			createAddMenus(ClauseConstants.getTimingOperators().keySet().toArray(new String[0]), CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
+			createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
 			MenuBar functionsMenuBar = new MenuBar(true); 
 			subMenuBar.addItem("Functions", functionsMenuBar);//functions menu 2nd level
-			createAddMenus(ClauseConstants.FUNCTIONS, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar);// functions sub menus 3rd level	
+			createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar);// functions sub menus 3rd level	
 			MenuBar relMenuBar = new MenuBar(true); 
 			subMenuBar.addItem("Relationship", relMenuBar);//functions menu 2nd level
-			String[] key = ClauseConstants.getRelAssociationOperators().keySet().toArray(new String[0]);
-			createAddMenus(key, CellTreeNode.RELATIONSHIP_NODE, relMenuBar);// Timing sub menus 3rd level
+			createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE, relMenuBar);// Timing sub menus 3rd level
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 			popupMenuBar.addItem(addMenu);
 			popupMenuBar.addSeparator(separator);
@@ -179,7 +181,7 @@ public class ClauseWorkspaceContextMenu {
 					&& xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE){
 				cutMenu.setEnabled(true);
 				subMenuBar = new MenuBar(true);
-				createEditMenus(ClauseConstants.LOGICAL_OPS, subMenuBar);
+				createEditMenus(MatContext.get().logicalOps, subMenuBar);
 				editMenu = new MenuItem("Edit", true, subMenuBar);
 				popupMenuBar.addItem(editMenu);				
 			}
@@ -242,14 +244,14 @@ public class ClauseWorkspaceContextMenu {
 			subMenuBar = new MenuBar(true);
 			popupMenuBar.setAutoOpen(true);
 			subMenuBar.setAutoOpen(true);
-			createAddMenus(ClauseConstants.LOGICAL_OPS, CellTreeNode.LOGICAL_OP_NODE, subMenuBar);// creating logical Operators Menu 2nd level
+			createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE, subMenuBar);// creating logical Operators Menu 2nd level
 			createAddQDM_MenuItem(subMenuBar);
 			MenuBar timing = new MenuBar(true); 
 			subMenuBar.addItem("Timing", timing);//Timing menu 2nd level
-			createAddMenus(ClauseConstants.getTimingOperators().keySet().toArray(new String[0]), CellTreeNode.TIMING_NODE, timing);// Timing sub menus 3rd level
+			createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timing);// Timing sub menus 3rd level
 			MenuBar functions = new MenuBar(true); 
 			subMenuBar.addItem("Functions", functions);//functions menu 2nd level
-			createAddMenus(ClauseConstants.FUNCTIONS, CellTreeNode.FUNCTIONS_NODE, functions);// functions sub menus 3rd level			
+			createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE, functions);// functions sub menus 3rd level			
 			addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 			popupMenuBar.addItem(addMenu);
 			popupMenuBar.addSeparator(separator);
@@ -277,14 +279,13 @@ public class ClauseWorkspaceContextMenu {
 			
 			MenuBar RelAssociationMenuBar = new MenuBar(true); 
 			subMenuBarRelLHS.addItem("Relationship", RelAssociationMenuBar);//Relationship menu 2nd level
-			String[] keyRel = ClauseConstants.getRelAssociationOperators().keySet().toArray(new String[0]);
-			createAddMenus(keyRel, CellTreeNode.RELATIONSHIP_NODE, RelAssociationMenuBar);// Relationship sub menus 3rd level
+			createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE, RelAssociationMenuBar);// Relationship sub menus 3rd level
 			addMenuLHS = new MenuItem("Add LHS", subMenuBarRelLHS); //LHS Sub Menu
 			
 			MenuBar subMenuBarRelRHS = createMenuBarWithTimingFuncAndQDM();
 			MenuBar RelAssociationMenuBarRHS = new MenuBar(true); 
 			subMenuBarRelRHS.addItem("Relationship", RelAssociationMenuBar);//Relationship menu 2nd level
-			createAddMenus(keyRel, CellTreeNode.RELATIONSHIP_NODE, RelAssociationMenuBarRHS);// Relationship sub menus 3rd level
+			createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE, RelAssociationMenuBarRHS);// Relationship sub menus 3rd level
 			addMenuRHS = new MenuItem("Add RHS", subMenuBarRelRHS);//RHS Sub Menu
 			
 			//Disable  RHS by default.
@@ -315,7 +316,7 @@ public class ClauseWorkspaceContextMenu {
 				deleteMenu.setEnabled(true);
 			}
 			MenuBar subMenuBarEdit = new MenuBar(true);
-			createEditMenus(keyRel, subMenuBarEdit);
+			createEditMenus(MatContext.get().relationships, subMenuBarEdit);
 			editMenu = new MenuItem("Edit", true, subMenuBarEdit);
 			popupMenuBar.addItem(editMenu);	
 			cutMenu.setEnabled(true);
@@ -345,15 +346,14 @@ public class ClauseWorkspaceContextMenu {
 		MenuBar menuBar = new MenuBar(true);
 		popupMenuBar.setAutoOpen(true);
 		menuBar.setAutoOpen(true);
-		createAddMenus(ClauseConstants.LOGICAL_OPS, CellTreeNode.LOGICAL_OP_NODE, menuBar);// creating logical Operators Menu 2nd level
+		createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE, menuBar);// creating logical Operators Menu 2nd level
 		createAddQDM_MenuItem(menuBar);
 		MenuBar timingMenuBar = new MenuBar(true); 
 		menuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level
-		String[] key = ClauseConstants.getTimingOperators().keySet().toArray(new String[0]);
-		createAddMenus(key, CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
+		createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
 		MenuBar functionsMenuBar = new MenuBar(true); 
 		menuBar.addItem("Functions", functionsMenuBar);//functions menu 2nd level
-		createAddMenus(ClauseConstants.FUNCTIONS, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar);// functions sub menus 3rd level
+		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar);// functions sub menus 3rd level
 		return menuBar;
 	}
 	
@@ -382,7 +382,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param nodeType
 	 * @param menuBar
 	 */
-	private void createAddMenus(String[] menuNames, final short nodeType, MenuBar menuBar){
+	private void createAddMenus(List<String> menuNames, final short nodeType, MenuBar menuBar){
 		for (final String name : menuNames) {
 			Command addCmd = new Command() {
 				public void execute( ) {
@@ -402,7 +402,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param editMenuNames
 	 * @param subMenuBar
 	 */
-	private void createEditMenus(String[] editMenuNames, MenuBar subMenuBar){
+	private void createEditMenus(List<String> editMenuNames, MenuBar subMenuBar){
 		for (final String editMenuName : editMenuNames) {
 			Command timingCmd = new Command() {
 				

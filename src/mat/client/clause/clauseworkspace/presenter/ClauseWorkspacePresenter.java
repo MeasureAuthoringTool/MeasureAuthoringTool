@@ -42,9 +42,8 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		emptyWidget.add(new Label("No Measure Selected"));
 		simplepanel.setStyleName("contentPanel");
 		simplepanel.add(flowPanel);
-		loadTimingOperators();
+		MatContext.get().getAllOperators();
 		loadAllUnits();
-		loadRelAssociationOperators();
 	}
 
 
@@ -64,35 +63,6 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 			}
 			
 			});
-	}
-
-	private void loadTimingOperators() {
-		CodeListServiceAsync codeListServiceAsync = MatContext.get().getCodeListService();
-		codeListServiceAsync.getTimingOperators(new AsyncCallback<Map<String,String>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {}
-
-			@Override
-			public void onSuccess(Map<String, String> result) {
-				ClauseConstants.timingOperators = result;
-			}
-		});
-	}
-	
-	
-	private void loadRelAssociationOperators() {
-		CodeListServiceAsync codeListServiceAsync = MatContext.get().getCodeListService();
-		codeListServiceAsync.getRelAssociationsOperators(new AsyncCallback<Map<String,String>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {}
-
-			@Override
-			public void onSuccess(Map<String, String> result) {
-				ClauseConstants.relAssociationOperators = result;
-			}
-		});
 	}
 
 	private void setXMLOnTabs() {

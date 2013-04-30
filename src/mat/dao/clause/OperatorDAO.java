@@ -14,5 +14,6 @@ public interface OperatorDAO extends IDAO<Operator, String> {
 	public List<OperatorDTO> getLogicalOperators();
 	public List<OperatorDTO> getRelTimingperators();
 	public List<OperatorDTO> getRelAssociationsOperators();
+	public List<OperatorDTO> getAllOperators();
 	
 }

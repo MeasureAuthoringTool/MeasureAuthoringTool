@@ -379,5 +379,10 @@ implements mat.client.codelist.service.CodeListService {
 		}
 		return relOpsMap;
 	}
+
+	@Override
+	public List<OperatorDTO> getAllOperators() {
+		return getCodeListService().getAllOperators();
+	}
 	
 }

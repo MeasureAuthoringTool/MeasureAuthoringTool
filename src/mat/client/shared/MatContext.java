@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
@@ -128,6 +130,22 @@ public class MatContext implements IsSerializable {
 	private int errorTabIndex;
 	
 	private boolean isErrorTab;
+	
+	public List<String> timings = new ArrayList<String>();
+	
+	public List<String> functions = new ArrayList<String>();
+	
+	public List<String> relationships = new ArrayList<String>();
+	
+	public List<String> comparisonOps = new ArrayList<String>();
+	
+	public List<String> logicalOps = new ArrayList<String>();
+	
+	public Map<String, String> operatorMapKeyShort = new HashMap<String, String>();
+	
+	public Map<String, String> operatorMapKeyLong = new HashMap<String, String>();
+	
+	
 	
 	
 	public void clearDVIMessages(){
@@ -826,7 +844,37 @@ public class MatContext implements IsSerializable {
 			});
 	}
 
+	
+	public void getAllOperators(){
+		getCodeListService().getAllOperators(new AsyncCallback<List<OperatorDTO>>() {
 
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(List<OperatorDTO> result) {
+				for (OperatorDTO operatorDTO : result) {
+					operatorMapKeyShort.put(operatorDTO.getId(), operatorDTO.getOperator());
+					operatorMapKeyLong.put(operatorDTO.getOperator(), operatorDTO.getId());
+					if(operatorDTO.getOperatorType().equals("1")){
+						logicalOps.add(operatorDTO.getOperator());
+					}else if(operatorDTO.getOperatorType().equals("2")){
+						timings.add(operatorDTO.getOperator());
+					}else if(operatorDTO.getOperatorType().equals("3")){
+						relationships.add(operatorDTO.getOperator());
+					}else if(operatorDTO.getOperatorType().equals("4")){
+						functions.add(operatorDTO.getOperator());
+					}else if(operatorDTO.getOperatorType().equals("5")){
+						comparisonOps.add(operatorDTO.getOperator());
+					}
+					
+				}
+			}
+		});
+	}
 	
 	
 }

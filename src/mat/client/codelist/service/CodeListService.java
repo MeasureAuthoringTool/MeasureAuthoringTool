@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import mat.DTO.OperatorDTO;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
@@ -205,5 +206,7 @@ public interface CodeListService extends RemoteService {
 
 	List<String> getAllUnits();
 
-	Map<String, String> getRelAssociationsOperators(); 
+	Map<String, String> getRelAssociationsOperators();
+
+	List<OperatorDTO> getAllOperators(); 
 }

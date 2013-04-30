@@ -40,14 +40,7 @@ public class ClauseConstants{
 	
 	public static final String RELATIONAL_OP = "relationalOp";
 	
-	public static Map<String, String> timingOperators;
-	public static Map<String, String> relAssociationOperators;
-	
 	public static ArrayList<String> units;
-	
-	public static final String[] comparisonOperators = {"Less Than","Greater Than","Less Than or Equal To","Greater Than or Equal To","Equal To"};
-	
-	public static Map<String,String> comparisonOperatorMap = new HashMap<String,String>();
 	
 	public static Map<String, Node> elementLookUps;
 	
@@ -56,8 +49,6 @@ public class ClauseConstants{
 	public static final String ID = "id";
 	
 	public static final int LABEL_MAX_LENGTH = 50;
-	
-	public static final String[] FUNCTIONS = {"AVG", "COUNT", "DATEDIFF", "MAX", "MIN", "MEDIAN", "SUM", "TIMEDIFF", "FIRST", "SECOND", "THIRD", "FOURTH", "FIFTH", "MOST RECENT", "NOT"};
 	
 	public static Map<String, String> functions = new HashMap<String, String>();
 	
@@ -101,14 +92,6 @@ public class ClauseConstants{
 		constantsMap.put("Populations", "populations");
 	}
 
-	static{
-		comparisonOperatorMap.put("Less Than","<");
-		comparisonOperatorMap.put("Greater Than",">");
-		comparisonOperatorMap.put("Less Than or Equal To","<=");
-		comparisonOperatorMap.put("Greater Than or Equal To",">=");
-		comparisonOperatorMap.put("Equal To","=");
-	}
-	
 	public static String get(String key){
 		return constantsMap.get(key);
 	}
@@ -125,16 +108,6 @@ public class ClauseConstants{
 		constantsMap.put(key, value);
 	}
 
-
-
-	/**
-	 * @return the timingOperators
-	 */
-	public static Map<String, String> getTimingOperators() {
-		return timingOperators;
-	}
-
-
 	/**
 	 * @return the qdmElementLookupNode
 	 */
@@ -142,24 +115,11 @@ public class ClauseConstants{
 		return elementLookUps;
 	}
 
-
-
 	/**
 	 * @return the functions
 	 */
 	public static Map<String, String> getFunctions() {
 		return functions;
-	}
-
-
-
-	public static Map<String, String> getRelAssociationOperators() {
-		return relAssociationOperators;
-	}
-
-	public static void setRelAssociationOperators(
-			Map<String, String> relAssociationOperators) {
-		ClauseConstants.relAssociationOperators = relAssociationOperators;
 	}
 
 	/**
@@ -169,17 +129,8 @@ public class ClauseConstants{
 		ClauseConstants.functions = functions;
 	}
 
-	public static String[] getComparisonoperators() {
-		return comparisonOperators;
-	}
-
 	public static ArrayList<String> getUnits() {
 		return units;
 	}
-	
-	public static Map<String, String> getComparisonOperatorMap() {
-		return comparisonOperatorMap;
-	}
-
 
 }

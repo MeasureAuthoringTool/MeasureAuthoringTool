@@ -6,6 +6,7 @@ import java.util.List;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
+import mat.client.shared.MatContext;
 
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
@@ -210,19 +211,21 @@ public class XmlConversionlHelper {
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.LOG_OP)){
 			cellTreeNodeType = CellTreeNode.LOGICAL_OP_NODE;			
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.RELATIONAL_OP)){
-			cellTreeNodeType = CellTreeNode.TIMING_NODE;	
-			HashMap<String,String> map = new HashMap<String,String>();
-			if(node.hasAttributes()){
+			String type = node.getAttributes().getNamedItem(ClauseConstants.TYPE).getNodeValue();
+			String longName = MatContext.get().operatorMapKeyShort.get(type);
+			if(MatContext.get().relationships.contains(longName)){
+				cellTreeNodeType = CellTreeNode.RELATIONSHIP_NODE;
+			}else{
+				cellTreeNodeType = CellTreeNode.TIMING_NODE;	
 				NamedNodeMap nodeMap = node.getAttributes();
+				HashMap<String,String> map = new HashMap<String,String>();
 				for(int i=0;i< nodeMap.getLength() ;i++){
 					String key = nodeMap.item(i).getNodeName();
 					String value = nodeMap.item(i).getNodeValue();
 					map.put(key, value);
 				}
+				child.setExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES, map);
 			}
-			cellTreeNodeType = ClauseConstants.getRelAssociationOperators().containsKey(map.get(ClauseConstants.TYPE))?CellTreeNode.RELATIONSHIP_NODE:cellTreeNodeType;
-			if(cellTreeNodeType == CellTreeNode.TIMING_NODE)
-				child.setExtraInformation("extraAttributes_"+cellTreeNodeType, map);
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.ELEMENT_REF)){
 			cellTreeNodeType = CellTreeNode.ELEMENT_REF_NODE;			
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.FUNC_NAME)){
@@ -280,8 +283,10 @@ public class XmlConversionlHelper {
 			HashMap<String,String> map = (HashMap<String, String>) cellTreeNode.getExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES);
 			if(map!=null){
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, map.get(ClauseConstants.DISPLAY_NAME));
-				String typeValue = ClauseConstants.getTimingOperators().containsKey(map.get(ClauseConstants.TYPE))?ClauseConstants.getTimingOperators().get(map.get(ClauseConstants.TYPE)):map.get(ClauseConstants.DISPLAY_NAME);
-				element.setAttribute(ClauseConstants.TYPE, toCamelCase(typeValue));
+//				String typeValue = ClauseConstants.getTimingOperators().containsKey(map.get(ClauseConstants.TYPE))
+//						? ClauseConstants.getTimingOperators().get(map.get(ClauseConstants.TYPE)): map.get(ClauseConstants.DISPLAY_NAME);
+				String typeValue = map.get(ClauseConstants.TYPE);
+				element.setAttribute(ClauseConstants.TYPE, typeValue);
 				if(map.containsKey(ClauseConstants.OPERATOR_TYPE)){
 					element.setAttribute(ClauseConstants.OPERATOR_TYPE, map.get(ClauseConstants.OPERATOR_TYPE));	
 				}
@@ -293,13 +298,13 @@ public class XmlConversionlHelper {
 				}
 			}else{
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
-				element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
+				element.setAttribute(ClauseConstants.TYPE, MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
 			}
 			break;
 		case CellTreeNode.RELATIONSHIP_NODE:
 			element = document.createElement(ClauseConstants.RELATIONAL_OP);
 			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
-			element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
+			element.setAttribute(ClauseConstants.TYPE, MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
 			break;
 		case CellTreeNode.ELEMENT_REF_NODE:
 			element = document.createElement(ClauseConstants.ELEMENT_REF);
@@ -316,7 +321,7 @@ public class XmlConversionlHelper {
 			HashMap<String,String> functionMap = (HashMap<String, String>) cellTreeNode.getExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES);
 			if(functionMap!=null){
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, functionMap.get(ClauseConstants.DISPLAY_NAME));
-				element.setAttribute(ClauseConstants.TYPE, toCamelCase(functionMap.get(ClauseConstants.TYPE)));
+				element.setAttribute(ClauseConstants.TYPE, functionMap.get(ClauseConstants.TYPE));
 				if(functionMap.containsKey(ClauseConstants.OPERATOR_TYPE)){
 					element.setAttribute(ClauseConstants.OPERATOR_TYPE, functionMap.get(ClauseConstants.OPERATOR_TYPE));	
 				}
@@ -328,7 +333,7 @@ public class XmlConversionlHelper {
 				}
 			}else{
 				element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
-				element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName()));
+				element.setAttribute(ClauseConstants.TYPE, MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
 				
 			}
 			break;

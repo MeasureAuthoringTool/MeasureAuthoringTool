@@ -288,7 +288,7 @@ public class QDMAttributeDialogBox {
 	}
 	
 	private static void buildAndDisplayDialogBox(String qdmDataType,
-			List<String> mode, final XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode) {
+			List<String> mode, final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
 		
 		final DialogBox qdmAttributeDialogBox = new DialogBox(false,true);
 		qdmAttributeDialogBox.getElement().setId("qdmAttributeDialog");
@@ -332,7 +332,8 @@ public class QDMAttributeDialogBox {
 			public void onClick(ClickEvent event) {
 				//TODO:Validate the table rows.
 				if(validateRows(qdmAttributeDialogBox)){									
-					saveToModel(xmlTreeDisplay);			
+					saveToModel(xmlTreeDisplay);
+					xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName()+"   ("+grid.getRowCount()+")");
 					qdmAttributeDialogBox.hide();
 				}
 			}

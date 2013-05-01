@@ -244,8 +244,8 @@ public class QDMAttributeDialogBox {
 			modeListBox.setVisibleItemCount(1);
 			modeListBox.setWidth("8em");
 			modeListBox.addItem(QDMAttributeDialogBox.SELECT);
-			for(String modeValue:mode){
-				String modeName = (modeValue.startsWith("--"))?modeValue.substring(2).trim():modeValue;
+			for(String modeName:mode){
+				String modeValue = (modeName.startsWith("--"))?modeName.substring(2).trim():modeName;
 				modeListBox.addItem(modeName, modeValue);
 			}
 			modeListBox.setEnabled(false);
@@ -257,7 +257,7 @@ public class QDMAttributeDialogBox {
 			textBox.setWidth("8em");
 			grid.setWidget(i, 3, textBox);	
 			
-			setExitingAttributeAsLastRowInGrid(node,i);
+			setExitingAttributeInGrid(node,i);
 		}
 	}
 	
@@ -353,7 +353,11 @@ public class QDMAttributeDialogBox {
 				//TODO:Validate the table rows.
 				if(validateRows(qdmAttributeDialogBox)){									
 					saveToModel(xmlTreeDisplay);
-					xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName()+"   ("+grid.getRowCount()+")");
+					if(grid.getRowCount() > 0){
+						xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName()+"   ("+grid.getRowCount()+")");
+					}else{
+						xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName());
+					}
 					qdmAttributeDialogBox.hide();
 				}
 			}
@@ -548,7 +552,7 @@ public class QDMAttributeDialogBox {
 		dialogContents.setCellHorizontalAlignment(decoratorPanel, HasHorizontalAlignment.ALIGN_LEFT);		
 	}
 	
-	private static void setExitingAttributeAsLastRowInGrid(CellTreeNode attributenode, int row){
+	private static void setExitingAttributeInGrid(CellTreeNode attributenode, int row){
 			if(attributenode == null){
 				return;
 			}
@@ -586,9 +590,10 @@ public class QDMAttributeDialogBox {
 					grid.setWidget(row, 3, qdmListBox);
 					
 					String qdmId = (String) attributenode.getExtraInformation(QDM_ID);
-					for(Node qdmNode:ClauseConstants.getElementLookUps().values()){
-						String qdmName = qdmNode.getAttributes().getNamedItem(ID).getNodeValue();
-						if(qdmId.equals(qdmName)){
+					for(String qdmName:ClauseConstants.getElementLookUps().keySet()){
+						Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName);
+						String qdmNodeId = qdmNode.getAttributes().getNamedItem(ID).getNodeValue();
+						if(qdmId.equals(qdmNodeId)){
 							for(int r=0;r<qdmListBox.getItemCount();r++){
 								if(qdmName.equals(qdmListBox.getItemText(r))){
 									qdmListBox.setSelectedIndex(r);

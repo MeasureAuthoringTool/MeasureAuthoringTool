@@ -289,8 +289,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 							searchDisplay.getApplyToMeasureSuccessMsg().setMessage(message);
 						//	searchDisplay.getMsgFocusWidget().getElement().setAttribute("role", "alert");//This line adds the aria-alert 
 							searchDisplay.getMsgFocusWidget().setFocus(true);
-							if(appliedQDMList.size()>0)
-								appliedQDMList.removeAll(appliedQDMList);
+							/*if(appliedQDMList.size()>0)
+								appliedQDMList.removeAll(appliedQDMList);*/
 							
 						}
 					}
@@ -312,7 +312,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		final String nodeName ="qdm";
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
-		exportModal.setParentNode("elementLookUp");
+		exportModal.setParentNode("/measure/elementLookUp");
 		exportModal.setToReplaceNode("qdm");
 		System.out.println("XML "+qdmXMLString);
 		exportModal.setXml(qdmXMLString);
@@ -322,6 +322,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	
 					@Override
 					public void onFailure(Throwable caught) {
+						//Window.alert("Failure in saveMeasureXML ");
 					}
 	
 					@Override

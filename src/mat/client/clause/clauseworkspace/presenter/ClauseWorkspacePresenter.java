@@ -132,16 +132,19 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 			for (int i = 0; i < qdms.getLength() ; i++) {
 				if("qdm".equals(qdms.item(i).getNodeName())){
 					NamedNodeMap namedNodeMap = qdms.item(i).getAttributes();
-					String name = namedNodeMap.getNamedItem("name").getNodeValue();
+					String isSupplementData = namedNodeMap.getNamedItem("suppDataElement").getNodeValue();
+					if(isSupplementData.equals("false")){//filter supplementDataElements from elementLookUp
+						String name = namedNodeMap.getNamedItem("name").getNodeValue();
 						
-					if(namedNodeMap.getNamedItem("instance") != null){
-						name = namedNodeMap.getNamedItem("instance").getNodeValue() + " of " + name;
-					}
+						if(namedNodeMap.getNamedItem("instance") != null){
+							name = namedNodeMap.getNamedItem("instance").getNodeValue() + " of " + name;
+						}
 					
-					if(namedNodeMap.getNamedItem("datatype") != null){
-						name = name + ": " + namedNodeMap.getNamedItem("datatype").getNodeValue();
+						if(namedNodeMap.getNamedItem("datatype") != null){
+							name = name + ": " + namedNodeMap.getNamedItem("datatype").getNodeValue();
+						}
+						qdmElementLookUps.put(name, qdms.item(i));
 					}
-					qdmElementLookUps.put(name, qdms.item(i));
 				}
 			}
 		}

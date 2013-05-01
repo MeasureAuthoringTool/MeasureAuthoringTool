@@ -48,6 +48,31 @@ import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.google.gwt.xml.client.Node;
 
 public class QDMAttributeDialogBox {
+	//Declare all constants
+	private static final String DATATYPE = "datatype";
+	private static final String GREATER_THAN_OR_EQUAL_TO = "-- Greater Than Or Equal To";
+	private static final String LESS_THAN_OR_EQUAL_TO = "-- Less Than Or Equal To";
+	private static final String EQUAL_TO = "-- Equal To";
+	private static final String GREATER_THAN = "-- Greater Than";
+	private static final String LESS_THAN = "-- Less Than";
+	private static final String COMPARISON = "Comparison";
+	private static final String UNIT = "unit";
+	private static final String COMPARISON_VALUE = "comparisonValue";
+	private static final String QDM_ID = "qdmId";
+	private static final String ID = "id";
+	private static final String MODE = "mode";
+	private static final String VALUE_SET = "Value Set";
+	private static final String CHECK_IF_PRESENT = "Check if Present";
+	private static final String NAME = "name";
+	private static final String ATTRIBUTE = "attribute";
+	private static final String ATTRIBUTES = "attributes";
+	private static final String QDM_ATTRIBUTES_ERROR_TITLE = "QDM Attributes. Please correct the rows below in red.";
+	private static final String QDM_ATTRIBUTES_TITLE = "QDM Attributes.";
+	private static final String QDM_ATTRIBUTE_INVALID_ROW = "qdm_attribute_invalidRow";
+	private static final String QDM_ATTRIBUTE_INVALID_ROW_RIGHT = "qdm_attribute_invalidRow_right";
+	private static final String QDM_ATTRIBUTE_INVALID_ROW_LEFT = "qdm_attribute_invalidRow_left";
+	private static final String SELECT = "Select";
+	
 	private static final List<String> qdmNames = new ArrayList<String>();
 	private static final List<String> unitNames = new ArrayList<String>();
 	private static final List<String> attributeList = new ArrayList<String>();
@@ -105,7 +130,7 @@ public class QDMAttributeDialogBox {
 				String text = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
 				int rowNum = cell.getRowIndex();
 				
-				if("Select".equalsIgnoreCase(text)){
+				if(QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text)){
 					ListBox modeListBox = (ListBox)grid.getWidget(rowNum, 2);
 					modeListBox.setSelectedIndex(0);
 					DomEvent.fireNativeEvent(Document.get().createChangeEvent(), modeListBox);
@@ -121,12 +146,12 @@ public class QDMAttributeDialogBox {
 				String text = modeListBox.getItemText(modeListBox.getSelectedIndex());
 				int rowNum = cell.getRowIndex();
 				
-				if("Select".equalsIgnoreCase(text) || "Check if Present".equalsIgnoreCase(text) || "Comparison".equalsIgnoreCase(text)){
+				if(QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text) || CHECK_IF_PRESENT.equalsIgnoreCase(text) || COMPARISON.equalsIgnoreCase(text)){
 					TextBox textBox = new TextBox();
 					textBox.setEnabled(false);
 					textBox.setWidth("8em");
 					grid.setWidget(rowNum, 3, textBox);
-				}else if("Value Set".equals(text)){
+				}else if(VALUE_SET.equals(text)){
 					ListBox qdmListBox = new ListBox(false);
 					qdmListBox.setVisibleItemCount(1);
 					qdmListBox.setWidth("8em");
@@ -158,8 +183,7 @@ public class QDMAttributeDialogBox {
 					panel.add(textBox);
 					panel.add(units);
 					
-					grid.setWidget(rowNum, 3, panel);
-					
+					grid.setWidget(rowNum, 3, panel);					
 				}
 			}
 		}
@@ -183,7 +207,7 @@ public class QDMAttributeDialogBox {
 			CellTreeNode node = rowNode;
 			String attributeName = "";
 			if(node != null){
-				attributeName = (String) node.getExtraInformation("name");
+				attributeName = (String) node.getExtraInformation(NAME);
 			}
 			final ListBox attributeListBox = new ListBox(false);
 						
@@ -196,7 +220,7 @@ public class QDMAttributeDialogBox {
 						
 			attributeListBox.setVisibleItemCount(1);
 			attributeListBox.setWidth("8em");
-			attributeListBox.addItem("Select", ""+i);
+			attributeListBox.addItem(QDMAttributeDialogBox.SELECT, ""+i);
 			if(attributeList.size() > 0){
 				for(String attribName:attributeList){
 					attributeListBox.addItem(attribName);
@@ -214,23 +238,20 @@ public class QDMAttributeDialogBox {
 			else{
 				fetchAtttributesByDataType(this.qdmDataTypeName, attributeListBox, attributeList,attributeName);
 			}			
-			
 			grid.setWidget(i, 1, attributeListBox);
-			//If needed, attributeListBox can have a ChangeHandler here.
-			
+						
 			final ListBox modeListBox = new ListBox(false);
 			modeListBox.setVisibleItemCount(1);
 			modeListBox.setWidth("8em");
-			modeListBox.addItem("Select", ""+i);
+			modeListBox.addItem(QDMAttributeDialogBox.SELECT);
 			for(String modeValue:mode){
-				modeListBox.addItem(modeValue, ""+i);
+				String modeName = (modeValue.startsWith("--"))?modeValue.substring(2).trim():modeValue;
+				modeListBox.addItem(modeName, modeValue);
 			}
 			modeListBox.setEnabled(false);
 			setToolTipForEachElementInListbox(modeListBox);
 			grid.setWidget(i, 2, modeListBox);
-			
-			//If needed, modeListBox can have a ChangeHandler here.
-			
+						
 			TextBox textBox = new TextBox();
 			textBox.setEnabled(false);
 			textBox.setWidth("8em");
@@ -255,7 +276,6 @@ public class QDMAttributeDialogBox {
 		    if (!(Character.isDigit(charCode) || unicodeCharCode == 0)){
 		       sender.cancelKey();
 		    }
-		   
 		}
 	}
 
@@ -278,7 +298,7 @@ public class QDMAttributeDialogBox {
 		unitNames.clear();
 		attributeList.clear();
 		
-		String qdmDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+		String qdmDataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();
 						
 		qdmNames.addAll(getQDMElementNames());
 		unitNames.addAll(getUnitNameList());
@@ -294,7 +314,7 @@ public class QDMAttributeDialogBox {
 		qdmAttributeDialogBox.getElement().setId("qdmAttributeDialog");
 		qdmAttributeDialogBox.setGlassEnabled(true);
 		qdmAttributeDialogBox.setAnimationEnabled(true);
-	    qdmAttributeDialogBox.setText("QDM Attributes.");
+	    qdmAttributeDialogBox.setText(QDM_ATTRIBUTES_TITLE);
 	    
 		// Create a table to layout the content
 	    VerticalPanel dialogContents = new VerticalPanel();
@@ -366,16 +386,13 @@ public class QDMAttributeDialogBox {
 		
 		//Go through all the rows & collect all the invalid row numbers in a list 'inValidRows'
 		for(int i=0;i<rowCount;i++){
-			RowFormatter rowFormatter = grid.getRowFormatter();
-			System.out.println("Border Color:"+rowFormatter.getElement(0).getStyle().getBorderColor());
-			System.out.println("Border Style:"+rowFormatter.getElement(0).getStyle().getBorderStyle());
 			ListBox attributeListBox = ((ListBox)grid.getWidget(i, 1));
-			if(!"Select".equals(attributeListBox.getItemText(attributeListBox.getSelectedIndex()))){
+			if(!QDMAttributeDialogBox.SELECT.equals(attributeListBox.getItemText(attributeListBox.getSelectedIndex()))){
 				ListBox modeListBox = ((ListBox)grid.getWidget(i, 2));
-				if(!"Select".equals(modeListBox.getItemText(modeListBox.getSelectedIndex()))){
-					String modeName = modeListBox.getItemText(modeListBox.getSelectedIndex());
-					if(!"Check if Present".equals(modeName)){
-						if("Value Set".equals(modeName)){
+				if(!QDMAttributeDialogBox.SELECT.equals(modeListBox.getItemText(modeListBox.getSelectedIndex()))){
+					String modeName = modeListBox.getValue(modeListBox.getSelectedIndex());
+					if(!CHECK_IF_PRESENT.equals(modeName)){
+						if(VALUE_SET.equals(modeName)){
 							ListBox qdmListBox = ((ListBox)grid.getWidget(i, 3));
 							String qdmName = qdmListBox.getItemText(qdmListBox.getSelectedIndex());
 							if(qdmName == null || qdmName.length() == 0){
@@ -407,40 +424,48 @@ public class QDMAttributeDialogBox {
 				inValidRows.add(i);
 				continue;
 			}
-		}
-		
+		}		
+		setGridRowStyles(qdmAttributeDialogBox, rowCount, inValidRows);
+		return (inValidRows.size() == 0);
+	}
+
+	/**
+	 * @param qdmAttributeDialogBox
+	 * @param rowCount
+	 * @param inValidRows
+	 */
+	private static void setGridRowStyles(DialogBox qdmAttributeDialogBox,
+			int rowCount, List<Integer> inValidRows) {
 		if(inValidRows.size() > 0){
-			qdmAttributeDialogBox.setText("QDM Attributes. Please correct the rows below in red.");
+			qdmAttributeDialogBox.setText(QDM_ATTRIBUTES_ERROR_TITLE);
 		}else{
-			qdmAttributeDialogBox.setText("QDM Attributes.");
+			qdmAttributeDialogBox.setText(QDM_ATTRIBUTES_TITLE);
 		}			
 		CellFormatter cellFormatter = grid.getCellFormatter();
 		for(int i=0;i<rowCount;i++){
-			System.out.println("i:"+i);
 			if(inValidRows.contains(i)){
 				for(int j=0;j<4;j++){
 					if(j == 0){
-						cellFormatter.addStyleName(i, j, "qdm_attribute_invalidRow_left");
+						cellFormatter.addStyleName(i, j, QDM_ATTRIBUTE_INVALID_ROW_LEFT);
 					}else if(j == 3){
-						cellFormatter.addStyleName(i, j, "qdm_attribute_invalidRow_right");
+						cellFormatter.addStyleName(i, j, QDM_ATTRIBUTE_INVALID_ROW_RIGHT);
 					}
-					cellFormatter.addStyleName(i, j, "qdm_attribute_invalidRow");
+					cellFormatter.addStyleName(i, j, QDM_ATTRIBUTE_INVALID_ROW);
 				}
 			}else{
 				for(int j=0;j<4;j++){
-					cellFormatter.removeStyleName(i, j, "qdm_attribute_invalidRow");
-					cellFormatter.removeStyleName(i, j, "qdm_attribute_invalidRow_left");
-					cellFormatter.removeStyleName(i, j, "qdm_attribute_invalidRow_right");
+					cellFormatter.removeStyleName(i, j, QDM_ATTRIBUTE_INVALID_ROW);
+					cellFormatter.removeStyleName(i, j, QDM_ATTRIBUTE_INVALID_ROW_LEFT);
+					cellFormatter.removeStyleName(i, j, QDM_ATTRIBUTE_INVALID_ROW_RIGHT);
 				}
 			}
 		}
-		return (inValidRows.size() == 0);
 	}
 
 	@SuppressWarnings("unchecked")
 	protected static void saveToModel(XmlTreeDisplay xmlTreeDisplay) {
 		int rowCount = grid.getRowCount();
-		List<CellTreeNode> attributeList = (List<CellTreeNode>)xmlTreeDisplay.getSelectedNode().getExtraInformation("attributes");
+		List<CellTreeNode> attributeList = (List<CellTreeNode>)xmlTreeDisplay.getSelectedNode().getExtraInformation(ATTRIBUTES);
 		if(attributeList == null){
 			attributeList = new ArrayList<CellTreeNode>();
 		}
@@ -448,37 +473,38 @@ public class QDMAttributeDialogBox {
 		
 		for(int i=0;i<rowCount;i++){
 			CellTreeNode attributeNode = new CellTreeNodeImpl();
-			attributeNode.setName("attribute");
+			attributeNode.setName(ATTRIBUTE);
 			attributeNode.setNodeType(CellTreeNode.ATTRIBUTE_NODE);
 								
 			ListBox attributeListBox = ((ListBox)grid.getWidget(i, 1));
 			String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
-			attributeNode.setExtraInformation("name", attributeName);
+			attributeNode.setExtraInformation(NAME, attributeName);
 			
 			ListBox modeListBox = ((ListBox)grid.getWidget(i, 2));
 			String modeName = modeListBox.getItemText(modeListBox.getSelectedIndex());
-			if("Check if Present".equals(modeName) || "Value Set".equals(modeName)){
-				attributeNode.setExtraInformation("mode", modeName);
-				if("Value Set".equals(modeName)){
+			
+			if(CHECK_IF_PRESENT.equals(modeName) || VALUE_SET.equals(modeName)){
+				attributeNode.setExtraInformation(MODE, modeName);
+				if(VALUE_SET.equals(modeName)){
 					ListBox qdmListBox = ((ListBox)grid.getWidget(i, 3));
 					String qdmName = qdmListBox.getItemText(qdmListBox.getSelectedIndex());
 					Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName);
-					String qdmId = qdmNode.getAttributes().getNamedItem("id").getNodeValue();
-					attributeNode.setExtraInformation("qdmId", qdmId);
+					String qdmId = qdmNode.getAttributes().getNamedItem(ID).getNodeValue();
+					attributeNode.setExtraInformation(QDM_ID, qdmId);
 				}
 			}else{
-				attributeNode.setExtraInformation("mode", modeName);
+				attributeNode.setExtraInformation(MODE, modeName);
 				
 				HorizontalPanel hPanel = (HorizontalPanel) grid.getWidget(i, 3);
 				TextBox valueBox = (TextBox) hPanel.getWidget(0);
 				ListBox unitBox =  (ListBox) hPanel.getWidget(1);
 				
-				attributeNode.setExtraInformation("comparisonValue", valueBox.getText());
-				attributeNode.setExtraInformation("unit", unitBox.getItemText(unitBox.getSelectedIndex()));
+				attributeNode.setExtraInformation(COMPARISON_VALUE, valueBox.getText());
+				attributeNode.setExtraInformation(UNIT, unitBox.getItemText(unitBox.getSelectedIndex()));
 			}
 			attributeList.add(attributeNode);	
 		}
-		xmlTreeDisplay.getSelectedNode().setExtraInformation("attributes", attributeList);
+		xmlTreeDisplay.getSelectedNode().setExtraInformation(ATTRIBUTES, attributeList);
 		
 	}
 
@@ -495,7 +521,7 @@ public class QDMAttributeDialogBox {
 	private static void addTableToPanel(VerticalPanel dialogContents,
 			final String qdmDataType, final List<String> mode, XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode, Button deleteSelectedButton, Button addNewButton) {
 		
-		List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode.getExtraInformation("attributes");
+		List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode.getExtraInformation(ATTRIBUTES);
 		int rows = (attributeNodeList == null)?0:attributeNodeList.size();
 	    	
 		if(rows == 0){
@@ -528,7 +554,7 @@ public class QDMAttributeDialogBox {
 			}
 					
 			//Set the attribute name
-			String attributeName = (String) attributenode.getExtraInformation("name");
+			String attributeName = (String) attributenode.getExtraInformation(NAME);
 			ListBox attributeNameListBox = (ListBox) grid.getWidget(row, 1);
 			attributeNameListBox.setEnabled(true);
 			for(int j=0;j<attributeNameListBox.getItemCount();j++){
@@ -538,17 +564,17 @@ public class QDMAttributeDialogBox {
 				}
 			}
 			//Set the mode name
-			String modeName = (String) attributenode.getExtraInformation("mode");
+			String modeName = (String) attributenode.getExtraInformation(MODE);
 			ListBox modeNameListBox = (ListBox) grid.getWidget(row, 2);
 			modeNameListBox.setEnabled(true);
 			for(int j=0;j<modeNameListBox.getItemCount();j++){
-				if(modeNameListBox.getItemText(j).equals(modeName)){
+				if(modeNameListBox.getItemText(j).equals(modeName) || modeNameListBox.getItemText(j).equals("-- "+modeName)){
 					modeNameListBox.setSelectedIndex(j);
 					break;
 				}
 			}
-			if(!"Check if Present".equals(modeName)){
-				if("Value Set".equals(modeName)){
+			if(!CHECK_IF_PRESENT.equals(modeName)){
+				if(VALUE_SET.equals(modeName)){
 					ListBox qdmListBox = new ListBox(false);
 					qdmListBox.setVisibleItemCount(1);
 					qdmListBox.setWidth("8em");
@@ -559,9 +585,9 @@ public class QDMAttributeDialogBox {
 					setToolTipForEachElementInListbox(qdmListBox);
 					grid.setWidget(row, 3, qdmListBox);
 					
-					String qdmId = (String) attributenode.getExtraInformation("qdmId");
+					String qdmId = (String) attributenode.getExtraInformation(QDM_ID);
 					for(Node qdmNode:ClauseConstants.getElementLookUps().values()){
-						String qdmName = qdmNode.getAttributes().getNamedItem("id").getNodeValue();
+						String qdmName = qdmNode.getAttributes().getNamedItem(ID).getNodeValue();
 						if(qdmId.equals(qdmName)){
 							for(int r=0;r<qdmListBox.getItemCount();r++){
 								if(qdmName.equals(qdmListBox.getItemText(r))){
@@ -583,7 +609,7 @@ public class QDMAttributeDialogBox {
 					textBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
 					textBox.setWidth("3em");
 					textBox.setHeight("19");
-					textBox.setValue((String) attributenode.getExtraInformation("comparisonValue"));
+					textBox.setValue((String) attributenode.getExtraInformation(COMPARISON_VALUE));
 					
 					ListBox units = new ListBox(false);
 					units.setVisibleItemCount(1);
@@ -593,7 +619,7 @@ public class QDMAttributeDialogBox {
 						units.addItem(unitName);
 					}
 					setToolTipForEachElementInListbox(units);
-					String unit = (String) attributenode.getExtraInformation("unit");
+					String unit = (String) attributenode.getExtraInformation(UNIT);
 					for(int g=0;g<units.getItemCount();g++){
 						if(units.getItemText(g).equals(unit)){
 							units.setSelectedIndex(g);
@@ -613,14 +639,14 @@ public class QDMAttributeDialogBox {
 	private static List<String> getModeList() {
 		List<String> modeList = new ArrayList<String>();
 		
-		modeList.add("Check if Present");
-		modeList.add("Comparison");
-		modeList.add("-- Less Than");
-		modeList.add("-- Greater Than");
-		modeList.add("-- Equal To");
-		modeList.add("-- Less Than Or Equal To");
-		modeList.add("-- Greater Than Or Equal To");
-		modeList.add("Value Set");
+		modeList.add(CHECK_IF_PRESENT);
+		modeList.add(COMPARISON);
+		modeList.add(LESS_THAN);
+		modeList.add(GREATER_THAN);
+		modeList.add(EQUAL_TO);
+		modeList.add(LESS_THAN_OR_EQUAL_TO);
+		modeList.add(GREATER_THAN_OR_EQUAL_TO);
+		modeList.add(VALUE_SET);
 		
 		return modeList;
 	}
@@ -664,8 +690,8 @@ public class QDMAttributeDialogBox {
 		Set<String> qdmNames = ClauseConstants.getElementLookUps().keySet();
 		for(String qdmName:qdmNames){
 			com.google.gwt.xml.client.Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName);
-			String dataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
-			if("attribute".equals(dataType)){
+			String dataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();
+			if(ATTRIBUTE.equals(dataType)){
 				qdmNameList.add(qdmName);
 			}
 		}

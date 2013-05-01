@@ -5,7 +5,6 @@
 <mapping>
 	<class name="mat.model.QualityDataModelWrapper">
 		<map-to xml="measure" />
-
 		<field name="qualityDataDTOList" type="mat.model.QualityDataSetDTO"
 			get-method="getQualityDataDTO" set-method="setQualityDataDTO"
 			collection="arraylist">

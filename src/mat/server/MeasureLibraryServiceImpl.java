@@ -29,7 +29,6 @@ import mat.model.Author;
 import mat.model.ListObject;
 import mat.model.MeasureType;
 import mat.model.QualityDataModelWrapper;
-import mat.model.QualityDataSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.SecurityRole;
 import mat.model.User;
@@ -354,7 +353,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		result.setId(pkg.getId());
 		if(isNewMeasure){
 			//Create Default SupplimentalQDM if it is a new Measure.
-			createSupplimentalQDM(pkg);
+			//createSupplimentalQDM(pkg);
 		}
 		saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));		
 		
@@ -362,33 +361,40 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	/* When a new Measure has been created, always create the default 4 cms supplimental QDM */
-	public void createSupplimentalQDM(Measure newMeasure){
+	public QualityDataModelWrapper createSupplimentalQDM(String measureId){
 		//Get the Supplimental ListObject from the list_object table
 		List<ListObject> listOfSuppElements = getCodeListService().getSupplimentalCodeList();
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+		wrapper.setQualityDataDTO(qdsList);
 		for(ListObject lo : listOfSuppElements){
-			QualityDataSet qds = new QualityDataSet();
-			qds.setListObject(lo);
-			qds.setMeasureId(newMeasure);
-			qds.setOid(getMeasurePackageService().getUniqueOid());
-			qds.setVersion("1");//Don't know whether to have version or not?
+			QualityDataSetDTO qds = new QualityDataSetDTO();
+			qds.setOid(lo.getOid());
+			qds.setUuid(lo.getId());
+			qds.setCodeListName(lo.getName());
+			qds.setTaxonomy(lo.getCodeSystem().getDescription());
+			qds.setVersion("1");
+			qds.setId(UUID.randomUUID().toString());
 			if(lo.getOid().equalsIgnoreCase("2.16.840.1.113762.1.4.1")){
 				//find out patient characteristic gender dataType.
-				qds.setDataType(getMeasurePackageService().findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_GENDER, lo.getCategory().getId()));
+				qds.setDataType((getMeasurePackageService().findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_GENDER, lo.getCategory().getId())).getDescription());
 			}else if(lo.getOid().equalsIgnoreCase("2.16.840.1.114222.4.11.836")){
 				//find out patient characteristic race dataType.
-				qds.setDataType(getMeasurePackageService().findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_RACE, lo.getCategory().getId()));
+				qds.setDataType((getMeasurePackageService().findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_RACE, lo.getCategory().getId())).getDescription());
 			}else if(lo.getOid().equalsIgnoreCase("2.16.840.1.114222.4.11.837")){
 				//find out patient characteristic ethnicity dataType.
-				qds.setDataType(getMeasurePackageService().findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_ETHNICITY, lo.getCategory().getId()));
+				qds.setDataType((getMeasurePackageService().findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_ETHNICITY, lo.getCategory().getId())).getDescription());
 			}else if(lo.getOid().equalsIgnoreCase("2.16.840.1.114222.4.11.3591")){
 				//find out patient characteristic payer dataType.
-				qds.setDataType(getMeasurePackageService().findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_PAYER, lo.getCategory().getId()));
+				qds.setDataType((getMeasurePackageService().findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_PAYER, lo.getCategory().getId())).getDescription());
 			}
 			
 			qds.setSuppDataElement(true);
-			getMeasurePackageService().saveSupplimentalQDM(qds);
+			//getMeasurePackageService().saveSupplimentalQDM(qds);
+			wrapper.getQualityDataDTO().add(qds);
 		}
 		
+		return wrapper;
 	}
 	
 	
@@ -989,28 +995,63 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 			processor.addParentNode(MEASURE);			
 			measureXmlModel.setXml(processor.checkForScoringType());
+			
+			QualityDataModelWrapper wrapper = createSupplimentalQDM(measureXmlModel.getMeasureId());
+			// Object to XML for elementLoopUp
+			ByteArrayOutputStream streamQDM = convertQualityDataDTOToXML(wrapper);
+			// Object to XML for supplementalDataElements
+			ByteArrayOutputStream streamSuppDataEle =convertQDMOToSuppleDataXML(wrapper);
+			//Remove <?xml> and then replace.
+			String filteredString = removePatternFromXMLString(streamQDM.toString().substring(streamQDM.toString().indexOf("<measure>", 0)),"<measure>","");
+			filteredString =removePatternFromXMLString(filteredString,"</measure>","");
+			//Remove <?xml> and then replace.
+			String filteredStringSupp = removePatternFromXMLString(streamSuppDataEle.toString().substring(streamSuppDataEle.toString().indexOf("<measure>", 0)),"<measure>","");
+			filteredStringSupp =removePatternFromXMLString(filteredStringSupp,"</measure>","");
+			//Add Supplemental data to elementLoopUp
+			String result= callAppendNode(measureXmlModel,filteredString,"qdm","/measure/elementLookUp");
+			measureXmlModel.setXml(result);
+			//Add Supplemental data to supplementalDataElements
+			result= callAppendNode(measureXmlModel,filteredStringSupp,"elementRef","/measure/supplementalDataElements");
+			measureXmlModel.setXml(result);
+			
 		}
 		getService().saveMeasureXml(measureXmlModel);
 	}
+	
+	private String removePatternFromXMLString(String xmlString,String patternStart,String replaceWith){
+		String newString = xmlString;
+		if(patternStart !=null){
+			newString = newString.replaceAll(patternStart, replaceWith);
+		}
+		return newString;
+	}
+	
+	/**
+	 * Method to call XMLProcessor appendNode method to append new xml nodes into existing xml.
+	 * 
+	 * */
+	private String callAppendNode(MeasureXmlModel measureXmlModel,String newXml,String nodeName,String parentNodeName){
+		XmlProcessor xmlProcessor = new XmlProcessor(measureXmlModel.getXml());
+		String result = null;
+		try {
+			result = xmlProcessor.appendNode(newXml,nodeName,parentNodeName);
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+	
 	
 	@Override
 	public void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName){
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if((xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) && (nodeName != null && StringUtils.isNotBlank(nodeName))){
-			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
-			try {
-				String result = xmlProcessor.appendNode(measureXmlModel.getXml(),nodeName);
-				measureXmlModel.setXml(result);
-				getService().saveMeasureXml(measureXmlModel);
-			} catch (SAXException e) {
-
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			
+			String result =callAppendNode(xmlModel,measureXmlModel.getXml(),nodeName,measureXmlModel.getParentNode()); 
+			measureXmlModel.setXml(result);
+			getService().saveMeasureXml(measureXmlModel);
 		}
-		
 		
 	}
 	
@@ -1109,12 +1150,6 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	@Override
 	public ArrayList<QualityDataSetDTO> getMeasureXMLForAppliedQDM(String measureId){
-		ArrayList<QualityDataSetDTO> list = getAppliedQualityDTOList(measureId);
-		return list;
-		
-	}
-	
-	public ArrayList<QualityDataSetDTO> getAppliedQualityDTOList(String measureId){
 		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
 		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
 		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
@@ -1124,7 +1159,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			if(details.getQualityDataDTO()!=null && details.getQualityDataDTO().size()!=0){
 				logger.info(" details.getQualityDataDTO().size() :"+ details.getQualityDataDTO().size());
 				for(QualityDataSetDTO dataSetDTO: details.getQualityDataDTO()){
-					if(dataSetDTO.getCodeListName() !=null)
+					if(dataSetDTO.getCodeListName() !=null && !dataSetDTO.isSuppDataElement())
 						finalList.add(dataSetDTO);
 				}
 			}
@@ -1137,6 +1172,67 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		}
 		logger.info("finalList()of QualityDataSetDTO ::"+ finalList.size());
 		return finalList;
+		
+	}
+	
+	 /**
+     * Method to create XML from QualityDataModelWrapper object for elementLookUp.
+     * */
+    private ByteArrayOutputStream convertQualityDataDTOToXML(QualityDataModelWrapper qualityDataSetDTO) {
+		logger.info("In MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("QualityDataModelMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+	        marshaller.marshal(qualityDataSetDTO);
+	        logger.info("Marshalling of QualityDataSetDTO is successful.." + stream.toString());
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load QualityDataModelMapping.xml in convertQualityDataDTOToXML method" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed in convertQualityDataDTOToXML method" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed in convertQualityDataDTOToXML method" + e);
+			}else if(e instanceof ValidationException){
+				logger.info("Validation Exception in convertQualityDataDTOToXML method" + e);
+			}else{
+				logger.info("Other Exception in convertQualityDataDTOToXML method " + e);
+			}
+		} 
+		logger.info("Exiting MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
+		return stream;
+	}
+    
+    /**
+     * Method to create XML from QualityDataModelWrapper object for supplementalDataElement .
+     * */
+    private ByteArrayOutputStream convertQDMOToSuppleDataXML(QualityDataModelWrapper qualityDataSetDTO) {
+		logger.info("In MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("QDMToSupplementDataMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+	        marshaller.marshal(qualityDataSetDTO);
+	        logger.info("Marshalling of QualityDataSetDTO is successful in convertQDMOToSuppleDataXML()" + stream.toString());
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load QualityDataModelMapping.xml in convertQDMOToSuppleDataXML()" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed in convertQDMOToSuppleDataXML()" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed in convertQDMOToSuppleDataXML()" + e);
+			}else if(e instanceof ValidationException){
+				logger.info("Validation Exception in convertQDMOToSuppleDataXML()" + e);
+			}else{
+				logger.info("Other Exception in convertQDMOToSuppleDataXML()" + e);
+			}
+		} 
+		logger.info("Exiting MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
+		return stream;
 	}
 	
 	private QualityDataModelWrapper convertXmltoQualityDataDTOModel(MeasureXmlModel xmlModel){

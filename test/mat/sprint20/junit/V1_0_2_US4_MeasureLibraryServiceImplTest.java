@@ -44,7 +44,7 @@ public class V1_0_2_US4_MeasureLibraryServiceImplTest extends SpringInitializati
 		m.setMeasureSet(measureSet);
 		measurePackService.save(m);
 		measureLibService.setContext(applicationContext);
-		measureLibService.createSupplimentalQDM(m);
+		//measureLibService.createSupplimentalQDM(m);
 	}
 	
 	

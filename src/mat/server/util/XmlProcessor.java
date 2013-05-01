@@ -121,21 +121,25 @@ public class XmlProcessor {
 	 * Method to insert new Node under existing parent Node.
 	 * 
 	 * */
-	public String appendNode(String newElement,String nodeName) throws SAXException, IOException{
-		logger.info("In appendQDMNode method with newElement ::: " + newElement);
+	public String appendNode(String newElement,String nodeName,String parentNode) throws SAXException, IOException{
+		logger.info("In appendNode method with newElement ::: " + newElement);
 		if (this.originalDoc == null || newElement == null ){
 			return "";
 		}
 		try {
-			Node elementLookUpNode = findNode(originalDoc,XPATH_MEASURE_ELEMENT_LOOKUP);
+			Node parentTypeNode = findNode(originalDoc,parentNode);
 			InputSource newXmlstream = new InputSource(new StringReader(newElement));
 			Document newDoc = docBuilder.parse(newXmlstream);//Parse the NewXml which should be replaced
 			NodeList newNodeList = newDoc.getElementsByTagName(nodeName);
-			Node newNode = newNodeList.item(0);
-			elementLookUpNode.appendChild(originalDoc.importNode(newNode, true));
+			for(int i=0;i<newNodeList.getLength();i++){
+				Node newNode = newNodeList.item(i);
+				parentTypeNode.appendChild(originalDoc.importNode(newNode, true));
+			}
+			
+			
 			logger.info("Document Object created successfully for the XML String" + originalDoc.toString());
 		} catch (XPathExpressionException e) {
-			logger.info("Exception thrown on appendQDMNode method");
+			logger.info("Exception thrown on appendNode method");
 			caughtExceptions(e);
 			e.printStackTrace();
 		}
@@ -305,7 +309,6 @@ public class XmlProcessor {
 			removeNodesBasedOnScoring(scoringType);
 			createNewNodesBasedOnScoring(scoringType);
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return transform(originalDoc);

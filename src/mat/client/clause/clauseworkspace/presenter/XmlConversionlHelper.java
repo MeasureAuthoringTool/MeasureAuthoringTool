@@ -133,7 +133,7 @@ public class XmlConversionlHelper {
 			Node node = nodes.item(i);
 			String name = node.getNodeName().replaceAll("\n\r", "").trim();
 			//if(!(name.equalsIgnoreCase("#text") && name.isEmpty())){
-			if(name.length() >0 && !name.equalsIgnoreCase("#text") || !name.equalsIgnoreCase("attribute")){
+			if(name.length() > 0 && !name.equalsIgnoreCase("#text") && !name.equalsIgnoreCase("attribute")){
 				createCellTreeNodeChilds(child, node, childs);
 			}
 			/**
@@ -142,14 +142,19 @@ public class XmlConversionlHelper {
 			else if(name.equalsIgnoreCase("attribute")){
 				Object attributes = child.getExtraInformation("attributes");
 				if(attributes == null){
-					attributes = new ArrayList<Node>();
+					attributes = new ArrayList<CellTreeNode>();
 					child.setExtraInformation("attributes", attributes);
 				}
-				List<Node> attributeList = (List<Node>) attributes;
-				attributeList.add(node);
+				List<CellTreeNode> attributeList = (List<CellTreeNode>) attributes;
+				CellTreeNode cellNode = new CellTreeNodeImpl();
+				NamedNodeMap attNodeMap = node.getAttributes();
+				for(int j=0;j<attNodeMap.getLength();j++){
+					Node attrib = attNodeMap.item(j);
+					cellNode.setExtraInformation(attrib.getNodeName(), attrib.getNodeValue());
+				}
+				attributeList.add(cellNode);
 			}
 		}
-
 	}
 
 
@@ -193,9 +198,6 @@ public class XmlConversionlHelper {
 		}
 		return doc.toString();
 	}
-
-
-
 
 	private static void setCellTreeNodeValues(Node node, CellTreeNode parent, CellTreeNode child, List<CellTreeNode> childs){
 		String nodeName = node.getNodeName();
@@ -247,6 +249,12 @@ public class XmlConversionlHelper {
 		String nodeLabel = nodeValue;
 		if(nodeLabel.length() > ClauseConstants.LABEL_MAX_LENGTH){
 			nodeLabel = nodeLabel.substring(0,  ClauseConstants.LABEL_MAX_LENGTH - 1).concat("...");
+		}
+		if(CellTreeNode.ELEMENT_REF_NODE == cellTreeNodeType){
+			int qdmAttributeSize = node.getChildNodes().getLength();
+			if(qdmAttributeSize > 0){
+				nodeLabel += "  ("+qdmAttributeSize+")";
+			}
 		}
 		child.setLabel(nodeLabel);
 		child.setNodeType(cellTreeNodeType);		
@@ -312,6 +320,17 @@ public class XmlConversionlHelper {
 			element.setAttribute(ClauseConstants.ID, idNode != null ? idNode.getNodeValue() : "");// TBD if we need this
 			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 			element.setAttribute(ClauseConstants.TYPE, "qdm");//this can change
+			
+			List<CellTreeNode> attributeList = (List<CellTreeNode>)cellTreeNode.getExtraInformation("attributes");
+			if(attributeList != null){
+				for(CellTreeNode attribNode:attributeList){
+					Element attribElement = document.createElement(ClauseConstants.ATTRIBUTE);
+					for(String name:((CellTreeNodeImpl)attribNode).getExtraInformationMap().keySet()){
+						attribElement.setAttribute(name, (String) attribNode.getExtraInformation(name));
+					}
+					element.appendChild(attribElement);
+				}
+			}
 			
 			break;
 		case CellTreeNode.FUNCTIONS_NODE:

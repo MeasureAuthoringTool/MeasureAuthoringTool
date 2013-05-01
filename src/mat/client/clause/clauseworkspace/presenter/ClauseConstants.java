@@ -46,6 +46,8 @@ public class ClauseConstants{
 	
 	public static final String ELEMENT_REF = "elementRef";
 	
+	public static final String ATTRIBUTE = "attribute";
+	
 	public static final String ID = "id";
 	
 	public static final int LABEL_MAX_LENGTH = 50;

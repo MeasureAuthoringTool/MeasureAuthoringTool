@@ -24,6 +24,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -37,6 +38,7 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -68,6 +70,7 @@ public class QDMAttributeDialogBox {
 	private static final String QDM_ATTRIBUTE_INVALID_ROW_LEFT = "qdm_attribute_invalidRow_left";
 	private static final String SELECT = "Select";
 	
+	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT.create(QDSAttributesService.class);
 	private static final List<String> qdmNames = new ArrayList<String>();
 	private static final List<String> unitNames = new ArrayList<String>();
 	private static final List<String> attributeList = new  ArrayList<String>();
@@ -223,7 +226,7 @@ public class QDMAttributeDialogBox {
 			attributeListBox.setVisibleItemCount(1);
 			attributeListBox.setWidth("8em");
 			attributeListBox.addItem(QDMAttributeDialogBox.SELECT, ""+i);
-			if(attributeList.size() > 0){
+//			if(attributeList.size() > 0){
 				for(String attribName:attributeList){
 					attributeListBox.addItem(attribName);
 				}
@@ -237,10 +240,10 @@ public class QDMAttributeDialogBox {
 					}
 				}
 				updateAttributeListBox(grid, i, attributeListBox);
-			}
-			else{
-				fetchAtttributesByDataType(this.qdmDataTypeName, attributeListBox, attributeList,attributeName);
-			}
+//			}
+//			else{
+//				fetchAtttributesByDataType(this.qdmDataTypeName, attributeListBox, attributeList,attributeName);
+//			}
 			grid.setWidget(i, 1, attributeListBox);
 			
 			final ListBox modeListBox = new ListBox(false);
@@ -287,24 +290,22 @@ public class QDMAttributeDialogBox {
 		if(cellTreeNode.getNodeType() != CellTreeNode.ELEMENT_REF_NODE){
 			return;
 		}
-		
+		qdmNames.clear();
+		unitNames.clear();
+		attributeList.clear();
 		Node qdmNode = findElementLookUpNode(cellTreeNode.getName());
 		//Could not find the qdm node in elemenentLookup tag 
 		if(qdmNode == null){
 			return;
 		}
-		
+		String qdmDataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();
+		findAttributesForDataType(qdmDataType);
 		grid = new Grid(0,4);
 		grid.addClickHandler(new QDMAttributeGridClickHandler(grid));
-				
-		qdmNames.clear();
-		unitNames.clear();
-		attributeList.clear();
-		
-		String qdmDataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();
-						
+			
 		qdmNames.addAll(getQDMElementNames());
-		unitNames.addAll(getUnitNameList());
+		//unitNames.addAll(getUnitNameList());
+		unitNames.addAll(ClauseConstants.units);
 		
 		List<String> mode = getModeList();
 		buildAndDisplayDialogBox(qdmDataType, mode,xmlTreeDisplay, cellTreeNode);
@@ -579,23 +580,7 @@ public class QDMAttributeDialogBox {
 	 * @param deleteSelectedButton 
 	 */
 	private static void addTableToPanel(VerticalPanel dialogContents,
-			final String qdmDataType, final List<String> mode, XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode, Button deleteSelectedButton, Button addNewButton) {
-		
-		List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode.getExtraInformation(ATTRIBUTES);
-		int rows = (attributeNodeList == null)?0:attributeNodeList.size();
-	    	
-		if(rows == 0){
-			//Add a blank attribute row to the table for the user to fill in.
-			AddNewQDMAttributeClickHandler.rowNode = null;
-			DomEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), addNewButton);
-		}else{
-			for(int i=0;i<rows;i++){
-				//Add a blank row to the table.
-				CellTreeNode rowNode = attributeNodeList.get(i);
-				AddNewQDMAttributeClickHandler.rowNode = rowNode;
-				DomEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), addNewButton);
-			}
-		}
+			final String qdmDataType, final List<String> mode, XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode, Button deleteSelectedButton, final Button addNewButton) {
 		
 		ScrollPanel scrollPanel = new ScrollPanel();
 		scrollPanel.setSize("28em", "19em");
@@ -605,7 +590,28 @@ public class QDMAttributeDialogBox {
 		decoratorPanel.setWidget(scrollPanel);
 		dialogContents.add(decoratorPanel);
 		
-		dialogContents.setCellHorizontalAlignment(decoratorPanel, HasHorizontalAlignment.ALIGN_LEFT);		
+		dialogContents.setCellHorizontalAlignment(decoratorPanel, HasHorizontalAlignment.ALIGN_LEFT);
+		
+		final List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode.getExtraInformation(ATTRIBUTES);
+		final int rows = (attributeNodeList == null)?0:attributeNodeList.size();
+	    
+		Timer t = new Timer() {
+			public void run(){
+				if(rows == 0){
+					//Add a blank attribute row to the table for the user to fill in.
+					AddNewQDMAttributeClickHandler.rowNode = null;
+					DomEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), addNewButton);
+				}else{
+					for(int i=0;i<rows;i++){
+						//Add a blank row to the table.
+						CellTreeNode rowNode = attributeNodeList.get(i);
+						AddNewQDMAttributeClickHandler.rowNode = rowNode;
+						DomEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), addNewButton);
+					}
+				}
+			}
+		};
+		t.schedule(250);
 	}
 	
 	private static void setExitingAttributeInGrid(CellTreeNode attributenode, int row){
@@ -712,36 +718,35 @@ public class QDMAttributeDialogBox {
 		return modeList;
 	}
 
-	private static void fetchAtttributesByDataType(String qdmDataType, final ListBox qdmAttributeListBox, final List<String> attributeList, final String attributeName) {
-		QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT.create(QDSAttributesService.class);
-		attributeService.getAllAttributesByDataType(qdmDataType, new AsyncCallback<List<QDSAttributes>>() {
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-				System.out.println("Error retrieving data type attributes. " + caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(List<QDSAttributes> result) {
-				for(QDSAttributes qdsAttributes:result){
-					qdmAttributeListBox.addItem(qdsAttributes.getName());
-					if(!attributeList.contains(qdsAttributes.getName())){
-						attributeList.add(qdsAttributes.getName());
-					}
-				}
-				setToolTipForEachElementInListbox(qdmAttributeListBox);
-				
-				for(int j=0;j<qdmAttributeListBox.getItemCount();j++){
-					if(qdmAttributeListBox.getItemText(j).equals(attributeName)){
-						qdmAttributeListBox.setSelectedIndex(j);
-						break;
-					}
-				}
-			}
-		});
-		
-	}
+//	private static void fetchAtttributesByDataType(String qdmDataType, final ListBox qdmAttributeListBox, final List<String> attributeList, final String attributeName) {
+//		attributeService.getAllAttributesByDataType(qdmDataType, new AsyncCallback<List<QDSAttributes>>() {
+//			
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				caught.printStackTrace();
+//				System.out.println("Error retrieving data type attributes. " + caught.getMessage());
+//			}
+//
+//			@Override
+//			public void onSuccess(List<QDSAttributes> result) {
+//				for(QDSAttributes qdsAttributes:result){
+//					qdmAttributeListBox.addItem(qdsAttributes.getName());
+//					if(!attributeList.contains(qdsAttributes.getName())){
+//						attributeList.add(qdsAttributes.getName());
+//					}
+//				}
+//				System.out.println("attrib list:"+attributeList);
+//				setToolTipForEachElementInListbox(qdmAttributeListBox);
+//				
+//				for(int j=0;j<qdmAttributeListBox.getItemCount();j++){
+//					if(qdmAttributeListBox.getItemText(j).equals(attributeName)){
+//						qdmAttributeListBox.setSelectedIndex(j);
+//						break;
+//					}
+//				}
+//			}
+//		});
+//	}
 	
 	/**
 	 * This method will check all the QDM elements in ElementLookup node
@@ -760,6 +765,24 @@ public class QDMAttributeDialogBox {
 		}
 		return qdmNameList;
 	}
+	
+	private static void findAttributesForDataType(String dataType){
+		attributeService.getAllAttributesByDataType(dataType, new AsyncCallback<List<QDSAttributes>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				System.out.println("Error retrieving data type attributes. " + caught.getMessage());
+			}
+			@Override
+			public void onSuccess(List<QDSAttributes> result) {
+				for(QDSAttributes qdsAttributes:result){
+					attributeList .add(qdsAttributes.getName());
+				}
+				System.out.println("attribs:"+attributeList);
+			}
+		});
+	}
 
 	private static Node findElementLookUpNode(String name) {
 		Set<String> qdmNames = ClauseConstants.getElementLookUps().keySet();
@@ -772,22 +795,23 @@ public class QDMAttributeDialogBox {
 		return null;
 	}
 	
-	private static List<String> getUnitNameList(){
-		final List<String> unitNameList = new ArrayList<String>();		
-		MatContext.get().getListBoxCodeProvider().getUnitMatrixListByCategory(ConstantMessages.UNIT_ATTRIBUTE, new AsyncCallback<List<? extends HasListBox>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-			}
-			@Override
-			public void onSuccess(List<? extends HasListBox> result) {				
-				for(HasListBox hasListBox:result){
-					unitNameList.add(hasListBox.getItem());
-				}
-			}
-       });
-	   return unitNameList;
-	}
+//	private static List<String> getUnitNameList(){
+//		final List<String> unitNameList = new ArrayList<String>();		
+//		MatContext.get().getListBoxCodeProvider().getUnitMatrixListByCategory(ConstantMessages.UNIT_ATTRIBUTE, new AsyncCallback<List<? extends HasListBox>>() {
+//			@Override
+//			public void onFailure(Throwable caught) {
+//				caught.printStackTrace();
+//			}
+//			@Override
+//			public void onSuccess(List<? extends HasListBox> result) {				
+//				for(HasListBox hasListBox:result){
+//					unitNameList.add(hasListBox.getItem());
+//				}
+//			}
+//       });
+//	   return unitNameList;
+//	}
+	
 	private static void setToolTipForEachElementInListbox(ListBox listBox){
 		//Set tooltips for each element in listbox
 		SelectElement selectElement = SelectElement.as(listBox.getElement());

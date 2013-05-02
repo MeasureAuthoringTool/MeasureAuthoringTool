@@ -10,11 +10,7 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
-import mat.client.codelist.HasListBox;
-import mat.client.shared.MatContext;
 import mat.model.clause.QDSAttributes;
-import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
@@ -38,7 +34,6 @@ import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -611,7 +606,7 @@ public class QDMAttributeDialogBox {
 				}
 			}
 		};
-		t.schedule(250);
+		t.schedule(350);
 	}
 	
 	private static void setExitingAttributeInGrid(CellTreeNode attributenode, int row){

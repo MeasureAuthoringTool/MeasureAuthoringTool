@@ -12,7 +12,6 @@ import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.codelist.HasListBox;
 import mat.client.shared.MatContext;
-import mat.client.shared.MessageDelegate;
 import mat.model.clause.QDSAttributes;
 import mat.shared.ConstantMessages;
 
@@ -20,14 +19,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
-import com.google.gwt.dom.client.Style.BorderStyle;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.CheckBox;
@@ -44,7 +40,6 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.HTMLTable.RowFormatter;
 import com.google.gwt.xml.client.Node;
 
 public class QDMAttributeDialogBox {
@@ -75,7 +70,7 @@ public class QDMAttributeDialogBox {
 	
 	private static final List<String> qdmNames = new ArrayList<String>();
 	private static final List<String> unitNames = new ArrayList<String>();
-	private static final List<String> attributeList = new ArrayList<String>();
+	private static final List<String> attributeList = new  ArrayList<String>();
 	private static Grid grid;
 	
 	private static final class DeleteSelectedClickHandler implements
@@ -108,11 +103,13 @@ public class QDMAttributeDialogBox {
 	private static final class QDMAttributeGridClickHandler implements
 			ClickHandler {
 		private final Grid grid;
+		private int lastRow = -1;
+		private int lastCol = -1;
 		
 		private QDMAttributeGridClickHandler(Grid grid) {
 			this.grid = grid;
 		}
-
+		
 		@Override
 		public void onClick(ClickEvent event) {
 			HTMLTable.Cell cell = grid.getCellForEvent(event);
@@ -123,17 +120,23 @@ public class QDMAttributeDialogBox {
 				return;
 			}
 			
+			if(cell.getRowIndex() != lastRow && cell.getCellIndex() != lastCol){
+				lastRow = cell.getRowIndex();
+				lastCol = cell.getCellIndex();
+				return;
+			}
+			
 			Widget widget = grid.getWidget(cell.getRowIndex(), cell.getCellIndex());
 			if(cell.getCellIndex() == 1){
 				ListBox attributeListBox = (ListBox)widget;
-				
+				//updateAttributeListBox(grid, cell.getRowIndex(), attributeListBox);
+				updateAttributeListBoxes(grid,cell.getRowIndex());
 				String text = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
 				int rowNum = cell.getRowIndex();
 				
 				if(QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text)){
 					ListBox modeListBox = (ListBox)grid.getWidget(rowNum, 2);
 					modeListBox.setSelectedIndex(0);
-					DomEvent.fireNativeEvent(Document.get().createChangeEvent(), modeListBox);
 					modeListBox.setEnabled(false);
 				}else{
 					ListBox modeListBox = (ListBox)grid.getWidget(rowNum, 2);
@@ -142,7 +145,7 @@ public class QDMAttributeDialogBox {
 				
 			}else if(cell.getCellIndex() == 2){
 				ListBox modeListBox = (ListBox)widget;
-				
+								
 				String text = modeListBox.getItemText(modeListBox.getSelectedIndex());
 				int rowNum = cell.getRowIndex();
 				
@@ -210,9 +213,8 @@ public class QDMAttributeDialogBox {
 				attributeName = (String) node.getExtraInformation(NAME);
 			}
 			final ListBox attributeListBox = new ListBox(false);
-						
 			grid.resizeRows(grid.getRowCount()+1);
-			int i = grid.getRowCount()-1;
+			final int i = grid.getRowCount()-1;
 			
 			CheckBox checkBox = new CheckBox();
 			grid.setWidget(i, 0, checkBox);
@@ -234,10 +236,11 @@ public class QDMAttributeDialogBox {
 						break;
 					}
 				}
+				updateAttributeListBox(grid, i, attributeListBox);
 			}
 			else{
 				fetchAtttributesByDataType(this.qdmDataTypeName, attributeListBox, attributeList,attributeName);
-			}			
+			}
 			grid.setWidget(i, 1, attributeListBox);
 						
 			final ListBox modeListBox = new ListBox(false);
@@ -293,7 +296,7 @@ public class QDMAttributeDialogBox {
 		
 		grid = new Grid(0,4);
 		grid.addClickHandler(new QDMAttributeGridClickHandler(grid));
-		
+				
 		qdmNames.clear();
 		unitNames.clear();
 		attributeList.clear();
@@ -307,6 +310,54 @@ public class QDMAttributeDialogBox {
 		buildAndDisplayDialogBox(qdmDataType, mode,xmlTreeDisplay, cellTreeNode);
 	}
 	
+	/**
+	 * Remove all attribute names used in other rows from modeListBox.
+	 * @param table
+	 * @param rowIndex
+	 * @param attributeListBox
+	 */
+	public static void updateAttributeListBox(Grid table, int rowIndex, ListBox attributeListBox) {
+		for(int i=0;i<grid.getRowCount();i++){
+			if(i == rowIndex){
+				continue;
+			}
+			ListBox rowListBox = (ListBox)table.getWidget(i, 1);
+			String alreadySelectedAttribute = rowListBox.getItemText(rowListBox.getSelectedIndex());
+			if(SELECT.equals(alreadySelectedAttribute)){
+				continue;
+			}
+			for(int j=0;j<attributeListBox.getItemCount();j++){
+				if(attributeListBox.getItemText(j).equals(alreadySelectedAttribute)){
+					attributeListBox.removeItem(j);
+					break;
+				}
+			}
+		}
+	}
+	
+	public static void updateAttributeListBoxes(Grid table, int row){
+		for(int i=0;i<grid.getRowCount();i++){
+			if(i == row){
+				continue;
+			}
+			ListBox rowListBox = (ListBox)table.getWidget(i, 1);
+			String selected = rowListBox.getItemText(rowListBox.getSelectedIndex());
+			rowListBox.clear();
+			for(int g=0;g<attributeList.size();g++){
+				String att = attributeList.get(g); 
+				rowListBox.addItem(att);
+			}
+			updateAttributeListBox(grid, i, rowListBox);
+			for(int j=0;j<rowListBox.getItemCount();j++){
+				String item = rowListBox.getItemText(j);
+				if(item.equals(selected)){
+					rowListBox.setSelectedIndex(j);
+					break;
+				}
+			}
+		}
+	}
+
 	private static void buildAndDisplayDialogBox(String qdmDataType,
 			List<String> mode, final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
 		
@@ -403,6 +454,9 @@ public class QDMAttributeDialogBox {
 								inValidRows.add(i);
 								continue;
 							}
+						}else if(!COMPARISON.equals(modeName)){
+							inValidRows.add(i);
+							continue;
 						}else{
 							HorizontalPanel hPanel = (HorizontalPanel) grid.getWidget(i, 3);
 							TextBox valueBox = (TextBox) hPanel.getWidget(0);
@@ -485,7 +539,8 @@ public class QDMAttributeDialogBox {
 			attributeNode.setExtraInformation(NAME, attributeName);
 			
 			ListBox modeListBox = ((ListBox)grid.getWidget(i, 2));
-			String modeName = modeListBox.getItemText(modeListBox.getSelectedIndex());
+			//String modeName = modeListBox.getItemText(modeListBox.getSelectedIndex());
+			String modeName = modeListBox.getValue(modeListBox.getSelectedIndex());
 			
 			if(CHECK_IF_PRESENT.equals(modeName) || VALUE_SET.equals(modeName)){
 				attributeNode.setExtraInformation(MODE, modeName);
@@ -670,7 +725,9 @@ public class QDMAttributeDialogBox {
 			public void onSuccess(List<QDSAttributes> result) {
 				for(QDSAttributes qdsAttributes:result){
 					qdmAttributeListBox.addItem(qdsAttributes.getName());
-					attributeList.add(qdsAttributes.getName());
+					if(!attributeList.contains(qdsAttributes.getName())){
+						attributeList.add(qdsAttributes.getName());
+					}
 				}
 				setToolTipForEachElementInListbox(qdmAttributeListBox);
 				

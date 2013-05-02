@@ -242,7 +242,7 @@ public class QDMAttributeDialogBox {
 				fetchAtttributesByDataType(this.qdmDataTypeName, attributeListBox, attributeList,attributeName);
 			}
 			grid.setWidget(i, 1, attributeListBox);
-						
+			
 			final ListBox modeListBox = new ListBox(false);
 			modeListBox.setVisibleItemCount(1);
 			modeListBox.setWidth("8em");
@@ -276,7 +276,7 @@ public class QDMAttributeDialogBox {
 		    Character charCode = event.getCharCode();
 		    int unicodeCharCode = event.getUnicodeCharCode();
 		    // allow digits, and non-characters
-		    if (!(Character.isDigit(charCode) || unicodeCharCode == 0)){
+		    if (!(Character.isDigit(charCode) || unicodeCharCode == 0 || charCode == '.')){
 		       sender.cancelKey();
 		    }
 		}
@@ -454,7 +454,7 @@ public class QDMAttributeDialogBox {
 								inValidRows.add(i);
 								continue;
 							}
-						}else if(!COMPARISON.equals(modeName)){
+						}else if(COMPARISON.equals(modeName)){
 							inValidRows.add(i);
 							continue;
 						}else{
@@ -462,7 +462,8 @@ public class QDMAttributeDialogBox {
 							TextBox valueBox = (TextBox) hPanel.getWidget(0);
 							ListBox unitBox =  (ListBox) hPanel.getWidget(1);
 							
-							if(valueBox.getText().length() == 0){
+							String value = valueBox.getText(); 
+							if(value == null || value.length() == 0){
 								inValidRows.add(i);
 								continue;
 							}else{

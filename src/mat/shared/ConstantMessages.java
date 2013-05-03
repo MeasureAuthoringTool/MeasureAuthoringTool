@@ -29,16 +29,16 @@ public  class ConstantMessages {
 		public static final String RATIO_SCORING = "Ratio";
 		
 		//From MAT_APP.CONTEXT
-		public static final String POPULATION_CONTEXT_ID= "1";
-		public static final String NUMERATOR_CONTEXT_ID = "2";
-		public static final String NUMERATOR_EXCLUSIONS_CONTEXT_ID = "3";
-		public static final String DENOMINATOR_CONTEXT_ID = "4";
-		public static final String DENOMINATOR_EXCLUSIONS_CONTEXT_ID = "5";
-		public static final String DENOMINATOR_EXCEPTIONS_CONTEXT_ID = "6";
-		public static final String MEASURE_POPULATION_CONTEXT_ID = "7";
-		public static final String MEASURE_OBSERVATION_CONTEXT_ID = "8";
+		public static final String POPULATION_CONTEXT_ID= "initialPatientPopulation";
+		public static final String NUMERATOR_CONTEXT_ID = "numerator";
+		public static final String NUMERATOR_EXCLUSIONS_CONTEXT_ID = "numeratorExclusions";
+		public static final String DENOMINATOR_CONTEXT_ID = "denominator";
+		public static final String DENOMINATOR_EXCLUSIONS_CONTEXT_ID = "denominatorExclusions";
+		public static final String DENOMINATOR_EXCEPTIONS_CONTEXT_ID = "denominatorExceptions";
+		public static final String MEASURE_POPULATION_CONTEXT_ID = "measurePopulation";
+		public static final String MEASURE_OBSERVATION_CONTEXT_ID = "measureObservation";
 		//US 597
-		public static final String STRATIFICATION_CONTEXT_ID = "9";
+		public static final String STRATIFICATION_CONTEXT_ID = "stratification";
 		public static final String USER_DEFINED_CONTEXT_ID = "10";
 		public static final String MEASURE_PHRASE_CONTEXT_ID ="11";
 		

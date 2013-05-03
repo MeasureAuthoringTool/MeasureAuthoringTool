@@ -281,6 +281,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		boolean valid = message.size() == 0;
 		if(!valid) {
 			view.getErrorMessageDisplay().setMessages(message);
+			((Button)view.getPackageMeasureButton()).setEnabled(true);
 		}
 		else {
 			view.getErrorMessageDisplay().clear();
@@ -422,7 +423,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		
 		view.setPackageName(currentDetail.getPackageName());
 		view.setClausesInPackage(packageClauses);
-		view.setValuesSetDate(model.getValueSetDate());
+		view.setValuesSetDate(model != null ? model.getValueSetDate() : "");
 		view.setClauses(remainingClauses);
 		setQDMElements(overview.getQdmElements());				
 	}

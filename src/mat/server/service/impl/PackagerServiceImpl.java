@@ -1,116 +1,197 @@
 package mat.server.service.impl;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.xpath.XPathExpressionException;
+
+import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
 import mat.dao.QualityDataSetDAO;
-import mat.dao.clause.ClauseDAO;
-import mat.dao.clause.DecisionDAO;
-import mat.dao.clause.MeasureDAO;
-import mat.dao.clause.PackagerDAO;
+import mat.dao.clause.MeasureXMLDAO;
 import mat.model.QualityDataSet;
 import mat.model.QualityDataSetDTO;
-import mat.model.clause.Clause;
-import mat.model.clause.Decision;
-import mat.model.clause.Measure;
-import mat.model.clause.Packager;
+import mat.model.clause.MeasureXML;
 import mat.server.service.PackagerService;
+import mat.server.util.ResourceLoader;
+import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class PackagerServiceImpl implements PackagerService {
+
 	private static final Log logger = LogFactory.getLog(PackagerServiceImpl.class);
 	 
-	@Autowired
-	private PackagerDAO packagerDAO;
-	@Autowired 
-	private ClauseDAO clauseDAO;
-	@Autowired
-	private MeasureDAO measureDAO;
-	@Autowired 
-	private DecisionDAO decisionDAO;
 	@Autowired 
 	private QualityDataSetDAO qualityDataSetDAO;
+	@Autowired 
+	private MeasureXMLDAO measureXMLDAO;
 	
+	/**
+	 * Creates measureGrouping XML chunk from MeasurePackageDetail using castor and "MeasurePackageClauseDetail.xml" mapping file.
+	 * Finds the Group Node in the Measure_Xml using the sequence number from MeasurePackageDetail
+	 * if the Group present deletes that Group in Measure_Xml and appends the new Group from measureGrouping XML to the measureGrouping node in Measure_Xml
+	 * if the Group not Present appends the new Group from measureGrouping XML to the parent measureGrouping node in Measure_XML
+	 * Finally Save the Measure_xml
+	 */
 	@Override
 	public void save(MeasurePackageDetail detail) {
-		packagerDAO.deletePackage(detail.getMeasureId(), detail.getSequence());
-		Measure measure = measureDAO.find(detail.getMeasureId());
-		int sequence = Integer.valueOf(detail.getSequence());
-			
-		for(MeasurePackageClauseDetail nvp : detail.getPackageClauses()) {
-			Packager pkgr = new Packager();
-			pkgr.setMeasure(measure);
-			pkgr.setClause(clauseDAO.find(nvp.getId()));
-			pkgr.setSequence(sequence);
-			packagerDAO.save(pkgr);
+		
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
+		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+		Node groupNode = null;
+		Node measureGroupingNode = null;
+		try {
+			//fetches the Group node from Measure_XML with the sequence number from MeasurePackageDetail
+			groupNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_GROUP_SEQ_START + detail.getSequence() +  XmlProcessor.XPATH_GROUP_SEQ_END);			
+			//fetches the MeasureGrouping node from the Measure_xml
+			measureGroupingNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_GROUPING);
+		} catch (XPathExpressionException e) {
+			logger.info("Xpath Expression is incorrect" + e);
 		}
+		if(null != groupNode && groupNode.hasChildNodes()){
+			logger.info("Removing Group with seq number" + detail.getSequence());
+			measureGroupingNode.removeChild(groupNode);
+		}
+		String measureGroupingXml = createGroupingXml(detail);//Converts MeasurePackageDetail to measureGroupingXml 
+		XmlProcessor measureGrpProcessor = new XmlProcessor(measureGroupingXml);
+		Node newGroupNode = measureGrpProcessor.getOriginalDoc().getElementsByTagName("measureGrouping").item(0).getFirstChild();
+		measureGroupingNode.appendChild(processor.getOriginalDoc().importNode(newGroupNode, true));
+		logger.info("new Group appended");
+		String xml = measureGrpProcessor.transform(processor.getOriginalDoc());
+		measureXML.setMeasureXMLAsByteArray(xml);
+		measureXMLDAO.save(measureXML);
 	}
 
+	
+	private String createGroupingXml(
+			MeasurePackageDetail detail) {
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MeasurePackageClauseDetail.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+	        marshaller.marshal(detail);
+	        logger.info("Marshalling of MeasurePackageDetail is successful.." + stream.toString());
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load MeasurePackageClauseDetail.xml" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed" + e);
+			}else if(e instanceof ValidationException){
+				logger.info("Validation Exception" + e);
+			}else{
+				logger.info("Other Exception" + e);
+			}
+		} 
+		return stream.toString();
+	}
+	
 
+	/**
+	 * 1) Loads the MeasureXml from DB and converts into Xml Document Object
+	 * 2) XPATH retrieves all Clause nodes in Measure_Xml except for  Clause type "stratum"
+	 * 3) Creates a list of MeasurePackageClauseDetail object with the attributes from Clause Nodes, which is used to show on the Measure Packager Screen Clause Box on left
+	 * 4) XPATH finds the group nodes that are not matching with the the Clause nodes but comparing the uuids, the found group nodes are deleted from MeasureXml
+	 * 5) XPATH finds the remaining groups in MeasureXml, converted into list of MeasurePackageDetail object using the groups child node attributes. this list is used to display the top Groupings with seq number on Page 
+	 * 6) The MeasurePackageClauseDetail list and MeasurePackageDetail list is set into MeasurePackageOverview object and returned to Page,
+	 * 
+	 */
 	@Override
 	public MeasurePackageOverview buildOverviewForMeasure(String measureId) {
 		
 		MeasurePackageOverview overview = new MeasurePackageOverview();
 		
 		List<MeasurePackageClauseDetail> clauses = new ArrayList<MeasurePackageClauseDetail>();
-		List<Clause> clauseList = clauseDAO.findByMeasureId(measureId, null);
-		for(Clause c : clauseList) {
-			String clauseContextId = c.getContextId();
-			
-			/*
-			 * 1) if population, numerator, or denominator (clause id = 1-2) and clause id = 4, 6 and 7 then add to clause list
-			 * 2) ** if numerator exclusions, denominator exclusions or denominator exceptions (clause id = 3 or 4 or 5), add to clause list if there is any content deeper than top level AND
-			 * ** handled by clauseHasContent
-			 * 3) else do not add to clause list 
-			 */
-			
-				
-			
-			//TODO Think about only displaying the clauses needed with regards to the scoring type
-			//TODO Replace these with string constants from ConstantMessages.java
-			//US497
-			boolean doadd = clauseContextId.equals(ConstantMessages.POPULATION_CONTEXT_ID) || clauseContextId.equals(ConstantMessages.NUMERATOR_CONTEXT_ID) 
-					|| clauseContextId.equals(ConstantMessages.DENOMINATOR_CONTEXT_ID) || clauseContextId.equals(ConstantMessages.MEASURE_POPULATION_CONTEXT_ID)
-					|| clauseContextId.equals(ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) ? clauseHasContentForPopulationNumeratorDenominator(c) :
-					clauseContextId.equals(ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) || clauseContextId.equals(ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) 
-					|| clauseContextId.equals(ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) ? clauseHasContentForExclusionsExceptions(c) : false;
-			if(doadd) {
-				clauses.add(extractClause(c));
-			}
-		}
-		
 		List<MeasurePackageDetail> pkgs = new ArrayList<MeasurePackageDetail>();
-		Map<Integer, MeasurePackageDetail> seqDetailMap = 
-			new HashMap<Integer, MeasurePackageDetail>();
-		List<Packager> pList = getForMeasure(measureId);
-		for(Packager p : pList) {
-			MeasurePackageDetail detail = seqDetailMap.get(p.getSequence());
-			if(detail == null) {
-				detail = new MeasurePackageDetail();
-				detail.setSequence(Integer.toString(p.getSequence()));
-				detail.setMeasureId(measureId);
-				seqDetailMap.put(p.getSequence(), detail);
-				pkgs.add(detail);
+		// Load Measure Xml
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
+		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+		boolean isGroupRemoved = false;
+		try {
+			NodeList measureClauses = processor.findNodeList(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_CLAUSE);
+			if(null != measureClauses && measureClauses.getLength() > 0){
+				String xpathGrpUuid = XmlProcessor.XPATH_FIND_GROUP_CLAUSE;
+				for (int i = 0; i < measureClauses.getLength(); i++) {
+					NamedNodeMap namedNodeMap = measureClauses.item(i).getAttributes();
+					Node uuidNode = namedNodeMap.getNamedItem(ClauseConstants.UUID);
+					Node displayNameNode = namedNodeMap.getNamedItem(ClauseConstants.DISPLAY_NAME);
+					Node typeNode = namedNodeMap.getNamedItem(ClauseConstants.TYPE);
+					clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue()));	
+					xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and";
+				}
+				xpathGrpUuid = xpathGrpUuid.substring(0, xpathGrpUuid.lastIndexOf(" and")).concat("]]");
+				// delete groups which doesn't have the measure clauses.
+				 NodeList toRemoveGroups = processor.findNodeList(processor.getOriginalDoc(), xpathGrpUuid);
+				 if(toRemoveGroups != null && toRemoveGroups.getLength() > 0){
+					 Node measureGroupingNode = toRemoveGroups.item(0).getParentNode();
+					 for (int i = 0; i < toRemoveGroups.getLength(); i++) {
+						measureGroupingNode.removeChild(toRemoveGroups.item(i));
+						isGroupRemoved = true;
+					}
+				 }
 			}
 			
-			detail.getPackageClauses().add(extractClause(p.getClause()));
+			NodeList measureGroups = processor.findNodeList(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_GROUPING_GROUP);
+			Map<Integer, MeasurePackageDetail> seqDetailMap = 
+				new HashMap<Integer, MeasurePackageDetail>();
+			
+			if(measureGroups != null && measureGroups.getLength() > 0){
+				for (int i = 0; i < measureGroups.getLength(); i++) {
+					NamedNodeMap groupAttrs = measureGroups.item(i).getAttributes();
+					Integer seq = Integer.parseInt(groupAttrs.getNamedItem("sequence").getNodeValue());
+					MeasurePackageDetail detail = seqDetailMap.get(seq);
+					if(detail == null) {
+						detail = new MeasurePackageDetail();
+						detail.setSequence(Integer.toString(seq));
+						detail.setMeasureId(measureId);
+						seqDetailMap.put(seq, detail);
+						pkgs.add(detail);
+					}
+					NodeList pkgClauses = measureGroups.item(i).getChildNodes();
+					for (int j = 0; j < pkgClauses.getLength(); j++) {
+						NamedNodeMap pkgClauseMap = pkgClauses.item(j).getAttributes();
+						detail.getPackageClauses().add(createMeasurePackageClauseDetail(pkgClauseMap.getNamedItem(ClauseConstants.UUID).getNodeValue()
+								, pkgClauseMap.getNamedItem("name").getNodeValue(), pkgClauseMap.getNamedItem(ClauseConstants.TYPE).getNodeValue()));
+					}
+				}	
+			}
+		} catch (XPathExpressionException e) {
+			logger.info("Xpath Expression is incorrect" + e);
 		}
 		
+		Collections.sort(pkgs);
 		overview.setClauses(clauses);
 		overview.setPackages(pkgs);
 				
 		overview.setQdmElements(getQDMElements(measureId));
-		
+		if(isGroupRemoved){
+			measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
+			measureXMLDAO.save(measureXML);	
+		}
 		return overview;
 	}
 	
@@ -127,59 +208,35 @@ public class PackagerServiceImpl implements PackagerService {
 		return filteredQDMElements;
 	}
 
-	private MeasurePackageClauseDetail extractClause(Clause clause) {
+
+	private MeasurePackageClauseDetail createMeasurePackageClauseDetail(String id, String name, String type) {
 		MeasurePackageClauseDetail detail = new MeasurePackageClauseDetail();
-		detail.setId(clause.getId());
-		detail.setName(clause.getName());
-		detail.setType(clause.getContextId());
+		detail.setId(id);
+		detail.setName(name);
+		detail.setType(type);
 		return detail;
 	}
-
-	private List<Packager> getForMeasure(String measureId) {
-		return packagerDAO.getForMeasure(measureId);
-	}
+	
 
 	@Override
 	public void delete(MeasurePackageDetail detail) {
-		packagerDAO.deletePackage(detail.getMeasureId(), detail.getSequence());
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
+		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+		Node groupNode = null;
+		try {
+			groupNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_GROUP_SEQ_START + detail.getSequence() +  XmlProcessor.XPATH_GROUP_SEQ_END);			
+		} catch (XPathExpressionException e) {
+			logger.info("Xpath Expression is incorrect" + e);
+		}
+		if(groupNode != null){
+			Node measureGroupingNode = groupNode.getParentNode();
+			measureGroupingNode.removeChild(groupNode);
+		}
+		String xml = processor.transform(processor.getOriginalDoc());
+		measureXML.setMeasureXMLAsByteArray(xml);
+		measureXMLDAO.save(measureXML);
 	}
 
-	/**
-	 * return true if more than top level conditional
-	 * @param c
-	 * @return
-	 */
-	private boolean clauseHasContentForExclusionsExceptions(Clause c) {
-		try{
-			Clause c1 = clauseDAO.find(c.getId());
-			Decision d = decisionDAO.find(c1.getDecision().getId());
-			while(d.getOperator().equals("CLAUSE") && d.getChildDecisions().size()==1)
-				d = d.getChildDecisions().toArray(new Decision[d.getChildDecisions().size()])[0];
-			if(d.getChildDecisions().isEmpty() || !d.getOperator().equals("AND"))
-				return false;
-			else{
-//				Decision child = d.getChildDecisions().toArray(new Decision[d.getChildDecisions().size()])[0];
-//				return !child.getChildDecisions().isEmpty();
-				return !d.getChildDecisions().isEmpty();
-			}
-			
-		}catch(Exception e){
-			return false;
-		}
-	}
-	
-	private boolean clauseHasContentForPopulationNumeratorDenominator(Clause c) {
-		try{
-			Clause c1 = clauseDAO.find(c.getId());
-			Decision d = decisionDAO.find(c1.getDecision().getId());
-			while(d.getOperator().equals("CLAUSE") && d.getChildDecisions().size()==1)
-				d = d.getChildDecisions().toArray(new Decision[d.getChildDecisions().size()])[0];
-			return d.getOperator().equals("AND");
-//			return !d.getChildDecisions().isEmpty();
-		}catch(Exception e){
-			return false;
-		}
-	}
 	
 	@Override
 	public void saveQDMData(MeasurePackageDetail detail) {

@@ -78,6 +78,8 @@ public class ClauseConstants{
 	
 	public static final String EXTRA_ATTRIBUTES = "extraAttributes";
 	
+	public static final String UUID = "uuid";
+	
 	static{
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");

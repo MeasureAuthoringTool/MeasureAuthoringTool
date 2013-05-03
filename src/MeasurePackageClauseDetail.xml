@@ -1,0 +1,37 @@
+<?xml version="1.0"?>
+<!DOCTYPE mapping PUBLIC "-//EXOLAB/Castor Mapping DTD Version 1.0//EN"
+                         "http://castor.org/mapping.dtd">
+
+<mapping>
+	<class name="mat.client.measurepackage.MeasurePackageDetail">
+		<map-to xml="measureGrouping" />
+		
+		<field name="sequence" 
+           type="java.lang.String">
+	      <bind-xml name="sequence" node="attribute" location="group"/>
+	    </field>
+
+		<field name="packageClauses"
+	           type="mat.client.measurepackage.MeasurePackageClauseDetail"
+	           collection="arraylist">
+	     	 <bind-xml name="packageClause" location="group">
+	      		<class name="mat.client.measurepackage.MeasurePackageClauseDetail">
+				    <field name="id"
+				           type="java.lang.String" >
+				      <bind-xml name="uuid" node="attribute"/>
+				    </field>
+				    
+				    <field name="name"
+				           type="java.lang.String">
+				      <bind-xml name="name" node="attribute"/>
+				    </field>
+				    
+				     <field name="type"
+				           type="java.lang.String">
+				      <bind-xml name="type" node="attribute"/>
+				    </field>
+	  			</class>
+	     	 </bind-xml>
+	    </field>
+	</class>
+</mapping>

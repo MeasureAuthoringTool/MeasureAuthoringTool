@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class CellTreeNodeImpl implements CellTreeNode{
 
@@ -20,6 +21,8 @@ public class CellTreeNodeImpl implements CellTreeNode{
 	private short nodeType;
 	
 	Map<String,Object> extraInformationMap = new HashMap<String, Object>();
+	
+	private String uuid;
 
 
 	@Override
@@ -62,6 +65,10 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		cellTreeNode.setLabel(label);
 		cellTreeNode.setNodeType(nodeType);
 		cellTreeNode.setOpen(true);
+		if(nodeType == CLAUSE_NODE){
+			cellTreeNode.setUUID(UUID.randomUUID().toString());	
+		}
+		
 		this.setOpen(true);//open parent
 		return appendChild(cellTreeNode);
 	}
@@ -128,6 +135,9 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		Map<String, Object> extraInfos = new HashMap<String, Object>();
 		extraInfos.putAll(((CellTreeNodeImpl)model).getExtraInformationMap());
 		((CellTreeNodeImpl)copyModel).setExtraInformationMap(extraInfos);
+		if(model.getNodeType() == CLAUSE_NODE){
+			copyModel.setUUID(UUID.randomUUID().toString());	
+		}
 		return copyModel;
 	}
 
@@ -191,6 +201,18 @@ public class CellTreeNodeImpl implements CellTreeNode{
 	 */
 	public void setExtraInformationMap(Map<String, Object> extraInformationMap) {
 		this.extraInformationMap = extraInformationMap;
+	}
+
+
+	@Override
+	public String getUUID() {
+		return this.uuid;
+	}
+
+
+	@Override
+	public void setUUID(String uuid) {
+		this.uuid = uuid;
 	}
 
 }

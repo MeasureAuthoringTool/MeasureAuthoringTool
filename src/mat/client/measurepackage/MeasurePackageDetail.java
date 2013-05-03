@@ -7,7 +7,7 @@ import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class MeasurePackageDetail implements IsSerializable{
+public class MeasurePackageDetail implements IsSerializable, Comparable<MeasurePackageDetail>{
 	private String sequence;
 	private String measureId;
 	private List<MeasurePackageClauseDetail> packageClauses = new ArrayList<MeasurePackageClauseDetail>();
@@ -53,6 +53,13 @@ public class MeasurePackageDetail implements IsSerializable{
 	}
 	public void setSuppDataElements(List<QualityDataSetDTO> suppDataElements) {
 		this.suppDataElements = suppDataElements;
+	}
+	@Override
+	public int compareTo(MeasurePackageDetail detail) {
+		Integer seq1 = Integer.parseInt(this.sequence);
+		Integer seq2 = Integer.parseInt(detail.getSequence());
+		// TODO Auto-generated method stub
+		return seq1.compareTo(seq2);
 	}
 	
 	

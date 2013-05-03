@@ -203,13 +203,14 @@ public class XmlConversionlHelper {
 		String nodeName = node.getNodeName();
 		String nodeValue = node.hasAttributes() ? node.getAttributes().getNamedItem(ClauseConstants.DISPLAY_NAME).getNodeValue() : nodeName;
 		short cellTreeNodeType = 0;
-		
+		String uuid = "";
 		if(nodeName.equalsIgnoreCase(ClauseConstants.MASTER_ROOT_NODE_POPULATION)){
 			cellTreeNodeType =  CellTreeNode.MASTER_ROOT_NODE;				
 		}else if(ClauseConstants.ROOT_NODES.contains(nodeName)){
 			cellTreeNodeType =  CellTreeNode.ROOT_NODE;				
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.CLAUSE_TYPE)){
 			cellTreeNodeType =  CellTreeNode.CLAUSE_NODE;
+			uuid = node.getAttributes().getNamedItem(ClauseConstants.UUID).getNodeValue();
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.LOG_OP)){
 			cellTreeNodeType = CellTreeNode.LOGICAL_OP_NODE;			
 		}else if(nodeName.equalsIgnoreCase(ClauseConstants.RELATIONAL_OP)){
@@ -259,6 +260,7 @@ public class XmlConversionlHelper {
 		child.setLabel(nodeLabel);
 		child.setNodeType(cellTreeNodeType);		
 		child.setParent(parent);// set parent in child
+		child.setUUID(uuid);
 		childs.add(child);// add child to child list
 	}
 
@@ -278,6 +280,7 @@ public class XmlConversionlHelper {
 			element = document.createElement(ClauseConstants.CLAUSE_TYPE);
 			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 			element.setAttribute(ClauseConstants.TYPE, toCamelCase(cellTreeNode.getName().substring(0, cellTreeNode.getName().lastIndexOf(" "))));
+			element.setAttribute(ClauseConstants.UUID, cellTreeNode.getUUID());
 			break;
 		case CellTreeNode.LOGICAL_OP_NODE:
 			element = document.createElement(ClauseConstants.LOG_OP);

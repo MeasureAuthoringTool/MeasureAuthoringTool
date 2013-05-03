@@ -61,4 +61,8 @@ public interface CellTreeNode {
 	
 	public Object getExtraInformation(String key);
 	
+	public String getUUID();
+	
+	public void setUUID(String uuid);
+	
 }

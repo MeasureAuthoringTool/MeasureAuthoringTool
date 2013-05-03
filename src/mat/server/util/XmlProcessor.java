@@ -1,12 +1,14 @@
 package mat.server.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,11 +18,12 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import net.sf.saxon.TransformerFactoryImpl;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -75,6 +78,18 @@ public class XmlProcessor {
 
 	private static final String INITIAL_PATIENT_POPULATIONS = "initialPatientPopulations";
 	
+	public static final String XPATH_MEASURE_CLAUSE = "/measure/populations/*/clause | /measure/*/clause[@type !='stratum']";
+	
+	public static final String XPATH_MEASURE_GROUPING = "/measure/measureGrouping";
+	
+	public static final String XPATH_MEASURE_GROUPING_GROUP = "/measure/measureGrouping/group";
+	
+	public static final String XPATH_GROUP_SEQ_START = "/measure/measureGrouping/group[@sequence = '";
+	
+	public static final String XPATH_GROUP_SEQ_END = "' ] ";
+	
+	public static final String XPATH_FIND_GROUP_CLAUSE = "/measure/measureGrouping/group[packageClause[";
+
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
 
 	private static final Log logger = LogFactory.getLog(XmlProcessor.class);
@@ -99,6 +114,17 @@ public class XmlProcessor {
 		constantsMap.put("denominatorExceptions", "Denominator Exceptions");
 		constantsMap.put("measurePopulations", "Measure Populations");
 		constantsMap.put("numeratorExclusions", "Numerator Exclusions");
+		
+		constantsMap.put("Measure Observations", "Measure Observation");
+		constantsMap.put("Stratum", "Stratum");
+		constantsMap.put("Initial Patient Populations", "Initial Patient Population");
+		constantsMap.put("Numerators", "Numerator");
+		constantsMap.put("Denominators", "Denominator");
+		constantsMap.put("Denominator Exclusions", "Denominator Exclusions");
+		constantsMap.put("Denominator Exceptions", "Denominator Exceptions");
+		constantsMap.put("Measure Populations", "Measure Population");
+		constantsMap.put("Numerator Exclusions", "Numerator Exclusions");
+		
 	}
 	
 	public XmlProcessor(String originalXml) {
@@ -238,7 +264,7 @@ public class XmlProcessor {
 		return null;
 	}
 	
-	private String transform(Node node){	
+	public String transform(Node node){	
 		logger.info("In transform() method");
 		ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
 		TransformerFactory transformerFactory = TransformerFactoryImpl.newInstance();
@@ -447,6 +473,12 @@ public class XmlProcessor {
 			((Element)supplementaDataElements_Element.getParentNode()).insertBefore(elementLookUp_Element, supplementaDataElements_Element.getNextSibling());
 		}
 		
+		//create Measure Grouping node
+		if(findNode(originalDoc, XPATH_MEASURE_GROUPING) == null){
+			Element measureGrouping_Element = originalDoc.createElement("measureGrouping");
+			((Element)supplementaDataElements_Element.getParentNode()).insertBefore(measureGrouping_Element, supplementaDataElements_Element.getNextSibling());
+		}
+		
 		/*
 		 * All the adding and removing can put the children of 'populations' in
 		 * a random order.
@@ -519,8 +551,10 @@ public class XmlProcessor {
 		mainChildElem.setAttribute("displayName", constantsMap.get(nodeName));
 		
 		Element clauseChildElem = originalDoc.createElement("clause");
-		clauseChildElem.setAttribute("displayName", clauseDisplayName +" 1");
-		clauseChildElem.setAttribute("type", nodeName);
+		String dispName = constantsMap.get(clauseDisplayName);
+		clauseChildElem.setAttribute("displayName", dispName + " 1");
+		clauseChildElem.setAttribute("type", toCamelCase(dispName));
+		clauseChildElem.setAttribute("uuid", UUID.randomUUID().toString());
 		mainChildElem.appendChild(clauseChildElem);
 		
 		Element logicalOpElem = originalDoc.createElement("logicalOp");
@@ -540,10 +574,54 @@ public class XmlProcessor {
 		}
 	}
 
-	private Node findNode(Document document, String xPathString) throws XPathExpressionException{
+	public Node findNode(Document document, String xPathString) throws XPathExpressionException{
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		Node node = (Node)xPath.evaluate(xPathString, document.getDocumentElement(), XPathConstants.NODE);
 		return node;
+	}
+	
+	
+	public NodeList findNodeList(Document document, String xPathString) throws XPathExpressionException{
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		XPathExpression expr = xPath.compile(xPathString);
+		return (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+	}
+	
+	
+	public NodeList getNodeCount(Document document, String xPathString) throws XPathExpressionException{
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		XPathExpression expr = xPath.compile(xPathString);
+		return (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+	}
+	
+	
+	/**
+	 * @return the originalDoc
+	 */
+	public Document getOriginalDoc() {
+		return originalDoc;
+	}
+	/**
+	 * @param originalDoc the originalDoc to set
+	 */
+	public void setOriginalDoc(Document originalDoc) {
+		this.originalDoc = originalDoc;
+	}
+	
+	
+	private static String toCamelCase(String name){
+		name = name.toLowerCase();
+		String[] parts = name.split(" ");
+		String camelCaseString = parts[0].substring(0,1).toLowerCase() + parts[0].substring(1);
+		for (int i = 1; i < parts.length; i++) {		   
+			camelCaseString = camelCaseString + toProperCase(parts[i]);
+		}
+		return camelCaseString;
+	}
+	
+	private static String toProperCase(String s) {
+		return s.substring(0, 1).toUpperCase() +
+		s.substring(1).toLowerCase();
 	}
 	
 }

@@ -30,9 +30,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MeasurePackagePresenter implements MatPresenter {
 	private SimplePanel emptyPanel = new SimplePanel();
-	/*ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
-	ArrayList<QualityDataSetDTO> supplementalDataList = new ArrayList<QualityDataSetDTO>();
-	ArrayList<QualityDataSetDTO> masterQDMList = new ArrayList<QualityDataSetDTO>();*/
 	private SimplePanel panel = new SimplePanel();
 	public static interface MeasurePackageSelectionHandler {
 		public void onSelection(MeasurePackageDetail detail);

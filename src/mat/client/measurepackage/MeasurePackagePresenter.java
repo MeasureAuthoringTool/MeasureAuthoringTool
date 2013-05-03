@@ -211,7 +211,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 						//and set error message if needed 
 						//view.getPackageErrorMessageDisplay()
 						if(!overview.getPackages().contains(currentDetail)) {
-							overview.getPackages().add(currentDetail);
+							if(currentDetail.getPackageClauses() != null && currentDetail.getPackageClauses().size() > 0){
+								overview.getPackages().add(currentDetail);	
+							}
 							overview.setQdmElements(currentDetail.getQdmElements());
 							overview.setSuppDataElements(currentDetail.getSuppDataElements());
 							setOverview(overview);
@@ -532,6 +534,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(Void result) {
 				overview.getPackages().remove(pkg);
+				if(currentDetail.getSequence().equals(pkg.getSequence())){
+					currentDetail = null;
+				}
 				setOverview(overview);
 			}
 			

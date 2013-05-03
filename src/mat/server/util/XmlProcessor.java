@@ -20,7 +20,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.client.util.UUIDUtilClient;
+import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
 
 import org.apache.commons.lang.StringUtils;

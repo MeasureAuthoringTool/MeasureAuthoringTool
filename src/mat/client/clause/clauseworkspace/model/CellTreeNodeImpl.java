@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.client.util.UUIDUtilClient;
+import mat.shared.UUIDUtilClient;
 
 public class CellTreeNodeImpl implements CellTreeNode{
 

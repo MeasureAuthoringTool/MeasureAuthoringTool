@@ -30,7 +30,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MeasurePackagePresenter implements MatPresenter {
 	private SimplePanel emptyPanel = new SimplePanel();
-
+	/*ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
+	ArrayList<QualityDataSetDTO> supplementalDataList = new ArrayList<QualityDataSetDTO>();
+	ArrayList<QualityDataSetDTO> masterQDMList = new ArrayList<QualityDataSetDTO>();*/
 	private SimplePanel panel = new SimplePanel();
 	public static interface MeasurePackageSelectionHandler {
 		public void onSelection(MeasurePackageDetail detail);
@@ -425,26 +427,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClausesInPackage(packageClauses);
 		view.setValuesSetDate(model != null ? model.getValueSetDate() : "");
 		view.setClauses(remainingClauses);
-		setQDMElements(overview.getQdmElements());				
-	}
-	// QDM elements
-	private void setQDMElements(List<QualityDataSetDTO> master) {
-		List<QualityDataSetDTO> suppDataList = new ArrayList<QualityDataSetDTO>();
-		List<QualityDataSetDTO> qdmList = new ArrayList<QualityDataSetDTO>();
-		qdmList.addAll(master);
-		for(int i = 0; i < master.size(); i++) {
-			QualityDataSetDTO qds = master.get(i);
-			if(qds.isSuppDataElement()) {
-				qdmList.remove(qds);
-				suppDataList.add(qds);
-			}
-		}
-		if(suppDataList != null && suppDataList.size() > 0) {
-			overview.setSuppDataElements(suppDataList);
-		}
 		view.setQDMElementsInSuppElements(overview.getSuppDataElements());
-		view.setQDMElements(qdmList);
+		view.setQDMElements(overview.getQdmElements());
 	}
+	
 	
 	private List<MeasurePackageClauseDetail> removeClauses(List<MeasurePackageClauseDetail> master, List<MeasurePackageClauseDetail> toRemove) {
 		List<MeasurePackageClauseDetail> newList = new ArrayList<MeasurePackageClauseDetail>();
@@ -464,6 +450,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClauses(result.getClauses());
 		// QDM elements
 		view.setQDMElements(result.getQdmElements());
+	
 		view.setMeasurePackages(result.getPackages());
 		
 		if(result.getPackages().size() > 0) {
@@ -486,6 +473,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setViewIsEditable(isEditable());
 		view.getValuesSetDateInputBox().setEnabled(isEditable());
 	}
+	
 	private void getMeasurePackageOverview(final String measureId) {
 		MatContext.get().getPackageService().getClausesAndPackagesForMeasure(measureId, new AsyncCallback<MeasurePackageOverview>() {
 			@Override

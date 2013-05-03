@@ -94,7 +94,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	public void getXMLForAppliedQDM(){
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if (measureId != null && measureId != "") {
-			service.getMeasureXMLForAppliedQDM(measureId, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
+			service.getMeasureXMLForAppliedQDM(measureId,true, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
 
 				@Override
 				public void onFailure(Throwable caught) {

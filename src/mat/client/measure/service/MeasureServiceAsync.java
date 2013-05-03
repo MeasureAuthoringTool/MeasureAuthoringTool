@@ -43,7 +43,9 @@ public interface MeasureServiceAsync {
 	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
 			String clonedMeasureId, AsyncCallback<Void> callback);
 	void getMeasureXMLForAppliedQDM(String measureId,
+			boolean checkForSupplementData,
 			AsyncCallback<ArrayList<QualityDataSetDTO>> callback);
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName,
 			AsyncCallback<Void> callback);
+	
 	}

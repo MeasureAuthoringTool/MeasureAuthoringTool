@@ -16,9 +16,6 @@
 					<field name="codeListName" type="java.lang.String">
 						<bind-xml name="name" node="attribute" />
 					</field>
-					<field name="taxonomy" type="java.lang.String">
-						<bind-xml name="taxonomy" node="attribute" />
-					</field>
 				</class>
 			</bind-xml>
 		</field>

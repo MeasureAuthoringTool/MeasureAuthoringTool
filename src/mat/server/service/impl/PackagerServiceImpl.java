@@ -186,26 +186,24 @@ public class PackagerServiceImpl implements PackagerService {
 		Collections.sort(pkgs);
 		overview.setClauses(clauses);
 		overview.setPackages(pkgs);
-				
-		overview.setQdmElements(getQDMElements(measureId));
+		Map<String,ArrayList<QualityDataSetDTO>> finalMap = getIntersectionOfQDMAndSDE(measureId);	
+		overview.setQdmElements(finalMap.get("QDM"));
+		overview.setSuppDataElements(finalMap.get("SDE"));
 		if(isGroupRemoved){
 			measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
 			measureXMLDAO.save(measureXML);	
 		}
 		return overview;
 	}
-	
-	//filtered out QDM Elements of type attribute timing element and occurrence US613
-	private List<QualityDataSetDTO> getQDMElements(String measureId) {
-		List<QualityDataSetDTO> qdmElements = qualityDataSetDAO.getQDSElements(true, measureId);
-		List<QualityDataSetDTO> filteredQDMElements = new ArrayList<QualityDataSetDTO>();
-		for(QualityDataSetDTO dataSet : qdmElements) {
-			if(dataSet.getDataType() != null && !dataSet.getDataType().equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
-					&& !dataSet.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) && StringUtils.isBlank(dataSet.getOccurrenceText())){
-				filteredQDMElements.add(dataSet);
-			}
-		}
-		return filteredQDMElements;
+
+	private Map<String,ArrayList<QualityDataSetDTO>> getIntersectionOfQDMAndSDE(String measureId){
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
+		Map<String,ArrayList<QualityDataSetDTO>> finalMap = new HashMap<String,ArrayList<QualityDataSetDTO>>();
+		XmlProcessor processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+		finalMap = processor.sortSDEAndQDMsForMeasurePackager();
+		logger.info("finalMap()of QualityDataSetDTO ::"+ finalMap.size());
+		return finalMap;
+		
 	}
 
 
@@ -250,7 +248,7 @@ public class PackagerServiceImpl implements PackagerService {
 			qdmids.add(qdsd.getId());
 		}
 		List<QualityDataSet> qdms = qualityDataSetDAO.getQDMsById(qdmids);
-		for(QualityDataSet qds : qdms) {
+		/*for(QualityDataSet qds : qdms) {
 			// save supplemental data elements	
 			for(QualityDataSetDTO suppData : detail.getSuppDataElements()) {
 				if(qds.getId() != null && qds.getId().equals(suppData.getId())){
@@ -267,7 +265,7 @@ public class PackagerServiceImpl implements PackagerService {
 					break;
 				}
 			}
-		}
+		}*/
 			
 	}
 	

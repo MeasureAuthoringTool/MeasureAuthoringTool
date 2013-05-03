@@ -160,7 +160,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	private void getListOfAppliedQDMs(){
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if (measureId != null && measureId != "") {
-			service.getMeasureXMLForAppliedQDM(measureId, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
+			service.getMeasureXMLForAppliedQDM(measureId,true, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
 
 				@Override
 				public void onFailure(Throwable caught) {

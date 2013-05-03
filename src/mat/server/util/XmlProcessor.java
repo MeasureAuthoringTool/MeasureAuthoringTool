@@ -20,6 +20,8 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
 
@@ -48,6 +50,8 @@ public class XmlProcessor {
 	private static final String XPATH_MEASURE_STRATIFICATIONS = "/measure/strata";
 	
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS = "/measure/supplementalDataElements";
+	
+	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
 	
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP = "/measure/elementLookUp";
 
@@ -339,6 +343,75 @@ public class XmlProcessor {
 		return transform(originalDoc);
 	}
 	
+	public Map<String,ArrayList<QualityDataSetDTO>> sortSDEAndQDMsForMeasurePackager() {
+		Map<String,ArrayList<QualityDataSetDTO>> map = new HashMap<String,ArrayList<QualityDataSetDTO>>();
+		ArrayList<QualityDataSetDTO> qdmList = new ArrayList<QualityDataSetDTO>();
+		ArrayList<QualityDataSetDTO> masterList = new ArrayList<QualityDataSetDTO>();
+		ArrayList<QualityDataSetDTO> supplementalDataList = new ArrayList<QualityDataSetDTO>();
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();		
+		
+		if (this.originalDoc == null){
+			return map;
+		}		
+		
+		try {
+			NodeList nodesElementLookUpAll = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm", originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			for(int i=0;i<nodesElementLookUpAll.getLength();i++){
+				Node newNode = nodesElementLookUpAll.item(i);
+				QualityDataSetDTO dataSetDTO = new QualityDataSetDTO();
+				dataSetDTO.setId(newNode.getAttributes().getNamedItem("id").getNodeValue().toString());
+				dataSetDTO.setDataType(newNode.getAttributes().getNamedItem("datatype").getNodeValue().toString());
+				if(newNode.getAttributes().getNamedItem("instance")!=null)
+					dataSetDTO.setOccurrenceText(newNode.getAttributes().getNamedItem("instance").getNodeValue().toString());
+				else
+					dataSetDTO.setOccurrenceText("");
+				dataSetDTO.setCodeListName(newNode.getAttributes().getNamedItem("name").getNodeValue().toString());
+				dataSetDTO.setOid(newNode.getAttributes().getNamedItem("oid").getNodeValue().toString());
+				dataSetDTO.setTaxonomy(newNode.getAttributes().getNamedItem("taxonomy").getNodeValue().toString());
+				dataSetDTO.setUuid(newNode.getAttributes().getNamedItem("uuid").getNodeValue().toString());
+				dataSetDTO.setVersion(newNode.getAttributes().getNamedItem("version").getNodeValue().toString());
+				masterList.add(dataSetDTO);
+				
+			}
+			NodeList nodesSupplementalData = (NodeList) xPath.evaluate(XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			StringBuilder expression = new StringBuilder("/measure/elementLookUp/qdm[");
+			for(int i=0 ;i<nodesSupplementalData.getLength();i++){
+				Node newNode = nodesSupplementalData.item(i);
+				String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
+				expression= expression.append("@id!= '").append(nodeID).append("'").append(" and ");
+				for(QualityDataSetDTO dataSetDTO: masterList){
+					if(dataSetDTO.getId().equalsIgnoreCase(nodeID)){
+						supplementalDataList.add(dataSetDTO);
+						break;
+					}
+				}
+			}
+			String xpathUniqueQDM = expression.toString();
+			xpathUniqueQDM = xpathUniqueQDM.substring(0, xpathUniqueQDM.lastIndexOf(" and")).concat("]");
+			XPathExpression expr = xPath.compile(xpathUniqueQDM);
+			NodeList nodesFinal =(NodeList) expr.evaluate( originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			for(int i=0;i<nodesFinal.getLength();i++){
+				Node newNode = nodesFinal.item(i);
+				String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
+				String dataType = newNode.getAttributes().getNamedItem("datatype").getNodeValue();
+				
+				if(!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT) && !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+					for(QualityDataSetDTO dataSetDTO: masterList){
+						if(dataSetDTO.getId().equalsIgnoreCase(nodeID) && StringUtils.isBlank(dataSetDTO.getOccurrenceText()) ){
+							qdmList.add(dataSetDTO);
+							break;
+						}
+					}
+				}
+			}
+			map.put("QDM", qdmList);
+			map.put("SDE", supplementalDataList);
+			map.put("MASTER", masterList);
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return map;
+	}
 	/**
 	 * This method looks at the Scoring Type for a measure and removes nodes based on the
 	 * value of Scoring Type.

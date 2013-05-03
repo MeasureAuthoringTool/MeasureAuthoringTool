@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
+import java.util.UUID;
 
 import mat.DTO.CodeSystemDTO;
 import mat.DTO.DataTypeDTO;
@@ -844,7 +845,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				}
 			}
 			
-			qds.setId(qualityDataSetDAO.generateUniqueOid());
+			qds.setId(UUID.randomUUID().toString());
 			qds.setVersion("1.0");
 			
 			if(isSpecificOccurrence){
@@ -905,7 +906,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					qds.setCodeSystemName(listObject.getSteward().getOrgName());
 				}
 			}
-			qds.setId(qualityDataSetDAO.generateUniqueOid());
+			qds.setId(UUID.randomUUID().toString());
 			qds.setVersion("1.0");
 			wrapper.getQualityDataDTO().add(qds);
 			String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);

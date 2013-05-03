@@ -1149,18 +1149,20 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 	@Override
-	public ArrayList<QualityDataSetDTO> getMeasureXMLForAppliedQDM(String measureId){
+	public ArrayList<QualityDataSetDTO> getMeasureXMLForAppliedQDM(String measureId, boolean checkForSupplementData){
 		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
 		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
 		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
-		
 		if(details !=null ){
 		
 			if(details.getQualityDataDTO()!=null && details.getQualityDataDTO().size()!=0){
 				logger.info(" details.getQualityDataDTO().size() :"+ details.getQualityDataDTO().size());
 				for(QualityDataSetDTO dataSetDTO: details.getQualityDataDTO()){
-					if(dataSetDTO.getCodeListName() !=null && !dataSetDTO.isSuppDataElement())
-						finalList.add(dataSetDTO);
+					if(dataSetDTO.getCodeListName() !=null)
+						if(checkForSupplementData && dataSetDTO.isSuppDataElement())
+							continue;
+						else
+							finalList.add(dataSetDTO);
 				}
 			}
 			Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
@@ -1174,6 +1176,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return finalList;
 		
 	}
+	
+	
 	
 	 /**
      * Method to create XML from QualityDataModelWrapper object for elementLookUp.

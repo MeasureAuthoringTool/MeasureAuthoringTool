@@ -253,6 +253,7 @@ public class QDMAttributeDialogBox {
 			grid.setWidget(i, 3, textBox);	
 			
 			setExitingAttributeInGrid(node,i);
+			updateAttributeListBox(grid, i, attributeListBox);
 		}
 	}
 	

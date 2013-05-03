@@ -220,24 +220,19 @@ public class QDMAttributeDialogBox {
 			attributeListBox.setVisibleItemCount(1);
 			attributeListBox.setWidth("8em");
 			attributeListBox.addItem(QDMAttributeDialogBox.SELECT, ""+i);
-//			if(attributeList.size() > 0){
-				for(String attribName:attributeList){
-					attributeListBox.addItem(attribName);
+
+			for(String attribName:attributeList){
+				attributeListBox.addItem(attribName);
+			}
+			setToolTipForEachElementInListbox(attributeListBox);
+			
+			//Set the attribute name
+			for(int j=0;j<attributeListBox.getItemCount();j++){
+				if(attributeListBox.getItemText(j).equals(attributeName)){
+					attributeListBox.setSelectedIndex(j);
+					break;
 				}
-				setToolTipForEachElementInListbox(attributeListBox);
-				
-				//Set the attribute name
-				for(int j=0;j<attributeListBox.getItemCount();j++){
-					if(attributeListBox.getItemText(j).equals(attributeName)){
-						attributeListBox.setSelectedIndex(j);
-						break;
-					}
-				}
-//				updateAttributeListBox(grid, i, attributeListBox);
-//			}
-//			else{
-//				fetchAtttributesByDataType(this.qdmDataTypeName, attributeListBox, attributeList,attributeName);
-//			}
+			}
 			grid.setWidget(i, 1, attributeListBox);
 			
 			final ListBox modeListBox = new ListBox(false);
@@ -712,36 +707,6 @@ public class QDMAttributeDialogBox {
 		
 		return modeList;
 	}
-
-//	private static void fetchAtttributesByDataType(String qdmDataType, final ListBox qdmAttributeListBox, final List<String> attributeList, final String attributeName) {
-//		attributeService.getAllAttributesByDataType(qdmDataType, new AsyncCallback<List<QDSAttributes>>() {
-//			
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				caught.printStackTrace();
-//				System.out.println("Error retrieving data type attributes. " + caught.getMessage());
-//			}
-//
-//			@Override
-//			public void onSuccess(List<QDSAttributes> result) {
-//				for(QDSAttributes qdsAttributes:result){
-//					qdmAttributeListBox.addItem(qdsAttributes.getName());
-//					if(!attributeList.contains(qdsAttributes.getName())){
-//						attributeList.add(qdsAttributes.getName());
-//					}
-//				}
-//				System.out.println("attrib list:"+attributeList);
-//				setToolTipForEachElementInListbox(qdmAttributeListBox);
-//				
-//				for(int j=0;j<qdmAttributeListBox.getItemCount();j++){
-//					if(qdmAttributeListBox.getItemText(j).equals(attributeName)){
-//						qdmAttributeListBox.setSelectedIndex(j);
-//						break;
-//					}
-//				}
-//			}
-//		});
-//	}
 	
 	/**
 	 * This method will check all the QDM elements in ElementLookup node
@@ -774,7 +739,6 @@ public class QDMAttributeDialogBox {
 				for(QDSAttributes qdsAttributes:result){
 					attributeList .add(qdsAttributes.getName());
 				}
-				System.out.println("attribs:"+attributeList);
 			}
 		});
 	}
@@ -789,23 +753,6 @@ public class QDMAttributeDialogBox {
 		}
 		return null;
 	}
-	
-//	private static List<String> getUnitNameList(){
-//		final List<String> unitNameList = new ArrayList<String>();		
-//		MatContext.get().getListBoxCodeProvider().getUnitMatrixListByCategory(ConstantMessages.UNIT_ATTRIBUTE, new AsyncCallback<List<? extends HasListBox>>() {
-//			@Override
-//			public void onFailure(Throwable caught) {
-//				caught.printStackTrace();
-//			}
-//			@Override
-//			public void onSuccess(List<? extends HasListBox> result) {				
-//				for(HasListBox hasListBox:result){
-//					unitNameList.add(hasListBox.getItem());
-//				}
-//			}
-//       });
-//	   return unitNameList;
-//	}
 	
 	private static void setToolTipForEachElementInListbox(ListBox listBox){
 		//Set tooltips for each element in listbox

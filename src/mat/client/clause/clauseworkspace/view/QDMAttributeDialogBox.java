@@ -192,13 +192,11 @@ public class QDMAttributeDialogBox {
 
 	private static final class AddNewQDMAttributeClickHandler implements ClickHandler {
 		private final List<String> mode;
-		private final String qdmDataTypeName;
 		private final Grid grid;
 		private static CellTreeNode rowNode;
 
 		private AddNewQDMAttributeClickHandler(String qdmDataTypeName,
 				List<String> mode, Grid grid) {
-			this.qdmDataTypeName = qdmDataTypeName;
 			this.mode = mode;
 			this.grid = grid;
 		}
@@ -206,6 +204,7 @@ public class QDMAttributeDialogBox {
 		@Override
 		public void onClick(ClickEvent event) {
 			CellTreeNode node = rowNode;
+			rowNode = null;
 			String attributeName = "";
 			if(node != null){
 				attributeName = (String) node.getExtraInformation(NAME);
@@ -234,7 +233,7 @@ public class QDMAttributeDialogBox {
 						break;
 					}
 				}
-				updateAttributeListBox(grid, i, attributeListBox);
+//				updateAttributeListBox(grid, i, attributeListBox);
 //			}
 //			else{
 //				fetchAtttributesByDataType(this.qdmDataTypeName, attributeListBox, attributeList,attributeName);
@@ -603,6 +602,9 @@ public class QDMAttributeDialogBox {
 						AddNewQDMAttributeClickHandler.rowNode = rowNode;
 						DomEvent.fireNativeEvent(Document.get().createClickEvent(0, 0, 0, 0, 0, false, false, false, false), addNewButton);
 					}
+					for(int j=0;j<grid.getRowCount();j++){
+						updateAttributeListBox(grid, j, (ListBox) grid.getWidget(j, 1));
+					}
 				}
 			}
 		};
@@ -694,8 +696,6 @@ public class QDMAttributeDialogBox {
 					grid.setWidget(row, 3, panel);					
 				}
 			}
-			//Set AddNewQDMAttributeClickHandler.rowNode to NULL so as not to affect the Add New button clicks that happen later.
-			AddNewQDMAttributeClickHandler.rowNode = null;	
 	}
 
 	private static List<String> getModeList() {

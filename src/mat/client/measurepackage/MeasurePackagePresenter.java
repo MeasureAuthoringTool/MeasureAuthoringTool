@@ -215,6 +215,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 						//view.getPackageErrorMessageDisplay()
 						if(!overview.getPackages().contains(currentDetail)) {
 							overview.getPackages().add(currentDetail);
+							overview.setQdmElements(currentDetail.getQdmElements());
+							overview.setSuppDataElements(currentDetail.getSuppDataElements());
 							setOverview(overview);
 						}
 						view.getSuppDataSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getSuppDataSavedMessage());

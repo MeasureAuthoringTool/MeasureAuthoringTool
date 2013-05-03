@@ -1,14 +1,12 @@
 package mat.server.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -22,6 +20,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.client.util.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
 
 import org.apache.commons.lang.StringUtils;
@@ -554,7 +553,7 @@ public class XmlProcessor {
 		String dispName = constantsMap.get(clauseDisplayName);
 		clauseChildElem.setAttribute("displayName", dispName + " 1");
 		clauseChildElem.setAttribute("type", toCamelCase(dispName));
-		clauseChildElem.setAttribute("uuid", UUID.randomUUID().toString());
+		clauseChildElem.setAttribute("uuid", UUIDUtilClient.uuid());
 		mainChildElem.appendChild(clauseChildElem);
 		
 		Element logicalOpElem = originalDoc.createElement("logicalOp");

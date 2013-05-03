@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
+
+import mat.client.util.UUIDUtilClient;
 
 public class CellTreeNodeImpl implements CellTreeNode{
 
@@ -66,7 +67,7 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		cellTreeNode.setNodeType(nodeType);
 		cellTreeNode.setOpen(true);
 		if(nodeType == CLAUSE_NODE){
-			cellTreeNode.setUUID(UUID.randomUUID().toString());	
+			cellTreeNode.setUUID(UUIDUtilClient.uuid());	
 		}
 		
 		this.setOpen(true);//open parent
@@ -136,7 +137,7 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		extraInfos.putAll(((CellTreeNodeImpl)model).getExtraInformationMap());
 		((CellTreeNodeImpl)copyModel).setExtraInformationMap(extraInfos);
 		if(model.getNodeType() == CLAUSE_NODE){
-			copyModel.setUUID(UUID.randomUUID().toString());	
+			copyModel.setUUID(UUIDUtilClient.uuid());	
 		}
 		return copyModel;
 	}

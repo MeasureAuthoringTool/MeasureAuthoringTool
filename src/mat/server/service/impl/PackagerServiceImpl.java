@@ -14,18 +14,15 @@ import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
-import mat.dao.QualityDataSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
-import mat.model.QualityDataSet;
+import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.clause.MeasureXML;
 import mat.server.service.PackagerService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
-import mat.shared.ConstantMessages;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.exolab.castor.mapping.Mapping;
@@ -41,9 +38,8 @@ import org.w3c.dom.NodeList;
 public class PackagerServiceImpl implements PackagerService {
 
 	private static final Log logger = LogFactory.getLog(PackagerServiceImpl.class);
-	 
-	@Autowired 
-	private QualityDataSetDAO qualityDataSetDAO;
+	private static final String SUPPLEMENT_DATA_ELEMENTS = "supplementalDataElements";
+	private static final String MEASURE ="measure";
 	@Autowired 
 	private MeasureXMLDAO measureXMLDAO;
 	
@@ -238,35 +234,45 @@ public class PackagerServiceImpl implements PackagerService {
 	
 	@Override
 	public void saveQDMData(MeasurePackageDetail detail) {
-		
-		List<String> qdmids = new ArrayList<String>();
-		for(QualityDataSetDTO qdsd : detail.getSuppDataElements()) {
-			qdmids.add(qdsd.getId());
-		}
-		
-		for(QualityDataSetDTO qdsd : detail.getQdmElements()) {
-			qdmids.add(qdsd.getId());
-		}
-		List<QualityDataSet> qdms = qualityDataSetDAO.getQDMsById(qdmids);
-		/*for(QualityDataSet qds : qdms) {
-			// save supplemental data elements	
-			for(QualityDataSetDTO suppData : detail.getSuppDataElements()) {
-				if(qds.getId() != null && qds.getId().equals(suppData.getId())){
-					qds.setSuppDataElement(true);
-					qualityDataSetDAO.save(qds);
-					break;
-				}
+		ArrayList<QualityDataSetDTO> supplementDataElementsAll = (ArrayList<QualityDataSetDTO>) detail.getSuppDataElements();
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		wrapper.setQualityDataDTO(supplementDataElementsAll);
+		ByteArrayOutputStream stream = convertQDMOToSuppleDataXML(wrapper);
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
+		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+		processor.replaceNode(stream.toString(), SUPPLEMENT_DATA_ELEMENTS, MEASURE);
+		measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
+		measureXMLDAO.save(measureXML);	
+	}
+	
+	 /**
+     * Method to create XML from QualityDataModelWrapper object for supplementalDataElement .
+     * */
+    private ByteArrayOutputStream convertQDMOToSuppleDataXML(QualityDataModelWrapper qualityDataSetDTO) {
+		logger.info("In PackagerServiceImpl.convertQDMOToSuppleDataXML()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("QDMToSupplementDataMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+	        marshaller.marshal(qualityDataSetDTO);
+	        logger.info("Marshalling of QualityDataSetDTO is successful in convertQDMOToSuppleDataXML()" + stream.toString());
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load QualityDataModelMapping.xml in convertQDMOToSuppleDataXML()" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed in convertQDMOToSuppleDataXML()" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed in convertQDMOToSuppleDataXML()" + e);
+			}else if(e instanceof ValidationException){
+				logger.info("Validation Exception in convertQDMOToSuppleDataXML()" + e);
+			}else{
+				logger.info("Other Exception in convertQDMOToSuppleDataXML()" + e);
 			}
-			// save qdm elements
-			for(QualityDataSetDTO qdm : detail.getQdmElements()) {
-				if(qds.getId() != null && qds.getId().equals(qdm.getId())){
-					qds.setSuppDataElement(false);
-					qualityDataSetDAO.save(qds);
-					break;
-				}
-			}
-		}*/
-			
+		} 
+		logger.info("Exiting PackagerServiceImpl.convertQDMOToSuppleDataXML");
+		return stream;
 	}
 	
 }

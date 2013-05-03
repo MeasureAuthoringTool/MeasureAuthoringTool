@@ -129,7 +129,10 @@ public class QDMAttributeDialogBox {
 				ListBox attributeListBox = (ListBox)widget;
 				//updateAttributeListBox(grid, cell.getRowIndex(), attributeListBox);
 				updateAttributeListBoxes(grid,cell.getRowIndex());
-				String text = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
+				String text = SELECT;
+				if(attributeListBox.getSelectedIndex() > -1){
+					text = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
+				}
 				int rowNum = cell.getRowIndex();
 				
 				if(QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text)){
@@ -313,14 +316,16 @@ public class QDMAttributeDialogBox {
 				continue;
 			}
 			ListBox rowListBox = (ListBox)table.getWidget(i, 1);
-			String alreadySelectedAttribute = rowListBox.getItemText(rowListBox.getSelectedIndex());
-			if(SELECT.equals(alreadySelectedAttribute)){
-				continue;
-			}
-			for(int j=0;j<attributeListBox.getItemCount();j++){
-				if(attributeListBox.getItemText(j).equals(alreadySelectedAttribute)){
-					attributeListBox.removeItem(j);
-					break;
+			if(rowListBox.getSelectedIndex() > -1){
+				String alreadySelectedAttribute = rowListBox.getItemText(rowListBox.getSelectedIndex());
+				if(SELECT.equals(alreadySelectedAttribute)){
+					continue;
+				}
+				for(int j=0;j<attributeListBox.getItemCount();j++){
+					if(attributeListBox.getItemText(j).equals(alreadySelectedAttribute)){
+						attributeListBox.removeItem(j);
+						break;
+					}
 				}
 			}
 		}
@@ -332,18 +337,21 @@ public class QDMAttributeDialogBox {
 				continue;
 			}
 			ListBox rowListBox = (ListBox)table.getWidget(i, 1);
-			String selected = rowListBox.getItemText(rowListBox.getSelectedIndex());
-			rowListBox.clear();
-			for(int g=0;g<attributeList.size();g++){
-				String att = attributeList.get(g); 
-				rowListBox.addItem(att);
-			}
-			updateAttributeListBox(grid, i, rowListBox);
-			for(int j=0;j<rowListBox.getItemCount();j++){
-				String item = rowListBox.getItemText(j);
-				if(item.equals(selected)){
-					rowListBox.setSelectedIndex(j);
-					break;
+			if(rowListBox.getSelectedIndex() > -1){
+				String selected = rowListBox.getItemText(rowListBox.getSelectedIndex());
+				rowListBox.clear();
+				rowListBox.addItem(SELECT);
+				for(int g=0;g<attributeList.size();g++){
+					String att = attributeList.get(g); 
+					rowListBox.addItem(att);
+				}
+				updateAttributeListBox(grid, i, rowListBox);
+				for(int j=0;j<rowListBox.getItemCount();j++){
+					String item = rowListBox.getItemText(j);
+					if(item.equals(selected)){
+						rowListBox.setSelectedIndex(j);
+						break;
+					}
 				}
 			}
 		}

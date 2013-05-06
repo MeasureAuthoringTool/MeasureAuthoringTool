@@ -33,6 +33,7 @@ import mat.model.clause.MeasureXML;
 
 public class ExportSimpleXML {
 
+	private static final String STRATA = "strata";
 	private static final Log _logger = LogFactory.getLog(ExportSimpleXML.class);
 	private static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
@@ -46,16 +47,12 @@ public class ExportSimpleXML {
 				exportedXML = generateExportedXML(measureXMLDocument);
 			}
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
 		return exportedXML;
@@ -155,7 +152,7 @@ public class ExportSimpleXML {
 				Node clauseNode = ((Attr)clauseIdNode).getOwnerElement();
 				Node clauseParentNode = clauseNode.getParentNode();
 				//Ignore if the clause is a Stratification clause.
-				if(!"strata".equals(clauseParentNode.getNodeName())){
+				if(!STRATA.equals(clauseParentNode.getNodeName())){
 					clauseParentNode.removeChild(clauseNode);
 				}
 			}

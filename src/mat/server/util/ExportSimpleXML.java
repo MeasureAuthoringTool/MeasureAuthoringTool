@@ -1,12 +1,14 @@
 package mat.server.util;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
@@ -24,38 +26,61 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
+import mat.client.shared.MatContext;
 import mat.model.clause.MeasureXML;
 
 public class ExportSimpleXML {
 
 	private static final Log _logger = LogFactory.getLog(ExportSimpleXML.class);
+	private static final javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	
-	public static String export(MeasureXML measureXMLObject) {
+	public static String export(MeasureXML measureXMLObject, List<String> message) {
 		String exportedXML = "";
 		//Validate the XML
-		if(validateMeasure(measureXMLObject)){
-			exportedXML = generateExportedXML(measureXMLObject.getMeasureXMLAsString());
-		}
+		Document measureXMLDocument;
+		try {
+			measureXMLDocument = getXMLDocument(measureXMLObject);
+			if(validateMeasure(measureXMLDocument, message)){
+				exportedXML = generateExportedXML(measureXMLDocument);
+			}
+		} catch (ParserConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SAXException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
 		return exportedXML;
+	}
+	
+	private static boolean validateMeasure(Document measureXMLDocument, List<String> message) throws XPathExpressionException{
+		boolean isValid = true;
+		Node groupingNode = (Node)xPath.evaluate("/measure/measureGrouping", measureXMLDocument, XPathConstants.NODE);
+		if(!groupingNode.hasChildNodes()){
+			message.add(MatContext.get().getMessageDelegate().getGroupingRequiredMessage());
+			isValid = false;
+		}
+		return isValid;
 	}
 	
 	/**
 	 * This will work with the existing Measure XML & assume that it is correct and 
 	 * validated to generate the exported XML. 
-	 * @param measureXMLAsString
+	 * @param measureXMLDocument
 	 * @return 
 	 */
-	private static String generateExportedXML(String measureXMLAsString) {
+	private static String generateExportedXML(Document measureXMLDocument) {
 		_logger.info("In ExportSimpleXML.generateExportedXML()");
 		try {
-			//Create Document object
-			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			InputSource oldXmlstream = new InputSource(new StringReader(measureXMLAsString));
-			Document originalDoc = docBuilder.parse(oldXmlstream);
-			_logger.info("Created DOM for the XML String");
-			
-			return traverseXML(originalDoc);
+			return traverseXML(measureXMLDocument);
 		} catch (Exception e) {
 			_logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
 			e.printStackTrace();
@@ -64,12 +89,12 @@ public class ExportSimpleXML {
 	}
 	
 	//This will walk through the original Measure XML and generate the Measure Export XML.
-	private static String traverseXML(Document originalDoc) throws XPathExpressionException {
-		
+	private static String traverseXML(Document originalDoc) throws XPathExpressionException {		
 		List<String> usedQDMIds = getUsedQDMIds(originalDoc);
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
 		
 		//using the above 2 lists we need to traverse the originalDoc and remove the unnecessary nodes
+		removeBlankStratificationClauses(originalDoc);
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		removeUnWantedQDMs(usedQDMIds, originalDoc);
 		removeGrouping(originalDoc);
@@ -96,7 +121,7 @@ public class ExportSimpleXML {
 	}
 
 	private static void removeUnWantedQDMs(List<String> usedQDMIds, Document originalDoc) throws XPathExpressionException {
-		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		
 		NodeList allQDMIDs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm/@id", originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for(int i=0;i<allQDMIDs.getLength();i++){
@@ -118,7 +143,7 @@ public class ExportSimpleXML {
 	 * @throws XPathExpressionException
 	 */
 	private static void removeUnwantedClauses(List<String> usedClauseIds, Document originalDoc) throws XPathExpressionException {
-		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		//"/measure//clause/@uuid" will get us uuid attribute of all the <clause> tags where ever they are on underneath the <measure> tag
 		NodeList allClauseIDs = (NodeList) xPath.evaluate("/measure//clause/@uuid", originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for(int i=0;i<allClauseIDs.getLength();i++){
@@ -129,7 +154,10 @@ public class ExportSimpleXML {
 			if(!usedClauseIds.contains(clauseNodeUuid)){
 				Node clauseNode = ((Attr)clauseIdNode).getOwnerElement();
 				Node clauseParentNode = clauseNode.getParentNode();
-				clauseParentNode.removeChild(clauseNode);
+				//Ignore if the clause is a Stratification clause.
+				if(!"strata".equals(clauseParentNode.getNodeName())){
+					clauseParentNode.removeChild(clauseNode);
+				}
 			}
 		}
 	}
@@ -140,7 +168,6 @@ public class ExportSimpleXML {
 	 * @throws XPathExpressionException
 	 */
 	private static void removeGrouping(Document originalDoc) throws XPathExpressionException {
-		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		Node measureGroupingNode = (Node)xPath.evaluate("/measure/measureGrouping", 
 				originalDoc.getDocumentElement(), XPathConstants.NODE);
 		
@@ -153,7 +180,6 @@ public class ExportSimpleXML {
 	private static List<String> getUsedClauseIds(Document originalDoc) throws XPathExpressionException {
 		List<String> usedClauseIds = new ArrayList<String>();
 		
-		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		NodeList groupedClauseIdsNodeList = (NodeList)xPath.evaluate("/measure/measureGrouping/group/packageClause/@uuid", 
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
@@ -176,15 +202,45 @@ public class ExportSimpleXML {
 		_logger.info("usedQDMIds:"+usedQDMIds);
 		return usedQDMIds;
 	}
-
+	
 	/**
-	 * This will run all the necessary validations
-	 * such as validate the Measure Details, etc
-	 * @param measureXMLObject
+	 * This method will look inside <strata>/<clause>/<logicalOp> and if if finds a <logicalOp> without any children.
+	 * then remove the <clause> node.
+	 * After that it will check the <strata> node and if it is empty then remove the <strata> tag completely. 
+	 * @param originalDoc
+	 * @throws XPathExpressionException 
 	 */
-	private static boolean validateMeasure(MeasureXML measureXMLObject) {
-		boolean returnValue = true;
-		return returnValue;
+	private static void removeBlankStratificationClauses(Document originalDoc) throws XPathExpressionException {
+		NodeList strataLogicalOpNodes = (NodeList)xPath.evaluate("/measure/strata/clause/logicalOp", originalDoc, XPathConstants.NODESET);
+		boolean childRemoved = false;
+		for(int i=0;i<strataLogicalOpNodes.getLength();i++){
+			Node strataLogicalOpNode = strataLogicalOpNodes.item(i);
+			if(strataLogicalOpNode.getChildNodes().getLength() == 0){
+				Node strataClauseNode = strataLogicalOpNode.getParentNode();
+				Node strataNode = strataClauseNode.getParentNode();
+				strataNode.removeChild(strataClauseNode);
+				childRemoved = true;
+			}
+		}
+		
+		/**
+		 * If the <strata> tag now has no children remove the <strata> tag.
+		 */
+		if(childRemoved){
+			Node strataNode = (Node) xPath.evaluate("/measure/strata", originalDoc,XPathConstants.NODE);
+			if(strataNode.getChildNodes().getLength() == 0){
+				Node measurenode = strataNode.getParentNode();
+				measurenode.removeChild(strataNode);
+			}
+		}
+	}
+	
+	private static Document getXMLDocument(MeasureXML measureXMLObject) throws ParserConfigurationException, SAXException, IOException{
+		//Create Document object
+		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		InputSource oldXmlstream = new InputSource(new StringReader(measureXMLObject.getMeasureXMLAsString()));
+		Document originalDoc = docBuilder.parse(oldXmlstream);
+		return originalDoc;
 	}
 
 }

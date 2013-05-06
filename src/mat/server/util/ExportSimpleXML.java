@@ -147,8 +147,7 @@ public class ExportSimpleXML {
 		for(int i=0;i<allClauseIDs.getLength();i++){
 			Node clauseIdNode = allClauseIDs.item(i);
 			String clauseNodeUuid = clauseIdNode.getNodeValue();
-			System.out.println("clauseNodeUuid:"+clauseNodeUuid);
-			
+				
 			if(!usedClauseIds.contains(clauseNodeUuid)){
 				Node clauseNode = ((Attr)clauseIdNode).getOwnerElement();
 				Node clauseParentNode = clauseNode.getParentNode();
@@ -195,7 +194,7 @@ public class ExportSimpleXML {
 		return usedClauseIds;
 	}
 
-	private static List<String>  getUsedQDMIds(Document originalDoc) {
+	private static List<String> getUsedQDMIds(Document originalDoc) {
 		List<String> usedQDMIds = new ArrayList<String>();
 		NodeList elementRefNodeList = originalDoc.getElementsByTagName("elementRef");
 		for(int i=0;i<elementRefNodeList.getLength();i++){
@@ -246,5 +245,4 @@ public class ExportSimpleXML {
 		Document originalDoc = docBuilder.parse(oldXmlstream);
 		return originalDoc;
 	}
-
 }

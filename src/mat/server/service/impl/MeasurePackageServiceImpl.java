@@ -386,207 +386,21 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 	@Override
 	public ValidateMeasureResult validateMeasureForExport(String key) throws Exception {
-
-		List<Metadata> metadataList = metaDataDAO.getMeasureDetails(key);		
-		Map<String, String> metadataMap = buildMetadataMap(metadataList);
-
-		//Populate measure and scoring choice. 
-		Measure measure = getById(key);
-		if(measure != null){
-			metadataMap.put(MetaDataConstants.EMEASURE_TITLE, measure.getDescription());
-			metadataMap.put(MetaDataConstants.EMEASURE_ABBR_TITLE, measure.getaBBRName());
-			metadataMap.put(MetaDataConstants.MEASURE_SCORING, measure.getMeasureScoring());
-		}
-
-		//initValidation();
 		List<String> message = new ArrayList<String>();
-
-		//  Keep commented until these are implemented so Grace can test
-		if(isEmpty(metadataMap, MetaDataConstants.MEASURE_STATUS)){
-			message.add(MatContext.get().getMessageDelegate().getMeasureStatusRequiredMessage());
-		}
-
-		if(isEmpty(metadataMap, MetaDataConstants.NQF_NUMBER)) {
-			message.add(MatContext.get().getMessageDelegate().getNQFNumberRequiredMessage());
-
-		}
-
-		if(isEmpty(metadataMap, MetaDataConstants.MEASUREMENT_FROM_PERIOD)) {
-			message.add(MatContext.get().getMessageDelegate().getMeasurePeriodFromRequiredMessage());
-		}
-		if(notvalidDate(metadataMap, MetaDataConstants.MEASUREMENT_FROM_PERIOD)){
-			message.add(MatContext.get().getMessageDelegate().getMeasurePeriodFromDateInvalidMessage());
-		}
-		if(isEmpty(metadataMap, MetaDataConstants.MEASUREMENT_TO_PERIOD)) {
-			message.add(MatContext.get().getMessageDelegate().getMeasurePeriodToRequiredMessage());
-		}
-		if(notvalidDate(metadataMap, MetaDataConstants.MEASUREMENT_TO_PERIOD)){
-			message.add(MatContext.get().getMessageDelegate().getMeasurePeriodToDateInvalidMessage());
-		}
-		if(isEmpty(metadataMap, MetaDataConstants.MEASURE_STEWARD)) {
-			message.add(MatContext.get().getMessageDelegate().getMeasureStewardRequiredMessage());
-		}else{
-			//US 413. Validate Measure Steward and Steward Other values.			
-			String stewardValue = metadataMap.get(MetaDataConstants.MEASURE_STEWARD);			
-			if(stewardValue != null && stewardValue.equalsIgnoreCase("Other")){				
-				if(isEmpty(metadataMap, MetaDataConstants.MEASURE_STEWARD_OTHER)){
-					message.add(MatContext.get().getMessageDelegate().getMeasureStewardRequiredMessage());
-				}
-			}			
-		}
-		if(isEmpty(metadataMap, MetaDataConstants.MEASURE_DEVELOPER)) {
-			message.add(MatContext.get().getMessageDelegate().getAuthorRequiredMessage());
-		}
-
-		if(isEmpty(metadataMap, MetaDataConstants.ENDORSE_BY_NQF)) {
-			message.add(MatContext.get().getMessageDelegate().getEndorsedByRequiredMessage());
-		}
-
-		validator.validate(metadataMap, MetaDataConstants.DESCRIPTION);
-		if(isEmpty(metadataMap, MetaDataConstants.DESCRIPTION)){
-			message.add(MatContext.get().getMessageDelegate().getDescriptionRequiredMeassage());
-		}
-		if(isTooLong(metadataMap, MetaDataConstants.DESCRIPTION, 15000)){
-			message.add("Description is too long message");
-		}
-
-		validator.validate(metadataMap, MetaDataConstants.COPYRIGHT);
-		if(isEmpty(metadataMap, MetaDataConstants.COPYRIGHT)){
-			message.add(MatContext.get().getMessageDelegate().getCopyrightRequiredMeassage());
-		}
-
-		validator.validate(metadataMap, MetaDataConstants.DISCLAIMER);
-		if(isEmpty(metadataMap, MetaDataConstants.DISCLAIMER)){
-			message.add(MatContext.get().getMessageDelegate().getDisclaimerRequiredMessage());
-		}
-
-		if(isEmpty(metadataMap, MetaDataConstants.MEASURE_TYPE)){
-			message.add(MatContext.get().getMessageDelegate().getMeasureTypeRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.STRATIFICATION);
-		if(isEmpty(metadataMap, MetaDataConstants.STRATIFICATION)) {
-			message.add(MatContext.get().getMessageDelegate().getStratRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.RISK_ADJUSTMENT);
-		if(isEmpty(metadataMap, MetaDataConstants.RISK_ADJUSTMENT)) {
-			message.add(MatContext.get().getMessageDelegate().getRiskAdjustmentRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.RATE_AGGREGATION);
-		if(isEmpty(metadataMap, MetaDataConstants.RATE_AGGREGATION)) {
-			message.add(MatContext.get().getMessageDelegate().getRateAggregationRequiredMessage());
-		}
-
-		validator.validate(metadataMap, MetaDataConstants.RATIONALE);
-		if(isEmpty(metadataMap, MetaDataConstants.RATIONALE)) {
-			message.add(MatContext.get().getMessageDelegate().getRationaleRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.CLINICAL_RECOM_STATE);
-		if(isEmpty(metadataMap, MetaDataConstants.CLINICAL_RECOM_STATE)) {
-			message.add(MatContext.get().getMessageDelegate().getClinicalRecomendRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.IMPROVEMENT_NOTATION);
-		if(isEmpty(metadataMap, MetaDataConstants.IMPROVEMENT_NOTATION)) {
-			message.add(MatContext.get().getMessageDelegate().getImporvementNotationRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.REFERENCES);
-		if(isEmpty(metadataMap, MetaDataConstants.REFERENCES)) {
-			message.add(MatContext.get().getMessageDelegate().getReferencesRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.DEFENITION);
-		if(isEmpty(metadataMap, MetaDataConstants.DEFENITION)) {
-			message.add(MatContext.get().getMessageDelegate().getDefinitionRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.GUIDANCE);
-		if(isEmpty(metadataMap, MetaDataConstants.GUIDANCE)) {
-			message.add(MatContext.get().getMessageDelegate().getGuidenceRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.TRANSMISSION_FORMAT);
-		if(isEmpty(metadataMap, MetaDataConstants.TRANSMISSION_FORMAT)) {
-			message.add(MatContext.get().getMessageDelegate().getTransmissionFormatRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.INITIAL_PATIENT_POP);
-		if(isEmpty(metadataMap, MetaDataConstants.INITIAL_PATIENT_POP)){
-			message.add(MatContext.get().getMessageDelegate().getInitialPatientPopRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.DENOM);
-		if(isEmpty(metadataMap, MetaDataConstants.DENOM)){
-			message.add(MatContext.get().getMessageDelegate().getDenominatorRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.DENOM_EXCL);
-		if(isEmpty(metadataMap, MetaDataConstants.DENOM_EXCL)){	
-			message.add(MatContext.get().getMessageDelegate().getDenominatorExclusionsRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.NUM);
-		if(isEmpty(metadataMap, MetaDataConstants.NUM)){
-			message.add(MatContext.get().getMessageDelegate().getNumeratorRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.NUM_EXCL);
-		if(isEmpty(metadataMap, MetaDataConstants.NUM_EXCL)){
-			message.add(MatContext.get().getMessageDelegate().getNumeratorExclusionsRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.DENOM_EXEP);
-		if(isEmpty(metadataMap, MetaDataConstants.DENOM_EXEP)){
-			message.add(MatContext.get().getMessageDelegate().getDenominatorExceptionsRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.MEASURE_POP);
-		if(isEmpty(metadataMap, MetaDataConstants.MEASURE_POP)){
-			message.add(MatContext.get().getMessageDelegate().getMeasurePopulationRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.MEASURE_OBS);
-		if(isEmpty(metadataMap, MetaDataConstants.MEASURE_OBS)){
-			message.add(MatContext.get().getMessageDelegate().getMeasureObservationRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.SUPPLEMENTAL_DATA_ELEMENTS);
-		if(isEmpty(metadataMap, MetaDataConstants.SUPPLEMENTAL_DATA_ELEMENTS)) {
-			message.add(MatContext.get().getMessageDelegate().getSuplementalRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.MEASURE_SET);
-		if(isEmpty(metadataMap, MetaDataConstants.MEASURE_SET)) {
-			message.add(MatContext.get().getMessageDelegate().getMeasureSetRequiredMessage());
-		}
-
-		validator.validate(metadataMap, MetaDataConstants.EMEASURE_TITLE);
-		if(isEmpty(metadataMap, MetaDataConstants.EMEASURE_TITLE)) {
-			message.add(MatContext.get().getMessageDelegate().getMeasureNameRequiredMessage());
-		}
-		validator.validate(metadataMap, MetaDataConstants.EMEASURE_ABBR_TITLE);
-		if(isEmpty(metadataMap, MetaDataConstants.EMEASURE_ABBR_TITLE)) {
-			message.add(MatContext.get().getMessageDelegate().getAbvMeasureNameRequired());
-		}
-
-		validator.validate(metadataMap, MetaDataConstants.MEASURE_SCORING);
-		if(isEmpty(metadataMap, MetaDataConstants.MEASURE_SCORING)) {
-			message.add(MatContext.get().getMessageDelegate().getMeasureScoreRequiredMessage());
-		}
-
-		long numPackages = packagerDAO.getNumberOfPackagesForMeasure(key);
-		if(numPackages == 0) {
-			message.add(MatContext.get().getMessageDelegate().getGroupingRequiredMessage());
-		}
-
-		//doPackageGroupingValidation(){
-
-		//}
-
+		generateExport(key,message);
 		ValidateMeasureResult result = new ValidateMeasureResult();
 		result.setValid(message.size() == 0);
 		result.setValidationMessages(message);
-
-//		if(result.isValid()) {
-			//TODO422: 
-			generateExport(key);
-//		}
-
 		return result;
 	}
 
 	//TODO422:
-	private void generateExport(String measureId) throws Exception {
+	private void generateExport(String measureId, List<String> message) throws Exception {
 		SimpleEMeasureService.ExportResult exportResult = 
 			eMeasureService.exportMeasureIntoSimpleXML(measureId);
 		
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
-		String exportedXML = ExportSimpleXML.export(measureXML);
+		String exportedXML = ExportSimpleXML.export(measureXML, message);
 		
 		Measure measure = measureDAO.find(measureId);
 		MeasureExport export = measureExportDAO.findForMeasure(measureId);

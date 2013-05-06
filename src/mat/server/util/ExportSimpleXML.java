@@ -14,6 +14,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -60,8 +61,8 @@ public class ExportSimpleXML {
 	
 	private static boolean validateMeasure(Document measureXMLDocument, List<String> message) throws XPathExpressionException{
 		boolean isValid = true;
-		Node groupingNode = (Node)xPath.evaluate("/measure/measureGrouping", measureXMLDocument, XPathConstants.NODE);
-		if(!groupingNode.hasChildNodes()){
+		XPathExpression expr = xPath.compile("boolean(" + XmlProcessor.XPATH_MEASURE_GROUPING_GROUP + ")");
+		if(!(Boolean) expr.evaluate(measureXMLDocument, XPathConstants.BOOLEAN)){
 			message.add(MatContext.get().getMessageDelegate().getGroupingRequiredMessage());
 			isValid = false;
 		}
@@ -154,6 +155,12 @@ public class ExportSimpleXML {
 				//Ignore if the clause is a Stratification clause.
 				if(!STRATA.equals(clauseParentNode.getNodeName())){
 					clauseParentNode.removeChild(clauseNode);
+					
+					//Check if the parent of the clause is now empty. If yes, remove the parent from its parent.
+					if(!clauseParentNode.hasChildNodes()){
+						Node parentOfClauseParent = clauseParentNode.getParentNode();
+						parentOfClauseParent.removeChild(clauseParentNode);
+					}
 				}
 			}
 		}

@@ -47,6 +47,7 @@ import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
+import mat.server.util.ExportSimpleXML;
 import mat.shared.ValidationUtility;
 
 
@@ -571,10 +572,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		result.setValid(message.size() == 0);
 		result.setValidationMessages(message);
 
-		if(result.isValid()) {
+//		if(result.isValid()) {
 			//TODO422: 
 			generateExport(key);
-		}
+//		}
 
 		return result;
 	}
@@ -583,14 +584,18 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	private void generateExport(String measureId) throws Exception {
 		SimpleEMeasureService.ExportResult exportResult = 
 			eMeasureService.exportMeasureIntoSimpleXML(measureId);
-
+		
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
+		String exportedXML = ExportSimpleXML.export(measureXML);
+		
 		Measure measure = measureDAO.find(measureId);
 		MeasureExport export = measureExportDAO.findForMeasure(measureId);
 		if(export == null) {
 			export = new MeasureExport();
 			export.setMeasure(measure);
 		}
-		export.setSimpleXML(exportResult.export);
+		//export.setSimpleXML(exportResult.export);
+		export.setSimpleXML(exportedXML);
 		export.setCodeListBarr(exportResult.wkbkbarr);
 		measure.setExportedDate(new Date());
 		measureDAO.save(measure);

@@ -33,7 +33,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MeasureComposerPresenter implements MatPresenter, Enableable {
-	private MatClausePresenter clauseWorkspace = new MatClausePresenter();
+	//private MatClausePresenter clauseWorkspace = new MatClausePresenter();
 	private QDMPresenter qdmPresenter;
 	private Widget measurePackageWidget;
 	private SimplePanel emptyWidget = new SimplePanel();
@@ -55,7 +55,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.setId("measureComposerTabLayout");
 		measureComposerTabLayout.addPresenter(metaDataPresenter,"Measure Details");	
 		measureComposerTabLayout.addPresenter(qdmPresenter,"QDM Element");
-		measureComposerTabLayout.addPresenter(clauseWorkspace,"Old CW");//name changed 
+		//measureComposerTabLayout.addPresenter(clauseWorkspace,"Old CW");//name changed 
 		measureComposerTabLayout.addPresenter(clauseWorkspacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 	
@@ -234,12 +234,12 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	}
 	
 	
-	public MatClausePresenter getClauseWorkspace() {
+	/*public MatClausePresenter getClauseWorkspace() {
 		return clauseWorkspace;
 	}
 	public void setClauseWorkspace(MatClausePresenter clauseWorkspace) {
 		this.clauseWorkspace = clauseWorkspace;
-	}
+	}*/
 	
 	class EnterKeyDownHandler implements KeyDownHandler {
 		private int i = 0;

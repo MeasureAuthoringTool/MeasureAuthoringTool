@@ -209,10 +209,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			if(composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 0){
 				MetaDataPresenter metaDataPresenter = composerPresenter.getMetaDataPresenter();
 				processMeasureDetails(selectedIndex, metaDataPresenter);
-			}else if(composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 2){
+			}/*else if(composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 2){
 				MatClausePresenter matClausePresenter = composerPresenter.getClauseWorkspace();
 				createErrorMessageForClauseWorkSpace(matClausePresenter);
-			}
+			}*/
 		}else if(selectedIndex == 0 && previousPresenter instanceof MetaDataPresenter){
 			MetaDataPresenter metaDataPresenter = (MetaDataPresenter)previousPresenter;
 			processMeasureDetails(selectedIndex, metaDataPresenter);

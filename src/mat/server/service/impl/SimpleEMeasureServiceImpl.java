@@ -19,7 +19,6 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
 import mat.dao.ListObjectDAO;
-import mat.dao.MeasureValidationLogDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.UserDAO;
 import mat.dao.clause.ClauseDAO;
@@ -40,14 +39,12 @@ import mat.server.export.AttachmentGenerator.PackageInfo;
 import mat.server.export.CriterionToInterim;
 import mat.server.export.ElementLookupGenerator;
 import mat.server.export.HeaderInfoGenerator;
-import mat.server.export.SimpleXMLWriter;
 import mat.server.export.SuppDataElementsGenerator;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import mat.shared.StringUtility;
-import mat.shared.model.IQDSTerm;
 import mat.simplexml.model.Criterion;
 import mat.simplexml.model.CriterionWithAttachments;
 import mat.simplexml.model.Denominator;
@@ -80,7 +77,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private static final String CONVERSION_FILE_1="xsl/db2hqmf_08262010_1.xsl";
 	private static final String CONVERSION_FILE_2="xsl/mat_narrGen.xsl";
 	private static final String CONVERSION_FILE_HTML="xsl/eMeasure.xsl";
-	
+	private static final String XPATH_ELEMENTLOOKUP_QDM="/measure/elementLookUp/qdm";
+	private static final String SUPPLEMENTDATAELEMENT="supplementalDataElements";
+	//This expression will find distinct elementRef records from SimpleXML.
+	private static final String XPATH_ALL_ELEMENTREF_ID="/measure//elementRef[not(@id = preceding:: elementRef/@id)]/@id";
 	private static final Log logger = LogFactory.getLog(SimpleEMeasureServiceImpl.class);
 	
 	@Autowired
@@ -113,8 +113,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	@Autowired
 	private ListObjectDAO listObjectDAO;
 	
-	@Autowired
-	private MeasureValidationLogDAO measureValidationLogDAO;	
+	//@Autowired
+	//private MeasureValidationLogDAO measureValidationLogDAO;	
 	
 	@Autowired
 	private QualityDataSetDAO qdsDAO;
@@ -138,10 +138,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	
 	@Override
 	public ExportResult exportMeasureIntoSimpleXML(String measureId ,String xmlString) throws Exception {	
-		Measure measure = createSimpleXML(measureId,xmlString);
+		//Measure measure = createSimpleXML(measureId,xmlString);
 		ExportResult result = new ExportResult();
-		result.measureName = getMeasureName(measureId).getaBBRName();
-		result.export = writeMeasureXML(measure);
+		//result.measureName = getMeasureName(measureId).getaBBRName();
+		//result.export = writeMeasureXML(measure);
 	
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		InputSource oldXmlstream = new InputSource(new StringReader(xmlString));
@@ -152,8 +152,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		List<String> supplRefID = new ArrayList<String>();
 		List<QualityDataSetDTO> masterRefID = new ArrayList<QualityDataSetDTO>();
 		
-		NodeList allElementRefIDs = (NodeList) xPath.evaluate("/measure//elementRef/@id", originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		NodeList allQDMRefIDs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm", originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		NodeList allElementRefIDs = (NodeList) xPath.evaluate(XPATH_ALL_ELEMENTREF_ID, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		NodeList allQDMRefIDs = (NodeList) xPath.evaluate(XPATH_ELEMENTLOOKUP_QDM, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for(int i=0;i<allQDMRefIDs.getLength();i++){
 			Node newNode = allQDMRefIDs.item(i);
@@ -167,8 +167,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 			Node idNode = allElementRefIDs.item(i);
 			String idNodeValue = idNode.getNodeValue();
 			Node qdmNode = ((Attr)idNode).getOwnerElement();
-			Node elementLookUpNode = qdmNode.getParentNode();
-			if(!elementLookUpNode.getNodeName().equalsIgnoreCase("supplementalDataElements")){
+			Node elementRefNode = qdmNode.getParentNode();
+			if(!elementRefNode.getNodeName().equalsIgnoreCase(SUPPLEMENTDATAELEMENT)){
 				for(QualityDataSetDTO dataSetDTO: masterRefID){
 					if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
 						qdmRefID.add(dataSetDTO.getUuid());
@@ -398,11 +398,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		//wkbk = createEMeasureXLS(measureId, cti.getQdmRefs(),supplementalQDMS);
 	}
 	
-	private boolean isClauseEmpty(Clause c){
+	/*private boolean isClauseEmpty(Clause c){
 		CriterionToInterimUtility ctiu = new CriterionToInterimUtility();
 		IQDSTerm term = ctiu.peel(c);
 		return term.getDecisions().isEmpty();
-	}
+	}*/
 	
 	
 	/**
@@ -433,13 +433,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		return headerInfoGenerator.getAllHeaders(measureId);
 	}
 	
-	private String writeMeasureXML(Measure measure) throws IOException {		
+	/*private String writeMeasureXML(Measure measure) throws IOException {		
 
 		SimpleXMLWriter sxw = new SimpleXMLWriter();
 		String x = sxw.toXML(measure);
 //		System.out.println(x);
 		return x;
-	}
+	}*/
 
 	public void setApplicationContext(ApplicationContext ctx) {
 		this.context = ctx;
@@ -576,6 +576,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	 * @param ts
 	 * @return yyyymmddhhss-zzzz
 	 */
+	@SuppressWarnings("deprecation")
 	private String convertTimestampToString(Timestamp ts){
 		String hours = getTwoDigitString(ts.getHours());
 		String mins = getTwoDigitString(ts.getMinutes());

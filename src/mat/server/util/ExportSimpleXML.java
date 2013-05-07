@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -31,6 +32,7 @@ import org.xml.sax.SAXException;
 
 import mat.client.shared.MatContext;
 import mat.model.clause.MeasureXML;
+import mat.shared.UUIDUtilClient;
 
 public class ExportSimpleXML {
 
@@ -95,7 +97,7 @@ public class ExportSimpleXML {
 		removeBlankStratificationClauses(originalDoc);
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		removeUnWantedQDMs(usedQDMIds, originalDoc);
-		removeGrouping(originalDoc);
+		expandAndHandleGrouping(originalDoc);
 		
 		return transform(originalDoc);
 	}
@@ -166,18 +168,48 @@ public class ExportSimpleXML {
 	}
 	
 	/**
-	 * <measureGrouping> element is not needed in Exported XMl for Measure. Remove it.
+	 * This method will go through individual <group> tags and each <packageClause> child.
+	 * For each <packageClause> it will copy the original <clause> to <group> and remove the 
+	 * <packageClause> tag.
+	 * Finally, at the end of the method it will remove the <populations> and <measureObservations>
+	 * tags from the document.
 	 * @param originalDoc
 	 * @throws XPathExpressionException
 	 */
-	private static void removeGrouping(Document originalDoc) throws XPathExpressionException {
+	private static void expandAndHandleGrouping(Document originalDoc) throws XPathExpressionException {
 		Node measureGroupingNode = (Node)xPath.evaluate("/measure/measureGrouping", 
 				originalDoc.getDocumentElement(), XPathConstants.NODE);
 		
-		if(measureGroupingNode != null){
-			Node parentNode = measureGroupingNode.getParentNode();
-			parentNode.removeChild(measureGroupingNode);
+		NodeList groupNodes = measureGroupingNode.getChildNodes();
+		for(int j=0;j<groupNodes.getLength();j++){
+			Node groupNode = groupNodes.item(j);
+			String groupSequence = groupNode.getAttributes().getNamedItem("sequence").getNodeValue();
+			NodeList packageClauses = groupNode.getChildNodes();
+			List<Node> clauseNodes = new ArrayList<Node>();
+			for(int i=0;i<packageClauses.getLength();i++){
+				Node packageClause = packageClauses.item(i);
+				String uuid = packageClause.getAttributes().getNamedItem("uuid").getNodeValue();
+				Node clauseNode = findClauseByUUID(uuid,originalDoc);
+				//deep clone the <clause> tag
+				Node clonedClauseNode = clauseNode.cloneNode(true);
+				//set a new 'uuid' attribute value for <clause>
+				clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(UUIDUtilClient.uuid());
+				String clauseName = clonedClauseNode.getAttributes().getNamedItem("displayName").getNodeValue();  
+				//set a new 'displayName' for <clause> 
+				clonedClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(clauseName+"_"+groupSequence);
+				clauseNodes.add(clonedClauseNode);
+			}
+			//finally remove the all the <packageClause> tags from <group>
+			for(int i=packageClauses.getLength();i>0;i--){
+				groupNode.removeChild(packageClauses.item(0));
+			}
+			//set the cloned <clause>'s as children of <group>
+			for(Node cNode:clauseNodes){
+				groupNode.appendChild(cNode);
+			}
 		}
+		removeNode("/measure/populations",originalDoc);
+		removeNode("/measure/measureObservations",originalDoc);
 	}
 
 	private static List<String> getUsedClauseIds(Document originalDoc) throws XPathExpressionException {
@@ -194,9 +226,9 @@ public class ExportSimpleXML {
 		return usedClauseIds;
 	}
 
-	private static List<String> getUsedQDMIds(Document originalDoc) {
+	private static List<String> getUsedQDMIds(Document originalDoc) throws XPathExpressionException {
 		List<String> usedQDMIds = new ArrayList<String>();
-		NodeList elementRefNodeList = originalDoc.getElementsByTagName("elementRef");
+		NodeList elementRefNodeList = (NodeList)xPath.evaluate("/measure//elementRef", originalDoc, XPathConstants.NODESET);
 		for(int i=0;i<elementRefNodeList.getLength();i++){
 			Node elementRefNode = elementRefNodeList.item(i);
 			Node idAttributeNode = elementRefNode.getAttributes().getNamedItem("id");
@@ -244,5 +276,33 @@ public class ExportSimpleXML {
 		InputSource oldXmlstream = new InputSource(new StringReader(measureXMLObject.getMeasureXMLAsString()));
 		Document originalDoc = docBuilder.parse(oldXmlstream);
 		return originalDoc;
+	}
+	
+	/**
+	 * This method finds a <clause> tag with a specified 'uuid' attribute.
+	 * @param uuid
+	 * @param originalDoc
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	private static Node findClauseByUUID(String uuid, Document originalDoc) throws XPathExpressionException {
+		Node clauseNode = null;		
+		clauseNode = (Node)xPath.evaluate("/measure//clause[@uuid='"+uuid+"']", originalDoc,XPathConstants.NODE);		
+		return clauseNode;
+	}
+	
+	/**
+	 * Takes an XPath notation String for a particular tag and a Document object and finds and removes the tag
+	 * from the document. 
+	 * @param nodeXPath
+	 * @param originalDoc
+	 * @throws XPathExpressionException 
+	 */
+	private static void removeNode(String nodeXPath, Document originalDoc) throws XPathExpressionException {
+		Node node = (Node)xPath.evaluate(nodeXPath, originalDoc.getDocumentElement(), XPathConstants.NODE);
+		if(node != null){
+			Node parentNode = node.getParentNode();
+			parentNode.removeChild(node);
+		}
 	}
 }

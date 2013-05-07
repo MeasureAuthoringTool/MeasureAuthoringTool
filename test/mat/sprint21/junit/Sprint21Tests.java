@@ -226,7 +226,7 @@ public class Sprint21Tests extends SpringInitializationTest{
 		Measure m = me.getMeasure();
 		String mid = m.getId();
 		
-		eMeasureService.createSimpleXML(mid);
+	//	eMeasureService.createSimpleXML(mid);
 		HSSFWorkbook wkbk = eMeasureService.getWkbk();
 		int namecount = wkbk.getNumberOfNames();
 		assertEquals(18, namecount);

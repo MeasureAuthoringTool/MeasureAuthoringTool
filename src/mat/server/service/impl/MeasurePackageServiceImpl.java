@@ -396,11 +396,12 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
 	//TODO422:
 	private void generateExport(String measureId, List<String> message) throws Exception {
-		SimpleEMeasureService.ExportResult exportResult = 
-			eMeasureService.exportMeasureIntoSimpleXML(measureId);
 		
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		String exportedXML = ExportSimpleXML.export(measureXML, message);
+		
+		SimpleEMeasureService.ExportResult exportResult = 
+			eMeasureService.exportMeasureIntoSimpleXML(measureId,exportedXML);
 		
 		Measure measure = measureDAO.find(measureId);
 		MeasureExport export = measureExportDAO.findForMeasure(measureId);

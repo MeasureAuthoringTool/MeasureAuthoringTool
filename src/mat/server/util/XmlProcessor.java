@@ -54,6 +54,8 @@ public class XmlProcessor {
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
 	
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP = "/measure/elementLookUp";
+	
+	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
 
 	private static final String XPATH_MEASURE_POPULATIONS = "/measure/populations/measurePopulations";
 
@@ -355,7 +357,9 @@ public class XmlProcessor {
 		}		
 		
 		try {
-			NodeList nodesElementLookUpAll = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm", originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			NodeList nodesElementLookUpAll = (NodeList) xPath.evaluate(XPATH_MEASURE_ELEMENT_LOOKUP_QDM, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			
+			//Master List of Element Look Up QDM's. This list is used to populate QDM properties in SDE and QDM List.
 			for(int i=0;i<nodesElementLookUpAll.getLength();i++){
 				Node newNode = nodesElementLookUpAll.item(i);
 				QualityDataSetDTO dataSetDTO = new QualityDataSetDTO();
@@ -370,11 +374,18 @@ public class XmlProcessor {
 				dataSetDTO.setTaxonomy(newNode.getAttributes().getNamedItem("taxonomy").getNodeValue().toString());
 				dataSetDTO.setUuid(newNode.getAttributes().getNamedItem("uuid").getNodeValue().toString());
 				dataSetDTO.setVersion(newNode.getAttributes().getNamedItem("version").getNodeValue().toString());
+				if((newNode.getAttributes().getNamedItem("suppDataElement").getNodeValue().toString()).equalsIgnoreCase("true")){
+					dataSetDTO.setSuppDataElement(true);
+				}else{
+					dataSetDTO.setSuppDataElement(false);
+				}
 				masterList.add(dataSetDTO);
 				
 			}
 			NodeList nodesSupplementalData = (NodeList) xPath.evaluate(XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF, originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			StringBuilder expression = new StringBuilder("/measure/elementLookUp/qdm[");
+			StringBuilder expression = new StringBuilder(XPATH_MEASURE_ELEMENT_LOOKUP_QDM.concat("["));
+			
+			//populate supplementDataElement List and create XPATH expression to find intersection of QDM and SDE.
 			for(int i=0 ;i<nodesSupplementalData.getLength();i++){
 				Node newNode = nodesSupplementalData.item(i);
 				String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
@@ -387,9 +398,13 @@ public class XmlProcessor {
 				}
 			}
 			String xpathUniqueQDM = expression.toString();
+			//Final XPath Expression.
 			xpathUniqueQDM = xpathUniqueQDM.substring(0, xpathUniqueQDM.lastIndexOf(" and")).concat("]");
 			XPathExpression expr = xPath.compile(xpathUniqueQDM);
+			
+			//Intersection List of QDM and SDE. Elements which are referenced in SDE are filtered out.
 			NodeList nodesFinal =(NodeList) expr.evaluate( originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			//populate QDM List
 			for(int i=0;i<nodesFinal.getLength();i++){
 				Node newNode = nodesFinal.item(i);
 				String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();

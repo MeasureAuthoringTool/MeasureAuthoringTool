@@ -24,9 +24,9 @@ public class SimpleEMeasureServiceImplTest  extends SpringInitializationTest{
 		Measure m = me.getMeasure();
 		String mid = m.getId();
 		
-		String simpleXML = eMeasureService.exportMeasureIntoSimpleXML(mid).export;
+		//String simpleXML = eMeasureService.exportMeasureIntoSimpleXML(mid).export;
 		System.out.println("XML:");
-		System.out.println(simpleXML);
+		//System.out.println(simpleXML);
 		
 		String emeasureHTML = eMeasureService.getEMeasureHTML(mid).export;
 		System.out.println("HTML:");

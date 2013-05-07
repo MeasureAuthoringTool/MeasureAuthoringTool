@@ -1,6 +1,7 @@
 package mat.server.service.impl;
 
 import java.io.IOException;
+import java.io.StringReader;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -12,6 +13,11 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.zip.ZipException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathFactory;
+
 import mat.dao.ListObjectDAO;
 import mat.dao.MeasureValidationLogDAO;
 import mat.dao.QualityDataSetDAO;
@@ -22,6 +28,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.model.ListObject;
 import mat.model.QualityDataSet;
+import mat.model.QualityDataSetDTO;
 import mat.model.User;
 import mat.model.clause.Clause;
 import mat.model.clause.Context;
@@ -60,6 +67,11 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.tools.zip.ZipOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 
 
@@ -125,14 +137,55 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	}
 	
 	@Override
-	public ExportResult exportMeasureIntoSimpleXML(String measureId) throws Exception {	
-		Measure measure = createSimpleXML(measureId);
+	public ExportResult exportMeasureIntoSimpleXML(String measureId ,String xmlString) throws Exception {	
+		Measure measure = createSimpleXML(measureId,xmlString);
 		ExportResult result = new ExportResult();
 		result.measureName = getMeasureName(measureId).getaBBRName();
 		result.export = writeMeasureXML(measure);
+	
+		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		InputSource oldXmlstream = new InputSource(new StringReader(xmlString));
+		Document originalDoc = docBuilder.parse(oldXmlstream);
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		
+		List<String> qdmRefID = new ArrayList<String>();
+		List<String> supplRefID = new ArrayList<String>();
+		List<QualityDataSetDTO> masterRefID = new ArrayList<QualityDataSetDTO>();
+		
+		NodeList allElementRefIDs = (NodeList) xPath.evaluate("/measure//elementRef/@id", originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		NodeList allQDMRefIDs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm", originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		for(int i=0;i<allQDMRefIDs.getLength();i++){
+			Node newNode = allQDMRefIDs.item(i);
+			QualityDataSetDTO dataSetDTO = new QualityDataSetDTO();
+			dataSetDTO.setId(newNode.getAttributes().getNamedItem("id").getNodeValue().toString());
+			dataSetDTO.setUuid(newNode.getAttributes().getNamedItem("uuid").getNodeValue().toString());
+			masterRefID.add(dataSetDTO);
+		}
+		
+		for(int i=0;i<allElementRefIDs.getLength();i++){
+			Node idNode = allElementRefIDs.item(i);
+			String idNodeValue = idNode.getNodeValue();
+			Node qdmNode = ((Attr)idNode).getOwnerElement();
+			Node elementLookUpNode = qdmNode.getParentNode();
+			if(!elementLookUpNode.getNodeName().equalsIgnoreCase("supplementalDataElements")){
+				for(QualityDataSetDTO dataSetDTO: masterRefID){
+					if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
+						qdmRefID.add(dataSetDTO.getUuid());
+					}
+				}
+			}else{
+				for(QualityDataSetDTO dataSetDTO: masterRefID){
+					if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
+						supplRefID.add(dataSetDTO.getUuid());
+					}
+				}
+			}
+		}
+		wkbk = createEMeasureXLS(measureId,qdmRefID ,supplRefID);
 		result.wkbkbarr = getHSSFWorkbookBytes(wkbk);
 		wkbk = null;
-		doXSDValidation(result.export, measureId);
+		//doXSDValidation(result.export, measureId);
 		return result;
 	}
 	
@@ -143,13 +196,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	 * @param measureId
 	 * @throws Exception
 	 */
-	private void doXSDValidation(String interimXML, String measureId) throws Exception{
+	/*private void doXSDValidation(String interimXML, String measureId) throws Exception{
 		String emeasureXML = null;
 		emeasureXML = getEMeasureXML(measureId, interimXML).export;
 		mat.model.clause.Measure measure = measureDAO.find(measureId);
 		XSDValidationService xvs = new XSDValidationService(emeasureXML, interimXML, measure, measureValidationLogDAO);
 		xvs.validateEmeasureXML();
-	}
+	}*/
 	
 	private mat.model.clause.Measure getMeasureName(String measureId) {
 		MeasurePackageService measureService = (MeasurePackageService)context.getBean("measurePackageService");
@@ -203,7 +256,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		return html;
 	}
 	
-	public Measure createSimpleXML(String measureId) throws Exception { 
+	public Measure createSimpleXML(String measureId,String xmlString) throws Exception { 
 		Measure m = new Measure();
 		//headers
 		//New code.
@@ -342,7 +395,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 			//no attachments are necessary for stratification system clauses
 		}
 		
-		wkbk = createEMeasureXLS(measureId, cti.getQdmRefs(),supplementalQDMS);
+		//wkbk = createEMeasureXLS(measureId, cti.getQdmRefs(),supplementalQDMS);
 	}
 	
 	private boolean isClauseEmpty(Clause c){
@@ -392,9 +445,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		this.context = ctx;
 	}
 	
-	public HSSFWorkbook createEMeasureXLS(String measureId, List<String> qdmRefs,List<QualityDataSet> supplementalQDMS) throws Exception {
+	public HSSFWorkbook createEMeasureXLS(String measureId, List<String> allQDMs,List<String> supplementalQDMS) throws Exception {
 		CodeListXLSGenerator clgen = new CodeListXLSGenerator();
-		return clgen.getXLS(getMeasureName(measureId), qdmRefs, qualityDataSetDAO,listObjectDAO,supplementalQDMS);
+		return clgen.getXLS(getMeasureName(measureId), allQDMs, qualityDataSetDAO,listObjectDAO,supplementalQDMS);
 	}
 	
 	public HSSFWorkbook createErrorEMeasureXLS() throws Exception {

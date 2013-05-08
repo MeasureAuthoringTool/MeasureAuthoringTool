@@ -125,6 +125,7 @@ public class QDMDialogBox{
 					label = label.substring(0,  ClauseConstants.LABEL_MAX_LENGTH -1).concat("...");
 				}
 				xmlTreeDisplay.addNode(value, label, CellTreeNode.ELEMENT_REF_NODE);
+				xmlTreeDisplay.setDirty(true);
 				dialogBox.hide();
 			}
 		});		

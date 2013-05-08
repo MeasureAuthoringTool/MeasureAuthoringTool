@@ -11,6 +11,7 @@ import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
+import mat.client.shared.PreviousContinueButtonBar;
 import mat.client.shared.SpacerWidget;
 
 import com.google.gwt.user.client.Window;
@@ -37,7 +38,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	private PopulationClausePresenter populationClausePresenter = new PopulationClausePresenter();
 	private MeasureObsClausePresenter measureObsClausePresenter = new MeasureObsClausePresenter();
 	private StratificationClausePresenter stratificationClausePresenter = new StratificationClausePresenter();
-
+	
 	public ClauseWorkspacePresenter() {
 		emptyWidget.add(new Label("No Measure Selected"));
 		simplepanel.setStyleName("contentPanel");
@@ -169,6 +170,12 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	private void displayEmpty() {
 		simplepanel.clear();
 		simplepanel.add(emptyWidget);
+	}
+
+
+	public XmlTreePresenter getSelectedTreePresenter(){		
+		MatPresenter matPresenter = clauseWorkspaceTabs.getPresenterMap().get(clauseWorkspaceTabs.getSelectedIndex());
+		return (XmlTreePresenter)matPresenter;
 	}
 
 

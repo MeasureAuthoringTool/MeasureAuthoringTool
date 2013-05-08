@@ -46,8 +46,6 @@ import com.google.gwt.view.client.TreeViewModel;
 
 public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel, KeyDownHandler, FocusHandler{
 
-
-
 	interface Template extends SafeHtmlTemplates {
 	    @Template("<div class=\"{0}\" title=\"{1}\">{2}</div>")
 	    SafeHtml outerDiv(String classes, String title, String content);
@@ -84,6 +82,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	ClauseWorkspaceContextMenu clauseWorkspaceContextMenu = new ClauseWorkspaceContextMenu(this, popupPanel);
 
 	boolean enabled;
+	
+	boolean isDirty = false;
+	
 
 	public XmlTreeView(CellTreeNode cellTreeNode) {
 		clearMessages();
@@ -116,7 +117,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		rightPanel.setStyleName("div-second");//right div having tree creation inputs.
 
 		VerticalPanel treePanel =  new VerticalPanel();
-		
 		HorizontalPanel expandCollapse  = new HorizontalPanel();
 		expandCollapse.setStyleName("leftAndTopPadding");
 		expandCollapse.setSize("100px", "20px");
@@ -134,15 +134,18 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		leftPanel.add(treePanel);
 
 		SimplePanel bottomSavePanel = new SimplePanel();
-		bottomSavePanel.setStyleName("div-first");
+		bottomSavePanel.setStyleName("div-first buttonPadding");
 		VerticalPanel savePanel = new VerticalPanel();
 		savePanel.add(new SpacerWidget());
-		savePanel.add(errorMessageDisplay);
+//		savePanel.add(errorMessageDisplay);
 		savePanel.add(successMessageDisplay);
 		savePanel.add(saveBtn);
 
 		bottomSavePanel.add(savePanel);
 
+		SimplePanel errPanel = new SimplePanel();
+		errPanel.add(errorMessageDisplay);
+		mainPanel.add(errPanel);
 		mainPanel.add(leftPanel);
 		mainPanel.add(rightPanel);
 		mainPanel.add(bottomSavePanel);	
@@ -384,6 +387,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 
 	public void onRightClick(CellTreeNode value, Event event, Element element) {
+		clearMessages();
 		selectedNode = value;
 		selectionModel.setSelected(selectedNode, true);
 		int x = element.getAbsoluteRight() - 10;
@@ -532,6 +536,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						case CellTreeNode.ROOT_NODE:
 							if(selectedNode.equals(copiedNode.getParent())){
 								clauseWorkspaceContextMenu.pasteRootNodeTypeItem();
+								isDirty = true;
 							}
 							break;
 						case CellTreeNode.LOGICAL_OP_NODE: case CellTreeNode.FUNCTIONS_NODE:
@@ -550,6 +555,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 						if(canPaste){
 							paste();
+							isDirty = true;
 						}
 					}
 					
@@ -561,6 +567,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								&& selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE){
 						copy();
 						removeNode();
+						isDirty = true;
 					}
 				}
 			}else if(keyCode == ClauseConstants.DELETE_DELETE){//DELETE
@@ -571,6 +578,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						&& selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
 						|| (selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE && selectedNode.getParent().getChilds().size() > 1 )){
 					removeNode();
+					isDirty = true;
 				}
 			}
 		}
@@ -593,6 +601,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public void onFocus(FocusEvent event) {
 		focusPanel.setStyleName("focusPanel");
+	}
+
+
+
+	@Override
+	public void setDirty(boolean isDirty) {
+		this.isDirty = isDirty;
+	}
+
+
+	@Override
+	public boolean isDirty() {
+		return this.isDirty;
 	}
 
 

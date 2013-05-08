@@ -42,4 +42,8 @@ public interface XmlTreeDisplay {
 		
 		public void setCopiedNode(CellTreeNode cellTreeNode);
 		
+		public void setDirty(boolean isDirty);
+		
+		public boolean isDirty();
+		
 	}

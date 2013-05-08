@@ -156,6 +156,7 @@ public class ComparisonDialogBox{
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
 				saveAttributesToNode(listAllTimeOrFunction.getValue(), listAllOperator.getValue(),quantity.getValue(),listAllUnits.getValue(),xmlTreeDisplay);
+				xmlTreeDisplay.setDirty(true);
 			}
 		});
 		// Add a Close button at the bottom of the dialog

@@ -408,6 +408,7 @@ public class QDMAttributeDialogBox {
 					}else{
 						xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName());
 					}
+					xmlTreeDisplay.setDirty(true);
 					qdmAttributeDialogBox.hide();
 				}
 			}

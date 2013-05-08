@@ -59,6 +59,7 @@ public class ClauseWorkspaceContextMenu {
 	
 	public ClauseWorkspaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		this.xmlTreeDisplay = treeDisplay;
+		xmlTreeDisplay.setDirty(false);
 		this.popupPanel = popPanel;
 		Command copyCmd = new Command() {
 			public void execute( ) {
@@ -70,6 +71,7 @@ public class ClauseWorkspaceContextMenu {
 		
 		Command deleteCmd = new Command() {
 			public void execute( ) {
+				xmlTreeDisplay.setDirty(true);
 				popupPanel.hide();
 				xmlTreeDisplay.removeNode();
 			}
@@ -77,6 +79,7 @@ public class ClauseWorkspaceContextMenu {
 		deleteMenu = new MenuItem(template.menuTable("Delete", "Delete"), deleteCmd);
 		Command cutCmd = new Command() {
 			public void execute( ) {
+				xmlTreeDisplay.setDirty(true);
 				popupPanel.hide();
 				xmlTreeDisplay.copy();
 				xmlTreeDisplay.removeNode();
@@ -86,7 +89,7 @@ public class ClauseWorkspaceContextMenu {
 		
 		Command pasteCmd = new Command() {
 			public void execute() {
-				popupPanel.hide();
+				xmlTreeDisplay.setDirty(true);
 				if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.ROOT_NODE){
 					pasteRootNodeTypeItem();
 				}else{
@@ -119,9 +122,9 @@ public class ClauseWorkspaceContextMenu {
 		case CellTreeNode.ROOT_NODE:
 			Command addNodeCmd = new Command() {
 				public void execute( ) {
+					xmlTreeDisplay.setDirty(true);
 					popupPanel.hide();
 					addRootNodeTypeItem();
-
 				}
 			};
 			addMenu = new MenuItem(getAddMenuName(xmlTreeDisplay.getSelectedNode().getChilds().get(0)) , true, addNodeCmd);
@@ -385,7 +388,8 @@ public class ClauseWorkspaceContextMenu {
 	private void createAddMenus(List<String> menuNames, final short nodeType, MenuBar menuBar){
 		for (final String name : menuNames) {
 			Command addCmd = new Command() {
-				public void execute( ) {
+				public void execute() {
+					xmlTreeDisplay.setDirty(true);
 					popupPanel.hide();
 					xmlTreeDisplay.addNode(name, name, nodeType);
 				}
@@ -408,6 +412,7 @@ public class ClauseWorkspaceContextMenu {
 				
 				@Override
 				public void execute() {
+					xmlTreeDisplay.setDirty(true);
 					popupPanel.hide();
 					xmlTreeDisplay.editNode(editMenuName, editMenuName);
 				}
@@ -481,9 +486,4 @@ public class ClauseWorkspaceContextMenu {
 		}
 		return sortedName.last() + 1;
 	}
-
-
-
-
-	
 }

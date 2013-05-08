@@ -40,6 +40,7 @@ public class XmlTreePresenter {
 	private static final String MEASURE = "measure";
 	private String rootNode;
 	
+	
 	/**
 	 * This member variable is used to pass the original measure XML to XmlTreePresenter class
 	 * which will then be used to construct the CellTree.
@@ -97,6 +98,7 @@ public class XmlTreePresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
+				xmlTreeDisplay.setDirty(false);
 				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay.getXmlTree().getRootTreeNode().getChildValue(0);
 				final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper.createXmlFromTree(cellTreeNode));
 				
@@ -138,6 +140,14 @@ public class XmlTreePresenter {
 
 	public String getOriginalXML() {
 		return originalXML;
+	}
+
+	public XmlTreeDisplay getXmlTreeDisplay() {
+		return xmlTreeDisplay;
+	}
+
+	public void setXmlTreeDisplay(XmlTreeDisplay xmlTreeDisplay) {
+		this.xmlTreeDisplay = xmlTreeDisplay;
 	}
 
 }

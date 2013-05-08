@@ -5,7 +5,6 @@ import java.io.StringReader;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,42 +19,15 @@ import javax.xml.xpath.XPathFactory;
 
 import mat.dao.ListObjectDAO;
 import mat.dao.QualityDataSetDAO;
-import mat.dao.UserDAO;
-import mat.dao.clause.ClauseDAO;
-import mat.dao.clause.ContextDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.model.ListObject;
-import mat.model.QualityDataSet;
 import mat.model.QualityDataSetDTO;
-import mat.model.User;
-import mat.model.clause.Clause;
-import mat.model.clause.Context;
 import mat.model.clause.MeasureExport;
-import mat.server.LoggedInUserUtil;
-import mat.server.clause.ClauseBusinessService;
-import mat.server.export.AttachmentGenerator;
-import mat.server.export.AttachmentGenerator.PackageInfo;
-import mat.server.export.CriterionToInterim;
-import mat.server.export.ElementLookupGenerator;
-import mat.server.export.HeaderInfoGenerator;
-import mat.server.export.SuppDataElementsGenerator;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
-import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import mat.shared.StringUtility;
-import mat.simplexml.model.Criterion;
-import mat.simplexml.model.CriterionWithAttachments;
-import mat.simplexml.model.Denominator;
-import mat.simplexml.model.Elementlookup;
-import mat.simplexml.model.Function;
-import mat.simplexml.model.Headers;
-import mat.simplexml.model.Iqdsel;
-import mat.simplexml.model.Measure;
-import mat.simplexml.model.Propel;
-import mat.simplexml.model.Qdsel;
-import mat.simplexml.model.SupplementalDataElements;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
@@ -79,7 +51,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private static final String CONVERSION_FILE_HTML="xsl/eMeasure.xsl";
 	private static final String XPATH_ELEMENTLOOKUP_QDM="/measure/elementLookUp/qdm";
 	private static final String SUPPLEMENTDATAELEMENT="supplementalDataElements";
-	//This expression will find distinct elementRef records from SimpleXML.
+	//This expression will find distinct elementRef records from SimpleXML.SimpleXML will have grouping which can have
+	//repeated clauses containing repeated elementRef. This XPath expression will yield distinct elementRef's.
 	private static final String XPATH_ALL_ELEMENTREF_ID="/measure//elementRef[not(@id = preceding:: elementRef/@id)]/@id";
 	private static final Log logger = LogFactory.getLog(SimpleEMeasureServiceImpl.class);
 	
@@ -89,7 +62,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	@Autowired
 	private MeasureExportDAO measureExportDAO;	
 	
-	@Autowired
+	/*@Autowired
 	private HeaderInfoGenerator headerInfoGenerator;
 	
 	@Autowired
@@ -102,7 +75,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private ClauseBusinessService clauseService;
 
 	@Autowired
-	private AttachmentGenerator attachmentGenerator;
+	private AttachmentGenerator attachmentGenerator;*/
 		
 	@Autowired
 	private ApplicationContext context;
@@ -116,7 +89,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	//@Autowired
 	//private MeasureValidationLogDAO measureValidationLogDAO;	
 	
-	@Autowired
+	/*@Autowired
 	private QualityDataSetDAO qdsDAO;
 	
 	@Autowired
@@ -126,15 +99,15 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private ContextDAO contextDAO;
 	
 	@Autowired
-	private UserDAO userDAO;
+	private UserDAO userDAO;*/
 	
 	private HSSFWorkbook wkbk = null;
 	
 	
 	
-	public QualityDataSetDAO getQDSDAO() {
+	/*public QualityDataSetDAO getQDSDAO() {
 		return qdsDAO;
-	}
+	}*/
 	
 	@Override
 	public ExportResult exportMeasureIntoSimpleXML(String measureId ,String xmlString) throws Exception {	
@@ -256,7 +229,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		return html;
 	}
 	
-	public Measure createSimpleXML(String measureId,String xmlString) throws Exception { 
+	/*public Measure createSimpleXML(String measureId,String xmlString) throws Exception { 
 		Measure m = new Measure();
 		//headers
 		//New code.
@@ -293,9 +266,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		List<QualityDataSet> supplementalQDMS = suppDataElementsGenerator.getOnlySupplimentalQDMS(qdsList);
 		handleRules(measureId, m,supplementalQDMS);
 		return m;
-	}
+	}*/
 	
-	private Criterion createCriterionAndAddToMeasure(CriterionToInterim cti,
+	/*private Criterion createCriterionAndAddToMeasure(CriterionToInterim cti,
 			Measure m, String measureId, Clause clause, boolean doEmptyCheck) throws Exception {
 		Clause c = populateClauseRules(measureId, clause);
 		if(doEmptyCheck && isEmpty(c))
@@ -310,17 +283,17 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		
 		return criterion;
 	}
-	
-	private boolean isEmpty(Clause c){
+	*/
+	/*private boolean isEmpty(Clause c){
 		if(c.getDecisions().isEmpty())
 			return true;
 		if(c.getDecisions().get(0) instanceof Clause)
 			return isEmpty((Clause) c.getDecisions().get(0));
 		return false;
-	}
+	}*/
 	
 	//TODO Add Numerator Exclusions
-	private void handleRules(String measureId, Measure m,List<QualityDataSet> supplementalQDMS) throws Exception {
+	/*private void handleRules(String measureId, Measure m,List<QualityDataSet> supplementalQDMS) throws Exception {
 		Collection<PackageInfo> packages = 
 			attachmentGenerator.buildPackageInfoForMeasure(measureId);
 		QualityDataSetDAO qualityDataSetDAO = getQDSDAO();
@@ -338,10 +311,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 			
 			counter++;
 			
-			/*
+			
 			 * should check for measure type
 			 * if a continuous variable measure, then denominator will be null
-			 */
+			 
 			if(packageInfo.denominator != null){
 				Criterion denominator = createCriterionAndAddToMeasure(cti, m, measureId, packageInfo.denominator, false);
 				attachmentGenerator.addAttachment((Denominator)denominator, population, pClause, pTitle);
@@ -388,7 +361,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 			}
 		}
 		
-		/*US597 - US598*/
+		US597 - US598
 		List<Clause> stratifications =  getStrataFromMeasure(measureId);
 		for(Clause stratificationClause : stratifications) {
 			Criterion crit = createCriterionAndAddToMeasure(cti, m, measureId, stratificationClause, true);
@@ -396,7 +369,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		}
 		
 		//wkbk = createEMeasureXLS(measureId, cti.getQdmRefs(),supplementalQDMS);
-	}
+	}*/
 	
 	/*private boolean isClauseEmpty(Clause c){
 		CriterionToInterimUtility ctiu = new CriterionToInterimUtility();
@@ -411,12 +384,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	 * @return List of Stratification Clauses
 	 * 
 	 */
-	private List<Clause> getStrataFromMeasure(String measureId){
+	/*private List<Clause> getStrataFromMeasure(String measureId){
 		Context ctx = contextDAO.getContext(ConstantMessages.STRAT_CONTEXT_DESC);
 		return clauseDAO.getAllStratificationClauses(measureId,ctx.getId());
-	}
+	}*/
 	
-	private void addQdselsToSimpleXML(Measure m, List<Qdsel> qdselsret) {
+	/*private void addQdselsToSimpleXML(Measure m, List<Qdsel> qdselsret) {
 		for (Qdsel q: qdselsret) {
 			if (!m.getElementlookup().getQdsels().contains(q)) {
 				m.getElementlookup().getQdsels().add(q);		
@@ -427,11 +400,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private Clause populateClauseRules(String measureId, Clause cl) {
 		// TODO Auto-generated method stub
 		return clauseService.loadClause(measureId, cl.getId(), context);
-	}
+	}*/
 
-	private Headers retrieveMetaDataInfo(String measureId) {
+	/*private Headers retrieveMetaDataInfo(String measureId) {
 		return headerInfoGenerator.getAllHeaders(measureId);
-	}
+	}*/
 	
 	/*private String writeMeasureXML(Measure measure) throws IOException {		
 
@@ -522,7 +495,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	
 	
 	
-	private boolean isRatioMeasure(Measure m){
+	/*private boolean isRatioMeasure(Measure m){
 		boolean hasScoringType = m.getHeaders().getScores() == null ? false :
 			m.getHeaders().getScores().getScores().isEmpty() ? false :
 				true;
@@ -531,7 +504,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 			return scoringType.equalsIgnoreCase("RATIO");
 		}
 		return false;
-	}
+	}*/
 	
 	private MeasureExport getMeasureExport(String measureId){
 		MeasureExport measureExport = measureExportDAO.findForMeasure(measureId);

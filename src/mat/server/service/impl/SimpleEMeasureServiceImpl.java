@@ -50,10 +50,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private static final String CONVERSION_FILE_2="xsl/mat_narrGen.xsl";
 	private static final String CONVERSION_FILE_HTML="xsl/eMeasure.xsl";
 	private static final String XPATH_ELEMENTLOOKUP_QDM="/measure/elementLookUp/qdm";
+	private static final String XPATH_SUPPLEMENTDATA_ELEMENTREF="/measure/supplementalDataElements/elementRef/@id";
 	private static final String SUPPLEMENTDATAELEMENT="supplementalDataElements";
 	//This expression will find distinct elementRef records from SimpleXML.SimpleXML will have grouping which can have
 	//repeated clauses containing repeated elementRef. This XPath expression will yield distinct elementRef's.
-	private static final String XPATH_ALL_ELEMENTREF_ID="/measure//elementRef[not(@id = preceding:: elementRef/@id)]/@id";
+	//private static final String XPATH_ALL_ELEMENTREF_ID="/measure//elementRef[not(@id = preceding:: elementRef/@id)]/@id";
+	private static final String XPATH_ALL_ELEMENTREF_ID="/measure/measureGrouping/group/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
 	private static final Log logger = LogFactory.getLog(SimpleEMeasureServiceImpl.class);
 	
 	@Autowired
@@ -127,7 +129,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		
 		NodeList allElementRefIDs = (NodeList) xPath.evaluate(XPATH_ALL_ELEMENTREF_ID, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		NodeList allQDMRefIDs = (NodeList) xPath.evaluate(XPATH_ELEMENTLOOKUP_QDM, originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		
+		NodeList allSupplementIDs = (NodeList) xPath.evaluate(XPATH_SUPPLEMENTDATA_ELEMENTREF, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for(int i=0;i<allQDMRefIDs.getLength();i++){
 			Node newNode = allQDMRefIDs.item(i);
 			QualityDataSetDTO dataSetDTO = new QualityDataSetDTO();
@@ -140,20 +142,40 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 			Node idNode = allElementRefIDs.item(i);
 			String idNodeValue = idNode.getNodeValue();
 			Node qdmNode = ((Attr)idNode).getOwnerElement();
-			Node elementRefNode = qdmNode.getParentNode();
-			if(!elementRefNode.getNodeName().equalsIgnoreCase(SUPPLEMENTDATAELEMENT)){
-				for(QualityDataSetDTO dataSetDTO: masterRefID){
-					if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
-						qdmRefID.add(dataSetDTO.getUuid());
-					}
+			//Node elementRefNode = qdmNode.getParentNode();
+			//if(!elementRefNode.getNodeName().equalsIgnoreCase(SUPPLEMENTDATAELEMENT)){
+			for(QualityDataSetDTO dataSetDTO: masterRefID){
+				if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
+					qdmRefID.add(dataSetDTO.getUuid());
 				}
-			}else{
+			}
+			/*}else{
 				for(QualityDataSetDTO dataSetDTO: masterRefID){
 					if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
 						supplRefID.add(dataSetDTO.getUuid());
 					}
 				}
+			}*/
+		}
+		
+		for(int i=0;i<allSupplementIDs.getLength();i++){
+			Node idNode = allSupplementIDs.item(i);
+			String idNodeValue = idNode.getNodeValue();
+			Node qdmNode = ((Attr)idNode).getOwnerElement();
+			//Node elementRefNode = qdmNode.getParentNode();
+			//if(!elementRefNode.getNodeName().equalsIgnoreCase(SUPPLEMENTDATAELEMENT)){
+			for(QualityDataSetDTO dataSetDTO: masterRefID){
+				if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
+					supplRefID.add(dataSetDTO.getUuid());
+				}
 			}
+			/*}else{
+				for(QualityDataSetDTO dataSetDTO: masterRefID){
+					if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
+						supplRefID.add(dataSetDTO.getUuid());
+					}
+				}
+			}*/
 		}
 		wkbk = createEMeasureXLS(measureId,qdmRefID ,supplRefID);
 		result.wkbkbarr = getHSSFWorkbookBytes(wkbk);

@@ -7,6 +7,7 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.view.XmlTreeView;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
+import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -99,6 +100,7 @@ public class XmlTreePresenter {
 			public void onClick(ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
 				xmlTreeDisplay.setDirty(false);
+				MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null,rootNode.toUpperCase()+"_TAB_SAVE_EVENT", rootNode.toUpperCase().concat(" Saved."), ConstantMessages.DB_LOG);
 				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay.getXmlTree().getRootTreeNode().getChildValue(0);
 				final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper.createXmlFromTree(cellTreeNode));
 				

@@ -2,7 +2,7 @@ package mat.client.measurepackage;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class MeasurePackageClauseDetail implements IsSerializable {
+public class MeasurePackageClauseDetail implements IsSerializable, Comparable<MeasurePackageClauseDetail> {
 	public static class Comparator implements java.util.Comparator<MeasurePackageClauseDetail>, IsSerializable {
 
 		@Override
@@ -34,6 +34,13 @@ public class MeasurePackageClauseDetail implements IsSerializable {
 	public void setType(String type) {
 		this.type = type;
 	}
+	@Override
+	public int compareTo(MeasurePackageClauseDetail oth) {
+		Integer groupingOrder = Integer.parseInt(MeasureGroupingOrder.valueOf(type).getStatusCode());
+		Integer otherGroupingOrder = Integer.parseInt(MeasureGroupingOrder.valueOf(oth.type).getStatusCode());
+		return groupingOrder.compareTo(otherGroupingOrder);
+	}
+	
 	
 	
 }

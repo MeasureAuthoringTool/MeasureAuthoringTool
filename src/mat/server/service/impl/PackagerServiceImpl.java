@@ -82,6 +82,7 @@ public class PackagerServiceImpl implements PackagerService {
 	
 	private String createGroupingXml(
 			MeasurePackageDetail detail) {
+		Collections.sort(detail.getPackageClauses());
 		Mapping mapping = new Mapping();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		try {

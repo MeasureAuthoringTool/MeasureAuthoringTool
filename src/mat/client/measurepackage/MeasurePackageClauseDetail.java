@@ -3,15 +3,7 @@ package mat.client.measurepackage;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class MeasurePackageClauseDetail implements IsSerializable, Comparable<MeasurePackageClauseDetail> {
-	public static class Comparator implements java.util.Comparator<MeasurePackageClauseDetail>, IsSerializable {
 
-		@Override
-		public int compare(MeasurePackageClauseDetail o1,
-				MeasurePackageClauseDetail o2) {
-			return o1.getName().compareTo(o2.getName());
-		}
-		
-	}
 	private String id;
 	private String name;
 	private String type;

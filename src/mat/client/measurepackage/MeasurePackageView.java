@@ -371,7 +371,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	private void setClauseItems(ListBox lb, List<MeasurePackageClauseDetail> valuesArg) {
 		List<MeasurePackageClauseDetail> values = new ArrayList<MeasurePackageClauseDetail>();
 		values.addAll(valuesArg);
-		Collections.sort(values, new MeasurePackageClauseDetail.Comparator());
+		Collections.sort(values);
 		
 		lb.clear();
 		for(MeasurePackageClauseDetail nvp : values) {
@@ -395,7 +395,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	private void addClauseItem(ListBox lb, MeasurePackageClauseDetail nvp) {
 		List<MeasurePackageClauseDetail> list = getClauseItems(lb);
 		list.add(nvp);
-		Collections.sort(list, new MeasurePackageClauseDetail.Comparator());
+		Collections.sort(list);
 		setClauseItems(lb, list);
 	}
 	

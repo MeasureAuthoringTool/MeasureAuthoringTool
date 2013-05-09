@@ -1,7 +1,9 @@
 package mat.client.clause.clauseworkspace.view;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
@@ -149,9 +151,27 @@ public class QDMDialogBox{
 
 	
 	private static void addQDMNamesToListBox(ListBox listBox, Map<String, Node> qdmElementLookupNode) {
-		Set<String> keys = qdmElementLookupNode.keySet();
+		ArrayList<Node> nodeItems = new ArrayList<Node>();
+		nodeItems.addAll(qdmElementLookupNode.values());
+		Map<String,Node> map = new TreeMap<String,Node>();
+		for(Node node : nodeItems){
+			if(!node.getAttributes().getNamedItem("datatype").getNodeValue().toString().equalsIgnoreCase("attribute")){
+				map.put(node.getAttributes().getNamedItem("name").getNodeValue().toString().concat(": "+node.getAttributes().getNamedItem("id").getNodeValue().toString()).toLowerCase(), node);
+			}
+			
+		}
+		Set<String> keys = map.keySet();
 		for (String qdm : keys) {
-			listBox.addItem(qdm);
+			Node node = map.get(qdm);
+			String listName = node.getAttributes().getNamedItem("name").getNodeValue().toString();
+			if(node.getAttributes().getNamedItem("instance") != null){
+				listName = node.getAttributes().getNamedItem("instance").getNodeValue() + " of " + listName;
+			}
+		
+			if(node.getAttributes().getNamedItem("datatype") != null){
+				listName = listName + ": " + node.getAttributes().getNamedItem("datatype").getNodeValue();
+			}
+			listBox.addItem(listName);
 		}
 		
 		//Set tooltips for each element in listbox

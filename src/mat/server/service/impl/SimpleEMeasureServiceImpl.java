@@ -36,7 +36,6 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.tools.zip.ZipOutputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
-import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -54,7 +53,6 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private static final String SUPPLEMENTDATAELEMENT="supplementalDataElements";
 	//This expression will find distinct elementRef records from SimpleXML.SimpleXML will have grouping which can have
 	//repeated clauses containing repeated elementRef. This XPath expression will yield distinct elementRef's.
-	//private static final String XPATH_ALL_ELEMENTREF_ID="/measure//elementRef[not(@id = preceding:: elementRef/@id)]/@id";
 	private static final String XPATH_ALL_ELEMENTREF_ID="/measure/measureGrouping/group/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
 	private static final Log logger = LogFactory.getLog(SimpleEMeasureServiceImpl.class);
 	
@@ -141,41 +139,21 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		for(int i=0;i<allElementRefIDs.getLength();i++){
 			Node idNode = allElementRefIDs.item(i);
 			String idNodeValue = idNode.getNodeValue();
-			Node qdmNode = ((Attr)idNode).getOwnerElement();
-			//Node elementRefNode = qdmNode.getParentNode();
-			//if(!elementRefNode.getNodeName().equalsIgnoreCase(SUPPLEMENTDATAELEMENT)){
 			for(QualityDataSetDTO dataSetDTO: masterRefID){
 				if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
 					qdmRefID.add(dataSetDTO.getUuid());
 				}
 			}
-			/*}else{
-				for(QualityDataSetDTO dataSetDTO: masterRefID){
-					if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
-						supplRefID.add(dataSetDTO.getUuid());
-					}
-				}
-			}*/
 		}
 		
 		for(int i=0;i<allSupplementIDs.getLength();i++){
 			Node idNode = allSupplementIDs.item(i);
 			String idNodeValue = idNode.getNodeValue();
-			Node qdmNode = ((Attr)idNode).getOwnerElement();
-			//Node elementRefNode = qdmNode.getParentNode();
-			//if(!elementRefNode.getNodeName().equalsIgnoreCase(SUPPLEMENTDATAELEMENT)){
 			for(QualityDataSetDTO dataSetDTO: masterRefID){
 				if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
 					supplRefID.add(dataSetDTO.getUuid());
 				}
 			}
-			/*}else{
-				for(QualityDataSetDTO dataSetDTO: masterRefID){
-					if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
-						supplRefID.add(dataSetDTO.getUuid());
-					}
-				}
-			}*/
 		}
 		wkbk = createEMeasureXLS(measureId,qdmRefID ,supplRefID);
 		result.wkbkbarr = getHSSFWorkbookBytes(wkbk);

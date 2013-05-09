@@ -1,8 +1,5 @@
 package mat.server.service;
 
-import java.io.IOException;
-
-import mat.server.service.SimpleEMeasureService.ExportResult;
 
 
 public interface SimpleEMeasureService {

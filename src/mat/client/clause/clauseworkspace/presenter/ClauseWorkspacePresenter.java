@@ -11,7 +11,6 @@ import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
-import mat.client.shared.PreviousContinueButtonBar;
 import mat.client.shared.SpacerWidget;
 
 import com.google.gwt.user.client.Window;

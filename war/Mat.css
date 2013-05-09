@@ -1208,7 +1208,10 @@ padding: 2px;
 	outline: none;
 }
 
-
+.buttonPadding {
+	padding-left: 10px;
+	padding-bottom: 5px	
+}
 
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________

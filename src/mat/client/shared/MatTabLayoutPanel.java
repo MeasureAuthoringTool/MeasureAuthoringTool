@@ -14,6 +14,7 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreePresenter;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.metadata.MetaDataPresenter;
 import mat.client.shared.ui.MATTabPanel;
+import mat.shared.ConstantMessages;
 import mat.shared.DynamicTabBarFormatter;
 
 import com.google.gwt.dom.client.Style.Unit;
@@ -247,7 +248,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			}
 			showErrorMessage(metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg());
 			metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons().get(0).setFocus(true);
-			handleClickEventsOnUnsavedErrorMsg(selectedIndex, metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons(),metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg() );
+			handleClickEventsOnUnsavedErrorMsg(selectedIndex, metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons(),metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg() ,null);
 		}else{
 			isUnsavedData = false;
 		}
@@ -260,8 +261,9 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			saveButton = xmlTreePresenter.getXmlTreeDisplay().getSaveButton();
 			showErrorMessage(xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay());
 			xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay().getButtons().get(0).setFocus(true);
+			String auditMessage =xmlTreePresenter.getRootNode().toUpperCase()+"_TAB_YES_CLICKED";
 			handleClickEventsOnUnsavedErrorMsg(selectedIndex, xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay().getButtons(),
-					xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay());
+					xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay(),auditMessage);
 		}else{
 			isUnsavedData = false;
 		}
@@ -272,7 +274,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	 * @param selIndex
 	 * @param btns
 	 */
-	private void handleClickEventsOnUnsavedErrorMsg(int selIndex, List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage) {
+	private void handleClickEventsOnUnsavedErrorMsg(int selIndex, List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage,final String auditMessage) {
 		isUnsavedData = true;
 			ClickHandler clickHandler = new ClickHandler() {
 				@Override
@@ -280,6 +282,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 					isUnsavedData = false;
 					SecondaryButton button = (SecondaryButton)event.getSource();
 					if("Yes".equals(button.getText())){// navigate to the tab select
+						//Audit If Yes is clicked and changes are discarded on clauseWorkspace.
+						if(auditMessage!=null){
+							MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null,auditMessage, auditMessage, ConstantMessages.DB_LOG);
+						}
 						saveErrorMessage.clear();
 						updateOnBeforeSelection();
 						selectTab(selectedIndex);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import mat.client.MatPresenter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -124,7 +125,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 
 	
 	private void setQdmElementsMap(String xml) {
-		Map<String, Node> qdmElementLookUps = new HashMap<String, Node>();
+		Map<String, Node> qdmElementLookUps = new TreeMap<String, Node>();
 		Document document = XMLParser.parse(xml);
 		NodeList nodeList = document.getElementsByTagName("elementLookUp");
 		if(null != nodeList && nodeList.getLength() > 0){
@@ -148,7 +149,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 				}
 			}
 		}
-		ClauseConstants.elementLookUps = qdmElementLookUps;
+		ClauseConstants.elementLookUps = (TreeMap<String, Node>) qdmElementLookUps;
 	}
 
 	@Override

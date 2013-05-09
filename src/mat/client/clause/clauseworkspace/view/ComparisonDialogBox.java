@@ -151,7 +151,7 @@ public class ComparisonDialogBox{
 		dialogContents.add(listAllUnits);
 		dialogContents.setCellHorizontalAlignment(listAllUnits, HasHorizontalAlignment.ALIGN_LEFT);
 		// Add a Save button at the bottom of the dialog
-		Button save = new Button("Save", new ClickHandler() {
+		Button save = new Button("OK", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
@@ -160,7 +160,7 @@ public class ComparisonDialogBox{
 			}
 		});
 		// Add a Close button at the bottom of the dialog
-		Button closeButton = new Button("Close", new ClickHandler() {
+		Button closeButton = new Button("Cancel", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();		

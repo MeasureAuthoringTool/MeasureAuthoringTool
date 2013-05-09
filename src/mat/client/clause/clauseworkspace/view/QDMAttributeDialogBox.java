@@ -389,7 +389,7 @@ public class QDMAttributeDialogBox {
 	    horizontalDeleteAddNewPanel.setCellHorizontalAlignment(deleteSelectedButton, HasHorizontalAlignment.ALIGN_LEFT);
 	    	    	    
 	    //Add a Close button at the bottom of the dialog
-	    Button closeButton = new Button("Close", new ClickHandler() {
+	    Button closeButton = new Button("Cancel", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				qdmAttributeDialogBox.hide();		
@@ -397,7 +397,7 @@ public class QDMAttributeDialogBox {
 		});
 	    
 	    //Add a Save button at the bottom of the dialog
-	    Button saveButton = new Button("Save", new ClickHandler() {
+	    Button saveButton = new Button("OK", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				//TODO:Validate the table rows.

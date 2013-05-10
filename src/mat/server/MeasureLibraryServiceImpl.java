@@ -581,6 +581,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		if(measureDetailModel.getEndorseByNQF() != null && measureDetailModel.getEndorseByNQF()){
 			measureDetailModel.setEndorsement("National Quality Forum");
 			measureDetailModel.setEndorsementId("2.16.840.1.113883.3.560");
+		}else{
+			measureDetailModel.setEndorsement(null);
+			measureDetailModel.setEndorsementId(null);
 		}
 		NqfModel nqfModel = new NqfModel();
 		nqfModel.setExtension(measureDetailModel.getNqfId());

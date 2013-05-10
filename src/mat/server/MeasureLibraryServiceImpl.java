@@ -370,11 +370,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		for(ListObject lo : listOfSuppElements){
 			QualityDataSetDTO qds = new QualityDataSetDTO();
 			qds.setOid(lo.getOid());
-			qds.setUuid(lo.getId());
+			qds.setUuid(UUID.randomUUID().toString());
 			qds.setCodeListName(lo.getName());
 			qds.setTaxonomy(lo.getCodeSystem().getDescription());
 			qds.setVersion("1");
-			qds.setId(UUID.randomUUID().toString());
+			qds.setId(lo.getId());
 			if(lo.getOid().equalsIgnoreCase("2.16.840.1.113762.1.4.1")){
 				//find out patient characteristic gender dataType.
 				qds.setDataType((getMeasurePackageService().findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_GENDER, lo.getCategory().getId())).getDescription());

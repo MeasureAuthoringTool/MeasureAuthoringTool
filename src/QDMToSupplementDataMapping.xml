@@ -10,7 +10,7 @@
 			collection="arraylist">
 			<bind-xml name="elementRef" location="supplementalDataElements">
 				<class name="mat.model.QualityDataSetDTO">
-					<field name="id" type="java.lang.String">
+					<field name="uuid" type="java.lang.String">
 						<bind-xml name="id" node="attribute" />
 					</field>
 					<field name="codeListName" type="java.lang.String">

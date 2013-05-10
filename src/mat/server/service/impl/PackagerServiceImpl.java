@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
@@ -39,6 +41,8 @@ public class PackagerServiceImpl implements PackagerService {
 
 	private static final Log logger = LogFactory.getLog(PackagerServiceImpl.class);
 	private static final String SUPPLEMENT_DATA_ELEMENTS = "supplementalDataElements";
+	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef/@id";
+	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION = "/measure/supplementalDataElements/elementRef[@id";
 	private static final String MEASURE ="measure";
 	@Autowired 
 	private MeasureXMLDAO measureXMLDAO;
@@ -241,7 +245,25 @@ public class PackagerServiceImpl implements PackagerService {
 		ByteArrayOutputStream stream = convertQDMOToSuppleDataXML(wrapper);
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
 		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
-		processor.replaceNode(stream.toString(), SUPPLEMENT_DATA_ELEMENTS, MEASURE);
+		if(supplementDataElementsAll.size() >0){
+			processor.replaceNode(stream.toString(), SUPPLEMENT_DATA_ELEMENTS, MEASURE);
+		}else{
+			
+			try {
+				// In case all elements from SupplementDataElements are moved to QDM, this will remove all.
+				javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+				NodeList nodesSupplementalData = (NodeList) xPath.evaluate(XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF, processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
+				for(int i=0 ;i<nodesSupplementalData.getLength();i++){
+					String xPathString = XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION.concat("='").concat(nodesSupplementalData.item(i).getNodeValue().toString()).concat("']");
+					Node newNode = processor.findNode(processor.getOriginalDoc(), xPathString);
+					Node parentNode = newNode.getParentNode();
+					parentNode.removeChild(newNode);
+				}
+			} catch (XPathExpressionException e) {
+				
+				e.printStackTrace();
+			}
+		}
 		measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
 		measureXMLDAO.save(measureXML);	
 	}

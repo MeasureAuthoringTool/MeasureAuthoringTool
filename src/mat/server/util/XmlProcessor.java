@@ -383,41 +383,60 @@ public class XmlProcessor {
 				
 			}
 			NodeList nodesSupplementalData = (NodeList) xPath.evaluate(XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF, originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			StringBuilder expression = new StringBuilder(XPATH_MEASURE_ELEMENT_LOOKUP_QDM.concat("["));
-			
-			//populate supplementDataElement List and create XPATH expression to find intersection of QDM and SDE.
-			for(int i=0 ;i<nodesSupplementalData.getLength();i++){
-				Node newNode = nodesSupplementalData.item(i);
-				String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
-				expression= expression.append("@id!= '").append(nodeID).append("'").append(" and ");
-				for(QualityDataSetDTO dataSetDTO: masterList){
-					if(dataSetDTO.getId().equalsIgnoreCase(nodeID)){
-						supplementalDataList.add(dataSetDTO);
-						break;
-					}
-				}
-			}
-			String xpathUniqueQDM = expression.toString();
-			//Final XPath Expression.
-			xpathUniqueQDM = xpathUniqueQDM.substring(0, xpathUniqueQDM.lastIndexOf(" and")).concat("]");
-			XPathExpression expr = xPath.compile(xpathUniqueQDM);
-			
-			//Intersection List of QDM and SDE. Elements which are referenced in SDE are filtered out.
-			NodeList nodesFinal =(NodeList) expr.evaluate( originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			//populate QDM List
-			for(int i=0;i<nodesFinal.getLength();i++){
-				Node newNode = nodesFinal.item(i);
-				String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
-				String dataType = newNode.getAttributes().getNamedItem("datatype").getNodeValue();
-				
-				if(!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT) && !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+			// If SupplementDataElement contains elementRef, intersection of QDM and SupplementDataElement is evaluated.
+			if(nodesSupplementalData.getLength() >0){
+				StringBuilder expression = new StringBuilder(XPATH_MEASURE_ELEMENT_LOOKUP_QDM.concat("["));
+
+				//populate supplementDataElement List and create XPATH expression to find intersection of QDM and SDE.
+				for(int i=0 ;i<nodesSupplementalData.getLength();i++){
+					Node newNode = nodesSupplementalData.item(i);
+					String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
+					expression= expression.append("@id!= '").append(nodeID).append("'").append(" and ");
 					for(QualityDataSetDTO dataSetDTO: masterList){
-						if(dataSetDTO.getId().equalsIgnoreCase(nodeID) && StringUtils.isBlank(dataSetDTO.getOccurrenceText()) ){
-							qdmList.add(dataSetDTO);
+						if(dataSetDTO.getId().equalsIgnoreCase(nodeID)){
+							supplementalDataList.add(dataSetDTO);
 							break;
 						}
 					}
 				}
+				String xpathUniqueQDM = expression.toString();
+				//Final XPath Expression.
+				xpathUniqueQDM = xpathUniqueQDM.substring(0, xpathUniqueQDM.lastIndexOf(" and")).concat("]");
+				XPathExpression expr = xPath.compile(xpathUniqueQDM);
+
+				//Intersection List of QDM and SDE. Elements which are referenced in SDE are filtered out.
+				NodeList nodesFinal =(NodeList) expr.evaluate( originalDoc.getDocumentElement(), XPathConstants.NODESET);
+				//populate QDM List
+				for(int i=0;i<nodesFinal.getLength();i++){
+					Node newNode = nodesFinal.item(i);
+					String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
+					String dataType = newNode.getAttributes().getNamedItem("datatype").getNodeValue();
+
+					if(!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT) && !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+						for(QualityDataSetDTO dataSetDTO: masterList){
+							if(dataSetDTO.getId().equalsIgnoreCase(nodeID) && StringUtils.isBlank(dataSetDTO.getOccurrenceText()) ){
+								qdmList.add(dataSetDTO);
+								break;
+							}
+						}
+					}
+				}
+			}else{
+				for(int i=0;i<nodesElementLookUpAll.getLength();i++){
+					Node newNode = nodesElementLookUpAll.item(i);
+					String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
+					String dataType = newNode.getAttributes().getNamedItem("datatype").getNodeValue();
+
+					if(!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT) && !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+						for(QualityDataSetDTO dataSetDTO: masterList){
+							if(dataSetDTO.getId().equalsIgnoreCase(nodeID) && StringUtils.isBlank(dataSetDTO.getOccurrenceText()) ){
+								qdmList.add(dataSetDTO);
+								break;
+							}
+						}
+					}
+				}
+				
 			}
 			map.put("QDM", qdmList);
 			map.put("SDE", supplementalDataList);

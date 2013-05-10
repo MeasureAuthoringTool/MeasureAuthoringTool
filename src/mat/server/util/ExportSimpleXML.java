@@ -325,12 +325,12 @@ public class ExportSimpleXML {
 				Node node = childNodeList.item(i);
 				if("startDate".equals(node.getNodeName())){
 					//Date in MM/DD/YYYY
-					String value = node.getNodeValue();
-					node.setNodeValue(formatDate(value));
+					String value = node.getTextContent();
+					node.setTextContent(formatDate(value));
 				}else if("stopDate".equals(node.getNodeName())){
 					//Date in MM/DD/YYYY
-					String value = node.getNodeValue();
-					node.setNodeValue(formatDate(value));
+					String value = node.getTextContent();
+					node.setTextContent(formatDate(value));
 				}
 			}
 		}

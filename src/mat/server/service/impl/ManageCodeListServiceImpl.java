@@ -835,7 +835,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			if(codeList != null){
 				ListObject listObject = listObjectDAO.find(codeList.getId());
 				qds.setOid(listObject.getOid());
-				qds.setUuid(listObject.getId());
+				qds.setId(listObject.getId());
 				qds.setCodeListName(listObject.getName());
 				qds.setTaxonomy(listObject.getCodeSystem().getDescription());
 				if(listObject.getStewardOther() !=null && ((listObject.getStewardOther()).equalsIgnoreCase("Other"))){
@@ -845,7 +845,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				}
 			}
 			
-			qds.setId(UUID.randomUUID().toString());
+			qds.setUuid(UUID.randomUUID().toString());
 			qds.setVersion("1.0");
 			
 			if(isSpecificOccurrence){
@@ -897,7 +897,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			if(codeList != null){
 				ListObject listObject = listObjectDAO.find(codeList.getId());
 				qds.setOid(listObject.getOid());
-				qds.setUuid(listObject.getId());
+				qds.setId(listObject.getId());
 				qds.setCodeListName(listObject.getName());
 				qds.setTaxonomy(listObject.getCodeSystem().getDescription());
 				if(listObject.getStewardOther() !=null && listObject.getStewardOther().equalsIgnoreCase("Other") ){
@@ -906,7 +906,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					qds.setCodeSystemName(listObject.getSteward().getOrgName());
 				}
 			}
-			qds.setId(UUID.randomUUID().toString());
+			qds.setUuid(UUID.randomUUID().toString());
 			qds.setVersion("1.0");
 			wrapper.getQualityDataDTO().add(qds);
 			String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);

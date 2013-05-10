@@ -240,18 +240,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		
 		if(MatContext.get().getCurrentMeasureId() != null && !MatContext.get().getCurrentMeasureId().equals("")){
 			getMeasure(MatContext.get().getCurrentMeasureId());
-			Command isSavingCmd = new Command() {
-	    	   public void execute() {
-	    		  //Call getMeasurePackageOverview once the clauses saving process is done
-	    		  if((!MatContext.get().getSynchronizationDelegate().isSavingClauses())){
-	    			  getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-	    		  }else{
-	    			  DeferredCommand.addCommand(this);
-	    		  }
-	    	   }
-	    	};
-	    	isSavingCmd.execute();
-	    	displayMeasurePackageWorkspace();
 		}else{
 			displayEmpty();
 		}
@@ -513,6 +501,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(ManageMeasureDetailModel result) {
 				model = result;
+				getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
+			    displayMeasurePackageWorkspace();
 			}
 			
 			@Override

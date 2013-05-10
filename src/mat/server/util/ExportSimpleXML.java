@@ -3,7 +3,12 @@ package mat.server.util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -98,6 +103,8 @@ public class ExportSimpleXML {
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		removeUnWantedQDMs(usedQDMIds, originalDoc);
 		expandAndHandleGrouping(originalDoc);
+		//modify the <startDate> and <stopDate> tags to have date in YYYYMMDD format
+		modifyHeaderStart_Stop_Dates(originalDoc);
 		
 		return transform(originalDoc);
 	}
@@ -120,8 +127,7 @@ public class ExportSimpleXML {
 		return arrayOutputStream.toString();
 	}
 
-	private static void removeUnWantedQDMs(List<String> usedQDMIds, Document originalDoc) throws XPathExpressionException {
-		
+	private static void removeUnWantedQDMs(List<String> usedQDMIds, Document originalDoc) throws XPathExpressionException {		
 		NodeList allQDMIDs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm/@id", originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for(int i=0;i<allQDMIDs.getLength();i++){
@@ -304,5 +310,51 @@ public class ExportSimpleXML {
 			Node parentNode = node.getParentNode();
 			parentNode.removeChild(node);
 		}
+	}
+	
+	/**
+	 * We need to modify <startDate> and <stopDate> inside <measureDetails>/<period> to have YYYYMMDD format
+	 * @param originalDoc
+	 * @throws XPathExpressionException 
+	 */
+	private static void modifyHeaderStart_Stop_Dates(Document originalDoc) throws XPathExpressionException {
+		Node periodNode = (Node)xPath.evaluate("/measure/measureDetails/period", originalDoc, XPathConstants.NODE);
+		if(periodNode != null){
+			NodeList childNodeList = periodNode.getChildNodes();
+			for(int i=0;i<childNodeList.getLength();i++){
+				Node node = childNodeList.item(i);
+				if("startDate".equals(node.getNodeName())){
+					//Date in MM/DD/YYYY
+					String value = node.getNodeValue();
+					node.setNodeValue(formatDate(value));
+				}else if("stopDate".equals(node.getNodeName())){
+					//Date in MM/DD/YYYY
+					String value = node.getNodeValue();
+					node.setNodeValue(formatDate(value));
+				}
+			}
+		}
+	}
+	
+	/**
+	 * This method will expect Date String in MM/DD/YYYY format
+	 * And convert it to YYYYMMDD format.
+	 * @param date
+	 * @return
+	 */
+	private static String formatDate(String date){
+		Calendar cal = Calendar.getInstance();
+		cal.setLenient(true);
+		DateFormat oldDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+		DateFormat newDateFormat = new SimpleDateFormat("yyyyMMdd");
+		try {
+			Date oldParsedDate = oldDateFormat.parse(date);
+			cal.setTime(oldParsedDate);
+			return newDateFormat.format(oldParsedDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "";
 	}
 }

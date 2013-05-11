@@ -12,50 +12,50 @@
 			<xsl:value-of select="../../@id"/>
 		</xsl:variable>
 		<xsl:variable name="qcode">
-			<xsl:value-of select="ancestor::measure//elementlookup/qdsel[@id=$qid]/@oid"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/qdsel[@id=$qid]/@oid"/>
 		</xsl:variable>
 		<xsl:variable name="qdisplayName">
-			<xsl:value-of select="ancestor::measure//elementlookup/qdsel[@id=$qid]/@name"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/qdsel[@id=$qid]/@name"/>
 		</xsl:variable>
 		<xsl:variable name="qcodeSystem">
-			<xsl:value-of select="ancestor::measure//elementlookup/qdsel[@id=$qid]/@codeSystem"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/qdsel[@id=$qid]/@codeSystem"/>
 		</xsl:variable>
 		<xsl:variable name="pvalue">
 			<xsl:value-of select="@value"/>
 		</xsl:variable>
 		<xsl:variable name="pcode">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@code"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@code"/>
 		</xsl:variable>
 		<xsl:variable name="poid">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@oid"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@oid"/>
 		</xsl:variable>
 		<xsl:variable name="pdisplayName">
 			<xsl:choose>
-				<xsl:when test="string-length(ancestor::measure//elementlookup/*[@id=$pvalue]/@displayName)>0">
-					<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@displayName"/>
+				<xsl:when test="string-length(ancestor::measure//elementLookUp/*[@id=$pvalue]/@displayName)>0">
+					<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@displayName"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@name"/>
+					<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@name"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="pcodeSystem">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@codeSystem"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@codeSystem"/>
 		</xsl:variable>	
 		<xsl:variable name="pcodeSystemName">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@codeSystemName"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@codeSystemName"/>
 		</xsl:variable>
 		<xsl:variable name="pdatatype">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@datatype"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@datatype"/>
 		</xsl:variable>
 		<xsl:variable name="ptypeCode">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@typeCode"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@typeCode"/>
 		</xsl:variable>
 		<xsl:variable name="pmode">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@mode"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@mode"/>
 		</xsl:variable>
 		<xsl:variable name="pname">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@name"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@name"/>
 		</xsl:variable>
 		
 		<xsl:choose>

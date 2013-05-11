@@ -13,8 +13,8 @@
 		</xsl:variable>
 		<xsl:variable name="refid">
 			<xsl:choose>
-				<xsl:when test="/measure/elementlookup/*[@id=$rid]/@refid">
-					<xsl:value-of select="/measure/elementlookup/*[@id=$rid]/@refid"/>
+				<xsl:when test="/measure/elementLookUp/*[@id=$rid]/@refid">
+					<xsl:value-of select="/measure/elementLookUp/*[@id=$rid]/@refid"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="@refid"/>
@@ -22,14 +22,14 @@
 			</xsl:choose>
 		</xsl:variable>
 		<xsl:variable name="refuuid">
-			<xsl:value-of select="/measure/elementlookup/*[@id=$rid]/@uuid"/>
+			<xsl:value-of select="/measure/elementLookUp/*[@id=$rid]/@uuid"/>
 		</xsl:variable>
 		<xsl:variable name="refdatatype">
-			<!--<xsl:value-of select="/measure/elementlookup/*[@id=$refid]/@datatype"/>-->
-			<xsl:value-of select="/measure/elementlookup/*[@id=$rid]/@datatype"/>
+			<!--<xsl:value-of select="/measure/elementLookUp/*[@id=$refid]/@datatype"/>-->
+			<xsl:value-of select="/measure/elementLookUp/*[@id=$rid]/@datatype"/>
 		</xsl:variable>
 		<xsl:variable name="refname">
-			<xsl:value-of select="/measure/elementlookup/*[@id=$refid]/@name"/>
+			<xsl:value-of select="/measure/elementLookUp/*[@id=$refid]/@name"/>
 		</xsl:variable>
 		<xsl:variable name="tid-root">
 			<xsl:value-of select="$the_tidrootMapping/PatternMapping/pattern[@dataType=lower-case($refdatatype)]/@root"/>
@@ -78,18 +78,18 @@
 			<xsl:value-of select="@value"/>
 		</xsl:variable>
 		<xsl:variable name="poid">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@oid"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@oid"/>
 		</xsl:variable>
 		<xsl:variable name="pname">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@name"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@name"/>
 		</xsl:variable>
 		<xsl:variable name="pdisplayName">
 			<xsl:choose>
-				<xsl:when test="string-length(ancestor::measure//elementlookup/*[@id=$pvalue]/@displayName)>0">
-					<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@displayName"/>
+				<xsl:when test="string-length(ancestor::measure//elementLookUp/*[@id=$pvalue]/@displayName)>0">
+					<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@displayName"/>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@name"/>
+					<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@name"/>
 				</xsl:otherwise>
 			</xsl:choose>
 		</xsl:variable>

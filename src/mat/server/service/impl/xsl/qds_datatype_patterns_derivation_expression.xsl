@@ -11,52 +11,52 @@
 		<xsl:param name="qdsuuid"/>
 		
 		<xsl:variable name="refid">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]/@refid"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]/@refid"/>
 		</xsl:variable>
 		<xsl:variable name="refdatatype">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$refid]/@datatype"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$refid]/@datatype"/>
 		</xsl:variable>
 		<xsl:variable name="refname">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$refid]/@name"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$refid]/@name"/>
 		</xsl:variable>
 		<xsl:variable name="calcname">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]/@name"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]/@name"/>
 		</xsl:variable>
 		<!-- evalue = measurecalc/@value -->
 		<xsl:variable name="pvalue">
-			<xsl:value-of select="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]/@value"/>
+			<xsl:value-of select="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]/@value"/>
 		</xsl:variable>
 		<xsl:variable name="comparison">
 			<xsl:choose>
-				<xsl:when test="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]/high">
-					<xsl:apply-templates select="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]/high" mode="high_text"/>
+				<xsl:when test="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]/high">
+					<xsl:apply-templates select="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]/high" mode="high_text"/>
 				</xsl:when>
-				<xsl:when test="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]/low">
-					<xsl:apply-templates select="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]/low" mode="low_text"/>
+				<xsl:when test="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]/low">
+					<xsl:apply-templates select="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]/low" mode="low_text"/>
 				</xsl:when>
-				<xsl:when test="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]/equal">
-					<xsl:apply-templates select="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]/equal" mode="equal_text"/>
+				<xsl:when test="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]/equal">
+					<xsl:apply-templates select="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]/equal" mode="equal_text"/>
 				</xsl:when>
-				<xsl:when test="ancestor::measure//elementlookup/*[@uuid=$qdsuuid][@highnum]">
-					<xsl:apply-templates select="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]" mode="inline_high_text"/>
+				<xsl:when test="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid][@highnum]">
+					<xsl:apply-templates select="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]" mode="inline_high_text"/>
 				</xsl:when>
-				<xsl:when test="ancestor::measure//elementlookup/*[@uuid=$qdsuuid][@lownum]">
-					<xsl:apply-templates select="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]" mode="inline_low_text"/>
+				<xsl:when test="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid][@lownum]">
+					<xsl:apply-templates select="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]" mode="inline_low_text"/>
 				</xsl:when>
-				<xsl:when test="ancestor::measure//elementlookup/*[@uuid=$qdsuuid][@equalnum]">
-					<xsl:apply-templates select="ancestor::measure//elementlookup/*[@uuid=$qdsuuid]" mode="inline_equal_text"/>
+				<xsl:when test="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid][@equalnum]">
+					<xsl:apply-templates select="ancestor::measure//elementLookUp/*[@uuid=$qdsuuid]" mode="inline_equal_text"/>
 				</xsl:when>
-				<xsl:when test="ancestor::measure//elementlookup/*[@id=$pvalue]">
+				<xsl:when test="ancestor::measure//elementLookUp/*[@id=$pvalue]">
 					<xsl:text> </xsl:text>
 					<xsl:choose>
-						<xsl:when test="ancestor::measure//elementlookup/*[@id=$pvalue][lower-case(@name)='is present' or lower-case(@name)='is not present']">
-							<xsl:value-of select="ancestor::measure//elementlookup/*[@id=$pvalue]/@name"/>
+						<xsl:when test="ancestor::measure//elementLookUp/*[@id=$pvalue][lower-case(@name)='is present' or lower-case(@name)='is not present']">
+							<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@name"/>
 						</xsl:when>
-						<xsl:when test="ancestor::measure//elementlookup/*[@id=$pvalue][string-length(@oid)>0]">
+						<xsl:when test="ancestor::measure//elementLookUp/*[@id=$pvalue][string-length(@oid)>0]">
 							<xsl:text>= </xsl:text>
 							<xsl:call-template name="elTitle">
-					      		<xsl:with-param name="datatype" select="/measure/elementlookup/*[@id=$pvalue]/@datatype"/>
-					            <xsl:with-param name="name" select="/measure/elementlookup/*[@id=$pvalue]/@name"/>
+					      		<xsl:with-param name="datatype" select="/measure/elementLookUp/*[@id=$pvalue]/@datatype"/>
+					            <xsl:with-param name="name" select="/measure/elementLookUp/*[@id=$pvalue]/@name"/>
 					         </xsl:call-template>
 						</xsl:when>
 					</xsl:choose>
@@ -92,8 +92,8 @@
 			<xsl:value-of select="current()/@id"/>
 		</xsl:variable>
 		<xsl:choose>
-			<xsl:when test="name(current()) = 'qdsel' and /*/elementlookup/measurecalc[@id=$id]">
-				<xsl:apply-templates select="/*/elementlookup/measurecalc[@id=$id]" mode="dc_measurecalc"/>
+			<xsl:when test="name(current()) = 'qdsel' and /*/elementLookUp/measurecalc[@id=$id]">
+				<xsl:apply-templates select="/*/elementLookUp/measurecalc[@id=$id]" mode="dc_measurecalc"/>
 			</xsl:when>
 			<xsl:otherwise>
 				<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">

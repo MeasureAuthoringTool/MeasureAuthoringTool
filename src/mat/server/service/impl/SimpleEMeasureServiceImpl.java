@@ -45,7 +45,8 @@ import org.xml.sax.InputSource;
 
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	
-	private static final String CONVERSION_FILE_1="xsl/db2hqmf_08262010_1.xsl";
+	//private static final String CONVERSION_FILE_1="xsl/db2hqmf_08262010_1.xsl";
+	private static final String CONVERSION_FILE_1="xsl/New_HQMF.xsl";
 	private static final String CONVERSION_FILE_2="xsl/mat_narrGen.xsl";
 	private static final String CONVERSION_FILE_HTML="xsl/eMeasure.xsl";
 	private static final String XPATH_ELEMENTLOOKUP_QDM="/measure/elementLookUp/qdm";

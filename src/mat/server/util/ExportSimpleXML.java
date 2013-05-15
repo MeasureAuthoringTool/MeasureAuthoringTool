@@ -10,8 +10,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -200,9 +198,9 @@ public class ExportSimpleXML {
 				Node clonedClauseNode = clauseNode.cloneNode(true);
 				//set a new 'uuid' attribute value for <clause>
 				clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(UUIDUtilClient.uuid());
-				String clauseName = clonedClauseNode.getAttributes().getNamedItem("displayName").getNodeValue();  
+//				String clauseName = clonedClauseNode.getAttributes().getNamedItem("displayName").getNodeValue();  
 				//set a new 'displayName' for <clause> 
-				clonedClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(clauseName+"_"+groupSequence);
+//				clonedClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(clauseName+"_"+groupSequence);
 				clauseNodes.add(clonedClauseNode);
 			}
 			//finally remove the all the <packageClause> tags from <group>
@@ -214,8 +212,54 @@ public class ExportSimpleXML {
 				groupNode.appendChild(cNode);
 			}
 		}
+		//reArrangeClauseNodes(originalDoc);
 		removeNode("/measure/populations",originalDoc);
 		removeNode("/measure/measureObservations",originalDoc);
+	}
+	
+	/**
+	 * This method will go through all the <group> tags and within rearrange <clause>
+	 * tags to have the <clause type="denominator"> as the 2nd to last <clause> element
+	 * and  <clause type="initialPatientPopulation"> as the last <clause> in a <group>.
+	 * This is being done to aid the final export to eMeasure XML.
+	 * @param originalDoc
+	 * @throws XPathExpressionException 
+	 */
+	private static void reArrangeClauseNodes(Document originalDoc) throws XPathExpressionException {
+		NodeList groupNodes = (NodeList)xPath.evaluate("/measure/measureGrouping/group", 
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		for(int i=0;i<groupNodes.getLength();i++){
+			List<Node> otherClauses = new ArrayList<Node>();
+			Node denomNode = null;
+			Node ippNode = null;
+			Node groupNode = groupNodes.item(i);
+			NodeList clauseNodes = groupNode.getChildNodes();
+			for(int j=0;j<clauseNodes.getLength();j++){
+				Node clauseNode = clauseNodes.item(j);
+				String type = clauseNode.getAttributes().getNamedItem("type").getNodeValue();
+				if("denominator".equals(type)){
+					denomNode = clauseNode;
+				}else if("initialPatientPopulation".equals(type)){
+					ippNode = clauseNode;					
+				}else{
+					otherClauses.add(clauseNode);
+				}
+			}
+			//finally remove the all the <packageClause> tags from <group>
+			for(int k=clauseNodes.getLength();k>0;k--){
+				groupNode.removeChild(clauseNodes.item(0));
+			}
+			for(Node nod:otherClauses){
+				groupNode.appendChild(nod);
+			}
+			if(denomNode != null){
+				groupNode.appendChild(denomNode);
+			}
+			if(ippNode != null){
+				groupNode.appendChild(ippNode);
+			}
+		}
 	}
 
 	private static List<String> getUsedClauseIds(Document originalDoc) throws XPathExpressionException {

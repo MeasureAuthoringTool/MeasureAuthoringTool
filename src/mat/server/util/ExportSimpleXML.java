@@ -64,6 +64,23 @@ public class ExportSimpleXML {
 		return exportedXML;
 	}
 	
+	public static String setQDMIdAsUUID(String xmlString) throws XPathExpressionException, ParserConfigurationException, SAXException, IOException{
+		//Code to replace all @id attributes of <qdm> with @uuid attribute value
+		
+		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+		InputSource oldXmlstream = new InputSource(new StringReader(xmlString));
+		Document originalDoc = docBuilder.parse(oldXmlstream);
+		
+		NodeList allQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm", originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for(int i=0;i<allQDMs.getLength();i++){
+			Node qdmNode = allQDMs.item(i);
+			String uuid = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			qdmNode.getAttributes().getNamedItem("id").setNodeValue(uuid);
+		}
+		
+		return transform(originalDoc);
+	}
+	
 	private static boolean validateMeasure(Document measureXMLDocument, List<String> message) throws XPathExpressionException{
 		boolean isValid = true;
 		XPathExpression expr = xPath.compile("boolean(" + XmlProcessor.XPATH_MEASURE_GROUPING_GROUP + ")");
@@ -126,7 +143,7 @@ public class ExportSimpleXML {
 	}
 
 	private static void removeUnWantedQDMs(List<String> usedQDMIds, Document originalDoc) throws XPathExpressionException {		
-		NodeList allQDMIDs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm/@id", originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		NodeList allQDMIDs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm/@uuid", originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for(int i=0;i<allQDMIDs.getLength();i++){
 			Node idNode = allQDMIDs.item(i);

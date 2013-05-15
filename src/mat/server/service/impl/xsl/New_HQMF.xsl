@@ -125,8 +125,8 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:call-template name="handleClause">
-                        <xsl:with-param name="attachedUUID"><xsl:value-of select="following-sibling::clause[1]/@uuid"/></xsl:with-param>
-                        <xsl:with-param name="attachedTitle"><xsl:value-of select="following-sibling::clause[1]/@displayName"/></xsl:with-param>
+                        <xsl:with-param name="attachedUUID"><xsl:value-of select="following-sibling::clause[@type=('denominator','initialPatientPopulation')][1]/@uuid"/></xsl:with-param>
+                        <xsl:with-param name="attachedTitle"><xsl:value-of select="following-sibling::clause[@type=('denominator','initialPatientPopulation')][1]/@displayName"/></xsl:with-param>
                     </xsl:call-template> 
                 </xsl:otherwise>
             </xsl:choose>    
@@ -167,7 +167,7 @@
         </xsl:variable>
         <xsl:variable name="actionNegationInd">
             <xsl:choose>
-                <xsl:when test="@type = 'exclusions'">true</xsl:when>
+                <xsl:when test="@type = 'denominatorExclusions'">true</xsl:when>
                 <xsl:when test="@type = 'numeratorExclusions'">true</xsl:when>
                 <xsl:otherwise></xsl:otherwise>
             </xsl:choose>         

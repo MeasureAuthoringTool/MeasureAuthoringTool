@@ -405,6 +405,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		SimpleEMeasureService.ExportResult exportResult = 
 			eMeasureService.exportMeasureIntoSimpleXML(measureId,exportedXML);
 		
+		//replace all @id attributes of <elementLookUp>/<qdm> with @uuid attribute value
+		exportedXML = ExportSimpleXML.setQDMIdAsUUID(exportedXML);
+		
 		Measure measure = measureDAO.find(measureId);
 		MeasureExport export = measureExportDAO.findForMeasure(measureId);
 		if(export == null) {
@@ -412,6 +415,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			export.setMeasure(measure);
 		}
 		//export.setSimpleXML(exportResult.export);
+		System.out.println("exportedXML:"+exportedXML);
 		export.setSimpleXML(exportedXML);
 		export.setCodeListBarr(exportResult.wkbkbarr);
 		measure.setExportedDate(new Date());

@@ -141,8 +141,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 			Node idNode = allElementRefIDs.item(i);
 			String idNodeValue = idNode.getNodeValue();
 			for(QualityDataSetDTO dataSetDTO: masterRefID){
-				if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
-					qdmRefID.add(dataSetDTO.getUuid());
+				if(dataSetDTO.getUuid().equalsIgnoreCase(idNodeValue)){
+					qdmRefID.add(dataSetDTO.getId());
 				}
 			}
 		}
@@ -151,8 +151,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 			Node idNode = allSupplementIDs.item(i);
 			String idNodeValue = idNode.getNodeValue();
 			for(QualityDataSetDTO dataSetDTO: masterRefID){
-				if(dataSetDTO.getId().equalsIgnoreCase(idNodeValue)){
-					supplRefID.add(dataSetDTO.getUuid());
+				if(dataSetDTO.getUuid().equalsIgnoreCase(idNodeValue)){
+					supplRefID.add(dataSetDTO.getId());
 				}
 			}
 		}

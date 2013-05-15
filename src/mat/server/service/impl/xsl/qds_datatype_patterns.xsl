@@ -44,13 +44,13 @@
       <xsl:variable name="qdsuuid">
       	<xsl:choose>
 	      	<xsl:when test="name(/measure/elementLookUp/*[@id=$iid])='iqdsel'">
-	      		<xsl:value-of select="/measure/elementLookUp/*[@id=$iid]/@id"/>
+	      		<xsl:value-of select="/measure/elementLookUp/*[@id=$iid]/@uuid"/>
 	      	</xsl:when>
       		<!--<xsl:when test="name(..)='supplementalDataElements'">
       			<xsl:value-of select="/measure/supplementalDataElements/*[@id=$qdsid]/@uuid"/>
       		</xsl:when>-->
       		<xsl:otherwise>
-         		<xsl:value-of select="/measure/elementLookUp/*[@id=$qdsid]/@id"/>
+         		<xsl:value-of select="/measure/elementLookUp/*[@id=$qdsid]/@uuid"/>
       		</xsl:otherwise>
       	</xsl:choose>
       </xsl:variable>

@@ -391,9 +391,9 @@ public class XmlProcessor {
 				for(int i=0 ;i<nodesSupplementalData.getLength();i++){
 					Node newNode = nodesSupplementalData.item(i);
 					String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
-					expression= expression.append("@id!= '").append(nodeID).append("'").append(" and ");
+					expression= expression.append("@uuid!= '").append(nodeID).append("'").append(" and ");
 					for(QualityDataSetDTO dataSetDTO: masterList){
-						if(dataSetDTO.getId().equalsIgnoreCase(nodeID)){
+						if(dataSetDTO.getUuid().equalsIgnoreCase(nodeID)){
 							supplementalDataList.add(dataSetDTO);
 							break;
 						}

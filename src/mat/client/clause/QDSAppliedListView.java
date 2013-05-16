@@ -1,7 +1,6 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -20,8 +19,6 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.json.client.JSONObject;
-import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
@@ -43,15 +40,12 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
 	private Button removeButton = new Button("Remove");
-	//private Button removeButtonJSON = new Button("Remove");
+	
 	private CellList<QualityDataSetDTO> cellList;
-	//private CellList<QualityDataSetDTO> cellListJSON;
-
+	
 	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
 	RangeLabelPager rangeLabelPager = new RangeLabelPager();
 
-	/*ShowMorePagerPanel pagerPanelJSON = new ShowMorePagerPanel();
-	RangeLabelPager rangeLabelPagerJSON = new RangeLabelPager();*/
 	public SuccessMessageDisplay getSuccessMessagePanel(){
 		return successMessagePanel;
 	}
@@ -79,23 +73,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(removeButton);
 		vp.add(new SpacerWidget());
 
-		/*VerticalPanel vpJson = new VerticalPanel();
-		vpJson.setStylePrimaryName("qdmCellList");
-		HorizontalPanel mainPanelJson = new HorizontalPanel();
-		mainPanelJson.add(pagerPanelJSON);
-		vpJson.add(new SpacerWidget());
-		vpJson.add(new HTML("<h4> Applied QDM Elements from SimpleXML </h4>"));
-		vpJson.add(new SpacerWidget());
-		vpJson.add(mainPanelJson);
-		vpJson.add(new SpacerWidget());
-		vpJson.add(rangeLabelPagerJSON);
-		vpJson.add(new SpacerWidget());
-		removeButtonJSON.setEnabled(checkForEnable());
-		vpJson.add(removeButtonJSON);
-		vpJson.add(new SpacerWidget());*/
-
 		mainPanel.add(vp);
-		//mainPanel.add(vpJson);
 		containerPanel.add(mainPanel);
 
 		containerPanel.setStyleName("qdsContentPanel");
@@ -116,19 +94,6 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg() {
 		return successMessagePanel;
 	}
-
-	/*@Override
-	public  void buildCellListWidget(QDSAppliedListModel appliedListModel) {
-		cellList = initializeCellListContent(cellList,appliedListModel);
-		cellList.setPageSize(15);
-		cellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-		ListDataProvider<QualityDataSetDTO> dataProvider = new ListDataProvider<QualityDataSetDTO>(appliedListModel.getAppliedQDMs()); 
-		dataProvider.addDataDisplay(cellList); 
-		pagerPanel.addStyleName("scrollable");
-		pagerPanel.setDisplay(cellList);
-		rangeLabelPager.setDisplay(cellList);
-
-	}*/
 
 	private CellList<QualityDataSetDTO> initializeCellListContent(CellList<QualityDataSetDTO> cellList,final QDSAppliedListModel appliedListModel){
 

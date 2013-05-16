@@ -22,8 +22,10 @@
         <xsl:template match="measure">
             <QualityMeasureDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 ../xsd/schemas/EMeasure.xsd" moodCode="EVN" classCode="DOC">
                 <xsl:apply-templates select="measureDetails"/>
-                <xsl:apply-templates select="measureGrouping"/> 
+                <xsl:apply-templates select="measureGrouping"/>
+                <!-- <xsl:call-template name="measure_observations"/> -->
                 <xsl:call-template name="data_criteria"/>
+                 <xsl:call-template name="stratification"/>
                 <xsl:call-template name="supplemental_data_elements"/>
             </QualityMeasureDocument>    
         </xsl:template>
@@ -113,7 +115,7 @@
         <xsl:variable name="initPopDisplayName"><xsl:value-of select="clause[@type='initialPatientPopulation']/@displayName"/></xsl:variable>
         <xsl:for-each select="clause">
             <xsl:choose>
-                <xsl:when test=".[@type='initialPatientPopulation']">
+                <xsl:when test=".[@type=('initialPatientPopulation','measureObservation')]">
                     <!-- do nothing -->
                 </xsl:when>
                 <xsl:when test=".[@type='denominator']">
@@ -125,8 +127,8 @@
                 </xsl:when>
                 <xsl:otherwise>
                     <xsl:call-template name="handleClause">
-                        <xsl:with-param name="attachedUUID"><xsl:value-of select="following-sibling::clause[@type=('denominator','initialPatientPopulation')][1]/@uuid"/></xsl:with-param>
-                        <xsl:with-param name="attachedTitle"><xsl:value-of select="following-sibling::clause[@type=('denominator','initialPatientPopulation')][1]/@displayName"/></xsl:with-param>
+                        <xsl:with-param name="attachedUUID"><xsl:value-of select="../clause[@type=('denominator','initialPatientPopulation')][1]/@uuid"/></xsl:with-param>
+                        <xsl:with-param name="attachedTitle"><xsl:value-of select="../clause[@type=('denominator','initialPatientPopulation')][1]/@displayName"/></xsl:with-param>
                     </xsl:call-template> 
                 </xsl:otherwise>
             </xsl:choose>    
@@ -153,6 +155,7 @@
                 <xsl:when test="@type = 'denominatorExceptions'">DENEXCEP</xsl:when>
                 <xsl:when test="@type = 'measurePopulation'">MSRPOPL</xsl:when>
                 <xsl:when test="@type = 'numeratorExclusions'">NUMER</xsl:when>
+                <xsl:when test="@type = 'measureObservation'">MSROBS</xsl:when>
                 <xsl:otherwise>MISSING_POPULATION_CODE</xsl:otherwise>
             </xsl:choose>         
         </xsl:variable>
@@ -182,12 +185,26 @@
                 <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4"/>
                 <value xsi:type="CD" code="{$code}" codeSystem="2.16.840.1.113883.5.1063"
                     codeSystemName="HL7 Observation Value" displayName="{$displayName}"/>
-                <xsl:for-each select="*">
-                    <xsl:call-template name="topCond">
-                        <xsl:with-param name="attachedUUID"><xsl:value-of select="$attachedUUID"/></xsl:with-param>
-                        <xsl:with-param name="attachedTitle"><xsl:value-of select="$attachedTitle"/></xsl:with-param>
-                    </xsl:call-template>
-                </xsl:for-each>    
+                 <xsl:choose>
+                    <xsl:when test="$code='MSROBS'">
+                        <sourceOf typeCode="COMP">
+                            <xsl:for-each select="*">
+                                <xsl:call-template name="topCond">
+                                    <xsl:with-param name="attachedUUID"><xsl:value-of select="$attachedUUID"/></xsl:with-param>
+                                    <xsl:with-param name="attachedTitle"><xsl:value-of select="$attachedTitle"/></xsl:with-param>
+                                </xsl:call-template>
+                            </xsl:for-each>
+                        </sourceOf>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:for-each select="*">
+                            <xsl:call-template name="topCond">
+                                <xsl:with-param name="attachedUUID"><xsl:value-of select="$attachedUUID"/></xsl:with-param>
+                                <xsl:with-param name="attachedTitle"><xsl:value-of select="$attachedTitle"/></xsl:with-param>
+                            </xsl:call-template>
+                        </xsl:for-each>        
+                    </xsl:otherwise>
+                </xsl:choose>    
             </observation>
         </entry>        
     </xsl:template>
@@ -239,6 +256,64 @@
             <xsl:apply-templates select="."/>
         </sourceOf>
     </xsl:template>
+    
+   <!--  <xsl:template name="measure_observations">
+        <xsl:if test="headers/scores/score[@id='CONTVAR'] and ./measureObservation">
+            <xsl:text>
+            
+         </xsl:text>
+            <xsl:comment>
+            **************************************************************   
+            Measure Observations Section
+            **************************************************************
+         </xsl:comment>
+            <component typeCode="COMP">
+                <section>
+                    <code code="57027-5" codeSystem="2.16.840.1.113883.6.1"
+                        displayName="Measure observations"/>
+                    <title>Measure observations</title>
+                    <text/>
+                    <xsl:for-each select="measureObservation/and/*">
+                        <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
+                            <xsl:call-template name="criteria"/>
+                        </entry>
+                    </xsl:for-each>
+                </section>
+            </component>
+        </xsl:if>
+    </xsl:template> -->
+    
+    <xsl:template name="stratification">
+      <xsl:if test="count(strata) >= 1">
+         <xsl:text>
+            
+         </xsl:text>
+         <xsl:comment>
+            **************************************************************   
+            Stratification Section
+            **************************************************************
+         </xsl:comment>
+         <component typeCode="COMP">
+            <section>
+               <code code="69669-0" codeSystem="2.16.840.1.113883.6.1" displayName="Population stratification description"/>
+               <title>Reporting Stratification</title>               
+               <text/>
+               <xsl:for-each select="strata/clause[logicalOp/*]">
+                  <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
+                     <observation classCode="OBS" moodCode="EVN" isCriterionInd="true" actionNegationInd="true">
+                        <id root="{@uuid}"/>
+                        <code nullFlavor="OTH">
+                           <originalText>Stratum</originalText>
+                        </code>
+                        <!--<xsl:call-template name="criteria"/>-->
+                        <xsl:apply-templates select="logicalOp"/>
+                     </observation>
+                  </entry>
+               </xsl:for-each>
+            </section>
+         </component>
+      </xsl:if>
+   </xsl:template>
     
     <xsl:template name="data_criteria">
         <xsl:text>

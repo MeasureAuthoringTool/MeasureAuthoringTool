@@ -23,7 +23,7 @@
             <QualityMeasureDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:hl7-org:v3 ../xsd/schemas/EMeasure.xsd" moodCode="EVN" classCode="DOC">
                 <xsl:apply-templates select="measureDetails"/>
                 <xsl:apply-templates select="measureGrouping"/>
-                <!-- <xsl:call-template name="measure_observations"/> -->
+                <xsl:call-template name="measure_observations"/>
                 <xsl:call-template name="data_criteria"/>
                  <xsl:call-template name="stratification"/>
                 <xsl:call-template name="supplemental_data_elements"/>
@@ -257,8 +257,8 @@
         </sourceOf>
     </xsl:template>
     
-   <!--  <xsl:template name="measure_observations">
-        <xsl:if test="headers/scores/score[@id='CONTVAR'] and ./measureObservation">
+    <xsl:template name="measure_observations">
+        <xsl:if test="count(measureObservations) >= 1">
             <xsl:text>
             
          </xsl:text>
@@ -273,15 +273,15 @@
                         displayName="Measure observations"/>
                     <title>Measure observations</title>
                     <text/>
-                    <xsl:for-each select="measureObservation/and/*">
+                    <xsl:for-each select="measureObservations/clause/logicalOp/*">
                         <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
-                            <xsl:call-template name="criteria"/>
+                             <xsl:apply-templates select="."/>
                         </entry>
                     </xsl:for-each>
                 </section>
             </component>
         </xsl:if>
-    </xsl:template> -->
+    </xsl:template>
     
     <xsl:template name="stratification">
       <xsl:if test="count(strata) >= 1">

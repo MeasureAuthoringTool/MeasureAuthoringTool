@@ -319,7 +319,7 @@ public class XmlConversionlHelper {
 			break;
 		case CellTreeNode.ELEMENT_REF_NODE:
 			element = document.createElement(ClauseConstants.ELEMENT_REF);
-			Node idNode = ClauseConstants.getElementLookUps().get(cellTreeNode.getName()).getAttributes().getNamedItem("id");
+			Node idNode = ClauseConstants.getElementLookUps().get(cellTreeNode.getName()).getAttributes().getNamedItem("uuid");
 			element.setAttribute(ClauseConstants.ID, idNode != null ? idNode.getNodeValue() : "");// TBD if we need this
 			element.setAttribute(ClauseConstants.DISPLAY_NAME, cellTreeNode.getName());
 			element.setAttribute(ClauseConstants.TYPE, "qdm");//this can change

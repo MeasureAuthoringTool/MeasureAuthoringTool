@@ -1,22 +1,19 @@
 package mat.client.clause;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mat.client.MatPresenter;
-import mat.client.codelist.service.CodeListService;
-import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.QualityDataSetDTO;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class QDSAppliedListPresenter implements MatPresenter {
@@ -25,27 +22,24 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	private SearchDisplay searchDisplay;
 	List<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
-	//List<JSONObject> codeListQDSEL = new ArrayList<JSONObject>();
+	
 	List<String> codeListString = new ArrayList<String>();
 	
 	public static interface SearchDisplay {
 		public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-	//	public  void buildCellListWidget(QDSAppliedListModel appliedListModel);
 		public Widget asWidget();
 		void buildCellList(QDSAppliedListModel appliedListModel);
 	}
 
 	public QDSAppliedListPresenter(SearchDisplay sDisplayArg) {
 		this.searchDisplay = sDisplayArg;
-		//showAppliedQDMsInMeasure(MatContext.get().getCurrentMeasureId());
 		getXMLForAppliedQDM();
 	}
 
 	void loadCodeListData() {
 		panel.clear();
 		getXMLForAppliedQDM();
-		//showAppliedQDMsInMeasure(MatContext.get().getCurrentMeasureId());
 		displaySearch();
 		
 	}

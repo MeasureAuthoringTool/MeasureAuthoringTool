@@ -210,6 +210,12 @@ public class ExportSimpleXML {
 			for(int i=0;i<packageClauses.getLength();i++){
 				Node packageClause = packageClauses.item(i);
 				String uuid = packageClause.getAttributes().getNamedItem("uuid").getNodeValue();
+				
+				//Ignore "Measure Observation" in grouping
+				if("measureObservation".equals(packageClause.getAttributes().getNamedItem("type").getNodeValue())){
+					continue;
+				}
+				
 				Node clauseNode = findClauseByUUID(uuid,originalDoc);
 				//deep clone the <clause> tag
 				Node clonedClauseNode = clauseNode.cloneNode(true);
@@ -231,7 +237,7 @@ public class ExportSimpleXML {
 		}
 		//reArrangeClauseNodes(originalDoc);
 		removeNode("/measure/populations",originalDoc);
-		removeNode("/measure/measureObservations",originalDoc);
+		//removeNode("/measure/measureObservations",originalDoc);
 	}
 	
 	/**
@@ -346,7 +352,7 @@ public class ExportSimpleXML {
 	}
 	
 	/**
-	 * This method finds a <clause> tag with a specified 'uuid' attribute.
+	 * This method finds a <clause> tag in <measure>/<populations> with a specified 'uuid' attribute.
 	 * @param uuid
 	 * @param originalDoc
 	 * @return
@@ -354,7 +360,7 @@ public class ExportSimpleXML {
 	 */
 	private static Node findClauseByUUID(String uuid, Document originalDoc) throws XPathExpressionException {
 		Node clauseNode = null;		
-		clauseNode = (Node)xPath.evaluate("/measure//clause[@uuid='"+uuid+"']", originalDoc,XPathConstants.NODE);		
+		clauseNode = (Node)xPath.evaluate("/measure/populations//clause[@uuid='"+uuid+"']", originalDoc,XPathConstants.NODE);		
 		return clauseNode;
 	}
 	

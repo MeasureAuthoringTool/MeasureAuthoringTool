@@ -113,6 +113,10 @@
     <xsl:template match="group" mode="processOtherPopulations">
         <xsl:variable name="initPopUUID"><xsl:value-of select="clause[@type='initialPatientPopulation']/@uuid"/></xsl:variable>
         <xsl:variable name="initPopDisplayName"><xsl:value-of select="clause[@type='initialPatientPopulation']/@displayName"/></xsl:variable>
+        
+        <xsl:variable name="denominatorPopUUID"><xsl:value-of select="clause[@type='denominator']/@uuid"/></xsl:variable>
+        <xsl:variable name="denominatorPopDisplayName"><xsl:value-of select="clause[@type='denominator']/@displayName"/></xsl:variable>
+        
         <xsl:for-each select="clause">
             <xsl:choose>
                 <xsl:when test=".[@type=('initialPatientPopulation','measureObservation')]">
@@ -126,9 +130,21 @@
                     </xsl:call-template>
                 </xsl:when>
                 <xsl:otherwise>
+                	<xsl:variable name="attach_uuid">
+	                	<xsl:choose>
+		                	<xsl:when test="string-length($denominatorPopUUID)=0"><xsl:value-of select="$initPopUUID"/></xsl:when>
+		                	<xsl:otherwise><xsl:value-of select="$denominatorPopUUID"/></xsl:otherwise>
+	                	</xsl:choose>
+	                </xsl:variable>
+	                <xsl:variable name="attach_title">
+	                	<xsl:choose>
+		                	<xsl:when test="string-length($denominatorPopDisplayName)=0"><xsl:value-of select="$initPopDisplayName"/></xsl:when>
+		                	<xsl:otherwise><xsl:value-of select="$denominatorPopDisplayName"/></xsl:otherwise>
+	                	</xsl:choose>
+	                </xsl:variable>	
                     <xsl:call-template name="handleClause">
-                        <xsl:with-param name="attachedUUID"><xsl:value-of select="../clause[@type=('denominator','initialPatientPopulation')][1]/@uuid"/></xsl:with-param>
-                        <xsl:with-param name="attachedTitle"><xsl:value-of select="../clause[@type=('denominator','initialPatientPopulation')][1]/@displayName"/></xsl:with-param>
+                        <xsl:with-param name="attachedUUID"><xsl:value-of select="$attach_uuid"/></xsl:with-param>
+                        <xsl:with-param name="attachedTitle"><xsl:value-of select="$attach_title"/></xsl:with-param>
                     </xsl:call-template> 
                 </xsl:otherwise>
             </xsl:choose>    

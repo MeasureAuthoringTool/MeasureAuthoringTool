@@ -21,6 +21,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -86,18 +87,23 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	//int currentPackageTab = 1;
 	
 	@Override
-	public void setViewIsEditable(boolean b) {
+	public void setViewIsEditable(boolean b, List<MeasurePackageDetail> packages) {
 		/*MatContext.get().setVisible(addToPackage,b);
 		MatContext.get().setVisible(packageMeasure,b);
 		MatContext.get().setVisible(createNew,b);
 		MatContext.get().setVisible(addButtonPanel,b);
 		MatContext.get().setVisible(clausesPanel,b);
 		*/
-		addClausesToPackage.setEnabled(b);
 		packageMeasure.setEnabled(b);
-		createNew.setEnabled(b);
+		if(ConstantMessages.CONTINUOUS_VARIABLE_SCORING.equals(MatContext.get().getCurrentMeasureScoringType()) && packages.size() > 0){
+			addClausesToPackage.setEnabled(false);
+			createNew.setEnabled(false);
+		}else{
+			addClausesToPackage.setEnabled(b);
+			createNew.setEnabled(b);
+
+		}
 		addClauseButtonPanel.setVisible(b);
-		
 		addQDMElementsToMeasure.setEnabled(b);
 		clausesPanel.setVisible(b);
 		qdmElementsPanel.setVisible(b);
@@ -356,7 +362,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		panel.add(addAllQDMLeft);
 		return panel;
 	}
-	
+		
 	@Override
 	public void setClausesInPackage(List<MeasurePackageClauseDetail> clauses) {
 		setClauseItems(packagedClausesListBox, clauses);
@@ -568,9 +574,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		else {
 			MatContext.get().setVisible(packagesTable,true);
 			packagesTable.resize(packages.size() + 1, 3);
-	
+
 			buildTableHeader(packagesTable);
-			
+								
 			for(int i = 0; i < packages.size(); i++) {
 				final MeasurePackageDetail nvp = packages.get(i);
 				packagesTable.setText(i+1, 0, nvp.getPackageName());

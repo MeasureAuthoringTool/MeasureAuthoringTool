@@ -54,7 +54,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		public Widget asWidget();
 		public void setSelectionHandler(MeasurePackageSelectionHandler handler);
 		public void setDeletionHandler(MeasurePackageSelectionHandler handler);
-		public void setViewIsEditable(boolean b);
+		public void setViewIsEditable(boolean b, List<MeasurePackageDetail> packages);
 		
 		public String getValuesSetDate();
 		public void setValuesSetDate(String date);
@@ -455,11 +455,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 				
 		}
 		else {
-			setNewMeasurePackage();
+		setNewMeasurePackage();			
 		}
 		
 		ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(),isEditable());
-		view.setViewIsEditable(isEditable());
+		view.setViewIsEditable(isEditable(),result.getPackages());
 		view.getValuesSetDateInputBox().setEnabled(isEditable());
 	}
 	

@@ -50,7 +50,7 @@ public class QDMAttributeDialogBox {
 	private static final String COMPARISON = "Comparison";
 	private static final String UNIT = "unit";
 	private static final String COMPARISON_VALUE = "comparisonValue";
-	private static final String QDM_UUID = "qdmUUId";
+	private static final String QDM_UUID = "qdmUUID";
 	private static final String ID = "id";
 	private static final String MODE = "mode";
 	private static final String VALUE_SET = "Value Set";

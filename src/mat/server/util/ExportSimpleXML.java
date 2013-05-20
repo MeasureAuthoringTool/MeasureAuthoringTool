@@ -307,6 +307,11 @@ public class ExportSimpleXML {
 			Node idAttributeNode = elementRefNode.getAttributes().getNamedItem("id");
 			usedQDMIds.add(idAttributeNode.getNodeValue());
 		}
+		NodeList elementInQDMAttributesList = (NodeList)xPath.evaluate("/measure//attribute/@qdmUUId", originalDoc, XPathConstants.NODESET);
+		for(int i=0;i<elementInQDMAttributesList.getLength();i++){
+			Node elementRefNode = elementInQDMAttributesList.item(i);
+			usedQDMIds.add(elementRefNode.getNodeValue());
+		}
 		_logger.info("usedQDMIds:"+usedQDMIds);
 		return usedQDMIds;
 	}

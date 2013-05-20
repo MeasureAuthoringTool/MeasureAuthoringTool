@@ -50,7 +50,7 @@ public class QDMAttributeDialogBox {
 	private static final String COMPARISON = "Comparison";
 	private static final String UNIT = "unit";
 	private static final String COMPARISON_VALUE = "comparisonValue";
-	private static final String QDM_ID = "qdmId";
+	private static final String QDM_UUID = "qdmUUId";
 	private static final String ID = "id";
 	private static final String MODE = "mode";
 	private static final String VALUE_SET = "Value Set";
@@ -549,8 +549,8 @@ public class QDMAttributeDialogBox {
 					ListBox qdmListBox = ((ListBox)grid.getWidget(i, 3));
 					String qdmName = qdmListBox.getItemText(qdmListBox.getSelectedIndex());
 					Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName);
-					String qdmId = qdmNode.getAttributes().getNamedItem(ID).getNodeValue();
-					attributeNode.setExtraInformation(QDM_ID, qdmId);
+					String qdmId = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					attributeNode.setExtraInformation(QDM_UUID, qdmId);
 				}
 			}else{
 				attributeNode.setExtraInformation(MODE, modeName);
@@ -653,10 +653,10 @@ public class QDMAttributeDialogBox {
 					setToolTipForEachElementInListbox(qdmListBox);
 					grid.setWidget(row, 3, qdmListBox);
 					
-					String qdmId = (String) attributenode.getExtraInformation(QDM_ID);
+					String qdmId = (String) attributenode.getExtraInformation(QDM_UUID);
 					for(String qdmName:ClauseConstants.getElementLookUps().keySet()){
 						Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName);
-						String qdmNodeId = qdmNode.getAttributes().getNamedItem(ID).getNodeValue();
+						String qdmNodeId = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
 						if(qdmId.equals(qdmNodeId)){
 							for(int r=0;r<qdmListBox.getItemCount();r++){
 								if(qdmName.equals(qdmListBox.getItemText(r))){

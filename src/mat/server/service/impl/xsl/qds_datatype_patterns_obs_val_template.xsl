@@ -31,9 +31,11 @@
 			<xsl:value-of select="$the_qdmAttributeMapping/DATA/ROW[ATTR_NAME='$pdisplayName']/CODE" />
 			<!-- <xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@code"/> -->
 		</xsl:variable>
+		<xsl:variable name="qdmUUID">
+			<xsl:value-of select="@qdmUUID"/>
+		</xsl:variable>	
 		<xsl:variable name="poid">
-			<xsl:value-of select="$the_qdmAttributeMapping/DATA/ROW[ATTR_NAME='$pdisplayName']/OID"/>
-			<!-- <xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@oid"/> -->
+			<xsl:value-of select="ancestor::measure/elementLookUp/qdm[@id=$qdmUUID]/@oid"/> 
 		</xsl:variable>
 		
 		<xsl:variable name="pcodeSystem">

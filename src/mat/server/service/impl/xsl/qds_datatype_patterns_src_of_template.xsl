@@ -30,9 +30,11 @@
 			<xsl:value-of select="$the_qdmAttributeMapping/DATA/ROW[ATTR_NAME='$pdisplayName']/CODE" />
 			<!-- <xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@code"/> -->
 		</xsl:variable>
+		<xsl:variable name="qdmUUID">
+			<xsl:value-of select="@qdmUUID"/>
+		</xsl:variable>	
 		<xsl:variable name="poid">
-			<xsl:value-of select="$the_qdmAttributeMapping/DATA/ROW[ATTR_NAME='$pdisplayName']/OID"/>
-			<!-- <xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@oid"/> -->
+			<xsl:value-of select="ancestor::measure/elementLookUp/qdm[@id=$qdmUUID]/@oid"/> 
 		</xsl:variable>
 		<xsl:variable name="pcodeSystem">
 			<xsl:value-of select="$the_qdmAttributeMapping/DATA/ROW[ATTR_NAME=$pdisplayName]/CODE_SYSTEM"/>
@@ -118,6 +120,9 @@
 					<xsl:variable name="attribute_mode">
 						<xsl:choose>
 							<!-- new addition for new XML architechture -->
+							<xsl:when test="@qdmUUID">
+								<xsl:text>2</xsl:text>
+							</xsl:when>
 							<xsl:when test="@mode">
 								<xsl:text>3</xsl:text>
 							</xsl:when>
@@ -151,6 +156,10 @@
 							</xsl:if>
 						</code>
 						<xsl:choose>
+							<xsl:when test="@qdmUUID">
+								<!-- Value Set -->
+								<value xsi:type="CD" code="{$poid}" codeSystem="2.16.840.1.113883.3.560.101.1" displayName="{$pdisplayName}"/>
+							</xsl:when>
 							<xsl:when test="@mode">
 								<!-- value -->
 								<xsl:apply-templates select="." mode="property_values_new"/>

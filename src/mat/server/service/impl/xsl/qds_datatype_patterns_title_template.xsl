@@ -199,15 +199,22 @@
 		     		</xsl:otherwise>
 				</xsl:choose>
 				<xsl:if test="string-length($is_to)=0">
+					<xsl:if test="attribute">
+						<xsl:text> (</xsl:text>
+						<xsl:value-of select="attribute/@name"/>
+						<xsl:apply-templates select="attribute" mode="text_new"/>
+						<xsl:text> )</xsl:text>
+					</xsl:if>
 					<xsl:if test="properties/property[not(@name='result outc')]">
 						<xsl:text> (</xsl:text>
-							<xsl:for-each select="properties/property[not(@name='result conj') and not(@name='result outc')]">
+						<xsl:for-each select="properties/propert[not(@name='result conj') and not(@name='result outc')]">
 							<xsl:choose>
 								<xsl:when test="contains(@name, ' id') or @name='_id'">
 									<xsl:variable name="pvalue">
 										<xsl:value-of select="@value"/>
 									</xsl:variable>
 									<xsl:variable name="pname">
+										
 										<xsl:choose>
 											<xsl:when test="string-length(ancestor::measure//elementLookUp/*[@id=$pvalue]/@displayName)>0">
 												<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@displayName"/>
@@ -230,8 +237,12 @@
 											</xsl:otherwise>
 										</xsl:choose>
 									</xsl:variable>
+									<xsl:variable name="qid">
+										<xsl:value-of select="../@id"/>
+									</xsl:variable>
 									<xsl:variable name="pdatatype">
-										<xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@datatype"/>
+										<xsl:value-of select="ancestor::measure//elementLookUp/qdm[@id=$qid]/@datatype"/>
+										<!-- <xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@datatype"/> -->
 									</xsl:variable>
 									<xsl:value-of select="$pdatatype"/>
 									<xsl:choose>
@@ -252,6 +263,9 @@
 										<xsl:apply-templates select="." mode="inline_arit_text"/>
 									</xsl:if>
 									<xsl:choose>
+										<xsl:when test="attribute">
+											<xsl:apply-templates select="attributes" mode="text_new"></xsl:apply-templates>
+										</xsl:when>
 										<xsl:when test="high">
 											<xsl:apply-templates select="high" mode="high_text"/>
 										</xsl:when>

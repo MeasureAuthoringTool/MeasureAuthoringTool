@@ -7,6 +7,97 @@
    exclude-result-prefixes="exsl uuid math xs msxsl">
 	<xsl:output method="xml" indent="yes" encoding="ISO-8859-1"/>
 
+	<xsl:template match="attribute" mode="text_new">
+		<xsl:choose>
+			<xsl:when test="@mode = 'Less Than'">
+				<xsl:text> &lt;</xsl:text>
+				<xsl:if test="@comparisonValue">
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="@comparisonValue"/>
+					<xsl:text> </xsl:text>
+				</xsl:if>
+				<xsl:if test="@unit">
+					<xsl:text> </xsl:text>
+					<xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
+					
+					<xsl:call-template name="unit-output">
+						<xsl:with-param name="uval" select="$unit"/>
+					</xsl:call-template>
+				</xsl:if>
+			</xsl:when>
+			<xsl:when test="@mode = 'Greater Than'">
+				<xsl:text> &gt;</xsl:text>
+				<xsl:if test="@comparisonValue">
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="@comparisonValue"/>
+					<xsl:text> </xsl:text>
+				</xsl:if>
+				<xsl:if test="@unit">
+					<xsl:text> </xsl:text>
+					<xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
+					
+					<xsl:call-template name="unit-output">
+						<xsl:with-param name="uval" select="$unit"/>
+					</xsl:call-template>
+				</xsl:if>
+			</xsl:when>
+			<xsl:when test="@mode = 'Equal To'">
+				<xsl:text> =</xsl:text>
+				<xsl:if test="@comparisonValue">
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="@comparisonValue"/>
+					<xsl:text> </xsl:text>
+				</xsl:if>
+				<xsl:if test="@unit">
+					<xsl:text> </xsl:text>
+					<xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
+					
+					<xsl:call-template name="unit-output">
+						<xsl:with-param name="uval" select="$unit"/>
+					</xsl:call-template>
+				</xsl:if>
+			</xsl:when>
+			<xsl:when test="@mode = 'Less Than Or Equal To'">
+				<xsl:text> &lt;=</xsl:text>
+				<xsl:if test="@comparisonValue">
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="@comparisonValue"/>
+					<xsl:text> </xsl:text>
+				</xsl:if>
+				<xsl:if test="@unit">
+					<xsl:text> </xsl:text>
+					<xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
+					
+					<xsl:call-template name="unit-output">
+						<xsl:with-param name="uval" select="$unit"/>
+					</xsl:call-template>
+				</xsl:if>
+			</xsl:when>
+			<xsl:when test="@mode = 'Greater Than Or Equal To'">
+				<xsl:text> &gt;=</xsl:text>
+				<xsl:if test="@comparisonValue">
+					<xsl:text> </xsl:text>
+					<xsl:value-of select="@comparisonValue"/>
+					<xsl:text> </xsl:text>
+				</xsl:if>
+				<xsl:if test="@unit">
+					<xsl:text> </xsl:text>
+					<xsl:variable name="unit"><xsl:value-of select="@unit"/></xsl:variable>
+					
+					<xsl:call-template name="unit-output">
+						<xsl:with-param name="uval" select="$unit"/>
+					</xsl:call-template>
+				</xsl:if>
+			</xsl:when>
+			<xsl:when test="@mode = 'Value Set'">
+				
+			</xsl:when>
+			<xsl:when test="@mode = 'Check if Present'">
+				 
+			</xsl:when>
+		</xsl:choose>
+	</xsl:template>
+	
 	<xsl:template match="high" mode="high_text">
 		<xsl:text> &lt;</xsl:text>
 		<xsl:if test="@inclusive='true'"><xsl:text>=</xsl:text></xsl:if>

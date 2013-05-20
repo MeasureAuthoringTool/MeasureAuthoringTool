@@ -7,7 +7,7 @@
    exclude-result-prefixes="exsl uuid math xs msxsl">
 	<xsl:output method="xml" indent="yes" encoding="ISO-8859-1"/>
 	
-	<xsl:template match="qdsel" mode="to">
+	<xsl:template match="qdm|qdsel" mode="to">
 		<xsl:variable name="rel_to_uuid">
 			<xsl:if test="current()/@to">
 				<xsl:value-of select="/measure/elementLookUp/*[@id=current()/@to]/@uuid"/>

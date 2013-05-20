@@ -96,13 +96,11 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		*/
 		packageMeasure.setEnabled(b);
 		if(ConstantMessages.CONTINUOUS_VARIABLE_SCORING.equals(MatContext.get().getCurrentMeasureScoringType()) && packages.size() > 0){
-			addClausesToPackage.setEnabled(false);
 			createNew.setEnabled(false);
 		}else{
-			addClausesToPackage.setEnabled(b);
 			createNew.setEnabled(b);
-
 		}
+		addClausesToPackage.setEnabled(b);
 		addClauseButtonPanel.setVisible(b);
 		addQDMElementsToMeasure.setEnabled(b);
 		clausesPanel.setVisible(b);

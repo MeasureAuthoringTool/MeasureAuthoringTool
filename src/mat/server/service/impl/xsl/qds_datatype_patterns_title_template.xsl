@@ -201,20 +201,24 @@
 				<xsl:if test="string-length($is_to)=0">
 					<xsl:if test="attribute">
 						<xsl:text> (</xsl:text>
-						<xsl:value-of select="attribute/@name"/>
-						<xsl:choose>
-							<xsl:when test="attribute/@qdmUUID">
-								<xsl:text> : '</xsl:text>
-								<xsl:variable name="qdmUUID"><xsl:value-of select="attribute/@qdmUUID"/></xsl:variable>
-								<xsl:value-of select="ancestor::measure/elementLookUp/qdm[@id=$qdmUUID]/@name"/>
-								<xsl:text>'</xsl:text>
-							</xsl:when>
-							<xsl:otherwise>
-								<xsl:apply-templates select="attribute" mode="text_new"/>		
-							</xsl:otherwise>
-						</xsl:choose>
-						
-						<xsl:text> )</xsl:text>
+						<xsl:for-each select="attribute">
+							<xsl:if test="count(preceding-sibling::attribute) > 0">
+								<xsl:text>, </xsl:text>
+							</xsl:if>
+							<xsl:value-of select="@name"/>
+							<xsl:choose>
+								<xsl:when test="@qdmUUID">
+									<xsl:text>: '</xsl:text>
+									<xsl:variable name="qdmUUID"><xsl:value-of select="@qdmUUID"/></xsl:variable>
+									<xsl:value-of select="ancestor::measure/elementLookUp/qdm[@id=$qdmUUID]/@name"/>
+									<xsl:text>'</xsl:text>
+								</xsl:when>
+								<xsl:otherwise>
+									<xsl:apply-templates select="current()" mode="text_new"/>		
+								</xsl:otherwise>
+							</xsl:choose>
+						</xsl:for-each>
+						<xsl:text>)</xsl:text>
 					</xsl:if>
 					<xsl:if test="properties/property[not(@name='result outc')]">
 						<xsl:text> (</xsl:text>

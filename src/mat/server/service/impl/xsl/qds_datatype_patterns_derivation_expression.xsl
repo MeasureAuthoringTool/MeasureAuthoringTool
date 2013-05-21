@@ -101,7 +101,7 @@
 					<id root="{$qdsuuid}"/>
 					<title><xsl:value-of select="$title"/></title>
 					<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-					<xsl:apply-templates select="attribute" mode="src_of_new"/>
+					<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 					
 					<xsl:apply-templates select="." mode="to"/>
 				</observation>

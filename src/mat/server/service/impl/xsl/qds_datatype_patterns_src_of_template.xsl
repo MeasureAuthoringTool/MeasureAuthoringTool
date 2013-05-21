@@ -8,12 +8,15 @@
 	<xsl:output method="xml" indent="yes" encoding="ISO-8859-1"/>
 
 	<xsl:template match="attribute" mode="src_of_new">
+		
 		<xsl:variable name="qid">
 			<xsl:value-of select="../@id"/>
 		</xsl:variable>
+		
 		<xsl:variable name="qcode">
 			<xsl:value-of select="ancestor::measure//elementLookUp/qdm[@id=$qid]/@oid"/>
 		</xsl:variable>
+		
 		<xsl:variable name="qdisplayName">
 			<xsl:value-of select="ancestor::measure//elementLookUp/qdm[@id=$qid]/@name"/>
 		</xsl:variable>
@@ -24,12 +27,14 @@
 			<xsl:value-of select="@value"/>
 		</xsl:variable> -->
 		<xsl:variable name="pdisplayName">
-			<xsl:value-of select="@name"/>
+			<xsl:value-of select="lower-case(@name)"/>
 		</xsl:variable>
+		
 		<xsl:variable name="pcode">
 			<xsl:value-of select="$the_qdmAttributeMapping/DATA/ROW[ATTR_NAME='$pdisplayName']/CODE" />
 			<!-- <xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@code"/> -->
 		</xsl:variable>
+		
 		<xsl:variable name="qdmUUID">
 			<xsl:value-of select="@qdmUUID"/>
 		</xsl:variable>	

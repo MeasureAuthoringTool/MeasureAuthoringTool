@@ -371,7 +371,7 @@
 					     	<code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
 							<title><xsl:value-of select="$title"/></title>
 							<xsl:apply-templates select="attribute" mode="obs_val"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>   
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>   
 							<xsl:apply-templates select="." mode="to"/>
 					     </observation>
 					  </sourceOf>
@@ -394,7 +394,7 @@
                				<title><xsl:value-of select="$title"/></title>
                				<value xsi:type="CD" code="{$qdsoid}" displayName="{$qdsdisplayname}" />
                				<xsl:apply-templates select="attribute" mode="obs_val"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:apply-templates select="." mode="to"/>
                			</observation>
                		</sourceOf>
@@ -418,7 +418,7 @@
 		<title><xsl:value-of select="$title"/></title>
 		<value xsi:type="CD" code="{$qdsoid}" displayName="{$qdsdisplayname}" />
 		<xsl:apply-templates select="attribute" mode="obs_val"/>
-		<xsl:apply-templates select="attribute" mode="src_of_new"/>   
+		<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>   
 		<xsl:apply-templates select="." mode="to"/>
      </observation>
   </sourceOf>
@@ -442,7 +442,7 @@
 		<title><xsl:value-of select="$title"/></title>
 		<value xsi:type="CD" code="{$qdsoid}" displayName="{$qdsdisplayname}" />
 		<xsl:apply-templates select="attribute" mode="obs_val"/>
-		<xsl:apply-templates select="attribute" mode="src_of_new"/>   
+		<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>   
 		<xsl:apply-templates select="." mode="to"/>
      </observation>
   </sourceOf>
@@ -467,7 +467,7 @@
 		<title><xsl:value-of select="$title"/></title>
 		<value xsi:type="CD" code="{$qdsoid}" displayName="{$qdsdisplayname}" />
 		<xsl:apply-templates select="attribute" mode="obs_val"/>
-		<xsl:apply-templates select="attribute" mode="src_of_new"/>   
+		<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>   
 		<xsl:apply-templates select="." mode="to"/>
      </observation>
   </sourceOf>
@@ -491,7 +491,7 @@
 		<title><xsl:value-of select="$title"/></title>
 		<value xsi:type="CD" code="{$qdsoid}" displayName="{$qdsdisplayname}" />
 		<xsl:apply-templates select="attribute" mode="obs_val"/>
-		<xsl:apply-templates select="attribute" mode="src_of_new"/>   
+		<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>   
 		<xsl:apply-templates select="." mode="to"/>
      </observation>
   </sourceOf>
@@ -513,7 +513,7 @@
 							<code code="{$qdsoid}"  displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
 							<title><xsl:value-of select="$title"/></title>
 							<xsl:apply-templates select="attribute" mode="obs_val"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:apply-templates select="." mode="to"/>
 						</observation>
 					</sourceOf>
@@ -545,7 +545,9 @@
 							  </playingDevice>
 						  </roleParticipant>
 					   </participant>
-					   <xsl:apply-templates select="attribute" mode="src_of_new"/>
+					   <xsl:for-each select="attribute">
+					   		<xsl:apply-templates select="." mode="src_of_new"/>
+					   </xsl:for-each>
 					   <xsl:if test="$refid!='NA' and $refoid!=''"> 
 							<sourceOf typeCode="RSON">
 								<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -580,7 +582,7 @@
 							<statusCode code="completed"/>
 							
 							<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -615,7 +617,7 @@
 							<statusCode code="completed"/>
 							
 							<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -649,7 +651,7 @@
 							<title><xsl:value-of select="$title"/></title>
 							
 							<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -684,7 +686,7 @@
 						<statusCode code="completed"/>
 						
 						<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						<xsl:apply-templates select="attribute" mode="src_of_new"/>
+						<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 						<xsl:if test="$refid != 'NA'">
 							<sourceOf typeCode="RSON">
 								<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -717,7 +719,7 @@
 							 <title><xsl:value-of select="$title"/></title>
 							 
 							 <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							 <xsl:apply-templates select="attribute" mode="src_of_new"/>
+							 <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							 <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -751,7 +753,7 @@
 							<title><xsl:value-of select="$title"/></title>
 							
 							<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -785,7 +787,7 @@
 							<title><xsl:value-of select="$title"/></title>
 							
 							<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -819,7 +821,7 @@
 							 <title><xsl:value-of select="$title"/></title>
 							 
 							 <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							 <xsl:apply-templates select="attribute" mode="src_of_new"/>
+							 <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							  <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -859,7 +861,7 @@
 									</playingMaterial>
 								</roleParticipant>
 							</participant>
-						   <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						   <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 						   <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -888,7 +890,7 @@
 							<title><xsl:value-of select="$title"/></title>
 							
 							<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -921,7 +923,7 @@
 								 <code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
 							  </roleParticipant>
 							</participant>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -960,7 +962,7 @@
 						 			<value xsi:type="CD" code="55561003" displayName="active" codeSystem="2.16.840.1.113883.6.96"/>
 						 		</observation>
 						 	</sourceOf>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -994,7 +996,7 @@
 							<statusCode code="completed"/>
 							
 							<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1028,7 +1030,7 @@
 							<statusCode code="completed"/>
 							
 							<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1061,7 +1063,7 @@
 							<title><xsl:value-of select="$title"/></title>
 							
 							<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1093,7 +1095,7 @@
 				              <title><xsl:value-of select="$title"/></title>
 								
 								<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-								<xsl:apply-templates select="attribute" mode="src_of_new"/>
+								<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 								
 								<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
@@ -1127,7 +1129,7 @@
 				                <statusCode code="completed"/>
 				                
 			            		<xsl:apply-templates select="attribute" mode="obs_val_new"/>
-								<xsl:apply-templates select="attribute" mode="src_of_new"/>    
+								<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>    
 								<xsl:if test="$refid!='NA' and $refoid!=''"> 
 									<sourceOf typeCode="RSON">
 										<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1159,7 +1161,7 @@
 				         <title><xsl:value-of select="$title"/></title>
 				         
 				         <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				         <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				         <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				         <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1202,7 +1204,7 @@
 				                    <value xsi:type="CD" code="55561003" displayName="active" codeSystem="2.16.840.1.113883.6.96"/>
 				                </observation>
 				            </sourceOf>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/><!-- 0014 UNSENSITIZED 0047 severity=persistent -->
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each><!-- 0014 UNSENSITIZED 0047 severity=persistent -->
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1240,7 +1242,7 @@
 				                </playingMaterial>
 				            </roleParticipant>
 				        </participant>
-				        <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				        <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 						<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1278,7 +1280,7 @@
 				                   </playingMaterial>
 				                </roleParticipant>
 				           </participant>
-				           <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				           <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				        	<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1320,7 +1322,7 @@
 				                    </playingMaterial>
 				                </roleParticipant>
 				            </participant>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <sourceOf typeCode="REFR">
 				                <observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 				                    <code code="33999-4" displayName="Status" codeSystem="2.16.840.1.113883.6.1"/>
@@ -1368,7 +1370,7 @@
 								   </playingMaterial>
 								</roleParticipant>
 							</participant>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 								
 							
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
@@ -1409,7 +1411,7 @@
 			            <title><xsl:value-of select="$title"/></title>
 			            
 			            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						<xsl:apply-templates select="attribute" mode="src_of_new"/>
+						<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 			            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1444,7 +1446,7 @@
 			            <title><xsl:value-of select="$title"/></title>
 			            <statusCode code="completed"/>
 			            
-			            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+			            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 			            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
 						<xsl:if test="$refid != 'NA'">
 							<sourceOf typeCode="RSON">
@@ -1482,7 +1484,7 @@
 				             	</xsl:if>
 				             </value>
 				             <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							 <xsl:apply-templates select="attribute" mode="src_of_new"/>
+							 <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				             <xsl:if test="$refid != 'NA'">
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1539,7 +1541,7 @@
 							 	<code code="{$ircp_cd}" codeSystem="{$ircp_cs}" displayName="Medical Practitioner"/>
 			                </roleParticipant>
 			            </participant>
-			            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+			            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 			            <xsl:if test="$refid != 'NA'">
 							<sourceOf typeCode="RSON">
 								<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1596,7 +1598,7 @@
 				               <signatureCode code="S" />
 				               <patientParticipant classCode="PAT"/>
 				           </participant>
-				           <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				           <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				           <xsl:if test="$refid != 'NA'">
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1671,7 +1673,7 @@
 								 <code code="{$ircp_cd}" codeSystem="{$ircp_cs}" displayName="Medical Practitioner"/>
 				                 </roleParticipant>
 				            </participant>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1710,7 +1712,7 @@
 				                    </playingDevice>
 				                </roleParticipant>
 				            </participant>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1744,7 +1746,7 @@
 				         
 				         <value xsi:type="CD" code="{$qdsoid}" displayName="{$qdsdisplayname}"/>
 				         <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				         <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				         <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				         <sourceOf typeCode="REFR">
 				            <observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 				               <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status"/>
@@ -1780,7 +1782,7 @@
 				                    <code code="125677006" codeSystem="2.16.840.1.113883.6.96" displayName="Relative"/>
 				                </roleParticipant>
 				           </participant>
-				           <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				           <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1814,7 +1816,7 @@
 				            
 				            <value xsi:type="CD" code="{$qdsoid}"  displayName="{$qdsdisplayname}"/>
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <sourceOf typeCode="REFR">
 				                <observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 				                    <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status"/>
@@ -1856,7 +1858,7 @@
 				            <statusCode code="completed"/>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1890,7 +1892,7 @@
 				             <statusCode code="completed"/>
 				             
 					        <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -1929,7 +1931,7 @@
 				                   </playingMaterial>
 				                </roleParticipant>
 				            </participant>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 					            
 							
 				        	<xsl:if test="$refid!='NA' and $refoid!=''"> 
@@ -1964,7 +1966,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2002,7 +2004,7 @@
 				            <statusCode code="completed"/>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2035,7 +2037,7 @@
 				             <title><xsl:value-of select="$title"/></title>
 				             
 				             <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				             <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				             <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				              <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2068,7 +2070,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-							<xsl:apply-templates select="attribute" mode="src_of_new"/>
+							<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2102,7 +2104,7 @@
 				             <statusCode code="completed"/>
 				             
 				             <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				             <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				             <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				             <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2141,7 +2143,7 @@
 				               </playingMaterial>
 				            </roleParticipant>
 				         </participant>
-				         <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				         <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				         <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2180,7 +2182,7 @@
 				                    </playingMaterial>
 				                </roleParticipant>
 				            </participant>
-				           <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				           <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				           <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2213,7 +2215,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <sourceOf typeCode="REFR">
 				                <observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 				                    <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status"/>
@@ -2252,7 +2254,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <sourceOf typeCode="REFR">
 				                <observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 				                    <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status"/>
@@ -2291,7 +2293,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<sourceOf typeCode="REFR">
 								<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 								   <code code="33999-4" codeSystem="2.16.840.1.113883.6.1" displayName="Status"/>
@@ -2330,7 +2332,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2362,7 +2364,7 @@
 				             <code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
 				         </roleParticipant>
 				    </participant>
-				    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 	            	<xsl:apply-templates select="." mode="to"/>
 	            	</observation>
             	</sourceOf>
@@ -2384,7 +2386,7 @@
 					              <code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
 					         </roleParticipant>
 					     </participant>
-					     <xsl:apply-templates select="attribute" mode="src_of_new"/>
+					     <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 	            		<xsl:apply-templates select="." mode="to"/>
             		</observation>
             	</sourceOf>
@@ -2414,7 +2416,7 @@
 				                    </playingMaterial>
 				                </roleParticipant>
 				            </participant>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>					  
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>					  
 				          <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2447,7 +2449,7 @@
 				           <title><xsl:value-of select="$title"/></title>
 				           
 				           <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						   <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						   <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				           <sourceOf typeCode="CAUS" inversionInd="true">
 				               <procedure classCode="PROC" moodCode="EVN" isCriterionInd="true">
 				               	<code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
@@ -2485,7 +2487,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <sourceOf typeCode="CAUS" inversionInd="true">
 				                <procedure classCode="PROC" moodCode="EVN" isCriterionInd="true">
 				                	<code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
@@ -2532,7 +2534,7 @@
 				                   </playingMaterial>
 				               </roleParticipant>
 				           </participant>	
-				           <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				           <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				           	<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2572,7 +2574,7 @@
 				                </playingMaterial>
 				            </roleParticipant>
 				         </participant>
-				         <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				         <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				          	<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2612,7 +2614,7 @@
 				                   </playingMaterial>
 				                </roleParticipant>
 				            </participant>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>   
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>   
 				          <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2652,7 +2654,7 @@
 				                </playingMaterial>
 				            </roleParticipant>
 				        </participant>
-				        <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				        <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2692,7 +2694,7 @@
 				                   </playingMaterial>
 				               </roleParticipant>
 				           </participant>
-				           <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				           <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				          <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2732,7 +2734,7 @@
 				                     </playingMaterial>
 				                 </roleParticipant>
 				            </participant>
-				            <xsl:apply-templates select="attribute" mode="src_of_new"/>        
+				            <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>        
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2771,7 +2773,7 @@
 				              </playingDevice>
 				          </roleParticipant>
 				       </participant>
-				       <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				       <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				       <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2804,7 +2806,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <sourceOf typeCode="CAUS" inversionInd="true">
 				                <procedure classCode="PROC" moodCode="EVN" isCriterionInd="true">
 				                    <code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
@@ -2843,7 +2845,7 @@
 				           <title><xsl:value-of select="$title"/></title>
 				           
 				           <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						   <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						   <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				           <sourceOf typeCode="CAUS" inversionInd="true">
 				               <procedure classCode="PROC" moodCode="EVN" isCriterionInd="true">
 				                   <code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
@@ -2881,7 +2883,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2913,7 +2915,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 							
 							<xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
@@ -2946,7 +2948,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -2979,7 +2981,7 @@
 				             <title><xsl:value-of select="$title"/></title>
 				             
 				             <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						     <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						     <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				             <sourceOf typeCode="CAUS" inversionInd="true">
 				                 <procedure classCode="PROC" moodCode="EVN" isCriterionInd="true">
 				                     <code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
@@ -3017,7 +3019,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <sourceOf typeCode="CAUS" inversionInd="true">
 				                <procedure classCode="PROC" moodCode="EVN" isCriterionInd="true">
 				                     <code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
@@ -3055,7 +3057,7 @@
 				             <title><xsl:value-of select="$title"/></title>
 				             
 				             <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						     <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						     <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				             <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -3089,7 +3091,7 @@
 				            <statusCode code="completed"/>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				             <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -3123,7 +3125,7 @@
 				             <statusCode code="completed"/>
 				             
 				             <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-				           	 <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				           	 <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -3156,7 +3158,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <sourceOf typeCode="CAUS" inversionInd="true">
 				                <procedure classCode="PROC" moodCode="EVN" isCriterionInd="true">
 				                    <code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
@@ -3194,7 +3196,7 @@
 				             <title><xsl:value-of select="$title"/></title>
 				             
 				             <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						     <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						     <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				             <sourceOf typeCode="CAUS" inversionInd="true">
 				                 <procedure classCode="PROC" moodCode="EVN" isCriterionInd="true">
 				                     <code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
@@ -3232,7 +3234,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -3272,7 +3274,7 @@
 				                    </playingMaterial>
 				                </roleParticipant>
 				           </participant>
-				           <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				           <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				           <sourceOf typeCode="REFR">
 				               <observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 				                   <code code="33999-4" displayName="Status" codeSystem="2.16.840.1.113883.6.1"/>
@@ -3318,7 +3320,7 @@
 				                    </playingMaterial>
 				                </roleParticipant>
 				           </participant>
-				           <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				           <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				          <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -3358,7 +3360,7 @@
 				                    </playingMaterial>
 				                </roleParticipant>
 				             </participant>
-				             <xsl:apply-templates select="attribute" mode="src_of_new"/>
+				             <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -3386,7 +3388,7 @@
 				            <title><xsl:value-of select="$title"/></title>
 				            
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -3418,7 +3420,7 @@
 				            <code code="{$qdsoid}" displayName="{$qdsdisplayname}" codeSystem="2.16.840.1.113883.3.560.101.1"/>
 				            <title><xsl:value-of select="$title"/></title>
 				            <xsl:apply-templates select="attribute" mode="obs_val_new"/>
-						    <xsl:apply-templates select="attribute" mode="src_of_new"/>
+						    <xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 				            <xsl:if test="$refid!='NA' and $refoid!=''"> 
 								<sourceOf typeCode="RSON">
 									<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -3685,7 +3687,7 @@
 		<!-- deprecate start QDM 2.1.1.1 -->
 		<xsl:apply-templates select="attribute" mode="obs_val_new"/>
 		<!-- deprecate end -->
-		<xsl:apply-templates select="attribute" mode="src_of_new"/>
+		<xsl:for-each select="attribute"> <xsl:apply-templates select="." mode="src_of_new"/> </xsl:for-each>
 	</xsl:template>
 	
 </xsl:stylesheet>

@@ -411,12 +411,19 @@ public class XmlProcessor {
 					Node newNode = nodesFinal.item(i);
 					String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
 					String dataType = newNode.getAttributes().getNamedItem("datatype").getNodeValue();
-
-					if(!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT) && !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
-						for(QualityDataSetDTO dataSetDTO: masterList){
-							if(dataSetDTO.getId().equalsIgnoreCase(nodeID) && StringUtils.isBlank(dataSetDTO.getOccurrenceText()) ){
-								qdmList.add(dataSetDTO);
-								break;
+					boolean isOccurrenceText = false;
+					if(newNode.getAttributes().getNamedItem("instance")!=null){
+						isOccurrenceText=true;
+					}
+					// Check to Filter Occurrences
+					if(!isOccurrenceText){
+						// Check to filter Attributes and Timing data types.
+						if(!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT) && !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+							for(QualityDataSetDTO dataSetDTO: masterList){
+								if(dataSetDTO.getId().equalsIgnoreCase(nodeID) && StringUtils.isBlank(dataSetDTO.getOccurrenceText()) ){
+									qdmList.add(dataSetDTO);
+									break;
+								}
 							}
 						}
 					}

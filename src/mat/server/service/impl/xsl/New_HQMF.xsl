@@ -214,6 +214,7 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:for-each select="*">
+                            <testt><xsl:value-of select="name()"/></testt>
                             <xsl:call-template name="topCond">
                                 <xsl:with-param name="attachedUUID"><xsl:value-of select="$attachedUUID"/></xsl:with-param>
                                 <xsl:with-param name="attachedTitle"><xsl:value-of select="$attachedTitle"/></xsl:with-param>
@@ -346,19 +347,31 @@
                     displayName="Data criteria (QDM Data Elements)"/>
                 <title>Data criteria (QDM Data Elements)</title>
                 <text/>
-                <xsl:for-each select="elementLookUp/qdm">
-                    <xsl:variable name="id">
-                        <xsl:value-of select="@id"/>
-                    </xsl:variable>
-                    <xsl:variable name="addToDC">
-                        <xsl:value-of select="@suppDataElement"/>
-                    </xsl:variable>
-                    
-                    <xsl:if test="$addToDC != 'true'">
-                        <xsl:apply-templates select="." mode="datacriteria"/>
-                    </xsl:if>
-                </xsl:for-each> 
                 
+                <xsl:for-each select="elementLookUp/qdm">
+                    <xsl:if test="@datatype != 'attribute'">
+                        <xsl:variable name="id">
+                            <xsl:value-of select="@id"/>
+                        </xsl:variable>
+                        <xsl:variable name="addToDC">
+                            <xsl:value-of select="@suppDataElement"/>
+                        </xsl:variable>
+                        
+                        <xsl:if test="$addToDC != 'true'">
+                            <xsl:apply-templates select="." mode="datacriteria"/>
+                        </xsl:if>
+                    </xsl:if>
+                </xsl:for-each>
+                <!-- For each attribute with a mode of 'Value Set' we need to show the QDM used in the value set with the datatype as the name of the QDM
+                attribute. Also If the same QDM element is used as Value Set in more than 1 QDM Attributes, then we need to show the <propel> element twice.-->
+                <xsl:for-each select="measureGrouping//attribute">
+                    <xsl:variable name="qdmUUID"><xsl:value-of select="@qdmUUID"/></xsl:variable>
+                    <xsl:variable name="dataTyp"><xsl:value-of select="@name"/></xsl:variable>
+                    
+                    <xsl:for-each select="ancestor::measure/elementLookUp/qdm[@datatype='attribute'][@id=$qdmUUID]">
+                        <propel id="{@id}"  name="{@name}" displayName="{@name}" datatype="{$dataTyp}" oid="{@oid}" uuid="{@uuid}" taxonomy="{@taxonomy}" taxonomyVersion="{@version}" codeSystem="{@codeSystem}" codeSystemName="{@codeSystemName}"/>
+                    </xsl:for-each>    
+                </xsl:for-each>
             </section>
         </component> 
     </xsl:template>

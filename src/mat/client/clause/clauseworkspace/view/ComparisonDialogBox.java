@@ -55,10 +55,17 @@ public class ComparisonDialogBox{
 
 		if(extraAttributesMap!=null){
 			timingOrFuncMethod =  extraAttributesMap.get(ClauseConstants.TYPE);
-			timingOrFuncMethod =  MatContext.get().operatorMapKeyShort.get(timingOrFuncMethod);
+			timingOrFuncMethod =  MatContext.get().operatorMapKeyShort.containsKey(timingOrFuncMethod) 
+					? MatContext.get().operatorMapKeyShort.get(timingOrFuncMethod) : "--Select--";
 			operatorMethod = extraAttributesMap.containsKey(ClauseConstants.OPERATOR_TYPE) ? extraAttributesMap.get(ClauseConstants.OPERATOR_TYPE) : operatorMethod;
 			quantityValue = extraAttributesMap.containsKey(ClauseConstants.QUANTITY) ? extraAttributesMap.get(ClauseConstants.QUANTITY) : quantityValue;
 			unitType = extraAttributesMap.containsKey(ClauseConstants.UNIT) ? extraAttributesMap.get(ClauseConstants.UNIT) : unitType;
+			if(operatorMethod.trim().length() == 0){
+				operatorMethod = "--Select--";
+			}
+			if(unitType.trim().length() == 0){
+				unitType = "--Select--";
+			}
 		}else{
 			timingOrFuncMethod = cellTreeNode.getLabel();
 		}
@@ -73,8 +80,10 @@ public class ComparisonDialogBox{
 			labelForListBox = "Functions";
 		}
 		
-		if(timingOrFuncMethod.contains("Select"))
+		if(timingOrFuncMethod.contains("Select")){ //added is null check for Functions which are not in recent list but exists in prod like COUNTDISTINCT 
 			listAllTimeOrFunction.addItem(timingOrFuncMethod);
+		}
+			
 		for(int i=0; i < keys.size(); i++){
 			listAllTimeOrFunction.addItem(keys.get(i));
 			if(keys.get(i).equalsIgnoreCase(timingOrFuncMethod)){

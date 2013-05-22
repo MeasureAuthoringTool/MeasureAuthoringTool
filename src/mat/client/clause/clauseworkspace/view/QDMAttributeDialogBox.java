@@ -2,6 +2,7 @@ package mat.client.clause.clauseworkspace.view;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import mat.client.clause.QDSAttributesService;
@@ -754,10 +755,10 @@ public class QDMAttributeDialogBox {
 	}
 
 	private static Node findElementLookUpNode(String name) {
-		Set<String> qdmNames = ClauseConstants.getElementLookUps().keySet();
-		for(String qdmName:qdmNames){
-			if(qdmName.equals(name)){
-				com.google.gwt.xml.client.Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName);
+		Set<Entry<String, Node>> qdmNames = ClauseConstants.getElementLookUps().entrySet();
+		for(Entry qdmName:qdmNames){
+			if(qdmName.getKey().equals(name)){
+				com.google.gwt.xml.client.Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName.getKey());
 				return qdmNode;
 			}
 		}

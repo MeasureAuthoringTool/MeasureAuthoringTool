@@ -142,7 +142,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 						}
 					
 						if(namedNodeMap.getNamedItem("datatype") != null){
-							name = name + ": " + namedNodeMap.getNamedItem("datatype").getNodeValue();
+							name = name + " : " + namedNodeMap.getNamedItem("datatype").getNodeValue();
 						}
 						qdmElementLookUps.put(name, qdms.item(i));
 					}

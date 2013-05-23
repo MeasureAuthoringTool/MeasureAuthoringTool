@@ -409,7 +409,7 @@ public class XmlProcessor {
 				//populate QDM List
 				for(int i=0;i<nodesFinal.getLength();i++){
 					Node newNode = nodesFinal.item(i);
-					String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
+					String nodeID = newNode.getAttributes().getNamedItem("uuid").getNodeValue();
 					String dataType = newNode.getAttributes().getNamedItem("datatype").getNodeValue();
 					boolean isOccurrenceText = false;
 					if(newNode.getAttributes().getNamedItem("instance")!=null){
@@ -420,7 +420,7 @@ public class XmlProcessor {
 						// Check to filter Attributes and Timing data types.
 						if(!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT) && !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
 							for(QualityDataSetDTO dataSetDTO: masterList){
-								if(dataSetDTO.getId().equalsIgnoreCase(nodeID) && StringUtils.isBlank(dataSetDTO.getOccurrenceText()) ){
+								if(dataSetDTO.getUuid().equalsIgnoreCase(nodeID) && StringUtils.isBlank(dataSetDTO.getOccurrenceText()) ){
 									qdmList.add(dataSetDTO);
 									break;
 								}
@@ -431,7 +431,7 @@ public class XmlProcessor {
 			}else{
 				for(int i=0;i<nodesElementLookUpAll.getLength();i++){
 					Node newNode = nodesElementLookUpAll.item(i);
-					String nodeID = newNode.getAttributes().getNamedItem("id").getNodeValue();
+					String nodeID = newNode.getAttributes().getNamedItem("uuid").getNodeValue();
 					String dataType = newNode.getAttributes().getNamedItem("datatype").getNodeValue();
 					boolean isOccurrenceText = false;
 					if(newNode.getAttributes().getNamedItem("instance")!=null){
@@ -442,7 +442,7 @@ public class XmlProcessor {
 						// Check to filter Attributes and Timing data types.
 						if(!dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT) && !dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
 							for(QualityDataSetDTO dataSetDTO: masterList){
-								if(dataSetDTO.getId().equalsIgnoreCase(nodeID) && StringUtils.isBlank(dataSetDTO.getOccurrenceText()) ){
+								if(dataSetDTO.getUuid().equalsIgnoreCase(nodeID) && StringUtils.isBlank(dataSetDTO.getOccurrenceText()) ){
 									qdmList.add(dataSetDTO);
 									break;
 								}

@@ -89,24 +89,40 @@
                 <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4"/>
                 <value xsi:type="CD" code="{$code}" codeSystem="2.16.840.1.113883.5.1063"
                     codeSystemName="HL7 Observation Value" displayName="{$displayName}"/>
-                <!-- TODO verify handling of measure observation section -->
-                <!-- 
-                    PRCN: (precondition) defines the criteria that must hold 
-                    in order to satisfy inclusion. 
-                    The target of the precondition can be 
-                    a reference to a criterion defined elsewhere, 
-                    whether in the same eMeasure document or 
-                    contained in an external library of criteria, if necessary. 
-                    
-                    COMP: (component), for the general case where 
-                    the only assertion is that the 
-                    related entries are contained within 
-                    the source section and 
-                    no other semantics are implied
-                 -->
-                <xsl:apply-templates select="*"/>
+                <xsl:apply-templates select="*" mode="topmost"/>
             </observation>
         </entry>
+    </xsl:template>
+    
+    <xsl:template match="logicalOp" mode="topmost">
+        <xsl:variable name="conj">
+            <xsl:value-of select="upper-case(@type)"/>
+        </xsl:variable>
+        <xsl:if test="$conj='AND' or $conj='OR'">
+            <xsl:text>
+           
+            </xsl:text>
+            
+            <sourceOf typeCode="PRCN">
+                <conjunctionCode code="{$conj}"/>
+                <!-- Handle QDM elements -->
+                <xsl:if test="count('./elementRef') > 0">
+                    <xsl:for-each select="elementRef">
+                        <xsl:apply-templates select="."/>
+                    </xsl:for-each>
+                </xsl:if>
+                
+                <!-- Handle nested AND/OR -->
+                <xsl:if test="count('./logicalOp') > 0">
+                    <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                        <xsl:for-each select="logicalOp">
+                           <xsl:apply-templates select="." mode="topmost"/>
+                        </xsl:for-each>
+                    </act>
+                </xsl:if>
+                
+            </sourceOf>
+        </xsl:if>
     </xsl:template>
     
     <!-- template which will handle clauses other than "initialPatientPopulation" clause-->
@@ -214,7 +230,6 @@
                     </xsl:when>
                     <xsl:otherwise>
                         <xsl:for-each select="*">
-                            <testt><xsl:value-of select="name()"/></testt>
                             <xsl:call-template name="topCond">
                                 <xsl:with-param name="attachedUUID"><xsl:value-of select="$attachedUUID"/></xsl:with-param>
                                 <xsl:with-param name="attachedTitle"><xsl:value-of select="$attachedTitle"/></xsl:with-param>
@@ -246,24 +261,29 @@
                         <title><xsl:value-of select="$attachedTitle"/></title>
                     </observation>
                 </sourceOf>
-                <xsl:apply-templates select="./*" mode="nested"/>
-            </xsl:when>
+                <xsl:if test="count(child::*) > 0">
+                    <xsl:apply-templates select="." mode="topmost"/>
+                </xsl:if>
+           </xsl:when>
         </xsl:choose>
     </xsl:template>
     
     <xsl:template match="logicalOp">
-        <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
+        <!--<xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
         <xsl:variable name="conj">
             <xsl:value-of select="upper-case(@type)"/>
-        </xsl:variable>
-       <xsl:text>
-               
-       </xsl:text>
-       <xsl:comment>  top and/or </xsl:comment>
-       <xsl:apply-templates select="*" mode="nested"/>
-    </xsl:template>
+        </xsl:variable>-->
+       
+       <act classCode="ACT" moodCode="EVN" isCriterionInd="true"> 
+            <xsl:apply-templates select="./*" mode="nested"/>
+       </act>     
+   </xsl:template>
     
     <xsl:template match="elementRef" mode="nested">
+        <xsl:text>
+               
+       </xsl:text>
+        <xsl:comment>  nested and/or </xsl:comment>
         <sourceOf typeCode="PRCN">
             <conjunctionCode>
                 <xsl:attribute name="code">
@@ -272,8 +292,8 @@
             </conjunctionCode>
             <xsl:apply-templates select="."/>
         </sourceOf>
-    </xsl:template>
-    
+   </xsl:template>
+        
     <xsl:template name="measure_observations">
         <xsl:if test="count(measureObservations) >= 1">
             <xsl:text>

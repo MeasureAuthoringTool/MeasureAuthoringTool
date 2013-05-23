@@ -101,27 +101,32 @@
         <xsl:if test="$conj='AND' or $conj='OR'">
             <xsl:text>
            
-            </xsl:text>
-            
-            <sourceOf typeCode="PRCN">
-                <conjunctionCode code="{$conj}"/>
+            </xsl:text>             
                 <!-- Handle QDM elements -->
-                <xsl:if test="count('./elementRef') > 0">
+            <xsl:if test="count(child::*[name()='elementRef']) > 0">
                     <xsl:for-each select="elementRef">
-                        <xsl:apply-templates select="."/>
+                        <sourceOf typeCode="PRCN">
+                            <conjunctionCode code="{$conj}"/>
+                            <xsl:apply-templates select="."/>
+                        </sourceOf>    
                     </xsl:for-each>
                 </xsl:if>
                 
                 <!-- Handle nested AND/OR -->
-                <xsl:if test="count('./logicalOp') > 0">
-                    <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
-                        <xsl:for-each select="logicalOp">
-                           <xsl:apply-templates select="." mode="topmost"/>
-                        </xsl:for-each>
-                    </act>
+               <!-- <test><xsl:value-of select="name()"/></test>
+                <parent><xsl:value-of select="name(current()/parent::node())"/></parent>-->
+                <xsl:variable name="countLogicalOp"><xsl:value-of select="count(child::*[name()='logicalOp'])"/></xsl:variable>
+                <!--<countLogicalOp><xsl:value-of select="$countLogicalOp"/></countLogicalOp>-->
+                <xsl:if test="$countLogicalOp &gt; 0">
+                    <sourceOf typeCode="PRCN">
+                        <conjunctionCode code="{$conj}"/>
+                        <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                            <xsl:for-each select="logicalOp">
+                               <xsl:apply-templates select="." mode="topmost"/>
+                            </xsl:for-each>
+                        </act>
+                    </sourceOf>
                 </xsl:if>
-                
-            </sourceOf>
         </xsl:if>
     </xsl:template>
     
@@ -268,18 +273,18 @@
         </xsl:choose>
     </xsl:template>
     
-    <xsl:template match="logicalOp">
-        <!--<xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
+    <!--<xsl:template match="logicalOp">
+        <!-\-<xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
         <xsl:variable name="conj">
             <xsl:value-of select="upper-case(@type)"/>
-        </xsl:variable>-->
+        </xsl:variable>-\->
        
        <act classCode="ACT" moodCode="EVN" isCriterionInd="true"> 
             <xsl:apply-templates select="./*" mode="nested"/>
        </act>     
-   </xsl:template>
+   </xsl:template>-->
     
-    <xsl:template match="elementRef" mode="nested">
+    <!--<xsl:template match="elementRef" mode="nested">
         <xsl:text>
                
        </xsl:text>
@@ -292,7 +297,7 @@
             </conjunctionCode>
             <xsl:apply-templates select="."/>
         </sourceOf>
-   </xsl:template>
+   </xsl:template>-->
         
     <xsl:template name="measure_observations">
         <xsl:if test="count(measureObservations) >= 1">
@@ -425,7 +430,7 @@
         </entry>
     </xsl:template>
     
-    <xsl:template match="logicalOp" mode="getConj">
+    <!--<xsl:template match="logicalOp" mode="getConj">
         <xsl:choose>
             <xsl:when test="@type = 'or' ">OR</xsl:when>         
             <xsl:when test="@type = 'and' ">AND</xsl:when>         
@@ -438,7 +443,7 @@
             <xsl:when test="@type = 'and' ">AND</xsl:when>
             <xsl:otherwise>MISSING_CONJUNCTION</xsl:otherwise>
         </xsl:choose>
-    </xsl:template>
+    </xsl:template>-->
     
     <xsl:template name="unitvalue">
         <xsl:param name="uval"/>

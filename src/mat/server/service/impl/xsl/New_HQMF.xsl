@@ -103,7 +103,7 @@
            
             </xsl:text>             
                 <!-- Handle QDM elements -->
-            <xsl:if test="count(child::*[name()='elementRef']) > 0">
+            <xsl:if test="count(child::*[name()='elementRef']) &gt; 0">
                     <xsl:for-each select="elementRef">
                         <sourceOf typeCode="PRCN">
                             <conjunctionCode code="{$conj}"/>

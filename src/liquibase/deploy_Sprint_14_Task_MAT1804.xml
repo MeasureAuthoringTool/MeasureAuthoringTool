@@ -9,7 +9,7 @@
 		
 	    <changeSet author="mat_dev_user" id="1" context="prod">
 	        <sql> 
-				  UPDATE METADATA SET VALUE='In Progress' WHERE Name ='MeasureStatus';
+				 UPDATE METADATA SET VALUE='In Progress' WHERE name ='MeasureStatus' and value ='InProgress';
 			</sql>
 	    </changeSet>
     

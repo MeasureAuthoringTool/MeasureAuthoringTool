@@ -1,9 +1,7 @@
 package mat.client.clause.clauseworkspace.view;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
@@ -34,6 +32,7 @@ import com.google.gwt.xml.client.Node;
 
 public class QDMDialogBox{	
 	 
+	
 	 public static void showQDMDialogBox(final XmlTreeDisplay xmlTreeDisplay) {
 		final DialogBox dialogBox = new DialogBox(false,true);
 		dialogBox.setGlassEnabled(true);
@@ -49,7 +48,7 @@ public class QDMDialogBox{
 	    dialogBox.setWidget(dialogContents);
 	    
 	    //Create Search box
-	    final SuggestBox suggestBox = new SuggestBox(createSuggestOracle(ClauseConstants.getElementLookUps()));
+	    final SuggestBox suggestBox = new SuggestBox(createSuggestOracle());
 	    suggestBox.setWidth("18em");
 	    suggestBox.setText("Search");
 	    suggestBox.getValueBox().addClickHandler(new ClickHandler() {
@@ -70,7 +69,7 @@ public class QDMDialogBox{
 	    final ListBox listBox = new ListBox();
 	    listBox.setWidth("18em");
 	    listBox.setVisibleItemCount(10);
-	    addQDMNamesToListBox(listBox, ClauseConstants.getElementLookUps());
+	    addQDMNamesToListBox(listBox);
 	    
 	    //Add listbox to vertical panel and align it in center.
 	    dialogContents.add(listBox);
@@ -126,7 +125,9 @@ public class QDMDialogBox{
 				if(label.length() > ClauseConstants.LABEL_MAX_LENGTH){
 					label = label.substring(0,  ClauseConstants.LABEL_MAX_LENGTH -1).concat("...");
 				}
-				xmlTreeDisplay.addNode(value, label, CellTreeNode.ELEMENT_REF_NODE);
+				
+				CellTreeNode cellTreeNode = xmlTreeDisplay.addNode(value, label, CellTreeNode.ELEMENT_REF_NODE);
+				cellTreeNode.setUUID(listBox.getValue(listBox.getSelectedIndex()));
 				xmlTreeDisplay.setDirty(true);
 				dialogBox.hide();
 			}
@@ -150,8 +151,18 @@ public class QDMDialogBox{
 	}
 
 	
-	private static void addQDMNamesToListBox(ListBox listBox, Map<String, Node> qdmElementLookupNode) {
-		ArrayList<Node> nodeItems = new ArrayList<Node>();
+	private static void addQDMNamesToListBox(ListBox listBox) {
+		Set<Entry<String, Node>> elementLookUpNodes  = ClauseConstants.getElementLookUpNode().entrySet();
+		for (Entry<String, Node> elementLookup : elementLookUpNodes) {
+			Node node = elementLookup.getValue();
+			if(!QDMAttributeDialogBox.ATTRIBUTE.equalsIgnoreCase(node.getAttributes().getNamedItem(QDMAttributeDialogBox.DATATYPE).getNodeValue())){
+				String key = elementLookup.getKey();
+				String uuid = key.substring(key.lastIndexOf("~") + 1);
+				listBox.addItem(ClauseConstants.getElementLookUpName().get(uuid), uuid);
+			}
+		}
+		
+	/*	ArrayList<Node> nodeItems = new ArrayList<Node>();
 		nodeItems.addAll(qdmElementLookupNode.values());
 		Map<String,Node> map = new TreeMap<String,Node>();
 		for(Node node : nodeItems){
@@ -172,7 +183,9 @@ public class QDMDialogBox{
 				listName = listName + ": " + node.getAttributes().getNamedItem("datatype").getNodeValue();
 			}
 			listBox.addItem(listName);
-		}
+		}*/
+		
+		
 		
 		//Set tooltips for each element in listbox
 		SelectElement selectElement = SelectElement.as(listBox.getElement());
@@ -184,9 +197,9 @@ public class QDMDialogBox{
 	}
 	
 	
-	private static MultiWordSuggestOracle createSuggestOracle(Map<String, Node> qdmElementLookupNode){
+	private static MultiWordSuggestOracle createSuggestOracle(){
 		MultiWordSuggestOracle multiWordSuggestOracle = new MultiWordSuggestOracle();
-		multiWordSuggestOracle.addAll(qdmElementLookupNode.keySet());
+		multiWordSuggestOracle.addAll(ClauseConstants.getElementLookUpName().values());
 		return multiWordSuggestOracle;
 	}
 }

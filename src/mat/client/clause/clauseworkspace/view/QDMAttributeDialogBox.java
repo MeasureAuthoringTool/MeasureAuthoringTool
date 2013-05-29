@@ -42,7 +42,7 @@ import com.google.gwt.xml.client.Node;
 
 public class QDMAttributeDialogBox {
 	//Declare all constants
-	private static final String DATATYPE = "datatype";
+	static final String DATATYPE = "datatype";
 	private static final String GREATER_THAN_OR_EQUAL_TO = "-- Greater Than Or Equal To";
 	private static final String LESS_THAN_OR_EQUAL_TO = "-- Less Than Or Equal To";
 	private static final String EQUAL_TO = "-- Equal To";
@@ -57,7 +57,7 @@ public class QDMAttributeDialogBox {
 	private static final String VALUE_SET = "Value Set";
 	private static final String CHECK_IF_PRESENT = "Check if Present";
 	private static final String NAME = "name";
-	private static final String ATTRIBUTE = "attribute";
+	static final String ATTRIBUTE = "attribute";
 	private static final String ATTRIBUTES = "attributes";
 	private static final String QDM_ATTRIBUTES_ERROR_TITLE = "QDM Attributes. Please correct the rows below in red.";
 	private static final String QDM_ATTRIBUTES_TITLE = "QDM Attributes.";
@@ -65,9 +65,9 @@ public class QDMAttributeDialogBox {
 	private static final String QDM_ATTRIBUTE_INVALID_ROW_RIGHT = "qdm_attribute_invalidRow_right";
 	private static final String QDM_ATTRIBUTE_INVALID_ROW_LEFT = "qdm_attribute_invalidRow_left";
 	private static final String SELECT = "Select";
+	private static final String UUID = "uuid";
 	
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT.create(QDSAttributesService.class);
-	private static final List<String> qdmNames = new ArrayList<String>();
 	private static final List<String> unitNames = new ArrayList<String>();
 	private static final List<String> attributeList = new  ArrayList<String>();
 	private static Grid grid;
@@ -157,13 +157,7 @@ public class QDMAttributeDialogBox {
 					textBox.setWidth("8em");
 					grid.setWidget(rowNum, 3, textBox);
 				}else if(VALUE_SET.equals(text)){
-					ListBox qdmListBox = new ListBox(false);
-					qdmListBox.setVisibleItemCount(1);
-					qdmListBox.setWidth("8em");
-					
-					for(String qdmName:qdmNames){
-						qdmListBox.addItem(qdmName);
-					}
+					ListBox qdmListBox = createQdmListBox();
 					setToolTipForEachElementInListbox(qdmListBox);
 					grid.setWidget(rowNum, 3, qdmListBox);
 				}else {
@@ -284,10 +278,11 @@ public class QDMAttributeDialogBox {
 		if(cellTreeNode.getNodeType() != CellTreeNode.ELEMENT_REF_NODE){
 			return;
 		}
-		qdmNames.clear();
 		unitNames.clear();
 		attributeList.clear();
-		Node qdmNode = findElementLookUpNode(cellTreeNode.getName());
+		
+		String qdmName = ClauseConstants.getElementLookUpName().get(cellTreeNode.getUUID());
+		Node qdmNode = ClauseConstants.getElementLookUpNode().get(qdmName + "~" + cellTreeNode.getUUID());
 		//Could not find the qdm node in elemenentLookup tag 
 		if(qdmNode == null){
 			return;
@@ -297,7 +292,6 @@ public class QDMAttributeDialogBox {
 		grid = new Grid(0,4);
 		grid.addClickHandler(new QDMAttributeGridClickHandler(grid));
 			
-		qdmNames.addAll(getQDMElementNames());
 		//unitNames.addAll(getUnitNameList());
 		unitNames.addAll(ClauseConstants.units);
 		
@@ -548,10 +542,8 @@ public class QDMAttributeDialogBox {
 				attributeNode.setExtraInformation(MODE, modeName);
 				if(VALUE_SET.equals(modeName)){
 					ListBox qdmListBox = ((ListBox)grid.getWidget(i, 3));
-					String qdmName = qdmListBox.getItemText(qdmListBox.getSelectedIndex());
-					Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName);
-					String qdmId = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
-					attributeNode.setExtraInformation(QDM_UUID, qdmId);
+					String uuid = qdmListBox.getValue(qdmListBox.getSelectedIndex());
+					attributeNode.setExtraInformation(QDM_UUID, uuid);
 				}
 			}else{
 				attributeNode.setExtraInformation(MODE, modeName);
@@ -644,28 +636,17 @@ public class QDMAttributeDialogBox {
 			}
 			if(!CHECK_IF_PRESENT.equals(modeName)){
 				if(VALUE_SET.equals(modeName)){
-					ListBox qdmListBox = new ListBox(false);
-					qdmListBox.setVisibleItemCount(1);
-					qdmListBox.setWidth("8em");
-					
-					for(String qdmName:qdmNames){
-						qdmListBox.addItem(qdmName);
-					}
+					ListBox qdmListBox = createQdmListBox();
 					setToolTipForEachElementInListbox(qdmListBox);
 					grid.setWidget(row, 3, qdmListBox);
 					
 					String qdmId = (String) attributenode.getExtraInformation(QDM_UUID);
-					for(String qdmName:ClauseConstants.getElementLookUps().keySet()){
-						Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName);
-						String qdmNodeId = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
-						if(qdmId.equals(qdmNodeId)){
-							for(int r=0;r<qdmListBox.getItemCount();r++){
-								if(qdmName.equals(qdmListBox.getItemText(r))){
-									qdmListBox.setSelectedIndex(r);
-									break;
-								}
+					if(ClauseConstants.getElementLookUpName().containsKey(qdmId)){
+						for(int r=0;r<qdmListBox.getItemCount();r++){
+							if(qdmId.equals(qdmListBox.getValue(r))){
+								qdmListBox.setSelectedIndex(r);
+								break;
 							}
-							break;
 						}
 					}
 				}
@@ -704,6 +685,21 @@ public class QDMAttributeDialogBox {
 			}
 	}
 
+	private static ListBox createQdmListBox() {
+		ListBox qdmListBox = new ListBox(false);
+		qdmListBox.setVisibleItemCount(1);
+		qdmListBox.setWidth("8em");
+		for (Entry<String, Node> qdm : ClauseConstants.getElementLookUpNode().entrySet()) {
+			Node qdmNode = qdm.getValue();
+			String dataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();
+			String uuid = qdmNode.getAttributes().getNamedItem(UUID).getNodeValue();
+			if(ATTRIBUTE.equals(dataType)){
+				qdmListBox.addItem(ClauseConstants.getElementLookUpName().get(uuid), uuid);	
+			}
+		}
+		return qdmListBox;
+	}
+
 	private static List<String> getModeList() {
 		List<String> modeList = new ArrayList<String>();
 		
@@ -724,18 +720,19 @@ public class QDMAttributeDialogBox {
 	 * and return the names of QDM elements of datatype 'attribute'.
 	 * @return
 	 */
-	private static List<String> getQDMElementNames(){
+	/*private static List<String> getQDMElementNames(){
 		List<String> qdmNameList = new ArrayList<String>();
-		Set<String> qdmNames = ClauseConstants.getElementLookUps().keySet();
+		Set<String> qdmNames = ClauseConstants.getElementLookUpNode().keySet();
 		for(String qdmName:qdmNames){
-			com.google.gwt.xml.client.Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName);
+			com.google.gwt.xml.client.Node qdmNode = ClauseConstants.getElementLookUpNode().get(qdmName);
 			String dataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();
 			if(ATTRIBUTE.equals(dataType)){
-				qdmNameList.add(qdmName);
+				String uuid = qdmName.substring(qdmName.lastIndexOf("~") + 1);
+				qdmNameList.add(ClauseConstants.getElementLookUpName().get(uuid));
 			}
 		}
 		return qdmNameList;
-	}
+	}*/
 	
 	private static void findAttributesForDataType(String dataType){
 		attributeService.getAllAttributesByDataType(dataType, new AsyncCallback<List<QDSAttributes>>() {
@@ -748,22 +745,22 @@ public class QDMAttributeDialogBox {
 			@Override
 			public void onSuccess(List<QDSAttributes> result) {
 				for(QDSAttributes qdsAttributes:result){
-					attributeList .add(qdsAttributes.getName());
+					attributeList.add(qdsAttributes.getName());
 				}
 			}
 		});
 	}
 
-	private static Node findElementLookUpNode(String name) {
-		Set<Entry<String, Node>> qdmNames = ClauseConstants.getElementLookUps().entrySet();
+/*	private static Node findElementLookUpNode(String name) {
+		Set<Entry<String, Node>> qdmNames = ClauseConstants.getElementLookUpNode().entrySet();
 		for(Entry qdmName:qdmNames){
 			if(qdmName.getKey().equals(name)){
-				com.google.gwt.xml.client.Node qdmNode = ClauseConstants.getElementLookUps().get(qdmName.getKey());
+				com.google.gwt.xml.client.Node qdmNode = ClauseConstants.getElementLookUpNode().get(qdmName.getKey());
 				return qdmNode;
 			}
 		}
 		return null;
-	}
+	}*/
 	
 	private static void setToolTipForEachElementInListbox(ListBox listBox){
 		//Set tooltips for each element in listbox

@@ -42,7 +42,9 @@ public class ClauseConstants{
 	
 	public static ArrayList<String> units;
 	
-	public static Map<String, Node> elementLookUps;
+	public static Map<String, String> elementLookUpName;
+	
+	public static Map<String, Node> elementLookUpNode;
 	
 	public static final String ELEMENT_REF = "elementRef";
 	
@@ -112,11 +114,13 @@ public class ClauseConstants{
 		constantsMap.put(key, value);
 	}
 
-	/**
-	 * @return the qdmElementLookupNode
-	 */
-	public static Map<String, Node> getElementLookUps() {
-		return elementLookUps;
+
+	public static Map<String, String> getElementLookUpName() {
+		return elementLookUpName;
+	}
+
+	public static Map<String, Node> getElementLookUpNode() {
+		return elementLookUpNode;
 	}
 
 	/**
@@ -136,5 +140,9 @@ public class ClauseConstants{
 	public static ArrayList<String> getUnits() {
 		return units;
 	}
+
+	/*public static Map<String, Node> getElementLookUps() {
+		return elementLookUps;
+	}*/
 
 }

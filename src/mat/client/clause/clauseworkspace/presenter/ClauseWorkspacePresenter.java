@@ -125,7 +125,8 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 
 	
 	private void setQdmElementsMap(String xml) {
-		Map<String, Node> qdmElementLookUps = new TreeMap<String, Node>();
+		ClauseConstants.elementLookUpName = new TreeMap<String, String>();
+		ClauseConstants.elementLookUpNode = new TreeMap<String, Node>();
 		Document document = XMLParser.parse(xml);
 		NodeList nodeList = document.getElementsByTagName("elementLookUp");
 		if(null != nodeList && nodeList.getLength() > 0){
@@ -144,12 +145,15 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 						if(namedNodeMap.getNamedItem("datatype") != null){
 							name = name + " : " + namedNodeMap.getNamedItem("datatype").getNodeValue();
 						}
-						qdmElementLookUps.put(name, qdms.item(i));
+						
+						String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
+						ClauseConstants.elementLookUpNode.put(name + "~" + uuid, qdms.item(i));
+						ClauseConstants.elementLookUpName.put(uuid, name);
 					}
 				}
 			}
 		}
-		ClauseConstants.elementLookUps = (TreeMap<String, Node>) qdmElementLookUps;
+		
 	}
 
 	@Override

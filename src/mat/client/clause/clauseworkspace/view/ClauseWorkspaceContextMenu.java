@@ -56,6 +56,8 @@ public class ClauseWorkspaceContextMenu {
 	
 	Command pasteCmd;
 	
+	MenuItem expandMenu;
+	
 	
 	public ClauseWorkspaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		this.xmlTreeDisplay = treeDisplay;
@@ -95,9 +97,19 @@ public class ClauseWorkspaceContextMenu {
 				}else{
 					xmlTreeDisplay.paste();	
 				}
+				popupPanel.hide();
 			}
 		};
 		pasteMenu = new MenuItem(template.menuTable("Paste", "Ctrl+V"), pasteCmd);
+		
+		Command expandCmd = new Command() {
+			public void execute( ) {
+				popupPanel.hide();
+				xmlTreeDisplay.expandSelected(xmlTreeDisplay.getXmlTree().getRootTreeNode());
+			}
+		};
+		expandMenu = new MenuItem(template.menuTable("Expand", ""), expandCmd);
+		
 	}
 
 
@@ -112,10 +124,11 @@ public class ClauseWorkspaceContextMenu {
 		deleteMenu.setEnabled(false);
 		pasteMenu.setEnabled(false);
 		cutMenu.setEnabled(false);
-
+		showHideExpandMenu();
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 
 		case CellTreeNode.MASTER_ROOT_NODE:
+//			addCommonMenus();
 			popupPanel.hide();
 			break;
 			
@@ -329,6 +342,14 @@ public class ClauseWorkspaceContextMenu {
 		}
 	}
 
+	private void showHideExpandMenu(){
+		if(xmlTreeDisplay.getSelectedNode().hasChildren()){
+			expandMenu.setEnabled(true);
+		}else{
+			expandMenu.setEnabled(false);
+		}
+	}
+	
 	private void createQDMAttributeMenuItem(MenuBar menuBar, final CellTreeNode cellTreeNode) {
 		Command addQDMAttributeCmd = new Command() {
 			public void execute() {

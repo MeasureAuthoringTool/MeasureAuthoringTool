@@ -158,7 +158,7 @@ public class QDMAttributeDialogBox {
 					grid.setWidget(rowNum, 3, textBox);
 				}else if(VALUE_SET.equals(text)){
 					ListBox qdmListBox = createQdmListBox();
-					setToolTipForEachElementInListbox(qdmListBox);
+					setToolTipForEachElementInQdmListBox(qdmListBox);
 					grid.setWidget(rowNum, 3, qdmListBox);
 				}else {
 					HorizontalPanel panel = new HorizontalPanel();
@@ -637,7 +637,7 @@ public class QDMAttributeDialogBox {
 			if(!CHECK_IF_PRESENT.equals(modeName)){
 				if(VALUE_SET.equals(modeName)){
 					ListBox qdmListBox = createQdmListBox();
-					setToolTipForEachElementInListbox(qdmListBox);
+					setToolTipForEachElementInQdmListBox(qdmListBox);
 					grid.setWidget(row, 3, qdmListBox);
 					
 					String qdmId = (String) attributenode.getExtraInformation(QDM_UUID);
@@ -769,6 +769,20 @@ public class QDMAttributeDialogBox {
 		for (int i = 0; i < options.getLength(); i++) {
 			OptionElement optionElement = options.getItem(i);
 	        optionElement.setTitle(optionElement.getInnerText());
+	    }
+	}
+	
+	
+	private static void setToolTipForEachElementInQdmListBox(ListBox listBox){
+		SelectElement selectElement = SelectElement.as(listBox.getElement());
+		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
+		for (int i = 0; i < options.getLength(); i++) {
+			String text = options.getItem(i).getText();
+			String uuid = options.getItem(i).getAttribute("value");
+			String oid = ClauseConstants.getElementLookUpNode().get(text + "~" + uuid).getAttributes().getNamedItem("oid").getNodeValue();
+			String title = text + " (OID: " + oid + ")";
+			OptionElement optionElement = options.getItem(i);
+	        optionElement.setTitle(title);
 	    }
 	}
 }

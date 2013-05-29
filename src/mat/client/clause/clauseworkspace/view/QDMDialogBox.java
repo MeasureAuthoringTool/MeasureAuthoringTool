@@ -125,9 +125,8 @@ public class QDMDialogBox{
 				if(label.length() > ClauseConstants.LABEL_MAX_LENGTH){
 					label = label.substring(0,  ClauseConstants.LABEL_MAX_LENGTH -1).concat("...");
 				}
-				
-				CellTreeNode cellTreeNode = xmlTreeDisplay.addNode(value, label, CellTreeNode.ELEMENT_REF_NODE);
-				cellTreeNode.setUUID(listBox.getValue(listBox.getSelectedIndex()));
+				String uuid = listBox.getValue(listBox.getSelectedIndex());
+				xmlTreeDisplay.addNode(value, label, uuid, CellTreeNode.ELEMENT_REF_NODE);
 				xmlTreeDisplay.setDirty(true);
 				dialogBox.hide();
 			}
@@ -162,37 +161,16 @@ public class QDMDialogBox{
 			}
 		}
 		
-	/*	ArrayList<Node> nodeItems = new ArrayList<Node>();
-		nodeItems.addAll(qdmElementLookupNode.values());
-		Map<String,Node> map = new TreeMap<String,Node>();
-		for(Node node : nodeItems){
-			if(!node.getAttributes().getNamedItem("datatype").getNodeValue().toString().equalsIgnoreCase("attribute")){
-				map.put(node.getAttributes().getNamedItem("name").getNodeValue().toString().concat(": "+node.getAttributes().getNamedItem("id").getNodeValue().toString()).toLowerCase(), node);
-			}
-			
-		}
-		Set<String> keys = map.keySet();
-		for (String qdm : keys) {
-			Node node = map.get(qdm);
-			String listName = node.getAttributes().getNamedItem("name").getNodeValue().toString();
-			if(node.getAttributes().getNamedItem("instance") != null){
-				listName = node.getAttributes().getNamedItem("instance").getNodeValue() + " of " + listName;
-			}
-		
-			if(node.getAttributes().getNamedItem("datatype") != null){
-				listName = listName + ": " + node.getAttributes().getNamedItem("datatype").getNodeValue();
-			}
-			listBox.addItem(listName);
-		}*/
-		
-		
-		
 		//Set tooltips for each element in listbox
 		SelectElement selectElement = SelectElement.as(listBox.getElement());
 		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement.getOptions();
 		for (int i = 0; i < options.getLength(); i++) {
+			String text = options.getItem(i).getText();
+			String uuid = options.getItem(i).getAttribute("value");
+			String oid = ClauseConstants.getElementLookUpNode().get(text + "~" + uuid).getAttributes().getNamedItem("oid").getNodeValue();
+			String title = text + " (OID: " + oid + ")";
 			OptionElement optionElement = options.getItem(i);
-	        optionElement.setTitle(optionElement.getInnerText());
+	        optionElement.setTitle(title);
 	    }
 	}
 	

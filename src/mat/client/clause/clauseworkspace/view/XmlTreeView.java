@@ -181,18 +181,24 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			@Override
 			public void onClose(CloseEvent<TreeNode> event) {
 				CellTreeNode node = (CellTreeNode)event.getTarget().getValue();
-				if(node.hasChildren()){
-					for (CellTreeNode child : node.getChilds()) {
-						child.setOpen(false);
-					}
-				}
+				setOpenToFalse(node);
 				node.setOpen(false);
 				clearMessages();
 			}
+
 		});
 	}
 
 
+	private void setOpenToFalse(CellTreeNode node) {
+		if(node.hasChildren()){
+			for (CellTreeNode child : node.getChilds()) {
+				child.setOpen(false);
+				setOpenToFalse(child);
+			}
+		}
+	}
+	
 	/**
 	 * Closing all nodes in the CellTree
 	 * @param treeNode
@@ -259,7 +265,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	private void openAllNodes(TreeNode treeNode){		
 		if(treeNode != null){
-			getNodeInfo(treeNode.getValue());
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				TreeNode subTree = treeNode.setChildOpen(i, true);	      			
 				if (subTree != null && subTree.getChildCount() > 0){
@@ -327,12 +332,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			super(BrowserEvents.CONTEXTMENU);
 		}
 		@Override
-		public void render(Context context, CellTreeNode value, SafeHtmlBuilder sb) {
-			if (value == null) {
+		public void render(Context context, CellTreeNode cellTreeNode, SafeHtmlBuilder sb) {
+			if (cellTreeNode == null) {
 				return;
 			}			
 			//TODO :  We can add classes based on the NodeType with the specified image. The classes will be picked up from Mat.css
-			sb.append(template.outerDiv(getStyleClass(value), value.getName(), value.getLabel() != null ? value.getLabel() : value.getName()));
+			String title = cellTreeNode.getName();
+			if(cellTreeNode.getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
+				String oid = ClauseConstants.getElementLookUpNode().get(cellTreeNode.getName() + "~" +cellTreeNode.getUUID()).getAttributes().getNamedItem("oid").getNodeValue();
+				title = title + " (OID: " + oid + ")";
+			}
+			sb.append(template.outerDiv(getStyleClass(cellTreeNode), title, cellTreeNode.getLabel() != null ? cellTreeNode.getLabel() : cellTreeNode.getName()));
 		}
 
 		@Override
@@ -367,8 +377,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		CellTreeNode childNode = null;
 		if(selectedNode != null &&  value != null && value.trim().length() > 0){//if nodeTex textbox is not empty
 			childNode = selectedNode.createChild(value, label, nodeType);
-		closeSelectedOpenNodes(cellTree.getRootTreeNode());
-		selectionModel.setSelected(selectedNode, true);					
+			closeSelectedOpenNodes(cellTree.getRootTreeNode());
+			selectionModel.setSelected(selectedNode, true);					
 		}
 		return childNode;
 	}
@@ -619,5 +629,54 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return this.isDirty;
 	}
 
+
+	@Override
+	public void expandSelected(TreeNode treeNode) {
+		if(treeNode != null){
+			for (int i = 0; i < treeNode.getChildCount(); i++) {
+				TreeNode subTree = null;
+				if(treeNode.getChildValue(i).equals(selectedNode)){// this check is performed since IE was giving JavaScriptError after removing a node and closing all nodes.
+					// to avoid that we are closing the parent of the removed node.
+					subTree = treeNode.setChildOpen(i, true, true);
+					if (subTree != null && subTree.getChildCount() > 0){
+						openAllNodes(subTree);
+					}
+					break;
+				}
+				subTree = treeNode.setChildOpen(i, ((CellTreeNode)treeNode.getChildValue(i)).isOpen(), ((CellTreeNode)treeNode.getChildValue(i)).isOpen());
+				if (subTree != null && subTree.getChildCount() > 0){
+					expandSelected(subTree);
+				}
+			}  
+		}
+	}
+
+
+	@Override
+	public CellTreeNode addNode(String name, String label, String uuid,
+			short nodeType) {
+		CellTreeNode childNode = null;
+		if(selectedNode != null &&  name != null && name.trim().length() > 0){//if nodeTex textbox is not empty
+			childNode = selectedNode.createChild(name, label, nodeType);
+			childNode.setUUID(uuid);
+			closeSelectedOpenNodes(cellTree.getRootTreeNode());
+			selectionModel.setSelected(selectedNode, true);					
+		}
+		return childNode;
+	}
+
+
+	@Override
+	public void editNode(String name, String label, String uuid) {
+		if(selectedNode != null){
+			selectedNode.setName(name);
+			selectedNode.setLabel(label);
+			selectedNode.setUUID(uuid);
+			closeParentOpenNodes(cellTree.getRootTreeNode());
+		}		
+	}
+
+	
+	
 
 }

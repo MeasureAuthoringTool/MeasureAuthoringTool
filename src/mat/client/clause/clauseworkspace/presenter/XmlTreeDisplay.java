@@ -5,6 +5,7 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SuccessMessageDisplay;
 
 import com.google.gwt.user.cellview.client.CellTree;
+import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -45,5 +46,11 @@ public interface XmlTreeDisplay {
 		public void setDirty(boolean isDirty);
 		
 		public boolean isDirty();
+		
+		public void expandSelected(TreeNode treeNode);
+		
+		public CellTreeNode addNode(String name, String label, String uuid, short nodeType);
+		
+		public void editNode(String name, String label, String uuid);
 		
 	}

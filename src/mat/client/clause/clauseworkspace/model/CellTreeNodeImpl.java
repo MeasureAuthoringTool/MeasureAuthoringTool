@@ -138,6 +138,8 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		((CellTreeNodeImpl)copyModel).setExtraInformationMap(extraInfos);
 		if(model.getNodeType() == CLAUSE_NODE){
 			copyModel.setUUID(UUIDUtilClient.uuid());	
+		}else{
+			copyModel.setUUID(model.getUUID());
 		}
 		return copyModel;
 	}

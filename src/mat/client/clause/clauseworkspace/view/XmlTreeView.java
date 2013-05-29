@@ -4,6 +4,7 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 
@@ -340,7 +341,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			if(event.getType().equals(BrowserEvents.CONTEXTMENU)){
 				event.preventDefault();
 				event.stopPropagation();
-				onRightClick(value, (Event)event, parent);
+				if(MatContext.get().getMeasureLockService().checkForEditPermission()){
+					onRightClick(value, (Event)event, parent);
+				}					
 			}else{
 				super.onBrowserEvent(context, parent, value, event, valueUpdater);
 			}

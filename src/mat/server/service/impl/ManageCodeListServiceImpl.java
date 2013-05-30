@@ -997,7 +997,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     	dt = dataTypeDAO.find(dataTypeId);
     	while(qdsIterator.hasNext()){
     		QualityDataSetDTO qds = qdsIterator.next();
-    		if(codeList.getId().equalsIgnoreCase(qds.getUuid())){
+    		if(codeList.getId().equalsIgnoreCase(qds.getId())){
     			if(dt.getDescription().equalsIgnoreCase(qds.getDataType()) && qds.getOccurrenceText() != null){
     				occurrenceCount++;
     			}

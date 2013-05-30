@@ -41,6 +41,8 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Node;
 
 public class QDMAttributeDialogBox {
+	private static final String NEGATION_RATIONALE = "negation rationale";
+	private static final String INSTANCE = "instance";
 	//Declare all constants
 	static final String DATATYPE = "datatype";
 	private static final String GREATER_THAN_OR_EQUAL_TO = "-- Greater Than Or Equal To";
@@ -288,11 +290,16 @@ public class QDMAttributeDialogBox {
 			return;
 		}
 		String qdmDataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();
-		findAttributesForDataType(qdmDataType);
+		boolean isOccuranceQDM = false;
+		if(qdmNode.getAttributes().getNamedItem(INSTANCE) != null){
+			isOccuranceQDM = true;
+		}
+		findAttributesForDataType(qdmDataType,isOccuranceQDM);
 		grid = new Grid(0,4);
 		grid.addClickHandler(new QDMAttributeGridClickHandler(grid));
 			
 		//unitNames.addAll(getUnitNameList());
+		unitNames.add("");
 		unitNames.addAll(ClauseConstants.units);
 		
 		List<String> mode = getModeList();
@@ -461,13 +468,14 @@ public class QDMAttributeDialogBox {
 							if(value == null || value.length() == 0){
 								inValidRows.add(i);
 								continue;
-							}else{
+							}
+							/*else{
 								String unit = unitBox.getItemText(unitBox.getSelectedIndex());
 								if(unit == null || unit.length() == 0){
 									inValidRows.add(i);
 									continue;
 								}
-							}
+							}*/
 						}
 					}
 				}else{
@@ -553,7 +561,10 @@ public class QDMAttributeDialogBox {
 				ListBox unitBox =  (ListBox) hPanel.getWidget(1);
 				
 				attributeNode.setExtraInformation(COMPARISON_VALUE, valueBox.getText());
-				attributeNode.setExtraInformation(UNIT, unitBox.getItemText(unitBox.getSelectedIndex()));
+				String unitName = unitBox.getItemText(unitBox.getSelectedIndex());
+				if(unitName.trim().length() > 0){
+					attributeNode.setExtraInformation(UNIT, unitName);
+				}
 			}
 			attributeList.add(attributeNode);	
 		}
@@ -734,7 +745,7 @@ public class QDMAttributeDialogBox {
 		return qdmNameList;
 	}*/
 	
-	private static void findAttributesForDataType(String dataType){
+	private static void findAttributesForDataType(String dataType, final boolean isOccuranceQDM){
 		attributeService.getAllAttributesByDataType(dataType, new AsyncCallback<List<QDSAttributes>>() {
 
 			@Override
@@ -745,6 +756,9 @@ public class QDMAttributeDialogBox {
 			@Override
 			public void onSuccess(List<QDSAttributes> result) {
 				for(QDSAttributes qdsAttributes:result){
+					if(isOccuranceQDM && NEGATION_RATIONALE.equals(qdsAttributes.getName())){
+						continue;
+					}
 					attributeList.add(qdsAttributes.getName());
 				}
 			}

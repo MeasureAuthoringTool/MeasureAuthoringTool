@@ -323,6 +323,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		}
 		int numRows = results.getNumberOfRows();
 		int numColumns = results.getNumberOfColumns();
+		dataTable.getElement().setAttribute("aria-live", "assertive");
 		dataTable.resize((int)numRows + 1, (int)numColumns);
 		buildSearchResultsColumnHeaders(numRows, numColumns, results, false, false);
 		buildHistorySearchResults(numRows,numColumns,results);
@@ -601,12 +602,12 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		int tableRow = 1;
 		String rowStyle = "odd";
 		for(int i = 0; i < numRows; i++) {			
-			boolean isUserComment = false;
-			String additionalInfo = "";
+			//boolean isUserComment = false;
+		//	String additionalInfo = "";
 			for(int j = 0; j < numColumns; j++) {
 				if(results.isColumnFiresSelection(j)) {					
 					Label text = new Label(results.getValue(i, j).getElement().getInnerText());
-					final int rowIndex = i;					
+					//final int rowIndex = i;					
 					dataTable.setWidget(tableRow, j, text);					
 				}
 				else {

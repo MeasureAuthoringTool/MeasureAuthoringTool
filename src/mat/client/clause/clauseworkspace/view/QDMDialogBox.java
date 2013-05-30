@@ -33,7 +33,7 @@ import com.google.gwt.xml.client.Node;
 public class QDMDialogBox{	
 	 
 	
-	 public static void showQDMDialogBox(final XmlTreeDisplay xmlTreeDisplay) {
+	 public static void showQDMDialogBox(final XmlTreeDisplay xmlTreeDisplay, boolean isAdd) {
 		final DialogBox dialogBox = new DialogBox(false,true);
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
@@ -69,7 +69,8 @@ public class QDMDialogBox{
 	    final ListBox listBox = new ListBox();
 	    listBox.setWidth("18em");
 	    listBox.setVisibleItemCount(10);
-	    addQDMNamesToListBox(listBox);
+	    String currentSelectedQDM=xmlTreeDisplay.getSelectedNode().getLabel();
+	    addQDMNamesToListBox(listBox,currentSelectedQDM);
 	    
 	    //Add listbox to vertical panel and align it in center.
 	    dialogContents.add(listBox);
@@ -100,12 +101,12 @@ public class QDMDialogBox{
 	    dialogContents.setCellHorizontalAlignment(horizontalButtonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 	    
 	    addSuggestHandler(suggestBox,listBox);
-	    addListBoxHandler(listBox,suggestBox,xmlTreeDisplay, dialogBox);
+	    addListBoxHandler(listBox,suggestBox,xmlTreeDisplay, dialogBox,isAdd);
 	    
 	    dialogBox.center();	    		
 	}
 	 
-	private static void addListBoxHandler(final ListBox listBox, final SuggestBox suggestBox, final XmlTreeDisplay xmlTreeDisplay, final DialogBox dialogBox) {
+	private static void addListBoxHandler(final ListBox listBox, final SuggestBox suggestBox, final XmlTreeDisplay xmlTreeDisplay, final DialogBox dialogBox, final boolean isAdd) {
 		listBox.addChangeHandler(new ChangeHandler() {			
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -126,7 +127,11 @@ public class QDMDialogBox{
 					label = label.substring(0,  ClauseConstants.LABEL_MAX_LENGTH -1).concat("...");
 				}
 				String uuid = listBox.getValue(listBox.getSelectedIndex());
-				xmlTreeDisplay.addNode(value, label, uuid, CellTreeNode.ELEMENT_REF_NODE);
+				if(isAdd){
+						xmlTreeDisplay.addNode(value, label, uuid, CellTreeNode.ELEMENT_REF_NODE);
+				}else{
+						xmlTreeDisplay.editNode(value, label,uuid);
+				}
 				xmlTreeDisplay.setDirty(true);
 				dialogBox.hide();
 			}
@@ -150,14 +155,18 @@ public class QDMDialogBox{
 	}
 
 	
-	private static void addQDMNamesToListBox(ListBox listBox) {
+	private static void addQDMNamesToListBox(ListBox listBox,String currentSelectedQDM) {
 		Set<Entry<String, Node>> elementLookUpNodes  = ClauseConstants.getElementLookUpNode().entrySet();
 		for (Entry<String, Node> elementLookup : elementLookUpNodes) {
 			Node node = elementLookup.getValue();
 			if(!QDMAttributeDialogBox.ATTRIBUTE.equalsIgnoreCase(node.getAttributes().getNamedItem(QDMAttributeDialogBox.DATATYPE).getNodeValue())){
 				String key = elementLookup.getKey();
 				String uuid = key.substring(key.lastIndexOf("~") + 1);
-				listBox.addItem(ClauseConstants.getElementLookUpName().get(uuid), uuid);
+				String item = ClauseConstants.getElementLookUpName().get(uuid); 
+				listBox.addItem(item, uuid);
+				if(item.equals(currentSelectedQDM)){
+					listBox.setItemSelected(listBox.getItemCount()-1, true);
+				}
 			}
 		}
 		

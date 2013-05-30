@@ -46,6 +46,8 @@ public class ClauseWorkspaceContextMenu {
 	
 	MenuItem editMenu;
 	
+	MenuItem editQDMMenu;
+	
 	MenuBar popupMenuBar = new MenuBar(true);
 	
 	MenuBar subMenuBar;
@@ -254,6 +256,16 @@ public class ClauseWorkspaceContextMenu {
 			pasteMenu.setEnabled(false);
 			cutMenu.setEnabled(true);
 			deleteMenu.setEnabled(true);
+			Command editQDMCmd = new Command() {
+				public void execute( ) {
+					xmlTreeDisplay.setDirty(true);
+					popupPanel.hide();
+					//To edit the QDM element
+					showQDMPopup(false);
+				}
+			};
+			editQDMMenu = new MenuItem("Edit", true, editQDMCmd);
+			popupMenuBar.addItem(editQDMMenu);
 			break;
 			
 		case CellTreeNode.FUNCTIONS_NODE:
@@ -385,15 +397,15 @@ public class ClauseWorkspaceContextMenu {
 		Command addQDMCmd = new Command() {
 			public void execute() {
 				popupPanel.hide();
-				showQDMPopup();
+				showQDMPopup(true);
 			}
 		};
 		MenuItem item = new MenuItem("QDM Element",true,addQDMCmd);		
 		menuBar.addItem(item);
 	}
 
-	protected void showQDMPopup() {
-		QDMDialogBox.showQDMDialogBox(xmlTreeDisplay);
+	protected void showQDMPopup(boolean isAdd) {
+		QDMDialogBox.showQDMDialogBox(xmlTreeDisplay,isAdd);
 	}
 
 	/**

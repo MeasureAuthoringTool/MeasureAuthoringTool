@@ -780,7 +780,7 @@ public class QDMAttributeDialogBox {
 			String text = options.getItem(i).getText();
 			String uuid = options.getItem(i).getAttribute("value");
 			String oid = ClauseConstants.getElementLookUpNode().get(text + "~" + uuid).getAttributes().getNamedItem("oid").getNodeValue();
-			String title = text + " (OID: " + oid + ")";
+			String title = text + " (" + oid + ")";
 			OptionElement optionElement = options.getItem(i);
 	        optionElement.setTitle(title);
 	    }

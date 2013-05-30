@@ -340,7 +340,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			String title = cellTreeNode.getName();
 			if(cellTreeNode.getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
 				String oid = ClauseConstants.getElementLookUpNode().get(cellTreeNode.getName() + "~" +cellTreeNode.getUUID()).getAttributes().getNamedItem("oid").getNodeValue();
-				title = title + " (OID: " + oid + ")";
+				title = title + " (" + oid + ")";
 			}
 			sb.append(template.outerDiv(getStyleClass(cellTreeNode), title, cellTreeNode.getLabel() != null ? cellTreeNode.getLabel() : cellTreeNode.getName()));
 		}

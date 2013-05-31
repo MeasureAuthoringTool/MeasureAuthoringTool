@@ -39,7 +39,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	private SimplePanel containerPanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
-	private Button removeButton = new Button("Remove");
+	//Commented till remove functionality is implemented.
+	//private Button removeButton = new Button("Remove");
 	
 	private CellList<QualityDataSetDTO> cellList;
 	
@@ -69,8 +70,9 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(new SpacerWidget());
 		vp.add(rangeLabelPager);
 		vp.add(new SpacerWidget());
-		removeButton.setEnabled(checkForEnable());
-		vp.add(removeButton);
+		//Commented till remove functionality is implemented.
+	//	removeButton.setEnabled(checkForEnable());
+	//	vp.add(removeButton);
 		vp.add(new SpacerWidget());
 
 		mainPanel.add(vp);
@@ -99,7 +101,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 		ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>();
 		final MultiSelectionModel<QualityDataSetDTO> selectionModel = new MultiSelectionModel<QualityDataSetDTO>();
-		hasCells.add(new HasCell<QualityDataSetDTO, Boolean>(){
+		//Commented till remove functionality is implemented.
+		/*hasCells.add(new HasCell<QualityDataSetDTO, Boolean>(){
 
 			private MatCheckBoxCell cbCell = new MatCheckBoxCell();
 			@Override
@@ -115,7 +118,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			@Override
 			public Boolean getValue(QualityDataSetDTO object) {
 				return selectionModel.isSelected(object);
-			} });
+			} });*/
 
 		hasCells.add(new HasCell<QualityDataSetDTO, String>(){
 			private TextCell cell = new TextCell();
@@ -160,7 +163,9 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			{
 				// this renders each of the cells inside the composite cell in a new table cell
 				Cell<X> cell = hasCell.getCell();
-				sb.appendHtmlConstant("<td style='font-size:95%;'>");
+				//Commented till remove functionality is implemented.
+				//sb.appendHtmlConstant("<td style='font-size:95%;'>");
+				sb.appendHtmlConstant("<td style='font-size:100%;'>");
 				cell.render(context, hasCell.getValue(value), sb);
 				sb.appendHtmlConstant("</td>");
 			}

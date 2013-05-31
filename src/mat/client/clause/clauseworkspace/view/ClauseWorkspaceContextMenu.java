@@ -130,8 +130,7 @@ public class ClauseWorkspaceContextMenu {
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 
 		case CellTreeNode.MASTER_ROOT_NODE:
-//			addCommonMenus();
-			popupPanel.hide();
+			addCommonMenus();
 			break;
 			
 		case CellTreeNode.ROOT_NODE:
@@ -485,6 +484,7 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.addItem(pasteMenu);
 		popupMenuBar.addItem(cutMenu);
 		popupMenuBar.addItem(deleteMenu);
+		popupMenuBar.addItem(expandMenu);
 		popupMenuBar.setVisible(true);		  
 		popupPanel.add(popupMenuBar);
 	}

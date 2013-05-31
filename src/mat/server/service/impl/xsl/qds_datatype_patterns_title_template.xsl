@@ -19,7 +19,7 @@
 		<xsl:variable name="iid">
 			<xsl:choose>
 				<xsl:when test="string-length($is_to)>0">
-					<xsl:value-of select="@to"/>
+					<xsl:value-of select="$is_to"/>
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:value-of select="@id"/>
@@ -30,7 +30,7 @@
 		<xsl:variable name="qdsid">
 			<xsl:choose>
 				<xsl:when test="string-length($is_to)>0">
-					<xsl:value-of select="current()/@to"/>
+					<xsl:value-of select="$is_to"/>
 				</xsl:when>
 				<xsl:when test="name(..)='reference' and ../../@id"><xsl:value-of select="../../@id"/></xsl:when>
 				<xsl:when test="name(/measure/elementLookUp/*[@id=$iid])='iqdsel'">

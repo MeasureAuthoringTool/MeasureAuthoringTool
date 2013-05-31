@@ -7,13 +7,18 @@
    exclude-result-prefixes="exsl uuid math xs msxsl">
 	<xsl:output method="xml" indent="yes" encoding="ISO-8859-1"/>
 	
-	<xsl:template match="qdm|qdsel" mode="to">
-		<xsl:variable name="rel_to_uuid">
-			<xsl:if test="current()/@to">
-				<xsl:value-of select="/measure/elementLookUp/*[@id=current()/@to]/@uuid"/>
+	<xsl:template match="elementRef|qdm|qdsel" mode="to">
+<!-- 		<xsl:variable name="rel_to_uuid"> -->
+<!-- 			<xsl:if test="current()/@to"> -->
+<!-- 				<xsl:value-of select="/measure/elementLookUp/*[@id=current()/@to]/@uuid"/> -->
+<!-- 			</xsl:if> -->
+<!--       	</xsl:variable> -->
+      	<xsl:variable name="rel_to_uuid">
+			<xsl:if test="parent::relationalOp and following-sibling::elementRef">
+				<xsl:value-of select="following-sibling::elementRef[1]/@id"/>
 			</xsl:if>
       	</xsl:variable>
-		<xsl:variable name="rel">
+		<!-- <xsl:variable name="rel">
 	   		<xsl:choose>
 	   			<xsl:when test="@rel='SBOD'">EAS</xsl:when>
 	   			<xsl:when test="@rel='EBOD'">EAE</xsl:when>
@@ -21,6 +26,18 @@
 	   				<xsl:value-of select="@rel"/>
 	   			</xsl:otherwise>
 	   		</xsl:choose>
+	   	</xsl:variable> -->
+	   	
+	   	<xsl:variable name="rel">
+	   		<xsl:if test="parent::relationalOp">
+		   		<xsl:choose>
+		   			<xsl:when test="parent::relationalOp/@type='SBOD'">EAS</xsl:when>
+		   			<xsl:when test="parent::relationalOp/@type='EBOD'">EAE</xsl:when>
+		   			<xsl:otherwise>
+		   				<xsl:value-of select="parent::relationalOp/@type"/>
+		   			</xsl:otherwise>
+		   		</xsl:choose>
+	   		</xsl:if>
 	   	</xsl:variable>
 	   	
 	   	<xsl:variable name="inversion">
@@ -33,16 +50,18 @@
 		
 		<xsl:apply-templates select="." mode="resultvalue"/>
 		<xsl:choose>
-			<xsl:when test="name(..)!='elementLookUp' and @rel">
+<!-- 			<xsl:when test="name(..)!='elementLookUp' and @rel"> -->
+				<xsl:when test="parent::relationalOp">
 				<sourceOf typeCode="{$rel}">
 					<xsl:if test="$inversion = 'true'">
 	                  <xsl:attribute name="inversionInd">true</xsl:attribute>                  
 					</xsl:if>
 					<xsl:attribute name="displayInd">true</xsl:attribute>
-					<xsl:if test="@to">
+					<!-- <xsl:if test="@to"> -->
+					<xsl:if test="following-sibling::elementRef">
 						<xsl:apply-templates select="." mode="pauseQuantity"/>
 						<xsl:variable name="to_id">
-							<xsl:value-of select="@to"/>
+							<xsl:value-of select="following-sibling::elementRef[1]/@id"/>
 						</xsl:variable>
 						<xsl:variable name="to">
 							<xsl:choose>
@@ -50,14 +69,14 @@
 					      			<xsl:value-of select="/measure/elementLookUp/*[@id=$to_id]/@refid"/>
 					      		</xsl:when>
 					      		<xsl:otherwise>
-									<xsl:value-of select="@to"/>
+									<xsl:value-of select="following-sibling::elementRef[1]/@id"/>
 								</xsl:otherwise>
 							</xsl:choose>
 						</xsl:variable>
 
 						<xsl:variable name="to_title">
 							<xsl:call-template name="title">
-								<xsl:with-param name="is_to" select="@to"/>
+								<xsl:with-param name="is_to" select="$to"/>
 							</xsl:call-template>
 						</xsl:variable>
 						<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">

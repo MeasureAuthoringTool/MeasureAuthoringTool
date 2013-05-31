@@ -98,36 +98,100 @@
         <xsl:variable name="conj">
             <xsl:value-of select="upper-case(@type)"/>
         </xsl:variable>
+        <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
         <xsl:if test="$conj='AND' or $conj='OR'">
             <xsl:text>
            
             </xsl:text>             
                 <!-- Handle QDM elements -->
             <xsl:if test="count(child::*[name()='elementRef']) &gt; 0">
-                    <xsl:for-each select="elementRef">
-                        <sourceOf typeCode="PRCN">
-                            <conjunctionCode code="{$conj}"/>
-                            <xsl:apply-templates select="."/>
-                        </sourceOf>    
-                    </xsl:for-each>
-                </xsl:if>
-                
-                <!-- Handle nested AND/OR -->
-               <!-- <test><xsl:value-of select="name()"/></test>
-                <parent><xsl:value-of select="name(current()/parent::node())"/></parent>-->
-                <xsl:variable name="countLogicalOp"><xsl:value-of select="count(child::*[name()='logicalOp'])"/></xsl:variable>
-                <!--<countLogicalOp><xsl:value-of select="$countLogicalOp"/></countLogicalOp>-->
-                <xsl:if test="$countLogicalOp &gt; 0">
-                    <sourceOf typeCode="PRCN">
-                        <conjunctionCode code="{$conj}"/>
-                        <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
-                            <xsl:for-each select="logicalOp">
-                               <xsl:apply-templates select="." mode="topmost"/>
-                            </xsl:for-each>
-                        </act>
-                    </sourceOf>
-                </xsl:if>
+                <xsl:for-each select="elementRef">
+                   <xsl:apply-templates select="." mode="handleElementRef">
+                       <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                   </xsl:apply-templates>   
+                </xsl:for-each>
+            </xsl:if>
+            
+            <!-- Handle nested AND/OR -->
+           <!-- <test><xsl:value-of select="name()"/></test>
+            <parent><xsl:value-of select="name(current()/parent::node())"/></parent>-->
+            <xsl:variable name="countLogicalOp"><xsl:value-of select="count(child::*[name()='logicalOp'])"/></xsl:variable>
+            <!--<countLogicalOp><xsl:value-of select="$countLogicalOp"/></countLogicalOp>-->
+            <xsl:if test="$countLogicalOp &gt; 0">
+                <sourceOf typeCode="PRCN">
+                    <conjunctionCode code="{$conj}"/>
+                    <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                        <xsl:if test="$isNot = 'true' "><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>
+                        <xsl:for-each select="logicalOp">
+                           <xsl:apply-templates select="." mode="topmost"/>
+                        </xsl:for-each>
+                    </act>
+                </sourceOf>
+            </xsl:if>
+            
+            <!-- Iterate over all <functionalOp> children.-->
+            <xsl:for-each select="functionalOp">
+                <xsl:apply-templates select="." mode="handleChildFunction">
+                    <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                </xsl:apply-templates>
+            </xsl:for-each>
+            
+            <!-- Iterate over all <relationalOp> children.-->
+            <xsl:for-each select="relationalOp">
+                <xsl:apply-templates select=".">
+                    <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                </xsl:apply-templates>
+            </xsl:for-each>
         </xsl:if>
+    </xsl:template>
+    
+    <xsl:template match="relationalOp">
+        <xsl:param name="conj"/>
+        
+        <xsl:variable name="countelementRef"><xsl:value-of select="count(child::*[name()='elementRef'])"/></xsl:variable>
+        <xsl:if test="$countelementRef = 2">
+            <xsl:apply-templates select="child::elementRef[1]" mode="handleElementRef">
+                <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+            </xsl:apply-templates>
+        </xsl:if>
+        
+        
+    </xsl:template>
+    
+    <xsl:template match="functionalOp" mode="handleChildFunction">
+        <xsl:param name="conj"/>
+        <xsl:choose>
+            <xsl:when test="@type='NOT'">
+                <xsl:for-each select="*">
+                    <xsl:choose>
+                        <xsl:when test="name(.)='logicalOp'">
+                            <xsl:apply-templates select="." mode="topmost"/>
+                        </xsl:when>
+                        <xsl:when test="name(.)='elementRef'">
+                            <xsl:apply-templates select="." mode="handleElementRef">
+                                <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                            </xsl:apply-templates>
+                        </xsl:when>
+                        <xsl:when test="name(.)='functionalOp'">
+                            <xsl:apply-templates select="." mode="handleChildFunction">
+                                <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                            </xsl:apply-templates>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:apply-templates select="."/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+                </xsl:for-each>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template match="elementRef" mode="handleElementRef">
+        <xsl:param name="conj"/>
+        <sourceOf typeCode="PRCN">
+            <conjunctionCode code="{$conj}"/>
+            <xsl:apply-templates select="."/>
+        </sourceOf>
     </xsl:template>
     
     <!-- template which will handle clauses other than "initialPatientPopulation" clause-->
@@ -510,5 +574,12 @@
             </xsl:otherwise>
         </xsl:choose>
     </xsl:template>
+    
+    <xsl:template match="*" mode="isChildOfNot">
+        <xsl:choose>
+            <xsl:when test="parent::functionalOp[@type='NOT']">true</xsl:when>
+            <xsl:otherwise>false</xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>    
     
 </xsl:stylesheet>

@@ -323,7 +323,13 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		}
 		int numRows = results.getNumberOfRows();
 		int numColumns = results.getNumberOfColumns();
+		dataTable.getElement().setAttribute("id", "historytable");
+		dataTable.getElement().setAttribute("aria-role", "grid");
+		dataTable.getElement().setAttribute("aria-labelledby", "LiveRegion");
 		dataTable.getElement().setAttribute("aria-live", "assertive");
+		dataTable.getElement().setAttribute("aria-atomic", "true");
+		dataTable.getElement().setAttribute("aria-relevant", "all");
+		dataTable.getElement().setAttribute("role", "alert");
 		dataTable.resize((int)numRows + 1, (int)numColumns);
 		buildSearchResultsColumnHeaders(numRows, numColumns, results, false, false);
 		buildHistorySearchResults(numRows,numColumns,results);

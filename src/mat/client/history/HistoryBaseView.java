@@ -79,6 +79,7 @@ public abstract class HistoryBaseView {
 		addCommentPanel.add(new SpacerWidget());
 		
 		addCommentPanel.add(LabelBuilder.buildLabel( addComment, "Add Comment"));
+		inputText.getElement().setAttribute("id", "Add Comment");
 		addCommentPanel.add(inputText);
 		
 		addCommentPanel.add(commentButtons);

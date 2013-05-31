@@ -78,8 +78,14 @@ class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
 		fPanel.setStyleName("centerAligned");
 		String currentShare = dto.getShareLevel();
 		final CheckBox modifyCheckBox = new CheckBox();
+		//508 - remove extra label with checkbox.Set ID attribute to Span and remove id from input. 
+		modifyCheckBox.getElement().removeChild(modifyCheckBox.getElement().getLastChild());
+		modifyCheckBox.getElement().setAttribute("id", "share - " + dto.getUserId());
+		modifyCheckBox.getElement().getFirstChildElement().removeAttribute("id");
 		modifyCheckBox.setFormValue("share" + dto.getUserId());
 		modifyCheckBox.setValue(false);
+		modifyCheckBox.setTitle("Select User to Share Measure");
+		
 		if(ShareLevel.VIEW_ONLY_ID.equals(currentShare)) {
 			modifyCheckBox.setValue(false);
 		}else if(ShareLevel.MODIFY_ID.equals(currentShare)) {

@@ -69,8 +69,8 @@ public class QDMDialogBox{
 	    final ListBox listBox = new ListBox();
 	    listBox.setWidth("18em");
 	    listBox.setVisibleItemCount(10);
-	    String currentSelectedQDM=xmlTreeDisplay.getSelectedNode().getLabel();
-	    addQDMNamesToListBox(listBox,currentSelectedQDM);
+	    String currentSelectedQDMUuid = xmlTreeDisplay.getSelectedNode().getUUID();
+	    addQDMNamesToListBox(listBox, currentSelectedQDMUuid);
 	    
 	    //Add listbox to vertical panel and align it in center.
 	    dialogContents.add(listBox);
@@ -155,7 +155,7 @@ public class QDMDialogBox{
 	}
 
 	
-	private static void addQDMNamesToListBox(ListBox listBox,String currentSelectedQDM) {
+	private static void addQDMNamesToListBox(ListBox listBox,String currentSelectedQDMUuid) {
 		Set<Entry<String, Node>> elementLookUpNodes  = ClauseConstants.getElementLookUpNode().entrySet();
 		for (Entry<String, Node> elementLookup : elementLookUpNodes) {
 			Node node = elementLookup.getValue();
@@ -164,7 +164,7 @@ public class QDMDialogBox{
 				String uuid = key.substring(key.lastIndexOf("~") + 1);
 				String item = ClauseConstants.getElementLookUpName().get(uuid); 
 				listBox.addItem(item, uuid);
-				if(item.equals(currentSelectedQDM)){
+				if(uuid.equals(currentSelectedQDMUuid)){
 					listBox.setItemSelected(listBox.getItemCount()-1, true);
 				}
 			}

@@ -134,8 +134,28 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		copyModel.setNodeType(model.getNodeType());
 		copyModel.setOpen(model.isOpen());	
 		Map<String, Object> extraInfos = new HashMap<String, Object>();
-		extraInfos.putAll(((CellTreeNodeImpl)model).getExtraInformationMap());
-		((CellTreeNodeImpl)copyModel).setExtraInformationMap(extraInfos);
+		if(model.getNodeType() == ELEMENT_REF_NODE){
+			List<CellTreeNode> attributes = (List<CellTreeNode>) extraInformationMap.get("attributes");
+			if(attributes != null){
+				List<CellTreeNode> extraAttrList = new ArrayList<CellTreeNode>();
+				for (CellTreeNode cellTreeNode : attributes) {
+					CellTreeNode attrNode = new CellTreeNodeImpl();
+					attrNode.setName(cellTreeNode.getName());
+					attrNode.setLabel(cellTreeNode.getLabel());
+					attrNode.setNodeType(cellTreeNode.getNodeType());
+					Map<String, Object> extraInfoAttr = new HashMap<String, Object>();
+					extraInfoAttr.putAll(((CellTreeNodeImpl)cellTreeNode).getExtraInformationMap());
+					((CellTreeNodeImpl)attrNode).setExtraInformationMap(extraInfoAttr);
+					extraAttrList.add(attrNode);
+				}
+				copyModel.setExtraInformation("attributes", extraAttrList);
+			}
+		}else{
+			extraInfos.putAll(((CellTreeNodeImpl)model).getExtraInformationMap());
+			((CellTreeNodeImpl)copyModel).setExtraInformationMap(extraInfos);
+		}
+		
+		
 		if(model.getNodeType() == CLAUSE_NODE){
 			copyModel.setUUID(UUIDUtilClient.uuid());	
 		}else{

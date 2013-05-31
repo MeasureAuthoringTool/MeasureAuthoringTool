@@ -251,7 +251,6 @@ public class ClauseWorkspaceContextMenu {
 		case CellTreeNode.ELEMENT_REF_NODE:
 			Command editQDMCmd = new Command() {
 				public void execute( ) {
-					xmlTreeDisplay.setDirty(true);
 					popupPanel.hide();
 					//To edit the QDM element
 					showQDMPopup(false);

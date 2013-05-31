@@ -265,7 +265,7 @@ body#main select, body#main input, body#main textarea {
 }
 
 .cms-address-bar {
-    background: none repeat scroll 0 0 #A8B0B3;
+    background: none repeat scroll 0 0 #E6E1E1;
     overflow: auto;
     padding: 20px;
 }

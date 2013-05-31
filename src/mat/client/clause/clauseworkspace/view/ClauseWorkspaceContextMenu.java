@@ -249,12 +249,6 @@ public class ClauseWorkspaceContextMenu {
 			break;
 		
 		case CellTreeNode.ELEMENT_REF_NODE:
-			createQDMAttributeMenuItem(popupMenuBar,xmlTreeDisplay.getSelectedNode());
-			addCommonMenus();
-			copyMenu.setEnabled(true);
-			pasteMenu.setEnabled(false);
-			cutMenu.setEnabled(true);
-			deleteMenu.setEnabled(true);
 			Command editQDMCmd = new Command() {
 				public void execute( ) {
 					xmlTreeDisplay.setDirty(true);
@@ -265,6 +259,12 @@ public class ClauseWorkspaceContextMenu {
 			};
 			editQDMMenu = new MenuItem("Edit", true, editQDMCmd);
 			popupMenuBar.addItem(editQDMMenu);
+			createQDMAttributeMenuItem(popupMenuBar,xmlTreeDisplay.getSelectedNode());
+			addCommonMenus();
+			copyMenu.setEnabled(true);
+			pasteMenu.setEnabled(false);
+			cutMenu.setEnabled(true);
+			deleteMenu.setEnabled(true);
 			break;
 			
 		case CellTreeNode.FUNCTIONS_NODE:

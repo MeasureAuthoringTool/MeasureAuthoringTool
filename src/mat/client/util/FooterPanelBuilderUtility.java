@@ -101,19 +101,22 @@ public class FooterPanelBuilderUtility {
 	
 	private static String logosHTML = 
 		"<div class=\"cms-address-bar\"> "+
-			"<a title=\"Link to CMS.gov home page\" href=\"http://www.cms.gov/\" target=\"_blank\"> " +
+			"<div id=\"footer-cms-logo-wrapper\" align=\"left\"> " +
+				"<a id=\"footer_cms_logo_link\" title=\"CMS home page\" href=\"http://www.cms.gov/\" target=\"_blank\"> " +
 				"{img_cms_logo}" +
-			"</a> "+	
+				"</a> "+	
+			"</div> " +
 			"<div id=\"footer-address-text\"> " +
 				"A federal government website managed by the Centers for Medicare " +
-				"&amp; Medicaid Services <br> 7500 Security Boulevard, "+
+				"&amp; Medicaid Services <br> 7500 Security Boulevard, " +
 				"Baltimore, MD 21244" +
 			"</div> "+
-			"<div> "+
-				"<a title=\"Link to Health and Human Services home page\" "+
-					"href=\"http://www.hhs.gov/\" target=\"_blank\"> " +
+			"<div id=\"footer-hhs-logo-wrapper\" align=\"right\"> " +
+				"<div id=\"footer_hhs_logo\"> " +
+					"<a id=\"footer_hhs_logo_link\" title=\"Health and Human Services home page\" href=\"http://www.hhs.gov/\" target=\"_blank\"> " +
 					"{img_hhs_logo} " +
-				"</a> "+
+					"</a> "+
+				"</div>" +
 			"</div>" +
 		"</div>";
 	

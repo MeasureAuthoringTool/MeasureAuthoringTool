@@ -490,6 +490,54 @@
 		</pauseQuantity>
 	</xsl:template>
 	
+	<xsl:template match="*" mode="pq_comparison_new">
+		<xsl:variable name="operatorType"><xsl:value-of select="@operatorType"/></xsl:variable>
+		<xsl:variable name="value"><xsl:value-of select="@quantity"/></xsl:variable>
+		<xsl:variable name="unit">
+			<xsl:call-template name="unitvalue">
+				<xsl:with-param name="uval" select="@unit"/>
+			</xsl:call-template>
+		</xsl:variable>
+		
+		<xsl:choose>
+			<xsl:when test="$operatorType = 'Equal To'">
+				<pauseQuantity xsi:type="PQ">
+					<xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
+					<xsl:attribute name="unit"><xsl:value-of select="$unit"/></xsl:attribute>
+				</pauseQuantity>
+			</xsl:when>
+			<xsl:otherwise>
+				<pauseQuantity xsi:type="IVL_PQ" >
+					<xsl:choose>
+						<xsl:when test="$operatorType = 'Greater Than'">
+							<low inclusive='false'>
+								<xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
+								<xsl:attribute name="unit"><xsl:value-of select="$unit"/></xsl:attribute>
+							</low>
+						</xsl:when>
+						<xsl:when test="$operatorType = 'Greater Than or Equal To'">
+							<low inclusive='true'>
+								<xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
+								<xsl:attribute name="unit"><xsl:value-of select="$unit"/></xsl:attribute>
+							</low>
+						</xsl:when>
+						<xsl:when test="$operatorType = 'Less Than'">
+							<high inclusive='false'>
+								<xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
+								<xsl:attribute name="unit"><xsl:value-of select="$unit"/></xsl:attribute>
+							</high>
+						</xsl:when>
+						<xsl:when test="$operatorType = 'Less Than or Equal To'">
+							<high inclusive='true'>
+								<xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
+								<xsl:attribute name="unit"><xsl:value-of select="$unit"/></xsl:attribute>
+							</high>
+						</xsl:when>
+					</xsl:choose>
+				</pauseQuantity>			
+			</xsl:otherwise>
+		</xsl:choose>
+	</xsl:template>
 	<!-- centralized logic to output comparison content for pauseQuantity -->
 	<xsl:template match="*" mode="pq_comparison">
 		<xsl:choose>

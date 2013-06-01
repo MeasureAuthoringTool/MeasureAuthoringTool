@@ -51,7 +51,7 @@
 		<xsl:apply-templates select="." mode="resultvalue"/>
 		<xsl:choose>
 <!-- 			<xsl:when test="name(..)!='elementLookUp' and @rel"> -->
-				<xsl:when test="parent::relationalOp">
+			<xsl:when test="parent::relationalOp and following-sibling::elementRef">
 				<sourceOf typeCode="{$rel}">
 					<xsl:if test="$inversion = 'true'">
 	                  <xsl:attribute name="inversionInd">true</xsl:attribute>                  
@@ -59,7 +59,7 @@
 					<xsl:attribute name="displayInd">true</xsl:attribute>
 					<!-- <xsl:if test="@to"> -->
 					<xsl:if test="following-sibling::elementRef">
-						<xsl:apply-templates select="." mode="pauseQuantity"/>
+						<xsl:apply-templates select="parent::relationalOp" mode="pauseQuantity"/>
 						<xsl:variable name="to_id">
 							<xsl:value-of select="following-sibling::elementRef[1]/@id"/>
 						</xsl:variable>
@@ -90,6 +90,9 @@
 						<xsl:apply-templates select="to/*" mode="to_child"/>
 					</xsl:if>
 				</sourceOf>
+			</xsl:when>
+			<xsl:when test="parent::relationalOp and following-sibling::logicalOp">
+				<xsl:apply-templates select="following-sibling::logicalOp" mode="processRelational_Func_RHS"/>
 			</xsl:when>
 			<xsl:when test="@highnum or @lownum or @equalnum">
 				<xsl:apply-templates select="." mode="pauseQuantity"/>

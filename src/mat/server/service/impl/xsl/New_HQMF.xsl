@@ -131,7 +131,7 @@
             
             <!-- Iterate over all <functionalOp> children.-->
             <xsl:for-each select="functionalOp">
-                <xsl:apply-templates select="." mode="handleChildFunction">
+                <xsl:apply-templates select=".">
                     <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                 </xsl:apply-templates>
             </xsl:for-each>
@@ -147,18 +147,85 @@
     
     <xsl:template match="relationalOp">
         <xsl:param name="conj"/>
-        
+        <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
         <xsl:variable name="countelementRef"><xsl:value-of select="count(child::*[name()='elementRef'])"/></xsl:variable>
-        <xsl:if test="$countelementRef = 2">
-            <xsl:apply-templates select="child::elementRef[1]" mode="handleElementRef">
-                <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
-            </xsl:apply-templates>
-        </xsl:if>
+        <xsl:choose>
+            <xsl:when test="$countelementRef = 2">
+                <xsl:apply-templates select="child::elementRef[1]" mode="handleElementRef">
+                    <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                </xsl:apply-templates>
+            </xsl:when>
+            <xsl:otherwise>
+                <sourceOf typeCode="PRCN">
+                    <conjunctionCode code="{$conj}"/>
+                    <!-- Process first child i.e. LHS -->
+                    <xsl:variable name="child1Name"><xsl:value-of select="name(child::*[1])"/></xsl:variable>
+                    <xsl:choose>
+                        <xsl:when test="$child1Name='logicalOp'">
+                            <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                                <xsl:apply-templates select="child::*[1]" mode="topmost"/>
+                                <!-- Process second child i.e. RHS -->
+                                <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS"/>
+                            </act>
+                        </xsl:when>
+                        <xsl:when test="$child1Name='elementRef'">
+                            <xsl:apply-templates select="child::*[1]"/>
+                        </xsl:when>
+                        <xsl:otherwise>
+                           <xsl:apply-templates select="child::*[1]"/>
+                           <!-- Process second child i.e. RHS -->
+                           <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS"/>
+                        </xsl:otherwise>
+                    </xsl:choose>
+               </sourceOf>  
+           </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template match="*" mode="processRelational_Func_RHS">
+        <xsl:variable name="rel">
+            <xsl:if test="parent::relationalOp">
+                <xsl:choose>
+                    <xsl:when test="parent::relationalOp/@type='SBOD'">EAS</xsl:when>
+                    <xsl:when test="parent::relationalOp/@type='EBOD'">EAE</xsl:when>
+                    <xsl:otherwise>
+                        <xsl:value-of select="parent::relationalOp/@type"/>
+                    </xsl:otherwise>
+                </xsl:choose>
+            </xsl:if>
+        </xsl:variable>
         
+        <xsl:variable name="inversion">
+            <xsl:choose>
+                <xsl:when test="@rel='SBOD'">true</xsl:when>
+                <xsl:when test="@rel='EBOD'">true</xsl:when>
+                <xsl:otherwise>false</xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        
+        <!-- sourceOf here -->
+        <sourceOf typeCode="{$rel}">
+            <xsl:if test="$inversion = 'true'">
+                <xsl:attribute name="inversionInd">true</xsl:attribute>                  
+            </xsl:if>
+            <xsl:attribute name="displayInd">true</xsl:attribute>
+            <xsl:apply-templates select="parent::relationalOp" mode="pauseQuantity"/>
+            
+            <xsl:choose>
+                <xsl:when test="name() = 'logicalOp'">
+                    <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                        <xsl:apply-templates select="." mode="topmost"/>
+                    </act>
+                </xsl:when>
+                <xsl:otherwise>
+                    <xsl:apply-templates select="."/>
+                </xsl:otherwise>
+            </xsl:choose>
+        </sourceOf>
         
     </xsl:template>
     
-    <xsl:template match="functionalOp" mode="handleChildFunction">
+    <xsl:template match="functionalOp">
         <xsl:param name="conj"/>
         <xsl:choose>
             <xsl:when test="@type='NOT'">
@@ -184,6 +251,17 @@
                 </xsl:for-each>
             </xsl:when>
         </xsl:choose>
+    </xsl:template>
+    
+    <xsl:template match="elementRef" mode="handleElementRef_ForRel">
+        <xsl:param name="conj"/>
+        <sourceOf typeCode="PRCN">
+            <conjunctionCode code="{$conj}"/>
+            <xsl:apply-templates select="."/>
+            
+            <!-- Process second child i.e. RHS -->
+            <xsl:apply-templates select="following-sibling::*[1]" mode="processRelational_Func_RHS"/>
+        </sourceOf>
     </xsl:template>
     
     <xsl:template match="elementRef" mode="handleElementRef">
@@ -508,6 +586,61 @@
             <xsl:otherwise>MISSING_CONJUNCTION</xsl:otherwise>
         </xsl:choose>
     </xsl:template>-->
+    
+    <xsl:template match="*" mode="pauseQuantity">
+        <xsl:variable name="unitval">
+            <xsl:choose>
+                <xsl:when test="@unit">
+                    <xsl:value-of select="@unit"/>
+                </xsl:when>
+                <xsl:when test="value and value/low">
+                    <xsl:value-of select="current()/value/low/@unit"/>
+                </xsl:when>
+                <xsl:when test="value and value/high">
+                    <xsl:value-of select="current()/value/high/@unit"/>
+                </xsl:when>
+                <xsl:when test="value and value/equal">
+                    <xsl:value-of select="current()/value/equal/@unit"/>
+                </xsl:when>
+                <xsl:when test="@lowunit">
+                    <xsl:value-of select="current()/@lowunit"/>
+                </xsl:when>
+                <xsl:when test="@highunit">
+                    <xsl:value-of select="current()/@highunit"/>
+                </xsl:when>
+                <xsl:when test="@equalunit">
+                    <xsl:value-of select="current()/@equalunit"/>
+                </xsl:when>
+                <xsl:otherwise>NA</xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:variable name="unit">
+            <xsl:call-template name="unitvalue">
+                <xsl:with-param name="uval" select="$unitval"/>
+            </xsl:call-template>
+        </xsl:variable>
+        <xsl:variable name="vtype">
+            <xsl:choose>
+                <xsl:when test="value/@type"><xsl:value-of select="value/@type"/></xsl:when>
+                <xsl:otherwise>IVL_PQ</xsl:otherwise>
+            </xsl:choose>
+        </xsl:variable>
+        <xsl:choose>
+            <xsl:when test="$unit='a' or $unit= 'mo' or $unit= 'd' or $unit= 'h' or $unit= 'wk' or $unit= 'min' or $unit= '[qtr]' or $unit= 's'">
+                <xsl:apply-templates select="current()" mode="pq_comparison_new"/>
+            </xsl:when>
+            <xsl:when test="@widthnum and @widthunit">
+                <xsl:variable name="wunit">
+                    <xsl:call-template name="unitvalue">
+                        <xsl:with-param name="uval" select="@widthunit"/>
+                    </xsl:call-template>
+                </xsl:variable>
+                <pauseQuantity xsi:type="URG_PQ">
+                    <width value="{@widthnum}" unit="{$wunit}"/>
+                </pauseQuantity>
+            </xsl:when>
+        </xsl:choose>
+    </xsl:template>
     
     <xsl:template name="unitvalue">
         <xsl:param name="uval"/>

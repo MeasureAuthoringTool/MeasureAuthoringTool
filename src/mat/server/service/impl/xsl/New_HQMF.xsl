@@ -225,6 +225,7 @@
         
         <!-- sourceOf here -->
         <sourceOf typeCode="{$rel}">
+            <xsl:apply-templates select="." mode="handleFunctionalOps"/>
             <xsl:if test="$inversion = 'true'">
                 <xsl:attribute name="inversionInd">true</xsl:attribute>                  
             </xsl:if>
@@ -526,7 +527,7 @@
                 <text/>
                 
                 <xsl:for-each select="elementLookUp/qdm">
-                    <xsl:if test="@datatype != 'attribute'">
+                    <xsl:if test="@datatype != 'attribute' and @datatype != 'Timing Element'">
                         <xsl:variable name="id">
                             <xsl:value-of select="@id"/>
                         </xsl:variable>

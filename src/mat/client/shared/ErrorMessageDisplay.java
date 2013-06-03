@@ -26,6 +26,7 @@ public class ErrorMessageDisplay extends Composite implements ErrorMessageDispla
 		hPanel = new HorizontalPanel();
 		imagePanel = new FlowPanel();
 		msgPanel = new FlowPanel();
+		errorIcon.setAltText("Error Message");
 		imagePanel.add(errorIcon);
 		initWidget(hPanel);
 	}
@@ -80,6 +81,13 @@ public class ErrorMessageDisplay extends Composite implements ErrorMessageDispla
 	public void setFocus(){
 		try{
 		hPanel.getElement().focus();
+		hPanel.getElement().setAttribute("id", "Error Message");
+		hPanel.getElement().setAttribute("aria-role", "textbox");
+		hPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		hPanel.getElement().setAttribute("aria-live", "assertive");
+		hPanel.getElement().setAttribute("aria-atomic", "true");
+		hPanel.getElement().setAttribute("aria-relevant", "all");
+		hPanel.getElement().setAttribute("role", "alert");
 		}catch(JavaScriptException e){
 			//This try/catch block is needed for IE7 since it is throwing exception "cannot move
 		    //focus to the invisible control." 

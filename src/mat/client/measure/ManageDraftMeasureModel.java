@@ -26,9 +26,10 @@ class ManageDraftMeasureModel extends PagingFacade<ManageMeasureSearchModel.Resu
 			    RadioButton rb = new RadioButton("RowGroup","");
 			    /** 508 Fix - Radio button with no label should not have empty label tag and radio button should not have Id attribute. 
 			     Instead title should be set.**/
+			    rb.getElement().setAttribute("id", "rb-"+c.getName());
 			    rb.getElement().getFirstChildElement().removeAttribute("id");
 			    rb.getElement().removeChild(rb.getElement().getLastChild());
-			    rb.setTitle("Select a Measure Version to create a Draft.");
+			    rb.setTitle("Select a Measure Version to create a Draft from "+ c.getName());
 			    rb.addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {

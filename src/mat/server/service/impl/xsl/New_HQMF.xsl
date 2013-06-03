@@ -181,10 +181,12 @@
                     <xsl:variable name="child1Name"><xsl:value-of select="name(child::*[1])"/></xsl:variable>
                     <xsl:choose>
                         <xsl:when test="$child1Name='logicalOp'">
-                            <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                           <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
                                 <xsl:apply-templates select="child::*[1]" mode="topmost"/>
                                 <!-- Process second child i.e. RHS -->
-                                <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS"/>
+                                <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS">
+                                    <xsl:with-param name="showAtt">true</xsl:with-param>
+                                </xsl:apply-templates>
                             </act>
                         </xsl:when>
                         <xsl:when test="$child1Name='elementRef'">
@@ -193,7 +195,9 @@
                         <xsl:otherwise>
                            <xsl:apply-templates select="child::*[1]"/>
                            <!-- Process second child i.e. RHS -->
-                           <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS"/>
+                           <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS">
+                               <xsl:with-param name="showAtt">true</xsl:with-param>
+                           </xsl:apply-templates>
                         </xsl:otherwise>
                     </xsl:choose>
                </sourceOf>  
@@ -202,6 +206,7 @@
     </xsl:template>
     
     <xsl:template match="*" mode="processRelational_Func_RHS">
+        <xsl:param name="showAtt"/>
         <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
         <xsl:variable name="rel">
             <xsl:if test="parent::relationalOp">
@@ -235,7 +240,7 @@
             <xsl:choose>
                 <xsl:when test="name() = 'logicalOp'">
                     <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
-                    <xsl:if test="$isNot = 'true' "><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>    
+                    <xsl:if test="$isNot = 'true' and $showAtt"><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>    
                         <xsl:apply-templates select="." mode="topmost"/>
                     </act>
                 </xsl:when>

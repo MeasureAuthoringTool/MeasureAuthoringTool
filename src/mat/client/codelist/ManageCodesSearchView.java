@@ -28,6 +28,13 @@ public class ManageCodesSearchView extends SearchView<Code> {
 		int numColumns = results.getNumberOfColumns();
 		dataTable.clear();
 		dataTable.resize((int)numRows + 1, (int)numColumns);
+		dataTable.getElement().setAttribute("id", "ManageCodetable");
+		dataTable.getElement().setAttribute("aria-role", "grid");
+		dataTable.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		dataTable.getElement().setAttribute("aria-live", "assertive");
+		dataTable.getElement().setAttribute("aria-atomic", "true");
+		dataTable.getElement().setAttribute("aria-relevant", "all");
+		dataTable.getElement().setAttribute("role", "alert");
 		buildSearchResultsColumnHeaders(numRows,numColumns,results, isAscending,isChecked);
 		buildSearchResults(numRows,numColumns,results);
 		int viewStartNumber = findViewingNumber(DEFAULT_PAGE_SIZE,currentPage);

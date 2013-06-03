@@ -84,7 +84,7 @@ class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
 		modifyCheckBox.getElement().getFirstChildElement().removeAttribute("id");
 		modifyCheckBox.setFormValue("share" + dto.getUserId());
 		modifyCheckBox.setValue(false);
-		modifyCheckBox.setTitle("Select User "+ dto.getFirstName()+ dto.getLastName()+ "to Share Measure" );
+		modifyCheckBox.setTitle("Select User "+ dto.getFirstName()+ " " +dto.getLastName()+ " to Share Measure." );
 		
 		if(ShareLevel.VIEW_ONLY_ID.equals(currentShare)) {
 			modifyCheckBox.setValue(false);

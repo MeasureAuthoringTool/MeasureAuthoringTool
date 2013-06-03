@@ -60,8 +60,18 @@
 					<xsl:value-of select="/measure/supplementalDataElements/*[@id=$qdsid]/@datatype"/>
 				</xsl:when>
 				<xsl:otherwise>-->
+				<xsl:variable name="tmp">
 					<xsl:value-of select="/measure/elementLookUp/*[@id=$qdsid]/@datatype"/>
-				<!--</xsl:otherwise>
+				</xsl:variable>
+				<xsl:choose>
+					<xsl:when test="/measure/elementLookUp/*[@id=$qdsid][@instance]">
+						<xsl:value-of select="/measure/elementLookUp/*[@id=$qdsid]/@instance"/> of <xsl:value-of select="$tmp"/>
+					</xsl:when>
+					<xsl:otherwise>
+						<xsl:value-of select="$tmp"/>
+					</xsl:otherwise>
+				</xsl:choose>
+			<!--</xsl:otherwise>
 			</xsl:choose>-->
 		</xsl:variable>
 		

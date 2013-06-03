@@ -1,5 +1,6 @@
 package mat.client.clause.clauseworkspace.view;
 
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -32,7 +33,7 @@ import com.google.gwt.xml.client.Node;
 
 public class QDMDialogBox{	
 	 
-	
+	 private static final String ATTRIBUTES = "attributes";
 	 public static void showQDMDialogBox(final XmlTreeDisplay xmlTreeDisplay, boolean isAdd) {
 		final DialogBox dialogBox = new DialogBox(false,true);
 		dialogBox.setGlassEnabled(true);
@@ -131,6 +132,10 @@ public class QDMDialogBox{
 						xmlTreeDisplay.addNode(value, label, uuid, CellTreeNode.ELEMENT_REF_NODE);
 				}else{
 						xmlTreeDisplay.editNode(value, label,uuid);
+						List<CellTreeNode> attributeList = (List<CellTreeNode>)xmlTreeDisplay.getSelectedNode().getExtraInformation(ATTRIBUTES);
+						if(attributeList != null){
+							attributeList.clear();
+						}
 				}
 				xmlTreeDisplay.setDirty(true);
 				dialogBox.hide();

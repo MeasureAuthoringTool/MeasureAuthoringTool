@@ -470,7 +470,7 @@
                     <text/>
                     <xsl:for-each select="measureObservations/clause/logicalOp/*">
                         <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
-                             <xsl:apply-templates select="."/>
+                             <xsl:apply-templates select="." mode="topmost"/>
                         </entry>
                     </xsl:for-each>
                 </section>
@@ -501,7 +501,7 @@
                            <originalText>Stratum</originalText>
                         </code>
                         <!--<xsl:call-template name="criteria"/>-->
-                        <xsl:apply-templates select="logicalOp"/>
+                        <xsl:apply-templates select="logicalOp" mode="topmost"/>
                      </observation>
                   </entry>
                </xsl:for-each>

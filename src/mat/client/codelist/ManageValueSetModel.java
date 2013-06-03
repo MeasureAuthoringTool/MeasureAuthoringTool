@@ -28,6 +28,10 @@ class ManageValueSetModel extends PagingFacade<ManageValueSetSearchModel.Result>
 		super(data);
 		for(ManageValueSetSearchModel.Result c : data) {
 			    RadioButton rb = new RadioButton("RowGroup","");
+			    /**508 fix - Radio button should not have empty label and Id should be removed. Instead Title should be used.**/
+			    rb.getElement().getFirstChildElement().removeAttribute("id");
+			    rb.getElement().removeChild(rb.getElement().getLastChild());
+			    rb.setTitle("Select Value Set");
 			    rb.addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {

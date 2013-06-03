@@ -165,6 +165,11 @@ public class TransferMeasureOwnerShipModel implements SearchResults<TransferMeas
 	
 	private RadioButton getSelectedRadioBox(final List<Result> data,final int row){
 		final RadioButton transferRB = new RadioButton("selected",null,false);
+		/** 508 Fix - Radio button with no label should not have empty label tag and radio button should not have Id attribute. 
+	     Instead title should be set.**/
+		transferRB.getElement().getFirstChildElement().removeAttribute("id");
+		transferRB.getElement().removeChild(transferRB.getElement().getLastChild());
+		transferRB.setTitle("Select to Transfer Ownership.");
 		transferRB.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> e) {

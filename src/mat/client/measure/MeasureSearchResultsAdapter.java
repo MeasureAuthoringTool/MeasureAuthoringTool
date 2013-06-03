@@ -166,7 +166,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		addListener(image);
 		hPanel.add(image);
 				
-		CustomCheckBox checkBox = new CustomCheckBox("bulkExport", false);	
+		CustomCheckBox checkBox = new CustomCheckBox("Select Record to Export", false);	
 		checkBox.setStyleName("centerAligned");
 		checkBox.setFormValue(key);
 		hPanel.add(checkBox);	

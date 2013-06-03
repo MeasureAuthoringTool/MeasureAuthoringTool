@@ -46,6 +46,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Boolean> {
   InputElement inputElem;
   LabelElement labelElem;
+  Boolean isLabelRequired = false;
   private boolean valueChangeHandlerInitialized;
 
   
@@ -58,6 +59,7 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
   public CustomCheckBox(String title,boolean isLabelRequired) {
 	this(DOM.createInputCheck(),title);
     setText(title,isLabelRequired);
+    this.isLabelRequired=isLabelRequired;
   }
 
   /**
@@ -76,12 +78,15 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
 	  super(DOM.createDiv());
     inputElem = InputElement.as(elem);
     labelElem = Document.get().createLabelElement();
-
+   
     getElement().appendChild(inputElem);
-    getElement().appendChild(labelElem);
+    /**508 fix - Check box with no label should not render label tag inside Input tag.**/
+    if(isLabelRequired)
+    	getElement().appendChild(labelElem);
 
     String uid = DOM.createUniqueId();
-    inputElem.setPropertyString("id", uid);
+    /**508 fix - Id attribute should be removed instead title should be added.**/
+  //  inputElem.setPropertyString("id", uid);
     inputElem.setPropertyString("title", title);
     labelElem.setHtmlFor(uid);
 

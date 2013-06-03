@@ -49,7 +49,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	protected TextBox nameInput = new TextBox();
 	
 	protected ListBoxMVP stewardInput = new ListBoxMVP();
-	
+	protected Label stewardLabel;
 	//US 413. Empty panel and input textbox for Steward Other option. 
 	protected VerticalPanel emptyTextBoxHolder = new VerticalPanel();
 	protected TextBox stewardOtherInput = new TextBox();
@@ -93,7 +93,8 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		fPanel.add(new SpacerWidget());
 		
 		VerticalPanel verStewardPanel = new VerticalPanel();
-		verStewardPanel.add(LabelBuilder.buildRequiredLabel(stewardInput, "Steward"));
+		stewardLabel = (Label) LabelBuilder.buildRequiredLabel(stewardInput, "Steward");
+		verStewardPanel.add(stewardLabel);
 		verStewardPanel.add(stewardInput);		
 		verStewardPanel.add(emptyTextBoxHolder);		
 
@@ -412,6 +413,13 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		clearOtherPanel();
 		emptyTextBoxHolder.add(new SpacerWidget());
 		Widget otherSpecify = LabelBuilder.buildRequiredLabel(stewardOtherInput, "User Defined Steward");
+		otherSpecify.getElement().setAttribute("id", "Added UserDefineSteward");
+		otherSpecify.getElement().setAttribute("aria-role", "textbox");
+		otherSpecify.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		otherSpecify.getElement().setAttribute("aria-live", "assertive");
+		otherSpecify.getElement().setAttribute("aria-atomic", "true");
+		otherSpecify.getElement().setAttribute("aria-relevant", "all");
+		otherSpecify.getElement().setAttribute("role", "alert");
 		emptyTextBoxHolder.add(otherSpecify);		
 		emptyTextBoxHolder.add(stewardOtherInput);		
 	}
@@ -430,7 +438,14 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	/**
 	 * Local method to clear out the Steward other panel. 
 	 */
-	private void clearOtherPanel(){		
+	private void clearOtherPanel(){	
+		stewardLabel.getElement().setAttribute("id", "Removed UserDefineSteward");
+		stewardLabel.getElement().setAttribute("aria-role", "textbox");
+		stewardLabel.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		stewardLabel.getElement().setAttribute("aria-live", "assertive");
+		stewardLabel.getElement().setAttribute("aria-atomic", "true");
+		stewardLabel.getElement().setAttribute("aria-relevant", "all");
+		stewardLabel.getElement().setAttribute("role", "alert");
 		stewardOtherInput.setValue(null);
 		emptyTextBoxHolder.clear();
 	}

@@ -491,7 +491,7 @@
 	</xsl:template>
 	
 	<xsl:template match="*" mode="pq_comparison_new">
-		<xsl:variable name="operatorType"><xsl:value-of select="@operatorType"/></xsl:variable>
+		<xsl:variable name="operatorType"><xsl:value-of select="lower-case(@operatorType)"/></xsl:variable>
 		<xsl:variable name="value"><xsl:value-of select="@quantity"/></xsl:variable>
 		<xsl:variable name="unit">
 			<xsl:call-template name="unitvalue">
@@ -500,7 +500,7 @@
 		</xsl:variable>
 		
 		<xsl:choose>
-			<xsl:when test="$operatorType = 'Equal To'">
+			<xsl:when test="$operatorType = 'equal to'">
 				<pauseQuantity xsi:type="PQ">
 					<xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
 					<xsl:attribute name="unit"><xsl:value-of select="$unit"/></xsl:attribute>
@@ -509,25 +509,25 @@
 			<xsl:otherwise>
 				<pauseQuantity xsi:type="IVL_PQ" >
 					<xsl:choose>
-						<xsl:when test="$operatorType = 'Greater Than'">
+						<xsl:when test="$operatorType = 'greater than'">
 							<low inclusive='false'>
 								<xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
 								<xsl:attribute name="unit"><xsl:value-of select="$unit"/></xsl:attribute>
 							</low>
 						</xsl:when>
-						<xsl:when test="$operatorType = 'Greater Than or Equal To'">
+						<xsl:when test="$operatorType = 'greater than or equal to'">
 							<low inclusive='true'>
 								<xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
 								<xsl:attribute name="unit"><xsl:value-of select="$unit"/></xsl:attribute>
 							</low>
 						</xsl:when>
-						<xsl:when test="$operatorType = 'Less Than'">
+						<xsl:when test="$operatorType = 'less than'">
 							<high inclusive='false'>
 								<xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
 								<xsl:attribute name="unit"><xsl:value-of select="$unit"/></xsl:attribute>
 							</high>
 						</xsl:when>
-						<xsl:when test="$operatorType = 'Less Than or Equal To'">
+						<xsl:when test="$operatorType = 'less than or equal to'">
 							<high inclusive='true'>
 								<xsl:attribute name="value"><xsl:value-of select="$value"/></xsl:attribute>
 								<xsl:attribute name="unit"><xsl:value-of select="$unit"/></xsl:attribute>

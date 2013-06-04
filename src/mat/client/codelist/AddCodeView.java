@@ -68,6 +68,7 @@ public class AddCodeView extends AddBaseView implements  ManageCodeListDetailPre
 	protected SearchView<?> getSearchView() {
 		if(view == null) {
 			view = new ManageCodesSearchView();
+			
 		}
 		return view;
 	}
@@ -262,6 +263,11 @@ public class AddCodeView extends AddBaseView implements  ManageCodeListDetailPre
 	protected Button getSearchButton() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	@Override
+	public SuccessMessageDisplay getSuccessMessageDisplayForRemovingCodes(){
+		return view.successMessageDisplay;
 	}
 	
 }

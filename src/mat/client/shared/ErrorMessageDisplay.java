@@ -26,7 +26,7 @@ public class ErrorMessageDisplay extends Composite implements ErrorMessageDispla
 		hPanel = new HorizontalPanel();
 		imagePanel = new FlowPanel();
 		msgPanel = new FlowPanel();
-		errorIcon.getElement().setAttribute("alt", "Error Message");
+		errorIcon.getElement().setAttribute("alt", "ErrorMessage");
 		imagePanel.setTitle("Error");
 		imagePanel.add(errorIcon);
 		initWidget(hPanel);
@@ -82,7 +82,7 @@ public class ErrorMessageDisplay extends Composite implements ErrorMessageDispla
 	public void setFocus(){
 		try{
 		hPanel.getElement().focus();
-		hPanel.getElement().setAttribute("id", "Error Message");
+		hPanel.getElement().setAttribute("id", "ErrorMessage");
 		hPanel.getElement().setAttribute("aria-role", "textbox");
 		hPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
 		hPanel.getElement().setAttribute("aria-live", "assertive");

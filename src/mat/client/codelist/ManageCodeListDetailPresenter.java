@@ -17,6 +17,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.ReadOnlyHelper;
+import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.TextAreaWithMaxLength;
 import mat.client.shared.search.HasPageSelectionHandler;
@@ -76,6 +77,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 		public ErrorMessageDisplayInterface getUploadErrorMessageDisplay();
 		public int getCurrentPage();
 		public void setCurrentPage(int pageNumber);
+		public SuccessMessageDisplay getSuccessMessageDisplayForRemovingCodes();
 	}
 
 	public static interface ExternalLinkDisclaimerDisplay{
@@ -119,6 +121,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 		this.addCodeDisplay = addCodeArg;
 		this.addQDSDisplay = addQDSArg;
 		this.disclaimerDisplay = disclaimerDsp;
+		
 		listBoxProvider = lpArg;
 		addCodeDisplay.buildImportTab();
 		addCodeDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
@@ -618,6 +621,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 					    	addCodeDisplay.setCurrentPage(pageCount);
 					}
 					displayCodesForTheSelectedPage(currentDetails.getID());
+					addCodeDisplay.getSuccessMessageDisplayForRemovingCodes().setMessage("Selected Code(s) removed successfully");
 				}
 			});
 		}
@@ -837,6 +841,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 		addCodeDisplay.getSuccessMessageDisplay().clear();
 		addCodeDisplay.getUploadSuccessMessageDisplay().clear();
 		addCodeDisplay.getUploadErrorMessageDisplay().clear();
+		addCodeDisplay.getSuccessMessageDisplayForRemovingCodes().clear();
 	}
 	
 	private void enableOrDisable(boolean editable) {

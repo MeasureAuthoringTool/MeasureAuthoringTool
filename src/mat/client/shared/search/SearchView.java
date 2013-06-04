@@ -10,6 +10,7 @@ import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
 import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
 
@@ -66,6 +67,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	public VerticalPanel vPanelForQDMTable = new VerticalPanel();
 	//private FlexTable flexTable = new FlexTable();
 	
+	public SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
 	
 	private int currentPageSize = DEFAULT_PAGE_SIZE;
 	private int currentPage = DEFAULT_PAGE;
@@ -92,6 +94,8 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		fPanel.add(pageSizeSelector);
 		pageSizeSelector.setStylePrimaryName("searchResultsPageSize");
 		fPanel.add(viewingNumber);
+		fPanel.add(new SpacerWidget());
+		fPanel.add(successMessageDisplay);
 		fPanel.add(new SpacerWidget());
 		fPanel.add(dataTable);	
 		fPanel.add(new SpacerWidget());

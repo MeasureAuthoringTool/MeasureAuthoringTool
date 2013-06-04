@@ -28,7 +28,7 @@ public class ManageCodesSearchView extends SearchView<Code> {
 		int numColumns = results.getNumberOfColumns();
 		dataTable.clear();
 		dataTable.resize((int)numRows + 1, (int)numColumns);
-		dataTable.getElement().setAttribute("id", "ManageCodetable");
+		dataTable.getElement().setAttribute("id", "ManageCodeTable");
 		dataTable.getElement().setAttribute("aria-role", "grid");
 		dataTable.getElement().setAttribute("aria-labelledby", "LiveRegion");
 		dataTable.getElement().setAttribute("aria-live", "assertive");

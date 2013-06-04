@@ -27,7 +27,8 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 		hPanel = new HorizontalPanel();
 		imagePanel = new FlowPanel();
 		msgPanel = new FlowPanel();
-		successIcon.setAltText("Success Message");
+		successIcon.getElement().setAttribute("alt", "Success Message");
+		imagePanel.setTitle("Success");
 		imagePanel.add(successIcon);
 		initWidget(hPanel);
 		
@@ -43,6 +44,13 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 
 	@Override
 	public void setMessages(List<String> messages) {
+		hPanel.getElement().setAttribute("id", "Success Message");
+		hPanel.getElement().setAttribute("aria-role", "textbox");
+		hPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		hPanel.getElement().setAttribute("aria-live", "assertive");
+		hPanel.getElement().setAttribute("aria-atomic", "true");
+		hPanel.getElement().setAttribute("aria-relevant", "all");
+		hPanel.getElement().setAttribute("role", "alert");
 		if(messages.size() > 0){
 			hPanel.addStyleName("successMessage");
 			msgPanel.clear();
@@ -61,6 +69,13 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 	public void setMessage(String message) {
 		if(!message.isEmpty()){
 			hPanel.addStyleName("successMessage");
+			hPanel.getElement().setAttribute("id", "Success Message");
+			hPanel.getElement().setAttribute("aria-role", "textbox");
+			hPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
+			hPanel.getElement().setAttribute("aria-live", "assertive");
+			hPanel.getElement().setAttribute("aria-atomic", "true");
+			hPanel.getElement().setAttribute("aria-relevant", "all");
+			hPanel.getElement().setAttribute("role", "alert");
 			msgPanel.clear();
 			hPanel.add(imagePanel);
 			hPanel.add(msgPanel);
@@ -78,13 +93,7 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 	public void setFocus(){
 		try{
 		hPanel.getElement().focus();
-		hPanel.getElement().setAttribute("id", "Success Message");
-		hPanel.getElement().setAttribute("aria-role", "textbox");
-		hPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
-		hPanel.getElement().setAttribute("aria-live", "assertive");
-		hPanel.getElement().setAttribute("aria-atomic", "true");
-		hPanel.getElement().setAttribute("aria-relevant", "all");
-		hPanel.getElement().setAttribute("role", "alert");
+		
 		}catch(JavaScriptException e){
 			//This try/catch block is needed for IE7 since it is throwing exception "cannot move
 		    //focus to the invisible control." 

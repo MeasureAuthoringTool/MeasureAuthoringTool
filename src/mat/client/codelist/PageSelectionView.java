@@ -9,6 +9,7 @@ import mat.client.shared.search.PageSelectionEvent;
 import mat.client.shared.search.PageSelectionEventHandler;
 import mat.shared.ConstantMessages;
 
+import com.google.gwt.dom.builder.shared.LabelBuilder;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
@@ -21,6 +22,7 @@ import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -64,6 +66,14 @@ public class PageSelectionView<T> implements HasSelectionHandlers<T>, HasPageSel
 	public Widget buildPageSelector(int pageCount) {
 		if(pageCount > 1){
 			pageSelector.clear();
+			pageSelector.getElement().setAttribute("id", "ManageCodesPagination");
+			pageSelector.getElement().setAttribute("aria-role", "texbox");
+			pageSelector.getElement().setAttribute("aria-labelledby", "LiveRegion");
+			pageSelector.getElement().setAttribute("aria-live", "assertive");
+			pageSelector.getElement().setAttribute("aria-atomic", "true");
+			pageSelector.getElement().setAttribute("aria-relevant", "all");
+			pageSelector.getElement().setAttribute("role", "alert");
+			pageSelector.add(mat.client.shared.LabelBuilder.buildInvisibleLabel(new Label(), "Pagination Added Page"));
 			int maxDisplay = ConstantMessages.MAX_PAGE_DISPLAY; 
 			int start = (int) (currentPage/maxDisplay) * 10;
 	

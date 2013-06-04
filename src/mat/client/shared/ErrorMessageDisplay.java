@@ -26,7 +26,8 @@ public class ErrorMessageDisplay extends Composite implements ErrorMessageDispla
 		hPanel = new HorizontalPanel();
 		imagePanel = new FlowPanel();
 		msgPanel = new FlowPanel();
-		errorIcon.setAltText("Error Message");
+		errorIcon.getElement().setAttribute("alt", "Error Message");
+		imagePanel.setTitle("Error");
 		imagePanel.add(errorIcon);
 		initWidget(hPanel);
 	}

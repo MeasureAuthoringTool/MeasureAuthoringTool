@@ -23,7 +23,7 @@ public class ManageCodesModel extends PagingFacade<Code> implements IsSerializab
 	public ManageCodesModel(List<Code> data,boolean value) {
 		super(data);
 		for(Code c : data) {
-			    CustomCheckBox cb = new CustomCheckBox("Select Code " + c.getDescription(),false);
+			    CustomCheckBox cb = new CustomCheckBox("Select Code " + c.getCode(),false);
 			    cb.setValue(value);
 				checkboxMap.put(c, cb);
 		}

@@ -67,7 +67,7 @@ public class PageSelectionView<T> implements HasSelectionHandlers<T>, HasPageSel
 		if(pageCount > 1){
 			pageSelector.clear();
 			pageSelector.getElement().setAttribute("id", "ManageCodesPagination");
-			pageSelector.getElement().setAttribute("aria-role", "texbox");
+			pageSelector.getElement().setAttribute("aria-role", "textbox");
 			pageSelector.getElement().setAttribute("aria-labelledby", "LiveRegion");
 			pageSelector.getElement().setAttribute("aria-live", "assertive");
 			pageSelector.getElement().setAttribute("aria-atomic", "true");

@@ -475,9 +475,19 @@
                     <text/>
                     <xsl:for-each select="measureObservations/clause/logicalOp/*">
                         <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
-                             <xsl:apply-templates select="." mode="topmost"/>
+                             <xsl:apply-templates select="."/>
                         </entry>
                     </xsl:for-each>
+                   <!-- <xsl:for-each select="measureObservations/clause[logicalOp/*]">
+                        <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
+                            <observation classCode="OBS" moodCode="EVN" isCriterionInd="true" actionNegationInd="true">
+                                <id root="{@uuid}"/>
+                                
+                                <!-\-<xsl:call-template name="criteria"/>-\->
+                                <xsl:apply-templates select="logicalOp" mode="topmost"/>
+                            </observation>
+                        </entry>
+                    </xsl:for-each>-->
                 </section>
             </component>
         </xsl:if>

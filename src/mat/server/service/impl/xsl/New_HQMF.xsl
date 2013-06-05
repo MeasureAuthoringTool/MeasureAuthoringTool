@@ -80,7 +80,7 @@
                 <xsl:otherwise>MISSING_UUID</xsl:otherwise>
             </xsl:choose>         
         </xsl:variable>
-        <xsl:variable name="displayName"><xsl:value-of select="@displayName"/></xsl:variable>
+        <xsl:variable name="displayName">Initial Patient Population</xsl:variable>
                 
         <entry typeCode="DRIV">
             <observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
@@ -390,7 +390,17 @@
             </xsl:choose>         
         </xsl:variable>
         <xsl:variable name="displayName">
-            <xsl:value-of select="@displayName"/>         
+            <xsl:choose>
+                <xsl:when test="@type = 'initialPatientPopulation'">Initial Patient Population</xsl:when>            
+                <xsl:when test="@type = 'numerator'">Numerator</xsl:when>            
+                <xsl:when test="@type = 'denominator'">Denominator</xsl:when>            
+                <xsl:when test="@type = 'exclusions'">Denominator</xsl:when>            
+                <xsl:when test="@type = 'exceptions'">Denominator Exception</xsl:when>
+                <xsl:when test="@type = 'measurePopulation'">Measure Population</xsl:when>
+                <xsl:when test="@type = 'measureObservation'">Measure Observation</xsl:when>
+                <xsl:when test="@type = 'numeratorExclusions'">Numerator Exclusions</xsl:when>
+                <xsl:otherwise>MISSING_POPULATION_DISPLAYNAME</xsl:otherwise>
+            </xsl:choose>         
         </xsl:variable>
         <xsl:variable name="entry_uuid">
             <xsl:choose>

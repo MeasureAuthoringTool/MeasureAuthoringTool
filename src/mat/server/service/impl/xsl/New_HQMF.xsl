@@ -167,11 +167,40 @@
         <xsl:param name="conj"/>
         <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
         <xsl:variable name="countelementRef"><xsl:value-of select="count(child::*[name()='elementRef'])"/></xsl:variable>
+        
         <xsl:choose>
             <xsl:when test="$countelementRef = 2">
                 <xsl:apply-templates select="child::elementRef[1]" mode="handleElementRef">
                     <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                 </xsl:apply-templates>
+            </xsl:when>
+            <xsl:when test="string-length($conj)=0">
+                <xsl:apply-templates select=".." mode="handleFunctionalOps"/>
+                <!-- Process first child i.e. LHS -->
+                <xsl:variable name="child1Name"><xsl:value-of select="name(child::*[1])"/></xsl:variable>
+                <xsl:choose>
+                    <xsl:when test="$child1Name='logicalOp'">
+                        <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                            <xsl:apply-templates select="child::*[1]" mode="topmost"/>
+                            <!-- Process second child i.e. RHS -->
+                            <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS">
+                                <xsl:with-param name="showAtt">true</xsl:with-param>
+                                <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                            </xsl:apply-templates>
+                        </act>
+                    </xsl:when>
+                    <xsl:when test="$child1Name='elementRef'">
+                        <xsl:apply-templates select="child::*[1]"/>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:apply-templates select="child::*[1]"/>
+                        <!-- Process second child i.e. RHS -->
+                        <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS">
+                            <xsl:with-param name="showAtt">true</xsl:with-param>
+                            <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                        </xsl:apply-templates>
+                    </xsl:otherwise>
+                </xsl:choose>
             </xsl:when>
             <xsl:otherwise>
                 <sourceOf typeCode="PRCN">
@@ -186,6 +215,7 @@
                                 <!-- Process second child i.e. RHS -->
                                 <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS">
                                     <xsl:with-param name="showAtt">true</xsl:with-param>
+                                    <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                                 </xsl:apply-templates>
                             </act>
                         </xsl:when>
@@ -197,16 +227,19 @@
                            <!-- Process second child i.e. RHS -->
                            <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS">
                                <xsl:with-param name="showAtt">true</xsl:with-param>
+                               <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                            </xsl:apply-templates>
                         </xsl:otherwise>
                     </xsl:choose>
                </sourceOf>  
            </xsl:otherwise>
+           
         </xsl:choose>
     </xsl:template>
     
     <xsl:template match="*" mode="processRelational_Func_RHS">
         <xsl:param name="showAtt"/>
+        <xsl:param name="conj"/>
         <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
         <xsl:variable name="rel">
             <xsl:if test="parent::relationalOp">
@@ -230,26 +263,27 @@
         
         <!-- sourceOf here -->
         <sourceOf typeCode="{$rel}">
-            <xsl:apply-templates select="." mode="handleFunctionalOps"/>
             <xsl:if test="$inversion = 'true'">
                 <xsl:attribute name="inversionInd">true</xsl:attribute>                  
             </xsl:if>
             <xsl:attribute name="displayInd">true</xsl:attribute>
-            <xsl:apply-templates select="parent::relationalOp" mode="pauseQuantity"/>
+            <xsl:apply-templates select=".." mode="handleFunctionalOps"/>
             
-            <xsl:choose>
-                <xsl:when test="name() = 'logicalOp'">
-                    <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
-                    <xsl:if test="$isNot = 'true' and $showAtt"><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>    
-                        <xsl:apply-templates select="." mode="topmost"/>
-                    </act>
-                </xsl:when>
-                <xsl:otherwise>
-                    <xsl:apply-templates select="."/>
-                </xsl:otherwise>
-            </xsl:choose>
+            <xsl:apply-templates select="parent::relationalOp" mode="pauseQuantity"/>
+               <xsl:choose>
+                    <xsl:when test="name() = 'logicalOp'">
+                        <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                            <xsl:if test="$isNot = 'true' and $showAtt"><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>    
+                                <xsl:apply-templates select="." mode="topmost"/>
+                        </act>
+                    </xsl:when>
+                    <xsl:otherwise>
+                        <xsl:apply-templates select=".">
+                            <!--<xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>-->
+                        </xsl:apply-templates>
+                    </xsl:otherwise>
+                </xsl:choose>
         </sourceOf>
-        
     </xsl:template>
     
     <xsl:template match="functionalOp">
@@ -267,6 +301,7 @@
                             </xsl:apply-templates>
                         </xsl:when>
                         <xsl:when test="name(.)=('functionalOp','relationalOp')">
+                            
                             <xsl:apply-templates select=".">
                                 <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                             </xsl:apply-templates>

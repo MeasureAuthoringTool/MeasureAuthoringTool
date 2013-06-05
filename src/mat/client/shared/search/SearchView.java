@@ -14,6 +14,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
 
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -447,13 +448,19 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	public void buildSearchResultsColumnHeaders(int numRows,int numColumns,SearchResults<T> results, boolean isAscending,boolean isChecked){
 		boolean isClearAll = false;
 		for(int i = 0; i < numColumns; i++) {
-			Panel headerPanel = new FlowPanel();
+			final Panel headerPanel = new FlowPanel();
 			Widget columnHeader = null;
 			if(results.isColumnSortable(i)){
-				columnHeader = new Anchor(results.getColumnHeader(i)+ARROW_DOWN+ARROW_UP);
+				HorizontalPanel headingPanel = new HorizontalPanel();
+				Label headerName = new Label(results.getColumnHeader(i));
+				Anchor sortingAnchor = new Anchor(ARROW_DOWN+ARROW_UP);
+				sortingAnchor.getElement().getStyle().setCursor(Cursor.POINTER);
+				headingPanel.add(headerName);
+				headingPanel.add(sortingAnchor);
+				columnHeader = headingPanel;
 				
 				final int columnIndex = i;
-				((Anchor) columnHeader).addClickHandler(new ClickHandler() {
+				((Anchor) sortingAnchor).addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
 					
@@ -465,6 +472,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					}
 				});
 				columnHeader.setStylePrimaryName("sortAnchor");
+				 
 				String title = "";
 				if(i == sortColumnIndex){
 					title = "Sorted by "+results.getColumnHeader(i);
@@ -474,7 +482,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					else
 						title = title + " in descending order";
 					
-					title = title + ". Select to change sort order.";
+					//title = title + ". Select to change sort order.";
 				}
 				else
 					title = "Select to sort by "+results.getColumnHeader(i)+".";
@@ -507,9 +515,18 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 				if("ExportClear".equals(results.getColumnHeader(i))){
 					isClearAll = true;
 					HorizontalPanel panel = new HorizontalPanel();
+					
 					panel.add(new Label("Export"));
 					Anchor clearAnchor = new Anchor("(Clear)");
 					clearAnchor.setStyleName("clearAnchorStyle");
+					clearAnchor.setTabIndex(-1);
+					headerPanel.getElement().setAttribute("id", "clearExport");
+					headerPanel.getElement().setAttribute("aria-role", "button");
+					headerPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
+					headerPanel.getElement().setAttribute("aria-live", "assertive");
+					headerPanel.getElement().setAttribute("aria-atomic", "true");
+					headerPanel.getElement().setAttribute("aria-relevant", "all");
+					headerPanel.getElement().setAttribute("role", "alert");
 					clearAnchor.addClickHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
@@ -518,6 +535,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 							}
 							MatContext.get().getManageMeasureSearchView().clearBulkExportCheckBoxes(dataTable);
 							MatContext.get().getManageMeasureSearchView().getErrorMessageDisplayForBulkExport().clear();
+							headerPanel.getElement().focus();
 						}
 					});
 					panel.add(clearAnchor);
@@ -526,8 +544,9 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					isClearAll = true;
 					HorizontalPanel panel = new HorizontalPanel();
 					panel.add(new Label("Transfer"));
-					Anchor clearAnchor = new Anchor("(Clear)");
+					final Anchor clearAnchor = new Anchor("(Clear)");
 					clearAnchor.setStyleName("clearAnchorStyle");
+					
 					clearAnchor.addClickHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
@@ -537,8 +556,16 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 							}
 							MatContext.get().getManageCodeListSearchView().clearAllCheckBoxes(dataTable);
 							MatContext.get().getManageCodeListSearchView().getErrorMessageDisplay().clear();
+							
 						}
 					});
+					clearAnchor.getElement().setAttribute("id", "TransferClear");
+					clearAnchor.getElement().setAttribute("aria-role", "anchor");
+					clearAnchor.getElement().setAttribute("aria-labelledby", "LiveRegion");
+					clearAnchor.getElement().setAttribute("aria-live", "assertive");
+					clearAnchor.getElement().setAttribute("aria-atomic", "true");
+					clearAnchor.getElement().setAttribute("aria-relevant", "all");
+					clearAnchor.getElement().setAttribute("role", "alert");
 					panel.add(clearAnchor);
 					headerPanel.add(panel);
 				}else if("TransferMeasureClear".equals(results.getColumnHeader(i))){
@@ -558,6 +585,13 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 							MatContext.get().getManageMeasureSearchView().getErrorMessagesForTransferOS().clear();
 						}
 					});
+					clearAnchor.getElement().setAttribute("id", "TransferMeasureClear");
+					clearAnchor.getElement().setAttribute("aria-role", "anchor");
+					clearAnchor.getElement().setAttribute("aria-labelledby", "LiveRegion");
+					clearAnchor.getElement().setAttribute("aria-live", "assertive");
+					clearAnchor.getElement().setAttribute("aria-atomic", "true");
+					clearAnchor.getElement().setAttribute("aria-relevant", "all");
+					clearAnchor.getElement().setAttribute("role", "alert");
 					panel.add(clearAnchor);
 					headerPanel.add(panel);
 				}

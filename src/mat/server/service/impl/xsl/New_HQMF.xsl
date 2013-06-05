@@ -175,7 +175,7 @@
                 </xsl:apply-templates>
             </xsl:when>
             <xsl:when test="string-length($conj)=0">
-                <xsl:apply-templates select=".." mode="handleFunctionalOps"/>
+                <xsl:apply-templates select="." mode="handleFunctionalOps"/>
                 <!-- Process first child i.e. LHS -->
                 <xsl:variable name="child1Name"><xsl:value-of select="name(child::*[1])"/></xsl:variable>
                 <xsl:choose>
@@ -205,7 +205,7 @@
             <xsl:otherwise>
                 <sourceOf typeCode="PRCN">
                     <conjunctionCode code="{$conj}"/>
-                    <xsl:apply-templates select=".." mode="handleFunctionalOps"/>
+                    <xsl:apply-templates select="." mode="handleFunctionalOps"/>
                     <!-- Process first child i.e. LHS -->
                     <xsl:variable name="child1Name"><xsl:value-of select="name(child::*[1])"/></xsl:variable>
                     <xsl:choose>
@@ -267,7 +267,7 @@
                 <xsl:attribute name="inversionInd">true</xsl:attribute>                  
             </xsl:if>
             <xsl:attribute name="displayInd">true</xsl:attribute>
-            <xsl:apply-templates select=".." mode="handleFunctionalOps"/>
+            <!--<xsl:apply-templates select=".." mode="handleFunctionalOps"/>-->
             
             <xsl:apply-templates select="parent::relationalOp" mode="pauseQuantity"/>
                <xsl:choose>

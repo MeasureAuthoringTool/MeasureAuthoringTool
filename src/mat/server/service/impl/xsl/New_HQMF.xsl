@@ -102,22 +102,51 @@
         <xsl:if test="$conj='AND' or $conj='OR'">
             <xsl:text>
            
-            </xsl:text>             
+            </xsl:text>
+            
+            <!-- Iterate over elements -->
+            <xsl:for-each select="*">
+                <xsl:variable name="elemName"><xsl:value-of select="name()"/></xsl:variable>
+                
+                <xsl:choose>
+                    <xsl:when test="$elemName = 'elementRef'">
+                        <xsl:apply-templates select="." mode="handleElementRef">
+                            <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                        </xsl:apply-templates> 
+                    </xsl:when>
+                    <xsl:when test="$elemName = 'logicalOp'">
+                        <sourceOf typeCode="PRCN">
+                            <conjunctionCode code="{$conj}"/>
+                            <xsl:apply-templates select="." mode="handleFunctionalOps"/>
+                            <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                                <xsl:if test="$isNot = 'true' "><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>
+                                   <xsl:apply-templates select="." mode="topmost"/>
+                            </act>
+                        </sourceOf>
+                    </xsl:when>
+                    <xsl:when test="$elemName = ('relationalOp','functionalOp')">
+                        <xsl:apply-templates select=".">
+                            <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                        </xsl:apply-templates>
+                    </xsl:when>
+                </xsl:choose>
+            </xsl:for-each>    
+            <!-- Done Iterating -->
                 <!-- Handle QDM elements -->
-            <xsl:if test="count(child::*[name()='elementRef']) &gt; 0">
+            <!--<xsl:if test="count(child::*[name()='elementRef']) &gt; 0">
                 <xsl:for-each select="elementRef">
                    <xsl:apply-templates select="." mode="handleElementRef">
                        <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                    </xsl:apply-templates>   
                 </xsl:for-each>
-            </xsl:if>
+            </xsl:if>-->
             
             <!-- Handle nested AND/OR -->
            <!-- <test><xsl:value-of select="name()"/></test>
             <parent><xsl:value-of select="name(current()/parent::node())"/></parent>-->
             <xsl:variable name="countLogicalOp"><xsl:value-of select="count(child::*[name()='logicalOp'])"/></xsl:variable>
             <!--<countLogicalOp><xsl:value-of select="$countLogicalOp"/></countLogicalOp>-->
-            <xsl:if test="$countLogicalOp &gt; 0">
+            <!--<xsl:if test="$countLogicalOp &gt; 0">
                 <sourceOf typeCode="PRCN">
                     <conjunctionCode code="{$conj}"/>
                     <xsl:apply-templates select="." mode="handleFunctionalOps"/>
@@ -128,21 +157,21 @@
                         </xsl:for-each>
                     </act>
                 </sourceOf>
-            </xsl:if>
+            </xsl:if>-->
             
             <!-- Iterate over all <functionalOp> children.-->
-            <xsl:for-each select="functionalOp">
+            <!--<xsl:for-each select="functionalOp">
                 <xsl:apply-templates select=".">
                     <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                 </xsl:apply-templates>
-            </xsl:for-each>
+            </xsl:for-each>-->
             
             <!-- Iterate over all <relationalOp> children.-->
-            <xsl:for-each select="relationalOp">
+            <!--<xsl:for-each select="relationalOp">
                 <xsl:apply-templates select=".">
                     <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                 </xsl:apply-templates>
-            </xsl:for-each>
+            </xsl:for-each>-->
         </xsl:if>
     </xsl:template>
     
@@ -243,13 +272,14 @@
         <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
         <xsl:variable name="rel">
             <xsl:if test="parent::relationalOp">
-                <xsl:choose>
+                <xsl:value-of select="parent::relationalOp/@type"/>
+                <!--<xsl:choose>
                     <xsl:when test="parent::relationalOp/@type='SBOD'">EAS</xsl:when>
                     <xsl:when test="parent::relationalOp/@type='EBOD'">EAE</xsl:when>
                     <xsl:otherwise>
                         <xsl:value-of select="parent::relationalOp/@type"/>
                     </xsl:otherwise>
-                </xsl:choose>
+                </xsl:choose>-->
             </xsl:if>
         </xsl:variable>
         
@@ -326,10 +356,10 @@
     <!-- template which will handle clauses other than "initialPatientPopulation" clause-->
     <xsl:template match="group" mode="processOtherPopulations">
         <xsl:variable name="initPopUUID"><xsl:value-of select="clause[@type='initialPatientPopulation']/@uuid"/></xsl:variable>
-        <xsl:variable name="initPopDisplayName"><xsl:value-of select="clause[@type='initialPatientPopulation']/@displayName"/></xsl:variable>
+        <xsl:variable name="initPopDisplayName">Initial Patient Population</xsl:variable>
         
         <xsl:variable name="denominatorPopUUID"><xsl:value-of select="clause[@type='denominator']/@uuid"/></xsl:variable>
-        <xsl:variable name="denominatorPopDisplayName"><xsl:value-of select="clause[@type='denominator']/@displayName"/></xsl:variable>
+        <xsl:variable name="denominatorPopDisplayName">Denominator</xsl:variable>
         
         <xsl:for-each select="clause">
             <xsl:choose>

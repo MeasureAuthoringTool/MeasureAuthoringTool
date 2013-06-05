@@ -30,13 +30,14 @@
 	   	
 	   	<xsl:variable name="rel">
 	   		<xsl:if test="parent::relationalOp">
-		   		<xsl:choose>
+	   			<xsl:value-of select="parent::relationalOp/@type"/>	
+		   		<!-- <xsl:choose>
 		   			<xsl:when test="parent::relationalOp/@type='SBOD'">EAS</xsl:when>
 		   			<xsl:when test="parent::relationalOp/@type='EBOD'">EAE</xsl:when>
 		   			<xsl:otherwise>
 		   				<xsl:value-of select="parent::relationalOp/@type"/>
 		   			</xsl:otherwise>
-		   		</xsl:choose>
+		   		</xsl:choose> -->
 	   		</xsl:if>
 	   	</xsl:variable>
 	   	

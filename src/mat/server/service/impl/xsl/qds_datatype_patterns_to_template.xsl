@@ -30,24 +30,25 @@
 	   	
 	   	<xsl:variable name="rel">
 	   		<xsl:if test="parent::relationalOp">
-	   			<xsl:value-of select="parent::relationalOp/@type"/>	
-		   		<!-- <xsl:choose>
+	   			<xsl:choose>
 		   			<xsl:when test="parent::relationalOp/@type='SBOD'">EAS</xsl:when>
 		   			<xsl:when test="parent::relationalOp/@type='EBOD'">EAE</xsl:when>
 		   			<xsl:otherwise>
 		   				<xsl:value-of select="parent::relationalOp/@type"/>
 		   			</xsl:otherwise>
-		   		</xsl:choose> -->
+		   		</xsl:choose>
 	   		</xsl:if>
 	   	</xsl:variable>
 	   	
 	   	<xsl:variable name="inversion">
-			<xsl:choose>
-				<xsl:when test="@rel='SBOD'">true</xsl:when>
-				<xsl:when test="@rel='EBOD'">true</xsl:when>
-				<xsl:otherwise>false</xsl:otherwise>
-			</xsl:choose>
-		</xsl:variable>
+            <xsl:if test="parent::relationalOp">
+                <xsl:choose>
+                    <xsl:when test="parent::relationalOp/@type='SBOD'">true</xsl:when>
+                    <xsl:when test="parent::relationalOp/@type='EBOD'">true</xsl:when>
+                    <xsl:otherwise>false</xsl:otherwise>
+                </xsl:choose>
+            </xsl:if>
+        </xsl:variable>
 		
 		<xsl:apply-templates select="." mode="resultvalue"/>
 		<xsl:choose>

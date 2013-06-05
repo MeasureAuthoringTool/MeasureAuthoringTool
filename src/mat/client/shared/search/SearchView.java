@@ -8,6 +8,7 @@ import mat.client.Enableable;
 import mat.client.event.MATClickHandler;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -516,7 +517,9 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					HorizontalPanel panel = new HorizontalPanel();
 					panel.add(new Label("Export"));
 					Anchor clearAnchor = new Anchor("(Clear)");
+					clearAnchor.setTitle("Clear All Selection");
 					clearAnchor.setStyleName("clearAnchorStyle");
+					
 					clearAnchor.addClickHandler(new ClickHandler() {
 						@Override
 						public void onClick(ClickEvent event) {
@@ -528,12 +531,14 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 						}
 					});
 					panel.add(clearAnchor);
+					panel.add(LabelBuilder.buildInvisibleLabel(new Label(), "clearSelections"));
 					headerPanel.add(panel);
 				}else if("TransferClear".equals(results.getColumnHeader(i))){
 					isClearAll = true;
 					HorizontalPanel panel = new HorizontalPanel();
 					panel.add(new Label("Transfer"));
 					Anchor clearAnchor = new Anchor("(Clear)");
+					clearAnchor.setTitle("Clear Selction");
 					clearAnchor.setStyleName("clearAnchorStyle");
 					clearAnchor.addClickHandler(new ClickHandler() {
 						@Override
@@ -553,6 +558,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					HorizontalPanel panel = new HorizontalPanel();
 					panel.add(new Label("Transfer"));
 					Anchor clearAnchor = new Anchor("(Clear)");
+					clearAnchor.setTitle("Clear All Selection");
 					clearAnchor.setStyleName("clearAnchorStyle");
 					clearAnchor.addClickHandler(new ClickHandler() {
 						@Override

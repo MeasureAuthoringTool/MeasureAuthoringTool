@@ -20,9 +20,11 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -217,6 +219,26 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		for(int i = 0; i < rows; i++){
 			for(int j = 0; j < cols; j++){
 				Widget w = dataTable.getWidget(i, j);
+				if(i==0 && j ==8){
+					if(w instanceof FlowPanel){
+						FlowPanel panel = (FlowPanel)w;
+						HorizontalPanel hp = (HorizontalPanel) panel.getWidget(0);
+						int childCount = hp.getWidgetCount();
+						for(int childNumber =0;childNumber<childCount;childNumber++){
+							Widget widget = hp.getWidget(childNumber);
+							if(widget instanceof Anchor){
+								widget.getElement().setAttribute("id", "clearlink");
+								widget.getElement().setAttribute("aria-role", "link");
+								widget.getElement().setAttribute("aria-labelledby", "LiveRegion");
+								widget.getElement().setAttribute("aria-live", "assertive");
+								widget.getElement().setAttribute("aria-atomic", "true");
+								widget.getElement().setAttribute("aria-relevant", "all");
+								widget.getElement().setAttribute("role", "alert");
+								widget.getElement().setAttribute("tabIndex", "1");
+							}
+						}
+					}
+				}
 				if(w instanceof HorizontalPanel){
 					HorizontalPanel hPanel = (HorizontalPanel)w;
 					int count = hPanel.getWidgetCount();
@@ -224,12 +246,13 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 						Widget widget = hPanel.getWidget(k);
 						if(widget instanceof CustomCheckBox){
 							CustomCheckBox checkBox = ((CustomCheckBox)widget);
-								checkBox.setValue(false);										
+							checkBox.setValue(false);
 						}
 					}
 				}
 			}
 		}
+		
 	}
 
 	@Override

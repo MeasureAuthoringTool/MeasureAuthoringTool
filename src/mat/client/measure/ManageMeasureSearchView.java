@@ -20,6 +20,7 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -60,9 +61,10 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		mainPanel.add(new SpacerWidget());
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			loadListBoxOptions();
-			mainPanel.add(new Label("Create:"));
+			mainPanel.add(LabelBuilder.buildLabel("Create", "Create Measure"));
 			mainPanel.add(options);
-			options.setName("Create:");
+			options.setName("Create");
+			DOM.setElementAttribute(options.getElement(), "id", "Create Measure");
 			mainPanel.add(createButton);
 			createButton.setTitle("Create");
 			mainPanel.add(new SpacerWidget());

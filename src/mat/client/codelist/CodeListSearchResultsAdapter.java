@@ -146,7 +146,7 @@ class CodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 		addListener(image);*/
 		CustomButton image = new CustomButton();
 		image.setTitle(action);
-		image.setResource(url);
+		image.setResource(url,action);
 		setId(image, action, key);
 		addListener(image);
 		holder.add(image);

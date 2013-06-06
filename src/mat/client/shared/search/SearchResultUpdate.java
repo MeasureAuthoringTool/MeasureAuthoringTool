@@ -13,7 +13,7 @@ public class SearchResultUpdate {
 		}else{
 			StringUtility su = new StringUtility();
 			if(!su.isEmptyOrNull(searchTextBox.getValue())){
-				String searchTitle = result.getResultsTotal()+" Record(s) returned.";
+				String searchTitle = result.getResultsTotal()+" Record(s) returned for search string "+ searchTextBox.getValue()+".";
 				searchTextBox.setTitle(searchTitle);
 			}
 			else{

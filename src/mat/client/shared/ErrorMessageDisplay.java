@@ -83,7 +83,7 @@ public class ErrorMessageDisplay extends Composite implements ErrorMessageDispla
 		try{
 		hPanel.getElement().focus();
 		hPanel.getElement().setAttribute("id", "ErrorMessage");
-		hPanel.getElement().setAttribute("aria-role", "textbox");
+		hPanel.getElement().setAttribute("aria-role", "image");
 		hPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
 		hPanel.getElement().setAttribute("aria-live", "assertive");
 		hPanel.getElement().setAttribute("aria-atomic", "true");

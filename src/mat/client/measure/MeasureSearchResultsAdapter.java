@@ -173,7 +173,6 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	private Widget getImageReadOnly(String action, ImageResource url, String key) {
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
-		holder.getElement().getStyle().setCursor(Cursor.POINTER);
 		/*FocusableImageButton image = new FocusableImageButton(url,action);
 		setImageStyle(image);
 		setId(image, action, key);

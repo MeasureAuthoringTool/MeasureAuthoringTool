@@ -616,20 +616,34 @@
                     displayName="Data criteria (QDM Data Elements)"/>
                 <title>Data criteria (QDM Data Elements)</title>
                 <text/>
-                
-                <xsl:for-each select="elementLookUp/qdm">
-                    <xsl:if test="@datatype != 'attribute' and @datatype != 'Timing Element'">
-                        <xsl:variable name="id">
-                            <xsl:value-of select="@id"/>
-                        </xsl:variable>
-                        <xsl:variable name="addToDC">
-                            <xsl:value-of select="@suppDataElement"/>
-                        </xsl:variable>
+
+                <xsl:for-each select="elementLookUp/qdm[@datatype != 'attribute'][@datatype != 'Timing Element'][@suppDataElement != 'true']">
+                    <!--<xsl:if test="@datatype != 'attribute' and @datatype != 'Timing Element'">-->
+                        <xsl:variable name="this_oid"><xsl:value-of select="@oid"/></xsl:variable>
+                        <xsl:variable name="this_datatype"><xsl:value-of select="@datatype"/></xsl:variable>
                         
-                        <xsl:if test="$addToDC != 'true'">
+                        <xsl:variable name="count_preceeding">
+                            <xsl:value-of select="count(preceding-sibling::qdm[@suppDataElement != 'true']
+                                                                              [@oid = $this_oid]
+                                                                              [@datatype != ('attribute','Timing Element')]
+                                                                              [@datatype=$this_datatype])"/>
+                        </xsl:variable>
+                                               
+                        <xsl:if test="$count_preceeding = 0">
                             <xsl:apply-templates select="." mode="datacriteria"/>
-                        </xsl:if>
-                    </xsl:if>
+                        </xsl:if>    
+                            <!--<xsl:variable name="id">
+                                <xsl:value-of select="@id"/>
+                            </xsl:variable>-->
+                            <!--<xsl:variable name="addToDC">
+                                <xsl:value-of select="@suppDataElement"/>
+                            </xsl:variable>-->
+                            
+<!--                        <xsl:if test="$addToDC != 'true'">-->
+<!--                            <xsl:apply-templates select="." mode="datacriteria"/>-->
+<!--                        </xsl:if>-->
+                            
+                    <!--</xsl:if>-->
                 </xsl:for-each>
                 <!-- For each attribute with a mode of 'Value Set' we need to show the QDM used in the value set with the datatype as the name of the QDM
                 attribute. Also If the same QDM element is used as Value Set in more than 1 QDM Attributes, then we need to show the <propel> element twice.-->
@@ -644,6 +658,8 @@
             </section>
         </component> 
     </xsl:template>
+    
+    
     
     <xsl:template name="supplemental_data_elements">
         <xsl:text>

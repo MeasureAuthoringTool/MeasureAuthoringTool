@@ -22,14 +22,13 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.RadioButton;
+
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -64,9 +63,10 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 			searchCriteriaPanel.add(errorMessages);
 			searchCriteriaPanel.add(new SpacerWidget());
 			loadListBoxOptions();
-			searchCriteriaPanel.add(new Label("Create:"));
+			searchCriteriaPanel.add(LabelBuilder.buildLabel("Create", "Create Value Set"));
 			searchCriteriaPanel.add(options);
-			options.setName("Create:");
+			options.setName("Create");
+			DOM.setElementAttribute(options.getElement(), "id", "Create Value Set");
 			searchCriteriaPanel.add(createButton);
 			createButton.setTitle("Create");
 			searchCriteriaPanel.add(new SpacerWidget());

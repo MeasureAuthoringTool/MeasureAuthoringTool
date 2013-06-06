@@ -391,11 +391,13 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		HorizontalPanel codeList = new HorizontalPanel();
 		codeList.addStyleName("codeListLink");
 		Image addImage1 = new Image(ImageResources.INSTANCE.addImage());
+		addImage1.setAltText("Create Value Set");
 		codeList.add(addImage1);
 		codeList.add(createNewAnchor);
 		
 		HorizontalPanel groupedCodeList = new HorizontalPanel();
 		Image addImage2 = new Image(ImageResources.INSTANCE.addImage());
+		addImage2.setAltText("Create Grouped Value Set");
 		groupedCodeList.add(addImage2);
 		groupedCodeList.add(createNewGroupedAnchor);
 		
@@ -449,7 +451,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		stewardOtherInput.setValue(null);
 		emptyTextBoxHolder.clear();
 	}
-
+	
 	@Override
 	public DateBoxWithCalendar getLastModifiedDate() {
 		return lastModifiedDate;

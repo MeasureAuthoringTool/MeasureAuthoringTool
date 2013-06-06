@@ -117,13 +117,14 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 			 * display edit image, and display "Read-Only" image if the user is a Normal User and has got view-only mode.
 			*/
 			if(data.get(row).isEditable()){
-				if(data.get(row).isMeasureLocked())
-					value = getImage("Measure in use by "+ emailAddress, ImageResources.INSTANCE.g_lock(), data.get(row).getId());
+				if(data.get(row).isMeasureLocked()){
+					value = getImageReadOnly("Measure in use by "+ emailAddress, ImageResources.INSTANCE.g_lock(), data.get(row).getId());
+				}
 				else
 					value = getImage("edit", ImageResources.INSTANCE.g_package_edit(), data.get(row).getId());
 				
 			}else{
-				    value = getImage("Read-Only", ImageResources.INSTANCE.ReadOnly(), data.get(row).getId());
+				    value = getImageReadOnly("Read-Only", ImageResources.INSTANCE.ReadOnly(), data.get(row).getId());
 			}
 			break;
 		case 6:
@@ -157,6 +158,30 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		addListener(image);
 		image.getElement().getStyle().setCursor(Cursor.POINTER);*/
 		CustomButton image = new CustomButton();
+		image.setTitle(action);
+		image.setResource(url,action);
+		setId(image, action, key);
+		//508 fix - Read only and locked icons do not do anything but they appear to show hand pointer on mouse hover.
+		if(!action.equalsIgnoreCase("Read-Only") && !(action.contains("Measure in use")))
+			addListener(image);
+		else
+			image.setEnabled(false);
+		holder.add(image);
+		return holder;
+	}
+	
+	private Widget getImageReadOnly(String action, ImageResource url, String key) {
+		SimplePanel holder = new SimplePanel();
+		holder.setStyleName("searchTableCenteredHolder");
+		holder.getElement().getStyle().setCursor(Cursor.POINTER);
+		/*FocusableImageButton image = new FocusableImageButton(url,action);
+		setImageStyle(image);
+		setId(image, action, key);
+		addListener(image);
+		image.getElement().getStyle().setCursor(Cursor.POINTER);*/
+		CustomButton image = new CustomButton();
+		image.removeStyleName("gwt-button");
+		image.setStylePrimaryName("readOnlyButton");
 		image.setTitle(action);
 		image.setResource(url,action);
 		setId(image, action, key);

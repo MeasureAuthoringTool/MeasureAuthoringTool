@@ -40,6 +40,7 @@ public class LoginView implements LoginPresenter.Display  {
 	private Anchor forgotLoginId;
 	private Anchor forgotPassword;
 	private VerticalPanel mainPanel = new VerticalPanel();
+	Label success = new Label();
 	
 	public LoginView() {
 		mainPanel.addStyleName("centered");
@@ -50,7 +51,6 @@ public class LoginView implements LoginPresenter.Display  {
 		
 		Grid infoGrid = new Grid(2,2);
 		infoGrid.setWidget(0, 0, new FocusableImageButton(ImageResources.INSTANCE.icon_success_sm(),"Success"));
-		Label success = new Label("Success");
 		success.setStyleName("loginInfoMessageHeader");
 		infoGrid.setWidget(0, 1, success);
 		infoGrid.setWidget(1, 1, infoMessage);
@@ -156,6 +156,11 @@ public class LoginView implements LoginPresenter.Display  {
 	}
 	@Override
 	public void setInfoMessageVisible(boolean value) {
+		if(value){
+			success.setText("Success");
+		}else{
+			success.setText("");
+		}
 		MatContext.get().setVisible(infoMessagePanel,value);
 	}
 

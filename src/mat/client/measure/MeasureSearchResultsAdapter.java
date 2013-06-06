@@ -6,16 +6,13 @@ import mat.client.ImageResources;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.CustomButton;
 import mat.client.shared.FocusableImageButton;
-import mat.client.shared.LabelBuilder;
 import mat.client.shared.search.SearchResults;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -161,7 +158,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		image.getElement().getStyle().setCursor(Cursor.POINTER);*/
 		CustomButton image = new CustomButton();
 		image.setTitle(action);
-		image.setResource(url);
+		image.setResource(url,action);
 		setId(image, action, key);
 		//508 fix - Read only and locked icons do not do anything but they appear to show hand pointer on mouse hover.
 		if(!action.equalsIgnoreCase("Read-Only") || !action.equalsIgnoreCase("Measure in use by"))
@@ -183,7 +180,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		hPanel.setStyleName("exportCheckBox");
 		CustomButton image = new CustomButton();
 		image.setTitle(action);
-		image.setResource(url);
+		image.setResource(url,action);
 		setId(image, action, key);
 		addListener(image);
 		hPanel.add(image);

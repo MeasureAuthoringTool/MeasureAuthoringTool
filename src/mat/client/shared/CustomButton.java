@@ -11,8 +11,9 @@ public class CustomButton extends Button {
 	public CustomButton(){
 		super();
 	}
-	public void setResource(ImageResource imageResource){ 
+	public void setResource(ImageResource imageResource, String imageTitle){ 
 		Image img = new Image(imageResource); 
+		img.setAltText(imageTitle);
 		String definedStyles = img.getElement().getAttribute("style"); 
 		img.getElement().setAttribute("style", definedStyles + "; vertical-align:middle;"); 
 		DOM.insertBefore(getElement(), img.getElement(), DOM.getFirstChild(getElement())); 

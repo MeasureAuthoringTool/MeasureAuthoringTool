@@ -1092,7 +1092,7 @@ padding: 2px;
 	color: #666666;
 }
 .exportCheckBox{
-	align:center;	
+	margin-left: 15px;
 }
 .exportCheckBox td {
 	border:0px;

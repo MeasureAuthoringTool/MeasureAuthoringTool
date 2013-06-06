@@ -1,9 +1,11 @@
 package mat.client.measure;
 
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -32,12 +34,14 @@ public class MeasureSearchFilterPanel {
 	
 	public MeasureSearchFilterPanel(){
 		DOM.setElementAttribute(listBox.getElement(), "id", title);
+		DOM.setElementAttribute(listBox.getElement(), "name", title);
 		listBox.insertItem(MY_MEASURES_STR, MY_MEASURES_TITLE,
 				"Returns Measures that you have created." );
 		listBox.insertItem(ALL_MEASURES_STR, ALL_MEASURES_TITLE,
 				"Returns all Measures created by all users.");
 		
 		resetFilter();
+		panel.add(LabelBuilder.buildInvisibleLabel(new Label(), title));
 		panel.add(listBox);
 	}
 

@@ -1,9 +1,11 @@
 package mat.client.codelist;
 
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 
 /**
@@ -34,6 +36,8 @@ public class ValueSetSearchFilterPanel {
 	
 	public ValueSetSearchFilterPanel(){
 		DOM.setElementAttribute(listBox.getElement(), "id", title);
+		DOM.setElementAttribute(listBox.getElement(), "name", title);
+		listBox.setName(title);
 		listBox.insertItem(MY_VALUE_SETS_STR, MY_VALUE_SETS_TITLE,
 				"Returns Value Sets that you have created." );
 		listBox.insertItem(ALL_VALUE_SETS_STR, ALL_VALUE_SETS_TITLE,
@@ -41,6 +45,7 @@ public class ValueSetSearchFilterPanel {
 		listBox.insertItem(APPLIED_VALUE_SETS_STR, APPLIED_VALUE_SETS_TITLE,
 				"Returns Value Sets that have been used to create QDM Elements for any measure you created.");
 		resetFilter();
+		panel.add(LabelBuilder.buildInvisibleLabel(new Label(), title));
 		panel.add(listBox);
 	}
 

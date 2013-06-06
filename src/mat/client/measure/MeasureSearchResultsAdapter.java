@@ -4,13 +4,18 @@ import java.sql.Timestamp;
 
 import mat.client.ImageResources;
 import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.shared.CustomButton;
 import mat.client.shared.FocusableImageButton;
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.search.SearchResults;
 
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Cursor;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -136,7 +141,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		case 8:
 			if(data.get(row).isExportable()){
 //				value = getImage("export", ImageResources.INSTANCE.g_package_go(), data.get(row).getId());
-				value = getImageAndCheckBox("export", ImageResources.INSTANCE.g_package_go(), data.get(row).getId());
+				value = getImageAndCheckBox("export", ImageResources.INSTANCE.g_package_go(), data.get(row).getId(),data.get(row).getName());
 			}
 			break;
 		default: 
@@ -148,8 +153,15 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	private Widget getImage(String action, ImageResource url, String key) {
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
-		FocusableImageButton image = new FocusableImageButton(url,action);
+		holder.getElement().getStyle().setCursor(Cursor.POINTER);
+		/*FocusableImageButton image = new FocusableImageButton(url,action);
 		setImageStyle(image);
+		setId(image, action, key);
+		addListener(image);
+		image.getElement().getStyle().setCursor(Cursor.POINTER);*/
+		CustomButton image = new CustomButton();
+		image.setTitle(action);
+		image.setResource(url);
 		setId(image, action, key);
 		addListener(image);
 		holder.add(image);
@@ -157,11 +169,17 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	}
 	
 	
-	private Widget getImageAndCheckBox(String action, ImageResource url, String key){
+	private Widget getImageAndCheckBox(String action, ImageResource url, String key,String name){
 		HorizontalPanel hPanel = new HorizontalPanel();
-		hPanel.setStyleName("searchTableCenteredHolder");
-		FocusableImageButton image = new FocusableImageButton(url,action);
+		//hPanel.setStyleName("searchTableCenteredHolder");
+		/*FocusableImageButton image = new FocusableImageButton(url,action);
 		image.setStylePrimaryName("measureSearchResultIcon rightAligned");
+		setId(image, action, key);
+		addListener(image);*/
+		hPanel.setStyleName("exportCheckBox");
+		CustomButton image = new CustomButton();
+		image.setTitle(action);
+		image.setResource(url);
 		setId(image, action, key);
 		addListener(image);
 		hPanel.add(image);
@@ -169,20 +187,20 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		CustomCheckBox checkBox = new CustomCheckBox("Select Record to Export", false);	
 		checkBox.setStyleName("centerAligned");
 		checkBox.setFormValue(key);
-		hPanel.add(checkBox);	
+		hPanel.add(checkBox);
 		checkBox.getElement().setId("bulkExport_" + key);
 		checkBox.addClickHandler(clickHandler);
 		return hPanel;
 	}
 	
 	
-	private void addListener(FocusableImageButton image) {
+	private void addListener(CustomButton image) {
 		image.addClickHandler(clickHandler);
 	}
 	private void setImageStyle(FocusableImageButton image) {
 		image.setStylePrimaryName("measureSearchResultIcon");
 	}
-	private void setId(FocusableImageButton image, String action, String key) {
+	private void setId(CustomButton image, String action, String key) {
 		String id = action + "_" + key;
 		image.getElement().setAttribute("id", id);
 	}

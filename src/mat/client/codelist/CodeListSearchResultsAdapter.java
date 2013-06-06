@@ -1,6 +1,7 @@
 package mat.client.codelist;
 
 import mat.client.ImageResources;
+import mat.client.shared.CustomButton;
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.search.SearchResults;
 import mat.model.CodeListSearchDTO;
@@ -139,21 +140,26 @@ class CodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 	private Widget getImage(String action, ImageResource url, String key) {
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
-		FocusableImageButton image = new FocusableImageButton(url,action);
+		/*FocusableImageButton image = new FocusableImageButton(url,action);
 		setImageStyle(image);
+		setId(image, action, key);
+		addListener(image);*/
+		CustomButton image = new CustomButton();
+		image.setTitle(action);
+		image.setResource(url);
 		setId(image, action, key);
 		addListener(image);
 		holder.add(image);
 		return holder;
 	}
 	
-	private void addListener(FocusableImageButton image) {
+	private void addListener(CustomButton image) {
 		image.addClickHandler(clickHandler);
 	}
 	private void setImageStyle(FocusableImageButton image) {
 		image.setStylePrimaryName("measureSearchResultIcon");
 	}
-	private void setId(FocusableImageButton image, String action, String key) {
+	private void setId(CustomButton image, String action, String key) {
 		String id = action + "_" + key;
 		image.getElement().setAttribute("id", id);
 	}

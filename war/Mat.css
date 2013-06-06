@@ -1091,12 +1091,13 @@ padding: 2px;
 .generate-emeasureid-button{
 	color: #666666;
 }
-
-.searchTableCenteredHolder td {
+.exportCheckBox{
+	align:center;	
+}
+.exportCheckBox td {
 	border:0px;
 	vertical-align: top;
 }
-
 .clearAnchorStyle {
 	font-size:.84em;
 	font-weight: normal;

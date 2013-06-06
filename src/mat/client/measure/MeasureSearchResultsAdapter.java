@@ -161,7 +161,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		image.setResource(url,action);
 		setId(image, action, key);
 		//508 fix - Read only and locked icons do not do anything but they appear to show hand pointer on mouse hover.
-		if(!action.equalsIgnoreCase("Read-Only") || !action.equalsIgnoreCase("Measure in use by"))
+		if(!action.equalsIgnoreCase("Read-Only") && !(action.contains("Measure in use")))
 			addListener(image);
 		else
 			image.setEnabled(false);

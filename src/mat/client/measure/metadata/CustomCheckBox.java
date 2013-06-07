@@ -57,7 +57,7 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
    * @param title for the check box's 
    */
   public CustomCheckBox(String title,boolean isLabelRequired) {
-	this(DOM.createInputCheck(),title);
+	this(DOM.createInputCheck(),title,isLabelRequired);
     setText(title,isLabelRequired);
     this.isLabelRequired=isLabelRequired;
   }
@@ -67,21 +67,23 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
    * 
    * @param title for the check box's 
    */
-  public CustomCheckBox(String title, String label) {
-	this(DOM.createInputCheck(),title);
-    setText(label,true);
+  public CustomCheckBox(String title, String label,boolean isLabelRequired) {
+	  
+	this(DOM.createInputCheck(),title,isLabelRequired);
+	setText(label,true);
   }
 
   
-  protected CustomCheckBox(Element elem,String title) {
+  protected CustomCheckBox(Element elem,String title, boolean isLabelRequired2) {
     //super(DOM.createSpan());
 	  super(DOM.createDiv());
+	  
     inputElem = InputElement.as(elem);
     labelElem = Document.get().createLabelElement();
    
     getElement().appendChild(inputElem);
     /**508 fix - Check box with no label should not render label tag inside Input tag.**/
-    if(isLabelRequired)
+    if(isLabelRequired2)
     	getElement().appendChild(labelElem);
 
     String uid = DOM.createUniqueId();

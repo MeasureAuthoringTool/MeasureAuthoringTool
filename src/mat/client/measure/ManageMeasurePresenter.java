@@ -885,7 +885,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		mcs.clone(currentDetails,loggedinUserId,isDraftCreation, new AsyncCallback<ManageMeasureSearchModel.Result>() {
 			public void onSuccess(ManageMeasureSearchModel.Result result) {
-				MatContext.get().getMeasureService().cloneMeasureXml(isDraftCreation, currentDetails.getId(), result.getId(), new AsyncCallback<Void>() {
+				/*MatContext.get().getMeasureService().cloneMeasureXml(isDraftCreation, currentDetails.getId(), result.getId(), new AsyncCallback<Void>() {
 
 					@Override
 					public void onFailure(Throwable caught) {}
@@ -893,7 +893,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(Void result) {}
 					
-				});
+				});*/
 				fireMeasureSelectedEvent(result.getId(), result.getVersion(),
 						result.getName(), result.getShortName(), result.getScoringType(), result.isEditable(),result.isMeasureLocked(),
 						result.getLockedUserId(result.getLockedUserInfo()));

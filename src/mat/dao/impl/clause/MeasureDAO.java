@@ -240,24 +240,23 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		if (dAOService!=null) {
 			//allow to test using DAOService
 			dAOService.getMeasureDAO().save(measure);
-			
-			ClauseManagerDAO cm = new ClauseManagerDAO(dAOService);
+			/*ClauseManagerDAO cm = new ClauseManagerDAO(dAOService);
 			String id = measure.getId();
 			for (Clause clause : measure.getClauses()) {
 				clause.setMeasureId(id);
 				dAOService.getClauseDAO().save(clause);
 				cm.saveClause(clause);
-			}
+			}*/
 			
 		} else {
 			super.save(measure);
-			ClauseManagerDAO cm = new ClauseManagerDAO(context);
+			/*ClauseManagerDAO cm = new ClauseManagerDAO(context);
 			
 			for (Clause clause : measure.getClauses()) {
 				ClauseDAO clauseDAO = new ClauseDAO();
 				clauseDAO.save(clause);				
 				cm.saveClause(clause);
-			}
+			}*/
 		}
 	}
 

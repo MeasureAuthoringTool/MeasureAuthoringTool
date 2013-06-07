@@ -152,11 +152,6 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
 		holder.getElement().getStyle().setCursor(Cursor.POINTER);
-		/*FocusableImageButton image = new FocusableImageButton(url,action);
-		setImageStyle(image);
-		setId(image, action, key);
-		addListener(image);
-		image.getElement().getStyle().setCursor(Cursor.POINTER);*/
 		CustomButton image = new CustomButton();
 		image.setTitle(action);
 		image.setResource(url,action);
@@ -173,11 +168,6 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	private Widget getImageReadOnly(String action, ImageResource url, String key) {
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
-		/*FocusableImageButton image = new FocusableImageButton(url,action);
-		setImageStyle(image);
-		setId(image, action, key);
-		addListener(image);
-		image.getElement().getStyle().setCursor(Cursor.POINTER);*/
 		CustomButton image = new CustomButton();
 		image.removeStyleName("gwt-button");
 		image.setStylePrimaryName("readOnlyButton");

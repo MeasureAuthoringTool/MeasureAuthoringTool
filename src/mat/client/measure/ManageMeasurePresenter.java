@@ -847,7 +847,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 	else{
 	 		 displaySearch();
 	 	}
-	 	Mat.hideLoadingMessage();
+	 	// Commented for MAT-1929 : Retain Filters at Measure library screen.This message is commented since loading Please message was getting removed when search was performed.
+	 //	Mat.hideLoadingMessage();
 		Mat.focusSkipLists("MainContent");
 	}
 	@Override 
@@ -975,9 +976,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 			heading ="Measures";
 			filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
 		}else{
-			filter = searchDisplay.getMeasureSearchFilterPanel().getDefaultFilter();
+			//MAT-1929 : Retain filters at measure library screen
+			filter = searchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
 		}
-		searchDisplay.getMeasureSearchFilterPanel().resetFilter();
+		//MAT-1929: Retain filters at measure library screen. commented resetFilters method to retain filter state.
+		//searchDisplay.getMeasureSearchFilterPanel().resetFilter();
 		search(searchDisplay.getSearchString().getValue(), 1, searchDisplay.getPageSize(),filter);
 		panel.setHeading(heading,"MainContent");
 		//panel.setEmbeddedLink("MainContent");

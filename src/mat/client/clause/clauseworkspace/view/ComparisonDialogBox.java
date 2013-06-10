@@ -18,6 +18,7 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 
+//import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -43,6 +44,11 @@ public class ComparisonDialogBox{
 		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.setWidth("20em");
 		dialogContents.setSpacing(5);
+		//- POC to change width and height for dialogBox. - Success 
+		//dialogContents.setWidth("50em");
+		/*DOM.setStyleAttribute(dialogBox.getElement(), "width", "950px");
+		DOM.setStyleAttribute(dialogBox.getElement(), "height", "950px");
+		DOM.setStyleAttribute(dialogBox.getElement(), "top", "155px");*/
 		dialogBox.setWidget(dialogContents);
 		@SuppressWarnings("unchecked")
 		HashMap<String,String> extraAttributesMap = (HashMap<String, String>) cellTreeNode.getExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES);

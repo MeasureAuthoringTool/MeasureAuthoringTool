@@ -569,7 +569,8 @@ public class ManageCodeListSearchPresenter {
 		//MAT-1929 :Search for value set drop down retains filter criteria.This is done for story" Retain filter and search criteria.".
 		//searchDisplay.getValueSetSearchFilterPanel().resetFilter();
 		search(searchDisplay.getSearchString().getValue(), 1, currentSortColumn, sortIsAscending,defaultCodeList, filter);
-		searchDisplay.clearSelections();
+		//MAT-1929 :Commented clearSelections.This is done for story" Retain filter and search criteria.".
+		//searchDisplay.clearSelections();
 		
 	}
 	

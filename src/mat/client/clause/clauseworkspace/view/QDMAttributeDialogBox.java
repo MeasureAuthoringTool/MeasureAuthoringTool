@@ -598,8 +598,8 @@ public class QDMAttributeDialogBox {
 		final List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode.getExtraInformation(ATTRIBUTES);
 		final int rows = (attributeNodeList == null)?0:attributeNodeList.size();
 	    
-//		Timer t = new Timer() {
-//			public void run(){
+		Timer t = new Timer() {
+			public void run(){
 				if(rows == 0){
 					//Add a blank attribute row to the table for the user to fill in.
 					AddNewQDMAttributeClickHandler.rowNode = null;
@@ -615,9 +615,9 @@ public class QDMAttributeDialogBox {
 						updateAttributeListBox(grid, j, (ListBox) grid.getWidget(j, 1));
 					}
 				}
-//			}
-//		};
-//		t.schedule(350);
+			}
+		};
+		t.schedule(500);
 	}
 	
 	private static void setExitingAttributeInGrid(CellTreeNode attributenode, int row){

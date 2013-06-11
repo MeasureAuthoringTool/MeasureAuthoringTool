@@ -415,18 +415,21 @@ public class ExportSimpleXML {
 	 * @return
 	 */
 	private static String formatDate(String date){
-		Calendar cal = Calendar.getInstance();
-		cal.setLenient(true);
-		DateFormat oldDateFormat = new SimpleDateFormat("MM/dd/yyyy");
-		DateFormat newDateFormat = new SimpleDateFormat("yyyyMMdd");
-		try {
-			Date oldParsedDate = oldDateFormat.parse(date);
-			cal.setTime(oldParsedDate);
-			return newDateFormat.format(oldParsedDate);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return "";
+		return date.substring(6) + date.substring(0,2) + date.substring(3,5);
+//		Calendar cal = Calendar.getInstance();
+//		cal.setLenient(false);
+//		DateFormat oldDateFormat = new SimpleDateFormat("MM/dd/yyyy");
+//		DateFormat newDateFormat = new SimpleDateFormat("yyyyMMdd");
+//		try {
+//			Date oldParsedDate = oldDateFormat.parse(date);
+//			cal.setTime(oldParsedDate);
+//			System.out.println("returning date1:"+newDateFormat.format(oldParsedDate));
+//			return newDateFormat.format(oldParsedDate);
+//		} catch (ParseException e) {
+//			//Parse the dates with substring (these might contain the notorious xxx's
+//			e.printStackTrace();
+//			System.out.println("returning date2:"+date.substring(6) + date.substring(0,2) + date.substring(3,5));
+//			return date.substring(6) + date.substring(0,2) + date.substring(3,5);
+//		}
 	}
 }

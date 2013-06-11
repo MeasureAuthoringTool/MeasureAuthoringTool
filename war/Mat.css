@@ -124,6 +124,12 @@ body#main select, body#main input, body#main textarea {
     background-repeat:repeat-x;
     font-weight: bold;
 }
+
+.primaryGreyButton {
+    background: url("images/bg_btnGrey-secondary.png");
+    background-repeat:repeat-x;
+    font-weight: bold; 
+}
 .secondaryButton {
     background: url("images/bg_btnGrey-secondary.png");
     background-repeat:repeat-x;

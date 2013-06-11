@@ -118,7 +118,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private Button addEditAuthors = new PrimaryButton("Add/Edit Measure Developer(s)");
 	
 	private Button AddRowButton = new PrimaryButton("Add Reference");
-	private Button saveButton = new PrimaryButton("Save");
+	private Button saveButton = new PrimaryButton("Save","primaryButton");
 	private Button generateeMeasureIDButton = new Button("Generate Identifier");
 	
 	private ArrayList<TextAreaWithMaxLength> referenceArrayList = new ArrayList<TextAreaWithMaxLength>(); 

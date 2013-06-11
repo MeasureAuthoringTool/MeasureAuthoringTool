@@ -28,7 +28,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	public ManageMeasureShareView() {
 		content.setStylePrimaryName("contentPanel");
 		content.addStyleName("leftAligned");
-		buttonBar.getSaveButton().setText("Share");
+		buttonBar.getSaveButton().setText("Save");
 		
 		content.add(measureNameLabel);
 		

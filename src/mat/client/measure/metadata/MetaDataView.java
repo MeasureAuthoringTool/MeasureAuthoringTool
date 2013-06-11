@@ -411,7 +411,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	    
 	 	fPanel.add(errorMessages);
 		fPanel.add(successMessages);
-		saveButton.setTitle("Save     Ctrl+Alt+s");
+		saveButton.setTitle("Save");
 		fPanel.add(saveButton);
 		successMessages.setMessage("");
 		fPanel.add(new SpacerWidget());

@@ -562,11 +562,13 @@ public class ManageCodeListSearchPresenter {
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
 			 filter = searchDisplay.getValueSetSearchFilterPanel().ALL_VALUE_SETS;
 		}else{
-			filter = searchDisplay.getValueSetSearchFilterPanel().getDefaultFilter();
+			//MAT-1929 : Commented default search filter criteria for story Retain filter and search criteria.
+			//filter = searchDisplay.getValueSetSearchFilterPanel().getDefaultFilter();
+			filter = searchDisplay.getValueSetSearchFilterPanel().getSelectedIndex();
 		}
-		
-		searchDisplay.getValueSetSearchFilterPanel().resetFilter();
-		search("", 1, currentSortColumn, sortIsAscending,defaultCodeList, filter);
+		//MAT-1929 :Search for value set drop down retains filter criteria.This is done for story" Retain filter and search criteria.".
+		//searchDisplay.getValueSetSearchFilterPanel().resetFilter();
+		search(searchDisplay.getSearchString().getValue(), 1, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 		searchDisplay.clearSelections();
 		
 	}

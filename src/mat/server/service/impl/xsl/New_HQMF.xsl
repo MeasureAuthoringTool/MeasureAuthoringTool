@@ -790,6 +790,7 @@
             <xsl:when test="$uval='WBC/hpf'">{WBC}/[HPF]</xsl:when>
             <xsl:when test="$uval='CFU/mL'">{CFU}/mL</xsl:when>
             <xsl:when test="$uval='per mm3'">/mm3</xsl:when>
+            <xsl:when test="$uval='copies/mL'">[copies]/mL</xsl:when>
             
             <xsl:otherwise><xsl:value-of select="$uval"/></xsl:otherwise>
         </xsl:choose>

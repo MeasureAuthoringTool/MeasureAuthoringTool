@@ -51,9 +51,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	private Label packageName = new Label();
 	private ListBox clausesListBox = new ListBox();
 	private ListBox packagedClausesListBox = new ListBox();
-	private PrimaryButton addClausesToPackage = new PrimaryButton("Save Grouping");
+	private PrimaryButton addClausesToPackage = new PrimaryButton("Save Grouping","primaryButton");
 	private Grid packagesTable = new Grid508();
-	private PrimaryButton packageMeasure = new PrimaryButton("Create Measure Package");
+	private PrimaryButton packageMeasure = new PrimaryButton("Create Measure Package","primaryButton");
 	private PrimaryButton createNew = new PrimaryButton("Create New Grouping");
 	
 	private FocusPanel addClauseRight = buildAddButton(ImageResources.INSTANCE.addRight());
@@ -81,7 +81,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	private Widget addQDMElementButtonPanel = buildQDMElementAddButtonWidget();
 	private FlowPanel qdmElementsPanel = new FlowPanel();
 	private FlowPanel suppElementsPanel = new FlowPanel();
-	private PrimaryButton addQDMElementsToMeasure = new PrimaryButton("Save Supplemental Data Elements");
+	private PrimaryButton addQDMElementsToMeasure = new PrimaryButton("Save Supplemental Data Elements","primaryButton");
 	private Label qdmTabName = new Label("Supplemental Data Elements");
 	private Label valueSetPackageDateNote = new Label("The Value Set Package Date applies to all QDM elements used in the measure logic. Only the most recently saved value sets that are closest to, but do not occur after the Value Set Package Date entered, will be included in the Value Set Export file. Value Sets in Draft mode will NOT be included in the Value Set Export file.");
 	//int currentPackageTab = 1;

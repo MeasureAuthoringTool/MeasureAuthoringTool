@@ -82,6 +82,7 @@ public class LoginView implements LoginPresenter.Display  {
 		loginPanel.add(new SpacerWidget());
 		
 		submitButton = new PrimaryButton("Sign In");
+		submitButton.setStylePrimaryName("primaryButton");
 		loginPanel.add(submitButton);
 		
 		loginPanel.setStylePrimaryName("loginContentPanel");

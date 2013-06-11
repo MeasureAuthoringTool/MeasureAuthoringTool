@@ -5,6 +5,7 @@ import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
+import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 
@@ -60,7 +61,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	CellTree cellTree;
 
-	private Button saveBtn = new Button("Save");
+	private Button saveBtn = new PrimaryButton("Save","primaryButton");
 
 	private Button buttonExpand = new Button();
 	

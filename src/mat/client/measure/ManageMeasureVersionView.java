@@ -52,6 +52,9 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		
 		mainPanel.add(radioPanel);
 		SimplePanel buttonPanel = new SimplePanel();
+		buttonBar.getSaveButton().setText("Save and Continue");
+		buttonBar.getSaveButton().setTitle("Save and Continue");
+		buttonBar.getCancelButton().setTitle("Cancel");
 		buttonPanel.add(buttonBar);
 		buttonPanel.setWidth("100%");
 		mainPanel.add(buttonBar);

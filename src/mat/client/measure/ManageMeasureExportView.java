@@ -22,7 +22,7 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 	private RadioButton eMeasureRadio = new RadioButton("format", "eMeasure");
 	private RadioButton codeListRadio = new RadioButton("format", "Measure Value Set");
 	private RadioButton eMeasurePackageRadio = new RadioButton("format", "eMeasure Package");
-	private PrimaryButton saveButton = new PrimaryButton("Save");
+	private PrimaryButton saveButton = new PrimaryButton("Save","primaryButton");
 	private SecondaryButton cancelButton = new SecondaryButton("Cancel");
 	private SecondaryButton openButton = new SecondaryButton("Open");
 	

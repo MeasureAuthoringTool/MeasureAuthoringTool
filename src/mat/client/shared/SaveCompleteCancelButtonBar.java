@@ -5,8 +5,8 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
 public class SaveCompleteCancelButtonBar extends Composite {
-	private Button saveCompleteButton = new PrimaryButton("Save As Complete");
-	private Button saveButton = new PrimaryButton("Save As Draft");
+	private Button saveCompleteButton = new PrimaryButton("Save As Complete","primaryButton");
+	private Button saveButton = new PrimaryButton("Save As Draft","primaryButton");
 	private Button cancelButton = new SecondaryButton("Cancel");
 	
 	public SaveCompleteCancelButtonBar(){

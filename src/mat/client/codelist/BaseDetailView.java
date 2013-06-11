@@ -170,7 +170,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		rationaleInput.setMaxLength(15000);
 		commentsInput.setMaxLength(2000);
 		stewardOtherInput.setMaxLength(200);
-		
+		buttonBar.getSaveButton().setTitle("Save As Draft");
+		buttonBar.getSaveCompleteButton().setTitle("Save As Complete");
+		buttonBar.getCancelButton().setTitle("Cancel");
 		fPanel.add(buttonBar);
 		createNewPanel = buildCodeListLink();
 		fPanel.add(createNewPanel);

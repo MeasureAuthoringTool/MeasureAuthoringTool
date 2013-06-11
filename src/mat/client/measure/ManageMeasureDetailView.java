@@ -93,6 +93,9 @@ public class ManageMeasureDetailView
 		leftPanel.add(new SpacerWidget());
 
 		SimplePanel buttonPanel = new SimplePanel();
+		buttonBar.getSaveButton().setText("Save and Continue");
+		buttonBar.getSaveButton().setTitle("Save and Continue");
+		buttonBar.getCancelButton().setTitle("Cancel");
 		buttonPanel.add(buttonBar);
 		buttonPanel.setWidth("100%");
 		fPanel.add(buttonPanel);

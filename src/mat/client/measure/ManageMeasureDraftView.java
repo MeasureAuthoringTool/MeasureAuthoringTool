@@ -39,7 +39,9 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 		mainPanel.add(view.asWidget());
 		mainPanel.add(errorMessages);
 		SimplePanel buttonPanel = new SimplePanel();
-		buttonBar.getSaveButton().setText("Save And Continue");
+		buttonBar.getSaveButton().setText("Save and Continue");
+		buttonBar.getSaveButton().setTitle("Save and Continue");
+		buttonBar.getCancelButton().setTitle("Cancel");
 		buttonPanel.add(buttonBar);
 		buttonPanel.setWidth("100%");
 		mainPanel.add(buttonBar);

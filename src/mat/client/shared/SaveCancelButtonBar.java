@@ -7,7 +7,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 
 public class SaveCancelButtonBar extends Composite {
 
-	private Button saveButton = new PrimaryButton("Save");
+	private Button saveButton = new PrimaryButton("Save","primaryButton");
 	private Button cancelButton = new SecondaryButton("Cancel");
 	
 	public SaveCancelButtonBar() {

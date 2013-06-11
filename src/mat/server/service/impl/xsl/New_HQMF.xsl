@@ -383,7 +383,7 @@
 	                </xsl:variable>
 	                <xsl:variable name="attach_title">
 	                	<xsl:choose>
-		                	<xsl:when test="string-length($denominatorPopDisplayName)=0"><xsl:value-of select="$initPopDisplayName"/></xsl:when>
+		                	<xsl:when test="string-length($denominatorPopUUID)=0"><xsl:value-of select="$initPopDisplayName"/></xsl:when>
 		                	<xsl:otherwise><xsl:value-of select="$denominatorPopDisplayName"/></xsl:otherwise>
 	                	</xsl:choose>
 	                </xsl:variable>	

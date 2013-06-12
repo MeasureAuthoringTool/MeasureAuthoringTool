@@ -19,6 +19,7 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -95,6 +96,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		fPanel.add(new SpacerWidget());
 		
 		VerticalPanel verStewardPanel = new VerticalPanel();
+		DOM.setElementAttribute(stewardInput.getElement(), "id", "Steward");
+		DOM.setElementAttribute(stewardInput.getElement(), "name", "Steward");
+		stewardInput.setName("Steward");
 		stewardLabel = (Label) LabelBuilder.buildRequiredLabel(stewardInput, "Steward");
 		verStewardPanel.add(stewardLabel);
 		verStewardPanel.add(stewardInput);		
@@ -103,7 +107,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		//US 413
 		fPanel.add(verStewardPanel);
 		fPanel.add(new SpacerWidget());
-		
+		DOM.setElementAttribute(categoryInput.getElement(), "id", "Category");
+		DOM.setElementAttribute(categoryInput.getElement(), "name", "Category");
+		categoryInput.setName("Category");
 		fPanel.add(LabelBuilder.buildRequiredLabel(categoryInput, "Category"));
 		fPanel.add(categoryInput);
 		fPanel.add(new SpacerWidget());
@@ -112,6 +118,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 			FlowPanel codeSystemPanel = new FlowPanel();
 			codeSystemPanel.add(LabelBuilder.buildRequiredLabel(codeSystemInput, "Code System"));
 			codeSystemPanel.addStyleName("floatLeft");
+			DOM.setElementAttribute(codeSystemInput.getElement(), "id", "Code System");
+			DOM.setElementAttribute(codeSystemInput.getElement(), "name", "Code System");
+			codeSystemInput.setName("Code System");
 			codeSystemPanel.add(codeSystemInput);
 			fPanel.add(codeSystemPanel);
 			
@@ -420,14 +429,16 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		clearOtherPanel();
 		emptyTextBoxHolder.add(new SpacerWidget());
 		Widget otherSpecify = LabelBuilder.buildRequiredLabel(stewardOtherInput, "User Defined Steward");
-		otherSpecify.getElement().setAttribute("id", "Added UserDefineSteward");
+		Label invLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label(), "Added");
+		otherSpecify.getElement().setAttribute("id", "Added");
 		otherSpecify.getElement().setAttribute("aria-role", "textbox");
-		otherSpecify.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		otherSpecify.getElement().setAttribute("aria-labelledby", "Added");
 		otherSpecify.getElement().setAttribute("aria-live", "assertive");
 		otherSpecify.getElement().setAttribute("aria-atomic", "true");
 		otherSpecify.getElement().setAttribute("aria-relevant", "all");
 		otherSpecify.getElement().setAttribute("role", "alert");
-		emptyTextBoxHolder.add(otherSpecify);		
+		emptyTextBoxHolder.add(invLabel);
+		emptyTextBoxHolder.add(otherSpecify);	
 		emptyTextBoxHolder.add(stewardOtherInput);		
 	}
 
@@ -446,9 +457,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	 * Local method to clear out the Steward other panel. 
 	 */
 	private void clearOtherPanel(){	
-		stewardLabel.getElement().setAttribute("id", "Removed UserDefineSteward");
+		stewardLabel.getElement().setAttribute("id", "steward");
 		stewardLabel.getElement().setAttribute("aria-role", "textbox");
-		stewardLabel.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		stewardLabel.getElement().setAttribute("aria-label", "Others option is changed");
 		stewardLabel.getElement().setAttribute("aria-live", "assertive");
 		stewardLabel.getElement().setAttribute("aria-atomic", "true");
 		stewardLabel.getElement().setAttribute("aria-relevant", "all");

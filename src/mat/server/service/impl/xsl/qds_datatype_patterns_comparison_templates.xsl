@@ -8,8 +8,9 @@
 	<xsl:output method="xml" indent="yes" encoding="ISO-8859-1"/>
 
 	<xsl:template match="attribute" mode="text_new">
+		<xsl:variable name="modeVal"><xsl:value-of select="lower-case(@mode)"/></xsl:variable>
 		<xsl:choose>
-			<xsl:when test="@mode = 'Less Than'">
+			<xsl:when test="$modeVal = 'less than'">
 				<xsl:text> &lt;</xsl:text>
 				<xsl:if test="@comparisonValue">
 					<xsl:text> </xsl:text>
@@ -25,7 +26,7 @@
 					</xsl:call-template>
 				</xsl:if>
 			</xsl:when>
-			<xsl:when test="@mode = 'Greater Than'">
+			<xsl:when test="$modeVal = 'greater than'">
 				<xsl:text> &gt;</xsl:text>
 				<xsl:if test="@comparisonValue">
 					<xsl:text> </xsl:text>
@@ -41,7 +42,7 @@
 					</xsl:call-template>
 				</xsl:if>
 			</xsl:when>
-			<xsl:when test="@mode = 'Equal To'">
+			<xsl:when test="$modeVal = 'equal to'">
 				<xsl:text> =</xsl:text>
 				<xsl:if test="@comparisonValue">
 					<xsl:text> </xsl:text>
@@ -57,7 +58,7 @@
 					</xsl:call-template>
 				</xsl:if>
 			</xsl:when>
-			<xsl:when test="@mode = 'Less Than Or Equal To'">
+			<xsl:when test="$modeVal = 'less than or equal to'">
 				<xsl:text> &lt;=</xsl:text>
 				<xsl:if test="@comparisonValue">
 					<xsl:text> </xsl:text>
@@ -73,7 +74,7 @@
 					</xsl:call-template>
 				</xsl:if>
 			</xsl:when>
-			<xsl:when test="@mode = 'Greater Than Or Equal To'">
+			<xsl:when test="$modeVal = 'greater than or equal to'">
 				<xsl:text> &gt;=</xsl:text>
 				<xsl:if test="@comparisonValue">
 					<xsl:text> </xsl:text>
@@ -89,10 +90,10 @@
 					</xsl:call-template>
 				</xsl:if>
 			</xsl:when>
-			<xsl:when test="@mode = 'Value Set'">
+			<xsl:when test="$modeVal = 'value set'">
 				
 			</xsl:when>
-			<xsl:when test="@mode = 'Check if Present'">
+			<xsl:when test="$modeVal = 'check if present'">
 				 
 			</xsl:when>
 		</xsl:choose>

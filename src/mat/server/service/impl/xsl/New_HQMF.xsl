@@ -200,9 +200,11 @@
         <xsl:choose>
             <xsl:when test="$countelementRef = 2">
                 <xsl:if test="string-length($conj)>0">
-                    <xsl:apply-templates select="child::elementRef[1]" mode="handleElementRef">
-                        <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
-                    </xsl:apply-templates>
+                    <sourceOf typeCode="PRCN">
+                        <xsl:apply-templates select="." mode="handleFunctionalOps"/>
+                        <conjunctionCode code="{$conj}"/>
+                        <xsl:apply-templates select="."/>
+                    </sourceOf>
                 </xsl:if>
                 <xsl:if test="string-length($conj)=0">
                     <xsl:apply-templates select="child::elementRef[1]"/>
@@ -326,12 +328,20 @@
     
     <xsl:template match="functionalOp">
         <xsl:param name="conj"/>
+        <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
        <!-- <xsl:choose>
             <xsl:when test="@type='NOT'">-->
                 <xsl:for-each select="*">
                     <xsl:choose>
                         <xsl:when test="name(.)='logicalOp'">
-                            <xsl:apply-templates select="." mode="topmost"/>
+                            <sourceOf typeCode="PRCN">
+                                <conjunctionCode code="{$conj}"/>
+                                <xsl:apply-templates select="." mode="handleFunctionalOps"/>
+                                <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                                    <xsl:if test="$isNot = 'true' "><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>
+                                    <xsl:apply-templates select="." mode="topmost"/>
+                                </act>
+                            </sourceOf>
                         </xsl:when>
                         <xsl:when test="name(.)='elementRef'">
                             <xsl:apply-templates select="." mode="handleElementRef">
@@ -356,6 +366,7 @@
     <xsl:template match="elementRef" mode="handleElementRef">
         <xsl:param name="conj"/>
         <sourceOf typeCode="PRCN">
+            <xsl:apply-templates select="." mode="handleFunctionalOps"/>
             <conjunctionCode code="{$conj}"/>
             <xsl:apply-templates select="."/>
         </sourceOf>

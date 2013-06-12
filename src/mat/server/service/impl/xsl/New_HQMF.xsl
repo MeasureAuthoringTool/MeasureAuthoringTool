@@ -144,7 +144,7 @@
             <!-- Handle nested AND/OR -->
            <!-- <test><xsl:value-of select="name()"/></test>
             <parent><xsl:value-of select="name(current()/parent::node())"/></parent>-->
-            <xsl:variable name="countLogicalOp"><xsl:value-of select="count(child::*[name()='logicalOp'])"/></xsl:variable>
+<!--             <xsl:variable name="countLogicalOp"><xsl:value-of select="count(child::*[name()='logicalOp'])"/></xsl:variable> -->
             <!--<countLogicalOp><xsl:value-of select="$countLogicalOp"/></countLogicalOp>-->
             <!--<xsl:if test="$countLogicalOp &gt; 0">
                 <sourceOf typeCode="PRCN">
@@ -199,10 +199,16 @@
         
         <xsl:choose>
             <xsl:when test="$countelementRef = 2">
-                <xsl:apply-templates select="child::elementRef[1]" mode="handleElementRef">
-                    <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
-                </xsl:apply-templates>
+                <xsl:if test="string-length($conj)>0">
+                    <xsl:apply-templates select="child::elementRef[1]" mode="handleElementRef">
+                        <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                    </xsl:apply-templates>
+                </xsl:if>
+                <xsl:if test="string-length($conj)=0">
+                    <xsl:apply-templates select="child::elementRef[1]"/>
+                </xsl:if>
             </xsl:when>
+            
             <xsl:when test="string-length($conj)=0">
                 <xsl:apply-templates select="." mode="handleFunctionalOps"/>
                 <!-- Process first child i.e. LHS -->
@@ -269,6 +275,7 @@
     <xsl:template match="*" mode="processRelational_Func_RHS">
         <xsl:param name="showAtt"/>
         <xsl:param name="conj"/>
+        
         <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
         <xsl:variable name="rel">
             <xsl:if test="parent::relationalOp">
@@ -310,7 +317,7 @@
                  </xsl:when>
                  <xsl:otherwise>
                      <xsl:apply-templates select=".">
-                         <!--<xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>-->
+                         <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                      </xsl:apply-templates>
                  </xsl:otherwise>
              </xsl:choose>
@@ -506,33 +513,7 @@
            </xsl:when>
         </xsl:choose>
     </xsl:template>
-    
-    <!--<xsl:template match="logicalOp">
-        <!-\-<xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
-        <xsl:variable name="conj">
-            <xsl:value-of select="upper-case(@type)"/>
-        </xsl:variable>-\->
-       
-       <act classCode="ACT" moodCode="EVN" isCriterionInd="true"> 
-            <xsl:apply-templates select="./*" mode="nested"/>
-       </act>     
-   </xsl:template>-->
-    
-    <!--<xsl:template match="elementRef" mode="nested">
-        <xsl:text>
-               
-       </xsl:text>
-        <xsl:comment>  nested and/or </xsl:comment>
-        <sourceOf typeCode="PRCN">
-            <conjunctionCode>
-                <xsl:attribute name="code">
-                    <xsl:apply-templates select=".." mode="getConj"/>
-                </xsl:attribute>   
-            </conjunctionCode>
-            <xsl:apply-templates select="."/>
-        </sourceOf>
-   </xsl:template>-->
-        
+         
     <xsl:template name="measure_observations">
         <xsl:if test="count(measureObservations) >= 1">
             <xsl:text>
@@ -554,16 +535,6 @@
                              <xsl:apply-templates select="."/>
                         </entry>
                     </xsl:for-each>
-                   <!-- <xsl:for-each select="measureObservations/clause[logicalOp/*]">
-                        <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
-                            <observation classCode="OBS" moodCode="EVN" isCriterionInd="true" actionNegationInd="true">
-                                <id root="{@uuid}"/>
-                                
-                                <!-\-<xsl:call-template name="criteria"/>-\->
-                                <xsl:apply-templates select="logicalOp" mode="topmost"/>
-                            </observation>
-                        </entry>
-                    </xsl:for-each>-->
                 </section>
             </component>
         </xsl:if>

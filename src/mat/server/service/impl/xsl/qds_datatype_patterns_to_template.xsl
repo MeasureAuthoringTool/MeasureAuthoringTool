@@ -93,8 +93,8 @@
 					</xsl:if>
 				</sourceOf>
 			</xsl:when>
-			<xsl:when test="parent::relationalOp and following-sibling::logicalOp">
-				<xsl:apply-templates select="following-sibling::logicalOp" mode="processRelational_Func_RHS"/>
+			<xsl:when test="parent::relationalOp and following-sibling::*">
+				<xsl:apply-templates select="following-sibling::*" mode="processRelational_Func_RHS"/>				
 			</xsl:when>
 			<xsl:when test="@highnum or @lownum or @equalnum">
 				<xsl:apply-templates select="." mode="pauseQuantity"/>

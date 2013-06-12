@@ -143,7 +143,7 @@ public class ExportSimpleXML {
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
 		
 		//using the above 2 lists we need to traverse the originalDoc and remove the unnecessary nodes
-		removeBlankStratificationClauses(originalDoc);
+		//removeBlankStratificationClauses(originalDoc);
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		removeUnWantedQDMs(usedQDMIds, originalDoc);
 		expandAndHandleGrouping(originalDoc);
@@ -346,13 +346,13 @@ public class ExportSimpleXML {
 	}
 	
 	/**
-	 * This method will look inside <strata>/<clause>/<logicalOp> and if if finds a <logicalOp> without any children.
+	 * This method will look inside <strata>/<clause>/<logicalOp> and if it finds a <logicalOp> without any children.
 	 * then remove the <clause> node.
 	 * After that it will check the <strata> node and if it is empty then remove the <strata> tag completely. 
 	 * @param originalDoc
 	 * @throws XPathExpressionException 
 	 */
-	private static void removeBlankStratificationClauses(Document originalDoc) throws XPathExpressionException {
+	/*private static void removeBlankStratificationClauses(Document originalDoc) throws XPathExpressionException {
 		NodeList strataLogicalOpNodes = (NodeList)xPath.evaluate("/measure/strata/clause/logicalOp", originalDoc, XPathConstants.NODESET);
 		boolean childRemoved = false;
 		for(int i=0;i<strataLogicalOpNodes.getLength();i++){
@@ -365,9 +365,9 @@ public class ExportSimpleXML {
 			}
 		}
 		
-		/**
+		*//**
 		 * If the <strata> tag now has no children remove the <strata> tag.
-		 */
+		 *//*
 		if(childRemoved){
 			Node strataNode = (Node) xPath.evaluate("/measure/strata", originalDoc,XPathConstants.NODE);
 			if(strataNode.getChildNodes().getLength() == 0){
@@ -375,7 +375,7 @@ public class ExportSimpleXML {
 				measurenode.removeChild(strataNode);
 			}
 		}
-	}
+	}*/
 	
 	private static Document getXMLDocument(MeasureXML measureXMLObject) throws ParserConfigurationException, SAXException, IOException{
 		//Create Document object

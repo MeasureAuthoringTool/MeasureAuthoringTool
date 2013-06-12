@@ -141,6 +141,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		savePanel.add(new SpacerWidget());
 //		savePanel.add(errorMessageDisplay);
 		savePanel.add(successMessageDisplay);
+		saveBtn.setTitle("Ctrl+Alt+s");
 		savePanel.add(saveBtn);
 
 		bottomSavePanel.add(savePanel);

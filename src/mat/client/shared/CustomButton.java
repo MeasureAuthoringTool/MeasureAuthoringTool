@@ -8,11 +8,12 @@ import com.google.gwt.user.client.ui.Image;
 public class CustomButton extends Button { 
 	
 	private String text; 
+	Image img;
 	public CustomButton(){
 		super();
 	}
 	public void setResource(ImageResource imageResource, String imageTitle){ 
-		Image img = new Image(imageResource); 
+		img = new Image(imageResource); 
 		img.setAltText(imageTitle);
 		String definedStyles = img.getElement().getAttribute("style"); 
 		img.getElement().setAttribute("style", definedStyles + "; vertical-align:middle;"); 
@@ -29,5 +30,9 @@ public class CustomButton extends Button {
 	public String getText() { 
 		return this.text; 
 	} 
+	
+	public Image getImage(){
+		return this.img;
+	}
 }
 

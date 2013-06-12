@@ -4,6 +4,7 @@ import java.util.Date;
 
 import mat.client.ImageResources;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.BlurEvent;
 import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -42,13 +43,16 @@ public class DateBoxWithCalendar extends Composite{
 	private PopupPanel datePickerPopup;
 	private boolean showInvalidMessage;
 	private boolean valueChanged = false;
-	private FocusableImageButton calendar;
+	public CustomButton calendar;
 
 	private int maxLength;
 	public static final int MDY = 10;
 	public static final int MDYHMA = 19;
 
-
+	public String label;
+	public Label invLabel;
+	boolean enabled;
+	
 	public DateBoxWithCalendar() {
 		this(false,"", MDY);
 	}
@@ -64,6 +68,16 @@ public class DateBoxWithCalendar extends Composite{
 		this.showInvalidMessage = showInvalidMessage;
 		this.maxLength = maxLength;
 		dateBox = new TextBox();
+		invLabel = (Label) LabelBuilder.buildInvisibleLabelWithContent(new Label(), "Input Date", "Input Date");
+		dateBox.setStylePrimaryName("no-border");
+		panel.add(invLabel);
+		Element element = dateBox.getElement();
+		element.setAttribute("id", "Input Date");
+		element.setAttribute("aria-role", "textbox");
+		element.setAttribute("aria-labelledby", "LastModifiedLabel");
+		element.setAttribute("aria-live", "assertive");
+		element.setAttribute("aria-invalid", "false");
+		element.setAttribute("role", "alert");
 		dateBox.setMaxLength(maxLength);
 		int width = maxLength == MDYHMA ? 150 : 100;
 		dateBox.setWidth("150");
@@ -158,9 +172,11 @@ public class DateBoxWithCalendar extends Composite{
 	
 	private void initDateBoxWithCalender(final String availableDateId)
 	{
-		dateBox.setStylePrimaryName("no-border");
+		
 		panel.add(dateBox);
-		calendar = new FocusableImageButton(ImageResources.INSTANCE.calendar(), "Calendar");
+		//calendar = new FocusableImageButton(ImageResources.INSTANCE.calendar(), "Calendar");
+		calendar = new CustomButton();
+		calendar.setResource(ImageResources.INSTANCE.calendar(), "Calendar");
 		calendar.addClickHandler(new ClickHandler() {			
 			public void onClick(ClickEvent event) {
 				if(!datePickerPopup.isShowing() && calendar.isEnabled()) {
@@ -278,12 +294,34 @@ public class DateBoxWithCalendar extends Composite{
 			dateBox.setStyleName("gwt-TextBox");
 		else
 			dateBox.setStyleName("gwt-TextBox-readonly");
-		calendar.enableImage(enabled);
+		//calendar.enableImage(enabled);
+		calendar.setEnabled(enabled);
 	}
 
 	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 		dateBox.setEnabled(enabled);
-		calendar.enableImage(enabled);
+		//calendar.enableImage(enabled);
+		calendar.setEnabled(enabled);
+		if(label != null){
+			invLabel.getElement().setAttribute("id", label);
+			dateBox.getElement().setAttribute("id", label);
+		}
+		
+		if(enabled){
+			if(label != null){
+				calendar.getImage().setAltText(label + " Calendar Enabled");
+				calendar.setTitle(label + " Enabled");
+				invLabel.setText(label + " Enabled");
+			}
+		}else{
+			if(label != null){
+				calendar.getImage().setAltText(label + " Calendar Disabled");
+				calendar.setTitle(label + " Disabled");
+				invLabel.setText(label + " Disabled");				
+			}
+		}
+		
 	}
 	
 	public void setFocus(boolean focused) {
@@ -323,9 +361,20 @@ public class DateBoxWithCalendar extends Composite{
 	/**
 	 * @return the calendar
 	 */
-	public FocusableImageButton getCalendar() {
+	public CustomButton getCalendar() {
 		return calendar;
 	}
 
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+	
+	public boolean isEnabled(){
+		return this.enabled;
+	}
 
 }

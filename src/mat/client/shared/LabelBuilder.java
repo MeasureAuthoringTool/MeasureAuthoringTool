@@ -47,5 +47,13 @@ public class LabelBuilder {
 		String Html = "<a class='invisible' name='"+embeddedString+"'></a><label>"+labelStr+"</label>";
 		return Html;
 	}
+	
+	public static Widget buildInvisibleLabelWithContent(Widget widget, String id, String content) {
+		//widget.getElement().setAttribute("id", labelStr);
+		HTML label = new HTML("<label id= '" +id+ "' for='" + id + "'>"+content+"</label>");
+		label.getElement().setAttribute("id", id);
+		label.setStyleName("invisible");
+		return label;
+	}
 
 }

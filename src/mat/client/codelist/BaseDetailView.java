@@ -17,6 +17,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.TextAreaWithMaxLength;
 import mat.shared.ConstantMessages;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
@@ -70,6 +71,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	protected SaveCompleteCancelButtonBar buttonBar = new SaveCompleteCancelButtonBar();
 	protected SummaryWidgetBase<?> codeListsSummary = getSummaryWidget();
 	private Panel createNewPanel;
+	private Label lastModify = new Label("Last Modified");
 	
 	
 	public BaseDetailView(String nameType){
@@ -152,8 +154,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		clearBoth2.addStyleName("clearBoth");
 		fPanel.add(clearBoth3);
 		
-		fPanel.add(new Label("Last Modified"));
+		fPanel.add(lastModify);
 		fPanel.add(lastModifiedDate);
+		lastModifiedDate.setLabel("Last Modified");
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildRequiredLabel(rationaleInput, "Rationale"));
@@ -452,6 +455,16 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		stewardLabel.getElement().setAttribute("role", "alert");
 		stewardOtherInput.setValue(null);
 		emptyTextBoxHolder.clear();
+		Element element = lastModifiedDate.calendar.getElement();
+		if(lastModifiedDate.isEnabled()){
+			element.focus();
+		}
+		element.setAttribute("aria-role", "command");
+		element.setAttribute("aria-labelledby", "LiveRegion");
+		element.setAttribute("aria-live", "assertive");
+		element.setAttribute("aria-atomic", "true");
+		element.setAttribute("aria-relevant", "all");
+		element.setAttribute("role", "alert");
 	}
 	
 	@Override

@@ -902,4 +902,9 @@ public class MessageDelegate {
 	public String getNoQdmSelectedMessage(){
 		return NO_QDM_SELECTED;
 	}
+	
+	private final String RELATIONALOP_TWO_CHILD_MESSAGE = "Package Failed. Measure logic contains one or more Incomplete Timings. LHS and RHS are required for all Timings.";
+	public String getRelationalOpTwoChildMessage() {
+		return RELATIONALOP_TWO_CHILD_MESSAGE;
+	}
 }

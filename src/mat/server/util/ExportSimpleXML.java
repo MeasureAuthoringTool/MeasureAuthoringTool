@@ -81,16 +81,38 @@ public class ExportSimpleXML {
 		return transform(originalDoc);
 	}
 	
+	/**
+	 * This method will check If this measure has at-least one grouping.
+	 * In addition, it will make sure that all the <relationalOp> tags have exactly 2 children.
+	 * @param measureXMLDocument
+	 * @param message
+	 * @return
+	 * @throws XPathExpressionException
+	 */
 	private static boolean validateMeasure(Document measureXMLDocument, List<String> message) throws XPathExpressionException{
 		boolean isValid = true;
 		XPathExpression expr = xPath.compile("boolean(" + XmlProcessor.XPATH_MEASURE_GROUPING_GROUP + ")");
 		if(!(Boolean) expr.evaluate(measureXMLDocument, XPathConstants.BOOLEAN)){
 			message.add(MatContext.get().getMessageDelegate().getGroupingRequiredMessage());
 			isValid = false;
-		}
+		}else{		
+			checkForValidRelationalOps(measureXMLDocument, message);
+		}		
 		return isValid;
 	}
 	
+	private static void checkForValidRelationalOps(Document measureXMLDocument,
+			List<String> message) throws XPathExpressionException {
+		NodeList allRelationalOps = (NodeList) xPath.evaluate("/measure//relationalOp", measureXMLDocument, XPathConstants.NODESET);
+		for(int i=0;i<allRelationalOps.getLength();i++){
+			Node relationalOpNode = allRelationalOps.item(i);
+			if (relationalOpNode.getChildNodes().getLength() != 2){
+				message.add(MatContext.get().getMessageDelegate().getRelationalOpTwoChildMessage());
+				break;
+			}
+		}
+	}
+
 	/**
 	 * This will work with the existing Measure XML & assume that it is correct and 
 	 * validated to generate the exported XML. 

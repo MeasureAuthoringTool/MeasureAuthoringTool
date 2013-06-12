@@ -101,6 +101,13 @@ public class ExportSimpleXML {
 		return isValid;
 	}
 	
+	/**
+	 * Go through all <relationalOp> tags in the XML and verify that each has exactly 2 children.
+	 * Stop the search the moment you find a <relationalOp> having less than or greater than 2 children. 
+	 * @param measureXMLDocument
+	 * @param message
+	 * @throws XPathExpressionException
+	 */
 	private static void checkForValidRelationalOps(Document measureXMLDocument,
 			List<String> message) throws XPathExpressionException {
 		NodeList allRelationalOps = (NodeList) xPath.evaluate("/measure//relationalOp", measureXMLDocument, XPathConstants.NODESET);

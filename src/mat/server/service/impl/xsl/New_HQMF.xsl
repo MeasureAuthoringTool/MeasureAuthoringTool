@@ -301,19 +301,19 @@
             <!--<xsl:apply-templates select=".." mode="handleFunctionalOps"/>-->
             
             <xsl:apply-templates select="parent::relationalOp" mode="pauseQuantity"/>
-               <xsl:choose>
-                    <xsl:when test="name() = 'logicalOp'">
-                        <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
-                            <xsl:if test="$isNot = 'true' and $showAtt"><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>    
-                                <xsl:apply-templates select="." mode="topmost"/>
-                        </act>
-                    </xsl:when>
-                    <xsl:otherwise>
-                        <xsl:apply-templates select=".">
-                            <!--<xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>-->
-                        </xsl:apply-templates>
-                    </xsl:otherwise>
-                </xsl:choose>
+            <xsl:choose>
+                 <xsl:when test="name() = 'logicalOp'">
+                     <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                         <xsl:if test="$isNot = 'true' and $showAtt"><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>    
+                             <xsl:apply-templates select="." mode="topmost"/>
+                     </act>
+                 </xsl:when>
+                 <xsl:otherwise>
+                     <xsl:apply-templates select=".">
+                         <!--<xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>-->
+                     </xsl:apply-templates>
+                 </xsl:otherwise>
+             </xsl:choose>
         </sourceOf>
     </xsl:template>
     
@@ -383,7 +383,7 @@
 	                </xsl:variable>
 	                <xsl:variable name="attach_title">
 	                	<xsl:choose>
-		                	<xsl:when test="string-length($denominatorPopUUID)=0"><xsl:value-of select="$initPopDisplayName"/></xsl:when>
+	                	    <xsl:when test="string-length($denominatorPopUUID)=0"><xsl:value-of select="$initPopDisplayName"/></xsl:when>
 		                	<xsl:otherwise><xsl:value-of select="$denominatorPopDisplayName"/></xsl:otherwise>
 	                	</xsl:choose>
 	                </xsl:variable>	
@@ -632,28 +632,15 @@
                         <xsl:if test="$count_preceeding = 0">
                             <xsl:apply-templates select="." mode="datacriteria"/>
                         </xsl:if>    
-                            <!--<xsl:variable name="id">
-                                <xsl:value-of select="@id"/>
-                            </xsl:variable>-->
-                            <!--<xsl:variable name="addToDC">
-                                <xsl:value-of select="@suppDataElement"/>
-                            </xsl:variable>-->
-                            
-<!--                        <xsl:if test="$addToDC != 'true'">-->
-<!--                            <xsl:apply-templates select="." mode="datacriteria"/>-->
-<!--                        </xsl:if>-->
-                            
-                    <!--</xsl:if>-->
                 </xsl:for-each>
                 <!-- For each attribute with a mode of 'Value Set' we need to show the QDM used in the value set with the datatype as the name of the QDM
                 attribute. Also If the same QDM element is used as Value Set in more than 1 QDM Attributes, then we need to show the <propel> element twice.-->
-                <xsl:for-each select="measureGrouping//attribute">
-                    <xsl:variable name="qdmUUID"><xsl:value-of select="@qdmUUID"/></xsl:variable>
-                    <xsl:variable name="dataTyp"><xsl:value-of select="@name"/></xsl:variable>
-                    
-                    <xsl:for-each select="ancestor::measure/elementLookUp/qdm[@datatype='attribute'][@id=$qdmUUID]">
+                <xsl:for-each select="elementLookUp/qdm[@datatype='attribute']">
+                    <xsl:variable name="qdmID"><xsl:value-of select="@id"/></xsl:variable>
+                    <xsl:if test="count('ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID]') > 0">
+                        <xsl:variable name="dataTyp"><xsl:value-of select="ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID][1]/@name"/></xsl:variable>
                         <propel id="{@id}"  name="{@name}" displayName="{@name}" datatype="{$dataTyp}" oid="{@oid}" uuid="{@uuid}" taxonomy="{@taxonomy}" taxonomyVersion="{@version}" codeSystem="{@codeSystem}" codeSystemName="{@codeSystemName}"/>
-                    </xsl:for-each>    
+                    </xsl:if>
                 </xsl:for-each>
             </section>
         </component> 

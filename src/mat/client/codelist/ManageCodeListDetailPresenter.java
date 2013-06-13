@@ -266,7 +266,10 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 			
 			@Override
 			public void onBlur(BlurEvent event) {
-				((TextAreaWithMaxLength)detailDisplay.getOid()).getElement().setAttribute("aria-label", "");				
+				((TextAreaWithMaxLength)detailDisplay.getOid()).getElement().setAttribute("aria-label", "");
+				((TextAreaWithMaxLength)detailDisplay.getOid()).getElement().removeAttribute("role");
+				
+				
 			}
 		});
 		

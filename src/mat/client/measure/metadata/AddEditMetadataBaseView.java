@@ -97,8 +97,11 @@ public abstract class AddEditMetadataBaseView {
 		fPanel.add(new SpacerWidget());
 		fPanel.add(emptyTextBoxHolder);
 		fPanel.add(new SpacerWidget());
+		buttonBar.getSaveButton().setStylePrimaryName("primaryGreyButton");
 		buttonBar.getSaveButton().setText("Add to List");
+		buttonBar.getSaveButton().setTitle("Add to List");
 		buttonBar.getCancelButton().setText("Clear");
+		buttonBar.getCancelButton().setTitle("Clear");
 		fPanel.add(buttonBar);
 		rightSideFormHolder.clear();
 		rightSideFormHolder.add(fPanel);

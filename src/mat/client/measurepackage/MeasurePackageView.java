@@ -170,6 +170,8 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		content.add(new SpacerWidget());
 		
 		content.add(measurePackageSuccessMsg);
+		packageMeasure.setTitle("Create Measure Package");
+		packageMeasure.setStylePrimaryName("primaryGreyButton");
 		content.add(packageMeasure);
 		
 		clausesListBox.setVisibleItemCount(10);

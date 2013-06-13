@@ -114,7 +114,7 @@
                             <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                         </xsl:apply-templates> 
                     </xsl:when>
-                    <xsl:when test="$elemName = 'logicalOp'">
+                    <xsl:when test="$elemName = 'logicalOp' and (count(*)>0)">
                         <sourceOf typeCode="PRCN">
                             <conjunctionCode code="{$conj}"/>
                             <xsl:apply-templates select="." mode="handleFunctionalOps"/>
@@ -216,7 +216,7 @@
                 <!-- Process first child i.e. LHS -->
                 <xsl:variable name="child1Name"><xsl:value-of select="name(child::*[1])"/></xsl:variable>
                 <xsl:choose>
-                    <xsl:when test="$child1Name='logicalOp'">
+                    <xsl:when test="$child1Name='logicalOp' and (count(child::*[1]/*) > 0)">
                         <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
                             <xsl:apply-templates select="child::*[1]" mode="topmost"/>
                             <!-- Process second child i.e. RHS -->
@@ -246,7 +246,7 @@
                     <!-- Process first child i.e. LHS -->
                     <xsl:variable name="child1Name"><xsl:value-of select="name(child::*[1])"/></xsl:variable>
                     <xsl:choose>
-                        <xsl:when test="$child1Name='logicalOp'">
+                        <xsl:when test="$child1Name='logicalOp' and (count(child::*[1]/*) > 0)">
                            <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
                                 <xsl:apply-templates select="child::*[1]" mode="topmost"/>
                                 <!-- Process second child i.e. RHS -->
@@ -311,7 +311,7 @@
             
             <xsl:apply-templates select="parent::relationalOp" mode="pauseQuantity"/>
             <xsl:choose>
-                 <xsl:when test="name() = 'logicalOp'">
+                <xsl:when test="name() = 'logicalOp' and (count(*) > 0)">
                      <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
                          <xsl:if test="$isNot = 'true' and $showAtt"><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>    
                              <xsl:apply-templates select="." mode="topmost"/>
@@ -333,7 +333,7 @@
             <xsl:when test="@type='NOT'">-->
                 <xsl:for-each select="*">
                     <xsl:choose>
-                        <xsl:when test="name(.)='logicalOp'">
+                        <xsl:when test="name(.)='logicalOp' and (count(*) > 0)">
                             <xsl:if test="string-length($conj) > 0">
                                 <sourceOf typeCode="PRCN">
                                     <conjunctionCode code="{$conj}"/>

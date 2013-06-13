@@ -2,11 +2,13 @@ package mat.server.util;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,6 +22,10 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.dao.ListObjectDAO;
+import mat.dao.DataTypeDAO;
+import mat.model.ListObject;
+import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
@@ -28,6 +34,11 @@ import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.exolab.castor.mapping.Mapping;
+import org.exolab.castor.mapping.MappingException;
+import org.exolab.castor.xml.MarshalException;
+import org.exolab.castor.xml.Marshaller;
+import org.exolab.castor.xml.ValidationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -466,7 +477,7 @@ public class XmlProcessor {
 	 * @param scoringType
 	 * @throws XPathExpressionException
 	 */
-	private void removeNodesBasedOnScoring(String scoringType) throws XPathExpressionException{
+	public void removeNodesBasedOnScoring(String scoringType) throws XPathExpressionException{
 		List<String> xPathList = new ArrayList<String>();
 		
 		if(RATIO.equals(scoringType.toUpperCase())){
@@ -500,7 +511,7 @@ public class XmlProcessor {
 	 * @param scoringType
 	 * @throws XPathExpressionException
 	 */
-	private void createNewNodesBasedOnScoring(String scoringType) throws XPathExpressionException {
+	public void createNewNodesBasedOnScoring(String scoringType) throws XPathExpressionException {
 		
 		List<String> scoreBasedNodes = new ArrayList<String>();
 		if(SCORING_TYPE_CONTVAR.equals(scoringType)){
@@ -637,7 +648,7 @@ public class XmlProcessor {
 				populationsNode.appendChild(populationsChildNode);
 			}
 		}
-		
+	
 	}
 	
 	/**
@@ -742,6 +753,105 @@ public class XmlProcessor {
 	private static String toProperCase(String s) {
 		return s.substring(0, 1).toUpperCase() +
 		s.substring(1).toLowerCase();
+	}
+	
+
+	/* When a new Measure has been created, always create the default 4 cms supplimental QDM */
+	public static QualityDataModelWrapper createSupplimentalQDM(String measureId,DataTypeDAO dataTypeDAO,ListObjectDAO listObjectDAO){
+		//Get the Supplimental ListObject from the list_object table
+		List<ListObject> listOfSuppElements = listObjectDAO.getSupplimentalCodeList();
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+		wrapper.setQualityDataDTO(qdsList);
+		for(ListObject lo : listOfSuppElements){
+			QualityDataSetDTO qds = new QualityDataSetDTO();
+			qds.setOid(lo.getOid());
+			qds.setUuid(UUID.randomUUID().toString());
+			qds.setCodeListName(lo.getName());
+			qds.setTaxonomy(lo.getCodeSystem().getDescription());
+			qds.setVersion("1");
+			qds.setId(lo.getId());
+			if(lo.getOid().equalsIgnoreCase("2.16.840.1.113762.1.4.1")){
+				//find out patient characteristic gender dataType.
+				qds.setDataType((dataTypeDAO.findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_GENDER, lo.getCategory().getId())).getDescription());
+			}else if(lo.getOid().equalsIgnoreCase("2.16.840.1.114222.4.11.836")){
+				//find out patient characteristic race dataType.
+				qds.setDataType((dataTypeDAO.findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_RACE, lo.getCategory().getId())).getDescription());
+			}else if(lo.getOid().equalsIgnoreCase("2.16.840.1.114222.4.11.837")){
+				//find out patient characteristic ethnicity dataType.
+				qds.setDataType((dataTypeDAO.findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_ETHNICITY, lo.getCategory().getId())).getDescription());
+			}else if(lo.getOid().equalsIgnoreCase("2.16.840.1.114222.4.11.3591")){
+				//find out patient characteristic payer dataType.
+				qds.setDataType((dataTypeDAO.findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_PAYER, lo.getCategory().getId())).getDescription());
+			}
+			
+			qds.setSuppDataElement(true);
+			//getMeasurePackageService().saveSupplimentalQDM(qds);
+			wrapper.getQualityDataDTO().add(qds);
+		}
+		
+		return wrapper;
+	}
+	
+	
+	/**
+     * Method to create XML from QualityDataModelWrapper object for elementLookUp.
+     * */
+    public static org.apache.commons.io.output.ByteArrayOutputStream convertQualityDataDTOToXML(QualityDataModelWrapper qualityDataSetDTO) {
+		logger.info("In MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
+		Mapping mapping = new Mapping();
+		org.apache.commons.io.output.ByteArrayOutputStream stream = new org.apache.commons.io.output.ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("QualityDataModelMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+	        marshaller.marshal(qualityDataSetDTO);
+	        logger.info("Marshalling of QualityDataSetDTO is successful.." + stream.toString());
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load QualityDataModelMapping.xml in convertQualityDataDTOToXML method" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed in convertQualityDataDTOToXML method" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed in convertQualityDataDTOToXML method" + e);
+			}else if(e instanceof ValidationException){
+				logger.info("Validation Exception in convertQualityDataDTOToXML method" + e);
+			}else{
+				logger.info("Other Exception in convertQualityDataDTOToXML method " + e);
+			}
+		} 
+		logger.info("Exiting MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
+		return stream;
+	}
+    
+    /**
+     * Method to create XML from QualityDataModelWrapper object for supplementalDataElement .
+     * */
+    public static org.apache.commons.io.output.ByteArrayOutputStream convertQDMOToSuppleDataXML(QualityDataModelWrapper qualityDataSetDTO) {
+		logger.info("In MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
+		Mapping mapping = new Mapping();
+		org.apache.commons.io.output.ByteArrayOutputStream stream = new org.apache.commons.io.output.ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("QDMToSupplementDataMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+	        marshaller.marshal(qualityDataSetDTO);
+	        logger.info("Marshalling of QualityDataSetDTO is successful in convertQDMOToSuppleDataXML()" + stream.toString());
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load QualityDataModelMapping.xml in convertQDMOToSuppleDataXML()" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed in convertQDMOToSuppleDataXML()" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed in convertQDMOToSuppleDataXML()" + e);
+			}else if(e instanceof ValidationException){
+				logger.info("Validation Exception in convertQDMOToSuppleDataXML()" + e);
+			}else{
+				logger.info("Other Exception in convertQDMOToSuppleDataXML()" + e);
+			}
+		} 
+		logger.info("Exiting MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
+		return stream;
 	}
 	
 }

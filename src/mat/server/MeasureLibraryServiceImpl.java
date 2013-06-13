@@ -25,8 +25,9 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
 import mat.client.shared.MetaDataConstants;
+import mat.dao.ListObjectDAO;
+import mat.dao.impl.DataTypeDAO;
 import mat.model.Author;
-import mat.model.ListObject;
 import mat.model.MeasureType;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
@@ -361,7 +362,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	/* When a new Measure has been created, always create the default 4 cms supplimental QDM */
-	public QualityDataModelWrapper createSupplimentalQDM(String measureId){
+	/*public QualityDataModelWrapper createSupplimentalQDM(String measureId){
 		//Get the Supplimental ListObject from the list_object table
 		List<ListObject> listOfSuppElements = getCodeListService().getSupplimentalCodeList();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
@@ -395,7 +396,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		}
 		
 		return wrapper;
-	}
+	}*/
 	
 	
 	/*
@@ -674,6 +675,15 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return (MeasurePackageService)context.getBean("measurePackageService");
 	}
 	
+	private ListObjectDAO getListObjectDAO(){
+		return (ListObjectDAO)context.getBean("listObjectDAO");
+	}
+	
+	private mat.dao.DataTypeDAO getDataTypeDAO(){
+		mat.dao.DataTypeDAO dao = (mat.dao.DataTypeDAO)context.getBean("dataTypeDAO");
+		return dao;
+	}
+		
 	private ClauseBusinessService getClauseBusinessService() {
 		return (ClauseBusinessService)context.getBean("clauseBusinessService");
 	}
@@ -999,11 +1009,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			processor.addParentNode(MEASURE);			
 			measureXmlModel.setXml(processor.checkForScoringType());
 			
-			QualityDataModelWrapper wrapper = createSupplimentalQDM(measureXmlModel.getMeasureId());
+			QualityDataModelWrapper wrapper = XmlProcessor.createSupplimentalQDM(measureXmlModel.getMeasureId(),getDataTypeDAO(),getListObjectDAO());
 			// Object to XML for elementLoopUp
-			ByteArrayOutputStream streamQDM = convertQualityDataDTOToXML(wrapper);
+			ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
 			// Object to XML for supplementalDataElements
-			ByteArrayOutputStream streamSuppDataEle =convertQDMOToSuppleDataXML(wrapper);
+			ByteArrayOutputStream streamSuppDataEle = XmlProcessor.convertQDMOToSuppleDataXML(wrapper);
 			//Remove <?xml> and then replace.
 			String filteredString = removePatternFromXMLString(streamQDM.toString().substring(streamQDM.toString().indexOf("<measure>", 0)),"<measure>","");
 			filteredString =removePatternFromXMLString(filteredString,"</measure>","");
@@ -1182,9 +1192,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	
 	
-	 /**
+	/* *//**
      * Method to create XML from QualityDataModelWrapper object for elementLookUp.
-     * */
+     * *//*
     private ByteArrayOutputStream convertQualityDataDTOToXML(QualityDataModelWrapper qualityDataSetDTO) {
 		logger.info("In MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
 		Mapping mapping = new Mapping();
@@ -1212,9 +1222,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return stream;
 	}
     
-    /**
+    *//**
      * Method to create XML from QualityDataModelWrapper object for supplementalDataElement .
-     * */
+     * *//*
     private ByteArrayOutputStream convertQDMOToSuppleDataXML(QualityDataModelWrapper qualityDataSetDTO) {
 		logger.info("In MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
 		Mapping mapping = new Mapping();
@@ -1241,7 +1251,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		logger.info("Exiting MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
 		return stream;
 	}
-	
+	*/
 	private QualityDataModelWrapper convertXmltoQualityDataDTOModel(MeasureXmlModel xmlModel){
 		logger.info("In MeasureLibraryServiceImpl.convertXmltoQualityDataDTOModel()");
 		QualityDataModelWrapper details = null;

@@ -1,6 +1,5 @@
 package mat.server.clause;
 
-
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.UUID;
@@ -19,7 +18,10 @@ import mat.client.shared.MatException;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
+import mat.dao.DataTypeDAO;
+import mat.dao.ListObjectDAO;
 import mat.dao.UserDAO;
+import mat.model.QualityDataModelWrapper;
 import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
@@ -27,14 +29,20 @@ import mat.model.clause.MeasureXML;
 import mat.server.LoggedInUserUtil;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.util.MeasureUtility;
+import mat.server.util.XmlProcessor;
+import mat.shared.model.util.MeasureDetailsUtil;
 
+import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.xerces.dom.ElementImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+
+
 
 @SuppressWarnings("serial")
 public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implements MeasureCloningService {
@@ -50,7 +58,6 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	
 	private static final Log logger = LogFactory.getLog(MeasureCloningServiceImpl.class);
 	private static final String MEASURE_DETAILS = "measureDetails";
-	private static final String MEASURE = "measure";
 	private static final String MEASURE_GROUPING = "measureGrouping";
 	private static final String UU_ID = "uuid";
 	private static final String TITLE = "title";
@@ -60,14 +67,12 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	private static final String MEASURE_STATUS = "status";
 	private static final String MEASURE_SCORING = "scoring";
 	private static final String SUPPLEMENTAL_DATA_ELEMENTS = "supplementalDataElements";
-	private static final String ONC_ADMIN_SEX = "ONC Administrative Sex";
-	private static final String RACE = "Race";
-	private static final String ETHNICITY = "Ethnicity";
-	private static final String PAYER = "Payer";
+	private static final String ELEMENT_LOOKUP = "elementLookUp";
 	private static final String VERSION_ZERO = "0.0";
 	private static final boolean TRUE = true;
 		
 	private Document clonedDoc;
+	Measure clonedMeasure;
 	
 	
 	/*@Override
@@ -103,47 +108,81 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			ManageMeasureSearchModel.Result result = new ManageMeasureSearchModel.Result();
 			Measure measure = measureDAO.find(currentDetails.getId());
 			MeasureXML xml = measureXmlDAO.findForMeasure(currentDetails.getId());
-			Measure clonedMeasure = new Measure();
-			MeasureSet measureSet = new MeasureSet();
-			measureSet.setId(UUID.randomUUID().toString());
-			measureSetDAO.save(measureSet);
-			clonedMeasure.setMeasureSet(measureSet);
+			clonedMeasure = new Measure();
+			String originalXml = xml.getMeasureXMLAsString();
+			InputSource oldXmlstream = new InputSource(new StringReader(originalXml));
+			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+			Document originalDoc = docBuilder.parse(oldXmlstream);
+			clonedDoc = originalDoc;
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
 			clonedMeasure.setDescription(currentDetails.getName());
-			clonedMeasure.setVersion(VERSION_ZERO);
 			clonedMeasure.setMeasureStatus("In Progress");
 			if(currentDetails.getMeasScoring()!= null){
 				clonedMeasure.setMeasureScoring(currentDetails.getMeasScoring());
 			}else{
 				clonedMeasure.setMeasureScoring(measure.getMeasureScoring());
 			}	
-			clonedMeasure.setDraft(TRUE);
 			if(LoggedInUserUtil.getLoggedInUser() != null){
 				User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 				clonedMeasure.setOwner(currentUser);
 			}
-			measureDAO.saveMeasure(clonedMeasure);
-			String originalXml = xml.getMeasureXMLAsString();
-			InputSource oldXmlstream = new InputSource(new StringReader(originalXml));
-			DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-			Document originalDoc = docBuilder.parse(oldXmlstream);
-			clonedDoc = originalDoc;
-			
-			// Clear the measureDetails tag
-			clearChildNodes(MEASURE_DETAILS);
-			createNewMeasureDetails(clonedMeasure);
+			if(creatingDraft){
+				clonedMeasure.setVersion(measure.getVersion());
+				clonedMeasure.setDraft(TRUE);
+				clonedMeasure.setMeasureSet(measure.getMeasureSet());
+				measureDAO.saveMeasure(clonedMeasure);
+				createNewMeasureDetailsForDraft();
+			}else{
+				clonedMeasure.setVersion(VERSION_ZERO);
+				clonedMeasure.setDraft(measure.isDraft());
+				// Clear the measureDetails tag
+				clearChildNodes(MEASURE_DETAILS);
+				MeasureSet measureSet = new MeasureSet();
+				measureSet.setId(UUID.randomUUID().toString());
+				measureSetDAO.save(measureSet);
+				clonedMeasure.setMeasureSet(measureSet);
+				measureDAO.saveMeasure(clonedMeasure);
+				createNewMeasureDetails();
+			}
+										
 			// Create the measureGrouping tag
 			clearChildNodes(MEASURE_GROUPING);
-			clearOtherSupplementalDataElements(); 
+			clearChildNodes(SUPPLEMENTAL_DATA_ELEMENTS);
+			clearChildNodes(ELEMENT_LOOKUP);
+			//create the default 4 CMS supplemental QDM
+			DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
+			ListObjectDAO listObjectDAO = (ListObjectDAO)context.getBean("listObjectDAO");
+			QualityDataModelWrapper wrapper = XmlProcessor.createSupplimentalQDM(clonedMeasure.getId(),dataTypeDAO,listObjectDAO);
+			ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
+			ByteArrayOutputStream streamSuppDataEle = XmlProcessor.convertQDMOToSuppleDataXML(wrapper);			
+			//Remove <?xml> and then replace.
+			String filteredString = removePatternFromXMLString(streamQDM.toString().substring(streamQDM.toString().indexOf("<measure>", 0)),"<measure>","");
+			filteredString =removePatternFromXMLString(filteredString,"</measure>","");
+			//Remove <?xml> and then replace.
+			String filteredStringSupp = removePatternFromXMLString(streamSuppDataEle.toString().substring(streamSuppDataEle.toString().indexOf("<measure>", 0)),"<measure>","");
+			filteredStringSupp =removePatternFromXMLString(filteredStringSupp,"</measure>","");
+			
 			String clonedXMLString = convertDocumenttoString(clonedDoc);
 			MeasureXML clonedXml = new MeasureXML();
 			clonedXml.setMeasureXMLAsByteArray(clonedXMLString);
 			clonedXml.setMeasure_id(clonedMeasure.getId());
+			XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
+			String clonedXMLString2 = xmlProcessor.appendNode(filteredString,"qdm","/measure/elementLookUp");
+			clonedXMLString2=xmlProcessor.appendNode(filteredStringSupp,"elementRef","/measure/supplementalDataElements");
+			clonedXml.setMeasureXMLAsByteArray(clonedXMLString2);
+			if(currentDetails.getMeasScoring()!= null && !currentDetails.getMeasScoring().equals(measure.getMeasureScoring())){
+				xmlProcessor = new XmlProcessor(clonedXMLString2);
+				String scoringType= clonedMeasure.getMeasureScoring();
+				xmlProcessor.removeNodesBasedOnScoring(scoringType);
+				xmlProcessor.createNewNodesBasedOnScoring(scoringType);
+				clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+			}
+			logger.info("Final XML after cloning/draft" + clonedXml.getMeasureXMLAsString());			
 			measureXmlDAO.save(clonedXml);
 			result.setId(clonedMeasure.getId());
 			result.setName(currentDetails.getName());
 			result.setShortName(currentDetails.getShortName());
-			result.setScoringType(clonedMeasure.getMeasureScoring());
+			result.setScoringType(currentDetails.getMeasScoring());
 			String formattedVersion = MeasureUtility.getVersionText(measure.getVersion(), measure.isDraft());
 			result.setVersion(formattedVersion);
 			result.setEditable(TRUE);
@@ -154,47 +193,39 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			throw new MatException(e.getMessage());
 		}
 	}
-
 	
-	public void clearChildNodes(String nodeName){
+		
+	private void clearChildNodes(String nodeName){
 		NodeList nodeList  = clonedDoc.getElementsByTagName(nodeName);
 		Node parentNode = nodeList.item(0);
-		while(parentNode.hasChildNodes()){
-			parentNode.removeChild(parentNode.getFirstChild());
-		}
-	}
-	
-	private void clearOtherSupplementalDataElements(){
-			NodeList nodeList = clonedDoc.getElementsByTagName(SUPPLEMENTAL_DATA_ELEMENTS);
-			Node parentNode =  nodeList.item(0);
-			NodeList childNodesList = parentNode.getChildNodes();
-			for(int i=0; i < childNodesList.getLength();i++){
-				String attrName =childNodesList.item(i).getAttributes().item(1).getNodeValue();
-				if(!attrName.equals(ONC_ADMIN_SEX)&& !attrName.equals(RACE)&& !attrName.equals(ETHNICITY) && !attrName.equals(PAYER)){
-					parentNode.removeChild(childNodesList.item(i));
-				
-				}
+		if(parentNode!= null){	
+			while(parentNode.hasChildNodes()){
+				parentNode.removeChild(parentNode.getFirstChild());
 					
-			}		
+			}
+		}	
 	}
-	
-	private void createNewMeasureDetails(Measure measure){
+					
+	private void createNewMeasureDetails(){
 				NodeList nodeList  = clonedDoc.getElementsByTagName(MEASURE_DETAILS);
 				Node parentNode = nodeList.item(0);
 				Node uuidNode = clonedDoc.createElement(UU_ID);
-				uuidNode.setTextContent(measure.getId());
+				uuidNode.setTextContent(clonedMeasure.getId());
 				Node titleNode = clonedDoc.createElement(TITLE);
-				titleNode.setTextContent(measure.getDescription());
+				titleNode.setTextContent(clonedMeasure.getDescription());
 				Node shortTitleNode = clonedDoc.createElement(SHORT_TITLE);
-				shortTitleNode.setTextContent(measure.getaBBRName());
+				shortTitleNode.setTextContent(clonedMeasure.getaBBRName());
 				Node guidNode = clonedDoc.createElement(GUID);
-				guidNode.setTextContent(measure.getMeasureSet().getId());
+				guidNode.setTextContent(clonedMeasure.getMeasureSet().getId());
 				Node versionNode = clonedDoc.createElement(VERSION);
-				versionNode.setTextContent(measure.getVersion());
+				versionNode.setTextContent(clonedMeasure.getVersion());
 				Node statusNode = clonedDoc.createElement(MEASURE_STATUS);
-				statusNode.setTextContent(measure.getMeasureStatus());
-				Node measureScoringNode = clonedDoc.createElement(MEASURE_SCORING);
-				measureScoringNode.setTextContent(measure.getMeasureScoring());
+				statusNode.setTextContent(clonedMeasure.getMeasureStatus());
+				Node  measureScoringNode = clonedDoc.createElement(MEASURE_SCORING);
+				String measureScoring = clonedMeasure.getMeasureScoring();
+				ElementImpl element = (ElementImpl) measureScoringNode;
+				element.setAttribute("id",MeasureDetailsUtil.getScoringAbbr(measureScoring));
+				measureScoringNode.setTextContent(measureScoring);
 				parentNode.appendChild(uuidNode);
 				parentNode.appendChild(titleNode);
 				parentNode.appendChild(shortTitleNode);
@@ -202,8 +233,15 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 				parentNode.appendChild(versionNode);
 				parentNode.appendChild(statusNode);
 				parentNode.appendChild(measureScoringNode);
-				
 	}
+	
+	private void createNewMeasureDetailsForDraft(){
+		clonedDoc.getElementsByTagName(UU_ID).item(0).setTextContent(clonedMeasure.getId());
+		clonedDoc.getElementsByTagName(TITLE).item(0).setTextContent(clonedMeasure.getDescription());
+		clonedDoc.getElementsByTagName(SHORT_TITLE).item(0).setTextContent(clonedMeasure.getaBBRName());
+		clonedDoc.getElementsByTagName(MEASURE_STATUS).item(0).setTextContent(clonedMeasure.getMeasureStatus());
+			
+}
 		
 	private String convertDocumenttoString(Document doc) throws Exception{
 		try{	
@@ -218,7 +256,14 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
         		log(e.getMessage(), e);
         		throw new Exception(e.getMessage());
     		}
-           
-        	
+           	
+	}
+	
+	private String removePatternFromXMLString(String xmlString,String patternStart,String replaceWith){
+		String newString = xmlString;
+		if(patternStart !=null){
+			newString = newString.replaceAll(patternStart, replaceWith);
+		}
+		return newString;
 	}
 }

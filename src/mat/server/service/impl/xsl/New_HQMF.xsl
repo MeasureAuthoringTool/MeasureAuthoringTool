@@ -99,7 +99,7 @@
             <xsl:value-of select="upper-case(@type)"/>
         </xsl:variable>
         <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
-        <xsl:if test="$conj='AND' or $conj='OR'">
+        <xsl:if test="(count(child::*) > 0) and ($conj='AND' or $conj='OR')">
             <xsl:text>
            
             </xsl:text>
@@ -319,7 +319,7 @@
                  </xsl:when>
                  <xsl:otherwise>
                      <xsl:apply-templates select=".">
-                         <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                         <!--<xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>-->
                      </xsl:apply-templates>
                  </xsl:otherwise>
              </xsl:choose>
@@ -334,14 +334,19 @@
                 <xsl:for-each select="*">
                     <xsl:choose>
                         <xsl:when test="name(.)='logicalOp'">
-                            <sourceOf typeCode="PRCN">
-                                <conjunctionCode code="{$conj}"/>
-                                <xsl:apply-templates select="." mode="handleFunctionalOps"/>
-                                <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
-                                    <xsl:if test="$isNot = 'true' "><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>
-                                    <xsl:apply-templates select="." mode="topmost"/>
-                                </act>
-                            </sourceOf>
+                            <xsl:if test="string-length($conj) > 0">
+                                <sourceOf typeCode="PRCN">
+                                    <conjunctionCode code="{$conj}"/>
+                                    <xsl:apply-templates select="." mode="handleFunctionalOps"/>
+                                    <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                                        <xsl:if test="$isNot = 'true' "><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>
+                                        <xsl:apply-templates select="." mode="topmost"/>
+                                    </act>
+                                </sourceOf>
+                            </xsl:if>
+                            <xsl:if test="string-length($conj) = 0">
+                                <xsl:apply-templates select="." mode="topmost"/>
+                            </xsl:if>
                         </xsl:when>
                         <xsl:when test="name(.)='elementRef'">
                             <xsl:apply-templates select="." mode="handleElementRef">
@@ -349,7 +354,6 @@
                             </xsl:apply-templates>
                         </xsl:when>
                         <xsl:when test="name(.)=('functionalOp','relationalOp')">
-                            
                             <xsl:apply-templates select=".">
                                 <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                             </xsl:apply-templates>
@@ -443,8 +447,8 @@
                 <xsl:when test="@type = 'initialPatientPopulation'">Initial Patient Population</xsl:when>            
                 <xsl:when test="@type = 'numerator'">Numerator</xsl:when>            
                 <xsl:when test="@type = 'denominator'">Denominator</xsl:when>            
-                <xsl:when test="@type = 'exclusions'">Denominator</xsl:when>            
-                <xsl:when test="@type = 'exceptions'">Denominator Exception</xsl:when>
+                <xsl:when test="@type = 'denominatorExclusions'">Denominator</xsl:when>            
+                <xsl:when test="@type = 'denominatorExceptions'">Denominator Exception</xsl:when>
                 <xsl:when test="@type = 'measurePopulation'">Measure Population</xsl:when>
                 <xsl:when test="@type = 'measureObservation'">Measure Observation</xsl:when>
                 <xsl:when test="@type = 'numeratorExclusions'">Numerator Exclusions</xsl:when>

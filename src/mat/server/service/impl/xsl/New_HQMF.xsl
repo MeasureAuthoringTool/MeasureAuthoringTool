@@ -389,7 +389,7 @@
                 <xsl:when test=".[@type=('initialPatientPopulation','measureObservation')]">
                     <!-- do nothing -->
                 </xsl:when>
-                <xsl:when test=".[@type='denominator']">
+                <xsl:when test=".[@type=('denominator','denominatorExclusions')]">
                     <!-- Process 'denominator' clause with attachment to initialPatientPopulation -->
                     <xsl:call-template name="handleClause">
                         <xsl:with-param name="attachedUUID"><xsl:value-of select="$initPopUUID"/></xsl:with-param>
@@ -457,6 +457,9 @@
         </xsl:variable>
         <xsl:variable name="entry_uuid">
             <xsl:choose>
+                <xsl:when test="@type='numerator' or @type='denominatorExclusions' or @type='denominatorExceptions'">
+                    <xsl:value-of select="uuid:randomUUID()"/>
+                </xsl:when>
                 <xsl:when test="@uuid"><xsl:value-of select="@uuid"/></xsl:when>            
                 <xsl:otherwise>MISSING_UUID</xsl:otherwise>
             </xsl:choose>    

@@ -124,8 +124,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		expandCollapse.setSize("100px", "20px");
 		buttonExpand.setStylePrimaryName("expandAllButton");
 		buttonCollapse.setStylePrimaryName("collapseAllButton");
-		buttonExpand.setTitle("Expand All (Shift '+' )");
-		buttonCollapse.setTitle("Collapse All (Shift '-' )");
+		buttonExpand.setTitle("Expand All (Shift +)");
+		buttonCollapse.setTitle("Collapse All (Shift -)");
 		expandCollapse.add(buttonExpand);
 		expandCollapse.add(buttonCollapse);
 		buttonExpand.setFocus(true);

@@ -4,6 +4,9 @@ import java.util.List;
 
 import mat.client.measure.TransferMeasureOwnerShipModel.Result;
 import mat.client.shared.search.SearchResults;
+
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -167,6 +170,12 @@ public class TransferOwnerShipModel implements SearchResults<TransferOwnerShipMo
 	
 	private RadioButton getSelectedRadioBox(final List<Result> data,final int row){
 		final RadioButton transferRB = new RadioButton("selected",null,false);
+		transferRB.getElement().removeChild(transferRB.getElement().getLastChild());// removing empty label
+		NodeList<Element> inputs =  transferRB.getElement().getElementsByTagName("input");
+		for (int i = 0; i < inputs.getLength(); i++) {
+			inputs.getItem(i).removeAttribute("id");
+			inputs.getItem(i).setAttribute("title", "Select to Transfer Record");
+		}
 		transferRB.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
             @Override
             public void onValueChange(ValueChangeEvent<Boolean> e) {

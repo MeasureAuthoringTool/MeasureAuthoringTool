@@ -153,6 +153,8 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		holder.setStyleName("searchTableCenteredHolder");
 		holder.getElement().getStyle().setCursor(Cursor.POINTER);
 		CustomButton image = new CustomButton();
+		image.removeStyleName("gwt-button");
+		image.setStylePrimaryName("invisibleButtonText");
 		image.setTitle(action);
 		image.setResource(url,action);
 		setId(image, action, key);
@@ -186,13 +188,10 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	
 	private Widget getImageAndCheckBox(String action, ImageResource url, String key,String name){
 		HorizontalPanel hPanel = new HorizontalPanel();
-		//hPanel.setStyleName("searchTableCenteredHolder");
-		/*FocusableImageButton image = new FocusableImageButton(url,action);
-		image.setStylePrimaryName("measureSearchResultIcon rightAligned");
-		setId(image, action, key);
-		addListener(image);*/
 		hPanel.setStyleName("exportCheckBox");
 		CustomButton image = new CustomButton();
+		image.removeStyleName("gwt-button");
+		image.setStylePrimaryName("invisibleButtonText");
 		image.setTitle(action);
 		image.setResource(url,action);
 		setId(image, action, key);

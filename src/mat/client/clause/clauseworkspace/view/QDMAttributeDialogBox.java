@@ -294,7 +294,7 @@ public class QDMAttributeDialogBox {
 		if(qdmNode.getAttributes().getNamedItem(INSTANCE) != null){
 			isOccuranceQDM = true;
 		}
-		findAttributesForDataType(qdmDataType,isOccuranceQDM);
+//		findAttributesForDataType(qdmDataType,isOccuranceQDM);
 		grid = new Grid(0,4);
 		grid.addClickHandler(new QDMAttributeGridClickHandler(grid));
 			
@@ -303,7 +303,8 @@ public class QDMAttributeDialogBox {
 		unitNames.addAll(ClauseConstants.units);
 		
 		List<String> mode = getModeList();
-		buildAndDisplayDialogBox(qdmDataType, mode,xmlTreeDisplay, cellTreeNode);
+		findAttributesForDataType(qdmDataType,isOccuranceQDM, mode, xmlTreeDisplay, cellTreeNode);
+		//buildAndDisplayDialogBox(qdmDataType, mode,xmlTreeDisplay, cellTreeNode);
 	}
 	
 	/**
@@ -729,6 +730,9 @@ public class QDMAttributeDialogBox {
 	/**
 	 * This method will check all the QDM elements in ElementLookup node
 	 * and return the names of QDM elements of datatype 'attribute'.
+	 * @param cellTreeNode 
+	 * @param xmlTreeDisplay 
+	 * @param mode2 
 	 * @return
 	 */
 	/*private static List<String> getQDMElementNames(){
@@ -745,7 +749,7 @@ public class QDMAttributeDialogBox {
 		return qdmNameList;
 	}*/
 	
-	private static void findAttributesForDataType(String dataType, final boolean isOccuranceQDM){
+	private static void findAttributesForDataType(final String dataType, final boolean isOccuranceQDM, final List<String> mode2, final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode){
 		attributeService.getAllAttributesByDataType(dataType, new AsyncCallback<List<QDSAttributes>>() {
 
 			@Override
@@ -761,6 +765,7 @@ public class QDMAttributeDialogBox {
 					}
 					attributeList.add(qdsAttributes.getName());
 				}
+				buildAndDisplayDialogBox(dataType, mode2,xmlTreeDisplay, cellTreeNode);
 			}
 		});
 	}

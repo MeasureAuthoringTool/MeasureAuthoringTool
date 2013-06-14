@@ -11,6 +11,7 @@ public class CustomButton extends Button {
 	Image img;
 	public CustomButton(){
 		super();
+		getElement().removeAttribute("class");
 	}
 	public void setResource(ImageResource imageResource, String imageTitle){ 
 		img = new Image(imageResource); 
@@ -18,12 +19,14 @@ public class CustomButton extends Button {
 		String definedStyles = img.getElement().getAttribute("style"); 
 		img.getElement().setAttribute("style", definedStyles + "; vertical-align:middle;"); 
 		DOM.insertBefore(getElement(), img.getElement(), DOM.getFirstChild(getElement())); 
+		setText(imageTitle);
 	}
 	@Override 
 	public void setText(String text) { 
 		this.text = text; 
-		Element span = DOM.createElement("span"); span.setInnerText(text); 
-		span.setAttribute("style", "padding-left:3px; vertical-align:middle;"); 
+		Element span = DOM.createElement("span"); 
+		span.setInnerText(text); 
+		span.setAttribute("style", "padding-left:3px; vertical-align:middle;");
 		DOM.insertChild(getElement(), span, 0); 
 	}
 	@Override 

@@ -124,8 +124,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		expandCollapse.setSize("100px", "20px");
 		buttonExpand.setStylePrimaryName("expandAllButton");
 		buttonCollapse.setStylePrimaryName("collapseAllButton");
-		buttonExpand.setTitle("Expand All");
-		buttonCollapse.setTitle("Collapse All");
+		buttonExpand.setTitle("Expand All (Shift '+' )");
+		buttonCollapse.setTitle("Collapse All (Shift '-' )");
 		expandCollapse.add(buttonExpand);
 		expandCollapse.add(buttonCollapse);
 		buttonExpand.setFocus(true);
@@ -597,11 +597,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 			}
 		}
-		if((event.isShiftKeyDown() && (keyCode == ClauseConstants.PLUS_FF || keyCode == ClauseConstants.PLUS_IE))
-					||(keyCode == ClauseConstants.PLUS_NUMPAD)){//EXPAND/COLLAPSE (+(Shift +) Expand| - Collapse)
+		if((event.isShiftKeyDown() && (keyCode == ClauseConstants.PLUS_FF || keyCode == ClauseConstants.PLUS_IE))){
+			//EXPAND/COLLAPSE (+(Shift +) Expand| - Collapse)
 			popupPanel.hide();
 			openAllNodes(cellTree.getRootTreeNode());
-		}else if((!event.isShiftKeyDown()) && keyCode == ClauseConstants.MINUS_FF || keyCode == ClauseConstants.MINUS_IE ||keyCode == ClauseConstants.MINUS_NUMPAD){
+		}else if((event.isShiftKeyDown() && (keyCode == ClauseConstants.MINUS_FF || keyCode == ClauseConstants.MINUS_IE))){
 			popupPanel.hide();
 			closeNodes(cellTree.getRootTreeNode());
 		}

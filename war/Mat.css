@@ -1223,11 +1223,37 @@ padding: 2px;
 .readOnlyButton {
     background: url("images/hborder.png") repeat-x scroll 0 -27px transparent;
     border: 1px outset #CCCCCC;
-    font-size: small;
+    font-size: 0;
     margin: 0;
     padding: 3px 5px;
     text-decoration: none;
 }
+.invisibleButtonText{
+  margin: 0;
+  padding: 3px 5px;
+  text-decoration: none;
+  font-size: 0;
+  cursor: pointer;
+  cursor: hand;
+  background: url("images/hborder.png") repeat-x 0px -27px;
+  border: 1px outset #ccc;
+	
+}
+
+.invisibleButtonText:active {
+  border: 1px inset #ccc;
+}
+.invisibleButtonText:hover {
+  border-color: #9cf #69e #69e #7af;
+}
+.invisibleButtonText[disabled] {
+  cursor: default;
+  color: #888;
+}
+.invisibleButtonText[disabled]:hover {
+  border: 1px outset #ccc;
+}
+
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________
 .skiplist {margin: 0 0 0 5px; padding: 0} 

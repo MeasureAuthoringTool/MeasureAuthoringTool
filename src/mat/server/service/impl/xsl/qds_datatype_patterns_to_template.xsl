@@ -77,15 +77,21 @@
 						</xsl:variable>
 
 						<xsl:variable name="to_title">
-							<xsl:call-template name="title">
+							<xsl:for-each select="following-sibling::elementRef[1]">
+								<xsl:call-template name="title"/>
+							</xsl:for-each>
+							<!--<xsl:call-template name="title">
 								<xsl:with-param name="is_to" select="$to"/>
-							</xsl:call-template>
+							</xsl:call-template>-->
 						</xsl:variable>
 						<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 							<id root="{$rel_to_uuid}"/>
 							<xsl:if test="string-length($to_title)>0">
 								<title><xsl:value-of select="$to_title"/></title>
 							</xsl:if>
+							<xsl:for-each select="following-sibling::elementRef[1]">
+								<xsl:call-template name="handleAttributes"/>
+							</xsl:for-each>
 						</observation>
 					</xsl:if>
 					<xsl:if test="to">

@@ -623,24 +623,37 @@
                         </xsl:if>    
                 </xsl:for-each>
                 <!-- For each attribute with a mode of 'Value Set' we need to show the QDM used in the value set with the datatype as the name of the QDM
-                attribute. Also If the same QDM element is used as Value Set in more than 1 QDM Attributes, then we need to show the <propel> element twice.-->
+                attribute. -->
                 <xsl:for-each select="elementLookUp/qdm[@datatype='attribute']">
-                    <xsl:variable name="qdmID"><xsl:value-of select="@id"/></xsl:variable>
                     
-                    <xsl:if test="count('ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID]') > 0">
+                    <xsl:variable name="qdmID"><xsl:value-of select="@id"/></xsl:variable>
+                    <xsl:variable name="qdmName"><xsl:value-of select="@name"/></xsl:variable>
+                    <xsl:variable name="qdmOid"><xsl:value-of select="@oid"/></xsl:variable>
+                    <xsl:variable name="qdmUuid"><xsl:value-of select="@uuid"/></xsl:variable>
+                    <xsl:variable name="qdmTaxonomy"><xsl:value-of select="@taxonomy"/></xsl:variable>
+                    <xsl:variable name="qdmVersion"><xsl:value-of select="@version"/></xsl:variable>
+                    <xsl:variable name="qdmCodeSystem"><xsl:value-of select="@codeSystem"/></xsl:variable>
+                    <xsl:variable name="qdmCodeSystemName"><xsl:value-of select="@codeSystemName"/></xsl:variable>
+                    
+                    <xsl:choose>
+                        <xsl:when test="(count(ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID]) > 0)">
+                            <xsl:for-each select="distinct-values(ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID]/@name)">
+                                <propel id="{$qdmID}"  name="{$qdmName}" displayName="{$qdmName}" datatype="{.}" oid="{$qdmOid}" uuid="{$qdmUuid}" taxonomy="{$qdmTaxonomy}" taxonomyVersion="{$qdmVersion}" codeSystem="{$qdmCodeSystem}" codeSystemName="{$qdmCodeSystemName}"/>
+                            </xsl:for-each>
+                        </xsl:when>
                         
-                        <xsl:variable name="qdmName"><xsl:value-of select="@name"/></xsl:variable>
-                        <xsl:variable name="qdmOid"><xsl:value-of select="@oid"/></xsl:variable>
-                        <xsl:variable name="qdmUuid"><xsl:value-of select="@uuid"/></xsl:variable>
-                        <xsl:variable name="qdmTaxonomy"><xsl:value-of select="@taxonomy"/></xsl:variable>
-                        <xsl:variable name="qdmVersion"><xsl:value-of select="@version"/></xsl:variable>
-                        <xsl:variable name="qdmCodeSystem"><xsl:value-of select="@codeSystem"/></xsl:variable>
-                        <xsl:variable name="qdmCodeSystemName"><xsl:value-of select="@codeSystemName"/></xsl:variable>
+                        <xsl:when test="(count(ancestor::measure/strata//attribute[@qdmUUID = $qdmID]) > 0)">
+                            <xsl:for-each select="distinct-values(ancestor::measure/strata//attribute[@qdmUUID = $qdmID]/@name)">
+                                <propel id="{$qdmID}"  name="{$qdmName}" displayName="{$qdmName}" datatype="{.}" oid="{$qdmOid}" uuid="{$qdmUuid}" taxonomy="{$qdmTaxonomy}" taxonomyVersion="{$qdmVersion}" codeSystem="{$qdmCodeSystem}" codeSystemName="{$qdmCodeSystemName}"/>
+                            </xsl:for-each>
+                        </xsl:when>
                         
-                        <xsl:for-each select="distinct-values(ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID]/@name)">
-                            <propel id="{$qdmID}"  name="{$qdmName}" displayName="{$qdmName}" datatype="{.}" oid="{$qdmOid}" uuid="{$qdmUuid}" taxonomy="{$qdmTaxonomy}" taxonomyVersion="{$qdmVersion}" codeSystem="{$qdmCodeSystem}" codeSystemName="{$qdmCodeSystemName}"/>
-                        </xsl:for-each>    
-                    </xsl:if>
+                        <xsl:when test="(count(ancestor::measure/measureObservations//attribute[@qdmUUID = $qdmID]) > 0)">
+                            <xsl:for-each select="distinct-values(ancestor::measure/measureObservations//attribute[@qdmUUID = $qdmID]/@name)">
+                                <propel id="{$qdmID}"  name="{$qdmName}" displayName="{$qdmName}" datatype="{.}" oid="{$qdmOid}" uuid="{$qdmUuid}" taxonomy="{$qdmTaxonomy}" taxonomyVersion="{$qdmVersion}" codeSystem="{$qdmCodeSystem}" codeSystemName="{$qdmCodeSystemName}"/>
+                            </xsl:for-each>
+                        </xsl:when>
+                    </xsl:choose>
                 </xsl:for-each>
             </section>
         </component> 

@@ -626,9 +626,20 @@
                 attribute. Also If the same QDM element is used as Value Set in more than 1 QDM Attributes, then we need to show the <propel> element twice.-->
                 <xsl:for-each select="elementLookUp/qdm[@datatype='attribute']">
                     <xsl:variable name="qdmID"><xsl:value-of select="@id"/></xsl:variable>
+                    
                     <xsl:if test="count('ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID]') > 0">
-                        <xsl:variable name="dataTyp"><xsl:value-of select="ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID][1]/@name"/></xsl:variable>
-                        <propel id="{@id}"  name="{@name}" displayName="{@name}" datatype="{$dataTyp}" oid="{@oid}" uuid="{@uuid}" taxonomy="{@taxonomy}" taxonomyVersion="{@version}" codeSystem="{@codeSystem}" codeSystemName="{@codeSystemName}"/>
+                        
+                        <xsl:variable name="qdmName"><xsl:value-of select="@name"/></xsl:variable>
+                        <xsl:variable name="qdmOid"><xsl:value-of select="@oid"/></xsl:variable>
+                        <xsl:variable name="qdmUuid"><xsl:value-of select="@uuid"/></xsl:variable>
+                        <xsl:variable name="qdmTaxonomy"><xsl:value-of select="@taxonomy"/></xsl:variable>
+                        <xsl:variable name="qdmVersion"><xsl:value-of select="@version"/></xsl:variable>
+                        <xsl:variable name="qdmCodeSystem"><xsl:value-of select="@codeSystem"/></xsl:variable>
+                        <xsl:variable name="qdmCodeSystemName"><xsl:value-of select="@codeSystemName"/></xsl:variable>
+                        
+                        <xsl:for-each select="distinct-values(ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID]/@name)">
+                            <propel id="{$qdmID}"  name="{$qdmName}" displayName="{$qdmName}" datatype="{.}" oid="{$qdmOid}" uuid="{$qdmUuid}" taxonomy="{$qdmTaxonomy}" taxonomyVersion="{$qdmVersion}" codeSystem="{$qdmCodeSystem}" codeSystemName="{$qdmCodeSystemName}"/>
+                        </xsl:for-each>    
                     </xsl:if>
                 </xsl:for-each>
             </section>

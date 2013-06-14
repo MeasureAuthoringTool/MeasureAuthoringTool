@@ -140,11 +140,9 @@ class CodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 	private Widget getImage(String action, ImageResource url, String key) {
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
-		/*FocusableImageButton image = new FocusableImageButton(url,action);
-		setImageStyle(image);
-		setId(image, action, key);
-		addListener(image);*/
 		CustomButton image = new CustomButton();
+		image.removeStyleName("gwt-button");
+		image.setStylePrimaryName("invisibleButtonText");
 		image.setTitle(action);
 		image.setResource(url,action);
 		setId(image, action, key);

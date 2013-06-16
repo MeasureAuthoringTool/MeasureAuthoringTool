@@ -218,6 +218,7 @@
                 <xsl:choose>
                     <xsl:when test="$child1Name='logicalOp' and (count(child::*[1]/*) > 0)">
                         <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                            <xsl:if test="$isNot = 'true' "><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>
                             <xsl:apply-templates select="child::*[1]" mode="topmost"/>
                             <!-- Process second child i.e. RHS -->
                             <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS">
@@ -248,6 +249,7 @@
                     <xsl:choose>
                         <xsl:when test="$child1Name='logicalOp' and (count(child::*[1]/*) > 0)">
                            <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                               <xsl:if test="$isNot = 'true' "><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>
                                 <xsl:apply-templates select="child::*[1]" mode="topmost"/>
                                 <!-- Process second child i.e. RHS -->
                                 <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS">
@@ -313,10 +315,11 @@
             <xsl:choose>
                 <xsl:when test="name() = 'logicalOp' and (count(*) > 0)">
                      <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
-                         <xsl:if test="$isNot = 'true' and $showAtt"><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>    
+                        <!-- <xsl:if test="$isNot = 'true' and $showAtt"><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>-->    
                              <xsl:apply-templates select="." mode="topmost"/>
                      </act>
                  </xsl:when>
+                
                  <xsl:otherwise>
                      <xsl:apply-templates select=".">
                          <!--<xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>-->
@@ -349,9 +352,17 @@
                             </xsl:if>
                         </xsl:when>
                         <xsl:when test="name(.)='elementRef'">
-                            <xsl:apply-templates select="." mode="handleElementRef">
-                                <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
-                            </xsl:apply-templates>
+                            <xsl:choose>
+                                <xsl:when test="string-length($conj) > 0">
+                                    <xsl:apply-templates select="." mode="handleElementRef">
+                                        <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                                    </xsl:apply-templates>
+                                </xsl:when>
+                                <xsl:otherwise>
+                                    <xsl:apply-templates select="." mode="handleFunctionalOps"/>
+                                    <xsl:apply-templates select="."/>
+                                </xsl:otherwise>
+                            </xsl:choose>
                         </xsl:when>
                         <xsl:when test="name(.)=('functionalOp','relationalOp')">
                             <xsl:apply-templates select=".">

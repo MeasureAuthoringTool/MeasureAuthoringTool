@@ -2,6 +2,7 @@ package mat.client.codelist;
 
 import mat.client.ImageResources;
 import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.shared.CustomButton;
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.search.SearchResults;
 import mat.model.CodeListSearchDTO;
@@ -137,8 +138,11 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 	private Widget getImage(String action, ImageResource url, String key) {
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
-		FocusableImageButton image = new FocusableImageButton(url,action);
-		setImageStyle(image);
+		CustomButton image = new CustomButton();
+		image.removeStyleName("gwt-button");
+		image.setStylePrimaryName("invisibleButtonText");
+		image.setTitle(action);
+		image.setResource(url,action);
 		setId(image, action, key);
 		addListener(image);
 		holder.add(image);
@@ -151,18 +155,19 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		
 		//transFerCheckBox.setFormValue(key);
 		transFerCheckBox.getElement().setId("Transfer_" + key);
+		transFerCheckBox.setTitle("Select Value Set to Transfer Ownership.");
 		transFerCheckBox.addClickHandler(clickHandler);
 		return transFerCheckBox;
 		
 	}
 	
-	private void addListener(FocusableImageButton image) {
+	private void addListener(CustomButton image) {
 		image.addClickHandler(clickHandler);
 	}
 	private void setImageStyle(FocusableImageButton image) {
 		image.setStylePrimaryName("measureSearchResultIcon");
 	}
-	private void setId(FocusableImageButton image, String action, String key) {
+	private void setId(CustomButton image, String action, String key) {
 		String id = action + "_" + key;
 		image.getElement().setAttribute("id", id);
 	}

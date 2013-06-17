@@ -2,6 +2,9 @@ package mat.server.clause;
 
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -10,6 +13,9 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -18,8 +24,6 @@ import mat.client.shared.MatException;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
-import mat.dao.DataTypeDAO;
-import mat.dao.ListObjectDAO;
 import mat.dao.UserDAO;
 import mat.model.QualityDataModelWrapper;
 import mat.model.User;
@@ -27,9 +31,11 @@ import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureXML;
 import mat.server.LoggedInUserUtil;
+import mat.server.MeasureLibraryServiceImpl;
 import mat.server.SpringRemoteServiceServlet;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
+import mat.shared.ConstantMessages;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -67,10 +73,10 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	private static final String MEASURE_STATUS = "status";
 	private static final String MEASURE_SCORING = "scoring";
 	private static final String SUPPLEMENTAL_DATA_ELEMENTS = "supplementalDataElements";
-	private static final String ELEMENT_LOOKUP = "elementLookUp";
 	private static final String VERSION_ZERO = "0.0";
 	private static final boolean TRUE = true;
-		
+	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm [@suppDataElement='true']";
+
 	private Document clonedDoc;
 	Measure clonedMeasure;
 	
@@ -96,6 +102,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 		}
 	}
 */		
+	
 	@Override
 	public ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, String loggedinUserId,boolean creatingDraft) throws MatException{
 		logger.info("In MeasureCloningServiceImpl.clone() method..");
@@ -148,16 +155,9 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			// Create the measureGrouping tag
 			clearChildNodes(MEASURE_GROUPING);
 			clearChildNodes(SUPPLEMENTAL_DATA_ELEMENTS);
-			clearChildNodes(ELEMENT_LOOKUP);
 			//create the default 4 CMS supplemental QDM
-			DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
-			ListObjectDAO listObjectDAO = (ListObjectDAO)context.getBean("listObjectDAO");
-			QualityDataModelWrapper wrapper = XmlProcessor.createSupplimentalQDM(clonedMeasure.getId(),dataTypeDAO,listObjectDAO);
-			ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
+			QualityDataModelWrapper wrapper = measureXmlDAO.createSupplimentalQDM(clonedMeasure.getId(), TRUE, getSupplementalUUIds());
 			ByteArrayOutputStream streamSuppDataEle = XmlProcessor.convertQDMOToSuppleDataXML(wrapper);			
-			//Remove <?xml> and then replace.
-			String filteredString = removePatternFromXMLString(streamQDM.toString().substring(streamQDM.toString().indexOf("<measure>", 0)),"<measure>","");
-			filteredString =removePatternFromXMLString(filteredString,"</measure>","");
 			//Remove <?xml> and then replace.
 			String filteredStringSupp = removePatternFromXMLString(streamSuppDataEle.toString().substring(streamSuppDataEle.toString().indexOf("<measure>", 0)),"<measure>","");
 			filteredStringSupp =removePatternFromXMLString(filteredStringSupp,"</measure>","");
@@ -167,8 +167,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			clonedXml.setMeasureXMLAsByteArray(clonedXMLString);
 			clonedXml.setMeasure_id(clonedMeasure.getId());
 			XmlProcessor xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
-			String clonedXMLString2 = xmlProcessor.appendNode(filteredString,"qdm","/measure/elementLookUp");
-			clonedXMLString2=xmlProcessor.appendNode(filteredStringSupp,"elementRef","/measure/supplementalDataElements");
+			String clonedXMLString2=xmlProcessor.appendNode(filteredStringSupp,"elementRef","/measure/supplementalDataElements");
 			clonedXml.setMeasureXMLAsByteArray(clonedXMLString2);
 			if(currentDetails.getMeasScoring()!= null && !currentDetails.getMeasScoring().equals(measure.getMeasureScoring())){
 				xmlProcessor = new XmlProcessor(clonedXMLString2);
@@ -205,34 +204,63 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			}
 		}	
 	}
+	
+	private HashMap<String, String> getSupplementalUUIds(){
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		HashMap<String, String> supplementalUUIdMap = null;
+		try{
+			NodeList nodesElementLookUpAll = (NodeList) xPath.evaluate(XPATH_MEASURE_ELEMENT_LOOKUP_QDM, clonedDoc.getDocumentElement(), XPathConstants.NODESET);
+			if(nodesElementLookUpAll!= null){	
+				supplementalUUIdMap = new HashMap<String,String>();
+				for(int i=0;i<nodesElementLookUpAll.getLength();i++){
+					Node newNode = nodesElementLookUpAll.item(i);
+					String nodeName = newNode.getAttributes().getNamedItem("name").getNodeValue().toString();
+					String uuid = newNode.getAttributes().getNamedItem("uuid").getNodeValue().toString();
+					if(nodeName.equals(ConstantMessages.GENDER)){
+						supplementalUUIdMap.put(ConstantMessages.GENDER,uuid);
+					}else if(nodeName.equals(ConstantMessages.RACE)){
+						supplementalUUIdMap.put(ConstantMessages.RACE,uuid);
+					}else if(nodeName.equals(ConstantMessages.ETHNICITY)){
+						supplementalUUIdMap.put(ConstantMessages.ETHNICITY,uuid);
+					}else if(nodeName.equals(ConstantMessages.PAYER)){
+						supplementalUUIdMap.put(ConstantMessages.PAYER, uuid);
+					}
 					
+				}
+			}	
+		}catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return supplementalUUIdMap;	
+	}
+		
 	private void createNewMeasureDetails(){
-				NodeList nodeList  = clonedDoc.getElementsByTagName(MEASURE_DETAILS);
-				Node parentNode = nodeList.item(0);
-				Node uuidNode = clonedDoc.createElement(UU_ID);
-				uuidNode.setTextContent(clonedMeasure.getId());
-				Node titleNode = clonedDoc.createElement(TITLE);
-				titleNode.setTextContent(clonedMeasure.getDescription());
-				Node shortTitleNode = clonedDoc.createElement(SHORT_TITLE);
-				shortTitleNode.setTextContent(clonedMeasure.getaBBRName());
-				Node guidNode = clonedDoc.createElement(GUID);
-				guidNode.setTextContent(clonedMeasure.getMeasureSet().getId());
-				Node versionNode = clonedDoc.createElement(VERSION);
-				versionNode.setTextContent(clonedMeasure.getVersion());
-				Node statusNode = clonedDoc.createElement(MEASURE_STATUS);
-				statusNode.setTextContent(clonedMeasure.getMeasureStatus());
-				Node  measureScoringNode = clonedDoc.createElement(MEASURE_SCORING);
-				String measureScoring = clonedMeasure.getMeasureScoring();
-				ElementImpl element = (ElementImpl) measureScoringNode;
-				element.setAttribute("id",MeasureDetailsUtil.getScoringAbbr(measureScoring));
-				measureScoringNode.setTextContent(measureScoring);
-				parentNode.appendChild(uuidNode);
-				parentNode.appendChild(titleNode);
-				parentNode.appendChild(shortTitleNode);
-				parentNode.appendChild(guidNode);
-				parentNode.appendChild(versionNode);
-				parentNode.appendChild(statusNode);
-				parentNode.appendChild(measureScoringNode);
+		NodeList nodeList  = clonedDoc.getElementsByTagName(MEASURE_DETAILS);
+		Node parentNode = nodeList.item(0);
+		Node uuidNode = clonedDoc.createElement(UU_ID);
+		uuidNode.setTextContent(clonedMeasure.getId());
+		Node titleNode = clonedDoc.createElement(TITLE);
+		titleNode.setTextContent(clonedMeasure.getDescription());
+		Node shortTitleNode = clonedDoc.createElement(SHORT_TITLE);
+		shortTitleNode.setTextContent(clonedMeasure.getaBBRName());
+		Node guidNode = clonedDoc.createElement(GUID);
+		guidNode.setTextContent(clonedMeasure.getMeasureSet().getId());
+		Node versionNode = clonedDoc.createElement(VERSION);
+		versionNode.setTextContent(clonedMeasure.getVersion());
+		Node statusNode = clonedDoc.createElement(MEASURE_STATUS);
+		statusNode.setTextContent(clonedMeasure.getMeasureStatus());
+		Node  measureScoringNode = clonedDoc.createElement(MEASURE_SCORING);
+		String measureScoring = clonedMeasure.getMeasureScoring();
+		ElementImpl element = (ElementImpl) measureScoringNode;
+		element.setAttribute("id",MeasureDetailsUtil.getScoringAbbr(measureScoring));
+		measureScoringNode.setTextContent(measureScoring);
+		parentNode.appendChild(uuidNode);
+		parentNode.appendChild(titleNode);
+		parentNode.appendChild(shortTitleNode);
+		parentNode.appendChild(guidNode);
+		parentNode.appendChild(versionNode);
+		parentNode.appendChild(statusNode);
+		parentNode.appendChild(measureScoringNode);
 	}
 	
 	private void createNewMeasureDetailsForDraft(){

@@ -15,8 +15,11 @@
     </global-method-security>
 
     <http use-expressions="true">
-        <intercept-url pattern="/Mat.html" access="isAuthenticated()" requires-channel="https" />
-         <intercept-url pattern="/mat/**" access="isAuthenticated()"  requires-channel="https" />
+       <!--  <intercept-url pattern="/Mat.html" access="isAuthenticated()" requires-channel="https" />
+         <intercept-url pattern="/mat/**" access="isAuthenticated()"  requires-channel="https" /> -->
+         <!-- Above is commented as proxy changes are done. -->
+         <intercept-url pattern="/Mat.html" access="isAuthenticated()" requires-channel="http" />
+         <intercept-url pattern="/mat/**" access="isAuthenticated()"  requires-channel="http" />
         <form-login default-target-url="/Mat.html" login-page="/Login.html"/>
         <!-- <logout invalidate-session="true" success-handler-ref="logoutSuccessHandler" /> -->
          <logout/>

@@ -109,7 +109,7 @@
                 <xsl:variable name="elemName"><xsl:value-of select="name()"/></xsl:variable>
                 
                 <xsl:choose>
-                    <xsl:when test="$elemName = 'elementRef'">
+                    <xsl:when test="$elemName = 'elementRef'">                        
                         <xsl:apply-templates select="." mode="handleElementRef">
                             <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
                         </xsl:apply-templates> 
@@ -261,6 +261,17 @@
                         <xsl:when test="$child1Name='elementRef'">
                             <xsl:apply-templates select="child::*[1]"/>
                         </xsl:when>
+                        <xsl:when test="$child1Name = 'functionalOp'">
+                            <xsl:apply-templates select="child::*[1]/*" mode="handleFunctionalOps"/>
+                            <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                                <xsl:apply-templates select="child::*[1]"/>
+                                <!-- Process second child i.e. RHS -->
+                                <xsl:apply-templates select="child::*[2]" mode="processRelational_Func_RHS">
+                                    <xsl:with-param name="showAtt">true</xsl:with-param>
+                                    <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                                </xsl:apply-templates>
+                            </act>
+                        </xsl:when>
                         <xsl:otherwise>
                            <xsl:apply-templates select="child::*[1]"/>
                            <!-- Process second child i.e. RHS -->
@@ -348,7 +359,22 @@
                                 </sourceOf>
                             </xsl:if>
                             <xsl:if test="string-length($conj) = 0">
-                                <xsl:apply-templates select="." mode="topmost"/>
+                                <xsl:variable name="isRHS_RelationalOp"><xsl:apply-templates mode='isRelationalOp_RHS' select=".."></xsl:apply-templates></xsl:variable>
+                                <xsl:choose>
+                                    <xsl:when test="$isRHS_RelationalOp='true'">
+                                         
+                                        <xsl:apply-templates select="." mode="handleFunctionalOps"/>    
+                                        <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                                            <xsl:apply-templates select="." mode="topmost"/>   
+                                        </act>
+                                        
+                                    </xsl:when>
+                                    <xsl:otherwise>
+                                        <xsl:apply-templates select="." mode="handleFunctionalOps"/>
+                                        <xsl:apply-templates select="." mode="topmost"/>
+                                    </xsl:otherwise>
+                                </xsl:choose>
+                                
                             </xsl:if>
                         </xsl:when>
                         <xsl:when test="name(.)='elementRef'">
@@ -359,8 +385,20 @@
                                     </xsl:apply-templates>
                                 </xsl:when>
                                 <xsl:otherwise>
-                                    <xsl:apply-templates select="." mode="handleFunctionalOps"/>
-                                    <xsl:apply-templates select="."/>
+                                    <xsl:variable name="isLHS_RelationalOp"><xsl:apply-templates mode='isRelationalOp_LHS' select=".."></xsl:apply-templates></xsl:variable>
+                                    <xsl:choose>
+                                        <xsl:when test="$isLHS_RelationalOp='true'">
+                                            <sourceOf typeCode="PRCN">
+                                                <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->    
+                                                <xsl:apply-templates select="."/>
+                                            </sourceOf>
+                                        </xsl:when>
+                                        <xsl:otherwise>
+                                            <xsl:apply-templates select="." mode="handleFunctionalOps"/>
+                                            <xsl:apply-templates select="."/>
+                                        </xsl:otherwise>
+                                    </xsl:choose>
+                                    
                                 </xsl:otherwise>
                             </xsl:choose>
                         </xsl:when>
@@ -845,5 +883,13 @@
             <xsl:otherwise>false</xsl:otherwise>
         </xsl:choose>
     </xsl:template>    
+    
+    <xsl:template mode="isRelationalOp_RHS" match="*">
+        <xsl:if test="parent::relationalOp and count(preceding-sibling::*) = 1">true</xsl:if>
+    </xsl:template>
+    
+    <xsl:template mode="isRelationalOp_LHS" match="*">
+        <xsl:if test="parent::relationalOp and count(following-sibling::*) = 1">true</xsl:if>
+    </xsl:template>
     
 </xsl:stylesheet>

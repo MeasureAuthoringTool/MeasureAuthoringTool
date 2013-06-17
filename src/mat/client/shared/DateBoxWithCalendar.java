@@ -176,6 +176,8 @@ public class DateBoxWithCalendar extends Composite{
 		panel.add(dateBox);
 		//calendar = new FocusableImageButton(ImageResources.INSTANCE.calendar(), "Calendar");
 		calendar = new CustomButton();
+		calendar.removeStyleName("gwt-button");
+		calendar.setStylePrimaryName("invisibleButtonText");
 		calendar.setResource(ImageResources.INSTANCE.calendar(), "Calendar");
 		calendar.addClickHandler(new ClickHandler() {			
 			public void onClick(ClickEvent event) {

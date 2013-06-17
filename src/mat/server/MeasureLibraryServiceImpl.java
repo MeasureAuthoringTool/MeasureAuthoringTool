@@ -25,8 +25,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
 import mat.client.shared.MetaDataConstants;
-import mat.dao.ListObjectDAO;
-import mat.dao.impl.DataTypeDAO;
+import mat.dao.clause.MeasureXMLDAO;
 import mat.model.Author;
 import mat.model.MeasureType;
 import mat.model.QualityDataModelWrapper;
@@ -63,18 +62,20 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-
-
-
 
 public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implements MeasureService{
 	private static final long serialVersionUID = 2280421300224680146L;
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
 	private static final String MEASURE_DETAILS = "measureDetails";
 	private static final String MEASURE = "measure";
+	
+
+	@Autowired
+	private MeasureXMLDAO measureXMLDAO;
+	
 	
 	/**
 	 * This method is no longer used as we are loading all the measure details from XML  in Measure_Xml table 
@@ -362,7 +363,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	/* When a new Measure has been created, always create the default 4 cms supplimental QDM */
-	/*public QualityDataModelWrapper createSupplimentalQDM(String measureId){
+		/*public QualityDataModelWrapper createSupplimentalQDM(String measureId, boolean isClone, HashMap<String,String> uuidMap){
 		//Get the Supplimental ListObject from the list_object table
 		List<ListObject> listOfSuppElements = getCodeListService().getSupplimentalCodeList();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
@@ -388,13 +389,12 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			}else if(lo.getOid().equalsIgnoreCase("2.16.840.1.114222.4.11.3591")){
 				//find out patient characteristic payer dataType.
 				qds.setDataType((getMeasurePackageService().findDataTypeForSupplimentalCodeList(ConstantMessages.PATIENT_CHARACTERISTIC_PAYER, lo.getCategory().getId())).getDescription());
+				}
 			}
-			
 			qds.setSuppDataElement(true);
 			//getMeasurePackageService().saveSupplimentalQDM(qds);
 			wrapper.getQualityDataDTO().add(qds);
-		}
-		
+		}		
 		return wrapper;
 	}*/
 	
@@ -675,15 +675,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return (MeasurePackageService)context.getBean("measurePackageService");
 	}
 	
-	private ListObjectDAO getListObjectDAO(){
-		return (ListObjectDAO)context.getBean("listObjectDAO");
-	}
-	
-	private mat.dao.DataTypeDAO getDataTypeDAO(){
-		mat.dao.DataTypeDAO dao = (mat.dao.DataTypeDAO)context.getBean("dataTypeDAO");
-		return dao;
-	}
-		
+			
 	private ClauseBusinessService getClauseBusinessService() {
 		return (ClauseBusinessService)context.getBean("clauseBusinessService");
 	}
@@ -1009,7 +1001,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			processor.addParentNode(MEASURE);			
 			measureXmlModel.setXml(processor.checkForScoringType());
 			
-			QualityDataModelWrapper wrapper = XmlProcessor.createSupplimentalQDM(measureXmlModel.getMeasureId(),getDataTypeDAO(),getListObjectDAO());
+			QualityDataModelWrapper wrapper = measureXMLDAO.createSupplimentalQDM(measureXmlModel.getMeasureId(), false,null);
 			// Object to XML for elementLoopUp
 			ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
 			// Object to XML for supplementalDataElements

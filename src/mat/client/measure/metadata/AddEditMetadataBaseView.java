@@ -125,6 +125,7 @@ public abstract class AddEditMetadataBaseView {
 	
 	public void setReturnToLink(String s){
 		returnButton.setText(s);
+		returnButton.setTitle(s);
 		containerPanel.setFooter(returnButton);
 	}
    

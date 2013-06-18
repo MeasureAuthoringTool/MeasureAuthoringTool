@@ -45,6 +45,9 @@ public class ManageMeasureExportView implements ManageMeasurePresenter.ExportDis
 		
 		FlowPanel buttonPanel = new FlowPanel();
 		buttonPanel.addStyleName("measureExportButtonContainer");
+		saveButton.setTitle("Save");
+		cancelButton.setTitle("Cancel");
+		openButton.setTitle("Open");
 		buttonPanel.add(saveButton);
 		buttonPanel.add(openButton);
 		buttonPanel.add(cancelButton);

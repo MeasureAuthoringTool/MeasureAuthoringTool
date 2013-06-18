@@ -17,6 +17,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -68,6 +69,8 @@ public abstract class BaseDetailPresenter {
 		 */
 		public void enableValueSetWidgetsBasedOnDraft(boolean isDraft);
 		public String getOidTitle();
+		Label getOtherSpecify();
+		Label getStewardLabel();
 	}
 	
 	protected static interface BaseAddDisplay<T> {

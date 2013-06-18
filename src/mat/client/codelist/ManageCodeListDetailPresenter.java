@@ -200,6 +200,16 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 			public void onClick(ClickEvent event) {
 				currentDetails.setDraft(false);
 				update(MessageDelegate.COMPLETE);
+				Element element = detailDisplay.getLastModifiedDate().calendar.getElement();
+				if(detailDisplay.getLastModifiedDate().isEnabled()){
+					element.focus();
+				}
+				element.setAttribute("aria-role", "command");
+				element.setAttribute("aria-labelledby", "LiveRegion");
+				element.setAttribute("aria-live", "assertive");
+				element.setAttribute("aria-atomic", "true");
+				element.setAttribute("aria-relevant", "all");
+				element.setAttribute("role", "alert");
 			}
 		});
 		
@@ -539,6 +549,8 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 						}
 						detailDisplay.getErrorMessageDisplay().setMessage(message);
 					}
+					detailDisplay.getOtherSpecify().getElement().setAttribute("role","");
+					detailDisplay.getStewardLabel().getElement().setAttribute("role", "");
 				}
 				
 				@Override

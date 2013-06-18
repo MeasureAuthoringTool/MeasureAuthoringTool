@@ -51,7 +51,8 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	protected TextBox nameInput = new TextBox();
 	
 	protected ListBoxMVP stewardInput = new ListBoxMVP();
-	protected Label stewardLabel;
+	public Label stewardLabel;
+	
 	//US 413. Empty panel and input textbox for Steward Other option. 
 	protected VerticalPanel emptyTextBoxHolder = new VerticalPanel();
 	protected TextBox stewardOtherInput = new TextBox();
@@ -73,8 +74,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	protected SummaryWidgetBase<?> codeListsSummary = getSummaryWidget();
 	private Panel createNewPanel;
 	private Label lastModify = new Label("Last Modified");
+	public Label otherSpecify = (Label) LabelBuilder.buildRequiredLabel(stewardOtherInput, "User Defined Steward");
 	
-	
+
 	public BaseDetailView(String nameType){
 		if(nameType == null)
 			nameType = "Name";
@@ -428,7 +430,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	public void showOtherTextBox() {
 		clearOtherPanel();
 		emptyTextBoxHolder.add(new SpacerWidget());
-		Widget otherSpecify = LabelBuilder.buildRequiredLabel(stewardOtherInput, "User Defined Steward");
+		
 		Label invLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label(), "Added");
 		otherSpecify.getElement().setAttribute("id", "Added");
 		otherSpecify.getElement().setAttribute("aria-role", "textbox");
@@ -449,7 +451,13 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	@Override
 	public void hideOtherTextBox() {
 		clearOtherPanel();
-		
+		otherSpecify.getElement().removeAttribute("id");
+		otherSpecify.getElement().removeAttribute("aria-role");
+		otherSpecify.getElement().removeAttribute("aria-labelledby");
+		otherSpecify.getElement().removeAttribute("aria-live");
+		otherSpecify.getElement().removeAttribute("aria-atomic");
+		otherSpecify.getElement().removeAttribute("aria-relevant");
+		otherSpecify.getElement().removeAttribute("role");
 	}
 
 	//US 413
@@ -466,21 +474,20 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		stewardLabel.getElement().setAttribute("role", "alert");
 		stewardOtherInput.setValue(null);
 		emptyTextBoxHolder.clear();
-		Element element = lastModifiedDate.calendar.getElement();
-		if(lastModifiedDate.isEnabled()){
-			element.focus();
-		}
-		element.setAttribute("aria-role", "command");
-		element.setAttribute("aria-labelledby", "LiveRegion");
-		element.setAttribute("aria-live", "assertive");
-		element.setAttribute("aria-atomic", "true");
-		element.setAttribute("aria-relevant", "all");
-		element.setAttribute("role", "alert");
 	}
 	
 	@Override
 	public DateBoxWithCalendar getLastModifiedDate() {
 		return lastModifiedDate;
+	}
+	@Override
+	public Label getOtherSpecify() {
+		return otherSpecify;
+	}
+
+	@Override
+	public Label getStewardLabel() {
+		return stewardLabel;
 	}
 	
 }

@@ -31,7 +31,7 @@
 		</xsl:variable>
 		
 		<xsl:variable name="pcode">
-			<xsl:value-of select="$the_qdmAttributeMapping/DATA/ROW[ATTR_NAME='$pdisplayName']/CODE" />
+			<xsl:value-of select="$the_qdmAttributeMapping/DATA/ROW[ATTR_NAME=$pdisplayName]/CODE" />
 			<!-- <xsl:value-of select="ancestor::measure//elementLookUp/*[@id=$pvalue]/@code"/> -->
 		</xsl:variable>
 		

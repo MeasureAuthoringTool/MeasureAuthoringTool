@@ -605,9 +605,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			popupPanel.hide();
 			closeNodes(cellTree.getRootTreeNode());
 		}
-		if(event.isControlKeyDown() && event.isAltKeyDown() && keyCode == 83){
+		/*if(event.isControlKeyDown() && event.isAltKeyDown() && keyCode == 83){
+			saveBtn.getElement().focus();
 			saveBtn.click();
-		}
+		}*/
 	}
 
 

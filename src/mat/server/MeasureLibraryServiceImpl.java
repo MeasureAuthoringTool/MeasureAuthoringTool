@@ -71,12 +71,13 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
 	private static final String MEASURE_DETAILS = "measureDetails";
 	private static final String MEASURE = "measure";
+		
 	
-
-	@Autowired
-	private MeasureXMLDAO measureXMLDAO;
+	private MeasureXMLDAO getMeasureXMLDAO(){
+		return ((MeasureXMLDAO)context.getBean("measureXMLDAO")); 
+	}
 	
-	
+		
 	/**
 	 * This method is no longer used as we are loading all the measure details from XML  in Measure_Xml table 
 	 * TODO: This should be used only once before the Prod move to Convert all measure to model and marshall as xml and persist in measure_xml table. 
@@ -1001,7 +1002,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			processor.addParentNode(MEASURE);			
 			measureXmlModel.setXml(processor.checkForScoringType());
 			
-			QualityDataModelWrapper wrapper = measureXMLDAO.createSupplimentalQDM(measureXmlModel.getMeasureId(), false,null);
+			QualityDataModelWrapper wrapper = getMeasureXMLDAO().createSupplimentalQDM(measureXmlModel.getMeasureId(), false,null);
 			// Object to XML for elementLoopUp
 			ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);
 			// Object to XML for supplementalDataElements

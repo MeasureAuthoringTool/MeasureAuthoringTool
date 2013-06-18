@@ -9,6 +9,7 @@ import java.util.Map;
 import mat.client.ImageResources;
 import mat.client.measure.metadata.Grid508;
 import mat.client.measurepackage.MeasurePackagePresenter.MeasurePackageSelectionHandler;
+import mat.client.shared.CustomButton;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -579,7 +580,11 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 			for(int i = 0; i < packages.size(); i++) {
 				final MeasurePackageDetail nvp = packages.get(i);
 				packagesTable.setText(i+1, 0, nvp.getPackageName());
-				FocusableImageButton editImage = new FocusableImageButton(ImageResources.INSTANCE.g_package_edit(),"edit");
+				//FocusableImageButton editImage = new FocusableImageButton(ImageResources.INSTANCE.g_package_edit(),"edit");
+				CustomButton editImage = new CustomButton();
+				editImage.removeStyleName("gwt-button");
+				editImage.setStylePrimaryName("invisibleButtonText");
+				editImage.setResource(ImageResources.INSTANCE.g_package_edit(), "edit");
 				editImage.addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
@@ -590,7 +595,11 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 				});
 				packagesTable.setWidget(i+1, 1, createImageHolder(editImage));
 				
-				FocusableImageButton deleteImage = new FocusableImageButton(ImageResources.INSTANCE.g_delete(),"delete");
+				//FocusableImageButton deleteImage = new FocusableImageButton(ImageResources.INSTANCE.g_delete(),"delete");
+				CustomButton deleteImage = new CustomButton();
+				deleteImage.removeStyleName("gwt-button");
+				deleteImage.setStylePrimaryName("invisibleButtonText");
+				deleteImage.setResource(ImageResources.INSTANCE.g_delete(),"delete");
 				deleteImage.addClickHandler(new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
@@ -608,11 +617,11 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 	}
 	
-	private Panel createImageHolder(FocusableImageButton image) {
-		image.setStylePrimaryName("measureSearchResultIcon");
+	private Panel createImageHolder(CustomButton image) {
+		image.setStylePrimaryName("invisibleButtonText");
 		SimplePanel holder = new SimplePanel();
 		holder.add(image);
-		holder.setStyleName("searchTableCenteredHolder");
+		//holder.setStyleName("invisibleButtonText");
 		return holder;
 	}
 	@Override

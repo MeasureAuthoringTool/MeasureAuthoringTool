@@ -170,10 +170,10 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			String clonedXMLString2=xmlProcessor.appendNode(filteredStringSupp,"elementRef","/measure/supplementalDataElements");
 			clonedXml.setMeasureXMLAsByteArray(clonedXMLString2);
 			if(currentDetails.getMeasScoring()!= null && !currentDetails.getMeasScoring().equals(measure.getMeasureScoring())){
-				xmlProcessor = new XmlProcessor(clonedXMLString2);
-				String scoringType= clonedMeasure.getMeasureScoring();
-				xmlProcessor.removeNodesBasedOnScoring(scoringType);
-				xmlProcessor.createNewNodesBasedOnScoring(scoringType);
+				xmlProcessor = new XmlProcessor(clonedXml.getMeasureXMLAsString());
+				String scoringTypeId= MeasureDetailsUtil.getScoringAbbr(clonedMeasure.getMeasureScoring());
+				xmlProcessor.removeNodesBasedOnScoring(scoringTypeId);
+				xmlProcessor.createNewNodesBasedOnScoring(scoringTypeId);
 				clonedXml.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
 			}
 			logger.info("Final XML after cloning/draft" + clonedXml.getMeasureXMLAsString());			

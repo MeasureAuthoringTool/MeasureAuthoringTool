@@ -94,7 +94,9 @@
 				
 			</xsl:when>
 			<xsl:when test="$modeVal = 'check if present'">
-				 
+				 <xsl:if test="@name = 'negation rationale'">
+				 	<xsl:text> is present</xsl:text> 
+				 </xsl:if>
 			</xsl:when>
 		</xsl:choose>
 	</xsl:template>

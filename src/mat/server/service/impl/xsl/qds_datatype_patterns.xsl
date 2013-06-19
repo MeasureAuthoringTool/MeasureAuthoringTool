@@ -132,13 +132,17 @@
 	      	</xsl:when>
       	</xsl:choose>      	
       </xsl:variable>
-
-    <xsl:variable name="isNot">
-       <xsl:apply-templates select="." mode="isChildOfNot"/>
-    </xsl:variable>
-    <xsl:variable name="isRHS_Of_RelationalOp">
+	
+	<xsl:variable name="isRHS_Of_RelationalOp">
     	<xsl:if test="(parent::relationalOp) and (count(preceding-sibling::*) = 1)">true</xsl:if>
     </xsl:variable>
+	
+    <xsl:variable name="isNot">
+       <xsl:if test="$isRHS_Of_RelationalOp != 'true'">
+       		<xsl:apply-templates select="." mode="isChildOfNot"/>
+       </xsl:if>
+    </xsl:variable>
+    
     <xsl:variable name="arit_text">
       	<xsl:apply-templates select="." mode="inline_arit_text"/>
 	</xsl:variable>
@@ -195,7 +199,7 @@
    		<act classCode="ACT" moodCode="EVN" isCriterionInd="true">
    		
 	    <!-- when not done or not -->
-	    <xsl:if test="($refid != 'NA' or $isNot='true') and ($isRHS_Of_RelationalOp != 'true')">
+	    <xsl:if test="($refid != 'NA' or $isNot='true' or (child::attribute[@name = 'negation rationale']))">
 	    	<xsl:attribute name="actionNegationInd">true</xsl:attribute>
 	    	<!-- only when not done -->
 	    	<xsl:if test="not($isNot='true')">

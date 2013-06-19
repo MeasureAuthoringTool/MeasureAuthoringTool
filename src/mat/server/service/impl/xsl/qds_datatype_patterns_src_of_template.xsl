@@ -77,16 +77,16 @@
 			<xsl:value-of select="../../../..[reference]/@id"/>
 		</xsl:variable>
 		<xsl:variable name="rdisplayname">
+			<xsl:variable name="uuidVal"><xsl:value-of select="parent::elementRef/@id"/></xsl:variable>
 			<xsl:choose>
-				<xsl:when test="/measure/elementLookUp/*[@id=$rid]/@taxonomy='GROUPING'">
-					<xsl:value-of select="/measure/elementLookUp/*[@id=$rid]/@name"/><xsl:text> Value Set </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$rid]/@taxonomy"/>
+				<xsl:when test="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy='GROUPING'">
+					<xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@name"/><xsl:text> Value Set </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy"/>
 				</xsl:when>
-				<xsl:when test="/measure/elementLookUp/*[@id=$rid]/@taxonomy">
-					<xsl:value-of select="/measure/elementLookUp/*[@id=$rid]/@name"/><xsl:text> </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$rid]/@taxonomy"/><xsl:text> Value Set</xsl:text>
+				<xsl:when test="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy">
+					<xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@name"/><xsl:text> </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy"/><xsl:text> Value Set</xsl:text>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
-		
 		<xsl:choose>
 			<xsl:when test="@name='removal datetime' or @name='removal datetime id'">
 				<sourceOf typeCode="REFR">
@@ -363,12 +363,13 @@
 					</observation>
 				</sourceOf>
 			</xsl:when>
-			<xsl:when test="@name='negation rationale is present' or @name='negation rationale is not present' or (@name='negation rationale' and (@value='is present' or @value='is not present'))">
+			<!-- <xsl:when test="@name='negation rationale is present' or @name='negation rationale is not present' or (@name='negation rationale' and (@value='is present' or @value='is not present'))"> -->
+			<xsl:when test="@name='negation rationale'">
 				<sourceOf typeCode="RSON">
 					<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 						<code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4"/>
 						<value xsi:type="ANYNonNull" notDoneDisplayName="{$rdisplayname}"/>
-						<xsl:if test="contains(@value,'is not present') or contains(@name,'is not present')">
+						<xsl:if test="contains(lower-case(@mode),'is not present') or contains(lower-case(@name),'is not present')">
 							<valueNegationInd/>
 						</xsl:if>
 					</observation>
@@ -381,33 +382,33 @@
 	<xsl:template match="attribute" mode="property_values_new">
 		
 		<xsl:choose>
-			<xsl:when test="@mode = 'Less Than'">
+			<xsl:when test="lower-case(@mode) = 'Less Than'">
 				<xsl:apply-templates select="." mode="Less_Than">
 					<xsl:with-param name="inclusive">false</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:when>
-			<xsl:when test="@mode = 'Greater Than'">
+			<xsl:when test="lower-case(@mode) = 'Greater Than'">
 				<xsl:apply-templates select="." mode="Greater_Than">
 					<xsl:with-param name="inclusive">false</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:when>
-			<xsl:when test="@mode = 'Equal To'">
+			<xsl:when test="lower-case(@mode) = 'Equal To'">
 				<xsl:apply-templates select="." mode="Equal_To"/>
 			</xsl:when>
-			<xsl:when test="@mode = 'Less Than Or Equal To'">
+			<xsl:when test="lower-case(@mode) = 'Less Than Or Equal To'">
 				<xsl:apply-templates select="." mode="Less_Than">
 					<xsl:with-param name="inclusive">true</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:when>
-			<xsl:when test="@mode = 'Greater Than Or Equal To'">
+			<xsl:when test="lower-case(@mode) = 'Greater Than Or Equal To'">
 				<xsl:apply-templates select="." mode="Greater_Than">
 					<xsl:with-param name="inclusive">true</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:when>
-			<xsl:when test="@mode = 'Value Set'">
+			<xsl:when test="lower-case(@mode) = 'Value Set'">
 				
 			</xsl:when>
-			<xsl:when test="@mode = 'Check if Present'">
+			<xsl:when test="lower-case(@mode) = 'Check if Present'">
 				<value xsi:type="ANYNonNull"/> 
 			</xsl:when>
 		</xsl:choose>
@@ -593,6 +594,7 @@
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
+		
 		<xsl:choose>
 			<xsl:when test="@name='removal datetime' or @name='removal datetime id'">
 				<sourceOf typeCode="REFR">
@@ -850,7 +852,8 @@
 					</observation>
 				</sourceOf>
 			</xsl:when>
-			<xsl:when test="@name='negation rationale is present' or @name='negation rationale is not present' or (@name='negation rationale' and (@value='is present' or @value='is not present'))">
+			<!-- <xsl:when test="@name='negation rationale is present' or @name='negation rationale is not present' or (@name='negation rationale' and (@value='is present' or @value='is not present'))"> -->
+			<xsl:when test="@name='negation rationale is present' or @name='negation rationale is not present' or (@name='negation rationale' and (lower-case(@mode)='check if present' or lower-case(@mode)='is not present'))">
 				<sourceOf typeCode="RSON">
 					<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 						<code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4"/>

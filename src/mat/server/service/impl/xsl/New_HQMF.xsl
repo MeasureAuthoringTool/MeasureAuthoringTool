@@ -84,7 +84,7 @@
                 
         <entry typeCode="DRIV">
             <observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
-                <xsl:attribute name="actionNegationInd">false</xsl:attribute>                  
+                <!--<xsl:attribute name="actionNegationInd">false</xsl:attribute>-->                  
                 <id root="{$entry_uuid}"/>
                 <code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4"/>
                 <value xsi:type="CD" code="{$code}" codeSystem="2.16.840.1.113883.5.1063"

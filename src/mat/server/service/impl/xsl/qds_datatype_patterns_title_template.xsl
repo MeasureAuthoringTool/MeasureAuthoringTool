@@ -210,25 +210,52 @@
 				</xsl:choose>
 				<xsl:if test="string-length($is_to)=0">
 					<xsl:if test="attribute">
-						<xsl:text> (</xsl:text>
+						
+						<!-- Take care of the 'negation rationale' attribute -->
 						<xsl:for-each select="attribute">
-							<xsl:if test="count(preceding-sibling::attribute) > 0">
-								<xsl:text>, </xsl:text>
-							</xsl:if>
-							<xsl:value-of select="@name"/>
-							<xsl:choose>
-								<xsl:when test="@qdmUUID">
-									<xsl:text>: '</xsl:text>
+							<xsl:if test="lower-case(@name)='negation rationale'">
+								<xsl:text> not done </xsl:text>
+								<xsl:if test="@qdmUUID">
+									<xsl:text>: </xsl:text>
 									<xsl:variable name="qdmUUID"><xsl:value-of select="@qdmUUID"/></xsl:variable>
 									<xsl:value-of select="ancestor::measure/elementLookUp/qdm[@id=$qdmUUID]/@name"/>
-									<xsl:text>'</xsl:text>
-								</xsl:when>
-								<xsl:otherwise>
-									<xsl:apply-templates select="current()" mode="text_new"/>		
-								</xsl:otherwise>
-							</xsl:choose>
+								</xsl:if>
+							</xsl:if>
 						</xsl:for-each>
-						<xsl:text>)</xsl:text>
+						
+						<xsl:choose>
+							<xsl:when test="count(attribute) = 1 and child::attribute[1]/lower-case(@name) = 'negation rationale' and child::attribute[1]/@qdmUUID">
+							<!-- Do not do anything. This condition is already handled above. -->
+							</xsl:when>
+							<xsl:otherwise>
+								<xsl:text> (</xsl:text>
+								<xsl:for-each select="attribute">
+									<xsl:choose>
+										<xsl:when test="lower-case(@name) = 'negation rationale' and @qdmUUID">
+										<!-- Skip it. Do not do anything. -->
+										</xsl:when>
+										<xsl:otherwise>
+											<xsl:if test="count(preceding-sibling::attribute[lower-case(@name) != 'negation rationale'][not(@qdmUUID)]) > 0">
+												<xsl:text>, </xsl:text>
+											</xsl:if>
+											<xsl:value-of select="@name"/>
+											<xsl:choose>
+												<xsl:when test="@qdmUUID">
+													<xsl:text>: '</xsl:text>
+													<xsl:variable name="qdmUUID"><xsl:value-of select="@qdmUUID"/></xsl:variable>
+													<xsl:value-of select="ancestor::measure/elementLookUp/qdm[@id=$qdmUUID]/@name"/>
+													<xsl:text>'</xsl:text>
+												</xsl:when>
+												<xsl:otherwise>
+													<xsl:apply-templates select="current()" mode="text_new"/>		
+												</xsl:otherwise>
+											</xsl:choose>
+										</xsl:otherwise>
+									</xsl:choose>
+								</xsl:for-each>
+								<xsl:text>)</xsl:text>
+							</xsl:otherwise>
+						</xsl:choose>
 					</xsl:if>
 					<xsl:if test="properties/property[not(@name='result outc')]">
 						<xsl:text> (</xsl:text>

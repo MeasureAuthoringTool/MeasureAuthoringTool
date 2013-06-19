@@ -241,8 +241,18 @@
 										<!-- Skip it. Do not do anything. -->
 										</xsl:when>
 										<xsl:otherwise>
-											<xsl:if test="count(preceding-sibling::attribute[lower-case(@name) != 'negation rationale'][not(@qdmUUID)]) > 0">
-												<xsl:text>, </xsl:text>
+											<xsl:if test="count(preceding-sibling::attribute) > 0">
+												<xsl:choose>
+													<xsl:when test="count(preceding-sibling::attribute) = 1 and 
+																	preceding-sibling::attribute[1][lower-case(@name)='negation rationale']">
+														<xsl:if test="not(preceding-sibling::attribute[1]/@qdmUUID)">
+															<xsl:text>, </xsl:text>
+														</xsl:if>
+													</xsl:when>
+													<xsl:otherwise>
+														<xsl:text>, </xsl:text>
+													</xsl:otherwise>										
+												</xsl:choose>
 											</xsl:if>
 											<xsl:value-of select="@name"/>
 											<xsl:choose>

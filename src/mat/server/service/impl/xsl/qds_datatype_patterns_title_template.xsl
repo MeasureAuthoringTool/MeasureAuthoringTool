@@ -190,12 +190,31 @@
 						</xsl:call-template>
 					</xsl:when>
 					<xsl:otherwise>
-					   	<xsl:if test="$refid='NA'">
-							<xsl:call-template name="elTitle">
-								<xsl:with-param name="datatype" select="$qdsdatatype"/>
-								<xsl:with-param name="name" select="$qdsname"/>
-							</xsl:call-template>
-					     </xsl:if>
+					   	  <xsl:if test="$refid='NA'">
+								<!-- Take care of the 'negation rationale' attribute -->
+								<xsl:choose>
+									<xsl:when test="attribute[@name='negation rationale']">
+										<title>
+											<xsl:call-template name="capitalize">
+							      				<xsl:with-param name="textString" select="$qdsdatatype"/>
+							      			</xsl:call-template>
+											<xsl:for-each select="attribute[lower-case(@name)='negation rationale']">
+												<xsl:text> not done: </xsl:text>
+												<xsl:if test="@qdmUUID">
+													<xsl:variable name="qdmUUID"><xsl:value-of select="@qdmUUID"/></xsl:variable>
+													<xsl:value-of select="ancestor::measure/elementLookUp/qdm[@id=$qdmUUID]/@name"/>
+												</xsl:if>
+											</xsl:for-each>
+										</title>
+									</xsl:when>
+									<xsl:otherwise>
+										<xsl:call-template name="elTitle">
+											<xsl:with-param name="datatype" select="$qdsdatatype"/>
+											<xsl:with-param name="name" select="$qdsname"/>
+										</xsl:call-template>
+									</xsl:otherwise>
+								</xsl:choose>
+						 </xsl:if>
 					     <xsl:if test="$refid!='NA'">
 					      	<title>
 					      		<xsl:call-template name="capitalize">
@@ -210,19 +229,6 @@
 				</xsl:choose>
 				<xsl:if test="string-length($is_to)=0">
 					<xsl:if test="attribute">
-						
-						<!-- Take care of the 'negation rationale' attribute -->
-						<xsl:for-each select="attribute">
-							<xsl:if test="lower-case(@name)='negation rationale'">
-								<xsl:text> not done </xsl:text>
-								<xsl:if test="@qdmUUID">
-									<xsl:text>: </xsl:text>
-									<xsl:variable name="qdmUUID"><xsl:value-of select="@qdmUUID"/></xsl:variable>
-									<xsl:value-of select="ancestor::measure/elementLookUp/qdm[@id=$qdmUUID]/@name"/>
-								</xsl:if>
-							</xsl:if>
-						</xsl:for-each>
-						
 						<xsl:choose>
 							<xsl:when test="count(attribute) = 1 and child::attribute[1]/lower-case(@name) = 'negation rationale' and child::attribute[1]/@qdmUUID">
 							<!-- Do not do anything. This condition is already handled above. -->

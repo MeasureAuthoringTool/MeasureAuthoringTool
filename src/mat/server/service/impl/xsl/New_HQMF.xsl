@@ -705,19 +705,19 @@
                     <xsl:variable name="qdmCodeSystemName"><xsl:value-of select="@codeSystemName"/></xsl:variable>
                     
                     <xsl:choose>
-                        <xsl:when test="(count(ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID]) > 0)">
+                        <xsl:when test="(count(ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID][@name != 'negation rationale']) > 0)">
                             <xsl:for-each select="distinct-values(ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID]/@name)">
                                 <propel id="{$qdmID}"  name="{$qdmName}" displayName="{$qdmName}" datatype="{.}" oid="{$qdmOid}" uuid="{$qdmUuid}" taxonomy="{$qdmTaxonomy}" taxonomyVersion="{$qdmVersion}" codeSystem="{$qdmCodeSystem}" codeSystemName="{$qdmCodeSystemName}"/>
                             </xsl:for-each>
                         </xsl:when>
                         
-                        <xsl:when test="(count(ancestor::measure/strata//attribute[@qdmUUID = $qdmID]) > 0)">
+                        <xsl:when test="(count(ancestor::measure/strata//attribute[@qdmUUID = $qdmID][@name != 'negation rationale']) > 0)">
                             <xsl:for-each select="distinct-values(ancestor::measure/strata//attribute[@qdmUUID = $qdmID]/@name)">
                                 <propel id="{$qdmID}"  name="{$qdmName}" displayName="{$qdmName}" datatype="{.}" oid="{$qdmOid}" uuid="{$qdmUuid}" taxonomy="{$qdmTaxonomy}" taxonomyVersion="{$qdmVersion}" codeSystem="{$qdmCodeSystem}" codeSystemName="{$qdmCodeSystemName}"/>
                             </xsl:for-each>
                         </xsl:when>
                         
-                        <xsl:when test="(count(ancestor::measure/measureObservations//attribute[@qdmUUID = $qdmID]) > 0)">
+                        <xsl:when test="(count(ancestor::measure/measureObservations//attribute[@qdmUUID = $qdmID][@name != 'negation rationale']) > 0)">
                             <xsl:for-each select="distinct-values(ancestor::measure/measureObservations//attribute[@qdmUUID = $qdmID]/@name)">
                                 <propel id="{$qdmID}"  name="{$qdmName}" displayName="{$qdmName}" datatype="{.}" oid="{$qdmOid}" uuid="{$qdmUuid}" taxonomy="{$qdmTaxonomy}" taxonomyVersion="{$qdmVersion}" codeSystem="{$qdmCodeSystem}" codeSystemName="{$qdmCodeSystemName}"/>
                             </xsl:for-each>

@@ -35,7 +35,6 @@ import mat.client.myAccount.SecurityQuestionsView;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SkipListBuilder;
-import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.ui.MATTabPanel;
 import mat.client.util.ClientConstants;
 import mat.model.SecurityRole;
@@ -43,7 +42,6 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -60,8 +58,7 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
@@ -257,6 +254,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			
 			title = ClientConstants.TITLE_MY_ACCOUNT;	
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
+			
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
 		{
@@ -274,8 +272,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			measureLibrary = buildMeasureLibraryWidget(); 
 			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;	
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
-			
-			
 		}
 		else {
 			Window.alert("Unrecognized user role " + currentUserRole);
@@ -527,6 +523,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	 */
 	public void setEnabled(boolean enabled){
 		mainTabLayout.setEnabled(enabled);
+	}
+	
+	
+	public static void removeInputBoxFromFocusPanel(Element element) {
+		if(element.hasChildNodes() && element.getFirstChild().getNodeName().equalsIgnoreCase("input")){// this is done for 508 issue to fix the input box in FF
+			element.removeChild(element.getFirstChild());
+		}
 	}
 	
 }

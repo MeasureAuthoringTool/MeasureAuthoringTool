@@ -40,9 +40,14 @@ public class LoginView implements LoginPresenter.Display  {
 	private Anchor forgotLoginId;
 	private Anchor forgotPassword;
 	private VerticalPanel mainPanel = new VerticalPanel();
-	Label success = new Label();
+	
 	
 	public LoginView() {
+		createLoginPanel();
+		
+	}
+
+	private void createLoginPanel() {
 		mainPanel.addStyleName("centered");
 		
 		
@@ -51,6 +56,7 @@ public class LoginView implements LoginPresenter.Display  {
 		
 		Grid infoGrid = new Grid(2,2);
 		infoGrid.setWidget(0, 0, new FocusableImageButton(ImageResources.INSTANCE.icon_success_sm(),"Success"));
+		Label success = new Label();
 		success.setStyleName("loginInfoMessageHeader");
 		infoGrid.setWidget(0, 1, success);
 		infoGrid.setWidget(1, 1, infoMessage);
@@ -59,6 +65,7 @@ public class LoginView implements LoginPresenter.Display  {
 		infoMessage.setStyleName("loginInfoMessageContainer");
 		infoMessagePanel = wrapInSpacer(infoMessage);
 		mainPanel.add(infoMessagePanel);
+		
 		
 		SimplePanel loginTitleHolder = new SimplePanel();
 		Label loginTitlePanel = new Label("Please sign in");
@@ -106,7 +113,6 @@ public class LoginView implements LoginPresenter.Display  {
 		password.setWidth("200px");
 		
 		mainPanel.add(loginPanel);
-		
 	}
 
 	private SimplePanel wrapInSpacer(Widget w) {
@@ -158,9 +164,10 @@ public class LoginView implements LoginPresenter.Display  {
 	@Override
 	public void setInfoMessageVisible(boolean value) {
 		if(value){
-			success.setText("Success");
+			mainPanel.clear();
+			createLoginPanel();
 		}else{
-			success.setText("");
+			infoMessagePanel.clear();
 		}
 		MatContext.get().setVisible(infoMessagePanel,value);
 	}

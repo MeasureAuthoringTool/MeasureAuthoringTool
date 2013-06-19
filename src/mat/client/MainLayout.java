@@ -4,24 +4,14 @@ import java.util.List;
 
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.FocusableWidget;
-
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
-import mat.client.shared.SpacerWidget;
-
 import mat.client.util.ClientConstants;
 import mat.client.util.FooterPanelBuilderUtility;
-import mat.shared.ConstantMessages;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -30,7 +20,6 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public abstract class MainLayout {
@@ -77,6 +66,7 @@ public abstract class MainLayout {
 	
 	private Panel buildSkipContent() {
 		 skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
+		 Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
 		 return skipListHolder;
 	}
 
@@ -91,8 +81,12 @@ public abstract class MainLayout {
 		
 		content.setStylePrimaryName("mainContentPanel");
 		setId(content, "content");
+		Mat.removeInputBoxFromFocusPanel(content.getElement());
+		
 		return content;
 	}
+
+	
 	
 	
 	private Panel buildLoadingPanel() {
@@ -201,12 +195,12 @@ public abstract class MainLayout {
 		final HorizontalPanel topBanner = new HorizontalPanel();
 		setId(topBanner, "title");
 		topBanner.setStylePrimaryName("topBanner");
-		//To Do Add logo 
-		//FocusableImageButton logo = new FocusableImageButton(ImageResources.INSTANCE.logo_###(),"MAT");
-		//logo.setStylePrimaryName("topBannerImage");
-		//topBanner.add(logo);
 		final FocusableImageButton titleImage= new FocusableImageButton(ImageResources.INSTANCE.g_header_title(),"Measure Authoring Tool");
 		titleImage.setStylePrimaryName("topBannerImage");
+		Mat.removeInputBoxFromFocusPanel(titleImage.getElement());
+		HTML desc = new HTML("<h4 style=\"font-size:0;\">Measure Authoring Tool</h4>");// Doing this for 508 when CSS turned off
+		com.google.gwt.user.client.Element heading = desc.getElement();
+		DOM.insertChild(titleImage.getElement(), heading, 0);
 		topBanner.add(titleImage);
 		logOutPanel = new SimplePanel();
 		logOutPanel.addStyleName("logoutPanel");

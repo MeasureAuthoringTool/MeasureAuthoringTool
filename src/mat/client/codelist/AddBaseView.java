@@ -77,6 +77,10 @@ public abstract class AddBaseView {
 		Widget leftForm = buildLeftSideForm();
 		mainContentPanel.add(leftForm);
 		
+		SimplePanel emptyPanelForSpace = new SimplePanel();
+		emptyPanelForSpace.getElement().setAttribute("style", "padding-left:10px");
+		mainContentPanel.add(emptyPanelForSpace);
+		
 		SimplePanel p = new SimplePanel();
 		p.setStyleName("decorator");
 		p.setWidth("457px");
@@ -134,8 +138,8 @@ public abstract class AddBaseView {
 		addCodeWidget.add(hPanel);
 		
 		addCodeWidget.add(new SpacerWidget());
-		addCodeWidget.add(successMessages);
-		addCodeWidget.add(errorMessages);
+//		addCodeWidget.add(successMessages);
+//		addCodeWidget.add(errorMessages);
 		addCodeWidget.add(new SpacerWidget());
 		addCodeWidget.add(LabelBuilder.buildLabel(codeInput, getValueInputLabel()));
 		String width ="420px";
@@ -160,8 +164,8 @@ public abstract class AddBaseView {
 		VerticalPanel addCodeWidget = new VerticalPanel();
 		addCodeWidget.add(new Label("All fields are required"));
 		addCodeWidget.add(new SpacerWidget());
-		addCodeWidget.add(successMessages);
-		addCodeWidget.add(errorMessages);
+//		addCodeWidget.add(successMessages);
+//		addCodeWidget.add(errorMessages);
 		addCodeWidget.add(new SpacerWidget());
 		addCodeWidget.add(LabelBuilder.buildLabel(codeInput, getValueInputLabel()));
 		addCodeWidget.add(codeInput);
@@ -181,6 +185,9 @@ public abstract class AddBaseView {
 		 leftSideForm.addStyleName("manageCodeLeftForm");
 		 leftSideForm.add(new SpacerWidget());
 		 leftSideForm.add(labelHolder);
+		 leftSideForm.add(new SpacerWidget());
+		 leftSideForm.add(successMessages);
+		 leftSideForm.add(errorMessages);
 		 Widget searchResults = view.asWidget();
 		 searchResults.setSize("470px","400px");
 		 leftSideForm.add(new SpacerWidget());

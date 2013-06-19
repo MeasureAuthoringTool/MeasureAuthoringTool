@@ -78,7 +78,6 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 		public ErrorMessageDisplayInterface getUploadErrorMessageDisplay();
 		public int getCurrentPage();
 		public void setCurrentPage(int pageNumber);
-		public SuccessMessageDisplay getSuccessMessageDisplayForRemovingCodes();
 	}
 
 	public static interface ExternalLinkDisclaimerDisplay{
@@ -579,6 +578,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 		ManageCodesSummaryModel codesSummaryModel = new ManageCodesSummaryModel();
 		codesSummaryModel.setData(currentDetails.getCodes());
 		detailDisplay.EnableAnchors(codesSummaryModel,currentDetails.getCodesPageCount(),currentDetails.getTotalCodes(),detailDisplay.getCodesSummary().getCurrentPage());
+		
 		enableOrDisableFields();
 	}
 	
@@ -598,6 +598,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 		//OVERFLOW
 		setPanelContentAndHeading(addCodeDisplay.asWidget(), CodeListController.MY_VALUE_SETS_VALUE_SET_MANAGE+" for "+currentDetails.getName());
 		//return addCodeDisplay.asWidget();
+		addCodeDisplay.getSuccessMessageDisplay().setFocus();
 		return panel;
 	}
 	
@@ -651,7 +652,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 					    	addCodeDisplay.setCurrentPage(pageCount);
 					}
 					displayCodesForTheSelectedPage(currentDetails.getID());
-					addCodeDisplay.getSuccessMessageDisplayForRemovingCodes().setMessage("Selected Code(s) removed successfully");
+					addCodeDisplay.getSuccessMessageDisplay().setMessage("Selected Code(s) removed successfully");
 				}
 			});
 		}
@@ -770,7 +771,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 		MatContext.get().getCodeListService().saveorUpdateCodeList(currentCodeList, new AsyncCallback<SaveUpdateCodeListResult>() {
 			@Override
 			public void onSuccess(SaveUpdateCodeListResult result) {
-			     addCodeDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getCodeListAddedMessage());
+				addCodeDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getCodeListAddedMessage());
 			     addCodeDisplay.getCodeName().setValue("");
 			     addCodeDisplay.getCodeDescription().setValue("");
 			     newCode.setId(result.getCodeId());
@@ -872,7 +873,6 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 		addCodeDisplay.getSuccessMessageDisplay().clear();
 		addCodeDisplay.getUploadSuccessMessageDisplay().clear();
 		addCodeDisplay.getUploadErrorMessageDisplay().clear();
-		addCodeDisplay.getSuccessMessageDisplayForRemovingCodes().clear();
 	}
 	
 	private void enableOrDisable(boolean editable) {

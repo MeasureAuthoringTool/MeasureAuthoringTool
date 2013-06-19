@@ -30,7 +30,6 @@ public class ManageCodesSearchView extends SearchView<Code> {
 		dataTable.resize((int)numRows + 1, (int)numColumns);
 		dataTable.getElement().setAttribute("id", "ManageCodeTable");
 		dataTable.getElement().setAttribute("aria-role", "grid");
-		dataTable.getElement().setAttribute("aria-labelledby", "LiveRegion");
 		dataTable.getElement().setAttribute("aria-live", "assertive");
 		dataTable.getElement().setAttribute("aria-atomic", "true");
 		dataTable.getElement().setAttribute("aria-relevant", "all");

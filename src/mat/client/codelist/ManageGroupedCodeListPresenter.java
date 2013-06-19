@@ -393,6 +393,7 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 				    }
 					currentDetails.setID(result.getId());
 					displayCodeListsForTheSelectedPage(currentDetails.getID());
+					addCodeListDisplay.getSuccessMessageDisplay().setMessage("Selected Code(s) removed successfully");
 				}
 				
 			}

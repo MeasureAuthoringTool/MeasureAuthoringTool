@@ -265,9 +265,4 @@ public class AddCodeView extends AddBaseView implements  ManageCodeListDetailPre
 		return null;
 	}
 	
-	@Override
-	public SuccessMessageDisplay getSuccessMessageDisplayForRemovingCodes(){
-		return view.successMessageDisplay;
-	}
-	
 }

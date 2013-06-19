@@ -1260,7 +1260,9 @@ padding: 2px;
 .skip {display: none; font-family: verdana, sans-serif; text-align: center; margin: 0; padding: 0; position: absolute} /*All incl Opera*/
 /* * html */ .skip {display: block} /*Seen by IE*/
 :root .skip {display: block} /*Seen by Moz, FF and Safari*/
-.skip a {padding: 0 0.5em; display: inline; z-index: 2; text-decoration:none; position: absolute; width: 14em; left: -200em;}
+.skip a {padding: 0 0.5em; display: inline; z-index: 2; text-decoration:none; position: absolute; width: 12em; left: -200em;}
 .skip a:focus, .skip a:active {position: absolute; left: 0.5em; border: solid #333 2px; color: #333; background: #D3DEF6;}
 .skip a:hover {cursor: default}
+.skiplist {}
+
 

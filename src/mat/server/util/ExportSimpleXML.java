@@ -3,13 +3,9 @@ package mat.server.util;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -22,6 +18,9 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.client.shared.MatContext;
+import mat.model.clause.MeasureXML;
+import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
 
 import org.apache.commons.logging.Log;
@@ -32,10 +31,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import mat.client.shared.MatContext;
-import mat.model.clause.MeasureXML;
-import mat.shared.UUIDUtilClient;
 
 public class ExportSimpleXML {
 
@@ -444,7 +439,21 @@ public class ExportSimpleXML {
 	 * @return
 	 */
 	private static String formatDate(String date){
-		return date.substring(6) + date.substring(0,2) + date.substring(3,5);
+		
+		String[] splitDate = date.split("/");
+		String month = splitDate[0];
+		String dt = splitDate[1];
+		String year = splitDate[2];
+		
+		if(year.length() != 4 || year.toLowerCase().indexOf("x") > -1){
+			year = "0000";
+		}
+		return year + month + dt;
+		
+		
+//		return date.substring(6) + date.substring(0,2) + date.substring(3,5);
+		
+		
 //		Calendar cal = Calendar.getInstance();
 //		cal.setLenient(false);
 //		DateFormat oldDateFormat = new SimpleDateFormat("MM/dd/yyyy");

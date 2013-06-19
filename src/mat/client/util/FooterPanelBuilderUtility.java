@@ -7,18 +7,8 @@ import mat.client.ImageResources;
 import mat.client.shared.MatContext;
 import mat.shared.ConstantMessages;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.dom.client.MouseOutEvent;
-import com.google.gwt.event.dom.client.MouseOutHandler;
-import com.google.gwt.event.dom.client.MouseOverEvent;
-import com.google.gwt.event.dom.client.MouseOverHandler;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 
@@ -103,6 +93,7 @@ public class FooterPanelBuilderUtility {
 		"<div class=\"cms-address-bar\"> "+
 			"<div id=\"footer-cms-logo-wrapper\" align=\"left\"> " +
 				"<a id=\"footer_cms_logo_link\" title=\"CMS home page\" href=\"http://www.cms.gov/\" target=\"_blank\"> " +
+				"<h4 style=\"font-size:0;\">CMS.gov</h4>" + 
 				"{img_cms_logo}" +
 				"</a> "+	
 			"</div> " +
@@ -114,6 +105,7 @@ public class FooterPanelBuilderUtility {
 			"<div id=\"footer-hhs-logo-wrapper\" align=\"right\"> " +
 				"<div id=\"footer_hhs_logo\"> " +
 					"<a id=\"footer_hhs_logo_link\" title=\"Health and Human Services home page\" href=\"http://www.hhs.gov/\" target=\"_blank\"> " +
+					"<h4 style=\"font-size:0;\">hhs.gov</h4>" +
 					"{img_hhs_logo} " +
 					"</a> "+
 				"</div>" +

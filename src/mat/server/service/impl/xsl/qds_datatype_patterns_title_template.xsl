@@ -230,7 +230,8 @@
 				<xsl:if test="string-length($is_to)=0">
 					<xsl:if test="attribute">
 						<xsl:choose>
-							<xsl:when test="count(attribute) = 1 and child::attribute[1]/lower-case(@name) = 'negation rationale' and child::attribute[1]/@qdmUUID">
+							<xsl:when test="count(attribute) = 1 and child::attribute[1]/lower-case(@name) = 'negation rationale' 
+											and child::attribute[1]/@qdmUUID">
 							<!-- Do not do anything. This condition is already handled above. -->
 							</xsl:when>
 							<xsl:otherwise>

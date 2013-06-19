@@ -1,6 +1,7 @@
 package mat.client.login;
 
 import mat.client.ImageResources;
+import mat.client.Mat;
 import mat.client.shared.EmailAddressTextBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -40,14 +41,9 @@ public class LoginView implements LoginPresenter.Display  {
 	private Anchor forgotLoginId;
 	private Anchor forgotPassword;
 	private VerticalPanel mainPanel = new VerticalPanel();
-	
+	Label success = new Label();
 	
 	public LoginView() {
-		createLoginPanel();
-		
-	}
-
-	private void createLoginPanel() {
 		mainPanel.addStyleName("centered");
 		
 		
@@ -55,8 +51,9 @@ public class LoginView implements LoginPresenter.Display  {
 		mainPanel.add(welcomePanel);
 		
 		Grid infoGrid = new Grid(2,2);
-		infoGrid.setWidget(0, 0, new FocusableImageButton(ImageResources.INSTANCE.icon_success_sm(),"Success"));
-		Label success = new Label();
+		FocusableImageButton focusableImageButton = new FocusableImageButton(ImageResources.INSTANCE.icon_success_sm(),"Success");
+		infoGrid.setWidget(0, 0, focusableImageButton);
+		Mat.removeInputBoxFromFocusPanel(focusableImageButton.getElement());
 		success.setStyleName("loginInfoMessageHeader");
 		infoGrid.setWidget(0, 1, success);
 		infoGrid.setWidget(1, 1, infoMessage);
@@ -65,7 +62,6 @@ public class LoginView implements LoginPresenter.Display  {
 		infoMessage.setStyleName("loginInfoMessageContainer");
 		infoMessagePanel = wrapInSpacer(infoMessage);
 		mainPanel.add(infoMessagePanel);
-		
 		
 		SimplePanel loginTitleHolder = new SimplePanel();
 		Label loginTitlePanel = new Label("Please sign in");
@@ -89,7 +85,6 @@ public class LoginView implements LoginPresenter.Display  {
 		loginPanel.add(new SpacerWidget());
 		
 		submitButton = new PrimaryButton("Sign In");
-		submitButton.setStylePrimaryName("primaryButton");
 		loginPanel.add(submitButton);
 		
 		loginPanel.setStylePrimaryName("loginContentPanel");
@@ -113,6 +108,7 @@ public class LoginView implements LoginPresenter.Display  {
 		password.setWidth("200px");
 		
 		mainPanel.add(loginPanel);
+		
 	}
 
 	private SimplePanel wrapInSpacer(Widget w) {
@@ -164,10 +160,9 @@ public class LoginView implements LoginPresenter.Display  {
 	@Override
 	public void setInfoMessageVisible(boolean value) {
 		if(value){
-			mainPanel.clear();
-			createLoginPanel();
+			success.setText("Success");
 		}else{
-			infoMessagePanel.clear();
+			success.setText("");
 		}
 		MatContext.get().setVisible(infoMessagePanel,value);
 	}

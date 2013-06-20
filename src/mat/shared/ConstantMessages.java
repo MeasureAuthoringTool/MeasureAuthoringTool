@@ -170,9 +170,9 @@ public  class ConstantMessages {
 		public static final String MAXIMUM_ALLOWED_MINOR_VERSION = "999";
 		
 		//Value Set Library ListBox Options
-		public static final String CREATE_NEW_GROUPED_VALUE_SET = "Create New Grouped Value Set";
-		public static final String CREATE_NEW_VALUE_SET = "Create New Value Set";
-		public static final String CREATE_VALUE_SET_DRAFT = "Create Draft of Value Set";
+		public static final String CREATE_NEW_GROUPED_VALUE_SET = "New Grouped Value Set";
+		public static final String CREATE_NEW_VALUE_SET = "New Value Set";
+		public static final String CREATE_VALUE_SET_DRAFT = "Draft of Value Set";
 		
 		//Value Set Edit Screen
 		public static final String OID_CAUTION = "CAUTION: Changing the OID should be avoided unless absolutely necessary. Under most circumstances the OID should only be changed when a correction is needed.";

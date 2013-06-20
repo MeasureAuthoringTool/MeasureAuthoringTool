@@ -362,7 +362,7 @@
     
     <xsl:template match="functionalOp">
         <xsl:param name="conj"/>
-        <xsl:variable name="isNot"><xsl:apply-templates select="." mode="isChildOfNot"/></xsl:variable>
+        <xsl:variable name="isNot"><xsl:apply-templates select="child::*[1]" mode="isChildOfNot"/></xsl:variable>
        <!-- <xsl:choose>
             <xsl:when test="@type='NOT'">-->
                 <xsl:for-each select="*">
@@ -385,6 +385,7 @@
                                          
                                         <xsl:apply-templates select="." mode="handleFunctionalOps"/>    
                                         <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                                            <xsl:if test="$isNot = 'true' "><xsl:attribute name="actionNegationInd">true</xsl:attribute></xsl:if>
                                             <xsl:apply-templates select="." mode="topmost"/>   
                                         </act>
                                         

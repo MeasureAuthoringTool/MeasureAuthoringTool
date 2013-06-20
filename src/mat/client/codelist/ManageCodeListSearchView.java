@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.ValueSetSearchDisplay {
 	private FlowPanel searchCriteriaPanel = new FlowPanel();
 	private Panel createNewPanel;
-	private Button searchButton = new PrimaryButton("Search");
+	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	private TextBox searchInput = new TextBox();
 	Button transferButton = new PrimaryButton("Transfer");
 	private SearchView<CodeListSearchDTO> view;

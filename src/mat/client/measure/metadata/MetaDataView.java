@@ -13,6 +13,7 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -85,9 +86,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected TextAreaWithMaxLength  measurePopulationInput = new TextAreaWithMaxLength ();
 	protected TextAreaWithMaxLength  measureObservationsInput = new TextAreaWithMaxLength ();
 	
-	
-	
-	
+			
 	protected ListBoxMVP objectStatusInput = new ListBoxMVP();
 	protected ListBoxMVP measureTypeInput = new ListBoxMVP();
 	protected SimplePanel emptyMeasureTypePanel = new SimplePanel();
@@ -114,12 +113,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected TextAreaWithMaxLength  definitionsInput = new TextAreaWithMaxLength ();
 	protected TextAreaWithMaxLength guidanceInput = new TextAreaWithMaxLength();
 	protected TextAreaWithMaxLength transmissionFormatInput = new TextAreaWithMaxLength();	
-	private Button addEditMeasureType = new PrimaryButton("Add/Edit Measure Type");
-	private Button addEditAuthors = new PrimaryButton("Add/Edit Measure Developer(s)");
-	
-	private Button AddRowButton = new PrimaryButton("Add Reference");
+	private Button addEditMeasureType = new PrimaryButton("Add/Edit Measure Type","primaryMetaDataButton");
+	private Button addEditAuthors = new PrimaryButton("Add/Edit Measure Developer(s)","primaryMetaDataButton");
+	private Button AddRowButton = new PrimaryButton("Add Reference","primaryGreyLeftButton");
 	private Button saveButton = new PrimaryButton("Save","primaryButton");
-	private Button generateeMeasureIDButton = new Button("Generate Identifier");
+	private Button generateeMeasureIDButton = new SecondaryButton("Generate Identifier");
 	
 	private ArrayList<TextAreaWithMaxLength> referenceArrayList = new ArrayList<TextAreaWithMaxLength>(); 
 	
@@ -805,7 +803,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		   HorizontalPanel hp = new HorizontalPanel();
 		   hp.add(newReferenceBoxLabel);
 		   hp.add(newReferenceBox);
-		   Button newremoveButton = new PrimaryButton("Remove");
+		   Button newremoveButton = new PrimaryButton("Remove","primaryGreyLeftButton");
 		   newremoveButton.addClickHandler(new ClickHandler() {
 			
 			@Override

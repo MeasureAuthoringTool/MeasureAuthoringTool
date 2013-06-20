@@ -53,7 +53,7 @@ import com.google.gwt.view.client.ListDataProvider;
 public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.SearchDisplay {
 
 	private SimplePanel containerPanel = new SimplePanel();
-	private Button searchButton = new PrimaryButton("Search");
+	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	private TextBox searchInput = new TextBox();
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
@@ -170,7 +170,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private Widget buildSearchWidget(){
 		HorizontalPanel hp = new HorizontalPanel();
 		SimplePanel sp1 = new SimplePanel();
-		sp1.addStyleName("codeListLink");
+		//sp1.addStyleName("codeListLink");
 		sp1.add(searchInput);
 		searchInput.addFocusHandler(
 				new FocusHandler() {

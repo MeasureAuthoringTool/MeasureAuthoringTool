@@ -37,7 +37,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDisplay {
 
 	private FlowPanel mainPanel = new FlowPanel();
-	private Button searchButton = new PrimaryButton("Search");
+	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	private TextBox searchInput = new TextBox();
 	private FocusableWidget searchFocusHolder ;
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();

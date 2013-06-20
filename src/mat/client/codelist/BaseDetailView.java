@@ -143,15 +143,16 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		
 		FlowPanel oidPanel1 = new FlowPanel();
 		oidPanel1.add(LabelBuilder.buildRequiredLabel(codeListOidInput, "OID"));
-		oidPanel1.addStyleName("floatLeft");
 		oidPanel1.add(codeListOidInput);
+		oidPanel1.add(generateOidButton);
+		oidPanel1.addStyleName("codeListCodeSystemPanel");
 		fPanel.add(oidPanel1);
 		
-		FlowPanel oidPanel2 = new FlowPanel();
-		oidPanel2.addStyleName("floatLeft");
-		oidPanel2.add(generateOidButton);
-		oidPanel2.addStyleName("codeListCodeSystemPanel");
-		fPanel.add(oidPanel2);
+		//FlowPanel oidPanel2 = new FlowPanel();
+		//oidPanel2.addStyleName("floatLeft");
+		//oidPanel2.add(generateOidButton);
+		//oidPanel2.addStyleName("codeListCodeSystemPanel");
+		//fPanel.add(oidPanel2);
 		
 		SpacerWidget clearBoth2 = new SpacerWidget();
 		clearBoth2.addStyleName("clearBoth");
@@ -489,5 +490,4 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	public Label getStewardLabel() {
 		return stewardLabel;
 	}
-	
 }

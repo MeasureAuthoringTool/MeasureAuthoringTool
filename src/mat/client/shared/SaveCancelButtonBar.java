@@ -13,8 +13,11 @@ public class SaveCancelButtonBar extends Composite {
 	public SaveCancelButtonBar() {
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
+		saveButton.setTitle("Save");
+		cancelButton.setTitle("Cancel");
 		buttonLayout.add(saveButton);
 		buttonLayout.add(cancelButton);
+		
 		initWidget(buttonLayout);
 	}
 	

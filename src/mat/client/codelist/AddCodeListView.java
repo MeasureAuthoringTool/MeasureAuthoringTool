@@ -133,7 +133,7 @@ public class AddCodeListView extends AddBaseView implements  ManageGroupedCodeLi
 	@Override
 	public Button getSearchButton() {
 		if(searchButton == null) {
-			searchButton = new PrimaryButton();
+			searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 			searchButton.setText("Search");
 		}
 		return searchButton;

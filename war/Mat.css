@@ -127,12 +127,30 @@ body#main select, body#main input, body#main textarea {
 
 .primaryGreyButton {
     background: url("images/bg_btnGrey-secondary.png");
-    background-repeat:repeat-x;
-    font-weight: bold; 
+    background-repeat: repeat-x;
+    font-weight: normal;
 }
+
+.primaryGreyLeftButton{
+    background: url("images/bg_btnGrey-secondary.png");
+    background-repeat: repeat-x;
+    font-weight: normal;
+    margin-left: 12px;
+}	
+
+.primaryMetaDataButton{
+	background: url("images/bg_btnGrey-secondary.png");
+    background-repeat: repeat-x;
+    font-weight: normal;
+    margin-top: 10px;
+}	
+
 .secondaryButton {
     background: url("images/bg_btnGrey-secondary.png");
     background-repeat:repeat-x;
+    font-weight: normal;
+    margin-left: 14px;
+ 
 }
 
 .AddCodeButton{
@@ -156,7 +174,6 @@ body#main select, body#main input, body#main textarea {
 }
 .RemoveButton{
 	float:left;
-	border: 1px solid;
 	font-weight: bold;
 }
 .ReadOnlyStyle{
@@ -803,7 +820,7 @@ padding: 2px;
 
 
 .codeListCodeSystemPanel {
-	padding-left:20px;
+	padding-right:15px;
 }
 .codeListSearchRightPanel {
 	float: right;
@@ -844,7 +861,7 @@ padding: 2px;
      margin-left: 30%	
 }
 .codeListLink{
-	  padding-right: 15%;
+	  padding-right: 10%;
 	}
 
 .manageCodesLink{
@@ -1076,6 +1093,10 @@ padding: 2px;
     border: 1px solid #FFFFFF;
 }
 
+.pad-right3px{
+	padding-right:3px;
+}
+
 .pad-right5px{
 	padding-right:5px;
 }
@@ -1237,7 +1258,8 @@ padding: 2px;
   cursor: hand;
   background: url("images/hborder.png") repeat-x 0px -27px;
   border: 1px outset #ccc;
-	
+  margin-left: 12px;
+  margin-right: 12px;	
 }
 
 .invisibleButtonText:active {

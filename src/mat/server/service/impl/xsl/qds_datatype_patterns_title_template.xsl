@@ -9,12 +9,14 @@
 	
 	<xsl:template match="*" name="title">
 		<xsl:param name="is_to"/>
-		<xsl:variable name="refid">
+		<xsl:param name="refid"/>
+		
+		<!-- <xsl:variable name="refid">
 	      	<xsl:choose>
 		      	<xsl:when test="string-length($is_to)=0 and name(..)='reference' and ../../@id"><xsl:value-of select="current()/@id"/></xsl:when>
 		      	<xsl:otherwise>NA</xsl:otherwise>
 	      	</xsl:choose>
-		</xsl:variable>
+		</xsl:variable> -->
 
 		<xsl:variable name="iid">
 			<xsl:choose>

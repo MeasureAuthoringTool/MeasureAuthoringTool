@@ -21,10 +21,14 @@
 
 	<xsl:template match="elementRef|qdm|qdsel|iqdsel">
       <xsl:param name="conj"/>
+      <xsl:param name="process_Neg_RatId"/>
 
 	<xsl:variable name="refid">
       	<xsl:choose>
-	      	<xsl:when test="name(..)='reference' and ../../@id"><xsl:value-of select="current()/@id"/></xsl:when>
+	      	<!-- <xsl:when test="name(..)='reference' and ../../@id"><xsl:value-of select="current()/@id"/></xsl:when> -->
+	      	<xsl:when test="string-length($process_Neg_RatId) > 0">
+	      		<xsl:value-of select="$process_Neg_RatId"/>
+	      	</xsl:when>
 	      	<xsl:otherwise>NA</xsl:otherwise>
       	</xsl:choose>
       </xsl:variable>
@@ -51,6 +55,7 @@
       		<!--<xsl:when test="name(..)='supplementalDataElements'">
       			<xsl:value-of select="/measure/supplementalDataElements/*[@id=$qdsid]/@uuid"/>
       		</xsl:when>-->
+      		<xsl:when test="$refid != 'NA'"><xsl:value-of select="$refid"/></xsl:when>
       		<xsl:otherwise>
          		<xsl:value-of select="/measure/elementLookUp/*[@id=$qdsid]/@uuid"/>
       		</xsl:otherwise>
@@ -148,7 +153,9 @@
 	</xsl:variable>
 	
       <xsl:variable name="title">
-      	<xsl:call-template name="title"/>
+      	<xsl:call-template name="title">
+      		<xsl:with-param name="refid"><xsl:value-of select="$refid"/></xsl:with-param>
+      	</xsl:call-template>
      </xsl:variable>
 	
    	<xsl:variable name="rel">
@@ -165,16 +172,19 @@
 			<xsl:value-of select="/measure/elementLookUp/*[@id=current()/@to]/@uuid"/>
 		</xsl:if>
 	</xsl:variable>
+	
 	<xsl:variable name="tid-root">
 		<xsl:choose>
 			<xsl:when test="$refid != 'NA'">
-				<xsl:value-of select="$the_tidrootMapping/PatternMapping/pattern[@dataType=lower-case($refdatatype)]/@root"/>
+				<xsl:variable name="negDataTyp"><xsl:value-of select="concat($qdsdatatype,' not done')"/></xsl:variable>
+				<xsl:value-of select="$the_tidrootMapping/PatternMapping/pattern[@dataType=lower-case($negDataTyp)]/@root"/>
 	    	</xsl:when>
 			<xsl:when test="$the_tidrootMapping/PatternMapping/pattern[@dataType=lower-case($qdsdatatype)]">
 				<xsl:value-of select="$the_tidrootMapping/PatternMapping/pattern[@dataType=lower-case($qdsdatatype)]/@root"/>
 			</xsl:when>
 		</xsl:choose>
 	</xsl:variable>
+	
 	<xsl:variable name="has_act_code">
 		<xsl:apply-templates select="attribute" mode="has_act_code"/>
 	</xsl:variable>
@@ -199,7 +209,7 @@
    		<act classCode="ACT" moodCode="EVN" isCriterionInd="true">
    		
 	    <!-- when not done or not -->
-	    <xsl:if test="($refid != 'NA' or $isNot='true' or (child::attribute[@name = 'negation rationale']))">
+	    <xsl:if test="($isNot='true' or (child::attribute[@name = 'negation rationale']))">
 	    	<xsl:attribute name="actionNegationInd">true</xsl:attribute>
 	    	<!-- only when not done -->
 	    	<xsl:if test="not($isNot='true')">
@@ -563,7 +573,7 @@
 									<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 								</observation>
 							</sourceOf>
-							<xsl:apply-templates select="../.." mode="to"/>
+							<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 						</xsl:if>
 						    
 						<xsl:apply-templates select="." mode="to"/>
@@ -598,7 +608,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -633,7 +643,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -667,7 +677,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -735,7 +745,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -769,7 +779,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -803,7 +813,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -837,7 +847,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -877,7 +887,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -906,7 +916,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -939,7 +949,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>							    
 							<xsl:apply-templates select="." mode="to"/>
 						</observation>
@@ -978,7 +988,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 							</encounter>
@@ -1012,7 +1022,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 						</encounter>
@@ -1046,7 +1056,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 						</encounter>
@@ -1079,7 +1089,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 						</encounter>
@@ -1112,7 +1122,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 								<xsl:apply-templates select="." mode="to"/>
 					        </encounter>
@@ -1145,7 +1155,7 @@
 											<value xsi:type="CD" code="{$refoid}"  displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 										</observation>
 									</sourceOf>
-									<xsl:apply-templates select="../.." mode="to"/>
+									<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 	            				</xsl:if>
 	            				<xsl:apply-templates select="." mode="to"/>
 				          </observation>
@@ -1177,7 +1187,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 						<xsl:apply-templates select="." mode="to"/>
 				     </procedure>
@@ -1220,7 +1230,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 				      </observation>
@@ -1258,7 +1268,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 			      </supply>
@@ -1296,7 +1306,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 				        	    
 							<xsl:apply-templates select="." mode="to"/>
@@ -1344,7 +1354,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -1388,7 +1398,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 						</substanceAdministration>
@@ -1427,7 +1437,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 						    
 						<xsl:apply-templates select="." mode="to"/>
@@ -1689,7 +1699,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 				        </act>
@@ -1728,7 +1738,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>			            
@@ -1798,7 +1808,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -1838,7 +1848,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -1874,7 +1884,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							
 							<xsl:apply-templates select="." mode="to"/>
@@ -1908,7 +1918,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 				        </observation>
@@ -1949,7 +1959,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> --> 
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 				        </substanceAdministration>
@@ -1982,7 +1992,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2020,7 +2030,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2053,7 +2063,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2086,7 +2096,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -2120,7 +2130,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -2159,7 +2169,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 				            
 						<xsl:apply-templates select="." mode="to"/>
@@ -2198,7 +2208,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2237,7 +2247,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							    
 							<xsl:apply-templates select="." mode="to"/>
@@ -2276,7 +2286,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2315,7 +2325,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2348,7 +2358,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2432,7 +2442,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 				            
 						<xsl:apply-templates select="." mode="to"/>
@@ -2470,7 +2480,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2508,7 +2518,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2550,7 +2560,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2590,7 +2600,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2630,7 +2640,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2670,7 +2680,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2710,7 +2720,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2750,7 +2760,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2789,7 +2799,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 				            
 						<xsl:apply-templates select="." mode="to"/>
@@ -2827,7 +2837,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2866,7 +2876,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -2899,7 +2909,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 				        </procedure>
@@ -2932,7 +2942,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 							<xsl:apply-templates select="." mode="to"/>
 				        </procedure>
@@ -2964,7 +2974,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3002,7 +3012,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3040,7 +3050,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3073,7 +3083,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3107,7 +3117,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3141,7 +3151,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3179,7 +3189,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3217,7 +3227,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3250,7 +3260,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3296,7 +3306,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3336,7 +3346,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3376,7 +3386,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3404,7 +3414,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>
@@ -3436,7 +3446,7 @@
 										<value xsi:type="CD" code="{$refoid}" displayName="{$refdisplayname}" notDoneDisplayName="{$qdsdisplayname}"/>
 									</observation>
 								</sourceOf>
-								<xsl:apply-templates select="../.." mode="to"/>
+								<!-- <xsl:apply-templates select="../.." mode="to"/> -->
 							</xsl:if>
 					            
 							<xsl:apply-templates select="." mode="to"/>

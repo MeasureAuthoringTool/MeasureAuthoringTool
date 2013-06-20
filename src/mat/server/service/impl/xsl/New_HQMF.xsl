@@ -706,11 +706,11 @@
                     
                     <xsl:choose>
                         <xsl:when test="(count(ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID][@name != 'negation rationale']) > 0)">
-                            <xsl:for-each select="distinct-values(ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID]/@name)">
+                            <xsl:for-each select="distinct-values(ancestor::measure/measureGrouping//attribute[@qdmUUID = $qdmID][@name != 'negation rationale']/@name)">
                                 <propel id="{$qdmID}"  name="{$qdmName}" displayName="{$qdmName}" datatype="{.}" oid="{$qdmOid}" uuid="{$qdmUuid}" taxonomy="{$qdmTaxonomy}" taxonomyVersion="{$qdmVersion}" codeSystem="{$qdmCodeSystem}" codeSystemName="{$qdmCodeSystemName}"/>
                             </xsl:for-each>
                         </xsl:when>
-                        
+                                                
                         <xsl:when test="(count(ancestor::measure/strata//attribute[@qdmUUID = $qdmID][@name != 'negation rationale']) > 0)">
                             <xsl:for-each select="distinct-values(ancestor::measure/strata//attribute[@qdmUUID = $qdmID]/@name)">
                                 <propel id="{$qdmID}"  name="{$qdmName}" displayName="{$qdmName}" datatype="{.}" oid="{$qdmOid}" uuid="{$qdmUuid}" taxonomy="{$qdmTaxonomy}" taxonomyVersion="{$qdmVersion}" codeSystem="{$qdmCodeSystem}" codeSystemName="{$qdmCodeSystemName}"/>
@@ -727,8 +727,6 @@
             </section>
         </component> 
     </xsl:template>
-    
-    
     
     <xsl:template name="supplemental_data_elements">
         <xsl:text>
@@ -757,6 +755,23 @@
         <entry typeCode="DRIV">
             <xsl:apply-templates select="."/>
         </entry>
+        
+        <!-- Handle QDM's which have 'negation rationale' attributes -->
+        <xsl:if test="name() = 'qdm'">
+            <xsl:variable name="uuid"><xsl:value-of select="@uuid"/></xsl:variable>
+            <xsl:if test="count(ancestor::measure//elementRef[@id=$uuid][attribute[@qdmUUID][lower-case(@name)='negation rationale']]) > 0">
+                <xsl:variable name="rootNode" select="/"/>
+                <xsl:for-each select="distinct-values(ancestor::measure//elementRef[@id=$uuid]/attribute[@qdmUUID][lower-case(@name)='negation rationale']/@qdmUUID)">
+                    <xsl:variable name="qdmuuid"><xsl:value-of select="."/></xsl:variable>
+                    <entry typeCode="DRIV">
+                        <xsl:apply-templates select="$rootNode//elementLookUp/qdm[@uuid=$uuid]">
+                             <xsl:with-param name="process_Neg_RatId"><xsl:value-of select="$qdmuuid"/></xsl:with-param>               
+                        </xsl:apply-templates>
+                    </entry>
+                </xsl:for-each>
+            </xsl:if>    
+        </xsl:if>
+        
     </xsl:template>
     
     <!--<xsl:template match="logicalOp" mode="getConj">

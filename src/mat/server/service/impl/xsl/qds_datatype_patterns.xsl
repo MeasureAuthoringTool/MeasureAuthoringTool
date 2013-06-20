@@ -154,7 +154,7 @@
 	
       <xsl:variable name="title">
       	<xsl:call-template name="title">
-      		<xsl:with-param name="refid"><xsl:value-of select="$refid"/></xsl:with-param>
+      		<xsl:with-param name="ref-id"><xsl:value-of select="$refid"/></xsl:with-param>
       	</xsl:call-template>
      </xsl:variable>
 	

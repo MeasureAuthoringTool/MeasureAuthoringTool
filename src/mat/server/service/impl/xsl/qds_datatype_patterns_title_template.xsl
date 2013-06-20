@@ -9,7 +9,17 @@
 	
 	<xsl:template match="*" name="title">
 		<xsl:param name="is_to"/>
-		<xsl:param name="refid"/>
+		<xsl:param name="ref-id"/>
+		
+		<xsl:variable name="refid">
+			<xsl:choose>
+				<xsl:when test="string-length($ref-id) > 0">
+					<xsl:value-of select="$ref-id"/>
+				</xsl:when>
+				<xsl:otherwise>NA</xsl:otherwise>
+			</xsl:choose>
+		</xsl:variable>
+			
 		
 		<!-- <xsl:variable name="refid">
 	      	<xsl:choose>
@@ -193,7 +203,7 @@
 					</xsl:when>
 					<xsl:otherwise>
 					   	  <xsl:if test="$refid='NA'">
-								<!-- Take care of the 'negation rationale' attribute -->
+					   	  		<!-- Take care of the 'negation rationale' attribute -->
 								<xsl:choose>
 									<xsl:when test="attribute[@name='negation rationale']">
 										<title>

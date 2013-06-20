@@ -255,6 +255,9 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	}
 	
 	private void validateClauseWorkspaceTab(XmlTreePresenter xmlTreePresenter, int selectedIndex){
+		if(null ==	xmlTreePresenter.getXmlTreeDisplay()){// this will happen when there is any errors on Clause Workspace Tabs
+			return;
+		}
 		xmlTreePresenter.getXmlTreeDisplay().clearMessages();
 		if(xmlTreePresenter.getXmlTreeDisplay().isDirty()){
 			isUnsavedData = true;

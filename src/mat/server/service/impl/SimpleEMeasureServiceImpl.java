@@ -517,9 +517,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		// 1 add finalizedDate field
 		if(fdts != null && !emeasureXMLStr.contains("<finalizedDate")){
 			String fdstr = convertTimestampToString(fdts);
-			String repee = "</headers>";
+			String repee = "</measureDetails>";
 			String repor = su.nl+"<finalizedDate value=\""+fdstr+"\"/>"
-				+su.nl+"</headers>";
+				+su.nl+"</measureDetails>";
 			int offset = emeasureXMLStr.indexOf(repee);
 			emeasureXMLStr = emeasureXMLStr.substring(0,offset)+repor+emeasureXMLStr.substring(offset+repee.length());
 			measureExport.setSimpleXML(emeasureXMLStr);
@@ -534,9 +534,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 			emeasureXMLStr = emeasureXMLStr.substring(0, start) + vStr + emeasureXMLStr.substring(end);
 			measureExport.setSimpleXML(emeasureXMLStr);
 		}else{
-			String repee = "</headers>";
+			String repee = "</measureDetails>";
 			String repor = su.nl+VERSION_START+vStr+VERSION_END
-				+su.nl+"</headers>";
+				+su.nl+"</measureDetails>";
 			int offset = emeasureXMLStr.indexOf(repee);
 			emeasureXMLStr = emeasureXMLStr.substring(0,offset)+repor+emeasureXMLStr.substring(offset+repee.length());
 			measureExport.setSimpleXML(emeasureXMLStr);

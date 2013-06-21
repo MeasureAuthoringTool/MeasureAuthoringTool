@@ -233,9 +233,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());
 		
 		HorizontalPanel measurePeriodPanel = new HorizontalPanel();
-	    measurePeriodPanel.add(new Label("From"));
-	    measurePeriodPanel.add(measurePeriodFromInput);
-	    measurePeriodPanel.add(new Label("To"));
+	   	Label fromLabel = new Label("From");
+	   	fromLabel.addStyleName("firstLabel");
+		measurePeriodPanel.add(fromLabel);
+	   	measurePeriodPanel.add(measurePeriodFromInput);
+	    Label toLabel = new Label("To");
+	    toLabel.addStyleName("secondLabel");
+	   	measurePeriodPanel.add(toLabel);
 	    measurePeriodPanel.add(measurePeriodToInput);
 	    measurePeriodFromInput.getDateBox().addKeyDownHandler(keyDownHandler);
 	    measurePeriodToInput.getDateBox().addKeyDownHandler(keyDownHandler);

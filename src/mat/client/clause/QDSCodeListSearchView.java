@@ -36,13 +36,11 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -169,9 +167,9 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	
 	private Widget buildSearchWidget(){
 		HorizontalPanel hp = new HorizontalPanel();
-		SimplePanel sp1 = new SimplePanel();
+		FlowPanel fp1 = new FlowPanel();
 		//sp1.addStyleName("codeListLink");
-		sp1.add(searchInput);
+		fp1.add(searchInput);
 		searchInput.addFocusHandler(
 				new FocusHandler() {
 					@Override
@@ -180,8 +178,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 					}
 				});
 		
-		SimplePanel sp2 = new SimplePanel();
-		sp2.add(searchButton);
+		fp1.add(searchButton);
 		searchButton.addFocusHandler(
 				new FocusHandler() {
 					@Override
@@ -189,8 +186,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 						MatContext.get().clearDVIMessages();
 					}
 				});
-		hp.add(sp1);
-		hp.add(sp2);
+		fp1.add(new SpacerWidget());
+		hp.add(fp1);
 		return hp;
 	}
 	

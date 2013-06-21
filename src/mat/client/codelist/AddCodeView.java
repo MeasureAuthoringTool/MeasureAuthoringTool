@@ -116,11 +116,14 @@ public class AddCodeView extends AddBaseView implements  ManageCodeListDetailPre
 		    uploadField.setHeight("20px");
 		    vPanel.add(uploadField);
 
-		    vPanel.add(new Button("Import", new ClickHandler() {
-		      public void onClick(ClickEvent event) {
-		        form.submit();
-		      }
-		    }));
+		    Button importButton = new Button("Import", new ClickHandler() {
+		    	public void onClick(ClickEvent event) {
+			        form.submit();
+			      }
+			    });
+		    importButton.setTitle("Import");
+		    importButton.setStyleName("marginTop");
+		    vPanel.add(importButton);
 
 		    form.addSubmitHandler(new FormPanel.SubmitHandler() {
 		      public void onSubmit(SubmitEvent event) {

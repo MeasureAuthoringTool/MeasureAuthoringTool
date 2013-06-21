@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Panel;
 
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -123,13 +122,11 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 
 	private Widget buildSearchWidget(){
 		HorizontalPanel hp = new HorizontalPanel();
-		SimplePanel sp1 = new SimplePanel();
-		sp1.addStyleName("codeListLink");
-		sp1.add(searchInput);
-		SimplePanel sp2 = new SimplePanel();
-		sp2.add(searchButton);
-		hp.add(sp1);
-		hp.add(sp2);
+		FlowPanel fp1 = new FlowPanel();
+		fp1.add(searchInput);
+		fp1.add(searchButton);
+		fp1.add(new SpacerWidget());
+		hp.add(fp1);
 		return hp;
 	}
 	

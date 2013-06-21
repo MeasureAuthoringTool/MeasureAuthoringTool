@@ -99,14 +99,12 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	
 	private Widget buildSearchWidget(){
 		HorizontalPanel hp = new HorizontalPanel();
-		SimplePanel sp1 = new SimplePanel();
-		sp1.addStyleName("codeListLink");
-		sp1.add(searchInput);
-		SimplePanel sp2 = new SimplePanel();
-		sp2.add(searchButton);
+		FlowPanel fp1 = new FlowPanel();
+		fp1.add(searchInput);
 		searchButton.setTitle("Search");
-		hp.add(sp1);
-		hp.add(sp2);
+		fp1.add(searchButton);
+		fp1.add(new SpacerWidget());
+		hp.add(fp1);
 		return hp;
 	}
 	

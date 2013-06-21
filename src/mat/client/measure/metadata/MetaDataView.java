@@ -334,7 +334,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	    referencePlaceHolder.add(referenceTable);
 	    fPanel.add(LabelBuilder.buildLabel(referencePlaceHolder, "Reference(s)"));
 		fPanel.add(referencePlaceHolder);
-		fPanel.add(new SpacerWidget());
+		//fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(definitionsInput, "Definition"));
 		fPanel.add(definitionsInput);
@@ -399,7 +399,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(LabelBuilder.buildLabel(setNameInput, "Measure Set"));
 		fPanel.add(setNameInput);
 		setNameInput.addKeyDownHandler(keyDownHandler);
-		fPanel.add(new SpacerWidget());
+		//fPanel.add(new SpacerWidget());
 		
 		
 	    AddRowButton.addClickHandler(new ClickHandler() {
@@ -836,7 +836,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			  referenceArrayList.remove(referenceTable.getWidget(rowIndex, 0));  
 		  }
 		  referenceTable.removeRow(rowIndex);
-		  referenceTable.getFlexCellFormatter().setRowSpan(0, 1, numRows - 1);
+		  //referenceTable.getFlexCellFormatter().setRowSpan(0, 1, numRows - 1);
 	}
 
 
@@ -866,8 +866,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				}else{
 					referenceTable.setWidget(i, 0, newReferenceBox);
 					if(editable) {
-							Button newremoveButton = new PrimaryButton("Remove");
-						newremoveButton.addClickHandler(new ClickHandler() {
+							Button newRemoveButton = new PrimaryButton("Remove","primaryGreyLeftButton");
+						newRemoveButton.addClickHandler(new ClickHandler() {
 								
 								@Override
 								public void onClick(ClickEvent event) {
@@ -876,7 +876,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 									removeRow(referenceTable,clickedRowIndex);
 								}
 							   });
-						referenceTable.setWidget(i, 1, newremoveButton);
+						 referenceTable.setWidget(i, 1, new SimplePanel());
+						referenceTable.setWidget(i, 2, newRemoveButton);
 					}
 				}
 				referenceArrayList.add(newReferenceBox);
@@ -1026,7 +1027,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		setListBoxOptions(objectStatusInput, texts, MatContext.PLEASE_SELECT);
 		
 	}
-
+	
 
 	@Override
 	public String getMeasureStatusValue() {

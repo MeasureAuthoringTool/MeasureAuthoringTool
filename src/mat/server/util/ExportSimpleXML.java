@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -142,6 +143,7 @@ public class ExportSimpleXML {
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		removeUnWantedQDMs(usedQDMIds, originalDoc);
 		expandAndHandleGrouping(originalDoc);
+		addUUIDToFunctions(originalDoc);
 		//modify the <startDate> and <stopDate> tags to have date in YYYYMMDD format
 		modifyHeaderStart_Stop_Dates(originalDoc);
 		
@@ -429,6 +431,19 @@ public class ExportSimpleXML {
 					node.setTextContent(formatDate(value));
 				}
 			}
+		}
+	}
+	
+	private static void addUUIDToFunctions(Document originalDoc) throws XPathExpressionException {
+		NodeList functionalOpNodes = (NodeList)xPath.evaluate("/measure//clause//functionalOp", originalDoc, XPathConstants.NODESET);
+		
+		for(int i=0;i<functionalOpNodes.getLength();i++){
+			Node functionalOpNode = functionalOpNodes.item(i);
+			
+			Attr uuidAttr = originalDoc.createAttribute("uuid");
+			uuidAttr.setValue(UUID.randomUUID().toString());
+			
+			functionalOpNode.getAttributes().setNamedItem(uuidAttr);
 		}
 	}
 	

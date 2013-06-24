@@ -382,33 +382,33 @@
 	<xsl:template match="attribute" mode="property_values_new">
 		
 		<xsl:choose>
-			<xsl:when test="lower-case(@mode) = 'Less Than'">
+			<xsl:when test="lower-case(@mode) = 'less than'">
 				<xsl:apply-templates select="." mode="Less_Than">
 					<xsl:with-param name="inclusive">false</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:when>
-			<xsl:when test="lower-case(@mode) = 'Greater Than'">
+			<xsl:when test="lower-case(@mode) = 'greater than'">
 				<xsl:apply-templates select="." mode="Greater_Than">
 					<xsl:with-param name="inclusive">false</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:when>
-			<xsl:when test="lower-case(@mode) = 'Equal To'">
+			<xsl:when test="lower-case(@mode) = 'equal to'">
 				<xsl:apply-templates select="." mode="Equal_To"/>
 			</xsl:when>
-			<xsl:when test="lower-case(@mode) = 'Less Than Or Equal To'">
+			<xsl:when test="lower-case(@mode) = 'less than or equal to'">
 				<xsl:apply-templates select="." mode="Less_Than">
 					<xsl:with-param name="inclusive">true</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:when>
-			<xsl:when test="lower-case(@mode) = 'Greater Than Or Equal To'">
+			<xsl:when test="lower-case(@mode) = 'greater than or equal to'">
 				<xsl:apply-templates select="." mode="Greater_Than">
 					<xsl:with-param name="inclusive">true</xsl:with-param>
 				</xsl:apply-templates>
 			</xsl:when>
-			<xsl:when test="lower-case(@mode) = 'Value Set'">
+			<xsl:when test="lower-case(@mode) = 'value set'">
 				
 			</xsl:when>
-			<xsl:when test="lower-case(@mode) = 'Check if Present'">
+			<xsl:when test="lower-case(@mode) = 'check if present'">
 				<value xsi:type="ANYNonNull"/> 
 			</xsl:when>
 		</xsl:choose>
@@ -417,7 +417,7 @@
 	<xsl:template match="attribute" mode="Equal_To">
 		<value xsi:type="PQ" >
 			<xsl:if test="@comparisonValue">
-				<xsl:attribute name="value"><xsl:value-of select="@value"/></xsl:attribute>
+				<xsl:attribute name="value"><xsl:value-of select="@comparisonValue"/></xsl:attribute>
 			</xsl:if>
 			<xsl:if test="@unit">
 				<xsl:variable name="unit">

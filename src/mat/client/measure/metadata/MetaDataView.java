@@ -821,6 +821,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		   });
 		   int numRows = referenceTable.getRowCount();
 		   referenceTable.setWidget(numRows, 0, hp);
+		   //referenceTable.setWidget(numRows, 1, new SimplePanel());
 		   referenceTable.setWidget(numRows, 1,newremoveButton);
 		   referenceTable.getFlexCellFormatter().setRowSpan(0, 1, numRows + 1);
 		   referenceArrayList.add(newReferenceBox);

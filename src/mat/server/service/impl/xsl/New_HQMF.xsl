@@ -879,9 +879,22 @@
                     <title>Measure observations</title>
                     <text/>
                     <xsl:for-each select="measureObservations/clause/logicalOp/*">
-                        <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
-                            <xsl:apply-templates select="."/>
-                        </entry>
+                        <xsl:choose>
+                            <xsl:when test="name() = 'functionalOp'">
+                                <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
+                                    <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                                        <xsl:apply-templates select="."/>
+                                    </act>
+                                </entry>
+                            </xsl:when>
+                            <xsl:otherwise>
+                                <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
+                                    <xsl:apply-templates select="."/>
+                                </entry>
+                            </xsl:otherwise>
+                        </xsl:choose>
+                        
+                        
                     </xsl:for-each>
                 </section>
             </component>

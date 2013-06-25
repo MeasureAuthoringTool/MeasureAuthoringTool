@@ -164,7 +164,7 @@ public class ExportSimpleXML {
 			e.printStackTrace();
 		}
 		_logger.info("Document object to ByteArray transformation complete");
-		System.out.println(arrayOutputStream.toString());
+		//System.out.println(arrayOutputStream.toString());
 		return arrayOutputStream.toString();
 	}
 

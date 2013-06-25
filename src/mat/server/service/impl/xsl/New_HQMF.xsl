@@ -488,12 +488,11 @@
                             <xsl:when test="name(.)='logicalOp' and (count(*) > 0)">
                                 <xsl:if test="string-length($conj) > 0">
                                     <sourceOf typeCode="PRCN">
-                                        <conjunctionCode code="{$conj}"/>
+<!--                                        <conjunctionCode code="{$conj}"/>-->
                                         <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->
                                         <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
                                             <xsl:if test="$isNot = 'true' ">
-                                                <xsl:attribute name="actionNegationInd"
-                                                  >true</xsl:attribute>
+                                                <xsl:attribute name="actionNegationInd">true</xsl:attribute>
                                             </xsl:if>
                                             <xsl:apply-templates select="." mode="topmost"/>
                                         </act>
@@ -563,9 +562,9 @@
                             </xsl:when>
                             <xsl:when test="name(.)='functionalOp'">
                                 <xsl:apply-templates select=".">
-                                    <xsl:with-param name="conj">
+                                    <!--<xsl:with-param name="conj">
                                         <xsl:value-of select="$conj"/>
-                                    </xsl:with-param>
+                                    </xsl:with-param>-->
                                 </xsl:apply-templates>
                             </xsl:when>
                             <xsl:otherwise>

@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
@@ -48,6 +50,9 @@ public class UserServiceImpl implements UserService {
 	
 	private static final String ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 	private static final String NUMERIC = "1234567890";
+	private static final String EMAIL_PATTERN = 
+			"^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@"
+			+ "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
 	//private static Random ID = new Random(99999);
 	private static Random ID = new Random(System.currentTimeMillis());
 	
@@ -216,14 +221,21 @@ public class UserServiceImpl implements UserService {
 		result.setEmailSent(false);
 		logger.info(" requestForgottenLoginID   email ====" + email);
 		User user = null;
+		boolean inValidEmail=false;
 		try {
-			user = userDAO.findByEmail(email);
+			if(isValidEmail(email)){
+				inValidEmail=true;
+				user = userDAO.findByEmail(email);
+			}
 		}
-		catch(ObjectNotFoundException exc) { }
+		catch(ObjectNotFoundException exc) { logger.info(" requestForgottenLoginID   Exception " + exc.getMessage());}
 		
-		if(user == null) {
+		if(user == null && inValidEmail) {
 			result.setFailureReason(ForgottenLoginIDResult.EMAIL_NOT_FOUND_MSG);
 			logger.info(" requestForgottenLoginID   user not found for email ::" +email );
+		}else if(!inValidEmail){
+			result.setFailureReason(ForgottenLoginIDResult.EMAIL_INVALID);
+			logger.info(" requestForgottenLoginID   Invalid email ::" +email );
 		}
 		else {	
 			
@@ -243,6 +255,14 @@ public class UserServiceImpl implements UserService {
 		return result;
 	}
 	
+	private boolean isValidEmail(String emailAddress){
+		Pattern pattern;
+		Matcher matcher;
+		pattern = Pattern.compile(EMAIL_PATTERN);
+		matcher = pattern.matcher(emailAddress);
+		return matcher.matches();
+	
+	}
 	
 	private boolean securityQuestionMatch(User user, 
 			String securityQuestion, String securityAnswer) {

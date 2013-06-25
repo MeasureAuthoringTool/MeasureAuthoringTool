@@ -81,19 +81,26 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 			String ipAddress = getClientIpAddr(getThreadLocalRequest());
 			logger.info("CLient IPAddress :: " + ipAddress);
 			String message=null;
+			TransactionAuditService auditService = (TransactionAuditService)context.getBean("transactionAuditService");
 			if(forgottenLoginIDResult.getFailureReason()==5){
 				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
+				//this is to show success message on client side.
+				forgottenLoginIDResult.setEmailSent(true);
+				//Illegal activity is logged in Transaction Audit table with IP Address of client requesting for User Id.
+				auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_USER_EVENT", email, "[IP: "+ipAddress+" ]"+"[EMAIL Entered: "+email+" ]" +message, ConstantMessages.DB_LOG);
 			}else if (forgottenLoginIDResult.getFailureReason()==4){
 				message = MatContext.get().getMessageDelegate().getEmailNotFoundMessage();
+				//this is to show success message on client side.
+				forgottenLoginIDResult.setEmailSent(true);
+				//Illegal activity is logged in Transaction Audit table with IP Address of client requesting for User Id.
+				auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_USER_EVENT", email, "[IP: "+ipAddress+" ]"+"[EMAIL Entered: "+email+" ]" +message, ConstantMessages.DB_LOG);
 			}
-			//Illegal activity is logged in Transaction Audit table with IP Address of client requesting for User Id.
-			TransactionAuditService auditService = (TransactionAuditService)context.getBean("transactionAuditService");
-			auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_USER_EVENT", email, "[IP: "+ipAddress+" ]"+"[EMAIL Entered: "+email+" ]" +message, ConstantMessages.DB_LOG);
-			//this is to show success message on client side.
-			forgottenLoginIDResult.setEmailSent(true);
+			
 		}
 		return forgottenLoginIDResult;
 	}
+	
+	
 	
 	/** Method to find IP address of Client **/
 	private String getClientIpAddr(HttpServletRequest request) {  

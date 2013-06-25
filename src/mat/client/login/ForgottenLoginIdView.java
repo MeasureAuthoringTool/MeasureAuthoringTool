@@ -1,18 +1,17 @@
 package mat.client.login;
 
-import java.util.List;
-
 import mat.client.shared.EmailAddressTextBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.NameValuePair;
+import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -43,7 +42,7 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 		VerticalPanel bluePanel = new VerticalPanel();
 		bluePanel.setStylePrimaryName("loginContentPanel");
 		
-		Label instructions = new Label("To request your User ID, please provide the following information:");
+		Label instructions = new Label("Enter the E-mail address you used for registeration:");
 		instructions.setStylePrimaryName("loginForgotInstructions");
 		bluePanel.add(instructions);
 		bluePanel.add(new SpacerWidget());
@@ -51,7 +50,13 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 		bluePanel.add(errorMessages);
 		
 		email = new EmailAddressTextBox();
-		bluePanel.add(LabelBuilder.buildLabel(email, "Email Address"));
+		Label emailAddressLabel = (Label)LabelBuilder.buildLabel(email, "Email Address");
+		HorizontalPanel hPanel = new HorizontalPanel();
+		HTML required = new HTML(RequiredIndicator.get());
+		hPanel.add(emailAddressLabel);
+		hPanel.add(required);
+		bluePanel.add(hPanel);
+		bluePanel.add(new SpacerWidget());
 		bluePanel.add(email);
 		bluePanel.add(new SpacerWidget());
 		bluePanel.add(new SpacerWidget());

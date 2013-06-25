@@ -274,7 +274,7 @@ public class ExportSimpleXML {
 	 * @param originalDoc
 	 * @throws XPathExpressionException 
 	 */
-	private static void reArrangeClauseNodes(Document originalDoc) throws XPathExpressionException {
+	/*private static void reArrangeClauseNodes(Document originalDoc) throws XPathExpressionException {
 		NodeList groupNodes = (NodeList)xPath.evaluate("/measure/measureGrouping/group", 
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
@@ -309,7 +309,7 @@ public class ExportSimpleXML {
 				groupNode.appendChild(ippNode);
 			}
 		}
-	}
+	}*/
 
 	private static List<String> getUsedClauseIds(Document originalDoc) throws XPathExpressionException {
 		List<String> usedClauseIds = new ArrayList<String>();
@@ -434,6 +434,11 @@ public class ExportSimpleXML {
 		}
 	}
 	
+	/**
+	 * This method will go through the entire XML file and find <functionalOp> tags and add a 'uuid' attribute to each.
+	 * @param originalDoc
+	 * @throws XPathExpressionException
+	 */
 	private static void addUUIDToFunctions(Document originalDoc) throws XPathExpressionException {
 		NodeList functionalOpNodes = (NodeList)xPath.evaluate("/measure//clause//functionalOp", originalDoc, XPathConstants.NODESET);
 		

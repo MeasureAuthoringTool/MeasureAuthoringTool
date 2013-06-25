@@ -28,15 +28,10 @@ public class ForgottenLoginIdPresenter {
 
 	public static interface Display {
 		public HasValue<String> getEmail();
-		public HasValue<String> getSecurityQuestion();
-		public HasValue<String> getSecurityAnswer();
 		
 		public HasClickHandlers getSubmit();
 		public HasClickHandlers getReset();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		public void setSecurityQuestionAnswerEnabled(boolean enabled);
-		public void addSecurityQuestionOptions(List<NameValuePair> texts);
-		public void setFocus(boolean focus);
 		public Widget asWidget();
 	}
 
@@ -59,53 +54,15 @@ public class ForgottenLoginIdPresenter {
 				requestForgottenLoginID();
 			}
 		});
-		
-		display.getEmail().addValueChangeHandler(new ValueChangeHandler<String>() {
-			@Override
-			public void onValueChange(ValueChangeEvent<String> arg0) {
-				display.setFocus(true);
-				display.setSecurityQuestionAnswerEnabled(false);
-				display.getErrorMessageDisplay().clear();
-				loadSecurityQuestionsForUserId(arg0.getValue());
-			}
-		});
-		
-		display.setSecurityQuestionAnswerEnabled(false);
 	}
 	
 	private void reset() {
 		display.getEmail().setValue("");
-		display.getSecurityAnswer().setValue("");
 		display.getErrorMessageDisplay().clear();
 	}
-	private void loadSecurityQuestionsForUserId(String email) {
-		MatContext.get().getLoginService().getSecurityQuestionOptionsForEmail(email, new AsyncCallback<SecurityQuestionOptions>() {
-
-			@Override
-			public void onFailure(Throwable exc) {
-				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
-
-			@Override
-			public void onSuccess(SecurityQuestionOptions options) {
-				if(options.isUserFound() && options.getSecurityQuestions().size() > 0) {
-					display.setSecurityQuestionAnswerEnabled(true);
-					display.setFocus(true);//This line is needed to focus the dropdown when the security Questions dynamically changed.
-					List<NameValuePair> qs = options.getSecurityQuestions();
-					Collections.sort(qs, new NameValuePair.Comparator());
-					display.addSecurityQuestionOptions(qs);
-				}
-				else {
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getEmailNotFoundMessage());
-				}
-			}
-			
-		});
-	}
+	
 	private void requestForgottenLoginID() {
-		MatContext.get().getLoginService().forgotLoginID(display.getEmail().getValue(), display.getSecurityQuestion().getValue(),
-				display.getSecurityAnswer().getValue(), new AsyncCallback<ForgottenLoginIDResult>(){
-
+		MatContext.get().getLoginService().forgotLoginID(display.getEmail().getValue(), new AsyncCallback<ForgottenLoginIDResult>(){
 					@Override
 					public void onFailure(Throwable caught) {
 						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -152,16 +109,6 @@ public class ForgottenLoginIdPresenter {
 	}
 	public void go(HasWidgets container) {
 		reset();
-		MatContext.get().getSecurityQuestions(new AsyncCallback<List<NameValuePair>>() {
-			public void onSuccess(List<NameValuePair> values) {
-				display.addSecurityQuestionOptions(values);
-			}
-			public void onFailure(Throwable t) {
-				//Window.alert(t.getMessage());
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
-		});
-		
 		container.add(display.asWidget());
 	}
 }

@@ -17,8 +17,6 @@ public interface LoginService extends RemoteService {
 	public LoginModel  isValidUser(String username, String password); 
 	public ForgottenPasswordResult forgotPassword(String email, 
 			String securityQuestion, String securityAnswer);
-	public ForgottenLoginIDResult forgotLoginID(String email, 
-			String securityQuestion, String securityAnswer);
 	LoginResult changePasswordSecurityAnswers(LoginModel model);
 	public void signOut();
 	public LoginModel changeTempPassword(String email, String password);
@@ -28,4 +26,5 @@ public interface LoginService extends RemoteService {
 	List<String> getFooterURLs();
 	public String updateOnSignOut(String userId, String email, String activityType);
 	SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email);
+	ForgottenLoginIDResult forgotLoginID(String email);
 }

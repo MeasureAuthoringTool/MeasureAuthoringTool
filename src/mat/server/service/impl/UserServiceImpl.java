@@ -211,8 +211,7 @@ public class UserServiceImpl implements UserService {
 		return result;
 	}
 	
-	public ForgottenLoginIDResult requestForgottenLoginID(String email, 
-			String securityQuestion, String securityAnswer) {
+	public ForgottenLoginIDResult requestForgottenLoginID(String email){
 		ForgottenLoginIDResult result = new ForgottenLoginIDResult();
 		result.setEmailSent(false);
 		logger.info(" requestForgottenLoginID   email ====" + email);
@@ -226,28 +225,6 @@ public class UserServiceImpl implements UserService {
 			result.setFailureReason(ForgottenLoginIDResult.EMAIL_NOT_FOUND_MSG);
 			logger.info(" requestForgottenLoginID   user not found for email ::" +email );
 		}
-		else if(user.getSecurityQuestions().size() != 3) {
-			logger.info(" requestForgottenLoginID :: Security Questions Not Set  ");
-			result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTIONS_NOT_SET);
-		}
-		else if(user.getLockedOutDate() != null) {
-			logger.info(" requestForgottenLoginID :: Security Questions Not Set  ");
-			result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTIONS_LOCKED);
-		}
-		else if(!securityQuestionMatch(user, securityQuestion, securityAnswer)) {
-			result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTION_MISMATCH);
-			int lockCounter = user.getPassword().getForgotPwdlockCounter() + 1;
-			if(lockCounter == 2) {
-				result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT);
-				user.setLockedOutDate(new Date());
-			}
-			if(lockCounter == 3) {
-				result.setFailureReason(ForgottenLoginIDResult.SECURITY_QUESTIONS_LOCKED);
-				user.setLockedOutDate(new Date());
-			}
-			user.getPassword().setForgotPwdlockCounter(lockCounter);
-			userDAO.save(user);
-		}
 		else {	
 			
 			Date lastSignIn = user.getSignInDate();
@@ -259,11 +236,8 @@ public class UserServiceImpl implements UserService {
 			if(isAlreadySignedIn){
 				result.setFailureReason(ForgottenLoginIDResult.USER_ALREADY_LOGGED_IN);
 			}else{
-				//String newPassword = generateRandomPassword();
-				//setUserPassword(user, newPassword, true);
 				result.setEmailSent(true);
 				notifyUserOfForgottenLoginId(user);
-				//userDAO.save(user);
 			}
 		}
 		return result;

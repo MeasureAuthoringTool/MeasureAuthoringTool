@@ -4,24 +4,24 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.UUID;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
-import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.shared.MatContext;
-import mat.client.util.ClientConstants;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.LoginCredentialService;
+import mat.server.service.TransactionAuditService;
 import mat.server.service.UserService;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
+import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.PasswordVerifier;
@@ -30,12 +30,6 @@ import mat.shared.SecurityQuestionVerifier;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import com.google.gwt.http.client.Request;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.RequestCallback;
-import com.google.gwt.http.client.RequestException;
-import com.google.gwt.http.client.Response;
 
 @SuppressWarnings("serial")
 public class LoginServiceImpl extends SpringRemoteServiceServlet implements LoginService{
@@ -79,13 +73,48 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		return userService.requestForgottenPassword(loginId, securityQuestion, securityAnswer);
 	}
 
-
 	@Override
-	public ForgottenLoginIDResult forgotLoginID(String email,
-			String securityQuestion, String securityAnswer) {
+	public ForgottenLoginIDResult forgotLoginID(String email) {
 		UserService userService = (UserService)context.getBean("userService");
-		return userService.requestForgottenLoginID(email, securityQuestion, securityAnswer);
+		ForgottenLoginIDResult forgottenLoginIDResult = userService.requestForgottenLoginID(email);
+		if(!forgottenLoginIDResult.isEmailSent()){
+			String ipAddress = getClientIpAddr(getThreadLocalRequest());
+			logger.info("CLient IPAddress :: " + ipAddress);
+			String message=null;
+			if(forgottenLoginIDResult.getFailureReason()==5){
+				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
+			}else if (forgottenLoginIDResult.getFailureReason()==4){
+				message = MatContext.get().getMessageDelegate().getEmailNotFoundMessage();
+			}
+			//Illegal activity is logged in Transaction Audit table with IP Address of client requesting for User Id.
+			TransactionAuditService auditService = (TransactionAuditService)context.getBean("transactionAuditService");
+			auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_USER_EVENT", email, "[IP: "+ipAddress+" ]"+"[EMAIL Entered: "+email+" ]" +message, ConstantMessages.DB_LOG);
+			//this is to show success message on client side.
+			forgottenLoginIDResult.setEmailSent(true);
+		}
+		return forgottenLoginIDResult;
 	}
+	
+	/** Method to find IP address of Client **/
+	private String getClientIpAddr(HttpServletRequest request) {  
+        String ip = request.getHeader("X-Forwarded-For");  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("Proxy-Client-IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("WL-Proxy-Client-IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("HTTP_CLIENT_IP");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
+        }  
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
+            ip = request.getRemoteAddr();  
+        }  
+        return ip;  
+    }  
 	@Override
 	public void signOut() {
 		 getLoginCredentialService().signOut();

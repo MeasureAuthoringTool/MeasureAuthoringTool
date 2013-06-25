@@ -35,7 +35,6 @@ public interface UserService {
 	User findByEmailID(String emailId);
 	public int countSearchResultsNonAdmin(String string);
 	public String updateOnSignOut(String userId, String email, String activityType);
-	public ForgottenLoginIDResult requestForgottenLoginID(String email,
-			String securityQuestion, String securityAnswer);
+	public ForgottenLoginIDResult requestForgottenLoginID(String email);
 	SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email);
 }

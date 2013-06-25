@@ -24,8 +24,6 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 	private Panel mainPanel;
 	private TextBox email;
 	
-	private ListBoxMVP securityQuestion;
-	private TextBox securityAnswer;
 	private SaveCancelButtonBar buttonBar;
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	
@@ -56,15 +54,6 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 		bluePanel.add(LabelBuilder.buildLabel(email, "Email Address"));
 		bluePanel.add(email);
 		bluePanel.add(new SpacerWidget());
-		
-		securityQuestion = new ListBoxMVP();
-		bluePanel.add(LabelBuilder.buildLabel(securityQuestion, "Security Question"));
-		bluePanel.add(securityQuestion);
-		bluePanel.add(new SpacerWidget());
-		
-		securityAnswer = new TextBox();
-		bluePanel.add(LabelBuilder.buildLabel(securityAnswer, "Security Question Answer"));
-		bluePanel.add(securityAnswer);
 		bluePanel.add(new SpacerWidget());
 		
 		buttonBar = new SaveCancelButtonBar();
@@ -78,16 +67,6 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 	@Override
 	public HasValue<String> getEmail() {
 		return email;
-	}
-
-	@Override
-	public HasValue<String> getSecurityQuestion() {
-		return securityQuestion;
-	}
-
-	@Override
-	public HasValue<String> getSecurityAnswer() {
-		return securityAnswer;
 	}
 
 	@Override
@@ -107,23 +86,8 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 	}
 
 	@Override
-	public void addSecurityQuestionOptions(List<NameValuePair> texts) {
-		securityQuestion.setDropdownOptions(texts);
-	}
-	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
-	}
-
-	@Override
-	public void setSecurityQuestionAnswerEnabled(boolean enabled) {
-		securityQuestion.setEnabled(enabled);
-		securityAnswer.setEnabled(enabled);
-	}
-
-	@Override
-	public void setFocus(boolean focus) {
-		securityQuestion.setFocus(focus);
 	}
 	
 }

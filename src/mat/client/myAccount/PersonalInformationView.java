@@ -53,9 +53,9 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		vPanel.add(required);
 		vPanel.add(new SpacerWidget());
 		
-		HTML userId = new HTML("&nbsp; User ID :&nbsp; ");
-		hPanel.add(userId);
-		hPanel.add(loginId);
+		//HTML userId = new HTML("&nbsp; User ID :&nbsp; ");
+		//hPanel.add(userId);
+		//hPanel.add(loginId);
 		vPanel.add(hPanel);
 		vPanel.add(new SpacerWidget());
 		

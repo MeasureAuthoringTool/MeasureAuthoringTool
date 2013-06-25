@@ -46,8 +46,11 @@
                     displayName="Population criteria"/>
                 <title>Population criteria</title>
                 <text/>
-                <xsl:apply-templates select="group"/>
-            </section>
+                <xsl:for-each select="group">
+                    <xsl:sort select="@sequence"/>
+                    <xsl:apply-templates select="."/>        
+                </xsl:for-each>
+           </section>
         </component>
     </xsl:template>
 

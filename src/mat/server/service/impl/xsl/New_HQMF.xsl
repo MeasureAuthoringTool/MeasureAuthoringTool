@@ -319,7 +319,6 @@
                             <xsl:apply-templates select="child::*[1]"/>
                         </xsl:when>
                         <xsl:when test="$child1Name = 'functionalOp'">
-
                             <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
                                 <sourceOf typeCode="PRCN">
                                     <!--<xsl:apply-templates select="child::*[1]/*"
@@ -327,6 +326,26 @@
                                     <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
                                         <xsl:apply-templates select="child::*[1]"/>
                                     </act>
+                                </sourceOf>
+                                <!-- Process second child i.e. RHS -->
+                                <xsl:apply-templates select="child::*[2]"
+                                    mode="processRelational_Func_RHS">
+                                    <xsl:with-param name="showAtt">true</xsl:with-param>
+                                    <xsl:with-param name="conj">
+                                        <xsl:value-of select="$conj"/>
+                                    </xsl:with-param>
+                                </xsl:apply-templates>
+                            </act>
+                        </xsl:when>
+                        <xsl:when test="$child1Name = 'relationalOp'">
+                            <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                                <xsl:if test="$isNot = 'true' ">
+                                    <xsl:attribute name="actionNegationInd">true</xsl:attribute>
+                                </xsl:if>
+                                <sourceOf typeCode="PRCN">
+                                    <!--<xsl:apply-templates select="child::*[1]/*"
+                                        mode="handleFunctionalOps"/>-->
+                                    <xsl:apply-templates select="child::*[1]"/>
                                 </sourceOf>
                                 <!-- Process second child i.e. RHS -->
                                 <xsl:apply-templates select="child::*[2]"
@@ -495,6 +514,7 @@
                                                 <xsl:attribute name="actionNegationInd">true</xsl:attribute>
                                             </xsl:if>
                                             <xsl:apply-templates select="." mode="topmost"/>
+                                                
                                         </act>
                                     </sourceOf>
                                 </xsl:if>
@@ -504,16 +524,16 @@
                                     </xsl:variable>
                                     <xsl:choose>
                                         <xsl:when test="$isRHS_RelationalOp='true'">
-
-                                            <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>  -->
-                                            <act classCode="ACT" moodCode="EVN"
-                                                isCriterionInd="true">
-                                                <xsl:if test="$isNot = 'true' ">
-                                                  <xsl:attribute name="actionNegationInd">true</xsl:attribute>
-                                                </xsl:if>
-                                                <xsl:apply-templates select="." mode="topmost"/>
-                                            </act>
-
+                                            <sourceOf typeCode="PRCN">
+                                                <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>  -->
+                                                <act classCode="ACT" moodCode="EVN"
+                                                    isCriterionInd="true">
+                                                    <xsl:if test="$isNot = 'true' ">
+                                                      <xsl:attribute name="actionNegationInd">true</xsl:attribute>
+                                                    </xsl:if>
+                                                    <xsl:apply-templates select="." mode="topmost"/>
+                                                </act>
+                                            </sourceOf>
                                         </xsl:when>
                                         <xsl:otherwise>
                                             <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->

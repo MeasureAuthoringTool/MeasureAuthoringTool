@@ -452,6 +452,10 @@ public class QDMAttributeDialogBox {
 					if(!CHECK_IF_PRESENT.equals(modeName)){
 						if(VALUE_SET.equals(modeName)){
 							ListBox qdmListBox = ((ListBox)grid.getWidget(i, 3));
+							if(qdmListBox.getItemCount() == 0){
+								inValidRows.add(i);
+								continue;
+							}
 							String qdmName = qdmListBox.getItemText(qdmListBox.getSelectedIndex());
 							if(qdmName == null || qdmName.length() == 0){
 								inValidRows.add(i);

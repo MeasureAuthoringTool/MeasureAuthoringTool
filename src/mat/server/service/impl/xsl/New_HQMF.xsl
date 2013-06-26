@@ -549,9 +549,9 @@
                                 <xsl:choose>
                                     <xsl:when test="string-length($conj) > 0">
                                         <xsl:apply-templates select="." mode="handleElementRef">
-                                            <xsl:with-param name="conj">
+                                            <!--<xsl:with-param name="conj">
                                                 <xsl:value-of select="$conj"/>
-                                            </xsl:with-param>
+                                            </xsl:with-param>-->
                                         </xsl:apply-templates>
                                     </xsl:when>
                                     <xsl:otherwise>

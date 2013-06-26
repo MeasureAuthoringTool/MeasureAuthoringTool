@@ -649,15 +649,16 @@ public class ManageCodeListSearchPresenter {
 	
 	
 	private void search(String searchText, int startIndex, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
-		lastSearchText = searchText;
+		lastSearchText = (!searchText.equals(null))? searchText.trim() : null;
 		lastStartIndex = startIndex;
 		int pageSize = searchDisplay.getPageSize();
 		final boolean isAscending = isAsc;
 		showSearchingBusy(true);
 		searchDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getTransferErrorMessageDisplay().clear();
+		String trimmedSearchText = (!searchText.equals(null))? searchText.trim() : null;
 		if(MatContext.get().getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
-			MatContext.get().getCodeListService().searchForAdmin(searchText,
+			MatContext.get().getCodeListService().searchForAdmin(trimmedSearchText,
 																 startIndex, pageSize, 
 																 sortColumn, isAsc,defaultCodeList, filter, 
 																 new AsyncCallback<AdminManageCodeListSearchModel>() {
@@ -711,7 +712,7 @@ public class ManageCodeListSearchPresenter {
 			});
 		}else{
 			
-			MatContext.get().getCodeListService().search(searchText,
+			MatContext.get().getCodeListService().search(trimmedSearchText,
 														startIndex, pageSize, 
 														sortColumn, isAsc,defaultCodeList, filter, 
 														new AsyncCallback<ManageCodeListSearchModel>() {

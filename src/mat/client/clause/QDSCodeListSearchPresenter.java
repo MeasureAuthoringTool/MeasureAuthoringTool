@@ -180,11 +180,11 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	
 	private void search(String searchText, int startIndex, final int pageSize,
 			String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
-		lastSearchText = searchText;
+		lastSearchText = (!searchText.equals(null))? searchText.trim() : null;
 		lastStartIndex = startIndex;
 		showSearchingBusy(true);
 		displaySearch();
-		MatContext.get().getCodeListService().search(searchText,
+		MatContext.get().getCodeListService().search(lastSearchText,
 				startIndex, Integer.MAX_VALUE, 
 				sortColumn, isAsc, defaultCodeList, filter,
 				new AsyncCallback<ManageCodeListSearchModel>() {
@@ -194,6 +194,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoCodeListsMessage());
 				}else{
 					resetQDSFields();
+					searchDisplay.getSearchString().setValue(lastSearchText);
 				}
 				QDSCodeListSearchModel QDSSearchResult = new QDSCodeListSearchModel();
 				QDSSearchResult.setData(result.getData());

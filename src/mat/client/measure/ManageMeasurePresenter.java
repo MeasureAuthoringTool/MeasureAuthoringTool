@@ -1212,9 +1212,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void search(String searchText, int startIndex, int pageSize , int filter) {
-		final String lastSearchText = searchText;
+		final String lastSearchText = (!searchText.equals(null))? searchText.trim(): null;
 		showSearchingBusy(true);
-		
 		MatContext.get().getMeasureService().search(searchText, startIndex, pageSize,filter, 
 				new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override

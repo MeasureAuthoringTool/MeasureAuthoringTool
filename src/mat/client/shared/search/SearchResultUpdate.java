@@ -13,11 +13,16 @@ public class SearchResultUpdate {
 		}else{
 			StringUtility su = new StringUtility();
 			if(!su.isEmptyOrNull(searchTextBox.getValue())){
-				String searchTitle = result.getResultsTotal()+" Record(s) returned for search string "+ searchTextBox.getValue()+".";
+				String trimmedSearchString = searchTextBox.getValue().trim();
+				String searchTitle = result.getResultsTotal()+" Record(s) returned for search string "+ trimmedSearchString+".";
+				
+				System.out.println("Search String entered: " + searchTitle);
 				searchTextBox.setTitle(searchTitle);
+				searchTextBox.setText(trimmedSearchString);
 			}
 			else{
 				String searchTitle = "No search string entered";
+				System.out.println("Search String entered: " + searchTitle);
 				searchTextBox.setTitle(searchTitle);
 			}
 		}

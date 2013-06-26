@@ -92,7 +92,7 @@ public class ExportSimpleXML {
 			message.add(MatContext.get().getMessageDelegate().getGroupingRequiredMessage());
 			isValid = false;
 		}else{		
-			checkForValidRelationalOps(measureXMLDocument, message);
+			isValid = checkForValidRelationalOps(measureXMLDocument, message);
 		}		
 		return isValid;
 	}
@@ -104,16 +104,19 @@ public class ExportSimpleXML {
 	 * @param message
 	 * @throws XPathExpressionException
 	 */
-	private static void checkForValidRelationalOps(Document measureXMLDocument,
+	private static boolean checkForValidRelationalOps(Document measureXMLDocument,
 			List<String> message) throws XPathExpressionException {
+		boolean retValue = true;
 		NodeList allRelationalOps = (NodeList) xPath.evaluate("/measure//relationalOp", measureXMLDocument, XPathConstants.NODESET);
 		for(int i=0;i<allRelationalOps.getLength();i++){
 			Node relationalOpNode = allRelationalOps.item(i);
 			if (relationalOpNode.getChildNodes().getLength() != 2){
 				message.add(MatContext.get().getMessageDelegate().getRelationalOpTwoChildMessage());
+				retValue = false;
 				break;
 			}
 		}
+		return retValue;
 	}
 
 	/**

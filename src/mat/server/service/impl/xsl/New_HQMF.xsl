@@ -485,7 +485,9 @@
 
             <code>
                 <originalText>
-                    <xsl:value-of select="@displayName"/>
+                    <xsl:call-template name="setFunctionName">
+                        <xsl:with-param name="displayName"><xsl:value-of select="@displayName"/></xsl:with-param>
+                    </xsl:call-template>    
                 </originalText>
             </code>
             <derivationExpr>
@@ -1385,5 +1387,89 @@
     <xsl:template mode="isRelationalOp_LHS" match="*">
         <xsl:if test="parent::relationalOp and count(following-sibling::*) = 1">true</xsl:if>
     </xsl:template>
+    
+    <xsl:template name="setFunctionName">
+        <xsl:param name="displayName"/>
+        <xsl:choose>
+            <xsl:when test="starts-with($displayName,'LAST')">
+                <xsl:value-of select="replace($displayName,'LAST','MOST RECENT')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'ABS')">
+                <xsl:value-of select="replace($displayName,'ABS','Absolute value')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'ADDDATE')">
+                <xsl:value-of select="replace($displayName,'ADDDATE','Add to date')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'DAYOFWEEK')">
+                <xsl:value-of select="replace($displayName,'DAYOFWEEK','Current day of the week')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'DAYOFYEAR')">
+                <xsl:value-of select="replace($displayName,'DAYOFYEAR','Current day of the year')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'FIFTH')">
+                <xsl:value-of select="replace($displayName,'FIFTH','Fifth')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'FOURTH')">
+                <xsl:value-of select="replace($displayName,'FOURTH','Fourth')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'MAX')">
+                <xsl:value-of select="replace($displayName,'MAX','Maximum')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'MEDIAN')">
+                <xsl:value-of select="replace($displayName,'MEDIAN','Median')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'ADDTIME')">
+                <xsl:value-of select="replace($displayName,'ADDTIME','Add to time')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'MINUTE')">
+                <xsl:value-of select="replace($displayName,'MINUTE','Current minute of the hour')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'MONTH')">
+                <xsl:value-of select="replace($displayName,'MONTH','Current month of the year')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'NOW')">
+                <xsl:value-of select="replace($displayName,'NOW','Current date and time of')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'POSITION')">
+                <xsl:value-of select="replace($displayName,'POSITION','Current position')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'RELATIVEFIRST')">
+                <xsl:value-of select="replace($displayName,'RELATIVEFIRST','IMMEDIATE PRIOR')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'RELATIVESECOND')">
+                <xsl:value-of select="replace($displayName,'RELATIVESECOND','CURRENT')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'ROUND')">
+                <xsl:value-of select="replace($displayName,'ROUND','Round')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'SEC')">
+                <xsl:value-of select="replace($displayName,'SEC','Current second of the minute')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'STDDEV')">
+                <xsl:value-of select="replace($displayName,'STDDEV','Standard deviation')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'SUBDATE')">
+                <xsl:value-of select="replace($displayName,'SUBDATE','Subtract from date')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'SUBTIME')">
+                <xsl:value-of select="replace($displayName,'SUBTIME','Subtract from time')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'TIMEDIFF')">
+                <xsl:value-of select="replace($displayName,'TIMEDIFF','Time difference')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'SUM')">
+                <xsl:value-of select="replace($displayName,'SUM','Sum')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'AVG')">
+                <xsl:value-of select="replace($displayName,'AVG','Average')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'TIME')">
+                <xsl:value-of select="replace($displayName,'TIME','Time')"/>
+            </xsl:when>
+            <xsl:otherwise>
+                <xsl:value-of select="$displayName"/>
+            </xsl:otherwise>
+        </xsl:choose>
+    </xsl:template>    
 
 </xsl:stylesheet>

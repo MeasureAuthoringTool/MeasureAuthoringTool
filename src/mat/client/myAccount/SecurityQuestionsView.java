@@ -7,14 +7,13 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SecurityQuestionsWidget;
+import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
@@ -24,8 +23,8 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 	private ContentWithHeadingWidget headingPanel;
-	private SecurityQuestionsWidget securityQuestionsWidget =
-		new SecurityQuestionsWidget();
+	protected SecurityQuestionWithMaskedAnswerWidget securityQuestionsWidget = new SecurityQuestionWithMaskedAnswerWidget();
+	
 	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
 	
 	public SecurityQuestionsView() {
@@ -96,6 +95,10 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	@Override
 	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
 		return successMessages;
+	}
+	@Override
+	public SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget() {
+		return securityQuestionsWidget;
 	}
 	
 }

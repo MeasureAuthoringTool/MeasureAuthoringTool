@@ -9,11 +9,16 @@ import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
+import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.shared.SecurityQuestionVerifier;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -35,6 +40,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		HasClickHandlers getCancelButton();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget();
 	}
 	
 	private Display display;
@@ -50,6 +56,53 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 			public void onFailure(Throwable t) {
 				//Window.alert(t.getMessage());
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+		});
+		
+		
+		display.getSecurityQuestionsWidget().getAnswer1().addFocusHandler(new FocusHandler() {
+			
+			@Override
+			public void onFocus(FocusEvent event) {
+				display.getSecurityQuestionsWidget().getAnswer1().setText("");
+				display.getSecurityQuestionsWidget().getAnswer1().getElement().setAttribute("type", "text");
+			}
+		});
+		display.getSecurityQuestionsWidget().getAnswer1().addBlurHandler(new BlurHandler() {
+			
+			@Override
+			public void onBlur(BlurEvent event) {
+				display.getSecurityQuestionsWidget().getAnswer1().getElement().setAttribute("type", "password");
+			}
+		});
+		display.getSecurityQuestionsWidget().getAnswer2().addFocusHandler(new FocusHandler() {
+			
+			@Override
+			public void onFocus(FocusEvent event) {
+				display.getSecurityQuestionsWidget().getAnswer2().setText("");
+				display.getSecurityQuestionsWidget().getAnswer2().getElement().setAttribute("type", "text");
+			}
+		});
+		display.getSecurityQuestionsWidget().getAnswer2().addBlurHandler(new BlurHandler() {
+			
+			@Override
+			public void onBlur(BlurEvent event) {
+				display.getSecurityQuestionsWidget().getAnswer2().getElement().setAttribute("type", "password");
+			}
+		});
+		display.getSecurityQuestionsWidget().getAnswer3().addFocusHandler(new FocusHandler() {
+			
+			@Override
+			public void onFocus(FocusEvent event) {
+				display.getSecurityQuestionsWidget().getAnswer3().setText("");
+				display.getSecurityQuestionsWidget().getAnswer3().getElement().setAttribute("type", "text");
+			}
+		});
+		display.getSecurityQuestionsWidget().getAnswer3().addBlurHandler(new BlurHandler() {
+			
+			@Override
+			public void onBlur(BlurEvent event) {
+				display.getSecurityQuestionsWidget().getAnswer3().getElement().setAttribute("type", "password");
 			}
 		});
 		

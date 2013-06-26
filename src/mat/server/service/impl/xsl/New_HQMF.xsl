@@ -423,7 +423,7 @@
                 <xsl:when test="name() = 'functionalOp'">
                     <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
                         <xsl:apply-templates select=".">
-                            <xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>
+                            <!--<xsl:with-param name="conj"><xsl:value-of select="$conj"/></xsl:with-param>-->
                         </xsl:apply-templates>
                     </act>
                 </xsl:when>

@@ -1466,6 +1466,42 @@
             <xsl:when test="starts-with($displayName,'TIME')">
                 <xsl:value-of select="replace($displayName,'TIME','Time')"/>
             </xsl:when>
+            <xsl:when test="starts-with($displayName,'VAR')">
+                <xsl:value-of select="replace($displayName,'VAR','Variance')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'WEEK')">
+                <xsl:value-of select="replace($displayName,'WEEK','Current week of the month')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'WEEKDAY')">
+                <xsl:value-of select="$displayName"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'COUNT')">
+                <xsl:value-of select="replace($displayName,'COUNT','Count')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'WEEKOFYEAR')">
+                <xsl:value-of select="replace($displayName,'WEEKOFYEAR','Current week of the year')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'YEAR')">
+                <xsl:value-of select="replace($displayName,'YEAR','Current year')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'YEARWEEK')">
+                <xsl:value-of select="replace($displayName,'YEARWEEK','Current year and week')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'COUNTDISTINCT')">
+                <xsl:value-of select="replace($displayName,'COUNTDISTINCT','Count distinct values')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'CURDATE')">
+                <xsl:value-of select="replace($displayName,'CURDATE','Current date')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'CURTIME')">
+                <xsl:value-of select="replace($displayName,'CURTIME','Current time')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'DATEDIFF')">
+                <xsl:value-of select="replace($displayName,'DATEDIFF','Difference between dates')"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'DAYOFMONTH')">
+                <xsl:value-of select="replace($displayName,'DAYOFMONTH','Current day of the month')"/>
+            </xsl:when>
             <xsl:otherwise>
                 <xsl:value-of select="$displayName"/>
             </xsl:otherwise>

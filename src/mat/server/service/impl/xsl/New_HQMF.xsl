@@ -1391,6 +1391,15 @@
     <xsl:template name="setFunctionName">
         <xsl:param name="displayName"/>
         <xsl:choose>
+            <xsl:when test="starts-with($displayName,'FIRST')">
+                <xsl:value-of select="$displayName"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'SECOND')">
+                <xsl:value-of select="$displayName"/>
+            </xsl:when>
+            <xsl:when test="starts-with($displayName,'THIRD')">
+                <xsl:value-of select="$displayName"/>
+            </xsl:when>
             <xsl:when test="starts-with($displayName,'LAST')">
                 <xsl:value-of select="replace($displayName,'LAST','MOST RECENT')"/>
             </xsl:when>

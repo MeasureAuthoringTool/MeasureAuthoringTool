@@ -300,7 +300,7 @@ public class CellTreeNodeImpl implements CellTreeNode{
 				}else{
 					label = getName() + qdmAttr;
 				}
-				title = name + " (" + oid + ")" + getQdmAttribute();
+				title = name + " (" + oid + ")" + qdmAttr;
 				
 			}
 		}

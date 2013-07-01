@@ -100,5 +100,33 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	public SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget() {
 		return securityQuestionsWidget;
 	}
+	@Override
+	public String getAnswerText1() {
+		
+		return  securityQuestionsWidget.getAnswerText1();
+	}
+	@Override
+	public String getAnswerText2() {
+		return  securityQuestionsWidget.getAnswerText2();
+	}
+	@Override
+	public String getAnswerText3() {
+		return  securityQuestionsWidget.getAnswerText3();
+	}
+	@Override
+	public void setAnswerText1(String answerText1) {
+		 securityQuestionsWidget.setAnswerText1(answerText1);
+		
+	}
+	@Override
+	public void setAnswerText2(String answerText2) {
+		 securityQuestionsWidget.setAnswerText2(answerText2);
+		
+	}
+	@Override
+	public void setAnswerText3(String answerText3) {
+		 securityQuestionsWidget.setAnswerText3(answerText3);
+		
+	}
 	
 }

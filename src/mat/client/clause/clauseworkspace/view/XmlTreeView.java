@@ -339,12 +339,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				return;
 			}			
 			//TODO :  We can add classes based on the NodeType with the specified image. The classes will be picked up from Mat.css
-			String title = cellTreeNode.getName();
-			if(cellTreeNode.getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
-				String oid = ClauseConstants.getElementLookUpNode().get(cellTreeNode.getName() + "~" +cellTreeNode.getUUID()).getAttributes().getNamedItem("oid").getNodeValue();
-				title = title + " (" + oid + ")";
-			}
-			sb.append(template.outerDiv(getStyleClass(cellTreeNode), title, cellTreeNode.getLabel() != null ? cellTreeNode.getLabel() : cellTreeNode.getName()));
+			sb.append(template.outerDiv(getStyleClass(cellTreeNode), cellTreeNode.getTitle(), cellTreeNode.getLabel() != null ? 
+					cellTreeNode.getLabel() : cellTreeNode.getName()));
 		}
 
 		@Override

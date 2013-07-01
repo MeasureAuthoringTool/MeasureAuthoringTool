@@ -65,4 +65,9 @@ public interface CellTreeNode {
 	
 	public void setUUID(String uuid);
 	
+	public String getQdmAttribute();
+	
+	public int getQdmAttributeCount();
+	
+	public String getTitle();
 }

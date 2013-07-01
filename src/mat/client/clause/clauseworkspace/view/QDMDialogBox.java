@@ -123,15 +123,11 @@ public class QDMDialogBox{
 					return;
 				}
 				String value = listBox.getItemText(listBox.getSelectedIndex());
-				String label = value;
-				if(label.length() > ClauseConstants.LABEL_MAX_LENGTH){
-					label = label.substring(0,  ClauseConstants.LABEL_MAX_LENGTH -1).concat("...");
-				}
 				String uuid = listBox.getValue(listBox.getSelectedIndex());
 				if(isAdd){
-						xmlTreeDisplay.addNode(value, label, uuid, CellTreeNode.ELEMENT_REF_NODE);
+						xmlTreeDisplay.addNode(value, value, uuid, CellTreeNode.ELEMENT_REF_NODE);
 				}else{
-						xmlTreeDisplay.editNode(value, label,uuid);
+						xmlTreeDisplay.editNode(value, value, uuid);
 						List<CellTreeNode> attributeList = (List<CellTreeNode>)xmlTreeDisplay.getSelectedNode().getExtraInformation(ATTRIBUTES);
 						if(attributeList != null){
 							attributeList.clear();

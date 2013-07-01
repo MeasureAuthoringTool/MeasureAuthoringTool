@@ -246,23 +246,53 @@ public class XmlConversionlHelper {
 			
 			child.setExtraInformation(ClauseConstants.EXTRA_ATTRIBUTES, map);
 		}
-
 		child.setName(nodeValue);//set the name to Child
-		String nodeLabel = nodeValue;
-		if(nodeLabel.length() > ClauseConstants.LABEL_MAX_LENGTH){
-			nodeLabel = nodeLabel.substring(0,  ClauseConstants.LABEL_MAX_LENGTH - 1).concat("...");
-		}
-		if(CellTreeNode.ELEMENT_REF_NODE == cellTreeNodeType){
-			int qdmAttributeSize = node.getChildNodes().getLength();
-			if(qdmAttributeSize > 0){
-				nodeLabel += "  ("+qdmAttributeSize+")";
-			}
-		}
-		child.setLabel(nodeLabel);
+		child.setLabel(nodeValue);
 		child.setNodeType(cellTreeNodeType);		
 		child.setParent(parent);// set parent in child
 		child.setUUID(uuid);
 		childs.add(child);// add child to child list
+	}
+
+	
+	
+	private static String appendAttributeToQdmName(Node node) {
+		NamedNodeMap namedNodeMap = node.getChildNodes().item(0).getAttributes();
+		StringBuilder stringBuilder = new StringBuilder(namedNodeMap.getNamedItem("name").getNodeValue());
+		String modeName = namedNodeMap.getNamedItem("mode") != null ? namedNodeMap.getNamedItem("mode").getNodeValue() : "";
+		
+		if("Check if Present".equalsIgnoreCase(modeName)){
+			stringBuilder.append(" is present ");
+		}else if("Value Set".equalsIgnoreCase(modeName)){
+			Node qdm = namedNodeMap.getNamedItem("qdmUUID");
+			if(null != qdm){
+				String qdmId = namedNodeMap.getNamedItem("qdmUUID").getNodeValue();
+				String qdmName = ClauseConstants.getElementLookUpName().get(qdmId);
+				stringBuilder.append(": '").append(qdmName).append("'");
+			}
+		}else{
+			if("Less Than".equalsIgnoreCase(modeName)){
+				stringBuilder.append(" < ");
+			}else if("Less Than Or Equal To".equalsIgnoreCase(modeName)){
+				stringBuilder.append(" <= ");
+			}else if ("Greater Than".equalsIgnoreCase(modeName)) {
+				stringBuilder.append(" > ");
+			}else if ("Greater Than Or Equal To".equalsIgnoreCase(modeName)) {
+				stringBuilder.append(" >= ");
+			}else if ("Equal To".equalsIgnoreCase(modeName)) {
+				stringBuilder.append(" = ");
+			} 
+			
+			Node comparisonValue = namedNodeMap.getNamedItem("comparisonValue");
+			if(null != comparisonValue){
+				stringBuilder.append(comparisonValue.getNodeValue());	
+			}
+			Node unit = namedNodeMap.getNamedItem("unit");
+			if(null != unit){
+				stringBuilder.append(" ").append(unit.getNodeValue());	
+			}
+		}
+		return stringBuilder.toString();
 	}
 
 

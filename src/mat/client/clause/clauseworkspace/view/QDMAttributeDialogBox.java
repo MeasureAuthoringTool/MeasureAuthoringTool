@@ -406,11 +406,7 @@ public class QDMAttributeDialogBox {
 				//TODO:Validate the table rows.
 				if(validateRows(qdmAttributeDialogBox)){									
 					saveToModel(xmlTreeDisplay);
-					if(grid.getRowCount() > 0){
-						xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName()+"   ("+grid.getRowCount()+")");
-					}else{
-						xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName());
-					}
+					xmlTreeDisplay.editNode(cellTreeNode.getName(), cellTreeNode.getName());
 					xmlTreeDisplay.setDirty(true);
 					qdmAttributeDialogBox.hide();
 				}

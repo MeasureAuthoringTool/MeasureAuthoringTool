@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.shared.UUIDUtilClient;
 
 public class CellTreeNodeImpl implements CellTreeNode{
@@ -24,7 +25,7 @@ public class CellTreeNodeImpl implements CellTreeNode{
 	Map<String,Object> extraInformationMap = new HashMap<String, Object>();
 	
 	private String uuid;
-
+	
 
 	@Override
 	public List<CellTreeNode> getChilds() {
@@ -237,5 +238,87 @@ public class CellTreeNodeImpl implements CellTreeNode{
 	public void setUUID(String uuid) {
 		this.uuid = uuid;
 	}
+
+
+	@Override
+	public String getQdmAttribute() {
+		String attrib = "";
+		if(getQdmAttributeCount() == 1){
+			List<CellTreeNode> attributeList = (List<CellTreeNode>) getExtraInformation("attributes");
+			CellTreeNode attributeNode  = attributeList.get(0);
+			StringBuilder stringBuilder = new StringBuilder(" (" + attributeNode.getExtraInformation("name").toString());
+			String modeName = (String)attributeNode.getExtraInformation("mode");
+			if("Check if Present".equals(modeName)){
+				stringBuilder.append(" is present ");
+			}else if("Value Set".equals(modeName)){
+					String qdmId = (String)attributeNode.getExtraInformation("qdmUUID");
+					String qdmName = ClauseConstants.getElementLookUpName().get(qdmId);
+					stringBuilder.append(": '").append(qdmName).append("'");
+			}else{
+				if("Less Than".equalsIgnoreCase(modeName)){
+					stringBuilder.append(" < ");
+				}else if("Less Than Or Equal To".equalsIgnoreCase(modeName)){
+					stringBuilder.append(" <= ");
+				}else if ("Greater Than".equalsIgnoreCase(modeName)) {
+					stringBuilder.append(" > ");
+				}else if ("Greater Than Or Equal To".equalsIgnoreCase(modeName)) {
+					stringBuilder.append(" >= ");
+				}else if ("Equal To".equalsIgnoreCase(modeName)) {
+					stringBuilder.append(" = ");
+				} 
+				String comparisonValue = (String)attributeNode.getExtraInformation("comparisonValue");
+				stringBuilder.append(comparisonValue);
+
+				String unit = (String)attributeNode.getExtraInformation("unit"); 
+				stringBuilder.append(" ").append(unit);
+			}
+			attrib =  stringBuilder.append(")").toString();
+		}
+		
+		return attrib;
+	}
+
+	
+
+	@Override
+	public String getTitle() {
+		String title = getName();
+		String label = getName();
+		if(label.length() > ClauseConstants.LABEL_MAX_LENGTH){
+			label = label.substring(0,  ClauseConstants.LABEL_MAX_LENGTH - 1).concat("...");
+		}
+		if(getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
+			String oid = ClauseConstants.getElementLookUpNode().get(getName() + "~" + getUUID()).getAttributes().getNamedItem("oid").getNodeValue();
+			int attrCount = getQdmAttributeCount();
+			if(attrCount > 1){
+				title = name + " (" + oid + ")";
+				label = label + " (" + attrCount + ")";
+			}else if(attrCount == 1){
+				String qdmAttr = getQdmAttribute();
+				if((qdmAttr.length() + name.length()) > ClauseConstants.LABEL_MAX_LENGTH){
+					label = label + " (" + attrCount + ")";
+				}else{
+					label = getName() + qdmAttr;
+				}
+				title = name + " (" + oid + ")" + getQdmAttribute();
+				
+			}
+		}
+		setLabel(label);
+		return title;
+	}
+
+
+	@Override
+	public int getQdmAttributeCount() {
+		if(getNodeType() == ELEMENT_REF_NODE){
+			List<CellTreeNode> attributeList = (List<CellTreeNode>) getExtraInformation("attributes");
+			if(attributeList != null){
+				return attributeList.size();
+			}
+		}
+		return 0;
+	}
+	
 
 }

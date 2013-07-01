@@ -865,6 +865,16 @@ public class MessageDelegate {
 		return GENERIC_ERROR_MESSAGE;
 	}
 	
+	private final String PASSWORD_REQUIRED_ERROR_MESSAGE = "Password is required to confirm changes.";
+	public String getPasswordRequiredErrorMessage(){
+		return PASSWORD_REQUIRED_ERROR_MESSAGE;
+	}
+	
+	private final String PASSWORD_MISMATCH_ERROR_MESSAGE = "Incorrect password supplied.Try again";
+	public String getPasswordMismatchErrorMessage(){
+		return PASSWORD_MISMATCH_ERROR_MESSAGE;
+	}
+		
 	private final String MEASURE_SELECTION_ERROR = "Please select at least one measure";
 	public String getMeasureSelectionError(){
 		return MEASURE_SELECTION_ERROR;

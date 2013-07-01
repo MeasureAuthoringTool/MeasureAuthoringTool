@@ -1,7 +1,10 @@
 package mat.client.login.service;
 
 
+import java.util.HashMap;
 import java.util.List;
+
+import org.springframework.security.core.userdetails.UserDetails;
 
 import mat.client.login.LoginModel;
 import mat.model.UserSecurityQuestion;
@@ -20,11 +23,11 @@ public interface LoginService extends RemoteService {
 	LoginResult changePasswordSecurityAnswers(LoginModel model);
 	public void signOut();
 	public LoginModel changeTempPassword(String email, String password);
-	
 	public SecurityQuestionOptions getSecurityQuestionOptions(String userid);
 	public List<UserSecurityQuestion> getSecurityQuestionsAnswers(String userid);
 	List<String> getFooterURLs();
 	public String updateOnSignOut(String userId, String email, String activityType);
 	SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email);
 	ForgottenLoginIDResult forgotLoginID(String email);
+	public HashMap<String,String> validatePassword(String userID,String enteredPassword);
 }

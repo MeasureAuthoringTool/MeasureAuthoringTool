@@ -1,6 +1,7 @@
 package mat.client.login.service;
 
 
+import java.util.HashMap;
 import java.util.List;
 
 import mat.client.login.LoginModel;
@@ -31,6 +32,7 @@ public interface LoginServiceAsync extends AsynchronousService{
 			AsyncCallback<SecurityQuestionOptions> callback);
 	void forgotLoginID(String email,
 			AsyncCallback<ForgottenLoginIDResult> callback);
-	
-	
+	void validatePassword(String userID, String enteredPassword,
+			AsyncCallback<HashMap<String,String>> callback);
+		
 }

@@ -1,16 +1,20 @@
 package mat.client.myAccount;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.login.service.LoginServiceAsync;
 import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
+import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.util.ClientConstants;
 import mat.shared.SecurityQuestionVerifier;
 
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -26,6 +30,8 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SecurityQuestionsPresenter implements MatPresenter {
+	LoginServiceAsync loginService = (LoginServiceAsync) MatContext.get().getLoginService();
+	
 	public static interface Display {
 		Widget asWidget();
 		void addQuestionTexts(List<NameValuePair> texts);
@@ -35,6 +41,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		HasValue<String> getAnswer2();
 		HasValue<String> getQuestion3();
 		HasValue<String> getAnswer3();
+		HasValue<String> getPassword();
 		HasClickHandlers getSaveButton();
 		HasClickHandlers getCancelButton();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
@@ -46,6 +53,8 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		public void setAnswerText1(String answerText1);
 		public void setAnswerText2(String answerText2);
 		public void setAnswerText3(String answerText3);
+		PasswordEditInfoWidget getPasswordEditInfoWidget();
+
 	}
 	
 	private Display display;
@@ -68,7 +77,6 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		
 		
 		display.getSecurityQuestionsWidget().getAnswer1().addFocusHandler(new FocusHandler() {
-			
 			@Override
 			public void onFocus(FocusEvent event) {
 				display.getSecurityQuestionsWidget().getAnswer1().setText("");
@@ -120,6 +128,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 			}
 		});
 		
+		
 		display.getCancelButton().addClickHandler(new ClickHandler() {
 			
 			public void onClick(ClickEvent event) {
@@ -147,36 +156,63 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 					display.getErrorMessageDisplay().setMessages(sverifier.getMessages());
 				}
 				else {
-					currentValues = getValues();
-					MatContext.get().getMyAccountService().saveSecurityQuestions(currentValues, new AsyncCallback<SaveMyAccountResult>() {
-						public void onFailure(Throwable caught) {
-							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						}
-						@Override
-						public void onSuccess(SaveMyAccountResult result) {
-							if(result.isSuccess()){
-								display.getErrorMessageDisplay().clear();
-								display.getSuccessMessageDisplay().clear();
-								display.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getSecurityQuestionsUpdatedMessage());
-							}else{
-								List<String> messages = new ArrayList<String>();
-								switch(result.getFailureReason()) {
-									case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
-										messages = result.getMessages();
-										break;
-									default:
-										messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
-								}
-								display.getSuccessMessageDisplay().clear();
-								display.getErrorMessageDisplay().setMessages(messages);
-							}
-						}
-					});
+					saveSecurityQuestions(display.getPassword().getValue());
 				}
+				display.getPassword().setValue("");
 			}
 		});
 	}
 
+	private void saveSecurityQuestions(String password){
+		 loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String,String>>(){ 
+				@Override
+				public void onSuccess(HashMap<String,String> resultMap) {
+					String result = (String)resultMap.get("result");
+			    	if(result.equals("SUCCESS")){
+			    		currentValues = getValues();
+						MatContext.get().getMyAccountService().saveSecurityQuestions(currentValues, new AsyncCallback<SaveMyAccountResult>() {
+							public void onFailure(Throwable caught) {
+								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+							}
+							@Override
+							public void onSuccess(SaveMyAccountResult result) {
+								if(result.isSuccess()){
+									display.getErrorMessageDisplay().clear();
+									display.getSuccessMessageDisplay().clear();
+									display.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getSecurityQuestionsUpdatedMessage());
+								}else{
+									List<String> messages = new ArrayList<String>();
+									switch(result.getFailureReason()) {
+										case SaveMyAccountResult.SERVER_SIDE_VALIDATION:
+											messages = result.getMessages();
+											break;
+										default:
+											messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+									}
+									display.getSuccessMessageDisplay().clear();
+									display.getErrorMessageDisplay().setMessages(messages);
+								}
+							}
+						});
+			    	}else{
+			    		display.getErrorMessageDisplay().clear();
+						display.getSuccessMessageDisplay().clear();
+						String displayErrorMsg= (String)resultMap.get("message");
+						if(displayErrorMsg.equals("REDIRECT")){
+							MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+						}else{
+							display.getErrorMessageDisplay().setMessage(displayErrorMsg);
+						}
+			    	}
+				}
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				}
+			});
+		 }
+	
+	
 	@Override
 	public void beforeDisplay() {
 		

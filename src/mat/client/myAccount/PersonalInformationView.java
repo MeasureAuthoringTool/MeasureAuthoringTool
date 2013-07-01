@@ -5,9 +5,11 @@ import mat.client.shared.EmailAddressTextBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.PhoneNumberWidget;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -34,10 +36,13 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	private TextBox emailAddress = new EmailAddressTextBox();
 	private Label loginId = new Label();
 	
+	
 	private TextBox oid = new TextBox();
 	private TextBox rootOid = new TextBox();
 	private TextBox organization = new TextBox();
+	private TextBox password = new TextBox();
 	private PhoneNumberWidget phoneWidget = new PhoneNumberWidget();
+	private PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
 	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
@@ -84,6 +89,9 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		vPanel.add(new SpacerWidget());
 		
 		vPanel.add(phoneWidget);
+		vPanel.add(new SpacerWidget());
+		
+		vPanel.add(passwordEditInfoWidget);
 		vPanel.add(new SpacerWidget());
 		
 		buttons.getCancelButton().setTitle("Undo");
@@ -183,9 +191,19 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	}
 
 	@Override
+	public HasValue<String> getPassword() {
+		return passwordEditInfoWidget.getPassword();
+	}
+	
+	@Override
 	public Label getLoginId() {
 		return loginId;
 	}
 
+	@Override
+	public PasswordEditInfoWidget getPasswordEditInfoWidget() {
+		return passwordEditInfoWidget;
+	}
+	
 
 }

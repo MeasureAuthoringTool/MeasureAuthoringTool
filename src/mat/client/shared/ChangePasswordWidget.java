@@ -21,8 +21,8 @@ public class ChangePasswordWidget extends Composite {
 		mainPanel.add(confirmPassword);
 		mainPanel.add(new SpacerWidget());
 		
-		password.setWidth("200px");
-		confirmPassword.setWidth("200px");
+		password.setWidth("100px");
+		confirmPassword.setWidth("100px");
 		
 		initWidget(mainPanel);
 	}

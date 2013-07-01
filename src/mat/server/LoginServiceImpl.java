@@ -2,8 +2,10 @@ package mat.server;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,8 +17,11 @@ import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.shared.MatContext;
+import mat.client.util.ClientConstants;
+import mat.dao.UserDAO;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
+import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.TransactionAuditService;
 import mat.server.service.UserService;
@@ -31,9 +36,16 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.google.gwt.http.client.UrlBuilder;
+import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 @SuppressWarnings("serial")
 public class LoginServiceImpl extends SpringRemoteServiceServlet implements LoginService{
 	private static final Log logger = LogFactory.getLog(LoginServiceImpl.class);
+	private static final String SUCCESS = "SUCCESS";
+	private static final String FAILURE = "FAILURE";
 	
 	private LoginCredentialService getLoginCredentialService(){
 		return (LoginCredentialService)context.getBean("loginService");
@@ -176,7 +188,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		}
 		return result;
 	}
-
+	
 	@Override
 	public LoginModel changeTempPassword(String email, String changedpassword) {
 		
@@ -204,12 +216,66 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		return footerURLs;
 	}
 	
+	@Override
+	public HashMap<String,String> validatePassword(String userID,String enteredPassword){
+		String ifMatched = FAILURE;
+		HashMap<String,String> resultMap = new HashMap<String,String>(); 
+		if(enteredPassword.equals(null)|| enteredPassword.equals("")){
+			resultMap.put("message",MatContext.get().getMessageDelegate().getPasswordRequiredErrorMessage());
+		}else{
+				UserDAO userDAO = (UserDAO)context.getBean("userDAO");
+				MatUserDetails userDetails =(MatUserDetails )userDAO.getUser(userID);
+				if(userDetails != null)
+				{
+					UserService userService = (UserService)context.getBean("userService");
+					String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), enteredPassword);
+					if(hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())){
+						ifMatched= SUCCESS;
+					}else{
+						int currentPasswordlockCounter = userDetails.getUserPassword().getPasswordlockCounter();
+						logger.info("CurrentPasswordLockCounter value:" +currentPasswordlockCounter);
+						if(currentPasswordlockCounter == 3){
+							//Force the user to log out of the system
+							 //MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
+							 String resultStr = updateOnSignOut(userDetails.getId(), userDetails.getEmailAddress(),"SIGN_OUT_EVENT" );
+							 if(resultStr.equals(SUCCESS)){
+								 Date currentDate = new Date();
+								 Timestamp currentTimeStamp = new Timestamp(currentDate.getTime());
+								 userDetails.setSignOutDate(currentTimeStamp);
+								 userDetails.setLockedOutDate(currentTimeStamp);
+								 userDAO.saveUserDetails(userDetails);
+								 resultMap.put("message","REDIRECT");
+								 logger.info("Locking user out with LOGIN ID ::" + userDetails.getLoginId() + " :: USER ID ::" + userDetails.getId());
+							 }	 
+						}else{
+							resultMap.put("message",MatContext.get().getMessageDelegate().getPasswordMismatchErrorMessage());
+							userDetails.getUserPassword().setPasswordlockCounter(currentPasswordlockCounter + 1);
+							userDAO.saveUserDetails(userDetails);
+						}
+						 
+					}
+				}
+		}	
+		resultMap.put("result",ifMatched);
+		return resultMap;	
+	}
+	
+	public void redirectToHtmlPage(String html) {
+		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
+		String path = Window.Location.getPath();
+		path=path.substring(0, path.lastIndexOf('/'));
+		path += html;
+		urlBuilder.setPath(path);
+		Window.Location.replace(urlBuilder.buildString());
+	}
+	
+	
 	private String callCheckDictionaryWordInPassword(String changedpassword){
-		String returnMessage = "FAILURE";
+		String returnMessage = FAILURE;
 		try {
 			boolean result = CheckDictionaryWordInPassword.containsDictionaryWords(changedpassword);
 			if(result)
-				returnMessage = "SUCCESS";
+				returnMessage = SUCCESS;
 				
 		} catch (FileNotFoundException e) {
 			returnMessage="EXCEPTION";
@@ -243,6 +309,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	}
 
 	
+    
 }
 
 

@@ -12,6 +12,7 @@ import java.util.List;
 import mat.client.login.LoginModel;
 import mat.client.login.service.LoginResult;
 import mat.client.shared.MatContext;
+import mat.dao.UserDAO;
 import mat.model.User;
 import mat.model.UserPassword;
 import mat.model.UserSecurityQuestion;
@@ -30,6 +31,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
+import org.springframework.security.core.userdetails.UserDetails;
 
 public class LoginCredentialServiceImpl implements LoginCredentialService {
 
@@ -40,6 +42,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	UserDAO userDAO;
 	
 	@Override
 	public LoginModel isValidUser(String userId, String password) {
@@ -319,5 +324,12 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	
 		
 	}
+	
+	@Override
+	public UserDetails loadUserByUsername(String userId) {
+		//UserDAO userDAO = (UserDAO)context.getBean("userDAO");
+		return userDAO.getUser(userId);
+	}
+	
 	
 }

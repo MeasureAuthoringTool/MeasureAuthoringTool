@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -57,6 +58,11 @@ public class SpringRemoteServiceServlet extends RemoteServiceServlet {
 			base = base.substring(0,base.lastIndexOf("/") + 1);
 			return super.doGetSerializationPolicy(request, base, strongName);
 		}
+	}
+
+	public UserDetails loadUserByUsername(String userId) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }

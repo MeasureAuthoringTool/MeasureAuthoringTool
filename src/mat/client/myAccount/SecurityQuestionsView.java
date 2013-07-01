@@ -6,6 +6,7 @@ import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.NameValuePair;
+import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SpacerWidget;
@@ -16,14 +17,17 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display {
 	private FlowPanel container = new FlowPanel();
+	private PasswordTextBox password = new PasswordTextBox();
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 	private ContentWithHeadingWidget headingPanel;
 	protected SecurityQuestionWithMaskedAnswerWidget securityQuestionsWidget = new SecurityQuestionWithMaskedAnswerWidget();
+	protected PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
 	
 	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
 	
@@ -36,7 +40,9 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 		container.add(successMessages);
 		
 		container.add(securityQuestionsWidget);
-		
+		container.add(new SpacerWidget());
+		container.add (passwordEditInfoWidget);
+		container.add(new SpacerWidget());
 		buttons.getCancelButton().setText("Undo");
 		buttons.getCancelButton().setTitle("Undo");
 		buttons.getSaveButton().setTitle("Save");
@@ -47,6 +53,13 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	}
 	public Widget asWidget() {
 		return headingPanel;
+	}
+	
+	public PasswordTextBox getPasswordTextBox() {
+		return password;
+	}
+	public void getPasswordTextBox(PasswordTextBox password) {
+		this.password = password;
 	}
 	
 	public void addQuestionTexts(List<NameValuePair> texts) {
@@ -99,6 +112,17 @@ public class SecurityQuestionsView implements SecurityQuestionsPresenter.Display
 	@Override
 	public SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget() {
 		return securityQuestionsWidget;
+	}
+	
+	
+	@Override
+	public PasswordEditInfoWidget getPasswordEditInfoWidget() {
+		return passwordEditInfoWidget;
+	}
+		
+	@Override
+	public HasValue<String> getPassword() {
+		return passwordEditInfoWidget.getPassword();
 	}
 	@Override
 	public String getAnswerText1() {

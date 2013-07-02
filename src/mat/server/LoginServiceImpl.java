@@ -242,7 +242,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 								 Date currentDate = new Date();
 								 Timestamp currentTimeStamp = new Timestamp(currentDate.getTime());
 								 userDetails.setSignOutDate(currentTimeStamp);
-								 userDetails.setLockedOutDate(currentTimeStamp);
+								 userDetails.getUserPassword().setPasswordlockCounter(0);
 								 userDAO.saveUserDetails(userDetails);
 								 resultMap.put("message","REDIRECT");
 								 logger.info("Locking user out with LOGIN ID ::" + userDetails.getLoginId() + " :: USER ID ::" + userDetails.getId());

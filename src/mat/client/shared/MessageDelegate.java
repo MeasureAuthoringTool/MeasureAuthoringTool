@@ -874,11 +874,18 @@ public class MessageDelegate {
 	public String getPasswordMismatchErrorMessage(){
 		return PASSWORD_MISMATCH_ERROR_MESSAGE;
 	}
-		
+	
+	private final String NEW_AND_CONFIRM_PWD_REQUIRED = "Both new password and confirm new password are required.";
+	public String getNewAndConfirmPwdRequired(){
+		return NEW_AND_CONFIRM_PWD_REQUIRED;
+	}
+	
 	private final String MEASURE_SELECTION_ERROR = "Please select at least one measure";
 	public String getMeasureSelectionError(){
 		return MEASURE_SELECTION_ERROR;
 	}
+	
+	
 	
 	private final String TRANSFER_CHECKBOX_ERROR = "Please select at least one Value Set to transfer ownership.";
 	public String getTransferCheckBoxError(){

@@ -57,8 +57,16 @@ public class ChangePasswordPresenter implements MatPresenter {
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			
 			public void onClick(ClickEvent event) {
-				saveChangedPassword(display.getCurrentPassword().getValue());
-				display.getCurrentPassword().setValue("");
+				String newPassword = display.getPassword().getValue();
+				String confirmPassword = display.getConfirmPassword().getValue();
+				if(newPassword.equals(null) || newPassword.equals("") || confirmPassword.equals(null) || confirmPassword.equals("")){
+					display.getErrorMessageDisplay().clear();
+					display.getSuccessMessageDisplay().clear();
+					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNewAndConfirmPwdRequired());
+				}else{
+					saveChangedPassword(display.getCurrentPassword().getValue());
+					display.getCurrentPassword().setValue("");
+				}
 			}
 		});
 	}

@@ -78,7 +78,6 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(new SpacerWidget());
 		vp.add(errorMessagePanel);
 		vp.add(successMessagePanel);
-		vp.add(new SpacerWidget());
 		vp.add(new HTML("<h4> Applied QDM Elements </h4>"));
 		vp.add(new SpacerWidget());
 		vp.add(mainPanelNormal);
@@ -193,6 +192,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
+				errorMessagePanel.clear();
+				successMessagePanel.clear();
 				appliedListModel.setRemoveQDMs(selectionModel.getSelectedSet());
 				System.out.println("appliedListModel Remove QDS Set Size =======>>>>" + appliedListModel.getRemoveQDMs().size());
 				listToRemove = new ArrayList<QualityDataSetDTO>(appliedListModel.getRemoveQDMs());

@@ -865,7 +865,7 @@ public class MessageDelegate {
 		return GENERIC_ERROR_MESSAGE;
 	}
 	
-	private final String PASSWORD_REQUIRED_ERROR_MESSAGE = "Password is required to confirm changes.";
+	private final String PASSWORD_REQUIRED_ERROR_MESSAGE = "Existing password is required to confirm changes.";
 	public String getPasswordRequiredErrorMessage(){
 		return PASSWORD_REQUIRED_ERROR_MESSAGE;
 	}
@@ -875,9 +875,9 @@ public class MessageDelegate {
 		return PASSWORD_MISMATCH_ERROR_MESSAGE;
 	}
 	
-	private final String NEW_AND_CONFIRM_PWD_REQUIRED = "Both new password and confirm new password are required.";
-	public String getNewAndConfirmPwdRequired(){
-		return NEW_AND_CONFIRM_PWD_REQUIRED;
+	private final String ALL_PASSWORD_FIELDS_REQUIRED = "All password fields are required.";
+	public String getAllPasswordFieldsRequired(){
+		return ALL_PASSWORD_FIELDS_REQUIRED;
 	}
 	
 	private final String MEASURE_SELECTION_ERROR = "Please select at least one measure";

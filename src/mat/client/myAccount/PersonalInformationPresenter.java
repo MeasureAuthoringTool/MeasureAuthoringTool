@@ -182,6 +182,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getOrganisation().setValue(model.getOrganisation());
 		display.getOID().setValue(model.getOid());
 		display.getRootOID().setValue(model.getRootoid());
+		display.getPassword().setValue("");
 	}
 	
 	private MyAccountModel getValues() {

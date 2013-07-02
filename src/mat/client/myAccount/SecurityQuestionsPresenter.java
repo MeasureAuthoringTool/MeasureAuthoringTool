@@ -265,6 +265,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		display.setAnswerText3(result.getQuestion3Answer());
 		display.getAnswer3().setValue(maskAnswers(result.getQuestion3Answer()));
 		display.getQuestion3().setValue(result.getQuestion3());
+		display.getPassword().setValue("");
 	}
 	
 	

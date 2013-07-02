@@ -62,7 +62,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 				if(newPassword.equals(null) || newPassword.equals("") || confirmPassword.equals(null) || confirmPassword.equals("")){
 					display.getErrorMessageDisplay().clear();
 					display.getSuccessMessageDisplay().clear();
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNewAndConfirmPwdRequired());
+					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getAllPasswordFieldsRequired());
 				}else{
 					saveChangedPassword(display.getCurrentPassword().getValue());
 					display.getCurrentPassword().setValue("");
@@ -104,6 +104,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 	private void clearValues() {
 		display.getPassword().setValue("");
 		display.getConfirmPassword().setValue("");
+		display.getCurrentPassword().setValue("");
 		display.getErrorMessageDisplay().clear();
 		display.getSuccessMessageDisplay().clear();
 	}

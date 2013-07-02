@@ -18,6 +18,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	private String codeSystemName;
 	private String version;
 	private String uuid;
+	private boolean isUsed;
 	
 	
 		
@@ -140,6 +141,14 @@ public class QualityDataSetDTO implements IsSerializable {
 
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
+	}
+
+	public boolean isUsed() {
+		return isUsed;
+	}
+
+	public void setUsed(boolean isUsed) {
+		this.isUsed = isUsed;
 	}
 	
 	

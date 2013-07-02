@@ -47,5 +47,7 @@ public interface MeasureServiceAsync {
 			AsyncCallback<ArrayList<QualityDataSetDTO>> callback);
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName,
 			AsyncCallback<Void> callback);
+	void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list,
+			String measureID, AsyncCallback<Void> callback);
 
 	}

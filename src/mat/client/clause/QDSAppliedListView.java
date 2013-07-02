@@ -1,6 +1,7 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -40,8 +41,18 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
 	//Commented till remove functionality is implemented.
-	//private Button removeButton = new Button("Remove");
-	
+	public Button removeButton = new Button("Remove");
+	public List<QualityDataSetDTO> listToRemove;
+	@Override
+	public List<QualityDataSetDTO> getListToRemove() {
+		return listToRemove;
+	}
+
+	@Override
+	public Button getRemoveButton() {
+		return removeButton;
+	}
+
 	private CellList<QualityDataSetDTO> cellList;
 	
 	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
@@ -64,6 +75,10 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		HorizontalPanel mainPanelNormal = new HorizontalPanel();
 		mainPanelNormal.add(pagerPanel);
 		vp.add(new SpacerWidget());
+		vp.add(new SpacerWidget());
+		vp.add(errorMessagePanel);
+		vp.add(successMessagePanel);
+		vp.add(new SpacerWidget());
 		vp.add(new HTML("<h4> Applied QDM Elements </h4>"));
 		vp.add(new SpacerWidget());
 		vp.add(mainPanelNormal);
@@ -71,8 +86,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(rangeLabelPager);
 		vp.add(new SpacerWidget());
 		//Commented till remove functionality is implemented.
-	//	removeButton.setEnabled(checkForEnable());
-	//	vp.add(removeButton);
+		removeButton.setEnabled(checkForEnable());
+		vp.add(removeButton);
 		vp.add(new SpacerWidget());
 
 		mainPanel.add(vp);
@@ -102,7 +117,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>();
 		final MultiSelectionModel<QualityDataSetDTO> selectionModel = new MultiSelectionModel<QualityDataSetDTO>();
 		//Commented till remove functionality is implemented.
-		/*hasCells.add(new HasCell<QualityDataSetDTO, Boolean>(){
+		hasCells.add(new HasCell<QualityDataSetDTO, Boolean>(){
 
 			private MatCheckBoxCell cbCell = new MatCheckBoxCell();
 			@Override
@@ -117,9 +132,11 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 			@Override
 			public Boolean getValue(QualityDataSetDTO object) {
+				cbCell.setUsed(object.isUsed());
 				return selectionModel.isSelected(object);
-			} });*/
-
+			} });
+		
+		
 		hasCells.add(new HasCell<QualityDataSetDTO, String>(){
 			private TextCell cell = new TextCell();
 			@Override
@@ -164,7 +181,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				// this renders each of the cells inside the composite cell in a new table cell
 				Cell<X> cell = hasCell.getCell();
 				//Commented till remove functionality is implemented.
-				//sb.appendHtmlConstant("<td style='font-size:95%;'>");
+				sb.appendHtmlConstant("<td style='font-size:95%;'>");
 				sb.appendHtmlConstant("<td style='font-size:100%;'>");
 				cell.render(context, hasCell.getValue(value), sb);
 				sb.appendHtmlConstant("</td>");
@@ -178,16 +195,22 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			public void onSelectionChange(SelectionChangeEvent event) {
 				appliedListModel.setRemoveQDMs(selectionModel.getSelectedSet());
 				System.out.println("appliedListModel Remove QDS Set Size =======>>>>" + appliedListModel.getRemoveQDMs().size());
+				listToRemove = new ArrayList<QualityDataSetDTO>(appliedListModel.getRemoveQDMs());
+				for(int i=0;i<listToRemove.size();i++){
+					System.out.println("QDM IDS=======>>>>" + listToRemove.get(i).getUuid());
+					
+				}
 			}
 		});
 		cellList.setSelectionModel(selectionModel, DefaultSelectionEventManager.<QualityDataSetDTO> createCheckboxManager());
+		removeButton.setEnabled(checkForEnable());
 		return cellList;
 	}
 
 	private boolean checkForEnable(){
-		//			return MatContext.get().getMeasureLockService().checkForEditPermission();
+		return MatContext.get().getMeasureLockService().checkForEditPermission();
 		// uncomment above line once remove button action is active and implemented.
-		return false;
+		//return false;
 	}
 
 	@Override

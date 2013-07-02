@@ -288,10 +288,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 							}
 							MatContext.get().getEventBus().fireEvent(new QDSElementCreatedEvent(codeList.getName()));
 							searchDisplay.getApplyToMeasureSuccessMsg().setMessage(message);
-						//	searchDisplay.getMsgFocusWidget().getElement().setAttribute("role", "alert");//This line adds the aria-alert 
 							searchDisplay.getMsgFocusWidget().setFocus(true);
-							/*if(appliedQDMList.size()>0)
-								appliedQDMList.removeAll(appliedQDMList);*/
 							
 						}
 					}

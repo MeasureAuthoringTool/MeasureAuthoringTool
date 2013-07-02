@@ -1,6 +1,7 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import mat.client.MatPresenter;
@@ -10,8 +11,11 @@ import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.QualityDataSetDTO;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -20,7 +24,8 @@ public class QDSAppliedListPresenter implements MatPresenter {
 
 	private SimplePanel panel = new SimplePanel();
 	private SearchDisplay searchDisplay;
-	List<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+	ArrayList<QualityDataSetDTO> allQdsList = new ArrayList<QualityDataSetDTO>();
+	boolean isCheckForSDE=false;
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
 	List<String> codeListString = new ArrayList<String>();
@@ -30,18 +35,86 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		public Widget asWidget();
 		void buildCellList(QDSAppliedListModel appliedListModel);
+		Button getRemoveButton();
+		List<QualityDataSetDTO> getListToRemove();
 	}
 
 	public QDSAppliedListPresenter(SearchDisplay sDisplayArg) {
 		this.searchDisplay = sDisplayArg;
-		getXMLForAppliedQDM();
+		getXMLForAppliedQDM(true);
+		searchDisplay.getRemoveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				resetQDSFields();
+				if(searchDisplay.getListToRemove()!=null){
+					if(searchDisplay.getListToRemove().size() >0){
+						service.getMeasureXMLForAppliedQDM(MatContext.get().getCurrentMeasureId(),false, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
+
+							@Override
+							public void onFailure(Throwable caught) {
+								Window.alert(MatContext.get().getMessageDelegate()
+										.getGenericErrorMessage());	
+								
+							}
+							@Override
+							public void onSuccess(ArrayList<QualityDataSetDTO> result) {
+								allQdsList=result;
+								if(allQdsList.size()>0){
+									for(QualityDataSetDTO setDTO : searchDisplay.getListToRemove()){
+										Iterator<QualityDataSetDTO> iterator = allQdsList.iterator();
+										while(iterator.hasNext()){
+											QualityDataSetDTO dataSetDTO = iterator.next();
+											if(dataSetDTO.getUuid().equals(setDTO.getUuid())){
+												iterator.remove();
+											}
+										}
+										
+									}
+									saveMeasureXML(allQdsList);
+								}
+								
+							}
+							
+						});
+					}else{
+						searchDisplay.getErrorMessageDisplay().setMessage("Please select at least one unused value set to delete.");
+					}
+				}else{
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());	
+				}			
+			}
+					
+		});
+	}
+	
+	private void saveMeasureXML(ArrayList<QualityDataSetDTO> list){
+		service.createAndSaveElementLookUp(list,MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate()
+						.getGenericErrorMessage());	
+				
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				searchDisplay.getListToRemove().removeAll(searchDisplay.getListToRemove());
+				allQdsList.removeAll(allQdsList);
+				resetQDSFields();
+				loadAppliedListData();
+				searchDisplay.getApplyToMeasureSuccessMsg().setMessage("Successfully Removed selected Value Set(s)");
+				
+			}
+		});
 	}
 
-	void loadCodeListData() {
+	void loadAppliedListData() {
 		panel.clear();
-		getXMLForAppliedQDM();
+		getXMLForAppliedQDM(true);
 		displaySearch();
-		
 	}
 
 	public Widget getWidget() {
@@ -62,10 +135,11 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	 * in context.
 	 * 
 	 * */
-	public void getXMLForAppliedQDM(){
+	public void getXMLForAppliedQDM(boolean checkForSupplementData){
 		String measureId = MatContext.get().getCurrentMeasureId();
+		isCheckForSDE = checkForSupplementData;
 		if (measureId != null && measureId != "") {
-			service.getMeasureXMLForAppliedQDM(measureId,true, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
+			service.getMeasureXMLForAppliedQDM(measureId,checkForSupplementData, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
 
 				@Override
 				public void onFailure(Throwable caught) {
@@ -87,7 +161,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	@Override
 	public void beforeDisplay() {
 		resetQDSFields();
-		loadCodeListData();
+		loadAppliedListData();
 
 	}
 

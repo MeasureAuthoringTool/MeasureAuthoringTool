@@ -1,5 +1,7 @@
 package mat.client.shared;
 
+import mat.model.QualityDataSetDTO;
+
 import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.BrowserEvents;
@@ -27,12 +29,24 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 
 	private final boolean dependsOnSelection;
 	private final boolean handlesSelection;
+	private boolean isUsed;
 
+	public boolean isUsed() {
+		return isUsed;
+	}
+	public void setUsed(boolean isUsed) {
+		this.isUsed = isUsed;
+	}
 	/**
 	 * Construct a new {@link MatCheckBoxCell}.
 	 */
 	public MatCheckBoxCell() {
 		this(false);
+	}
+	public MatCheckBoxCell(QualityDataSetDTO dataSetDTO){
+		this(false);
+		this.isUsed = dataSetDTO.isUsed(); 
+		
 	}
 
 	/**
@@ -120,7 +134,7 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 			clearViewData(context.getKey());
 			viewData = null;
 		}
-		if(checkForEnable()){    
+		if(!isUsed){    
 			if (value != null && ((viewData != null) ? viewData : value)) {
 				sb.append(INPUT_CHECKED);
 			} else {
@@ -128,14 +142,14 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 			}
 		}else{
 			sb.append(INPUT_UNCHECKED_DISABLED);
+			//sb.append(INPUT_UNCHECKED);
 
 		}
 	}
 
 	private boolean checkForEnable(){
-		//Uncomment when Remove functionality is implemented.
-		//return MatContext.get().getMeasureLockService().checkForEditPermission();
-		return false;
+
+		return MatContext.get().getMeasureLockService().checkForEditPermission();
 	}
 }
 

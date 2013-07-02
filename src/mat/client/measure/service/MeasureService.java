@@ -45,6 +45,8 @@ public interface MeasureService extends RemoteService {
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
 	ArrayList<QualityDataSetDTO> getMeasureXMLForAppliedQDM(String measureId,
 			boolean checkForSupplementData);
+	void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list,
+			String measureID);
 	
 
 }

@@ -641,13 +641,13 @@ public class QDMAttributeDialogBox {
 			ListBox modeNameListBox = (ListBox) grid.getWidget(row, 2);
 			modeNameListBox.setEnabled(true);
 			for(int j=0;j<modeNameListBox.getItemCount();j++){
-				if(modeNameListBox.getItemText(j).equals(modeName) || modeNameListBox.getItemText(j).equals("-- "+modeName)){
+				if(modeNameListBox.getItemText(j).equalsIgnoreCase(modeName) || modeNameListBox.getItemText(j).equalsIgnoreCase("-- "+modeName)){
 					modeNameListBox.setSelectedIndex(j);
 					break;
 				}
 			}
-			if(!CHECK_IF_PRESENT.equals(modeName)){
-				if(VALUE_SET.equals(modeName)){
+			if(!CHECK_IF_PRESENT.equalsIgnoreCase(modeName)){
+				if(VALUE_SET.equalsIgnoreCase(modeName)){
 					ListBox qdmListBox = createQdmListBox();
 					setToolTipForEachElementInQdmListBox(qdmListBox);
 					grid.setWidget(row, 3, qdmListBox);

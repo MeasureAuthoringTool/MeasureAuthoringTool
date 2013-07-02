@@ -20,7 +20,6 @@ import mat.DTO.UnitDTO;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageValueSetSearchModel;
-
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.dao.AuthorDAO;
 import mat.dao.CategoryDAO;
@@ -52,7 +51,6 @@ import mat.model.GroupedCodeListDTO;
 import mat.model.ListObject;
 import mat.model.ListObjectLT;
 import mat.model.MeasureSteward;
-import mat.model.ObjectStatus;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSet;
 import mat.model.QualityDataSetDTO;
@@ -144,8 +142,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	
 	@Autowired
 	private OperatorDAO operatorDAO;
-	
-	private String[] alphabetArray = new String[]{"A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"};
 	
 	
 	/*US566*/
@@ -613,15 +609,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				logger.info("Trying to add a CodeList with same name and Taxonomy which was already added in the Grouped CodeList.");
 				return duplicateExists;
 			}
-			//Check for same codeList Name && Same Taxonomy(code system) is not fine.
-			/*
-			if(gcl.getCodeList().getName().trim().equalsIgnoreCase(currentcodeList.getName().trim()) &&
-					gcl.getCodeList().getCodeSystem().getId().equalsIgnoreCase(currentcodeList.getCodeSystem().getId())){
-				duplicateExists = true;
-				logger.info("Trying to add a CodeList with same name and Taxonomy which was already added in the Grouped CodeList.");
-				return duplicateExists;
-			}
-			*/
 		}
 		return duplicateExists;
 	}
@@ -650,10 +637,10 @@ public class ManageCodeListServiceImpl implements CodeListService {
     	return user;
     }
     
-    private ObjectStatus getUserStatus(String key){
+ /*   private ObjectStatus getUserStatus(String key){
     	ObjectStatus status = (ObjectStatus)objectStatusDAO.find(key);
     	return status;
-    }
+    }*/
 	@Override
 	public ManageCodeListDetailModel getCodeList(String key) {
 		ManageCodeListDetailModel  codeListModel = new ManageCodeListDetailModel();
@@ -860,16 +847,16 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			if(isSpecificOccurrence){
 				DataType dt = dataTypeDAO.find(dataType);
 				int occurrenceCount = checkForOccurrenceCount(measureId, dt.getId(), codeList,appliedQDM);
-				if(occurrenceCount < 26){//Alphabet are 26 characters.
-					String alphaOccurrence = findAlphabet(occurrenceCount);
-					qds.setOccurrenceText("Occurrence" + " " +alphaOccurrence);
+				if(occurrenceCount < 90){//Alphabet ASCII Integer Values.
+					char occTxt = (char)occurrenceCount;
+					qds.setOccurrenceText("Occurrence" + " " +occTxt);
 					wrapper.getQualityDataDTO().add(qds);
 					result.setOccurrenceMessage(qds.getOccurrenceText());
 					String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 					result.setSuccess(true);
 					result.setXmlString(qdmXMLString);
 					
-					qdm.setOccurrence("Occurrence" + " " +alphaOccurrence);
+					qdm.setOccurrence("Occurrence" + " " +occTxt);
 					qualityDataSetDAO.save(qdm);
 				}
 			}else{//Treat as regular QDM
@@ -886,11 +873,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 		}
 		return result;
-	}
-
-	
-	private String findAlphabet(int occurrenceCount){
-		return alphabetArray[occurrenceCount];
 	}
 
 	private SaveUpdateCodeListResult saveAttributeOrMeasurementTiming(String measureId,String dataType,CodeListSearchDTO codeList, ArrayList<QualityDataSetDTO> appliedQDM){
@@ -951,7 +933,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				dt = dataTypeDAO.find(dataType);
 			}
 		}
-    	//List<QualityDataSetDTO> existingQDSList = qualityDataSetDAO.getQDSElementsFor(measureId, codeList.getId());
     	List<QualityDataSetDTO> existingQDSList = appliedQDM;
     	for(QualityDataSetDTO QDTO : existingQDSList){
     		if(dt.getDescription().equalsIgnoreCase(QDTO.getDataType())&&(QDTO.getId().equalsIgnoreCase(codeList.getId())) && QDTO.getOccurrenceText() == null){
@@ -1014,8 +995,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
      * the given dataType not for the specific occurrence.
      */
     private int checkForOccurrenceCount(String measureId,String dataTypeId,CodeListSearchDTO codeList,ArrayList<QualityDataSetDTO> appliedQDM){
-    	int occurrenceCount = 0;
-    	//List<QualityDataSet> existingQDSList = qualityDataSetDAO.getQDSElementsFor(measureId, codeList.getId(),dataTypeId, null);
+    	int occurrenceCount = 65;
     	ListIterator<QualityDataSetDTO> qdsIterator = appliedQDM.listIterator();
     	DataType dt = null;
     	dt = dataTypeDAO.find(dataTypeId);
@@ -1023,7 +1003,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
     		QualityDataSetDTO qds = qdsIterator.next();
     		if(codeList.getId().equalsIgnoreCase(qds.getId())){
     			if(dt.getDescription().equalsIgnoreCase(qds.getDataType()) && qds.getOccurrenceText() != null){
-    				occurrenceCount++;
+    				String nextOccString = qds.getOccurrenceText();
+    				Character text = nextOccString.charAt(nextOccString.length()-1);
+    				occurrenceCount =((int)text)+1;
     			}
     		}
     	}

@@ -50,7 +50,7 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 		bluePanel.add(errorMessages);
 		
 		email = new EmailAddressTextBox();
-		email.setTitle("Email Address");
+		email.setTitle("Enter Email Address");
 		Label emailAddressLabel = (Label)LabelBuilder.buildLabel(email, "Email Address");
 		HorizontalPanel hPanel = new HorizontalPanel();
 		HTML required = new HTML(RequiredIndicator.get());

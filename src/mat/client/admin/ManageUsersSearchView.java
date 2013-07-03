@@ -14,6 +14,7 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -29,13 +30,19 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	private SearchView<ManageUsersSearchModel.Result> view = new SearchView<ManageUsersSearchModel.Result>("Users");
 	private Button searchButton = new SecondaryButton("Search");
 	private Button createNewButton = new SecondaryButton("Add New User");
+	private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
 	
 	public ManageUsersSearchView() {
 		view.buildDataTable(new ManageUsersSearchModel());
 		searchText.setWidth("256px");
 		
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(createNewButton);
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		buttonPanel.add(createNewButton);
+		buttonPanel.add(generateCSVFileButton);
+		generateCSVFileButton.setTitle("Generate CSV file of Email Addresses.");
+		mainPanel.add(buttonPanel);
+		//mainPanel.add(createNewButton);
 		mainPanel.add(new SpacerWidget());
 		
 		mainPanel.add(searchLabel);
@@ -69,8 +76,10 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	public Widget asWidget() {
 		return containerPanel;
 	}
-
-	
+	@Override
+	public Button getGenerateCSVFileButton() {
+		return generateCSVFileButton;
+	}
 	@Override
 	public HasClickHandlers getCreateNewButton() {
 		return createNewButton;

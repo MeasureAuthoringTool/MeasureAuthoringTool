@@ -45,6 +45,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ManageUsersPresenter implements MatPresenter {
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
 		public HasClickHandlers getCreateNewButton();
+		public Button getGenerateCSVFileButton();
 		public HasSelectionHandlers<ManageUsersSearchModel.Result> getSelectIdForEditTool();
 		public void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results);
 	}
@@ -106,6 +107,13 @@ public class ManageUsersPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				createNew();
+			}
+		});
+		searchDisplay.getGenerateCSVFileButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				generateCSVOfActiveUserEmails();
 			}
 		});
 		searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
@@ -256,6 +264,23 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.setTitle("Add a User");
 		currentDetails = new ManageUsersDetailModel();
 		displayDetail();
+	}
+	private void generateCSVOfActiveUserEmails(){
+		MatContext.get().getAdminService().generateCSVOfActiveUserEmails(new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println("generate CSV Of Active User Emails returned UnSuccessfully");
+				
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				System.out.println("generate CSV Of Active User Emails returned successfully");
+				
+			}
+			
+		});
 	}
 	private void edit(String name) {
 		detailDisplay.setTitle("Update a User");

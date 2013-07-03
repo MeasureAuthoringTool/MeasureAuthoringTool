@@ -129,6 +129,11 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		checkAdminUser();
 		getUserService().deleteUser(userId);
 	}
+	
+	@Override
+	public void generateCSVOfActiveUserEmails() throws InCorrectUserRoleException{
+		System.out.println("Generating CSV of email addrs for all Active Users...");
+	}
 
 	private UserService getUserService() {
 		return (UserService)context.getBean("userService");

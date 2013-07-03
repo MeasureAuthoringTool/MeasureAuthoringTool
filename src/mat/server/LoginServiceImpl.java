@@ -240,7 +240,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 					}else{
 						int currentPasswordlockCounter = userDetails.getUserPassword().getPasswordlockCounter();
 						logger.info("CurrentPasswordLockCounter value:" +currentPasswordlockCounter);
-						if(currentPasswordlockCounter == 3){
+						if(currentPasswordlockCounter == 2){
 							//Force the user to log out of the system
 							 //MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
 							 String resultStr = updateOnSignOut(userDetails.getId(), userDetails.getEmailAddress(),"SIGN_OUT_EVENT" );

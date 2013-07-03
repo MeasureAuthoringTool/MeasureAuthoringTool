@@ -248,13 +248,11 @@ public class CellTreeNodeImpl implements CellTreeNode{
 			CellTreeNode attributeNode  = attributeList.get(0);
 			StringBuilder stringBuilder = new StringBuilder(" (" + attributeNode.getExtraInformation("name").toString());
 			String modeName = (String)attributeNode.getExtraInformation("mode");
-			if("Check if Present".equals(modeName)){
-				stringBuilder.append(" is present ");
-			}else if("Value Set".equals(modeName)){
+			if("Value Set".equalsIgnoreCase(modeName)){
 					String qdmId = (String)attributeNode.getExtraInformation("qdmUUID");
 					String qdmName = ClauseConstants.getElementLookUpName().get(qdmId);
 					stringBuilder.append(": '").append(qdmName).append("'");
-			}else{
+			}else if(!("Check if Present".equalsIgnoreCase(modeName))){				
 				if("Less Than".equalsIgnoreCase(modeName)){
 					stringBuilder.append(" < ");
 				}else if("Less Than Or Equal To".equalsIgnoreCase(modeName)){

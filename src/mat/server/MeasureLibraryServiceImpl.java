@@ -1191,7 +1191,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		for(QualityDataSetDTO dataSetDTO : arrayList){
 			String XPATH_EXPRESSION = "/measure//clause//@id=";
-			XPATH_EXPRESSION = XPATH_EXPRESSION.concat("'").concat(dataSetDTO.getUuid()).concat("'");
+			XPATH_EXPRESSION = XPATH_EXPRESSION.concat("'").concat(dataSetDTO.getUuid()).concat("' or /measure//clause//@qdmUUID= '").concat(dataSetDTO.getUuid()).
+								concat("' or /measure/supplementalDataElements//@id='").concat(dataSetDTO.getUuid()).concat("'");
+			
 			try {
 				Boolean isUsed = (Boolean) xPath.evaluate(XPATH_EXPRESSION, processor.getOriginalDoc().getDocumentElement(), XPathConstants.BOOLEAN);
 				dataSetDTO.setUsed(isUsed);

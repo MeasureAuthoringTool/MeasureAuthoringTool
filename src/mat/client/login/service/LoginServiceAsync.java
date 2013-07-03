@@ -32,6 +32,7 @@ public interface LoginServiceAsync extends AsynchronousService{
 			AsyncCallback<SecurityQuestionOptions> callback);
 	void forgotLoginID(String email,
 			AsyncCallback<ForgottenLoginIDResult> callback);
+	void getSecurityQuestion(String userid, AsyncCallback<String> callback);
 	void validatePassword(String userID, String enteredPassword,
 			AsyncCallback<HashMap<String,String>> callback);
 		

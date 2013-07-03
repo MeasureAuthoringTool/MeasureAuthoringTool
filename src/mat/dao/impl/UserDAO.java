@@ -10,7 +10,6 @@ import mat.server.model.MatUserDetails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -240,5 +239,21 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 		Date current = new Date();
 		u.setSignOutDate(current);
 		save(u);
+	}
+
+	@Override
+	public String getRandomSecurityQuestion(String userId) {
+	   User user = findByLoginId(userId);
+	
+	   String query = "select QUESTION from USER_SECURITY_QUESTIONS";
+	   if(null != user){
+		   query += " where USER_ID ='" + user.getId() + "'";
+	   }
+	   query += " ORDER BY RAND() LIMIT 1";
+	   
+	   Session session = getSessionFactory().getCurrentSession();
+	   List<String> list = session.createSQLQuery(query).list();
+	   
+	  return list.get(0);
 	}
 }

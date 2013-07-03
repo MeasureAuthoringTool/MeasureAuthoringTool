@@ -174,6 +174,7 @@ public class UserServiceImpl implements UserService {
 		
 		if(user == null) {
 			result.setFailureReason(ForgottenPasswordResult.USER_NOT_FOUND);
+			return result;
 		}
 		else if(user.getSecurityQuestions().size() != 3) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_NOT_SET);
@@ -186,9 +187,8 @@ public class UserServiceImpl implements UserService {
 			int lockCounter = user.getPassword().getForgotPwdlockCounter() + 1;
 			if(lockCounter == 2) {
 				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT);
-				user.setLockedOutDate(new Date());
 			}
-			if(lockCounter == 3) {
+			if(lockCounter >= 3) {
 				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
 				user.setLockedOutDate(new Date());
 			}
@@ -210,6 +210,8 @@ public class UserServiceImpl implements UserService {
 				setUserPassword(user, newPassword, true);
 				result.setEmailSent(true);
 				sendResetPassword(user.getEmailAddress(), newPassword);
+				user.setLockedOutDate(null);
+				user.getPassword().setForgotPwdlockCounter(0);
 				userDAO.save(user);
 			}
 		}
@@ -267,8 +269,8 @@ public class UserServiceImpl implements UserService {
 	private boolean securityQuestionMatch(User user, 
 			String securityQuestion, String securityAnswer) {
 		for(UserSecurityQuestion usq : user.getSecurityQuestions()) {
-			if(securityQuestion.equals(usq.getSecurityQuestion()) &&
-					securityAnswer.equals(usq.getSecurityAnswer())) {
+			if(securityQuestion.equalsIgnoreCase(usq.getSecurityQuestion()) &&
+					securityAnswer.equalsIgnoreCase(usq.getSecurityAnswer())) {
 				return true;
 			}
 		}
@@ -314,7 +316,6 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public User findByEmailID(String emailId) {
-		
 		return userDAO.findByEmail(emailId);
 	}
 	
@@ -664,6 +665,11 @@ public class UserServiceImpl implements UserService {
 			logger.info("SignOut Unsuccessful "+ "("+ signoutDate.toString() +")"+ e.getMessage());
 			return e.getMessage();
 		}
+	}
+
+	@Override
+	public String getSecurityQuestion(String userid) {
+		return userDAO.getRandomSecurityQuestion(userid);
 	}
 
 	

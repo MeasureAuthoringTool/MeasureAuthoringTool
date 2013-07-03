@@ -1,46 +1,40 @@
 package mat.client.login;
 
-import java.util.Collections;
-import java.util.List;
-
 import mat.client.event.PasswordEmailSentEvent;
 import mat.client.event.ReturnToLoginEvent;
-import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
-import mat.client.shared.NameValuePair;
 import mat.shared.ForgottenPasswordResult;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
-import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasWidgets;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ForgottenPasswordPresenter {
 
 	public static interface Display {
-	//	public HasValue<String> getEmail();
-		public HasValue<String> getLoginId();
-		public HasValue<String> getSecurityQuestion();
-		public HasValue<String> getSecurityAnswer();
+		public TextBox getLoginId();
+		public Button getLoginIdSubmit();
+		public String getSecurityQuestion();
+		public String getSecurityAnswer();
 		
 		public HasClickHandlers getSubmit();
 		public HasClickHandlers getReset();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		public void setSecurityQuestionAnswerEnabled(boolean enabled);
-		public void addSecurityQuestionOptions(List<NameValuePair> texts);
+		public void setSecurityQuestionAnswerEnabled(boolean show);
+		public void addSecurityQuestionOptions(String text);
 		public void setFocus(boolean focus);
 		public Widget asWidget();
 	}
 
 	private final Display display;
 	
+	private int invalidUserCounter = 0;
 	
 	public ForgottenPasswordPresenter(Display displayArg) {
 		this.display = displayArg;
@@ -55,17 +49,27 @@ public class ForgottenPasswordPresenter {
 		
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
+				if(invalidUserCounter >= 3){
+					String message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
+					display.getErrorMessageDisplay().setMessage(message);
+					return;
+				}
 				requestForgottenPassword();
 			}
 		});
 		
-		display.getLoginId().addValueChangeHandler(new ValueChangeHandler<String>() {
+		display.getLoginIdSubmit().addClickHandler(new ClickHandler() {
+			
 			@Override
-			public void onValueChange(ValueChangeEvent<String> arg0) {
-				display.setFocus(true);
-				display.setSecurityQuestionAnswerEnabled(false);
+			public void onClick(ClickEvent event) {
 				display.getErrorMessageDisplay().clear();
-				loadSecurityQuestionsForUserId(arg0.getValue());
+				if(null == display.getLoginId().getValue() || display.getLoginId().getValue().trim().isEmpty()){
+					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
+					return;
+				}
+				display.getLoginId().setEnabled(false);
+				display.getLoginIdSubmit().setEnabled(false);
+				loadSecurityQuestionForUserId(display.getLoginId().getText());				
 			}
 		});
 		
@@ -73,12 +77,17 @@ public class ForgottenPasswordPresenter {
 	}
 	
 	private void reset() {
+		display.getLoginId().setEnabled(true);
 		display.getLoginId().setValue("");
-		display.getSecurityAnswer().setValue("");
+		display.setSecurityQuestionAnswerEnabled(false);
 		display.getErrorMessageDisplay().clear();
+		display.getLoginIdSubmit().setEnabled(true);
+		display.getLoginId().setFocus(true);
+		invalidUserCounter = 0;
 	}
-	private void loadSecurityQuestionsForUserId(String userid) {
-		MatContext.get().getLoginService().getSecurityQuestionOptions(userid, new AsyncCallback<SecurityQuestionOptions>() {
+	
+	private void loadSecurityQuestionForUserId(String userid) {
+		MatContext.get().getLoginService().getSecurityQuestion(userid, new AsyncCallback<String>() {
 
 			@Override
 			public void onFailure(Throwable exc) {
@@ -86,36 +95,40 @@ public class ForgottenPasswordPresenter {
 			}
 
 			@Override
-			public void onSuccess(SecurityQuestionOptions options) {
-				if(options.isUserFound() && options.getSecurityQuestions().size() > 0) {
-					display.setSecurityQuestionAnswerEnabled(true);
-					display.setFocus(true);//This line is needed to focus the dropdown when the security Questions dynamically changed.
-					List<NameValuePair> qs = options.getSecurityQuestions();
-					Collections.sort(qs, new NameValuePair.Comparator());
-					display.addSecurityQuestionOptions(qs);
-				}
-				else {
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
-				}
+			public void onSuccess(String question) {
+				display.setSecurityQuestionAnswerEnabled(true);
+				display.addSecurityQuestionOptions(question);
 			}
-			
 		});
 	}
+	
 	private void requestForgottenPassword() {
 		MatContext.get().getLoginService().forgotPassword(display.getLoginId().getValue(), 
-				display.getSecurityQuestion().getValue(), 
-				display.getSecurityAnswer().getValue(), 
+				display.getSecurityQuestion(), 
+				display.getSecurityAnswer(), 
 				new AsyncCallback<ForgottenPasswordResult>() {
 					
 					@Override
 					public void onSuccess(ForgottenPasswordResult result) {
 						if(result.isEmailSent()) {
 							MatContext.get().getEventBus().fireEvent(new PasswordEmailSentEvent());	
-						}
-						else {
+						}else if(ForgottenPasswordResult.USER_NOT_FOUND == result.getFailureReason()){
+							invalidUserCounter += 1;
+							String message = "";
+							if(invalidUserCounter == 2){
+								message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT);
+							}else if(invalidUserCounter >= 3){
+								message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
+							}else{
+								message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
+							}
+							display.getErrorMessageDisplay().setMessage(message);
+							
+						}else{
 							String message = convertMessage(result.getFailureReason());
 							display.getErrorMessageDisplay().setMessage(message);
 						}
+						
 					}
 					
 					@Override
@@ -155,16 +168,7 @@ public class ForgottenPasswordPresenter {
 	}
 	public void go(HasWidgets container) {
 		reset();
-		MatContext.get().getSecurityQuestions(new AsyncCallback<List<NameValuePair>>() {
-			public void onSuccess(List<NameValuePair> values) {
-				display.addSecurityQuestionOptions(values);
-			}
-			public void onFailure(Throwable t) {
-				//Window.alert(t.getMessage());
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
-		});
-		
 		container.add(display.asWidget());
+		display.getLoginId().setFocus(true);
 	}
 }

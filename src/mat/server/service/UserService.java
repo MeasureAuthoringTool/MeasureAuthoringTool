@@ -37,4 +37,5 @@ public interface UserService {
 	public String updateOnSignOut(String userId, String email, String activityType);
 	public ForgottenLoginIDResult requestForgottenLoginID(String email);
 	SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email);
+	public String getSecurityQuestion(String userid);
 }

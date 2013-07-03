@@ -29,5 +29,6 @@ public interface LoginService extends RemoteService {
 	public String updateOnSignOut(String userId, String email, String activityType);
 	SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email);
 	ForgottenLoginIDResult forgotLoginID(String email);
+	String getSecurityQuestion(String userid);
 	public HashMap<String,String> validatePassword(String userID,String enteredPassword);
 }

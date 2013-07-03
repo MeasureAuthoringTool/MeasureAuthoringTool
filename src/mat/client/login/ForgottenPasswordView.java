@@ -1,18 +1,21 @@
 package mat.client.login;
 
-import java.util.List;
-
-import mat.client.shared.EmailAddressTextBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
-import mat.client.shared.NameValuePair;
+import mat.client.shared.PrimaryButton;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.Hidden;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -24,10 +27,14 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	private Panel mainPanel;
 	private TextBox email;
 	private TextBox loginId;
-	private ListBoxMVP securityQuestion;
+	private Label securityQuestion;
 	private TextBox securityAnswer;
-	private SaveCancelButtonBar buttonBar;
+	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	private VerticalPanel securityQuestionAnsPanel = new  VerticalPanel();
+	Hidden securityAnswerHidden = new Hidden();
+	private Button userIdSubmit = new PrimaryButton("Submit");
+	
 	
 	public ForgottenPasswordView() {
 		mainPanel = new VerticalPanel();
@@ -51,25 +58,28 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		bluePanel.add(new SpacerWidget());
 		
 		bluePanel.add(errorMessages);
-		
-		loginId = new EmailAddressTextBox();
-		bluePanel.add(LabelBuilder.buildLabel(loginId, "User ID"));
-		bluePanel.add(loginId);
+		Label userIdLabel = (Label) LabelBuilder.buildLabel(loginId, "User ID");
+		bluePanel.add(userIdLabel);
 		bluePanel.add(new SpacerWidget());
 		
-		securityQuestion = new ListBoxMVP();
-		bluePanel.add(LabelBuilder.buildLabel(securityQuestion, "Security Question"));
-		bluePanel.add(securityQuestion);
+		loginId = new TextBox();
+		loginId.setTitle("Enter User ID");
+		loginId.setEnabled(true);
+		loginId.setWidth("170px");
+		loginId.setHeight("15px");
+		
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.add(loginId);
+		SimplePanel spacerWidget = new SimplePanel();
+		spacerWidget.setWidth("5px");
+		horizontalPanel.add(spacerWidget);
+		horizontalPanel.add(userIdSubmit);
+		userIdSubmit.setEnabled(true);
+
+		bluePanel.add(horizontalPanel);
 		bluePanel.add(new SpacerWidget());
 		
-		securityAnswer = new TextBox();
-		bluePanel.add(LabelBuilder.buildLabel(securityAnswer, "Security Question Answer"));
-		bluePanel.add(securityAnswer);
-		bluePanel.add(new SpacerWidget());
-		
-		buttonBar = new SaveCancelButtonBar();
-		buttonBar.getSaveButton().setText("Submit");
-		bluePanel.add(buttonBar);
+		bluePanel.add(securityQuestionAnsPanel);
 		
 		mainPanel.add(bluePanel);
 		
@@ -81,13 +91,13 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	}*/
 
 	@Override
-	public HasValue<String> getSecurityQuestion() {
-		return securityQuestion;
+	public String getSecurityQuestion() {
+		return securityQuestion.getText();
 	}
 
 	@Override
-	public HasValue<String> getSecurityAnswer() {
-		return securityAnswer;
+	public String getSecurityAnswer() {
+		return securityAnswerHidden.getValue();
 	}
 
 	@Override
@@ -107,8 +117,8 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	}
 
 	@Override
-	public void addSecurityQuestionOptions(List<NameValuePair> texts) {
-		securityQuestion.setDropdownOptions(texts);
+	public void addSecurityQuestionOptions(String text) {
+		securityQuestion.setText(text);
 	}
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
@@ -116,18 +126,77 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	}
 
 	@Override
-	public void setSecurityQuestionAnswerEnabled(boolean enabled) {
-		securityQuestion.setEnabled(enabled);
-		securityAnswer.setEnabled(enabled);
-	}
-
-	@Override
 	public void setFocus(boolean focus) {
-		securityQuestion.setFocus(focus);
+		securityAnswer.setFocus(focus);
 	}
 
 	@Override
-	public HasValue<String> getLoginId() {
+	public void setSecurityQuestionAnswerEnabled(boolean enable) {
+		securityQuestionAnsPanel.clear();
+		if(enable){
+			securityQuestion = new Label();
+			Label label = (Label)LabelBuilder.buildLabel(securityQuestion, "Security Question");
+			securityQuestionAnsPanel.add(label);
+			securityQuestionAnsPanel.add(securityQuestion);
+			securityQuestionAnsPanel.add(new SpacerWidget());
+			
+			securityAnswer = new TextBox();
+			securityAnswer.setTitle("Enter Security Question Answer");
+			securityQuestionAnsPanel.add(LabelBuilder.buildLabel(securityAnswer, "Security Question Answer"));
+			securityQuestionAnsPanel.add(securityAnswer);
+			securityQuestionAnsPanel.add(securityAnswerHidden);
+			securityQuestionAnsPanel.add(new SpacerWidget());
+			buttonBar.getSaveButton().setText("Submit");
+			securityQuestionAnsPanel.add(buttonBar);
+			
+			
+			Element element1 = securityAnswer.getElement();
+		    element1.setAttribute("aria-role", "command");
+			element1.setAttribute("aria-labelledby", "LiveRegion");
+			element1.setAttribute("aria-live", "assertive");
+			element1.setAttribute("aria-atomic", "true");
+			element1.setAttribute("aria-relevant", "all");
+			element1.setAttribute("role", "alert");						
+			
+			Element element = securityQuestion.getElement();
+		    element.setAttribute("aria-role", "command");
+			element.setAttribute("aria-labelledby", "LiveRegion");
+			element.setAttribute("aria-live", "assertive");
+			element.setAttribute("aria-atomic", "true");
+			element.setAttribute("aria-relevant", "all");
+			element.setAttribute("role", "alert");
+			
+			setFocus(true);
+			
+			securityAnswer.addBlurHandler(new BlurHandler() {
+				@Override
+				public void onBlur(BlurEvent event) {
+					String ans = securityAnswer.getText();
+					securityAnswerHidden.setValue(ans);
+					String asterisks = "";
+					for (int i = 0; i < ans.length(); i++) {
+						asterisks += "*";
+					}
+					securityAnswer.setText(asterisks);
+				}
+			});
+			
+			securityAnswer.addFocusHandler(new FocusHandler() {
+				@Override
+				public void onFocus(FocusEvent event) {
+					securityAnswer.setText("");
+				}
+			});
+		}
+	}
+
+	@Override
+	public Button getLoginIdSubmit() {
+		return userIdSubmit;
+	}
+
+	@Override
+	public TextBox getLoginId() {
 		return loginId;
 	}
 	

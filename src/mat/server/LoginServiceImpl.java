@@ -58,6 +58,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		UserService userService = (UserService)context.getBean("userService");
 		return  userService.getSecurityQuestionOptions(userid);
 	}
+	
+	@Override
+	public String getSecurityQuestion(String userid) {
+		UserService userService = (UserService)context.getBean("userService");
+		return userService.getSecurityQuestion(userid);
+	}
 
 	@Override
 	public SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email) {

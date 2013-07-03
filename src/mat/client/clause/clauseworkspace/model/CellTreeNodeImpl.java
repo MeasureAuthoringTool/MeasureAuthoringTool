@@ -268,7 +268,10 @@ public class CellTreeNodeImpl implements CellTreeNode{
 				stringBuilder.append(comparisonValue);
 
 				String unit = (String)attributeNode.getExtraInformation("unit"); 
-				stringBuilder.append(" ").append(unit);
+				if(null != unit){
+					stringBuilder.append(" ").append(unit);	
+				}
+				
 			}
 			attrib =  stringBuilder.append(")").toString();
 		}

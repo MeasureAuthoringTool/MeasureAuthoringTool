@@ -52,7 +52,7 @@ public class ClauseConstants{
 	
 	public static final String ID = "id";
 	
-	public static final int LABEL_MAX_LENGTH = 70;
+	public static final int LABEL_MAX_LENGTH = 100;
 	
 	public static Map<String, String> functions = new HashMap<String, String>();
 	

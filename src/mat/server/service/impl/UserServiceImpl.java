@@ -250,6 +250,7 @@ public class UserServiceImpl implements UserService {
 			if(isAlreadySignedIn){
 				result.setFailureReason(ForgottenLoginIDResult.USER_ALREADY_LOGGED_IN);
 			}else{
+				logger.info(" requestForgottenLoginID   User ID Found and email sent successfully to email address ::" +email );
 				result.setEmailSent(true);
 				notifyUserOfForgottenLoginId(user);
 			}

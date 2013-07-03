@@ -244,16 +244,20 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 	@Override
 	public String getRandomSecurityQuestion(String userId) {
 	   User user = findByLoginId(userId);
+	   String question = null;
+	   if(user == null){
+		   return null;
+	   }
 	
 	   String query = "select QUESTION from USER_SECURITY_QUESTIONS";
-	   if(null != user){
-		   query += " where USER_ID ='" + user.getId() + "'";
-	   }
+	   query += " where USER_ID ='" + user.getId() + "'";
 	   query += " ORDER BY RAND() LIMIT 1";
 	   
 	   Session session = getSessionFactory().getCurrentSession();
 	   List<String> list = session.createSQLQuery(query).list();
-	   
-	  return list.get(0);
+	   if(null != list && list.size() > 0){
+		   question = list.get(0);
+	   }
+	  return question;
 	}
 }

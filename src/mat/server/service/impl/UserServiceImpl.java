@@ -174,7 +174,6 @@ public class UserServiceImpl implements UserService {
 		
 		if(user == null) {
 			result.setFailureReason(ForgottenPasswordResult.USER_NOT_FOUND);
-			return result;
 		}
 		else if(user.getSecurityQuestions().size() != 3) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_NOT_SET);

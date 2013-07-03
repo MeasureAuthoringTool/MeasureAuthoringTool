@@ -88,7 +88,19 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		String securityQuestion, String securityAnswer) {
 
 		UserService userService = (UserService)context.getBean("userService");
-		return userService.requestForgottenPassword(loginId, securityQuestion, securityAnswer);
+		ForgottenPasswordResult forgottenPasswordResult = userService.requestForgottenPassword(loginId, securityQuestion, securityAnswer);
+		String ipAddress = getClientIpAddr(getThreadLocalRequest());
+		TransactionAuditService auditService = (TransactionAuditService)context.getBean("transactionAuditService");
+		logger.info("Login ID --- " + loginId);
+		if(forgottenPasswordResult.getFailureReason() > 0){
+			logger.info("Forgot Password Failed ====> CLient IPAddress :: " + ipAddress);
+			auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_PASSWORD_EVENT", loginId, "[IP: "+ipAddress+" ]" + "Forgot Password Failed"  , ConstantMessages.DB_LOG);
+		}else{
+			logger.info("Forgot Password Success ====> CLient IPAddress :: " + ipAddress);
+			auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_PASSWORD_EVENT", loginId, "[IP: "+ipAddress+" ]" + "Forgot Password Success"  , ConstantMessages.DB_LOG);
+		}
+		return forgottenPasswordResult;
+		
 	}
 
 	@Override

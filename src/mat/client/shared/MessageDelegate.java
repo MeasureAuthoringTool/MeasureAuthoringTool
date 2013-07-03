@@ -455,7 +455,7 @@ public class MessageDelegate {
 	}
 
 
-	private final String SECURITY_NOT_ANSWERED = "Your security questions have not been answered.  You cannot continue.";
+	private final String SECURITY_NOT_ANSWERED = "Your security questions have not been answered.  You cannot continue. Please contact the Helpdesk";
 	public String getSecurityNotAnsweredMessage(){
 		return SECURITY_NOT_ANSWERED;
 	}

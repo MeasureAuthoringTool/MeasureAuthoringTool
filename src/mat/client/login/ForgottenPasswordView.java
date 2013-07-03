@@ -3,7 +3,7 @@ package mat.client.login;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.PrimaryButton;
+import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 
@@ -13,7 +13,7 @@ import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Hidden;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -25,7 +25,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display {
 	private Panel mainPanel;
-	private TextBox email;
 	private TextBox loginId;
 	private Label securityQuestion;
 	private TextBox securityAnswer;
@@ -33,7 +32,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	private VerticalPanel securityQuestionAnsPanel = new  VerticalPanel();
 	Hidden securityAnswerHidden = new Hidden();
-	private Button userIdSubmit = new PrimaryButton("Submit");
+	public static boolean isUserIdSubmit = true;
 	
 	
 	public ForgottenPasswordView() {
@@ -58,8 +57,12 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		bluePanel.add(new SpacerWidget());
 		
 		bluePanel.add(errorMessages);
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
 		Label userIdLabel = (Label) LabelBuilder.buildLabel(loginId, "User ID");
-		bluePanel.add(userIdLabel);
+		horizontalPanel.add(userIdLabel);
+		HTML required = new HTML(RequiredIndicator.get());
+		horizontalPanel.add(required);
+		bluePanel.add(horizontalPanel);
 		bluePanel.add(new SpacerWidget());
 		
 		loginId = new TextBox();
@@ -68,27 +71,19 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		loginId.setWidth("170px");
 		loginId.setHeight("15px");
 		
-		HorizontalPanel horizontalPanel = new HorizontalPanel();
-		horizontalPanel.add(loginId);
-		SimplePanel spacerWidget = new SimplePanel();
-		spacerWidget.setWidth("5px");
-		horizontalPanel.add(spacerWidget);
-		horizontalPanel.add(userIdSubmit);
-		userIdSubmit.setEnabled(true);
-
-		bluePanel.add(horizontalPanel);
+		bluePanel.add(loginId);
 		bluePanel.add(new SpacerWidget());
 		
 		bluePanel.add(securityQuestionAnsPanel);
+		bluePanel.add(new SpacerWidget());
+		
+		buttonBar.getSaveButton().setText("Submit");
+		bluePanel.add(buttonBar);
 		
 		mainPanel.add(bluePanel);
 		
 	}	
 
-	/*@Override
-	public HasValue<String> getEmail() {
-		return email;
-	}*/
 
 	@Override
 	public String getSecurityQuestion() {
@@ -134,8 +129,9 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	public void setSecurityQuestionAnswerEnabled(boolean enable) {
 		securityQuestionAnsPanel.clear();
 		if(enable){
+			isUserIdSubmit = false;
 			securityQuestion = new Label();
-			Label label = (Label)LabelBuilder.buildLabel(securityQuestion, "Security Question");
+			Label label = (Label)LabelBuilder.buildLabel(securityQuestion, "Security Question:");
 			securityQuestionAnsPanel.add(label);
 			securityQuestionAnsPanel.add(securityQuestion);
 			securityQuestionAnsPanel.add(new SpacerWidget());
@@ -146,8 +142,6 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 			securityQuestionAnsPanel.add(securityAnswer);
 			securityQuestionAnsPanel.add(securityAnswerHidden);
 			securityQuestionAnsPanel.add(new SpacerWidget());
-			buttonBar.getSaveButton().setText("Submit");
-			securityQuestionAnsPanel.add(buttonBar);
 			
 			
 			Element element1 = securityAnswer.getElement();
@@ -188,11 +182,6 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 				}
 			});
 		}
-	}
-
-	@Override
-	public Button getLoginIdSubmit() {
-		return userIdSubmit;
 	}
 
 	@Override

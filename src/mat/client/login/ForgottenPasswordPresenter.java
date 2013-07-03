@@ -19,10 +19,8 @@ public class ForgottenPasswordPresenter {
 
 	public static interface Display {
 		public TextBox getLoginId();
-		public Button getLoginIdSubmit();
 		public String getSecurityQuestion();
 		public String getSecurityAnswer();
-		
 		public HasClickHandlers getSubmit();
 		public HasClickHandlers getReset();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
@@ -49,27 +47,23 @@ public class ForgottenPasswordPresenter {
 		
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
-				if(invalidUserCounter >= 3){
-					String message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
-					display.getErrorMessageDisplay().setMessage(message);
-					return;
+				if(ForgottenPasswordView.isUserIdSubmit){
+					display.getErrorMessageDisplay().clear();
+					if(null == display.getLoginId().getValue() || display.getLoginId().getValue().trim().isEmpty()){
+						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
+						return;
+					}
+					display.getLoginId().setEnabled(false);
+					loadSecurityQuestionForUserId(display.getLoginId().getText());		
+				}else{
+					if(invalidUserCounter >= 3){
+						String message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
+						display.getErrorMessageDisplay().setMessage(message);
+						return;
+					}
+					requestForgottenPassword();
 				}
-				requestForgottenPassword();
-			}
-		});
-		
-		display.getLoginIdSubmit().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				display.getErrorMessageDisplay().clear();
-				if(null == display.getLoginId().getValue() || display.getLoginId().getValue().trim().isEmpty()){
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
-					return;
-				}
-				display.getLoginId().setEnabled(false);
-				display.getLoginIdSubmit().setEnabled(false);
-				loadSecurityQuestionForUserId(display.getLoginId().getText());				
+				
 			}
 		});
 		
@@ -81,9 +75,9 @@ public class ForgottenPasswordPresenter {
 		display.getLoginId().setValue("");
 		display.setSecurityQuestionAnswerEnabled(false);
 		display.getErrorMessageDisplay().clear();
-		display.getLoginIdSubmit().setEnabled(true);
 		display.getLoginId().setFocus(true);
 		invalidUserCounter = 0;
+		ForgottenPasswordView.isUserIdSubmit = true;
 	}
 	
 	private void loadSecurityQuestionForUserId(String userid) {
@@ -96,6 +90,11 @@ public class ForgottenPasswordPresenter {
 
 			@Override
 			public void onSuccess(String question) {
+				if(null == question){
+					String[] questions = MatContext.get().questions;
+					int i = (int) (Math.random() * questions.length);
+					question = questions[i];
+				}
 				display.setSecurityQuestionAnswerEnabled(true);
 				display.addSecurityQuestionOptions(question);
 			}

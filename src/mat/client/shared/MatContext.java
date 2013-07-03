@@ -145,6 +145,16 @@ public class MatContext implements IsSerializable {
 	
 	public Map<String, String> operatorMapKeyLong = new HashMap<String, String>();
 	
+	public String[] questions = new String[]{
+			 "What was your dream job as a child?",
+			 "What is your preferred musical genre?",  
+			 "What is the name of your favorite childhood friend?",  
+			 "What was the make of your first car?",
+			 "In what city or town was your first job?",
+			 "What was the name of your elementary / primary school?",		
+			 "What school did you attend for sixth grade?",
+			 "What was the first sport you ever played as a child?"
+	  };  	
 	
 	
 	
@@ -333,16 +343,6 @@ public class MatContext implements IsSerializable {
 	
 	
 	public void getSecurityQuestions(final AsyncCallback<List<NameValuePair>> callback) {
-		String[] questions = new String[]{
-				 "What was your dream job as a child?",
-	 			 "What is your preferred musical genre?",  
-	 			 "What is the name of your favorite childhood friend?",  
-	 			 "What was the make of your first car?",
-	 			 "In what city or town was your first job?",
-				 "What was the name of your elementary / primary school?",		
-	 			 "What school did you attend for sixth grade?",
-	 			 "What was the first sport you ever played as a child?"
-		  };  	
 				
 			/*	
 			

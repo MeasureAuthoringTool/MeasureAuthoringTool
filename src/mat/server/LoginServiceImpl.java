@@ -101,6 +101,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 			String message=null;
 			TransactionAuditService auditService = (TransactionAuditService)context.getBean("transactionAuditService");
 			if(forgottenLoginIDResult.getFailureReason()==5){
+				logger.info(" User ID Found and but user already logged in : IP Address Location :" + ipAddress );
 				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
 				//this is to show success message on client side.
 				forgottenLoginIDResult.setEmailSent(true);
@@ -108,6 +109,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 				auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_USER_EVENT", email, "[IP: "+ipAddress+" ]"+"[EMAIL Entered: "+email+" ]" +message, ConstantMessages.DB_LOG);
 			}else if (forgottenLoginIDResult.getFailureReason()==4){
 				message = MatContext.get().getMessageDelegate().getEmailNotFoundMessage();
+				logger.info(" User ID : "+ email + " Not found in User Table IP Address Location :" + ipAddress );
 				//this is to show success message on client side.
 				forgottenLoginIDResult.setEmailSent(true);
 				//Illegal activity is logged in Transaction Audit table with IP Address of client requesting for User Id.

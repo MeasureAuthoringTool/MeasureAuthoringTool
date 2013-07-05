@@ -60,7 +60,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 	private Display display;
 	private SecurityQuestionsModel currentValues;
 	
-	@SuppressWarnings("deprecation")
+	
 	public SecurityQuestionsPresenter(Display displayArg) {
 		this.display = displayArg;
 		

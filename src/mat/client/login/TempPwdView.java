@@ -5,23 +5,16 @@ import java.util.List;
 import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordRules;
-import mat.client.shared.PrimaryButton;
 import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SecurityQuestionsWidget;
+import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SpacerWidget;
-import mat.model.UserSecurityQuestion;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.HasKeyDownHandlers;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -31,8 +24,8 @@ import com.google.gwt.user.client.ui.Widget;
 public class TempPwdView implements TempPwdLoginPresenter.Display {
 
 	private VerticalPanel mainPanel;
-	private SecurityQuestionsWidget securityQuestionsWidget = 
-		new SecurityQuestionsWidget();
+	private SecurityQuestionWithMaskedAnswerWidget securityQuestionsWidget = 
+		new SecurityQuestionWithMaskedAnswerWidget();
 	private ChangePasswordWidget changePasswordWidget = 
 		new ChangePasswordWidget();
 	
@@ -168,5 +161,42 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		securityQuestionsWidget.getSecurityQuestion1().setDropdownOptions(texts);
 		securityQuestionsWidget.getSecurityQuestion2().setDropdownOptions(texts);
 		securityQuestionsWidget.getSecurityQuestion3().setDropdownOptions(texts);
+	}
+
+	public SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget() {
+		return securityQuestionsWidget;
+	}
+
+	@Override
+	public String getAnswerText1() {
+		return securityQuestionsWidget.getAnswerText1();
+	}
+
+	@Override
+	public String getAnswerText2() {
+		return securityQuestionsWidget.getAnswerText2();
+		}
+
+	@Override
+	public String getAnswerText3() {
+		return securityQuestionsWidget.getAnswerText3();
+	}
+
+	@Override
+	public void setAnswerText1(String answerText1) {
+		securityQuestionsWidget.setAnswerText1(answerText1);
+		
+	}
+
+	@Override
+	public void setAnswerText2(String answerText2) {
+		securityQuestionsWidget.setAnswerText2(answerText2);
+		
+	}
+
+	@Override
+	public void setAnswerText3(String answerText3) {
+		securityQuestionsWidget.setAnswerText3(answerText3);
+		
 	}	
 }

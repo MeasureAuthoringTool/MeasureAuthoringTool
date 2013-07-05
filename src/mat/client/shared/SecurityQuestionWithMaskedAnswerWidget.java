@@ -3,6 +3,8 @@ package mat.client.shared;
 
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -12,9 +14,6 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	private ListBoxMVP securityQuestion2 = new ListBoxMVP();
 	private ListBoxMVP securityQuestion3 = new ListBoxMVP();
 	
-	/*private PasswordTextBox answer1 = new PasswordTextBox();
-	private PasswordTextBox answer2 = new PasswordTextBox();
-	private PasswordTextBox answer3 = new PasswordTextBox();*/
 	private TextBox answer1 = new TextBox();
 	private TextBox answer2 = new TextBox();
 	private TextBox answer3 = new TextBox();
@@ -23,6 +22,19 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	private String answerText3;
 	public SecurityQuestionWithMaskedAnswerWidget() {
 		FlowPanel container = new FlowPanel();
+		FlowPanel fp = new FlowPanel();
+		
+		HTML b1 = new HTML("<img src='images/bullet.png'/><span style='font-size:1.5 em;'> You must select three questions and enter an answer for each question.</span>");
+		HTML b2 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> You cannot use the same question more than once.</span>");
+		HTML b3 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> Answers are NOT case sensitive (caps or no caps are OK).</span>");
+		
+		fp.add(b1);
+		fp.add(b2);
+		fp.add(b3);
+		container.add(fp);
+		
+		container.add(new SpacerWidget());
+		
 		container.add(LabelBuilder.buildLabel(securityQuestion1, "Security Question 1"));
 		container.add(wrap(securityQuestion1));
 		container.add(LabelBuilder.buildLabel(answer1, "Security Answer 1"));
@@ -119,7 +131,4 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	public void setAnswerText3(String answerText3) {
 		this.answerText3 = answerText3;
 	}
-	
-	
-	
 }

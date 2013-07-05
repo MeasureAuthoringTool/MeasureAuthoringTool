@@ -411,7 +411,7 @@ public class MessageDelegate {
 		return PASSWORD_WRONG_LENGTH;
 	}
 
-	private final String PASSWORD_MISMATCH = "Your passwords do not match.";
+	private final String PASSWORD_MISMATCH = "Your new password and confirm password do not match.";
 	public String getPasswordMismatchMessage(){
 		return PASSWORD_MISMATCH;
 	}

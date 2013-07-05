@@ -414,8 +414,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			export = new MeasureExport();
 			export.setMeasure(measure);
 		}
-		//export.setSimpleXML(exportResult.export);
-		System.out.println("exportedXML:"+exportedXML);
 		export.setSimpleXML(exportedXML);
 		export.setCodeListBarr(exportResult.wkbkbarr);
 		measure.setExportedDate(new Date());

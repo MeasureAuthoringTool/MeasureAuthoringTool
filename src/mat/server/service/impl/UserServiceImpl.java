@@ -671,7 +671,9 @@ public class UserServiceImpl implements UserService {
 	public String getSecurityQuestion(String userid) {
 		return userDAO.getRandomSecurityQuestion(userid);
 	}
-
-	
+	@Override
+	public List<User> getAllNonAdminActiveUsers(){
+		return this.userDAO.getAllNonAdminActiveUsers();
+	}
 	
 }

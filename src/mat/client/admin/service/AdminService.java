@@ -21,5 +21,5 @@ public interface AdminService extends RemoteService {
 	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws InCorrectUserRoleException;
 	public void deleteUser(String userId) throws InCorrectUserRoleException;
 	public void resetUserPassword(String userid) throws InCorrectUserRoleException;
-	public void generateCSVOfActiveUserEmails() throws InCorrectUserRoleException;
+	
 }

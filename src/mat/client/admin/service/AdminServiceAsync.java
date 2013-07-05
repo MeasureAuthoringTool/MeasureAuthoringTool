@@ -13,5 +13,4 @@ public interface AdminServiceAsync {
 	
 	public void resetUserPassword(String userid, AsyncCallback<Void> callback);
 	public void deleteUser(String userid, AsyncCallback<Void> callback);
-	public void generateCSVOfActiveUserEmails(AsyncCallback<Void> callback);
 }

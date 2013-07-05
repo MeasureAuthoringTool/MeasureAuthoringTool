@@ -36,7 +36,7 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		HSSFSheet wkst = createSheet(wkbk, style, sheetName);
 		
 		createHeaderRow(wkst, HEADER_STRINGS, names,  0, style);
-		SortUtility su = new SortUtility();
+//		SortUtility su = new SortUtility();
 	//	SortedSet<ListObject> sortedListObjects = su.sortQDMsToListObjects(supplementalQDMS);//This sortedListObjects is the ListObjects used in the Measure Logic.
 		Timestamp vsPackageDate = m.getValueSetDate();
 		for(ListObject loFamily: supplementalQDMS){	

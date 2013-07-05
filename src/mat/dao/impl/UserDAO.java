@@ -127,6 +127,17 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 		
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> getAllNonAdminActiveUsers(){
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.ne("securityRole.id", "1"));
+		criteria.add(Restrictions.eq("status.id", "1"));
+		criteria.addOrder(Order.asc("lastName"));
+		return criteria.list();
+	}
+	
 	public int countSearchResults(String text) {
 		Criteria criteria = createSearchCriteria(text);
 		criteria.setProjection(Projections.rowCount());

@@ -23,6 +23,7 @@ import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
 
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -33,6 +34,7 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -266,21 +268,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		displayDetail();
 	}
 	private void generateCSVOfActiveUserEmails(){
-		MatContext.get().getAdminService().generateCSVOfActiveUserEmails(new AsyncCallback<Void>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				System.out.println("generate CSV Of Active User Emails returned UnSuccessfully");
-				
-			}
-
-			@Override
-			public void onSuccess(Void result) {
-				System.out.println("generate CSV Of Active User Emails returned successfully");
-				
-			}
-			
-		});
+		String url = GWT.getModuleBaseURL() + "export?format=exportActiveNonAdminUsersCSV";
+		Window.open(url + "&type=save", "_self", "");		
 	}
 	private void edit(String name) {
 		detailDisplay.setTitle("Update a User");

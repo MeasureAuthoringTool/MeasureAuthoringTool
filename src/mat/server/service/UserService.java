@@ -38,4 +38,5 @@ public interface UserService {
 	public ForgottenLoginIDResult requestForgottenLoginID(String email);
 	SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email);
 	public String getSecurityQuestion(String userid);
+	public List<User> getAllNonAdminActiveUsers();
 }

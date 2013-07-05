@@ -78,7 +78,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(new SpacerWidget());
 		vp.add(errorMessagePanel);
 		vp.add(successMessagePanel);
-		vp.add(new HTML("<h4> Applied QDM Elements </h4>"));
+		/*vp.add(new HTML("<h4> Applied QDM Elements </h4>"));*/
 		vp.add(new SpacerWidget());
 		vp.add(mainPanelNormal);
 		vp.add(new SpacerWidget());
@@ -180,7 +180,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				// this renders each of the cells inside the composite cell in a new table cell
 				Cell<X> cell = hasCell.getCell();
 				//Commented till remove functionality is implemented.
-				sb.appendHtmlConstant("<td style='font-size:95%;'>");
+			//	sb.appendHtmlConstant("<td style='font-size:95%;'>");
 				sb.appendHtmlConstant("<td style='font-size:100%;'>");
 				cell.render(context, hasCell.getValue(value), sb);
 				sb.appendHtmlConstant("</td>");
@@ -189,6 +189,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		};
 
 		cellList =  new CellList<QualityDataSetDTO>(myClassCell);
+		cellList.setWidth("350px");
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {

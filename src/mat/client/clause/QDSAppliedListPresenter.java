@@ -81,8 +81,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 						searchDisplay.getErrorMessageDisplay().setMessage("Please select at least one unused value set to delete.");
 					}
 				}else{
-					Window.alert(MatContext.get().getMessageDelegate()
-							.getGenericErrorMessage());	
+					searchDisplay.getErrorMessageDisplay().setMessage("Please select at least one unused value set to delete.");
 				}			
 			}
 					
@@ -105,7 +104,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 				allQdsList.removeAll(allQdsList);
 				resetQDSFields();
 				loadAppliedListData();
-				searchDisplay.getApplyToMeasureSuccessMsg().setMessage("Successfully Removed selected Value Set(s)");
+				searchDisplay.getApplyToMeasureSuccessMsg().setMessage("Successfully removed selected QDM element(s).");
 				
 			}
 		});

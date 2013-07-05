@@ -460,7 +460,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	}
 	private byte[] getHSSFWorkbookBytes(HSSFWorkbook hssfwkbk) throws IOException{
 		CodeListXLSGenerator clgen = new CodeListXLSGenerator();
-			return clgen.getHSSFWorkbookBytes(hssfwkbk);
+		return clgen.getHSSFWorkbookBytes(hssfwkbk);
 	}
 	@Override
 	public ExportResult getEMeasureZIP(String measureId) throws Exception {

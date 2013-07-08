@@ -8,7 +8,7 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.NameValuePair;
 import mat.client.shared.PasswordRules;
 import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SecurityQuestionsWidget;
+import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SpacerWidget;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -24,8 +24,9 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class FirstLoginView implements FirstLoginPresenter.Display {
 	private VerticalPanel mainPanel;
-	private SecurityQuestionsWidget securityQuestionsWidget = 
-		new SecurityQuestionsWidget();
+	private SecurityQuestionWithMaskedAnswerWidget securityQuestionsWidget = 
+			new SecurityQuestionWithMaskedAnswerWidget();
+	
 	private ChangePasswordWidget changePasswordWidget = 
 		new ChangePasswordWidget();
 	
@@ -162,4 +163,41 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		securityQuestionsWidget.getSecurityQuestion2().setDropdownOptions(texts);
 		securityQuestionsWidget.getSecurityQuestion3().setDropdownOptions(texts);
 	}
+	
+	public SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget() {
+		return securityQuestionsWidget;
+	}
+
+	@Override
+	public String getAnswerText1() {
+		return securityQuestionsWidget.getAnswerText1();
+	}
+
+	@Override
+	public String getAnswerText2() {
+		return securityQuestionsWidget.getAnswerText2();
+		}
+
+	@Override
+	public String getAnswerText3() {
+		return securityQuestionsWidget.getAnswerText3();
+	}
+
+	@Override
+	public void setAnswerText1(String answerText1) {
+		securityQuestionsWidget.setAnswerText1(answerText1);
+		
+	}
+
+	@Override
+	public void setAnswerText2(String answerText2) {
+		securityQuestionsWidget.setAnswerText2(answerText2);
+		
+	}
+
+	@Override
+	public void setAnswerText3(String answerText3) {
+		securityQuestionsWidget.setAnswerText3(answerText3);
+		
+	}	
 }

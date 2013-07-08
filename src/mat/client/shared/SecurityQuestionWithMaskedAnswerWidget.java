@@ -4,7 +4,6 @@ package mat.client.shared;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -131,4 +130,12 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	public void setAnswerText3(String answerText3) {
 		this.answerText3 = answerText3;
 	}
+	
+	public String maskAnswers(String answer){
+		String maskedAnswer = new String();
+		for(int i=0;i<answer.length();i++){
+			maskedAnswer=maskedAnswer.concat("*");
+		}
+		return maskedAnswer;
+	}	
 }

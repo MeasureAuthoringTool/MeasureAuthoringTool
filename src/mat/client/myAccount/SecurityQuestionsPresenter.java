@@ -89,7 +89,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 			public void onBlur(BlurEvent event) {
 				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty())
 					display.getSecurityQuestionsWidget().setAnswerText1(display.getSecurityQuestionsWidget().getAnswer1().getText());
-				display.getSecurityQuestionsWidget().getAnswer1().setText(maskAnswers(display.getSecurityQuestionsWidget().getAnswerText1()));
+				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText1()));
 			}
 		});
 		
@@ -108,7 +108,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty())
 					display.getSecurityQuestionsWidget().setAnswerText2(display.getSecurityQuestionsWidget().getAnswer2().getText());
 					
-				display.getSecurityQuestionsWidget().getAnswer2().setText(maskAnswers(display.getSecurityQuestionsWidget().getAnswerText2()));
+				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText2()));
 			}
 		});
 		display.getSecurityQuestionsWidget().getAnswer3().addFocusHandler(new FocusHandler() {
@@ -124,7 +124,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 			public void onBlur(BlurEvent event) {
 				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty())
 					display.getSecurityQuestionsWidget().setAnswerText3(display.getSecurityQuestionsWidget().getAnswer3().getText());
-				display.getSecurityQuestionsWidget().getAnswer3().setText(maskAnswers(display.getSecurityQuestionsWidget().getAnswerText3()));
+				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText3()));
 			}
 		});
 		
@@ -254,26 +254,18 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 	}
 	private void setValues(SecurityQuestionsModel result) {
 		display.setAnswerText1(result.getQuestion1Answer());
-		display.getAnswer1().setValue(maskAnswers(result.getQuestion1Answer()));
+		display.getAnswer1().setValue(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion1Answer()));
 		
 		display.getQuestion1().setValue(result.getQuestion1());
 
 		display.setAnswerText2(result.getQuestion2Answer());
-		display.getAnswer2().setValue(maskAnswers(result.getQuestion2Answer()));
+		display.getAnswer2().setValue(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion2Answer()));
 		display.getQuestion2().setValue(result.getQuestion2());
 		
 		display.setAnswerText3(result.getQuestion3Answer());
-		display.getAnswer3().setValue(maskAnswers(result.getQuestion3Answer()));
+		display.getAnswer3().setValue(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion3Answer()));
 		display.getQuestion3().setValue(result.getQuestion3());
 		display.getPassword().setValue("");
 	}
 	
-	
-	private String maskAnswers(String answer){
-		String maskedAnswer = new String();
-		for(int i=0;i<answer.length();i++){
-			maskedAnswer=maskedAnswer.concat("*");
-		}
-		return maskedAnswer;
-	}
 }

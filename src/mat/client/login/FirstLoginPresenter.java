@@ -1,21 +1,24 @@
 package mat.client.login;
 
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.event.SuccessfulLoginEvent;
 import mat.client.login.service.LoginResult;
-
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
+import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
 
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
@@ -38,6 +41,13 @@ public class FirstLoginPresenter {
 		public ErrorMessageDisplayInterface getSecurityErrorMessageDisplay();
 		public void addSecurityQuestionTexts(List<NameValuePair> texts);
 		public Widget asWidget();
+		public String getAnswerText1();
+		public String getAnswerText2();
+		public String getAnswerText3();
+		public void setAnswerText1(String answerText1);
+		public void setAnswerText2(String answerText2);
+		public void setAnswerText3(String answerText3);
+		SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget();
 	}
 
 	private final Display display;
@@ -61,6 +71,57 @@ public class FirstLoginPresenter {
 			}
 		});
 
+		display.getSecurityQuestionsWidget().getAnswer1().addFocusHandler(new FocusHandler() {
+			@Override
+			public void onFocus(FocusEvent event) {
+				display.getSecurityQuestionsWidget().getAnswer1().setText("");
+				
+			}
+		});
+		display.getSecurityQuestionsWidget().getAnswer1().addBlurHandler(new BlurHandler() {
+			
+			@Override
+			public void onBlur(BlurEvent event) {
+				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty())
+					display.getSecurityQuestionsWidget().setAnswerText1(display.getSecurityQuestionsWidget().getAnswer1().getText());
+				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText1()));
+			}
+		});
+		
+		display.getSecurityQuestionsWidget().getAnswer2().addFocusHandler(new FocusHandler() {
+			
+			@Override
+			public void onFocus(FocusEvent event) {
+				display.getSecurityQuestionsWidget().getAnswer2().setText("");
+			}
+		});
+		display.getSecurityQuestionsWidget().getAnswer2().addBlurHandler(new BlurHandler() {
+			
+			@Override
+			public void onBlur(BlurEvent event) {
+
+				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty())
+					display.getSecurityQuestionsWidget().setAnswerText2(display.getSecurityQuestionsWidget().getAnswer2().getText());
+					
+				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText2()));
+			}
+		});
+		display.getSecurityQuestionsWidget().getAnswer3().addFocusHandler(new FocusHandler() {
+			
+			@Override
+			public void onFocus(FocusEvent event) {
+				display.getSecurityQuestionsWidget().getAnswer3().setText("");
+			}
+		});
+		display.getSecurityQuestionsWidget().getAnswer3().addBlurHandler(new BlurHandler() {
+			
+			@Override
+			public void onBlur(BlurEvent event) {
+				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty())
+					display.getSecurityQuestionsWidget().setAnswerText3(display.getSecurityQuestionsWidget().getAnswer3().getText());
+				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText3()));
+			}
+		});
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				
@@ -146,6 +207,8 @@ public class FirstLoginPresenter {
 		display.getPasswordErrorMessageDisplay().clear();
 		display.getSecurityErrorMessageDisplay().clear();
 	}
+	
+	
 
 	private LoginModel getValues() {
 		LoginModel model = new LoginModel();
@@ -153,12 +216,12 @@ public class FirstLoginPresenter {
 		model.setEmail(MatContext.get().getLoggedInUserEmail());
 		model.setLoginId(MatContext.get().getLoggedinLoginId());
 		model.setPassword(display.getPassword().getValue());
-		model.setQuestion1(display.getQuestion1Text().getValue());
-		model.setQuestion1Answer(display.getQuestion1Answer().getValue());
-		model.setQuestion2(display.getQuestion2Text().getValue());
-		model.setQuestion2Answer(display.getQuestion2Answer().getValue());
-		model.setQuestion3(display.getQuestion3Text().getValue());
-		model.setQuestion3Answer(display.getQuestion3Answer().getValue());
+		model.setQuestion1(display.getSecurityQuestionsWidget().getSecurityQuestion1().getValue());
+		model.setQuestion1Answer(display.getSecurityQuestionsWidget().getAnswerText1());
+		model.setQuestion2(display.getSecurityQuestionsWidget().getSecurityQuestion2().getValue());
+		model.setQuestion2Answer(display.getSecurityQuestionsWidget().getAnswerText2());
+		model.setQuestion3(display.getSecurityQuestionsWidget().getSecurityQuestion3().getValue());
+		model.setQuestion3Answer(display.getSecurityQuestionsWidget().getAnswerText3());
 		return model;
 	}
 	public void go(HasWidgets container) {

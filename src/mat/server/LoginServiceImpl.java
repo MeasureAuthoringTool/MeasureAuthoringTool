@@ -117,6 +117,8 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
 				//this is to show success message on client side.
 				forgottenLoginIDResult.setEmailSent(true);
+				//Failure reason un-set : burp suite showing different values in response for invalid user. It should be same for valid and invalid user.
+				forgottenLoginIDResult.setFailureReason(0);
 				//Illegal activity is logged in Transaction Audit table with IP Address of client requesting for User Id.
 				auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_USER_EVENT", email, "[IP: "+ipAddress+" ]"+"[EMAIL Entered: "+email+" ]" +message, ConstantMessages.DB_LOG);
 			}else if (forgottenLoginIDResult.getFailureReason()==4){
@@ -124,6 +126,8 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 				logger.info(" User ID : "+ email + " Not found in User Table IP Address Location :" + ipAddress );
 				//this is to show success message on client side.
 				forgottenLoginIDResult.setEmailSent(true);
+				//Failure reason un-set : burp suite showing different values in response for invalid user. It should be same for valid and invalid user.
+				forgottenLoginIDResult.setFailureReason(0);
 				//Illegal activity is logged in Transaction Audit table with IP Address of client requesting for User Id.
 				auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_USER_EVENT", email, "[IP: "+ipAddress+" ]"+"[EMAIL Entered: "+email+" ]" +message, ConstantMessages.DB_LOG);
 			}

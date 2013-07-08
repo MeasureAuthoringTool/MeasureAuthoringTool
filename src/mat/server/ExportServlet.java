@@ -85,7 +85,10 @@ public class ExportServlet extends HttpServlet {
 				String userRole = LoggedInUserUtil.getLoggedInUserRole();
 				if("Administrator".equalsIgnoreCase(userRole)){
 					String csvFileString = generateCSVOfActiveUserEmails();
-					resp.setHeader("Content-Disposition", "attachment; filename=activeUsers.csv");
+					resp.setHeader("Content-Disposition", "attachment; filename=activeUsers.csv; Cache-Control=no-cache");
+//					resp.addHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+//					resp.addHeader("Pragma", "no-cache"); // HTTP 1.0.
+//					resp.setDateHeader("Expires", 0); // Proxies.
 					resp.setContentType("text/csv");
 					resp.getOutputStream().write(csvFileString.getBytes());
 					resp.getOutputStream().close();

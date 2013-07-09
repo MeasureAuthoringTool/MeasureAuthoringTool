@@ -85,10 +85,10 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	}
 	
 	public ForgottenPasswordResult forgotPassword(String loginId, 
-		String securityQuestion, String securityAnswer) {
+		String securityQuestion, String securityAnswer, int invalidUserCounter) {
 
 		UserService userService = (UserService)context.getBean("userService");
-		ForgottenPasswordResult forgottenPasswordResult = userService.requestForgottenPassword(loginId, securityQuestion, securityAnswer);
+		ForgottenPasswordResult forgottenPasswordResult = userService.requestForgottenPassword(loginId, securityQuestion, securityAnswer, invalidUserCounter);
 		String ipAddress = getClientIpAddr(getThreadLocalRequest());
 		TransactionAuditService auditService = (TransactionAuditService)context.getBean("transactionAuditService");
 		logger.info("Login ID --- " + loginId);
@@ -330,6 +330,14 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		logger.info("User Session Invalidated at :::: " +new Date());
 		logger.info("In UserServiceImpl Signout Update " + resultStr);
 		return resultStr;
+	}
+
+
+
+	@Override
+	public boolean isLockedUser(String loginId) {
+		UserService userService = (UserService)context.getBean("userService");
+		return userService.isLockedUser(loginId);
 	}
 
 	

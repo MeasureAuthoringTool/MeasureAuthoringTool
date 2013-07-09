@@ -161,7 +161,7 @@ public class UserServiceImpl implements UserService {
 	
 	
 	public ForgottenPasswordResult requestForgottenPassword(String loginId, 
-			String securityQuestion, String securityAnswer) {
+			String securityQuestion, String securityAnswer, int invalidUserCounter) {
 		ForgottenPasswordResult result = new ForgottenPasswordResult();
 		result.setEmailSent(false);
 		//logger.info(" requestForgottenPassword   Login Id ====" + loginId);
@@ -173,13 +173,24 @@ public class UserServiceImpl implements UserService {
 		catch(ObjectNotFoundException exc) { }
 		
 		if(user == null) {
-			result.setFailureReason(ForgottenPasswordResult.USER_NOT_FOUND);
+			invalidUserCounter += 1;
+			if(invalidUserCounter == 1){
+				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
+			}else if(invalidUserCounter == 2){
+				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT);
+			}else if(invalidUserCounter == 3){
+				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
+			}
+			result.setCounter(invalidUserCounter);
+//			result.setFailureReason(ForgottenPasswordResult.USER_NOT_FOUND);
 		}
 		else if(user.getSecurityQuestions().size() != 3) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_NOT_SET);
+			result.setCounter(user.getPassword().getForgotPwdlockCounter());
 		}
 		else if(user.getLockedOutDate() != null) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
+			result.setCounter(user.getPassword().getForgotPwdlockCounter());
 		}
 		else if(!securityQuestionMatch(user, securityQuestion, securityAnswer)) {
 			result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
@@ -187,11 +198,13 @@ public class UserServiceImpl implements UserService {
 			if(lockCounter == 2) {
 				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT);
 			}
-			if(lockCounter >= 3) {
+			if(lockCounter == 3) {
 				result.setFailureReason(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
 				user.setLockedOutDate(new Date());
+				notifyUserOfAccountLocked(user);
 			}
 			user.getPassword().setForgotPwdlockCounter(lockCounter);
+			result.setCounter(user.getPassword().getForgotPwdlockCounter());
 			userDAO.save(user);
 		}
 		else {	
@@ -211,12 +224,32 @@ public class UserServiceImpl implements UserService {
 				sendResetPassword(user.getEmailAddress(), newPassword);
 				user.setLockedOutDate(null);
 				user.getPassword().setForgotPwdlockCounter(0);
+				result.setCounter(0);
 				userDAO.save(user);
 			}
 		}
 		return result;
 	}
 	
+	private void sendAccountLockedMail(String email) {
+		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
+		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
+		msg.setTo(email);
+		//US 440. Re-factored to use template based framework
+//		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
+//		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
+//		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_RESET_PASSWORD, paramsMap);
+		msg.setText("hello");
+//		System.out.println("newPassword ==============="+newPassword);
+		logger.info("Sending email to " + email);
+		try {
+			this.mailSender.send(msg);
+		}
+		catch(MailException exc) {
+			logger.error(exc);
+		}
+	}
+
 	public ForgottenLoginIDResult requestForgottenLoginID(String email){
 		ForgottenLoginIDResult result = new ForgottenLoginIDResult();
 		result.setEmailSent(false);
@@ -392,7 +425,7 @@ public class UserServiceImpl implements UserService {
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_FORGOT_LOGINID, paramsMap);
-		
+		System.out.println(text);
 		msg.setTo(user.getEmailAddress());
 		msg.setText(text);
 
@@ -674,6 +707,29 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<User> getAllNonAdminActiveUsers(){
 		return this.userDAO.getAllNonAdminActiveUsers();
+	}
+	
+	public void notifyUserOfAccountLocked(User user) {
+		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
+		msg.setSubject(ServerConstants.ACCOUNT_LOCKED_SUBJECT);
+		String text = ServerConstants.ACCOUNT_LOCKED_MESSAGE;
+		msg.setTo(user.getEmailAddress());
+		msg.setText(text);
+		try {
+			this.mailSender.send(msg);
+		}
+		catch(MailException exc) {
+			logger.error(exc);
+		}
+	}
+
+	@Override
+	public boolean isLockedUser(String loginId) {
+		User user = userDAO.findByLoginId(loginId);
+		if(user != null && (user.getLockedOutDate() != null || user.getPassword().getPasswordlockCounter() >= 3)){
+			return true;
+		}
+		return false;
 	}
 	
 }

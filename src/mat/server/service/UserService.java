@@ -18,7 +18,7 @@ public interface UserService {
 	public void saveExisting(User user);
     public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model);
 	public ForgottenPasswordResult requestForgottenPassword(String email, 
-			String securityQuestion, String securityAnswer);
+			String securityQuestion, String securityAnswer, int invalidUserCounter);
 	public void requestResetLockedPassword(String userid);
 	
 	public void setUserPassword(User user, String clearTextPassword, boolean isTemporary);
@@ -39,4 +39,5 @@ public interface UserService {
 	SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email);
 	public String getSecurityQuestion(String userid);
 	public List<User> getAllNonAdminActiveUsers();
+	public boolean isLockedUser(String loginId);
 }

@@ -74,59 +74,65 @@ public class ForgottenPasswordPresenter {
 		display.getLoginId().setValue("");
 		display.setSecurityQuestionAnswerEnabled(false);
 		display.getErrorMessageDisplay().clear();
-		display.getLoginId().setFocus(true);
+		display.getLoginId().setFocus(true); 
 		invalidUserCounter = 0;
 		ForgottenPasswordView.isUserIdSubmit = true;
 	}
 	
-	private void loadSecurityQuestionForUserId(String userid) {
-		MatContext.get().getLoginService().getSecurityQuestion(userid, new AsyncCallback<String>() {
+	private void loadSecurityQuestionForUserId(final String userid) {
+		
+		MatContext.get().getLoginService().isLockedUser(userid, new AsyncCallback<Boolean>() {
 
 			@Override
-			public void onFailure(Throwable exc) {
-				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
+			public void onFailure(Throwable caught) {}
 
 			@Override
-			public void onSuccess(String question) {
-				if(null == question){
-					String[] questions = MatContext.get().questions;
-					int i = (int) (Math.random() * questions.length);
-					question = questions[i];
+			public void onSuccess(Boolean isLocked) {
+				if(!isLocked){
+					MatContext.get().getLoginService().getSecurityQuestion(userid, new AsyncCallback<String>() {
+
+						@Override
+						public void onFailure(Throwable exc) {
+							display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						}
+
+						@Override
+						public void onSuccess(String question) {
+							if(null == question){
+								String[] questions = MatContext.get().questions;
+								int i = (int) (Math.random() * questions.length);
+								question = questions[i];
+							}
+							display.setSecurityQuestionAnswerEnabled(true);
+							display.addSecurityQuestionOptions(question);
+						}
+					});
+				}else{
+					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getAccountLockedMessage());
 				}
-				display.setSecurityQuestionAnswerEnabled(true);
-				display.addSecurityQuestionOptions(question);
+				
 			}
+		
 		});
+		
+		
 	}
 	
 	private void requestForgottenPassword() {
 		MatContext.get().getLoginService().forgotPassword(display.getLoginId().getValue(), 
 				display.getSecurityQuestion(), 
-				display.getSecurityAnswer(), 
+				display.getSecurityAnswer(), invalidUserCounter, 
 				new AsyncCallback<ForgottenPasswordResult>() {
 					
 					@Override
 					public void onSuccess(ForgottenPasswordResult result) {
 						if(result.isEmailSent()) {
 							MatContext.get().getEventBus().fireEvent(new PasswordEmailSentEvent());	
-						}else if(ForgottenPasswordResult.USER_NOT_FOUND == result.getFailureReason()){
-							invalidUserCounter += 1;
-							String message = "";
-							if(invalidUserCounter == 2){
-								message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED_SECOND_ATTEMPT);
-							}else if(invalidUserCounter >= 3){
-								message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTIONS_LOCKED);
-							}else{
-								message = convertMessage(ForgottenPasswordResult.SECURITY_QUESTION_MISMATCH);
-							}
-							display.getErrorMessageDisplay().setMessage(message);
-							
 						}else{
 							String message = convertMessage(result.getFailureReason());
 							display.getErrorMessageDisplay().setMessage(message);
 						}
-						
+						invalidUserCounter = result.getCounter();
 					}
 					
 					@Override
@@ -136,6 +142,7 @@ public class ForgottenPasswordPresenter {
 					}
 				});
 	}
+
 	private String convertMessage(int id) {
 		String message;
 		switch(id) {

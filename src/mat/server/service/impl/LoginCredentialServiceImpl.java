@@ -278,12 +278,12 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		return loginModel;
 	}
 
-	@Override
+	/*@Override
 	public ForgottenPasswordResult forgotPassword(String userid, String email,
 			String securityQuestion, String securityAnswer) {
 		return userService.requestForgottenPassword(email, securityQuestion, securityAnswer);
 	}
-
+*/
 	@Override
 	public boolean changePasswordSecurityAnswers(LoginModel model) {
 		logger.info("First time login, changing password and security answers");

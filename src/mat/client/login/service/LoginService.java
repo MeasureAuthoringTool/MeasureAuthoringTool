@@ -4,8 +4,6 @@ package mat.client.login.service;
 import java.util.HashMap;
 import java.util.List;
 
-import org.springframework.security.core.userdetails.UserDetails;
-
 import mat.client.login.LoginModel;
 import mat.model.UserSecurityQuestion;
 import mat.shared.ForgottenLoginIDResult;
@@ -18,8 +16,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface LoginService extends RemoteService {
 	
 	public LoginModel  isValidUser(String username, String password); 
-	public ForgottenPasswordResult forgotPassword(String email, 
-			String securityQuestion, String securityAnswer);
+	ForgottenPasswordResult forgotPassword(String email,
+			String securityQuestion, String securityAnswer,
+			int invalidUserCounter);
 	LoginResult changePasswordSecurityAnswers(LoginModel model);
 	public void signOut();
 	public LoginModel changeTempPassword(String email, String password);
@@ -31,4 +30,5 @@ public interface LoginService extends RemoteService {
 	ForgottenLoginIDResult forgotLoginID(String email);
 	String getSecurityQuestion(String userid);
 	public HashMap<String,String> validatePassword(String userID,String enteredPassword);
+	public boolean isLockedUser(String loginId);
 }

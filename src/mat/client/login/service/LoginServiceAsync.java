@@ -16,7 +16,7 @@ public interface LoginServiceAsync extends AsynchronousService{
 	void isValidUser(String username, String password,
 			AsyncCallback<LoginModel> callback);
 	void forgotPassword(String email, 
-			String securityQuestion, String securityAnswer,
+			String securityQuestion, String securityAnswer, int invalidUserCounter, 
 			AsyncCallback<ForgottenPasswordResult> callback);
 	void signOut(AsyncCallback<Void> callback);
 	void changePasswordSecurityAnswers(LoginModel model,
@@ -35,5 +35,6 @@ public interface LoginServiceAsync extends AsynchronousService{
 	void getSecurityQuestion(String userid, AsyncCallback<String> callback);
 	void validatePassword(String userID, String enteredPassword,
 			AsyncCallback<HashMap<String,String>> callback);
+	void isLockedUser(String loginId, AsyncCallback<Boolean> callback);
 		
 }

@@ -257,6 +257,7 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 	   User user = findByLoginId(userId);
 	   String question = null;
 	   if(user == null){
+		   //should return question from master table
 		   return null;
 	   }
 	

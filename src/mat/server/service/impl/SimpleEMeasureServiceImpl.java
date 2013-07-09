@@ -55,6 +55,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	//This expression will find distinct elementRef records from SimpleXML.SimpleXML will have grouping which can have
 	//repeated clauses containing repeated elementRef. This XPath expression will yield distinct elementRef's.
 	private static final String XPATH_ALL_ELEMENTREF_ID="/measure/measureGrouping/group/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
+	private static final String XPATH_ALL_ATTRIBUTES_UUID="/measure/measureGrouping/group/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
 	private static final Log logger = LogFactory.getLog(SimpleEMeasureServiceImpl.class);
 	
 	@Autowired
@@ -112,10 +113,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	
 	@Override
 	public ExportResult exportMeasureIntoSimpleXML(String measureId ,String xmlString) throws Exception {	
-		//Measure measure = createSimpleXML(measureId,xmlString);
+	
 		ExportResult result = new ExportResult();
-		//result.measureName = getMeasureName(measureId).getaBBRName();
-		//result.export = writeMeasureXML(measure);
 	
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		InputSource oldXmlstream = new InputSource(new StringReader(xmlString));
@@ -127,8 +126,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		List<QualityDataSetDTO> masterRefID = new ArrayList<QualityDataSetDTO>();
 		
 		NodeList allElementRefIDs = (NodeList) xPath.evaluate(XPATH_ALL_ELEMENTREF_ID, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		NodeList allAttributesUUIDs = (NodeList) xPath.evaluate(XPATH_ALL_ATTRIBUTES_UUID, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		NodeList allQDMRefIDs = (NodeList) xPath.evaluate(XPATH_ELEMENTLOOKUP_QDM, originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		NodeList allSupplementIDs = (NodeList) xPath.evaluate(XPATH_SUPPLEMENTDATA_ELEMENTREF, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
 		for(int i=0;i<allQDMRefIDs.getLength();i++){
 			Node newNode = allQDMRefIDs.item(i);
 			QualityDataSetDTO dataSetDTO = new QualityDataSetDTO();
@@ -139,6 +140,16 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 		
 		for(int i=0;i<allElementRefIDs.getLength();i++){
 			Node idNode = allElementRefIDs.item(i);
+			String idNodeValue = idNode.getNodeValue();
+			for(QualityDataSetDTO dataSetDTO: masterRefID){
+				if(dataSetDTO.getUuid().equalsIgnoreCase(idNodeValue)){
+					qdmRefID.add(dataSetDTO.getId());
+				}
+			}
+		}
+		
+		for(int i=0;i<allAttributesUUIDs.getLength();i++){
+			Node idNode = allAttributesUUIDs.item(i);
 			String idNodeValue = idNode.getNodeValue();
 			for(QualityDataSetDTO dataSetDTO: masterRefID){
 				if(dataSetDTO.getUuid().equalsIgnoreCase(idNodeValue)){

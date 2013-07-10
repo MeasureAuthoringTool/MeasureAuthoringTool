@@ -84,6 +84,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	public SearchView() {
 		dataTable.setCellPadding(5);
 		dataTable.setStylePrimaryName("searchResultsTable");
+		dataTable.setTitle("data Table");
 		viewingNumber.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		
 		mainPanel = new SimplePanel();

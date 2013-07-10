@@ -12,11 +12,8 @@ import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
 import mat.client.audit.service.AuditService;
 import mat.client.audit.service.AuditServiceAsync;
-import mat.client.clause.ClauseService;
-import mat.client.clause.ClauseServiceAsync;
 import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSCodeListSearchView;
-import mat.client.clause.view.DiagramViewImpl;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.ManageCodeListSearchView;
@@ -92,8 +89,6 @@ public class MatContext implements IsSerializable {
 	
 	private ListBoxCodeProvider listBoxCodeProvider;
 	
-	private ClauseServiceAsync clauseService;
-	
 	private AuditServiceAsync auditService;
 	
 	private String userId;
@@ -104,7 +99,6 @@ public class MatContext implements IsSerializable {
 	
 	private ZoomFactorService zoomFactorService = new ZoomFactorService();
 	
-	private DiagramViewImpl dviWindow;
 	
 	private QDSCodeListSearchView qdsView;
 	
@@ -159,9 +153,6 @@ public class MatContext implements IsSerializable {
 	
 	
 	public void clearDVIMessages(){
-		if(dviWindow != null){
-			dviWindow.clearMessages();
-		}
 		if(qdsView !=null){
 			qdsView.getSuccessMessagePanel().clear();
 			qdsView.getErrorMessagePanel().clear();
@@ -182,10 +173,6 @@ public class MatContext implements IsSerializable {
 	
 	public void setErrorMessage1(ErrorMessageDisplay msg){
 		this.errorMessage1 = msg;
-	}
-	
-	public void setDVIWindow(DiagramViewImpl window){
-		this.dviWindow = window;	
 	}
 	
 	
@@ -293,13 +280,6 @@ public class MatContext implements IsSerializable {
 		return auditService;
 	}
 
-	
-	public ClauseServiceAsync getClauseService(){
-		if(clauseService == null){
-			clauseService = (ClauseServiceAsync) GWT.create(ClauseService.class);
-		}
-		return clauseService;
-	}
 	
 	public PackageServiceAsync getPackageService(){
 		if(measurePackageService == null){

@@ -8,7 +8,6 @@ import mat.model.CodeSystem;
 import mat.model.ListObject;
 import mat.model.MeasureAuditLog;
 import mat.model.QualityDataSet;
-import mat.model.clause.Clause;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.server.LoggedInUserUtil;
@@ -62,11 +61,11 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 
 	private boolean shouldAudit(Object obj, String event) {
 		if(event.equals(ConstantMessages.INSERT)){
-			return obj instanceof Measure || obj instanceof Clause || 
+			return obj instanceof Measure ||  
 				obj instanceof QualityDataSet || obj instanceof ListObject || obj instanceof MeasureExport;
 		}else{
 			//Production Error fix subsequent measurePackaging update information is not logged.
-			return obj instanceof MeasureExport || obj instanceof Clause || obj instanceof QualityDataSet;			
+			return obj instanceof MeasureExport  || obj instanceof QualityDataSet;			
 		}
 	}
 	
@@ -122,10 +121,6 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 			auditLog.setUpdatedBy(user);
 			auditLog.setCreateDate(new Date());
 			auditLog.setCreatedBy(user);
-
-			if(obj instanceof Clause) {
-				auditLog.setClause((Clause)obj);
-			}
 			if(obj instanceof QualityDataSet) {
 				auditLog.setQds((QualityDataSet)obj);
 			}

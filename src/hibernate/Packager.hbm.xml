@@ -10,8 +10,8 @@
     </id>
 	 <many-to-one name="measure" column="MEASURE_ID" 
         class="mat.model.clause.Measure"  cascade="none"/>
-    <many-to-one name="clause" column="CLAUSE_ID" 
-        class="mat.model.clause.Clause"  cascade="none"/>     
+    <!-- <many-to-one name="clause" column="CLAUSE_ID" 
+        class="mat.model.clause.Clause"  cascade="none"/>  -->    
     <property name="sequence" column="SEQUENCE" />   
   </class>
 </hibernate-mapping>

@@ -2,7 +2,6 @@ package mat.model.clause;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 import mat.model.User;
@@ -16,7 +15,7 @@ public class Measure{
 	private String measureStatus;
 	private String measureScoring;
 	private Date exportedDate;
-	private List<Clause> clauses;
+	
 	private Set<MeasureShare> shares;
 	private Timestamp lockedOutDate;
 	private User lockedUser;
@@ -55,12 +54,7 @@ public class Measure{
 	public void setFinalizedDate(Timestamp finalizedDate) {
 		this.finalizedDate = finalizedDate;
 	}
-	public List<Clause> getClauses() {
-		return clauses;
-	}
-	public void setClauses(List<Clause> clauses) {
-		this.clauses = clauses;
-	}
+	
 	public String getId() {
 		return id;
 	}

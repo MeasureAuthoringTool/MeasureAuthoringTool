@@ -1,8 +1,7 @@
 package mat.client;
 
-import mat.client.clause.MatClausePresenter;
-import mat.client.clause.clauseworkspace.presenter.ClauseWorkspacePresenter;
 import mat.client.clause.QDMPresenter;
+import mat.client.clause.clauseworkspace.presenter.ClauseWorkspacePresenter;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.metadata.AddEditAuthorsView;

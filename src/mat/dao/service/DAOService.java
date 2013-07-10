@@ -13,7 +13,6 @@ import mat.dao.MatFlagDAO;
 import mat.dao.MeasureAuditLogDAO;
 import mat.dao.MeasureScoreDAO;
 import mat.dao.MeasureValidationLogDAO;
-import mat.dao.MetadataDAO;
 import mat.dao.ObjectStatusDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.SecurityRoleDAO;
@@ -27,18 +26,13 @@ import mat.dao.UserDAO;
 import mat.dao.UserPasswordDAO;
 import mat.dao.UserSecurityQuestionDAO;
 import mat.dao.clause.AttributeDetailsDAO;
-import mat.dao.clause.ClauseDAO;
-import mat.dao.clause.ContextDAO;
-import mat.dao.clause.DecisionDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
-import mat.dao.clause.MeasurementTermDAO;
 import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributeDetailsDAO;
 import mat.dao.clause.QDSAttributesDAO;
-import mat.dao.clause.QDSTermDAO;
 
 
 public class DAOService {
@@ -59,21 +53,15 @@ public class DAOService {
 	private ListObjectLTDAO listObjectLTDAO;
 	private ObjectStatusDAO objectStatusDAO;
 	private QualityDataSetDAO qualityDataSetDAO;
-	private DecisionDAO decisionDAO;
-	private MeasurementTermDAO measurementTermDAO;
-	private QDSTermDAO qDSTermDAO;
 	private MeasureDAO measureDAO;
-	private ClauseDAO clauseDAO;
 	private QDSAttributesDAO qDSAttributesDAO;
 	private QDSAttributeDetailsDAO qDSAttributeDetailsDAO;
-	private ContextDAO contextDAO;
 	private AttributeDetailsDAO attributeDetailsDAO;
 	private MeasureScoreDAO measureScoreDAO;
 	private UnitDAO unitDAO;
 	private UnitTypeDAO unitTypeDAO;
 	private UnitTypeMatrixDAO unitTypeMatrixDAO;
 	private MeasureSetDAO measureSetDAO;
-	private MetadataDAO metadataDAO;
 	private MeasureExportDAO measureExportDAO;
 	private TransactionAuditLogDAO transactionAuditLogDAO;
 	//US 171
@@ -81,14 +69,6 @@ public class DAOService {
 	private MatFlagDAO matFlagDAO;
 	private MeasureXMLDAO measureXMLDAO;
 	
-	
-	public MetadataDAO getMetadataDAO() {
-		return metadataDAO;
-	}
-
-	public void setMetadataDAO(MetadataDAO metadataDAO) {
-		this.metadataDAO = metadataDAO;
-	}
 
 	//US 170 & 383
 	private MeasureAuditLogDAO measureAuditLogDAO;
@@ -96,13 +76,7 @@ public class DAOService {
 	
 	private MeasureValidationLogDAO measureValidationLogDAO;
 
-	public ContextDAO getContextDAO() {
-		return contextDAO;
-	}
 
-	public void setContextDAO(ContextDAO contextDAO) {
-		this.contextDAO = contextDAO;
-	}
 	public QDSAttributeDetailsDAO getqDSAttributeDetailsDAO() {
 		return qDSAttributeDetailsDAO;
 	}
@@ -116,12 +90,7 @@ public class DAOService {
 	public void setqDSAttributesDAO(QDSAttributesDAO qDSAttributesDAO) {
 		this.qDSAttributesDAO = qDSAttributesDAO;
 	}
-	public ClauseDAO getClauseDAO() {
-		return clauseDAO;
-	}
-	public void setClauseDAO(ClauseDAO clauseDAO) {
-		this.clauseDAO = clauseDAO;
-	}
+	
 	public MeasureDAO getMeasureDAO() {
 		return measureDAO;
 	}
@@ -129,24 +98,7 @@ public class DAOService {
 		this.measureDAO = measureDAO;
 	}
 	
-	public QDSTermDAO getqDSTermDAO() {
-		return qDSTermDAO;
-	}
-	public void setqDSTermDAO(QDSTermDAO qDSTermDAO) {
-		this.qDSTermDAO = qDSTermDAO;
-	}
-	public MeasurementTermDAO getMeasurementTermDAO() {
-		return measurementTermDAO;
-	}
-	public void setMeasurementTermDAO(MeasurementTermDAO measurementTermDAO) {
-		this.measurementTermDAO = measurementTermDAO;
-	}
-	public DecisionDAO getDecisionDAO() {
-		return decisionDAO;
-	}
-	public void setDecisionDAO(DecisionDAO decisionDAO) {
-		this.decisionDAO = decisionDAO;
-	}
+	
 	public CategoryDAO getCategoryDAO() {
 		return categoryDAO;
 	}

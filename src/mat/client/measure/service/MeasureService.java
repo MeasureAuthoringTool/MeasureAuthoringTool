@@ -26,8 +26,6 @@ public interface MeasureService extends RemoteService {
 			int pageSize, int filter);
 	public ManageMeasureShareModel getUsersForShare(String measureId, int startIndex, int pageSize);
 	public void updateUsersShare(ManageMeasureShareModel model);
-	public ManageMeasureDetailModel deleteAuthors(String measureId,List<Author> selectedAuthorsList);
-	public ManageMeasureDetailModel deleteMeasureTypes(String measureId,List<MeasureType> selectedMeasureTypeList);
 	public ValidateMeasureResult validateMeasureForExport(String key) throws MatException;
 	public SaveMeasureResult updateLockedDate(String measureId,String userId);
 	SaveMeasureResult resetLockedDate(String measureId,String userId);

@@ -8,7 +8,6 @@ import java.util.Map;
 import mat.client.Enableable;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
-import mat.client.clause.MatClausePresenter;
 import mat.client.clause.clauseworkspace.presenter.ClauseWorkspacePresenter;
 import mat.client.clause.clauseworkspace.presenter.XmlTreePresenter;
 import mat.client.measure.ManageMeasureDetailModel;

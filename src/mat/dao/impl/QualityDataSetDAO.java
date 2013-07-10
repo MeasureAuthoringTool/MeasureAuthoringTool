@@ -8,7 +8,6 @@ import mat.dao.search.GenericDAO;
 import mat.model.QualityDataSet;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-import mat.shared.model.QDSTerm;
 
 import org.hibernate.Criteria;
 import org.hibernate.SQLQuery;
@@ -101,47 +100,6 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		}
 	}
 	
-	public void cloneSelectedQDSElements(String measureId, mat.model.clause.Measure clonedMeasure, List<QDSTerm> allQDSTermsInClause) {
-		
-		java.util.List<QualityDataSet> clonedQDSs = getForMeasure(clonedMeasure.getId());
-		java.util.List<QualityDataSet> origQDSs = getForMeasure(measureId);
-		List<QualityDataSet> persistQDSs = removeduplicate(origQDSs, clonedQDSs);
-		//check to see if qdm elements for new measure is already cloned
-		if (!persistQDSs.isEmpty()) {
-			for (QualityDataSet aqds: persistQDSs) {
-				for (QDSTerm qt : allQDSTermsInClause) {
-					QualityDataSet qds = this.find(qt.getqDSRef());
-					String listObjectId = qds.getListObject().getId();
-					String dataTypeId = qds.getDataType().getId();
-					String occurrence = qds.getOccurrence();
-					String aListObjectId = aqds.getListObject().getId();
-					String aDataTypeId = aqds.getDataType().getId();
-					String aoccurrence = aqds.getOccurrence(); 
-					/*
-					 * clone only QDSTerms found in the clause and match QualityDataSets on:
-					 * (1) list object (2) data type (3) occurrence NOTE: null null is a match
-					 */
-					boolean listObjectsMatch = aListObjectId.equalsIgnoreCase(listObjectId);
-					boolean dataTypesMatch = aDataTypeId.equalsIgnoreCase(dataTypeId);
-					boolean occurrencesMatch = (occurrence == null && aoccurrence == null) ? true :
-						(occurrence == null && aoccurrence != null) ? false :
-							(occurrence != null && aoccurrence == null) ? false : 
-								occurrence.equalsIgnoreCase(aoccurrence);
-					if (listObjectsMatch && dataTypesMatch && occurrencesMatch) {
-						QualityDataSet cloneDqds = new QualityDataSet();
-						if (aqds.getDataType()!=null) cloneDqds.setDataType(aqds.getDataType());
-						if (aqds.getListObject()!=null) cloneDqds.setListObject(aqds.getListObject());
-						if (aqds.getMeasureId()!=null) cloneDqds.setMeasureId(clonedMeasure);
-						if (aqds.getVersion()!=null) cloneDqds.setVersion(aqds.getVersion());
-						if (aqds.getOid()!=null) cloneDqds.setOid(aqds.getOid());
-						if (aqds.getOccurrence()!=null) cloneDqds.setOccurrence(aqds.getOccurrence());
-						cloneDqds.setSuppDataElement(aqds.isSuppDataElement());//US 594 adding supplimental data value while cloning
-						this.save(cloneDqds);
-					}
-				}
-			}
-		}
-	}	
 	
 	private List<QualityDataSet> removeduplicate(List<QualityDataSet> origQDSs,
 			List<QualityDataSet> clonedQDSs) {
@@ -203,16 +161,6 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		
 	}
 	
-	@Override
-	public List<QualityDataSet> getQDMsById(List<String> qdmids) {
-		if(qdmids.isEmpty())
-			return new ArrayList<QualityDataSet>(); 
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(QualityDataSet.class);
-		criteria.add(Restrictions.in("id", qdmids));
-		List<QualityDataSet> qds = criteria.list();
-		return qds;
-	}
 	
 	@Override
 	public void updateListObjectId(String oldLOID, String newLOID) {
@@ -286,4 +234,5 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		SQLQuery query = session.createSQLQuery("delete from QUALITY_DATA_MODEL where QUALITY_DATA_MODEL_ID = '"+oldID+"';");
 		int ret = query.executeUpdate();
 	}
+	
 }

@@ -3,11 +3,9 @@ package mat.server;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-
 
 import mat.DTO.OperatorDTO;
 import mat.DTO.UnitDTO;
@@ -17,7 +15,6 @@ import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
-
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.model.Code;
 import mat.model.CodeListSearchDTO;
@@ -36,7 +33,6 @@ import mat.shared.ListObjectModelValidator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 
 import edu.emory.mathcs.backport.java.util.Collections;
 

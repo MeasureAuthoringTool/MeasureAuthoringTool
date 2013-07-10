@@ -6,40 +6,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import mat.model.Author;
-import mat.model.MeasureType;
 import mat.server.service.impl.XMLUtility;
-import mat.simplexml.model.Attachment;
-import mat.simplexml.model.Count;
-import mat.simplexml.model.CountUniqueByDate;
-import mat.simplexml.model.Criterion;
-import mat.simplexml.model.Denominator;
-import mat.simplexml.model.Exceptions;
-import mat.simplexml.model.Exclusions;
-import mat.simplexml.model.First;
-import mat.simplexml.model.Function;
-import mat.simplexml.model.FunctionHolder;
-import mat.simplexml.model.Iqdsel;
-import mat.simplexml.model.Last;
-import mat.simplexml.model.LogicOp;
-import mat.simplexml.model.Max;
-import mat.simplexml.model.Measure;
-import mat.simplexml.model.MeasureObservation;
-import mat.simplexml.model.MeasurePopulation;
-import mat.simplexml.model.Min;
-import mat.simplexml.model.MinMax;
-import mat.simplexml.model.Not;
-import mat.simplexml.model.NqfId;
-import mat.simplexml.model.Numerator;
-import mat.simplexml.model.NumeratorExclusions;
-import mat.simplexml.model.Period;
-import mat.simplexml.model.Population;
-import mat.simplexml.model.Propel;
-import mat.simplexml.model.Property;
-import mat.simplexml.model.Second;
-import mat.simplexml.model.Stratification;
-import mat.simplexml.model.Third;
-import mat.simplexml.model.Verifier;
 
 import com.thoughtworks.xstream.XStream;
 
@@ -47,102 +14,7 @@ public class SimpleXMLWriter {
 	
 	private static final String CONVERSION_FILE_FILTER="xsl/filter.xsl";
 	
-	public String toXML(Measure measure) {
-		XStream xstream = new XStream();
-		setAlias(measure.getClass(), xstream);
-
-		List<Class<?>> classList = new ArrayList<Class<?>>();
-		getClasses(Measure.class, classList);
-		classList.add(Propel.class);
-		classList.add(Iqdsel.class);//This line makes the iqdsel tag to appear as part of ElementLookUp
-		
-		for (Class<?> c : classList) {
-			removeCollectionTags(c, xstream);
-			setAlias(c, xstream);
-			setAttributes(c, xstream);
-		}
-		
-		setManually(xstream);
-		String xmlStr = xstream.toXML(measure);
-		xmlStr = cleanManually(xmlStr);
-		xmlStr = filterXSL(xmlStr);
-		return xmlStr;
-	}
 	
-	private void setManually(XStream xstream) {
-		setAttributes(LogicOp.class, xstream);
-		removeCollectionTags(LogicOp.class, xstream);
-		removeCollectionTags(FunctionHolder.class, xstream);
-		setAlias(Count.class, xstream);
-		setAttributes(Count.class, xstream);
-
-		setAlias(Not.class, xstream);
-		setAlias(Last.class, xstream);
-		setAlias(First.class, xstream);
-		setAlias(Second.class, xstream);
-		setAlias(Third.class,xstream);
-
-		setAttributes(MinMax.class, xstream);
-		xstream.omitField(MinMax.class, "funcName");
-		xstream.omitField(First.class, "funcName");
-		
-		setAlias(Min.class, xstream);
-		
-		xstream.useAttributeFor(Criterion.class, "uuid");
-		
-		setAttributes(CountUniqueByDate.class, xstream);
-		setAlias(CountUniqueByDate.class, xstream);
-		xstream.omitField(CountUniqueByDate.class, "funcName");
-		xstream.addImplicitCollection(FunctionHolder.class, "listOfCountUniqueByDate");
-		xstream.omitField(Count.class, "funcName");
-		setAlias(Author.class, xstream);
-		setAlias(MeasureType.class, xstream);
-//		setAlias(Function.class,xstream);
-		setAlias(Attachment.class, xstream);
-		setAlias(Property.class, xstream);
-		setAlias(Numerator.class, xstream);
-		setAlias(NumeratorExclusions.class, xstream);
-		setAlias(Denominator.class, xstream);
-		setAlias(Population.class, xstream);
-		setAlias(Exceptions.class, xstream);
-		setAlias(Exclusions.class, xstream);
-		setAlias(MeasurePopulation.class, xstream);
-		setAlias(MeasureObservation.class, xstream);
-		setAlias(Stratification.class, xstream);
-		setAlias(Verifier.class, xstream);
-		setAlias(Max.class,xstream);
-		setAlias(Min.class,xstream);
-		setAlias(NqfId.class,xstream);
-		xstream.alias("measurecalc", Function.class);
-		xstream.useAttributeFor(Property.class, "name");
-		xstream.useAttributeFor(Property.class, "value");
-		xstream.useAttributeFor(Function.class, "lowinclusive");
-		xstream.useAttributeFor(Function.class, "lownum");
-		xstream.useAttributeFor(Function.class, "lowunit");
-		xstream.useAttributeFor(Function.class, "highinclusive");
-		xstream.useAttributeFor(Function.class, "highnum");
-		xstream.useAttributeFor(Function.class, "highunit");
-		xstream.useAttributeFor(Function.class, "equalnum");
-		xstream.useAttributeFor(Function.class, "equalunit");
-		xstream.useAttributeFor(Function.class, "equalnegationind");
-		xstream.useAttributeFor(Function.class, "name");
-		xstream.useAttributeFor(Function.class, "datatype");
-		xstream.useAttributeFor(Function.class, "uuid");
-		xstream.useAttributeFor(Function.class, "origText");
-		xstream.useAttributeFor(Function.class, "idAttr");
-		xstream.useAttributeFor(Function.class, "value");
-		xstream.useAttributeFor(Function.class, "refid");
-		
-		xstream.useAttributeFor(NqfId.class, "root");
-		xstream.useAttributeFor(NqfId.class, "extension");
-
-		xstream.useAttributeFor(Period.class, "uuid");
-		
-		xstream.useAttributeFor(Attachment.class, "uuid");
-		xstream.useAttributeFor(Attachment.class, "title");
-		xstream.useAttributeFor(Attachment.class, "clause");
-		
-	}
 	private String filterXSL(String xmlStr) {
 		XMLUtility xmlUtility = new XMLUtility();
 		String tempXML = xmlUtility.applyXSL(xmlStr, xmlUtility.getXMLResource(CONVERSION_FILE_FILTER));

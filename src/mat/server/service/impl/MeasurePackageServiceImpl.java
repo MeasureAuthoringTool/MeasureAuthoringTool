@@ -1,22 +1,14 @@
 package mat.server.service.impl;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
-import mat.client.shared.MatContext;
-import mat.client.shared.MetaDataConstants;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureAuditLogDAO;
-import mat.dao.MetadataDAO;
 import mat.dao.PropertyOperator;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.StewardDAO;
@@ -30,10 +22,8 @@ import mat.dao.clause.PackagerDAO;
 import mat.dao.clause.ShareLevelDAO;
 import mat.dao.search.CriteriaQuery;
 import mat.dao.search.SearchCriteria;
-import mat.model.Author;
 import mat.model.DataType;
 import mat.model.MeasureSteward;
-import mat.model.MeasureType;
 import mat.model.QualityDataSet;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -42,14 +32,12 @@ import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.MeasureXML;
-import mat.model.clause.Metadata;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.util.ExportSimpleXML;
 import mat.shared.ValidationUtility;
-
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,9 +59,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	private MeasureShareDAO measureShareDAO;
 	@Autowired
 	private MeasureDAO measureDAO;
-
-	@Autowired
-	private MetadataDAO metaDataDAO;
 
 	@Autowired
 	private PackagerDAO packagerDAO;
@@ -224,13 +209,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	}
 
 	@Override
-	public void saveMeasureDetails(List<Metadata> measureDetails){
-		if(measureDetails != null){
-			metaDataDAO.batchSave(measureDetails);
-		}
-	}
-
-	@Override
 	public Measure getById(String id) {
 		return measurePackageDAO.find(id);
 	}
@@ -245,145 +223,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measurePackageDAO.getMeasureShareInfoForMeasure(measureId, startIndex - 1, pageSize);
 	}
 
-	@Override
-	public List<Metadata> getMeasureDetailsById(String id) {
-		return metaDataDAO.getMeasureDetails(id);
-	}
-
-	@Override
-	public Metadata getMetadata(String id){
-		return metaDataDAO.find(id);
-	}
-
-	private ManageMeasureDetailModel getMeasureMetadatadetails(String id){
-		List<Metadata> measureDetailList = metaDataDAO.getMeasureDetails(id);
-		ManageMeasureDetailModel model = new ManageMeasureDetailModel();
-		model.setId(id);
-		setMetadataonModel(model,measureDetailList);
-		return model;
-	}
-
-
-	private void  setMetadataonModel(ManageMeasureDetailModel model, List<Metadata> metadataList){
-		List<Author> authorList = new ArrayList();
-		List<MeasureType> measureTypeList = new ArrayList();
-		for(Metadata mt: metadataList){
-			if(mt.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_DEVELOPER)){
-				Author a = new Author();
-				a.setAuthorName(mt.getValue());
-				authorList.add(a);
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_TYPE)){
-				MeasureType m = new MeasureType();
-				m.setDescription(mt.getValue());
-				measureTypeList.add(m);
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.EMEASURE_TITLE)){
-				model.setName(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.EMEASURE_ABBR_TITLE)){
-				model.setShortName(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_SET)){
-				model.setGroupName(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.MEASUREMENT_FROM_PERIOD)){
-				model.setMeasFromPeriod(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.MEASUREMENT_TO_PERIOD)){
-				model.setMeasToPeriod(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_STEWARD)){
-				model.setMeasSteward(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.ENDORSE_BY_NQF)){
-				if(mt.getValue().equalsIgnoreCase("true")){
-					model.setEndorseByNQF(Boolean.TRUE);
-				}else{
-					model.setEndorseByNQF(Boolean.FALSE);
-				}
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.DESCRIPTION)){
-				model.setDescription(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.COPYRIGHT)){
-				model.setCopyright(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.CLINICAL_RECOM_STATE)){
-				model.setClinicalRecomms(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.DEFENITION)){
-				model.setDefinitions(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.GUIDANCE)){
-				model.setGuidance(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.TRANSMISSION_FORMAT)){
-				model.setTransmissionFormat(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.RATIONALE)){
-				model.setRationale(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.IMPROVEMENT_NOTATION)){
-				model.setImprovNotations(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.STRATIFICATION)){
-				model.setStratification(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.RISK_ADJUSTMENT)){
-				model.setRiskAdjustment(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.SUPPLEMENTAL_DATA_ELEMENTS)){
-				model.setSupplementalData(mt.getValue());
-			}else if(mt.getName().equalsIgnoreCase(MetaDataConstants.REFERENCES)){
-				//model.setReference(mt.getValue());
-			}
-
-		}
-		model.setAuthorList(authorList);
-		model.setMeasureTypeList(measureTypeList);
-	}
-
-
-	public ManageMeasureDetailModel deleteAuthors(List<Author> authorList,String id){
-		if(authorList != null){
-			metaDataDAO.deleteAuthor(authorList, id);
-		}
-		ManageMeasureDetailModel  detailModel = getMeasureMetadatadetails(id);
-		return detailModel;
-	}
-
-
-	public ManageMeasureDetailModel deleteMeasureTypes(List<MeasureType> measureTypeList, String id){
-		if(measureTypeList != null){
-			metaDataDAO.deleteMeasureTypes(measureTypeList,id);
-		}
-		ManageMeasureDetailModel  detailModel = getMeasureMetadatadetails(id);
-		return detailModel;
-	}
-
-	@Override
-	public void update(String metadataId,String keyValue) {
-		Metadata metadata = getMetadata(metadataId);
-		metadata.setValue(keyValue);
-		metaDataDAO.save(metadata);
-
-	}
-
-	@Override
-	public void deleteALLDetailsForMeasureId(List<Metadata> metaDataDetails) {
-		if(metaDataDetails != null)
-			metaDataDAO.deleteAllMetaData(metaDataDetails);
-	}
-
-	private Map<String, String> buildMetadataMap(List<Metadata> list) {
-		HashMap<String, String> map = new HashMap<String, String>();
-		for(Metadata md : list) {
-			map.put(md.getName(), md.getValue());
-		}
-		return map;
-	}
-
-
-	private boolean isTooLong(Map<String, String> metadata, String key, int maxLength){
-		if(metadata.get(key) == null)
-			return false;
-		if(metadata.get(key).length() > maxLength)
-			return true;
-		return false;
-	}
-
-	private boolean isEmpty(Map<String, String> metadata, String key) {
-		return !metadata.containsKey(key) || metadata.get(key).equals("") || metadata.get(key).equalsIgnoreCase("--Select--");
-	}
-
-	private boolean notvalidDate(Map<String, String> metadata, String key){
-		if(metadata.get(key) != null){
-			return metadata.get(key).length() > 0 && metadata.get(key).length() < 10;
-		}else
-			return false;
-	}
+	
 	@Override
 	public ValidateMeasureResult validateMeasureForExport(String key) throws Exception {
 		List<String> message = new ArrayList<String>();
@@ -424,13 +264,13 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	@Override
 	public List<MeasureShareDTO> search(String searchText, int startIndex,int numResults) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasureShareInfoForUser(searchText, metaDataDAO, user, startIndex-1, numResults);
+		return measurePackageDAO.getMeasureShareInfoForUser(searchText,  user, startIndex-1, numResults);
 	}
 
 	@Override
 	public List<MeasureShareDTO> searchWithFilter(String searchText, int startIndex,int numResults,int filter) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText, metaDataDAO, user, startIndex-1, numResults,filter);
+		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText,  user, startIndex-1, numResults,filter);
 	}
 
 
@@ -519,7 +359,6 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
 	}
 	@Override
-
 	public void transferMeasureOwnerShipToUser(List<String> list, String toEmail){		
 		User userTo = userDAO.findByEmail(toEmail);
 
@@ -589,4 +428,5 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return oid;
 	}
 
+	
 }

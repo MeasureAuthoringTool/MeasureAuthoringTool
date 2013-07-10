@@ -9,9 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
@@ -28,9 +26,7 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
-import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
-import mat.client.shared.MetaDataConstants;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.Author;
 import mat.model.MeasureType;
@@ -41,9 +37,7 @@ import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
-import mat.model.clause.Metadata;
 import mat.model.clause.ShareLevel;
-import mat.server.clause.ClauseBusinessService;
 import mat.server.service.CodeListService;
 import mat.server.service.InvalidValueSetDateException;
 import mat.server.service.MeasurePackageService;
@@ -68,8 +62,6 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -92,115 +84,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * @param measureDetailsList
 	 * @return
 	 */
-	@SuppressWarnings("unused")
-	@Deprecated
-	private ManageMeasureDetailModel extractModel(Measure measure,List<Metadata> measureDetailsList) {
-		ManageMeasureDetailModel model = new ManageMeasureDetailModel();
-		List<Author> authorList = new ArrayList<Author>(); 
-		List<MeasureType> measureTypeList = new ArrayList<MeasureType>();
-		List<String> referenceList = new ArrayList<String>();
-		model.setId(measure.getId());
-		model.setName(measure.getDescription());
-		model.setShortName(measure.getaBBRName());
-		model.setMeasScoring(measure.getMeasureScoring());
-		model.setOrgVersionNumber(MeasureUtility.formatVersionText(String.valueOf(measure.getVersionNumber())));
-		model.setVersionNumber(MeasureUtility.getVersionText(measure.getVersion(), measure.isDraft()));
-		model.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
-		model.setDraft(measure.isDraft());
-		model.setMeasureSetId(measure.getMeasureSet().getId());
-		model.setValueSetDate(DateUtility.convertDateToStringNoTime(measure.getValueSetDate()));
-		model.seteMeasureId(measure.geteMeasureId());
-		if(measureDetailsList != null && measureDetailsList.size() > 0){
-			for(Metadata measDet: measureDetailsList){
-				if(measDet.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_DEVELOPER)){
-					Author a = new Author();
-					a.setAuthorName(measDet.getValue());
-					authorList.add(a);
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_TYPE)){
-					MeasureType mt = new MeasureType();
-					mt.setDescription(measDet.getValue());
-					measureTypeList.add(mt);
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_SET)){
-					model.setGroupName(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.NQF_NUMBER)){
-					model.setNqfId(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.MEASUREMENT_FROM_PERIOD)){
-					model.setMeasFromPeriod(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.MEASUREMENT_TO_PERIOD)){
-					model.setMeasToPeriod(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_STEWARD)){   //US 413 to support steward and other value and removed measure scoring from meta data since its now part of core Measure.
-					model.setMeasSteward(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_STEWARD_OTHER)){
-					model.setMeasStewardOther(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.ENDORSE_BY_NQF)){
-					if(measDet.getValue().equalsIgnoreCase("true"))
-						model.setEndorseByNQF(Boolean.TRUE);
-					else
-						model.setEndorseByNQF(Boolean.FALSE);
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_STATUS)){
-					model.setMeasureStatus(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.DESCRIPTION)){
-					model.setDescription(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.COPYRIGHT)){
-					model.setCopyright(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.CLINICAL_RECOM_STATE)){
-					model.setClinicalRecomms(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.DEFENITION)){
-					model.setDefinitions(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.GUIDANCE)){
-					model.setGuidance(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.TRANSMISSION_FORMAT)){
-					model.setTransmissionFormat(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.RATIONALE)){
-					model.setRationale(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.IMPROVEMENT_NOTATION)){
-					model.setImprovNotations(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.STRATIFICATION)){
-					model.setStratification(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.RISK_ADJUSTMENT)){
-					model.setRiskAdjustment(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.REFERENCES)){
-					referenceList.add(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.SUPPLEMENTAL_DATA_ELEMENTS)){
-					model.setSupplementalData(measDet.getValue());
-				}else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.DISCLAIMER)){
-					model.setDisclaimer(measDet.getValue());
-				}
-					else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.RATE_AGGREGATION)){
-						model.setRateAggregation(measDet.getValue());
-					}
-					else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.INITIAL_PATIENT_POP)){
-						model.setInitialPatientPop(measDet.getValue());
-					}
-					else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.DENOM)){
-						model.setDenominator(measDet.getValue());
-					}
-					else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.DENOM_EXCL)){
-						model.setDenominatorExclusions(measDet.getValue());
-					}
-					else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.NUM)){
-						model.setNumerator(measDet.getValue());
-					}
-					else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.NUM_EXCL)){
-						model.setNumeratorExclusions(measDet.getValue());
-					}
-					else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.DENOM_EXEP)){
-						model.setDenominatorExceptions(measDet.getValue());
-					}
-					else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_POP)){
-						model.setMeasurePopulation(measDet.getValue());
-					}
-					else if(measDet.getName().equalsIgnoreCase(MetaDataConstants.MEASURE_OBS)){
-						model.setMeasureObservations(measDet.getValue());
-					}
-			}
-		}
-		model.setAuthorList(authorList);
-		model.setMeasureTypeList(measureTypeList);
-		model.setReferencesList(referenceList);
-		return model;
-	}
-
+	
 	private void setValueFromModel(ManageMeasureDetailModel model, Measure measure) {
 		measure.setDescription(model.getName());
 		measure.setaBBRName(model.getShortName());
@@ -213,100 +97,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		if(model.getValueSetDate() != null  && !model.getValueSetDate().equals(""))
 			measure.setValueSetDate(new Timestamp(DateUtility.convertStringToDate(model.getValueSetDate()).getTime()));
 	}
-
-	private void setValueFromModel(ManageMeasureDetailModel model, List<Metadata> metadataList,Measure m,List<Metadata> existingMetaData){
-		HashMap<String,String> detailModelMap = new HashMap<String,String>();
-		detailModelMap.put(MetaDataConstants.EMEASURE_TITLE, model.getName());
-		detailModelMap.put(MetaDataConstants.EMEASURE_ABBR_TITLE, model.getShortName());
-		detailModelMap.put(MetaDataConstants.MEASURE_SET,model.getGroupName());
-		detailModelMap.put(MetaDataConstants.NQF_NUMBER, model.getNqfId());
-		detailModelMap.put(MetaDataConstants.MEASUREMENT_FROM_PERIOD, model.getMeasFromPeriod());
-		detailModelMap.put(MetaDataConstants.MEASUREMENT_TO_PERIOD, model.getMeasToPeriod());
-		detailModelMap.put(MetaDataConstants.MEASURE_STEWARD, model.getMeasSteward());
-
-		//US 413. Populate Steward other value from the model.
-		if(model.getMeasStewardOther() != null){
-			detailModelMap.put(MetaDataConstants.MEASURE_STEWARD_OTHER, model.getMeasStewardOther());
-		}
-		if(model.getEndorseByNQF() != null){
-			detailModelMap.put(MetaDataConstants.ENDORSE_BY_NQF, model.getEndorseByNQF().toString());}
-		detailModelMap.put(MetaDataConstants.MEASURE_STATUS, model.getMeasureStatus());
-		m.setMeasureStatus(model.getMeasureStatus());
-		m.seteMeasureId(model.geteMeasureId());
-		detailModelMap.put(MetaDataConstants.DESCRIPTION,model.getDescription());
-		detailModelMap.put(MetaDataConstants.COPYRIGHT,model.getCopyright());
-		detailModelMap.put(MetaDataConstants.CLINICAL_RECOM_STATE, model.getClinicalRecomms());
-		detailModelMap.put(MetaDataConstants.DEFENITION,model.getDefinitions());
-		detailModelMap.put(MetaDataConstants.GUIDANCE, model.getGuidance());
-		detailModelMap.put(MetaDataConstants.TRANSMISSION_FORMAT, model.getTransmissionFormat());
-		detailModelMap.put(MetaDataConstants.RATIONALE,model.getRationale());
-		detailModelMap.put(MetaDataConstants.IMPROVEMENT_NOTATION, model.getImprovNotations());
-		detailModelMap.put(MetaDataConstants.STRATIFICATION, model.getStratification());
-	    detailModelMap.put(MetaDataConstants.RISK_ADJUSTMENT, model.getRiskAdjustment());
-	    detailModelMap.put(MetaDataConstants.SUPPLEMENTAL_DATA_ELEMENTS, model.getSupplementalData());
-		
-	    detailModelMap.put(MetaDataConstants.DISCLAIMER, model.getDisclaimer());
-	    detailModelMap.put(MetaDataConstants.RATE_AGGREGATION, model.getRateAggregation());
-	    detailModelMap.put(MetaDataConstants.INITIAL_PATIENT_POP, model.getInitialPatientPop());
-	    detailModelMap.put(MetaDataConstants.DENOM, model.getDenominator());
-	    detailModelMap.put(MetaDataConstants.DENOM_EXCL, model.getDenominatorExclusions());
-	    detailModelMap.put(MetaDataConstants.NUM, model.getNumerator());
-	    detailModelMap.put(MetaDataConstants.NUM_EXCL, model.getNumeratorExclusions());
-	    detailModelMap.put(MetaDataConstants.DENOM_EXEP, model.getDenominatorExceptions());
-	    detailModelMap.put(MetaDataConstants.MEASURE_POP, model.getMeasurePopulation());
-	    detailModelMap.put(MetaDataConstants.MEASURE_OBS, model.getMeasureObservations());
-	      
-	    
-	    HashMap<String,List<Author>> authorListMap = new HashMap<String,List<Author>>();
-		authorListMap.put(MetaDataConstants.MEASURE_DEVELOPER,model.getAuthorList());
-		
-		HashMap<String,List<MeasureType>> measureTypeListMap = new HashMap<String, List<MeasureType>>();
-		measureTypeListMap.put(MetaDataConstants.MEASURE_TYPE, model.getMeasureTypeList());
-		
-		HashMap<String,List<String>> referencesListMap = new HashMap<String, List<String>>();
-		referencesListMap.put(MetaDataConstants.REFERENCES, model.getReferencesList());
-
-		
-		for(String key:detailModelMap.keySet()){
-			if(detailModelMap.get(key)!= null && !detailModelMap.get(key).equals(""))
-				addMetadata(m, key, detailModelMap.get(key), metadataList);
-		 }
-		
-		//clean up
-		List<Author> authorLst = authorListMap.get(MetaDataConstants.MEASURE_DEVELOPER);
-		if(authorLst != null){
-			for(Author author: authorListMap.get(MetaDataConstants.MEASURE_DEVELOPER)){
-				if(author!= null && !author.getAuthorName().equals(""))
-					addMetadata(m,MetaDataConstants.MEASURE_DEVELOPER,author.getAuthorName(),metadataList);
-			}
-		}
-		
-		List<MeasureType> measureTypeLst = measureTypeListMap.get(MetaDataConstants.MEASURE_TYPE);
-		if(measureTypeLst != null){
-			for(MeasureType mt: measureTypeListMap.get(MetaDataConstants.MEASURE_TYPE)){
-				if(mt!= null && !mt.getDescription().equals(""))
-					addMetadata(m,MetaDataConstants.MEASURE_TYPE,mt.getDescription(),metadataList);
-			}
-		}
-		
-		List<String> referenceLst = referencesListMap.get(MetaDataConstants.REFERENCES);
-		if(referenceLst != null){
-			for(String referenceValue : referencesListMap.get(MetaDataConstants.REFERENCES)){
-				if(referenceValue != null && !referenceValue.equals(""))
-					addMetadata(m,MetaDataConstants.REFERENCES,referenceValue,metadataList);
-			}
-		}
-		
-	}
 	
-	private void addMetadata(Measure m,String key,String value,List<Metadata> metadataList){
-		Metadata mt = new Metadata();
-		mt.setMeasure(m);
-		mt.setName(key);
-		mt.setValue(value);
-		metadataList.add(mt);
-	}
-
+	
 	@Override
 	public ManageMeasureDetailModel getMeasure(String key) {
 		logger.info("In MeasureLibraryServiceImpl.getMeasure() method..");
@@ -358,7 +150,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			return result;
 		}
 		
-		getClauseBusinessService().setClauseNameForMeasure(model.getId(), model.getShortName());
+		/*getClauseBusinessService().setClauseNameForMeasure(model.getId(), model.getShortName());*/
 		result.setSuccess(true);
 		result.setId(pkg.getId());
 		if(isNewMeasure){
@@ -451,17 +243,6 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		Measure measure = null;
 		if(model.getId() != null){
 			measure = getService().getById(model.getId());
-		}
-		List<Metadata> measureDetails = new ArrayList<Metadata>();
-
-		List<Metadata> existingDetails = getService().getMeasureDetailsById(model.getId());
-		if(existingDetails != null && existingDetails.isEmpty()){
-			setValueFromModel(model, measureDetails,measure,existingDetails);
-			getService().saveMeasureDetails(measureDetails);
-		}else{
-			getService().deleteALLDetailsForMeasureId(existingDetails);
-			setValueFromModel(model, measureDetails,measure,existingDetails);
-			getService().saveMeasureDetails(measureDetails);
 		}
 		logger.info("Saving Measure_Xml");
 		saveMeasureXml(createMeasureXmlModel(model, measure, MEASURE_DETAILS, MEASURE));
@@ -677,9 +458,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 			
-	private ClauseBusinessService getClauseBusinessService() {
+	/*private ClauseBusinessService getClauseBusinessService() {
 		return (ClauseBusinessService)context.getBean("clauseBusinessService");
-	}
+	}*/
 	
 	public CodeListService getCodeListService() {
 		return (CodeListService)context.getBean("codeListService");
@@ -688,18 +469,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	private UserService getUserService(){
 		return (UserService)context.getBean("userService");
 	}
-	@Override
-	public ManageMeasureDetailModel deleteAuthors(String measureId,
-			List<Author> selectedAuthorsList) {
-
-		return getService().deleteAuthors(selectedAuthorsList,measureId);
-	}
-
-	@Override
-	public ManageMeasureDetailModel deleteMeasureTypes(String measureId,
-			List<MeasureType> selectedMeasureTypeList) {
-		return getService().deleteMeasureTypes(selectedMeasureTypeList, measureId);
-	}
+	
 
 	@Override
 	public ValidateMeasureResult validateMeasureForExport(String key) throws MatException {
@@ -861,7 +631,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		setValueFromModel(mDetail, meas);
 		getService().save(meas);
 		saveMeasureXml(createMeasureXmlModel(mDetail, meas, MEASURE_DETAILS, MEASURE));
-		getClauseBusinessService().setClauseNameForMeasure(mDetail.getId(), mDetail.getShortName());
+		/*getClauseBusinessService().setClauseNameForMeasure(mDetail.getId(), mDetail.getShortName());*/
 		SaveMeasureResult result = new SaveMeasureResult();
 		result.setSuccess(true);
 		result.setId(meas.getId());
@@ -880,11 +650,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		rs.setSuccess(false);
 		return rs;
 	}
-	/*
-	private  ManageMeasureDetailModel getMeasureDetail(String mId,Measure m){
-		List<Metadata> measureDetails = getService().getMeasureDetailsById(mId);
-		return extractModel(m,measureDetails);
-	}*/
+
 	
 	private void setDTOtoModel(List<ManageMeasureSearchModel.Result> detailModelList,MeasureShareDTO dto ,String currentUserId, boolean isSuperUser){
 		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());

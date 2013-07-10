@@ -17,11 +17,6 @@
 	<property name="eMeasureId" column="EMEASURE_ID" />
     <many-to-one name="owner" column="MEASURE_OWNER_ID" 
         class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
-	<list name="clauses" cascade="all" lazy="true" inverse="true">
-           <key column="ID"/>
-           <list-index column="MEASURE_ID"/>
-           <one-to-many class="mat.model.clause.Clause"/>
-    </list>
 	<set name="shares" cascade="all" lazy="true" inverse="true">
 	      <key column="MEASURE_ID"/>
            <one-to-many class="mat.model.clause.MeasureShare"/>

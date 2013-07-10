@@ -3,7 +3,6 @@ package mat.model;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import mat.model.clause.Clause;
 import mat.model.clause.Measure;
 
 public class AuditLog {
@@ -17,7 +16,7 @@ public class AuditLog {
 	private String updatedBy;
 	
 	private Measure measure;
-	private Clause clause;
+	
 	private QualityDataSet qds;
 	private ListObject listObject;
 
@@ -70,13 +69,7 @@ public class AuditLog {
 		this.measure = measure;
 	}
 
-	public Clause getClause() {
-		return clause;
-	}
-
-	public void setClause(Clause clause) {
-		this.clause = clause;
-	}
+	
 
 	public QualityDataSet getQds() {
 		return qds;

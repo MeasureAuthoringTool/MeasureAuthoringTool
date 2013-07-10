@@ -2,15 +2,11 @@ package mat.dao.clause;
 
 import java.util.List;
 
-import mat.client.measure.ManageMeasureDetailModel;
 import mat.dao.IDAO;
-import mat.dao.MetadataDAO;
 import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
-
-import org.springframework.context.ApplicationContext;
 
 public interface MeasureDAO extends IDAO<Measure, String> {
 	public void saveMeasure(Measure measure);
@@ -18,14 +14,12 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	public List<MeasureShareDTO> getMeasureShareInfoForUser(User user, int startIndex, int pageSize);
 	public List<MeasureShareDTO> getMeasuresForVersion(User user, int startIndex, int pageSize);
 	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex, int pageSize);
-	public List<MeasureShareDTO> getMeasureShareInfoForUser(String searchText, MetadataDAO metadataDAO, User user, int startIndex, int pageSize);
+	public List<MeasureShareDTO> getMeasureShareInfoForUser(String searchText, User user, int startIndex, int pageSize);
 	public int countMeasureShareInfoForUser(User user);
 	public int countMeasureForVersion(User user);
 	public int countMeasureForDraft(User user);
 	public int countMeasureShareInfoForUser(String searchText, User user);
 	public int countUsersForMeasureShare();
-	public MeasureShareDTO clone(ManageMeasureDetailModel currentDetails, String loggedinUserId, boolean isDraftCreation, 
-			ApplicationContext context);
 	public java.util.List<Measure> findByOwnerId(String measureOwnerId);
 	public void resetLockDate(Measure m);
 	public String findMaxVersion(String measureSetId);
@@ -35,7 +29,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	public int saveandReturnMaxEMeasureId(Measure measure);
 	public List<Measure> getAllMeasuresInSet(List<Measure> ms);
 	List<MeasureShare> getMeasureShareForMeasure(String measureId);
-	List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText, MetadataDAO metadataDAO, User user,
+	List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText, User user,
 			int startIndex, int pageSize, int filter);
 	int countMeasureShareInfoForUser(int filter, User user);
 }

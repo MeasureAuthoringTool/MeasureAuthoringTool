@@ -16,8 +16,8 @@
 	<property name="activityType" column="ACTIVITY_TYPE"/>
 	<many-to-one name="measure" column="MEASURE_ID" 
         class="mat.model.clause.Measure" unique="false" cascade="none" />
-    <many-to-one name="clause" column="CLAUSE_ID" 
-        class="mat.model.clause.Clause" unique="false" cascade="none" />
+    <!-- <many-to-one name="clause" column="CLAUSE_ID" 
+        class="mat.model.clause.Clause" unique="false" cascade="none" /> -->
     <many-to-one name="qds" column="QDM_ID" 
         class="mat.model.QualityDataSet" unique="false" cascade="none" />  
     <many-to-one name="listObject" column="LIST_OBJECT_ID" 

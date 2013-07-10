@@ -10,18 +10,15 @@ import java.util.Date;
 import java.util.List;
 
 import mat.client.login.LoginModel;
-import mat.client.login.service.LoginResult;
 import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
 import mat.model.User;
 import mat.model.UserPassword;
 import mat.model.UserSecurityQuestion;
-import mat.server.PreventCachingFilter;
 import mat.server.hibernate.HibernateUserDetailService;
 import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.UserService;
-import mat.shared.ForgottenPasswordResult;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

@@ -10,29 +10,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.MeasureSearchFilterPanel;
-import mat.dao.MetadataDAO;
-import mat.dao.QualityDataSetDAO;
-import mat.dao.UserDAO;
 import mat.dao.search.GenericDAO;
 import mat.dao.service.DAOService;
 import mat.model.LockedUserInfo;
 import mat.model.SecurityRole;
 import mat.model.User;
-import mat.model.clause.Clause;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
-import mat.model.clause.Metadata;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
-import mat.shared.ConstantMessages;
 import mat.shared.StringUtility;
-import mat.shared.model.Decision;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -86,177 +78,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		return cloned;
 	}
 	
-	public MeasureShareDTO clone(ManageMeasureDetailModel currentDetails, String loggedinUserId, boolean creatingDraft,ApplicationContext context) {
-		
-		ClauseManagerDAO cm = null;
-		QualityDataSetDAO qdsDAO = null;
-		mat.dao.clause.MeasureDAO mDAO = null;
-		mat.dao.clause.ClauseDAO cDAO = null;
-		UserDAO uDAO = null;
-		mat.dao.clause.MeasureSetDAO mSetDAO = null;
-		List<Metadata> mdl = null;
-		List<Metadata> cmdl = new ArrayList<Metadata>();
-		MetadataDAO mdDAO = null;
-		
-		Measure originalMeasure = null;
-		Measure cloned = null;
-		
-		if (dAOService!=null) {
-			originalMeasure = dAOService.getMeasureDAO().find(currentDetails.getId());
-			mDAO = dAOService.getMeasureDAO();
-			qdsDAO = dAOService.getQualityDataSetDAO();
-			cDAO = dAOService.getClauseDAO();
-			cm = new ClauseManagerDAO(dAOService);
-			uDAO = dAOService.getUserDAO();
-			mSetDAO = dAOService.getMeasureSetDAO();
-			mdDAO = dAOService.getMetadataDAO();
-		} else {
-			originalMeasure = ((mat.dao.clause.MeasureDAO)context.getBean("measureDAO")).find(currentDetails.getId());
-			mDAO = (mat.dao.clause.MeasureDAO)context.getBean("measureDAO");
-			qdsDAO = (QualityDataSetDAO)context.getBean("qualityDataSetDAO");
-			cDAO = (mat.dao.clause.ClauseDAO)context.getBean("clauseDAO");
-			cm = new ClauseManagerDAO(context);
-			uDAO = (UserDAO) context.getBean("userDAO");
-			mSetDAO = (mat.dao.clause.MeasureSetDAO) context.getBean("measureSetDAO");
-			mdDAO =   (MetadataDAO)context.getBean("metadataDAO");
-			
-		}
-
-		//cloning measure only 
-		cloned = cloner(currentDetails, context, originalMeasure);
-		
-		//setting new measure owner for clone and original measure owner for draft
-		User cloneOwner = null;
-		if(creatingDraft){
-			cloned.seteMeasureId(originalMeasure.geteMeasureId());
-			cloneOwner = originalMeasure.getOwner();
-		}else{
-			cloneOwner = uDAO.find(loggedinUserId);
-		}
-		
-		cloned.setOwner(cloneOwner);
-	
-		if(creatingDraft){
-			//When creating draft of existing version, the measureset is same as OriginalMeasure.
-			cloned.setMeasureSet(originalMeasure.getMeasureSet());
-			
-			//get the list of metadata
-			
-			mdl =mdDAO.getMeasureDetails(originalMeasure.getId());
-			
-			for(Metadata m: mdl){
-				Metadata mCopy = new Metadata();
-				mCopy.setMeasure(cloned);
-				mCopy.setName(m.getName());
-				mCopy.setValue(m.getValue());
-				cmdl.add(mCopy);
-//				m.setMeasure(cloned);
-			}
-		}else{
-			//When creating a clone.New Measure-set needs to be created.
-			MeasureSet mSet = new MeasureSet();
-			mSet.setId(UUID.randomUUID().toString());
-			mSetDAO.save(mSet);
-			cloned.setMeasureSet(mSet);
-		}
-		//this will insert a new row in measure table
-		mDAO.save(cloned);
-		
-		//clone Quality Data Set
-		qdsDAO.cloneQDSElements(currentDetails.getId(), cloned);
-		
-		//get measure phrases
-		List<Clause> clauseList = cDAO.findByMeasureId(currentDetails.getId(), null);
-		HashMap<String, Clause> clauseMap = new HashMap<String,Clause>();
-		
-		for (Clause clause : clauseList) {
-			System.out.println(clause.getName());
-			//do not care about system clauses
-			if(clause.getContextId().equalsIgnoreCase(ConstantMessages.MEASURE_PHRASE_CONTEXT_ID)){
-				clauseMap.put(clause.getName(), clause);
-			}
-		}
-		
-		//get priority list clause names: these need to be processed first... children first then parents
-		ArrayList<String> clauseNames = new ArrayList<String>();
-		for (Clause clause : clauseList) {
-			if(clause.getContextId().equalsIgnoreCase(ConstantMessages.MEASURE_PHRASE_CONTEXT_ID)){
-				Decision d = cm.loadClause(clause.getDecision().getId());
-				cm.addAllUnique(clauseNames,cm.getDependencyTree(d));
-			}
-		}
-		
-			
-		for(int i = clauseNames.size()-1; i>=0; i--){
-			String clauseName = clauseNames.get(i);
-			Clause clause = clauseMap.get(clauseName);
-			processClause(clause, cm, cloned, currentDetails.getShortName());
-			//do not process clause later
-			clauseList.remove(clause);
-		}
-		
-		//clone clause, terms, and attributes
-		
-		//process phrases first
-		for (Clause clause : clauseList) {
-			if(clause.getContextId().equalsIgnoreCase(ConstantMessages.MEASURE_PHRASE_CONTEXT_ID)){
-				processClause(clause, cm, cloned, currentDetails.getShortName());
-			}
-		}	
-		//process system clauses last
-		for (Clause clause : clauseList) {
-			if(!clause.getContextId().equalsIgnoreCase(ConstantMessages.MEASURE_PHRASE_CONTEXT_ID)){
-				processClause(clause, cm, cloned, currentDetails.getShortName());
-			}
-		}
-		if(creatingDraft){
-			//Probably need to have saved the new Measure before committing the metadata for it.
-			mdDAO.batchSave(cmdl);
-		}
-		
-		clauseList.clear();
-		clauseMap.clear();
-		clauseList = null;
-		clauseMap = null;
-		clauseNames.clear();
-		clauseNames = null;
-		
-		return extractDTOFromMeasure(cloned);
-	}
-	
-	private void processClause(Clause clause, ClauseManagerDAO cm, Measure cloned, String newClonedMeasureName){
-		Decision d = cm.loadClause(clause.getDecision().getId());
-		
-		Clause c = (Clause) d;
-		List<Decision> listOfDecisions = c.getDecisions();
-		if (listOfDecisions!=null && !listOfDecisions.isEmpty()) {
-			c.setName(clause.getName());
-			c.setContextId(clause.getContextId());
-			cm.cloneClause(c, cloned, newClonedMeasureName, false, true, true);
-		}
-	}
 	
 	public void saveMeasure(Measure measure) {
 		if (dAOService!=null) {
 			//allow to test using DAOService
 			dAOService.getMeasureDAO().save(measure);
-			/*ClauseManagerDAO cm = new ClauseManagerDAO(dAOService);
-			String id = measure.getId();
-			for (Clause clause : measure.getClauses()) {
-				clause.setMeasureId(id);
-				dAOService.getClauseDAO().save(clause);
-				cm.saveClause(clause);
-			}*/
 			
 		} else {
 			super.save(measure);
-			/*ClauseManagerDAO cm = new ClauseManagerDAO(context);
-			
-			for (Clause clause : measure.getClauses()) {
-				ClauseDAO clauseDAO = new ClauseDAO();
-				clauseDAO.save(clause);				
-				cm.saveClause(clause);
-			}*/
 		}
 	}
 
@@ -376,7 +205,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUser(User user, int startIndex, int pageSize) {
-		return getMeasureShareInfoForUser("", null, user, startIndex, pageSize);
+		return getMeasureShareInfoForUser("",  user, startIndex, pageSize);
 	}
 	
 	private MeasureShareDTO extractDTOFromMeasure(Measure measure) {
@@ -439,7 +268,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	
 	
 	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForUser(String searchText, mat.dao.MetadataDAO metadataDAO,
+	public List<MeasureShareDTO> getMeasureShareInfoForUser(String searchText,
 			User user, int startIndex, int pageSize) {
 	
 		String searchTextLC = searchText.toLowerCase().trim();
@@ -472,14 +301,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 								false;
 			
 			//measure steward (only check if necessary)
-			if(!matchesSearch && !su.isEmptyOrNull(searchTextLC)){
+			/*if(!matchesSearch && !su.isEmptyOrNull(searchTextLC)){
 				List<Metadata> mdList = metadataDAO.getMeasureDetails(measure.getId(), "MeasureSteward");
 				for(Metadata md : mdList)
 					if(md.getName().equalsIgnoreCase("MeasureSteward") && md.getValue().toLowerCase().contains(searchTextLC)){
 						matchesSearch = true;
 						break;
 					}
-			}
+			}*/
 			
 			if(matchesSearch){
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
@@ -518,7 +347,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	}
 	
 	@Override
-	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText, mat.dao.MetadataDAO metadataDAO,
+	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText, 
 			User user, int startIndex, int pageSize ,int filter) {
 	
 		String searchTextLC = searchText.toLowerCase().trim();
@@ -552,14 +381,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 								false;
 			
 			//measure steward (only check if necessary)
-			if(!matchesSearch && !su.isEmptyOrNull(searchTextLC)){
+			/*if(!matchesSearch && !su.isEmptyOrNull(searchTextLC)){
 				List<Metadata> mdList = metadataDAO.getMeasureDetails(measure.getId(), "MeasureSteward");
 				for(Metadata md : mdList)
 					if(md.getName().equalsIgnoreCase("MeasureSteward") && md.getValue().toLowerCase().contains(searchTextLC)){
 						matchesSearch = true;
 						break;
 					}
-			}
+			}*/
 			
 			if(matchesSearch){
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);

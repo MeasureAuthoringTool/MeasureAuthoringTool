@@ -23,8 +23,7 @@ public interface MeasureServiceAsync {
 	public void getUsersForShare(String measureId, int startIndex, int pageSize, AsyncCallback<ManageMeasureShareModel> callback);
 	public void updateUsersShare(ManageMeasureShareModel model, AsyncCallback<Void> callback);
 	void saveMeasureDetails(ManageMeasureDetailModel model,AsyncCallback<SaveMeasureResult> callback);
-	void deleteAuthors(String measureId, List<Author> selectedAuthorsList,AsyncCallback<ManageMeasureDetailModel> callback);
-	void deleteMeasureTypes(String measureId,List<MeasureType> selectedMeasureTypeList,AsyncCallback<ManageMeasureDetailModel> callback);
+	
 	public void validateMeasureForExport(String key, AsyncCallback<ValidateMeasureResult> callback);
 	public void updateLockedDate(String measureId,String userId, AsyncCallback<SaveMeasureResult> callback);
 	void resetLockedDate(String measureId,String userId, AsyncCallback<SaveMeasureResult> callback);

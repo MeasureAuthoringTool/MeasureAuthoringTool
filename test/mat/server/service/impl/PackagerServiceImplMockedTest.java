@@ -1,4 +1,4 @@
-package mat.server.service.impl;
+/*package mat.server.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,3 +99,4 @@ public class PackagerServiceImplMockedTest extends BaseServiceMockedTest {
 
 
 }
+*/

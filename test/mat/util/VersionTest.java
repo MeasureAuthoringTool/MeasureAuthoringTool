@@ -1,4 +1,4 @@
-package mat.util;
+/*package mat.util;
 
 import mat.simplexml.model.Version;
 
@@ -42,3 +42,4 @@ public class VersionTest extends TestCase{
 		
 	}
 }
+*/

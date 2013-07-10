@@ -12,7 +12,6 @@ import mat.model.Code;
 import mat.model.ListObject;
 import mat.model.ListObjectLT;
 import mat.model.User;
-import mat.model.clause.Clause;
 import mat.model.clause.Measure;
 import mat.server.MeasureLibraryServiceImpl;
 import mat.server.service.SimpleEMeasureService.ExportResult;
@@ -122,7 +121,7 @@ private MeasureLibraryServiceImpl measureLibService = new MeasureLibraryServiceI
 					testedSuperUser = true;
 			
 			String measureOwnerId = u.getId();
-			List<Clause> systemClauses = getService().getClauseDAO().findSystemClauses(measureOwnerId, userRole, applicationContext);
+			/*List<Clause> systemClauses = getService().getClauseDAO().findSystemClauses(measureOwnerId, userRole, applicationContext);*/
 		}
 		
 	}

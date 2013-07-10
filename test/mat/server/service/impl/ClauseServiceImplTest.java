@@ -1,4 +1,4 @@
-package mat.server.service.impl;
+/*package mat.server.service.impl;
 
 import java.util.List;
 
@@ -35,3 +35,4 @@ public class ClauseServiceImplTest extends SpringInitializationTest {
 
 
 }
+*/

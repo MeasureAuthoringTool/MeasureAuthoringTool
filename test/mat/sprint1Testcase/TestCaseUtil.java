@@ -1,11 +1,9 @@
 package mat.sprint1Testcase;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
 import mat.client.codelist.ManageCodeListDetailModel;
-import mat.model.clause.Clause;
 import mat.model.clause.Measure;
 
 public class TestCaseUtil {
@@ -37,7 +35,7 @@ public class TestCaseUtil {
 		String meaName = "TestCaseMeasureName_" + new Date().getTime();
 		String meaDesc = "TestCaseMeasureDesc_" + new Date().getTime();
 		measure = new Measure();
-		measure.setClauses(new ArrayList<Clause>());
+		/*measure.setClauses(new ArrayList<Clause>());*/
 		measure.setaBBRName(meaName);
 		measure.setDescription(meaDesc);
 		measure.setVersion("22.33");

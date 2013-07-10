@@ -1,4 +1,4 @@
-package mat.dao;
+/*package mat.dao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -188,3 +188,4 @@ public class MeasureDAOTest extends SpringInitializationTest {
 	}
 	
 }
+*/

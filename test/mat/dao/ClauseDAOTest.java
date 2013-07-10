@@ -1,15 +1,11 @@
 package mat.dao;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
-import mat.model.clause.Clause;
-import mat.model.clause.Decision;
-import mat.shared.model.MeasurementTerm;
-import mat.shared.model.QDSTerm;
-
 import org.junit.Test;
+/*import mat.model.clause.Clause;
+import mat.model.clause.Decision;
+*/
 
 public class ClauseDAOTest extends SpringInitializationTest {
 
@@ -103,7 +99,7 @@ public class ClauseDAOTest extends SpringInitializationTest {
 	
 	
 	
-	private void testParentChild() {
+	/*private void testParentChild() {
 		
 		List<Object> terms = new ArrayList<Object>();
 		
@@ -248,7 +244,7 @@ public class ClauseDAOTest extends SpringInitializationTest {
 			} else if (obj instanceof MeasurementTerm) {
 				getService().getMeasurementTermDAO().save((MeasurementTerm)obj);
 			}
-		}
+		}*/
 		
 		
 		//load mocked up data from tables to memory objects
@@ -257,7 +253,7 @@ public class ClauseDAOTest extends SpringInitializationTest {
 //		Conditional conditional = conditionalDAO.load(decision.getId());
 		//conditionalDAO.save(conditional);
 		
-		Clause clause = new Clause();
+		/*Clause clause = new Clause();
 //		clause.setDecisions(conditional.getDecisions());
 		clause.setName("AMA_1_POPULATION_1");
 		clause.setContextId("System");
@@ -266,7 +262,7 @@ public class ClauseDAOTest extends SpringInitializationTest {
 		System.out.println();
 		
 		clause.setMeasureId(getId());
-		getService().getClauseDAO().save(clause);
+		getService().getClauseDAO().save(clause);*/
 		
 
 //		mat.shared.model.Decision sharedDecision = new mat.shared.model.Decision();
@@ -281,12 +277,12 @@ public class ClauseDAOTest extends SpringInitializationTest {
 //		clause.setDecisionId(parent.getId());
 
 		
-		createReferenceClause();
-	}
+		/*createReferenceClause();*/
+	//}
 	
 	
 	
-	private void createReferenceClause() {
+/*	private void createReferenceClause() {
 		//test of (((4 SBOD 5)DURING 6)>=(10,YEARS))
 		
 		List<Object> terms = new ArrayList<Object>();
@@ -412,7 +408,7 @@ public class ClauseDAOTest extends SpringInitializationTest {
 		clause.setMeasureId(getId());
 		getService().getClauseDAO().save(clause);
 
-	}
+	}*/
 
 
 //	private void testParentChild() {

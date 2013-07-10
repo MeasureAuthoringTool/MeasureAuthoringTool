@@ -89,22 +89,22 @@
     <servlet-name>codelistServiceImpl</servlet-name>
     <servlet-class>mat.server.CodeListServiceImpl</servlet-class>
   </servlet>
-  <servlet>
+  <!-- <servlet>
     <servlet-name>clauseServiceImpl</servlet-name>
     <servlet-class>mat.server.clause.ClauseServiceImpl</servlet-class>
   </servlet>
   <servlet>
     <servlet-name>clauseCloningServiceImpl</servlet-name>
     <servlet-class>mat.server.clause.ClauseCloningServiceImpl</servlet-class>
-  </servlet>
+  </servlet> -->
   <servlet>
     <servlet-name>packageServiceImpl</servlet-name>
     <servlet-class>mat.server.PackageServiceImpl</servlet-class>
   </servlet>
-  <servlet>
+   <servlet>
     <servlet-name>qDSAttributesServiceImpl</servlet-name>
     <servlet-class>mat.server.clause.QDSAttributesServiceImpl</servlet-class>
-  </servlet>
+  </servlet> 
   <servlet>
     <servlet-name>measureCloningServiceImpl</servlet-name>
     <servlet-class>mat.server.clause.MeasureCloningServiceImpl</servlet-class>
@@ -167,14 +167,14 @@
     <servlet-name>codelistServiceImpl</servlet-name>
     <url-pattern>/mat/codelist</url-pattern>
   </servlet-mapping>
-  <servlet-mapping>
+ <!--  <servlet-mapping>
     <servlet-name>clauseServiceImpl</servlet-name>
     <url-pattern>/mat/clause</url-pattern>
-  </servlet-mapping>
-  <servlet-mapping>
+  </servlet-mapping> -->
+ <!--  <servlet-mapping>
     <servlet-name>clauseCloningServiceImpl</servlet-name>
     <url-pattern>/mat/clauseCloning</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping> -->
   <servlet-mapping>
     <servlet-name>packageServiceImpl</servlet-name>
     <url-pattern>/mat/package</url-pattern>
@@ -182,7 +182,7 @@
   <servlet-mapping>
     <servlet-name>qDSAttributesServiceImpl</servlet-name>
     <url-pattern>/mat/qdsattributes</url-pattern>
-  </servlet-mapping>
+  </servlet-mapping> 
   <servlet-mapping>
     <servlet-name>measureCloningServiceImpl</servlet-name>
     <url-pattern>/mat/measureCloning</url-pattern>

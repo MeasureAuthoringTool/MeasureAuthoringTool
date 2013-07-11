@@ -37,7 +37,7 @@ public class UserDAOTestHelper{
 		user.setPassword(password);
 		
 		UserSecurityQuestion secQues = new UserSecurityQuestion();
-		secQues.setSecurityQuestion("Test Question");
+		//secQues.getSecurityQuestions().setQuestion("Test Question");
 		secQues.setSecurityAnswer("test answer");
 		List<UserSecurityQuestion> securityQuestions = new ArrayList<UserSecurityQuestion>();
 		securityQuestions.add(secQues);

@@ -131,6 +131,8 @@ public class LoginPresenter {
 		}else{
 			MatContext.get().isValidUser(display.getUserid().getValue(),display.getPassword().getValue(), contextcallback);
 		}
+		
+		//MatContext.get().isValidUser("YoTawde7441","Shifu*29", contextcallback);
 	}
 
 	public void go(HasWidgets container) {

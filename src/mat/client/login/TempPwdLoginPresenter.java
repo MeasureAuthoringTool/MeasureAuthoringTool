@@ -1,5 +1,6 @@
 package mat.client.login;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.Mat;
@@ -9,6 +10,7 @@ import mat.client.login.service.LoginResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
+import mat.model.SecurityQuestions;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.model.UserSecurityQuestion;
 import mat.shared.PasswordVerifier;
@@ -27,7 +29,7 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
 public class TempPwdLoginPresenter {
-	public static interface Display {
+		public static interface Display {
 		public HasClickHandlers getSubmit();
 		public HasClickHandlers getReset();
 		public HasValue<String> getQuestion1Answer();
@@ -58,16 +60,33 @@ public class TempPwdLoginPresenter {
 	public TempPwdLoginPresenter(Display displayArg) {
 		
 		this.display = displayArg;
+		MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
 
-		MatContext.get().getSecurityQuestions(new AsyncCallback<List<NameValuePair>>() {
-			public void onSuccess(List<NameValuePair> values) {
-				display.addSecurityQuestionTexts(values);
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				display.getSecurityErrorMessageDisplay().setMessage(caught.getMessage());
 			}
-			public void onFailure(Throwable t) {
-				display.getSecurityErrorMessageDisplay().setMessage(t.getMessage());
+
+			@Override
+			public void onSuccess(List<SecurityQuestions> result) {
+				// TODO Auto-generated method stub
+				List<NameValuePair> retList = new ArrayList<NameValuePair>();
+				for(int i=0; i < result.size();i++){
+						SecurityQuestions securityQues = result.get(i);
+						NameValuePair nvp = new NameValuePair();
+						nvp.setName(securityQues.getQuestion());
+						nvp.setValue(securityQues.getQuestion());
+						retList.add(nvp);
+				}
+					
+				if(retList!=null){
+					display.addSecurityQuestionTexts(retList);
+				}
 			}
+			
 		});
-
+					
 		display.getReset().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -127,7 +146,6 @@ public class TempPwdLoginPresenter {
 			}
 		});
 		
-
 		display.getSubmit().addClickHandler(new ClickHandler() {
 			public void onClick(ClickEvent event) {
 				
@@ -246,17 +264,22 @@ public class TempPwdLoginPresenter {
 			@Override
 			public void onSuccess(List<UserSecurityQuestion> result) {
 				if(result !=null && result.size()>0){
+
 					display.setAnswerText1(result.get(0).getSecurityAnswer());
 					display.getQuestion1Answer().setValue(display.getSecurityQuestionsWidget().maskAnswers(result.get(0).getSecurityAnswer()));
-					display.getQuestion1Text().setValue(result.get(0).getSecurityQuestion());
+					display.getQuestion1Text().setValue(result.get(0).getSecurityQuestions().getQuestion());
+
 
 					display.setAnswerText2(result.get(1).getSecurityAnswer());
 					display.getQuestion2Answer().setValue(display.getSecurityQuestionsWidget().maskAnswers(result.get(1).getSecurityAnswer()));
-					display.getQuestion2Text().setValue(result.get(1).getSecurityQuestion());
-				
+					display.getQuestion2Text().setValue(result.get(1).getSecurityQuestions().getQuestion());
+			
+
 					display.setAnswerText3(result.get(2).getSecurityAnswer());
 					display.getQuestion3Answer().setValue(display.getSecurityQuestionsWidget().maskAnswers(result.get(2).getSecurityAnswer()));
-					display.getQuestion3Text().setValue(result.get(2).getSecurityQuestion());
+					display.getQuestion3Text().setValue(result.get(2).getSecurityQuestions().getQuestion());
+
+
 				}
 			}
 		});

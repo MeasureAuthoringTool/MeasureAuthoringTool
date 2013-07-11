@@ -15,6 +15,7 @@ import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.ClientConstants;
+import mat.model.SecurityQuestions;
 import mat.shared.SecurityQuestionVerifier;
 
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -64,13 +65,29 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 	public SecurityQuestionsPresenter(Display displayArg) {
 		this.display = displayArg;
 		
-		MatContext.get().getSecurityQuestions(new AsyncCallback<List<NameValuePair>>() {
-			public void onSuccess(List<NameValuePair> values) {
-				display.addQuestionTexts(values);
-			}
-			public void onFailure(Throwable t) {
-				//Window.alert(t.getMessage());
+		loginService.getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
 				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+
+			@Override
+			public void onSuccess(List<SecurityQuestions> result) {
+				// TODO Auto-generated method stub
+				List<NameValuePair> retList = new ArrayList<NameValuePair>();
+				for(int i=0; i < result.size();i++){
+						SecurityQuestions securityQues = result.get(i);
+						NameValuePair nvp = new NameValuePair();
+						nvp.setName(securityQues.getQuestion());
+						nvp.setValue(securityQues.getQuestion());
+						retList.add(nvp);
+				}
+					
+				if(retList!=null){
+					display.addQuestionTexts(retList);
+				}
 			}
 		});
 		

@@ -21,6 +21,7 @@ import mat.dao.SecurityRoleDAO;
 import mat.dao.StatusDAO;
 import mat.dao.TransactionAuditLogDAO;
 import mat.dao.UserDAO;
+import mat.model.SecurityQuestions;
 import mat.model.SecurityRole;
 import mat.model.Status;
 import mat.model.TransactionAuditLog;
@@ -302,7 +303,7 @@ public class UserServiceImpl implements UserService {
 	private boolean securityQuestionMatch(User user, 
 			String securityQuestion, String securityAnswer) {
 		for(UserSecurityQuestion usq : user.getSecurityQuestions()) {
-			if(securityQuestion.equalsIgnoreCase(usq.getSecurityQuestion()) &&
+			if(securityQuestion.equalsIgnoreCase(usq.getSecurityQuestions().getQuestion()) &&
 					securityAnswer.equalsIgnoreCase(usq.getSecurityAnswer())) {
 				return true;
 			}
@@ -425,7 +426,6 @@ public class UserServiceImpl implements UserService {
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_FORGOT_LOGINID, paramsMap);
-		System.out.println(text);
 		msg.setTo(user.getEmailAddress());
 		msg.setText(text);
 
@@ -483,7 +483,7 @@ public class UserServiceImpl implements UserService {
 			options.setUserFound(true);
 			for(UserSecurityQuestion q : user.getSecurityQuestions()) {
 				NameValuePair nvp = 
-					new NameValuePair(q.getSecurityQuestion(), q.getSecurityQuestion());
+					new NameValuePair(q.getSecurityQuestions().getQuestion(), q.getSecurityQuestions().getQuestion());
 				options.getSecurityQuestions().add(nvp);
 			}
 		}
@@ -502,7 +502,7 @@ public class UserServiceImpl implements UserService {
 			options.setUserFound(true);
 			for(UserSecurityQuestion q : user.getSecurityQuestions()) {
 				NameValuePair nvp = 
-					new NameValuePair(q.getSecurityQuestion(), q.getSecurityQuestion());
+					new NameValuePair(q.getSecurityQuestions().getQuestion(), q.getSecurityQuestions().getQuestion());
 				options.getSecurityQuestions().add(nvp);
 			}
 		}
@@ -731,5 +731,15 @@ public class UserServiceImpl implements UserService {
 		}
 		return false;
 	}
+		
+	@Override
+	public List<SecurityQuestions> getSecurityQuestions() {
+		return userDAO.getSecurityQuestions();
+	}
 	
+	@Override
+	public SecurityQuestions getSecurityQuestionObj(String question){
+		SecurityQuestions secQuesObj = userDAO.getSecurityQuestionObj(question);
+		return secQuesObj;
+	}
 }

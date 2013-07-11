@@ -8,6 +8,7 @@ import mat.client.myAccount.MyAccountModel;
 import mat.client.myAccount.SecurityQuestionsModel;
 import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.SaveMyAccountResult;
+import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.service.UserService;
@@ -91,19 +92,20 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 	public SecurityQuestionsModel getSecurityQuestions() {
 		UserService userService = getUserService();
 		User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
+		System.out.println("User ID in MyAccountServiceImpl is:::" + user.getLoginId());
 		List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
 		
 		SecurityQuestionsModel model = new SecurityQuestionsModel();
 		if(secQuestions.size() > 0) {
-			model.setQuestion1(secQuestions.get(0).getSecurityQuestion());
+			model.setQuestion1(secQuestions.get(0).getSecurityQuestions().getQuestion());
 			model.setQuestion1Answer(secQuestions.get(0).getSecurityAnswer());
 		}
 		if(secQuestions.size() > 1) {
-			model.setQuestion2(secQuestions.get(1).getSecurityQuestion());
+			model.setQuestion2(secQuestions.get(1).getSecurityQuestions().getQuestion());
 			model.setQuestion2Answer(secQuestions.get(1).getSecurityAnswer());
 		}
 		if(secQuestions.size() > 2) {
-			model.setQuestion3(secQuestions.get(2).getSecurityQuestion());
+			model.setQuestion3(secQuestions.get(2).getSecurityQuestions().getQuestion());
 			model.setQuestion3Answer(secQuestions.get(2).getSecurityAnswer());
 		}
 
@@ -135,17 +137,27 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 				secQuestions.add(newQuestion);
 			}
 		
-			user.setSecurityQuestions(secQuestions);
-		
-			secQuestions.get(0).setSecurityQuestion(model.getQuestion1());
+			
+			String newQuestion1 = model.getQuestion1();
+			SecurityQuestions secQue1 = userService.getSecurityQuestionObj(newQuestion1);
+			secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
+			secQuestions.get(0).setSecurityQuestions(secQue1);
 			secQuestions.get(0).setSecurityAnswer(model.getQuestion1Answer());
 
-			secQuestions.get(1).setSecurityQuestion(model.getQuestion2());
+			String newQuestion2 = model.getQuestion2();
+			SecurityQuestions secQue2 = userService.getSecurityQuestionObj(newQuestion2);
+			secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
+			secQuestions.get(1).setSecurityQuestions(secQue2);
 			secQuestions.get(1).setSecurityAnswer(model.getQuestion2Answer());
 
-			secQuestions.get(2).setSecurityQuestion(model.getQuestion3());
+			
+			String newQuestion3 = model.getQuestion3();
+			SecurityQuestions secQue3 = userService.getSecurityQuestionObj(newQuestion3);
+			secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
+			secQuestions.get(2).setSecurityQuestions(secQue3);
 			secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
-		
+			user.setSecurityQuestions(secQuestions);
+					
 			userService.saveExisting(user);
 			result.setSuccess(true);
 		}

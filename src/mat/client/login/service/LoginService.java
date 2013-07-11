@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import mat.client.login.LoginModel;
+import mat.model.SecurityQuestions;
 import mat.model.UserSecurityQuestion;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
@@ -31,4 +32,6 @@ public interface LoginService extends RemoteService {
 	String getSecurityQuestion(String userid);
 	public HashMap<String,String> validatePassword(String userID,String enteredPassword);
 	public boolean isLockedUser(String loginId);
+	public List<SecurityQuestions> getSecurityQuestions();
+
 }

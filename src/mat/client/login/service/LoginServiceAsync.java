@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import mat.client.login.LoginModel;
+import mat.model.SecurityQuestions;
 import mat.model.UserSecurityQuestion;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
@@ -36,5 +37,6 @@ public interface LoginServiceAsync extends AsynchronousService{
 	void validatePassword(String userID, String enteredPassword,
 			AsyncCallback<HashMap<String,String>> callback);
 	void isLockedUser(String loginId, AsyncCallback<Boolean> callback);
-		
+	void getSecurityQuestions(AsyncCallback<List<SecurityQuestions>> callback);
+	
 }

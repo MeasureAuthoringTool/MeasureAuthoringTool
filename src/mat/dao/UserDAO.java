@@ -3,6 +3,7 @@ package mat.dao;
 import java.util.Date;
 import java.util.List;
 
+import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.server.model.MatUserDetails;
 
@@ -25,5 +26,7 @@ public interface UserDAO extends IDAO<User, String> {
 	public int countSearchResultsNonAdmin(String text);
 	public String getRandomSecurityQuestion(String userId);
 	public List<User> getAllNonAdminActiveUsers();
-	
+	public List<SecurityQuestions> getSecurityQuestions();
+	public SecurityQuestions getSecurityQuestionObj(String question);
+
 }

@@ -322,9 +322,9 @@ public class MatContext implements IsSerializable {
 	}
 	
 	
-	public void getSecurityQuestions(final AsyncCallback<List<NameValuePair>> callback) {
+/*	public void getSecurityQuestions(final AsyncCallback<List<NameValuePair>> callback) {
 				
-			/*	
+				
 			
 			 "What is your father's middle name?",
 			 "What was the name of your first pet?",
@@ -333,7 +333,7 @@ public class MatContext implements IsSerializable {
 			 "What was the make of your first car?",
 			 "What is the name of the company of your first job?",
 			 "What is your favorite movie?"  	
-		};	 */		   
+		};	 		   
 			
 		List<NameValuePair> retList = new ArrayList<NameValuePair>();
 		for(int i = 0; i < questions.length; i++) {
@@ -343,7 +343,7 @@ public class MatContext implements IsSerializable {
 			retList.add(nvp);
 		}
 		callback.onSuccess(retList);
-	}
+	}*/
 	
 	public void restartTimeoutWarning() {
 		getTimeoutManager().startActivityTimers(ConstantMessages.MAT_MODULE);

@@ -19,6 +19,7 @@ import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.shared.MatContext;
 import mat.client.util.ClientConstants;
 import mat.dao.UserDAO;
+import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.model.MatUserDetails;
@@ -34,6 +35,7 @@ import mat.shared.SecurityQuestionVerifier;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.gwt.http.client.UrlBuilder;
@@ -51,7 +53,8 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		return (LoginCredentialService)context.getBean("loginService");
 	}
 	
-	
+	@Autowired
+	private UserDAO userDAO;
 
 	@Override
 	public SecurityQuestionOptions getSecurityQuestionOptions(String userid) {
@@ -332,14 +335,19 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		return resultStr;
 	}
 
-
-
+	
+	
 	@Override
 	public boolean isLockedUser(String loginId) {
 		UserService userService = (UserService)context.getBean("userService");
 		return userService.isLockedUser(loginId);
 	}
-
+	
+	@Override
+	public List<SecurityQuestions> getSecurityQuestions() {
+		UserService userService = (UserService)context.getBean("userService");
+		return userService.getSecurityQuestions();
+	}
 	
     
 }

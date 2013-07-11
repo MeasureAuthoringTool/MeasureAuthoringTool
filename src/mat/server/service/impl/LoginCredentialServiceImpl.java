@@ -12,6 +12,7 @@ import java.util.List;
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
+import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.model.UserPassword;
 import mat.model.UserSecurityQuestion;
@@ -297,13 +298,23 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			secQuestions.add(newQuestion);
 		}
 		
-		secQuestions.get(0).setSecurityQuestion(model.getQuestion1());
+		String newQuestion1 = model.getQuestion1();
+		SecurityQuestions secQue1 = userService.getSecurityQuestionObj(newQuestion1);
+		secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
+		secQuestions.get(0).setSecurityQuestions(secQue1);
 		secQuestions.get(0).setSecurityAnswer(model.getQuestion1Answer());
 
-		secQuestions.get(1).setSecurityQuestion(model.getQuestion2());
+		String newQuestion2 = model.getQuestion2();
+		SecurityQuestions secQue2 = userService.getSecurityQuestionObj(newQuestion2);
+		secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
+		secQuestions.get(1).setSecurityQuestions(secQue2);
 		secQuestions.get(1).setSecurityAnswer(model.getQuestion2Answer());
 
-		secQuestions.get(2).setSecurityQuestion(model.getQuestion3()); 
+		
+		String newQuestion3 = model.getQuestion3();
+		SecurityQuestions secQue3 = userService.getSecurityQuestionObj(newQuestion3);
+		secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
+		secQuestions.get(2).setSecurityQuestions(secQue3);
 		secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
 		user.setSecurityQuestions(secQuestions);
 		userService.saveExisting(user);

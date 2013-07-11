@@ -5,6 +5,7 @@ import java.util.List;
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
+import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
@@ -40,4 +41,6 @@ public interface UserService {
 	public String getSecurityQuestion(String userid);
 	public List<User> getAllNonAdminActiveUsers();
 	public boolean isLockedUser(String loginId);
+	public List<SecurityQuestions> getSecurityQuestions();
+	public SecurityQuestions getSecurityQuestionObj(String question);
 }

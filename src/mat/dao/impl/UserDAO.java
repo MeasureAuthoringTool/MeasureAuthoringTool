@@ -1,15 +1,18 @@
 package mat.dao.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import mat.dao.search.GenericDAO;
+import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.server.model.MatUserDetails;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -255,21 +258,46 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 	@Override
 	public String getRandomSecurityQuestion(String userId) {
 	   User user = findByLoginId(userId);
-	   String question = null;
-	   if(user == null){
-		   //should return question from master table
-		   return null;
-	   }
 	
-	   String query = "select QUESTION from USER_SECURITY_QUESTIONS";
-	   query += " where USER_ID ='" + user.getId() + "'";
+	   String query = "select QUESTION_ID from USER_SECURITY_QUESTIONS";
+	   if(null != user){
+		   query += " where USER_ID ='" + user.getId() + "'";
+	   }
 	   query += " ORDER BY RAND() LIMIT 1";
 	   
 	   Session session = getSessionFactory().getCurrentSession();
-	   List<String> list = session.createSQLQuery(query).list();
+	   List<Integer> list = session.createSQLQuery(query).list();
+	   SecurityQuestions securityQuestionObj=null;
 	   if(null != list && list.size() > 0){
-		   question = list.get(0);
+		   securityQuestionObj = getSecurityQuestionById("" + list.get(0));
 	   }
-	  return question;
+	   String question = securityQuestionObj.getQuestion();
+	   return question;
+	}
+	
+	
+	@Override
+	public List<SecurityQuestions> getSecurityQuestions(){
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(SecurityQuestions.class);
+		List<SecurityQuestions> results = criteria.list();
+		return results;
+	}
+	
+	@Override 
+	public SecurityQuestions getSecurityQuestionObj(String question){
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(SecurityQuestions.class);
+		criteria.add(Restrictions.ilike("question", question));
+		List<SecurityQuestions> results = criteria.list();
+		return results.get(0);
+	}
+	
+	public SecurityQuestions getSecurityQuestionById(String questionId){
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(SecurityQuestions.class);
+		criteria.add(Restrictions.ilike("questionId", questionId));
+		List<SecurityQuestions> results = criteria.list();
+		return results.get(0);
 	}
 }

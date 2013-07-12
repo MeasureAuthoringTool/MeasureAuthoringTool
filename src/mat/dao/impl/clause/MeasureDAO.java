@@ -736,8 +736,16 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 
 	@Override
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
-		// TODO Auto-generated method stub
-		
+		Session session = getSessionFactory().openSession();
+		org.hibernate.Transaction tx = session.beginTransaction();
+		String sql = "update mat.model.clause.Measure m set isPrivate  = :isPrivate where id = :measureId";
+		Query query = session.createQuery(sql);
+		query.setBoolean("isPrivate", isPrivate);
+		query.setString("measureId", measureId);
+		int rowCount = query.executeUpdate();		
+		logger.info("Updated Private column" + rowCount);
+		tx.commit();
+		session.close();
 	}
 
 	

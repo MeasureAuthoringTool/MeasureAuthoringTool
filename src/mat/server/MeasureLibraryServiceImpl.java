@@ -445,6 +445,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		model.setData(dataList);
 		model.setStartIndex(startIndex);	
 		model.setMeasureId(measureId);
+		model.setPrivate(getService().getById(measureId).getIsPrivate());
 		return model;
 	}
 

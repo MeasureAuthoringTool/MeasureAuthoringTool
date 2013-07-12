@@ -25,7 +25,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
-	private CheckBox privateCheck = new CheckBox("Private");
+	private CheckBox privateCheck = new CheckBox("Private Measure");
 	
 	private SearchView<MeasureShareDTO> searchView = new SearchView<MeasureShareDTO>("Users");
 	

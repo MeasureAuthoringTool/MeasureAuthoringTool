@@ -98,6 +98,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		fPanel.add(new SpacerWidget());
 		
 		VerticalPanel verStewardPanel = new VerticalPanel();
+		verStewardPanel.getElement().setAttribute("id", "PanelSteward");
 		DOM.setElementAttribute(stewardInput.getElement(), "id", "Steward");
 		DOM.setElementAttribute(stewardInput.getElement(), "name", "Steward");
 		stewardInput.setName("Steward");

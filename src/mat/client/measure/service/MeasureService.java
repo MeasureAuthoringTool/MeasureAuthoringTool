@@ -45,6 +45,6 @@ public interface MeasureService extends RemoteService {
 			boolean checkForSupplementData);
 	void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list,
 			String measureID);
-	
+	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
 
 }

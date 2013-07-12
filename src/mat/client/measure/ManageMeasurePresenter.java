@@ -8,8 +8,6 @@ import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.codelist.HasListBox;
-import mat.client.codelist.TransferOwnerShipModel;
-import mat.client.codelist.ManageCodeListSearchPresenter.TransferDisplay;
 import mat.client.codelist.events.OnChangeMeasureDraftOptionsEvent;
 import mat.client.codelist.events.OnChangeMeasureVersionOptionsEvent;
 import mat.client.event.MeasureEditEvent;
@@ -38,7 +36,6 @@ import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
-import mat.model.CodeListSearchDTO;
 import mat.model.clause.MeasureShareDTO;
 import mat.shared.ConstantMessages;
 
@@ -50,8 +47,11 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
@@ -121,6 +121,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public HasPageSelectionHandler getPageSelectionTool();
 		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
 		public int getPageSize();
+		public HasValueChangeHandlers<Boolean> privateCheckbox();
+		public void setPrivate(boolean isPrivate);
 	}
 	public static interface ExportDisplay extends BaseDisplay{
 		public void setMeasureName(String name);
@@ -367,6 +369,25 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(Void result) {
 						displaySearch();
+					}
+				});
+			}
+		});
+		
+		shareDisplay.privateCheckbox().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				MatContext.get().getMeasureService().updatePrivateColumnInMeasure(currentShareDetails.getMeasureId(), event.getValue(), new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						
 					}
 				});
 			}
@@ -954,6 +975,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onSuccess(ManageMeasureShareModel result) {
 						currentShareDetails = result;
+						shareDisplay.setPrivate(currentShareDetails.isPrivate());
 						userShareInfo.setData(result);
 						shareDisplay.buildDataTable(userShareInfo);
 					}

@@ -13,7 +13,10 @@ import mat.client.shared.search.SearchView;
 import mat.model.clause.MeasureShareDTO;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.HasValueChangeHandlers;
+import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -22,6 +25,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
+	private CheckBox privateCheck = new CheckBox("Private");
 	
 	private SearchView<MeasureShareDTO> searchView = new SearchView<MeasureShareDTO>("Users");
 	
@@ -29,7 +33,11 @@ public class ManageMeasureShareView implements ShareDisplay {
 		content.setStylePrimaryName("contentPanel");
 		content.addStyleName("leftAligned");
 		buttonBar.getSaveButton().setText("Save");
-		content.add(measureNameLabel);
+		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.add(measureNameLabel);
+		horizontalPanel.add(privateCheck);
+//		content.add(measureNameLabel);
+		content.add(horizontalPanel);
 		
 		content.add(new Label("Select users with whom you wish to share modify access:"));
 		content.add(new SpacerWidget());
@@ -84,5 +92,15 @@ public class ManageMeasureShareView implements ShareDisplay {
 	@Override
 	public int getPageSize() {
 		return searchView.getPageSize();
+	}
+
+	@Override
+	public HasValueChangeHandlers<Boolean> privateCheckbox() {
+		return privateCheck;
+	}
+
+	@Override
+	public void setPrivate(boolean isPrivate) {
+		privateCheck.setValue(isPrivate);
 	}
 }

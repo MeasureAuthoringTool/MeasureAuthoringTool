@@ -48,5 +48,5 @@ public interface MeasurePackageService {
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId);
 	public void saveMeasureXml(MeasureXmlModel measureXmlModel);
 	public String retrieveStewardOID(String stewardName);
-	
+	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
 }

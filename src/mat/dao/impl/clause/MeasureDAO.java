@@ -360,6 +360,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
 		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
 		List<Measure> measureResultList = mCriteria.list();
+		boolean isNormalUserAndAllMeasures = user.getSecurityRole().getId().equals("3") && filter ==  MeasureSearchFilterPanel.ALL_MEASURES;
 		
 		if(!user.getSecurityRole().getId().equals("2")) { 
 			measureResultList = getAllMeasuresInSet(measureResultList);
@@ -393,6 +394,10 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			if(matchesSearch){
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				measureIdDTOMap.put(measure.getId(), dto);
+				if(isNormalUserAndAllMeasures 
+						&& measure.getIsPrivate() && !measure.getOwner().getId().equals(user.getId())){
+						continue;
+				}
 				orderedDTOList.add(dto);
 			}
 		}
@@ -409,8 +414,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 				String shareLevel = share.getShareLevel().getId();
 				
 				String existingShareLevel = measureSetIdToShareLevel.get(msid);
-				if(existingShareLevel == null || ShareLevel.VIEW_ONLY_ID.equals(existingShareLevel))				
+				if(existingShareLevel == null || ShareLevel.VIEW_ONLY_ID.equals(existingShareLevel)){			
 					measureSetIdToShareLevel.put(msid, shareLevel);
+				}
+				if(isNormalUserAndAllMeasures
+						 && shareLevel.equals(ShareLevel.MODIFY_ID)){
+					orderedDTOList.add(measureIdDTOMap.get(share.getMeasure().getId()));
+					measureSetIdToShareLevel.put(msid, shareLevel);
+				}
 			}
 			for(MeasureShareDTO dto : orderedDTOList){
 				String msid = dto.getMeasureSetId();
@@ -721,6 +732,12 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		SQLQuery query = session.createSQLQuery("update MEASURE m set m.EMEASURE_ID = "+eMeasureId+" where m.MEASURE_SET_ID = '"+ms.getId()+"';");
 		query.executeUpdate();
 		return eMeasureId;
+	}
+
+	@Override
+	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

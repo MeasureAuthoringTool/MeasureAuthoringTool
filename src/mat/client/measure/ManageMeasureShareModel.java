@@ -13,6 +13,7 @@ public class ManageMeasureShareModel implements IsSerializable {
 	private String measureName;
 	private int startIndex;
 	private int resultsTotal;
+	private boolean isPrivate;
 	
 	public void setData(List<MeasureShareDTO> data) {
 		this.data = data;
@@ -63,6 +64,16 @@ public class ManageMeasureShareModel implements IsSerializable {
 
 	public void setMeasureName(String measureName) {
 		this.measureName = measureName;
+	}
+
+
+	public boolean isPrivate() {
+		return isPrivate;
+	}
+
+
+	public void setPrivate(boolean isPrivate) {
+		this.isPrivate = isPrivate;
 	}
 
 }

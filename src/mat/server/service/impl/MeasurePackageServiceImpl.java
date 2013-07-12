@@ -427,6 +427,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 
 		return oid;
 	}
+	
+	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate){
+		measureDAO.updatePrivateColumnInMeasure(measureId, isPrivate);
+	}
 
 	
 }

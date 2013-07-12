@@ -1037,4 +1037,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		} 
 		return details;
 	}
+
+
+	@Override
+	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
+		getService().updatePrivateColumnInMeasure(measureId, isPrivate);
+	}
 }

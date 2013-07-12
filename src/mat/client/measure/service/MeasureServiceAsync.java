@@ -48,5 +48,8 @@ public interface MeasureServiceAsync {
 			AsyncCallback<Void> callback);
 	void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list,
 			String measureID, AsyncCallback<Void> callback);
+	void updatePrivateColumnInMeasure(String measureId, boolean isPrivate,
+			AsyncCallback<Void> callback);
+	
 
 	}

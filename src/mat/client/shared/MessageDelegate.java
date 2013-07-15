@@ -85,6 +85,7 @@ public class MessageDelegate {
 		return "NQF Number is required.";
 	}
 	
+	
 	public static String getMeasureSaveServerErrorMessage(int code){
 		String pre = "Error saving: ";
 		String s ="SPECIAL CODE "+code+".";

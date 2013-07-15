@@ -1061,7 +1061,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			return;
 		
 		Mat.showLoadingMessage();
-		updateDetailsFromView();
+		boolean errorFlag = updateDetailsFromView();
 		
 		if (isClone && isValid(currentDetails)) {
 			cloneMeasure(currentDetails,false);
@@ -1072,36 +1072,45 @@ public class ManageMeasurePresenter implements MatPresenter {
 			final String shortName = currentDetails.getShortName();
 			final String scoringType = currentDetails.getMeasScoring();
 			final String version = currentDetails.getVersionNumber();
-			MatContext.get().getMeasureService().save(currentDetails, new AsyncCallback<SaveMeasureResult>() {
-				
-				@Override
-				public void onSuccess(SaveMeasureResult result) {
-					if(result.isSuccess()) {
-						if(isInsert) {
-							fireMeasureSelectedEvent(result.getId(), version, name, shortName, scoringType, true,false,null);//Need to revisit this, since don't know how this will affect
-							fireMeasureEditEvent();
+			if(errorFlag){
+				detailDisplay.getErrorMessageDisplay().clear();
+				detailDisplay.getErrorMessageDisplay().setMessage(MessageDelegate.s_ERR_MEASURE_SCORE_REQUIRED);
+				Mat.hideLoadingMessage();
+			}else{
+				MatContext.get().getMeasureService().save(currentDetails, new AsyncCallback<SaveMeasureResult>() {
+					
+					@Override
+					public void onSuccess(SaveMeasureResult result) {
+											
+						if(result.isSuccess()) {
+							if(isInsert) {
+								fireMeasureSelectedEvent(result.getId(), version, name, shortName, scoringType, true,false,null);//Need to revisit this, since don't know how this will affect
+								fireMeasureEditEvent();
+							}
+							else {
+								displaySearch();
+							}
 						}
 						else {
-							displaySearch();
+							String message = null;
+							switch(result.getFailureReason()) {
+								default:
+									message = "Unknown Code " + result.getFailureReason();
+							}
+							detailDisplay.getErrorMessageDisplay().setMessage(message);
 						}
+						Mat.hideLoadingMessage();
 					}
-					else {
-						String message = null;
-						switch(result.getFailureReason()) {
-							default:
-								message = "Unknown Code " + result.getFailureReason();
-						}
-						detailDisplay.getErrorMessageDisplay().setMessage(message);
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						detailDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
+						Mat.hideLoadingMessage();
 					}
-					Mat.hideLoadingMessage();
-				}
+				});
+			}
 				
-				@Override
-				public void onFailure(Throwable caught) {
-					detailDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
-					Mat.hideLoadingMessage();
-				}
-			});
+			
 		}
 	}
 	private void createNew() {
@@ -1417,20 +1426,28 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	
-	private void updateDetailsFromView() {
-		currentDetails.setName(detailDisplay.getName().getValue().trim());
-		currentDetails.setShortName(detailDisplay.getShortName().getValue().trim());
-		String measureScoring = detailDisplay.getMeasScoringValue(); 
+	private boolean updateDetailsFromView() {
+		boolean flag = false;
+		String measureScoring = detailDisplay.getMeasScoringValue();
+		if(measureScoring.equals("--Select--")){
+			flag = true;
+		}else{
+			currentDetails.setName(detailDisplay.getName().getValue().trim());
+			currentDetails.setShortName(detailDisplay.getShortName().getValue().trim());
+			 
+			
+			//US 421. Update the Measure scoring choice from the UI.
+			if(isValidValue(measureScoring)){
+				currentDetails.setMeasScoring(measureScoring);
+			}
+			
+			MatContext.get().setCurrentMeasureName(detailDisplay.getName().getValue().trim());
+			MatContext.get().setCurrentShortName(detailDisplay.getShortName().getValue().trim());
+			MatContext.get().setCurrentMeasureScoringType(detailDisplay.getMeasScoringValue());
+			//MatContext.get().setCurrentMeasureVersion(detailDisplay.getMeasureVersion().getValue().trim());
 		
-		//US 421. Update the Measure scoring choice from the UI.
-		if(isValidValue(measureScoring)){
-			currentDetails.setMeasScoring(measureScoring);
 		}
-		
-		MatContext.get().setCurrentMeasureName(detailDisplay.getName().getValue().trim());
-		MatContext.get().setCurrentShortName(detailDisplay.getShortName().getValue().trim());
-		MatContext.get().setCurrentMeasureScoringType(detailDisplay.getMeasScoringValue());
-		//MatContext.get().setCurrentMeasureVersion(detailDisplay.getMeasureVersion().getValue().trim());
+		return flag;		
 	}
 	
 	public boolean isValid(ManageMeasureDetailModel model) {

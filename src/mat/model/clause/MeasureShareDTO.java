@@ -22,11 +22,14 @@ public class MeasureShareDTO implements IsSerializable {
 	private LockedUserInfo lockedUserInfo;
 	private String organizationName;
 	
+	
 	/*US501*/
 	private boolean draft;
 	private Timestamp finalizedDate;
 	private String version;
 	private String measureSetId;
+	
+	private boolean isPrivateMeasure;
 	
 	
 	public String getScoringType(){
@@ -145,6 +148,18 @@ public class MeasureShareDTO implements IsSerializable {
 	 */
 	public void setOrganizationName(String organizationName) {
 		this.organizationName = organizationName;
+	}
+	/**
+	 * @return the isPrivateMeasure
+	 */
+	public boolean isPrivateMeasure() {
+		return isPrivateMeasure;
+	}
+	/**
+	 * @param isPrivateMeasure the isPrivateMeasure to set
+	 */
+	public void setPrivateMeasure(boolean isPrivateMeasure) {
+		this.isPrivateMeasure = isPrivateMeasure;
 	}
 		
 }

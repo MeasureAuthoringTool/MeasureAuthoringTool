@@ -1,6 +1,5 @@
 package mat.dao.impl;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +11,6 @@ import mat.server.model.MatUserDetails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -258,20 +256,26 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 	@Override
 	public String getRandomSecurityQuestion(String userId) {
 	   User user = findByLoginId(userId);
-	
-	   String query = "select QUESTION_ID from USER_SECURITY_QUESTIONS";
-	   if(null != user){
-		   query += " where USER_ID ='" + user.getId() + "'";
+	   String question = null;
+	   if(null == user){
+		   question =  getRandomSecurityQuestion();
 	   }
-	   query += " ORDER BY RAND() LIMIT 1";
 	   
-	   Session session = getSessionFactory().getCurrentSession();
-	   List<Integer> list = session.createSQLQuery(query).list();
-	   SecurityQuestions securityQuestionObj=null;
-	   if(null != list && list.size() > 0){
-		   securityQuestionObj = getSecurityQuestionById("" + list.get(0));
+	  String query = "SELECT S.QUESTION FROM USER_SECURITY_QUESTIONS US JOIN SECURITY_QUESTIONS S" +  
+	   " ON US.QUESTION_ID = S.QUESTION_ID WHERE US.USER_ID = '" + userId + "' ORDER BY RAND() LIMIT 1";
+	   
+	  /* String query = "select QUESTION_ID from USER_SECURITY_QUESTIONS";
+	   query += " where USER_ID ='" + user.getId() + "'";
+	   query += " ORDER BY RAND() LIMIT 1";*/
+	   
+	   Session session = getSessionFactory().openSession();
+	   List<String> list = session.createSQLQuery(query).list();	 
+	   if(list == null || list.isEmpty()){
+		   question = getRandomSecurityQuestion();
+	   }else{
+		   question = list.get(0);
 	   }
-	   String question = securityQuestionObj.getQuestion();
+	   
 	   return question;
 	}
 
@@ -282,4 +286,13 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 		List<SecurityQuestions> results = criteria.list();
 		return results.get(0);
 	}
+
+	public String getRandomSecurityQuestion() {
+		 String query = "select QUESTION from SECURITY_QUESTIONS";		 
+		 query += " order by rand() LIMIT 1";
+		 Session session = getSessionFactory().openSession();
+		 List<String> list = session.createSQLQuery(query).list();
+		 return list.get(0); 
+	}
+
 }

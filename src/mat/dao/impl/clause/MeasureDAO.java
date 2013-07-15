@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -224,6 +225,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		dto.setVersion(measure.getVersion());
 		dto.setFinalizedDate(measure.getFinalizedDate());
 		dto.setMeasureSetId(measure.getMeasureSet().getId());
+		dto.setPrivateMeasure(measure.getIsPrivate());
 
 		boolean isLocked = isLocked(measure.getLockedOutDate());
 		dto.setLocked(isLocked);
@@ -394,13 +396,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 			if(matchesSearch){
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				measureIdDTOMap.put(measure.getId(), dto);
-				if(isNormalUserAndAllMeasures 
-						&& measure.getIsPrivate() && !measure.getOwner().getId().equals(user.getId())){
-						continue;
-				}
 				orderedDTOList.add(dto);
 			}
-		}
+		} 
 		
 		if(orderedDTOList.size() > 0) {
 			Criteria shareCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureShare.class);
@@ -417,18 +415,21 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 				if(existingShareLevel == null || ShareLevel.VIEW_ONLY_ID.equals(existingShareLevel)){			
 					measureSetIdToShareLevel.put(msid, shareLevel);
 				}
-				if(isNormalUserAndAllMeasures
-						 && shareLevel.equals(ShareLevel.MODIFY_ID)){
-					orderedDTOList.add(measureIdDTOMap.get(share.getMeasure().getId()));
-					measureSetIdToShareLevel.put(msid, shareLevel);
-				}
 			}
-			for(MeasureShareDTO dto : orderedDTOList){
-				String msid = dto.getMeasureSetId();
-				String shareLevel = measureSetIdToShareLevel.get(msid);
-				if(shareLevel != null){
-					dto.setShareLevel(shareLevel);
-				}
+			
+			for (Iterator<MeasureShareDTO> iterator = orderedDTOList.iterator(); iterator.hasNext();) {
+				MeasureShareDTO dto = (MeasureShareDTO) iterator.next();
+					String msid = dto.getMeasureSetId();
+					String shareLevel = measureSetIdToShareLevel.get(msid);
+					if(isNormalUserAndAllMeasures 
+							&& dto.isPrivateMeasure() && !dto.getOwnerUserId().equals(user.getId())
+							&& (shareLevel == null || !shareLevel.equals(ShareLevel.MODIFY_ID))){
+							iterator.remove();
+							continue;
+					}
+					if(shareLevel != null){
+						dto.setShareLevel(shareLevel);
+					}
 			}
 		}
 		if(pageSize < orderedDTOList.size())

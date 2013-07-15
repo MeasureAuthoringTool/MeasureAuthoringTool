@@ -1,12 +1,9 @@
 package mat.client.login;
 
-import java.util.List;
-
 import mat.client.event.PasswordEmailSentEvent;
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
-import mat.model.SecurityQuestions;
 import mat.shared.ForgottenPasswordResult;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -100,12 +97,7 @@ public class ForgottenPasswordPresenter {
 						}
 
 						@Override
-						public void onSuccess(String question) {
-							if(null == question){
-								String[] questions = MatContext.get().questions;
-								int i = (int) (Math.random() * questions.length);
-								question = questions[i];
-							}
+						public void onSuccess(String question) {							
 							display.setSecurityQuestionAnswerEnabled(true);
 							display.addSecurityQuestionOptions(question);
 						}

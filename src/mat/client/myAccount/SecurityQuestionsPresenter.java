@@ -64,7 +64,7 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 	
 	public SecurityQuestionsPresenter(Display displayArg) {
 		this.display = displayArg;
-		
+			
 		loginService.getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
 
 			@Override

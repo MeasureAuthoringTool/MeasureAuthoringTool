@@ -26,7 +26,5 @@ public interface UserDAO extends IDAO<User, String> {
 	public int countSearchResultsNonAdmin(String text);
 	public String getRandomSecurityQuestion(String userId);
 	public List<User> getAllNonAdminActiveUsers();
-	public List<SecurityQuestions> getSecurityQuestions();
-	public SecurityQuestions getSecurityQuestionObj(String question);
-
+	
 }

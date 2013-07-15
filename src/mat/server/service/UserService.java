@@ -41,6 +41,4 @@ public interface UserService {
 	public String getSecurityQuestion(String userid);
 	public List<User> getAllNonAdminActiveUsers();
 	public boolean isLockedUser(String loginId);
-	public List<SecurityQuestions> getSecurityQuestions();
-	public SecurityQuestions getSecurityQuestionObj(String question);
 }

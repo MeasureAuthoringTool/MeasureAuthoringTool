@@ -24,6 +24,7 @@ import mat.model.User;
 import mat.model.UserSecurityQuestion;
 import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
+import mat.server.service.SecurityQuestionsService;
 import mat.server.service.TransactionAuditService;
 import mat.server.service.UserService;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
@@ -345,8 +346,8 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	
 	@Override
 	public List<SecurityQuestions> getSecurityQuestions() {
-		UserService userService = (UserService)context.getBean("userService");
-		return userService.getSecurityQuestions();
+		SecurityQuestionsService securityQuestionsService = (SecurityQuestionsService)context.getBean("securityQuestionsService");
+		return securityQuestionsService.getSecurityQuestions();
 	}
 	
     

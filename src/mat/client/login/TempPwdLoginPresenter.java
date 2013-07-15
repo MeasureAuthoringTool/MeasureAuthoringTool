@@ -23,6 +23,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -65,27 +66,31 @@ public class TempPwdLoginPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				display.getSecurityErrorMessageDisplay().setMessage(caught.getMessage());
+				Window.alert("Error fetching security questions :: " + caught.getMessage());
 			}
 
 			@Override
 			public void onSuccess(List<SecurityQuestions> result) {
 				// TODO Auto-generated method stub
-				List<NameValuePair> retList = new ArrayList<NameValuePair>();
-				for(int i=0; i < result.size();i++){
-						SecurityQuestions securityQues = result.get(i);
-						NameValuePair nvp = new NameValuePair();
-						nvp.setName(securityQues.getQuestion());
-						nvp.setValue(securityQues.getQuestion());
-						retList.add(nvp);
-				}
-					
-				if(retList!=null){
-					display.addSecurityQuestionTexts(retList);
+				if(result != null){
+					List<NameValuePair> retList = new ArrayList<NameValuePair>();
+					for(int i=0; i < result.size();i++){
+							SecurityQuestions securityQues = result.get(i);
+							NameValuePair nvp = new NameValuePair();
+							nvp.setName(securityQues.getQuestion());
+							nvp.setValue(securityQues.getQuestion());
+							retList.add(nvp);
+					}
+						
+					if(retList!=null){
+						//display.addQuestionTexts(retList);
+						display.addSecurityQuestionTexts(retList);
+					}
 				}
 			}
 			
 		});
+		
 					
 		display.getReset().addClickHandler(new ClickHandler() {
 

@@ -22,6 +22,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
@@ -56,7 +57,39 @@ public class FirstLoginPresenter {
 
 	public FirstLoginPresenter(Display displayArg) {
 		this.display = displayArg;
+			
 		MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				Window.alert("Error fetching security questions :: " + caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(List<SecurityQuestions> result) {
+				// TODO Auto-generated method stub
+				if(result != null){
+					List<NameValuePair> retList = new ArrayList<NameValuePair>();
+					for(int i=0; i < result.size();i++){
+							SecurityQuestions securityQues = result.get(i);
+							NameValuePair nvp = new NameValuePair();
+							nvp.setName(securityQues.getQuestion());
+							nvp.setValue(securityQues.getQuestion());
+							retList.add(nvp);
+					}
+						
+					if(retList!=null){
+						//display.addQuestionTexts(retList);
+						display.addSecurityQuestionTexts(retList);
+					}
+				}
+			}
+			
+		});
+		
+		
+		/*{
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -73,7 +106,6 @@ public class FirstLoginPresenter {
 						NameValuePair nvp = new NameValuePair();
 						nvp.setName(securityQues.getQuestion());
 						nvp.setValue(securityQues.getQuestion());
-						System.out.println("Security Question: " + securityQues.getQuestion());
 						retList.add(nvp);
 				}
 					
@@ -82,7 +114,7 @@ public class FirstLoginPresenter {
 					display.addSecurityQuestionTexts(retList);
 				}
 			}
-		});
+		});*/
 			
 		display.getReset().addClickHandler(new ClickHandler() {
 

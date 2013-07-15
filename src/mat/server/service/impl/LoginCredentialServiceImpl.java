@@ -19,6 +19,7 @@ import mat.model.UserSecurityQuestion;
 import mat.server.hibernate.HibernateUserDetailService;
 import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
+import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
 
 import org.apache.commons.logging.Log;
@@ -40,6 +41,10 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private SecurityQuestionsService securityQuestionsService;
+	
 	
 	@Autowired
 	UserDAO userDAO;
@@ -299,20 +304,20 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 		
 		String newQuestion1 = model.getQuestion1();
-		SecurityQuestions secQue1 = userService.getSecurityQuestionObj(newQuestion1);
+		SecurityQuestions secQue1 = securityQuestionsService.getSecurityQuestionObj(newQuestion1);
 		secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
 		secQuestions.get(0).setSecurityQuestions(secQue1);
 		secQuestions.get(0).setSecurityAnswer(model.getQuestion1Answer());
-
+		
 		String newQuestion2 = model.getQuestion2();
-		SecurityQuestions secQue2 = userService.getSecurityQuestionObj(newQuestion2);
+		SecurityQuestions secQue2 = securityQuestionsService.getSecurityQuestionObj(newQuestion2);
 		secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
 		secQuestions.get(1).setSecurityQuestions(secQue2);
 		secQuestions.get(1).setSecurityAnswer(model.getQuestion2Answer());
 
 		
 		String newQuestion3 = model.getQuestion3();
-		SecurityQuestions secQue3 = userService.getSecurityQuestionObj(newQuestion3);
+		SecurityQuestions secQue3 = securityQuestionsService.getSecurityQuestionObj(newQuestion3);
 		secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
 		secQuestions.get(2).setSecurityQuestions(secQue3);
 		secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());

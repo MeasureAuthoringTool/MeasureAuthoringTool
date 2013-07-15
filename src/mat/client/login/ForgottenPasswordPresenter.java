@@ -1,9 +1,12 @@
 package mat.client.login;
 
+import java.util.List;
+
 import mat.client.event.PasswordEmailSentEvent;
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
+import mat.model.SecurityQuestions;
 import mat.shared.ForgottenPasswordResult;
 
 import com.google.gwt.event.dom.client.ClickEvent;

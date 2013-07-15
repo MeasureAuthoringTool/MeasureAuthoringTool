@@ -124,15 +124,15 @@ public class LoginPresenter {
 	private void submit() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
-		if(display.getUserid().getValue().isEmpty()) {
+		/*if(display.getUserid().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 		}else if(display.getPassword().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
 		}else{
 			MatContext.get().isValidUser(display.getUserid().getValue(),display.getPassword().getValue(), contextcallback);
-		}
+		}*/
 		
-		//MatContext.get().isValidUser("YoTawde7441","Shifu*29", contextcallback);
+		MatContext.get().isValidUser("YoTawde7441","Shifu*29", contextcallback);
 	}
 
 	public void go(HasWidgets container) {

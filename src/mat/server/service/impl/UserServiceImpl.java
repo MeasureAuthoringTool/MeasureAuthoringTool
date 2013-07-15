@@ -732,14 +732,5 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 		
-	@Override
-	public List<SecurityQuestions> getSecurityQuestions() {
-		return userDAO.getSecurityQuestions();
-	}
-	
-	@Override
-	public SecurityQuestions getSecurityQuestionObj(String question){
-		SecurityQuestions secQuesObj = userDAO.getSecurityQuestionObj(question);
-		return secQuesObj;
-	}
+
 }

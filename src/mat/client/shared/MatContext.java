@@ -37,6 +37,9 @@ import mat.client.measurepackage.service.PackageServiceAsync;
 import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.MyAccountServiceAsync;
 import mat.client.util.ClientConstants;
+
+import mat.model.SecurityQuestions;
+import mat.server.service.SecurityQuestionsService;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;
@@ -150,6 +153,7 @@ public class MatContext implements IsSerializable {
 			 "What was the first sport you ever played as a child?"
 	  };  	
 	
+	private List<SecurityQuestions> securityQuestions = null;
 	
 	
 	public void clearDVIMessages(){
@@ -322,28 +326,27 @@ public class MatContext implements IsSerializable {
 	}
 	
 	
-/*	public void getSecurityQuestions(final AsyncCallback<List<NameValuePair>> callback) {
-				
-				
+	/*public List<SecurityQuestions> getSecurityQuestions() {
+		
+		getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				Window.alert("Error fetching security questions :: " + caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(List<SecurityQuestions> result) {
+				// TODO Auto-generated method stub
+				if(result != null){
+					securityQuestions =  new ArrayList<SecurityQuestions>(result);
+				}
+			}
 			
-			 "What is your father's middle name?",
-			 "What was the name of your first pet?",
-			 "What was the name of your first school?",
-			 "In what city were you born?",
-			 "What was the make of your first car?",
-			 "What is the name of the company of your first job?",
-			 "What is your favorite movie?"  	
-		};	 		   
-			
-		List<NameValuePair> retList = new ArrayList<NameValuePair>();
-		for(int i = 0; i < questions.length; i++) {
-			NameValuePair nvp = new NameValuePair();
-			nvp.setName(questions[i]);
-			nvp.setValue(questions[i]);
-			retList.add(nvp);
-		}
-		callback.onSuccess(retList);
-	}*/
+		});
+		return securityQuestions;
+	}	*/
 	
 	public void restartTimeoutWarning() {
 		getTimeoutManager().startActivityTimers(ConstantMessages.MAT_MODULE);

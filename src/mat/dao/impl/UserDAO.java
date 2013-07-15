@@ -274,25 +274,7 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 	   String question = securityQuestionObj.getQuestion();
 	   return question;
 	}
-	
-	
-	@Override
-	public List<SecurityQuestions> getSecurityQuestions(){
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(SecurityQuestions.class);
-		List<SecurityQuestions> results = criteria.list();
-		return results;
-	}
-	
-	@Override 
-	public SecurityQuestions getSecurityQuestionObj(String question){
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(SecurityQuestions.class);
-		criteria.add(Restrictions.ilike("question", question));
-		List<SecurityQuestions> results = criteria.list();
-		return results.get(0);
-	}
-	
+
 	public SecurityQuestions getSecurityQuestionById(String questionId){
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(SecurityQuestions.class);

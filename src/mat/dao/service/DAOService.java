@@ -76,7 +76,7 @@ public class DAOService {
 	private CodeListAuditLogDAO codeListAuditLogDAO;
 	
 	private MeasureValidationLogDAO measureValidationLogDAO;
-	private SecurityQuestionsDAO securityQuestionsDAO;
+//	private SecurityQuestionsDAO securityQuestionsDAO;
 
 
 	public QDSAttributeDetailsDAO getqDSAttributeDetailsDAO() {
@@ -313,15 +313,15 @@ public class DAOService {
 	}
 	/**
 	 * @return the securityQuestionsDAO
-	 */
+	 *//*
 	public SecurityQuestionsDAO getSecurityQuestionsDAO() {
 		return securityQuestionsDAO;
 	}
-	/**
+	*//**
 	 * @param securityQuestionsDAO the securityQuestionsDAO to set
-	 */
+	 *//*
 	public void setSecurityQuestionsDAO(SecurityQuestionsDAO securityQuestionsDAO) {
 		this.securityQuestionsDAO = securityQuestionsDAO;
-	}
+	}*/
 
 }

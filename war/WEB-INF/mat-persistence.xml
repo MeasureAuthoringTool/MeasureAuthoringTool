@@ -332,7 +332,6 @@
 		<property name="transactionAuditLogDAO" ref="transactionAuditLogDAO"/>
 		<property name="matFlagDAO" ref="matFlagDAO"/>
 		<property name="measureXMLDAO" ref="measureXMLDAO"/>
-		<property name="securityQuestionsDAO" ref="securityQuestionsDAO"/>
 	</bean>
 	 
 </beans>

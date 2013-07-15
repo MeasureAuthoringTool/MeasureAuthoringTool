@@ -27,6 +27,7 @@ import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
+import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.Author;
 import mat.model.MeasureType;
@@ -76,14 +77,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return ((MeasureXMLDAO)context.getBean("measureXMLDAO")); 
 	}
 	
-		
-	/**
-	 * This method is no longer used as we are loading all the measure details from XML  in Measure_Xml table 
-	 * TODO: This should be used only once before the Prod move to Convert all measure to model and marshall as xml and persist in measure_xml table. 
-	 * @param measure
-	 * @param measureDetailsList
-	 * @return
-	 */
+	/*private MeasureDAO getMeasureDAO(){
+		return ((MeasureDAO)context.getBean("measureDAO")); 
+	}
+		*/
 	
 	private void setValueFromModel(ManageMeasureDetailModel model, Measure measure) {
 		measure.setDescription(model.getName());
@@ -92,6 +89,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		measure.setMeasureScoring(model.getMeasScoring());
 		measure.setVersion(model.getVersionNumber());
 		measure.setDraft(model.isDraft());
+		measure.setMeasureStatus(model.getMeasureStatus());
+		measure.seteMeasureId(model.geteMeasureId());
 		if(model.getFinalizedDate() != null  && !model.getFinalizedDate().equals(""))
 			measure.setFinalizedDate(new Timestamp(DateUtility.convertStringToDate(model.getFinalizedDate()).getTime()));
 		if(model.getValueSetDate() != null  && !model.getValueSetDate().equals(""))
@@ -108,6 +107,17 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return convertXmltoModel(xml, measure);	
 		
 	}
+	
+	/*@Override
+	public void saveAndDeleteMeasure(String measureID){
+		MeasureDAO measureDAO = getMeasureDAO();
+		Measure m = measureDAO.find(measureID);
+		m.setDeleted("softDeleted");
+		measureDAO.save(m);
+	}*/
+	
+	
+	
 
 	@Override
 	public SaveMeasureResult save(ManageMeasureDetailModel model) {
@@ -243,6 +253,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		Measure measure = null;
 		if(model.getId() != null){
 			measure = getService().getById(model.getId());
+			if(!measure.getMeasureStatus().equalsIgnoreCase(model.getMeasureStatus())){
+				measure.setMeasureStatus(model.getMeasureStatus());
+				getService().save(measure);
+			}
 		}
 		logger.info("Saving Measure_Xml");
 		saveMeasureXml(createMeasureXmlModel(model, measure, MEASURE_DETAILS, MEASURE));
@@ -396,6 +410,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		manageMeasureDetailModel.setValueSetDate(DateUtility.convertDateToStringNoTime(measure.getValueSetDate()));
 		manageMeasureDetailModel.setNqfId(manageMeasureDetailModel.getNqfModel() != null ? manageMeasureDetailModel.getNqfModel().getExtension() : null);
 		manageMeasureDetailModel.seteMeasureId(measure.geteMeasureId());
+		//manageMeasureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
 		logger.info("Exiting easureLibraryServiceImpl.convertAddlXmlElementsToModel() method..");
 	}
 	

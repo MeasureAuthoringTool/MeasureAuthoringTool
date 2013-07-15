@@ -289,6 +289,10 @@
         class="mat.dao.impl.clause.MeasureXMLDAO" parent="baseDAO">
     </bean>
 
+	  <bean id="SecurityQuestionsDAO"
+        class="mat.dao.impl.SecurityQuestionsDAO" parent="baseDAO">
+    </bean>
+	
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>

@@ -21,7 +21,10 @@
 	    <property name="privacyPolicyUseUrl" value="${mat.privacypolicy.url}"/>	
 	    <property name="userGuideUrl" value="${mat.userguide.url}"/>
     </bean>
-    
+        
+    <bean id="securityQuestionsService" class="mat.server.service.impl.SecurityQuestionsServiceImpl">
+    </bean>    
+            
     <bean id="codeListService" class="mat.server.service.impl.ManageCodeListServiceImpl">
     </bean>
     
@@ -58,5 +61,6 @@
     </bean>-->
     <!-- US154 -->
     <bean id="transactionAuditService" class="mat.server.service.impl.TransactionAuditServiceImpl">
-    </bean>    
+    </bean>
+        
 </beans>

@@ -410,7 +410,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		manageMeasureDetailModel.setValueSetDate(DateUtility.convertDateToStringNoTime(measure.getValueSetDate()));
 		manageMeasureDetailModel.setNqfId(manageMeasureDetailModel.getNqfModel() != null ? manageMeasureDetailModel.getNqfModel().getExtension() : null);
 		manageMeasureDetailModel.seteMeasureId(measure.geteMeasureId());
-		//manageMeasureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
+		manageMeasureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
 		logger.info("Exiting easureLibraryServiceImpl.convertAddlXmlElementsToModel() method..");
 	}
 	

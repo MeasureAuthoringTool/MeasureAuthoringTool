@@ -88,13 +88,13 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		return loginModel;
 	}
 	
-	@Override
+	/*@Override
 	public boolean isValidPassword(String userId, String password){
 		
 		Boolean isValid = getLoginCredentialService().isValidPassword(userId, password);
 		
 		return isValid;
-	}
+	}*/
 	
 	public ForgottenPasswordResult forgotPassword(String loginId, 
 		String securityQuestion, String securityAnswer, int invalidUserCounter) {

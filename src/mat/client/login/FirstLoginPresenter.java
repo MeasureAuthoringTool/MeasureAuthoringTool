@@ -62,8 +62,7 @@ public class FirstLoginPresenter {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				Window.alert("Error fetching 1 security questions :: " + caught.getMessage());
+				//Window.alert("Error fetching 1 security questions :: " + caught.getMessage());
 			}
 
 			@Override
@@ -88,33 +87,6 @@ public class FirstLoginPresenter {
 			
 		});
 		
-		
-		/*{
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				display.getSecurityErrorMessageDisplay().setMessage(caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(List<SecurityQuestions> result) {
-				// TODO Auto-generated method stub
-				List<NameValuePair> retList = new ArrayList<NameValuePair>();
-				for(int i=0; i < result.size();i++){
-						SecurityQuestions securityQues = result.get(i);
-						NameValuePair nvp = new NameValuePair();
-						nvp.setName(securityQues.getQuestion());
-						nvp.setValue(securityQues.getQuestion());
-						retList.add(nvp);
-				}
-					
-				if(retList!=null){
-					//display.addQuestionTexts(retList);
-					display.addSecurityQuestionTexts(retList);
-				}
-			}
-		});*/
 			
 		display.getReset().addClickHandler(new ClickHandler() {
 

@@ -33,5 +33,6 @@ public interface LoginService extends RemoteService {
 	public HashMap<String,String> validatePassword(String userID,String enteredPassword);
 	public boolean isLockedUser(String loginId);
 	public List<SecurityQuestions> getSecurityQuestions();
+	boolean isValidPassword(String userId, String password);
 
 }

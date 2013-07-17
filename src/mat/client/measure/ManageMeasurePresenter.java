@@ -10,6 +10,7 @@ import mat.client.MatPresenter;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.events.OnChangeMeasureDraftOptionsEvent;
 import mat.client.codelist.events.OnChangeMeasureVersionOptionsEvent;
+import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.history.HistoryModel;
@@ -20,11 +21,13 @@ import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.SynchronizationDelegate;
 import mat.client.shared.search.HasPageSelectionHandler;
@@ -67,8 +70,12 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+@SuppressWarnings("deprecation")
 public class ManageMeasurePresenter implements MatPresenter {
 	final String currentUserRole = MatContext.get().getLoggedInUserRole();
+	private boolean measureDeletion =false;
+	private boolean isMeasureDeleted = false;
+	private String measureDelMessage;
 	public static interface BaseDisplay{
 		public Widget asWidget();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
@@ -94,6 +101,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public void clearBulkExportCheckBoxes(Grid508 dataTable);
 		public HasClickHandlers getTransferButton();
 		public MeasureSearchFilterPanel getMeasureSearchFilterPanel();
+		public SuccessMessageDisplay getSuccessMeasureDeletion();
+		public ErrorMessageDisplay getErrorMeasureDeletion();
 		
 	}
 	public static interface DetailDisplay extends BaseDisplay {
@@ -251,6 +260,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onSelection(SelectionEvent<ManageMeasureSearchModel.Result> event) {
 				//TODO synchronize this method call
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				measureDeletion =false;
+				isMeasureDeleted = false;
 				if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 					final String mid = event.getSelectedItem().getId();
 					Result result = event.getSelectedItem();
@@ -292,6 +305,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				measureDeletion =false;
+				isMeasureDeleted = false;
+				
 				if(searchDisplay.getSelectedOption().equalsIgnoreCase(ConstantMessages.CREATE_NEW_MEASURE)){
 					createNew();
 				}else if(searchDisplay.getSelectedOption().equalsIgnoreCase(ConstantMessages.CREATE_NEW_DRAFT)){
@@ -307,6 +325,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				measureDeletion =false;
+				isMeasureDeleted = false;
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getSuccessMeasureDeletion().clear();
 				searchDisplay.clearBulkExportCheckBoxes(searchDisplay.getMeasureDataTable());
 				displayTransferView(startIndex,transferDisplay.getPageSize());
 			}
@@ -315,6 +337,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onPageSelection(PageSelectionEvent event) {
+				measureDeletion =false;
+				isMeasureDeleted = false;
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getSuccessMeasureDeletion().clear();
 				int filter = searchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
 				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
 					 filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
@@ -326,11 +352,35 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
 			@Override
 			public void onPageSizeSelection(PageSizeSelectionEvent event) {
+				measureDeletion =false;
+				isMeasureDeleted = false;
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getSuccessMeasureDeletion().clear();
 				int filter = searchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
 				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
 					 filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
 				}
 				search(searchDisplay.getSearchString().getValue(), startIndex, searchDisplay.getPageSize(),filter);
+			}
+		});
+		
+		//This event will be called when measure is successfully deleted and then MeasureLibrary is reloaded.
+		MatContext.get().getEventBus().addHandler(MeasureDeleteEvent.TYPE, new MeasureDeleteEvent.Handler() {
+
+						@Override
+			public void onDeletion(MeasureDeleteEvent event) {
+				displaySearch();
+				if(event.isDeleted()){
+					//searchDisplay.getSuccessMeasureDeletion().setMessage("Measure successfully deleted.");
+					isMeasureDeleted = true;
+					measureDeletion = true;
+					measureDelMessage=event.getMessage();
+				}else{
+					//searchDisplay.getErrorMeasureDeletion().setMessage("Measure deletion Failed.");
+					isMeasureDeleted = false;
+					measureDeletion = true;
+					measureDelMessage=event.getMessage();
+				}
 			}
 		});
 		
@@ -518,6 +568,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				int startIndex = 1;
+				measureDeletion=false;
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMessageDisplay().clear();
 				int filter = searchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
 				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
 					 filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
@@ -530,6 +584,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+				isMeasureDeleted=false;
+				measureDeletion=false;
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getSuccessMeasureDeletion().clear();
 				searchDisplay.getErrorMessageDisplay().clear();
 				versionDisplay.getErrorMessageDisplay().clear();
 				draftDisplay.getErrorMessageDisplay().clear();
@@ -874,7 +932,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	@Override 
 	public void beforeClosingDisplay() {
-		
+		isMeasureDeleted =false;
+		measureDeletion=false;
 	}
 	
 	private void createVersion(){
@@ -884,6 +943,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchMeasuresForVersion(startIndex,versionDisplay.getPageSize());
 		versionDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+		searchDisplay.getSuccessMeasureDeletion().clear();
+		searchDisplay.getErrorMeasureDeletion().clear();
 		panel.setHeading("My Measures > Create Measure Version of Draft","MainContent");
  	    panel.setContent(versionDisplay.asWidget());
     	Mat.focusSkipLists("MainContent");
@@ -895,6 +956,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		int pageSize = draftDisplay.getPageSize();
 		int startIndex = pageSize * (pageNumber - 1);
     	searchMeasuresForDraft(startIndex,draftDisplay.getPageSize());
+    	searchDisplay.getSuccessMeasureDeletion().clear();
+		searchDisplay.getErrorMeasureDeletion().clear();
     	draftDisplay.getErrorMessageDisplay().clear();
     	searchDisplay.getErrorMessageDisplayForBulkExport().clear();
     	panel.setHeading("My Measures > Create Draft of Existing Measure","MainContent");
@@ -903,6 +966,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
   	private void cloneMeasure(final ManageMeasureDetailModel currentDetails, final boolean isDraftCreation) {
 		String loggedinUserId = MatContext.get().getLoggedinUserId();
+		searchDisplay.getSuccessMeasureDeletion().clear();
+		searchDisplay.getErrorMeasureDeletion().clear();
 		MeasureCloningServiceAsync mcs = (MeasureCloningServiceAsync) GWT.create(MeasureCloningService.class);
 		
 		mcs.clone(currentDetails,loggedinUserId,isDraftCreation, new AsyncCallback<ManageMeasureSearchModel.Result>() {
@@ -959,11 +1024,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void fireMeasureSelectedEvent(String id, String version, String name, String shortName, String scoringType, boolean isEditable,boolean isLocked,String lockedUserId) {
 		MeasureSelectedEvent evt = 
 			new MeasureSelectedEvent(id, version, name, shortName, scoringType, isEditable,isLocked,lockedUserId);
+		searchDisplay.getSuccessMeasureDeletion().clear();
+		searchDisplay.getErrorMeasureDeletion().clear();
 		MatContext.get().getEventBus().fireEvent(evt);
 	}
 	
 	private void getShareDetails(String id, int startIndex) {
 		shareStartIndex = startIndex;
+		searchDisplay.getSuccessMeasureDeletion().clear();
+		searchDisplay.getErrorMeasureDeletion().clear();
 		MatContext.get().getMeasureService().getUsersForShare(id, startIndex, 
 				shareDisplay.getPageSize(), new AsyncCallback<ManageMeasureShareModel>() {
 					@Override
@@ -1262,6 +1331,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 					}else{
 						searchDisplay.getErrorMessageDisplay().clear();
 						searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+						if(measureDeletion){
+							if(isMeasureDeleted){
+								searchDisplay.getSuccessMeasureDeletion().setMessage(measureDelMessage);
+							}else{
+								searchDisplay.getErrorMeasureDeletion().setMessage(measureDelMessage);
+							}
+							
+						}else{
+							searchDisplay.getSuccessMeasureDeletion().clear();
+							searchDisplay.getErrorMeasureDeletion().clear();
+						}
 					}
 					SearchResultUpdate sru = new SearchResultUpdate();
 					sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchText);

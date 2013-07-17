@@ -74,6 +74,7 @@ public class LoginView implements LoginPresenter.Display  {
 		loginPanel.add(errorMessages);
 		
 		userid = new EmailAddressTextBox();
+		userid.getElement().setAttribute("id", "UserID");
 		//loginPanel.add(LabelBuilder.buildLabel(userid, "E-mail Address"));
 		loginPanel.add(LabelBuilder.buildLabel(userid, "User ID"));
 		loginPanel.add(userid);

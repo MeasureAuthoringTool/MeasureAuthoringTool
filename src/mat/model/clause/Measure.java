@@ -26,6 +26,8 @@ public class Measure{
 	//Sprint17
 	private Timestamp valueSetDate;
 	private int eMeasureId;
+
+	private String deleted;
 	private boolean isPrivate;
 	
 	public Timestamp getValueSetDate() {
@@ -170,6 +172,13 @@ public class Measure{
 	}
 	public void seteMeasureId(int eMeasureId) {
 		this.eMeasureId = eMeasureId;
+	}
+
+	public String getDeleted() {
+		return deleted;
+	}
+	public void setDeleted(String deleted) {
+		this.deleted = deleted;
 	}
 	public boolean getIsPrivate() {
 		return isPrivate;

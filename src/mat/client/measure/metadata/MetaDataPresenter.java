@@ -9,6 +9,8 @@ import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.ListBoxCodeProvider;
+import mat.client.event.BackToMeasureLibraryPage;
+import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -33,6 +35,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasValue;
@@ -118,7 +121,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		public void hideOtherTextBox();
 		
 		public Button getSaveBtn();
-			
+		public Button getDeleteMeasure();	
 		
 	}
 	
@@ -178,7 +181,24 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				displayAddEditMeasureType();
 			}
 		});
-		
+		metaDataDisplay.getDeleteMeasure().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				//deleteMeasure();
+				DeleteMeasureConfirmationBox.showDeletionConfimationDialog();
+				DeleteMeasureConfirmationBox.getSave().addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+					//	Window.alert(DeleteMeasureConfirmationBox.getPasswordEntered());
+						checkPasswordForMeasureDeletion(DeleteMeasureConfirmationBox.getPasswordEntered());
+						DeleteMeasureConfirmationBox.getDialogBox().hide();
+					}
+				});
+			}
+		});
 		addEditAuthorsDisplay.getCancelButton().addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
@@ -351,6 +371,17 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		
 		emptyWidget.add(new Label("No Measure Selected"));
 	}
+	
+	private void fireSuccessfullDeletionEvent(boolean isSuccess, String message){
+		MeasureDeleteEvent deleteEvent = new MeasureDeleteEvent(isSuccess, message);
+		MatContext.get().getEventBus().fireEvent(deleteEvent);
+	}
+	
+	private void fireBackToMeasureLibraryEvent(){
+		BackToMeasureLibraryPage backToMeasureLibraryPage = new BackToMeasureLibraryPage();
+		MatContext.get().getEventBus().fireEvent(backToMeasureLibraryPage);
+	}
+			
 	
 	private void generateAndSaveNewEmeasureid(){
 		MeasureServiceAsync service = MatContext.get().getMeasureService();
@@ -568,7 +599,12 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		metaDataDisplay.enableEndorseByRadioButtons(editable);
 		metaDataDisplay.setSaveButtonEnabled(editable);
 		metaDataDisplay.getEmeasureId().setValue(currentMeasureDetail.geteMeasureId()+"");
-		//metaDataDisplay.getMaxEMeasureId()
+		
+		if(!currentMeasureDetail.getMeasureOwnerId().equalsIgnoreCase(MatContext.get().getLoggedinUserId())){
+			metaDataDisplay.getDeleteMeasure().setEnabled(false);
+		}else{
+			metaDataDisplay.getDeleteMeasure().setEnabled(true);
+		}
 		
 	}
 
@@ -592,10 +628,6 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 							metaDataDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getChangesSavedMessage());
 						}
 						
-						/*currentMeasureDetail.setAuthorList(result.getAuthorList());
-						currentMeasureDetail.setMeasureTypeList(result.getMeasureTypeList());
-						setDbAuthorList(result.getAuthorList());
-						setDbMeasureTypeList(result.getMeasureTypeList());					*/
 						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
 						MatContext.get().getMeasureService().getMeasure(MatContext.get().getCurrentMeasureId(), 
 								new AsyncCallback<ManageMeasureDetailModel>(){
@@ -606,8 +638,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 									}
 
 									@Override
-									public void onSuccess(
-											ManageMeasureDetailModel result) {
+									public void onSuccess(ManageMeasureDetailModel result) {
 										currentMeasureDetail = result;
 										displayDetail();
 										
@@ -616,7 +647,6 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 						});
 					}
 					else{
-						//Window.alert("I FAIL1");
 						Mat.hideLoadingMessage();
 						MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
 						metaDataDisplay.getErrorMessageDisplay().setMessage(MessageDelegate.getMeasureSaveServerErrorMessage( result.getFailureReason()));
@@ -625,7 +655,6 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					//Window.alert("I FAIL2");
 					Mat.hideLoadingMessage();
 					MatContext.get().getSynchronizationDelegate().setSavingMeasureDetails(false);
 					metaDataDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
@@ -769,6 +798,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		/*if(currentMeasureDetail != null) {// Removed Auto Save
 			saveMetaDataInformation(false);
 		}*/
+		//This is done to reset measure composure tab to show "No Measure Selected" as when measure is deleted,it should not show Any sub tabs under MeasureComposure. 
+		//MatContext.get().getCurrentMeasureInfo().setMeasureId("");
 		clearMessages();
 	}
 	
@@ -794,6 +825,49 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		});
 	}
 	
+	private void checkPasswordForMeasureDeletion(String password){
+		
+		MatContext.get().getLoginService().isValidPassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<Boolean>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				fireBackToMeasureLibraryEvent();
+				fireSuccessfullDeletionEvent(false,MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+
+			@Override
+			public void onSuccess(Boolean result) {
+				if(result){
+					deleteMeasure();
+				}else{
+					fireBackToMeasureLibraryEvent();
+					fireSuccessfullDeletionEvent(false,"Password supplied is not a valid password.");
+				}
+				
+			}
+		});
+	}
+	
+	
+	private void deleteMeasure(){
+		MatContext.get().getMeasureService().saveAndDeleteMeasure(MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				fireBackToMeasureLibraryEvent();
+				fireSuccessfullDeletionEvent(false,MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				fireBackToMeasureLibraryEvent();
+				fireSuccessfullDeletionEvent(true,"Measure successfully deleted.");
+			}
+			
+		});
+		
+		
+	}
 	
 	/**
 	 * Added on FEB 2013

@@ -29,6 +29,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		private Timestamp finalizedDate;
 		private boolean draft;
 		private String measureSetId;
+		private boolean isDeleted;
 		
 		public LockedUserInfo getLockedUserInfo() {
 			return lockedUserInfo;
@@ -167,6 +168,12 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		 */
 		public boolean isTransferable() {
 			return isTransferable;
+		}
+		public boolean isDeleted() {
+			return isDeleted;
+		}
+		public void setDeleted(boolean isDeleted) {
+			this.isDeleted = isDeleted;
 		}
 		
 	}

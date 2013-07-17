@@ -68,7 +68,15 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	private String endorsement;
 	private String endorsementId;
 	private NqfModel nqfModel;
+	private boolean isDeleted;
+	private String measureOwnerId;
 	
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 	public boolean isDraft() {
 		return draft;
 	}
@@ -841,6 +849,12 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	}
 	public void setOrgVersionNumber(String orgVersionNumber) {
 		this.orgVersionNumber = orgVersionNumber;
+	}
+	public String getMeasureOwnerId() {
+		return measureOwnerId;
+	}
+	public void setMeasureOwnerId(String measureOwnerId) {
+		this.measureOwnerId = measureOwnerId;
 	}
 	
 	

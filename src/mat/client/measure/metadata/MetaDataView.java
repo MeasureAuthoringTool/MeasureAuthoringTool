@@ -119,6 +119,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private Button saveButton = new PrimaryButton("Save","primaryButton");
 	private Button generateeMeasureIDButton = new SecondaryButton("Generate Identifier");
 	
+	private Button deleteMeasure = new SecondaryButton("Delete Measure");
+	
 	private ArrayList<TextAreaWithMaxLength> referenceArrayList = new ArrayList<TextAreaWithMaxLength>(); 
 	
 	private SimplePanel referencePlaceHolder = new SimplePanel();
@@ -190,8 +192,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 
 		fPanel.add(errorMessages);
 		
+		
         fPanel.add(LabelBuilder.buildLabel(nameInput, "eMeasure Title"));
-		fPanel.add(nameInput);
+        HorizontalPanel hp = new HorizontalPanel();
+        hp.getElement().setAttribute("id", "emeasureTitlePanel");
+		hp.add(nameInput);
+		hp.add(deleteMeasure);
+		fPanel.add(hp);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(abbrInput, "eMeasure Abbreviated Title"));
@@ -969,6 +976,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		// TODO Auto-generated method stub
 		return generateeMeasureIDButton;
 	}
+	@Override
+	public Button getDeleteMeasure() {
+		return deleteMeasure;
+	}
+
+	
 	//US 413
 	/* Clears out the Steward Other panel and re-draw the Steward Other input components
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#showOtherTextBox()

@@ -422,7 +422,15 @@ body#main select, body#main input, body#main textarea {
 	
 	
 }
+.gwt-PopupPanelGlass {
+  background-color: #000;
+  opacity: 0.3;
+  filter: alpha(opacity=30);
+}
 
+.gwt-DialogBox .Caption {
+  font-weight: bold;
+}
 
 .successMessage {
 	/*color: green;

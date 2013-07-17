@@ -11,6 +11,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
@@ -52,6 +53,8 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	
 	private ErrorMessageDisplay errorMessagesForBulkExport = new ErrorMessageDisplay();
 	private ErrorMessageDisplay errorMessagesForTransferOS = new ErrorMessageDisplay();
+	private ErrorMessageDisplay errorMeasureDeletion = new ErrorMessageDisplay();
+	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
 	String currentUserRole = MatContext.get().getLoggedInUserRole();
 	
 	
@@ -76,6 +79,9 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 			searchFocusHolder = new FocusableWidget(searchText);
 			mainPanel.add(searchFocusHolder);*/
 			mainPanel.add(buildSearchWidget());
+			mainPanel.add(new SpacerWidget());
+			mainPanel.add(successMeasureDeletion);
+			mainPanel.add(errorMeasureDeletion);
 			mainPanel.add(new SpacerWidget());
 			mainPanel.add(view.asWidget());
 			mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
@@ -277,6 +283,27 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	@Override
 	public ErrorMessageDisplay getErrorMessagesForTransferOS() {
 		return errorMessagesForTransferOS;
+	}
+
+
+	public ErrorMessageDisplay getErrorMeasureDeletion() {
+		return errorMeasureDeletion;
+	}
+
+
+	public void setErrorMeasureDeletion(ErrorMessageDisplay errorMeasureDeletion) {
+		this.errorMeasureDeletion = errorMeasureDeletion;
+	}
+
+
+	public SuccessMessageDisplay getSuccessMeasureDeletion() {
+		return successMeasureDeletion;
+	}
+
+
+	public void setSuccessMeasureDeletion(
+			SuccessMessageDisplay successMeasureDeletion) {
+		this.successMeasureDeletion = successMeasureDeletion;
 	}
 	
 }

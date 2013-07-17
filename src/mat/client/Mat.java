@@ -10,6 +10,7 @@ import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.events.EditCodeListEvent;
 import mat.client.codelist.events.EditGroupedCodeListEvent;
 import mat.client.event.BackToLoginPageEvent;
+import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.LogoffEvent;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
@@ -176,6 +177,15 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 //				currentMeasure.setText(event.getMeasureName());
 				mainTabLayout.selectTab(measureComposer);
 				focusSkipLists("MeasureComposer");
+			}
+		});
+		
+		MatContext.get().getEventBus().addHandler(BackToMeasureLibraryPage.TYPE, new BackToMeasureLibraryPage.Handler() {
+
+			@Override
+			public void onDeleted(BackToMeasureLibraryPage event) {
+				mainTabLayout.selectTab(measureLibrary);
+				focusSkipLists("Measure Library");
 			}
 		});
 		

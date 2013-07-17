@@ -50,6 +50,23 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	UserDAO userDAO;
 	
 	@Override
+	public boolean isValidPassword(String userId, String password){
+		MatUserDetails userDetails =(MatUserDetails )hibernateUserService.loadUserByUsername(userId);
+		if(userDetails!=null){
+			String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), password);
+			if(hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())){
+				return true;
+				
+			}else{
+				return false;
+			}
+		}else{
+			return false;
+		}
+		
+	}
+	
+	@Override
 	public LoginModel isValidUser(String userId, String password) {
 		
 		LoginModel loginModel = new LoginModel();

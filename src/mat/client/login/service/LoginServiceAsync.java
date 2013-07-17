@@ -38,5 +38,7 @@ public interface LoginServiceAsync extends AsynchronousService{
 			AsyncCallback<HashMap<String,String>> callback);
 	void isLockedUser(String loginId, AsyncCallback<Boolean> callback);
 	void getSecurityQuestions(AsyncCallback<List<SecurityQuestions>> callback);
+	void isValidPassword(String userId, String password,
+			AsyncCallback<Boolean> callback);
 	
 }

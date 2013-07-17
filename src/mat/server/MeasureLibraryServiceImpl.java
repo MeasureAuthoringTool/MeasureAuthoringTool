@@ -77,10 +77,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return ((MeasureXMLDAO)context.getBean("measureXMLDAO")); 
 	}
 	
-	/*private MeasureDAO getMeasureDAO(){
+	private MeasureDAO getMeasureDAO(){
 		return ((MeasureDAO)context.getBean("measureDAO")); 
 	}
-		*/
+		
 	
 	private void setValueFromModel(ManageMeasureDetailModel model, Measure measure) {
 		measure.setDescription(model.getName());
@@ -108,13 +108,13 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		
 	}
 	
-	/*@Override
+	@Override
 	public void saveAndDeleteMeasure(String measureID){
 		MeasureDAO measureDAO = getMeasureDAO();
 		Measure m = measureDAO.find(measureID);
 		m.setDeleted("softDeleted");
 		measureDAO.save(m);
-	}*/
+	}
 	
 	
 	

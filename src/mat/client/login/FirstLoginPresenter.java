@@ -63,7 +63,7 @@ public class FirstLoginPresenter {
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
-				Window.alert("Error fetching security questions :: " + caught.getMessage());
+				Window.alert("Error fetching 1 security questions :: " + caught.getMessage());
 			}
 
 			@Override

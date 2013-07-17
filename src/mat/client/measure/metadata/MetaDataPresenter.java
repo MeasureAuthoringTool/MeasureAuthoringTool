@@ -35,7 +35,6 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasValue;
@@ -600,7 +599,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		metaDataDisplay.setSaveButtonEnabled(editable);
 		metaDataDisplay.getEmeasureId().setValue(currentMeasureDetail.geteMeasureId()+"");
 		
-		if(!currentMeasureDetail.getMeasureOwnerId().equalsIgnoreCase(MatContext.get().getLoggedinUserId())){
+		if(currentMeasureDetail.getMeasureOwnerId()!= null && !currentMeasureDetail.getMeasureOwnerId().equalsIgnoreCase(MatContext.get().getLoggedinUserId())){
 			metaDataDisplay.getDeleteMeasure().setEnabled(false);
 		}else{
 			metaDataDisplay.getDeleteMeasure().setEnabled(true);

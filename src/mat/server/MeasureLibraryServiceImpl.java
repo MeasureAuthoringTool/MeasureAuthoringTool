@@ -253,7 +253,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		Measure measure = null;
 		if(model.getId() != null){
 			measure = getService().getById(model.getId());
-			if(!measure.getMeasureStatus().equalsIgnoreCase(model.getMeasureStatus())){
+			if(measure.getMeasureStatus() !=null && !measure.getMeasureStatus().equalsIgnoreCase(model.getMeasureStatus())){
 				measure.setMeasureStatus(model.getMeasureStatus());
 				getService().save(measure);
 			}
@@ -908,6 +908,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		model.setValueSetDate(DateUtility.convertDateToStringNoTime(measure.getValueSetDate()));
 		model.seteMeasureId(measure.geteMeasureId());
 		model.setMeasureStatus(measure.getMeasureStatus());
+		model.setMeasureOwnerId(measure.getOwner().getId());
 		logger.info("Exiting MeasureLibraryServiceImpl.createMeasureDetailsModelFromMeasure()");
 	}
 	

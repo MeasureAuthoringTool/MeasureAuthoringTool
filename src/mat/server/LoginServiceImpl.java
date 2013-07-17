@@ -88,6 +88,14 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 		return loginModel;
 	}
 	
+	@Override
+	public boolean isValidPassword(String userId, String password){
+		
+		Boolean isValid = getLoginCredentialService().isValidPassword(userId, password);
+		
+		return isValid;
+	}
+	
 	public ForgottenPasswordResult forgotPassword(String loginId, 
 		String securityQuestion, String securityAnswer, int invalidUserCounter) {
 
@@ -346,7 +354,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	
 	@Override
 	public List<SecurityQuestions> getSecurityQuestions() {
+		logger.info("Loading....");
 		SecurityQuestionsService securityQuestionsService = (SecurityQuestionsService)context.getBean("securityQuestionsService");
+		logger.info("Found...."+context.getBean("securityQuestionsService"));
 		return securityQuestionsService.getSecurityQuestions();
 	}
 	

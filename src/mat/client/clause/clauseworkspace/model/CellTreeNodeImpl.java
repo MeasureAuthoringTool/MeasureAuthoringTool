@@ -280,7 +280,7 @@ public class CellTreeNodeImpl implements CellTreeNode{
 	}
 
 	
-
+ //TODO : this is called every time when we make a change to the Celltree, instead we can have a title variable in the CellTreeNodeImpl and set it for each functionality.
 	@Override
 	public String getTitle() {
 		String title = getName();
@@ -288,13 +288,14 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		if(label.length() > ClauseConstants.LABEL_MAX_LENGTH){
 			label = label.substring(0,  ClauseConstants.LABEL_MAX_LENGTH - 1).concat("...");
 		}
-		if(getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
-			String oid = ClauseConstants.getElementLookUpNode().get(getName() + "~" + getUUID()).getAttributes().getNamedItem("oid").getNodeValue();
+		if(getNodeType() == CellTreeNode.ELEMENT_REF_NODE){//checking if QDM node
+			String oid = ClauseConstants.getElementLookUpNode().get(getName() + "~" + getUUID()).getAttributes().getNamedItem("oid").getNodeValue();// getting the OID for the QDM
 			int attrCount = getQdmAttributeCount();
-			if(attrCount > 1){
+			if(attrCount > 1){ //if count greater than 1 just append the count to the label
 				title = name + " (" + oid + ")";
 				label = label + " (" + attrCount + ")";
-			}else if(attrCount == 1){
+			}else if(attrCount == 1){ // if count  equals one check if the length of name plus the length attribute name is greater than the max length allowed, 
+												  //if yes add the count as number to name and set the title as attribute name else directly add the attribute name to name 
 				String qdmAttr = getQdmAttribute();
 				if((qdmAttr.length() + name.length()) > ClauseConstants.LABEL_MAX_LENGTH){
 					label = label + " (" + attrCount + ")";
@@ -302,7 +303,6 @@ public class CellTreeNodeImpl implements CellTreeNode{
 					label = getName() + qdmAttr;
 				}
 				title = name + " (" + oid + ")" + qdmAttr;
-				
 			}
 		}
 		setLabel(label);

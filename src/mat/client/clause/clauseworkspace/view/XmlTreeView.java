@@ -97,6 +97,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	/**
 	 * Creates the Root Node in the CellTree.
+	 * Sets the Root node to the ListData Provider.
 	 * @param treeModel
 	 */
 	private void createRootNode(CellTreeNode cellTreeNode) {
@@ -165,10 +166,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				selectedNode = selectionModel.getSelectedObject();
+				selectedNode = selectionModel.getSelectedObject(); // assigning the selected object to the selectedNode variable.
 			}
 		});
 
+		/**
+		 * This handler is implemented to save the open state of the Celltree in CellTreeNode Object
+		 * Set to isOpen boolean in CellTreeNode.
+		 * After adding/removing/editing a node to the celltree 
+		 * Manually  we have to close and open all nodes to see the new node, 
+		 * so using this boolean we will know which node was already in opened state and closed state.
+		 */
 		this.cellTree.addOpenHandler(new OpenHandler<TreeNode>() {
 
 			@Override
@@ -183,7 +191,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			@Override
 			public void onClose(CloseEvent<TreeNode> event) {
 				CellTreeNode node = (CellTreeNode)event.getTarget().getValue();
-				setOpenToFalse(node);
+				setOpenToFalse(node);// when a node is closed set all the child nodes isOpen boolean to false.
 				node.setOpen(false);
 				clearMessages();
 			}
@@ -192,6 +200,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 
 
+	/**
+	 * Iterating through all the child nodes and setting the isOpen boolean to false.
+	 * @param node
+	 */
 	private void setOpenToFalse(CellTreeNode node) {
 		if(node.hasChildren()){
 			for (CellTreeNode child : node.getChilds()) {
@@ -202,7 +214,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	/**
-	 * Closing all nodes in the CellTree
+	 * Closing all nodes in the CellTree except for the Master Root Node which is the Population node.
+	 * This method is called when '-' Collapse All button is clicked on the Screen
 	 * @param treeNode
 	 * @param fireEvents
 	 */
@@ -225,7 +238,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 
 	/**
-	 * this method is called only after removing the node.
+	 * This method is called  after removing or editing of the node.
+	 * When a node is removed, parent node is closed first and then opened.
+	 * Remaining all nodes will be opened or closed based on the isOpen boolean in CellTreeNode
 	 * @param treeNode
 	 */
 	private void closeParentOpenNodes(TreeNode treeNode) {
@@ -245,6 +260,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 
 
+	/**
+	 * This method is called after adding a child node to the parent.
+	 * After adding a child node, close the Parent node and open.
+	 * Remaining all nodes will be opened or closed based on the isOpen boolean in CellTreeNode
+	 * @param treeNode
+	 */
 	private void closeSelectedOpenNodes(TreeNode treeNode) {
 		if(treeNode != null){
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
@@ -262,7 +283,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 
 	/**
-	 * Opens all nodes.
+	 * Opens all nodes. this is called when '+' Expand All button is clicked on the screen
 	 * @param treeNode
 	 */
 	private void openAllNodes(TreeNode treeNode){		

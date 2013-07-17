@@ -65,17 +65,17 @@ public class PackagerServiceImpl implements PackagerService {
 			//fetches the Group node from Measure_XML with the sequence number from MeasurePackageDetail
 			groupNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_GROUP_SEQ_START + detail.getSequence() +  XmlProcessor.XPATH_GROUP_SEQ_END);			
 			//fetches the MeasureGrouping node from the Measure_xml
-			measureGroupingNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_GROUPING);
+			measureGroupingNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_GROUPING);// get the MEASUREGROUPING node
 		} catch (XPathExpressionException e) {
 			logger.info("Xpath Expression is incorrect" + e);
 		}
-		if(null != groupNode && groupNode.hasChildNodes()){
+		if(null != groupNode && groupNode.hasChildNodes()){//if Same sequence , remove and update.
 			logger.info("Removing Group with seq number" + detail.getSequence());
 			measureGroupingNode.removeChild(groupNode);
 		}
-		String measureGroupingXml = createGroupingXml(detail);//Converts MeasurePackageDetail to measureGroupingXml 
+		String measureGroupingXml = createGroupingXml(detail);//Converts MeasurePackageDetail to measureGroupingXml through castor
 		XmlProcessor measureGrpProcessor = new XmlProcessor(measureGroupingXml);
-		Node newGroupNode = measureGrpProcessor.getOriginalDoc().getElementsByTagName("measureGrouping").item(0).getFirstChild();
+		Node newGroupNode = measureGrpProcessor.getOriginalDoc().getElementsByTagName("measureGrouping").item(0).getFirstChild(); // get the converted XML's first child and appends it the Measure Grouping 
 		measureGroupingNode.appendChild(processor.getOriginalDoc().importNode(newGroupNode, true));
 		logger.info("new Group appended");
 		String xml = measureGrpProcessor.transform(processor.getOriginalDoc());
@@ -133,20 +133,21 @@ public class PackagerServiceImpl implements PackagerService {
 		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		boolean isGroupRemoved = false;
 		try {
-			NodeList measureClauses = processor.findNodeList(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_CLAUSE);
+			NodeList measureClauses = processor.findNodeList(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_CLAUSE);// get all CLAUSE type nodes except for Stratum. 
 			if(null != measureClauses && measureClauses.getLength() > 0){
-				String xpathGrpUuid = XmlProcessor.XPATH_FIND_GROUP_CLAUSE;
+				String xpathGrpUuid = XmlProcessor.XPATH_FIND_GROUP_CLAUSE; // find the GROUP/PACKAGECLAUSES that are not in the main CLAUSE nodes using the clause node UUID 
 				for (int i = 0; i < measureClauses.getLength(); i++) {
 					NamedNodeMap namedNodeMap = measureClauses.item(i).getAttributes();
 					Node uuidNode = namedNodeMap.getNamedItem(ClauseConstants.UUID);
 					Node displayNameNode = namedNodeMap.getNamedItem(ClauseConstants.DISPLAY_NAME);
 					Node typeNode = namedNodeMap.getNamedItem(ClauseConstants.TYPE);
 					clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue()));	
-					xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and";
+					xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and"; //adding all Clause type uuid's
 				}
-				xpathGrpUuid = xpathGrpUuid.substring(0, xpathGrpUuid.lastIndexOf(" and")).concat("]]");
+				xpathGrpUuid = xpathGrpUuid.substring(0, xpathGrpUuid.lastIndexOf(" and")).concat("]]"); 
 				// delete groups which doesn't have the measure clauses.
-				 NodeList toRemoveGroups = processor.findNodeList(processor.getOriginalDoc(), xpathGrpUuid);
+				 NodeList toRemoveGroups = processor.findNodeList(processor.getOriginalDoc(), xpathGrpUuid); 
+				// if the UUID's of Clause nodes does not match the UUID's of Group/Package Clause, remove the Grouping completely
 				 if(toRemoveGroups != null && toRemoveGroups.getLength() > 0){
 					 Node measureGroupingNode = toRemoveGroups.item(0).getParentNode();
 					 for (int i = 0; i < toRemoveGroups.getLength(); i++) {
@@ -156,10 +157,11 @@ public class PackagerServiceImpl implements PackagerService {
 				 }
 			}
 			
-			NodeList measureGroups = processor.findNodeList(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_GROUPING_GROUP);
+			NodeList measureGroups = processor.findNodeList(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_GROUPING_GROUP); // XPath to get all Group
 			Map<Integer, MeasurePackageDetail> seqDetailMap = 
 				new HashMap<Integer, MeasurePackageDetail>();
 			
+			// iterate through the measure groupings and get the sequence number attribute and insert in a map with sequence as key and MeasurePackageDetail as value
 			if(measureGroups != null && measureGroups.getLength() > 0){
 				for (int i = 0; i < measureGroups.getLength(); i++) {
 					NamedNodeMap groupAttrs = measureGroups.item(i).getAttributes();
@@ -172,7 +174,7 @@ public class PackagerServiceImpl implements PackagerService {
 						seqDetailMap.put(seq, detail);
 						pkgs.add(detail);
 					}
-					NodeList pkgClauses = measureGroups.item(i).getChildNodes();
+					NodeList pkgClauses = measureGroups.item(i).getChildNodes(); //Iterate through the PACKAGECLAUSE nodes and  convert it into MeasurePackageClauseDetail add it to the list in MeasurePackageDetail
 					for (int j = 0; j < pkgClauses.getLength(); j++) {
 						NamedNodeMap pkgClauseMap = pkgClauses.item(j).getAttributes();
 						detail.getPackageClauses().add(createMeasurePackageClauseDetail(pkgClauseMap.getNamedItem(ClauseConstants.UUID).getNodeValue()

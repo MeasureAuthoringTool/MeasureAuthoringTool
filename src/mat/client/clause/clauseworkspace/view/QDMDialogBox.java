@@ -127,11 +127,11 @@ public class QDMDialogBox{
 				if(isAdd){
 						xmlTreeDisplay.addNode(value, value, uuid, CellTreeNode.ELEMENT_REF_NODE);
 				}else{
-						xmlTreeDisplay.editNode(value, value, uuid);
 						List<CellTreeNode> attributeList = (List<CellTreeNode>)xmlTreeDisplay.getSelectedNode().getExtraInformation(ATTRIBUTES);
 						if(attributeList != null){
 							attributeList.clear();
 						}
+						xmlTreeDisplay.editNode(value, value, uuid);
 				}
 				xmlTreeDisplay.setDirty(true);
 				dialogBox.hide();

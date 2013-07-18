@@ -113,8 +113,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		MeasureDAO measureDAO = getMeasureDAO();
 		Measure m = measureDAO.find(measureID);
 		//This is done to increment correct next version. This should be changed when hard deletion will be implemented.
-		if(!m.isDraft())
+		if(!m.isDraft()){
 			m.setVersion("0.000");
+		}
 		m.setDeleted("softDeleted");
 		measureDAO.save(m);
 	}

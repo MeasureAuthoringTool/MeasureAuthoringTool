@@ -614,12 +614,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		List<List<Measure>> measureLists = new ArrayList<List<Measure>>(); 
 		for(Measure m : measureResultList){
 			boolean hasList = false;
-			for(List<Measure> mlist : measureLists){
-				String msetId = mlist.get(0).getMeasureSet().getId();
-				if(m.getMeasureSet().getId().equalsIgnoreCase(msetId)){
-					mlist.add(m);
-					hasList = true;
-					break;
+			if(m.getDeleted()==null){
+				for(List<Measure> mlist : measureLists){
+					String msetId = mlist.get(0).getMeasureSet().getId();
+					if(m.getMeasureSet().getId().equalsIgnoreCase(msetId)){
+						mlist.add(m);
+						hasList = true;
+						break;
+					}
 				}
 			}
 			if(!hasList){

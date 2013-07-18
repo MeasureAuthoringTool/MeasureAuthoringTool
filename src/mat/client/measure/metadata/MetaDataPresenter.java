@@ -25,6 +25,7 @@ import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.search.SearchView;
 import mat.model.Author;
 import mat.model.MeasureType;
+import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -859,8 +860,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 
 			@Override
 			public void onSuccess(Void result) {
+				MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null, "MEASURE_DELETE_EVENT", "Measure Successfully Deleted", ConstantMessages.DB_LOG);
 				fireBackToMeasureLibraryEvent();
 				fireSuccessfullDeletionEvent(true,MatContext.get().getMessageDelegate().getMeasureDeletionSuccessMgs());
+				
 			}
 			
 		});

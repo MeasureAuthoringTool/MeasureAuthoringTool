@@ -831,7 +831,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onFailure(Throwable caught) {
 				fireBackToMeasureLibraryEvent();
-				fireSuccessfullDeletionEvent(false,MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				fireSuccessfullDeletionEvent(false,null);
 			}
 
 			@Override
@@ -854,7 +854,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onFailure(Throwable caught) {
 				fireBackToMeasureLibraryEvent();
-				fireSuccessfullDeletionEvent(false,MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				fireSuccessfullDeletionEvent(false,null);
 			}
 
 			@Override

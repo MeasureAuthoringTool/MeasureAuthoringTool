@@ -371,15 +371,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onDeletion(MeasureDeleteEvent event) {
 				displaySearch();
 				if(event.isDeleted()){
-					//searchDisplay.getSuccessMeasureDeletion().setMessage("Measure successfully deleted.");
+					
 					isMeasureDeleted = true;
 					measureDeletion = true;
 					measureDelMessage=event.getMessage();
+					System.out.println("Event - is Deleted : " + isMeasureDeleted + measureDeletion);
+					System.out.println("Event - message : " + measureDelMessage);
 				}else{
 					//searchDisplay.getErrorMeasureDeletion().setMessage("Measure deletion Failed.");
 					isMeasureDeleted = false;
 					measureDeletion = true;
 					measureDelMessage=event.getMessage();
+					System.out.println("Event - is NOT Deleted : " + isMeasureDeleted + measureDeletion);
+					System.out.println("Event - message : " + measureDelMessage);
 				}
 			}
 		});
@@ -1326,7 +1330,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 							if(isMeasureDeleted){
 								searchDisplay.getSuccessMeasureDeletion().setMessage(measureDelMessage);
 							}else{
-								searchDisplay.getErrorMeasureDeletion().setMessage(measureDelMessage);
+								if(measureDelMessage!=null)
+									searchDisplay.getErrorMeasureDeletion().setMessage(measureDelMessage);
 							}
 							
 						}else{

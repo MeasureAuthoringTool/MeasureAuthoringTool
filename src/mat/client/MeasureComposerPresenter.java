@@ -194,8 +194,10 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	 	};
 	 	if(MatContext.get().getMeasureLockService().isResettingLock()){
 	 		waitForUnlock.execute();
-	 		//This is done to reset measure composure tab to show "No Measure Selected" as when measure is deleted,it should not show Any sub tabs under MeasureComposure.
-	 		 MatContext.get().getCurrentMeasureInfo().setMeasureId("");
+	 		 //This is done to reset measure composure tab to show "No Measure Selected" as when measure is deleted,it should not show Any sub tabs under MeasureComposure.
+		  	if(MatContext.get().getCurrentMeasureInfo()!=null){
+		  		MatContext.get().getCurrentMeasureInfo().setMeasureId("");
+		  	}
 	 	}
 	 	else{
 	 	    measureComposerTabLayout.close();
@@ -203,8 +205,10 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	 	    measureComposerTabLayout.setSelectedIndex(0);
 	 	    buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 		  	buttonBar.setPageNamesOnState();
-		  	//This is done to reset measure composure tab to show "No Measure Selected" as when measure is deleted,it should not show Any sub tabs under MeasureComposure.
-		    MatContext.get().getCurrentMeasureInfo().setMeasureId("");
+		  //This is done to reset measure composure tab to show "No Measure Selected" as when measure is deleted,it should not show Any sub tabs under MeasureComposure.
+		  	if(MatContext.get().getCurrentMeasureInfo()!=null){
+		  		MatContext.get().getCurrentMeasureInfo().setMeasureId("");
+		  	}
 	 	}
 		
 	}

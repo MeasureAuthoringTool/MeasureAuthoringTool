@@ -51,16 +51,20 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	
 	@Override
 	public boolean isValidPassword(String userId, String password){
-		MatUserDetails userDetails =(MatUserDetails )hibernateUserService.loadUserByUsername(userId);
+		logger.info("LoginCredentialServiceImpl: isValidPassword start : password:: " + password);
+		MatUserDetails userDetails = (MatUserDetails)hibernateUserService.loadUserByUsername(userId);
 		if(userDetails!=null){
 			String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), password);
 			if(hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())){
+				logger.info("LoginCredentialServiceImpl: isValidPassword end : password matched. ");
 				return true;
 				
 			}else{
+				logger.info("LoginCredentialServiceImpl: isValidPassword end : password mismatched. ");
 				return false;
 			}
 		}else{
+			logger.info("LoginCredentialServiceImpl: isValidPassword end : user detail null ");
 			return false;
 		}
 		

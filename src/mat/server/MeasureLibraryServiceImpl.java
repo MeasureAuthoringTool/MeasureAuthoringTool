@@ -122,7 +122,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		m.setDeleted("softDeleted");
 		measureDAO.save(m);
 		//Transaction Audit entry for measure deletion.
-		MatContext.get().recordTransactionEvent(measureID, null, "MEASURE_DELETE_EVENT", "Measure Successfully Deleted", ConstantMessages.DB_LOG);
+	//	MatContext.get().recordTransactionEvent(measureID, null, "MEASURE_DELETE_EVENT", "Measure Successfully Deleted", ConstantMessages.DB_LOG);
 		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure End : measureId:: " + measureID);
 	}
 	

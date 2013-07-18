@@ -110,14 +110,17 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	@Override
 	public void saveAndDeleteMeasure(String measureID){
+		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure start : measureId:: " + measureID);
 		MeasureDAO measureDAO = getMeasureDAO();
 		Measure m = measureDAO.find(measureID);
 		//This is done to increment correct next version. This should be changed when hard deletion will be implemented.
 		if(!m.isDraft()){
+			logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure: Version number updated from ::"+ m.getVersionNumber() +" to 0.000");
 			m.setVersion("0.000");
 		}
 		m.setDeleted("softDeleted");
 		measureDAO.save(m);
+		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure End : measureId:: " + measureID);
 	}
 	
 	

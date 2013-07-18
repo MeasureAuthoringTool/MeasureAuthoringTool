@@ -1347,6 +1347,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 						@Override
 						public void onHistoryClicked(Result result) {
+							measureDeletion=false;
+							isMeasureDeleted=false;
+							searchDisplay.getSuccessMeasureDeletion().clear();
+							searchDisplay.getErrorMeasureDeletion().clear();
 							historyDisplay.setReturnToLinkText("<< Return to Measure Library");
 							if(!result.isEditable()){
 								historyDisplay.setUserCommentsReadOnly(true);
@@ -1421,15 +1425,27 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchResults.setObserver(new MeasureSearchResultsAdapter.Observer() {
 			@Override
 			public void onShareClicked(ManageMeasureSearchModel.Result result) {
+				measureDeletion=false;
+				isMeasureDeleted=false;
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
 				displayShare(result.getId(), result.getName());
 			}
 			@Override
 			public void onExportClicked(ManageMeasureSearchModel.Result result) {
+				measureDeletion=false;
+				isMeasureDeleted=false;
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
 				export(result.getId(), result.getName());
 			}
 			
 			@Override
 			public void onHistoryClicked(ManageMeasureSearchModel.Result result) {
+				measureDeletion=false;
+				isMeasureDeleted=false;
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
 				historyDisplay.setReturnToLinkText("<< Return to Measure Library");
 				if(!result.isEditable()){
 					historyDisplay.setUserCommentsReadOnly(true);
@@ -1447,17 +1463,29 @@ public class ManageMeasurePresenter implements MatPresenter {
 //				fireMeasureSelectedEvent(result.getId(), 
 //						result.getName(), result.getShortName(), result.getScoringType(),result.isEditable(),result.isMeasureLocked(),
 //						result.getLockedUserId(result.getLockedUserInfo()));
+				measureDeletion=false;
+				isMeasureDeleted=false;
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
 					edit(result.getId());
 			}
 			
 			@Override
 			public void onCloneClicked(ManageMeasureSearchModel.Result result) {
+				measureDeletion=false;
+				isMeasureDeleted=false;
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
 				isClone = true;
 				editClone(result.getId());
 			}
 
 			@Override
 			public void onExportSelectedClicked(CustomCheckBox checkBox){
+				measureDeletion=false;
+				isMeasureDeleted=false;
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
 				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 				if(checkBox.getValue()){
 					if(manageMeasureSearchModel.getSelectedExportIds().size() > 89){

@@ -112,6 +112,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	public void saveAndDeleteMeasure(String measureID){
 		MeasureDAO measureDAO = getMeasureDAO();
 		Measure m = measureDAO.find(measureID);
+		if(!m.isDraft())
+			m.setVersion("0.000");
 		m.setDeleted("softDeleted");
 		measureDAO.save(m);
 	}

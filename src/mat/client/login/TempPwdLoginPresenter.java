@@ -61,37 +61,7 @@ public class TempPwdLoginPresenter {
 	public TempPwdLoginPresenter(Display displayArg) {
 		
 		this.display = displayArg;
-		MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				Window.alert("Error fetching security questions :: " + caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(List<SecurityQuestions> result) {
-				// TODO Auto-generated method stub
-				if(result != null){
-					List<NameValuePair> retList = new ArrayList<NameValuePair>();
-					for(int i=0; i < result.size();i++){
-							SecurityQuestions securityQues = result.get(i);
-							NameValuePair nvp = new NameValuePair();
-							nvp.setName(securityQues.getQuestion());
-							nvp.setValue(securityQues.getQuestion());
-							retList.add(nvp);
-					}
-						
-					if(retList!=null){
-						//display.addQuestionTexts(retList);
-						display.addSecurityQuestionTexts(retList);
-					}
-				}
-			}
-			
-		});
-		
-					
+							
 		display.getReset().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -224,6 +194,39 @@ public class TempPwdLoginPresenter {
 		});
 	}
 
+	private void loadSecurityQuestions(){
+			MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				Window.alert("Error fetching security questions :: " + caught.getMessage());
+			}
+
+			@Override
+			public void onSuccess(List<SecurityQuestions> result) {
+				// TODO Auto-generated method stub
+				if(result != null){
+					List<NameValuePair> retList = new ArrayList<NameValuePair>();
+					for(int i=0; i < result.size();i++){
+							SecurityQuestions securityQues = result.get(i);
+							NameValuePair nvp = new NameValuePair();
+							nvp.setName(securityQues.getQuestion());
+							nvp.setValue(securityQues.getQuestion());
+							retList.add(nvp);
+					}
+						
+					if(retList!=null){
+						//display.addQuestionTexts(retList);
+						display.addSecurityQuestionTexts(retList);
+					}
+				}
+			}
+			
+		});
+		}
+	
+	
 	private void reset() {
 		display.getPasswordErrorMessageDisplay().clear();
 		display.getSecurityErrorMessageDisplay().clear();
@@ -253,6 +256,7 @@ public class TempPwdLoginPresenter {
 	public void go(HasWidgets container) {
 		reset();
 		beforeDisplay();
+		loadSecurityQuestions();
 		container.add(display.asWidget());
 	}	
 	

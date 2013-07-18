@@ -123,7 +123,6 @@ public class UserServiceImpl implements UserService {
 		}
 		setUserPassword(user, newPassword, true);
 		userDAO.save(user);
-		System.out.println("newPassword ==============="+newPassword);
 		notifyUserOfTemporaryPassword(user, newPassword);
 	}
 	

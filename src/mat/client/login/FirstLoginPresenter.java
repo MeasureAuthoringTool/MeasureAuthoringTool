@@ -57,37 +57,7 @@ public class FirstLoginPresenter {
 
 	public FirstLoginPresenter(Display displayArg) {
 		this.display = displayArg;
-			
-		MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				//Window.alert("Error fetching 1 security questions :: " + caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(List<SecurityQuestions> result) {
-				// TODO Auto-generated method stub
-				if(result != null){
-					List<NameValuePair> retList = new ArrayList<NameValuePair>();
-					for(int i=0; i < result.size();i++){
-							SecurityQuestions securityQues = result.get(i);
-							NameValuePair nvp = new NameValuePair();
-							nvp.setName(securityQues.getQuestion());
-							nvp.setValue(securityQues.getQuestion());
-							retList.add(nvp);
-					}
-						
-					if(retList!=null){
-						//display.addQuestionTexts(retList);
-						display.addSecurityQuestionTexts(retList);
-					}
-				}
-			}
-			
-		});
-		
-		
+					
 		/*{
 
 			@Override
@@ -247,6 +217,42 @@ public class FirstLoginPresenter {
 		});
 	}
 
+	
+	
+	private void loadSecurityQuestions(){
+			MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					//Window.alert("Error fetching 1 security questions :: " + caught.getMessage());
+				}
+
+				@Override
+				public void onSuccess(List<SecurityQuestions> result) {
+					// TODO Auto-generated method stub
+					if(result != null){
+						List<NameValuePair> retList = new ArrayList<NameValuePair>();
+						for(int i=0; i < result.size();i++){
+								SecurityQuestions securityQues = result.get(i);
+								NameValuePair nvp = new NameValuePair();
+								nvp.setName(securityQues.getQuestion());
+								nvp.setValue(securityQues.getQuestion());
+								retList.add(nvp);
+						}
+							
+						if(retList!=null){
+							//display.addQuestionTexts(retList);
+							display.addSecurityQuestionTexts(retList);
+						}
+					}
+				}
+				
+			});
+			
+		
+	}
+	
+	
 	private void reset() {
 		display.getPasswordErrorMessageDisplay().clear();
 		display.getSecurityErrorMessageDisplay().clear();
@@ -258,10 +264,6 @@ public class FirstLoginPresenter {
 		display.getPasswordErrorMessageDisplay().clear();
 		display.getSecurityErrorMessageDisplay().clear();
 	}
-	
-	
-
-	
 	
 	private LoginModel getValues() {
 		LoginModel model = new LoginModel();
@@ -279,6 +281,7 @@ public class FirstLoginPresenter {
 	}
 	public void go(HasWidgets container) {
 		reset();
+		loadSecurityQuestions();
 		container.add(display.asWidget());
 	}
 }

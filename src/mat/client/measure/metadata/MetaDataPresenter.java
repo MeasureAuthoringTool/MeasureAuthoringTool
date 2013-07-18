@@ -840,7 +840,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 					deleteMeasure();
 				}else{
 					fireBackToMeasureLibraryEvent();
-					fireSuccessfullDeletionEvent(false,"Password supplied is not a valid password.");
+					fireSuccessfullDeletionEvent(false,MatContext.get().getMessageDelegate().getMeasureDeletionInvalidPwd());
 				}
 				
 			}
@@ -860,7 +860,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onSuccess(Void result) {
 				fireBackToMeasureLibraryEvent();
-				fireSuccessfullDeletionEvent(true,"Measure successfully deleted.");
+				fireSuccessfullDeletionEvent(true,MatContext.get().getMessageDelegate().getMeasureDeletionSuccessMgs());
 			}
 			
 		});

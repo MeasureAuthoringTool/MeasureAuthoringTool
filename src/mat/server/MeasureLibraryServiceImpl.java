@@ -26,6 +26,7 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
@@ -120,6 +121,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		}
 		m.setDeleted("softDeleted");
 		measureDAO.save(m);
+		//Transaction Audit entry for measure deletion.
+		MatContext.get().recordTransactionEvent(measureID, null, "MEASURE_DELETE_EVENT", "Measure Successfully Deleted", ConstantMessages.DB_LOG);
 		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure End : measureId:: " + measureID);
 	}
 	

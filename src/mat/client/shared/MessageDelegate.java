@@ -925,4 +925,14 @@ public class MessageDelegate {
 	public String getRelationalOpTwoChildMessage() {
 		return RELATIONALOP_TWO_CHILD_MESSAGE;
 	}
+	
+	private final String MEASURE_DELETION_INVALID_PWD="The entered password is wrong, please try again.";
+	public String getMeasureDeletionInvalidPwd(){
+		return MEASURE_DELETION_INVALID_PWD;
+	}
+	
+	private final String MEASURE_DELETION_SUCCESS_MSG="Measure successfully deleted.";
+	public String getMeasureDeletionSuccessMgs(){
+		return MEASURE_DELETION_SUCCESS_MSG;
+	}
 }

@@ -24,7 +24,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -40,7 +39,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	private SimplePanel containerPanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
-	//Commented till remove functionality is implemented.
+	
 	public Button removeButton = new Button("Remove");
 	public List<QualityDataSetDTO> listToRemove;
 	@Override
@@ -78,13 +77,12 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(new SpacerWidget());
 		vp.add(errorMessagePanel);
 		vp.add(successMessagePanel);
-		/*vp.add(new HTML("<h4> Applied QDM Elements </h4>"));*/
+		
 		vp.add(new SpacerWidget());
 		vp.add(mainPanelNormal);
 		vp.add(new SpacerWidget());
 		vp.add(rangeLabelPager);
 		vp.add(new SpacerWidget());
-		//Commented till remove functionality is implemented.
 		removeButton.setEnabled(checkForEnable());
 		vp.add(removeButton);
 		vp.add(new SpacerWidget());
@@ -115,7 +113,6 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 		ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>();
 		final MultiSelectionModel<QualityDataSetDTO> selectionModel = new MultiSelectionModel<QualityDataSetDTO>();
-		//Commented till remove functionality is implemented.
 		hasCells.add(new HasCell<QualityDataSetDTO, Boolean>(){
 
 			private MatCheckBoxCell cbCell = new MatCheckBoxCell();
@@ -179,8 +176,6 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			{
 				// this renders each of the cells inside the composite cell in a new table cell
 				Cell<X> cell = hasCell.getCell();
-				//Commented till remove functionality is implemented.
-			//	sb.appendHtmlConstant("<td style='font-size:95%;'>");
 				sb.appendHtmlConstant("<td style='font-size:100%;'>");
 				cell.render(context, hasCell.getValue(value), sb);
 				sb.appendHtmlConstant("</td>");
@@ -189,7 +184,6 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		};
 
 		cellList =  new CellList<QualityDataSetDTO>(myClassCell);
-		cellList.setWidth("350px");
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
@@ -211,8 +205,6 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 	private boolean checkForEnable(){
 		return MatContext.get().getMeasureLockService().checkForEditPermission();
-		// uncomment above line once remove button action is active and implemented.
-		//return false;
 	}
 
 	@Override

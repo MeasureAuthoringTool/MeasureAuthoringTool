@@ -855,12 +855,15 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onFailure(Throwable caught) {
 				fireBackToMeasureLibraryEvent();
+				
 				fireSuccessfullDeletionEvent(false,null);
 			}
 
 			@Override
 			public void onSuccess(Void result) {
 				MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null, "MEASURE_DELETE_EVENT", "Measure Successfully Deleted", ConstantMessages.DB_LOG);
+				// this is set to avoid showing dirty check message if user has modified Measure details and is deleting without saving.
+				currentMeasureDetail.setDeleted(true);
 				fireBackToMeasureLibraryEvent();
 				fireSuccessfullDeletionEvent(true,MatContext.get().getMessageDelegate().getMeasureDeletionSuccessMgs());
 				

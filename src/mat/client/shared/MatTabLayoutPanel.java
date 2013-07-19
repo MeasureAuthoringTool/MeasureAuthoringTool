@@ -326,11 +326,15 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		ManageMeasureDetailModel pageData = new ManageMeasureDetailModel();
 		metaDataPresenter.updateModelDetailsFromView(pageData, metaDataPresenter.getMetaDataDisplay());
 		ManageMeasureDetailModel dbData = metaDataPresenter.getCurrentMeasureDetail();
-		pageData.setToCompareAuthor(pageData.getAuthorList());
-		pageData.setToCompareMeasure(pageData.getMeasureTypeList());
-		dbData.setToCompareAuthor(metaDataPresenter.getDbAuthorList());
-		dbData.setToCompareMeasure(metaDataPresenter.getDbMeasureTypeList());
-		return pageData.equals(dbData);
+		if(dbData.isDeleted())
+			return true;
+		else{
+			pageData.setToCompareAuthor(pageData.getAuthorList());
+			pageData.setToCompareMeasure(pageData.getMeasureTypeList());
+			dbData.setToCompareAuthor(metaDataPresenter.getDbAuthorList());
+			dbData.setToCompareMeasure(metaDataPresenter.getDbMeasureTypeList());
+			return pageData.equals(dbData);
+		}
 	}
 
 	

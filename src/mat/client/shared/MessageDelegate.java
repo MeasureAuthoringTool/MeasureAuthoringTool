@@ -926,7 +926,7 @@ public class MessageDelegate {
 		return RELATIONALOP_TWO_CHILD_MESSAGE;
 	}
 	
-	private final String MEASURE_DELETION_INVALID_PWD="The entered password is wrong, please try again.";
+	private final String MEASURE_DELETION_INVALID_PWD="The entered password is invalid. Please try again.";
 	public String getMeasureDeletionInvalidPwd(){
 		return MEASURE_DELETION_INVALID_PWD;
 	}

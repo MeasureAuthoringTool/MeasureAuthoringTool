@@ -51,7 +51,7 @@ public class DeleteMeasureConfirmationBox {
 		ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 		errorMessageDisplay.setMessage("Deleting a draft or version of a measure will permanently remove the designated measure draft or version from  the Measure Authoring Tool. Deleted measures cannot <br> be recovered.");
 		VerticalPanel passwordPanel = new VerticalPanel();
-		final HTML passwordText = new HTML("To Confirm deletion enter your password below:");
+		final HTML passwordText = new HTML("To confirm deletion enter your password below:");
 		final PasswordTextBox password = new PasswordTextBox();
 		passwordPanel.add(passwordText);
 		passwordPanel.add(new SpacerWidget());

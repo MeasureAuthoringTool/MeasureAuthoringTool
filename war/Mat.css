@@ -345,7 +345,7 @@ body#main select, body#main input, body#main textarea {
 }
  .scrollable {
       height: 400px;
-      width: 250px;
+      width: 850px;
       border: 1px solid #ccc;
       text-align: left;
  }

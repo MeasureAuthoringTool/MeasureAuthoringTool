@@ -349,13 +349,6 @@ body#main select, body#main input, body#main textarea {
       border: 1px solid #ccc;
       text-align: left;
  }
- 
- .scrollableJSON {
-      height: 400px;
-      width: 250px;
-      border: 1px solid #ccc;
-      text-align: left;
- }
  .qdmCellList{
  	margin-top:-12px;
  	margin-left:10px;

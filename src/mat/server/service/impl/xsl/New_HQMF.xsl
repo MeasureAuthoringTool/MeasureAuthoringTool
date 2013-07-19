@@ -987,10 +987,11 @@
                             select="count(preceding-sibling::qdm[@suppDataElement != 'true']
                                                                               [@oid = $this_oid]
                                                                               [@datatype != ('attribute','Timing Element')]
-                                                                              [@datatype=$this_datatype])"
+                                                                              [@datatype=$this_datatype]
+                                                                              [not(@instance)])"
                         />
                     </xsl:variable>
-
+                    <!--<test><xsl:value-of select="$this_datatype"/> and <xsl:value-of select="$count_preceeding"/></test>-->
                     <xsl:if test="$count_preceeding = 0">
                         <xsl:apply-templates select="." mode="datacriteria"/>
                     </xsl:if>
@@ -1092,15 +1093,31 @@
         <xsl:variable name="elId">
             <xsl:value-of select="@id"/>
         </xsl:variable>
-        <entry typeCode="DRIV">
-            <xsl:apply-templates select="."/>
-        </entry>
-
+        <xsl:variable name="this_oid">
+            <xsl:value-of select="@oid"/>
+        </xsl:variable>
+        <xsl:variable name="this_datatype">
+            <xsl:value-of select="@datatype"/>
+        </xsl:variable>
+        <xsl:variable name="count_preceeding">
+            <xsl:value-of
+                select="count(preceding-sibling::qdm[@suppDataElement != 'true']
+                [@oid = $this_oid]
+                [@datatype != ('attribute','Timing Element')]
+                [@datatype=$this_datatype])"
+            />
+        </xsl:variable>
+        <xsl:if test="$count_preceeding = 0">
+            <entry typeCode="DRIV">
+                <xsl:apply-templates select="."/>
+            </entry>
+        </xsl:if>
         <!-- Handle QDM's which have 'negation rationale' attributes -->
         <xsl:if test="name() = 'qdm'">
             <xsl:variable name="uuid">
                 <xsl:value-of select="@uuid"/>
             </xsl:variable>
+<!--            <test1>UUID:<xsl:value-of select="$uuid"/></test1>-->
             <xsl:if
                 test="count(ancestor::measure//elementRef[@id=$uuid][attribute[@qdmUUID][lower-case(@name)='negation rationale']]) > 0">
                 <xsl:variable name="rootNode" select="/"/>

@@ -124,6 +124,8 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
 			clonedMeasure.setDescription(currentDetails.getName());
 			clonedMeasure.setMeasureStatus("In Progress");
+			clonedMeasure.setVersion(VERSION_ZERO);
+			clonedMeasure.setDraft(TRUE);
 			if(currentDetails.getMeasScoring()!= null){
 				clonedMeasure.setMeasureScoring(currentDetails.getMeasScoring());
 			}else{
@@ -134,14 +136,10 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 				clonedMeasure.setOwner(currentUser);
 			}
 			if(creatingDraft){
-				clonedMeasure.setVersion(measure.getVersion());
-				clonedMeasure.setDraft(TRUE);
 				clonedMeasure.setMeasureSet(measure.getMeasureSet());
 				measureDAO.saveMeasure(clonedMeasure);
 				createNewMeasureDetailsForDraft();
 			}else{
-				clonedMeasure.setVersion(VERSION_ZERO);
-				clonedMeasure.setDraft(measure.isDraft());
 				// Clear the measureDetails tag
 				clearChildNodes(MEASURE_DETAILS);
 				MeasureSet measureSet = new MeasureSet();

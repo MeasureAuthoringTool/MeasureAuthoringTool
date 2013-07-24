@@ -1,16 +1,8 @@
-package mat.client.clause;
+package mat.client.shared;
 
 import java.util.ArrayList;
 
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.MatContext;
-import mat.client.shared.RadioButtonCell;
-import mat.client.shared.RangeLabelPager;
-import mat.client.shared.ShowMorePagerPanel;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.clause.QDSAppliedListModel;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.cell.client.Cell;
@@ -18,58 +10,39 @@ import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.TextCell;
+
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+public class QDMAppliedListWidget {
 
-
-public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDisplay {
-	private SimplePanel containerPanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
-	
+	HorizontalPanel mainAppliedQDMPanel = new HorizontalPanel();
 	public Button removeButton = new Button("Remove");
-	public Button modify = new Button("Modify");
 	public QualityDataSetDTO  lastSelectedObject;
-	@Override
-	public QualityDataSetDTO getSelectedElementToRemove() {
-		return lastSelectedObject;
-	}
-
-	@Override
-	public Button getRemoveButton() {
-		return removeButton;
-	}
-
+	
 	private CellList<QualityDataSetDTO> cellList;
 	
 	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
 	RangeLabelPager rangeLabelPager = new RangeLabelPager();
-
-	public SuccessMessageDisplay getSuccessMessagePanel(){
-		return successMessagePanel;
-	}
-
-	public ErrorMessageDisplay getErrorMessagePanel(){
-		return errorMessagePanel;
-	}
-
-	public QDSAppliedListView() {
+	
+	public QDMAppliedListWidget(){
 		successMessagePanel = new SuccessMessageDisplay();
 		successMessagePanel.clear();
-		HorizontalPanel mainPanel = new HorizontalPanel();
+		
 		VerticalPanel vp = new VerticalPanel();
+		
 		vp.setStylePrimaryName("qdmCellList");
 		HorizontalPanel mainPanelNormal = new HorizontalPanel();
 		mainPanelNormal.add(pagerPanel);
@@ -80,38 +53,15 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		
 		vp.add(new SpacerWidget());
 		vp.add(mainPanelNormal);
-		vp.add(new SpacerWidget());
-		vp.add(rangeLabelPager);
+		//vp.add(new SpacerWidget());
+		//vp.add(rangeLabelPager);
 		vp.add(new SpacerWidget());
 		removeButton.setEnabled(checkForEnable());
-		HorizontalPanel buttonPanel = new HorizontalPanel();
-		buttonPanel.add(removeButton);
-		buttonPanel.add(modify);
-		vp.add(buttonPanel);
+		vp.add(removeButton);
 		vp.add(new SpacerWidget());
-
-		mainPanel.add(vp);
-		containerPanel.add(mainPanel);
-
-		containerPanel.setStyleName("qdsContentPanel");
-		MatContext.get().setQdsAppliedListView(this);
+		mainAppliedQDMPanel.add(vp);
 	}
-
-	@Override
-	public Widget asWidget() {
-		return containerPanel;
-	}
-
-	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
-		return errorMessagePanel;
-	}
-
-	@Override
-	public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg() {
-		return successMessagePanel;
-	}
-
+	
 	private CellList<QualityDataSetDTO> initializeCellListContent(CellList<QualityDataSetDTO> cellList,final QDSAppliedListModel appliedListModel){
 
 		ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>();
@@ -236,7 +186,6 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		return MatContext.get().getMeasureLockService().checkForEditPermission();
 	}
 
-	@Override
 	public  void buildCellList(QDSAppliedListModel appliedListModel) {
 		if(appliedListModel.getAppliedQDMs()!=null){
 			cellList = initializeCellListContent(cellList,appliedListModel);
@@ -250,11 +199,23 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		}
 	}
 
-	@Override
-	public Button getModifyButton() {
-		return modify;
+	public HorizontalPanel getMainAppliedQDMPanel() {
+		return mainAppliedQDMPanel;
+	}
+	
+	public QualityDataSetDTO getSelectedElementToRemove() {
+		return lastSelectedObject;
 	}
 
+	public Button getRemoveButton() {
+		return removeButton;
+	}
 
+	public ErrorMessageDisplay getErrorMessagePanel() {
+		return errorMessagePanel;
+	}
 
+	public SuccessMessageDisplay getSuccessMessagePanel() {
+		return successMessagePanel;
+	}
 }

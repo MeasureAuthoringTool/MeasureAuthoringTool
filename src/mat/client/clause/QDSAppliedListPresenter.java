@@ -5,10 +5,14 @@ import java.util.Iterator;
 import java.util.List;
 
 import mat.client.MatPresenter;
+import mat.client.clause.clauseworkspace.view.QDMAttributeDialogBox;
+import mat.client.codelist.ManageCodeListSearchModel;
+import mat.client.measure.metadata.DeleteMeasureConfirmationBox;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.shared.search.SearchResultUpdate;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -17,6 +21,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -36,7 +41,8 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		public Widget asWidget();
 		void buildCellList(QDSAppliedListModel appliedListModel);
 		Button getRemoveButton();
-		List<QualityDataSetDTO> getListToRemove();
+		Button getModifyButton();
+		QualityDataSetDTO getSelectedElementToRemove();
 	}
 
 	public QDSAppliedListPresenter(SearchDisplay sDisplayArg) {
@@ -47,8 +53,8 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				resetQDSFields();
-				if(searchDisplay.getListToRemove()!=null){
-					if(searchDisplay.getListToRemove().size() >0){
+				if(searchDisplay.getSelectedElementToRemove()!=null){
+					
 						service.getMeasureXMLForAppliedQDM(MatContext.get().getCurrentMeasureId(),false, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
 
 							@Override
@@ -61,16 +67,13 @@ public class QDSAppliedListPresenter implements MatPresenter {
 							public void onSuccess(ArrayList<QualityDataSetDTO> result) {
 								allQdsList=result;
 								if(allQdsList.size()>0){
-									for(QualityDataSetDTO setDTO : searchDisplay.getListToRemove()){
 										Iterator<QualityDataSetDTO> iterator = allQdsList.iterator();
 										while(iterator.hasNext()){
 											QualityDataSetDTO dataSetDTO = iterator.next();
-											if(dataSetDTO.getUuid().equals(setDTO.getUuid())){
+											if(dataSetDTO.getUuid().equals(searchDisplay.getSelectedElementToRemove().getUuid())){
 												iterator.remove();
 											}
 										}
-										
-									}
 									saveMeasureXML(allQdsList);
 								}
 								
@@ -80,11 +83,20 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					}else{
 						searchDisplay.getErrorMessageDisplay().setMessage("Please select at least one unused value set to delete.");
 					}
-				}else{
-					searchDisplay.getErrorMessageDisplay().setMessage("Please select at least one unused value set to delete.");
 				}			
-			}
 					
+		});
+		
+		searchDisplay.getModifyButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getApplyToMeasureSuccessMsg().clear();
+				searchDisplay.getErrorMessageDisplay().clear();
+				QDMAvailableValueSetWidget availableValueSetWidget = new QDMAvailableValueSetWidget();
+				QDMAvailableValueSetPresenter availableValueSetPresenter = new QDMAvailableValueSetPresenter(availableValueSetWidget);
+				availableValueSetPresenter.beforeDisplay();
+			}
 		});
 	}
 	
@@ -100,7 +112,6 @@ public class QDSAppliedListPresenter implements MatPresenter {
 
 			@Override
 			public void onSuccess(Void result) {
-				searchDisplay.getListToRemove().removeAll(searchDisplay.getListToRemove());
 				allQdsList.removeAll(allQdsList);
 				resetQDSFields();
 				loadAppliedListData();
@@ -109,6 +120,48 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			}
 		});
 	}
+	
+	
+	/*private void search(String searchText, int startIndex, final int pageSize,
+			String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
+		//lastSearchText = (!searchText.equals(null))? searchText.trim() : null;
+		//lastStartIndex = startIndex;
+		//showSearchingBusy(true);
+		displaySearch();
+		MatContext.get().getCodeListService().search("",
+				startIndex, Integer.MAX_VALUE, 
+				sortColumn, isAsc, defaultCodeList, filter,
+				new AsyncCallback<ManageCodeListSearchModel>() {
+			@Override
+			public void onSuccess(ManageCodeListSearchModel result) {
+				if(result.getData().isEmpty() && !"".isEmpty()){
+					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoCodeListsMessage());
+				}else{
+					resetQDSFields();
+					//searchDisplay.getSearchString().setValue(lastSearchText);
+				}
+				QDSCodeListSearchModel QDSSearchResult = new QDSCodeListSearchModel();
+				QDSSearchResult.setData(result.getData());
+				QDSSearchResult.setResultsTotal(result.getResultsTotal());
+			//	ModifyQDMDialogBox.showModifyDialogBox(QDSSearchResult);
+				
+				//SearchResultUpdate sru = new SearchResultUpdate();
+				//sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchText);
+				//sru = null;
+				//searchDisplay.buildQDSDataTable(QDSSearchResult);
+				//currentCodeListResults = QDSSearchResult;
+				//displaySearch();
+				//searchDisplay.getErrorMessageDisplay().setFocus();
+				//showSearchingBusy(false);
+			}
+			@Override
+			public void onFailure(Throwable caught) {
+				searchDisplay.getErrorMessageDisplay().setMessage("Problem while performing a search");
+				//showSearchingBusy(false);
+			}
+		});
+	}*/
+	
 
 	void loadAppliedListData() {
 		panel.clear();

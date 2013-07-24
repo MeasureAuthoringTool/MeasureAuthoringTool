@@ -23,15 +23,24 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 	/**
 	 * An html string representation of a checked radio button.
 	 */
-	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" checked=\"checked\"/>");
-//	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"choices\" checked=\"checked\"/>");
+	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"radioButtongrp\" checked=\"checked\"/>");
+
 	/**
 	 * An html string representation of an unchecked radio button.
 	 */
-	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" />");
-	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" disabled=\"disabled\" />");
-	//private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"choices\"/>");
+	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"radioButtongrp\"/>");
+	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"radioButtongrp\" disabled=\"disabled\" />");
+
 	private boolean dependsOnSelection, handlesSelection,isEnabled;
+	private boolean isUsed;
+	
+
+	public boolean isUsed() {
+		return isUsed;
+	}
+	public void setUsed(boolean isUsed) {
+		this.isUsed = isUsed;
+	}
  
 	/**
 	 * Constructs a new {@link RadioButtonCell} that does not depend on
@@ -56,8 +65,6 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 		this();
 		this.dependsOnSelection = dependsOnSelection;
 		this.handlesSelection = handlesSelection;
-		//this.isEnabled =  
-		
 	}
 	
  
@@ -154,16 +161,17 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 			clearViewData(context.getKey());
 			viewData = null;
 		}
-		if(checkForEnable()){    
+		//if(!isUsed){    
 			if (value != null && ((viewData != null) ? viewData : value)) {
 				sb.append(INPUT_CHECKED);
 			} else {
 				sb.append(INPUT_UNCHECKED);
 			}
-		}else{
-			sb.append(INPUT_UNCHECKED_DISABLED);
-			
-		}
+	//	}else{
+		//	sb.append(INPUT_UNCHECKED_DISABLED);
+			//sb.append(INPUT_UNCHECKED);
+
+		//}
 	}
 	
 	private boolean checkForEnable(){

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.event.QDSElementCreatedEvent;
@@ -51,7 +52,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	private QDSCodeListSearchModel currentCodeListResults;
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
-	
+	QualityDataSetDTO  modifyValueSetDTO;
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption();
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement();
@@ -75,8 +76,10 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	}
 	
 	
-	public QDMAvailableValueSetPresenter(SearchDisplay sDisplayArg){
+	public QDMAvailableValueSetPresenter(SearchDisplay sDisplayArg , QualityDataSetDTO dataSetDTO){
 		this.searchDisplay = sDisplayArg;
+		this.modifyValueSetDTO = dataSetDTO;
+		
 		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			
@@ -227,6 +230,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
 		lastSearchText = (!searchText.equals(null))? searchText.trim() : null;
 		lastStartIndex = startIndex;
+		showSearchingBusy(true);
 		displaySearch();
 		MatContext.get().getCodeListService().search(lastSearchText,
 				startIndex, Integer.MAX_VALUE, 
@@ -252,14 +256,24 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				currentCodeListResults = QDSSearchResult;
 				displaySearch();
 				searchDisplay.getErrorMessageDisplay().setFocus();
+				showSearchingBusy(false);
 				
 			}
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage("Problem while performing a search");
-				
+				showSearchingBusy(false);
 			}
 		});
+	}
+	
+	private void showSearchingBusy(boolean busy){
+		if(busy)
+			Mat.showLoadingMessage();
+		else
+			Mat.hideLoadingMessage();
+		((Button)searchDisplay.getSearchButton()).setEnabled(!busy);
+		((TextBox)(searchDisplay.getSearchString())).setEnabled(!busy);
 	}
 	
 	private void displaySearch() {

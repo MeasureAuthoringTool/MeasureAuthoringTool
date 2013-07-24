@@ -76,9 +76,10 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	}
 	
 	
-	public QDMAvailableValueSetPresenter(SearchDisplay sDisplayArg , QualityDataSetDTO dataSetDTO){
+	//public QDMAvailableValueSetPresenter(SearchDisplay sDisplayArg , QualityDataSetDTO dataSetDTO){
+	public QDMAvailableValueSetPresenter(SearchDisplay sDisplayArg){
 		this.searchDisplay = sDisplayArg;
-		this.modifyValueSetDTO = dataSetDTO;
+		//this.modifyValueSetDTO = dataSetDTO;
 		
 		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {

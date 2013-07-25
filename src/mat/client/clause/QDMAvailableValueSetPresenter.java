@@ -6,8 +6,6 @@ import java.util.List;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
-import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ValueSetSearchFilterPanel;
@@ -35,13 +33,11 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class QDMAvailableValueSetPresenter  implements MatPresenter{
 
-//	private SimplePanel panel = new SimplePanel();
 	private SearchDisplay searchDisplay;
 	private int startIndex = 1;
 	private String currentSortColumn = getSortKey(0);
@@ -50,9 +46,12 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	private String lastSearchText;
 	private int lastStartIndex;
 	private QDSCodeListSearchModel currentCodeListResults;
-	MeasureServiceAsync service = MatContext.get().getMeasureService();
+	MeasureServiceAsync measureService = MatContext.get().getMeasureService();
 	ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
 	QualityDataSetDTO  modifyValueSetDTO;
+	
+	
+	
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption();
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement();
@@ -76,11 +75,10 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	}
 	
 	
-	//public QDMAvailableValueSetPresenter(SearchDisplay sDisplayArg , QualityDataSetDTO dataSetDTO){
-	public QDMAvailableValueSetPresenter(SearchDisplay sDisplayArg){
+	public QDMAvailableValueSetPresenter(SearchDisplay sDisplayArg , QualityDataSetDTO dataSetDTO, ArrayList<QualityDataSetDTO> allQdsList){
 		this.searchDisplay = sDisplayArg;
-		//this.modifyValueSetDTO = dataSetDTO;
-		
+		this.modifyValueSetDTO = dataSetDTO;
+		this.appliedQDMList = allQdsList;
 		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			
@@ -135,100 +133,119 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				MatContext.get().clearDVIMessages();
 				searchDisplay.scrollToBottom();
-				getListOfAppliedQDMs();
+				MatContext.get().getMeasureService().getMeasureXMLForAppliedQDM(MatContext.get().getCurrentMeasureId(),true, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(ArrayList<QualityDataSetDTO> result) {
+						appliedQDMList = result;
+						modifyQDM();
+					}
+					
+				});
+				
 			}
 		});
 	}
 	
-	private void addSelectedCodeListtoMeasure(){
-		//clear the successMessage
-		searchDisplay.getApplyToMeasureSuccessMsg().clear();
-		final CodeListSearchDTO codeList = currentCodeListResults.getSelectedCodeList();
-		if(codeList != null){
-		       final String dataType;
-		       final  String dataTypeText;
-		       final boolean isSpecificOccurrence;
-		       if(codeList.getCategoryDisplay().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+	protected void modifyQDM() {
+		CodeListSearchDTO modifyWithDTO = currentCodeListResults.getLastSelectedCodeList();
+		if(modifyValueSetDTO!=null){
+			String dataType , dataTypeText;
+			Boolean isSpecificOccurrence=false;
+		
+			if(modifyWithDTO.getCategoryDisplay().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
 		    	   dataType = ConstantMessages.ATTRIBUTE;
-		       }else if(codeList.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_PERIOD)){
+		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_PERIOD)){
 		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		       }else if(codeList.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_START_DATE)){
+		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_START_DATE)){
 		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		       }else if(codeList.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_END_DATE)){
+		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_END_DATE)){
 		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		       }
-		       else{
-		    	   populateQDSDataType(codeList.getCategoryCode());
+		     }else{
+		    	   populateQDSDataType(modifyWithDTO.getCategoryCode());
 		    	   dataType = searchDisplay.getDataTypeValue();
-		       }
-		      
-		       if(searchDisplay.getDataTypeText().equalsIgnoreCase("--Select--")){
+		     }
+		     if(searchDisplay.getDataTypeText().equalsIgnoreCase("--Select--")){
 		    	   dataTypeText = dataType;
-		       }else{
+		      }else{
 		    	   dataTypeText = searchDisplay.getDataTypeText();
 		       }
-		        isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
-		        String measureID = MatContext.get().getCurrentMeasureId();
-				if(!dataType.isEmpty() && !dataType.equals("")){
-					MatContext.get().getCodeListService().addCodeListToMeasure(measureID,dataType, codeList, isSpecificOccurrence,appliedQDMList, new AsyncCallback<SaveUpdateCodeListResult>(){
-					@Override
-					public void onSuccess(SaveUpdateCodeListResult result) {
-						String message="";
-						if(result.getXmlString() !=null)
-							saveMeasureXML(result.getXmlString());
-						searchDisplay.getSpecificOccurrenceInput().setValue(false);//OnSuccess() uncheck the specific occurrence and deselect the radio options 
-						if(result.isSuccess()) {
-							if(result.getOccurrenceMessage()!= null && !result.getOccurrenceMessage().equals("")){
-								message = MatContext.get().getMessageDelegate().getQDMOcurrenceSuccessMessage(codeList.getName(), dataTypeText, result.getOccurrenceMessage());
-							}else{
-								message = MatContext.get().getMessageDelegate().getQDMSuccessMessage(codeList.getName(), dataTypeText);
-							}
-							MatContext.get().getEventBus().fireEvent(new QDSElementCreatedEvent(codeList.getName()));
-							searchDisplay.getApplyToMeasureSuccessMsg().setMessage(message);
-							searchDisplay.getMsgFocusWidget().setFocus(true);
-							
-						}
-					}
-					@Override
-					public void onFailure(Throwable caught) {
-						if(appliedQDMList.size()>0)
-							appliedQDMList.removeAll(appliedQDMList);
-						searchDisplay.getErrorMessageDisplay().setMessage("problem while saving the QDM to Measure");
-					}
-				});
-				}
-		   
-		}
-			
-		
-	}
-	
-	private void saveMeasureXML(String qdmXMLString){
-		final String nodeName ="qdm";
-		MeasureXmlModel exportModal = new MeasureXmlModel();
-		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
-		exportModal.setParentNode("/measure/elementLookUp");
-		exportModal.setToReplaceNode("qdm");
-		System.out.println("XML "+qdmXMLString);
-		exportModal.setXml(qdmXMLString);
-		
-		service.appendAndSaveNode(exportModal,nodeName,
-				new AsyncCallback<Void>() {
-	
-					@Override
-					public void onFailure(Throwable caught) {
-						//Window.alert("Failure in saveMeasureXML ");
-					}
-	
-					@Override
-					public void onSuccess(Void result) {
+		       isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
+		       
 				
-					}
-			});
+			if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+				if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
+					//Window.alert("Valid Modification");
+					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,dataTypeText,isSpecificOccurrence);
+					
+				}else{
+					Window.alert("Attribute Can only be modified with Attribute");
+					ModifyQDMDialogBox.dialogBox.hide();
+				}
+			}else{
+				//Window.alert("Valid Modification");
+				updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,dataTypeText,isSpecificOccurrence);
+				
+			
+			}
+		}else{
+			Window.alert("No QDM selected for modification");
+			ModifyQDMDialogBox.dialogBox.hide();
+		
+		}
+		
 	}
+	
+	private void updateAppliedQDMList(final CodeListSearchDTO codeListSearchDTO , final QualityDataSetDTO  qualityDataSetDTO, String dataType, String dataTypeText, Boolean isSpecificOccurrence){
+		MatContext.get().getCodeListService().updateCodeListToMeasure(MatContext.get().getCurrentMeasureId(),dataType, codeListSearchDTO,qualityDataSetDTO, isSpecificOccurrence,appliedQDMList, new AsyncCallback<SaveUpdateCodeListResult>(){
+			@Override
+			public void onFailure(Throwable caught) {
+				Window.alert("failure");
+				ModifyQDMDialogBox.dialogBox.hide();
+				
+			}
+			@Override
+			public void onSuccess(SaveUpdateCodeListResult result) {
+				if(result.getFailureReason()==7){
+					searchDisplay.getErrorMessageDisplay().setMessage("Duplicate QDM");
+				}
+				else{
+					Window.alert("Success" + result.getAppliedQDMList().size());
+					updateMeasureXML(result.getAppliedQDMList(), codeListSearchDTO ,   qualityDataSetDTO);
+					ModifyQDMDialogBox.dialogBox.hide();
+				}
+			}
+		});
+		
+	}
+	
+	private void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList, CodeListSearchDTO codeListSearchDTO, QualityDataSetDTO qualityDataSetDTO){
+		MatContext.get().getMeasureService().updateMeasureXML(updatedQDMList, codeListSearchDTO, qualityDataSetDTO, MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+	}
+	
 	
 	private void search(String searchText, int startIndex, final int pageSize,
-			String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
+					String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
 		lastSearchText = (!searchText.equals(null))? searchText.trim() : null;
 		lastStartIndex = startIndex;
 		showSearchingBusy(true);
@@ -278,8 +295,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	}
 	
 	private void displaySearch() {
-		//panel.clear();
-		//panel.add(searchDisplay.asWidget());
 		ModifyQDMDialogBox.showModifyDialogBox(searchDisplay.asWidget());
 		searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
@@ -356,28 +371,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		searchDisplay.getDataTypeInput().setEnabled(dataTypeInput);
 	}
 	
-	private void getListOfAppliedQDMs(){
-		String measureId = MatContext.get().getCurrentMeasureId();
-		if (measureId != null && measureId != "") {
-			service.getMeasureXMLForAppliedQDM(measureId,true, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
-
-				@Override
-				public void onFailure(Throwable caught) {
-					Window.alert(MatContext.get().getMessageDelegate()
-							.getGenericErrorMessage());
-				}
-
-				@Override
-				public void onSuccess(ArrayList<QualityDataSetDTO> result) {
-					appliedQDMList = result;
-					addSelectedCodeListtoMeasure();
-				}
-			});
-
-		}
-	}
-	
-	
 	void loadCodeListData(){
 		
 		searchDisplay.getValueSetSearchFilterPanel().resetFilter();
@@ -394,7 +387,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 
 	@Override
 	public void beforeClosingDisplay() {
-		// TODO Auto-generated method stub
+	
 		
 	}
 

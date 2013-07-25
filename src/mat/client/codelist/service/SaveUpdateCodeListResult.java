@@ -1,7 +1,10 @@
 package mat.client.codelist.service;
 
+import java.util.ArrayList;
+
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.shared.GenericResult;
+import mat.model.QualityDataSetDTO;
 
 public class SaveUpdateCodeListResult extends GenericResult {
 	public static final int NOT_UNIQUE = 1;
@@ -10,7 +13,7 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	public static final int SERVER_SIDE_VALIDATION = 4;
 	public static final int INVALID_LAST_MODIFIED_DATE = 5;
 	public static final int LAST_MODIFIED_DATE_DUPLICATE = 6;
-	
+	public static final int ALREADY_EXISTS=7;
 	private String id;
 	private String codeId;
 	private String codeListName;
@@ -19,6 +22,8 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	private String occurrenceMessage;
 	private String lastModifiedDate;
 	private String xmlString;
+	ArrayList<QualityDataSetDTO> appliedQDMList ;
+	
 	public String getXmlString() {
 		return xmlString;
 	}
@@ -101,6 +106,14 @@ public class SaveUpdateCodeListResult extends GenericResult {
 
 	public void setCodeListDetailModel(ManageCodeListDetailModel codeListDetailModel) {
 		this.codeListDetailModel = codeListDetailModel;
+	}
+
+	public ArrayList<QualityDataSetDTO> getAppliedQDMList() {
+		return appliedQDMList;
+	}
+
+	public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList) {
+		this.appliedQDMList = appliedQDMList;
 	}
 
 	

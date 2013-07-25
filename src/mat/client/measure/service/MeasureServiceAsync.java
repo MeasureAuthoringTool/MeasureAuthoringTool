@@ -8,6 +8,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.model.CodeListSearchDTO;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -49,6 +50,9 @@ public interface MeasureServiceAsync {
 	void saveAndDeleteMeasure(String measureID, AsyncCallback<Void> callback);
 	void updatePrivateColumnInMeasure(String measureId, boolean isPrivate,
 			AsyncCallback<Void> callback);
+	void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList,
+			CodeListSearchDTO modifyWithDTO, QualityDataSetDTO modifyDTO,
+			String measureId, AsyncCallback<Void> callback);
 	
 
 	}

@@ -31,6 +31,7 @@ import mat.client.shared.MatException;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.Author;
+import mat.model.CodeListSearchDTO;
 import mat.model.MeasureType;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
@@ -126,7 +127,24 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure End : measureId:: " + measureID);
 	}
 	
-	
+	@Override
+	public void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList,CodeListSearchDTO modifyWithDTO , QualityDataSetDTO modifyDTO,String measureId){
+		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+		XmlProcessor processor = new XmlProcessor(model.getXml());
+		if(model!=null){
+			if(modifyDTO.isUsed()){
+				//Update clause work Space.
+				
+			}else{
+				//update only elementLookUp Tag
+				QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+				wrapper.setQualityDataDTO(updatedQDMList);
+				ByteArrayOutputStream stream = createQDMXML(wrapper);
+				System.out.println("Element Look up String ==== " + stream.toString());
+			}
+			
+		}
+	}
 	
 
 	@Override
@@ -488,9 +506,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return (ClauseBusinessService)context.getBean("clauseBusinessService");
 	}*/
 	
-	public CodeListService getCodeListService() {
+	/*public CodeListService getCodeListService() {
 		return (CodeListService)context.getBean("codeListService");
-	}
+	}*/
 	
 	private UserService getUserService(){
 		return (UserService)context.getBean("userService");
@@ -978,6 +996,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		
 	}
 	
+	/***
+	 * Find All QDM's which are used in Clause Workspace tag's or in Supplemental Data Elements or in Attribute tags.
+	 * */
 	private ArrayList<QualityDataSetDTO> findUsedQDMs(ArrayList<QualityDataSetDTO> arrayList,MeasureXmlModel measureXmlModel){
 
 		XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
@@ -1025,6 +1046,36 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			getService().saveMeasureXml(exportModal);
 		}
 		
+	}
+	
+	 /**
+     * Method to create XML from QualityDataModelWrapper object.
+     * */
+    private ByteArrayOutputStream createXML(QualityDataModelWrapper qualityDataSetDTO) {
+		logger.info("In MeasureLibraryServiceImpl.createXml()");
+		Mapping mapping = new Mapping();
+		ByteArrayOutputStream stream = new ByteArrayOutputStream();
+		try {
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("QualityDataModelMapping.xml"));
+			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
+			marshaller.setMapping(mapping);
+	        marshaller.marshal(qualityDataSetDTO);
+	        logger.info("Marshalling of QualityDataSetDTO is successful.." + stream.toString());
+		} catch (Exception e) {
+			if(e instanceof IOException){
+				logger.info("Failed to load QualityDataModelMapping.xml" + e);
+			}else if(e instanceof MappingException){
+				logger.info("Mapping Failed" + e);
+			}else if(e instanceof MarshalException){
+				logger.info("Unmarshalling Failed" + e);
+			}else if(e instanceof ValidationException){
+				logger.info("Validation Exception" + e);
+			}else{
+				logger.info("Other Exception" + e);
+			}
+		} 
+		logger.info("Exiting MeasureLibraryServiceImpl.createXml()");
+		return stream;
 	}
 	
 	

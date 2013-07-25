@@ -85,4 +85,10 @@ public interface CodeListServiceAsync {
 	void getRelAssociationsOperators(AsyncCallback<Map<String, String>> callback);
 	
 	void getAllOperators(AsyncCallback<List<OperatorDTO>> callback);
+
+	public void updateCodeListToMeasure(String measureID, String dataType,
+			CodeListSearchDTO codeListSearchDTO,
+			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDMList,
+			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
 }

@@ -5,14 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import mat.client.MatPresenter;
-import mat.client.clause.clauseworkspace.view.QDMAttributeDialogBox;
-import mat.client.codelist.ManageCodeListSearchModel;
-import mat.client.measure.metadata.DeleteMeasureConfirmationBox;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.SearchResultUpdate;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -21,7 +17,6 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -30,7 +25,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	private SimplePanel panel = new SimplePanel();
 	private SearchDisplay searchDisplay;
 	ArrayList<QualityDataSetDTO> allQdsList = new ArrayList<QualityDataSetDTO>();
-	boolean isCheckForSDE=false;
+//	boolean isCheckForSDE=false;
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
 	List<String> codeListString = new ArrayList<String>();
@@ -93,8 +88,9 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				searchDisplay.getApplyToMeasureSuccessMsg().clear();
 				searchDisplay.getErrorMessageDisplay().clear();
+				QualityDataSetDTO dataSetDTO = searchDisplay.getSelectedElementToRemove();
 				QDMAvailableValueSetWidget availableValueSetWidget = new QDMAvailableValueSetWidget();
-				QDMAvailableValueSetPresenter availableValueSetPresenter = new QDMAvailableValueSetPresenter(availableValueSetWidget);
+				QDMAvailableValueSetPresenter availableValueSetPresenter = new QDMAvailableValueSetPresenter(availableValueSetWidget,dataSetDTO,allQdsList);
 				availableValueSetPresenter.beforeDisplay();
 			}
 		});
@@ -122,47 +118,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	}
 	
 	
-	/*private void search(String searchText, int startIndex, final int pageSize,
-			String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
-		//lastSearchText = (!searchText.equals(null))? searchText.trim() : null;
-		//lastStartIndex = startIndex;
-		//showSearchingBusy(true);
-		displaySearch();
-		MatContext.get().getCodeListService().search("",
-				startIndex, Integer.MAX_VALUE, 
-				sortColumn, isAsc, defaultCodeList, filter,
-				new AsyncCallback<ManageCodeListSearchModel>() {
-			@Override
-			public void onSuccess(ManageCodeListSearchModel result) {
-				if(result.getData().isEmpty() && !"".isEmpty()){
-					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoCodeListsMessage());
-				}else{
-					resetQDSFields();
-					//searchDisplay.getSearchString().setValue(lastSearchText);
-				}
-				QDSCodeListSearchModel QDSSearchResult = new QDSCodeListSearchModel();
-				QDSSearchResult.setData(result.getData());
-				QDSSearchResult.setResultsTotal(result.getResultsTotal());
-			//	ModifyQDMDialogBox.showModifyDialogBox(QDSSearchResult);
-				
-				//SearchResultUpdate sru = new SearchResultUpdate();
-				//sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchText);
-				//sru = null;
-				//searchDisplay.buildQDSDataTable(QDSSearchResult);
-				//currentCodeListResults = QDSSearchResult;
-				//displaySearch();
-				//searchDisplay.getErrorMessageDisplay().setFocus();
-				//showSearchingBusy(false);
-			}
-			@Override
-			public void onFailure(Throwable caught) {
-				searchDisplay.getErrorMessageDisplay().setMessage("Problem while performing a search");
-				//showSearchingBusy(false);
-			}
-		});
-	}*/
 	
-
 	void loadAppliedListData() {
 		panel.clear();
 		getXMLForAppliedQDM(true);
@@ -189,7 +145,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	 * */
 	public void getXMLForAppliedQDM(boolean checkForSupplementData){
 		String measureId = MatContext.get().getCurrentMeasureId();
-		isCheckForSDE = checkForSupplementData;
+	//	isCheckForSDE = checkForSupplementData;
 		if (measureId != null && measureId != "") {
 			service.getMeasureXMLForAppliedQDM(measureId,checkForSupplementData, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
 

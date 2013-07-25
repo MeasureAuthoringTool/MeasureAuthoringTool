@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
@@ -946,6 +947,139 @@ public class ManageCodeListServiceImpl implements CodeListService {
     	return isQDSExist;
     	
     }
+    
+    @Override
+	public SaveUpdateCodeListResult updateQDStoMeasure(String measureId,String dataType,CodeListSearchDTO codeList,QualityDataSetDTO qualityDataSetDTO,boolean isSpecificOccurrence,ArrayList<QualityDataSetDTO> appliedQDM) {
+		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		if(dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)){
+			boolean duplicateQDS = checkForDuplicates(measureId,dataType,codeList, appliedQDM);
+			if(!duplicateQDS){
+				QualityDataSetDTO qds = qualityDataSetDTO;
+				//For Search - Applied Value set QDM is saved in table.
+				//QualityDataSet qdm = qualityDataSetDAO.get
+				//if(measureId != null){
+				//	qdm.setMeasureId(measureDAO.find(measureId));
+				//}
+				if(dataType != null){
+					DataType dt = dataTypeDAO.findByDataTypeName(dataType);
+					qds.setDataType(dt.getDescription());
+					
+				//	qdm.setDataType(dataTypeDAO.findByDataTypeName(dataType));
+				}
+				if(codeList != null){
+					ListObject listObject = listObjectDAO.find(codeList.getId());
+					qds.setOid(listObject.getOid());
+					qds.setId(listObject.getId());
+					qds.setCodeListName(listObject.getName());
+					qds.setTaxonomy(listObject.getCodeSystem().getDescription());
+					if(listObject.getStewardOther() !=null && listObject.getStewardOther().equalsIgnoreCase("Other") ){
+						qds.setCodeSystemName("Others");
+					}else{
+						qds.setCodeSystemName(listObject.getSteward().getOrgName());
+					}
+					
+				//	qdm.setListObject(listObjectDAO.find(codeList.getId()));
+				}
+			//	qds.setUuid(UUID.randomUUID().toString());
+				//qds.setVersion("1.0");
+				wrapper = modifyAppliedElementList(qds,appliedQDM);
+				//String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+				
+			//	qdm.setOid(qualityDataSetDAO.generateUniqueOid());
+			//	qdm.setVersion("1");
+			//	qualityDataSetDAO.save(qdm);
+				
+				result.setSuccess(true);
+				result.setAppliedQDMList(wrapper.getQualityDataDTO());
+			}else{
+				result.setSuccess(true);
+				result.setFailureReason(result.ALREADY_EXISTS);
+			}
+			return result;
+		}else{
+			QualityDataSetDTO qds = qualityDataSetDTO;
+			//For Search - Applied Value set QDM is saved in table.
+			//QualityDataSet qdm = new QualityDataSet();
+			//if(measureId != null){
+			//	qdm.setMeasureId(measureDAO.find(measureId));
+			//}
+			
+			if(dataType != null){
+					DataType dt = dataTypeDAO.find(dataType);
+					qds.setDataType(dt.getDescription());
+				//	qdm.setDataType(dataTypeDAO.find(dataType));
+			}
+			if(codeList != null){
+				ListObject listObject = listObjectDAO.find(codeList.getId());
+				qds.setOid(listObject.getOid());
+				qds.setId(listObject.getId());
+				qds.setCodeListName(listObject.getName());
+				qds.setTaxonomy(listObject.getCodeSystem().getDescription());
+				if(listObject.getStewardOther() !=null && ((listObject.getStewardOther()).equalsIgnoreCase("Other"))){
+					qds.setCodeSystemName("Others");
+				}else{
+					qds.setCodeSystemName(listObject.getSteward().getOrgName());
+				}
+				//qdm.setListObject(listObjectDAO.find(codeList.getId()));
+			}
+			
+			//qds.setUuid(UUID.randomUUID().toString());
+			//qds.setVersion("1.0");
+			
+			//qdm.setOid(qualityDataSetDAO.generateUniqueOid());
+			//qdm.setVersion("1");
+			
+			if(isSpecificOccurrence){
+				DataType dt = dataTypeDAO.find(dataType);
+				int occurrenceCount = checkForOccurrenceCount(measureId, dt.getId(), codeList,appliedQDM);
+				if(occurrenceCount < 90){//Alphabet ASCII Integer Values.
+					char occTxt = (char)occurrenceCount;
+					qds.setOccurrenceText("Occurrence" + " " +occTxt);
+					wrapper = modifyAppliedElementList(qds, appliedQDM);
+					result.setOccurrenceMessage(qds.getOccurrenceText());
+					
+					result.setSuccess(true);
+					result.setAppliedQDMList(wrapper.getQualityDataDTO());
+					
+				//	qdm.setOccurrence("Occurrence" + " " +occTxt);
+					//qualityDataSetDAO.save(qdm);
+				}
+			}else{//Treat as regular QDM
+				DataType dt = dataTypeDAO.find(dataType);
+				qds.setOccurrenceText("");
+				if(!checkForDuplicates(measureId,  dt.getId(), codeList, appliedQDM)){
+					wrapper = modifyAppliedElementList(qds, appliedQDM);
+					result.setOccurrenceMessage(qds.getOccurrenceText());
+					
+					result.setSuccess(true);
+					result.setAppliedQDMList(wrapper.getQualityDataDTO());
+					
+					//qualityDataSetDAO.save(qdm);
+				}else{
+					result.setSuccess(true);
+					result.setFailureReason(result.ALREADY_EXISTS);
+				}
+			}
+		}
+		return result;
+	}
+    
+    QualityDataModelWrapper modifyAppliedElementList(QualityDataSetDTO dataSetDTO ,ArrayList<QualityDataSetDTO> appliedQDM){
+    	QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+    	Iterator<QualityDataSetDTO> iterator = appliedQDM.iterator();
+		while(iterator.hasNext()){
+			QualityDataSetDTO qualityDataSetDTO = iterator.next();
+			if(qualityDataSetDTO.getUuid().equals(dataSetDTO.getUuid())){
+				iterator.remove();
+				break;
+			}
+		}
+    	appliedQDM.add(dataSetDTO);
+    	wrapper.setQualityDataDTO(appliedQDM);
+    	return wrapper;
+    }
+    
     /**
      * Method to extract qdm element node created after marshalling of QualityDataModelWrapper object.
      * */

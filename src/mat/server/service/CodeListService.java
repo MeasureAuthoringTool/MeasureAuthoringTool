@@ -60,6 +60,10 @@ public interface CodeListService {
 	List<UnitDTO> getAllUnits();
 	public List<OperatorDTO> getRelAssociationsOperators(); 
 	public List<OperatorDTO> getAllOperators();
+	SaveUpdateCodeListResult updateQDStoMeasure(String measureId,
+			String dataType, CodeListSearchDTO codeList,
+			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDM);
 	
 	
 }

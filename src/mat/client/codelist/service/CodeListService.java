@@ -208,5 +208,10 @@ public interface CodeListService extends RemoteService {
 
 	Map<String, String> getRelAssociationsOperators();
 
-	List<OperatorDTO> getAllOperators(); 
+	List<OperatorDTO> getAllOperators();
+
+	SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
+			String dataType, CodeListSearchDTO codeListSearchDTO,
+			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDMList); 
 }

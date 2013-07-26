@@ -216,8 +216,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					searchDisplay.getErrorMessageDisplay().setMessage("Duplicate QDM");
 				}
 				else{
-					Window.alert("Success" + result.getAppliedQDMList().size());
-					updateMeasureXML(result.getAppliedQDMList(), codeListSearchDTO ,   qualityDataSetDTO);
+					//Window.alert("Success" + result.getAppliedQDMList().size());
+					updateMeasureXML(result.getAppliedQDMList(), result.getDataSetDTO() ,   qualityDataSetDTO);
 					ModifyQDMDialogBox.dialogBox.hide();
 				}
 			}
@@ -225,8 +225,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		
 	}
 	
-	private void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList, CodeListSearchDTO codeListSearchDTO, QualityDataSetDTO qualityDataSetDTO){
-		MatContext.get().getMeasureService().updateMeasureXML(updatedQDMList, codeListSearchDTO, qualityDataSetDTO, MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
+	private void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList, QualityDataSetDTO qualityDataSetDTO2, QualityDataSetDTO qualityDataSetDTO){
+		MatContext.get().getMeasureService().updateMeasureXML(updatedQDMList, qualityDataSetDTO2, qualityDataSetDTO, MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

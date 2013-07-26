@@ -51,7 +51,7 @@ public interface MeasureServiceAsync {
 	void updatePrivateColumnInMeasure(String measureId, boolean isPrivate,
 			AsyncCallback<Void> callback);
 	void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList,
-			CodeListSearchDTO modifyWithDTO, QualityDataSetDTO modifyDTO,
+			QualityDataSetDTO qualityDataSetDTO2, QualityDataSetDTO modifyDTO,
 			String measureId, AsyncCallback<Void> callback);
 	
 

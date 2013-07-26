@@ -991,6 +991,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			//	qualityDataSetDAO.save(qdm);
 				
 				result.setSuccess(true);
+				result.setDataSetDTO(qds);
 				result.setAppliedQDMList(wrapper.getQualityDataDTO());
 			}else{
 				result.setSuccess(true);
@@ -1041,7 +1042,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					
 					result.setSuccess(true);
 					result.setAppliedQDMList(wrapper.getQualityDataDTO());
-					
+					result.setDataSetDTO(qds);
 				//	qdm.setOccurrence("Occurrence" + " " +occTxt);
 					//qualityDataSetDAO.save(qdm);
 				}
@@ -1054,7 +1055,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					
 					result.setSuccess(true);
 					result.setAppliedQDMList(wrapper.getQualityDataDTO());
-					
+					result.setDataSetDTO(qds);
 					//qualityDataSetDAO.save(qdm);
 				}else{
 					result.setSuccess(true);

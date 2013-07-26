@@ -26,12 +26,11 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
-import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
+import mat.dao.clause.QDSAttributesDAO;
 import mat.model.Author;
-import mat.model.CodeListSearchDTO;
 import mat.model.MeasureType;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
@@ -40,8 +39,8 @@ import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
+import mat.model.clause.QDSAttributes;
 import mat.model.clause.ShareLevel;
-import mat.server.service.CodeListService;
 import mat.server.service.InvalidValueSetDateException;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
@@ -65,6 +64,10 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -73,7 +76,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
 	private static final String MEASURE_DETAILS = "measureDetails";
 	private static final String MEASURE = "measure";
-		
+	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();	
+	@Autowired
+	private QDSAttributesDAO qDSAttributesDAO;
 	
 	private MeasureXMLDAO getMeasureXMLDAO(){
 		return ((MeasureXMLDAO)context.getBean("measureXMLDAO")); 
@@ -81,6 +86,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	private MeasureDAO getMeasureDAO(){
 		return ((MeasureDAO)context.getBean("measureDAO")); 
+	}
+	
+	private QDSAttributesDAO getAttributeDAO(){
+		return ((QDSAttributesDAO)context.getBean("qDSAttributesDAO"));
+		
 	}
 		
 	
@@ -127,26 +137,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure End : measureId:: " + measureID);
 	}
 	
-	@Override
-	public void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList,CodeListSearchDTO modifyWithDTO , QualityDataSetDTO modifyDTO,String measureId){
-		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
-		XmlProcessor processor = new XmlProcessor(model.getXml());
-		if(model!=null){
-			if(modifyDTO.isUsed()){
-				//Update clause work Space.
-				
-			}else{
-				//update only elementLookUp Tag
-				QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
-				wrapper.setQualityDataDTO(updatedQDMList);
-				ByteArrayOutputStream stream = createQDMXML(wrapper);
-				System.out.println("Element Look up String ==== " + stream.toString());
-			}
-			
-		}
-	}
 	
-
 	@Override
 	public SaveMeasureResult save(ManageMeasureDetailModel model) {
 		boolean isNewMeasure = false;
@@ -735,6 +726,23 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		}
 	}
 
+	private List<QDSAttributes> getAllDataTypeAttributes(String qdmName) {
+		List<QDSAttributes> attrs = getAttributeDAO().findByDataType(qdmName, context);
+		List<QDSAttributes> attrs1 = getAttributeDAO().getAllDataFlowAttributeName();
+		Collections.sort(attrs, attributeComparator);
+		Collections.sort(attrs1, attributeComparator);
+		attrs.addAll(attrs1);
+		//Collections.sort(attrs, attributeComparator);
+		return attrs;
+	}
+	
+	private Comparator<QDSAttributes> attributeComparator = new Comparator<QDSAttributes>(){
+		@Override
+		public int compare(QDSAttributes arg0, QDSAttributes arg1) {
+			return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
+		}
+	};
+	
 	@Override
 	public boolean isMeasureLocked(String id) {
 		MeasurePackageService service = getService();
@@ -1020,6 +1028,154 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return arrayList;
 	}
 	
+	
+	@Override
+	public void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList,QualityDataSetDTO modifyWithDTO , QualityDataSetDTO modifyDTO,String measureId){
+		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
+		XmlProcessor processor = new XmlProcessor(model.getXml());
+		if(model!=null){
+			if(modifyDTO.isUsed()){
+				if(modifyDTO.getDataType().equalsIgnoreCase("Attribute")){
+					//update All Attributes.
+					updateAttributes(processor, modifyWithDTO, modifyDTO);
+				}else{
+					//Update all elementRef's in Populations and Stratification
+					updatePopulationAndStratification(processor, modifyWithDTO, modifyDTO);
+				}
+				
+				//update  elementLookUp Tag
+				updateElementLookUp(processor, modifyWithDTO, modifyDTO);
+				updateSupplementalDataElement(processor, modifyWithDTO, modifyDTO);
+				System.out.println("Transformed XML :: " + processor.transform(processor.getOriginalDoc()));
+				model.setXml(processor.transform(processor.getOriginalDoc()));
+				getService().saveMeasureXml(model);
+				
+			}else{
+				//update  elementLookUp Tag
+				updateElementLookUp(processor, modifyWithDTO, modifyDTO);
+				System.out.println("Transformed XML :: " + processor.transform(processor.getOriginalDoc()));
+				model.setXml(processor.transform(processor.getOriginalDoc()));
+				getService().saveMeasureXml(model);
+			}
+			
+		}
+	}
+	
+	
+	private void updateAttributes(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO){
+		
+		//XPath to find all elementRefs in supplementalDataElements for to be modified QDM.
+		String XPATH_EXPRESSION_ATTRIBUTE = "/measure//clause//attribute[@qdmUUID='"+modifyDTO.getUuid()+"']";
+		
+		try {
+			NodeList nodesATTR = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ATTRIBUTE, processor.getOriginalDoc(), XPathConstants.NODESET);
+			for(int i=0 ;i<nodesATTR.getLength();i++){
+				Node newNode = nodesATTR.item(i);
+				newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getDataType());
+			}
+			
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void updateSupplementalDataElement(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO){
+		
+		//XPath to find all elementRefs in supplementalDataElements for to be modified QDM.
+		String XPATH_EXPRESSION_SDE_ELEMENTREF = "/measure/supplementalDataElements/elementRef[@id='"+modifyDTO.getUuid()+"']";
+		
+		try {
+			NodeList nodesSDE = (NodeList) xPath.evaluate(XPATH_EXPRESSION_SDE_ELEMENTREF, processor.getOriginalDoc(), XPathConstants.NODESET);
+			for(int i=0 ;i<nodesSDE.getLength();i++){
+				Node newNode = nodesSDE.item(i);
+				newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getCodeListName());
+			}
+			
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private void updatePopulationAndStratification(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO){
+		
+		//XPath to find All elementRef's under clause element nodes for to be modified QDM.
+		String XPATH_EXPRESSION_CLAUSE_ELEMENTREF = "/measure//clause//elementRef[@id='"+modifyDTO.getUuid()+"']";
+		try {
+			NodeList nodesClauseWorkSpace = (NodeList) xPath.evaluate(XPATH_EXPRESSION_CLAUSE_ELEMENTREF, processor.getOriginalDoc(), XPathConstants.NODESET);
+			ArrayList<QDSAttributes> attr = (ArrayList<QDSAttributes>)getAllDataTypeAttributes(modifyWithDTO.getDataType());
+			for(int i=0 ;i<nodesClauseWorkSpace.getLength();i++){
+				Node newNode = nodesClauseWorkSpace.item(i);
+				newNode.getAttributes().getNamedItem("displayName").setNodeValue(modifyWithDTO.getCodeListName()+":"+modifyWithDTO.getDataType());
+				if(newNode.getChildNodes()!=null){
+					NodeList childList = newNode.getChildNodes();
+					for(int j=0;j<childList.getLength();j++){
+						Node childNode = childList.item(j);
+						if(childNode.getAttributes().getNamedItem("qdmUUID")!=null){
+							String childNodeAttrName = childNode.getAttributes().getNamedItem("name").getNodeValue();
+							boolean isRemovable = true;
+							for(QDSAttributes attributes : attr){
+								if(attributes.getName().equalsIgnoreCase(childNodeAttrName)){
+									isRemovable = false;
+									break;
+								}
+							}
+							if(isRemovable){
+								Node parentNode = childNode.getParentNode();
+								parentNode.removeChild(childNode);
+							}
+						}
+					}
+				}
+			}
+		}catch (XPathExpressionException e) {
+			e.printStackTrace();
+		
+		}
+		
+	}
+	
+	private void updateElementLookUp(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO ){
+		
+		//XPath to find all elementRefs in elementLookUp for to be modified QDM.
+		String XPATH_EXPRESSION_ELEMENTLOOKUP = "/measure/elementLookUp/qdm[@uuid='"+modifyDTO.getUuid()+"']";
+		try {
+			NodeList nodesElementLookUp = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ELEMENTLOOKUP, processor.getOriginalDoc(), XPathConstants.NODESET);
+			for(int i=0 ;i<nodesElementLookUp.getLength();i++){
+				Node newNode = nodesElementLookUp.item(i);
+				newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getCodeListName());
+				newNode.getAttributes().getNamedItem("id").setNodeValue(modifyWithDTO.getId());
+				newNode.getAttributes().getNamedItem("codeSystemName").setNodeValue(modifyWithDTO.getCodeSystemName());
+				newNode.getAttributes().getNamedItem("datatype").setNodeValue(modifyWithDTO.getDataType());
+				newNode.getAttributes().getNamedItem("oid").setNodeValue(modifyWithDTO.getOid());
+				newNode.getAttributes().getNamedItem("taxonomy").setNodeValue(modifyWithDTO.getTaxonomy());
+				if(modifyWithDTO.isSuppDataElement()){
+					newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("true");
+				}else{
+					newNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("false");
+				}
+				if(newNode.getAttributes().getNamedItem("instance")!=null){
+					if(!StringUtils.isBlank(modifyWithDTO.getOccurrenceText())){
+						newNode.getAttributes().getNamedItem("instance").setNodeValue(modifyWithDTO.getOccurrenceText());
+					}else{
+						newNode.getAttributes().removeNamedItem("instance");
+					}
+				}else{
+					if(!StringUtils.isEmpty(modifyWithDTO.getOccurrenceText())){
+						Attr instance = processor.getOriginalDoc().createAttribute("instance");
+						instance.setNodeValue(modifyWithDTO.getOccurrenceText());
+						newNode.getAttributes().setNamedItem(instance);
+					}
+				}
+				
+			}
+			
+		} catch (XPathExpressionException e) {
+				e.printStackTrace();
+		
+		}
+		
+	}
+	
 	@Override
 	public void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list , String measureID){
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
@@ -1048,35 +1204,6 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		
 	}
 	
-	 /**
-     * Method to create XML from QualityDataModelWrapper object.
-     * */
-    private ByteArrayOutputStream createXML(QualityDataModelWrapper qualityDataSetDTO) {
-		logger.info("In MeasureLibraryServiceImpl.createXml()");
-		Mapping mapping = new Mapping();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapping.loadMapping(new ResourceLoader().getResourceAsURL("QualityDataModelMapping.xml"));
-			Marshaller marshaller = new Marshaller(new OutputStreamWriter(stream));
-			marshaller.setMapping(mapping);
-	        marshaller.marshal(qualityDataSetDTO);
-	        logger.info("Marshalling of QualityDataSetDTO is successful.." + stream.toString());
-		} catch (Exception e) {
-			if(e instanceof IOException){
-				logger.info("Failed to load QualityDataModelMapping.xml" + e);
-			}else if(e instanceof MappingException){
-				logger.info("Mapping Failed" + e);
-			}else if(e instanceof MarshalException){
-				logger.info("Unmarshalling Failed" + e);
-			}else if(e instanceof ValidationException){
-				logger.info("Validation Exception" + e);
-			}else{
-				logger.info("Other Exception" + e);
-			}
-		} 
-		logger.info("Exiting MeasureLibraryServiceImpl.createXml()");
-		return stream;
-	}
 	
 	
 	private QualityDataModelWrapper convertXmltoQualityDataDTOModel(MeasureXmlModel xmlModel){

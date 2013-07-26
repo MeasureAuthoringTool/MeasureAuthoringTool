@@ -23,6 +23,7 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	private String lastModifiedDate;
 	private String xmlString;
 	ArrayList<QualityDataSetDTO> appliedQDMList ;
+	QualityDataSetDTO dataSetDTO;
 	
 	public String getXmlString() {
 		return xmlString;
@@ -114,6 +115,14 @@ public class SaveUpdateCodeListResult extends GenericResult {
 
 	public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList) {
 		this.appliedQDMList = appliedQDMList;
+	}
+
+	public QualityDataSetDTO getDataSetDTO() {
+		return dataSetDTO;
+	}
+
+	public void setDataSetDTO(QualityDataSetDTO dataSetDTO) {
+		this.dataSetDTO = dataSetDTO;
 	}
 
 	

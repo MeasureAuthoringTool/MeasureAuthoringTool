@@ -47,7 +47,7 @@ public interface MeasureService extends RemoteService {
 	void saveAndDeleteMeasure(String measureID);
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
 	void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList,
-			CodeListSearchDTO modifyWithDTO, QualityDataSetDTO modifyDTO,
+			QualityDataSetDTO qualityDataSetDTO2, QualityDataSetDTO modifyDTO,
 			String measureId);
 
 

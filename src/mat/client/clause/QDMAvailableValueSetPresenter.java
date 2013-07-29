@@ -306,7 +306,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	}
 	
 	private void displaySearch() {
-		ModifyQDMDialogBox.showModifyDialogBox(searchDisplay.asWidget());
+		ModifyQDMDialogBox.showModifyDialogBox(searchDisplay.asWidget(),modifyValueSetDTO);
 		searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	
@@ -383,7 +383,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	}
 	
 	void loadCodeListData(){
-		
 		searchDisplay.getValueSetSearchFilterPanel().resetFilter();
 		int filter = searchDisplay.getValueSetSearchFilterPanel().getDefaultFilter();
 		search("", 1, searchDisplay.getPageSize(), currentSortColumn, sortIsAscending,showdefaultCodeList,filter);

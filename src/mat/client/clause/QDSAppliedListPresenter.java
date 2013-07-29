@@ -89,9 +89,11 @@ public class QDSAppliedListPresenter implements MatPresenter {
 				searchDisplay.getApplyToMeasureSuccessMsg().clear();
 				searchDisplay.getErrorMessageDisplay().clear();
 				QualityDataSetDTO dataSetDTO = searchDisplay.getSelectedElementToRemove();
-				QDMAvailableValueSetWidget availableValueSetWidget = new QDMAvailableValueSetWidget();
-				QDMAvailableValueSetPresenter availableValueSetPresenter = new QDMAvailableValueSetPresenter(availableValueSetWidget,dataSetDTO,allQdsList);
-				availableValueSetPresenter.beforeDisplay();
+				if(dataSetDTO!=null){
+					QDMAvailableValueSetWidget availableValueSetWidget = new QDMAvailableValueSetWidget();
+					QDMAvailableValueSetPresenter availableValueSetPresenter = new QDMAvailableValueSetPresenter(availableValueSetWidget,dataSetDTO,allQdsList);
+					availableValueSetPresenter.beforeDisplay();
+				}
 			}
 		});
 	}

@@ -84,6 +84,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(rangeLabelPager);
 		vp.add(new SpacerWidget());
 		removeButton.setEnabled(checkForEnable());
+		modify.setEnabled(checkForEnable()?true:false);
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		removeButton.setTitle("Remove");
@@ -148,10 +149,16 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 						//System.out.println("appliedListModel.getLastSelected() =======>>>>" + appliedListModel.getLastSelected());
 						//selectionModel.setSelected(object, true);
 						lastSelectedObject=object;
-						if(object.isUsed()){
-							removeButton.setEnabled(false);
+						if(checkForEnable()){
+							modify.setEnabled(true);
+							if(object.isUsed()){
+								removeButton.setEnabled(false);
+							}else{
+								removeButton.setEnabled(true);
+							}
 						}else{
-							removeButton.setEnabled(true);
+							removeButton.setEnabled(false);
+							modify.setEnabled(false);
 						}
 						
 					}
@@ -251,6 +258,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			pagerPanel.addStyleName("scrollable");
 			pagerPanel.setDisplay(cellList);
 			rangeLabelPager.setDisplay(cellList);
+			removeButton.setEnabled(false);
+			modify.setEnabled(checkForEnable() && appliedListModel.getLastSelected()!=null ?true:false);
 		}
 	}
 

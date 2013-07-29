@@ -82,19 +82,19 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		public ValueSetSearchFilterPanel getValueSetSearchFilterPanel();
 		public void setEnabled(boolean enabled);
 		
-		public SuccessMessageDisplayInterface getRemoveMeasureSuccessMsg();
+		/*public SuccessMessageDisplayInterface getRemoveMeasureSuccessMsg();
 		public ErrorMessageDisplayInterface getErrorMessageRemoveDisplay();
 		public Widget asWidget();
 		void buildCellList(QDSAppliedListModel appliedListModel);
 		Button getRemoveButton();
-		QualityDataSetDTO getSelectedElementToRemove();
+		QualityDataSetDTO getSelectedElementToRemove();*/
 	}
 
 	public QDSCodeListSearchPresenter(SearchDisplay sDisplayArg) {
 		this.searchDisplay = sDisplayArg;
 		
-		getXMLForAppliedQDM(true);
-		searchDisplay.getRemoveButton().addClickHandler(new ClickHandler() {
+		//getXMLForAppliedQDM(true);
+		/*searchDisplay.getRemoveButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -131,7 +131,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 					}
 				}			
 					
-		});
+		});*/
 		
 		
 		
@@ -286,7 +286,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 //		int filter = searchDisplay.getValueSetSearchFilterPanel().getSelectedIndex();
 		//reverting to default search filter when navigating to Clause Workspace 
 		panel.clear();
-		getXMLForAppliedQDM(true);
+		//getXMLForAppliedQDM(true);
 		searchDisplay.getValueSetSearchFilterPanel().resetFilter();
 		int filter = searchDisplay.getValueSetSearchFilterPanel().getDefaultFilter();
 		search("", 1, searchDisplay.getPageSize(), currentSortColumn, sortIsAscending,showdefaultCodeList,filter);
@@ -458,11 +458,11 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		//select data type
 		searchDisplay.getDataTypeInput().setEnabled(dataTypeInput);
 	}
-	/**
+/*	*//**
 	 * Method for fetching all applied Value Sets in a measure which is loaded
 	 * in context.
 	 * 
-	 * */
+	 * *//*
 	public void getXMLForAppliedQDM(boolean checkForSupplementData){
 		String measureId = MatContext.get().getCurrentMeasureId();
 		isCheckForSDE = checkForSupplementData;
@@ -485,7 +485,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 
 		}
 
-	}
+	}*/
 	
 	private void saveMeasureXML(ArrayList<QualityDataSetDTO> list){
 		service.createAndSaveElementLookUp(list,MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {

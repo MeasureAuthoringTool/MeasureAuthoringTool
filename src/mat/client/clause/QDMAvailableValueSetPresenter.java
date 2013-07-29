@@ -71,6 +71,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		public String getDataTypeText();
 		public ValueSetSearchFilterPanel getValueSetSearchFilterPanel();
 		public void setEnabled(boolean enabled);
+		public Button getCancel();
 		
 	}
 	
@@ -151,6 +152,16 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				
 			}
 		});
+		
+		searchDisplay.getCancel().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				ModifyQDMDialogBox.dialogBox.hide();
+				
+			}
+		});
+		
 	}
 	
 	protected void modifyQDM() {

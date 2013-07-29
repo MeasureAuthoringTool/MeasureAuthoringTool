@@ -15,6 +15,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -53,6 +54,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
 	private Button addToMeasure = new PrimaryButton("Apply to Measure","primaryButton");
+	private Button cancel = new SecondaryButton("Cancel");
 	private SimplePanel dataTypePanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
@@ -107,8 +109,15 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		searchCriteriaPanel.add(buildInitialDisabledWidget());
 		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(addToMeasure);
-	
+		
+		HorizontalPanel buttonLayout = new HorizontalPanel();
+		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
+		addToMeasure.setTitle("Apply to Measure");
+		cancel.setTitle("Cancel");
+		buttonLayout.add(addToMeasure);
+		buttonLayout.add(cancel);
+		searchCriteriaPanel.add(buttonLayout);
+		
 		vp.add(searchCriteriaPanel);
 		vp.add(new SpacerWidget());
 		mainPanel.add(vp);
@@ -370,6 +379,10 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 
 	public FocusableWidget getMessageFocus() {
 		return messageFocus;
+	}
+	@Override
+	public Button getCancel() {
+		return cancel;
 	}
 
 	@Override

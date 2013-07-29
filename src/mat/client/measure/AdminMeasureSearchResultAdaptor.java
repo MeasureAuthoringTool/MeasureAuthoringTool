@@ -2,7 +2,6 @@ package mat.client.measure;
 
 import java.sql.Timestamp;
 
-import mat.client.ImageResources;
 import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.MatButtonCell;
@@ -10,11 +9,12 @@ import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
 
+
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -62,7 +62,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 		this.data = data;
 		
 	}
-	
+
 	public ManageMeasureSearchModel getData() {
 		return data;
 	}
@@ -71,7 +71,6 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	public boolean isColumnSortable(int columnIndex) {
 		return false;
 	}
-
 
 	@Override
 	public int getNumberOfColumns() {
@@ -117,11 +116,12 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	}
 
 	
-	//TODO - need to remove this method going forward as we replace the Grid Table with Cell Table
+	//TODO - need to remove this method going forward as we replace the Grid Table with Cel T
 	@Override
 	public Widget getValue(int row, int column) {
 		return null;
-	}		
+	}
+		
 		
 	private ClickHandler buildClickHandler() {
 		return new ClickHandler() {
@@ -197,7 +197,9 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 			public void onSelectionChange(SelectionChangeEvent event) {
 				ManageMeasureSearchModel.Result measureListObject = selectionModel.getSelectedObject();
 				if(measureListObject !=null){
+					//lastSelectedCodeList = codeListObject;
 					MatContext.get().clearDVIMessages();
+					
 					setLastSelectedMeasureList(measureListObject);
 					setSelectedMeasureList(measureListObject);
 					MatContext.get().getEventBus().fireEvent(new OnChangeOptionsEvent());
@@ -216,7 +218,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	@SuppressWarnings("unchecked")
 	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table){
 		
-		if(table.getColumnCount() !=5 ){	
+		if(table.getColumnCount() !=6 ){	
 			
 			TextColumn<ManageMeasureSearchModel.Result > measureName = new TextColumn<ManageMeasureSearchModel.Result >() {
 				@Override
@@ -243,7 +245,15 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 			};
 			table.addColumn(ownerEmailAddress, "Owner E-mail Address");
 						
-						
+			TextColumn<ManageMeasureSearchModel.Result > version = new TextColumn<ManageMeasureSearchModel.Result >() {
+				@Override
+				public String getValue(ManageMeasureSearchModel.Result object) {
+					return object.getVersion();
+				}
+			};
+			table.addColumn(version, "Version");
+			
+			
 			Cell<String> historyButton = new MatButtonCell();
 			Column historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
 			  @Override
@@ -276,10 +286,13 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 				  }
 				});
 			table.addColumn(transferColumn , "Transfer");
-								
+					
+			
+			
 		}
 		
 		return table;
+		
 	}
 
 	public boolean isHistoryClicked() {

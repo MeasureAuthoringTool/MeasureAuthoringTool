@@ -490,13 +490,13 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	
 	private ManageMeasurePresenter buildMeasureLibraryWidget() {
 		ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
+		AdminManageMeasureSearchView adminManageMeasureSearchView = new AdminManageMeasureSearchView();
 		ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
 		ManageMeasureVersionView versionView = new ManageMeasureVersionView();
 		ManageMeasureDraftView measureDraftView = new ManageMeasureDraftView();
 		TransferMeasureOwnershipView transferOS = new TransferMeasureOwnershipView();
 		ManageMeasureShareView measureShareView = new ManageMeasureShareView();
 		ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
-		AdminSearchDisplay adminSearchDisplayArg = new AdminManageMeasureSearchView();
 		ManageMeasureExportView measureExportView;
 		if (currentUserRole.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)){
 			measureExportView = new ManageMeasureExportView(true);
@@ -504,7 +504,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			measureExportView = new ManageMeasureExportView(false);
 		}
 		ManageMeasurePresenter measurePresenter = 
-			new ManageMeasurePresenter(measureSearchView,adminSearchDisplayArg, measureDetailView, measureShareView, measureExportView,
+			new ManageMeasurePresenter(measureSearchView, adminManageMeasureSearchView,measureDetailView, measureShareView, measureExportView,
 					historyView,versionView,measureDraftView,transferOS);
 		
 		return measurePresenter;

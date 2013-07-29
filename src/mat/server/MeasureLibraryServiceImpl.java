@@ -1108,7 +1108,13 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			ArrayList<QDSAttributes> attr = (ArrayList<QDSAttributes>)getAllDataTypeAttributes(modifyWithDTO.getDataType());
 			for(int i=0 ;i<nodesClauseWorkSpace.getLength();i++){
 				Node newNode = nodesClauseWorkSpace.item(i);
-				newNode.getAttributes().getNamedItem("displayName").setNodeValue(modifyWithDTO.getCodeListName()+" : "+modifyWithDTO.getDataType());
+				String displayName = new String();
+				if(!StringUtils.isBlank(modifyWithDTO.getOccurrenceText())){
+						displayName = displayName.concat(modifyWithDTO.getOccurrenceText() +" of ");
+				}
+				displayName = displayName.concat(modifyWithDTO.getCodeListName()+" : "+modifyWithDTO.getDataType());
+				
+				newNode.getAttributes().getNamedItem("displayName").setNodeValue(displayName);
 				if(newNode.getChildNodes()!=null){
 					NodeList childList = newNode.getChildNodes();
 					for(int j=0;j<childList.getLength();j++){

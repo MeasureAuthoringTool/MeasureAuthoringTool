@@ -1171,12 +1171,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
 		panel.setContent(detailDisplay.asWidget());
-		Mat.focusSkipLists("MainContent");
 	}
 	private void displayDetailForClone() {
 		detailDisplay.clearFields();
 		detailDisplay.setMeasureName(currentDetails.getName());
 		detailDisplay.showMeasureName(true);
+		detailDisplay.getMeasScoringChoice().setValueMetadata(currentDetails.getMeasScoring());
 		panel.setHeading("My Measures > Clone Measure","MainContent");
 		panel.setContent(detailDisplay.asWidget());
 		Mat.focusSkipLists("MainContent");
@@ -1614,7 +1614,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		//US 421. Validate Measure Scoring choice
 		String scoring = model.getMeasScoring();
 		String enteredScoringValue = detailDisplay.getMeasScoringValue();
-		System.out.println(" Entered value for Measure Scoring in Edit Measure is :::: " + enteredScoringValue);
 		if(scoring == null || !isValidValue(model.getMeasScoring()) || enteredScoringValue.equals("--Select--")) {
 			message.add(MatContext.get().getMessageDelegate().s_ERR_MEASURE_SCORE_REQUIRED);
 		}

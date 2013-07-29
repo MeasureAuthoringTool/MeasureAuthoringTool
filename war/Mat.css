@@ -344,11 +344,12 @@ body#main select, body#main input, body#main textarea {
 	float:right;
 }
  .scrollable {
-      height: 400px;
+      height: 250px;
       width: 850px;
       border: 1px solid #ccc;
       text-align: left;
  }
+
  .qdmCellList{
  	margin-top:-12px;
  	margin-left:10px;
@@ -401,6 +402,16 @@ body#main select, body#main input, body#main textarea {
     width: 1px;
 }
 
+.rightAlignSecondaryButton{
+	background: url("images/hborder.png") repeat-x scroll 0 -27px transparent;
+    border: 1px outset #CCCCCC;
+    cursor: pointer;
+    font-size: small;
+    margin-left: 15px;
+    padding: 3px 5px;
+    text-decoration: none;
+	
+}
 .alertMessage {
 	/*color: red;*/
 	
@@ -421,9 +432,16 @@ body#main select, body#main input, body#main textarea {
   filter: alpha(opacity=30);
 }
 
+/* .gwt-DialogBox{
+	width:950px;
+	height:950px;
+	
+} */
 .gwt-DialogBox .Caption {
   font-weight: bold;
 }
+
+
 
 .successMessage {
 	/*color: green;

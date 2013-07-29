@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.xml.client.Node;
 
 public class ClauseWorkspaceContextMenu {
 	
@@ -368,7 +369,30 @@ public class ClauseWorkspaceContextMenu {
 			}
 		};
 		MenuItem item = new MenuItem(template.menuTable("Edit Attributes", ""),addQDMAttributeCmd);
-		menuBar.addItem(item);		
+		menuBar.addItem(item);	
+		checkForTimingElementDataType(cellTreeNode,item);
+	}
+	
+	/**
+	 * Check if the Data Type for the selected node is "Timing Element" and disable the menuItem.
+	 * @param cellTreeNode
+	 * @param item
+	 */
+	private void checkForTimingElementDataType(CellTreeNode cellTreeNode,
+			MenuItem item) {
+		if(cellTreeNode.getNodeType() != CellTreeNode.ELEMENT_REF_NODE){
+			return;
+		}
+		String qdmName = ClauseConstants.getElementLookUpName().get(cellTreeNode.getUUID());
+		Node qdmNode = ClauseConstants.getElementLookUpNode().get(qdmName + "~" + cellTreeNode.getUUID());
+		//Could not find the qdm node in elemenentLookup tag 
+		if(qdmNode == null){
+			return;
+		}
+		String qdmDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+		if("Timing Element".equals(qdmDataType)){
+			item.setEnabled(false);
+		}
 	}
 
 	protected void showQDMAttributePopup(CellTreeNode cellTreeNode) {

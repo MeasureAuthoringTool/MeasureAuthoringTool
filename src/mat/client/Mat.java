@@ -16,6 +16,7 @@ import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.TimedOutEvent;
 import mat.client.login.service.SessionManagementService;
+import mat.client.measure.AdminManageMeasureSearchView;
 import mat.client.measure.ManageMeasureDetailView;
 import mat.client.measure.ManageMeasureDraftView;
 import mat.client.measure.ManageMeasureExportView;
@@ -25,6 +26,7 @@ import mat.client.measure.ManageMeasureSearchView;
 import mat.client.measure.ManageMeasureShareView;
 import mat.client.measure.ManageMeasureVersionView;
 import mat.client.measure.TransferMeasureOwnershipView;
+import mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay;
 import mat.client.myAccount.ChangePasswordPresenter;
 import mat.client.myAccount.ChangePasswordView;
 import mat.client.myAccount.MyAccountPresenter;
@@ -494,6 +496,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		TransferMeasureOwnershipView transferOS = new TransferMeasureOwnershipView();
 		ManageMeasureShareView measureShareView = new ManageMeasureShareView();
 		ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
+		AdminSearchDisplay adminSearchDisplayArg = new AdminManageMeasureSearchView();
 		ManageMeasureExportView measureExportView;
 		if (currentUserRole.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)){
 			measureExportView = new ManageMeasureExportView(true);
@@ -501,7 +504,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			measureExportView = new ManageMeasureExportView(false);
 		}
 		ManageMeasurePresenter measurePresenter = 
-			new ManageMeasurePresenter(measureSearchView, measureDetailView, measureShareView, measureExportView,
+			new ManageMeasurePresenter(measureSearchView,adminSearchDisplayArg, measureDetailView, measureShareView, measureExportView,
 					historyView,versionView,measureDraftView,transferOS);
 		
 		return measurePresenter;

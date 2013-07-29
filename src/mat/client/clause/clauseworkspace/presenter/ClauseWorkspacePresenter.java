@@ -155,7 +155,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 						}
 					
 						if(namedNodeMap.getNamedItem("datatype") != null){
-							name = name + ":" + namedNodeMap.getNamedItem("datatype").getNodeValue();
+							name = name + " : " + namedNodeMap.getNamedItem("datatype").getNodeValue();
 						}
 						
 						String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();

@@ -27,6 +27,7 @@ import mat.client.login.service.LoginService;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementServiceAsync;
+import mat.client.measure.AdminManageMeasureSearchView;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchView;
@@ -114,7 +115,7 @@ public class MatContext implements IsSerializable {
 	private ErrorMessageDisplay errorMessage2;
 	
 	private ManageMeasureSearchView manageMeasureSearchView;
-	
+	private AdminManageMeasureSearchView adminManageMeasureSearchView;
 	private ManageMeasureSearchModel manageMeasureSearchModel;
 	
 	private ManageCodeListSearchView manageCodeListSearchView;
@@ -162,8 +163,15 @@ public class MatContext implements IsSerializable {
 			qdsView.getErrorMessagePanel().clear();
 		}
 	}
-	
-	
+		
+	public AdminManageMeasureSearchView getAdminManageMeasureSearchView() {
+		return adminManageMeasureSearchView;
+	}
+
+	public void setAdminManageMeasureSearchView(AdminManageMeasureSearchView view){
+		adminManageMeasureSearchView=view;
+	}
+		
 	public void setQDSView(QDSCodeListSearchView view){
 		qdsView=view;
 	}
@@ -748,9 +756,6 @@ public class MatContext implements IsSerializable {
 			ManageMeasureSearchModel manageMeasureSearchModel) {
 		this.manageMeasureSearchModel = manageMeasureSearchModel;
 	}
-
-
-
 
 
 	/**

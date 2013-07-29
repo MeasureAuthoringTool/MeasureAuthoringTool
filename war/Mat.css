@@ -138,6 +138,18 @@ body#main select, body#main input, body#main textarea {
     font-weight: bold;
 }
 
+.customClockButton {
+    background: url("images/clock.png");
+    background-position:center;
+	background-repeat:no-repeat;
+	height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+  	cursor: pointer;
+  	cursor: hand;
+}
+
 .primaryGreyButton {
     background: url("images/bg_btnGrey-secondary.png");
     background-repeat: repeat-x;

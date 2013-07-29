@@ -86,17 +86,17 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 			mainPanel.add(view.asWidget());
 			mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
 			mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,errorMessagesForBulkExport));
-		}else{
+		}/*else{
 			
 			mainPanel.add(new SpacerWidget());
-			/*Widget searchText = LabelBuilder.buildLabel(searchInput, "");
+			Widget searchText = LabelBuilder.buildLabel(searchInput, "");
 			searchFocusHolder = new FocusableWidget(searchText);
-			mainPanel.add(searchFocusHolder);*/
+			mainPanel.add(searchFocusHolder);
 			mainPanel.add(buildSearchWidget());
 			mainPanel.add(new SpacerWidget());
 			mainPanel.add(view.asWidget());
 			mainPanel.add(buildBottomButtonWidget((PrimaryButton) transferButton,errorMessagesForTransferOS));
-		}
+		}*/
 		
 		MatContext.get().setManageMeasureSearchView(this);
 		
@@ -153,6 +153,8 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	public void buildDataTable(SearchResults<ManageMeasureSearchModel.Result> results) {
 		view.buildDataTable(results);
 	}
+	
+	
 	@Override 
 	public int getPageSize() {
 		return view.getPageSize();

@@ -3,6 +3,8 @@ package mat.client.measure;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.formula.functions.T;
+
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
@@ -23,6 +25,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
@@ -39,6 +42,7 @@ import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
+import mat.model.CodeListSearchDTO;
 import mat.model.clause.MeasureShareDTO;
 import mat.shared.ConstantMessages;
 
@@ -103,8 +107,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public MeasureSearchFilterPanel getMeasureSearchFilterPanel();
 		public SuccessMessageDisplay getSuccessMeasureDeletion();
 		public ErrorMessageDisplay getErrorMeasureDeletion();
-		
 	}
+	
+	public static interface AdminSearchDisplay extends mat.client.measure.ManageMeasurePresenter.SearchDisplay{
+		public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectedMeasureOption();
+		public void buildMeasureDataTable(AdminMeasureSearchResultAdaptor results);
+		public FocusableWidget getMsgFocusWidget();
+		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		public HasClickHandlers getTransferButton();
+		public void setEnabled(boolean enabled);
+		public HasClickHandlers getClearButton();
+		public void clearTransferCheckBoxes();
+		
+;	}
+	
 	public static interface DetailDisplay extends BaseDisplay {
 		public HasValue<String> getName();
 		public HasValue<String> getShortName();
@@ -210,6 +226,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
 	private SearchDisplay searchDisplay;
+	private AdminSearchDisplay adminSearchDisplay;
 	private DetailDisplay detailDisplay;
 	private HistoryDisplay historyDisplay;
 	private ShareDisplay shareDisplay;
@@ -239,13 +256,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 			detailDisplay.getName().setValue("");
 			detailDisplay.getShortName().setValue("");
 			searchDisplay.clearSelections();
+			adminSearchDisplay.clearSelections();
 			displaySearch();
 		}
 	};
 	
-	public ManageMeasurePresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg,
+	public ManageMeasurePresenter(SearchDisplay sDisplayArg,AdminSearchDisplay adminSearchDisplayArg, DetailDisplay dDisplayArg,
 			ShareDisplay shareDisplayArg, ExportDisplay exportDisplayArg, HistoryDisplay hDisplay,VersionDisplay vDisplay,DraftDisplay dDisplay, final TransferDisplay transferDisplay) {
 		this.searchDisplay = sDisplayArg;
+		this.adminSearchDisplay = adminSearchDisplayArg;
 		this.detailDisplay = dDisplayArg;
 		this.historyDisplay = hDisplay;
 		this.shareDisplay = shareDisplayArg;
@@ -329,10 +348,30 @@ public class ManageMeasurePresenter implements MatPresenter {
 				isMeasureDeleted = false;
 				searchDisplay.getErrorMeasureDeletion().clear();
 				searchDisplay.getSuccessMeasureDeletion().clear();
-				searchDisplay.clearBulkExportCheckBoxes(searchDisplay.getMeasureDataTable());
+				//searchDisplay.clearBulkExportCheckBoxes(searchDisplay.getMeasureDataTable());
 				displayTransferView(startIndex,transferDisplay.getPageSize());
 			}
 		});
+		
+		adminSearchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				measureDeletion =false;
+				isMeasureDeleted = false;
+				adminSearchDisplay.getErrorMeasureDeletion().clear();
+				adminSearchDisplay.getSuccessMeasureDeletion().clear();
+				displayTransferView(startIndex,transferDisplay.getPageSize());
+			}
+		});
+		
+		adminSearchDisplay.getClearButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				adminSearchDisplay.clearTransferCheckBoxes();
+			}
+		});
+		
+		
 		searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
 			
 			@Override
@@ -367,7 +406,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		//This event will be called when measure is successfully deleted and then MeasureLibrary is reloaded.
 		MatContext.get().getEventBus().addHandler(MeasureDeleteEvent.TYPE, new MeasureDeleteEvent.Handler() {
 
-						@Override
+			@Override
 			public void onDeletion(MeasureDeleteEvent event) {
 				displaySearch();
 				if(event.isDeleted()){
@@ -581,6 +620,23 @@ public class ManageMeasurePresenter implements MatPresenter {
 					 filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
 				}
 				search(searchDisplay.getSearchString().getValue(),startIndex, searchDisplay.getPageSize(),filter);
+			}
+		});
+		
+		adminSearchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
+			@Override
+			// TODO Auto-generated method stub	
+			public void onClick(ClickEvent event) {
+				int startIndex = 1;
+				measureDeletion=false;
+				adminSearchDisplay.getErrorMeasureDeletion().clear();
+				adminSearchDisplay.getSuccessMeasureDeletion().clear();
+				adminSearchDisplay.getErrorMessageDisplay().clear();
+				int filter = adminSearchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
+				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
+					 filter = adminSearchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+				}
+				search(adminSearchDisplay.getSearchString().getValue(),startIndex, adminSearchDisplay.getPageSize(),filter);
 			}
 		});
 		
@@ -845,8 +901,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	private void displayTransferView(int startIndex, int pageSize){
 		final ArrayList<ManageMeasureSearchModel.Result> transferMeasureResults = (ArrayList<Result>) manageMeasureSearchModel.getSelectedTransferResults();
-		searchDisplay.getErrorMessageDisplay().clear();
-		searchDisplay.getErrorMessagesForTransferOS().clear();
+		adminSearchDisplay.getErrorMessageDisplay().clear();
+		adminSearchDisplay.getErrorMessagesForTransferOS().clear();
 		transferDisplay.getErrorMessageDisplay().clear();
 		if(transferMeasureResults.size() !=0){
 			showSearchingBusy(true);
@@ -869,7 +925,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 			});
 		}else{
-			searchDisplay.getErrorMessagesForTransferOS().setMessage(MatContext.get().getMessageDelegate().getTransferCheckBoxErrorMeasure());
+			adminSearchDisplay.getErrorMessagesForTransferOS().setMessage(MatContext.get().getMessageDelegate().getTransferCheckBoxErrorMeasure());
 		}
 		
 	}
@@ -1068,7 +1124,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		String heading ="My Measures";
 		int filter;
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
-			heading ="Measures";
+			heading = "";
 			filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
 		}else{
 			//MAT-1929 : Retain filters at measure library screen
@@ -1349,13 +1405,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 					manageMeasureSearchModel = result;
 					AdminMeasureSearchResultAdaptor searchAdminResults = new AdminMeasureSearchResultAdaptor();
 					searchAdminResults.setObserver(new AdminMeasureSearchResultAdaptor.Observer() {
-
 						@Override
 						public void onHistoryClicked(Result result) {
 							measureDeletion=false;
 							isMeasureDeleted=false;
-							searchDisplay.getSuccessMeasureDeletion().clear();
-							searchDisplay.getErrorMeasureDeletion().clear();
+							adminSearchDisplay.getSuccessMeasureDeletion().clear();
+							adminSearchDisplay.getErrorMeasureDeletion().clear();
 							historyDisplay.setReturnToLinkText("<< Return to Measure Library");
 							if(!result.isEditable()){
 								historyDisplay.setUserCommentsReadOnly(true);
@@ -1367,8 +1422,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 						@Override
 						public void onTransferSelectedClicked(Result result) {
-							searchDisplay.getErrorMessageDisplay().clear();
-							searchDisplay.getErrorMessagesForTransferOS().clear();
+							adminSearchDisplay.getErrorMessageDisplay().clear();
+							adminSearchDisplay.getErrorMessagesForTransferOS().clear();
 							updateTransferID(result);
 						}
 						
@@ -1377,16 +1432,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 					result.setSelectedExportIds(new ArrayList<String>());
 					manageMeasureSearchModel = result;
 					MatContext.get().setManageMeasureSearchModel(manageMeasureSearchModel);
-				
+					
 					if(result.getResultsTotal() == 0 && !lastSearchText.isEmpty()){
-						searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
+						adminSearchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
 					}else{
-						searchDisplay.getErrorMessageDisplay().clear();
-						searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+						adminSearchDisplay.getErrorMessageDisplay().clear();
+						adminSearchDisplay.getErrorMessageDisplayForBulkExport().clear();
 					}
 					SearchResultUpdate sru = new SearchResultUpdate();
-					sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchText);
-					searchDisplay.buildDataTable(searchAdminResults);
+					sru.update(result, (TextBox)adminSearchDisplay.getSearchString(), lastSearchText);
+					adminSearchDisplay.buildMeasureDataTable(searchAdminResults);
+					panel.setContent(adminSearchDisplay.asWidget());
 					showSearchingBusy(false);
 					
 				}

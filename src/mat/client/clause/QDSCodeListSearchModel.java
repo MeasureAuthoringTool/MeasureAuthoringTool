@@ -8,7 +8,6 @@ import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
 import mat.model.CodeListSearchDTO;
-import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;

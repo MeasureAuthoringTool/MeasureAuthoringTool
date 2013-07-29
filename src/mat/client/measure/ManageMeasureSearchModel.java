@@ -8,6 +8,7 @@ import mat.model.LockedUserInfo;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 public class ManageMeasureSearchModel implements IsSerializable, SearchResults<ManageMeasureSearchModel.Result>{
 	public static class Result implements IsSerializable {
@@ -30,6 +31,9 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		private boolean draft;
 		private String measureSetId;
 		private boolean isDeleted;
+		private String ownerfirstName;
+		private String ownerLastName;
+		private String ownerEmailAddress;
 		
 		public LockedUserInfo getLockedUserInfo() {
 			return lockedUserInfo;
@@ -175,6 +179,26 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		public void setDeleted(boolean isDeleted) {
 			this.isDeleted = isDeleted;
 		}
+		public String getOwnerfirstName() {
+			return ownerfirstName;
+		}
+		public void setOwnerfirstName(String ownerfirstName) {
+			this.ownerfirstName = ownerfirstName;
+		}
+		public String getOwnerLastName() {
+			return ownerLastName;
+		}
+		public void setOwnerLastName(String ownerLastName) {
+			this.ownerLastName = ownerLastName;
+		}
+		public String getOwnerEmailAddress() {
+			return ownerEmailAddress;
+		}
+		public void setOwnerEmailAddress(String ownerEmailAddress) {
+			this.ownerEmailAddress = ownerEmailAddress;
+		}
+		
+		
 		
 	}
 	
@@ -186,11 +210,12 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	private List<String> selectedTransferIds;
 	private List<Result> selectedTransferResults;
 	
+	
 	public void setData(List<Result> data) {
 		this.data = data;
 	}
 	
-    public List<Result>  getData(){
+    public List<Result> getData(){
     	return data;
     }
 
@@ -317,6 +342,8 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	public List<Result> getSelectedTransferResults() {
 		return selectedTransferResults;
 	}
+
+	
 
 
 	

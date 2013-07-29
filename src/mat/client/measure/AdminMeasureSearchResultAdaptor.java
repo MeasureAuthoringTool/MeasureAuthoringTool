@@ -3,25 +3,35 @@ package mat.client.measure;
 import java.sql.Timestamp;
 
 import mat.client.ImageResources;
+import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.shared.CustomButton;
-import mat.client.shared.FocusableImageButton;
+import mat.client.shared.MatButtonCell;
+import mat.client.shared.MatCheckBoxCell;
+import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
 
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.resources.client.ImageResource;
+
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeasureSearchModel.Result> {
 	
 	private static String[] headers = new String[] { "Measure Name", "Version", "Finalized Date", "Status", "History" ,"TransferMeasureClear"};
 	private static String[] widths = new String[] { "35%", "16%", "16%", "8%", "5%","5%","10%" };
+	
+	private boolean isHistoryClicked;
 
 	public static interface Observer {
 		public void onTransferSelectedClicked(ManageMeasureSearchModel.Result result);
@@ -29,9 +39,12 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	}
 		
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
+	private ManageMeasureSearchModel.Result lastSelectedMeasureList;
+	private ManageMeasureSearchModel.Result selectedMeasureList;
+	
 	private Observer observer;
 	private ClickHandler clickHandler = buildClickHandler();
-
+	
 	private ManageMeasureSearchModel.Result getResultForId(String id) {
 		for(int i = 0; i < data.getNumberOfRows(); i++) {
 			if(id.equals(data.getKey(i))) {
@@ -50,7 +63,10 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 		
 	}
 	
-	
+	public ManageMeasureSearchModel getData() {
+		return data;
+	}
+
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return false;
@@ -81,95 +97,32 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	public boolean isColumnFiresSelection(int columnIndex) {
 		return columnIndex == 0;
 	}
+	
+	public ManageMeasureSearchModel.Result getLastSelectedMeasureList() {
+		return lastSelectedMeasureList;
+	}
 
+	public void setLastSelectedMeasureList(
+			ManageMeasureSearchModel.Result lastSelectedMeasureList) {
+		this.lastSelectedMeasureList = lastSelectedMeasureList;
+	}
+
+	public ManageMeasureSearchModel.Result getSelectedMeasureList() {
+		return selectedMeasureList;
+	}
+
+	public void setSelectedMeasureList(
+			ManageMeasureSearchModel.Result selectedMeasureList) {
+		this.selectedMeasureList = selectedMeasureList;
+	}
+
+	
+	//TODO - need to remove this method going forward as we replace the Grid Table with Cell Table
 	@Override
 	public Widget getValue(int row, int column) {
-		Widget value = null;
-		switch(column) {
-		case 0:
-			value = new Label(data.get(row).getName());
-			break;
-		case 1:
-			value = new Label(data.get(row).getVersion());
-			break;
-		case 2:
-			Timestamp ts = data.get(row).getFinalizedDate();
-			String text = ts == null ? "" : convertTimestampToString(ts);
-			value = new Label(text);
-			break;
-		case 3:
-			value = new Label(data.get(row).getStatus());
-			break;
-		case 4: 
-			value = getImage("history", ImageResources.INSTANCE.clock(),data.get(row).getId());
-			
-			break;
-		case 5:
-			if(data.get(row).isTransferable()){
-				value = getTransferCheckBox(data.get(row).getId());
-				value.addStyleName("searchTableCenteredHolder");
-			}else
-				value = new Label();
-			break;
-		default: 
-			value = new Label();
-		}
-		return value;
-	}
-	
-	private Widget getImage(String action, ImageResource url, String key) {
-		SimplePanel holder = new SimplePanel();
-		holder.setStyleName("searchTableCenteredHolder");
-		/*FocusableImageButton image = new FocusableImageButton(url,action);
-		setImageStyle(image);
-		setId(image, action, key);
-		addListener(image);
-		holder.add(image);*/
-		CustomButton image = new CustomButton();
-		image.removeStyleName("gwt-button");
-		image.setStylePrimaryName("invisibleButtonText");
-		image.setTitle(action);
-		image.setResource(url,action);
-		setId(image, action, key);
-		addListener(image);
-		holder.add(image);
-		return holder;
-	}
-	
-	
-	/*private HorizontalPanel getTransferCheckBox(String key){
-		HorizontalPanel hPanel = new HorizontalPanel();
-		hPanel.setStyleName("searchTableCenteredHolder");
-		CustomCheckBox transFerCheckBox = new CustomCheckBox("Transfer", false);	
-		transFerCheckBox.getElement().setId("Transfer_" + key);
-		transFerCheckBox.setTitle("Select Measure to Transfer Ownership.");
-		transFerCheckBox.addClickHandler(clickHandler);
-		hPanel.add(transFerCheckBox);
-		return hPanel;
+		return null;
+	}		
 		
-	}*/
-	private CustomCheckBox getTransferCheckBox(String key){
-		
-		CustomCheckBox transFerCheckBox = new CustomCheckBox("Transfer", false);	
-		//transFerCheckBox.setFormValue(key);
-		transFerCheckBox.getElement().setId("Transfer_" + key);
-		transFerCheckBox.setTitle("Select Measure to Transfer Ownership.");
-		transFerCheckBox.addClickHandler(clickHandler);
-		return transFerCheckBox;
-		
-	}
-	
-	
-	private void addListener(CustomButton image) {
-		image.addClickHandler(clickHandler);
-	}
-	private void setImageStyle(FocusableImageButton image) {
-		image.setStylePrimaryName("measureSearchResultIcon");
-	}
-	private void setId(CustomButton image, String action, String key) {
-		String id = action + "_" + key;
-		image.getElement().setAttribute("id", id);
-	}
 	private ClickHandler buildClickHandler() {
 		return new ClickHandler() {
 			@Override
@@ -236,4 +189,107 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 		String tsStr = (ts.getMonth()+1)+"/"+ts.getDate()+"/"+(ts.getYear()+1900)+" "+hoursStr+":"+mins+" "+ap;
 		return tsStr;
 	}
+	
+	public SingleSelectionModel<ManageMeasureSearchModel.Result> addSelectionHandlerOnTable(){
+		final SingleSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new  SingleSelectionModel<ManageMeasureSearchModel.Result>();
+		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				ManageMeasureSearchModel.Result measureListObject = selectionModel.getSelectedObject();
+				if(measureListObject !=null){
+					MatContext.get().clearDVIMessages();
+					setLastSelectedMeasureList(measureListObject);
+					setSelectedMeasureList(measureListObject);
+					MatContext.get().getEventBus().fireEvent(new OnChangeOptionsEvent());
+
+				}
+			}
+		});
+		return selectionModel;
+	}
+
+	private SafeHtml getColumnToolTip(String columnText, StringBuilder title) {
+		String htmlConstant = "<html>" + "<head> </head> <Body><span title='"+title + "'>"+columnText+ "</span></body>" + "</html>";
+		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table){
+		
+		if(table.getColumnCount() !=5 ){	
+			
+			TextColumn<ManageMeasureSearchModel.Result > measureName = new TextColumn<ManageMeasureSearchModel.Result >() {
+				@Override
+				public String getValue(ManageMeasureSearchModel.Result object) {
+					return object.getName();
+				}
+			};
+			table.addColumn(measureName, "Measure Name");
+			
+			
+			TextColumn<ManageMeasureSearchModel.Result > ownerName = new TextColumn<ManageMeasureSearchModel.Result >() {
+				@Override
+				public String getValue(ManageMeasureSearchModel.Result object) {
+					return object.getOwnerfirstName() + "  " + object.getOwnerLastName();
+				}
+			};
+			table.addColumn(ownerName, "Owner Name");
+			
+			TextColumn<ManageMeasureSearchModel.Result > ownerEmailAddress = new TextColumn<ManageMeasureSearchModel.Result >() {
+				@Override
+				public String getValue(ManageMeasureSearchModel.Result object) {
+					return object.getOwnerEmailAddress();
+				}
+			};
+			table.addColumn(ownerEmailAddress, "Owner E-mail Address");
+						
+						
+			Cell<String> historyButton = new MatButtonCell();
+			Column historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
+			  @Override
+			  public String getValue(ManageMeasureSearchModel.Result object) {
+			    return "History";
+			  }
+			};
+			
+			historyColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
+				  @Override
+				  public void update(int index, ManageMeasureSearchModel.Result object, String value) {
+					  observer.onHistoryClicked(object);
+				  }
+				});
+			table.addColumn(historyColumn , "History");
+			
+			Cell<Boolean> transferCB = new MatCheckBoxCell();
+			Column transferColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(transferCB) {
+			  @Override
+			  public Boolean getValue(ManageMeasureSearchModel.Result object) {
+			    return object.isTransferable();
+			  }
+			};
+			
+			transferColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
+				  @Override
+				  public void update(int index, ManageMeasureSearchModel.Result object, Boolean value) {
+					  object.setTransferable(value);
+					  observer.onTransferSelectedClicked(object);
+				  }
+				});
+			table.addColumn(transferColumn , "Transfer");
+								
+		}
+		
+		return table;
+	}
+
+	public boolean isHistoryClicked() {
+		return isHistoryClicked;
+	}
+
+	public void setHistoryClicked(boolean isHistoryClicked) {
+		this.isHistoryClicked = isHistoryClicked;
+	}
+	
+		
+	
 }

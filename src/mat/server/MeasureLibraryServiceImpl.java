@@ -546,7 +546,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			detail.setSharable(isOwner || isSuperUser);
 			detail.setMeasureLocked(dto.isLocked());
 			detail.setLockedUserInfo(dto.getLockedUserInfo());
-			
+			User user = getUserService().getById(dto.getOwnerUserId()); 
+			detail.setOwnerfirstName(user.getFirstName());
+			detail.setOwnerLastName(user.getLastName());
+			detail.setOwnerEmailAddress(user.getEmailAddress());
 			/*US501*/
 			detail.setDraft(dto.isDraft());
 			String formattedVersion = MeasureUtility.getVersionText(dto.getVersion(), dto.isDraft());

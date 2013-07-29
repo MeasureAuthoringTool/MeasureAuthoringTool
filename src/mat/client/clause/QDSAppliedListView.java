@@ -84,10 +84,14 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(rangeLabelPager);
 		vp.add(new SpacerWidget());
 		removeButton.setEnabled(checkForEnable());
-		HorizontalPanel buttonPanel = new HorizontalPanel();
-		buttonPanel.add(removeButton);
-		buttonPanel.add(modify);
-		vp.add(buttonPanel);
+		HorizontalPanel buttonLayout = new HorizontalPanel();
+		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
+		removeButton.setTitle("Remove");
+		modify.setTitle("Modify");
+		modify.setStyleName("rightAlignSecondaryButton");
+		buttonLayout.add(removeButton);
+		buttonLayout.add(modify);
+		vp.add(buttonLayout);
 		vp.add(new SpacerWidget());
 
 		mainPanel.add(vp);

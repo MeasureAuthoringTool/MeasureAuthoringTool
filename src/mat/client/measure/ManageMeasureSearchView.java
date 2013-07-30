@@ -48,11 +48,9 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	private ListBoxMVP options = new ListBoxMVP();
 	private MeasureSearchFilterPanel msfp = new MeasureSearchFilterPanel();
 	private Button bulkExportButton = new PrimaryButton("Export Selected");
-	private Button transferButton = new PrimaryButton("Transfer");
 	final FormPanel form = new FormPanel();
 	
 	private ErrorMessageDisplay errorMessagesForBulkExport = new ErrorMessageDisplay();
-	private ErrorMessageDisplay errorMessagesForTransferOS = new ErrorMessageDisplay();
 	private ErrorMessageDisplay errorMeasureDeletion = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
 	String currentUserRole = MatContext.get().getLoggedInUserRole();
@@ -62,44 +60,31 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		mainPanel.setStyleName("contentPanel");
 		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
-		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
-			loadListBoxOptions();
-			mainPanel.add(LabelBuilder.buildLabel("Create", "Create Measure"));
-			mainPanel.add(options);
-			options.setName("Create");
-			DOM.setElementAttribute(options.getElement(), "id", "Create Measure");
-			mainPanel.add(createButton);
-			createButton.setTitle("Create");
-			mainPanel.add(new SpacerWidget());
-			Label searchMeasureText =new Label("Search For a Measure");
-			mainPanel.add(searchMeasureText);
-			mainPanel.add(msfp.getPanel());
-			mainPanel.add(new SpacerWidget());
-			/*Widget searchText = LabelBuilder.buildLabel(searchInput, "");
-			searchFocusHolder = new FocusableWidget(searchText);
-			mainPanel.add(searchFocusHolder);*/
-			mainPanel.add(buildSearchWidget());
-			mainPanel.add(new SpacerWidget());
-			mainPanel.add(successMeasureDeletion);
-			mainPanel.add(errorMeasureDeletion);
-			mainPanel.add(new SpacerWidget());
-			mainPanel.add(view.asWidget());
-			mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
-			mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,errorMessagesForBulkExport));
-		}/*else{
-			
-			mainPanel.add(new SpacerWidget());
-			Widget searchText = LabelBuilder.buildLabel(searchInput, "");
-			searchFocusHolder = new FocusableWidget(searchText);
-			mainPanel.add(searchFocusHolder);
-			mainPanel.add(buildSearchWidget());
-			mainPanel.add(new SpacerWidget());
-			mainPanel.add(view.asWidget());
-			mainPanel.add(buildBottomButtonWidget((PrimaryButton) transferButton,errorMessagesForTransferOS));
-		}*/
-		
+		loadListBoxOptions();
+		mainPanel.add(LabelBuilder.buildLabel("Create", "Create Measure"));
+		mainPanel.add(options);
+		options.setName("Create");
+		DOM.setElementAttribute(options.getElement(), "id", "Create Measure");
+		mainPanel.add(createButton);
+		createButton.setTitle("Create");
+		mainPanel.add(new SpacerWidget());
+		Label searchMeasureText =new Label("Search For a Measure");
+		mainPanel.add(searchMeasureText);
+		mainPanel.add(msfp.getPanel());
+		mainPanel.add(new SpacerWidget());
+		/*Widget searchText = LabelBuilder.buildLabel(searchInput, "");
+		searchFocusHolder = new FocusableWidget(searchText);
+		mainPanel.add(searchFocusHolder);*/
+		mainPanel.add(buildSearchWidget());
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(successMeasureDeletion);
+		mainPanel.add(errorMeasureDeletion);
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(view.asWidget());
+		mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
+		mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,errorMessagesForBulkExport));
 		MatContext.get().setManageMeasureSearchView(this);
-		
+
 	}
 	
 	
@@ -268,26 +253,7 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		return msfp;
 	}
 	
-	@Override
-	public HasClickHandlers getTransferButton() {
-		return transferButton;
-	}
-
-
-	/**
-	 * @param errorMessagesForTransferOS the errorMessagesForTransferOS to set
-	 */
-	public void setErrorMessagesForTransferOS(ErrorMessageDisplay errorMessagesForTransferOS) {
-		this.errorMessagesForTransferOS = errorMessagesForTransferOS;
-	}
-
-
-	@Override
-	public ErrorMessageDisplay getErrorMessagesForTransferOS() {
-		return errorMessagesForTransferOS;
-	}
-
-
+	
 	public ErrorMessageDisplay getErrorMeasureDeletion() {
 		return errorMeasureDeletion;
 	}

@@ -554,7 +554,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					});
 					panel.add(clearAnchor);
 					headerPanel.add(panel);
-				}else if("TransferMeasureClear".equals(results.getColumnHeader(i))){
+				}/*else if("TransferMeasureClear".equals(results.getColumnHeader(i))){
 					isClearAll = true;
 					HorizontalPanel panel = new HorizontalPanel();
 					panel.add(new Label("Transfer"));
@@ -569,12 +569,12 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 								MatContext.get().getManageMeasureSearchModel().getSelectedTransferIds().clear();
 							}
 							MatContext.get().getManageMeasureSearchView().clearBulkExportCheckBoxes(dataTable);
-							MatContext.get().getManageMeasureSearchView().getErrorMessagesForTransferOS().clear();
+							//MatContext.get().getManageMeasureSearchView().getErrorMessagesForTransferOS().clear();
 						}
 					});
 					panel.add(clearAnchor);
 					headerPanel.add(panel);
-				}
+				}*/
 				else{
 					columnHeader = new Label(results.getColumnHeader(i));
 					columnHeader.setTitle(results.getColumnHeader(i));

@@ -13,6 +13,7 @@ import mat.client.shared.search.SearchResults;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
@@ -227,7 +228,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 				}
 			};
 			table.addColumn(measureName, "Measure Name");
-			
+
 			
 			TextColumn<ManageMeasureSearchModel.Result > ownerName = new TextColumn<ManageMeasureSearchModel.Result >() {
 				@Override
@@ -287,9 +288,13 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 				  }
 				});
 			table.addColumn(transferColumn , "Transfer");
-						
+			table.setColumnWidth(0, 30.0, Unit.PCT);
+			table.setColumnWidth(1, 20.0, Unit.PCT);
+			table.setColumnWidth(2, 20.0, Unit.PCT);
+			table.setColumnWidth(3, 15.0, Unit.PCT);
+			table.setColumnWidth(4, 5.0, Unit.PCT);
+			table.setColumnWidth(5, 5.0, Unit.PCT);
 		}
-		
 		return table;
 	}
 

@@ -99,26 +99,30 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public HasClickHandlers getBulkExportButton();
 		public FormPanel getForm();
 		public ErrorMessageDisplayInterface getErrorMessageDisplayForBulkExport();
-		public ErrorMessageDisplayInterface getErrorMessagesForTransferOS();
 		public Grid508 getMeasureDataTable();
 		public Button getExportSelectedButton();
 		public void clearBulkExportCheckBoxes(Grid508 dataTable);
-		public HasClickHandlers getTransferButton();
 		public MeasureSearchFilterPanel getMeasureSearchFilterPanel();
 		public SuccessMessageDisplay getSuccessMeasureDeletion();
 		public ErrorMessageDisplay getErrorMeasureDeletion();
 	}
 	
-	public static interface AdminSearchDisplay extends mat.client.measure.ManageMeasurePresenter.SearchDisplay{
+	public static interface AdminSearchDisplay {
+		public HasClickHandlers getSearchButton();
+		public HasValue<String> getSearchString();
 		public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectedMeasureOption();
 		public void buildMeasureDataTable(AdminMeasureSearchResultAdaptor results);
 		public FocusableWidget getMsgFocusWidget();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		public ErrorMessageDisplayInterface getErrorMessagesForTransferOS();
 		public HasClickHandlers getTransferButton();
 		public void setEnabled(boolean enabled);
 		public HasClickHandlers getClearButton();
-		public void clearTransferCheckBoxes();
-		
+		public void clearTransferCheckBoxes();	
+		public MeasureSearchFilterPanel getMeasureSearchFilterPanel();
+		public SuccessMessageDisplay getSuccessMeasureDeletion();
+		public ErrorMessageDisplay getErrorMeasureDeletion();
+		public Widget asWidget();
 ;	}
 	
 	public static interface DetailDisplay extends BaseDisplay {
@@ -256,7 +260,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			detailDisplay.getName().setValue("");
 			detailDisplay.getShortName().setValue("");
 			searchDisplay.clearSelections();
-			adminSearchDisplay.clearSelections();
 			displaySearch();
 		}
 	};
@@ -341,18 +344,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 			}
 		});
-		searchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				measureDeletion =false;
-				isMeasureDeleted = false;
-				searchDisplay.getErrorMeasureDeletion().clear();
-				searchDisplay.getSuccessMeasureDeletion().clear();
-				//searchDisplay.clearBulkExportCheckBoxes(searchDisplay.getMeasureDataTable());
-				displayTransferView(startIndex,transferDisplay.getPageSize());
-			}
-		});
-		
+				
 		adminSearchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -636,7 +628,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
 					 filter = adminSearchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
 				}
-				search(adminSearchDisplay.getSearchString().getValue(),startIndex, adminSearchDisplay.getPageSize(),filter);
+				search(adminSearchDisplay.getSearchString().getValue(),startIndex, Integer.MAX_VALUE,filter);
 			}
 		});
 		
@@ -1441,7 +1433,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 						adminSearchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
 					}else{
 						adminSearchDisplay.getErrorMessageDisplay().clear();
-						adminSearchDisplay.getErrorMessageDisplayForBulkExport().clear();
 					}
 					SearchResultUpdate sru = new SearchResultUpdate();
 					sru.update(result, (TextBox)adminSearchDisplay.getSearchString(), lastSearchText);

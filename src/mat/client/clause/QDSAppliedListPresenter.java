@@ -38,6 +38,8 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		Button getRemoveButton();
 		Button getModifyButton();
 		QualityDataSetDTO getSelectedElementToRemove();
+		public List<QualityDataSetDTO> getAllAppliedQDMList();
+		public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList);
 	}
 
 	public QDSAppliedListPresenter(SearchDisplay sDisplayArg) {
@@ -162,6 +164,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 					appliedListModel.setAppliedQDMs(result);
 					searchDisplay.buildCellList(appliedListModel);
+					searchDisplay.setAppliedQDMList(result);
 				}
 		});
 

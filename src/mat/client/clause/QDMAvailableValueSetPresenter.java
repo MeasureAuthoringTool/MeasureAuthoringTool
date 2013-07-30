@@ -79,6 +79,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		this.searchDisplay = sDisplayArg;
 		this.modifyValueSetDTO = dataSetDTO;
 		this.searchDisplay2 = searchDisplay2;
+		this.appliedQDMList = (ArrayList<QualityDataSetDTO>) searchDisplay2.getAllAppliedQDMList();
 		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			
@@ -156,7 +157,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				ModifyQDMDialogBox.dialogBox.hide();
-				
+				reloadAppliedQDMList();
 			}
 		});
 		
@@ -166,7 +167,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		CodeListSearchDTO modifyWithDTO = currentCodeListResults.getLastSelectedCodeList();
 		searchDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getApplyToMeasureSuccessMsg().clear();
-		if(modifyValueSetDTO!=null){
+		if(modifyValueSetDTO!=null && modifyWithDTO!=null ){
 			String dataType , dataTypeText;
 			Boolean isSpecificOccurrence=false;
 		
@@ -196,15 +197,17 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					
 				}else{
 					searchDisplay.getErrorMessageDisplay().setMessage("Attribute can only be modified with Attribute.");
+					//searchDisplay.getApplyToMeasure().setEnabled(false);
+					setEnabled(true);
 				}
 			}else{
 				updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,dataTypeText,isSpecificOccurrence);
-				
 			
 			}
 		}else{
 			searchDisplay.getErrorMessageDisplay().setMessage("Please select atleast one applied QDM to modify.");
-			
+			//searchDisplay.getApplyToMeasure().setEnabled(false);
+			setEnabled(true);
 		
 		}
 		
@@ -215,14 +218,20 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				//searchDisplay.getApplyToMeasure().setEnabled(false);
+				setEnabled(true);
+				
 			}
 			@Override
 			public void onSuccess(SaveUpdateCodeListResult result) {
 				if(result.getFailureReason()==7){
 					searchDisplay.getErrorMessageDisplay().setMessage("This value set already exists.");
+					//searchDisplay.getApplyToMeasure().setEnabled(false);
+					setEnabled(true);
 				}
 				else{
-					updateMeasureXML(result.getAppliedQDMList(), result.getDataSetDTO() ,   qualityDataSetDTO);
+					appliedQDMList = result.getAppliedQDMList();
+					updateMeasureXML(appliedQDMList, result.getDataSetDTO() ,   qualityDataSetDTO);
 				}
 			}
 		});
@@ -239,15 +248,21 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 
 			@Override
 			public void onSuccess(Void result) {
-				searchDisplay.getApplyToMeasureSuccessMsg().setMessage("Successfully modified QDM.");
-				QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-				appliedListModel.setAppliedQDMs(updatedQDMList);
-				searchDisplay2.buildCellList(appliedListModel);
+				searchDisplay.getApplyToMeasureSuccessMsg().setMessage("Successfully modified QDM element.");
+				//searchDisplay.getApplyToMeasure().setEnabled(false);
+				//reloadAppliedQDMList();
+				setEnabled(true);
 			}
 		});
 		
 	}
 	
+	private void reloadAppliedQDMList(){
+		QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+		appliedListModel.setAppliedQDMs(appliedQDMList);
+		searchDisplay2.buildCellList(appliedListModel);
+		
+	}
 	
 	private void search(String searchText, int startIndex, final int pageSize,
 					String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
@@ -301,7 +316,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	
 	private void displaySearch() {
 		ModifyQDMDialogBox.showModifyDialogBox(searchDisplay.asWidget(),modifyValueSetDTO);
-		searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
+	//	searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	
 	private void populateQDSDataType(String category){

@@ -1,6 +1,7 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -42,6 +43,9 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	public Button removeButton = new Button("Remove");
 	public Button modify = new Button("Modify");
 	public QualityDataSetDTO  lastSelectedObject;
+	private ArrayList<QualityDataSetDTO> appliedQDMList;
+	
+	
 	@Override
 	public QualityDataSetDTO getSelectedElementToRemove() {
 		return lastSelectedObject;
@@ -266,6 +270,20 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	@Override
 	public Button getModifyButton() {
 		return modify;
+	}
+
+	@Override
+	public List<QualityDataSetDTO> getAllAppliedQDMList() {
+		return getAppliedQDMList();
+	}
+
+	public ArrayList<QualityDataSetDTO> getAppliedQDMList() {
+		return appliedQDMList;
+	}
+
+	@Override
+	public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList) {
+		this.appliedQDMList = appliedQDMList;
 	}
 
 

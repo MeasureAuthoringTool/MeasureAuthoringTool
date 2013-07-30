@@ -5,6 +5,7 @@ import java.io.OutputStreamWriter;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -992,7 +993,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				
 				result.setSuccess(true);
 				result.setDataSetDTO(qds);
-				result.setAppliedQDMList(wrapper.getQualityDataDTO());
+				result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
 			}else{
 				result.setSuccess(true);
 				result.setFailureReason(result.ALREADY_EXISTS);
@@ -1041,7 +1042,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					result.setOccurrenceMessage(qds.getOccurrenceText());
 					
 					result.setSuccess(true);
-					result.setAppliedQDMList(wrapper.getQualityDataDTO());
+					result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
 					result.setDataSetDTO(qds);
 				//	qdm.setOccurrence("Occurrence" + " " +occTxt);
 					//qualityDataSetDAO.save(qdm);
@@ -1054,7 +1055,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					result.setOccurrenceMessage(qds.getOccurrenceText());
 					
 					result.setSuccess(true);
-					result.setAppliedQDMList(wrapper.getQualityDataDTO());
+					result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
 					result.setDataSetDTO(qds);
 					//qualityDataSetDAO.save(qdm);
 				}else{
@@ -1065,6 +1066,19 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 		return result;
 	}
+    
+    private ArrayList<QualityDataSetDTO> sortQualityDataSetList(ArrayList<QualityDataSetDTO> finalList){
+    	
+    	Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
+			@Override
+			public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
+				return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
+			}
+		});
+    	
+    	return finalList;
+    	
+    }
     
     QualityDataModelWrapper modifyAppliedElementList(QualityDataSetDTO dataSetDTO ,ArrayList<QualityDataSetDTO> appliedQDM){
     	QualityDataModelWrapper wrapper = new QualityDataModelWrapper();

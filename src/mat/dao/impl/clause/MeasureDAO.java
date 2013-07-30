@@ -498,9 +498,11 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	public String findMaxVersion(String measureSetId){
 		Criteria mCriteria = getSessionFactory().getCurrentSession().createCriteria(Measure.class);
 		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
+		//add check to filter Draft's version number when finding max version number.
+		mCriteria.add(Restrictions.ne("draft",true));
 		mCriteria.setProjection(Projections.max("version")); 
 		String maxVersion = (String) mCriteria.list().get(0);
-		return maxVersion;
+		return maxVersion; 
 	}
 	
 	public String findMaxOfMinVersion(String measureSetId, String version){

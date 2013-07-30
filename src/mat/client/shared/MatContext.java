@@ -12,6 +12,7 @@ import mat.client.admin.service.AdminService;
 import mat.client.admin.service.AdminServiceAsync;
 import mat.client.audit.service.AuditService;
 import mat.client.audit.service.AuditServiceAsync;
+import mat.client.clause.QDMAvailableValueSetWidget;
 import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSCodeListSearchView;
 import mat.client.codelist.AdminManageCodeListSearchModel;
@@ -105,6 +106,7 @@ public class MatContext implements IsSerializable {
 	
 	
 	private QDSCodeListSearchView qdsView;
+	private QDMAvailableValueSetWidget modifyQDMPopUpWidget;
 	
 	private QDSAppliedListView qdsAppliedListView;
 	
@@ -161,6 +163,16 @@ public class MatContext implements IsSerializable {
 		if(qdsView !=null){
 			qdsView.getSuccessMessagePanel().clear();
 			qdsView.getErrorMessagePanel().clear();
+		}
+	}
+	
+	
+	public void clearModifyPopUpMessages(){
+		if(modifyQDMPopUpWidget !=null){
+			modifyQDMPopUpWidget.getApplyToMeasureSuccessMsg().clear();
+			modifyQDMPopUpWidget.getErrorMessageDisplay().clear();
+			modifyQDMPopUpWidget.getSuccessMessagePanel().clear();
+			modifyQDMPopUpWidget.getErrorMessagePanel().clear();
 		}
 	}
 		
@@ -875,6 +887,12 @@ public class MatContext implements IsSerializable {
 				}
 			}
 		});
+	}
+
+
+	public void setModifyQDMPopUpWidget(
+			QDMAvailableValueSetWidget modifyQDMPopUpWidget) {
+		this.modifyQDMPopUpWidget = modifyQDMPopUpWidget;
 	}
 	
 	

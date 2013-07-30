@@ -54,6 +54,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
 	private Button addToMeasure = new PrimaryButton("Apply to Measure","primaryButton");
+	private Button ok = new SecondaryButton("OK");
 	private Button cancel = new SecondaryButton("Cancel");
 	private SimplePanel dataTypePanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
@@ -61,7 +62,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private ListBoxMVP dataTypeInput = new ListBoxMVP();
 	private FocusableWidget messageFocus;
 	VerticalPanel listBoxVPanel = new VerticalPanel();
-   
+	CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
     private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
    
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
@@ -114,14 +115,16 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		addToMeasure.setTitle("Apply to Measure");
 		cancel.setTitle("Cancel");
+		ok.setTitle("OK");
 		buttonLayout.add(addToMeasure);
+		buttonLayout.add(ok);
 		buttonLayout.add(cancel);
 		searchCriteriaPanel.add(buttonLayout);
 		
 		vp.add(searchCriteriaPanel);
 		vp.add(new SpacerWidget());
 		mainPanel.add(vp);
-		
+		MatContext.get().setModifyQDMPopUpWidget(this);
 		
 	}
 	
@@ -333,7 +336,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	
 	public void buildTableQDS( QDSCodeListSearchModel results){
 		 
-		CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
+	
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
 		  
@@ -384,6 +387,10 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	public Button getCancel() {
 		return cancel;
 	}
+	
+	public CellTable<CodeListSearchDTO> getTable() {
+		return table;
+	}
 
 	@Override
 	public Widget asWidget() {
@@ -394,6 +401,12 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	public void buildQDSDataTable(QDSCodeListSearchModel results) {
 		buildTableQDS(results);
 		
+	}
+
+	@Override
+	public Button getOKButton() {
+		
+		return ok;
 	}
 
 }

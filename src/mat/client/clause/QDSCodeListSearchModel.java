@@ -155,6 +155,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 				if(codeListObject !=null){
 					//lastSelectedCodeList = codeListObject;
 					MatContext.get().clearDVIMessages();
+					MatContext.get().clearModifyPopUpMessages();
 					setLastSelectedCodeList(codeListObject);
 					setSelectedCodeList(codeListObject);
 					MatContext.get().getEventBus().fireEvent( new OnChangeOptionsEvent());

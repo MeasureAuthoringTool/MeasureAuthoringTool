@@ -54,8 +54,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
 	private Button addToMeasure = new PrimaryButton("Apply to Measure","primaryButton");
-	private Button ok = new SecondaryButton("OK");
-	private Button cancel = new SecondaryButton("Cancel");
+	private Button cancel = new Button("Close");
 	private SimplePanel dataTypePanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
@@ -114,10 +113,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		addToMeasure.setTitle("Apply to Measure");
-		cancel.setTitle("Cancel");
-		ok.setTitle("OK");
+		cancel.setTitle("Close");
+		cancel.setStyleName("rightAlignSecondaryButton");
 		buttonLayout.add(addToMeasure);
-		buttonLayout.add(ok);
 		buttonLayout.add(cancel);
 		searchCriteriaPanel.add(buttonLayout);
 		
@@ -401,12 +399,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	public void buildQDSDataTable(QDSCodeListSearchModel results) {
 		buildTableQDS(results);
 		
-	}
-
-	@Override
-	public Button getOKButton() {
-		
-		return ok;
 	}
 
 }

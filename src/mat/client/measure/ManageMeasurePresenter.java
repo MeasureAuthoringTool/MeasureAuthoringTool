@@ -1365,6 +1365,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void search(String searchText, int startIndex, int pageSize , int filter) {
 		final String lastSearchText = (!searchText.equals(null))? searchText.trim(): null;
 		showSearchingBusy(true);
+		//This to fetch all Measures if user role is Admin. This will go away when Pagination will be implemented in Measure Library.
+		if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
+			pageSize=Integer.MAX_VALUE;
+		}
 		MatContext.get().getMeasureService().search(searchText, startIndex, pageSize,filter, 
 				new AsyncCallback<ManageMeasureSearchModel>() {
 			@Override

@@ -136,8 +136,8 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 			}
 			if(creatingDraft){
 				clonedMeasure.setMeasureSet(measure.getMeasureSet());
-				measureDAO.saveMeasure(clonedMeasure);
 				clonedMeasure.setVersion(measure.getVersion());
+				measureDAO.saveMeasure(clonedMeasure);
 				createNewMeasureDetailsForDraft();
 			}else{
 				// Clear the measureDetails tag

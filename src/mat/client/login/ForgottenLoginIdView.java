@@ -42,7 +42,7 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 		VerticalPanel bluePanel = new VerticalPanel();
 		bluePanel.setStylePrimaryName("loginContentPanel");
 		
-		Label instructions = new Label("Enter the E-mail address associated with your MAT account:");
+		Label instructions = new Label("Enter the E-mail Address associated with your MAT account:");
 		instructions.setStylePrimaryName("loginForgotInstructions");
 		bluePanel.add(instructions);
 		bluePanel.add(new SpacerWidget());

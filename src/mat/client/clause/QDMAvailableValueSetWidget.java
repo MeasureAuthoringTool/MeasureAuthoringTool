@@ -3,7 +3,6 @@ package mat.client.clause;
 import java.util.List;
 
 import mat.client.CustomPager;
-import mat.client.clause.QDSCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -15,7 +14,6 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -100,10 +98,8 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		searchCriteriaPanel.add(label);
 		searchCriteriaPanel.add(errorMessagePanel);
 		searchCriteriaPanel.add(vssfp.getPanel());
-		//searchCriteriaPanel.add(new SpacerWidget());
+	
 		searchCriteriaPanel.add(searchWidget);
-		//searchCriteriaPanel.add(new SpacerWidget());
-		//searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(view.asWidget());
 		searchCriteriaPanel.add(messageFocus);
 		searchCriteriaPanel.add(buildInitialDisabledWidget());
@@ -163,7 +159,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private Widget buildSearchWidget(){
 		VerticalPanel hp = new VerticalPanel();
 		FlowPanel fp1 = new FlowPanel();
-		//sp1.addStyleName("codeListLink");
 		fp1.add(searchInput);
 		searchInput.addFocusHandler(
 				new FocusHandler() {

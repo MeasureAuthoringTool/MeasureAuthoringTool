@@ -540,6 +540,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			detail.setStatus(dto.getStatus());
 			detail.setId(dto.getMeasureId());
 			detail.setStatus(dto.getStatus());
+			detail.seteMeasureId(dto.geteMeasureId());
 			detail.setClonable(isOwner || isSuperUser);
 			detail.setEditable((isOwner || isSuperUser || ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) && dto.isDraft());
 			detail.setExportable(dto.isPackaged());

@@ -21,6 +21,7 @@ public class MeasureShareDTO implements IsSerializable {
 	private String shortName;
 	private LockedUserInfo lockedUserInfo;
 	private String organizationName;
+	private int eMeasureId;
 	
 	
 	/*US501*/
@@ -161,5 +162,13 @@ public class MeasureShareDTO implements IsSerializable {
 	public void setPrivateMeasure(boolean isPrivateMeasure) {
 		this.isPrivateMeasure = isPrivateMeasure;
 	}
+	public int geteMeasureId() {
+		return eMeasureId;
+	}
+	public void seteMeasureId(int eMeasureId) {
+		this.eMeasureId = eMeasureId;
+	}
+	
+	
 		
 }

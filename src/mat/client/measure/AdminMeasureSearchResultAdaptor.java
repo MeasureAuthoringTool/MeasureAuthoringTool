@@ -245,13 +245,14 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 			};
 			table.addColumn(ownerEmailAddress, "Owner E-mail Address");
 						
-			TextColumn<ManageMeasureSearchModel.Result > version = new TextColumn<ManageMeasureSearchModel.Result >() {
+						
+			TextColumn<ManageMeasureSearchModel.Result > eMeasureID = new TextColumn<ManageMeasureSearchModel.Result >() {
 				@Override
 				public String getValue(ManageMeasureSearchModel.Result object) {
-					return object.getVersion();
+					return  "" + object.geteMeasureId();
 				}
 			};
-			table.addColumn(version, "Version");
+			table.addColumn(eMeasureID, "eMeasure Id");
 			
 			
 			Cell<String> historyButton = new MatButtonCell();
@@ -286,13 +287,10 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 				  }
 				});
 			table.addColumn(transferColumn , "Transfer");
-					
-			
-			
+						
 		}
 		
 		return table;
-		
 	}
 
 	public boolean isHistoryClicked() {

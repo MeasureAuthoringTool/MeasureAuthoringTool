@@ -227,6 +227,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		dto.setVersion(measure.getVersion());
 		dto.setFinalizedDate(measure.getFinalizedDate());
 		dto.setMeasureSetId(measure.getMeasureSet().getId());
+		dto.seteMeasureId(measure.geteMeasureId());
 		dto.setPrivateMeasure(measure.getIsPrivate());
 
 		boolean isLocked = isLocked(measure.getLockedOutDate());

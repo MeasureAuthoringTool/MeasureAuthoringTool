@@ -34,6 +34,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		private String ownerfirstName;
 		private String ownerLastName;
 		private String ownerEmailAddress;
+		private int eMeasureId;
 		
 		public LockedUserInfo getLockedUserInfo() {
 			return lockedUserInfo;
@@ -197,7 +198,12 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		public void setOwnerEmailAddress(String ownerEmailAddress) {
 			this.ownerEmailAddress = ownerEmailAddress;
 		}
-		
+		public int geteMeasureId() {
+			return eMeasureId;
+		}
+		public void seteMeasureId(int eMeasureId) {
+			this.eMeasureId = eMeasureId;
+		}
 		
 		
 	}

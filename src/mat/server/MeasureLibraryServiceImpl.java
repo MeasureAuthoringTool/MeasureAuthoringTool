@@ -613,6 +613,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		   String versionNumber = null;
 		   if(isMajor){
 			   versionNumber =   findOutMaximumVersionNumber(m.getMeasureSet().getId());
+			   if(versionNumber==null)
+				   versionNumber="0.000";
 			   logger.info("Max Version Number loaded from DB: " + versionNumber);   
 		   } else {
 			   int versionIndex = version.indexOf('v');

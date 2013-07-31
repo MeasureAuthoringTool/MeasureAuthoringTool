@@ -3,7 +3,8 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
+
+import org.apache.poi.ss.usermodel.VerticalAlignment;
 
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
@@ -12,10 +13,12 @@ import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.model.clause.QDSAttributes;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.dom.client.Style.VerticalAlign;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.DomEvent;
@@ -32,10 +35,12 @@ import com.google.gwt.user.client.ui.HTMLTable;
 import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
+import com.google.gwt.user.client.ui.HasVerticalAlignment.VerticalAlignmentConstant;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.ValueBoxBase.TextAlignment;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Node;
@@ -156,7 +161,7 @@ public class QDMAttributeDialogBox {
 				if(QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text) || CHECK_IF_PRESENT.equalsIgnoreCase(text) || COMPARISON.equalsIgnoreCase(text)){
 					TextBox textBox = new TextBox();
 					textBox.setEnabled(false);
-					textBox.setWidth("8em");
+					textBox.setWidth("11em");
 					grid.setWidget(rowNum, 3, textBox);
 				}else if(VALUE_SET.equals(text)){
 					ListBox qdmListBox = createQdmListBox();
@@ -164,7 +169,7 @@ public class QDMAttributeDialogBox {
 					grid.setWidget(rowNum, 3, qdmListBox);
 				}else {
 					HorizontalPanel panel = new HorizontalPanel();
-					panel.setWidth("8em");
+					panel.setWidth("11em");
 					panel.setSpacing(0);
 					
 					TextBox textBox = new TextBox();
@@ -174,7 +179,7 @@ public class QDMAttributeDialogBox {
 					
 					ListBox units = new ListBox(false);
 					units.setVisibleItemCount(1);
-					units.setWidth("5em");
+					units.setWidth("8em");
 					
 					for(String unitName:unitNames){
 						units.addItem(unitName);
@@ -218,7 +223,7 @@ public class QDMAttributeDialogBox {
 			grid.getCellFormatter().setVerticalAlignment(i, 0, HasVerticalAlignment.ALIGN_MIDDLE);
 						
 			attributeListBox.setVisibleItemCount(1);
-			attributeListBox.setWidth("8em");
+			attributeListBox.setWidth("11em");
 			attributeListBox.addItem(QDMAttributeDialogBox.SELECT, ""+i);
 
 			for(String attribName:attributeList){
@@ -237,7 +242,7 @@ public class QDMAttributeDialogBox {
 			
 			final ListBox modeListBox = new ListBox(false);
 			modeListBox.setVisibleItemCount(1);
-			modeListBox.setWidth("8em");
+			modeListBox.setWidth("11em");
 			modeListBox.addItem(QDMAttributeDialogBox.SELECT);
 			for(String modeName:mode){
 				String modeValue = (modeName.startsWith("--"))?modeName.substring(2).trim():modeName;
@@ -249,9 +254,8 @@ public class QDMAttributeDialogBox {
 						
 			TextBox textBox = new TextBox();
 			textBox.setEnabled(false);
-			textBox.setWidth("8em");
+			textBox.setWidth("11em");
 			grid.setWidget(i, 3, textBox);	
-			
 			setExitingAttributeInGrid(node,i);
 			updateAttributeListBox(grid, i, attributeListBox);
 		}
@@ -368,7 +372,8 @@ public class QDMAttributeDialogBox {
 		qdmAttributeDialogBox.setGlassEnabled(true);
 		qdmAttributeDialogBox.setAnimationEnabled(true);
 	    qdmAttributeDialogBox.setText(QDM_ATTRIBUTES_TITLE);
-	    
+//	    qdmAttributeDialogBox.addStyleDependentName("EditAttributes");
+	    System.out.println(qdmAttributeDialogBox.getStyleName());
 		// Create a table to layout the content
 	    VerticalPanel dialogContents = new VerticalPanel();
 	        
@@ -431,6 +436,7 @@ public class QDMAttributeDialogBox {
 	    dialogContents.setCellHorizontalAlignment(horizontalSaveClosePanel, HasHorizontalAlignment.ALIGN_RIGHT);
 	    
 	    dialogContents.setHeight("21em");
+	    dialogContents.setWidth("35em");
 	    qdmAttributeDialogBox.center();	    
 	}
 	
@@ -587,7 +593,7 @@ public class QDMAttributeDialogBox {
 			final String qdmDataType, final List<String> mode, XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode, Button deleteSelectedButton, final Button addNewButton) {
 		
 		ScrollPanel scrollPanel = new ScrollPanel();
-		scrollPanel.setSize("28em", "19em");
+		scrollPanel.setSize("38em", "19em");
 		
 		DecoratorPanel decoratorPanel = new DecoratorPanel();
 		scrollPanel.setWidget(grid);
@@ -665,18 +671,21 @@ public class QDMAttributeDialogBox {
 				//If this is a Comparison operator
 				else{
 					HorizontalPanel panel = new HorizontalPanel();
-					panel.setWidth("8em");
+					panel.setWidth("11.5em");
 					panel.setSpacing(0);
 					
+					VerticalPanel vpanel = new VerticalPanel();
+					
 					TextBox textBox = new TextBox();
+					textBox.addStyleName("gwt-TextBox");
 					textBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
 					textBox.setWidth("3em");
 					textBox.setHeight("19");
 					textBox.setValue((String) attributenode.getExtraInformation(COMPARISON_VALUE));
-					
+					vpanel.add(textBox);
 					ListBox units = new ListBox(false);
 					units.setVisibleItemCount(1);
-					units.setWidth("5em");
+					units.setWidth("8em");
 					
 					for(String unitName:unitNames){
 						units.addItem(unitName);
@@ -689,8 +698,11 @@ public class QDMAttributeDialogBox {
 							break;
 						}
 					}					
-					panel.add(textBox);
+					vpanel.setCellVerticalAlignment(textBox, HasVerticalAlignment.ALIGN_MIDDLE);
+					panel.add(vpanel);
 					panel.add(units);
+					
+					//panel.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
 					
 					grid.setWidget(row, 3, panel);					
 				}
@@ -700,7 +712,7 @@ public class QDMAttributeDialogBox {
 	private static ListBox createQdmListBox() {
 		ListBox qdmListBox = new ListBox(false);
 		qdmListBox.setVisibleItemCount(1);
-		qdmListBox.setWidth("8em");
+		qdmListBox.setWidth("11em");
 		for (Entry<String, Node> qdm : ClauseConstants.getElementLookUpNode().entrySet()) {
 			Node qdmNode = qdm.getValue();
 			String dataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();

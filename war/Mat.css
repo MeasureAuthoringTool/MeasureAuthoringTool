@@ -73,6 +73,10 @@ body#main select, body#main input, body#main textarea {
 	height: 100%;
 }
 
+.gwt-TextBox{
+	vertical-align: middle!important;
+}
+
 .manageCodeRightForm{
 	margin-top: 5%;
 	border: 1px solid;
@@ -87,7 +91,13 @@ body#main select, body#main input, body#main textarea {
 
 .gwt-DialogBox {
   width: 400px;
+  clip: auto!important;
 }
+
+/* .gwt-DialogBox-EditAttributes {
+  width: 400px;
+  clip: auto!important;
+} */
 
 .dialogVPanel {
   margin: 5px;
@@ -453,7 +463,9 @@ body#main select, body#main input, body#main textarea {
   font-weight: bold;
 }
 
-
+.editAttributePanel {
+	vertical-align: middle!important;
+}
 
 .successMessage {
 	/*color: green;

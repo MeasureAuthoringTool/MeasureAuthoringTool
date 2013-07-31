@@ -43,14 +43,14 @@ public class QDMDialogBox{
 		
 		// Create a table to layout the content
 	    VerticalPanel dialogContents = new VerticalPanel();
-	    dialogContents.setWidth("20em");
+	    dialogContents.setWidth("35em");
 	    dialogContents.setHeight("15em");
 	    dialogContents.setSpacing(8);
 	    dialogBox.setWidget(dialogContents);
 	    
 	    //Create Search box
 	    final SuggestBox suggestBox = new SuggestBox(createSuggestOracle());
-	    suggestBox.setWidth("18em");
+	    suggestBox.setWidth("33em");
 	    suggestBox.setText("Search");
 	    suggestBox.getValueBox().addClickHandler(new ClickHandler() {
 			
@@ -68,7 +68,7 @@ public class QDMDialogBox{
 	    	    	    
 	    //Create ListBox
 	    final ListBox listBox = new ListBox();
-	    listBox.setWidth("18em");
+	    listBox.setWidth("33em");
 	    listBox.setVisibleItemCount(10);
 	    String currentSelectedQDMUuid = xmlTreeDisplay.getSelectedNode().getUUID();
 	    addQDMNamesToListBox(listBox, currentSelectedQDMUuid);

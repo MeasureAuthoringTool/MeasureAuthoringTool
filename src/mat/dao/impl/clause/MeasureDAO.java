@@ -523,6 +523,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		//mCriteria.setProjection(Projections.max("version")); 
 		logger.info("Query Using Measure Set Id:" + measureSetId);
 		mCriteria.add(Restrictions.eq("measureSet.id", measureSetId));
+		mCriteria.add(Restrictions.ne("draft",true));
 		mCriteria.addOrder(Order.asc("version"));
 		List<Measure> measureList = mCriteria.list();
 		double tempVersion = 0;

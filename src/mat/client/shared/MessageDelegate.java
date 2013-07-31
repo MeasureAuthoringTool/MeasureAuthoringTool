@@ -935,4 +935,19 @@ public class MessageDelegate {
 	public String getMeasureDeletionSuccessMgs(){
 		return MEASURE_DELETION_SUCCESS_MSG;
 	}
+	
+	private final String DUPLICATE_APPLIED_QDM="Selected QDM element is already available in the applied elements list";
+	public String getDuplicateAppliedQDMMsg(){
+		return DUPLICATE_APPLIED_QDM;
+		
+	}
+	
+	private final String SUCCESSFUL_MODIFY_APPLIED_QDM="Selected QDM element has been modified successfully";
+	public String getSuccessfulModifyQDMMsg(){
+		return SUCCESSFUL_MODIFY_APPLIED_QDM;
+		
+	}
+	
 }
+
+

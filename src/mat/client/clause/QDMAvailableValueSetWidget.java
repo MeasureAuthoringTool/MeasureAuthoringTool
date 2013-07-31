@@ -34,6 +34,7 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -61,7 +62,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	VerticalPanel listBoxVPanel = new VerticalPanel();
 	CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
     private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
-   
+    private String cautionMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Data Type' for an applied QDM element will automatically delete invalid attributes  <br/> associated with this element in the Clause Workspace." +
+    								"</div>";
+    
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
 		@Override
 		public void onValueChange(ValueChangeEvent<String> event) {
@@ -81,7 +84,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		successMessagePanel.clear();
 		messageFocus = new FocusableWidget(successMessagePanel);
 		VerticalPanel vp = new VerticalPanel();
+		vp.getElement().setAttribute("id", "ModifyVerticalPanel");
 		FlowPanel header = new FlowPanel();
+		header.getElement().setAttribute("id", "ModifyHeaderFlowPanel");
 		header.addStyleName("codeListHeader");
 		Label codeListLabel = new Label("QDM");
 		FocusableWidget  labelFocus = new FocusableWidget(codeListLabel);
@@ -91,6 +96,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		addToMeasure.setEnabled(false);
 		
 		FlowPanel searchCriteriaPanel = new FlowPanel();
+		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchCriteriaPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.addStyleName("leftAligned");
 		Widget searchWidget = buildSearchWidget();
@@ -107,6 +113,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		searchCriteriaPanel.add(new SpacerWidget());
 		
 		HorizontalPanel buttonLayout = new HorizontalPanel();
+		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		addToMeasure.setTitle("Apply to Measure");
 		cancel.setTitle("Close");
@@ -118,6 +125,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		vp.add(searchCriteriaPanel);
 		vp.add(new SpacerWidget());
 		mainPanel.add(vp);
+		mainPanel.getElement().setAttribute("id","ModifyMainPanel");
 		MatContext.get().setModifyQDMPopUpWidget(this);
 		
 	}
@@ -132,10 +140,17 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	
 	private Widget buildDataTypeWidget(){
 		FlowPanel fPanel = new FlowPanel();
+		fPanel.getElement().setAttribute("id", "ModifyDataTypeWidgetFlowPanel");
 		fPanel.addStyleName("leftAligned");
+		
 		fPanel.add(new SpacerWidget());
 		fPanel.add(LabelBuilder.buildLabel(dataTypeInput, "Select Data Type"));
-		fPanel.add(dataTypeInput);
+		fPanel.add(new SpacerWidget());
+		HorizontalPanel hp = new HorizontalPanel();
+		hp.getElement().setAttribute("id", "ModifyDataTypeWidgetHoziPanel");
+		hp.add(dataTypeInput);
+		hp.add(new HTML("&nbsp;&nbsp;"));
+		hp.add(new HTML(cautionMsgStr));
 		dataTypeInput.addFocusHandler(
 				new FocusHandler() {
 					@Override
@@ -143,13 +158,15 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 						MatContext.get().clearDVIMessages();	
 					}
 				});
-
+		
+		fPanel.add(hp);
 		fPanel.add(new SpacerWidget());
 		return fPanel;
 	}
 	
 	private Widget buildSpecificOccurrenceWidget(){
 		FlowPanel fPanel = new FlowPanel();
+		fPanel.getElement().setAttribute("id", "ModifySpecificOccWidgetFlowPanel");
 		fPanel.addStyleName("leftAligned");
 		fPanel.add(new SpacerWidget());		
 		fPanel.add(specificOccurrence);
@@ -157,8 +174,10 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	}
 	
 	private Widget buildSearchWidget(){
-		VerticalPanel hp = new VerticalPanel();
+		VerticalPanel vp = new VerticalPanel();
+		vp.getElement().setAttribute("id", "ModifySearchInputVerPanel");
 		FlowPanel fp1 = new FlowPanel();
+		fp1.getElement().setAttribute("id", "ModifySearchInputFlowPanel");
 		fp1.add(searchInput);
 		searchInput.addFocusHandler(
 				new FocusHandler() {
@@ -177,8 +196,8 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 					}
 				});
 		fp1.add(new SpacerWidget());
-		hp.add(fp1);
-		return hp;
+		vp.add(fp1);
+		return vp;
 	}
 	
 	@Override
@@ -329,7 +348,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	
 	public void buildTableQDS( QDSCodeListSearchModel results){
 		 
-	
+		table.getElement().setAttribute("id", "ModifyAvailableValueSetTable");
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
 		  

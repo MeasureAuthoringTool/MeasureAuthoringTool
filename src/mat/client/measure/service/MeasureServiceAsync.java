@@ -50,9 +50,9 @@ public interface MeasureServiceAsync {
 	void saveAndDeleteMeasure(String measureID, AsyncCallback<Void> callback);
 	void updatePrivateColumnInMeasure(String measureId, boolean isPrivate,
 			AsyncCallback<Void> callback);
-	void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList,
-			QualityDataSetDTO qualityDataSetDTO2, QualityDataSetDTO modifyDTO,
-			String measureId, AsyncCallback<Void> callback);
+	void updateMeasureXML(QualityDataSetDTO modifyWithDTO,
+			QualityDataSetDTO modifyDTO, String measureId,
+			AsyncCallback<Void> callback);
 	
 
 	}

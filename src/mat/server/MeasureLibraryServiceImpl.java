@@ -1011,11 +1011,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	/***
 	 * Find All QDM's which are used in Clause Workspace tag's or in Supplemental Data Elements or in Attribute tags.
 	 * */
-	private ArrayList<QualityDataSetDTO> findUsedQDMs(ArrayList<QualityDataSetDTO> arrayList,MeasureXmlModel measureXmlModel){
+	private ArrayList<QualityDataSetDTO> findUsedQDMs(ArrayList<QualityDataSetDTO> appliedQDMList,MeasureXmlModel measureXmlModel){
 
 		XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		for(QualityDataSetDTO dataSetDTO : arrayList){
+		for(QualityDataSetDTO dataSetDTO : appliedQDMList){
 			String XPATH_EXPRESSION = "/measure//clause//@id=";
 			XPATH_EXPRESSION = XPATH_EXPRESSION.concat("'").concat(dataSetDTO.getUuid()).concat("' or /measure//clause//@qdmUUID= '").concat(dataSetDTO.getUuid()).
 								concat("' or /measure/supplementalDataElements//@id='").concat(dataSetDTO.getUuid()).concat("'");
@@ -1029,12 +1029,18 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			}
 		}
 
-		return arrayList;
+		return appliedQDMList;
 	}
 	
 	
 	@Override
-	public void updateMeasureXML(ArrayList<QualityDataSetDTO> updatedQDMList,QualityDataSetDTO modifyWithDTO , QualityDataSetDTO modifyDTO,String measureId){
+	/**
+	 * This method updates MeasureXML - ElementLookUpNode,ElementRef's under Population Node and Stratification Node, SupplementDataElements. It also removes attributes nodes if
+	 * there is mismatch in data types of newly selected QDM and already applied QDM.
+	 * 
+	 * **/
+	public void updateMeasureXML(QualityDataSetDTO modifyWithDTO , QualityDataSetDTO modifyDTO,String measureId){
+		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXML Start : Measure Id :: " + measureId);
 		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
 		XmlProcessor processor = new XmlProcessor(model.getXml());
 		if(model!=null){
@@ -1050,26 +1056,29 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 				//update  elementLookUp Tag
 				updateElementLookUp(processor, modifyWithDTO, modifyDTO);
 				updateSupplementalDataElement(processor, modifyWithDTO, modifyDTO);
-				System.out.println("Transformed XML :: " + processor.transform(processor.getOriginalDoc()));
 				model.setXml(processor.transform(processor.getOriginalDoc()));
 				getService().saveMeasureXml(model);
 				
 			}else{
 				//update  elementLookUp Tag
 				updateElementLookUp(processor, modifyWithDTO, modifyDTO);
-				System.out.println("Transformed XML :: " + processor.transform(processor.getOriginalDoc()));
 				model.setXml(processor.transform(processor.getOriginalDoc()));
 				getService().saveMeasureXml(model);
 			}
 			
 		}
+		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXML End : Measure Id :: " + measureId);
 	}
 	
+	/**
+	 * This method updates MeasureXML - Attributes Nodes
+	 * 
+	 * **/
 	
 	private void updateAttributes(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO){
 		
-		//XPath to find all elementRefs in supplementalDataElements for to be modified QDM.
-		String XPATH_EXPRESSION_ATTRIBUTE = "/measure//clause//attribute[@qdmUUID='"+modifyDTO.getUuid()+"']";
+		logger.debug(" MeasureLibraryServiceImpl: updateAttributes Start :  " );
+		String XPATH_EXPRESSION_ATTRIBUTE = "/measure//clause//attribute[@qdmUUID='"+modifyDTO.getUuid()+"']";//XPath to find all elementRefs in supplementalDataElements for to be modified QDM.
 		
 		try {
 			NodeList nodesATTR = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ATTRIBUTE, processor.getOriginalDoc(), XPathConstants.NODESET);
@@ -1081,12 +1090,17 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
+		logger.debug(" MeasureLibraryServiceImpl: updateAttributes End : ");
 	}
 	
+	/**
+	 * This method updates MeasureXML - ElementRef's under SupplementalDataElement Node
+	 * 
+	 * **/
 	private void updateSupplementalDataElement(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO){
 		
-		//XPath to find all elementRefs in supplementalDataElements for to be modified QDM.
-		String XPATH_EXPRESSION_SDE_ELEMENTREF = "/measure/supplementalDataElements/elementRef[@id='"+modifyDTO.getUuid()+"']";
+		logger.debug(" MeasureLibraryServiceImpl: updateSupplementalDataElement Start :  " );
+		String XPATH_EXPRESSION_SDE_ELEMENTREF = "/measure/supplementalDataElements/elementRef[@id='"+modifyDTO.getUuid()+"']";//XPath to find all elementRefs in supplementalDataElements for to be modified QDM.
 		
 		try {
 			NodeList nodesSDE = (NodeList) xPath.evaluate(XPATH_EXPRESSION_SDE_ELEMENTREF, processor.getOriginalDoc(), XPathConstants.NODESET);
@@ -1098,12 +1112,17 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
+		logger.debug(" MeasureLibraryServiceImpl: updateSupplementalDataElement End :  " );
 	}
 	
+	/**
+	 * This method updates MeasureXML - ElementRef's under Population and Stratification Node
+	 * 
+	 * **/
 	private void updatePopulationAndStratification(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO){
-		
-		//XPath to find All elementRef's under clause element nodes for to be modified QDM.
-		String XPATH_EXPRESSION_CLAUSE_ELEMENTREF = "/measure//clause//elementRef[@id='"+modifyDTO.getUuid()+"']";
+	
+		logger.debug(" MeasureLibraryServiceImpl: updatePopulationAndStratification Start :  " );
+		String XPATH_EXPRESSION_CLAUSE_ELEMENTREF = "/measure//clause//elementRef[@id='"+modifyDTO.getUuid()+"']";	//XPath to find All elementRef's under clause element nodes for to be modified QDM.
 		try {
 			NodeList nodesClauseWorkSpace = (NodeList) xPath.evaluate(XPATH_EXPRESSION_CLAUSE_ELEMENTREF, processor.getOriginalDoc(), XPathConstants.NODESET);
 			ArrayList<QDSAttributes> attr = (ArrayList<QDSAttributes>)getAllDataTypeAttributes(modifyWithDTO.getDataType());
@@ -1141,13 +1160,17 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			e.printStackTrace();
 		
 		}
-		
+		logger.debug(" MeasureLibraryServiceImpl: updatePopulationAndStratification End :  " );
 	}
 	
+	/**
+	 * This method updates MeasureXML - QDM nodes under ElementLookUp.
+	 * 
+	 * **/
 	private void updateElementLookUp(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO ){
-		
-		//XPath to find all elementRefs in elementLookUp for to be modified QDM.
-		String XPATH_EXPRESSION_ELEMENTLOOKUP = "/measure/elementLookUp/qdm[@uuid='"+modifyDTO.getUuid()+"']";
+	
+		logger.debug(" MeasureLibraryServiceImpl: updateElementLookUp Start :  " );
+		String XPATH_EXPRESSION_ELEMENTLOOKUP = "/measure/elementLookUp/qdm[@uuid='"+modifyDTO.getUuid()+"']";//XPath Expression to find all elementRefs in elementLookUp for to be modified QDM.
 		try {
 			NodeList nodesElementLookUp = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ELEMENTLOOKUP, processor.getOriginalDoc(), XPathConstants.NODESET);
 			for(int i=0 ;i<nodesElementLookUp.getLength();i++){
@@ -1183,7 +1206,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 				e.printStackTrace();
 		
 		}
-		
+		logger.debug(" MeasureLibraryServiceImpl: updateElementLookUp End :  " );
 	}
 	
 	@Override

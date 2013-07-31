@@ -30,7 +30,6 @@ import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextBox;
@@ -157,12 +156,17 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				ModifyQDMDialogBox.dialogBox.hide();
+				//This is to reload applied QDM List.
 				reloadAppliedQDMList();
 			}
 		});
 		
 	}
 	
+	/***
+	 * Method to find if selected Available value set is a valid modifiable selection. If yes, then call to updateAppliedQDMList method is made. 
+	 * 
+	 * */
 	protected void modifyQDM() {
 		CodeListSearchDTO modifyWithDTO = currentCodeListResults.getLastSelectedCodeList();
 		searchDisplay.getErrorMessageDisplay().clear();
@@ -197,7 +201,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					
 				}else{
 					searchDisplay.getErrorMessageDisplay().setMessage("Attribute can only be modified with Attribute.");
-					//searchDisplay.getApplyToMeasure().setEnabled(false);
 					setEnabled(true);
 				}
 			}else{
@@ -206,40 +209,49 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			}
 		}else{
 			searchDisplay.getErrorMessageDisplay().setMessage("Please select atleast one applied QDM to modify.");
-			//searchDisplay.getApplyToMeasure().setEnabled(false);
 			setEnabled(true);
 		
 		}
 		
 	}
 	
+	/**
+	 * This method is used to update QDM element selected for modification. All check's for attributes and non attributes , Occurrence and non occurences
+	 * are done in this method. This method returns modified and ordered list of all applied QDM elements.This method also makes call to updateMeasureXML method.
+	 * 
+	 * **/
+	
 	private void updateAppliedQDMList(final CodeListSearchDTO codeListSearchDTO , final QualityDataSetDTO  qualityDataSetDTO, String dataType, String dataTypeText, Boolean isSpecificOccurrence){
 		MatContext.get().getCodeListService().updateCodeListToMeasure(MatContext.get().getCurrentMeasureId(),dataType, codeListSearchDTO,qualityDataSetDTO, isSpecificOccurrence,appliedQDMList, new AsyncCallback<SaveUpdateCodeListResult>(){
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				//searchDisplay.getApplyToMeasure().setEnabled(false);
 				setEnabled(true);
 				
 			}
 			@Override
 			public void onSuccess(SaveUpdateCodeListResult result) {
 				if(result.getFailureReason()==7){
-					searchDisplay.getErrorMessageDisplay().setMessage("This value set already exists.");
-					//searchDisplay.getApplyToMeasure().setEnabled(false);
+					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
 					setEnabled(true);
 				}
 				else{
 					appliedQDMList = result.getAppliedQDMList();
-					updateMeasureXML(appliedQDMList, result.getDataSetDTO() ,   qualityDataSetDTO);
+					updateMeasureXML( result.getDataSetDTO() ,   qualityDataSetDTO);
 				}
 			}
 		});
 		
 	}
 	
-	private void updateMeasureXML(final ArrayList<QualityDataSetDTO> updatedQDMList, QualityDataSetDTO qualityDataSetDTO2, QualityDataSetDTO qualityDataSetDTO){
-		MatContext.get().getMeasureService().updateMeasureXML(updatedQDMList, qualityDataSetDTO2, qualityDataSetDTO, MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
+	/**
+	 * This method updates MeasureXML - ElementLookUpNode,ElementRef's under Population Node and Stratification Node, SupplementDataElements. It also removes attributes nodes if
+	 * there is mismatch in data types of newly selected QDM and already applied QDM.
+	 * 
+	 * **/
+	
+	private void updateMeasureXML(QualityDataSetDTO qualityDataSetDTO2, QualityDataSetDTO qualityDataSetDTO){
+		MatContext.get().getMeasureService().updateMeasureXML(qualityDataSetDTO2, qualityDataSetDTO, MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -248,22 +260,26 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 
 			@Override
 			public void onSuccess(Void result) {
-				searchDisplay.getApplyToMeasureSuccessMsg().setMessage("Successfully modified QDM element.");
-				//searchDisplay.getApplyToMeasure().setEnabled(false);
-				//reloadAppliedQDMList();
+				searchDisplay.getApplyToMeasureSuccessMsg().setMessage(MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
 				setEnabled(true);
 			}
 		});
 		
 	}
 	
+	/**
+	 * This method is used to reload Applied QDM List.
+	 * 
+	 * */
 	private void reloadAppliedQDMList(){
 		QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 		appliedListModel.setAppliedQDMs(appliedQDMList);
 		searchDisplay2.buildCellList(appliedListModel);
-		
 	}
 	
+	/**
+	 * This method is used in searching all available Value sets for pop up.
+	 * */
 	private void search(String searchText, int startIndex, final int pageSize,
 					String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
 		lastSearchText = (!searchText.equals(null))? searchText.trim() : null;
@@ -314,9 +330,11 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		((TextBox)(searchDisplay.getSearchString())).setEnabled(!busy);
 	}
 	
+	/**
+	 * This method shows AvailableValueSet Widget in pop up.
+	 * */
 	private void displaySearch() {
 		ModifyQDMDialogBox.showModifyDialogBox(searchDisplay.asWidget(),modifyValueSetDTO);
-	//	searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	
 	private void populateQDSDataType(String category){

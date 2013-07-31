@@ -296,7 +296,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
-		searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
+		//searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	
 	private void addSelectedCodeListtoMeasure(){

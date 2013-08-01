@@ -359,6 +359,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		adminSearchDisplay.getClearButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				manageMeasureSearchModel.getSelectedTransferResults().removeAll(manageMeasureSearchModel.getSelectedTransferResults());
 				adminSearchDisplay.clearTransferCheckBoxes();
 			}
 		});

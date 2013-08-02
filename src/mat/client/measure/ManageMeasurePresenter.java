@@ -1466,17 +1466,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void updateTransferID(List<Result> result){
 		System.out.println("==================Transfer CLicked========" + result.size());
-		//if(result.isTransferable()){
-			//manageMeasureSearchModel.getSelectedTransferIds().add(result.getId());
-			manageMeasureSearchModel.setSelectedTransferResults(result);
-		/*}else{
-			for(int i=0 ;i< manageMeasureSearchModel.getSelectedTransferIds().size();i++){
-				if(result.getId() == manageMeasureSearchModel.getSelectedTransferIds().get(i)){
-					manageMeasureSearchModel.getSelectedTransferIds().remove(i);
-					manageMeasureSearchModel.getSelectedTransferResults().remove(i);
-				}
-			}
-		}*/
+		manageMeasureSearchModel.setSelectedTransferResults(result);
+		List<String> measureIdsList = new ArrayList<String>();
+		for(ManageMeasureSearchModel.Result results: result){
+			measureIdsList.add(results.getId());
+		}
+		manageMeasureSearchModel.setSelectedTransferIds(measureIdsList);
 	}
 	
 	/**

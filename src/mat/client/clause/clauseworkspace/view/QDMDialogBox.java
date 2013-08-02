@@ -94,12 +94,12 @@ public class QDMDialogBox{
 	    HorizontalPanel horizontalButtonPanel = new HorizontalPanel();
 	    horizontalButtonPanel.setSpacing(5);
 	    horizontalButtonPanel.add(selectButton);
-	    horizontalButtonPanel.setCellHorizontalAlignment(selectButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    horizontalButtonPanel.setCellHorizontalAlignment(selectButton, HasHorizontalAlignment.ALIGN_LEFT);
 	    horizontalButtonPanel.add(closeButton);
-	    horizontalButtonPanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    horizontalButtonPanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_LEFT);
 	    
 	    dialogContents.add(horizontalButtonPanel);
-	    dialogContents.setCellHorizontalAlignment(horizontalButtonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
+	    dialogContents.setCellHorizontalAlignment(horizontalButtonPanel, HasHorizontalAlignment.ALIGN_LEFT);
 	    
 	    addSuggestHandler(suggestBox,listBox);
 	    addListBoxHandler(listBox,suggestBox,xmlTreeDisplay, dialogBox,isAdd);

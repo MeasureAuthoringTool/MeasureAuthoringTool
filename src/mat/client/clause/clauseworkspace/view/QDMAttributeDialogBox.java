@@ -422,10 +422,10 @@ public class QDMAttributeDialogBox {
 	    horizontalSaveClosePanel.setSpacing(5);
 	    
 	    horizontalSaveClosePanel.add(saveButton);
-	    horizontalSaveClosePanel.setCellHorizontalAlignment(saveButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    horizontalSaveClosePanel.setCellHorizontalAlignment(saveButton, HasHorizontalAlignment.ALIGN_LEFT);
 	    
 	    horizontalSaveClosePanel.add(closeButton);
-	    horizontalSaveClosePanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
+	    horizontalSaveClosePanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_LEFT);
 	  	  
 	    addTableToPanel(dialogContents,qdmDataType,mode,xmlTreeDisplay, cellTreeNode,deleteSelectedButton,addNewButton);
 	    
@@ -433,7 +433,7 @@ public class QDMAttributeDialogBox {
 	    dialogContents.setCellHorizontalAlignment(horizontalDeleteAddNewPanel, HasHorizontalAlignment.ALIGN_LEFT);
 	    
 	    dialogContents.add(horizontalSaveClosePanel);
-	    dialogContents.setCellHorizontalAlignment(horizontalSaveClosePanel, HasHorizontalAlignment.ALIGN_RIGHT);
+	    dialogContents.setCellHorizontalAlignment(horizontalSaveClosePanel, HasHorizontalAlignment.ALIGN_LEFT);
 	    
 	    dialogContents.setHeight("21em");
 	    dialogContents.setWidth("35em");

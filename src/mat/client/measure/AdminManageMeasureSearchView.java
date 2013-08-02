@@ -1,7 +1,18 @@
 package mat.client.measure;
 
-import com.google.gwt.core.client.GWT;
+import mat.client.CustomPager;
+import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.FocusableWidget;
+import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.search.SearchView;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -14,22 +25,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-
-import mat.client.CustomPager;
-import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.metadata.Grid508;
-import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.FocusableWidget;
-import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
-import mat.client.shared.PrimaryButton;
-import mat.client.shared.SpacerWidget;
-import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.search.HasPageSelectionHandler;
-import mat.client.shared.search.HasPageSizeSelectionHandler;
-import mat.client.shared.search.SearchResults;
-import mat.client.shared.search.SearchView;
 
 public class AdminManageMeasureSearchView implements ManageMeasurePresenter.AdminSearchDisplay {
 	private FlowPanel mainPanel = new FlowPanel();
@@ -113,7 +108,7 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		
 		// Display 50 rows in one page or all records.
 		cellTable.setPageSize(50);
-		cellTable.setSelectionModel(results.addSelectionHandlerOnTable());
+	//	cellTable.setSelectionModel(results.addSelectionHandlerOnTable());
 		cellTable = results.addColumnToTable(cellTable);
 		
 		cellTable.redraw();

@@ -348,8 +348,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		adminSearchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				measureDeletion =false;
-				isMeasureDeleted = false;
 				adminSearchDisplay.getErrorMeasureDeletion().clear();
 				adminSearchDisplay.getSuccessMeasureDeletion().clear();
 				displayTransferView(startIndex,transferDisplay.getPageSize());
@@ -1417,11 +1415,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 								
 							displayHistory(result.getId(),result.getName());
 						}
-						@Override
-						public void onTransferSelectedClicked(Result result) {
+						/*@Override
+						public void onTransferSelectedClicked(List<ManageMeasureModel.Result> result) {
 							adminSearchDisplay.getErrorMessageDisplay().clear();
 							adminSearchDisplay.getErrorMessagesForTransferOS().clear();
 							updateTransferID(result);
+						}*/
+
+						@Override
+						public void onTransferSelectedClicked(
+								List<Result> result) {
+							adminSearchDisplay.getErrorMessagesForTransferOS().clear();
+							adminSearchDisplay.getSuccessMeasureDeletion().clear();
+							updateTransferID(result);
+							
 						}
 						
 					});
@@ -1457,19 +1464,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * 
 	 * */
 	
-	private void updateTransferID(Result result){
-		System.out.println("==================Transfer CLicked========" + result.getId());
-		if(result.isTransferable()){
-			manageMeasureSearchModel.getSelectedTransferIds().add(result.getId());
-			manageMeasureSearchModel.getSelectedTransferResults().add(result);
-		}else{
+	private void updateTransferID(List<Result> result){
+		System.out.println("==================Transfer CLicked========" + result.size());
+		//if(result.isTransferable()){
+			//manageMeasureSearchModel.getSelectedTransferIds().add(result.getId());
+			manageMeasureSearchModel.setSelectedTransferResults(result);
+		/*}else{
 			for(int i=0 ;i< manageMeasureSearchModel.getSelectedTransferIds().size();i++){
 				if(result.getId() == manageMeasureSearchModel.getSelectedTransferIds().get(i)){
 					manageMeasureSearchModel.getSelectedTransferIds().remove(i);
 					manageMeasureSearchModel.getSelectedTransferResults().remove(i);
 				}
 			}
-		}
+		}*/
 	}
 	
 	/**

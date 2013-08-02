@@ -161,7 +161,7 @@ public class QDMAttributeDialogBox {
 				if(QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text) || CHECK_IF_PRESENT.equalsIgnoreCase(text) || COMPARISON.equalsIgnoreCase(text)){
 					TextBox textBox = new TextBox();
 					textBox.setEnabled(false);
-					textBox.setWidth("11em");
+					textBox.setWidth("8em");
 					grid.setWidget(rowNum, 3, textBox);
 				}else if(VALUE_SET.equals(text)){
 					ListBox qdmListBox = createQdmListBox();
@@ -169,7 +169,7 @@ public class QDMAttributeDialogBox {
 					grid.setWidget(rowNum, 3, qdmListBox);
 				}else {
 					HorizontalPanel panel = new HorizontalPanel();
-					panel.setWidth("11em");
+					panel.setWidth("8em");
 					panel.setSpacing(0);
 					
 					TextBox textBox = new TextBox();
@@ -179,7 +179,7 @@ public class QDMAttributeDialogBox {
 					
 					ListBox units = new ListBox(false);
 					units.setVisibleItemCount(1);
-					units.setWidth("8em");
+					units.setWidth("5em");
 					
 					for(String unitName:unitNames){
 						units.addItem(unitName);
@@ -223,7 +223,7 @@ public class QDMAttributeDialogBox {
 			grid.getCellFormatter().setVerticalAlignment(i, 0, HasVerticalAlignment.ALIGN_MIDDLE);
 						
 			attributeListBox.setVisibleItemCount(1);
-			attributeListBox.setWidth("11em");
+			attributeListBox.setWidth("8em");
 			attributeListBox.addItem(QDMAttributeDialogBox.SELECT, ""+i);
 
 			for(String attribName:attributeList){
@@ -242,7 +242,7 @@ public class QDMAttributeDialogBox {
 			
 			final ListBox modeListBox = new ListBox(false);
 			modeListBox.setVisibleItemCount(1);
-			modeListBox.setWidth("11em");
+			modeListBox.setWidth("8em");
 			modeListBox.addItem(QDMAttributeDialogBox.SELECT);
 			for(String modeName:mode){
 				String modeValue = (modeName.startsWith("--"))?modeName.substring(2).trim():modeName;
@@ -254,7 +254,7 @@ public class QDMAttributeDialogBox {
 						
 			TextBox textBox = new TextBox();
 			textBox.setEnabled(false);
-			textBox.setWidth("11em");
+			textBox.setWidth("8em");
 			grid.setWidget(i, 3, textBox);	
 			setExitingAttributeInGrid(node,i);
 			updateAttributeListBox(grid, i, attributeListBox);
@@ -436,7 +436,6 @@ public class QDMAttributeDialogBox {
 	    dialogContents.setCellHorizontalAlignment(horizontalSaveClosePanel, HasHorizontalAlignment.ALIGN_LEFT);
 	    
 	    dialogContents.setHeight("21em");
-	    dialogContents.setWidth("35em");
 	    qdmAttributeDialogBox.center();	    
 	}
 	
@@ -671,7 +670,7 @@ public class QDMAttributeDialogBox {
 				//If this is a Comparison operator
 				else{
 					HorizontalPanel panel = new HorizontalPanel();
-					panel.setWidth("11.5em");
+					panel.setWidth("8em");
 					panel.setSpacing(0);
 					
 					VerticalPanel vpanel = new VerticalPanel();
@@ -685,7 +684,7 @@ public class QDMAttributeDialogBox {
 					vpanel.add(textBox);
 					ListBox units = new ListBox(false);
 					units.setVisibleItemCount(1);
-					units.setWidth("8em");
+					units.setWidth("5em");
 					
 					for(String unitName:unitNames){
 						units.addItem(unitName);
@@ -712,7 +711,7 @@ public class QDMAttributeDialogBox {
 	private static ListBox createQdmListBox() {
 		ListBox qdmListBox = new ListBox(false);
 		qdmListBox.setVisibleItemCount(1);
-		qdmListBox.setWidth("11em");
+		qdmListBox.setWidth("8em");
 		for (Entry<String, Node> qdm : ClauseConstants.getElementLookUpNode().entrySet()) {
 			Node qdmNode = qdm.getValue();
 			String dataType = qdmNode.getAttributes().getNamedItem(DATATYPE).getNodeValue();

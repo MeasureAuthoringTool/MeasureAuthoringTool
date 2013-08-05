@@ -65,11 +65,12 @@ public class CodeListController implements MatPresenter {
 		codeListDetailPresenter = new ManageCodeListDetailPresenter(mcld,addCodeView,extDisclaimerView,qdsView,listBoxCodeProvider);
 		groupedCodeListPresenter = new ManageGroupedCodeListPresenter(groupedView, addCodeListView, listBoxCodeProvider);
 	    
-		displayEmpty();
+	    displayEmpty();
 		
 		HandlerManager eventBus = MatContext.get().getEventBus();
 		addingHandlersOnEvent(eventBus);
 		DOM.setElementAttribute(contents.getElement(), "id", "CodeListControler.contents");
+		beforeDisplay();
 	}
 	
 	

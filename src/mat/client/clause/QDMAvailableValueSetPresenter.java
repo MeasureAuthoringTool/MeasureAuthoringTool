@@ -198,11 +198,14 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
 				if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
 					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,dataTypeText,isSpecificOccurrence);
-					
+			}else{
+				if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
+					searchDisplay.getErrorMessageDisplay().setMessage("A value set with a non-Attribute category must be used for this data element.");
 				}else{
-					searchDisplay.getErrorMessageDisplay().setMessage("Attribute can only be modified with Attribute.");
-					setEnabled(true);
+					searchDisplay.getErrorMessageDisplay().setMessage("A value set with an Attribute category must be used for this data element.");
 				}
+				setEnabled(true);
+			}
 			}else{
 				updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,dataTypeText,isSpecificOccurrence);
 			

@@ -188,14 +188,16 @@ public class ManageCodeListSearchPresenter {
 		}
 	};
 	
-	public ManageCodeListSearchPresenter(ValueSetSearchDisplay sDisplayArg, HistoryDisplay argHistDisplay, HasVisible prevContButtons, DraftDisplay dDisplay) {
+	public ManageCodeListSearchPresenter(ValueSetSearchDisplay sDisplayArg,AdminValueSetSearchDisplay adminValueSetDisplayArg ,HistoryDisplay argHistDisplay, HasVisible prevContButtons, DraftDisplay dDisplay) {
 		this.searchDisplay = sDisplayArg;
+		this.adminSearchDisplay = adminValueSetDisplayArg;
 		this.historyDisplay = argHistDisplay;
 		this.buttonBar = (PreviousContinueButtonBar) prevContButtons;
 		this.draftDisplay = dDisplay;
 		displaySearch();		
 		
 		searchDisplayHandlers(searchDisplay);
+		adminSearchDisplayHandlers(adminSearchDisplay);
 		draftDisplayHandlers(draftDisplay);	
 		historyDisplayHandlers(historyDisplay); 	
 		

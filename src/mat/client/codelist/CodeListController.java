@@ -53,7 +53,7 @@ public class CodeListController implements MatPresenter {
 		listBoxCodeProvider = MatContext.get().getListBoxCodeProvider();
 		ManageCodeListDetailView mcld = new ManageCodeListDetailView("Value Set Name");
 		ManageCodeListSearchView mclsv = new ManageCodeListSearchView();
-		//AdminValueSetSearchView adminValueSetSearchView = new AdminValueSetSearchView();
+		AdminValueSetSearchView adminValueSetSearchView = new AdminValueSetSearchView();
 		draftDisplay = new ManageValueSetDraftView();
 		AddCodeView addCodeView = new AddCodeView();
 		ExternalLinkDisclaimerView extDisclaimerView = new ExternalLinkDisclaimerView();
@@ -61,7 +61,7 @@ public class CodeListController implements MatPresenter {
 		AddCodeListView addCodeListView = new AddCodeListView();
 		QDSElementView qdsView = new QDSElementView();
 		CodeListHistoryView historyView = new CodeListHistoryView();
-		codeListSearchPresenter = new ManageCodeListSearchPresenter(mclsv, historyView, null, draftDisplay);
+		codeListSearchPresenter = new ManageCodeListSearchPresenter(mclsv,adminValueSetSearchView, historyView, null, draftDisplay);
 		codeListDetailPresenter = new ManageCodeListDetailPresenter(mcld,addCodeView,extDisclaimerView,qdsView,listBoxCodeProvider);
 		groupedCodeListPresenter = new ManageGroupedCodeListPresenter(groupedView, addCodeListView, listBoxCodeProvider);
 	    

@@ -196,6 +196,10 @@ public class ListObjectDAO extends GenericDAO<ListObject, String>
 		dto.setId(cl.getId());
 		dto.setName(cl.getName());
 		dto.setOid(cl.getOid());
+		User user = cl.getObjectOwner(); 
+		dto.setOwnerFirstName(user.getFirstName());
+		dto.setOwnerLastName(user.getLastName());
+		dto.setOwnerEmailAddress(user.getEmailAddress());
 		dto.setSteward(cl.getSteward().getOrgName());
 		dto.setCodeSystem(cl.getCodeSystem().getDescription());
 		dto.setAbbreviatedCodeSystem(cl.getCodeSystem().getAbbreviation());

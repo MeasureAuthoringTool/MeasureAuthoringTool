@@ -80,7 +80,8 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 			searchCriteriaPanel.add(view.asWidget());
 			searchCriteriaPanel.setStyleName("contentPanel");
 		}else{
-			view = new AdminValueSetSearchView();
+			AdminValueSetSearchView adminValueSetSearchView = new AdminValueSetSearchView();
+			view = adminValueSetSearchView.getView();
 			view.buildDataTable(new AdminManageCodeListSearchModel());
 			searchCriteriaPanel.add(errorMessages);
 			searchCriteriaPanel.add(new SpacerWidget());

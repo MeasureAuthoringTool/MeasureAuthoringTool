@@ -130,4 +130,9 @@ public class ValueSetSearchView extends SearchView<CodeListSearchDTO>{
 		addClickHandler(image, results, rowIndex);
 		return image;
 	}
+
+	public void buildDataTable(AdminCodeListSearchResultsAdapter results,
+			boolean isAscending) {
+			
+	}
 }

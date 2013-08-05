@@ -1,30 +1,25 @@
 package mat.client.measure;
 
-
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
-import mat.client.measure.ManageMeasureSearchModel.Result;
+
+
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
-import mat.client.shared.search.SearchResults;
 
+import mat.client.shared.search.SearchResults;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
+
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
-import com.google.gwt.view.client.MultiSelectionModel;
-import com.google.gwt.view.client.SelectionChangeEvent;
 
 public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeasureSearchModel.Result> {
 	
@@ -34,16 +29,16 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	private boolean isHistoryClicked;
 
 	public static interface Observer {
-		public void onTransferSelectedClicked(List<ManageMeasureSearchModel.Result> result);
+		public void onTransferSelectedClicked(ManageMeasureSearchModel.Result result);
 		public void onHistoryClicked(ManageMeasureSearchModel.Result result);
 	}
 		
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
 	private ManageMeasureSearchModel.Result lastSelectedMeasureList;
-	private ArrayList<ManageMeasureSearchModel.Result> selectedMeasureList;
+	private ManageMeasureSearchModel.Result selectedMeasureList;
 	
 	private Observer observer;
-	//private ClickHandler clickHandler = buildClickHandler();
+	private ClickHandler clickHandler = buildClickHandler();
 	
 	private ManageMeasureSearchModel.Result getResultForId(String id) {
 		for(int i = 0; i < data.getNumberOfRows(); i++) {
@@ -65,7 +60,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 
 	public ManageMeasureSearchModel getData() {
 		return data;
-	}
+	}	
 
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
@@ -101,7 +96,19 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 		return lastSelectedMeasureList;
 	}
 
-	
+	public void setLastSelectedMeasureList(
+			ManageMeasureSearchModel.Result lastSelectedMeasureList) {
+		this.lastSelectedMeasureList = lastSelectedMeasureList;
+	}
+
+	public ManageMeasureSearchModel.Result getSelectedMeasureList() {
+		return selectedMeasureList;
+	}
+
+	public void setSelectedMeasureList(
+			ManageMeasureSearchModel.Result selectedMeasureList) {
+		this.selectedMeasureList = selectedMeasureList;
+	}
 
 	
 	//TODO - need to remove this method going forward as we replace the Grid Table with Cel T
@@ -111,7 +118,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	}
 		
 		
-	/*private ClickHandler buildClickHandler() {
+	private ClickHandler buildClickHandler() {
 		return new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -132,7 +139,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 			}
 		};
 	}
-	*/@Override
+	@Override
 	public int getStartIndex() {
 		return data.getStartIndex();
 	}
@@ -178,36 +185,34 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 		return tsStr;
 	}
 	
-	public MultiSelectionModel<ManageMeasureSearchModel.Result> addSelectionHandlerOnTable(){
-		final MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new  MultiSelectionModel<ManageMeasureSearchModel.Result>();
+/*	
+	public MultiSelectionModel<CodeListSearchDTO> addSelectionHandlerOnTable(){
+		final MultiSelectionModel<CodeListSearchDTO> selectionModel = new  MultiSelectionModel<CodeListSearchDTO>();
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				HashSet<ManageMeasureSearchModel.Result> hashSet=(HashSet<Result>) selectionModel.getSelectedSet();
-				if(hashSet !=null){
+				Set<CodeListSearchDTO> codeListSet = selectionModel.getSelectedSet();
+				if(codeListSet !=null){
+					//lastSelectedCodeList = codeListObject;
 					MatContext.get().clearDVIMessages();
-					ArrayList<ManageMeasureSearchModel.Result> list = new ArrayList<ManageMeasureSearchModel.Result>(hashSet);
-					data.setSelectedTransferResults(list);
-					observer.onTransferSelectedClicked(list);
+					MatContext.get().clearModifyPopUpMessages();
+					List<CodeListSearchDTO> selectedCodeList = new ArrayList<CodeListSearchDTO>(codeListSet);
+					setLastSelectedCodeList(selectedCodeList);
+					setSelectedCodeList(selectedCodeList);
+					MatContext.get().getEventBus().fireEvent( new OnChangeOptionsEvent());
+
 				}
 			}
 		});
 		return selectionModel;
 	}
-
-	private SafeHtml getColumnToolTip(String columnText, StringBuilder title) {
-		String htmlConstant = "<html>" + "<head> </head> <Body><span title='"+title + "'>"+columnText+ "</span></body>" + "</html>";
-		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
-	}
+	*/
 	
 	@SuppressWarnings("unchecked")
 	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table){
 		
-		final MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = addSelectionHandlerOnTable();
-		
-		
 		if(table.getColumnCount() !=6 ){	
-		
+			
 			TextColumn<ManageMeasureSearchModel.Result > measureName = new TextColumn<ManageMeasureSearchModel.Result >() {
 				@Override
 				public String getValue(ManageMeasureSearchModel.Result object) {
@@ -223,7 +228,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					return object.getOwnerfirstName() + "  " + object.getOwnerLastName();
 				}
 			};
-			table.addColumn(ownerName, "Owner Name");
+			table.addColumn(ownerName, "Owner ");
 			
 			TextColumn<ManageMeasureSearchModel.Result > ownerEmailAddress = new TextColumn<ManageMeasureSearchModel.Result >() {
 				@Override
@@ -259,25 +264,22 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 				});
 			table.addColumn(historyColumn , "History");
 			
-			Column<ManageMeasureSearchModel.Result, Boolean> transferColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(
-				    new MatCheckBoxCell(true, true)) {
+			Cell<Boolean> transferCB = new MatCheckBoxCell();
+			Column transferColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(transferCB) {
+			  @Override
+			  public Boolean getValue(ManageMeasureSearchModel.Result object) {
+			    return object.isTransferable();
+			  }
+			};
+			
+			transferColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
 				  @Override
-				  public Boolean getValue(ManageMeasureSearchModel.Result object) {
-				    // Get the value from the selection model.
-				    return selectionModel.isSelected(object);
+				  public void update(int index, ManageMeasureSearchModel.Result object, Boolean value) {
+					  object.setTransferable(value);
+					  observer.onTransferSelectedClicked(object);
 				  }
-				  
-				  
-				};
-				transferColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
-			         @Override
-			         public void update(int index, ManageMeasureSearchModel.Result object, Boolean value){
-			            selectionModel.setSelected(object, value);
-			            }
-			      });
-				table.addColumn(transferColumn , "Transfer");
-			
-			
+				});
+			table.addColumn(transferColumn , "Transfer");
 			table.setColumnWidth(0, 30.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
@@ -285,7 +287,6 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 			table.setColumnWidth(4, 5.0, Unit.PCT);
 			table.setColumnWidth(5, 5.0, Unit.PCT);
 		}
-		table.setSelectionModel(selectionModel,DefaultSelectionEventManager.<ManageMeasureSearchModel.Result> createCheckboxManager());
 		return table;
 	}
 
@@ -295,15 +296,6 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 
 	public void setHistoryClicked(boolean isHistoryClicked) {
 		this.isHistoryClicked = isHistoryClicked;
-	}
-
-	public ArrayList<ManageMeasureSearchModel.Result> getSelectedMeasureList() {
-		return selectedMeasureList;
-	}
-
-	public void setSelectedMeasureList(
-			ArrayList<ManageMeasureSearchModel.Result> selectedMeasureList) {
-		this.selectedMeasureList = selectedMeasureList;
 	}
 	
 		

@@ -9,6 +9,7 @@ import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.events.OnChangeMeasureDraftOptionsEvent;
 import mat.client.codelist.events.OnChangeMeasureVersionOptionsEvent;
@@ -350,6 +351,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				adminSearchDisplay.getErrorMeasureDeletion().clear();
 				adminSearchDisplay.getSuccessMeasureDeletion().clear();
+				adminSearchDisplay.clearTransferCheckBoxes();
 				displayTransferView(startIndex,transferDisplay.getPageSize());
 			}
 		});
@@ -358,7 +360,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				manageMeasureSearchModel.getSelectedTransferResults().removeAll(manageMeasureSearchModel.getSelectedTransferResults());
-				adminSearchDisplay.clearTransferCheckBoxes();
+				manageMeasureSearchModel.getSelectedTransferIds().removeAll(manageMeasureSearchModel.getSelectedTransferIds());
+				int filter = adminSearchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+				search(adminSearchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE,filter);
 			}
 		});
 		
@@ -540,6 +544,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				historyDisplay.clearErrorMessage();
 				historyDisplay.getUserComment().setValue("");
+				
 			}
 		});
 		
@@ -868,8 +873,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		transferDisplay.getCancelButton().addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
-				manageMeasureSearchModel.getSelectedTransferIds().clear();
-				manageMeasureSearchModel.getSelectedTransferResults().clear();
+				manageMeasureSearchModel.getSelectedTransferResults().removeAll(manageMeasureSearchModel.getSelectedTransferResults());
+				manageMeasureSearchModel.getSelectedTransferIds().removeAll(manageMeasureSearchModel.getSelectedTransferIds());
 				transferDisplay.getSuccessMessageDisplay().clear();
 				transferDisplay.getErrorMessageDisplay().clear();
 				displaySearch();
@@ -1116,17 +1121,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 		int filter;
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
 			heading = "";
-			filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+			filter = adminSearchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+			search(adminSearchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE,filter);
+			panel.setContent(adminSearchDisplay.asWidget());
 		}else{
 			//MAT-1929 : Retain filters at measure library screen
 			filter = searchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
+			search(searchDisplay.getSearchString().getValue(), 1, searchDisplay.getPageSize(),filter);
+			panel.setContent(searchDisplay.asWidget());		
 		}
 		//MAT-1929: Retain filters at measure library screen. commented resetFilters method to retain filter state.
 		//searchDisplay.getMeasureSearchFilterPanel().resetFilter();
-		search(searchDisplay.getSearchString().getValue(), 1, searchDisplay.getPageSize(),filter);
+		
 		panel.setHeading(heading,"MainContent");
 		//panel.setEmbeddedLink("MainContent");
-		panel.setContent(searchDisplay.asWidget());		
 		Mat.focusSkipLists("MainContent");
 	}
 	
@@ -1397,8 +1405,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}else{
 					result.setSelectedTransferIds(new ArrayList<String>());
 					result.setSelectedTransferResults(new ArrayList<Result>());
+					result.setSelectedExportIds(new ArrayList<String>());
 					manageMeasureSearchModel = result;
 					AdminMeasureSearchResultAdaptor searchAdminResults = new AdminMeasureSearchResultAdaptor();
+					searchAdminResults.setData(result);
+					MatContext.get().setManageMeasureSearchModel(manageMeasureSearchModel);
 					searchAdminResults.setObserver(new AdminMeasureSearchResultAdaptor.Observer() {
 						@Override
 						public void onHistoryClicked(Result result) {
@@ -1415,28 +1426,23 @@ public class ManageMeasurePresenter implements MatPresenter {
 								
 							displayHistory(result.getId(),result.getName());
 						}
-						/*@Override
-						public void onTransferSelectedClicked(List<ManageMeasureModel.Result> result) {
+						@Override
+						public void onTransferSelectedClicked(Result result) {
 							adminSearchDisplay.getErrorMessageDisplay().clear();
 							adminSearchDisplay.getErrorMessagesForTransferOS().clear();
-							updateTransferID(result);
-						}*/
+							updateTransferIDs(result,manageMeasureSearchModel);
+						}
 
-						@Override
+						/*@Override
 						public void onTransferSelectedClicked(
 								List<Result> result) {
 							adminSearchDisplay.getErrorMessagesForTransferOS().clear();
 							adminSearchDisplay.getSuccessMeasureDeletion().clear();
 							updateTransferID(result);
 							
-						}
+						}*/
 						
 					});
-					searchAdminResults.setData(result);
-					result.setSelectedExportIds(new ArrayList<String>());
-					manageMeasureSearchModel = result;
-					MatContext.get().setManageMeasureSearchModel(manageMeasureSearchModel);
-					
 					if(result.getResultsTotal() == 0 && !lastSearchText.isEmpty()){
 						adminSearchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
 					}else{
@@ -1464,14 +1470,33 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * 
 	 * */
 	
-	private void updateTransferID(List<Result> result){
-		System.out.println("==================Transfer CLicked========" + result.size());
-		manageMeasureSearchModel.setSelectedTransferResults(result);
-		List<String> measureIdsList = new ArrayList<String>();
-		for(ManageMeasureSearchModel.Result results: result){
-			measureIdsList.add(results.getId());
+/*	private void updateTransferID(List<Result> result){
+			System.out.println("==================Transfer CLicked========" + result.size());
+			manageMeasureSearchModel.setSelectedTransferResults(result);
+			List<String> measureIdsList = new ArrayList<String>();
+			for(ManageMeasureSearchModel.Result results: result){
+				measureIdsList.add(results.getId());
+			}
+			manageMeasureSearchModel.setSelectedTransferIds(measureIdsList);
+		
+	}*/
+	
+	private void updateTransferIDs(Result result,ManageMeasureSearchModel model) {
+		if(result.isTransferable()){
+			List<String> selectedIdList = model.getSelectedTransferIds();
+			if(!selectedIdList.contains(result.getId())){
+				model.getSelectedTransferResults().add(result);
+				selectedIdList.add(result.getId());
+			}
+		}else{
+			for(int i=0 ;i< model.getSelectedTransferIds().size();i++){
+				if(result.getId() == model.getSelectedTransferResults().get(i).getId()){
+					model.getSelectedTransferIds().remove(i);
+					model.getSelectedTransferResults().remove(i);
+				}
+			}
+			
 		}
-		manageMeasureSearchModel.setSelectedTransferIds(measureIdsList);
 	}
 	
 	/**

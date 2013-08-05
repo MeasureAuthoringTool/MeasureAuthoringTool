@@ -1,5 +1,7 @@
 package mat.client.measure;
 
+import java.awt.List;
+
 import mat.client.CustomPager;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageDisplay;
@@ -94,21 +96,22 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		for(ManageMeasureSearchModel.Result result : sortProvider.getList()){
 				result.setTransferable(false);
 		}
-		sortProvider.refresh();
+		AdminMeasureSearchResultAdaptor adapter = new AdminMeasureSearchResultAdaptor();
+		adapter.getData().setData(sortProvider.getList());
+		buildDataTable(adapter);
+		
 	}
 	
 	private void buildDataTable(AdminMeasureSearchResultAdaptor results){
 		if(results == null) {
 			return;
 		}
-		//CellTable<ManageMeasureSearchModel.Result> table = new CellTable<ManageMeasureSearchModel.Result>();
 		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
 		
 		
-		// Display 50 rows in one page or all records.
+		// Display 50 rows on a page 
 		cellTable.setPageSize(50);
-	//	cellTable.setSelectionModel(results.addSelectionHandlerOnTable());
 		cellTable = results.addColumnToTable(cellTable);
 		
 		cellTable.redraw();

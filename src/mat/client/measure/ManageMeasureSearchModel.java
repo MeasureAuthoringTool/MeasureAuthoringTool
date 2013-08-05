@@ -36,6 +36,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		private String ownerEmailAddress;
 		private int eMeasureId;
 		
+		
 		public LockedUserInfo getLockedUserInfo() {
 			return lockedUserInfo;
 		}

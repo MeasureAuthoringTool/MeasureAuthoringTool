@@ -188,16 +188,14 @@ public class ManageCodeListSearchPresenter {
 		}
 	};
 	
-	public ManageCodeListSearchPresenter(ValueSetSearchDisplay sDisplayArg,AdminValueSetSearchDisplay adminValueSetDisplayArg ,HistoryDisplay argHistDisplay, HasVisible prevContButtons, DraftDisplay dDisplay) {
+	public ManageCodeListSearchPresenter(ValueSetSearchDisplay sDisplayArg, HistoryDisplay argHistDisplay, HasVisible prevContButtons, DraftDisplay dDisplay) {
 		this.searchDisplay = sDisplayArg;
-		this.adminSearchDisplay = adminValueSetDisplayArg;
 		this.historyDisplay = argHistDisplay;
 		this.buttonBar = (PreviousContinueButtonBar) prevContButtons;
 		this.draftDisplay = dDisplay;
 		displaySearch();		
 		
 		searchDisplayHandlers(searchDisplay);
-		adminSearchDisplayHandlers(adminSearchDisplay);
 		draftDisplayHandlers(draftDisplay);	
 		historyDisplayHandlers(historyDisplay); 	
 		
@@ -286,7 +284,9 @@ public class ManageCodeListSearchPresenter {
 				searchModel.getTransferValueSetIDs().clear();
 				transferDisplay.getSuccessMessageDisplay().clear();
 				transferDisplay.getErrorMessageDisplay().clear();
-				displaySearch();
+				int filter = searchDisplay.getValueSetSearchFilterPanel().ALL_VALUE_SETS;
+				search(searchDisplay.getSearchString().getValue(),
+					startIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
 		});
 	

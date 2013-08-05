@@ -17,6 +17,10 @@ public class CodeListSearchDTO implements IsSerializable {
 	private boolean isGroupedCodeList;
 	private boolean isTransferable;
 	private String stewardOthers;
+	private String ownerFirstName;
+	private String ownerLastName;
+	private String ownerEmailAddress;
+	
 	
 	public String getStewardOthers() {
 		return stewardOthers;
@@ -107,4 +111,30 @@ public class CodeListSearchDTO implements IsSerializable {
 	public boolean isTransferable() {
 		return isTransferable;
 	}
+	
+	public String getOwnerFirstName() {
+		return ownerFirstName;
+	}
+
+	public void setOwnerFirstName(String ownerFirstName) {
+		this.ownerFirstName = ownerFirstName;
+	}
+
+	public String getOwnerLastName() {
+		return ownerLastName;
+	}
+
+	public void setOwnerLastName(String ownerLastName) {
+		this.ownerLastName = ownerLastName;
+	}
+
+	public String getOwnerEmailAddress() {
+		return ownerEmailAddress;
+	}
+
+	public void setOwnerEmailAddress(String ownerEmailAddress) {
+		this.ownerEmailAddress = ownerEmailAddress;
+	}
+	
+	
 }

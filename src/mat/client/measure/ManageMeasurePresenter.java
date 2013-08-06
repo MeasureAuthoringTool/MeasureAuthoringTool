@@ -864,7 +864,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 				if(userSelected==false){
 					transferDisplay.getSuccessMessageDisplay().clear();
-					transferDisplay.getErrorMessageDisplay().setMessage("Please select at least one user to transfer ownership.");
+					transferDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUserRequiredErrorMessage());
 				}
 					
 				transferDisplay.clearAllRadioButtons(transferDisplay.getDataTable());

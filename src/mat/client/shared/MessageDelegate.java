@@ -948,6 +948,12 @@ public class MessageDelegate {
 		
 	}
 	
+	private final String USER_REQUIRED_ERROR_MSG="Please select a user to transfer ownership.";
+	public String getUserRequiredErrorMessage(){
+		return USER_REQUIRED_ERROR_MSG;
+		
+	}
+	
 }
 
 

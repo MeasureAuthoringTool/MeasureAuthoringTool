@@ -272,7 +272,7 @@ public class ManageCodeListSearchPresenter {
 				}
 				if(userSelected==false){
 					transferDisplay.getSuccessMessageDisplay().clear();
-					transferDisplay.getErrorMessageDisplay().setMessage("Please select at least one user to transfer ownership.");
+					transferDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUserRequiredErrorMessage());
 					
 				}
 					

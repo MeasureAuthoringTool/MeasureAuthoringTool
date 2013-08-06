@@ -288,7 +288,6 @@ public class ManageCodeListSearchPresenter {
 				transferDisplay.getSuccessMessageDisplay().clear();
 				transferDisplay.getErrorMessageDisplay().clear();
 				int filter = searchDisplay.getValueSetSearchFilterPanel().ALL_VALUE_SETS;
-				adminSearchDisplay.getSearchString().setValue(emptySearchString);
 				search(emptySearchString,startIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
 		});

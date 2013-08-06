@@ -878,8 +878,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 				manageMeasureSearchModel.getSelectedTransferIds().removeAll(manageMeasureSearchModel.getSelectedTransferIds());
 				transferDisplay.getSuccessMessageDisplay().clear();
 				transferDisplay.getErrorMessageDisplay().clear();
-				adminSearchDisplay.getSearchString().setValue("");
-				displaySearch();
+				int filter = adminSearchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+				search("", 1, Integer.MAX_VALUE,filter);
 			}
 		});
 		

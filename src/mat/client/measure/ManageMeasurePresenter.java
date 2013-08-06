@@ -864,6 +864,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 				if(userSelected==false){
 					transferDisplay.getSuccessMessageDisplay().clear();
+					transferDisplay.getErrorMessageDisplay().setMessage("Please select at least one user to transfer ownership.");
 				}
 					
 				transferDisplay.clearAllRadioButtons(transferDisplay.getDataTable());
@@ -877,6 +878,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				manageMeasureSearchModel.getSelectedTransferIds().removeAll(manageMeasureSearchModel.getSelectedTransferIds());
 				transferDisplay.getSuccessMessageDisplay().clear();
 				transferDisplay.getErrorMessageDisplay().clear();
+				adminSearchDisplay.getSearchString().setValue("");
 				displaySearch();
 			}
 		});

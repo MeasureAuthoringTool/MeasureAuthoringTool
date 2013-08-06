@@ -60,6 +60,7 @@ public class ManageCodeListSearchPresenter {
 	private static final String MY_VALUE_SETS_CREATE_DRAFT = "My Value Sets  > Create a Value Set Draft";
 	private String MY_VALUE_SETS_HISTORY = "My Value Sets  > History";
 	private boolean isObserverBusy = false;
+	private String emptySearchString = "";
 	
 	public static interface ValueSetSearchDisplay extends mat.client.shared.search.SearchDisplay {
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForEditTool();
@@ -271,7 +272,7 @@ public class ManageCodeListSearchPresenter {
 				}
 				if(userSelected==false){
 					transferDisplay.getSuccessMessageDisplay().clear();
-					//transferDisplay.getErrorMessageDisplay().setMessage("Please select at least one user to transfer ownership.");
+					transferDisplay.getErrorMessageDisplay().setMessage("Please select at least one user to transfer ownership.");
 					
 				}
 					
@@ -287,8 +288,8 @@ public class ManageCodeListSearchPresenter {
 				transferDisplay.getSuccessMessageDisplay().clear();
 				transferDisplay.getErrorMessageDisplay().clear();
 				int filter = searchDisplay.getValueSetSearchFilterPanel().ALL_VALUE_SETS;
-				search(searchDisplay.getSearchString().getValue(),
-					startIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
+				adminSearchDisplay.getSearchString().setValue(emptySearchString);
+				search(emptySearchString,startIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
 		});
 	

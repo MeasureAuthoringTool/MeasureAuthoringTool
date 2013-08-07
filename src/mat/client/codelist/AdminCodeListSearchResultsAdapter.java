@@ -19,9 +19,12 @@ import mat.model.CodeListSearchDTO;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
@@ -35,6 +38,8 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.CellPreviewEvent;
+import com.google.gwt.view.client.CellPreviewEvent.Handler;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
@@ -222,9 +227,9 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 					//lastSelectedCodeList = codeListObject;
 					MatContext.get().clearDVIMessages();
 					MatContext.get().clearModifyPopUpMessages();
-					List<CodeListSearchDTO> selectedCodeList = new ArrayList<CodeListSearchDTO>(codeListSet);
-					setLastSelectedCodeList(selectedCodeList);
-					setSelectedCodeList(selectedCodeList);
+					//List<CodeListSearchDTO> selectedCodeList = new ArrayList<CodeListSearchDTO>(codeListSet);
+					//setLastSelectedCodeList(selectedCodeList);
+					//setSelectedCodeList(selectedCodeList);
 					MatContext.get().getEventBus().fireEvent( new OnChangeOptionsEvent());
 
 				}
@@ -236,12 +241,19 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 	
 
 	private SafeHtml getColumnToolTip(String columnText, StringBuilder title) {
-		String htmlConstant = "<html>" + "<head> </head> <Body><span title='"+title + "'>"+columnText+ "</span></body>" + "</html>";
+		String htmlConstant = "<html>" + "<head> </head> <Body><span title='"+ columnText + ", " + title + "'>"+columnText+ "</span></body>" + "</html>";
+		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
+	}
+	
+	private SafeHtml getColumnToolTip(String title){
+		String htmlConstant = "<html>" + "<head> </head> <Body><span title='" + title + "'>"+title+ "</span></body>" + "</html>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
 	@SuppressWarnings("unchecked")
 	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table){
+		
+		final MultiSelectionModel<CodeListSearchDTO> selectionModel = addSelectionHandlerOnTable();
 		
 		if(table.getColumnCount() !=6 ){	
 			
@@ -257,41 +269,39 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 					}
 				};
 			
-			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Value Sets'>"+   "Value Set Name"   +"</span>"));
+			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Value Set Name'>" +"Value Set Name"+ "</span>"));
 			
-			TextColumn<CodeListSearchDTO > ownerName = new TextColumn<CodeListSearchDTO>() {
+			Column<CodeListSearchDTO , SafeHtml> ownerName = new Column<CodeListSearchDTO, SafeHtml>(new SafeHtmlCell()) {
 				@Override
-				public String getValue(CodeListSearchDTO object) {
-					return object.getOwnerFirstName() + "  " + object.getOwnerLastName();
+				public SafeHtml getValue(CodeListSearchDTO object) {
+					return getColumnToolTip(object.getOwnerFirstName() + "  " + object.getOwnerLastName());
 				}
 			};
-			table.addColumn(ownerName, "Owner");
+			table.addColumn(ownerName, SafeHtmlUtils.fromSafeConstant("<span title='Owner'>" +"Owner"+ "</span>"));
 			
-			TextColumn<CodeListSearchDTO > ownerEmailAddress = new TextColumn<CodeListSearchDTO >() {
+			Column<CodeListSearchDTO , SafeHtml> ownerEmailAddress = new Column<CodeListSearchDTO , SafeHtml>(new SafeHtmlCell()) {
 				@Override
-				public String getValue(CodeListSearchDTO object) {
-					return object.getOwnerEmailAddress();
+				public SafeHtml getValue(CodeListSearchDTO object) {
+					return getColumnToolTip(object.getOwnerEmailAddress());
 				}
 			};
-			table.addColumn(ownerEmailAddress, "Owner E-mail Address");
+			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title='Owner E-mail Address'>" +"Owner E-mail Address"+ "</span>"));
 						
-			TextColumn<CodeListSearchDTO> codeSystem = new TextColumn<CodeListSearchDTO>() {
+			Column<CodeListSearchDTO, SafeHtml> codeSystem = new Column<CodeListSearchDTO, SafeHtml>(new SafeHtmlCell()) {
 				@Override
-				public String getValue(CodeListSearchDTO object) {
-					return  object.getCodeSystem();
+				public SafeHtml getValue(CodeListSearchDTO object) {
+					return getColumnToolTip(object.getCodeSystem());
 				}
 			};
-			table.addColumn(codeSystem, "Code System");
-			
-						
-						
-			Cell<String> historyButton = new MatButtonCell();
-			Column historyColumn = new Column<CodeListSearchDTO, String>(historyButton) {
-			  @Override
-			  public String getValue(CodeListSearchDTO object) {
-			    return "History";
-			  }
-			};
+			table.addColumn(codeSystem, SafeHtmlUtils.fromSafeConstant("<span title='Code System'>" +"Code System"+ "</span>"));
+									
+			Cell<String> historyButton = new MatButtonCell("Click to view history");
+			Column<CodeListSearchDTO, String> historyColumn = new Column<CodeListSearchDTO, String>(historyButton) {
+				@Override
+				public String getValue(CodeListSearchDTO object) {
+					return "History";
+				 }	
+				};
 			
 			historyColumn.setFieldUpdater(new FieldUpdater<CodeListSearchDTO, String>() {
 				  @Override
@@ -299,10 +309,10 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 					  observer.onHistoryClicked(object);
 				  }
 				});
-			table.addColumn(historyColumn , "History");
+			table.addColumn(historyColumn , SafeHtmlUtils.fromSafeConstant("<span title='History'>" +"History"+ "</span>"));
+					
 			
 			Cell<Boolean> transferCB = new MatCheckBoxCell();
-			
 			Column transferColumn = new Column<CodeListSearchDTO, Boolean>(transferCB) {
 			  @Override
 			  public Boolean getValue(CodeListSearchDTO object) {
@@ -317,17 +327,55 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 					  observer.onTransferSelectedClicked(object);
 				  }
 				});
-			table.addColumn(transferColumn , "Transfer");
+								
+			table.addColumn(transferColumn , SafeHtmlUtils.fromSafeConstant("<span title='Check for Ownership Transfer'>" +"CheckBox"+ "</span>"));
 			table.setColumnWidth(0, 30.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
 			table.setColumnWidth(3, 20.0, Unit.PCT);
 			table.setColumnWidth(4, 5.0, Unit.PCT);
 			table.setColumnWidth(5, 5.0, Unit.PCT);
+			/*table.addCellPreviewHandler(new CellPreviewEvent.Handler<CodeListSearchDTO>() {
+				@Override
+				public void onCellPreview(CellPreviewEvent event){
+					handleSelectionEvent(event, selectionModel);
+				}
+			});*/
+			
 			
 		}
 		return table;
 	}
+	
+	protected <T> void handleSelectionEvent(CellPreviewEvent<T> event,
+			final MultiSelectionModel<? super T> selectionModel) {
+		T value = event.getValue();
+		NativeEvent nativeEvent = event.getNativeEvent();
+		String type = nativeEvent.getType();
+		System.out.println("type="+type);
+		if ("click".equals(type)) {
+			if (nativeEvent.getCtrlKey() || nativeEvent.getMetaKey()) {
+				System.out.println("inside the ctrl +click event");
+				selectionModel.setSelected(value, !selectionModel.isSelected(value));
+			} else {
+				System.out.println("inside the click event + onclic");
+				selectionModel.setSelected(value, true);
+			}
+		} else if (("keyup".equals(type))||("focus".equals(type))||("keydown".equals(type))) {
+			if("focus".equals(type)){
+				System.out.println("inside the focus");
+				return;
+			}
+			int keyCode = nativeEvent.getKeyCode();
+			System.out.println("keycode=="+keyCode);
+			if (keyCode == 9) {
+				System.out.println("inside the tab event");
+				selectionModel.setSelected(value, true);
+			}
+		}
+	}	
+	
+	
 	
 	private void addListener(CustomButton image) {
 		image.addClickHandler(clickHandler);

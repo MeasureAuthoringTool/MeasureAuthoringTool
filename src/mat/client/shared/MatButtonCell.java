@@ -36,6 +36,7 @@ import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
  */
 public class MatButtonCell extends AbstractSafeHtmlCell<String> {
 
+   String ButtonTitle=""; 	
   /**
    * Construct a new ButtonCell that will use a {@link SimpleSafeHtmlRenderer}.
    */
@@ -43,6 +44,11 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
     this(SimpleSafeHtmlRenderer.getInstance());
   }
 
+  public MatButtonCell(String ButtonTitle) {
+	    this(SimpleSafeHtmlRenderer.getInstance());
+	    this.ButtonTitle=ButtonTitle;
+	  }
+  
   /**
    * Construct a new ButtonCell that will use a given {@link SafeHtmlRenderer}.
    * 
@@ -52,7 +58,7 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
     super(renderer, CLICK, KEYDOWN);
   }
 
-  @Override
+@Override
   public void onBrowserEvent(Context context, Element parent, String value,
       NativeEvent event, ValueUpdater<String> valueUpdater) {
     super.onBrowserEvent(context, parent, value, event, valueUpdater);
@@ -71,7 +77,7 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
   @Override
   public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
 	  
-    sb.appendHtmlConstant("<button type=\"button\" tabindex=\"-1\" class=\"customClockButton\">");
+    sb.appendHtmlConstant("<button type=\"button\" title='" + ButtonTitle + "' tabindex=\"-1\" class=\"customClockButton\">");
     if (data != null) {
       sb.append(data);
     }

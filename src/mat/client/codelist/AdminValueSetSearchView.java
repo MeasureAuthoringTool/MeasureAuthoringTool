@@ -65,12 +65,12 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 	
 	AdminValueSetSearchView (){
 		view.buildDataTable(new AdminManageCodeListSearchModel());
-		searchCriteriaPanel.add(errorMessages);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(buildSearchWidget());
 		searchCriteriaPanel.add(view.asWidget());
 		searchCriteriaPanel.setStyleName("contentPanel");
+		searchCriteriaPanel.add(errorMessages);
 		searchCriteriaPanel.add(transferErrorMessages);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(buildTransferWidget());
@@ -81,6 +81,7 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 		HorizontalPanel hp = new HorizontalPanel();
 		FlowPanel fp1 = new FlowPanel();
 		fp1.add(searchInput);
+		searchButton.setTitle("Search");
 		fp1.add(searchButton);
 		fp1.add(new SpacerWidget());
 		hp.add(fp1);
@@ -90,6 +91,8 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 	private Widget buildTransferWidget(){
 		FlowPanel hpT = new FlowPanel();
 		hpT.add(errorMessages);
+		transferButton.setTitle("Transfer");
+		clearButton.setTitle("Clear");
 		hpT.add(transferButton);
 		hpT.add(clearButton);
 		form.setWidget(hpT);
@@ -176,12 +179,11 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 			return;
 		}
 		//CellTable<ManageMeasureSearchModel.Result> table = new CellTable<ManageMeasureSearchModel.Result>();
-		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		sortProvider = new ListDataProvider<CodeListSearchDTO>();
 		
 		// Display 50 rows in one page or all records.
 		cellTable.setPageSize(50);
-		//cellTable.setSelectionModel(adapter.addSelectionHandlerOnTable());
+		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		cellTable = adapter.addColumnToTable(cellTable);
 		cellTable.redraw();
 		sortProvider.refresh();

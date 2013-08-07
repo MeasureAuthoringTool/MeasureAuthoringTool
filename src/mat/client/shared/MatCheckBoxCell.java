@@ -18,18 +18,21 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 	/**
 	 * An html string representation of a checked input box.
 	 */
-	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" checked/>");
+	
+	private static String checkBoxTitle="Click checkbox to select";
+	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" title=\'" + checkBoxTitle + "' checked/>");
 
 	/**
 	 * An html string representation of an unchecked input box.
 	 */
-	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\"/>");
+	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" title=\'" + checkBoxTitle + "' />");
 
-	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" disabled=\"disabled\"/>");
+	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" disabled=\"disabled\"  title=\'" + checkBoxTitle + "' />");
 
 	private final boolean dependsOnSelection;
 	private final boolean handlesSelection;
 	private boolean isUsed;
+	
 
 	public boolean isUsed() {
 		return isUsed;
@@ -43,6 +46,7 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 	public MatCheckBoxCell() {
 		this(false);
 	}
+	
 	public MatCheckBoxCell(QualityDataSetDTO dataSetDTO){
 		this(false);
 		this.isUsed = dataSetDTO.isUsed(); 
@@ -145,6 +149,7 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 			//sb.append(INPUT_UNCHECKED);
 
 		}
+		
 	}
 
 	private boolean checkForEnable(){

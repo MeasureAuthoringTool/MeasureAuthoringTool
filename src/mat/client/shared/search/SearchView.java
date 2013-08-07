@@ -83,18 +83,22 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 	public SearchView() {
 		dataTable.setCellPadding(5);
+		dataTable.getElement().setId("searchView_dataTable");
 		dataTable.setStylePrimaryName("searchResultsTable");
 		dataTable.setTitle("data Table");
 		viewingNumber.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		
 		mainPanel = new SimplePanel();
+		mainPanel.getElement().setId("serachView_mainPanel");
 		mainPanel.setStylePrimaryName("searchResultsContainer");
 		
 		FlowPanel fPanel = new FlowPanel();
+		fPanel.getElement().setId("serachView_FlowPanel");
 		dataTable.setWidth("98%");
 		mainPanel.add(fPanel);
 		
 		fPanel.add(pageSizeSelector);
+		pageSizeSelector.getElement().setId("serachView_pageSizeSelector");
 		pageSizeSelector.setStylePrimaryName("searchResultsPageSize");
 		fPanel.add(viewingNumber);
 		fPanel.add(new SpacerWidget());
@@ -103,15 +107,19 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		fPanel.add(dataTable);	
 		fPanel.add(new SpacerWidget());
 		fPanel.add(pageSelector);
+		pageSelector.getElement().setId("serachView_pageSelector");
 	}
 	
 	public SearchView(boolean QDSCodeListView){
 		mainPanel = new SimplePanel();
+		mainPanel.getElement().setId("serachView_mainPanel");
 		FlowPanel fPanel = new FlowPanel();
+		fPanel.getElement().setId("serachView_FlowPanel");
 		mainPanel.add(fPanel);
 		//fPanel.add(viewingNumber);
 		/*fPanel.add(new SpacerWidget());
 		fPanel.add(new SpacerWidget());*/
+		vPanelForQDMTable.getElement().setId("serachView_vPanelForQDMTable");
 		fPanel.add(vPanelForQDMTable);
 	}
 

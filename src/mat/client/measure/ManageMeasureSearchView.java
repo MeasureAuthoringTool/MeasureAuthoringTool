@@ -57,6 +57,7 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	
 	
 	public ManageMeasureSearchView() {
+		mainPanel.getElement().setId("measureLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
 		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
@@ -90,7 +91,9 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	
 	private Widget buildSearchWidget(){
 		HorizontalPanel hp = new HorizontalPanel();
+		hp.getElement().setId("measureLibrary_searchWidgetHPanel");
 		FlowPanel fp1 = new FlowPanel();
+		fp1.getElement().setId("measureLibrary_searchWidgetFlowPanel");
 		fp1.add(searchInput);
 		searchButton.setTitle("Search");
 		fp1.add(searchButton);
@@ -101,10 +104,12 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	
 	private Widget buildBottomButtonWidget(PrimaryButton button, ErrorMessageDisplay errorMessageDisplay){
 		FlowPanel flowPanel = new FlowPanel();
+		flowPanel.getElement().setId("measureLibrary_bottomPanel");
 		flowPanel.add(errorMessageDisplay);
 		flowPanel.setStyleName("rightAlignButton");
 		flowPanel.add(button);
 		form.setWidget(flowPanel);
+		form.getElement().setId("measureLibrary_bottomPanelForm");
 		return form;
 	}
 	

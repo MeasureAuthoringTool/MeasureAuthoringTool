@@ -80,10 +80,10 @@
 			<xsl:variable name="uuidVal"><xsl:value-of select="parent::elementRef/@id"/></xsl:variable>
 			<xsl:choose>
 				<xsl:when test="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy='GROUPING'">
-					<xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@name"/><xsl:text> Value Set </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy"/>
+					<xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@name"/><!-- <xsl:text> Value Set </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy"/> -->
 				</xsl:when>
 				<xsl:when test="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy">
-					<xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@name"/><xsl:text> </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy"/><xsl:text> Value Set</xsl:text>
+					<xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@name"/><!-- <xsl:text> </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy"/><xsl:text> Value Set</xsl:text> -->
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>

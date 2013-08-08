@@ -328,7 +328,7 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 				  }
 				});
 								
-			table.addColumn(transferColumn , SafeHtmlUtils.fromSafeConstant("<span title='Check for Ownership Transfer'>" +"CheckBox"+ "</span>"));
+			table.addColumn(transferColumn , SafeHtmlUtils.fromSafeConstant("<span title='Check for Ownership Transfer'>" +"Transfer"+ "</span>"));
 			table.setColumnWidth(0, 30.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);

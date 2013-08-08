@@ -50,6 +50,7 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		mainPanel.add(buildSearchWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(view.asWidget());
+		mainPanel.setStyleName("contentPanel");
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buildBottomButtonWidget((PrimaryButton) transferButton, (PrimaryButton) clearButton,errorMessagesForTransferOS));
 		MatContext.get().setAdminManageMeasureSearchView(this);
@@ -117,7 +118,7 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		cellTable.redraw();
 		sortProvider.refresh();
 		sortProvider.setList(results.getData().getData());
-			
+	
 		sortProvider.addDataDisplay(cellTable);
 		//Used custom pager class - for disabling next/last button when on last page and for showing correct pagination number.
 		MatSimplePager spager;
@@ -125,13 +126,14 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 	    spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
         spager.setDisplay(cellTable);
         spager.setPageStart(0);
+        spager.setPageSize(50);
         spager.setToolTipAndTabIndex(spager);
         view.getvPanelForQDMTable().clear();
         view.getvPanelForQDMTable().add(cellTable);
 		view.getvPanelForQDMTable().add(new SpacerWidget());
 		view.getvPanelForQDMTable().add(spager);
-		
-
+			
+	
 	}
 
 	public HasClickHandlers getSearchButton() {

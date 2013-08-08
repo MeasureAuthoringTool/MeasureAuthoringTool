@@ -40,8 +40,7 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 	public Grid508 dataTable = view.getDataTable();
 	public TransferOwnershipView() {
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(successMessages);
-		mainPanel.add(errorMessages);
+	
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(valueSetNamePanel);
 		mainPanel.add(new SpacerWidget());
@@ -49,6 +48,9 @@ public class TransferOwnershipView  implements ManageCodeListSearchPresenter.Tra
 		mainPanel.setStyleName("contentPanel");
 		HorizontalPanel hp = new HorizontalPanel();
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(successMessages);
+		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
 		buttons.getCancelButton().setTitle("Cancel");
 		buttons.getCancelButton().setText("Cancel");

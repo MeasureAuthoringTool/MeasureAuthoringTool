@@ -11,12 +11,15 @@ import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.search.SearchResults;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.Window;
 
 import com.google.gwt.user.client.ui.Widget;
@@ -208,47 +211,52 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	}
 	*/
 	
+	private SafeHtml getColumnToolTip(String title){
+		String htmlConstant = "<html>" + "<head> </head> <Body><span title='" + title + "'>"+title+ "</span></body>" + "</html>";
+		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table){
 		
 		if(table.getColumnCount() !=6 ){	
 			
-			TextColumn<ManageMeasureSearchModel.Result > measureName = new TextColumn<ManageMeasureSearchModel.Result >() {
+			Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
 				@Override
-				public String getValue(ManageMeasureSearchModel.Result object) {
-					return object.getName();
+				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+					return getColumnToolTip(object.getName());
 				}
 			};
-			table.addColumn(measureName, "Measure Name");
+			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'>" +"Measure Name"+ "</span>"));
 
 			
-			TextColumn<ManageMeasureSearchModel.Result > ownerName = new TextColumn<ManageMeasureSearchModel.Result >() {
+			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
 				@Override
-				public String getValue(ManageMeasureSearchModel.Result object) {
-					return object.getOwnerfirstName() + "  " + object.getOwnerLastName();
+				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+					return getColumnToolTip(object.getOwnerfirstName() + "  " + object.getOwnerLastName());
 				}
 			};
-			table.addColumn(ownerName, "Owner ");
+			table.addColumn(ownerName,SafeHtmlUtils.fromSafeConstant("<span title='Owner'>" +"Owner"+ "</span>"));
 			
-			TextColumn<ManageMeasureSearchModel.Result > ownerEmailAddress = new TextColumn<ManageMeasureSearchModel.Result >() {
+			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerEmailAddress = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
 				@Override
-				public String getValue(ManageMeasureSearchModel.Result object) {
-					return object.getOwnerEmailAddress();
+				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+					return getColumnToolTip(object.getOwnerEmailAddress());
 				}
 			};
-			table.addColumn(ownerEmailAddress, "Owner E-mail Address");
+			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title='Owner E-mail Address'>" +"Owner E-mail Address"+ "</span>"));
 						
 						
-			TextColumn<ManageMeasureSearchModel.Result > eMeasureID = new TextColumn<ManageMeasureSearchModel.Result >() {
+			Column<ManageMeasureSearchModel.Result, SafeHtml> eMeasureID = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
 				@Override
-				public String getValue(ManageMeasureSearchModel.Result object) {
-					return  "" + object.geteMeasureId();
+				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+					return  getColumnToolTip("" + object.geteMeasureId());
 				}
 			};
-			table.addColumn(eMeasureID, "eMeasure Id");
+			table.addColumn(eMeasureID, SafeHtmlUtils.fromSafeConstant("<span title='eMeasure Id'>" +"eMeasure Id"+ "</span>"));
 			
 			
-			Cell<String> historyButton = new MatButtonCell();
+			Cell<String> historyButton = new MatButtonCell("Click to view history");
 			Column historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
 			  @Override
 			  public String getValue(ManageMeasureSearchModel.Result object) {
@@ -262,7 +270,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					  observer.onHistoryClicked(object);
 				  }
 				});
-			table.addColumn(historyColumn , "History");
+			table.addColumn(historyColumn , SafeHtmlUtils.fromSafeConstant("<span title='History'>" +"History"+ "</span>"));
 			
 			Cell<Boolean> transferCB = new MatCheckBoxCell();
 			Column transferColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(transferCB) {
@@ -279,7 +287,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					  observer.onTransferSelectedClicked(object);
 				  }
 				});
-			table.addColumn(transferColumn , "Transfer");
+			table.addColumn(transferColumn , SafeHtmlUtils.fromSafeConstant("<span title='Check for Ownership Transfer'>" +"Transfer"+ "</span>"));
 			table.setColumnWidth(0, 30.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);

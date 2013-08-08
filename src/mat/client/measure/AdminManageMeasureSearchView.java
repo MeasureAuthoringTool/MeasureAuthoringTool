@@ -81,6 +81,8 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.add(errorMessageDisplay);
 		//flowPanel.setStyleName("rightAlignButton");
+		transferButton.setTitle("Transfer");
+		clearButton.setTitle("Clear");
 		flowPanel.add(transferButton);
 		flowPanel.add(clearButton);
 		form.setWidget(flowPanel);

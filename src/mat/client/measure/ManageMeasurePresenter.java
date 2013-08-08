@@ -1449,6 +1449,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						adminSearchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getNoMeasuresMessage());
 					}else{
 						adminSearchDisplay.getErrorMessageDisplay().clear();
+						adminSearchDisplay.getErrorMessagesForTransferOS().clear();
 					}
 					SearchResultUpdate sru = new SearchResultUpdate();
 					sru.update(result, (TextBox)adminSearchDisplay.getSearchString(), lastSearchText);

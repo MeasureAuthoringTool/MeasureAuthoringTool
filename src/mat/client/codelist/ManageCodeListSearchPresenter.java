@@ -778,6 +778,7 @@ public class ManageCodeListSearchPresenter {
 							}else{
 								adminSearchDisplay.getErrorMessageDisplay().clear();
 							}
+							adminSearchDisplay.getTransferErrorMessageDisplay().clear();
 							adminSearchDisplay.setAdapter(adapter);
 							adminSearchDisplay.buildDataTable(adapter.getModel(), isAscending);
 							displaySearch();

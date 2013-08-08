@@ -1,16 +1,10 @@
 package mat.client.codelist;
 
+
 import mat.client.CustomPager;
-import mat.client.codelist.events.OnChangeOptionsEvent;
-import mat.client.measure.AdminMeasureSearchResultAdaptor;
-import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.HorizontalFlowPanel;
-import mat.client.shared.MatButtonCell;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
@@ -21,32 +15,20 @@ import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
 import mat.model.CodeListSearchDTO;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
+
 
 public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.AdminValueSetSearchDisplay {
 	private FlowPanel searchCriteriaPanel = new FlowPanel();
@@ -170,25 +152,26 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 	
 	@Override
 	public void buildDataTable(SearchResults<CodeListSearchDTO> results, boolean isAsc) {		
-		buildCodeListDataTable(results);//Default value for isAscending is true and isChecked is false.
+		buildCodeListDataTable((AdminManageCodeListSearchModel) results);//Default value for isAscending is true and isChecked is false.
 	}
 	
 	
-	private void buildCodeListDataTable(SearchResults<CodeListSearchDTO> results){
+	private void buildCodeListDataTable(AdminManageCodeListSearchModel results){
 		if(results == null) {
 			return;
 		}
-		//CellTable<ManageMeasureSearchModel.Result> table = new CellTable<ManageMeasureSearchModel.Result>();
+		
 		sortProvider = new ListDataProvider<CodeListSearchDTO>();
 		
 		// Display 50 rows in one page or all records.
-		cellTable.setPageSize(50);
+		cellTable.setPageSize(5);
 		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		cellTable = adapter.addColumnToTable(cellTable);
+		
 		cellTable.redraw();
 		sortProvider.refresh();
-		sortProvider.setList(adapter.getModel().getData());
-			
+		sortProvider.setList(results.getData());
+		
 		sortProvider.addDataDisplay(cellTable);
 		//Used custom pager class - for disabling next/last button when on last page and for showing correct pagination number.
 		MatSimplePager spager;
@@ -217,25 +200,21 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 
 	@Override
 	public HasClickHandlers getSearchButton() {
-		// TODO Auto-generated method stub
 		return searchButton;
 	}
 
 	@Override
 	public HasValue<String> getSearchString() {
-		// TODO Auto-generated method stub
 		return searchInput;
 	}
 
 	@Override
 	public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForEditTool() {
-		// TODO Auto-generated method stub
 		return view;
 	}
 
 	@Override
 	public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement() {
-		// TODO Auto-generated method stub
 		return view;
 	}
 
@@ -248,31 +227,26 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 	
 	@Override
 	public HasSortHandler getPageSortTool() {
-		// TODO Auto-generated method stub
 		return view;
 	}
 
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
-		// TODO Auto-generated method stub
 		return errorMessages;
 	}
 
 	@Override
 	public ErrorMessageDisplayInterface getTransferErrorMessageDisplay() {
-		// TODO Auto-generated method stub
 		return transferErrorMessages;
 	}
 
 	@Override
 	public HasClickHandlers getTransferButton() {
-		// TODO Auto-generated method stub
 		return transferButton;
 	}
 
 	@Override
 	public HasClickHandlers getCreateButton() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -302,13 +276,11 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 
 	@Override
 	public int getPageSize() {
-		// TODO Auto-generated method stub
 		return Integer.MAX_VALUE;
 	}
 
 	@Override
 	public ValueSetSearchFilterPanel getValueSetSearchFilterPanel() {
-		// TODO Auto-generated method stub
 		return vssfp;
 	}
 
@@ -333,7 +305,6 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 
 	@Override
 	public HasClickHandlers getClearButton() {
-		// TODO Auto-generated method stub
 		return clearButton;
 	}
 	

@@ -164,7 +164,7 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 		sortProvider = new ListDataProvider<CodeListSearchDTO>();
 		
 		// Display 50 rows in one page or all records.
-		cellTable.setPageSize(5);
+		cellTable.setPageSize(50);
 		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		cellTable = adapter.addColumnToTable(cellTable);
 		

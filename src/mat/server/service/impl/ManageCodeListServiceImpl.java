@@ -1154,7 +1154,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
     			if(dt.getDescription().equalsIgnoreCase(qds.getDataType()) && qds.getOccurrenceText() != null){
     				String nextOccString = qds.getOccurrenceText();
     				Character text = nextOccString.charAt(nextOccString.length()-1);
-    				int newOcc =  ((int)text)+1;
+    				int newOcc =  ((int)text);
     				if(newOcc >= occurrenceCount){
     					occurrenceCount = ++newOcc;
     				}

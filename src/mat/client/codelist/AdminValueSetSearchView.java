@@ -177,6 +177,8 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 		MatSimplePager spager;
 		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 	    spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+	  //This will fix issue - eg if data count is 92, Last will not round up total count to 100. This method sets whether or not the page range should be limited to the actual data size.
+	    spager.setRangeLimited(false);
         spager.setDisplay(cellTable);
         spager.setPageStart(0);
         spager.setToolTipAndTabIndex(spager);

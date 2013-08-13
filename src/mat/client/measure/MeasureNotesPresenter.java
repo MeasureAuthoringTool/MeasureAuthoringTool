@@ -63,11 +63,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 		exportButton.addClickHandler(exportButtonClickHandler);
 	}	
 	 
-	private native void alertMessage(String message) /*-{
-		 	 
-}-*/;
-	
-	
+		
 	private native void generateCSVFile()/*-{
 		var data = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
 		var csvContent = data[0];

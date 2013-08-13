@@ -88,9 +88,9 @@ public class MeasureNotesPresenter implements MatPresenter{
 		
 		
 		if (navigator.appName != 'Microsoft Internet Explorer') {
-        	//window.open('data:text/csv;charset=utf-8,' + escape(csvContent));
-        	var popup = window.open('', 'csv', '');
-        	popup.document.body.innerHTML = '<pre>' + csvContent + '</pre>';
+        	window.open('data:text/csv;charset=utf-8,' + escape(csvContent));
+        	//var popup = window.open('', 'csv', '');
+        	//popup.document.body.innerHTML = '<pre>' + csvContent + '</pre>';
     	}
     	else {
         	var popup = window.open('', 'csv', '');

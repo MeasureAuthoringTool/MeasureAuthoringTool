@@ -68,7 +68,43 @@ public class MeasureNotesPresenter implements MatPresenter{
 }-*/;
 	
 	
-	private native void generateCSVFile(String fileName) /*-{
+	private native void generateCSVFile(String fileName)/*-{
+		var data = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
+		var csvContent = data[0];
+		function joinData(infoArray, index){
+				//if(index!=0){
+					dataString = infoArray.join(",");
+		   			csvContent += index < infoArray.length ? "\n" + dataString  : dataString;
+				//}
+		}
+		for (i = 1, len = data.length; i < len; i++) {
+			joinData(data,i);
+		}
+		
+			
+		//var uriContent = 'data:application/octet-stream,Content-Disposition: attachment; filename="name_of_file.csv",' + encodeURIComponent(csvContent);
+		//var myWindow = window.open(uriContent, "abc");
+		//myWindow.focus();
+		
+		
+		if (navigator.appName != 'Microsoft Internet Explorer') {
+        	window.open('data:text/csv;charset=utf-8,' + escape(csvContent));
+    	}
+    	else {
+        	var popup = window.open('', 'csv', '');
+        	popup.document.body.innerHTML = '<pre>' + csvContent + '</pre>';
+    	}
+			
+			//var encodedUri = 'data:application/octet-stream,' + encodeURIComponent(csvContent);
+			//window.open(encodedUri);
+		//	var link = document.createElement("a");
+		//	link.setAttribute("href", encodedUri);
+			//link.setAttribute("download", fileName);
+		//	link.click();	
+		
+	 
+}-*/;
+	private native void generateCSVFileWithBlob(String fileName) /*-{
 		//var csvContent = "data:text/csv;charset=utf-8,";
 		//	data.forEach(function(infoArray, index){
 
@@ -310,7 +346,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 		}(self));
 		
 		var data = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
-		var csvContent = data[0];
+		var csvContent = "data:text/csv;charset=utf-8,";
 		//data.forEach(function(infoArray, index){
 		//	if(index!=0){
 		//		dataString = infoArray.join(",");
@@ -319,19 +355,19 @@ public class MeasureNotesPresenter implements MatPresenter{
 		//});
 		
 		function joinData(infoArray, index){
-				if(index!=0){
+				//if(index!=0){
 					dataString = infoArray.join(",");
 		   			csvContent += index < infoArray.length ? "\n" + dataString  : dataString;
-				}
+				//}
 		}
 		for (i = 0, len = data.length; i < len; i++) {
 			joinData(data,i);
 		}
 		
-		var blob = new Blob([csvContent], {
-    		type: "text/csv;charset=utf-8;",
-		});
-		saveAs(blob, "thing.csv");
+		//var blob = new Blob([csvContent], {
+    	//	type: "text/csv;charset=utf-8;",
+		//});
+		saveAs(csvContent, "thing.csv");
 	
 	}-*/;
 	@Override

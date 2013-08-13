@@ -88,11 +88,20 @@ public class MeasureNotesPresenter implements MatPresenter{
 		
 		
 		if (navigator.appName != 'Microsoft Internet Explorer') {
-        	window.open('data:text/csv;charset=utf-8,' + escape(csvContent));
+        	//window.open('data:text/csv;charset=utf-8,' + escape(csvContent));
+        	var popup = window.open('', 'csv', '');
+        	popup.document.body.innerHTML = '<pre>' + csvContent + '</pre>';
     	}
     	else {
         	var popup = window.open('', 'csv', '');
         	popup.document.body.innerHTML = '<pre>' + csvContent + '</pre>';
+        	
+        	//var fso = new ActiveXObject("Scripting.FileSystemObject");
+ 			//var utf8Enc = new ActiveXObject("Utf8Lib.Utf8Enc");
+ 			//var flOutput = fso.CreateTextFile("c:\\exportNotes.txt", true); 
+ 			//true for overwrite
+ 			//flOutput.BinaryWrite(utf8Enc.UnicodeToUtf8(csvContent));
+ 			//flOutput.Close();
     	}
 			
 			//var encodedUri = 'data:application/octet-stream,' + encodeURIComponent(csvContent);

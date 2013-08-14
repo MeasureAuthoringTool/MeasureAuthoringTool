@@ -1,6 +1,7 @@
 package mat.client.measure;
 
-import java.awt.List;
+import java.util.ArrayList;
+import java.util.List;
 
 import mat.client.CustomPager;
 import mat.client.measure.ManageMeasureSearchModel.Result;
@@ -35,15 +36,15 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 	private Button transferButton = new PrimaryButton("Transfer","primaryGreyButton");
 	private Button clearButton = new PrimaryButton("Clear","primaryGreyLeftButton");
 	private TextBox searchInput = new TextBox();
-	ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
+	private List<Result> selectedMeasureList;
 	private SearchView<ManageMeasureSearchModel.Result> view = new SearchView<ManageMeasureSearchModel.Result>(true);
 	private MeasureSearchFilterPanel msfp = new MeasureSearchFilterPanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private ErrorMessageDisplay errorMessagesForTransferOS = new ErrorMessageDisplay();
-	private ErrorMessageDisplay errorMessagesForBulkExport = new ErrorMessageDisplay();
+	
 	private ErrorMessageDisplay errorMeasureDeletion = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
-	public CellTable<ManageMeasureSearchModel.Result> cellTable = new CellTable<ManageMeasureSearchModel.Result>();
+	
 		
 	public AdminManageMeasureSearchView() {
 		mainPanel.add(new SpacerWidget());
@@ -56,14 +57,14 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		MatContext.get().setAdminManageMeasureSearchView(this);
 	}
 
-	public CellTable<ManageMeasureSearchModel.Result> getCellTable() {
+	/*public CellTable<ManageMeasureSearchModel.Result> getCellTable() {
 		return cellTable;
 	}
 
 
 	public void setCellTable(CellTable<ManageMeasureSearchModel.Result> cellTable) {
 		this.cellTable = cellTable;
-	}
+	}*/
 
 
 	private Widget buildSearchWidget(){
@@ -96,11 +97,11 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 	}
 	
 	public void clearTransferCheckBoxes(){
-		for(ManageMeasureSearchModel.Result result : sortProvider.getList()){
+		for(ManageMeasureSearchModel.Result result : selectedMeasureList){
 				result.setTransferable(false);
 		}
 		AdminMeasureSearchResultAdaptor adapter = new AdminMeasureSearchResultAdaptor();
-		adapter.getData().setData(sortProvider.getList());
+		adapter.getData().setData(selectedMeasureList);
 		buildDataTable(adapter);
 		
 	}
@@ -109,25 +110,26 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		if(results == null) {
 			return;
 		}
+		CellTable<ManageMeasureSearchModel.Result> cellTable = new CellTable<ManageMeasureSearchModel.Result>();
 		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
 		sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
-		
-		
+		selectedMeasureList = new ArrayList<Result>(); 
+		selectedMeasureList.addAll(results.getData().getData());	
 		// Display 50 rows on a page 
 		cellTable.setPageSize(50);
 		cellTable = results.addColumnToTable(cellTable);
 		
 		cellTable.redraw();
+		cellTable.setRowCount(selectedMeasureList.size(), true);
 		sortProvider.refresh();
-		sortProvider.setList(results.getData().getData());
-	
+		sortProvider.setList(selectedMeasureList);
 		sortProvider.addDataDisplay(cellTable);
 		//Used custom pager class - for disabling next/last button when on last page and for showing correct pagination number.
 		MatSimplePager spager;
 		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 	    spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-	    //This will fix issue - eg if data count is 92, Last will not round up total count to 100. This method sets whether or not the page range should be limited to the actual data size.
-	    spager.setRangeLimited(false);
+	   
         spager.setDisplay(cellTable);
         spager.setPageStart(0);
         spager.setPageSize(50);
@@ -158,7 +160,6 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 
 	@Override
 	public HasClickHandlers getTransferButton() {
-		// TODO Auto-generated method stub
 		return transferButton;
 	}
 	

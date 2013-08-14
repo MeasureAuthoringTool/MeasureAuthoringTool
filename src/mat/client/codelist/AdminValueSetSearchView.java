@@ -1,6 +1,9 @@
 package mat.client.codelist;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mat.client.CustomPager;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ErrorMessageDisplay;
@@ -33,8 +36,7 @@ import com.google.gwt.view.client.ListDataProvider;
 public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.AdminValueSetSearchDisplay {
 	private FlowPanel searchCriteriaPanel = new FlowPanel();
 	final FormPanel form = new FormPanel();
-	public CellTable<CodeListSearchDTO> cellTable = new CellTable<CodeListSearchDTO>();
-	ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
+	
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
 	private AdminCodeListSearchResultsAdapter adapter;
 	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
@@ -44,7 +46,7 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	protected ErrorMessageDisplay transferErrorMessages = new ErrorMessageDisplay();
 	private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
-	
+	public List<CodeListSearchDTO> codeListResults;
 	AdminValueSetSearchView (){
 		view.buildDataTable(new AdminManageCodeListSearchModel());
 		searchCriteriaPanel.add(new SpacerWidget());
@@ -144,10 +146,12 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 	
 	
 	public void clearTransferCheckBoxes(){
-		for(CodeListSearchDTO result : sortProvider.getList()){
+		for(CodeListSearchDTO result : codeListResults){
 				result.setTransferable(false);
 		}
-		sortProvider.refresh();
+		AdminManageCodeListSearchModel model = new AdminManageCodeListSearchModel();
+		model.setData(codeListResults);
+		buildDataTable(model);
 	}
 	
 	@Override
@@ -160,9 +164,11 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 		if(results == null) {
 			return;
 		}
-		
+		CellTable<CodeListSearchDTO> cellTable = new CellTable<CodeListSearchDTO>();
+		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
 		sortProvider = new ListDataProvider<CodeListSearchDTO>();
-		
+		codeListResults = new ArrayList<CodeListSearchDTO>();
+		codeListResults.addAll(results.getData());
 		// Display 50 rows in one page or all records.
 		cellTable.setPageSize(50);
 		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -170,15 +176,14 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 		
 		cellTable.redraw();
 		sortProvider.refresh();
-		sortProvider.setList(results.getData());
+		sortProvider.setList(codeListResults);
 		
 		sortProvider.addDataDisplay(cellTable);
 		//Used custom pager class - for disabling next/last button when on last page and for showing correct pagination number.
 		MatSimplePager spager;
 		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 	    spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-	  //This will fix issue - eg if data count is 92, Last will not round up total count to 100. This method sets whether or not the page range should be limited to the actual data size.
-	    spager.setRangeLimited(false);
+	 
         spager.setDisplay(cellTable);
         spager.setPageStart(0);
         spager.setToolTipAndTabIndex(spager);

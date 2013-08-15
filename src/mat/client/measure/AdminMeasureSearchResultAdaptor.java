@@ -37,8 +37,8 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	}
 		
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
-	private ManageMeasureSearchModel.Result lastSelectedMeasureList;
-	private ManageMeasureSearchModel.Result selectedMeasureList;
+	//private ManageMeasureSearchModel.Result lastSelectedMeasureList;
+	//private ManageMeasureSearchModel.Result selectedMeasureList;
 	
 	private Observer observer;
 	private ClickHandler clickHandler = buildClickHandler();
@@ -95,7 +95,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 		return columnIndex == 0;
 	}
 	
-	public ManageMeasureSearchModel.Result getLastSelectedMeasureList() {
+	/*public ManageMeasureSearchModel.Result getLastSelectedMeasureList() {
 		return lastSelectedMeasureList;
 	}
 
@@ -111,7 +111,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	public void setSelectedMeasureList(
 			ManageMeasureSearchModel.Result selectedMeasureList) {
 		this.selectedMeasureList = selectedMeasureList;
-	}
+	}*/
 
 	
 	//TODO - need to remove this method going forward as we replace the Grid Table with Cel T

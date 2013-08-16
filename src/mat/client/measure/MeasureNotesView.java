@@ -107,6 +107,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		containerPanel.add(new SpacerWidget());
 		
 		FlowPanel fPanel = new FlowPanel();
+		fPanel.getElement().setId("MeasureNotesView_fPanel");
 		fPanel.add(new SpacerWidget());
 		fPanel.add(successMessageDisplay);
 		fPanel.add(new SpacerWidget());
@@ -164,6 +165,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		ScrollPanel scrollPanel = new ScrollPanel();
 		VerticalPanel mainPanel = new VerticalPanel();
 		scrollPanel.setWidget(mainPanel);
+		mainPanel.setSpacing(20);
 		
 		if(results != null) {
 			scrollPanel.getElement().setId("measureNotesView_scrollPanel");
@@ -215,6 +217,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		bottomButtonPanel.setWidth("150px");
 		bottomButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		vPanel.add(bottomButtonPanel);
+		//vPanel.setCellHorizontalAlignment(bottomButtonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 		return vPanel;
 	}
 
@@ -223,28 +226,56 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		HorizontalPanel headerPanel = new HorizontalPanel();
 		headerPanel.setWidth("800px");
 		HorizontalPanel noteTitlePanel = new HorizontalPanel();
-		HTML noteTitle = new HTML(result.getTitle());
-		noteTitle.setStyleName("disclosurePanelHeaderValue");
-		noteTitlePanel.setWidth("160px");
+		noteTitlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		String title = result.getTitle();
+		HTML noteTitle;
+		if(title.length() > 30){
+			title = title.substring(0,31)+"....";
+			noteTitle = new HTML(title);
+		}
+		else{
+			noteTitle = new HTML(result.getTitle());
+		}
+		noteTitle.setTitle(result.getTitle());
+		noteTitle.setWidth("100%");
+		//noteTitle.setStyleName("disclosurePanelHeaderValue");
+//		noteTitlePanel.setWidth("160px");
 		noteTitlePanel.add(noteTitle);
+		
+		noteTitlePanel.setCellWidth(noteTitle, "100%");
 		headerPanel.add(noteTitlePanel);
+		headerPanel.setCellWidth(noteTitlePanel, "20%");
 		
 		HorizontalPanel emailAddrPanel = new HorizontalPanel();
+		emailAddrPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		HTML creatorEmailAddr = new HTML(result.getCreatorEmailAddr());
-		creatorEmailAddr.setStyleName("disclosurePanelHeaderValue");
-		emailAddrPanel.setWidth("200px");
+		creatorEmailAddr.setTitle(result.getCreatorEmailAddr());
+		creatorEmailAddr.setWidth("100%");
+		
+		//creatorEmailAddr.setStyleName("disclosurePanelHeaderValue");
+//		emailAddrPanel.setWidth("200px");
 		emailAddrPanel.add(creatorEmailAddr);
+		
+		emailAddrPanel.setCellWidth(creatorEmailAddr, "100%");
 		headerPanel.add(emailAddrPanel);
+		headerPanel.setCellWidth(emailAddrPanel, "25%");
 		
 		HorizontalPanel creationDatePanel = new HorizontalPanel();
+		creationDatePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		HTML creationDate = new HTML(result.getCreationDate().toString());
-		creationDate.setStyleName("disclosurePanelHeaderValue");
-		creationDatePanel.setWidth("200px");
+		creationDate.setTitle(result.getCreationDate().toString());
+		creationDate.setWidth("100%");
+		//creationDate.setStyleName("disclosurePanelHeaderValue");
+//		creationDatePanel.setWidth("200px");
 		creationDatePanel.add(creationDate);
+		
+		creationDatePanel.setCellWidth(creationDate, "100%");
 		headerPanel.add(creationDatePanel);
+		headerPanel.setCellWidth(creationDatePanel, "25%");
 		
 		Image editmg = new Image(ImageResources.INSTANCE.g_package_edit());
 		Button editButton = new Button();
+		editButton.setTitle("Edit");
 		editButton.getElement().appendChild(editmg.getElement());
 		editButton.addClickHandler(new ClickHandler(){
 			@Override
@@ -256,6 +287,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		});
 		Image deleteImg  = new Image(ImageResources.INSTANCE.g_delete());
 		Button deleteButton = new Button();
+		deleteButton.setTitle("Delete");
 		deleteButton.getElement().appendChild(deleteImg.getElement());
 		deleteButton.addClickHandler(new ClickHandler(){
 			@Override
@@ -265,14 +297,21 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			}
 		});
 		HorizontalPanel deleteButtonPanel = new HorizontalPanel();
+		deleteButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		deleteButtonPanel.add(deleteButton);
-		deleteButtonPanel.setWidth("120px");
+//		deleteButtonPanel.setWidth("120px");
+		
+		//deleteButtonPanel.setCellWidth(spacer3, "100%");
 		headerPanel.add(deleteButtonPanel);
+		headerPanel.setCellWidth(deleteButtonPanel, "15%");
 		
 		HorizontalPanel editButtonPanel = new HorizontalPanel();
+		editButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		editButtonPanel.add(editButton);
-		editButtonPanel.setWidth("120px");
+//		editButtonPanel.setWidth("120px");
+		//editButtonPanel.setCellWidth(spacer4, "100%");
 		headerPanel.add(editButtonPanel);
+		headerPanel.setCellWidth(editButtonPanel, "15%");
 		return headerPanel;
 	}
 

@@ -3,13 +3,10 @@ package mat.client.measure;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.formula.functions.T;
-
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
-import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.events.OnChangeMeasureDraftOptionsEvent;
 import mat.client.codelist.events.OnChangeMeasureVersionOptionsEvent;
@@ -26,7 +23,6 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
@@ -43,7 +39,6 @@ import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
-import mat.model.CodeListSearchDTO;
 import mat.model.clause.MeasureShareDTO;
 import mat.shared.ConstantMessages;
 
@@ -111,18 +106,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 	public static interface AdminSearchDisplay {
 		public HasClickHandlers getSearchButton();
 		public HasValue<String> getSearchString();
-		public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectedMeasureOption();
-		public void buildMeasureDataTable(AdminMeasureSearchResultAdaptor results);
-		public FocusableWidget getMsgFocusWidget();
+		public void buildDataTable(AdminMeasureSearchResultAdaptor results);
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		public ErrorMessageDisplayInterface getErrorMessagesForTransferOS();
 		public HasClickHandlers getTransferButton();
-		public void setEnabled(boolean enabled);
 		public HasClickHandlers getClearButton();
 		public void clearTransferCheckBoxes();	
-		public MeasureSearchFilterPanel getMeasureSearchFilterPanel();
-		public SuccessMessageDisplay getSuccessMeasureDeletion();
-		public ErrorMessageDisplay getErrorMeasureDeletion();
 		public Widget asWidget();
 ;	}
 	
@@ -277,12 +266,117 @@ public class ManageMeasurePresenter implements MatPresenter {
 		this.versionDisplay = vDisplay;
 		this.transferDisplay = transferDisplay;
 		displaySearch();
+		if(searchDisplay!=null)
+			searchDisplayHandlers(searchDisplay);
+		if(adminSearchDisplay !=null)
+			adminSearchDisplayHandlers(adminSearchDisplay);
+		if(draftDisplay !=null)
+			draftDisplayHandlers(draftDisplay);
+		if(versionDisplay !=null)
+			versionDisplayHandlers(versionDisplay);
+		if(historyDisplay !=null)
+			historyDisplayHandlers(historyDisplay);
+		if(shareDisplay !=null)
+			shareDisplayHandlers(shareDisplay);
+		if(transferDisplay !=null)
+			transferDisplayHandlers(transferDisplay);
+		if(detailDisplay !=null)
+			detailDisplayHandlers(detailDisplay);
+		if(exportDisplay !=null)
+			exportDisplayHandlers(exportDisplay);
 		
+		//This event will be called when measure is successfully deleted and then MeasureLibrary is reloaded.
+		MatContext.get().getEventBus().addHandler(MeasureDeleteEvent.TYPE, new MeasureDeleteEvent.Handler() {
+
+			@Override
+			public void onDeletion(MeasureDeleteEvent event) {
+				displaySearch();
+				if(event.isDeleted()){
+					
+					isMeasureDeleted = true;
+					measureDeletion = true;
+					measureDelMessage=event.getMessage();
+					System.out.println("Event - is Deleted : " + isMeasureDeleted + measureDeletion);
+					System.out.println("Event - message : " + measureDelMessage);
+				}else{
+					//searchDisplay.getErrorMeasureDeletion().setMessage("Measure deletion Failed.");
+					isMeasureDeleted = false;
+					measureDeletion = true;
+					measureDelMessage=event.getMessage();
+					System.out.println("Event - is NOT Deleted : " + isMeasureDeleted + measureDeletion);
+					System.out.println("Event - message : " + measureDelMessage);
+				}
+			}
+		});
+		
+		
+		
+		
+		HandlerManager eventBus = MatContext.get().getEventBus(); 
+		eventBus.addHandler(OnChangeMeasureDraftOptionsEvent.TYPE, new OnChangeMeasureDraftOptionsEvent.Handler() {
+			@Override
+			public void onChangeOptions(OnChangeMeasureDraftOptionsEvent event) {
+				PrimaryButton button = (PrimaryButton) draftDisplay.getSaveButton();
+				button.setFocus(true);
+			}
+		});
+		
+		eventBus.addHandler(OnChangeMeasureVersionOptionsEvent.TYPE, new OnChangeMeasureVersionOptionsEvent.Handler() {
+			@Override
+			public void onChangeOptions(OnChangeMeasureVersionOptionsEvent event) {
+				PrimaryButton button = (PrimaryButton) versionDisplay.getSaveButton();
+				button.setFocus(true);
+			}
+		});
+	
+	}
+	
+	private void detailDisplayHandlers(final DetailDisplay detailDisplay){
+		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				 update();
+			}
+		});
+		
+		detailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
+		
+		//US 421. Retrieve the Measure scoring choices from db.
+		MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+					Window.alert(MessageDelegate.s_ERR_RETRIEVE_SCORING_CHOICES);
+			}
+			@Override
+			public void onSuccess(List<? extends HasListBox> result) {
+					detailDisplay.setScoringChoices(result);
+			}
+		});
+	}
+	
+	private void exportDisplayHandlers(final ExportDisplay exportDisplay){
+		exportDisplay.getCancelButton().addClickHandler(cancelClickHandler);
+		exportDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				saveExport();
+			}
+		});
+		exportDisplay.getOpenButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				openExport();
+			}
+		});
+		
+	}
+	
+	private void searchDisplayHandlers(final SearchDisplay searchDisplay){
 		searchDisplay.getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<ManageMeasureSearchModel.Result>() {
 			
 			@Override
 			public void onSelection(SelectionEvent<ManageMeasureSearchModel.Result> event) {
-				//TODO synchronize this method call
+				
 				searchDisplay.getErrorMeasureDeletion().clear();
 				searchDisplay.getSuccessMeasureDeletion().clear();
 				measureDeletion =false;
@@ -345,30 +439,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 			}
 		});
-				
-		adminSearchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				adminSearchDisplay.getErrorMeasureDeletion().clear();
-				adminSearchDisplay.getSuccessMeasureDeletion().clear();
-				adminSearchDisplay.clearTransferCheckBoxes();
-				displayTransferView(startIndex,transferDisplay.getPageSize());
-			}
-		});
-		
-		adminSearchDisplay.getClearButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				manageMeasureSearchModel.getSelectedTransferResults().removeAll(manageMeasureSearchModel.getSelectedTransferResults());
-				manageMeasureSearchModel.getSelectedTransferIds().removeAll(manageMeasureSearchModel.getSelectedTransferIds());
-				int filter = adminSearchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
-				search(adminSearchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE,filter);
-			}
-		});
-		
 		
 		searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
 			
+			@SuppressWarnings("static-access")
 			@Override
 			public void onPageSelection(PageSelectionEvent event) {
 				measureDeletion =false;
@@ -384,6 +458,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		searchDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
+			@SuppressWarnings("static-access")
 			@Override
 			public void onPageSizeSelection(PageSizeSelectionEvent event) {
 				measureDeletion =false;
@@ -397,115 +472,238 @@ public class ManageMeasurePresenter implements MatPresenter {
 				search(searchDisplay.getSearchString().getValue(), startIndex, searchDisplay.getPageSize(),filter);
 			}
 		});
-		
-		//This event will be called when measure is successfully deleted and then MeasureLibrary is reloaded.
-		MatContext.get().getEventBus().addHandler(MeasureDeleteEvent.TYPE, new MeasureDeleteEvent.Handler() {
-
+		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onDeletion(MeasureDeleteEvent event) {
-				displaySearch();
-				if(event.isDeleted()){
-					
-					isMeasureDeleted = true;
-					measureDeletion = true;
-					measureDelMessage=event.getMessage();
-					System.out.println("Event - is Deleted : " + isMeasureDeleted + measureDeletion);
-					System.out.println("Event - message : " + measureDelMessage);
+			public void onClick(ClickEvent event) {
+				int startIndex = 1;
+				measureDeletion=false;
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMessageDisplay().clear();
+				int filter = searchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
+				search(searchDisplay.getSearchString().getValue(),startIndex, searchDisplay.getPageSize(),filter);
+			}
+		});
+		
+		searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+				isMeasureDeleted=false;
+				measureDeletion=false;
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMessageDisplay().clear();
+				versionDisplay.getErrorMessageDisplay().clear();
+				draftDisplay.getErrorMessageDisplay().clear();
+				detailDisplay.getErrorMessageDisplay().clear();
+				historyDisplay.getErrorMessageDisplay().clear();
+				exportDisplay.getErrorMessageDisplay().clear();
+				shareDisplay.getErrorMessageDisplay().clear();
+				if(manageMeasureSearchModel.getSelectedExportIds().isEmpty()){
+					searchDisplay.getErrorMessageDisplayForBulkExport().setMessage(MatContext.get().getMessageDelegate().getMeasureSelectionError());
 				}else{
-					//searchDisplay.getErrorMeasureDeletion().setMessage("Measure deletion Failed.");
-					isMeasureDeleted = false;
-					measureDeletion = true;
-					measureDelMessage=event.getMessage();
-					System.out.println("Event - is NOT Deleted : " + isMeasureDeleted + measureDeletion);
-					System.out.println("Event - message : " + measureDelMessage);
+					searchDisplay.clearBulkExportCheckBoxes(searchDisplay.getMeasureDataTable());
+					bulkExport(manageMeasureSearchModel.getSelectedExportIds());
 				}
 			}
 		});
+		FormPanel form = searchDisplay.getForm();
+		form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
+		      public void onSubmitComplete(SubmitCompleteEvent event) {
+		    	  String errorMsg = event.getResults();
+		    	  if(null != errorMsg && errorMsg.contains("Exceeded Limit")){
+		    		  List<String> err = new ArrayList<String>();
+			    	  err.add("Export file size is " + errorMsg);
+			    	  err.add("File size limit is 100 MB");
+			    	  searchDisplay.getErrorMessageDisplayForBulkExport().setMessages(err);  
+		    	  }else{
+		    		  Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+		    	  }
+		      }
+		    });
 		
-		shareDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
+		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
+		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
+					((Button)searchDisplay.getSearchButton()).click();
+	            }
+			}
+		});
+		
+	}
+	
+	private void adminSearchDisplayHandlers(final AdminSearchDisplay adminSearchDisplay){
+		
+		adminSearchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
+			@Override
+		
+			public void onClick(ClickEvent event) {
+				int startIndex = 1;
+				adminSearchDisplay.getErrorMessageDisplay().clear();
+				int filter = 1;
+				search(adminSearchDisplay.getSearchString().getValue(),startIndex, Integer.MAX_VALUE,filter);
+			}
+		});
+		
+		
+		adminSearchDisplay.getTransferButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				//adminSearchDisplay.clearTransferCheckBoxes();
+				displayTransferView(startIndex,transferDisplay.getPageSize());
+			}
+		});
+		
+		adminSearchDisplay.getClearButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				manageMeasureSearchModel.getSelectedTransferResults().removeAll(manageMeasureSearchModel.getSelectedTransferResults());
+				manageMeasureSearchModel.getSelectedTransferIds().removeAll(manageMeasureSearchModel.getSelectedTransferIds());
+				int filter = 1;
+				search(adminSearchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE,filter);
+			}
+		});
+		
+		
+	}
+	
+	private void versionDisplayHandlers(final VersionDisplay versionDisplay){
+
+		versionDisplay.getSaveButton().addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+			     ManageMeasureSearchModel.Result selectedMeasure =  versionMeasureResults.getSelectedMeasure();
+			     if(selectedMeasure.getId() != null && (versionDisplay.getMajorRadioButton().getValue() || versionDisplay.getMinorRadioButton().getValue()))
+			    	 saveFinalizedVersion(selectedMeasure.getId(),versionDisplay.getMajorRadioButton().getValue(),selectedMeasure.getVersion());
+			     else
+			    	  versionDisplay.getErrorMessageDisplay().setMessage("Please select a Measure Name to version and select a version type of Major or Minor.");
+			}
+		});
+		
+		versionDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
 			@Override
 			public void onPageSelection(PageSelectionEvent event) {
-				shareStartIndex = shareDisplay.getPageSize() * (event.getPageNumber() - 1) + 1;
-				getShareDetails(currentShareDetails.getMeasureId(), shareStartIndex);
+				int pageNumber = event.getPageNumber();
+				if(pageNumber == -1){ // if next button clicked
+					if(versionDisplay.getCurrentPage() == versionMeasureResults.getTotalpages()){
+						pageNumber = versionDisplay.getCurrentPage();
+					}else{
+						pageNumber = versionDisplay.getCurrentPage() + 1;
+					}
+				}else if(pageNumber == 0){ // if first button clicked
+					pageNumber = 1;
+				}else if(pageNumber == -19){ // if first button clicked
+					if(versionDisplay.getCurrentPage() == 1){
+						pageNumber = versionDisplay.getCurrentPage();
+					}else{
+						pageNumber = versionDisplay.getCurrentPage() - 1;
+					}
+				}else if(pageNumber == -9){ // if first button clicked
+					if(versionDisplay.getCurrentPage() == 1){
+						pageNumber = versionDisplay.getCurrentPage();
+					}else{
+						pageNumber = versionDisplay.getCurrentPage() - 1;
+					}
+				}
+				versionDisplay.setCurrentPage(pageNumber);
+				int pageSize = versionDisplay.getPageSize();
+				int startIndex = pageSize * (pageNumber - 1);
+				searchMeasuresForVersion(startIndex,versionDisplay.getPageSize());
 			}
 		});
-		shareDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
+		versionDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
+				
 			@Override
 			public void onPageSizeSelection(PageSizeSelectionEvent event) {
-				getShareDetails(currentShareDetails.getMeasureId(), shareStartIndex);
-			}
-		});
-		shareDisplay.getCancelButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				isClone = false;
-				displaySearch();
-			}
-		});
-		shareDisplay.getShareButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				MatContext.get().getMeasureService().updateUsersShare(currentShareDetails, new AsyncCallback<Void>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						shareDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
-					}
-
-					@Override
-					public void onSuccess(Void result) {
-						displaySearch();
-					}
-				});
+				versionDisplay.setPageSize(event.getPageSize());
+				searchMeasuresForVersion(startIndex,versionDisplay.getPageSize());
 			}
 		});
 		
-		shareDisplay.privateCheckbox().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<Boolean> event) {
-				MatContext.get().getMeasureService().updatePrivateColumnInMeasure(currentShareDetails.getMeasureId(), event.getValue(), new AsyncCallback<Void>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						
-					}
-
-					@Override
-					public void onSuccess(Void result) {
-						
-					}
-				});
-			}
-		});
-		
-		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				 update();
-			}
-		});
-		
-		detailDisplay.getCancelButton().addClickHandler(cancelClickHandler);
-		exportDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 		versionDisplay.getCancelButton().addClickHandler(cancelClickHandler);
+			
+	}
+	
+	private void draftDisplayHandlers(final DraftDisplay draftDisplay){
+		draftDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
+			@Override
+			public void onPageSelection(PageSelectionEvent event) {
+				int pageNumber = event.getPageNumber();
+				if(pageNumber == -1){ // if next button clicked
+					if(draftDisplay.getCurrentPage() == draftMeasureResults.getTotalpages()){
+						pageNumber = draftDisplay.getCurrentPage();
+					}else{
+						pageNumber = draftDisplay.getCurrentPage() + 1;
+					}
+				}else if(pageNumber == 0){ // if first button clicked
+					pageNumber = 1;
+				}else if(pageNumber == -19){ // if first button clicked
+					if(draftDisplay.getCurrentPage() == 1){
+						pageNumber = draftDisplay.getCurrentPage();
+					}else{
+						pageNumber = draftDisplay.getCurrentPage() - 1;
+					}
+				}else if(pageNumber == -9){ // if first button clicked
+					if(draftDisplay.getCurrentPage() == 1){
+						pageNumber = draftDisplay.getCurrentPage();
+					}else{
+						pageNumber = draftDisplay.getCurrentPage() - 1;
+					}
+				}
+				draftDisplay.setCurrentPage(pageNumber);
+				int pageSize = draftDisplay.getPageSize();
+				int startIndex = pageSize * (pageNumber - 1);
+				searchMeasuresForDraft(startIndex,draftDisplay.getPageSize());
+			}
+		});
+		draftDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
+			@Override
+			public void onPageSizeSelection(PageSizeSelectionEvent event) {
+				draftDisplay.setPageSize(event.getPageSize());
+				searchMeasuresForDraft(startIndex,draftDisplay.getPageSize());
+			}
+		});
+		draftDisplay.getSaveButton().addClickHandler(new ClickHandler(){
+			@Override
+			public void onClick(ClickEvent event) {
+				//O&M 17
+				((Button)draftDisplay.getSaveButton()).setEnabled(false);
+				
+				ManageMeasureSearchModel.Result selectedMeasure =  draftMeasureResults.getSelectedMeasure();
+				if(selectedMeasure.getId() != null){
+					MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(), new AsyncCallback<ManageMeasureDetailModel>() {
+						
+						@Override
+						public void onSuccess(ManageMeasureDetailModel result) {
+							currentDetails = result;
+							createDraftOfSelectedVersion(currentDetails);
+						}
+						
+						@Override
+						public void onFailure(Throwable caught) {
+							//O&M 17
+							((Button)draftDisplay.getSaveButton()).setEnabled(true);
+							draftDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+							MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+						}
+					});
+				}else{
+					//O&M 17
+					((Button)draftDisplay.getSaveButton()).setEnabled(true);
+					draftDisplay.getErrorMessageDisplay().setMessage("Please select a Measure Version to create a Draft.");
+				}
+				
+			}
+		});
 		draftDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 		
-		exportDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				saveExport();
-			}
-		});
-		exportDisplay.getOpenButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				openExport();
-			}
-		});
-		
+	}
+	
+	private void historyDisplayHandlers(final HistoryDisplay historyDisplay){
 		historyDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -592,241 +790,69 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
-		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
-		searchWidget.addKeyUpHandler(new KeyUpHandler() {
+	}
+	
+	private void shareDisplayHandlers(final ShareDisplay shareDisplay){
+		shareDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
 			
 			@Override
-			public void onKeyUp(KeyUpEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-					((Button)searchDisplay.getSearchButton()).click();
-	            }
-			}
-		});
-		
-		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				int startIndex = 1;
-				measureDeletion=false;
-				searchDisplay.getErrorMeasureDeletion().clear();
-				searchDisplay.getSuccessMeasureDeletion().clear();
-				searchDisplay.getErrorMessageDisplay().clear();
-				int filter = searchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
-				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
-					 filter = searchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
-				}
-				search(searchDisplay.getSearchString().getValue(),startIndex, searchDisplay.getPageSize(),filter);
-			}
-		});
-		
-		adminSearchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
-			@Override
-			// TODO Auto-generated method stub	
-			public void onClick(ClickEvent event) {
-				int startIndex = 1;
-				measureDeletion=false;
-				adminSearchDisplay.getErrorMeasureDeletion().clear();
-				adminSearchDisplay.getSuccessMeasureDeletion().clear();
-				adminSearchDisplay.getErrorMessageDisplay().clear();
-				int filter = adminSearchDisplay.getMeasureSearchFilterPanel().getSelectedIndex();
-				if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
-					 filter = adminSearchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
-				}
-				search(adminSearchDisplay.getSearchString().getValue(),startIndex, Integer.MAX_VALUE,filter);
-			}
-		});
-		
-		searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
-				isMeasureDeleted=false;
-				measureDeletion=false;
-				searchDisplay.getErrorMeasureDeletion().clear();
-				searchDisplay.getSuccessMeasureDeletion().clear();
-				searchDisplay.getErrorMessageDisplay().clear();
-				versionDisplay.getErrorMessageDisplay().clear();
-				draftDisplay.getErrorMessageDisplay().clear();
-				detailDisplay.getErrorMessageDisplay().clear();
-				historyDisplay.getErrorMessageDisplay().clear();
-				exportDisplay.getErrorMessageDisplay().clear();
-				shareDisplay.getErrorMessageDisplay().clear();
-				if(manageMeasureSearchModel.getSelectedExportIds().isEmpty()){
-					searchDisplay.getErrorMessageDisplayForBulkExport().setMessage(MatContext.get().getMessageDelegate().getMeasureSelectionError());
-				}else{
-					searchDisplay.clearBulkExportCheckBoxes(searchDisplay.getMeasureDataTable());
-					bulkExport(manageMeasureSearchModel.getSelectedExportIds());
-				}
-			}
-		});
-			FormPanel form = searchDisplay.getForm();
-		    form.addSubmitCompleteHandler(new FormPanel.SubmitCompleteHandler() {
-		      public void onSubmitComplete(SubmitCompleteEvent event) {
-		    	  String errorMsg = event.getResults();
-		    	  if(null != errorMsg && errorMsg.contains("Exceeded Limit")){
-		    		  List<String> err = new ArrayList<String>();
-			    	  err.add("Export file size is " + errorMsg);
-			    	  err.add("File size limit is 100 MB");
-			    	  searchDisplay.getErrorMessageDisplayForBulkExport().setMessages(err);  
-		    	  }else{
-		    		  Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-		    	  }
-		      }
-		    });
-
-		
-		versionDisplay.getSaveButton().addClickHandler(new ClickHandler(){
-			@Override
-			public void onClick(ClickEvent event) {
-			     ManageMeasureSearchModel.Result selectedMeasure =  versionMeasureResults.getSelectedMeasure();
-			     if(selectedMeasure.getId() != null && (versionDisplay.getMajorRadioButton().getValue() || versionDisplay.getMinorRadioButton().getValue()))
-			    	 saveFinalizedVersion(selectedMeasure.getId(),versionDisplay.getMajorRadioButton().getValue(),selectedMeasure.getVersion());
-			     else
-			    	  versionDisplay.getErrorMessageDisplay().setMessage("Please select a Measure Name to version and select a version type of Major or Minor.");
-			}
-		});
-		
-		versionDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
-			@Override
 			public void onPageSelection(PageSelectionEvent event) {
-				int pageNumber = event.getPageNumber();
-				if(pageNumber == -1){ // if next button clicked
-					if(versionDisplay.getCurrentPage() == versionMeasureResults.getTotalpages()){
-						pageNumber = versionDisplay.getCurrentPage();
-					}else{
-						pageNumber = versionDisplay.getCurrentPage() + 1;
-					}
-				}else if(pageNumber == 0){ // if first button clicked
-					pageNumber = 1;
-				}else if(pageNumber == -19){ // if first button clicked
-					if(versionDisplay.getCurrentPage() == 1){
-						pageNumber = versionDisplay.getCurrentPage();
-					}else{
-						pageNumber = versionDisplay.getCurrentPage() - 1;
-					}
-				}else if(pageNumber == -9){ // if first button clicked
-					if(versionDisplay.getCurrentPage() == 1){
-						pageNumber = versionDisplay.getCurrentPage();
-					}else{
-						pageNumber = versionDisplay.getCurrentPage() - 1;
-					}
-				}
-				versionDisplay.setCurrentPage(pageNumber);
-				int pageSize = versionDisplay.getPageSize();
-				int startIndex = pageSize * (pageNumber - 1);
-				searchMeasuresForVersion(startIndex,versionDisplay.getPageSize());
+				shareStartIndex = shareDisplay.getPageSize() * (event.getPageNumber() - 1) + 1;
+				getShareDetails(currentShareDetails.getMeasureId(), shareStartIndex);
 			}
 		});
-		versionDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
-				
+		shareDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
 			@Override
 			public void onPageSizeSelection(PageSizeSelectionEvent event) {
-				versionDisplay.setPageSize(event.getPageSize());
-				searchMeasuresForVersion(startIndex,versionDisplay.getPageSize());
+				getShareDetails(currentShareDetails.getMeasureId(), shareStartIndex);
 			}
 		});
-		
-		draftDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
-			@Override
-			public void onPageSelection(PageSelectionEvent event) {
-				int pageNumber = event.getPageNumber();
-				if(pageNumber == -1){ // if next button clicked
-					if(draftDisplay.getCurrentPage() == draftMeasureResults.getTotalpages()){
-						pageNumber = draftDisplay.getCurrentPage();
-					}else{
-						pageNumber = draftDisplay.getCurrentPage() + 1;
-					}
-				}else if(pageNumber == 0){ // if first button clicked
-					pageNumber = 1;
-				}else if(pageNumber == -19){ // if first button clicked
-					if(draftDisplay.getCurrentPage() == 1){
-						pageNumber = draftDisplay.getCurrentPage();
-					}else{
-						pageNumber = draftDisplay.getCurrentPage() - 1;
-					}
-				}else if(pageNumber == -9){ // if first button clicked
-					if(draftDisplay.getCurrentPage() == 1){
-						pageNumber = draftDisplay.getCurrentPage();
-					}else{
-						pageNumber = draftDisplay.getCurrentPage() - 1;
-					}
-				}
-				draftDisplay.setCurrentPage(pageNumber);
-				int pageSize = draftDisplay.getPageSize();
-				int startIndex = pageSize * (pageNumber - 1);
-				searchMeasuresForDraft(startIndex,draftDisplay.getPageSize());
-			}
-		});
-		draftDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
-			@Override
-			public void onPageSizeSelection(PageSizeSelectionEvent event) {
-				draftDisplay.setPageSize(event.getPageSize());
-				searchMeasuresForDraft(startIndex,draftDisplay.getPageSize());
-			}
-		});
-		draftDisplay.getSaveButton().addClickHandler(new ClickHandler(){
+		shareDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				//O&M 17
-				((Button)draftDisplay.getSaveButton()).setEnabled(false);
-				
-				ManageMeasureSearchModel.Result selectedMeasure =  draftMeasureResults.getSelectedMeasure();
-				if(selectedMeasure.getId() != null){
-					MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(), new AsyncCallback<ManageMeasureDetailModel>() {
-						
-						@Override
-						public void onSuccess(ManageMeasureDetailModel result) {
-							currentDetails = result;
-							createDraftOfSelectedVersion(currentDetails);
-						}
-						
-						@Override
-						public void onFailure(Throwable caught) {
-							//O&M 17
-							((Button)draftDisplay.getSaveButton()).setEnabled(true);
-							draftDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
-						}
-					});
-				}else{
-					//O&M 17
-					((Button)draftDisplay.getSaveButton()).setEnabled(true);
-					draftDisplay.getErrorMessageDisplay().setMessage("Please select a Measure Version to create a Draft.");
-				}
-				
+				isClone = false;
+				displaySearch();
 			}
 		});
-		transferDisplayHandlers(transferDisplay);
-		HandlerManager eventBus = MatContext.get().getEventBus(); 
-		eventBus.addHandler(OnChangeMeasureDraftOptionsEvent.TYPE, new OnChangeMeasureDraftOptionsEvent.Handler() {
+		shareDisplay.getShareButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onChangeOptions(OnChangeMeasureDraftOptionsEvent event) {
-				PrimaryButton button = (PrimaryButton) draftDisplay.getSaveButton();
-				button.setFocus(true);
+			public void onClick(ClickEvent event) {
+				MatContext.get().getMeasureService().updateUsersShare(currentShareDetails, new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						shareDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						displaySearch();
+					}
+				});
 			}
 		});
 		
-		eventBus.addHandler(OnChangeMeasureVersionOptionsEvent.TYPE, new OnChangeMeasureVersionOptionsEvent.Handler() {
+		shareDisplay.privateCheckbox().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			
 			@Override
-			public void onChangeOptions(OnChangeMeasureVersionOptionsEvent event) {
-				PrimaryButton button = (PrimaryButton) versionDisplay.getSaveButton();
-				button.setFocus(true);
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+				MatContext.get().getMeasureService().updatePrivateColumnInMeasure(currentShareDetails.getMeasureId(), event.getValue(), new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						
+					}
+				});
 			}
 		});
 		
-		//US 421. Retrieve the Measure scoring choices from db.
-		MatContext.get().getListBoxCodeProvider().getScoringList(new AsyncCallback<List<? extends HasListBox>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				Window.alert(MessageDelegate.s_ERR_RETRIEVE_SCORING_CHOICES);
-			}
-
-			@Override
-			public void onSuccess(List<? extends HasListBox> result) {
-				detailDisplay.setScoringChoices(result);
-			}
-		});
-
+		
 	}
 	
 	private void transferDisplayHandlers(final TransferDisplay transferDisplay) {
@@ -878,7 +904,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				manageMeasureSearchModel.getSelectedTransferIds().removeAll(manageMeasureSearchModel.getSelectedTransferIds());
 				transferDisplay.getSuccessMessageDisplay().clear();
 				transferDisplay.getErrorMessageDisplay().clear();
-				int filter = adminSearchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+				int filter = 1;
 				search("", 1, Integer.MAX_VALUE,filter);
 			}
 		});
@@ -943,12 +969,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 						
 						@Override
 						public void onFailure(Throwable caught) {
-							// TODO Auto-generated method stub
+							
 						}
 
 						@Override
 						public void onSuccess(Boolean result) {
-							// TODO Auto-generated method stub	
+							
 						}
 					});
 				}
@@ -1030,15 +1056,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		mcs.clone(currentDetails,loggedinUserId,isDraftCreation, new AsyncCallback<ManageMeasureSearchModel.Result>() {
 			public void onSuccess(ManageMeasureSearchModel.Result result) {
-				/*MatContext.get().getMeasureService().cloneMeasureXml(isDraftCreation, currentDetails.getId(), result.getId(), new AsyncCallback<Void>() {
-
-					@Override
-					public void onFailure(Throwable caught) {}
-
-					@Override
-					public void onSuccess(Void result) {}
-					
-				});*/
 				fireMeasureSelectedEvent(result.getId(), result.getVersion(),
 						result.getName(), result.getShortName(), result.getScoringType(), result.isEditable(),result.isMeasureLocked(),
 						result.getLockedUserId(result.getLockedUserInfo()));
@@ -1123,7 +1140,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		int filter;
 		if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get().getLoggedInUserRole())){
 			heading = "";
-			filter = adminSearchDisplay.getMeasureSearchFilterPanel().ALL_MEASURES;
+			filter = 1;//ALL Measures
 			search(adminSearchDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE,filter);
 			panel.setContent(adminSearchDisplay.asWidget());
 		}else{
@@ -1184,8 +1201,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	}
 	
 	private void update() {
-		//TODO seperate the clone from the edit update
-		
 		//exit if there is something already being saved
 		if(!MatContext.get().getLoadingQueue().isEmpty())
 			return;
@@ -1365,7 +1380,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void search(String searchText, int startIndex, int pageSize , int filter) {
 		final String lastSearchText = (!searchText.equals(null))? searchText.trim(): null;
-		showSearchingBusy(true);
+		
 		//This to fetch all Measures if user role is Admin. This will go away when Pagination will be implemented in Measure Library.
 		if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			pageSize=Integer.MAX_VALUE;
@@ -1375,6 +1390,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(ManageMeasureSearchModel result) {
 				if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
+					showSearchingBusy(true);
 					MeasureSearchResultsAdapter searchResults = new MeasureSearchResultsAdapter();
 					addHandlersToAdaptor(searchResults);
 					searchResults.setData(result);
@@ -1407,7 +1423,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}else{
 					result.setSelectedTransferIds(new ArrayList<String>());
 					result.setSelectedTransferResults(new ArrayList<Result>());
-					result.setSelectedExportIds(new ArrayList<String>());
 					manageMeasureSearchModel = result;
 					AdminMeasureSearchResultAdaptor searchAdminResults = new AdminMeasureSearchResultAdaptor();
 					searchAdminResults.setData(result);
@@ -1415,11 +1430,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					searchAdminResults.setObserver(new AdminMeasureSearchResultAdaptor.Observer() {
 						@Override
 						public void onHistoryClicked(Result result) {
-							measureDeletion=false;
-							isMeasureDeleted=false;
-							adminSearchDisplay.getSuccessMeasureDeletion().clear();
-							adminSearchDisplay.getErrorMeasureDeletion().clear();
-							historyDisplay.setReturnToLinkText("<< Return to Measure Library");
+							historyDisplay.setReturnToLinkText("<< Return to MeasureLibrary Owner Ship");
 							if(!result.isEditable()){
 								historyDisplay.setUserCommentsReadOnly(true);
 							}else{
@@ -1434,15 +1445,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 							adminSearchDisplay.getErrorMessagesForTransferOS().clear();
 							updateTransferIDs(result,manageMeasureSearchModel);
 						}
-
-						/*@Override
-						public void onTransferSelectedClicked(
-								List<Result> result) {
-							adminSearchDisplay.getErrorMessagesForTransferOS().clear();
-							adminSearchDisplay.getSuccessMeasureDeletion().clear();
-							updateTransferID(result);
-							
-						}*/
 						
 					});
 					if(result.getResultsTotal() == 0 && !lastSearchText.isEmpty()){
@@ -1453,9 +1455,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 					}
 					SearchResultUpdate sru = new SearchResultUpdate();
 					sru.update(result, (TextBox)adminSearchDisplay.getSearchString(), lastSearchText);
-					adminSearchDisplay.buildMeasureDataTable(searchAdminResults);
+					adminSearchDisplay.buildDataTable(searchAdminResults);
 					panel.setContent(adminSearchDisplay.asWidget());
-					showSearchingBusy(false);
+				//	showSearchingBusy(false);
 					
 				}
 			}
@@ -1467,22 +1469,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 	}
-	
-	/**
-	 * Method to update Transfer List in case of Admin
-	 * 
-	 * */
-	
-/*	private void updateTransferID(List<Result> result){
-			System.out.println("==================Transfer CLicked========" + result.size());
-			manageMeasureSearchModel.setSelectedTransferResults(result);
-			List<String> measureIdsList = new ArrayList<String>();
-			for(ManageMeasureSearchModel.Result results: result){
-				measureIdsList.add(results.getId());
-			}
-			manageMeasureSearchModel.setSelectedTransferIds(measureIdsList);
-		
-	}*/
 	
 	private void updateTransferIDs(Result result,ManageMeasureSearchModel model) {
 		if(result.isTransferable()){
@@ -1628,6 +1614,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		//MatContext.get().setCurrentMeasureVersion(detailDisplay.getMeasureVersion().getValue().trim());			
 	}
 	
+	@SuppressWarnings("static-access")
 	public boolean isValid(ManageMeasureDetailModel model) {
 		List<String> message = new ArrayList<String>();
 		if(model.getName() == null || "".equals(model.getName().trim())) {
@@ -1643,8 +1630,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if(scoring == null || !isValidValue(model.getMeasScoring()) || enteredScoringValue.equals("--Select--")) {
 			message.add(MatContext.get().getMessageDelegate().s_ERR_MEASURE_SCORE_REQUIRED);
 		}
-		
-		//TODO handle clobbering of measure names and abbreviated measure names. 
 		
 		boolean valid = message.size() == 0;
 		if(!valid) {

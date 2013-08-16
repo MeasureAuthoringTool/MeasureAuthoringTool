@@ -256,7 +256,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			title = ClientConstants.TITLE_VALUE_SET_LIB;	
 			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));
 		
-			measureLibrary = buildMeasureLibraryWidget(); 
+			measureLibrary = buildMeasureLibraryWidget(false); 
 			title = ClientConstants.TITLE_MEASURE_LIB;	
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
 			
@@ -281,7 +281,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			title = ClientConstants.TITLE_VALUE_SET_CHANGE_OWNERSHIP;	
 			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));
 		
-			measureLibrary = buildMeasureLibraryWidget(); 
+			measureLibrary = buildMeasureLibraryWidget(true); 
 			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;	
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
 		}
@@ -488,25 +488,45 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		return mup;
 	}
 	
-	private ManageMeasurePresenter buildMeasureLibraryWidget() {
-		ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
-		AdminManageMeasureSearchView adminManageMeasureSearchView = new AdminManageMeasureSearchView();
-		ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
-		ManageMeasureVersionView versionView = new ManageMeasureVersionView();
-		ManageMeasureDraftView measureDraftView = new ManageMeasureDraftView();
-		TransferMeasureOwnershipView transferOS = new TransferMeasureOwnershipView();
-		ManageMeasureShareView measureShareView = new ManageMeasureShareView();
-		ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
-		ManageMeasureExportView measureExportView;
-		if (currentUserRole.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)){
-			measureExportView = new ManageMeasureExportView(true);
-		}else{ 
-			measureExportView = new ManageMeasureExportView(false);
+	private ManageMeasurePresenter buildMeasureLibraryWidget(Boolean isAdmin) {
+		ManageMeasurePresenter measurePresenter = null;
+		if(isAdmin){
+			/*ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();*/
+			AdminManageMeasureSearchView adminManageMeasureSearchView = new AdminManageMeasureSearchView();
+			/*ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
+			ManageMeasureVersionView versionView = new ManageMeasureVersionView();
+			ManageMeasureDraftView measureDraftView = new ManageMeasureDraftView();*/
+			TransferMeasureOwnershipView transferOS = new TransferMeasureOwnershipView();
+			/*ManageMeasureShareView measureShareView = new ManageMeasureShareView();*/
+			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
+			/*ManageMeasureExportView measureExportView;
+			if (currentUserRole.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)){
+				measureExportView = new ManageMeasureExportView(true);
+			}else{ 
+				measureExportView = new ManageMeasureExportView(false);
+			}*/
+			measurePresenter = 
+					new ManageMeasurePresenter(null, adminManageMeasureSearchView,null, null, null,
+							historyView,null,null,transferOS);
+		}else{
+			ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
+			/*AdminManageMeasureSearchView adminManageMeasureSearchView = new AdminManageMeasureSearchView();*/
+			ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
+			ManageMeasureVersionView versionView = new ManageMeasureVersionView();
+			ManageMeasureDraftView measureDraftView = new ManageMeasureDraftView();
+			/*TransferMeasureOwnershipView transferOS = new TransferMeasureOwnershipView();*/
+			ManageMeasureShareView measureShareView = new ManageMeasureShareView();
+			ManageMeasureHistoryView historyView = new ManageMeasureHistoryView();
+			ManageMeasureExportView measureExportView;
+			if (currentUserRole.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE)){
+				measureExportView = new ManageMeasureExportView(true);
+			}else{ 
+				measureExportView = new ManageMeasureExportView(false);
+			}
+			measurePresenter = 
+					new ManageMeasurePresenter(measureSearchView, null,measureDetailView, measureShareView, measureExportView,
+							historyView,versionView,measureDraftView,null);
 		}
-		ManageMeasurePresenter measurePresenter = 
-			new ManageMeasurePresenter(measureSearchView, adminManageMeasureSearchView,measureDetailView, measureShareView, measureExportView,
-					historyView,versionView,measureDraftView,transferOS);
-		
 		return measurePresenter;
 		
 	}

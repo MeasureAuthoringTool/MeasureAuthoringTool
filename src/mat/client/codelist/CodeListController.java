@@ -77,12 +77,12 @@ public class CodeListController implements MatPresenter {
 	public CodeListController(String type) {
 		if(type.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			emptyWidget.add(new Label("No Measure Selected line 150"));
-			ManageCodeListSearchView mclsv = new ManageCodeListSearchView();
+			//ManageCodeListSearchView mclsv = new ManageCodeListSearchView();
 			AdminValueSetSearchView adminValueSetSearchView = new AdminValueSetSearchView();
 			draftDisplay = new ManageValueSetDraftView();
 			CodeListHistoryView historyView = new CodeListHistoryView();
 			TransferOwnershipView transferOS = new TransferOwnershipView();
-			codeListSearchPresenter = new ManageCodeListSearchPresenter(mclsv, adminValueSetSearchView,historyView, null, draftDisplay,transferOS);
+			codeListSearchPresenter = new ManageCodeListSearchPresenter(null, adminValueSetSearchView,historyView, null, draftDisplay,transferOS);
 			displayEmpty();
 			HandlerManager eventBus = MatContext.get().getEventBus();
 			addingHandlersOnEvent(eventBus);

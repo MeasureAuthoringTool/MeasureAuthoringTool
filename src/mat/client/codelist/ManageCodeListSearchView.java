@@ -10,7 +10,6 @@ import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.VerticalFlowPanel;
 import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.HasSortHandler;
@@ -27,25 +26,22 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Panel;
-
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 
 public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.ValueSetSearchDisplay {
 	private FlowPanel searchCriteriaPanel = new FlowPanel();
-	private Panel createNewPanel;
+	
 	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	private TextBox searchInput = new TextBox();
-	Button transferButton = new PrimaryButton("Transfer");
 	private SearchView<CodeListSearchDTO> view;
 	
 	public Grid508 getDataTable() {
 		return view.getDataTable();
 	}
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
-	protected ErrorMessageDisplay transferErrorMessages = new ErrorMessageDisplay();
+	
 	private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
 	
 	/*US537*/
@@ -79,7 +75,7 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 			
 			searchCriteriaPanel.add(view.asWidget());
 			searchCriteriaPanel.setStyleName("contentPanel");
-		}else{
+		}/*else{
 			AdminValueSetSearchView adminValueSetSearchView = new AdminValueSetSearchView();
 			view = adminValueSetSearchView.getView();
 			view.buildDataTable(new AdminManageCodeListSearchModel());
@@ -90,11 +86,11 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 			
 			searchCriteriaPanel.add(view.asWidget());
 			searchCriteriaPanel.setStyleName("contentPanel");
-			searchCriteriaPanel.add(transferErrorMessages);
+			
 			searchCriteriaPanel.add(new SpacerWidget());
 			searchCriteriaPanel.add(buildTransferWidget());
 			searchCriteriaPanel.add(new SpacerWidget()); 
-		}
+		}*/
 		MatContext.get().setManageCodeListSearchView(this);
 		
 	}
@@ -131,12 +127,12 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 		return hp;
 	}
 	
-	private Widget buildTransferWidget(){
+	/*private Widget buildTransferWidget(){
 		FlowPanel hpT = new FlowPanel();
 		hpT.setStylePrimaryName("rightAlignButton");
 		hpT.add(transferButton);
 		return hpT;
-	}
+	}*/
 	
 	@Override
 	public Widget asWidget() {
@@ -148,11 +144,6 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 		return searchButton;
 	}
 	
-	@Override
-	public HasClickHandlers getTransferButton() {
-		return transferButton;
-	}
-
 	@Override
 	public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForEditTool() {
 		return view;
@@ -228,10 +219,10 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 		return vssfp;
 	}
 
-	@Override
+	/*@Override
 	public ErrorMessageDisplayInterface getTransferErrorMessageDisplay() {
 		return transferErrorMessages;
-	}
+	}*/
 
 	
 }

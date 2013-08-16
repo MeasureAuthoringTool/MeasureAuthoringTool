@@ -1,6 +1,7 @@
 package mat.client.measure;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.shared.search.SearchResults;
@@ -8,7 +9,6 @@ import mat.model.LockedUserInfo;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.SingleSelectionModel;
 
 public class ManageMeasureSearchModel implements IsSerializable, SearchResults<ManageMeasureSearchModel.Result>{
 	public static class Result implements IsSerializable {
@@ -215,7 +215,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	private int pageCount;
 	private List<String> selectedExportIds;
 	private List<String> selectedTransferIds;
-	private List<Result> selectedTransferResults;
+	private ArrayList<Result> selectedTransferResults;
 	
 	
 	public void setData(List<Result> data) {
@@ -339,7 +339,7 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	/**
 	 * @param selectedTransferResults the selectedTransferResults to set
 	 */
-	public void setSelectedTransferResults(List<Result> selectedTransferResults) {
+	public void setSelectedTransferResults(ArrayList<Result> selectedTransferResults) {
 		this.selectedTransferResults = selectedTransferResults;
 	}
 

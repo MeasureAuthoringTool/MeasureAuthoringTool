@@ -5,6 +5,7 @@ import mat.client.clause.clauseworkspace.presenter.ClauseWorkspacePresenter;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.MeasureNotesPresenter;
+import mat.client.measure.MeasureNotesView;
 import mat.client.measure.metadata.AddEditAuthorsView;
 import mat.client.measure.metadata.AddEditMeasureTypeView;
 import mat.client.measure.metadata.MetaDataPresenter;
@@ -45,7 +46,8 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
     private static SimplePanel subSkipContentHolder = new SimplePanel();  
     private String measureComposerTab;
     private ClauseWorkspacePresenter clauseWorkspacePresenter = new ClauseWorkspacePresenter();
-    private MeasureNotesPresenter measureNotesPresenter = new MeasureNotesPresenter();
+    private MeasureNotesPresenter measureNotesPresenter = new MeasureNotesPresenter(new MeasureNotesView());
+    
 	public MeasureComposerPresenter() {
 		
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
@@ -55,9 +57,11 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.setId("measureComposerTabLayout");
 		measureComposerTabLayout.addPresenter(metaDataPresenter,"Measure Details");	
 		measureComposerTabLayout.addPresenter(qdmPresenter,"QDM Element");
+		//measureComposerTabLayout.addPresenter(clauseWorkspace,"Old CW");//name changed 
 		measureComposerTabLayout.addPresenter(clauseWorkspacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
-		measureComposerTabLayout.addPresenter(measureNotesPresenter,"Measure Note");
+		measureComposerTabLayout.addPresenter(measureNotesPresenter, "Measure Notes");
+		
 		measureComposerTabLayout.setHeight("98%");
 		//measureComposerTabLayout.selectTab(metaDataPresenter.getWidget());
 		

@@ -1035,6 +1035,27 @@ padding: 2px;
     background-color:white;
     border:1px solid #C0C0C0;
 }
+
+.notesContentPanel{
+	padding-left: 20px;
+	paddling-right: 20px;
+	padding-top: 10px;
+	position: relative;
+	overflow: hidden;
+	height:250px;
+	width: 100%;
+	-moz-box-sizing:border-box;
+    background-color:#F0F0F0;
+    border:0px solid #C0C0C0;
+}
+
+.measureComposerLabel{
+	margin-left: 5px;
+	background-color: #DFFFFF;
+	font-weight:bold;
+	height: 25px;
+	width: 90%;
+}
 .qdsScroll{
 	overflow-x: hidden; 
 	overflow-y: auto; 
@@ -1331,6 +1352,17 @@ padding: 2px;
 .invisibleButtonText[disabled]:hover {
   border: 1px outset #ccc;
 }
+
+.disclosurePanelHeaderValue{
+	padding-top: 10px;
+	padding-bottom: 10px;
+	padding-left: 20px;
+	padding-right:40px;
+	font-weight: bold;
+	align: center;
+	margin-left: 12px;
+ 	margin-right: 12px;	
+}	
 
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________

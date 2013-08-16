@@ -1,69 +1,62 @@
 package mat.client.measure;
 
 import mat.client.MatPresenter;
+import mat.client.measure.ManageMeasurePresenter.BaseDisplay;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
-import mat.client.shared.PrimaryButton;
+import mat.client.shared.search.SearchResults;
+import mat.model.MeasureNotesModel.Result;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MeasureNotesPresenter implements MatPresenter{
-	private SimplePanel simplePanel = new SimplePanel();
-	private FlowPanel flowPanel = new FlowPanel();
-	private TextBox measureNote1 = new TextBox();
-	private TextBox measureNote2 = new TextBox();
-	private TextBox measureNote3 = new TextBox();
-	private Label measureNoteLabel1 = new Label("07/05/2013 12:22:23");
-	private Label measureNoteLabel2 = new Label("09/05/2012 15:22:23");
-	private Label measureNoteLabel3 = new Label("07/07/2013 9:22:45");
-	private Button exportButton  = new PrimaryButton("Export to CSV","primaryGreyLeftButton");
 	
-	MeasureServiceAsync service = MatContext.get().getMeasureService();
-	private ClickHandler exportButtonClickHandler = new ClickHandler() {
-		@Override
-		public void onClick(ClickEvent event) {
-			generateCSVFile();
-		}
-	};
-	
-	
-	//private static final String MEASURE_OBS = "measureObservations";
-	
-	public MeasureNotesPresenter() {
-		System.out.println("Created an instance of MeasureNotesPresenter >>>>");
-		simplePanel.setStyleName("contentPanel");
-		flowPanel.add(new Label("Measure Notes Section"));
-		measureNote1.setText("Ryan Gosling");
-		measureNote2.setText("Hugh Jackman");
-		VerticalPanel verticalPanel = new VerticalPanel();
-		HorizontalPanel hPanel1 = new HorizontalPanel();
-		hPanel1.add(measureNote1);
-		hPanel1.add(measureNoteLabel1);
-		HorizontalPanel hPanel2 = new HorizontalPanel();
-		hPanel2.add(measureNote2);
-		hPanel2.add(measureNoteLabel2);
-		HorizontalPanel hPanel3 = new HorizontalPanel();
-		hPanel3.add(measureNote3);
-		hPanel3.add(measureNoteLabel3);
-		verticalPanel.add(hPanel1);
-		verticalPanel.add(hPanel2);
-		verticalPanel.add(hPanel3);
-		verticalPanel.add(exportButton);
-		flowPanel.add(verticalPanel);
-		simplePanel.add(flowPanel);
-		exportButton.addClickHandler(exportButtonClickHandler);
-	}	
-	 
+ 	MeasureServiceAsync service = MatContext.get().getMeasureService();
+ 	private NotesDisplay notesDisplay; 
+ 	
+ 	public static interface NotesDisplay extends BaseDisplay{
+		public HasClickHandlers getSaveButton();
+		public HasClickHandlers getCancelButton();
+		public HasClickHandlers getExportButton();
+		public void cancelComposedNote();
+		void buildDataTable(SearchResults<Result> results);
 		
+	}
+ 	 
+ 	public MeasureNotesPresenter(final NotesDisplay notesDisplay){
+ 		this.notesDisplay=notesDisplay;
+ 		System.out.println("Created an instance of MeasureNotesPresenter >>>>");
+ 		
+ 		notesDisplay.getExportButton().addClickHandler(new ClickHandler() { 
+ 			@Override
+ 			public void onClick(ClickEvent event) {
+ 				System.out.println("Export code to be written here");
+ 			}
+ 		});
+ 		
+ 		
+ 		notesDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+ 			@Override
+ 			public void onClick(ClickEvent event) {
+ 				System.out.println("Write code to save this note in database");
+ 						
+ 			}
+ 		}); 
+ 		
+ 				
+ 		notesDisplay.getCancelButton().addClickHandler(new ClickHandler() {
+ 			@Override
+ 			public void onClick(ClickEvent event) {
+ 				notesDisplay.cancelComposedNote();
+ 			}	
+ 		}); 
+ 	}
+ 	
+ 		
+	
 	private native void generateCSVFile()/*-{
 		var data = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
 		var csvContent = data[0];
@@ -294,20 +287,21 @@ public class MeasureNotesPresenter implements MatPresenter{
 }-*/;
 	
 	
+
 	@Override
 	public void beforeDisplay() {
-		//simplePanel.clear();
+		// TODO Auto-generated method stub
+		notesDisplay.asWidget();
 	}
-
-
 	@Override
 	public void beforeClosingDisplay() {
 		// TODO Auto-generated method stub
-		
+		notesDisplay.asWidget();
 	}
-
 	@Override
 	public Widget getWidget() {
-		return simplePanel;
+		// TODO Auto-generated method stub
+		return notesDisplay.asWidget();
 	}
-}
+	
+}	

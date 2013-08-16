@@ -942,7 +942,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				public void onSuccess(TransferMeasureOwnerShipModel result) {
 					transferDisplay.buildHTMLForMeasures(transferMeasureResults);
 					transferDisplay.buildDataTable(result);
-					panel.setHeading("Measure Libray Ownership >  Measure Ownership Transfer","MainContent");
+					panel.setHeading("Measure Library Ownership >  Measure Ownership Transfer","MainContent");
 			 	    panel.setContent(transferDisplay.asWidget());
 			 	   showSearchingBusy(false);
 			 	   model = result;

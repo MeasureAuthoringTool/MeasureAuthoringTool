@@ -26,6 +26,7 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
@@ -126,14 +127,21 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		MeasureDAO measureDAO = getMeasureDAO();
 		Measure m = measureDAO.find(measureID);
 		//This is done to increment correct next version. This should be changed when hard deletion will be implemented.
-		if(!m.isDraft()){
+		/*if(!m.isDraft()){
 			logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure: Version number updated from ::"+ m.getVersionNumber() +" to 0.000");
 			m.setVersion("0.000");
 		}
 		m.setDeleted("softDeleted");
-		measureDAO.save(m);
-		//Transaction Audit entry for measure deletion.
-	//	
+		measureDAO.save(m);*/
+		logger.info("Measure Deletion Started for measure Id :: " + measureID);
+		try{
+			measureDAO.delete(m);
+			logger.info("Measure Deleted Successfully :: " + measureID);
+		}catch(Exception e){
+			MatContext.get().setMeasureDeleted(false);
+			logger.info("Measure not deleted.Something went wrong for measure Id :: " + measureID);
+		}
+	
 		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure End : measureId:: " + measureID);
 	}
 	
@@ -243,7 +251,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
     	Measure existingMeasure = null;
     	User lockedUser = null;
     	SaveMeasureResult result = new SaveMeasureResult();
-		if(measureId != null && userId != null){
+		if(measureId != null && userId != null && StringUtils.isNotBlank(measureId)){
 			 existingMeasure = getService().getById(measureId);
 			 if(existingMeasure != null){
 				 lockedUser = getLockedUser(existingMeasure);

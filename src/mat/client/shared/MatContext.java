@@ -90,6 +90,8 @@ public class MatContext implements IsSerializable {
 	
 	private MeasureSelectedEvent currentMeasureInfo;
 	
+	private boolean isMeasureDeleted;
+	
 	private ManageMeasureDetailModel measureDetailModel;
 	
 	private ListBoxCodeProvider listBoxCodeProvider;
@@ -893,6 +895,16 @@ public class MatContext implements IsSerializable {
 	public void setModifyQDMPopUpWidget(
 			QDMAvailableValueSetWidget modifyQDMPopUpWidget) {
 		this.modifyQDMPopUpWidget = modifyQDMPopUpWidget;
+	}
+
+
+	public boolean isMeasureDeleted() {
+		return isMeasureDeleted;
+	}
+
+
+	public void setMeasureDeleted(boolean isMeasureDeleted) {
+		this.isMeasureDeleted = isMeasureDeleted;
 	}
 	
 	

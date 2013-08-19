@@ -864,6 +864,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null, "MEASURE_DELETE_EVENT", "Measure Successfully Deleted", ConstantMessages.DB_LOG);
 				// this is set to avoid showing dirty check message if user has modified Measure details and is deleting without saving.
 				currentMeasureDetail.setDeleted(true);
+				MatContext.get().setMeasureDeleted(true);
 				fireBackToMeasureLibraryEvent();
 				fireSuccessfullDeletionEvent(true,MatContext.get().getMessageDelegate().getMeasureDeletionSuccessMgs());
 				

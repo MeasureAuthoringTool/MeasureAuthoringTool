@@ -182,6 +182,10 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 
 	@Override
 	public void beforeClosingDisplay() {
+		if(MatContext.get().isMeasureDeleted()){
+			MatContext.get().getCurrentMeasureInfo().setMeasureId("");
+			MatContext.get().setMeasureDeleted(false);
+		}
 		MatContext.get().getMeasureLockService().releaseMeasureLock();
 		Command waitForUnlock = new Command(){
 			public void execute() {

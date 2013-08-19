@@ -15,7 +15,7 @@
 	<property name="measureStatus" column="MEASURE_STATUS" />
 	<property name="measureScoring" column="SCORING" />	
 	<property name="eMeasureId" column="EMEASURE_ID" />
-	<property name="deleted" column="DELETED" />
+	<!-- <property name="deleted" column="DELETED" /> -->
     <many-to-one name="owner" column="MEASURE_OWNER_ID" 
         class="mat.model.User" unique="false" cascade="none" lazy="proxy"/>
 	<set name="shares" cascade="all" lazy="true" inverse="true">

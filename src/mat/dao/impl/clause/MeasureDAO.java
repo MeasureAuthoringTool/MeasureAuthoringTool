@@ -188,7 +188,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	@Override
 	public int countMeasureShareInfoForUser(User user) {
 		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
-		mCriteria.add(Restrictions.isNull("deleted"));
+	//	mCriteria.add(Restrictions.isNull("deleted"));
 		List<Measure> measureList = mCriteria.list();
 		measureList = getAllMeasuresInSet(measureList);
 		return measureList.size();
@@ -280,7 +280,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		
 		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
 		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
-		mCriteria.add(Restrictions.isNull("deleted"));
+		//mCriteria.add(Restrictions.isNull("deleted"));
 		mCriteria.setFirstResult(startIndex);
 		
 		Map<String, MeasureShareDTO> measureIdDTOMap = new HashMap<String, MeasureShareDTO>();
@@ -359,7 +359,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		String searchTextLC = searchText.toLowerCase().trim();
 		
 		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, filter);
-		mCriteria.add(Restrictions.isNull("deleted"));//("deleted", "softDeleted"));
+	//	mCriteria.add(Restrictions.isNull("deleted"));//("deleted", "softDeleted"));
 		mCriteria.addOrder(Order.desc("measureSet.id")).addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
 		mCriteria.setFirstResult(startIndex);
 		
@@ -466,7 +466,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 	@Override
 	public int countMeasureShareInfoForUser(int filter, User user) {
 		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user, filter);
-		mCriteria.add(Restrictions.isNull("deleted"));
+		//mCriteria.add(Restrictions.isNull("deleted"));
 		List<Measure> ms = mCriteria.list();
 		ms = getAllMeasuresInSet(ms);
 		return ms.size();
@@ -618,7 +618,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 		List<List<Measure>> measureLists = new ArrayList<List<Measure>>(); 
 		for(Measure m : measureResultList){
 			boolean hasList = false;
-			if(m.getDeleted()==null){
+			/*if(m.getDeleted()==null){*/
 				for(List<Measure> mlist : measureLists){
 					String msetId = mlist.get(0).getMeasureSet().getId();
 					if(m.getMeasureSet().getId().equalsIgnoreCase(msetId)){
@@ -627,14 +627,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements mat.dao.c
 						break;
 					}
 				}
-			}
+			//}
 			if(!hasList){
 				List<Measure> mlist = new ArrayList<Measure>();
 				//Check if Measure is softDeleted then dont include that into list.
-				if(m.getDeleted()==null){
+			//	if(m.getDeleted()==null){
 					mlist.add(m);
 					measureLists.add(mlist);
-				}
+				//}
 			}
 		}
 	  	//sort

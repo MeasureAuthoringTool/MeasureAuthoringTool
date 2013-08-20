@@ -172,6 +172,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		
 		hasCells.add(new HasCell<QualityDataSetDTO, String>(){
 			private TextCell cell = new TextCell();
+			@SuppressWarnings("unchecked")
 			@Override
 			public Cell<String> getCell() {
 				return (Cell)cell;

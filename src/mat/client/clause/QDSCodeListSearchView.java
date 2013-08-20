@@ -103,16 +103,23 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		specificOccurrence.setEnabled(false);
 		addToMeasure.setEnabled(false);
 		FlowPanel searchCriteriaPanel = new FlowPanel();
+		HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.addStyleName("leftAligned");
 		Widget searchWidget = buildSearchWidget();
 		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
+		searchInput.setHeight("18px");
 		searchCriteriaPanel.add(label);
+		searchCriteriaPanel.add(new SpacerWidget());
+		searchHorizontalPanel.add(vssfp.getPanel());
+		searchHorizontalPanel.add(searchWidget);
+		//searchCriteriaPanel.add(label);
 		searchCriteriaPanel.add(errorMessagePanel);
-		searchCriteriaPanel.add(vssfp.getPanel());
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(searchWidget);
-		searchCriteriaPanel.add(new SpacerWidget());
+		//searchCriteriaPanel.add(vssfp.getPanel());
+		//searchCriteriaPanel.add(new SpacerWidget());
+		//searchCriteriaPanel.add(searchWidget);
+		//searchCriteriaPanel.add(new SpacerWidget());
+		searchCriteriaPanel.add(searchHorizontalPanel);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(view.asWidget());
 		searchCriteriaPanel.add(messageFocus);
@@ -187,6 +194,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 					}
 				});
 		fp1.add(new SpacerWidget());
+		hp.setStylePrimaryName("marginLeft");
 		hp.add(fp1);
 		return hp;
 	}
@@ -350,11 +358,11 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	}
 
 	@Override
-	public void buildQDSDataTable(QDSCodeListSearchModel results) {
-		buildTableQDS(results);
+	public void buildQDSDataTable(QDSCodeListSearchModel results ,boolean isTableEnabled) {
+		buildTableQDS(results,isTableEnabled);
 	}
 	
-	private void buildTableQDS( QDSCodeListSearchModel results){
+	private void buildTableQDS( QDSCodeListSearchModel results,boolean isTableEnabled){
 		 
 		CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -363,7 +371,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		// Display 50 rows in one page or all records.
 		table.setPageSize(50);
 		table.setSelectionModel(results.addSelectionHandlerOnTable());
-		table = results.addColumnToTable(table);
+		table = results.addColumnToTable(table,isTableEnabled);
 		
 		table.redraw();
 		sortProvider.refresh();

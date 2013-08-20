@@ -83,12 +83,12 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
-	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table){
+	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table,boolean isTableEnabled){
 		
 		if(table.getColumnCount() !=5){	
 			
-			Column<CodeListSearchDTO, Boolean> radioButtonColumn = new Column<CodeListSearchDTO, Boolean>(new RadioButtonCell(true,true)) {  
-				public Boolean getValue(CodeListSearchDTO CodeListSearchDTO) {  
+			Column<CodeListSearchDTO, Boolean> radioButtonColumn = new Column<CodeListSearchDTO, Boolean>(new RadioButtonCell(true,true,isTableEnabled)) {  
+				public Boolean getValue(CodeListSearchDTO CodeListSearchDTO) { 
 					return table.getSelectionModel().isSelected(CodeListSearchDTO);  
 				}  
 			};  
@@ -98,6 +98,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 					table.getSelectionModel().setSelected(object, true); 
 				}  
 			});  
+			
 			table.addColumn(radioButtonColumn);  
 			
 			 Column< CodeListSearchDTO , SafeHtml> nameColumn;

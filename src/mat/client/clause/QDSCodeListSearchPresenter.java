@@ -65,7 +65,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption();
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement();
-		public void buildQDSDataTable(QDSCodeListSearchModel results);
+		public void buildQDSDataTable(QDSCodeListSearchModel results,boolean isTableEnabled);
 		public HasClickHandlers getAddToMeasureButton();
 		public void setAddToMeasureButtonEnabled(boolean visible);
 		public Widget getDataTypeWidget();
@@ -259,7 +259,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				SearchResultUpdate sru = new SearchResultUpdate();
 				sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchText);
 				sru = null;
-				searchDisplay.buildQDSDataTable(QDSSearchResult);
+				searchDisplay.buildQDSDataTable(QDSSearchResult,true);
 				currentCodeListResults = QDSSearchResult;
 				displaySearch();
 				searchDisplay.getErrorMessageDisplay().setFocus();

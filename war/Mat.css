@@ -1352,7 +1352,7 @@ padding: 2px;
   border: 1px outset #ccc;
 }
 
-gwt-DisclosurePanel .content {
+.gwt-DisclosurePanel .content {
     /* background-color: lightgray; */
     background-image: url("images/bg_box-blue.png");
     background-repeat: repeat-x;
@@ -1363,6 +1363,15 @@ gwt-DisclosurePanel .content {
     border-width: 3px;
     margin-left: 6px;
     padding: 4px 0 4px 8px;
+}
+
+.marginLeft{
+	margin-left:35px;
+}
+
+.marginLeftRight{
+	margin-left:35px;
+	margin-right: 350px;
 }
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________

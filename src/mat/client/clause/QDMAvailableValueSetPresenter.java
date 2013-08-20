@@ -32,9 +32,13 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DisclosureEvent;
+import com.google.gwt.user.client.ui.DisclosureHandler;
+import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+@SuppressWarnings("deprecation")
 public class QDMAvailableValueSetPresenter  implements MatPresenter{
 
 	private SearchDisplay searchDisplay;
@@ -54,7 +58,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption();
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement();
-		public void buildQDSDataTable(QDSCodeListSearchModel results);
+		public void buildQDSDataTable(QDSCodeListSearchModel results,Boolean isTableEnabled);
 		public HasClickHandlers getAddToMeasureButton();
 		public void setAddToMeasureButtonEnabled(boolean visible);
 		public Widget getDataTypeWidget();
@@ -71,6 +75,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		public ValueSetSearchFilterPanel getValueSetSearchFilterPanel();
 		public void setEnabled(boolean enabled);
 		public Button getCancel();
+		public DisclosurePanel getDisclosurePanel();
 	}
 	
 	
@@ -114,6 +119,21 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				}
 			}
 		});
+		searchDisplay.getDisclosurePanel().addEventHandler(new DisclosureHandler()
+	    {
+
+	        public void onClose(DisclosureEvent event)
+	        {
+	        	searchDisplay.buildQDSDataTable(currentCodeListResults, true);
+	        	displaySearch();
+	        }
+
+	        public void onOpen(DisclosureEvent event)
+	        {
+	            searchDisplay.buildQDSDataTable(currentCodeListResults, false);
+	            displaySearch();
+	        }
+	    });
 		
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -309,7 +329,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				SearchResultUpdate sru = new SearchResultUpdate();
 				sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchText);
 				sru = null;
-				searchDisplay.buildQDSDataTable(QDSSearchResult);
+				searchDisplay.buildQDSDataTable(QDSSearchResult,true);
 				currentCodeListResults = QDSSearchResult;
 				displaySearch();
 				searchDisplay.getErrorMessageDisplay().setFocus();

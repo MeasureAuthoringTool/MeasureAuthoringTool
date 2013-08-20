@@ -3,13 +3,9 @@ package mat.client.shared;
 import com.google.gwt.cell.client.AbstractEditableCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.ValueUpdater;
-import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.Node;
-import com.google.gwt.dom.client.NodeList;
-import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -65,8 +61,15 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 		this();
 		this.dependsOnSelection = dependsOnSelection;
 		this.handlesSelection = handlesSelection;
+		this.isEnabled =true;
 	}
 	
+	public RadioButtonCell(boolean dependsOnSelection, boolean handlesSelection,boolean isEnabled) {
+		this();
+		this.dependsOnSelection = dependsOnSelection;
+		this.handlesSelection = handlesSelection;
+		this.isEnabled = isEnabled;
+	}
  
 	@Override
 	public boolean dependsOnSelection() {
@@ -161,22 +164,19 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 			clearViewData(context.getKey());
 			viewData = null;
 		}
-		//if(!isUsed){    
+		//if(!isUsed || isEnabled ){  
+		if(isEnabled ){
 			if (value != null && ((viewData != null) ? viewData : value)) {
 				sb.append(INPUT_CHECKED);
 			} else {
 				sb.append(INPUT_UNCHECKED);
 			}
-	//	}else{
-		//	sb.append(INPUT_UNCHECKED_DISABLED);
+		}else{
+			sb.append(INPUT_UNCHECKED_DISABLED);
 			//sb.append(INPUT_UNCHECKED);
 
-		//}
+		}
 	}
 	
-	private boolean checkForEnable(){
-		
-		return MatContext.get().getMeasureLockService().checkForEditPermission();
-	}
- 
+	 
 }

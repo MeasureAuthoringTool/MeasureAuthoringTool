@@ -35,6 +35,7 @@ public class QDMPresenter implements MatPresenter{
 	}
 
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public void beforeDisplay() {
 		tabLayout = new MatTabLayoutPanel(true);
@@ -45,6 +46,7 @@ public class QDMPresenter implements MatPresenter{
 		MatContext.get().tabRegistry.put("QDM Element",tabLayout);
 		MatContext.get().enableRegistry.put(tabLayout,this);
 		tabLayout.addSelectionHandler(new SelectionHandler<Integer>(){
+			@SuppressWarnings("rawtypes")
 			public void onSelection(final SelectionEvent event) {
 				int index = ((SelectionEvent<Integer>) event).getSelectedItem();
 				// suppressing token dup

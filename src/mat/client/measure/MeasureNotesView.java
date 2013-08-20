@@ -42,7 +42,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	private static final int[] PAGE_SIZES= new int[] {50, PAGE_SIZE_ALL};
 	private VerticalPanel containerPanel = new VerticalPanel();
 	private SimplePanel simplePanel = new SimplePanel();
-	private FlowPanel flowPanel = new FlowPanel();
+	private FlowPanel flowPanel = new FlowPanel ();
 	private TextArea measureNoteComposer = new TextArea();
 	private TextBox measureNoteTitle = new TextBox();
 	private Button exportButton = new PrimaryButton("Export Notes","primaryButton");
@@ -95,8 +95,11 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 
 	public MeasureNotesView(){
 		containerPanel.clear();
-		simplePanel.setStyleName("notesContentPanel");
-		//flowPanel.add(new Label("Measure Notes Section"));
+		containerPanel.setStyleName("contentPanel");
+		
+		
+		simplePanel.getElement().setId("MeasureNotesView_simplePanel");
+		
 		flowPanel.add(exportButton);
 		flowPanel.add(new SpacerWidget());
 		flowPanel.add(new SpacerWidget());
@@ -107,7 +110,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		containerPanel.add(new SpacerWidget());
 		
 		FlowPanel fPanel = new FlowPanel();
-		fPanel.getElement().setId("MeasureNotesView_fPanel");
+		
 		fPanel.add(new SpacerWidget());
 		fPanel.add(successMessageDisplay);
 		fPanel.add(new SpacerWidget());
@@ -127,7 +130,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		HorizontalPanel titlePanel = new HorizontalPanel();
 		Label titleLabel= new Label("Title:");
 		titleLabel.setStyleName("bold");
-		measureNoteTitle.setWidth("50%");
+		measureNoteTitle.setWidth("400px");
 		titlePanel.add(titleLabel);
 		titlePanel.add(measureNoteTitle);
 		composerPanel.add(titlePanel);
@@ -168,7 +171,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		mainPanel.setSpacing(20);
 		
 		if(results != null) {
-			scrollPanel.getElement().setId("measureNotesView_scrollPanel");
+			
 			for(MeasureNotesModel.Result result : results.getData()){
 				createDisclosurePanel(mainPanel,result);
 			}
@@ -180,12 +183,12 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	
 	private void createDisclosurePanel(VerticalPanel mainPanel, MeasureNotesModel.Result result){
 		DisclosurePanel notesDisclosurePanel = new DisclosurePanel();
-		//notesDisclosurePanel.getElement().setId("measureNotesView_notesDisclosurePanel");
 		notesDisclosurePanel.setAnimationEnabled(true);
 		notesDisclosurePanel.setOpen(false);
 		notesDisclosurePanel.setHeader(createDisclosureHeaderWidget(result));
 		notesDisclosurePanel.setContent(createDisclosureContentWidget(result));
 		notesDisclosurePanel.setWidth("100%");
+		
 		mainPanel.add(notesDisclosurePanel);
 	}
 	
@@ -193,9 +196,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			mat.model.MeasureNotesModel.Result result) {
 		// TODO Auto-generated method stub
 		TextBox title = new TextBox();
+		title.setTitle("Measure Notes Title");
 		title.setWidth("400px");
-		title.setStyleName("bold");
 		TextArea measureNoteDesc = new TextArea();
+		measureNoteDesc.setTitle("Measure Notes Description");
 		measureNoteDesc.setWidth("800px");
 		measureNoteDesc.setHeight("70px");
 		HorizontalPanel hPanel = new HorizontalPanel();
@@ -204,6 +208,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		hPanel.add(titleLabel);
 		hPanel.add(title);
 		VerticalPanel vPanel = new VerticalPanel();
+		vPanel.setWidth("1000px");
 		vPanel.add(hPanel);
 		vPanel.add(new SpacerWidget());
 		vPanel.add(measureNoteDesc);

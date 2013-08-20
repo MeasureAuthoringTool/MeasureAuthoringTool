@@ -58,6 +58,8 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
 	private Button addToMeasure = new PrimaryButton("Apply to Measure","primaryButton");
+	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
+	private Button psuedoQDMCancel = new SecondaryButton("Cancel");
 	private Button cancel = new Button("Close");
 	private SimplePanel dataTypePanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
@@ -230,7 +232,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		Widget widgetDataType = LabelBuilder.buildLabel("Select Data Type", "Select Data Type");
 		dataTypePanel.add(widgetDataType);
 		dataTypePanel.add(new SpacerWidget());
-		allDataTypeInput.addItem("-- Select Data Type --");
+		/*allDataTypeInput.addItem("-- Select Data Type --");*/
 		dataTypePanel.add(allDataTypeInput);
 		allDataTypeInput.addFocusHandler(
 				new FocusHandler() {
@@ -244,9 +246,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		horiPanel.add(dataTypePanel);
 		
 		HorizontalPanel buttonHorizontalPanel = new HorizontalPanel();
-		buttonHorizontalPanel.add(new PrimaryButton("Apply to Measure", "primaryButton"));
+		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		buttonHorizontalPanel.add(new SpacerWidget());
-		buttonHorizontalPanel.add(new SecondaryButton("Cancel"));
+		buttonHorizontalPanel.add(psuedoQDMCancel);
 		
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.add(horiPanel);
@@ -364,6 +366,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	public void setDataTypeOptions(List<? extends HasListBox> texts) {
 		setListBoxItems(dataTypeInput, texts, MatContext.PLEASE_SELECT);
 	}
+	
+	@Override
+	public void setAllDataTypeOptions(List<? extends HasListBox> texts) {
+		setListBoxItems(allDataTypeInput, texts, MatContext.PLEASE_SELECT);
+	}
 
 
 	@Override
@@ -467,12 +474,44 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return getMainPanel();
 	}
 
+	public TextBox getUserDefinedInput() {
+		return userDefinedInput;
+	}
+
+	public void setUserDefinedInput(TextBox userDefinedInput) {
+		this.userDefinedInput = userDefinedInput;
+	}
+
 	public DisclosurePanel getDisclosurePanel() {
 		return disclosurePanel;
 	}
 
 	public void setDisclosurePanel(DisclosurePanel disclosurePanel) {
 		this.disclosurePanel = disclosurePanel;
+	}
+
+	public Button getPsuedoQDMToMeasure() {
+		return psuedoQDMToMeasure;
+	}
+
+	public void setPsuedoQDMToMeasure(Button psuedoQDMToMeasure) {
+		this.psuedoQDMToMeasure = psuedoQDMToMeasure;
+	}
+
+	public Button getPsuedoQDMCancel() {
+		return psuedoQDMCancel;
+	}
+
+	public void setPsuedoQDMCancel(Button psuedoQDMCancel) {
+		this.psuedoQDMCancel = psuedoQDMCancel;
+	}
+
+	public ListBoxMVP getAllDataTypeInput() {
+		return allDataTypeInput;
+	}
+
+	public void setAllDataTypeInput(ListBoxMVP allDataTypeInput) {
+		this.allDataTypeInput = allDataTypeInput;
 	}
 
 	@Override

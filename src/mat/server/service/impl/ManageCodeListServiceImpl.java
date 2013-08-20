@@ -795,6 +795,19 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 	
 	@Override
+	public List<? extends HasListBox> getAllDataTypes() {
+		List<DataTypeDTO> retList = new ArrayList<DataTypeDTO>();
+		List<DataType> dt = dataTypeDAO.findAllDataType();
+		for(DataType dataType : dt){
+			DataTypeDTO dto = new DataTypeDTO();
+			dto.setDescription(dataType.getDescription());
+			dto.setId(dataType.getId());
+			retList.add(dto);
+		}
+		return retList;
+	}
+	
+	@Override
 	public ManageCodeListDetailModel deleteCodes(String key, List<Code> codes) {
 		if(codes != null){
 			codeDAO.deleteCodes(codes);

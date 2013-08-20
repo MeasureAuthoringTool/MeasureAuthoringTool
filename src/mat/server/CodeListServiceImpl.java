@@ -388,6 +388,12 @@ implements mat.client.codelist.service.CodeListService {
 		return getCodeListService().getAllOperators();
 	}
 
+	@Override
+	public List<? extends HasListBox> getAllDataTypes() {
+		List<? extends HasListBox> ret = getCodeListService().getAllDataTypes();
+		return ret;
+	}
+
 	
 	
 }

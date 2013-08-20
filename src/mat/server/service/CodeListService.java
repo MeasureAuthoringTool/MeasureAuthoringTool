@@ -64,6 +64,7 @@ public interface CodeListService {
 			String dataType, CodeListSearchDTO codeList,
 			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDM);
+	List<? extends HasListBox> getAllDataTypes();
 	
 	
 }

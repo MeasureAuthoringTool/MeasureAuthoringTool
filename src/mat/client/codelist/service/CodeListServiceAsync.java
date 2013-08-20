@@ -91,4 +91,9 @@ public interface CodeListServiceAsync {
 			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDMList,
 			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
+
+	public void getAllDataTypes(
+			AsyncCallback<List<? extends HasListBox>> asyncCallback);
+	
+	
 }

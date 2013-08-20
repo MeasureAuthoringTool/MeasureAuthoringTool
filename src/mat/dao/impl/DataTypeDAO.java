@@ -1,5 +1,8 @@
 package mat.dao.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mat.dao.search.GenericDAO;
 import mat.model.DataType;
 
@@ -27,4 +30,14 @@ public class DataTypeDAO extends GenericDAO<DataType, String> implements mat.dao
 		if(criteria.list().isEmpty()) return null;
 		return (DataType)criteria.list().get(0);
 	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<DataType> findAllDataType(){
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(DataType.class);
+		if(criteria.list().isEmpty()) return null;
+		return (ArrayList<DataType>)criteria.list();
+	}
+	
 }

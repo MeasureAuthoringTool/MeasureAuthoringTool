@@ -355,6 +355,23 @@ public class ListBoxCodeProvider implements IsSerializable {
 	}
 	
 	
+	public void getAllDataType(final AsyncCallback<List<? extends HasListBox>> callback){
+		MatContext.get().getCodeListService().getAllDataTypes(new AsyncCallback<List<? extends HasListBox>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				callback.onFailure(caught);
+			}
+
+			@Override
+			public void onSuccess(List<? extends HasListBox> result) {
+				Collections.sort(result, new HasListBox.Comparator());
+				callback.onSuccess(result);
+			}
+		});
+	}
+	
+	
 	//US 62	
 	public void getUnitList(AsyncCallback<List<? extends HasListBox>> callback) {
 		if(retrieved) {

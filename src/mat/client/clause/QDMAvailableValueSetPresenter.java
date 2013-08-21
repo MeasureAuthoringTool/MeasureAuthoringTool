@@ -81,6 +81,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		public TextBox getUserDefinedInput();
 		public ListBoxMVP getAllDataTypeInput();
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
+		public DisclosurePanel getDisclosurePanelCellTable();
 	}
 	
 	
@@ -136,6 +137,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	        	searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
 	        	searchDisplay.buildQDSDataTable(currentCodeListResults, true);
 	        	displaySearch();
+	        	searchDisplay.getDisclosurePanelCellTable().setOpen(true);
 	        }
 
 	        public void onOpen(DisclosureEvent event)
@@ -143,6 +145,29 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	        	populateAllDataType();
 	        	searchDisplay.buildQDSDataTable(currentCodeListResults, false);
 	            displaySearch();
+	            searchDisplay.getDisclosurePanelCellTable().setOpen(false);
+	        }
+	    });
+		
+		
+		searchDisplay.getDisclosurePanelCellTable().addEventHandler(new DisclosureHandler()
+	    {
+
+	        public void onClose(DisclosureEvent event)
+	        {
+	        	searchDisplay.getUserDefinedInput().setText("");
+	        	//searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
+	        	searchDisplay.buildQDSDataTable(currentCodeListResults, false);
+	        	displaySearch();
+	        	searchDisplay.getDisclosurePanel().setOpen(true);
+	        }
+
+	        public void onOpen(DisclosureEvent event)
+	        {
+	        	/*populateAllDataType();*/
+	        	searchDisplay.buildQDSDataTable(currentCodeListResults, false);
+	            displaySearch();
+	            searchDisplay.getDisclosurePanel().setOpen(false);
 	        }
 	    });
 		

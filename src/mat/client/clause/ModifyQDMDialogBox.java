@@ -22,9 +22,9 @@ public class ModifyQDMDialogBox {
 		dialogBox.setText(text);
 		dialogBox.setTitle("Modify Applied QDM");
 		VerticalPanel dialogContents = new VerticalPanel();
-		dialogContents.setWidth("93em");
-		DOM.setStyleAttribute(dialogBox.getElement(), "width", "2000px");
-		DOM.setStyleAttribute(dialogBox.getElement(), "height", "2000px");
+		dialogContents.setWidth("70em");
+		DOM.setStyleAttribute(dialogBox.getElement(), "width", "1000px");
+		DOM.setStyleAttribute(dialogBox.getElement(), "height", "1000px");
 	
 		dialogBox.setWidget(dialogContents);
 		

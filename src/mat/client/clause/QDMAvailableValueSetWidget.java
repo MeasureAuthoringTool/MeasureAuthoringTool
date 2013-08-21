@@ -52,7 +52,8 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	HorizontalPanel mainPanel = new HorizontalPanel();
 	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	
-	private DisclosurePanel disclosurePanel = new DisclosurePanel("User Defined Value Set");
+	private DisclosurePanel disclosurePanel = new DisclosurePanel("User Defined QDM");
+	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Available QDM");
 	private TextBox searchInput = new TextBox();
 	private TextBox userDefinedInput = new TextBox();
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
@@ -103,42 +104,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		specificOccurrence.setEnabled(false);
 		addToMeasure.setEnabled(false);
 		
-		FlowPanel searchCriteriaPanel = new FlowPanel();
-		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchCriteriaPanel");
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.addStyleName("leftAligned");
-		Widget searchWidget = buildSearchWidget();
-		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
-		searchInput.setHeight("18px");
-		searchCriteriaPanel.add(label);
-		HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
-		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchHorizontalPanel");
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchHorizontalPanel.add(vssfp.getPanel());
-		searchHorizontalPanel.add(searchWidget);
-		searchCriteriaPanel.add(searchHorizontalPanel);
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(buildUserDefinedDisclosureWidget());
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(errorMessagePanel);
-		searchCriteriaPanel.add(view.asWidget());
-		searchCriteriaPanel.add(messageFocus);
-		searchCriteriaPanel.add(buildInitialDisabledWidget());
-		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
-		searchCriteriaPanel.add(new SpacerWidget());
-		
-		HorizontalPanel buttonLayout = new HorizontalPanel();
-		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
-		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
-		addToMeasure.setTitle("Apply to Measure");
-		cancel.setTitle("Close");
-		cancel.setStyleName("rightAlignSecondaryButton");
-		buttonLayout.add(addToMeasure);
-		buttonLayout.add(cancel);
-		searchCriteriaPanel.add(buttonLayout);
-		
-		vp.add(searchCriteriaPanel);
+		vp.add(buildCellTableWidget());
+		vp.add(new SpacerWidget());
+		vp.add(buildUserDefinedDisclosureWidget());
+		vp.add(new SpacerWidget());
+		vp.add(new SpacerWidget());
 		vp.add(new SpacerWidget());
 		mainPanel.add(vp);
 		mainPanel.getElement().setAttribute("id","ModifyMainPanel");
@@ -257,6 +227,48 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		mainPanel.add(new SpacerWidget());
 		disclosurePanel.add(mainPanel);
 		return disclosurePanel;
+	}
+	
+	private Widget buildCellTableWidget(){
+		FlowPanel searchCriteriaPanel = new FlowPanel();
+		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchCriteriaPanel");
+		searchCriteriaPanel.add(new SpacerWidget());
+		searchCriteriaPanel.addStyleName("leftAligned");
+		Widget searchWidget = buildSearchWidget();
+		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
+		searchInput.setHeight("18px");
+		searchCriteriaPanel.add(label);
+		HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
+		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchHorizontalPanel");
+		searchCriteriaPanel.add(new SpacerWidget());
+		searchHorizontalPanel.add(vssfp.getPanel());
+		searchHorizontalPanel.add(searchWidget);
+		searchCriteriaPanel.add(searchHorizontalPanel);
+		searchCriteriaPanel.add(new SpacerWidget());
+		searchCriteriaPanel.add(new SpacerWidget());
+		
+		searchCriteriaPanel.add(new SpacerWidget());
+		searchCriteriaPanel.add(errorMessagePanel);
+		searchCriteriaPanel.add(view.asWidget());
+		searchCriteriaPanel.add(messageFocus);
+		searchCriteriaPanel.add(buildInitialDisabledWidget());
+		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
+		searchCriteriaPanel.add(new SpacerWidget());
+		
+		HorizontalPanel buttonLayout = new HorizontalPanel();
+		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
+		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
+		addToMeasure.setTitle("Apply to Measure");
+		cancel.setTitle("Close");
+		cancel.setStyleName("rightAlignSecondaryButton");
+		buttonLayout.add(addToMeasure);
+		buttonLayout.add(cancel);
+		searchCriteriaPanel.add(buttonLayout);
+		
+		disclosurePanelCellTable.add(searchCriteriaPanel);
+		disclosurePanelCellTable.setOpen(true);
+		return disclosurePanelCellTable;
+		
 	}
 	
 	
@@ -512,6 +524,14 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 
 	public void setAllDataTypeInput(ListBoxMVP allDataTypeInput) {
 		this.allDataTypeInput = allDataTypeInput;
+	}
+
+	public DisclosurePanel getDisclosurePanelCellTable() {
+		return disclosurePanelCellTable;
+	}
+
+	public void setDisclosurePanelCellTable(DisclosurePanel disclosurePanelCellTable) {
+		this.disclosurePanelCellTable = disclosurePanelCellTable;
 	}
 
 	@Override

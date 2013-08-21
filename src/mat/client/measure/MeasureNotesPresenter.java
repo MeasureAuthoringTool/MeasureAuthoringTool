@@ -3,19 +3,25 @@ package mat.client.measure;
 import mat.client.MatPresenter;
 import mat.client.measure.ManageMeasurePresenter.BaseDisplay;
 import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
+import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.search.SearchResults;
 import mat.model.MeasureNotesModel.Result;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MeasureNotesPresenter implements MatPresenter{
 	
  	MeasureServiceAsync service = MatContext.get().getMeasureService();
- 	private NotesDisplay notesDisplay; 
+ 	 		
+ 	public NotesDisplay notesDisplay; 
  	
  	public static interface NotesDisplay extends BaseDisplay{
 		public HasClickHandlers getSaveButton();
@@ -23,13 +29,16 @@ public class MeasureNotesPresenter implements MatPresenter{
 		public HasClickHandlers getExportButton();
 		public void cancelComposedNote();
 		void buildDataTable(SearchResults<Result> results);
+		public TextArea getMeasureNoteComposer();
+		public SuccessMessageDisplay getSuccessMessageDisplay();
+		public ErrorMessageDisplay getErrorMessageDisplay();
+		public TextBox getMeasureNoteTitle();
 		
 	}
  	 
- 	public MeasureNotesPresenter(final NotesDisplay notesDisplay){
+ 	public MeasureNotesPresenter(NotesDisplay notesDisplay){
  		this.notesDisplay=notesDisplay;
  		System.out.println("Created an instance of MeasureNotesPresenter >>>>");
- 		
  		notesDisplay.getExportButton().addClickHandler(new ClickHandler() { 
  			@Override
  			public void onClick(ClickEvent event) {
@@ -41,21 +50,52 @@ public class MeasureNotesPresenter implements MatPresenter{
  		notesDisplay.getSaveButton().addClickHandler(new ClickHandler() {
  			@Override
  			public void onClick(ClickEvent event) {
- 				System.out.println("Write code to save this note in database");
+ 				System.out.println("Saving the note to the database >>>> ");
+ 				saveMeasureNote();
  						
  			}
  		}); 
- 		
- 				
+ 		 				
  		notesDisplay.getCancelButton().addClickHandler(new ClickHandler() {
  			@Override
  			public void onClick(ClickEvent event) {
- 				notesDisplay.cancelComposedNote();
+ 				//notesDisplay.cancelComposedNote();
  			}	
  		}); 
  	}
  	
- 		
+ 	private MeasureNotesModel getAllMeasureNotesByMeasureID(){
+ 		//TODO for retriving measure notes
+ 		return null; 		
+ 	}
+ 	
+ 	
+ 	private void saveMeasureNote(){
+ 		String noteTitle = notesDisplay.getMeasureNoteTitle().getText();
+ 		String noteDescription = notesDisplay.getMeasureNoteComposer().getText();
+ 		if(noteTitle != null && !noteTitle.isEmpty() && noteDescription != null && !noteDescription.isEmpty()){
+ 			
+ 			service.saveMeasureNote(noteTitle, noteDescription,MatContext.get().getCurrentMeasureId(),MatContext.get().getLoggedinUserId(), new AsyncCallback<Void>() {
+				
+				@Override
+				public void onSuccess(Void result) {
+					notesDisplay.getSuccessMessageDisplay().setMessage("The measure note is saved successfully");
+					notesDisplay.getMeasureNoteComposer().setText("");
+					notesDisplay.getMeasureNoteTitle().setText("");
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note" );
+					
+				}
+			});		
+ 		}else{
+ 			notesDisplay.getSuccessMessageDisplay().clear();
+ 			notesDisplay.getErrorMessageDisplay().setMessage("Please enter Title and Description for the measure note before saving");
+ 		}
+ 	}
+ 	
 	
 	private native void generateCSVFile()/*-{
 		var data = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];

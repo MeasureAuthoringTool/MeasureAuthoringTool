@@ -24,7 +24,7 @@
       </property>
     </bean>
     
-    <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
+     <bean id="liquibase" class="liquibase.integration.spring.SpringLiquibase">
 		<property name="dataSource" ref="dataSource" />
 		<property name="changeLog" value="classpath:/liquibase/changelog.xml"  />
 		<property name="contexts" value="prod" />
@@ -47,9 +47,12 @@
     </bean> -->
      <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		<property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_NEWER_TS"/>
-        <property name="username" value="mat_newer_ts_usr"/>
+	    <property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_NEWERER"/>
+        <property name="username" value="mat_newerer_usr"/>
         <property name="password" value="***REMOVED***"/>  
+    <!--<property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_NEWER_TS"/>
+         <property name="username" value="mat_newer_ts_usr"/>
+         <property name="password" value="***REMOVED***"/>  -->
     </bean>
 
 	<context:annotation-config />
@@ -292,7 +295,11 @@
 	<bean id="securityQuestionsDAO"
         class="mat.dao.impl.SecurityQuestionsDAO" parent="baseDAO">
     </bean>
-	
+    
+    <bean id="measureNotesDAO"
+        class="mat.dao.impl.MeasureNotesDAO" parent="baseDAO">
+    </bean>
+    
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>
@@ -332,6 +339,7 @@
 		<property name="transactionAuditLogDAO" ref="transactionAuditLogDAO"/>
 		<property name="matFlagDAO" ref="matFlagDAO"/>
 		<property name="measureXMLDAO" ref="measureXMLDAO"/>
+		<property name="measureNotesDAO" ref="measureNotesDAO"/>
 	</bean>
 	 
 </beans>

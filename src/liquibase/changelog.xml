@@ -15,7 +15,7 @@
 		<include file="classpath:/liquibase/deploy_01.00.07_20110308.xml"/>
 		<include file="classpath:/liquibase/deploy_01.00.08_20110315.xml"/>
 		
-		<include file="classpath:/liquibase/deploy_01.00.09_20110322.xml"/>
+ 		<include file="classpath:/liquibase/deploy_01.00.09_20110322.xml"/>
 		<include file="classpath:/liquibase/deploy_01.00.10_20110414.xml"/>
 		<include file="classpath:/liquibase/deploy_01.00.11_20110426.xml"/>
 		
@@ -128,4 +128,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint_18_US_MAT2123_1.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_18_US2080.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_20_US2136.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint_20_US_MAT1337.xml"/>
 	</databaseChangeLog>

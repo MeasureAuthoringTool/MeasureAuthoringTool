@@ -32,6 +32,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.model.Author;
+import mat.model.MeasureNotes;
 import mat.model.MeasureType;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
@@ -43,6 +44,7 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.QDSAttributes;
 import mat.model.clause.ShareLevel;
 import mat.server.service.InvalidValueSetDateException;
+import mat.server.service.MeasureNotesService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
 import mat.server.util.MeasureUtility;
@@ -81,6 +83,32 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	@Autowired
 	private QDSAttributesDAO qDSAttributesDAO;
 	
+	//@Autowired
+	//private MeasureNotesService measureNotesService;
+	
+	@Autowired 
+	private MeasurePackageService measurePackageService;
+	
+	@Autowired 
+	private UserService userService;
+	
+	
+	/*public MeasureNotesService getMeasureNotesService() {
+		return measureNotesService;
+	}
+
+	public void setMeasureNotesService(MeasureNotesService measureNotesService) {
+		this.measureNotesService = measureNotesService;
+	}
+	*/	
+	public void setMeasurePackageService(MeasurePackageService measurePackageService) {
+		this.measurePackageService = measurePackageService;
+	}
+
+	public void setUserService(UserService userService) {
+		this.userService = userService;
+	}
+
 	private MeasureXMLDAO getMeasureXMLDAO(){
 		return ((MeasureXMLDAO)context.getBean("measureXMLDAO")); 
 	}
@@ -93,8 +121,12 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return ((QDSAttributesDAO)context.getBean("qDSAttributesDAO"));
 		
 	}
-		
 	
+	private MeasureNotesService getMeasureNotesService(){
+		return ((MeasureNotesService)context.getBean("measureNotesService"));
+		
+	}
+			
 	private void setValueFromModel(ManageMeasureDetailModel model, Measure measure) {
 		measure.setDescription(model.getName());
 		measure.setaBBRName(model.getShortName());
@@ -1292,4 +1324,28 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
 		getService().updatePrivateColumnInMeasure(measureId, isPrivate);
 	}
+	
+	@Override
+	public void saveMeasureNote(String noteTitle, String noteDescription, String measureId, String userId){
+			MeasureNotes measureNote = new MeasureNotes();
+			measureNote.setNoteTitle(noteTitle);
+ 			measureNote.setNoteDesc(noteDescription);
+ 			Measure measure = getMeasureDAO().find(measureId);
+			if(measure != null){
+				measureNote.setMeasure(measure);
+			}
+			User user = getUserService().getById(userId);
+			if(user != null){
+				measureNote.setCreateUser(user);
+			}
+			measureNote.setLastModifiedDate(new Date());
+			getMeasureNotesService().saveMeasureNote(measureNote);
+	}
+
+	@Override
+	public void getAllMeasureNotesByMeasureID(String measureID) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

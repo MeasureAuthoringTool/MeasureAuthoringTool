@@ -10,6 +10,7 @@ import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
 import mat.model.CodeListSearchDTO;
+import mat.model.MeasureNotes;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -48,6 +49,8 @@ public interface MeasureService extends RemoteService {
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
 	void updateMeasureXML(QualityDataSetDTO modifyWithDTO,
 			QualityDataSetDTO modifyDTO, String measureId);
-
+	public void saveMeasureNote(String noteTitle, String noteDescription,
+			String string, String string2);
+	public void getAllMeasureNotesByMeasureID(String measureID);
 
 }

@@ -103,6 +103,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		flowPanel.add(exportButton);
 		flowPanel.add(new SpacerWidget());
 		flowPanel.add(new SpacerWidget());
+		flowPanel.add(successMessageDisplay);
+		flowPanel.add(errorMessages);
+		flowPanel.add(new SpacerWidget());
 		flowPanel.add(buildMeasureComposer());
 		flowPanel.add(new SpacerWidget());
 		simplePanel.add(flowPanel);
@@ -112,7 +115,6 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		FlowPanel fPanel = new FlowPanel();
 		
 		fPanel.add(new SpacerWidget());
-		fPanel.add(successMessageDisplay);
 		fPanel.add(new SpacerWidget());
 		notesResult.setData(getDataList());
 		fPanel.add(buildDataTable(notesResult));
@@ -154,11 +156,19 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return containerPanel;
 	}
 	
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
+	public ErrorMessageDisplay getErrorMessageDisplay() {
 		// TODO Auto-generated method stub
 		return errorMessages;
 	}
-	
+		
+	public SuccessMessageDisplay getSuccessMessageDisplay() {
+		return successMessageDisplay;
+	}
+
+	public void setSuccessMessageDisplay(SuccessMessageDisplay successMessageDisplay) {
+		this.successMessageDisplay = successMessageDisplay;
+	}
+
 	public void cancelComposedNote() {
 		getMeasureNoteComposer().setText("");
 		getMeasureNoteTitle().setText("");

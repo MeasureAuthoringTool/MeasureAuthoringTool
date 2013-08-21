@@ -11,6 +11,7 @@ import mat.dao.ListObjectDAO;
 import mat.dao.ListObjectLTDAO;
 import mat.dao.MatFlagDAO;
 import mat.dao.MeasureAuditLogDAO;
+import mat.dao.MeasureNotesDAO;
 import mat.dao.MeasureScoreDAO;
 import mat.dao.MeasureValidationLogDAO;
 import mat.dao.ObjectStatusDAO;
@@ -69,7 +70,7 @@ public class DAOService {
 	private OperatorDAO operatorDAO;
 	private MatFlagDAO matFlagDAO;
 	private MeasureXMLDAO measureXMLDAO;
-	
+	private MeasureNotesDAO measureNotesDAO;
 
 	//US 170 & 383
 	private MeasureAuditLogDAO measureAuditLogDAO;
@@ -311,6 +312,13 @@ public class DAOService {
 	public MeasureXMLDAO getMeasureXMLDAO() {
 		return measureXMLDAO;
 	}
+	public MeasureNotesDAO getMeasureNotesDAO() {
+		return measureNotesDAO;
+	}
+	public void setMeasureNotesDAO(MeasureNotesDAO measureNotesDAO) {
+		this.measureNotesDAO = measureNotesDAO;
+	}
+	
 	/**
 	 * @return the securityQuestionsDAO
 	 *//*

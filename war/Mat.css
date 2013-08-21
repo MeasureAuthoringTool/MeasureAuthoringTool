@@ -1373,6 +1373,16 @@ padding: 2px;
 	margin-left:35px;
 	margin-right: 200px;
 }
+
+.marginLeft{
+	margin-left:35px;
+}
+
+.marginLeftRight{
+	margin-left:35px;
+	margin-right: 350px;
+}
+
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________
 .skiplist {margin: 0 0 0 5px; padding: 0} 

@@ -269,10 +269,13 @@
         class="mat.dao.impl.clause.MeasureXMLDAO" parent="baseDAO">
     </bean>
     
-     <bean id="securityQuestionsDAO"
+    <bean id="securityQuestionsDAO"
         class="mat.dao.impl.SecurityQuestionsDAO" parent="baseDAO">
     </bean>
 	
+	<bean id="measureNotesDAO"
+        class="mat.dao.impl.MeasureNotesDAO" parent="baseDAO">
+    </bean>
 
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
@@ -313,6 +316,7 @@
 		<property name="transactionAuditLogDAO" ref="transactionAuditLogDAO"/>
 		<property name="matFlagDAO" ref="matFlagDAO"/>
 		<property name="measureXMLDAO" ref="measureXMLDAO"/>
+		<property name="measureNotesDAO" ref="measureNotesDAO"/>
 	</bean>
      
 </beans>

@@ -1,5 +1,6 @@
 package mat.client.measure;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -195,11 +197,25 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		DisclosurePanel notesDisclosurePanel = new DisclosurePanel();
 		notesDisclosurePanel.setAnimationEnabled(true);
 		notesDisclosurePanel.setOpen(false);
-		notesDisclosurePanel.setHeader(createDisclosureHeaderWidget(result));
-		notesDisclosurePanel.setContent(createDisclosureContentWidget(result));
+		Widget contentWidget = createDisclosureContentWidget(result);
+		Widget headerWidget = createDisclosureHeaderWidget(result,notesDisclosurePanel);
+		//notesDisclosurePanel.setHeader(createDisclosureHeaderWidget(result));
+		notesDisclosurePanel.setContent(contentWidget);
 		notesDisclosurePanel.setWidth("100%");
 		
-		mainPanel.add(notesDisclosurePanel);
+		VerticalPanel widgetPanel = new VerticalPanel();
+		widgetPanel.setWidth("875px");
+		widgetPanel.setStylePrimaryName("bottom_border_inset");		
+		widgetPanel.add(headerWidget);
+		widgetPanel.setCellHorizontalAlignment(headerWidget, HasHorizontalAlignment.ALIGN_RIGHT);
+		widgetPanel.add(new SpacerWidget());
+		widgetPanel.add(notesDisclosurePanel);
+		widgetPanel.add(new SpacerWidget());
+		
+		mainPanel.add(widgetPanel);
+		mainPanel.setWidth("875px");
+		mainPanel.setStylePrimaryName("right_left_border_outset");
+				
 	}
 	
 	private Widget createDisclosureContentWidget(
@@ -218,7 +234,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		hPanel.add(titleLabel);
 		hPanel.add(title);
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setWidth("1000px");
+		vPanel.setWidth("850px");
 		vPanel.add(hPanel);
 		vPanel.add(new SpacerWidget());
 		vPanel.add(measureNoteDesc);
@@ -237,7 +253,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	}
 
 	private Widget createDisclosureHeaderWidget(
-		mat.model.MeasureNotesModel.Result result) {
+		mat.model.MeasureNotesModel.Result result, final DisclosurePanel notesDisclosurePanel) {
+		
 		HorizontalPanel headerPanel = new HorizontalPanel();
 		headerPanel.setWidth("800px");
 		HorizontalPanel noteTitlePanel = new HorizontalPanel();
@@ -277,8 +294,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		HorizontalPanel creationDatePanel = new HorizontalPanel();
 		creationDatePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-		HTML creationDate = new HTML(result.getCreationDate().toString());
-		creationDate.setTitle(result.getCreationDate().toString());
+		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+		String dateString = dateFormat.format(result.getCreationDate());
+		HTML creationDate = new HTML(dateString);
+		creationDate.setTitle(dateString);
 		creationDate.setWidth("100%");
 		//creationDate.setStyleName("disclosurePanelHeaderValue");
 //		creationDatePanel.setWidth("200px");
@@ -297,6 +316,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			public void onClick(ClickEvent event) {
 				// TODO Auto-generated method stub
 				System.out.println("Edit button clicked !!!");
+				notesDisclosurePanel.setOpen(!notesDisclosurePanel.isOpen());
 			}
 				
 		});

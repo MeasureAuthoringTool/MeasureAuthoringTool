@@ -1383,6 +1383,15 @@ padding: 2px;
 	margin-right: 350px;
 }
 
+.bottom_border_inset{
+	border-bottom: 2px inset #B0B0B0;	
+}
+
+.right_left_border_outset{
+	border-left: 2px outset #B0B0B0;
+	border-right: 2px inset #B0B0B0;
+}
+
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________
 .skiplist {margin: 0 0 0 5px; padding: 0} 

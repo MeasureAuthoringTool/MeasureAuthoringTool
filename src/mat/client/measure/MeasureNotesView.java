@@ -94,11 +94,11 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	public void setViewingNumber(HTML viewingNumber) {
 		this.viewingNumber = viewingNumber;
 	}
+		
 
 	public MeasureNotesView(){
 		containerPanel.clear();
-		containerPanel.setStyleName("contentPanel");
-		
+		containerPanel.setStyleName("contentPanel");		
 		
 		simplePanel.getElement().setId("MeasureNotesView_simplePanel");
 		
@@ -181,15 +181,77 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		VerticalPanel mainPanel = new VerticalPanel();
 		scrollPanel.setWidget(mainPanel);
 		mainPanel.setSpacing(20);
+		mainPanel.setWidth("875px");
+		mainPanel.setStylePrimaryName("right_left_border_outset");
 		
-		if(results != null) {
-			
+		VerticalPanel tableHeaderPanel = new VerticalPanel();
+		tableHeaderPanel.setWidth("875px");
+		tableHeaderPanel.setStylePrimaryName("header_background");
+		Widget tableHeaderWidget = createTableHeaderWidget();
+		tableHeaderPanel.add(tableHeaderWidget);
+		tableHeaderPanel.setCellHorizontalAlignment(tableHeaderWidget, HasHorizontalAlignment.ALIGN_RIGHT);
+		
+		mainPanel.add(tableHeaderPanel);
+		
+		if(results != null) {			
 			for(MeasureNotesModel.Result result : results.getData()){
 				createDisclosurePanel(mainPanel,result);
 			}
-		}
-		
+		}		
 		return scrollPanel;
+	}
+	
+	private Widget createTableHeaderWidget() {			
+			HorizontalPanel headerPanel = new HorizontalPanel();
+			headerPanel.setWidth("800px");
+			HorizontalPanel noteTitlePanel = new HorizontalPanel();
+			noteTitlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+			String title = "Title";
+			HTML noteTitle = new HTML(title);
+			noteTitle.setTitle(title);
+			noteTitle.setWidth("100%");
+			noteTitlePanel.add(noteTitle);
+			
+			noteTitlePanel.setCellWidth(noteTitle, "100%");
+			headerPanel.add(noteTitlePanel);
+			headerPanel.setCellWidth(noteTitlePanel, "20%");
+			
+			HorizontalPanel emailAddrPanel = new HorizontalPanel();
+			emailAddrPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+			HTML creatorEmailAddr = new HTML("Email Address");
+			creatorEmailAddr.setTitle("Email Address");
+			creatorEmailAddr.setWidth("100%");
+			emailAddrPanel.add(creatorEmailAddr);
+			
+			emailAddrPanel.setCellWidth(creatorEmailAddr, "100%");
+			headerPanel.add(emailAddrPanel);
+			headerPanel.setCellWidth(emailAddrPanel, "25%");
+			
+			HorizontalPanel creationDatePanel = new HorizontalPanel();
+			creationDatePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+			
+			String dateString = "Creation Date";
+			HTML creationDate = new HTML(dateString);
+			creationDate.setTitle(dateString);
+			creationDate.setWidth("100%");
+			creationDatePanel.add(creationDate);
+			
+			creationDatePanel.setCellWidth(creationDate, "100%");
+			headerPanel.add(creationDatePanel);
+			headerPanel.setCellWidth(creationDatePanel, "25%");
+
+			HorizontalPanel deleteButtonPanel = new HorizontalPanel();
+			deleteButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+			deleteButtonPanel.add(new HTML("Delete"));
+			headerPanel.add(deleteButtonPanel);
+			headerPanel.setCellWidth(deleteButtonPanel, "15%");
+			
+			HorizontalPanel editButtonPanel = new HorizontalPanel();
+			editButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+			editButtonPanel.add(new HTML("Edit"));
+			headerPanel.add(editButtonPanel);
+			headerPanel.setCellWidth(editButtonPanel, "15%");
+			return headerPanel;
 	}
 	
 	
@@ -212,10 +274,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		widgetPanel.add(notesDisclosurePanel);
 		widgetPanel.add(new SpacerWidget());
 		
-		mainPanel.add(widgetPanel);
-		mainPanel.setWidth("875px");
-		mainPanel.setStylePrimaryName("right_left_border_outset");
-				
+		mainPanel.add(widgetPanel);				
 	}
 	
 	private Widget createDisclosureContentWidget(
@@ -294,8 +353,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		HorizontalPanel creationDatePanel = new HorizontalPanel();
 		creationDatePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
-		String dateString = dateFormat.format(result.getCreationDate());
+		String dateString = result.getCreationDate().toString();
 		HTML creationDate = new HTML(dateString);
 		creationDate.setTitle(dateString);
 		creationDate.setWidth("100%");

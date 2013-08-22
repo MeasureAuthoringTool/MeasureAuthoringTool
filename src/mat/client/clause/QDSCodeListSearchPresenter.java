@@ -209,8 +209,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		searchDisplay.getPsuedoQDMToMeasure().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				Window.alert(searchDisplay.getUserDefinedInput().getText());
-				Window.alert(searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()));
+				/*Window.alert(searchDisplay.getUserDefinedInput().getText());
+				Window.alert(searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()));*/
 				addSelectedCodeListtoMeasure(true);
 			}
 		});
@@ -403,22 +403,27 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		   
 			}
 		}else{
-			MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(MatContext.get().getCurrentMeasureId(), searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()), searchDisplay.getUserDefinedInput().getText(), appliedQDMList, 
-				new AsyncCallback<SaveUpdateCodeListResult>() {
-						@Override
-						public void onFailure(Throwable caught) {
+			if(searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput())!=null && searchDisplay.getUserDefinedInput().getText()!=null){
+				MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(MatContext.get().getCurrentMeasureId(), searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()), searchDisplay.getUserDefinedInput().getText(), appliedQDMList, 
+						new AsyncCallback<SaveUpdateCodeListResult>() {
+							@Override
+							public void onFailure(Throwable caught) {
 												
 												
-						}
-						@Override
-						public void onSuccess(SaveUpdateCodeListResult result) {
-							if(result.getXmlString() !=null){
-								saveMeasureXML(result.getXmlString());
-								Window.alert(result.getXmlString());
 							}
+							@Override
+							public void onSuccess(SaveUpdateCodeListResult result) {
+								if(result.getXmlString() !=null){
+									saveMeasureXML(result.getXmlString());
+									//Window.alert(result.getXmlString());
+								}
 												
-						}
-			})	;
+							}
+				})	;
+			}else{
+				
+				searchDisplay.getErrorMessageDisplay().setMessage("Please enter Value Set name and select a data type associated with it.");
+			}
 			
 		}
 		

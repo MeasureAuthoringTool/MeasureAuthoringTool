@@ -65,6 +65,9 @@ public interface CodeListService {
 			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDM);
 	List<? extends HasListBox> getAllDataTypes();
+	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(String measureId,
+			String dataType, String codeListName,
+			ArrayList<QualityDataSetDTO> appliedQDM);
 	
 	
 }

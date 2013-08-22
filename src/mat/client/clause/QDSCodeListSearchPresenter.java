@@ -46,6 +46,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+@SuppressWarnings("deprecation")
 public class QDSCodeListSearchPresenter implements MatPresenter{
 	
 	private SimplePanel panel = new SimplePanel();
@@ -76,11 +77,11 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		public Button getApplyToMeasure();
 		public void scrollToBottom();
 		public FocusableWidget getMsgFocusWidget();
-		public String getDataTypeValue();
+		public String getDataTypeValue(ListBoxMVP inputListBox);
 		public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		public void setDataTypeOptions(List<? extends HasListBox> texts);
-		public String getDataTypeText();
+		public String getDataTypeText(ListBoxMVP inputListBox);
 		public ValueSetSearchFilterPanel getValueSetSearchFilterPanel();
 		public void setEnabled(boolean enabled);
 		public DisclosurePanel getDisclosurePanel();
@@ -90,14 +91,10 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		public ListBoxMVP getAllDataTypeInput();
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
 		public DisclosurePanel getDisclosurePanelCellTable();
-		/*public SuccessMessageDisplayInterface getRemoveMeasureSuccessMsg();
-		public ErrorMessageDisplayInterface getErrorMessageRemoveDisplay();
-		public Widget asWidget();
-		void buildCellList(QDSAppliedListModel appliedListModel);
-		Button getRemoveButton();
-		QualityDataSetDTO getSelectedElementToRemove();*/
+		
 	}
 
+	@SuppressWarnings("deprecation")
 	public QDSCodeListSearchPresenter(SearchDisplay sDisplayArg) {
 		this.searchDisplay = sDisplayArg;
 		
@@ -209,6 +206,15 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			}
 		});
 		
+		searchDisplay.getPsuedoQDMToMeasure().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				Window.alert(searchDisplay.getUserDefinedInput().getText());
+				Window.alert(searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()));
+				addSelectedCodeListtoMeasure(true);
+			}
+		});
+		
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -246,7 +252,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				@Override
 				public void onSuccess(ArrayList<QualityDataSetDTO> result) {
 					appliedQDMList = result;
-					addSelectedCodeListtoMeasure();
+					addSelectedCodeListtoMeasure(false);
 				}
 			});
 
@@ -336,35 +342,36 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		//searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 	
-	private void addSelectedCodeListtoMeasure(){
-		//clear the successMessage
-		searchDisplay.getApplyToMeasureSuccessMsg().clear();
-		final CodeListSearchDTO codeList = currentCodeListResults.getSelectedCodeList();
-		if(codeList != null){
-		       final String dataType;
-		       final  String dataTypeText;
-		       final boolean isSpecificOccurrence;
-		       if(codeList.getCategoryDisplay().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
-		    	   dataType = ConstantMessages.ATTRIBUTE;
-		       }else if(codeList.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_PERIOD)){
-		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		       }else if(codeList.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_START_DATE)){
-		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		       }else if(codeList.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_END_DATE)){
-		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		       }
-		       else{
-		    	   populateQDSDataType(codeList.getCategoryCode());
-		    	   dataType = searchDisplay.getDataTypeValue();
-		       }
+	private void addSelectedCodeListtoMeasure(boolean isUserDefinedQDM){
+		if(!isUserDefinedQDM){
+			//clear the successMessage
+			searchDisplay.getApplyToMeasureSuccessMsg().clear();
+			final CodeListSearchDTO codeList = currentCodeListResults.getSelectedCodeList();
+			if(codeList != null){
+				final String dataType;
+				final  String dataTypeText;
+				final boolean isSpecificOccurrence;
+				if(codeList.getCategoryDisplay().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+					dataType = ConstantMessages.ATTRIBUTE;
+				}else if(codeList.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_PERIOD)){
+					dataType = ConstantMessages.TIMING_ELEMENT;
+				}else if(codeList.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_START_DATE)){
+					dataType = ConstantMessages.TIMING_ELEMENT;
+				}else if(codeList.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_END_DATE)){
+					dataType = ConstantMessages.TIMING_ELEMENT;
+				}
+				else{
+					populateQDSDataType(codeList.getCategoryCode());
+					dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypeInput());
+				}
 		      
-		       if(searchDisplay.getDataTypeText().equalsIgnoreCase("--Select--")){
-		    	   dataTypeText = dataType;
-		       }else{
-		    	   dataTypeText = searchDisplay.getDataTypeText();
-		       }
-		        isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
-		        String measureID = MatContext.get().getCurrentMeasureId();
+				if(searchDisplay.getDataTypeText(searchDisplay.getDataTypeInput()).equalsIgnoreCase("--Select--")){
+					dataTypeText = dataType;
+				}else{
+					dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypeInput());
+				}
+				isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
+				String measureID = MatContext.get().getCurrentMeasureId();
 				if(!dataType.isEmpty() && !dataType.equals("")){
 					MatContext.get().getCodeListService().addCodeListToMeasure(measureID,dataType, codeList, isSpecificOccurrence,appliedQDMList, new AsyncCallback<SaveUpdateCodeListResult>(){
 					@Override
@@ -394,8 +401,26 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				});
 				}
 		   
-		}
+			}
+		}else{
+			MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(MatContext.get().getCurrentMeasureId(), searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()), searchDisplay.getUserDefinedInput().getText(), appliedQDMList, 
+				new AsyncCallback<SaveUpdateCodeListResult>() {
+						@Override
+						public void onFailure(Throwable caught) {
+												
+												
+						}
+						@Override
+						public void onSuccess(SaveUpdateCodeListResult result) {
+							if(result.getXmlString() !=null){
+								saveMeasureXML(result.getXmlString());
+								Window.alert(result.getXmlString());
+							}
+												
+						}
+			})	;
 			
+		}
 		
 	}
 	

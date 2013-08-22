@@ -215,5 +215,9 @@ public interface CodeListService extends RemoteService {
 			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDMList);
 
-	List<? extends HasListBox> getAllDataTypes(); 
+	List<? extends HasListBox> getAllDataTypes();
+
+	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(String measureId,
+			String dataType, String codeList,
+			ArrayList<QualityDataSetDTO> appliedQDMs); 
 }

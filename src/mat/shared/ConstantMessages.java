@@ -194,4 +194,7 @@ public  class ConstantMessages {
 		
 		public static final String MAIN_TAB_LAYOUT_ID = "mainTab";
 		public static final String MEASURE_COMPOSER_TAB = "measureTab";
+		
+		public static final String USER_DEFINED_QDM_OID="1.2.3.4.5.001";
+		public static final String USER_DEFINED_QDM_NAME="User Defined QDM";
 }

@@ -95,5 +95,7 @@ public interface CodeListServiceAsync {
 	public void getAllDataTypes(
 			AsyncCallback<List<? extends HasListBox>> asyncCallback);
 	
+	void saveUserDefinedQDStoMeasure(String measureId, String dataType,String codeList,ArrayList<QualityDataSetDTO> appliedQDMs,
+			AsyncCallback<SaveUpdateCodeListResult> callback);
 	
 }

@@ -41,10 +41,6 @@ public class CodeListServiceImpl extends SpringRemoteServiceServlet
 implements mat.client.codelist.service.CodeListService {
 	private static final Log logger = LogFactory.getLog(CodeListServiceImpl.class);
 
-
-	
-	
-	
 	@Override
 	public ManageCodeListSearchModel search(String searchText,
 			int startIndex,	int pageSize, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
@@ -392,6 +388,13 @@ implements mat.client.codelist.service.CodeListService {
 	public List<? extends HasListBox> getAllDataTypes() {
 		List<? extends HasListBox> ret = getCodeListService().getAllDataTypes();
 		return ret;
+	}
+
+	@Override
+	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(
+			String measureId, String dataType, String codeList,
+			ArrayList<QualityDataSetDTO> appliedQDMs) {
+		return getCodeListService().saveUserDefinedQDStoMeasure(measureId, dataType, codeList, appliedQDMs);
 	}
 
 	

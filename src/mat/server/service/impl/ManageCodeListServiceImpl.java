@@ -890,6 +890,29 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return result;
 	}
 
+	@Override
+	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(String measureId,String dataType,String codeListName,ArrayList<QualityDataSetDTO> appliedQDM) {
+		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+		wrapper.setQualityDataDTO(qdsList);
+		QualityDataSetDTO qds = new QualityDataSetDTO();
+		DataType dt = dataTypeDAO.findByDataTypeName(dataType);
+		qds.setDataType(dt.getDescription());
+		qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
+		qds.setId(UUID.randomUUID().toString());
+		qds.setCodeListName(codeListName);
+		qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
+		qds.setUuid(UUID.randomUUID().toString());
+		qds.setVersion("1.0");
+		wrapper.getQualityDataDTO().add(qds);
+		String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+		result.setSuccess(true);
+		result.setXmlString(qdmXMLString);
+		return result;
+		
+	}
+	
 	private SaveUpdateCodeListResult saveAttributeOrMeasurementTiming(String measureId,String dataType,CodeListSearchDTO codeList, ArrayList<QualityDataSetDTO> appliedQDM){
 		boolean duplicateQDS = checkForDuplicates(measureId,dataType,codeList, appliedQDM);
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();

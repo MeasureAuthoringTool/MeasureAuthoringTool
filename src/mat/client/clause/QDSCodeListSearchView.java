@@ -199,7 +199,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		Widget widgetDataType = LabelBuilder.buildLabel("Select Data Type", "Select Data Type");
 		dataTypePanel.add(widgetDataType);
 		dataTypePanel.add(new SpacerWidget());
-		/*allDataTypeInput.addItem("-- Select Data Type --");*/
 		dataTypePanel.add(allDataTypeInput);
 		allDataTypeInput.addFocusHandler(
 				new FocusHandler() {
@@ -230,7 +229,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		FlowPanel searchCriteriaPanel = new FlowPanel();
 		HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
 		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.addStyleName("leftAligned");
 		Widget searchWidget = buildSearchWidget();
 		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
 		searchInput.setHeight("18px");
@@ -238,12 +236,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchHorizontalPanel.add(vssfp.getPanel());
 		searchHorizontalPanel.add(searchWidget);
-		//searchCriteriaPanel.add(label);
 		searchCriteriaPanel.add(errorMessagePanel);
-		//searchCriteriaPanel.add(vssfp.getPanel());
-		//searchCriteriaPanel.add(new SpacerWidget());
-		//searchCriteriaPanel.add(searchWidget);
-		//searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(searchHorizontalPanel);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(view.asWidget());
@@ -343,9 +336,9 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	
 	
 	@Override
-	public String getDataTypeValue() {
-		if(dataTypeInput.getSelectedIndex() >= 0) {
-			return dataTypeInput.getValue(dataTypeInput.getSelectedIndex());
+	public String getDataTypeValue(ListBoxMVP inputListBox) {
+		if(inputListBox.getSelectedIndex() >= 0) {
+			return inputListBox.getValue(inputListBox.getSelectedIndex());
 		}
 		else {
 			return "";
@@ -353,9 +346,9 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	}
 	
 	@Override
-	public String getDataTypeText() {
-		if(dataTypeInput.getSelectedIndex() >= 0) {
-			return dataTypeInput.getItemText(dataTypeInput.getSelectedIndex());
+	public String getDataTypeText(ListBoxMVP inputListBox) {
+		if(inputListBox.getSelectedIndex() >= 0) {
+			return inputListBox.getItemText(inputListBox.getSelectedIndex());
 		}
 		else {
 			return "";
@@ -371,7 +364,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			}
 		}
 	}
-
+	
 	@Override
 	public void setDataTypeOptions(List<? extends HasListBox> texts) {
 		setListBoxItems(dataTypeInput, texts, MatContext.PLEASE_SELECT);

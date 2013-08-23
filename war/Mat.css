@@ -1387,9 +1387,27 @@ padding: 2px;
 	border-bottom: 2px inset #B0B0B0;	
 }
 
+.top_border_outset{
+	border-top: 2px inset #B0B0B0;	
+}
+
 .right_left_border_outset{
 	border-left: 2px outset #B0B0B0;
 	border-right: 2px inset #B0B0B0;
+}
+
+.header_background {
+    /* background-color: lightgray; */
+    background-image: url("images/bg_box-blue.png");
+    background-repeat: repeat-x;
+    border-color: #E8EEF7 #E8EEF7 #E8EFF7;
+    border-left: 3px solid #E8EEF7;
+    border-right: 3px solid #E8EEF7;
+    border-style: solid;
+    border-width: 3px;
+    margin-left: 6px;
+    padding: 4px 0 4px 8px;
+    height: 35px;
 }
 
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */

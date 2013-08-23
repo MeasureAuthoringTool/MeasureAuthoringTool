@@ -63,6 +63,9 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private SimplePanel dataTypePanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
+	
+	private ErrorMessageDisplay errorMessageUserDefinedPanel = new ErrorMessageDisplay();
+	private SuccessMessageDisplay successMessageUserDefinedPanel = new SuccessMessageDisplay();
 	private ListBoxMVP dataTypeInput = new ListBoxMVP();
 	private ListBoxMVP allDataTypeInput = new ListBoxMVP();
 	private FocusableWidget messageFocus;
@@ -117,6 +120,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		vp.add(new SpacerWidget());
 		
 		HorizontalPanel mainPanel = new HorizontalPanel();
+		
 		mainPanel.add(vp);
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("qdsContentPanel");
@@ -218,6 +222,9 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.add(horiPanel);
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(successMessageUserDefinedPanel);
+		mainPanel.add(errorMessageUserDefinedPanel);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buttonHorizontalPanel);
 		mainPanel.add(new SpacerWidget());
@@ -443,6 +450,24 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 
 	public void setAllDataTypeInput(ListBoxMVP allDataTypeInput) {
 		this.allDataTypeInput = allDataTypeInput;
+	}
+
+	public ErrorMessageDisplay getErrorMessageUserDefinedPanel() {
+		return errorMessageUserDefinedPanel;
+	}
+
+	public void setErrorMessageUserDefinedPanel(
+			ErrorMessageDisplay errorMessageUserDefinedPanel) {
+		this.errorMessageUserDefinedPanel = errorMessageUserDefinedPanel;
+	}
+
+	public SuccessMessageDisplay getSuccessMessageUserDefinedPanel() {
+		return successMessageUserDefinedPanel;
+	}
+
+	public void setSuccessMessageUserDefinedPanel(
+			SuccessMessageDisplay successMessageUserDefinedPanel) {
+		this.successMessageUserDefinedPanel = successMessageUserDefinedPanel;
 	}
 
 	public void setEnabled(boolean enabled){

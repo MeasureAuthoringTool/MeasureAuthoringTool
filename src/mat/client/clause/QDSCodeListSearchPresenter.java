@@ -15,10 +15,12 @@ import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.PageSelectionEvent;
 import mat.client.shared.search.PageSelectionEventHandler;
@@ -91,7 +93,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		public ListBoxMVP getAllDataTypeInput();
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
 		public DisclosurePanel getDisclosurePanelCellTable();
-		
+		public SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
+		public ErrorMessageDisplay getErrorMessageUserDefinedPanel();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -147,6 +150,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.getDisclosurePanel().setOpen(false);
+				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+				searchDisplay.getErrorMessageUserDefinedPanel().clear();
 			}
 		});
 		
@@ -403,7 +408,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		   
 			}
 		}else{
-			if(searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput())!=null && searchDisplay.getUserDefinedInput().getText()!=null){
+			searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+			searchDisplay.getErrorMessageUserDefinedPanel().clear();
+			if((searchDisplay.getUserDefinedInput().getText().trim().length()>0) && !searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
 				MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(MatContext.get().getCurrentMeasureId(), searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()), searchDisplay.getUserDefinedInput().getText(), appliedQDMList, 
 						new AsyncCallback<SaveUpdateCodeListResult>() {
 							@Override
@@ -415,14 +422,16 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 							public void onSuccess(SaveUpdateCodeListResult result) {
 								if(result.getXmlString() !=null){
 									saveMeasureXML(result.getXmlString());
-									//Window.alert(result.getXmlString());
+									String message = MatContext.get().getMessageDelegate().getQDMSuccessMessage(searchDisplay.getUserDefinedInput().getText(), searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()));
+									searchDisplay.getSuccessMessageUserDefinedPanel().setMessage(message);
+									searchDisplay.getUserDefinedInput().setText("");
+									searchDisplay.getAllDataTypeInput().setSelectedIndex(0);
 								}
 												
 							}
 				})	;
 			}else{
-				
-				searchDisplay.getErrorMessageDisplay().setMessage("Please enter Value Set name and select a data type associated with it.");
+				searchDisplay.getErrorMessageUserDefinedPanel().setMessage("Please enter Value Set name and select a data type associated with it.");
 			}
 			
 		}

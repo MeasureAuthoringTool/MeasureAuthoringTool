@@ -16,10 +16,12 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
+import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
@@ -1343,9 +1345,33 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	@Override
-	public void getAllMeasureNotesByMeasureID(String measureID) {
-		// TODO Auto-generated method stub
+	public MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID) {
+		MeasureNotesModel measureNotesModel = new MeasureNotesModel();
+		ArrayList<MeasureNoteDTO> data = new ArrayList<MeasureNoteDTO>();
 		
+		Measure measure = getMeasureDAO().find(measureID);		
+		if(measure!=null) {
+			List<MeasureNotes> measureNotesList = getMeasureNotesService().getAllMeasureNotesByMeasureID(measure);
+			if(measureNotesList!=null && !measureNotesList.isEmpty()) {
+				for(MeasureNotes measureNotes : measureNotesList) {
+					if(measureNotes!=null) {
+						MeasureNoteDTO measureNoteDTO = new MeasureNoteDTO();
+						measureNoteDTO.setId(measureNotes.getId());
+						if(measureNotes.getCreateUser()!=null)
+							measureNoteDTO.setCreateUserEmailAddress(measureNotes.getCreateUser().getEmailAddress());
+						if(measureNotes.getModifyUser()!=null)
+							measureNoteDTO.setModifyUserEmailAddress(measureNotes.getModifyUser().getEmailAddress());
+						measureNoteDTO.setNoteDesc(measureNotes.getNoteDesc());
+						measureNoteDTO.setNoteTitle(measureNotes.getNoteTitle());
+						measureNoteDTO.setLastModifiedDate(measureNotes.getLastModifiedDate());	
+						
+						data.add(measureNoteDTO);
+					}
+				}				
+			}
+		}
+		measureNotesModel.setData(data);
+		return measureNotesModel;
 	}
 	
 }

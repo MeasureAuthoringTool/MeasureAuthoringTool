@@ -3,13 +3,13 @@ package mat.client.measure.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
+import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
-import mat.model.CodeListSearchDTO;
-import mat.model.MeasureNotes;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -57,7 +57,7 @@ public interface MeasureServiceAsync {
 	public void saveMeasureNote(String noteTitle, String noteDescription,
 			String string, String string2, AsyncCallback<Void> callback);
 	public void getAllMeasureNotesByMeasureID(String measureID,
-			AsyncCallback<Void> callback);
+			AsyncCallback<MeasureNotesModel> callback);
 	
 
 	}

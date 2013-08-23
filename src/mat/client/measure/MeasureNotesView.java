@@ -1,24 +1,14 @@
 package mat.client.measure;
 
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
+import mat.DTO.MeasureNoteDTO;
 import mat.client.ImageResources;
-import mat.client.codelist.TransferOwnerShipModel;
-import mat.client.codelist.TransferOwnerShipModel.Result;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.search.SearchResults;
-import mat.client.shared.search.SearchView;
-import mat.model.CodeListSearchDTO;
-import mat.model.MeasureNotesModel;
-
+import mat.model.MeasureNotes;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -27,7 +17,6 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment.HorizontalAlignmentConstant;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
@@ -57,7 +46,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	protected Panel pageSelector = new HorizontalPanel();
 	MeasureNotesModel notesResult = new MeasureNotesModel();
 		
-	private SearchView<mat.model.MeasureNotesModel.Result> view = new SearchView<MeasureNotesModel.Result>("Users");
+	//private SearchView<mat.model.MeasureNotesModel.Result> view = new SearchView<MeasureNotesModel.Result>("Users");
 	
 	public HasClickHandlers getExportButton() {
 		return exportButton;
@@ -87,6 +76,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return measureNoteTitle;
 	}
 
+	public MeasureNotesModel getNotesResult() {
+		return notesResult;
+	}
+	
 	private HTML viewingNumber = new HTML();
 	public HTML getViewingNumber() {
 		return viewingNumber;
@@ -94,11 +87,16 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	public void setViewingNumber(HTML viewingNumber) {
 		this.viewingNumber = viewingNumber;
 	}
-		
 
 	public MeasureNotesView(){
+		//displayView();
+	}
+	
+	public void displayView() {
+		flowPanel.clear();
+		simplePanel.clear();
 		containerPanel.clear();
-		containerPanel.setStyleName("contentPanel");		
+		containerPanel.setStyleName("contentPanel");
 		
 		simplePanel.getElement().setId("MeasureNotesView_simplePanel");
 		
@@ -118,7 +116,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		fPanel.add(new SpacerWidget());
 		fPanel.add(new SpacerWidget());
-		notesResult.setData(getDataList());
+		//notesResult.setData(getDataList());
 		fPanel.add(buildDataTable(notesResult));
 		//fPanel.add(dataTable);	
 		fPanel.add(new SpacerWidget());
@@ -193,8 +191,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		mainPanel.add(tableHeaderPanel);
 		
-		if(results != null) {			
-			for(MeasureNotesModel.Result result : results.getData()){
+		if(results != null && results.getData()!=null) {
+			
+			for(MeasureNoteDTO result : results.getData()){
 				createDisclosurePanel(mainPanel,result);
 			}
 		}		
@@ -256,7 +255,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	}
 	
 	
-	private void createDisclosurePanel(VerticalPanel mainPanel, MeasureNotesModel.Result result){
+	private void createDisclosurePanel(VerticalPanel mainPanel, MeasureNoteDTO result){
 		DisclosurePanel notesDisclosurePanel = new DisclosurePanel();
 		notesDisclosurePanel.setAnimationEnabled(true);
 		notesDisclosurePanel.setOpen(false);
@@ -279,7 +278,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	}
 	
 	private Widget createDisclosureContentWidget(
-			mat.model.MeasureNotesModel.Result result) {
+			MeasureNoteDTO result) {
 		// TODO Auto-generated method stub
 		TextBox title = new TextBox();
 		title.setTitle("Measure Notes Title");
@@ -313,24 +312,23 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	}
 
 	private Widget createDisclosureHeaderWidget(
-		mat.model.MeasureNotesModel.Result result, final DisclosurePanel notesDisclosurePanel) {
-		
+			MeasureNoteDTO result, final DisclosurePanel notesDisclosurePanel) {
 		HorizontalPanel headerPanel = new HorizontalPanel();
 		headerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		headerPanel.setWidth("800px");
 		
 		HorizontalPanel noteTitlePanel = new HorizontalPanel();
 		//noteTitlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-		String title = result.getTitle() + "bansabsnbdnsbdnbsndbsnbdnsbdnbsndbsndbsndbnsbdnsbdnbsdbsndbsn";
+		String title = result.getNoteTitle();
 		HTML noteTitle;
 		if(title.length() > 25){
 			title = title.substring(0,26)+"...";
 			noteTitle = new HTML(title);
 		}
 		else{
-			noteTitle = new HTML(result.getTitle());
+			noteTitle = new HTML(result.getNoteTitle());
 		}
-		noteTitle.setTitle(result.getTitle());
+		noteTitle.setTitle(result.getNoteTitle());
 		noteTitle.setWidth("100%");
 		noteTitlePanel.add(noteTitle);
 		
@@ -341,8 +339,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		HorizontalPanel emailAddrPanel = new HorizontalPanel();
 		//emailAddrPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-		HTML creatorEmailAddr = new HTML(result.getCreatorEmailAddr());
-		creatorEmailAddr.setTitle(result.getCreatorEmailAddr());
+		HTML creatorEmailAddr = new HTML(result.getCreateUserEmailAddress());
+		creatorEmailAddr.setTitle(result.getCreateUserEmailAddress());
 		creatorEmailAddr.setWidth("100%");
 		emailAddrPanel.add(creatorEmailAddr);
 		
@@ -352,7 +350,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		HorizontalPanel creationDatePanel = new HorizontalPanel();
 		//creationDatePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
-		String dateString = result.getCreationDate().toString();
+		String dateString = result.getLastModifiedDate().toString();
 		HTML creationDate = new HTML(dateString);
 		creationDate.setTitle(dateString);
 		creationDate.setWidth("100%");
@@ -402,7 +400,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	 * Method to build User Results
 	 * 
 	 * */
-	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<MeasureNotesModel.Result> results){		
+	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<MeasureNotes> results){		
 		for(int i = 0; i < numRows; i++) {
 			for(int j = 0; j < numColumns; j++) {
 				if(results.isColumnFiresSelection(j)) {
@@ -419,56 +417,5 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 				dataTable.getRowFormatter().addStyleName(i + 1, "odd");
 			}
 		}
-	}
-	
-	
-	
-	
-	
-	private List<MeasureNotesModel.Result> getDataList(){
- 		List<MeasureNotesModel.Result> notesList = new ArrayList<MeasureNotesModel.Result>();
- 		MeasureNotesModel.Result note1 = new MeasureNotesModel.Result();
- 		MeasureNotesModel.Result note2 = new MeasureNotesModel.Result();
- 		MeasureNotesModel.Result note3 = new MeasureNotesModel.Result();
- 		MeasureNotesModel.Result note4 = new MeasureNotesModel.Result();
- 		note1.setNoteId("1");
- 		note1.setTitle("test1");
- 		note1.setDescription("Test1 Desc");
- 		note1.setCreatorEmailAddr("ytawde@hcareis.com");
- 		note1.setCreationDate(new Date());
- 		
- 		note2.setNoteId("2");
- 		note2.setTitle("test2");
- 		note2.setDescription("Test2 Desc");
- 		note2.setCreatorEmailAddr("cbajikar@telligen.org");
- 		note2.setCreationDate(new Date());
- 		
- 		note3.setNoteId("3");
- 		note3.setTitle("test3");
- 		note3.setDescription("Test3 Desc");
- 		note3.setCreatorEmailAddr("jnarang@hcareis.com");
- 		note3.setCreationDate(new Date());
- 		
- 		note4.setNoteId("4");
- 		note4.setTitle("test4");
- 		note4.setDescription("Test4 Desc");
- 		note4.setCreatorEmailAddr("abc@def.edu");
- 		note4.setCreationDate(new Date());
- 		
- 		notesList.add(note1);
- 		notesList.add(note2);
- 		notesList.add(note3);
- 		notesList.add(note4);
- 		return notesList;
- 	}
-
-	@Override
-	public void buildDataTable(
-			SearchResults<mat.model.MeasureNotesModel.Result> results) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-	
+	}	
 }

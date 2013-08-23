@@ -3,10 +3,12 @@ package mat.client.measure.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
+import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
 import mat.model.CodeListSearchDTO;
@@ -51,6 +53,7 @@ public interface MeasureService extends RemoteService {
 			QualityDataSetDTO modifyDTO, String measureId);
 	public void saveMeasureNote(String noteTitle, String noteDescription,
 			String string, String string2);
-	public void getAllMeasureNotesByMeasureID(String measureID);
+	public MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID);
+	
 
 }

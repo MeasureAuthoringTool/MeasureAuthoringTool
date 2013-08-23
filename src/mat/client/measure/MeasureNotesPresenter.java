@@ -1,14 +1,10 @@
 package mat.client.measure;
 
 import mat.client.MatPresenter;
-import mat.client.measure.ManageMeasurePresenter.BaseDisplay;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.search.SearchResults;
-import mat.model.MeasureNotesModel.Result;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -23,21 +19,22 @@ public class MeasureNotesPresenter implements MatPresenter{
  	 		
  	public NotesDisplay notesDisplay; 
  	
- 	public static interface NotesDisplay extends BaseDisplay{
+ 	public static interface NotesDisplay {
 		public HasClickHandlers getSaveButton();
 		public HasClickHandlers getCancelButton();
 		public HasClickHandlers getExportButton();
 		public void cancelComposedNote();
-		void buildDataTable(SearchResults<Result> results);
 		public TextArea getMeasureNoteComposer();
 		public SuccessMessageDisplay getSuccessMessageDisplay();
 		public ErrorMessageDisplay getErrorMessageDisplay();
 		public TextBox getMeasureNoteTitle();
-		
+		public MeasureNotesModel getNotesResult();
+		public void displayView();
+		public Widget asWidget();
 	}
  	 
  	public MeasureNotesPresenter(NotesDisplay notesDisplay){
- 		this.notesDisplay=notesDisplay;
+ 		this.notesDisplay=notesDisplay; 		
  		System.out.println("Created an instance of MeasureNotesPresenter >>>>");
  		notesDisplay.getExportButton().addClickHandler(new ClickHandler() { 
  			@Override
@@ -52,7 +49,7 @@ public class MeasureNotesPresenter implements MatPresenter{
  			public void onClick(ClickEvent event) {
  				System.out.println("Saving the note to the database >>>> ");
  				saveMeasureNote();
- 						
+ 				search();
  			}
  		}); 
  		 				
@@ -64,9 +61,20 @@ public class MeasureNotesPresenter implements MatPresenter{
  		}); 
  	}
  	
- 	private MeasureNotesModel getAllMeasureNotesByMeasureID(){
- 		//TODO for retriving measure notes
- 		return null; 		
+ 	private void search(){
+ 		String measureID = MatContext.get().getCurrentMeasureId();
+ 		service.getAllMeasureNotesByMeasureID(measureID, new AsyncCallback<MeasureNotesModel>() {
+ 			@Override
+			public void onSuccess(MeasureNotesModel result) {
+ 				notesDisplay.getNotesResult().setData(result.getData());
+ 			}
+			@Override
+			public void onFailure(Throwable caught) {
+				notesDisplay.getErrorMessageDisplay().setMessage("No measure notes" );
+			}
+						
+		});
+ 		notesDisplay.displayView();
  	}
  	
  	
@@ -331,6 +339,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 	@Override
 	public void beforeDisplay() {
 		// TODO Auto-generated method stub
+		search();		
 		notesDisplay.asWidget();
 	}
 	@Override

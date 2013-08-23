@@ -33,6 +33,8 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -155,8 +157,34 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			}
 		});
 		
+		searchDisplay.getUserDefinedInput().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+				searchDisplay.getErrorMessageUserDefinedPanel().clear();
+			}
+		});
 		
+		/*searchDisplay.getAllDataTypeInput().addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+				searchDisplay.getErrorMessageUserDefinedPanel().clear();
+				
+			}
+		});*/
 		
+		searchDisplay.getAllDataTypeInput().addFocusHandler(new FocusHandler() {
+			
+			@Override
+			public void onFocus(FocusEvent event) {
+				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+				searchDisplay.getErrorMessageUserDefinedPanel().clear();
+				
+			}
+		});
 	    searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
 			@Override
 			public void onPageSelection(PageSelectionEvent event) {
@@ -543,11 +571,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 
 	@Override
 	public void beforeClosingDisplay() {
-		// TODO Auto-generated method stub
+		searchDisplay.getDisclosurePanel().setOpen(false);
+		searchDisplay.getDisclosurePanelCellTable().setOpen(true);
 
 	}
-		
-		
-
-
 }

@@ -62,9 +62,12 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
 	private Button psuedoQDMCancel = new SecondaryButton("Cancel");
 	private Button cancel = new Button("Close");
+	private Button userDefinedCancel = new SecondaryButton("Close");
 	private SimplePanel dataTypePanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel;
+	private ErrorMessageDisplay errorMessageUserDefinedPanel = new ErrorMessageDisplay();
+	private SuccessMessageDisplay successMessageUserDefinedPanel = new SuccessMessageDisplay();
 	private ListBoxMVP dataTypeInput = new ListBoxMVP();
 	private ListBoxMVP allDataTypeInput = new ListBoxMVP();
 	private FocusableWidget messageFocus;
@@ -219,9 +222,14 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		buttonHorizontalPanel.add(new SpacerWidget());
 		buttonHorizontalPanel.add(psuedoQDMCancel);
+		buttonHorizontalPanel.add(new SpacerWidget());
+		buttonHorizontalPanel.add(userDefinedCancel);
 		
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.add(horiPanel);
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(successMessageUserDefinedPanel);
+		mainPanel.add(errorMessageUserDefinedPanel);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buttonHorizontalPanel);
 		mainPanel.add(new SpacerWidget());
@@ -538,6 +546,38 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	public void buildQDSDataTable(QDSCodeListSearchModel results,Boolean isTableEnabled) {
 		buildTableQDS(results,isTableEnabled);
 		
+	}
+
+	public ErrorMessageDisplay getErrorMessageUserDefinedPanel() {
+		return errorMessageUserDefinedPanel;
+	}
+
+	public void setErrorMessageUserDefinedPanel(
+			ErrorMessageDisplay errorMessageUserDefinedPanel) {
+		this.errorMessageUserDefinedPanel = errorMessageUserDefinedPanel;
+	}
+
+	public SuccessMessageDisplay getSuccessMessageUserDefinedPanel() {
+		return successMessageUserDefinedPanel;
+	}
+
+	public void setSuccessMessageUserDefinedPanel(
+			SuccessMessageDisplay successMessageUserDefinedPanel) {
+		this.successMessageUserDefinedPanel = successMessageUserDefinedPanel;
+	}
+
+	public Button getUserDefinedCancel() {
+		return userDefinedCancel;
+	}
+
+	@Override
+	public String getDataTypeText(ListBoxMVP inputListBox) {
+		if(inputListBox.getSelectedIndex() >= 0) {
+			return inputListBox.getItemText(inputListBox.getSelectedIndex());
+		}
+		else {
+			return "";
+		}
 	}
 
 }

@@ -60,14 +60,17 @@ public interface CodeListService {
 	List<UnitDTO> getAllUnits();
 	public List<OperatorDTO> getRelAssociationsOperators(); 
 	public List<OperatorDTO> getAllOperators();
-	SaveUpdateCodeListResult updateQDStoMeasure(String measureId,
+	/*SaveUpdateCodeListResult updateQDStoMeasure(String measureId,
 			String dataType, CodeListSearchDTO codeList,
 			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDM);
+			ArrayList<QualityDataSetDTO> appliedQDM);*/
 	List<? extends HasListBox> getAllDataTypes();
 	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(String measureId,
 			String dataType, String codeListName,
 			ArrayList<QualityDataSetDTO> appliedQDM);
-	
+	SaveUpdateCodeListResult updateQDStoMeasure(String measureId,
+			String dataType, CodeListSearchDTO codeList,
+			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDM, boolean isUSerDefined);
 	
 }

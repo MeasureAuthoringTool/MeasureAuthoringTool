@@ -13,10 +13,12 @@ import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.model.CodeListSearchDTO;
@@ -25,6 +27,8 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
@@ -75,6 +79,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		public ValueSetSearchFilterPanel getValueSetSearchFilterPanel();
 		public void setEnabled(boolean enabled);
 		public Button getCancel();
+		public String getDataTypeText(ListBoxMVP inputListBox);
 		public DisclosurePanel getDisclosurePanel();
 		public Button getPsuedoQDMToMeasure();
 		public Button getPsuedoQDMCancel();
@@ -82,6 +87,9 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		public ListBoxMVP getAllDataTypeInput();
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
 		public DisclosurePanel getDisclosurePanelCellTable();
+		public SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
+		public ErrorMessageDisplay getErrorMessageUserDefinedPanel();
+		public Button getUserDefinedCancel();
 	}
 	
 	
@@ -135,7 +143,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	        {
 	        	searchDisplay.getUserDefinedInput().setText("");
 	        	searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
-	        	searchDisplay.buildQDSDataTable(currentCodeListResults, true);
+	        	searchDisplay.buildQDSDataTable(currentCodeListResults, false);
 	        	displaySearch();
 	        	searchDisplay.getDisclosurePanelCellTable().setOpen(true);
 	        }
@@ -194,6 +202,32 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			}
 		});
 		
+		searchDisplay.getUserDefinedInput().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+				searchDisplay.getErrorMessageUserDefinedPanel().clear();
+			}
+		});
+		
+		searchDisplay.getAllDataTypeInput().addFocusHandler(new FocusHandler() {
+			
+			@Override
+			public void onFocus(FocusEvent event) {
+				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+				searchDisplay.getErrorMessageUserDefinedPanel().clear();
+				
+			}
+		});
+		
+		searchDisplay.getPsuedoQDMToMeasure().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				modifyQDM(true);
+			}
+		});
+		
 		searchDisplay.getAddToMeasureButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -209,7 +243,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					@Override
 					public void onSuccess(ArrayList<QualityDataSetDTO> result) {
 						appliedQDMList = result;
-						modifyQDM();
+						modifyQDM(false);
 					}
 					
 				});
@@ -227,61 +261,96 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			}
 		});
 		
+		searchDisplay.getUserDefinedCancel().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				ModifyQDMDialogBox.dialogBox.hide();
+				//This is to reload applied QDM List.
+				reloadAppliedQDMList();
+			}
+		});
+		
 	}
 	
 	/***
 	 * Method to find if selected Available value set is a valid modifiable selection. If yes, then call to updateAppliedQDMList method is made. 
 	 * 
 	 * */
-	protected void modifyQDM() {
-		CodeListSearchDTO modifyWithDTO = currentCodeListResults.getLastSelectedCodeList();
-		searchDisplay.getErrorMessageDisplay().clear();
-		searchDisplay.getApplyToMeasureSuccessMsg().clear();
-		if(modifyValueSetDTO!=null && modifyWithDTO!=null ){
-			String dataType , dataTypeText;
-			Boolean isSpecificOccurrence=false;
-		
-			if(modifyWithDTO.getCategoryDisplay().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
-		    	   dataType = ConstantMessages.ATTRIBUTE;
-		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_PERIOD)){
-		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_START_DATE)){
-		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_END_DATE)){
-		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		     }else{
-		    	   populateQDSDataType(modifyWithDTO.getCategoryCode());
-		    	   dataType = searchDisplay.getDataTypeValue();
-		     }
-		     if(searchDisplay.getDataTypeText().equalsIgnoreCase("--Select--")){
-		    	   dataTypeText = dataType;
-		      }else{
-		    	   dataTypeText = searchDisplay.getDataTypeText();
-		       }
-		       isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
-		       
-				
-			if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
-				if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
-					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,dataTypeText,isSpecificOccurrence);
-			}else{
-				if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
-					searchDisplay.getErrorMessageDisplay().setMessage("A value set with a non-Attribute category must be used for this data element.");
-				}else{
-					searchDisplay.getErrorMessageDisplay().setMessage("A value set with an Attribute category must be used for this data element.");
+	protected void modifyQDM(boolean isUserDefined) {
+		if(!isUserDefined){
+			CodeListSearchDTO modifyWithDTO = currentCodeListResults.getLastSelectedCodeList();
+			searchDisplay.getErrorMessageDisplay().clear();
+			searchDisplay.getApplyToMeasureSuccessMsg().clear();
+			if(modifyValueSetDTO!=null && modifyWithDTO!=null ){
+				String dataType , dataTypeText;
+				Boolean isSpecificOccurrence=false;
+			
+				if(modifyWithDTO.getCategoryDisplay().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+			    	   dataType = ConstantMessages.ATTRIBUTE;
+			     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_PERIOD)){
+			    	   dataType = ConstantMessages.TIMING_ELEMENT;
+			     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_START_DATE)){
+			    	   dataType = ConstantMessages.TIMING_ELEMENT;
+			     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_END_DATE)){
+			    	   dataType = ConstantMessages.TIMING_ELEMENT;
+			     }else{
+			    	   populateQDSDataType(modifyWithDTO.getCategoryCode());
+			    	   dataType = searchDisplay.getDataTypeValue();
+			     }
+			     if(searchDisplay.getDataTypeText().equalsIgnoreCase("--Select--")){
+			    	   dataTypeText = dataType;
+			      }else{
+			    	   dataTypeText = searchDisplay.getDataTypeText();
+			       }
+			       isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
+			       
+					
+				if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+					if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
+						updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
+					}else{
+						if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
+							searchDisplay.getErrorMessageDisplay().setMessage("A value set with a non-Attribute category must be used for this data element.");
+						}else{
+							searchDisplay.getErrorMessageDisplay().setMessage("A value set with an Attribute category must be used for this data element.");
+						}
+					setEnabled(true);
 				}
-				setEnabled(true);
-			}
+				}else{
+					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
+				
+				}
 			}else{
-				updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,dataTypeText,isSpecificOccurrence);
+				searchDisplay.getErrorMessageDisplay().setMessage("Please select atleast one applied QDM to modify.");
+				setEnabled(true);
 			
 			}
 		}else{
-			searchDisplay.getErrorMessageDisplay().setMessage("Please select atleast one applied QDM to modify.");
-			setEnabled(true);
-		
+			
+			searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+			searchDisplay.getErrorMessageUserDefinedPanel().clear();
+			if((searchDisplay.getUserDefinedInput().getText().trim().length()>0) && !searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
+				
+				CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
+				modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
+				String dataType = searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput());
+				if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+					if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
+						updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,false);
+					}else{
+						if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
+							searchDisplay.getErrorMessageUserDefinedPanel().setMessage("A value set with a non-Attribute category must be used for this data element.");
+						}else{
+							searchDisplay.getErrorMessageUserDefinedPanel().setMessage("A value set with an Attribute category must be used for this data element.");
+						}
+					}
+				}else{
+					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,true);
+				}
+			}
+			
 		}
-		
 	}
 	
 	/**
@@ -290,23 +359,31 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	 * 
 	 * **/
 	
-	private void updateAppliedQDMList(final CodeListSearchDTO codeListSearchDTO , final QualityDataSetDTO  qualityDataSetDTO, String dataType, String dataTypeText, Boolean isSpecificOccurrence){
-		MatContext.get().getCodeListService().updateCodeListToMeasure(MatContext.get().getCurrentMeasureId(),dataType, codeListSearchDTO,qualityDataSetDTO, isSpecificOccurrence,appliedQDMList, new AsyncCallback<SaveUpdateCodeListResult>(){
+	private void updateAppliedQDMList(final CodeListSearchDTO codeListSearchDTO , final QualityDataSetDTO  qualityDataSetDTO, String dataType,  Boolean isSpecificOccurrence,final boolean isUSerDefined){
+		MatContext.get().getCodeListService().updateCodeListToMeasure(MatContext.get().getCurrentMeasureId(),dataType, codeListSearchDTO,qualityDataSetDTO, isSpecificOccurrence,appliedQDMList,isUSerDefined, new AsyncCallback<SaveUpdateCodeListResult>(){
 			@Override
 			public void onFailure(Throwable caught) {
-				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				setEnabled(true);
+				if(!isUSerDefined){
+					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+					setEnabled(true);
+				}else{
+					searchDisplay.getErrorMessageUserDefinedPanel().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				}
 				
 			}
 			@Override
 			public void onSuccess(SaveUpdateCodeListResult result) {
 				if(result.getFailureReason()==7){
-					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
-					setEnabled(true);
+					if(!isUSerDefined){
+						searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
+						setEnabled(true);
+					}else{
+						searchDisplay.getErrorMessageUserDefinedPanel().setMessage(MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
+					}
 				}
 				else{
 					appliedQDMList = result.getAppliedQDMList();
-					updateMeasureXML( result.getDataSetDTO() ,   qualityDataSetDTO);
+					updateMeasureXML( result.getDataSetDTO() , qualityDataSetDTO,isUSerDefined);
 				}
 			}
 		});
@@ -319,18 +396,28 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	 * 
 	 * **/
 	
-	private void updateMeasureXML(QualityDataSetDTO qualityDataSetDTO2, QualityDataSetDTO qualityDataSetDTO){
+	private void updateMeasureXML(QualityDataSetDTO qualityDataSetDTO2, QualityDataSetDTO qualityDataSetDTO,final boolean isUserDefined){
 		MatContext.get().getMeasureService().updateMeasureXML(qualityDataSetDTO2, qualityDataSetDTO, MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
-				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				if(!isUserDefined){
+					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				}else{
+					searchDisplay.getErrorMessageUserDefinedPanel().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				}
 			}
 
 			@Override
 			public void onSuccess(Void result) {
-				searchDisplay.getApplyToMeasureSuccessMsg().setMessage(MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
-				setEnabled(true);
+				if(!isUserDefined){
+					searchDisplay.getApplyToMeasureSuccessMsg().setMessage(MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+					setEnabled(true);
+				}else{
+					searchDisplay.getSuccessMessageUserDefinedPanel().setMessage(MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
+					searchDisplay.getUserDefinedInput().setText("");
+					searchDisplay.getAllDataTypeInput().setSelectedIndex(0);
+				}
 			}
 		});
 		
@@ -454,8 +541,12 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		searchDisplay.getApplyToMeasureSuccessMsg().clear();
 		searchDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getSearchString().setValue("");
+		searchDisplay.getErrorMessageUserDefinedPanel().clear();
+		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getApplyToMeasure().setEnabled(false);
 		searchDisplay.getDataTypeInput().setEnabled(false);
+		searchDisplay.getDisclosurePanel().setOpen(false);
+		searchDisplay.getDisclosurePanelCellTable().setOpen(true);
 	}
 	
 	public void setEnabled(boolean enabled){

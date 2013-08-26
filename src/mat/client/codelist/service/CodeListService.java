@@ -210,14 +210,19 @@ public interface CodeListService extends RemoteService {
 
 	List<OperatorDTO> getAllOperators();
 
-	SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
+	/*SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
 			String dataType, CodeListSearchDTO codeListSearchDTO,
 			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDMList);
+			ArrayList<QualityDataSetDTO> appliedQDMList);*/
 
 	List<? extends HasListBox> getAllDataTypes();
 
 	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(String measureId,
 			String dataType, String codeList,
-			ArrayList<QualityDataSetDTO> appliedQDMs); 
+			ArrayList<QualityDataSetDTO> appliedQDMs);
+
+	SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
+			String dataType, CodeListSearchDTO codeListSearchDTO,
+			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDMList, boolean isUserDefined); 
 }

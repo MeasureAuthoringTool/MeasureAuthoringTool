@@ -433,6 +433,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 						new AsyncCallback<SaveUpdateCodeListResult>() {
 							@Override
 							public void onFailure(Throwable caught) {
+								if(appliedQDMList.size()>0)
+									appliedQDMList.removeAll(appliedQDMList);
 								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());				
 							}
 							@Override
@@ -446,11 +448,13 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 								}else if(result.getFailureReason()==7){
 									searchDisplay.getErrorMessageUserDefinedPanel().setMessage(MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
 								}
-												
 							}
 				})	;
 			}else{
+				if(appliedQDMList.size()>0)
+					appliedQDMList.removeAll(appliedQDMList);
 				searchDisplay.getErrorMessageUserDefinedPanel().setMessage("Please enter Value Set name and select a data type associated with it.");
+				
 			}
 			
 		}

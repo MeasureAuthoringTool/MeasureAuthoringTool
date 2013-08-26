@@ -1092,7 +1092,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			if(modifyDTO.isUsed()){
 				if(modifyDTO.getDataType().equalsIgnoreCase("Attribute")){
 					//update All Attributes.
-					updateAttributes(processor, modifyWithDTO, modifyDTO);
+					//updateAttributes(processor, modifyWithDTO, modifyDTO);
 				}else{
 					//Update all elementRef's in Populations and Stratification
 					updatePopulationAndStratification(processor, modifyWithDTO, modifyDTO);
@@ -1123,7 +1123,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	private void updateAttributes(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO){
 		
 		logger.debug(" MeasureLibraryServiceImpl: updateAttributes Start :  " );
-		String XPATH_EXPRESSION_ATTRIBUTE = "/measure//clause//attribute[@qdmUUID='"+modifyDTO.getUuid()+"']";//XPath to find all elementRefs in supplementalDataElements for to be modified QDM.
+		/*String XPATH_EXPRESSION_ATTRIBUTE = "/measure//clause//attribute[@qdmUUID='"+modifyDTO.getUuid()+"']";//XPath to find all elementRefs in supplementalDataElements for to be modified QDM.
 		
 		try {
 			NodeList nodesATTR = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ATTRIBUTE, processor.getOriginalDoc(), XPathConstants.NODESET);
@@ -1134,7 +1134,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
-		}
+		}*/
 		logger.debug(" MeasureLibraryServiceImpl: updateAttributes End : ");
 	}
 	

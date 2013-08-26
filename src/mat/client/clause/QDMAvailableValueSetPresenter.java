@@ -337,7 +337,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				String dataType = searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput());
 				if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
 					if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
-						updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,false);
+						updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,true);
 					}else{
 						if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
 							searchDisplay.getErrorMessageUserDefinedPanel().setMessage("A value set with a non-Attribute category must be used for this data element.");

@@ -1222,7 +1222,16 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 				Node newNode = nodesElementLookUp.item(i);
 				newNode.getAttributes().getNamedItem("name").setNodeValue(modifyWithDTO.getCodeListName());
 				newNode.getAttributes().getNamedItem("id").setNodeValue(modifyWithDTO.getId());
-				newNode.getAttributes().getNamedItem("codeSystemName").setNodeValue(modifyWithDTO.getCodeSystemName());
+				if(newNode.getAttributes().getNamedItem("codeSystemName")==null && modifyWithDTO.getCodeSystemName()!=null){
+					Attr attrNode = processor.getOriginalDoc().createAttribute("codeSystemName");
+					attrNode.setNodeValue(modifyWithDTO.getCodeSystemName());
+					newNode.getAttributes().setNamedItem(attrNode);
+				}else if(newNode.getAttributes().getNamedItem("codeSystemName")!=null && modifyWithDTO.getCodeSystemName()==null){
+					newNode.getAttributes().getNamedItem("codeSystemName").setNodeValue(null);
+				}else if(newNode.getAttributes().getNamedItem("codeSystemName")!=null && modifyWithDTO.getCodeSystemName()!=null){
+					newNode.getAttributes().getNamedItem("codeSystemName").setNodeValue(modifyWithDTO.getCodeSystemName());
+				}
+				
 				newNode.getAttributes().getNamedItem("datatype").setNodeValue(modifyWithDTO.getDataType());
 				newNode.getAttributes().getNamedItem("oid").setNodeValue(modifyWithDTO.getOid());
 				newNode.getAttributes().getNamedItem("taxonomy").setNodeValue(modifyWithDTO.getTaxonomy());

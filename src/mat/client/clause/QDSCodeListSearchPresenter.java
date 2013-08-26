@@ -64,7 +64,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	private QDSCodeListSearchModel currentCodeListResults;
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
-	
+	boolean isUSerDefined = false;
 	ArrayList<QualityDataSetDTO> allQdsList = new ArrayList<QualityDataSetDTO>();
 	boolean isCheckForSDE=false;
 	List<String> codeListString = new ArrayList<String>();
@@ -166,16 +166,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			}
 		});
 		
-		/*searchDisplay.getAllDataTypeInput().addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
-				searchDisplay.getErrorMessageUserDefinedPanel().clear();
-				
-			}
-		});*/
-		
 		searchDisplay.getAllDataTypeInput().addFocusHandler(new FocusHandler() {
 			
 			@Override
@@ -242,9 +232,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		searchDisplay.getPsuedoQDMToMeasure().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				/*Window.alert(searchDisplay.getUserDefinedInput().getText());
-				Window.alert(searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()));*/
-				addSelectedCodeListtoMeasure(true);
+				isUSerDefined = true;
+				getListOfAppliedQDMs(isUSerDefined);
 			}
 		});
 		
@@ -266,12 +255,13 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				MatContext.get().clearDVIMessages();
 				searchDisplay.scrollToBottom();
-				getListOfAppliedQDMs();
+				isUSerDefined = false;
+				getListOfAppliedQDMs(isUSerDefined);
 			}
 		});
 	}
 	
-	private void getListOfAppliedQDMs(){
+	private void getListOfAppliedQDMs(final boolean isUSerDefined){
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if (measureId != null && measureId != "") {
 			service.getMeasureXMLForAppliedQDM(measureId,true, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
@@ -285,7 +275,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				@Override
 				public void onSuccess(ArrayList<QualityDataSetDTO> result) {
 					appliedQDMList = result;
-					addSelectedCodeListtoMeasure(false);
+					addSelectedCodeListtoMeasure(isUSerDefined);
 				}
 			});
 
@@ -443,8 +433,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 						new AsyncCallback<SaveUpdateCodeListResult>() {
 							@Override
 							public void onFailure(Throwable caught) {
-												
-												
+								Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());				
 							}
 							@Override
 							public void onSuccess(SaveUpdateCodeListResult result) {
@@ -454,6 +443,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 									searchDisplay.getSuccessMessageUserDefinedPanel().setMessage(message);
 									searchDisplay.getUserDefinedInput().setText("");
 									searchDisplay.getAllDataTypeInput().setSelectedIndex(0);
+								}else if(result.getFailureReason()==7){
+									searchDisplay.getErrorMessageUserDefinedPanel().setMessage(MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
 								}
 												
 							}
@@ -571,6 +562,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 
 	@Override
 	public void beforeClosingDisplay() {
+		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+		searchDisplay.getErrorMessageUserDefinedPanel().clear();
 		searchDisplay.getDisclosurePanel().setOpen(false);
 		searchDisplay.getDisclosurePanelCellTable().setOpen(true);
 

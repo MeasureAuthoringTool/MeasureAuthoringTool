@@ -890,28 +890,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return result;
 	}
 
-	@Override
-	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(String measureId,String dataType,String codeListName,ArrayList<QualityDataSetDTO> appliedQDM) {
-		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
-		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
-		wrapper.setQualityDataDTO(qdsList);
-		QualityDataSetDTO qds = new QualityDataSetDTO();
-		DataType dt = dataTypeDAO.findByDataTypeName(dataType);
-		qds.setDataType(dt.getDescription());
-		qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
-		qds.setId(UUID.randomUUID().toString());
-		qds.setCodeListName(codeListName);
-		qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
-		qds.setUuid(UUID.randomUUID().toString());
-		qds.setVersion("1.0");
-		wrapper.getQualityDataDTO().add(qds);
-		String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
-		result.setSuccess(true);
-		result.setXmlString(qdmXMLString);
-		return result;
-		
-	}
 	
 	private SaveUpdateCodeListResult saveAttributeOrMeasurementTiming(String measureId,String dataType,CodeListSearchDTO codeList, ArrayList<QualityDataSetDTO> appliedQDM){
 		boolean duplicateQDS = checkForDuplicates(measureId,dataType,codeList, appliedQDM);
@@ -985,7 +963,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
     	
     }
     
-    @Override
+    @SuppressWarnings("static-access")
+	@Override
 	public SaveUpdateCodeListResult updateQDStoMeasure(String measureId,String dataType,CodeListSearchDTO codeList,QualityDataSetDTO qualityDataSetDTO,boolean isSpecificOccurrence,ArrayList<QualityDataSetDTO> appliedQDM) {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
@@ -993,16 +972,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			boolean duplicateQDS = checkForDuplicates(measureId,dataType,codeList, appliedQDM);
 			if(!duplicateQDS){
 				QualityDataSetDTO qds = qualityDataSetDTO;
-				//For Search - Applied Value set QDM is saved in table.
-				//QualityDataSet qdm = qualityDataSetDAO.get
-				//if(measureId != null){
-				//	qdm.setMeasureId(measureDAO.find(measureId));
-				//}
 				if(dataType != null){
 					DataType dt = dataTypeDAO.findByDataTypeName(dataType);
 					qds.setDataType(dt.getDescription());
-					
-				//	qdm.setDataType(dataTypeDAO.findByDataTypeName(dataType));
 				}
 				if(codeList != null){
 					ListObject listObject = listObjectDAO.find(codeList.getId());
@@ -1015,18 +987,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					}else{
 						qds.setCodeSystemName(listObject.getSteward().getOrgName());
 					}
-					
-				//	qdm.setListObject(listObjectDAO.find(codeList.getId()));
 				}
-			//	qds.setUuid(UUID.randomUUID().toString());
-				//qds.setVersion("1.0");
 				wrapper = modifyAppliedElementList(qds,appliedQDM);
-				//String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
-				
-			//	qdm.setOid(qualityDataSetDAO.generateUniqueOid());
-			//	qdm.setVersion("1");
-			//	qualityDataSetDAO.save(qdm);
-				
 				result.setSuccess(true);
 				result.setDataSetDTO(qds);
 				result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
@@ -1037,16 +999,10 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			return result;
 		}else{
 			QualityDataSetDTO qds = qualityDataSetDTO;
-			//For Search - Applied Value set QDM is saved in table.
-			//QualityDataSet qdm = new QualityDataSet();
-			//if(measureId != null){
-			//	qdm.setMeasureId(measureDAO.find(measureId));
-			//}
 			
 			if(dataType != null){
 					DataType dt = dataTypeDAO.find(dataType);
 					qds.setDataType(dt.getDescription());
-				//	qdm.setDataType(dataTypeDAO.find(dataType));
 			}
 			if(codeList != null){
 				ListObject listObject = listObjectDAO.find(codeList.getId());
@@ -1059,15 +1015,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				}else{
 					qds.setCodeSystemName(listObject.getSteward().getOrgName());
 				}
-				//qdm.setListObject(listObjectDAO.find(codeList.getId()));
 			}
-			
-			//qds.setUuid(UUID.randomUUID().toString());
-			//qds.setVersion("1.0");
-			
-			//qdm.setOid(qualityDataSetDAO.generateUniqueOid());
-			//qdm.setVersion("1");
-			
 			if(isSpecificOccurrence){
 				DataType dt = dataTypeDAO.find(dataType);
 				int occurrenceCount = checkForOccurrenceCount(measureId, dt.getId(), codeList,appliedQDM);
@@ -1080,8 +1028,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					result.setSuccess(true);
 					result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
 					result.setDataSetDTO(qds);
-				//	qdm.setOccurrence("Occurrence" + " " +occTxt);
-					//qualityDataSetDAO.save(qdm);
 				}
 			}else{//Treat as regular QDM
 				DataType dt = dataTypeDAO.find(dataType);
@@ -1093,7 +1039,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					result.setSuccess(true);
 					result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
 					result.setDataSetDTO(qds);
-					//qualityDataSetDAO.save(qdm);
 				}else{
 					result.setSuccess(true);
 					result.setFailureReason(result.ALREADY_EXISTS);
@@ -1130,6 +1075,45 @@ public class ManageCodeListServiceImpl implements CodeListService {
     	wrapper.setQualityDataDTO(appliedQDM);
     	return wrapper;
     }
+    
+    @Override
+	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(String measureId,String dataType,String codeListName,ArrayList<QualityDataSetDTO> appliedQDM) {
+		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+		List<QualityDataSetDTO> existingQDSList = appliedQDM;
+		DataType dt = dataTypeDAO.findByDataTypeName(dataType);
+		boolean isQDSExist = false;
+    	for(QualityDataSetDTO QDTO : existingQDSList){
+    		if(dt.getDescription().equalsIgnoreCase(QDTO.getDataType())&&(QDTO.getCodeListName().equalsIgnoreCase(codeListName)) && QDTO.getOccurrenceText() == null){
+    			//if the same dataType exists and the occurrenceText is also null 
+    			//then there is a any occurrence exists for that dataType.
+    			isQDSExist = true;
+    			break;
+    		}
+    	}
+		if(!isQDSExist){
+			wrapper.setQualityDataDTO(qdsList);
+			QualityDataSetDTO qds = new QualityDataSetDTO();
+		
+			qds.setDataType(dt.getDescription());
+			qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
+			qds.setId(UUID.randomUUID().toString());
+			qds.setCodeListName(codeListName);
+			qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
+			qds.setUuid(UUID.randomUUID().toString());
+			qds.setVersion("1.0");
+			wrapper.getQualityDataDTO().add(qds);
+			String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+			result.setSuccess(true);
+			result.setXmlString(qdmXMLString);
+		}else{
+			result.setSuccess(true);
+			result.setFailureReason(result.ALREADY_EXISTS);
+		}
+		return result;
+		
+	}
     
     /**
      * Method to extract qdm element node created after marshalling of QualityDataModelWrapper object.

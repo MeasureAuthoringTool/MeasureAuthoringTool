@@ -63,6 +63,14 @@ public interface ImageResources extends ClientBundle {
 	@Source("images/g_lock.gif")
 	ImageResource g_lock();
 	
+	@Source("images/trash.png")
+	ImageResource g_trash();
+	
+	@Source("images/open_panel.png")
+	ImageResource g_openPanel();
+	
+	@Source("images/close_panel.png")
+	ImageResource g_closePanel();
 	
 	@Source("images/g_package_edit.png")
 	 ImageResource g_package_edit();

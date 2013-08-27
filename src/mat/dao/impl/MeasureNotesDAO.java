@@ -3,6 +3,9 @@ package mat.dao.impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.dao.search.GenericDAO;
+import mat.model.MeasureNotes;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
@@ -10,9 +13,6 @@ import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Restrictions;
 
-import mat.dao.search.GenericDAO;
-import mat.model.MeasureNotes;
-import mat.model.clause.Measure;
 
 
 public class MeasureNotesDAO extends GenericDAO<MeasureNotes, String> implements mat.dao.MeasureNotesDAO{
@@ -20,12 +20,12 @@ public class MeasureNotesDAO extends GenericDAO<MeasureNotes, String> implements
 	private static final Log logger = LogFactory.getLog(MeasureNotesDAO.class);
 	
 	@Override
-	public List<MeasureNotes> getAllMeasureNotesByMeasureID(Measure measure) {
+	public List<MeasureNotes> getAllMeasureNotesByMeasureID(String measureId) {
 		List<MeasureNotes> measureNotesList = new ArrayList<MeasureNotes>();
-		logger.info("Getting all the notes for the measure ::::" + measure.getId());
+		logger.info("Getting all the notes for the measure ::::" + measureId);
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(MeasureNotes.class);
-		criteria.add(Restrictions.eq("measure", measure));
+		criteria.add(Restrictions.eq("measure_id", measureId));
 		measureNotesList = criteria.list();
 		return measureNotesList;
 	}

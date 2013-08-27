@@ -8,7 +8,8 @@
 	<id name="id" column="ID">	
 			<generator class="uuid"/>
     </id>
-	<many-to-one name="measure" class="mat.model.clause.Measure" column="MEASURE_ID"/>
+	<!-- <many-to-one name="measure" class="mat.model.clause.Measure" column="MEASURE_ID"/> -->
+	<property name="measure_id" column="MEASURE_ID"/>
 	<property name="noteTitle"  column="TITLE"/>
 	<property name="noteDesc"   column="DESCRIPTION"/>
 	<many-to-one name="createUser" class="mat.model.User" column="CREATE_USER_ID"/>

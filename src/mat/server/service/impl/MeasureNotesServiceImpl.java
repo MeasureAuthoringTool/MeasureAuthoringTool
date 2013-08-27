@@ -1,9 +1,9 @@
 package mat.server.service.impl;
 
 import java.util.List;
+
 import mat.dao.MeasureNotesDAO;
 import mat.model.MeasureNotes;
-import mat.model.clause.Measure;
 import mat.server.service.MeasureNotesService;
 
 public class MeasureNotesServiceImpl implements MeasureNotesService{
@@ -19,9 +19,9 @@ public class MeasureNotesServiceImpl implements MeasureNotesService{
 	}
 
 	@Override
-	public List<MeasureNotes> getAllMeasureNotesByMeasureID(Measure measure) {
+	public List<MeasureNotes> getAllMeasureNotesByMeasureID(String measureId) {
 		
-		return measureNotesDAO.getAllMeasureNotesByMeasureID(measure);
+		return measureNotesDAO.getAllMeasureNotesByMeasureID(measureId);
 		
 	}
 

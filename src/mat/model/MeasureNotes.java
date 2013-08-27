@@ -9,7 +9,7 @@ import mat.model.clause.Measure;
 public class MeasureNotes{
 
 	private String id;
-	private Measure measure; 
+	private String measure_id;
 	private String noteTitle;
 	private String noteDesc;
 	private User createUser;
@@ -21,12 +21,14 @@ public class MeasureNotes{
 	public void setId(String id) {
 		this.id = id;
 	}
-	public Measure getMeasure() {
-		return measure;
+	
+	public String getMeasure_id() {
+		return measure_id;
 	}
-	public void setMeasure(Measure measure) {
-		this.measure = measure;
+	public void setMeasure_id(String measure_id) {
+		this.measure_id = measure_id;
 	}
+	
 	public String getNoteTitle() {
 		return noteTitle;
 	}

@@ -1333,7 +1333,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
  			measureNote.setNoteDesc(noteDescription);
  			Measure measure = getMeasureDAO().find(measureId);
 			if(measure != null){
-				measureNote.setMeasure(measure);
+				measureNote.setMeasure_id(measureId);
 			}
 			User user = getUserService().getById(userId);
 			if(user != null){
@@ -1350,7 +1350,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		
 		Measure measure = getMeasureDAO().find(measureID);		
 		if(measure!=null) {
-			List<MeasureNotes> measureNotesList = getMeasureNotesService().getAllMeasureNotesByMeasureID(measure);
+			List<MeasureNotes> measureNotesList = getMeasureNotesService().getAllMeasureNotesByMeasureID(measureID);
 			if(measureNotesList!=null && !measureNotesList.isEmpty()) {
 				for(MeasureNotes measureNotes : measureNotesList) {
 					if(measureNotes!=null) {

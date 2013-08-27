@@ -50,7 +50,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private static final String CONVERSION_FILE_2="xsl/mat_narrGen.xsl";
 	private static final String CONVERSION_FILE_HTML="xsl/eMeasure.xsl";
 	//Filtered User Defined QDM's as these are dummy QDM's created by user and should not be part of Value Set sheet.
-	private static final String XPATH_ELEMENTLOOKUP_QDM="/measure/elementLookUp/qdm[not(@oid='1.2.3.4.5.001')]";
+	private static final String XPATH_ELEMENTLOOKUP_QDM="/measure/elementLookUp/qdm[not(@oid='1.1.1.1')]";
 	private static final String XPATH_SUPPLEMENTDATA_ELEMENTREF="/measure/supplementalDataElements/elementRef/@id";
 	private static final String SUPPLEMENTDATAELEMENT="supplementalDataElements";
 	//This expression will find distinct elementRef records from SimpleXML.SimpleXML will have grouping which can have

@@ -1423,6 +1423,18 @@ padding: 2px;
     padding: 4px 0 4px 8px;
 }
 
+.notes_table_background{
+	 /* background-color: lightgray; */
+    background-image: url("images/bg_btnGrey-secondary.png");
+    background-repeat: repeat-x;
+    /* border-color: #E8EEF7 #E8EEF7 #E8EFF7;
+    border-left: 3px solid #E8EEF7;
+    border-right: 3px solid #E8EEF7;
+    border-style: solid;
+    border-width: 3px; */
+    /* margin-left: 15px;
+    padding: 4px 0 4px 8px; */
+}
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________
 .skiplist {margin: 0 0 0 5px; padding: 0} 

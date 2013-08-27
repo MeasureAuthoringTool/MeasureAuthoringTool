@@ -5,10 +5,12 @@ import mat.client.ImageResources;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.search.SearchResults;
 import mat.model.MeasureNotes;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -38,16 +40,13 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	private TextBox measureNoteTitle = new TextBox();
 	private Button exportButton = new PrimaryButton("Export Notes","primaryButton");
 	private Button saveButton = new PrimaryButton("Save","primaryButton");
-	private Button cancelButton = new PrimaryButton("Cancel","rightAlignSecondaryButton");
+	private Button cancelButton = new SecondaryButton("Cancel");
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
-	public Grid508 dataTable = new Grid508();
 	protected Panel pageSizeSelector = new FlowPanel();
 	public SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
 	protected Panel pageSelector = new HorizontalPanel();
 	MeasureNotesModel notesResult = new MeasureNotesModel();
 		
-	//private SearchView<mat.model.MeasureNotesModel.Result> view = new SearchView<MeasureNotesModel.Result>("Users");
-	
 	public HasClickHandlers getExportButton() {
 		return exportButton;
 	}
@@ -60,13 +59,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return cancelButton;
 	}
 	
-	public Grid508 getDataTable() {
-		return dataTable;
-	}
-
-	public void setDataTable(Grid508 dataTable) {
-		this.dataTable = dataTable;
-	}
+	
 
 	public TextArea getMeasureNoteComposer() {
 		return measureNoteComposer;
@@ -123,41 +116,49 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		containerPanel.add(fPanel);
 	}
 	
+	
+	
 	private Widget buildMeasureComposer(){
-		FlowPanel composerPanel = new FlowPanel();
-		Label composerLabel = new Label("Measure Notes Composer");
-		composerLabel.setStyleName("measureComposerLabel");
-		composerPanel.add(composerLabel);
-		composerPanel.add(new SpacerWidget());
-		HorizontalPanel titlePanel = new HorizontalPanel();
-		Label titleLabel= new Label("Title:");
-		titleLabel.setStyleName("bold");
-		measureNoteTitle.setWidth("400px");
-		titlePanel.add(titleLabel);
-		titlePanel.add(measureNoteTitle);
-		composerPanel.add(titlePanel);
-		composerPanel.add(new SpacerWidget());
-		measureNoteComposer.setHeight("70px");
-		measureNoteComposer.setWidth("90%");
-		composerPanel.add(measureNoteComposer);
-		composerPanel.add(new SpacerWidget());
-		HorizontalPanel bottomButtonPanel = new HorizontalPanel();
-		composerPanel.add(new SpacerWidget());
-		bottomButtonPanel.add(saveButton);
-		bottomButtonPanel.add(cancelButton);
-		bottomButtonPanel.setWidth("100px");
-		bottomButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		composerPanel.add(bottomButtonPanel);
-		
-		return composerPanel;
-	}
+		  FlowPanel composerPanel = new FlowPanel();
+		  composerPanel.setStylePrimaryName("notes_composer_background");
+		  Label composerLabel = new Label("Measure Notes Composer");
+		  composerLabel.setStyleName("measureComposerLabel");
+		  composerPanel.add(composerLabel);
+		  composerPanel.add(new SpacerWidget());
+		  HorizontalPanel titlePanel = new HorizontalPanel();
+		  Label titleLabel= new Label("Title");
+		  titleLabel.setStyleName("bold");
+		  Label descLabel= new Label("Description");
+		  descLabel.setStyleName("bold");
+		  measureNoteTitle.setWidth("400px");
+		  titlePanel.add(measureNoteTitle);
+		  composerPanel.add(titleLabel);
+		  composerPanel.add(new SpacerWidget());
+		  composerPanel.add(titlePanel);
+		  composerPanel.add(new SpacerWidget());
+		  measureNoteComposer.setHeight("70px");
+		  measureNoteComposer.setWidth("80%");
+		  composerPanel.add(descLabel);
+		  composerPanel.add(new SpacerWidget());
+		  composerPanel.add(measureNoteComposer);
+		  composerPanel.add(new SpacerWidget());
+		  HorizontalPanel bottomButtonPanel = new HorizontalPanel();
+		  composerPanel.add(new SpacerWidget());
+		  bottomButtonPanel.add(saveButton);
+		  bottomButtonPanel.add(cancelButton);
+		  bottomButtonPanel.setWidth("100px");
+		  bottomButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
+		  composerPanel.add(bottomButtonPanel);
+		  
+		  return composerPanel;
+		 }
+	
 	
 	public Widget asWidget() {
 		return containerPanel;
 	}
 	
 	public ErrorMessageDisplay getErrorMessageDisplay() {
-		// TODO Auto-generated method stub
 		return errorMessages;
 	}
 		
@@ -270,10 +271,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		widgetPanel.setStylePrimaryName("bottom_border_inset");		
 		widgetPanel.add(headerWidget);
 		widgetPanel.setCellHorizontalAlignment(headerWidget, HasHorizontalAlignment.ALIGN_RIGHT);
-		widgetPanel.add(new SpacerWidget());
+		/*widgetPanel.add(new SpacerWidget());*/
 		widgetPanel.add(notesDisclosurePanel);
 		widgetPanel.add(new SpacerWidget());
-		
+		widgetPanel.setStylePrimaryName("notes_table_background");
 		mainPanel.add(widgetPanel);				
 	}
 	
@@ -301,7 +302,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vPanel.add(new SpacerWidget());
 		HorizontalPanel bottomButtonPanel = new HorizontalPanel();
 		Button saveButton = new PrimaryButton("Save","primaryButton");
-		Button cancelButton = new PrimaryButton("Cancel","rightAlignSecondaryButton");
+		Button cancelButton = new SecondaryButton("Cancel");
 		bottomButtonPanel.add(saveButton);
 		bottomButtonPanel.add(cancelButton);
 		bottomButtonPanel.setWidth("150px");
@@ -360,7 +361,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		headerPanel.add(creationDatePanel);
 		headerPanel.setCellWidth(creationDatePanel, "25%");
 		
-		Image editmg = new Image(ImageResources.INSTANCE.g_package_edit());
+		//Image editmg = new Image(ImageResources.INSTANCE.g_package_edit());
+		Image editmg = new Image(ImageResources.INSTANCE.g_openPanel());
 		Button editButton = new Button();
 		editButton.setTitle("Edit");
 		editButton.getElement().appendChild(editmg.getElement());
@@ -372,7 +374,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			}
 				
 		});
-		Image deleteImg  = new Image(ImageResources.INSTANCE.g_delete());
+		Image deleteImg  = new Image(ImageResources.INSTANCE.g_trash());//new Image(ImageResources.INSTANCE.g_delete());
 		Button deleteButton = new Button();
 		deleteButton.setTitle("Delete");
 		deleteButton.getElement().appendChild(deleteImg.getElement());
@@ -393,29 +395,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		editButtonPanel.add(editButton);
 		headerPanel.add(editButtonPanel);
 		headerPanel.setCellWidth(editButtonPanel, "15%");
+		/*headerPanel.setStyleName("notes_composer_background");*/
 		return headerPanel;
 	}
 
-	/**
-	 * Method to build User Results
-	 * 
-	 * */
-	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<MeasureNotes> results){		
-		for(int i = 0; i < numRows; i++) {
-			for(int j = 0; j < numColumns; j++) {
-				if(results.isColumnFiresSelection(j)) {
-					String innerText = results.getValue(i, j).getElement().getInnerText();
-					Label a = new Label();
-					a.setText(innerText);
-					dataTable.setWidget(i+1, j, a);
-				}
-				else {
-					dataTable.setWidget(i+1, j,results.getValue(i, j));
-				}
-			}
-			if(i % 2 == 0) {
-				dataTable.getRowFormatter().addStyleName(i + 1, "odd");
-			}
-		}
-	}	
 }

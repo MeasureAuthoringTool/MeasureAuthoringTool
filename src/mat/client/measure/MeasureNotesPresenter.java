@@ -338,18 +338,17 @@ public class MeasureNotesPresenter implements MatPresenter{
 
 	@Override
 	public void beforeDisplay() {
-		// TODO Auto-generated method stub
+		notesDisplay.getSuccessMessageDisplay().clear();
 		search();		
 		notesDisplay.asWidget();
 	}
 	@Override
 	public void beforeClosingDisplay() {
-		// TODO Auto-generated method stub
+		notesDisplay.getSuccessMessageDisplay().clear();
 		notesDisplay.asWidget();
 	}
 	@Override
 	public Widget getWidget() {
-		// TODO Auto-generated method stub
 		return notesDisplay.asWidget();
 	}
 	

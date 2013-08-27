@@ -2,14 +2,12 @@ package mat.client.measure;
 
 import mat.DTO.MeasureNoteDTO;
 import mat.client.ImageResources;
-import mat.client.measure.metadata.Grid508;
+import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.search.SearchResults;
-import mat.model.MeasureNotes;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -20,7 +18,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -147,7 +144,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  bottomButtonPanel.setWidth("100px");
 		  bottomButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		  composerPanel.add(bottomButtonPanel);
-		  
+		  composerPanel.add(new SpacerWidget());
 		  return composerPanel;
 		 }
 	
@@ -286,14 +283,21 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		measureNoteDesc.setTitle("Measure Notes Description");
 		measureNoteDesc.setWidth("800px");
 		measureNoteDesc.setHeight("70px");
-		HorizontalPanel hPanel = new HorizontalPanel();
-		HTML titleLabel = new HTML("Title:");
+		//HorizontalPanel hPanel = new HorizontalPanel();
+		HTML titleLabel = new HTML("Title");
 		titleLabel.setStyleName("bold");
-		hPanel.add(titleLabel);
-		hPanel.add(title);
+		HTML descLabel = new HTML("Description");
+		descLabel.setStyleName("bold");
+		//hPanel.add(titleLabel);
+		//hPanel.add(title);
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.setWidth("850px");
-		vPanel.add(hPanel);
+		vPanel.add(titleLabel);
+		vPanel.add(new SpacerWidget());
+		vPanel.add(title);
+		//vPanel.add(hPanel);
+		vPanel.add(new SpacerWidget());
+		vPanel.add(descLabel);
 		vPanel.add(new SpacerWidget());
 		vPanel.add(measureNoteDesc);
 		vPanel.add(new SpacerWidget());
@@ -306,6 +310,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		bottomButtonPanel.setWidth("150px");
 		bottomButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		vPanel.add(bottomButtonPanel);
+		vPanel.add(new SpacerWidget());
 		//vPanel.setCellHorizontalAlignment(bottomButtonPanel, HasHorizontalAlignment.ALIGN_RIGHT);
 		return vPanel;
 	}
@@ -360,10 +365,16 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		headerPanel.setCellWidth(creationDatePanel, "25%");
 		
 		//Image editmg = new Image(ImageResources.INSTANCE.g_package_edit());
-		Image editmg = new Image(ImageResources.INSTANCE.g_openPanel());
-		Button editButton = new Button();
+		/*Image editmg = new Image(ImageResources.INSTANCE.g_openPanel());*/
+		CustomButton editButton = new CustomButton();
+		editButton.removeStyleName("gwt-button");
+		editButton.setStylePrimaryName("invisibleButtonText");
 		editButton.setTitle("Edit");
-		editButton.getElement().appendChild(editmg.getElement());
+		editButton.setResource(ImageResources.INSTANCE.g_openPanel(),"Edit");
+		
+		/*Button editButton = new Button();
+		editButton.setTitle("Edit");
+		editButton.getElement().appendChild(editmg.getElement());*/
 		editButton.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
@@ -372,10 +383,15 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			}
 				
 		});
-		Image deleteImg  = new Image(ImageResources.INSTANCE.g_trash());//new Image(ImageResources.INSTANCE.g_delete());
+		/*Image deleteImg  = new Image(ImageResources.INSTANCE.g_trash());//new Image(ImageResources.INSTANCE.g_delete());
 		Button deleteButton = new Button();
 		deleteButton.setTitle("Delete");
-		deleteButton.getElement().appendChild(deleteImg.getElement());
+		deleteButton.getElement().appendChild(deleteImg.getElement());*/
+		CustomButton deleteButton = new CustomButton();
+		deleteButton.removeStyleName("gwt-button");
+		deleteButton.setStylePrimaryName("invisibleButtonText");
+		deleteButton.setTitle("Delete");
+		deleteButton.setResource(ImageResources.INSTANCE.g_trash(),"Delete");
 		deleteButton.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {

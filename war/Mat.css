@@ -1318,12 +1318,13 @@ padding: 2px;
 }
 
 .readOnlyButton {
-    background: url("images/hborder.png") repeat-x scroll 0 -27px transparent;
-    border: 1px outset #CCCCCC;
+    /* background: url("images/hborder.png") repeat-x scroll 0 -27px transparent; */
+    border: 0px outset #CCCCCC;
     font-size: 0;
     margin: 0;
     padding: 3px 5px;
     text-decoration: none;
+    background-color: rgba(0, 0, 0, 0);
 }
 .invisibleButtonText{
   margin: 0;
@@ -1332,10 +1333,11 @@ padding: 2px;
   font-size: 0;
   cursor: pointer;
   cursor: hand;
-  background: url("images/hborder.png") repeat-x 0px -27px;
-  border: 1px outset #ccc;
+  /* background: url("images/hborder.png") repeat-x 0px -27px; */
+  border: 0px outset #ccc;
   margin-left: 12px;
   margin-right: 12px;	
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .invisibleButtonText:active {
@@ -1424,16 +1426,8 @@ padding: 2px;
 }
 
 .notes_table_background{
-	 /* background-color: lightgray; */
-    background-image: url("images/bg_btnGrey-secondary.png");
-    background-repeat: repeat-x;
-    /* border-color: #E8EEF7 #E8EEF7 #E8EFF7;
-    border-left: 3px solid #E8EEF7;
-    border-right: 3px solid #E8EEF7;
-    border-style: solid;
-    border-width: 3px; */
-    /* margin-left: 15px;
-    padding: 4px 0 4px 8px; */
+	background-color:white;
+    border-bottom: 2px inset #B0B0B0;	
 }
 /* =SKIPLIST CODE AND =508 COMPLIANCE  */
 /*_____________________________________________________________

@@ -64,15 +64,17 @@ public class MeasureNotesPresenter implements MatPresenter{
  			@Override
  			public void onClick(ClickEvent event) {
  				resetWidget();
- 			}
-
-			
+ 				clearTitleAndDescription();
+ 			}			
  		}); 
- 		
- 		
  	}
  	
- 	private void generateCSVToExportMeasureNotes(){
+ 	protected void clearTitleAndDescription() {
+ 		notesDisplay.getMeasureNoteTitle().setText(null);
+	 	notesDisplay.getMeasureNoteComposer().setText(null);
+	}
+
+	private void generateCSVToExportMeasureNotes(){
 		String url = GWT.getModuleBaseURL() + "export?id=" + MatContext.get().getCurrentMeasureId() + "&format=exportMeasureNotesForMeasure";
 		Window.open(url + "&type=save", "_self", "");		
 	}
@@ -88,8 +90,36 @@ public class MeasureNotesPresenter implements MatPresenter{
  				notesDisplay.setObserver(new Observer() {
 					@Override
 					public void onDeleteClicked(MeasureNoteDTO result) {
-						Window.alert("Deleted .... am Clicked !!!" + result.getId());
-						
+						service.deleteMeasureNotes(result, new AsyncCallback<Void>() {
+							@Override
+							public void onSuccess(Void result) {
+								notesDisplay.getErrorMessageDisplay().clear();
+								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note deleted successfully");
+								search();
+							}
+							@Override
+							public void onFailure(Throwable caught) {
+								notesDisplay.getSuccessMessageDisplay().clear();
+								notesDisplay.getErrorMessageDisplay().setMessage("Failed to delete measure note" );
+							}
+						});
+					}
+
+					@Override
+					public void onSaveClicked(MeasureNoteDTO measureNoteDTO) {
+						service.updateMeasureNotes(measureNoteDTO, MatContext.get().getLoggedinUserId(), new AsyncCallback<Void>() {							
+							@Override
+							public void onSuccess(Void result) {
+								notesDisplay.getErrorMessageDisplay().clear();
+								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note saved successfully");
+								search();
+							}							
+							@Override
+							public void onFailure(Throwable caught) {
+								notesDisplay.getSuccessMessageDisplay().clear();
+								notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note" );
+							}
+						});
 					}
 				});
  			}

@@ -58,6 +58,6 @@ public interface MeasureServiceAsync {
 			String string, String string2, AsyncCallback<Void> callback);
 	public void getAllMeasureNotesByMeasureID(String measureID,
 			AsyncCallback<MeasureNotesModel> callback);
-	
-
+	public void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO, AsyncCallback<Void> callback);
+	public void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId, AsyncCallback<Void> callback);
 	}

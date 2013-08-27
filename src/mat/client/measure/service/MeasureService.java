@@ -11,10 +11,9 @@ import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
-import mat.model.CodeListSearchDTO;
-import mat.model.MeasureNotes;
 import mat.model.QualityDataSetDTO;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -54,6 +53,6 @@ public interface MeasureService extends RemoteService {
 	public void saveMeasureNote(String noteTitle, String noteDescription,
 			String string, String string2);
 	public MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID);
-	
-
+	public void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO);
+	public void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId);
 }

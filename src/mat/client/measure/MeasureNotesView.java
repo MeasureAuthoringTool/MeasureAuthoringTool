@@ -52,6 +52,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	
 	public static interface Observer {
 		public void onDeleteClicked(MeasureNoteDTO result);
+		public void onSaveClicked(MeasureNoteDTO measureNoteDTO);
 	}
 	private Observer observer;
 	
@@ -316,8 +317,16 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vPanel.add(new SpacerWidget());
 		vPanel.add(new SpacerWidget());
 		HorizontalPanel bottomButtonPanel = new HorizontalPanel();
+		
 		Button saveButton = new PrimaryButton("Save","primaryButton");
+		setId(saveButton, "Save", result.getId());
+		saveButton.addClickHandler(clickHandler);
+		
 		Button cancelButton = new SecondaryButton("Cancel");
+		cancelButton.getElement().setAttribute("id", result.getId());
+		cancelButton.addClickHandler(cancelClickHandler());
+		
+		
 		bottomButtonPanel.add(saveButton);
 		bottomButtonPanel.add(cancelButton);
 		bottomButtonPanel.setWidth("150px");
@@ -326,7 +335,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vPanel.add(new SpacerWidget());
 		return vPanel;
 	}
-
+	
 	private Widget createDisclosureHeaderWidget(MeasureNoteDTO result, final DisclosurePanel notesDisclosurePanel) {
 		HorizontalPanel headerPanel = new HorizontalPanel();
 		headerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -439,7 +448,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return image;
 	}
 	
-	private void setId(CustomButton image, String action, String key) {
+	private void setId(Widget image, String action, String key) {
 		String id = action + "_" + key;
 		image.getElement().setAttribute("id", id);
 	}
@@ -461,7 +470,40 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 					if("Delete".equals(action)) {
 						observer.onDeleteClicked(measureNoteDTO);
 					}
-					
+					if("Save".equals(action)) {
+						VerticalPanel vpanel = (VerticalPanel) ((Widget)event.getSource()).getParent().getParent();
+						for(int i=0; i<vpanel.getWidgetCount(); i++) {
+							Widget widget = vpanel.getWidget(i);
+							if(widget.getTitle().equalsIgnoreCase("Measure Notes Title")) {
+								measureNoteDTO.setNoteTitle(((TextBox)widget).getText());
+							}
+							if(widget.getTitle().equalsIgnoreCase("Measure Notes Description")) {
+								measureNoteDTO.setNoteDesc(((TextArea)widget).getText());
+							}
+						}
+						observer.onSaveClicked(measureNoteDTO);
+					}
+				}
+			}
+		};
+	}
+	
+	private ClickHandler cancelClickHandler() {		
+		return new ClickHandler() {			
+			@Override
+			public void onClick(ClickEvent event) {
+				String measureNoteId = ((Widget)event.getSource()).getElement().getId();
+				MeasureNoteDTO measureNoteDTO = getResultForId(measureNoteId);
+				
+				VerticalPanel vpanel = (VerticalPanel) ((Widget)event.getSource()).getParent().getParent();
+				for(int i=0; i<vpanel.getWidgetCount(); i++) {
+					Widget widget = vpanel.getWidget(i);
+					if(widget.getTitle().equalsIgnoreCase("Measure Notes Title")) {
+						((TextBox)widget).setText(measureNoteDTO.getNoteTitle());
+					}
+					if(widget.getTitle().equalsIgnoreCase("Measure Notes Description")) {
+						((TextArea)widget).setText(measureNoteDTO.getNoteDesc());
+					}
 				}
 			}
 		};

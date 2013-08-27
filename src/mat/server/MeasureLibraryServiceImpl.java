@@ -30,6 +30,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
+import mat.dao.MeasureNotesDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.QDSAttributesDAO;
@@ -76,6 +77,8 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
+
 public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implements MeasureService{
 	private static final long serialVersionUID = 2280421300224680146L;
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
@@ -117,6 +120,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	private MeasureNotesService getMeasureNotesService(){
 		return ((MeasureNotesService)context.getBean("measureNotesService"));
 		
+	}
+	
+	private MeasureNotesDAO getMeasureNotesDAO(){
+		return ((MeasureNotesDAO)context.getBean("measureNotesDAO")); 
 	}
 			
 	private void setValueFromModel(ManageMeasureDetailModel model, Measure measure) {
@@ -1371,6 +1378,32 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		}
 		measureNotesModel.setData(data);
 		return measureNotesModel;
+	}
+
+	@Override
+	public void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO) {
+		MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
+		MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());
+		try{
+			getMeasureNotesService().deleteMeasureNote(measureNotes);	
+			logger.info("MeasureNotes Deleted Successfully :: " + measureNotes.getId());
+		}catch(Exception e){
+			logger.info("MeasureNotes not deleted. Measure notes Id :: " + measureNotes.getId());
+		}
+	}
+
+	@Override
+	public void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId) {
+		MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
+		MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());
+		measureNotes.setNoteTitle(measureNoteDTO.getNoteTitle());
+		measureNotes.setNoteDesc(measureNoteDTO.getNoteDesc());
+		User user = getUserService().getById(userId);
+		if(user != null){
+			measureNotes.setModifyUser(user);
+		}
+		measureNotes.setLastModifiedDate(new Date());
+		getMeasureNotesService().saveMeasureNote(measureNotes);
 	}
 	
 }

@@ -4,7 +4,7 @@
 	"http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
 	
 <hibernate-mapping auto-import="false">
-  <class name="mat.model.MeasureNotes" table="MEASURE_NOTES_TEMP" lazy="false">
+  <class name="mat.model.MeasureNotes" table="MEASURE_NOTES" lazy="false">
 	<id name="id" column="ID">	
 			<generator class="uuid"/>
     </id>

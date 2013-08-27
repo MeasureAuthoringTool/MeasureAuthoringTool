@@ -76,13 +76,6 @@ public class MeasureNotesPresenter implements MatPresenter{
  				notesDisplay.setNotesResult(result);
  				notesDisplay.displayView();
  				notesDisplay.setObserver(new Observer() {
-					
-					@Override
-					public void onEditClicked(MeasureNoteDTO result) {
-						Window.alert("I am Clicked !!!" + result.getId());
-						
-					}
-					
 					@Override
 					public void onDeleteClicked(MeasureNoteDTO result) {
 						Window.alert("Deleted .... am Clicked !!!" + result.getId());

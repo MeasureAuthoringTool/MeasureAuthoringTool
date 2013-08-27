@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -33,7 +34,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	@SuppressWarnings("unused")
 	private static final int[] PAGE_SIZES= new int[] {50, PAGE_SIZE_ALL};
 	private VerticalPanel containerPanel = new VerticalPanel();
-	DisclosurePanel notesDisclosurePanel = new DisclosurePanel();
+	
 	private SimplePanel simplePanel = new SimplePanel();
 	private FlowPanel flowPanel = new FlowPanel ();
 	private TextArea measureNoteComposer = new TextArea();
@@ -50,7 +51,6 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	private ClickHandler clickHandler = buildClickHandler();
 	
 	public static interface Observer {
-		public void onEditClicked(MeasureNoteDTO result);
 		public void onDeleteClicked(MeasureNoteDTO result);
 	}
 	private Observer observer;
@@ -268,7 +268,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	
 	
 	private void createDisclosurePanel(VerticalPanel mainPanel, MeasureNoteDTO result){
-		
+		DisclosurePanel notesDisclosurePanel = new DisclosurePanel();
 		notesDisclosurePanel.setAnimationEnabled(true);
 		notesDisclosurePanel.setOpen(false);
 		Widget contentWidget = createDisclosureContentWidget(result);
@@ -331,7 +331,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		HorizontalPanel headerPanel = new HorizontalPanel();
 		headerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		headerPanel.setWidth("800px");
-		final MeasureNoteDTO selectedMeasureNote = result;
+		
 		HorizontalPanel noteTitlePanel = new HorizontalPanel();
 		
 		String title = result.getNoteTitle();
@@ -374,24 +374,23 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		headerPanel.add(creationDatePanel);
 		headerPanel.setCellWidth(creationDatePanel, "25%");
 		
-		/*CustomButton editButton = new CustomButton();
-		editButton.removeStyleName("gwt-button");
-		editButton.setStylePrimaryName("invisibleButtonText");
-		editButton.setTitle("Edit");
-		editButton.setResource(ImageResources.INSTANCE.g_openPanel(),"Edit");*/
-		
 		CustomButton editButton = (CustomButton) getImage("edit", ImageResources.INSTANCE.g_openPanel(), result.getId());
-		
-		/*editButton.addClickHandler(new ClickHandler(){
+		editButton.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
+				CustomButton myEditButton = (CustomButton)event.getSource();
 				System.out.println("Edit button clicked !!!");
+				if(notesDisclosurePanel.isOpen()){
+					Image img = myEditButton.getImage();
+					img.setResource(ImageResources.INSTANCE.g_openPanel());
+				}else{
+					Image img = myEditButton.getImage();
+					img.setResource(ImageResources.INSTANCE.g_closePanel());
+				}
 				notesDisclosurePanel.setOpen(!notesDisclosurePanel.isOpen());
-				
-				
 			}
 				
-		});*/
+		});
 		
 		CustomButton deleteButton =(CustomButton) getImage("Delete",ImageResources.INSTANCE.g_trash(), result.getId()); /*new CustomButton();
 		deleteButton.removeStyleName("gwt-button");
@@ -414,8 +413,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		HorizontalPanel editButtonPanel = new HorizontalPanel();
 		editButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		editButtonPanel.add(editButton);
+		
 		headerPanel.add(editButtonPanel);
 		headerPanel.setCellWidth(editButtonPanel, "15%");
+		
 		return headerPanel;
 	}
 	
@@ -457,11 +458,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 				String measureNoteId= id.substring(index+1);
 				MeasureNoteDTO measureNoteDTO = getResultForId(measureNoteId);
 				if(observer != null) {
-					if("edit".equals(action)) {
-						observer.onEditClicked(measureNoteDTO);
-						notesDisclosurePanel.setOpen(true);
-					}
-					else if("Delete".equals(action)) {
+					if("Delete".equals(action)) {
 						observer.onDeleteClicked(measureNoteDTO);
 					}
 					

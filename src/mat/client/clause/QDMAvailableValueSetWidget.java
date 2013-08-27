@@ -52,8 +52,8 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	HorizontalPanel mainPanel = new HorizontalPanel();
 	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	
-	private DisclosurePanel disclosurePanel = new DisclosurePanel("User Defined QDM");
-	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Available QDM");
+	private DisclosurePanel disclosurePanel = new DisclosurePanel("QDM element with undefined Value set");
+	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("QDM elements with Value set");
 	private TextBox searchInput = new TextBox();
 	private TextBox userDefinedInput = new TextBox();
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);

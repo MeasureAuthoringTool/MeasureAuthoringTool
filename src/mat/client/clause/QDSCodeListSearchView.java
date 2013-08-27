@@ -51,8 +51,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 
 	private SimplePanel containerPanel = new SimplePanel();
 	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
-	private DisclosurePanel disclosurePanel = new DisclosurePanel("QDM element with undefined Value set");
-	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("QDM elements with Value set");
+	private DisclosurePanel disclosurePanel = new DisclosurePanel("QDM Element with undefined Value set");
+	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("QDM Elements with Value set");
 	private TextBox userDefinedInput = new TextBox();
 	private TextBox searchInput = new TextBox();
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);

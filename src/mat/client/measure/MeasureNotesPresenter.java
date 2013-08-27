@@ -7,6 +7,8 @@ import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
+
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -45,6 +47,7 @@ public class MeasureNotesPresenter implements MatPresenter{
  			@Override
  			public void onClick(ClickEvent event) {
  				System.out.println("Export code to be written here");
+ 				generateCSVToExportMeasureNotes();
  			}
  		});
  		
@@ -65,7 +68,14 @@ public class MeasureNotesPresenter implements MatPresenter{
 
 			
  		}); 
+ 		
+ 		
  	}
+ 	
+ 	private void generateCSVToExportMeasureNotes(){
+		String url = GWT.getModuleBaseURL() + "export?id=" + MatContext.get().getCurrentMeasureId() + "&format=exportMeasureNotesForMeasure";
+		Window.open(url + "&type=save", "_self", "");		
+	}
  	
  	private void search(){
  		String measureID = MatContext.get().getCurrentMeasureId();

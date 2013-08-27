@@ -8,11 +8,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import mat.client.admin.service.AdminService;
+import mat.model.MeasureNotes;
 import mat.model.User;
+import mat.server.service.MeasureNotesService;
 import mat.server.service.SimpleEMeasureService;
-import mat.server.service.UserService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
+import mat.server.service.UserService;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
 
@@ -93,19 +94,44 @@ public class ExportServlet extends HttpServlet {
 					resp.getOutputStream().write(csvFileString.getBytes());
 					resp.getOutputStream().close();
 				}
+			}else if("exportMeasureNotesForMeasure".equals(format)){
+				String csvFileString = generateCSVToExportMeasureNotes(id);
+				resp.setHeader("Content-Disposition", "attachment; filename=MeasureNotes.csv; Cache-Control=no-cache");
+				resp.setContentType("text/csv");
+				resp.getOutputStream().write(csvFileString.getBytes());
+				resp.getOutputStream().close();
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			throw new ServletException(e);
 		}
-		if(! "codelist".equals(format) && ! "exportActiveNonAdminUsersCSV".equals(format)){
+		if(! "codelist".equals(format) && ! "exportActiveNonAdminUsersCSV".equals(format) && ! "exportMeasureNotesForMeasure".equals(format)){
 			resp.getOutputStream().println(export.export);
 		}
 	}
 	
+	private String generateCSVToExportMeasureNotes(String measureId){
+		logger.info("Generating CSV of Measure Notes...");
+		List<MeasureNotes> allMeasureNotes = getMeasureNoteService().getAllMeasureNotesByMeasureID(measureId) ;
+		
+		StringBuilder csvStringBuilder = new StringBuilder();
+		//Add the header row
+		csvStringBuilder.append("Title,Description,LastModifiedDate,Created By,Modified By");
+		csvStringBuilder.append("\r\n");
+		//Add data rows
+		for(MeasureNotes measureNotes:allMeasureNotes){
+			if(measureNotes.getModifyUser()!=null)
+				csvStringBuilder.append("\""+measureNotes.getNoteTitle()+"\",\""+measureNotes.getNoteDesc()+
+						"\",\""+measureNotes.getLastModifiedDate()+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+measureNotes.getModifyUser().getEmailAddress()+"\"");
+			else
+				csvStringBuilder.append("\""+measureNotes.getNoteTitle()+"\",\""+measureNotes.getNoteDesc()+
+						"\",\""+measureNotes.getLastModifiedDate()+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+""+"\"");
+			csvStringBuilder.append("\r\n");
+		}
+		return csvStringBuilder.toString();
+	}
+	
 	private String generateCSVOfActiveUserEmails() throws InCorrectUserRoleException{
 		logger.info("Generating CSV of email addrs for all Active Users...");
-		
 		//Get all the active users
 		List<User> allNonAdminActiveUsersList = getUserService().getAllNonAdminActiveUsers();
 		
@@ -135,5 +161,9 @@ public class ExportServlet extends HttpServlet {
 	}
 	private UserService getUserService() {
 		return (UserService)context.getBean("userService");
+	}
+	
+	private MeasureNotesService getMeasureNoteService(){
+		return (MeasureNotesService)context.getBean("measureNotesService");
 	}
 }

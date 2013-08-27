@@ -278,7 +278,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	 * 
 	 * */
 	protected void modifyQDM(boolean isUserDefined) {
-		if(!isUserDefined){
+		
+		if(!isUserDefined){//Normal Available QDM Flow
 			CodeListSearchDTO modifyWithDTO = currentCodeListResults.getLastSelectedCodeList();
 			searchDisplay.getErrorMessageDisplay().clear();
 			searchDisplay.getApplyToMeasureSuccessMsg().clear();
@@ -326,7 +327,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				setEnabled(true);
 			
 			}
-		}else{
+		}else{//Pseudo QDM Flow
 			
 			searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 			searchDisplay.getErrorMessageUserDefinedPanel().clear();

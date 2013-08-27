@@ -26,6 +26,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.clause.MeasureExport;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
+import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import mat.shared.StringUtility;
 
@@ -50,9 +51,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private static final String CONVERSION_FILE_2="xsl/mat_narrGen.xsl";
 	private static final String CONVERSION_FILE_HTML="xsl/eMeasure.xsl";
 	//Filtered User Defined QDM's as these are dummy QDM's created by user and should not be part of Value Set sheet.
-	private static final String XPATH_ELEMENTLOOKUP_QDM="/measure/elementLookUp/qdm[not(@oid='1.1.1.1')]";
+	static String userDefinedOID = ConstantMessages.USER_DEFINED_QDM_OID;
+	private static final String XPATH_ELEMENTLOOKUP_QDM="/measure/elementLookUp/qdm[not(@oid='"+userDefinedOID+"')]";
 	private static final String XPATH_SUPPLEMENTDATA_ELEMENTREF="/measure/supplementalDataElements/elementRef/@id";
-	private static final String SUPPLEMENTDATAELEMENT="supplementalDataElements";
+	//private static final String SUPPLEMENTDATAELEMENT="supplementalDataElements";
 	//This expression will find distinct elementRef records from SimpleXML.SimpleXML will have grouping which can have
 	//repeated clauses containing repeated elementRef. This XPath expression will yield distinct elementRef's.
 	private static final String XPATH_ALL_ELEMENTREF_ID="/measure/measureGrouping/group/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";

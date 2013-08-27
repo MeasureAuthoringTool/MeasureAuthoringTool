@@ -219,10 +219,13 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		horiPanel.add(dataTypePanel);
 		
 		HorizontalPanel buttonHorizontalPanel = new HorizontalPanel();
+		psuedoQDMToMeasure.setTitle("Apply to Measure");
 		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		buttonHorizontalPanel.add(new SpacerWidget());
+		psuedoQDMCancel.setTitle("Cancel");
 		buttonHorizontalPanel.add(psuedoQDMCancel);
 		buttonHorizontalPanel.add(new SpacerWidget());
+		userDefinedCancel.setTitle("Close");
 		buttonHorizontalPanel.add(userDefinedCancel);
 		
 		VerticalPanel mainPanel = new VerticalPanel();

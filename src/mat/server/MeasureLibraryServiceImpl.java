@@ -85,8 +85,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	@Autowired
 	private QDSAttributesDAO qDSAttributesDAO;
 	
-	//@Autowired
-	//private MeasureNotesService measureNotesService;
+	
 	
 	@Autowired 
 	private MeasurePackageService measurePackageService;
@@ -94,15 +93,6 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	@Autowired 
 	private UserService userService;
 	
-	
-	/*public MeasureNotesService getMeasureNotesService() {
-		return measureNotesService;
-	}
-
-	public void setMeasureNotesService(MeasureNotesService measureNotesService) {
-		this.measureNotesService = measureNotesService;
-	}
-	*/	
 	public void setMeasurePackageService(MeasurePackageService measurePackageService) {
 		this.measurePackageService = measurePackageService;
 	}

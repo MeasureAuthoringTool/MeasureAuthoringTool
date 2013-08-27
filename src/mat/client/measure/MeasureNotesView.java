@@ -12,6 +12,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -32,6 +33,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	@SuppressWarnings("unused")
 	private static final int[] PAGE_SIZES= new int[] {50, PAGE_SIZE_ALL};
 	private VerticalPanel containerPanel = new VerticalPanel();
+	DisclosurePanel notesDisclosurePanel = new DisclosurePanel();
 	private SimplePanel simplePanel = new SimplePanel();
 	private FlowPanel flowPanel = new FlowPanel ();
 	private TextArea measureNoteComposer = new TextArea();
@@ -44,7 +46,18 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	public SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
 	protected Panel pageSelector = new HorizontalPanel();
 	MeasureNotesModel notesResult = new MeasureNotesModel();
-		
+	
+	private ClickHandler clickHandler = buildClickHandler();
+	
+	public static interface Observer {
+		public void onEditClicked(MeasureNoteDTO result);
+		public void onDeleteClicked(MeasureNoteDTO result);
+	}
+	private Observer observer;
+	
+	public void setObserver(Observer observer) {
+		this.observer = observer;
+	}
 	public HasClickHandlers getExportButton() {
 		return exportButton;
 	}
@@ -69,6 +82,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return notesResult;
 	}
 	
+	public void setNotesResult(MeasureNotesModel notesResult) {
+		this.notesResult = notesResult;
+	}
+
 	private HTML viewingNumber = new HTML();
 	public HTML getViewingNumber() {
 		return viewingNumber;
@@ -251,7 +268,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	
 	
 	private void createDisclosurePanel(VerticalPanel mainPanel, MeasureNoteDTO result){
-		DisclosurePanel notesDisclosurePanel = new DisclosurePanel();
+		
 		notesDisclosurePanel.setAnimationEnabled(true);
 		notesDisclosurePanel.setOpen(false);
 		Widget contentWidget = createDisclosureContentWidget(result);
@@ -314,7 +331,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		HorizontalPanel headerPanel = new HorizontalPanel();
 		headerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		headerPanel.setWidth("800px");
-		
+		final MeasureNoteDTO selectedMeasureNote = result;
 		HorizontalPanel noteTitlePanel = new HorizontalPanel();
 		
 		String title = result.getNoteTitle();
@@ -357,13 +374,15 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		headerPanel.add(creationDatePanel);
 		headerPanel.setCellWidth(creationDatePanel, "25%");
 		
-		CustomButton editButton = new CustomButton();
+		/*CustomButton editButton = new CustomButton();
 		editButton.removeStyleName("gwt-button");
 		editButton.setStylePrimaryName("invisibleButtonText");
 		editButton.setTitle("Edit");
-		editButton.setResource(ImageResources.INSTANCE.g_openPanel(),"Edit");
+		editButton.setResource(ImageResources.INSTANCE.g_openPanel(),"Edit");*/
 		
-		editButton.addClickHandler(new ClickHandler(){
+		CustomButton editButton = (CustomButton) getImage("edit", ImageResources.INSTANCE.g_openPanel(), result.getId());
+		
+		/*editButton.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
 				System.out.println("Edit button clicked !!!");
@@ -372,9 +391,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 				
 			}
 				
-		});
+		});*/
 		
-		CustomButton deleteButton = new CustomButton();
+		CustomButton deleteButton =(CustomButton) getImage("Delete",ImageResources.INSTANCE.g_trash(), result.getId()); /*new CustomButton();
 		deleteButton.removeStyleName("gwt-button");
 		deleteButton.setStylePrimaryName("invisibleButtonText");
 		deleteButton.setTitle("Delete");
@@ -383,8 +402,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			@Override
 			public void onClick(ClickEvent event) {
 				System.out.println("Delete button clicked !!!");
+				selectedMeasureNote.setDeleted(true);
 			}
-		});
+		});*/
 		HorizontalPanel deleteButtonPanel = new HorizontalPanel();
 		deleteButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		deleteButtonPanel.add(deleteButton);
@@ -398,5 +418,67 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		headerPanel.setCellWidth(editButtonPanel, "15%");
 		return headerPanel;
 	}
-
+	
+	private Widget getImage(String action, ImageResource url, String key) {
+		/*SimplePanel holder = new SimplePanel();
+		holder.setStyleName("searchTableCenteredHolder");
+		holder.getElement().getStyle().setCursor(Cursor.POINTER);*/
+		CustomButton image = new CustomButton();
+		image.removeStyleName("gwt-button");
+		image.setStylePrimaryName("invisibleButtonText");
+		image.setTitle(action);
+		image.setResource(url,action);
+		setId(image, action, key);
+		//508 fix - Read only and locked icons do not do anything but they appear to show hand pointer on mouse hover.
+		if(!action.equalsIgnoreCase("Read-Only") && !(action.contains("Measure in use")))
+			addListener(image);
+		else
+			image.setEnabled(false);
+		/*holder.add(image)*/;
+		return image;
+	}
+	
+	private void setId(CustomButton image, String action, String key) {
+		String id = action + "_" + key;
+		image.getElement().setAttribute("id", id);
+	}
+	
+	private void addListener(CustomButton image) {
+		image.addClickHandler(clickHandler);
+	}
+	
+	private ClickHandler buildClickHandler() {
+		return new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				String id = ((Widget)event.getSource()).getElement().getId();
+				int index = id.indexOf('_');
+				String action = id.substring(0, index);
+				String measureNoteId= id.substring(index+1);
+				MeasureNoteDTO measureNoteDTO = getResultForId(measureNoteId);
+				if(observer != null) {
+					if("edit".equals(action)) {
+						observer.onEditClicked(measureNoteDTO);
+						notesDisclosurePanel.setOpen(true);
+					}
+					else if("Delete".equals(action)) {
+						observer.onDeleteClicked(measureNoteDTO);
+					}
+					
+				}
+			}
+		};
+	}
+	
+	private MeasureNoteDTO getResultForId(String id) {
+		MeasureNoteDTO result = null;
+		for(MeasureNoteDTO measureNoteDTO : notesResult.getData()){
+			if(id.equals(measureNoteDTO.getId())) {
+				result= measureNoteDTO;
+				break;
+			}
+		}
+		return result;
+	}
+	
 }

@@ -1,6 +1,8 @@
 package mat.client.measure;
 
+import mat.DTO.MeasureNoteDTO;
 import mat.client.MatPresenter;
+import mat.client.measure.MeasureNotesView.Observer;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
@@ -8,6 +10,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
@@ -17,7 +20,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 	
  	MeasureServiceAsync service = MatContext.get().getMeasureService();
  	 		
- 	public NotesDisplay notesDisplay; 
+ 	private NotesDisplay notesDisplay; 
  	
  	public static interface NotesDisplay {
 		public HasClickHandlers getSaveButton();
@@ -31,6 +34,8 @@ public class MeasureNotesPresenter implements MatPresenter{
 		public MeasureNotesModel getNotesResult();
 		public void displayView();
 		public Widget asWidget();
+		public void setObserver(Observer observer);
+		public void setNotesResult(MeasureNotesModel notesResult);
 	}
  	 
  	public MeasureNotesPresenter(NotesDisplay notesDisplay){
@@ -55,8 +60,10 @@ public class MeasureNotesPresenter implements MatPresenter{
  		notesDisplay.getCancelButton().addClickHandler(new ClickHandler() {
  			@Override
  			public void onClick(ClickEvent event) {
- 				//notesDisplay.cancelComposedNote();
- 			}	
+ 				resetWidget();
+ 			}
+
+			
  		}); 
  	}
  	
@@ -65,8 +72,23 @@ public class MeasureNotesPresenter implements MatPresenter{
  		service.getAllMeasureNotesByMeasureID(measureID, new AsyncCallback<MeasureNotesModel>() {
  			@Override
 			public void onSuccess(MeasureNotesModel result) {
- 				notesDisplay.getNotesResult().setData(result.getData()); 				
+ 				/*notesDisplay.getNotesResult().setData(result.getData()); */
+ 				notesDisplay.setNotesResult(result);
  				notesDisplay.displayView();
+ 				notesDisplay.setObserver(new Observer() {
+					
+					@Override
+					public void onEditClicked(MeasureNoteDTO result) {
+						Window.alert("I am Clicked !!!" + result.getId());
+						
+					}
+					
+					@Override
+					public void onDeleteClicked(MeasureNoteDTO result) {
+						Window.alert("Deleted .... am Clicked !!!" + result.getId());
+						
+					}
+				});
  			}
 			@Override
 			public void onFailure(Throwable caught) {
@@ -336,7 +358,10 @@ public class MeasureNotesPresenter implements MatPresenter{
       	}
 }-*/;
 	
-	
+	private void resetWidget() {
+		notesDisplay.getSuccessMessageDisplay().clear();
+		notesDisplay.getErrorMessageDisplay().clear();
+	}		
 
 	@Override
 	public void beforeDisplay() {

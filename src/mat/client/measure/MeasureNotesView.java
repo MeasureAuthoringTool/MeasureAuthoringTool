@@ -131,6 +131,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	
 	private Widget buildMeasureComposer(){
 		  FlowPanel composerPanel = new FlowPanel();
+		  composerPanel.setWidth("875px");
 		  composerPanel.setStylePrimaryName("notes_composer_background");
 		  Label composerLabel = new Label("Measure Notes Composer");
 		  composerLabel.setStyleName("measureComposerLabel");
@@ -302,7 +303,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		HTML descLabel = new HTML("Description");
 		descLabel.setStyleName("bold");
 		VerticalPanel vPanel = new VerticalPanel();
-		vPanel.setWidth("850px");
+		vPanel.setWidth("875px");
 		vPanel.add(titleLabel);
 		vPanel.add(new SpacerWidget());
 		title.setText(result.getNoteTitle());
@@ -323,7 +324,6 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		bottomButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		vPanel.add(bottomButtonPanel);
 		vPanel.add(new SpacerWidget());
-		
 		return vPanel;
 	}
 

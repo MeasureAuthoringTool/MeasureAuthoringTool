@@ -216,8 +216,10 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		horiPanel.add(dataTypePanel);
 		
 		HorizontalPanel buttonHorizontalPanel = new HorizontalPanel();
+		psuedoQDMToMeasure.setTitle("Apply to Measure");
 		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		buttonHorizontalPanel.add(new SpacerWidget());
+		psuedoQDMCancel.setTitle("Cancel");
 		buttonHorizontalPanel.add(psuedoQDMCancel);
 		
 		VerticalPanel mainPanel = new VerticalPanel();

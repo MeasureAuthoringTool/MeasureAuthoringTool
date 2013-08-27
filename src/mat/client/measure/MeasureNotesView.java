@@ -116,8 +116,6 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		containerPanel.add(fPanel);
 	}
 	
-	
-	
 	private Widget buildMeasureComposer(){
 		  FlowPanel composerPanel = new FlowPanel();
 		  composerPanel.setStylePrimaryName("notes_composer_background");

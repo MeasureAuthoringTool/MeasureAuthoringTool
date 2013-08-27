@@ -49,7 +49,6 @@ public class MeasureNotesPresenter implements MatPresenter{
  			public void onClick(ClickEvent event) {
  				System.out.println("Saving the note to the database >>>> ");
  				saveMeasureNote();
- 				search();
  			}
  		}); 
  		 				
@@ -66,15 +65,15 @@ public class MeasureNotesPresenter implements MatPresenter{
  		service.getAllMeasureNotesByMeasureID(measureID, new AsyncCallback<MeasureNotesModel>() {
  			@Override
 			public void onSuccess(MeasureNotesModel result) {
- 				notesDisplay.getNotesResult().setData(result.getData());
+ 				notesDisplay.getNotesResult().setData(result.getData()); 				
+ 				notesDisplay.displayView();
  			}
 			@Override
 			public void onFailure(Throwable caught) {
 				notesDisplay.getErrorMessageDisplay().setMessage("No measure notes" );
 			}
 						
-		});
- 		notesDisplay.displayView();
+		}); 		
  	}
  	
  	
@@ -87,17 +86,20 @@ public class MeasureNotesPresenter implements MatPresenter{
 				
 				@Override
 				public void onSuccess(Void result) {
+					notesDisplay.getErrorMessageDisplay().clear();
 					notesDisplay.getSuccessMessageDisplay().setMessage("The measure note is saved successfully");
 					notesDisplay.getMeasureNoteComposer().setText("");
 					notesDisplay.getMeasureNoteTitle().setText("");
+					search();
 				}
 				
 				@Override
 				public void onFailure(Throwable caught) {
+					notesDisplay.getSuccessMessageDisplay().clear();
 					notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note" );
 					
 				}
-			});		
+			});		 			
  		}else{
  			notesDisplay.getSuccessMessageDisplay().clear();
  			notesDisplay.getErrorMessageDisplay().setMessage("Please enter Title and Description for the measure note before saving");

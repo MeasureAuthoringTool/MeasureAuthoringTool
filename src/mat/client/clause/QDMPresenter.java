@@ -40,10 +40,10 @@ public class QDMPresenter implements MatPresenter{
 	public void beforeDisplay() {
 		tabLayout = new MatTabLayoutPanel(true);
 		tabLayout.setId("qdmElementTabLayout");
-		tabLayout.addPresenter(codeListSearchPresenter,"Available Value Sets");
+		tabLayout.addPresenter(codeListSearchPresenter,"Create Element");
 		tabLayout.addPresenter(qdsAppliedListPresenter,"Applied Elements");
 		tabLayout.setHeight("98%");
-		MatContext.get().tabRegistry.put("QDM Element",tabLayout);
+		MatContext.get().tabRegistry.put("QDM Elements",tabLayout);
 		MatContext.get().enableRegistry.put(tabLayout,this);
 		tabLayout.addSelectionHandler(new SelectionHandler<Integer>(){
 			@SuppressWarnings("rawtypes")

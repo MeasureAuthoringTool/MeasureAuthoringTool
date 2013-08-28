@@ -331,7 +331,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			
 			searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 			searchDisplay.getErrorMessageUserDefinedPanel().clear();
-			if((searchDisplay.getUserDefinedInput().getText().trim().length()>0) && !searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT)){
+			if((searchDisplay.getUserDefinedInput().getText().trim().length()>0) && !searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT))
+			{
 				
 				CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
 				modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
@@ -349,6 +350,11 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				}else{
 					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,true);
 				}
+			}else{
+				/*if(appliedQDMList.size()>0)
+					appliedQDMList.removeAll(appliedQDMList);*/
+				searchDisplay.getErrorMessageUserDefinedPanel().setMessage("Please enter Value Set name and select a data type associated with it.");
+				
 			}
 			
 		}

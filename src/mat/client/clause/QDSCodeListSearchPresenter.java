@@ -451,8 +451,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 							}
 				})	;
 			}else{
-				if(appliedQDMList.size()>0)
-					appliedQDMList.removeAll(appliedQDMList);
+				/*if(appliedQDMList.size()>0)
+					appliedQDMList.removeAll(appliedQDMList);*/
 				searchDisplay.getErrorMessageUserDefinedPanel().setMessage("Please enter Value Set name and select a data type associated with it.");
 				
 			}

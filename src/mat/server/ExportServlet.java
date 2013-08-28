@@ -1,6 +1,8 @@
 package mat.server;
 
 import java.io.IOException;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -119,12 +121,15 @@ public class ExportServlet extends HttpServlet {
 		csvStringBuilder.append("\r\n");
 		//Add data rows
 		for(MeasureNotes measureNotes:allMeasureNotes){
+			//This conversion from Date to String is done in order to show date in excel.
+			Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String measureNoteDate = formatter.format(measureNotes.getLastModifiedDate());
 			if(measureNotes.getModifyUser()!=null)
 				csvStringBuilder.append("\""+measureNotes.getNoteTitle()+"\",\""+measureNotes.getNoteDesc()+
-						"\",\""+measureNotes.getLastModifiedDate()+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+measureNotes.getModifyUser().getEmailAddress()+"\"");
+						"\",\""+measureNoteDate+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+measureNotes.getModifyUser().getEmailAddress()+"\"");
 			else
 				csvStringBuilder.append("\""+measureNotes.getNoteTitle()+"\",\""+measureNotes.getNoteDesc()+
-						"\",\""+measureNotes.getLastModifiedDate()+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+""+"\"");
+						"\",\""+measureNoteDate+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+""+"\"");
 			csvStringBuilder.append("\r\n");
 		}
 		return csvStringBuilder.toString();

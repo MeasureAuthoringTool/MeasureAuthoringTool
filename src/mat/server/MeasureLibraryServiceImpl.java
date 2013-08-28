@@ -1355,18 +1355,21 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		MeasureNotesModel measureNotesModel = new MeasureNotesModel();
 		ArrayList<MeasureNoteDTO> data = new ArrayList<MeasureNoteDTO>();
 		
-		Measure measure = getMeasureDAO().find(measureID);		
+		Measure measure = getMeasureDAO().find(measureID);
 		if(measure!=null) {
 			List<MeasureNotes> measureNotesList = getMeasureNotesService().getAllMeasureNotesByMeasureID(measureID);
 			if(measureNotesList!=null && !measureNotesList.isEmpty()) {
 				for(MeasureNotes measureNotes : measureNotesList) {
 					if(measureNotes!=null) {
 						MeasureNoteDTO measureNoteDTO = new MeasureNoteDTO();
+						measureNoteDTO.setMeasureId(measureID);
 						measureNoteDTO.setId(measureNotes.getId());
-						if(measureNotes.getCreateUser()!=null)
-							measureNoteDTO.setCreateUserEmailAddress(measureNotes.getCreateUser().getEmailAddress());
+						
 						if(measureNotes.getModifyUser()!=null)
-							measureNoteDTO.setModifyUserEmailAddress(measureNotes.getModifyUser().getEmailAddress());
+							measureNoteDTO.setLastModifiedByEmailAddress(measureNotes.getModifyUser().getEmailAddress());
+						else if(measureNotes.getCreateUser()!=null)
+							measureNoteDTO.setLastModifiedByEmailAddress(measureNotes.getCreateUser().getEmailAddress());
+						
 						measureNoteDTO.setNoteDesc(measureNotes.getNoteDesc());
 						measureNoteDTO.setNoteTitle(measureNotes.getNoteTitle());
 						measureNoteDTO.setLastModifiedDate(measureNotes.getLastModifiedDate());	

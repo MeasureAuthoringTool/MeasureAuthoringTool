@@ -8,10 +8,13 @@ import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.TextAreaWithMaxLength;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
@@ -37,7 +40,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	
 	private SimplePanel simplePanel = new SimplePanel();
 	private FlowPanel flowPanel = new FlowPanel ();
-	private TextArea measureNoteComposer = new TextArea();
+	private TextAreaWithMaxLength measureNoteComposer = new TextAreaWithMaxLength();
 	private TextBox measureNoteTitle = new TextBox();
 	private Button exportButton = new PrimaryButton("Export Notes","primaryButton");
 	private Button saveButton = new PrimaryButton("Save","primaryButton");
@@ -71,7 +74,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return cancelButton;
 	}
 	
-	public TextArea getMeasureNoteComposer() {
+	public TextAreaWithMaxLength getMeasureNoteComposer() {
 		return measureNoteComposer;
 	}
 
@@ -125,7 +128,6 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		fPanel.add(new SpacerWidget());
 		//notesResult.setData(getDataList());
 		fPanel.add(buildDataTable(notesResult));
-		//fPanel.add(dataTable);	
 		fPanel.add(new SpacerWidget());
 		containerPanel.add(fPanel);
 	}
@@ -144,6 +146,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  Label descLabel= new Label("Description");
 		  descLabel.setStyleName("bold");
 		  measureNoteTitle.setWidth("400px");
+		  measureNoteTitle.setMaxLength(50);
 		  titlePanel.add(measureNoteTitle);
 		  composerPanel.add(titleLabel);
 		  composerPanel.add(new SpacerWidget());
@@ -151,6 +154,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  composerPanel.add(new SpacerWidget());
 		  measureNoteComposer.setHeight("70px");
 		  measureNoteComposer.setWidth("80%");
+		  measureNoteComposer.setMaxLength(3000);
+		  
 		  composerPanel.add(descLabel);
 		  composerPanel.add(new SpacerWidget());
 		  composerPanel.add(measureNoteComposer);
@@ -232,27 +237,27 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			
 			HorizontalPanel emailAddrPanel = new HorizontalPanel();
 			emailAddrPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-			HTML creatorEmailAddr = new HTML("Email Address");
-			creatorEmailAddr.setTitle("Email Address");
-			creatorEmailAddr.setWidth("100%");
-			emailAddrPanel.add(creatorEmailAddr);
+			HTML lastModifiedBy = new HTML("Last Modified By");
+			lastModifiedBy.setTitle("Last Modified By");
+			lastModifiedBy.setWidth("100%");
+			emailAddrPanel.add(lastModifiedBy);
 			
-			emailAddrPanel.setCellWidth(creatorEmailAddr, "100%");
+			emailAddrPanel.setCellWidth(lastModifiedBy, "100%");
 			headerPanel.add(emailAddrPanel);
 			headerPanel.setCellWidth(emailAddrPanel, "25%");
 			
-			HorizontalPanel creationDatePanel = new HorizontalPanel();
-			creationDatePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+			HorizontalPanel lastModifiedDatePanel = new HorizontalPanel();
+			lastModifiedDatePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			
-			String dateString = "Creation Date";
-			HTML creationDate = new HTML(dateString);
-			creationDate.setTitle(dateString);
-			creationDate.setWidth("100%");
-			creationDatePanel.add(creationDate);
+			String dateString = "Last Modified Date";
+			HTML lastModifiedDate = new HTML(dateString);
+			lastModifiedDate.setTitle(dateString);
+			lastModifiedDate.setWidth("100%");
+			lastModifiedDatePanel.add(lastModifiedDate);
 			
-			creationDatePanel.setCellWidth(creationDate, "100%");
-			headerPanel.add(creationDatePanel);
-			headerPanel.setCellWidth(creationDatePanel, "25%");
+			lastModifiedDatePanel.setCellWidth(lastModifiedDate, "100%");
+			headerPanel.add(lastModifiedDatePanel);
+			headerPanel.setCellWidth(lastModifiedDatePanel, "25%");
 
 			HorizontalPanel deleteButtonPanel = new HorizontalPanel();
 			deleteButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -293,11 +298,15 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	private Widget createDisclosureContentWidget(MeasureNoteDTO result) {
 		TextBox title = new TextBox();
 		title.setTitle("Measure Notes Title");
+		title.getElement().setAttribute("id", "NoteTitle_"+result.getId());
 		title.setWidth("400px");
-		TextArea measureNoteDesc = new TextArea();
+		title.setMaxLength(50);
+		TextAreaWithMaxLength measureNoteDesc = new TextAreaWithMaxLength();
 		measureNoteDesc.setTitle("Measure Notes Description");
+		measureNoteDesc.getElement().setAttribute("id", "NoteDesc_"+result.getId());
 		measureNoteDesc.setWidth("800px");
 		measureNoteDesc.setHeight("70px");
+		measureNoteDesc.setMaxLength(3000);
 		
 		HTML titleLabel = new HTML("Title");
 		titleLabel.setStyleName("bold");
@@ -363,30 +372,32 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		HorizontalPanel emailAddrPanel = new HorizontalPanel();
 		
-		HTML creatorEmailAddr = new HTML(result.getCreateUserEmailAddress());
-		creatorEmailAddr.setTitle(result.getCreateUserEmailAddress());
-		creatorEmailAddr.setWidth("100%");
-		emailAddrPanel.add(creatorEmailAddr);
+		HTML lastModifiedBy = new HTML(result.getLastModifiedByEmailAddress());
+		lastModifiedBy.setTitle(result.getLastModifiedByEmailAddress());
+		lastModifiedBy.setWidth("100%");
+		emailAddrPanel.add(lastModifiedBy);
 		
-		emailAddrPanel.setCellWidth(creatorEmailAddr, "100%");
+		emailAddrPanel.setCellWidth(lastModifiedBy, "100%");
 		headerPanel.add(emailAddrPanel);
 		headerPanel.setCellWidth(emailAddrPanel, "25%");
 		
-		HorizontalPanel creationDatePanel = new HorizontalPanel();
+		HorizontalPanel lastModifiedDatePanel = new HorizontalPanel();
 		String dateString = result.getLastModifiedDate().toString();
-		HTML creationDate = new HTML(dateString);
-		creationDate.setTitle(dateString);
-		creationDate.setWidth("100%");
-		creationDatePanel.add(creationDate);
+		HTML lastModifiedDate = new HTML(dateString);
+		lastModifiedDate.setTitle(dateString);
+		lastModifiedDate.setWidth("100%");
+		lastModifiedDatePanel.add(lastModifiedDate);
 		
-		creationDatePanel.setCellWidth(creationDate, "100%");
-		headerPanel.add(creationDatePanel);
-		headerPanel.setCellWidth(creationDatePanel, "25%");
+		lastModifiedDatePanel.setCellWidth(lastModifiedDate, "100%");
+		headerPanel.add(lastModifiedDatePanel);
+		headerPanel.setCellWidth(lastModifiedDatePanel, "25%");
 		
 		CustomButton editButton = (CustomButton) getImage("edit", ImageResources.INSTANCE.g_openPanel(), result.getId());
 		editButton.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
+				successMessageDisplay.clear();
+				errorMessages.clear();
 				CustomButton myEditButton = (CustomButton)event.getSource();
 				System.out.println("Edit button clicked !!!");
 				if(notesDisclosurePanel.isOpen()){
@@ -474,10 +485,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 						VerticalPanel vpanel = (VerticalPanel) ((Widget)event.getSource()).getParent().getParent();
 						for(int i=0; i<vpanel.getWidgetCount(); i++) {
 							Widget widget = vpanel.getWidget(i);
-							if(widget.getTitle().equalsIgnoreCase("Measure Notes Title")) {
+							if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteTitle_"+measureNoteId)) {
 								measureNoteDTO.setNoteTitle(((TextBox)widget).getText());
 							}
-							if(widget.getTitle().equalsIgnoreCase("Measure Notes Description")) {
+							if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteDesc_"+measureNoteId)) {
 								measureNoteDTO.setNoteDesc(((TextArea)widget).getText());
 							}
 						}
@@ -492,16 +503,19 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return new ClickHandler() {			
 			@Override
 			public void onClick(ClickEvent event) {
+				successMessageDisplay.clear();
+				errorMessages.clear();
+				
 				String measureNoteId = ((Widget)event.getSource()).getElement().getId();
 				MeasureNoteDTO measureNoteDTO = getResultForId(measureNoteId);
 				
 				VerticalPanel vpanel = (VerticalPanel) ((Widget)event.getSource()).getParent().getParent();
 				for(int i=0; i<vpanel.getWidgetCount(); i++) {
 					Widget widget = vpanel.getWidget(i);
-					if(widget.getTitle().equalsIgnoreCase("Measure Notes Title")) {
+					if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteTitle_"+measureNoteId)) {
 						((TextBox)widget).setText(measureNoteDTO.getNoteTitle());
 					}
-					if(widget.getTitle().equalsIgnoreCase("Measure Notes Description")) {
+					if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteDesc_"+measureNoteId)) {
 						((TextArea)widget).setText(measureNoteDTO.getNoteDesc());
 					}
 				}

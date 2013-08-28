@@ -8,12 +8,12 @@ import mat.model.User;
 
 
 public class MeasureNoteDTO implements IsSerializable{
-	private String id;
+	private String id;	
 	private String noteTitle;
 	private String noteDesc;
-	private String createUserEmailAddress;
-	private String modifyUserEmailAddress;
+	private String lastModifiedByEmailAddress;
 	private Date lastModifiedDate;
+	private String measureId;
 
 	public MeasureNoteDTO(){
 		
@@ -44,19 +44,19 @@ public class MeasureNoteDTO implements IsSerializable{
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
-	public String getCreateUserEmailAddress() {
-		return createUserEmailAddress;
+	public String getLastModifiedByEmailAddress() {
+		return lastModifiedByEmailAddress;
 	}
 
-	public void setCreateUserEmailAddress(String createUserEmailAddress) {
-		this.createUserEmailAddress = createUserEmailAddress;
+	public void setLastModifiedByEmailAddress(String lastModifiedByEmailAddress) {
+		this.lastModifiedByEmailAddress = lastModifiedByEmailAddress;
 	}
 
-	public String getModifyUserEmailAddress() {
-		return modifyUserEmailAddress;
+	public String getMeasureId() {
+		return measureId;
 	}
 
-	public void setModifyUserEmailAddress(String modifyUserEmailAddress) {
-		this.modifyUserEmailAddress = modifyUserEmailAddress;
+	public void setMeasureId(String measureId) {
+		this.measureId = measureId;
 	}
 }

@@ -63,7 +63,7 @@ public class MeasureNotesPresenter implements MatPresenter{
  		notesDisplay.getCancelButton().addClickHandler(new ClickHandler() {
  			@Override
  			public void onClick(ClickEvent event) {
- 				resetWidget();
+ 				clearMessages();
  				clearTitleAndDescription();
  			}			
  		}); 
@@ -391,7 +391,7 @@ public class MeasureNotesPresenter implements MatPresenter{
       	}
 }-*/;
 	
-	private void resetWidget() {
+	private void clearMessages() {
 		notesDisplay.getSuccessMessageDisplay().clear();
 		notesDisplay.getErrorMessageDisplay().clear();
 	}		

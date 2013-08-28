@@ -50,7 +50,7 @@ public class QDMPresenter implements MatPresenter{
 			public void onSelection(final SelectionEvent event) {
 				int index = ((SelectionEvent<Integer>) event).getSelectedItem();
 				// suppressing token dup
-				String newToken = "QDM Element" + index;
+				String newToken = "QDM Elements" + index;
 				if(!History.getToken().equals(newToken)){
 					MeasureSelectedEvent mse = MatContext.get().getCurrentMeasureInfo();
 					String msg = " [measure] "+mse.getMeasureName()+" [version] "+mse.getMeasureVersion();

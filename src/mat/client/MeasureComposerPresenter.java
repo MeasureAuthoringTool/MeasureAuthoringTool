@@ -48,6 +48,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
     private ClauseWorkspacePresenter clauseWorkspacePresenter = new ClauseWorkspacePresenter();
     private MeasureNotesPresenter measureNotesPresenter = new MeasureNotesPresenter(new MeasureNotesView());
     
+	@SuppressWarnings("unchecked")
 	public MeasureComposerPresenter() {
 		
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
@@ -57,18 +58,17 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.setId("measureComposerTabLayout");
 		measureComposerTabLayout.addPresenter(metaDataPresenter,"Measure Details");	
 		measureComposerTabLayout.addPresenter(qdmPresenter,"QDM Elements");
-		//measureComposerTabLayout.addPresenter(clauseWorkspace,"Old CW");//name changed 
 		measureComposerTabLayout.addPresenter(clauseWorkspacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 		measureComposerTabLayout.addPresenter(measureNotesPresenter, "Measure Notes");
 		
 		measureComposerTabLayout.setHeight("98%");
-		//measureComposerTabLayout.selectTab(metaDataPresenter.getWidget());
 		
 		measureComposerTab = ConstantMessages.MEASURE_COMPOSER_TAB;
 		MatContext.get().tabRegistry.put(measureComposerTab,measureComposerTabLayout);
 		MatContext.get().enableRegistry.put(measureComposerTab,this);
 		measureComposerTabLayout.addSelectionHandler(new SelectionHandler<Integer>(){
+			@SuppressWarnings("rawtypes")
 			public void onSelection(final SelectionEvent event) {
 				int index = ((SelectionEvent<Integer>) event).getSelectedItem();
 				// suppressing token dup
@@ -87,6 +87,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		
 		buttonBar.getPreviousButton().addClickHandler(new MATClickHandler() {
 			
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void onEvent(GwtEvent arg0) {
 				int selectedIndex = measureComposerTabLayout.getSelectedIndex();
@@ -109,6 +110,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		
 		buttonBar.getContinueButton().addClickHandler(new MATClickHandler() {
 
+			@SuppressWarnings("rawtypes")
 			@Override
 			protected void onEvent(GwtEvent event) {
 				measureComposerTabLayout.selectNextTab();
@@ -124,7 +126,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.addSelectionHandler(new SelectionHandler<Integer>() {
 			@Override
 			public void onSelection(SelectionEvent<Integer> event) {				
-				int index = ((SelectionEvent<Integer>)event).getSelectedItem(); 
+				//int index = ((SelectionEvent<Integer>)event).getSelectedItem(); 
 				buttonBar.setPreviousButtonVisible(measureComposerTabLayout.hasPreviousTab());
 				buttonBar.setContinueButtonVisible(measureComposerTabLayout.hasNextTab());
 				buttonBar.state = measureComposerTabLayout.getSelectedIndex();
@@ -188,6 +190,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		}
 		MatContext.get().getMeasureLockService().releaseMeasureLock();
 		Command waitForUnlock = new Command(){
+			@SuppressWarnings("deprecation")
 			public void execute() {
 			  if(!MatContext.get().getMeasureLockService().isResettingLock()){
 	 			  measureComposerTabLayout.close();

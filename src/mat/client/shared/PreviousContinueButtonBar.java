@@ -19,7 +19,7 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 		if(state<=0){
 			state =0;
 			if(subState == 0){
-				setPageNames("UNDEFINED", "QDM Element");				
+				setPageNames("UNDEFINED", "QDM Elements");				
 				buttonPanel.remove(previousButton);
 				buttonPanel.remove(continueButton);
 				buttonPanel.add(continueButton);
@@ -36,7 +36,7 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 		}
 		else if(state ==2){
 			
-			setPageNames("QDM Element", "Measure Packager");
+			setPageNames("QDM Elements", "Measure Packager");
 			
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);

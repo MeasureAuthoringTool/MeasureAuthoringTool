@@ -11,6 +11,7 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 
@@ -26,6 +27,7 @@ public class MeasureNotesDAO extends GenericDAO<MeasureNotes, String> implements
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(MeasureNotes.class);
 		criteria.add(Restrictions.eq("measure_id", measureId));
+		criteria.addOrder(Order.desc("lastModifiedDate"));
 		measureNotesList = criteria.list();
 		return measureNotesList;
 	}
@@ -35,6 +37,7 @@ public class MeasureNotesDAO extends GenericDAO<MeasureNotes, String> implements
 		Session session = null;
 		Transaction transaction = null;
 		try {
+			logger.info("Saving measure note, measure note id ::::" + measureNote.getId());			
 			session = getSessionFactory().openSession();
 			transaction = session.beginTransaction();
 			session.saveOrUpdate(measureNote);
@@ -54,6 +57,7 @@ public class MeasureNotesDAO extends GenericDAO<MeasureNotes, String> implements
 	public void deleteMeasureNote(MeasureNotes measureNote) {
 		 
 		try {
+				logger.info("Deleting measure note, measure note id ::::" + measureNote.getId());
 			 	Session session = getSessionFactory().openSession();
 			 	session.beginTransaction();  
 			 	session.delete(measureNote);

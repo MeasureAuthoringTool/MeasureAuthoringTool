@@ -1,10 +1,6 @@
 package mat.DTO;
 
-import java.util.Date;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
-
-import mat.model.User;
 
 
 public class MeasureNoteDTO implements IsSerializable{
@@ -12,7 +8,7 @@ public class MeasureNoteDTO implements IsSerializable{
 	private String noteTitle;
 	private String noteDesc;
 	private String lastModifiedByEmailAddress;
-	private Date lastModifiedDate;
+	private String lastModifiedDate;
 	private String measureId;
 
 	public MeasureNoteDTO(){
@@ -37,10 +33,10 @@ public class MeasureNoteDTO implements IsSerializable{
 	public void setNoteDesc(String noteDesc) {
 		this.noteDesc = noteDesc;
 	}
-	public Date getLastModifiedDate() {
+	public String getLastModifiedDate() {
 		return lastModifiedDate;
 	}
-	public void setLastModifiedDate(Date lastModifiedDate) {
+	public void setLastModifiedDate(String lastModifiedDate) {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 

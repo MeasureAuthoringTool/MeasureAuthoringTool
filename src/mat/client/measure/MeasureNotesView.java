@@ -141,9 +141,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  composerPanel.add(composerLabel);
 		  composerPanel.add(new SpacerWidget());
 		  HorizontalPanel titlePanel = new HorizontalPanel();
-		  Label titleLabel= new Label("Title");
+		  Label titleLabel= new Label("Title:");
 		  titleLabel.setStyleName("bold");
-		  Label descLabel= new Label("Description");
+		  Label descLabel= new Label("Description:");
 		  descLabel.setStyleName("bold");
 		  measureNoteTitle.setWidth("400px");
 		  measureNoteTitle.setMaxLength(50);
@@ -308,9 +308,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		measureNoteDesc.setHeight("70px");
 		measureNoteDesc.setMaxLength(3000);
 		
-		HTML titleLabel = new HTML("Title");
+		HTML titleLabel = new HTML("Title:");
 		titleLabel.setStyleName("bold");
-		HTML descLabel = new HTML("Description");
+		HTML descLabel = new HTML("Description:");
 		descLabel.setStyleName("bold");
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.setWidth("875px");
@@ -382,7 +382,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		headerPanel.setCellWidth(emailAddrPanel, "25%");
 		
 		HorizontalPanel lastModifiedDatePanel = new HorizontalPanel();
-		String dateString = result.getLastModifiedDate().toString();
+		String dateString = result.getLastModifiedDate();
 		HTML lastModifiedDate = new HTML(dateString);
 		lastModifiedDate.setTitle(dateString);
 		lastModifiedDate.setWidth("100%");

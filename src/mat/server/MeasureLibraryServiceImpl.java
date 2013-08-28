@@ -5,6 +5,8 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -1335,6 +1337,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	@Override
 	public void saveMeasureNote(String noteTitle, String noteDescription, String measureId, String userId){
+		try{
 			MeasureNotes measureNote = new MeasureNotes();
 			measureNote.setNoteTitle(noteTitle);
  			measureNote.setNoteDesc(noteDescription);
@@ -1348,6 +1351,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			}
 			measureNote.setLastModifiedDate(new Date());
 			getMeasureNotesService().saveMeasureNote(measureNote);
+			logger.info("MeasureNotes Saved Successfully.");
+		} catch(Exception e) {
+			logger.info("Failed to save MeasureNotes. Exception occured.");
+		}
 	}
 
 	@Override
@@ -1372,7 +1379,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 						
 						measureNoteDTO.setNoteDesc(measureNotes.getNoteDesc());
 						measureNoteDTO.setNoteTitle(measureNotes.getNoteTitle());
-						measureNoteDTO.setLastModifiedDate(measureNotes.getLastModifiedDate());	
+						Date lastModifiedDate = measureNotes.getLastModifiedDate();
+						SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a z");
+						if(lastModifiedDate != null)
+							measureNoteDTO.setLastModifiedDate(dateFormat.format(lastModifiedDate));	
 						
 						data.add(measureNoteDTO);
 					}
@@ -1391,22 +1401,27 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			getMeasureNotesService().deleteMeasureNote(measureNotes);	
 			logger.info("MeasureNotes Deleted Successfully :: " + measureNotes.getId());
 		}catch(Exception e){
-			logger.info("MeasureNotes not deleted. Measure notes Id :: " + measureNotes.getId());
+			logger.info("MeasureNotes not deleted. Exception occured. Measure notes Id :: " + measureNotes.getId());
 		}
 	}
 
 	@Override
 	public void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId) {
-		MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
-		MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());
-		measureNotes.setNoteTitle(measureNoteDTO.getNoteTitle());
-		measureNotes.setNoteDesc(measureNoteDTO.getNoteDesc());
-		User user = getUserService().getById(userId);
-		if(user != null){
-			measureNotes.setModifyUser(user);
-		}
-		measureNotes.setLastModifiedDate(new Date());
-		getMeasureNotesService().saveMeasureNote(measureNotes);
+		try {
+			MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
+			MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());
+			measureNotes.setNoteTitle(measureNoteDTO.getNoteTitle());
+			measureNotes.setNoteDesc(measureNoteDTO.getNoteDesc());
+			User user = getUserService().getById(userId);
+			if(user != null){
+				measureNotes.setModifyUser(user);
+			}
+			measureNotes.setLastModifiedDate(new Date());
+			getMeasureNotesService().saveMeasureNote(measureNotes);
+			logger.info("Edited MeasureNotes Saved Successfully. Measure notes Id :: " + measureNoteDTO.getId());
+		} catch(Exception e) {
+			logger.info("Edited MeasureNotes not saved. Exception occured. Measure notes Id :: " + measureNoteDTO.getId());
+		}		
 	}
 	
 }

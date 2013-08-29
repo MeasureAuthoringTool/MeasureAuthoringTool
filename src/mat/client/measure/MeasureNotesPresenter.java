@@ -16,6 +16,7 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
@@ -98,14 +99,14 @@ public class MeasureNotesPresenter implements MatPresenter{
 						service.deleteMeasureNotes(result, new AsyncCallback<Void>() {
 							@Override
 							public void onSuccess(Void result) {
-								notesDisplay.getErrorMessageDisplay().clear();
-								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note deleted successfull.");
+								clearMessages();
+								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note deleted successfully.");
 								search();
 							}
 							@Override
 							public void onFailure(Throwable caught) {
 								showSearchingBusy(false);
-								notesDisplay.getSuccessMessageDisplay().clear();
+								clearMessages();
 								notesDisplay.getErrorMessageDisplay().setMessage("Failed to delete measure note." );
 							}
 						});
@@ -116,14 +117,16 @@ public class MeasureNotesPresenter implements MatPresenter{
 						service.updateMeasureNotes(measureNoteDTO, MatContext.get().getLoggedinUserId(), new AsyncCallback<Void>() {							
 							@Override
 							public void onSuccess(Void result) {
-								notesDisplay.getErrorMessageDisplay().clear();
+								clearMessages();
 								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note saved successfully.");
+								notesDisplay.getSuccessMessageDisplay().setFocus();
 								search();
 							}							
 							@Override
 							public void onFailure(Throwable caught) {
-								notesDisplay.getSuccessMessageDisplay().clear();
+								clearMessages();
 								notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note.");
+								notesDisplay.getErrorMessageDisplay().setFocus();
 							}
 						});
 					}
@@ -131,6 +134,7 @@ public class MeasureNotesPresenter implements MatPresenter{
  			}
 			@Override
 			public void onFailure(Throwable caught) {
+				clearMessages();
 				notesDisplay.getErrorMessageDisplay().setMessage("No measure notes.");
 			}
 						
@@ -175,8 +179,8 @@ public class MeasureNotesPresenter implements MatPresenter{
 		else
 			Mat.hideLoadingMessage();
 		
-		/*((Button)searchDisplay.getSearchButton()).setEnabled(!busy);
-		((TextBox)(searchDisplay.getSearchString())).setEnabled(!busy);*/
+		((Button)notesDisplay.getSaveButton()).setEnabled(!busy);
+		((Button)notesDisplay.getCancelButton()).setEnabled(!busy);
 	}
 	private native void generateCSVFile()/*-{
 		var data = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
@@ -412,15 +416,21 @@ public class MeasureNotesPresenter implements MatPresenter{
 		notesDisplay.getErrorMessageDisplay().clear();
 	}		
 
+	private void resetWidget() {
+		clearMessages();
+		notesDisplay.getMeasureNoteComposer().setText("");
+		notesDisplay.getMeasureNoteTitle().setText("");
+	}
+	
 	@Override
 	public void beforeDisplay() {
-		notesDisplay.getSuccessMessageDisplay().clear();
+		resetWidget();
 		search();		
 		notesDisplay.asWidget();
 	}
 	@Override
 	public void beforeClosingDisplay() {
-		notesDisplay.getSuccessMessageDisplay().clear();
+		resetWidget();
 		notesDisplay.asWidget();
 	}
 	@Override

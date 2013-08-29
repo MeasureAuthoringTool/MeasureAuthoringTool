@@ -4,17 +4,20 @@ import mat.DTO.MeasureNoteDTO;
 import mat.client.ImageResources;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.TextAreaWithMaxLength;
+import mat.client.util.ClientConstants;
+import mat.model.SecurityRole;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.FocusEvent;
+import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
@@ -50,6 +53,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	public SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
 	protected Panel pageSelector = new HorizontalPanel();
 	MeasureNotesModel notesResult = new MeasureNotesModel();
+	
+	String currentUserRole = MatContext.get().getLoggedInUserRole();
+	boolean isReadOnlyView = !(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR) || currentUserRole.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE));
 	
 	private ClickHandler clickHandler = buildClickHandler();
 	
@@ -147,6 +153,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  descLabel.setStyleName("bold");
 		  measureNoteTitle.setWidth("400px");
 		  measureNoteTitle.setMaxLength(50);
+		  measureNoteTitle.addFocusHandler(getFocusHandler());		  
 		  titlePanel.add(measureNoteTitle);
 		  composerPanel.add(titleLabel);
 		  composerPanel.add(new SpacerWidget());
@@ -155,19 +162,29 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  measureNoteComposer.setHeight("70px");
 		  measureNoteComposer.setWidth("80%");
 		  measureNoteComposer.setMaxLength(3000);
+		  measureNoteComposer.addFocusHandler(getFocusHandler());
 		  
 		  composerPanel.add(descLabel);
 		  composerPanel.add(new SpacerWidget());
 		  composerPanel.add(measureNoteComposer);
 		  composerPanel.add(new SpacerWidget());
 		  HorizontalPanel bottomButtonPanel = new HorizontalPanel();
-		  composerPanel.add(new SpacerWidget());
+		  composerPanel.add(new SpacerWidget());		  
 		  bottomButtonPanel.add(saveButton);
+		  cancelButton.setTitle("Cancel");
 		  bottomButtonPanel.add(cancelButton);
 		  bottomButtonPanel.setWidth("100px");
 		  bottomButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		  composerPanel.add(bottomButtonPanel);
 		  composerPanel.add(new SpacerWidget());
+		  
+		  if(isReadOnlyView) {
+			  measureNoteTitle.setReadOnly(true);
+			  measureNoteComposer.setReadOnly(true);
+			  saveButton.setEnabled(false);
+			  cancelButton.setEnabled(false);
+		  }
+		  
 		  return composerPanel;
 		 }
 	
@@ -345,6 +362,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		saveButton.addClickHandler(clickHandler);
 		
 		Button cancelButton = new SecondaryButton("Cancel");
+		cancelButton.setTitle("Cancel");
 		cancelButton.getElement().setAttribute("id", result.getId());
 		cancelButton.addClickHandler(cancelClickHandler());
 		
@@ -355,6 +373,14 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		bottomButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		vPanel.add(bottomButtonPanel);
 		vPanel.add(new SpacerWidget());
+		
+		if(isReadOnlyView) {
+			title.setReadOnly(true);
+			measureNoteDesc.setReadOnly(true);
+			saveButton.setEnabled(false);
+			cancelButton.setEnabled(false);
+		  }
+		
 		return vPanel;
 	}
 	
@@ -365,15 +391,16 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		HorizontalPanel noteTitlePanel = new HorizontalPanel();
 		
-		String title = result.getNoteTitle();
 		HTML noteTitle;
+		/*String title = result.getNoteTitle();		
 		if(title.length() > 25){
 			title = title.substring(0,26)+"...";
 			noteTitle = new HTML(title);
 		}
 		else{
 			noteTitle = new HTML(result.getNoteTitle());
-		}
+		}*/
+		noteTitle = new HTML(result.getNoteTitle());
 		noteTitle.setTitle(result.getNoteTitle());
 		noteTitle.setWidth("100%");
 		noteTitlePanel.add(noteTitle);
@@ -413,8 +440,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		editButton.addClickHandler(new ClickHandler(){
 			@Override
 			public void onClick(ClickEvent event) {
-				successMessageDisplay.clear();
-				errorMessages.clear();
+				clearMessages();
 				CustomButton myEditButton = (CustomButton)event.getSource();
 				System.out.println("Edit button clicked !!!");
 				if(notesDisclosurePanel.isOpen()){
@@ -453,6 +479,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		headerPanel.add(editButtonPanel);
 		headerPanel.setCellWidth(editButtonPanel, "10%");
+		
+		if(isReadOnlyView) {
+			deleteButton.setEnabled(false);
+		}
 		
 		return headerPanel;
 	}
@@ -517,8 +547,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 							observer.onSaveClicked(measureNoteDTO);
 						}
 						else {
-							successMessageDisplay.clear();
+							clearMessages();
 							errorMessages.setMessage("Text required in Title and Description fields.");
+							errorMessages.setFocus();
 						}
 					}
 				}
@@ -530,8 +561,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return new ClickHandler() {			
 			@Override
 			public void onClick(ClickEvent event) {
-				successMessageDisplay.clear();
-				errorMessages.clear();
+				clearMessages();
 				
 				String measureNoteId = ((Widget)event.getSource()).getElement().getId();
 				MeasureNoteDTO measureNoteDTO = getResultForId(measureNoteId);
@@ -561,4 +591,17 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return result;
 	}
 	
+	private void clearMessages() {
+		successMessageDisplay.clear();
+		errorMessages.clear();
+	}
+	
+	private FocusHandler getFocusHandler() {
+		return new FocusHandler() {			
+			@Override
+			public void onFocus(FocusEvent event) {
+				clearMessages();
+			}
+		};
+	}
 }

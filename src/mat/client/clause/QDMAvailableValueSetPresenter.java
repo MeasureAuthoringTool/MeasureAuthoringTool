@@ -185,6 +185,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				searchDisplay.getDisclosurePanel().setOpen(false);
+				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+				searchDisplay.getErrorMessageUserDefinedPanel().clear();
 			}
 		});
 		

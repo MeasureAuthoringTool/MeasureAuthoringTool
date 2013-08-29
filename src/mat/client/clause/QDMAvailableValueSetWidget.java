@@ -60,7 +60,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
 	private Button addToMeasure = new PrimaryButton("Apply to Measure","primaryButton");
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
-	private Button psuedoQDMCancel = new SecondaryButton("Cancel");
+	/*private Button psuedoQDMCancel = new SecondaryButton("Cancel");*/
 	private Button cancel = new Button("Close");
 	private Button userDefinedCancel = new SecondaryButton("Close");
 	private SimplePanel dataTypePanel = new SimplePanel();
@@ -222,8 +222,8 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		psuedoQDMToMeasure.setTitle("Apply to Measure");
 		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		buttonHorizontalPanel.add(new SpacerWidget());
-		psuedoQDMCancel.setTitle("Cancel");
-		buttonHorizontalPanel.add(psuedoQDMCancel);
+		/*psuedoQDMCancel.setTitle("Cancel");
+		buttonHorizontalPanel.add(psuedoQDMCancel);*/
 		buttonHorizontalPanel.add(new SpacerWidget());
 		userDefinedCancel.setTitle("Close");
 		buttonHorizontalPanel.add(userDefinedCancel);
@@ -521,13 +521,13 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		this.psuedoQDMToMeasure = psuedoQDMToMeasure;
 	}
 
-	public Button getPsuedoQDMCancel() {
+	/*public Button getPsuedoQDMCancel() {
 		return psuedoQDMCancel;
 	}
 
 	public void setPsuedoQDMCancel(Button psuedoQDMCancel) {
 		this.psuedoQDMCancel = psuedoQDMCancel;
-	}
+	}*/
 
 	public ListBoxMVP getAllDataTypeInput() {
 		return allDataTypeInput;

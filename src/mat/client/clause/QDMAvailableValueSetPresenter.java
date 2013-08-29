@@ -82,7 +82,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		public String getDataTypeText(ListBoxMVP inputListBox);
 		public DisclosurePanel getDisclosurePanel();
 		public Button getPsuedoQDMToMeasure();
-		public Button getPsuedoQDMCancel();
+		/*public Button getPsuedoQDMCancel();*/
 		public TextBox getUserDefinedInput();
 		public ListBoxMVP getAllDataTypeInput();
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
@@ -180,7 +180,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	    });
 		
 		
-		searchDisplay.getPsuedoQDMCancel().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getPsuedoQDMCancel().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -188,7 +188,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 				searchDisplay.getErrorMessageUserDefinedPanel().clear();
 			}
-		});
+		});*/
 		
 		
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {

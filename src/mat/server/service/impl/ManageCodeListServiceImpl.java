@@ -1068,8 +1068,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				qds.setCodeListName(codeList.getName());
 				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
 				qds.setOccurrenceText(null);
-				//qds.setUuid(UUID.randomUUID().toString());
-				//qds.setVersion("1.0");
 				wrapper = modifyAppliedElementList(qds,appliedQDM);
 				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 				result.setSuccess(true);

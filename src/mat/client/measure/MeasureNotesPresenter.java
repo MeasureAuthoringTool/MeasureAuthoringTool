@@ -1,6 +1,7 @@
 package mat.client.measure;
 
 import mat.DTO.MeasureNoteDTO;
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.measure.MeasureNotesView.Observer;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -83,10 +84,12 @@ public class MeasureNotesPresenter implements MatPresenter{
  	
  	private void search(){
  		String measureID = MatContext.get().getCurrentMeasureId();
+ 		showSearchingBusy(true);
  		service.getAllMeasureNotesByMeasureID(measureID, new AsyncCallback<MeasureNotesModel>() {
  			@Override
 			public void onSuccess(MeasureNotesModel result) {
  				/*notesDisplay.getNotesResult().setData(result.getData()); */
+ 				showSearchingBusy(false);
  				notesDisplay.setNotesResult(result);
  				notesDisplay.displayView();
  				notesDisplay.setObserver(new Observer() {
@@ -101,6 +104,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 							}
 							@Override
 							public void onFailure(Throwable caught) {
+								showSearchingBusy(false);
 								notesDisplay.getSuccessMessageDisplay().clear();
 								notesDisplay.getErrorMessageDisplay().setMessage("Failed to delete measure note." );
 							}
@@ -138,11 +142,12 @@ public class MeasureNotesPresenter implements MatPresenter{
  		String noteTitle = notesDisplay.getMeasureNoteTitle().getText();
  		String noteDescription = notesDisplay.getMeasureNoteComposer().getText();
  		if(noteTitle != null && !noteTitle.isEmpty() && noteDescription != null && !noteDescription.isEmpty()){
- 			
+ 			showSearchingBusy(true);
  			service.saveMeasureNote(noteTitle, noteDescription,MatContext.get().getCurrentMeasureId(),MatContext.get().getLoggedinUserId(), new AsyncCallback<Void>() {
 				
 				@Override
 				public void onSuccess(Void result) {
+					showSearchingBusy(false);
 					notesDisplay.getErrorMessageDisplay().clear();
 					notesDisplay.getSuccessMessageDisplay().setMessage("The measure note is saved successfully.");
 					notesDisplay.getMeasureNoteComposer().setText("");
@@ -152,8 +157,9 @@ public class MeasureNotesPresenter implements MatPresenter{
 				
 				@Override
 				public void onFailure(Throwable caught) {
+					showSearchingBusy(false);
 					notesDisplay.getSuccessMessageDisplay().clear();
-					notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note.");
+					notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 					
 				}
 			});		 			
@@ -163,7 +169,15 @@ public class MeasureNotesPresenter implements MatPresenter{
  		}
  	}
  	
-	
+ 	private void showSearchingBusy(boolean busy){
+		if(busy)
+			Mat.showLoadingMessage();
+		else
+			Mat.hideLoadingMessage();
+		
+		/*((Button)searchDisplay.getSearchButton()).setEnabled(!busy);
+		((TextBox)(searchDisplay.getSearchString())).setEnabled(!busy);*/
+	}
 	private native void generateCSVFile()/*-{
 		var data = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
 		var csvContent = data[0];

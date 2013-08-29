@@ -205,7 +205,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		Widget widgetDataType = LabelBuilder.buildLabel("Select Data Type", "Select Data Type");
 		dataTypePanel.add(widgetDataType);
 		dataTypePanel.add(new SpacerWidget());
-		/*allDataTypeInput.addItem("-- Select Data Type --");*/
+		
 		dataTypePanel.add(allDataTypeInput);
 		allDataTypeInput.addFocusHandler(
 				new FocusHandler() {

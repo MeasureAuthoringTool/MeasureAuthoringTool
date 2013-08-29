@@ -230,6 +230,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			noteTitle.setTitle(title);
 			noteTitle.setWidth("100%");
 			noteTitle.setStyleName("bold");
+			noteTitlePanel.getElement().setAttribute("tabIndex", "0");
 			noteTitlePanel.add(noteTitle);
 			
 			noteTitlePanel.setCellWidth(noteTitle, "100%");
@@ -238,6 +239,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			headerPanel.setCellHorizontalAlignment(noteTitlePanel, HasHorizontalAlignment.ALIGN_LEFT);
 			
 			HorizontalPanel emailAddrPanel = new HorizontalPanel();
+			emailAddrPanel.getElement().setAttribute("tabIndex", "0");
 			emailAddrPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			HTML lastModifiedBy = new HTML("Last Modified By");
 			lastModifiedBy.setTitle("Last Modified By");
@@ -250,6 +252,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			headerPanel.setCellWidth(emailAddrPanel, "30%");
 			
 			HorizontalPanel lastModifiedDatePanel = new HorizontalPanel();
+			lastModifiedDatePanel.getElement().setAttribute("tabIndex", "0");
 			lastModifiedDatePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			
 			String dateString = "Last Modified Date";
@@ -264,6 +267,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			headerPanel.setCellWidth(lastModifiedDatePanel, "25%");
 
 			HorizontalPanel deleteButtonPanel = new HorizontalPanel();
+			deleteButtonPanel.getElement().setAttribute("tabIndex", "0");
 			deleteButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			HTML delete = new HTML("Delete");
 			delete.setStyleName("bold");
@@ -272,6 +276,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			headerPanel.setCellWidth(deleteButtonPanel, "10%");
 			
 			HorizontalPanel editButtonPanel = new HorizontalPanel();
+			editButtonPanel.getElement().setAttribute("tabIndex", "0");
 			editButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			HTML edit = new HTML("Edit");
 			edit.setStyleName("bold");
@@ -372,25 +377,28 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		noteTitle.setTitle(result.getNoteTitle());
 		noteTitle.setWidth("100%");
 		noteTitlePanel.add(noteTitle);
+		noteTitlePanel.getElement().setAttribute("tabIndex", "0");
 		
 		noteTitlePanel.setCellWidth(noteTitle, "100%");
 		headerPanel.add(noteTitlePanel);
 		headerPanel.setCellWidth(noteTitlePanel, "25%");
 		headerPanel.setCellHorizontalAlignment(noteTitlePanel, HasHorizontalAlignment.ALIGN_LEFT);
-		//noteTitlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		
 		HorizontalPanel emailAddrPanel = new HorizontalPanel();
+		emailAddrPanel.getElement().setAttribute("tabIndex", "0");
 		
 		HTML lastModifiedBy = new HTML(result.getLastModifiedByEmailAddress());
 		lastModifiedBy.setTitle(result.getLastModifiedByEmailAddress());
 		lastModifiedBy.setWidth("100%");
-		emailAddrPanel.add(lastModifiedBy);
+		lastModifiedBy.getElement().setAttribute("tabIndex", "0");
 		
+		emailAddrPanel.add(lastModifiedBy);
 		emailAddrPanel.setCellWidth(lastModifiedBy, "100%");
 		headerPanel.add(emailAddrPanel);
 		headerPanel.setCellWidth(emailAddrPanel, "30%");
 		
 		HorizontalPanel lastModifiedDatePanel = new HorizontalPanel();
+		lastModifiedDatePanel.getElement().setAttribute("tabIndex", "0");
 		String dateString = result.getLastModifiedDate();
 		HTML lastModifiedDate = new HTML(dateString);
 		lastModifiedDate.setTitle(dateString);

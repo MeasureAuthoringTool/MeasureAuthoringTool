@@ -56,7 +56,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	MeasureServiceAsync measureService = MatContext.get().getMeasureService();
 	ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
 	QualityDataSetDTO  modifyValueSetDTO;
-	mat.client.clause.QDSAppliedListPresenter.SearchDisplay searchDisplay2;
+	mat.client.clause.QDSAppliedListPresenter.SearchDisplay qdsAppliedListPresenterDisplay;
 	
 	
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
@@ -93,11 +93,11 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	}
 	
 	
-	public QDMAvailableValueSetPresenter(SearchDisplay sDisplayArg , QualityDataSetDTO dataSetDTO, mat.client.clause.QDSAppliedListPresenter.SearchDisplay searchDisplay2){
+	public QDMAvailableValueSetPresenter(SearchDisplay sDisplayArg , QualityDataSetDTO dataSetDTO, mat.client.clause.QDSAppliedListPresenter.SearchDisplay qdsAppliedListPresenterDisplay){
 		this.searchDisplay = sDisplayArg;
 		this.modifyValueSetDTO = dataSetDTO;
-		this.searchDisplay2 = searchDisplay2;
-		this.appliedQDMList = (ArrayList<QualityDataSetDTO>) searchDisplay2.getAllAppliedQDMList();
+		this.qdsAppliedListPresenterDisplay = qdsAppliedListPresenterDisplay;
+		this.appliedQDMList = (ArrayList<QualityDataSetDTO>) qdsAppliedListPresenterDisplay.getAllAppliedQDMList();
 		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			
@@ -286,7 +286,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			searchDisplay.getErrorMessageDisplay().clear();
 			searchDisplay.getApplyToMeasureSuccessMsg().clear();
 			if(modifyValueSetDTO!=null && modifyWithDTO!=null ){
-				String dataType , dataTypeText;
+				String dataType;
 				Boolean isSpecificOccurrence=false;
 			
 				if(modifyWithDTO.getCategoryDisplay().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
@@ -301,15 +301,9 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			    	   populateQDSDataType(modifyWithDTO.getCategoryCode());
 			    	   dataType = searchDisplay.getDataTypeValue();
 			     }
-			     if(searchDisplay.getDataTypeText().equalsIgnoreCase("--Select--")){
-			    	   dataTypeText = dataType;
-			      }else{
-			    	   dataTypeText = searchDisplay.getDataTypeText();
-			       }
-			       isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
-			       
-					
-				if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+			     isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
+			     	
+				 if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
 					if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
 						updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
 					}else{
@@ -319,7 +313,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 							searchDisplay.getErrorMessageDisplay().setMessage("A value set with an Attribute category must be used for this data element.");
 						}
 					setEnabled(true);
-				}
+					}
 				}else{
 					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
 				
@@ -353,10 +347,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,true);
 				}
 			}else{
-				/*if(appliedQDMList.size()>0)
-					appliedQDMList.removeAll(appliedQDMList);*/
 				searchDisplay.getErrorMessageUserDefinedPanel().setMessage("Please enter Value Set name and select a data type associated with it.");
-				
 			}
 			
 		}
@@ -439,7 +430,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	private void reloadAppliedQDMList(){
 		QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 		appliedListModel.setAppliedQDMs(appliedQDMList);
-		searchDisplay2.buildCellList(appliedListModel);
+		qdsAppliedListPresenterDisplay.buildCellList(appliedListModel);
 	}
 	
 	/**

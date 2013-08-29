@@ -3,6 +3,7 @@ package mat.server;
 import java.io.IOException;
 import java.text.Format;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -88,17 +89,18 @@ public class ExportServlet extends HttpServlet {
 				String userRole = LoggedInUserUtil.getLoggedInUserRole();
 				if("Administrator".equalsIgnoreCase(userRole)){
 					String csvFileString = generateCSVOfActiveUserEmails();
-					resp.setHeader("Content-Disposition", "attachment; filename=activeUsers.csv; Cache-Control=no-cache");
-//					resp.addHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
-//					resp.addHeader("Pragma", "no-cache"); // HTTP 1.0.
-//					resp.setDateHeader("Expires", 0); // Proxies.
+					Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					String activeUserCSVDate = formatter.format(new Date());
+					resp.setHeader("Content-Disposition", "attachment; filename="+fnu.getCSVFileName("activeUsers", activeUserCSVDate) +";");
 					resp.setContentType("text/csv");
 					resp.getOutputStream().write(csvFileString.getBytes());
 					resp.getOutputStream().close();
 				}
 			}else if("exportMeasureNotesForMeasure".equals(format)){
 				String csvFileString = generateCSVToExportMeasureNotes(id);
-				resp.setHeader("Content-Disposition", "attachment; filename=MeasureNotes.csv; Cache-Control=no-cache");
+				Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				String measureNoteDate = formatter.format(new Date());
+				resp.setHeader("Content-Disposition", "attachment; filename="+fnu.getCSVFileName("MeasureNotes", measureNoteDate) +";");
 				resp.setContentType("text/csv");
 				resp.getOutputStream().write(csvFileString.getBytes());
 				resp.getOutputStream().close();

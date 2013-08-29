@@ -40,4 +40,8 @@ public class FileNameUtility {
 	public String getBulkZipName(String name) {
 		return name.replaceAll("\\W","") + "_Artifacts.zip";
 	}
+	public String getCSVFileName(String name , String currentTime){
+		
+		return name.replaceAll("\\W","") +currentTime+".csv";
+	}
 }

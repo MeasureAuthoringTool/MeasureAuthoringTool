@@ -96,13 +96,13 @@ public class MeasureNotesPresenter implements MatPresenter{
 							@Override
 							public void onSuccess(Void result) {
 								notesDisplay.getErrorMessageDisplay().clear();
-								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note deleted successfully");
+								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note deleted successfull.");
 								search();
 							}
 							@Override
 							public void onFailure(Throwable caught) {
 								notesDisplay.getSuccessMessageDisplay().clear();
-								notesDisplay.getErrorMessageDisplay().setMessage("Failed to delete measure note" );
+								notesDisplay.getErrorMessageDisplay().setMessage("Failed to delete measure note." );
 							}
 						});
 					}
@@ -113,13 +113,13 @@ public class MeasureNotesPresenter implements MatPresenter{
 							@Override
 							public void onSuccess(Void result) {
 								notesDisplay.getErrorMessageDisplay().clear();
-								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note saved successfully");
+								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note saved successfully.");
 								search();
 							}							
 							@Override
 							public void onFailure(Throwable caught) {
 								notesDisplay.getSuccessMessageDisplay().clear();
-								notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note" );
+								notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note.");
 							}
 						});
 					}
@@ -127,7 +127,7 @@ public class MeasureNotesPresenter implements MatPresenter{
  			}
 			@Override
 			public void onFailure(Throwable caught) {
-				notesDisplay.getErrorMessageDisplay().setMessage("No measure notes" );
+				notesDisplay.getErrorMessageDisplay().setMessage("No measure notes.");
 			}
 						
 		}); 		
@@ -144,7 +144,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 				@Override
 				public void onSuccess(Void result) {
 					notesDisplay.getErrorMessageDisplay().clear();
-					notesDisplay.getSuccessMessageDisplay().setMessage("The measure note is saved successfully");
+					notesDisplay.getSuccessMessageDisplay().setMessage("The measure note is saved successfully.");
 					notesDisplay.getMeasureNoteComposer().setText("");
 					notesDisplay.getMeasureNoteTitle().setText("");
 					search();
@@ -153,13 +153,13 @@ public class MeasureNotesPresenter implements MatPresenter{
 				@Override
 				public void onFailure(Throwable caught) {
 					notesDisplay.getSuccessMessageDisplay().clear();
-					notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note" );
+					notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note.");
 					
 				}
 			});		 			
  		}else{
  			notesDisplay.getSuccessMessageDisplay().clear();
- 			notesDisplay.getErrorMessageDisplay().setMessage("Please enter Title and Description for the measure note before saving");
+ 			notesDisplay.getErrorMessageDisplay().setMessage("Text required in Title and Description fields.");
  		}
  	}
  	

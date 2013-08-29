@@ -224,27 +224,30 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			headerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			headerPanel.setWidth("800px");
 			HorizontalPanel noteTitlePanel = new HorizontalPanel();
-			noteTitlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-			String title = "Title                    ";
+			//noteTitlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+			String title = "Title";
 			HTML noteTitle = new HTML(title);
 			noteTitle.setTitle(title);
 			noteTitle.setWidth("100%");
+			noteTitle.setStyleName("bold");
 			noteTitlePanel.add(noteTitle);
 			
 			noteTitlePanel.setCellWidth(noteTitle, "100%");
 			headerPanel.add(noteTitlePanel);
-			headerPanel.setCellWidth(noteTitlePanel, "20%");
+			headerPanel.setCellWidth(noteTitlePanel, "25%");
+			headerPanel.setCellHorizontalAlignment(noteTitlePanel, HasHorizontalAlignment.ALIGN_LEFT);
 			
 			HorizontalPanel emailAddrPanel = new HorizontalPanel();
 			emailAddrPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			HTML lastModifiedBy = new HTML("Last Modified By");
 			lastModifiedBy.setTitle("Last Modified By");
 			lastModifiedBy.setWidth("100%");
+			lastModifiedBy.setStyleName("bold");
 			emailAddrPanel.add(lastModifiedBy);
 			
 			emailAddrPanel.setCellWidth(lastModifiedBy, "100%");
 			headerPanel.add(emailAddrPanel);
-			headerPanel.setCellWidth(emailAddrPanel, "25%");
+			headerPanel.setCellWidth(emailAddrPanel, "30%");
 			
 			HorizontalPanel lastModifiedDatePanel = new HorizontalPanel();
 			lastModifiedDatePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -253,6 +256,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			HTML lastModifiedDate = new HTML(dateString);
 			lastModifiedDate.setTitle(dateString);
 			lastModifiedDate.setWidth("100%");
+			lastModifiedDate.setStyleName("bold");
 			lastModifiedDatePanel.add(lastModifiedDate);
 			
 			lastModifiedDatePanel.setCellWidth(lastModifiedDate, "100%");
@@ -261,15 +265,19 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 
 			HorizontalPanel deleteButtonPanel = new HorizontalPanel();
 			deleteButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-			deleteButtonPanel.add(new HTML("Delete"));
+			HTML delete = new HTML("Delete");
+			delete.setStyleName("bold");
+			deleteButtonPanel.add(delete);
 			headerPanel.add(deleteButtonPanel);
-			headerPanel.setCellWidth(deleteButtonPanel, "15%");
+			headerPanel.setCellWidth(deleteButtonPanel, "10%");
 			
 			HorizontalPanel editButtonPanel = new HorizontalPanel();
 			editButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-			editButtonPanel.add(new HTML("Edit"));
+			HTML edit = new HTML("Edit");
+			edit.setStyleName("bold");
+			editButtonPanel.add(edit);
 			headerPanel.add(editButtonPanel);
-			headerPanel.setCellWidth(editButtonPanel, "15%");
+			headerPanel.setCellWidth(editButtonPanel, "10%");
 			return headerPanel;
 	}
 	
@@ -367,8 +375,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		noteTitlePanel.setCellWidth(noteTitle, "100%");
 		headerPanel.add(noteTitlePanel);
-		headerPanel.setCellWidth(noteTitlePanel, "20%");
+		headerPanel.setCellWidth(noteTitlePanel, "25%");
 		headerPanel.setCellHorizontalAlignment(noteTitlePanel, HasHorizontalAlignment.ALIGN_LEFT);
+		//noteTitlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
 		
 		HorizontalPanel emailAddrPanel = new HorizontalPanel();
 		
@@ -379,7 +388,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		emailAddrPanel.setCellWidth(lastModifiedBy, "100%");
 		headerPanel.add(emailAddrPanel);
-		headerPanel.setCellWidth(emailAddrPanel, "25%");
+		headerPanel.setCellWidth(emailAddrPanel, "30%");
 		
 		HorizontalPanel lastModifiedDatePanel = new HorizontalPanel();
 		String dateString = result.getLastModifiedDate();
@@ -428,14 +437,14 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		deleteButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		deleteButtonPanel.add(deleteButton);
 		headerPanel.add(deleteButtonPanel);
-		headerPanel.setCellWidth(deleteButtonPanel, "15%");
+		headerPanel.setCellWidth(deleteButtonPanel, "10%");
 		
 		HorizontalPanel editButtonPanel = new HorizontalPanel();
 		editButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		editButtonPanel.add(editButton);
 		
 		headerPanel.add(editButtonPanel);
-		headerPanel.setCellWidth(editButtonPanel, "15%");
+		headerPanel.setCellWidth(editButtonPanel, "10%");
 		
 		return headerPanel;
 	}
@@ -482,17 +491,27 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 						observer.onDeleteClicked(measureNoteDTO);
 					}
 					if("Save".equals(action)) {
+						String noteTitle = "";
+						String noteDesc = "";
 						VerticalPanel vpanel = (VerticalPanel) ((Widget)event.getSource()).getParent().getParent();
 						for(int i=0; i<vpanel.getWidgetCount(); i++) {
 							Widget widget = vpanel.getWidget(i);
 							if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteTitle_"+measureNoteId)) {
-								measureNoteDTO.setNoteTitle(((TextBox)widget).getText());
+								noteTitle = ((TextBox)widget).getText();
 							}
 							if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteDesc_"+measureNoteId)) {
-								measureNoteDTO.setNoteDesc(((TextArea)widget).getText());
+								noteDesc = ((TextArea)widget).getText();
 							}
 						}
-						observer.onSaveClicked(measureNoteDTO);
+						if(noteTitle!=null && !noteTitle.trim().isEmpty() && noteDesc!=null && !noteDesc.trim().isEmpty()) {
+							measureNoteDTO.setNoteTitle(noteTitle);
+							measureNoteDTO.setNoteDesc(noteDesc);
+							observer.onSaveClicked(measureNoteDTO);
+						}
+						else {
+							successMessageDisplay.clear();
+							errorMessages.setMessage("Text required in Title and Description fields.");
+						}
 					}
 				}
 			}

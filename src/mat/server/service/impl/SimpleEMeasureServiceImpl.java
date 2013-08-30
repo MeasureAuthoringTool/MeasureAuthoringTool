@@ -51,7 +51,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService{
 	private static final String CONVERSION_FILE_2="xsl/mat_narrGen.xsl";
 	private static final String CONVERSION_FILE_HTML="xsl/eMeasure.xsl";
 	//Filtered User Defined QDM's as these are dummy QDM's created by user and should not be part of Value Set sheet.
-	static String userDefinedOID = ConstantMessages.USER_DEFINED_QDM_OID;
+	private static String userDefinedOID = ConstantMessages.USER_DEFINED_QDM_OID;
 	private static final String XPATH_ELEMENTLOOKUP_QDM="/measure/elementLookUp/qdm[not(@oid='"+userDefinedOID+"')]";
 	private static final String XPATH_SUPPLEMENTDATA_ELEMENTREF="/measure/supplementalDataElements/elementRef/@id";
 	//private static final String SUPPLEMENTDATAELEMENT="supplementalDataElements";

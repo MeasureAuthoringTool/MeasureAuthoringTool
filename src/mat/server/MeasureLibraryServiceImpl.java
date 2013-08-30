@@ -5,7 +5,6 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,7 +29,6 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
-import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.dao.MeasureNotesDAO;
 import mat.dao.clause.MeasureDAO;
@@ -78,8 +76,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implements MeasureService{
 	private static final long serialVersionUID = 2280421300224680146L;
@@ -171,7 +167,6 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			measureDAO.delete(m);
 			logger.info("Measure Deleted Successfully :: " + measureID);
 		}catch(Exception e){
-			MatContext.get().setMeasureDeleted(false);
 			logger.info("Measure not deleted.Something went wrong for measure Id :: " + measureID);
 		}
 	

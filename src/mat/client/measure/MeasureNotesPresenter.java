@@ -119,14 +119,14 @@ public class MeasureNotesPresenter implements MatPresenter{
 							public void onSuccess(Void result) {
 								clearMessages();
 								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note saved successfully.");
-								notesDisplay.getSuccessMessageDisplay().setFocus();
+								//notesDisplay.getSuccessMessageDisplay().setFocus();
 								search();
 							}							
 							@Override
 							public void onFailure(Throwable caught) {
 								clearMessages();
 								notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note.");
-								notesDisplay.getErrorMessageDisplay().setFocus();
+								//notesDisplay.getErrorMessageDisplay().setFocus();
 							}
 						});
 					}

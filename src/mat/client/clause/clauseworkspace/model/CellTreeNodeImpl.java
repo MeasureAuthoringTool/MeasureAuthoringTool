@@ -136,8 +136,10 @@ public class CellTreeNodeImpl implements CellTreeNode{
 		copyModel.setOpen(model.isOpen());	
 		Map<String, Object> extraInfos = new HashMap<String, Object>();
 		if(model.getNodeType() == ELEMENT_REF_NODE){
+			//MAT-2282 : Bug fix for issue "Copy/Paste in Clause Workspace Dropping Attributes".
 			//List<CellTreeNode> attributes = (List<CellTreeNode>) extraInformationMap.get("attributes");
 			List<CellTreeNode> attributes = (List<CellTreeNode>) model.getExtraInformation("attributes");
+			//MAT-2282 : Bug fix ends.
 			if(attributes != null){
 				List<CellTreeNode> extraAttrList = new ArrayList<CellTreeNode>();
 				for (CellTreeNode cellTreeNode : attributes) {

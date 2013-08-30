@@ -954,7 +954,7 @@ public class MessageDelegate {
 		
 	}
 	
-	private final String VALUE_SET_NAME_DATATYPE_REQD = "Please enter name and select a data type associated with it.";
+	private final String VALUE_SET_NAME_DATATYPE_REQD = "Please enter Name and select a Datatype associated with it.";
 	public String getVALUE_SET_NAME_DATATYPE_REQD() {
 		return VALUE_SET_NAME_DATATYPE_REQD;
 	}

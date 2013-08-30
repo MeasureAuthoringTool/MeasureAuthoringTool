@@ -45,20 +45,16 @@ public class MeasureNotesPresenter implements MatPresenter{
  	 
  	public MeasureNotesPresenter(NotesDisplay notesDisplay){
  		this.notesDisplay=notesDisplay; 		
- 		System.out.println("Created an instance of MeasureNotesPresenter >>>>");
  		notesDisplay.getExportButton().addClickHandler(new ClickHandler() { 
  			@Override
  			public void onClick(ClickEvent event) {
- 				System.out.println("Export code to be written here");
  				generateCSVToExportMeasureNotes();
  			}
  		});
- 		
- 		
+ 		 		
  		notesDisplay.getSaveButton().addClickHandler(new ClickHandler() {
  			@Override
  			public void onClick(ClickEvent event) {
- 				System.out.println("Saving the note to the database >>>> ");
  				saveMeasureNote();
  			}
  		}); 
@@ -66,16 +62,10 @@ public class MeasureNotesPresenter implements MatPresenter{
  		notesDisplay.getCancelButton().addClickHandler(new ClickHandler() {
  			@Override
  			public void onClick(ClickEvent event) {
- 				clearMessages();
- 				clearTitleAndDescription();
+ 				resetWidget();
  			}			
  		}); 
  	}
- 	
- 	protected void clearTitleAndDescription() {
- 		notesDisplay.getMeasureNoteTitle().setText(null);
-	 	notesDisplay.getMeasureNoteComposer().setText(null);
-	}
 
 	private void generateCSVToExportMeasureNotes(){
 		MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null, "MEASURE_NOTES_EXPORT", "Measure Notes Exported", ConstantMessages.DB_LOG);
@@ -83,13 +73,16 @@ public class MeasureNotesPresenter implements MatPresenter{
 		Window.open(url + "&type=save", "_self", "");		
 	}
  	
+	/**
+	 * Retrieving all the Measure Notes of the current measure id and displaying.
+	 * MeasureNotesView.Observer is set here onSuccess method. 
+	 */
  	private void search(){
  		String measureID = MatContext.get().getCurrentMeasureId();
  		showSearchingBusy(true);
  		service.getAllMeasureNotesByMeasureID(measureID, new AsyncCallback<MeasureNotesModel>() {
  			@Override
 			public void onSuccess(MeasureNotesModel result) {
- 				/*notesDisplay.getNotesResult().setData(result.getData()); */
  				showSearchingBusy(false);
  				notesDisplay.setNotesResult(result);
  				notesDisplay.displayView();
@@ -141,7 +134,9 @@ public class MeasureNotesPresenter implements MatPresenter{
 		}); 		
  	}
  	
- 	
+ 	/**
+ 	 * Saving Measure Notes.
+ 	 */
  	private void saveMeasureNote(){
  		String noteTitle = notesDisplay.getMeasureNoteTitle().getText();
  		String noteDescription = notesDisplay.getMeasureNoteComposer().getText();
@@ -153,7 +148,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 				public void onSuccess(Void result) {
 					showSearchingBusy(false);
 					notesDisplay.getErrorMessageDisplay().clear();
-					notesDisplay.getSuccessMessageDisplay().setMessage("The measure note is saved successfully.");
+					notesDisplay.getSuccessMessageDisplay().setMessage("The measure note saved successfully.");
 					notesDisplay.getMeasureNoteComposer().setText("");
 					notesDisplay.getMeasureNoteTitle().setText("");
 					search();
@@ -173,6 +168,11 @@ public class MeasureNotesPresenter implements MatPresenter{
  		}
  	}
  	
+ 	/**
+ 	 * Show or Hide Loading Message.
+ 	 * Show Loading Message when 'busy' is true and hide Loading Message when 'busy' is false. 
+ 	 * @param busy
+ 	 */
  	private void showSearchingBusy(boolean busy){
 		if(busy)
 			Mat.showLoadingMessage();
@@ -182,6 +182,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 		((Button)notesDisplay.getSaveButton()).setEnabled(!busy);
 		((Button)notesDisplay.getCancelButton()).setEnabled(!busy);
 	}
+ 	
 	private native void generateCSVFile()/*-{
 		var data = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
 		var csvContent = data[0];
@@ -411,11 +412,18 @@ public class MeasureNotesPresenter implements MatPresenter{
       	}
 }-*/;
 	
+	/**
+	 * Clearing Success Message and Error Message display.
+	 */
 	private void clearMessages() {
 		notesDisplay.getSuccessMessageDisplay().clear();
 		notesDisplay.getErrorMessageDisplay().clear();
 	}		
 
+	/**
+	 * Clear the Measure Title and Measure Description input fields.
+	 * Clear Success Message and Error Message display.
+	 */
 	private void resetWidget() {
 		clearMessages();
 		notesDisplay.getMeasureNoteComposer().setText("");

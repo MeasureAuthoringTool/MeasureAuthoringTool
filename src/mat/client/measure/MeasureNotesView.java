@@ -10,9 +10,6 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.TextAreaWithMaxLength;
-import mat.client.util.ClientConstants;
-import mat.model.SecurityRole;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -27,7 +24,6 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -36,11 +32,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
-	public static final int PAGE_SIZE_ALL = Integer.MAX_VALUE;
-	@SuppressWarnings("unused")
-	private static final int[] PAGE_SIZES= new int[] {50, PAGE_SIZE_ALL};
-	private VerticalPanel containerPanel = new VerticalPanel();
-	
+	private VerticalPanel containerPanel = new VerticalPanel();	
 	private SimplePanel simplePanel = new SimplePanel();
 	private FlowPanel flowPanel = new FlowPanel ();
 	private TextAreaWithMaxLength measureNoteComposer = new TextAreaWithMaxLength();
@@ -49,21 +41,17 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	private Button saveButton = new PrimaryButton("Save","primaryButton");
 	private Button cancelButton = new SecondaryButton("Cancel");
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
-	protected Panel pageSizeSelector = new FlowPanel();
 	public SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
-	protected Panel pageSelector = new HorizontalPanel();
-	MeasureNotesModel notesResult = new MeasureNotesModel();
-	
-	boolean editable = false;
-	
-	private ClickHandler clickHandler = buildClickHandler();
+	MeasureNotesModel notesResult = new MeasureNotesModel();	
+	private boolean editable = false;	
+	private ClickHandler clickHandler = buildClickHandler();	
+	private Observer observer;
 	
 	public static interface Observer {
 		public void onDeleteClicked(MeasureNoteDTO result);
 		public void onSaveClicked(MeasureNoteDTO measureNoteDTO);
 	}
-	private Observer observer;
-	
+		
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
@@ -95,16 +83,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		this.notesResult = notesResult;
 	}
 
-	private HTML viewingNumber = new HTML();
-	public HTML getViewingNumber() {
-		return viewingNumber;
-	}
-	public void setViewingNumber(HTML viewingNumber) {
-		this.viewingNumber = viewingNumber;
-	}
-
 	public MeasureNotesView(){
-		//displayView();
+		
 	}
 	
 	public void displayView() {
@@ -132,7 +112,6 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		fPanel.add(new SpacerWidget());
 		fPanel.add(new SpacerWidget());
-		//notesResult.setData(getDataList());
 		fPanel.add(buildDataTable(notesResult));
 		fPanel.add(new SpacerWidget());
 		containerPanel.add(fPanel);
@@ -178,15 +157,13 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  composerPanel.add(bottomButtonPanel);
 		  composerPanel.add(new SpacerWidget());
 		  
-		  if(!editable) {
-			  measureNoteTitle.setReadOnly(true);
-			  measureNoteComposer.setReadOnly(true);
-			  saveButton.setEnabled(false);
-			  cancelButton.setEnabled(false);
-		  }
+		  measureNoteTitle.setReadOnly(!editable);
+		  measureNoteComposer.setReadOnly(!editable);
+		  saveButton.setEnabled(editable);
+		  cancelButton.setEnabled(editable);
 		  
 		  return composerPanel;
-		 }
+	}
 	
 	
 	public Widget asWidget() {
@@ -374,12 +351,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vPanel.add(bottomButtonPanel);
 		vPanel.add(new SpacerWidget());
 		
-		if(!editable) {
-			title.setReadOnly(true);
-			measureNoteDesc.setReadOnly(true);
-			saveButton.setEnabled(false);
-			cancelButton.setEnabled(false);
-		  }
+		title.setReadOnly(!editable);
+		measureNoteDesc.setReadOnly(!editable);
+		saveButton.setEnabled(editable);
+		cancelButton.setEnabled(editable);
 		
 		return vPanel;
 	}
@@ -391,15 +366,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		HorizontalPanel noteTitlePanel = new HorizontalPanel();
 		
-		HTML noteTitle;
-		/*String title = result.getNoteTitle();		
-		if(title.length() > 25){
-			title = title.substring(0,26)+"...";
-			noteTitle = new HTML(title);
-		}
-		else{
-			noteTitle = new HTML(result.getNoteTitle());
-		}*/
+		HTML noteTitle;		
 		noteTitle = new HTML(result.getNoteTitle());
 		noteTitle.setTitle(result.getNoteTitle());
 		noteTitle.setWidth("100%");
@@ -442,7 +409,6 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			public void onClick(ClickEvent event) {
 				clearMessages();
 				CustomButton myEditButton = (CustomButton)event.getSource();
-				System.out.println("Edit button clicked !!!");
 				if(notesDisclosurePanel.isOpen()){
 					Image img = myEditButton.getImage();
 					img.setResource(ImageResources.INSTANCE.g_openPanel());
@@ -480,9 +446,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		headerPanel.add(editButtonPanel);
 		headerPanel.setCellWidth(editButtonPanel, "10%");
 		
-		if(!editable) {
-			deleteButton.setEnabled(false);
-		}
+		deleteButton.setEnabled(editable);
 		
 		return headerPanel;
 	}

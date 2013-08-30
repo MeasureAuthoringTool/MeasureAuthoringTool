@@ -120,7 +120,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			public void onOpen(DisclosureEvent event)
 			{
 				populateAllDataType();
-				searchDisplay.buildQDSDataTable(currentCodeListResults, false);
+				searchDisplay.buildQDSDataTable(currentCodeListResults, true);
 				displaySearch();
 				searchDisplay.getDisclosurePanelCellTable().setOpen(false);
 			}
@@ -135,7 +135,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			{
 				searchDisplay.getUserDefinedInput().setText("");
 				//searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
-				searchDisplay.buildQDSDataTable(currentCodeListResults, false);
+				searchDisplay.buildQDSDataTable(currentCodeListResults, true);
 				displaySearch();
 				searchDisplay.getDisclosurePanel().setOpen(true);
 			}
@@ -144,7 +144,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			public void onOpen(DisclosureEvent event)
 			{
 				/*populateAllDataType();*/
-				searchDisplay.buildQDSDataTable(currentCodeListResults, false);
+				searchDisplay.buildQDSDataTable(currentCodeListResults, true);
 				displaySearch();
 				searchDisplay.getDisclosurePanel().setOpen(false);
 			}
@@ -366,6 +366,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
+		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+		searchDisplay.getErrorMessageUserDefinedPanel().clear();
 		//searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 

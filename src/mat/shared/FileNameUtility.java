@@ -41,7 +41,6 @@ public class FileNameUtility {
 		return name.replaceAll("\\W","") + "_Artifacts.zip";
 	}
 	public String getCSVFileName(String name , String currentTime){
-		
-		return name.replaceAll("\\W","") +currentTime+".csv";
+		return (name.concat(currentTime)).replaceAll("\\W","").concat(".csv");
 	}
 }

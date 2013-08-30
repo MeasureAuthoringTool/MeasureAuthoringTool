@@ -279,78 +279,87 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	 * Method to find if selected Available value set is a valid modifiable selection. If yes, then call to updateAppliedQDMList method is made. 
 	 * 
 	 * */
-	protected void modifyQDM(boolean isUserDefined) {
-		
+	protected void modifyQDM(boolean isUserDefined) {		
 		if(!isUserDefined){//Normal Available QDM Flow
-			CodeListSearchDTO modifyWithDTO = currentCodeListResults.getLastSelectedCodeList();
-			searchDisplay.getErrorMessageDisplay().clear();
-			searchDisplay.getApplyToMeasureSuccessMsg().clear();
-			if(modifyValueSetDTO!=null && modifyWithDTO!=null ){
-				String dataType;
-				Boolean isSpecificOccurrence=false;
-			
-				if(modifyWithDTO.getCategoryDisplay().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
-			    	   dataType = ConstantMessages.ATTRIBUTE;
-			     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_PERIOD)){
-			    	   dataType = ConstantMessages.TIMING_ELEMENT;
-			     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_START_DATE)){
-			    	   dataType = ConstantMessages.TIMING_ELEMENT;
-			     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_END_DATE)){
-			    	   dataType = ConstantMessages.TIMING_ELEMENT;
-			     }else{
-			    	   populateQDSDataType(modifyWithDTO.getCategoryCode());
-			    	   dataType = searchDisplay.getDataTypeValue();
-			     }
-			     isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
-			     	
-				 if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
-					if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
-						updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
-					}else{
-						if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
-							searchDisplay.getErrorMessageDisplay().setMessage("A value set with a non-Attribute category must be used for this data element.");
-						}else{
-							searchDisplay.getErrorMessageDisplay().setMessage("A value set with an Attribute category must be used for this data element.");
-						}
-					setEnabled(true);
-					}
-				}else{
-					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
-				
-				}
-			}else{
-				searchDisplay.getErrorMessageDisplay().setMessage("Please select atleast one applied QDM to modify.");
-				setEnabled(true);
-			
-			}
+			modifyValueSetQDM();
 		}else{//Pseudo QDM Flow
-			
-			searchDisplay.getSuccessMessageUserDefinedPanel().clear();
-			searchDisplay.getErrorMessageUserDefinedPanel().clear();
-			if((searchDisplay.getUserDefinedInput().getText().trim().length()>0) && !searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT))
-			{
-				
-				CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
-				modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
-				String dataType = searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput());
-				if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
-					if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
-						updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,true);
-					}else{
-						if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
-							searchDisplay.getErrorMessageUserDefinedPanel().setMessage("A value set with a non-Attribute category must be used for this data element.");
-						}else{
-							searchDisplay.getErrorMessageUserDefinedPanel().setMessage("A value set with an Attribute category must be used for this data element.");
-						}
-					}
+			modifyQDMWithOutValueSet();		
+		}
+	}
+	
+	private void modifyValueSetQDM(){
+		//Normal Available QDM Flow
+		CodeListSearchDTO modifyWithDTO = currentCodeListResults.getLastSelectedCodeList();
+		searchDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getApplyToMeasureSuccessMsg().clear();
+		if(modifyValueSetDTO!=null && modifyWithDTO!=null ){
+			String dataType;
+			Boolean isSpecificOccurrence=false;
+		
+			if(modifyWithDTO.getCategoryDisplay().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+		    	   dataType = ConstantMessages.ATTRIBUTE;
+		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_PERIOD)){
+		    	   dataType = ConstantMessages.TIMING_ELEMENT;
+		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_START_DATE)){
+		    	   dataType = ConstantMessages.TIMING_ELEMENT;
+		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_END_DATE)){
+		    	   dataType = ConstantMessages.TIMING_ELEMENT;
+		     }else{
+		    	   populateQDSDataType(modifyWithDTO.getCategoryCode());
+		    	   dataType = searchDisplay.getDataTypeValue();
+		     }
+		     isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
+		     	
+			 if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+				if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
+					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
 				}else{
-					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,true);
+					if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
+						searchDisplay.getErrorMessageDisplay().setMessage("A value set with a non-Attribute category must be used for this data element.");
+					}else{
+						searchDisplay.getErrorMessageDisplay().setMessage("A value set with an Attribute category must be used for this data element.");
+					}
+				setEnabled(true);
 				}
 			}else{
-				searchDisplay.getErrorMessageUserDefinedPanel().setMessage("Please enter Value Set name and select a data type associated with it.");
-			}
+				updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
 			
+			}
+		}else{
+			searchDisplay.getErrorMessageDisplay().setMessage("Please select atleast one applied QDM to modify.");
+			setEnabled(true);
+		
 		}
+	}
+	
+	private void modifyQDMWithOutValueSet(){
+		//Pseudo QDM Flow
+		
+		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+		searchDisplay.getErrorMessageUserDefinedPanel().clear();
+		if((searchDisplay.getUserDefinedInput().getText().trim().length()>0) && !searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT))
+		{
+			
+			CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
+			modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
+			String dataType = searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput());
+			if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+				if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
+					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,true);
+				}else{
+					if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
+						searchDisplay.getErrorMessageUserDefinedPanel().setMessage("A value set with a non-Attribute category must be used for this data element.");
+					}else{
+						searchDisplay.getErrorMessageUserDefinedPanel().setMessage("A value set with an Attribute category must be used for this data element.");
+					}
+				}
+			}else{
+				updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,true);
+			}
+		}else{
+			searchDisplay.getErrorMessageUserDefinedPanel().setMessage("Please enter Value Set name and select a data type associated with it.");
+		}
+		
 	}
 	
 	/**

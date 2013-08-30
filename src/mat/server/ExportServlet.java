@@ -36,6 +36,7 @@ public class ExportServlet extends HttpServlet {
 	private static final String ATTACHMENT_FILENAME = "attachment; filename=";
 	private static final String CONTENT_DISPOSITION = "Content-Disposition";
 	private static final String TEXT_XML = "text/xml";
+	private static final String TEXT_HTML = "text/html";
 	private static final String CONTENT_TYPE = "Content-Type";
 	private static final String EMEASURE = "emeasure";
 	private static final String SIMPLEXML = "simplexml";
@@ -72,7 +73,7 @@ public class ExportServlet extends HttpServlet {
 			else if(EMEASURE.equals(format)) {
 				if("open".equals(type)) {
 					export=getService().getEMeasureHTML(id);
-					resp.setHeader(CONTENT_TYPE, TEXT_XML);
+					resp.setHeader(CONTENT_TYPE, TEXT_HTML);
 				}
 				else if(SAVE.equals(type)) {
 					export=getService().getEMeasureXML(id);

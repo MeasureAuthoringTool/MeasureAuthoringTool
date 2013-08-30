@@ -954,6 +954,12 @@ public class MessageDelegate {
 		
 	}
 	
+	private final String VALUE_SET_NAME_DATATYPE_REQD = "Please enter Value Set name and select a data type associated with it.";
+	public String getVALUE_SET_NAME_DATATYPE_REQD() {
+		return VALUE_SET_NAME_DATATYPE_REQD;
+	}
+	
+	
 }
 
 

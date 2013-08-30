@@ -5,7 +5,6 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -21,13 +20,10 @@ import mat.server.service.UserService;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-
-import com.google.gwt.user.client.Random;
 
 public class ExportServlet extends HttpServlet {
 	
@@ -121,7 +117,7 @@ public class ExportServlet extends HttpServlet {
 				String csvFileString = generateCSVToExportMeasureNotes(id);
 				Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String measureNoteDate = formatter.format(new Date());
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME+UUID.randomUUID() +";");
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME+fnu.getCSVFileName("MeasureNotes", measureNoteDate) +";");
 				resp.setContentType("text/csv");
 				resp.getOutputStream().write(csvFileString.getBytes());
 				resp.getOutputStream().close();

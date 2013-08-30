@@ -54,8 +54,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	protected Panel pageSelector = new HorizontalPanel();
 	MeasureNotesModel notesResult = new MeasureNotesModel();
 	
-	String currentUserRole = MatContext.get().getLoggedInUserRole();
-	boolean isReadOnlyView = !(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR) || currentUserRole.equalsIgnoreCase(SecurityRole.SUPER_USER_ROLE));
+	boolean editable = false;
 	
 	private ClickHandler clickHandler = buildClickHandler();
 	
@@ -109,6 +108,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	}
 	
 	public void displayView() {
+		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		flowPanel.clear();
 		simplePanel.clear();
 		containerPanel.clear();
@@ -178,7 +178,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  composerPanel.add(bottomButtonPanel);
 		  composerPanel.add(new SpacerWidget());
 		  
-		  if(isReadOnlyView) {
+		  if(!editable) {
 			  measureNoteTitle.setReadOnly(true);
 			  measureNoteComposer.setReadOnly(true);
 			  saveButton.setEnabled(false);
@@ -374,7 +374,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vPanel.add(bottomButtonPanel);
 		vPanel.add(new SpacerWidget());
 		
-		if(isReadOnlyView) {
+		if(!editable) {
 			title.setReadOnly(true);
 			measureNoteDesc.setReadOnly(true);
 			saveButton.setEnabled(false);
@@ -480,7 +480,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		headerPanel.add(editButtonPanel);
 		headerPanel.setCellWidth(editButtonPanel, "10%");
 		
-		if(isReadOnlyView) {
+		if(!editable) {
 			deleteButton.setEnabled(false);
 		}
 		

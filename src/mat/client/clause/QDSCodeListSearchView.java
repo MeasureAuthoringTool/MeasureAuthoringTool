@@ -51,8 +51,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 
 	private SimplePanel containerPanel = new SimplePanel();
 	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
-	private DisclosurePanel disclosurePanel = new DisclosurePanel("QDM element with undefined value set");
-	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("QDM elements with value set");
+	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without value set");
+	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with value set");
 	private TextBox userDefinedInput = new TextBox();
 	private TextBox searchInput = new TextBox();
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
@@ -193,7 +193,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		VerticalPanel valueSetPanel = new VerticalPanel();
 		VerticalPanel dataTypePanel = new VerticalPanel();
 		
-		Widget widgetValueSet =LabelBuilder.buildRequiredLabel(userDefinedInput, "Value Set Name");
+		Widget widgetValueSet =LabelBuilder.buildLabel(userDefinedInput, "Name");
 		valueSetPanel.add(widgetValueSet);
 		valueSetPanel.add(new SpacerWidget());
 		userDefinedInput.setWidth("230px");

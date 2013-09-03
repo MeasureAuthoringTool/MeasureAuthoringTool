@@ -193,7 +193,6 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		scrollPanel.setWidget(mainPanel);
 		mainPanel.setSpacing(20);
 		mainPanel.setWidth("875px");
-		//mainPanel.setStylePrimaryName("right_left_border_outset");
 		
 		VerticalPanel tableHeaderPanel = new VerticalPanel();
 		tableHeaderPanel.setWidth("875px");
@@ -218,7 +217,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			headerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 			headerPanel.setWidth("800px");
 			HorizontalPanel noteTitlePanel = new HorizontalPanel();
-			//noteTitlePanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_LEFT);
+		
 			String title = "Title";
 			HTML noteTitle = new HTML(title);
 			noteTitle.setTitle(title);
@@ -421,18 +420,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 				
 		});
 		
-		CustomButton deleteButton =(CustomButton) getImage("Delete",ImageResources.INSTANCE.g_trash(), result.getId()); /*new CustomButton();
-		deleteButton.removeStyleName("gwt-button");
-		deleteButton.setStylePrimaryName("invisibleButtonText");
-		deleteButton.setTitle("Delete");
-		deleteButton.setResource(ImageResources.INSTANCE.g_trash(),"Delete");
-		deleteButton.addClickHandler(new ClickHandler(){
-			@Override
-			public void onClick(ClickEvent event) {
-				System.out.println("Delete button clicked !!!");
-				selectedMeasureNote.setDeleted(true);
-			}
-		});*/
+		CustomButton deleteButton =(CustomButton) getImage("Delete",ImageResources.INSTANCE.g_trash(), result.getId()); 
 		HorizontalPanel deleteButtonPanel = new HorizontalPanel();
 		deleteButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		deleteButtonPanel.add(deleteButton);
@@ -452,21 +440,14 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	}
 	
 	private Widget getImage(String action, ImageResource url, String key) {
-		/*SimplePanel holder = new SimplePanel();
-		holder.setStyleName("searchTableCenteredHolder");
-		holder.getElement().getStyle().setCursor(Cursor.POINTER);*/
+	
 		CustomButton image = new CustomButton();
 		image.removeStyleName("gwt-button");
 		image.setStylePrimaryName("invisibleButtonText");
 		image.setTitle(action);
 		image.setResource(url,action);
 		setId(image, action, key);
-		//508 fix - Read only and locked icons do not do anything but they appear to show hand pointer on mouse hover.
-		if(!action.equalsIgnoreCase("Read-Only") && !(action.contains("Measure in use")))
-			addListener(image);
-		else
-			image.setEnabled(false);
-		/*holder.add(image)*/;
+		addListener(image);
 		return image;
 	}
 	
@@ -512,7 +493,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 						}
 						else {
 							clearMessages();
-							errorMessages.setMessage("Text required in Title and Description fields.");
+							errorMessages.setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_REQUIRED_MESSAGE());
 							errorMessages.setFocus();
 						}
 					}

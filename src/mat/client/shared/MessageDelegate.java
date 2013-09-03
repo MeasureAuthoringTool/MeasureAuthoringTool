@@ -959,6 +959,10 @@ public class MessageDelegate {
 		return VALUE_SET_NAME_DATATYPE_REQD;
 	}
 	
+	private final String MEASURE_NOTES_REQUIRED_MESSAGE ="Text required in Title and Description fields.";
+	public String getMEASURE_NOTES_REQUIRED_MESSAGE() {
+		return MEASURE_NOTES_REQUIRED_MESSAGE;
+	}
 	
 }
 

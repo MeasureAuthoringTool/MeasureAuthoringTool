@@ -93,14 +93,14 @@ public class MeasureNotesPresenter implements MatPresenter{
 							@Override
 							public void onSuccess(Void result) {
 								clearMessages();
-								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note deleted successfully.");
+								notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SUCCESS_MESSAGE());
 								search();
 							}
 							@Override
 							public void onFailure(Throwable caught) {
 								showSearchingBusy(false);
 								clearMessages();
-								notesDisplay.getErrorMessageDisplay().setMessage("Failed to delete measure note." );
+								notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_DELETE_FAILURE_MSG() );
 							}
 						});
 					}
@@ -111,15 +111,13 @@ public class MeasureNotesPresenter implements MatPresenter{
 							@Override
 							public void onSuccess(Void result) {
 								clearMessages();
-								notesDisplay.getSuccessMessageDisplay().setMessage("The measure note saved successfully.");
-								//notesDisplay.getSuccessMessageDisplay().setFocus();
+								notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SUCCESS_MESSAGE());
 								search();
 							}							
 							@Override
 							public void onFailure(Throwable caught) {
 								clearMessages();
-								notesDisplay.getErrorMessageDisplay().setMessage("Failed to save measure note.");
-								//notesDisplay.getErrorMessageDisplay().setFocus();
+								notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_FAILURE_MSG() );
 							}
 						});
 					}
@@ -128,7 +126,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 			@Override
 			public void onFailure(Throwable caught) {
 				clearMessages();
-				notesDisplay.getErrorMessageDisplay().setMessage("No measure notes.");
+				notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 						
 		}); 		
@@ -148,7 +146,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 				public void onSuccess(Void result) {
 					showSearchingBusy(false);
 					notesDisplay.getErrorMessageDisplay().clear();
-					notesDisplay.getSuccessMessageDisplay().setMessage("The measure note saved successfully.");
+					notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SUCCESS_MESSAGE());
 					notesDisplay.getMeasureNoteComposer().setText("");
 					notesDisplay.getMeasureNoteTitle().setText("");
 					search();
@@ -164,7 +162,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 			});		 			
  		}else{
  			notesDisplay.getSuccessMessageDisplay().clear();
- 			notesDisplay.getErrorMessageDisplay().setMessage("Text required in Title and Description fields.");
+ 			notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_REQUIRED_MESSAGE());
  		}
  	}
  	
@@ -183,7 +181,9 @@ public class MeasureNotesPresenter implements MatPresenter{
 		((Button)notesDisplay.getCancelButton()).setEnabled(!busy);
 	}
  	
-	private native void generateCSVFile()/*-{
+ 	//TO Do : This Native Jave code can be used to create CSV on client side. Presently it works for FF not in IE. IE10 has included support for blob. When Mat will move to IE 10 this can be used.
+	
+ 	/*private native void generateCSVFile()-{
 		var data = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
 		var csvContent = data[0];
 		function joinData(infoArray, index){
@@ -410,7 +410,7 @@ public class MeasureNotesPresenter implements MatPresenter{
         	var popup = window.open('', 'csv', '');
         	popup.document.body.innerHTML = '<pre>' +  + '</pre>';
       	}
-}-*/;
+}-;*/
 	
 	/**
 	 * Clearing Success Message and Error Message display.

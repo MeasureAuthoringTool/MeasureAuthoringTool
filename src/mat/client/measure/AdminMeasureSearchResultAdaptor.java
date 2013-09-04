@@ -2,26 +2,21 @@ package mat.client.measure;
 
 import java.sql.Timestamp;
 
-
-
-import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatCheckBoxCell;
-
+import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.search.SearchResults;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.Window;
-
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Widget;
 
 public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeasureSearchModel.Result> {
@@ -37,22 +32,9 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	}
 		
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
-	//private ManageMeasureSearchModel.Result lastSelectedMeasureList;
-	//private ManageMeasureSearchModel.Result selectedMeasureList;
+	
 	
 	private Observer observer;
-	private ClickHandler clickHandler = buildClickHandler();
-	
-	private ManageMeasureSearchModel.Result getResultForId(String id) {
-		for(int i = 0; i < data.getNumberOfRows(); i++) {
-			if(id.equals(data.getKey(i))) {
-				return get(i);
-			}
-		}
-		Window.alert("Could not find id " + id);
-		return null;
-	}
-	
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
@@ -95,25 +77,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 		return columnIndex == 0;
 	}
 	
-	/*public ManageMeasureSearchModel.Result getLastSelectedMeasureList() {
-		return lastSelectedMeasureList;
-	}
-
-	public void setLastSelectedMeasureList(
-			ManageMeasureSearchModel.Result lastSelectedMeasureList) {
-		this.lastSelectedMeasureList = lastSelectedMeasureList;
-	}
-
-	public ManageMeasureSearchModel.Result getSelectedMeasureList() {
-		return selectedMeasureList;
-	}
-
-	public void setSelectedMeasureList(
-			ManageMeasureSearchModel.Result selectedMeasureList) {
-		this.selectedMeasureList = selectedMeasureList;
-	}*/
-
-	
+		
 	//TODO - need to remove this method going forward as we replace the Grid Table with Cel T
 	@Override
 	public Widget getValue(int row, int column) {
@@ -121,27 +85,6 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	}
 		
 		
-	private ClickHandler buildClickHandler() {
-		return new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				String id = ((Widget)event.getSource()).getElement().getId();
-				int index = id.indexOf('_');
-				String action = id.substring(0, index);
-				String key = id.substring(index + 1);
-				ManageMeasureSearchModel.Result result = getResultForId(key);
-				if(observer != null) {
-					if("Transfer".equals(action)){
-						CustomCheckBox transferCB = (CustomCheckBox)event.getSource();
-						result.setTransferable((transferCB.getValue()));
-						observer.onTransferSelectedClicked(result);
-					}else if("history".equals(action)){
-						observer.onHistoryClicked(result);
-					}
-				}
-			}
-		};
-	}
 	@Override
 	public int getStartIndex() {
 		return data.getStartIndex();
@@ -174,6 +117,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 	 * @param ts
 	 * @return
 	 */
+	@SuppressWarnings("deprecation")
 	public String convertTimestampToString(Timestamp ts){
 		int hours = ts.getHours();
 		String ap = hours < 12 ? "AM" : "PM";
@@ -216,48 +160,47 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
-	@SuppressWarnings("unchecked")
 	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table){
 		
 		if(table.getColumnCount() !=6 ){	
 			
-			Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
+			Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 					return getColumnToolTip(object.getName());
 				}
 			};
-			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'>" +"Measure Name"+ "</span>"));
+			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name' tabindex=\"0\">" +"Measure Name"+ "</span>"));
 
 			
-			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
+			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 					return getColumnToolTip(object.getOwnerfirstName() + "  " + object.getOwnerLastName());
 				}
 			};
-			table.addColumn(ownerName,SafeHtmlUtils.fromSafeConstant("<span title='Owner'>" +"Owner"+ "</span>"));
+			table.addColumn(ownerName,SafeHtmlUtils.fromSafeConstant("<span title='Owner' tabindex=\"0\">" +"Owner"+ "</span>"));
 			
-			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerEmailAddress = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
+			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerEmailAddress = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 					return getColumnToolTip(object.getOwnerEmailAddress());
 				}
 			};
-			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title='Owner E-mail Address'>" +"Owner E-mail Address"+ "</span>"));
+			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title='Owner E-mail Address' tabindex=\"0\">" +"Owner E-mail Address"+ "</span>"));
 						
 						
-			Column<ManageMeasureSearchModel.Result, SafeHtml> eMeasureID = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()) {
+			Column<ManageMeasureSearchModel.Result, SafeHtml> eMeasureID = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 					return  getColumnToolTip("" + object.geteMeasureId());
 				}
 			};
-			table.addColumn(eMeasureID, SafeHtmlUtils.fromSafeConstant("<span title='eMeasure Id'>" +"eMeasure Id"+ "</span>"));
+			table.addColumn(eMeasureID, SafeHtmlUtils.fromSafeConstant("<span title='eMeasure Id' tabindex=\"0\">" +"eMeasure Id"+ "</span>"));
 			
 			
 			Cell<String> historyButton = new MatButtonCell("Click to view history");
-			Column historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
+			Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
 			  @Override
 			  public String getValue(ManageMeasureSearchModel.Result object) {
 			    return "History";
@@ -270,10 +213,10 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					  observer.onHistoryClicked(object);
 				  }
 				});
-			table.addColumn(historyColumn , SafeHtmlUtils.fromSafeConstant("<span title='History'>" +"History"+ "</span>"));
+			table.addColumn(historyColumn , SafeHtmlUtils.fromSafeConstant("<span title='History' tabindex=\"0\">" +"History"+ "</span>"));
 			
 			Cell<Boolean> transferCB = new MatCheckBoxCell();
-			Column transferColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(transferCB) {
+			Column<Result, Boolean> transferColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(transferCB) {
 			  @Override
 			  public Boolean getValue(ManageMeasureSearchModel.Result object) {
 			    return object.isTransferable();
@@ -287,13 +230,15 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					  observer.onTransferSelectedClicked(object);
 				  }
 				});
-			table.addColumn(transferColumn , SafeHtmlUtils.fromSafeConstant("<span title='Check for Ownership Transfer'>" +"Transfer"+ "</span>"));
+			table.addColumn(transferColumn , SafeHtmlUtils.fromSafeConstant("<span title='Check for Ownership Transfer' tabindex=\"0\">" +"Transfer"+ "</span>"));
 			table.setColumnWidth(0, 30.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
 			table.setColumnWidth(3, 15.0, Unit.PCT);
 			table.setColumnWidth(4, 5.0, Unit.PCT);
 			table.setColumnWidth(5, 5.0, Unit.PCT);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
+			
 		}
 		return table;
 	}

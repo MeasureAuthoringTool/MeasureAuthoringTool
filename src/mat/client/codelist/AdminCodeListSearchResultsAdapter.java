@@ -1,5 +1,6 @@
 package mat.client.codelist;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -10,12 +11,12 @@ import mat.client.shared.CustomButton;
 import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.search.SearchResults;
 import mat.model.CodeListSearchDTO;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -26,6 +27,8 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -46,7 +49,6 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 	private ClickHandler clickHandler = buildClickHandler();
 	private boolean isHistoryClicked;
 	private List<CodeListSearchDTO> lastSelectedCodeList;
-	//private List<CodeListSearchDTO> data;
 	
 	private List<CodeListSearchDTO> selectedCodeList;
 	
@@ -66,15 +68,6 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		this.selectedCodeList = selectedCodeList;
 	}
 	
-		
-	/*public List<CodeListSearchDTO> getData() {
-		return data;
-	}
-
-	public void setData(List<CodeListSearchDTO> data) {
-		this.data = data;
-	}
-*/
 	private CodeListSearchDTO getResultForId(String id) {
 		for(int i = 0; i < model.getNumberOfRows(); i++) {			
 			if(id.equals(model.getKey(i))) {
@@ -240,15 +233,12 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
-	@SuppressWarnings("unchecked")
-	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table){
-		
-		final MultiSelectionModel<CodeListSearchDTO> selectionModel = addSelectionHandlerOnTable();
+	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table, List<CodeListSearchDTO> list){
 		
 		if(table.getColumnCount() !=6 ){	
 			
 			Column< CodeListSearchDTO , SafeHtml> nameColumn;
-				nameColumn = new Column< CodeListSearchDTO  , SafeHtml>(new SafeHtmlCell()) {
+				nameColumn = new Column< CodeListSearchDTO  , SafeHtml>(new MatSafeHTMLCell()) {
 					
 					@Override
 					public SafeHtml getValue( CodeListSearchDTO   object ) {
@@ -259,31 +249,31 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 					}
 				};
 			
-			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Value Set Name'>" +"Value Set Name"+ "</span>"));
+			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Value Set Name' tabindex=\"0\">" +"Value Set Name"+ "</span>"));
 			
-			Column<CodeListSearchDTO , SafeHtml> ownerName = new Column<CodeListSearchDTO, SafeHtml>(new SafeHtmlCell()) {
+			Column<CodeListSearchDTO , SafeHtml> ownerName = new Column<CodeListSearchDTO, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(CodeListSearchDTO object) {
 					return getColumnToolTip(object.getOwnerFirstName() + "  " + object.getOwnerLastName());
 				}
 			};
-			table.addColumn(ownerName, SafeHtmlUtils.fromSafeConstant("<span title='Owner'>" +"Owner"+ "</span>"));
+			table.addColumn(ownerName, SafeHtmlUtils.fromSafeConstant("<span title='Owner' tabindex=\"0\">" +"Owner"+ "</span>"));
 			
-			Column<CodeListSearchDTO , SafeHtml> ownerEmailAddress = new Column<CodeListSearchDTO , SafeHtml>(new SafeHtmlCell()) {
+			Column<CodeListSearchDTO , SafeHtml> ownerEmailAddress = new Column<CodeListSearchDTO , SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(CodeListSearchDTO object) {
 					return getColumnToolTip(object.getOwnerEmailAddress());
 				}
 			};
-			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title='Owner E-mail Address'>" +"Owner E-mail Address"+ "</span>"));
+			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title='Owner E-mail Address' tabindex=\"0\">" +"Owner E-mail Address"+ "</span>"));
 						
-			Column<CodeListSearchDTO, SafeHtml> codeSystem = new Column<CodeListSearchDTO, SafeHtml>(new SafeHtmlCell()) {
+			Column<CodeListSearchDTO, SafeHtml> codeSystem = new Column<CodeListSearchDTO, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(CodeListSearchDTO object) {
 					return getColumnToolTip(object.getCodeSystem());
 				}
 			};
-			table.addColumn(codeSystem, SafeHtmlUtils.fromSafeConstant("<span title='Code System'>" +"Code System"+ "</span>"));
+			table.addColumn(codeSystem, SafeHtmlUtils.fromSafeConstant("<span title='Code System' tabindex=\"0\">" +"Code System"+ "</span>"));
 									
 			Cell<String> historyButton = new MatButtonCell("Click to view history");
 			Column<CodeListSearchDTO, String> historyColumn = new Column<CodeListSearchDTO, String>(historyButton) {
@@ -299,11 +289,11 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 					  observer.onHistoryClicked(object);
 				  }
 				});
-			table.addColumn(historyColumn , SafeHtmlUtils.fromSafeConstant("<span title='History'>" +"History"+ "</span>"));
+			table.addColumn(historyColumn , SafeHtmlUtils.fromSafeConstant("<span title='History' tabindex=\"0\">" +"History"+ "</span>"));
 					
 			
 			Cell<Boolean> transferCB = new MatCheckBoxCell();
-			Column transferColumn = new Column<CodeListSearchDTO, Boolean>(transferCB) {
+			Column<CodeListSearchDTO, Boolean> transferColumn = new Column<CodeListSearchDTO, Boolean>(transferCB) {
 			  @Override
 			  public Boolean getValue(CodeListSearchDTO object) {
 			    return object.isTransferable();
@@ -317,21 +307,33 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 					  observer.onTransferSelectedClicked(object);
 				  }
 				});
-								
-			table.addColumn(transferColumn , SafeHtmlUtils.fromSafeConstant("<span title='Check for Ownership Transfer'>" +"Transfer"+ "</span>"));
+			table.addColumn(transferColumn , SafeHtmlUtils.fromSafeConstant("<span title='Check for Ownership Transfer' tabindex=\"0\">" +"Transfer"+ "</span>"));
 			table.setColumnWidth(0, 30.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
 			table.setColumnWidth(3, 20.0, Unit.PCT);
 			table.setColumnWidth(4, 5.0, Unit.PCT);
 			table.setColumnWidth(5, 5.0, Unit.PCT);
-			/*table.addCellPreviewHandler(new CellPreviewEvent.Handler<CodeListSearchDTO>() {
-				@Override
-				public void onCellPreview(CellPreviewEvent event){
-					handleSelectionEvent(event, selectionModel);
-				}
-			});*/
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			
+			ListHandler<CodeListSearchDTO> columnSortHandler = new ListHandler<CodeListSearchDTO>(list);
+		    columnSortHandler.setComparator(nameColumn,new Comparator<CodeListSearchDTO>() {
+		          public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
+		            if (o1 == o2) {
+		              return 0;
+		            }
+
+		            // Compare the name columns.
+		            if (o1 != null) {
+		              return (o2 != null) ? o1.getName().compareTo(o2.getName()) : 1;
+		            }
+		            return -1;
+		          }
+		        });
+		    table.addColumnSortHandler(columnSortHandler);
+
+		    // We know that the data is sorted alphabetically by default.
+		    table.getColumnSortList().push(nameColumn);
 			
 		}
 		return table;

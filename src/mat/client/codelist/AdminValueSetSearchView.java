@@ -113,7 +113,7 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 		// Display 50 rows in one page or all records.
 		cellTable.setPageSize(50);
 		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		cellTable = adapter.addColumnToTable(cellTable);
+		cellTable = adapter.addColumnToTable(cellTable,results.getData());
 		
 		cellTable.redraw();
 		sortProvider.refresh();

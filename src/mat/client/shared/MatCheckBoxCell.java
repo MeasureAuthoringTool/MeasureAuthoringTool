@@ -20,14 +20,14 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 	 */
 	
 	private static String checkBoxTitle="Click checkbox to select";
-	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" title=\'" + checkBoxTitle + "' checked/>");
+	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" tabindex=\"0\" title=\'" + checkBoxTitle + "' checked/>");
 
 	/**
 	 * An html string representation of an unchecked input box.
 	 */
-	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" title=\'" + checkBoxTitle + "' />");
+	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" tabindex=\"0\" title=\'" + checkBoxTitle + "' />");
 
-	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" disabled=\"disabled\"  title=\'" + checkBoxTitle + "' />");
+	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" tabindex=\"0\" disabled=\"disabled\"  title=\'" + checkBoxTitle + "' />");
 
 	private final boolean dependsOnSelection;
 	private final boolean handlesSelection;
@@ -146,8 +146,6 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 			}
 		}else{
 			sb.append(INPUT_UNCHECKED_DISABLED);
-			//sb.append(INPUT_UNCHECKED);
-
 		}
 		
 	}

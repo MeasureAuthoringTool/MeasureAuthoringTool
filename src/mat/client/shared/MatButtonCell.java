@@ -47,6 +47,7 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
   public MatButtonCell(String ButtonTitle) {
 	    this(SimpleSafeHtmlRenderer.getInstance());
 	    this.ButtonTitle=ButtonTitle;
+	    
 	  }
   
   /**
@@ -77,7 +78,7 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
   @Override
   public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
 	  
-    sb.appendHtmlConstant("<button type=\"button\" title='" + ButtonTitle + "' tabindex=\"-1\" class=\"customClockButton\">");
+    sb.appendHtmlConstant("<button type=\"button\" title='" + ButtonTitle + "' tabindex=\"0\" class=\"customClockButton\">");
     if (data != null) {
       sb.append(data);
     }

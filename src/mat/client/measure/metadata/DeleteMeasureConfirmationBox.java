@@ -9,7 +9,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
@@ -44,6 +43,7 @@ public class DeleteMeasureConfirmationBox {
 		dialogBox.setText("Warning");
 		// Create a table to layout the content
 		VerticalPanel dialogContents = new VerticalPanel();
+		dialogContents.getElement().setId("dialogContents_VerticalPanel");
 		dialogContents.setWidth("28em");
 		dialogContents.setSpacing(5);
 		dialogBox.setWidget(dialogContents);
@@ -51,11 +51,13 @@ public class DeleteMeasureConfirmationBox {
 		ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 		errorMessageDisplay.setMessage("Deleting a draft or version of a measure will permanently remove the designated measure draft or version from  the Measure Authoring Tool. Deleted measures cannot <br> be recovered.");
 		VerticalPanel passwordPanel = new VerticalPanel();
+		passwordPanel.getElement().setId("passwordPanel_VerticalPanel");
 		final HTML passwordText = new HTML("To confirm deletion enter your password below:");
 		final PasswordTextBox password = new PasswordTextBox();
 		passwordPanel.add(passwordText);
 		passwordPanel.add(new SpacerWidget());
 		HorizontalPanel hp = new HorizontalPanel();
+		hp.getElement().setId("hp_HorizontalPanel");
 		HTML required = new HTML(RequiredIndicator.get());
 		hp.add(password);
 		hp.add(required);
@@ -98,6 +100,7 @@ public class DeleteMeasureConfirmationBox {
 			}
 		});
 		HorizontalPanel buttonPanel = new HorizontalPanel();
+		buttonPanel.getElement().setId("buttonPanel_HorizontalPanel");
 		buttonPanel.setSpacing(10);
 		buttonPanel.add(save);
 		buttonPanel.setCellHorizontalAlignment(save,

@@ -38,13 +38,14 @@ public class ShowMorePagerPanel extends AbstractPager {
    * Construct a new {@link ShowMorePagerPanel}.
    */
   public ShowMorePagerPanel() {
-    initWidget(scrollable);
+	  scrollable.getElement().setId("scrollable_ScrollPanel");
+	  initWidget(scrollable);
 
-    // Do not let the scrollable take tab focus.
-    scrollable.getElement().setTabIndex(-1);
+	  // Do not let the scrollable take tab focus.
+	  scrollable.getElement().setTabIndex(-1);
 
-    // Handle scroll events.
-    scrollable.addScrollHandler(new ScrollHandler() {
+	  // Handle scroll events.
+	  scrollable.addScrollHandler(new ScrollHandler() {
       public void onScroll(ScrollEvent event) {
         // If scrolling up, ignore the event.
         int oldScrollPos = lastScrollPos;

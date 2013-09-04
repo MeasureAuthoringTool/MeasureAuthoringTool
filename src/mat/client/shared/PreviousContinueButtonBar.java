@@ -76,7 +76,9 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 		
 		
 		SimplePanel sPanel = new SimplePanel();
+		sPanel.getElement().setId("sPanel_SimplePanel");
 		sPanel.addStyleName("clearBoth");
+		buttonPanel.getElement().setId("buttonPanel_FlowPanel");
 		buttonPanel.add(sPanel);
 		initWidget(buttonPanel);
 		setPageNamesOnState();

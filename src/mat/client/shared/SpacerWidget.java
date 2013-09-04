@@ -6,6 +6,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 public class SpacerWidget extends Composite {
 	public SpacerWidget() {
 		SimplePanel panel = new SimplePanel();
+		panel.getElement().setId("panel_SimplePanel");
 		panel.setHeight("10px");
 		initWidget(panel);
 	}

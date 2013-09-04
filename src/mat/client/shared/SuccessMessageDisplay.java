@@ -25,8 +25,11 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 	
 	public SuccessMessageDisplay() {
 		hPanel = new HorizontalPanel();
+		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		imagePanel = new FlowPanel();
+		imagePanel.getElement().setId("imagePanel_FlowPanel");
 		msgPanel = new FlowPanel();
+		msgPanel.getElement().setId("msgPanel_FlowPanel");
 		successIcon.getElement().setAttribute("alt", "SuccessMessage");
 		imagePanel.setTitle("Success");
 		imagePanel.add(successIcon);

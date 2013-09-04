@@ -4,8 +4,6 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class PasswordEditInfoWidget extends Composite {
@@ -14,6 +12,7 @@ public class PasswordEditInfoWidget extends Composite {
 	
 	public PasswordEditInfoWidget() {
 		FlowPanel container = new FlowPanel();
+		container.getElement().setId("container_FlowPanel");
 		container.add(LabelBuilder.buildRequiredLabel(password, "Enter existing password to confirm changes"));
 		container.add(new SpacerWidget());
 		container.add(wrap(password));
@@ -24,6 +23,7 @@ public class PasswordEditInfoWidget extends Composite {
 	}
 	private SimplePanel wrap(Widget widget) {
 		SimplePanel p = new SimplePanel();
+		p.getElement().setId("p_SimplePanel");
 		p.add(widget);
 		return p;
 	}

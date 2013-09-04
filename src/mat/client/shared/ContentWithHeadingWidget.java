@@ -16,7 +16,12 @@ public class ContentWithHeadingWidget extends Composite{
 	FocusableWidget headerHolder = new FocusableWidget(heading);
 	SimplePanel embeddedLinkHolder = new SimplePanel();
 	public ContentWithHeadingWidget() {
+		codeListInfo.getElement().setId("codeListInfo_SimplePanel");
+		content.getElement().setId("content_SimplePanel");
+		footer.getElement().setId("footer_SimplePanel");
+		
 		FlowPanel vPanel = new FlowPanel();
+		vPanel.getElement().setId("vPanel_FlowPanel");
 		
 		heading.addStyleName("contentWithHeadingHeader");
 		heading.addStyleName("leftAligned");
@@ -27,6 +32,7 @@ public class ContentWithHeadingWidget extends Composite{
 		vPanel.add(footer);
 		footer.addStyleName("returnLink");
 		SimplePanel sPanel = new SimplePanel();
+		sPanel.getElement().setId("sPanel_SimplePanel");
 		sPanel.add(vPanel);
 		initWidget(sPanel);		
 	}

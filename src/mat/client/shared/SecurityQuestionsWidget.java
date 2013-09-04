@@ -16,6 +16,7 @@ public class SecurityQuestionsWidget extends Composite {
 	
 	public SecurityQuestionsWidget() {
 		FlowPanel container = new FlowPanel();
+		container.getElement().setId("container_FlowPanel");
 		container.add(LabelBuilder.buildLabel(securityQuestion1, "Security Question 1"));
 		container.add(wrap(securityQuestion1));
 		container.add(LabelBuilder.buildLabel(answer1, "Security Answer 1"));
@@ -49,6 +50,7 @@ public class SecurityQuestionsWidget extends Composite {
 	}
 	private SimplePanel wrap(Widget widget) {
 		SimplePanel p = new SimplePanel();
+		p.getElement().setId("p_SimplePanel");
 		p.add(widget);
 		return p;
 	}

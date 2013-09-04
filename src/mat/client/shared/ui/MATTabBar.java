@@ -37,7 +37,6 @@ import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Accessibility;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.Composite;
@@ -221,6 +220,7 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * Creates an empty tab bar.
    */
   public MATTabBar() {
+	panel.getElement().setId("panel_HorizontalPanel");
     initWidget(panel);
     sinkEvents(Event.ONCLICK);
     setStyleName("gwt-TabBar");

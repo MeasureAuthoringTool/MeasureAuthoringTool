@@ -415,6 +415,7 @@ public CustomPager(TextLocation location, Resources resources,
 
     // Construct the widget.
     HorizontalPanel layout = new HorizontalPanel();
+    layout.getElement().setId("layout_HorizontalPanel");
     layout.setVerticalAlignment(HasVerticalAlignment.ALIGN_MIDDLE);
     initWidget(layout);
     if (location == TextLocation.RIGHT) {

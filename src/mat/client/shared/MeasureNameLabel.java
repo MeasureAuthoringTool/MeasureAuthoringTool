@@ -11,6 +11,7 @@ public class MeasureNameLabel extends Composite {
 	
 	public MeasureNameLabel() {
 		FlowPanel measureNamePanel = new FlowPanel();
+		measureNamePanel.getElement().setId("measureNamePanel_FlowPanel");
 		HTML measureLabel = new HTML("Measure:&nbsp");
 		measureLabel.addStyleName("bold");
 		measureLabel.addStyleName("measureLabel");
@@ -18,6 +19,7 @@ public class MeasureNameLabel extends Composite {
 		measureNamePanel.add(measureLabel);
 		measureNamePanel.add(measureName);
 		SimplePanel clearBoth = new SimplePanel();
+		clearBoth.getElement().setId("clearBoth_SimplePanel");
 		clearBoth.addStyleName("clearBoth");
 		measureNamePanel.add(clearBoth);
 		measureNamePanel.add(new SpacerWidget());

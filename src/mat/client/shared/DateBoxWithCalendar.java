@@ -70,6 +70,7 @@ public class DateBoxWithCalendar extends Composite{
 		dateBox = new TextBox();
 		invLabel = (Label) LabelBuilder.buildInvisibleLabelWithContent(new Label(), "Input Date", "Input Date");
 		dateBox.setStylePrimaryName("no-border");
+		panel.getElement().setId("panel_HorizontalPanel");
 		panel.add(invLabel);
 		Element element = dateBox.getElement();
 		element.setAttribute("id", "Input Date");

@@ -222,6 +222,7 @@ public class MATTabPanel extends Composite implements TabListener,
    */
   public MATTabPanel() {
     VerticalPanel panel = new VerticalPanel();
+    panel.getElement().setId("panel_VerticalPanel");
     panel.add(tabBar);
     panel.add(deck);
 

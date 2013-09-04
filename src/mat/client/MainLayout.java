@@ -115,6 +115,7 @@ public abstract class MainLayout {
 	private Panel buildFooterPanel() {
 		
 		FlowPanel footerMainPanel = new FlowPanel();
+		footerMainPanel.getElement().setId("footerMainPanel_FlowPanel");
 		footerMainPanel.setStylePrimaryName("footer");		
 		footerMainPanel.add(FooterPanelBuilderUtility.buildFooterLogoPanel());
 				
@@ -193,6 +194,7 @@ public abstract class MainLayout {
 
 	private Panel buildTopPanel() {
 		final HorizontalPanel topBanner = new HorizontalPanel();
+		topBanner.getElement().setId("topBanner_HorizontalPanel");
 		setId(topBanner, "title");
 		topBanner.setStylePrimaryName("topBanner");
 		final FocusableImageButton titleImage= new FocusableImageButton(ImageResources.INSTANCE.g_header_title(),"Measure Authoring Tool");
@@ -203,6 +205,7 @@ public abstract class MainLayout {
 		DOM.insertChild(titleImage.getElement(), heading, 0);
 		topBanner.add(titleImage);
 		logOutPanel = new SimplePanel();
+		logOutPanel.getElement().setId("logOutPanel_SimplePanel");
 		logOutPanel.addStyleName("logoutPanel");
 		topBanner.add(logOutPanel);
 		return topBanner;      

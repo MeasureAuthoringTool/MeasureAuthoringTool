@@ -27,9 +27,12 @@ public abstract class SummaryWidgetBase<T> extends Composite{
 	protected PageSelectionView psv = new PageSelectionView();
 	
 	public SummaryWidgetBase(String labelStr){
+		codesPanelHolder.getElement().setId("codesPanelHolder_SimplePanel");
+		manageCodesLink.getElement().setId("manageCodesLink_SimplePanel");
     	manageCodesPanel = new VerticalPanel();
+    	manageCodesPanel.getElement().setId("manageCodesPanel_VerticalPanel");
     	manageCodesPanel.addStyleName("rightSideForm");
-  		manageCodesPanel.add(buildManageCodesLink(labelStr));
+  		manageCodesPanel.add(buildManageCodesLink(labelStr));  		
 		manageCodesPanel.add(codesPanelHolder);
 		manageCodesPanel.add(new SpacerWidget());
 		manageCodesPanel.add(psv.asWidget());
@@ -48,9 +51,11 @@ public abstract class SummaryWidgetBase<T> extends Composite{
 		SimplePanel codesLabel = new SimplePanel();
 		Label l = new Label(labelStr);
 		codesLabel.add(l);
+		codesLabel.getElement().setId("codesLabel_SimplePanel");
 		manageCodesLink.setStylePrimaryName("manageCodes");
 		manageCodesLink.add( manageCodesAnchor);
 		FlowPanel addCodes = new FlowPanel();
+		addCodes.getElement().setId("addCodes_FlowPanel");
 		addCodes.add(manageCodesLink);
 		addCodes.add(codesLabel);
 		return addCodes;

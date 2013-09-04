@@ -51,6 +51,8 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	@SuppressWarnings("unchecked")
 	public MeasureComposerPresenter() {
 		
+		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
+		subSkipContentHolder.getElement().setId("subSkipContentHolder_SimplePanel");
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
 		qdmPresenter = (QDMPresenter) buildQDMPresenter();
@@ -162,6 +164,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 			heading = heading+version;
 			measureComposerContent.setHeading(heading,"MeasureComposer");
 			FlowPanel fp = new FlowPanel();
+			fp.getElement().setId("fp_FlowPanel");
 			subSkipContentHolder.clear();
 			subSkipContentHolder.add(SkipListBuilder.buildSubSkipList("CodeList"));
 			fp.add(subSkipContentHolder);

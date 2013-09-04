@@ -21,7 +21,9 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	private String answerText3;
 	public SecurityQuestionWithMaskedAnswerWidget() {
 		FlowPanel container = new FlowPanel();
+		container.getElement().setId("container_FlowPanel");
 		FlowPanel fp = new FlowPanel();
+		fp.getElement().setId("fp_FlowPanel");
 		
 		HTML b1 = new HTML("<img src='images/bullet.png'/><span style='font-size:1.5 em;'> You must select three questions and enter an answer for each question.</span>");
 		HTML b2 = new HTML("<img src='images/bullet.png'/> <span style='font-size:1.5 em;'> You cannot use the same question more than once.</span>");
@@ -72,6 +74,7 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	}
 	private SimplePanel wrap(Widget widget) {
 		SimplePanel p = new SimplePanel();
+		p.getElement().setId("p_SimplePanel");
 		p.add(widget);
 		return p;
 	}

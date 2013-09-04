@@ -17,6 +17,7 @@ import mat.model.CodeListSearchDTO;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -107,22 +108,20 @@ public class AdminValueSetSearchView implements ManageCodeListSearchPresenter.Ad
 		}
 		CellTable<CodeListSearchDTO> cellTable = new CellTable<CodeListSearchDTO>();
 		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
-		sortProvider = new ListDataProvider<CodeListSearchDTO>();
+		
 		codeListResults = new ArrayList<CodeListSearchDTO>();
 		codeListResults.addAll(results.getData());
 		// Display 50 rows in one page or all records.
 		cellTable.setPageSize(50);
 		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		cellTable = adapter.addColumnToTable(cellTable,results.getData());
-		
 		cellTable.redraw();
 		sortProvider.refresh();
-		sortProvider.setList(codeListResults);
-		
+		sortProvider.getList().addAll(results.getData());
+		ListHandler<CodeListSearchDTO> sortHandler = new ListHandler<CodeListSearchDTO>(sortProvider.getList());
+		cellTable.addColumnSortHandler(sortHandler);
+		cellTable = adapter.addColumnToTable(cellTable,sortHandler);
 		sortProvider.addDataDisplay(cellTable);
-		
-        spager.setDisplay(cellTable);
-        
+		spager.setDisplay(cellTable);
         spager.setToolTipAndTabIndex(spager);
         view.getvPanelForQDMTable().clear();
         view.getvPanelForQDMTable().add(cellTable);

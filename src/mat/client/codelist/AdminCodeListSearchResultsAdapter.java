@@ -233,7 +233,7 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
-	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table, List<CodeListSearchDTO> list){
+	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table, ListHandler<CodeListSearchDTO> sortHandler){
 		
 		if(table.getColumnCount() !=6 ){	
 			
@@ -248,7 +248,20 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 						return getColumnToolTip(object.getName(), title);
 					}
 				};
-			
+			nameColumn.setSortable(true);
+			sortHandler.setComparator(nameColumn,new Comparator<CodeListSearchDTO>() {
+				public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getName().compareTo(o2.getName()) : 1;
+					}
+					return -1;
+				}
+			});
 			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Value Set Name' tabindex=\"0\">" +"Value Set Name"+ "</span>"));
 			
 			Column<CodeListSearchDTO , SafeHtml> ownerName = new Column<CodeListSearchDTO, SafeHtml>(new MatSafeHTMLCell()) {
@@ -257,6 +270,20 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 					return getColumnToolTip(object.getOwnerFirstName() + "  " + object.getOwnerLastName());
 				}
 			};
+			ownerName.setSortable(true);
+			sortHandler.setComparator(ownerName,new Comparator<CodeListSearchDTO>() {
+				public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getOwnerFirstName().compareTo(o2.getOwnerFirstName()) : 1;
+					}
+					return -1;
+				}
+			});
 			table.addColumn(ownerName, SafeHtmlUtils.fromSafeConstant("<span title='Owner' tabindex=\"0\">" +"Owner"+ "</span>"));
 			
 			Column<CodeListSearchDTO , SafeHtml> ownerEmailAddress = new Column<CodeListSearchDTO , SafeHtml>(new MatSafeHTMLCell()) {
@@ -265,7 +292,21 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 					return getColumnToolTip(object.getOwnerEmailAddress());
 				}
 			};
-			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title='Owner E-mail Address' tabindex=\"0\">" +"Owner E-mail Address"+ "</span>"));
+			ownerEmailAddress.setSortable(true);
+			sortHandler.setComparator(ownerEmailAddress,new Comparator<CodeListSearchDTO>() {
+				public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getOwnerEmailAddress().compareTo(o2.getOwnerEmailAddress()) : 1;
+					}
+					return -1;
+				}
+			});
+			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title='E-mail Address' tabindex=\"0\">" +"Owner E-mail Address"+ "</span>"));
 						
 			Column<CodeListSearchDTO, SafeHtml> codeSystem = new Column<CodeListSearchDTO, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
@@ -310,30 +351,15 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 			table.addColumn(transferColumn , SafeHtmlUtils.fromSafeConstant("<span title='Check for Ownership Transfer' tabindex=\"0\">" +"Transfer"+ "</span>"));
 			table.setColumnWidth(0, 30.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
-			table.setColumnWidth(2, 20.0, Unit.PCT);
+			table.setColumnWidth(2, 24.0, Unit.PCT);
 			table.setColumnWidth(3, 20.0, Unit.PCT);
-			table.setColumnWidth(4, 5.0, Unit.PCT);
-			table.setColumnWidth(5, 5.0, Unit.PCT);
+			table.setColumnWidth(4, 3.0, Unit.PCT);
+			table.setColumnWidth(5, 3.0, Unit.PCT);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			
-			ListHandler<CodeListSearchDTO> columnSortHandler = new ListHandler<CodeListSearchDTO>(list);
-		    columnSortHandler.setComparator(nameColumn,new Comparator<CodeListSearchDTO>() {
-		          public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
-		            if (o1 == o2) {
-		              return 0;
-		            }
-
-		            // Compare the name columns.
-		            if (o1 != null) {
-		              return (o2 != null) ? o1.getName().compareTo(o2.getName()) : 1;
-		            }
-		            return -1;
-		          }
-		        });
-		    table.addColumnSortHandler(columnSortHandler);
-
-		    // We know that the data is sorted alphabetically by default.
-		    table.getColumnSortList().push(nameColumn);
+			// We know that the data is sorted alphabetically by default.
+			/*table.getColumnSortList().push(nameColumn);*/
+			
 			
 		}
 		return table;

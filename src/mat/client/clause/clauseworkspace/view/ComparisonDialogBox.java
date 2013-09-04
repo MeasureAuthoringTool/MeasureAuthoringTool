@@ -44,6 +44,7 @@ public class ComparisonDialogBox{
 		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.setWidth("20em");
 		dialogContents.setSpacing(5);
+		dialogContents.getElement().setId("dialogContents_VerticalPanel");
 		//- POC to change width and height for dialogBox. - Success 
 		//dialogContents.setWidth("50em");
 		/*DOM.setStyleAttribute(dialogBox.getElement(), "width", "950px");
@@ -187,6 +188,7 @@ public class ComparisonDialogBox{
 		buttonPanel.setCellHorizontalAlignment(save, HasHorizontalAlignment.ALIGN_RIGHT);
 		buttonPanel.add(closeButton);
 		buttonPanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
+		buttonPanel.getElement().setId("buttonPanel_HorizontalPanel");
 
 		dialogContents.add(buttonPanel);
 		dialogBox.center();

@@ -16,7 +16,9 @@ public class AuditLogWidget extends Composite{
 	public AuditLogWidget(String activityType, String userId, Date timeStamp, String additionalInfo){
 		VerticalPanel auditLogPanel = new VerticalPanel();    	     
 		auditLogPanel.setWidth("100%"); 
+		auditLogPanel.getElement().setId("auditLogPanel_VerticalPanel");
 		HorizontalPanel eventPanel = new HorizontalPanel(); 
+		eventPanel.getElement().setId("eventPanel_HorizontalPanel");
 		
 		Label activityTypeLbl = new Label(activityType);
 		activityTypeLbl.setStylePrimaryName("noBorder");
@@ -39,6 +41,7 @@ public class AuditLogWidget extends Composite{
 
 		HorizontalPanel additionalInfoPanel = new HorizontalPanel();
 		additionalInfoPanel.setWidth("100%");	
+		additionalInfoPanel.getElement().setId("additionalInfoPanel_HorizontalPanel");
 		
 		if(additionalInfo != null){
 			TextArea additionalInfoTxtArea = new TextArea();

@@ -31,8 +31,10 @@ public class ExcelViewerWidget extends Composite{
 	  
 	  public ExcelViewerWidget(){
     	     VerticalPanel exportViewerPanel = new VerticalPanel();
+    	     exportViewerPanel.getElement().setId("exportViewerPanel_VerticalPanel");
     	     exportViewerPanel.add(new Label("Excel Viewer is required to view and print the files available on this page."));
     	     HorizontalPanel exportViewerLinkHolder = new HorizontalPanel();
+    	     exportViewerLinkHolder.getElement().setId("exportViewerLinkHolder_HorizontalPanel");
     	     exportViewerHtml = new HTML("Install the latest version of");
     	     exportViewAnchor = new Anchor("Excel Viewer");
     	     exportViewAnchor.addClickHandler(exportViewClickHandler);

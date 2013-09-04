@@ -166,6 +166,7 @@ public class QDMAttributeDialogBox {
 					HorizontalPanel panel = new HorizontalPanel();
 					panel.setWidth("8em");
 					panel.setSpacing(0);
+					panel.getElement().setId("panel_HorizontalPanel");
 					
 					TextBox textBox = new TextBox();
 					textBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
@@ -371,6 +372,7 @@ public class QDMAttributeDialogBox {
 	    
 		// Create a table to layout the content
 	    VerticalPanel dialogContents = new VerticalPanel();
+	    dialogContents.getElement().setId("dialogContents_VerticalPanel");
 	        
 	    qdmAttributeDialogBox.setWidget(dialogContents);
 	    
@@ -383,6 +385,7 @@ public class QDMAttributeDialogBox {
 	    deleteSelectedButton.addClickHandler(new DeleteSelectedClickHandler(grid));
 	    
 	    HorizontalPanel horizontalDeleteAddNewPanel = new HorizontalPanel();
+	    horizontalDeleteAddNewPanel.getElement().setId("horizontalDeleteAddNewPanel_HorizontalPanel");
 	    horizontalDeleteAddNewPanel.setSpacing(5);
 	    	    
 	    horizontalDeleteAddNewPanel.add(addNewButton);
@@ -414,6 +417,7 @@ public class QDMAttributeDialogBox {
 		});
 	    
 	    HorizontalPanel horizontalSaveClosePanel = new HorizontalPanel();
+	    horizontalSaveClosePanel.getElement().setId("horizontalSaveClosePanel_HorizontalPanel");
 	    horizontalSaveClosePanel.setSpacing(5);
 	    
 	    horizontalSaveClosePanel.add(saveButton);
@@ -588,6 +592,7 @@ public class QDMAttributeDialogBox {
 		
 		ScrollPanel scrollPanel = new ScrollPanel();
 		scrollPanel.setSize("28em", "19em");
+		scrollPanel.getElement().setId("scrollPanel_ScrollPanel");
 		
 		DecoratorPanel decoratorPanel = new DecoratorPanel();
 		scrollPanel.setWidget(grid);
@@ -665,6 +670,7 @@ public class QDMAttributeDialogBox {
 				//If this is a Comparison operator
 				else{
 					HorizontalPanel panel = new HorizontalPanel();
+					panel.getElement().setId("panel_HorizontalPanel");
 					panel.setWidth("8em");
 					panel.setSpacing(0);
 					

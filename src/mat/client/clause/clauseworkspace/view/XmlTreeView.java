@@ -26,7 +26,6 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
@@ -92,6 +91,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		clearMessages();
 		createRootNode(cellTreeNode);
 		addHandlers();
+		mainPanel.getElement().setId("mainPanel_FlowPanel");
 	}
 
 
@@ -114,13 +114,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		mainPanel.setStyleName("div-wrapper");//main div
 		
 		SimplePanel leftPanel = new SimplePanel();
+		leftPanel.getElement().setId("leftPanel_SimplePanel");
 		leftPanel.setStyleName("div-first bottomPadding10px");//left side div which will  have tree
 
 		SimplePanel rightPanel = new SimplePanel();
+		rightPanel.getElement().setId("rightPanel_SimplePanel");
 		rightPanel.setStyleName("div-second");//right div having tree creation inputs.
 
 		VerticalPanel treePanel =  new VerticalPanel();
+		treePanel.getElement().setId("treePanel_VerticalPanel");
 		HorizontalPanel expandCollapse  = new HorizontalPanel();
+		expandCollapse.getElement().setId("expandCollapse_HorizontalPanel");
 		expandCollapse.setStyleName("leftAndTopPadding");
 		expandCollapse.setSize("100px", "20px");
 		buttonExpand.setStylePrimaryName("expandAllButton");
@@ -137,8 +141,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		leftPanel.add(treePanel);
 
 		SimplePanel bottomSavePanel = new SimplePanel();
+		bottomSavePanel.getElement().setId("bottomSavePanel_SimplePanel");
 		bottomSavePanel.setStyleName("div-first buttonPadding");
 		VerticalPanel savePanel = new VerticalPanel();
+		savePanel.getElement().setId("savePanel_VerticalPanel");
 		savePanel.add(new SpacerWidget());
 //		savePanel.add(errorMessageDisplay);
 		savePanel.add(successMessageDisplay);
@@ -148,6 +154,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		bottomSavePanel.add(savePanel);
 
 		SimplePanel errPanel = new SimplePanel();
+		errPanel.getElement().setId("errPanel_SimplePanel");
 		errPanel.add(errorMessageDisplay);
 		mainPanel.add(errPanel);
 		mainPanel.add(leftPanel);

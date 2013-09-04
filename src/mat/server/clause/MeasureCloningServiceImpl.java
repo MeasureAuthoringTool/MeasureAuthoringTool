@@ -25,6 +25,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureSetDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.UserDAO;
+import mat.model.MeasureNotes;
 import mat.model.QualityDataModelWrapper;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -33,6 +34,7 @@ import mat.model.clause.MeasureXML;
 import mat.server.LoggedInUserUtil;
 import mat.server.MeasureLibraryServiceImpl;
 import mat.server.SpringRemoteServiceServlet;
+import mat.server.service.MeasureNotesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
@@ -138,6 +140,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 				clonedMeasure.setMeasureSet(measure.getMeasureSet());
 				clonedMeasure.setVersion(measure.getVersion());
 				measureDAO.saveMeasure(clonedMeasure);
+				saveMeasureNotesInDraftMeasure(clonedMeasure.getId(), measure);
 				createNewMeasureDetailsForDraft();
 			}else{
 				// Clear the measureDetails tag
@@ -193,6 +196,33 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 		
+	private void saveMeasureNotesInDraftMeasure(String draftMeasureId, Measure measure) {
+		List<MeasureNotes> measureNotesList = getMeasureNotesService().getAllMeasureNotesByMeasureID(measure.getId());
+		if(measureNotesList!=null && !measureNotesList.isEmpty()) {
+			for(MeasureNotes measureNotes : measureNotesList) {
+				if(measureNotes!=null) {
+					try{
+						MeasureNotes measureNotesDraft = new MeasureNotes();
+						measureNotesDraft.setMeasure_id(draftMeasureId);
+						measureNotesDraft.setNoteTitle(measureNotes.getNoteTitle());
+						measureNotesDraft.setNoteDesc(measureNotes.getNoteDesc());
+						measureNotesDraft.setCreateUser(measureNotes.getCreateUser());
+						measureNotesDraft.setModifyUser(measureNotes.getModifyUser());
+						measureNotesDraft.setLastModifiedDate(measureNotes.getLastModifiedDate());
+						getMeasureNotesService().saveMeasureNote(measureNotesDraft);
+						logger.info("MeasureNotes saved successfully on creating draft measure.");
+					} catch (Exception e) {
+						logger.info("Failed to save MeasureNotes on creating draft measure. Exception occured.");
+					}
+				}
+			}
+		}
+	}
+
+	private MeasureNotesService getMeasureNotesService(){
+		return ((MeasureNotesService)context.getBean("measureNotesService"));		
+	}
+
 	private void clearChildNodes(String nodeName){
 		NodeList nodeList  = clonedDoc.getElementsByTagName(nodeName);
 		Node parentNode = nodeList.item(0);

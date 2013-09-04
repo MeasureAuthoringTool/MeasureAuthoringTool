@@ -964,6 +964,20 @@ public class MessageDelegate {
 		return MEASURE_NOTES_REQUIRED_MESSAGE;
 	}
 	
+	private final String MEASURE_NOTES_SUCCESS_MESSAGE ="The measure note deleted successfully.";
+	public String getMEASURE_NOTES_SUCCESS_MESSAGE() {
+		return MEASURE_NOTES_SUCCESS_MESSAGE;
+	}
+	
+	private final String MEASURE_NOTES_DELETE_FAILURE_MSG="Measure Note deletion unsuccessful.";
+	public String getMEASURE_NOTES_DELETE_FAILURE_MSG() {
+		return MEASURE_NOTES_DELETE_FAILURE_MSG;
+	}
+	
+	private final String MEASURE_NOTES_SAVE_FAILURE_MSG="Unable to Save measure note.Try again.";
+	public String getMEASURE_NOTES_SAVE_FAILURE_MSG() {
+		return MEASURE_NOTES_SAVE_FAILURE_MSG;
+	}
 }
 
 

@@ -1,6 +1,7 @@
 package mat.client.measure;
 
 import java.sql.Timestamp;
+import java.util.Comparator;
 
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.MatButtonCell;
@@ -16,6 +17,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -160,7 +162,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
-	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table){
+	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table ,ListHandler<ManageMeasureSearchModel.Result> sortHandler){
 		
 		if(table.getColumnCount() !=6 ){	
 			
@@ -170,6 +172,20 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					return getColumnToolTip(object.getName());
 				}
 			};
+			measureName.setSortable(true);
+			sortHandler.setComparator(measureName,new Comparator<ManageMeasureSearchModel.Result>() {
+				public int compare(ManageMeasureSearchModel.Result o1, ManageMeasureSearchModel.Result o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getName().compareTo(o2.getName()) : 1;
+					}
+					return -1;
+				}
+			});
 			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name' tabindex=\"0\">" +"Measure Name"+ "</span>"));
 
 			
@@ -179,6 +195,21 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					return getColumnToolTip(object.getOwnerfirstName() + "  " + object.getOwnerLastName());
 				}
 			};
+			
+			ownerName.setSortable(true);
+			sortHandler.setComparator(ownerName,new Comparator<ManageMeasureSearchModel.Result>() {
+				public int compare(ManageMeasureSearchModel.Result o1, ManageMeasureSearchModel.Result o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getOwnerfirstName().compareTo(o2.getOwnerfirstName()) : 1;
+					}
+					return -1;
+				}
+			});
 			table.addColumn(ownerName,SafeHtmlUtils.fromSafeConstant("<span title='Owner' tabindex=\"0\">" +"Owner"+ "</span>"));
 			
 			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerEmailAddress = new Column<ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
@@ -187,6 +218,21 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					return getColumnToolTip(object.getOwnerEmailAddress());
 				}
 			};
+			
+			ownerEmailAddress.setSortable(true);
+			sortHandler.setComparator(ownerEmailAddress,new Comparator<ManageMeasureSearchModel.Result>() {
+				public int compare(ManageMeasureSearchModel.Result o1, ManageMeasureSearchModel.Result o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getOwnerEmailAddress().compareTo(o2.getOwnerEmailAddress()) : 1;
+					}
+					return -1;
+				}
+			});
 			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title='Owner E-mail Address' tabindex=\"0\">" +"Owner E-mail Address"+ "</span>"));
 						
 						

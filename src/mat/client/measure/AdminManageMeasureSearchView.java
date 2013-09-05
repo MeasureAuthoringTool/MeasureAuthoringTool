@@ -16,6 +16,7 @@ import mat.client.shared.search.SearchView;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -103,22 +104,20 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		CellTable<ManageMeasureSearchModel.Result> cellTable = new CellTable<ManageMeasureSearchModel.Result>();
 		/*cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);*/
 		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
-		sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
+		
 		selectedMeasureList = new ArrayList<Result>(); 
 		selectedMeasureList.addAll(results.getData().getData());	
 		// Display 50 rows on a page 
 		cellTable.setPageSize(50);
-		cellTable = results.addColumnToTable(cellTable);
-		
 		cellTable.redraw();
 		cellTable.setRowCount(selectedMeasureList.size(), true);
 		sortProvider.refresh();
-		sortProvider.setList(selectedMeasureList);
+		sortProvider.getList().addAll(results.getData().getData());
+		ListHandler<ManageMeasureSearchModel.Result> sortHandler = new ListHandler<ManageMeasureSearchModel.Result>(sortProvider.getList());
+		cellTable.addColumnSortHandler(sortHandler);
+		cellTable = results.addColumnToTable(cellTable,sortHandler);
 		sortProvider.addDataDisplay(cellTable);
-		
-	   
-        spager.setDisplay(cellTable);
-       
+		spager.setDisplay(cellTable);
         spager.setPageSize(50);
         spager.setToolTipAndTabIndex(spager);
         view.getvPanelForQDMTable().clear();

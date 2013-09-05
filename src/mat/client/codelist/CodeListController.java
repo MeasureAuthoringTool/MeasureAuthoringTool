@@ -4,7 +4,6 @@ import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.codelist.ManageCodeListSearchPresenter.DraftDisplay;
-
 import mat.client.codelist.events.AddCodeToCodeListEvent;
 import mat.client.codelist.events.AddQDSElementEvent;
 import mat.client.codelist.events.CancelAddCodeEvent;
@@ -15,7 +14,6 @@ import mat.client.codelist.events.EditCodeListEvent;
 import mat.client.codelist.events.EditGroupedCodeListEvent;
 import mat.client.codelist.events.ExternalViewerEvent;
 import mat.client.codelist.events.OnChangeValueSetDraftOptionsEvent;
-
 import mat.client.event.UploadRefreshViewEvent;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;

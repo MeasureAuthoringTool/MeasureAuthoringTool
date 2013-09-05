@@ -26,7 +26,6 @@ import mat.client.measure.ManageMeasureSearchView;
 import mat.client.measure.ManageMeasureShareView;
 import mat.client.measure.ManageMeasureVersionView;
 import mat.client.measure.TransferMeasureOwnershipView;
-import mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay;
 import mat.client.myAccount.ChangePasswordPresenter;
 import mat.client.myAccount.ChangePasswordView;
 import mat.client.myAccount.MyAccountPresenter;

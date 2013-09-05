@@ -4,8 +4,6 @@ import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.SearchView;
 import mat.model.Code;
 
-import com.google.gwt.user.client.ui.Widget;
-
 public class CodesSummaryWidget extends SummaryWidgetBase<Code> implements ManageCodeListDetailPresenter.CodesSummaryDisplay{
 	
 	private ManageCodesSearchView view ;

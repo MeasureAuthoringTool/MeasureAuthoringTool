@@ -2,7 +2,6 @@ package mat.dao;
 
 import java.util.List;
 
-import mat.DTO.CodesDTO;
 import mat.model.Code;
 
 public interface CodeDAO extends IDAO<Code, String> {

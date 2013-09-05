@@ -2,7 +2,6 @@ package mat.client.codelist;
 
 import java.util.List;
 
-import mat.client.measure.TransferMeasureOwnerShipModel.Result;
 import mat.client.shared.search.SearchResults;
 
 import com.google.gwt.dom.client.Element;

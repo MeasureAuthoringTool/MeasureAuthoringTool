@@ -2,11 +2,8 @@ package mat.client.codelist;
 
 import java.util.List;
 
-import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
-import mat.client.util.ClientConstants;
 import mat.model.CodeListSearchDTO;
-import mat.server.LoggedInUserUtil;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;

@@ -4,7 +4,6 @@ package mat.client.codelist;
 import java.util.List;
 
 import mat.client.shared.search.SearchResults;
-import mat.model.Code;
 import mat.model.GroupedCodeListDTO;
 
 import com.google.gwt.user.client.rpc.IsSerializable;

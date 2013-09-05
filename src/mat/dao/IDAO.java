@@ -3,8 +3,6 @@ package mat.dao;
 import java.io.Serializable;
 import java.util.List;
 
-import org.hibernate.HibernateException;
-
 public interface IDAO<T, ID extends Serializable> {
 
 	/**

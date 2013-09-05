@@ -4,7 +4,6 @@ import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.LabelBuilder;
 import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.PasswordRules;
 import mat.client.shared.SaveCancelButtonBar;
@@ -18,8 +17,6 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ChangePasswordView implements ChangePasswordPresenter.Display {

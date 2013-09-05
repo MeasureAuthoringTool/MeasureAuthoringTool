@@ -5,10 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import mat.dao.ListObjectDAO;
 import mat.dao.search.GenericDAO;
 import mat.model.ListObject;
@@ -16,6 +12,10 @@ import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.clause.MeasureXML;
 import mat.shared.ConstantMessages;
+
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class MeasureXMLDAO extends GenericDAO<MeasureXML, String>  implements mat.dao.clause.MeasureXMLDAO {
 	

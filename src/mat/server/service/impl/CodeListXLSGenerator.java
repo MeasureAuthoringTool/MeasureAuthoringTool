@@ -8,7 +8,6 @@ import mat.dao.QualityDataSetDAO;
 import mat.model.ListObject;
 import mat.model.clause.Measure;
 import mat.shared.DateUtility;
-import mat.shared.comparators.SortUtility;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;

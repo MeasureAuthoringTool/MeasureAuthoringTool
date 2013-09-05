@@ -1,9 +1,5 @@
 package mat.dao;
 
-import java.util.List;
-
-import mat.DTO.SearchHistoryDTO;
-import mat.model.ListObject;
 import mat.model.TransactionAuditLog;
 
 /**

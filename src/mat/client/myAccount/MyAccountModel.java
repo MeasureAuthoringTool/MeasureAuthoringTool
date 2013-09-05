@@ -1,7 +1,5 @@
 package mat.client.myAccount;
 
-import java.util.Date;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class MyAccountModel implements IsSerializable {

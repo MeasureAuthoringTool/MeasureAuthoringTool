@@ -2,8 +2,6 @@
 package mat.server.util.dictionary;
 
 import edu.vt.middleware.dictionary.Dictionary;
-import edu.vt.middleware.password.PasswordData;
-import edu.vt.middleware.password.RuleResult;
 
 
 public class DictionarySubstringRule extends AbstractDictionaryRule

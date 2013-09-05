@@ -2,9 +2,9 @@ package mat.client.measure;
 
 import java.util.List;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
 import mat.DTO.MeasureNoteDTO;
+
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class MeasureNotesModel implements IsSerializable {
 	

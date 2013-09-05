@@ -13,7 +13,6 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
 import mat.model.QualityDataSetDTO;
 
-import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 

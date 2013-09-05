@@ -11,7 +11,6 @@ import mat.client.login.service.LoginServiceAsync;
 import mat.client.myAccount.service.SaveMyAccountResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
-import mat.client.shared.PasswordEditInfoWidget;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.util.ClientConstants;
 import mat.shared.PasswordVerifier;

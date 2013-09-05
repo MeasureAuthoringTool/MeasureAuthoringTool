@@ -10,7 +10,6 @@ import mat.dao.IDAO;
 import mat.dao.IQuery;
 
 import org.hibernate.Criteria;
-import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

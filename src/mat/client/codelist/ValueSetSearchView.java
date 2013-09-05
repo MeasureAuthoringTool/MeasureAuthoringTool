@@ -5,15 +5,12 @@ package mat.client.codelist;
 
 import mat.client.ImageResources;
 import mat.client.shared.HorizontalFlowPanel;
-import mat.client.shared.MatContext;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
-import mat.client.util.ClientConstants;
 import mat.model.CodeListSearchDTO;
 
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 

@@ -1,13 +1,11 @@
 package mat.client.measure;
 
 import java.util.List;
-import mat.client.codelist.TransferOwnerShipModel.Result;
-import mat.client.measure.metadata.CustomCheckBox;
+
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
-
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -16,15 +14,13 @@ import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
-import mat.model.CodeListSearchDTO;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 
+import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
-
 import com.google.gwt.user.client.ui.Widget;
 
 

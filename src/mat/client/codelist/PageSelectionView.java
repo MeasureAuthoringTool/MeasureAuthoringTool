@@ -9,7 +9,6 @@ import mat.client.shared.search.PageSelectionEvent;
 import mat.client.shared.search.PageSelectionEventHandler;
 import mat.shared.ConstantMessages;
 
-import com.google.gwt.dom.builder.shared.LabelBuilder;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;

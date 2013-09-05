@@ -4,7 +4,6 @@ import java.util.List;
 
 import mat.model.clause.MeasureShareDTO;
 
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class ManageMeasureShareModel implements IsSerializable {

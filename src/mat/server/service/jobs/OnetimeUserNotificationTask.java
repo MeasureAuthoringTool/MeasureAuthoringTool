@@ -6,7 +6,6 @@ import mat.dao.MatFlagDAO;
 import mat.dao.UserDAO;
 import mat.model.MatFlag;
 import mat.model.User;
-import mat.model.UserPassword;
 import mat.server.service.UserService;
 import mat.server.service.impl.UserServiceImpl;
 

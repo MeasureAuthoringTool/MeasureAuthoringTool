@@ -1,8 +1,8 @@
 package mat.client.shared;
 
-import com.google.gwt.resources.client.ImageResource; 
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Element; 
+import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Image;
 public class CustomButton extends Button { 

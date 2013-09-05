@@ -11,7 +11,6 @@ import mat.model.Status;
 import mat.model.User;
 import mat.server.service.UserService;
 import mat.shared.AdminManageUserModelValidator;
-
 import mat.shared.InCorrectUserRoleException;
 
 import org.apache.commons.logging.Log;

@@ -20,7 +20,6 @@ import java.util.Iterator;
 
 import mat.client.Enableable;
 
-
 import com.google.gwt.event.logical.shared.BeforeSelectionEvent;
 import com.google.gwt.event.logical.shared.BeforeSelectionHandler;
 import com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers;

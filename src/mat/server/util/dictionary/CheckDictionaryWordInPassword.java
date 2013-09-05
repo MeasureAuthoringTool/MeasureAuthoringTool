@@ -18,12 +18,12 @@ import org.apache.commons.logging.LogFactory;
 import edu.vt.middleware.dictionary.AbstractWordList;
 import edu.vt.middleware.dictionary.WordListDictionary;
 import edu.vt.middleware.dictionary.WordLists;
+import edu.vt.middleware.dictionary.sort.ArraysSort;
 import edu.vt.middleware.password.Password;
 import edu.vt.middleware.password.PasswordData;
 import edu.vt.middleware.password.PasswordValidator;
 import edu.vt.middleware.password.Rule;
 import edu.vt.middleware.password.RuleResult;
-import edu.vt.middleware.dictionary.sort.ArraysSort;
 
 /**
  * @author jnarang

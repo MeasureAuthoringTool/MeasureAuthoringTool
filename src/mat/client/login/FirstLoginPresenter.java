@@ -10,8 +10,8 @@ import mat.client.login.service.LoginResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
-import mat.model.SecurityQuestions;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
+import mat.model.SecurityQuestions;
 import mat.shared.PasswordVerifier;
 import mat.shared.SecurityQuestionVerifier;
 
@@ -22,7 +22,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;

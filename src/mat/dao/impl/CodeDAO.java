@@ -1,6 +1,7 @@
 package mat.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import mat.dao.search.GenericDAO;
@@ -9,10 +10,7 @@ import mat.model.Code;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-
-import java.util.Collections;
 
 public class CodeDAO extends GenericDAO<Code, String> implements mat.dao.CodeDAO {
 	

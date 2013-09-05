@@ -39,9 +39,7 @@ import mat.client.measurepackage.service.PackageServiceAsync;
 import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.MyAccountServiceAsync;
 import mat.client.util.ClientConstants;
-
 import mat.model.SecurityQuestions;
-import mat.server.service.SecurityQuestionsService;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;

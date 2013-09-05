@@ -17,7 +17,6 @@ import mat.client.login.service.LoginResult;
 import mat.client.login.service.LoginService;
 import mat.client.login.service.SecurityQuestionOptions;
 import mat.client.shared.MatContext;
-import mat.client.util.ClientConstants;
 import mat.dao.UserDAO;
 import mat.model.SecurityQuestions;
 import mat.model.User;
@@ -40,9 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import com.google.gwt.http.client.UrlBuilder;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.rpc.AsyncCallback;
 
 @SuppressWarnings("serial")
 public class LoginServiceImpl extends SpringRemoteServiceServlet implements LoginService{

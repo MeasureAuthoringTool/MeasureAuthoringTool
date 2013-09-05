@@ -3,7 +3,6 @@ package mat.dao;
 import java.util.Date;
 import java.util.List;
 
-import mat.model.SecurityQuestions;
 import mat.model.User;
 import mat.server.model.MatUserDetails;
 

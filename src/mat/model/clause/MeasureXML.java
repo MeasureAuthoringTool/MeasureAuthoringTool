@@ -64,6 +64,7 @@ public class MeasureXML {
 				  try {   
 					  baos.close(); 
 				  } catch (IOException ex) {
+					  ex.printStackTrace();
 				  }
 			  }  
 		  } 
@@ -85,6 +86,7 @@ public class MeasureXML {
 				  try {
 					  is.close();
 				  } catch (IOException ex) {
+					  ex.printStackTrace();
 				  }
 			  }  
 		  }  

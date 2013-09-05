@@ -85,6 +85,7 @@ public class MeasureValidationLog {
 				  try {   
 					  baos.close(); 
 				  } catch (IOException ex) {
+					  ex.printStackTrace();
 				  }
 			  }  
 		  } 
@@ -106,6 +107,7 @@ public class MeasureValidationLog {
 				  try {
 					  is.close();
 				  } catch (IOException ex) {
+					  ex.printStackTrace();
 				  }
 			  }  
 		  }  

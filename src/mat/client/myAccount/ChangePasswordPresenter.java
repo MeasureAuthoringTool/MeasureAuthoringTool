@@ -72,7 +72,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 	
 		
 	@Override
-	public Widget getWidget() {;
+	public Widget getWidget() {
 		return display.asWidget();
 	}
 	

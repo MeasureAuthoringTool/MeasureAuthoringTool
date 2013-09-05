@@ -667,7 +667,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String>
 			try{
 				Integer.parseInt(tempNum);
 				endsWithInt = true;
-			}catch(NumberFormatException nfe){}
+			}catch(NumberFormatException nfe){
+				nfe.printStackTrace();
+			}
 			
 			boolean endsWithClone = tempName.endsWith(suffix);
 			

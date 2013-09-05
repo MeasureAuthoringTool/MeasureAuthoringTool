@@ -159,7 +159,7 @@ public class ComparisonDialogBox{
 
 		}
 		listAllUnits.setWidth("150px");
-		Label lableUnits = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Units");;
+		Label lableUnits = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Units");
 		dialogContents.add(lableUnits);
 		dialogContents.setCellHorizontalAlignment(lableUnits, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(listAllUnits);

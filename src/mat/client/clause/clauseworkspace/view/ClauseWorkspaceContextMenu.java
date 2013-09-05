@@ -530,6 +530,7 @@ public class ClauseWorkspaceContextMenu {
 						lastInt = Integer.parseInt(clauseNodeName);
 					} catch (Exception e) {
 						// TODO: handle exception
+						e.printStackTrace();
 					}
 					if(lastInt > 0){
 						sortedName.add(lastInt);

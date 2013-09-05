@@ -63,6 +63,7 @@ public class MeasureExport {
 				  try {   
 					  baos.close(); 
 				  } catch (IOException ex) {
+					  ex.printStackTrace();
 				  }
 			  }  
 		  } 
@@ -84,6 +85,7 @@ public class MeasureExport {
 				  try {
 					  is.close();
 				  } catch (IOException ex) {
+					  ex.printStackTrace();
 				  }
 			  }  
 		  }  

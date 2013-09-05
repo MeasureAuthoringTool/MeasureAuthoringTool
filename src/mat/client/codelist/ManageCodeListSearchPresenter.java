@@ -254,7 +254,7 @@ public class ManageCodeListSearchPresenter {
 									@Override
 									public void onFailure(Throwable caught) {
 										Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-										searchModel.getTransferValueSetIDs().clear();;
+										searchModel.getTransferValueSetIDs().clear();
 										searchModel.getLisObjectId().clear();
 										model.getData().get(rowIndex).setSelected(false);
 									}

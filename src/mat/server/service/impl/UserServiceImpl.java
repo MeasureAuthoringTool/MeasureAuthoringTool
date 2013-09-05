@@ -169,7 +169,9 @@ public class UserServiceImpl implements UserService {
 			//user = userDAO.findByEmail(email);
 			user = userDAO.findByLoginId(loginId);
 		}
-		catch(ObjectNotFoundException exc) { }
+		catch(ObjectNotFoundException exc) {
+			exc.printStackTrace();
+		}
 		
 		if(user == null) {
 			invalidUserCounter += 1;

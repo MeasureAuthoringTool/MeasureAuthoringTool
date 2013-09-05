@@ -874,7 +874,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 									@Override
 									public void onFailure(Throwable caught) {
 										Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-										manageMeasureSearchModel.getSelectedTransferIds().clear();;
+										manageMeasureSearchModel.getSelectedTransferIds().clear();
 										manageMeasureSearchModel.getSelectedTransferResults().clear();
 										model.getData().get(rowIndex).setSelected(false);
 									}

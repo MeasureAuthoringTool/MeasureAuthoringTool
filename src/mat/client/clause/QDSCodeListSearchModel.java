@@ -1,5 +1,6 @@
 package mat.client.clause;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -83,7 +85,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
-	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table,boolean isTableEnabled){
+	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table,boolean isTableEnabled,ListHandler<CodeListSearchDTO> sortHandler){
 		
 		if(table.getColumnCount() !=5){	
 			
@@ -112,7 +114,21 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 					return getColumnToolTip(object.getName(), title);
 				}
 			};
-		
+			nameColumn.setSortable(true);
+			sortHandler.setComparator(nameColumn,new Comparator<CodeListSearchDTO>() {
+				public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getName().compareTo(o2.getName()) : 1;
+					}
+					return -1;
+				}
+			});
+			
 			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Value Sets'>"+headers[0]+"</span>"));
 			
 			TextColumn<CodeListSearchDTO > category = new TextColumn<CodeListSearchDTO >() {
@@ -121,6 +137,21 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 					return object.getCategoryDisplay();
 				}
 			};
+			category.setSortable(true);
+			sortHandler.setComparator(category,new Comparator<CodeListSearchDTO>() {
+				public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getCategoryDisplay().compareTo(o2.getCategoryDisplay()) : 1;
+					}
+					return -1;
+				}
+			});
+			
 			table.addColumn(category, SafeHtmlUtils.fromSafeConstant("<span title='Category'>"+headers[1]+"</span>"));
 			TextColumn<CodeListSearchDTO > codeSystem = new TextColumn<CodeListSearchDTO >() {
 				@Override
@@ -128,6 +159,21 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 					return object.getCodeSystem();
 				}
 			};
+			
+			codeSystem.setSortable(true);
+			sortHandler.setComparator(codeSystem,new Comparator<CodeListSearchDTO>() {
+				public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getCodeSystem().compareTo(o2.getCodeSystem()) : 1;
+					}
+					return -1;
+				}
+			});
 			table.addColumn(codeSystem, SafeHtmlUtils.fromSafeConstant("<span title='Code System'>"+headers[2]+"</span>"));
 			
 			TextColumn<CodeListSearchDTO > stewardCol = new TextColumn<CodeListSearchDTO >() {
@@ -140,6 +186,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 					return steward;
 				}
 			};
+
 			table.addColumn(stewardCol, SafeHtmlUtils.fromSafeConstant("<span title='Steward'>"+headers[3]+"</span>"));
 		}
 		

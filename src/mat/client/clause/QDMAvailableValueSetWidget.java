@@ -32,6 +32,7 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
@@ -443,12 +444,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		// Display 50 rows in one page or all records.
 		table.setPageSize(10);
 		table.setSelectionModel(results.addSelectionHandlerOnTable());
-		table = results.addColumnToTable(table,isTableEnabled);
-		
-		table.redraw();
 		sortProvider.refresh();
-		sortProvider.setList(results.getData());
-	
+		sortProvider.getList().addAll(results.getData());
+		ListHandler<CodeListSearchDTO> sortHandler = new ListHandler<CodeListSearchDTO>(sortProvider.getList());
+		table.addColumnSortHandler(sortHandler);
+		table = results.addColumnToTable(table,isTableEnabled,sortHandler);
 		sortProvider.addDataDisplay(table);
 		//Used custom pager class - for disabling next/last button when on last page and for showing correct pagination number.
 		MatSimplePager spager;

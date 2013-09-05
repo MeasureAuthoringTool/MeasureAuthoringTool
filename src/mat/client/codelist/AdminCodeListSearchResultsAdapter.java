@@ -357,10 +357,6 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 			table.setColumnWidth(5, 3.0, Unit.PCT);
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 			
-			// We know that the data is sorted alphabetically by default.
-			/*table.getColumnSortList().push(nameColumn);*/
-			
-			
 		}
 		return table;
 	}

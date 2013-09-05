@@ -2,10 +2,6 @@ package mat.model;
 
 import java.util.Date;
 
-import com.google.gwt.user.client.rpc.IsSerializable;
-
-import mat.model.clause.Measure;
-
 public class MeasureNotes{
 
 	private String id;

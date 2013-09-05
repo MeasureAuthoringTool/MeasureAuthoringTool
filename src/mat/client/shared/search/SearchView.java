@@ -12,7 +12,6 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
-import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.dom.client.Style.Cursor;
@@ -64,10 +63,8 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 
 	public Grid508 dataTable = new Grid508();
-	//private Grid508 qdsDataTable = new Grid508();
-	//public CellTable<CodeListSearchDTO > qdsDataTable = new CellTable<CodeListSearchDTO>();
+	
 	public VerticalPanel vPanelForQDMTable = new VerticalPanel();
-	//private FlexTable flexTable = new FlexTable();
 	
 	public SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
 	
@@ -301,7 +298,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 			MATAnchor a = new MATAnchor(label);
 			a.addClickHandler(new MATClickHandler() {
 				@Override
-				public void onEvent(GwtEvent event) {
+				public void onEvent(@SuppressWarnings("rawtypes") GwtEvent event) {
 					MatContext.get().clearDVIMessages();
 					currentPageSize = size;
 					//
@@ -665,71 +662,6 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		}
 	}
 
-	
-	private void buildQDSSearchResults(int numRows,int numColumns,final SearchResults<T> results){
-		for(int i = 0; i < numRows; i++) {
-			for(int j = 0; j < numColumns; j++) {
-				Widget widget = null;
-				
-				if(j == 0){
-					CodeListSearchDTO clsdto = (CodeListSearchDTO) results.get(i);
-					StringBuilder title = new StringBuilder();
-					String steward = clsdto.getSteward();
-					if(steward.equalsIgnoreCase("Other")){
-						steward = clsdto.getStewardOthers();
-					}
-					
-					title.append("Name : ").append(clsdto.getName()).append("\n").append("OID : ").append(clsdto.getOid()).append("\n").append("Steward : ").append(steward);
-					widget = results.getValue(i, j);
-					widget.getElement().setAttribute("title", title.toString());
-					widget.setStylePrimaryName("pad-left5Right55px");
-				}else{
-					widget = results.getValue(i, j);
-					widget.setStylePrimaryName("pad-left5Right21px");
-				}
-				
-				/*qdsDataTable.setWidget(i+1, j,widget);
-				qdsDataTable.getColumnFormatter().setWidth(j, results.getColumnWidth(j));*/
-				
-			}
-			if(i % 2 == 0) {
-				/*qdsDataTable.getRowFormatter().removeStyleName(i + 1, "odd");
-				qdsDataTable.getRowFormatter().addStyleName(i+1,"noWrap");*/
-				
-			}else{
-				/*qdsDataTable.getRowFormatter().addStyleName(i + 1, "odd");
-				qdsDataTable.getRowFormatter().addStyleName(i+1,"noWrap");*/
-			}
-			//
-			
-		}
-	}
-	
-	
-	private Widget buildPageSelectionAnchor(String label, final int page) {
-		Anchor a = new Anchor(label);
-		a.addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				MatContext.get().clearDVIMessages();
-				selectPage(page);
-			}
-		});
-		return a;
-	}
-	private void selectPage(int page) {
-		PageSelectionEvent event = new PageSelectionEvent(page);
-		this.fireEvent(event);
-	}
-	private Widget buildPagingSpacer() {
-		HTML spacer = new HTML("&nbsp");
-		spacer.setStylePrimaryName("spacer");
-		return spacer;
-		
-	}
-	
-	
 	
 	protected void setViewingRange2(long start, long end, long total) {
 		if(total == 0) {

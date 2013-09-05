@@ -72,6 +72,7 @@ public abstract class AddBaseView {
 		mainPanel.addStyleName("leftAligned");
 		
 		HorizontalPanel mainContentPanel  = new HorizontalPanel();
+		mainContentPanel.getElement().setId("mainContentPanel_HorizontalPanel");
 		mainContentPanel.setWidth("100%");
 		mainContentPanel.setHeight("300px");
 		Widget leftForm = buildLeftSideForm();

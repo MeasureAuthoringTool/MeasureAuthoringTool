@@ -46,6 +46,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		mainPanel.add(view.asWidget());
 		mainPanel.setStyleName("contentPanel");
 		HorizontalPanel hp = new HorizontalPanel();
+		hp.getElement().setId("hp_HorizontalPanel");
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(successMessages);

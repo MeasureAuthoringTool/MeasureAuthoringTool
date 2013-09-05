@@ -73,6 +73,7 @@ public class ManageUsersDetailView
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 
 	public ManageUsersDetailView() {
+		lockedLabel.getElement().setId("lockedLabel_HorizontalPanel");
 		
 		
 		mainPanel.setStylePrimaryName("contentPanel");

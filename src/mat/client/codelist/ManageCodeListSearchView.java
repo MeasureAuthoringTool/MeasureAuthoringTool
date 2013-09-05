@@ -119,6 +119,7 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 
 	private Widget buildSearchWidget(){
 		HorizontalPanel hp = new HorizontalPanel();
+		hp.getElement().setId("hp_HorizontalPanel");
 		FlowPanel fp1 = new FlowPanel();
 		fp1.add(searchInput);
 		fp1.add(searchButton);

@@ -45,6 +45,7 @@ public class QDMAppliedListWidget {
 		
 		vp.setStylePrimaryName("qdmCellList");
 		HorizontalPanel mainPanelNormal = new HorizontalPanel();
+		mainPanelNormal.getElement().setId("mainPanelNormal_HorizontalPanel");
 		mainPanelNormal.add(pagerPanel);
 		vp.add(new SpacerWidget());
 		vp.add(new SpacerWidget());

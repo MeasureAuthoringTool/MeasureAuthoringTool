@@ -58,6 +58,7 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		
 		bluePanel.add(errorMessages);
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
 		Label userIdLabel = (Label) LabelBuilder.buildLabel(loginId, "User ID");
 		horizontalPanel.add(userIdLabel);
 		HTML required = new HTML(RequiredIndicator.get());

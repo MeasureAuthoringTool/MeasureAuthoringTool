@@ -62,6 +62,7 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		
 		
 		HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		bluePanel.add(buildInstructions("Change Password"));
 		hPanel.add(changePasswordWidget);
 		

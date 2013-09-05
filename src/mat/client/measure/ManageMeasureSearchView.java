@@ -91,6 +91,7 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	
 	private Widget buildSearchWidget(){
 		HorizontalPanel hp = new HorizontalPanel();
+		hp.getElement().setId("hp_HorizontalPanel");
 		hp.getElement().setId("measureLibrary_searchWidgetHPanel");
 		FlowPanel fp1 = new FlowPanel();
 		fp1.getElement().setId("measureLibrary_searchWidgetFlowPanel");

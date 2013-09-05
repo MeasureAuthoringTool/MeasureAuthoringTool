@@ -52,6 +52,7 @@ public abstract class AddEditMetadataBaseView {
 		mainPanel.setStylePrimaryName("searchResultsContainer");
 		mainPanel.addStyleName("leftAligned");
 		HorizontalPanel mainContentPanel  = new HorizontalPanel();
+		mainContentPanel.getElement().setId("mainContentPanel_HorizontalPanel");
 		mainContentPanel.add(buildLeftSideForm());
        	mainContentPanel.add(rightSideFormHolder);
 		mainPanel.add(mainContentPanel);
@@ -79,6 +80,7 @@ public abstract class AddEditMetadataBaseView {
 	
 	private Widget buildRemoveButton(){
 		 HorizontalPanel removePanel = new HorizontalPanel();
+		removePanel.getElement().setId("removePanel_HorizontalPanel");
 	     removePanel.addStyleName("RemoveButton");
 	     removePanel.add(removeButton);
 	     return removePanel;

@@ -54,6 +54,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 
 		vPanel.addStyleName("leftAligned");
 		HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		HTML required = new HTML(RequiredIndicator.get() + " indicates required field");
 		vPanel.add(required);
 		vPanel.add(new SpacerWidget());

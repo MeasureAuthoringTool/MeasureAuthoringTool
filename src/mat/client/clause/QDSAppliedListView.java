@@ -73,9 +73,11 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		successMessagePanel = new SuccessMessageDisplay();
 		successMessagePanel.clear();
 		HorizontalPanel mainPanel = new HorizontalPanel();
+		mainPanel.getElement().setId("mainPanel_HorizontalPanel");
 		VerticalPanel vp = new VerticalPanel();
 		vp.setStylePrimaryName("qdmCellList");
 		HorizontalPanel mainPanelNormal = new HorizontalPanel();
+		mainPanelNormal.getElement().setId("mainPanelNormal_HorizontalPanel");
 		mainPanelNormal.add(pagerPanel);
 		vp.add(new SpacerWidget());
 		vp.add(new SpacerWidget());
@@ -90,6 +92,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		removeButton.setEnabled(checkForEnable());
 		modify.setEnabled(checkForEnable()?true:false);
 		HorizontalPanel buttonLayout = new HorizontalPanel();
+		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		removeButton.setTitle("Remove");
 		modify.setTitle("Modify");

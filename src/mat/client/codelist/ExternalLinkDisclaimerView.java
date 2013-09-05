@@ -33,6 +33,7 @@ public class ExternalLinkDisclaimerView implements ManageCodeListDetailPresenter
 		mainContentVP.add(new SpacerWidget());
 		mainContentVP.add(new SpacerWidget());
 	    HorizontalPanel hp = new HorizontalPanel();
+		hp.getElement().setId("hp_HorizontalPanel");
 	    hp.add(new HTML("&nbsp;"));
 	    hp.add(new FocusableImageButton(ImageResources.INSTANCE.icon_newWindow(),"Excel Viewer"));
 	    hp.add(new HTML("&nbsp;"));

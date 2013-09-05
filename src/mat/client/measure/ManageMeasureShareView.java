@@ -34,6 +34,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 		content.addStyleName("leftAligned");
 		buttonBar.getSaveButton().setText("Save");
 		HorizontalPanel horizontalPanel = new HorizontalPanel();
+		horizontalPanel.getElement().setId("horizontalPanel_HorizontalPanel");
 		horizontalPanel.add(measureNameLabel);
 		horizontalPanel.add(privateCheck);
 //		content.add(measureNameLabel);

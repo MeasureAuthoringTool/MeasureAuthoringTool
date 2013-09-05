@@ -63,6 +63,7 @@ public class FirstLoginView implements FirstLoginPresenter.Display {
 		
 		
 		HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		bluePanel.add(buildInstructions("Change Password"));
 		hPanel.add(changePasswordWidget);
 		

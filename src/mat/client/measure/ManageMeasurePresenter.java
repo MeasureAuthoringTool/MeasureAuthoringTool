@@ -929,13 +929,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		adminSearchDisplay.getErrorMessagesForTransferOS().clear();
 		transferDisplay.getErrorMessageDisplay().clear();
 		if(transferMeasureResults.size() !=0){
-			showSearchingBusy(true);
+			showAdminSearchingBusy(true);
 			MatContext.get().getMeasureService().searchUsers(startIndex, pageSize, new AsyncCallback<TransferMeasureOwnerShipModel>(){
 
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-					showSearchingBusy(false);
+					showAdminSearchingBusy(false);
 				}
 
 				@Override
@@ -944,7 +944,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					transferDisplay.buildDataTable(result);
 					panel.setHeading("Measure Library Ownership >  Measure Ownership Transfer","MainContent");
 			 	    panel.setContent(transferDisplay.asWidget());
-			 	   showSearchingBusy(false);
+			 	   showAdminSearchingBusy(false);
 			 	   model = result;
 				}
 			});
@@ -953,7 +953,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 		
 	}
-	
 	
 	private void  saveFinalizedVersion(final String measureId,final boolean isMajor, final String version){
 		Mat.showLoadingMessage();
@@ -1583,6 +1582,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 			Mat.hideLoadingMessage();
 		((Button)searchDisplay.getSearchButton()).setEnabled(!busy);
 		((TextBox)(searchDisplay.getSearchString())).setEnabled(!busy);
+	}
+	
+	private void showAdminSearchingBusy(boolean busy){
+		if(busy)
+			Mat.showLoadingMessage();
+		else
+			Mat.hideLoadingMessage();
+		((Button)adminSearchDisplay.getSearchButton()).setEnabled(!busy);
+		((TextBox)(adminSearchDisplay.getSearchString())).setEnabled(!busy);
 	}
 	
 	public Widget getWidget() {

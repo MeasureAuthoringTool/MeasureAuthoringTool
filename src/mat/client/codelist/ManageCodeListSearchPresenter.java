@@ -661,19 +661,19 @@ public class ManageCodeListSearchPresenter {
 		transferDisplay.getErrorMessageDisplay().clear();
 		if(transferValueSetIDs.size() !=0){
 			
-			showSearchingBusy(true);
+			showAdminSearchingBusy(true);
 			MatContext.get().getCodeListService().searchUsers(1,pageSize,new AsyncCallback<TransferOwnerShipModel>(){
 				@Override
 				public void onFailure(Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-					showSearchingBusy(false);
+					showAdminSearchingBusy(false);
 				}
 				@Override
 				public void onSuccess(TransferOwnerShipModel result) {
 					transferDisplay.buildHTMLForValueSets(transferValueSetIDs);
 					transferDisplay.buildDataTable(result,transferValueSetIDs);
 					resetPanel(transferDisplay.asWidget(), "Value Set Ownership >  Value Set Ownership Transfer");
-					showSearchingBusy(false);
+					showAdminSearchingBusy(false);
 					model = result;
 				}
 			});

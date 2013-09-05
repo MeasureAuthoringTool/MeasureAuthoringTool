@@ -93,14 +93,14 @@ public class MeasureNotesPresenter implements MatPresenter{
 							@Override
 							public void onSuccess(Void result) {
 								clearMessages();
-								notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SUCCESS_MESSAGE());
+								notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_DELETE_SUCCESS_MESSAGE());
 								search();
 							}
 							@Override
 							public void onFailure(Throwable caught) {
 								showSearchingBusy(false);
 								clearMessages();
-								notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_DELETE_FAILURE_MSG() );
+								notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							}
 						});
 					}
@@ -111,13 +111,13 @@ public class MeasureNotesPresenter implements MatPresenter{
 							@Override
 							public void onSuccess(Void result) {
 								clearMessages();
-								notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SUCCESS_MESSAGE());
+								notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_SUCCESS_MESSAGE());
 								search();
 							}							
 							@Override
 							public void onFailure(Throwable caught) {
 								clearMessages();
-								notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_FAILURE_MSG() );
+								notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 							}
 						});
 					}
@@ -146,7 +146,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 				public void onSuccess(Void result) {
 					showSearchingBusy(false);
 					notesDisplay.getErrorMessageDisplay().clear();
-					notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SUCCESS_MESSAGE());
+					notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_SUCCESS_MESSAGE());
 					notesDisplay.getMeasureNoteComposer().setText("");
 					notesDisplay.getMeasureNoteTitle().setText("");
 					search();

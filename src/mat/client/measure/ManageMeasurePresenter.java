@@ -1260,7 +1260,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void export(String id, String name) {
 		//US 170
-		MatContext.get().getAuditService().recordMeasureEvent(id, ConstantMessages.EXPORT, name, true, new AsyncCallback<Boolean>() {
+		MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Export", name, true, new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
 			}
@@ -1283,7 +1283,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void searchHistory(String measureId, int startIndex, int pageSize) {
 		List<String> filterList = new ArrayList<String>();
-	    filterList.add("Export");
+		
+		/** Commented on : 09/05/2013
+		 * The below line is commented because Export log entry should also be displayed in the History. 
+		 * "filterList" is added in the restrictions to exclude while searching history. 
+		 * If "Export" is added in the list then log entries with ACTIVITY_TYPE = "Export" will not be displayed in History.
+		 * So, to display the "Export" log entry, below line is commented.
+		 * 
+		 * NOTE: "Export" is replaced with "Measure Export". From now, Export log entries will be recorded as "Measure Export" under ACTIVITY_TYPE.
+		 * Refer MAT-1629 user story for details.
+		 */
+	    //filterList.add("Export");
+		
 		MatContext.get().getAuditService().executeMeasureLogSearch(measureId, startIndex, pageSize,filterList, new AsyncCallback<SearchHistoryDTO>() {		
 			@Override
 			public void onSuccess(SearchHistoryDTO data) {

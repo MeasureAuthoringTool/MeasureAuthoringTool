@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/httpclient-4.2.5.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/httpclient-cache-4.2.5.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/httpcore-4.2.4.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/httpmime-4.2.5.jar"/>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" output="test-classes" path="test"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -87,5 +91,7 @@
 	<classpathentry kind="lib" path="war/WEB-INF/lib/requestfactory-client.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/requestfactory-server.jar"/>
 	<classpathentry kind="lib" path="war/WEB-INF/lib/validation-api-1.0.0.GA.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/fluent-hc-4.2.5.jar"/>
+	<classpathentry kind="lib" path="war/WEB-INF/lib/vsac_framework.jar"/>
 	<classpathentry kind="output" path="war/WEB-INF/classes"/>
 </classpath>

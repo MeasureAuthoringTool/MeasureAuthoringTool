@@ -274,7 +274,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			title= ClientConstants.TITLE_UMLS;
 			manageUmlsPresenter = (ManageUmlsPresenter) buildUMLSWidget();
 			tabIndex = mainTabLayout.addPresenter(manageUmlsPresenter, mainTabLayout.fmt.normalTitle(title));
-			mainTabLayout.setSelectedIndex(4);
+		
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
 		{

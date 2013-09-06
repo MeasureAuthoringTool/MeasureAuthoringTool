@@ -33,10 +33,10 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+@SuppressWarnings("deprecation")
 public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	//private MatClausePresenter clauseWorkspace = new MatClausePresenter();
 	private QDMPresenter qdmPresenter;
-	private Widget measurePackageWidget;
 	private SimplePanel emptyWidget = new SimplePanel();
 	private MetaDataPresenter metaDataPresenter ;
 	private MeasurePackagePresenter measurePackagePresenter ;
@@ -193,7 +193,6 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		}
 		MatContext.get().getMeasureLockService().releaseMeasureLock();
 		Command waitForUnlock = new Command(){
-			@SuppressWarnings("deprecation")
 			public void execute() {
 			  if(!MatContext.get().getMeasureLockService().isResettingLock()){
 	 			  measureComposerTabLayout.close();
@@ -236,7 +235,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	private MatPresenter buildMeasurePackageWidget() {
 		MeasurePackageView mpv = new MeasurePackageView();
 		MeasurePackagePresenter mpp = new MeasurePackagePresenter(mpv);
-		measurePackageWidget = mpp.getWidget();
+		mpp.getWidget();
 		return mpp;
 	}
 	private MatPresenter buildMeasureMetaDataPresenter(){

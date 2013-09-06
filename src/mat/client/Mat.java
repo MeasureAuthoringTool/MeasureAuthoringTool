@@ -38,6 +38,8 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SkipListBuilder;
 import mat.client.shared.ui.MATTabPanel;
+import mat.client.umls.ManageUmlsPresenter;
+import mat.client.umls.UmlsLoginView;
 import mat.client.util.ClientConstants;
 import mat.model.SecurityRole;
 import mat.shared.ConstantMessages;
@@ -80,12 +82,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	private ManageMeasurePresenter measureLibrary;
 	private	MatPresenter adminPresenter;
 	private CodeListController codeListController;
+	private ManageUmlsPresenter manageUmlsPresenter;
 	private ClosingEvent closingEvent;
 	
 	
 	String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
 	
-	@SuppressWarnings("rawtypes")
 	private  final AsyncCallback<SessionManagementService.Result> userRoleCallback = new AsyncCallback<SessionManagementService.Result>(){
 
 		@Override
@@ -265,6 +267,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			
 			title = ClientConstants.TITLE_MY_ACCOUNT;	
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
+			
+			title= "UMLS Login";
+			tabIndex = mainTabLayout.addPresenter(buildUMLSWidget(), mainTabLayout.fmt.normalTitle(title));
+			
 			
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
@@ -485,6 +491,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			new ManageUsersPresenter(musd, mudd);
 		
 		return mup;
+	}
+	
+	private MatPresenter buildUMLSWidget(){
+		UmlsLoginView umlsLoginView = new UmlsLoginView();
+		ManageUmlsPresenter manageUmlsPresenter = new ManageUmlsPresenter(umlsLoginView);
+		return manageUmlsPresenter;
 	}
 	
 	private ManageMeasurePresenter buildMeasureLibraryWidget(Boolean isAdmin) {

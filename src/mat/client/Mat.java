@@ -83,6 +83,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	private	MatPresenter adminPresenter;
 	private CodeListController codeListController;
 	private ManageUmlsPresenter manageUmlsPresenter;
+	
 	private ClosingEvent closingEvent;
 	
 	
@@ -271,9 +272,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 			
 			title= "UMLS Login";
-			tabIndex = mainTabLayout.addPresenter(buildUMLSWidget(), mainTabLayout.fmt.normalTitle(title));
-			
-			
+			manageUmlsPresenter = (ManageUmlsPresenter) buildUMLSWidget();
+			tabIndex = mainTabLayout.addPresenter(manageUmlsPresenter, mainTabLayout.fmt.normalTitle(title));
+			mainTabLayout.setSelectedIndex(4);
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR))
 		{
@@ -320,7 +321,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		// TODO consider using a forced tab selection
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			//mainTabLayout.selectTab(measureLibrary);
-			mainTabLayout.selectTab(codeListController);
+			mainTabLayout.selectTab(manageUmlsPresenter);
 		}
 		else if(currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			mainTabLayout.selectTab(adminPresenter);

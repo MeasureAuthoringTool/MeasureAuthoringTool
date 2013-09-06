@@ -39,7 +39,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	
 	public ManageUmlsPresenter(UMLSDisplay displayArg) {
 		this.display = displayArg;
-		
+		resetWidget();
 		display.getSubmit().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
@@ -87,7 +87,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 	public void beforeDisplay() {
 		resetWidget();
 		display.asWidget();
-		
 	}
 
 	@Override

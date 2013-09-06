@@ -66,5 +66,7 @@
     <bean id="measureNotesService" class="mat.server.service.impl.MeasureNotesServiceImpl">
     	<property name="measureNotesDAO" ref="measureNotesDAO"/>
     </bean>  
-        
+    
+     <bean id="vsacapiService" class="mat.server.VSACAPIServiceImpl">
+    </bean>    
 </beans>

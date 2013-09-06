@@ -125,6 +125,10 @@
   	<servlet-name>auditServiceImpl</servlet-name>
   	<servlet-class>mat.server.AuditServiceImpl</servlet-class>
   </servlet>  
+   <servlet>
+    <servlet-name>vsacAPIServiceImpl</servlet-name>
+    <servlet-class>mat.server.VSACAPIServiceImpl</servlet-class>
+  </servlet>
   
   <servlet-mapping>
     <servlet-name>FileUploadServlet</servlet-name>
@@ -190,7 +194,11 @@
   <servlet-mapping>
   	<servlet-name>auditServiceImpl</servlet-name>
   	<url-pattern>/mat/auditService</url-pattern>
-  </servlet-mapping>  
+  </servlet-mapping> 
+  <servlet-mapping>
+    <servlet-name>vsacAPIServiceImpl</servlet-name>
+    <url-pattern>/mat/vsacapi</url-pattern>
+  </servlet-mapping> 
     <session-config>
         <session-timeout>70</session-timeout>
     </session-config>

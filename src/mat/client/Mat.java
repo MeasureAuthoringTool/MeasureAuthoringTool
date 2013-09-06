@@ -115,6 +115,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			}
         }
 	};
+	private int tabIndex;
 	
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.MAT_MODULE);
@@ -220,6 +221,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		});
 	}
 	
+	@SuppressWarnings("unchecked")
 	private void loadMatWidgets(){
 		//US212 begin updating user sign in time at regular intervals
 		MatContext.get().startUserLockUpdate();
@@ -247,7 +249,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			});
 		
 		String title = ClientConstants.TEXT_THE_TITLE;			
-		int tabIndex =0;
+		tabIndex = 0;
 		
 		currentUserRole = MatContext.get().getLoggedInUserRole();
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
@@ -300,6 +302,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		Anchor signout = new Anchor(ClientConstants.ANCHOR_SIGN_OUT);
 		signout.addClickHandler(new MATClickHandler() {
 			
+			@SuppressWarnings("rawtypes")
 			@Override
 			public void onEvent(GwtEvent event) {
 				MatContext.get().getEventBus().fireEvent(new LogoffEvent());

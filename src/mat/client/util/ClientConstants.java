@@ -38,6 +38,7 @@ public class ClientConstants {
 	public final static String TITLE_MEASURE_COMPOSER ="Measure Composer";
 	public final static String TITLE_ADMIN ="Admin";
 	public final static String TITLE_MY_ACCOUNT="My Account";
+	public final static String TITLE_UMLS="UMLS Login";
 	public final static String TITLE_CMS_GOV_LOGO="CMS.gov";
 
 	public final static String TITLE_VALUE_SET_CHANGE_OWNERSHIP ="Value Set Ownership";

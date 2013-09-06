@@ -1260,7 +1260,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void export(String id, String name) {
 		//US 170
-		MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Export", name, true, new AsyncCallback<Boolean>() {
+		MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Export", null, true, new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
 			}

@@ -271,7 +271,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			title = ClientConstants.TITLE_MY_ACCOUNT;	
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 			
-			title= "UMLS Login";
+			title= ClientConstants.TITLE_UMLS;
 			manageUmlsPresenter = (ManageUmlsPresenter) buildUMLSWidget();
 			tabIndex = mainTabLayout.addPresenter(manageUmlsPresenter, mainTabLayout.fmt.normalTitle(title));
 			mainTabLayout.setSelectedIndex(4);

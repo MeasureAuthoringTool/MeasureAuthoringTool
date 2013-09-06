@@ -38,6 +38,8 @@ import mat.client.measurepackage.service.PackageService;
 import mat.client.measurepackage.service.PackageServiceAsync;
 import mat.client.myAccount.service.MyAccountService;
 import mat.client.myAccount.service.MyAccountServiceAsync;
+import mat.client.umls.service.VSACAPIService;
+import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.ClientConstants;
 import mat.model.SecurityQuestions;
 import mat.shared.ConstantMessages;
@@ -81,6 +83,8 @@ public class MatContext implements IsSerializable {
 	private MyAccountServiceAsync myAccountService;
 	
 	private CodeListServiceAsync codeListService;
+	
+	private VSACAPIServiceAsync vsacapiServiceAsync;
 	
 	private HandlerManager eventBus;
 	
@@ -283,6 +287,19 @@ public class MatContext implements IsSerializable {
 		return loginService;
 	}
 	
+	public VSACAPIServiceAsync getVsacapiServiceAsync() {
+		if(vsacapiServiceAsync == null){
+			vsacapiServiceAsync = (VSACAPIServiceAsync) GWT.create(VSACAPIService.class);
+		}
+		return vsacapiServiceAsync;
+	}
+
+
+	public void setVsacapiServiceAsync(VSACAPIServiceAsync vsacapiServiceAsync) {
+		this.vsacapiServiceAsync = vsacapiServiceAsync;
+	}
+
+
 	private SessionManagementServiceAsync getSessionService(){
 		if(sessionService == null){
 			sessionService = (SessionManagementServiceAsync) GWT.create(SessionManagementService.class);

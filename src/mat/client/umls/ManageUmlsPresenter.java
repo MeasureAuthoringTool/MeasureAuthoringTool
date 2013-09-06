@@ -2,6 +2,8 @@ package mat.client.umls;
 
 import mat.client.MatPresenter;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.MatContext;
+import mat.client.umls.service.VSACAPIServiceAsync;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -10,6 +12,8 @@ import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
@@ -25,15 +29,13 @@ public class ManageUmlsPresenter implements MatPresenter{
 		public HasHTML getInfoMessage();
 		public void setWelcomeVisible(boolean value);
 		public void setInfoMessageVisible(boolean value);
-		public HasClickHandlers getForgotPassword();
-		public HasClickHandlers getForgotLoginId();
 		public Widget asWidget();
-
 		public HasKeyDownHandlers getUseridField();
 		public HasKeyDownHandlers getPasswordField();
 		public void setInitialFocus();
 	}
 	
+	VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
 	private  UMLSDisplay display;
 	
 	
@@ -43,26 +45,12 @@ public class ManageUmlsPresenter implements MatPresenter{
 		display.getSubmit().addClickHandler(new ClickHandler() {
 
 			public void onClick(ClickEvent event) {
-				
+				submit();
 			}
 
 
-		});
-		/*display.getForgotPassword().addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				
-				MatContext.get().getEventBus().fireEvent(new ForgottenPasswordEvent());
-			}
 		});
 		
-		display.getForgotLoginId().addClickHandler(new ClickHandler() {
-
-			public void onClick(ClickEvent event) {
-				
-				MatContext.get().getEventBus().fireEvent(new ForgotLoginIDEvent());
-			}
-		});*/
 		display.getUseridField().addKeyDownHandler(submitOnEnterHandler);
 		display.getPasswordField().addKeyDownHandler(submitOnEnterHandler);
 	}
@@ -75,6 +63,31 @@ public class ManageUmlsPresenter implements MatPresenter{
 			}
 		}
 	};
+	
+	private void submit() {
+		display.getErrorMessageDisplay().clear();
+		display.setInfoMessageVisible(false);
+		if(display.getUserid().getValue().isEmpty()) {
+			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
+		}else if(display.getPassword().getValue().isEmpty()) {
+			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
+		}else{
+			vsacapiService.validateVsacUser(display.getUserid().getValue(), display.getPassword().getValue(), new AsyncCallback<String>() {
+				
+				@Override
+				public void onSuccess(String result) {
+					Window.alert("I am Hit " +result);
+					
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					Window.alert("Darn You.. I failed ");
+					caught.printStackTrace();
+				}
+			});
+		}
+	}
 	
 	private void resetWidget() {
 		display.getErrorMessageDisplay().clear();

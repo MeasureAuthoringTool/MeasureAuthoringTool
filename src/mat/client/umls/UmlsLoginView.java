@@ -13,7 +13,6 @@ import mat.client.shared.SpacerWidget;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
@@ -38,8 +37,6 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	private TextBox userid;
 	private TextBox password;
 	private Button submitButton;
-	private Anchor forgotLoginId;
-	private Anchor forgotPassword;
 	private VerticalPanel mainPanel = new VerticalPanel();
 	private SimplePanel simplePanel = new SimplePanel();
 	Label success = new Label();
@@ -142,12 +139,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		return mainPanel;
 	}
 
-	@Override
-	public HasClickHandlers getForgotPassword() {
-		return forgotPassword;
-	}
-
-	@Override
+		@Override
 	public HasHTML getInfoMessage() {
 		return infoMessage;
 	}
@@ -184,12 +176,6 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	@Override
 	public void setInitialFocus() {
 		userid.setFocus(false);
-	}
-
-	@Override
-	public HasClickHandlers getForgotLoginId() {
-		// TODO Auto-generated method stub
-		return forgotLoginId;
 	}
 	
 }

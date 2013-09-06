@@ -76,8 +76,8 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		loginPanel.add(errorMessages);
 		
 		userid = new EmailAddressTextBox();
-		userid.getElement().setAttribute("id", "UserID");
-		loginPanel.add(LabelBuilder.buildLabel(userid, "User ID"));
+		userid.getElement().setAttribute("id", "User Name");
+		loginPanel.add(LabelBuilder.buildLabel(userid, "User Name"));
 		loginPanel.add(userid);
 		loginPanel.add(new SpacerWidget());
 		

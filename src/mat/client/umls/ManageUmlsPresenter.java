@@ -3,6 +3,7 @@ package mat.client.umls;
 import mat.client.MatPresenter;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
+import mat.client.shared.SaveCancelButtonBar;
 import mat.client.umls.service.VSACAPIServiceAsync;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -14,8 +15,10 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
@@ -33,6 +36,9 @@ public class ManageUmlsPresenter implements MatPresenter{
 		public HasKeyDownHandlers getUseridField();
 		public HasKeyDownHandlers getPasswordField();
 		public void setInitialFocus();
+		public Anchor getUmlsExternalLink();
+		public VerticalPanel getExternalLinkDisclaimer();
+		public SaveCancelButtonBar getButtonBar() ;
 	}
 	
 	VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
@@ -53,11 +59,40 @@ public class ManageUmlsPresenter implements MatPresenter{
 		
 		display.getUseridField().addKeyDownHandler(submitOnEnterHandler);
 		display.getPasswordField().addKeyDownHandler(submitOnEnterHandler);
+		display.getUmlsExternalLink().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				display.getExternalLinkDisclaimer().setVisible(true);
+				
+			}
+		});
+		
+		display.getButtonBar().getSaveButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+			
+				
+			}
+		});
+		
+		display.getButtonBar().getCancelButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+			
+				display.getExternalLinkDisclaimer().setVisible(false);
+			}
+		});
+		
 	}
 	
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
+			display.getErrorMessageDisplay().clear();
+			display.setInfoMessageVisible(false);
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
 				submit();
 			}
@@ -67,6 +102,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	private void submit() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
+		display.getExternalLinkDisclaimer().setVisible(false);
 		if(display.getUserid().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 		}else if(display.getPassword().getValue().isEmpty()) {
@@ -102,6 +138,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	private void resetWidget() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
+		display.getExternalLinkDisclaimer().setVisible(false);
 		display.getPassword().setValue("");
 		display.getUserid().setValue("");
 	}

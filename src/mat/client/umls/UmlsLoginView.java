@@ -9,15 +9,18 @@ import mat.client.shared.FocusableImageButton;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -40,6 +43,9 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	private VerticalPanel mainPanel = new VerticalPanel();
 	private SimplePanel simplePanel = new SimplePanel();
 	Label success = new Label();
+	Anchor umlsExternalLink;
+	VerticalPanel externalLinkDisclaimer = new VerticalPanel();
+	SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	
 	public UmlsLoginView() {
 		mainPanel.setStyleName("contentPanel");
@@ -88,26 +94,32 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		
 		loginPanel.setStylePrimaryName("loginContentPanel");
 		
-		/*HorizontalPanel hPanel = new HorizontalPanel();
-		HTML desc = new HTML("Forgot your&nbsp;");
-		HTML or = new HTML("&nbsp;or&nbsp;");
-		forgotLoginId = new Anchor("User ID");
-		forgotLoginId.setTitle("Forgot LoginId");
-		forgotLoginId.getElement().setAttribute("alt", "User ID");
-		forgotPassword = new Anchor("Password?");
-		forgotPassword.setTitle("Forgot Password");
-		forgotPassword.getElement().setAttribute("alt", "Password");
-		hPanel.add(desc);
-		hPanel.add(forgotLoginId);
-		hPanel.add(or);
-		hPanel.add(forgotPassword);
-		loginPanel.add(hPanel);*/
+		HorizontalPanel hPanel = new HorizontalPanel();
+		umlsExternalLink = new Anchor("Need a UMLS account or forgot your user ?");
+		umlsExternalLink.setTitle("UMLS");
+		umlsExternalLink.getElement().setAttribute("alt", "UMLS");
+		hPanel.add(umlsExternalLink);
+		loginPanel.add(new SpacerWidget());
+		loginPanel.add(hPanel);
 		
 		password.setWidth("200px");
 		simplePanel.add(loginPanel);
 	
 		mainPanel.add(simplePanel);
 		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());
+		
+		HTML externalDisclamerText = new HTML("<b>You will be subject to the destination site's Privacy Policy when you follow the link.</b>");
+		buttonBar.getSaveButton().setText("I Agree");
+		buttonBar.getSaveButton().setTitle("I Agree");
+		buttonBar.getCancelButton().setText("I Disagree");
+		buttonBar.getCancelButton().setTitle("I Disagree");
+		externalLinkDisclaimer.add(externalDisclamerText);
+		externalLinkDisclaimer.add(new SpacerWidget());
+		externalLinkDisclaimer.add(buttonBar);
+		externalLinkDisclaimer.setVisible(false);
+		externalLinkDisclaimer.addStyleName("loginContentPanel");
+		mainPanel.add(externalLinkDisclaimer);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 	}
@@ -176,6 +188,25 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	@Override
 	public void setInitialFocus() {
 		userid.setFocus(false);
+	}
+
+	@Override
+	public Anchor getUmlsExternalLink() {
+		return umlsExternalLink;
+	}
+
+	public void setUmlsExternalLink(Anchor umlsExternalLink) {
+		this.umlsExternalLink = umlsExternalLink;
+	}
+
+	@Override
+	public VerticalPanel getExternalLinkDisclaimer() {
+		return externalLinkDisclaimer;
+	}
+
+	@Override
+	public SaveCancelButtonBar getButtonBar() {
+		return buttonBar;
 	}
 	
 }

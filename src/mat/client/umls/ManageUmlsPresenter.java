@@ -77,6 +77,9 @@ public class ManageUmlsPresenter implements MatPresenter{
 				@Override
 				public void onSuccess(String result) {
 					Window.alert("I am Hit " +result);
+					display.getUserid().setValue("");
+					display.getPassword().setValue("");
+					display.getInfoMessage().setText("Successfully logged in into UMLS");
 					
 				}
 				

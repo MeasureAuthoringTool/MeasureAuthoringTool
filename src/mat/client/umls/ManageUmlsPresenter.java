@@ -76,16 +76,21 @@ public class ManageUmlsPresenter implements MatPresenter{
 				
 				@Override
 				public void onSuccess(String result) {
-					Window.alert("I am Hit " +result);
+				
 					display.getUserid().setValue("");
 					display.getPassword().setValue("");
-					display.getInfoMessage().setText("Successfully logged in into UMLS");
+					if(result!=null){
+						display.getInfoMessage().setText("Successfully logged in into UMLS");
+						Window.alert("Ticket Granted for session :  " +result);
+					}
+					else
+						display.getErrorMessageDisplay().setMessage("Unable to verify your credentials on UMLS. Please contact UMLS helpdesk or try again.");
 					
 				}
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					Window.alert("Darn You.. I failed ");
+					display.getErrorMessageDisplay().setMessage("Unable to verify your credentials on UMLS. Please contact UMLS helpdesk or try again.");
 					caught.printStackTrace();
 				}
 			});

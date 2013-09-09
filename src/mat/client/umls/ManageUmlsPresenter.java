@@ -80,7 +80,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 					display.getUserid().setValue("");
 					display.getPassword().setValue("");
 					if(result!=null){
-						display.getInfoMessage().setText("Successfully logged in into UMLS");
+						display.getInfoMessage().setText("Successfully logged into UMLS");
 						Window.alert("Ticket Granted for session :  " +result);
 					}
 					else

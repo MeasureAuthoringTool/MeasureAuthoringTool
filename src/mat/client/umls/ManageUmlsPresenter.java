@@ -59,7 +59,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-				
+				submit();
 			}
 		}
 	};
@@ -77,15 +77,17 @@ public class ManageUmlsPresenter implements MatPresenter{
 				@Override
 				public void onSuccess(String result) {
 				
-					display.getUserid().setValue("");
-					display.getPassword().setValue("");
 					if(result!=null){
+						display.setInfoMessageVisible(true);
 						display.getInfoMessage().setText("Successfully logged into UMLS");
 						Window.alert("Ticket Granted for session :  " +result);
 					}
-					else
+					else{
 						display.getErrorMessageDisplay().setMessage("Unable to verify your credentials on UMLS. Please contact UMLS helpdesk or try again.");
-					
+					}
+
+					display.getUserid().setValue("");
+					display.getPassword().setValue("");
 				}
 				
 				@Override

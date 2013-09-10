@@ -128,7 +128,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 						Window.alert("Ticket Granted for session :  " +result);
 					}
 					else{
-						display.getErrorMessageDisplay().setMessage("Unable to verify your credentials on UMLS. Please contact UMLS helpdesk or try again.");
+						display.getErrorMessageDisplay().setMessage("Unable to verify your UMLS credentials. Please contact the MAT Help Desk or try again.");
 					}
 
 					display.getUserid().setValue("");
@@ -137,7 +137,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					display.getErrorMessageDisplay().setMessage("Unable to verify your credentials on UMLS. Please contact UMLS helpdesk or try again.");
+					display.getErrorMessageDisplay().setMessage("Unable to verify your UMLS credentials. Please contact the MAT Help Desk or try again."
+);
 					caught.printStackTrace();
 				}
 			});

@@ -96,7 +96,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		loginPanel.setStylePrimaryName("loginContentPanel");
 		
 		HorizontalPanel hPanel = new HorizontalPanel();
-		umlsExternalLink = new Anchor("Need UMLS license?");
+		umlsExternalLink = new Anchor("Need a UMLS license?");
 		HTML or = new HTML("&nbsp;or&nbsp;");
 		umlsTroubleLogging = new Anchor("Trouble Logging in?");
 		umlsExternalLink.setTitle("Need UMLS license");

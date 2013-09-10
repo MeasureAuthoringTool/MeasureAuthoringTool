@@ -33,7 +33,7 @@ public class ClientConstants {
 	public static final String TEXT_FOIA ="Freedom of Information Act";
 	
 	
-	public final static String TITLE_VALUE_SET_LIB ="Value Set Library(Retired)";
+	public final static String TITLE_VALUE_SET_LIB ="Value Set Archive";
 	public final static String TITLE_MEASURE_LIB ="Measure Library";
 	public final static String TITLE_MEASURE_COMPOSER ="Measure Composer";
 	public final static String TITLE_ADMIN ="Admin";

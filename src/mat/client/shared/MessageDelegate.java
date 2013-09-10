@@ -681,6 +681,11 @@ public class MessageDelegate {
 	public String getLoginIDRequiredMessage(){
 		return LOGIN_ID_REQUIRED;
 	}
+	
+	public static final String LOGIN_USER_REQUIRED = "User Name is required.";
+	public String getLoginUserRequiredMessage(){
+		return LOGIN_USER_REQUIRED;
+	}
 
 	public static final String LAST_NAME_REQUIRED = "Last Name is required.";
 	public String getLastNameRequiredMessage(){

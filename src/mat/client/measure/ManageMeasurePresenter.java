@@ -1260,7 +1260,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void export(String id, String name) {
 		//US 170
-		MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Export", null, true, new AsyncCallback<Boolean>() {
+		MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Exported", null, true, new AsyncCallback<Boolean>() {
 			@Override
 			public void onSuccess(Boolean result) {
 			}
@@ -1290,7 +1290,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * If "Export" is added in the list then log entries with ACTIVITY_TYPE = "Export" will not be displayed in History.
 		 * So, to display the "Export" log entry, below line is commented.
 		 * 
-		 * NOTE: "Export" is replaced with "Measure Export". From now, Export log entries will be recorded as "Measure Export" under ACTIVITY_TYPE.
+		 * NOTE: "Export" is replaced with "Measure Exported". From now, Export log entries will be recorded as "Measure Exported" under ACTIVITY_TYPE.
 		 * Refer MAT-1629 user story for details.
 		 */
 	    //filterList.add("Export");
@@ -1690,6 +1690,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 		String measureId = "";
 		for (String id : selectedMeasureIds) {			
 			measureId += id+"&id="; 
+			
+			MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Package Exported", null, true, new AsyncCallback<Boolean>() {
+				@Override
+				public void onSuccess(Boolean result) {
+				}
+				
+				@Override
+				public void onFailure(Throwable caught) {
+					detailDisplay.getErrorMessageDisplay().setMessage("Error while adding bulk export log entry.");
+				}
+				
+			});
 		}
 		measureId = measureId.substring(0,measureId.lastIndexOf("&"));
 		String url = GWT.getModuleBaseURL() + "bulkExport?id=" + measureId; 

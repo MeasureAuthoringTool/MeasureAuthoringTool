@@ -53,8 +53,8 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		
-		welcomePanel = wrapInSpacer(new WelcomeWidgetUmls());
-		mainPanel.add(welcomePanel);
+		/*welcomePanel = wrapInSpacer(new WelcomeWidgetUmls());
+		mainPanel.add(welcomePanel);*/
 		
 		Grid infoGrid = new Grid(2,2);
 		FocusableImageButton focusableImageButton = new FocusableImageButton(ImageResources.INSTANCE.icon_success_sm(),"Success");

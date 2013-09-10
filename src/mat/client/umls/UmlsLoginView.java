@@ -44,6 +44,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	private SimplePanel simplePanel = new SimplePanel();
 	Label success = new Label();
 	Anchor umlsExternalLink;
+	Anchor umlsTroubleLogging;
 	VerticalPanel externalLinkDisclaimer = new VerticalPanel();
 	SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	
@@ -95,10 +96,16 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		loginPanel.setStylePrimaryName("loginContentPanel");
 		
 		HorizontalPanel hPanel = new HorizontalPanel();
-		umlsExternalLink = new Anchor("Need a UMLS account or forgot your user ?");
-		umlsExternalLink.setTitle("UMLS");
-		umlsExternalLink.getElement().setAttribute("alt", "UMLS");
+		umlsExternalLink = new Anchor("Need UMLS license?");
+		HTML or = new HTML("&nbsp;or&nbsp;");
+		umlsTroubleLogging = new Anchor("Trouble Logging in?");
+		umlsExternalLink.setTitle("Need UMLS license");
+		umlsExternalLink.getElement().setAttribute("alt", "Need UMLS license");
+		umlsTroubleLogging.setTitle("Trouble Logging in");
+		umlsTroubleLogging.getElement().setAttribute("alt", "Trouble Logging in");
 		hPanel.add(umlsExternalLink);
+		hPanel.add(or);
+		hPanel.add(umlsTroubleLogging);
 		loginPanel.add(new SpacerWidget());
 		loginPanel.add(hPanel);
 		
@@ -202,6 +209,10 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	@Override
 	public VerticalPanel getExternalLinkDisclaimer() {
 		return externalLinkDisclaimer;
+	}
+	@Override
+	public Anchor getUmlsTroubleLogging() {
+		return umlsTroubleLogging;
 	}
 
 	@Override

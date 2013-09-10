@@ -39,6 +39,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		public Anchor getUmlsExternalLink();
 		public VerticalPanel getExternalLinkDisclaimer();
 		public SaveCancelButtonBar getButtonBar() ;
+		public Anchor getUmlsTroubleLogging();
 	}
 	
 	VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
@@ -64,7 +65,14 @@ public class ManageUmlsPresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(true);
-				
+			}
+		});
+		
+		display.getUmlsTroubleLogging().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				display.getExternalLinkDisclaimer().setVisible(true);
 			}
 		});
 		
@@ -72,8 +80,9 @@ public class ManageUmlsPresenter implements MatPresenter{
 			
 			@Override
 			public void onClick(ClickEvent event) {
-			
-				
+				display.getExternalLinkDisclaimer().setVisible(false);
+				String strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
+				Window.open("https://utslogin.nlm.nih.gov/cas/login", "UMLS", strWindowFeatures);
 			}
 		});
 		

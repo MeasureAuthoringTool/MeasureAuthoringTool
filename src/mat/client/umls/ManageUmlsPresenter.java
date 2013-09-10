@@ -100,8 +100,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
-			display.getErrorMessageDisplay().clear();
-			display.setInfoMessageVisible(false);
+			/*display.getErrorMessageDisplay().clear();
+			display.setInfoMessageVisible(false);*/
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
 				submit();
 			}
@@ -113,7 +113,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
 		if(display.getUserid().getValue().isEmpty()) {
-			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
+			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginUserRequiredMessage());
 		}else if(display.getPassword().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
 		}else{
@@ -126,19 +126,18 @@ public class ManageUmlsPresenter implements MatPresenter{
 						display.setInfoMessageVisible(true);
 						display.getInfoMessage().setText("Successfully logged into UMLS");
 						Window.alert("Ticket Granted for session :  " +result);
+						display.getUserid().setValue("");
+						display.getPassword().setValue("");
 					}
 					else{
 						display.getErrorMessageDisplay().setMessage("Unable to verify your UMLS credentials. Please contact the MAT Help Desk or try again.");
 					}
-
-					display.getUserid().setValue("");
-					display.getPassword().setValue("");
+					
 				}
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					display.getErrorMessageDisplay().setMessage("Unable to verify your UMLS credentials. Please contact the MAT Help Desk or try again."
-);
+					display.getErrorMessageDisplay().setMessage("Unable to verify your UMLS credentials. Please contact the MAT Help Desk or try again.");
 					caught.printStackTrace();
 				}
 			});

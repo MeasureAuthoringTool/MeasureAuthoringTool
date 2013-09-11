@@ -978,6 +978,16 @@ public class MessageDelegate {
 	public String getMEASURE_NOTES_SAVE_SUCCESS_MESSAGE() {
 		return MEASURE_NOTES_SAVE_SUCCESS_MESSAGE;
 	}
+
+	private final String UMLS_SUCCESSFULL_LOGIN="Successfully logged into UMLS";
+	public String getUMLS_SUCCESSFULL_LOGIN() {
+		return UMLS_SUCCESSFULL_LOGIN;
+	}
+	
+	private final String UML_LOGIN_UNAVAILABLE ="Unable to verify your UMLS credentials. Please contact the MAT Help Desk or try again.";
+	public String getUML_LOGIN_UNAVAILABLE() {
+		return UML_LOGIN_UNAVAILABLE;
+	}
 }
 
 

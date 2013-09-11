@@ -24,6 +24,7 @@ public class ClientConstants {
 	public final static String HTML_MAT ="/Mat.html";
 	public final static String EXT_LINK_HHS_Site ="http://www.hhs.gov/";
 	public final static String EXT_LINK_FOIA ="https://www.cms.gov/center/freedom-of-information-act-center.html";
+	public final static String EXT_LINK_UMLS="https://utslogin.nlm.nih.gov/cas/login/";
 	public final static String TEXT_ACCESSIBILITY_POLICY ="Accessibility Policy";
 	public final static String TEXT_TERMSOFUSE ="Terms Of Use";
 	public final static String TEXT_USER_GUIDE ="User Guide";

@@ -5,6 +5,7 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.client.util.ClientConstants;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -81,8 +82,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(false);
-				String strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
-				Window.open("https://utslogin.nlm.nih.gov/cas/login/", "_blank", "");
+				Window.open(ClientConstants.EXT_LINK_UMLS, "_blank", "");
 			}
 		});
 		
@@ -100,8 +100,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
-			/*display.getErrorMessageDisplay().clear();
-			display.setInfoMessageVisible(false);*/
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
 				submit();
 			}
@@ -124,20 +122,20 @@ public class ManageUmlsPresenter implements MatPresenter{
 				
 					if(result!=null){
 						display.setInfoMessageVisible(true);
-						display.getInfoMessage().setText("Successfully logged into UMLS");
+						display.getInfoMessage().setText(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
 						Window.alert("Ticket Granted for session :  " +result);
 						display.getUserid().setValue("");
 						display.getPassword().setValue("");
 					}
 					else{
-						display.getErrorMessageDisplay().setMessage("Unable to verify your UMLS credentials. Please contact the MAT Help Desk or try again.");
+						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
 					}
 					
 				}
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					display.getErrorMessageDisplay().setMessage("Unable to verify your UMLS credentials. Please contact the MAT Help Desk or try again.");
+					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
 					caught.printStackTrace();
 				}
 			});

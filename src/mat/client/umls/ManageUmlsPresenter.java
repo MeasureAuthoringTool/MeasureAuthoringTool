@@ -82,7 +82,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(false);
 				String strWindowFeatures = "menubar=yes,location=yes,resizable=yes,scrollbars=yes,status=yes";
-				Window.open("https://utslogin.nlm.nih.gov/cas/login", "UMLS", strWindowFeatures);
+				Window.open("https://utslogin.nlm.nih.gov/cas/login/", "_blank", "");
 			}
 		});
 		

@@ -823,6 +823,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		String sql = "select max(eMeasureId) from mat.model.clause.Measure";
 		Query query = session.createQuery(sql);
 		List<Integer> result = query.list();
+		session.close();
 		if (!result.isEmpty()) {
 			return result.get(0).intValue();
 		} else {
@@ -833,20 +834,15 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 
 	@Override
 	public int saveandReturnMaxEMeasureId(Measure measure) {
-		Session session = null;
-		try {
-			int eMeasureId = getMaxEMeasureId() + 1;
-			MeasureSet ms = measure.getMeasureSet();
-			session = getSessionFactory().getCurrentSession();
-			SQLQuery query = session
-					.createSQLQuery("update MEASURE m set m.EMEASURE_ID = "
-							+ eMeasureId + " where m.MEASURE_SET_ID = '"
-							+ ms.getId() + "';");
-			query.executeUpdate();
-			return eMeasureId;
-		} finally {
-			closeSession(session);
-		}
+		int eMeasureId = getMaxEMeasureId() + 1;
+		MeasureSet ms = measure.getMeasureSet();
+		Session session = getSessionFactory().getCurrentSession();
+		SQLQuery query = session
+				.createSQLQuery("update MEASURE m set m.EMEASURE_ID = "
+						+ eMeasureId + " where m.MEASURE_SET_ID = '"
+						+ ms.getId() + "';");
+		query.executeUpdate();
+		return eMeasureId;
 
 	}
 

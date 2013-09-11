@@ -820,16 +820,19 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 	@Override
 	public int getMaxEMeasureId() {
 		Session session = getSessionFactory().openSession();
-		String sql = "select max(eMeasureId) from mat.model.clause.Measure";
-		Query query = session.createQuery(sql);
-		List<Integer> result = query.list();
-		session.close();
-		if (!result.isEmpty()) {
-			return result.get(0).intValue();
-		} else {
-			return 0;
-		}
+		try {
+			String sql = "select max(eMeasureId) from mat.model.clause.Measure";
+			Query query = session.createQuery(sql);
+			List<Integer> result = query.list();
 
+			if (!result.isEmpty()) {
+				return result.get(0).intValue();
+			} else {
+				return 0;
+			}
+		} finally {
+			closeSession(session);
+		}
 	}
 
 	@Override

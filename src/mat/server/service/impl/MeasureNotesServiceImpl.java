@@ -27,12 +27,12 @@ public class MeasureNotesServiceImpl implements MeasureNotesService{
 
 	@Override
 	public void saveMeasureNote(MeasureNotes measureNote) {
-		measureNotesDAO.saveMeasureNote(measureNote);
+		measureNotesDAO.save(measureNote);
 	}
 
 	@Override
 	public void deleteMeasureNote(MeasureNotes measureNote) {
-		measureNotesDAO.deleteMeasureNote(measureNote);
+		measureNotesDAO.delete(measureNote);
 		
 	}
 	

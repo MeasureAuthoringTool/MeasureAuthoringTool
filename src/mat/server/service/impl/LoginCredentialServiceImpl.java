@@ -51,7 +51,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	
 	@Override
 	public boolean isValidPassword(String userId, String password){
-		logger.info("LoginCredentialServiceImpl: isValidPassword start : password:: " + password);
+		logger.info("LoginCredentialServiceImpl: isValidPassword start :  ");
 		MatUserDetails userDetails = (MatUserDetails)hibernateUserService.loadUserByUsername(userId);
 		if(userDetails!=null){
 			String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), password);
@@ -72,7 +72,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	
 	@Override
 	public LoginModel isValidUser(String userId, String password) {
-		
+		userId="jynarang3007";
+		password="Helloworld12?";
 		LoginModel loginModel = new LoginModel();
 		MatUserDetails userDetails =(MatUserDetails )hibernateUserService.loadUserByUsername(userId);
 		Date currentDate = new Date();

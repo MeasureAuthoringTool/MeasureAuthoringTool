@@ -693,11 +693,10 @@ public class ListObjectDAO extends GenericDAO<ListObject, String>
 	}
 	
 	private boolean isUniqueName(String name, User u){
-		Session session = getSessionFactory().openSession();
+		Session session = getSessionFactory().getCurrentSession();
 		String sql = "select count(*) from mat.model.ListObject where objectOwner.id='"+u.getId()+"' and name='"+name+"'";
 		Query query = session.createQuery(sql);
 		List<Long> list  = query.list();
-		session.close();
 		return list.get(0) == 0;
 	}
 

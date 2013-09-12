@@ -36,52 +36,36 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 	
 	@Override
 	public void expireTemporaryPasswords(Date targetDate) {
-		Session session = getSessionFactory().openSession();
-		Transaction tx = session.beginTransaction();
-		try {
-			int updatedCount = 0;
-			Criteria criteria = session.createCriteria(User.class).createCriteria("password");
-			criteria.add(Restrictions.lt("createdDate", targetDate)).add(Restrictions.eq("temporaryPassword", Boolean.TRUE));
+		Session session = getSessionFactory().getCurrentSession();
+		int updatedCount = 0;
+		Criteria criteria = session.createCriteria(User.class).createCriteria("password");
+		criteria.add(Restrictions.lt("createdDate", targetDate)).add(Restrictions.eq("temporaryPassword", Boolean.TRUE));
 			
-			@SuppressWarnings("unchecked")
-			List<User> results = criteria.list();
-			for(User u : results) {
-				u.getPassword().setPassword("expired");
-				updatedCount++;
-			}
-
-			logger.info("Expired password count: " + updatedCount);	
-			tx.commit();
+		@SuppressWarnings("unchecked")
+		List<User> results = criteria.list();
+		for(User u : results) {
+			u.getPassword().setPassword("expired");
+			updatedCount++;
 		}
-		finally {
-			session.close();
-		}
+		logger.info("Expired password count: " + updatedCount);	
 	}
 	@Override
 	public void unlockUsers(Date unlockDate) {
 		
-		Session session = getSessionFactory().openSession();
-		try {
-			Transaction tx = session.beginTransaction();
-	
-			int updatedCount = 0;
-			Criteria criteria = session.createCriteria(User.class);
-			criteria.add(Restrictions.lt("lockedOutDate", unlockDate));
-			@SuppressWarnings("unchecked")
-			List<User> results = criteria.list();
-			for(User u : results) {
-				u.setLockedOutDate(null);
-				u.getPassword().setForgotPwdlockCounter(0);
-				u.getPassword().setPasswordlockCounter(0);
-				updatedCount++;
-			}
-			
-			tx.commit();
-			logger.info("Unlocked user count: " + updatedCount);
+		Session session = getSessionFactory().getCurrentSession();
+		int updatedCount = 0;
+		Criteria criteria = session.createCriteria(User.class);
+		criteria.add(Restrictions.lt("lockedOutDate", unlockDate));
+		@SuppressWarnings("unchecked")
+		List<User> results = criteria.list();
+		for(User u : results) {
+			u.setLockedOutDate(null);
+			u.getPassword().setForgotPwdlockCounter(0);
+			u.getPassword().setPasswordlockCounter(0);
+			updatedCount++;
 		}
-		finally {
-			session.close();
-		}
+		logger.info("Unlocked user count: " + updatedCount);
+		
 	}
 	
 	private Criteria createSearchCriteria(String text) {
@@ -221,18 +205,15 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 		Session session = null;
 		Transaction transaction = null;
 		try {
-			session = getSessionFactory().openSession();
-			transaction = session.beginTransaction();
+			session = getSessionFactory().getCurrentSession();
 			session.saveOrUpdate(userdetails);
 			
-			transaction.commit();
 		}
 		catch (Exception e) {
 			e.printStackTrace();		  
 		}
 		finally {
-	    	rollbackUncommitted(transaction);
-	    	closeSession(session);
+	    	
 		}
 	}
 
@@ -268,7 +249,7 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 	   query += " where USER_ID ='" + user.getId() + "'";
 	   query += " ORDER BY RAND() LIMIT 1";*/
 	   
-	   Session session = getSessionFactory().openSession();
+	   Session session = getSessionFactory().getCurrentSession();
 	   List<String> list = session.createSQLQuery(query).list();	 
 	   if(list == null || list.isEmpty()){
 		   question = getRandomSecurityQuestion();
@@ -290,7 +271,7 @@ public class UserDAO extends GenericDAO<User, String> implements mat.dao.UserDAO
 	public String getRandomSecurityQuestion() {
 		 String query = "select QUESTION from SECURITY_QUESTIONS";		 
 		 query += " order by rand() LIMIT 1";
-		 Session session = getSessionFactory().openSession();
+		 Session session = getSessionFactory().getCurrentSession();
 		 List<String> list = session.createSQLQuery(query).list();
 		 return list.get(0); 
 	}

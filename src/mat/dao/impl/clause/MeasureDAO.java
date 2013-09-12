@@ -539,8 +539,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 	// settingtheLockedDate.
 	@Override
 	public void resetLockDate(Measure m) {
-		Session session = getSessionFactory().openSession();
-		org.hibernate.Transaction tx = session.beginTransaction();
+		Session session = getSessionFactory().getCurrentSession();
 		String sql = "update mat.model.clause.Measure m set lockedOutDate  = :lockDate, lockedUser = :lockedUserId  where id = :measureId";
 		Query query = session.createQuery(sql);
 		query.setString("lockDate", null);
@@ -548,8 +547,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		query.setString("measureId", m.getId());
 		int rowCount = query.executeUpdate();
 		System.out.println("Rows affected: while releasing lock " + rowCount);
-		tx.commit();
-		session.close();
+		
 
 	}
 
@@ -801,13 +799,11 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 
 	@Override
 	public boolean isMeasureLocked(String measureId) {
-		Session session = getSessionFactory().openSession();
+		Session session = getSessionFactory().getCurrentSession();
 		String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = '"
 				+ measureId + "'";
 		Query query = session.createQuery(sql);
 		List<Timestamp> result = query.list();
-		session.close();
-
 		Timestamp lockedOutDate = null;
 		if (!result.isEmpty()) {
 			lockedOutDate = result.get(0);
@@ -819,20 +815,16 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 
 	@Override
 	public int getMaxEMeasureId() {
-		Session session = getSessionFactory().openSession();
-		try {
-			String sql = "select max(eMeasureId) from mat.model.clause.Measure";
-			Query query = session.createQuery(sql);
-			List<Integer> result = query.list();
-
-			if (!result.isEmpty()) {
-				return result.get(0).intValue();
-			} else {
-				return 0;
-			}
-		} finally {
-			closeSession(session);
+		Session session = getSessionFactory().getCurrentSession();
+		String sql = "select max(eMeasureId) from mat.model.clause.Measure";
+		Query query = session.createQuery(sql);
+		List<Integer> result = query.list();
+		if (!result.isEmpty()) {
+			return result.get(0).intValue();
+		} else {
+			return 0;
 		}
+	
 	}
 
 	@Override
@@ -851,16 +843,13 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 
 	@Override
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
-		Session session = getSessionFactory().openSession();
-		org.hibernate.Transaction tx = session.beginTransaction();
+		Session session = getSessionFactory().getCurrentSession();
 		String sql = "update mat.model.clause.Measure m set isPrivate  = :isPrivate where id = :measureId";
 		Query query = session.createQuery(sql);
 		query.setBoolean("isPrivate", isPrivate);
 		query.setString("measureId", measureId);
 		int rowCount = query.executeUpdate();
 		logger.info("Updated Private column" + rowCount);
-		tx.commit();
-		session.close();
 	}
 
 }

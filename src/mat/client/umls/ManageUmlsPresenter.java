@@ -132,7 +132,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 						MatContext.get().restartUMLSSignout();
 					}
 					else{
-						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
+						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
 						Mat.hideUMLSActive();
 					}
 					

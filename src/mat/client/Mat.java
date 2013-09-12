@@ -316,7 +316,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		 * tab selection below will fail if loading
 		 */
 		hideLoadingMessage(0);
-		
+		hideUMLSActive();
 		// delaying these invocation until after hideLoadingMessage() so these selections are not ignored
 		// TODO consider using a forced tab selection
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){

@@ -123,4 +123,10 @@ public interface ImageResources extends ClientBundle {
 	
 	@Source("images/application_cascade.png")
 	ImageResource application_cascade();
+	
+	@Source("images/bullet_green.png")
+	ImageResource bullet_green();
+	
+	@Source("images/bullet_red.png")
+	ImageResource bullet_red();
 }

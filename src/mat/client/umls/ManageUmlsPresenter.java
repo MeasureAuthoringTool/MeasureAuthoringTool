@@ -1,5 +1,6 @@
 package mat.client.umls;
 
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
@@ -121,14 +122,18 @@ public class ManageUmlsPresenter implements MatPresenter{
 				public void onSuccess(String result) {
 				
 					if(result!=null){
+						Mat.showUMLSActive();
 						display.setInfoMessageVisible(true);
 						display.getInfoMessage().setText(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
 						Window.alert("Ticket Granted for session :  " +result);
 						display.getUserid().setValue("");
 						display.getPassword().setValue("");
+						Mat.showUMLSActive();
+						MatContext.get().restartUMLSSignout();
 					}
 					else{
 						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
+						Mat.hideUMLSActive();
 					}
 					
 				}
@@ -137,6 +142,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 				public void onFailure(Throwable caught) {
 					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
 					caught.printStackTrace();
+					Mat.hideUMLSActive();
 				}
 			});
 		}

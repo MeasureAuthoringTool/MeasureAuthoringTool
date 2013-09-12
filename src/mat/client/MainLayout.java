@@ -2,8 +2,10 @@ package mat.client;
 
 import java.util.List;
 
+import mat.client.shared.CustomButton;
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.FocusableWidget;
+import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.MatContext;
 import mat.client.shared.SkipListBuilder;
 import mat.client.util.ClientConstants;
@@ -19,16 +21,18 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public abstract class MainLayout {
 	
 	private FocusPanel content;
 	private static Panel loadingPanel;
-	private SimplePanel logOutPanel;
+	private static Panel showUMLSState;
 	
-	
+	private HorizontalFlowPanel logOutPanel;
+	private static CustomButton umlsActiveStateButton = new CustomButton();
+	private static CustomButton umlsInactiveStateButton = new CustomButton();
 	
 	protected static FocusableWidget skipListHolder;
 	
@@ -36,6 +40,9 @@ public abstract class MainLayout {
 	private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
 	private static String alertTitle = ClientConstants.MAINLAYOUT_ALERT_TITLE;
 	private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
+	
+	static HTML umlsActiveStatusLabel;
+	static HTML umlsInactiveStatusLabel;
 	
 	public final void onModuleLoad() {
 		
@@ -45,9 +52,8 @@ public abstract class MainLayout {
 		final Panel footerPanel = buildFooterPanel();
 		final Panel contentPanel = buildContentPanel();
 		final Panel loadingPanel = buildLoadingPanel();
+		
 		final FlowPanel container = new FlowPanel();
-		//container.add(new SpacerWidget());
-		//container.add(new SpacerWidget());
 		container.add(topBanner);
 		container.add(loadingPanel);
 		container.add(contentPanel);
@@ -106,6 +112,49 @@ public abstract class MainLayout {
 		return loadingPanel;
 	}
 	
+	private Panel buildUMLStatePanel() {
+		showUMLSState = new HorizontalFlowPanel();
+		showUMLSState.getElement().setAttribute("id", "showUMLSStateContainer");
+		
+		umlsActiveStateButton.removeStyleName("gwt-button");
+		umlsActiveStateButton.setStylePrimaryName("invisibleButtonText");
+		umlsActiveStateButton.setTitle("Active");
+		umlsActiveStateButton.setResource(ImageResources.INSTANCE.bullet_green(),"Active");
+		umlsActiveStateButton.setEnabled(false);
+		//umlsActiveStatusLabel = (Label) mat.client.shared.LabelBuilder.buildLabel("Active", "Active");
+		umlsActiveStatusLabel = new HTML("<b>Active UMLS</b>");
+		
+		umlsInactiveStateButton.removeStyleName("gwt-button");
+		umlsInactiveStateButton.setStylePrimaryName("invisibleButtonText");
+		umlsInactiveStateButton.setTitle("Inactive");
+		umlsInactiveStateButton.setResource(ImageResources.INSTANCE.bullet_red(),"Inactive");
+		umlsInactiveStateButton.setEnabled(false);
+		/*umlsInactiveStatusLabel = (Label) mat.client.shared.LabelBuilder.buildLabel("Inactive", "Inactive");*/
+		umlsInactiveStatusLabel = new HTML("<b>Inactive UMLS</b>");
+		return showUMLSState;
+	}
+	
+	
+	public static void showUMLSActive(){
+		getShowUMLSState().clear();
+		if(getShowUMLSState().getElement().hasChildNodes()){
+			getShowUMLSState().remove(umlsInactiveStateButton);
+			getShowUMLSState().remove(umlsInactiveStatusLabel);
+		}
+		umlsActiveStateButton.setEnabled(false);
+		getShowUMLSState().add(umlsActiveStateButton);
+		getShowUMLSState().add(umlsActiveStatusLabel);
+	}
+	
+	public static void hideUMLSActive(){
+		getShowUMLSState().clear();
+		getShowUMLSState().remove(umlsActiveStateButton);
+		getShowUMLSState().remove(umlsActiveStatusLabel);
+		umlsInactiveStateButton.setEnabled(false);
+		getShowUMLSState().add(umlsInactiveStateButton);
+		getShowUMLSState().add(umlsInactiveStatusLabel);
+		
+	}
 	
 	/**
 	 * Builds the Footer Panel for the Login and Mat View. Currently, it displays the 
@@ -118,18 +167,6 @@ public abstract class MainLayout {
 		footerMainPanel.getElement().setId("footerMainPanel_FlowPanel");
 		footerMainPanel.setStylePrimaryName("footer");		
 		footerMainPanel.add(FooterPanelBuilderUtility.buildFooterLogoPanel());
-				
-//		final VerticalPanel footerLinksPanel = new VerticalPanel();
-//		footerLinksPanel.setStylePrimaryName("footer-nav");
-//		
-//		HTML helpFullLinks = new HTML("&nbsp;&nbsp;<h2>Helpful Links</h2>");
-//		footerLinksPanel.add(helpFullLinks);
-//		
-//		final HorizontalPanel footerLinks = new HorizontalPanel();
-//		fetchAndcreateFooterLinks(footerLinks);
-//		
-//		footerLinksPanel.add(footerLinks);
-		
 		footerMainPanel.add(fetchAndcreateFooterLinks());
 		return footerMainPanel;
 }
@@ -149,48 +186,12 @@ public abstract class MainLayout {
 				ClientConstants.PRIVACYPOLICY_URL = result.get(1);
 				ClientConstants.TERMSOFUSE_URL = result.get(2);
 				ClientConstants.USERGUIDE_URL = result.get(3);
-				//This will create Footer links with values from server.
-				//createFooterLinks(footerLinks);
 			}
 		
 		});
 		return FooterPanelBuilderUtility.buildFooterLinksPanel();
 	}
 
-//	private void createFooterLinks(HorizontalPanel footerLinks) {
-//		
-//		final String pipeHTML = "&nbsp;&nbsp;<b>|</b>";
-//		
-//		final Anchor policyAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_ACCESSIBILITY_POLICY, null, ConstantMessages.LOGIN_MODULE, 
-//				null,ClientConstants.ACCESSIBILITY_POLICY_URL);
-//		footerLinks.add(policyAnchor);
-//		HTML pipe = new HTML(pipeHTML);
-//		footerLinks.add(pipe);
-//		
-//		final Anchor privacyPolicyAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_PRIVACYPOLICY, null, ConstantMessages.LOGIN_MODULE, 
-//		null,ClientConstants.PRIVACYPOLICY_URL);
-//		footerLinks.add(privacyPolicyAnchor);
-//		HTML pipe_2 = new HTML(pipeHTML);
-//		footerLinks.add(pipe_2);
-//		
-//		final Anchor termsOfUseAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_TERMSOFUSE, null, ConstantMessages.LOGIN_MODULE, 
-//		null,ClientConstants.TERMSOFUSE_URL);
-//		footerLinks.add(termsOfUseAnchor);
-//		HTML pipe_3 = new HTML(pipeHTML);
-//		footerLinks.add(pipe_3);
-//		
-//		final Anchor foiaAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_FOIA, null, ConstantMessages.LOGIN_MODULE, 
-//																null,ClientConstants.EXT_LINK_FOIA);
-//		footerLinks.add(foiaAnchor);
-//		HTML pipe_4 = new HTML(pipeHTML);
-//		footerLinks.add(pipe_4);
-//		
-//		
-//		final Anchor linkAnchor = FooterPanelBuilderUtility.createFooterLink(ClientConstants.TEXT_USER_GUIDE, null, ConstantMessages.LOGIN_MODULE, 
-//		null,ClientConstants.USERGUIDE_URL);
-//		footerLinks.add(linkAnchor);
-//		
-//	}
 
 	private Panel buildTopPanel() {
 		final HorizontalPanel topBanner = new HorizontalPanel();
@@ -204,10 +205,17 @@ public abstract class MainLayout {
 		com.google.gwt.user.client.Element heading = desc.getElement();
 		DOM.insertChild(titleImage.getElement(), heading, 0);
 		topBanner.add(titleImage);
-		logOutPanel = new SimplePanel();
+		logOutPanel = new HorizontalFlowPanel();
 		logOutPanel.getElement().setId("logOutPanel_SimplePanel");
 		logOutPanel.addStyleName("logoutPanel");
-		topBanner.add(logOutPanel);
+		showUMLSState = buildUMLStatePanel();
+		VerticalPanel vp = new VerticalPanel();
+		vp.add(logOutPanel);
+		vp.add(showUMLSState);
+		vp.addStyleName("logoutPanel");
+		topBanner.add(vp);
+		/*showUMLSState.addStyleName("logoutPanel");*/
+		//topBanner.add(showUMLSState);
 		return topBanner;      
 	}
 	
@@ -221,6 +229,10 @@ public abstract class MainLayout {
 		return loadingPanel;
 	}
 	
+	protected static Panel getShowUMLSState(){
+		return showUMLSState;
+	}
+	
 	protected static FocusableWidget getSkipList(){
 		return skipListHolder;
 	}
@@ -229,11 +241,11 @@ public abstract class MainLayout {
 		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}
 	
-	protected void setLogout(final SimplePanel logOutPanel){
+	protected void setLogout(final HorizontalFlowPanel logOutPanel){
 		this.logOutPanel = logOutPanel;
 	}
 	
-	protected SimplePanel getLogoutPanel(){
+	protected HorizontalFlowPanel getLogoutPanel(){
 		return logOutPanel;
 	}
 	protected Widget getNavigationList(){

@@ -26,11 +26,12 @@ class TimeoutManager {
 	private static final int REPEATED_WARNING_INTERVAL = 2 * 60 * 1000;
 	private static final int TIMEOUTTHRESHOLD_TIME = WARNING_TIME+WARNING_INTERVAL;
 	private Image alertIcon = new Image(ImageResources.INSTANCE.msg_error());
-	
+	private static final int UMLS_TIME_OUT = 8 * 60 * 60 * 1000;
 	private static HTML warningBannerWidget ;
 	
 	
 	private long lastActivityTime = 0;
+	private long lastUMLSSignIn =0;
 	//US 439
 	private volatile String activeModule = null;
 	
@@ -63,6 +64,18 @@ class TimeoutManager {
 	    };
 	
 
+	    private Timer umlsTicketTimeOut = new Timer(){
+
+			@Override
+			public void run() {
+				Date today = new Date();
+				if((today.getTime() - lastUMLSSignIn) >= UMLS_TIME_OUT){ 
+					Mat.hideUMLSActive();
+				}
+			}
+	    	
+	    };
+	    
 	/*
 	 * TimeoutWarning timer is scheduled to run at the 50th minute from the last activity Time. 
 	 * TimeOutWarning timer will show warning only if the 
@@ -112,6 +125,12 @@ class TimeoutManager {
 		}
 	}
 	
+	public void startUMLSTimer(){
+		Date umlsActivityDate = new Date();
+		lastUMLSSignIn = umlsActivityDate.getTime();
+		umlsTicketTimeOut.cancel();
+		umlsTicketTimeOut.schedule(UMLS_TIME_OUT);
+	}
 	
 	
 	

@@ -388,6 +388,10 @@ public class MatContext implements IsSerializable {
 	public void restartTimeoutWarning() {
 		getTimeoutManager().startActivityTimers(ConstantMessages.MAT_MODULE);
 	}
+	
+	public void restartUMLSSignout() {
+		getTimeoutManager().startUMLSTimer();
+	}
 
 	public String getCurrentMeasureId() {
 		if(currentMeasureInfo != null) {

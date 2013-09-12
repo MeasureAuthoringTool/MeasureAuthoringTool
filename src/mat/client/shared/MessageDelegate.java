@@ -988,6 +988,12 @@ public class MessageDelegate {
 	public String getUML_LOGIN_UNAVAILABLE() {
 		return UML_LOGIN_UNAVAILABLE;
 	}
+	
+	private final String UML_LOGIN_FAILED="Login failed. Please sign in again.";
+	public String getUML_LOGIN_FAILED(){
+		return UML_LOGIN_FAILED;
+	}
+
 }
 
 

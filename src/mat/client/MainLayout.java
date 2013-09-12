@@ -121,16 +121,16 @@ public abstract class MainLayout {
 		umlsActiveStateButton.setTitle("Active");
 		umlsActiveStateButton.setResource(ImageResources.INSTANCE.bullet_green(),"Active");
 		umlsActiveStateButton.setEnabled(false);
-		//umlsActiveStatusLabel = (Label) mat.client.shared.LabelBuilder.buildLabel("Active", "Active");
-		umlsActiveStatusLabel = new HTML("<b>UMLS Active</b>");
+		umlsActiveStateButton.setSize("15px", "15px");
+		umlsActiveStatusLabel = new HTML("<h9>UMLS Active</h9>");
 		
 		umlsInactiveStateButton.removeStyleName("gwt-button");
 		umlsInactiveStateButton.setStylePrimaryName("invisibleButtonText");
 		umlsInactiveStateButton.setTitle("Inactive");
 		umlsInactiveStateButton.setResource(ImageResources.INSTANCE.bullet_red(),"Inactive");
 		umlsInactiveStateButton.setEnabled(false);
-		/*umlsInactiveStatusLabel = (Label) mat.client.shared.LabelBuilder.buildLabel("Inactive", "Inactive");*/
-		umlsInactiveStatusLabel = new HTML("<b>UMLS Inactive</b>");
+		umlsInactiveStateButton.setSize("15px", "15px");
+		umlsInactiveStatusLabel = new HTML("<h9>UMLS Inactive</h9>");
 		return showUMLSState;
 	}
 	

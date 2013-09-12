@@ -843,6 +843,20 @@ padding: 2px;
 	font-size:small;
 }
 
+.umlsStatePanel{
+	float: right;
+	position: relative;
+	padding-top: 12px;
+	font-size:small;
+}
+
+.logoutAndUMLSPanel{
+	float: right;
+	position: relative;
+	padding-top: 12px;
+	font-size:small;
+}
+
 .grid {
   width: 150px;
   height: 50px;
@@ -1328,8 +1342,8 @@ padding: 2px;
     background:transparent;
 }
 .invisibleButtonText{
-  margin: 0;
-  padding: 3px 5px;
+ /*  margin: 0;
+  padding: 3px 5px; */
   text-decoration: none;
   font-size: 0;
  /* cursor: pointer;
@@ -1349,11 +1363,11 @@ padding: 2px;
   border-color: #9cf #69e #69e #7af;
 }
 .invisibleButtonText[disabled] {
-  cursor: default;
+ /*  cursor: default; */
   color: #888;
 }
 .invisibleButtonText[disabled]:hover {
-  border: 1px outset #ccc;
+ /*  border: 1px outset #ccc; */
 }
 
 .gwt-DisclosurePanel .content {

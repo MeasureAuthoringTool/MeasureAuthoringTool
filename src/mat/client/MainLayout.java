@@ -2,7 +2,6 @@ package mat.client;
 
 import java.util.List;
 
-import mat.client.shared.CustomButton;
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.FocusableWidget;
 import mat.client.shared.HorizontalFlowPanel;
@@ -31,8 +30,8 @@ public abstract class MainLayout {
 	private static Panel showUMLSState;
 	
 	private HorizontalFlowPanel logOutPanel;
-	private static CustomButton umlsActiveStateButton = new CustomButton();
-	private static CustomButton umlsInactiveStateButton = new CustomButton();
+	private static Image activeUmlsImage;
+	private static  Image inActiveUmlsImage;
 	
 	protected static FocusableWidget skipListHolder;
 	
@@ -116,21 +115,16 @@ public abstract class MainLayout {
 		showUMLSState = new HorizontalFlowPanel();
 		showUMLSState.getElement().setAttribute("id", "showUMLSStateContainer");
 		
-		umlsActiveStateButton.removeStyleName("gwt-button");
-		umlsActiveStateButton.setStylePrimaryName("invisibleButtonText");
-		umlsActiveStateButton.setTitle("Active");
-		umlsActiveStateButton.setResource(ImageResources.INSTANCE.bullet_green(),"Active");
-		umlsActiveStateButton.setEnabled(false);
-		umlsActiveStateButton.setSize("15px", "15px");
-		umlsActiveStatusLabel = new HTML("<h9>UMLS Active</h9>");
 		
-		umlsInactiveStateButton.removeStyleName("gwt-button");
-		umlsInactiveStateButton.setStylePrimaryName("invisibleButtonText");
-		umlsInactiveStateButton.setTitle("Inactive");
-		umlsInactiveStateButton.setResource(ImageResources.INSTANCE.bullet_red(),"Inactive");
-		umlsInactiveStateButton.setEnabled(false);
-		umlsInactiveStateButton.setSize("15px", "15px");
+		activeUmlsImage = new Image(ImageResources.INSTANCE.bullet_green());
+		activeUmlsImage.setStylePrimaryName("imageMiddleAlign");
+		umlsActiveStatusLabel = new HTML("<h9>UMLS Active</h9>");
+		umlsActiveStatusLabel.setStylePrimaryName("htmlDescription");
+	
+		inActiveUmlsImage = new Image(ImageResources.INSTANCE.bullet_red());
+		inActiveUmlsImage.setStylePrimaryName("imageMiddleAlign");
 		umlsInactiveStatusLabel = new HTML("<h9>UMLS Inactive</h9>");
+		umlsInactiveStatusLabel.setStylePrimaryName("htmlDescription");
 		return showUMLSState;
 	}
 	
@@ -138,20 +132,20 @@ public abstract class MainLayout {
 	public static void showUMLSActive(){
 		getShowUMLSState().clear();
 		if(getShowUMLSState().getElement().hasChildNodes()){
-			getShowUMLSState().remove(umlsInactiveStateButton);
+			getShowUMLSState().remove(inActiveUmlsImage);
 			getShowUMLSState().remove(umlsInactiveStatusLabel);
 		}
-		umlsActiveStateButton.setEnabled(false);
-		getShowUMLSState().add(umlsActiveStateButton);
+		
+		getShowUMLSState().add(activeUmlsImage);
 		getShowUMLSState().add(umlsActiveStatusLabel);
 	}
 	
 	public static void hideUMLSActive(){
 		getShowUMLSState().clear();
-		getShowUMLSState().remove(umlsActiveStateButton);
+		getShowUMLSState().remove(activeUmlsImage);
 		getShowUMLSState().remove(umlsActiveStatusLabel);
-		umlsInactiveStateButton.setEnabled(false);
-		getShowUMLSState().add(umlsInactiveStateButton);
+		
+		getShowUMLSState().add(inActiveUmlsImage);
 		getShowUMLSState().add(umlsInactiveStatusLabel);
 		
 	}

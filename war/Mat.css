@@ -1342,8 +1342,8 @@ padding: 2px;
     background:transparent;
 }
 .invisibleButtonText{
- /*  margin: 0;
-  padding: 3px 5px; */
+   margin: 0;
+  padding: 3px 5px;
   text-decoration: none;
   font-size: 0;
  /* cursor: pointer;
@@ -1356,6 +1356,7 @@ padding: 2px;
   background:transparent;
 }
 
+
 .invisibleButtonText:active {
   border: 1px inset #ccc;
 }
@@ -1363,13 +1364,22 @@ padding: 2px;
   border-color: #9cf #69e #69e #7af;
 }
 .invisibleButtonText[disabled] {
- /*  cursor: default; */
+   cursor: default; 
   color: #888;
 }
 .invisibleButtonText[disabled]:hover {
  /*  border: 1px outset #ccc; */
 }
 
+
+.htmlDescription{
+	position:relative;
+	font-style:Italic;
+}
+
+.imageMiddleAlign{
+	vertical-align:middle;	
+}
 .gwt-DisclosurePanel .content {
     /* background-color: lightgray; */
     background-image: url("images/bg_box-blue.png");

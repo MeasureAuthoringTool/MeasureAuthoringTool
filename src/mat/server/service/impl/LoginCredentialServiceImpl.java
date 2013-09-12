@@ -72,8 +72,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	
 	@Override
 	public LoginModel isValidUser(String userId, String password) {
-		userId="jynarang3007";
-		password="Helloworld12?";
+	
 		LoginModel loginModel = new LoginModel();
 		MatUserDetails userDetails =(MatUserDetails )hibernateUserService.loadUserByUsername(userId);
 		Date currentDate = new Date();

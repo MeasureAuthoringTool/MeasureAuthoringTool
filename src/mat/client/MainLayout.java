@@ -209,13 +209,13 @@ public abstract class MainLayout {
 		logOutPanel.getElement().setId("logOutPanel_SimplePanel");
 		logOutPanel.addStyleName("logoutPanel");
 		showUMLSState = buildUMLStatePanel();
+		showUMLSState.addStyleName("umlsStatePanel");
 		VerticalPanel vp = new VerticalPanel();
 		vp.add(logOutPanel);
 		vp.add(showUMLSState);
-		vp.addStyleName("logoutPanel");
+		vp.addStyleName("logoutAndUMLSPanel");
 		topBanner.add(vp);
-		/*showUMLSState.addStyleName("logoutPanel");*/
-		//topBanner.add(showUMLSState);
+		
 		return topBanner;      
 	}
 	

@@ -16,6 +16,10 @@ public class UserNameWidget extends Composite {
 	private Widget  lastNameLabel = LabelBuilder.buildRequiredLabel(lastName, "Last Name");
 	
 	public UserNameWidget() {
+		firstName.getElement().setId("firstName_TextBox");
+		lastName.getElement().setId("lastName_TextBox");
+		middleInitial.getElement().setId("middleInitial_TextBox");
+		
 		Grid nameGrid = new Grid(2,3);
 		nameGrid.setWidget(0, 0, firstNameLabel);
 		nameGrid.setWidget(0, 1, middleInitialLabel);

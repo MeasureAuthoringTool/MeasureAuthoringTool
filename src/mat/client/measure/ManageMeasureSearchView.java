@@ -54,6 +54,11 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	
 	
 	public ManageMeasureSearchView() {
+		options.getElement().setId("options_ListBoxMVP");
+		createButton.getElement().setId("createButton_Button");
+		searchInput.getElement().setId("searchInput_TextBox");
+		searchButton.getElement().setId("searchButton_Button");
+		bulkExportButton.getElement().setId("bulkExportButton_Button");
 		mainPanel.getElement().setId("measureLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
 		mainPanel.add(errorMessages);

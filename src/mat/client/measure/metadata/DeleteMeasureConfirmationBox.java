@@ -54,6 +54,7 @@ public class DeleteMeasureConfirmationBox {
 		passwordPanel.getElement().setId("passwordPanel_VerticalPanel");
 		final HTML passwordText = new HTML("To confirm deletion enter your password below:");
 		final PasswordTextBox password = new PasswordTextBox();
+		password.getElement().setId("password_PasswordTextBox");
 		passwordPanel.add(passwordText);
 		passwordPanel.add(new SpacerWidget());
 		HorizontalPanel hp = new HorizontalPanel();
@@ -85,6 +86,7 @@ public class DeleteMeasureConfirmationBox {
 				
 			}
 		});
+		closeButton.getElement().setId("closeButton_Button");
 		password.addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
@@ -102,6 +104,7 @@ public class DeleteMeasureConfirmationBox {
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.getElement().setId("buttonPanel_HorizontalPanel");
 		buttonPanel.setSpacing(10);
+		save.getElement().setId("save_Button");
 		buttonPanel.add(save);
 		buttonPanel.setCellHorizontalAlignment(save,
 				HasHorizontalAlignment.ALIGN_RIGHT);

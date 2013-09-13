@@ -30,7 +30,7 @@ public class ExcelViewerWidget extends Composite{
 	};
 	  
 	  public ExcelViewerWidget(){
-    	     VerticalPanel exportViewerPanel = new VerticalPanel();
+		  	 VerticalPanel exportViewerPanel = new VerticalPanel();
     	     exportViewerPanel.getElement().setId("exportViewerPanel_VerticalPanel");
     	     exportViewerPanel.add(new Label("Excel Viewer is required to view and print the files available on this page."));
     	     HorizontalPanel exportViewerLinkHolder = new HorizontalPanel();
@@ -38,6 +38,8 @@ public class ExcelViewerWidget extends Composite{
     	     exportViewerHtml = new HTML("Install the latest version of");
     	     exportViewAnchor = new Anchor("Excel Viewer");
     	     exportViewAnchor.addClickHandler(exportViewClickHandler);
+    	     exportViewAnchor.getElement().setId("exportViewAnchor_Anchor");
+    	     exportlinkimage.getElement().setId("exportlinkimage_FocusableImageButton");
     	     exportViewerLinkHolder.add(exportViewerHtml);
     	     exportViewerLinkHolder.add(new HTML("&nbsp;"));
     	     exportViewerLinkHolder.add(exportlinkimage);

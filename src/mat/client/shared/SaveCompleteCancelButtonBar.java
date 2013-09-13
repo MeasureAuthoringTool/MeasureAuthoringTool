@@ -13,6 +13,9 @@ public class SaveCompleteCancelButtonBar extends Composite {
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
+		saveCompleteButton.getElement().setId("saveCompleteButton_Button");
+		saveButton.getElement().setId("saveButton_Button");
+		cancelButton.getElement().setId("cancelButton_Button");
 		buttonLayout.add(saveButton);
 		buttonLayout.add(saveCompleteButton);
 		buttonLayout.add(cancelButton);

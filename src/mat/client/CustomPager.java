@@ -267,6 +267,7 @@ public CustomPager(TextLocation location, Resources resources,
     firstPageAnchor.setTabIndex(0);
     firstPage = new ImageButton(resources.simplePagerFirstPage(),
         resources.simplePagerFirstPageDisabled(), disabledStyle);
+    firstPage.getElement().setId("firstPage_ImageButton");
     firstPage.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         firstPage();
@@ -297,6 +298,7 @@ public CustomPager(TextLocation location, Resources resources,
     
     nextPage = new ImageButton(resources.simplePagerNextPage(),
         resources.simplePagerNextPageDisabled(), disabledStyle);
+    nextPage.getElement().setId("nextPage_ImageButton");
     nextPage.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         nextPage();
@@ -325,6 +327,7 @@ public CustomPager(TextLocation location, Resources resources,
     prevPageAnchor.setTabIndex(0);
     prevPage = new ImageButton(resources.simplePagerPreviousPage(),
     								resources.simplePagerPreviousPageDisabled(), disabledStyle);
+    prevPage.getElement().setId("prevPage_ImageButton");
     prevPage.addClickHandler(new ClickHandler() {
       public void onClick(ClickEvent event) {
         previousPage();
@@ -354,6 +357,7 @@ public CustomPager(TextLocation location, Resources resources,
     if (showLastPageButton) {
     	lastPage = new ImageButton(resources.simplePagerLastPage(),
     			resources.simplePagerLastPageDisabled(), disabledStyle);
+    	lastPage.getElement().setId("lastPage_ImageButton");
     	lastPage.addClickHandler(new ClickHandler() {
     		public void onClick(ClickEvent event) {
     			lastPage();
@@ -387,6 +391,7 @@ public CustomPager(TextLocation location, Resources resources,
     	
     	fastForward = new ImageButton(resources.simplePagerFastForward(),
     			resources.simplePagerFastForwardDisabled(), disabledStyle);
+    	fastForward.getElement().setId("fastForward_ImageButton");
     	fastForward.addClickHandler(new ClickHandler() {
     		public void onClick(ClickEvent event) {
     			setPage(getPage() + getFastForwardPages());

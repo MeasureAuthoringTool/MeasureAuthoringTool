@@ -188,8 +188,10 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	
 	private Widget getImageAndCheckBox(String action, ImageResource url, String key,String name){
 		HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.getElement().setId("hPanel_HorizontalPanel");
 		hPanel.setStyleName("exportCheckBox");
 		CustomButton image = new CustomButton();
+		image.getElement().setId("image_CustomButton");
 		image.removeStyleName("gwt-button");
 		image.setStylePrimaryName("invisibleButtonText");
 		image.setTitle(action);
@@ -199,6 +201,7 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		hPanel.add(image);
 				
 		CustomCheckBox checkBox = new CustomCheckBox("Select Record to Export", false);	
+		checkBox.getElement().setId("checkBox_CustomcheckBox");
 		checkBox.setStyleName("centerAligned");
 		checkBox.setFormValue(key);
 		hPanel.add(checkBox);

@@ -68,6 +68,7 @@ public class DateBoxWithCalendar extends Composite{
 		this.showInvalidMessage = showInvalidMessage;
 		this.maxLength = maxLength;
 		dateBox = new TextBox();
+		dateBox.getElement().setId("dateBox_TextBox");
 		invLabel = (Label) LabelBuilder.buildInvisibleLabelWithContent(new Label(), "Input Date", "Input Date");
 		dateBox.setStylePrimaryName("no-border");
 		panel.getElement().setId("panel_HorizontalPanel");
@@ -177,6 +178,7 @@ public class DateBoxWithCalendar extends Composite{
 		panel.add(dateBox);
 		//calendar = new FocusableImageButton(ImageResources.INSTANCE.calendar(), "Calendar");
 		calendar = new CustomButton();
+		calendar.getElement().setId("calendar_CustomButton");
 		calendar.removeStyleName("gwt-button");
 		calendar.setStylePrimaryName("invisibleButtonText");
 		calendar.setResource(ImageResources.INSTANCE.calendar(), "Calendar");

@@ -124,6 +124,7 @@ public class ComparisonDialogBox{
 
 		//Qunatity Text Box.
 		final TextBox quantity = new TextBox();
+		quantity.getElement().setId("quantity_TextBox");
 		if(quantityValue!=null){
 			quantity.setValue(quantityValue);
 		}
@@ -173,6 +174,7 @@ public class ComparisonDialogBox{
 				xmlTreeDisplay.setDirty(true);
 			}
 		});
+		save.getElement().setId("save_Button");
 		// Add a Close button at the bottom of the dialog
 		Button closeButton = new Button("Cancel", new ClickHandler() {
 			@Override
@@ -180,6 +182,7 @@ public class ComparisonDialogBox{
 				dialogBox.hide();		
 			}
 		});
+		closeButton.getElement().setId("closeButton_Button");
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.setSpacing(10);
 		buttonPanel.add(save);

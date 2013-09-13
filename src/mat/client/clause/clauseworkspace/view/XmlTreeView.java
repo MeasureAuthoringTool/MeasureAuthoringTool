@@ -26,7 +26,6 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
@@ -93,6 +92,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		createRootNode(cellTreeNode);
 		addHandlers();
 		mainPanel.getElement().setId("mainPanel_FlowPanel");
+		saveBtn.getElement().setId("saveBtn_Button");
+		buttonExpand.getElement().setId("buttonExpand_Button");
+		buttonCollapse.getElement().setId("buttonCollapse_Button");
 	}
 
 

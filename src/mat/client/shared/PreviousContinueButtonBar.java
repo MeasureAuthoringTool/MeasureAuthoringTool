@@ -73,7 +73,8 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 	
 	public PreviousContinueButtonBar() {
 		continueButton.addStyleName("continueButton");
-		
+		continueButton.getElement().setId("continueButton_MATAnchor");
+		previousButton.getElement().setId("previousButton_MATAnchor");
 		
 		SimplePanel sPanel = new SimplePanel();
 		sPanel.getElement().setId("sPanel_SimplePanel");

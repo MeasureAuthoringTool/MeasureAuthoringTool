@@ -15,6 +15,13 @@ public class SecurityQuestionsWidget extends Composite {
 	private TextBox answer3 = new TextBox();
 	
 	public SecurityQuestionsWidget() {
+		answer1.getElement().setId("answer1_TextBox");
+		answer2.getElement().setId("answer2_TextBox");
+		answer3.getElement().setId("answer3_TextBox");
+		securityQuestion1.getElement().setId("securityQuestion1_ListBoxMVP");
+		securityQuestion2.getElement().setId("securityQuestion2_ListBoxMVP");
+		securityQuestion3.getElement().setId("securityQuestion3_ListBoxMVP");
+		
 		FlowPanel container = new FlowPanel();
 		container.getElement().setId("container_FlowPanel");
 		container.add(LabelBuilder.buildLabel(securityQuestion1, "Security Question 1"));

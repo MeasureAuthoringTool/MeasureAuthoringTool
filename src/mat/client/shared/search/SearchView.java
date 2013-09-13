@@ -523,6 +523,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					HorizontalPanel panel = new HorizontalPanel();
 					panel.add(new Label("Export"));
 					Anchor clearAnchor = new Anchor("(Clear)");
+					clearAnchor.getElement().setId("clearAnchor_Anchor");
 					clearAnchor.setTitle("Clear All Selection");
 					clearAnchor.setStyleName("clearAnchorStyle");
 					
@@ -544,7 +545,8 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 					HorizontalPanel panel = new HorizontalPanel();
 					panel.add(new Label("Transfer"));
 					Anchor clearAnchor = new Anchor("(Clear)");
-					clearAnchor.setTitle("Clear Selction");
+					clearAnchor.getElement().setId("clearAnchor_Anchor");
+					clearAnchor.setTitle("Clear Selection");
 					clearAnchor.setStyleName("clearAnchorStyle");
 					clearAnchor.addClickHandler(new ClickHandler() {
 						@Override

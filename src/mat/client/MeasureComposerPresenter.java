@@ -50,7 +50,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
     
 	@SuppressWarnings("unchecked")
 	public MeasureComposerPresenter() {
-		
+		buttonBar.getElement().setId("buttonBar_PreviousContinueButtonBar");
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
 		subSkipContentHolder.getElement().setId("subSkipContentHolder_SimplePanel");
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();

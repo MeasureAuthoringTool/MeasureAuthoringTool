@@ -107,6 +107,7 @@ public class ErrorMessageDisplay extends Composite implements ErrorMessageDispla
 		hPanel.add(msgPanel);
 		for (String btnName : buttonNames) {
 			SecondaryButton button1 = new SecondaryButton(btnName);
+			button1.getElement().setId("button1_SecondaryButton");
 			buttons.add(button1);
 			hPanel.add(button1);
 		}

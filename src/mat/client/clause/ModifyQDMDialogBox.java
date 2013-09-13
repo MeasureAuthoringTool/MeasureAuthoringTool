@@ -13,6 +13,7 @@ public class ModifyQDMDialogBox {
 	
 	public static void showModifyDialogBox(Widget widget, QualityDataSetDTO modifyValueSetDTO){
 		
+		dialogBox.getElement().setId("dialogBox_DialogBox");
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
 		String text = "Modify Applied QDM ( ";

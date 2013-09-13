@@ -193,6 +193,7 @@ public abstract class MainLayout {
 		setId(topBanner, "title");
 		topBanner.setStylePrimaryName("topBanner");
 		final FocusableImageButton titleImage= new FocusableImageButton(ImageResources.INSTANCE.g_header_title(),"Measure Authoring Tool");
+		titleImage.getElement().setId("titleImage_FocusableImageButton");
 		titleImage.setStylePrimaryName("topBannerImage");
 		Mat.removeInputBoxFromFocusPanel(titleImage.getElement());
 		HTML desc = new HTML("<h4 style=\"font-size:0;\">Measure Authoring Tool</h4>");// Doing this for 508 when CSS turned off
@@ -200,7 +201,7 @@ public abstract class MainLayout {
 		DOM.insertChild(titleImage.getElement(), heading, 0);
 		topBanner.add(titleImage);
 		logOutPanel = new HorizontalFlowPanel();
-		logOutPanel.getElement().setId("logOutPanel_SimplePanel");
+		logOutPanel.getElement().setId("logOutPanel_HorizontalFlowPanel");
 		logOutPanel.addStyleName("logoutPanel");
 		showUMLSState = buildUMLStatePanel();
 		showUMLSState.addStyleName("umlsStatePanel");

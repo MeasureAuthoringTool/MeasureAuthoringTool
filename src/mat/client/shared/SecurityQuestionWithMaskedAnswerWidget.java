@@ -20,6 +20,13 @@ public class SecurityQuestionWithMaskedAnswerWidget extends Composite {
 	private String answerText2;
 	private String answerText3;
 	public SecurityQuestionWithMaskedAnswerWidget() {
+		answer1.getElement().setId("answer1_TextBox");
+		answer2.getElement().setId("answer2_TextBox");
+		answer3.getElement().setId("answer3_TextBox");
+		securityQuestion1.getElement().setId("securityQuestion1_ListBoxMVP");
+		securityQuestion2.getElement().setId("securityQuestion2_ListBoxMVP");
+		securityQuestion3.getElement().setId("securityQuestion3_ListBoxMVP");
+		
 		FlowPanel container = new FlowPanel();
 		container.getElement().setId("container_FlowPanel");
 		FlowPanel fp = new FlowPanel();

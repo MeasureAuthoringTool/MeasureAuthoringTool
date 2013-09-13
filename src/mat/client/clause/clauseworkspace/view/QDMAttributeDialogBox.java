@@ -155,6 +155,7 @@ public class QDMAttributeDialogBox {
 				
 				if(QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text) || CHECK_IF_PRESENT.equalsIgnoreCase(text) || COMPARISON.equalsIgnoreCase(text)){
 					TextBox textBox = new TextBox();
+					textBox.getElement().setId("textBox_TextBox_1");
 					textBox.setEnabled(false);
 					textBox.setWidth("8em");
 					grid.setWidget(rowNum, 3, textBox);
@@ -169,6 +170,7 @@ public class QDMAttributeDialogBox {
 					panel.getElement().setId("panel_HorizontalPanel");
 					
 					TextBox textBox = new TextBox();
+					textBox.getElement().setId("textBox_TextBox_2");
 					textBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
 					textBox.setWidth("3em");
 					textBox.setHeight("19");
@@ -249,6 +251,7 @@ public class QDMAttributeDialogBox {
 			grid.setWidget(i, 2, modeListBox);
 						
 			TextBox textBox = new TextBox();
+			textBox.getElement().setId("textBox_TextBox_3");
 			textBox.setEnabled(false);
 			textBox.setWidth("8em");
 			grid.setWidget(i, 3, textBox);	
@@ -378,10 +381,12 @@ public class QDMAttributeDialogBox {
 	    
 	    //Add a Add New button
 	    Button addNewButton = new Button("Add New");
+	    addNewButton.getElement().setId("addNewButton_Button");
 	    //Handler to Add New rows to the attribute table.
 		addNewButton.addClickHandler(new AddNewQDMAttributeClickHandler(qdmDataType, mode, grid));
 		//Add a Delete Selected button
 	    Button deleteSelectedButton = new Button("Delete Selected");
+	    deleteSelectedButton.getElement().setId("deleteSelectedButton_Button");
 	    deleteSelectedButton.addClickHandler(new DeleteSelectedClickHandler(grid));
 	    
 	    HorizontalPanel horizontalDeleteAddNewPanel = new HorizontalPanel();
@@ -401,6 +406,7 @@ public class QDMAttributeDialogBox {
 				qdmAttributeDialogBox.hide();		
 			}
 		});
+	    closeButton.getElement().setId("closeButton_Button");
 	    
 	    //Add a Save button at the bottom of the dialog
 	    Button saveButton = new Button("OK", new ClickHandler() {
@@ -415,6 +421,7 @@ public class QDMAttributeDialogBox {
 				}
 			}
 		});
+	    saveButton.getElement().setId("saveButton_Button");
 	    
 	    HorizontalPanel horizontalSaveClosePanel = new HorizontalPanel();
 	    horizontalSaveClosePanel.getElement().setId("horizontalSaveClosePanel_HorizontalPanel");
@@ -675,6 +682,7 @@ public class QDMAttributeDialogBox {
 					panel.setSpacing(0);
 					
 					TextBox textBox = new TextBox();
+					textBox.getElement().setId("textBox_TextBox_4");
 					textBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
 					textBox.setWidth("3em");
 					textBox.setHeight("19");

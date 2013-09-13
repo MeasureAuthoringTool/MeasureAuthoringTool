@@ -45,6 +45,7 @@ public class AuditLogWidget extends Composite{
 		
 		if(additionalInfo != null){
 			TextArea additionalInfoTxtArea = new TextArea();
+			additionalInfoTxtArea.getElement().setId("additionalInfoTxtArea_TextArea");
 			additionalInfoTxtArea.setReadOnly(true);
 			additionalInfoTxtArea.setWidth("90%");
 			additionalInfoTxtArea.setHeight("80px");

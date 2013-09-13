@@ -13,11 +13,13 @@ public class ChangePasswordWidget extends Composite {
 		mainPanel.getElement().setId("mainPanel_FlowPanel");
 		
 		password = new PasswordTextBox();
+		password.getElement().setId("password_PasswordTextBox");
 		mainPanel.add(LabelBuilder.buildRequiredLabel(password, "New Password"));
 		mainPanel.add(password);
 		mainPanel.add(new SpacerWidget());
 		
 		confirmPassword = new PasswordTextBox();
+		confirmPassword.getElement().setId("confirmPassword_PasswordTextBox");
 		mainPanel.add(LabelBuilder.buildRequiredLabel(confirmPassword, "Confirm New Password"));
 		mainPanel.add(confirmPassword);
 		mainPanel.add(new SpacerWidget());

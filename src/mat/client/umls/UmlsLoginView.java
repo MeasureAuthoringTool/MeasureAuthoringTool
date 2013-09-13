@@ -116,7 +116,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		
-		HTML externalDisclamerText = new HTML("<b>You will be subject to the destination site's Privacy Policy when you follow the link.</b>");
+		HTML externalDisclamerText = new HTML("You are leaving the Measure Authoring Tool and entering another Web site.The Measure Authoring Tool cannot attest to the accuracy of information provided by linked sites.You will be subject to the destination site's Privacy Policy when you leave the Measure Authoring Tool. ");
 		buttonBar.getSaveButton().setText("I Agree");
 		buttonBar.getSaveButton().setTitle("I Agree");
 		buttonBar.getCancelButton().setText("I Disagree");
@@ -125,7 +125,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		externalLinkDisclaimer.add(new SpacerWidget());
 		externalLinkDisclaimer.add(buttonBar);
 		externalLinkDisclaimer.setVisible(false);
-		externalLinkDisclaimer.addStyleName("loginContentPanel");
+		externalLinkDisclaimer.addStyleName("disclaimer");
 		mainPanel.add(externalLinkDisclaimer);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());

@@ -26,7 +26,7 @@ class TimeoutManager {
 	private static final int REPEATED_WARNING_INTERVAL = 2 * 60 * 1000;
 	private static final int TIMEOUTTHRESHOLD_TIME = WARNING_TIME+WARNING_INTERVAL;
 	private Image alertIcon = new Image(ImageResources.INSTANCE.msg_error());
-	private static final int UMLS_TIME_OUT = 8 * 60 * 60 * 1000;
+	private static final int UMLS_TIME_OUT = 5 * 60 * 60 * 1000;//8 * 60 * 60 * 1000;
 	private static HTML warningBannerWidget ;
 	
 	

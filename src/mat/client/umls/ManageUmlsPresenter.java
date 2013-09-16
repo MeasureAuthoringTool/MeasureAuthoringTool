@@ -32,7 +32,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		public HasValue<String> getPassword();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		public HasHTML getInfoMessage();
-		public void setWelcomeVisible(boolean value);
+		
 		public void setInfoMessageVisible(boolean value);
 		public Widget asWidget();
 		public HasKeyDownHandlers getUseridField();

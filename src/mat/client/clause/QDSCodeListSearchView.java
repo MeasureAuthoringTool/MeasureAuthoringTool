@@ -2,7 +2,6 @@ package mat.client.clause;
 
 import java.util.List;
 
-import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -12,7 +11,6 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
@@ -24,36 +22,30 @@ import mat.client.shared.search.SearchView;
 import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
-import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
-import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 
 
 public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.SearchDisplay {
 
 	private SimplePanel containerPanel = new SimplePanel();
 	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
-	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without value set");
-	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with value set");
+	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without VSAC value set");
+	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with VSAC value set");
 	private TextBox userDefinedInput = new TextBox();
 	private TextBox searchInput = new TextBox();
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
@@ -103,7 +95,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		successMessagePanel.clear();
 		messageFocus = new FocusableWidget(successMessagePanel);
 		VerticalPanel vp = new VerticalPanel();
-		FlowPanel header = new FlowPanel();
+		/*FlowPanel header = new FlowPanel();
 		header.addStyleName("codeListHeader");
 		Label codeListLabel = new Label("QDM");
 		FocusableWidget  labelFocus = new FocusableWidget(codeListLabel);
@@ -111,7 +103,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		dataTypeInput.addValueChangeHandler(dataTypeChangeHandler);
 		specificOccurrence.setEnabled(false);
 		addToMeasure.setEnabled(false);
-		
+		*/
 	
 		vp.add(buildCellTableWidget());
 		vp.add(new SpacerWidget());
@@ -237,7 +229,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	
 	private Widget buildCellTableWidget(){
 		FlowPanel searchCriteriaPanel = new FlowPanel();
-		HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
+		searchCriteriaPanel.setSize("800px", "200px");
+		/*HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
 		searchCriteriaPanel.add(new SpacerWidget());
 		Widget searchWidget = buildSearchWidget();
 		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
@@ -254,7 +247,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		searchCriteriaPanel.add(buildInitialDisabledWidget());
 		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(addToMeasure);
+		searchCriteriaPanel.add(addToMeasure);*/
 		
 		disclosurePanelCellTable.add(searchCriteriaPanel);
 		disclosurePanelCellTable.setOpen(true);
@@ -486,10 +479,13 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 
 	@Override
 	public void buildQDSDataTable(QDSCodeListSearchModel results ,boolean isTableEnabled) {
-		buildTableQDS(results,isTableEnabled);
+		/**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
+		**/
+		//buildTableQDS(results,isTableEnabled);
 	}
-	
-	private void buildTableQDS( QDSCodeListSearchModel results,boolean isTableEnabled){
+	/**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
+	**/
+	/*private void buildTableQDS( QDSCodeListSearchModel results,boolean isTableEnabled){
 		 
 		CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -519,7 +515,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		view.getvPanelForQDMTable().add(new SpacerWidget());
 		view.getvPanelForQDMTable().add(spager);
 
-	}
+	}*/
 
 	@Override
 	public void setAllDataTypeOptions(List<? extends HasListBox> texts) {

@@ -2,7 +2,6 @@ package mat.client.clause;
 
 import java.util.List;
 
-import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -12,7 +11,6 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
@@ -24,7 +22,6 @@ import mat.client.shared.search.SearchView;
 import mat.model.CodeListSearchDTO;
 import mat.shared.ConstantMessages;
 
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -32,29 +29,25 @@ import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
-import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
 
 public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter.SearchDisplay {
 	
 	HorizontalPanel mainPanel = new HorizontalPanel();
 	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	
-	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without value set");
-	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with value set");
+	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element with VSAC value set");
+	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element without VSAC value set");
 	private TextBox searchInput = new TextBox();
 	private TextBox userDefinedInput = new TextBox();
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
@@ -74,21 +67,21 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private FocusableWidget messageFocus;
 	VerticalPanel listBoxVPanel = new VerticalPanel();
 	CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
-    private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
+   private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
     private String cautionMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Data Type' for an applied QDM element will automatically delete invalid attributes  <br/> associated with this element in the Clause Workspace." +
     								"</div>";
     
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
 		@Override
 		public void onValueChange(ValueChangeEvent<String> event) {
-			specificOccurrence.setValue(false);
+			/*specificOccurrence.setValue(false);
 			String selectedValue = event.getValue();
 		    if(!selectedValue.isEmpty()&& !selectedValue.equals("")){
 		    	addToMeasure.setEnabled(true);
 		    }
 		    else{
 		    	addToMeasure.setEnabled(false);
-		    }
+		    }*/
 		}
 	};
 	
@@ -98,15 +91,15 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		messageFocus = new FocusableWidget(successMessagePanel);
 		VerticalPanel vp = new VerticalPanel();
 		vp.getElement().setAttribute("id", "ModifyVerticalPanel");
-		FlowPanel header = new FlowPanel();
+		/*FlowPanel header = new FlowPanel();
 		header.getElement().setAttribute("id", "ModifyHeaderFlowPanel");
 		header.addStyleName("codeListHeader");
 		Label codeListLabel = new Label("QDM");
 		FocusableWidget  labelFocus = new FocusableWidget(codeListLabel);
 		header.add(labelFocus);
-		dataTypeInput.addValueChangeHandler(dataTypeChangeHandler);
-		specificOccurrence.setEnabled(false);
-		addToMeasure.setEnabled(false);
+		//dataTypeInput.addValueChangeHandler(dataTypeChangeHandler);
+		//specificOccurrence.setEnabled(false);
+		//addToMeasure.setEnabled(false);*/
 		
 		vp.add(buildCellTableWidget());
 		vp.add(new SpacerWidget());
@@ -246,7 +239,8 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchCriteriaPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.addStyleName("leftAligned");
-		Widget searchWidget = buildSearchWidget();
+		searchCriteriaPanel.setSize("800px", "200px");
+		/*Widget searchWidget = buildSearchWidget();
 		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
 		searchInput.setHeight("18px");
 		searchCriteriaPanel.add(label);
@@ -275,7 +269,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		cancel.setStyleName("rightAlignSecondaryButton");
 		buttonLayout.add(addToMeasure);
 		buttonLayout.add(cancel);
-		searchCriteriaPanel.add(buttonLayout);
+		searchCriteriaPanel.add(buttonLayout);*/
 		
 		disclosurePanelCellTable.add(searchCriteriaPanel);
 		disclosurePanelCellTable.setOpen(true);
@@ -434,8 +428,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		view.setEnabled(enabled);
 	}
 
-	
-	public void buildTableQDS( QDSCodeListSearchModel results,Boolean isTableEnabled){
+	/**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
+	**/
+	/*public void buildTableQDS( QDSCodeListSearchModel results,Boolean isTableEnabled){
 		 table = new CellTable<CodeListSearchDTO>();
 		table.getElement().setAttribute("id", "ModifyAvailableValueSetTable");
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -462,7 +457,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		view.getvPanelForQDMTable().add(new SpacerWidget());
 		view.getvPanelForQDMTable().add(spager);
 
-	}
+	}*/
 
 	public HorizontalPanel getMainPanel() {
 		return mainPanel;
@@ -547,7 +542,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 
 	@Override
 	public void buildQDSDataTable(QDSCodeListSearchModel results,Boolean isTableEnabled) {
-		buildTableQDS(results,isTableEnabled);
+		/**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
+		**/
+		//buildTableQDS(results,isTableEnabled);
 		
 	}
 

@@ -67,6 +67,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(true);
+				display.getExternalLinkDisclaimer().getElement().setAttribute("id", "ExternalLinkDisclaimer");
+				display.getExternalLinkDisclaimer().getElement().setAttribute("role", "alert");
 			}
 		});
 		
@@ -75,6 +77,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(true);
+				display.getExternalLinkDisclaimer().getElement().setAttribute("id", "ExternalLinkDisclaimer");
+				display.getExternalLinkDisclaimer().getElement().setAttribute("role", "alert");
 			}
 		});
 		
@@ -83,6 +87,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(false);
+				display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
+				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
 				Window.open(ClientConstants.EXT_LINK_UMLS, "_blank", "");
 			}
 		});
@@ -93,6 +99,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 			
 				display.getExternalLinkDisclaimer().setVisible(false);
+				display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
+				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
 			}
 		});
 		

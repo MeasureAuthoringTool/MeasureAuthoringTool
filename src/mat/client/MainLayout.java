@@ -114,7 +114,11 @@ public abstract class MainLayout {
 	private Panel buildUMLStatePanel() {
 		showUMLSState = new HorizontalFlowPanel();
 		showUMLSState.getElement().setAttribute("id", "showUMLSStateContainer");
-		
+		showUMLSState.getElement().setAttribute("aria-role", "application");
+		showUMLSState.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		showUMLSState.getElement().setAttribute("aria-live", "assertive");
+		showUMLSState.getElement().setAttribute("aria-atomic", "true");
+		showUMLSState.getElement().setAttribute("aria-relevant", "all");
 		
 		activeUmlsImage = new Image(ImageResources.INSTANCE.bullet_green());
 		activeUmlsImage.setStylePrimaryName("imageMiddleAlign");
@@ -138,6 +142,7 @@ public abstract class MainLayout {
 		
 		getShowUMLSState().add(activeUmlsImage);
 		getShowUMLSState().add(umlsActiveStatusLabel);
+		getShowUMLSState().getElement().setAttribute("role", "alert");
 	}
 	
 	public static void hideUMLSActive(){
@@ -147,7 +152,7 @@ public abstract class MainLayout {
 		
 		getShowUMLSState().add(inActiveUmlsImage);
 		getShowUMLSState().add(umlsInactiveStatusLabel);
-		
+		getShowUMLSState().getElement().setAttribute("role", "alert");
 	}
 	
 	/**

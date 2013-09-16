@@ -20,7 +20,6 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
@@ -34,7 +33,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 
 
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
-	private Panel welcomePanel;
+	
 	private HTML infoMessage = new HTML();
 	private Panel infoMessagePanel;
 	private TextBox userid;
@@ -52,10 +51,6 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		mainPanel.setStyleName("contentPanel");
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
-		
-		/*welcomePanel = wrapInSpacer(new WelcomeWidgetUmls());
-		mainPanel.add(welcomePanel);*/
-		
 		Grid infoGrid = new Grid(2,2);
 		FocusableImageButton focusableImageButton = new FocusableImageButton(ImageResources.INSTANCE.icon_success_sm(),"Success");
 		infoGrid.setWidget(0, 0, focusableImageButton);
@@ -95,19 +90,17 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		
 		loginPanel.setStylePrimaryName("loginContentPanel");
 		
-		HorizontalPanel hPanel = new HorizontalPanel();
+		VerticalPanel vPanel = new VerticalPanel();
 		umlsExternalLink = new Anchor("Need a UMLS license?");
-		HTML or = new HTML("&nbsp;or&nbsp;");
 		umlsTroubleLogging = new Anchor("Trouble Logging in?");
 		umlsExternalLink.setTitle("Need UMLS license");
 		umlsExternalLink.getElement().setAttribute("alt", "Need UMLS license");
 		umlsTroubleLogging.setTitle("Trouble Logging in");
 		umlsTroubleLogging.getElement().setAttribute("alt", "Trouble Logging in");
-		hPanel.add(umlsExternalLink);
-		hPanel.add(or);
-		hPanel.add(umlsTroubleLogging);
+		vPanel.add(umlsExternalLink);
+		vPanel.add(umlsTroubleLogging);
 		loginPanel.add(new SpacerWidget());
-		loginPanel.add(hPanel);
+		loginPanel.add(vPanel);
 		
 		password.setWidth("200px");
 		simplePanel.add(loginPanel);
@@ -163,11 +156,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		return infoMessage;
 	}
 
-	@Override
-	public void setWelcomeVisible(boolean value) {
-		MatContext.get().setVisible(welcomePanel,value);
-	}
-
+	
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;

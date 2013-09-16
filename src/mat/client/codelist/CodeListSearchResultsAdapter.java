@@ -59,9 +59,10 @@ class CodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 						observer.onHistoryClicked(result);
 						//observer.onCloneClicked(result);
 					}
-					else if("clone".equals(action)){
+					// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+					/*else if("clone".equals(action)){
 						observer.onCloneClicked(result);
-					}
+					}*/
 					else if("export".equals(action)){
 						observer.onExportClicked(result);
 					}
@@ -124,10 +125,11 @@ class CodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 		case 5:
 			value = getImage("history", ImageResources.INSTANCE.clock(),model.getData().get(row).getId());
 			break;
-		case 6:
+			// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+		/*case 6:
 			value = getImage("clone", ImageResources.INSTANCE.g_page_copy(), model.getData().get(row).getId());
-			break;
-		case 7:
+			break;*/
+		case 6:
 			value = getImage("export", ImageResources.INSTANCE.g_package_go(), model.getData().get(row).getId());
 			break;
 			    

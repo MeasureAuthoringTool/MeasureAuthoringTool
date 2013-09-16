@@ -7,8 +7,6 @@ import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.codelist.events.AddCodeToCodeListEvent;
 import mat.client.codelist.events.CancelAddCodeEvent;
 import mat.client.codelist.events.CancelEditCodeListEvent;
-import mat.client.codelist.events.CreateNewCodeListEvent;
-import mat.client.codelist.events.CreateNewGroupedCodeListEvent;
 import mat.client.codelist.events.ExternalViewerEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.shared.ContentWithHeadingWidget;
@@ -45,8 +43,9 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 	
 	private int default_page_number = 1;
 	public static interface CodeListDetailDisplay extends BaseDisplay {
-		public HasClickHandlers getCreateNewButton();
-		public HasClickHandlers getCreateNewGroupedButton();
+		// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+		/*public HasClickHandlers getCreateNewButton();
+		public HasClickHandlers getCreateNewGroupedButton();*/
 		public HasClickHandlers getAddCodeButton();
 		public String getTitle();
 		public String getCategoryValue();
@@ -218,8 +217,8 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 				MatContext.get().getEventBus().fireEvent(new CancelEditCodeListEvent());
 			}
 		});
-		
-       detailDisplay.getCreateNewButton().addClickHandler(new ClickHandler() {
+		// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+       /*detailDisplay.getCreateNewButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -233,7 +232,7 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 			public void onClick(ClickEvent event) {
 				MatContext.get().getEventBus().fireEvent(new CreateNewGroupedCodeListEvent());
 			}
-		});
+		});*/
 		detailDisplay.getAddCodeButton().addClickHandler(new ClickHandler() {
 			
 			@Override

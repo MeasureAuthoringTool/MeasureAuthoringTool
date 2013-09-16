@@ -7,8 +7,6 @@ import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
 import mat.client.codelist.events.CancelEditCodeListEvent;
-import mat.client.codelist.events.CreateNewCodeListEvent;
-import mat.client.codelist.events.CreateNewGroupedCodeListEvent;
 import mat.client.codelist.events.EditCodeListEvent;
 import mat.client.codelist.events.EditGroupedCodeListEvent;
 import mat.client.event.MeasureSelectedEvent;
@@ -70,10 +68,10 @@ public class ManageCodeListSearchPresenter {
 		public HasSortHandler getPageSortTool();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		
-		/*US537*/
-		public HasClickHandlers getCreateButton();
-		public void clearSelections();
-		public String getSelectedOption();
+		// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+		//public HasClickHandlers getCreateButton();
+		//public void clearSelections();
+	//	public String getSelectedOption();
 		public HasPageSelectionHandler getPageSelectionTool();
 		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
 		public int getPageSize();
@@ -181,7 +179,8 @@ public class ManageCodeListSearchPresenter {
 		public void onClick(ClickEvent event) {
 			draftDisplay.getErrorMessageDisplay().clear();
 			draftDisplay.getSuccessMessageDisplay().clear();
-			searchDisplay.clearSelections();
+			// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+			//searchDisplay.clearSelections();
 			MatContext.get().getEventBus().fireEvent(new CancelEditCodeListEvent());
 			displaySearch();
 		}
@@ -547,8 +546,8 @@ public class ManageCodeListSearchPresenter {
 				search(lastSearchText, lastStartIndex, currentSortColumn, sortIsAscending,defaultCodeList, filter);
 			}
 		});
-		/*US537*/
-		searchDisplay.getCreateButton().addClickHandler(new ClickHandler() {
+		// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+		/*searchDisplay.getCreateButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				if(searchDisplay.getSelectedOption().equalsIgnoreCase(ConstantMessages.CREATE_NEW_GROUPED_VALUE_SET)){
@@ -561,7 +560,7 @@ public class ManageCodeListSearchPresenter {
 					searchDisplay.getErrorMessageDisplay().setMessage("Please select an option from the Create list box.");
 				}
 			}
-		});
+		});*/
 		
 		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {

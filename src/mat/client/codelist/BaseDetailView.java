@@ -2,7 +2,6 @@ package mat.client.codelist;
 
 import java.util.List;
 
-import mat.client.ImageResources;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -19,16 +18,13 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -44,8 +40,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	protected SimplePanel mainPanel = new SimplePanel();
 
 	protected HTML required = new HTML(RequiredIndicator.get() + " indicates required field");
-	private Anchor createNewAnchor = new Anchor(ConstantMessages.CREATE_NEW_VALUE_SET);
-	private Anchor createNewGroupedAnchor = new Anchor(ConstantMessages.CREATE_NEW_GROUPED_VALUE_SET);
+	// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+	//private Anchor createNewAnchor = new Anchor(ConstantMessages.CREATE_NEW_VALUE_SET);
+	//private Anchor createNewGroupedAnchor = new Anchor(ConstantMessages.CREATE_NEW_GROUPED_VALUE_SET);
 	
 	protected TextBox nameInput = new TextBox();
 	
@@ -71,7 +68,7 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	
 	protected SaveCompleteCancelButtonBar buttonBar = new SaveCompleteCancelButtonBar();
 	protected SummaryWidgetBase<?> codeListsSummary = getSummaryWidget();
-	private Panel createNewPanel;
+	//private Panel createNewPanel;
 	private Label lastModify = new Label("Last Modified");
 	public Label otherSpecify = (Label) LabelBuilder.buildRequiredLabel(stewardOtherInput, "User Defined Steward");
 	
@@ -189,8 +186,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		buttonBar.getSaveCompleteButton().setTitle("Save As Complete");
 		buttonBar.getCancelButton().setTitle("Cancel");
 		fPanel.add(buttonBar);
-		createNewPanel = buildCodeListLink();
-		fPanel.add(createNewPanel);
+		// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+		//createNewPanel = buildCodeListLink();
+		//fPanel.add(createNewPanel);
 		
 		mainContent.add(fPanel);
 		mainContent.add(codeListsSummary);
@@ -386,42 +384,43 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	public void setOIDButtonEnabled(boolean enabled) {
 		generateOidButton.setEnabled(enabled);
 	}
-	public HasClickHandlers getCreateNewButton() {
+	// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+	/*public HasClickHandlers getCreateNewButton() {
 		return createNewAnchor;
 	}
 	
 	public HasClickHandlers getCreateNewGroupedButton() {
 		return createNewGroupedAnchor;
-	}
+	}*/
 	
 	public HasClickHandlers getGenerateOidButton() {
 		return generateOidButton;
 	}
-	
-	private Panel buildCodeListLink() {
-		HorizontalPanel fp = new HorizontalPanel();
-		fp.addStyleName("codeListStyle");
-		createNewAnchor.setTitle("Create Value Set");
-		createNewAnchor.getElement().setAttribute("alt", "Create Value Set");
-		createNewGroupedAnchor.setTitle("Create Grouped Value Set");
-		createNewGroupedAnchor.getElement().setAttribute("alt", "Create Grouped Value Set");
-		HorizontalPanel codeList = new HorizontalPanel();
-		codeList.addStyleName("codeListLink");
-		Image addImage1 = new Image(ImageResources.INSTANCE.addImage());
-		addImage1.setAltText("Create Value Set");
-		codeList.add(addImage1);
-		codeList.add(createNewAnchor);
+	// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+	//private Panel buildCodeListLink() {
+		//HorizontalPanel fp = new HorizontalPanel();
+		//fp.addStyleName("codeListStyle");
+	//	createNewAnchor.setTitle("Create Value Set");
+	//	createNewAnchor.getElement().setAttribute("alt", "Create Value Set");
+	//	createNewGroupedAnchor.setTitle("Create Grouped Value Set");
+	//	createNewGroupedAnchor.getElement().setAttribute("alt", "Create Grouped Value Set");
+		//HorizontalPanel codeList = new HorizontalPanel();
+		//codeList.addStyleName("codeListLink");
+		//Image addImage1 = new Image(ImageResources.INSTANCE.addImage());
+		//addImage1.setAltText("Create Value Set");
+		//codeList.add(addImage1);
+		//codeList.add(createNewAnchor);
 		
-		HorizontalPanel groupedCodeList = new HorizontalPanel();
-		Image addImage2 = new Image(ImageResources.INSTANCE.addImage());
-		addImage2.setAltText("Create Grouped Value Set");
-		groupedCodeList.add(addImage2);
-		groupedCodeList.add(createNewGroupedAnchor);
+		//HorizontalPanel groupedCodeList = new HorizontalPanel();
+		//Image addImage2 = new Image(ImageResources.INSTANCE.addImage());
+		//addImage2.setAltText("Create Grouped Value Set");
+		//groupedCodeList.add(addImage2);
+		//groupedCodeList.add(createNewGroupedAnchor);
 		
-		fp.add(codeList);
-		fp.add(groupedCodeList);
-		return fp;
-	}
+		//fp.add(codeList);
+		//fp.add(groupedCodeList);
+		//return fp;
+	//}
 	
 	//US 413
 	/* Clears out the Steward Other panel and re-draw the Steward Other input components

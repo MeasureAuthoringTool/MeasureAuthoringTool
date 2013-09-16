@@ -14,9 +14,10 @@ public class ManageCodeListSearchModel implements SearchResults<CodeListSearchDT
 	//US190, US192
 	
 	
-	private String[] headers = new String[] { "Name","Last Modified","Steward","Category","Code System", "History","Clone","Export"};
+	// Clone Column removed for User Story MAT-2372 : Remove Value Set Creation.
+	private String[] headers = new String[] { "Name","Last Modified","Steward","Category","Code System", "History","Export"};
 	private boolean[] sortable = new boolean[]{true,false,true, true, true, false,false,false}; //US 385
-	private String[] widths = new String[] { "25%","15%","20%", "10%", "10%", "5%","5%","5%"};
+	private String[] widths = new String[] { "25%","15%","20%", "10%", "10%", "5%","5%"};
 	
 
 	public String[] getHeaders() {

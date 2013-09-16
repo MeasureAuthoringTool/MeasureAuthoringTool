@@ -5,10 +5,8 @@ import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
@@ -17,11 +15,9 @@ import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
 import mat.client.util.ClientConstants;
 import mat.model.CodeListSearchDTO;
-import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
@@ -44,9 +40,9 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 	
 	private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
 	
-	/*US537*/
-	private Button createButton = new SecondaryButton("Create");
-	private ListBoxMVP options = new ListBoxMVP();
+	// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+	//private Button createButton = new SecondaryButton("Create");
+	//private ListBoxMVP options = new ListBoxMVP();
 
 	public ManageCodeListSearchView() {	
 		String currentUserRole = MatContext.get().getLoggedInUserRole();
@@ -56,14 +52,15 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 			view.buildDataTable(new ManageCodeListSearchModel());
 			Widget searchText = LabelBuilder.buildLabelWithEmbeddedLink(searchInput, "Search for a Value Set","CodeList");
 			searchCriteriaPanel.add(errorMessages);
-			searchCriteriaPanel.add(new SpacerWidget());
-			loadListBoxOptions();
-			searchCriteriaPanel.add(LabelBuilder.buildLabel("Create", "Create Value Set"));
-			searchCriteriaPanel.add(options);
-			options.setName("Create");
-			DOM.setElementAttribute(options.getElement(), "id", "Create Value Set");
-			searchCriteriaPanel.add(createButton);
-			createButton.setTitle("Create");
+			// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+			//searchCriteriaPanel.add(new SpacerWidget());
+		//	loadListBoxOptions();
+		//	searchCriteriaPanel.add(LabelBuilder.buildLabel("Create", "Create Value Set"));
+		//	searchCriteriaPanel.add(options);
+		//	options.setName("Create");
+		//	DOM.setElementAttribute(options.getElement(), "id", "Create Value Set");
+			//searchCriteriaPanel.add(createButton);
+			//createButton.setTitle("Create");
 			searchCriteriaPanel.add(new SpacerWidget());
 			
 			searchCriteriaPanel.addStyleName("leftAligned");
@@ -184,35 +181,36 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 	public void buildDataTable(SearchResults<CodeListSearchDTO> results, boolean isAscending) {
 		view.buildDataTable(results,isAscending,false);
 	}
-
+	// Code commented for User Story MAT-2372 : Remove Value Set Creation.
 	
-	private void loadListBoxOptions(){
+	/*private void loadListBoxOptions(){
 		options.addItem(ConstantMessages.DEFAULT_SELECT);
 		options.addItem(ConstantMessages.CREATE_NEW_GROUPED_VALUE_SET);
 		options.addItem(ConstantMessages.CREATE_NEW_VALUE_SET);
 		options.addItem(ConstantMessages.CREATE_VALUE_SET_DRAFT);
-	}
+	}*/
 	
-	/*US537*/
-	@Override
+	// Code commented for User Story MAT-2372 : Remove Value Set Creation.
+	//@Override
 	public HasClickHandlers getCreateButton() {
-		return createButton;
+		//return createButton;
+		return null;
 	}
 
-	/*US537*/
+	// Code commented for User Story MAT-2372 : Remove Value Set Creation.
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedOption()
 	 */
-	@Override
+	/*@Override
 	public String getSelectedOption() {
 		return options.getItemText(options.getSelectedIndex());
 	}
 
-	/*US537*/
+	US537
 	@Override
 	public void clearSelections() {
 		options.setSelectedIndex(0);
-	}
+	}*/
 
 	/*US566*/
 	@Override

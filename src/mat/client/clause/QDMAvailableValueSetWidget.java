@@ -91,6 +91,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		messageFocus = new FocusableWidget(successMessagePanel);
 		VerticalPanel vp = new VerticalPanel();
 		vp.getElement().setAttribute("id", "ModifyVerticalPanel");
+		/*
+		 * Commented for User Story MAT-2360 : Hide Element With Value Set content.
+		 * */
 		/*FlowPanel header = new FlowPanel();
 		header.getElement().setAttribute("id", "ModifyHeaderFlowPanel");
 		header.addStyleName("codeListHeader");
@@ -240,6 +243,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.addStyleName("leftAligned");
 		searchCriteriaPanel.setSize("800px", "200px");
+		/*
+		 * Commented for User Story MAT-2360 : Hide Element With Value Set content.
+		 * */
 		/*Widget searchWidget = buildSearchWidget();
 		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
 		searchInput.setHeight("18px");

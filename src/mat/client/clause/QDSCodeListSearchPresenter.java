@@ -27,6 +27,7 @@ import mat.client.shared.search.PageSelectionEventHandler;
 import mat.client.shared.search.PageSizeSelectionEvent;
 import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
+import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.model.CodeListSearchDTO;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
@@ -68,7 +69,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	ArrayList<QualityDataSetDTO> allQdsList = new ArrayList<QualityDataSetDTO>();
 	boolean isCheckForSDE=false;
 	List<String> codeListString = new ArrayList<String>();
-
+	VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption();
 		public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement();
@@ -260,11 +261,44 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				MatContext.get().clearDVIMessages();
 				searchDisplay.scrollToBottom();
 				isUSerDefined = false;
-				getListOfAppliedQDMs(isUSerDefined);
+				//POC - UMLS VSAC API Call to Reterive Value Set based on OID.
+				//getListOfAppliedQDMs(isUSerDefined);
+				searchValueSetInVsac("2.16.840.1.113883.3.526.2.39",null);
 			}
 		});
 	}
+	//POC - UMLS VSAC API Call to Retrieve Value Set based on OID.
+	private void searchValueSetInVsac(String oid, String version){
+		if(MatContext.get().getUMLSEightHourTicket()!=null){
+			
+			if(oid!=null){
+				vsacapiService.getValueSetBasedOIDAndVersion(MatContext.get().getUMLSEightHourTicket(), oid, version, new AsyncCallback<CodeListSearchDTO>() {
 
+					@Override
+					public void onFailure(Throwable caught) {
+						
+						
+					}
+
+					@Override
+					public void onSuccess(CodeListSearchDTO result) {
+						Window.alert(result.getName());
+						
+					}
+				});
+				
+			}else{
+				searchDisplay.getErrorMessageDisplay().setMessage("OId is Required.");
+			}
+			
+		}else{
+			
+			searchDisplay.getErrorMessageDisplay().setMessage("You are not logged in to UMLS.Please access the UMLS Account tab to continue.");
+		}
+		
+	}
+	
+	
 	private void getListOfAppliedQDMs(final boolean isUSerDefined){
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if (measureId != null && measureId != "") {
@@ -529,7 +563,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		searchDisplay.getApplyToMeasureSuccessMsg().clear();
 		searchDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getSearchString().setValue("");
-		searchDisplay.getApplyToMeasure().setEnabled(false);
+		searchDisplay.getApplyToMeasure().setEnabled(true);
 		searchDisplay.getDataTypeInput().setEnabled(false);
 	}
 

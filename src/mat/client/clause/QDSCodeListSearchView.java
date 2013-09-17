@@ -246,9 +246,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		searchCriteriaPanel.add(messageFocus);
 		searchCriteriaPanel.add(buildInitialDisabledWidget());
 		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(addToMeasure);*/
-		
+		searchCriteriaPanel.add(new SpacerWidget());*/
+		searchCriteriaPanel.add(addToMeasure);
 		disclosurePanelCellTable.add(searchCriteriaPanel);
 		disclosurePanelCellTable.setOpen(true);
 		return disclosurePanelCellTable;

@@ -71,6 +71,8 @@ class TimeoutManager {
 				Date today = new Date();
 				if((today.getTime() - lastUMLSSignIn) >= UMLS_TIME_OUT){ 
 					Mat.hideUMLSActive();
+					//Un-set Eight Hour UMLS ticket.
+					MatContext.get().setUMLSEightHourTicket(null);
 				}
 			}
 	    	

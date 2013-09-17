@@ -1389,7 +1389,7 @@ padding: 2px;
 
 .htmlDescription{
 	position:relative;
-	font-style:Italic;
+	/* font-style:Italic; */
 }
 
 .imageMiddleAlign{

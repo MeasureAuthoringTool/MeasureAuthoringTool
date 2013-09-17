@@ -21,6 +21,9 @@ public class CodeListSearchDTO implements IsSerializable {
 	private String ownerLastName;
 	private String ownerEmailAddress;
 	
+	public String toString() {
+		return name + ": " + codeSystem + "-" + getOid() ;
+}
 	
 	public String getStewardOthers() {
 		return stewardOthers;
@@ -135,6 +138,8 @@ public class CodeListSearchDTO implements IsSerializable {
 	public void setOwnerEmailAddress(String ownerEmailAddress) {
 		this.ownerEmailAddress = ownerEmailAddress;
 	}
+	
+	
 	
 	
 }

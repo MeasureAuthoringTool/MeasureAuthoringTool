@@ -50,7 +50,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private TextBox searchInput = new TextBox();
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
-	private Button addToMeasure = new PrimaryButton("Apply to Measure","primaryButton");
+	private Button addToMeasure = new PrimaryButton("Search","primaryButton");
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
 	private Button psuedoQDMCancel = new SecondaryButton("Cancel");
 	private SimplePanel dataTypePanel = new SimplePanel();
@@ -230,23 +230,23 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private Widget buildCellTableWidget(){
 		FlowPanel searchCriteriaPanel = new FlowPanel();
 		searchCriteriaPanel.setSize("800px", "200px");
-		/*HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
+		//HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
 		searchCriteriaPanel.add(new SpacerWidget());
-		Widget searchWidget = buildSearchWidget();
+		/*Widget searchWidget = buildSearchWidget();
 		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
 		searchInput.setHeight("18px");
 		searchCriteriaPanel.add(label);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchHorizontalPanel.add(vssfp.getPanel());
 		searchHorizontalPanel.add(searchWidget);
-		searchCriteriaPanel.add(errorMessagePanel);
-		searchCriteriaPanel.add(searchHorizontalPanel);
+		*/searchCriteriaPanel.add(errorMessagePanel);
+		/*searchCriteriaPanel.add(searchHorizontalPanel);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(view.asWidget());
-		searchCriteriaPanel.add(messageFocus);
-		searchCriteriaPanel.add(buildInitialDisabledWidget());
+		*/searchCriteriaPanel.add(messageFocus);
+		/*searchCriteriaPanel.add(buildInitialDisabledWidget());
 		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
-		searchCriteriaPanel.add(new SpacerWidget());*/
+		*/searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(addToMeasure);
 		disclosurePanelCellTable.add(searchCriteriaPanel);
 		disclosurePanelCellTable.setOpen(true);

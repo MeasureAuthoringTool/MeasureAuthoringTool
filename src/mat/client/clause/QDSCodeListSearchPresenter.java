@@ -263,7 +263,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				isUSerDefined = false;
 				//POC - UMLS VSAC API Call to Reterive Value Set based on OID.
 				//getListOfAppliedQDMs(isUSerDefined);
-				searchValueSetInVsac("2.16.840.1.113883.3.526.2.39",null);
+				searchValueSetInVsac("2.16.840.1.113883.3.666.5.1738","20121025");
 			}
 		});
 	}
@@ -276,13 +276,13 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 
 					@Override
 					public void onFailure(Throwable caught) {
-						
+						searchDisplay.getErrorMessageDisplay().setMessage("Unable to retreive from Vsac.Please check the data and try again.");
 						
 					}
 
 					@Override
 					public void onSuccess(CodeListSearchDTO result) {
-						Window.alert(result.getName());
+						Window.alert(result.toString());
 						
 					}
 				});

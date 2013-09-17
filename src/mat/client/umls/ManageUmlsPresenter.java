@@ -133,15 +133,18 @@ public class ManageUmlsPresenter implements MatPresenter{
 						Mat.showUMLSActive();
 						display.setInfoMessageVisible(true);
 						display.getInfoMessage().setText(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
-						Window.alert("Ticket Granted for session :  " +result);
 						display.getUserid().setValue("");
 						display.getPassword().setValue("");
 						Mat.showUMLSActive();
 						MatContext.get().restartUMLSSignout();
+						//set Eight Hour UMLS ticket in MatContext.
+						MatContext.get().setUMLSEightHourTicket(result);
 					}
 					else{//incorrect UMLS credential - no ticket is assigned.
 						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
 						Mat.hideUMLSActive();
+						//Un-set Eight Hour UMLS ticket.
+						MatContext.get().setUMLSEightHourTicket(null);
 					}
 					
 				}
@@ -151,10 +154,13 @@ public class ManageUmlsPresenter implements MatPresenter{
 					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
 					caught.printStackTrace();
 					Mat.hideUMLSActive();
+					//Un-set Eight Hour UMLS ticket.
+					MatContext.get().setUMLSEightHourTicket(null);
 				}
 			});
 		}
 	}
+	
 	
 	private void resetWidget() {
 		display.getErrorMessageDisplay().clear();

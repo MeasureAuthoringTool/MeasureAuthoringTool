@@ -67,6 +67,8 @@ public class MatContext implements IsSerializable {
 	private static final long serialVersionUID = 1L;
 
 	private static MatContext instance = new MatContext();
+	
+	private String UMLSEightHourTicket;
 
 	private String currentModule;
 	
@@ -924,6 +926,16 @@ public class MatContext implements IsSerializable {
 
 	public void setMeasureDeleted(boolean isMeasureDeleted) {
 		this.isMeasureDeleted = isMeasureDeleted;
+	}
+
+
+	public String getUMLSEightHourTicket() {
+		return UMLSEightHourTicket;
+	}
+
+
+	public void setUMLSEightHourTicket(String uMLSEightHourTicket) {
+		UMLSEightHourTicket = uMLSEightHourTicket;
 	}
 	
 	

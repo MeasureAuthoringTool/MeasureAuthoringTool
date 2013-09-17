@@ -1688,20 +1688,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	private void bulkExport(List<String> selectedMeasureIds){
 		String measureId = "";
+		
+		MatContext.get().getAuditService().recordMeasureEvent(selectedMeasureIds, "Measure Package Exported", null, true, new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				detailDisplay.getErrorMessageDisplay().setMessage("Error while adding bulk export log entry.");
+			}
+			@Override
+			public void onSuccess(Void result) {
+			}
+		});
+		
 		for (String id : selectedMeasureIds) {			
-			measureId += id+"&id="; 
-			
-			MatContext.get().getAuditService().recordMeasureEvent(id, "Measure Package Exported", null, true, new AsyncCallback<Boolean>() {
-				@Override
-				public void onSuccess(Boolean result) {
-				}
-				
-				@Override
-				public void onFailure(Throwable caught) {
-					detailDisplay.getErrorMessageDisplay().setMessage("Error while adding bulk export log entry.");
-				}
-				
-			});
+			measureId += id+"&id="; 			
 		}
 		measureId = measureId.substring(0,measureId.lastIndexOf("&"));
 		String url = GWT.getModuleBaseURL() + "bulkExport?id=" + measureId; 

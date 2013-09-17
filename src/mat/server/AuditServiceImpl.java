@@ -84,4 +84,11 @@ public class AuditServiceImpl extends SpringRemoteServiceServlet implements Audi
 		return getTransactionAuditService().recordTransactionEvent(primaryId, secondaryId, activityType, userId, additionalInfo, logLevel);
 	}
 
+	@Override
+	public void recordMeasureEvent(List<String> measureIds, String event, String additionalInfo, boolean isChildLogRequired) {
+		for(String measureId : measureIds) {
+			recordMeasureEvent(measureId, event, additionalInfo, isChildLogRequired);
+		}
+	}
+
 }

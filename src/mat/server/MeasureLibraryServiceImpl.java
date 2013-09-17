@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
@@ -560,6 +561,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
 		List<MeasureShareDTO> measureList = getService().searchWithFilter(searchText, startIndex, pageSize,filter);
+		
+		if(SecurityRole.ADMIN_ROLE.equals(userRole)) {
+			measureList = updateMeasureListOnlyWithLatestDraftOrVersion(measureList);
+		}
 		searchModel.setStartIndex(startIndex);
 		//searchModel.setResultsTotal((int)getService().count());
 		searchModel.setResultsTotal((int)getService().count(filter));
@@ -600,6 +605,39 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return searchModel;
 	}
 	
+	private List<MeasureShareDTO> updateMeasureListOnlyWithLatestDraftOrVersion(List<MeasureShareDTO> measureList) {
+		List<MeasureShareDTO> updatedMeasureList = new ArrayList<MeasureShareDTO>();
+		for(MeasureShareDTO measureShareDTO : measureList) {
+			if(updatedMeasureList == null || updatedMeasureList.isEmpty())
+				updatedMeasureList.add(measureShareDTO);
+			else {
+				boolean found = false;
+				for(ListIterator<MeasureShareDTO> itr = updatedMeasureList.listIterator(); itr.hasNext();) {
+					MeasureShareDTO measureShareDTO_updated = itr.next();
+					if(measureShareDTO.getMeasureSetId() == measureShareDTO_updated.getMeasureSetId()) {
+						found = true;
+						if(measureShareDTO.isDraft()) {
+							itr.remove();
+							itr.add(measureShareDTO);
+						}
+						else if(!measureShareDTO_updated.isDraft()) {
+							Double measureShareDTOVersion = Double.valueOf(measureShareDTO.getVersion());
+							Double measureShareDTO_updatedVersion = Double.valueOf(measureShareDTO_updated.getVersion());
+							if(measureShareDTOVersion.compareTo(measureShareDTO_updatedVersion) > 0) {
+								itr.remove();
+								itr.add(measureShareDTO);
+							}
+						}
+					}
+				}
+				if(!found) {
+					updatedMeasureList.add(measureShareDTO);
+				}
+			}
+		}
+		return updatedMeasureList;
+	}	
+
 	@Override
 	public ManageMeasureSearchModel searchMeasuresForVersion(int startIndex,int pageSize) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();

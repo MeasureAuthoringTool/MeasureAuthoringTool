@@ -621,9 +621,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 							itr.add(measureShareDTO);
 						}
 						else if(!measureShareDTO_updated.isDraft()) {
-							Double measureShareDTOVersion = Double.valueOf(measureShareDTO.getVersion());
+							/*Double measureShareDTOVersion = Double.valueOf(measureShareDTO.getVersion());
 							Double measureShareDTO_updatedVersion = Double.valueOf(measureShareDTO_updated.getVersion());
-							if(measureShareDTOVersion.compareTo(measureShareDTO_updatedVersion) > 0) {
+							if(measureShareDTOVersion.compareTo(measureShareDTO_updatedVersion) > 0) {*/
+							
+							if(measureShareDTO.getFinalizedDate().compareTo(measureShareDTO_updated.getFinalizedDate()) > 0) {
 								itr.remove();
 								itr.add(measureShareDTO);
 							}

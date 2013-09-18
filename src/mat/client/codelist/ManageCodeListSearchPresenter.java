@@ -699,10 +699,15 @@ public class ManageCodeListSearchPresenter {
 
 	
 	private void searchHistory(String codeListId, int startIndex, int pageSize) {
-	    //The filterList tells us what need not to be shown in the UI. This is created as list, Since, in future if the list grows.
-		
+	    /**
+	     * The filterList tells us what need not to be shown in the UI. This is created as list, Since, in future if the list grows.
+	     * 9-18-2013: Added "Measure Export","Measure Exported" and "Measure Package Exported" in the filter.
+	     */		   
 		List<String> filterList = new ArrayList<String>();
 	    filterList.add("Export");
+	    filterList.add("Measure Export");
+	    filterList.add("Measure Exported");
+	    filterList.add("Measure Package Exported");
 		MatContext.get().getAuditService().executeCodeListLogSearch(codeListId, startIndex, pageSize,filterList, new AsyncCallback<SearchHistoryDTO>() {		
 			@Override
 			public void onSuccess(SearchHistoryDTO data) {

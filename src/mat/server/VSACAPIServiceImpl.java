@@ -3,6 +3,7 @@ package mat.server;
 import mat.client.umls.service.VSACAPIService;
 import mat.model.CodeListSearchDTO;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.telligen.vsac.dao.ValueSetsResponseDAO;
@@ -30,7 +31,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	}
 	
 	@Override
-	public CodeListSearchDTO getValueSetBasedOIDAndVersion(String eightHourTicket,String OID, String Version){
+	public CodeListSearchDTO getValueSetBasedOIDAndVersion(String eightHourTicket,String OID, String version){
 		CodeListSearchDTO result = new CodeListSearchDTO();
 		//To Do - To be removed.
 		String[] testIDs = { "2.16.840.1.113883.3.526.2.39",
@@ -38,34 +39,46 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				"2.16.840.1.113883.3.464.1003.199.11.1005" };
 		String id = null;
 		
-		if(OID==null){
+		if(OID==null || StringUtils.isBlank(OID)){
 			id= testIDs[0];
 		}else{
 			id=OID;
 		}
-		String version = Version;
-		
 		
 		ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
 		
-		if(version!=null ){
+		if(version!=null && StringUtils.isNotBlank(version)){
 		
 			ValueSetsResponse vsr =dao.getSpecifiedValueSetsResponseByIDAndVersion(id, version);
+			System.out.println("XML Returned====");
+			System.out.println(vsr.getXmlPayLoad());
+			result.setVsacXMLPayload(vsr.getXmlPayLoad());
 			for(ValueSet list : vsr.getValueSetList()){
 				result.setId(list.getID());
 				result.setCodeSystem(list.getConceptList().getConceptList().get(0).getCodeSystemName());
 				result.setName(list.getDisplayName());
 				result.setOid(list.getID());
 				result.setLastModified(list.getRevisionDate());
+				if(list.getGroupList()!=null){
+					result.setGroupedCodeList(true);
+				}
+				
 			}
 		}else{
-			ValueSetsResponse vsr = dao.getLatestVersionValueSetsResponseByID(id);
+			//ValueSetsResponse vsr = dao.getLatestVersionValueSetsResponseByID(id);
+			ValueSetsResponse vsr = dao.getMultipleValueSetsResponseByOID(id);
+			System.out.println("XML Returned====");
+			System.out.println(vsr.getXmlPayLoad());
+			result.setVsacXMLPayload(vsr.getXmlPayLoad());
 			for(ValueSet list : vsr.getValueSetList()){
 				result.setId(list.getID());
 				result.setCodeSystem(list.getConceptList().getConceptList().get(0).getCodeSystemName());
 				result.setName(list.getDisplayName());
 				result.setOid(list.getID());
 				result.setLastModified(list.getRevisionDate());
+				if(list.getGroupList()!=null){
+					result.setGroupedCodeList(true);
+				}
 			}
 		}
 		return result;

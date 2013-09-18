@@ -78,6 +78,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		public void setAddToMeasureButtonEnabled(boolean visible);
 		public Widget getDataTypeWidget();
 		public ListBoxMVP getDataTypeInput();
+		public TextBox getVersionInput();
 		public CustomCheckBox getSpecificOccurrenceInput();
 		public Button getApplyToMeasure();
 		public void scrollToBottom();
@@ -263,7 +264,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				isUSerDefined = false;
 				//POC - UMLS VSAC API Call to Reterive Value Set based on OID.
 				//getListOfAppliedQDMs(isUSerDefined);
-				searchValueSetInVsac("2.16.840.1.113883.3.666.5.1738","20121025");
+				//searchValueSetInVsac("2.16.840.1.113883.3.464.1003.104.12.1001",null);
+				searchValueSetInVsac(searchDisplay.getSearchString().getValue(), searchDisplay.getVersionInput().getValue());
 			}
 		});
 	}
@@ -283,6 +285,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 					@Override
 					public void onSuccess(CodeListSearchDTO result) {
 						Window.alert(result.toString());
+						Window.alert(result.getVsacXMLPayload());
 						
 					}
 				});

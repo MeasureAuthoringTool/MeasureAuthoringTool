@@ -33,6 +33,7 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -48,6 +49,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with VSAC value set");
 	private TextBox userDefinedInput = new TextBox();
 	private TextBox searchInput = new TextBox();
+	private TextBox versionInput = new TextBox();
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
 	private Button addToMeasure = new PrimaryButton("Search","primaryButton");
@@ -228,10 +230,20 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	}
 	
 	private Widget buildCellTableWidget(){
-		FlowPanel searchCriteriaPanel = new FlowPanel();
-		searchCriteriaPanel.setSize("800px", "200px");
-		//HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
+		HorizontalPanel searchCriteriaPanel = new HorizontalPanel();
+		//searchCriteriaPanel.setSize("800px", "200px");
+		VerticalPanel searchHorizontalPanel = new VerticalPanel();
+		VerticalPanel searchHorizontalPanelHP = new VerticalPanel();
 		searchCriteriaPanel.add(new SpacerWidget());
+		searchHorizontalPanel.add(LabelBuilder.buildRequiredLabel(new Label(), "OID"));
+		searchHorizontalPanel.add(new SpacerWidget());
+		searchHorizontalPanel.add(searchInput);
+		searchHorizontalPanel.add(new SpacerWidget());
+		
+		searchHorizontalPanelHP.add(LabelBuilder.buildRequiredLabel(new Label(), "Version"));
+		searchHorizontalPanelHP.add(new SpacerWidget());
+		searchHorizontalPanelHP.add(versionInput);
+		searchHorizontalPanelHP.setStylePrimaryName("marginLeftRight");
 		/*Widget searchWidget = buildSearchWidget();
 		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
 		searchInput.setHeight("18px");
@@ -240,15 +252,19 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		searchHorizontalPanel.add(vssfp.getPanel());
 		searchHorizontalPanel.add(searchWidget);
 		*/searchCriteriaPanel.add(errorMessagePanel);
-		/*searchCriteriaPanel.add(searchHorizontalPanel);
-		searchCriteriaPanel.add(new SpacerWidget());
+		 searchCriteriaPanel.add(searchHorizontalPanel);
+		 searchCriteriaPanel.add(searchHorizontalPanelHP);
+		/*searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(view.asWidget());
 		*/searchCriteriaPanel.add(messageFocus);
 		/*searchCriteriaPanel.add(buildInitialDisabledWidget());
 		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
 		*/searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(addToMeasure);
-		disclosurePanelCellTable.add(searchCriteriaPanel);
+		VerticalPanel mainPanel = new VerticalPanel();
+		mainPanel.add(searchCriteriaPanel);
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(addToMeasure);
+		disclosurePanelCellTable.add(mainPanel);
 		disclosurePanelCellTable.setOpen(true);
 		return disclosurePanelCellTable;
 		
@@ -519,6 +535,14 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	@Override
 	public void setAllDataTypeOptions(List<? extends HasListBox> texts) {
 		setListBoxItems(allDataTypeInput, texts, MatContext.PLEASE_SELECT);
+	}
+	@Override
+	public TextBox getVersionInput() {
+		return versionInput;
+	}
+
+	public void setVersionInput(TextBox versionInput) {
+		this.versionInput = versionInput;
 	}
 	
 }

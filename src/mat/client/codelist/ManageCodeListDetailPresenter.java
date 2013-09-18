@@ -879,8 +879,9 @@ public class ManageCodeListDetailPresenter extends BaseDetailPresenter {
 	}
 	
 	private void enableOrDisableFields(){
-		boolean canEditValueSet = currentDetails.isMyValueSet();
-		boolean isValueSetDraft = currentDetails.isDraft();
+		// Commented and set to false for MAT-2378 : Set Draft Sets to Read Only.
+		boolean canEditValueSet = false;//currentDetails.isMyValueSet();
+		boolean isValueSetDraft = false;//currentDetails.isDraft();
 		
 		enableOrDisable(canEditValueSet);
 		

@@ -20,7 +20,16 @@ public class CodeListSearchDTO implements IsSerializable {
 	private String ownerFirstName;
 	private String ownerLastName;
 	private String ownerEmailAddress;
+	private String vsacXMLPayload;
 	
+	public String getVsacXMLPayload() {
+		return vsacXMLPayload;
+	}
+
+	public void setVsacXMLPayload(String vsacXMLPayload) {
+		this.vsacXMLPayload = vsacXMLPayload;
+	}
+
 	public String toString() {
 		return name + ": " + codeSystem + "-" + getOid() ;
 }

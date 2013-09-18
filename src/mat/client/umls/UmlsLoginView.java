@@ -97,6 +97,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		umlsExternalLink.getElement().setAttribute("alt", "Need UMLS license");
 		umlsTroubleLogging.setTitle("Trouble Logging in");
 		umlsTroubleLogging.getElement().setAttribute("alt", "Trouble Logging in");
+		
 		vPanel.add(umlsExternalLink);
 		vPanel.add(umlsTroubleLogging);
 		loginPanel.add(new SpacerWidget());
@@ -110,6 +111,12 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		mainPanel.add(new SpacerWidget());
 		
 		HTML externalDisclamerText = new HTML("You are leaving the Measure Authoring Tool and entering another Web site.The Measure Authoring Tool cannot attest to the accuracy of information provided by linked sites.You will be subject to the destination site's Privacy Policy when you leave the Measure Authoring Tool. ");
+		externalDisclamerText.getElement().setAttribute("id", "ExternalLinkDisclaimer");
+		externalDisclamerText.getElement().setAttribute("aria-role", "application");
+		externalDisclamerText.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		externalDisclamerText.getElement().setAttribute("aria-live", "assertive");
+		externalDisclamerText.getElement().setAttribute("aria-atomic", "true");
+		externalDisclamerText.getElement().setAttribute("aria-relevant", "all");
 		buttonBar.getSaveButton().setText("I Agree");
 		buttonBar.getSaveButton().setTitle("I Agree");
 		buttonBar.getCancelButton().setText("I Disagree");

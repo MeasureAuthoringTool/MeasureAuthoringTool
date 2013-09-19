@@ -548,10 +548,11 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 			query.setString("lockedUserId", null);
 			query.setString("measureId", m.getId());
 			int rowCount = query.executeUpdate();
+			tx.commit();
 			System.out.println("Rows affected: while releasing lock "
 					+ rowCount);
 		} finally {
-			tx.commit();
+			rollbackUncommitted(tx);
 			closeSession(session);
 		}
 
@@ -857,9 +858,10 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 			query.setBoolean("isPrivate", isPrivate);
 			query.setString("measureId", measureId);
 			int rowCount = query.executeUpdate();
+			tx.commit();
 			logger.info("Updated Private column" + rowCount);
 		} finally {
-			tx.commit();
+			rollbackUncommitted(tx);
 			closeSession(session);
 		}
 	}

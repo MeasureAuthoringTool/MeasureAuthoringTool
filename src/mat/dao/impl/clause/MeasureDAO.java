@@ -539,15 +539,21 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 	// settingtheLockedDate.
 	@Override
 	public void resetLockDate(Measure m) {
-		Session session = getSessionFactory().getCurrentSession();
-		String sql = "update mat.model.clause.Measure m set lockedOutDate  = :lockDate, lockedUser = :lockedUserId  where id = :measureId";
-		Query query = session.createQuery(sql);
-		query.setString("lockDate", null);
-		query.setString("lockedUserId", null);
-		query.setString("measureId", m.getId());
-		int rowCount = query.executeUpdate();
-		System.out.println("Rows affected: while releasing lock " + rowCount);
-		
+		Session session = getSessionFactory().openSession();
+		org.hibernate.Transaction tx = session.beginTransaction();
+		try {
+			String sql = "update mat.model.clause.Measure m set lockedOutDate  = :lockDate, lockedUser = :lockedUserId  where id = :measureId";
+			Query query = session.createQuery(sql);
+			query.setString("lockDate", null);
+			query.setString("lockedUserId", null);
+			query.setString("measureId", m.getId());
+			int rowCount = query.executeUpdate();
+			System.out.println("Rows affected: while releasing lock "
+					+ rowCount);
+		} finally {
+			tx.commit();
+			closeSession(session);
+		}
 
 	}
 
@@ -824,7 +830,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		} else {
 			return 0;
 		}
-	
+
 	}
 
 	@Override
@@ -843,13 +849,19 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 
 	@Override
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
-		Session session = getSessionFactory().getCurrentSession();
-		String sql = "update mat.model.clause.Measure m set isPrivate  = :isPrivate where id = :measureId";
-		Query query = session.createQuery(sql);
-		query.setBoolean("isPrivate", isPrivate);
-		query.setString("measureId", measureId);
-		int rowCount = query.executeUpdate();
-		logger.info("Updated Private column" + rowCount);
+		Session session = getSessionFactory().openSession();
+		org.hibernate.Transaction tx = session.beginTransaction();
+		try {
+			String sql = "update mat.model.clause.Measure m set isPrivate  = :isPrivate where id = :measureId";
+			Query query = session.createQuery(sql);
+			query.setBoolean("isPrivate", isPrivate);
+			query.setString("measureId", measureId);
+			int rowCount = query.executeUpdate();
+			logger.info("Updated Private column" + rowCount);
+		} finally {
+			tx.commit();
+			closeSession(session);
+		}
 	}
 
 }

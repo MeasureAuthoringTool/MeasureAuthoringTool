@@ -14,7 +14,9 @@ import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.measure.metadata.Grid508;
 import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableWidget;
@@ -78,14 +80,13 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		public void setAddToMeasureButtonEnabled(boolean visible);
 		public Widget getDataTypeWidget();
 		public ListBoxMVP getDataTypeInput();
-		public TextBox getVersionInput();
 		public CustomCheckBox getSpecificOccurrenceInput();
 		public Button getApplyToMeasure();
 		public void scrollToBottom();
-		public FocusableWidget getMsgFocusWidget();
+		//public FocusableWidget getMsgFocusWidget();
 		public String getDataTypeValue(ListBoxMVP inputListBox);
 		public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		public ErrorMessageDisplay getErrorMessageDisplay();
 		public void setDataTypeOptions(List<? extends HasListBox> texts);
 		public String getDataTypeText(ListBoxMVP inputListBox);
 		public ValueSetSearchFilterPanel getValueSetSearchFilterPanel();
@@ -99,6 +100,14 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		public DisclosurePanel getDisclosurePanelCellTable();
 		public SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
 		public ErrorMessageDisplay getErrorMessageUserDefinedPanel();
+		public TextBox getQueryInput();
+		public DateBoxWithCalendar getVersionInput();
+		public Button getRetrieveButton();
+		public Grid508 getValueSetGrid();
+		public ListBoxMVP getDataTypesListBox();
+		public SuccessMessageDisplay getSuccessMessageDisplay();
+		public void setDataTypesListBoxOptions(List<? extends HasListBox> texts);
+		public void clearVSACValueSetMessages();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -135,9 +144,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			//TODO: Need to replace the DisclosureEvent with CloseEvent
 			public void onClose(DisclosureEvent event)
 			{
-				searchDisplay.getUserDefinedInput().setText("");
+				//searchDisplay.getUserDefinedInput().setText("");
 				//searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
-				searchDisplay.buildQDSDataTable(currentCodeListResults, true);
+				//searchDisplay.buildQDSDataTable(currentCodeListResults, true);
 				displaySearch();
 				searchDisplay.getDisclosurePanel().setOpen(true);
 			}
@@ -268,12 +277,20 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				searchValueSetInVsac(searchDisplay.getSearchString().getValue(), searchDisplay.getVersionInput().getValue());
 			}
 		});
+		
+		searchDisplay.getRetrieveButton().addClickHandler(new ClickHandler() {			
+			@Override
+			public void onClick(ClickEvent event) {
+				MatContext.get().clearDVIMessages();
+				isUSerDefined = false;
+				searchValueSetInVsac(searchDisplay.getQueryInput().getValue(), searchDisplay.getVersionInput().getValue());				
+			}
+		});
 	}
 	//POC - UMLS VSAC API Call to Retrieve Value Set based on OID.
 	private void searchValueSetInVsac(String oid, String version){
-		if(MatContext.get().getUMLSEightHourTicket()!=null){
-			
-			if(oid!=null){
+		if(MatContext.get().getUMLSEightHourTicket()!=null){			
+			if(oid!=null && !oid.isEmpty()){
 				vsacapiService.getValueSetBasedOIDAndVersion(MatContext.get().getUMLSEightHourTicket(), oid, version, new AsyncCallback<CodeListSearchDTO>() {
 
 					@Override
@@ -284,21 +301,19 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 
 					@Override
 					public void onSuccess(CodeListSearchDTO result) {
+						searchDisplay.getValueSetGrid().setVisible(true);
 						Window.alert(result.toString());
 						Window.alert(result.getVsacXMLPayload());
 						
 					}
-				});
-				
+				});				
 			}else{
-				searchDisplay.getErrorMessageDisplay().setMessage("OId is Required.");
-			}
-			
+				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getQUERY_REQUIRED());
+			}			
 		}else{
 			
-			searchDisplay.getErrorMessageDisplay().setMessage("You are not logged in to UMLS.Please access the UMLS Account tab to continue.");
-		}
-		
+			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUMLS_LOGIN_REQUIRED());
+		}		
 	}
 	
 	
@@ -335,6 +350,24 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			public void onSuccess(List<? extends HasListBox> result) {
 				Collections.sort(result, new HasListBox.Comparator());
 				searchDisplay.setAllDataTypeOptions(result);
+			}
+		});
+
+	}
+	
+	private void populateDataTypesListBox(){
+		MatContext.get().getListBoxCodeProvider().getAllDataType(new AsyncCallback<List<? extends HasListBox>>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				searchDisplay.clearVSACValueSetMessages();
+				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+
+			@Override
+			public void onSuccess(List<? extends HasListBox> result) {
+				Collections.sort(result, new HasListBox.Comparator());
+				searchDisplay.setDataTypesListBoxOptions(result);
 			}
 		});
 
@@ -403,6 +436,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
+		populateDataTypesListBox();
+		searchDisplay.getValueSetGrid().setVisible(false);
+		searchDisplay.clearVSACValueSetMessages();
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
 		//searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
@@ -461,7 +497,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 							}
 							MatContext.get().getEventBus().fireEvent(new QDSElementCreatedEvent(codeList.getName()));
 							searchDisplay.getApplyToMeasureSuccessMsg().setMessage(message);
-							searchDisplay.getMsgFocusWidget().setFocus(true);
+							//searchDisplay.getMsgFocusWidget().setFocus(true);
 
 						}
 					}

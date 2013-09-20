@@ -994,6 +994,15 @@ public class MessageDelegate {
 		return UML_LOGIN_FAILED;
 	}
 
+	private final String QUERY_REQUIRED="Please enter query.";
+	public String getQUERY_REQUIRED() {
+		return QUERY_REQUIRED;
+	}
+	
+	private final String UMLS_LOGIN_REQUIRED = "You are not logged in to UMLS. Please access the UMLS Account tab to continue.";
+	public String getUMLS_LOGIN_REQUIRED() {
+		return UMLS_LOGIN_REQUIRED;
+	}
 }
 
 

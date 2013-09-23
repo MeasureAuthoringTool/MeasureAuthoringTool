@@ -26,6 +26,7 @@ import mat.server.service.LoginCredentialService;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.TransactionAuditService;
 import mat.server.service.UserService;
+import mat.server.util.UMLSSessionTicket;
 import mat.server.util.dictionary.CheckDictionaryWordInPassword;
 import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
@@ -333,6 +334,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements Logi
 	
 	public String updateOnSignOut(String userId, String emailId, String activityType){
 		UserService userService = (UserService)context.getBean("userService");
+		UMLSSessionTicket.getUmlssessionmap().remove(getThreadLocalRequest().getSession().getId());
 		String resultStr = userService.updateOnSignOut(userId, emailId, activityType);
 		SecurityContextHolder.clearContext();
 		getThreadLocalRequest().getSession().invalidate();

@@ -18,8 +18,6 @@ import mat.client.measure.metadata.Grid508;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
@@ -30,6 +28,7 @@ import mat.client.shared.search.PageSizeSelectionEvent;
 import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.client.umls.service.VsacApiResult;
 import mat.model.CodeListSearchDTO;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
@@ -144,7 +143,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			//TODO: Need to replace the DisclosureEvent with CloseEvent
 			public void onClose(DisclosureEvent event)
 			{
-				//searchDisplay.getUserDefinedInput().setText("");
+				searchDisplay.getUserDefinedInput().setText("");
 				//searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
 				//searchDisplay.buildQDSDataTable(currentCodeListResults, true);
 				displaySearch();
@@ -271,10 +270,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				MatContext.get().clearDVIMessages();
 				searchDisplay.scrollToBottom();
 				isUSerDefined = false;
-				//POC - UMLS VSAC API Call to Reterive Value Set based on OID.
-				//getListOfAppliedQDMs(isUSerDefined);
-				//searchValueSetInVsac("2.16.840.1.113883.3.464.1003.104.12.1001",null);
-				searchValueSetInVsac(searchDisplay.getSearchString().getValue(), searchDisplay.getVersionInput().getValue());
+				getListOfAppliedQDMs(isUSerDefined);
+				
 			}
 		});
 		
@@ -289,33 +286,47 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	}
 	//POC - UMLS VSAC API Call to Retrieve Value Set based on OID.
 	private void searchValueSetInVsac(String oid, String version){
-		if(MatContext.get().getUMLSEightHourTicket()!=null){			
-			if(oid!=null && !oid.isEmpty()){
-				vsacapiService.getValueSetBasedOIDAndVersion(MatContext.get().getUMLSEightHourTicket(), oid, version, new AsyncCallback<CodeListSearchDTO>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						searchDisplay.getErrorMessageDisplay().setMessage("Unable to retreive from Vsac.Please check the data and try again.");
-						
-					}
-
-					@Override
-					public void onSuccess(CodeListSearchDTO result) {
-						searchDisplay.getValueSetGrid().setVisible(true);
-						Window.alert(result.toString());
-						Window.alert(result.getVsacXMLPayload());
-						
-					}
-				});				
-			}else{
-				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getQUERY_REQUIRED());
-			}			
-		}else{
 			
-			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUMLS_LOGIN_REQUIRED());
-		}		
+		vsacapiService.getValueSetBasedOIDAndVersion( oid, version, new AsyncCallback<VsacApiResult>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				searchDisplay.getErrorMessageDisplay().setMessage("Unable to retreive from Vsac.Please check the data and try again.");
+
+			}
+
+			@Override
+			public void onSuccess(VsacApiResult result) {
+				if(result.isSuccess()){
+					Window.alert(result.getVsacResponse().toString());
+					
+					searchDisplay.getValueSetGrid().setVisible(true);
+				}else{
+					
+					String message = convertMessage(result.getFailureReason());
+					searchDisplay.getErrorMessageDisplay().setMessage(message);
+				}
+
+
+			}
+		});
+	
 	}
 	
+	private String convertMessage(int id) {
+		String message;
+		switch(id) {
+			case VsacApiResult.UMLS_NOT_LOGGEDIN:
+				message = MatContext.get().getMessageDelegate().getUML_NOT_LOGGEDIN();
+				break;
+			case VsacApiResult.OID_REQUIRED:
+				message = MatContext.get().getMessageDelegate().getUML_OID_REQUIRED();
+				break;
+			
+			default: message = MatContext.get().getMessageDelegate().getUnknownFailMessage();
+		}
+		return message;
+	}
 	
 	private void getListOfAppliedQDMs(final boolean isUSerDefined){
 		String measureId = MatContext.get().getCurrentMeasureId();
@@ -354,7 +365,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		});
 
 	}
-	
+
 	private void populateDataTypesListBox(){
 		MatContext.get().getListBoxCodeProvider().getAllDataType(new AsyncCallback<List<? extends HasListBox>>() {
 
@@ -372,7 +383,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		});
 
 	}
-
+	
 	private void search(String searchText, int startIndex, final int pageSize,
 			String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
 		lastSearchText = (!searchText.equals(null))? searchText.trim() : null;

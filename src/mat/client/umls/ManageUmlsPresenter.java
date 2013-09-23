@@ -86,8 +86,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(false);
-				display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
-				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
+				/*display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
+				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");*/
 				Window.open(ClientConstants.EXT_LINK_UMLS, "_blank", "");
 			}
 		});
@@ -98,8 +98,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 			
 				display.getExternalLinkDisclaimer().setVisible(false);
-				display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
-				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
+				/*display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
+				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");*/
 			}
 		});
 		
@@ -115,8 +115,6 @@ public class ManageUmlsPresenter implements MatPresenter{
 	};
 	
 	private void submit() {
-		display.getUserid().setValue("lwisham");
-		display.getPassword().setValue("Codes_44");
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
@@ -125,12 +123,12 @@ public class ManageUmlsPresenter implements MatPresenter{
 		}else if(display.getPassword().getValue().isEmpty()) {
 			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
 		}else{
-			vsacapiService.validateVsacUser(display.getUserid().getValue(), display.getPassword().getValue(), new AsyncCallback<String>() {
+			vsacapiService.validateVsacUser(display.getUserid().getValue(), display.getPassword().getValue(), new AsyncCallback<Boolean>() {
 				
 				@Override
-				public void onSuccess(String result) {
+				public void onSuccess(Boolean result) {
 				
-					if(result!=null){
+					if(result){
 						Mat.showUMLSActive();
 						display.setInfoMessageVisible(true);
 						display.getInfoMessage().setText(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
@@ -138,14 +136,12 @@ public class ManageUmlsPresenter implements MatPresenter{
 						display.getPassword().setValue("");
 						Mat.showUMLSActive();
 						MatContext.get().restartUMLSSignout();
-						//set Eight Hour UMLS ticket in MatContext.
-						MatContext.get().setUMLSEightHourTicket(result);
+						
 					}
 					else{//incorrect UMLS credential - no ticket is assigned.
 						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
 						Mat.hideUMLSActive();
-						//Un-set Eight Hour UMLS ticket.
-						MatContext.get().setUMLSEightHourTicket(null);
+						invalidateVSacSession();
 					}
 					
 				}
@@ -155,13 +151,26 @@ public class ManageUmlsPresenter implements MatPresenter{
 					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
 					caught.printStackTrace();
 					Mat.hideUMLSActive();
-					//Un-set Eight Hour UMLS ticket.
-					MatContext.get().setUMLSEightHourTicket(null);
 				}
 			});
 		}
 	}
 	
+	private void invalidateVSacSession(){
+		vsacapiService.inValidateVsacUser(new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				
+			}
+		});
+		
+	}
 	
 	private void resetWidget() {
 		display.getErrorMessageDisplay().clear();

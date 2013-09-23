@@ -1,14 +1,14 @@
 package mat.client.umls.service;
 
-import mat.model.CodeListSearchDTO;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface VSACAPIServiceAsync {
 	void validateVsacUser(String userName, String password,
-			AsyncCallback<String> callback);
+			AsyncCallback<Boolean> callback);
 
-	void getValueSetBasedOIDAndVersion(String eightHourTicket, String OID,
-			String Version, AsyncCallback<CodeListSearchDTO> callback);
+	void getValueSetBasedOIDAndVersion(String OID, String version,
+			AsyncCallback<VsacApiResult> callback);
+
+	void inValidateVsacUser(AsyncCallback<Void> callback);
 
 }

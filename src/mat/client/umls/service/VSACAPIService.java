@@ -3,8 +3,6 @@
  */
 package mat.client.umls.service;
 
-import mat.model.CodeListSearchDTO;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -15,9 +13,10 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("vsacapi")
 public interface VSACAPIService extends RemoteService {
 
-	String validateVsacUser(String userName, String password);
+	boolean validateVsacUser(String userName, String password);
 
-	CodeListSearchDTO getValueSetBasedOIDAndVersion(String eightHourTicket, String OID,
-			String Version);
+	VsacApiResult getValueSetBasedOIDAndVersion(String OID, String version);
+
+	void inValidateVsacUser();
 
 }

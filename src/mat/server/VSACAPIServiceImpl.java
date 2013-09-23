@@ -1,13 +1,20 @@
 package mat.server;
 
-import mat.client.umls.service.VSACAPIService;
-import mat.model.CodeListSearchDTO;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import mat.client.umls.service.VSACAPIService;
+import mat.client.umls.service.VsacApiResult;
+import mat.model.MatConcept;
+import mat.model.MatConceptList;
+import mat.model.MatValueSet;
+import mat.server.util.UMLSSessionTicket;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.telligen.vsac.dao.ValueSetsResponseDAO;
-import org.telligen.vsac.object.ValueSet;
+import org.telligen.vsac.object.Concept;
+import org.telligen.vsac.object.ConceptList;
 import org.telligen.vsac.object.ValueSetsResponse;
 import org.telligen.vsac.service.VSACTicketService;
 
@@ -23,65 +30,77 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	private static final Log logger = LogFactory.getLog(VSACAPIServiceImpl.class);
 
 	@Override
-	public String validateVsacUser(String userName, String password) {
+	public boolean validateVsacUser(String userName, String password) {
 		logger.info("Start validateVsacUser =====");
 		String eightHourTicketForUser = new VSACTicketService().getTicketGrantingTicket(userName,password);
 		logger.info("End validateVsacUser ===== eightHourTicketForUser =====" + eightHourTicketForUser);
-		return eightHourTicketForUser;
+		UMLSSessionTicket.getUmlssessionmap().put(getThreadLocalRequest().getSession().getId(), eightHourTicketForUser);
+		if(eightHourTicketForUser!=null)
+			return true;
+		else
+			return false;
 	}
 	
+	
 	@Override
-	public CodeListSearchDTO getValueSetBasedOIDAndVersion(String eightHourTicket,String OID, String version){
-		CodeListSearchDTO result = new CodeListSearchDTO();
-		//To Do - To be removed.
-		String[] testIDs = { "2.16.840.1.113883.3.526.2.39",
-				"2.16.840.1.113883.3.666.5.1738",
-				"2.16.840.1.113883.3.464.1003.199.11.1005" };
-		String id = null;
-		
-		if(OID==null || StringUtils.isBlank(OID)){
-			id= testIDs[0];
-		}else{
-			id=OID;
+	public void inValidateVsacUser() {
+		logger.info("Start inValidateVsacUser =====");
+		if(UMLSSessionTicket.getUmlssessionmap().size()>0){
+			UMLSSessionTicket.getUmlssessionmap().remove(getThreadLocalRequest().getSession().getId());
 		}
+		logger.info("End inValidateVsacUser =====");
 		
-		ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
-		
-		if(version!=null && StringUtils.isNotBlank(version)){
-		
-			ValueSetsResponse vsr =dao.getSpecifiedValueSetsResponseByIDAndVersion(id, version);
-			System.out.println("XML Returned====");
-			System.out.println(vsr.getXmlPayLoad());
-			result.setVsacXMLPayload(vsr.getXmlPayLoad());
-			for(ValueSet list : vsr.getValueSetList()){
-				result.setId(list.getID());
-				result.setCodeSystem(list.getConceptList().getConceptList().get(0).getCodeSystemName());
-				result.setName(list.getDisplayName());
-				result.setOid(list.getID());
-				result.setLastModified(list.getRevisionDate());
-				if(list.getGroupList()!=null){
-					result.setGroupedCodeList(true);
+	}
+	
+	@SuppressWarnings("static-access")
+	@Override
+	public VsacApiResult getValueSetBasedOIDAndVersion(String OID, String version){
+		VsacApiResult result = new VsacApiResult();
+		if(UMLSSessionTicket.getUmlssessionmap().size()>0){
+			String eightHourTicket = UMLSSessionTicket.getUmlssessionmap().get(getThreadLocalRequest().getSession().getId());
+			if(eightHourTicket!=null){
+				if(OID!=null){
+					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
+					ValueSetsResponse vsr = dao.getMultipleValueSetsResponseByOID(OID);
+					result.setSuccess(true);
+					MatValueSet valueset = new MatValueSet();
+					org.telligen.vsac.object.ValueSet vsrValueSet = vsr.getValueSetList().get(0);
+					
+					valueset.setRevisionDate(vsrValueSet.getRevisionDate());
+					valueset.setDisplayName(vsrValueSet.getDisplayName());
+					valueset.setBinding(vsrValueSet.getBinding());
+					valueset.setType(vsrValueSet.getType());
+					valueset.setID(vsrValueSet.getID());
+					valueset.setSource(vsrValueSet.getSource());
+					valueset.setStatus(vsrValueSet.getStatus());
+					
+					MatConceptList conceptList = new MatConceptList();
+					ConceptList vsrConceptList = vsrValueSet.getConceptList();
+					List<MatConcept> conceptsList = new ArrayList<MatConcept>(vsrConceptList.getConceptList().size()); 
+					for(Concept concept:vsrConceptList.getConceptList() ){
+						MatConcept matConcept = new MatConcept();
+						matConcept.setCode(concept.getCode());
+						matConcept.setCodeSystem(concept.getCodeSystem());
+						matConcept.setCodeSystemName(concept.getCodeSystemName());
+						matConcept.setCodeSystemVersion(concept.getCodeSystemVersion());
+						conceptsList.add(matConcept);
+					}
+					conceptList.setConceptList(conceptsList);
+					valueset.setConceptList(conceptList);
+					result.setVsacResponse(valueset);
+					
+				}else{
+					result.setSuccess(false);
+					result.setFailureReason(result.OID_REQUIRED);
 				}
-				
+			}else{
+				result.setSuccess(false);
+				result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
 			}
 		}else{
-			//ValueSetsResponse vsr = dao.getLatestVersionValueSetsResponseByID(id);
-			ValueSetsResponse vsr = dao.getMultipleValueSetsResponseByOID(id);
-			System.out.println("XML Returned====");
-			System.out.println(vsr.getXmlPayLoad());
-			result.setVsacXMLPayload(vsr.getXmlPayLoad());
-			for(ValueSet list : vsr.getValueSetList()){
-				result.setId(list.getID());
-				result.setCodeSystem(list.getConceptList().getConceptList().get(0).getCodeSystemName());
-				result.setName(list.getDisplayName());
-				result.setOid(list.getID());
-				result.setLastModified(list.getRevisionDate());
-				if(list.getGroupList()!=null){
-					result.setGroupedCodeList(true);
-				}
-			}
+			result.setSuccess(false);
+			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
 		}
 		return result;
 	}
-
 }

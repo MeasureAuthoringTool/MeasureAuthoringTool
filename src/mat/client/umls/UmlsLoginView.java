@@ -110,13 +110,15 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		
-		HTML externalDisclamerText = new HTML("<h9 id=\"abc\"> You are leaving the Measure Authoring Tool and entering another Web site.The Measure Authoring Tool cannot attest to the accuracy of information provided by linked sites.You will be subject to the destination site's Privacy Policy when you leave the Measure Authoring Tool. </h9>");
+		HTML externalDisclamerText = new HTML("You are leaving the Measure Authoring Tool and entering another Web site.The Measure Authoring Tool cannot attest to the accuracy of information provided by linked sites.You will be subject to the destination site's Privacy Policy when you leave the Measure Authoring Tool.");
+		externalDisclamerText.getElement().setAttribute("id", "externalDisclamerText");
 		externalLinkDisclaimer.getElement().setAttribute("id", "ExternalLinkDisclaimer");
 		externalLinkDisclaimer.getElement().setAttribute("aria-role", "panel");
-		externalLinkDisclaimer.getElement().setAttribute("aria-labelledby", "abc");
+		externalLinkDisclaimer.getElement().setAttribute("aria-labelledby", "externalDisclamerText");
 		externalLinkDisclaimer.getElement().setAttribute("aria-live", "assertive");
 		externalLinkDisclaimer.getElement().setAttribute("aria-atomic", "true");
 		externalLinkDisclaimer.getElement().setAttribute("aria-relevant", "all");
+		externalLinkDisclaimer.getElement().setAttribute("role", "alert");
 		buttonBar.getSaveButton().setText("I Agree");
 		buttonBar.getSaveButton().setTitle("I Agree");
 		buttonBar.getCancelButton().setText("I Disagree");

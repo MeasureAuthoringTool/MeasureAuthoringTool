@@ -67,6 +67,9 @@ public class ManageUmlsPresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(true);
+				display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
+				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
+				display.getExternalLinkDisclaimer().getElement().setAttribute("id", "ExternalLinkDisclaimer");
 				display.getExternalLinkDisclaimer().getElement().setAttribute("role", "alert");
 			}
 		});
@@ -76,6 +79,9 @@ public class ManageUmlsPresenter implements MatPresenter{
 			@Override
 			public void onClick(ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(true);
+				display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
+				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
+				display.getExternalLinkDisclaimer().getElement().setAttribute("id", "ExternalLinkDisclaimer");
 				display.getExternalLinkDisclaimer().getElement().setAttribute("role", "alert");
 				
 			}

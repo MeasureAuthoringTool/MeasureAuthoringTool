@@ -11,6 +11,7 @@ import mat.shared.ConstantMessages;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Timer;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -71,12 +72,27 @@ class TimeoutManager {
 				Date today = new Date();
 				if((today.getTime() - lastUMLSSignIn) >= UMLS_TIME_OUT){ 
 					Mat.hideUMLSActive();
-					//Un-set Eight Hour UMLS ticket.
-					MatContext.get().setUMLSEightHourTicket(null);
+					invalidateVSacSession();
 				}
 			}
 	    	
 	    };
+	  
+	    private void invalidateVSacSession(){
+	    	MatContext.get().getVsacapiServiceAsync().inValidateVsacUser(new AsyncCallback<Void>() {
+
+				@Override
+				public void onFailure(Throwable caught) {
+					
+				}
+
+				@Override
+				public void onSuccess(Void result) {
+					
+				}
+			});
+			
+		} 
 	    
 	/*
 	 * TimeoutWarning timer is scheduled to run at the 50th minute from the last activity Time. 

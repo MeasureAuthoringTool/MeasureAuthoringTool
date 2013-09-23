@@ -993,7 +993,7 @@ public class MessageDelegate {
 	public String getUML_LOGIN_FAILED(){
 		return UML_LOGIN_FAILED;
 	}
-
+	
 	private final String QUERY_REQUIRED="Please enter query.";
 	public String getQUERY_REQUIRED() {
 		return QUERY_REQUIRED;
@@ -1003,6 +1003,17 @@ public class MessageDelegate {
 	public String getUMLS_LOGIN_REQUIRED() {
 		return UMLS_LOGIN_REQUIRED;
 	}
+	
+	private final String UML_NOT_LOGGEDIN ="You are not logged in to UMLS.Please access the UMLS Account tab to continue.";
+	public String getUML_NOT_LOGGEDIN() {
+		return UML_NOT_LOGGEDIN;
+	}
+	
+	private final String UML_OID_REQUIRED ="OId is Required.";
+	public String getUML_OID_REQUIRED() {
+		return UML_OID_REQUIRED;
+	}
+	
 }
 
 

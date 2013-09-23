@@ -78,33 +78,32 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implements MeasureService{
+public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implements MeasureService {
 	private static final long serialVersionUID = 2280421300224680146L;
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
 	private static final String MEASURE_DETAILS = "measureDetails";
 	private static final String MEASURE = "measure";
-	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();	
+	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 	@Autowired
 	private QDSAttributesDAO qDSAttributesDAO;
-	
-	
-	
-	@Autowired 
+
+	@Autowired
 	private MeasurePackageService measurePackageService;
-	
-	@Autowired 
+
+	@Autowired
 	private UserService userService;
 	
-	public void setMeasurePackageService(MeasurePackageService measurePackageService) {
+	public final void setMeasurePackageService
+		(final MeasurePackageService measurePackageService) {
 		this.measurePackageService = measurePackageService;
 	}
 
-	public void setUserService(UserService userService) {
+	public final void setUserService(final UserService userService) {
 		this.userService = userService;
 	}
 
 	private MeasureXMLDAO getMeasureXMLDAO(){
-		return ((MeasureXMLDAO)context.getBean("measureXMLDAO")); 
+		return ((MeasureXMLDAO)context.getBean("measureXMLDAO"));
 	}
 	
 	private MeasureDAO getMeasureDAO(){
@@ -125,7 +124,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return ((MeasureNotesDAO)context.getBean("measureNotesDAO")); 
 	}
 			
-	private void setValueFromModel(ManageMeasureDetailModel model, Measure measure) {
+	private void setValueFromModel(final ManageMeasureDetailModel model, final Measure measure) {
 		measure.setDescription(model.getName());
 		measure.setaBBRName(model.getShortName());
 		//US 421. Scoring choice is not part of core measure.
@@ -134,15 +133,17 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		measure.setDraft(model.isDraft());
 		measure.setMeasureStatus(model.getMeasureStatus());
 		measure.seteMeasureId(model.geteMeasureId());
-		if(model.getFinalizedDate() != null  && !model.getFinalizedDate().equals(""))
+		if(model.getFinalizedDate() != null  && !model.getFinalizedDate().equals("")) {
 			measure.setFinalizedDate(new Timestamp(DateUtility.convertStringToDate(model.getFinalizedDate()).getTime()));
-		if(model.getValueSetDate() != null  && !model.getValueSetDate().equals(""))
+		}
+		if(model.getValueSetDate() != null  && !model.getValueSetDate().equals("")) {
 			measure.setValueSetDate(new Timestamp(DateUtility.convertStringToDate(model.getValueSetDate()).getTime()));
+		}
 	}
 	
 	
 	@Override
-	public ManageMeasureDetailModel getMeasure(String key) {
+	public final ManageMeasureDetailModel getMeasure(final String key) {
 		logger.info("In MeasureLibraryServiceImpl.getMeasure() method..");
 		logger.info("Loading Measure for MeasueId: " + key);
 		Measure measure = getService().getById(key);
@@ -152,7 +153,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 	@Override
-	public void saveAndDeleteMeasure(String measureID){
+	public final void saveAndDeleteMeasure(final String measureID){
 		logger.info("MeasureLibraryServiceImpl: saveAndDeleteMeasure start : measureId:: " + measureID);
 		MeasureDAO measureDAO = getMeasureDAO();
 		Measure m = measureDAO.find(measureID);
@@ -176,7 +177,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	
 	@Override
-	public SaveMeasureResult save(ManageMeasureDetailModel model) {
+	public final SaveMeasureResult save(final ManageMeasureDetailModel model) {
 		boolean isNewMeasure = false;
 		Measure pkg = null;
 		MeasureSet measureSet = null;
@@ -201,41 +202,39 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			measureSet.setId(UUID.randomUUID().toString());
 			getService().save(measureSet);
 		}
-		
+
 		pkg.setMeasureSet(measureSet);
 		setValueFromModel(model, pkg);
-		SaveMeasureResult result = new SaveMeasureResult();	
-		try{			
+		SaveMeasureResult result = new SaveMeasureResult();
+		try {
 			getAndValidateValueSetDate(model.getValueSetDate());
-			pkg.setValueSetDate(DateUtility.addTimeToDate(pkg.getValueSetDate()));
+			pkg.setValueSetDate(DateUtility.
+				addTimeToDate(pkg.getValueSetDate()));
 			getService().save(pkg);
-		}catch(InvalidValueSetDateException e){
+		} catch (InvalidValueSetDateException e) {
 			result.setSuccess(false);
-			result.setFailureReason(SaveMeasureResult.INVALID_VALUE_SET_DATE);
+			result.setFailureReason(
+				SaveMeasureResult.INVALID_VALUE_SET_DATE);
 			result.setId(pkg.getId());
 			return result;
 		}
-		
-		/*getClauseBusinessService().setClauseNameForMeasure(model.getId(), model.getShortName());*/
 		result.setSuccess(true);
 		result.setId(pkg.getId());
-		if(isNewMeasure){
-			//Create Default SupplimentalQDM if it is a new Measure.
-			//createSupplimentalQDM(pkg);
-		}
-		saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));		
-		
+		saveMeasureXml(createMeasureXmlModel(model, pkg,
+				MEASURE_DETAILS, MEASURE));
 		return result;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#updateLockedDate(java.lang.String, java.lang.String)
-	 * This method has been added to update the measureLock Date. This method first gets the exisitingMeasure and then adds the lockedOutDate 
-	 * if it is not there. 
+	 * @see mat.client.measure.service.MeasureService#updateLockedDate
+	 * (java.lang.String, java.lang.String).This method has been added
+	 *  to update the measureLock Date. This method first gets the
+	 *  exisitingMeasure and then adds the lockedOutDate
+	 * if it is not there.
 	 */
 	 @Override
-		public SaveMeasureResult updateLockedDate(String measureId,String userId){
+		public final SaveMeasureResult updateLockedDate(final String measureId,final String userId){
 			Measure existingmeasure = null;
 			User user = null;
 			SaveMeasureResult result = new SaveMeasureResult();
@@ -258,9 +257,10 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
     
     
     //TODO refactor this logic into a shared location: see MeasureDAO
-    private boolean isLocked(Measure m){
-    	if(m.getLockedOutDate() == null)
-    		return false;
+    private boolean isLocked(final Measure m){
+    	if(m.getLockedOutDate() == null) {
+			return false;
+		}
     	long lockTime = m.getLockedOutDate().getTime();
     	long currentTime = System.currentTimeMillis();
     	long threshold = 3*60*1000;
@@ -276,7 +276,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
      * the loggedinUserId and the LockedUserid to release the lock.
      */
     @Override
-    public SaveMeasureResult resetLockedDate(String measureId,String userId){
+	public final SaveMeasureResult resetLockedDate(final String measureId,final String userId){
     	Measure existingMeasure = null;
     	User lockedUser = null;
     	SaveMeasureResult result = new SaveMeasureResult();
@@ -299,12 +299,12 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return result;
     }
 	
-    private User getLockedUser(Measure existingMeasure){
+    private User getLockedUser(final Measure existingMeasure){
     	return existingMeasure.getLockedUser();
     }
     
 	@Override
-	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model) {	
+	public final SaveMeasureResult saveMeasureDetails(final ManageMeasureDetailModel model) {	
 		logger.info("In MeasureLibraryServiceImpl.saveMeasureDetails() method..");
 		Measure measure = null;
 		if(model.getId() != null){
@@ -324,7 +324,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	
 	
-	public String createMeasureDetailsXml(ManageMeasureDetailModel measureDetailModel, Measure measure){
+	public final String createMeasureDetailsXml(final ManageMeasureDetailModel measureDetailModel, final Measure measure){
 		logger.info("In MeasureLibraryServiceImpl.createMeasureDetailsXml()");
 		setAdditionalAttrsForMeasureXml(measureDetailModel, measure);
 		logger.info("creating XML from Measure Details Model");
@@ -334,7 +334,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	private ByteArrayOutputStream createXml(
-			ManageMeasureDetailModel measureDetailModel) {
+			final ManageMeasureDetailModel measureDetailModel) {
 		logger.info("In MeasureLibraryServiceImpl.createXml()");
 		Mapping mapping = new Mapping();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -365,7 +365,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * Setting Additional Attributes for Measure Xml.
 	 * @param measureDetailModel
 	 */
-	private void setAdditionalAttrsForMeasureXml(ManageMeasureDetailModel measureDetailModel, Measure measure){
+	private void setAdditionalAttrsForMeasureXml(final ManageMeasureDetailModel measureDetailModel, final Measure measure){
 		logger.info("In MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()");
 		measureDetailModel.setId(measure.getId());
 		measureDetailModel.setMeasureSetId(measure.getMeasureSet() != null ? measure.getMeasureSet().getId() : null);
@@ -421,7 +421,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 /**
      * Method to create XML from QualityDataModelWrapper object.
      * */
-    private ByteArrayOutputStream createQDMXML(QualityDataModelWrapper qualityDataSetDTO) {
+    private ByteArrayOutputStream createQDMXML(final QualityDataModelWrapper qualityDataSetDTO) {
 		logger.info("In ManageCodeLiseServiceImpl.createXml()");
 		Mapping mapping = new Mapping();
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -453,7 +453,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * @param manageMeasureDetailModel
 	 * @param measure
 	 */
-	private void convertAddlXmlElementsToModel(ManageMeasureDetailModel manageMeasureDetailModel, Measure measure){
+	private void convertAddlXmlElementsToModel(final ManageMeasureDetailModel manageMeasureDetailModel, final Measure measure){
 		logger.info("In easureLibraryServiceImpl.convertAddlXmlElementsToModel()");
 		manageMeasureDetailModel.setId(measure.getId());
 		manageMeasureDetailModel.setMeasFromPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel.getPeriodModel().getStartDate() : null);
@@ -471,11 +471,11 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 	
-	private String setScoringAbbreviation(String measScoring) {
+	private String setScoringAbbreviation(final String measScoring) {
 		return MeasureDetailsUtil.getScoringAbbr(measScoring);
 	}
 
-	private void setMeasureTypeAbbreviation(List<MeasureType> measureTypeList) {
+	private void setMeasureTypeAbbreviation(final List<MeasureType> measureTypeList) {
 		if(measureTypeList != null){
 			for (MeasureType measureType : measureTypeList) {
 				measureType.setAbbrDesc(MeasureDetailsUtil.getMeasureTypeAbbr(measureType.getDescription()));
@@ -483,7 +483,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		}
 	}
 
-	private MeasureXmlModel createMeasureXmlModel(ManageMeasureDetailModel manageMeasureDetailModel, Measure measure, String replaceNode, String parentNode){
+	private MeasureXmlModel createMeasureXmlModel(final ManageMeasureDetailModel manageMeasureDetailModel, final Measure measure, final String replaceNode, final String parentNode){
 		MeasureXmlModel measureXmlModel = new MeasureXmlModel();
 		measureXmlModel.setMeasureId(measure.getId());
 		measureXmlModel.setXml(createMeasureDetailsXml(manageMeasureDetailModel, measure));
@@ -493,7 +493,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	
-	private void setOrgIdInAuthor(List<Author> authors){
+	private void setOrgIdInAuthor(final List<Author> authors){
 		if(CollectionUtils.isNotEmpty(authors)){
 			for (Author author : authors) {
 				String oid = getService().retrieveStewardOID(author.getAuthorName().trim());
@@ -504,7 +504,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	
 	@Override
-	public ManageMeasureShareModel getUsersForShare(String measureId, int startIndex, int pageSize) {
+	public final ManageMeasureShareModel getUsersForShare(final String measureId, final int startIndex, final int pageSize) {
 		ManageMeasureShareModel model = new ManageMeasureShareModel();
 		List<MeasureShareDTO> dtoList = getService().getUsersForShare(measureId, startIndex, pageSize);
 		model.setResultsTotal(getService().countUsersForMeasureShare());
@@ -521,7 +521,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	@Override
-	public void updateUsersShare(ManageMeasureShareModel model) {
+	public final void updateUsersShare(final ManageMeasureShareModel model) {
 		getService().updateUsersShare(model);
 	}
 
@@ -544,7 +544,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 
 	@Override
-	public ValidateMeasureResult validateMeasureForExport(String key) throws MatException {
+	public final ValidateMeasureResult validateMeasureForExport(final String key) throws MatException {
 		try {
 			return getService().validateMeasureForExport(key);
 		}
@@ -555,7 +555,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	@Override
-	public ManageMeasureSearchModel search(String searchText, int startIndex,int pageSize, int filter) {
+	public final ManageMeasureSearchModel search(final String searchText, final int startIndex,final int pageSize, final int filter) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
@@ -605,12 +605,12 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return searchModel;
 	}
 	
-	private List<MeasureShareDTO> updateMeasureListOnlyWithLatestDraftOrVersion(List<MeasureShareDTO> measureList) {
+	private List<MeasureShareDTO> updateMeasureListOnlyWithLatestDraftOrVersion(final List<MeasureShareDTO> measureList) {
 		List<MeasureShareDTO> updatedMeasureList = new ArrayList<MeasureShareDTO>();
 		for(MeasureShareDTO measureShareDTO : measureList) {
-			if(updatedMeasureList == null || updatedMeasureList.isEmpty())
+			if(updatedMeasureList == null || updatedMeasureList.isEmpty()) {
 				updatedMeasureList.add(measureShareDTO);
-			else {
+			} else {
 				boolean found = false;
 				for(ListIterator<MeasureShareDTO> itr = updatedMeasureList.listIterator(); itr.hasNext();) {
 					MeasureShareDTO measureShareDTO_updated = itr.next();
@@ -641,7 +641,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}	
 
 	@Override
-	public ManageMeasureSearchModel searchMeasuresForVersion(int startIndex,int pageSize) {
+	public final ManageMeasureSearchModel searchMeasuresForVersion(final int startIndex,final int pageSize) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
@@ -662,7 +662,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 
 
 	@Override
-	public ManageMeasureSearchModel searchMeasuresForDraft(int startIndex,int pageSize) {
+	public final ManageMeasureSearchModel searchMeasuresForDraft(final int startIndex,final int pageSize) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
@@ -682,7 +682,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 
 	
 	@Override
-	public SaveMeasureResult saveFinalizedVersion(String measureId,boolean isMajor,String version) {
+	public final SaveMeasureResult saveFinalizedVersion(final String measureId,final boolean isMajor,final String version) {
 		logger.info("In MeasureLibraryServiceImpl.saveFinalizedVersion() method..");
 		   Measure m = getService().getById(measureId);
 		   logger.info("Measure Loaded for: " + measureId);   
@@ -690,8 +690,9 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		   if(isMajor){
 			   versionNumber =   findOutMaximumVersionNumber(m.getMeasureSet().getId());
 			   //For new measure's only draft entry will be available.findOutMaximumVersionNumber will return null.
-			   if(versionNumber==null)
-				   versionNumber="0.000";
+			   if(versionNumber==null) {
+				versionNumber="0.000";
+			}
 			   logger.info("Max Version Number loaded from DB: " + versionNumber);   
 		   } else {
 			   int versionIndex = version.indexOf('v');
@@ -717,29 +718,30 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 				}else{
 					if(!versionArr[1].equalsIgnoreCase(ConstantMessages.MAXIMUM_ALLOWED_MINOR_VERSION)){
 						return incrementVersionNumberAndSave(versionNumber,"0.001",mDetail,m);
-					}
-					else
+					} else {
 						return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_MINOR_VERSION);
+					}
 				}
-		   }else
-			   return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
+		   } else {
+			return returnFailureReason(rs, SaveMeasureResult.REACHED_MAXIMUM_VERSION);
+		}
 	}
 	
 	
 	
 	
 
-	private String findOutMaximumVersionNumber(String measureSetId){
+	private String findOutMaximumVersionNumber(final String measureSetId){
 		String maxVerNum = getService().findOutMaximumVersionNumber(measureSetId);
 		return maxVerNum;
 	}
 	
-	private String findOutVersionNumber(String measureId, String measureSetId){
+	private String findOutVersionNumber(final String measureId, final String measureSetId){
 		String maxVerNum = getService().findOutVersionNumber(measureId, measureSetId);
 		return maxVerNum;
 	}
 	
-	private SaveMeasureResult incrementVersionNumberAndSave(String maximumVersionNumber, String incrementBy,ManageMeasureDetailModel mDetail,Measure meas){
+	private SaveMeasureResult incrementVersionNumberAndSave(final String maximumVersionNumber, final String incrementBy,final ManageMeasureDetailModel mDetail,final Measure meas){
 		BigDecimal mVersion = new BigDecimal(maximumVersionNumber);
 		mVersion =  mVersion.add(new BigDecimal(incrementBy));
 		mDetail.setVersionNumber(mVersion.toString());
@@ -759,18 +761,18 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return result;
 	}
 	
-	public MeasurePackageService getMeasurePackageService() {
+	public final MeasurePackageService getMeasurePackageService() {
 		return (MeasurePackageService)context.getBean("measurePackageService");
 	}
 	
-	private SaveMeasureResult returnFailureReason(SaveMeasureResult rs, int failureReason){
+	private SaveMeasureResult returnFailureReason(final SaveMeasureResult rs, final int failureReason){
 		rs.setFailureReason(failureReason);
 		rs.setSuccess(false);
 		return rs;
 	}
 
 	
-	private void setDTOtoModel(List<ManageMeasureSearchModel.Result> detailModelList,MeasureShareDTO dto ,String currentUserId, boolean isSuperUser){
+	private void setDTOtoModel(final List<ManageMeasureSearchModel.Result> detailModelList,final MeasureShareDTO dto ,final String currentUserId, final boolean isSuperUser){
 		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
 		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
 		detail.setName(dto.getMeasureName());
@@ -792,7 +794,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		detailModelList.add(detail);
 	}
 	
-	private int getPageCount(long totalRows, int numberOfRows){
+	private int getPageCount(final long totalRows, final int numberOfRows){
 		int pageCount = 0;
 		int mod = (int) (totalRows % numberOfRows);
 		pageCount = (int) (totalRows / numberOfRows);
@@ -800,16 +802,17 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return pageCount;
 	}
 	
-	private void getAndValidateValueSetDate(String valueSetDateStr) throws InvalidValueSetDateException{
+	private void getAndValidateValueSetDate(final String valueSetDateStr) throws InvalidValueSetDateException{
 		if(StringUtils.isNotBlank(valueSetDateStr)){
 			DateStringValidator dsv = new DateStringValidator();
 			int validationCode = dsv.isValidDateString(valueSetDateStr);
-			if(validationCode != dsv.VALID)
+			if(validationCode != dsv.VALID) {
 				throw new InvalidValueSetDateException();
+			}
 		}
 	}
 
-	private List<QDSAttributes> getAllDataTypeAttributes(String qdmName) {
+	private List<QDSAttributes> getAllDataTypeAttributes(final String qdmName) {
 		List<QDSAttributes> attrs = getAttributeDAO().findByDataType(qdmName, context);
 		List<QDSAttributes> attrs1 = getAttributeDAO().getAllDataFlowAttributeName();
 		Collections.sort(attrs, attributeComparator);
@@ -821,19 +824,19 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	private Comparator<QDSAttributes> attributeComparator = new Comparator<QDSAttributes>(){
 		@Override
-		public int compare(QDSAttributes arg0, QDSAttributes arg1) {
+		public int compare(final QDSAttributes arg0, final QDSAttributes arg1) {
 			return arg0.getName().toLowerCase().compareTo(arg1.getName().toLowerCase());
 		}
 	};
 	
 	@Override
-	public boolean isMeasureLocked(String id) {
+	public final boolean isMeasureLocked(final String id) {
 		MeasurePackageService service = getService();
 		boolean isLocked = service.isMeasureLocked(id);
 		return isLocked;
 	}
 	
-	public int getMaxEMeasureId(){
+	public final int getMaxEMeasureId(){
 		MeasurePackageService service = getService();
 		int emeasureId = service.getMaxEMeasureId();
 		logger.info("**********Current Max EMeasure Id from DB ******************"+emeasureId);
@@ -842,14 +845,14 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	@Override
-	public int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureModel) {
+	public final int generateAndSaveMaxEmeasureId(final ManageMeasureDetailModel measureModel) {
 		MeasurePackageService service = getService();
 		Measure meas = service.getById(measureModel.getId());
 		return service.saveAndReturnMaxEMeasureId(meas);
 	}
 
 	@Override
-	public TransferMeasureOwnerShipModel searchUsers(int startIndex, int pageSize) {
+	public final TransferMeasureOwnerShipModel searchUsers(final int startIndex, final int pageSize) {
 		UserService userService = getUserService();
 		List<User> searchResults = userService.searchNonAdminUsers("",startIndex, pageSize);
 		logger.info("User search returned " + searchResults.size());
@@ -873,13 +876,13 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 	@Override
-	public void transferOwnerShipToUser(List<String> list, String toEmail){
+	public final void transferOwnerShipToUser(final List<String> list, final String toEmail){
 		MeasurePackageService service = getService();
 		service.transferMeasureOwnerShipToUser(list, toEmail);
 	}
 
 	@Override
-	public MeasureXmlModel getMeasureXmlForMeasure(String measureId) {
+	public final MeasureXmlModel getMeasureXmlForMeasure(final String measureId) {
 		logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure()");
 		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(measureId);	
 		if( measureXmlModel != null){
@@ -891,7 +894,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	@Override
-	public void saveMeasureXml(MeasureXmlModel measureXmlModel) {
+	public final void saveMeasureXml(final MeasureXmlModel measureXmlModel) {
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if(xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())){
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
@@ -925,7 +928,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		getService().saveMeasureXml(measureXmlModel);
 	}
 	
-	private String removePatternFromXMLString(String xmlString,String patternStart,String replaceWith){
+	private String removePatternFromXMLString(final String xmlString,final String patternStart,final String replaceWith){
 		String newString = xmlString;
 		if(patternStart !=null){
 			newString = newString.replaceAll(patternStart, replaceWith);
@@ -937,7 +940,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * Method to call XMLProcessor appendNode method to append new xml nodes into existing xml.
 	 * 
 	 * */
-	private String callAppendNode(MeasureXmlModel measureXmlModel,String newXml,String nodeName,String parentNodeName){
+	private String callAppendNode(final MeasureXmlModel measureXmlModel,final String newXml,final String nodeName,final String parentNodeName){
 		XmlProcessor xmlProcessor = new XmlProcessor(measureXmlModel.getXml());
 		String result = null;
 		try {
@@ -952,7 +955,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	
 	@Override
-	public void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName){
+	public final void appendAndSaveNode(final MeasureXmlModel measureXmlModel, final String nodeName){
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if((xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) && (nodeName != null && StringUtils.isNotBlank(nodeName))){
 			String result =callAppendNode(xmlModel,measureXmlModel.getXml(),nodeName,measureXmlModel.getParentNode()); 
@@ -968,7 +971,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * @param measure
 	 * @return
 	 */
-	private ManageMeasureDetailModel convertXmltoModel(MeasureXmlModel xmlModel, Measure measure){
+	private ManageMeasureDetailModel convertXmltoModel(final MeasureXmlModel xmlModel, final Measure measure){
 		logger.info("In MeasureLibraryServiceImpl.convertXmltoModel()");
 		ManageMeasureDetailModel details = null;
 		String xml = null;
@@ -1013,7 +1016,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * @param measure
 	 * @return
 	 */
-	private void createMeasureDetailsModelFromMeasure(ManageMeasureDetailModel model, Measure measure){
+	private void createMeasureDetailsModelFromMeasure(final ManageMeasureDetailModel model, final Measure measure){
 		logger.info("In MeasureLibraryServiceImpl.createMeasureDetailsModelFromMeasure()");
 		model.setId(measure.getId());
 		model.setName(measure.getDescription());
@@ -1038,7 +1041,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * 		1) The MeasureDAO.clone() method should be re written in here
 	 * 		
 	 */
-	public void cloneMeasureXml(boolean creatingDraft, String oldMeasureId, String clonedMeasureId){
+	public final void cloneMeasureXml(final boolean creatingDraft, final String oldMeasureId, final String clonedMeasureId){
 		logger.info("In MeasureLibraryServiceImpl.cloneMeasureXml() method. Clonig for Measure: "+ oldMeasureId);
 		ManageMeasureDetailModel measureDetailModel = null;
 		if(creatingDraft){			
@@ -1057,7 +1060,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 	@Override
-	public ArrayList<QualityDataSetDTO> getMeasureXMLForAppliedQDM(String measureId, boolean checkForSupplementData){
+	public final ArrayList<QualityDataSetDTO> getMeasureXMLForAppliedQDM(final String measureId, final boolean checkForSupplementData){
 		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
 		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
 		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
@@ -1066,16 +1069,18 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			if(details.getQualityDataDTO()!=null && details.getQualityDataDTO().size()!=0){
 				logger.info(" details.getQualityDataDTO().size() :"+ details.getQualityDataDTO().size());
 				for(QualityDataSetDTO dataSetDTO: details.getQualityDataDTO()){
-					if(dataSetDTO.getCodeListName() !=null)
-						if(checkForSupplementData && dataSetDTO.isSuppDataElement())
+					if(dataSetDTO.getCodeListName() !=null) {
+						if(checkForSupplementData && dataSetDTO.isSuppDataElement()) {
 							continue;
-						else
+						} else {
 							finalList.add(dataSetDTO);
+						}
+					}
 				}
 			}
 			Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
 				@Override
-				public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
+				public int compare(final QualityDataSetDTO o1, final QualityDataSetDTO o2) {
 					return o1.getCodeListName().compareToIgnoreCase(o2.getCodeListName());
 				}
 			});
@@ -1090,7 +1095,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	/***
 	 * Find All QDM's which are used in Clause Workspace tag's or in Supplemental Data Elements or in Attribute tags.
 	 * */
-	private ArrayList<QualityDataSetDTO> findUsedQDMs(ArrayList<QualityDataSetDTO> appliedQDMList,MeasureXmlModel measureXmlModel){
+	private ArrayList<QualityDataSetDTO> findUsedQDMs(final ArrayList<QualityDataSetDTO> appliedQDMList,final MeasureXmlModel measureXmlModel){
 
 		XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -1112,13 +1117,14 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 	
-	@Override
+	
 	/**
 	 * This method updates MeasureXML - ElementLookUpNode,ElementRef's under Population Node and Stratification Node, SupplementDataElements. It also removes attributes nodes if
 	 * there is mismatch in data types of newly selected QDM and already applied QDM.
 	 * 
 	 * **/
-	public void updateMeasureXML(QualityDataSetDTO modifyWithDTO , QualityDataSetDTO modifyDTO,String measureId){
+	@Override
+	public final void updateMeasureXML(final QualityDataSetDTO modifyWithDTO , final QualityDataSetDTO modifyDTO,final String measureId){
 		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXML Start : Measure Id :: " + measureId);
 		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
 		XmlProcessor processor = new XmlProcessor(model.getXml());
@@ -1154,7 +1160,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * 
 	 * **/
 	
-	private void updateAttributes(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO){
+	private void updateAttributes(final XmlProcessor processor , final QualityDataSetDTO modifyWithDTO,final QualityDataSetDTO modifyDTO){
 		
 		logger.debug(" MeasureLibraryServiceImpl: updateAttributes Start :  " );
 		/*String XPATH_EXPRESSION_ATTRIBUTE = "/measure//clause//attribute[@qdmUUID='"+modifyDTO.getUuid()+"']";//XPath to find all elementRefs in supplementalDataElements for to be modified QDM.
@@ -1176,7 +1182,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * This method updates MeasureXML - ElementRef's under SupplementalDataElement Node
 	 * 
 	 * **/
-	private void updateSupplementalDataElement(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO){
+	private void updateSupplementalDataElement(final XmlProcessor processor , final QualityDataSetDTO modifyWithDTO,final QualityDataSetDTO modifyDTO){
 		
 		logger.debug(" MeasureLibraryServiceImpl: updateSupplementalDataElement Start :  " );
 		String XPATH_EXPRESSION_SDE_ELEMENTREF = "/measure/supplementalDataElements/elementRef[@id='"+modifyDTO.getUuid()+"']";//XPath to find all elementRefs in supplementalDataElements for to be modified QDM.
@@ -1198,7 +1204,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * This method updates MeasureXML - ElementRef's under Population and Stratification Node
 	 * 
 	 * **/
-	private void updatePopulationAndStratification(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO){
+	private void updatePopulationAndStratification(final XmlProcessor processor , final QualityDataSetDTO modifyWithDTO,final QualityDataSetDTO modifyDTO){
 	
 		logger.debug(" MeasureLibraryServiceImpl: updatePopulationAndStratification Start :  " );
 		String XPATH_EXPRESSION_CLAUSE_ELEMENTREF = "/measure//clause//elementRef[@id='"+modifyDTO.getUuid()+"']";	//XPath to find All elementRef's under clause element nodes for to be modified QDM.
@@ -1246,7 +1252,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	 * This method updates MeasureXML - QDM nodes under ElementLookUp.
 	 * 
 	 * **/
-	private void updateElementLookUp(XmlProcessor processor , QualityDataSetDTO modifyWithDTO,QualityDataSetDTO modifyDTO ){
+	private void updateElementLookUp(final XmlProcessor processor , final QualityDataSetDTO modifyWithDTO,final QualityDataSetDTO modifyDTO ){
 	
 		logger.debug(" MeasureLibraryServiceImpl: updateElementLookUp Start :  " );
 		String XPATH_EXPRESSION_ELEMENTLOOKUP = "/measure/elementLookUp/qdm[@uuid='"+modifyDTO.getUuid()+"']";//XPath Expression to find all elementRefs in elementLookUp for to be modified QDM.
@@ -1298,7 +1304,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 	@Override
-	public void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list , String measureID){
+	public final void createAndSaveElementLookUp(final ArrayList<QualityDataSetDTO> list , final String measureID){
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		wrapper.setQualityDataDTO(list);
 		ByteArrayOutputStream stream = createQDMXML(wrapper);
@@ -1327,7 +1333,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	
 	
 	
-	private QualityDataModelWrapper convertXmltoQualityDataDTOModel(MeasureXmlModel xmlModel){
+	private QualityDataModelWrapper convertXmltoQualityDataDTOModel(final MeasureXmlModel xmlModel){
 		logger.info("In MeasureLibraryServiceImpl.convertXmltoQualityDataDTOModel()");
 		QualityDataModelWrapper details = null;
 		String xml = null;
@@ -1366,12 +1372,12 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 
 
 	@Override
-	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
+	public final void updatePrivateColumnInMeasure(final String measureId, final boolean isPrivate) {
 		getService().updatePrivateColumnInMeasure(measureId, isPrivate);
 	}
 	
 	@Override
-	public void saveMeasureNote(String noteTitle, String noteDescription, String measureId, String userId){
+	public final void saveMeasureNote(final String noteTitle, final String noteDescription, final String measureId, final String userId){
 		try{
 			MeasureNotes measureNote = new MeasureNotes();
 			measureNote.setNoteTitle(noteTitle);
@@ -1393,7 +1399,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	@Override
-	public MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID) {
+	public final MeasureNotesModel getAllMeasureNotesByMeasureID(final String measureID) {
 		MeasureNotesModel measureNotesModel = new MeasureNotesModel();
 		ArrayList<MeasureNoteDTO> data = new ArrayList<MeasureNoteDTO>();
 		
@@ -1407,17 +1413,19 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 						measureNoteDTO.setMeasureId(measureID);
 						measureNoteDTO.setId(measureNotes.getId());
 						
-						if(measureNotes.getModifyUser()!=null)
+						if(measureNotes.getModifyUser()!=null) {
 							measureNoteDTO.setLastModifiedByEmailAddress(measureNotes.getModifyUser().getEmailAddress());
-						else if(measureNotes.getCreateUser()!=null)
+						} else if(measureNotes.getCreateUser()!=null) {
 							measureNoteDTO.setLastModifiedByEmailAddress(measureNotes.getCreateUser().getEmailAddress());
+						}
 						
 						measureNoteDTO.setNoteDesc(measureNotes.getNoteDesc());
 						measureNoteDTO.setNoteTitle(measureNotes.getNoteTitle());
 						Date lastModifiedDate = measureNotes.getLastModifiedDate();
 						SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a z");
-						if(lastModifiedDate != null)
-							measureNoteDTO.setLastModifiedDate(dateFormat.format(lastModifiedDate));	
+						if(lastModifiedDate != null) {
+							measureNoteDTO.setLastModifiedDate(dateFormat.format(lastModifiedDate));
+						}	
 						
 						data.add(measureNoteDTO);
 					}
@@ -1429,7 +1437,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	@Override
-	public void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO) {
+	public final void deleteMeasureNotes(final MeasureNoteDTO measureNoteDTO) {
 		MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
 		MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());
 		try{
@@ -1441,7 +1449,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 
 	@Override
-	public void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId) {
+	public final void updateMeasureNotes(final MeasureNoteDTO measureNoteDTO, final String userId) {
 		try {
 			MeasureNotesDAO measureNotesDAO = getMeasureNotesDAO();
 			MeasureNotes measureNotes = measureNotesDAO.find(measureNoteDTO.getId());

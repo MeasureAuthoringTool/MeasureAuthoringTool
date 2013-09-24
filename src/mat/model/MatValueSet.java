@@ -14,6 +14,7 @@ public class MatValueSet implements IsSerializable {
 	private String binding;
 	private String status;
 	private String revisionDate;
+	private String definition;
 	private List<MatGroup> groupList;
 	
 	public String toString(){
@@ -78,5 +79,11 @@ public class MatValueSet implements IsSerializable {
 	}
 	public void setGroupList(List<MatGroup> groupList) {
 		this.groupList = groupList;
+	}
+	public String getDefinition() {
+		return definition;
+	}
+	public void setDefinition(String definition) {
+		this.definition = definition;
 	}
 }

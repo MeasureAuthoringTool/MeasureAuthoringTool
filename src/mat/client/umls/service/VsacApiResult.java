@@ -1,5 +1,7 @@
 package mat.client.umls.service;
 
+import java.util.ArrayList;
+
 import mat.model.MatValueSet;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -12,7 +14,7 @@ public class VsacApiResult implements IsSerializable {
 	private int failureReason;
 	private boolean isSuccess;
 	
-	private MatValueSet vsacResponse;
+	private ArrayList<MatValueSet> vsacResponse;
 	
 	public boolean isSuccess() {
 		return isSuccess;
@@ -26,14 +28,12 @@ public class VsacApiResult implements IsSerializable {
 	public void setFailureReason(int failureReason) {
 		this.failureReason = failureReason;
 	}
-	
-	public MatValueSet getVsacResponse() {
+	public ArrayList<MatValueSet> getVsacResponse() {
 		return vsacResponse;
 	}
-	public void setVsacResponse(MatValueSet vsacResponse) {
+	public void setVsacResponse(ArrayList<MatValueSet> vsacResponse) {
 		this.vsacResponse = vsacResponse;
 	}
-
 	
 
 }

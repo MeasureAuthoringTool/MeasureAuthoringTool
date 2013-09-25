@@ -82,7 +82,7 @@ implements VSACAPIService {
 										ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(eightHourTicket);
 										ValueSetsResponse vsrGrouped = daoGroupped.getMultipleValueSetsResponseByOID(groupedValueSetOid[0].trim());
 										VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsrGrouped.getXmlPayLoad());
-										valueSet.setGrouppedValueSet(wrapperGrouped.getValueSetList());
+										valueSet.setGroupedValueSet(wrapperGrouped.getValueSetList());
 									}
 								}
 							}

@@ -59,18 +59,18 @@ implements VSACAPIService {
 
 	@SuppressWarnings("static-access")
 	@Override
-	public final VsacApiResult getValueSetBasedOIDAndVersion(final String oid, final String version) {
+	public final VsacApiResult getValueSetBasedOIDAndVersion(final String oid) {
 		VsacApiResult result = new VsacApiResult();
 		if (UMLSSessionTicket.getUmlssessionmap().size() > 0) {
 			String eightHourTicket = UMLSSessionTicket.getUmlssessionmap().get(getThreadLocalRequest().getSession().getId());
 			if (eightHourTicket != null) {
-				if (oid != null && StringUtils.isEmpty(oid)) {
+				if (oid != null && StringUtils.isNotEmpty(oid) && StringUtils.isNotBlank(oid)) {
 					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
 					ValueSetsResponse vsr = dao.getMultipleValueSetsResponseByOID(oid);
 					result.setSuccess(true);
 					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
 					for(MatValueSet valueSet : wrapper.getValueSetList()){
-						if(valueSet.getType().equalsIgnoreCase("grouping")){
+						if(valueSet.isGrouping()){
 							String definitation = valueSet.getDefinition();
 							if(definitation != null && StringUtils.isNotBlank(definitation)){
 								definitation = definitation.replace("(", "");
@@ -78,7 +78,7 @@ implements VSACAPIService {
 								String[] newDefinitation = definitation.split(",");
 								for(int i=0;i<newDefinitation.length;i++){
 									String[] groupedValueSetOid = newDefinitation[i].split(":");
-									if(groupedValueSetOid.length ==2) {
+									if(groupedValueSetOid.length ==2) {//To avoid junk data
 										ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(eightHourTicket);
 										ValueSetsResponse vsrGrouped = daoGroupped.getMultipleValueSetsResponseByOID(groupedValueSetOid[0].trim());
 										VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsrGrouped.getXmlPayLoad());

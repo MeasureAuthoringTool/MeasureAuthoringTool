@@ -14,7 +14,6 @@ import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.measure.metadata.Grid508;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
@@ -290,7 +289,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	//POC - UMLS VSAC API Call to Retrieve Value Set based on OID.
 	private void searchValueSetInVsac(String oid, String version){
 			
-		vsacapiService.getValueSetBasedOIDAndVersion( oid, version, new AsyncCallback<VsacApiResult>() {
+		vsacapiService.getValueSetBasedOIDAndVersion( oid, new AsyncCallback<VsacApiResult>() {
 
 			@Override
 			public void onFailure(Throwable caught) {

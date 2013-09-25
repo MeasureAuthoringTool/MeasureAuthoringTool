@@ -16,7 +16,7 @@ public class MatValueSet implements IsSerializable {
 	private String revisionDate;
 	private String definition;
 	private List<MatGroup> groupList;
-	private List<MatValueSet> grouppedValueSet;
+	private List<MatValueSet> groupedValueSet;
 	
 	public String toString(){
 		return getID() +" - "+ getDisplayName()+ " - "+ getType();
@@ -90,10 +90,10 @@ public class MatValueSet implements IsSerializable {
 	public void setDefinition(String definition) {
 		this.definition = definition;
 	}
-	public List<MatValueSet> getGrouppedValueSet() {
-		return grouppedValueSet;
+	public List<MatValueSet> getGroupedValueSet() {
+		return groupedValueSet;
 	}
-	public void setGrouppedValueSet(List<MatValueSet> grouppedValueSet) {
-		this.grouppedValueSet = grouppedValueSet;
+	public void setGroupedValueSet(List<MatValueSet> groupedValueSet) {
+		this.groupedValueSet = groupedValueSet;
 	}
 }

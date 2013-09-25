@@ -19,4 +19,6 @@ public interface VSACAPIService extends RemoteService {
 
 	void inValidateVsacUser();
 
+	boolean isAlreadySignedIn();
+
 }

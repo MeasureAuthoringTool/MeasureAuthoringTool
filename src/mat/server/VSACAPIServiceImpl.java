@@ -39,27 +39,39 @@ implements VSACAPIService {
 	@Override
 	public final boolean validateVsacUser(final String
 			userName, final String password) {
-		LOGGER.info("Start validateVsacUser =====");
+		LOGGER.info("Start VSACAPIServiceImpl validateVsacUser");
 		String eightHourTicketForUser = new VSACTicketService().getTicketGrantingTicket(userName,password);
-		LOGGER.info("End validateVsacUser ====="+ " eightHourTicketForUser ====="+ eightHourTicketForUser);
 		UMLSSessionTicket.getUmlssessionmap().put(getThreadLocalRequest().getSession().getId(), eightHourTicketForUser);
+		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: "+ " Ticket issued for 8 hours: "+ eightHourTicketForUser);
 		return eightHourTicketForUser != null;
 	}
 
+	@Override
+	public final boolean isAlreadySignedIn() {
+		LOGGER.info("Start VSACAPIServiceImpl isAlreadySignedIn");
+		String eightHourTicketForUser = null;
+		if (UMLSSessionTicket.getUmlssessionmap().size() > 0) {
+			eightHourTicketForUser = UMLSSessionTicket.getUmlssessionmap().get(getThreadLocalRequest().getSession().getId());
+		}
+		LOGGER.info("End VSACAPIServiceImpl isAlreadySignedIn: ");
+		return eightHourTicketForUser != null;
+	}
+	
 
 	@Override
 	public final void inValidateVsacUser() {
-		LOGGER.info("Start inValidateVsacUser =====");
+		LOGGER.info("Start VSACAPIServiceImpl inValidateVsacUser");
 		if (UMLSSessionTicket.getUmlssessionmap().size() > 0) {
 			UMLSSessionTicket.getUmlssessionmap().remove(getThreadLocalRequest().getSession().getId());
 		}
-		LOGGER.info("End inValidateVsacUser =====");
+		LOGGER.info("End VSACAPIServiceImpl inValidateVsacUser");
 
 	}
 
 	@SuppressWarnings("static-access")
 	@Override
 	public final VsacApiResult getValueSetBasedOIDAndVersion(final String oid) {
+		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" +oid);
 		VsacApiResult result = new VsacApiResult();
 		if (UMLSSessionTicket.getUmlssessionmap().size() > 0) {
 			String eightHourTicket = UMLSSessionTicket.getUmlssessionmap().get(getThreadLocalRequest().getSession().getId());
@@ -73,6 +85,7 @@ implements VSACAPIService {
 						if(valueSet.isGrouping()){
 							String definitation = valueSet.getDefinition();
 							if(definitation != null && StringUtils.isNotBlank(definitation)){
+								//Definitation format is (oid:SourceName),(oid:sourceName). Below code is removing '(' ')' and splitting on ':' to find oid's.
 								definitation = definitation.replace("(", "");
 								definitation = definitation.replace(")", "");
 								String[] newDefinitation = definitation.split(",");
@@ -89,19 +102,23 @@ implements VSACAPIService {
 						}
 					}
 					result.setVsacResponse(wrapper.getValueSetList());
-
+					LOGGER.info("Successfully converted valueset object from vsac xml payload.");
 				} else {
 					result.setSuccess(false);
 					result.setFailureReason(result.OID_REQUIRED);
+					LOGGER.info("OID is required");
 				}
 			} else {
 				result.setSuccess(false);
 				result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+				LOGGER.info("UMLS Login is required");
 			}
 		} else {
 			result.setSuccess(false);
 			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			LOGGER.info("UMLS Login is required");
 		}
+		LOGGER.info("End VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" +oid);
 		return result;
 	}
 	
@@ -110,7 +127,7 @@ implements VSACAPIService {
 	 * 
 	 * */
 	private VSACValueSetWrapper convertXmltoValueSet(final String xmlPayLoad){
-		LOGGER.info("In VSACAPIServiceImpl convertXmltoValueSet");
+		LOGGER.info("Start VSACAPIServiceImpl convertXmltoValueSet");
 		VSACValueSetWrapper details = null;
 		String xml = xmlPayLoad;
 		if(xml != null && StringUtils.isNotBlank(xml)){
@@ -141,6 +158,7 @@ implements VSACAPIService {
 				LOGGER.info("Other Exception" + e);
 			}
 		} 
+		LOGGER.info("End VSACAPIServiceImpl convertXmltoValueSet");
 		return details;
 	}
 }

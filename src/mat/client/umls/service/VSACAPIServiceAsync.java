@@ -11,4 +11,6 @@ public interface VSACAPIServiceAsync {
 
 	void inValidateVsacUser(AsyncCallback<Void> callback);
 
+	void isAlreadySignedIn(AsyncCallback<Boolean> callback);
+
 }

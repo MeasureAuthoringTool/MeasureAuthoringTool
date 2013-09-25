@@ -20,6 +20,11 @@ public class MatValueSet implements IsSerializable {
 	public String toString(){
 		return getID() +" - "+ getDisplayName()+ " - "+ getType();
 	}
+	public boolean isGrouping(){
+		if("Grouping".equalsIgnoreCase(getType()))
+			return true;
+		return false;
+	}	
 	public String getID() {
 		return ID;
 	}

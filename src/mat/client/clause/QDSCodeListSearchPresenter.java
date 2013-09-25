@@ -30,6 +30,7 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CodeListSearchDTO;
+import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
@@ -50,6 +51,7 @@ import com.google.gwt.user.client.ui.DisclosureHandler;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 @SuppressWarnings("deprecation")
@@ -99,14 +101,15 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		public DisclosurePanel getDisclosurePanelCellTable();
 		public SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
 		public ErrorMessageDisplay getErrorMessageUserDefinedPanel();
-		public TextBox getQueryInput();
+		public TextBox getOIDInput();
 		public DateBoxWithCalendar getVersionInput();
 		public Button getRetrieveButton();
-		public Grid508 getValueSetGrid();
+		public VerticalPanel getValueSetDetailsPanel();
 		public ListBoxMVP getDataTypesListBox();
 		public SuccessMessageDisplay getSuccessMessageDisplay();
 		public void setDataTypesListBoxOptions(List<? extends HasListBox> texts);
 		public void clearVSACValueSetMessages();
+		public void buildValueSetDetailsWidget(MatValueSet matValueSet);
 	}
 
 	@SuppressWarnings("deprecation")
@@ -280,7 +283,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			public void onClick(ClickEvent event) {
 				MatContext.get().clearDVIMessages();
 				isUSerDefined = false;
-				searchValueSetInVsac(searchDisplay.getQueryInput().getValue(), searchDisplay.getVersionInput().getValue());				
+				searchValueSetInVsac(searchDisplay.getOIDInput().getValue(), searchDisplay.getVersionInput().getValue());				
 			}
 		});
 	}
@@ -299,10 +302,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			public void onSuccess(VsacApiResult result) {
 				if(result.isSuccess()){
 					Window.alert(result.getVsacResponse().toString());
-					
-					searchDisplay.getValueSetGrid().setVisible(true);
-				}else{
-					
+					searchDisplay.buildValueSetDetailsWidget(result.getVsacResponse().get(0));
+					searchDisplay.getValueSetDetailsPanel().setVisible(true);
+				}else{					
 					String message = convertMessage(result.getFailureReason());
 					searchDisplay.getErrorMessageDisplay().setMessage(message);
 				}
@@ -317,10 +319,10 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		String message;
 		switch(id) {
 			case VsacApiResult.UMLS_NOT_LOGGEDIN:
-				message = MatContext.get().getMessageDelegate().getUML_NOT_LOGGEDIN();
+				message = MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN();
 				break;
 			case VsacApiResult.OID_REQUIRED:
-				message = MatContext.get().getMessageDelegate().getUML_OID_REQUIRED();
+				message = MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED();
 				break;
 			
 			default: message = MatContext.get().getMessageDelegate().getUnknownFailMessage();
@@ -448,7 +450,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
 		populateDataTypesListBox();
-		searchDisplay.getValueSetGrid().setVisible(false);
+		searchDisplay.getValueSetDetailsPanel().setVisible(false);
 		searchDisplay.clearVSACValueSetMessages();
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();

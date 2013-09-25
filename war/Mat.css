@@ -1487,4 +1487,39 @@ padding: 2px;
 .skip a:hover {cursor: default}
 .skiplist {}
 
+.valueSetSearchPanel{
+	 /* background-color: lightgray; */
+    /* background-image: url("images/bg_box-blue.png");
+    background-repeat: repeat-x; */
+    background-color: white;
+    border-color: #E8EEF7 #E8EEF7 #E8EFF7;
+    border-left: 3px solid #E8EEF7;
+    border-right: 3px solid #E8EEF7;
+    border-style: solid;
+    border-width: 3px;
+    margin-left: 4px;
+    margin-top: 6px;
+    padding: 0px 0px 8px 0px;
+}
+.valueSetDetailsPanel{
+	margin-left: 4px;
+    margin-top: 6px;
+    padding: 0px 0px 8px 0px;
+}
+.valueSetDetailsTable{
+	border-collapse:collapse;
+}
+.valueSetHeader{
+	background-color: #91B2CA;
+	font-size: small;
+    font-weight: bold;
+    color: white;
+    padding: 5px;
+}
 
+.valueSetMarginTop{
+	margin-top: 4px;
+}
+.valueSetMarginLeft{
+	margin-left: 4px;
+}

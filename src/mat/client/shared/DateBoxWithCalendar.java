@@ -37,7 +37,7 @@ public class DateBoxWithCalendar extends Composite{
 	FocusPanel fPanel;
 	private HorizontalPanel panel = new HorizontalPanel();
 	private TextBox dateBox;
-	final DateTimeFormat df = DateTimeFormat.getFormat("MM/dd/yyyy");
+	private DateTimeFormat df = DateTimeFormat.getFormat("MM/dd/yyyy");
 	private PopupPanel pop;
 	private DatePicker datePicker;
 	private PopupPanel datePickerPopup;
@@ -64,6 +64,14 @@ public class DateBoxWithCalendar extends Composite{
 	public DateBoxWithCalendar(String availableDateId){
 		this(false, availableDateId, MDY);
 	}
+	
+	public DateBoxWithCalendar(DateTimeFormat dateTimeFormat) {
+		this(false,"", dateTimeFormat.getPattern().length());
+		df = dateTimeFormat;
+		dateBox.setTitle("Enter date in "+dateTimeFormat.getPattern());
+		dateBox.setWidth("100");
+	}
+	
 	public DateBoxWithCalendar(boolean showInvalidMessage,String availableDateId, int maxLength) {
 		this.showInvalidMessage = showInvalidMessage;
 		this.maxLength = maxLength;
@@ -243,7 +251,7 @@ public class DateBoxWithCalendar extends Composite{
 					}
 				}
 				
-				if(newValue.length() == 2 || newValue.length() == 5) {
+				if((maxLength == MDY || maxLength == MDYHMA) && (newValue.length() == 2 || newValue.length() == 5)) {
 					newValue += "/";
 				}
 				else if(maxLength == MDYHMA){
@@ -261,7 +269,8 @@ public class DateBoxWithCalendar extends Composite{
 			}
 			if((curCursPos == 2 || curCursPos == 5 || curCursPos == 10 || curCursPos == 16 || curCursPos == 13) && 
 					keyCode != KeyCodes.KEY_BACKSPACE &&
-					keyCode != KeyCodes.KEY_LEFT) {
+					keyCode != KeyCodes.KEY_LEFT &&
+					(maxLength == MDY || maxLength == MDYHMA)) {
 				curCursPos++;
 			}
 			dateBox.setValue(newValue);

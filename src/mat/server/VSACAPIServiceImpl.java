@@ -63,7 +63,7 @@ implements VSACAPIService {
 		if (UMLSSessionTicket.getUmlssessionmap().size() > 0) {
 			String eightHourTicket = UMLSSessionTicket.getUmlssessionmap().get(getThreadLocalRequest().getSession().getId());
 			if (eightHourTicket != null) {
-				if (oid != null) {
+				if (oid != null && !oid.trim().isEmpty()) {
 					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
 					ValueSetsResponse vsr = dao.getMultipleValueSetsResponseByOID(oid);
 					result.setSuccess(true);

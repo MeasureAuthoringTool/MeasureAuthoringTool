@@ -8,6 +8,7 @@ import java.io.StringReader;
 
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
+import mat.model.MatValueSet;
 import mat.model.VSACValueSetWrapper;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UMLSSessionTicket;
@@ -63,11 +64,30 @@ implements VSACAPIService {
 		if (UMLSSessionTicket.getUmlssessionmap().size() > 0) {
 			String eightHourTicket = UMLSSessionTicket.getUmlssessionmap().get(getThreadLocalRequest().getSession().getId());
 			if (eightHourTicket != null) {
-				if (oid != null && !oid.trim().isEmpty()) {
+				if (oid != null && StringUtils.isEmpty(oid)) {
 					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
 					ValueSetsResponse vsr = dao.getMultipleValueSetsResponseByOID(oid);
 					result.setSuccess(true);
 					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
+					for(MatValueSet valueSet : wrapper.getValueSetList()){
+						if(valueSet.getType().equalsIgnoreCase("grouping")){
+							String definitation = valueSet.getDefinition();
+							if(definitation != null && StringUtils.isNotBlank(definitation)){
+								definitation = definitation.replace("(", "");
+								definitation = definitation.replace(")", "");
+								String[] newDefinitation = definitation.split(",");
+								for(int i=0;i<newDefinitation.length;i++){
+									String[] groupedValueSetOid = newDefinitation[i].split(":");
+									if(groupedValueSetOid.length ==2) {
+										ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(eightHourTicket);
+										ValueSetsResponse vsrGrouped = daoGroupped.getMultipleValueSetsResponseByOID(groupedValueSetOid[0].trim());
+										VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsrGrouped.getXmlPayLoad());
+										valueSet.setGrouppedValueSet(wrapperGrouped.getValueSetList());
+									}
+								}
+							}
+						}
+					}
 					result.setVsacResponse(wrapper.getValueSetList());
 
 				} else {
@@ -85,9 +105,10 @@ implements VSACAPIService {
 		return result;
 	}
 	
-	
-	
-	
+	/**
+	 * Private method to Covert VSAC xml payload into Java object through Castor.
+	 * 
+	 * */
 	private VSACValueSetWrapper convertXmltoValueSet(final String xmlPayLoad){
 		LOGGER.info("In VSACAPIServiceImpl convertXmltoValueSet");
 		VSACValueSetWrapper details = null;
@@ -104,7 +125,7 @@ implements VSACAPIService {
 				Unmarshaller unmar = new Unmarshaller(mapping);
 				unmar.setClass(VSACValueSetWrapper.class);
 				unmar.setWhitespacePreserve(true);
-				LOGGER.info("unmarshalling xml..RetrieveMultipleValueSetsResponse " + xml);
+				LOGGER.info("unmarshalling xml..RetrieveMultipleValueSetsResponse ");
 	            details = (VSACValueSetWrapper)unmar.unmarshal(new InputSource(new StringReader(xml)));
 	            LOGGER.info("unmarshalling complete..RetrieveMultipleValueSetsResponse" + details.getValueSetList().get(0).getDefinition());
 	       }

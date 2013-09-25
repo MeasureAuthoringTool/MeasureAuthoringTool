@@ -16,14 +16,13 @@ public class MatValueSet implements IsSerializable {
 	private String revisionDate;
 	private String definition;
 	private List<MatGroup> groupList;
+	private List<MatValueSet> grouppedValueSet;
 	
 	public String toString(){
 		return getID() +" - "+ getDisplayName()+ " - "+ getType();
 	}
 	public boolean isGrouping(){
-		if("Grouping".equalsIgnoreCase(getType()))
-			return true;
-		return false;
+		return (getType().equalsIgnoreCase("grouping"));
 	}	
 	public String getID() {
 		return ID;
@@ -90,5 +89,11 @@ public class MatValueSet implements IsSerializable {
 	}
 	public void setDefinition(String definition) {
 		this.definition = definition;
+	}
+	public List<MatValueSet> getGrouppedValueSet() {
+		return grouppedValueSet;
+	}
+	public void setGrouppedValueSet(List<MatValueSet> grouppedValueSet) {
+		this.grouppedValueSet = grouppedValueSet;
 	}
 }

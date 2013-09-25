@@ -40,9 +40,9 @@ implements VSACAPIService {
 	public final boolean validateVsacUser(final String
 			userName, final String password) {
 		LOGGER.info("Start VSACAPIServiceImpl validateVsacUser");
-		String eightHourTicketForUser = new VSACTicketService().getTicketGrantingTicket(userName,password);
+		String eightHourTicketForUser = new VSACTicketService().getTicketGrantingTicket(userName, password);
 		UMLSSessionTicket.getUmlssessionmap().put(getThreadLocalRequest().getSession().getId(), eightHourTicketForUser);
-		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: "+ " Ticket issued for 8 hours: "+ eightHourTicketForUser);
+		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: " + " Ticket issued for 8 hours: " + eightHourTicketForUser);
 		return eightHourTicketForUser != null;
 	}
 
@@ -51,12 +51,13 @@ implements VSACAPIService {
 		LOGGER.info("Start VSACAPIServiceImpl isAlreadySignedIn");
 		String eightHourTicketForUser = null;
 		if (UMLSSessionTicket.getUmlssessionmap().size() > 0) {
-			eightHourTicketForUser = UMLSSessionTicket.getUmlssessionmap().get(getThreadLocalRequest().getSession().getId());
+			eightHourTicketForUser = UMLSSessionTicket.getUmlssessionmap().get(
+					getThreadLocalRequest().getSession().getId());
 		}
 		LOGGER.info("End VSACAPIServiceImpl isAlreadySignedIn: ");
 		return eightHourTicketForUser != null;
 	}
-	
+
 
 	@Override
 	public final void inValidateVsacUser() {
@@ -71,7 +72,7 @@ implements VSACAPIService {
 	@SuppressWarnings("static-access")
 	@Override
 	public final VsacApiResult getValueSetBasedOIDAndVersion(final String oid) {
-		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" +oid);
+		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + oid);
 		VsacApiResult result = new VsacApiResult();
 		if (UMLSSessionTicket.getUmlssessionmap().size() > 0) {
 			String eightHourTicket = UMLSSessionTicket.getUmlssessionmap().get(getThreadLocalRequest().getSession().getId());
@@ -81,21 +82,27 @@ implements VSACAPIService {
 					ValueSetsResponse vsr = dao.getMultipleValueSetsResponseByOID(oid);
 					result.setSuccess(true);
 					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
-					for(MatValueSet valueSet : wrapper.getValueSetList()){
-						if(valueSet.isGrouping()){
+					for (MatValueSet valueSet : wrapper.getValueSetList()) {
+						if (valueSet.isGrouping()) {
 							String definitation = valueSet.getDefinition();
-							if(definitation != null && StringUtils.isNotBlank(definitation)){
-								//Definitation format is (oid:SourceName),(oid:sourceName). Below code is removing '(' ')' and splitting on ':' to find oid's.
+							if (definitation != null && StringUtils.isNotBlank(definitation)) {
+								//Definition format is (oid:SourceName),(oid:sourceName).
+								//Below code is removing '(' ')' and splitting on ':' to find oid's.
 								definitation = definitation.replace("(", "");
 								definitation = definitation.replace(")", "");
 								String[] newDefinitation = definitation.split(",");
-								for(int i=0;i<newDefinitation.length;i++){
+								for (int i = 0; i < newDefinitation.length; i++) {
 									String[] groupedValueSetOid = newDefinitation[i].split(":");
-									if(groupedValueSetOid.length ==2) {//To avoid junk data
-										ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(eightHourTicket);
-										ValueSetsResponse vsrGrouped = daoGroupped.getMultipleValueSetsResponseByOID(groupedValueSetOid[0].trim());
-										VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsrGrouped.getXmlPayLoad());
-										valueSet.setGroupedValueSet(wrapperGrouped.getValueSetList());
+									if (groupedValueSetOid.length == 2) { //To avoid junk data
+										ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(
+												eightHourTicket);
+										ValueSetsResponse vsrGrouped = daoGroupped.
+												getMultipleValueSetsResponseByOID(
+												groupedValueSetOid[0].trim());
+										VSACValueSetWrapper wrapperGrouped =
+											convertXmltoValueSet(vsrGrouped.getXmlPayLoad());
+										valueSet.setGroupedValueSet(
+											wrapperGrouped.getValueSetList());
 									}
 								}
 							}
@@ -118,46 +125,49 @@ implements VSACAPIService {
 			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
 			LOGGER.info("UMLS Login is required");
 		}
-		LOGGER.info("End VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" +oid);
+		LOGGER.info("End VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + oid);
 		return result;
 	}
-	
+
 	/**
 	 * Private method to Covert VSAC xml payload into Java object through Castor.
-	 * 
+	 * @param xmlPayLoad - String vsac payload.
+	 * @return VSACValueSetWrapper.
+	 *
 	 * */
-	private VSACValueSetWrapper convertXmltoValueSet(final String xmlPayLoad){
+	private VSACValueSetWrapper convertXmltoValueSet(final String xmlPayLoad) {
 		LOGGER.info("Start VSACAPIServiceImpl convertXmltoValueSet");
 		VSACValueSetWrapper details = null;
 		String xml = xmlPayLoad;
-		if(xml != null && StringUtils.isNotBlank(xml)){
+		if (xml != null && StringUtils.isNotBlank(xml)) {
 			LOGGER.info("xml To reterive RetrieveMultipleValueSetsResponse tag is not null ");
 		}
 		try {
-			if(xml == null){
+			if (xml == null) {
 				LOGGER.info("xml is null or xml doesn't contain RetrieveMultipleValueSetsResponse tag");
-			}else{
+			} else {
 				Mapping mapping = new Mapping();
 				mapping.loadMapping(new ResourceLoader().getResourceAsURL("MultiValueSetMapping.xml"));
 				Unmarshaller unmar = new Unmarshaller(mapping);
 				unmar.setClass(VSACValueSetWrapper.class);
 				unmar.setWhitespacePreserve(true);
 				LOGGER.info("unmarshalling xml..RetrieveMultipleValueSetsResponse ");
-	            details = (VSACValueSetWrapper)unmar.unmarshal(new InputSource(new StringReader(xml)));
-	            LOGGER.info("unmarshalling complete..RetrieveMultipleValueSetsResponse" + details.getValueSetList().get(0).getDefinition());
+	            details = (VSACValueSetWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
+	            LOGGER.info("unmarshalling complete..RetrieveMultipleValueSetsResponse"
+	            + details.getValueSetList().get(0).getDefinition());
 	       }
-		
+
 		} catch (Exception e) {
-			if(e instanceof IOException){
+			if (e instanceof IOException) {
 				LOGGER.info("Failed to load MultiValueSetMapping.xml" + e);
-			}else if(e instanceof MappingException){
+			} else if (e instanceof MappingException) {
 				LOGGER.info("Mapping Failed" + e);
-			}else if(e instanceof MarshalException){
+			} else if (e instanceof MarshalException) {
 				LOGGER.info("Unmarshalling Failed" + e);
-			}else{
+			} else {
 				LOGGER.info("Other Exception" + e);
 			}
-		} 
+		}
 		LOGGER.info("End VSACAPIServiceImpl convertXmltoValueSet");
 		return details;
 	}

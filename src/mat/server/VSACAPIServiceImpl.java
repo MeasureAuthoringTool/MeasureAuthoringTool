@@ -5,6 +5,7 @@ package mat.server;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
@@ -85,6 +86,7 @@ implements VSACAPIService {
 						VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
 						for (MatValueSet valueSet : wrapper.getValueSetList()) {
 							if (valueSet.isGrouping()) {
+								valueSet.setGroupedValueSet(new ArrayList<MatValueSet>());
 								String definitation = valueSet.getDefinition();
 								if (definitation != null && StringUtils.isNotBlank(definitation)) {
 									//Definition format is (oid:SourceName),(oid:sourceName).
@@ -95,15 +97,14 @@ implements VSACAPIService {
 									for (int i = 0; i < newDefinitation.length; i++) {
 										String[] groupedValueSetOid = newDefinitation[i].split(":");
 										if (groupedValueSetOid.length == 2) { //To avoid junk data
-											ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(
-												eightHourTicket);
+											ValueSetsResponseDAO daoGroupped = new
+												ValueSetsResponseDAO(eightHourTicket);
 											ValueSetsResponse vsrGrouped = daoGroupped.
 												getMultipleValueSetsResponseByOID(
 												groupedValueSetOid[0].trim());
 											VSACValueSetWrapper wrapperGrouped =
 											convertXmltoValueSet(vsrGrouped.getXmlPayLoad());
-											valueSet.setGroupedValueSet(
-													wrapperGrouped.getValueSetList());
+											valueSet.getGroupedValueSet().add(wrapperGrouped.getValueSetList().get(0));
 										}
 									}
 								}
@@ -112,7 +113,7 @@ implements VSACAPIService {
 							LOGGER.info("Successfully converted valueset object from vsac xml payload.");
 						}
 					}
-					
+
 				} else {
 					result.setSuccess(false);
 					result.setFailureReason(result.OID_REQUIRED);

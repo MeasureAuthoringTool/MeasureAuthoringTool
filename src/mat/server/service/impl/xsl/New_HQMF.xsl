@@ -975,26 +975,36 @@
                 <xsl:for-each
                     select="elementLookUp/qdm[@datatype != 'attribute'][@datatype != 'Timing Element'][@suppDataElement != 'true']">
                     <!--<xsl:if test="@datatype != 'attribute' and @datatype != 'Timing Element'">-->
-                    <xsl:variable name="this_oid">
-                        <xsl:value-of select="@oid"/>
-                    </xsl:variable>
-                    <xsl:variable name="this_datatype">
-                        <xsl:value-of select="@datatype"/>
-                    </xsl:variable>
-
-                    <xsl:variable name="count_preceeding">
-                        <xsl:value-of
-                            select="count(preceding-sibling::qdm[@suppDataElement != 'true']
-                                                                              [@oid = $this_oid]
-                                                                              [@datatype != ('attribute','Timing Element')]
-                                                                              [@datatype=$this_datatype]
-                                                                              [not(@instance)])"
-                        />
-                    </xsl:variable>
-                    <!--<test><xsl:value-of select="$this_datatype"/> and <xsl:value-of select="$count_preceeding"/></test>-->
-                    <xsl:if test="$count_preceeding = 0">
-                        <xsl:apply-templates select="." mode="datacriteria"/>
-                    </xsl:if>
+                    <xsl:variable name="elemLookUpID"><xsl:value-of select="@id"/></xsl:variable>
+                    <xsl:choose>
+                        <xsl:when test="count(ancestor::measure/supplementalDataElements/elementRef[@id=$elemLookUpID]) > 0">
+                            <!-- We should be ignoring elements which are in Supplemental Data elem Section. Dont do anything.  -->
+                            <!-- Typically we depend on the 'suppDataElement' to tell us that the qdm is used in Supplemental data elems.
+                                 But it seems the GUI isnt always setting it. So added this check.-->
+                        </xsl:when>
+                        <xsl:otherwise>
+		                    <xsl:variable name="this_oid">
+		                        <xsl:value-of select="@oid"/>
+		                    </xsl:variable>
+		                    <xsl:variable name="this_datatype">
+		                        <xsl:value-of select="@datatype"/>
+		                    </xsl:variable>
+		
+		                    <xsl:variable name="count_preceeding">
+		                        <xsl:value-of
+		                            select="count(preceding-sibling::qdm[@suppDataElement != 'true']
+		                                                                              [@oid = $this_oid]
+		                                                                              [@datatype != ('attribute','Timing Element')]
+		                                                                              [@datatype=$this_datatype]
+		                                                                              [not(@instance)])"
+		                        />
+		                    </xsl:variable>
+		                    <!--<test><xsl:value-of select="$this_datatype"/> and <xsl:value-of select="$count_preceeding"/></test>-->
+		                    <xsl:if test="$count_preceeding = 0">
+		                        <xsl:apply-templates select="." mode="datacriteria"/>
+		                    </xsl:if>
+                        </xsl:otherwise>
+                </xsl:choose>
                 </xsl:for-each>
                 <!-- For each attribute with a mode of 'Value Set' we need to show the QDM used in the value set with the datatype as the name of the QDM
                 attribute. -->

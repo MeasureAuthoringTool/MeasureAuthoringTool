@@ -4,96 +4,292 @@ import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * Container for holding VSAC value set.
+ *
+ * **/
+
 public class MatValueSet implements IsSerializable {
+    /**
+    * VSAC value set ID.
+	*
+	 * **/
 	private String ID;
+	/**
+	 * VSAC value set Display name.
+	 *
+	 * **/
 	private String displayName;
+	/**
+	 * VSAC value set version.
+	 *
+	 * **/
 	private String version;
+	/**
+	 * VSAC value set conceptList.
+	 *
+	 * **/
 	private MatConceptList conceptList;
+	/**
+	 * VSAC value set source.
+	 *
+	 * **/
 	private String source;
+	/**
+	 * VSAC value set Type.
+	 *
+	 * **/
 	private String type;
+	/**
+	 * VSAC value set Binding.
+	 *
+	 * **/
 	private String binding;
+	/**
+	 * VSAC value set Status.
+	 *
+	 * **/
 	private String status;
+	/**
+	 * VSAC value set Revision Date.
+	 *
+	 * **/
 	private String revisionDate;
+	/**
+	 * VSAC value set Definition.
+	 *
+	 * **/
 	private String definition;
+	/**
+	 * VSAC value set Group List.
+	 *
+	 * **/
 	private List<MatGroup> groupList;
+	/**
+	 * VSAC value set Grouped Value Set.
+	 *
+	 * **/
 	private List<MatValueSet> groupedValueSet;
-	
-	public String toString(){
-		return getID() +" - "+ getDisplayName()+ " - "+ getType();
+
+	/**
+	 * @return String with ID , Display name and Type.
+	 *
+	 * **/
+
+	public final String toString() {
+		return getID() + " - " + getDisplayName() + " - " + getType();
 	}
-	public boolean isGrouping(){
+
+	/**
+	 * @return Boolean.
+	 *
+	 * **/
+	public final boolean isGrouping() {
 		return (getType().equalsIgnoreCase("grouping"));
-	}	
-	public String getID() {
+	}
+
+	/**
+	 * Getter -ID.
+	 * @return OID.
+	 *
+	 * **/
+
+	public final String getID() {
 		return ID;
 	}
-	public void setID(String iD) {
+
+	/**
+	 *Setter for ID.
+	 *@param iD - OID.
+	 * **/
+	public final void setID(final String iD) {
 		ID = iD;
 	}
-	public String getDisplayName() {
+
+	/**
+	 * Getter -displayName.
+	 * @return displayName.
+	 *
+	 * **/
+	public final String getDisplayName() {
 		return displayName;
 	}
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
+
+	/**
+	 *Setter for displayName.
+	 *@param vDisplayName - displayName.
+	 * **/
+	public final void setDisplayName(final String vDisplayName) {
+		this.displayName = vDisplayName;
 	}
-	public String getVersion() {
+
+	/**
+	 * Getter -version.
+	 * @return version.
+	 *
+	 * **/
+	public final String getVersion() {
 		return version;
 	}
-	public void setVersion(String version) {
-		this.version = version;
+
+	/**
+	 *Setter for version.
+	 *@param vVersion - version.
+	 * **/
+	public final void setVersion(final String vVersion) {
+		this.version = vVersion;
 	}
-	public MatConceptList getConceptList() {
+
+	/**
+	 * Getter -conceptList.
+	 * @return conceptList.
+	 *
+	 * **/
+	public final MatConceptList getConceptList() {
 		return conceptList;
 	}
-	public void setConceptList(MatConceptList conceptList) {
-		this.conceptList = conceptList;
+
+	/**
+	 *Setter for conceptList.
+	 *@param conceptLists - conceptList.
+	 * **/
+	public final void setConceptList(final MatConceptList conceptLists) {
+		this.conceptList = conceptLists;
 	}
-	public String getSource() {
+
+	/**
+	 * Getter -source.
+	 * @return source.
+	 *
+	 * **/
+	public final String getSource() {
 		return source;
 	}
-	public void setSource(String source) {
-		this.source = source;
+
+	/**
+	 *Setter for source.
+	 *@param vSource - source.
+	 * **/
+	public final void setSource(final String vSource) {
+		this.source = vSource;
 	}
-	public String getType() {
+
+	/**
+	 * Getter -type.
+	 * @return type.
+	 *
+	 * **/
+	public final String getType() {
 		return type;
 	}
-	public void setType(String type) {
-		this.type = type;
+
+	/**
+	 *Setter for type.
+	 *@param vType - type.
+	 * **/
+	public final void setType(final String vType) {
+		this.type = vType;
 	}
-	public String getBinding() {
+
+	/**
+	 * Getter -binding.
+	 * @return binding.
+	 *
+	 * **/
+	public final String getBinding() {
 		return binding;
 	}
-	public void setBinding(String binding) {
-		this.binding = binding;
+
+	/**
+	 *Setter for binding.
+	 *@param vBinding - binding.
+	 * **/
+	public final void setBinding(final String vBinding) {
+		this.binding = vBinding;
 	}
-	public String getStatus() {
+
+	/**
+	 * Getter -status.
+	 * @return status.
+	 *
+	 * **/
+	public final String getStatus() {
 		return status;
 	}
-	public void setStatus(String status) {
-		this.status = status;
+
+	/**
+	 *Setter for status.
+	 *@param vStatus - status.
+	 * **/
+	public final void setStatus(final String vStatus) {
+		this.status = vStatus;
 	}
-	public String getRevisionDate() {
+
+	/**
+	 * Getter -revisionDate.
+	 * @return revisionDate.
+	 *
+	 * **/
+	public final String getRevisionDate() {
 		return revisionDate;
 	}
-	public void setRevisionDate(String revisionDate) {
-		this.revisionDate = revisionDate;
+
+	/**
+	 *Setter for revisionDate.
+	 *@param revisionDates - revisionDate.
+	 * **/
+	public final void setRevisionDate(final String revisionDates) {
+		this.revisionDate = revisionDates;
 	}
-	public List<MatGroup> getGroupList() {
+
+	/**
+	 * Getter -groupList.
+	 * @return groupList.
+	 *
+	 * **/
+	public final List<MatGroup> getGroupList() {
 		return groupList;
 	}
-	public void setGroupList(List<MatGroup> groupList) {
-		this.groupList = groupList;
+
+	/**
+	 *Setter for groupList.
+	 *@param groupLists - groupList.
+	 * **/
+	public final void setGroupList(final List<MatGroup> groupLists) {
+		this.groupList = groupLists;
 	}
-	public String getDefinition() {
+
+	/**
+	 * Getter -ID.
+	 * @return OID.
+	 *
+	 * **/
+	public final String getDefinition() {
 		return definition;
 	}
-	public void setDefinition(String definition) {
-		this.definition = definition;
+
+	/**
+	 *Setter for definition.
+	 *@param definitions - definition.
+	 * **/
+	public final void setDefinition(final String definitions) {
+		this.definition = definitions;
 	}
-	public List<MatValueSet> getGroupedValueSet() {
+
+	/**
+	 * Getter -groupedValueSet.
+	 * @return groupedValueSet.
+	 *
+	 * **/
+	public final List<MatValueSet> getGroupedValueSet() {
 		return groupedValueSet;
 	}
-	public void setGroupedValueSet(List<MatValueSet> groupedValueSet) {
-		this.groupedValueSet = groupedValueSet;
+
+	/**
+	 *Setter for groupedValueSet.
+	 *@param groupedValueSets - MatValueSet.
+	 * **/
+	public final void setGroupedValueSet(final List<MatValueSet> groupedValueSets) {
+		this.groupedValueSet = groupedValueSets;
 	}
 }

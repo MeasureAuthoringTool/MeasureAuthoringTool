@@ -4,43 +4,92 @@ import java.util.ArrayList;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * Container for holding Group information.
+ *
+ * **/
 public class MatGroup implements IsSerializable {
+/**
+* Group ID.
+*
+* **/
+private String Id;
+/**
+* Group Source Organization.
+*
+* **/
 
-	private String ID;
-	private String sourceOrganization;
-	private String displayName;
-	private ArrayList<String> keywordList;
+private String sourceOrganization;
+/**
+* Group Display Name.
+*
+* **/
 
-	public String getID() {
-		return ID;
-	}
+private String displayName;
+/**
+* Array List of Key Words.
+*
+* **/
 
-	public void setID(String iD) {
-		ID = iD;
-	}
-
-	public String getSourceOrganization() {
-		return sourceOrganization;
-	}
-
-	public void setSourceOrganization(String sourceOrganization) {
-		this.sourceOrganization = sourceOrganization;
-	}
-
-	public String getDisplayName() {
-		return displayName;
-	}
-
-	public void setDisplayName(String displayName) {
-		this.displayName = displayName;
-	}
-
-	public void setKeywordList(ArrayList<String> keywordList) {
-		this.keywordList = keywordList;
-	}
-
-	public ArrayList<String> getKeywordList() {
-		return keywordList;
-	}
-
+private ArrayList<String> keywordList;
+/**
+ * Getter -ID.
+ * @return ID.
+ *
+ * **/
+public final String getId() {
+return Id;
+}
+/**
+ *Setter for ID.
+ *@param Ids - Group ID.
+ * **/
+public final void setId(final String Ids) {
+this.Id = Ids;
+}
+/**
+ * Getter -sourceOrganization.
+ * @return sourceOrganization.
+ *
+ * **/
+public final String getSourceOrganization() {
+return sourceOrganization;
+}
+/**
+ *Setter for sourceOrganization.
+ *@param sourceOrganizations - sourceOrganization.
+ * **/
+public final void setSourceOrganization(final String sourceOrganizations) {
+this.sourceOrganization = sourceOrganizations;
+}
+/**
+ * Getter -displayName.
+ * @return displayName.
+ *
+ * **/
+public final String getDisplayName() {
+return displayName;
+}
+/**
+ *Setter for displayName.
+ *@param displayNames - displayName.
+ * **/
+public final void setDisplayName(final String displayNames) {
+this.displayName = displayNames;
+}
+/**
+ *Setter for keywordList.
+ *@param keywordLists - keywordList.
+ * **/
+public final void setKeywordList(final ArrayList<String> keywordLists) {
+this.keywordList = keywordLists;
+}
+/**
+ * Getter -keywordList.
+ * @return keywordList.
+ *
+ * **/
+public final ArrayList<String> getKeywordList() {
+return keywordList;
+}
 }

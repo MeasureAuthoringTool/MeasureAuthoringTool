@@ -79,37 +79,40 @@ implements VSACAPIService {
 			if (eightHourTicket != null) {
 				if (oid != null && StringUtils.isNotEmpty(oid) && StringUtils.isNotBlank(oid)) {
 					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
-					ValueSetsResponse vsr = dao.getMultipleValueSetsResponseByOID(oid);
+					ValueSetsResponse vsr = dao.getMultipleValueSetsResponseByOID(oid.trim());
 					result.setSuccess(true);
-					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
-					for (MatValueSet valueSet : wrapper.getValueSetList()) {
-						if (valueSet.isGrouping()) {
-							String definitation = valueSet.getDefinition();
-							if (definitation != null && StringUtils.isNotBlank(definitation)) {
-								//Definition format is (oid:SourceName),(oid:sourceName).
-								//Below code is removing '(' ')' and splitting on ':' to find oid's.
-								definitation = definitation.replace("(", "");
-								definitation = definitation.replace(")", "");
-								String[] newDefinitation = definitation.split(",");
-								for (int i = 0; i < newDefinitation.length; i++) {
-									String[] groupedValueSetOid = newDefinitation[i].split(":");
-									if (groupedValueSetOid.length == 2) { //To avoid junk data
-										ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(
+					if (!vsr.getXmlPayLoad().isEmpty()) {
+						VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
+						for (MatValueSet valueSet : wrapper.getValueSetList()) {
+							if (valueSet.isGrouping()) {
+								String definitation = valueSet.getDefinition();
+								if (definitation != null && StringUtils.isNotBlank(definitation)) {
+									//Definition format is (oid:SourceName),(oid:sourceName).
+									//Below code is removing '(' ')' and splitting on ':' to find oid's.
+									definitation = definitation.replace("(", "");
+									definitation = definitation.replace(")", "");
+									String[] newDefinitation = definitation.split(",");
+									for (int i = 0; i < newDefinitation.length; i++) {
+										String[] groupedValueSetOid = newDefinitation[i].split(":");
+										if (groupedValueSetOid.length == 2) { //To avoid junk data
+											ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(
 												eightHourTicket);
-										ValueSetsResponse vsrGrouped = daoGroupped.
+											ValueSetsResponse vsrGrouped = daoGroupped.
 												getMultipleValueSetsResponseByOID(
 												groupedValueSetOid[0].trim());
-										VSACValueSetWrapper wrapperGrouped =
+											VSACValueSetWrapper wrapperGrouped =
 											convertXmltoValueSet(vsrGrouped.getXmlPayLoad());
-										valueSet.setGroupedValueSet(
-											wrapperGrouped.getValueSetList());
+											valueSet.setGroupedValueSet(
+													wrapperGrouped.getValueSetList());
+										}
 									}
 								}
 							}
+							result.setVsacResponse(wrapper.getValueSetList());
+							LOGGER.info("Successfully converted valueset object from vsac xml payload.");
 						}
 					}
-					result.setVsacResponse(wrapper.getValueSetList());
-					LOGGER.info("Successfully converted valueset object from vsac xml payload.");
+					
 				} else {
 					result.setSuccess(false);
 					result.setFailureReason(result.OID_REQUIRED);

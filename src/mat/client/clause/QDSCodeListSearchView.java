@@ -3,9 +3,11 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 
 import org.apache.commons.lang.StringUtils;
 
+import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -17,6 +19,7 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
@@ -30,6 +33,7 @@ import mat.model.MatConcept;
 import mat.model.MatValueSet;
 import mat.shared.ConstantMessages;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -59,6 +63,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.HasData;
+import com.google.gwt.view.client.ListDataProvider;
 
 import elemental.js.util.StringUtil;
 
@@ -344,9 +350,12 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		Label queryHeader = new Label("Query");
 		queryHeader.getElement().setId("queryHeader_Label");
 		queryHeader.setStyleName("valueSetHeader");
+		queryHeader.getElement().setAttribute("tabIndex", "0");
 		searchPanel.add(queryHeader);
 		searchPanel.add(new SpacerWidget());		
 		oidInput.getElement().setId("oidInput_TextBox");
+		oidInput.getElement().setAttribute("tabIndex", "0");
+		oidInput.setTitle("Enter OID");
 		oidInput.setWidth("300px");
 		oidInput.setMaxLength(45);
 		oidInput.addKeyPressHandler(new KeyPressHandler() {			
@@ -359,7 +368,9 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			}
 		});
 		versionInput.getElement().setId("versionInput_DateBoxWithCalendar");
+		versionInput.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.getElement().setId("retrieveButton_Button");
+		retrieveButton.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.setStyleName("marginTop");
 		Grid queryGrid = new Grid(3,2);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
@@ -392,8 +403,12 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private Widget createGroupingMembersCellTable(MatValueSet matValueSet) {
 		List<MatValueSet> groupedMatValueSets = matValueSet.getGroupedValueSet(); 
 		
-		CellTable<MatValueSet> groupingValueSetTable = new CellTable<MatValueSet>(4);
+		CellTable<MatValueSet> groupingValueSetTable = new CellTable<MatValueSet>();
 		groupingValueSetTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		groupingValueSetTable.getElement().setAttribute("tabIndex", "0");
+		groupingValueSetTable.addStyleName("valueSetMarginLeft_7px");
+		groupingValueSetTable.setPageSize(4);
+		groupingValueSetTable.redraw();
 		
 		TextColumn<MatValueSet> valuesetNameColumn = new TextColumn<MatValueSet>() {
 			@Override
@@ -419,19 +434,30 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		};
 		groupingValueSetTable.addColumn(codeSystemColumn, "CodeSystem");
 		
-		groupingValueSetTable.setRowCount(groupedMatValueSets.size(), true);
-		groupingValueSetTable.setRowData(groupedMatValueSets);
+		ListDataProvider<MatValueSet> listDataProvider = new ListDataProvider<MatValueSet>();	
+		listDataProvider.refresh();
+		listDataProvider.getList().addAll(groupedMatValueSets);
+		listDataProvider.addDataDisplay(groupingValueSetTable);
 		
 		VerticalPanel groupingPanel = new VerticalPanel();
 		groupingPanel.getElement().setId("groupingPanel_VerticalPanel");
-		groupingPanel.addStyleName("valueSetMarginLeft_7px");
 		groupingPanel.setWidth("100%");
 		Label groupingHeader = new Label("Grouping value set");
 		groupingHeader.getElement().setId("groupingHeader_Label");
+		groupingHeader.getElement().setAttribute("tabIndex", "0");
 		groupingHeader.setStyleName("valueSetHeader");
 		groupingHeader.setWidth("150px");
 		groupingPanel.add(groupingHeader);
-		groupingPanel.add(groupingValueSetTable);
+		groupingPanel.add(groupingValueSetTable);		
+				
+		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+		spager.addStyleName("valueSetMarginLeft_7px");
+        spager.setDisplay(groupingValueSetTable);
+        spager.setPageStart(0);
+        spager.setToolTipAndTabIndex(spager);
+        groupingPanel.add(spager);
+        
 		return groupingPanel;
 	}
 
@@ -442,6 +468,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		
 		Label detailsHeader = new Label("Value set details");
 		detailsHeader.getElement().setId("detailsHeader_Label");
+		detailsHeader.getElement().setAttribute("tabIndex", "0");
 		detailsHeader.setStyleName("valueSetHeader");
 		detailsPanel.add(detailsHeader);
 		
@@ -481,9 +508,14 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			String codeSystem = StringUtils.EMPTY;
 			List<MatValueSet> groupedMatValueSets = matValueSet.getGroupedValueSet(); 
 			if(groupedMatValueSets!=null) {
-				for(MatValueSet groupedMatValueSet : groupedMatValueSets) {
+				ListIterator<MatValueSet> itr = groupedMatValueSets.listIterator();
+				while(itr.hasNext()) {
+					MatValueSet groupedMatValueSet = itr.next();
 					codeSystem += groupedMatValueSet.getCodeSystemName();
-				}
+					if(itr.hasNext()) {
+						codeSystem += ", ";
+					}
+				}				
 			}		
 			return codeSystem;
 		}
@@ -506,6 +538,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			}
 		}
 		html.setHeight("100%");
+		html.getElement().setAttribute("tabIndex", "0");
 		return html;
 	}
 
@@ -531,9 +564,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		cancelButton.addClickHandler(new ClickHandler() {			
 			@Override
 			public void onClick(ClickEvent event) {
-				dataTypesListBox.setSelectedIndex(0);
-				specificOccurrence.setValue(false);
-				applyToMeasureButton.setEnabled(false);
+				resetVSACValueSetWidget();
+				clearVSACValueSetMessages();
 			}
 		});
 		buttonsPanel.add(cancelButton);
@@ -813,6 +845,13 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		view.getvPanelForQDMTable().add(spager);
 
 	}*/
+	
+	@Override
+	public void resetVSACValueSetWidget() {
+		getOIDInput().setValue(StringUtils.EMPTY);
+		getVersionInput().setValue(StringUtils.EMPTY);
+		getValueSetDetailsPanel().setVisible(false);
+	}
 
 	@Override
 	public void setAllDataTypeOptions(List<? extends HasListBox> texts) {

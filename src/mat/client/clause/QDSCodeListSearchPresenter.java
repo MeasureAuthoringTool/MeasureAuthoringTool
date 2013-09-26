@@ -115,6 +115,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		public void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets);
 		public Button getApplyToMeasureButton();
 		public MatValueSet getCurrentMatValueSet();
+		public void resetVSACValueSetWidget();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -307,6 +308,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		//OID validation.
 		if (oid==null || oid.trim().isEmpty()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
+			searchDisplay.resetVSACValueSetWidget();
 			return;
 		}
 				
@@ -314,6 +316,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
+				searchDisplay.resetVSACValueSetWidget();
 			}
 
 			@Override
@@ -324,6 +327,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				}else{					
 					String message = convertMessage(result.getFailureReason());
 					searchDisplay.getErrorMessageDisplay().setMessage(message);
+					searchDisplay.resetVSACValueSetWidget();
 				}
 			}
 		});	
@@ -464,14 +468,12 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
 		populateDataTypesListBox();
-		searchDisplay.getOIDInput().setValue(StringUtils.EMPTY);
-		searchDisplay.getVersionInput().setValue(StringUtils.EMPTY);
-		searchDisplay.getValueSetDetailsPanel().setVisible(false);
+		searchDisplay.resetVSACValueSetWidget();
 		searchDisplay.clearVSACValueSetMessages();
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
 		//searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
-	}
+	}	
 
 	private void addSelectedCodeListtoMeasure(boolean isUserDefinedQDM){
 		if(!isUserDefinedQDM){

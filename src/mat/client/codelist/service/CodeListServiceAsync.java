@@ -55,8 +55,8 @@ public interface CodeListServiceAsync {
 	void deleteCodes(String codeListID, List<Code> Codes,
 			AsyncCallback<ManageCodeListDetailModel> callback);
 
-	void addCodeListToMeasure(String measureId, String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence,ArrayList<QualityDataSetDTO> appliedQDMs,
-			AsyncCallback<SaveUpdateCodeListResult> callback);
+	/*void addCodeListToMeasure(String measureId, String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence,ArrayList<QualityDataSetDTO> appliedQDMs,
+			AsyncCallback<SaveUpdateCodeListResult> callback);*/
 
 	public void getQDSElements(String measureId, String vertsion, AsyncCallback<List<QualityDataSetDTO>> callback);
 	
@@ -88,7 +88,7 @@ public interface CodeListServiceAsync {
 	void getAllOperators(AsyncCallback<List<OperatorDTO>> callback);
 
 	void updateCodeListToMeasure(String measureID, String dataType,
-			CodeListSearchDTO codeListSearchDTO,
+			MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO,
 			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDMList, boolean isUserDefined,
 			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);

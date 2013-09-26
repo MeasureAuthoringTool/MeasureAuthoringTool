@@ -42,7 +42,7 @@ public interface CodeListService {
 		throws CodeListNotUniqueException, CodeListOidNotUniqueException, InvalidLastModifiedDateException, ValueSetLastModifiedDateNotUniqueException;	
 	
 	public List<ListObject> getSupplimentalCodeList();
-	public SaveUpdateCodeListResult saveQDStoMeasure(String measureId,String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDM);
+	/*public SaveUpdateCodeListResult saveQDStoMeasure(String measureId,String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDM);*/
 	public List<? extends HasListBox> getCodeSystemsForCategory(String category);
 	public List<? extends HasListBox> getQDSDataTypeForCategory(String category);
 	public List<QualityDataSetDTO> getQDSElements(String measureId, String verision);
@@ -69,13 +69,18 @@ public interface CodeListService {
 	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(String measureId,
 			String dataType, String codeListName,
 			ArrayList<QualityDataSetDTO> appliedQDM);
-	SaveUpdateCodeListResult updateQDStoMeasure(String measureId,
+	/*SaveUpdateCodeListResult updateQDStoMeasure(String measureId,
 			String dataType, CodeListSearchDTO codeList,
 			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDM, boolean isUSerDefined);
+			ArrayList<QualityDataSetDTO> appliedQDM, boolean isUSerDefined);*/
 	SaveUpdateCodeListResult saveQDStoMeasure(String measureId,
 			String dataType, MatValueSet matValueSet,
 			boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDM);
+	SaveUpdateCodeListResult updateQDStoMeasure(String measureId,
+			String dataType, MatValueSet matValueSet,
+			CodeListSearchDTO codeList, QualityDataSetDTO qualityDataSetDTO,
+			boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDM, boolean isUSerDefined);
 	
 }

@@ -168,10 +168,10 @@ public interface CodeListService extends RemoteService {
 	
 	public ManageCodeListDetailModel getCodeList(String key);
 	public ManageCodeListDetailModel deleteCodes(String codeListID,List<Code> Codes);
-	SaveUpdateCodeListResult addCodeListToMeasure(String measureId,
+	/*SaveUpdateCodeListResult addCodeListToMeasure(String measureId,
 			String dataType, CodeListSearchDTO codeList,
 			boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDMs);
+			ArrayList<QualityDataSetDTO> appliedQDMs);*/
 	public ManageCodeListDetailModel getGroupedCodeList(String key);
 	
 	
@@ -222,13 +222,20 @@ public interface CodeListService extends RemoteService {
 			String dataType, String codeList,
 			ArrayList<QualityDataSetDTO> appliedQDMs);
 
-	SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
+	/*SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
 			String dataType, CodeListSearchDTO codeListSearchDTO,
-			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDMList, boolean isUserDefined);
+			MatValueSet matValueSet, QualityDataSetDTO qualityDataSetDTO,
+			Boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDMList, boolean isUserDefined);*/
 
 	SaveUpdateCodeListResult saveQDStoMeasure(String measureId,
 			String dataType, MatValueSet matValueSet,
 			boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDM); 
+			ArrayList<QualityDataSetDTO> appliedQDM);
+
+	SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
+			String dataType, MatValueSet matValueSet,
+			CodeListSearchDTO codeListSearchDTO,
+			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDMList, boolean isUserDefined); 
 }

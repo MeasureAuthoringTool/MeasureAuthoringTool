@@ -16,7 +16,6 @@ import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
@@ -58,6 +57,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	private String lastSearchText;
 	private int lastStartIndex;
 	private QDSCodeListSearchModel currentCodeListResults;
+	private MatValueSet currentMatValueSet ;//To Do Sowmaya to Set this value set.
 	MeasureServiceAsync measureService = MatContext.get().getMeasureService();
 	ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
 	QualityDataSetDTO  modifyValueSetDTO;
@@ -249,7 +249,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			}
 		});
 		
-		searchDisplay.getAddToMeasureButton().addClickHandler(new ClickHandler() {
+		searchDisplay.getApplyToMeasureButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				MatContext.get().clearDVIMessages();
@@ -264,6 +264,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					@Override
 					public void onSuccess(ArrayList<QualityDataSetDTO> result) {
 						appliedQDMList = result;
+						currentMatValueSet = searchDisplay.getCurrentMatValueSet();
 						modifyQDM(false);
 					}
 					
@@ -378,30 +379,25 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	
 	private void modifyValueSetQDM(){
 		//Normal Available QDM Flow
-		CodeListSearchDTO modifyWithDTO = currentCodeListResults.getLastSelectedCodeList();
+		//CodeListSearchDTO modifyWithDTO = currentCodeListResults.getLastSelectedCodeList();
+		MatValueSet modifyWithDTO = currentMatValueSet;
 		searchDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getApplyToMeasureSuccessMsg().clear();
 		if(modifyValueSetDTO!=null && modifyWithDTO!=null ){
 			String dataType;
 			Boolean isSpecificOccurrence=false;
 		
-			if(modifyWithDTO.getCategoryDisplay().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+			if(modifyWithDTO.getCodeSystemName().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
 		    	   dataType = ConstantMessages.ATTRIBUTE;
-		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_PERIOD)){
-		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_START_DATE)){
-		    	   dataType = ConstantMessages.TIMING_ELEMENT;
-		     }else if(modifyWithDTO.getName().equalsIgnoreCase(ConstantMessages.MEASUREMENT_END_DATE)){
-		    	   dataType = ConstantMessages.TIMING_ELEMENT;
 		     }else{
-		    	   populateQDSDataType(modifyWithDTO.getCategoryCode());
-		    	   dataType = searchDisplay.getDataTypeValue();
+		    	   /*populateQDSDataType(modifyWithDTO.getCategoryCode());*/
+		    	   dataType = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
 		     }
 		     isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
 		     	
 			 if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
 				if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
-					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
+					updateAppliedQDMList(modifyWithDTO,null, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
 				}else{
 					if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
 						searchDisplay.getErrorMessageDisplay().setMessage("A value set with a non-Attribute category must be used for this data element.");
@@ -411,7 +407,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				setEnabled(true);
 				}
 			}else{
-				updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
+				updateAppliedQDMList(modifyWithDTO,null, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
 			
 			}
 		}else{
@@ -434,7 +430,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			String dataType = searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput());
 			if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
 				if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
-					updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,true);
+					updateAppliedQDMList(null,modifyWithDTO, modifyValueSetDTO,dataType,false,true);
 				}else{
 					if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
 						searchDisplay.getErrorMessageUserDefinedPanel().setMessage("A value set with a non-Attribute category must be used for this data element.");
@@ -443,7 +439,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					}
 				}
 			}else{
-				updateAppliedQDMList(modifyWithDTO, modifyValueSetDTO,dataType,false,true);
+				updateAppliedQDMList(null,modifyWithDTO, modifyValueSetDTO,dataType,false,true);
 			}
 		}else{
 			searchDisplay.getErrorMessageUserDefinedPanel().setMessage("Please enter Value Set name and select a data type associated with it.");
@@ -457,8 +453,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	 * 
 	 * **/
 	
-	private void updateAppliedQDMList(final CodeListSearchDTO codeListSearchDTO , final QualityDataSetDTO  qualityDataSetDTO, String dataType,  Boolean isSpecificOccurrence,final boolean isUSerDefined){
-		MatContext.get().getCodeListService().updateCodeListToMeasure(MatContext.get().getCurrentMeasureId(),dataType, codeListSearchDTO,qualityDataSetDTO, isSpecificOccurrence,appliedQDMList,isUSerDefined, new AsyncCallback<SaveUpdateCodeListResult>(){
+	private void updateAppliedQDMList(final MatValueSet matValueSet ,final CodeListSearchDTO codeListSearchDTO , final QualityDataSetDTO  qualityDataSetDTO, String dataType,  Boolean isSpecificOccurrence,final boolean isUSerDefined){
+		MatContext.get().getCodeListService().updateCodeListToMeasure(MatContext.get().getCurrentMeasureId(),dataType, matValueSet, codeListSearchDTO,qualityDataSetDTO, isSpecificOccurrence,appliedQDMList,isUSerDefined, new AsyncCallback<SaveUpdateCodeListResult>(){
 			@Override
 			public void onFailure(Throwable caught) {
 				if(!isUSerDefined){

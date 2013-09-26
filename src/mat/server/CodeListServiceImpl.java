@@ -208,19 +208,19 @@ implements mat.client.codelist.service.CodeListService {
 		return  getCodeListService().deleteCodes(codeListID, Codes);
 	}
 
-	@Override
+	/*@Override
 	public SaveUpdateCodeListResult addCodeListToMeasure(String measureId,String dataType,
 			CodeListSearchDTO codeList,boolean isSpecificOccurrence,ArrayList<QualityDataSetDTO> appliedQDM) {
 		return getCodeListService().saveQDStoMeasure(measureId,dataType,codeList,isSpecificOccurrence,appliedQDM);
-	}
+	}*/
 
 	@Override
 	public SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
-			String dataType, CodeListSearchDTO codeListSearchDTO,
+			String dataType, MatValueSet matValueSet,CodeListSearchDTO codeListSearchDTO,
 			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDMList,boolean isUserDefined) {
 		
-		return getCodeListService().updateQDStoMeasure(measureID, dataType, codeListSearchDTO, qualityDataSetDTO, isSpecificOccurrence, appliedQDMList,isUserDefined);
+		return getCodeListService().updateQDStoMeasure(measureID, dataType,matValueSet, codeListSearchDTO, qualityDataSetDTO, isSpecificOccurrence, appliedQDMList,isUserDefined);
 	}
 
 	@Override

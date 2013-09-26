@@ -13,6 +13,7 @@ import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
 import mat.model.Code;
 import mat.model.CodeListSearchDTO;
+import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -97,5 +98,5 @@ public interface CodeListServiceAsync {
 	
 	void saveUserDefinedQDStoMeasure(String measureId, String dataType,String codeList,ArrayList<QualityDataSetDTO> appliedQDMs,
 			AsyncCallback<SaveUpdateCodeListResult> callback);
-	
+	void saveQDStoMeasure(String measureId, String dataType, MatValueSet matValueSet, boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDM, AsyncCallback<SaveUpdateCodeListResult> callback);
 }

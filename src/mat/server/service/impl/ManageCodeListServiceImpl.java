@@ -52,6 +52,7 @@ import mat.model.GroupedCodeList;
 import mat.model.GroupedCodeListDTO;
 import mat.model.ListObject;
 import mat.model.ListObjectLT;
+import mat.model.MatValueSet;
 import mat.model.MeasureSteward;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSet;
@@ -815,6 +816,82 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		
 		ManageCodeListDetailModel detailModel =  getCodeList(key);
 		return detailModel;
+	}
+
+	@Override
+	public SaveUpdateCodeListResult saveQDStoMeasure(String measureId, String dataType, MatValueSet matValueSet, boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDM) {
+		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+		wrapper.setQualityDataDTO(qdsList);
+//		US 445
+		if(dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)){
+			//return  saveAttributeOrMeasurementTiming(measureId, dataType, codeList,appliedQDM);
+		}else{
+			QualityDataSetDTO qds = new QualityDataSetDTO();			
+			if(dataType != null){
+					DataType dt = dataTypeDAO.find(dataType);
+					qds.setDataType(dt.getDescription());
+			}			
+			qds.setOid(matValueSet.getID());
+			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+			qds.setCodeListName(matValueSet.getDisplayName());
+			qds.setTaxonomy(matValueSet.getCodeSystemName());
+			qds.setUuid(UUID.randomUUID().toString());
+			qds.setVersion("1.0");
+			
+			if(isSpecificOccurrence){
+				DataType dt = dataTypeDAO.find(dataType);
+								
+				int occurrenceCount = 65;
+		    	ListIterator<QualityDataSetDTO> qdsIterator = appliedQDM.listIterator();
+		    	while(qdsIterator.hasNext()){
+		    		QualityDataSetDTO dto = qdsIterator.next();
+		    		if(matValueSet.getID().equalsIgnoreCase(dto.getOid())){
+		    			if(dt.getDescription().equalsIgnoreCase(dto.getDataType()) && dto.getOccurrenceText() != null){
+		    				String nextOccString = dto.getOccurrenceText();
+		    				Character text = nextOccString.charAt(nextOccString.length()-1);
+		    				int newOcc =  ((int)text);
+		    				if(newOcc >= occurrenceCount){
+		    					occurrenceCount = ++newOcc;
+		    				}
+		    			}
+		    		}
+		    	}
+		    	
+				if(occurrenceCount < 90){//Alphabet ASCII Integer Values.
+					char occTxt = (char)occurrenceCount;
+					qds.setOccurrenceText("Occurrence" + " " +occTxt);
+					wrapper.getQualityDataDTO().add(qds);
+					result.setOccurrenceMessage(qds.getOccurrenceText());
+					String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+					result.setSuccess(true);
+					result.setXmlString(qdmXMLString);					
+				}
+			}else{//Treat as regular QDM
+				DataType dt = dataTypeDAO.find(dataType);
+				
+				boolean isQDSExist = false;
+				List<QualityDataSetDTO> existingQDSList = appliedQDM;
+		    	for(QualityDataSetDTO QDTO : existingQDSList){
+		    		if(dt.getDescription().equalsIgnoreCase(QDTO.getDataType())&&(QDTO.getOid().equalsIgnoreCase(matValueSet.getID())) && QDTO.getOccurrenceText() == null){
+		    			//if the same dataType exists and the occurrenceText is also null 
+		    			//then there is a any occurrence exists for that dataType.
+		    			isQDSExist = true;
+		    			break;
+		    		}
+		    	}
+								
+				if(!isQDSExist){
+					wrapper.getQualityDataDTO().add(qds);
+					result.setOccurrenceMessage(qds.getOccurrenceText());
+					String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+					result.setSuccess(true);
+					result.setXmlString(qdmXMLString);
+				}
+			}
+		}
+		return result;
 	}
 
 	@Override

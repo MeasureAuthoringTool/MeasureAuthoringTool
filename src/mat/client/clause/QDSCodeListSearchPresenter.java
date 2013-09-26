@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -14,6 +16,7 @@ import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.metadata.CustomCheckBox;
+import mat.client.measure.metadata.Grid508;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
@@ -31,6 +34,7 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.CodeListSearchDTO;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
+import mat.server.util.UMLSSessionTicket;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -108,7 +112,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		public SuccessMessageDisplay getSuccessMessageDisplay();
 		public void setDataTypesListBoxOptions(List<? extends HasListBox> texts);
 		public void clearVSACValueSetMessages();
-		public void buildValueSetDetailsWidget(MatValueSet matValueSet);
+		public void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets);
+		public Button getApplyToMeasureButton();
+		public MatValueSet getCurrentMatValueSet();
 	}
 
 	@SuppressWarnings("deprecation")
@@ -285,33 +291,42 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				searchValueSetInVsac(searchDisplay.getOIDInput().getValue(), searchDisplay.getVersionInput().getValue());				
 			}
 		});
+		
+		searchDisplay.getApplyToMeasureButton().addClickHandler(new ClickHandler() {			
+			@Override
+			public void onClick(ClickEvent event) {
+				MatContext.get().clearDVIMessages();
+				searchDisplay.scrollToBottom();
+				isUSerDefined = false;
+				getListOfAppliedQDMs(isUSerDefined);
+			}
+		});
 	}
-	//POC - UMLS VSAC API Call to Retrieve Value Set based on OID.
-	private void searchValueSetInVsac(String oid, String version){
-			
-		vsacapiService.getValueSetBasedOIDAndVersion( oid, new AsyncCallback<VsacApiResult>() {
-
+	
+	private void searchValueSetInVsac(String oid, String version){				
+		//OID validation.
+		if (oid==null || oid.trim().isEmpty()) {
+			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
+			return;
+		}
+				
+		vsacapiService.getValueSetBasedOIDAndVersion(oid, new AsyncCallback<VsacApiResult>() {			
 			@Override
 			public void onFailure(Throwable caught) {
-				searchDisplay.getErrorMessageDisplay().setMessage("Unable to retreive from Vsac.Please check the data and try again.");
-
+				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 			}
 
 			@Override
 			public void onSuccess(VsacApiResult result) {
-				if(result.isSuccess()){
-					Window.alert(result.getVsacResponse().toString());
-					searchDisplay.buildValueSetDetailsWidget(result.getVsacResponse().get(0));
+				if(result.isSuccess()) {
+					searchDisplay.buildValueSetDetailsWidget(result.getVsacResponse());
 					searchDisplay.getValueSetDetailsPanel().setVisible(true);
 				}else{					
 					String message = convertMessage(result.getFailureReason());
 					searchDisplay.getErrorMessageDisplay().setMessage(message);
 				}
-
-
 			}
-		});
-	
+		});	
 	}
 	
 	private String convertMessage(int id) {
@@ -449,6 +464,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
 		populateDataTypesListBox();
+		searchDisplay.getOIDInput().setValue(StringUtils.EMPTY);
+		searchDisplay.getVersionInput().setValue(StringUtils.EMPTY);
 		searchDisplay.getValueSetDetailsPanel().setVisible(false);
 		searchDisplay.clearVSACValueSetMessages();
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
@@ -465,6 +482,52 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 	}
 
 	private void addQDSWithValueSet(){
+		//clear the successMessage
+		searchDisplay.getApplyToMeasureSuccessMsg().clear();
+			final String dataType;
+			final  String dataTypeText;
+			final boolean isSpecificOccurrence;
+			
+			dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
+
+			if(searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox()).equalsIgnoreCase("--Select--")){
+				dataTypeText = dataType;
+			}else{
+				dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
+			}
+			isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
+			String measureID = MatContext.get().getCurrentMeasureId();
+			if(!dataType.isEmpty() && !dataType.equals("")){
+				MatContext.get().getCodeListService().saveQDStoMeasure(measureID,dataType, searchDisplay.getCurrentMatValueSet(), isSpecificOccurrence,appliedQDMList, new AsyncCallback<SaveUpdateCodeListResult>(){
+					@Override
+					public void onSuccess(SaveUpdateCodeListResult result) {
+						String message="";
+						if(result.getXmlString() !=null)
+							saveMeasureXML(result.getXmlString());
+						searchDisplay.getSpecificOccurrenceInput().setValue(false);//OnSuccess() uncheck the specific occurrence and deselect the radio options 
+						if(result.isSuccess()) {
+							if(result.getOccurrenceMessage()!= null && !result.getOccurrenceMessage().equals("")){
+								message = MatContext.get().getMessageDelegate().getQDMOcurrenceSuccessMessage(searchDisplay.getCurrentMatValueSet().getDisplayName(), dataTypeText, result.getOccurrenceMessage());
+							}else{
+								message = MatContext.get().getMessageDelegate().getQDMSuccessMessage(searchDisplay.getCurrentMatValueSet().getDisplayName(), dataTypeText);
+							}
+							MatContext.get().getEventBus().fireEvent(new QDSElementCreatedEvent(searchDisplay.getCurrentMatValueSet().getDisplayName()));
+							searchDisplay.getApplyToMeasureSuccessMsg().setMessage(message);
+							//searchDisplay.getMsgFocusWidget().setFocus(true);
+
+						}
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						if(appliedQDMList.size()>0)
+							appliedQDMList.removeAll(appliedQDMList);
+						searchDisplay.getErrorMessageDisplay().setMessage("problem while saving the QDM to Measure");
+					}
+				});
+			}
+	}
+	
+	/*private void addQDSWithValueSet(){
 		//clear the successMessage
 		searchDisplay.getApplyToMeasureSuccessMsg().clear();
 		final CodeListSearchDTO codeList = currentCodeListResults.getSelectedCodeList();
@@ -524,7 +587,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 
 		}
 	}
-
+*/
 	private void addQDSWithOutValueSet(){
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();

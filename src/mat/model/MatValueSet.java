@@ -2,6 +2,8 @@ package mat.model;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -86,6 +88,23 @@ public class MatValueSet implements IsSerializable {
 	 * **/
 	public final boolean isGrouping() {
 		return (getType().equalsIgnoreCase("grouping"));
+	}
+	
+	/**
+	 * getCodeSystemName method returns the code system name of the first concept in this "conceptList" object.
+	 * This method is used to get code system name for "Extensional" Type MatValueSet. 
+	 * For "Grouping" Type MatValueSet, iterate through this groupedValueSet list object and call getCodeSystemName() for each object in groupedValueSet list. 
+	 * @return String Code System Name.
+	 */
+	public String getCodeSystemName() {
+		if(getConceptList()!=null) {
+			List<MatConcept> matConcepts = getConceptList().getConceptList();
+			if(matConcepts!=null && !matConcepts.isEmpty()) {
+				if(matConcepts.get(0)!=null)
+					return matConcepts.get(0).getCodeSystemName();
+			}
+		}
+		return StringUtils.EMPTY;
 	}
 
 	/**

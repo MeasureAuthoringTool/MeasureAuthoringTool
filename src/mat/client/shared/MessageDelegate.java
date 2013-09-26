@@ -1004,6 +1004,10 @@ public class MessageDelegate {
 		return UMLS_OID_REQUIRED;
 	}
 	
+	private final String VSAC_RETRIEVE_FAILED = "Unable to retrieve from VSAC. Please check the data and try again.";
+	public String getVSAC_RETRIEVE_FAILED() {
+		return VSAC_RETRIEVE_FAILED;
+	}	
 }
 
 

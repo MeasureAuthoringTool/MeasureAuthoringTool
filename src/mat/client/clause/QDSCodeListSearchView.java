@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -24,12 +26,17 @@ import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchView;
 import mat.model.CodeListSearchDTO;
+import mat.model.MatConcept;
 import mat.model.MatValueSet;
 import mat.shared.ConstantMessages;
 
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
@@ -53,6 +60,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+import elemental.js.util.StringUtil;
+
 
 public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.SearchDisplay {
 
@@ -67,11 +76,12 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
 	Button retrieveButton = new PrimaryButton("Retrieve","primaryGreyButton");
 	private ListBoxMVP dataTypesListBox = new ListBoxMVP();
-	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure", "primaryButton");
+	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure","primaryButton");
 	private Button cancelButton = new SecondaryButton("Cancel");
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
 	VerticalPanel valueSetDetailsPanel = new VerticalPanel();
-	
+	MatValueSet currentMatValueSet;
+
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);	
 	private Button addToMeasure = new PrimaryButton("Search","primaryButton");
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
@@ -90,19 +100,28 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
    // private ScrollPanel sp;
     private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
    
-	/*private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
+	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
 		@Override
 		public void onValueChange(ValueChangeEvent<String> event) {
 			specificOccurrence.setValue(false);
 			String selectedValue = event.getValue();
 		    if(!selectedValue.isEmpty()&& !selectedValue.equals("")){
-		    	addToMeasure.setEnabled(true);
+		    	applyToMeasureButton.setEnabled(true);
 		    }
 		    else{
-		    	addToMeasure.setEnabled(false);
+		    	applyToMeasureButton.setEnabled(false);
+		    }
+		    
+		    ListBoxMVP listbox = (ListBoxMVP)event.getSource();
+		    if(listbox.getItemText(listbox.getSelectedIndex()).equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
+		    	specificOccurrence.setValue(false);
+		    	specificOccurrence.setEnabled(false);
+		    }
+		    else {
+		    	specificOccurrence.setEnabled(true);
 		    }
 		}
-	};*/
+	};
 	
     
 	public SuccessMessageDisplay getSuccessMessagePanel(){
@@ -269,12 +288,11 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		mainPanel.add(buildSearchPanel());
 		
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());	
 		
 		valueSetDetailsPanel.getElement().setId("valueSetDetailsPanel_VerticalPanel");
 		valueSetDetailsPanel.setStyleName("valueSetDetailsPanel");
-		valueSetDetailsPanel.setWidth("100%");
+		valueSetDetailsPanel.setWidth("95%");
 		mainPanel.add(valueSetDetailsPanel);
 		
 		/*HorizontalPanel searchCriteriaPanel = new HorizontalPanel();
@@ -331,6 +349,15 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		oidInput.getElement().setId("oidInput_TextBox");
 		oidInput.setWidth("300px");
 		oidInput.setMaxLength(45);
+		oidInput.addKeyPressHandler(new KeyPressHandler() {			
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				char charCode = event.getCharCode();
+				if(!Character.isDigit(charCode) && charCode!='.') {
+					oidInput.cancelKey();
+				}
+			}
+		});
 		versionInput.getElement().setId("versionInput_DateBoxWithCalendar");
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.setStyleName("marginTop");
@@ -345,79 +372,67 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		return searchPanel;
 	}
 
-	public void buildValueSetDetailsWidget(MatValueSet matValueSet) {
+	public void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets) {
+		
+		MatValueSet matValueSet = matValueSets.get(0);//getMatValueSetBasedOnVersion(matValueSets, versionInput.getValue());
+		currentMatValueSet = matValueSet;
 		
 		valueSetDetailsPanel.clear();
 		valueSetDetailsPanel.add(createDetailsWidget(matValueSet));
 		if(matValueSet.isGrouping()) {
 			valueSetDetailsPanel.add(new SpacerWidget());
-			valueSetDetailsPanel.add(new SpacerWidget());
 			valueSetDetailsPanel.add(createGroupingMembersCellTable(matValueSet));
 		}
 		valueSetDetailsPanel.add(new SpacerWidget());
 		valueSetDetailsPanel.add(new SpacerWidget());
+		valueSetDetailsPanel.add(new SpacerWidget());
 		valueSetDetailsPanel.add(createDataTypeWidget());
 	}
-
+	
 	private Widget createGroupingMembersCellTable(MatValueSet matValueSet) {
-		ArrayList<String> testValues = new ArrayList<String>(Arrays.asList(new String[]{"A","B","C","D","E","F","G"}));
+		List<MatValueSet> groupedMatValueSets = matValueSet.getGroupedValueSet(); 
 		
-		CellTable<String> groupingMembers = new CellTable<String>(4);
-		groupingMembers.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		CellTable<MatValueSet> groupingValueSetTable = new CellTable<MatValueSet>(4);
+		groupingValueSetTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		
-		TextColumn<String> codeColumn = new TextColumn<String>() {
+		TextColumn<MatValueSet> valuesetNameColumn = new TextColumn<MatValueSet>() {
 			@Override
-			public String getValue(String object) {				
-				return object+" Code";
+			public String getValue(MatValueSet object) {				
+				return object.getDisplayName();
 			}
 		};
-		groupingMembers.addColumn(codeColumn, "Code");
+		groupingValueSetTable.addColumn(valuesetNameColumn, "Value Set Name");
 		
-		TextColumn<String> descriptorColumn = new TextColumn<String>() {
+		TextColumn<MatValueSet> oidColumn = new TextColumn<MatValueSet>() {
 			@Override
-			public String getValue(String object) {				
-				return object+" Descriptor";
+			public String getValue(MatValueSet object) {				
+				return object.getID();
 			}
 		};
-		groupingMembers.addColumn(descriptorColumn, "Descriptor");
+		groupingValueSetTable.addColumn(oidColumn, "OID");
 		
-		TextColumn<String> codeSystemColumn = new TextColumn<String>() {
+		TextColumn<MatValueSet> codeSystemColumn = new TextColumn<MatValueSet>() {
 			@Override
-			public String getValue(String object) {				
-				return object+" CodeSystem";
+			public String getValue(MatValueSet object) {
+				return object.getCodeSystemName();
 			}
 		};
-		groupingMembers.addColumn(codeSystemColumn, "CodeSystem");
+		groupingValueSetTable.addColumn(codeSystemColumn, "CodeSystem");
 		
-		TextColumn<String> versionColumn = new TextColumn<String>() {
-			@Override
-			public String getValue(String object) {				
-				return object+" Version";
-			}
-		};
-		groupingMembers.addColumn(versionColumn, "Version");
+		groupingValueSetTable.setRowCount(groupedMatValueSets.size(), true);
+		groupingValueSetTable.setRowData(groupedMatValueSets);
 		
-		TextColumn<String> codeSystemOIDColumn = new TextColumn<String>() {
-			@Override
-			public String getValue(String object) {				
-				return object+" Code System OID";
-			}
-		};
-		groupingMembers.addColumn(codeSystemOIDColumn, "Code System OID");
-		
-		groupingMembers.setRowCount(testValues.size(), true);
-		groupingMembers.setRowData(testValues);
-		
-		VerticalPanel groupingMembersPanel = new VerticalPanel();
-		groupingMembersPanel.getElement().setId("groupingMembersPanel_VerticalPanel");
-		groupingMembersPanel.setWidth("100%");
-		Label groupingMembersHeader = new Label("Grouping Members");
-		groupingMembersHeader.getElement().setId("groupingMembersHeader_Label");
-		groupingMembersHeader.setStyleName("valueSetHeader");
-		groupingMembersPanel.add(groupingMembersHeader);
-		groupingMembers.setWidth("100%");
-		groupingMembersPanel.add(groupingMembers);
-		return groupingMembersPanel;
+		VerticalPanel groupingPanel = new VerticalPanel();
+		groupingPanel.getElement().setId("groupingPanel_VerticalPanel");
+		groupingPanel.addStyleName("valueSetMarginLeft_7px");
+		groupingPanel.setWidth("100%");
+		Label groupingHeader = new Label("Grouping value set");
+		groupingHeader.getElement().setId("groupingHeader_Label");
+		groupingHeader.setStyleName("valueSetHeader");
+		groupingHeader.setWidth("150px");
+		groupingPanel.add(groupingHeader);
+		groupingPanel.add(groupingValueSetTable);
+		return groupingPanel;
 	}
 
 	private Widget createDetailsWidget(MatValueSet matValueSet) {
@@ -457,44 +472,26 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		details.setWidget(4, 1, createHTML("Status:", "Status", "valueSetMarginLeft,valueSetMarginTop"));
 		details.setWidget(5, 1, createHTML(matValueSet.getStatus(), "StatusValue", "valueSetMarginLeft"));
 		detailsPanel.add(details);
-		
-		
-		
-		/*ArrayList<ValueSet> valueSetDetails = getValueSetDetails();		
-		valueSetGrid = new Grid508(valueSetDetails.size()+1,2);
-		valueSetGrid.getElement().setId("valueSetGrid_Grid508");
-		valueSetGrid.getRowFormatter().setStyleName(0, "header_background");
-		valueSetGrid.setStylePrimaryName("valueSetDetailsTable");
 				
-		HorizontalPanel headerPanel = new HorizontalPanel();
-		headerPanel.getElement().setId("headerPanel_HorizontalPanel");
-		Label headerName = new Label(); 
-		headerName.getElement().setId("headerName_Label");
-		headerName.setText(" Value set details");		
-		headerPanel.add(headerName);
-		valueSetGrid.setWidget(0, 0, headerPanel);
-		valueSetGrid.getCellFormatter().getElement(0, 0).setAttribute("colSpan", "2");
-		
-		int i=0;
-		for(ValueSet valueSet : valueSetDetails) {
-			int rowNum = ++i;
-			valueSetGrid.setWidget(rowNum, 0, LabelBuilder.buildLabel(new Label(), valueSet.getName()));
-			valueSetGrid.getCellFormatter().addStyleName(rowNum, 0, "bold");
-			valueSetGrid.setWidget(rowNum, 1, LabelBuilder.buildLabel(new Label(), valueSet.getValue()));
-		}*/
 		return detailsPanel;
 	}
 	
 	private String getCodeSystem(MatValueSet matValueSet) {		
 		if(matValueSet.isGrouping()) {
-			//TODO: Write logic to get code system for "Grouping" type.
-			return "Grouping Code System";
+			String codeSystem = StringUtils.EMPTY;
+			List<MatValueSet> groupedMatValueSets = matValueSet.getGroupedValueSet(); 
+			if(groupedMatValueSets!=null) {
+				for(MatValueSet groupedMatValueSet : groupedMatValueSets) {
+					codeSystem += groupedMatValueSet.getCodeSystemName();
+				}
+			}		
+			return codeSystem;
 		}
 		else {
-			return matValueSet.getConceptList().getConceptList().get(0).getCodeSystem();
+			return matValueSet.getCodeSystemName();
 		}		
 	}
-
+	
 	private HTML createHTML(String value, String id, String styles) {
 		HTML html = new HTML(value);		
 		if(id!=null && !id.trim().isEmpty()) {
@@ -515,16 +512,30 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private Widget createDataTypeWidget() {
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.getElement().setId("vPanel_VerticalPanel");
+		vPanel.addStyleName("valueSetMarginLeft_7px");
 		vPanel.add(LabelBuilder.buildLabel(new Label(), "Select Data Type"));
+		dataTypesListBox.setSelectedIndex(0);
+		dataTypesListBox.addValueChangeHandler(dataTypeChangeHandler);
 		vPanel.add(dataTypesListBox);
 		vPanel.add(new SpacerWidget());
+		specificOccurrence.setValue(false);
 		vPanel.add(specificOccurrence);
 		vPanel.add(new SpacerWidget());
 		vPanel.add(new SpacerWidget());
 		HorizontalPanel buttonsPanel = new HorizontalPanel();	
 		buttonsPanel.getElement().setId("buttonsPanel_HorizontalPanel");
-		applyToMeasureButton.setStyleName("firstLabel");
+		applyToMeasureButton.addStyleName("firstLabel");
+		applyToMeasureButton.setTitle("Apply To Measure");
+		applyToMeasureButton.setEnabled(false);
 		buttonsPanel.add(applyToMeasureButton);
+		cancelButton.addClickHandler(new ClickHandler() {			
+			@Override
+			public void onClick(ClickEvent event) {
+				dataTypesListBox.setSelectedIndex(0);
+				specificOccurrence.setValue(false);
+				applyToMeasureButton.setEnabled(false);
+			}
+		});
 		buttonsPanel.add(cancelButton);
 		vPanel.add(buttonsPanel);
 		return vPanel;
@@ -840,5 +851,15 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	@Override
 	public ListBoxMVP getDataTypesListBox() {
 		return dataTypesListBox;
+	}
+
+	@Override
+	public Button getApplyToMeasureButton() {
+		return applyToMeasureButton;
+	}
+	
+	@Override
+	public MatValueSet getCurrentMatValueSet() {
+		return currentMatValueSet;
 	}
 }

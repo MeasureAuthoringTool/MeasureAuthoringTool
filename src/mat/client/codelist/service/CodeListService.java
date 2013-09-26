@@ -13,6 +13,7 @@ import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
 import mat.model.Code;
 import mat.model.CodeListSearchDTO;
+import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -224,5 +225,10 @@ public interface CodeListService extends RemoteService {
 	SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
 			String dataType, CodeListSearchDTO codeListSearchDTO,
 			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDMList, boolean isUserDefined); 
+			ArrayList<QualityDataSetDTO> appliedQDMList, boolean isUserDefined);
+
+	SaveUpdateCodeListResult saveQDStoMeasure(String measureId,
+			String dataType, MatValueSet matValueSet,
+			boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDM); 
 }

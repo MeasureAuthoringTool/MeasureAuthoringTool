@@ -12,6 +12,7 @@ import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.model.Code;
 import mat.model.CodeListSearchDTO;
 import mat.model.ListObject;
+import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.User;
 import mat.server.exception.ExcelParsingException;
@@ -72,5 +73,9 @@ public interface CodeListService {
 			String dataType, CodeListSearchDTO codeList,
 			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDM, boolean isUSerDefined);
+	SaveUpdateCodeListResult saveQDStoMeasure(String measureId,
+			String dataType, MatValueSet matValueSet,
+			boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDM);
 	
 }

@@ -655,9 +655,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	
 	
 	@Override
-	public String getDataTypeValue() {
-		if(dataTypeInput.getSelectedIndex() >= 0) {
-			return dataTypeInput.getValue(dataTypeInput.getSelectedIndex());
+	public String getDataTypeValue(ListBoxMVP inputListBox) {
+		if(inputListBox.getSelectedIndex() >= 0) {
+			return inputListBox.getValue(inputListBox.getSelectedIndex());
 		}
 		else {
 			return "";

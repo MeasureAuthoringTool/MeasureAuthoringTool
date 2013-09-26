@@ -76,7 +76,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		public Button getApplyToMeasure();
 		public void scrollToBottom();
 		//public FocusableWidget getMsgFocusWidget();
-		public String getDataTypeValue();
+		public String getDataTypeValue(ListBoxMVP inputListBox);
 		public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		public void setDataTypeOptions(List<? extends HasListBox> texts);
@@ -391,7 +391,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		    	   dataType = ConstantMessages.ATTRIBUTE;
 		     }else{
 		    	   /*populateQDSDataType(modifyWithDTO.getCategoryCode());*/
-		    	   dataType = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
+		    	   dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
 		     }
 		     isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
 		     	

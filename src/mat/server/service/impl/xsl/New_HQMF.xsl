@@ -977,7 +977,10 @@
                     <!--<xsl:if test="@datatype != 'attribute' and @datatype != 'Timing Element'">-->
                     <xsl:variable name="elemLookUpID"><xsl:value-of select="@id"/></xsl:variable>
                     <xsl:choose>
-                        <xsl:when test="count(ancestor::measure/supplementalDataElements/elementRef[@id=$elemLookUpID]) > 0">
+                        <xsl:when test="count(ancestor::measure/supplementalDataElements/elementRef[@id=$elemLookUpID]) > 0 
+                            and count(ancestor:: measure/measureGrouping//elementRef[@id=$elemLookUpID]) = 0
+                            and count(ancestor:: measure/strata//elementRef[@id=$elemLookUpID]) = 0 
+                            and count(ancestor:: measure/measureObservations//elementRef[@id=$elemLookUpID]) = 0" >
                             <!-- We should be ignoring elements which are in Supplemental Data elem Section. Dont do anything.  -->
                             <!-- Typically we depend on the 'suppDataElement' to tell us that the qdm is used in Supplemental data elems.
                                  But it seems the GUI isnt always setting it. So added this check.-->

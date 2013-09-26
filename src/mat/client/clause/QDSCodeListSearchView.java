@@ -368,10 +368,12 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			}
 		});
 		versionInput.getElement().setId("versionInput_DateBoxWithCalendar");
+		versionInput.setTitle("Enter version");
 		versionInput.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.setStyleName("marginTop");
+		retrieveButton.setTitle("Retrieve");
 		Grid queryGrid = new Grid(3,2);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
 		queryGrid.setWidget(0, 1, oidInput);
@@ -407,6 +409,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		groupingValueSetTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		groupingValueSetTable.getElement().setAttribute("tabIndex", "0");
 		groupingValueSetTable.addStyleName("valueSetMarginLeft_7px");
+		groupingValueSetTable.addStyleName("valueSetMarginTop");
 		groupingValueSetTable.setPageSize(4);
 		groupingValueSetTable.redraw();
 		
@@ -538,6 +541,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			}
 		}
 		html.setHeight("100%");
+		html.setTitle(value);
 		html.getElement().setAttribute("tabIndex", "0");
 		return html;
 	}
@@ -546,7 +550,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.getElement().setId("vPanel_VerticalPanel");
 		vPanel.addStyleName("valueSetMarginLeft_7px");
-		vPanel.add(LabelBuilder.buildLabel(new Label(), "Select Data Type"));
+		vPanel.add(LabelBuilder.buildLabel(new Label(), "Select Datatype"));
+		dataTypesListBox.setTitle("Select Datatype");
 		dataTypesListBox.setSelectedIndex(0);
 		dataTypesListBox.addValueChangeHandler(dataTypeChangeHandler);
 		vPanel.add(dataTypesListBox);
@@ -561,6 +566,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		applyToMeasureButton.setTitle("Apply To Measure");
 		applyToMeasureButton.setEnabled(false);
 		buttonsPanel.add(applyToMeasureButton);
+		cancelButton.setTitle("Cancel");
 		cancelButton.addClickHandler(new ClickHandler() {			
 			@Override
 			public void onClick(ClickEvent event) {

@@ -308,7 +308,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 		//OID validation.
 		if (oid==null || oid.trim().isEmpty()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
-			searchDisplay.resetVSACValueSetWidget();
+			searchDisplay.getValueSetDetailsPanel().setVisible(false);
 			return;
 		}
 				
@@ -316,7 +316,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
-				searchDisplay.resetVSACValueSetWidget();
+				searchDisplay.getValueSetDetailsPanel().setVisible(false);
 			}
 
 			@Override
@@ -327,7 +327,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter{
 				}else{					
 					String message = convertMessage(result.getFailureReason());
 					searchDisplay.getErrorMessageDisplay().setMessage(message);
-					searchDisplay.resetVSACValueSetWidget();
+					searchDisplay.getValueSetDetailsPanel().setVisible(false);
 				}
 			}
 		});	

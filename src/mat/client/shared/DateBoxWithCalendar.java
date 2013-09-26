@@ -68,7 +68,7 @@ public class DateBoxWithCalendar extends Composite{
 	public DateBoxWithCalendar(DateTimeFormat dateTimeFormat) {
 		this(false,"", dateTimeFormat.getPattern().length());
 		df = dateTimeFormat;
-		dateBox.setTitle("Enter date in "+dateTimeFormat.getPattern());
+		dateBox.setTitle("Enter date in "+dateTimeFormat.getPattern().toUpperCase());
 		dateBox.setWidth("100");
 	}
 	

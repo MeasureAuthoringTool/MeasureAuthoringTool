@@ -80,7 +80,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	
 	private TextBox oidInput = new TextBox();	
 	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
-	Button retrieveButton = new SecondaryButton("Retrieve");
+	Button retrieveButton = new PrimaryButton("Retrieve","primaryMetaDataButton");
 	private ListBoxMVP dataTypesListBox = new ListBoxMVP();
 	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure","primaryButton");
 	private Button cancelButton = new SecondaryButton("Cancel");
@@ -372,7 +372,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		versionInput.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
-		retrieveButton.setStyleName("marginTop");
 		retrieveButton.setTitle("Retrieve");
 		Grid queryGrid = new Grid(3,2);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));

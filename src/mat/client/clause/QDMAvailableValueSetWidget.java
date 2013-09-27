@@ -86,13 +86,12 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private FocusableWidget messageFocus;
 	VerticalPanel listBoxVPanel = new VerticalPanel();
 	CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
-   private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
+    private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
     private String cautionMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Data Type' for an applied QDM element will automatically delete invalid attributes  <br/> associated with this element in the Clause Workspace." +
-    								"</div>";
-       
+    								"</div>";       
     private TextBox oidInput = new TextBox();	
 	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
-	Button retrieveButton = new SecondaryButton("Retrieve");
+	Button retrieveButton = new PrimaryButton("Retrieve","primaryMetaDataButton");
 	private ListBoxMVP dataTypesListBox = new ListBoxMVP();
 	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure","primaryButton");
 	private Button closeButton = new SecondaryButton("Close");
@@ -376,7 +375,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		versionInput.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
-		retrieveButton.setStyleName("marginTop");
+		retrieveButton.addStyleName("marginTop");
 		retrieveButton.setTitle("Retrieve");
 		Grid queryGrid = new Grid(3,2);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));

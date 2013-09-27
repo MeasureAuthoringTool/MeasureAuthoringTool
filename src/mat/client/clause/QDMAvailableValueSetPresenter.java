@@ -253,8 +253,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		searchDisplay.getApplyToMeasureButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MatContext.get().clearDVIMessages();
-				searchDisplay.scrollToBottom();
 				MatContext.get().getMeasureService().getMeasureXMLForAppliedQDM(MatContext.get().getCurrentMeasureId(),true, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
 
 					@Override

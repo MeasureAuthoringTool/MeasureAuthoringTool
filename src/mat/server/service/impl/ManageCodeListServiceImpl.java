@@ -825,45 +825,45 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
 		wrapper.setQualityDataDTO(qdsList);
-//		US 445
-		if (dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)) {
-			//return  saveAttributeOrMeasurementTiming(measureId, dataType, codeList,appliedQDM);
+		
+		QualityDataSetDTO qds = new QualityDataSetDTO();			
+		if(dataType != null){
+				DataType dt = dataTypeDAO.find(dataType);
+				qds.setDataType(dt.getDescription());
+		}			
+		qds.setOid(matValueSet.getID());
+		qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+		qds.setCodeListName(matValueSet.getDisplayName());
+		if(matValueSet.isGrouping()) {
+			qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 		} else {
-			QualityDataSetDTO qds = new QualityDataSetDTO();			
-			if(dataType != null){
-					DataType dt = dataTypeDAO.find(dataType);
-					qds.setDataType(dt.getDescription());
-			}			
-			qds.setOid(matValueSet.getID());
-			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-			qds.setCodeListName(matValueSet.getDisplayName());
 			qds.setTaxonomy(matValueSet.getCodeSystemName());
-			qds.setUuid(UUID.randomUUID().toString());
-			qds.setVersion("1.0");
-			
-			if(isSpecificOccurrence){
-				int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,matValueSet,appliedQDM);
-								
-				if(occurrenceCount < 90){//Alphabet ASCII Integer Values.
-					char occTxt = (char)occurrenceCount;
-					qds.setOccurrenceText("Occurrence" + " " +occTxt);
-					wrapper.getQualityDataDTO().add(qds);
-					result.setOccurrenceMessage(qds.getOccurrenceText());
-					String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
-					result.setSuccess(true);
-					result.setXmlString(qdmXMLString);					
-				}
-			}else{//Treat as regular QDM
-								
-				if(!checkForDuplicatesVsacValueSet(dataType, matValueSet, appliedQDM)){
-					wrapper.getQualityDataDTO().add(qds);
-					result.setOccurrenceMessage(qds.getOccurrenceText());
-					String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
-					result.setSuccess(true);
-					result.setXmlString(qdmXMLString);
-				}
-			}
 		}
+		qds.setUuid(UUID.randomUUID().toString());
+		qds.setVersion("1.0");
+		
+		if(isSpecificOccurrence){
+			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,matValueSet,appliedQDM);
+							
+			if(occurrenceCount < 90){//Alphabet ASCII Integer Values.
+				char occTxt = (char)occurrenceCount;
+				qds.setOccurrenceText("Occurrence" + " " +occTxt);
+				wrapper.getQualityDataDTO().add(qds);
+				result.setOccurrenceMessage(qds.getOccurrenceText());
+				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+				result.setSuccess(true);
+				result.setXmlString(qdmXMLString);					
+			}
+		}else{//Treat as regular QDM
+							
+			if(!checkForDuplicatesVsacValueSet(dataType, matValueSet, appliedQDM)){
+				wrapper.getQualityDataDTO().add(qds);
+				result.setOccurrenceMessage(qds.getOccurrenceText());
+				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+				result.setSuccess(true);
+				result.setXmlString(qdmXMLString);
+			}
+		}		
 		return result;
 	}
 
@@ -956,64 +956,64 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		if (matValueSet != null) {
-				QualityDataSetDTO qds = qualityDataSetDTO;
-				if (dataType != null) {
-						DataType dt = dataTypeDAO.find(dataType);
-						qds.setDataType(dt.getDescription());
+			QualityDataSetDTO qds = qualityDataSetDTO;
+			if (dataType != null) {
+					DataType dt = dataTypeDAO.find(dataType);
+					qds.setDataType(dt.getDescription());
+			}
+			qds.setOid(matValueSet.getID());
+			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+			qds.setCodeListName(matValueSet.getDisplayName());
+			if(matValueSet.isGrouping()) {
+				qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
+			} else {
+				qds.setTaxonomy(matValueSet.getCodeSystemName());
+			}
+			qds.setVersion("1.0");
+			if (isSpecificOccurrence) {
+				int occurrenceCount = checkForOccurrenceCountVsacApi(dataType, matValueSet, appliedQDM);
+				if (occurrenceCount < ASCII_START) { //Alphabet ASCII Integer Values.
+					char occTxt = (char) occurrenceCount;
+					qds.setOccurrenceText("Occurrence" + " " + occTxt);
+					wrapper = modifyAppliedElementList(qds, appliedQDM);
+					result.setOccurrenceMessage(qds.getOccurrenceText());
+					String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+					result.setSuccess(true);
+					result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
+					result.setDataSetDTO(qds);
 				}
-				qds.setOid(matValueSet.getID());
-				qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-				qds.setCodeListName(matValueSet.getDisplayName());
-				if (matValueSet.isGrouping()) {
-					qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
-				} else {
-					qds.setTaxonomy(matValueSet.getCodeSystemName());
-				}
-				qds.setVersion("1.0");
-				if (isSpecificOccurrence) {
-					int occurrenceCount = checkForOccurrenceCountVsacApi(dataType, matValueSet, appliedQDM);
-					if (occurrenceCount < ASCII_START) { //Alphabet ASCII Integer Values.
-						char occTxt = (char) occurrenceCount;
-						qds.setOccurrenceText("Occurrence" + " " + occTxt);
-						wrapper = modifyAppliedElementList(qds, appliedQDM);
-						result.setOccurrenceMessage(qds.getOccurrenceText());
-						String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
-						result.setSuccess(true);
-						result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
-						result.setDataSetDTO(qds);
-					}
 
-				} else { //Treat as regular QDM
-					qds.setOccurrenceText("");
-					if (!checkForDuplicatesVsacValueSet(dataType, matValueSet, appliedQDM)) {
-						wrapper = modifyAppliedElementList(qds, appliedQDM);
-						result.setOccurrenceMessage(qds.getOccurrenceText());
-						result.setSuccess(true);
-						result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
-						result.setDataSetDTO(qds);
-					} else {
-						result.setSuccess(true);
-						result.setFailureReason(result.ALREADY_EXISTS);
-					}
+			} else { //Treat as regular QDM
+				qds.setOccurrenceText("");
+				if (!checkForDuplicatesVsacValueSet(dataType, matValueSet, appliedQDM)) {
+					wrapper = modifyAppliedElementList(qds, appliedQDM);
+					result.setOccurrenceMessage(qds.getOccurrenceText());
+					result.setSuccess(true);
+					result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
+					result.setDataSetDTO(qds);
+				} else {
+					result.setSuccess(true);
+					result.setFailureReason(result.ALREADY_EXISTS);
 				}
+			}
 		} else if (codeList != null) {
 			if (!checkForDuplicates(dataType, codeList, appliedQDM)) {
-    				ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
-    				wrapper.setQualityDataDTO(qdsList);
-    				QualityDataSetDTO qds = qualityDataSetDTO;
-    				DataType dt = dataTypeDAO.find(dataType);
-    				qds.setDataType(dt.getDescription());
-    				qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
-    				qds.setId(UUID.randomUUID().toString());
-    				qds.setCodeListName(codeList.getName());
-    				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
-    				qds.setOccurrenceText(null);
-    				wrapper = modifyAppliedElementList(qds, appliedQDM);
-    				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
-    				result.setSuccess(true);
-    				result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
-    				result.setXmlString(qdmXMLString);
-    				result.setDataSetDTO(qds);
+				ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+				wrapper.setQualityDataDTO(qdsList);
+				QualityDataSetDTO qds = qualityDataSetDTO;
+				DataType dt = dataTypeDAO.find(dataType);
+				qds.setDataType(dt.getDescription());
+				qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
+				qds.setId(UUID.randomUUID().toString());
+				qds.setCodeListName(codeList.getName());
+				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
+				qds.setOccurrenceText(null);
+				wrapper = modifyAppliedElementList(qds, appliedQDM);
+				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+				result.setSuccess(true);
+				result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
+				result.setXmlString(qdmXMLString);
+				result.setDataSetDTO(qds);
 			} else {
 				result.setSuccess(true);
 				result.setFailureReason(result.ALREADY_EXISTS);

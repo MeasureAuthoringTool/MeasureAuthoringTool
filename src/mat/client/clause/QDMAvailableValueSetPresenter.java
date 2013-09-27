@@ -307,7 +307,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		//OID validation.
 		if (oid==null || oid.trim().isEmpty()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
-			searchDisplay.resetVSACValueSetWidget();
+			searchDisplay.getValueSetDetailsPanel().setVisible(false);
 			return;
 		}
 				
@@ -315,7 +315,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
-				searchDisplay.resetVSACValueSetWidget();
+				searchDisplay.getValueSetDetailsPanel().setVisible(false);
 			}
 
 			@Override
@@ -326,7 +326,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				}else{					
 					String message = convertMessage(result.getFailureReason());
 					searchDisplay.getErrorMessageDisplay().setMessage(message);
-					searchDisplay.resetVSACValueSetWidget();
+					searchDisplay.getValueSetDetailsPanel().setVisible(false);
 				}
 			}
 		});	
@@ -385,21 +385,18 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		searchDisplay.getApplyToMeasureSuccessMsg().clear();
 		if(modifyValueSetDTO!=null && modifyWithDTO!=null ){
 			String dataType;
+			String dataTypeText;
 			Boolean isSpecificOccurrence=false;
 		
-			if(modifyWithDTO.getCodeSystemName().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
-		    	   dataType = ConstantMessages.ATTRIBUTE;
-		     }else{
-		    	   /*populateQDSDataType(modifyWithDTO.getCategoryCode());*/
-		    	   dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
-		     }
-		     isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
+			dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
+			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
+		    isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
 		     	
-			 if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
-				if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
+			if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+				if(dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
 					updateAppliedQDMList(modifyWithDTO,null, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
 				}else{
-					if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
+					if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataTypeText)){
 						searchDisplay.getErrorMessageDisplay().setMessage("A value set with a non-Attribute category must be used for this data element.");
 					}else{
 						searchDisplay.getErrorMessageDisplay().setMessage("A value set with an Attribute category must be used for this data element.");
@@ -408,12 +405,10 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				}
 			}else{
 				updateAppliedQDMList(modifyWithDTO,null, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
-			
 			}
 		}else{
 			searchDisplay.getErrorMessageDisplay().setMessage("Please select atleast one applied QDM to modify.");
-			setEnabled(true);
-		
+			setEnabled(true);		
 		}
 	}
 	
@@ -427,12 +422,13 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			
 			CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
 			modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
-			String dataType = searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput());
-			if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
-				if(dataType.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
+			String dataType = searchDisplay.getDataTypeValue(searchDisplay.getAllDataTypeInput());
+			String dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput());
+			if(modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE) || dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)){
+				if(dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())){
 					updateAppliedQDMList(null,modifyWithDTO, modifyValueSetDTO,dataType,false,true);
 				}else{
-					if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataType)){
+					if(ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataTypeText)){
 						searchDisplay.getErrorMessageUserDefinedPanel().setMessage("A value set with a non-Attribute category must be used for this data element.");
 					}else{
 						searchDisplay.getErrorMessageUserDefinedPanel().setMessage("A value set with an Attribute category must be used for this data element.");

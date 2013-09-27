@@ -66,8 +66,8 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	HorizontalPanel mainPanel = new HorizontalPanel();
 	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	
-	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element with VSAC value set");
-	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element without VSAC value set");
+	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without VSAC value set");
+	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with VSAC value set");
 	private TextBox searchInput = new TextBox();
 	private TextBox userDefinedInput = new TextBox();
 	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
@@ -89,11 +89,10 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
    private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
     private String cautionMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Data Type' for an applied QDM element will automatically delete invalid attributes  <br/> associated with this element in the Clause Workspace." +
     								"</div>";
-    
-    
+       
     private TextBox oidInput = new TextBox();	
 	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
-	Button retrieveButton = new PrimaryButton("Retrieve","primaryGreyButton");
+	Button retrieveButton = new SecondaryButton("Retrieve");
 	private ListBoxMVP dataTypesListBox = new ListBoxMVP();
 	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure","primaryButton");
 	private Button closeButton = new SecondaryButton("Close");
@@ -373,14 +372,16 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 			}
 		});
 		versionInput.getElement().setId("versionInput_DateBoxWithCalendar");
+		versionInput.setTitle("Enter version");
 		versionInput.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.setStyleName("marginTop");
+		retrieveButton.setTitle("Retrieve");
 		Grid queryGrid = new Grid(3,2);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
 		queryGrid.setWidget(0, 1, oidInput);
-		queryGrid.setWidget(1, 0, LabelBuilder.buildLabel(new Label(), "Version(Optional):"));
+		queryGrid.setWidget(1, 0, LabelBuilder.buildLabel(new Label(), "Version (Optional):"));
 		queryGrid.setWidget(1, 1, versionInput);
 		queryGrid.setWidget(2, 0, retrieveButton);
 		queryGrid.setStyleName("secondLabel");
@@ -412,6 +413,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		groupingValueSetTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		groupingValueSetTable.getElement().setAttribute("tabIndex", "0");
 		groupingValueSetTable.addStyleName("valueSetMarginLeft_7px");
+		groupingValueSetTable.addStyleName("valueSetMarginTop");
 		groupingValueSetTable.setPageSize(4);
 		groupingValueSetTable.redraw();
 		
@@ -543,6 +545,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 			}
 		}
 		html.setHeight("100%");
+		html.setTitle(value);
 		html.getElement().setAttribute("tabIndex", "0");
 		return html;
 	}

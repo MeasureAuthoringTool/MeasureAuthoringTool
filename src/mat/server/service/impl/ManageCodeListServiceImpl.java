@@ -956,32 +956,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		if (!isUSerDefined) {
-			/*if (dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-					|| dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)) {
-
-				if (!checkForDuplicatesVsacValueSet(measureId, dataType, matValueSet, appliedQDM)) {
-					QualityDataSetDTO qds = qualityDataSetDTO;
-					if (dataType != null) {
-						DataType dt = dataTypeDAO.find(dataType);
-						qds.setDataType(dt.getDescription());
-					}
-					qds.setOid(matValueSet.getID());
-					qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-					qds.setCodeListName(matValueSet.getDisplayName());
-					qds.setTaxonomy(matValueSet.getCodeSystemName());
-					qds.setUuid(UUID.randomUUID().toString());
-					qds.setVersion("1.0");
-
-					wrapper = modifyAppliedElementList(qds, appliedQDM);
-					result.setSuccess(true);
-					result.setDataSetDTO(qds);
-					result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
-				} else {
-					result.setSuccess(true);
-					result.setFailureReason(result.ALREADY_EXISTS);
-				}
-				return result;
-			} else {*/
 				QualityDataSetDTO qds = qualityDataSetDTO;
 
 				if (dataType != null) {
@@ -991,19 +965,23 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				qds.setOid(matValueSet.getID());
 				qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 				qds.setCodeListName(matValueSet.getDisplayName());
-				qds.setTaxonomy(matValueSet.getCodeSystemName());
-				qds.setUuid(UUID.randomUUID().toString());
+				if(matValueSet.isGrouping())
+					qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
+				else
+					qds.setTaxonomy(matValueSet.getCodeSystemName());
 				qds.setVersion("1.0");
 				if (isSpecificOccurrence) {
 					int occurrenceCount = checkForOccurrenceCountVsacApi(measureId, dataType, matValueSet, appliedQDM);
 					if (occurrenceCount < 90) { //Alphabet ASCII Integer Values.
 						char occTxt = (char) occurrenceCount;
 						qds.setOccurrenceText("Occurrence" + " " + occTxt);
-						wrapper.getQualityDataDTO().add(qds);
+						//wrapper.getQualityDataDTO().add(qds);
+						wrapper = modifyAppliedElementList(qds, appliedQDM);
 						result.setOccurrenceMessage(qds.getOccurrenceText());
 						String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 						result.setSuccess(true);
-						result.setXmlString(qdmXMLString);
+						result.setAppliedQDMList(sortQualityDataSetList(wrapper.getQualityDataDTO()));
+						result.setDataSetDTO(qds);
 					}
 
 				} else { //Treat as regular QDM
@@ -1019,7 +997,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 						result.setFailureReason(result.ALREADY_EXISTS);
 					}
 				}
-			//}
+			
 		} else {
 			if (!checkForDuplicates(measureId, dataType, codeList, appliedQDM)) {
     				ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();

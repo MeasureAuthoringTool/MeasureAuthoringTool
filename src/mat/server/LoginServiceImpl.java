@@ -43,324 +43,379 @@ import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
 
 @SuppressWarnings("serial")
-public class LoginServiceImpl extends SpringRemoteServiceServlet implements LoginService{
+public class LoginServiceImpl extends SpringRemoteServiceServlet implements
+		LoginService {
 	private static final Log logger = LogFactory.getLog(LoginServiceImpl.class);
 	private static final String SUCCESS = "SUCCESS";
 	private static final String FAILURE = "FAILURE";
-	
-	private LoginCredentialService getLoginCredentialService(){
-		return (LoginCredentialService)context.getBean("loginService");
+
+	private LoginCredentialService getLoginCredentialService() {
+		return (LoginCredentialService) context.getBean("loginService");
 	}
-	
+
 	@Autowired
 	private UserDAO userDAO;
 
 	@Override
 	public SecurityQuestionOptions getSecurityQuestionOptions(String userid) {
-		UserService userService = (UserService)context.getBean("userService");
-		return  userService.getSecurityQuestionOptions(userid);
+		UserService userService = (UserService) context.getBean("userService");
+		return userService.getSecurityQuestionOptions(userid);
 	}
-	
+
 	@Override
 	public String getSecurityQuestion(String userid) {
-		UserService userService = (UserService)context.getBean("userService");
+		UserService userService = (UserService) context.getBean("userService");
 		return userService.getSecurityQuestion(userid);
 	}
 
 	@Override
-	public SecurityQuestionOptions getSecurityQuestionOptionsForEmail(String email) {
-		UserService userService = (UserService)context.getBean("userService");
-		return  userService.getSecurityQuestionOptionsForEmail(email);
+	public SecurityQuestionOptions getSecurityQuestionOptionsForEmail(
+			String email) {
+		UserService userService = (UserService) context.getBean("userService");
+		return userService.getSecurityQuestionOptionsForEmail(email);
 	}
 
-
 	@Override
-	public LoginModel  isValidUser(String userId, String password) {
-		//Code to create New session ID everytime user log's in. Story Ref - MAT1222
+	public LoginModel isValidUser(String userId, String password) {
+		// Code to create New session ID everytime user log's in. Story Ref -
+		// MAT1222
 		HttpSession session = getThreadLocalRequest().getSession(false);
-		if (session!=null && !session.isNew()) {
-		    session.invalidate();
+		if (session != null && !session.isNew()) {
+			session.invalidate();
 		}
 		session = getThreadLocalRequest().getSession(true);
-		LoginModel loginModel = getLoginCredentialService().isValidUser(userId, password);
+		LoginModel loginModel = getLoginCredentialService().isValidUser(userId,
+				password);
 		return loginModel;
 	}
-	
+
 	@Override
-	public boolean isValidPassword(String userId, String password){
-		
-		Boolean isValid = getLoginCredentialService().isValidPassword(userId, password);
-		
+	public boolean isValidPassword(String userId, String password) {
+
+		Boolean isValid = getLoginCredentialService().isValidPassword(userId,
+				password);
+
 		return isValid;
 	}
-	
-	public ForgottenPasswordResult forgotPassword(String loginId, 
-		String securityQuestion, String securityAnswer, int invalidUserCounter) {
 
-		UserService userService = (UserService)context.getBean("userService");
-		ForgottenPasswordResult forgottenPasswordResult = userService.requestForgottenPassword(loginId, securityQuestion, securityAnswer, invalidUserCounter);
+	public ForgottenPasswordResult forgotPassword(String loginId,
+			String securityQuestion, String securityAnswer,
+			int invalidUserCounter) {
+
+		UserService userService = (UserService) context.getBean("userService");
+		ForgottenPasswordResult forgottenPasswordResult = userService
+				.requestForgottenPassword(loginId, securityQuestion,
+						securityAnswer, invalidUserCounter);
 		String ipAddress = getClientIpAddr(getThreadLocalRequest());
-		TransactionAuditService auditService = (TransactionAuditService)context.getBean("transactionAuditService");
+		TransactionAuditService auditService = (TransactionAuditService) context
+				.getBean("transactionAuditService");
 		logger.info("Login ID --- " + loginId);
-		if(forgottenPasswordResult.getFailureReason() > 0){
-			logger.info("Forgot Password Failed ====> CLient IPAddress :: " + ipAddress);
-			auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_PASSWORD_EVENT", loginId, "[IP: "+ipAddress+" ]" + "Forgot Password Failed"  , ConstantMessages.DB_LOG);
-		}else{
-			logger.info("Forgot Password Success ====> CLient IPAddress :: " + ipAddress);
-			auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_PASSWORD_EVENT", loginId, "[IP: "+ipAddress+" ]" + "Forgot Password Success"  , ConstantMessages.DB_LOG);
+		if (forgottenPasswordResult.getFailureReason() > 0) {
+			logger.info("Forgot Password Failed ====> CLient IPAddress :: "
+					+ ipAddress);
+			auditService.recordTransactionEvent(UUID.randomUUID().toString(),
+					null, "FORGOT_PASSWORD_EVENT", loginId, "[IP: " + ipAddress
+							+ " ]" + "Forgot Password Failed",
+					ConstantMessages.DB_LOG);
+		} else {
+			logger.info("Forgot Password Success ====> CLient IPAddress :: "
+					+ ipAddress);
+			auditService.recordTransactionEvent(UUID.randomUUID().toString(),
+					null, "FORGOT_PASSWORD_EVENT", loginId, "[IP: " + ipAddress
+							+ " ]" + "Forgot Password Success",
+					ConstantMessages.DB_LOG);
 		}
 		return forgottenPasswordResult;
-		
+
 	}
 
 	@Override
 	public ForgottenLoginIDResult forgotLoginID(String email) {
-		UserService userService = (UserService)context.getBean("userService");
-		ForgottenLoginIDResult forgottenLoginIDResult = userService.requestForgottenLoginID(email);
-		if(!forgottenLoginIDResult.isEmailSent()){
+		UserService userService = (UserService) context.getBean("userService");
+		ForgottenLoginIDResult forgottenLoginIDResult = userService
+				.requestForgottenLoginID(email);
+		if (!forgottenLoginIDResult.isEmailSent()) {
 			String ipAddress = getClientIpAddr(getThreadLocalRequest());
 			logger.info("CLient IPAddress :: " + ipAddress);
-			String message=null;
-			TransactionAuditService auditService = (TransactionAuditService)context.getBean("transactionAuditService");
-			if(forgottenLoginIDResult.getFailureReason()==5){
-				logger.info(" User ID Found and but user already logged in : IP Address Location :" + ipAddress );
-				message = MatContext.get().getMessageDelegate().getLoginFailedAlreadyLoggedInMessage();
-				//this is to show success message on client side.
+			String message = null;
+			TransactionAuditService auditService = (TransactionAuditService) context
+					.getBean("transactionAuditService");
+			if (forgottenLoginIDResult.getFailureReason() == 5) {
+				logger.info(" User ID Found and but user already logged in : IP Address Location :"
+						+ ipAddress);
+				message = MatContext.get().getMessageDelegate()
+						.getLoginFailedAlreadyLoggedInMessage();
+				// this is to show success message on client side.
 				forgottenLoginIDResult.setEmailSent(true);
-				//Failure reason un-set : burp suite showing different values in response for invalid user. It should be same for valid and invalid user.
+				// Failure reason un-set : burp suite showing different values
+				// in response for invalid user. It should be same for valid and
+				// invalid user.
 				forgottenLoginIDResult.setFailureReason(0);
-				//Illegal activity is logged in Transaction Audit table with IP Address of client requesting for User Id.
-				auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_USER_EVENT", email, "[IP: "+ipAddress+" ]"+"[EMAIL Entered: "+email+" ]" +message, ConstantMessages.DB_LOG);
-			}else if (forgottenLoginIDResult.getFailureReason()==4){
-				message = MatContext.get().getMessageDelegate().getEmailNotFoundMessage();
-				logger.info(" User ID : "+ email + " Not found in User Table IP Address Location :" + ipAddress );
-				//this is to show success message on client side.
+				// Illegal activity is logged in Transaction Audit table with IP
+				// Address of client requesting for User Id.
+				auditService.recordTransactionEvent(UUID.randomUUID()
+						.toString(), null, "FORGOT_USER_EVENT", email, "[IP: "
+						+ ipAddress + " ]" + "[EMAIL Entered: " + email + " ]"
+						+ message, ConstantMessages.DB_LOG);
+			} else if (forgottenLoginIDResult.getFailureReason() == 4) {
+				message = MatContext.get().getMessageDelegate()
+						.getEmailNotFoundMessage();
+				logger.info(" User ID : " + email
+						+ " Not found in User Table IP Address Location :"
+						+ ipAddress);
+				// this is to show success message on client side.
 				forgottenLoginIDResult.setEmailSent(true);
-				//Failure reason un-set : burp suite showing different values in response for invalid user. It should be same for valid and invalid user.
+				// Failure reason un-set : burp suite showing different values
+				// in response for invalid user. It should be same for valid and
+				// invalid user.
 				forgottenLoginIDResult.setFailureReason(0);
-				//Illegal activity is logged in Transaction Audit table with IP Address of client requesting for User Id.
-				auditService.recordTransactionEvent(UUID.randomUUID().toString(), null, "FORGOT_USER_EVENT", email, "[IP: "+ipAddress+" ]"+"[EMAIL Entered: "+email+" ]" +message, ConstantMessages.DB_LOG);
+				// Illegal activity is logged in Transaction Audit table with IP
+				// Address of client requesting for User Id.
+				auditService.recordTransactionEvent(UUID.randomUUID()
+						.toString(), null, "FORGOT_USER_EVENT", email, "[IP: "
+						+ ipAddress + " ]" + "[EMAIL Entered: " + email + " ]"
+						+ message, ConstantMessages.DB_LOG);
 			}
-			
+
 		}
 		return forgottenLoginIDResult;
 	}
-	
-	
-	
+
 	/** Method to find IP address of Client **/
-	private String getClientIpAddr(HttpServletRequest request) {  
-        String ip = request.getHeader("X-Forwarded-For");  
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-            ip = request.getHeader("Proxy-Client-IP");  
-        }  
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-            ip = request.getHeader("WL-Proxy-Client-IP");  
-        }  
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-            ip = request.getHeader("HTTP_CLIENT_IP");  
-        }  
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");  
-        }  
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {  
-            ip = request.getRemoteAddr();  
-        }  
-        return ip;  
-    }  
+	private String getClientIpAddr(HttpServletRequest request) {
+		String ip = request.getHeader("X-Forwarded-For");
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("WL-Proxy-Client-IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("HTTP_CLIENT_IP");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+		}
+		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+			ip = request.getRemoteAddr();
+		}
+		return ip;
+	}
+
 	@Override
 	public void signOut() {
-		 getLoginCredentialService().signOut();
+		getLoginCredentialService().signOut();
 	}
 
 	@Override
 	public LoginResult changePasswordSecurityAnswers(LoginModel model) {
 		LoginModel loginModel = model;
 		LoginResult result = new LoginResult();
-		logger.info("LoggedInUserUtil.getLoggedInLoginId() ::::"+ LoggedInUserUtil.getLoggedInLoginId());
-		logger.info("loginModel.getPassword()() ::::"+ loginModel.getPassword());
-		
-		PasswordVerifier verifier  = new PasswordVerifier(loginModel.getLoginId(), 
-												loginModel.getPassword(), loginModel.getPassword());
-		
-		if(verifier.isValid()){
-			SecurityQuestionVerifier sverifier = new SecurityQuestionVerifier(loginModel.getQuestion1(),
-					loginModel.getQuestion1Answer(),
-					loginModel.getQuestion2(),
-					loginModel.getQuestion2Answer(),
-					loginModel.getQuestion3(),
-					loginModel.getQuestion3Answer());
+		logger.info("LoggedInUserUtil.getLoggedInLoginId() ::::"
+				+ LoggedInUserUtil.getLoggedInLoginId());
+		logger.info("loginModel.getPassword()() ::::"
+				+ loginModel.getPassword());
 
-			if(sverifier.isValid()){
-				String resultMessage = callCheckDictionaryWordInPassword(loginModel.getPassword());
-				if(resultMessage.equalsIgnoreCase("SUCCESS")){
-					boolean isSuccessful = getLoginCredentialService().changePasswordSecurityAnswers(loginModel);
-					if(isSuccessful){
+		PasswordVerifier verifier = new PasswordVerifier(
+				loginModel.getLoginId(), loginModel.getPassword(),
+				loginModel.getPassword());
+
+		if (verifier.isValid()) {
+			SecurityQuestionVerifier sverifier = new SecurityQuestionVerifier(
+					loginModel.getQuestion1(), loginModel.getQuestion1Answer(),
+					loginModel.getQuestion2(), loginModel.getQuestion2Answer(),
+					loginModel.getQuestion3(), loginModel.getQuestion3Answer());
+
+			if (sverifier.isValid()) {
+				String resultMessage = callCheckDictionaryWordInPassword(loginModel
+						.getPassword());
+				if (resultMessage.equalsIgnoreCase("SUCCESS")) {
+					boolean isSuccessful = getLoginCredentialService()
+							.changePasswordSecurityAnswers(loginModel);
+					if (isSuccessful) {
 						result.setSuccess(true);
-					}else{
+					} else {
 						result.setSuccess(false);
 					}
-				}else{
-					logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:"+LoggedInUserUtil.getLoggedInUser() );
+				} else {
+					logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:"
+							+ LoggedInUserUtil.getLoggedInUser());
 					result.setSuccess(false);
 					result.setFailureReason(LoginResult.DICTIONARY_EXCEPTION);
 				}
-			}else{
-				logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:"+LoggedInUserUtil.getLoggedInUser() );
+			} else {
+				logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:"
+						+ LoggedInUserUtil.getLoggedInUser());
 				result.setSuccess(false);
 				result.setMessages(sverifier.getMessages());
 				result.setFailureReason(LoginResult.SERVER_SIDE_VALIDATION_SECURITY_QUESTIONS);
 			}
-			
-		}
-		else{
-			logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:"+LoggedInUserUtil.getLoggedInUser() );
+
+		} else {
+			logger.info("Server Side Validation Failed in changePasswordSecurityAnswers for User:"
+					+ LoggedInUserUtil.getLoggedInUser());
 			result.setSuccess(false);
 			result.setMessages(verifier.getMessages());
 			result.setFailureReason(LoginResult.SERVER_SIDE_VALIDATION_PASSWORD);
-			
+
 		}
 		return result;
 	}
-	
+
 	@Override
 	public LoginModel changeTempPassword(String email, String changedpassword) {
-		
+
 		LoginModel loginModel = new LoginModel();
-		
+
 		String resultMessage = callCheckDictionaryWordInPassword(changedpassword);
-		
-		if(resultMessage.equalsIgnoreCase("EXCEPTION")){
+
+		if (resultMessage.equalsIgnoreCase("EXCEPTION")) {
 			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-		}else if(resultMessage.equalsIgnoreCase("SUCCESS")){
-			loginModel= getLoginCredentialService().changeTempPassword(email, changedpassword);
-		}else{
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate()
+					.getGenericErrorMessage());
+		} else if (resultMessage.equalsIgnoreCase("SUCCESS")) {
+			loginModel = getLoginCredentialService().changeTempPassword(email,
+					changedpassword);
+		} else {
 			loginModel.setLoginFailedEvent(true);
-			loginModel.setErrorMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+			loginModel.setErrorMessage(MatContext.get().getMessageDelegate()
+					.getMustNotContainDictionaryWordMessage());
 		}
-		
+
 		return loginModel;
 	}
-	
+
 	@Override
-	public List<String> getFooterURLs(){
-		UserService userService = (UserService)context.getBean("userService");
+	public List<String> getFooterURLs() {
+		UserService userService = (UserService) context.getBean("userService");
 		List<String> footerURLs = userService.getFooterURLs();
 		return footerURLs;
 	}
-	
+
 	@Override
-	public HashMap<String,String> validatePassword(String userID,String enteredPassword){
+	public HashMap<String, String> validatePassword(String userID,
+			String enteredPassword) {
 		String ifMatched = FAILURE;
-		HashMap<String,String> resultMap = new HashMap<String,String>(); 
-		if(enteredPassword.equals(null)|| enteredPassword.equals("")){
-			resultMap.put("message",MatContext.get().getMessageDelegate().getPasswordRequiredErrorMessage());
-		}else{
-				UserDAO userDAO = (UserDAO)context.getBean("userDAO");
-				MatUserDetails userDetails =(MatUserDetails )userDAO.getUser(userID);
-				if(userDetails != null)
-				{
-					UserService userService = (UserService)context.getBean("userService");
-					String hashPassword = userService.getPasswordHash(userDetails.getUserPassword().getSalt(), enteredPassword);
-					if(hashPassword.equalsIgnoreCase(userDetails.getUserPassword().getPassword())){
-						ifMatched= SUCCESS;
-					}else{
-						int currentPasswordlockCounter = userDetails.getUserPassword().getPasswordlockCounter();
-						logger.info("CurrentPasswordLockCounter value:" +currentPasswordlockCounter);
-						if(currentPasswordlockCounter == 2){
-							//Force the user to log out of the system
-							 //MatContext.get().handleSignOut("SIGN_OUT_EVENT", true);
-							 String resultStr = updateOnSignOut(userDetails.getId(), userDetails.getEmailAddress(),"SIGN_OUT_EVENT" );
-							 if(resultStr.equals(SUCCESS)){
-								 Date currentDate = new Date();
-								 Timestamp currentTimeStamp = new Timestamp(currentDate.getTime());
-								 userDetails.setSignOutDate(currentTimeStamp);
-								 userDetails.getUserPassword().setPasswordlockCounter(0);
-								 userDAO.saveUserDetails(userDetails);
-								 resultMap.put("message","REDIRECT");
-								 logger.info("Locking user out with LOGIN ID ::" + userDetails.getLoginId() + " :: USER ID ::" + userDetails.getId());
-							 }	 
-						}else{
-							resultMap.put("message",MatContext.get().getMessageDelegate().getPasswordMismatchErrorMessage());
-							userDetails.getUserPassword().setPasswordlockCounter(currentPasswordlockCounter + 1);
+		HashMap<String, String> resultMap = new HashMap<String, String>();
+		if (enteredPassword.equals(null) || enteredPassword.equals("")) {
+			resultMap.put("message", MatContext.get().getMessageDelegate()
+					.getPasswordRequiredErrorMessage());
+		} else {
+			UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+			MatUserDetails userDetails = (MatUserDetails) userDAO
+					.getUser(userID);
+			if (userDetails != null) {
+				UserService userService = (UserService) context
+						.getBean("userService");
+				String hashPassword = userService.getPasswordHash(userDetails
+						.getUserPassword().getSalt(), enteredPassword);
+				if (hashPassword.equalsIgnoreCase(userDetails.getUserPassword()
+						.getPassword())) {
+					ifMatched = SUCCESS;
+				} else {
+					int currentPasswordlockCounter = userDetails
+							.getUserPassword().getPasswordlockCounter();
+					logger.info("CurrentPasswordLockCounter value:"
+							+ currentPasswordlockCounter);
+					if (currentPasswordlockCounter == 2) {
+						// Force the user to log out of the system
+						// MatContext.get().handleSignOut("SIGN_OUT_EVENT",
+						// true);
+						String resultStr = updateOnSignOut(userDetails.getId(),
+								userDetails.getEmailAddress(), "SIGN_OUT_EVENT");
+						if (resultStr.equals(SUCCESS)) {
+							Date currentDate = new Date();
+							Timestamp currentTimeStamp = new Timestamp(
+									currentDate.getTime());
+							userDetails.setSignOutDate(currentTimeStamp);
+							userDetails.getUserPassword()
+									.setPasswordlockCounter(0);
 							userDAO.saveUserDetails(userDetails);
+							resultMap.put("message", "REDIRECT");
+							logger.info("Locking user out with LOGIN ID ::"
+									+ userDetails.getLoginId()
+									+ " :: USER ID ::" + userDetails.getId());
 						}
-						 
+					} else {
+						resultMap.put("message", MatContext.get()
+								.getMessageDelegate()
+								.getPasswordMismatchErrorMessage());
+						userDetails.getUserPassword().setPasswordlockCounter(
+								currentPasswordlockCounter + 1);
+						userDAO.saveUserDetails(userDetails);
 					}
+
 				}
-		}	
-		resultMap.put("result",ifMatched);
-		return resultMap;	
+			}
+		}
+		resultMap.put("result", ifMatched);
+		return resultMap;
 	}
-	
+
 	public void redirectToHtmlPage(String html) {
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 		String path = Window.Location.getPath();
-		path=path.substring(0, path.lastIndexOf('/'));
+		path = path.substring(0, path.lastIndexOf('/'));
 		path += html;
 		urlBuilder.setPath(path);
 		Window.Location.replace(urlBuilder.buildString());
 	}
-	
-	
-	private String callCheckDictionaryWordInPassword(String changedpassword){
+
+	private String callCheckDictionaryWordInPassword(String changedpassword) {
 		String returnMessage = FAILURE;
 		try {
-			boolean result = CheckDictionaryWordInPassword.containsDictionaryWords(changedpassword);
-			if(result)
+			boolean result = CheckDictionaryWordInPassword
+					.containsDictionaryWords(changedpassword);
+			if (result)
 				returnMessage = SUCCESS;
-				
+
 		} catch (FileNotFoundException e) {
-			returnMessage="EXCEPTION";
+			returnMessage = "EXCEPTION";
 			e.printStackTrace();
-			
+
 		} catch (IOException e) {
-			returnMessage="EXCEPTION";
+			returnMessage = "EXCEPTION";
 			e.printStackTrace();
 		}
 		return returnMessage;
-		
-		
+
 	}
-	
+
 	public List<UserSecurityQuestion> getSecurityQuestionsAnswers(String userID) {
-		UserService userService = (UserService)context.getBean("userService");
+		UserService userService = (UserService) context.getBean("userService");
 		User user = userService.getById(userID);
-		List<UserSecurityQuestion> secQuestions = new ArrayList<UserSecurityQuestion>(user.getSecurityQuestions()); 
-		logger.info("secQuestions Length "+ secQuestions.size());
+		List<UserSecurityQuestion> secQuestions = new ArrayList<UserSecurityQuestion>(
+				user.getSecurityQuestions());
+		logger.info("secQuestions Length " + secQuestions.size());
 		return secQuestions;
 	}
-	
-	public String updateOnSignOut(String userId, String emailId, String activityType){
-		UserService userService = (UserService)context.getBean("userService");
-		UMLSSessionTicket.getUmlssessionmap().remove(getThreadLocalRequest().getSession().getId());
-		String resultStr = userService.updateOnSignOut(userId, emailId, activityType);
+
+	public String updateOnSignOut(String userId, String emailId,
+			String activityType) {
+		UserService userService = (UserService) context.getBean("userService");
+		UMLSSessionTicket.remove(getThreadLocalRequest().getSession().getId());
+		String resultStr = userService.updateOnSignOut(userId, emailId,
+				activityType);
 		SecurityContextHolder.clearContext();
 		getThreadLocalRequest().getSession().invalidate();
-		logger.info("User Session Invalidated at :::: " +new Date());
+		logger.info("User Session Invalidated at :::: " + new Date());
 		logger.info("In UserServiceImpl Signout Update " + resultStr);
 		return resultStr;
 	}
 
-	
-	
 	@Override
 	public boolean isLockedUser(String loginId) {
-		UserService userService = (UserService)context.getBean("userService");
+		UserService userService = (UserService) context.getBean("userService");
 		return userService.isLockedUser(loginId);
 	}
-	
+
 	@Override
 	public List<SecurityQuestions> getSecurityQuestions() {
 		logger.info("Loading....");
-		SecurityQuestionsService securityQuestionsService = (SecurityQuestionsService)context.getBean("securityQuestionsService");
-		logger.info("Found...."+context.getBean("securityQuestionsService"));
+		SecurityQuestionsService securityQuestionsService = (SecurityQuestionsService) context
+				.getBean("securityQuestionsService");
+		logger.info("Found...." + context.getBean("securityQuestionsService"));
 		return securityQuestionsService.getSecurityQuestions();
 	}
-	
-    
+
 }
-
-
-

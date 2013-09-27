@@ -233,9 +233,8 @@ public interface CodeListService extends RemoteService {
 			boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDM);
 
-	SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
-			String dataType, MatValueSet matValueSet,
-			CodeListSearchDTO codeListSearchDTO,
-			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDMList, boolean isUserDefined); 
+	SaveUpdateCodeListResult updateCodeListToMeasure(String dataType,
+			MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO,
+			QualityDataSetDTO qualityDataSetDTO,
+			Boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDMList); 
 }

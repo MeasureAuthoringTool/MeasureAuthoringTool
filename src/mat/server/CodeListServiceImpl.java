@@ -215,10 +215,9 @@ implements mat.client.codelist.service.CodeListService {
 	}*/
 
 	@Override
-	public SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
-			String dataType, MatValueSet matValueSet,CodeListSearchDTO codeListSearchDTO,
-			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDMList,boolean isUserDefined) {
+	public SaveUpdateCodeListResult updateCodeListToMeasure(String dataType,
+			MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO,QualityDataSetDTO qualityDataSetDTO,
+			Boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDMList) {
 		
 		return getCodeListService().updateQDStoMeasure(dataType, matValueSet,codeListSearchDTO, qualityDataSetDTO, isSpecificOccurrence, appliedQDMList);
 	}

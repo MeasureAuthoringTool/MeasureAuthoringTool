@@ -87,10 +87,9 @@ public interface CodeListServiceAsync {
 	
 	void getAllOperators(AsyncCallback<List<OperatorDTO>> callback);
 
-	void updateCodeListToMeasure(String measureID, String dataType,
-			MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO,
-			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDMList, boolean isUserDefined,
+	void updateCodeListToMeasure(String dataType, MatValueSet matValueSet,
+			CodeListSearchDTO codeListSearchDTO, QualityDataSetDTO qualityDataSetDTO,
+			Boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDMList,
 			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
 
 	public void getAllDataTypes(

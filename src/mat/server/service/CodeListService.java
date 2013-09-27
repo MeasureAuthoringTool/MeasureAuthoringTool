@@ -77,10 +77,9 @@ public interface CodeListService {
 			String dataType, MatValueSet matValueSet,
 			boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDM);
-	SaveUpdateCodeListResult updateQDStoMeasure(String measureId,
-			String dataType, MatValueSet matValueSet,
-			CodeListSearchDTO codeList, QualityDataSetDTO qualityDataSetDTO,
-			boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDM, boolean isUSerDefined);
+	SaveUpdateCodeListResult updateQDStoMeasure(String dataType,
+			MatValueSet matValueSet, CodeListSearchDTO codeList,
+			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
+			ArrayList<QualityDataSetDTO> appliedQDM);
 	
 }

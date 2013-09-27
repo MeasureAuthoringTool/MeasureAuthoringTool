@@ -220,7 +220,7 @@ implements mat.client.codelist.service.CodeListService {
 			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDMList,boolean isUserDefined) {
 		
-		return getCodeListService().updateQDStoMeasure(measureID, dataType,matValueSet, codeListSearchDTO, qualityDataSetDTO, isSpecificOccurrence, appliedQDMList,isUserDefined);
+		return getCodeListService().updateQDStoMeasure(dataType, matValueSet,codeListSearchDTO, qualityDataSetDTO, isSpecificOccurrence, appliedQDMList);
 	}
 
 	@Override

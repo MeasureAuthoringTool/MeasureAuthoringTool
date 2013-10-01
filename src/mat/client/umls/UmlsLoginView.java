@@ -92,11 +92,11 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		
 		VerticalPanel vPanel = new VerticalPanel();
 		umlsExternalLink = new Anchor("Need a UMLS license?");
-		umlsTroubleLogging = new Anchor("Trouble Logging in?");
+		umlsTroubleLogging = new Anchor("Trouble signing in?");
 		umlsExternalLink.setTitle("Need UMLS license");
 		umlsExternalLink.getElement().setAttribute("alt", "Need UMLS license");
 		umlsTroubleLogging.setTitle("Trouble Logging in");
-		umlsTroubleLogging.getElement().setAttribute("alt", "Trouble Logging in");
+		umlsTroubleLogging.getElement().setAttribute("alt", "Trouble signing in");
 		
 		vPanel.add(umlsExternalLink);
 		vPanel.add(umlsTroubleLogging);

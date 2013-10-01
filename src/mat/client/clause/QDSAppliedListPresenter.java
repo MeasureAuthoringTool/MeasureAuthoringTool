@@ -25,104 +25,105 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	private SimplePanel panel = new SimplePanel();
 	private SearchDisplay searchDisplay;
 	ArrayList<QualityDataSetDTO> allQdsList = new ArrayList<QualityDataSetDTO>();
-//	boolean isCheckForSDE=false;
+
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
-	
+
 	List<String> codeListString = new ArrayList<String>();
-	
+
 	public static interface SearchDisplay {
-		public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		public Widget asWidget();
+		SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
+		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		Widget asWidget();
 		void buildCellList(QDSAppliedListModel appliedListModel);
 		Button getRemoveButton();
 		Button getModifyButton();
 		QualityDataSetDTO getSelectedElementToRemove();
-		public List<QualityDataSetDTO> getAllAppliedQDMList();
-		public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList);
+		List<QualityDataSetDTO> getAllAppliedQDMList();
+		void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList);
 	}
 
 	public QDSAppliedListPresenter(SearchDisplay sDisplayArg) {
 		this.searchDisplay = sDisplayArg;
 		getXMLForAppliedQDM(true);
 		searchDisplay.getRemoveButton().addClickHandler(new ClickHandler() {
-			
+
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				resetQDSFields();
-				if(searchDisplay.getSelectedElementToRemove()!=null){
-					
-						service.getMeasureXMLForAppliedQDM(MatContext.get().getCurrentMeasureId(),false, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
+				if (searchDisplay.getSelectedElementToRemove() != null) {
+						service.getMeasureXMLForAppliedQDM(MatContext.get().getCurrentMeasureId(),
+								false, new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
 
 							@Override
-							public void onFailure(Throwable caught) {
+							public void onFailure(final Throwable caught) {
 								Window.alert(MatContext.get().getMessageDelegate()
-										.getGenericErrorMessage());	
-								
+										.getGenericErrorMessage());
+
 							}
 							@Override
-							public void onSuccess(ArrayList<QualityDataSetDTO> result) {
-								allQdsList=result;
-								if(allQdsList.size()>0){
-										Iterator<QualityDataSetDTO> iterator = allQdsList.iterator();
-										while(iterator.hasNext()){
+							public void onSuccess(final ArrayList<QualityDataSetDTO> result) {
+								allQdsList = result;
+								if (allQdsList.size() > 0) {
+										Iterator<QualityDataSetDTO> iterator =
+														allQdsList.iterator();
+										while (iterator.hasNext()) {
 											QualityDataSetDTO dataSetDTO = iterator.next();
-											if(dataSetDTO.getUuid().equals(searchDisplay.getSelectedElementToRemove().getUuid())){
+											if (dataSetDTO.getUuid().equals(searchDisplay.
+													getSelectedElementToRemove().getUuid())) {
 												iterator.remove();
 											}
 										}
 									saveMeasureXML(allQdsList);
 								}
-								
+
 							}
-							
+
 						});
-					}else{
-						searchDisplay.getErrorMessageDisplay().setMessage("Please select at least one unused value set to delete.");
+					} else {
+						searchDisplay.getErrorMessageDisplay().setMessage(
+								"Please select at least one unused value set to delete.");
 					}
-				}			
-					
+				}
+
 		});
-		
+
 		searchDisplay.getModifyButton().addClickHandler(new ClickHandler() {
-			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				searchDisplay.getApplyToMeasureSuccessMsg().clear();
 				searchDisplay.getErrorMessageDisplay().clear();
 				QualityDataSetDTO dataSetDTO = searchDisplay.getSelectedElementToRemove();
-				if(dataSetDTO!=null){
+				if (dataSetDTO != null) {
 					QDMAvailableValueSetWidget availableValueSetWidget = new QDMAvailableValueSetWidget();
-					QDMAvailableValueSetPresenter availableValueSetPresenter = new QDMAvailableValueSetPresenter(availableValueSetWidget,dataSetDTO,searchDisplay);
+					QDMAvailableValueSetPresenter availableValueSetPresenter =
+						new QDMAvailableValueSetPresenter(availableValueSetWidget, dataSetDTO, searchDisplay);
 					availableValueSetPresenter.beforeDisplay();
 				}
 			}
 		});
 	}
-	
-	private void saveMeasureXML(ArrayList<QualityDataSetDTO> list){
-		service.createAndSaveElementLookUp(list,MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
+
+	private void saveMeasureXML(final ArrayList<QualityDataSetDTO> list) {
+		service.createAndSaveElementLookUp(list, MatContext.get().getCurrentMeasureId(),  new AsyncCallback<Void>() {
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(final Throwable caught) {
 				Window.alert(MatContext.get().getMessageDelegate()
-						.getGenericErrorMessage());	
-				
+						.getGenericErrorMessage());
+
 			}
 
 			@Override
-			public void onSuccess(Void result) {
+			public void onSuccess(final Void result) {
 				allQdsList.removeAll(allQdsList);
 				resetQDSFields();
 				loadAppliedListData();
 				searchDisplay.getApplyToMeasureSuccessMsg().setMessage("Successfully removed selected QDM element.");
-				
+
 			}
 		});
 	}
-	
-	
-	
+
 	void loadAppliedListData() {
 		panel.clear();
 		getXMLForAppliedQDM(true);
@@ -145,22 +146,22 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	/**
 	 * Method for fetching all applied Value Sets in a measure which is loaded
 	 * in context.
-	 * 
+	 *
 	 * */
 	public void getXMLForAppliedQDM(boolean checkForSupplementData){
 		String measureId = MatContext.get().getCurrentMeasureId();
-	//	isCheckForSDE = checkForSupplementData;
 		if (measureId != null && measureId != "") {
-			service.getMeasureXMLForAppliedQDM(measureId,checkForSupplementData, new AsyncCallback<ArrayList<QualityDataSetDTO>>(){
-
+			service.getMeasureXMLForAppliedQDM(measureId , checkForSupplementData ,
+					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
+ 
 				@Override
-				public void onFailure(Throwable caught) {
+				public void onFailure(final Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate()
 							.getGenericErrorMessage());
 				}
 
 				@Override
-				public void onSuccess(ArrayList<QualityDataSetDTO> result) {
+				public void onSuccess(final ArrayList<QualityDataSetDTO> result) {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 					appliedListModel.setAppliedQDMs(result);
 					searchDisplay.buildCellList(appliedListModel);

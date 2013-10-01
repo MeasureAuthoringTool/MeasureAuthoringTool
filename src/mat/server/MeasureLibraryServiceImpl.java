@@ -563,7 +563,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		List<MeasureShareDTO> measureList = getService().searchWithFilter(searchText, startIndex, pageSize,filter);
 		
 		if(SecurityRole.ADMIN_ROLE.equals(userRole)) {
-			measureList = updateMeasureListOnlyWithLatestDraftOrVersion(measureList);
+			measureList = filterMeasureListWithLatestDraftOrVersion(measureList);
 		}
 		searchModel.setStartIndex(startIndex);
 		//searchModel.setResultsTotal((int)getService().count());
@@ -605,7 +605,12 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		return searchModel;
 	}
 	
-	private List<MeasureShareDTO> updateMeasureListOnlyWithLatestDraftOrVersion(final List<MeasureShareDTO> measureList) {
+	/**
+	 * measureList is filtered with latest draft or version. 
+	 * In a measure set, first we look for a draft version. If there is a draft version then that measure is added in the measureList. 
+	 * Otherwise, we look for the latest version and add in the measureList. Latest version measure is the measure with the latest Finalized Date. 
+	 */
+	private List<MeasureShareDTO> filterMeasureListWithLatestDraftOrVersion(final List<MeasureShareDTO> measureList) {
 		List<MeasureShareDTO> updatedMeasureList = new ArrayList<MeasureShareDTO>();
 		for(MeasureShareDTO measureShareDTO : measureList) {
 			if(updatedMeasureList == null || updatedMeasureList.isEmpty()) {

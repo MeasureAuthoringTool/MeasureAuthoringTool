@@ -385,6 +385,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		dataTypesListBox.setSelectedIndex(0);
 		dataTypesListBox.addValueChangeHandler(dataTypeChangeHandler);
 		vPanel.add(dataTypesListBox);
+		vPanel.add(new SpacerWidget());
 		vPanel.add(new HTML(cautionMsgStr));
 		vPanel.add(new SpacerWidget());
 		specificOccurrence.setValue(false);

@@ -555,9 +555,27 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		return sortKeys[columnIndex];
 	}
 
+	/**
+	 * This method is used to set all the widgets to read only mode. 
+	 * @param editable
+	 */
+	private void setWidgetsReadOnly(boolean editable) {
+		//Widgets in "Element with VSAC Value Set" panel.
+		searchDisplay.getRetrieveButton().setEnabled(editable);
+		searchDisplay.getOIDInput().setReadOnly(!editable);
+		searchDisplay.getVersionInput().setEnabled(editable);	
+		
+		//Widgets in "Element without VSAC Value Set" panel.
+		searchDisplay.getUserDefinedInput().setReadOnly(!editable);
+		searchDisplay.getAllDataTypeInput().setEnabled(editable);
+		searchDisplay.getPsuedoQDMToMeasure().setEnabled(editable);
+		searchDisplay.getPsuedoQDMCancel().setEnabled(editable);
+	}
+
 	@Override
 	public void beforeDisplay() {		
 		displaySearch();
+		setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 
 	@Override

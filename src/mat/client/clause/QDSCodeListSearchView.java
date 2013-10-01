@@ -54,27 +54,24 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without VSAC value set");
 	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with VSAC value set");
 	private TextBox userDefinedInput = new TextBox();
-	
-	private TextBox oidInput = new TextBox();	
-	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
-	Button retrieveButton = new PrimaryButton("Retrieve","primaryMetaDataButton");
-	private ListBoxMVP dataTypesListBox = new ListBoxMVP();
-	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure","primaryButton");
-	private Button cancelButton = new SecondaryButton("Cancel");
-	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
-	VerticalPanel valueSetDetailsPanel = new VerticalPanel();
-	MatValueSet currentMatValueSet;
-
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
 	private Button psuedoQDMCancel = new SecondaryButton("Cancel");
 	private SimplePanel dataTypePanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
-	private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();
-	
+	private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();	
 	private ErrorMessageDisplay errorMessageUserDefinedPanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessageUserDefinedPanel = new SuccessMessageDisplay();
 	private ListBoxMVP allDataTypeInput = new ListBoxMVP();
-   
+	private TextBox oidInput = new TextBox();	
+	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
+	private Button retrieveButton = new PrimaryButton("Retrieve","primaryMetaDataButton");
+	private ListBoxMVP dataTypesListBox = new ListBoxMVP();
+	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure","primaryButton");
+	private Button cancelButton = new SecondaryButton("Cancel");
+	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
+	private VerticalPanel valueSetDetailsPanel = new VerticalPanel();
+	MatValueSet currentMatValueSet;
+	
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
 		@Override
 		public void onValueChange(ValueChangeEvent<String> event) {
@@ -98,7 +95,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		}
 	};
 		
-	public QDSCodeListSearchView() {		
+	public QDSCodeListSearchView() {
 		VerticalPanel vp = new VerticalPanel();
 		vp.getElement().setId("vp_VerticalPanel");
 		vp.setWidth("100%");	
@@ -153,7 +150,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		buttonHorizontalPanel.add(new SpacerWidget());
 		psuedoQDMCancel.setTitle("Cancel");
 		buttonHorizontalPanel.add(psuedoQDMCancel);
-		
+				
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.add(horiPanel);
 		mainPanel.add(new SpacerWidget());
@@ -205,7 +202,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		versionInput.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
-		retrieveButton.setTitle("Retrieve");
+		retrieveButton.setTitle("Retrieve");		
 		Grid queryGrid = new Grid(3,2);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
 		queryGrid.setWidget(0, 1, oidInput);
@@ -213,7 +210,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		queryGrid.setWidget(1, 1, versionInput);
 		queryGrid.setWidget(2, 0, retrieveButton);
 		queryGrid.setStyleName("secondLabel");
-		searchPanel.add(queryGrid);
+		searchPanel.add(queryGrid);				
 		return searchPanel;
 	}
 
@@ -406,6 +403,13 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			}
 		});
 		buttonsPanel.add(cancelButton);
+		
+		boolean editable = MatContext.get().getMeasureLockService().checkForEditPermission();
+		dataTypesListBox.setEnabled(editable);
+		specificOccurrence.setEnabled(editable);
+		applyToMeasureButton.setEnabled(editable);
+		cancelButton.setEnabled(editable);
+		
 		vPanel.add(buttonsPanel);
 		return vPanel;
 	}

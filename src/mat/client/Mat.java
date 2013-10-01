@@ -285,10 +285,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			
 			title = ClientConstants.TITLE_MY_ACCOUNT;	
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
-			
-			codeListController = new CodeListController(currentUserRole);
+			/**
+			 * Commented Value Set Owner ship tab as part of MAT-2452 : Remove Value Set Ownership tab.
+			 * **/
+			/*codeListController = new CodeListController(currentUserRole);
 			title = ClientConstants.TITLE_VALUE_SET_CHANGE_OWNERSHIP;	
-			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));
+			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));*/
 		
 			measureLibrary = buildMeasureLibraryWidget(true); 
 			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;	

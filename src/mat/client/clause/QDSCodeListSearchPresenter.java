@@ -331,10 +331,14 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}	
 
 	private void showSearchingBusy(boolean busy) {
-		if (busy)
+		if (busy) {
 			Mat.showLoadingMessage();
-		else
+		} else {
 			Mat.hideLoadingMessage();
+		}		
+		searchDisplay.getRetrieveButton().setEnabled(!busy);
+		searchDisplay.getOIDInput().setEnabled(!busy);
+		searchDisplay.getVersionInput().setEnabled(!busy);
 	}
 
 	private void displaySearch() {

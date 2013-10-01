@@ -345,7 +345,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.clearVSACValueSetMessages();
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
-		// searchDisplay.setAddToMeasureButtonEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 
 	private void addSelectedCodeListtoMeasure(boolean isUserDefinedQDM) {

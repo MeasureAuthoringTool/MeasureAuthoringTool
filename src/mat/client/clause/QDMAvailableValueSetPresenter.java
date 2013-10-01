@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.codelist.HasListBox;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
@@ -301,12 +302,14 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			searchDisplay.getValueSetDetailsPanel().setVisible(false);
 			return;
 		}
-				
+		
+		showSearchingBusy(true);
 		vsacapiService.getValueSetByOIDAndVersion(oid, new AsyncCallback<VsacApiResult>() {			
 			@Override
 			public void onFailure(Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				searchDisplay.getValueSetDetailsPanel().setVisible(false);
+				showSearchingBusy(false);
 			}
 
 			@Override
@@ -319,6 +322,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					searchDisplay.getErrorMessageDisplay().setMessage(message);
 					searchDisplay.getValueSetDetailsPanel().setVisible(false);
 				}
+				showSearchingBusy(false);
 			}
 		});	
 	}
@@ -558,14 +562,12 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		});
 	}*/
 	
-	/*private void showSearchingBusy(boolean busy){
+	private void showSearchingBusy(boolean busy){
 		if(busy)
 			Mat.showLoadingMessage();
 		else
 			Mat.hideLoadingMessage();
-		((Button)searchDisplay.getSearchButton()).setEnabled(!busy);
-		((TextBox)(searchDisplay.getSearchString())).setEnabled(!busy);
-	}*/
+	}
 	
 	/**
 	 * This method shows AvailableValueSet Widget in pop up.

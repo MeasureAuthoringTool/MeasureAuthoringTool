@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.event.QDSElementCreatedEvent;
@@ -396,6 +397,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			return;
 		}
 
+		showSearchingBusy(true);
 		vsacapiService.getValueSetByOIDAndVersion(oid,
 				new AsyncCallback<VsacApiResult>() {
 					@Override
@@ -405,6 +407,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 										.getVSAC_RETRIEVE_FAILED());
 						searchDisplay.getValueSetDetailsPanel().setVisible(
 								false);
+						showSearchingBusy(false);
 					}
 
 					@Override
@@ -422,6 +425,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 							searchDisplay.getValueSetDetailsPanel().setVisible(
 									false);
 						}
+						showSearchingBusy(false);
 					}
 				});
 	}
@@ -587,14 +591,12 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 						});
 	}*/
 
-	/*private void showSearchingBusy(boolean busy) {
+	private void showSearchingBusy(boolean busy) {
 		if (busy)
 			Mat.showLoadingMessage();
 		else
 			Mat.hideLoadingMessage();
-		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
-		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
-	}*/
+	}
 
 	/*void loadCodeListData() {
 		// int filter =

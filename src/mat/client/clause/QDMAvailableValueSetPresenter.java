@@ -4,12 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.codelist.HasListBox;
-import mat.client.codelist.ManageCodeListSearchModel;
-import mat.client.codelist.ValueSetSearchFilterPanel;
-import mat.client.codelist.events.OnChangeOptionsEvent;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -20,7 +16,6 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.SearchResultUpdate;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.CodeListSearchDTO;
@@ -32,11 +27,6 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyUpEvent;
-import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosureEvent;
@@ -50,13 +40,13 @@ import com.google.gwt.user.client.ui.Widget;
 public class QDMAvailableValueSetPresenter  implements MatPresenter{
 
 	private SearchDisplay searchDisplay;
-	private int startIndex = 1;
+	/*private int startIndex = 1;
 	private String currentSortColumn = getSortKey(0);
 	private boolean sortIsAscending = true;
 	private boolean showdefaultCodeList = true;
 	private String lastSearchText;
 	private int lastStartIndex;
-	private QDSCodeListSearchModel currentCodeListResults;
+	private QDSCodeListSearchModel currentCodeListResults;*/
 
 	private MatValueSet currentMatValueSet;
 	MeasureServiceAsync measureService = MatContext.get().getMeasureService();
@@ -65,25 +55,26 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	mat.client.clause.QDSAppliedListPresenter.SearchDisplay qdsAppliedListPresenterDisplay;
 	VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
 	
-	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
-		public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption();
-		public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement();
-		public void buildQDSDataTable(QDSCodeListSearchModel results,Boolean isTableDisabled);
-		public HasClickHandlers getAddToMeasureButton();
-		public void setAddToMeasureButtonEnabled(boolean visible);
-		public Widget getDataTypeWidget();
-		public ListBoxMVP getDataTypeInput();
+	//public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
+	public static interface SearchDisplay {
+		//public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption();
+		//public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement();
+		//public void buildQDSDataTable(QDSCodeListSearchModel results,Boolean isTableDisabled);
+		//public HasClickHandlers getAddToMeasureButton();
+		//public void setAddToMeasureButtonEnabled(boolean visible);
+		//public Widget getDataTypeWidget();
+		//public ListBoxMVP getDataTypeInput();
 		public CustomCheckBox getSpecificOccurrenceInput();
-		public Button getApplyToMeasure();
-		public void scrollToBottom();
+		//public Button getApplyToMeasure();
+		//public void scrollToBottom();
 		//public FocusableWidget getMsgFocusWidget();
 		public String getDataTypeValue(ListBoxMVP inputListBox);
 		public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		public void setDataTypeOptions(List<? extends HasListBox> texts);
-		public String getDataTypeText();
-		public ValueSetSearchFilterPanel getValueSetSearchFilterPanel();
-		public void setEnabled(boolean enabled);
+		//public void setDataTypeOptions(List<? extends HasListBox> texts);
+		//public String getDataTypeText();
+		//public ValueSetSearchFilterPanel getValueSetSearchFilterPanel();
+		//public void setEnabled(boolean enabled);
 		public Button getCancel();
 		public String getDataTypeText(ListBoxMVP inputListBox);
 		public DisclosurePanel getDisclosurePanel();
@@ -96,7 +87,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		public SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
 		public ErrorMessageDisplay getErrorMessageUserDefinedPanel();
 		public Button getUserDefinedCancel();
-		
+				
 		public TextBox getOIDInput();
 		public DateBoxWithCalendar getVersionInput();
 		public Button getRetrieveButton();
@@ -110,6 +101,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		public MatValueSet getCurrentMatValueSet();
 		public void resetVSACValueSetWidget();
 		public Button getCloseButton();
+		public Widget asWidget();
 	}
 	
 	
@@ -118,7 +110,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		this.modifyValueSetDTO = dataSetDTO;
 		this.qdsAppliedListPresenterDisplay = qdsAppliedListPresenterDisplay;
 		this.appliedQDMList = (ArrayList<QualityDataSetDTO>) qdsAppliedListPresenterDisplay.getAllAppliedQDMList();
-		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
+		/*TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			
 			@Override
@@ -127,9 +119,9 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					((Button)searchDisplay.getSearchButton()).click();
 	            }
 			}
-		});
+		});*/
 		
-		MatContext.get().getEventBus().addHandler(OnChangeOptionsEvent.TYPE, new OnChangeOptionsEvent.Handler() {
+		/*MatContext.get().getEventBus().addHandler(OnChangeOptionsEvent.TYPE, new OnChangeOptionsEvent.Handler() {
 			@Override
 			public void onChangeOptions(OnChangeOptionsEvent event) {
 				final CodeListSearchDTO codeList = currentCodeListResults.getSelectedCodeList();
@@ -152,7 +144,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					   }
 				}
 			}
-		});
+		});*/
 		
 		
 		
@@ -163,7 +155,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	        {
 	        	searchDisplay.getUserDefinedInput().setText("");
 	        	searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
-	        	searchDisplay.buildQDSDataTable(currentCodeListResults, true);
+	        	//searchDisplay.buildQDSDataTable(currentCodeListResults, true);
 	        	displaySearch();
 	        	searchDisplay.getDisclosurePanelCellTable().setOpen(true);
 	        }
@@ -171,7 +163,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	        public void onOpen(DisclosureEvent event)
 	        {
 	        	populateAllDataType();
-	        	searchDisplay.buildQDSDataTable(currentCodeListResults, true);
+	        	//searchDisplay.buildQDSDataTable(currentCodeListResults, true);
 	            displaySearch();
 	            searchDisplay.getDisclosurePanelCellTable().setOpen(false);
 	        }
@@ -185,7 +177,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	        {
 	        	searchDisplay.getUserDefinedInput().setText("");
 	        	//searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
-	        	searchDisplay.buildQDSDataTable(currentCodeListResults, true);
+	        	//searchDisplay.buildQDSDataTable(currentCodeListResults, true);
 	        	displaySearch();
 	        	searchDisplay.getDisclosurePanel().setOpen(true);
 	        }
@@ -193,7 +185,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	        public void onOpen(DisclosureEvent event)
 	        {
 	        	/*populateAllDataType();*/
-	        	searchDisplay.buildQDSDataTable(currentCodeListResults, true);
+	        	//searchDisplay.buildQDSDataTable(currentCodeListResults, true);
 	            displaySearch();
 	            searchDisplay.getDisclosurePanel().setOpen(false);
 	        }
@@ -211,7 +203,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		});*/
 		
 		
-		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
+		/*searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				MatContext.get().clearDVIMessages();
@@ -222,7 +214,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				search(searchDisplay.getSearchString().getValue(),
 						startIndex, searchDisplay.getPageSize(), currentSortColumn, sortIsAscending,showdefaultCodeList,filter);
 			}
-		});
+		});*/
 		
 		searchDisplay.getUserDefinedInput().addClickHandler(new ClickHandler() {
 			
@@ -295,7 +287,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		searchDisplay.getRetrieveButton().addClickHandler(new ClickHandler() {			
 			@Override
 			public void onClick(ClickEvent event) {
-				MatContext.get().clearDVIMessages();
+				searchDisplay.clearVSACValueSetMessages();
 				searchValueSetInVsac(searchDisplay.getOIDInput().getValue(), searchDisplay.getVersionInput().getValue());				
 			}
 		});
@@ -400,14 +392,14 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 					}else{
 						searchDisplay.getErrorMessageDisplay().setMessage("A value set with an Attribute category must be used for this data element.");
 					}
-				setEnabled(true);
+				//setEnabled(true);
 				}
 			}else{
 				updateAppliedQDMList(modifyWithDTO,null, modifyValueSetDTO,dataType,isSpecificOccurrence,false);
 			}
 		}else{
 			searchDisplay.getErrorMessageDisplay().setMessage("Please select atleast one applied QDM to modify.");
-			setEnabled(true);		
+			//setEnabled(true);		
 		}
 	}
 	
@@ -454,7 +446,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			public void onFailure(Throwable caught) {
 				if(!isUSerDefined){
 					searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-					setEnabled(true);
+					//setEnabled(true);
 				}else{
 					searchDisplay.getErrorMessageUserDefinedPanel().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
@@ -465,7 +457,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				if(result.getFailureReason()==7){
 					if(!isUSerDefined){
 						searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
-						setEnabled(true);
+						//setEnabled(true);
 					}else{
 						searchDisplay.getErrorMessageUserDefinedPanel().setMessage(MatContext.get().getMessageDelegate().getDuplicateAppliedQDMMsg());
 					}
@@ -501,7 +493,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			public void onSuccess(Void result) {
 				if(!isUserDefined){
 					searchDisplay.getApplyToMeasureSuccessMsg().setMessage(MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
-					setEnabled(true);
+					//setEnabled(true);
 				}else{
 					searchDisplay.getSuccessMessageUserDefinedPanel().setMessage(MatContext.get().getMessageDelegate().getSuccessfulModifyQDMMsg());
 					searchDisplay.getUserDefinedInput().setText("");
@@ -525,7 +517,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 	/**
 	 * This method is used in searching all available Value sets for pop up.
 	 * */
-	private void search(String searchText, int startIndex, final int pageSize,
+	/*private void search(String searchText, int startIndex, final int pageSize,
 					String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
 		lastSearchText = (!searchText.equals(null))? searchText.trim() : null;
 		lastStartIndex = startIndex;
@@ -564,16 +556,16 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 				showSearchingBusy(false);
 			}
 		});
-	}
+	}*/
 	
-	private void showSearchingBusy(boolean busy){
+	/*private void showSearchingBusy(boolean busy){
 		if(busy)
 			Mat.showLoadingMessage();
 		else
 			Mat.hideLoadingMessage();
 		((Button)searchDisplay.getSearchButton()).setEnabled(!busy);
 		((TextBox)(searchDisplay.getSearchString())).setEnabled(!busy);
-	}
+	}*/
 	
 	/**
 	 * This method shows AvailableValueSet Widget in pop up.
@@ -585,7 +577,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		searchDisplay.clearVSACValueSetMessages();
 	}
 	
-	private void populateQDSDataType(String category){
+	/*private void populateQDSDataType(String category){
 		MatContext.get().getListBoxCodeProvider().getQDSDataTypeForCategory(category, new AsyncCallback<List<? extends HasListBox>>() {
 
 			@Override
@@ -600,7 +592,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 			}
        });
 		
-	}
+	}*/
 	
 	
 	private void populateAllDataType(){
@@ -629,7 +621,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		return sortKeys[columnIndex];
 	}
 	
-	public void resetQDSFields(){
+	/*public void resetQDSFields(){
 		searchDisplay.getApplyToMeasureSuccessMsg().clear();
 		searchDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getSearchString().setValue("");
@@ -639,9 +631,9 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		searchDisplay.getDataTypeInput().setEnabled(false);
 		searchDisplay.getDisclosurePanel().setOpen(false);
 		searchDisplay.getDisclosurePanelCellTable().setOpen(true);
-	}
+	}*/
 	
-	public void setEnabled(boolean enabled){
+	/*public void setEnabled(boolean enabled){
 		searchDisplay.setEnabled(enabled);
 		
 		//determine which of the "Select Data Type" drop down, the "Specific Occurrence" check box, and the "Apply to Measure" button are to be enabled 
@@ -677,19 +669,19 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter{
 		searchDisplay.getSpecificOccurrenceInput().setEnabled(specificOccurrence);
 		//select data type
 		searchDisplay.getDataTypeInput().setEnabled(dataTypeInput);
-	}
+	}*/
 	
-	void loadCodeListData(){
+	/*void loadCodeListData(){
 		searchDisplay.getValueSetSearchFilterPanel().resetFilter();
 		int filter = searchDisplay.getValueSetSearchFilterPanel().getDefaultFilter();
 		search("", 1, searchDisplay.getPageSize(), currentSortColumn, sortIsAscending,showdefaultCodeList,filter);
-	}
+	}*/
 	
 	@Override
 	public void beforeDisplay() {
-		resetQDSFields();
-		loadCodeListData();
-		
+		/*resetQDSFields();
+		loadCodeListData();*/
+		displaySearch();
 	}
 
 	@Override

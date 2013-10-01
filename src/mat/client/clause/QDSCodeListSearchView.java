@@ -1,7 +1,6 @@
 package mat.client.clause;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -9,13 +8,9 @@ import org.apache.commons.lang.StringUtils;
 
 import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
-import mat.client.codelist.ValueSetSearchFilterPanel;
 import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.measure.metadata.Grid508;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
-import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.FocusableWidget;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -24,12 +19,6 @@ import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.HasPageSelectionHandler;
-import mat.client.shared.search.HasPageSizeSelectionHandler;
-import mat.client.shared.search.SearchView;
-import mat.model.CodeListSearchDTO;
-import mat.model.MatConcept;
 import mat.model.MatValueSet;
 import mat.shared.ConstantMessages;
 
@@ -38,10 +27,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
-import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
@@ -50,11 +37,8 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
@@ -63,20 +47,17 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.HasData;
 import com.google.gwt.view.client.ListDataProvider;
-
-import elemental.js.util.StringUtil;
 
 
 public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.SearchDisplay {
 
 	private SimplePanel containerPanel = new SimplePanel();
-	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
+	//private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without VSAC value set");
 	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with VSAC value set");
 	private TextBox userDefinedInput = new TextBox();
-	private TextBox searchInput = new TextBox();
+	//private TextBox searchInput = new TextBox();
 	
 	private TextBox oidInput = new TextBox();	
 	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
@@ -88,8 +69,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	VerticalPanel valueSetDetailsPanel = new VerticalPanel();
 	MatValueSet currentMatValueSet;
 
-	private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);	
-	private Button addToMeasure = new PrimaryButton("Search","primaryButton");
+	//private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);	
+	//private Button addToMeasure = new PrimaryButton("Search","primaryButton");
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
 	private Button psuedoQDMCancel = new SecondaryButton("Cancel");
 	private SimplePanel dataTypePanel = new SimplePanel();
@@ -98,13 +79,13 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	
 	private ErrorMessageDisplay errorMessageUserDefinedPanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessageUserDefinedPanel = new SuccessMessageDisplay();
-	private ListBoxMVP dataTypeInput = new ListBoxMVP();
+	//private ListBoxMVP dataTypeInput = new ListBoxMVP();
 	private ListBoxMVP allDataTypeInput = new ListBoxMVP();
 	//private FocusableWidget messageFocus;
 	//private Button removeButton = new Button("Remove");
-	VerticalPanel listBoxVPanel = new VerticalPanel();
+	//VerticalPanel listBoxVPanel = new VerticalPanel();
    // private ScrollPanel sp;
-    private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
+    //private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
    
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
 		@Override
@@ -130,13 +111,13 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	};
 	
     
-	public SuccessMessageDisplay getSuccessMessagePanel(){
+	/*public SuccessMessageDisplay getSuccessMessagePanel(){
 		return successMessagePanel;
 	}
 	
 	public ErrorMessageDisplay getErrorMessagePanel(){
 		return errorMessagePanel;
-	}
+	}*/
 	
 	public QDSCodeListSearchView() {
 		/*successMessagePanel = new SuccessMessageDisplay();
@@ -357,7 +338,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		oidInput.getElement().setAttribute("tabIndex", "0");
 		oidInput.setTitle("Enter OID");
 		oidInput.setWidth("300px");
-		oidInput.setMaxLength(45);
+		oidInput.setMaxLength(200);
 		oidInput.addKeyPressHandler(new KeyPressHandler() {			
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
@@ -585,15 +566,11 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 
 
 	
-	@Override
+	/*@Override
 	public HasClickHandlers getSearchButton() {
 		return searchButton;
 	}
-	
-	
-
-	
-	
+		
 	@Override
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return view;
@@ -601,17 +578,17 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	@Override
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return view;
-	}
+	}	
 	@Override
 	public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement() {
 		return view;
-	}
+	}*/
 
 	
-	@Override
+	/*@Override
 	public ListBoxMVP getDataTypeInput(){
 		return dataTypeInput;
-	}
+	}*/
 	
 	
 	@Override
@@ -620,7 +597,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	}
 	
 
-	@Override
+	/*@Override
 	public HasValue<String> getSearchString() {
 		return searchInput;
 	}
@@ -635,7 +612,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	@Override
 	public HasClickHandlers getAddToMeasureButton() {
 		return  addToMeasure; 
-	}
+	}*/
 
 
 	@Override
@@ -702,19 +679,19 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		}
 	}
 	
-	@Override
+	/*@Override
 	public void setDataTypeOptions(List<? extends HasListBox> texts) {
 		setListBoxItems(dataTypeInput, texts, MatContext.PLEASE_SELECT);
-	}
+	}*/
 
 
-	@Override
+	/*@Override
 	public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg() {
 		return successMessagePanel;
-	}
+	}*/
 
 
-	@Override
+	/*@Override
 	public void setAddToMeasureButtonEnabled(boolean enabled) {
 		addToMeasure.setEnabled(enabled);
 	}
@@ -722,17 +699,17 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
     @Override
     public Button getApplyToMeasure(){
     	return addToMeasure;
-    }
+    }*/
 	
-	@Override
+	/*@Override
 	public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption() {
 		return view;
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public ValueSetSearchFilterPanel getValueSetSearchFilterPanel() {
 		return vssfp;
-	}
+	}*/
 	
 	public DisclosurePanel getDisclosurePanel() {
 		return disclosurePanel;
@@ -800,7 +777,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		this.successMessageUserDefinedPanel = successMessageUserDefinedPanel;
 	}
 
-	public void setEnabled(boolean enabled){
+	/*public void setEnabled(boolean enabled){
 		//search button
 		searchButton.setEnabled(enabled);
 		//search text
@@ -809,14 +786,14 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		getValueSetSearchFilterPanel().setEnabled(enabled);
 		//data type radios
 		view.setEnabled(enabled);
-	}
+	}*/
 
-	@Override
+	/*@Override
 	public void buildQDSDataTable(QDSCodeListSearchModel results ,boolean isTableEnabled) {
-		/**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
-		**/
+		*//**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
+		**//*
 		//buildTableQDS(results,isTableEnabled);
-	}
+	}*/
 	/**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
 	**/
 	/*private void buildTableQDS( QDSCodeListSearchModel results,boolean isTableEnabled){
@@ -905,5 +882,5 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	@Override
 	public MatValueSet getCurrentMatValueSet() {
 		return currentMatValueSet;
-	}
+	}	
 }

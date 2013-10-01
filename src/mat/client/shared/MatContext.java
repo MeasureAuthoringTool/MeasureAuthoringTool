@@ -165,8 +165,8 @@ public class MatContext implements IsSerializable {
 	
 	public void clearDVIMessages(){
 		if(qdsView !=null){
-			qdsView.getSuccessMessagePanel().clear();
-			qdsView.getErrorMessagePanel().clear();
+			qdsView.getSuccessMessageDisplay().clear();
+			qdsView.getErrorMessageDisplay().clear();
 		}
 	}
 	

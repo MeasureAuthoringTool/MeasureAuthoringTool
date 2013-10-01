@@ -29,7 +29,6 @@ import mat.client.login.service.LoginServiceAsync;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementServiceAsync;
 import mat.client.measure.AdminManageMeasureSearchView;
-import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchView;
 import mat.client.measure.service.MeasureService;
@@ -41,7 +40,6 @@ import mat.client.myAccount.service.MyAccountServiceAsync;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.ClientConstants;
-import mat.model.SecurityQuestions;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;
@@ -64,8 +62,6 @@ public class MatContext implements IsSerializable {
 	private final int userLockUpdateTime = 2*60*1000;
 	
 	public static final String PLEASE_SELECT = "--Select--";
-	private static final long serialVersionUID = 1L;
-
 	private static MatContext instance = new MatContext();
 	
 	private String currentModule;
@@ -94,8 +90,6 @@ public class MatContext implements IsSerializable {
 	
 	private boolean isMeasureDeleted;
 	
-	private ManageMeasureDetailModel measureDetailModel;
-	
 	private ListBoxCodeProvider listBoxCodeProvider;
 	
 	private AuditServiceAsync auditService;
@@ -111,14 +105,6 @@ public class MatContext implements IsSerializable {
 	
 	private QDSCodeListSearchView qdsView;
 	private QDMAvailableValueSetWidget modifyQDMPopUpWidget;
-	
-	private QDSAppliedListView qdsAppliedListView;
-	
-	private SuccessMessageDisplay successMessage1;
-	private SuccessMessageDisplay successMessage2;
-	
-	private ErrorMessageDisplay errorMessage1;
-	private ErrorMessageDisplay errorMessage2;
 	
 	private ManageMeasureSearchView manageMeasureSearchView;
 	private AdminManageMeasureSearchView adminManageMeasureSearchView;
@@ -148,19 +134,6 @@ public class MatContext implements IsSerializable {
 	public Map<String, String> operatorMapKeyShort = new HashMap<String, String>();
 	
 	public Map<String, String> operatorMapKeyLong = new HashMap<String, String>();
-	
-	public String[] questions = new String[]{
-			 "What was your dream job as a child?",
-			 "What is your preferred musical genre?",  
-			 "What is the name of your favorite childhood friend?",  
-			 "What was the make of your first car?",
-			 "In what city or town was your first job?",
-			 "What was the name of your elementary / primary school?",		
-			 "What school did you attend for sixth grade?",
-			 "What was the first sport you ever played as a child?"
-	  };  	
-	
-	private List<SecurityQuestions> securityQuestions = null;
 	
 	
 	public void clearDVIMessages(){
@@ -193,14 +166,12 @@ public class MatContext implements IsSerializable {
 	}
 	
 	public void setQdsAppliedListView(QDSAppliedListView qdsAppliedListView) {
-		this.qdsAppliedListView = qdsAppliedListView;
 	}
 	
 	//register the Value Set search messages
 	//register the property editor messages
 	
 	public void setErrorMessage1(ErrorMessageDisplay msg){
-		this.errorMessage1 = msg;
 	}
 	
 	
@@ -252,11 +223,10 @@ public class MatContext implements IsSerializable {
 		return eventBus;
 	}
 	
-	public void logException(String message, Throwable t){
-		String s = message + "\r\n" + t.getMessage() +"\r\n";
+	public void logException(String message, Throwable t) {
 		StackTraceElement[] elementArr = t.getStackTrace();
-		for(StackTraceElement element : elementArr){
-			s += element.toString() + "\r\n";
+		for (StackTraceElement element : elementArr) {
+			element.toString().concat("\r\n");
 		}
 	}
 	
@@ -362,28 +332,6 @@ public class MatContext implements IsSerializable {
 		getSessionService().getCurrentUserRole(userRoleCallback);
 	}
 	
-	
-	/*public List<SecurityQuestions> getSecurityQuestions() {
-		
-		getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
-
-			@Override
-			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
-				Window.alert("Error fetching security questions :: " + caught.getMessage());
-			}
-
-			@Override
-			public void onSuccess(List<SecurityQuestions> result) {
-				// TODO Auto-generated method stub
-				if(result != null){
-					securityQuestions =  new ArrayList<SecurityQuestions>(result);
-				}
-			}
-			
-		});
-		return securityQuestions;
-	}	*/
 	
 	public void restartTimeoutWarning() {
 		getTimeoutManager().startActivityTimers(ConstantMessages.MAT_MODULE);
@@ -553,24 +501,9 @@ public class MatContext implements IsSerializable {
 		//NOTE: if (visible = true) then (ARIA not hidden)
 		setAriaHidden(widget, !visible);
 	}
-	
-	/*
-	 * field used to register TabPanels for history tracking
-	 * When instantiating a TabPanel, add a selection handler responsible for adding a History item
-	 * to History identifying the TabPanel in the registry. 
-		      
-	 MatContext.get().tabRegistry.put(MY_TAB_PANEL_ID,tabLayout);
-		tabLayout.addSelectionHandler(new SelectionHandler<Integer>(){
-		      public void onSelection(SelectionEvent<Integer> event) {
-		        History.newItem(MY_TAB_PANEL_ID + event.getSelectedItem(), false);
-		      }});
+	public HashMap<String, Enableable> enableRegistry = new HashMap<String, Enableable>();
+	public HashMap<String, TabPanel> tabRegistry = new HashMap<String, TabPanel>();
 
-	 */
-	
-	
-	public HashMap enableRegistry = new HashMap<String, Enableable>();
-	public HashMap tabRegistry = new HashMap<String, TabPanel>();
-	
 	public ZoomFactorService getZoomFactorService(){
 		return this.zoomFactorService;
 	}
@@ -578,30 +511,30 @@ public class MatContext implements IsSerializable {
 	public MeasureSelectedEvent getCurrentMeasureInfo(){
 		return currentMeasureInfo;
 	}
-	
+
 	public void setCurrentMeasureInfo(MeasureSelectedEvent evt){
 		this.currentMeasureInfo = evt;
 	}
-	
+
 	/*
 	 * MeasureLock Service --- contains logic to set and release the lock.
-	 * 
+	 *
 	 */
 	private MeasureLockService measureLockService = new MeasureLockService();
-	
+
 	public MeasureLockService getMeasureLockService(){
 	    return measureLockService;
 	}
-	
+
 	/*
 	 * Loading queue
 	 * used to track loading behavior in the MAT
-	 * 
+	 *
 	 * add operation on MainLayout.showLoadingMessage
 	 * poll operation on MainLayout.hideLoadingMessage
-	 * 
+	 *
 	 * when the queue is empty, then loading is done
-	 * NOTE a queue is required because >= 1 add operations could be invoked before a subsequent poll 
+	 * NOTE a queue is required because >= 1 add operations could be invoked before a subsequent poll
 	 */
 	private MATQueue loadingQueue = new MATQueue();
 	public MATQueue getLoadingQueue(){
@@ -610,7 +543,7 @@ public class MatContext implements IsSerializable {
 	public boolean isLoading(){
 		return !getLoadingQueue().isEmpty();
 	}
-	
+
 	/*
 	 * Message store to prevent duplicated messages
 	 */
@@ -618,88 +551,89 @@ public class MatContext implements IsSerializable {
 	public MessageDelegate getMessageDelegate(){
 		return messageDelegate;
 	}
-	
+
 	public void fireLoadingAlert(){
 		Window.alert(MatContext.get().getMessageDelegate().getAlertLoadingMessage());
 	}
-	
+
 	private TimeoutManager getTimeoutManager(){
-		if(timeoutManager == null)
+		if (timeoutManager == null){
 			timeoutManager = new TimeoutManager();
+		}
 		return timeoutManager;
 	}
-	
+
 	/**
-	 * run a repeating process that updates the current measure lock while flag doMeasureLockUpdates returns true 
+	 * run a repeating process that updates the current measure lock while flag doMeasureLockUpdates returns true.
 	 */
 	public void startMeasureLockUpdate(){
-		if(!doMeasureLockUpdates){
+		if (!doMeasureLockUpdates) {
 			doMeasureLockUpdates = true;
 			Timer t = new Timer() {
 				@Override
 				public void run() {
-					if(doMeasureLockUpdates){
+					if (doMeasureLockUpdates) {
 						getMeasureLockService().setMeasureLock();
-					}else{
+					} else {
 						//terminate job
 						this.cancel();
 					}
-						
+
 				}
 			};
 			t.scheduleRepeating(lockUpdateTime);
 		}
 	}
 	/**
-	 * set flag doMeasureLockUpdates to false the repeating process will verify based on its value
+	 * set flag doMeasureLockUpdates to false the repeating process will verify based on its value.
 	 */
 	public void stopMeasureLockUpdate(){
 		doMeasureLockUpdates = false;
 	}
-	
+
 	/**
-	 * run a repeating process that updates the current measure lock while flag doMeasureLockUpdates returns true 
+	 * run a repeating process that updates the current measure lock while flag doMeasureLockUpdates returns true.
 	 */
 	public void startUserLockUpdate(){
-		if(!doUserLockUpdates){
+		if (!doUserLockUpdates) {
 			doUserLockUpdates = true;
 			Timer t = new Timer() {
 				@Override
 				public void run() {
-					if(doUserLockUpdates){
+					if (doUserLockUpdates) {
 						setUserSignInDate(getLoggedinUserId());
-					}else{
+					} else {
 						//terminate job
 						this.cancel();
 					}
-						
+
 				}
 			};
 			t.scheduleRepeating(userLockUpdateTime);
 		}
 	}
-	public void setUserSignInDate(String userid){
-		if(userid != null){
+	public void setUserSignInDate(String userid) {
+		if (userid != null) {
 			getMyAccountService().setUserSignInDate(userid, new AsyncCallback<Void>() {
 				@Override
-				public void onFailure(Throwable caught) {}
+				public void onFailure(final Throwable caught) { }
 				@Override
-				public void onSuccess(Void result) {}
+				public void onSuccess(final Void result) { }
 			});
 		}
 	}
 	/**
 	 * set flag doUserLockUpdates to false the repeating process will verify based on its value
 	 */
-	public void stopUserLockUpdate(){
+	public void stopUserLockUpdate() {
 		doUserLockUpdates = false;
 		String userid = getLoggedinUserId();
-		if(userid != null){
+		if (userid != null) {
 			getMyAccountService().setUserSignOutDate(userid, new AsyncCallback<Void>() {
 				@Override
-				public void onFailure(Throwable caught) {}
+				public void onFailure(final Throwable caught) { }
 				@Override
-				public void onSuccess(Void result) {}
+				public void onSuccess(final Void result) { }
 			});
 		}
 	}
@@ -710,38 +644,42 @@ public class MatContext implements IsSerializable {
 	 * return text without -<<oid>>
 	 */
 	public String getTextSansOid(String text) {
-		if(text == null)
+		if (text == null) {
 			return text;
+		}
 		int d = text.lastIndexOf('-');
 		int c = text.lastIndexOf(':');
-		if(d > 0 && d > c)
-			return text.substring(0,d);
-		else
+		if (d > 0 && d > c) {
+			return text.substring(0, d);
+		} else {
 			return text;
+		}
 	}
-	
-	public String stripOffOID(String item){
+
+	public String stripOffOID(String item) {
 		int idx = item.lastIndexOf('-');
-		if(idx < 0)
+		if(idx < 0){
 			return item;
+		}
 		return item.substring(0,idx).trim();
 	}
-	
+
 	public void recordTransactionEvent(String primaryId, String secondaryId, String activityType, String additionalInfo, int logLevel){
 		String userId = getLoggedinUserId();
 		String userEmail = "["+getLoggedInUserEmail()+"] ";
-	    getAuditService().recordTransactionEvent(primaryId, secondaryId, activityType, userId, userEmail+additionalInfo, logLevel, new AsyncCallback<Boolean>(){
+	    getAuditService().recordTransactionEvent(primaryId, secondaryId, activityType, userId,
+	    	userEmail + additionalInfo, logLevel, new AsyncCallback<Boolean>() {
 			@Override
-			public void onFailure(Throwable caught) {}
+			public void onFailure(final Throwable caught) { }
 			@Override
-			public void onSuccess(Boolean result) {}
+			public void onSuccess(final Boolean result) { }
 		});
 	}
 
 	public SynchronizationDelegate getSynchronizationDelegate() {
 		return synchronizationDelegate;
 	}
-	
+
 	public boolean isAlreadySignedIn(Date lastSignOut, Date lastSignIn, Date current){
 		/*
 		 * ASSUMPTION: while signed in... lastSignIn is updated every 2 minutes
@@ -749,9 +687,9 @@ public class MatContext implements IsSerializable {
 		 * (2) lastSignOut < lastSignIn --> see if last sign in time > 3 minutes ago
 		 * (3)lastSignOut > lastSignIn --> not signed in
 		 */
-		boolean alreadySignedIn = (lastSignIn == null) ? false : 
-			(lastSignOut == null || lastSignOut.before(lastSignIn)) ? 
-				(current.getTime() - lastSignIn.getTime() < (3*60*1000)) : 
+		boolean alreadySignedIn = (lastSignIn == null) ? false :
+			(lastSignOut == null || lastSignOut.before(lastSignIn)) ?
+				(current.getTime() - lastSignIn.getTime() < (3 * 60 * 1000)) :
 					false;
 		return alreadySignedIn;
 	}
@@ -853,39 +791,39 @@ public class MatContext implements IsSerializable {
 	public AdminManageCodeListSearchModel getManageCodeListSearchModel() {
 		return manageCodeListSearchModel;
 	}
-	
+
 	/**
-	 * Method is called on SignOut/ X out / Time Out
+	 * Method is called on SignOut/ X out / Time Out.
 	 */
-	public void handleSignOut(String activityType, final boolean isRedirect){		
+	public void handleSignOut(String activityType, final boolean isRedirect) {
 		MatContext.get().getSynchronizationDelegate().setLogOffFlag();
-		MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(), 
+		MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
 			MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
-				
+
 				@Override
-				public void onSuccess(String result) {
-					if(isRedirect){
+				public void onSuccess(final String result) {
+					if (isRedirect) {
 						MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
 					}
 				}
-				
+
 				@Override
-				public void onFailure(Throwable caught) {
-					if(isRedirect){
+				public void onFailure(final Throwable caught) {
+					if (isRedirect) {
 						MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
 					}
 				}
 			});
 	}
 
-	
+
 	public void getAllOperators(){
 		getCodeListService().getAllOperators(new AsyncCallback<List<OperatorDTO>>() {
 
 			@Override
-			public void onFailure(Throwable caught) {
+			public void onFailure(final Throwable caught) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override

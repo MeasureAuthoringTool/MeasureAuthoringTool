@@ -180,19 +180,18 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		disclosurePanelCellTable.setWidth("100%");
 		disclosurePanelCellTable.add(mainPanel);
 		disclosurePanelCellTable.setOpen(true);
-		return disclosurePanelCellTable;
-		
+		return disclosurePanelCellTable;		
 	}
 	
 	private Widget buildSearchPanel() {
 		VerticalPanel searchPanel = new VerticalPanel();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("valueSetSearchPanel");
-		Label queryHeader = new Label("Query");
-		queryHeader.getElement().setId("queryHeader_Label");
-		queryHeader.setStyleName("valueSetHeader");
-		queryHeader.getElement().setAttribute("tabIndex", "0");
-		searchPanel.add(queryHeader);
+		Label searchHeader = new Label("Search");
+		searchHeader.getElement().setId("searchHeader_Label");
+		searchHeader.setStyleName("valueSetHeader");
+		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchPanel.add(searchHeader);
 		searchPanel.add(new SpacerWidget());		
 		oidInput.getElement().setId("oidInput_TextBox");
 		oidInput.getElement().setAttribute("tabIndex", "0");
@@ -204,7 +203,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		versionInput.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
-		retrieveButton.addStyleName("marginTop");
 		retrieveButton.setTitle("Retrieve");
 		Grid queryGrid = new Grid(3,2);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));

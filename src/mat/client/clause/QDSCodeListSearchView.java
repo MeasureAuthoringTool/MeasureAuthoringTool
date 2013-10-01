@@ -186,11 +186,11 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		VerticalPanel searchPanel = new VerticalPanel();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("valueSetSearchPanel");
-		Label queryHeader = new Label("Query");
-		queryHeader.getElement().setId("queryHeader_Label");
-		queryHeader.setStyleName("valueSetHeader");
-		queryHeader.getElement().setAttribute("tabIndex", "0");
-		searchPanel.add(queryHeader);
+		Label searchHeader = new Label("Search");
+		searchHeader.getElement().setId("searchHeader_Label");
+		searchHeader.setStyleName("valueSetHeader");
+		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchPanel.add(searchHeader);
 		searchPanel.add(new SpacerWidget());		
 		oidInput.getElement().setId("oidInput_TextBox");
 		oidInput.getElement().setAttribute("tabIndex", "0");

@@ -42,6 +42,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	
 	public Button removeButton = new Button("Remove");
 	public Button modify = new Button("Modify");
+	public Button updateVsacButton = new Button("Update with VSAC");
 	public QualityDataSetDTO  lastSelectedObject;
 	private ArrayList<QualityDataSetDTO> appliedQDMList;
 	
@@ -54,6 +55,11 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	@Override
 	public Button getRemoveButton() {
 		return removeButton;
+	}
+
+	@Override
+	public Button getUpdateVsacButton() {
+		return updateVsacButton;
 	}
 
 	private CellList<QualityDataSetDTO> cellList;
@@ -90,7 +96,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(rangeLabelPager);
 		vp.add(new SpacerWidget());
 		removeButton.setEnabled(checkForEnable());
-		modify.setEnabled(checkForEnable()?true:false);
+		modify.setEnabled(checkForEnable() ? true : false);
+		
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
@@ -99,6 +106,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		modify.setStyleName("rightAlignSecondaryButton");
 		buttonLayout.add(removeButton);
 		buttonLayout.add(modify);
+		buttonLayout.add(updateVsacButton);
 		vp.add(buttonLayout);
 		vp.add(new SpacerWidget());
 
@@ -152,12 +160,11 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 					@Override
 					public void update(int index, QualityDataSetDTO object,Boolean value) {
-						//appliedListModel.setLastSelected(object);
-						//System.out.println("appliedListModel.getLastSelected() =======>>>>" + appliedListModel.getLastSelected());
-						//selectionModel.setSelected(object, true);
+						
 						lastSelectedObject=object;
-						if(checkForEnable()){
+						if (checkForEnable()) {
 							modify.setEnabled(true);
+							/*updateVsacButton.setEnabled(true);*/
 							if(object.isUsed()){
 								removeButton.setEnabled(false);
 							}else{
@@ -166,8 +173,9 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 						}else{
 							removeButton.setEnabled(false);
 							modify.setEnabled(false);
+							/*updateVsacButton.setEnabled(false);*/
 						}
-						
+
 					}
 				};
 			} });

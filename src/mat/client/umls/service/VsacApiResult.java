@@ -3,6 +3,7 @@ package mat.client.umls.service;
 import java.util.ArrayList;
 
 import mat.model.MatValueSet;
+import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -15,7 +16,7 @@ public class VsacApiResult implements IsSerializable {
 	private boolean isSuccess;
 	
 	private ArrayList<MatValueSet> vsacResponse;
-	
+	private ArrayList<QualityDataSetDTO> appliedQDMList;
 	public boolean isSuccess() {
 		return isSuccess;
 	}
@@ -33,6 +34,12 @@ public class VsacApiResult implements IsSerializable {
 	}
 	public void setVsacResponse(ArrayList<MatValueSet> vsacResponse) {
 		this.vsacResponse = vsacResponse;
+	}
+	public ArrayList<QualityDataSetDTO> getAppliedQDMList() {
+		return appliedQDMList;
+	}
+	public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList) {
+		this.appliedQDMList = appliedQDMList;
 	}
 	
 

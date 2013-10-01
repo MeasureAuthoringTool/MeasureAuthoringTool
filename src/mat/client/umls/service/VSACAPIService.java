@@ -21,4 +21,6 @@ public interface VSACAPIService extends RemoteService {
 
 	boolean isAlreadySignedIn();
 
+	VsacApiResult updateAllVSACValueSets(String measureId);
+
 }

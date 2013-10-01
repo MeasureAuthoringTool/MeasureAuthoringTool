@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
+import mat.model.QualityDataSetDTO;
 import mat.model.VSACValueSetWrapper;
+import mat.server.service.MeasureLibraryService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UMLSSessionTicket;
+import mat.shared.ConstantMessages;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -34,6 +37,15 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	/** Logger for VSACAPIServiceImpl class. **/
 	private static final Log LOGGER = LogFactory
 			.getLog(VSACAPIServiceImpl.class);
+
+	/**
+	 * MeasureLibrary Service Object.
+	 * @return MeasureLibraryService.
+	 * */
+	public final MeasureLibraryService getMeasureLibraryService() {
+		return (MeasureLibraryService) context.getBean("measureLibraryService");
+	}
+
 
 	@Override
 	public final boolean validateVsacUser(final String userName,
@@ -109,12 +121,68 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 		return result;
 	}
 
+	/***
+	 * Method to update valueset's without versions from VSAC. Skip supplemental Data Elements and Timing elements.
+	 *
+	 * @param measureId - Selected Measure Id.
+	 *@return VsacApiResult - Result.
+	 * */
+	@SuppressWarnings("static-access")
+	@Override
+	public final VsacApiResult updateAllVSACValueSets(final String measureId) {
+		VsacApiResult result = new VsacApiResult();
+		if (isAlreadySignedIn()) {
+			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
+					getAppliedQDMFromMeasureXml(measureId, true);
+			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
+				System.out.println("Display name ====" + qualityDataSetDTO.getCodeListName());
+				if (qualityDataSetDTO.getDataType() != ConstantMessages.TIMING_ELEMENT
+						&& "1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
+					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(
+							UMLSSessionTicket
+							.getTicket(getThreadLocalRequest().getSession().getId()));
+					ValueSetsResponse vsr = new ValueSetsResponse();
+					try {
+						 vsr = dao
+								.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid());
+					} catch (Exception ex) {
+						LOGGER.info("Value Set reterival failed at VSAC for OID :" + qualityDataSetDTO.getOid());
+					}
+					if (vsr != null) {
+						if (vsr.getXmlPayLoad() != null && StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {
+							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr
+									.getXmlPayLoad());
+							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
+							if (matValueSet != null) {
+								qualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
+								if (matValueSet.isGrouping()) {
+									qualityDataSetDTO.setTaxonomy("Grouping");
+								} else {
+									qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
+											getConceptList().get(0).getCodeSystemName());
+								}
+							}
+						}
+					}
+
+				}
+			}
+			getMeasureLibraryService().createAndSaveElementLookUp(appliedQDMList, measureId);
+			result.setSuccess(true);
+		} else {
+			result.setSuccess(false);
+			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			LOGGER.info("UMLS Login is required");
+		}
+		return result;
+	}
+
 	/**
-	 * @param eightHourTicket
-	 * @param valueSet
+	 * @param eightHourTicket - String.
+	 * @param valueSet - MatValueSet.
 	 */
-	private void handleVSACGroupedValueSet(String eightHourTicket,
-			MatValueSet valueSet) {
+	private void handleVSACGroupedValueSet(final String eightHourTicket,
+			final MatValueSet valueSet) {
 
 		if (!valueSet.isGrouping()) {
 			return;
@@ -152,13 +220,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	/**
-	 * Private method to Covert VSAC xml payload into Java object through
+	 * Private method to Convert VSAC xml payload into Java object through
 	 * Castor.
-	 * 
-	 * @param xmlPayLoad
-	 *            - String vsac payload.
+	 *
+	 * @param xmlPayLoad - String vsac payload.
 	 * @return VSACValueSetWrapper.
-	 * 
+	 *
 	 * */
 	private VSACValueSetWrapper convertXmltoValueSet(final String xmlPayLoad) {
 		LOGGER.info("Start VSACAPIServiceImpl convertXmltoValueSet");

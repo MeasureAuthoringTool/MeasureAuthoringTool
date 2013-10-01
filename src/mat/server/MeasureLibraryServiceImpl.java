@@ -27,7 +27,6 @@ import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
-import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
@@ -48,6 +47,7 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.QDSAttributes;
 import mat.model.clause.ShareLevel;
 import mat.server.service.InvalidValueSetDateException;
+import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasureNotesService;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.UserService;
@@ -72,14 +72,15 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.Unmarshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implements MeasureService {
-	private static final long serialVersionUID = 2280421300224680146L;
+public class MeasureLibraryServiceImpl implements MeasureLibraryService {
+	
 	private static final Log logger = LogFactory.getLog(MeasureLibraryServiceImpl.class);
 	private static final String MEASURE_DETAILS = "measureDetails";
 	private static final String MEASURE = "measure";
@@ -93,6 +94,17 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	@Autowired
 	private UserService userService;
 	
+	@Autowired
+	private ApplicationContext context; 
+	
+	public ApplicationContext getContext() {
+		return context;
+	}
+
+	public void setContext(ApplicationContext context) {
+		this.context = context;
+	}
+
 	public final void setMeasurePackageService
 		(final MeasurePackageService measurePackageService) {
 		this.measurePackageService = measurePackageService;
@@ -549,7 +561,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 			return getService().validateMeasureForExport(key);
 		}
 		catch(Exception exc) {
-			log("Exception validating export for " + key, exc);
+			//log("Exception validating export for " + key, exc);
+			logger.info("Exception validating export for " + key, exc);
 			throw new MatException(exc.getMessage());
 		}
 	}
@@ -561,8 +574,8 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
 		List<MeasureShareDTO> measureList = getService().searchWithFilter(searchText, startIndex, pageSize,filter);
-		
-		if(SecurityRole.ADMIN_ROLE.equals(userRole)) {
+
+		if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
 			measureList = filterMeasureListWithLatestDraftOrVersion(measureList);
 		}
 		searchModel.setStartIndex(startIndex);
@@ -1065,7 +1078,7 @@ public class MeasureLibraryServiceImpl extends SpringRemoteServiceServlet implem
 	}
 	
 	@Override
-	public final ArrayList<QualityDataSetDTO> getMeasureXMLForAppliedQDM(final String measureId, final boolean checkForSupplementData){
+	public final ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(final String measureId, final boolean checkForSupplementData) {
 		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
 		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
 		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();

@@ -1,4 +1,4 @@
-package mat.client.measure.service;
+package mat.server.service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,14 +10,12 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.measure.service.SaveMeasureResult;
+import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
 import mat.model.QualityDataSetDTO;
 
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
-
-@RemoteServiceRelativePath("measureLibrary")
-public interface MeasureService extends RemoteService {
+public interface MeasureLibraryService  {
 	public ManageMeasureDetailModel getMeasure(String key);
 	public SaveMeasureResult save(ManageMeasureDetailModel model);
 	public SaveMeasureResult saveFinalizedVersion(String measureId,boolean isMajor,String version) ;
@@ -55,3 +53,4 @@ public interface MeasureService extends RemoteService {
 	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
 }
+

@@ -13,4 +13,7 @@ public interface VSACAPIServiceAsync {
 
 	void isAlreadySignedIn(AsyncCallback<Boolean> callback);
 
+	void updateAllVSACValueSets(String measureId,
+			AsyncCallback<VsacApiResult> callback);
+
 }

@@ -41,9 +41,6 @@ public interface MeasureServiceAsync {
 			AsyncCallback<Void> callback);
 	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
 			String clonedMeasureId, AsyncCallback<Void> callback);
-	void getMeasureXMLForAppliedQDM(String measureId,
-			boolean checkForSupplementData,
-			AsyncCallback<ArrayList<QualityDataSetDTO>> callback);
 	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName,
 			AsyncCallback<Void> callback);
 	void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list,
@@ -60,4 +57,7 @@ public interface MeasureServiceAsync {
 			AsyncCallback<MeasureNotesModel> callback);
 	public void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO, AsyncCallback<Void> callback);
 	public void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId, AsyncCallback<Void> callback);
+	void getAppliedQDMFromMeasureXml(String measureId,
+			boolean checkForSupplementData,
+			AsyncCallback<ArrayList<QualityDataSetDTO>> callback);
 	}

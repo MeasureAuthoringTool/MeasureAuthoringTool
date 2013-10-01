@@ -21,6 +21,7 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -250,7 +251,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	private void getListOfAppliedQDMs(final boolean isUSerDefined) {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if (measureId != null && measureId != "") {
-			service.getMeasureXMLForAppliedQDM(measureId, true,
+			service.getAppliedQDMFromMeasureXml(measureId, true,
 					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
 
 						@Override
@@ -330,12 +331,12 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 
 	}	
 
-	private void showSearchingBusy(boolean busy) {
+	private void showSearchingBusy(final boolean busy) {
 		if (busy) {
 			Mat.showLoadingMessage();
 		} else {
 			Mat.hideLoadingMessage();
-		}		
+		}
 		searchDisplay.getRetrieveButton().setEnabled(!busy);
 		searchDisplay.getOIDInput().setEnabled(!busy);
 		searchDisplay.getVersionInput().setEnabled(!busy);

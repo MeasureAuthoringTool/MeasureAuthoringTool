@@ -501,8 +501,8 @@ public class MatContext implements IsSerializable {
 		//NOTE: if (visible = true) then (ARIA not hidden)
 		setAriaHidden(widget, !visible);
 	}
-	public HashMap<String, Enableable> enableRegistry = new HashMap<String, Enableable>();
-	public HashMap<String, TabPanel> tabRegistry = new HashMap<String, TabPanel>();
+	public HashMap enableRegistry = new HashMap<String, Enableable>();
+	public HashMap tabRegistry = new HashMap<String, TabPanel>();
 
 	public ZoomFactorService getZoomFactorService(){
 		return this.zoomFactorService;

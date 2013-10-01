@@ -49,29 +49,18 @@ import com.google.gwt.view.client.ListDataProvider;
 public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter.SearchDisplay {
 	
 	HorizontalPanel mainPanel = new HorizontalPanel();
-	//private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	
 	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without VSAC value set");
 	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with VSAC value set");
-	//private TextBox searchInput = new TextBox();
 	private TextBox userDefinedInput = new TextBox();
-	//private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);
-	//private Button addToMeasure = new PrimaryButton("Apply to Measure","primaryButton");
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
-	/*private Button psuedoQDMCancel = new SecondaryButton("Cancel");*/
 	private Button cancel = new Button("Close");
 	private Button userDefinedCancel = new SecondaryButton("Close");
-	//private SimplePanel dataTypePanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();
 	private ErrorMessageDisplay errorMessageUserDefinedPanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessageUserDefinedPanel = new SuccessMessageDisplay();
-	//private ListBoxMVP dataTypeInput = new ListBoxMVP();
 	private ListBoxMVP allDataTypeInput = new ListBoxMVP();
-	//private FocusableWidget messageFocus;
-	//VerticalPanel listBoxVPanel = new VerticalPanel();
-	//CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
-    //private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
     private String cautionMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'Data Type' for an applied QDM element will automatically delete invalid attributes  <br/> associated with this element in the Clause Workspace." +
     								"</div>";       
     private TextBox oidInput = new TextBox();	
@@ -108,26 +97,10 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		}
 	};
 	
-	public QDMAvailableValueSetWidget(){
-		/*successMessagePanel = new SuccessMessageDisplay();
-		successMessagePanel.clear();
-		messageFocus = new FocusableWidget(successMessagePanel);*/
+	public QDMAvailableValueSetWidget(){		
 		VerticalPanel vp = new VerticalPanel();
 		vp.getElement().setAttribute("id", "ModifyVerticalPanel");
-		vp.setWidth("100%");
-		/*
-		 * Commented for User Story MAT-2360 : Hide Element With Value Set content.
-		 * */
-		/*FlowPanel header = new FlowPanel();
-		header.getElement().setAttribute("id", "ModifyHeaderFlowPanel");
-		header.addStyleName("codeListHeader");
-		Label codeListLabel = new Label("QDM");
-		FocusableWidget  labelFocus = new FocusableWidget(codeListLabel);
-		header.add(labelFocus);
-		//dataTypeInput.addValueChangeHandler(dataTypeChangeHandler);
-		//specificOccurrence.setEnabled(false);
-		//addToMeasure.setEnabled(false);*/
-		
+		vp.setWidth("100%");		
 		vp.add(buildElementWithVSACValueSetWidget());
 		vp.add(new SpacerWidget());
 		vp.add(buildUserDefinedDisclosureWidget());
@@ -141,78 +114,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		
 		valueSetDetailsPanel.setVisible(false);
 		
-	}
-	
-	/*private Widget buildInitialDisabledWidget(){
-		dataTypeInput.addItem(MatContext.PLEASE_SELECT);
-		dataTypeInput.setEnabled(false);
-		dataTypePanel.clear();
-		dataTypePanel.add(buildDataTypeWidget(dataTypeInput));
-		return dataTypePanel;
-	}
-	
-	private Widget buildDataTypeWidget(ListBoxMVP listBox){
-		FlowPanel fPanel = new FlowPanel();
-		fPanel.getElement().setAttribute("id", "ModifyDataTypeWidgetFlowPanel");
-		fPanel.addStyleName("leftAligned");
-		
-		fPanel.add(new SpacerWidget());
-		fPanel.add(LabelBuilder.buildLabel(listBox, "Select Data Type"));
-		fPanel.add(new SpacerWidget());
-		HorizontalPanel hp = new HorizontalPanel();
-		hp.getElement().setAttribute("id", "ModifyDataTypeWidgetHoziPanel");
-		hp.add(listBox);
-		hp.add(new HTML("&nbsp;&nbsp;"));
-		hp.add(new HTML(cautionMsgStr));
-		listBox.addFocusHandler(
-				new FocusHandler() {
-					@Override
-					public void onFocus(FocusEvent event) {
-						MatContext.get().clearDVIMessages();	
-					}
-				});
-		
-		fPanel.add(hp);
-		fPanel.add(new SpacerWidget());
-		return fPanel;
-	}
-	
-	private Widget buildSpecificOccurrenceWidget(){
-		FlowPanel fPanel = new FlowPanel();
-		fPanel.getElement().setAttribute("id", "ModifySpecificOccWidgetFlowPanel");
-		fPanel.addStyleName("leftAligned");
-		fPanel.add(new SpacerWidget());		
-		fPanel.add(specificOccurrence);
-		return fPanel;
-	}
-	
-	private Widget buildSearchWidget(){
-		VerticalPanel vp = new VerticalPanel();
-		vp.getElement().setAttribute("id", "ModifySearchInputVerPanel");
-		FlowPanel fp1 = new FlowPanel();
-		fp1.getElement().setAttribute("id", "ModifySearchInputFlowPanel");
-		fp1.add(searchInput);
-		searchInput.addFocusHandler(
-				new FocusHandler() {
-					@Override
-					public void onFocus(FocusEvent event) {
-						MatContext.get().clearDVIMessages();
-					}
-				});
-		
-		fp1.add(searchButton);
-		searchButton.addFocusHandler(
-				new FocusHandler() {
-					@Override
-					public void onFocus(FocusEvent event) {
-						MatContext.get().clearDVIMessages();
-					}
-				});
-		fp1.add(new SpacerWidget());
-		vp.add(fp1);
-		vp.setStylePrimaryName("marginLeft");
-		return vp;
-	}*/
+	}	
 	
 	private Widget buildUserDefinedDisclosureWidget(){
 		HorizontalPanel horiPanel = new HorizontalPanel();
@@ -246,8 +148,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		psuedoQDMToMeasure.setTitle("Apply to Measure");
 		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		buttonHorizontalPanel.add(new SpacerWidget());
-		/*psuedoQDMCancel.setTitle("Cancel");
-		buttonHorizontalPanel.add(psuedoQDMCancel);*/
 		buttonHorizontalPanel.add(new SpacerWidget());
 		userDefinedCancel.setTitle("Close");
 		buttonHorizontalPanel.add(userDefinedCancel);
@@ -264,66 +164,19 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return disclosurePanel;
 	}
 	
-	private Widget buildElementWithVSACValueSetWidget(){
-		/*FlowPanel searchCriteriaPanel = new FlowPanel();
-		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchCriteriaPanel");
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.addStyleName("leftAligned");
-		searchCriteriaPanel.setSize("800px", "200px");*/
-		
+	private Widget buildElementWithVSACValueSetWidget(){		
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.getElement().setId("mainPanel_VerticalPanel");
-		mainPanel.setWidth("100%");
-		//mainPanel.setSize("800px", "200px");
-		
+		mainPanel.setWidth("100%");		
 		mainPanel.add(successMessagePanel);
-		mainPanel.add(errorMessagePanel);
-		
-		mainPanel.add(buildSearchPanel());
-		
+		mainPanel.add(errorMessagePanel);		
+		mainPanel.add(buildSearchPanel());		
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(new SpacerWidget());	
-		
+		mainPanel.add(new SpacerWidget());			
 		valueSetDetailsPanel.getElement().setId("valueSetDetailsPanel_VerticalPanel");
 		valueSetDetailsPanel.setStyleName("valueSetDetailsPanel");
 		valueSetDetailsPanel.setWidth("95%");
-		mainPanel.add(valueSetDetailsPanel);
-		
-		/*
-		 * Commented for User Story MAT-2360 : Hide Element With Value Set content.
-		 * */
-		/*Widget searchWidget = buildSearchWidget();
-		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
-		searchInput.setHeight("18px");
-		searchCriteriaPanel.add(label);
-		HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
-		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchHorizontalPanel");
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchHorizontalPanel.add(vssfp.getPanel());
-		searchHorizontalPanel.add(searchWidget);
-		searchCriteriaPanel.add(searchHorizontalPanel);
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(new SpacerWidget());
-		
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(errorMessagePanel);
-		searchCriteriaPanel.add(view.asWidget());
-		searchCriteriaPanel.add(messageFocus);
-		searchCriteriaPanel.add(buildInitialDisabledWidget());
-		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
-		searchCriteriaPanel.add(new SpacerWidget());
-		
-		HorizontalPanel buttonLayout = new HorizontalPanel();
-		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
-		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
-		addToMeasure.setTitle("Apply to Measure");
-		cancel.setTitle("Close");
-		cancel.setStyleName("rightAlignSecondaryButton");
-		buttonLayout.add(addToMeasure);
-		buttonLayout.add(cancel);
-		searchCriteriaPanel.add(buttonLayout);*/
-		
-		//disclosurePanelCellTable.add(searchCriteriaPanel);
+		mainPanel.add(valueSetDetailsPanel);				
 		disclosurePanelCellTable.setWidth("100%");
 		disclosurePanelCellTable.add(mainPanel);
 		disclosurePanelCellTable.setOpen(true);
@@ -345,16 +198,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		oidInput.getElement().setAttribute("tabIndex", "0");
 		oidInput.setTitle("Enter OID");
 		oidInput.setWidth("300px");
-		oidInput.setMaxLength(200);
-		/*oidInput.addKeyPressHandler(new KeyPressHandler() {			
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				char charCode = event.getCharCode();
-				if(!Character.isDigit(charCode) && charCode!='.') {
-					oidInput.cancelKey();
-				}
-			}
-		});*/
+		oidInput.setMaxLength(200);		
 		versionInput.getElement().setId("versionInput_DateBoxWithCalendar");
 		versionInput.setTitle("Enter version");
 		versionInput.getElement().setAttribute("tabIndex", "0");
@@ -375,9 +219,8 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 
 	public void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets) {
 		
-		MatValueSet matValueSet = matValueSets.get(0);//getMatValueSetBasedOnVersion(matValueSets, versionInput.getValue());
-		currentMatValueSet = matValueSet;
-		
+		MatValueSet matValueSet = matValueSets.get(0);
+		currentMatValueSet = matValueSet;		
 		valueSetDetailsPanel.clear();
 		valueSetDetailsPanel.add(createDetailsWidget(matValueSet));
 		if(matValueSet.isGrouping()) {
@@ -558,66 +401,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		vPanel.add(buttonsPanel);
 		return vPanel;
 	}
-
-	
-	/*@Override
-	public HasClickHandlers getSearchButton() {
-		return searchButton;
-	}
-	@Override	
-	public HasPageSelectionHandler getPageSelectionTool() {
-		return view;
-	}
-	@Override
-	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
-		return view;
-	}
-	@Override
-	public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement() {
-		return view;
-	}*/
-
-	
-	/*@Override
-	public ListBoxMVP getDataTypeInput(){
-		return dataTypeInput;
-	}*/
-	
 	
 	@Override
 	public CustomCheckBox getSpecificOccurrenceInput(){
 		return specificOccurrence;
-	}
-	
-
-	/*@Override
-	public HasValue<String> getSearchString() {
-		return searchInput;
-	}
-
-
-	@Override
-	public int getPageSize() {
-		return view.getPageSize();
-	}*/
-
-
-	/*@Override
-	public HasClickHandlers getAddToMeasureButton() {
-		return  addToMeasure; 
-	}*/
-
-
-	/*@Override
-	public Widget getDataTypeWidget() {
-		return dataTypePanel;
-	}
-*/
-    
-	/*@Override
-	public FocusableWidget getMsgFocusWidget(){
-		return messageFocus;
-	}*/
+	}	
 	
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
@@ -635,13 +423,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		getErrorMessageDisplay().clear();
 	}
 	
-	/*@Override
-	public void scrollToBottom(){
-	//	sp.scrollToBottom();
-	}*/
-    
-	
-	
 	@Override
 	public String getDataTypeValue(ListBoxMVP inputListBox) {
 		if(inputListBox.getSelectedIndex() >= 0) {
@@ -650,17 +431,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		else {
 			return "";
 		}
-	}
-	
-	/*@Override
-	public String getDataTypeText() {
-		if(dataTypeInput.getSelectedIndex() >= 0) {
-			return dataTypeInput.getItemText(dataTypeInput.getSelectedIndex());
-		}
-		else {
-			return "";
-		}
-	}*/
+	}	
 	
 	public void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption){
 		listBox.clear();
@@ -671,11 +442,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 			}
 		}
 	}
-
-	/*@Override
-	public void setDataTypeOptions(List<? extends HasListBox> texts) {
-		setListBoxItems(dataTypeInput, texts, MatContext.PLEASE_SELECT);
-	}*/
 	
 	@Override
 	public void setAllDataTypeOptions(List<? extends HasListBox> texts) {
@@ -688,76 +454,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return successMessagePanel;
 	}
 
-
-	/*@Override
-	public void setAddToMeasureButtonEnabled(boolean enabled) {
-		addToMeasure.setEnabled(enabled);
-	}
-
-	@Override
-    public Button getApplyToMeasure(){
-    	return addToMeasure;
-    }*/
-	
-	/*@Override
-	public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption() {
-		return view;
-	}*/
-
-	/*@Override
-	public ValueSetSearchFilterPanel getValueSetSearchFilterPanel() {
-		return vssfp;
-	}*/
-	/*@Override
-	public void setEnabled(boolean enabled){
-		//search button
-		searchButton.setEnabled(enabled);
-		//search text
-		searchInput.setEnabled(enabled);
-		//search list
-		getValueSetSearchFilterPanel().setEnabled(enabled);
-		//data type radios
-		view.setEnabled(enabled);
-	}*/
-
-	/**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
-	**/
-	/*public void buildTableQDS( QDSCodeListSearchModel results,Boolean isTableEnabled){
-		 table = new CellTable<CodeListSearchDTO>();
-		table.getElement().setAttribute("id", "ModifyAvailableValueSetTable");
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
-		  
-		// Display 50 rows in one page or all records.
-		table.setPageSize(10);
-		table.setSelectionModel(results.addSelectionHandlerOnTable());
-		sortProvider.refresh();
-		sortProvider.getList().addAll(results.getData());
-		ListHandler<CodeListSearchDTO> sortHandler = new ListHandler<CodeListSearchDTO>(sortProvider.getList());
-		table.addColumnSortHandler(sortHandler);
-		table = results.addColumnToTable(table,isTableEnabled,sortHandler);
-		sortProvider.addDataDisplay(table);
-		//Used custom pager class - for disabling next/last button when on last page and for showing correct pagination number.
-		MatSimplePager spager;
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-	    spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-        spager.setDisplay(table);
-        spager.setPageStart(0);
-        spager.setToolTipAndTabIndex(spager);
-        view.getvPanelForQDMTable().clear();
-        view.getvPanelForQDMTable().add(table);
-		view.getvPanelForQDMTable().add(new SpacerWidget());
-		view.getvPanelForQDMTable().add(spager);
-
-	}*/
-
 	public HorizontalPanel getMainPanel() {
 		return mainPanel;
 	}
-
-	/*public SearchView<CodeListSearchDTO> getView() {
-		return view;
-	}*/
 	
 	public SuccessMessageDisplay getSuccessMessagePanel(){
 		return successMessagePanel;
@@ -766,18 +465,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	public ErrorMessageDisplay getErrorMessagePanel(){
 		return errorMessagePanel;
 	}
-
-	/*public FocusableWidget getMessageFocus() {
-		return messageFocus;
-	}*/
+	
 	@Override
 	public Button getCancel() {
 		return cancel;
-	}
-	
-	/*public CellTable<CodeListSearchDTO> getTable() {
-		return table;
-	}*/
+	}	
 
 	@Override
 	public Widget asWidget() {
@@ -806,15 +498,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 
 	public void setPsuedoQDMToMeasure(Button psuedoQDMToMeasure) {
 		this.psuedoQDMToMeasure = psuedoQDMToMeasure;
-	}
-
-	/*public Button getPsuedoQDMCancel() {
-		return psuedoQDMCancel;
-	}
-
-	public void setPsuedoQDMCancel(Button psuedoQDMCancel) {
-		this.psuedoQDMCancel = psuedoQDMCancel;
-	}*/
+	}	
 
 	public ListBoxMVP getAllDataTypeInput() {
 		return allDataTypeInput;
@@ -831,14 +515,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	public void setDisclosurePanelCellTable(DisclosurePanel disclosurePanelCellTable) {
 		this.disclosurePanelCellTable = disclosurePanelCellTable;
 	}
-
-	/*@Override
-	public void buildQDSDataTable(QDSCodeListSearchModel results,Boolean isTableEnabled) {
-		*//**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
-		**//*
-		//buildTableQDS(results,isTableEnabled);
-		
-	}*/
 
 	public ErrorMessageDisplay getErrorMessageUserDefinedPanel() {
 		return errorMessageUserDefinedPanel;

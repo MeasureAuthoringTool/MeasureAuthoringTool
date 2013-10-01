@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 class TimeoutManager {
 	
-	private static final int WARNING_TIME = 50 * 60 * 1000;
+	private static final int WARNING_TIME = 20 * 60 * 1000;
 	private static final int WARNING_INTERVAL = 5 * 60 * 1000;
 	private static final int REPEATED_WARNING_INTERVAL = 2 * 60 * 1000;
 	private static final int TIMEOUTTHRESHOLD_TIME = WARNING_TIME+WARNING_INTERVAL;
@@ -95,15 +95,15 @@ class TimeoutManager {
 		} 
 	    
 	/*
-	 * TimeoutWarning timer is scheduled to run at the 50th minute from the last activity Time. 
+	 * TimeoutWarning timer is scheduled to run at the 20th minute from the last activity Time. 
 	 * TimeOutWarning timer will show warning only if the 
-	 * currentTime - lastActivityTime < 60 minutes. else, fires logOff event.
+	 * currentTime - lastActivityTime < 30 minutes. else, fires logOff event.
 	 */
 	//US 153
 	private Timer timeoutWarning = new Timer() {
 		public void run() {
 			    Date today = new Date();
-			    if((today.getTime() - lastActivityTime) < TIMEOUTTHRESHOLD_TIME){//show warning message only if the lastActivityTime is within 60 minutes.
+			    if((today.getTime() - lastActivityTime) < TIMEOUTTHRESHOLD_TIME){//show warning message only if the lastActivityTime is within 30 minutes.
 						Date actualTimeOutDate = new Date(today.getTime()+WARNING_INTERVAL); //Timeout time = warningTime + 10 Minutes.
 					    actualTimeOutTime = actualTimeOutDate.getTime();
 					    formattedTime = DateTimeFormat.getMediumDateTimeFormat().format(actualTimeOutDate);

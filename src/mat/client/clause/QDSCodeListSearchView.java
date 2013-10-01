@@ -51,11 +51,9 @@ import com.google.gwt.view.client.ListDataProvider;
 public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.SearchDisplay {
 
 	private SimplePanel containerPanel = new SimplePanel();
-	//private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
 	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without VSAC value set");
 	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with VSAC value set");
 	private TextBox userDefinedInput = new TextBox();
-	//private TextBox searchInput = new TextBox();
 	
 	private TextBox oidInput = new TextBox();	
 	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
@@ -67,8 +65,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	VerticalPanel valueSetDetailsPanel = new VerticalPanel();
 	MatValueSet currentMatValueSet;
 
-	//private SearchView<CodeListSearchDTO> view = new SearchView<CodeListSearchDTO>(true);	
-	//private Button addToMeasure = new PrimaryButton("Search","primaryButton");
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
 	private Button psuedoQDMCancel = new SecondaryButton("Cancel");
 	private SimplePanel dataTypePanel = new SimplePanel();
@@ -77,13 +73,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	
 	private ErrorMessageDisplay errorMessageUserDefinedPanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessageUserDefinedPanel = new SuccessMessageDisplay();
-	//private ListBoxMVP dataTypeInput = new ListBoxMVP();
 	private ListBoxMVP allDataTypeInput = new ListBoxMVP();
-	//private FocusableWidget messageFocus;
-	//private Button removeButton = new Button("Remove");
-	//VerticalPanel listBoxVPanel = new VerticalPanel();
-   // private ScrollPanel sp;
-    //private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
    
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
 		@Override
@@ -107,114 +97,28 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		    }
 		}
 	};
-	
-    
-	/*public SuccessMessageDisplay getSuccessMessagePanel(){
-		return successMessagePanel;
-	}
-	
-	public ErrorMessageDisplay getErrorMessagePanel(){
-		return errorMessagePanel;
-	}*/
-	
-	public QDSCodeListSearchView() {
-		/*successMessagePanel = new SuccessMessageDisplay();
-		successMessagePanel.clear();
-		messageFocus = new FocusableWidget(successMessagePanel);*/
+		
+	public QDSCodeListSearchView() {		
 		VerticalPanel vp = new VerticalPanel();
 		vp.getElement().setId("vp_VerticalPanel");
-		vp.setWidth("100%");
-		/*FlowPanel header = new FlowPanel();
-		header.addStyleName("codeListHeader");
-		Label codeListLabel = new Label("QDM");
-		FocusableWidget  labelFocus = new FocusableWidget(codeListLabel);
-		header.add(labelFocus);
-		dataTypeInput.addValueChangeHandler(dataTypeChangeHandler);
-		specificOccurrence.setEnabled(false);
-		addToMeasure.setEnabled(false);
-		*/
-	
+		vp.setWidth("100%");	
 		vp.add(buildElementWithVSACValueSetWidget());
 		vp.add(new SpacerWidget());
 		vp.add(buildUserDefinedDisclosureWidget());
 		vp.add(new SpacerWidget());
 		vp.add(new SpacerWidget());
-		vp.add(new SpacerWidget());
-		
+		vp.add(new SpacerWidget());		
 		HorizontalPanel mainPanel = new HorizontalPanel();
 		mainPanel.getElement().setId("mainPanel_HorizontalPanel");
-		mainPanel.setWidth("100%");
-		
+		mainPanel.setWidth("100%");		
 		mainPanel.add(vp);
 		containerPanel.getElement().setId("containerPanel_SimplePanel");
 		containerPanel.setWidth("100%");
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("qdsContentPanel");
-		MatContext.get().setQDSView(this);
-		
+		MatContext.get().setQDSView(this);		
 		valueSetDetailsPanel.setVisible(false);
-	}
-		
-	/*private Widget buildInitialDisabledWidget(){
-		dataTypeInput.addItem(MatContext.PLEASE_SELECT);
-		dataTypeInput.setEnabled(false);
-		dataTypePanel.clear();
-		dataTypePanel.add(buildDataTypeWidget());
-		return dataTypePanel;
-	}
-	
-	private Widget buildDataTypeWidget(){
-		FlowPanel fPanel = new FlowPanel();
-		fPanel.addStyleName("leftAligned");
-		fPanel.add(new SpacerWidget());
-		fPanel.add(LabelBuilder.buildLabel(dataTypeInput, "Select Data Type"));
-		fPanel.add(dataTypeInput);
-		dataTypeInput.addFocusHandler(
-				new FocusHandler() {
-					@Override
-					public void onFocus(FocusEvent event) {
-						MatContext.get().clearDVIMessages();	
-					}
-				});
-
-		fPanel.add(new SpacerWidget());
-		return fPanel;
-	}
-	
-	private Widget buildSpecificOccurrenceWidget(){
-		FlowPanel fPanel = new FlowPanel();
-		fPanel.addStyleName("leftAligned");
-		fPanel.add(new SpacerWidget());		
-		fPanel.add(specificOccurrence);
-		return fPanel;
-	}
-	
-	private Widget buildSearchWidget(){
-		HorizontalPanel hp = new HorizontalPanel();
-		FlowPanel fp1 = new FlowPanel();
-		//sp1.addStyleName("codeListLink");
-		fp1.add(searchInput);
-		searchInput.addFocusHandler(
-				new FocusHandler() {
-					@Override
-					public void onFocus(FocusEvent event) {
-						MatContext.get().clearDVIMessages();
-					}
-				});
-		
-		fp1.add(searchButton);
-		searchButton.addFocusHandler(
-				new FocusHandler() {
-					@Override
-					public void onFocus(FocusEvent event) {
-						MatContext.get().clearDVIMessages();
-					}
-				});
-		fp1.add(new SpacerWidget());
-		hp.setStylePrimaryName("marginLeft");
-		hp.add(fp1);
-		return hp;
-	}*/
+	}	
 	
 	private Widget buildUserDefinedDisclosureWidget(){
 		HorizontalPanel horiPanel = new HorizontalPanel();
@@ -265,63 +169,22 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private Widget buildElementWithVSACValueSetWidget(){
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.getElement().setId("mainPanel_VerticalPanel");
-		mainPanel.setWidth("100%");
-		
+		mainPanel.setWidth("100%");		
 		mainPanel.add(successMessagePanel);
-		mainPanel.add(errorMessagePanel);
-		
-		mainPanel.add(buildSearchPanel());
-		
+		mainPanel.add(errorMessagePanel);		
+		mainPanel.add(buildSearchPanel());		
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(new SpacerWidget());	
-		
+		mainPanel.add(new SpacerWidget());			
 		valueSetDetailsPanel.getElement().setId("valueSetDetailsPanel_VerticalPanel");
 		valueSetDetailsPanel.setStyleName("valueSetDetailsPanel");
 		valueSetDetailsPanel.setWidth("95%");
-		mainPanel.add(valueSetDetailsPanel);
-		
-		/*HorizontalPanel searchCriteriaPanel = new HorizontalPanel();
-		//searchCriteriaPanel.setSize("800px", "200px");
-		VerticalPanel searchHorizontalPanel = new VerticalPanel();
-		VerticalPanel searchHorizontalPanelHP = new VerticalPanel();
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchHorizontalPanel.add(LabelBuilder.buildRequiredLabel(new Label(), "OID"));
-		searchHorizontalPanel.add(new SpacerWidget());
-		searchHorizontalPanel.add(searchInput);
-		searchHorizontalPanel.add(new SpacerWidget());
-		
-		searchHorizontalPanelHP.add(LabelBuilder.buildRequiredLabel(new Label(), "Version"));
-		searchHorizontalPanelHP.add(new SpacerWidget());
-		searchHorizontalPanelHP.add(versionInput);
-		searchHorizontalPanelHP.setStylePrimaryName("marginLeftRight");
-		
-		Widget searchWidget = buildSearchWidget();
-		Widget label = LabelBuilder.buildLabel(searchInput, "Search for a Value Set");
-		searchInput.setHeight("18px");
-		searchCriteriaPanel.add(label);
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchHorizontalPanel.add(vssfp.getPanel());
-		searchHorizontalPanel.add(searchWidget);
-		searchCriteriaPanel.add(errorMessagePanel);
-		 searchCriteriaPanel.add(searchHorizontalPanel);
-		 searchCriteriaPanel.add(searchHorizontalPanelHP);
-		searchCriteriaPanel.add(new SpacerWidget());
-		searchCriteriaPanel.add(view.asWidget());
-		searchCriteriaPanel.add(messageFocus);
-		searchCriteriaPanel.add(buildInitialDisabledWidget());
-		searchCriteriaPanel.add(buildSpecificOccurrenceWidget());
-		searchCriteriaPanel.add(new SpacerWidget());
-		VerticalPanel mainPanel = new VerticalPanel();
-		mainPanel.add(searchCriteriaPanel);
-		mainPanel.add(new SpacerWidget());
-		mainPanel.add(addToMeasure);*/
-		
+		mainPanel.add(valueSetDetailsPanel);				
 		disclosurePanelCellTable.setWidth("100%");
 		disclosurePanelCellTable.add(mainPanel);
 		disclosurePanelCellTable.setOpen(true);
-		return disclosurePanelCellTable;
-		
+		return disclosurePanelCellTable;		
 	}
+	
 	private Widget buildSearchPanel() {
 		VerticalPanel searchPanel = new VerticalPanel();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
@@ -336,16 +199,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		oidInput.getElement().setAttribute("tabIndex", "0");
 		oidInput.setTitle("Enter OID");
 		oidInput.setWidth("300px");
-		oidInput.setMaxLength(200);
-		/*oidInput.addKeyPressHandler(new KeyPressHandler() {			
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				char charCode = event.getCharCode();
-				if(!Character.isDigit(charCode) && charCode!='.') {
-					oidInput.cancelKey();
-				}
-			}
-		});*/
+		oidInput.setMaxLength(200);		
 		versionInput.getElement().setId("versionInput_DateBoxWithCalendar");
 		versionInput.setTitle("Enter version");
 		versionInput.getElement().setAttribute("tabIndex", "0");
@@ -363,9 +217,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		return searchPanel;
 	}
 
-	public void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets) {
-		
-		MatValueSet matValueSet = matValueSets.get(0);//getMatValueSetBasedOnVersion(matValueSets, versionInput.getValue());
+	public void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets) {		
+		MatValueSet matValueSet = matValueSets.get(0);
 		currentMatValueSet = matValueSet;
 		
 		valueSetDetailsPanel.clear();
@@ -561,68 +414,16 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	public Widget asWidget() {
 		return containerPanel;
 	}
-
-
-	
-	/*@Override
-	public HasClickHandlers getSearchButton() {
-		return searchButton;
-	}
-		
-	@Override
-	public HasPageSelectionHandler getPageSelectionTool() {
-		return view;
-	}
-	@Override
-	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
-		return view;
-	}	
-	@Override
-	public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement() {
-		return view;
-	}*/
-
-	
-	/*@Override
-	public ListBoxMVP getDataTypeInput(){
-		return dataTypeInput;
-	}*/
-	
 	
 	@Override
 	public CustomCheckBox getSpecificOccurrenceInput(){
 		return specificOccurrence;
 	}
 	
-
-	/*@Override
-	public HasValue<String> getSearchString() {
-		return searchInput;
-	}
-
-
-	@Override
-	public int getPageSize() {
-		return view.getPageSize();
-	}
-
-
-	@Override
-	public HasClickHandlers getAddToMeasureButton() {
-		return  addToMeasure; 
-	}*/
-
-
 	@Override
 	public Widget getDataTypeWidget() {
 		return dataTypePanel;
 	}
-
-    
-	/*@Override
-	public FocusableWidget getMsgFocusWidget(){
-		return messageFocus;
-	}*/
 	
 	@Override
 	public ErrorMessageDisplay getErrorMessageDisplay() {
@@ -639,14 +440,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		getSuccessMessageDisplay().clear();
 		getErrorMessageDisplay().clear();
 	}
-	
-	@Override
-	public void scrollToBottom(){
-	//	sp.scrollToBottom();
-	}
-    
-	
-	
+		
 	@Override
 	public String getDataTypeValue(ListBoxMVP inputListBox) {
 		if(inputListBox.getSelectedIndex() >= 0) {
@@ -675,39 +469,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 				listBox.addItem(listBoxContent.getItem(),"" +listBoxContent.getValue());
 			}
 		}
-	}
-	
-	/*@Override
-	public void setDataTypeOptions(List<? extends HasListBox> texts) {
-		setListBoxItems(dataTypeInput, texts, MatContext.PLEASE_SELECT);
-	}*/
-
-
-	/*@Override
-	public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg() {
-		return successMessagePanel;
-	}*/
-
-
-	/*@Override
-	public void setAddToMeasureButtonEnabled(boolean enabled) {
-		addToMeasure.setEnabled(enabled);
-	}
-
-    @Override
-    public Button getApplyToMeasure(){
-    	return addToMeasure;
-    }*/
-	
-	/*@Override
-	public HasSelectionHandlers<CodeListSearchDTO> getSelectedOption() {
-		return view;
-	}*/
-
-	/*@Override
-	public ValueSetSearchFilterPanel getValueSetSearchFilterPanel() {
-		return vssfp;
-	}*/
+	}	
 	
 	public DisclosurePanel getDisclosurePanel() {
 		return disclosurePanel;
@@ -774,58 +536,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			SuccessMessageDisplay successMessageUserDefinedPanel) {
 		this.successMessageUserDefinedPanel = successMessageUserDefinedPanel;
 	}
-
-	/*public void setEnabled(boolean enabled){
-		//search button
-		searchButton.setEnabled(enabled);
-		//search text
-		searchInput.setEnabled(enabled);
-		//search list
-		getValueSetSearchFilterPanel().setEnabled(enabled);
-		//data type radios
-		view.setEnabled(enabled);
-	}*/
-
-	/*@Override
-	public void buildQDSDataTable(QDSCodeListSearchModel results ,boolean isTableEnabled) {
-		*//**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
-		**//*
-		//buildTableQDS(results,isTableEnabled);
-	}*/
-	/**Code Commented for USer Story MAT-2360 : Hide Elements With Value Set Contents.
-	**/
-	/*private void buildTableQDS( QDSCodeListSearchModel results,boolean isTableEnabled){
-		 
-		CellTable<CodeListSearchDTO> table = new CellTable<CodeListSearchDTO>();
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		ListDataProvider<CodeListSearchDTO> sortProvider = new ListDataProvider<CodeListSearchDTO>();
-		  
-		// Display 50 rows in one page or all records.
-		table.setPageSize(50);
-		table.setSelectionModel(results.addSelectionHandlerOnTable());
-		//table = results.addColumnToTable(table,isTableEnabled);
 		
-		table.redraw();
-		sortProvider.refresh();
-		sortProvider.getList().addAll(results.getData());
-		ListHandler<CodeListSearchDTO> sortHandler = new ListHandler<CodeListSearchDTO>(sortProvider.getList());
-		table.addColumnSortHandler(sortHandler);
-		table = results.addColumnToTable(table,isTableEnabled,sortHandler);
-		sortProvider.addDataDisplay(table);
-		//Used custom pager class - for disabling next/last button when on last page and for showing correct pagination number.
-		MatSimplePager spager;
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-	    spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-        spager.setDisplay(table);
-        spager.setPageStart(0);
-        spager.setToolTipAndTabIndex(spager);
-        view.getvPanelForQDMTable().clear();
-        view.getvPanelForQDMTable().add(table);
-		view.getvPanelForQDMTable().add(new SpacerWidget());
-		view.getvPanelForQDMTable().add(spager);
-
-	}*/
-	
 	@Override
 	public void resetVSACValueSetWidget() {
 		getOIDInput().setValue(StringUtils.EMPTY);

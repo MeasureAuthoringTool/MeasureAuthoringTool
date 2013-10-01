@@ -348,7 +348,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		oidInput.setTitle("Enter OID");
 		oidInput.setWidth("300px");
 		oidInput.setMaxLength(200);
-		oidInput.addKeyPressHandler(new KeyPressHandler() {			
+		/*oidInput.addKeyPressHandler(new KeyPressHandler() {			
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
 				char charCode = event.getCharCode();
@@ -356,7 +356,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 					oidInput.cancelKey();
 				}
 			}
-		});
+		});*/
 		versionInput.getElement().setId("versionInput_DateBoxWithCalendar");
 		versionInput.setTitle("Enter version");
 		versionInput.getElement().setAttribute("tabIndex", "0");

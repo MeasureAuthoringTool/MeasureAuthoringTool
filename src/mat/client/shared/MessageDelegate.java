@@ -1007,7 +1007,12 @@ public class MessageDelegate {
 	private final String VSAC_RETRIEVE_FAILED = "Unable to retrieve from VSAC. Please check the data and try again.";
 	public String getVSAC_RETRIEVE_FAILED() {
 		return VSAC_RETRIEVE_FAILED;
-	}	
+	}
+	
+	private final String VSAC_UPDATE_SUCCESSFULL="Successfully updated applied QDM list with VSAC data.";
+	public String getVSAC_UPDATE_SUCCESSFULL() {
+		return VSAC_UPDATE_SUCCESSFULL;
+	}
 }
 
 

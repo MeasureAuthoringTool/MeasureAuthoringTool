@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.apache.commons.lang.StringUtils;
-
 import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -21,6 +19,8 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.model.MatValueSet;
 import mat.shared.ConstantMessages;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -64,7 +64,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private ListBoxMVP allDataTypeInput = new ListBoxMVP();
 	private TextBox oidInput = new TextBox();	
 	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
-	private Button retrieveButton = new PrimaryButton("Retrieve","primaryMetaDataButton");
+	private Button retrieveButton = new PrimaryButton("Search","primaryMetaDataButton");
 	private ListBoxMVP dataTypesListBox = new ListBoxMVP();
 	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure","primaryButton");
 	private Button cancelButton = new SecondaryButton("Cancel");
@@ -202,7 +202,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		versionInput.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
-		retrieveButton.setTitle("Retrieve");		
+		retrieveButton.setTitle("Search");		
 		Grid queryGrid = new Grid(3,2);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
 		queryGrid.setWidget(0, 1, oidInput);

@@ -22,10 +22,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 class TimeoutManager {
 	
-	private static final int WARNING_TIME = 20 * 60 * 1000;
+	private static final int WARNING_TIME = 25 * 60 * 1000;
 	private static final int WARNING_INTERVAL = 5 * 60 * 1000;
 	private static final int REPEATED_WARNING_INTERVAL = 2 * 60 * 1000;
-	private static final int TIMEOUTTHRESHOLD_TIME = WARNING_TIME+WARNING_INTERVAL;
+	private static final int TIMEOUTTHRESHOLD_TIME = WARNING_TIME; //+WARNING_INTERVAL;
 	private Image alertIcon = new Image(ImageResources.INSTANCE.msg_error());
 	private static final int UMLS_TIME_OUT = 8 * 60 * 60 * 1000;//5 *  60 * 1000;//
 	private static HTML warningBannerWidget ;
@@ -95,7 +95,7 @@ class TimeoutManager {
 		} 
 	    
 	/*
-	 * TimeoutWarning timer is scheduled to run at the 20th minute from the last activity Time. 
+	 * TimeoutWarning timer is scheduled to run at the 25th minute from the last activity Time. 
 	 * TimeOutWarning timer will show warning only if the 
 	 * currentTime - lastActivityTime < 30 minutes. else, fires logOff event.
 	 */
@@ -104,17 +104,17 @@ class TimeoutManager {
 		public void run() {
 			    Date today = new Date();
 			    if((today.getTime() - lastActivityTime) < TIMEOUTTHRESHOLD_TIME){//show warning message only if the lastActivityTime is within 30 minutes.
-						Date actualTimeOutDate = new Date(today.getTime()+WARNING_INTERVAL); //Timeout time = warningTime + 10 Minutes.
-					    actualTimeOutTime = actualTimeOutDate.getTime();
-					    formattedTime = DateTimeFormat.getMediumDateTimeFormat().format(actualTimeOutDate);
+		    		Date actualTimeOutDate = new Date(today.getTime()+WARNING_INTERVAL); //Timeout time = warningTime + 5 Minutes.
+				    actualTimeOutTime = actualTimeOutDate.getTime();
+				    formattedTime = DateTimeFormat.getMediumDateTimeFormat().format(actualTimeOutDate);
 					    
 					String msg ="Running TimeOutTimer, ActualTimeOut time is :-" + formattedTime;
 					MatContext.get().recordTransactionEvent(null, null, "TIMEOUT_WARNING_EVENT", msg, ConstantMessages.DB_LOG);
 					    
-					    //Make save operation , release Lock, and Forward to Measure Library while the warning is about to display.
-					    MatContext.get().getEventBus().fireEvent(new TimedOutEvent());
-					    showTimeOutWarning();
-					    repeatedWarning.scheduleRepeating(REPEATED_WARNING_INTERVAL); //repeat showing warning message until user interacts with the app.
+				    //Make save operation , release Lock, and Forward to Measure Library while the warning is about to display.
+				    MatContext.get().getEventBus().fireEvent(new TimedOutEvent());
+				    showTimeOutWarning();
+				    repeatedWarning.scheduleRepeating(REPEATED_WARNING_INTERVAL); //repeat showing warning message until user interacts with the app.
 			   }else{
 					fireLogOffEvent();
 			   }

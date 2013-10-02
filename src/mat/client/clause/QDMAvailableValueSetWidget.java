@@ -51,7 +51,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	HorizontalPanel mainPanel = new HorizontalPanel();
 	
 	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without VSAC value set");
-	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with VSAC value set");
+	private DisclosurePanel disclosurePanelVSAC = new DisclosurePanel("Element with VSAC value set");
 	private TextBox userDefinedInput = new TextBox();
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
 	private Button cancel = new Button("Close");
@@ -121,7 +121,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		VerticalPanel valueSetPanel = new VerticalPanel();
 		VerticalPanel dataTypePanel = new VerticalPanel();
 		
-		Widget widgetValueSet =LabelBuilder.buildLabel(userDefinedInput, "Name");
+		Widget widgetValueSet = LabelBuilder.buildLabel(userDefinedInput, "Name");
 		valueSetPanel.add(widgetValueSet);
 		valueSetPanel.add(new SpacerWidget());
 		userDefinedInput.setWidth("230px");
@@ -177,10 +177,10 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		valueSetDetailsPanel.setStyleName("valueSetDetailsPanel");
 		valueSetDetailsPanel.setWidth("95%");
 		mainPanel.add(valueSetDetailsPanel);				
-		disclosurePanelCellTable.setWidth("100%");
-		disclosurePanelCellTable.add(mainPanel);
-		disclosurePanelCellTable.setOpen(true);
-		return disclosurePanelCellTable;		
+		disclosurePanelVSAC.setWidth("100%");
+		disclosurePanelVSAC.add(mainPanel);
+		disclosurePanelVSAC.setOpen(true);
+		return disclosurePanelVSAC;		
 	}
 	
 	private Widget buildSearchPanel() {
@@ -508,11 +508,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	}
 
 	public DisclosurePanel getDisclosurePanelCellTable() {
-		return disclosurePanelCellTable;
+		return disclosurePanelVSAC;
 	}
 
-	public void setDisclosurePanelCellTable(DisclosurePanel disclosurePanelCellTable) {
-		this.disclosurePanelCellTable = disclosurePanelCellTable;
+	public void setDisclosurePanelCellTable(DisclosurePanel disclosurePanelVSAC) {
+		this.disclosurePanelVSAC = disclosurePanelVSAC;
 	}
 
 	public ErrorMessageDisplay getErrorMessageUserDefinedPanel() {

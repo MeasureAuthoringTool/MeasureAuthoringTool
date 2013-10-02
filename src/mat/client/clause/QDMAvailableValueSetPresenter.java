@@ -60,7 +60,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		TextBox getUserDefinedInput();
 		ListBoxMVP getAllDataTypeInput();
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
-		DisclosurePanel getDisclosurePanelCellTable();
+		DisclosurePanel getDisclosurePanelVSAC();
 		SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
 		ErrorMessageDisplay getErrorMessageUserDefinedPanel();
 		Button getUserDefinedCancel();
@@ -95,17 +95,17 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	        	searchDisplay.getUserDefinedInput().setText("");
 	        	searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
 	        	displaySearch();
-	        	searchDisplay.getDisclosurePanelCellTable().setOpen(true);
+	        	searchDisplay.getDisclosurePanelVSAC().setOpen(true);
 	        }
 
 	        public void onOpen(final DisclosureEvent event) {
 	        	populateAllDataType();
 	        	displaySearch();
-	            searchDisplay.getDisclosurePanelCellTable().setOpen(false);
+	            searchDisplay.getDisclosurePanelVSAC().setOpen(false);
 	        }
 	    });
 
-		searchDisplay.getDisclosurePanelCellTable().addEventHandler(new DisclosureHandler()
+		searchDisplay.getDisclosurePanelVSAC().addEventHandler(new DisclosureHandler()
 	    {
 
 	        public void onClose(final DisclosureEvent event) {

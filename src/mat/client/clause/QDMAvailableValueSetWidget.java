@@ -507,11 +507,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		this.allDataTypeInput = allDataTypeInput;
 	}
 
-	public DisclosurePanel getDisclosurePanelCellTable() {
+	public DisclosurePanel getDisclosurePanelVSAC() {
 		return disclosurePanelVSAC;
 	}
 
-	public void setDisclosurePanelCellTable(DisclosurePanel disclosurePanelVSAC) {
+	public void setDisclosurePanelVSAC(DisclosurePanel disclosurePanelVSAC) {
 		this.disclosurePanelVSAC = disclosurePanelVSAC;
 	}
 

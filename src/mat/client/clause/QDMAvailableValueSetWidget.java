@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
-import org.apache.commons.lang.StringUtils;
-
 import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -24,6 +22,8 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.MatValueSet;
 import mat.shared.ConstantMessages;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
@@ -31,8 +31,8 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.Grid;
@@ -65,7 +65,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
     								"</div>";       
     private TextBox oidInput = new TextBox();	
 	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
-	Button retrieveButton = new PrimaryButton("Retrieve","primaryMetaDataButton");
+	Button retrieveButton = new PrimaryButton("Search","primaryMetaDataButton");
 	private ListBoxMVP dataTypesListBox = new ListBoxMVP();
 	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure","primaryButton");
 	private Button closeButton = new SecondaryButton("Close");
@@ -203,7 +203,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		versionInput.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
-		retrieveButton.setTitle("Retrieve");
+		retrieveButton.setTitle("Search");
 		Grid queryGrid = new Grid(3,2);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
 		queryGrid.setWidget(0, 1, oidInput);

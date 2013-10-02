@@ -171,7 +171,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				ModifyQDMDialogBox.dialogBox.hide();
+				ModifyQDMDialogBox.getDialogBox().hide();
 				//This is to reload applied QDM List.
 				reloadAppliedQDMList();
 			}
@@ -181,7 +181,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 
 			@Override
 			public void onClick(final ClickEvent event) {
-				ModifyQDMDialogBox.dialogBox.hide();
+				ModifyQDMDialogBox.getDialogBox().hide();
 				//This is to reload applied QDM List.
 				reloadAppliedQDMList();
 			}

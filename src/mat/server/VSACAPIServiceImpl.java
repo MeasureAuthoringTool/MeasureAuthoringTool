@@ -130,7 +130,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	 * */
 	@SuppressWarnings("static-access")
 	@Override
-	public final VsacApiResult updateAllVSACValueSets(final String measureId) {
+	public final VsacApiResult updateVSACValueSets(final String measureId) {
 		VsacApiResult result = new VsacApiResult();
 		if (isAlreadySignedIn()) {
 			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().

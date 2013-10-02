@@ -111,7 +111,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				resetQDSFields();
-				vsacapiServiceAsync.updateAllVSACValueSets(
+				vsacapiServiceAsync.updateVSACValueSets(
 						MatContext.get().getCurrentMeasureId(), new AsyncCallback<VsacApiResult>() {
 
 					@Override

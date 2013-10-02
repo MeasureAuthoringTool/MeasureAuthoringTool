@@ -172,8 +172,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				ModifyQDMDialogBox.getDialogBox().hide();
-				//This is to reload applied QDM List.
-				reloadAppliedQDMList();
 			}
 		});
 
@@ -182,8 +180,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				ModifyQDMDialogBox.getDialogBox().hide();
-				//This is to reload applied QDM List.
-				reloadAppliedQDMList();
 			}
 		});
 
@@ -421,9 +417,9 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	}
 
 	/**
-	 * This method is used to reload Applied QDM List.	 *
+	 * This method is used to reload Applied QDM List.
 	 **/
-	private void reloadAppliedQDMList() {
+	public void reloadAppliedQDMList() {
 		QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 		appliedListModel.setAppliedQDMs(appliedQDMList);
 		qdsAppliedListPresenterDisplay.buildCellList(appliedListModel);
@@ -448,7 +444,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 * This method shows AvailableValueSet Widget in pop up.
 	 * */
 	private void displaySearch() {
-		ModifyQDMDialogBox.showModifyDialogBox(searchDisplay.asWidget(), modifyValueSetDTO);
+		ModifyQDMDialogBox.showModifyDialogBox(searchDisplay.asWidget(), modifyValueSetDTO, this);
 		populateDataTypesListBox();
 		searchDisplay.resetVSACValueSetWidget();
 		searchDisplay.clearVSACValueSetMessages();

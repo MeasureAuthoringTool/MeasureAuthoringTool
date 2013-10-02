@@ -1,55 +1,69 @@
 package mat.client.clause;
 
+import org.apache.commons.lang.StringUtils;
+
 import mat.model.QualityDataSetDTO;
 
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ModifyQDMDialogBox {
-	/**
-	 * Instance of DialogBox.
-	 * **/
-	private static DialogBox dialogBox = new DialogBox(true, true);
+	private static dialogBoxWithCloseButton dialogBox = new dialogBoxWithCloseButton(StringUtils.EMPTY);
+	static HandlerRegistration handlerRegistration;
 
 	/**
-	 * Access method for dialog box.
-	 * @return dialogBox.
-	 * **/
-
-	public static DialogBox getDialogBox() {
+	 * Gets dialog box with close button.
+	 * @return Dialog Box with close button.
+	 */
+	public static dialogBoxWithCloseButton getDialogBox() {
 		return dialogBox;
 	}
 
 	/**
-	 * Method to create Modify QDM dialog box.
-	 * @param widget - Widget.
+	 * Creates and displays Modify QDM dialog box (pop-up). 
+	 * @param widget
 	 * @param modifyValueSetDTO - DTO to set caption heading.
-	 * **/
-	public static void showModifyDialogBox(final Widget widget, final QualityDataSetDTO modifyValueSetDTO) {
-
-		dialogBox.getElement().setId("dialogBox_DialogBox");
-		dialogBox.setGlassEnabled(true);
-		dialogBox.setAnimationEnabled(true);
+	 * @param qdmAvailableValueSetPresenter
+	 */
+	public static void showModifyDialogBox(Widget widget, QualityDataSetDTO modifyValueSetDTO, 
+			final QDMAvailableValueSetPresenter qdmAvailableValueSetPresenter){
 		String text = "Modify Applied QDM ( ";
-		if (modifyValueSetDTO.getOccurrenceText() != null) {
-			text = text.concat(" " + modifyValueSetDTO.getOccurrenceText() + " of ");
-		}
-		text = text.concat(modifyValueSetDTO.getCodeListName() + " : " + modifyValueSetDTO.getDataType()  + " )");
+		if(modifyValueSetDTO.getOccurrenceText()!=null)
+			text = text.concat(" " + modifyValueSetDTO.getOccurrenceText()+ " of ");
+		text = text.concat(modifyValueSetDTO.getCodeListName() + " : " + modifyValueSetDTO.getDataType() +" )");
+
 		dialogBox.setText(text);
+		dialogBox.getElement().setId("dialogBox_DialogBox");
 		dialogBox.setTitle("Modify Applied QDM");
 		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
 		dialogContents.setWidth("70em");
 		DOM.setStyleAttribute(dialogBox.getElement(), "width", "1000px");
 		DOM.setStyleAttribute(dialogBox.getElement(), "height", "1000px");
+
 		dialogBox.setWidget(dialogContents);
+
 		dialogContents.add(widget);
 		dialogContents.setCellHorizontalAlignment(widget, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogBox.center();
 		dialogBox.show();
-	}
 
+		if(handlerRegistration != null)
+			handlerRegistration.removeHandler();
+		
+		handlerRegistration = dialogBox.addCloseHandler(new CloseHandler<PopupPanel>() {
+			@Override
+			public void onClose(CloseEvent<PopupPanel> event) {
+				//Reloading applied QDM list on close.
+				qdmAvailableValueSetPresenter.reloadAppliedQDMList();
+			}
+		});
+	}
 }

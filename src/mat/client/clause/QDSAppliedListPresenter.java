@@ -122,13 +122,32 @@ public class QDSAppliedListPresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(final VsacApiResult result) {
-						searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
-								"Successfully Updated applied QDM list with VSAC data.");
-						getAppliedQDMList(true);
+						if (result.isSuccess()) {
+							searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
+								MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
+							getAppliedQDMList(true);
+						} else {
+							searchDisplay.getErrorMessageDisplay().setMessage(
+									convertMessage(result.getFailureReason()));
+						}
 					}
 				});
 			}
 		});
+	}
+
+	private String convertMessage(int id) {
+		String message;
+		switch (id) {
+		case VsacApiResult.UMLS_NOT_LOGGEDIN:
+			message = MatContext.get().getMessageDelegate()
+					.getUMLS_NOT_LOGGEDIN();
+			break;
+		default:
+			message = MatContext.get().getMessageDelegate()
+					.getUnknownFailMessage();
+		}
+		return message;
 	}
 
 	private void saveMeasureXML(final ArrayList<QualityDataSetDTO> list) {
@@ -186,7 +205,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		if (measureId != null && measureId != "") {
 			service.getAppliedQDMFromMeasureXml(measureId , checkForSupplementData ,
 					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
- 
+
 				@Override
 				public void onFailure(final Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate()

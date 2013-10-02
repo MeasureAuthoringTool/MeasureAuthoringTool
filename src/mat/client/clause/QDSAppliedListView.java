@@ -42,7 +42,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	
 	public Button removeButton = new Button("Remove");
 	public Button modify = new Button("Modify");
-	public Button updateVsacButton = new Button("Update with VSAC");
+	public Button updateVsacButton = new Button("Update value sets");
 	public QualityDataSetDTO  lastSelectedObject;
 	private ArrayList<QualityDataSetDTO> appliedQDMList;
 	
@@ -97,13 +97,15 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(new SpacerWidget());
 		removeButton.setEnabled(checkForEnable());
 		modify.setEnabled(checkForEnable() ? true : false);
-		
+
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		removeButton.setTitle("Remove");
 		modify.setTitle("Modify");
 		modify.setStyleName("rightAlignSecondaryButton");
+		updateVsacButton.setStylePrimaryName("rightAlignSecondaryButton");
+		updateVsacButton.setTitle("By selecting Update value set , the most recent version will be retrived from VSAC");
 		buttonLayout.add(removeButton);
 		buttonLayout.add(modify);
 		buttonLayout.add(updateVsacButton);
@@ -160,7 +162,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 					@Override
 					public void update(int index, QualityDataSetDTO object,Boolean value) {
-						
+						errorMessagePanel.clear();
 						lastSelectedObject=object;
 						if (checkForEnable()) {
 							modify.setEnabled(true);

@@ -567,14 +567,13 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	private void setWidgetsReadOnly(boolean editable) {
 		//Widgets in "Element with VSAC Value Set" panel.
 		searchDisplay.getRetrieveButton().setEnabled(editable);
-		searchDisplay.getOIDInput().setReadOnly(!editable);
+		searchDisplay.getOIDInput().setEnabled(editable);
 		searchDisplay.getVersionInput().setEnabled(editable);	
 		
 		//Widgets in "Element without VSAC Value Set" panel.
-		searchDisplay.getUserDefinedInput().setReadOnly(!editable);
+		searchDisplay.getUserDefinedInput().setEnabled(editable); 
 		searchDisplay.getAllDataTypeInput().setEnabled(editable);
 		searchDisplay.getPsuedoQDMToMeasure().setEnabled(editable);
-		searchDisplay.getPsuedoQDMCancel().setEnabled(editable);
 	}
 
 	@Override

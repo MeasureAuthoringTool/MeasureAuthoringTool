@@ -408,7 +408,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		dataTypesListBox.setEnabled(editable);
 		specificOccurrence.setEnabled(editable);
 		applyToMeasureButton.setEnabled(editable);
-		cancelButton.setEnabled(editable);
 		
 		vPanel.add(buttonsPanel);
 		return vPanel;

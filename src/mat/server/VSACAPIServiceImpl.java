@@ -133,11 +133,15 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 		VsacApiResult result = new VsacApiResult();
 		if (isAlreadySignedIn()) {
 			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
-					getAppliedQDMFromMeasureXml(measureId, true);
+					getAppliedQDMFromMeasureXml(measureId, false);
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
-				System.out.println("Display name ====" + qualityDataSetDTO.getCodeListName());
-				if (qualityDataSetDTO.getDataType() != ConstantMessages.TIMING_ELEMENT
-						&& "1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
+				LOGGER.info("OID ====" + qualityDataSetDTO.getOid());
+				//Filter out Timing Element and User defined QDM's and consider only those qdm's with version 1.0.
+				if (qualityDataSetDTO.getDataType().equals(ConstantMessages.TIMING_ELEMENT)
+						|| qualityDataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)
+						|| qualityDataSetDTO.isSuppDataElement()) {
+					continue;
+				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
 					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(
 							UMLSSessionTicket
 							.getTicket(getThreadLocalRequest().getSession().getId()));
@@ -153,6 +157,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr
 									.getXmlPayLoad());
 							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
+							QualityDataSetDTO toBeModifiedQDM = qualityDataSetDTO;
 							if (matValueSet != null) {
 								qualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
 								if (matValueSet.isGrouping()) {
@@ -161,13 +166,15 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 									qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
 											getConceptList().get(0).getCodeSystemName());
 								}
+								getMeasureLibraryService().updateMeasureXML(qualityDataSetDTO,
+										toBeModifiedQDM, measureId);
 							}
 						}
 					}
 
 				}
 			}
-			getMeasureLibraryService().createAndSaveElementLookUp(appliedQDMList, measureId);
+			/*getMeasureLibraryService().createAndSaveElementLookUp(appliedQDMList, measureId);*/
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);

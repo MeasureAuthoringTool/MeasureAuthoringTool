@@ -122,10 +122,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	/***
-	 * Method to update valueset's without versions from VSAC. Skip supplemental Data Elements and Timing elements.
+	 * Method to update valueset's without versions from VSAC in Measure XML.
+	 * Skip supplemental Data Elements and Timing elements and User defined QDM.
 	 *
 	 * @param measureId - Selected Measure Id.
-	 *@return VsacApiResult - Result.
+	 * @return VsacApiResult - Result.
 	 * */
 	@SuppressWarnings("static-access")
 	@Override
@@ -136,10 +137,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 					getAppliedQDMFromMeasureXml(measureId, false);
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
 				LOGGER.info("OID ====" + qualityDataSetDTO.getOid());
-				//Filter out Timing Element and User defined QDM's and consider only those qdm's with version 1.0.
-				if (qualityDataSetDTO.getDataType().equals(ConstantMessages.TIMING_ELEMENT)
-						|| qualityDataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)
+				//Filter out Timing Element , User defined QDM's and supplemental data elements.
+				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO.getDataType())
+						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())
 						|| qualityDataSetDTO.isSuppDataElement()) {
+					LOGGER.info("QDM filtered as it is of either for following type "
+						+ "(Supplemental data or User defined or Timing Element.");
 					continue;
 				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
 					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(
@@ -150,7 +153,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 						 vsr = dao
 								.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid());
 					} catch (Exception ex) {
-						LOGGER.info("Value Set reterival failed at VSAC for OID :" + qualityDataSetDTO.getOid());
+						LOGGER.info("Value Set reterival failed at VSAC for OID :" + qualityDataSetDTO.getOid()
+								+ " with Data Type : " + qualityDataSetDTO.getDataType());
 					}
 					if (vsr != null) {
 						if (vsr.getXmlPayLoad() != null && StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {
@@ -161,11 +165,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 							if (matValueSet != null) {
 								qualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
 								if (matValueSet.isGrouping()) {
-									qualityDataSetDTO.setTaxonomy("Grouping");
+									qualityDataSetDTO.setTaxonomy(
+											ConstantMessages.GROUPING_CODE_SYSTEM);
 								} else {
 									qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
 											getConceptList().get(0).getCodeSystemName());
 								}
+								//Code which updated Measure XML against each modifiable QDM.
 								getMeasureLibraryService().updateMeasureXML(qualityDataSetDTO,
 										toBeModifiedQDM, measureId);
 							}
@@ -174,7 +180,6 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 
 				}
 			}
-			/*getMeasureLibraryService().createAndSaveElementLookUp(appliedQDMList, measureId);*/
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);

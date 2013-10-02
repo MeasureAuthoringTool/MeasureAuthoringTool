@@ -124,6 +124,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					public void onSuccess(final VsacApiResult result) {
 						searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
 								"Successfully Updated applied QDM list with VSAC data.");
+						getAppliedQDMList(true);
 					}
 				});
 			}

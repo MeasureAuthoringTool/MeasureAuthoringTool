@@ -24,8 +24,8 @@ class TimeoutManager {
 	
 	private static final int WARNING_TIME = 25 * 60 * 1000;
 	private static final int WARNING_INTERVAL = 5 * 60 * 1000;
-	private static final int REPEATED_WARNING_INTERVAL = 2 * 60 * 1000;
-	private static final int TIMEOUTTHRESHOLD_TIME = WARNING_TIME; //+WARNING_INTERVAL;
+	private static final int REPEATED_WARNING_INTERVAL = 1 * 60 * 1000;
+	private static final int TIMEOUTTHRESHOLD_TIME = WARNING_TIME + WARNING_INTERVAL;
 	private Image alertIcon = new Image(ImageResources.INSTANCE.msg_error());
 	private static final int UMLS_TIME_OUT = 8 * 60 * 60 * 1000;//5 *  60 * 1000;//
 	private static HTML warningBannerWidget ;
@@ -101,13 +101,12 @@ class TimeoutManager {
 	 */
 	//US 153
 	private Timer timeoutWarning = new Timer() {
-		public void run() {
+		public void run() {			
 			    Date today = new Date();
-			    if((today.getTime() - lastActivityTime) < TIMEOUTTHRESHOLD_TIME){//show warning message only if the lastActivityTime is within 30 minutes.
+			    if((today.getTime() - lastActivityTime) < TIMEOUTTHRESHOLD_TIME){//show warning message only if the lastActivityTime is within 30 minutes.		
 		    		Date actualTimeOutDate = new Date(today.getTime()+WARNING_INTERVAL); //Timeout time = warningTime + 5 Minutes.
 				    actualTimeOutTime = actualTimeOutDate.getTime();
-				    formattedTime = DateTimeFormat.getMediumDateTimeFormat().format(actualTimeOutDate);
-					    
+				    formattedTime = DateTimeFormat.getMediumDateTimeFormat().format(actualTimeOutDate);		    
 					String msg ="Running TimeOutTimer, ActualTimeOut time is :-" + formattedTime;
 					MatContext.get().recordTransactionEvent(null, null, "TIMEOUT_WARNING_EVENT", msg, ConstantMessages.DB_LOG);
 					    

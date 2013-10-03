@@ -1,28 +1,27 @@
 package mat.client.clause;
 
-import org.apache.commons.lang.StringUtils;
-
 import mat.model.QualityDataSetDTO;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ModifyQDMDialogBox {
-	private static dialogBoxWithCloseButton dialogBox = new dialogBoxWithCloseButton(StringUtils.EMPTY);
+	private static DialogBoxWithCloseButton dialogBox = new DialogBoxWithCloseButton(StringUtils.EMPTY);
 	static HandlerRegistration handlerRegistration;
 
 	/**
 	 * Gets dialog box with close button.
 	 * @return Dialog Box with close button.
 	 */
-	public static dialogBoxWithCloseButton getDialogBox() {
+	public static DialogBoxWithCloseButton getDialogBox() {
 		return dialogBox;
 	}
 

@@ -25,6 +25,8 @@ import mat.shared.ConstantMessages;
 import org.apache.commons.lang.StringUtils;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -54,8 +56,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private DisclosurePanel disclosurePanelVSAC = new DisclosurePanel("Element with VSAC value set");
 	private TextBox userDefinedInput = new TextBox();
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
-	private Button cancel = new Button("Close");
-	private Button userDefinedCancel = new SecondaryButton("Close");
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();
 	private ErrorMessageDisplay errorMessageUserDefinedPanel = new ErrorMessageDisplay();
@@ -68,7 +68,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	Button retrieveButton = new PrimaryButton("Search","primaryMetaDataButton");
 	private ListBoxMVP dataTypesListBox = new ListBoxMVP();
 	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure","primaryButton");
-	private Button closeButton = new SecondaryButton("Close");
+	private Button cancelButton = new SecondaryButton("Cancel");
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
 	VerticalPanel valueSetDetailsPanel = new VerticalPanel();
 	MatValueSet currentMatValueSet;
@@ -149,8 +149,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		buttonHorizontalPanel.add(new SpacerWidget());
 		buttonHorizontalPanel.add(new SpacerWidget());
-		userDefinedCancel.setTitle("Close");
-		buttonHorizontalPanel.add(userDefinedCancel);
 		
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.add(horiPanel);
@@ -379,24 +377,40 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.getElement().setId("vPanel_VerticalPanel");
 		vPanel.addStyleName("valueSetMarginLeft_7px");
-		vPanel.add(LabelBuilder.buildLabel(new Label(), "Select Data Type"));
+		vPanel.add(LabelBuilder.buildLabel(new Label(), "Select Datatype"));
+		dataTypesListBox.getElement().setId("dataTypesListBox_ListBox");
+		dataTypesListBox.setTitle("Select Datatype");
 		dataTypesListBox.setSelectedIndex(0);
 		dataTypesListBox.addValueChangeHandler(dataTypeChangeHandler);
 		vPanel.add(dataTypesListBox);
 		vPanel.add(new SpacerWidget());
-		vPanel.add(new HTML(cautionMsgStr));
+		HTML cautionMsg = new HTML(cautionMsgStr);
+		cautionMsg.getElement().setId("cautionMsg_HTML");
+		cautionMsg.setTitle(cautionMsgStr);
+		vPanel.add(cautionMsg);
 		vPanel.add(new SpacerWidget());
+		specificOccurrence.getElement().setId("specificOccurrence_CheckBox");
 		specificOccurrence.setValue(false);
 		vPanel.add(specificOccurrence);
 		vPanel.add(new SpacerWidget());
 		vPanel.add(new SpacerWidget());
 		HorizontalPanel buttonsPanel = new HorizontalPanel();	
 		buttonsPanel.getElement().setId("buttonsPanel_HorizontalPanel");
+		applyToMeasureButton.getElement().setId("applyToMeasureButton_Button");
 		applyToMeasureButton.addStyleName("firstLabel");
 		applyToMeasureButton.setTitle("Apply To Measure");
 		applyToMeasureButton.setEnabled(false);
 		buttonsPanel.add(applyToMeasureButton);
-		buttonsPanel.add(closeButton);
+		cancelButton.getElement().setId("cancelButton_Button");
+		cancelButton.setTitle("Cancel");
+		cancelButton.addClickHandler(new ClickHandler() {			
+			@Override
+			public void onClick(ClickEvent event) {
+				resetVSACValueSetWidget();
+				clearVSACValueSetMessages();
+			}
+		});
+		buttonsPanel.add(cancelButton);
 		vPanel.add(buttonsPanel);
 		return vPanel;
 	}
@@ -464,11 +478,6 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	public ErrorMessageDisplay getErrorMessagePanel(){
 		return errorMessagePanel;
 	}
-	
-	@Override
-	public Button getCancel() {
-		return cancel;
-	}	
 
 	@Override
 	public Widget asWidget() {
@@ -532,11 +541,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 			SuccessMessageDisplay successMessageUserDefinedPanel) {
 		this.successMessageUserDefinedPanel = successMessageUserDefinedPanel;
 	}
-
-	public Button getUserDefinedCancel() {
-		return userDefinedCancel;
-	}
-
+	
 	@Override
 	public String getDataTypeText(ListBoxMVP inputListBox) {
 		if(inputListBox.getSelectedIndex() >= 0) {
@@ -596,10 +601,5 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	@Override
 	public MatValueSet getCurrentMatValueSet() {
 		return currentMatValueSet;
-	}
-	
-	@Override
-	public Button getCloseButton() {
-		return closeButton;
-	}
+	}	
 }

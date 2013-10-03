@@ -55,7 +55,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with VSAC value set");
 	private TextBox userDefinedInput = new TextBox();
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
-	private Button psuedoQDMCancel = new SecondaryButton("Cancel");
 	private SimplePanel dataTypePanel = new SimplePanel();
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();	
@@ -148,8 +147,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		psuedoQDMToMeasure.setTitle("Apply to Measure");
 		buttonHorizontalPanel.add(psuedoQDMToMeasure);
 		buttonHorizontalPanel.add(new SpacerWidget());
-		psuedoQDMCancel.setTitle("Cancel");
-		buttonHorizontalPanel.add(psuedoQDMCancel);
 				
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.add(horiPanel);
@@ -379,21 +376,25 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		vPanel.getElement().setId("vPanel_VerticalPanel");
 		vPanel.addStyleName("valueSetMarginLeft_7px");
 		vPanel.add(LabelBuilder.buildLabel(new Label(), "Select Datatype"));
+		dataTypesListBox.getElement().setId("dataTypesListBox_ListBox");
 		dataTypesListBox.setTitle("Select Datatype");
 		dataTypesListBox.setSelectedIndex(0);
 		dataTypesListBox.addValueChangeHandler(dataTypeChangeHandler);
 		vPanel.add(dataTypesListBox);
 		vPanel.add(new SpacerWidget());
+		specificOccurrence.getElement().setId("specificOccurrence_CheckBox");
 		specificOccurrence.setValue(false);
 		vPanel.add(specificOccurrence);
 		vPanel.add(new SpacerWidget());
 		vPanel.add(new SpacerWidget());
 		HorizontalPanel buttonsPanel = new HorizontalPanel();	
 		buttonsPanel.getElement().setId("buttonsPanel_HorizontalPanel");
+		applyToMeasureButton.getElement().setId("applyToMeasureButton_Button");
 		applyToMeasureButton.addStyleName("firstLabel");
 		applyToMeasureButton.setTitle("Apply To Measure");
 		applyToMeasureButton.setEnabled(false);
 		buttonsPanel.add(applyToMeasureButton);
+		cancelButton.getElement().setId("cancelButton_Button");
 		cancelButton.setTitle("Cancel");
 		cancelButton.addClickHandler(new ClickHandler() {			
 			@Override
@@ -504,14 +505,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 
 	public void setPsuedoQDMToMeasure(Button psuedoQDMToMeasure) {
 		this.psuedoQDMToMeasure = psuedoQDMToMeasure;
-	}
-
-	public Button getPsuedoQDMCancel() {
-		return psuedoQDMCancel;
-	}
-
-	public void setPsuedoQDMCancel(Button psuedoQDMCancel) {
-		this.psuedoQDMCancel = psuedoQDMCancel;
 	}
 
 	public ListBoxMVP getAllDataTypeInput() {

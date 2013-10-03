@@ -53,7 +53,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		String getDataTypeValue(ListBoxMVP inputListBox);
 		SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
-		Button getCancel();
 		String getDataTypeText(ListBoxMVP inputListBox);
 		DisclosurePanel getDisclosurePanel();
 		Button getPsuedoQDMToMeasure();
@@ -63,8 +62,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		DisclosurePanel getDisclosurePanelVSAC();
 		SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
 		ErrorMessageDisplay getErrorMessageUserDefinedPanel();
-		Button getUserDefinedCancel();
-
+		
 		TextBox getOIDInput();
 		DateBoxWithCalendar getVersionInput();
 		Button getRetrieveButton();
@@ -77,7 +75,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		Button getApplyToMeasureButton();
 		MatValueSet getCurrentMatValueSet();
 		void resetVSACValueSetWidget();
-		Button getCloseButton();
 		Widget asWidget();
 	}
 
@@ -167,23 +164,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			}
 		});
 
-		searchDisplay.getCloseButton().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				ModifyQDMDialogBox.getDialogBox().hide();
-			}
-		});
-
-		searchDisplay.getUserDefinedCancel().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(final ClickEvent event) {
-				ModifyQDMDialogBox.getDialogBox().hide();
-			}
-		});
-
-         searchDisplay.getRetrieveButton().addClickHandler(new ClickHandler() {
+        searchDisplay.getRetrieveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
 				searchDisplay.clearVSACValueSetMessages();

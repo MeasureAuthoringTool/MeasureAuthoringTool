@@ -59,7 +59,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		public String getDataTypeText(ListBoxMVP inputListBox);
 		public DisclosurePanel getDisclosurePanel();
 		public Button getPsuedoQDMToMeasure();
-		public Button getPsuedoQDMCancel();
 		public TextBox getUserDefinedInput();
 		public ListBoxMVP getAllDataTypeInput();
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
@@ -125,16 +124,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 						searchDisplay.getDisclosurePanel().setOpen(false);
 					}
 				});
-
-		searchDisplay.getPsuedoQDMCancel().addClickHandler(new ClickHandler() {
-
-			@Override
-			public void onClick(ClickEvent event) {
-				searchDisplay.getDisclosurePanel().setOpen(false);
-				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
-				searchDisplay.getErrorMessageUserDefinedPanel().clear();
-			}
-		});
 
 		searchDisplay.getUserDefinedInput().addClickHandler(new ClickHandler() {
 

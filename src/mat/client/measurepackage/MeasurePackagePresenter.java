@@ -1,6 +1,7 @@
 package mat.client.measurepackage;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import mat.client.Mat;
@@ -10,14 +11,12 @@ import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
-import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -54,9 +53,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		public void setDeletionHandler(MeasurePackageSelectionHandler handler);
 		public void setViewIsEditable(boolean b, List<MeasurePackageDetail> packages);
 		
-		public String getValuesSetDate();
-		public void setValuesSetDate(String date);
-		public DateBoxWithCalendar getValuesSetDateInputBox();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		
 		// QDM elements
@@ -95,72 +91,69 @@ public class MeasurePackagePresenter implements MatPresenter {
 				((Button)view.getPackageMeasureButton()).setEnabled(false);
 				
 				clearMessages();
-				String valueSetDate = view.getValuesSetDate();
-				if(isValidDate(valueSetDate)) {
-					MeasureSelectedEvent mse = MatContext.get().getCurrentMeasureInfo();
-					String msg = " [measure] "+mse.getMeasureName()+" [version] "+mse.getMeasureVersion()+" [package date] "+valueSetDate;
-					String mid = mse.getMeasureId();
-					MatContext.get().recordTransactionEvent(mid, null, "MEASURE_PACKAGE_EVENT", msg, ConstantMessages.DB_LOG);
-					/*
-					 * correction for packaging error thrown
-					 * accessing MatContext fields individually first before using them
-					 */
-					model.setValueSetDate(view.getValuesSetDate());
-					MatContext.get().getMeasureService().save(model, new AsyncCallback<SaveMeasureResult>() {
-						
-						@Override
-						public void onSuccess(SaveMeasureResult result) { 
-							if(result.isSuccess()) {
-								Mat.showLoadingMessage();
-								String measureId = MatContext.get().getCurrentMeasureId();
-								MatContext.get().getMeasureService().validateMeasureForExport(measureId,
-									new AsyncCallback<ValidateMeasureResult>() {
-										@Override
-										public void onFailure(Throwable caught) {
-											//O&M 17
-											((Button)view.getPackageMeasureButton()).setEnabled(true);
-											
+				
+				MeasureSelectedEvent mse = MatContext.get().getCurrentMeasureInfo();
+				String msg = " [measure] "+mse.getMeasureName()+" [version] "+mse.getMeasureVersion()+" [package date] " + new Date();
+				String mid = mse.getMeasureId();
+				MatContext.get().recordTransactionEvent(mid, null, "MEASURE_PACKAGE_EVENT", msg, ConstantMessages.DB_LOG);
+				/*
+				 * correction for packaging error thrown
+				 * accessing MatContext fields individually first before using them
+				 */
+				model.setValueSetDate(null);
+				MatContext.get().getMeasureService().save(model, new AsyncCallback<SaveMeasureResult>() {
+					
+					@Override
+					public void onSuccess(SaveMeasureResult result) { 
+						if(result.isSuccess()) {
+							Mat.showLoadingMessage();
+							String measureId = MatContext.get().getCurrentMeasureId();
+							MatContext.get().getMeasureService().validateMeasureForExport(measureId,
+								new AsyncCallback<ValidateMeasureResult>() {
+									@Override
+									public void onFailure(Throwable caught) {
+										//O&M 17
+										((Button)view.getPackageMeasureButton()).setEnabled(true);
+										
+										Mat.hideLoadingMessage();
+										view.getPackageErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+									}
+		
+									@Override
+									public void onSuccess(ValidateMeasureResult result) {
+										//O&M 17
+										((Button)view.getPackageMeasureButton()).setEnabled(true);
+										
+										if(result.isValid()) {
 											Mat.hideLoadingMessage();
-											view.getPackageErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
-										}
-			
-										@Override
-										public void onSuccess(ValidateMeasureResult result) {
-											//O&M 17
-											((Button)view.getPackageMeasureButton()).setEnabled(true);
+											view.getMeasurePackageSuccessMsg().setMessage(MatContext.get().getMessageDelegate().getPackageSuccessMessage());
 											
-											if(result.isValid()) {
-												Mat.hideLoadingMessage();
-												view.getMeasurePackageSuccessMsg().setMessage(MatContext.get().getMessageDelegate().getPackageSuccessMessage());
-												
-											}
-											else {
-												Mat.hideLoadingMessage();
-												view.getMeasureErrorMessageDisplay().setMessages(result.getValidationMessages());
-											}
 										}
-									});
-							} else{
-								//O&M 17
-								((Button)view.getPackageMeasureButton()).setEnabled(true);
-								
-								if(result.getFailureReason() == SaveMeasureResult.INVALID_VALUE_SET_DATE){
-									String message = MatContext.get().getMessageDelegate().getValueSetDateInvalidMessage();
-									view.getErrorMessageDisplay().setMessage(message);
-								}
-							}
-						}
-						@Override
-						public void onFailure(Throwable caught) {
+										else {
+											Mat.hideLoadingMessage();
+											view.getMeasureErrorMessageDisplay().setMessages(result.getValidationMessages());
+										}
+									}
+								});
+						} else{
 							//O&M 17
 							((Button)view.getPackageMeasureButton()).setEnabled(true);
 							
-							view.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+							if(result.getFailureReason() == SaveMeasureResult.INVALID_VALUE_SET_DATE){
+								String message = MatContext.get().getMessageDelegate().getValueSetDateInvalidMessage();
+								view.getErrorMessageDisplay().setMessage(message);
+							}
 						}
-					});						
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+						//O&M 17
+						((Button)view.getPackageMeasureButton()).setEnabled(true);
 						
-				}
+						view.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+					}
+				});
 			}
 		});
 		
@@ -258,27 +251,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		}
 	}
-	
-	private boolean isValidDate(String valueSetDate) {
-		List<String> message = new ArrayList<String>();
-		if(valueSetDate == null || "".equals(valueSetDate.trim())) {
-			message.add(MatContext.get().getMessageDelegate().getValueSetDateRequiredMessage());
-		} /*else if (!isValidDateCheck(valueSetDate)) {
-			message.add(MatContext.get().getMessageDelegate().getValueSetDateInvalidMessage());
-		}*/
-		
-		boolean valid = message.size() == 0;
-		if(!valid) {
-			view.getErrorMessageDisplay().setMessages(message);
-			((Button)view.getPackageMeasureButton()).setEnabled(true);
-		}
-		else {
-			view.getErrorMessageDisplay().clear();
-		}
-		return valid;
-	}
-	
-	
+
 	private boolean isValid() {
 		List<MeasurePackageClauseDetail> detailList = view.getClausesInPackage();
 		List<String> messages = new ArrayList<String>();
@@ -387,7 +360,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	private void updateDetailsFromView() {
 		currentDetail.setPackageClauses(view.getClausesInPackage());
-		currentDetail.setValueSetDate(view.getValuesSetDate());
+		currentDetail.setValueSetDate(null);
 	}
 	// QDM elements
 	private void updateSuppDataDetailsFromView() {
@@ -412,7 +385,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		
 		view.setPackageName(currentDetail.getPackageName());
 		view.setClausesInPackage(packageClauses);
-		view.setValuesSetDate(model != null ? model.getValueSetDate() : "");
 		view.setClauses(remainingClauses);
 		view.setQDMElementsInSuppElements(overview.getSuppDataElements());
 		view.setQDMElements(overview.getQdmElements());
@@ -458,8 +430,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		
 		ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(),isEditable());
 		view.setViewIsEditable(isEditable(),result.getPackages());
-		view.getValuesSetDateInputBox().setEnabled(isEditable());
-	}
+	} 
 	
 	private void getMeasurePackageOverview(final String measureId) {
 		MatContext.get().getPackageService().getClausesAndPackagesForMeasure(measureId, new AsyncCallback<MeasurePackageOverview>() {
@@ -567,7 +538,5 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	private boolean isEditable(){
 		return MatContext.get().getMeasureLockService().checkForEditPermission();
-	}
-
-	
+	}	
 }

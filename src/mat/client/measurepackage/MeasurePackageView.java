@@ -73,8 +73,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	private FlowPanel clausesPanel = new FlowPanel();
 	private FlowPanel packagedPanel = new FlowPanel();
 	private Label viewOrEditLabel = new Label();
-	private DateBoxWithCalendar valueSetDateInput = new DateBoxWithCalendar();
-
+	
 	//MatTabLayoutPanel packageTabPanel;
 	private ListBox qdmElementsListBox = new ListBox();
 	private ListBox suppElementsListBox = new ListBox();
@@ -84,7 +83,6 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	private FlowPanel suppElementsPanel = new FlowPanel();
 	private PrimaryButton addQDMElementsToMeasure = new PrimaryButton("Save Supplemental Data Elements","primaryButton");
 	private Label qdmTabName = new Label("Supplemental Data Elements");
-	private Label valueSetPackageDateNote = new Label("The Value Set Package Date applies to all QDM elements used in the measure logic. Only the most recently saved value sets that are closest to, but do not occur after the Value Set Package Date entered, will be included in the Value Set Export file. Value Sets in Draft mode will NOT be included in the Value Set Export file.");
 	private int listVisibleCount=10;
 	//int currentPackageTab = 1;
 
@@ -138,13 +136,6 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		content.add(topQDMElementContainer);
 		//content.add(packageTabPanel);
 
-		HorizontalPanel valueSetDatePanel = new HorizontalPanel();
-		valueSetDatePanel.add(valueSetDateInput);
-		valueSetDateInput.addStyleName("pad-right5px");
-		content.add(LabelBuilder.buildRequiredLabel(valueSetDateInput, "Value Set Package Date"));
-		valueSetPackageDateNote.addStyleName("pad-left21px");
-		valueSetDatePanel.add(valueSetPackageDateNote);
-		content.add(valueSetDatePanel);
 		content.add(new SpacerWidget());
 
 		content.add(measurePackageSuccessMsg);
@@ -654,20 +645,6 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	@Override
 	public final SuccessMessageDisplayInterface getMeasurePackageSuccessMsg() {
 		return measurePackageSuccessMsg;
-	}
-
-	@Override
-	public final String getValuesSetDate() {
-		return valueSetDateInput.getValue();
-	}
-	@Override
-	public final void setValuesSetDate(final String date) {
-		valueSetDateInput.setValue(date);
-	}
-
-	@Override
-	public final DateBoxWithCalendar getValuesSetDateInputBox() {
-		return valueSetDateInput;
 	}
 
 	@Override

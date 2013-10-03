@@ -19,14 +19,6 @@ public class ModifyQDMDialogBox {
 	static HandlerRegistration handlerRegistration;
 
 	/**
-	 * Gets dialog box with close button.
-	 * @return Dialog Box with close button.
-	 */
-	public static DialogBoxWithCloseButton getDialogBox() {
-		return dialogBox;
-	}
-
-	/**
 	 * Creates and displays Modify QDM dialog box (pop-up).
 	 * @param widget - Widget.
 	 * @param modifyValueSetDTO - DTO to set caption heading.

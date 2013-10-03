@@ -338,7 +338,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 					"Please enter Value Set name and select a data type associated with it.");
 		}
 	}
-	
+
 	/**
 	 * This method is used to update QDM element selected for modification.
 	 *  All check's for attributes and non attributes , Occurrence and non occurrences.
@@ -347,7 +347,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 *
 	 **/
 	private void updateAppliedQDMList(final MatValueSet matValueSet , final CodeListSearchDTO codeListSearchDTO ,
-			final QualityDataSetDTO  qualityDataSetDTO, String dataType,  Boolean isSpecificOccurrence, final boolean isUSerDefined) {
+			final QualityDataSetDTO  qualityDataSetDTO, final String dataType,  final Boolean isSpecificOccurrence,
+			final boolean isUSerDefined) {
 		MatContext.get().getCodeListService().updateCodeListToMeasure(dataType, matValueSet, codeListSearchDTO,
 				qualityDataSetDTO, isSpecificOccurrence, appliedQDMList, new AsyncCallback<SaveUpdateCodeListResult>() {
 			@Override
@@ -385,7 +386,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 *  SupplementDataElements. It also removes attributes nodes if
 	 * there is mismatch in data types of newly selected QDM and already applied QDM.	 *
 	 **/
-	private void updateMeasureXML(final QualityDataSetDTO modifyWithDTO, final QualityDataSetDTO modifyableDTO, final boolean isUserDefined) {
+	private void updateMeasureXML(final QualityDataSetDTO modifyWithDTO,
+			final QualityDataSetDTO modifyableDTO, final boolean isUserDefined) {
 		MatContext.get().getMeasureService().updateMeasureXML(modifyWithDTO, modifyableDTO,
 				MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
 

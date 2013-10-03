@@ -18,13 +18,13 @@ import com.google.gwt.user.client.ui.Widget;
  *
  *
  */
-public class DialogBoxWithCloseButton extends DialogBox{
+public class DialogBoxWithCloseButton extends DialogBox {
 
 	private HorizontalPanel captionPanel = new HorizontalPanel();
 	private Widget closeWidget = null;
 	private HTML textHTML = new HTML();
 
-	public  DialogBoxWithCloseButton(String text) {
+	public DialogBoxWithCloseButton(final String text) {
 		super(true, true);
 		setGlassEnabled(true);
 		setAnimationEnabled(true);
@@ -100,6 +100,7 @@ public class DialogBoxWithCloseButton extends DialogBox{
 
 	/**
 	 * Overrides the browser event from the DialogBox.
+	 * @param event.
 	 */
 	@Override
 	public final void onBrowserEvent(final Event event) {
@@ -123,12 +124,12 @@ public class DialogBoxWithCloseButton extends DialogBox{
 	}
 
 	@Override
-	public String getText() {
+	public final String getText() {
 		return textHTML.getText();
 	}
 
 	@Override
-	public void setText(final String text) {
+	public final void setText(final String text) {
 		textHTML.setText(text);
 	}
 }

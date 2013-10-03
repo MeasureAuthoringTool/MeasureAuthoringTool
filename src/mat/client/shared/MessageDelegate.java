@@ -999,7 +999,7 @@ public class MessageDelegate {
 		return UMLS_NOT_LOGGEDIN;
 	}
 	
-	private final String UMLS_OID_REQUIRED ="Please enter OID.";
+	private final String UMLS_OID_REQUIRED ="Please enter an OID.";
 	public String getUMLS_OID_REQUIRED() {
 		return UMLS_OID_REQUIRED;
 	}

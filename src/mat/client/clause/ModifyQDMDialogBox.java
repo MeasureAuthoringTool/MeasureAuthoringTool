@@ -26,17 +26,18 @@ public class ModifyQDMDialogBox {
 	}
 
 	/**
-	 * Creates and displays Modify QDM dialog box (pop-up). 
-	 * @param widget
+	 * Creates and displays Modify QDM dialog box (pop-up).
+	 * @param widget - Widget.
 	 * @param modifyValueSetDTO - DTO to set caption heading.
-	 * @param qdmAvailableValueSetPresenter
+	 * @param qdmAvailableValueSetPresenter - QDMAvailableValueSetPresenter.
 	 */
-	public static void showModifyDialogBox(Widget widget, QualityDataSetDTO modifyValueSetDTO, 
-			final QDMAvailableValueSetPresenter qdmAvailableValueSetPresenter){
+	public static void showModifyDialogBox(final Widget widget, final QualityDataSetDTO modifyValueSetDTO,
+			final QDMAvailableValueSetPresenter qdmAvailableValueSetPresenter) {
 		String text = "Modify Applied QDM ( ";
-		if(modifyValueSetDTO.getOccurrenceText()!=null)
-			text = text.concat(" " + modifyValueSetDTO.getOccurrenceText()+ " of ");
-		text = text.concat(modifyValueSetDTO.getCodeListName() + " : " + modifyValueSetDTO.getDataType() +" )");
+		if (modifyValueSetDTO.getOccurrenceText() != null) {
+			text = text.concat(" " + modifyValueSetDTO.getOccurrenceText() + " of ");
+		}
+		text = text.concat(modifyValueSetDTO.getCodeListName() + " : " + modifyValueSetDTO.getDataType()  + " )");
 
 		dialogBox.setText(text);
 		dialogBox.getElement().setId("dialogBox_DialogBox");
@@ -54,12 +55,13 @@ public class ModifyQDMDialogBox {
 		dialogBox.center();
 		dialogBox.show();
 
-		if(handlerRegistration != null)
+		if (handlerRegistration != null) {
 			handlerRegistration.removeHandler();
-		
+		}
+
 		handlerRegistration = dialogBox.addCloseHandler(new CloseHandler<PopupPanel>() {
 			@Override
-			public void onClose(CloseEvent<PopupPanel> event) {
+			public void onClose(final CloseEvent<PopupPanel> event) {
 				//Reloading applied QDM list on close.
 				qdmAvailableValueSetPresenter.reloadAppliedQDMList();
 			}

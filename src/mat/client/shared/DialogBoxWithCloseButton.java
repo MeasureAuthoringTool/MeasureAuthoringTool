@@ -1,4 +1,4 @@
-package mat.client.clause;
+package mat.client.shared;
 
 import mat.client.ImageResources;
 

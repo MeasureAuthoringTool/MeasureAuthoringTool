@@ -1,5 +1,6 @@
 package mat.client.clause;
 
+import mat.client.shared.DialogBoxWithCloseButton;
 import mat.model.QualityDataSetDTO;
 
 import org.apache.commons.lang.StringUtils;

@@ -25,7 +25,7 @@ public class DialogBoxWithCloseButton extends DialogBox {
 	private HTML textHTML = new HTML();
 
 	public DialogBoxWithCloseButton(final String text) {
-		super(true, true);
+		super(false, true);
 		setGlassEnabled(true);
 		setAnimationEnabled(true);
 

@@ -32,218 +32,278 @@ import com.google.gwt.user.client.ui.Widget;
 public class MeasurePackagePresenter implements MatPresenter {
 	private SimplePanel emptyPanel = new SimplePanel();
 	private SimplePanel panel = new SimplePanel();
+
 	public static interface MeasurePackageSelectionHandler {
 		public void onSelection(MeasurePackageDetail detail);
 	}
-	
-	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
+
+	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
+			.getVsacapiServiceAsync();
+
 	public static interface View {
-		public void setClauses(List<MeasurePackageClauseDetail> clauses);
-		public void setClausesInPackage(List<MeasurePackageClauseDetail> list);
-		public List<MeasurePackageClauseDetail> getClausesInPackage();
-		public void setPackageName(String name);
-		public HasClickHandlers getAddClausesToPackageButton();
-		public HasClickHandlers getCreateNewButton();
-		
-		public void setMeasurePackages(List<MeasurePackageDetail> packages);
-		public HasClickHandlers getPackageMeasureButton();
-		public ErrorMessageDisplayInterface getPackageErrorMessageDisplay();
-		public ErrorMessageDisplayInterface getMeasureErrorMessageDisplay();
-		public SuccessMessageDisplayInterface getPackageSuccessMessageDisplay();
-		public SuccessMessageDisplayInterface getSuppDataSuccessMessageDisplay();
-		public SuccessMessageDisplayInterface getMeasurePackageSuccessMsg();
-		public Widget asWidget();
-		public void setSelectionHandler(MeasurePackageSelectionHandler handler);
-		public void setDeletionHandler(MeasurePackageSelectionHandler handler);
-		public void setViewIsEditable(boolean b, List<MeasurePackageDetail> packages);
-		
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		
-		// QDM elements
-		public void setQDMElementsInSuppElements(List<QualityDataSetDTO> list);
-		public void setQDMElements(List<QualityDataSetDTO> clauses);
-		public List<QualityDataSetDTO> getQDMElementsInSuppElements();
-		public List<QualityDataSetDTO> getQDMElements();
-		public HasClickHandlers getAddQDMElementsToMeasureButton();
-		//public void setTabIndex();
-		public ErrorMessageDisplayInterface getQDMErrorMessageDisplay();
+		void setClauses(List<MeasurePackageClauseDetail> clauses);
+		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
+		List<MeasurePackageClauseDetail> getClausesInPackage();
+		void setPackageName(String name);
+		HasClickHandlers getAddClausesToPackageButton();
+		HasClickHandlers getCreateNewButton();
+		void setMeasurePackages(List<MeasurePackageDetail> packages);
+		HasClickHandlers getPackageMeasureButton();
+		ErrorMessageDisplayInterface getPackageErrorMessageDisplay();
+		ErrorMessageDisplayInterface getMeasureErrorMessageDisplay();
+		SuccessMessageDisplayInterface getPackageSuccessMessageDisplay();
+		SuccessMessageDisplayInterface getSuppDataSuccessMessageDisplay();
+		SuccessMessageDisplayInterface getMeasurePackageSuccessMsg();
+		Widget asWidget();
+		void setSelectionHandler(MeasurePackageSelectionHandler handler);
+		void setDeletionHandler(MeasurePackageSelectionHandler handler);
+		void setViewIsEditable(boolean b,
+				List<MeasurePackageDetail> packages);
+		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		void setQDMElementsInSuppElements(List<QualityDataSetDTO> list);
+		void setQDMElements(List<QualityDataSetDTO> clauses);
+		List<QualityDataSetDTO> getQDMElementsInSuppElements();
+		List<QualityDataSetDTO> getQDMElements();
+		HasClickHandlers getAddQDMElementsToMeasureButton();
+		ErrorMessageDisplayInterface getQDMErrorMessageDisplay();
 	}
-	
-	
+
 	private View view;
 	private MeasurePackageDetail currentDetail;
 	private ManageMeasureDetailModel model;
 	private MeasurePackageOverview overview;
-	
-		
-	public MeasurePackagePresenter(View viewArg) {
+
+	/**
+	 *Constructor.
+	 *@param viewArg - View.
+	 * */
+	public MeasurePackagePresenter(final View viewArg) {
 		this.view = viewArg;
-		
+		addAllHandlers();
+	}
+
+	/**
+	 * All Handlers for View.
+	 */
+	private void addAllHandlers() {
 		view.getCreateNewButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				clearMessages();
 				setNewMeasurePackage();
-				//view.setTabIndex();
 			}
 		});
-		
 		view.getPackageMeasureButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
-				//O&M 17
-				((Button)view.getPackageMeasureButton()).setEnabled(false);
-				
+			public void onClick(final ClickEvent event) {
+				// O&M 17
+				((Button) view.getPackageMeasureButton()).setEnabled(false);
+
 				clearMessages();
-				
+
 				MeasureSelectedEvent mse = MatContext.get().getCurrentMeasureInfo();
-				String msg = " [measure] "+mse.getMeasureName()+" [version] "+mse.getMeasureVersion()+" [package date] " + new Date();
+				String msg = " [measure] " + mse.getMeasureName() + " [version] " + mse.getMeasureVersion()
+						+ " [package date] " + new Date();
 				String mid = mse.getMeasureId();
-				MatContext.get().recordTransactionEvent(mid, null, "MEASURE_PACKAGE_EVENT", msg, ConstantMessages.DB_LOG);
-				/*
-				 * correction for packaging error thrown
-				 * accessing MatContext fields individually first before using them
-				 */
+				MatContext.get().recordTransactionEvent(mid, null,
+						"MEASURE_PACKAGE_EVENT", msg, ConstantMessages.DB_LOG);
 				model.setValueSetDate(null);
-				MatContext.get().getMeasureService().save(model, new AsyncCallback<SaveMeasureResult>() {
-					
-					@Override
-					public void onSuccess(SaveMeasureResult result) { 
-						if(result.isSuccess()) {
-							Mat.showLoadingMessage();
-							String measureId = MatContext.get().getCurrentMeasureId();
-							updateValueSetsBeforePackaging(measureId);
-						} else{
-							//O&M 17
-							((Button)view.getPackageMeasureButton()).setEnabled(true);
-							
-							if(result.getFailureReason() == SaveMeasureResult.INVALID_VALUE_SET_DATE){
-								String message = MatContext.get().getMessageDelegate().getValueSetDateInvalidMessage();
-								view.getErrorMessageDisplay().setMessage(message);
+				MatContext.get().getMeasureService()
+						.save(model, new AsyncCallback<SaveMeasureResult>() {
+
+							@Override
+							public void onSuccess(final SaveMeasureResult result) {
+								if (result.isSuccess()) {
+									Mat.showLoadingMessage();
+									String measureId = MatContext.get()
+											.getCurrentMeasureId();
+									updateValueSetsBeforePackaging(measureId);
+								} else {
+									((Button) view.getPackageMeasureButton())
+											.setEnabled(true);
+									if (result.getFailureReason()
+											== SaveMeasureResult.INVALID_VALUE_SET_DATE) {
+										String message = MatContext.get()
+												.getMessageDelegate()
+												.getValueSetDateInvalidMessage();
+										view.getErrorMessageDisplay().setMessage(message);
+									}
+								}
 							}
-						}
-					}
-					@Override
-					public void onFailure(Throwable caught) {
-						//O&M 17
-						((Button)view.getPackageMeasureButton()).setEnabled(true);
-						
-						view.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
-					}
-				});
+							@Override
+							public void onFailure(final Throwable caught) {
+								((Button) view.getPackageMeasureButton())
+										.setEnabled(true);
+
+								view.getErrorMessageDisplay().setMessage(
+										MatContext.get().getMessageDelegate()
+												.getGenericErrorMessage());
+								MatContext.get().recordTransactionEvent(
+										null , null , null ,
+										"Unhandled Exception: "
+										+ caught.getLocalizedMessage() , 0);
+							}
+						});
 			}
 		});
-		
 		view.getAddClausesToPackageButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				clearMessages();
 				updateDetailsFromView();
-			
-				if(isValid()) {
-					MatContext.get().getPackageService().save(currentDetail, new AsyncCallback<Void>() {
-						@Override
-						public void onFailure(Throwable caught) {
-							view.getQDMErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
-						}
-						@Override
-						public void onSuccess(Void result) {
-							//process result of save op
-							//and set error message if needed 
-							//view.getPackageErrorMessageDisplay()
-							if(!overview.getPackages().contains(currentDetail)) {
-								overview.getPackages().add(currentDetail);
-								setOverview(overview);
-							}
-							view.getPackageSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGroupingSavedMessage());
-						}
-					});
+				if (isValid()) {
+					MatContext.get().getPackageService()
+							.save(currentDetail, new AsyncCallback<Void>() {
+								@Override
+								public void onFailure(final Throwable caught) {
+									view.getQDMErrorMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+								}
+								@Override
+								public void onSuccess(final Void result) {
+									if (!overview.getPackages().contains(
+											currentDetail)) {
+										overview.getPackages().add(
+												currentDetail);
+										setOverview(overview);
+									}
+									view.getPackageSuccessMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate().getGroupingSavedMessage());
+								}
+							});
 				}
 			}
 		});
-		
-		// QDM elements
-		view.getAddQDMElementsToMeasureButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				clearMessages();
-				updateSuppDataDetailsFromView();
-				MatContext.get().getPackageService().saveQDMData(currentDetail, new AsyncCallback<Void>() {
+		view.getAddQDMElementsToMeasureButton().addClickHandler(
+				new ClickHandler() {
 					@Override
-					public void onFailure(Throwable caught) {
-						view.getPackageErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
-					}
-					@Override
-					public void onSuccess(Void result) {
-						//process result of save op
-						//and set error message if needed 
-						//view.getPackageErrorMessageDisplay()
-						if(!overview.getPackages().contains(currentDetail)) {
-							if(currentDetail.getPackageClauses() != null && currentDetail.getPackageClauses().size() > 0){
-								overview.getPackages().add(currentDetail);	
-							}
-							overview.setQdmElements(currentDetail.getQdmElements());
-							overview.setSuppDataElements(currentDetail.getSuppDataElements());
-							setOverview(overview);
-						}
-						view.getSuppDataSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getSuppDataSavedMessage());
+					public void onClick(final ClickEvent event) {
+						clearMessages();
+						updateSuppDataDetailsFromView();
+						MatContext
+								.get()
+								.getPackageService()
+								.saveQDMData(currentDetail,
+										new AsyncCallback<Void>() {
+											@Override
+											public void onFailure(final Throwable caught) {
+												view.getPackageErrorMessageDisplay().
+												setMessage(MatContext.get().
+												getMessageDelegate().
+												getUnableToProcessMessage());
+											}
+
+											@Override
+											public void onSuccess(final Void result) {
+												if (!overview.getPackages().contains(
+														currentDetail)) {
+													if (currentDetail
+														.getPackageClauses() != null
+														&& currentDetail.
+														getPackageClauses()
+															.size() > 0) {
+														overview.getPackages()
+														.add(currentDetail);
+													}
+													overview.setQdmElements(
+															currentDetail
+															.getQdmElements());
+													overview.
+													setSuppDataElements(currentDetail
+													.getSuppDataElements());
+													setOverview(overview);
+												}
+												view.getSuppDataSuccessMessageDisplay()
+												.setMessage(MatContext.get()
+													.getMessageDelegate()
+													.getSuppDataSavedMessage());
+											}
+										});
 					}
 				});
-			}
-		});
-	}
-	
-	
-	private void updateValueSetsBeforePackaging(final String measureId){
-		vsacapiServiceAsync.updateAllVSACValueSetsAtPackage(measureId, new AsyncCallback<VsacApiResult>() {
-
-			@Override
-			public void onFailure(final Throwable caught) {
-			}
-
-			@Override
-			public void onSuccess(final VsacApiResult result) {
-				if (!result.isSuccess()) {
-					view.getPackageErrorMessageDisplay().setMessage(
-							MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
-				}
-				validateMeasureAndExport(measureId , result.getVsacResponse());
-			}
-		});
 	}
 
-	private void validateMeasureAndExport(String measureId, ArrayList<MatValueSet> matValueSetList) {
-		MatContext.get().getMeasureService().validateMeasureForExport(measureId,
-			matValueSetList, new AsyncCallback<ValidateMeasureResult>() {
-				@Override
-				public void onFailure(final Throwable caught) {
-					//O&M 17
-					((Button) view.getPackageMeasureButton()).setEnabled(true);
+	/**
+	 *Service call to VSAC to update Measure Xml before invoking simple xml and value set sheet generation.
+	 *@param measureId - String.
+	 * **/
+	private void updateValueSetsBeforePackaging(final String measureId) {
+		vsacapiServiceAsync.updateAllVSACValueSetsAtPackage(measureId,
+				new AsyncCallback<VsacApiResult>() {
 
-					Mat.hideLoadingMessage();
-					view.getPackageErrorMessageDisplay().setMessage(
-							MatContext.get().getMessageDelegate().getUnableToProcessMessage());
-				}
-
-				@Override
-				public void onSuccess(final ValidateMeasureResult result) {
-					//O&M 17
-					((Button) view.getPackageMeasureButton()).setEnabled(true);
-
-					if (result.isValid()) {
-						Mat.hideLoadingMessage();
-						view.getMeasurePackageSuccessMsg().setMessage(
-								MatContext.get().getMessageDelegate().getPackageSuccessMessage());
-
-					} else {
-						Mat.hideLoadingMessage();
-						view.getMeasureErrorMessageDisplay().setMessages(result.getValidationMessages());
+					@Override
+					public void onFailure(final Throwable caught) {
 					}
-				}
-			});
+
+					@Override
+					public void onSuccess(final VsacApiResult result) {
+						if (!result.isSuccess()) {
+							view.getPackageErrorMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate()
+											.getUMLS_NOT_LOGGEDIN());
+						}
+						validateMeasureAndExport(measureId,
+								result.getVsacResponse());
+					}
+				});
 	}
-	
+
+	/**
+	 *Service Call to generate Simple Xml and value set sheet.
+	 *@param measureId - String.
+	 *@param matValueSetList - Array List of MatValueSet.
+	 * **/
+	private void validateMeasureAndExport(final String measureId,
+			final ArrayList<MatValueSet> matValueSetList) {
+		MatContext
+				.get()
+				.getMeasureService()
+				.validateMeasureForExport(measureId, matValueSetList,
+						new AsyncCallback<ValidateMeasureResult>() {
+							@Override
+							public void onFailure(final Throwable caught) {
+								// O&M 17
+								((Button) view.getPackageMeasureButton())
+										.setEnabled(true);
+
+								Mat.hideLoadingMessage();
+								view.getPackageErrorMessageDisplay()
+										.setMessage(
+												MatContext
+														.get()
+														.getMessageDelegate()
+													.getUnableToProcessMessage());
+							}
+
+							@Override
+							public void onSuccess(
+									final ValidateMeasureResult result) {
+								// O&M 17
+								((Button) view.getPackageMeasureButton())
+										.setEnabled(true);
+
+								if (result.isValid()) {
+									Mat.hideLoadingMessage();
+									view.getMeasurePackageSuccessMsg()
+											.setMessage(
+													MatContext
+															.get()
+														.getMessageDelegate()
+													.getPackageSuccessMessage());
+
+								} else {
+									Mat.hideLoadingMessage();
+									view.getMeasureErrorMessageDisplay()
+											.setMessages(
+													result.getValidationMessages());
+								}
+							}
+						});
+	}
+
+	/**
+	 * Method to clear messaged from widget.
+	 * **/
 	private void clearMessages() {
 		view.getPackageSuccessMessageDisplay().clear();
 		view.getSuppDataSuccessMessageDisplay().clear();
@@ -252,27 +312,33 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getMeasurePackageSuccessMsg().clear();
 		view.getErrorMessageDisplay().clear();
 	}
+
 	@Override
 	public void beforeDisplay() {
 		Mat.hideLoadingMessage();
 		clearMessages();
-		
-		if(MatContext.get().getCurrentMeasureId() != null && !MatContext.get().getCurrentMeasureId().equals("")){
+
+		if (MatContext.get().getCurrentMeasureId() != null
+				&& !MatContext.get().getCurrentMeasureId().equals("")) {
 			getMeasure(MatContext.get().getCurrentMeasureId());
-		}else{
+		} else {
 			displayEmpty();
 		}
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackage");
 		Mat.focusSkipLists("MeasureComposer");
 	}
-	@Override 
+
+	@Override
 	public void beforeClosingDisplay() {
-		
+
 	}
 
-	private void setMeasurePackage(String measurePackageId) {
-		for(MeasurePackageDetail detail : overview.getPackages()) {
-			if(detail.getSequence().equals(measurePackageId)) {
+	/**
+	 *@param measurePackageId - String.
+	 * **/
+	private void setMeasurePackage(final String measurePackageId) {
+		for (MeasurePackageDetail detail : overview.getPackages()) {
+			if (detail.getSequence().equals(measurePackageId)) {
 				currentDetail = detail;
 				setMeasurePackageDetailsOnView();
 				break;
@@ -280,151 +346,201 @@ public class MeasurePackagePresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 *Valid grouping check.
+	 *@return boolean.
+	 * **/
 	private boolean isValid() {
-		List<MeasurePackageClauseDetail> detailList = view.getClausesInPackage();
+		List<MeasurePackageClauseDetail> detailList = view
+				.getClausesInPackage();
 		List<String> messages = new ArrayList<String>();
-		
+
 		String scoring = MatContext.get().getCurrentMeasureScoringType();
-		
-		//TODO refactor this into a common shared class so the server can use it for validation also
-		if(ConstantMessages.CONTINUOUS_VARIABLE_SCORING.equalsIgnoreCase(scoring)){
-			if((countDetailsWithType(detailList, ConstantMessages.POPULATION_CONTEXT_ID) != 1) 
-				||(countDetailsWithType(detailList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 1)
-				||(countDetailsWithType(detailList, ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 1)
-				){
-						messages.add(MatContext.get().getMessageDelegate().getContinuousVariableWrongNumMessage());
+
+		// TODO refactor this into a common shared class so the server can use
+		// it for validation also
+		if (ConstantMessages.CONTINUOUS_VARIABLE_SCORING
+				.equalsIgnoreCase(scoring)) {
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getContinuousVariableWrongNumMessage());
 			}
-		
-			if((countDetailsWithType(detailList, ConstantMessages.NUMERATOR_CONTEXT_ID) != 0)
-				|| (countDetailsWithType(detailList, ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) != 0)
-				||	(countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_CONTEXT_ID) != 0) 
-				|| (countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) != 0)
-			    || (countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0) 
-			) {
-				messages.add(MatContext.get().getMessageDelegate().getContinuousVariableMayNotContainMessage());
+
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.NUMERATOR_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getContinuousVariableMayNotContainMessage());
 			}
-			
-		} 
-		/* PROPORTION
-			at least one and only one
-			Population, Denominator 
-			at least one or more
-			Numerator
-			zero or one
-			Denominator Exclusions
-			Denominator Exceptions
-			and no Numerator Exclusions, Measure Population, Measure Observations
-		 */
-		else if(ConstantMessages.PROPORTION_SCORING.equalsIgnoreCase(scoring)){
-			/* at least one and only one
-			   Population, Denominator */
-			if((countDetailsWithType(detailList, ConstantMessages.POPULATION_CONTEXT_ID) != 1)
-					|| (countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
-			){
-				messages.add(MatContext.get().getMessageDelegate().getProportionWrongNumMessage());
+
+		} else if (ConstantMessages.PROPORTION_SCORING.equalsIgnoreCase(scoring)) { /*
+			 * PROPORTION at least one and only one Population, Denominator at least
+			 * one or more Numerator zero or one Denominator Exclusions Denominator
+			 * Exceptions and no Numerator Exclusions, Measure Population, Measure
+			 * Observations
+			 */
+			/*
+			 * at least one and only one Population, Denominator
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionWrongNumMessage());
 			}
-			/* at least one or more
-			   Numerator */
-			if((countDetailsWithType(detailList, ConstantMessages.NUMERATOR_CONTEXT_ID) < 1)
-			){
-				messages.add(MatContext.get().getMessageDelegate().getProportionTooFewMessage());
+			/*
+			 * at least one or more Numerator
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.NUMERATOR_CONTEXT_ID) < 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionTooFewMessage());
 			}
-			/* zero or one
-			   Denominator Exclusions, Denominator Exceptions */
-			if((countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
-					|| (countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) > 1)
-			){
-				messages.add(MatContext.get().getMessageDelegate().getProportionTooManyMessage());
+			/*
+			 * zero or one Denominator Exclusions, Denominator Exceptions
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) > 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionTooManyMessage());
 			}
 			/* no Numerator Exclusions, Measure Population, Measure Observations */
-			if((countDetailsWithType(detailList, ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) != 0)
-				|| (countDetailsWithType(detailList, ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
-				|| (countDetailsWithType(detailList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)
-				){
-				messages.add(MatContext.get().getMessageDelegate().getProportionMayNotContainMessage());
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionMayNotContainMessage());
+			}
+		} else if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) { /*
+			 * at least one and only one Population, Denominator, Numerator, zero or
+			 * one Denominator Exclusions and no Denominator Exceptions, Measure
+			 * Observation, Measure Population
+			 */
+
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getRatioWrongNumMessage());
+			}
+			/*
+			 * zero or one Denominator Exclusions
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) > 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getRatioTooManyMessage());
+			}
+
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
+
+			) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getRatioMayNotContainMessage());
 			}
 		}
-		
-		/*
-			at least one and only one
-			Population, Denominator, Numerator, 
-			zero or one
-			Denominator Exclusions
-			and no Denominator Exceptions, Measure Observation, Measure Population
-		 */
-		else if(ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)){
-			
-			if((countDetailsWithType(detailList, ConstantMessages.POPULATION_CONTEXT_ID) != 1)
-					|| (countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
-					|| (countDetailsWithType(detailList, ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
-			){
-				messages.add(MatContext.get().getMessageDelegate().getRatioWrongNumMessage());
-			}
-			/* zero or one
-			   Denominator Exclusions */
-			if((countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
-					|| (countDetailsWithType(detailList, ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) > 1)
-			){
-				messages.add(MatContext.get().getMessageDelegate().getRatioTooManyMessage());
-			}
-			
-			if((countDetailsWithType(detailList, ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) !=0) 
-					|| (countDetailsWithType(detailList, ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)
-					|| (countDetailsWithType(detailList, ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
-					
-			){
-				messages.add(MatContext.get().getMessageDelegate().getRatioMayNotContainMessage());
-			}	
-		}
-		
-		if(messages.size() > 0) {
+
+		if (messages.size() > 0) {
 			view.getPackageErrorMessageDisplay().setMessages(messages);
-		}
-		else {
+		} else {
 			view.getPackageErrorMessageDisplay().clear();
 		}
 		return messages.size() == 0;
 	}
-	
+
+	/**
+	 * updateDetailsFromView.
+	 * **/
 	private void updateDetailsFromView() {
 		currentDetail.setPackageClauses(view.getClausesInPackage());
 		currentDetail.setValueSetDate(null);
 	}
-	// QDM elements
+
+	/**
+	 * updateSuppDataDetailsFromView.
+	 * **/
 	private void updateSuppDataDetailsFromView() {
 		currentDetail.setSuppDataElements(view.getQDMElementsInSuppElements());
 		currentDetail.setQdmElements(view.getQDMElements());
 	}
-	
-	
-	private int countDetailsWithType(List<MeasurePackageClauseDetail> detailList, String type) {
+
+	/**
+	 * countDetailsWithType.
+	 * @param detailList - List of MeasurePackageClauseDetail.
+	 * @param type - String.
+	 *
+	 * @return Integer.
+	 * **/
+	private int countDetailsWithType(
+			final List<MeasurePackageClauseDetail> detailList, final String type) {
 		int count = 0;
-		for(MeasurePackageClauseDetail detail : detailList) {
-			if(type.equals(detail.getType())) {
+		for (MeasurePackageClauseDetail detail : detailList) {
+			if (type.equals(detail.getType())) {
 				count++;
 			}
 		}
 		return count;
 	}
-	
+
+	/**
+	 * setMeasurePackageDetailsOnView.
+	 * **/
 	private void setMeasurePackageDetailsOnView() {
-		List<MeasurePackageClauseDetail> packageClauses = currentDetail.getPackageClauses();
-		List<MeasurePackageClauseDetail> remainingClauses = removeClauses(overview.getClauses(), packageClauses);
-		
+		List<MeasurePackageClauseDetail> packageClauses = currentDetail
+				.getPackageClauses();
+		List<MeasurePackageClauseDetail> remainingClauses = removeClauses(
+				overview.getClauses(), packageClauses);
+
 		view.setPackageName(currentDetail.getPackageName());
 		view.setClausesInPackage(packageClauses);
 		view.setClauses(remainingClauses);
 		view.setQDMElementsInSuppElements(overview.getSuppDataElements());
 		view.setQDMElements(overview.getQdmElements());
 	}
-	
-	
-	private List<MeasurePackageClauseDetail> removeClauses(List<MeasurePackageClauseDetail> master, List<MeasurePackageClauseDetail> toRemove) {
+
+	/**
+	 * remove clauses from Package.
+	 * @param master - List of MeasurePackageClauseDetail.
+	 * @param toRemove - List of MeasurePackageClauseDetail.
+	 *
+	 * @return MeasurePackageClauseDetail.
+	 * **/
+	private List<MeasurePackageClauseDetail> removeClauses(
+			final List<MeasurePackageClauseDetail> master,
+			final List<MeasurePackageClauseDetail> toRemove) {
 		List<MeasurePackageClauseDetail> newList = new ArrayList<MeasurePackageClauseDetail>();
 		newList.addAll(master);
-		for(MeasurePackageClauseDetail remove : toRemove) {
-			for(int i = 0; i < newList.size(); i++) {
-				if(newList.get(i).getId().equals(remove.getId())) {
+		for (MeasurePackageClauseDetail remove : toRemove) {
+			for (int i = 0; i < newList.size(); i++) {
+				if (newList.get(i).getId().equals(remove.getId())) {
 					newList.remove(i);
 					break;
 				}
@@ -432,139 +548,215 @@ public class MeasurePackagePresenter implements MatPresenter {
 		}
 		return newList;
 	}
-	private void setOverview(MeasurePackageOverview result) {
+
+	/**
+	 * set Overview.
+	 * @param result - MeasurePackageOverview.
+	 * **/
+	private void setOverview(final MeasurePackageOverview result) {
 		this.overview = result;
 		view.setClauses(result.getClauses());
 		// QDM elements
 		view.setQDMElements(result.getQdmElements());
-	
+
 		view.setMeasurePackages(result.getPackages());
-		
-		if(result.getPackages().size() > 0) {
-			if(currentDetail != null){
-				for(int i=0; i<result.getPackages().size(); i++){
+
+		if (result.getPackages().size() > 0) {
+			if (currentDetail != null) {
+				for (int i = 0; i < result.getPackages().size(); i++) {
 					MeasurePackageDetail mpDetail = result.getPackages().get(i);
-					if(mpDetail.getSequence().equalsIgnoreCase(currentDetail.getSequence())){
-						setMeasurePackage(result.getPackages().get(i).getSequence());
+					if (mpDetail.getSequence().equalsIgnoreCase(
+							currentDetail.getSequence())) {
+						setMeasurePackage(result.getPackages().get(i)
+								.getSequence());
 					}
 				}
-			}else
+			} else {
 				setMeasurePackage(result.getPackages().get(0).getSequence());
-				
+			}
+
+		} else {
+			setNewMeasurePackage();
 		}
-		else {
-		setNewMeasurePackage();			
-		}
-		
-		ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(),isEditable());
-		view.setViewIsEditable(isEditable(),result.getPackages());
-	} 
-	
+
+		ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(),
+				isEditable());
+		view.setViewIsEditable(isEditable(), result.getPackages());
+	}
+
+	/**
+	 * get Measure Package Overview.
+	 * @param measureId - String.
+	 * **/
 	private void getMeasurePackageOverview(final String measureId) {
-		MatContext.get().getPackageService().getClausesAndPackagesForMeasure(measureId, new AsyncCallback<MeasurePackageOverview>() {
-			@Override
-			public void onSuccess(MeasurePackageOverview result) {
-				if(currentDetail != null && !currentDetail.getMeasureId().equalsIgnoreCase(measureId)){
-					currentDetail = null; // This will make sure the package information are not cached across measures.
-				}
-				setOverview(result);
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				view.getPackageErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
-		});
+		MatContext
+				.get()
+				.getPackageService()
+				.getClausesAndPackagesForMeasure(measureId,
+						new AsyncCallback<MeasurePackageOverview>() {
+							@Override
+							public void onSuccess(final MeasurePackageOverview result) {
+								if (currentDetail != null
+										&& !currentDetail.getMeasureId()
+												.equalsIgnoreCase(measureId)) {
+									currentDetail = null; // This will make sure
+														  // the package
+														  // information are not
+														  // cached across
+														  // measures.
+								}
+								setOverview(result);
+							}
+
+							@Override
+							public void onFailure(final Throwable caught) {
+								view.getPackageErrorMessageDisplay()
+										.setMessage(
+												MatContext
+														.get()
+														.getMessageDelegate()
+														.getGenericErrorMessage());
+							}
+						});
 		view.setSelectionHandler(new MeasurePackageSelectionHandler() {
 			@Override
-			public void onSelection(MeasurePackageDetail detail) {
+			public void onSelection(final MeasurePackageDetail detail) {
 				currentDetail = detail;
 				clearMessages();
 				setMeasurePackageDetailsOnView();
 			}
-		}) ;
+		});
 		view.setDeletionHandler(new MeasurePackageSelectionHandler() {
-			
+
 			@Override
-			public void onSelection(MeasurePackageDetail detail) {
+			public void onSelection(final MeasurePackageDetail detail) {
 				clearMessages();
 				deleteMeasurePackage(detail);
 			}
 		});
 	}
-	
+
+	/**
+	 * get Measure.
+	 * @param measureId - String.
+	 * **/
 	private void getMeasure(final String measureId) {
-		MatContext.get().getMeasureService().getMeasure(measureId, new AsyncCallback<ManageMeasureDetailModel>() {
-			@Override
-			public void onSuccess(ManageMeasureDetailModel result) {
-				model = result;
-				getMeasurePackageOverview(MatContext.get().getCurrentMeasureId());
-			    displayMeasurePackageWorkspace();
-			}
-			
-			@Override
-			public void onFailure(Throwable caught) {
-				view.getPackageErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
-		});
-		
+		MatContext
+				.get()
+				.getMeasureService()
+				.getMeasure(measureId,
+						new AsyncCallback<ManageMeasureDetailModel>() {
+							@Override
+							public void onSuccess(
+									final ManageMeasureDetailModel result) {
+								model = result;
+								getMeasurePackageOverview(MatContext.get()
+										.getCurrentMeasureId());
+								displayMeasurePackageWorkspace();
+							}
+
+							@Override
+							public void onFailure(final Throwable caught) {
+								view.getPackageErrorMessageDisplay()
+										.setMessage(
+												MatContext
+														.get()
+														.getMessageDelegate()
+														.getGenericErrorMessage());
+							}
+						});
+
 	}
-	
+
+	/**
+	 * Delete Measure Package.
+	 * @param pkg - MeasurePackageDetail.
+	 * **/
 	private void deleteMeasurePackage(final MeasurePackageDetail pkg) {
-		MatContext.get().getPackageService().delete(pkg, new AsyncCallback<Void>() {
+		MatContext.get().getPackageService()
+				.delete(pkg, new AsyncCallback<Void>() {
 
-			@Override
-			public void onFailure(Throwable caught) {
-				view.getPackageErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
+					@Override
+					public void onFailure(final Throwable caught) {
+						view.getPackageErrorMessageDisplay().setMessage(
+								MatContext.get().getMessageDelegate()
+										.getGenericErrorMessage());
+					}
 
-			@Override
-			public void onSuccess(Void result) {
-				overview.getPackages().remove(pkg);
-				if(currentDetail.getSequence().equals(pkg.getSequence())){
-					currentDetail = null;
-				}
-				setOverview(overview);
-			}
-			
-		});
+					@Override
+					public void onSuccess(final Void result) {
+						overview.getPackages().remove(pkg);
+						if (currentDetail.getSequence().equals(
+								pkg.getSequence())) {
+							currentDetail = null;
+						}
+						setOverview(overview);
+					}
+
+				});
 	}
-	private int getMaxSequence(MeasurePackageOverview overview) {
+
+	/**
+	 * Get Max Sequence.
+	 * @param measurePackageOverview - MeasurePackageOverview.
+	 * @return Integer.
+	 * **/
+	private int getMaxSequence(final MeasurePackageOverview measurePackageOverview) {
 		int max = 0;
-		for(MeasurePackageDetail detail : overview.getPackages()) {
+		for (MeasurePackageDetail detail : measurePackageOverview.getPackages()) {
 			int seqInt = Integer.parseInt(detail.getSequence());
-			if(seqInt > max) {
+			if (seqInt > max) {
 				max = seqInt;
 			}
 		}
 		return max;
 	}
+
+	/**
+	 * set New MeasurePackage.
+	 * **/
 	private void setNewMeasurePackage() {
 		currentDetail = new MeasurePackageDetail();
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
-		currentDetail.setSequence(Integer.toString(getMaxSequence(overview) + 1));
+		currentDetail.setSequence(Integer
+				.toString(getMaxSequence(overview) + 1));
 		view.setMeasurePackages(overview.getPackages());
 		setMeasurePackageDetailsOnView();
 	}
-	
-	public Widget getWidget() {
+
+	/**
+	 * Get Widget.
+	 * @return Panel.
+	 * **/
+	public final Widget getWidget() {
 		panel.clear();
 		panel.add(view.asWidget());
 		return panel;
 	}
-	
-	private void displayEmpty(){
+
+	/**
+	 * Display Empty.
+	 * **/
+	private void displayEmpty() {
 		panel.clear();
 		panel.add(emptyPanel);
 	}
-	
-	private void displayMeasurePackageWorkspace(){
+
+	/**
+	 * Display MeasurePackage Workspace.
+	 * **/
+	private void displayMeasurePackageWorkspace() {
 		panel.clear();
 		panel.add(view.asWidget());
-		//view.setTabIndex();
+		// view.setTabIndex();
 	}
-	
-	private boolean isEditable(){
-		return MatContext.get().getMeasureLockService().checkForEditPermission();
-	}	
+
+	/**
+	 * Check if Measure is Editable.
+	 * @return boolean.
+	 * **/
+	private boolean isEditable() {
+		return MatContext.get().getMeasureLockService()
+				.checkForEditPermission();
+	}
 }

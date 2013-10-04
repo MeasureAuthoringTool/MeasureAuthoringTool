@@ -57,69 +57,69 @@ public class ExportServlet extends HttpServlet {
 		String id = req.getParameter(ID_PARAM);
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
-		
+
 		ExportResult export = null;
-		
+
 		FileNameUtility fnu = new FileNameUtility();
 		try {
-			if(SIMPLEXML.equals(format)) {
+			if (SIMPLEXML.equals(format)) {
 				export = getService().getSimpleXML(id);
-				if(SAVE.equals(type)) {
-					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME+ fnu.getSimpleXMLName(export.measureName));
-				}
-				else {
+				if (SAVE.equals(type)) {
+					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+							+ fnu.getSimpleXMLName(export.measureName));
+				} else {
 					resp.setHeader(CONTENT_TYPE, TEXT_XML);
 				}
-			}
-			else if(EMEASURE.equals(format)) {
-				if("open".equals(type)) {
-					export=getService().getEMeasureHTML(id);
+			} else if (EMEASURE.equals(format)) {
+				if ("open".equals(type)) {
+					export = getService().getEMeasureHTML(id);
 					resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+				} else if (SAVE.equals(type)) {
+					export = getService().getEMeasureXML(id);
+					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+							+ fnu.getEmeasureXMLName(export.measureName));
 				}
-				else if(SAVE.equals(type)) {
-					export=getService().getEMeasureXML(id);
-					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME+ fnu.getEmeasureXMLName(export.measureName));
-				}
-			}
-			else if(CODELIST.equals(format)) {
-				export=getService().getEMeasureXLS(id);
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME+ fnu.getEmeasureXLSName(export.measureName, export.packageDate));
+			} else if (CODELIST.equals(format)) {
+				export = getService().getEMeasureXLS(id);
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+						+ fnu.getEmeasureXLSName(export.measureName, export.packageDate));
 				resp.setContentType("application/vnd.ms-excel");
 				resp.getOutputStream().write(export.wkbkbarr);
 				resp.getOutputStream().close();
 				export.wkbkbarr = null;
-			}
-			else if(ZIP.equals(format)) {
-				export=getService().getEMeasureZIP(id);
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME+ fnu.getZipName(export.measureName));
+			} else if (ZIP.equals(format)) {
+				export = getService().getEMeasureZIP(id);
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName));
 				resp.setContentType("application/zip");
 				resp.getOutputStream().write(export.zipbarr);
 				resp.getOutputStream().close();
 				export.zipbarr = null;
-			}
-			else if(VALUESET.equals(format)) {
-				export=getService().getValueSetXLS(id);
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME+ fnu.getValueSetXLSName(export.valueSetName, export.lastModifiedDate));
+			} else if (VALUESET.equals(format)) {
+				export = getService().getValueSetXLS(id);
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+						+ fnu.getValueSetXLSName(export.valueSetName, export.lastModifiedDate));
 				resp.setContentType("application/vnd.ms-excel");
 				resp.getOutputStream().write(export.wkbkbarr);
 				resp.getOutputStream().close();
 				export.wkbkbarr = null;
-			}else if(EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)){
+			} else if (EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)) {
 				String userRole = LoggedInUserUtil.getLoggedInUserRole();
-				if("Administrator".equalsIgnoreCase(userRole)){
+				if ("Administrator".equalsIgnoreCase(userRole)) {
 					String csvFileString = generateCSVOfActiveUserEmails();
 					Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					String activeUserCSVDate = formatter.format(new Date());
-					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME+fnu.getCSVFileName("activeUsers", activeUserCSVDate) +";");
+					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+							+ fnu.getCSVFileName("activeUsers", activeUserCSVDate) + ";");
 					resp.setContentType("text/csv");
 					resp.getOutputStream().write(csvFileString.getBytes());
 					resp.getOutputStream().close();
 				}
-			}else if("exportMeasureNotesForMeasure".equals(format)){
+			} else if ("exportMeasureNotesForMeasure".equals(format)) {
 				String csvFileString = generateCSVToExportMeasureNotes(id);
 				Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String measureNoteDate = formatter.format(new Date());
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME+fnu.getCSVFileName("MeasureNotes", measureNoteDate) +";");
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+						+ fnu.getCSVFileName("MeasureNotes", measureNoteDate) + ";");
 				resp.setContentType("text/csv");
 				resp.getOutputStream().write(csvFileString.getBytes());
 				resp.getOutputStream().close();
@@ -127,75 +127,88 @@ public class ExportServlet extends HttpServlet {
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
-		if(! CODELIST.equals(format) && ! EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format) && ! EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format)){
+		if (!CODELIST.equals(format) && !EXPORT_ACTIVE_NON_ADMIN_USERS_CSV.equals(format)
+				&& !EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format)) {
 			resp.getOutputStream().println(export.export);
 		}
 	}
-	
-	private String generateCSVToExportMeasureNotes(String measureId){
+
+	private String generateCSVToExportMeasureNotes(final String measureId) {
 		logger.info("Generating CSV of Measure Notes...");
-		List<MeasureNotes> allMeasureNotes = getMeasureNoteService().getAllMeasureNotesByMeasureID(measureId) ;
-		
+		List<MeasureNotes> allMeasureNotes = getMeasureNoteService().getAllMeasureNotesByMeasureID(measureId);
+
 		StringBuilder csvStringBuilder = new StringBuilder();
 		//Add the header row
 		csvStringBuilder.append("Title,Description,LastModifiedDate,Created By,Modified By");
 		csvStringBuilder.append("\r\n");
 		//Add data rows
-		for(MeasureNotes measureNotes:allMeasureNotes){
-			if(measureNotes.getModifyUser()!=null)
-				csvStringBuilder.append("\""+measureNotes.getNoteTitle()+"\",\""+measureNotes.getNoteDesc()+
-						"\",\""+convertDateToString(measureNotes.getLastModifiedDate())+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+measureNotes.getModifyUser().getEmailAddress()+"\"");
-			else
-				csvStringBuilder.append("\""+measureNotes.getNoteTitle()+"\",\""+measureNotes.getNoteDesc()+
-						"\",\""+convertDateToString(measureNotes.getLastModifiedDate())+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+""+"\"");
+		for (MeasureNotes measureNotes:allMeasureNotes) {
+			if (measureNotes.getModifyUser() != null) {
+				csvStringBuilder.append("\"" + measureNotes.getNoteTitle() + "\",\""
+						+ measureNotes.getNoteDesc() + "\",\""
+						+ convertDateToString(measureNotes.getLastModifiedDate()) + "\",\""
+						+ measureNotes.getCreateUser().getEmailAddress() + "\",\""
+						+ measureNotes.getModifyUser().getEmailAddress() + "\"");
+			} else {
+				csvStringBuilder.append("\"" + measureNotes.getNoteTitle() + "\",\""
+						+ measureNotes.getNoteDesc() + "\",\""
+						+ convertDateToString(measureNotes.getLastModifiedDate()) + "\",\""
+						+ measureNotes.getCreateUser().getEmailAddress() + "\",\"" + "" + "\"");
+			}
 			csvStringBuilder.append("\r\n");
 		}
 		return csvStringBuilder.toString();
 	}
-	
-	private String convertDateToString(Date date) {
+
+	/**
+	 * Converts a date into a date time string of "MM/dd/yyyy hh:mm:ss a z" format.
+	 * @param date - date to be formated into a string.
+	 * @return the formated date string.
+	 */
+	private String convertDateToString(final Date date) {
 		String dateString = StringUtils.EMPTY;
-		if(date != null){
-			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a z"); 
+		if (date != null) {
+			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a z");
 			dateString = format.format(date);
 		}
 		return dateString;
 	}
-	
-	private String generateCSVOfActiveUserEmails() throws InCorrectUserRoleException{
+
+	private String generateCSVOfActiveUserEmails() throws InCorrectUserRoleException {
 		logger.info("Generating CSV of email addrs for all Active Users...");
 		//Get all the active users
 		List<User> allNonAdminActiveUsersList = getUserService().getAllNonAdminActiveUsers();
-		
+
 		//Iterate through the 'allNonAdminActiveUsersList' and generate a csv
 		return createCSVOfAllNonAdminActiveUsers(allNonAdminActiveUsersList);
 	}
 
 	private String createCSVOfAllNonAdminActiveUsers(
-			List<User> allNonAdminActiveUsersList) {
-		
+			final List<User> allNonAdminActiveUsersList) {
+
 		StringBuilder csvStringBuilder = new StringBuilder();
 		//Add the header row
 		csvStringBuilder.append("Last Name,First Name,Email Address,Organization,Organization Id");
 		csvStringBuilder.append("\r\n");
 		//Add data rows
-		for(User user:allNonAdminActiveUsersList){
-			csvStringBuilder.append("\""+user.getLastName()+"\",\""+user.getFirstName()+
-					"\",\""+user.getEmailAddress()+"\",\""+user.getOrganizationName()+"\",\""+user.getOrgOID()+"\"");
+		for (User user:allNonAdminActiveUsersList) {
+			csvStringBuilder.append("\"" + user.getLastName() + "\",\"" + user.getFirstName()
+					+ "\",\"" + user.getEmailAddress() + "\",\"" + user.getOrganizationName()
+					+ "\",\"" + user.getOrgOID() + "\"");
 			csvStringBuilder.append("\r\n");
 		}
 		return csvStringBuilder.toString();
 	}
-	
-	private SimpleEMeasureService getService(){
+
+	private SimpleEMeasureService getService() {
 		SimpleEMeasureService service = (SimpleEMeasureService) context.getBean("eMeasureService");
 		return service;
 	}
 	private UserService getUserService() {
-		return (UserService)context.getBean("userService");
+		return (UserService) context.getBean("userService");
 	}
-	
-	private MeasureNotesService getMeasureNoteService(){
-		return (MeasureNotesService)context.getBean("measureNotesService");
+
+	private MeasureNotesService getMeasureNoteService() {
+		return (MeasureNotesService) context.getBean("measureNotesService");
 	}
 }

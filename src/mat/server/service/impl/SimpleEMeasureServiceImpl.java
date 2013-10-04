@@ -44,56 +44,76 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+/** SimpleEMeasureServiceImpl.java **/
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
-	private static final String CONVERSION_FILE_1 = "xsl/New_HQMF.xsl";
-	private static final String CONVERSION_FILE_2 = "xsl/mat_narrGen.xsl";
-	private static final String CONVERSION_FILE_HTML = "xsl/eMeasure.xsl";
-	// Filtered User Defined QDM's as these are dummy QDM's created by user and
-	// should not be part of Value Set sheet.
+	/** Constant for New_HQMD.xsl. **/
+	private static final String conversionFile1 = "xsl/New_HQMF.xsl";
+	/** Constant for mat_narrGen.xsl. **/
+	private static final String conversionFile2 = "xsl/mat_narrGen.xsl";
+	/** Constant for eMeasure.xsl. **/
+	private static final String conversionFileHtml = "xsl/eMeasure.xsl";
+	/** Filtered User Defined QDM's as these are dummy QDM's created by user and
+	should not be part of Value Set sheet.**/
 	private static String userDefinedOID = ConstantMessages.USER_DEFINED_QDM_OID;
+	/**X-path for Element Look Up Node.**/
 	private static final String XPATH_ELEMENTLOOKUP_QDM = "/measure/elementLookUp/qdm[not(@oid='"
 			+ userDefinedOID + "')]";
+	/**X-path for Supplement Data Element Node.**/
 	private static final String XPATH_SUPPLEMENTDATA_ELEMENTREF = "/measure/supplementalDataElements/elementRef/@id";
-	// This expression will find distinct elementRef records from
-	// SimpleXML.SimpleXML will have grouping which can have
-	// repeated clauses containing repeated elementRef. This XPath expression
-	// will yield distinct elementRef's.
+	/** This expression will find distinct elementRef records from
+	 SimpleXML.SimpleXML will have grouping which can have
+	 repeated clauses containing repeated elementRef. This XPath expression
+	 will yield distinct elementRef's.**/
+	/**X-path for Grouping Element Ref.**/
 	private static final String XPATH_ALL_GROUPED_ELEMENTREF_ID =
 			"/measure/measureGrouping/group/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
+	/**X-path for Measure Observation Element Ref.**/
 	private static final String XPATH_ALL_MSR_OBS_ELEMENTREF_ID =
 			"/measure/measureObservations/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
+	/**X-path for Stratification Element Ref.**/
 	private static final String XPATH_ALL_STARTA_ELEMENTREF_ID =
 			"/measure/strata/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
+	/**X-path for Grouping Attributes.**/
 	private static final String XPATH_ALL_GROUPED_ATTRIBUTES_UUID =
 			"/measure/measureGrouping/group/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
+	/**X-path for Measure Observation Attributes.**/
 	private static final String XPATH_ALL_MSR_OBS_ATTRIBUTES_UUID =
 			"/measure/measureObservations/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
+	/**X-path for Stratification Attributes.**/
 	private static final String XPATH_ALL_STARTA_ATTRIBUTES_UUID =
 			"/measure/strata/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
-	private static final Log logger = LogFactory
+	/**Logger.**/
+	private static final Log LOGGER = LogFactory
 			.getLog(SimpleEMeasureServiceImpl.class);
 
+	/**MeasureDAO.**/
 	@Autowired
 	private MeasureDAO measureDAO;
 
+	/**MeasureExportDAO.**/
 	@Autowired
 	private MeasureExportDAO measureExportDAO;
 
+	/**ApplicationContext.**/
 	@Autowired
 	private ApplicationContext context;
 
+	/**QualityDataSetDAO.**/
 	@Autowired
 	private QualityDataSetDAO qualityDataSetDAO;
 
+	/**ListObjectDAO.**/
 	@Autowired
 	private ListObjectDAO listObjectDAO;
 
+	/**MeasureExportDAO.**/
 	private HSSFWorkbook wkbk = null;
 
 	@Override
-	public ExportResult exportMeasureIntoSimpleXML(final String measureId,
-			final String xmlString , final List<MatValueSet>matValueSets) throws Exception {
+	public final ExportResult exportMeasureIntoSimpleXML(final String measureId,
+			final String xmlString, final List<MatValueSet> matValueSets)
+			throws Exception {
 
 		System.out.println("exportMeasureIntoSimpleXML...xmlString:"
 				+ xmlString);
@@ -161,8 +181,14 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return result;
 	}
 
-	private void findAndAddDTO(NodeList nodeList,
-			final List<QualityDataSetDTO> masterRefID, final List<String> finalIdList) {
+	/**
+	 *@param nodeList - NodeList.
+	 *@param masterRefID - List of QualityDataSetDTO.
+	 *@param finalIdList - List of String.
+	 * **/
+	private void findAndAddDTO(final NodeList nodeList,
+			final List<QualityDataSetDTO> masterRefID,
+			final List<String> finalIdList) {
 
 		for (int i = 0; i < nodeList.getLength(); i++) {
 			Node idNode = nodeList.item(i);
@@ -175,7 +201,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		}
 	}
 
-	private mat.model.clause.Measure getMeasureName(String measureId) {
+	/**
+	 * @param measureId - String.
+	 * @return Measure.
+	 * **/
+	private mat.model.clause.Measure getMeasureName(final String measureId) {
 		MeasurePackageService measureService = (MeasurePackageService) context
 				.getBean("measurePackageService");
 		mat.model.clause.Measure measure = measureService.getById(measureId);
@@ -183,7 +213,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	@Override
-	public ExportResult getSimpleXML(final String measureId) throws Exception {
+	public final ExportResult getSimpleXML(final String measureId) throws Exception {
 		mat.model.clause.Measure measure = measureDAO.find(measureId);
 		MeasureExport measureExport = getMeasureExport(measureId);
 
@@ -194,19 +224,25 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	@Override
-	public ExportResult getEMeasureXML(final String measureId) throws Exception {
+	public final ExportResult getEMeasureXML(final String measureId) throws Exception {
 
 		MeasureExport measureExport = getMeasureExport(measureId);
 		return getEMeasureXML(measureId, measureExport);
 	}
 
-	public ExportResult getEMeasureXML(String measureId,
+	/***
+	 *@param measureId - String.
+	 *@param measureExport - MeasureExport.
+	 *@return ExportResult.
+	 *@throws Exception - Exception.
+	 * */
+	public final ExportResult getEMeasureXML(final String measureId,
 			final MeasureExport measureExport) throws Exception {
 		XMLUtility xmlUtility = new XMLUtility();
 		String tempXML = xmlUtility.applyXSL(measureExport.getSimpleXML(),
-				xmlUtility.getXMLResource(CONVERSION_FILE_1));
+				xmlUtility.getXMLResource(conversionFile1));
 		String eMeasureXML = xmlUtility.applyXSL(tempXML,
-				xmlUtility.getXMLResource(CONVERSION_FILE_2));
+				xmlUtility.getXMLResource(conversionFile2));
 
 		ExportResult result = new ExportResult();
 		result.measureName = measureExport.getMeasure().getaBBRName();
@@ -216,39 +252,60 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	@Override
-	public ExportResult getEMeasureHTML(final String measureId) throws Exception {
+	public final ExportResult getEMeasureHTML(final String measureId)
+			throws Exception {
 		ExportResult result = getEMeasureXML(measureId);
 		String html = emeasureXMLToEmeasureHTML(result.export);
 		result.export = html;
 		return result;
 	}
 
+	/**
+	 *@param emeasureXMLStr - String.
+	 *@return String.
+	 * **/
 	private String emeasureXMLToEmeasureHTML(final String emeasureXMLStr) {
 		XMLUtility xmlUtility = new XMLUtility();
 		String html = xmlUtility.applyXSL(emeasureXMLStr,
-				xmlUtility.getXMLResource(CONVERSION_FILE_HTML));
+				xmlUtility.getXMLResource(conversionFileHtml));
 		return html;
 	}
 
+	/***
+	 *@param ctx - ApplicationContext.
+	 * */
 	public void setApplicationContext(final ApplicationContext ctx) {
 		this.context = ctx;
 	}
 
-	public HSSFWorkbook createEMeasureXLS(final String measureId,
-			final List<String> allQDMs, final List<String> supplementalQDMS, List<MatValueSet> matValueSets)
-			throws Exception {
+	/**
+	 *@param measureId - String.
+	 *@param allQDMs - List.
+	 *@param supplementalQDMS - List.
+	 *@param matValueSets - List.
+	 *@return HSSFWorkbook
+	 *@throws Exception - Exception.
+	 * ***/
+	public final HSSFWorkbook createEMeasureXLS(final String measureId,
+			final List<String> allQDMs, final List<String> supplementalQDMS,
+			final List<MatValueSet> matValueSets) throws Exception {
 		CodeListXLSGenerator clgen = new CodeListXLSGenerator();
 		return clgen.getXLS(getMeasureName(measureId), allQDMs,
-				qualityDataSetDAO, listObjectDAO, supplementalQDMS, matValueSets);
+				qualityDataSetDAO, listObjectDAO, supplementalQDMS,
+				matValueSets);
 	}
 
-	public HSSFWorkbook createErrorEMeasureXLS() throws Exception {
+	/**
+	 *@return HSSFWorkbook
+	 *@throws Exception - Exception.
+	 * **/
+	public final HSSFWorkbook createErrorEMeasureXLS() throws Exception {
 		CodeListXLSGenerator clgen = new CodeListXLSGenerator();
 		return clgen.getErrorXLS();
 	}
 
 	@Override
-	public ExportResult getEMeasureXLS(final String measureId) throws Exception {
+	public final ExportResult getEMeasureXLS(final String measureId) throws Exception {
 		ExportResult result = new ExportResult();
 		result.measureName = getMeasureName(measureId).getaBBRName();
 		result.packageDate = DateUtility
@@ -264,24 +321,30 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	@Override
-	public ExportResult getValueSetXLS(final String valueSetId) throws Exception {
+	public final ExportResult getValueSetXLS(final String valueSetId)
+			throws Exception {
 		ExportResult result = new ExportResult();
 		ListObject lo = listObjectDAO.find(valueSetId);
 		ValueSetXLSGenerator vsxg = new ValueSetXLSGenerator();
-		HSSFWorkbook wkbk = null;
+		HSSFWorkbook workBook = null;
 		try {
-			wkbk = vsxg.getXLS(valueSetId, lo);
+			workBook = vsxg.getXLS(valueSetId, lo);
 		} catch (Exception e) {
-			logger.error(e.getMessage());
-			wkbk = vsxg.getErrorXLS();
+			LOGGER.error(e.getMessage());
+			workBook = vsxg.getErrorXLS();
 		}
-		result.wkbkbarr = vsxg.getHSSFWorkbookBytes(wkbk);
+		result.wkbkbarr = vsxg.getHSSFWorkbookBytes(workBook);
 		result.valueSetName = lo.getName();
 		result.lastModifiedDate = lo.getLastModified() != null ? DateUtility
 				.convertDateToStringNoTime2(lo.getLastModified()) : null;
 		return result;
 	}
 
+	/**
+	 *@param hssfwkbk - HSSFWorkbook.
+	 *@return byte[].
+	 *@throws IOException - IOException.
+	 * **/
 	private byte[] getHSSFWorkbookBytes(final HSSFWorkbook hssfwkbk)
 			throws IOException {
 		CodeListXLSGenerator clgen = new CodeListXLSGenerator();
@@ -289,7 +352,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	@Override
-	public ExportResult getEMeasureZIP(final String measureId) throws Exception {
+	public final ExportResult getEMeasureZIP(final String measureId) throws Exception {
 		ExportResult result = new ExportResult();
 		result.measureName = getMeasureName(measureId).getaBBRName();
 		MeasureExport me = getMeasureExport(measureId);
@@ -297,7 +360,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return result;
 	}
 
-	public byte[] getZipBarr(final String measureId, final MeasureExport me)
+	/**
+	 *@param measureId - String.
+	 * @param me - MeasureExport.
+	 * @return byte[].
+	 * @throws Exception - Exception.
+	 * **/
+	public final byte[] getZipBarr(final String measureId, final MeasureExport me)
 			throws Exception {
 		byte[] wkbkbarr = null;
 		if (me.getCodeList() == null) {
@@ -318,7 +387,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String emeasureHTMLStr = emeasureXMLToEmeasureHTML(emeasureXMLStr);
 		String simpleXmlStr = me.getSimpleXML();
 		XMLUtility xmlUtility = new XMLUtility();
-		String emeasureXSLUrl = xmlUtility.getXMLResource(CONVERSION_FILE_HTML);
+		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
 
 		ZipPackager zp = new ZipPackager();
 		return zp.getZipBarr(emeasureName, wkbkbarr, emeasureXMLStr,
@@ -326,7 +395,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 						.getValueSetDate().toString(), simpleXmlStr);
 	}
 
-	private MeasureExport getMeasureExport(String measureId) {
+	/**
+	 *@param measureId - String.
+	 *@return MeasureExport.
+	 * **/
+	private MeasureExport getMeasureExport(final String measureId) {
 		MeasureExport measureExport = measureExportDAO
 				.findForMeasure(measureId);
 		String emeasureXMLStr = measureExport.getSimpleXML();
@@ -346,19 +419,19 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			measureExport.setSimpleXML(emeasureXMLStr);
 		}
 		// 2 add version field
-		final String VERSION_START = "<version>";
-		final String VERSION_END = "</version>";
+		final String versionStart = "<version>";
+		final String versionEnd = "</version>";
 		String vStr = measure.getMajorVersionStr();
-		if (emeasureXMLStr.contains(VERSION_START)) {
-			int start = emeasureXMLStr.indexOf(VERSION_START)
-					+ VERSION_START.length();
-			int end = emeasureXMLStr.indexOf(VERSION_END);
+		if (emeasureXMLStr.contains(versionStart)) {
+			int start = emeasureXMLStr.indexOf(versionStart)
+					+ versionStart.length();
+			int end = emeasureXMLStr.indexOf(versionEnd);
 			emeasureXMLStr = emeasureXMLStr.substring(0, start) + vStr
 					+ emeasureXMLStr.substring(end);
 			measureExport.setSimpleXML(emeasureXMLStr);
 		} else {
 			String repee = "</measureDetails>";
-			String repor = su.nl + VERSION_START + vStr + VERSION_END + su.nl
+			String repor = su.nl + versionStart + vStr + versionEnd + su.nl
 					+ "</measureDetails>";
 			int offset = emeasureXMLStr.indexOf(repee);
 			emeasureXMLStr = emeasureXMLStr.substring(0, offset) + repor
@@ -371,7 +444,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 	/**
 	 *
-	 * @param ts - Time Stamp.
+	 * @param ts
+	 *            - Time Stamp.
 	 * @return yyyymmddhhss-zzzz
 	 */
 	@SuppressWarnings("deprecation")
@@ -388,6 +462,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return tsStr;
 	}
 
+	/**
+	 * @param i -Integer.
+	 * @return String.
+	 * **/
 	private String getTwoDigitString(final int i) {
 		String ret = i + "";
 		if (ret.length() == 1) {
@@ -396,12 +474,17 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return ret;
 	}
 
-	public HSSFWorkbook getWkbk() {
+	/**
+	 *Getter for wkbk.
+	 *@return HSSFWorkbook.
+	 * **/
+	public final HSSFWorkbook getWkbk() {
 		return wkbk;
 	}
 
 	@Override
-	public ExportResult getBulkExportZIP(final String[] measureIds) throws Exception {
+	public final ExportResult getBulkExportZIP(final String[] measureIds)
+			throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zip = new ZipOutputStream(baos);
 		Map<String, byte[]> filesMap = new HashMap<String, byte[]>();
@@ -428,13 +511,22 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			throw new ZipException("Exceeded Limit :" + baos.size());
 		}
 		zip.close();
-		logger.debug(baos.size());
+		LOGGER.debug(baos.size());
 		result.zipbarr = baos.toByteArray();
 		return result;
 	}
 
-	public void createFilesInBulkZip(final String measureId, final MeasureExport me,
-			final Map<String, byte[]> filesMap, final String seqNum) throws Exception {
+	/**
+	 *@param measureId - String.
+	 *@param me - MeasureExport.
+	 *@param filesMap - Map.
+	 *@param seqNum - String.
+	 *@throws Exception - Exception.
+	 *
+	 * **/
+	public final void createFilesInBulkZip(final String measureId,
+			final MeasureExport me, final Map<String, byte[]> filesMap,
+			final String seqNum) throws Exception {
 		byte[] wkbkbarr = null;
 		if (me.getCodeList() == null) {
 			wkbkbarr = getHSSFWorkbookBytes(createErrorEMeasureXLS());
@@ -453,7 +545,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String emeasureHTMLStr = emeasureXMLToEmeasureHTML(emeasureXMLStr);
 		String simpleXmlStr = me.getSimpleXML();
 		XMLUtility xmlUtility = new XMLUtility();
-		String emeasureXSLUrl = xmlUtility.getXMLResource(CONVERSION_FILE_HTML);
+		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
 
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr,

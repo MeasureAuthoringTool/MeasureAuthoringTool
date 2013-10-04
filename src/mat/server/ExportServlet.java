@@ -20,6 +20,7 @@ import mat.server.service.UserService;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -143,13 +144,22 @@ public class ExportServlet extends HttpServlet {
 		for(MeasureNotes measureNotes:allMeasureNotes){
 			if(measureNotes.getModifyUser()!=null)
 				csvStringBuilder.append("\""+measureNotes.getNoteTitle()+"\",\""+measureNotes.getNoteDesc()+
-						"\",\""+measureNotes.getLastModifiedDate()+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+measureNotes.getModifyUser().getEmailAddress()+"\"");
+						"\",\""+convertDateToString(measureNotes.getLastModifiedDate())+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+measureNotes.getModifyUser().getEmailAddress()+"\"");
 			else
 				csvStringBuilder.append("\""+measureNotes.getNoteTitle()+"\",\""+measureNotes.getNoteDesc()+
-						"\",\""+measureNotes.getLastModifiedDate()+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+""+"\"");
+						"\",\""+convertDateToString(measureNotes.getLastModifiedDate())+"\",\""+measureNotes.getCreateUser().getEmailAddress()+"\",\""+""+"\"");
 			csvStringBuilder.append("\r\n");
 		}
 		return csvStringBuilder.toString();
+	}
+	
+	private String convertDateToString(Date date) {
+		String dateString = StringUtils.EMPTY;
+		if(date != null){
+			SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a z"); 
+			dateString = format.format(date);
+		}
+		return dateString;
 	}
 	
 	private String generateCSVOfActiveUserEmails() throws InCorrectUserRoleException{

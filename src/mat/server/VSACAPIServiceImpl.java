@@ -30,8 +30,7 @@ import org.telligen.vsac.service.VSACTicketService;
 import org.xml.sax.InputSource;
 
 /** VSACAPIServiceImpl class. **/
-public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
-		VSACAPIService {
+public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VSACAPIService {
 	/** serialVersionUID for VSACAPIServiceImpl class. **/
 	private static final long serialVersionUID = -6645961609626183169L;
 	/** Logger for VSACAPIServiceImpl class. **/
@@ -132,16 +131,18 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	@Override
 	public final VsacApiResult updateVSACValueSets(final String measureId) {
 		VsacApiResult result = new VsacApiResult();
+		LOGGER.info("Start VSACAPIServiceImpl updateVSACValueSets method :");
 		if (isAlreadySignedIn()) {
 			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
 					getAppliedQDMFromMeasureXml(measureId, false);
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
-				LOGGER.info("OID ====" + qualityDataSetDTO.getOid());
+				LOGGER.info(" VSACAPIServiceImpl updateVSACValueSets :: OID:: " + qualityDataSetDTO.getOid());
 				//Filter out Timing Element , User defined QDM's and supplemental data elements.
 				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO.getDataType())
 						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())
 						|| qualityDataSetDTO.isSuppDataElement()) {
-					LOGGER.info("QDM filtered as it is of either for following type "
+					LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: QDM filtered as it is of either"
+							+ "for following type "
 						+ "(Supplemental data or User defined or Timing Element.");
 					continue;
 				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
@@ -153,7 +154,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 						 vsr = dao
 								.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid());
 					} catch (Exception ex) {
-						LOGGER.info("Value Set reterival failed at VSAC for OID :" + qualityDataSetDTO.getOid()
+						LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: Value Set reterival failed at "
+								+ "VSAC for OID :" + qualityDataSetDTO.getOid()
 								+ " with Data Type : " + qualityDataSetDTO.getDataType());
 					}
 					if (vsr != null) {
@@ -181,6 +183,74 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 				}
 			}
 			result.setSuccess(true);
+		} else {
+			result.setSuccess(false);
+			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);
+			LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: UMLS Login is required");
+		}
+		LOGGER.info("End VSACAPIServiceImpl updateVSACValueSets method :");
+		return result;
+	}
+
+	@Override
+	@SuppressWarnings("static-access")
+	public final VsacApiResult updateAllVSACValueSetsAtPackage(final String measureId) {
+		VsacApiResult result = new VsacApiResult();
+		if (isAlreadySignedIn()) {
+			String eightHourTicket = UMLSSessionTicket
+					.getTicket(getThreadLocalRequest().getSession().getId());
+			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
+					getAppliedQDMFromMeasureXml(measureId, false);
+			ArrayList<MatValueSet> matValueSetList = new ArrayList<MatValueSet>();
+			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
+				LOGGER.info("OID ====" + qualityDataSetDTO.getOid());
+				//Filter out Timing Element , User defined QDM's and supplemental data elements.
+				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO.getDataType())
+						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())
+						) {
+					LOGGER.info("QDM filtered as it is of either for following type "
+						+ "(User defined or Timing Element.");
+					continue;
+				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
+						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
+					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
+					ValueSetsResponse vsr = new ValueSetsResponse();
+					try {
+						 vsr = dao
+								.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid());
+					} catch (Exception ex) {
+						LOGGER.info("Value Set reterival failed at VSAC for OID :" + qualityDataSetDTO.getOid()
+								+ " with Data Type : " + qualityDataSetDTO.getDataType());
+					}
+					if (vsr != null) {
+						if (vsr.getXmlPayLoad() != null && StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {
+							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr
+									.getXmlPayLoad());
+							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
+							QualityDataSetDTO toBeModifiedQDM = qualityDataSetDTO;
+							if (matValueSet != null) {
+								matValueSet.setQdmId(qualityDataSetDTO.getId());
+								qualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
+								if (matValueSet.isGrouping()) {
+									qualityDataSetDTO.setTaxonomy(
+											ConstantMessages.GROUPING_CODE_SYSTEM);
+									handleVSACGroupedValueSet(eightHourTicket, matValueSet);
+								} else {
+									qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
+											getConceptList().get(0).getCodeSystemName());
+								}
+								matValueSetList.add(matValueSet);
+								//Code which updated Measure XML against each modifiable QDM.
+								getMeasureLibraryService().updateMeasureXML(qualityDataSetDTO,
+										toBeModifiedQDM, measureId);
+							}
+						}
+					}
+
+				}
+			}
+			result.setSuccess(true);
+			result.setVsacResponse(matValueSetList);
 		} else {
 			result.setSuccess(false);
 			result.setFailureReason(result.UMLS_NOT_LOGGEDIN);

@@ -16,4 +16,7 @@ public interface VSACAPIServiceAsync {
 	void updateVSACValueSets(String measureId,
 			AsyncCallback<VsacApiResult> callback);
 
+	void updateAllVSACValueSetsAtPackage(String measureId,
+			AsyncCallback<VsacApiResult> callback);
+
 }

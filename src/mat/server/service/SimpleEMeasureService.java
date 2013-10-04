@@ -1,5 +1,8 @@
 package mat.server.service;
 
+import java.util.List;
+
+import mat.model.MatValueSet;
 
 
 public interface SimpleEMeasureService {
@@ -12,8 +15,6 @@ public interface SimpleEMeasureService {
 		public byte[] zipbarr;
 		public String lastModifiedDate;
 	}
-	
-	//public ExportResult exportMeasureIntoSimpleXML(String measureId) throws Exception;
 	public ExportResult getSimpleXML(String measureId) throws Exception;
 	public ExportResult getEMeasureXML(String measureId) throws Exception;
 	public ExportResult getEMeasureHTML(String measureId) throws Exception;
@@ -21,6 +22,7 @@ public interface SimpleEMeasureService {
 	public ExportResult getEMeasureZIP(String measureId) throws Exception;
 	public ExportResult getValueSetXLS(String valueSetId) throws Exception;
 	public ExportResult getBulkExportZIP(String[] measureIds) throws Exception;
-	ExportResult exportMeasureIntoSimpleXML(String measureId, String xmlString)
+	ExportResult exportMeasureIntoSimpleXML(String measureId, String xmlString, List<MatValueSet> matValueSetList)
 			throws Exception;
+
 }

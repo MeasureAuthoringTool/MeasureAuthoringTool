@@ -17,6 +17,11 @@ public class MatValueSet implements IsSerializable {
 	*
 	 * **/
 	private String ID;
+   /**
+    * Measure XML QDM ID.
+	*
+    * **/
+	private String qdmId;
 	/**
 	 * VSAC value set Display name.
 	 *
@@ -310,5 +315,13 @@ public class MatValueSet implements IsSerializable {
 	 * **/
 	public final void setGroupedValueSet(final List<MatValueSet> groupedValueSets) {
 		this.groupedValueSet = groupedValueSets;
+	}
+
+	public String getQdmId() {
+		return qdmId;
+	}
+
+	public void setQdmId(String qdmId) {
+		this.qdmId = qdmId;
 	}
 }

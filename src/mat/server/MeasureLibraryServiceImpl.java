@@ -35,6 +35,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.model.Author;
+import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
 import mat.model.MeasureType;
 import mat.model.QualityDataModelWrapper;
@@ -556,12 +557,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 
 	@Override
-	public final ValidateMeasureResult validateMeasureForExport(final String key) throws MatException {
+	public final ValidateMeasureResult validateMeasureForExport(final String key , final ArrayList<MatValueSet> matValueSetList) throws MatException {
 		try {
-			return getService().validateMeasureForExport(key);
+			return getService().validateMeasureForExport(key,matValueSetList);
 		}
 		catch(Exception exc) {
-			//log("Exception validating export for " + key, exc);
 			logger.info("Exception validating export for " + key, exc);
 			throw new MatException(exc.getMessage());
 		}

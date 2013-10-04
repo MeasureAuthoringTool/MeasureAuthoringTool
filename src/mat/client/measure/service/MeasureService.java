@@ -11,6 +11,7 @@ import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
+import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -26,7 +27,6 @@ public interface MeasureService extends RemoteService {
 			int pageSize, int filter);
 	public ManageMeasureShareModel getUsersForShare(String measureId, int startIndex, int pageSize);
 	public void updateUsersShare(ManageMeasureShareModel model);
-	public ValidateMeasureResult validateMeasureForExport(String key) throws MatException;
 	public SaveMeasureResult updateLockedDate(String measureId,String userId);
 	SaveMeasureResult resetLockedDate(String measureId,String userId);
 	ManageMeasureSearchModel searchMeasuresForVersion(int startIndex,
@@ -54,4 +54,6 @@ public interface MeasureService extends RemoteService {
 	public void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId);
 	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
+	ValidateMeasureResult validateMeasureForExport(String key,
+			ArrayList<MatValueSet> matValueSetList) throws MatException;
 }

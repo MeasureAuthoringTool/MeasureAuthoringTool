@@ -1,11 +1,13 @@
 package mat.server.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.model.DataType;
+import mat.model.MatValueSet;
 import mat.model.QualityDataSet;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
@@ -31,7 +33,7 @@ public interface MeasurePackageService {
 	public int countUsersForMeasureShare();
 	public void updateUsersShare(ManageMeasureShareModel model);
 	public void updateLockedOutDate(Measure m);
-	public ValidateMeasureResult validateMeasureForExport(String key) throws Exception;
+	public ValidateMeasureResult validateMeasureForExport(String key, ArrayList<MatValueSet> matValueSetList) throws Exception;
 	public MeasureSet findMeasureSet(String id);
 	public void save(MeasureSet measureSet);
 	public String getUniqueOid();

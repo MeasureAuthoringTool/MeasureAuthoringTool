@@ -23,4 +23,6 @@ public interface VSACAPIService extends RemoteService {
 
 	VsacApiResult updateVSACValueSets(String measureId);
 
+	VsacApiResult updateAllVSACValueSetsAtPackage(String measureId);
+
 }

@@ -14,6 +14,7 @@ import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
+import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.server.service.MeasureLibraryService;
 
@@ -63,9 +64,9 @@ public class MeasureServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	@Override
-	public ValidateMeasureResult validateMeasureForExport(String key)
+	public ValidateMeasureResult validateMeasureForExport(String key , ArrayList<MatValueSet> matValueSetList)
 			throws MatException {
-		return this.getMeasureLibraryService().validateMeasureForExport(key);
+		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList);
 	}
 
 	@Override

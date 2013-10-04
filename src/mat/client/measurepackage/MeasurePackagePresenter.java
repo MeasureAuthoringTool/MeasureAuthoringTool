@@ -15,8 +15,12 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.client.umls.service.VsacApiResult;
+import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -32,7 +36,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		public void onSelection(MeasurePackageDetail detail);
 	}
 	
-	
+	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
 	public static interface View {
 		public void setClauses(List<MeasurePackageClauseDetail> clauses);
 		public void setClausesInPackage(List<MeasurePackageClauseDetail> list);
@@ -108,33 +112,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 						if(result.isSuccess()) {
 							Mat.showLoadingMessage();
 							String measureId = MatContext.get().getCurrentMeasureId();
-							MatContext.get().getMeasureService().validateMeasureForExport(measureId,
-								new AsyncCallback<ValidateMeasureResult>() {
-									@Override
-									public void onFailure(Throwable caught) {
-										//O&M 17
-										((Button)view.getPackageMeasureButton()).setEnabled(true);
-										
-										Mat.hideLoadingMessage();
-										view.getPackageErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
-									}
-		
-									@Override
-									public void onSuccess(ValidateMeasureResult result) {
-										//O&M 17
-										((Button)view.getPackageMeasureButton()).setEnabled(true);
-										
-										if(result.isValid()) {
-											Mat.hideLoadingMessage();
-											view.getMeasurePackageSuccessMsg().setMessage(MatContext.get().getMessageDelegate().getPackageSuccessMessage());
-											
-										}
-										else {
-											Mat.hideLoadingMessage();
-											view.getMeasureErrorMessageDisplay().setMessages(result.getValidationMessages());
-										}
-									}
-								});
+							updateValueSetsBeforePackaging(measureId);
 						} else{
 							//O&M 17
 							((Button)view.getPackageMeasureButton()).setEnabled(true);
@@ -214,6 +192,56 @@ public class MeasurePackagePresenter implements MatPresenter {
 				});
 			}
 		});
+	}
+	
+	
+	private void updateValueSetsBeforePackaging(final String measureId){
+		vsacapiServiceAsync.updateAllVSACValueSetsAtPackage(measureId, new AsyncCallback<VsacApiResult>() {
+
+			@Override
+			public void onFailure(final Throwable caught) {
+			}
+
+			@Override
+			public void onSuccess(final VsacApiResult result) {
+				if (!result.isSuccess()) {
+					view.getPackageErrorMessageDisplay().setMessage(
+							MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+				}
+				validateMeasureAndExport(measureId , result.getVsacResponse());
+			}
+		});
+	}
+
+	private void validateMeasureAndExport(String measureId, ArrayList<MatValueSet> matValueSetList) {
+		MatContext.get().getMeasureService().validateMeasureForExport(measureId,
+			matValueSetList, new AsyncCallback<ValidateMeasureResult>() {
+				@Override
+				public void onFailure(final Throwable caught) {
+					//O&M 17
+					((Button) view.getPackageMeasureButton()).setEnabled(true);
+
+					Mat.hideLoadingMessage();
+					view.getPackageErrorMessageDisplay().setMessage(
+							MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+				}
+
+				@Override
+				public void onSuccess(final ValidateMeasureResult result) {
+					//O&M 17
+					((Button) view.getPackageMeasureButton()).setEnabled(true);
+
+					if (result.isValid()) {
+						Mat.hideLoadingMessage();
+						view.getMeasurePackageSuccessMsg().setMessage(
+								MatContext.get().getMessageDelegate().getPackageSuccessMessage());
+
+					} else {
+						Mat.hideLoadingMessage();
+						view.getMeasureErrorMessageDisplay().setMessages(result.getValidationMessages());
+					}
+				}
+			});
 	}
 	
 	private void clearMessages() {

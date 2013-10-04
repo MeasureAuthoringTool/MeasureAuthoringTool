@@ -13,6 +13,7 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
+import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 
 public interface MeasureLibraryService  {
@@ -24,7 +25,6 @@ public interface MeasureLibraryService  {
 			int pageSize, int filter);
 	public ManageMeasureShareModel getUsersForShare(String measureId, int startIndex, int pageSize);
 	public void updateUsersShare(ManageMeasureShareModel model);
-	public ValidateMeasureResult validateMeasureForExport(String key) throws MatException;
 	public SaveMeasureResult updateLockedDate(String measureId,String userId);
 	SaveMeasureResult resetLockedDate(String measureId,String userId);
 	ManageMeasureSearchModel searchMeasuresForVersion(int startIndex,
@@ -52,5 +52,7 @@ public interface MeasureLibraryService  {
 	public void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId);
 	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
+	ValidateMeasureResult validateMeasureForExport(String key,
+			ArrayList<MatValueSet> matValueSetList) throws MatException;
 }
 

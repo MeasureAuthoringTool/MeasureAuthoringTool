@@ -15,7 +15,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**
  * Extended DialogBox widget with close button inside the pop-up header.
- *
+ * {@link DialogBox}
  *
  */
 public class DialogBoxWithCloseButton extends DialogBox {

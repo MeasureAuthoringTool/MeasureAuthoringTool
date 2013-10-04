@@ -95,8 +95,12 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		sizeColumns(wkst);
 	}
 
+	/**
+	 *@param lo - MatValueSet Object
+	 *
+	 * **/
 
-	protected void cacheXLSRow(final MatValueSet lo){
+	protected final void cacheXLSRow(final MatValueSet lo) {
 
 		if (lo == null) {
 			return;
@@ -109,7 +113,13 @@ public class CodeListXLSGenerator extends XLSGenerator{
 
 	}
 
-	private MatValueSet findInList(final String id , final List<MatValueSet> matValueSets){
+	/**
+	 *@param id - String qdm Id.
+	 *@param matValueSets - List of MatValueSet.
+	 *
+	 *@return MatValueSet.
+	 * */
+	private MatValueSet findInList(final String id , final List<MatValueSet> matValueSets) {
 		MatValueSet result = null;
 		if (matValueSets != null) {
 			for (MatValueSet valueSet : matValueSets) {
@@ -123,7 +133,7 @@ public class CodeListXLSGenerator extends XLSGenerator{
 	}
 
 	@Override
-	protected void cacheXLSRow(ListObject lo, final ListObjectDAO listObjectDAO, final Timestamp vsPackageDate){
+	protected final void cacheXLSRow(ListObject lo, final ListObjectDAO listObjectDAO, final Timestamp vsPackageDate){
 		//Make sure we have the most recent non-draft value set from that OID that is before the timestamp
 		ListObject vsTobeExported = listObjectDAO.findMostRecentValueSet(lo, vsPackageDate);
 		if (vsTobeExported == null) {

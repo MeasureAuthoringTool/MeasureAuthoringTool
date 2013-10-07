@@ -1013,6 +1013,19 @@ public class MessageDelegate {
 	public String getVSAC_UPDATE_SUCCESSFULL() {
 		return VSAC_UPDATE_SUCCESSFULL;
 	}
+	
+	private final String DELETE_MEASURE_WARNING_MESSAGE ="Deleting a draft or version of a measure will permanently remove the designated measure draft or " +
+			"version from  the Measure Authoring Tool. Deleted measures cannot <br> be recovered.";
+	/**
+	 * @return the dELETE_MEASURE_WARNING_MESSAGE
+	 */
+	public String getDELETE_MEASURE_WARNING_MESSAGE() {
+		return DELETE_MEASURE_WARNING_MESSAGE;
+	}
+
+	
+	
+			
 }
 
 

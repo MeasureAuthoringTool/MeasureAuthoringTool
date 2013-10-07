@@ -205,7 +205,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		Grid queryGrid = new Grid(3,2);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
 		queryGrid.setWidget(0, 1, oidInput);
-		queryGrid.setWidget(1, 0, LabelBuilder.buildLabel(new Label(), "Version (Optional):"));
+		queryGrid.setWidget(1, 0, LabelBuilder.buildLabel("Version (Optional):", "Version (Optional):"));
 		queryGrid.setWidget(1, 1, versionInput);
 		queryGrid.setWidget(2, 0, retrieveButton);
 		queryGrid.setStyleName("secondLabel");
@@ -377,7 +377,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.getElement().setId("vPanel_VerticalPanel");
 		vPanel.addStyleName("valueSetMarginLeft_7px");
-		vPanel.add(LabelBuilder.buildLabel(new Label(), "Select Datatype"));
+		vPanel.add(LabelBuilder.buildLabel("Select Datatype", "Select Datatype"));
 		dataTypesListBox.getElement().setId("dataTypesListBox_ListBox");
 		dataTypesListBox.setTitle("Select Datatype");
 		dataTypesListBox.setSelectedIndex(0);

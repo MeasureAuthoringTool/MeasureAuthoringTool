@@ -26,27 +26,30 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ManageUmlsPresenter implements MatPresenter{
 
-	public static interface UMLSDisplay {
-		public HasClickHandlers getSubmit();
-		public HasValue<String> getUserid();
-		public HasValue<String> getPassword();
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		public HasHTML getInfoMessage();
+	public interface UMLSDisplay {
+		HasClickHandlers getSubmit();
+		HasValue<String> getUserid();
+		HasValue<String> getPassword();
+		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		HasHTML getInfoMessage();
 
-		public void setInfoMessageVisible(boolean value);
-		public Widget asWidget();
-		public HasKeyDownHandlers getUseridField();
-		public HasKeyDownHandlers getPasswordField();
-		public void setInitialFocus();
-		public Anchor getUmlsExternalLink();
-		public VerticalPanel getExternalLinkDisclaimer();
-		public SaveCancelButtonBar getButtonBar() ;
-		public Anchor getUmlsTroubleLogging();
+		void setInfoMessageVisible(boolean value);
+		Widget asWidget();
+		HasKeyDownHandlers getUseridField();
+		HasKeyDownHandlers getPasswordField();
+		void setInitialFocus();
+		Anchor getUmlsExternalLink();
+		VerticalPanel getExternalLinkDisclaimer();
+		SaveCancelButtonBar getButtonBar() ;
+		Anchor getUmlsTroubleLogging();
 	}
-	VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
+	private VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
 	private  UMLSDisplay display;
 
-	public ManageUmlsPresenter(UMLSDisplay displayArg) {
+	/**Constructor.
+	 *@param displayArg - {@link UMLSDisplay}.
+	 * **/
+	public ManageUmlsPresenter(final UMLSDisplay displayArg) {
 		this.display = displayArg;
 		resetWidget();
 		display.getSubmit().addClickHandler(new ClickHandler() {
@@ -94,6 +97,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 			}
 		});
 	}
+	/**Key down handler to trap enter key.**/
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
 		@Override
 		public void onKeyDown(final KeyDownEvent event) {
@@ -103,6 +107,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		}
 	};
 
+	/** Private submit method - Calls to VSAC service.**/
 	private void submit() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
@@ -133,7 +138,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 							MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
 						Mat.hideUMLSActive();
 						MatContext.get().setUMLSLoggedIn(false);
-						invalidateVSacSession();
+						invalidateVsacSession();
 					}
 				}
 				@Override
@@ -146,8 +151,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 			});
 		}
 	}
-
-	private void invalidateVSacSession(){
+	/**private method to invalidate UMLS's session by clearing UMLSSession Map for current HTTP session ID.**/
+	private void invalidateVsacSession() {
 		vsacapiService.inValidateVsacUser(new AsyncCallback<Void>() {
 
 			@Override
@@ -161,6 +166,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		});
 	}
 
+	/**Method to clear all messages and un set user id and password input box's.**/
 	private void resetWidget() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);

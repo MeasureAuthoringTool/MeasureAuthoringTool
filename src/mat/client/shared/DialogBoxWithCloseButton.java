@@ -16,13 +16,23 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * Extended DialogBox widget with close button inside the pop-up header.
  * {@link DialogBox}
- *
  */
 public class DialogBoxWithCloseButton extends DialogBox {
 
-	private HorizontalPanel captionPanel = new HorizontalPanel();
-	private Widget closeWidget = null;
-	private HTML textHTML = new HTML();
+    /**
+     * HorizontalPanel that is used as DialogBox's Header.
+     */
+    private HorizontalPanel captionPanel = new HorizontalPanel();
+
+    /**
+     * Widget used as XOut for the DialogBox.
+     */
+    private Widget closeWidget = null;
+
+    /**
+     * HTML widget used in 'captionPanel' for setting the caption text.
+     */
+    private HTML textHTML = new HTML();
 
 	public DialogBoxWithCloseButton(final String text) {
 		super(false, true);
@@ -66,6 +76,10 @@ public class DialogBoxWithCloseButton extends DialogBox {
 	 * Close handler, which will hide the dialog box .
 	 */
 	private class DialogBoxCloseHandler {
+		/**
+		 * Hides this DialogBox.
+		 * @param event
+		 */
 		public void onClick(final Event event) {
 			hide();
 		}

@@ -177,7 +177,7 @@ public class QDMDialogBox {
 		for (Entry<String, Node> elementLookup : elementLookUpNodes) {
 			Node node = elementLookup.getValue();
 
-			if (!isDataTypeAttribOrTiming(node)) {
+			if (!isDataTypeAttrib(node)) {
 				String key = elementLookup.getKey();
 				String uuid = key.substring(key.lastIndexOf("~") + 1);
 				String item = ClauseConstants.getElementLookUpName().get(uuid);
@@ -215,12 +215,11 @@ public class QDMDialogBox {
 	 * @param node
 	 * @return
 	 */
-	private static boolean isDataTypeAttribOrTiming(Node node) {
+	private static boolean isDataTypeAttrib(Node node) {
 		boolean returnType = false;
 		String nodeDataType = node.getAttributes()
 				.getNamedItem(QDMAttributeDialogBox.DATATYPE).getNodeValue();
-		if (QDMAttributeDialogBox.ATTRIBUTE.equalsIgnoreCase(nodeDataType)
-				|| TIMING_ELEMENT.equals(nodeDataType)) {
+		if (QDMAttributeDialogBox.ATTRIBUTE.equalsIgnoreCase(nodeDataType)) {
 			returnType = true;
 		}
 

@@ -33,6 +33,7 @@ import com.google.gwt.xml.client.Node;
 
 public class QDMDialogBox {
 
+	private static final String TIMING_ELEMENT = "Timing Element";
 	private static final String ATTRIBUTES = "attributes";
 
 	public static void showQDMDialogBox(final XmlTreeDisplay xmlTreeDisplay,
@@ -175,10 +176,8 @@ public class QDMDialogBox {
 				.getElementLookUpNode().entrySet();
 		for (Entry<String, Node> elementLookup : elementLookUpNodes) {
 			Node node = elementLookup.getValue();
-			if (!QDMAttributeDialogBox.ATTRIBUTE.equalsIgnoreCase(node
-					.getAttributes()
-					.getNamedItem(QDMAttributeDialogBox.DATATYPE)
-					.getNodeValue())) {
+
+			if (!isDataTypeAttribOrTiming(node)) {
 				String key = elementLookup.getKey();
 				String uuid = key.substring(key.lastIndexOf("~") + 1);
 				String item = ClauseConstants.getElementLookUpName().get(uuid);
@@ -207,6 +206,25 @@ public class QDMDialogBox {
 			OptionElement optionElement = options.getItem(i);
 			optionElement.setTitle(title);
 		}
+	}
+
+	/**
+	 * This method will check for data type of the node to be "Attribute" or
+	 * "Timing Element". If yes, return true, else return false.
+	 * 
+	 * @param node
+	 * @return
+	 */
+	private static boolean isDataTypeAttribOrTiming(Node node) {
+		boolean returnType = false;
+		String nodeDataType = node.getAttributes()
+				.getNamedItem(QDMAttributeDialogBox.DATATYPE).getNodeValue();
+		if (QDMAttributeDialogBox.ATTRIBUTE.equalsIgnoreCase(nodeDataType)
+				|| TIMING_ELEMENT.equals(nodeDataType)) {
+			returnType = true;
+		}
+
+		return returnType;
 	}
 
 	private static MultiWordSuggestOracle createSuggestOracle() {

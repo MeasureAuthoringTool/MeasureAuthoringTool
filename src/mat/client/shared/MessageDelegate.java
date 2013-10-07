@@ -994,7 +994,7 @@ public class MessageDelegate {
 		return UML_LOGIN_FAILED;
 	}
 	
-	private final String UMLS_NOT_LOGGEDIN ="You are not logged in to UMLS.Please access the UMLS Account tab to continue.";
+	private final String UMLS_NOT_LOGGEDIN ="You are not logged in to UMLS. Please access the UMLS Account tab to continue.";
 	public String getUMLS_NOT_LOGGEDIN() {
 		return UMLS_NOT_LOGGEDIN;
 	}

@@ -1115,6 +1115,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 		List<String> missingTimingElementOIDList = xmlProcessor
 				.checkForTimingElements();
+
+		if (missingTimingElementOIDList.isEmpty()) {
+			return;
+		}
+
 		QualityDataModelWrapper wrapper = getMeasureXMLDAO()
 				.createTimingElementQDMs(missingTimingElementOIDList);
 

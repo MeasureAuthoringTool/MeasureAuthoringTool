@@ -594,15 +594,14 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 */
 	@Override
 	public List<ListObject> getElementCodeListByOID(List<String> elementOIDList) {
+		List<ListObject> timingElementList = new ArrayList<ListObject>();
 
-		if (elementOIDList == null) {
-			elementOIDList = new ArrayList<String>();
+		if (elementOIDList != null && !elementOIDList.isEmpty()) {
+			Session session = getSessionFactory().getCurrentSession();
+			Criteria criteria = session.createCriteria(ListObject.class);
+			criteria.add(Restrictions.in("oid", elementOIDList));
+			timingElementList = criteria.list();
 		}
-
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(ListObject.class);
-		criteria.add(Restrictions.in("oid", elementOIDList));
-		List<ListObject> timingElementList = criteria.list();
 		return timingElementList;
 	}
 

@@ -973,21 +973,21 @@ public class XmlProcessor {
 			try {
 				// Measurement Period
 				Node measurementPeriodNode = this.findNode(originalDoc,
-						"measure/elementLookUp/qdm[@oid='"
+						"/measure/elementLookUp/qdm[@oid='"
 								+ MEASUREMENT_PERIOD_OID + "']");
 				if (measurementPeriodNode == null) {
 					missingTimingElementList.add(MEASUREMENT_PERIOD_OID);
 				}
 				// Measurement Start Date
 				Node measurementStartDateNode = this.findNode(originalDoc,
-						"measure/elementLookUp/qdm[@oid='"
+						"/measure/elementLookUp/qdm[@oid='"
 								+ MEASUREMENT_START_DATE_OID + "']");
 				if (measurementStartDateNode == null) {
 					missingTimingElementList.add(MEASUREMENT_START_DATE_OID);
 				}
 				// Measurement End Date
 				Node measurementEndDateNode = this.findNode(originalDoc,
-						"measure/elementLookUp/qdm[@oid='"
+						"/measure/elementLookUp/qdm[@oid='"
 								+ MEASUREMENT_END_DATE_OID + "']");
 				if (measurementEndDateNode == null) {
 					missingTimingElementList.add(MEASUREMENT_END_DATE_OID);

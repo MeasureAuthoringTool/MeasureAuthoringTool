@@ -32,7 +32,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		public HasValue<String> getPassword();
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
 		public HasHTML getInfoMessage();
-		
+
 		public void setInfoMessageVisible(boolean value);
 		public Widget asWidget();
 		public HasKeyDownHandlers getUseridField();
@@ -43,29 +43,25 @@ public class ManageUmlsPresenter implements MatPresenter{
 		public SaveCancelButtonBar getButtonBar() ;
 		public Anchor getUmlsTroubleLogging();
 	}
-	
 	VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
 	private  UMLSDisplay display;
-	
-	
+
 	public ManageUmlsPresenter(UMLSDisplay displayArg) {
 		this.display = displayArg;
 		resetWidget();
 		display.getSubmit().addClickHandler(new ClickHandler() {
 
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				submit();
 			}
 
 
 		});
-		
 		display.getUseridField().addKeyDownHandler(submitOnEnterHandler);
 		display.getPasswordField().addKeyDownHandler(submitOnEnterHandler);
 		display.getUmlsExternalLink().addClickHandler(new ClickHandler() {
-			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(true);
 				display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
 				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
@@ -73,111 +69,98 @@ public class ManageUmlsPresenter implements MatPresenter{
 				display.getExternalLinkDisclaimer().getElement().setAttribute("role", "alert");
 			}
 		});
-		
 		display.getUmlsTroubleLogging().addClickHandler(new ClickHandler() {
-			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(true);
 				display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
 				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");
 				display.getExternalLinkDisclaimer().getElement().setAttribute("id", "ExternalLinkDisclaimer");
 				display.getExternalLinkDisclaimer().getElement().setAttribute("role", "alert");
-				
 			}
 		});
-		
 		display.getButtonBar().getSaveButton().addClickHandler(new ClickHandler() {
-			
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(false);
-				/*display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
-				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");*/
 				Window.open(ClientConstants.EXT_LINK_UMLS, "_blank", "");
 			}
 		});
-		
+
 		display.getButtonBar().getCancelButton().addClickHandler(new ClickHandler() {
-			
 			@Override
-			public void onClick(ClickEvent event) {
-			
+			public void onClick(final ClickEvent event) {
 				display.getExternalLinkDisclaimer().setVisible(false);
-				/*display.getExternalLinkDisclaimer().getElement().removeAttribute("id");
-				display.getExternalLinkDisclaimer().getElement().removeAttribute("role");*/
 			}
 		});
-		
 	}
-	
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
 		@Override
-		public void onKeyDown(KeyDownEvent event) {
-			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
+		public void onKeyDown(final KeyDownEvent event) {
+			if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 				submit();
 			}
 		}
 	};
-	
+
 	private void submit() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
 		display.getExternalLinkDisclaimer().setVisible(false);
-		if(display.getUserid().getValue().isEmpty()) {
-			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getLoginUserRequiredMessage());
-		}else if(display.getPassword().getValue().isEmpty()) {
-			display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
-		}else{
-			vsacapiService.validateVsacUser(display.getUserid().getValue(), display.getPassword().getValue(), new AsyncCallback<Boolean>() {
-				
+		if (display.getUserid().getValue().isEmpty()) {
+			display.getErrorMessageDisplay().setMessage(
+					MatContext.get().getMessageDelegate().getLoginUserRequiredMessage());
+		} else if (display.getPassword().getValue().isEmpty()) {
+			display.getErrorMessageDisplay().setMessage(
+					MatContext.get().getMessageDelegate().getPasswordRequiredMessage());
+		} else {
+			vsacapiService.validateVsacUser(display.getUserid().getValue(),
+					display.getPassword().getValue(), new AsyncCallback<Boolean>() {
 				@Override
-				public void onSuccess(Boolean result) {
-				
-					if(result){
+				public void onSuccess(final Boolean result) {
+					if (result) {
 						Mat.showUMLSActive();
 						display.setInfoMessageVisible(true);
-						display.getInfoMessage().setText(MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
+						display.getInfoMessage().setText(
+								MatContext.get().getMessageDelegate().getUMLS_SUCCESSFULL_LOGIN());
 						display.getUserid().setValue("");
 						display.getPassword().setValue("");
 						Mat.showUMLSActive();
 						MatContext.get().restartUMLSSignout();
-						
-					}
-					else{//incorrect UMLS credential - no ticket is assigned.
-						display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
+						MatContext.get().setUMLSLoggedIn(true);
+					} else { //incorrect UMLS credential - no ticket is assigned.
+						display.getErrorMessageDisplay().setMessage(
+							MatContext.get().getMessageDelegate().getUML_LOGIN_FAILED());
 						Mat.hideUMLSActive();
+						MatContext.get().setUMLSLoggedIn(false);
 						invalidateVSacSession();
 					}
-					
 				}
-				
 				@Override
-				public void onFailure(Throwable caught) {
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
+				public void onFailure(final Throwable caught) {
+					display.getErrorMessageDisplay().setMessage(
+						MatContext.get().getMessageDelegate().getUML_LOGIN_UNAVAILABLE());
 					caught.printStackTrace();
 					Mat.hideUMLSActive();
 				}
 			});
 		}
 	}
-	
+
 	private void invalidateVSacSession(){
 		vsacapiService.inValidateVsacUser(new AsyncCallback<Void>() {
 
 			@Override
-			public void onFailure(Throwable caught) {
-				
+			public void onFailure(final Throwable caught) {
+				display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
 
 			@Override
-			public void onSuccess(Void result) {
-				
+			public void onSuccess(final Void result) {
 			}
 		});
-		
 	}
-	
+
 	private void resetWidget() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
@@ -185,7 +168,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 		display.getPassword().setValue("");
 		display.getUserid().setValue("");
 	}
-	
+
 	@Override
 	public void beforeDisplay() {
 		resetWidget();
@@ -195,12 +178,10 @@ public class ManageUmlsPresenter implements MatPresenter{
 	@Override
 	public void beforeClosingDisplay() {
 		resetWidget();
-		
 	}
 
 	@Override
 	public Widget getWidget() {
-		
 		return display.asWidget();
 	}
 

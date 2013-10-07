@@ -55,6 +55,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class MatContext implements IsSerializable {
 	
+	private boolean isUMLSLoggedIn = false;
 	private boolean doMeasureLockUpdates = false;
 	private boolean doUserLockUpdates = false;
 	// how often to perform lock time updates
@@ -797,6 +798,7 @@ public class MatContext implements IsSerializable {
 	 */
 	public void handleSignOut(String activityType, final boolean isRedirect) {
 		MatContext.get().getSynchronizationDelegate().setLogOffFlag();
+		MatContext.get().setUMLSLoggedIn(false);
 		MatContext.get().getLoginService().updateOnSignOut(MatContext.get().getLoggedinUserId(),
 			MatContext.get().getLoggedInUserEmail(), activityType, new AsyncCallback<String>() {
 
@@ -862,6 +864,16 @@ public class MatContext implements IsSerializable {
 
 	public void setMeasureDeleted(boolean isMeasureDeleted) {
 		this.isMeasureDeleted = isMeasureDeleted;
+	}
+
+
+	public boolean isUMLSLoggedIn() {
+		return isUMLSLoggedIn;
+	}
+
+
+	public void setUMLSLoggedIn(boolean isUMLSLoggedIn) {
+		this.isUMLSLoggedIn = isUMLSLoggedIn;
 	}
 
 	

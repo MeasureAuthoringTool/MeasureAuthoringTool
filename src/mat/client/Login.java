@@ -136,6 +136,7 @@ public class Login extends MainLayout implements EntryPoint {
 	
 	//US 439.  Signing out and redirects to Login.html
 	private void callSignOut(){
+		MatContext.get().setUMLSLoggedIn(false);
 		 MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
 
 				@Override
@@ -149,7 +150,7 @@ public class Login extends MainLayout implements EntryPoint {
 				}
 			});
 	}
-	
+
 	/**
 	 * Redirects to the Login.html
 	 */

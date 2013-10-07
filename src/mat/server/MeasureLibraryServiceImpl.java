@@ -1324,8 +1324,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						+ details.getQualityDataDTO().size());
 				for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
 					if (dataSetDTO.getCodeListName() != null) {
-						if ((checkForSupplementData	&& dataSetDTO.isSuppDataElement())
-							    || dataSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)) {
+						if ((checkForSupplementData && dataSetDTO
+								.isSuppDataElement())
+								|| dataSetDTO.getDataType().equalsIgnoreCase(
+										ConstantMessages.TIMING_ELEMENT)) {
 							continue;
 						} else {
 							finalList.add(dataSetDTO);

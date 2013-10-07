@@ -130,6 +130,6 @@ public interface ImageResources extends ClientBundle {
 	@Source("images/bullet_red.png")
 	ImageResource bullet_red();
 	
-	@Source("images/close.png")
+	@Source("images/cross-button.png")
 	ImageResource close();
 }

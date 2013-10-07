@@ -128,7 +128,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		userDefinedInput.setMaxLength(255);
 		valueSetPanel.add(userDefinedInput);
 		
-		Widget widgetDataType = LabelBuilder.buildLabel("Select Data Type", "Select Data Type");
+		Widget widgetDataType = LabelBuilder.buildLabel("Select Datatype", "Select Datatype");
 		dataTypePanel.add(widgetDataType);
 		dataTypePanel.add(new SpacerWidget());
 		dataTypePanel.add(allDataTypeInput);

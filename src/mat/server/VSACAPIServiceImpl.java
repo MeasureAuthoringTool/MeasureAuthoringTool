@@ -1,6 +1,3 @@
-/**
- * mat.server package.
- * **/
 package mat.server;
 
 import java.io.IOException;
@@ -30,6 +27,7 @@ import org.telligen.vsac.service.VSACTicketService;
 import org.xml.sax.InputSource;
 
 /** VSACAPIServiceImpl class. **/
+@SuppressWarnings("static-access")
 public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	VSACAPIService {
 	/** serialVersionUID for VSACAPIServiceImpl class. **/
@@ -48,6 +46,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	@Override
+	/**
+	 *Method to authenticate user at VSAC and save eightHourTicket into UMLSSessionMap for valid user.
+	 *@param userName - String.
+	 *@param password - String.
+	 *@return Boolean.
+	 * **/
 	public final boolean validateVsacUser(final String userName,
 			final String password) {
 		LOGGER.info("Start VSACAPIServiceImpl validateVsacUser");
@@ -61,6 +65,10 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	@Override
+	/**
+	 *Method to check if User already signed in at VSAC.
+	 *@return Boolean.
+	 * **/
 	public final boolean isAlreadySignedIn() {
 		LOGGER.info("Start VSACAPIServiceImpl isAlreadySignedIn");
 		String eightHourTicketForUser = UMLSSessionTicket
@@ -70,6 +78,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	@Override
+	/**
+	 *Method to invalidate VSAC user session by removing HTTP session Id from UMLSSessionMap.
+	 * **/
 	public final void inValidateVsacUser() {
 		LOGGER.info("Start VSACAPIServiceImpl inValidateVsacUser");
 		UMLSSessionTicket.remove(getThreadLocalRequest().getSession().getId());
@@ -78,8 +89,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 
 	}
 
-	@SuppressWarnings("static-access")
 	@Override
+	/**
+	 *Method to retrieve value set from VSAC based on OID.
+	 *@param oid - String.
+	 *@return VsacApiResult - VsacApiResult.
+	 * **/
 	public final VsacApiResult getValueSetByOIDAndVersion(final String oid) {
 		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :"
 				+ oid);
@@ -121,6 +136,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 		return result;
 	}
 
+	@Override
 	/***
 	 * Method to update valueset's without versions from VSAC in Measure XML.
 	 * Skip supplemental Data Elements and Timing elements and User defined QDM.
@@ -129,8 +145,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	 *            - Selected Measure Id.
 	 * @return VsacApiResult - Result.
 	 * */
-	@SuppressWarnings("static-access")
-	@Override
+
 	public final VsacApiResult updateVSACValueSets(final String measureId) {
 		VsacApiResult result = new VsacApiResult();
 		LOGGER.info("Start VSACAPIServiceImpl updateVSACValueSets method :");
@@ -209,7 +224,6 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	@Override
-	@SuppressWarnings("static-access")
 	/***
 	 * Method to update valueset's without versions from VSAC in Measure XML.
 	 * Skip Timing elements and User defined QDM. Supplemental Data Elements are considered here.
@@ -230,8 +244,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 			LOGGER.info("Start time ==== " + startTime);
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
 				 LOGGER.info("OID ====" + qualityDataSetDTO.getOid());
-				// Filter out Timing Element , User defined QDM's and
-				// supplemental data elements.
+				// Filter out Timing Element and User defined QDM's.
 				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO
 						.getDataType())
 						|| ConstantMessages.USER_DEFINED_QDM_OID
@@ -302,6 +315,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	/**
+	 * Private method to Handle Grouped type Value set.
 	 * @param eightHourTicket
 	 *            - String.
 	 * @param valueSet
@@ -326,10 +340,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 			String[] newDefinitation = definitation.split(",");
 			for (int i = 0; i < newDefinitation.length; i++) {
 				String[] groupedValueSetOid = newDefinitation[i].split(":");
-				if (groupedValueSetOid.length == 2) { // To
-													  // avoid
-													  // junk
-													  // data
+				 // If Check To avoid junk data.
+				if (groupedValueSetOid.length == 2) {
 					ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(
 							eightHourTicket);
 					ValueSetsResponse vsrGrouped = daoGroupped
@@ -346,11 +358,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	}
 
 	/**
-	 * Private method to Convert VSAC xml payload into Java object through
+	 * Private method to Convert VSAC xml pay load into Java object through
 	 * Castor.
 	 *
 	 * @param xmlPayLoad
-	 *            - String vsac payload.
+	 *            - String vsac pay load.
 	 * @return VSACValueSetWrapper.
 	 *
 	 * */

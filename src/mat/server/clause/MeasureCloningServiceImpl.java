@@ -35,7 +35,6 @@ import mat.server.SpringRemoteServiceServlet;
 import mat.server.service.MeasureNotesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
-import mat.shared.ConstantMessages;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
@@ -266,17 +265,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet
 							.getNamedItem("name").getNodeValue().toString();
 					String uuid = newNode.getAttributes().getNamedItem("uuid")
 							.getNodeValue().toString();
-					if (nodeName.equals(ConstantMessages.GENDER)) {
-						supplementalUUIdMap.put(ConstantMessages.GENDER, uuid);
-					} else if (nodeName.equals(ConstantMessages.RACE)) {
-						supplementalUUIdMap.put(ConstantMessages.RACE, uuid);
-					} else if (nodeName.equals(ConstantMessages.ETHNICITY)) {
-						supplementalUUIdMap.put(ConstantMessages.ETHNICITY,
-								uuid);
-					} else if (nodeName.equals(ConstantMessages.PAYER)) {
-						supplementalUUIdMap.put(ConstantMessages.PAYER, uuid);
-					}
-
+					supplementalUUIdMap.put(nodeName, uuid);
 				}
 			}
 		} catch (XPathExpressionException e) {

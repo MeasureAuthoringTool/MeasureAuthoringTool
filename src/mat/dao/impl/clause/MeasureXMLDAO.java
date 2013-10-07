@@ -3,6 +3,7 @@ package mat.dao.impl.clause;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import mat.dao.ListObjectDAO;
@@ -25,7 +26,15 @@ public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements
 
 	@Autowired
 	private mat.dao.DataTypeDAO dataTypeDAO;
-
+	
+	private static Map<String, String> suppDataOidAndDataTypeNameMap = new HashMap<String, String>();
+	static{
+		suppDataOidAndDataTypeNameMap.put("2.16.840.1.113762.1.4.1", ConstantMessages.PATIENT_CHARACTERISTIC_GENDER);
+		suppDataOidAndDataTypeNameMap.put("2.16.840.1.114222.4.11.836", ConstantMessages.PATIENT_CHARACTERISTIC_RACE);
+		suppDataOidAndDataTypeNameMap.put("2.16.840.1.114222.4.11.837", ConstantMessages.PATIENT_CHARACTERISTIC_ETHNICITY);
+		suppDataOidAndDataTypeNameMap.put("2.16.840.1.114222.4.11.3591", ConstantMessages.PATIENT_CHARACTERISTIC_PAYER);
+	}
+	
 	@Override
 	public MeasureXML findForMeasure(String measureId) {
 		Criteria criteria = getSessionFactory().getCurrentSession()
@@ -70,12 +79,11 @@ public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements
 		return wrapper;
 	}
 
-	@Override
 	/**
-	 * Refactor the part where we are doing if then else for creating Supplemental QDS
-	 * elements. It can be made much shorter.
+	 * 
 	 */
-	public QualityDataModelWrapper createSupplimentalQDM(String measureId,
+	@Override
+	public final QualityDataModelWrapper createSupplimentalQDM(String measureId,
 			boolean isClone, HashMap<String, String> uuidMap) {
 		// Get the Supplimental ListObject from the list_object table
 		List<ListObject> listOfSuppElements = listObjectDAO
@@ -88,79 +96,30 @@ public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements
 			qds.setOid(lo.getOid());
 			qds.setCodeListName(lo.getName());
 			qds.setTaxonomy(lo.getCodeSystem().getDescription());
-			qds.setVersion("1");
+			qds.setVersion("1.0");
 			qds.setId(lo.getId());
-
+			qds.setDataType(findDataTypeForOID(lo.getOid(), lo.getCategory().getId()));
 			if (isClone && uuidMap != null) {
-				if (lo.getOid().equalsIgnoreCase("2.16.840.1.113762.1.4.1")) {
-					// find out patient characteristic gender dataType.
-					qds.setDataType((dataTypeDAO
-							.findDataTypeForSupplimentalCodeList(
-									ConstantMessages.PATIENT_CHARACTERISTIC_GENDER,
-									lo.getCategory().getId())).getDescription());
-					qds.setUuid(uuidMap.get(ConstantMessages.GENDER));
-				} else if (lo.getOid().equalsIgnoreCase(
-						"2.16.840.1.114222.4.11.836")) {
-					// find out patient characteristic race dataType.
-					qds.setDataType((dataTypeDAO
-							.findDataTypeForSupplimentalCodeList(
-									ConstantMessages.PATIENT_CHARACTERISTIC_RACE,
-									lo.getCategory().getId())).getDescription());
-					qds.setUuid(uuidMap.get(ConstantMessages.RACE));
-				} else if (lo.getOid().equalsIgnoreCase(
-						"2.16.840.1.114222.4.11.837")) {
-					// find out patient characteristic ethnicity dataType.
-					qds.setDataType((dataTypeDAO
-							.findDataTypeForSupplimentalCodeList(
-									ConstantMessages.PATIENT_CHARACTERISTIC_ETHNICITY,
-									lo.getCategory().getId())).getDescription());
-					qds.setUuid(uuidMap.get(ConstantMessages.ETHNICITY));
-				} else if (lo.getOid().equalsIgnoreCase(
-						"2.16.840.1.114222.4.11.3591")) {
-					// find out patient characteristic payer dataType.
-					qds.setDataType((dataTypeDAO
-							.findDataTypeForSupplimentalCodeList(
-									ConstantMessages.PATIENT_CHARACTERISTIC_PAYER,
-									lo.getCategory().getId())).getDescription());
-					qds.setUuid(uuidMap.get(ConstantMessages.PAYER));
-				}
-
+				qds.setUuid(uuidMap.get(lo.getName()));
 			} else {
 				qds.setUuid(UUID.randomUUID().toString());
-				if (lo.getOid().equalsIgnoreCase("2.16.840.1.113762.1.4.1")) {
-					// find out patient characteristic gender dataType.
-					qds.setDataType((dataTypeDAO
-							.findDataTypeForSupplimentalCodeList(
-									ConstantMessages.PATIENT_CHARACTERISTIC_GENDER,
-									lo.getCategory().getId())).getDescription());
-				} else if (lo.getOid().equalsIgnoreCase(
-						"2.16.840.1.114222.4.11.836")) {
-					// find out patient characteristic race dataType.
-					qds.setDataType((dataTypeDAO
-							.findDataTypeForSupplimentalCodeList(
-									ConstantMessages.PATIENT_CHARACTERISTIC_RACE,
-									lo.getCategory().getId())).getDescription());
-				} else if (lo.getOid().equalsIgnoreCase(
-						"2.16.840.1.114222.4.11.837")) {
-					// find out patient characteristic ethnicity dataType.
-					qds.setDataType((dataTypeDAO
-							.findDataTypeForSupplimentalCodeList(
-									ConstantMessages.PATIENT_CHARACTERISTIC_ETHNICITY,
-									lo.getCategory().getId())).getDescription());
-				} else if (lo.getOid().equalsIgnoreCase(
-						"2.16.840.1.114222.4.11.3591")) {
-					// find out patient characteristic payer dataType.
-					qds.setDataType((dataTypeDAO
-							.findDataTypeForSupplimentalCodeList(
-									ConstantMessages.PATIENT_CHARACTERISTIC_PAYER,
-									lo.getCategory().getId())).getDescription());
-				}
 			}
 			qds.setSuppDataElement(true);
-			// getMeasurePackageService().saveSupplimentalQDM(qds);
 			wrapper.getQualityDataDTO().add(qds);
 		}
 		return wrapper;
 	}
 
+
+	/** Method to find data type description based on OID and category Id.
+	 *@param oid - String.
+	 *@param categoryId - String.
+	 *@return String - String.
+	 * **/
+	private String findDataTypeForOID(final String oid, final String categoryId) {
+		String dataType = null;
+		String dataTypeName = suppDataOidAndDataTypeNameMap.get(oid);
+		dataType = (dataTypeDAO.findDataTypeForSupplimentalCodeList(dataTypeName, categoryId)).getDescription();
+		return dataType;
+	}
 }

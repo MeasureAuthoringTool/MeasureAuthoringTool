@@ -182,51 +182,48 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			}
 		});
 		metaDataDisplay.getDeleteMeasure().addClickHandler(new ClickHandler() {
-			
+
 			@Override
-			public void onClick(ClickEvent event) {
-				
-				//deleteMeasure();
+			public void onClick(final ClickEvent event) {
 				DeleteMeasureConfirmationBox.showDeletionConfimationDialog();
-				DeleteMeasureConfirmationBox.getSave().addClickHandler(new ClickHandler() {
-					
+				DeleteMeasureConfirmationBox.getConfirm().addClickHandler(new ClickHandler() {
+
 					@Override
-					public void onClick(ClickEvent event) {
-					//	Window.alert(DeleteMeasureConfirmationBox.getPasswordEntered());
+					public void onClick(final ClickEvent event) {
+
 						checkPasswordForMeasureDeletion(DeleteMeasureConfirmationBox.getPasswordEntered());
 						DeleteMeasureConfirmationBox.getDialogBox().hide();
 					}
 				});
 			}
 		});
-		addEditAuthorsDisplay.getCancelButton().addClickHandler(new ClickHandler(){
+		addEditAuthorsDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				addEditAuthorsDisplay.getAuthorInputBox().setValue("");
 				addEditAuthorsDisplay.hideTextBox();
 			}
 		});
-		addEditAuthorsDisplay.getReturnButton().addClickHandler(new ClickHandler(){
+		addEditAuthorsDisplay.getReturnButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				isSubView = false;
 				backToDetail();
 			}
 		});
-		
-		addEditAuthorsDisplay.getSaveButton().addClickHandler(new ClickHandler(){
+
+		addEditAuthorsDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
-				if(addEditAuthorsDisplay.getAuthor().equals(MatContext.PLEASE_SELECT)) {
+			public void onClick(final ClickEvent event) {
+				if (addEditAuthorsDisplay.getAuthor().equals(MatContext.PLEASE_SELECT)) {
 					//do nothing
-				}
-				else if(!addEditAuthorsDisplay.getAuthor().startsWith("Other")){
-					if(!addEditAuthorsDisplay.getAuthor().equals("")){
+				} else if (!addEditAuthorsDisplay.getAuthor().startsWith("Other")) {
+					if (!addEditAuthorsDisplay.getAuthor().equals("")) {
 						addToAuthorsList(addEditAuthorsDisplay.getAuthor());
 				    	addEditAuthorsDisplay.getAuthorInputBox().setValue("");
 					}
-				}else{
-					  if(!addEditAuthorsDisplay.getOtherAuthor().getValue().equals("")){
+				} else {
+					  if (!addEditAuthorsDisplay.getOtherAuthor().getValue().equals("")) {
 						  addToAuthorsList(addEditAuthorsDisplay.getOtherAuthor().getValue());
 						  addEditAuthorsDisplay.getOtherAuthor().setValue("");
 					  }
@@ -235,32 +232,31 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		});
 		addEditAuthorsDisplay.getRemoveButton().addClickHandler(new ClickHandler(){
 			@Override
-			public void onClick(ClickEvent event) {
-			     removeSelectedAuthor();	 
+			public void onClick(final ClickEvent event) {
+			     removeSelectedAuthor();
 			}
 		});
-		addEditMeasureTypeDisplay.getCancelButton().addClickHandler(new ClickHandler(){
+		addEditMeasureTypeDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				addEditMeasureTypeDisplay.getMeasureTypeInputBox().setValue("");
 				addEditMeasureTypeDisplay.hideTextBox();
 			}
 		});
-		addEditMeasureTypeDisplay.getReturnButton().addClickHandler(new ClickHandler(){
+		addEditMeasureTypeDisplay.getReturnButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				backToDetail();
 			}
 		});
-		
-		
-		addEditMeasureTypeDisplay.getSaveButton().addClickHandler(new ClickHandler(){
+
+		addEditMeasureTypeDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
-				if(addEditMeasureTypeDisplay.getMeasureType().equals(MatContext.PLEASE_SELECT)) {
+			public void onClick(final ClickEvent event) {
+				if (addEditMeasureTypeDisplay.getMeasureType().equals(
+						MatContext.PLEASE_SELECT)) {
 					//do nothing
-				}
-				else if(!(addEditMeasureTypeDisplay.getMeasureType().startsWith("Other"))){
+				} else if(!(addEditMeasureTypeDisplay.getMeasureType().startsWith("Other"))) {
 					if(!addEditMeasureTypeDisplay.getMeasureType().equals("")){
 						addToMeasureTypeList(addEditMeasureTypeDisplay.getMeasureType());
 						addEditMeasureTypeDisplay.getMeasureTypeInputBox().setValue("");

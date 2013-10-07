@@ -1,31 +1,39 @@
 package mat.client.measure.metadata;
 
+import mat.client.shared.DialogBoxWithCloseButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SpacerWidget;
 
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
+import org.apache.commons.lang.StringUtils;
+
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class DeleteMeasureConfirmationBox {
-	public static DialogBox dialogBox = new DialogBox(true, true);
+
+	private static DialogBoxWithCloseButton dialogBox = new DialogBoxWithCloseButton(
+			StringUtils.EMPTY);
+	static HandlerRegistration handlerRegistration;
 
 	public static DialogBox getDialogBox() {
 		return dialogBox;
 	}
 
-	public static Button save = new Button("Confirm");
+	public static Button confirm = new Button("Confirm");
 	public static String passwordEntered;
 
 	public static String getPasswordEntered() {
@@ -36,12 +44,12 @@ public class DeleteMeasureConfirmationBox {
 		DeleteMeasureConfirmationBox.passwordEntered = passwordEntered;
 	}
 
-	public static Button getSave() {
-		return save;
+	public static Button getConfirm() {
+		return confirm;
 	}
 
-	public static void setSave(Button save) {
-		DeleteMeasureConfirmationBox.save = save;
+	public static void setConfirm(Button confirm) {
+		DeleteMeasureConfirmationBox.confirm = confirm;
 	}
 
 	public static void showDeletionConfimationDialog() {
@@ -57,8 +65,8 @@ public class DeleteMeasureConfirmationBox {
 		dialogBox.setWidget(dialogContents);
 
 		ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
-		errorMessageDisplay
-				.setMessage(MatContext.get().getMessageDelegate().getDELETE_MEASURE_WARNING_MESSAGE());
+		errorMessageDisplay.setMessage(MatContext.get().getMessageDelegate()
+				.getDELETE_MEASURE_WARNING_MESSAGE());
 		VerticalPanel passwordPanel = new VerticalPanel();
 		passwordPanel.getElement().setId("passwordPanel_VerticalPanel");
 		final HTML passwordText = new HTML(
@@ -80,17 +88,8 @@ public class DeleteMeasureConfirmationBox {
 		dialogContents.add(passwordPanel);
 		dialogContents.setCellHorizontalAlignment(passwordPanel,
 				HasHorizontalAlignment.ALIGN_LEFT);
-		save.setEnabled(false);
-		// Add a Close button at the bottom of the dialog
-		Button closeButton = new Button("Cancel", new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-
-				dialogBox.hide();
-
-			}
-		});
-		closeButton.getElement().setId("closeButton_Button");
+		confirm.setEnabled(false);
+		
 		password.addKeyUpHandler(new KeyUpHandler() {
 
 			@Override
@@ -98,11 +97,11 @@ public class DeleteMeasureConfirmationBox {
 				if (password.getText() != null
 						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_TAB
 						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_BACKSPACE) {
-					save.setEnabled(true);
+					confirm.setEnabled(true);
 					setPasswordEntered(password.getText());
 				} else if (password.getText() == null
 						|| password.getText().trim().length() == 0) {
-					save.setEnabled(false);
+					confirm.setEnabled(false);
 				}
 
 			}
@@ -110,17 +109,25 @@ public class DeleteMeasureConfirmationBox {
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.getElement().setId("buttonPanel_HorizontalPanel");
 		buttonPanel.setSpacing(10);
-		save.getElement().setId("save_Button");
-		buttonPanel.add(save);
-		buttonPanel.setCellHorizontalAlignment(save,
-				HasHorizontalAlignment.ALIGN_RIGHT);
-		buttonPanel.add(closeButton);
-		buttonPanel.setCellHorizontalAlignment(closeButton,
+		confirm.getElement().setId("save_Button");
+		buttonPanel.add(confirm);
+		buttonPanel.setCellHorizontalAlignment(confirm,
 				HasHorizontalAlignment.ALIGN_RIGHT);
 
 		dialogContents.add(buttonPanel);
 		dialogBox.center();
 		dialogBox.show();
+
+		if (handlerRegistration != null) {
+			handlerRegistration.removeHandler();
+		}
+		handlerRegistration = dialogBox
+				.addCloseHandler(new CloseHandler<PopupPanel>() {
+					@Override
+					public void onClose(final CloseEvent<PopupPanel> event) {
+
+					}
+				});
 
 	}
 

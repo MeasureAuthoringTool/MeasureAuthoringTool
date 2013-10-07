@@ -175,6 +175,11 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	}
 
 	private void searchValueSetInVsac(String oid, String version) {
+		if (!MatContext.get().isUMLSLoggedIn()) { //UMLS Login Validation
+			searchDisplay.getErrorMessageDisplay().setMessage(
+					MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
+			return;
+		}
 		//OID validation.
 		if (oid == null || oid.trim().isEmpty()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
@@ -218,25 +223,6 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			default: message = MatContext.get().getMessageDelegate().getUnknownFailMessage();
 		}
 		return message;
-	}
-
-	private void populateDataTypesListBox(){
-		MatContext.get().getListBoxCodeProvider().getAllDataType(new AsyncCallback<List<? extends HasListBox>>() {
-
-			@Override
-			public void onFailure(final Throwable caught) {
-				searchDisplay.clearVSACValueSetMessages();
-				searchDisplay.getErrorMessageDisplay().setMessage(
-						MatContext.get().getMessageDelegate().getGenericErrorMessage());
-			}
-
-			@Override
-			public void onSuccess(final List<? extends HasListBox> result) {
-				Collections.sort(result, new HasListBox.Comparator());
-				searchDisplay.setDataTypesListBoxOptions(result);
-			}
-		});
-
 	}
 
 	/**
@@ -428,7 +414,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 * */
 	private void displaySearch() {
 		ModifyQDMDialogBox.showModifyDialogBox(searchDisplay.asWidget(), modifyValueSetDTO, this);
-		populateDataTypesListBox();
+		populateAllDataType();
 		searchDisplay.resetVSACValueSetWidget();
 		searchDisplay.clearVSACValueSetMessages();
 	}
@@ -445,6 +431,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			public void onSuccess(final List<? extends HasListBox> result) {
 				Collections.sort(result, new HasListBox.Comparator());
 				searchDisplay.setAllDataTypeOptions(result);
+				searchDisplay.setDataTypesListBoxOptions(result);
 			}
        });
 	}

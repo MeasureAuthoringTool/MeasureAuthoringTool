@@ -38,69 +38,71 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 @SuppressWarnings("deprecation")
+/**QDSCodeListSearchPresenter.java.**/
 public class QDSCodeListSearchPresenter implements MatPresenter {
 
+	/**Simple Panel Object.**/
 	private SimplePanel panel = new SimplePanel();
-	private SearchDisplay searchDisplay;	
-	MeasureServiceAsync service = MatContext.get().getMeasureService();
-	ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
-	boolean isUSerDefined = false;
-	ArrayList<QualityDataSetDTO> allQdsList = new ArrayList<QualityDataSetDTO>();
-	boolean isCheckForSDE = false;
-	List<String> codeListString = new ArrayList<String>();
-	VSACAPIServiceAsync vsacapiService = MatContext.get()
+	/**SearchDisplay Object.**/
+	private SearchDisplay searchDisplay;
+	/**ArrayList of All appliedQDM's.**/
+	private ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
+	/**Boolean isUserDefined.**/
+	private boolean isUSerDefined = false;
+    /**VSACService object.**/
+	private VSACAPIServiceAsync vsacapiService = MatContext.get()
 			.getVsacapiServiceAsync();
-
-	public static interface SearchDisplay {		
-		public Widget getDataTypeWidget();
-		public CustomCheckBox getSpecificOccurrenceInput();
-		public String getDataTypeValue(ListBoxMVP inputListBox);
-		public ErrorMessageDisplay getErrorMessageDisplay();
-		public String getDataTypeText(ListBoxMVP inputListBox);
-		public DisclosurePanel getDisclosurePanel();
-		public Button getPsuedoQDMToMeasure();
-		public TextBox getUserDefinedInput();
-		public ListBoxMVP getAllDataTypeInput();
+	  /**MeasureService object.**/
+	private MeasureServiceAsync service = MatContext.get().getMeasureService();
+/** QDSCodeListSearchView Implements this SearchDisplay.**/
+	public  interface SearchDisplay {
+		Widget getDataTypeWidget();
+		CustomCheckBox getSpecificOccurrenceInput();
+		String getDataTypeValue(ListBoxMVP inputListBox);
+		ErrorMessageDisplay getErrorMessageDisplay();
+		String getDataTypeText(ListBoxMVP inputListBox);
+		DisclosurePanel getDisclosurePanel();
+		Button getPsuedoQDMToMeasure();
+		TextBox getUserDefinedInput();
+		ListBoxMVP getAllDataTypeInput();
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
-		public DisclosurePanel getDisclosurePanelCellTable();
-		public SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
-		public ErrorMessageDisplay getErrorMessageUserDefinedPanel();
-		public TextBox getOIDInput();
-		public DateBoxWithCalendar getVersionInput();
-		public Button getRetrieveButton();
-		public VerticalPanel getValueSetDetailsPanel();
-		public ListBoxMVP getDataTypesListBox();
-		public SuccessMessageDisplay getSuccessMessageDisplay();
-		public void setDataTypesListBoxOptions(List<? extends HasListBox> texts);
-		public void clearVSACValueSetMessages();
-		public void buildValueSetDetailsWidget(
+		DisclosurePanel getDisclosurePanelCellTable();
+		SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
+		ErrorMessageDisplay getErrorMessageUserDefinedPanel();
+		TextBox getOIDInput();
+		DateBoxWithCalendar getVersionInput();
+		Button getRetrieveButton();
+		VerticalPanel getValueSetDetailsPanel();
+		ListBoxMVP getDataTypesListBox();
+		SuccessMessageDisplay getSuccessMessageDisplay();
+		void setDataTypesListBoxOptions(List<? extends HasListBox> texts);
+		void clearVSACValueSetMessages();
+		void buildValueSetDetailsWidget(
 				ArrayList<MatValueSet> matValueSets);
-		public Button getApplyToMeasureButton();
-		public MatValueSet getCurrentMatValueSet();
-		public void resetVSACValueSetWidget();		
-		public Widget asWidget();
+		Button getApplyToMeasureButton();
+		MatValueSet getCurrentMatValueSet();
+		void resetVSACValueSetWidget();
+		Widget asWidget();
 	}
 
-	@SuppressWarnings("deprecation")
-	public QDSCodeListSearchPresenter(SearchDisplay sDisplayArg) {
+	public QDSCodeListSearchPresenter(final SearchDisplay sDisplayArg) {
 		this.searchDisplay = sDisplayArg;
 
 		// TODO: Need to replace the use of addEventHandler with addOpenHandler.
 		searchDisplay.getDisclosurePanel().addEventHandler(
 				new DisclosureHandler() {
-					// TODO: Need to replace the DisclosureEvent with CloseEvent
-					public void onClose(DisclosureEvent event) {
+					// TODO: Need to replace the DisclosureEvent with CloseEvent.
+					public void onClose(final DisclosureEvent event) {
 						searchDisplay.getUserDefinedInput().setText("");
 						searchDisplay.getAllDataTypeInput().setItemSelected(0,
-								true);						
+								true);
 						displaySearch();
 						searchDisplay.getDisclosurePanelCellTable().setOpen(
 								true);
 					}
 
 					// TODO: Need to replace the DisclosureEvent with OpenEvent
-					public void onOpen(DisclosureEvent event) {
-						populateAllDataType();						
+					public void onOpen(final DisclosureEvent event) {
 						displaySearch();
 						searchDisplay.getDisclosurePanelCellTable().setOpen(
 								false);
@@ -112,14 +114,14 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				new DisclosureHandler() {
 
 					// TODO: Need to replace the DisclosureEvent with CloseEvent
-					public void onClose(DisclosureEvent event) {
-						searchDisplay.getUserDefinedInput().setText("");						
+					public void onClose(final DisclosureEvent event) {
+						searchDisplay.getUserDefinedInput().setText("");
 						displaySearch();
 						searchDisplay.getDisclosurePanel().setOpen(true);
 					}
 
-					// TODO: Need to replace the DisclosureEvent with OpenEvent
-					public void onOpen(DisclosureEvent event) {
+					// TODO: Need to replace the DisclosureEvent with OpenEvent.
+					public void onOpen(final DisclosureEvent event) {
 						displaySearch();
 						searchDisplay.getDisclosurePanel().setOpen(false);
 					}
@@ -128,7 +130,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getUserDefinedInput().addClickHandler(new ClickHandler() {
 
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 				searchDisplay.getErrorMessageUserDefinedPanel().clear();
 			}
@@ -137,7 +139,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getAllDataTypeInput().addFocusHandler(new FocusHandler() {
 
 			@Override
-			public void onFocus(FocusEvent event) {
+			public void onFocus(final FocusEvent event) {
 				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 				searchDisplay.getErrorMessageUserDefinedPanel().clear();
 
@@ -147,7 +149,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getPsuedoQDMToMeasure().addClickHandler(
 				new ClickHandler() {
 					@Override
-					public void onClick(ClickEvent event) {
+					public void onClick(final ClickEvent event) {
 						isUSerDefined = true;
 						getListOfAppliedQDMs(isUSerDefined);
 					}
@@ -155,7 +157,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 
 		searchDisplay.getRetrieveButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				MatContext.get().clearDVIMessages();
 				isUSerDefined = false;
 				searchValueSetInVsac(searchDisplay.getOIDInput().getValue(),
@@ -166,7 +168,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getApplyToMeasureButton().addClickHandler(
 				new ClickHandler() {
 					@Override
-					public void onClick(ClickEvent event) {
+					public void onClick(final ClickEvent event) {
 						MatContext.get().clearDVIMessages();
 						isUSerDefined = false;
 						getListOfAppliedQDMs(isUSerDefined);
@@ -174,8 +176,18 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				});
 	}
 
-	private void searchValueSetInVsac(String oid, String version) {
+	/**
+	 *@param oid - {@link String}.
+	 * @param version - {@link String}.
+	 * **/
+	private void searchValueSetInVsac(final String oid, final String version) {
 
+		if (!MatContext.get().isUMLSLoggedIn()) {
+			searchDisplay.getErrorMessageDisplay().setMessage(
+					MatContext.get().getMessageDelegate()
+							.getUMLS_NOT_LOGGEDIN());
+			return;
+		} else {
 		// OID validation.
 		if (oid == null || oid.trim().isEmpty()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(
@@ -189,7 +201,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		vsacapiService.getValueSetByOIDAndVersion(oid,
 				new AsyncCallback<VsacApiResult>() {
 					@Override
-					public void onFailure(Throwable caught) {
+					public void onFailure(final Throwable caught) {
 						searchDisplay.getErrorMessageDisplay().setMessage(
 								MatContext.get().getMessageDelegate()
 										.getVSAC_RETRIEVE_FAILED());
@@ -199,7 +211,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 					}
 
 					@Override
-					public void onSuccess(VsacApiResult result) {
+					public void onSuccess(final VsacApiResult result) {
 						if (result.isSuccess()) {
 							searchDisplay.buildValueSetDetailsWidget(result
 									.getVsacResponse());
@@ -216,9 +228,13 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 						showSearchingBusy(false);
 					}
 				});
+		}
 	}
-
-	private String convertMessage(int id) {
+/**
+ *@param id - {@link Integer}.
+ *@return String - {@link String}.
+ * **/
+	private String convertMessage(final int id) {
 		String message;
 		switch (id) {
 		case VsacApiResult.UMLS_NOT_LOGGEDIN:
@@ -237,29 +253,35 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		return message;
 	}
 
-	private void getListOfAppliedQDMs(final boolean isUSerDefined) {
+	/**
+	 *@param isUserDefined - {@link Boolean}.
+	 *
+	 * **/
+	private void getListOfAppliedQDMs(final boolean isUserDefined) {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if (measureId != null && measureId != "") {
 			service.getAppliedQDMFromMeasureXml(measureId, true,
 					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
 
 						@Override
-						public void onFailure(Throwable caught) {
+						public void onFailure(final Throwable caught) {
 							Window.alert(MatContext.get().getMessageDelegate()
 									.getGenericErrorMessage());
 						}
 
 						@Override
 						public void onSuccess(
-								ArrayList<QualityDataSetDTO> result) {
+								final ArrayList<QualityDataSetDTO> result) {
 							appliedQDMList = result;
-							addSelectedCodeListtoMeasure(isUSerDefined);
+							addSelectedCodeListtoMeasure(isUserDefined);
 						}
 					});
 
 		}
 	}
-
+/***
+ *Populates all data types from DB for Element's with and Element's without VSAC drop down.
+ * */
 	private void populateAllDataType() {
 		MatContext
 				.get()
@@ -268,7 +290,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 						new AsyncCallback<List<? extends HasListBox>>() {
 
 							@Override
-							public void onFailure(Throwable caught) {
+							public void onFailure(final Throwable caught) {
 								searchDisplay
 										.getErrorMessageDisplay()
 										.setMessage(
@@ -280,46 +302,21 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 
 							@Override
 							public void onSuccess(
-									List<? extends HasListBox> result) {
+									final List<? extends HasListBox> result) {
 								Collections.sort(result,
 										new HasListBox.Comparator());
 								searchDisplay.setAllDataTypeOptions(result);
+								searchDisplay
+								.setDataTypesListBoxOptions(result);
 							}
 						});
 
 	}
 
-	private void populateDataTypesListBox() {
-		MatContext
-				.get()
-				.getListBoxCodeProvider()
-				.getAllDataType(
-						new AsyncCallback<List<? extends HasListBox>>() {
-
-							@Override
-							public void onFailure(Throwable caught) {
-								searchDisplay.clearVSACValueSetMessages();
-								searchDisplay
-										.getErrorMessageDisplay()
-										.setMessage(
-												MatContext
-														.get()
-														.getMessageDelegate()
-														.getGenericErrorMessage());
-							}
-
-							@Override
-							public void onSuccess(
-									List<? extends HasListBox> result) {
-								Collections.sort(result,
-										new HasListBox.Comparator());
-								searchDisplay
-										.setDataTypesListBoxOptions(result);
-							}
-						});
-
-	}	
-
+	/**
+	 *Method to show loading message and disable Retrieve button , OID and version Input boxes.
+	 *@param busy - {@link Boolean}.
+	 * **/
 	private void showSearchingBusy(final boolean busy) {
 		if (busy) {
 			Mat.showLoadingMessage();
@@ -331,17 +328,25 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getVersionInput().setEnabled(!busy);
 	}
 
+	/**
+	 *Method to show Widget on Create Element Tab.
+	 * **/
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
-		populateDataTypesListBox();
+		populateAllDataType();
 		searchDisplay.resetVSACValueSetWidget();
 		searchDisplay.clearVSACValueSetMessages();
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
 	}
 
-	private void addSelectedCodeListtoMeasure(boolean isUserDefinedQDM) {
+	/**
+	 *Based on isUserDefined boolean - Service call to Add value set with VSAC QDS or
+	 *User defined Value set is made.
+	 *@param isUserDefinedQDM - {@link Boolean}
+	 * **/
+	private void addSelectedCodeListtoMeasure(final boolean isUserDefinedQDM) {
 		if (!isUserDefinedQDM) {
 			addQDSWithValueSet();
 		} else {
@@ -349,6 +354,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 *Service call to add VSAC QDS into Measure xml.
+	 * **/
 	private void addQDSWithValueSet() {
 		// clear the successMessage
 		searchDisplay.getSuccessMessageDisplay().clear();
@@ -379,18 +387,16 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 							new AsyncCallback<SaveUpdateCodeListResult>() {
 								@Override
 								public void onSuccess(
-										SaveUpdateCodeListResult result) {
+										final SaveUpdateCodeListResult result) {
 									String message = "";
-									if (result.getXmlString() != null)
+									if (result.getXmlString() != null) {
 										saveMeasureXML(result.getXmlString());
+									}
+									// OnSuccess() un check the specific
+									// occurrence  and de select
+									// the radio options
 									searchDisplay.getSpecificOccurrenceInput()
-											.setValue(false);// OnSuccess()
-																// uncheck the
-																// specific
-																// occurrence
-																// and deselect
-																// the radio
-																// options
+											.setValue(false);
 									if (result.isSuccess()) {
 										if (result.getOccurrenceMessage() != null
 												&& !result
@@ -401,28 +407,26 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 													.getMessageDelegate()
 													.getQDMOcurrenceSuccessMessage(
 															searchDisplay
-																	.getCurrentMatValueSet()
-																	.getDisplayName(),
+														.getCurrentMatValueSet()
+															.getDisplayName(),
 															dataTypeText,
-															result.getOccurrenceMessage());
+													result.getOccurrenceMessage());
 										} else {
 											message = MatContext
 													.get()
 													.getMessageDelegate()
 													.getQDMSuccessMessage(
-															searchDisplay
-																	.getCurrentMatValueSet()
-																	.getDisplayName(),
+													searchDisplay
+													.getCurrentMatValueSet()
+													.getDisplayName(),
 															dataTypeText);
 										}
-										MatContext
-												.get()
-												.getEventBus()
-												.fireEvent(
-														new QDSElementCreatedEvent(
-																searchDisplay
-																		.getCurrentMatValueSet()
-																		.getDisplayName()));
+										MatContext.get()
+										 .getEventBus().fireEvent(
+										new QDSElementCreatedEvent(
+												searchDisplay
+												.getCurrentMatValueSet()
+												.getDisplayName()));
 										searchDisplay
 												.getSuccessMessageDisplay()
 												.setMessage(message);
@@ -430,19 +434,28 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 								}
 
 								@Override
-								public void onFailure(Throwable caught) {
-									if (appliedQDMList.size() > 0)
+								public void onFailure(final Throwable caught) {
+									if (appliedQDMList.size() > 0) {
 										appliedQDMList
 												.removeAll(appliedQDMList);
+									}
 									searchDisplay
 											.getErrorMessageDisplay()
 											.setMessage(
-													"problem while saving the QDM to Measure");
+											"problem while saving the QDM to Measure");
 								}
 							});
+		} else {
+			searchDisplay
+			.getErrorMessageDisplay()
+			.setMessage(
+					"Please select data type from drop down list.");
 		}
 	}
-	
+
+	/**
+	 *Service call to add User defined QDS into Measure xml.
+	 * **/
 	private void addQDSWithOutValueSet() {
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
@@ -461,18 +474,20 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 							appliedQDMList,
 							new AsyncCallback<SaveUpdateCodeListResult>() {
 								@Override
-								public void onFailure(Throwable caught) {
-									if (appliedQDMList.size() > 0)
+								public void onFailure(final Throwable caught) {
+									if (appliedQDMList.size() > 0) {
 										appliedQDMList
 												.removeAll(appliedQDMList);
+									}
 									Window.alert(MatContext.get()
 											.getMessageDelegate()
 											.getGenericErrorMessage());
 								}
 
+								@SuppressWarnings("static-access")
 								@Override
 								public void onSuccess(
-										SaveUpdateCodeListResult result) {
+										final SaveUpdateCodeListResult result) {
 									if (result.getXmlString() != null) {
 										saveMeasureXML(result.getXmlString());
 										String message = MatContext
@@ -480,11 +495,11 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 												.getMessageDelegate()
 												.getQDMSuccessMessage(
 														searchDisplay
-																.getUserDefinedInput()
-																.getText(),
+														.getUserDefinedInput()
+														.getText(),
 														searchDisplay
-																.getDataTypeText(searchDisplay
-																		.getAllDataTypeInput()));
+													.getDataTypeText(searchDisplay
+														.getAllDataTypeInput()));
 										searchDisplay
 												.getSuccessMessageUserDefinedPanel()
 												.setMessage(message);
@@ -492,14 +507,14 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 												.setText("");
 										searchDisplay.getAllDataTypeInput()
 												.setSelectedIndex(0);
-									} else if (result.getFailureReason() == 7) {
+									} else if (result.getFailureReason() == result.ALREADY_EXISTS) {
 										searchDisplay
 												.getErrorMessageUserDefinedPanel()
 												.setMessage(
 														MatContext
-																.get()
-																.getMessageDelegate()
-																.getDuplicateAppliedQDMMsg());
+														.get()
+														.getMessageDelegate()
+													.getDuplicateAppliedQDMMsg());
 									}
 								}
 							});
@@ -514,7 +529,10 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		}
 	}
 
-	private void saveMeasureXML(String qdmXMLString) {
+	/**
+	 *@param qdmXMLString - {@link String}.
+	 * **/
+	private void saveMeasureXML(final String qdmXMLString) {
 		final String nodeName = "qdm";
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
@@ -527,46 +545,52 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				new AsyncCallback<Void>() {
 
 					@Override
-					public void onFailure(Throwable caught) {
+					public void onFailure(final Throwable caught) {
 						searchDisplay.getErrorMessageDisplay().setMessage(
 								MatContext.get().getMessageDelegate()
 										.getGenericErrorMessage());
 					}
 
 					@Override
-					public void onSuccess(Void result) {
+					public void onSuccess(final Void result) {
 
 					}
 				});
 	}
 
-	public Widget getWidget() {
+	/**
+	 *@return {@link Widget}.
+	 * **/
+	public final Widget getWidget() {
 		return panel;
 	}
 
-	public String getSortKey(int columnIndex) {
-		String[] sortKeys = new String[] { "name", "taxnomy", "category" };
+	/**
+	 *@param columnIndex - {@link Integer}.
+	 *@return String - {@link String}.
+	 * **/
+	public final String getSortKey(final int columnIndex) {
+		String[] sortKeys = new String[] {"name", "taxnomy", "category" };
 		return sortKeys[columnIndex];
 	}
 
 	/**
-	 * This method is used to set all the widgets to read only mode. 
-	 * @param editable
+	 * This method is used to set all the widgets to read only mode.
+	 * @param editable - {@link Boolean}
 	 */
-	private void setWidgetsReadOnly(boolean editable) {
+	private void setWidgetsReadOnly(final boolean editable) {
 		//Widgets in "Element with VSAC Value Set" panel.
 		searchDisplay.getRetrieveButton().setEnabled(editable);
 		searchDisplay.getOIDInput().setEnabled(editable);
-		searchDisplay.getVersionInput().setEnabled(editable);	
-		
+		searchDisplay.getVersionInput().setEnabled(editable);
 		//Widgets in "Element without VSAC Value Set" panel.
-		searchDisplay.getUserDefinedInput().setEnabled(editable); 
+		searchDisplay.getUserDefinedInput().setEnabled(editable);
 		searchDisplay.getAllDataTypeInput().setEnabled(editable);
 		searchDisplay.getPsuedoQDMToMeasure().setEnabled(editable);
 	}
 
 	@Override
-	public void beforeDisplay() {		
+	public  void beforeDisplay() {
 		displaySearch();
 		setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}

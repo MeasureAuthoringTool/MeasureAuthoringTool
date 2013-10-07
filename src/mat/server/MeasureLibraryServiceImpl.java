@@ -1318,15 +1318,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
 		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
 		if (details != null) {
-
 			if (details.getQualityDataDTO() != null
 					&& details.getQualityDataDTO().size() != 0) {
 				logger.info(" details.getQualityDataDTO().size() :"
 						+ details.getQualityDataDTO().size());
 				for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
 					if (dataSetDTO.getCodeListName() != null) {
-						if (checkForSupplementData
-								&& dataSetDTO.isSuppDataElement()) {
+						if ((checkForSupplementData	&& dataSetDTO.isSuppDataElement())
+							    || dataSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)) {
 							continue;
 						} else {
 							finalList.add(dataSetDTO);

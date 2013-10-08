@@ -37,7 +37,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	
 	
 	private TextBox oid = new TextBox();
-	private TextBox rootOid = new TextBox();
+	//private TextBox rootOid = new TextBox();
 	private TextBox organization = new TextBox();
 	private TextBox password = new TextBox();
 	private PhoneNumberWidget phoneWidget = new PhoneNumberWidget();
@@ -82,8 +82,8 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		vPanel.add(buildCell("Organization OID", oid, true));
 		vPanel.add(new SpacerWidget());
 		
-		vPanel.add(buildCell("Root OID", rootOid, true));
-		vPanel.add(new SpacerWidget());
+		/*vPanel.add(buildCell("Root OID", rootOid, true));
+		vPanel.add(new SpacerWidget());*/
 		
 		vPanel.add(buildCell("E-mail Address", emailAddress, true));
 		vPanel.add(new SpacerWidget());
@@ -185,10 +185,10 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		return oid;
 	}
 
-	@Override
+	/*@Override
 	public HasValue<String> getRootOID() {
 		return rootOid;
-	}
+	}*/
 
 	@Override
 	public HasValue<String> getPassword() {

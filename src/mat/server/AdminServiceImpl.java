@@ -70,7 +70,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		model.setLocked(user.getLockedOutDate() != null);
 		model.setRole(user.getSecurityRole().getId());
 		model.setOid(user.getOrgOID());
-		model.setRootOid(user.getRootOID());
+		//model.setRootOid(user.getRootOID());
 		model.setOrganization(user.getOrganizationName());
 		boolean v = isCurrentUserAdminForUser(user);
 		model.setCurrentUserCanChangeAccountStatus(v);

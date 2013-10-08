@@ -40,7 +40,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		model.setTitle(user.getTitle());
 		model.setOrganisation(user.getOrganizationName());
 		model.setOid(user.getOrgOID());
-		model.setRootoid(user.getRootOID());
+		//model.setRootoid(user.getRootOID());
 		model.setLoginId(user.getLoginId());
 		logger.info("Model Object for User " + user.getLoginId() +" is updated and returned with Organisation ::: " + model.getOrganisation());
 		return model;
@@ -54,7 +54,7 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		user.setTitle(model.getTitle());
 		user.setOrganizationName(model.getOrganisation());
 		user.setOrgOID(model.getOid());
-		user.setRootOID(model.getRootoid());
+		//user.setRootOID(model.getRootoid());
 		//user.setLoginId(model.getLoginId());
 		
 	}

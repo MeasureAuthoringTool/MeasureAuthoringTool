@@ -39,7 +39,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		HasValue<String> getPhoneNumber();
 		HasValue<String> getOrganisation();
 		HasValue<String> getOID();
-		HasValue<String> getRootOID();
+		//HasValue<String> getRootOID();
 		HasValue<String> getPassword();
 		HasClickHandlers getSaveButton();
 		HasClickHandlers getCancelButton();
@@ -172,7 +172,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getPhoneNumber().setValue(model.getPhoneNumber());
 		display.getOrganisation().setValue(model.getOrganisation());
 		display.getOID().setValue(model.getOid());
-		display.getRootOID().setValue(model.getRootoid());
+		//display.getRootOID().setValue(model.getRootoid());
 		display.getPassword().setValue("");
 	}
 	
@@ -186,7 +186,7 @@ public class PersonalInformationPresenter implements MatPresenter {
 		model.setPhoneNumber(display.getPhoneNumber().getValue());
 		model.setOrganisation(display.getOrganisation().getValue());
 		model.setOid(display.getOID().getValue());
-		model.setRootoid(display.getRootOID().getValue());
+		//model.setRootoid(display.getRootOID().getValue());
 		return model;
 	}
 	

@@ -575,7 +575,7 @@ public class UserServiceImpl implements UserService {
 		user.setStatus(getStatusObject(model.isActive()));
 		user.setSecurityRole(getRole(model.getRole()));
 		user.setOrgOID(model.getOid());
-		user.setRootOID(model.getRootOid());
+		//user.setRootOID(model.getRootOid());
 		user.setOrganizationName(model.getOrganization());
 		
 		if(model.isActive() && user.getActivationDate() == null) {

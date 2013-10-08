@@ -13,7 +13,7 @@ public class ManageUsersDetailModel implements IsSerializable{
 	private String phoneNumber;
 	private String organization;
 	private String oid;
-	private String rootOid;
+	//private String rootOid;
 	private String role;
 	
 	private boolean active = true;
@@ -110,12 +110,12 @@ public class ManageUsersDetailModel implements IsSerializable{
 	public void setOid(String oid) {
 		this.oid = doTrim(oid);
 	}
-	public String getRootOid() {
+	/*public String getRootOid() {
 		return rootOid;
 	}
 	public void setRootOid(String rootOid) {
 		this.rootOid = doTrim(rootOid);
-	}
+	}*/
 	public String getRole() {
 		return role;
 	}

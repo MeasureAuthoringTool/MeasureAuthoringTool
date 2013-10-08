@@ -29,9 +29,9 @@ public class MyAccountModelValidator {
 		if("".equals(model.getOid().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getOIDRequiredMessage());
 		}
-		if("".equals(model.getRootoid().trim())) {
+		/*if("".equals(model.getRootoid().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getRootOIDRequiredMessage());
-		}
+		}*/
 		if("".equals(model.getEmailAddress().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
 		}

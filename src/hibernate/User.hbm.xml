@@ -21,7 +21,7 @@
 	<property name="lockedOutDate" column="LOCKED_OUT_DATE" type="timestamp"/>
 	<property name="organizationName" column="ORGANIZATION_NAME"/>
 	<property name="orgOID" column="ORG_OID"/>
-	<property name="rootOID" column="ROOT_OID"/>
+	<!-- <property name="rootOID" column="ROOT_OID"/> -->
 	<property name="loginId" column="LOGIN_ID"/>
 	<one-to-one name="password" class="mat.model.UserPassword" lazy="proxy" property-ref="user"  cascade="all"/>
 	<many-to-one name="status" column="STATUS_ID" 

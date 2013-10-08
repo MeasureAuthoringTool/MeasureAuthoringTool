@@ -25,7 +25,7 @@ public class User  {
 	private Timestamp lockedOutDate;
 	private String organizationName;
 	private String orgOID;
-	private String rootOID;
+	//private String rootOID;
 	private UserPassword password;
 	private AuditLog auditLog;
 	private Status status;
@@ -101,12 +101,19 @@ public class User  {
 	public void setOrgOID(String orgOID) {
 		this.orgOID = orgOID;
 	}
+	
+	/**
+	 * Removed Root OID from User. But for legacy code purpose, getRootOID() method just returns blank string.
+	 * @return Blank String
+	 */
 	public String getRootOID() {
-		return rootOID;
+		return "";
 	}
-	public void setRootOID(String rootOID) {
+	
+	/*public void setRootOID(String rootOID) {
 		this.rootOID = rootOID;
-	}
+	}*/
+	
 	public UserPassword getPassword() {
 		return password;
 	}

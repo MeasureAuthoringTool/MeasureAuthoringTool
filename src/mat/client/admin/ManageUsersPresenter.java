@@ -65,7 +65,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		public HasValue<String> getOrganization();
 		public HasValue<String> getRole();
 		public HasValue<String> getOid();
-		public HasValue<String> getRootOid();
+		//public HasValue<String> getRootOid();
 		
 		public HasValue<Boolean> getIsActive();
 		public HasValue<Boolean> getIsRevoked();
@@ -395,7 +395,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.setShowUnlockOption(currentDetails.isCurrentUserCanUnlock() && currentDetails.isActive());
 		detailDisplay.getRole().setValue(currentDetails.getRole());
 		detailDisplay.getOid().setValue(currentDetails.getOid());
-		detailDisplay.getRootOid().setValue(currentDetails.getRootOid());
+		//detailDisplay.getRootOid().setValue(currentDetails.getRootOid());
 		
 	}
 	private void updateUserDetailsFromView() {
@@ -408,7 +408,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		currentDetails.setOrganization(detailDisplay.getOrganization().getValue());
 		currentDetails.setActive(detailDisplay.getIsActive().getValue());
 		currentDetails.setOid(detailDisplay.getOid().getValue());
-		currentDetails.setRootOid(detailDisplay.getRootOid().getValue());
+		//currentDetails.setRootOid(detailDisplay.getRootOid().getValue());
 		currentDetails.setRole(detailDisplay.getRole().getValue());
 	}
 	

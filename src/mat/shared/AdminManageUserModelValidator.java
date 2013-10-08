@@ -50,18 +50,18 @@ public class AdminManageUserModelValidator {
 		if("".equals(model.getOid().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getOIDRequiredMessage());
 		}
-		if("".equals(model.getRootOid().trim())) {
+		/*if("".equals(model.getRootOid().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getRootOIDRequiredMessage());
-		}
+		}*/
 		if(model.getFirstName().length() < 2) {
 			message.add(MatContext.get().getMessageDelegate().getFirstMinMessage());
 		}
 		if(model.getOid().length() > 50) {
 			message.add(MatContext.get().getMessageDelegate().getOIDTooLongMessage());
 		}
-		if(model.getRootOid().length() > 50) {
+		/*if(model.getRootOid().length() > 50) {
 			message.add(MatContext.get().getMessageDelegate().getRootOIDTooLongMessage());
-		}
+		}*/
 		return message;
 	}
 

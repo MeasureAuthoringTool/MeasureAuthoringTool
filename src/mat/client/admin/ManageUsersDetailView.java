@@ -50,14 +50,14 @@ public class ManageUsersDetailView
 	private String organizationLabel = "Organization";
 	private String statusLabel = "Status";
 	private String oidLabel = "Organization OID";
-	private String rootOidLabel = "Root OID";
+	//private String rootOidLabel = "Root OID";
 	
 	private Label loginId = new Label();
 	
 	private TextBox title = new TextBox();
 	private TextBox emailAddress = new EmailAddressTextBox();
 	private TextBox oid = new TextBox();
-	private TextBox rootOid = new TextBox();
+	//private TextBox rootOid = new TextBox();
 	private PhoneNumberWidget phoneWidget = new PhoneNumberWidget();
 	private RadioButton orgUserRadio = new RadioButton("role", "User");
 	private RadioButton orgAdminRadio = new RadioButton("role", "Top Level Administrator");
@@ -154,9 +154,9 @@ public class ManageUsersDetailView
 		rightPanel.add(oid);
 		rightPanel.add(new SpacerWidget());
 		
-		rightPanel.add(LabelBuilder.buildRequiredLabel(rootOid, rootOidLabel));
+		/*rightPanel.add(LabelBuilder.buildRequiredLabel(rootOid, rootOidLabel));
 		rightPanel.add(rootOid);
-		rightPanel.add(new SpacerWidget());
+		rightPanel.add(new SpacerWidget());*/
 		
 		rightPanel.add(LabelBuilder.buildLabel(activeStatus, statusLabel));
 		activeStatus.addStyleName("block");
@@ -179,10 +179,10 @@ public class ManageUsersDetailView
 		title.setWidth("196px");
 		organization.setWidth("196px");
 		oid.setWidth("196px");
-		rootOid.setWidth("196px");
+		//rootOid.setWidth("196px");
 		
 		oid.setMaxLength(50);
-		rootOid.setMaxLength(50);
+		//rootOid.setMaxLength(50);
 		title.setMaxLength(32);
 		organization.setMaxLength(80);
 	}
@@ -341,10 +341,10 @@ public class ManageUsersDetailView
 	}
 
 
-	@Override
+	/*@Override
 	public HasValue<String> getRootOid() {
 		return rootOid;
-	}
+	}*/
 
 	@Override
 	public void setShowRevokedStatus(boolean b) {

@@ -18,25 +18,34 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**MeasureXMLDAO.java.**/
 public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements
-		mat.dao.clause.MeasureXMLDAO {
+mat.dao.clause.MeasureXMLDAO {
 
+	/**ListObjectDAO.**/
 	@Autowired
 	private ListObjectDAO listObjectDAO;
 
+	/**DataTypeDAO.**/
 	@Autowired
 	private mat.dao.DataTypeDAO dataTypeDAO;
-	
+
+	/**supplemental data OID and Data type name map.**/
 	private static Map<String, String> suppDataOidAndDataTypeNameMap = new HashMap<String, String>();
-	static{
+
+	static {
 		suppDataOidAndDataTypeNameMap.put("2.16.840.1.113762.1.4.1", ConstantMessages.PATIENT_CHARACTERISTIC_GENDER);
 		suppDataOidAndDataTypeNameMap.put("2.16.840.1.114222.4.11.836", ConstantMessages.PATIENT_CHARACTERISTIC_RACE);
 		suppDataOidAndDataTypeNameMap.put("2.16.840.1.114222.4.11.837", ConstantMessages.PATIENT_CHARACTERISTIC_ETHNICITY);
 		suppDataOidAndDataTypeNameMap.put("2.16.840.1.114222.4.11.3591", ConstantMessages.PATIENT_CHARACTERISTIC_PAYER);
 	}
-	
+
+	/**
+	 *@param measureId - {@link String}.
+	 *@return {@link MeasureXML}.
+	 * **/
 	@Override
-	public MeasureXML findForMeasure(String measureId) {
+	public final MeasureXML findForMeasure(final String measureId) {
 		Criteria criteria = getSessionFactory().getCurrentSession()
 				.createCriteria(MeasureXML.class);
 
@@ -52,12 +61,14 @@ public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements
 	/**
 	 * This method will create QDM elements for Timing Elements based on the OID
 	 * list argument passed to it.
+	 * @param qdmOidList - {@link List}.
+	 * @return {@link QualityDataModelWrapper}.
 	 */
 	@Override
-	public QualityDataModelWrapper createTimingElementQDMs(
-			List<String> elementQDM_OID_List) {
+	public final QualityDataModelWrapper createTimingElementQDMs(
+			final List<String> qdmOidList) {
 		List<ListObject> elementList = listObjectDAO
-				.getElementCodeListByOID(elementQDM_OID_List);
+				.getElementCodeListByOID(qdmOidList);
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
 		for (ListObject lo : elementList) {
@@ -65,7 +76,7 @@ public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements
 			qds.setOid(lo.getOid());
 			qds.setCodeListName(lo.getName());
 			qds.setTaxonomy(lo.getCodeSystem().getDescription());
-			qds.setVersion("1");
+			qds.setVersion("1.0");
 			qds.setId(lo.getId());
 			qds.setUuid(UUID.randomUUID().toString());
 			qds.setSuppDataElement(false);
@@ -80,11 +91,14 @@ public class MeasureXMLDAO extends GenericDAO<MeasureXML, String> implements
 	}
 
 	/**
-	 * 
+	 *@param measureId - {@link String}.
+	 *@param isClone - {@link Boolean}.
+	 *@param uuidMap - {@link HashMap}.
+	 *@return {@link QualityDataModelWrapper}.
 	 */
 	@Override
-	public final QualityDataModelWrapper createSupplimentalQDM(String measureId,
-			boolean isClone, HashMap<String, String> uuidMap) {
+	public final QualityDataModelWrapper createSupplimentalQDM(final String measureId,
+			final boolean isClone, final HashMap<String, String> uuidMap) {
 		// Get the Supplimental ListObject from the list_object table
 		List<ListObject> listOfSuppElements = listObjectDAO
 				.getSupplimentalCodeList();

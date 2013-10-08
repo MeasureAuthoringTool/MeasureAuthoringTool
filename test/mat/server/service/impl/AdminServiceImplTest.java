@@ -37,7 +37,6 @@ public class AdminServiceImplTest extends SpringInitializationTest {
 		userDetails.setPhoneNumber("515-440-8572");
 		userDetails.setOrganization("IFMC");
 		userDetails.setOid("1234");
-		userDetails.setRootOid("56789");
 		userDetails.setRole("2");
 		userDetails.setActive(false);
 	}

@@ -25,7 +25,6 @@ public class UserDAOTestHelper{
 		user.setPhoneNumber("phone no");
 		user.setOrganizationName("organizationName");
 		user.setOrgOID("org OID");
-		user.setRootOID("Root OID");
 		user.setStatus(s);
 		user.setSecurityRole(sr);
 		user.setSignInDate(new Date());		

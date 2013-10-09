@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.sql.Timestamp;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -391,8 +392,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		ZipPackager zp = new ZipPackager();
 		return zp.getZipBarr(emeasureName, wkbkbarr, emeasureXMLStr,
-				emeasureHTMLStr, emeasureXSLUrl, me.getMeasure()
-						.getValueSetDate().toString(), simpleXmlStr);
+				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr);
 	}
 
 	/**
@@ -549,8 +549,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		ZipPackager zp = new ZipPackager();
 		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr,
-				emeasureHTMLStr, emeasureXSLUrl, me.getMeasure()
-						.getValueSetDate().toString(), simpleXmlStr, filesMap,
+				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, filesMap,
 				seqNum);
 	}
 }

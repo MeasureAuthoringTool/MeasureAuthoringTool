@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -312,26 +313,8 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		StringUtility su = new StringUtility();
 		for (Measure measure : measureResultList) {
 
-			boolean matchesSearch = su.isEmptyOrNull(searchTextLC) ? true
-					:
-					// measure name
-					measure.getDescription().toLowerCase()
-							.contains(searchTextLC) ? true
-							:
-							// abbreviated measure name
-							measure.getaBBRName().toLowerCase()
-									.contains(searchTextLC) ? true
-									:
-									// measure owner first name
-									measure.getOwner().getFirstName()
-											.toLowerCase()
-											.contains(searchTextLC) ? true
-											:
-											// measure owner last name
-											measure.getOwner().getLastName()
-													.toLowerCase()
-													.contains(searchTextLC) ? true
-													: false;
+			boolean matchesSearch = searchResultsForMeasure(searchTextLC, su,
+					measure);
 
 			// measure steward (only check if necessary)
 			/*
@@ -413,39 +396,8 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		StringUtility su = new StringUtility();
 		for (Measure measure : measureResultList) {
 
-			boolean matchesSearch = su.isEmptyOrNull(searchTextLC) ? true
-					:
-					// measure name
-					measure.getDescription().toLowerCase()
-							.contains(searchTextLC) ? true
-							:
-							// abbreviated measure name
-							measure.getaBBRName().toLowerCase()
-									.contains(searchTextLC) ? true
-									:
-									// measure owner first name
-									measure.getOwner().getFirstName()
-											.toLowerCase()
-											.contains(searchTextLC) ? true
-											:
-											// measure owner last name
-											measure.getOwner().getLastName()
-													.toLowerCase()
-													.contains(searchTextLC) ? true
-													: false;
-
-			// measure steward (only check if necessary)
-			/*
-			 * if(!matchesSearch && !su.isEmptyOrNull(searchTextLC)){
-			 * List<Metadata> mdList =
-			 * metadataDAO.getMeasureDetails(measure.getId(), "MeasureSteward");
-			 * for(Metadata md : mdList)
-			 * if(md.getName().equalsIgnoreCase("MeasureSteward") &&
-			 * md.getValue().toLowerCase().contains(searchTextLC)){
-			 * matchesSearch = true; break; } }
-			 */
-
-			if (matchesSearch) {
+			if (searchResultsForMeasure(searchTextLC, su,
+					measure)) {
 				MeasureShareDTO dto = extractDTOFromMeasure(measure);
 				measureIdDTOMap.put(measure.getId(), dto);
 				orderedDTOList.add(dto);
@@ -801,7 +753,7 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 			setCriteria.add(Restrictions.in("measureSet.id", measureSetIds));
 			ms = setCriteria.list();
 		}
-		return ms;
+		return sortMeasureList(ms);
 	}
 
 	@Override
@@ -864,6 +816,111 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 			rollbackUncommitted(tx);
 			closeSession(session);
 		}
+	}
+
+	@Override
+	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(
+			String searchText, int startIndex, int pageSize, int filter) {
+		String searchTextLC = searchText.toLowerCase().trim();
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(Measure.class);
+		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		mCriteria.addOrder(Order.desc("measureSet.id"))
+				.addOrder(Order.desc("draft")).addOrder(Order.desc("version"));
+		mCriteria.setFirstResult(startIndex);
+
+		ArrayList<MeasureShareDTO> orderedDTOList = new ArrayList<MeasureShareDTO>();
+		List<Measure> measureResultList = mCriteria.list();
+
+		measureResultList = getAllMeasuresInSet(measureResultList);
+		StringUtility su = new StringUtility();
+
+		for (Measure measure : measureResultList) {
+
+			if (searchResultsForMeasure(searchTextLC, su,
+					measure)) {
+				MeasureShareDTO dto = extractDTOFromMeasure(measure);
+				orderedDTOList.add(dto);
+			}
+		}
+		return filterMeasureListForAdmin(orderedDTOList);
+	}
+
+	/**
+	 * measureList is filtered with latest draft or version. In a measure set,
+	 * first we look for a draft version. If there is a draft version then that
+	 * measure is added in the measureList. Otherwise, we look for the latest
+	 * version and add in the measureList. Latest version measure is the measure
+	 * with the latest Finalized Date.
+	 *
+	 * @param measureList
+	 *            - {@link List} of {@link MeasureShareDTO}.
+	 * @return {@link List} of {@link MeasureShareDTO}.
+	 */
+	private List<MeasureShareDTO> filterMeasureListForAdmin(
+			final List<MeasureShareDTO> measureList) {
+		List<MeasureShareDTO> updatedMeasureList = new ArrayList<MeasureShareDTO>();
+		for (MeasureShareDTO measureShareDTO : measureList) {
+			if (updatedMeasureList == null || updatedMeasureList.isEmpty()) {
+				updatedMeasureList.add(measureShareDTO);
+			} else {
+				boolean found = false;
+				ListIterator<MeasureShareDTO> itr = updatedMeasureList
+						.listIterator();
+				while (itr.hasNext()) {
+					MeasureShareDTO shareDTO = itr.next();
+					if (measureShareDTO.getMeasureSetId() == shareDTO
+							.getMeasureSetId()) {
+						found = true;
+						if (measureShareDTO.isDraft()) {
+							itr.remove();
+							itr.add(measureShareDTO);
+						} else if (!shareDTO.isDraft()) {
+							if (measureShareDTO.getFinalizedDate().compareTo(
+									shareDTO.getFinalizedDate()) > 0) {
+								itr.remove();
+								itr.add(measureShareDTO);
+							}
+						}
+					}
+				}
+				if (!found) {
+					updatedMeasureList.add(measureShareDTO);
+				}
+			}
+		}
+		return updatedMeasureList;
+	}
+
+	/**
+	 * @param searchTextLC
+	 * @param stringUtility
+	 * @param measure
+	 * @return
+	 */
+	private boolean searchResultsForMeasure(String searchTextLC,
+			StringUtility stringUtility, Measure measure) {
+		boolean matchesSearch = stringUtility.isEmptyOrNull(searchTextLC) ? true
+				:
+				// measure name
+				measure.getDescription().toLowerCase()
+						.contains(searchTextLC) ? true
+						:
+						// abbreviated measure name
+						measure.getaBBRName().toLowerCase()
+								.contains(searchTextLC) ? true
+								:
+								// measure owner first name
+								measure.getOwner().getFirstName()
+										.toLowerCase()
+										.contains(searchTextLC) ? true
+										:
+										// measure owner last name
+										measure.getOwner().getLastName()
+												.toLowerCase()
+												.contains(searchTextLC) ? true
+												: false;
+		return matchesSearch;
 	}
 
 }

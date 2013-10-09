@@ -31,6 +31,8 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	List<MeasureShare> getMeasureShareForMeasure(String measureId);
 	List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText, User user,
 			int startIndex, int pageSize, int filter);
+	List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(String searchText,
+			int startIndex, int pageSize, int filter);
 	int countMeasureShareInfoForUser(int filter, User user);
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
 }

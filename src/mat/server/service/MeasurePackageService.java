@@ -165,6 +165,16 @@ public interface MeasurePackageService {
 	 * **/
 	List<MeasureShareDTO> searchWithFilter(String searchText, int startIndex,
 			int numResults, int filter);
+	
+	/**
+	 *@param searchText - {@link String}.
+	 *@param startIndex - {@link Integer}.
+	 *@param numResults - {@link Integer}.
+	 *@param filter - {@link Integer}.
+	 *@return {@link List} of {@link MeasureShareDTO}.
+	 * **/
+	List<MeasureShareDTO> searchForAdminWithFilter(String searchText, int startIndex,
+			int numResults, int filter);
 	/**
 	 *@param filter - {@link Integer}.
 	 *@return {@link Long}

@@ -79,23 +79,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet
 	private Document clonedDoc;
 	Measure clonedMeasure;
 
-	/*
-	 * @Override public ManageMeasureSearchModel.Result
-	 * clone(ManageMeasureDetailModel currentDetails, String
-	 * loggedinUserId,boolean creatingDraft) throws MatException{ measureDAO =
-	 * (MeasureDAO)context.getBean("measureDAO"); try { MeasureShareDTO dto =
-	 * measureDAO.clone(currentDetails, loggedinUserId,creatingDraft, context);
-	 * ManageMeasureSearchModel.Result result = new
-	 * ManageMeasureSearchModel.Result(); result.setId(dto.getMeasureId());
-	 * result.setName(dto.getMeasureName());
-	 * result.setShortName(dto.getShortName());
-	 * result.setScoringType(dto.getScoringType()); String formattedVersion =
-	 * MeasureUtility.getVersionText(dto.getVersion(), dto.isDraft());
-	 * result.setVersion(formattedVersion); result.setEditable(true);
-	 * result.setClonable(true); return result; } catch (Exception e) {
-	 * log(e.getMessage(), e); throw new MatException(e.getMessage()); } }
-	 */
-
+	
 	@Override
 	public ManageMeasureSearchModel.Result clone(
 			ManageMeasureDetailModel currentDetails, String loggedinUserId,
@@ -220,7 +204,7 @@ public class MeasureCloningServiceImpl extends SpringRemoteServiceServlet
 				if (measureNotes != null) {
 					try {
 						MeasureNotes measureNotesDraft = measureNotes
-								.cloneMeasureNote();
+								.clone();
 						measureNotesDraft.setMeasure_id(draftMeasureId);
 						getMeasureNotesService().saveMeasureNote(
 								measureNotesDraft);

@@ -68,7 +68,7 @@ public class MeasureNotes {
 		this.lastModifiedDate = lastModifiedDate;
 	}
 
-	public MeasureNotes cloneMeasureNote() {
+	public MeasureNotes clone() {
 		MeasureNotes measureNotesClone = new MeasureNotes();
 		measureNotesClone.setNoteTitle(this.getNoteTitle());
 		measureNotesClone.setNoteDesc(this.getNoteDesc());

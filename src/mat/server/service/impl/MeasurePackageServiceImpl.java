@@ -279,7 +279,13 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText,  user, startIndex - 1, numResults, filter);
 	}
 
-
+	@Override
+	public List<MeasureShareDTO> searchForAdminWithFilter(String searchText,
+			int startIndex, int numResults, int filter) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText, startIndex - 1, numResults, filter);
+	}
+	
 	@Override
 	public String findOutMaximumVersionNumber(final String measureSetId) {
 		return measureDAO.findMaxVersion(measureSetId);

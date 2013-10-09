@@ -1023,9 +1023,17 @@ public class MessageDelegate {
 		return DELETE_MEASURE_WARNING_MESSAGE;
 	}
 
-	
-	
-			
+	/**
+	 * @return the mEASURE_PACKAGE_UMLS_NOT_LOGGED_IN
+	 */
+	public String getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN() {
+		return MEASURE_PACKAGE_UMLS_NOT_LOGGED_IN;
+	}
+
+	private final String MEASURE_PACKAGE_UMLS_NOT_LOGGED_IN ="Measure package exported successfully. UMLS account is inactive. Updated VSAC value set data is not included in the measure package." +
+			"													Please access the measure library to export the measure.";
+
+
 }
 
 

@@ -8,8 +8,8 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 
 
 public class VsacApiResult implements IsSerializable {
-	public static final int UMLS_NOT_LOGGEDIN = 1;
-	public static final int OID_REQUIRED = 2;
+	public  final static int UMLS_NOT_LOGGEDIN = 1;
+	public  final static int OID_REQUIRED = 2;
 
 	private int failureReason;
 	private boolean isSuccess;

@@ -17,7 +17,6 @@ import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
-import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
@@ -237,13 +236,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 					@Override
 					public void onSuccess(final VsacApiResult result) {
-						if (!result.isSuccess()) {
-							view.getPackageErrorMessageDisplay().setMessage(
-									MatContext.get().getMessageDelegate()
-											.getUMLS_NOT_LOGGEDIN());
-						}
 						validateMeasureAndExport(measureId,
-								result.getVsacResponse());
+								result);
 					}
 				});
 	}
@@ -251,14 +245,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/**
 	 *Service Call to generate Simple Xml and value set sheet.
 	 *@param measureId - String.
-	 *@param matValueSetList - Array List of MatValueSet.
+	 *@param updateVsacResult - VsacApiResult.
 	 * **/
 	private void validateMeasureAndExport(final String measureId,
-			final ArrayList<MatValueSet> matValueSetList) {
+			final VsacApiResult updateVsacResult) {
 		MatContext
 				.get()
 				.getMeasureService()
-				.validateMeasureForExport(measureId, matValueSetList,
+				.validateMeasureForExport(measureId, updateVsacResult.getVsacResponse(),
 						new AsyncCallback<ValidateMeasureResult>() {
 							@Override
 							public void onFailure(final Throwable caught) {
@@ -282,7 +276,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 								((Button) view.getPackageMeasureButton())
 										.setEnabled(true);
 
-								if (result.isValid()) {
+								if (result.isValid() && updateVsacResult.isSuccess()) {
 									Mat.hideLoadingMessage();
 									view.getMeasurePackageSuccessMsg()
 											.setMessage(
@@ -291,6 +285,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 														.getMessageDelegate()
 													.getPackageSuccessMessage());
 
+								} else if (result.isValid() && !updateVsacResult.isSuccess()) {
+									Mat.hideLoadingMessage();
+									if (updateVsacResult.getFailureReason()
+											== VsacApiResult.UMLS_NOT_LOGGEDIN) {
+										view.getMeasurePackageSuccessMsg().setMessage(
+												MatContext.get().getMessageDelegate()
+												.getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN());
+										}
 								} else {
 									Mat.hideLoadingMessage();
 									view.getMeasureErrorMessageDisplay()

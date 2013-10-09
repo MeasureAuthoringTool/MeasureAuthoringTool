@@ -95,7 +95,7 @@ public class PasswordVerifier {
 		
 		return notTooLong && notTooShort && notUserid && containsUpper
 				&& containsLower && containsSpecial && containsNumber
-				&& noRepeatedChar && noRepeatedChar && confirmed;
+				&& noRepeatedChar && confirmed;
 		
 		}
 	

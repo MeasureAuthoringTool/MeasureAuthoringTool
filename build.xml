@@ -37,6 +37,8 @@
 	    </classpath>
 	</taskdef>
 	
+	<property name="CHECKSTYLE.home" location="war/WEB-INF"/>
+	 <property name="checkStyledoc" location="${output.dir}/checkStyledoc" />
 	
 	<path id="test.classpath">
 	  <pathelement path="${web.output.dir}/test-classes" />
@@ -219,6 +221,7 @@
     	<antcall target="pmd"/>
     	<!--<antcall target="JUnit-report" /> -->
     	<antcall target="checksum"/>
+    	<antcall target="checkstyle"/>
     </target>
 	
 	<!-- Save Checksum of war file after creating war file  -->
@@ -230,6 +233,10 @@
 	    <mkdir dir="${pmddoc}" />
 	</target>
 	
+	<target name="initCheckStyle">
+	        <mkdir dir="${checkStyledoc}" />
+	 </target>
+	
 	<target name="pmd" depends="init">
 		<pmd>
 		<formatter type="html" toFile="${pmddoc}/pmd_src_report.html" toConsole="true"/>
@@ -238,5 +245,19 @@
             <include name="**/*.java"/>     
         </fileset>
 	  </pmd>
+	</target>
+	<target name="checkstyle" depends="initCheckStyle"
+	            description="Generates a report of code convention violations.">
+		<taskdef resource="checkstyletask.properties" classpath ="${CHECKSTYLE.home}/lib/checkstyle-5.3-all.jar"/>
+	      <checkstyle config="doc/checkstyle-javasg.xml"
+	                  failureProperty="checkstyle.failure"
+	                  failOnViolation="false">
+	      	<formatter type="xml" tofile="${checkStyledoc}/checkstyle_report.xml" />
+	        <fileset dir="src/mat" includes="**/*.java"/>
+	      </checkstyle>
+		<style in="${checkStyledoc}/checkstyle_report.xml"
+		               out="${checkStyledoc}/checkstyle_report.html"
+		               style="doc/checkstyle-noframes.xsl"
+		        />
 	</target>
 </project>

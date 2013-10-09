@@ -42,43 +42,43 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 public class ManageUsersPresenter implements MatPresenter {
-	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay{
-		public HasClickHandlers getCreateNewButton();
-		public Button getGenerateCSVFileButton();
-		public HasSelectionHandlers<ManageUsersSearchModel.Result> getSelectIdForEditTool();
-		public void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results);
+	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay {
+		HasClickHandlers getCreateNewButton();
+		Button getGenerateCSVFileButton();
+		HasSelectionHandlers<ManageUsersSearchModel.Result> getSelectIdForEditTool();
+		void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results);
 	}
 	public static interface DetailDisplay {
-		public Widget asWidget();
-		
-		public HasClickHandlers getSaveButton();
-		public HasClickHandlers getCancelButton();
+		Widget asWidget();
+
+		HasClickHandlers getSaveButton();
+		HasClickHandlers getCancelButton();
 		//public HasClickHandlers getDeleteUserButton();
-		
-		public HasValue<String> getFirstName();
-		public HasValue<String> getLastName();
-		public HasValue<String> getMiddleInitial();
-		public Label getLoginId();
-		public HasValue<String> getTitle();
-		public HasValue<String> getEmailAddress();
-		public HasValue<String> getPhoneNumber();
-		public HasValue<String> getOrganization();
-		public HasValue<String> getRole();
-		public HasValue<String> getOid();
+
+		HasValue<String> getFirstName();
+		HasValue<String> getLastName();
+		HasValue<String> getMiddleInitial();
+		Label getLoginId();
+		HasValue<String> getTitle();
+		HasValue<String> getEmailAddress();
+		HasValue<String> getPhoneNumber();
+		HasValue<String> getOrganization();
+		HasValue<String> getRole();
+		HasValue<String> getOid();
 		//public HasValue<String> getRootOid();
-		
-		public HasValue<Boolean> getIsActive();
-		public HasValue<Boolean> getIsRevoked();
-		public HasValue<Boolean> getIsOrgUser();
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
-		public void setUserIsActiveEditable(boolean b);
+
+		HasValue<Boolean> getIsActive();
+		HasValue<Boolean> getIsRevoked();
+		HasValue<Boolean> getIsOrgUser();
+		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		void setUserIsActiveEditable(boolean b);
 		//public void setUserIsDeletable(boolean b);
-		public void setUserLocked(boolean b);
-		public void setShowRevokedStatus(boolean b);
-		public void setShowUnlockOption(boolean b);
-		public HasClickHandlers getResetPasswordButton();
-		public void setTitle(String title);
+		void setUserLocked(boolean b);
+		void setShowRevokedStatus(boolean b);
+		void setShowUnlockOption(boolean b);
+		HasClickHandlers getResetPasswordButton();
+		void setTitle(String title);
 	}
 
 	private SimplePanel panel = new SimplePanel();
@@ -92,37 +92,36 @@ public class ManageUsersPresenter implements MatPresenter {
 		this.searchDisplay = sDisplayArg;
 		this.detailDisplay = dDisplayArg;
 		displaySearch();
-		
+
 		searchDisplay.getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<ManageUsersSearchModel.Result>() {
-			
 			@Override
 			public void onSelection(SelectionEvent<ManageUsersSearchModel.Result> event) {
 				edit(event.getSelectedItem().getKey());
 			}
 		});
-		
+
 		searchDisplay.getCreateNewButton().addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
 				createNew();
 			}
 		});
+
 		searchDisplay.getGenerateCSVFileButton().addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
 				generateCSVOfActiveUserEmails();
 			}
 		});
+
 		searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
-			
 			@Override
 			public void onPageSelection(PageSelectionEvent event) {
 				startIndex = searchDisplay.getPageSize() * (event.getPageNumber() - 1) + 1;
 				search(lastSearchKey, startIndex, searchDisplay.getPageSize());
 			}
 		});
+
 		searchDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
 			@Override
 			public void onPageSizeSelection(PageSizeSelectionEvent event) {
@@ -130,46 +129,49 @@ public class ManageUsersPresenter implements MatPresenter {
 				search("", startIndex, searchDisplay.getPageSize());
 			}
 		});
-		
-		TextBox searchWidget = (TextBox)(searchDisplay.getSearchString());
+
+		TextBox searchWidget = (TextBox) (searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
-			
 			@Override
 			public void onKeyUp(KeyUpEvent event) {
-				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
-					((Button)searchDisplay.getSearchButton()).click();
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					((Button) searchDisplay.getSearchButton()).click();
 	            }
 			}
 		});
-		
+
 		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				update();
 			}
 		});
-		
+
 		detailDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				displaySearch();
 			}
 		});
+
 		detailDisplay.getResetPasswordButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				resetMessages();
-				MatContext.get().getAdminService().resetUserPassword(currentDetails.getUserID(), 
+				MatContext.get().getAdminService().resetUserPassword(currentDetails.getUserID(),
 						new AsyncCallback<Void>() {
 							@Override
 							public void onSuccess(Void result) {
-								detailDisplay.getSuccessMessageDisplay().setMessage("Temporary Password E-mail has been sent.");
+								detailDisplay.getSuccessMessageDisplay()
+										.setMessage("Temporary Password E-mail has been sent.");
 							}
-							
+
 							@Override
 							public void onFailure(Throwable caught) {
-								detailDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-								MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+								detailDisplay.getErrorMessageDisplay().setMessage(
+										MatContext.get().getMessageDelegate().getGenericErrorMessage());
+								MatContext.get().recordTransactionEvent(null, null, null,
+										"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 							}
 						});
 			}
@@ -195,8 +197,8 @@ public class ManageUsersPresenter implements MatPresenter {
 			}
 		});
 		*/
+
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
 				String key = searchDisplay.getSearchString().getValue();
@@ -204,13 +206,13 @@ public class ManageUsersPresenter implements MatPresenter {
 			}
 		});
 	}
-	
+
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
 		search("", 1, searchDisplay.getPageSize());
 	}
-	
+
 	private void displayDetail() {
 		resetMessages();
 		setUserDetailsToView();
@@ -218,35 +220,34 @@ public class ManageUsersPresenter implements MatPresenter {
 		panel.add(detailDisplay.asWidget());
 		Mat.focusSkipLists("Manage Users");
 	}
-	
-	
+
 	private void update() {
 		resetMessages();
 		updateUserDetailsFromView();
-		if(isValid(currentDetails)) {
+		if (isValid(currentDetails)) {
 			MatContext.get().getAdminService().saveUpdateUser(currentDetails, new AsyncCallback<SaveUpdateUserResult>() {
-				
 				@Override
 				public void onSuccess(SaveUpdateUserResult result) {
-					if(result.isSuccess()) {
+					if (result.isSuccess()) {
 						displaySearch();
-					}
-					else {
+					} else {
 						List<String> messages = new ArrayList<String>();
 						switch(result.getFailureReason()) {
 							case SaveUpdateUserResult.ID_NOT_UNIQUE:
-								messages.add(MatContext.get().getMessageDelegate().getEmailAlreadyExistsMessage());
+								messages.add(MatContext.get().getMessageDelegate()
+										.getEmailAlreadyExistsMessage());
 								break;
 							case SaveUpdateUserResult.SERVER_SIDE_VALIDATION:
 								messages = result.getMessages();
 								break;
 							default:
-								messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+								messages.add(MatContext.get().getMessageDelegate()
+										.getUnknownErrorMessage(result.getFailureReason()));
 						}
 						detailDisplay.getErrorMessageDisplay().setMessages(messages);
 					}
 				}
-				
+
 				@Override
 				public void onFailure(Throwable caught) {
 					detailDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
@@ -254,47 +255,51 @@ public class ManageUsersPresenter implements MatPresenter {
 			});
 		}
 	}
-	
+
 	private void resetMessages() {
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
 	}
+
 	private void createNew() {
 		detailDisplay.setTitle("Add a User");
 		currentDetails = new ManageUsersDetailModel();
 		displayDetail();
 	}
+
 	private void generateCSVOfActiveUserEmails(){
 		String url = GWT.getModuleBaseURL() + "export?format=exportActiveNonAdminUsersCSV";
-		Window.open(url + "&type=save", "_self", "");		
+		Window.open(url + "&type=save", "_self", "");
 	}
+
 	private void edit(String name) {
 		detailDisplay.setTitle("Update a User");
 		MatContext.get().getAdminService().getUser(name, new AsyncCallback<ManageUsersDetailModel>() {
-			
 			@Override
 			public void onSuccess(ManageUsersDetailModel result) {
 				currentDetails = result;
 				displayDetail();
 			}
-			
+
 			@Override
 			public void onFailure(Throwable caught) {
-				detailDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+				detailDisplay.getErrorMessageDisplay()
+							 .setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null,
+						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 			}
 		});
 	}
-	
+
 	private void search(String key, int startIndex, int pageSize) {
 		lastSearchKey = key;
 		showSearchingBusy(true);
-		MatContext.get().getAdminService().searchUsers(key, startIndex, pageSize, 
+		MatContext.get().getAdminService().searchUsers(key, startIndex, pageSize,
 				new AsyncCallback<ManageUsersSearchModel>() {
 			@Override
 			public void onSuccess(ManageUsersSearchModel result) {
 				SearchResultUpdate sru = new SearchResultUpdate();
-				sru.update(result, (TextBox)searchDisplay.getSearchString(), lastSearchKey);
+				sru.update(result, (TextBox) searchDisplay.getSearchString(), lastSearchKey);
 				sru = null;
 				searchDisplay.buildDataTable(result);
 				showSearchingBusy(false);
@@ -302,35 +307,35 @@ public class ManageUsersPresenter implements MatPresenter {
 			}
 			@Override
 			public void onFailure(Throwable caught) {
-				detailDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+				detailDisplay.getErrorMessageDisplay()
+							 .setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null,
+						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 				showSearchingBusy(false);
-				if(caught instanceof InCorrectUserRoleException){
+				if (caught instanceof InCorrectUserRoleException) {
 					callSignOut();
 				}
 			}
 		});
 	}
-	
+
 	private void callSignOut(){
 		 MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
+			@Override
+			public void onFailure(Throwable arg0) {
+				redirectToLogin();
+			}
 
-				@Override
-				public void onFailure(Throwable arg0) {
-					redirectToLogin();
-				}
-
-				@Override
-				public void onSuccess(Void arg0) {
-					redirectToLogin();
-				}
-			});
+			@Override
+			public void onSuccess(Void arg0) {
+				redirectToLogin();
+			}
+		});
 	}
-	
-	private void redirectToLogin() {
-		
+
+	private void redirectToLogin() {		
 		/*
-		 * Added a timer to have a delay before redirect since 
+		 * Added a timer to have a delay before redirect since
 		 * this was causing the firefox javascript exception.
 		 */
 		final Timer timer = new Timer() {
@@ -340,33 +345,33 @@ public class ManageUsersPresenter implements MatPresenter {
 			}
 		};
 		timer.schedule(1000);
-		
 	}
-	
-	private void showSearchingBusy(boolean busy){
-		if(busy)
+
+	private void showSearchingBusy(boolean busy) {
+		if (busy) {
 			Mat.showLoadingMessage();
-		else
+		} else {
 			Mat.hideLoadingMessage();
-		((Button)searchDisplay.getSearchButton()).setEnabled(!busy);
-		((TextBox)(searchDisplay.getSearchString())).setEnabled(!busy);
+		}
+		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
+		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
 	}
-	
+
 	@Override
 	public Widget getWidget() {
 		return panel;
 	}
 
-	
 	@Override
 	public void beforeDisplay() {
 		displaySearch();
 		Mat.focusSkipLists("Manage Users");
 	}
+	
 	@Override 
 	public void beforeClosingDisplay() {
-		
 	}
+
 	private void setUserDetailsToView() {
 		detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
 		detailDisplay.getLastName().setValue(currentDetails.getLastName());
@@ -377,17 +382,17 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
 		detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
 		detailDisplay.getIsActive().setValue(currentDetails.isActive());
-		if(!currentDetails.isActive()){
+		if (!currentDetails.isActive()) {
 			detailDisplay.getIsRevoked().setValue(true);
-		}else{// added else to fix default Revoked radio check in Mozilla (User Story 755)
+		} else { // added else to fix default Revoked radio check in Mozilla (User Story 755)
 			detailDisplay.getIsRevoked().setValue(false);
 		}
-		
+
 		detailDisplay.setUserLocked(currentDetails.isLocked());
-		if(currentDetails.isExistingUser()){
+		if (currentDetails.isExistingUser()) {
 		    detailDisplay.setShowRevokedStatus(currentDetails.isCurrentUserCanChangeAccountStatus());
 		   // detailDisplay.setUserIsDeletable(currentDetails.isCurrentUserCanChangeAccountStatus());
-		}else{
+		} else {
 			detailDisplay.setShowRevokedStatus(false);
 			//detailDisplay.setUserIsDeletable(false);
 		}
@@ -396,8 +401,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getRole().setValue(currentDetails.getRole());
 		detailDisplay.getOid().setValue(currentDetails.getOid());
 		//detailDisplay.getRootOid().setValue(currentDetails.getRootOid());
-		
 	}
+
 	private void updateUserDetailsFromView() {
 		currentDetails.setFirstName(detailDisplay.getFirstName().getValue());
 		currentDetails.setLastName(detailDisplay.getLastName().getValue());
@@ -411,7 +416,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		//currentDetails.setRootOid(detailDisplay.getRootOid().getValue());
 		currentDetails.setRole(detailDisplay.getRole().getValue());
 	}
-	
+
 	public Widget getWidgetWithHeading(Widget widget, String heading) {
 		FlowPanel vPanel = new FlowPanel();
 		Label h = new Label(heading);
@@ -423,17 +428,15 @@ public class ManageUsersPresenter implements MatPresenter {
 		widget.addStyleName("myAccountPanelContent");
 		return vPanel;
 	}
-	
-	private boolean isValid(ManageUsersDetailModel model) {
-		
+
+	private boolean isValid(ManageUsersDetailModel model) {		
 		AdminManageUserModelValidator test = new AdminManageUserModelValidator();
-		List<String>  message= test.isValidUsersDetail(model);
-		
+		List<String> message = test.isValidUsersDetail(model);
+
 		boolean valid = message.size() == 0;
-		if(!valid) {
+		if (!valid) {
 			detailDisplay.getErrorMessageDisplay().setMessages(message);
-		}
-		else {
+		} else {
 			detailDisplay.getErrorMessageDisplay().clear();
 		}
 		return valid;

@@ -87,7 +87,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	private ManageUsersDetailModel currentDetails;
 	private int startIndex = 1;
 	private String lastSearchKey;
-	
+
 	public ManageUsersPresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg) {
 		this.searchDisplay = sDisplayArg;
 		this.detailDisplay = dDisplayArg;
@@ -180,7 +180,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getDeleteUserButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				MatContext.get().getAdminService().deleteUser(currentDetails.getUserID(), 
+				MatContext.get().getAdminService().deleteUser(currentDetails.getUserID(),
 						new AsyncCallback<Void>() {
 
 							@Override
@@ -267,7 +267,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		displayDetail();
 	}
 
-	private void generateCSVOfActiveUserEmails(){
+	private void generateCSVOfActiveUserEmails() {
 		String url = GWT.getModuleBaseURL() + "export?format=exportActiveNonAdminUsersCSV";
 		Window.open(url + "&type=save", "_self", "");
 	}
@@ -319,7 +319,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		});
 	}
 
-	private void callSignOut(){
+	private void callSignOut() {
 		 MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
 			@Override
 			public void onFailure(Throwable arg0) {
@@ -333,7 +333,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		});
 	}
 
-	private void redirectToLogin() {		
+	private void redirectToLogin() {
 		/*
 		 * Added a timer to have a delay before redirect since
 		 * this was causing the firefox javascript exception.
@@ -367,8 +367,8 @@ public class ManageUsersPresenter implements MatPresenter {
 		displaySearch();
 		Mat.focusSkipLists("Manage Users");
 	}
-	
-	@Override 
+
+	@Override
 	public void beforeClosingDisplay() {
 	}
 
@@ -429,7 +429,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		return vPanel;
 	}
 
-	private boolean isValid(ManageUsersDetailModel model) {		
+	private boolean isValid(ManageUsersDetailModel model) {
 		AdminManageUserModelValidator test = new AdminManageUserModelValidator();
 		List<String> message = test.isValidUsersDetail(model);
 

@@ -25,7 +25,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display {
 	private Panel mainPanel;
-	private TextBox loginId;
+	private TextBox loginId = new TextBox();
 	private Label securityQuestion;
 	private TextBox securityAnswer;
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();

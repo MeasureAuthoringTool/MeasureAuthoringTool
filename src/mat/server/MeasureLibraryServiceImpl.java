@@ -240,7 +240,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see mat.client.measure.service.MeasureService#updateLockedDate
 	 * (java.lang.String, java.lang.String).This method has been added to update
 	 * the measureLock Date. This method first gets the exisitingMeasure and
@@ -284,7 +284,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see
 	 * mat.client.measure.service.MeasureService#resetLockedDate(java.lang.String
 	 * , java.lang.String) This method has been added to release the Measure
@@ -391,7 +391,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	/**
 	 * Setting Additional Attributes for Measure Xml.
-	 *
+	 * 
 	 * @param measureDetailModel
 	 *            - {@link ManageMeasureDetailModel}.
 	 * @param measure
@@ -472,7 +472,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	/**
 	 * Method to create XML from QualityDataModelWrapper object.
-	 *
+	 * 
 	 * @param qualityDataSetDTO
 	 *            - {@link QualityDataModelWrapper}.
 	 * @return {@link ByteArrayOutputStream}.
@@ -510,7 +510,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 
 	/**
 	 * Adding additonal fields in model from measure table.
-	 *
+	 * 
 	 * @param manageMeasureDetailModel
 	 *            - {@link ManageMeasureDetailModel}.
 	 * @param measure
@@ -684,13 +684,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 * @param currentUserId - {@link String}
-	 * @param isSuperUser - {@link Boolean}
-	 * @param dto - {@link MeasureShareDTO}.
+	 * @param currentUserId
+	 *            - {@link String}
+	 * @param isSuperUser
+	 *            - {@link Boolean}
+	 * @param dto
+	 *            - {@link MeasureShareDTO}.
 	 * @return {@link Result}.
 	 */
 	private ManageMeasureSearchModel.Result extractMeasureSearchModelDetail(
-			final String currentUserId, final boolean isSuperUser, final MeasureShareDTO dto) {
+			final String currentUserId, final boolean isSuperUser,
+			final MeasureShareDTO dto) {
 		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
 		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
 		detail.setName(dto.getMeasureName());
@@ -824,8 +828,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 *@param measureSetId - {@link String}.
-	 *@return {@link String}.
+	 * @param measureSetId
+	 *            - {@link String}.
+	 * @return {@link String}.
 	 * **/
 	private String findOutMaximumVersionNumber(final String measureSetId) {
 		String maxVerNum = getService().findOutMaximumVersionNumber(
@@ -834,9 +839,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 * @param measureId - {@link String}.
-	 *@param measureSetId - {@link String}.
-	 *@return {@link String}.
+	 * @param measureId
+	 *            - {@link String}.
+	 * @param measureSetId
+	 *            - {@link String}.
+	 * @return {@link String}.
 	 * **/
 	private String findOutVersionNumber(final String measureId,
 			final String measureSetId) {
@@ -846,11 +853,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 * @param maximumVersionNumber - {@link String}.
-	 *@param incrementBy - {@link String}.
-	 *@param mDetail - {@link ManageMeasureDetailModel}.
-	 *@param meas - {@link Measure}.
-	 *@return {@link SaveMeasureResult}.
+	 * @param maximumVersionNumber
+	 *            - {@link String}.
+	 * @param incrementBy
+	 *            - {@link String}.
+	 * @param mDetail
+	 *            - {@link ManageMeasureDetailModel}.
+	 * @param meas
+	 *            - {@link Measure}.
+	 * @return {@link SaveMeasureResult}.
 	 * **/
 	private SaveMeasureResult incrementVersionNumberAndSave(
 			final String maximumVersionNumber, final String incrementBy,
@@ -876,16 +887,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 *@return {@link MeasurePackageService}.
+	 * @return {@link MeasurePackageService}.
 	 * **/
 	public final MeasurePackageService getMeasurePackageService() {
 		return (MeasurePackageService) context.getBean("measurePackageService");
 	}
 
 	/**
-	 *@param rs - {@link SaveMeasureResult}.
-	 *@param failureReason - {@link Integer}.
-	 *@return {@link SaveMeasureResult}.
+	 * @param rs
+	 *            - {@link SaveMeasureResult}.
+	 * @param failureReason
+	 *            - {@link Integer}.
+	 * @return {@link SaveMeasureResult}.
 	 * **/
 	private SaveMeasureResult returnFailureReason(final SaveMeasureResult rs,
 			final int failureReason) {
@@ -895,10 +908,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 *@param detailModelList - {@link Result}.
-	 *@param dto - {@link MeasureShareDTO}.
-	 *@param currentUserId - {@link String}.
-	 *@param isSuperUser - {@link Boolean}.
+	 * @param detailModelList
+	 *            - {@link Result}.
+	 * @param dto
+	 *            - {@link MeasureShareDTO}.
+	 * @param currentUserId
+	 *            - {@link String}.
+	 * @param isSuperUser
+	 *            - {@link Boolean}.
 	 * **/
 	private void setDTOtoModel(
 			final List<ManageMeasureSearchModel.Result> detailModelList,
@@ -926,10 +943,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setMeasureSetId(dto.getMeasureSetId());
 		detailModelList.add(detail);
 	}
+
 	/**
-	 *@param totalRows - {@link Long}.
-	 *@param numberOfRows - {@link Integer}.
-	 *@return {@link Integer}.
+	 * @param totalRows
+	 *            - {@link Long}.
+	 * @param numberOfRows
+	 *            - {@link Integer}.
+	 * @return {@link Integer}.
 	 * **/
 	private int getPageCount(final long totalRows, final int numberOfRows) {
 		int pageCount = 0;
@@ -940,8 +960,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 *@param valueSetDateStr - {@link String}.
-	 *@throws InvalidValueSetDateException - {@link Exception}.
+	 * @param valueSetDateStr
+	 *            - {@link String}.
+	 * @throws InvalidValueSetDateException
+	 *             - {@link Exception}.
 	 * **/
 	private void getAndValidateValueSetDate(final String valueSetDateStr)
 			throws InvalidValueSetDateException {
@@ -955,7 +977,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 
 	/**
-	 *@param qdmName - {@link String}.
+	 * @param qdmName
+	 *            - {@link String}.
 	 * @return {@link List} of {@link QDSAttributes}.
 	 * **/
 	private List<QDSAttributes> getAllDataTypeAttributes(final String qdmName) {
@@ -969,8 +992,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		// Collections.sort(attrs, attributeComparator);
 		return attrs;
 	}
+
 	/**
-	 *Comparator.
+	 * Comparator.
 	 * **/
 	private Comparator<QDSAttributes> attributeComparator = new Comparator<QDSAttributes>() {
 		@Override
@@ -1215,7 +1239,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		try {
 			if (xml == null) { // TODO: This Check should be replaced when the
-							   // DataConversion is complete.
+								// DataConversion is complete.
 				logger.info("xml is null or xml doesn't contain measureDetails tag");
 				details = new ManageMeasureDetailModel();
 				createMeasureDetailsModelFromMeasure(details, measure);
@@ -1292,22 +1316,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ManageMeasureDetailModel measureDetailModel = null;
 		if (creatingDraft) {
 			measureDetailModel = getMeasure(oldMeasureId);// get the
-														  // measureDetailsmodel
-														  // object for which
-														  // draft have to be
-														  // created..
+															// measureDetailsmodel
+															// object for which
+															// draft have to be
+															// created..
 			Measure measure = getService().getById(clonedMeasureId);// get the
 																	// Cloned
 																	// version
 																	// of the
 																	// Measure.
 			createMeasureDetailsModelFromMeasure(measureDetailModel, measure); // apply
-																			   // measure
-																			   // values
-																			   // in
-																			   // the
-																			   // created
-																			   // MeasureDetailsModel.
+																				// measure
+																				// values
+																				// in
+																				// the
+																				// created
+																				// MeasureDetailsModel.
 		} else {
 			measureDetailModel = getMeasure(clonedMeasureId);
 		}
@@ -1333,9 +1357,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				for (QualityDataSetDTO dataSetDTO : details.getQualityDataDTO()) {
 					if (dataSetDTO.getCodeListName() != null) {
 						if ((checkForSupplementData && dataSetDTO
-								.isSuppDataElement())
-								|| dataSetDTO.getDataType().equalsIgnoreCase(
-										ConstantMessages.TIMING_ELEMENT)) {
+								.isSuppDataElement())) {
 							continue;
 						} else {
 							finalList.add(dataSetDTO);
@@ -1476,8 +1498,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updateSupplementalDataElement Start :  ");
 		String XPATH_EXPRESSION_SDE_ELEMENTREF = "/measure/supplementalDataElements/elementRef[@id='"
 				+ modifyDTO.getUuid() + "']";// XPath to find all elementRefs in
-											 // supplementalDataElements for
-											 // to be modified QDM.
+												// supplementalDataElements for
+												// to be modified QDM.
 
 		try {
 			NodeList nodesSDE = (NodeList) xPath.evaluate(
@@ -1508,8 +1530,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updatePopulationAndStratification Start :  ");
 		String XPATH_EXPRESSION_CLAUSE_ELEMENTREF = "/measure//clause//elementRef[@id='"
 				+ modifyDTO.getUuid() + "']"; // XPath to find All elementRef's
-											  // under clause element nodes
-											  // for to be modified QDM.
+												// under clause element nodes
+												// for to be modified QDM.
 		try {
 			NodeList nodesClauseWorkSpace = (NodeList) xPath.evaluate(
 					XPATH_EXPRESSION_CLAUSE_ELEMENTREF,
@@ -1572,8 +1594,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updateElementLookUp Start :  ");
 		String XPATH_EXPRESSION_ELEMENTLOOKUP = "/measure/elementLookUp/qdm[@uuid='"
 				+ modifyDTO.getUuid() + "']";// XPath Expression to find all
-											 // elementRefs in elementLookUp
-											 // for to be modified QDM.
+												// elementRefs in elementLookUp
+												// for to be modified QDM.
 		try {
 			NodeList nodesElementLookUp = (NodeList) xPath.evaluate(
 					XPATH_EXPRESSION_ELEMENTLOOKUP, processor.getOriginalDoc(),
@@ -1684,7 +1706,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		try {
 			if (xml == null) {// TODO: This Check should be replaced when the
-							  // DataConversion is complete.
+								// DataConversion is complete.
 				logger.info("xml is null or xml doesn't contain elementlookup tag");
 
 			} else {

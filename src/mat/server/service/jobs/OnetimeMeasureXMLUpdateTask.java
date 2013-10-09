@@ -35,10 +35,10 @@ public class OnetimeMeasureXMLUpdateTask {
 			logger.info("Updating Measure XML Timing Elements for Measure Id:"
 					+ measureXML.getMeasure_id());
 
-			if (!measureXML.getMeasure_id().equals(
-					"8ae45366418fb6f901418fbcfc60000b")) {
-				continue;
-			}
+			// if (!measureXML.getMeasure_id().equals(
+			// "8ae45366418fb6f901418fbcfc60000b")) {
+			// continue;
+			// }
 
 			String xml = measureXML.getMeasureXMLAsString();
 			XmlProcessor xmlProcessor = new XmlProcessor(xml);

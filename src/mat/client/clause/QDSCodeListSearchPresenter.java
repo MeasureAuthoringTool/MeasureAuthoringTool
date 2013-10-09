@@ -305,7 +305,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 									final List<? extends HasListBox> result) {
 								Collections.sort(result,
 										new HasListBox.Comparator());
-								searchDisplay.setAllDataTypeOptions(result);
+                            	searchDisplay.setAllDataTypeOptions(result);
 								searchDisplay
 								.setDataTypesListBoxOptions(result);
 							}

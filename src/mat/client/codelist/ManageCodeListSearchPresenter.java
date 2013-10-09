@@ -726,14 +726,14 @@ public class ManageCodeListSearchPresenter {
 	
 	
 	private void search(String searchText, int startIndex, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
-		lastSearchText = (!searchText.equals(null))? searchText.trim() : null;
+		lastSearchText = (searchText!=null)? searchText.trim() : null;
 		lastStartIndex = startIndex;
 		
 		final boolean isAscending = isAsc;
 		
 		
 		
-		String trimmedSearchText = (!searchText.equals(null))? searchText.trim() : null;
+		String trimmedSearchText = (searchText!=null)? searchText.trim() : null;
 		if(MatContext.get().getLoggedInUserRole().equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			int pageSize= Integer.MAX_VALUE;
 			adminSearchDisplay.getErrorMessageDisplay().clear();

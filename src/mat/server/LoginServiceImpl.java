@@ -297,7 +297,7 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 			String enteredPassword) {
 		String ifMatched = FAILURE;
 		HashMap<String, String> resultMap = new HashMap<String, String>();
-		if (enteredPassword.equals(null) || enteredPassword.equals("")) {
+		if (enteredPassword == null || enteredPassword.equals("")) {
 			resultMap.put("message", MatContext.get().getMessageDelegate()
 					.getPasswordRequiredErrorMessage());
 		} else {

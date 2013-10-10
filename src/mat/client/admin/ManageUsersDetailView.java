@@ -306,23 +306,20 @@ public class ManageUsersDetailView
 
 			@Override
 			public void setValue(String value, boolean fireEvents) {
-				if("1".equals(value)) {
+				if ("1".equals(value)) {
 					orgAdminRadio.setValue(Boolean.TRUE);
 					orgSuperUserRadio.setValue(Boolean.FALSE);
 					orgUserRadio.setValue(Boolean.FALSE);
-				}
-				else if("2".equals(value)) {
+				} else if ("2".equals(value)) {
 					orgSuperUserRadio.setValue(Boolean.TRUE);
 					orgAdminRadio.setValue(Boolean.FALSE);
 					orgUserRadio.setValue(Boolean.FALSE);
-				}
-				else {
+				} else {
 					orgUserRadio.setValue(Boolean.TRUE);
 					orgSuperUserRadio.setValue(Boolean.FALSE);
 					orgAdminRadio.setValue(Boolean.FALSE);
 				}
 			}
-			
 		};
 	}
 

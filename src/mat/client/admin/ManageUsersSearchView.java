@@ -31,11 +31,11 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	private Button searchButton = new SecondaryButton("Search");
 	private Button createNewButton = new SecondaryButton("Add New User");
 	private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
-	
+
 	public ManageUsersSearchView() {
 		view.buildDataTable(new ManageUsersSearchModel());
 		searchText.setWidth("256px");
-		
+
 		mainPanel.add(new SpacerWidget());
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.add(createNewButton);
@@ -44,33 +44,32 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		mainPanel.add(buttonPanel);
 		//mainPanel.add(createNewButton);
 		mainPanel.add(new SpacerWidget());
-		
+
 		mainPanel.add(searchLabel);
 		mainPanel.add(searchText);
 		searchButton.addStyleName("userSearchButton");
 		mainPanel.add(searchButton);
 		mainPanel.add(new SpacerWidget());
-//		
-//		searchCriteria.getCellFormatter().setHorizontalAlignment(0, 0, 
+//
+//		searchCriteria.getCellFormatter().setHorizontalAlignment(0, 0,
 //				HasHorizontalAlignment.ALIGN_LEFT);
-//		searchCriteria.getCellFormatter().setHorizontalAlignment(1, 0, 
+//		searchCriteria.getCellFormatter().setHorizontalAlignment(1, 0,
 //				HasHorizontalAlignment.ALIGN_LEFT);
 //		searchCriteria.getCellFormatter().setWidth(1, 0, "250px");
 //		searchText.setWidth("95%");
-//		
-//		searchCriteria.getCellFormatter().setHorizontalAlignment(1, 1, 
+//
+//		searchCriteria.getCellFormatter().setHorizontalAlignment(1, 1,
 //				HasHorizontalAlignment.ALIGN_LEFT);
 //		searchCriteria.getCellFormatter().setWidth(1, 1, "100px");
-//		searchCriteria.getCellFormatter().setHorizontalAlignment(1, 2, 
+//		searchCriteria.getCellFormatter().setHorizontalAlignment(1, 2,
 //				HasHorizontalAlignment.ALIGN_RIGHT);
-		
-		
+
+
 		mainPanel.add(view.asWidget());
 		mainPanel.setStyleName("contentPanel");
 		containerPanel.setContent(mainPanel);
-		//containerPanel.setEmbeddedLink("Manage Users");		
-		containerPanel.setHeading("Manage Users","Manage Users");
-		
+		//containerPanel.setEmbeddedLink("Manage Users");
+		containerPanel.setHeading("Manage Users", "Manage Users");
 	}
 	@Override
 	public Widget asWidget() {
@@ -112,5 +111,4 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	public HasValue<String> getSearchString() {
 		return searchText;
 	}
-	
 }

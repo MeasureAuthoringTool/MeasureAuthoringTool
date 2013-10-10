@@ -2,7 +2,7 @@ package mat.client.admin;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class ManageUsersDetailModel implements IsSerializable{
+public class ManageUsersDetailModel implements IsSerializable {
 	private String userID;
 	private String firstName;
 	private String lastName;
@@ -15,14 +15,14 @@ public class ManageUsersDetailModel implements IsSerializable{
 	private String oid;
 	//private String rootOid;
 	private String role;
-	
+
 	private boolean active = true;
 	private boolean isExistingUser;
 	private boolean isLocked;
-	
+
 	private boolean currentUserCanUnlock;
 	private boolean currentUserCanChangeAccountStatus;
-	
+
 	public boolean isCurrentUserCanUnlock() {
 		return currentUserCanUnlock;
 	}
@@ -122,12 +122,13 @@ public class ManageUsersDetailModel implements IsSerializable{
 	public void setRole(String role) {
 		this.role = doTrim(role);
 	}
-	
-	private String doTrim(String str){
-		if(str == null)
+
+	private String doTrim(String str) {
+		if(str == null) {
 			return str;
-		else
+		} else {
 			return str.trim();
+		}
 	}
 	/**
 	 * @param loginId the loginId to set
@@ -141,5 +142,4 @@ public class ManageUsersDetailModel implements IsSerializable{
 	public String getLoginId() {
 		return loginId;
 	}
-	
 }

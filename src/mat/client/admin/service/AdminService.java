@@ -17,9 +17,8 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface AdminService extends RemoteService {
 	public ManageUsersDetailModel getUser(String key) throws InCorrectUserRoleException;
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException;
-	
+
 	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws InCorrectUserRoleException;
 	public void deleteUser(String userId) throws InCorrectUserRoleException;
 	public void resetUserPassword(String userid) throws InCorrectUserRoleException;
-	
 }

@@ -53,11 +53,10 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		public String getLoginId() {
 			return loginId;
 		}
-		
 	}
 	
-	private static String[] headers = new String[] { "Name", "Organization" };
-	private static String[] widths = new String[] { "50%", "50%" };
+	private static String[] headers = new String[] {"Name", "Organization"};
+	private static String[] widths = new String[] {"50%", "50%"};
 
 	private List<Result> data;
 	private int startIndex;
@@ -66,13 +65,11 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 	public void setData(List<Result> data) {
 		this.data = data;
 	}
-	
-	
+
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return false;
 	}
-
 
 	@Override
 	public int getNumberOfColumns() {
@@ -105,13 +102,13 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		Label value;
 		switch(column) {
 		case 0:
-			value = new Label(data.get(row).getFirstName() + " " + 
-				data.get(row).getLastName());
+			value = new Label(data.get(row).getFirstName() + " "
+						+ data.get(row).getLastName());
 			break;
 		case 1:
 			value = new Label(data.get(row).getOrgName());
 			break;
-		default: 
+		default:
 			value = new Label("Unknown Column Index");
 		}
 		return value;
@@ -124,7 +121,6 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 	public void setStartIndex(int startIndex) {
 		this.startIndex = startIndex;
 	}
-	
 
 	@Override
 	public int getResultsTotal() {
@@ -134,22 +130,18 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		this.resultsTotal = resultsTotal;
 	}
 
-
 	@Override
 	public String getKey(int row) {
 		return data.get(row).getKey();
 	}
-
 
 	@Override
 	public Result get(int row) {
 		return data.get(row);
 	}
 
-
 	@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return false;
 	}
-
 }

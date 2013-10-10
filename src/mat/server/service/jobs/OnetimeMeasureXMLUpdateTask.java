@@ -23,7 +23,7 @@ public class OnetimeMeasureXMLUpdateTask {
 	public void updateMeasureXMLsForTimingElements() {
 		logger.info("Starting one time update Measure XMLs For Timing Elements task....");
 
-		if (!doesJobNeedExecution()) {
+		if (doesJobNeedExecution()) {
 			logger.info("Figured that one time update Measure XMLs For Timing Elements task doesnt need execution...stopping task.");
 			return;
 		}

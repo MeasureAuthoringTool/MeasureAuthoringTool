@@ -124,7 +124,7 @@ public class ManageUsersDetailModel implements IsSerializable {
 	}
 
 	private String doTrim(String str) {
-		if(str == null) {
+		if (str == null) {
 			return str;
 		} else {
 			return str.trim();

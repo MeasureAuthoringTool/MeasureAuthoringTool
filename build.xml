@@ -269,13 +269,13 @@
 
 	<target name="findbugs"  depends="compile.gwt,compile.java" description="Run code analysis over code to check for problems.">
 		<!-- Fail this target if FindBugs is not installed. -->
-		<available file="doc/findBug/lib/findbugs.jar" property="findbugs.available" />
+		<available file="${FINDBUG.home}/findBug/lib/findbugs.jar" property="findbugs.available" />
 		<fail unless="findbugs.available" message="Error: FINDBUGS_HOME not set or findbugs.jar not found." />
-		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="doc/findBug/lib/findbugs-ant.jar"/>
+		<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="${FINDBUG.home}/findBug/lib/findbugs-ant.jar"/>
 
 		<!-- Run FindBugs. -->
 		<mkdir dir="${findBugdoc}" />
-		<findbugs home="${FINDBUG.home}/findBug/lib" workHard="true" output="html" outputFile="${findBugdoc}\findbugs.html">
+		<findbugs home="${FINDBUG.home}/findBug/lib" workHard="true" output="html" outputFile="${findBugdoc}/findbugs.html">
 			<class location="${output.dir}/WEB-INF/classes" />
 			<auxClasspath>
 				<fileset file="${output.dir}/WEB-INF/lib/gwt-user.jar" />

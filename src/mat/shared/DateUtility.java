@@ -45,7 +45,7 @@ public class DateUtility {
 	}
 	
 	public static Date convertStringToDate(String str_date){
-		if(str_date.length() == 19)
+		if(str_date != null && str_date.length() == 19)
 			return convertStringToDateWithTime(str_date);
 		
 		Date dt = null; 

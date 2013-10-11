@@ -1,6 +1,6 @@
 package mat.shared;
 
-public class Attribute {
+public class Attribute implements Cloneable {
 	private String attribute;
 	private String type;
 	private String comparisonOperator;	

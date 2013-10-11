@@ -315,8 +315,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					}
 				}
 			}
+			result.setId(existingMeasure.getId());
 		}
-		result.setId(existingMeasure.getId());
+
 		return result;
 	}
 
@@ -1427,8 +1428,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXML Start : Measure Id :: "
 				+ measureId);
 		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
-		XmlProcessor processor = new XmlProcessor(model.getXml());
+		
 		if (model != null) {
+			XmlProcessor processor = new XmlProcessor(model.getXml());
 			if (modifyDTO.isUsed()) {
 				if (modifyDTO.getDataType().equalsIgnoreCase("Attribute")) {
 					// update All Attributes.

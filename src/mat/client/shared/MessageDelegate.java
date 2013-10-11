@@ -1030,8 +1030,8 @@ public class MessageDelegate {
 		return MEASURE_PACKAGE_UMLS_NOT_LOGGED_IN;
 	}
 
-	private final String MEASURE_PACKAGE_UMLS_NOT_LOGGED_IN = "Measure packaged successfully."
-			+ "Updated VSAC value set data is not included in the measure package as you are not logged into UMLS.";
+	private final String MEASURE_PACKAGE_UMLS_NOT_LOGGED_IN = "Measure packaged successfully. "
+			+ "Value set data is not included in the measure package as you are not logged into UMLS.";
 
 
 }

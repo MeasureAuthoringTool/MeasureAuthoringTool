@@ -259,7 +259,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	 * **/
 	private void getListOfAppliedQDMs(final boolean isUserDefined) {
 		String measureId = MatContext.get().getCurrentMeasureId();
-		if (measureId != null && measureId != "") {
+		if (measureId != null && !measureId.equals("")) {
 			service.getAppliedQDMFromMeasureXml(measureId, true,
 					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
 

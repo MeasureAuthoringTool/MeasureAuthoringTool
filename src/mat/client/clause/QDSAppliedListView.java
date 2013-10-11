@@ -134,7 +134,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		return successMessagePanel;
 	}
 
-	private CellList<QualityDataSetDTO> initializeCellListContent(CellList<QualityDataSetDTO> cellList,final QDSAppliedListModel appliedListModel){
+	private CellList<QualityDataSetDTO> initializeCellListContent(final QDSAppliedListModel appliedListModel){
 
 		ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>();
 		//final MultiSelectionModel<QualityDataSetDTO> selectionModel = new MultiSelectionModel<QualityDataSetDTO>();
@@ -235,7 +235,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 		};
 
-		cellList =  new CellList<QualityDataSetDTO>(myClassCell);
+		CellList<QualityDataSetDTO> cellsList =  new CellList<QualityDataSetDTO>(myClassCell);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
@@ -256,9 +256,9 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		
 		
 		
-		cellList.setSelectionModel(selectionModel, DefaultSelectionEventManager.<QualityDataSetDTO>createDefaultManager());
+		cellsList.setSelectionModel(selectionModel, DefaultSelectionEventManager.<QualityDataSetDTO>createDefaultManager());
 		//removeButton.setEnabled(checkForEnable());
-		return cellList;
+		return cellsList;
 	}
 
 	private boolean checkForEnable(){
@@ -268,7 +268,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	@Override
 	public  void buildCellList(QDSAppliedListModel appliedListModel) {
 		if(appliedListModel.getAppliedQDMs()!=null){
-			cellList = initializeCellListContent(cellList,appliedListModel);
+			cellList = initializeCellListContent(appliedListModel);
 			cellList.setPageSize(15);
 			cellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 			ListDataProvider<QualityDataSetDTO> dataProvider = new ListDataProvider<QualityDataSetDTO>(appliedListModel.getAppliedQDMs()); 

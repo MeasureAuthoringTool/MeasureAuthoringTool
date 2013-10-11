@@ -236,7 +236,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	 * */
 	public void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
-		if (measureId != null && measureId != "") {
+		if (measureId != null && !measureId.equals("")) {
 			service.getAppliedQDMFromMeasureXml(measureId,
 					checkForSupplementData,
 					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {

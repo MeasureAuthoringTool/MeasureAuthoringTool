@@ -869,8 +869,8 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 						.listIterator();
 				while (itr.hasNext()) {
 					MeasureShareDTO shareDTO = itr.next();
-					if (measureShareDTO.getMeasureSetId() == shareDTO
-							.getMeasureSetId()) {
+					if (measureShareDTO.getMeasureSetId().equals(shareDTO
+							.getMeasureSetId())) {
 						found = true;
 						if (measureShareDTO.isDraft()) {
 							itr.remove();

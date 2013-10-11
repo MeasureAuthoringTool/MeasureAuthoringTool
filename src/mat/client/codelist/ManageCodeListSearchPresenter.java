@@ -882,7 +882,7 @@ public class ManageCodeListSearchPresenter {
 			}
 		}else{
 			for(int i=0 ;i< model.getTransferValueSetIDs().size();i++){
-				if(codeList.getId() == model.getTransferValueSetIDs().get(i).getId()){
+				if(codeList.getId().equals(model.getTransferValueSetIDs().get(i).getId())){
 					model.getTransferValueSetIDs().remove(i);
 					model.getLisObjectId().remove(i);
 				}

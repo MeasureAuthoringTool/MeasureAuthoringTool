@@ -2,7 +2,7 @@ package mat.client.clause.clauseworkspace.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class MeasureXmlModel implements IsSerializable{
+public class MeasureXmlModel implements IsSerializable {
 	
 	private String meausreExportId;
 	
@@ -13,8 +13,6 @@ public class MeasureXmlModel implements IsSerializable{
 	private String toReplaceNode;
 	
 	private String parentNode;
-
-	
 
 	/**
 	 * @return the meausreExportId

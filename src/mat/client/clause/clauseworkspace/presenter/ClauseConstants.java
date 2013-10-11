@@ -6,13 +6,14 @@ import java.util.Map;
 
 import com.google.gwt.xml.client.Node;
 
-public class ClauseConstants{
+public class ClauseConstants {
 
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
 
 	private static Map<String, String> childMap = new HashMap<String, String>();
 
-	private static final String[] POPULATIONS = {"Initial Patient Populations", "Numerators", "Numerator Exclusions", "Denominators", "Denominator Exclusions", "Denominator Exceptions", "Measure Populations"};
+	private static final String[] POPULATIONS = {"Initial Patient Populations", "Numerators", "Numerator Exclusions",
+		"Denominators", "Denominator Exclusions", "Denominator Exceptions", "Measure Populations"};
 
 	public static final String LOG_OP = "logicalOp";
 
@@ -36,7 +37,7 @@ public class ClauseConstants{
 	
 	/** Constants added for RighClick SubMenus  */
 	
-	public static final String[] LOGICAL_OPS = {"AND","OR"};
+	public static final String[] LOGICAL_OPS = {"AND", "OR"};
 	
 	public static final String RELATIONAL_OP = "relationalOp";
 	
@@ -82,7 +83,7 @@ public class ClauseConstants{
 	
 	public static final String UUID = "uuid";
 	
-	static{
+	static {
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");
 		constantsMap.put("strata", "Stratification");
@@ -98,19 +99,19 @@ public class ClauseConstants{
 		constantsMap.put("Populations", "populations");
 	}
 
-	public static String get(String key){
+	public static String get(String key) {
 		return constantsMap.get(key);
 	}
 
-	public static String getClauseTypeNodeName(String key){
+	public static String getClauseTypeNodeName(String key) {
 		return childMap.get(key);
 	}
 
-	public static String[] getPopulationsChildren(){
+	public static String[] getPopulationsChildren() {
 		return POPULATIONS;
 	}
 
-	public static void put(String key, String value){
+	public static void put(String key, String value) {
 		constantsMap.put(key, value);
 	}
 

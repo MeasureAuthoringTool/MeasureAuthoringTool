@@ -287,14 +287,14 @@ public class CellTreeNodeImpl implements CellTreeNode {
 			label = label.substring(0, ClauseConstants.LABEL_MAX_LENGTH - 1)
 					.concat("...");
 		}
-		if (getNodeType() == CellTreeNode.ELEMENT_REF_NODE) {// checking if QDM
+		if (getNodeType() == CellTreeNode.ELEMENT_REF_NODE) { // checking if QDM
 																// node
 			String oid = "";
 			if (ClauseConstants.getElementLookUpNode().get(
 					getName() + "~" + getUUID()) != null) {
 				oid = ClauseConstants.getElementLookUpNode()
 						.get(getName() + "~" + getUUID()).getAttributes()
-						.getNamedItem("oid").getNodeValue();// getting the OID
+						.getNamedItem("oid").getNodeValue(); // getting the OID
 															// for the QDM
 			}
 			int attrCount = getQdmAttributeCount();

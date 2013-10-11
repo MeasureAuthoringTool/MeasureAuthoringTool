@@ -19,10 +19,10 @@ public class TreeModel {
 	private boolean isOpen;
 
 
-	public TreeModel() {}
+	public TreeModel() { }
 	
 	public boolean hasChildrens() {
-        return childs != null && childs.size()>0;
+        return childs != null && childs.size() > 0;
     }
 	
 	public String getName() {

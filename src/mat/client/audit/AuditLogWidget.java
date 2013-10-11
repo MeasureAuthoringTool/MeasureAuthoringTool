@@ -13,11 +13,11 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class AuditLogWidget extends Composite{
 	  
-	public AuditLogWidget(String activityType, String userId, Date timeStamp, String additionalInfo){
-		VerticalPanel auditLogPanel = new VerticalPanel();    	     
-		auditLogPanel.setWidth("100%"); 
+	public AuditLogWidget(String activityType, String userId, Date timeStamp, String additionalInfo) {
+		VerticalPanel auditLogPanel = new VerticalPanel();
+		auditLogPanel.setWidth("100%");
 		auditLogPanel.getElement().setId("auditLogPanel_VerticalPanel");
-		HorizontalPanel eventPanel = new HorizontalPanel(); 
+		HorizontalPanel eventPanel = new HorizontalPanel();
 		eventPanel.getElement().setId("eventPanel_HorizontalPanel");
 		
 		Label activityTypeLbl = new Label(activityType);
@@ -36,14 +36,14 @@ public class AuditLogWidget extends Composite{
 		eventPanel.add(timeStampLbl);
 
 		eventPanel.setStylePrimaryName("noBorder");
-		eventPanel.setSize("550px","30px");  //Reducing the height of the event if there is no additionalInfo
+		eventPanel.setSize("550px", "30px");  //Reducing the height of the event if there is no additionalInfo
 		auditLogPanel.add(eventPanel);
 
 		HorizontalPanel additionalInfoPanel = new HorizontalPanel();
-		additionalInfoPanel.setWidth("100%");	
+		additionalInfoPanel.setWidth("100%");
 		additionalInfoPanel.getElement().setId("additionalInfoPanel_HorizontalPanel");
 		
-		if(additionalInfo != null){
+		if (additionalInfo != null) {
 			TextArea additionalInfoTxtArea = new TextArea();
 			additionalInfoTxtArea.getElement().setId("additionalInfoTxtArea_TextArea");
 			additionalInfoTxtArea.setReadOnly(true);
@@ -51,7 +51,7 @@ public class AuditLogWidget extends Composite{
 			additionalInfoTxtArea.setHeight("80px");
 			additionalInfoTxtArea.setValue(additionalInfo);
 			additionalInfoPanel.add(additionalInfoTxtArea);
-			additionalInfoPanel.setSize("550px","100px"); 
+			additionalInfoPanel.setSize("550px", "100px");
 			additionalInfoPanel.setStylePrimaryName("noBorder");
 			auditLogPanel.add(LabelBuilder.buildInvisibleLabel(new Label(), "Event Information"));
 			auditLogPanel.add(additionalInfoPanel);

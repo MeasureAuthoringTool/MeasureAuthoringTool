@@ -46,7 +46,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 
 	private void loadAllUnits() {
 		CodeListServiceAsync codeListServiceAsync = MatContext.get().getCodeListService();
-		codeListServiceAsync.getAllUnits(new AsyncCallback<List<String>>(){
+		codeListServiceAsync.getAllUnits(new AsyncCallback<List<String>>() {
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -64,30 +64,29 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 
 	private void setXMLOnTabs() {
 		final String currentMeasureId = MatContext.get().getCurrentMeasureId();
-		if(currentMeasureId != null && !"".equals(currentMeasureId)) {
+		if (currentMeasureId != null && !"".equals(currentMeasureId)) {
 			MeasureServiceAsync service = MatContext.get().getMeasureService();
 			service.getMeasureXmlForMeasure(MatContext.get()
 					.getCurrentMeasureId(),
-					new AsyncCallback<MeasureXmlModel>() {// Loading the measure's SimpleXML from the Measure_XML table 
-
+					new AsyncCallback<MeasureXmlModel>() { // Loading the measure's SimpleXML from the Measure_XML table
 						@Override
 						public void onSuccess(MeasureXmlModel result) {
-							try{
+							try {
 								String xml = result != null ? result.getXml() : null;
 								com.google.gwt.xml.client.Document document = XMLParser.parse(xml);
 								NodeList nodeList = document.getElementsByTagName("scoring");
 								
-								if(nodeList != null && nodeList.getLength() > 0){
+								if (nodeList != null && nodeList.getLength() > 0) {
 									Node scoringNode = nodeList.item(0);
 									Node scoringIdAttribute = scoringNode.getAttributes().getNamedItem("id");
 									String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
 									
-									if("PROPOR".equals(scoringIdAttributeValue) || "RATIO".equals(scoringIdAttributeValue)){
+									if ("PROPOR".equals(scoringIdAttributeValue) || "RATIO".equals(scoringIdAttributeValue)) {
 										clauseWorkspaceTabs = new MatTabLayoutPanel(true);
 										clauseWorkspaceTabs.setId("clauseWorkspce");
 										clauseWorkspaceTabs.addPresenter(populationClausePresenter, "Populations");
 										clauseWorkspaceTabs.addPresenter(stratificationClausePresenter, "Stratification");
-									}else{
+									} else {
 										clauseWorkspaceTabs = new MatTabLayoutPanel(true);
 										clauseWorkspaceTabs.setId("clauseWorkspce");
 										clauseWorkspaceTabs.addPresenter(populationClausePresenter, "Populations");
@@ -99,17 +98,17 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 									flowPanel.add(clauseWorkspaceTabs);
 									
 									String newXML = document.getDocumentElement().toString();
-									System.out.println("newXML:"+newXML);
+									System.out.println("newXML:" + newXML);
 									populationClausePresenter.setOriginalXML(newXML);
 									measureObsClausePresenter.setOriginalXML(newXML);
 									stratificationClausePresenter.setOriginalXML(newXML);
 									setQdmElementsMap(xml);
 									clauseWorkspaceTabs.selectTab(populationClausePresenter);
 									populationClausePresenter.beforeDisplay();
-								}else{
+								} else {
 									clearPanelAndShowError("Measure Scoring missing in Measure Xml " + currentMeasureId);
 								}
-							}catch (Exception e) {
+							} catch (Exception e) {
 								clearPanelAndShowError("Exception Occured in Clause Workspace " + currentMeasureId);	
 							}
 						}
@@ -120,13 +119,11 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 							clearPanelAndShowError("Loading Measure Xml failed in Clause Workspace" + currentMeasureId);
 						}
 		});
-		}else{
+		} else {
 			clearPanelAndShowError("Measure Id is null in Clause Workspace");
 		}
-		
 	}
 
-	
 	private void clearPanelAndShowError(String auditMessage){
 		simplepanel.clear();
 		clauseWorkspaceTabs = new MatTabLayoutPanel(true);
@@ -141,20 +138,20 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		ClauseConstants.elementLookUpNode = new TreeMap<String, Node>();
 		Document document = XMLParser.parse(xml);
 		NodeList nodeList = document.getElementsByTagName("elementLookUp");
-		if(null != nodeList && nodeList.getLength() > 0){
+		if (null != nodeList && nodeList.getLength() > 0) {
 			NodeList qdms = nodeList.item(0).getChildNodes();
 			for (int i = 0; i < qdms.getLength() ; i++) {
-				if("qdm".equals(qdms.item(i).getNodeName())){
+				if ("qdm".equals(qdms.item(i).getNodeName())) {
 					NamedNodeMap namedNodeMap = qdms.item(i).getAttributes();
 					String isSupplementData = namedNodeMap.getNamedItem("suppDataElement").getNodeValue();
-					if(isSupplementData.equals("false")){//filter supplementDataElements from elementLookUp
+					if (isSupplementData.equals("false")) {//filter supplementDataElements from elementLookUp
 						String name = namedNodeMap.getNamedItem("name").getNodeValue();
 						
-						if(namedNodeMap.getNamedItem("instance") != null){
+						if (namedNodeMap.getNamedItem("instance") != null) {
 							name = namedNodeMap.getNamedItem("instance").getNodeValue() + " of " + name;
 						}
 					
-						if(namedNodeMap.getNamedItem("datatype") != null){
+						if (namedNodeMap.getNamedItem("datatype") != null) {
 							name = name + " : " + namedNodeMap.getNamedItem("datatype").getNodeValue();
 						}
 						
@@ -185,7 +182,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 
 
 
-	public XmlTreePresenter getSelectedTreePresenter(){		
+	public XmlTreePresenter getSelectedTreePresenter() {		
 		MatPresenter matPresenter = clauseWorkspaceTabs.getPresenterMap().get(clauseWorkspaceTabs.getSelectedIndex());
 		return (XmlTreePresenter)matPresenter;
 	}

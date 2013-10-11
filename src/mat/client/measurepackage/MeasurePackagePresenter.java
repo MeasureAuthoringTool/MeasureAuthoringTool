@@ -15,6 +15,7 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.shared.WarningMessageDisplay;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.QualityDataSetDTO;
@@ -65,6 +66,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		List<QualityDataSetDTO> getQDMElements();
 		HasClickHandlers getAddQDMElementsToMeasureButton();
 		ErrorMessageDisplayInterface getQDMErrorMessageDisplay();
+		WarningMessageDisplay getMeasurePackageWarningMsg();
 	}
 
 	private View view;
@@ -289,7 +291,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 									Mat.hideLoadingMessage();
 									if (updateVsacResult.getFailureReason()
 											== VsacApiResult.UMLS_NOT_LOGGEDIN) {
-										view.getMeasurePackageSuccessMsg().setMessage(
+										view.getMeasurePackageWarningMsg().setMessage(
 												MatContext.get().getMessageDelegate()
 												.getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN());
 										}
@@ -313,6 +315,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getMeasureErrorMessageDisplay().clear();
 		view.getMeasurePackageSuccessMsg().clear();
 		view.getErrorMessageDisplay().clear();
+		view.getMeasurePackageWarningMsg().clear();
 	}
 
 	@Override

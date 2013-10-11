@@ -10,7 +10,6 @@ import mat.client.ImageResources;
 import mat.client.measure.metadata.Grid508;
 import mat.client.measurepackage.MeasurePackagePresenter.MeasurePackageSelectionHandler;
 import mat.client.shared.CustomButton;
-import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
@@ -20,6 +19,7 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.shared.WarningMessageDisplay;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
@@ -31,7 +31,6 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
@@ -48,6 +47,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	private SuccessMessageDisplay packageSuccessMessages = new SuccessMessageDisplay();
 	private SuccessMessageDisplay suppDataSuccessMessages = new SuccessMessageDisplay();
 	private SuccessMessageDisplay measurePackageSuccessMsg = new SuccessMessageDisplay();
+	private WarningMessageDisplay measurePackageWarningMsg = new WarningMessageDisplay();
 	private FlowPanel content = new FlowPanel();
 	private Label packageName = new Label();
 	private ListBox clausesListBox = new ListBox();
@@ -139,6 +139,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		content.add(new SpacerWidget());
 
 		content.add(measurePackageSuccessMsg);
+		content.add(measurePackageWarningMsg);
 		packageMeasure.setTitle("Create Measure Package");
 		content.add(packageMeasure);
 
@@ -650,6 +651,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	@Override
 	public final ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return measureErrorMessages;
+	}
+	public WarningMessageDisplay getMeasurePackageWarningMsg() {
+		return measurePackageWarningMsg;
 	}
 
 }

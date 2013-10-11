@@ -40,30 +40,26 @@ class TimeoutManager {
 
 	private  long actualTimeOutTime;
 	private  String formattedTime;
-	
-	/*
-	 * RepeatedWarning Timer will keep running every 2 minutes from the warning time, 
-	 * up to the actualTimeOut time. 
-	 * RepeatedWarning Timer will keep showing the warning message, 
-	 * until currentTime < actualTimeOutTime, else fireLogOffEvent. 
+
+	/***
+	 * RepeatedWarning Timer will keep running every 2 minutes from the warning time,
+	 * up to the actualTimeOut time.
+	 * RepeatedWarning Timer will keep showing the warning message,
+	 * until currentTime < actualTimeOutTime, else fireLogOffEvent.
 	 */
-	//US 153
-	private Timer repeatedWarning = new Timer(){
-	    	public void run(){
-	    		
-//				String msg = "Running Repeated Warning Timer.";
-//				MatContext.get().recordTransactionEvent(null, null, "REPEATED_WARNING_TIMER", msg, true);
-	    		
-	    		Date currentDate = new Date(); 
-				if(currentDate.getTime() <  actualTimeOutTime){
+	private Timer repeatedWarning = new Timer() {
+	    	public void run() {
+
+	    		Date currentDate = new Date();
+				if (currentDate.getTime() <  actualTimeOutTime) {
 					  showTimeOutWarning();
-				}else{
+				} else {
 					this.cancel();
 					fireLogOffEvent();
 				}
 	    	}
 	    };
-	
+
 
 	    private Timer umlsTicketTimeOut = new Timer(){
 
@@ -132,8 +128,6 @@ class TimeoutManager {
 		activeModule = module;
 		Date lastActivityDate = new Date();
 		lastActivityTime = lastActivityDate.getTime();
-//		String msg ="The Last Activity Time is:-"+ DateTimeFormat.getMediumDateTimeFormat().format(lastActivityDate);
-//		MatContext.get().recordTransactionEvent(null, null, "TIMEOUT_EVENT", msg, false);
 		timeoutWarning.cancel();
 		repeatedWarning.cancel();
 		//US 439. Warning message only required for Mat module not Login module.

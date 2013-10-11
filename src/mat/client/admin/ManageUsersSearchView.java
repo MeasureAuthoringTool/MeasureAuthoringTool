@@ -18,13 +18,13 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-
+/**ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay.**/
 public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay {
 
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 
 	private FlowPanel mainPanel = new FlowPanel();
-//	private OrganizationAutoComplete searchText = new OrganizationAutoComplete();
+
 	private TextBox searchText = new TextBox();
 	private Widget searchLabel = LabelBuilder.buildLabel(searchText, "Search for a User");
 	private SearchView<ManageUsersSearchModel.Result> view = new SearchView<ManageUsersSearchModel.Result>("Users");
@@ -32,6 +32,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	private Button createNewButton = new SecondaryButton("Add New User");
 	private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
 
+	/**Constructor.**/
 	public ManageUsersSearchView() {
 		view.buildDataTable(new ManageUsersSearchModel());
 		searchText.setWidth("256px");
@@ -42,7 +43,6 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		buttonPanel.add(generateCSVFileButton);
 		generateCSVFileButton.setTitle("Generate CSV file of Email Addresses.");
 		mainPanel.add(buttonPanel);
-		//mainPanel.add(createNewButton);
 		mainPanel.add(new SpacerWidget());
 
 		mainPanel.add(searchLabel);
@@ -50,25 +50,10 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		searchButton.addStyleName("userSearchButton");
 		mainPanel.add(searchButton);
 		mainPanel.add(new SpacerWidget());
-//
-//		searchCriteria.getCellFormatter().setHorizontalAlignment(0, 0,
-//				HasHorizontalAlignment.ALIGN_LEFT);
-//		searchCriteria.getCellFormatter().setHorizontalAlignment(1, 0,
-//				HasHorizontalAlignment.ALIGN_LEFT);
-//		searchCriteria.getCellFormatter().setWidth(1, 0, "250px");
-//		searchText.setWidth("95%");
-//
-//		searchCriteria.getCellFormatter().setHorizontalAlignment(1, 1,
-//				HasHorizontalAlignment.ALIGN_LEFT);
-//		searchCriteria.getCellFormatter().setWidth(1, 1, "100px");
-//		searchCriteria.getCellFormatter().setHorizontalAlignment(1, 2,
-//				HasHorizontalAlignment.ALIGN_RIGHT);
-
 
 		mainPanel.add(view.asWidget());
 		mainPanel.setStyleName("contentPanel");
 		containerPanel.setContent(mainPanel);
-		//containerPanel.setEmbeddedLink("Manage Users");
 		containerPanel.setHeading("Manage Users", "Manage Users");
 	}
 	@Override

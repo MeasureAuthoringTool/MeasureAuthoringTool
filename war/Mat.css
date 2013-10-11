@@ -484,6 +484,20 @@ body#main select, body#main input, body#main textarea {
 	
 }
 
+.warningMessage {
+    background: no-repeat scroll 6px 50% #EEC99E;
+    border: 1px solid #D28021;
+    color: #000000;
+    display: block;
+    font-weight: bold;
+    margin: 2px auto 14px;
+    padding: 6px 6px 6px 30px;
+    text-align: left;
+    
+    
+    
+}
+
 .loginInfoMessageContainer {
 	-moz-box-sizing:border-box;
     background-color:#E3F3D8;

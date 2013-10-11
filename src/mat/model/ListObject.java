@@ -9,7 +9,7 @@ import java.util.Set;
  * This creation of group code list is independent of Code list, although it is
  * parent of Code list class. In nut shell, this class works as an independent class.
  */
-public class ListObject {
+public class ListObject implements Cloneable {
 	private String id;
 	private User objectOwner;
 	private String name;

@@ -2,7 +2,7 @@ package mat.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
-public class Code implements IsSerializable{
+public class Code implements IsSerializable , Cloneable{
 	public static class Comparator implements java.util.Comparator<Code>, IsSerializable {
 
 		@Override

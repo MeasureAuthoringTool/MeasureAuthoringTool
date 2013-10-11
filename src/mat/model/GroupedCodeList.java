@@ -1,6 +1,6 @@
 package mat.model;
 
-public class GroupedCodeList {
+public class GroupedCodeList implements Cloneable {
 	private String id;
 	private String description;
 	private CodeList codeList;

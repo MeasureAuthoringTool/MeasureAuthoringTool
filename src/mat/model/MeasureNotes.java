@@ -2,7 +2,7 @@ package mat.model;
 
 import java.util.Date;
 
-public class MeasureNotes {
+public class MeasureNotes implements Cloneable {
 
 	private String id;
 	private String measure_id;

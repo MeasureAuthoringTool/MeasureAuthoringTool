@@ -2153,8 +2153,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		} else {
 			for (int i = 0; i < model.getSelectedTransferIds().size(); i++) {
-				if (result.getId() == model.getSelectedTransferResults().get(i)
-						.getId()) {
+				if (result.getId().equals(model.getSelectedTransferResults().get(i)
+						.getId())) {
 					model.getSelectedTransferIds().remove(i);
 					model.getSelectedTransferResults().remove(i);
 				}

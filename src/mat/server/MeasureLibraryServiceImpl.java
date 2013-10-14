@@ -1148,7 +1148,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				.checkForTimingElements();
 
 		if (missingTimingElementOIDList.isEmpty()) {
-			logger.info("All timing elements present in the measure. Exiting the method.");
+			logger.info("All timing elements present in the measure.");
 			return;
 		}
 		logger.info("Found the following timing elements missing:"

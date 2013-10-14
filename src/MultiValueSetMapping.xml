@@ -57,7 +57,7 @@
 			<bind-xml name="Concept" />
 		</field>
 	</class>
-	<class name="mat.model.MatGroup">
+	<!--  <class name="mat.model.MatGroup">
 		<map-to xml="Group" ns-uri="urn:ihe:iti:svs:2008" />
 		<field name="Id" type="java.lang.String">
 			<bind-xml name="ID" node="attribute" />
@@ -71,10 +71,7 @@
 		<field name="keywordList" type="java.lang.String" collection="arraylist">
 			<bind-xml name="Keyword" node="element" />
 		</field>
-
-		<!-- Fields private String ID; private String sourceOrganization; private
-			String displayName; private String keyword; -->
-	</class>
+	</class>-->
 	<class name="mat.model.MatConcept">
 		<map-to xml="Concept" ns-uri="urn:ihe:iti:svs:2008" />
 		<field name="code" type="java.lang.String">

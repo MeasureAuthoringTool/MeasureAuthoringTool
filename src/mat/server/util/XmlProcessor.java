@@ -180,20 +180,27 @@ public class XmlProcessor {
 		}
 		try {
 			Node parentTypeNode = findNode(originalDoc, parentNode);
-			InputSource newXmlstream = new InputSource(new StringReader(
-					newElement));
-			Document newDoc = docBuilder.parse(newXmlstream);// Parse the NewXml
-																// which should
-																// be replaced
-			NodeList newNodeList = newDoc.getElementsByTagName(nodeName);
-			for (int i = 0; i < newNodeList.getLength(); i++) {
-				Node newNode = newNodeList.item(i);
-				parentTypeNode.appendChild(originalDoc
-						.importNode(newNode, true));
-			}
+			if (parentTypeNode != null) {
+				InputSource newXmlstream = new InputSource(new StringReader(
+						newElement));
+				Document newDoc = docBuilder.parse(newXmlstream);// Parse the
+																	// NewXml
+																	// which
+																	// should
+																	// be
+																	// replaced
+				NodeList newNodeList = newDoc.getElementsByTagName(nodeName);
+				for (int i = 0; i < newNodeList.getLength(); i++) {
+					Node newNode = newNodeList.item(i);
+					parentTypeNode.appendChild(originalDoc.importNode(newNode,
+							true));
+				}
 
-			logger.info("Document Object created successfully for the XML String"
-					+ originalDoc.toString());
+				logger.info("Document Object created successfully for the XML String.");
+			} else {
+				logger.info("parentNode:" + parentNode
+						+ " not found. method appendNode exiting prematurely.");
+			}
 		} catch (XPathExpressionException e) {
 			logger.info("Exception thrown on appendNode method");
 			caughtExceptions(e);
@@ -333,7 +340,6 @@ public class XmlProcessor {
 			e.printStackTrace();
 		}
 		logger.info("Document object to ByteArray transformation complete");
-		System.out.println(arrayOutputStream.toString());
 		return arrayOutputStream.toString();
 	}
 
@@ -390,7 +396,7 @@ public class XmlProcessor {
 			String scoringType = (String) xPath.evaluate(
 					"/measure/measureDetails/scoring/@id",
 					originalDoc.getDocumentElement(), XPathConstants.STRING);
-			System.out.println("scoringType:" + scoringType);
+			logger.info("scoringType:" + scoringType);
 
 			removeNodesBasedOnScoring(scoringType);
 			createNewNodesBasedOnScoring(scoringType);

@@ -1148,8 +1148,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				.checkForTimingElements();
 
 		if (missingTimingElementOIDList.isEmpty()) {
+			logger.info("All timing elements present in the measure. Exiting the method.");
 			return;
 		}
+		logger.info("Found the following timing elements missing:"
+				+ missingTimingElementOIDList);
 
 		QualityDataModelWrapper wrapper = getMeasureXMLDAO()
 				.createTimingElementQDMs(missingTimingElementOIDList);
@@ -1428,7 +1431,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updateMeasureXML Start : Measure Id :: "
 				+ measureId);
 		MeasureXmlModel model = getMeasureXmlForMeasure(measureId);
-		
+
 		if (model != null) {
 			XmlProcessor processor = new XmlProcessor(model.getXml());
 			if (modifyDTO.isUsed()) {

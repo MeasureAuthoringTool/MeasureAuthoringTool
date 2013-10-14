@@ -32,24 +32,36 @@ public class OnetimeMeasureXMLUpdateTask {
 
 		for (MeasureXML measureXML : allMeasureXML_List) {
 
-			logger.info("Updating Measure XML Timing Elements for Measure Id:"
-					+ measureXML.getMeasure_id());
-
-			// if (!measureXML.getMeasure_id().equals(
-			// "8ae45366418fb6f901418fbcfc60000b")) {
-			// continue;
-			// }
-
-			String xml = measureXML.getMeasureXMLAsString();
-			XmlProcessor xmlProcessor = new XmlProcessor(xml);
-
-			getMeasureLibraryService().checkForTimingElementsAndAppend(
-					xmlProcessor);
-
-			measureXML.setMeasureXMLAsByteArray(xmlProcessor
-					.transform(xmlProcessor.getOriginalDoc()));
-			getMeasureXMLDAO().save(measureXML);
+			try {
+				addTimingElement(measureXML);
+			} catch (Exception e) {
+				logger.info("Exception encountered for Measure Id:"
+						+ measureXML.getMeasure_id() + "." + e.getMessage());
+			}
 		}
+	}
+
+	/**
+	 * @param measureXML
+	 */
+	private void addTimingElement(MeasureXML measureXML) throws Exception {
+		logger.info("Updating Measure XML Timing Elements for Measure Id:"
+				+ measureXML.getMeasure_id());
+
+		// if (!measureXML.getMeasure_id().equals(
+		// "8ae45366418fb6f901418fbcfc60000b")) {
+		// continue;
+		// }
+
+		String xml = measureXML.getMeasureXMLAsString();
+		XmlProcessor xmlProcessor = new XmlProcessor(xml);
+
+		getMeasureLibraryService()
+				.checkForTimingElementsAndAppend(xmlProcessor);
+
+		measureXML.setMeasureXMLAsByteArray(xmlProcessor.transform(xmlProcessor
+				.getOriginalDoc()));
+		getMeasureXMLDAO().save(measureXML);
 	}
 
 	private boolean doesJobNeedExecution() {

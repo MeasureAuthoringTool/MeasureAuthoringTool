@@ -61,8 +61,10 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	private ErrorMessageDisplay errorMessageUserDefinedPanel = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMessageUserDefinedPanel = new SuccessMessageDisplay();
 	private ListBoxMVP allDataTypeInput = new ListBoxMVP();
-    private String cautionMsgStr = "<div style=\"padding-left:5px;\">WARNING: Changing the 'DataType' for an applied QDM element will automatically delete invalid attributes  <br/> associated with this element in the Clause Workspace." +
-    								"</div>";       
+    private String cautionMsgStr = "<div style=\"padding-left:5px;\">"
+    						+ "WARNING: Changing the datatype for an applied QDM element "
+    						+ "will automatically delete invalid attributes "
+    						+ "<br/> associated with this element in the Clause Workspace. </div>";
     private TextBox oidInput = new TextBox();	
 	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
 	Button retrieveButton = new PrimaryButton("Search","primaryMetaDataButton");

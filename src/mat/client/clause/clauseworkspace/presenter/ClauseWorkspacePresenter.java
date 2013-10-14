@@ -98,7 +98,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 									flowPanel.add(clauseWorkspaceTabs);
 									
 									String newXML = document.getDocumentElement().toString();
-									System.out.println("newXML:" + newXML);
+									
 									populationClausePresenter.setOriginalXML(newXML);
 									measureObsClausePresenter.setOriginalXML(newXML);
 									stratificationClausePresenter.setOriginalXML(newXML);

@@ -1067,9 +1067,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In MeasureLibraryServiceImpl.getMeasureXmlForMeasure()");
 		MeasureXmlModel measureXmlModel = getService().getMeasureXmlForMeasure(
 				measureId);
-		if (measureXmlModel != null) {
-			logger.info("Measure XML: " + measureXmlModel.getXml());
-		} else {
+
+		if (measureXmlModel == null) {
 			logger.info("Measure XML is null");
 		}
 		return measureXmlModel;
@@ -1239,7 +1238,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
 			xml = new XmlProcessor(xmlModel.getXml())
 					.getXmlByTagName(MEASURE_DETAILS);
-			//logger.info("xml by tag name measureDetails" + xml);
+			// logger.info("xml by tag name measureDetails" + xml);
 		}
 		try {
 			if (xml == null) { // TODO: This Check should be replaced when the
@@ -1707,7 +1706,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
 			xml = new XmlProcessor(xmlModel.getXml())
 					.getXmlByTagName("measure");
-			logger.info("xml by tag name elementlookup" + xml);
+			// logger.info("xml by tag name elementlookup" + xml);
 		}
 		try {
 			if (xml == null) {// TODO: This Check should be replaced when the
@@ -1721,7 +1720,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				Unmarshaller unmar = new Unmarshaller(mapping);
 				unmar.setClass(QualityDataModelWrapper.class);
 				unmar.setWhitespacePreserve(true);
-				logger.info("unmarshalling xml..elementlookup " + xml);
+				// logger.info("unmarshalling xml..elementlookup " + xml);
 				details = (QualityDataModelWrapper) unmar
 						.unmarshal(new InputSource(new StringReader(xml)));
 				logger.info("unmarshalling complete..elementlookup"

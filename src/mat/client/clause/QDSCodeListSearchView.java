@@ -408,7 +408,6 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		boolean editable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		dataTypesListBox.setEnabled(editable);
 		specificOccurrence.setEnabled(editable);
-		applyToMeasureButton.setEnabled(editable);
 		
 		vPanel.add(buttonsPanel);
 		return vPanel;

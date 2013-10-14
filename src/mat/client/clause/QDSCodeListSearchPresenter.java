@@ -41,20 +41,35 @@ import com.google.gwt.user.client.ui.Widget;
 /**QDSCodeListSearchPresenter.java.**/
 public class QDSCodeListSearchPresenter implements MatPresenter {
 
-	/**Simple Panel Object.**/
+	/**
+	 * Simple Panel Object.
+	 **/
 	private SimplePanel panel = new SimplePanel();
-	/**SearchDisplay Object.**/
+	/**
+	 * SearchDisplay Object.
+	 **/
 	private SearchDisplay searchDisplay;
-	/**ArrayList of All appliedQDM's.**/
+	/**
+	 * ArrayList of All appliedQDM's.
+	 **/
 	private ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
-	/**Boolean isUserDefined.**/
+	/**
+	 * Boolean isUserDefined.
+	 **/
 	private boolean isUSerDefined = false;
-    /**VSACService object.**/
+    /**
+     * VSACService object.
+     **/
 	private VSACAPIServiceAsync vsacapiService = MatContext.get()
 			.getVsacapiServiceAsync();
-	  /**MeasureService object.**/
+	/**
+	 * MeasureService object.
+	 **/
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
-/** QDSCodeListSearchView Implements this SearchDisplay.**/
+	
+	/** 
+	 * QDSCodeListSearchView Implements this SearchDisplay.
+	 **/
 	public  interface SearchDisplay {
 		Widget getDataTypeWidget();
 		CustomCheckBox getSpecificOccurrenceInput();
@@ -188,46 +203,38 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 							.getUMLS_NOT_LOGGEDIN());
 			return;
 		} else {
-		// OID validation.
-		if (oid == null || oid.trim().isEmpty()) {
-			searchDisplay.getErrorMessageDisplay().setMessage(
-					MatContext.get().getMessageDelegate()
-							.getUMLS_OID_REQUIRED());
-			searchDisplay.getValueSetDetailsPanel().setVisible(false);
-			return;
-		}
+			// OID validation.
+			if (oid == null || oid.trim().isEmpty()) {
+				searchDisplay.getErrorMessageDisplay().setMessage(
+						MatContext.get().getMessageDelegate()
+								.getUMLS_OID_REQUIRED());
+				searchDisplay.getValueSetDetailsPanel().setVisible(false);
+				return;
+			}
 
-		showSearchingBusy(true);
-		vsacapiService.getValueSetByOIDAndVersion(oid,
-				new AsyncCallback<VsacApiResult>() {
-					@Override
-					public void onFailure(final Throwable caught) {
-						searchDisplay.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate()
-										.getVSAC_RETRIEVE_FAILED());
-						searchDisplay.getValueSetDetailsPanel().setVisible(
-								false);
-						showSearchingBusy(false);
-					}
+			showSearchingBusy(true);
+			vsacapiService.getValueSetByOIDAndVersion(oid, new AsyncCallback<VsacApiResult>() {
+				@Override
+				public void onFailure(final Throwable caught) {
+					searchDisplay.getErrorMessageDisplay().setMessage(
+							MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
+					searchDisplay.getValueSetDetailsPanel().setVisible(false);
+					showSearchingBusy(false);
+				}
 
-					@Override
-					public void onSuccess(final VsacApiResult result) {
-						if (result.isSuccess()) {
-							searchDisplay.buildValueSetDetailsWidget(result
-									.getVsacResponse());
-							searchDisplay.getValueSetDetailsPanel().setVisible(
-									true);
-						} else {
-							String message = convertMessage(result
-									.getFailureReason());
-							searchDisplay.getErrorMessageDisplay().setMessage(
-									message);
-							searchDisplay.getValueSetDetailsPanel().setVisible(
-									false);
-						}
-						showSearchingBusy(false);
+				@Override
+				public void onSuccess(final VsacApiResult result) {
+					if (result.isSuccess()) {
+						searchDisplay.buildValueSetDetailsWidget(result.getVsacResponse());
+						searchDisplay.getValueSetDetailsPanel().setVisible(true);
+					} else {
+						String message = convertMessage(result.getFailureReason());
+						searchDisplay.getErrorMessageDisplay().setMessage(message);
+						searchDisplay.getValueSetDetailsPanel().setVisible(false);
 					}
-				});
+					showSearchingBusy(false);
+				}
+			});
 		}
 	}
 /**
@@ -524,7 +531,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			}
 			searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
 					MatContext.get().getMessageDelegate()
-							.getVALUE_SET_NAME_DATATYPE_REQD());
+							.getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
 
 		}
 	}

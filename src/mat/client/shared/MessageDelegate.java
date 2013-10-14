@@ -959,11 +959,6 @@ public class MessageDelegate {
 		
 	}
 	
-	private final String VALUE_SET_NAME_DATATYPE_REQD = "Please enter Name and select a Datatype associated with it.";
-	public String getVALUE_SET_NAME_DATATYPE_REQD() {
-		return VALUE_SET_NAME_DATATYPE_REQD;
-	}
-	
 	private final String MEASURE_NOTES_REQUIRED_MESSAGE ="Text required in Title and Description fields.";
 	public String getMEASURE_NOTES_REQUIRED_MESSAGE() {
 		return MEASURE_NOTES_REQUIRED_MESSAGE;
@@ -1033,7 +1028,7 @@ public class MessageDelegate {
 	private final String MEASURE_PACKAGE_UMLS_NOT_LOGGED_IN = "Measure packaged successfully. "
 			+ "Value set data is not included in the measure package as you are not logged into UMLS.";
 
-	private final String VALIDATION_MSG_ELEMENT_WITHOUT_VSAC ="Please enter Value Set name and select a Datatype associated with it.";
+	private final String VALIDATION_MSG_ELEMENT_WITHOUT_VSAC ="Please enter name and select a datatype associated with it.";
 	public String getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC() {
 		return VALIDATION_MSG_ELEMENT_WITHOUT_VSAC;
 	}

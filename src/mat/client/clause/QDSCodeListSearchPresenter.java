@@ -449,7 +449,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			searchDisplay
 			.getErrorMessageDisplay()
 			.setMessage(
-					"Please select data type from drop down list.");
+					"Please select datatype from drop down list.");
 		}
 	}
 

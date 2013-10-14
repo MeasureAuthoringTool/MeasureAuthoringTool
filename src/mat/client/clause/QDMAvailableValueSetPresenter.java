@@ -302,7 +302,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			}
 		} else {
 			searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
-					"Please enter Value Set name and select a data type associated with it.");
+				MatContext.get().getMessageDelegate().getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
 		}
 	}
 

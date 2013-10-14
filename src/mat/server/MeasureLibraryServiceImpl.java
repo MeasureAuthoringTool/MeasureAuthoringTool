@@ -1239,7 +1239,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (xmlModel != null && StringUtils.isNotBlank(xmlModel.getXml())) {
 			xml = new XmlProcessor(xmlModel.getXml())
 					.getXmlByTagName(MEASURE_DETAILS);
-			logger.info("xml by tag name measureDetails" + xml);
+			//logger.info("xml by tag name measureDetails" + xml);
 		}
 		try {
 			if (xml == null) { // TODO: This Check should be replaced when the
@@ -1254,10 +1254,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				Unmarshaller unmar = new Unmarshaller(mapping);
 				unmar.setClass(ManageMeasureDetailModel.class);
 				unmar.setWhitespacePreserve(true);
-				logger.info("unmarshalling xml.. " + xml);
+				// logger.info("unmarshalling xml.. " + xml);
 				details = (ManageMeasureDetailModel) unmar
 						.unmarshal(new InputSource(new StringReader(xml)));
-				logger.info("unmarshalling complete.." + details.toString());
+				// logger.info("unmarshalling complete.." + details.toString());
 				convertAddlXmlElementsToModel(details, measure);
 			}
 

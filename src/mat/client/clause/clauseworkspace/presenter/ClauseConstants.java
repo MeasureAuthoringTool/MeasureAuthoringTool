@@ -83,6 +83,8 @@ public class ClauseConstants {
 	
 	public static final String UUID = "uuid";
 	
+	public static final String PACKAGE_CLAUSE_NODE ="packageClause";
+	
 	static {
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");

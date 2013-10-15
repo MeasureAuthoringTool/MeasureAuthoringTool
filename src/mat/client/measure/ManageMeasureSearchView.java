@@ -29,31 +29,35 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-
-public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDisplay {
+public class ManageMeasureSearchView implements
+ManageMeasurePresenter.SearchDisplay {
 
 	private FlowPanel mainPanel = new FlowPanel();
-	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
+	private Button searchButton = new PrimaryButton("Search",
+			"primaryGreyLeftButton");
 	private TextBox searchInput = new TextBox();
-	private FocusableWidget searchFocusHolder ;
+	private FocusableWidget searchFocusHolder;
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 
-	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView("Measures");
+	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView(
+			"Measures");
 	private Button createButton = new SecondaryButton("Create");
 	private ListBoxMVP options = new ListBoxMVP();
 	private MeasureSearchFilterPanel msfp = new MeasureSearchFilterPanel();
 	private Button bulkExportButton = new PrimaryButton("Export Selected");
 	final FormPanel form = new FormPanel();
-	
+
 	private ErrorMessageDisplay errorMessagesForBulkExport = new ErrorMessageDisplay();
 	private ErrorMessageDisplay errorMeasureDeletion = new ErrorMessageDisplay();
 	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
 	String currentUserRole = MatContext.get().getLoggedInUserRole();
-	
-	
+
 	public ManageMeasureSearchView() {
+		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
+		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel");
 		options.getElement().setId("options_ListBoxMVP");
 		createButton.getElement().setId("createButton_Button");
 		searchInput.getElement().setId("searchInput_TextBox");
@@ -64,34 +68,50 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
 		loadListBoxOptions();
-		mainPanel.add(LabelBuilder.buildLabel("Create", "Create Measure"));
-		mainPanel.add(options);
+
+		VerticalPanel createVP = new VerticalPanel();
+		createVP.getElement().setId("panel_createVP");
+		createVP.add(LabelBuilder.buildLabel("Create", "Create Measure"));
+		createVP.add(new SpacerWidget());
+		createVP.add(options);
 		options.setName("Create");
 		DOM.setElementAttribute(options.getElement(), "id", "Create Measure");
-		mainPanel.add(createButton);
+		createVP.setStylePrimaryName("createMeasurePanelMeasureLib");
+		HorizontalPanel createHP = new HorizontalPanel();
+		createHP.getElement().setId("panel_createHP");
+		createHP.add(createVP);
+		VerticalPanel createButtonVP = new VerticalPanel();
+		createButtonVP.getElement().setId("panel_createButtonVP");
 		createButton.setTitle("Create");
-		mainPanel.add(new SpacerWidget());
-		Label searchMeasureText =new Label("Search For a Measure");
-		mainPanel.add(searchMeasureText);
-		mainPanel.add(msfp.getPanel());
-		mainPanel.add(new SpacerWidget());
-		/*Widget searchText = LabelBuilder.buildLabel(searchInput, "");
-		searchFocusHolder = new FocusableWidget(searchText);
-		mainPanel.add(searchFocusHolder);*/
-		mainPanel.add(buildSearchWidget());
-		mainPanel.add(new SpacerWidget());
+		createButtonVP.add(createButton);
+		createButtonVP.setStylePrimaryName("searchWidgetMeasureLibrary");
+		createHP.add(createButtonVP);
+
+		Label searchMeasureText = new Label("Search For a Measure");
+		VerticalPanel measureFilterVP = new VerticalPanel();
+		measureFilterVP.getElement().setId("panel_measureFilterVP");
+		measureFilterVP.add(searchMeasureText);
+		measureFilterVP.add(new SpacerWidget());
+		measureFilterVP.add(msfp.getPanel());
+		mainHorizontalPanel.add(measureFilterVP);
+		mainHorizontalPanel.add(new SpacerWidget());
+		mainHorizontalPanel.add(buildSearchWidget());
+		mainHorizontalPanel.add(createHP);
+		mainPanel.add(mainHorizontalPanel);
+
 		mainPanel.add(successMeasureDeletion);
 		mainPanel.add(errorMeasureDeletion);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(view.asWidget());
-		mainPanel.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
-		mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,errorMessagesForBulkExport));
+		mainPanel
+		.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
+		mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,
+				errorMessagesForBulkExport));
 		MatContext.get().setManageMeasureSearchView(this);
 
 	}
-	
-	
-	private Widget buildSearchWidget(){
+
+	private Widget buildSearchWidget() {
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizontalPanel");
 		hp.getElement().setId("measureLibrary_searchWidgetHPanel");
@@ -102,10 +122,12 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		fp1.add(searchButton);
 		fp1.add(new SpacerWidget());
 		hp.add(fp1);
+		hp.setStylePrimaryName("searchWidgetMeasureLibrary");
 		return hp;
 	}
-	
-	private Widget buildBottomButtonWidget(PrimaryButton button, ErrorMessageDisplay errorMessageDisplay){
+
+	private Widget buildBottomButtonWidget(PrimaryButton button,
+			ErrorMessageDisplay errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.getElement().setId("measureLibrary_bottomPanel");
 		flowPanel.add(errorMessageDisplay);
@@ -115,23 +137,21 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 		form.getElement().setId("measureLibrary_bottomPanelForm");
 		return form;
 	}
-	
-	
+
 	@Override
 	public HasClickHandlers getSearchButton() {
 		return searchButton;
 	}
-	
+
 	@Override
 	public HasValue<String> getSearchString() {
 		return searchInput;
 	}
-	
+
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
-
 
 	@Override
 	public HasClickHandlers getCreateButton() {
@@ -142,144 +162,154 @@ public class ManageMeasureSearchView implements ManageMeasurePresenter.SearchDis
 	public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool() {
 		return view;
 	}
+
 	@Override
-	public void buildDataTable(SearchResults<ManageMeasureSearchModel.Result> results) {
+	public void buildDataTable(
+			SearchResults<ManageMeasureSearchModel.Result> results) {
 		view.buildDataTable(results);
 	}
-	
-	
-	@Override 
+
+	@Override
 	public int getPageSize() {
 		return view.getPageSize();
 	}
+
 	@Override
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return view;
 	}
+
 	@Override
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return view;
 	}
+
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
-	
+
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplayForBulkExport() {
 		return errorMessagesForBulkExport;
 	}
-	
+
 	@Override
 	public HasClickHandlers getBulkExportButton() {
 		return bulkExportButton;
 	}
-	
+
 	@Override
 	public FormPanel getForm() {
 		return form;
 	}
-	
-	private void loadListBoxOptions(){
+
+	private void loadListBoxOptions() {
 		options.addItem(ConstantMessages.DEFAULT_SELECT);
 		options.addItem(ConstantMessages.CREATE_NEW_MEASURE);
 		options.addItem(ConstantMessages.CREATE_NEW_VERSION);
 		options.addItem(ConstantMessages.CREATE_NEW_DRAFT);
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedOption()
+	/**
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedOption
+	 * 
 	 */
 	@Override
 	public String getSelectedOption() {
 		return options.getItemText(options.getSelectedIndex());
 	}
 
-	
 	@Override
 	public void clearSelections() {
 		options.setSelectedIndex(0);
 	}
 
-
 	@Override
 	public Grid508 getMeasureDataTable() {
 		return view.getDataTable();
 	}
-	
+
 	@Override
-	public Button getExportSelectedButton(){
+	public Button getExportSelectedButton() {
 		return bulkExportButton;
 	}
 
-
 	@Override
-	public void clearBulkExportCheckBoxes(Grid508 dataTable){
+	public void clearBulkExportCheckBoxes(Grid508 dataTable) {
 		int rows = dataTable.getRowCount();
 		int cols = dataTable.getColumnCount();
-		for(int i = 0; i < rows; i++){
-			for(int j = 0; j < cols; j++){
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
 				Widget w = dataTable.getWidget(i, j);
-				if(i==0 && j ==8){
-					if(w instanceof FlowPanel){
-						FlowPanel panel = (FlowPanel)w;
-						HorizontalPanel hp = (HorizontalPanel) panel.getWidget(0);
+				if (i == 0 && j == 8) {
+					if (w instanceof FlowPanel) {
+						FlowPanel panel = (FlowPanel) w;
+						HorizontalPanel hp = (HorizontalPanel) panel
+								.getWidget(0);
 						int childCount = hp.getWidgetCount();
-						for(int childNumber =0;childNumber<childCount;childNumber++){
+						for (int childNumber = 0; childNumber < childCount; childNumber++) {
 							Widget widget = hp.getWidget(childNumber);
-							if(widget instanceof Anchor){
-								widget.getElement().setAttribute("id", "clearlink");
-								widget.getElement().setAttribute("aria-role", "link");
-								widget.getElement().setAttribute("aria-labelledby", "LiveRegion");
-								widget.getElement().setAttribute("aria-live", "assertive");
-								widget.getElement().setAttribute("aria-atomic", "true");
-								widget.getElement().setAttribute("aria-relevant", "all");
-								widget.getElement().setAttribute("role", "alert");
-								widget.getElement().setAttribute("tabIndex", "1");
+							if (widget instanceof Anchor) {
+								widget.getElement().setAttribute("id",
+										"clearlink");
+								widget.getElement().setAttribute("aria-role",
+										"link");
+								widget.getElement().setAttribute(
+										"aria-labelledby", "LiveRegion");
+								widget.getElement().setAttribute("aria-live",
+										"assertive");
+								widget.getElement().setAttribute("aria-atomic",
+										"true");
+								widget.getElement().setAttribute(
+										"aria-relevant", "all");
+								widget.getElement().setAttribute("role",
+										"alert");
+								widget.getElement().setAttribute("tabIndex",
+										"1");
 							}
 						}
 					}
 				}
-				if(w instanceof HorizontalPanel){
-					HorizontalPanel hPanel = (HorizontalPanel)w;
+				if (w instanceof HorizontalPanel) {
+					HorizontalPanel hPanel = (HorizontalPanel) w;
 					int count = hPanel.getWidgetCount();
 					for (int k = 0; k < count; k++) {
 						Widget widget = hPanel.getWidget(k);
-						if(widget instanceof CustomCheckBox){
-							CustomCheckBox checkBox = ((CustomCheckBox)widget);
+						if (widget instanceof CustomCheckBox) {
+							CustomCheckBox checkBox = ((CustomCheckBox) widget);
 							checkBox.setValue(false);
 						}
 					}
 				}
 			}
 		}
-		
+
 	}
 
 	@Override
 	public MeasureSearchFilterPanel getMeasureSearchFilterPanel() {
 		return msfp;
 	}
-	
-	
+
 	public ErrorMessageDisplay getErrorMeasureDeletion() {
 		return errorMeasureDeletion;
 	}
-
 
 	public void setErrorMeasureDeletion(ErrorMessageDisplay errorMeasureDeletion) {
 		this.errorMeasureDeletion = errorMeasureDeletion;
 	}
 
-
 	public SuccessMessageDisplay getSuccessMeasureDeletion() {
 		return successMeasureDeletion;
 	}
-
 
 	public void setSuccessMeasureDeletion(
 			SuccessMessageDisplay successMeasureDeletion) {
 		this.successMeasureDeletion = successMeasureDeletion;
 	}
-	
+
 }

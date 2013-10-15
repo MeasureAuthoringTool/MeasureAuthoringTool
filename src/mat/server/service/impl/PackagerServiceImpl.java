@@ -107,25 +107,31 @@ public class PackagerServiceImpl implements PackagerService {
 			}else{
 				logger.info("Other Exception" + e);
 			}
-		} 
+		}
 		return stream.toString();
 	}
-	
+
 
 	/**
 	 * 1) Loads the MeasureXml from DB and converts into Xml Document Object
 	 * 2) XPATH retrieves all Clause nodes in Measure_Xml except for  Clause type "stratum"
-	 * 3) Creates a list of MeasurePackageClauseDetail object with the attributes from Clause Nodes, which is used to show on the Measure Packager Screen Clause Box on left
-	 * 4) XPATH finds the group nodes that are not matching with the the Clause nodes but comparing the uuids, the found group nodes are deleted from MeasureXml
-	 * 5) XPATH finds the remaining groups in MeasureXml, converted into list of MeasurePackageDetail object using the groups child node attributes. this list is used to display the top Groupings with seq number on Page 
-	 * 6) The MeasurePackageClauseDetail list and MeasurePackageDetail list is set into MeasurePackageOverview object and returned to Page,
-	 * 
+	 * 3) Creates a list of MeasurePackageClauseDetail object with the attributes from Clause Nodes,
+	 * which is used to show on the Measure Packager Screen Clause Box on left
+	 * 4) XPATH finds the group nodes that are not matching with the the Clause
+	 * nodes but comparing the uuids, the found group nodes are deleted from MeasureXml
+	 * 5) XPATH finds the remaining groups in MeasureXml, converted into list of
+	 * MeasurePackageDetail object using the groups child node attributes.
+	 * this list is used to display the top Groupings with seq number on Page
+	 * 6) The MeasurePackageClauseDetail list and MeasurePackageDetail list is
+	 * set into MeasurePackageOverview object and returned to Page,
+	 * @param measureId - {@link String}.
+	 * @return {@link MeasurePackageOverview}.
 	 */
 	@Override
 	public MeasurePackageOverview buildOverviewForMeasure(String measureId) {
-		
+
 		MeasurePackageOverview overview = new MeasurePackageOverview();
-		
+
 		List<MeasurePackageClauseDetail> clauses = new ArrayList<MeasurePackageClauseDetail>();
 		List<MeasurePackageDetail> pkgs = new ArrayList<MeasurePackageDetail>();
 		// Load Measure Xml
@@ -133,22 +139,28 @@ public class PackagerServiceImpl implements PackagerService {
 		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		boolean isGroupRemoved = false;
 		try {
-			NodeList measureClauses = processor.findNodeList(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_CLAUSE);// get all CLAUSE type nodes except for Stratum. 
-			if(null != measureClauses && measureClauses.getLength() > 0){
-				String xpathGrpUuid = XmlProcessor.XPATH_FIND_GROUP_CLAUSE; // find the GROUP/PACKAGECLAUSES that are not in the main CLAUSE nodes using the clause node UUID 
+			// get all CLAUSE type nodes except for Stratum.
+			NodeList measureClauses = processor.findNodeList(processor.getOriginalDoc(),
+					XmlProcessor.XPATH_MEASURE_CLAUSE);
+			if (null != measureClauses && measureClauses.getLength() > 0) {
+				// find the GROUP/PACKAGECLAUSES that are not in the main CLAUSE nodes using the clause node UUID
+				String xpathGrpUuid = XmlProcessor.XPATH_FIND_GROUP_CLAUSE;
 				for (int i = 0; i < measureClauses.getLength(); i++) {
 					NamedNodeMap namedNodeMap = measureClauses.item(i).getAttributes();
 					Node uuidNode = namedNodeMap.getNamedItem(ClauseConstants.UUID);
 					Node displayNameNode = namedNodeMap.getNamedItem(ClauseConstants.DISPLAY_NAME);
 					Node typeNode = namedNodeMap.getNamedItem(ClauseConstants.TYPE);
-					clauses.add(createMeasurePackageClauseDetail(uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue()));	
-					xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and"; //adding all Clause type uuid's
+					clauses.add(createMeasurePackageClauseDetail(
+						uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue()));
+					//adding all Clause type uuid's
+					xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and";
 				}
-				xpathGrpUuid = xpathGrpUuid.substring(0, xpathGrpUuid.lastIndexOf(" and")).concat("]]"); 
+				xpathGrpUuid = xpathGrpUuid.substring(0, xpathGrpUuid.lastIndexOf(" and")).concat("]]");
 				// delete groups which doesn't have the measure clauses.
-				 NodeList toRemoveGroups = processor.findNodeList(processor.getOriginalDoc(), xpathGrpUuid); 
-				// if the UUID's of Clause nodes does not match the UUID's of Group/Package Clause, remove the Grouping completely
-				 if(toRemoveGroups != null && toRemoveGroups.getLength() > 0){
+				 NodeList toRemoveGroups = processor.findNodeList(processor.getOriginalDoc(), xpathGrpUuid);
+				// if the UUID's of Clause nodes does not match the UUID's
+				 //of Group/Package Clause, remove the Grouping completely
+				 if (toRemoveGroups != null && toRemoveGroups.getLength() > 0) {
 					 Node measureGroupingNode = toRemoveGroups.item(0).getParentNode();
 					 for (int i = 0; i < toRemoveGroups.getLength(); i++) {
 						measureGroupingNode.removeChild(toRemoveGroups.item(i));
@@ -156,11 +168,12 @@ public class PackagerServiceImpl implements PackagerService {
 					}
 				 }
 			}
-			
-			NodeList measureGroups = processor.findNodeList(processor.getOriginalDoc(), XmlProcessor.XPATH_MEASURE_GROUPING_GROUP); // XPath to get all Group
-			Map<Integer, MeasurePackageDetail> seqDetailMap = 
+
+			NodeList measureGroups = processor.findNodeList(processor.getOriginalDoc(),
+					XmlProcessor.XPATH_MEASURE_GROUPING_GROUP); // XPath to get all Group
+			Map<Integer, MeasurePackageDetail> seqDetailMap =
 				new HashMap<Integer, MeasurePackageDetail>();
-			
+
 			// iterate through the measure groupings and get the sequence number
 			//attribute and insert in a map with sequence as key and MeasurePackageDetail as value
 			if (measureGroups != null && measureGroups.getLength() > 0) {
@@ -197,16 +210,16 @@ public class PackagerServiceImpl implements PackagerService {
 		} catch (XPathExpressionException e) {
 			logger.info("Xpath Expression is incorrect" + e);
 		}
-		
+
 		Collections.sort(pkgs);
 		overview.setClauses(clauses);
 		overview.setPackages(pkgs);
-		Map<String,ArrayList<QualityDataSetDTO>> finalMap = getIntersectionOfQDMAndSDE(measureId);	
+		Map<String, ArrayList<QualityDataSetDTO>> finalMap = getIntersectionOfQDMAndSDE(measureId);
 		overview.setQdmElements(finalMap.get("QDM"));
 		overview.setSuppDataElements(finalMap.get("SDE"));
-		if(isGroupRemoved){
+		if (isGroupRemoved) {
 			measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
-			measureXMLDAO.save(measureXML);	
+			measureXMLDAO.save(measureXML);
 		}
 		return overview;
 	}

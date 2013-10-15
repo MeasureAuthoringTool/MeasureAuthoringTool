@@ -161,26 +161,38 @@ public class PackagerServiceImpl implements PackagerService {
 			Map<Integer, MeasurePackageDetail> seqDetailMap = 
 				new HashMap<Integer, MeasurePackageDetail>();
 			
-			// iterate through the measure groupings and get the sequence number attribute and insert in a map with sequence as key and MeasurePackageDetail as value
-			if(measureGroups != null && measureGroups.getLength() > 0){
+			// iterate through the measure groupings and get the sequence number
+			//attribute and insert in a map with sequence as key and MeasurePackageDetail as value
+			if (measureGroups != null && measureGroups.getLength() > 0) {
 				for (int i = 0; i < measureGroups.getLength(); i++) {
 					NamedNodeMap groupAttrs = measureGroups.item(i).getAttributes();
 					Integer seq = Integer.parseInt(groupAttrs.getNamedItem("sequence").getNodeValue());
 					MeasurePackageDetail detail = seqDetailMap.get(seq);
-					if(detail == null) {
+					if (detail == null) {
 						detail = new MeasurePackageDetail();
 						detail.setSequence(Integer.toString(seq));
 						detail.setMeasureId(measureId);
 						seqDetailMap.put(seq, detail);
 						pkgs.add(detail);
 					}
-					NodeList pkgClauses = measureGroups.item(i).getChildNodes(); //Iterate through the PACKAGECLAUSE nodes and  convert it into MeasurePackageClauseDetail add it to the list in MeasurePackageDetail
+					NodeList pkgClauses = measureGroups.item(i).getChildNodes();
+					//Iterate through the PACKAGECLAUSE nodes and  convert it into
+					//MeasurePackageClauseDetail add it to the list in MeasurePackageDetail
 					for (int j = 0; j < pkgClauses.getLength(); j++) {
+						if (ClauseConstants.PACKAGE_CLAUSE_NODE.equals(
+								pkgClauses.item(j).getNodeName())) {
+							// group node can contain tab or new lines
+							// which can be counted as it's child.Those should be filtered.
+							continue;
+						}
 						NamedNodeMap pkgClauseMap = pkgClauses.item(j).getAttributes();
-						detail.getPackageClauses().add(createMeasurePackageClauseDetail(pkgClauseMap.getNamedItem(ClauseConstants.UUID).getNodeValue()
-								, pkgClauseMap.getNamedItem("name").getNodeValue(), pkgClauseMap.getNamedItem(ClauseConstants.TYPE).getNodeValue()));
+						detail.getPackageClauses().add(
+								createMeasurePackageClauseDetail(
+								pkgClauseMap.getNamedItem(ClauseConstants.UUID).getNodeValue()
+								, pkgClauseMap.getNamedItem("name").getNodeValue(),
+								pkgClauseMap.getNamedItem(ClauseConstants.TYPE).getNodeValue()));
 					}
-				}	
+				}
 			}
 		} catch (XPathExpressionException e) {
 			logger.info("Xpath Expression is incorrect" + e);

@@ -390,8 +390,21 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 **/
 	public void reloadAppliedQDMList() {
 		QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+		filterTimingQDMs(appliedQDMList);
 		appliedListModel.setAppliedQDMs(appliedQDMList);
 		qdsAppliedListPresenterDisplay.buildCellList(appliedListModel);
+	}
+	
+	private final void filterTimingQDMs(
+			ArrayList<QualityDataSetDTO> result) {
+		List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
+		for (QualityDataSetDTO qdsDTO : result) {
+			if ("Timing Element".equals(qdsDTO
+					.getDataType())) {
+				timingQDMs.add(qdsDTO);
+			}
+		}
+		result.removeAll(timingQDMs);
 	}
 
 	/**

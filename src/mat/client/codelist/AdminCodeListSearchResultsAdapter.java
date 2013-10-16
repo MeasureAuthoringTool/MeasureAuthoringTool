@@ -316,7 +316,7 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 			};
 			table.addColumn(codeSystem, SafeHtmlUtils.fromSafeConstant("<span title='Code System' tabindex=\"0\">" +"Code System"+ "</span>"));
 									
-			Cell<String> historyButton = new MatButtonCell("Click to view history");
+			Cell<String> historyButton = new MatButtonCell("Click to view history","customClockButton");
 			Column<CodeListSearchDTO, String> historyColumn = new Column<CodeListSearchDTO, String>(historyButton) {
 				@Override
 				public String getValue(CodeListSearchDTO object) {

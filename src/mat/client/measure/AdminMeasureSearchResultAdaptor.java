@@ -245,7 +245,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 			table.addColumn(eMeasureID, SafeHtmlUtils.fromSafeConstant("<span title='eMeasure Id' tabindex=\"0\">" +"eMeasure Id"+ "</span>"));
 			
 			
-			Cell<String> historyButton = new MatButtonCell("Click to view history");
+			Cell<String> historyButton = new MatButtonCell("Click to view history","customClockButton");
 			Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
 			  @Override
 			  public String getValue(ManageMeasureSearchModel.Result object) {

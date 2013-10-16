@@ -37,6 +37,7 @@ import com.google.gwt.text.shared.SimpleSafeHtmlRenderer;
 public class MatButtonCell extends AbstractSafeHtmlCell<String> {
 
    String ButtonTitle=""; 	
+   String cssClass="";
   /**
    * Construct a new ButtonCell that will use a {@link SimpleSafeHtmlRenderer}.
    */
@@ -44,10 +45,10 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
     this(SimpleSafeHtmlRenderer.getInstance());
   }
 
-  public MatButtonCell(String ButtonTitle) {
+  public MatButtonCell(String ButtonTitle , String cssString) {
 	    this(SimpleSafeHtmlRenderer.getInstance());
 	    this.ButtonTitle=ButtonTitle;
-	    
+	    this.cssClass = cssString;
 	  }
   
   /**
@@ -78,7 +79,7 @@ public class MatButtonCell extends AbstractSafeHtmlCell<String> {
   @Override
   public void render(Context context, SafeHtml data, SafeHtmlBuilder sb) {
 	  
-    sb.appendHtmlConstant("<button type=\"button\" title='" + ButtonTitle + "' tabindex=\"0\" class=\"customClockButton\">");
+    sb.appendHtmlConstant("<button type=\"button\" title='" + ButtonTitle + "' tabindex=\"0\" class=\" "+cssClass+"\">");
     if (data != null) {
       sb.append(data);
     }

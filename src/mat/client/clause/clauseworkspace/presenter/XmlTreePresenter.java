@@ -165,10 +165,16 @@ public class XmlTreePresenter {
 				boolean result = xmlTreeDisplay
 						.validateCellTreeNodes(xmlTreeDisplay.getXmlTree()
 								.getRootTreeNode());
-				xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
-						.getRootTreeNode());
-				xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
-						.getRootTreeNode());
+				if (!result) {
+					xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
+							.getRootTreeNode());
+					xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
+							.getRootTreeNode());
+				} else {
+					xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
+							.getRootTreeNode());
+					xmlTreeDisplay.getSuccessMessageDisplay().setMessage("Validated Clauseworkspace successfully.");
+				}
 			}
 		});
 

@@ -710,27 +710,34 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public boolean validateCellTreeNodes(TreeNode treeNode) {
 		
-		if(treeNode != null){
+		if (treeNode != null) {
 			openAllNodes(treeNode);
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				TreeNode subTree = null;
 				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
-				if(node.getNodeType() == 5){// this check is performed since IE was giving JavaScriptError after removing a node and closing all nodes.
+				if (node.getNodeType()
+						== CellTreeNode.TIMING_NODE) {
+				// this check is performed since IE was giving JavaScriptError after removing a node and closing all nodes.
 					subTree = treeNode.setChildOpen(i, true, true);
 					if (subTree != null && subTree.getChildCount() >= 2){
-						editNode(true, node,subTree);
-						validateCellTreeNodes(subTree);
-						
+						if (!node.getValidNode()) {
+							editNode(true, node, subTree);
+						}
 					} else {
-						editNode(false, node,subTree);
+
+						editNode(false, node, subTree);
+						if (isValid) {
+							isValid = false;
+						}
 					}
-					
+
 				}
-				subTree = treeNode.setChildOpen(i, ((CellTreeNode)treeNode.getChildValue(i)).isOpen(), ((CellTreeNode)treeNode.getChildValue(i)).isOpen());
-				if (subTree != null && subTree.getChildCount() > 0){
+				subTree = treeNode.setChildOpen(i, ((CellTreeNode)treeNode.getChildValue(i)).isOpen(),
+						((CellTreeNode) treeNode.getChildValue(i)).isOpen());
+				if (subTree != null && subTree.getChildCount() > 0) {
 					validateCellTreeNodes(subTree);
 				}
-			}  
+			}
 		}
 		return isValid;
 	}
@@ -760,23 +767,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			closeParentOpenNodes(cellTree.getRootTreeNode());
 		}		
 	}
-	
+
 	@Override
 	public void editNode(boolean isValideNodeValue, CellTreeNode node, TreeNode subTree) {
-		CellTreeNode cellTreeNode = node.cloneNode();
-		
-		if(cellTreeNode != null){
+		if (!isValideNodeValue) {
+			CellTreeNode cellTreeNode = node.cloneNode();
 			cellTreeNode.setValidNode(isValideNodeValue);
 			CellTreeNode parentNode = node.getParent();
-			
 			parentNode.removeChild(node);
 			parentNode.appendChild(cellTreeNode);
 			selectedNode = cellTreeNode;
 			closeSelectedOpenNodes(subTree);
-		}		
+		} else if (isValideNodeValue) {
+			node.setValidNode(isValideNodeValue);
+			selectedNode = node;
+			closeParentOpenNodes(cellTree.getRootTreeNode());
+		}
 	}
-
-	
-	
-
 }

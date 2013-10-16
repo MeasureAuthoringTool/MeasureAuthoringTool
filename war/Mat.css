@@ -1416,6 +1416,12 @@ padding: 2px;
 .imageMiddleAlign{
 	vertical-align:middle;	
 }
+
+.clauseWorkSpaceInvalidNode{
+	font-weight:bold;
+	color:red;
+}
+
 .gwt-DisclosurePanel .content {
     /* background-color: lightgray; */
     background-image: url("images/bg_box-blue.png");

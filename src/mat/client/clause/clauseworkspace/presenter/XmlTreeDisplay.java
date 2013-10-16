@@ -52,5 +52,16 @@ public interface XmlTreeDisplay {
 		public CellTreeNode addNode(String name, String label, String uuid, short nodeType);
 		
 		public void editNode(String name, String label, String uuid);
+
+		Button getValidateBtn();
+
+		boolean validateCellTreeNodes(TreeNode treeNode);
+
+		void closeNodes(TreeNode node);
+
+		void openAllNodes(TreeNode treeNode);
+
+		void editNode(boolean isValideNodeValue, CellTreeNode node,
+				TreeNode subTree);
 		
 	}

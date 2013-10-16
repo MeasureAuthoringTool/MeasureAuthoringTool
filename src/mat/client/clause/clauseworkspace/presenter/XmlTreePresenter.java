@@ -22,74 +22,92 @@ public class XmlTreePresenter {
 	
 	
 	interface TreeResources extends CellTree.Resources {
-	    @Source("mat/client/images/plus.png")
-	    ImageResource cellTreeClosedItem();
+		@Source("mat/client/images/plus.png")
+		ImageResource cellTreeClosedItem();
 
-	    @Source("mat/client/images/minus.png")
-	    ImageResource cellTreeOpenItem();
+		@Source("mat/client/images/minus.png")
+		ImageResource cellTreeOpenItem();
 
-	    @Source("mat/client/images/CwCellTree.css")
-	    CellTree.Style cellTreeStyle();
-	    
-	    /*@Source("mat/client/images/cms_gov_footer.png")
-	    @ImageOptions(repeatStyle = RepeatStyle.Horizontal, flipRtl = true)
-	    ImageResource cellTreeSelectedBackground();*/
-	} 
+		@Source("mat/client/images/CwCellTree.css")
+		CellTree.Style cellTreeStyle();
+
+		/*
+		 * @Source("mat/client/images/cms_gov_footer.png")
+		 * 
+		 * @ImageOptions(repeatStyle = RepeatStyle.Horizontal, flipRtl = true)
+		 * ImageResource cellTreeSelectedBackground();
+		 */
+	}
 
 	XmlTreeDisplay xmlTreeDisplay;
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	private static final String MEASURE = "measure";
 	private String rootNode;
-	
-	
+	SimplePanel panel;
+
 	/**
-	 * This member variable is used to pass the original measure XML to XmlTreePresenter class
-	 * which will then be used to construct the CellTree.
-	 * Tree construction is done using loadXmlTree(..) method.
-	 * Once the loadXmlTree(..) method is done executing, originalXML should not be used.
-	 * Please refrain from using it anywhere other that the loadXmlTree(...) method.
+	 * This member variable is used to pass the original measure XML to
+	 * XmlTreePresenter class which will then be used to construct the CellTree.
+	 * Tree construction is done using loadXmlTree(..) method. Once the
+	 * loadXmlTree(..) method is done executing, originalXML should not be used.
+	 * Please refrain from using it anywhere other that the loadXmlTree(...)
+	 * method.
 	 */
 	private String originalXML = "";
-	
-	public void loadXmlTree(final SimplePanel panel){
-		
-		if(originalXML.length() > 0){
+
+	public final void loadXmlTree(final SimplePanel panel) {
+
+		if (originalXML.length() > 0) {
+			this.panel = panel;
 			panel.clear();
 			String xml = originalXML;
-			XmlTreeView xmlTreeView = new XmlTreeView(XmlConversionlHelper.createCellTreeNode(xml, rootNode));//converts XML to TreeModel Object and sets to XmlTreeView
-//			CellTree cellTree = new CellTree(xmlTreeView, null);
-			CellTree.Resources resource = GWT.create(TreeResources.class); 
-			CellTree cellTree = new CellTree(xmlTreeView, null, resource);// CellTree Creation
-			cellTree.setDefaultNodeSize(500);// this will get rid of the show more link on the bottom of the Tree
+			XmlTreeView xmlTreeView = new XmlTreeView(
+					XmlConversionlHelper.createCellTreeNode(xml, rootNode));// converts
+																			// XML
+																			// to
+																			// TreeModel
+																			// Object
+																			// and
+																			// sets
+																			// to
+																			// XmlTreeView
+			// CellTree cellTree = new CellTree(xmlTreeView, null);
+			CellTree.Resources resource = GWT.create(TreeResources.class);
+			CellTree cellTree = new CellTree(xmlTreeView, null, resource);// CellTree
+																		  // Creation
+			cellTree.setDefaultNodeSize(500);// this will get rid of the show
+											 // more link on the bottom of the
+											 // Tree
 			xmlTreeView.createPageView(cellTree); // Page Layout
 			cellTree.setTabIndex(0);
 			// This is Open Population Node by default in Population Tab.
 			TreeNode treeNode = cellTree.getRootTreeNode();
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
-				if (((CellTreeNode)treeNode.getChildValue(i)).getNodeType() == CellTreeNode.MASTER_ROOT_NODE){
-					//((CellTreeNode)treeNode.getChildValue(i)).setOpen(true);
-					 treeNode.setChildOpen(i, true,true);
+				if (((CellTreeNode) treeNode.getChildValue(i)).getNodeType() == CellTreeNode.MASTER_ROOT_NODE) {
+					// ((CellTreeNode)treeNode.getChildValue(i)).setOpen(true);
+					treeNode.setChildOpen(i, true, true);
 				}
-			}  
+			}
 
 			xmlTreeDisplay = (XmlTreeDisplay) xmlTreeView;
-			xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService().checkForEditPermission());
+			xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
+					.checkForEditPermission());
 			panel.add(xmlTreeDisplay.asWidget());
 			invokeSaveHandler();
-		}else {
+			invokeValidateHandler();
+		} else {
 			Mat.hideLoadingMessage();
 		}
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("ClauseWorkspaceTree");
 		Mat.focusSkipLists("MeasureComposer");
-		
+
 	}
-	
-	private MeasureXmlModel createMeasureExportModel(String xml) {
+
+	private MeasureXmlModel createMeasureExportModel(final String xml) {
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
 		exportModal.setToReplaceNode(rootNode);
 		exportModal.setParentNode(MEASURE);
-		System.out.println("XML "+xml);
 		exportModal.setXml(xml);
 		return exportModal;
 	}
@@ -97,58 +115,93 @@ public class XmlTreePresenter {
 	private void invokeSaveHandler() {
 		xmlTreeDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(ClickEvent event) {
+			public void onClick(final ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
 				xmlTreeDisplay.setDirty(false);
-				MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null,rootNode.toUpperCase()+"_TAB_SAVE_EVENT", rootNode.toUpperCase().concat(" Saved."), ConstantMessages.DB_LOG);
-				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay.getXmlTree().getRootTreeNode().getChildValue(0);
-				final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper.createXmlFromTree(cellTreeNode));
-				
+				MatContext.get().recordTransactionEvent(
+						MatContext.get().getCurrentMeasureId(), null,
+						rootNode.toUpperCase() + "_TAB_SAVE_EVENT",
+						rootNode.toUpperCase().concat(" Saved."),
+						ConstantMessages.DB_LOG);
+				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay
+						.getXmlTree().getRootTreeNode().getChildValue(0);
+				final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper
+						.createXmlFromTree(cellTreeNode));
+
 				service.saveMeasureXml(measureXmlModel,
-					new AsyncCallback<Void>() {
-		
-						@Override
-						public void onFailure(Throwable caught) {
-						}
-		
-						@Override
-						public void onSuccess(Void result) {
-							xmlTreeDisplay.getSuccessMessageDisplay().setMessage("Changes are successfully saved.");
-							setOriginalXML(measureXmlModel.getXml());
-							System.out.println("originalXML is:"+getOriginalXML());
-						}
-				});
+						new AsyncCallback<Void>() {
+
+							@Override
+							public void onFailure(final Throwable caught) {
+							}
+
+							@Override
+							public void onSuccess(final Void result) {
+								xmlTreeDisplay
+										.getSuccessMessageDisplay()
+										.setMessage(
+												"Changes are successfully saved.");
+								setOriginalXML(measureXmlModel.getXml());
+								System.out.println("originalXML is:"
+										+ getOriginalXML());
+							}
+						});
 			}
 		});
+
+	}
+
+	final void invokeValidateHandler() {
+		xmlTreeDisplay.getValidateBtn().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				xmlTreeDisplay.clearMessages();
+
+				/*MatContext.get().recordTransactionEvent(
+						MatContext.get().getCurrentMeasureId(), null,
+						rootNode.toUpperCase() + "_TAB_SAVE_EVENT",
+						rootNode.toUpperCase().concat(" Saved."),
+						ConstantMessages.DB_LOG);*/
+				boolean result = xmlTreeDisplay
+						.validateCellTreeNodes(xmlTreeDisplay.getXmlTree()
+								.getRootTreeNode());
+				xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
+						.getRootTreeNode());
+				xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
+						.getRootTreeNode());
+			}
+		});
+
 	}
 
 	/**
 	 * @return the rootNode
 	 */
-	public String getRootNode() {
+	public final String getRootNode() {
 		return rootNode;
 	}
 
 	/**
-	 * @param rootNode the rootNode to set
+	 * @param rootNode
+	 *            the rootNode to set
 	 */
-	public void setRootNode(String rootNode) {
+	public final void setRootNode(final String rootNode) {
 		this.rootNode = rootNode;
 	}
 
-	public void setOriginalXML(String originalXML) {
+	public final void setOriginalXML(final String originalXML) {
 		this.originalXML = originalXML;
 	}
 
-	public String getOriginalXML() {
+	public final String getOriginalXML() {
 		return originalXML;
 	}
 
-	public XmlTreeDisplay getXmlTreeDisplay() {
+	public final XmlTreeDisplay getXmlTreeDisplay() {
 		return xmlTreeDisplay;
 	}
 
-	public void setXmlTreeDisplay(XmlTreeDisplay xmlTreeDisplay) {
+	public final void setXmlTreeDisplay(final XmlTreeDisplay xmlTreeDisplay) {
 		this.xmlTreeDisplay = xmlTreeDisplay;
 	}
 

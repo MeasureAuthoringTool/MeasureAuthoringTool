@@ -23,6 +23,10 @@ public interface CellTreeNode {
 	
 	short RELATIONSHIP_NODE = 8;
 	
+	void setValidNode(boolean isValid);
+	
+	boolean getValidNode();
+	
 	public CellTreeNode appendChild(CellTreeNode child);
 	
 	public CellTreeNode removeChild(CellTreeNode child);

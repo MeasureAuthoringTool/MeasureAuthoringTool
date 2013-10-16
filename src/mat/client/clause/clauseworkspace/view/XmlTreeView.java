@@ -6,6 +6,7 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 
@@ -26,6 +27,7 @@ import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
@@ -56,11 +58,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 
 	private FlowPanel  mainPanel = new FlowPanel();
 	
+	boolean isValid = true;
+	
 	FocusPanel focusPanel = new FocusPanel(mainPanel);
 
 	CellTree cellTree;
 
 	private Button saveBtn = new PrimaryButton("Save","primaryButton");
+	
+	private Button validateBtn = new SecondaryButton("Validate");
 
 	private Button buttonExpand = new Button();
 	
@@ -146,15 +152,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		SimplePanel bottomSavePanel = new SimplePanel();
 		bottomSavePanel.getElement().setId("bottomSavePanel_SimplePanel");
 		bottomSavePanel.setStyleName("div-first buttonPadding");
-		VerticalPanel savePanel = new VerticalPanel();
+		VerticalPanel vp = new VerticalPanel();
+		HorizontalPanel savePanel = new HorizontalPanel();
 		savePanel.getElement().setId("savePanel_VerticalPanel");
 		savePanel.add(new SpacerWidget());
 //		savePanel.add(errorMessageDisplay);
-		savePanel.add(successMessageDisplay);
+		vp.add(successMessageDisplay);
 //		saveBtn.setTitle("Ctrl+Alt+s");
 		savePanel.add(saveBtn);
-
-		bottomSavePanel.add(savePanel);
+		savePanel.add(validateBtn);
+		vp.add(savePanel);
+		bottomSavePanel.add(vp);
 
 		SimplePanel errPanel = new SimplePanel();
 		errPanel.getElement().setId("errPanel_SimplePanel");
@@ -229,7 +237,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param treeNode
 	 * @param fireEvents
 	 */
-	private void closeNodes(TreeNode node) {
+	@Override
+	public void closeNodes(TreeNode node) {
 		if(node != null){
 			for (int i = 0; i < node.getChildCount(); i++) {
 				TreeNode subTree  = null;
@@ -296,7 +305,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * Opens all nodes. this is called when '+' Expand All button is clicked on the screen
 	 * @param treeNode
 	 */
-	private void openAllNodes(TreeNode treeNode){		
+	@Override
+	public void openAllNodes(TreeNode treeNode){		
 		if(treeNode != null){
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				TreeNode subTree = treeNode.setChildOpen(i, true);	      			
@@ -336,8 +346,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	@Override
 	public <T> NodeInfo<?> getNodeInfo(T value) {
-		if (value == null) { 
-			NodeCell nodeCell = new NodeCell();    
+		if (value == null) {
+			NodeCell nodeCell = new NodeCell();
 			return new DefaultNodeInfo<CellTreeNode>(nodeDataProvider, nodeCell, selectionModel, null);
 		} else {
 			CellTreeNode myValue = (CellTreeNode) value;
@@ -392,11 +402,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	
 	private String getStyleClass(CellTreeNode cellTreeNode){
-		switch (cellTreeNode.getNodeType()) {
-		case CellTreeNode.ROOT_NODE:
-			return "cellTreeRootNode";
-		default:
-			break;
+
+		if (cellTreeNode.getValidNode() != false) {
+			switch (cellTreeNode.getNodeType()) {
+				case CellTreeNode.ROOT_NODE:
+					return "cellTreeRootNode";
+				default:
+					break;
+			}
+		} else {
+			return "clauseWorkSpaceInvalidNode";
 		}
 		return "";
 	}
@@ -453,6 +468,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public Button getSaveButton() {
 		return saveBtn;
+	}
+
+
+	/**
+	 * @return the validateBtn
+	 */
+	@Override
+	public Button getValidateBtn() {
+		return validateBtn;
 	}
 
 
@@ -683,8 +707,36 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}  
 		}
 	}
+	@Override
+	public boolean validateCellTreeNodes(TreeNode treeNode) {
+		
+		if(treeNode != null){
+			openAllNodes(treeNode);
+			for (int i = 0; i < treeNode.getChildCount(); i++) {
+				TreeNode subTree = null;
+				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
+				if(node.getNodeType() == 5){// this check is performed since IE was giving JavaScriptError after removing a node and closing all nodes.
+					subTree = treeNode.setChildOpen(i, true, true);
+					if (subTree != null && subTree.getChildCount() >= 2){
+						editNode(true, node,subTree);
+						validateCellTreeNodes(subTree);
+						
+					} else {
+						editNode(false, node,subTree);
+					}
+					
+				}
+				subTree = treeNode.setChildOpen(i, ((CellTreeNode)treeNode.getChildValue(i)).isOpen(), ((CellTreeNode)treeNode.getChildValue(i)).isOpen());
+				if (subTree != null && subTree.getChildCount() > 0){
+					validateCellTreeNodes(subTree);
+				}
+			}  
+		}
+		return isValid;
+	}
 
 
+	
 	@Override
 	public CellTreeNode addNode(String name, String label, String uuid,
 			short nodeType) {
@@ -706,6 +758,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			selectedNode.setLabel(label);
 			selectedNode.setUUID(uuid);
 			closeParentOpenNodes(cellTree.getRootTreeNode());
+		}		
+	}
+	
+	@Override
+	public void editNode(boolean isValideNodeValue, CellTreeNode node, TreeNode subTree) {
+		CellTreeNode cellTreeNode = node.cloneNode();
+		
+		if(cellTreeNode != null){
+			cellTreeNode.setValidNode(isValideNodeValue);
+			CellTreeNode parentNode = node.getParent();
+			
+			parentNode.removeChild(node);
+			parentNode.appendChild(cellTreeNode);
+			selectedNode = cellTreeNode;
+			closeSelectedOpenNodes(subTree);
 		}		
 	}
 

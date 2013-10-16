@@ -9,6 +9,7 @@ import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.WarningMessageDisplay;
 
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -75,6 +76,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
 
 	private SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
+	
+	private WarningMessageDisplay warningMessageDisplay = new WarningMessageDisplay();
 
 	private ListDataProvider<CellTreeNode> nodeDataProvider;
 
@@ -161,6 +164,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 //		saveBtn.setTitle("Ctrl+Alt+s");
 		savePanel.add(saveBtn);
 		savePanel.add(validateBtn);
+		vp.add(warningMessageDisplay);
 		vp.add(savePanel);
 		bottomSavePanel.add(vp);
 
@@ -783,5 +787,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			selectedNode = node;
 			closeParentOpenNodes(cellTree.getRootTreeNode());
 		}
+	}
+
+
+	@Override
+	public WarningMessageDisplay getWarningMessageDisplay() {
+		return warningMessageDisplay;
 	}
 }

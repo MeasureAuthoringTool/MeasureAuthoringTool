@@ -170,10 +170,13 @@ public class XmlTreePresenter {
 							.getRootTreeNode());
 					xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
 							.getRootTreeNode());
+					xmlTreeDisplay.getWarningMessageDisplay().
+					setMessage("Measure logic contains one or more Incomplete Timings."
+							+ " LHS and RHS are required for all Timings.");
 				} else {
 					xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
 							.getRootTreeNode());
-					xmlTreeDisplay.getSuccessMessageDisplay().setMessage("Validated Clauseworkspace successfully.");
+					xmlTreeDisplay.getSuccessMessageDisplay().setMessage("Measure logic validation successful.");
 				}
 			}
 		});

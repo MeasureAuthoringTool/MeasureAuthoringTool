@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.presenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SuccessMessageDisplay;
+import mat.client.shared.WarningMessageDisplay;
 
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
@@ -20,6 +21,8 @@ public interface XmlTreeDisplay {
 		public SuccessMessageDisplay getSuccessMessageDisplay();
 		
 		public ErrorMessageDisplay getErrorMessageDisplay();
+		
+		public WarningMessageDisplay getWarningMessageDisplay();
 		
 		public void clearMessages();
 		

@@ -941,10 +941,9 @@ public class MessageDelegate {
 		return MEASURE_DELETION_SUCCESS_MSG;
 	}
 	
-	private final String DUPLICATE_APPLIED_QDM="Selected QDM element is already available in the applied elements list";
+	private final String DUPLICATE_APPLIED_QDM="Value set with selected datatype already exists in applied elements.";
 	public String getDuplicateAppliedQDMMsg(){
-		return DUPLICATE_APPLIED_QDM;
-		
+		return DUPLICATE_APPLIED_QDM;		
 	}
 	
 	private final String SUCCESSFUL_MODIFY_APPLIED_QDM="Selected QDM element has been modified successfully";

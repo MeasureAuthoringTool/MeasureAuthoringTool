@@ -417,6 +417,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		populateAllDataType();
 		searchDisplay.resetVSACValueSetWidget();
 		searchDisplay.clearVSACValueSetMessages();
+		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
+		searchDisplay.getErrorMessageUserDefinedPanel().clear();
 	}
 
 	private void populateAllDataType(){

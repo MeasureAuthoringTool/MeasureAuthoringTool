@@ -371,87 +371,85 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		final String dataTypeText;
 		final boolean isSpecificOccurrence;
 
-		dataType = searchDisplay.getDataTypeValue(searchDisplay
-				.getDataTypesListBox());
+		dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
 
-		if (searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox())
-				.equalsIgnoreCase("--Select--")) {
+		if (searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox()).equalsIgnoreCase("--Select--")) {
 			dataTypeText = dataType;
 		} else {
-			dataTypeText = searchDisplay.getDataTypeText(searchDisplay
-					.getDataTypesListBox());
+			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
 		}
-		isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput()
-				.getValue();
-		String measureID = MatContext.get().getCurrentMeasureId();
-		if (!dataType.isEmpty() && !dataType.equals("")) {
-			MatContext
-					.get()
-					.getCodeListService()
-					.saveQDStoMeasure(measureID, dataType,
-							searchDisplay.getCurrentMatValueSet(),
-							isSpecificOccurrence, appliedQDMList,
-							new AsyncCallback<SaveUpdateCodeListResult>() {
-								@Override
-								public void onSuccess(
-										final SaveUpdateCodeListResult result) {
-									String message = "";
-									if (result.getXmlString() != null) {
-										saveMeasureXML(result.getXmlString());
-									}
-									// OnSuccess() un check the specific
-									// occurrence  and de select
-									// the radio options
-									searchDisplay.getSpecificOccurrenceInput()
-											.setValue(false);
-									if (result.isSuccess()) {
-										if (result.getOccurrenceMessage() != null
-												&& !result
-														.getOccurrenceMessage()
-														.equals("")) {
-											message = MatContext
-													.get()
-													.getMessageDelegate()
-													.getQDMOcurrenceSuccessMessage(
-															searchDisplay
-														.getCurrentMatValueSet()
-															.getDisplayName(),
-															dataTypeText,
-													result.getOccurrenceMessage());
-										} else {
-											message = MatContext
-													.get()
-													.getMessageDelegate()
-													.getQDMSuccessMessage(
-													searchDisplay
-													.getCurrentMatValueSet()
-													.getDisplayName(),
-															dataTypeText);
-										}
-										MatContext.get()
-										 .getEventBus().fireEvent(
-										new QDSElementCreatedEvent(
-												searchDisplay
-												.getCurrentMatValueSet()
-												.getDisplayName()));
-										searchDisplay
-												.getSuccessMessageDisplay()
-												.setMessage(message);
-									}
-								}
 
-								@Override
-								public void onFailure(final Throwable caught) {
-									if (appliedQDMList.size() > 0) {
-										appliedQDMList
-												.removeAll(appliedQDMList);
-									}
-									searchDisplay
-											.getErrorMessageDisplay()
-											.setMessage(
-											"problem while saving the QDM to Measure");
-								}
-							});
+		isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
+		String measureID = MatContext.get().getCurrentMeasureId();
+
+		if (!dataType.isEmpty() && !dataType.equals("")) {
+			MatContext.get().getCodeListService().saveQDStoMeasure(measureID, dataType,
+						searchDisplay.getCurrentMatValueSet(), isSpecificOccurrence, appliedQDMList,
+						new AsyncCallback<SaveUpdateCodeListResult>() {
+			@Override
+			public void onSuccess(final SaveUpdateCodeListResult result) {
+				String message = "";
+				if (result.getXmlString() != null) {
+					saveMeasureXML(result.getXmlString());
+				}
+				// OnSuccess() un check the specific
+				// occurrence  and de select
+				// the radio options
+				searchDisplay.getSpecificOccurrenceInput().setValue(false);
+				if (result.isSuccess()) {
+					if (result.getOccurrenceMessage() != null
+							&& !result
+									.getOccurrenceMessage()
+									.equals("")) {
+						message = MatContext
+								.get()
+								.getMessageDelegate()
+								.getQDMOcurrenceSuccessMessage(
+										searchDisplay
+									.getCurrentMatValueSet()
+										.getDisplayName(),
+										dataTypeText,
+								result.getOccurrenceMessage());
+					} else {
+						message = MatContext
+								.get()
+								.getMessageDelegate()
+								.getQDMSuccessMessage(
+								searchDisplay
+								.getCurrentMatValueSet()
+								.getDisplayName(),
+										dataTypeText);
+					}
+					MatContext.get()
+					 .getEventBus().fireEvent(
+					new QDSElementCreatedEvent(
+							searchDisplay
+							.getCurrentMatValueSet()
+							.getDisplayName()));
+					searchDisplay
+							.getSuccessMessageDisplay()
+							.setMessage(message);
+				} else {
+					if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
+						searchDisplay.getErrorMessageDisplay().setMessage(
+								MatContext.get().getMessageDelegate()
+								.getDuplicateAppliedQDMMsg());
+					}
+				}
+			}
+	
+			@Override
+			public void onFailure(final Throwable caught) {
+				if (appliedQDMList.size() > 0) {
+					appliedQDMList
+							.removeAll(appliedQDMList);
+				}
+				searchDisplay
+						.getErrorMessageDisplay()
+						.setMessage(
+						"problem while saving the QDM to Measure");
+			}
+		});
 		} else {
 			searchDisplay
 			.getErrorMessageDisplay()
@@ -468,63 +466,58 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
 		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
 				&& !searchDisplay.getDataTypeText(
-						searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(
-						MatContext.PLEASE_SELECT)) {
-			MatContext
-					.get()
-					.getCodeListService()
-					.saveUserDefinedQDStoMeasure(
-							MatContext.get().getCurrentMeasureId(),
-							searchDisplay.getDataTypeText(searchDisplay
-									.getAllDataTypeInput()),
-							searchDisplay.getUserDefinedInput().getText(),
-							appliedQDMList,
-							new AsyncCallback<SaveUpdateCodeListResult>() {
-								@Override
-								public void onFailure(final Throwable caught) {
-									if (appliedQDMList.size() > 0) {
-										appliedQDMList
-												.removeAll(appliedQDMList);
-									}
-									Window.alert(MatContext.get()
-											.getMessageDelegate()
-											.getGenericErrorMessage());
-								}
-
-								@SuppressWarnings("static-access")
-								@Override
-								public void onSuccess(
-										final SaveUpdateCodeListResult result) {
-									if (result.getXmlString() != null) {
-										saveMeasureXML(result.getXmlString());
-										String message = MatContext
+						searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+			
+			String dataType = searchDisplay.getDataTypeValue(searchDisplay.getAllDataTypeInput());
+			
+			MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(
+					MatContext.get().getCurrentMeasureId(), dataType, searchDisplay.getUserDefinedInput().getText(),
+					appliedQDMList, new AsyncCallback<SaveUpdateCodeListResult>() {
+						@Override
+						public void onFailure(final Throwable caught) {
+							if (appliedQDMList.size() > 0) {
+								appliedQDMList
+										.removeAll(appliedQDMList);
+							}
+							Window.alert(MatContext.get()
+									.getMessageDelegate()
+									.getGenericErrorMessage());
+						}
+			
+						@SuppressWarnings("static-access")
+						@Override
+						public void onSuccess(
+								final SaveUpdateCodeListResult result) {
+							if (result.getXmlString() != null) {
+								saveMeasureXML(result.getXmlString());
+								String message = MatContext
+										.get()
+										.getMessageDelegate()
+										.getQDMSuccessMessage(
+												searchDisplay
+												.getUserDefinedInput()
+												.getText(),
+												searchDisplay
+											.getDataTypeText(searchDisplay
+												.getAllDataTypeInput()));
+								searchDisplay
+										.getSuccessMessageUserDefinedPanel()
+										.setMessage(message);
+								searchDisplay.getUserDefinedInput()
+										.setText("");
+								searchDisplay.getAllDataTypeInput()
+										.setSelectedIndex(0);
+							} else if (result.getFailureReason() == result.ALREADY_EXISTS) {
+								searchDisplay
+										.getErrorMessageUserDefinedPanel()
+										.setMessage(
+												MatContext
 												.get()
 												.getMessageDelegate()
-												.getQDMSuccessMessage(
-														searchDisplay
-														.getUserDefinedInput()
-														.getText(),
-														searchDisplay
-													.getDataTypeText(searchDisplay
-														.getAllDataTypeInput()));
-										searchDisplay
-												.getSuccessMessageUserDefinedPanel()
-												.setMessage(message);
-										searchDisplay.getUserDefinedInput()
-												.setText("");
-										searchDisplay.getAllDataTypeInput()
-												.setSelectedIndex(0);
-									} else if (result.getFailureReason() == result.ALREADY_EXISTS) {
-										searchDisplay
-												.getErrorMessageUserDefinedPanel()
-												.setMessage(
-														MatContext
-														.get()
-														.getMessageDelegate()
-													.getDuplicateAppliedQDMMsg());
-									}
-								}
-							});
+											.getDuplicateAppliedQDMMsg());
+							}
+						}
+					});
 		} else {
 			if (appliedQDMList.size() > 0) {
 				appliedQDMList.removeAll(appliedQDMList);

@@ -949,6 +949,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 				result.setSuccess(true);
 				result.setXmlString(qdmXMLString);
+			} else {
+				result.setSuccess(false);
+				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
 			}
 		}
 		return result;
@@ -1012,31 +1015,30 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 	}
 
-	private boolean checkForDuplicates(final String dataType,
-			final CodeListSearchDTO codeList,
+	private boolean checkForDuplicates(final String dataType, final CodeListSearchDTO codeList,
 			final ArrayList<QualityDataSetDTO> appliedQDM) {
 		logger.info("checkForDuplicates Method Call Start.");
 		boolean isQDSExist = false;
 		DataType dt = null;
 		if (dataType != null) {
-			if (dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-					|| dataType
-							.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)) {
+			/*if (dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
+					|| dataType.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)) {
 				dt = dataTypeDAO.findByDataTypeName(dataType);
-			} else {
+			} else {*/
 				dt = dataTypeDAO.find(dataType);
-			}
+			//}
 		}
 		List<QualityDataSetDTO> existingQDSList = appliedQDM;
 		for (QualityDataSetDTO dataSetDTO : existingQDSList) {
-			if (dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())
-					&& (dataSetDTO.getId().equalsIgnoreCase(codeList.getId()))
-					&& dataSetDTO.getOccurrenceText() == null) {
-				// if the same dataType exists and the occurrenceText is also
-				// null
-				// then there is a any occurrence exists for that dataType.
-				isQDSExist = true;
-				break;
+			if(dataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+				if (dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())
+						&& (dataSetDTO.getCodeListName().equalsIgnoreCase(codeList.getName()))
+						&& dataSetDTO.getOccurrenceText() == null) {
+					// if the same dataType exists and the occurrenceText is also null
+					// then there is a any occurrence exists for that dataType.
+					isQDSExist = true;
+					break;
+				}
 			}
 		}
 		logger.info("checkForDuplicates Method Call End.Check resulted in :"
@@ -1169,7 +1171,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
 		List<QualityDataSetDTO> existingQDSList = appliedQDM;
-		DataType dt = dataTypeDAO.findByDataTypeName(dataType);
+		//DataType dt = dataTypeDAO.findByDataTypeName(dataType);
+		DataType dt = dataTypeDAO.find(dataType);
 		boolean isQDSExist = false;
 		for (QualityDataSetDTO dataSetDTO : existingQDSList) {
 			if (dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())

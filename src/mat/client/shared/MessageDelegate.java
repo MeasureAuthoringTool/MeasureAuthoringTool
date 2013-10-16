@@ -252,6 +252,11 @@ public class MessageDelegate {
 	public String getLoginFailedAlreadyLoggedInMessage(){
 		return LOGIN_FAILED_USER_ALREADY_LOGGED_IN;
 	}
+	
+	private final String LOGIN_FAILED_TEMP_PASSWORD_EXPIRED = "Unable to login. Your temporary password has expired. Please contact HelpDesk to renew your password.";
+	public String getLoginFailedTempPasswordExpiredMessage(){
+		return LOGIN_FAILED_TEMP_PASSWORD_EXPIRED;
+	}
 
 	//TODO is this such a smart policy?
 	//This makes denial of service attacks on accounts too easy.

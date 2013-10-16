@@ -15,15 +15,11 @@
     <bean id="unlockUserTask" class="mat.server.service.impl.UnlockUserTask">
         <constructor-arg ref="taskExecutor" />
     </bean>
-    <bean id="expireTempPasswordTask" class="mat.server.service.impl.ExpireTempPasswordTask">
-        <constructor-arg ref="taskExecutor" />
-    </bean>
+   
     <task:scheduler id="scheduler" pool-size="1"/>
 	<task:scheduled-tasks scheduler="scheduler">
-	<!--  every hour -->
+		<!--  every hour -->
         <task:scheduled ref="unlockUserTask" method="unlockUsers" fixed-delay="216000000"/>
-    <!--  every four hours -->
-        <task:scheduled ref="expireTempPasswordTask" method="expireTempPassword" fixed-delay="86400000"/>
     </task:scheduled-tasks>
 
 

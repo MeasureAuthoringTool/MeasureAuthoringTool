@@ -126,6 +126,7 @@ public  class ConstantMessages {
 		
 		//PASSWORD
 		public static final String PASSWORD = "password";
+		public static final String PASSWORD_EXPIRE_DATE = "passwordExpireDate";
 		public static final String WEB_LINK = "link";
 		
 		public static final String LOGINID = "loginId";

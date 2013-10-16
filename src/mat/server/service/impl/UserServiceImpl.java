@@ -3,8 +3,11 @@ package mat.server.service.impl;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
@@ -89,6 +92,7 @@ public class UserServiceImpl implements UserService {
 	private String userGuideUrl;
 	
 	 public String generateRandomPassword() {
+		logger.info("In generateRandomPassword()....."); 
 		String password = null;
 		Random r = new Random(System.currentTimeMillis());
 		StringBuilder pwdBuilder = new StringBuilder();
@@ -114,6 +118,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	public void requestResetLockedPassword(String userid) {
+		logger.info("In requestResetLockedPassword(String userid).....");
 		User user = userDAO.find(userid);
 		String newPassword = generateRandomPassword();
 		if(user.getPassword() == null) {
@@ -126,14 +131,19 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	public void notifyUserOfTemporaryPassword(User user, String newPassword) {
+		logger.info("In notifyUserOfTemporaryPassword(User user, String newPassword).....");
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
 		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
 		msg.setTo(user.getEmailAddress());
-
+		
+		String expiryDateString = getFormattedExpiryDate(new Date(),5);
+		
 		//US 440. Re-factored to use template based framework
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
+		paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_TEMP_PASSWORD, paramsMap);
+		System.out.println(text);
 		msg.setText(text);
 		logger.info("Sending email to " + user.getEmailAddress());
 		try {
@@ -144,8 +154,19 @@ public class UserServiceImpl implements UserService {
 		}
 		
 	}
+	
+	private String getFormattedExpiryDate(Date startDate,int willExpireIn){
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(startDate);
+		calendar.roll(Calendar.DAY_OF_MONTH, willExpireIn);
+		
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEEE, MMMMM d, yyyy");
+		String returnDateString  = simpleDateFormat.format(calendar.getTime());
+		return returnDateString;
+	}
 	 
 	public void setUserPassword(User user, String clearTextPassword, boolean isTemporary) {
+		logger.info("In setUserPassword(User user, String clearTextPassword, boolean isTemporary)........");
 		String salt = UUID.randomUUID().toString();
 		user.getPassword().setSalt(salt);
 		String password = getPasswordHash(salt, clearTextPassword);
@@ -161,6 +182,7 @@ public class UserServiceImpl implements UserService {
 	
 	public ForgottenPasswordResult requestForgottenPassword(String loginId, 
 			String securityQuestion, String securityAnswer, int invalidUserCounter) {
+		logger.info("In requestForgottenPassword(String loginId, String securityQuestion, String securityAnswer, int invalidUserCounter).......");
 		ForgottenPasswordResult result = new ForgottenPasswordResult();
 		result.setEmailSent(false);
 		//logger.info(" requestForgottenPassword   Login Id ====" + loginId);
@@ -233,6 +255,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	private void sendAccountLockedMail(String email) {
+		logger.info("In sendAccountLockedMail(String email).......");
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
 		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
 		msg.setTo(email);
@@ -312,7 +335,8 @@ public class UserServiceImpl implements UserService {
 	}
 		
 		
-	private void sendResetPassword(String email, String newPassword) {		
+	private void sendResetPassword(String email, String newPassword) {
+		logger.info("In sendResetPassword(String email, String newPassword)........");
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
 		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
 		msg.setTo(email);
@@ -371,6 +395,7 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public void saveNew(User user) throws UserIDNotUnique {
+		logger.info("In saveNew(User user)..........");
 		if(userDAO.userExists(user.getEmailAddress())) {
 			throw new UserIDNotUnique();
 		}
@@ -403,6 +428,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	public void notifyUserOfNewAccount(User user) {
+		logger.info("In notifyUserOfNewAccount(User user)..........");
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
 		msg.setSubject(ServerConstants.NEW_ACCESS_SUBJECT);
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();

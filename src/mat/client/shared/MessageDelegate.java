@@ -931,7 +931,7 @@ public class MessageDelegate {
 		return NO_QDM_SELECTED;
 	}
 	
-	private final String RELATIONALOP_TWO_CHILD_MESSAGE = "Package Failed. Measure logic contains one or more Incomplete Timings. LHS and RHS are required for all Timings.";
+	private final String RELATIONALOP_TWO_CHILD_MESSAGE = "Package Failed. Measure logic is incomplete.LHS and RHS are required for Timings and Relationships.";
 	public String getRelationalOpTwoChildMessage() {
 		return RELATIONALOP_TWO_CHILD_MESSAGE;
 	}
@@ -1046,8 +1046,8 @@ public class MessageDelegate {
 
 	
 
-	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR="Measure logic contains one or more incomplete Timings/Relationships."
-			+ " LHS and RHS are required for all Timings/Relationships.";
+	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR = "Measure logic is incomplete."
+							+"LHS and RHS are required for Timings and Relationships.";
 	
 	private final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
 	/**

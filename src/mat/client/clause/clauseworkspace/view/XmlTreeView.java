@@ -774,19 +774,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	@Override
 	public void editNode(boolean isValideNodeValue, CellTreeNode node, TreeNode subTree) {
-		if (!isValideNodeValue) {
-			CellTreeNode cellTreeNode = node.cloneNode();
-			cellTreeNode.setValidNode(isValideNodeValue);
-			CellTreeNode parentNode = node.getParent();
-			parentNode.removeChild(node);
-			parentNode.appendChild(cellTreeNode);
-			selectedNode = cellTreeNode;
-			closeSelectedOpenNodes(subTree);
-		} else if (isValideNodeValue) {
-			node.setValidNode(isValideNodeValue);
-			selectedNode = node;
-			closeParentOpenNodes(cellTree.getRootTreeNode());
-		}
+		node.setValidNode(isValideNodeValue);
+		selectedNode = node;
+		closeParentOpenNodes(cellTree.getRootTreeNode());
 	}
 
 

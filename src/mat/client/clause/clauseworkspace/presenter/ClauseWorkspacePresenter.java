@@ -125,7 +125,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	}
 
 	private void clearPanelAndShowError(String auditMessage){
-		simplepanel.clear();
+		//simplepanel.clear();
 		clauseWorkspaceTabs = new MatTabLayoutPanel(true);
 		clauseWorkspaceTabs.setId("clauseWorkspce");
 		clauseWorkspaceTabs.addPresenter(populationClausePresenter, "Populations");

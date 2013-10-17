@@ -143,7 +143,9 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		searchDisplay.getApplyToMeasureButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-				MatContext.get().getMeasureService().getAppliedQDMFromMeasureXml(MatContext.get().getCurrentMeasureId(),
+				currentMatValueSet = searchDisplay.getCurrentMatValueSet();				
+				modifyQDM(false);
+				/*MatContext.get().getMeasureService().getAppliedQDMFromMeasureXml(MatContext.get().getCurrentMeasureId(),
 						true, new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
 
 					@Override
@@ -159,8 +161,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 						modifyQDM(false);
 					}
 
-				});
-
+				});*/
 			}
 		});
 
@@ -393,6 +394,13 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		filterTimingQDMs(appliedQDMList);
 		appliedListModel.setAppliedQDMs(appliedQDMList);
 		qdsAppliedListPresenterDisplay.buildCellList(appliedListModel);
+		
+		/*
+		 * Setting appliedQDMList in qdsAppliedListPresenterDisplay. 
+		 * Whenever this modify popup is opened this.appliedQDMList is set with qdsAppliedListPresenterDisplay.appliedQDMList in this presenter.
+		 * So, qdsAppliedListPresenterDisplay.appliedQDMList is updated here.
+		 */
+		qdsAppliedListPresenterDisplay.setAppliedQDMList(appliedQDMList);
 	}
 	
 	private final void filterTimingQDMs(

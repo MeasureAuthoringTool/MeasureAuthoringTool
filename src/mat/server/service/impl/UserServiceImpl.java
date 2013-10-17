@@ -340,12 +340,13 @@ public class UserServiceImpl implements UserService {
 		SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
 		msg.setSubject(ServerConstants.TEMP_PWD_SUBJECT);
 		msg.setTo(email);
+		String expiryDateString = getFormattedExpiryDate(new Date(), 5);
 		//US 440. Re-factored to use template based framework
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
+		paramsMap.put(ConstantMessages.PASSWORD_EXPIRE_DATE, expiryDateString);
 		paramsMap.put(ConstantMessages.PASSWORD, newPassword);
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_RESET_PASSWORD, paramsMap);
 		msg.setText(text);
-		System.out.println("newPassword ==============="+newPassword);
 		logger.info("Sending email to " + email);
 		try {
 			this.mailSender.send(msg);
@@ -727,8 +728,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public String getSecurityQuestion(String userid) {
-		return userDAO.getRandomSecurityQuestion(userid);
+	public String getSecurityQuestion(String userLoginID) {
+		return userDAO.getRandomSecurityQuestion(userLoginID);
 	}
 	@Override
 	public List<User> getAllNonAdminActiveUsers(){

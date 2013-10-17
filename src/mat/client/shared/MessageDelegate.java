@@ -1036,7 +1036,26 @@ public class MessageDelegate {
 	public String getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC() {
 		return VALIDATION_MSG_ELEMENT_WITHOUT_VSAC;
 	}
+
+	/**
+	 * @return the cLAUSE_WORK_SPACE_VALIDATION_ERROR
+	 */
+	public String getCLAUSE_WORK_SPACE_VALIDATION_ERROR() {
+		return CLAUSE_WORK_SPACE_VALIDATION_ERROR;
+	}
+
 	
+
+	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR="Measure logic contains one or more incomplete Timings/Relationships."
+			+ " LHS and RHS are required for all Timings/Relationships.";
+	
+	private final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
+	/**
+	 * @return the cLAUSE_WORK_SPACE_VALIDATION_SUCCESS
+	 */
+	public String getCLAUSE_WORK_SPACE_VALIDATION_SUCCESS() {
+		return CLAUSE_WORK_SPACE_VALIDATION_SUCCESS;
+	}
 }
 
 

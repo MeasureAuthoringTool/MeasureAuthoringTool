@@ -1014,11 +1014,47 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return isQDSExist;
 
 	}
+	
+	private boolean checkForDuplicates(final String dataType, final MatValueSet matValueSet, final CodeListSearchDTO codeList,
+			final ArrayList<QualityDataSetDTO> appliedQDM, boolean isVSACValueSet){
+		logger.info("refactored checkForDuplicates Method Call Start.");
+		boolean isQDSExist = false;
+		DataType dt = dataTypeDAO.find(dataType);
+		String qdmCompareNameOrID = "";
+		if(isVSACValueSet){
+			qdmCompareNameOrID = matValueSet.getID();
+		}else{
+			qdmCompareNameOrID = codeList.getName();
+		}
+		List<QualityDataSetDTO> existingQDSList = appliedQDM;
+		for (QualityDataSetDTO dataSetDTO : existingQDSList) {
+			String codeListNameOrOID = "";
+			if(isVSACValueSet){
+				codeListNameOrOID = dataSetDTO.getOid();
+			}else{
+				codeListNameOrOID = dataSetDTO.getCodeListName();
+			}
+			if (dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())
+					&& (codeListNameOrOID.equalsIgnoreCase(qdmCompareNameOrID))
+					&& dataSetDTO.getOccurrenceText() == null) {
+				// if the same dataType exists and the occurrenceText is also
+				// null
+				// then there is a any occurrence exists for that dataType.
+				isQDSExist = true;
+				break;
+			}
+		}
+		
+		logger.info("refactored checkForDuplicates Method Call End.Check resulted in :"
+				+ isQDSExist);
+		return isQDSExist;
+	}
 
 	private boolean checkForDuplicates(final String dataType, final CodeListSearchDTO codeList,
 			final ArrayList<QualityDataSetDTO> appliedQDM) {
 		logger.info("checkForDuplicates Method Call Start.");
 		boolean isQDSExist = false;
+		
 		DataType dt = null;
 		if (dataType != null) {
 			/*if (dataType.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)

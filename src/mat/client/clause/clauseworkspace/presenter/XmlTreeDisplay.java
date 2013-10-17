@@ -66,5 +66,7 @@ public interface XmlTreeDisplay {
 
 		void editNode(boolean isValideNodeValue, CellTreeNode node,
 				TreeNode subTree);
+
+		void setValid(boolean isValid);
 		
 	}

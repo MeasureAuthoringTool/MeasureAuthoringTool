@@ -55,7 +55,7 @@ public class XmlTreePresenter {
 	 */
 	private String originalXML = "";
 
-	public final void loadXmlTree(final SimplePanel panel) {
+	public final void loadXmlTree(SimplePanel panel) {
 
 		if (originalXML.length() > 0) {
 			this.panel = panel;
@@ -88,10 +88,10 @@ public class XmlTreePresenter {
 					treeNode.setChildOpen(i, true, true);
 				}
 			}
-
 			xmlTreeDisplay = (XmlTreeDisplay) xmlTreeView;
 			xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
 					.checkForEditPermission());
+			panel.clear();
 			panel.add(xmlTreeDisplay.asWidget());
 			invokeSaveHandler();
 			invokeValidateHandler();
@@ -137,6 +137,7 @@ public class XmlTreePresenter {
 
 							@Override
 							public void onSuccess(final Void result) {
+								xmlTreeDisplay.getWarningMessageDisplay().clear();
 								xmlTreeDisplay
 										.getSuccessMessageDisplay()
 										.setMessage(
@@ -156,12 +157,7 @@ public class XmlTreePresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
-
-				/*MatContext.get().recordTransactionEvent(
-						MatContext.get().getCurrentMeasureId(), null,
-						rootNode.toUpperCase() + "_TAB_SAVE_EVENT",
-						rootNode.toUpperCase().concat(" Saved."),
-						ConstantMessages.DB_LOG);*/
+				xmlTreeDisplay.setValid(true);
 				boolean result = xmlTreeDisplay
 						.validateCellTreeNodes(xmlTreeDisplay.getXmlTree()
 								.getRootTreeNode());
@@ -171,12 +167,12 @@ public class XmlTreePresenter {
 					xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
 							.getRootTreeNode());
 					xmlTreeDisplay.getWarningMessageDisplay().
-					setMessage("Measure logic contains one or more Incomplete Timings."
-							+ " LHS and RHS are required for all Timings.");
+					setMessage(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_VALIDATION_ERROR());
 				} else {
 					xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
 							.getRootTreeNode());
-					xmlTreeDisplay.getSuccessMessageDisplay().setMessage("Measure logic validation successful.");
+					xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
+							MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_VALIDATION_SUCCESS());
 				}
 			}
 		});

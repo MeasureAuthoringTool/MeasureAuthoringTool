@@ -61,6 +61,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	boolean isValid = true;
 	
+	
 	FocusPanel focusPanel = new FocusPanel(mainPanel);
 
 	CellTree cellTree;
@@ -506,7 +507,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void clearMessages() {
 		successMessageDisplay.clear();
 		errorMessageDisplay.clear();
-
+		warningMessageDisplay.clear();
 	}
 
 
@@ -708,22 +709,22 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if (subTree != null && subTree.getChildCount() > 0){
 					expandSelected(subTree);
 				}
-			}  
+			}
 		}
 	}
 	@Override
 	public boolean validateCellTreeNodes(TreeNode treeNode) {
-		
+
 		if (treeNode != null) {
 			openAllNodes(treeNode);
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				TreeNode subTree = null;
 				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
 				if (node.getNodeType()
-						== CellTreeNode.TIMING_NODE) {
+						== CellTreeNode.TIMING_NODE || node.getNodeType() == CellTreeNode.RELATIONSHIP_NODE) {
 				// this check is performed since IE was giving JavaScriptError after removing a node and closing all nodes.
 					subTree = treeNode.setChildOpen(i, true, true);
-					if (subTree != null && subTree.getChildCount() >= 2){
+					if (subTree != null && subTree.getChildCount() >= 2) {
 						if (!node.getValidNode()) {
 							editNode(true, node, subTree);
 						}
@@ -736,7 +737,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					}
 
 				}
-				subTree = treeNode.setChildOpen(i, ((CellTreeNode)treeNode.getChildValue(i)).isOpen(),
+				subTree = treeNode.setChildOpen(i, ((CellTreeNode) treeNode.getChildValue(i)).isOpen(),
 						((CellTreeNode) treeNode.getChildValue(i)).isOpen());
 				if (subTree != null && subTree.getChildCount() > 0) {
 					validateCellTreeNodes(subTree);
@@ -746,8 +747,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return isValid;
 	}
 
-
-	
 	@Override
 	public CellTreeNode addNode(String name, String label, String uuid,
 			short nodeType) {
@@ -783,5 +782,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public WarningMessageDisplay getWarningMessageDisplay() {
 		return warningMessageDisplay;
+	}
+	
+	/**
+	 * @return the isValid
+	 */
+	public boolean isValid() {
+		return isValid;
+	}
+
+
+	/**
+	 * @param isValid the isValid to set
+	 */
+	@Override
+	public void setValid(boolean isValid) {
+		this.isValid = isValid;
 	}
 }

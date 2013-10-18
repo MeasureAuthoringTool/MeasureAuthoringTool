@@ -1043,25 +1043,38 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		if (matValueSet != null) {
-			QualityDataSetDTO qds = qualityDataSetDTO;
-			if (dataType != null) {
-				DataType dt = dataTypeDAO.find(dataType);
-				qds.setDataType(dt.getDescription());
-			}
-			qds.setOid(matValueSet.getID());
-			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-			qds.setCodeListName(matValueSet.getDisplayName());
-			if (matValueSet.isGrouping()) {
-				qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
-			} else {
-				qds.setTaxonomy(matValueSet.getCodeSystemName());
-			}
-			qds.setVersion("1.0");
+			/*
+			 * Previously, there was qds:QualityDataSetDTO object code here.
+			 * That code was updating qds/qualityDataSetDTO with the modified values.
+			 * That "qds" was initialized with "qualityDataSetDTO" object,
+			 * and "qualityDataSetDTO" is an instance of the qds(which is selected to modify) in the "appliedQDM" list.
+			 * So, when values are updated in "qds", it is updated in the "appliedQDM" list too as "qds" is the same
+			 * instance of the QualityDataSetDTO in "appliedQDM" list.
+			 * Because of this, "checkForDuplicates" method is always returning true as the modifying values
+			 * are already updated in "appliedQDM" list.
+			 *
+			 * For this reason, "qds" QualityDataSetDTO object code is moved into the below if and else blocks.
+			 */
+
 			if (isSpecificOccurrence) {
+				QualityDataSetDTO qds = qualityDataSetDTO;
+				if (dataType != null) {
+					DataType dt = dataTypeDAO.find(dataType);
+					qds.setDataType(dt.getDescription());
+				}
+				qds.setOid(matValueSet.getID());
+				qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+				qds.setCodeListName(matValueSet.getDisplayName());
+				if (matValueSet.isGrouping()) {
+					qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
+				} else {
+					qds.setTaxonomy(matValueSet.getCodeSystemName());
+				}
+				qds.setVersion("1.0");
+				
 				int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
 						matValueSet, appliedQDM);
-				if (occurrenceCount < ASCII_START) { // Alphabet ASCII Integer
-													 // Values.
+				if (occurrenceCount < ASCII_START) { // Alphabet ASCII Integer Values.
 					char occTxt = (char) occurrenceCount;
 					qds.setOccurrenceText("Occurrence" + " " + occTxt);
 					wrapper = modifyAppliedElementList(qds, appliedQDM);
@@ -1072,9 +1085,24 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					result.setDataSetDTO(qds);
 				}
 
-			} else { // Treat as regular QDM
-				qds.setOccurrenceText("");
-				if (!checkForDuplicates(dataType, matValueSet, null, appliedQDM, true)) {
+			} else { // Treat as regular QDM				
+				if (!checkForDuplicates(dataType, matValueSet, null, appliedQDM, true)) {					
+					QualityDataSetDTO qds = qualityDataSetDTO;
+					if (dataType != null) {
+						DataType dt = dataTypeDAO.find(dataType);
+						qds.setDataType(dt.getDescription());
+					}
+					qds.setOid(matValueSet.getID());
+					qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+					qds.setCodeListName(matValueSet.getDisplayName());
+					if (matValueSet.isGrouping()) {
+						qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
+					} else {
+						qds.setTaxonomy(matValueSet.getCodeSystemName());
+					}
+					qds.setVersion("1.0");
+					qds.setOccurrenceText("");
+					
 					wrapper = modifyAppliedElementList(qds, appliedQDM);
 					result.setOccurrenceMessage(qds.getOccurrenceText());
 					result.setSuccess(true);

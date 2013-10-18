@@ -42,7 +42,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	
 	public Button removeButton = new Button("Remove");
 	public Button modify = new Button("Modify");
-	public Button updateVsacButton = new Button("Update value sets");
+	public Button updateVsacButton = new Button("Update from VSAC");
 	public QualityDataSetDTO  lastSelectedObject;
 	private ArrayList<QualityDataSetDTO> appliedQDMList;
 	

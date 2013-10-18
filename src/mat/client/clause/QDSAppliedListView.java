@@ -105,7 +105,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		modify.setTitle("Modify");
 		modify.setStyleName("rightAlignSecondaryButton");
 		updateVsacButton.setStylePrimaryName("rightAlignSecondaryButton");
-		updateVsacButton.setTitle("By selecting Update value set , the most recent version will be retrived from VSAC");
+		updateVsacButton.setTitle("Retrieve the most recent versions of applied value sets from VSAC.");
 		buttonLayout.add(removeButton);
 		buttonLayout.add(modify);
 		buttonLayout.add(updateVsacButton);

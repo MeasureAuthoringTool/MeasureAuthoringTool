@@ -28,6 +28,10 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.logical.shared.CloseEvent;
+import com.google.gwt.event.logical.shared.CloseHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosureEvent;
@@ -47,7 +51,12 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	QualityDataSetDTO  modifyValueSetDTO;
 	mat.client.clause.QDSAppliedListPresenter.SearchDisplay qdsAppliedListPresenterDisplay;
 	VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
-
+	/**
+	 * When retrieving value set from VSAC, "Loading Please Wait..." message is displayed.
+	 * busyLoading is set true when retrieving value set from VSAC otherwise it is set false.
+	 */
+	private boolean busyLoading;
+	
 	public static interface SearchDisplay {
 		CustomCheckBox getSpecificOccurrenceInput();
 		String getDataTypeValue(ListBoxMVP inputListBox);
@@ -85,37 +94,57 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		this.qdsAppliedListPresenterDisplay = qdsAppliedListPresenterDisplay;
 		this.appliedQDMList = (ArrayList<QualityDataSetDTO>) qdsAppliedListPresenterDisplay.getAllAppliedQDMList();
 
-		searchDisplay.getDisclosurePanel().addEventHandler(new DisclosureHandler()
-	    {
+		//Element without VSAC value set - OPEN Handler
+		searchDisplay.getDisclosurePanel().addOpenHandler(new OpenHandler<DisclosurePanel>() {
+			@Override
+			public void onOpen(OpenEvent<DisclosurePanel> event) {
+				if (isBusyLoading()) {
+					event.getTarget().setOpen(false);
+				} else {
+					//populateAllDataType();
+		        	displaySearch();
+		            searchDisplay.getDisclosurePanelVSAC().setOpen(false);
+				}
+			}
+		});
 
-	        public void onClose(final DisclosureEvent event) {
-	        	searchDisplay.getUserDefinedInput().setText("");
-	        	searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
-	        	displaySearch();
-	        	searchDisplay.getDisclosurePanelVSAC().setOpen(true);
-	        }
+		//Element without VSAC value set - CLOSE Handler
+		searchDisplay.getDisclosurePanel().addCloseHandler(new CloseHandler<DisclosurePanel>() {
+			@Override
+			public void onClose(CloseEvent<DisclosurePanel> event) {
+				if (!isBusyLoading()) {
+					searchDisplay.getUserDefinedInput().setText("");
+		        	searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
+		        	displaySearch();
+		        	searchDisplay.getDisclosurePanelVSAC().setOpen(true);
+				}
+			}
+		});
 
-	        public void onOpen(final DisclosureEvent event) {
-	        	populateAllDataType();
-	        	displaySearch();
-	            searchDisplay.getDisclosurePanelVSAC().setOpen(false);
-	        }
-	    });
+		//Element with VSAC value set - OPEN Handler.
+		searchDisplay.getDisclosurePanelVSAC().addOpenHandler(new OpenHandler<DisclosurePanel>() {
+			@Override
+			public void onOpen(OpenEvent<DisclosurePanel> event) {
+				if (!isBusyLoading()) {
+					displaySearch();
+		            searchDisplay.getDisclosurePanel().setOpen(false);
+				}
+			}
+		});
 
-		searchDisplay.getDisclosurePanelVSAC().addEventHandler(new DisclosureHandler()
-	    {
-
-	        public void onClose(final DisclosureEvent event) {
-	        	searchDisplay.getUserDefinedInput().setText("");
-	        	displaySearch();
-	        	searchDisplay.getDisclosurePanel().setOpen(true);
-	        }
-
-	        public void onOpen(final DisclosureEvent event) {
-	        	displaySearch();
-	            searchDisplay.getDisclosurePanel().setOpen(false);
-	        }
-	    });
+		//Element with VSAC value set - CLOSE Handler.
+		searchDisplay.getDisclosurePanelVSAC().addCloseHandler(new CloseHandler<DisclosurePanel>() {
+			@Override
+			public void onClose(CloseEvent<DisclosurePanel> event) {
+				if (isBusyLoading()) {
+					event.getTarget().setOpen(true);
+				} else {
+					searchDisplay.getUserDefinedInput().setText("");
+		        	displaySearch();
+		        	searchDisplay.getDisclosurePanel().setOpen(true);
+				}
+			}
+		});
 
 		searchDisplay.getUserDefinedInput().addClickHandler(new ClickHandler() {
 			@Override
@@ -175,6 +204,15 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		});
 	}
 
+	/**
+	 * When retrieving value set from VSAC, "Loading Please Wait..." message is displayed. 
+	 * @return true if "Loading Please Wait..." message is displaying(In other words, when retrieving value set from VSAC)
+	 * 	    else returns false;
+	 */
+	public boolean isBusyLoading() {
+		return busyLoading;
+	}
+	
 	private void searchValueSetInVsac(String oid, String version) {
 		if (!MatContext.get().isUMLSLoggedIn()) { //UMLS Login Validation
 			searchDisplay.getErrorMessageDisplay().setMessage(
@@ -425,6 +463,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		} else {
 			Mat.hideLoadingMessage();
 		}
+		busyLoading = busy;
 		searchDisplay.getRetrieveButton().setEnabled(!busy);
 		searchDisplay.getOIDInput().setEnabled(!busy);
 		searchDisplay.getVersionInput().setEnabled(!busy);

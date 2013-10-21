@@ -132,4 +132,10 @@ public interface ImageResources extends ClientBundle {
 	
 	@Source("images/cross-button.png")
 	ImageResource close();
+	
+	@Source("images/arrow_filter.png")
+	ImageResource arrow_filter();
+	
+	@Source("images/search_zoom.png")
+	ImageResource search_zoom();
 }

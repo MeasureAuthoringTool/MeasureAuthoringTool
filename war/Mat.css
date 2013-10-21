@@ -1367,6 +1367,36 @@ padding: 2px;
 	padding-left:50px;
 }
 
+.searchWidget{
+   /*  border: 1px solid #0964A2;
+    -moz-box-sizing: border-box; */
+    background-image: url("images/bg_box-blue.png");
+    background-repeat:repeat-x;
+    vertical-align: middle;
+    text-align: left;
+    padding-right: 10px;
+    padding-top: 15px;
+    font-size:.8em;
+    margin-left:350px; 
+    margin-right:auto;
+}
+
+.filterDisclosurePanel{
+    margin-left:345px; 
+    margin-right:auto;
+    margin-top:0.5px;
+}
+
+.invisibleButtonTextMeasureLibrary{
+   margin: 0;
+ /*  padding: 3px 5px; */
+  text-decoration: none;
+  font-size: 0;
+  border: 0px outset #ccc;
+  background-color: rgba(0, 0, 0, 0);
+  background:transparent;
+}
+
 .readOnlyButton {
     /* background: url("images/hborder.png") repeat-x scroll 0 -27px transparent; */
     border: 0px outset #CCCCCC;
@@ -1391,6 +1421,8 @@ padding: 2px;
   background-color: rgba(0, 0, 0, 0);
   background:transparent;
 }
+
+
 
 
 .invisibleButtonText:active {

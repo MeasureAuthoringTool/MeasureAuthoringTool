@@ -164,6 +164,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		vp.add(successMessageDisplay);
 //		saveBtn.setTitle("Ctrl+Alt+s");
 		savePanel.add(saveBtn);
+		validateBtn.setTitle("Validate");
 		savePanel.add(validateBtn);
 		vp.add(warningMessageDisplay);
 		vp.add(savePanel);

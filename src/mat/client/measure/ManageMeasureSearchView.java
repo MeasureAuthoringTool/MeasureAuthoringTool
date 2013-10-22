@@ -142,12 +142,12 @@ ManageMeasurePresenter.SearchDisplay {
 
 	@Override
 	public HasClickHandlers getSearchButton() {
-		return measureSearchFilterWidget.getButton();
+		return measureSearchFilterWidget.getSearchButton();
 	}
 
 	@Override
 	public HasValue<String> getSearchString() {
-		return measureSearchFilterWidget.getTextBox();
+		return measureSearchFilterWidget.getSearchInput();
 	}
 
 	@Override

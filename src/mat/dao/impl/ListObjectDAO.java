@@ -676,9 +676,9 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 		else if (filter == ValueSetSearchFilterPanel.ALL_VALUE_SETS)
 			mainCriteria = buildCriteriaForAllValueSets(searchText,
 					defaultCodeList);
-		else if (filter == ValueSetSearchFilterPanel.APPLIED_VALUE_SETS)
+		/*else if (filter == ValueSetSearchFilterPanel.APPLIED_VALUE_SETS)
 			mainCriteria = buildCriteriaForAppliedByUser(searchText,
-					loggedInUserid, defaultCodeList);
+					loggedInUserid, defaultCodeList);*/
 
 		if (mainCriteria == null) {
 			return null;

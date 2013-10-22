@@ -231,8 +231,8 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 			mainCriteria = buildCriteriaForUserCodeLists(searchText, userid, defaultCodeList);
 		else if(filter == ValueSetSearchFilterPanel.ALL_VALUE_SETS)
 			mainCriteria = buildCriteriaForAllValueSets(searchText, defaultCodeList);
-		else if(filter == ValueSetSearchFilterPanel.APPLIED_VALUE_SETS)
-			mainCriteria = buildCriteriaForAppliedByUser(searchText, userid, defaultCodeList);
+		/*else if(filter == ValueSetSearchFilterPanel.APPLIED_VALUE_SETS)
+			mainCriteria = buildCriteriaForAppliedByUser(searchText, userid, defaultCodeList);*/
 		
 		return mainCriteria;
 	}

@@ -72,8 +72,13 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
 	this(DOM.createInputCheck(),title,isLabelRequired);
 	setText(label,true);
   }
-
   
+  public CustomCheckBox(String title, String label, int labelOrder) {
+	  	this(DOM.createInputCheck(),title,labelOrder);
+		setText(label,true);
+ }
+
+
   protected CustomCheckBox(Element elem,String title, boolean isLabelRequired2) {
     //super(DOM.createSpan());
 	  super(DOM.createDiv());
@@ -99,6 +104,36 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
     // to call setTabIndex again, once inputElem has been created.
     setTabIndex(0);
   }
+  
+  protected CustomCheckBox(Element elem,String title,int labelOrder) {
+	    //super(DOM.createSpan());
+		  super(DOM.createDiv());
+ 
+	    inputElem = InputElement.as(elem);
+	    labelElem = Document.get().createLabelElement();
+	   if (labelOrder > 2) {
+		   getElement().appendChild(inputElem);
+		   getElement().appendChild(labelElem);
+	   } else {
+		 
+		   getElement().appendChild(labelElem);
+		   getElement().appendChild(inputElem);
+	   }
+
+	    String uid = DOM.createUniqueId();
+	    /**508 fix - Id attribute should be removed instead title should be added.**/
+	  //  inputElem.setPropertyString("id", uid);
+	    inputElem.setPropertyString("title", title);
+	    inputElem.setPropertyString("style", "margin-top:2px;");
+	    labelElem.setHtmlFor(uid);
+
+	    // Accessibility: setting tab index to be 0 by default, ensuring element
+	    // appears in tab sequence. FocusWidget's setElement method already
+	    // calls setTabIndex, which is overridden below. However, at the time
+	    // that this call is made, inputElem has not been created. So, we have
+	    // to call setTabIndex again, once inputElem has been created.
+	    setTabIndex(0);
+	  }
 
   public HandlerRegistration addValueChangeHandler(
       ValueChangeHandler<Boolean> handler) {

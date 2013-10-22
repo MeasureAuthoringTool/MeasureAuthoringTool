@@ -23,9 +23,9 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 	private TextBox searchInput = new TextBox();
 		private PrimaryButton searchButton;
 	CustomCheckBox myMeasuresCheckBox = new CustomCheckBox("My Measures",
-			"My Measures", false);
+			"My Measures", 1);
 	CustomCheckBox allMeasuresCheckBox = new CustomCheckBox("All Measures",
-			"All Measures", false);
+			"All Measures", 1);
 
 	DisclosurePanel searchFilterDisclosurePanel = new DisclosurePanel();
 	public static final int MY_MEASURES = 0;
@@ -93,11 +93,19 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		searchFilterDisclosurePanel.setOpen(false);
 		VerticalPanel contentWidget = new VerticalPanel();
 		HorizontalPanel myMeasurePanel = new HorizontalPanel();
-		myMeasurePanel.add(LabelBuilder.buildLabel("My Measures", "My Measures"));
+		/*Label myMeasuresText = (Label) LabelBuilder.buildLabel("My Measures", "My Measures");
+		myMeasuresText.setStylePrimaryName("searchWidgetLabel");
+		myMeasuresCheckBox.setStylePrimaryName("searchWidgetCheckBox");
+		myMeasurePanel.add(myMeasuresText);*/
+		myMeasuresCheckBox.setStylePrimaryName("searchWidgetLabel");
 		myMeasurePanel.add(myMeasuresCheckBox);
 
 		HorizontalPanel allMeasurePanel = new HorizontalPanel();
-		allMeasurePanel.add(LabelBuilder.buildLabel("All Measures", "All Measures"));
+		/*Label allMeasuresText = (Label) LabelBuilder.buildLabel("All Measures", "All Measures");
+		allMeasuresText.setStylePrimaryName("searchWidgetLabel");
+		allMeasuresCheckBox.setStylePrimaryName("searchWidgetCheckBox");
+		allMeasurePanel.add(allMeasuresText);*/
+		allMeasuresCheckBox.setStylePrimaryName("searchWidgetLabel");
 		allMeasurePanel.add(allMeasuresCheckBox);
 		contentWidget.add(myMeasurePanel);
 		contentWidget.add(new SpacerWidget());
@@ -197,5 +205,12 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 	 */
 	public void setSelectedFilter(int selectedFilter) {
 		this.selectedFilter = selectedFilter;
+	}
+
+	/**
+	 * @return the searchFilterDisclosurePanel
+	 */
+	public DisclosurePanel getSearchFilterDisclosurePanel() {
+		return searchFilterDisclosurePanel;
 	}
 }

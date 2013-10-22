@@ -25,6 +25,7 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SuccessMessageDisplay;
@@ -118,11 +119,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 		public void clearBulkExportCheckBoxes(Grid508 dataTable);
 
-		public MeasureSearchFilterPanel getMeasureSearchFilterPanel();
+		/*public MeasureSearchFilterPanel getMeasureSearchFilterPanel();*/
 
 		public SuccessMessageDisplay getSuccessMeasureDeletion();
 
 		public ErrorMessageDisplay getErrorMeasureDeletion();
+
+		int getSelectedFilter();
+		
+		MeasureSearchFilterWidget getMeasureSearchFilterWidget();
 	}
 
 	public static interface AdminSearchDisplay {
@@ -615,14 +620,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 						isMeasureDeleted = false;
 						searchDisplay.getErrorMeasureDeletion().clear();
 						searchDisplay.getSuccessMeasureDeletion().clear();
-						int filter = searchDisplay
+						/*int filter = searchDisplay
 								.getMeasureSearchFilterPanel()
-								.getSelectedIndex();
+								.getSelectedIndex();*/
+						int filter = searchDisplay
+								.getSelectedFilter();
 						if (ClientConstants.ADMINISTRATOR
 								.equalsIgnoreCase(MatContext.get()
 										.getLoggedInUserRole())) {
-							filter = searchDisplay
-									.getMeasureSearchFilterPanel().ALL_MEASURES;
+							 filter = searchDisplay
+										.getMeasureSearchFilterWidget().ALL_MEASURES;
+							/*filter = searchDisplay
+									.getMeasureSearchFilterPanel().ALL_MEASURES;*/
 						}
 						startIndex = searchDisplay.getPageSize()
 								* (event.getPageNumber() - 1) + 1;
@@ -639,14 +648,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 						isMeasureDeleted = false;
 						searchDisplay.getErrorMeasureDeletion().clear();
 						searchDisplay.getSuccessMeasureDeletion().clear();
-						int filter = searchDisplay
-								.getMeasureSearchFilterPanel()
-								.getSelectedIndex();
+						int filter = searchDisplay.getSelectedFilter();
+								
 						if (ClientConstants.ADMINISTRATOR
 								.equalsIgnoreCase(MatContext.get()
 										.getLoggedInUserRole())) {
 							filter = searchDisplay
-									.getMeasureSearchFilterPanel().ALL_MEASURES;
+									.getMeasureSearchFilterWidget().ALL_MEASURES;
 						}
 						search(searchDisplay.getSearchString().getValue(),
 								startIndex, searchDisplay.getPageSize(), filter);
@@ -660,8 +668,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				searchDisplay.getErrorMeasureDeletion().clear();
 				searchDisplay.getSuccessMeasureDeletion().clear();
 				searchDisplay.getErrorMessageDisplay().clear();
-				int filter = searchDisplay.getMeasureSearchFilterPanel()
-						.getSelectedIndex();
+				int filter = searchDisplay.getSelectedFilter();
 				search(searchDisplay.getSearchString().getValue(), startIndex,
 						searchDisplay.getPageSize(), filter);
 			}
@@ -1578,8 +1585,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			panel.setContent(adminSearchDisplay.asWidget());
 		} else {
 			// MAT-1929 : Retain filters at measure library screen
-			filter = searchDisplay.getMeasureSearchFilterPanel()
-					.getSelectedIndex();
+			filter = searchDisplay.getSelectedFilter();
 			search(searchDisplay.getSearchString().getValue(), 1,
 					searchDisplay.getPageSize(), filter);
 			panel.setContent(searchDisplay.asWidget());

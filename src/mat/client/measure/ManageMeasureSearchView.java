@@ -8,6 +8,7 @@ import mat.client.shared.FocusableWidget;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
@@ -27,7 +28,6 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -41,7 +41,8 @@ ManageMeasurePresenter.SearchDisplay {
 	private TextBox searchInput = new TextBox();
 	private FocusableWidget searchFocusHolder;
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
-
+	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget();
+	
 	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView(
 			"Measures");
 	private Button createButton = new SecondaryButton("Create");
@@ -76,7 +77,7 @@ ManageMeasurePresenter.SearchDisplay {
 		createVP.add(options);
 		options.setName("Create");
 		DOM.setElementAttribute(options.getElement(), "id", "Create Measure");
-		createVP.setStylePrimaryName("createMeasurePanelMeasureLib");
+		/*createVP.setStylePrimaryName("createMeasurePanelMeasureLib");*/
 		HorizontalPanel createHP = new HorizontalPanel();
 		createHP.getElement().setId("panel_createHP");
 		createHP.add(createVP);
@@ -85,22 +86,23 @@ ManageMeasurePresenter.SearchDisplay {
 		createButton.setTitle("Create");
 		createButtonVP.add(createButton);
 		createButtonVP.setStylePrimaryName("searchWidgetMeasureLibrary");
+		//createHP.add(dropDown);
 		createHP.add(createButtonVP);
-
-		Label searchMeasureText = new Label("Search For a Measure");
 		VerticalPanel measureFilterVP = new VerticalPanel();
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
-		measureFilterVP.add(searchMeasureText);
 		measureFilterVP.add(new SpacerWidget());
-		measureFilterVP.add(msfp.getPanel());
-		mainHorizontalPanel.add(measureFilterVP);
-		mainHorizontalPanel.add(new SpacerWidget());
-		mainHorizontalPanel.add(buildSearchWidget());
+		/*measureFilterVP.add(msfp.getPanel());*/
+		measureFilterVP.add(measureSearchFilterWidget);
+		/*mainHorizontalPanel.add(new SpacerWidget());
+		mainHorizontalPanel.add(buildSearchWidget());*/
 		mainHorizontalPanel.add(createHP);
+		mainHorizontalPanel.add(measureFilterVP);
 		mainPanel.add(mainHorizontalPanel);
 
 		mainPanel.add(successMeasureDeletion);
 		mainPanel.add(errorMeasureDeletion);
+		mainPanel.add(new SpacerWidget());
+		/*mainPanel.add(dropDown);*/
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(view.asWidget());
 		mainPanel
@@ -140,12 +142,12 @@ ManageMeasurePresenter.SearchDisplay {
 
 	@Override
 	public HasClickHandlers getSearchButton() {
-		return searchButton;
+		return measureSearchFilterWidget.getButton();
 	}
 
 	@Override
 	public HasValue<String> getSearchString() {
-		return searchInput;
+		return measureSearchFilterWidget.getTextBox();
 	}
 
 	@Override
@@ -290,10 +292,10 @@ ManageMeasurePresenter.SearchDisplay {
 
 	}
 
-	@Override
+	/*@Override
 	public MeasureSearchFilterPanel getMeasureSearchFilterPanel() {
 		return msfp;
-	}
+	}*/
 
 	public ErrorMessageDisplay getErrorMeasureDeletion() {
 		return errorMeasureDeletion;
@@ -311,5 +313,27 @@ ManageMeasurePresenter.SearchDisplay {
 			SuccessMessageDisplay successMeasureDeletion) {
 		this.successMeasureDeletion = successMeasureDeletion;
 	}
+	
+	@Override
+	public int getSelectedFilter() {
+		return measureSearchFilterWidget.getSelectedFilter();
+	}
+
+	/**
+	 * @return the dropDown
+	 */
+	
+	public MeasureSearchFilterWidget getMeasureSearchFilterWidget() {
+		return measureSearchFilterWidget;
+	}
+
+	
+	/**
+	 * @param measureSearchFilterWidget the measureSearchFilterWidget to set
+	 */
+	public void setMeasureSearchFilterWidget(MeasureSearchFilterWidget measureSearchFilterWidget) {
+		this.measureSearchFilterWidget = measureSearchFilterWidget;
+	}
+	
 
 }

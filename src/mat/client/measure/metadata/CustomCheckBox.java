@@ -124,7 +124,6 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
 	    /**508 fix - Id attribute should be removed instead title should be added.**/
 	  //  inputElem.setPropertyString("id", uid);
 	    inputElem.setPropertyString("title", title);
-	    inputElem.setPropertyString("style", "margin-top:2px;");
 	    labelElem.setHtmlFor(uid);
 
 	    // Accessibility: setting tab index to be 0 by default, ensuring element

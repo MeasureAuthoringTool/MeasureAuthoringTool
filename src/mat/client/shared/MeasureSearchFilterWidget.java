@@ -71,6 +71,9 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 				if (event.getValue()) {
 					allMeasuresCheckBox.setValue(false);
 					setSelectedFilter(MY_MEASURES);
+				} else {
+					allMeasuresCheckBox.setValue(true);
+					setSelectedFilter(ALL_MEASURES);
 				}
 			}
 		});
@@ -82,6 +85,9 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 				if (event.getValue()) {
 					myMeasuresCheckBox.setValue(false);
 					setSelectedFilter(ALL_MEASURES);
+				} else {
+					myMeasuresCheckBox.setValue(true);
+					setSelectedFilter(MY_MEASURES);
 				}
 
 			}

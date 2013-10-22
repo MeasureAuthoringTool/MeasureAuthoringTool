@@ -1576,15 +1576,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 
 		String heading = "My Measures";
 		int filter;
+		
 		if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
 				.getLoggedInUserRole())) {
 			heading = "";
-			filter = 1;// ALL Measures
+			filter = searchDisplay.getMeasureSearchFilterWidget().ALL_MEASURES;// ALL Measures
 			search(adminSearchDisplay.getSearchString().getValue(), 1,
 					Integer.MAX_VALUE, filter);
 			panel.setContent(adminSearchDisplay.asWidget());
 		} else {
 			// MAT-1929 : Retain filters at measure library screen
+			searchDisplay.getMeasureSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
 			filter = searchDisplay.getSelectedFilter();
 			search(searchDisplay.getSearchString().getValue(), 1,
 					searchDisplay.getPageSize(), filter);

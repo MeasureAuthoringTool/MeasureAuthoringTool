@@ -108,8 +108,8 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		CustomButton zoomButton = (CustomButton) getImage("Search",
 				ImageResources.INSTANCE.search_zoom(), "Search");
 		zoomButton.setEnabled(false);
-		CustomButton filterButton = (CustomButton) getImage("Click to select Filter",
-				ImageResources.INSTANCE.arrow_filter(), "Click to select Filter");
+		CustomButton filterButton = (CustomButton) getImage("Click to select filter",
+				ImageResources.INSTANCE.arrow_filter(), "Click to select filter");
 		filterButton.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

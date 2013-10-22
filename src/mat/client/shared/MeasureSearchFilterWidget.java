@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -23,9 +24,9 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 	private TextBox searchInput = new TextBox();
 		private PrimaryButton searchButton;
 	CustomCheckBox myMeasuresCheckBox = new CustomCheckBox("My Measures",
-			"My Measures", 1);
+			"My Measures", false);
 	CustomCheckBox allMeasuresCheckBox = new CustomCheckBox("All Measures",
-			"All Measures", 1);
+			"All Measures", false);
 
 	DisclosurePanel searchFilterDisclosurePanel = new DisclosurePanel();
 	public static final int MY_MEASURES = 0;
@@ -93,19 +94,17 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		searchFilterDisclosurePanel.setOpen(false);
 		VerticalPanel contentWidget = new VerticalPanel();
 		HorizontalPanel myMeasurePanel = new HorizontalPanel();
-		/*Label myMeasuresText = (Label) LabelBuilder.buildLabel("My Measures", "My Measures");
+		Label myMeasuresText = (Label) LabelBuilder.buildLabel("My Measures", "My Measures");
 		myMeasuresText.setStylePrimaryName("searchWidgetLabel");
 		myMeasuresCheckBox.setStylePrimaryName("searchWidgetCheckBox");
-		myMeasurePanel.add(myMeasuresText);*/
-		myMeasuresCheckBox.setStylePrimaryName("searchWidgetLabel");
+		myMeasurePanel.add(myMeasuresText);
 		myMeasurePanel.add(myMeasuresCheckBox);
 
 		HorizontalPanel allMeasurePanel = new HorizontalPanel();
-		/*Label allMeasuresText = (Label) LabelBuilder.buildLabel("All Measures", "All Measures");
+		Label allMeasuresText = (Label) LabelBuilder.buildLabel("All Measures", "All Measures");
 		allMeasuresText.setStylePrimaryName("searchWidgetLabel");
 		allMeasuresCheckBox.setStylePrimaryName("searchWidgetCheckBox");
-		allMeasurePanel.add(allMeasuresText);*/
-		allMeasuresCheckBox.setStylePrimaryName("searchWidgetLabel");
+		allMeasurePanel.add(allMeasuresText);
 		allMeasurePanel.add(allMeasuresCheckBox);
 		contentWidget.add(myMeasurePanel);
 		contentWidget.add(new SpacerWidget());

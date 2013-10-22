@@ -1381,6 +1381,24 @@ padding: 2px;
     margin-left:350px; 
     margin-right:auto;
 }
+.searchWidgetLabel{
+	font-size: 11px;
+     display: block;
+    padding-left: 15px;
+    text-indent: -15px;
+}
+
+.searchWidgetCheckBox{
+    width: 17px;
+    height: 13px;
+    padding-left: 3px;
+    padding-right: 3px;
+    margin-top:2px;
+    vertical-align: bottom;
+    position: relative;
+    top: -3px;
+    overflow: hidden;
+}
 
 .filterDisclosurePanel{
     margin-left:345px; 

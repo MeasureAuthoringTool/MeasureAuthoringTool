@@ -424,19 +424,19 @@ public class ExportSimpleXML {
 	private static void modifyHeaderStart_Stop_Dates(Document originalDoc) throws XPathExpressionException {
 		Node periodNode = (Node)xPath.evaluate("/measure/measureDetails/period", originalDoc, XPathConstants.NODE);
 		
-		/*Node measurementPeriodNode = (Node)xPath.evaluate("/measure/elementLookUp/qdm[@oid='"+ MEASUREMENT_PERIOD_OID + "']",originalDoc, 
+		Node measurementPeriodNode = (Node)xPath.evaluate("/measure/elementLookUp/qdm[@oid='"+ MEASUREMENT_PERIOD_OID + "']",originalDoc, 
 				XPathConstants.NODE);
 		Node measurementPeriodStartDateNode = (Node)xPath.evaluate("/measure/elementLookUp/qdm[@oid='"+ MEASUREMENT_START_DATE_OID + "']",originalDoc, 
 				XPathConstants.NODE);
 		Node measurementPeriodEndDateNode = (Node)xPath.evaluate("/measure/elementLookUp/qdm[@oid='"+ MEASUREMENT_END_DATE_OID + "']",originalDoc, 
-				XPathConstants.NODE);*/
+				XPathConstants.NODE);
 		
 		if(periodNode != null){
 		
-			/*if(measurementPeriodNode != null){
+			if(measurementPeriodNode != null){
 				periodNode.getAttributes().getNamedItem("uuid").setNodeValue(measurementPeriodNode.getAttributes().
 						getNamedItem("uuid").getNodeValue());
-			}*/
+			}
 			
 			NodeList childNodeList = periodNode.getChildNodes();
 			for(int i=0;i<childNodeList.getLength();i++){
@@ -445,18 +445,18 @@ public class ExportSimpleXML {
 					//Date in MM/DD/YYYY
 					String value = node.getTextContent();
 					node.setTextContent(formatDate(value));
-					/*if(measurementPeriodStartDateNode != null){
+					if(measurementPeriodStartDateNode != null){
 						node.getAttributes().getNamedItem("uuid").setNodeValue(measurementPeriodStartDateNode.getAttributes().
 								getNamedItem("uuid").getNodeValue());
-					}*/
+					}
 				}else if("stopDate".equals(node.getNodeName())){
 					//Date in MM/DD/YYYY
 					String value = node.getTextContent();
 					node.setTextContent(formatDate(value));
-					/*if(measurementPeriodEndDateNode != null){
+					if(measurementPeriodEndDateNode != null){
 						node.getAttributes().getNamedItem("uuid").setNodeValue(measurementPeriodEndDateNode.getAttributes().
 								getNamedItem("uuid").getNodeValue());
-					}*/
+					}
 				}
 			}
 		}

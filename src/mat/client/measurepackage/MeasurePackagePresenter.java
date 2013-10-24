@@ -78,9 +78,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private MeasurePackageOverview overview;
 
 	/**
-	 *Constructor.
-	 *@param viewArg - View.
-	 * */
+	 * Constructor.
+	 * @param viewArg - View.
+	 */
 	public MeasurePackagePresenter(final View viewArg) {
 		this.view = viewArg;
 		addAllHandlers();
@@ -97,6 +97,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				setNewMeasurePackage();
 			}
 		});
+
 		view.getPackageMeasureButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -154,6 +155,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 						});
 			}
 		});
+
 		view.getAddClausesToPackageButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -182,6 +184,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				}
 			}
 		});
+
 		view.getAddQDMElementsToMeasureButton().addClickHandler(
 				new ClickHandler() {
 					@Override
@@ -232,9 +235,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 
 	/**
-	 *Service call to VSAC to update Measure Xml before invoking simple xml and value set sheet generation.
-	 *@param measureId - String.
-	 * **/
+	 * Service call to VSAC to update Measure Xml before invoking simple xml and value set sheet generation.
+	 * @param measureId - String.
+	 */
 	private void updateValueSetsBeforePackaging(final String measureId) {
 		vsacapiServiceAsync.updateAllVSACValueSetsAtPackage(measureId,
 				new AsyncCallback<VsacApiResult>() {
@@ -252,17 +255,17 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 
 	/**
-	 *Service Call to generate Simple Xml and value set sheet.
-	 *@param measureId - String.
-	 *@param updateVsacResult - VsacApiResult.
-	 * **/
+	 * Service Call to generate Simple Xml and value set sheet.
+	 * @param measureId - String.
+	 * @param updateVsacResult - VsacApiResult.
+	 */
 	private void validateMeasureAndExport(final String measureId,
-			final VsacApiResult updateVsacResult) {		
+			final VsacApiResult updateVsacResult) {
 		ArrayList<MatValueSet> vsacResponce = null;
 		if (updateVsacResult != null) {
 			vsacResponce = updateVsacResult.getVsacResponse();
 		}
-		
+
 		MatContext.get().getMeasureService()
 				.validateMeasureForExport(measureId, vsacResponce,
 						new AsyncCallback<ValidateMeasureResult>() {
@@ -318,7 +321,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	/**
 	 * Method to clear messaged from widget.
-	 * **/
+	 */
 	private void clearMessages() {
 		view.getPackageSuccessMessageDisplay().clear();
 		view.getSuppDataSuccessMessageDisplay().clear();
@@ -351,8 +354,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 
 	/**
-	 *@param measurePackageId - String.
-	 * **/
+	 * @param measurePackageId - String.
+	 */
 	private void setMeasurePackage(final String measurePackageId) {
 		for (MeasurePackageDetail detail : overview.getPackages()) {
 			if (detail.getSequence().equals(measurePackageId)) {
@@ -364,9 +367,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 
 	/**
-	 *Valid grouping check.
-	 *@return boolean.
-	 * **/
+	 * Valid grouping check.
+	 * @return boolean.
+	 */
 	private boolean isValid() {
 		List<MeasurePackageClauseDetail> detailList = view
 				.getClausesInPackage();
@@ -495,7 +498,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	/**
 	 * updateDetailsFromView.
-	 * **/
+	 */
 	private void updateDetailsFromView() {
 		currentDetail.setPackageClauses(view.getClausesInPackage());
 		currentDetail.setValueSetDate(null);
@@ -503,7 +506,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	/**
 	 * updateSuppDataDetailsFromView.
-	 * **/
+	 */
 	private void updateSuppDataDetailsFromView() {
 		currentDetail.setSuppDataElements(view.getQDMElementsInSuppElements());
 		currentDetail.setQdmElements(view.getQDMElements());
@@ -515,7 +518,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * @param type - String.
 	 *
 	 * @return Integer.
-	 * **/
+	 */
 	private int countDetailsWithType(
 			final List<MeasurePackageClauseDetail> detailList, final String type) {
 		int count = 0;
@@ -529,7 +532,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	/**
 	 * setMeasurePackageDetailsOnView.
-	 * **/
+	 */
 	private void setMeasurePackageDetailsOnView() {
 		List<MeasurePackageClauseDetail> packageClauses = currentDetail
 				.getPackageClauses();
@@ -549,7 +552,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * @param toRemove - List of MeasurePackageClauseDetail.
 	 *
 	 * @return MeasurePackageClauseDetail.
-	 * **/
+	 */
 	private List<MeasurePackageClauseDetail> removeClauses(
 			final List<MeasurePackageClauseDetail> master,
 			final List<MeasurePackageClauseDetail> toRemove) {
@@ -569,7 +572,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/**
 	 * set Overview.
 	 * @param result - MeasurePackageOverview.
-	 * **/
+	 */
 	private void setOverview(final MeasurePackageOverview result) {
 		this.overview = result;
 		view.setClauses(result.getClauses());
@@ -604,7 +607,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/**
 	 * get Measure Package Overview.
 	 * @param measureId - String.
-	 * **/
+	 */
 	private void getMeasurePackageOverview(final String measureId) {
 		MatContext
 				.get()
@@ -635,6 +638,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 														.getGenericErrorMessage());
 							}
 						});
+
 		view.setSelectionHandler(new MeasurePackageSelectionHandler() {
 			@Override
 			public void onSelection(final MeasurePackageDetail detail) {
@@ -643,6 +647,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				setMeasurePackageDetailsOnView();
 			}
 		});
+
 		view.setDeletionHandler(new MeasurePackageSelectionHandler() {
 
 			@Override
@@ -656,7 +661,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/**
 	 * get Measure.
 	 * @param measureId - String.
-	 * **/
+	 */
 	private void getMeasure(final String measureId) {
 		MatContext
 				.get()
@@ -688,7 +693,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/**
 	 * Delete Measure Package.
 	 * @param pkg - MeasurePackageDetail.
-	 * **/
+	 */
 	private void deleteMeasurePackage(final MeasurePackageDetail pkg) {
 		MatContext.get().getPackageService()
 				.delete(pkg, new AsyncCallback<Void>() {
@@ -717,7 +722,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * Get Max Sequence.
 	 * @param measurePackageOverview - MeasurePackageOverview.
 	 * @return Integer.
-	 * **/
+	 */
 	private int getMaxSequence(final MeasurePackageOverview measurePackageOverview) {
 		int max = 0;
 		for (MeasurePackageDetail detail : measurePackageOverview.getPackages()) {
@@ -731,7 +736,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	/**
 	 * set New MeasurePackage.
-	 * **/
+	 */
 	private void setNewMeasurePackage() {
 		currentDetail = new MeasurePackageDetail();
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
@@ -744,7 +749,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/**
 	 * Get Widget.
 	 * @return Panel.
-	 * **/
+	 */
 	public final Widget getWidget() {
 		panel.clear();
 		panel.add(view.asWidget());
@@ -753,7 +758,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	/**
 	 * Display Empty.
-	 * **/
+	 */
 	private void displayEmpty() {
 		panel.clear();
 		panel.add(emptyPanel);
@@ -761,7 +766,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	/**
 	 * Display MeasurePackage Workspace.
-	 * **/
+	 */
 	private void displayMeasurePackageWorkspace() {
 		panel.clear();
 		panel.add(view.asWidget());
@@ -771,7 +776,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/**
 	 * Check if Measure is Editable.
 	 * @return boolean.
-	 * **/
+	 */
 	private boolean isEditable() {
 		return MatContext.get().getMeasureLockService()
 				.checkForEditPermission();

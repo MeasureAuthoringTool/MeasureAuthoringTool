@@ -41,7 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 public class MeasurePackageView implements MeasurePackagePresenter.View {
-	
+
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	private ErrorMessageDisplay qdmErrorMessages = new ErrorMessageDisplay();
 	private ErrorMessageDisplay measureErrorMessages = new ErrorMessageDisplay();
@@ -74,7 +74,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	private FlowPanel clausesPanel = new FlowPanel();
 	private FlowPanel packagedPanel = new FlowPanel();
 	private Label viewOrEditLabel = new Label();
-	
+
 	//MatTabLayoutPanel packageTabPanel;
 	private ListBox qdmElementsListBox = new ListBox();
 	private ListBox suppElementsListBox = new ListBox();
@@ -86,7 +86,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	private Label qdmTabName = new Label("Supplemental Data Elements");
 	private int listVisibleCount=10;
 	//int currentPackageTab = 1;
-	
+
 	private CustomCheckBox includeVSACData = new CustomCheckBox("Select 'Include VSAC value set data' to create "
 			+ "a measure package with VSAC data.", "Include VSAC value set data", true);
 
@@ -120,6 +120,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 
 	}
+
 	public MeasurePackageView() {
 		//packageTabPanel = new MatTabLayoutPanel(false);
 		addClauseLeftRightClickHandlers();
@@ -159,6 +160,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		packagesTable.setStylePrimaryName("searchResultsTable");
 		content.setStyleName("contentPanel");
 	}
+
 	private void addClauseLeftRightClickHandlers() {
 
 		addClauseRight.addClickHandler(new ClickHandler() {
@@ -186,6 +188,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 			}
 		});
 	}
+
 	// QDM elements
 	private void addQDMElementLeftRightClickHandlers() {
 
@@ -214,6 +217,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 			}
 		});
 	}
+
 	private Panel buildClauseLeftRightPanel() {
 		FlowPanel topContainer = new FlowPanel();
 		packageName.addStyleName("bold");
@@ -248,6 +252,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		topContainer.setStylePrimaryName("measurePackageLeftRightPanel");
 		return topContainer;
 	}
+
 	// QDM elements
 	private Panel buildQDMElementLeftRightPanel() {
 		FlowPanel qdmTopContainer = new FlowPanel();
@@ -291,6 +296,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		fPanel.addStyleName("measurePackageAddButton");
 		return fPanel;
 	}
+
 	private FocusPanel buildDoubleAddButton(ImageResource imageUrl) {
 		FocusPanel focusPanel = new FocusPanel();
 		FlowPanel fPanel = new FlowPanel();
@@ -301,6 +307,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		focusPanel.addStyleName("measurePackageAddButton");
 		return focusPanel;
 	}
+
 	private Widget buildClauseAddButtonWidget() {
 		FlowPanel panel = new FlowPanel();
 		panel.setStyleName("measurePackageAddButtonPanel");
@@ -319,6 +326,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		panel.add(addAllClauseLeft);
 		return panel;
 	}
+
 	// QDM elements
 	private Widget buildQDMElementAddButtonWidget() {
 		FlowPanel panel = new FlowPanel();
@@ -361,6 +369,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 			clauseIdMap.put(nvp.getId(), nvp);
 		}
 	}
+
 	// QDM elements
 	private void setQDMElementsItems(final ListBox lb, final List<QualityDataSetDTO> valuesArg) {
 		List<QualityDataSetDTO> values = new ArrayList<QualityDataSetDTO>();
@@ -394,6 +403,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		Collections.sort(list, new QualityDataSetDTO.Comparator());
 		setQDMElementsItems(lb, list);
 	}
+
 	// QDM elements
 	private void addQDMElementItems(final ListBox lb, final List<QualityDataSetDTO> nvpList) {
 		List<QualityDataSetDTO> list = getQDMElementsItems(lb);
@@ -409,6 +419,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 		return nvp;
 	}
+
 	// QDM elements
 	private QualityDataSetDTO getQDMElementSelectedValue(final ListBox lb) {
 		int index = lb.getSelectedIndex();
@@ -426,6 +437,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 			addClauseItem(packagedClausesListBox, nvp);
 		}
 	}
+
 	private void addClauseLeft() {
 		MeasurePackageClauseDetail nvp = getClauseSelectedValue(packagedClausesListBox);
 		if (nvp != null) {
@@ -433,14 +445,17 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 			addClauseItem(clausesListBox, nvp);
 		}
 	}
+
 	private void addAllClausesRight() {
 		addClauseItems(packagedClausesListBox, getClauseItems(clausesListBox));
 		clausesListBox.clear();
 	}
+
 	private void addAllClausesLeft() {
 		addClauseItems(clausesListBox, getClauseItems(packagedClausesListBox));
 		packagedClausesListBox.clear();
 	}
+
 	// QDM elements
 	private void addQDMElementRight() {
 		QualityDataSetDTO nvp = getQDMElementSelectedValue(qdmElementsListBox);
@@ -449,6 +464,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 			addQDMElementItem(suppElementsListBox, nvp);
 		}
 	}
+
 	private void addQDMElementLeft() {
 		QualityDataSetDTO nvp = getQDMElementSelectedValue(suppElementsListBox);
 		if (nvp != null) {
@@ -456,10 +472,12 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 			addQDMElementItem(qdmElementsListBox, nvp);
 		}
 	}
+
 	private void addAllQDMElementsRight() {
 		addQDMElementItems(suppElementsListBox, getQDMElementsItems(qdmElementsListBox));
 		qdmElementsListBox.clear();
 	}
+
 	private void addAllQDMElementsLeft() {
 		addQDMElementItems(qdmElementsListBox, getQDMElementsItems(suppElementsListBox));
 		suppElementsListBox.clear();
@@ -493,6 +511,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 			}
 		}
 	}
+
 	// QDM elements
 	private List<QualityDataSetDTO> getQDMElementsItems(final ListBox lb) {
 		List<QualityDataSetDTO> list = new ArrayList<QualityDataSetDTO>();
@@ -502,6 +521,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 		return list;
 	}
+
 	// QDM elements
 	private void removeQDMElementItem(final ListBox lb, final QualityDataSetDTO nvp) {
 		for (int i = 0; i < lb.getItemCount(); i++) {
@@ -516,11 +536,13 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	public final List<MeasurePackageClauseDetail> getClausesInPackage() {
 		return getClauseItems(packagedClausesListBox);
 	}
+
 	// QDM elements
 	@Override
 	public final List<QualityDataSetDTO> getQDMElements() {
 		return getQDMElementsItems(qdmElementsListBox);
 	}
+
 	@Override
 	public final List<QualityDataSetDTO> getQDMElementsInSuppElements() {
 		return getQDMElementsItems(suppElementsListBox);
@@ -530,6 +552,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	public final HasClickHandlers getAddClausesToPackageButton() {
 		return addClausesToPackage;
 	}
+
 	// QDM elements
 	@Override
 	public final HasClickHandlers getAddQDMElementsToMeasureButton() {
@@ -542,13 +565,13 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		table.setWidget(0, 1, viewOrEditLabel);
 		table.setText(0, 2, "Delete");
 	}
+
 	@Override
 	public final void setMeasurePackages(final List<MeasurePackageDetail> packages) {
 		int columnSize = 3;
 		if (packages.size() == 0) {
 			MatContext.get().setVisible(packagesTable, false);
-		}
-		else {
+		} else {
 			MatContext.get().setVisible(packagesTable, true);
 			packagesTable.resize(packages.size() + 1, columnSize);
 
@@ -599,6 +622,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		//holder.setStyleName("invisibleButtonText");
 		return holder;
 	}
+
 	@Override
 	public final HasClickHandlers getPackageMeasureButton() {
 		return packageMeasure;
@@ -642,14 +666,17 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	public final SuccessMessageDisplayInterface getPackageSuccessMessageDisplay() {
 		return packageSuccessMessages;
 	}
+
 	@Override
 	public final SuccessMessageDisplayInterface getSuppDataSuccessMessageDisplay() {
 		return suppDataSuccessMessages;
 	}
+
 	@Override
 	public final ErrorMessageDisplayInterface getMeasureErrorMessageDisplay() {
 		return measureErrorMessages;
 	}
+
 	@Override
 	public final SuccessMessageDisplayInterface getMeasurePackageSuccessMsg() {
 		return measurePackageSuccessMsg;
@@ -659,6 +686,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	public final ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return measureErrorMessages;
 	}
+
 	public WarningMessageDisplay getMeasurePackageWarningMsg() {
 		return measurePackageWarningMsg;
 	}

@@ -28,17 +28,15 @@ import org.xml.sax.InputSource;
 
 /** VSACAPIServiceImpl class. **/
 @SuppressWarnings("static-access")
-public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
-	VSACAPIService {
+public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VSACAPIService {
 	/** serialVersionUID for VSACAPIServiceImpl class. **/
 	private static final long serialVersionUID = -6645961609626183169L;
 	/** Logger for VSACAPIServiceImpl class. **/
-	private static final Log LOGGER = LogFactory
-			.getLog(VSACAPIServiceImpl.class);
+	private static final Log LOGGER = LogFactory.getLog(VSACAPIServiceImpl.class);
 
 	/**
 	 * MeasureLibrary Service Object.
-	 *
+	 * 
 	 * @return MeasureLibraryService.
 	 * */
 	public final MeasureLibraryService getMeasureLibraryService() {
@@ -52,15 +50,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	 *@param password - String.
 	 *@return Boolean.
 	 * **/
-	public final boolean validateVsacUser(final String userName,
-			final String password) {
+	public final boolean validateVsacUser(final String userName, final String password) {
 		LOGGER.info("Start VSACAPIServiceImpl validateVsacUser");
-		String eightHourTicketForUser = new VSACTicketService()
-				.getTicketGrantingTicket(userName, password);
-		UMLSSessionTicket.put(getThreadLocalRequest().getSession().getId(),
-				eightHourTicketForUser);
-		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: "
-				+ " Ticket issued for 8 hours: " + eightHourTicketForUser);
+		String eightHourTicketForUser = new VSACTicketService().getTicketGrantingTicket(userName, password);
+		UMLSSessionTicket.put(getThreadLocalRequest().getSession().getId(), eightHourTicketForUser);
+		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: " + " Ticket issued for 8 hours: " + eightHourTicketForUser);
 		return eightHourTicketForUser != null;
 	}
 
@@ -71,8 +65,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	 ***/
 	public final boolean isAlreadySignedIn() {
 		LOGGER.info("Start VSACAPIServiceImpl isAlreadySignedIn");
-		String eightHourTicketForUser = UMLSSessionTicket
-				.getTicket(getThreadLocalRequest().getSession().getId());
+		String eightHourTicketForUser = UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId());
 		LOGGER.info("End VSACAPIServiceImpl isAlreadySignedIn: ");
 		return eightHourTicketForUser != null;
 	}
@@ -97,31 +90,25 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	 *@return VsacApiResult - VsacApiResult.
 	 * **/
 	public final VsacApiResult getValueSetByOIDAndVersion(final String oid, final String version) {
-		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :"
-				+ oid + "for version entered :"  + version);
+		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + oid + "for version entered :"
+				+ version);
 		VsacApiResult result = new VsacApiResult();
 
-		String eightHourTicket = UMLSSessionTicket
-				.getTicket(getThreadLocalRequest().getSession().getId());
+		String eightHourTicket = UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId());
 		if (eightHourTicket != null) {
-			if (oid != null && StringUtils.isNotEmpty(oid)
-					&& StringUtils.isNotBlank(oid)) {
-				ValueSetsResponseDAO dao = new ValueSetsResponseDAO(
-						eightHourTicket);
+			if ((oid != null) && StringUtils.isNotEmpty(oid) && StringUtils.isNotBlank(oid)) {
+				ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
 				ValueSetsResponse vsr = null;
-				if (version != null && StringUtils.isNotEmpty(version)) {
-					vsr = dao
-					.getMultipleValueSetsResponseByOIDAndVersion(oid.trim(), version);
+				if ((version != null) && StringUtils.isNotEmpty(version)) {
+					vsr = dao.getMultipleValueSetsResponseByOIDAndVersion(oid.trim(), version);
 					result.setSuccess(true);
 				} else {
-					vsr = dao
-							.getMultipleValueSetsResponseByOID(oid.trim());
+					vsr = dao.getMultipleValueSetsResponseByOID(oid.trim());
 					result.setSuccess(true);
 				}
 
 				if (!vsr.getXmlPayLoad().isEmpty()) {
-					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr
-							.getXmlPayLoad());
+					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
 					for (MatValueSet valueSet : wrapper.getValueSetList()) {
 						handleVSACGroupedValueSet(eightHourTicket, valueSet);
 					}
@@ -140,8 +127,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 			LOGGER.info("UMLS Login is required");
 		}
 
-		LOGGER.info("End VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :"
-				+ oid + "for version entered :"  + version);
+		LOGGER.info("End VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :" + oid + "for version entered :" + version);
 		return result;
 	}
 
@@ -154,68 +140,46 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	 *            - Selected Measure Id.
 	 * @return VsacApiResult - Result.
 	 * */
-
 	public final VsacApiResult updateVSACValueSets(final String measureId) {
 		VsacApiResult result = new VsacApiResult();
 		LOGGER.info("Start VSACAPIServiceImpl updateVSACValueSets method :");
 		if (isAlreadySignedIn()) {
-			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService()
-					.getAppliedQDMFromMeasureXml(measureId, false);
+			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().getAppliedQDMFromMeasureXml(measureId, false);
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
-				LOGGER.info(" VSACAPIServiceImpl updateVSACValueSets :: OID:: "
-						+ qualityDataSetDTO.getOid());
+				LOGGER.info(" VSACAPIServiceImpl updateVSACValueSets :: OID:: " + qualityDataSetDTO.getOid());
 				// Filter out Timing Element , User defined QDM's and
 				// supplemental data elements.
-				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO
-						.getDataType())
-						|| ConstantMessages.USER_DEFINED_QDM_OID
-								.equalsIgnoreCase(qualityDataSetDTO.getOid())
+				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO.getDataType())
+						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())
 						|| qualityDataSetDTO.isSuppDataElement()) {
-					LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: QDM filtered as it is of either"
-							+ "for following type "
+					LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: QDM filtered as it is of either" + "for following type "
 							+ "(Supplemental data or User defined or Timing Element.");
 					continue;
-				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO
-						.getVersion())) {
-					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(
-							UMLSSessionTicket.getTicket(getThreadLocalRequest()
-									.getSession().getId()));
+				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
+					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession()
+							.getId()));
 					ValueSetsResponse vsr = new ValueSetsResponse();
 					try {
-						vsr = dao
-								.getMultipleValueSetsResponseByOID(qualityDataSetDTO
-										.getOid());
+						vsr = dao.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid());
 					} catch (Exception ex) {
-						LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: Value Set reterival failed at "
-								+ "VSAC for OID :"
-								+ qualityDataSetDTO.getOid()
-								+ " with Data Type : "
-								+ qualityDataSetDTO.getDataType());
+						LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: Value Set reterival failed at " + "VSAC for OID :"
+								+ qualityDataSetDTO.getOid() + " with Data Type : " + qualityDataSetDTO.getDataType());
 					}
 					if (vsr != null) {
-						if (vsr.getXmlPayLoad() != null
-								&& StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {
-							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr
-									.getXmlPayLoad());
-							MatValueSet matValueSet = wrapper.getValueSetList()
-									.get(0);
+						if ((vsr.getXmlPayLoad() != null) && StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {
+							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
+							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
 							QualityDataSetDTO toBeModifiedQDM = qualityDataSetDTO;
 							if (matValueSet != null) {
-								qualityDataSetDTO.setCodeListName(matValueSet
-										.getDisplayName());
+								qualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
 								if (matValueSet.isGrouping()) {
-									qualityDataSetDTO
-											.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
+									qualityDataSetDTO.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
 								} else {
-									qualityDataSetDTO.setTaxonomy(matValueSet
-											.getConceptList().getConceptList()
-											.get(0).getCodeSystemName());
+									qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().getConceptList().get(0).getCodeSystemName());
 								}
 								// Code which updated Measure XML against each
 								// modifiable QDM.
-								getMeasureLibraryService().updateMeasureXML(
-										qualityDataSetDTO, toBeModifiedQDM,
-										measureId);
+								getMeasureLibraryService().updateMeasureXML(qualityDataSetDTO, toBeModifiedQDM, measureId);
 							}
 						}
 					}
@@ -240,79 +204,74 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	 * @param measureId - Selected Measure Id.
 	 * @return VsacApiResult - Result.
 	 * */
-	public final VsacApiResult updateAllVSACValueSetsAtPackage(
-			final String measureId) {
+	public final VsacApiResult updateAllVSACValueSetsAtPackage(final String measureId) {
 		VsacApiResult result = new VsacApiResult();
 		if (isAlreadySignedIn()) {
-			String eightHourTicket = UMLSSessionTicket
-					.getTicket(getThreadLocalRequest().getSession().getId());
-			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService()
-					.getAppliedQDMFromMeasureXml(measureId, false);
+			String eightHourTicket = UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId());
+			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().getAppliedQDMFromMeasureXml(measureId, false);
 			ArrayList<MatValueSet> matValueSetList = new ArrayList<MatValueSet>();
-			long startTime = System.currentTimeMillis();
-			LOGGER.info("Start time ==== " + startTime);
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
-				 LOGGER.info("OID ====" + qualityDataSetDTO.getOid());
+				LOGGER.info("OID ====" + qualityDataSetDTO.getOid());
 				// Filter out Timing Element and User defined QDM's.
-				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO
-						.getDataType())
-						|| ConstantMessages.USER_DEFINED_QDM_OID
-								.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
-					LOGGER.info("QDM filtered as it is of either for following type "
-							+ "(User defined or Timing Element.");
+				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO.getDataType())
+						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
+					LOGGER.info("QDM filtered as it is of either for following type " + "(User defined or Timing Element.");
 					continue;
-				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO
-						.getVersion())
-						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
-					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(
-							eightHourTicket);
+				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion()) || "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
+					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
 					ValueSetsResponse vsr = new ValueSetsResponse();
 					try {
-						vsr = dao
-								.getMultipleValueSetsResponseByOID(qualityDataSetDTO
-										.getOid());
+						vsr = dao.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid());
 					} catch (Exception ex) {
-						LOGGER.info("Value Set reterival failed at VSAC for OID :"
-								+ qualityDataSetDTO.getOid()
-								+ " with Data Type : "
+						LOGGER.info("Value Set reterival failed at VSAC for OID :" + qualityDataSetDTO.getOid() + " with Data Type : "
 								+ qualityDataSetDTO.getDataType());
 					}
 					if (vsr != null) {
-						if (vsr.getXmlPayLoad() != null
-								&& StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {
-							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr
-									.getXmlPayLoad());
-							MatValueSet matValueSet = wrapper.getValueSetList()
-									.get(0);
+						if ((vsr.getXmlPayLoad() != null) && StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {
+							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
+							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
 							QualityDataSetDTO toBeModifiedQDM = qualityDataSetDTO;
 							if (matValueSet != null) {
 								matValueSet.setQdmId(qualityDataSetDTO.getId());
-								qualityDataSetDTO.setCodeListName(matValueSet
-										.getDisplayName());
+								qualityDataSetDTO.setCodeListName(matValueSet.getDisplayName());
 								if (matValueSet.isGrouping()) {
-									qualityDataSetDTO
-											.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
-									handleVSACGroupedValueSet(eightHourTicket,
-											matValueSet);
+									qualityDataSetDTO.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
+									handleVSACGroupedValueSet(eightHourTicket, matValueSet);
 								} else {
-									qualityDataSetDTO.setTaxonomy(matValueSet
-											.getConceptList().getConceptList()
-											.get(0).getCodeSystemName());
+									qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().getConceptList().get(0).getCodeSystemName());
 								}
 								matValueSetList.add(matValueSet);
 								// Code which updated Measure XML against each
 								// modifiable QDM.
-								getMeasureLibraryService().updateMeasureXML(
-										qualityDataSetDTO, toBeModifiedQDM,
-										measureId);
+								getMeasureLibraryService().updateMeasureXML(qualityDataSetDTO, toBeModifiedQDM, measureId);
 							}
 						}
 					}
 
+				} else if (!"1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion()) || !"1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
+
+					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
+					ValueSetsResponse vsr = new ValueSetsResponse();
+					try {
+						vsr = dao.getMultipleValueSetsResponseByOIDAndVersion(qualityDataSetDTO.getOid(), qualityDataSetDTO.getVersion());
+					} catch (Exception ex) {
+						LOGGER.info("Value Set reterival failed at VSAC for OID :" + qualityDataSetDTO.getOid() + " with Data Type : "
+								+ qualityDataSetDTO.getDataType());
+					}
+					if (vsr != null) {
+						if ((vsr.getXmlPayLoad() != null) && StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {
+							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
+							MatValueSet matValueSet = wrapper.getValueSetList().get(0);
+							if (matValueSet != null) {
+								matValueSet.setQdmId(qualityDataSetDTO.getId());
+								handleVSACGroupedValueSet(eightHourTicket, matValueSet);
+								matValueSetList.add(matValueSet);
+							}
+						}
+
+					}
 				}
 			}
-			LOGGER.info("End time ==== "
-					+ (System.currentTimeMillis() - startTime));
 			result.setSuccess(true);
 			result.setVsacResponse(matValueSetList);
 		} else {
@@ -330,8 +289,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	 * @param valueSet
 	 *            - MatValueSet.
 	 */
-	private void handleVSACGroupedValueSet(final String eightHourTicket,
-			final MatValueSet valueSet) {
+	private void handleVSACGroupedValueSet(final String eightHourTicket, final MatValueSet valueSet) {
 
 		if (!valueSet.isGrouping()) {
 			return;
@@ -339,7 +297,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 
 		valueSet.setGroupedValueSet(new ArrayList<MatValueSet>());
 		String definitation = valueSet.getDefinition();
-		if (definitation != null && StringUtils.isNotBlank(definitation)) {
+		if ((definitation != null) && StringUtils.isNotBlank(definitation)) {
 			// Definition format is
 			// (oid:SourceName),(oid:sourceName).
 			// Below code is removing '(' ')' and splitting
@@ -347,19 +305,14 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 			definitation = definitation.replace("(", "");
 			definitation = definitation.replace(")", "");
 			String[] newDefinitation = definitation.split(",");
-			for (int i = 0; i < newDefinitation.length; i++) {
-				String[] groupedValueSetOid = newDefinitation[i].split(":");
-				 // If Check To avoid junk data.
+			for (String element : newDefinitation) {
+				String[] groupedValueSetOid = element.split(":");
+				// If Check To avoid junk data.
 				if (groupedValueSetOid.length == 2) {
-					ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(
-							eightHourTicket);
-					ValueSetsResponse vsrGrouped = daoGroupped
-							.getMultipleValueSetsResponseByOID(groupedValueSetOid[0]
-									.trim());
-					VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsrGrouped
-							.getXmlPayLoad());
-					valueSet.getGroupedValueSet().add(
-							wrapperGrouped.getValueSetList().get(0));
+					ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(eightHourTicket);
+					ValueSetsResponse vsrGrouped = daoGroupped.getMultipleValueSetsResponseByOID(groupedValueSetOid[0].trim());
+					VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsrGrouped.getXmlPayLoad());
+					valueSet.getGroupedValueSet().add(wrapperGrouped.getValueSetList().get(0));
 				}
 			}
 		}
@@ -369,31 +322,28 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
 	 * Castor.
-	 *
+	 * 
 	 * @param xmlPayLoad
 	 *            - String vsac pay load.
 	 * @return VSACValueSetWrapper.
-	 *
+	 * 
 	 * */
 	private VSACValueSetWrapper convertXmltoValueSet(final String xmlPayLoad) {
 		LOGGER.info("Start VSACAPIServiceImpl convertXmltoValueSet");
 		VSACValueSetWrapper details = null;
 		String xml = xmlPayLoad;
-		if (xml != null && StringUtils.isNotBlank(xml)) {
+		if ((xml != null) && StringUtils.isNotBlank(xml)) {
 			LOGGER.info("xml To reterive RetrieveMultipleValueSetsResponse tag is not null ");
 		}
 		try {
 			Mapping mapping = new Mapping();
-			mapping.loadMapping(new ResourceLoader()
-					.getResourceAsURL("MultiValueSetMapping.xml"));
+			mapping.loadMapping(new ResourceLoader().getResourceAsURL("MultiValueSetMapping.xml"));
 			Unmarshaller unmar = new Unmarshaller(mapping);
 			unmar.setClass(VSACValueSetWrapper.class);
 			unmar.setWhitespacePreserve(true);
 			// LOGGER.info("unmarshalling xml..RetrieveMultipleValueSetsResponse ");
-			details = (VSACValueSetWrapper) unmar.unmarshal(new InputSource(
-					new StringReader(xml)));
-			LOGGER.info("unmarshalling complete..RetrieveMultipleValueSetsResponse"
-					+ details.getValueSetList().get(0).getDefinition());
+			details = (VSACValueSetWrapper) unmar.unmarshal(new InputSource(new StringReader(xml)));
+			LOGGER.info("unmarshalling complete..RetrieveMultipleValueSetsResponse" + details.getValueSetList().get(0).getDefinition());
 
 		} catch (Exception e) {
 			if (e instanceof IOException) {

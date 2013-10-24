@@ -1663,7 +1663,8 @@ public class MessageDelegate {
 	/**
 	 * 
 	 */
-	private final String DELETE_MEASURE_WARNING_MESSAGE = "Deleting a draft or version of a measure will permanently remove the designated measure draft or "
+	private final String DELETE_MEASURE_WARNING_MESSAGE = "Deleting a draft or version of a measure will"
+			+ "permanently remove the designated measure draft or "
 			+ "version from  the Measure Authoring Tool. Deleted measures cannot <br> be recovered.";
 
 	/**

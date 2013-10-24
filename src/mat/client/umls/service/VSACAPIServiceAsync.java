@@ -6,7 +6,7 @@ public interface VSACAPIServiceAsync {
 	void validateVsacUser(String userName, String password,
 			AsyncCallback<Boolean> callback);
 
-	void getValueSetByOIDAndVersion(String OID,
+	void getValueSetByOIDAndVersion(String OID, String version,
 			AsyncCallback<VsacApiResult> callback);
 
 	void inValidateVsacUser(AsyncCallback<Void> callback);

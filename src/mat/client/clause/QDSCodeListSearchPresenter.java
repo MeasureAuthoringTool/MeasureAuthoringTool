@@ -58,22 +58,22 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	 * boolean isUserDefined.
 	 */
 	private boolean isUSerDefined = false;
-    /**
-     * VSACService object.
-     */
-	private VSACAPIServiceAsync vsacapiService = MatContext.get()
+	/**
+	 * VSACService object.
+	 */
+	private final VSACAPIServiceAsync vsacapiService = MatContext.get()
 			.getVsacapiServiceAsync();
 	/**
 	 * MeasureService object.
 	 */
-	private MeasureServiceAsync service = MatContext.get().getMeasureService();
+	private final MeasureServiceAsync service = MatContext.get().getMeasureService();
 
 	/**
 	 * When retrieving value set from VSAC, "Loading Please Wait..." message is displayed.
 	 * busyLoading is set true when retrieving value set from VSAC otherwise it is set false.
 	 */
 	private boolean busyLoading;
-	
+
 	/**
 	 * QDSCodeListSearchView Implements this SearchDisplay.
 	 */
@@ -88,7 +88,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		TextBox getUserDefinedInput();
 		ListBoxMVP getAllDataTypeInput();
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
-		DisclosurePanel getDisclosurePanelCellTable();
+		DisclosurePanel getDisclosurePanelVSAC();
 		SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
 		ErrorMessageDisplay getErrorMessageUserDefinedPanel();
 		TextBox getOIDInput();
@@ -108,7 +108,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}
 
 	public QDSCodeListSearchPresenter(final SearchDisplay sDisplayArg) {
-		this.searchDisplay = sDisplayArg;
+		searchDisplay = sDisplayArg;
 
 		//Element without VSAC value set - OPEN Handler
 		searchDisplay.getDisclosurePanel().addOpenHandler(new OpenHandler<DisclosurePanel>() {
@@ -118,7 +118,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 					event.getTarget().setOpen(false);
 				} else {
 					displaySearch();
-					searchDisplay.getDisclosurePanelCellTable().setOpen(false);
+					searchDisplay.getDisclosurePanelVSAC().setOpen(false);
 				}
 			}
 		});
@@ -130,13 +130,13 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 					searchDisplay.getUserDefinedInput().setText("");
 					searchDisplay.getAllDataTypeInput().setItemSelected(0, true);
 					displaySearch();
-					searchDisplay.getDisclosurePanelCellTable().setOpen(true);
+					searchDisplay.getDisclosurePanelVSAC().setOpen(true);
 				}
 			}
 		});
 
 		//Element with VSAC value set - OPEN Handler.
-		searchDisplay.getDisclosurePanelCellTable().addOpenHandler(new OpenHandler<DisclosurePanel>() {
+		searchDisplay.getDisclosurePanelVSAC().addOpenHandler(new OpenHandler<DisclosurePanel>() {
 			@Override
 			public void onOpen(OpenEvent<DisclosurePanel> event) {
 				if (!isBusyLoading()) {
@@ -146,7 +146,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			}
 		});
 		//Element with VSAC value set - CLOSE Handler.
-		searchDisplay.getDisclosurePanelCellTable().addCloseHandler(new CloseHandler<DisclosurePanel>() {
+		searchDisplay.getDisclosurePanelVSAC().addCloseHandler(new CloseHandler<DisclosurePanel>() {
 			@Override
 			public void onClose(CloseEvent<DisclosurePanel> event) {
 				if (isBusyLoading()) {
@@ -205,9 +205,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 					}
 				});
 	}
-	
+
 	/**
-	 * When retrieving value set from VSAC, "Loading Please Wait..." message is displayed. 
+	 * When retrieving value set from VSAC, "Loading Please Wait..." message is displayed.
 	 * @return true if "Loading Please Wait..." message is displaying(In other words, when retrieving value set from VSAC)
 	 * 	    else returns false;
 	 */
@@ -224,20 +224,20 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		if (!MatContext.get().isUMLSLoggedIn()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(
 					MatContext.get().getMessageDelegate()
-							.getUMLS_NOT_LOGGEDIN());
+					.getUMLS_NOT_LOGGEDIN());
 			return;
 		} else {
 			// OID validation.
-			if (oid == null || oid.trim().isEmpty()) {
+			if ((oid == null) || oid.trim().isEmpty()) {
 				searchDisplay.getErrorMessageDisplay().setMessage(
 						MatContext.get().getMessageDelegate()
-								.getUMLS_OID_REQUIRED());
+						.getUMLS_OID_REQUIRED());
 				searchDisplay.getValueSetDetailsPanel().setVisible(false);
 				return;
 			}
 
 			showSearchingBusy(true);
-			vsacapiService.getValueSetByOIDAndVersion(oid, new AsyncCallback<VsacApiResult>() {
+			vsacapiService.getValueSetByOIDAndVersion(oid, version, new AsyncCallback<VsacApiResult>() {
 				@Override
 				public void onFailure(final Throwable caught) {
 					searchDisplay.getErrorMessageDisplay().setMessage(
@@ -261,7 +261,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			});
 		}
 	}
-	
+
 	/**
 	 * @param id - {@link Integer}.
 	 * @return String - {@link String}.
@@ -271,16 +271,16 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		switch (id) {
 		case VsacApiResult.UMLS_NOT_LOGGEDIN:
 			message = MatContext.get().getMessageDelegate()
-					.getUMLS_NOT_LOGGEDIN();
+			.getUMLS_NOT_LOGGEDIN();
 			break;
 		case VsacApiResult.OID_REQUIRED:
 			message = MatContext.get().getMessageDelegate()
-					.getUMLS_OID_REQUIRED();
+			.getUMLS_OID_REQUIRED();
 			break;
 
 		default:
 			message = MatContext.get().getMessageDelegate()
-					.getUnknownFailMessage();
+			.getUnknownFailMessage();
 		}
 		return message;
 	}
@@ -290,58 +290,58 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	 */
 	private void getListOfAppliedQDMs(final boolean isUserDefined) {
 		String measureId = MatContext.get().getCurrentMeasureId();
-		if (measureId != null && !measureId.equals("")) {
+		if ((measureId != null) && !measureId.equals("")) {
 			service.getAppliedQDMFromMeasureXml(measureId, true,
 					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
 
-						@Override
-						public void onFailure(final Throwable caught) {
-							Window.alert(MatContext.get().getMessageDelegate()
-									.getGenericErrorMessage());
-						}
+				@Override
+				public void onFailure(final Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+				}
 
-						@Override
-						public void onSuccess(
-								final ArrayList<QualityDataSetDTO> result) {
-							appliedQDMList = result;
-							addSelectedCodeListtoMeasure(isUserDefined);
-						}
-					});
+				@Override
+				public void onSuccess(
+						final ArrayList<QualityDataSetDTO> result) {
+					appliedQDMList = result;
+					addSelectedCodeListtoMeasure(isUserDefined);
+				}
+			});
 
 		}
 	}
-	
+
 	/**
 	 * Populates all data types from DB for Element's with and Element's without VSAC drop down.
 	 */
 	private void populateAllDataType() {
 		MatContext
-				.get()
-				.getListBoxCodeProvider()
-				.getAllDataType(
-						new AsyncCallback<List<? extends HasListBox>>() {
+		.get()
+		.getListBoxCodeProvider()
+		.getAllDataType(
+				new AsyncCallback<List<? extends HasListBox>>() {
 
-							@Override
-							public void onFailure(final Throwable caught) {
-								searchDisplay
-										.getErrorMessageDisplay()
-										.setMessage(
-												MatContext
-														.get()
-														.getMessageDelegate()
-														.getGenericErrorMessage());
-							}
+					@Override
+					public void onFailure(final Throwable caught) {
+						searchDisplay
+						.getErrorMessageDisplay()
+						.setMessage(
+								MatContext
+								.get()
+								.getMessageDelegate()
+								.getGenericErrorMessage());
+					}
 
-							@Override
-							public void onSuccess(
-									final List<? extends HasListBox> result) {
-								Collections.sort(result,
-										new HasListBox.Comparator());
-                            	searchDisplay.setAllDataTypeOptions(result);
-								searchDisplay
-								.setDataTypesListBoxOptions(result);
-							}
-						});
+					@Override
+					public void onSuccess(
+							final List<? extends HasListBox> result) {
+						Collections.sort(result,
+								new HasListBox.Comparator());
+						searchDisplay.setAllDataTypeOptions(result);
+						searchDisplay
+						.setDataTypesListBoxOptions(result);
+					}
+				});
 
 	}
 
@@ -410,77 +410,78 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 
 		if (!dataType.isEmpty() && !dataType.equals("")) {
 			MatContext.get().getCodeListService().saveQDStoMeasure(measureID, dataType,
-						searchDisplay.getCurrentMatValueSet(), isSpecificOccurrence, appliedQDMList,
-						new AsyncCallback<SaveUpdateCodeListResult>() {
-			@Override
-			public void onSuccess(final SaveUpdateCodeListResult result) {
-				String message = "";
-				if (result.getXmlString() != null) {
-					saveMeasureXML(result.getXmlString());
-				}
-				// OnSuccess() un check the specific
-				// occurrence  and de select
-				// the radio options
-				searchDisplay.getSpecificOccurrenceInput().setValue(false);
-				if (result.isSuccess()) {
-					if (result.getOccurrenceMessage() != null
-							&& !result
-									.getOccurrenceMessage()
-									.equals("")) {
-						message = MatContext
-								.get()
-								.getMessageDelegate()
-								.getQDMOcurrenceSuccessMessage(
+					searchDisplay.getCurrentMatValueSet(), isSpecificOccurrence,
+					searchDisplay.getVersionInput().getValue(), appliedQDMList,
+					new AsyncCallback<SaveUpdateCodeListResult>() {
+				@Override
+				public void onSuccess(final SaveUpdateCodeListResult result) {
+					String message = "";
+					if (result.getXmlString() != null) {
+						saveMeasureXML(result.getXmlString());
+					}
+					// OnSuccess() un check the specific
+					// occurrence  and de select
+					// the radio options
+					searchDisplay.getSpecificOccurrenceInput().setValue(false);
+					if (result.isSuccess()) {
+						if ((result.getOccurrenceMessage() != null)
+								&& !result
+								.getOccurrenceMessage()
+								.equals("")) {
+							message = MatContext
+									.get()
+									.getMessageDelegate()
+									.getQDMOcurrenceSuccessMessage(
+											searchDisplay
+											.getCurrentMatValueSet()
+											.getDisplayName(),
+											dataTypeText,
+											result.getOccurrenceMessage());
+						} else {
+							message = MatContext
+									.get()
+									.getMessageDelegate()
+									.getQDMSuccessMessage(
+											searchDisplay
+											.getCurrentMatValueSet()
+											.getDisplayName(),
+											dataTypeText);
+						}
+						MatContext.get()
+						.getEventBus().fireEvent(
+								new QDSElementCreatedEvent(
 										searchDisplay
-									.getCurrentMatValueSet()
-										.getDisplayName(),
-										dataTypeText,
-								result.getOccurrenceMessage());
+										.getCurrentMatValueSet()
+										.getDisplayName()));
+						searchDisplay
+						.getSuccessMessageDisplay()
+						.setMessage(message);
 					} else {
-						message = MatContext
-								.get()
-								.getMessageDelegate()
-								.getQDMSuccessMessage(
-								searchDisplay
-								.getCurrentMatValueSet()
-								.getDisplayName(),
-										dataTypeText);
+						if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
+							searchDisplay.getErrorMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate()
+									.getDuplicateAppliedQDMMsg());
+						}
 					}
-					MatContext.get()
-					 .getEventBus().fireEvent(
-					new QDSElementCreatedEvent(
-							searchDisplay
-							.getCurrentMatValueSet()
-							.getDisplayName()));
+				}
+
+				@Override
+				public void onFailure(final Throwable caught) {
+					if (appliedQDMList.size() > 0) {
+						appliedQDMList
+						.removeAll(appliedQDMList);
+					}
 					searchDisplay
-							.getSuccessMessageDisplay()
-							.setMessage(message);
-				} else {
-					if (result.getFailureReason() == SaveUpdateCodeListResult.ALREADY_EXISTS) {
-						searchDisplay.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate()
-								.getDuplicateAppliedQDMMsg());
-					}
+					.getErrorMessageDisplay()
+					.setMessage(
+							MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
-			}
-	
-			@Override
-			public void onFailure(final Throwable caught) {
-				if (appliedQDMList.size() > 0) {
-					appliedQDMList
-							.removeAll(appliedQDMList);
-				}
-				searchDisplay
-						.getErrorMessageDisplay()
-						.setMessage(
-						"problem while saving the QDM to Measure");
-			}
-		});
+			});
 		} else {
 			searchDisplay
 			.getErrorMessageDisplay()
-			.setMessage(
-					"Please select datatype from drop down list.");
+			.setMessage(MatContext.get().getMessageDelegate()
+					.getVALIDATION_MSG_DATA_TYPE_VSAC());
 		}
 	}
 
@@ -493,9 +494,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
 				&& !searchDisplay.getDataTypeText(
 						searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-			
+
 			String dataType = searchDisplay.getDataTypeValue(searchDisplay.getAllDataTypeInput());
-			
+
 			MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(
 					MatContext.get().getCurrentMeasureId(), dataType, searchDisplay.getUserDefinedInput().getText(),
 					appliedQDMList, new AsyncCallback<SaveUpdateCodeListResult>() {
@@ -503,13 +504,13 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 						public void onFailure(final Throwable caught) {
 							if (appliedQDMList.size() > 0) {
 								appliedQDMList
-										.removeAll(appliedQDMList);
+								.removeAll(appliedQDMList);
 							}
 							Window.alert(MatContext.get()
 									.getMessageDelegate()
 									.getGenericErrorMessage());
 						}
-			
+
 						@SuppressWarnings("static-access")
 						@Override
 						public void onSuccess(
@@ -524,23 +525,23 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 												.getUserDefinedInput()
 												.getText(),
 												searchDisplay
-											.getDataTypeText(searchDisplay
-												.getAllDataTypeInput()));
+												.getDataTypeText(searchDisplay
+														.getAllDataTypeInput()));
 								searchDisplay
-										.getSuccessMessageUserDefinedPanel()
-										.setMessage(message);
+								.getSuccessMessageUserDefinedPanel()
+								.setMessage(message);
 								searchDisplay.getUserDefinedInput()
-										.setText("");
+								.setText("");
 								searchDisplay.getAllDataTypeInput()
-										.setSelectedIndex(0);
+								.setSelectedIndex(0);
 							} else if (result.getFailureReason() == result.ALREADY_EXISTS) {
 								searchDisplay
-										.getErrorMessageUserDefinedPanel()
-										.setMessage(
-												MatContext
-												.get()
-												.getMessageDelegate()
-											.getDuplicateAppliedQDMMsg());
+								.getErrorMessageUserDefinedPanel()
+								.setMessage(
+										MatContext
+										.get()
+										.getMessageDelegate()
+										.getDuplicateAppliedQDMMsg());
 							}
 						}
 					});
@@ -550,7 +551,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			}
 			searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
 					MatContext.get().getMessageDelegate()
-							.getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
+					.getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
 
 		}
 	}
@@ -570,34 +571,26 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		service.appendAndSaveNode(exportModal, nodeName,
 				new AsyncCallback<Void>() {
 
-					@Override
-					public void onFailure(final Throwable caught) {
-						searchDisplay.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate()
-										.getGenericErrorMessage());
-					}
+			@Override
+			public void onFailure(final Throwable caught) {
+				searchDisplay.getErrorMessageDisplay().setMessage(
+						MatContext.get().getMessageDelegate()
+						.getGenericErrorMessage());
+			}
 
-					@Override
-					public void onSuccess(final Void result) {
+			@Override
+			public void onSuccess(final Void result) {
 
-					}
-				});
+			}
+		});
 	}
 
 	/**
 	 * @return {@link Widget}.
 	 */
+	@Override
 	public final Widget getWidget() {
 		return panel;
-	}
-
-	/**
-	 * @param columnIndex - {@link Integer}.
-	 * @return String - {@link String}.
-	 */
-	public final String getSortKey(final int columnIndex) {
-		String[] sortKeys = new String[] {"name", "taxnomy", "category" };
-		return sortKeys[columnIndex];
 	}
 
 	/**
@@ -626,6 +619,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
 		searchDisplay.getDisclosurePanel().setOpen(false);
-		searchDisplay.getDisclosurePanelCellTable().setOpen(true);
+		searchDisplay.getDisclosurePanelVSAC().setOpen(true);
 	}
 }

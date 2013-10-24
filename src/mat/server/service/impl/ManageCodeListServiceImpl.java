@@ -171,6 +171,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return codeList;
 	}
 
+	@Override
 	public List<CodeListSearchDTO> search(String searchText, int startIndex,
 			int pageSize, String sortColumn, boolean isAsc,
 			boolean defaultCodeList, int filter, String categoryId) {
@@ -265,9 +266,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	@Override
 	public SaveUpdateCodeListResult saveorUpdateCodeList(
 			ManageCodeListDetailModel currentDetails)
-			throws CodeListNotUniqueException, CodeListOidNotUniqueException,
-			ExcelParsingException, InvalidLastModifiedDateException,
-			ValueSetLastModifiedDateNotUniqueException {
+					throws CodeListNotUniqueException, CodeListOidNotUniqueException,
+					ExcelParsingException, InvalidLastModifiedDateException,
+					ValueSetLastModifiedDateNotUniqueException {
 
 		String oldOID = null;
 		String newOID = null;
@@ -296,9 +297,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				newCode = currentDetails.getCode();
 				existingCodes.add(newCode);
 				codeList.setCodes(existingCodes);
-			} else if (newCodesList != null && !newCodesList.isEmpty()
+			} else if ((newCodesList != null) && !newCodesList.isEmpty()
 					&& currentDetails.isImportFlag()) {// do this only when we
-													   // are importing
+				// are importing
 				for (Code code : newCodesList) {
 					if (!existingCodes.add(code)) {
 						++duplicateCount;
@@ -312,8 +313,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			codeList = new CodeList();
 			String oid = currentDetails.getOid() != null ? currentDetails
 					.getOid() : generateUniqueOid(currentDetails);
-			codeList.setOid(oid);
-			codeList.setDraft(true);
+					codeList.setOid(oid);
+					codeList.setDraft(true);
 		}
 
 		Timestamp ts = null;
@@ -346,10 +347,10 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 		if (!currentDetails.isImportFlag()) {
 			setModelFieldsOnCodeList(currentDetails, codeList);// do this only
-															   // when the user
-															   // is not
-															   // uploading sets
-															   // of codes
+			// when the user
+			// is not
+			// uploading sets
+			// of codes
 		}
 		codeListDAO.save(codeList);
 		result.setSuccess(true);
@@ -363,8 +364,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			result.setAllCodesDups(true);
 		}
 		if (currentDetails.isExistingCodeList()) {// Do set the model to the
-												  // result only if it is
-												  // existing CodeList.
+			// result only if it is
+			// existing CodeList.
 			// US 600 adding the codeListDetailModel as part of the result, to
 			// update the model on the client-side to reflect the addition of
 			// code changes.
@@ -397,12 +398,12 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	private void logCompleteEvent(CodeList codeList) {
-		if (codeList.getCodeSystem() != null
-				&& codeList.getCodeSystem().getDescription() != null
+		if ((codeList.getCodeSystem() != null)
+				&& (codeList.getCodeSystem().getDescription() != null)
 				&& codeList
-						.getCodeSystem()
-						.getDescription()
-						.equalsIgnoreCase(ConstantMessages.GROUPED_CODE_LIST_CS)) {
+				.getCodeSystem()
+				.getDescription()
+				.equalsIgnoreCase(ConstantMessages.GROUPED_CODE_LIST_CS)) {
 			codeListAuditLogDAO.recordCodeListEvent(codeList,
 					"Group Value Set Saved", null);
 		} else {
@@ -418,7 +419,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		ListObject existingListObject = listObjectDAO.getListObject(
 				currentDetails, LoggedInUserUtil.getLoggedInUser());
 		if (existingListObject != null) {
-			if (currentDetails.getID() == null
+			if ((currentDetails.getID() == null)
 					|| !existingListObject.getId().equals(
 							currentDetails.getID())) {
 				unique = false;
@@ -430,9 +431,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	@Override
 	public SaveUpdateCodeListResult saveorUpdateGroupedCodeList(
 			ManageCodeListDetailModel currentDetails)
-			throws CodeListNotUniqueException, CodeListOidNotUniqueException,
-			InvalidLastModifiedDateException,
-			ValueSetLastModifiedDateNotUniqueException {
+					throws CodeListNotUniqueException, CodeListOidNotUniqueException,
+					InvalidLastModifiedDateException,
+					ValueSetLastModifiedDateNotUniqueException {
 
 		String oldOID = null;
 		String newOID = null;
@@ -456,8 +457,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		} else {
 			String oid = currentDetails.getOid() != null ? currentDetails
 					.getOid() : generateUniqueOid(currentDetails);
-			currentDetails.setOid(oid);
-			codeList.setDraft(true);
+					currentDetails.setOid(oid);
+					codeList.setDraft(true);
 		}
 
 		Timestamp ts = null;
@@ -492,8 +493,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		setModelFieldsOnListObject(currentDetails, codeList);
 		filterCodeListsForCurrentCategory(codeList);
 		if (codeList.getCodeSystem() == null) {
-			if (codeList.getCategory() != null
-					&& codeList.getCategory().getCodeSystems() != null) {
+			if ((codeList.getCategory() != null)
+					&& (codeList.getCategory().getCodeSystems() != null)) {
 				for (CodeSystem cs : codeList.getCategory().getCodeSystems()) {
 					if (cs.getDescription().equals(
 							ConstantMessages.GROUPED_CODE_LIST_CS)) {
@@ -508,8 +509,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		result.setSuccess(true);
 		result.setId(codeList.getId());
 		if (currentDetails.isExistingCodeList()) {// Do set the model to the
-												  // result only if it is
-												  // existing CodeList.
+			// result only if it is
+			// existing CodeList.
 			// US 600 adding the codeListDetailModel as part of the result, to
 			// update the model on the client-side to reflect the addition of
 			// code changes.
@@ -544,12 +545,12 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	private void logGroupCompleteEvent(ListObject codeList) {
-		if (codeList.getCodeSystem() != null
-				&& codeList.getCodeSystem().getDescription() != null
+		if ((codeList.getCodeSystem() != null)
+				&& (codeList.getCodeSystem().getDescription() != null)
 				&& codeList
-						.getCodeSystem()
-						.getDescription()
-						.equalsIgnoreCase(ConstantMessages.GROUPED_CODE_LIST_CS)) {
+				.getCodeSystem()
+				.getDescription()
+				.equalsIgnoreCase(ConstantMessages.GROUPED_CODE_LIST_CS)) {
 			codeListAuditLogDAO.recordCodeListEvent(codeList,
 					"Group Value Set Saved", null);
 		} else {
@@ -612,8 +613,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 	private void setModelFieldsOnListObject(ManageCodeListDetailModel model,
 			ListObject listObject) {
-		if (StringUtils.isNotBlank(model.getMeasureId()))
+		if (StringUtils.isNotBlank(model.getMeasureId())) {
 			listObject.setMeasureId(model.getMeasureId());
+		}
 		listObject.setName(model.getName());
 		listObject.setCategory(getCategory(model.getCategory()));
 		listObject.setComment(model.getComments());
@@ -623,8 +625,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		// US 413
 		listObject.setStewardOther(model.getStewardOther());
 
-		if (listObject.getObjectOwner() == null)
+		if (listObject.getObjectOwner() == null) {
 			listObject.setObjectOwner(getLoggedInUser());
+		}
 		listObject.setOid(model.getOid());
 
 		if (model.getAddValueSetsMap().size() > 0) {
@@ -671,7 +674,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		for (GroupedCodeList gcl : listObject.getCodesLists()) {
 			String existingOID = gcl.getCodeList().getOid();
 			String currentOID = currentcodeList.getOid();
-			if (existingOID != null && currentOID != null
+			if ((existingOID != null) && (currentOID != null)
 					&& existingOID.trim().equalsIgnoreCase(currentOID.trim())) {
 				duplicateExists = true;
 				logger.info("Trying to add a CodeList with same name and Taxonomy which was already added in the Grouped CodeList.");
@@ -682,17 +685,17 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	private Category getCategory(String value) {
-		Category category = (Category) categoryDAO.find(value);
+		Category category = categoryDAO.find(value);
 		return category;
 	}
 
 	private CodeSystem getCodeSystem(String value) {
-		CodeSystem codeSystem = (CodeSystem) codeSystemDAO.find(value);
+		CodeSystem codeSystem = codeSystemDAO.find(value);
 		return codeSystem;
 	}
 
 	private MeasureSteward getSteward(String value) {
-		MeasureSteward steward_org = (MeasureSteward) stewardDAO.find(value);
+		MeasureSteward steward_org = stewardDAO.find(value);
 		return steward_org;
 	}
 
@@ -725,8 +728,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	private int findPageCountForCodeLists(List<GroupedCodeListDTO> codeLists) {
 		int totalRows = codeLists.size();
 		int numberOfRowsPerPage = DEFAULT_PAGE_SIZE;
-		int mod = (int) (totalRows % numberOfRowsPerPage);
-		int pageCount = (int) (totalRows / numberOfRowsPerPage);
+		int mod = totalRows % numberOfRowsPerPage;
+		int pageCount = totalRows / numberOfRowsPerPage;
 		pageCount = (mod > 0) ? (pageCount + 1) : pageCount;
 		return pageCount;
 	}
@@ -760,7 +763,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		codeListModel.setCodeLists(codeLists);
 		codeListModel.setTotalCodeList(codeLists.size());
 		codeListModel
-				.setCodeListsPageCount(findPageCountForCodeLists(codeLists));
+		.setCodeListsPageCount(findPageCountForCodeLists(codeLists));
 		/* US537 */
 		codeListModel.setDraft(codeList.isDraft());
 		codeListModel.setLastModifiedDate(DateUtility
@@ -810,7 +813,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	public List<? extends HasListBox> getCodeSystemsForCategory(
 			String categoryId) {
 		List<CodeSystemDTO> retList = new ArrayList<CodeSystemDTO>();
-		if (categoryId != null && !"".equals(categoryId)) {
+		if ((categoryId != null) && !"".equals(categoryId)) {
 			Category category = categoryDAO.find(categoryId);
 			for (CodeSystem codeSys : category.getCodeSystems()) {
 				String codeSysDesc = codeSys.getDescription();
@@ -822,11 +825,11 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				if (!ConstantMessages.GROUPING_CODE_SYSTEM
 						.equalsIgnoreCase(codeSysDesc)
 						&& !ConstantMessages.HL7_ADMINGENDER_CODE_SYSTEM
-								.equalsIgnoreCase(codeSysDesc)
+						.equalsIgnoreCase(codeSysDesc)
 						&& !ConstantMessages.CDC_CODE_SYSTEM
-								.equalsIgnoreCase(codeSysDesc)
+						.equalsIgnoreCase(codeSysDesc)
 						&& !ConstantMessages.SOURCE_OF_PAYMENT
-								.equalsIgnoreCase(codeSysDesc)) {
+						.equalsIgnoreCase(codeSysDesc)) {
 					CodeSystemDTO dto = new CodeSystemDTO();
 					dto.setDescription(codeSys.getDescription());
 					dto.setId(codeSys.getId());
@@ -840,7 +843,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	@Override
 	public List<? extends HasListBox> getCodeListsForCategory(String categoryId) {
 		List<HasListBoxDTO> retList = new ArrayList<HasListBoxDTO>();
-		if (categoryId != null && !"".equals(categoryId)) {
+		if ((categoryId != null) && !"".equals(categoryId)) {
 			List<CodeList> searchResults = new ArrayList<CodeList>();
 
 			searchResults = codeListDAO.getValueSetsForCategory(categoryId);
@@ -860,7 +863,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	public List<? extends HasListBox> getQDSDataTypeForCategory(
 			String categoryId) {
 		List<DataTypeDTO> retList = new ArrayList<DataTypeDTO>();
-		if (categoryId != null && !"".equals(categoryId)) {
+		if ((categoryId != null) && !"".equals(categoryId)) {
 			Category category = categoryDAO.find(categoryId);
 			for (DataType dataType : category.getDataTypes()) {
 				DataTypeDTO dto = new DataTypeDTO();
@@ -878,9 +881,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		List<DataType> dt = dataTypeDAO.findAllDataType();
 		for (DataType dataType : dt) {
 			if (!dataType.getCategoryId().equalsIgnoreCase("22")) { // Filter
-																	// Timing
-																	// Element
-																	// Category
+				// Timing
+				// Element
+				// Category
 				// as this will be added by default to measure at create time.
 				DataTypeDTO dto = new DataTypeDTO();
 				dto.setDescription(dataType.getDescription());
@@ -905,7 +908,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	@Override
 	public final SaveUpdateCodeListResult saveQDStoMeasure(
 			final String measureId, final String dataType,
-			final MatValueSet matValueSet, final boolean isSpecificOccurrence,
+			final MatValueSet matValueSet, final boolean isSpecificOccurrence, final String version ,
 			final ArrayList<QualityDataSetDTO> appliedQDM) {
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
@@ -926,7 +929,11 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			qds.setTaxonomy(matValueSet.getCodeSystemName());
 		}
 		qds.setUuid(UUID.randomUUID().toString());
-		qds.setVersion("1.0");
+		if ((version != null) && StringUtils.isNotEmpty(version)) {
+			qds.setVersion(version);
+		} else {
+			qds.setVersion("1.0");
+		}
 
 		if (isSpecificOccurrence) {
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
@@ -974,11 +981,11 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			QualityDataSetDTO dto = qdsIterator.next();
 			if (matValueSet.getID().equalsIgnoreCase(dto.getOid())) {
 				if (dt.getDescription().equalsIgnoreCase(dto.getDataType())
-						&& dto.getOccurrenceText() != null) {
+						&& (dto.getOccurrenceText() != null)) {
 					String nextOccString = dto.getOccurrenceText();
 					Character text = nextOccString.charAt(nextOccString
 							.length() - 1);
-					int newOcc = ((int) text);
+					int newOcc = (text);
 					if (newOcc >= occurrenceCount) {
 						occurrenceCount = ++newOcc;
 					}
@@ -987,31 +994,40 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 		return occurrenceCount;
 
-	}	
-	
+	}
+
+	/**
+	 * @param dataType
+	 * @param matValueSet
+	 * @param codeList
+	 * @param appliedQDM
+	 * @param isVSACValueSet
+	 * @return
+	 */
 	private boolean checkForDuplicates(final String dataType, final MatValueSet matValueSet, final CodeListSearchDTO codeList,
 			final ArrayList<QualityDataSetDTO> appliedQDM, boolean isVSACValueSet){
 		logger.info("refactored checkForDuplicates Method Call Start.");
 		boolean isQDSExist = false;
 		DataType dt = dataTypeDAO.find(dataType);
 		String qdmCompareNameOrID = "";
-		if(isVSACValueSet){
+		if (isVSACValueSet) {
 			qdmCompareNameOrID = matValueSet.getID();
-		}else{
+		} else {
 			qdmCompareNameOrID = codeList.getName();
 		}
 		List<QualityDataSetDTO> existingQDSList = appliedQDM;
 		for (QualityDataSetDTO dataSetDTO : existingQDSList) {
-			
-			//For "Element without VSAC value set", duplicates should not be checked in elements with VSAC value set in applied QDM list.
-			if(!isVSACValueSet && !dataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+
+			//For "Element without VSAC value set", duplicates should not be checked in
+			// elements with VSAC value set in applied QDM list.
+			if (!isVSACValueSet && !dataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
 				continue;
 			}
-			
+
 			String codeListNameOrOID = "";
-			if(isVSACValueSet){
+			if (isVSACValueSet) {
 				codeListNameOrOID = dataSetDTO.getOid();
-			}else{
+			} else {
 				codeListNameOrOID = dataSetDTO.getCodeListName();
 			}
 			if (dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())
@@ -1024,39 +1040,121 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				break;
 			}
 		}
-		
+
 		logger.info("refactored checkForDuplicates Method Call End.Check resulted in :"
 				+ isQDSExist);
 		return isQDSExist;
-	}	
+	}
 
-	/** TODO: Reactor : Try and break in smaller methods. **/
-	@SuppressWarnings("static-access")
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * mat.server.service.CodeListService#updateQDStoMeasure(java.lang.String,
+	 * mat.model.MatValueSet, mat.model.CodeListSearchDTO,
+	 * mat.model.QualityDataSetDTO, boolean, java.lang.String,
+	 * java.util.ArrayList)
+	 */
 	@Override
 	public final SaveUpdateCodeListResult updateQDStoMeasure(
 			final String dataType, final MatValueSet matValueSet,
-			final CodeListSearchDTO codeList,
-			final QualityDataSetDTO qualityDataSetDTO,
-			final boolean isSpecificOccurrence,
-			final ArrayList<QualityDataSetDTO> appliedQDM) {
+			final CodeListSearchDTO codeList, final QualityDataSetDTO qualityDataSetDTO, final boolean isSpecificOccurrence,
+			String version, final ArrayList<QualityDataSetDTO> appliedQDM) {
+
+		SaveUpdateCodeListResult result = null;
+
+		if (matValueSet != null) {
+			result = updateVSACValueSetInElementLookUp(dataType, matValueSet, qualityDataSetDTO, isSpecificOccurrence, version, appliedQDM);
+		} else if (codeList != null) {
+			result = updateUserDefineQDMInElementLookUp(dataType, codeList, qualityDataSetDTO, appliedQDM);
+		}
+		return result;
+	}
+
+	/**
+	 * @param dataType
+	 * @param codeList
+	 * @param qualityDataSetDTO
+	 * @param appliedQDM
+	 * @param wrapper
+	 */
+	private SaveUpdateCodeListResult updateUserDefineQDMInElementLookUp(final String dataType, final CodeListSearchDTO codeList,
+			final QualityDataSetDTO qualityDataSetDTO, final ArrayList<QualityDataSetDTO> appliedQDM) {
+		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
+		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
+		if (!checkForDuplicates(dataType, null, codeList, appliedQDM, false)) {
+			ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
+			wrapper.setQualityDataDTO(qdsList);
+			QualityDataSetDTO qds = qualityDataSetDTO;
+			DataType dt = dataTypeDAO.find(dataType);
+			qds.setDataType(dt.getDescription());
+			qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
+			qds.setId(UUID.randomUUID().toString());
+			qds.setCodeListName(codeList.getName());
+			qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
+			qds.setOccurrenceText(null);
+			wrapper = modifyAppliedElementList(qds, appliedQDM);
+			String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+			result.setSuccess(true);
+			result.setAppliedQDMList(sortQualityDataSetList(wrapper
+					.getQualityDataDTO()));
+			result.setXmlString(qdmXMLString);
+			result.setDataSetDTO(qds);
+		} else {
+			result.setSuccess(true);
+			result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
+		}
+		return result;
+	}
+
+	/**
+	 * @param dataType
+	 * @param matValueSet
+	 * @param qualityDataSetDTO
+	 * @param isSpecificOccurrence
+	 * @param appliedQDM
+	 * @param result
+	 */
+	private SaveUpdateCodeListResult updateVSACValueSetInElementLookUp(final String dataType, final MatValueSet matValueSet,
+			final QualityDataSetDTO qualityDataSetDTO, final boolean isSpecificOccurrence, String version,
+			final ArrayList<QualityDataSetDTO> appliedQDM
+			) {
 
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
-		if (matValueSet != null) {
-			/*
-			 * Previously, there was qds:QualityDataSetDTO object code here.
-			 * That code was updating qds/qualityDataSetDTO with the modified values.
-			 * That "qds" was initialized with "qualityDataSetDTO" object,
-			 * and "qualityDataSetDTO" is an instance of the qds(which is selected to modify) in the "appliedQDM" list.
-			 * So, when values are updated in "qds", it is updated in the "appliedQDM" list too as "qds" is the same
-			 * instance of the QualityDataSetDTO in "appliedQDM" list.
-			 * Because of this, "checkForDuplicates" method is always returning true as the modifying values
-			 * are already updated in "appliedQDM" list.
-			 *
-			 * For this reason, "qds" QualityDataSetDTO object code is moved into the below if and else blocks.
-			 */
+		if (isSpecificOccurrence) {
+			QualityDataSetDTO qds = qualityDataSetDTO;
+			if (dataType != null) {
+				DataType dt = dataTypeDAO.find(dataType);
+				qds.setDataType(dt.getDescription());
+			}
+			qds.setOid(matValueSet.getID());
+			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
+			qds.setCodeListName(matValueSet.getDisplayName());
+			if (matValueSet.isGrouping()) {
+				qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
+			} else {
+				qds.setTaxonomy(matValueSet.getCodeSystemName());
+			}
+			if ((version != null) && StringUtils.isNotEmpty(version)) {
+				qds.setVersion(version.trim());
+			} else {
+				qds.setVersion("1.0");
+			}
 
-			if (isSpecificOccurrence) {
+			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
+					matValueSet, appliedQDM);
+			if (occurrenceCount < ASCII_START) { // Alphabet ASCII Integer Values.
+				char occTxt = (char) occurrenceCount;
+				qds.setOccurrenceText("Occurrence" + " " + occTxt);
+				QualityDataModelWrapper wrapper = modifyAppliedElementList(qds, appliedQDM);
+				result.setOccurrenceMessage(qds.getOccurrenceText());
+				result.setSuccess(true);
+				result.setAppliedQDMList(sortQualityDataSetList(wrapper
+						.getQualityDataDTO()));
+				result.setDataSetDTO(qds);
+			}
+
+		} else { // Treat as regular QDM
+			if (!checkForDuplicates(dataType, matValueSet, null, appliedQDM, true)) {
 				QualityDataSetDTO qds = qualityDataSetDTO;
 				if (dataType != null) {
 					DataType dt = dataTypeDAO.find(dataType);
@@ -1070,72 +1168,22 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				} else {
 					qds.setTaxonomy(matValueSet.getCodeSystemName());
 				}
-				qds.setVersion("1.0");
-				
-				int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
-						matValueSet, appliedQDM);
-				if (occurrenceCount < ASCII_START) { // Alphabet ASCII Integer Values.
-					char occTxt = (char) occurrenceCount;
-					qds.setOccurrenceText("Occurrence" + " " + occTxt);
-					wrapper = modifyAppliedElementList(qds, appliedQDM);
-					result.setOccurrenceMessage(qds.getOccurrenceText());
-					result.setSuccess(true);
-					result.setAppliedQDMList(sortQualityDataSetList(wrapper
-							.getQualityDataDTO()));
-					result.setDataSetDTO(qds);
-				}
-
-			} else { // Treat as regular QDM				
-				if (!checkForDuplicates(dataType, matValueSet, null, appliedQDM, true)) {					
-					QualityDataSetDTO qds = qualityDataSetDTO;
-					if (dataType != null) {
-						DataType dt = dataTypeDAO.find(dataType);
-						qds.setDataType(dt.getDescription());
-					}
-					qds.setOid(matValueSet.getID());
-					qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
-					qds.setCodeListName(matValueSet.getDisplayName());
-					if (matValueSet.isGrouping()) {
-						qds.setTaxonomy(ConstantMessages.GROUPING_CODE_SYSTEM);
-					} else {
-						qds.setTaxonomy(matValueSet.getCodeSystemName());
-					}
-					qds.setVersion("1.0");
-					qds.setOccurrenceText("");
-					
-					wrapper = modifyAppliedElementList(qds, appliedQDM);
-					result.setOccurrenceMessage(qds.getOccurrenceText());
-					result.setSuccess(true);
-					result.setAppliedQDMList(sortQualityDataSetList(wrapper
-							.getQualityDataDTO()));
-					result.setDataSetDTO(qds);
+				if ((version != null) && StringUtils.isNotEmpty(version)) {
+					qds.setVersion(version.trim());
 				} else {
-					result.setSuccess(true);
-					result.setFailureReason(result.ALREADY_EXISTS);
+					qds.setVersion("1.0");
 				}
-			}
-		} else if (codeList != null) {
-			if (!checkForDuplicates(dataType, null, codeList, appliedQDM, false)) {
-				ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
-				wrapper.setQualityDataDTO(qdsList);
-				QualityDataSetDTO qds = qualityDataSetDTO;
-				DataType dt = dataTypeDAO.find(dataType);
-				qds.setDataType(dt.getDescription());
-				qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
-				qds.setId(UUID.randomUUID().toString());
-				qds.setCodeListName(codeList.getName());
-				qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
-				qds.setOccurrenceText(null);
-				wrapper = modifyAppliedElementList(qds, appliedQDM);
-				String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
+				qds.setOccurrenceText("");
+
+				QualityDataModelWrapper wrapper  = modifyAppliedElementList(qds, appliedQDM);
+				result.setOccurrenceMessage(qds.getOccurrenceText());
 				result.setSuccess(true);
 				result.setAppliedQDMList(sortQualityDataSetList(wrapper
 						.getQualityDataDTO()));
-				result.setXmlString(qdmXMLString);
 				result.setDataSetDTO(qds);
 			} else {
 				result.setSuccess(true);
-				result.setFailureReason(result.ALREADY_EXISTS);
+				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
 			}
 		}
 		return result;
@@ -1188,7 +1236,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			if(dataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
 				if (dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())
 						&& (dataSetDTO.getCodeListName().equalsIgnoreCase(codeListName))
-						&& dataSetDTO.getOccurrenceText() == null) {
+						&& (dataSetDTO.getOccurrenceText() == null)) {
 					// if the same dataType exists and the occurrenceText is also
 					// null
 					// then there is a any occurrence exists for that dataType.
@@ -1214,7 +1262,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			result.setXmlString(qdmXMLString);
 		} else {
 			result.setSuccess(true);
-			result.setFailureReason(result.ALREADY_EXISTS);
+			result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
 		}
 		return result;
 
@@ -1251,7 +1299,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		try {
 			mapping.loadMapping(new ResourceLoader()
-					.getResourceAsURL("QualityDataModelMapping.xml"));
+			.getResourceAsURL("QualityDataModelMapping.xml"));
 			Marshaller marshaller = new Marshaller(new OutputStreamWriter(
 					stream));
 			marshaller.setMapping(mapping);
@@ -1294,6 +1342,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 	}
 
+	@Override
 	public java.util.List<QualityDataSetDTO> getQDSElements(final String measureId,
 			final String version) {
 		return qualityDataSetDAO.getQDSElements(false, measureId);
@@ -1382,24 +1431,26 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		listObjectDAO.save(defaultObject);
 	}
 
+	@Override
 	public String generateUniqueOid(ManageCodeListDetailModel currentDetails) {
-		User user = currentDetails != null && currentDetails.getID() != null ? listObjectDAO
+		User user = (currentDetails != null) && (currentDetails.getID() != null) ? listObjectDAO
 				.find(currentDetails.getID()).getObjectOwner()
 				: getLoggedInUser();
-		String oid = listObjectDAO.generateUniqueOid(user);
-		return oid;
+				String oid = listObjectDAO.generateUniqueOid(user);
+				return oid;
 	}
 
 	public Boolean oidAlreadyExists(String oid, String id) {
-		if (oid == null || oid.length() == 0)
+		if ((oid == null) || (oid.length() == 0)) {
 			return false;
+		}
 		return listObjectDAO.countListObjectsByOidAndNotId(oid, id) > 0;
 	}
 
 	@Override
 	public String getGroupedCodeListCodeSystemsForCategory(String categoryId) {
 
-		if (categoryId != null && !"".equals(categoryId)) {
+		if ((categoryId != null) && !"".equals(categoryId)) {
 			Category category = categoryDAO.find(categoryId);
 			for (CodeSystem codeSys : category.getCodeSystems()) {
 				if ("Grouping".equals(codeSys.getDescription())) {
@@ -1458,8 +1509,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	private int findPageCountForCodes(List<Code> codes) {
 		int totalRows = codes.size();
 		int numberOfRowsPerPage = DEFAULT_PAGE_SIZE;
-		int mod = (int) (totalRows % numberOfRowsPerPage);
-		int pageCount = (int) (totalRows / numberOfRowsPerPage);
+		int mod = totalRows % numberOfRowsPerPage;
+		int pageCount = totalRows / numberOfRowsPerPage;
 		pageCount = (mod > 0) ? (pageCount + 1) : pageCount;
 		return pageCount;
 	}
@@ -1474,8 +1525,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		Timestamp ts = null;
 		DateStringValidator dsv = new DateStringValidator();
 		int validationCode = dsv.isValidDateString(lastModifiedStr);
-		if (validationCode != DateStringValidator.VALID)
+		if (validationCode != DateStringValidator.VALID) {
 			throw new InvalidLastModifiedDateException();
+		}
 		try {
 			Date lastModifiedDt = DateUtility
 					.convertStringToDate(lastModifiedStr);
@@ -1519,8 +1571,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		User user = getLoggedInUser();
 		clone.setOid(listObjectDAO.generateUniqueOid(user));
 		String name = listObjectDAO.generateUniqueName(clone.getName(), user);
-		if (name == null)
+		if (name == null) {
 			return null;
+		}
 		clone.setName(name);
 		// non-clone specific alterations, we want these fields to have these
 		// values
@@ -1545,7 +1598,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 		for (int i = 0; i < list.size(); i++) {
 			ListObject codeList = listObjectDAO.find(list.get(i));
-			List<ListObject> allCodes = (List<ListObject>) listObjectDAO
+			List<ListObject> allCodes = listObjectDAO
 					.getListObject(codeList.getOid());
 			for (int j = 0; j < allCodes.size(); j++) {
 				String additionalInfo = "Value Set Owner transferred from "

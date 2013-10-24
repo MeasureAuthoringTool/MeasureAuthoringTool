@@ -17,69 +17,75 @@ import mat.model.QualityDataSetDTO;
 import mat.model.User;
 import mat.server.exception.ExcelParsingException;
 
-
 public interface CodeListService {
-	public int countSearchResultsWithFilter(String searchText, boolean defaultCodeList, int filter); 
-	public List<CodeListSearchDTO> search(String searchText,
-			int startIndex, int pageSize, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter);
+	int countSearchResultsWithFilter(String searchText, boolean defaultCodeList, int filter);
 
-	public List<CodeListSearchDTO> search(String searchText,
-			int startIndex, int pageSize, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter, String categoryId);
-	
-	public List<? extends HasListBox> getCodeListsForCategory(String category);
-	
-	public List<Code> getCodes(String codeListId,int startIndex, int pageSize);
-	public ManageCodeListDetailModel  getCodeList(String key);
-	public ManageCodeListDetailModel  deleteCodes(String key,List<Code> Codes);
-	public ManageCodeListDetailModel  getGroupedCodeList(String key);
-	
-	public mat.client.codelist.service.CodeListService.ListBoxData getListBoxData();
-	public SaveUpdateCodeListResult saveorUpdateCodeList(
-			ManageCodeListDetailModel currentDetails) throws CodeListNotUniqueException, CodeListOidNotUniqueException, ExcelParsingException, InvalidLastModifiedDateException, ValueSetLastModifiedDateNotUniqueException;
-	public SaveUpdateCodeListResult saveDefaultCodeList(User user) throws CodeListNotUniqueException;
-	public SaveUpdateCodeListResult saveorUpdateGroupedCodeList(
-			ManageCodeListDetailModel currentDetails) 
-		throws CodeListNotUniqueException, CodeListOidNotUniqueException, InvalidLastModifiedDateException, ValueSetLastModifiedDateNotUniqueException;	
-	
-	public List<ListObject> getSupplimentalCodeList();
-	/*public SaveUpdateCodeListResult saveQDStoMeasure(String measureId,String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDM);*/
-	public List<? extends HasListBox> getCodeSystemsForCategory(String category);
-	public List<? extends HasListBox> getQDSDataTypeForCategory(String category);
-	public List<QualityDataSetDTO> getQDSElements(String measureId, String verision);
-	
-	public String generateUniqueOid(ManageCodeListDetailModel currentDetails);
-	
-	public String getGroupedCodeListCodeSystemsForCategory(String categoryId);
-	public ManageValueSetSearchModel searchValueSetsForDraft(int startIndex, int pageSize);
-	public ManageValueSetSearchModel createDraft(String id, String oid);
-	public boolean isCodeAlreadyExists(String codeListId, Code code);
-	//US193
-	public ManageValueSetSearchModel createClone(String id);
+	List<CodeListSearchDTO> search(String searchText, int startIndex, int pageSize, String sortColumn, boolean isAsc,
+			boolean defaultCodeList, int filter);
+
+	List<CodeListSearchDTO> search(String searchText, int startIndex, int pageSize, String sortColumn, boolean isAsc,
+			boolean defaultCodeList, int filter, String categoryId);
+
+	List<? extends HasListBox> getCodeListsForCategory(String category);
+
+	List<Code> getCodes(String codeListId, int startIndex, int pageSize);
+
+	ManageCodeListDetailModel getCodeList(String key);
+
+	ManageCodeListDetailModel deleteCodes(String key, List<Code> Codes);
+
+	ManageCodeListDetailModel getGroupedCodeList(String key);
+
+	mat.client.codelist.service.CodeListService.ListBoxData getListBoxData();
+
+	SaveUpdateCodeListResult saveorUpdateCodeList(ManageCodeListDetailModel currentDetails) throws CodeListNotUniqueException,
+			CodeListOidNotUniqueException, ExcelParsingException, InvalidLastModifiedDateException,
+			ValueSetLastModifiedDateNotUniqueException;
+
+	SaveUpdateCodeListResult saveDefaultCodeList(User user) throws CodeListNotUniqueException;
+
+	SaveUpdateCodeListResult saveorUpdateGroupedCodeList(ManageCodeListDetailModel currentDetails) throws CodeListNotUniqueException,
+			CodeListOidNotUniqueException, InvalidLastModifiedDateException, ValueSetLastModifiedDateNotUniqueException;
+
+	List<ListObject> getSupplimentalCodeList();
+
+	List<? extends HasListBox> getCodeSystemsForCategory(String category);
+
+	List<? extends HasListBox> getQDSDataTypeForCategory(String category);
+
+	List<QualityDataSetDTO> getQDSElements(String measureId, String verision);
+
+	String generateUniqueOid(ManageCodeListDetailModel currentDetails);
+
+	String getGroupedCodeListCodeSystemsForCategory(String categoryId);
+
+	ManageValueSetSearchModel searchValueSetsForDraft(int startIndex, int pageSize);
+
+	ManageValueSetSearchModel createDraft(String id, String oid);
+
+	boolean isCodeAlreadyExists(String codeListId, Code code);
+
+	// US193
+	ManageValueSetSearchModel createClone(String id);
+
 	void transferOwnerShipToUser(List<String> list, String toEmail);
-	
-	public List<OperatorDTO> getTimingOperators();
+
+	List<OperatorDTO> getTimingOperators();
+
 	List<UnitDTO> getAllUnits();
-	public List<OperatorDTO> getRelAssociationsOperators(); 
-	public List<OperatorDTO> getAllOperators();
-	/*SaveUpdateCodeListResult updateQDStoMeasure(String measureId,
-			String dataType, CodeListSearchDTO codeList,
-			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDM);*/
+
+	List<OperatorDTO> getRelAssociationsOperators();
+
+	List<OperatorDTO> getAllOperators();
+
 	List<? extends HasListBox> getAllDataTypes();
-	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(String measureId,
-			String dataType, String codeListName,
+
+	SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(String measureId, String dataType, String codeListName,
 			ArrayList<QualityDataSetDTO> appliedQDM);
-	/*SaveUpdateCodeListResult updateQDStoMeasure(String measureId,
-			String dataType, CodeListSearchDTO codeList,
-			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDM, boolean isUSerDefined);*/
-	SaveUpdateCodeListResult saveQDStoMeasure(String measureId,
-			String dataType, MatValueSet matValueSet,
-			boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDM);
-	SaveUpdateCodeListResult updateQDStoMeasure(String dataType,
-			MatValueSet matValueSet, CodeListSearchDTO codeList,
-			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDM);
-	
+
+	SaveUpdateCodeListResult saveQDStoMeasure(String measureId, String dataType, MatValueSet matValueSet, boolean isSpecificOccurrence,
+			String version, ArrayList<QualityDataSetDTO> appliedQDM);
+
+	SaveUpdateCodeListResult updateQDStoMeasure(String dataType, MatValueSet matValueSet, CodeListSearchDTO codeList,
+			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence, String version, ArrayList<QualityDataSetDTO> appliedQDM);
 }

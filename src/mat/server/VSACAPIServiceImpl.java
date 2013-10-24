@@ -68,7 +68,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 	/**
 	 *Method to check if User already signed in at VSAC.
 	 *@return Boolean.
-	 * **/
+	 ***/
 	public final boolean isAlreadySignedIn() {
 		LOGGER.info("Start VSACAPIServiceImpl isAlreadySignedIn");
 		String eightHourTicketForUser = UMLSSessionTicket
@@ -91,13 +91,14 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 
 	@Override
 	/**
-	 *Method to retrieve value set from VSAC based on OID.
+	 *Method to retrieve value set from VSAC based on OID and version.
 	 *@param oid - String.
+	 *@param version - String.
 	 *@return VsacApiResult - VsacApiResult.
 	 * **/
-	public final VsacApiResult getValueSetByOIDAndVersion(final String oid) {
+	public final VsacApiResult getValueSetByOIDAndVersion(final String oid, final String version) {
 		LOGGER.info("Start VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :"
-				+ oid);
+				+ oid + "for version entered :"  + version);
 		VsacApiResult result = new VsacApiResult();
 
 		String eightHourTicket = UMLSSessionTicket
@@ -107,9 +108,17 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 					&& StringUtils.isNotBlank(oid)) {
 				ValueSetsResponseDAO dao = new ValueSetsResponseDAO(
 						eightHourTicket);
-				ValueSetsResponse vsr = dao
-						.getMultipleValueSetsResponseByOID(oid.trim());
-				result.setSuccess(true);
+				ValueSetsResponse vsr = null;
+				if (version != null && StringUtils.isNotEmpty(version)) {
+					vsr = dao
+					.getMultipleValueSetsResponseByOIDAndVersion(oid.trim(), version);
+					result.setSuccess(true);
+				} else {
+					vsr = dao
+							.getMultipleValueSetsResponseByOID(oid.trim());
+					result.setSuccess(true);
+				}
+
 				if (!vsr.getXmlPayLoad().isEmpty()) {
 					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr
 							.getXmlPayLoad());
@@ -132,7 +141,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements
 		}
 
 		LOGGER.info("End VSACAPIServiceImpl getValueSetBasedOIDAndVersion method : oid entered :"
-				+ oid);
+				+ oid + "for version entered :"  + version);
 		return result;
 	}
 

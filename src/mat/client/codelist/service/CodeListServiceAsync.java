@@ -23,35 +23,35 @@ public interface CodeListServiceAsync {
 	public void search(String searchText,
 			int startIndex, int pageSize, String sortColumn, boolean isAsc, boolean defaultCodeList, int filter,
 			AsyncCallback<ManageCodeListSearchModel> callback);
-	
+
 	public void search(String searchText,
 			int startIndex, int pageSize, String sortColumn, boolean isAsc, boolean defaultCodeList, int filter,
 			String categoryId,
 			AsyncCallback<ManageCodeListSearchModel> callback);
-	
-	public void getCodeList(String key, 
+
+	public void getCodeList(String key,
 			AsyncCallback<ManageCodeListDetailModel> callback);
-	public void getGroupedCodeList(String key, 
+	public void getGroupedCodeList(String key,
 			AsyncCallback<ManageCodeListDetailModel> callback);
-	
+
 	public void getGroupedCodeList(String key, int startIndex, int pageSize,
 			AsyncCallback<ManageCodeListDetailModel> callback);
 	public void getCodes(String codeListId,int startIndex,int pageSize,AsyncCallback<List<Code>> callback);
-	
+
 	public void isCodeAlreadyExists(String codeListId, Code code,AsyncCallback<Boolean> callback);
 	void getListBoxData(AsyncCallback<CodeListService.ListBoxData> callback);
 
 	void saveorUpdateCodeList(ManageCodeListDetailModel currentDetails,
 			AsyncCallback<SaveUpdateCodeListResult> callback);
-	
+
 	void saveorUpdateGroupedCodeList(ManageCodeListDetailModel currentDetails,
 			AsyncCallback<SaveUpdateCodeListResult> callback);
-	
+
 	public void getCodeSystemsForCategory(String category, AsyncCallback<List<? extends HasListBox>> callback);
 	public void getCodeListsForCategory(String category, AsyncCallback<List<? extends HasListBox>> callback);
 	public void getQDSDataTypeForCategory(String category, AsyncCallback<List<? extends HasListBox>> callback);
 
-	
+
 	void deleteCodes(String codeListID, List<Code> Codes,
 			AsyncCallback<ManageCodeListDetailModel> callback);
 
@@ -59,7 +59,7 @@ public interface CodeListServiceAsync {
 			AsyncCallback<SaveUpdateCodeListResult> callback);*/
 
 	public void getQDSElements(String measureId, String vertsion, AsyncCallback<List<QualityDataSetDTO>> callback);
-	
+
 	public void generateUniqueOid(ManageCodeListDetailModel currentDetails, AsyncCallback<String> callBack);
 
 	public void searchValueSetsForDraft(int startIndex, int pageSize,
@@ -73,7 +73,7 @@ public interface CodeListServiceAsync {
 			String sortColumn, boolean isAsc, boolean defaultCodeList,
 			int filter, AsyncCallback<AdminManageCodeListSearchModel> callback);
 
-		void transferOwnerShipToUser(List<String> list, String toEmail,
+	void transferOwnerShipToUser(List<String> list, String toEmail,
 			AsyncCallback<Void> callback);
 
 	void searchUsers(int startIndex, int pageSize,
@@ -84,18 +84,21 @@ public interface CodeListServiceAsync {
 	void getAllUnits(AsyncCallback<List<String>> callback);
 
 	void getRelAssociationsOperators(AsyncCallback<Map<String, String>> callback);
-	
+
 	void getAllOperators(AsyncCallback<List<OperatorDTO>> callback);
 
 	void updateCodeListToMeasure(String dataType, MatValueSet matValueSet,
 			CodeListSearchDTO codeListSearchDTO, QualityDataSetDTO qualityDataSetDTO,
-			Boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDMList,
+ Boolean isSpecificOccurrence, String version, ArrayList<QualityDataSetDTO> appliedQDMList,
 			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
 
 	public void getAllDataTypes(
 			AsyncCallback<List<? extends HasListBox>> asyncCallback);
-	
+
 	void saveUserDefinedQDStoMeasure(String measureId, String dataType,String codeList,ArrayList<QualityDataSetDTO> appliedQDMs,
 			AsyncCallback<SaveUpdateCodeListResult> callback);
-	void saveQDStoMeasure(String measureId, String dataType, MatValueSet matValueSet, boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDM, AsyncCallback<SaveUpdateCodeListResult> callback);
+	void saveQDStoMeasure(String measureId, String dataType,
+			MatValueSet matValueSet, boolean isSpecificOccurrence,
+			String version, ArrayList<QualityDataSetDTO> appliedQDM,
+			AsyncCallback<SaveUpdateCodeListResult> callback);
 }

@@ -29,23 +29,23 @@ public interface CodeListService extends RemoteService {
 		private List<? extends HasListBox> measureStewardList;
 		private List<? extends HasListBox> authorsList;
 		private List<? extends HasListBox> measureTypeList;
-		
+
 		//US 421. Retrieve the scoring choices from DB
 		private List<? extends HasListBox> scoringList;
-		
+
 		//US 62. Retrieve Units from DB
 		private List<? extends HasListBox> unitList;
 		private List<? extends HasListBox> unitTypeList;
 		private List<? extends HasListBox> unitTypeMatrixList;
-		
+
 		//US 171. Retrieve Operators from DB
 		private List<? extends HasListBox> operatorList;
 		private List<? extends HasListBox> operatorTypeList;
-		
+
 		private List<? extends HasListBox> logicalOperatorList;
 		private List<? extends HasListBox> relTimingOperatorList;
 		private List<? extends HasListBox> relAssocOperatorList;
-		
+
 		public List<? extends HasListBox> getMeasureTypeList() {
 			return measureTypeList;
 		}
@@ -82,7 +82,7 @@ public interface CodeListService extends RemoteService {
 		public void setCodeSystemList(List<? extends HasListBox> codeSystemList) {
 			this.codeSystemList = codeSystemList;
 		}
-		
+
 		//US 421. Retrieve the scoring choices from DB
 		public List<? extends HasListBox> getScoringList() {
 			return scoringList;
@@ -90,7 +90,7 @@ public interface CodeListService extends RemoteService {
 		public void setScoringList(List<? extends HasListBox> scoringList) {
 			this.scoringList = scoringList;
 		}
-		
+
 		//US 62. Retrieve the Units from DB
 		public List<? extends HasListBox> getUnitList() {
 			return unitList;
@@ -105,14 +105,14 @@ public interface CodeListService extends RemoteService {
 		public void setUnitTypeList(List<? extends HasListBox> unitTypeList) {
 			this.unitTypeList = unitTypeList;
 		}
-		
+
 		public List<? extends HasListBox> getUnitTypeMatrixList() {
 			return unitTypeMatrixList;
 		}
 		public void setUnitTypeMatrixList(List<? extends HasListBox> unitTypeMatrixList) {
 			this.unitTypeMatrixList = unitTypeMatrixList;
 		}
-		
+
 		//US 171. Retrieve the Operators from DB
 		public List<? extends HasListBox> getOperatorList() {
 			return operatorList;
@@ -147,25 +147,25 @@ public interface CodeListService extends RemoteService {
 				List<? extends HasListBox> relAssocOperatorList) {
 			this.relAssocOperatorList = relAssocOperatorList;
 		}
-		
-		
+
+
 	}
-	
+
 	public ManageCodeListSearchModel search(String searchText,
 			int startIndex, int pageSize, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter);
-	
+
 	public ManageCodeListSearchModel search(String searchText,
 			int startIndex, int pageSize, String sortColumn, boolean isAsc, boolean defaultCodeList, int filter,
 			String categoryId);
-	
+
 	public AdminManageCodeListSearchModel searchForAdmin(String searchText,
 			int startIndex, int pageSize, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter);
-	
+
 	public ListBoxData getListBoxData();
-	
+
 	public List<? extends HasListBox> getCodeSystemsForCategory(String category);
 	public List<? extends HasListBox> getCodeListsForCategory(String category);
-	
+
 	public ManageCodeListDetailModel getCodeList(String key);
 	public ManageCodeListDetailModel deleteCodes(String codeListID,List<Code> Codes);
 	/*SaveUpdateCodeListResult addCodeListToMeasure(String measureId,
@@ -173,18 +173,18 @@ public interface CodeListService extends RemoteService {
 			boolean isSpecificOccurrence,
 			ArrayList<QualityDataSetDTO> appliedQDMs);*/
 	public ManageCodeListDetailModel getGroupedCodeList(String key);
-	
-	
+
+
 	public SaveUpdateCodeListResult saveorUpdateCodeList(ManageCodeListDetailModel currentDetails);
 	public SaveUpdateCodeListResult saveorUpdateGroupedCodeList(ManageCodeListDetailModel currentDetails);
-	
+
 	List<? extends HasListBox> getQDSDataTypeForCategory(String category);
 
-	
+
 	public List<QualityDataSetDTO> getQDSElements(String measureId, String vertsion);
-	
+
 	public String generateUniqueOid(ManageCodeListDetailModel currentDetails);
-	
+
 	/*US537*/
 	public ManageValueSetSearchModel searchValueSetsForDraft(int startIndex, int pageSize);
 	public ManageValueSetSearchModel createDraft(String id, String oid);
@@ -202,7 +202,7 @@ public interface CodeListService extends RemoteService {
 	public void transferOwnerShipToUser(List<String> list, String toEmail);
 
 	public TransferOwnerShipModel searchUsers(int startIndex, int pageSize);
-	
+
 	public Map<String, String> getTimingOperators();
 
 	List<String> getAllUnits();
@@ -222,19 +222,11 @@ public interface CodeListService extends RemoteService {
 			String dataType, String codeList,
 			ArrayList<QualityDataSetDTO> appliedQDMs);
 
-	/*SaveUpdateCodeListResult updateCodeListToMeasure(String measureID,
-			String dataType, CodeListSearchDTO codeListSearchDTO,
-			MatValueSet matValueSet, QualityDataSetDTO qualityDataSetDTO,
-			Boolean isSpecificOccurrence,
-			ArrayList<QualityDataSetDTO> appliedQDMList, boolean isUserDefined);*/
+	SaveUpdateCodeListResult updateCodeListToMeasure(String dataType, MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO,
+			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence, String version, ArrayList<QualityDataSetDTO> appliedQDMList);
 
 	SaveUpdateCodeListResult saveQDStoMeasure(String measureId,
 			String dataType, MatValueSet matValueSet,
-			boolean isSpecificOccurrence,
+			boolean isSpecificOccurrence, String version,
 			ArrayList<QualityDataSetDTO> appliedQDM);
-
-	SaveUpdateCodeListResult updateCodeListToMeasure(String dataType,
-			MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO,
-			QualityDataSetDTO qualityDataSetDTO,
-			Boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDMList); 
 }

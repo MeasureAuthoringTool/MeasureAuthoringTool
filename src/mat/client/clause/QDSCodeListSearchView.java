@@ -52,7 +52,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 
 	private SimplePanel containerPanel = new SimplePanel();
 	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without VSAC value set");
-	private DisclosurePanel disclosurePanelCellTable = new DisclosurePanel("Element with VSAC value set");
+	private DisclosurePanel disclosurePanelVSAC = new DisclosurePanel("Element with VSAC value set");
 	private TextBox userDefinedInput = new TextBox();
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
 	private SimplePanel dataTypePanel = new SimplePanel();
@@ -173,10 +173,10 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		valueSetDetailsPanel.setStyleName("valueSetDetailsPanel");
 		valueSetDetailsPanel.setWidth("95%");
 		mainPanel.add(valueSetDetailsPanel);				
-		disclosurePanelCellTable.setWidth("100%");
-		disclosurePanelCellTable.add(mainPanel);
-		disclosurePanelCellTable.setOpen(true);
-		return disclosurePanelCellTable;		
+		disclosurePanelVSAC.setWidth("100%");
+		disclosurePanelVSAC.add(mainPanel);
+		disclosurePanelVSAC.setOpen(true);
+		return disclosurePanelVSAC;		
 	}
 	
 	private Widget buildSearchPanel() {
@@ -314,9 +314,9 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		
 		details.setWidget(0, 0, createHTML("Name:", "Name", null));
 		details.setWidget(1, 0, createHTML(matValueSet.getDisplayName(), "NameValue", null));
-		details.setWidget(0, 1, createHTML("OID:", "oid", "valueSetMarginLeft"));
+		details.setWidget(0, 1, createHTML("OID:", "OID", "valueSetMarginLeft"));
 		details.setWidget(1, 1, createHTML(matValueSet.getID(), "oidValue", "valueSetMarginLeft"));
-		details.setWidget(0, 2, createHTML("Code System:", "CodeSystem", "valueSetMarginLeft"));
+		details.setWidget(0, 2, createHTML("Code System:", "Code System", "valueSetMarginLeft"));
 		details.setWidget(1, 2, createHTML(getCodeSystem(matValueSet), "CodeSystemValue", "valueSetMarginLeft"));
 		details.setWidget(2, 0, createHTML("Type:", "Type", "valueSetMarginTop"));
 		details.setWidget(3, 0, createHTML(matValueSet.getType(), "TypeValue", null));
@@ -366,7 +366,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			}
 		}
 		html.setHeight("100%");
-		html.setTitle(value);
+		html.setTitle(id);
 		html.getElement().setAttribute("tabIndex", "0");
 		return html;
 	}
@@ -482,12 +482,12 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		this.disclosurePanel = disclosurePanel;
 	}
 
-	public DisclosurePanel getDisclosurePanelCellTable() {
-		return disclosurePanelCellTable;
+	public DisclosurePanel getDisclosurePanelVSAC() {
+		return disclosurePanelVSAC;
 	}
 
-	public void setDisclosurePanelCellTable(DisclosurePanel disclosurePanelCellTable) {
-		this.disclosurePanelCellTable = disclosurePanelCellTable;
+	public void setDisclosurePanelVSAC(DisclosurePanel disclosurePanelVSAC) {
+		this.disclosurePanelVSAC = disclosurePanelVSAC;
 	}
 
 	public TextBox getUserDefinedInput() {

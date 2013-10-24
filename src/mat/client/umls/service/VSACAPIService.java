@@ -15,7 +15,7 @@ public interface VSACAPIService extends RemoteService {
 
 	boolean validateVsacUser(String userName, String password);
 
-	VsacApiResult getValueSetByOIDAndVersion(String OID);
+	VsacApiResult getValueSetByOIDAndVersion(String OID, String version);
 
 	void inValidateVsacUser();
 

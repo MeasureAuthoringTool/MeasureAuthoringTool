@@ -38,14 +38,14 @@ import org.apache.commons.logging.LogFactory;
 import edu.emory.mathcs.backport.java.util.Collections;
 
 @SuppressWarnings("serial")
-public class CodeListServiceImpl extends SpringRemoteServiceServlet 
+public class CodeListServiceImpl extends SpringRemoteServiceServlet
 implements mat.client.codelist.service.CodeListService {
 	private static final Log logger = LogFactory.getLog(CodeListServiceImpl.class);
 
 	@Override
 	public ManageCodeListSearchModel search(String searchText,
 			int startIndex,	int pageSize, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
-		
+
 		ManageCodeListSearchModel result = new ManageCodeListSearchModel();
 		result.setData(getCodeListService().search(searchText,
 				startIndex, pageSize, sortColumn, isAsc,defaultCodeList, filter));
@@ -53,11 +53,11 @@ implements mat.client.codelist.service.CodeListService {
 		result.setStartIndex(startIndex);
 		return result;
 	}
-	
+
 	@Override
 	public ManageCodeListSearchModel search(String searchText,
 			int startIndex,	int pageSize, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter, String categoryId) {
-		
+
 		ManageCodeListSearchModel result = new ManageCodeListSearchModel();
 		result.setData(getCodeListService().search(searchText,
 				startIndex, pageSize, sortColumn, isAsc,defaultCodeList, filter, categoryId));
@@ -80,30 +80,30 @@ implements mat.client.codelist.service.CodeListService {
 	public CodeListService getCodeListService() {
 		return (CodeListService)context.getBean("codeListService");
 	}
-	
+
 	@Override
 	public mat.client.codelist.service.CodeListService.ListBoxData getListBoxData() {
-		
+
 		logger.info("getListBoxData");
-		mat.client.codelist.service.CodeListService.ListBoxData data = 
-			new mat.client.codelist.service.CodeListService.ListBoxData();
+		mat.client.codelist.service.CodeListService.ListBoxData data =
+				new mat.client.codelist.service.CodeListService.ListBoxData();
 		data = getCodeListService().getListBoxData();
 		return data;
 	}
-	
+
 	@Override
 	public List<String> getAllUnits() {
-		
+
 		logger.info("getAllUnits");
 		List<String> units = new ArrayList<String>();
 		List<UnitDTO> data =  getCodeListService().getAllUnits();
 		for(int i=0;i<data.size();i++){
 			units.add(data.get(i).getUnit());
-			
+
 		}
 		return units;
 	}
-	
+
 
 	@Override
 	public SaveUpdateCodeListResult saveorUpdateCodeList(
@@ -145,10 +145,10 @@ implements mat.client.codelist.service.CodeListService {
 			result.setSuccess(false);
 			result.setFailureReason(SaveUpdateCodeListResult.LAST_MODIFIED_DATE_DUPLICATE);
 		}
-		
+
 		return result;
 	}
-	
+
 	@Override
 	public SaveUpdateCodeListResult saveorUpdateGroupedCodeList(
 			ManageCodeListDetailModel currentDetails) {
@@ -201,7 +201,7 @@ implements mat.client.codelist.service.CodeListService {
 		return getCodeListService().getQDSDataTypeForCategory(category);
 	}
 
-	
+
 	@Override
 	public ManageCodeListDetailModel deleteCodes(String codeListID,
 			List<Code> Codes) {
@@ -217,9 +217,10 @@ implements mat.client.codelist.service.CodeListService {
 	@Override
 	public SaveUpdateCodeListResult updateCodeListToMeasure(String dataType,
 			MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO,QualityDataSetDTO qualityDataSetDTO,
-			Boolean isSpecificOccurrence, ArrayList<QualityDataSetDTO> appliedQDMList) {
-		
-		return getCodeListService().updateQDStoMeasure(dataType, matValueSet,codeListSearchDTO, qualityDataSetDTO, isSpecificOccurrence, appliedQDMList);
+			Boolean isSpecificOccurrence, String version, ArrayList<QualityDataSetDTO> appliedQDMList) {
+
+		return getCodeListService().updateQDStoMeasure(dataType, matValueSet, codeListSearchDTO, qualityDataSetDTO, isSpecificOccurrence,
+				version, appliedQDMList);
 	}
 
 	@Override
@@ -228,14 +229,14 @@ implements mat.client.codelist.service.CodeListService {
 		List<QualityDataSetDTO> qdsElements = getCodeListService().getQDSElements(measureId, version);
 		List<QualityDataSetDTO> filteredQDSElements = new ArrayList<QualityDataSetDTO>();
 		for(QualityDataSetDTO dataSet : qdsElements) {
-			if(dataSet.getOid() != null && !dataSet.getOid().equals(ConstantMessages.GENDER_OID)
+			if((dataSet.getOid() != null) && !dataSet.getOid().equals(ConstantMessages.GENDER_OID)
 					&& !dataSet.getOid().equals(ConstantMessages.RACE_OID) && !dataSet.getOid().equals(ConstantMessages.ETHNICITY_OID)
 					&& !dataSet.getOid().equals(ConstantMessages.PAYER_OID)){
 				filteredQDSElements.add(dataSet);
 			} else {
 				System.out.println();
 			}
-				
+
 		}
 		Collections.sort(filteredQDSElements, new Comparator<QualityDataSetDTO>() {
 			@Override
@@ -299,12 +300,12 @@ implements mat.client.codelist.service.CodeListService {
 		}
 		return codesList;
 	}
-	
+
 	@Override
 	public boolean isCodeAlreadyExists(String codeListId, Code code) {
 		return getCodeListService().isCodeAlreadyExists(codeListId, code);
 	}
-	
+
 	//US193
 	@Override
 	public ManageValueSetSearchModel createClone(String id) {
@@ -317,7 +318,7 @@ implements mat.client.codelist.service.CodeListService {
 	public AdminManageCodeListSearchModel searchForAdmin(String searchText,
 			int startIndex, int pageSize, String sortColumn, boolean isAsc,
 			boolean defaultCodeList, int filter) {
-		
+
 		AdminManageCodeListSearchModel result = new AdminManageCodeListSearchModel();
 		result.setData(getCodeListService().search(searchText,
 				startIndex, pageSize, sortColumn, isAsc,defaultCodeList, filter));
@@ -325,16 +326,16 @@ implements mat.client.codelist.service.CodeListService {
 		result.setStartIndex(startIndex);
 		return result;
 	}
-	
+
 	@Override
 	public TransferOwnerShipModel searchUsers(int startIndex, int pageSize) {
-		
+
 		UserService userService = getUserService();
 		List<User> searchResults = userService.searchNonAdminUsers("",startIndex, pageSize);
 		logger.info("User search returned " + searchResults.size());
-		
+
 		TransferOwnerShipModel result = new TransferOwnerShipModel();
-		List<TransferOwnerShipModel.Result> detailList = new ArrayList<TransferOwnerShipModel.Result>();  
+		List<TransferOwnerShipModel.Result> detailList = new ArrayList<TransferOwnerShipModel.Result>();
 		for(User user : searchResults) {
 			TransferOwnerShipModel.Result r = new TransferOwnerShipModel.Result();
 			r.setFirstName(user.getFirstName());
@@ -346,7 +347,7 @@ implements mat.client.codelist.service.CodeListService {
 		result.setData(detailList);
 		result.setStartIndex(startIndex);
 		result.setResultsTotal(getUserService().countSearchResultsNonAdmin(""));
-		
+
 		return result;
 	}
 	@Override
@@ -354,7 +355,7 @@ implements mat.client.codelist.service.CodeListService {
 		CodeListService cls = getCodeListService();
 		cls.transferOwnerShipToUser(list, toEmail);
 	}
-	
+
 	private UserService getUserService() {
 		return (UserService)context.getBean("userService");
 	}
@@ -368,7 +369,7 @@ implements mat.client.codelist.service.CodeListService {
 		}
 		return timingOpsMap;
 	}
-	
+
 	@Override
 	public Map<String, String> getRelAssociationsOperators() {
 		List<OperatorDTO> operators = getCodeListService().getRelAssociationsOperators();
@@ -400,11 +401,11 @@ implements mat.client.codelist.service.CodeListService {
 	@Override
 	public SaveUpdateCodeListResult saveQDStoMeasure(String measureId,
 			String dataType, MatValueSet matValueSet,
-			boolean isSpecificOccurrence,
+			boolean isSpecificOccurrence,String version ,
 			ArrayList<QualityDataSetDTO> appliedQDM) {
-		return getCodeListService().saveQDStoMeasure(measureId, dataType, matValueSet, isSpecificOccurrence, appliedQDM);
+		return getCodeListService().saveQDStoMeasure(measureId, dataType, matValueSet, isSpecificOccurrence,version, appliedQDM);
 	}
 
-	
-	
+
+
 }

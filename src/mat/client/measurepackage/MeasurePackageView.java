@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import mat.client.ImageResources;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.measurepackage.MeasurePackagePresenter.MeasurePackageSelectionHandler;
 import mat.client.shared.CustomButton;
@@ -85,6 +86,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	private Label qdmTabName = new Label("Supplemental Data Elements");
 	private int listVisibleCount=10;
 	//int currentPackageTab = 1;
+	
+	private CustomCheckBox includeVSACData = new CustomCheckBox("Select 'Include VSAC value set data' to create "
+			+ "a measure package with VSAC data.", "Include VSAC value set data", true);
 
 	@Override
 	public final void setViewIsEditable(final boolean b, final List<MeasurePackageDetail> packages) {
@@ -136,6 +140,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		content.add(topQDMElementContainer);
 		//content.add(packageTabPanel);
 
+		content.add(new SpacerWidget());
+
+		content.add(includeVSACData);
 		content.add(new SpacerWidget());
 
 		content.add(measurePackageSuccessMsg);
@@ -656,4 +663,8 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		return measurePackageWarningMsg;
 	}
 
+	@Override
+	public CustomCheckBox getIncludeVSACData() {
+		return includeVSACData;
+	}
 }

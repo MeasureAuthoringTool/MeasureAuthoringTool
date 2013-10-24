@@ -145,6 +145,7 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 
 		content.add(includeVSACData);
 		content.add(new SpacerWidget());
+		content.add(new SpacerWidget());
 
 		content.add(measurePackageSuccessMsg);
 		content.add(measurePackageWarningMsg);

@@ -17,13 +17,24 @@ import org.apache.velocity.app.VelocityEngine;
  */
 public class TemplateUtil {
 	
+	/** The instance. */
 	private static TemplateUtil instance = new TemplateUtil();
+	
+	/** The engine. */
 	private VelocityEngine engine;
 	
+	/**
+	 * Instantiates a new template util.
+	 */
 	private TemplateUtil() {
 		initVelocity();
 	}
 	
+	/**
+	 * Gets the single instance of TemplateUtil.
+	 * 
+	 * @return single instance of TemplateUtil
+	 */
 	public static TemplateUtil getInstance(){
 		return instance;
 	}
@@ -40,9 +51,12 @@ public class TemplateUtil {
 	
 	/**
 	 * Merges the template with the context parameters.
+	 * 
 	 * @param template
+	 *            the template
 	 * @param paramsMap
-	 * @return
+	 *            the params map
+	 * @return the string
 	 */
 	public String mergeTemplate(String template, HashMap<String, Object> paramsMap){
 		Template vm = engine.getTemplate(ConstantMessages.ROOT_PATH + template);		

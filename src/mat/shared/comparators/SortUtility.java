@@ -7,8 +7,18 @@ import java.util.TreeSet;
 import mat.model.ListObject;
 import mat.model.QualityDataSet;
 
+/**
+ * The Class SortUtility.
+ */
 public class SortUtility {
 	
+	/**
+	 * Sort qd ms to list objects.
+	 * 
+	 * @param qdms
+	 *            the qdms
+	 * @return the sorted set
+	 */
 	public SortedSet<ListObject> sortQDMsToListObjects(List<QualityDataSet> qdms){
 		//Unit Test: Assert they are inserted in primary OID order
 		ListObjectOIDComparator comp = new ListObjectOIDComparator();

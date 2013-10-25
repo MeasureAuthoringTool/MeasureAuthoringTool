@@ -13,12 +13,18 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 
 /**
- * @author cbajikar
- * This is a utility class for building the Footer.
- * It uses direct HTML from the MAT Public Website footer.
+ * The Class FooterPanelBuilderUtility.
+ * 
+ * @author cbajikar This is a utility class for building the Footer. It uses
+ *         direct HTML from the MAT Public Website footer.
  */
 public class FooterPanelBuilderUtility {
 	
+	/**
+	 * Builds the footer logo panel.
+	 * 
+	 * @return the html
+	 */
 	public static HTML buildFooterLogoPanel(){
 		String html = new String (logosHTML);
 		
@@ -36,6 +42,11 @@ public class FooterPanelBuilderUtility {
 		return logoHTMLDiv;
 	}
 	
+	/**
+	 * Builds the footer links panel.
+	 * 
+	 * @return the html
+	 */
 	public static HTML buildFooterLinksPanel(){
 		String html = new String(footerLinkHTML);
 		
@@ -58,6 +69,12 @@ public class FooterPanelBuilderUtility {
 		return htmlPanel;
 	}
 
+	/**
+	 * Adds the click handler to restart timeout.
+	 * 
+	 * @param image
+	 *            the image
+	 */
 	private static void addClickHandlerToRestartTimeout(Image image) {
 		image.addClickHandler(new ClickHandler() {
 			@Override
@@ -89,7 +106,8 @@ public class FooterPanelBuilderUtility {
 //	}
 	
 	
-	private static String logosHTML = 
+	/** The logos html. */
+private static String logosHTML = 
 		"<div class=\"cms-address-bar\"> "+
 			"<div id=\"footer-cms-logo-wrapper\" align=\"left\"> " +
 				"<a id=\"footer_cms_logo_link\" title=\"CMS home page\" href=\"http://www.cms.gov/\" target=\"_blank\"> " +
@@ -113,6 +131,7 @@ public class FooterPanelBuilderUtility {
 		"</div>";
 	
 	
+	/** The footer link html. */
 	private static String footerLinkHTML = 
 		"<div class=\"custom-footer-nav\"> "+
 		"<div> "+

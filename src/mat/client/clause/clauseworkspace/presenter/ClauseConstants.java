@@ -57,7 +57,7 @@ public class ClauseConstants {
 
 	public static Map<String, String> functions = new HashMap<String, String>();
 
-	public static final String FUNC_NAME = "functionalOp"; 
+	public static final String FUNC_NAME = "functionalOp";
 
 	public static final int MINUS_NUMPAD = 109;
 

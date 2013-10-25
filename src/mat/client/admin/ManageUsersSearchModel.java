@@ -61,7 +61,7 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 	private List<Result> data;
 	private int startIndex;
 	private int resultsTotal;
-	
+
 	public void setData(List<Result> data) {
 		this.data = data;
 	}

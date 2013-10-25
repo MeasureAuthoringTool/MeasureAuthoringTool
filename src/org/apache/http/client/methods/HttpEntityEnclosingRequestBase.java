@@ -36,34 +36,50 @@ import org.apache.http.client.utils.CloneUtils;
 import org.apache.http.protocol.HTTP;
 
 /**
- * Basic implementation of an entity enclosing HTTP request
- * that can be modified
- *
+ * Basic implementation of an entity enclosing HTTP request that can be
+ * modified.
+ * 
  * @since 4.0
  */
 @NotThreadSafe // HttpRequestBase is @NotThreadSafe
 public abstract class HttpEntityEnclosingRequestBase
     extends HttpRequestBase implements HttpEntityEnclosingRequest {
 
+    /** The entity. */
     private HttpEntity entity;
 
+    /**
+	 * Instantiates a new http entity enclosing request base.
+	 */
     public HttpEntityEnclosingRequestBase() {
         super();
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.HttpEntityEnclosingRequest#getEntity()
+     */
     public HttpEntity getEntity() {
         return this.entity;
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.HttpEntityEnclosingRequest#setEntity(org.apache.http.HttpEntity)
+     */
     public void setEntity(final HttpEntity entity) {
         this.entity = entity;
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.HttpEntityEnclosingRequest#expectContinue()
+     */
     public boolean expectContinue() {
         Header expect = getFirstHeader(HTTP.EXPECT_DIRECTIVE);
         return expect != null && HTTP.EXPECT_CONTINUE.equalsIgnoreCase(expect.getValue());
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpRequestBase#clone()
+     */
     @Override
     public Object clone() throws CloneNotSupportedException {
         HttpEntityEnclosingRequestBase clone =

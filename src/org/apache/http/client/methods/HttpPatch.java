@@ -51,22 +51,41 @@ import org.apache.http.annotation.NotThreadSafe;
 @NotThreadSafe
 public class HttpPatch extends HttpEntityEnclosingRequestBase {
 
+    /** The Constant METHOD_NAME. */
     public final static String METHOD_NAME = "PATCH";
 
+    /**
+	 * Instantiates a new http patch.
+	 */
     public HttpPatch() {
         super();
     }
 
+    /**
+	 * Instantiates a new http patch.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpPatch(final URI uri) {
         super();
         setURI(uri);
     }
 
+    /**
+	 * Instantiates a new http patch.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpPatch(final String uri) {
         super();
         setURI(URI.create(uri));
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpRequestBase#getMethod()
+     */
     @Override
     public String getMethod() {
         return METHOD_NAME;

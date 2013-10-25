@@ -50,25 +50,41 @@ import org.apache.http.annotation.NotThreadSafe;
 @NotThreadSafe
 public class HttpGet extends HttpRequestBase {
 
+    /** The Constant METHOD_NAME. */
     public final static String METHOD_NAME = "GET";
 
+    /**
+	 * Instantiates a new http get.
+	 */
     public HttpGet() {
         super();
     }
 
+    /**
+	 * Instantiates a new http get.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpGet(final URI uri) {
         super();
         setURI(uri);
     }
 
     /**
-     * @throws IllegalArgumentException if the uri is invalid.
-     */
+	 * Instantiates a new http get.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpGet(final String uri) {
         super();
         setURI(URI.create(uri));
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpRequestBase#getMethod()
+     */
     @Override
     public String getMethod() {
         return METHOD_NAME;

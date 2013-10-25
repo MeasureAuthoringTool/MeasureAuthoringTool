@@ -43,28 +43,33 @@ import org.apache.http.HttpRequest;
 public interface HttpUriRequest extends HttpRequest {
 
     /**
-     * Returns the HTTP method this request uses, such as <code>GET</code>,
-     * <code>PUT</code>, <code>POST</code>, or other.
-     */
+	 * Returns the HTTP method this request uses, such as <code>GET</code>,
+	 * <code>PUT</code>, <code>POST</code>, or other.
+	 * 
+	 * @return the method
+	 */
     String getMethod();
 
     /**
-     * Returns the URI this request uses, such as
-     * <code>http://example.org/path/to/file</code>.
-     * <br/>
-     * Note that the URI may be absolute URI (as above) or may be a relative URI.
-     * <p>
-     * Implementations are encouraged to return
-     * the URI that was initially requested.
-     * </p>
-     * <p>
-     * To find the final URI after any redirects have been processed,
-     * please see the section entitled
-     * <a href="http://hc.apache.org/httpcomponents-client-ga/tutorial/html/fundamentals.html#d4e205">HTTP execution context</a>
-     * in the
-     * <a href="http://hc.apache.org/httpcomponents-client-ga/tutorial/html">HttpClient Tutorial</a>
-     * </p>
-     */
+	 * Returns the URI this request uses, such as
+	 * <code>http://example.org/path/to/file</code>. <br/>
+	 * Note that the URI may be absolute URI (as above) or may be a relative
+	 * URI.
+	 * <p>
+	 * Implementations are encouraged to return the URI that was initially
+	 * requested.
+	 * </p>
+	 * <p>
+	 * To find the final URI after any redirects have been processed, please see
+	 * the section entitled <a href=
+	 * "http://hc.apache.org/httpcomponents-client-ga/tutorial/html/fundamentals.html#d4e205"
+	 * >HTTP execution context</a> in the <a
+	 * href="http://hc.apache.org/httpcomponents-client-ga/tutorial/html"
+	 * >HttpClient Tutorial</a>
+	 * </p>
+	 * 
+	 * @return the uri
+	 */
     URI getURI();
 
     /**

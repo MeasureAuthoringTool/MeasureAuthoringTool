@@ -58,30 +58,53 @@ import org.apache.http.HttpResponse;
 @NotThreadSafe
 public class HttpOptions extends HttpRequestBase {
 
+    /** The Constant METHOD_NAME. */
     public final static String METHOD_NAME = "OPTIONS";
 
+    /**
+	 * Instantiates a new http options.
+	 */
     public HttpOptions() {
         super();
     }
 
+    /**
+	 * Instantiates a new http options.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpOptions(final URI uri) {
         super();
         setURI(uri);
     }
 
     /**
-     * @throws IllegalArgumentException if the uri is invalid.
-     */
+	 * Instantiates a new http options.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpOptions(final String uri) {
         super();
         setURI(URI.create(uri));
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpRequestBase#getMethod()
+     */
     @Override
     public String getMethod() {
         return METHOD_NAME;
     }
 
+    /**
+	 * Gets the allowed methods.
+	 * 
+	 * @param response
+	 *            the response
+	 * @return the allowed methods
+	 */
     public Set<String> getAllowedMethods(final HttpResponse response) {
         if (response == null) {
             throw new IllegalArgumentException("HTTP response may not be null");

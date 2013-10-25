@@ -46,20 +46,29 @@ import org.apache.http.conn.ManagedClientConnection;
 public interface AbortableHttpRequest {
 
     /**
-     * Sets the {@link ClientConnectionRequest} callback that can be
-     * used to abort a long-lived request for a connection.
-     * If the request is already aborted, throws an {@link IOException}.
-     *
-     * @see ClientConnectionManager
-     */
+	 * Sets the {@link ClientConnectionRequest} callback that can be used to
+	 * abort a long-lived request for a connection. If the request is already
+	 * aborted, throws an {@link IOException}.
+	 * 
+	 * @param connRequest
+	 *            the new connection request
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 * @see ClientConnectionManager
+	 */
     void setConnectionRequest(ClientConnectionRequest connRequest) throws IOException;
 
     /**
-     * Sets the {@link ConnectionReleaseTrigger} callback that can
-     * be used to abort an active connection.
-     * Typically, this will be the {@link ManagedClientConnection} itself.
-     * If the request is already aborted, throws an {@link IOException}.
-     */
+	 * Sets the {@link ConnectionReleaseTrigger} callback that can be used to
+	 * abort an active connection. Typically, this will be the
+	 * {@link ManagedClientConnection} itself. If the request is already
+	 * aborted, throws an {@link IOException}.
+	 * 
+	 * @param releaseTrigger
+	 *            the new release trigger
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
     void setReleaseTrigger(ConnectionReleaseTrigger releaseTrigger) throws IOException;
 
     /**

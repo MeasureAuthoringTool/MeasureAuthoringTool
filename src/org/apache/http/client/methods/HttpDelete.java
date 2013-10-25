@@ -49,26 +49,42 @@ import org.apache.http.annotation.NotThreadSafe;
 @NotThreadSafe // HttpRequestBase is @NotThreadSafe
 public class HttpDelete extends HttpRequestBase {
 
+    /** The Constant METHOD_NAME. */
     public final static String METHOD_NAME = "DELETE";
 
 
+    /**
+	 * Instantiates a new http delete.
+	 */
     public HttpDelete() {
         super();
     }
 
+    /**
+	 * Instantiates a new http delete.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpDelete(final URI uri) {
         super();
         setURI(uri);
     }
 
     /**
-     * @throws IllegalArgumentException if the uri is invalid.
-     */
+	 * Instantiates a new http delete.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpDelete(final String uri) {
         super();
         setURI(URI.create(uri));
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpRequestBase#getMethod()
+     */
     @Override
     public String getMethod() {
         return METHOD_NAME;

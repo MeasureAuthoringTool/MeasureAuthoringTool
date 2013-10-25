@@ -49,25 +49,41 @@ import org.apache.http.annotation.NotThreadSafe;
 @NotThreadSafe
 public class HttpPut extends HttpEntityEnclosingRequestBase {
 
+    /** The Constant METHOD_NAME. */
     public final static String METHOD_NAME = "PUT";
 
+    /**
+	 * Instantiates a new http put.
+	 */
     public HttpPut() {
         super();
     }
 
+    /**
+	 * Instantiates a new http put.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpPut(final URI uri) {
         super();
         setURI(uri);
     }
 
     /**
-     * @throws IllegalArgumentException if the uri is invalid.
-     */
+	 * Instantiates a new http put.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpPut(final String uri) {
         super();
         setURI(URI.create(uri));
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpRequestBase#getMethod()
+     */
     @Override
     public String getMethod() {
         return METHOD_NAME;

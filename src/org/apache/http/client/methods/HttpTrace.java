@@ -52,25 +52,41 @@ import org.apache.http.annotation.NotThreadSafe;
 @NotThreadSafe
 public class HttpTrace extends HttpRequestBase {
 
+    /** The Constant METHOD_NAME. */
     public final static String METHOD_NAME = "TRACE";
 
+    /**
+	 * Instantiates a new http trace.
+	 */
     public HttpTrace() {
         super();
     }
 
+    /**
+	 * Instantiates a new http trace.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpTrace(final URI uri) {
         super();
         setURI(uri);
     }
 
     /**
-     * @throws IllegalArgumentException if the uri is invalid.
-     */
+	 * Instantiates a new http trace.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpTrace(final String uri) {
         super();
         setURI(URI.create(uri));
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpRequestBase#getMethod()
+     */
     @Override
     public String getMethod() {
         return METHOD_NAME;

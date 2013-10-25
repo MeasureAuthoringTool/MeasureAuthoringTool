@@ -57,25 +57,41 @@ import org.apache.http.annotation.NotThreadSafe;
 @NotThreadSafe
 public class HttpPost extends HttpEntityEnclosingRequestBase {
 
+    /** The Constant METHOD_NAME. */
     public final static String METHOD_NAME = "POST";
 
+    /**
+	 * Instantiates a new http post.
+	 */
     public HttpPost() {
         super();
     }
 
+    /**
+	 * Instantiates a new http post.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpPost(final URI uri) {
         super();
         setURI(uri);
     }
 
     /**
-     * @throws IllegalArgumentException if the uri is invalid.
-     */
+	 * Instantiates a new http post.
+	 * 
+	 * @param uri
+	 *            the uri
+	 */
     public HttpPost(final String uri) {
         super();
         setURI(URI.create(uri));
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpRequestBase#getMethod()
+     */
     @Override
     public String getMethod() {
         return METHOD_NAME;

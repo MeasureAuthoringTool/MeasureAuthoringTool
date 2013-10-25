@@ -55,34 +55,56 @@ import org.apache.http.params.HttpProtocolParams;
 public abstract class HttpRequestBase extends AbstractHttpMessage
     implements HttpUriRequest, AbortableHttpRequest, Cloneable {
 
+    /** The abort lock. */
     private Lock abortLock;
+    
+    /** The aborted. */
     private volatile boolean aborted;
 
+    /** The uri. */
     private URI uri;
+    
+    /** The conn request. */
     private ClientConnectionRequest connRequest;
+    
+    /** The release trigger. */
     private ConnectionReleaseTrigger releaseTrigger;
 
+    /**
+	 * Instantiates a new http request base.
+	 */
     public HttpRequestBase() {
         super();
         this.abortLock = new ReentrantLock();
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpUriRequest#getMethod()
+     */
     public abstract String getMethod();
 
+    /* (non-Javadoc)
+     * @see org.apache.http.HttpMessage#getProtocolVersion()
+     */
     public ProtocolVersion getProtocolVersion() {
         return HttpProtocolParams.getVersion(getParams());
     }
 
     /**
-     * Returns the original request URI.
-     * <p>
-     * Please note URI remains unchanged in the course of request execution and
-     * is not updated if the request is redirected to another location.
-     */
+	 * Returns the original request URI.
+	 * <p>
+	 * Please note URI remains unchanged in the course of request execution and
+	 * is not updated if the request is redirected to another location.
+	 * 
+	 * @return the uri
+	 */
     public URI getURI() {
         return this.uri;
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.HttpRequest#getRequestLine()
+     */
     public RequestLine getRequestLine() {
         String method = getMethod();
         ProtocolVersion ver = getProtocolVersion();
@@ -97,10 +119,19 @@ public abstract class HttpRequestBase extends AbstractHttpMessage
         return new BasicRequestLine(method, uritext, ver);
     }
 
+    /**
+	 * Sets the uri.
+	 * 
+	 * @param uri
+	 *            the new uri
+	 */
     public void setURI(final URI uri) {
         this.uri = uri;
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.AbortableHttpRequest#setConnectionRequest(org.apache.http.conn.ClientConnectionRequest)
+     */
     public void setConnectionRequest(final ClientConnectionRequest connRequest)
             throws IOException {
         if (this.aborted) {
@@ -114,6 +145,9 @@ public abstract class HttpRequestBase extends AbstractHttpMessage
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.AbortableHttpRequest#setReleaseTrigger(org.apache.http.conn.ConnectionReleaseTrigger)
+     */
     public void setReleaseTrigger(final ConnectionReleaseTrigger releaseTrigger)
             throws IOException {
         if (this.aborted) {
@@ -127,6 +161,9 @@ public abstract class HttpRequestBase extends AbstractHttpMessage
         }
     }
 
+    /**
+	 * Cleanup.
+	 */
     private void cleanup() {
         if (this.connRequest != null) {
             this.connRequest.abortRequest();
@@ -141,6 +178,9 @@ public abstract class HttpRequestBase extends AbstractHttpMessage
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpUriRequest#abort()
+     */
     public void abort() {
         if (this.aborted) {
             return;
@@ -154,6 +194,9 @@ public abstract class HttpRequestBase extends AbstractHttpMessage
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.apache.http.client.methods.HttpUriRequest#isAborted()
+     */
     public boolean isAborted() {
         return this.aborted;
     }
@@ -183,6 +226,9 @@ public abstract class HttpRequestBase extends AbstractHttpMessage
         reset();
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#clone()
+     */
     @Override
     public Object clone() throws CloneNotSupportedException {
         HttpRequestBase clone = (HttpRequestBase) super.clone();
@@ -195,6 +241,9 @@ public abstract class HttpRequestBase extends AbstractHttpMessage
         return clone;
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
         return getMethod() + " " + getURI() + " " + getProtocolVersion();

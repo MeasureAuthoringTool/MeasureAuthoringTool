@@ -5,11 +5,17 @@ import java.util.List;
 
 import mat.shared.ConstantMessages;
 
+/**
+ * The Class MeasureDetailsUtil.
+ */
 public class MeasureDetailsUtil {
 	
 	/**
+	 * Gets the measure type abbr.
+	 * 
 	 * @param measureType
-	 * @return
+	 *            the measure type
+	 * @return the measure type abbr
 	 */
 	public static String getMeasureTypeAbbr(String measureType){
 		String abbr = "";
@@ -32,8 +38,11 @@ public class MeasureDetailsUtil {
 	}
 	
 	/**
+	 * Gets the scoring abbr.
+	 * 
 	 * @param scoring
-	 * @return
+	 *            the scoring
+	 * @return the scoring abbr
 	 */
 	public static String getScoringAbbr(String scoring){
 		String abbr = "";
@@ -47,6 +56,13 @@ public class MeasureDetailsUtil {
 		return abbr;
 	}
 	
+	/**
+	 * Gets the trimmed list.
+	 * 
+	 * @param listA
+	 *            the list a
+	 * @return the trimmed list
+	 */
 	public static List<String> getTrimmedList(List<String> listA){
 		ArrayList<String> newAList = new ArrayList<String>();
 		if(listA != null && listA.size() > 0){
@@ -60,6 +76,13 @@ public class MeasureDetailsUtil {
 		return newAList;
 	}
 
+	/**
+	 * Trim to null.
+	 * 
+	 * @param value
+	 *            the value
+	 * @return the string
+	 */
 	private static String trimToNull(String value){
 		if(null != value){
 			value = value.replaceAll("[\r\n]", "");

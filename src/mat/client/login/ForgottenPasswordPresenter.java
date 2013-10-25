@@ -14,25 +14,102 @@ import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ForgottenPasswordPresenter.
+ */
 public class ForgottenPasswordPresenter {
 
+	/**
+	 * The Interface Display.
+	 */
 	public static interface Display {
+		
+		/**
+		 * Gets the login id.
+		 * 
+		 * @return the login id
+		 */
 		public TextBox getLoginId();
+		
+		/**
+		 * Gets the security question.
+		 * 
+		 * @return the security question
+		 */
 		public String getSecurityQuestion();
+		
+		/**
+		 * Gets the security answer.
+		 * 
+		 * @return the security answer
+		 */
 		public String getSecurityAnswer();
+		
+		/**
+		 * Gets the submit.
+		 * 
+		 * @return the submit
+		 */
 		public HasClickHandlers getSubmit();
+		
+		/**
+		 * Gets the reset.
+		 * 
+		 * @return the reset
+		 */
 		public HasClickHandlers getReset();
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return the error message display
+		 */
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
+		/**
+		 * Sets the security question answer enabled.
+		 * 
+		 * @param show
+		 *            the new security question answer enabled
+		 */
 		public void setSecurityQuestionAnswerEnabled(boolean show);
+		
+		/**
+		 * Adds the security question options.
+		 * 
+		 * @param text
+		 *            the text
+		 */
 		public void addSecurityQuestionOptions(String text);
+		
+		/**
+		 * Sets the focus.
+		 * 
+		 * @param focus
+		 *            the new focus
+		 */
 		public void setFocus(boolean focus);
+		
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
 		public Widget asWidget();
 	}
 
+	/** The display. */
 	private final Display display;
 	
+	/** The invalid user counter. */
 	private int invalidUserCounter = 0;
 	
+	/**
+	 * Instantiates a new forgotten password presenter.
+	 * 
+	 * @param displayArg
+	 *            the display arg
+	 */
 	public ForgottenPasswordPresenter(Display displayArg) {
 		this.display = displayArg;
 		
@@ -69,6 +146,9 @@ public class ForgottenPasswordPresenter {
 		display.setSecurityQuestionAnswerEnabled(false);
 	}
 	
+	/**
+	 * Reset.
+	 */
 	private void reset() {
 		display.getLoginId().setEnabled(true);
 		display.getLoginId().setValue("");
@@ -79,6 +159,12 @@ public class ForgottenPasswordPresenter {
 		ForgottenPasswordView.isUserIdSubmit = true;
 	}
 	
+	/**
+	 * Load security question for user id.
+	 * 
+	 * @param userid
+	 *            the userid
+	 */
 	private void loadSecurityQuestionForUserId(final String userid) {
 		
 		MatContext.get().getLoginService().isLockedUser(userid, new AsyncCallback<Boolean>() {
@@ -113,6 +199,9 @@ public class ForgottenPasswordPresenter {
 		
 	}
 	
+	/**
+	 * Request forgotten password.
+	 */
 	private void requestForgottenPassword() {
 		MatContext.get().getLoginService().forgotPassword(display.getLoginId().getValue(), 
 				display.getSecurityQuestion(), 
@@ -138,6 +227,13 @@ public class ForgottenPasswordPresenter {
 				});
 	}
 
+	/**
+	 * Convert message.
+	 * 
+	 * @param id
+	 *            the id
+	 * @return the string
+	 */
 	private String convertMessage(int id) {
 		String message;
 		switch(id) {
@@ -166,6 +262,13 @@ public class ForgottenPasswordPresenter {
 		}
 		return message;
 	}
+	
+	/**
+	 * Go.
+	 * 
+	 * @param container
+	 *            the container
+	 */
 	public void go(HasWidgets container) {
 		reset();
 		container.add(display.asWidget());

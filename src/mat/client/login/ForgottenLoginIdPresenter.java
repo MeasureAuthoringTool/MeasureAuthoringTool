@@ -14,20 +14,62 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ForgottenLoginIdPresenter.
+ */
 public class ForgottenLoginIdPresenter {
 	
+	/**
+	 * The Interface Display.
+	 */
 	public static interface Display {
+		
+		/**
+		 * Gets the email.
+		 * 
+		 * @return the email
+		 */
 		public HasValue<String> getEmail();
 		
+		/**
+		 * Gets the submit.
+		 * 
+		 * @return the submit
+		 */
 		public HasClickHandlers getSubmit();
+		
+		/**
+		 * Gets the reset.
+		 * 
+		 * @return the reset
+		 */
 		public HasClickHandlers getReset();
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return the error message display
+		 */
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
 		public Widget asWidget();
 	}
 
+	/** The display. */
 	private final Display display;
 	
 	
+	/**
+	 * Instantiates a new forgotten login id presenter.
+	 * 
+	 * @param displayArg
+	 *            the display arg
+	 */
 	public ForgottenLoginIdPresenter(Display displayArg) {
 		this.display = displayArg;
 		
@@ -47,11 +89,17 @@ public class ForgottenLoginIdPresenter {
 		});
 	}
 	
+	/**
+	 * Reset.
+	 */
 	private void reset() {
 		display.getEmail().setValue("");
 		display.getErrorMessageDisplay().clear();
 	}
 	
+	/**
+	 * Request forgotten login id.
+	 */
 	private void requestForgottenLoginID() {
 		MatContext.get().getLoginService().forgotLoginID(display.getEmail().getValue(), new AsyncCallback<ForgottenLoginIDResult>(){
 					@Override
@@ -73,6 +121,14 @@ public class ForgottenLoginIdPresenter {
 						
 					}});
 		}
+	
+	/**
+	 * Convert message.
+	 * 
+	 * @param id
+	 *            the id
+	 * @return the string
+	 */
 	private String convertMessage(int id) {
 		String message;
 		switch(id) {
@@ -104,6 +160,12 @@ public class ForgottenLoginIdPresenter {
 	
 	
 	
+	/**
+	 * Go.
+	 * 
+	 * @param container
+	 *            the container
+	 */
 	public void go(HasWidgets container) {
 		reset();
 		container.add(display.asWidget());

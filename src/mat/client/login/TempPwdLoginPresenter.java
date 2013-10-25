@@ -29,35 +29,179 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class TempPwdLoginPresenter.
+ */
 public class TempPwdLoginPresenter {
+		
+		/**
+		 * The Interface Display.
+		 */
 		public static interface Display {
+		
+		/**
+		 * Gets the submit.
+		 * 
+		 * @return the submit
+		 */
 		public HasClickHandlers getSubmit();
+		
+		/**
+		 * Gets the reset.
+		 * 
+		 * @return the reset
+		 */
 		public HasClickHandlers getReset();
+		
+		/**
+		 * Gets the question1 answer.
+		 * 
+		 * @return the question1 answer
+		 */
 		public HasValue<String> getQuestion1Answer();
+		
+		/**
+		 * Gets the question2 answer.
+		 * 
+		 * @return the question2 answer
+		 */
 		public HasValue<String> getQuestion2Answer();
+		
+		/**
+		 * Gets the question3 answer.
+		 * 
+		 * @return the question3 answer
+		 */
 		public HasValue<String> getQuestion3Answer();
+		
+		/**
+		 * Gets the question1 text.
+		 * 
+		 * @return the question1 text
+		 */
 		public HasValue<String> getQuestion1Text();
+		
+		/**
+		 * Gets the question2 text.
+		 * 
+		 * @return the question2 text
+		 */
 		public HasValue<String> getQuestion2Text();
+		
+		/**
+		 * Gets the question3 text.
+		 * 
+		 * @return the question3 text
+		 */
 		public HasValue<String> getQuestion3Text();
+		
+		/**
+		 * Gets the password.
+		 * 
+		 * @return the password
+		 */
 		public HasValue<String> getPassword();
+		
+		/**
+		 * Gets the confirm password.
+		 * 
+		 * @return the confirm password
+		 */
 		public HasValue<String> getConfirmPassword();
+		
+		/**
+		 * Gets the password error message display.
+		 * 
+		 * @return the password error message display
+		 */
 		public ErrorMessageDisplayInterface getPasswordErrorMessageDisplay();
+		
+		/**
+		 * Gets the security error message display.
+		 * 
+		 * @return the security error message display
+		 */
 		public ErrorMessageDisplayInterface getSecurityErrorMessageDisplay();
+		
+		/**
+		 * Adds the security question texts.
+		 * 
+		 * @param texts
+		 *            the texts
+		 */
 		public void addSecurityQuestionTexts(List<NameValuePair> texts);
+		
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
 		public Widget asWidget();
+		
+		/**
+		 * Gets the answer text1.
+		 * 
+		 * @return the answer text1
+		 */
 		public String getAnswerText1();
+		
+		/**
+		 * Gets the answer text2.
+		 * 
+		 * @return the answer text2
+		 */
 		public String getAnswerText2();
+		
+		/**
+		 * Gets the answer text3.
+		 * 
+		 * @return the answer text3
+		 */
 		public String getAnswerText3();
+		
+		/**
+		 * Sets the answer text1.
+		 * 
+		 * @param answerText1
+		 *            the new answer text1
+		 */
 		public void setAnswerText1(String answerText1);
+		
+		/**
+		 * Sets the answer text2.
+		 * 
+		 * @param answerText2
+		 *            the new answer text2
+		 */
 		public void setAnswerText2(String answerText2);
+		
+		/**
+		 * Sets the answer text3.
+		 * 
+		 * @param answerText3
+		 *            the new answer text3
+		 */
 		public void setAnswerText3(String answerText3);
+		
+		/**
+		 * Gets the security questions widget.
+		 * 
+		 * @return the security questions widget
+		 */
 		SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget();
 		
 	}
 
 	
+	/** The display. */
 	private final Display display;
 	
+	/**
+	 * Instantiates a new temp pwd login presenter.
+	 * 
+	 * @param displayArg
+	 *            the display arg
+	 */
 	public TempPwdLoginPresenter(Display displayArg) {
 		
 		this.display = displayArg;
@@ -194,6 +338,9 @@ public class TempPwdLoginPresenter {
 		});
 	}
 
+	/**
+	 * Load security questions.
+	 */
 	private void loadSecurityQuestions(){
 			MatContext.get().getLoginService().getSecurityQuestions(new AsyncCallback<List<SecurityQuestions>>() {
 
@@ -227,6 +374,9 @@ public class TempPwdLoginPresenter {
 		}
 	
 	
+	/**
+	 * Reset.
+	 */
 	private void reset() {
 		display.getPasswordErrorMessageDisplay().clear();
 		display.getSecurityErrorMessageDisplay().clear();
@@ -239,6 +389,11 @@ public class TempPwdLoginPresenter {
 		display.getSecurityErrorMessageDisplay().clear();
 	}
 
+	/**
+	 * Gets the values.
+	 * 
+	 * @return the values
+	 */
 	private LoginModel getValues() {
 		LoginModel model = new LoginModel();
 		model.setUserId(MatContext.get().getLoggedinUserId());
@@ -253,6 +408,13 @@ public class TempPwdLoginPresenter {
 		model.setQuestion3Answer(display.getSecurityQuestionsWidget().getAnswerText3());
 		return model;
 	}
+	
+	/**
+	 * Go.
+	 * 
+	 * @param container
+	 *            the container
+	 */
 	public void go(HasWidgets container) {
 		reset();
 		beforeDisplay();
@@ -260,6 +422,9 @@ public class TempPwdLoginPresenter {
 		container.add(display.asWidget());
 	}	
 	
+	/**
+	 * Before display.
+	 */
 	private void beforeDisplay() {
 		
 		MatContext.get().getLoginService().getSecurityQuestionsAnswers(MatContext.get().getLoggedinUserId(), new AsyncCallback<List<UserSecurityQuestion>>(){

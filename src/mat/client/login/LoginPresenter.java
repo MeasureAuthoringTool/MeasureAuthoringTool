@@ -24,27 +24,115 @@ import com.google.gwt.user.client.ui.Widget;
 
 
 
+/**
+ * The Class LoginPresenter.
+ */
 public class LoginPresenter {
 
+	/**
+	 * The Interface Display.
+	 */
 	public static interface Display {
+		
+		/**
+		 * Gets the submit.
+		 * 
+		 * @return the submit
+		 */
 		public HasClickHandlers getSubmit();
+		
+		/**
+		 * Gets the userid.
+		 * 
+		 * @return the userid
+		 */
 		public HasValue<String> getUserid();
+		
+		/**
+		 * Gets the password.
+		 * 
+		 * @return the password
+		 */
 		public HasValue<String> getPassword();
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return the error message display
+		 */
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
+		/**
+		 * Gets the info message.
+		 * 
+		 * @return the info message
+		 */
 		public HasHTML getInfoMessage();
+		
+		/**
+		 * Sets the welcome visible.
+		 * 
+		 * @param value
+		 *            the new welcome visible
+		 */
 		public void setWelcomeVisible(boolean value);
+		
+		/**
+		 * Sets the info message visible.
+		 * 
+		 * @param value
+		 *            the new info message visible
+		 */
 		public void setInfoMessageVisible(boolean value);
+		
+		/**
+		 * Gets the forgot password.
+		 * 
+		 * @return the forgot password
+		 */
 		public HasClickHandlers getForgotPassword();
+		
+		/**
+		 * Gets the forgot login id.
+		 * 
+		 * @return the forgot login id
+		 */
 		public HasClickHandlers getForgotLoginId();
+		
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
 		public Widget asWidget();
 
+		/**
+		 * Gets the userid field.
+		 * 
+		 * @return the userid field
+		 */
 		public HasKeyDownHandlers getUseridField();
+		
+		/**
+		 * Gets the password field.
+		 * 
+		 * @return the password field
+		 */
 		public HasKeyDownHandlers getPasswordField();
+		
+		/**
+		 * Sets the initial focus.
+		 */
 		public void setInitialFocus();
 	}
+	
+	/** The display. */
 	private final Display display;
+	
+	/** The login model. */
 	private LoginModel loginModel;
 
+	/** The submit on enter handler. */
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
@@ -54,6 +142,7 @@ public class LoginPresenter {
 		}
 	};
 
+	/** The contextcallback. */
 	private  final AsyncCallback<LoginModel> contextcallback = new AsyncCallback<LoginModel>(){
 
 		@Override
@@ -91,6 +180,12 @@ public class LoginPresenter {
 
 	};
 
+	/**
+	 * Instantiates a new login presenter.
+	 * 
+	 * @param displayArg
+	 *            the display arg
+	 */
 	public LoginPresenter(Display displayArg) {
 		this.display = displayArg;
 		this.loginModel = new LoginModel();
@@ -121,6 +216,9 @@ public class LoginPresenter {
 		display.getPasswordField().addKeyDownHandler(submitOnEnterHandler);
 	}
 
+	/**
+	 * Submit.
+	 */
 	private void submit() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);
@@ -133,6 +231,12 @@ public class LoginPresenter {
 		}
 	}
 
+	/**
+	 * Go.
+	 * 
+	 * @param container
+	 *            the container
+	 */
 	public void go(HasWidgets container) {
 		reset();
 		container.add(display.asWidget());
@@ -141,22 +245,36 @@ public class LoginPresenter {
 		Login.hideLoadingMessage();
 
 	}
+	
+	/**
+	 * Display welcome message.
+	 */
 	private void displayWelcomeMessage() {
 		display.setWelcomeVisible(true);
 		display.setInfoMessageVisible(false);
 	}
 
+	/**
+	 * Display forgotten password message.
+	 */
 	public void displayForgottenPasswordMessage() {
 		display.setWelcomeVisible(false);
 		display.setInfoMessageVisible(true);
 		display.getInfoMessage().setHTML("A temporary password has been sent to the e-mail address associated with the User Id you provided. Please<br> check your e-mail and continue to sign in.");
 	}
+	
+	/**
+	 * Display forgotten login id message.
+	 */
 	public void displayForgottenLoginIDMessage() {
 		display.setWelcomeVisible(false);
 		display.setInfoMessageVisible(true);
 		display.getInfoMessage().setHTML("Measure Authoring Tool just sent your User ID to the e-mail address you provided. Please<br> check your e-mail and continue to sign in. ");
 	}
 
+	/**
+	 * Reset.
+	 */
 	public void reset() {
 		display.getErrorMessageDisplay().clear();
 		display.setInfoMessageVisible(false);

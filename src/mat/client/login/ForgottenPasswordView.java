@@ -23,18 +23,42 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ForgottenPasswordView.
+ */
 public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display {
+	
+	/** The main panel. */
 	private Panel mainPanel;
+	
+	/** The login id. */
 	private TextBox loginId = new TextBox();
+	
+	/** The security question. */
 	private Label securityQuestion;
+	
+	/** The security answer. */
 	private TextBox securityAnswer;
+	
+	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	
+	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The security question ans panel. */
 	private VerticalPanel securityQuestionAnsPanel = new  VerticalPanel();
+	
+	/** The security answer hidden. */
 	Hidden securityAnswerHidden = new Hidden();
+	
+	/** The is user id submit. */
 	public static boolean isUserIdSubmit = true;
 	
 	
+	/**
+	 * Instantiates a new forgotten password view.
+	 */
 	public ForgottenPasswordView() {
 		mainPanel = new VerticalPanel();
 		mainPanel.addStyleName("centered");
@@ -86,46 +110,74 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 	}	
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenPasswordPresenter.Display#getSecurityQuestion()
+	 */
 	@Override
 	public String getSecurityQuestion() {
 		return securityQuestion.getText();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenPasswordPresenter.Display#getSecurityAnswer()
+	 */
 	@Override
 	public String getSecurityAnswer() {
 		return securityAnswerHidden.getValue();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenPasswordPresenter.Display#getSubmit()
+	 */
 	@Override
 	public HasClickHandlers getSubmit() {
 		return buttonBar.getSaveButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenPasswordPresenter.Display#getReset()
+	 */
 	@Override
 	public HasClickHandlers getReset() {
 		return buttonBar.getCancelButton();
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenPasswordPresenter.Display#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenPasswordPresenter.Display#addSecurityQuestionOptions(java.lang.String)
+	 */
 	@Override
 	public void addSecurityQuestionOptions(String text) {
 		securityQuestion.setText(text);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenPasswordPresenter.Display#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenPasswordPresenter.Display#setFocus(boolean)
+	 */
 	@Override
 	public void setFocus(boolean focus) {
 		securityAnswer.setFocus(focus);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenPasswordPresenter.Display#setSecurityQuestionAnswerEnabled(boolean)
+	 */
 	@Override
 	public void setSecurityQuestionAnswerEnabled(boolean enable) {
 		securityQuestionAnsPanel.clear();
@@ -185,6 +237,9 @@ public class ForgottenPasswordView implements ForgottenPasswordPresenter.Display
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenPasswordPresenter.Display#getLoginId()
+	 */
 	@Override
 	public TextBox getLoginId() {
 		return loginId;

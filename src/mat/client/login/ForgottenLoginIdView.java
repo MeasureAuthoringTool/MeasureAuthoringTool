@@ -19,13 +19,26 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ForgottenLoginIdView.
+ */
 public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
+	
+	/** The main panel. */
 	private Panel mainPanel;
+	
+	/** The email. */
 	private TextBox email;
 	
+	/** The button bar. */
 	private SaveCancelButtonBar buttonBar;
+	
+	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	
+	/**
+	 * Instantiates a new forgotten login id view.
+	 */
 	public ForgottenLoginIdView() {
 		mainPanel = new VerticalPanel();
 		mainPanel.addStyleName("centered");
@@ -71,27 +84,42 @@ public class ForgottenLoginIdView implements ForgottenLoginIdPresenter.Display {
 		
 	}	
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenLoginIdPresenter.Display#getEmail()
+	 */
 	@Override
 	public HasValue<String> getEmail() {
 		return email;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenLoginIdPresenter.Display#getSubmit()
+	 */
 	@Override
 	public HasClickHandlers getSubmit() {
 		return buttonBar.getSaveButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenLoginIdPresenter.Display#getReset()
+	 */
 	@Override
 	public HasClickHandlers getReset() {
 		return buttonBar.getCancelButton();
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenLoginIdPresenter.Display#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.ForgottenLoginIdPresenter.Display#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;

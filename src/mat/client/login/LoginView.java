@@ -28,21 +28,48 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class LoginView.
+ */
 public class LoginView implements LoginPresenter.Display  {
 
 
+	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The welcome panel. */
 	private Panel welcomePanel;
+	
+	/** The info message. */
 	private HTML infoMessage = new HTML();
+	
+	/** The info message panel. */
 	private Panel infoMessagePanel;
+	
+	/** The userid. */
 	private TextBox userid;
+	
+	/** The password. */
 	private TextBox password;
+	
+	/** The submit button. */
 	private Button submitButton;
+	
+	/** The forgot login id. */
 	private Anchor forgotLoginId;
+	
+	/** The forgot password. */
 	private Anchor forgotPassword;
+	
+	/** The main panel. */
 	private VerticalPanel mainPanel = new VerticalPanel();
+	
+	/** The success. */
 	Label success = new Label();
 	
+	/**
+	 * Instantiates a new login view.
+	 */
 	public LoginView() {
 		mainPanel.addStyleName("centered");
 		
@@ -112,6 +139,13 @@ public class LoginView implements LoginPresenter.Display  {
 		
 	}
 
+	/**
+	 * Wrap in spacer.
+	 * 
+	 * @param w
+	 *            the w
+	 * @return the simple panel
+	 */
 	private SimplePanel wrapInSpacer(Widget w) {
 		SimplePanel spacer = new SimplePanel();
 		spacer.setStylePrimaryName("loginSpacer");
@@ -119,45 +153,73 @@ public class LoginView implements LoginPresenter.Display  {
 		return spacer;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#getSubmit()
+	 */
 	@Override
 	public HasClickHandlers getSubmit() {
 		return submitButton;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#getUserid()
+	 */
 	@Override
 	public HasValue<String> getUserid() {
 		return userid;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#getPassword()
+	 */
 	@Override
 	public HasValue<String> getPassword() {
 		return password;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#getForgotPassword()
+	 */
 	@Override
 	public HasClickHandlers getForgotPassword() {
 		return forgotPassword;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#getInfoMessage()
+	 */
 	@Override
 	public HasHTML getInfoMessage() {
 		return infoMessage;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#setWelcomeVisible(boolean)
+	 */
 	@Override
 	public void setWelcomeVisible(boolean value) {
 		MatContext.get().setVisible(welcomePanel,value);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#setInfoMessageVisible(boolean)
+	 */
 	@Override
 	public void setInfoMessageVisible(boolean value) {
 		if(value){
@@ -168,21 +230,33 @@ public class LoginView implements LoginPresenter.Display  {
 		MatContext.get().setVisible(infoMessagePanel,value);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#getUseridField()
+	 */
 	@Override
 	public HasKeyDownHandlers getUseridField() {
 		return userid;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#getPasswordField()
+	 */
 	@Override
 	public HasKeyDownHandlers getPasswordField() {
 		return password;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#setInitialFocus()
+	 */
 	@Override
 	public void setInitialFocus() {
 		userid.setFocus(false);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.LoginPresenter.Display#getForgotLoginId()
+	 */
 	@Override
 	public HasClickHandlers getForgotLoginId() {
 		// TODO Auto-generated method stub

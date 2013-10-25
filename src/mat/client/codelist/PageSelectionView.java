@@ -26,41 +26,68 @@ import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * The Class PageSelectionView.
+ * 
+ * @param <T>
+ *            the generic type
  * @author vandavar
- *
  */
 @SuppressWarnings("rawtypes")
 public class PageSelectionView<T> implements HasSelectionHandlers<T>, HasPageSelectionHandler{
 	
 	
+	/** The page selector. */
 	protected Panel pageSelector = new HorizontalPanel();
+	
+	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
+	
+	/** The Constant DEFAULT_PAGE. */
 	public static final int DEFAULT_PAGE = 1;
+	
+	/** The current page. */
 	private int currentPage = DEFAULT_PAGE;
 	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
+	 */
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.HasPageSelectionHandler#addPageSelectionHandler(mat.client.shared.search.PageSelectionEventHandler)
+	 */
 	@Override
 	public HandlerRegistration addPageSelectionHandler(
 			PageSelectionEventHandler handler) {
 		return handlerManager.addHandler(PageSelectionEvent.getType(), handler);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
+	 */
 	@Override
 	public HandlerRegistration addSelectionHandler(SelectionHandler<T> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
 
+	/**
+	 * As widget.
+	 * 
+	 * @return the widget
+	 */
 	public Widget asWidget() {
 		return pageSelector;
 	}
 	
 	/**
 	 * Build Page Selector links for a given page count.
+	 * 
 	 * @param pageCount
+	 *            the page count
+	 * @return the widget
 	 */
 	public Widget buildPageSelector(int pageCount) {
 		if(pageCount > 1){
@@ -142,10 +169,26 @@ public class PageSelectionView<T> implements HasSelectionHandlers<T>, HasPageSel
 		}
 	}
 	
+	/**
+	 * Builds the page link.
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @return the widget
+	 */
 	private Widget buildPageLink(final int pageNumber) {
 		return buildPageLink(pageNumber, null);
 	}
 
+	/**
+	 * Builds the page link.
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @param mnemonic
+	 *            the mnemonic
+	 * @return the widget
+	 */
 	private Widget buildPageLink(final int pageNumber, String mnemonic) {
 		
 		Widget widget = null;
@@ -181,6 +224,17 @@ public class PageSelectionView<T> implements HasSelectionHandlers<T>, HasPageSel
 		return widget;
 	}
 	
+	/**
+	 * Builds the anchor for page selection.
+	 * 
+	 * @param label
+	 *            the label
+	 * @param pageNumber
+	 *            the page number
+	 * @param mnemonic
+	 *            the mnemonic
+	 * @return the anchor
+	 */
 	private Anchor buildAnchorForPageSelection(String label, final int pageNumber, String mnemonic){
 		Anchor a = new Anchor(label);
 		a.addClickHandler(new ClickHandler() {
@@ -208,10 +262,21 @@ public class PageSelectionView<T> implements HasSelectionHandlers<T>, HasPageSel
 		return a;
 	}
 	
+	/**
+	 * Gets the current page.
+	 * 
+	 * @return the current page
+	 */
 	public int getCurrentPage() {
 		return currentPage;
 	}
 
+	/**
+	 * Sets the current page.
+	 * 
+	 * @param pageNumber
+	 *            the new current page
+	 */
 	public void setCurrentPage(int pageNumber) {
 		currentPage = pageNumber;
 	}

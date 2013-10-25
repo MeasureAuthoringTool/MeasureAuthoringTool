@@ -25,27 +25,51 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class CodeListController.
+ */
 public class CodeListController implements MatPresenter {
 	
 	/*USTod*/
+	/** The Constant MY_VALUE_SETS_VALUE_SET_CREATE. */
 	public static final String MY_VALUE_SETS_VALUE_SET_CREATE = "My Value Sets  > Create a Value Set";
+	
+	/** The Constant MY_VALUE_SETS_VALUE_SET_MANAGE. */
 	public static final String MY_VALUE_SETS_VALUE_SET_MANAGE = "My Value Sets  > Update a Value Set  >  Manage Codes";
 	
+	/** The Constant MY_VALUE_SETS_MANAGE_VALUE_SETS_ADD_CODES. */
 	public static final String MY_VALUE_SETS_MANAGE_VALUE_SETS_ADD_CODES = "My Value Sets  > Manage Value Set  >  Add Codes";
+	
+	/** The Constant MY_VALUE_SETS_VALUE_SET_UPDATE. */
 	public static final String MY_VALUE_SETS_VALUE_SET_UPDATE = "My Value Sets  > Update a Value Set";
 	
+	/** The type. */
 	private String type = MatContext.get().getLoggedInUserRole();;
 	
+	/** The contents. */
 	private SimplePanel contents = new SimplePanel();
 	
+	/** The code list search presenter. */
 	private ManageCodeListSearchPresenter codeListSearchPresenter;
 	
+	/** The code list detail presenter. */
 	private ManageCodeListDetailPresenter codeListDetailPresenter;
+	
+	/** The grouped code list presenter. */
 	private ManageGroupedCodeListPresenter groupedCodeListPresenter;
+	
+	/** The list box code provider. */
 	private ListBoxCodeProvider listBoxCodeProvider;
+	
+	/** The empty widget. */
 	private SimplePanel emptyWidget = new SimplePanel();
+	
+	/** The draft display. */
 	private DraftDisplay draftDisplay;
 	
+	/**
+	 * Instantiates a new code list controller.
+	 */
 	public CodeListController() {
 		emptyWidget.add(new Label("No Measure Selected line 150"));
 		listBoxCodeProvider = MatContext.get().getListBoxCodeProvider();
@@ -72,6 +96,12 @@ public class CodeListController implements MatPresenter {
 	}
 	
 	
+	/**
+	 * Instantiates a new code list controller.
+	 * 
+	 * @param type
+	 *            the type
+	 */
 	public CodeListController(String type) {
 		if(type.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			emptyWidget.add(new Label("No Measure Selected line 150"));
@@ -89,6 +119,12 @@ public class CodeListController implements MatPresenter {
 		}
 	}
 	
+	/**
+	 * Adding handlers on event.
+	 * 
+	 * @param eventBus
+	 *            the event bus
+	 */
 	private void addingHandlersOnEvent(HandlerManager eventBus){
 		
 		eventBus.addHandler(CancelEditCodeListEvent.TYPE, new CancelEditCodeListEvent.Handler() {
@@ -196,15 +232,29 @@ public class CodeListController implements MatPresenter {
 	}
 	
 	
+	/**
+	 * Display empty.
+	 */
 	public void displayEmpty() {
 		contents.clear();
 		contents.add(emptyWidget);
 	}
+	
+	/**
+	 * Display detail.
+	 * 
+	 * @param heading
+	 *            the heading
+	 */
 	public void displayDetail(String heading) {
 		codeListDetailPresenter.clearMessages();
 		contents.clear();
 		contents.add(codeListDetailPresenter.getWidget(heading));
 	}
+	
+	/**
+	 * Display search.
+	 */
 	public void displaySearch() {
 		codeListSearchPresenter.resetDisplay();
 		contents.clear();
@@ -212,31 +262,49 @@ public class CodeListController implements MatPresenter {
 		Mat.focusSkipLists("CodeList");
 	}
 	
+	/**
+	 * Display add codes.
+	 */
 	public void displayAddCodes(){
 		contents.clear();
 		contents.add(codeListDetailPresenter.getAddCodesToCodeList());
 		Mat.focusSkipLists("MainContent");
 	}
 	
+	/**
+	 * Display external disclaimer.
+	 */
 	public void displayExternalDisclaimer(){
 		contents.clear();
 		contents.add(codeListDetailPresenter.getAddCodesToCodeList());
 	}
 	
+	/**
+	 * Display grouped detail.
+	 */
 	private void displayGroupedDetail() {
 		contents.clear();
 		contents.add(groupedCodeListPresenter.getWidget());
 	}
 	
+	/**
+	 * Display qds view.
+	 */
 	private void displayQDSView() {
 		contents.clear();
 		contents.add(codeListDetailPresenter.getAddQDSDisplay());
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	public Widget getWidget() {
 		return contents;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 	 MeasureComposerPresenter.setSubSkipEmbeddedLink("CodeList");
@@ -244,6 +312,9 @@ public class CodeListController implements MatPresenter {
 	 displaySearch();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 		if(!type.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){

@@ -26,24 +26,43 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 
+/**
+ * The Class ManageCodeListSearchView.
+ */
 public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.ValueSetSearchDisplay {
+	
+	/** The search criteria panel. */
 	private FlowPanel searchCriteriaPanel = new FlowPanel();
 	
+	/** The search button. */
 	private Button searchButton = new PrimaryButton("Search","primaryGreyLeftButton");
+	
+	/** The search input. */
 	private TextBox searchInput = new TextBox();
+	
+	/** The view. */
 	private SearchView<CodeListSearchDTO> view;
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#getDataTable()
+	 */
 	public Grid508 getDataTable() {
 		return view.getDataTable();
 	}
+	
+	/** The error messages. */
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	
+	/** The vssfp. */
 	private ValueSetSearchFilterPanel vssfp = new ValueSetSearchFilterPanel();
 	
 	// Code commented for User Story MAT-2372 : Remove Value Set Creation.
 	//private Button createButton = new SecondaryButton("Create");
 	//private ListBoxMVP options = new ListBoxMVP();
 
+	/**
+	 * Instantiates a new manage code list search view.
+	 */
 	public ManageCodeListSearchView() {	
 		String currentUserRole = MatContext.get().getLoggedInUserRole();
 		/*US537*/
@@ -92,11 +111,17 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#clearAllCheckBoxes(mat.client.measure.metadata.Grid508)
+	 */
 	@Override	
 	public void clearAllCheckBoxes(Grid508 dataTable){
 			int rows = dataTable.getRowCount();
@@ -114,6 +139,11 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 			}
 	}
 
+	/**
+	 * Builds the search widget.
+	 * 
+	 * @return the widget
+	 */
 	private Widget buildSearchWidget(){
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizontalPanel");
@@ -132,51 +162,89 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 		return hpT;
 	}*/
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return searchCriteriaPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchDisplay#getSearchButton()
+	 */
 	@Override
 	public HasClickHandlers getSearchButton() {
 		return searchButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#getSelectIdForEditTool()
+	 */
 	@Override
 	public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForEditTool() {
 		return view;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
+	 */
 	@Override
 	public void buildDataTable(SearchResults<CodeListSearchDTO> results) {
 		view.buildDataTable(results);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#getPageSize()
+	 */
 	@Override 
 	public int getPageSize() {
 		return view.getPageSize();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#getPageSelectionTool()
+	 */
 	@Override
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return view;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#getPageSizeSelectionTool()
+	 */
 	@Override
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return view;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#getSelectIdForQDSElement()
+	 */
 	@Override
 	public HasSelectionHandlers<CodeListSearchDTO> getSelectIdForQDSElement() {
 		return view;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#getPageSortTool()
+	 */
 	@Override
 	public HasSortHandler getPageSortTool() {
 		return view;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchDisplay#getSearchString()
+	 */
 	@Override
 	public HasValue<String> getSearchString() {
 		return searchInput;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListSearchPresenter.ValueSetSearchDisplay#buildDataTable(mat.client.shared.search.SearchResults, boolean)
+	 */
 	@Override
 	public void buildDataTable(SearchResults<CodeListSearchDTO> results, boolean isAscending) {
 		view.buildDataTable(results,isAscending,false);
@@ -192,6 +260,11 @@ public class ManageCodeListSearchView implements ManageCodeListSearchPresenter.V
 	
 	// Code commented for User Story MAT-2372 : Remove Value Set Creation.
 	//@Override
+	/**
+	 * Gets the creates the button.
+	 * 
+	 * @return the creates the button
+	 */
 	public HasClickHandlers getCreateButton() {
 		//return createButton;
 		return null;

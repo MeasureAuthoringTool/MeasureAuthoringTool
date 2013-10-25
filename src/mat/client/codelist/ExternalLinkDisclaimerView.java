@@ -14,12 +14,23 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ExternalLinkDisclaimerView.
+ */
 public class ExternalLinkDisclaimerView implements ManageCodeListDetailPresenter.ExternalLinkDisclaimerDisplay{
 
+	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
+	
+	/** The main panel. */
 	private SimplePanel mainPanel = new SimplePanel();
+	
+	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	
+	/**
+	 * Instantiates a new external link disclaimer view.
+	 */
 	public ExternalLinkDisclaimerView(){
 		mainPanel.setStylePrimaryName("searchResultsContainer");
 		mainPanel.addStyleName("leftAligned");
@@ -46,16 +57,25 @@ public class ExternalLinkDisclaimerView implements ManageCodeListDetailPresenter
 	    mainPanel.add(mainContentVP);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.ExternalLinkDisclaimerDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.ExternalLinkDisclaimerDisplay#getYesButton()
+	 */
 	@Override
 	public HasClickHandlers getYesButton() {
 		return buttonBar.getSaveButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.ExternalLinkDisclaimerDisplay#getNoButton()
+	 */
 	@Override
 	public HasClickHandlers getNoButton() {
 		return buttonBar.getCancelButton();

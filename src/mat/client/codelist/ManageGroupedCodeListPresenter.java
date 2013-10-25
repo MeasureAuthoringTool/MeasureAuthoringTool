@@ -41,63 +41,273 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ManageGroupedCodeListPresenter.
+ */
 public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
+	
+	/** The default_page_number. */
 	private int default_page_number = 1;
 	/*USTod*/
+	/** The Constant MY_VALUE_SETS_GROUPED_VALUE_SET. */
 	private static final String MY_VALUE_SETS_GROUPED_VALUE_SET = "My Value Sets  > Grouped Value Set";
+	
+	/** The Constant MY_VALUE_SETS_GROUPED_VALUE_SET_CREATE. */
 	private static final String MY_VALUE_SETS_GROUPED_VALUE_SET_CREATE = "My Value Sets  > Create a Grouped Value Set";
+	
+	/** The Constant MY_VALUE_SETS_GROUPED_VALUE_SET_UPDATE. */
 	private static final String MY_VALUE_SETS_GROUPED_VALUE_SET_UPDATE = "My Value Sets  > Update a Grouped Value Set";
+	
+	/** The Constant MY_VALUE_SETS_GROUPED_VALUE_SET_MANAGE. */
 	private static final String MY_VALUE_SETS_GROUPED_VALUE_SET_MANAGE = "My Value Sets  > Update a Grouped Value Set  > Manage Value Sets";
+	
+	/** The Constant MY_VALUE_SETS_GROUPED_VALUE_SET_ADD. */
 	private static final String MY_VALUE_SETS_GROUPED_VALUE_SET_ADD = "My Value Sets  > Add Value Sets";
 
 	
 	
+	/**
+	 * The Interface GroupedCodeListDisplay.
+	 */
 	public static interface GroupedCodeListDisplay extends BaseDisplay {
 		// Code commented for User Story MAT-2372 : Remove Value Set Creation.
 		/*public HasClickHandlers getCreateNewButton();
 		public HasClickHandlers getCreateNewGroupedButton();*/
+		/**
+		 * Gets the adds the code list button.
+		 * 
+		 * @return the adds the code list button
+		 */
 		public HasClickHandlers getAddCodeListButton();
+		
+		/**
+		 * Sets the adds the code list button enabled.
+		 * 
+		 * @param b
+		 *            the new adds the code list button enabled
+		 */
 		public void setAddCodeListButtonEnabled(boolean b);
+		
+		/**
+		 * Sets the code lists.
+		 * 
+		 * @param sModel
+		 *            the s model
+		 * @param pageCount
+		 *            the page count
+		 * @param total
+		 *            the total
+		 * @param currentPage
+		 *            the current page
+		 */
 		void setCodeLists(ManageGroupedCodeListsSummaryModel sModel,int pageCount,int total,int currentPage);
+		
+		/**
+		 * Disable anchors.
+		 */
 		public void DisableAnchors();
+		
+		/**
+		 * Enable anchors.
+		 */
 		public void EnableAnchors();
+		
+		/**
+		 * Gets the code lists summary widget.
+		 * 
+		 * @return the code lists summary widget
+		 */
 		public CodeListsSummaryWidget getCodeListsSummaryWidget();
 	}
 	
+	/**
+	 * The Interface CodeListsSummaryDisplay.
+	 */
 	public static interface CodeListsSummaryDisplay {
+		
+		/**
+		 * Builds the summary data table.
+		 * 
+		 * @param codes
+		 *            the codes
+		 * @param totalPagesCount
+		 *            the total pages count
+		 * @param total
+		 *            the total
+		 * @param currentPage
+		 *            the current page
+		 */
 		public void buildSummaryDataTable(ManageGroupedCodeListsSummaryModel codes,int totalPagesCount,int total,int currentPage);
+		
+		/**
+		 * Gets the page selection tool.
+		 * 
+		 * @return the page selection tool
+		 */
 		public HasPageSelectionHandler getPageSelectionTool();
+		
+		/**
+		 * Gets the page size.
+		 * 
+		 * @return the page size
+		 */
 		public int getPageSize();
+		
+		/**
+		 * Sets the page size.
+		 * 
+		 * @param pageNumber
+		 *            the new page size
+		 */
 		public void setPageSize(int pageNumber);
+		
+		/**
+		 * Gets the current page.
+		 * 
+		 * @return the current page
+		 */
 		public int getCurrentPage();
+		
+		/**
+		 * Sets the current page.
+		 * 
+		 * @param pageNumber
+		 *            the new current page
+		 */
 		public void setCurrentPage(int pageNumber);	
 	}
+	
+	/**
+	 * The Interface AddCodeListDisplay.
+	 */
 	public static interface AddCodeListDisplay extends BaseAddDisplay<GroupedCodeListDTO> {
+		
+		/**
+		 * Sets the code list name.
+		 * 
+		 * @param name
+		 *            the new code list name
+		 */
 		public void setCodeListName(String name);
+		
+		/**
+		 * Gets the code list input.
+		 * 
+		 * @return the code list input
+		 */
 		public ListBoxMVP getCodeListInput();
+		
+		/**
+		 * Gets the search button.
+		 * 
+		 * @return the search button
+		 */
 		public Button getSearchButton();
+		
+		/**
+		 * Gets the code id.
+		 * 
+		 * @return the code id
+		 */
 		public HasValue<String> getCodeId();
+		
+		/**
+		 * Gets the code list id.
+		 * 
+		 * @return the code list id
+		 */
 		public String getCodeListId();
+		
+		/**
+		 * Gets the code list name.
+		 * 
+		 * @return the code list name
+		 */
 		public String getCodeListName();
+		
+		/**
+		 * Gets the code description.
+		 * 
+		 * @return the code description
+		 */
 		public HasValue<String> getCodeDescription();
+		
+		/**
+		 * Sets the code list options.
+		 * 
+		 * @param texts
+		 *            the new code list options
+		 */
 		void setCodeListOptions(List<? extends HasListBox> texts);
+		
+		/**
+		 * Gets the current page.
+		 * 
+		 * @return the current page
+		 */
 		public int getCurrentPage();
+		
+		/**
+		 * Sets the current page.
+		 * 
+		 * @param pageNumber
+		 *            the new current page
+		 */
 		public void setCurrentPage(int pageNumber);
+		
+		/**
+		 * Gets the code list oid.
+		 * 
+		 * @return the code list oid
+		 */
 		public String getCodeListOid();
+		
+		/**
+		 * Gets the value set search filter panel.
+		 * 
+		 * @return the value set search filter panel
+		 */
 		public ListBox getValueSetSearchFilterPanel();
 	}
+	
+	/** The panel. */
 	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
+	
+	/** The detail display. */
 	private GroupedCodeListDisplay detailDisplay;
+	
+	/** The current details. */
 	private ManageCodeListDetailModel currentDetails;
+	
+	/** The current code lists. */
 	private ManageGroupCodeListsModel currentCodeLists;
+	
+	/** The list box provider. */
 	private ListBoxCodeProvider listBoxProvider;
+	
+	/** The add code list display. */
 	private AddCodeListDisplay addCodeListDisplay;
+	
+	/** The code list exists. */
 	private boolean codeListExists = false;
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter#getDetailDisplay()
+	 */
 	protected BaseDisplay getDetailDisplay() {
 		return detailDisplay;
 	}
 	
+	/**
+	 * Instantiates a new manage grouped code list presenter.
+	 * 
+	 * @param dDisplayArg
+	 *            the d display arg
+	 * @param addCodeListArg
+	 *            the add code list arg
+	 * @param lbcp
+	 *            the lbcp
+	 */
 	public ManageGroupedCodeListPresenter(GroupedCodeListDisplay dDisplayArg, AddCodeListDisplay addCodeListArg, ListBoxCodeProvider lbcp) {
 		super(dDisplayArg, lbcp);
 		
@@ -358,6 +568,12 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		setPanelContentAndHeading(detailDisplay.asWidget(), MY_VALUE_SETS_GROUPED_VALUE_SET);
 	}
 	
+	/**
+	 * Display code lists summary.
+	 * 
+	 * @param codeListId
+	 *            the code list id
+	 */
 	private void displayCodeListsSummary(String codeListId){
 		final int pageNumber = detailDisplay.getCodeListsSummaryWidget().getCurrentPage();
 		int pageSize = detailDisplay.getCodeListsSummaryWidget().getPageSize();
@@ -376,6 +592,9 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		});
 	}
 	
+	/**
+	 * Removes the selected code lists from group code list.
+	 */
 	private void removeSelectedCodeListsFromGroupCodeList() {
 		List<GroupedCodeListDTO> selectedCodeList = currentCodeLists.getSelected();
 		for(GroupedCodeListDTO dto : selectedCodeList){
@@ -405,6 +624,13 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 			
 		
 	}
+	
+	/**
+	 * Sets the code list options.
+	 * 
+	 * @param category
+	 *            the new code list options
+	 */
 	private void setCodeListOptions(String category) {
 		if(category != null && category.length() > 0) {
 			MatContext.get().getCodeListService().getCodeListsForCategory(category,
@@ -428,6 +654,12 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		}
 	}
 	
+	/**
+	 * Display detail.
+	 * 
+	 * @param heading
+	 *            the heading
+	 */
 	private void displayDetail(String heading) {
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
@@ -437,6 +669,10 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		
 		Mat.focusSkipLists("MainContent");
 	}
+	
+	/**
+	 * Display code list.
+	 */
 	private void displayCodeList() {
 		setCodeListOptions(detailDisplay.getCategory().getValue());
 		addCodeListDisplay.setReturnToLink("Return to  "+currentDetails.getName());
@@ -448,12 +684,21 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		Mat.focusSkipLists("MainContent");
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter#buildValidationMessages(mat.client.codelist.ManageCodeListDetailModel)
+	 */
 	protected List<String> buildValidationMessages(ManageCodeListDetailModel model) {
 		List<String> message = super.buildValidationMessages(model);
 
 		return message;
 	}
 	
+	/**
+	 * Display code lists for the selected page.
+	 * 
+	 * @param codeListId
+	 *            the code list id
+	 */
 	private void displayCodeListsForTheSelectedPage(String codeListId) {
 		final int pageNumber = addCodeListDisplay.getCurrentPage();
 		int pageSize =   addCodeListDisplay.getPageSize();
@@ -474,6 +719,12 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		
 	}
 
+	/**
+	 * Update.
+	 * 
+	 * @param source
+	 *            the source
+	 */
 	private void update(final int source) {
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
@@ -534,6 +785,11 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		}
 	}
 	
+	/**
+	 * Gets the widget.
+	 * 
+	 * @return the widget
+	 */
 	public Widget getWidget() {
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
@@ -542,6 +798,9 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 	}
 
 	//Changed the method name for consistency. 
+	/**
+	 * Populate fields.
+	 */
 	private void populateFields() {
 		detailDisplay.getName().setValue(currentDetails.getName());
 		
@@ -576,6 +835,12 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 				
 	}
 	
+	/**
+	 * Sets the model codes to view.
+	 * 
+	 * @param value
+	 *            the new model codes to view
+	 */
 	private void setModelCodesToView(boolean value) {
 		if(currentDetails.getCodeLists() != null){
 			Collections.sort(currentDetails.getCodeLists(), new GroupedCodeListDTO.Comparator());
@@ -597,6 +862,9 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		} 
 	}
 	
+	/**
+	 * Update model details from view.
+	 */
 	private void updateModelDetailsFromView() {
 		currentDetails.setName(detailDisplay.getName().getValue());
 		
@@ -617,6 +885,9 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		currentDetails.setLastModifiedDate(detailDisplay.getLastModifiedDate().getValue());
 	}
 	
+	/**
+	 * Creates the new grouped code list.
+	 */
 	public void createNewGroupedCodeList() {
 		/*USTod*/
 //		panel.setHeading(MY_VALUE_SETS_GROUPED_VALUE_SET_CREATE, MY_VALUE_SETS_GROUPED_VALUE_SET_CREATE);
@@ -632,6 +903,13 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		detailDisplay.getOid().setValue("");
 		displayDetail(MY_VALUE_SETS_GROUPED_VALUE_SET_CREATE);
 	}
+	
+	/**
+	 * Edits the code list.
+	 * 
+	 * @param key
+	 *            the key
+	 */
 	public void editCodeList(String key) {
 		/*USTod*/
 //		panel.setHeading(MY_VALUE_SETS_GROUPED_VALUE_SET_UPDATE, MY_VALUE_SETS_GROUPED_VALUE_SET_UPDATE);
@@ -658,6 +936,15 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		
 	}
 	
+	/**
+	 * Gets the widget with heading.
+	 * 
+	 * @param widget
+	 *            the widget
+	 * @param heading
+	 *            the heading
+	 * @return the widget with heading
+	 */
 	public Widget getWidgetWithHeading(Widget widget, String heading) {
 		FlowPanel vPanel = new FlowPanel();
 		Label h = new Label(heading);
@@ -669,6 +956,12 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		widget.addStyleName("myAccountPanelContent");
 		return vPanel;
 	}
+	
+	/**
+	 * Gets the adds the code lists.
+	 * 
+	 * @return the adds the code lists
+	 */
 	public Widget getAddCodeLists(){
 		/*USTod*/
 		panel.setHeading(MY_VALUE_SETS_GROUPED_VALUE_SET_ADD, MY_VALUE_SETS_GROUPED_VALUE_SET_ADD);
@@ -677,6 +970,9 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		return addCodeListDisplay.asWidget();
 	}
 	
+	/**
+	 * Adds the code list.
+	 */
 	private void addCodeList() {
 		addCodeListDisplay.getErrorMessageDisplay().clear();
 		final GroupedCodeListDTO dto = new GroupedCodeListDTO();
@@ -727,6 +1023,11 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 	
 	
 	
+	/**
+	 * Checks if is valid code list.
+	 * 
+	 * @return true, if is valid code list
+	 */
 	private boolean isValidCodeList(){
 		List<String> messages = new ArrayList<String>();
 		String codeId = addCodeListDisplay.getCodeId().getValue();
@@ -749,6 +1050,12 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		return valid;
 	}
 	
+	/**
+	 * Adds the code listto grouped code list.
+	 * 
+	 * @param currentGDetails
+	 *            the current g details
+	 */
 	private void addCodeListtoGroupedCodeList(ManageCodeListDetailModel currentGDetails) {
 		 MatContext.get().getCodeListService().saveorUpdateGroupedCodeList(currentGDetails, new AsyncCallback<SaveUpdateCodeListResult>() {
 			@Override
@@ -772,12 +1079,31 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		});
 	}
 	
+	/**
+	 * Reset add code list screen.
+	 */
 	private void resetAddCodeListScreen() {
 		addCodeListDisplay.setCurrentPage(default_page_number);//Resetting to first page.
 		addCodeListDisplay.getCodeDescription().setValue("");
 		setModelCodesToView(false);
 	}
 	
+	/**
+	 * Search.
+	 * 
+	 * @param searchText
+	 *            the search text
+	 * @param startIndex
+	 *            the start index
+	 * @param sortColumn
+	 *            the sort column
+	 * @param isAsc
+	 *            the is asc
+	 * @param defaultCodeList
+	 *            the default code list
+	 * @param filter
+	 *            the filter
+	 */
 	private void search(String searchText, int startIndex, String sortColumn, boolean isAsc,boolean defaultCodeList, int filter) {
 
 		final boolean isAscending = isAsc;
@@ -810,6 +1136,14 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		});
 	}
 	
+	/**
+	 * Populate code system options.
+	 * 
+	 * @param category
+	 *            the category
+	 * @param populate
+	 *            the populate
+	 */
 	private void populateCodeSystemOptions(String category,final boolean populate){
 		listBoxProvider.getCodeSystemListForCategory(category, new AsyncCallback<List<? extends HasListBox>>() {
 
@@ -829,6 +1163,9 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		
 	}
 	
+	/**
+	 * Clear messages.
+	 */
 	public void clearMessages() {
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
@@ -836,11 +1173,20 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		addCodeListDisplay.getSuccessMessageDisplay().clear();
 	}
 	
+	/**
+	 * Enable or disable.
+	 * 
+	 * @param editable
+	 *            the editable
+	 */
 	private void enableOrDisable(boolean editable) {
 		ReadOnlyHelper.setReadOnlyForCurrentMeasure(detailDisplay.asWidget(),editable);
 //		ReadOnlyHelper.setReadOnlyForCurrentMeasure(addCodeListDisplay.asWidget(),editable);
 	}
 	
+	/**
+	 * Enable or disable fields.
+	 */
 	private void enableOrDisableFields(){
 		// Commented and set to false for MAT-2378 : Set Draft Sets to Read Only.
 		boolean canEditValueSet = false;//currentDetails.isMyValueSet();
@@ -861,11 +1207,22 @@ public class ManageGroupedCodeListPresenter extends BaseDetailPresenter {
 		}
 	}
 	
+	/**
+	 * Sets the panel content and heading.
+	 * 
+	 * @param w
+	 *            the w
+	 * @param heading
+	 *            the heading
+	 */
 	private void setPanelContentAndHeading(Widget w, String heading){
 		panel.setHeading(heading, heading);
 		panel.setContent(w);
 	}
 	
+	/**
+	 * Reset to first page.
+	 */
 	public void resetToFirstPage(){
 		detailDisplay.getCodeListsSummaryWidget().setCurrentPage(default_page_number);
 		if(currentDetails != null){

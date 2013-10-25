@@ -12,15 +12,22 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * The Class ExcelViewerWidget.
+ */
 public class ExcelViewerWidget extends Composite{
 	
-	  private HTML exportViewerHtml;
+	  /** The export viewer html. */
+  	private HTML exportViewerHtml;
 	  
-	  private Anchor exportViewAnchor;
+	  /** The export view anchor. */
+  	private Anchor exportViewAnchor;
 	  
-	  private FocusableImageButton exportlinkimage = new FocusableImageButton(ImageResources.INSTANCE.icon_newWindow(),"Excel Viewer");
+	  /** The exportlinkimage. */
+  	private FocusableImageButton exportlinkimage = new FocusableImageButton(ImageResources.INSTANCE.icon_newWindow(),"Excel Viewer");
 	  
-	  private ClickHandler exportViewClickHandler = new ClickHandler() {
+	  /** The export view click handler. */
+  	private ClickHandler exportViewClickHandler = new ClickHandler() {
 		
 		@Override
 		public void onClick(ClickEvent event) {
@@ -29,7 +36,10 @@ public class ExcelViewerWidget extends Composite{
 		}
 	};
 	  
-	  public ExcelViewerWidget(){
+	  /**
+	 * Instantiates a new excel viewer widget.
+	 */
+  	public ExcelViewerWidget(){
 		  	 VerticalPanel exportViewerPanel = new VerticalPanel();
     	     exportViewerPanel.getElement().setId("exportViewerPanel_VerticalPanel");
     	     exportViewerPanel.add(new Label("Excel Viewer is required to view and print the files available on this page."));
@@ -49,7 +59,12 @@ public class ExcelViewerWidget extends Composite{
     	     initWidget(exportViewerPanel);
       }
 	  
-	  public Anchor getExportViewAnchor(){
+	  /**
+	 * Gets the export view anchor.
+	 * 
+	 * @return the export view anchor
+	 */
+  	public Anchor getExportViewAnchor(){
 		  return  exportViewAnchor;
 		  
 	  }

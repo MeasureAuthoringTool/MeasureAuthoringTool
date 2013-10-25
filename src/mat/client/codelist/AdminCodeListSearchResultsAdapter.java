@@ -37,37 +37,96 @@ import com.google.gwt.view.client.CellPreviewEvent;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 
+/**
+ * The Class AdminCodeListSearchResultsAdapter.
+ */
 public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 
+	/**
+	 * The Interface Observer.
+	 */
 	public static interface Observer {
+		
+		/**
+		 * On history clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onHistoryClicked(CodeListSearchDTO result);
+		
+		/**
+		 * On transfer selected clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onTransferSelectedClicked(CodeListSearchDTO result);
 	}
 		
+	/** The model. */
 	private ManageCodeListSearchModel model = new AdminManageCodeListSearchModel();
+	
+	/** The observer. */
 	private Observer observer;
+	
+	/** The click handler. */
 	private ClickHandler clickHandler = buildClickHandler();
+	
+	/** The is history clicked. */
 	private boolean isHistoryClicked;
+	
+	/** The last selected code list. */
 	private List<CodeListSearchDTO> lastSelectedCodeList;
 	
+	/** The selected code list. */
 	private List<CodeListSearchDTO> selectedCodeList;
 	
+	/**
+	 * Gets the selected code list.
+	 * 
+	 * @return the selected code list
+	 */
 	public List<CodeListSearchDTO> getSelectedCodeList() {
 		return selectedCodeList;
 	}
 
+	/**
+	 * Gets the last selected code list.
+	 * 
+	 * @return the last selected code list
+	 */
 	public List<CodeListSearchDTO> getLastSelectedCodeList() {
 		return lastSelectedCodeList;
 	}
 
+	/**
+	 * Sets the last selected code list.
+	 * 
+	 * @param lastSelectedCodeList
+	 *            the new last selected code list
+	 */
 	public void setLastSelectedCodeList(List<CodeListSearchDTO> lastSelectedCodeList) {
 		this.lastSelectedCodeList = lastSelectedCodeList;
 	}
 
+	/**
+	 * Sets the selected code list.
+	 * 
+	 * @param selectedCodeList
+	 *            the new selected code list
+	 */
 	public void setSelectedCodeList(List<CodeListSearchDTO> selectedCodeList) {
 		this.selectedCodeList = selectedCodeList;
 	}
 	
+	/**
+	 * Gets the result for id.
+	 * 
+	 * @param id
+	 *            the id
+	 * @return the result for id
+	 */
 	private CodeListSearchDTO getResultForId(String id) {
 		for(int i = 0; i < model.getNumberOfRows(); i++) {			
 			if(id.equals(model.getKey(i))) {
@@ -78,14 +137,32 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		return null;
 	}
 	
+	/**
+	 * Sets the observer.
+	 * 
+	 * @param observer
+	 *            the new observer
+	 */
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
+	
+	/**
+	 * Sets the data.
+	 * 
+	 * @param model
+	 *            the new data
+	 */
 	public void setData(ManageCodeListSearchModel model) {
 		this.model = model;
 	}
 		
 	
+	/**
+	 * Builds the click handler.
+	 * 
+	 * @return the click handler
+	 */
 	private ClickHandler buildClickHandler() {
 		return new ClickHandler() {
 			@Override
@@ -109,37 +186,58 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		};
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSortable(int)
+	 */
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return model.isColumnSortable(columnIndex);
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getNumberOfColumns()
+	 */
 	@Override
 	public int getNumberOfColumns() {
 		return model.getNumberOfColumns();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getNumberOfRows()
+	 */
 	@Override
 	public int getNumberOfRows() {
 		return model.getNumberOfRows();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getColumnHeader(int)
+	 */
 	@Override
 	public String getColumnHeader(int columnIndex) {
 		return model.getColumnHeader(columnIndex);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getColumnWidth(int)
+	 */
 	@Override
 	public String getColumnWidth(int columnIndex) {
 		return model.getColumnWidth(columnIndex);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnFiresSelection(int)
+	 */
 	@Override
 	public boolean isColumnFiresSelection(int columnIndex) {
 		return model.isColumnFiresSelection(columnIndex);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getValue(int, int)
+	 */
 	@Override
 	public Widget getValue(int row, int column) {
 		Widget value;
@@ -176,6 +274,17 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		return value;
 	}
 	
+	/**
+	 * Gets the image.
+	 * 
+	 * @param action
+	 *            the action
+	 * @param url
+	 *            the url
+	 * @param key
+	 *            the key
+	 * @return the image
+	 */
 	private Widget getImage(String action, ImageResource url, String key) {
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
@@ -190,6 +299,13 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		return holder;
 	}
 	
+	/**
+	 * Gets the transfer check box.
+	 * 
+	 * @param key
+	 *            the key
+	 * @return the transfer check box
+	 */
 	private CustomCheckBox getTransferCheckBox(String key){
 		
 		CustomCheckBox transFerCheckBox = new CustomCheckBox("Transfer", false);	
@@ -200,6 +316,12 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		return transFerCheckBox;
 		
 	}
+	
+	/**
+	 * Adds the selection handler on table.
+	 * 
+	 * @return the multi selection model
+	 */
 	public MultiSelectionModel<CodeListSearchDTO> addSelectionHandlerOnTable(){
 		final MultiSelectionModel<CodeListSearchDTO> selectionModel = new  MultiSelectionModel<CodeListSearchDTO>();
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
@@ -223,16 +345,41 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 	
 	
 
+	/**
+	 * Gets the column tool tip.
+	 * 
+	 * @param columnText
+	 *            the column text
+	 * @param title
+	 *            the title
+	 * @return the column tool tip
+	 */
 	private SafeHtml getColumnToolTip(String columnText, StringBuilder title) {
 		String htmlConstant = "<html>" + "<head> </head> <Body><span title='"+ columnText + ", " + title + "'>"+columnText+ "</span></body>" + "</html>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
+	/**
+	 * Gets the column tool tip.
+	 * 
+	 * @param title
+	 *            the title
+	 * @return the column tool tip
+	 */
 	private SafeHtml getColumnToolTip(String title){
 		String htmlConstant = "<html>" + "<head> </head> <Body><span title='" + title + "'>"+title+ "</span></body>" + "</html>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
+	/**
+	 * Adds the column to table.
+	 * 
+	 * @param table
+	 *            the table
+	 * @param sortHandler
+	 *            the sort handler
+	 * @return the cell table
+	 */
 	public CellTable<CodeListSearchDTO> addColumnToTable(final CellTable<CodeListSearchDTO> table, ListHandler<CodeListSearchDTO> sortHandler){
 		
 		if(table.getColumnCount() !=6 ){	
@@ -361,6 +508,16 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 		return table;
 	}
 	
+	/**
+	 * Handle selection event.
+	 * 
+	 * @param <T>
+	 *            the generic type
+	 * @param event
+	 *            the event
+	 * @param selectionModel
+	 *            the selection model
+	 */
 	protected <T> void handleSelectionEvent(CellPreviewEvent<T> event,
 			final MultiSelectionModel<? super T> selectionModel) {
 		T value = event.getValue();
@@ -391,49 +548,96 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 	
 	
 	
+	/**
+	 * Adds the listener.
+	 * 
+	 * @param image
+	 *            the image
+	 */
 	private void addListener(CustomButton image) {
 		image.addClickHandler(clickHandler);
 	}
 	
+	/**
+	 * Sets the id.
+	 * 
+	 * @param image
+	 *            the image
+	 * @param action
+	 *            the action
+	 * @param key
+	 *            the key
+	 */
 	private void setId(CustomButton image, String action, String key) {
 		String id = action + "_" + key;
 		image.getElement().setAttribute("id", id);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getStartIndex()
+	 */
 	@Override
 	public int getStartIndex() {
 		return model.getStartIndex();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getResultsTotal()
+	 */
 	@Override
 	public int getResultsTotal() {
 		return model.getResultsTotal();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getKey(int)
+	 */
 	@Override
 	public String getKey(int row) {
 		return model.get(row).getId();
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#get(int)
+	 */
 	@Override
 	public CodeListSearchDTO get(int row) {
 		return model.get(row);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
+	 */
 	@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return model.isColumnSelectAll(columnIndex);
 	}
 
+	/**
+	 * Checks if is history clicked.
+	 * 
+	 * @return true, if is history clicked
+	 */
 	public boolean isHistoryClicked() {
 		return isHistoryClicked;
 	}
 
+	/**
+	 * Sets the history clicked.
+	 * 
+	 * @param isHistoryClicked
+	 *            the new history clicked
+	 */
 	public void setHistoryClicked(boolean isHistoryClicked) {
 		this.isHistoryClicked = isHistoryClicked;
 	}
 
+	/**
+	 * Gets the model.
+	 * 
+	 * @return the model
+	 */
 	public ManageCodeListSearchModel getModel() {
 		return model;
 	}

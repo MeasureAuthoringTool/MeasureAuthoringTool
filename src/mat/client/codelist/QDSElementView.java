@@ -20,16 +20,33 @@ import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class QDSElementView.
+ */
 public class QDSElementView implements ManageCodeListDetailPresenter.AddQDSDisplay{
+	
+	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
+	
+	/** The main panel. */
 	private SimplePanel mainPanel = new SimplePanel();
 	
 	
+	/** The data type input. */
 	private ListBoxMVP dataTypeInput = new ListBoxMVP();
+	
+	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	
+	/** The current code list model. */
 	private ManageCodeListDetailModel currentCodeListModel = new ManageCodeListDetailModel();
+	
+	/** The success messages. */
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 	
+	/**
+	 * Instantiates a new qDS element view.
+	 */
 	public QDSElementView(){
 		mainPanel.setStylePrimaryName("searchResultsContainer");
 		mainPanel.addStyleName("leftAligned");
@@ -48,25 +65,40 @@ public class QDSElementView implements ManageCodeListDetailPresenter.AddQDSDispl
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddQDSDisplay#asWidget()
+	 */
 	public Widget asWidget() {
 		return containerPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddQDSDisplay#getSaveButton()
+	 */
 	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttonBar.getSaveButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddQDSDisplay#getCancelButton()
+	 */
 	@Override
 	public HasClickHandlers getCancelButton() {
 		return buttonBar.getCancelButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddQDSDisplay#setTitle(java.lang.String)
+	 */
 	@Override 
 	public void setTitle(String title) {
 		containerPanel.setHeading(title,"");
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddQDSDisplay#setCodeListDetailModel(mat.client.codelist.ManageCodeListDetailModel)
+	 */
 	@Override
 	public void setCodeListDetailModel(ManageCodeListDetailModel currentDetails) {
 		currentCodeListModel = currentDetails;
@@ -75,22 +107,41 @@ public class QDSElementView implements ManageCodeListDetailPresenter.AddQDSDispl
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddQDSDisplay#getDataType()
+	 */
 	@Override
 	public HasValue<String> getDataType() {
 		return dataTypeInput;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddQDSDisplay#setDataType(int)
+	 */
 	@Override
 	public void setDataType(int value) {
 		
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddQDSDisplay#getSuccessMessageDisplay()
+	 */
 	@Override
 	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
 		return successMessages;
 	}
 	
+	/**
+	 * Sets the list box items.
+	 * 
+	 * @param listBox
+	 *            the list box
+	 * @param itemList
+	 *            the item list
+	 * @param defaultOption
+	 *            the default option
+	 */
 	private void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption){
 		listBox.clear();
 		listBox.addItem(defaultOption,"");
@@ -101,11 +152,17 @@ public class QDSElementView implements ManageCodeListDetailPresenter.AddQDSDispl
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddQDSDisplay#setDataTypeOptions(java.util.List)
+	 */
 	@Override
 	public void setDataTypeOptions(List<? extends HasListBox> texts) {
 		setListBoxItems(dataTypeInput, texts, MatContext.PLEASE_SELECT);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddQDSDisplay#getQDSDataTypeValue()
+	 */
 	@Override
 	public String getQDSDataTypeValue() {
 		return dataTypeInput.getValue(dataTypeInput.getSelectedIndex());

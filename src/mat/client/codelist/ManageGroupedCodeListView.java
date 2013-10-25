@@ -6,23 +6,44 @@ import mat.client.shared.MatContext;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Label;
 
+/**
+ * The Class ManageGroupedCodeListView.
+ */
 public class ManageGroupedCodeListView extends BaseDetailView
 	implements ManageGroupedCodeListPresenter.GroupedCodeListDisplay{
 	
+	/** The code lists summary. */
 	private CodeListsSummaryWidget codeListsSummary;
 	
+	/**
+	 * Instantiates a new manage grouped code list view.
+	 * 
+	 * @param nameType
+	 *            the name type
+	 */
 	public ManageGroupedCodeListView(String nameType) {
 		super(nameType);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageGroupedCodeListPresenter.GroupedCodeListDisplay#DisableAnchors()
+	 */
 	@Override
 	public void DisableAnchors() {
 		MatContext.get().setVisible(codeListsSummary,false);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageGroupedCodeListPresenter.GroupedCodeListDisplay#EnableAnchors()
+	 */
 	@Override
 	public void EnableAnchors() {
 		MatContext.get().setVisible(codeListsSummary,true);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailView#getSummaryWidget()
+	 */
 	@Override
 	protected SummaryWidgetBase<?> getSummaryWidget() {
 		if(codeListsSummary == null) {
@@ -35,11 +56,17 @@ public class ManageGroupedCodeListView extends BaseDetailView
 //		//codeListsSummary.setCodesSummaryList(codeLists);
 //		codeListsSummary.buildSummaryDataTable(codes, totalPagesCount, total, currentPage)
 //	}
-	@Override
+	/* (non-Javadoc)
+ * @see mat.client.codelist.ManageGroupedCodeListPresenter.GroupedCodeListDisplay#getAddCodeListButton()
+ */
+@Override
 	public HasClickHandlers getAddCodeListButton() {
 		return codeListsSummary.getManageCodeListsAnchor();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageGroupedCodeListPresenter.GroupedCodeListDisplay#setAddCodeListButtonEnabled(boolean)
+	 */
 	@Override
 	public void setAddCodeListButtonEnabled(boolean enabled) {
 		codeListsSummary.getManageCodeListsAnchor().setEnabled(enabled);
@@ -48,22 +75,36 @@ public class ManageGroupedCodeListView extends BaseDetailView
 		else
 			codeListsSummary.addManageCodesLink();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailView#shouldDisplayCodeSystem()
+	 */
 	@Override
 	protected boolean shouldDisplayCodeSystem() {
 		return false;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getCodeSystemListBox()
+	 */
 	@Override
 	public ListBoxMVP getCodeSystemListBox() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#setSaveCompleteButtonEnabled(boolean)
+	 */
 	@Override
 	public void setSaveCompleteButtonEnabled(boolean enabled) {
 		buttonBar.getSaveCompleteButton().setEnabled(enabled);
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#enableValueSetWidgetsBasedOnDraft(boolean)
+	 */
 	@Override
 	public void enableValueSetWidgetsBasedOnDraft(boolean isDraft) {
 		
@@ -81,6 +122,9 @@ public class ManageGroupedCodeListView extends BaseDetailView
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageGroupedCodeListPresenter.GroupedCodeListDisplay#setCodeLists(mat.client.codelist.ManageGroupedCodeListsSummaryModel, int, int, int)
+	 */
 	@Override
 	public void setCodeLists(ManageGroupedCodeListsSummaryModel sModel,
 			int pageCount, int total, int currentPage) {
@@ -88,6 +132,9 @@ public class ManageGroupedCodeListView extends BaseDetailView
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageGroupedCodeListPresenter.GroupedCodeListDisplay#getCodeListsSummaryWidget()
+	 */
 	@Override
 	public CodeListsSummaryWidget getCodeListsSummaryWidget() {
 		return codeListsSummary;

@@ -13,13 +13,29 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ManageGroupCodeListsModel.
+ */
 class ManageGroupCodeListsModel extends PagingFacade<GroupedCodeListDTO> implements IsSerializable{
 
+	/** The headers. */
 	private static String[] headers = new String[] {"Select","Value Set","Descriptor"};
+	
+	/** The widths. */
 	private static String[] widths = new String[] { "5%", "30%", "50%"};
+	
+	/** The checkbox map. */
 	private HashMap<GroupedCodeListDTO, CustomCheckBox> checkboxMap = 
 		new HashMap<GroupedCodeListDTO, CustomCheckBox>();
 	
+	/**
+	 * Instantiates a new manage group code lists model.
+	 * 
+	 * @param codesData
+	 *            the codes data
+	 * @param value
+	 *            the value
+	 */
 	public ManageGroupCodeListsModel(List<GroupedCodeListDTO> codesData,boolean value) {
 		super(codesData);
 		for(GroupedCodeListDTO dto : codesData) {
@@ -29,21 +45,33 @@ class ManageGroupCodeListsModel extends PagingFacade<GroupedCodeListDTO> impleme
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getNumberOfColumns()
+	 */
 	@Override
 	public int getNumberOfColumns() {
 		return headers.length;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getColumnHeader(int)
+	 */
 	@Override
 	public String getColumnHeader(int columnIndex) {
 		return headers[columnIndex];
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#isColumnSortable(int)
+	 */
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getColumnWidth(int)
+	 */
 	@Override
 	public String getColumnWidth(int columnIndex) {
 		return widths[columnIndex];
@@ -51,11 +79,17 @@ class ManageGroupCodeListsModel extends PagingFacade<GroupedCodeListDTO> impleme
 
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getKey(java.lang.Object)
+	 */
 	@Override
 	public String getKey(GroupedCodeListDTO dataObject) {
 		return dataObject.getId();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getValueImpl(java.lang.Object, int)
+	 */
 	@Override
 	public Widget getValueImpl(GroupedCodeListDTO dataObject, int column) {
 		Widget value;
@@ -76,11 +110,19 @@ class ManageGroupCodeListsModel extends PagingFacade<GroupedCodeListDTO> impleme
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#isColumnFiresSelection(int)
+	 */
 	@Override
 	public boolean isColumnFiresSelection(int columnIndex) {
 		return false;
 	}
 	
+	/**
+	 * Gets the selected.
+	 * 
+	 * @return the selected
+	 */
 	public List<GroupedCodeListDTO> getSelected() {
 		List<GroupedCodeListDTO> retList = new ArrayList<GroupedCodeListDTO>();
 		List<GroupedCodeListDTO> data = getData();
@@ -95,6 +137,9 @@ class ManageGroupCodeListsModel extends PagingFacade<GroupedCodeListDTO> impleme
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
+	 */
 	@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return (columnIndex==0);

@@ -30,49 +30,91 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class BaseDetailView.
+ */
 public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay {
 
+	/** The oid title. */
 	private String oidTitle = "Select 'Use System Generated OID' to have the system "+
 	"assign an OID to the Value Set.  If an OID "+
 	"has been assigned to the Value Set outside of "+
 	"the Measure Authoring Tool, manually enter the OID.";
 	
+	/** The main panel. */
 	protected SimplePanel mainPanel = new SimplePanel();
 
+	/** The required. */
 	protected HTML required = new HTML(RequiredIndicator.get() + " indicates required field");
 	// Code commented for User Story MAT-2372 : Remove Value Set Creation.
 	//private Anchor createNewAnchor = new Anchor(ConstantMessages.CREATE_NEW_VALUE_SET);
 	//private Anchor createNewGroupedAnchor = new Anchor(ConstantMessages.CREATE_NEW_GROUPED_VALUE_SET);
 	
+	/** The name input. */
 	protected TextBox nameInput = new TextBox();
 	
+	/** The steward input. */
 	protected ListBoxMVP stewardInput = new ListBoxMVP();
+	
+	/** The steward label. */
 	public Label stewardLabel;
 	
 	//US 413. Empty panel and input textbox for Steward Other option. 
+	/** The empty text box holder. */
 	protected VerticalPanel emptyTextBoxHolder = new VerticalPanel();
+	
+	/** The steward other input. */
 	protected TextBox stewardOtherInput = new TextBox();
 	
+	/** The category input. */
 	protected ListBoxMVP categoryInput = new ListBoxMVP();
+	
+	/** The rationale input. */
 	protected TextAreaWithMaxLength rationaleInput = new TextAreaWithMaxLength();
+	
+	/** The comments input. */
 	protected TextAreaWithMaxLength commentsInput = new TextAreaWithMaxLength();
+	
+	/** The error messages. */
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The success messages. */
 	protected SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	
+	/** The code system input. */
 	protected ListBoxMVP codeSystemInput = new ListBoxMVP();
+	
+	/** The code system version input. */
 	protected TextBox codeSystemVersionInput = new TextBox();
 	
+	/** The code list oid input. */
 	protected TextAreaWithMaxLength codeListOidInput = new TextAreaWithMaxLength();
+	
+	/** The generate oid button. */
 	private Button generateOidButton = new SecondaryButton("Use System Generated OID");
 	
+	/** The last modified date. */
 	public DateBoxWithCalendar lastModifiedDate = new DateBoxWithCalendar(DateBoxWithCalendar.MDYHMA);
 	
+	/** The button bar. */
 	protected SaveCompleteCancelButtonBar buttonBar = new SaveCompleteCancelButtonBar();
+	
+	/** The code lists summary. */
 	protected SummaryWidgetBase<?> codeListsSummary = getSummaryWidget();
 	//private Panel createNewPanel;
+	/** The last modify. */
 	private Label lastModify = new Label("Last Modified");
+	
+	/** The other specify. */
 	public Label otherSpecify = (Label) LabelBuilder.buildRequiredLabel(stewardOtherInput, "User Defined Steward");
 	
 
+	/**
+	 * Instantiates a new base detail view.
+	 * 
+	 * @param nameType
+	 *            the name type
+	 */
 	public BaseDetailView(String nameType){
 		if(nameType == null)
 			nameType = "Name";
@@ -211,38 +253,71 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	
 	
 	
+	/**
+	 * Gets the summary widget.
+	 * 
+	 * @return the summary widget
+	 */
 	protected abstract SummaryWidgetBase<?> getSummaryWidget();
+	
+	/**
+	 * Should display code system.
+	 * 
+	 * @return true, if successful
+	 */
 	protected abstract boolean shouldDisplayCodeSystem();
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getSaveButton()
+	 */
 	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttonBar.getSaveButton();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getSaveCompleteButton()
+	 */
 	@Override
 	public HasClickHandlers getSaveCompleteButton() {
 		return buttonBar.getSaveCompleteButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getCancelButton()
+	 */
 	@Override
 	public HasClickHandlers getCancelButton() {
 		return buttonBar.getCancelButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#setTitle(java.lang.String)
+	 */
 	@Override
 	public void setTitle(String text) {
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getName()
+	 */
 	@Override
 	public HasValue<String> getName() {
 		return nameInput;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getOrganisation()
+	 */
 	@Override
 	public HasValue<String> getOrganisation() {
 		return stewardInput;
@@ -250,6 +325,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	
 	//US 413
 	/* Returns the text value for the Steward selection. 
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardValue()
+	 */
+	/* (non-Javadoc)
 	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardValue()
 	 */
 	@Override
@@ -261,6 +339,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	/* Returns the Steward Other TextBox object.
 	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardOther()
 	 */
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardOther()
+	 */
 	@Override
 	public TextBox getStewardOther() {
 		return stewardOtherInput;
@@ -270,42 +351,73 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	/* Returns the Steward Other value.
 	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardOtherValue()
 	 */
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardOtherValue()
+	 */
 	@Override
 	public String getStewardOtherValue() {
 		return stewardOtherInput.getValue();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getCategory()
+	 */
 	@Override
 	public HasValue<String> getCategory() {		
 		return categoryInput;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getCategoryListBox()
+	 */
 	@Override
 	public ListBoxMVP getCategoryListBox() {		
 		return categoryInput;
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getRationale()
+	 */
 	@Override
 	public HasValue<String> getRationale() {
 		return rationaleInput;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getComments()
+	 */
 	@Override
 	public HasValue<String> getComments() {
 		return commentsInput;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getOid()
+	 */
 	@Override
 	public HasValue<String> getOid() {
 		return codeListOidInput;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getOidTitle()
+	 */
 	@Override
 	public String getOidTitle(){
 		return oidTitle;
 	}
 	
+	/**
+	 * Sets the list box options.
+	 * 
+	 * @param input
+	 *            the input
+	 * @param itemList
+	 *            the item list
+	 * @param defaultText
+	 *            the default text
+	 */
 	private void setListBoxOptions(ListBox input, List<? extends HasListBox> itemList,String defaultText) {
 		input.clear();
 		if(defaultText != null) {
@@ -317,27 +429,43 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 			}
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#setCategoryOptions(java.util.List)
+	 */
 	@Override
 	public void setCategoryOptions(List<? extends HasListBox> itemList) {
 		setListBoxOptions(categoryInput, itemList, MatContext.PLEASE_SELECT);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#setCodeSystemOptions(java.util.List)
+	 */
 	@Override
 	public void setCodeSystemOptions(List<? extends HasListBox> texts) {
 		setListBoxItems(codeSystemInput, texts, MatContext.PLEASE_SELECT);
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#setStewardOptions(java.util.List)
+	 */
 	@Override
 	public void setStewardOptions(List<? extends HasListBox> texts) {
 		setListBoxItems(stewardInput, texts, MatContext.PLEASE_SELECT);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getCodeSystemValue()
+	 */
 	@Override
 	public String getCodeSystemValue(){
 		if(codeSystemInput.getSelectedIndex() >= 0) {
@@ -348,6 +476,16 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		}
 	}
 	
+	/**
+	 * Sets the list box items.
+	 * 
+	 * @param listBox
+	 *            the list box
+	 * @param itemList
+	 *            the item list
+	 * @param defaultOption
+	 *            the default option
+	 */
 	private void setListBoxItems(ListBoxMVP listBox, List<? extends HasListBox> itemList, String defaultOption){
 		listBox.clear();
 		listBox.addItem(defaultOption,"");
@@ -360,26 +498,41 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getCodeSystem()
+	 */
 	@Override
 	public HasValue<String> getCodeSystem() {
 		return codeSystemInput;
 	} 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getCodeSystemVersion()
+	 */
 	@Override
 	public HasValue<String> getCodeSystemVersion() {
 		return codeSystemVersionInput;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getSuccessMessageDisplay()
+	 */
 	@Override
 	public SuccessMessageDisplay getSuccessMessageDisplay() {
 		return successMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#setSaveButtonEnabled(boolean)
+	 */
 	@Override
 	public void setSaveButtonEnabled(boolean enabled) {
 		buttonBar.getSaveButton().setEnabled(enabled);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#setOIDButtonEnabled(boolean)
+	 */
 	@Override
 	public void setOIDButtonEnabled(boolean enabled) {
 		generateOidButton.setEnabled(enabled);
@@ -393,6 +546,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		return createNewGroupedAnchor;
 	}*/
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getGenerateOidButton()
+	 */
 	public HasClickHandlers getGenerateOidButton() {
 		return generateOidButton;
 	}
@@ -426,6 +582,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 	/* Clears out the Steward Other panel and re-draw the Steward Other input components
 	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#showOtherTextBox()
 	 */
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#showOtherTextBox()
+	 */
 	@Override
 	public void showOtherTextBox() {
 		clearOtherPanel();
@@ -446,6 +605,9 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 
 	//US 413
 	/* Clears out the Steward Other panel by calling local method .
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#hideOtherTextBox()
+	 */
+	/* (non-Javadoc)
 	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#hideOtherTextBox()
 	 */
 	@Override
@@ -476,15 +638,25 @@ public abstract class BaseDetailView implements BaseDetailPresenter.BaseDisplay 
 		emptyTextBoxHolder.clear();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getLastModifiedDate()
+	 */
 	@Override
 	public DateBoxWithCalendar getLastModifiedDate() {
 		return lastModifiedDate;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getOtherSpecify()
+	 */
 	@Override
 	public Label getOtherSpecify() {
 		return otherSpecify;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseDisplay#getStewardLabel()
+	 */
 	@Override
 	public Label getStewardLabel() {
 		return stewardLabel;

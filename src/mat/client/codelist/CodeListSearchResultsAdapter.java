@@ -14,19 +14,58 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class CodeListSearchResultsAdapter.
+ */
 class CodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 
+	/**
+	 * The Interface Observer.
+	 */
 	public static interface Observer {
+		
+		/**
+		 * On history clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onHistoryClicked(CodeListSearchDTO result);
+		
+		/**
+		 * On clone clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onCloneClicked(CodeListSearchDTO result);
+		
+		/**
+		 * On export clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onExportClicked(CodeListSearchDTO result);
 		
 	}
 		
+	/** The model. */
 	private ManageCodeListSearchModel model = new ManageCodeListSearchModel();
+	
+	/** The observer. */
 	private Observer observer;
+	
+	/** The click handler. */
 	private ClickHandler clickHandler = buildClickHandler();
 	
+	/**
+	 * Gets the result for id.
+	 * 
+	 * @param id
+	 *            the id
+	 * @return the result for id
+	 */
 	private CodeListSearchDTO getResultForId(String id) {
 		for(int i = 0; i < model.getNumberOfRows(); i++) {			
 			if(id.equals(model.getKey(i))) {
@@ -37,13 +76,31 @@ class CodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 		return null;
 	}
 	
+	/**
+	 * Sets the observer.
+	 * 
+	 * @param observer
+	 *            the new observer
+	 */
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
+	
+	/**
+	 * Sets the data.
+	 * 
+	 * @param model
+	 *            the new data
+	 */
 	public void setData(ManageCodeListSearchModel model) {
 		this.model = model;
 	}
 	
+	/**
+	 * Builds the click handler.
+	 * 
+	 * @return the click handler
+	 */
 	private ClickHandler buildClickHandler() {
 		return new ClickHandler() {
 			@Override
@@ -71,37 +128,58 @@ class CodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 		};
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSortable(int)
+	 */
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return model.isColumnSortable(columnIndex);
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getNumberOfColumns()
+	 */
 	@Override
 	public int getNumberOfColumns() {
 		return model.getNumberOfColumns();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getNumberOfRows()
+	 */
 	@Override
 	public int getNumberOfRows() {
 		return model.getNumberOfRows();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getColumnHeader(int)
+	 */
 	@Override
 	public String getColumnHeader(int columnIndex) {
 		return model.getColumnHeader(columnIndex);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getColumnWidth(int)
+	 */
 	@Override
 	public String getColumnWidth(int columnIndex) {
 		return model.getColumnWidth(columnIndex);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnFiresSelection(int)
+	 */
 	@Override
 	public boolean isColumnFiresSelection(int columnIndex) {
 		return model.isColumnFiresSelection(columnIndex);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getValue(int, int)
+	 */
 	@Override
 	public Widget getValue(int row, int column) {
 		Widget value;
@@ -139,6 +217,17 @@ class CodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 		return value;
 	}
 	
+	/**
+	 * Gets the image.
+	 * 
+	 * @param action
+	 *            the action
+	 * @param url
+	 *            the url
+	 * @param key
+	 *            the key
+	 * @return the image
+	 */
 	private Widget getImage(String action, ImageResource url, String key) {
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
@@ -153,38 +242,77 @@ class CodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
 		return holder;
 	}
 	
+	/**
+	 * Adds the listener.
+	 * 
+	 * @param image
+	 *            the image
+	 */
 	private void addListener(CustomButton image) {
 		image.addClickHandler(clickHandler);
 	}
+	
+	/**
+	 * Sets the image style.
+	 * 
+	 * @param image
+	 *            the new image style
+	 */
 	private void setImageStyle(FocusableImageButton image) {
 		image.setStylePrimaryName("measureSearchResultIcon");
 	}
+	
+	/**
+	 * Sets the id.
+	 * 
+	 * @param image
+	 *            the image
+	 * @param action
+	 *            the action
+	 * @param key
+	 *            the key
+	 */
 	private void setId(CustomButton image, String action, String key) {
 		String id = action + "_" + key;
 		image.getElement().setAttribute("id", id);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getStartIndex()
+	 */
 	@Override
 	public int getStartIndex() {
 		return model.getStartIndex();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getResultsTotal()
+	 */
 	@Override
 	public int getResultsTotal() {
 		return model.getResultsTotal();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getKey(int)
+	 */
 	@Override
 	public String getKey(int row) {
 		return model.get(row).getId();
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#get(int)
+	 */
 	@Override
 	public CodeListSearchDTO get(int row) {
 		return model.get(row);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
+	 */
 	@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return model.isColumnSelectAll(columnIndex);

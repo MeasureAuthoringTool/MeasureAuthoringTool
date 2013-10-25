@@ -38,19 +38,39 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class AddCodeView.
+ */
 public class AddCodeView extends AddBaseView implements  ManageCodeListDetailPresenter.AddCodeDisplay{
+	
+	/** The code input. */
 	private TextBox codeInput;
+	
+	/** The view. */
 	private ManageCodesSearchView view;
+	
+	/** The uploadsuccess messages. */
 	private SuccessMessageDisplay uploadsuccessMessages = new SuccessMessageDisplay();
+	
+	/** The uploaderror messages. */
 	private ErrorMessageDisplay uploaderrorMessages = new ErrorMessageDisplay();
+	
+	/** The excel viewer widget. */
 	private ExcelViewerWidget excelViewerWidget = new ExcelViewerWidget();
 	
+	/** The selected index. */
 	private int selectedIndex = 0;
 	
+	/**
+	 * Instantiates a new adds the code view.
+	 */
 	public AddCodeView(){
 		super("Add Code");
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.AddBaseView#getValueInput()
+	 */
 	@Override
 	protected Widget getValueInput() {
 		if(codeInput == null) {
@@ -59,11 +79,18 @@ public class AddCodeView extends AddBaseView implements  ManageCodeListDetailPre
 		}
 		return codeInput;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.AddBaseView#getValueInputLabel()
+	 */
 	@Override
 	protected String getValueInputLabel() {
 		return "Code";
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.AddBaseView#getSearchView()
+	 */
 	@Override
 	protected SearchView<?> getSearchView() {
 		if(view == null) {
@@ -74,23 +101,36 @@ public class AddCodeView extends AddBaseView implements  ManageCodeListDetailPre
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddCodeDisplay#setCodeListDetailModel(mat.client.codelist.ManageCodeListDetailModel)
+	 */
 	@Override
 	public void setCodeListDetailModel(ManageCodeListDetailModel currentDetails) {
 		setParentName("Value Set Name:", currentDetails.getName());
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddCodeDisplay#getCodeName()
+	 */
 	@Override
 	public HasValue<String> getCodeName() {
 		return codeInput;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseAddDisplay#buildDataTable(mat.client.shared.search.SearchResults, boolean, int, int, int)
+	 */
 	@Override
 	public void buildDataTable(SearchResults<Code> results,boolean isChecked,int totalNumberofCodes,int totalPages,int currentPage) {
 		view.buildManageCodesDataTable(results, true, isChecked,totalNumberofCodes,totalPages,currentPage);
 		buildPageSelectionView(totalPages);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddCodeDisplay#buildUploadForm(mat.client.codelist.ManageCodeListDetailModel)
+	 */
 	@Override
 	public void buildUploadForm(ManageCodeListDetailModel currentDetails) {
 		    // Create a FormPanel and point it at a service.
@@ -165,6 +205,9 @@ public class AddCodeView extends AddBaseView implements  ManageCodeListDetailPre
 		}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddCodeDisplay#buildImportTab()
+	 */
 	@Override
 	public void buildImportTab() {
 		    SimplePanel importCodePanel = new SimplePanel();
@@ -223,45 +266,83 @@ public class AddCodeView extends AddBaseView implements  ManageCodeListDetailPre
 			});
 	}
 	
+	/**
+	 * Sets the aria hidden true for closing tab.
+	 */
 	private void setAriaHiddenTrueForClosingTab() {
 		MatContext.get().setAriaHidden(tabPanel.getWidget(selectedIndex),true);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddCodeDisplay#getUploadSuccessMessageDisplay()
+	 */
 	@Override
 	public SuccessMessageDisplayInterface getUploadSuccessMessageDisplay() {
 		return uploadsuccessMessages;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddCodeDisplay#getUploadErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getUploadErrorMessageDisplay() {
 		return uploaderrorMessages;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddCodeDisplay#getExternalViewerLink()
+	 */
 	@Override
 	public HasClickHandlers getExternalViewerLink() {
 		return excelViewerWidget.getExportViewAnchor();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseAddDisplay#getSelectAllTool()
+	 */
 	@Override
 	public HasSelectAllHandler getSelectAllTool() {
 		return view;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddCodeDisplay#getCurrentPage()
+	 */
 	@Override
 	public int getCurrentPage() {
 		return psv.getCurrentPage();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.ManageCodeListDetailPresenter.AddCodeDisplay#setCurrentPage(int)
+	 */
 	@Override
 	public void setCurrentPage(int pageNumber) {
 		psv.setCurrentPage(pageNumber);
 	}
+	
+	/**
+	 * Builds the page selection view.
+	 * 
+	 * @param totalPagesCount
+	 *            the total pages count
+	 */
 	private void buildPageSelectionView(int totalPagesCount){
 		psv.buildPageSelector(totalPagesCount);
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.BaseDetailPresenter.BaseAddDisplay#getPageSelectionTool()
+	 */
 	@Override
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return psv;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.codelist.AddBaseView#getSearchButton()
+	 */
 	@Override
 	protected Button getSearchButton() {
 		// TODO Auto-generated method stub

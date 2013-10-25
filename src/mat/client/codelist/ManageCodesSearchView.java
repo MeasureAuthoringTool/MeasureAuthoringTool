@@ -8,17 +8,35 @@ import mat.client.shared.search.SearchView;
 import mat.model.Code;
 
 /**
- * @author vandavar 
- * A subclass for searchview to handle the ManageCodes Differently without view size
- *
+ * The Class ManageCodesSearchView.
+ * 
+ * @author vandavar A subclass for searchview to handle the ManageCodes
+ *         Differently without view size
  */
 public class ManageCodesSearchView extends SearchView<Code> {
 	
+	/** The default page size. */
 	private int DEFAULT_PAGE_SIZE = 50;
 	
 	//build data table for manage codes search
 	//Depend on the manageCodeListDetailModel for the totalResults and totalPages
 	//Same method is used to build both the codessummaryView and  manageCodes
+	/**
+	 * Builds the manage codes data table.
+	 * 
+	 * @param results
+	 *            the results
+	 * @param isAscending
+	 *            the is ascending
+	 * @param isChecked
+	 *            the is checked
+	 * @param totalNumberofCodes
+	 *            the total numberof codes
+	 * @param totalPages
+	 *            the total pages
+	 * @param currentPage
+	 *            the current page
+	 */
 	public void buildManageCodesDataTable(final SearchResults results, boolean isAscending,boolean isChecked,int totalNumberofCodes,
 			int totalPages,int currentPage){
 		if(results == null) {
@@ -43,6 +61,9 @@ public class ManageCodesSearchView extends SearchView<Code> {
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchView#getPageSize()
+	 */
 	@Override
 	public int getPageSize(){
 		return DEFAULT_PAGE_SIZE;

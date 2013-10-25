@@ -8,7 +8,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * MeasureObsClausePresenter extends {@link XmlTreePresenter} and implements
+ * MeasureObsClausePresenter extends {@link XmlTreePresenter} and implements.
+ * 
  * {@link MatPresenter}.
  */
 public class MeasureObsClausePresenter extends XmlTreePresenter implements MatPresenter {

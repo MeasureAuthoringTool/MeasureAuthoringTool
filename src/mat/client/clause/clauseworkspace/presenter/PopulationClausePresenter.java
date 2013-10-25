@@ -8,7 +8,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * PopulationClausePresenter extends {@link XmlTreePresenter} and implements
+ * PopulationClausePresenter extends {@link XmlTreePresenter} and implements.
+ * 
  * {@link MatPresenter}.
  */
 public class PopulationClausePresenter extends XmlTreePresenter implements MatPresenter {
@@ -16,9 +17,8 @@ public class PopulationClausePresenter extends XmlTreePresenter implements MatPr
 	 * Root Node for Population Tab.
 	 */
 	private static final String POPULATIONS_TAG = "populations";
-	/**
-	 * {@link SimplePanel} Instance.
-	 */
+	
+	/** The panel. {@link SimplePanel} Instance. */
 	private SimplePanel panel = new SimplePanel();
 	/**
 	 * MeasureService Instance.

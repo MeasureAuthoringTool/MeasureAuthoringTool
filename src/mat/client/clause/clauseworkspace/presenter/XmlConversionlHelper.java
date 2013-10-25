@@ -15,13 +15,22 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
+/**
+ * The Class XmlConversionlHelper.
+ */
 public class XmlConversionlHelper {
 
+	/** The Constant NAMESPACE_XML. */
 	private static final String NAMESPACE_XML = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\" ?>\r\n";
 
 	/**
-	 * Creates CellTreeNode object which has list of children objects and a parent object from the XML.
+	 * Creates CellTreeNode object which has list of children objects and a
+	 * parent object from the XML.
+	 * 
 	 * @param xml
+	 *            the xml
+	 * @param tagName
+	 *            the tag name
 	 * @return CellTreeNode
 	 */
 	public static CellTreeNode createCellTreeNode(String xml, String tagName) {
@@ -48,6 +57,13 @@ public class XmlConversionlHelper {
 		return mainNode;
 	}
 
+	/**
+	 * Creates the root node.
+	 * 
+	 * @param tagName
+	 *            the tag name
+	 * @return the cell tree node
+	 */
 	private static CellTreeNode createRootNode(String tagName) {
 		CellTreeNode parent = new CellTreeNodeImpl();
 		List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
@@ -101,6 +117,19 @@ public class XmlConversionlHelper {
 		return parent;
 	}
 
+	/**
+	 * Creates the child.
+	 * 
+	 * @param name
+	 *            the name
+	 * @param label
+	 *            the label
+	 * @param nodeType
+	 *            the node type
+	 * @param parent
+	 *            the parent
+	 * @return the cell tree node
+	 */
 	private static CellTreeNode createChild(String name, String label, short nodeType, CellTreeNode parent) {
 		CellTreeNode child = new CellTreeNodeImpl();
 		child.setName(name);
@@ -110,6 +139,16 @@ public class XmlConversionlHelper {
 		return child;
 	}
 
+	/**
+	 * Creates the cell tree node childs.
+	 * 
+	 * @param parent
+	 *            the parent
+	 * @param root
+	 *            the root
+	 * @param childs
+	 *            the childs
+	 */
 	private static void createCellTreeNodeChilds(CellTreeNode parent, Node root, List<CellTreeNode> childs) {
 		String nodeName = root.getNodeName();
 		String nodeValue = root.hasAttributes()
@@ -159,6 +198,9 @@ public class XmlConversionlHelper {
 
 	/**
 	 * Creating XML from GWT tree using GWT Document object.
+	 * 
+	 * @param model
+	 *            the model
 	 * @return XML String
 	 */
 	public static String createXmlFromTree(CellTreeNode model) {
@@ -172,12 +214,16 @@ public class XmlConversionlHelper {
 	}
 
 	/**
-	 * Iterating through the Tree's Children to create the Document Element, Nodes and Attributes.
-	 * @param treeItem
+	 * Iterating through the Tree's Children to create the Document Element,
+	 * Nodes and Attributes.
+	 * 
+	 * @param cellTreeNode
+	 *            the cell tree node
 	 * @param doc
+	 *            the doc
 	 * @param node
-	 * @param element
-	 * @return
+	 *            the node
+	 * @return the string
 	 */
 	private static String createXmlFromTree(CellTreeNode cellTreeNode, Document doc, Node node) {
 		Element element = getNodeName(cellTreeNode, doc);
@@ -196,6 +242,18 @@ public class XmlConversionlHelper {
 		return doc.toString();
 	}
 
+	/**
+	 * Sets the cell tree node values.
+	 * 
+	 * @param node
+	 *            the node
+	 * @param parent
+	 *            the parent
+	 * @param child
+	 *            the child
+	 * @param childs
+	 *            the childs
+	 */
 	private static void setCellTreeNodeValues(Node node, CellTreeNode parent, CellTreeNode child, List<CellTreeNode> childs) {
 		String nodeName = node.getNodeName();
 		String nodeValue = node.hasAttributes()
@@ -251,6 +309,13 @@ public class XmlConversionlHelper {
 		childs.add(child); // add child to child list
 	}
 
+	/**
+	 * Append attribute to qdm name.
+	 * 
+	 * @param node
+	 *            the node
+	 * @return the string
+	 */
 	private static String appendAttributeToQdmName(Node node) {
 		NamedNodeMap namedNodeMap = node.getChildNodes().item(0).getAttributes();
 		StringBuilder stringBuilder = new StringBuilder(namedNodeMap.getNamedItem("name").getNodeValue());
@@ -290,6 +355,15 @@ public class XmlConversionlHelper {
 		return stringBuilder.toString();
 	}
 
+	/**
+	 * Gets the node name.
+	 * 
+	 * @param cellTreeNode
+	 *            the cell tree node
+	 * @param document
+	 *            the document
+	 * @return the node name
+	 */
 	private static Element getNodeName(CellTreeNode cellTreeNode, Document document) {
 		Element element = null;
 		switch (cellTreeNode.getNodeType()) {
@@ -394,6 +468,10 @@ public class XmlConversionlHelper {
 
 	/**
 	 * Method to convert case of string into camel case.
+	 * 
+	 * @param name
+	 *            the name
+	 * @return the string
 	 */
 	private static String toCamelCase(String name) {
 		name = name.toLowerCase();
@@ -405,6 +483,13 @@ public class XmlConversionlHelper {
 		return camelCaseString;
 	}
 
+	/**
+	 * To proper case.
+	 * 
+	 * @param s
+	 *            the s
+	 * @return the string
+	 */
 	private static String toProperCase(String s) {
 		return s.substring(0, 1).toUpperCase()
 		 + s.substring(1).toLowerCase();

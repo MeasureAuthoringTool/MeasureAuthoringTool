@@ -18,15 +18,31 @@ import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+/**
+ * The Class XmlTreePresenter.
+ */
 public class XmlTreePresenter {
 
+	/**
+	 * The Interface TreeResources.
+	 */
 	interface TreeResources extends CellTree.Resources {
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeClosedItem()
+		 */
 		@Source("mat/client/images/plus.png")
 		ImageResource cellTreeClosedItem();
 
+		/* (non-Javadoc)
+		 * @see com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeOpenItem()
+		 */
 		@Source("mat/client/images/minus.png")
 		ImageResource cellTreeOpenItem();
 
+		/* (non-Javadoc)
+		 * @see com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeStyle()
+		 */
 		@Source("mat/client/images/CwCellTree.css")
 		CellTree.Style cellTreeStyle();
 
@@ -38,10 +54,19 @@ public class XmlTreePresenter {
 		 */
 	}
 
+	/** The xml tree display. */
 	XmlTreeDisplay xmlTreeDisplay;
+	
+	/** The service. */
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
+	
+	/** The Constant MEASURE. */
 	private static final String MEASURE = "measure";
+	
+	/** The root node. */
 	private String rootNode;
+	
+	/** The panel. */
 	SimplePanel panel;
 
 	/**
@@ -54,6 +79,12 @@ public class XmlTreePresenter {
 	 */
 	private String originalXML = "";
 
+	/**
+	 * Load xml tree.
+	 * 
+	 * @param panel
+	 *            the panel
+	 */
 	public final void loadXmlTree(SimplePanel panel) {
 
 		if (originalXML.length() > 0) {
@@ -102,6 +133,13 @@ public class XmlTreePresenter {
 
 	}
 
+	/**
+	 * Creates the measure export model.
+	 * 
+	 * @param xml
+	 *            the xml
+	 * @return the measure xml model
+	 */
 	private MeasureXmlModel createMeasureExportModel(final String xml) {
 		MeasureXmlModel exportModal = new MeasureXmlModel();
 		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
@@ -111,6 +149,9 @@ public class XmlTreePresenter {
 		return exportModal;
 	}
 
+	/**
+	 * Invoke save handler.
+	 */
 	private void invokeSaveHandler() {
 		xmlTreeDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -151,6 +192,9 @@ public class XmlTreePresenter {
 
 	}
 
+	/**
+	 * Invoke validate handler.
+	 */
 	final void invokeValidateHandler() {
 		xmlTreeDisplay.getValidateBtn().addClickHandler(new ClickHandler() {
 			@Override
@@ -179,6 +223,8 @@ public class XmlTreePresenter {
 	}
 
 	/**
+	 * Gets the root node.
+	 * 
 	 * @return the rootNode
 	 */
 	public final String getRootNode() {
@@ -186,6 +232,8 @@ public class XmlTreePresenter {
 	}
 
 	/**
+	 * Sets the root node.
+	 * 
 	 * @param rootNode
 	 *            the rootNode to set
 	 */
@@ -193,18 +241,46 @@ public class XmlTreePresenter {
 		this.rootNode = rootNode;
 	}
 
+	/**
+	 * Sets the this member variable is used to pass the original measure XML to
+	 * XmlTreePresenter class which will then be used to construct the CellTree.
+	 * 
+	 * @param originalXML
+	 *            the new this member variable is used to pass the original
+	 *            measure XML to XmlTreePresenter class which will then be used
+	 *            to construct the CellTree
+	 */
 	public final void setOriginalXML(final String originalXML) {
 		this.originalXML = originalXML;
 	}
 
+	/**
+	 * Gets the this member variable is used to pass the original measure XML to
+	 * XmlTreePresenter class which will then be used to construct the CellTree.
+	 * 
+	 * @return the this member variable is used to pass the original measure XML
+	 *         to XmlTreePresenter class which will then be used to construct
+	 *         the CellTree
+	 */
 	public final String getOriginalXML() {
 		return originalXML;
 	}
 
+	/**
+	 * Gets the xml tree display.
+	 * 
+	 * @return the xml tree display
+	 */
 	public final XmlTreeDisplay getXmlTreeDisplay() {
 		return xmlTreeDisplay;
 	}
 
+	/**
+	 * Sets the xml tree display.
+	 * 
+	 * @param xmlTreeDisplay
+	 *            the new xml tree display
+	 */
 	public final void setXmlTreeDisplay(final XmlTreeDisplay xmlTreeDisplay) {
 		this.xmlTreeDisplay = xmlTreeDisplay;
 	}

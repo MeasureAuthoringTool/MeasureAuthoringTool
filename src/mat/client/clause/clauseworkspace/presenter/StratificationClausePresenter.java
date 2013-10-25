@@ -8,7 +8,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * StratificationClausePresenter extends {@link XmlTreePresenter} implements
+ * StratificationClausePresenter extends {@link XmlTreePresenter} implements.
+ * 
  * {@link MatPresenter}.
  */
 public class StratificationClausePresenter extends XmlTreePresenter implements MatPresenter {
@@ -16,9 +17,8 @@ public class StratificationClausePresenter extends XmlTreePresenter implements M
 	 * Root Node for Stratification Tab.
 	 */
 	private static final String STRATIFICATION = "strata";
-	/**
-	 * {@link SimplePanel} Instance.
-	 */
+	
+	/** The panel. {@link SimplePanel} Instance. */
 	private SimplePanel panel = new SimplePanel();
 	/**
 	 * MeasureService Instance.

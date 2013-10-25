@@ -24,17 +24,35 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
+/**
+ * The Class ClauseWorkspacePresenter.
+ */
 public class ClauseWorkspacePresenter implements MatPresenter {
 
+	/** The simplepanel. */
 	private SimplePanel simplepanel = new SimplePanel();
+	
+	/** The flow panel. */
 	FlowPanel flowPanel = new FlowPanel();
+	
+	/** The service. */
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 
+	/** The clause workspace tabs. */
 	private MatTabLayoutPanel clauseWorkspaceTabs;
+	
+	/** The population clause presenter. */
 	private PopulationClausePresenter populationClausePresenter = new PopulationClausePresenter();
+	
+	/** The measure obs clause presenter. */
 	private MeasureObsClausePresenter measureObsClausePresenter = new MeasureObsClausePresenter();
+	
+	/** The stratification clause presenter. */
 	private StratificationClausePresenter stratificationClausePresenter = new StratificationClausePresenter();
 
+	/**
+	 * Instantiates a new clause workspace presenter.
+	 */
 	public ClauseWorkspacePresenter() {
 		simplepanel.setStyleName("contentPanel");
 		simplepanel.add(flowPanel);
@@ -42,6 +60,9 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		loadAllUnits();
 	}
 
+	/**
+	 * Load all units.
+	 */
 	private void loadAllUnits() {
 		CodeListServiceAsync codeListServiceAsync = MatContext.get().getCodeListService();
 		codeListServiceAsync.getAllUnits(new AsyncCallback<List<String>>() {
@@ -57,6 +78,9 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Sets the xml on tabs.
+	 */
 	private void setXMLOnTabs() {
 		final String currentMeasureId = MatContext.get().getCurrentMeasureId();
 		if (currentMeasureId != null && !"".equals(currentMeasureId)) {
@@ -130,6 +154,12 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 * Clear panel and show error.
+	 * 
+	 * @param auditMessage
+	 *            the audit message
+	 */
 	private void clearPanelAndShowError(String auditMessage){
 		//simplepanel.clear();
 		clauseWorkspaceTabs = new MatTabLayoutPanel(true);
@@ -140,6 +170,12 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 	}
 
+	/**
+	 * Sets the qdm elements map.
+	 * 
+	 * @param xml
+	 *            the new qdm elements map
+	 */
 	private void setQdmElementsMap(String xml) {
 		ClauseConstants.elementLookUpName = new TreeMap<String, String>();
 		ClauseConstants.elementLookUpNode = new TreeMap<String, Node>();
@@ -171,21 +207,35 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		setXMLOnTabs();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		return simplepanel;
 	}
 
+	/**
+	 * Gets the selected tree presenter.
+	 * 
+	 * @return the selected tree presenter
+	 */
 	public XmlTreePresenter getSelectedTreePresenter() {
 		MatPresenter matPresenter = clauseWorkspaceTabs.getPresenterMap().get(clauseWorkspaceTabs.getSelectedIndex());
 		return (XmlTreePresenter) matPresenter;

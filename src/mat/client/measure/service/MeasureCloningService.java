@@ -13,6 +13,19 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("measureCloning")
 public interface MeasureCloningService extends RemoteService {
 	//ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, String loggedinUserId,boolean creatingDraft) throws MatException;
+	/**
+	 * Clone.
+	 * 
+	 * @param currentDetails
+	 *            the current details
+	 * @param loggedinUserId
+	 *            the loggedin user id
+	 * @param creatingDraft
+	 *            the creating draft
+	 * @return the manage measure search model. result
+	 * @throws MatException
+	 *             the mat exception
+	 */
 	ManageMeasureSearchModel.Result clone(ManageMeasureDetailModel currentDetails, String loggedinUserId,boolean creatingDraft) throws MatException;
 }
 

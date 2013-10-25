@@ -23,35 +23,74 @@ import com.google.gwt.user.client.ui.PasswordTextBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * The Class DeleteMeasureConfirmationBox.
+ */
 public class DeleteMeasureConfirmationBox {
 
+	/** The dialog box. */
 	private static DialogBoxWithCloseButton dialogBox = new DialogBoxWithCloseButton(
 			StringUtils.EMPTY);
+	
+	/** The handler registration. */
 	static HandlerRegistration handlerRegistration;
 
+	/**
+	 * Gets the dialog box.
+	 * 
+	 * @return the dialog box
+	 */
 	public static DialogBox getDialogBox() {
 		return dialogBox;
 	}
 
+	/** The confirm. */
 	public static Button confirm = new Button("Confirm");
+	
+	/** The password entered. */
 	public static String passwordEntered;
 
+	/**
+	 * Gets the password entered.
+	 * 
+	 * @return the password entered
+	 */
 	public static String getPasswordEntered() {
 		return passwordEntered;
 	}
 
+	/**
+	 * Sets the password entered.
+	 * 
+	 * @param passwordEntered
+	 *            the new password entered
+	 */
 	public static void setPasswordEntered(String passwordEntered) {
 		DeleteMeasureConfirmationBox.passwordEntered = passwordEntered;
 	}
 
+	/**
+	 * Gets the confirm.
+	 * 
+	 * @return the confirm
+	 */
 	public static Button getConfirm() {
 		return confirm;
 	}
 
+	/**
+	 * Sets the confirm.
+	 * 
+	 * @param confirm
+	 *            the new confirm
+	 */
 	public static void setConfirm(Button confirm) {
 		DeleteMeasureConfirmationBox.confirm = confirm;
 	}
 
+	/**
+	 * Show deletion confimation dialog.
+	 */
 	public static void showDeletionConfimationDialog() {
 
 		dialogBox.setGlassEnabled(true);

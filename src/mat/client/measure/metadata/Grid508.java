@@ -11,27 +11,52 @@ import com.google.gwt.user.client.ui.Grid;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
+ * The Class Grid508.
+ * 
  * @author skarunakaran
- *
  */
 public class Grid508 extends Grid{
 
+	/** The scope. */
 	private final String SCOPE = "scope";
+	
+	/** The row. */
 	private final String ROW = "row";
+	
+	/** The col. */
 	private final String COL = "col";
 	
+	/**
+	 * Instantiates a new grid508.
+	 */
 	public Grid508(){
 		super();
 	}
 	
 	
+	/**
+	 * Instantiates a new grid508.
+	 * 
+	 * @param rows
+	 *            the rows
+	 * @param columns
+	 *            the columns
+	 */
 	public Grid508(int rows, int columns){
 		  super(rows,columns);
     }
 	
-/*****************************************************
- * from Grid.java
- *****************************************************/
+/**
+ * *************************************************** from Grid.java
+ * ***************************************************
+ * 
+ * @param table
+ *            the table
+ * @param rows
+ *            the rows
+ * @param columns
+ *            the columns
+ */
 	  /**
 	   * Method to add rows into a table with a given number of columns where 
 	   * the first row is a header row <th>. 
@@ -63,21 +88,21 @@ public class Grid508 extends Grid{
 	   };
 	  
 	  /**
-	   * Resizes the grid to the specified number of rows.
-	   * ensure the following:
-	   * <table>
-	   * 	<tr>
-	   * 		<th scope="col">...</th>...
-	   * 	</tr>
-	   * 	<tr>
-	   * 		<td scope="row">...</td>
-	   * 		<td>...</td>
-	   * 		...
-	   * 	</tr>
-	   * </table>
-	   * @param rows the number of rows
-	   * @throws IndexOutOfBoundsException
-	   */
+	 * Resizes the grid to the specified number of rows. ensure the following:
+	 * <table>
+	 * <tr>
+	 * <th scope="col">...</th>...
+	 * </tr>
+	 * <tr>
+	 * <td scope="row">...</td>
+	 * <td>...</td>
+	 * ...
+	 * </tr>
+	 * </table>
+	 * 
+	 * @param rows
+	 *            the number of rows
+	 */
 	  @Override
 	  public void resizeRows(int rows) {
 	    if (numRows == rows) {
@@ -98,9 +123,12 @@ public class Grid508 extends Grid{
 	    }
 	  }
 	  
-/*****************************************************
- * from HTMLTable.java
- *****************************************************/
+/**
+ * *************************************************** from HTMLTable.java
+ * ***************************************************
+ * 
+ * @return the element
+ */
 /*	  
  	//consider overriding to use header cells where appropriate
 	@Override
@@ -128,9 +156,11 @@ public class Grid508 extends Grid{
 	  }
 
 	  /**
-	   * invoke setEnabled on each FocusWidget in this table
-	   * @param enabled
-	   */
+	 * invoke setEnabled on each FocusWidget in this table.
+	 * 
+	 * @param enabled
+	 *            the new enabled
+	 */
 	  public void setEnabled(boolean enabled){
 			int rows = getRowCount();
 			int cols = getColumnCount();
@@ -146,8 +176,10 @@ public class Grid508 extends Grid{
 	  
 	  
 	 /**
-	  * clears all checkboxes in Grid 
-	  * @param name must nut be null. checkBox name.
+	 * clears all checkboxes in Grid.
+	 * 
+	 * @param name
+	 *            must nut be null. checkBox name.
 	 */
 	public void clearCheckBoxesInGrid(String name){
 			int rows = getRowCount();
@@ -165,8 +197,10 @@ public class Grid508 extends Grid{
 	  
 	
 	 /**
-	  * Returns checkbox values that are checked and in Grid
-	 * @param name must not be null. CheckBox name
+	 * Returns checkbox values that are checked and in Grid.
+	 * 
+	 * @param name
+	 *            must not be null. CheckBox name
 	 * @return List for checkbox formValue
 	 */
 	public List<String> getCheckBoxValuesInGrid(String name){

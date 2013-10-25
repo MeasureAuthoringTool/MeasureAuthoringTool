@@ -44,121 +44,595 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class MetaDataPresenter.
+ */
 public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPresenter{
 	
 	
+	/**
+	 * The Interface MetaDataDetailDisplay.
+	 */
 	public static interface MetaDataDetailDisplay extends BaseMetaDataDisplay{
+		
+		/**
+		 * Gets the measure name.
+		 * 
+		 * @return the measure name
+		 */
 		public Label getMeasureName();
+		
+		/**
+		 * Gets the short name.
+		 * 
+		 * @return the short name
+		 */
 		public Label getShortName();
 		
 		//US 421. Measure scoring choice is now part of measure creation process. So, this module just displays the choice.
+		/**
+		 * Gets the measure scoring.
+		 * 
+		 * @return the measure scoring
+		 */
 		public Label getMeasureScoring();
 		
+		/**
+		 * Gets the edits the authors button.
+		 * 
+		 * @return the edits the authors button
+		 */
 		public HasClickHandlers getEditAuthorsButton();
+		
+		/**
+		 * Gets the edits the measure type button.
+		 * 
+		 * @return the edits the measure type button
+		 */
 		public HasClickHandlers getEditMeasureTypeButton();
+		
+		/**
+		 * Gets the focus panel.
+		 * 
+		 * @return the focus panel
+		 */
 		public HasKeyDownHandlers getFocusPanel();
+		
+		/**
+		 * Gets the version number.
+		 * 
+		 * @return the version number
+		 */
 		public Label getVersionNumber();
 		//public HasValue<String> getMeasureId();
+		/**
+		 * Gets the sets the name.
+		 * 
+		 * @return the sets the name
+		 */
 		public HasValue<String> getSetName();
+		
+		/**
+		 * Gets the e measure identifier.
+		 * 
+		 * @return the e measure identifier
+		 */
 		public Label geteMeasureIdentifier();
+		
+		/**
+		 * Gets the nqf id.
+		 * 
+		 * @return the nqf id
+		 */
 		public HasValue<String> getNqfId();
+		
+		/**
+		 * Gets the finalized date.
+		 * 
+		 * @return the finalized date
+		 */
 		public Label getFinalizedDate();
+		
+		/**
+		 * Gets the measurement from period.
+		 * 
+		 * @return the measurement from period
+		 */
 		public String getMeasurementFromPeriod();
+		
+		/**
+		 * Gets the measurement from period input box.
+		 * 
+		 * @return the measurement from period input box
+		 */
 		public DateBoxWithCalendar getMeasurementFromPeriodInputBox();
+		
+		/**
+		 * Gets the measurement to period.
+		 * 
+		 * @return the measurement to period
+		 */
 		public String getMeasurementToPeriod();
+		
+		/**
+		 * Gets the measurement to period input box.
+		 * 
+		 * @return the measurement to period input box
+		 */
 		public DateBoxWithCalendar getMeasurementToPeriodInputBox();
+		
+		/**
+		 * Gets the measure type.
+		 * 
+		 * @return the measure type
+		 */
 		public String getMeasureType();
+		
+		/**
+		 * Gets the measure steward.
+		 * 
+		 * @return the measure steward
+		 */
 		public ListBoxMVP getMeasureSteward();
 
 		//US 413. Introduced Measure Steward Other option.
+		/**
+		 * Gets the measure steward list box.
+		 * 
+		 * @return the measure steward list box
+		 */
 		public HasValue<String> getMeasureStewardListBox();		
+		
+		/**
+		 * Gets the measure steward value.
+		 * 
+		 * @return the measure steward value
+		 */
 		public String getMeasureStewardValue();
+		
+		/**
+		 * Gets the measure steward other.
+		 * 
+		 * @return the measure steward other
+		 */
 		public TextBox getMeasureStewardOther();
+		
+		/**
+		 * Gets the measure steward other value.
+		 * 
+		 * @return the measure steward other value
+		 */
 		public String getMeasureStewardOtherValue();
 		
+		/**
+		 * Gets the endorseby nqf.
+		 * 
+		 * @return the endorseby nqf
+		 */
 		public HasValue<Boolean> getEndorsebyNQF();
+		
+		/**
+		 * Gets the not endorseby nqf.
+		 * 
+		 * @return the not endorseby nqf
+		 */
 		public HasValue<Boolean> getNotEndorsebyNQF();
+		
+		/**
+		 * Gets the measure status.
+		 * 
+		 * @return the measure status
+		 */
 		public ListBoxMVP getMeasureStatus();
+		
+		/**
+		 * Gets the measure status value.
+		 * 
+		 * @return the measure status value
+		 */
 		public String getMeasureStatusValue();
+		
+		/**
+		 * Gets the author.
+		 * 
+		 * @return the author
+		 */
 		public String getAuthor();
+		
+		/**
+		 * Sets the authors list.
+		 * 
+		 * @param author
+		 *            the new authors list
+		 */
 		public void setAuthorsList(List<Author> author);
+		
+		/**
+		 * Sets the measure type list.
+		 * 
+		 * @param measureType
+		 *            the new measure type list
+		 */
 		public void setMeasureTypeList(List<MeasureType> measureType);
+		
+		/**
+		 * Gets the description.
+		 * 
+		 * @return the description
+		 */
 		public HasValue<String> getDescription();
+		
+		/**
+		 * Gets the copyright.
+		 * 
+		 * @return the copyright
+		 */
 		public HasValue<String> getCopyright();
+		
+		/**
+		 * Gets the clinical recommendation.
+		 * 
+		 * @return the clinical recommendation
+		 */
 		public HasValue<String> getClinicalRecommendation();
+		
+		/**
+		 * Gets the definitions.
+		 * 
+		 * @return the definitions
+		 */
 		public HasValue<String> getDefinitions();
+		
+		/**
+		 * Gets the guidance.
+		 * 
+		 * @return the guidance
+		 */
 		public HasValue<String> getGuidance();
+		
+		/**
+		 * Gets the transmission format.
+		 * 
+		 * @return the transmission format
+		 */
 		public HasValue<String> getTransmissionFormat();
+		
+		/**
+		 * Gets the rationale.
+		 * 
+		 * @return the rationale
+		 */
 		public HasValue<String> getRationale();
+		
+		/**
+		 * Gets the improvement notation.
+		 * 
+		 * @return the improvement notation
+		 */
 		public HasValue<String> getImprovementNotation();
+		
+		/**
+		 * Gets the stratification.
+		 * 
+		 * @return the stratification
+		 */
 		public HasValue<String> getStratification();
+		
+		/**
+		 * Gets the risk adjustment.
+		 * 
+		 * @return the risk adjustment
+		 */
 		public HasValue<String> getRiskAdjustment();
+		
+		/**
+		 * Gets the reference.
+		 * 
+		 * @return the reference
+		 */
 		public HasValue<String> getReference();
+		
+		/**
+		 * Gets the supplemental data.
+		 * 
+		 * @return the supplemental data
+		 */
 		public HasValue<String> getSupplementalData();
+		
+		/**
+		 * Gets the disclaimer.
+		 * 
+		 * @return the disclaimer
+		 */
 		public HasValue<String> getDisclaimer();
+		
+		/**
+		 * Gets the initial patient pop.
+		 * 
+		 * @return the initial patient pop
+		 */
 		public HasValue<String> getInitialPatientPop();
+		
+		/**
+		 * Gets the denominator.
+		 * 
+		 * @return the denominator
+		 */
 		public HasValue<String> getDenominator();
+		
+		/**
+		 * Gets the denominator exclusions.
+		 * 
+		 * @return the denominator exclusions
+		 */
 		public HasValue<String> getDenominatorExclusions();
+		
+		/**
+		 * Gets the numerator.
+		 * 
+		 * @return the numerator
+		 */
 		public HasValue<String> getNumerator();
+		
+		/**
+		 * Gets the numerator exclusions.
+		 * 
+		 * @return the numerator exclusions
+		 */
 		public HasValue<String> getNumeratorExclusions();
+		
+		/**
+		 * Gets the denominator exceptions.
+		 * 
+		 * @return the denominator exceptions
+		 */
 		public HasValue<String> getDenominatorExceptions();
+		
+		/**
+		 * Gets the measure population.
+		 * 
+		 * @return the measure population
+		 */
 		public HasValue<String> getMeasurePopulation();
+		
+		/**
+		 * Gets the measure observations.
+		 * 
+		 * @return the measure observations
+		 */
 		public HasValue<String> getMeasureObservations();
+		
+		/**
+		 * Gets the rate aggregation.
+		 * 
+		 * @return the rate aggregation
+		 */
 		public HasValue<String> getRateAggregation();
+		
+		/**
+		 * Gets the emeasure id.
+		 * 
+		 * @return the emeasure id
+		 */
 		public HasValue<String> getEmeasureId();
+		
+		/**
+		 * Gets the generate emeasure id button.
+		 * 
+		 * @return the generate emeasure id button
+		 */
 		public HasClickHandlers getGenerateEmeasureIdButton();
+		
+		/**
+		 * Sets the generate emeasure id button enabled.
+		 * 
+		 * @param b
+		 *            the new generate emeasure id button enabled
+		 */
 		public void setGenerateEmeasureIdButtonEnabled(boolean b);
 		
+		/**
+		 * Gets the reference values.
+		 * 
+		 * @return the reference values
+		 */
 		public List<String> getReferenceValues();
+		
+		/**
+		 * Sets the reference values.
+		 * 
+		 * @param values
+		 *            the values
+		 * @param editable
+		 *            the editable
+		 */
 		public void setReferenceValues(List<String> values, boolean editable);
+		
+		/**
+		 * Sets the adds the edit buttons visible.
+		 * 
+		 * @param b
+		 *            the new adds the edit buttons visible
+		 */
 		public void setAddEditButtonsVisible(boolean b);
+		
+		/**
+		 * Enable endorse by radio buttons.
+		 * 
+		 * @param b
+		 *            the b
+		 */
 		public void enableEndorseByRadioButtons(boolean b);
+		
+		/**
+		 * Sets the save button enabled.
+		 * 
+		 * @param b
+		 *            the new save button enabled
+		 */
 		public void setSaveButtonEnabled(boolean b);
+		
+		/**
+		 * Gets the save button.
+		 * 
+		 * @return the save button
+		 */
 		public HasClickHandlers getSaveButton();
 		
 		//US 413. Interfaces to show or clear out Steward Other text boxes.
+		/**
+		 * Show other text box.
+		 */
 		public void showOtherTextBox();
+		
+		/**
+		 * Hide other text box.
+		 */
 		public void hideOtherTextBox();
 		
+		/**
+		 * Gets the save btn.
+		 * 
+		 * @return the save btn
+		 */
 		public Button getSaveBtn();
+		
+		/**
+		 * Gets the delete measure.
+		 * 
+		 * @return the delete measure
+		 */
 		public Button getDeleteMeasure();	
 		
 	}
 	
+	/**
+	 * The Interface AddEditAuthorsDisplay.
+	 */
 	public static interface AddEditAuthorsDisplay extends BaseAddEditDisplay<Author> {
+		
+		/**
+		 * Gets the author.
+		 * 
+		 * @return the author
+		 */
 		public String getAuthor();
+		
+		/**
+		 * Gets the author input box.
+		 * 
+		 * @return the author input box
+		 */
 		public HasValue<String> getAuthorInputBox();
+		
+		/**
+		 * Gets the other author.
+		 * 
+		 * @return the other author
+		 */
 		public HasValue<String> getOtherAuthor();
 	}
 	
+	/**
+	 * The Interface AddEditMeasureTypeDisplay.
+	 */
 	public static interface AddEditMeasureTypeDisplay extends BaseAddEditDisplay<MeasureType>{
+		
+		/**
+		 * Gets the measure type.
+		 * 
+		 * @return the measure type
+		 */
 		public String getMeasureType();
+		
+		/**
+		 * Gets the measure type input box.
+		 * 
+		 * @return the measure type input box
+		 */
 		public HasValue<String> getMeasureTypeInputBox();
+		
+		/**
+		 * Gets the other measure type.
+		 * 
+		 * @return the other measure type
+		 */
 		public HasValue<String> getOtherMeasureType();
 	}
 	
+	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
+	
+	/** The meta data display. */
 	private MetaDataDetailDisplay metaDataDisplay;
+	
+	/** The add edit authors display. */
 	private AddEditAuthorsDisplay addEditAuthorsDisplay;
+	
+	/** The add edit measure type display. */
 	private AddEditMeasureTypeDisplay addEditMeasureTypeDisplay;
+	
+	/** The current measure detail. */
 	private ManageMeasureDetailModel currentMeasureDetail;
+	
+	/** The current authors list. */
 	private ManageAuthorsModel currentAuthorsList;
+	
+	/** The current measure type list. */
 	private ManageMeasureTypeModel currentMeasureTypeList;
+	
+	/** The author list. */
 	private List<Author> authorList = new ArrayList<Author>();
+	
+	/** The measure type list. */
 	private List<MeasureType> measureTypeList = new ArrayList<MeasureType>();
+	
+	/** The db author list. */
 	private List<Author> dbAuthorList = new ArrayList<Author>();
+	
+	/** The db measure type list. */
 	private List<MeasureType> dbMeasureTypeList = new ArrayList<MeasureType>();
+	
+	/** The empty widget. */
 	private SimplePanel emptyWidget = new SimplePanel();
+	
+	/** The previous continue buttons. */
 	private HasVisible previousContinueButtons;
+	
+	/** The last request time. */
 	private long lastRequestTime;
+	
+	/** The max emeasure id. */
 	private int maxEmeasureId;
+	
+	/** The editable. */
 	private boolean editable = false;
+	
+	/** The is sub view. */
 	private boolean isSubView = false;
+	
+	/** The measure xml model. */
 	private MeasureXmlModel measureXmlModel;// will hold the measure xml. 02/2013
+	
+	/** The is measure details loaded. */
 	private boolean isMeasureDetailsLoaded = false;
 	
 	
 	
+	/**
+	 * Instantiates a new meta data presenter.
+	 * 
+	 * @param mDisplay
+	 *            the m display
+	 * @param aDisplay
+	 *            the a display
+	 * @param mtDisplay
+	 *            the mt display
+	 * @param pcButtons
+	 *            the pc buttons
+	 * @param lp
+	 *            the lp
+	 */
 	public MetaDataPresenter(MetaDataDetailDisplay mDisplay,AddEditAuthorsDisplay aDisplay,AddEditMeasureTypeDisplay mtDisplay,HasVisible pcButtons,ListBoxCodeProvider lp){
 		super(mDisplay,aDisplay,mtDisplay,lp);
 		previousContinueButtons = pcButtons;
@@ -368,17 +842,31 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		emptyWidget.add(new Label("No Measure Selected"));
 	}
 	
+	/**
+	 * Fire successfull deletion event.
+	 * 
+	 * @param isSuccess
+	 *            the is success
+	 * @param message
+	 *            the message
+	 */
 	private void fireSuccessfullDeletionEvent(boolean isSuccess, String message){
 		MeasureDeleteEvent deleteEvent = new MeasureDeleteEvent(isSuccess, message);
 		MatContext.get().getEventBus().fireEvent(deleteEvent);
 	}
 	
+	/**
+	 * Fire back to measure library event.
+	 */
 	private void fireBackToMeasureLibraryEvent(){
 		BackToMeasureLibraryPage backToMeasureLibraryPage = new BackToMeasureLibraryPage();
 		MatContext.get().getEventBus().fireEvent(backToMeasureLibraryPage);
 	}
 			
 	
+	/**
+	 * Generate and save new emeasureid.
+	 */
 	private void generateAndSaveNewEmeasureid(){
 		MeasureServiceAsync service = MatContext.get().getMeasureService();
 		service.generateAndSaveMaxEmeasureId(currentMeasureDetail, new AsyncCallback<Integer>() {
@@ -426,7 +914,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 	*/
 	
-	private void setAuthorsListOnView() {
+	/**
+ * Sets the authors list on view.
+ */
+private void setAuthorsListOnView() {
 		Collections.sort(currentMeasureDetail.getAuthorList(), new Author.Comparator());
 		if(currentMeasureDetail.getAuthorList()!= null){
 			currentAuthorsList = new ManageAuthorsModel(currentMeasureDetail.getAuthorList());
@@ -437,6 +928,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		
 	}
 	
+	/**
+	 * Sets the measure type on view.
+	 */
 	private void setMeasureTypeOnView(){
 		Collections.sort(currentMeasureDetail.getMeasureTypeList(), new MeasureType.Comparator());
 		if(currentMeasureDetail.getMeasureTypeList()!= null){
@@ -446,6 +940,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		}	    
 	}
 	
+	/**
+	 * Removes the selected measure type.
+	 */
 	protected void removeSelectedMeasureType() {
 		List<MeasureType> selectedMt = currentMeasureTypeList.getSelectedMeasureType();
 		for(MeasureType mt: selectedMt){
@@ -455,6 +952,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		setMeasureTypeOnView();
 	}
 
+	/**
+	 * Removes the selected author.
+	 */
 	protected void removeSelectedAuthor() {
 		List<Author> selectedAuthor = currentAuthorsList.getSelectedAuthor();
 		for(Author a: selectedAuthor){
@@ -465,16 +965,25 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	public Widget getWidget() {
 		return panel;
 	}
 	
+	/**
+	 * Display empty.
+	 */
 	private void displayEmpty() {
 		previousContinueButtons.setVisible(false);
 		panel.clear();
 		panel.add(emptyWidget);
 	}
 	
+	/**
+	 * Display detail.
+	 */
 	public void displayDetail(){
 		previousContinueButtons.setVisible(true);
 		prepopulateFields();
@@ -496,6 +1005,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		panel.add(metaDataDisplay.asWidget());
 	}
 	
+	/**
+	 * Back to detail.
+	 */
 	public void backToDetail(){
 		previousContinueButtons.setVisible(true);
 		panel.clear();
@@ -503,6 +1015,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	
+	/**
+	 * Prepopulate fields.
+	 */
 	private void prepopulateFields() {
 		metaDataDisplay.getNqfId().setValue(currentMeasureDetail.getNqfId());
 		metaDataDisplay.geteMeasureIdentifier().setText(currentMeasureDetail.getMeasureSetId());
@@ -604,6 +1119,12 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		
 	}
 
+	/**
+	 * Save meta data information.
+	 * 
+	 * @param dispSuccessMsg
+	 *            the disp success msg
+	 */
 	public void saveMetaDataInformation(final boolean dispSuccessMsg){
 		metaDataDisplay.getSaveErrorMsg().clear();
 		metaDataDisplay.getErrorMessageDisplay().clear();
@@ -659,10 +1180,21 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		}
 	}
 	
+	/**
+	 * Update model details from view.
+	 */
 	private void updateModelDetailsFromView(){
 		updateModelDetailsFromView(currentMeasureDetail, metaDataDisplay);
 	}
 	
+	/**
+	 * Update model details from view.
+	 * 
+	 * @param currentMeasureDetail
+	 *            the current measure detail
+	 * @param metaDataDisplay
+	 *            the meta data display
+	 */
 	public void updateModelDetailsFromView(ManageMeasureDetailModel currentMeasureDetail, MetaDataDetailDisplay metaDataDisplay){
 		currentMeasureDetail.setName(metaDataDisplay.getMeasureName().getText());
 		currentMeasureDetail.setShortName(metaDataDisplay.getShortName().getText());
@@ -720,11 +1252,21 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	
 	
 	
+	/**
+	 * Null check.
+	 * 
+	 * @param value
+	 *            the value
+	 * @return true, if successful
+	 */
 	private boolean nullCheck(String value){
 		return  !value.equalsIgnoreCase("--Select--") && !value.equals("");
 	}
 	
 	
+	/**
+	 * Display add edit authors.
+	 */
 	private void displayAddEditAuthors(){
 		isSubView = true;
 		addEditAuthorsDisplay.setReturnToLink("Return to Previous");
@@ -737,6 +1279,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	
+	/**
+	 * Display add edit measure type.
+	 */
 	private void displayAddEditMeasureType(){
 		isSubView = true;
 		addEditMeasureTypeDisplay.setReturnToLink("Return to Previous");
@@ -750,6 +1295,12 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		Mat.focusSkipLists("MeasureComposer");
 	}
 
+	/**
+	 * Adds the to authors list.
+	 * 
+	 * @param selectedAuthor
+	 *            the selected author
+	 */
 	private void addToAuthorsList(String selectedAuthor){
 		Author author = new Author();
 		author.setAuthorName(selectedAuthor);
@@ -760,6 +1311,12 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		
 	}
 	
+	/**
+	 * Adds the to measure type list.
+	 * 
+	 * @param selectedMeasureType
+	 *            the selected measure type
+	 */
 	private void addToMeasureTypeList(String selectedMeasureType){
 		MeasureType mt = new MeasureType();
 		mt.setDescription(selectedMeasureType);
@@ -770,6 +1327,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		if(MatContext.get().getCurrentMeasureId() == null ||
@@ -789,6 +1349,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		Mat.focusSkipLists("MeasureComposer");
 		clearMessages();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override 
 	public void beforeClosingDisplay() {
 		/*if(currentMeasureDetail != null) {// Removed Auto Save
@@ -800,6 +1364,11 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 	
 
+	/**
+	 * Gets the measure detail.
+	 * 
+	 * @return the measure detail
+	 */
 	private void getMeasureDetail(){
 		MatContext.get().getMeasureService().getMeasure(MatContext.get().getCurrentMeasureId(), 
 				new AsyncCallback<ManageMeasureDetailModel>(){
@@ -821,6 +1390,12 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		});
 	}
 	
+	/**
+	 * Check password for measure deletion.
+	 * 
+	 * @param password
+	 *            the password
+	 */
 	private void checkPasswordForMeasureDeletion(String password){
 		
 		MatContext.get().getLoginService().isValidPassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<Boolean>() {
@@ -845,6 +1420,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 	
 	
+	/**
+	 * Delete measure.
+	 */
 	private void deleteMeasure(){
 		MatContext.get().getMeasureService().saveAndDeleteMeasure(MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>(){
 
@@ -872,10 +1450,11 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 	
 	/**
-	 * Added on FEB 2013
-	 * Method loads the MeasureXml from Measure_XML table using the Measure ID.	 
-	 * Sets the measureXmlModel field.
+	 * Added on FEB 2013 Method loads the MeasureXml from Measure_XML table
+	 * using the Measure ID. Sets the measureXmlModel field.
+	 * 
 	 * @param id
+	 *            the id
 	 */
 	private void loadMeasureXml(String id) {
 		MatContext.get().getMeasureService().getMeasureXmlForMeasure(id, new AsyncCallback<MeasureXmlModel>(){
@@ -892,17 +1471,25 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		});
 	}
 	
+	/**
+	 * Fire measure edit event.
+	 */
 	private void fireMeasureEditEvent() {
 		MeasureEditEvent evt = new MeasureEditEvent();
 		MatContext.get().getEventBus().fireEvent(evt);
 	}
 	
+	/**
+	 * Clear messages.
+	 */
 	private void  clearMessages(){
 		metaDataDisplay.getErrorMessageDisplay().clear();
 		metaDataDisplay.getSuccessMessageDisplay().clear();
 	}
 
 	/**
+	 * Gets the meta data display.
+	 * 
 	 * @return the metaDataDisplay
 	 */
 	public MetaDataDetailDisplay getMetaDataDisplay() {
@@ -910,13 +1497,18 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
-	 * @param metaDataDisplay the metaDataDisplay to set
+	 * Sets the meta data display.
+	 * 
+	 * @param metaDataDisplay
+	 *            the metaDataDisplay to set
 	 */
 	public void setMetaDataDisplay(MetaDataDetailDisplay metaDataDisplay) {
 		this.metaDataDisplay = metaDataDisplay;
 	}
 
 	/**
+	 * Gets the current measure detail.
+	 * 
 	 * @return the currentMeasureDetail
 	 */
 	public ManageMeasureDetailModel getCurrentMeasureDetail() {
@@ -924,7 +1516,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
-	 * @param currentMeasureDetail the currentMeasureDetail to set
+	 * Sets the current measure detail.
+	 * 
+	 * @param currentMeasureDetail
+	 *            the currentMeasureDetail to set
 	 */
 	public void setCurrentMeasureDetail(
 			ManageMeasureDetailModel currentMeasureDetail) {
@@ -932,6 +1527,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
+	 * Gets the current authors list.
+	 * 
 	 * @return the currentAuthorsList
 	 */
 	public ManageAuthorsModel getCurrentAuthorsList() {
@@ -939,13 +1536,18 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
-	 * @param currentAuthorsList the currentAuthorsList to set
+	 * Sets the current authors list.
+	 * 
+	 * @param currentAuthorsList
+	 *            the currentAuthorsList to set
 	 */
 	public void setCurrentAuthorsList(ManageAuthorsModel currentAuthorsList) {
 		this.currentAuthorsList = currentAuthorsList;
 	}
 
 	/**
+	 * Gets the author list.
+	 * 
 	 * @return the authorList
 	 */
 	public List<Author> getAuthorList() {
@@ -953,13 +1555,18 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
-	 * @param authorList the authorList to set
+	 * Sets the author list.
+	 * 
+	 * @param authorList
+	 *            the authorList to set
 	 */
 	public void setAuthorList(List<Author> authorList) {
 		this.authorList = authorList;
 	}
 
 	/**
+	 * Gets the db author list.
+	 * 
 	 * @return the dbAuthorList
 	 */
 	public List<Author> getDbAuthorList() {
@@ -967,13 +1574,18 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
-	 * @param dbAuthorList the dbAuthorList to set
+	 * Sets the db author list.
+	 * 
+	 * @param dbAuthorList
+	 *            the dbAuthorList to set
 	 */
 	public void setDbAuthorList(List<Author> dbAuthorList) {
 		this.dbAuthorList = dbAuthorList;
 	}
 
 	/**
+	 * Gets the db measure type list.
+	 * 
 	 * @return the dbMeasureTypeList
 	 */
 	public List<MeasureType> getDbMeasureTypeList() {
@@ -981,17 +1593,25 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
-	 * @param dbMeasureTypeList the dbMeasureTypeList to set
+	 * Sets the db measure type list.
+	 * 
+	 * @param dbMeasureTypeList
+	 *            the dbMeasureTypeList to set
 	 */
 	public void setDbMeasureTypeList(List<MeasureType> dbMeasureTypeList) {
 		this.dbMeasureTypeList = dbMeasureTypeList;
 	}
 	
+	/**
+	 * Sets the focus for save.
+	 */
 	public void setFocusForSave(){
 		getMetaDataDisplay().getSaveBtn().setFocus(true);
 	}
 
 	/**
+	 * Gets the adds the edit authors display.
+	 * 
 	 * @return the addEditAuthorsDisplay
 	 */
 	public AddEditAuthorsDisplay getAddEditAuthorsDisplay() {
@@ -999,13 +1619,18 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
-	 * @param addEditAuthorsDisplay the addEditAuthorsDisplay to set
+	 * Sets the adds the edit authors display.
+	 * 
+	 * @param addEditAuthorsDisplay
+	 *            the addEditAuthorsDisplay to set
 	 */
 	public void setAddEditAuthorsDisplay(AddEditAuthorsDisplay addEditAuthorsDisplay) {
 		this.addEditAuthorsDisplay = addEditAuthorsDisplay;
 	}
 
 	/**
+	 * Gets the adds the edit measure type display.
+	 * 
 	 * @return the addEditMeasureTypeDisplay
 	 */
 	public AddEditMeasureTypeDisplay getAddEditMeasureTypeDisplay() {
@@ -1013,7 +1638,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
-	 * @param addEditMeasureTypeDisplay the addEditMeasureTypeDisplay to set
+	 * Sets the adds the edit measure type display.
+	 * 
+	 * @param addEditMeasureTypeDisplay
+	 *            the addEditMeasureTypeDisplay to set
 	 */
 	public void setAddEditMeasureTypeDisplay(
 			AddEditMeasureTypeDisplay addEditMeasureTypeDisplay) {
@@ -1021,6 +1649,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
+	 * Checks if is sub view.
+	 * 
 	 * @return the isSubView
 	 */
 	public boolean isSubView() {
@@ -1028,13 +1658,18 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
-	 * @param isSubView the isSubView to set
+	 * Sets the sub view.
+	 * 
+	 * @param isSubView
+	 *            the isSubView to set
 	 */
 	public void setSubView(boolean isSubView) {
 		this.isSubView = isSubView;
 	}
 
 	/**
+	 * Gets the measure xml model.
+	 * 
 	 * @return the measureXmlModel
 	 */
 	public MeasureXmlModel getMeasureXmlModel() {
@@ -1042,7 +1677,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 
 	/**
-	 * @param measureXmlModel the measureXmlModel to set
+	 * Sets the measure xml model.
+	 * 
+	 * @param measureXmlModel
+	 *            the measureXmlModel to set
 	 */
 	public void setMeasureXmlModel(MeasureXmlModel measureXmlModel) {
 		this.measureXmlModel = measureXmlModel;

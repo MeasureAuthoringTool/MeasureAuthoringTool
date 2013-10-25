@@ -24,30 +24,77 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class AddEditMetadataBaseView.
+ */
 public abstract class AddEditMetadataBaseView {
+	
+	/** The container panel. */
 	protected ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
+	
+	/** The main panel. */
 	private SimplePanel mainPanel = new SimplePanel();
 	
+	/** The code input. */
 	private Widget codeInput = getValueInput();
+	
+	/** The empty text box holder. */
 	protected SimplePanel emptyTextBoxHolder = new SimplePanel();
+	
+	/** The description input. */
 	private TextBox descriptionInput = new TextBox();
+	
+	/** The button bar. */
 	protected SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	
+	/** The success messages. */
 	protected SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	
+	/** The error messages. */
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The view. */
 	private SearchView<?> view = getSearchView();
+	
+	/** The remove button. */
 	protected Button removeButton = new PrimaryButton("Remove Selected");
+	
+	/** The other specify box. */
 	protected TextBox otherSpecifyBox = new TextBox();
 	
+	/** The panel. */
 	private FlowPanel fPanel = new FlowPanel();
 	
+	/** The right side form holder. */
 	private SimplePanel rightSideFormHolder = new SimplePanel();
 	
+	/**
+	 * Gets the value input.
+	 * 
+	 * @return the value input
+	 */
 	protected abstract Widget getValueInput();
+	
+	/**
+	 * Gets the value input label.
+	 * 
+	 * @return the value input label
+	 */
 	protected abstract String getValueInputLabel();
+	
+	/**
+	 * Gets the search view.
+	 * 
+	 * @return the search view
+	 */
 	protected abstract SearchView<?> getSearchView();
+	
+	/** The return button. */
 	protected Button returnButton = new PrimaryButton();
 	
+	/**
+	 * Instantiates a new adds the edit metadata base view.
+	 */
 	public AddEditMetadataBaseView(){
 		mainPanel.setStylePrimaryName("searchResultsContainer");
 		mainPanel.addStyleName("leftAligned");
@@ -64,6 +111,11 @@ public abstract class AddEditMetadataBaseView {
 		view.setPageSize(SearchView.PAGE_SIZE_ALL);
 	}
 	
+	/**
+	 * Builds the left side form.
+	 * 
+	 * @return the widget
+	 */
 	private Widget buildLeftSideForm(){
 		 VerticalPanel leftSideForm = new VerticalPanel();
 		 leftSideForm.addStyleName("manageCodeLeftForm");
@@ -78,6 +130,11 @@ public abstract class AddEditMetadataBaseView {
 	     return leftSideForm;
 	}
 	
+	/**
+	 * Builds the remove button.
+	 * 
+	 * @return the widget
+	 */
 	private Widget buildRemoveButton(){
 		 HorizontalPanel removePanel = new HorizontalPanel();
 		removePanel.getElement().setId("removePanel_HorizontalPanel");
@@ -86,6 +143,9 @@ public abstract class AddEditMetadataBaseView {
 	     return removePanel;
 	}
 
+	/**
+	 * Builds the right side form.
+	 */
 	private void buildRightSideForm(){
 		descriptionInput.setMaxLength(1000);
 		fPanel.addStyleName("manageCodeRightForm");
@@ -110,14 +170,33 @@ public abstract class AddEditMetadataBaseView {
 		
 	}
 	
+	/**
+	 * As widget.
+	 * 
+	 * @return the widget
+	 */
 	public Widget asWidget() {
 		return containerPanel;
 	}
 
+	/**
+	 * Sets the title.
+	 * 
+	 * @param title
+	 *            the new title
+	 */
 	public void setTitle(String title) {
 		containerPanel.setHeading(title,"");
 	}
 	
+	/**
+	 * Sets the parent name.
+	 * 
+	 * @param label
+	 *            the label
+	 * @param name
+	 *            the name
+	 */
 	protected void setParentName(String label, String name) {
 		Label parentLabel = new Label(label);
 		Label parentName = new Label(name);
@@ -125,24 +204,50 @@ public abstract class AddEditMetadataBaseView {
 		containerPanel.setCodeListInfo(parentName);
 	}
 	
+	/**
+	 * Sets the return to link.
+	 * 
+	 * @param s
+	 *            the new return to link
+	 */
 	public void setReturnToLink(String s){
 		returnButton.setText(s);
 		returnButton.setTitle(s);
 		containerPanel.setFooter(returnButton);
 	}
    
+	/**
+	 * Gets the code description.
+	 * 
+	 * @return the code description
+	 */
 	public HasValue<String> getCodeDescription() {
 		return descriptionInput;
 	}
 
+	/**
+	 * Gets the page selection tool.
+	 * 
+	 * @return the page selection tool
+	 */
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return view;
 	}
 
+	/**
+	 * Gets the page size selection tool.
+	 * 
+	 * @return the page size selection tool
+	 */
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return view;
 	}
 
+	/**
+	 * Gets the page size.
+	 * 
+	 * @return the page size
+	 */
 	public int getPageSize() {
 		return view.getPageSize();
 	}	

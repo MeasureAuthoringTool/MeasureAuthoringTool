@@ -7,12 +7,12 @@ import mat.client.shared.MatContext;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
-public class PopulationClausePresenter extends XmlTreePresenter implements MatPresenter{
-	
+public class PopulationClausePresenter extends XmlTreePresenter implements MatPresenter {
+
 	SimplePanel panel = new SimplePanel();
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	private static final String POPULATIONS_TAG = "populations";
-	
+
 	public PopulationClausePresenter() {
 		setRootNode(POPULATIONS_TAG);
 	}
@@ -23,16 +23,13 @@ public class PopulationClausePresenter extends XmlTreePresenter implements MatPr
 		loadXmlTree(panel);
 	}
 
-	
 	@Override
 	public void beforeClosingDisplay() {
-		
+
 	}
 
 	@Override
 	public Widget getWidget() {
 		return panel;
 	}
-
-
 }

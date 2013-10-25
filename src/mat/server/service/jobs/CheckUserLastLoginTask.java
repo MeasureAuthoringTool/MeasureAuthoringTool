@@ -22,26 +22,48 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 
 
 
+/**
+ * The Class CheckUserLastLoginTask.
+ */
 public class CheckUserLastLoginTask {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CheckUserLastLoginTask.class);
 	
+	/** The user dao. */
 	private UserDAO userDAO;
 	
+	/** The mail sender. */
 	private MailSender mailSender;
+	
+	/** The simple mail message. */
 	private SimpleMailMessage simpleMailMessage;
 	
+	/** The warning day limit. */
 	private int warningDayLimit;
+	
+	/** The expiry day limit. */
 	private int expiryDayLimit;
 	
+	/** The warning mail template. */
 	private String warningMailTemplate;
+	
+	/** The warning mail subject. */
 	private String warningMailSubject;
 	
+	/** The expiry mail template. */
 	private String expiryMailTemplate;
+	
+	/** The expiry mail subject. */
 	private String expiryMailSubject;
 	
+	/** The velocity engine. */
 	private VelocityEngine velocityEngine;
 	
+	/** The Constant WARNING_EMAIL_FLAG. */
 	private final static String WARNING_EMAIL_FLAG = "WARNING";
+	
+	/** The Constant EXPIRY_EMAIL_FLAG. */
 	private final static String EXPIRY_EMAIL_FLAG = "EXPIRED";
 	
 	/**
@@ -118,11 +140,13 @@ public class CheckUserLastLoginTask {
 	}
 	
 	/**
-	 * Method Find Sub List of Users from Users List with Sign_in_date = noOfDayLimit.  
-	 *  
-	 * @param noOfDayLimit type integer.
-	 * @param users type List.
+	 * Method Find Sub List of Users from Users List with Sign_in_date =
+	 * noOfDayLimit.
 	 * 
+	 * @param dayLimit
+	 *            the day limit
+	 * @param users
+	 *            type List.
 	 * @return List.
 	 */
 	private List<User> checkLastLogin(final long dayLimit, final List<User> users){
@@ -153,12 +177,15 @@ public class CheckUserLastLoginTask {
 		logger.info(" :: checkLastLogin Method END :: ");
 		return returnUserList;
 	}
+	
 	/**
-	 * Method to Update Termination Date of User with no activity done in last 180 days.
+	 * Method to Update Termination Date of User with no activity done in last
+	 * 180 days.
 	 * 
-	 * @param User
+	 * @param user
+	 *            the user
 	 * @return void
-	 * */
+	 */
 	
 	private void updateUserTerminationDate(final User user){
 		
@@ -175,8 +202,10 @@ public class CheckUserLastLoginTask {
 	}
 	
 	/**
-	 * Method to check if the User has valid ACTIVATION DATE, TERMINATION DATE. 
-	 * @param user.
+	 * Method to check if the User has valid ACTIVATION DATE, TERMINATION DATE.
+	 * 
+	 * @param user
+	 *            the user
 	 * @return boolean.
 	 */
 	private boolean checkValidUser(final User user) {
@@ -214,22 +243,38 @@ public class CheckUserLastLoginTask {
 		return numberOfDaysAgo;
 	}
 
+	/**
+	 * Gets the user dao.
+	 * 
+	 * @return the user dao
+	 */
 	public UserDAO getUserDAO() {
 		return userDAO;
 	}
 
+	/**
+	 * Sets the user dao.
+	 * 
+	 * @param userDAO
+	 *            the new user dao
+	 */
 	public void setUserDAO(final UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
 
 	/**
-	 * @param mailSender the mailSender to set
+	 * Sets the mail sender.
+	 * 
+	 * @param mailSender
+	 *            the mailSender to set
 	 */
 	public void setMailSender(final MailSender mailSender) {
 		this.mailSender = mailSender;
 	}
 
 	/**
+	 * Gets the mail sender.
+	 * 
 	 * @return the mailSender
 	 */
 	public MailSender getMailSender() {
@@ -237,50 +282,85 @@ public class CheckUserLastLoginTask {
 	}
 
 	/**
-	 * @param simpleMailMessage the simpleMailMessage to set
+	 * Sets the simple mail message.
+	 * 
+	 * @param simpleMailMessage
+	 *            the simpleMailMessage to set
 	 */
 	public void setSimpleMailMessage(final SimpleMailMessage simpleMailMessage) {
 		this.simpleMailMessage = simpleMailMessage;
 	}
 
 	/**
+	 * Gets the simple mail message.
+	 * 
 	 * @return the simpleMailMessage
 	 */
 	public SimpleMailMessage getSimpleMailMessage() {
 		return simpleMailMessage;
 	}
 
+	/**
+	 * Gets the warning day limit.
+	 * 
+	 * @return the warning day limit
+	 */
 	public int getWarningDayLimit() {
 		return warningDayLimit;
 	}
 
+	/**
+	 * Sets the warning day limit.
+	 * 
+	 * @param warningDayLimit
+	 *            the new warning day limit
+	 */
 	public void setWarningDayLimit(final int warningDayLimit) {
 		this.warningDayLimit = warningDayLimit;
 	}
 
+	/**
+	 * Gets the expiry day limit.
+	 * 
+	 * @return the expiry day limit
+	 */
 	public int getExpiryDayLimit() {
 		return expiryDayLimit;
 	}
 
+	/**
+	 * Sets the expiry day limit.
+	 * 
+	 * @param expiryDayLimit
+	 *            the new expiry day limit
+	 */
 	public void setExpiryDayLimit(final int expiryDayLimit) {
 		this.expiryDayLimit = expiryDayLimit;
 	}
 
 	/**
-	 * @param warningMailTemplate the warningMailTemplate to set
+	 * Sets the warning mail template.
+	 * 
+	 * @param warningMailTemplate
+	 *            the warningMailTemplate to set
 	 */
 	public void setWarningMailTemplate(final String warningMailTemplate) {
 		this.warningMailTemplate = warningMailTemplate;
 	}
 
 	/**
-	 * @param warningMailSubject the warningMailSubject to set
+	 * Sets the warning mail subject.
+	 * 
+	 * @param warningMailSubject
+	 *            the warningMailSubject to set
 	 */
 	public void setWarningMailSubject(final String warningMailSubject) {
 		this.warningMailSubject = warningMailSubject;
 	}
 
 	/**
+	 * Gets the warning mail subject.
+	 * 
 	 * @return the warningMailSubject
 	 */
 	public String getWarningMailSubject() {
@@ -288,6 +368,8 @@ public class CheckUserLastLoginTask {
 	}
 
 	/**
+	 * Gets the warning mail template.
+	 * 
 	 * @return the warningMailTemplate
 	 */
 	public String getWarningMailTemplate() {
@@ -295,20 +377,28 @@ public class CheckUserLastLoginTask {
 	}
 
 	/**
-	 * @param expiryMailTemplate the expiryMailTemplate to set
+	 * Sets the expiry mail template.
+	 * 
+	 * @param expiryMailTemplate
+	 *            the expiryMailTemplate to set
 	 */
 	public void setExpiryMailTemplate(final String expiryMailTemplate) {
 		this.expiryMailTemplate = expiryMailTemplate;
 	}
 
 	/**
-	 * @param expiryMailSubject the expiryMailSubject to set
+	 * Sets the expiry mail subject.
+	 * 
+	 * @param expiryMailSubject
+	 *            the expiryMailSubject to set
 	 */
 	public void setExpiryMailSubject(final String expiryMailSubject) {
 		this.expiryMailSubject = expiryMailSubject;
 	}
 
 	/**
+	 * Gets the expiry mail subject.
+	 * 
 	 * @return the expiryMailSubject
 	 */
 	public String getExpiryMailSubject() {
@@ -316,16 +406,29 @@ public class CheckUserLastLoginTask {
 	}
 
 	/**
+	 * Gets the expiry mail template.
+	 * 
 	 * @return the expiryMailTemplate
 	 */
 	public String getExpiryMailTemplate() {
 		return expiryMailTemplate;
 	}
 
+	/**
+	 * Gets the velocity engine.
+	 * 
+	 * @return the velocity engine
+	 */
 	public VelocityEngine getVelocityEngine() {
 		return velocityEngine;
 	}
 
+	/**
+	 * Sets the velocity engine.
+	 * 
+	 * @param velocityEngine
+	 *            the new velocity engine
+	 */
 	public void setVelocityEngine(final VelocityEngine velocityEngine) {
 		this.velocityEngine = velocityEngine;
 	}

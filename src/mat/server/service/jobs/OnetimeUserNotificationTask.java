@@ -12,13 +12,26 @@ import mat.server.service.impl.UserServiceImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * The Class OnetimeUserNotificationTask.
+ */
 public class OnetimeUserNotificationTask {
 	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(OnetimeUserNotificationTask.class);
+	
+	/** The user dao. */
 	private UserDAO userDAO;
+	
+	/** The user service. */
 	private UserService userService;
+	
+	/** The mat flag dao. */
 	private MatFlagDAO matFlagDAO;
 	
+	/**
+	 * Send onetime user notification emails.
+	 */
 	public void sendOnetimeUserNotificationEmails(){
 		System.out.println("Hi there this is OnetimeUserNotificationTask..");
 		
@@ -31,6 +44,12 @@ public class OnetimeUserNotificationTask {
 		
 	}
 
+	/**
+	 * Send user login id email.
+	 * 
+	 * @param users
+	 *            the users
+	 */
 	private void sendUserLoginIdEmail(List<User> users) {
 	
 		for(User user:users){
@@ -42,6 +61,12 @@ public class OnetimeUserNotificationTask {
 		
 	}
 	
+	/**
+	 * Send user new temp password email.
+	 * 
+	 * @param users
+	 *            the users
+	 */
 	private void sendUserNewTempPasswordEmail(List<User> users) {
 		for(User user:users){
 			userService.requestResetLockedPassword(user.getId());
@@ -53,6 +78,11 @@ public class OnetimeUserNotificationTask {
 		
 	}
 	
+	/**
+	 * Does job need execution.
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean doesJobNeedExecution() {
 		boolean result = false;
 		
@@ -66,26 +96,59 @@ public class OnetimeUserNotificationTask {
 		return result;
 	}
 	
+	/**
+	 * Gets the user dao.
+	 * 
+	 * @return the user dao
+	 */
 	public UserDAO getUserDAO() {
 		return userDAO;
 	}
 
+	/**
+	 * Sets the user dao.
+	 * 
+	 * @param userDAO
+	 *            the new user dao
+	 */
 	public void setUserDAO(UserDAO userDAO) {
 		this.userDAO = userDAO;
 	}
 
+	/**
+	 * Sets the user service.
+	 * 
+	 * @param userService
+	 *            the new user service
+	 */
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
 
+	/**
+	 * Gets the user service.
+	 * 
+	 * @return the user service
+	 */
 	public UserService getUserService() {
 		return userService;
 	}
 	
+	/**
+	 * Gets the mat flag dao.
+	 * 
+	 * @return the mat flag dao
+	 */
 	public MatFlagDAO getMatFlagDAO() {
 		return matFlagDAO;
 	}
 
+	/**
+	 * Sets the mat flag dao.
+	 * 
+	 * @param matFlagDAO
+	 *            the new mat flag dao
+	 */
 	public void setMatFlagDAO(MatFlagDAO matFlagDAO) {
 		this.matFlagDAO = matFlagDAO;
 	}

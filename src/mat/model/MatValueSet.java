@@ -79,18 +79,24 @@ public class MatValueSet implements IsSerializable {
 	private List<MatValueSet> groupedValueSet;
 
 	/**
+	 * To string.
+	 * 
 	 * @return String with ID , Display name and Type.
-	 *
-	 * **/
+	 * 
+	 *         *
+	 */
 
 	public final String toString() {
 		return getID() + " - " + getDisplayName() + " - " + getType();
 	}
 
 	/**
+	 * Checks if is grouping.
+	 * 
 	 * @return Boolean.
-	 *
-	 * **/
+	 * 
+	 *         *
+	 */
 	public final boolean isGrouping() {
 		return (getType().equalsIgnoreCase("grouping"));
 	}
@@ -317,10 +323,21 @@ public class MatValueSet implements IsSerializable {
 		this.groupedValueSet = groupedValueSets;
 	}
 
+	/**
+	 * Gets the measure XML QDM ID.
+	 * 
+	 * @return the measure XML QDM ID
+	 */
 	public String getQdmId() {
 		return qdmId;
 	}
 
+	/**
+	 * Sets the measure XML QDM ID.
+	 * 
+	 * @param qdmId
+	 *            the new measure XML QDM ID
+	 */
 	public void setQdmId(String qdmId) {
 		this.qdmId = qdmId;
 	}

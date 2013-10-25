@@ -13,66 +13,172 @@ import mat.model.clause.Measure;
 import org.hibernate.Hibernate;
 
 /**
- * Data Structure to store for information about a validation event: type, user, measure, interimXML
+ * Data Structure to store for information about a validation event: type, user,
+ * measure, interimXML.
+ * 
  * @author aschmidt
- *
  */
 public class MeasureValidationLog {
 	
+	/** The id. */
 	private String id;
+	
+	/** The activity type. */
 	private String activityType;	
+	
+	/** The time. */
 	private Timestamp time;
+	
+	/** The user id. */
 	private String userId;
+	
+	/** The measure. */
 	private Measure measure;
+	
+	/** The interim blob. */
 	private Blob interimBlob;
 	
+	/**
+	 * Gets the id.
+	 * 
+	 * @return the id
+	 */
 	public String getId() {
 		return id;
 	}
+	
+	/**
+	 * Sets the id.
+	 * 
+	 * @param id
+	 *            the new id
+	 */
 	public void setId(String id) {
 		this.id = id;
 	}
+	
+	/**
+	 * Gets the activity type.
+	 * 
+	 * @return the activity type
+	 */
 	public String getActivityType() {
 		return activityType;
 	}
+	
+	/**
+	 * Sets the activity type.
+	 * 
+	 * @param activityType
+	 *            the new activity type
+	 */
 	public void setActivityType(String activityType) {
 		this.activityType = activityType;
 	}
+	
+	/**
+	 * Gets the time.
+	 * 
+	 * @return the time
+	 */
 	public Timestamp getTime() {
 		return time;
 	}
+	
+	/**
+	 * Sets the time.
+	 * 
+	 * @param created
+	 *            the new time
+	 */
 	public void setTime(Date created) {
 		this.time = new Timestamp(created.getTime());
 	}
+	
+	/**
+	 * Gets the user id.
+	 * 
+	 * @return the user id
+	 */
 	public String getUserId() {
 		return userId;
 	}
+	
+	/**
+	 * Sets the user id.
+	 * 
+	 * @param userId
+	 *            the new user id
+	 */
 	public void setUserId(String userId) {
 		this.userId = userId;
 	}
+	
+	/**
+	 * Gets the measure.
+	 * 
+	 * @return the measure
+	 */
 	public Measure getMeasure() {
 		return measure;
 	}
+	
+	/**
+	 * Sets the measure.
+	 * 
+	 * @param measure
+	 *            the new measure
+	 */
 	public void setMeasure(Measure measure) {
 		this.measure = measure;
 	}
 	
+	/**
+	 * Gets the interim barr.
+	 * 
+	 * @return the interim barr
+	 */
 	public byte[] getInterimBarr() {
 		return toByteArray(interimBlob);
 	}
+	
+	/**
+	 * Sets the interim barr.
+	 * 
+	 * @param interimBarr
+	 *            the new interim barr
+	 */
 	public void setInterimBarr(byte[] interimBarr) {
 		this.interimBlob = Hibernate.createBlob(interimBarr);
 	}
 	
-	  public void setInterimBlob(Blob codeList) {  
+	  /**
+	 * Sets the interim blob.
+	 * 
+	 * @param codeList
+	 *            the new interim blob
+	 */
+  	public void setInterimBlob(Blob codeList) {  
 		  this.interimBlob = codeList; 
 	  } 
 	  
-	  public Blob getInterimBlob() {  
+	  /**
+	 * Gets the interim blob.
+	 * 
+	 * @return the interim blob
+	 */
+  	public Blob getInterimBlob() {  
 		  return this.interimBlob; 
 	  } 
 	  
-	  private byte[] toByteArray(Blob fromBlob) {  
+	  /**
+	 * To byte array.
+	 * 
+	 * @param fromBlob
+	 *            the from blob
+	 * @return the byte[]
+	 */
+  	private byte[] toByteArray(Blob fromBlob) {  
 		  ByteArrayOutputStream baos = new ByteArrayOutputStream();  
 		  try {
 			  return toByteArrayImpl(fromBlob, baos);  
@@ -91,7 +197,20 @@ public class MeasureValidationLog {
 		  } 
 	  } 
 	  
-	  private byte[] toByteArrayImpl(Blob fromBlob, ByteArrayOutputStream baos) throws SQLException, IOException {  
+	  /**
+	 * To byte array impl.
+	 * 
+	 * @param fromBlob
+	 *            the from blob
+	 * @param baos
+	 *            the baos
+	 * @return the byte[]
+	 * @throws SQLException
+	 *             the sQL exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+  	private byte[] toByteArrayImpl(Blob fromBlob, ByteArrayOutputStream baos) throws SQLException, IOException {  
 		  byte[] buf = new byte[4000];  
 		  InputStream is = fromBlob.getBinaryStream();  
 		  try {

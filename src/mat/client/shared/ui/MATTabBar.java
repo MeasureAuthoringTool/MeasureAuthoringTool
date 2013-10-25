@@ -55,8 +55,10 @@ import com.google.gwt.user.client.ui.TabBar;
 import com.google.gwt.user.client.ui.TabListener;
 import com.google.gwt.user.client.ui.UIObject;
 import com.google.gwt.user.client.ui.Widget;
+
 /**
- * A horizontal bar of folder-style tabs, most commonly used as part of a
+ * A horizontal bar of folder-style tabs, most commonly used as part of a.
+ * 
  * {@link com.google.gwt.user.client.ui.TabPanel}.
  * <p>
  * <img class='gallery' src='doc-files/TabBar.png'/>
@@ -65,11 +67,9 @@ import com.google.gwt.user.client.ui.Widget;
  * <ul class='css'>
  * <li>.gwt-TabBar { the tab bar itself }</li>
  * <li>.gwt-TabBar .gwt-TabBarFirst { the left edge of the bar }</li>
- * <li>.gwt-TabBar .gwt-TabBarFirst-wrapper { table cell around the left edge }
- * </li>
+ * <li>.gwt-TabBar .gwt-TabBarFirst-wrapper { table cell around the left edge }</li>
  * <li>.gwt-TabBar .gwt-TabBarRest { the right edge of the bar }</li>
- * <li>.gwt-TabBar .gwt-TabBarRest-wrapper { table cell around the right edge }
- * </li>
+ * <li>.gwt-TabBar .gwt-TabBarRest-wrapper { table cell around the right edge }</li>
  * <li>.gwt-TabBar .gwt-TabBarItem { unselected tabs }</li>
  * <li>.gwt-TabBar .gwt-TabBarItem-wrapper { table cell around tab }</li>
  * <li>.gwt-TabBar .gwt-TabBarItem-selected { additional style for selected
@@ -113,9 +113,19 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
    * single observer is needed.
    */
   private class ClickDelegatePanel extends Composite implements Tab {
+    
+    /** The focusable panel. */
     private FocusPanel focusablePanel;
+    
+    /** The enabled. */
     private boolean enabled = true;
 
+    /**
+	 * Instantiates a new click delegate panel.
+	 * 
+	 * @param child
+	 *            the child
+	 */
     ClickDelegatePanel(Widget child) {
 
       focusablePanel = new FocusPanel(child);
@@ -130,26 +140,46 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
       sinkEvents(Event.ONCLICK | Event.ONKEYDOWN);
     }
 
+    /* (non-Javadoc)
+     * @see com.google.gwt.event.dom.client.HasClickHandlers#addClickHandler(com.google.gwt.event.dom.client.ClickHandler)
+     */
     public HandlerRegistration addClickHandler(ClickHandler handler) {
       return addHandler(handler, ClickEvent.getType());
     }
 
+    /* (non-Javadoc)
+     * @see com.google.gwt.event.dom.client.HasKeyDownHandlers#addKeyDownHandler(com.google.gwt.event.dom.client.KeyDownHandler)
+     */
     public HandlerRegistration addKeyDownHandler(KeyDownHandler handler) {
       return addHandler(handler, KeyDownEvent.getType());
     }
 
+    /* (non-Javadoc)
+     * @see com.google.gwt.event.dom.client.HasKeyPressHandlers#addKeyPressHandler(com.google.gwt.event.dom.client.KeyPressHandler)
+     */
     public HandlerRegistration addKeyPressHandler(KeyPressHandler handler) {
       return addDomHandler(handler, KeyPressEvent.getType());
     }
 
+    /* (non-Javadoc)
+     * @see com.google.gwt.event.dom.client.HasKeyUpHandlers#addKeyUpHandler(com.google.gwt.event.dom.client.KeyUpHandler)
+     */
     public HandlerRegistration addKeyUpHandler(KeyUpHandler handler) {
       return addDomHandler(handler, KeyUpEvent.getType());
     }
 
+    /**
+	 * Gets the focusable panel.
+	 * 
+	 * @return the focusable panel
+	 */
     public SimplePanel getFocusablePanel() {
       return focusablePanel;
     }
 
+    /* (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.HasWordWrap#getWordWrap()
+     */
     public boolean getWordWrap() {
       if (hasWordWrap()) {
         return ((HasWordWrap) focusablePanel.getWidget()).getWordWrap();
@@ -158,18 +188,29 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
           "Widget does not implement HasWordWrap");
     }
 
+    /* (non-Javadoc)
+     * @see mat.client.shared.ui.MATTabBar.Tab#hasWordWrap()
+     */
     public boolean hasWordWrap() {
       return focusablePanel.getWidget() instanceof HasWordWrap;
     }
 
+    /**
+	 * Checks if is enabled.
+	 * 
+	 * @return true, if is enabled
+	 */
     public boolean isEnabled() {
       return enabled;
     }
 
     /**
-     * NOTE pass on browser event only if the loading check passes
-     * else show an alert message
-     */
+	 * NOTE pass on browser event only if the loading check passes else show an
+	 * alert message.
+	 * 
+	 * @param event
+	 *            the event
+	 */
     @Override
     public void onBrowserEvent(Event event) {
     	
@@ -198,10 +239,19 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
       }
     }
 
+    /**
+	 * Sets the enabled.
+	 * 
+	 * @param enabled
+	 *            the new enabled
+	 */
     public void setEnabled(boolean enabled) {
       this.enabled = enabled;
     }
 
+    /* (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.HasWordWrap#setWordWrap(boolean)
+     */
     public void setWordWrap(boolean wrap) {
       if (hasWordWrap()) {
         ((HasWordWrap) focusablePanel.getWidget()).setWordWrap(wrap);
@@ -212,8 +262,13 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
     }
   }
 
+  /** The Constant STYLENAME_DEFAULT. */
   private static final String STYLENAME_DEFAULT = "gwt-TabBarItem";
+  
+  /** The panel. */
   private HorizontalPanel panel = new HorizontalPanel();
+  
+  /** The selected tab. */
   private Widget selectedTab;
 
   /**
@@ -246,11 +301,17 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
     setStyleName(rest.getElement().getParentElement(), "gwt-TabBarRest-wrapper");
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers#addBeforeSelectionHandler(com.google.gwt.event.logical.shared.BeforeSelectionHandler)
+   */
   public HandlerRegistration addBeforeSelectionHandler(
       BeforeSelectionHandler<Integer> handler) {
     return addHandler(handler, BeforeSelectionEvent.getType());
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
+   */
   public HandlerRegistration addSelectionHandler(
       SelectionHandler<Integer> handler) {
     return addHandler(handler, SelectionEvent.getType());
@@ -285,9 +346,13 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
   }
 
   /**
-   * @deprecated Use {@link #addBeforeSelectionHandler} and {#link
-   *             #addSelectionHandler} instead
-   */
+	 * Adds the tab listener.
+	 * 
+	 * @param listener
+	 *            the listener
+	 * @deprecated Use {@link #addBeforeSelectionHandler} and {#link
+	 *             #addSelectionHandler} instead
+	 */
   @Deprecated
   public void addTabListener(TabListener listener) {
     MATListenerWrapper.WrappedTabListener.add(this, listener);
@@ -410,37 +475,66 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
   }
 
   /**
-   * @deprecated add a {@link BeforeSelectionHandler} instead. Alternatively, if
-   * you need to access to the individual tabs, add a click handler to each
-   * {@link Tab} element instead.
-   */
+	 * On click.
+	 * 
+	 * @param sender
+	 *            the sender
+	 * @deprecated add a {@link BeforeSelectionHandler} instead. Alternatively,
+	 *             if you need to access to the individual tabs, add a click
+	 *             handler to each {@link Tab} element instead.
+	 */
   @Deprecated
   public void onClick(Widget sender) {
   }
 
   /**
-   * @deprecated add a key down handler to the individual {@link Tab} objects
-   *  instead.
-   */
+	 * On key down.
+	 * 
+	 * @param sender
+	 *            the sender
+	 * @param keyCode
+	 *            the key code
+	 * @param modifiers
+	 *            the modifiers
+	 * @deprecated add a key down handler to the individual {@link Tab} objects
+	 *             instead.
+	 */
   @Deprecated
   public void onKeyDown(Widget sender, char keyCode, int modifiers) {
   }
 
   /**
-   * @deprecated this method has been doing nothing for the entire last release,
-   * if what you wanted to do was to listen to key press events on tabs, add the
-   * key press handler to the individual tab wrappers instead.
-   */
+	 * On key press.
+	 * 
+	 * @param sender
+	 *            the sender
+	 * @param keyCode
+	 *            the key code
+	 * @param modifiers
+	 *            the modifiers
+	 * @deprecated this method has been doing nothing for the entire last
+	 *             release, if what you wanted to do was to listen to key press
+	 *             events on tabs, add the key press handler to the individual
+	 *             tab wrappers instead.
+	 */
   @Deprecated
   public void onKeyPress(Widget sender, char keyCode, int modifiers) {
   }
 
   /**
-   * @deprecated this method has been doing nothing for the entire last release,
-   * if what you wanted to do was to listen to key up events on tabs, add the
-   * key up handler to the individual tab wrappers instead.
-   * 
-   */
+	 * On key up.
+	 * 
+	 * @param sender
+	 *            the sender
+	 * @param keyCode
+	 *            the key code
+	 * @param modifiers
+	 *            the modifiers
+	 * @deprecated this method has been doing nothing for the entire last
+	 *             release, if what you wanted to do was to listen to key up
+	 *             events on tabs, add the key up handler to the individual tab
+	 *             wrappers instead.
+	 */
   @Deprecated
   public void onKeyUp(Widget sender, char keyCode, int modifiers) {
   }
@@ -462,9 +556,13 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
   }
 
   /**
-   * @deprecated Instead use the {@link HandlerRegistration#removeHandler}
-   * call on the object returned by an add*Handler method
-   */
+	 * Removes the tab listener.
+	 * 
+	 * @param listener
+	 *            the listener
+	 * @deprecated Instead use the {@link HandlerRegistration#removeHandler}
+	 *             call on the object returned by an add*Handler method
+	 */
   @Deprecated
   public void removeTabListener(TabListener listener) {
     MATListenerWrapper.WrappedTabListener.remove(this, listener);
@@ -522,15 +620,17 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
   }
 
   /**
-   * Sets a tab's contents via HTML.
-   * 
-   * Use care when setting an object's HTML; it is an easy way to expose
-   * script-based security problems. Consider using
-   * {@link #setTabText(int, String)} whenever possible.
-   * 
-   * @param index the index of the tab whose HTML is to be set
-   * @param html the tab new HTML
-   */
+	 * Sets a tab's contents via HTML.
+	 * 
+	 * Use care when setting an object's HTML; it is an easy way to expose
+	 * script-based security problems. Consider using
+	 * 
+	 * @param index
+	 *            the index of the tab whose HTML is to be set
+	 * @param html
+	 *            the tab new HTML {@link #setTabText(int, String)} whenever
+	 *            possible.
+	 */
   public void setTabHTML(int index, String html) {
     assert (index >= 0) && (index < getTabCount()) : "Tab index out of bounds";
 
@@ -591,14 +691,16 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
   }
 
   /**
-   * <b>Affected Elements:</b>
-   * <ul>
-   * <li>-tab# = The element containing the contents of the tab.</li>
-   * <li>-tab-wrapper# = The cell containing the tab at the index.</li>
-   * </ul>
-   * 
-   * @see UIObject#onEnsureDebugId(String)
-   */
+	 * <b>Affected Elements:</b>
+	 * <ul>
+	 * <li>-tab# = The element containing the contents of the tab.</li>
+	 * <li>-tab-wrapper# = The cell containing the tab at the index.</li>
+	 * </ul>
+	 * 
+	 * @param baseID
+	 *            the base id
+	 * @see UIObject#onEnsureDebugId(String)
+	 */
   @Override
   protected void onEnsureDebugId(String baseID) {
     super.onEnsureDebugId(baseID);
@@ -613,12 +715,24 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
     }
   }
 
+  /**
+	 * Check insert before tab index.
+	 * 
+	 * @param beforeIndex
+	 *            the before index
+	 */
   private void checkInsertBeforeTabIndex(int beforeIndex) {
     if ((beforeIndex < 0) || (beforeIndex > getTabCount())) {
       throw new IndexOutOfBoundsException();
     }
   }
 
+  /**
+	 * Check tab index.
+	 * 
+	 * @param index
+	 *            the index
+	 */
   private void checkTabIndex(int index) {
     if ((index < -1) || (index >= getTabCount())) {
       throw new IndexOutOfBoundsException();
@@ -646,6 +760,14 @@ public class MATTabBar extends Composite implements SourcesTabEvents,
     return false;
   }
 
+  /**
+	 * Sets the selection style.
+	 * 
+	 * @param item
+	 *            the item
+	 * @param selected
+	 *            the selected
+	 */
   private void setSelectionStyle(Widget item, boolean selected) {
     if (item != null) {
       if (selected) {

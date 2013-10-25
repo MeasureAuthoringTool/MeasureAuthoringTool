@@ -97,29 +97,50 @@ public class MATTabPanel extends Composite implements TabListener,
    * </p>
    */
   private static class TabbedDeckPanel extends DeckPanel {
+    
+    /** The tab bar. */
     private UnmodifiableTabBar tabBar;
+    
+    /**
+	 * Instantiates a new tabbed deck panel.
+	 * 
+	 * @param tabBar
+	 *            the tab bar
+	 */
     public TabbedDeckPanel(UnmodifiableTabBar tabBar) {
       this.tabBar = tabBar;
     }
 
+    /* (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.DeckPanel#add(com.google.gwt.user.client.ui.Widget)
+     */
     @Override
     public void add(Widget w) {
       throw new UnsupportedOperationException(
           "Use TabPanel.add() to alter the DeckPanel");
     }
 
+    /* (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.Panel#clear()
+     */
     @Override
     public void clear() {
       throw new UnsupportedOperationException(
           "Use TabPanel.clear() to alter the DeckPanel");
     }
 
+    /* (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.DeckPanel#insert(com.google.gwt.user.client.ui.Widget, int)
+     */
     @Override
     public void insert(Widget w, int beforeIndex) {
       throw new UnsupportedOperationException(
           "Use TabPanel.insert() to alter the DeckPanel");
     }
 
+    /* (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.DeckPanel#remove(com.google.gwt.user.client.ui.Widget)
+     */
     @Override
     public boolean remove(Widget w) {
       // Removal of items from the TabBar is delegated to the DeckPanel
@@ -133,6 +154,18 @@ public class MATTabPanel extends Composite implements TabListener,
       return false;
     }
 
+    /**
+	 * Insert protected.
+	 * 
+	 * @param w
+	 *            the w
+	 * @param tabText
+	 *            the tab text
+	 * @param asHTML
+	 *            the as html
+	 * @param beforeIndex
+	 *            the before index
+	 */
     protected void insertProtected(Widget w, String tabText, boolean asHTML,
         int beforeIndex) {
 
@@ -150,6 +183,16 @@ public class MATTabPanel extends Composite implements TabListener,
       super.insert(w, beforeIndex);
     }
 
+    /**
+	 * Insert protected.
+	 * 
+	 * @param w
+	 *            the w
+	 * @param tabWidget
+	 *            the tab widget
+	 * @param beforeIndex
+	 *            the before index
+	 */
     protected void insertProtected(Widget w, Widget tabWidget, int beforeIndex) {
 
       // Check to see if the TabPanel already contains the Widget. If so,
@@ -173,26 +216,53 @@ public class MATTabPanel extends Composite implements TabListener,
    */
   private class UnmodifiableTabBar extends MATTabBar {
 	
+    /* (non-Javadoc)
+     * @see mat.client.shared.ui.MATTabBar#insertTab(java.lang.String, boolean, int)
+     */
     @Override
     public void insertTab(String text, boolean asHTML, int beforeIndex) {
       throw new UnsupportedOperationException(
           "Use TabPanel.insert() to alter the TabBar");
     }
 
+    /* (non-Javadoc)
+     * @see mat.client.shared.ui.MATTabBar#insertTab(com.google.gwt.user.client.ui.Widget, int)
+     */
     @Override
     public void insertTab(Widget widget, int beforeIndex) {
       throw new UnsupportedOperationException(
           "Use TabPanel.insert() to alter the TabBar");
     }
 
+    /**
+	 * Insert tab protected.
+	 * 
+	 * @param text
+	 *            the text
+	 * @param asHTML
+	 *            the as html
+	 * @param beforeIndex
+	 *            the before index
+	 */
     public void insertTabProtected(String text, boolean asHTML, int beforeIndex) {
       super.insertTab(text, asHTML, beforeIndex);
     }
 
+    /**
+	 * Insert tab protected.
+	 * 
+	 * @param widget
+	 *            the widget
+	 * @param beforeIndex
+	 *            the before index
+	 */
     public void insertTabProtected(Widget widget, int beforeIndex) {
       super.insertTab(widget, beforeIndex);
     }
 
+    /* (non-Javadoc)
+     * @see mat.client.shared.ui.MATTabBar#removeTab(int)
+     */
     @Override
     public void removeTab(int index) {
       // It's possible for removeTab() to function correctly, but it's
@@ -202,10 +272,19 @@ public class MATTabPanel extends Composite implements TabListener,
           "Use TabPanel.remove() to alter the TabBar");
     }
 
+    /**
+	 * Removes the tab protected.
+	 * 
+	 * @param index
+	 *            the index
+	 */
     public void removeTabProtected(int index) {
       super.removeTab(index);
     }
 
+    /* (non-Javadoc)
+     * @see mat.client.shared.ui.MATTabBar#createTabTextWrapper()
+     */
     @Override
     protected SimplePanel createTabTextWrapper() {
       return MATTabPanel.this.createTabTextWrapper();
@@ -213,7 +292,10 @@ public class MATTabPanel extends Composite implements TabListener,
     
   }
 
+  /** The tab bar. */
   private UnmodifiableTabBar tabBar = new UnmodifiableTabBar();
+  
+  /** The deck. */
   private TabbedDeckPanel deck = new TabbedDeckPanel(tabBar);
 
   /**
@@ -236,6 +318,9 @@ public class MATTabPanel extends Composite implements TabListener,
     Accessibility.setRole(deck.getElement(), Accessibility.ROLE_TABPANEL);
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.client.ui.HasWidgets#add(com.google.gwt.user.client.ui.Widget)
+   */
   public void add(Widget w) {
     throw new UnsupportedOperationException(
         "A tabText parameter must be specified with add().");
@@ -275,25 +360,38 @@ public class MATTabPanel extends Composite implements TabListener,
     insert(w, tabWidget, getWidgetCount());
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.event.logical.shared.HasBeforeSelectionHandlers#addBeforeSelectionHandler(com.google.gwt.event.logical.shared.BeforeSelectionHandler)
+   */
   public HandlerRegistration addBeforeSelectionHandler(
       BeforeSelectionHandler<Integer> handler) {
     return addHandler(handler, BeforeSelectionEvent.getType());
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
+   */
   public HandlerRegistration addSelectionHandler(
       SelectionHandler<Integer> handler) {
     return addHandler(handler, SelectionEvent.getType());
   }
 
   /**
-   * @deprecated Use {@link #addBeforeSelectionHandler} and {@link
-   * #addSelectionHandler} instead
-   */
+	 * Adds the tab listener.
+	 * 
+	 * @param listener
+	 *            the listener
+	 * @deprecated Use {@link #addBeforeSelectionHandler} and
+	 *             {@link #addSelectionHandler} instead
+	 */
   @Deprecated
   public void addTabListener(TabListener listener) {
     //ListenerWrapper.WrappedTabListener.add(this, listener);
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.client.ui.HasWidgets#clear()
+   */
   public void clear() {
     while (getWidgetCount() > 0) {
       remove(getWidget(0));
@@ -321,14 +419,23 @@ public class MATTabPanel extends Composite implements TabListener,
     return tabBar;
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.client.ui.IndexedPanel#getWidget(int)
+   */
   public Widget getWidget(int index) {
     return deck.getWidget(index);
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.client.ui.IndexedPanel#getWidgetCount()
+   */
   public int getWidgetCount() {
     return deck.getWidgetCount();
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.client.ui.IndexedPanel#getWidgetIndex(com.google.gwt.user.client.ui.Widget)
+   */
   public int getWidgetIndex(Widget widget) {
     return deck.getWidgetIndex(widget);
   }
@@ -373,10 +480,16 @@ public class MATTabPanel extends Composite implements TabListener,
     insert(widget, tabText, false, beforeIndex);
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.client.ui.HasAnimation#isAnimationEnabled()
+   */
   public boolean isAnimationEnabled() {
     return deck.isAnimationEnabled();
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.client.ui.HasWidgets#iterator()
+   */
   public Iterator<Widget> iterator() {
     // The Iterator returned by DeckPanel supports removal and will invoke
     // TabbedDeckPanel.remove(), which is an active function.
@@ -384,8 +497,15 @@ public class MATTabPanel extends Composite implements TabListener,
   }
 
   /**
-   * @deprecated Use {@link BeforeSelectionHandler#onBeforeSelection} instead
-   */
+	 * On before tab selected.
+	 * 
+	 * @param sender
+	 *            the sender
+	 * @param tabIndex
+	 *            the tab index
+	 * @return true, if successful
+	 * @deprecated Use {@link BeforeSelectionHandler#onBeforeSelection} instead
+	 */
   @Deprecated
   public boolean onBeforeTabSelected(SourcesTabEvents sender, int tabIndex) {
     BeforeSelectionEvent<Integer> event = BeforeSelectionEvent.fire(this, tabIndex);
@@ -393,33 +513,48 @@ public class MATTabPanel extends Composite implements TabListener,
   }
 
   /**
-   * @deprecated Use {@link SelectionHandler#onSelection} instead
-   */
+	 * On tab selected.
+	 * 
+	 * @param sender
+	 *            the sender
+	 * @param tabIndex
+	 *            the tab index
+	 * @deprecated Use {@link SelectionHandler#onSelection} instead
+	 */
   @Deprecated
   public void onTabSelected(SourcesTabEvents sender, int tabIndex) {
     deck.showWidget(tabIndex);
     SelectionEvent.fire(this, tabIndex);
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.client.ui.IndexedPanel#remove(int)
+   */
   public boolean remove(int index) {
     // Delegate updates to the TabBar to our DeckPanel implementation
     return deck.remove(index);
   }
 
   /**
-   * Removes the given widget, and its associated tab.
-   * 
-   * @param widget the widget to be removed
-   */
+	 * Removes the given widget, and its associated tab.
+	 * 
+	 * @param widget
+	 *            the widget to be removed
+	 * @return true, if successful
+	 */
   public boolean remove(Widget widget) {
     // Delegate updates to the TabBar to our DeckPanel implementation
     return deck.remove(widget);
   }
 
   /**
-   * @deprecated Use the {@link HandlerRegistration#removeHandler}
-   * method on the object returned by and add*Handler method instead
-   */
+	 * Removes the tab listener.
+	 * 
+	 * @param listener
+	 *            the listener
+	 * @deprecated Use the {@link HandlerRegistration#removeHandler} method on
+	 *             the object returned by and add*Handler method instead
+	 */
   @Deprecated
   public void removeTabListener(TabListener listener) {
     //ListenerWrapper.WrappedTabListener.remove(this, listener);
@@ -434,6 +569,9 @@ public class MATTabPanel extends Composite implements TabListener,
     tabBar.selectTab(index);
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.client.ui.HasAnimation#setAnimationEnabled(boolean)
+   */
   public void setAnimationEnabled(boolean enable) {
     deck.setAnimationEnabled(enable);
   }
@@ -450,16 +588,18 @@ public class MATTabPanel extends Composite implements TabListener,
   }
 
   /**
-   * <b>Affected Elements:</b>
-   * <ul>
-   * <li>-bar = The tab bar.</li>
-   * <li>-bar-tab# = The element containing the content of the tab itself.</li>
-   * <li>-bar-tab-wrapper# = The cell containing the tab at the index.</li>
-   * <li>-bottom = The panel beneath the tab bar.</li>
-   * </ul>
-   * 
-   * @see UIObject#onEnsureDebugId(String)
-   */
+	 * <b>Affected Elements:</b>
+	 * <ul>
+	 * <li>-bar = The tab bar.</li>
+	 * <li>-bar-tab# = The element containing the content of the tab itself.</li>
+	 * <li>-bar-tab-wrapper# = The cell containing the tab at the index.</li>
+	 * <li>-bottom = The panel beneath the tab bar.</li>
+	 * </ul>
+	 * 
+	 * @param baseID
+	 *            the base id
+	 * @see UIObject#onEnsureDebugId(String)
+	 */
   @Override
   protected void onEnsureDebugId(String baseID) {
     super.onEnsureDebugId(baseID);
@@ -468,9 +608,12 @@ public class MATTabPanel extends Composite implements TabListener,
   }
   
   /**
-   * implementation if Enableable interface
-   * consider setting Enablement of tab bar widgets
-   */
+	 * implementation if Enableable interface consider setting Enablement of tab
+	 * bar widgets.
+	 * 
+	 * @param enabled
+	 *            the new enabled
+	 */
   public void setEnabled(boolean enabled){
 		for(int i = 0; i < tabBar.getTabCount(); i++){
 			tabBar.setTabEnabled(i, enabled);

@@ -19,30 +19,66 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * MeasureSearchFilterWidget.java.
+ */
 public class MeasureSearchFilterWidget extends Composite implements ClickHandler {
-
-	private TextBox searchInput = new TextBox();
-		private PrimaryButton searchButton;
-	CustomCheckBox myMeasuresCheckBox = new CustomCheckBox("My Measures",
-			"My Measures", false);
-	CustomCheckBox allMeasuresCheckBox = new CustomCheckBox("All Measures",
-			"All Measures", false);
-
-	DisclosurePanel searchFilterDisclosurePanel = new DisclosurePanel();
-	public static final int MY_MEASURES = 0;
+	/**
+	 * ALL measure filter value.
+	 */
 	public static final int ALL_MEASURES = 1;
-
-	int selectedFilter;
-
+	/**
+	 * My Measures Filter value.
+	 */
+	public static final int MY_MEASURES = 0;
+	/**
+	 * Search Button Left Margin Value.
+	 */
+	private static final int SEARCH_BTN_MRGN_LEFT = 5;
+	/**
+	 * Text Box height Value.
+	 */
+	private static final int TEXT_BOX_HT = 20;
+	/**
+	 * All Measure's Check Box.
+	 */
+	private CustomCheckBox allMeasuresCheckBox = new CustomCheckBox("All Measures",
+			"All Measures", false);
+	/**
+	 * My Measures Check Box.
+	 */
+	private CustomCheckBox myMeasuresCheckBox = new CustomCheckBox("My Measures",
+			"My Measures", false);
+	/**
+	 * Search button - {@link PrimaryButton}.
+	 */
+	private PrimaryButton searchButton;
+	/**
+	 * {@link DisclosurePanel}.
+	 */
+	private DisclosurePanel searchFilterDisclosurePanel = new DisclosurePanel();
+	/**
+	 * {@link WatermarkedTextBox}.
+	 */
+	private WatermarkedTextBox searchInput = new WatermarkedTextBox();
+	/**
+	 * Selected filter value - {@link Integer}.
+	 */
+	private int selectedFilter;
+	/**
+	 * Default Constructor.
+	 */
 	public MeasureSearchFilterWidget() {
+		searchInput.setWatermark("Search");
 		searchButton = new PrimaryButton("Go", "primaryButton");
 		searchButton.addClickHandler(this);
-		searchInput.getElement().getStyle().setHeight(20, Unit.PX);
-		searchInput.getElement().getStyle().setMarginLeft(5, Unit.PX);
-		searchInput.getElement().getStyle().setMarginRight(5, Unit.PX);
-		searchInput.getElement().setPropertyString("placeholder", "Search");
-
-		searchButton.getElement().getStyle().setMarginLeft(5, Unit.PX);
+		searchInput.getElement().getStyle().setHeight(TEXT_BOX_HT, Unit.PX);
+		/*
+		 * searchInput.getElement().getStyle().setMarginLeft(5, Unit.PX);
+		 * searchInput.getElement().getStyle().setMarginRight(5, Unit.PX);
+		 * searchInput.getElement().setPropertyString("placeholder", "Search");
+		 */
+		searchButton.getElement().getStyle().setMarginLeft(SEARCH_BTN_MRGN_LEFT, Unit.PX);
 		VerticalPanel topPanel = new VerticalPanel();
 		FlowPanel fp = new FlowPanel();
 		HorizontalPanel panel = new HorizontalPanel();
@@ -59,13 +95,11 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		// All composites must call initWidget() in their constructors.
 		initWidget(topPanel);
 	}
-
 	/**
-	 *
+	 * Private method to add valueChangeHandler's to check box's.
 	 */
 	private void addHandlersToCheckBox() {
 		myMeasuresCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				if (event.getValue()) {
@@ -77,9 +111,7 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 				}
 			}
 		});
-
 		allMeasuresCheckBox.addValueChangeHandler(new ValueChangeHandler<Boolean>() {
-
 			@Override
 			public void onValueChange(ValueChangeEvent<Boolean> event) {
 				if (event.getValue()) {
@@ -89,13 +121,15 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 					myMeasuresCheckBox.setValue(true);
 					setSelectedFilter(MY_MEASURES);
 				}
-
 			}
 		});
 	}
-
+	/**
+	 * Method to add content in searchFiltetDisclosurePanel.
+	 * @param mainPanel
+	 *            : {@link HorizontalPanel}.
+	 */
 	private void createDisclosurePanel(HorizontalPanel mainPanel) {
-
 		searchFilterDisclosurePanel.setAnimationEnabled(true);
 		searchFilterDisclosurePanel.setOpen(false);
 		VerticalPanel contentWidget = new VerticalPanel();
@@ -105,7 +139,6 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		myMeasuresCheckBox.setStylePrimaryName("searchWidgetCheckBox");
 		myMeasurePanel.add(myMeasuresText);
 		myMeasurePanel.add(myMeasuresCheckBox);
-
 		HorizontalPanel allMeasurePanel = new HorizontalPanel();
 		Label allMeasuresText = (Label) LabelBuilder.buildLabel("All Measures", "All Measures");
 		allMeasuresText.setStylePrimaryName("searchWidgetLabel");
@@ -115,9 +148,7 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		contentWidget.add(myMeasurePanel);
 		contentWidget.add(new SpacerWidget());
 		contentWidget.add(allMeasurePanel);
-
 		HorizontalPanel headerWidget = new HorizontalPanel();
-
 		CustomButton zoomButton = (CustomButton) getImage("Search",
 				ImageResources.INSTANCE.search_zoom(), "Search");
 		zoomButton.setEnabled(false);
@@ -127,19 +158,16 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 			@Override
 			public void onClick(ClickEvent event) {
 				searchFilterDisclosurePanel
-						.setOpen(!searchFilterDisclosurePanel.isOpen());
+				.setOpen(!searchFilterDisclosurePanel.isOpen());
 			}
-
 		});
-
 		HorizontalPanel editButtonPanel = new HorizontalPanel();
 		editButtonPanel
-				.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		editButtonPanel.add(zoomButton);
 		editButtonPanel.add(filterButton);
 		headerWidget.add(editButtonPanel);
 		searchFilterDisclosurePanel.setContent(contentWidget);
-
 		VerticalPanel widgetPanel = new VerticalPanel();
 		widgetPanel.add(headerWidget);
 		widgetPanel.setCellHorizontalAlignment(headerWidget,
@@ -147,7 +175,17 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		widgetPanel.add(new SpacerWidget());
 		mainPanel.add(widgetPanel);
 	}
-
+	/**
+	 * Add Image on Button with invisible text. This text will be available when
+	 * css is turned off.
+	 * @param action
+	 *            - {@link String}
+	 * @param url
+	 *            - {@link ImageResource}.
+	 * @param key
+	 *            - {@link String}.
+	 * @return - {@link Widget}.
+	 */
 	private Widget getImage(String action, ImageResource url, String key) {
 		CustomButton image = new CustomButton();
 		image.removeStyleName("gwt-button");
@@ -156,66 +194,67 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		image.setResource(url, action);
 		return image;
 	}
-
+	/**
+	 * @return the button - {@link Button}.
+	 */
+	public final PrimaryButton getSearchButton() {
+		return searchButton;
+	}
+	/**
+	 * @return the searchFilterDisclosurePanel- {@link DisclosurePanel}.
+	 */
+	public final DisclosurePanel getSearchFilterDisclosurePanel() {
+		return searchFilterDisclosurePanel;
+	}
+	/**
+	 * @return the textBox {@link TextBox}.
+	 */
+	public final TextBox getSearchInput() {
+		return searchInput;
+	}
+	/**
+	 * @return the selectedFilter - {@link Integer}.
+	 */
+	public final int getSelectedFilter() {
+		return selectedFilter;
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event
+	 * .dom.client.ClickEvent)
+	 */
 	@Override
-	public void onClick(ClickEvent event) {
+	public final void onClick(ClickEvent event) {
 		searchFilterDisclosurePanel.setOpen(false);
 	}
-
-	public void resetFilter(){
+	/**
+	 * Method to Reset check box to default state.
+	 */
+	public final void resetFilter() {
 		myMeasuresCheckBox.setValue(true);
 		allMeasuresCheckBox.setValue(false);
 		setSelectedFilter(MY_MEASURES);
 	}
-
 	/**
-	 * @return the button
+	 * @param searchButton
+	 *            the searchButton to set.
 	 */
-	public PrimaryButton getSearchButton() {
-		return searchButton;
-	}
-
-
-	/**
-	 * @param searchButton the searchButton to set
-	 */
-	public void setSearchButton(PrimaryButton searchButton) {
+	public final void setSearchButton(PrimaryButton searchButton) {
 		this.searchButton = searchButton;
 	}
-
 	/**
-	 * @return the textBox
+	 * @param textBox
+	 *            the textBox to set.
 	 */
-	public TextBox getSearchInput() {
-		return searchInput;
+	public final void setSearchInput(WatermarkedTextBox textBox) {
+		searchInput = textBox;
 	}
-
 	/**
-	 * @param textBox the textBox to set
+	 * @param selectedFilter
+	 *            the selectedFilter to set.
 	 */
-	public void setSearchInput(TextBox textBox) {
-		this.searchInput = textBox;
-	}
-
-
-	/**
-	 * @return the selectedFilter
-	 */
-	public int getSelectedFilter() {
-		return selectedFilter;
-	}
-
-	/**
-	 * @param selectedFilter the selectedFilter to set
-	 */
-	public void setSelectedFilter(int selectedFilter) {
+	public final void setSelectedFilter(int selectedFilter) {
 		this.selectedFilter = selectedFilter;
-	}
-
-	/**
-	 * @return the searchFilterDisclosurePanel
-	 */
-	public DisclosurePanel getSearchFilterDisclosurePanel() {
-		return searchFilterDisclosurePanel;
 	}
 }

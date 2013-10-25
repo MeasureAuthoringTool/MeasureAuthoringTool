@@ -12,16 +12,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * Client implementation of Audit Service Implementation
- *
+ * Client implementation of Audit Service Implementation.
  */
 @SuppressWarnings("serial")
 public class AuditServiceImpl extends SpringRemoteServiceServlet implements AuditService{
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(AuditServiceImpl.class);
 	
 	
 	/**
-	 * Returns the spring bean MeasureAuditService
+	 * Returns the spring bean MeasureAuditService.
+	 * 
 	 * @return MeasureAuditService
 	 */
 	private MeasureAuditService getMeasureAuditService(){
@@ -29,7 +31,8 @@ public class AuditServiceImpl extends SpringRemoteServiceServlet implements Audi
 	}
 
 	/**
-	 * Returns the spring bean CodeListAuditService
+	 * Returns the spring bean CodeListAuditService.
+	 * 
 	 * @return CodeListAuditService
 	 */
 	private CodeListAuditService getCodeListAuditService(){
@@ -39,12 +42,18 @@ public class AuditServiceImpl extends SpringRemoteServiceServlet implements Audi
 	/* Records an measure event
 	 * @see mat.client.audit.service.AuditService#recordMeasureEvent(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
 	 */
+	/* (non-Javadoc)
+	 * @see mat.client.audit.service.AuditService#recordMeasureEvent(java.lang.String, java.lang.String, java.lang.String, boolean)
+	 */
 	@Override
 	public boolean recordMeasureEvent(String measureId, String event, String additionalInfo, boolean isChildLogRequired) {
 		return getMeasureAuditService().recordMeasureEvent(measureId, event, additionalInfo, isChildLogRequired);
 	}
 	
 	/* Records an code list event
+	 * @see mat.client.audit.service.AuditService#recordCodeListEvent(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	/* (non-Javadoc)
 	 * @see mat.client.audit.service.AuditService#recordCodeListEvent(java.lang.String, java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -54,6 +63,9 @@ public class AuditServiceImpl extends SpringRemoteServiceServlet implements Audi
 	
 	/* Returns the code list log search result for a given code list id
 	 * @see mat.client.audit.service.AuditService#executeCodeListLogSearch(java.lang.String, int, int)
+	 */
+	/* (non-Javadoc)
+	 * @see mat.client.audit.service.AuditService#executeCodeListLogSearch(java.lang.String, int, int, java.util.List)
 	 */
 	@Override
 	public SearchHistoryDTO executeCodeListLogSearch(String codeListId, int startIndex, int numberOfRows,List<String> filterList){
@@ -65,25 +77,35 @@ public class AuditServiceImpl extends SpringRemoteServiceServlet implements Audi
 	/* Returns the measure log search result for a given code list id
 	 * @see mat.client.audit.service.AuditService#executeMeasureLogSearch(java.lang.String, int, int)
 	 */
+	/* (non-Javadoc)
+	 * @see mat.client.audit.service.AuditService#executeMeasureLogSearch(java.lang.String, int, int, java.util.List)
+	 */
 	@Override
 	public SearchHistoryDTO executeMeasureLogSearch(String measureId, int startIndex, int numberOfRows,List<String> filterList){
 		return getMeasureAuditService().executeSearch(measureId, startIndex, numberOfRows,filterList);
 	}
 
 	/**
-	 * Returns the spring bean TransactionAuditService
+	 * Returns the spring bean TransactionAuditService.
+	 * 
 	 * @return TransactionService
 	 */
 	private TransactionAuditService getTransactionAuditService(){
 		return (TransactionAuditService)context.getBean("transactionAuditService");
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.audit.service.AuditService#recordTransactionEvent(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
+	 */
 	@Override
 	public boolean recordTransactionEvent(String primaryId, String secondaryId,
 			String activityType, String userId, String additionalInfo, int logLevel) {
 		return getTransactionAuditService().recordTransactionEvent(primaryId, secondaryId, activityType, userId, additionalInfo, logLevel);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.audit.service.AuditService#recordMeasureEvent(java.util.List, java.lang.String, java.lang.String, boolean)
+	 */
 	@Override
 	public void recordMeasureEvent(List<String> measureIds, String event, String additionalInfo, boolean isChildLogRequired) {
 		for(String measureId : measureIds) {

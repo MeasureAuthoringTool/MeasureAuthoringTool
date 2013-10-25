@@ -42,32 +42,56 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
 
+/**
+ * The Class LoginServiceImpl.
+ */
 @SuppressWarnings("serial")
 public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		LoginService {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(LoginServiceImpl.class);
+	
+	/** The Constant SUCCESS. */
 	private static final String SUCCESS = "SUCCESS";
+	
+	/** The Constant FAILURE. */
 	private static final String FAILURE = "FAILURE";
 
+	/**
+	 * Gets the login credential service.
+	 * 
+	 * @return the login credential service
+	 */
 	private LoginCredentialService getLoginCredentialService() {
 		return (LoginCredentialService) context.getBean("loginService");
 	}
 
+	/** The user dao. */
 	@Autowired
 	private UserDAO userDAO;
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#getSecurityQuestionOptions(java.lang.String)
+	 */
 	@Override
 	public SecurityQuestionOptions getSecurityQuestionOptions(String userid) {
 		UserService userService = (UserService) context.getBean("userService");
 		return userService.getSecurityQuestionOptions(userid);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#getSecurityQuestion(java.lang.String)
+	 */
 	@Override
 	public String getSecurityQuestion(String userid) {
 		UserService userService = (UserService) context.getBean("userService");
 		return userService.getSecurityQuestion(userid);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#getSecurityQuestionOptionsForEmail(java.lang.String)
+	 */
 	@Override
 	public SecurityQuestionOptions getSecurityQuestionOptionsForEmail(
 			String email) {
@@ -75,6 +99,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return userService.getSecurityQuestionOptionsForEmail(email);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#isValidUser(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public LoginModel isValidUser(String userId, String password) {
 		// Code to create New session ID everytime user log's in. Story Ref -
@@ -89,6 +116,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return loginModel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#isValidPassword(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean isValidPassword(String userId, String password) {
 
@@ -98,6 +128,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return isValid;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#forgotPassword(java.lang.String, java.lang.String, java.lang.String, int)
+	 */
 	public ForgottenPasswordResult forgotPassword(String loginId,
 			String securityQuestion, String securityAnswer,
 			int invalidUserCounter) {
@@ -129,6 +162,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#forgotLoginID(java.lang.String)
+	 */
 	@Override
 	public ForgottenLoginIDResult forgotLoginID(String email) {
 		UserService userService = (UserService) context.getBean("userService");
@@ -181,7 +217,13 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return forgottenLoginIDResult;
 	}
 
-	/** Method to find IP address of Client **/
+	/**
+	 * Method to find IP address of Client *.
+	 * 
+	 * @param request
+	 *            the request
+	 * @return the client ip addr
+	 */
 	private String getClientIpAddr(HttpServletRequest request) {
 		String ip = request.getHeader("X-Forwarded-For");
 		if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
@@ -202,11 +244,17 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return ip;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#signOut()
+	 */
 	@Override
 	public void signOut() {
 		getLoginCredentialService().signOut();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#changePasswordSecurityAnswers(mat.client.login.LoginModel)
+	 */
 	@Override
 	public LoginResult changePasswordSecurityAnswers(LoginModel model) {
 		LoginModel loginModel = model;
@@ -262,6 +310,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#changeTempPassword(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public LoginModel changeTempPassword(String email, String changedpassword) {
 
@@ -285,6 +336,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return loginModel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#getFooterURLs()
+	 */
 	@Override
 	public List<String> getFooterURLs() {
 		UserService userService = (UserService) context.getBean("userService");
@@ -292,6 +346,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return footerURLs;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#validatePassword(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public HashMap<String, String> validatePassword(String userID,
 			String enteredPassword) {
@@ -352,6 +409,12 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return resultMap;
 	}
 
+	/**
+	 * Redirect to html page.
+	 * 
+	 * @param html
+	 *            the html
+	 */
 	public void redirectToHtmlPage(String html) {
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 		String path = Window.Location.getPath();
@@ -361,6 +424,13 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		Window.Location.replace(urlBuilder.buildString());
 	}
 
+	/**
+	 * Call check dictionary word in password.
+	 * 
+	 * @param changedpassword
+	 *            the changedpassword
+	 * @return the string
+	 */
 	private String callCheckDictionaryWordInPassword(String changedpassword) {
 		String returnMessage = FAILURE;
 		try {
@@ -381,6 +451,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#getSecurityQuestionsAnswers(java.lang.String)
+	 */
 	public List<UserSecurityQuestion> getSecurityQuestionsAnswers(String userID) {
 		UserService userService = (UserService) context.getBean("userService");
 		User user = userService.getById(userID);
@@ -390,6 +463,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return secQuestions;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#updateOnSignOut(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	public String updateOnSignOut(String userId, String emailId,
 			String activityType) {
 		UserService userService = (UserService) context.getBean("userService");
@@ -403,12 +479,18 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return resultStr;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#isLockedUser(java.lang.String)
+	 */
 	@Override
 	public boolean isLockedUser(String loginId) {
 		UserService userService = (UserService) context.getBean("userService");
 		return userService.isLockedUser(loginId);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#getSecurityQuestions()
+	 */
 	@Override
 	public List<SecurityQuestions> getSecurityQuestions() {
 		logger.info("Loading....");

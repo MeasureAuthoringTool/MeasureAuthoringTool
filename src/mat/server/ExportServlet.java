@@ -26,29 +26,71 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+/**
+ * The Class ExportServlet.
+ */
 public class ExportServlet extends HttpServlet {
 	
+	/** The Constant EXPORT_MEASURE_NOTES_FOR_MEASURE. */
 	private static final String EXPORT_MEASURE_NOTES_FOR_MEASURE = "exportMeasureNotesForMeasure";
+	
+	/** The Constant EXPORT_ACTIVE_NON_ADMIN_USERS_CSV. */
 	private static final String EXPORT_ACTIVE_NON_ADMIN_USERS_CSV = "exportActiveNonAdminUsersCSV";
+	
+	/** The Constant VALUESET. */
 	private static final String VALUESET = "valueset";
+	
+	/** The Constant ZIP. */
 	private static final String ZIP = "zip";
+	
+	/** The Constant CODELIST. */
 	private static final String CODELIST = "codelist";
+	
+	/** The Constant SAVE. */
 	private static final String SAVE = "save";
+	
+	/** The Constant ATTACHMENT_FILENAME. */
 	private static final String ATTACHMENT_FILENAME = "attachment; filename=";
+	
+	/** The Constant CONTENT_DISPOSITION. */
 	private static final String CONTENT_DISPOSITION = "Content-Disposition";
+	
+	/** The Constant TEXT_XML. */
 	private static final String TEXT_XML = "text/xml";
+	
+	/** The Constant TEXT_HTML. */
 	private static final String TEXT_HTML = "text/html";
+	
+	/** The Constant CONTENT_TYPE. */
 	private static final String CONTENT_TYPE = "Content-Type";
+	
+	/** The Constant EMEASURE. */
 	private static final String EMEASURE = "emeasure";
+	
+	/** The Constant SIMPLEXML. */
 	private static final String SIMPLEXML = "simplexml";
+	
+	/** The Constant TYPE_PARAM. */
 	private static final String TYPE_PARAM = "type";
+	
+	/** The Constant FORMAT_PARAM. */
 	private static final String FORMAT_PARAM = "format";
+	
+	/** The Constant ID_PARAM. */
 	private static final String ID_PARAM = "id";
 	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(ExportServlet.class);
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4539514145289378238L;
+	
+	/** The context. */
 	protected ApplicationContext context;
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -133,6 +175,13 @@ public class ExportServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Generate csv to export measure notes.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @return the string
+	 */
 	private String generateCSVToExportMeasureNotes(final String measureId) {
 		logger.info("Generating CSV of Measure Notes...");
 		List<MeasureNotes> allMeasureNotes = getMeasureNoteService().getAllMeasureNotesByMeasureID(measureId);
@@ -174,6 +223,13 @@ public class ExportServlet extends HttpServlet {
 		return dateString;
 	}
 
+	/**
+	 * Generate csv of active user emails.
+	 * 
+	 * @return the string
+	 * @throws InCorrectUserRoleException
+	 *             the in correct user role exception
+	 */
 	private String generateCSVOfActiveUserEmails() throws InCorrectUserRoleException {
 		logger.info("Generating CSV of email addrs for all Active Users...");
 		//Get all the active users
@@ -183,6 +239,13 @@ public class ExportServlet extends HttpServlet {
 		return createCSVOfAllNonAdminActiveUsers(allNonAdminActiveUsersList);
 	}
 
+	/**
+	 * Creates the csv of all non admin active users.
+	 * 
+	 * @param allNonAdminActiveUsersList
+	 *            the all non admin active users list
+	 * @return the string
+	 */
 	private String createCSVOfAllNonAdminActiveUsers(
 			final List<User> allNonAdminActiveUsersList) {
 
@@ -200,14 +263,30 @@ public class ExportServlet extends HttpServlet {
 		return csvStringBuilder.toString();
 	}
 
+	/**
+	 * Gets the service.
+	 * 
+	 * @return the service
+	 */
 	private SimpleEMeasureService getService() {
 		SimpleEMeasureService service = (SimpleEMeasureService) context.getBean("eMeasureService");
 		return service;
 	}
+	
+	/**
+	 * Gets the user service.
+	 * 
+	 * @return the user service
+	 */
 	private UserService getUserService() {
 		return (UserService) context.getBean("userService");
 	}
 
+	/**
+	 * Gets the measure note service.
+	 * 
+	 * @return the measure note service
+	 */
 	private MeasureNotesService getMeasureNoteService() {
 		return (MeasureNotesService) context.getBean("measureNotesService");
 	}

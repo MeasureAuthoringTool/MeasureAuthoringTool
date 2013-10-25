@@ -27,9 +27,18 @@ import org.apache.commons.logging.LogFactory;
 @SuppressWarnings("serial")
 public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		MyAccountService {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(MyAccountServiceImpl.class);
 	
 	
+	/**
+	 * Extract model.
+	 * 
+	 * @param user
+	 *            the user
+	 * @return the my account model
+	 */
 	private MyAccountModel extractModel(User user) {
 		MyAccountModel model = new MyAccountModel();
 		model.setFirstName(user.getFirstName());
@@ -45,6 +54,15 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		logger.info("Model Object for User " + user.getLoginId() +" is updated and returned with Organisation ::: " + model.getOrganisation());
 		return model;
 	}
+	
+	/**
+	 * Sets the model fields on user.
+	 * 
+	 * @param user
+	 *            the user
+	 * @param model
+	 *            the model
+	 */
 	private void setModelFieldsOnUser(User user, MyAccountModel model) {
 		user.setFirstName(model.getFirstName());
 		user.setMiddleInit(model.getMiddleInitial());
@@ -58,15 +76,29 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		//user.setLoginId(model.getLoginId());
 		
 	}
+	
+	/**
+	 * Gets the user service.
+	 * 
+	 * @return the user service
+	 */
 	private UserService getUserService() {
 		return (UserService)context.getBean("userService");
 	}
 	
+	/**
+	 * Gets the security questions service.
+	 * 
+	 * @return the security questions service
+	 */
 	private SecurityQuestionsService getSecurityQuestionsService() {
 		return (SecurityQuestionsService)context.getBean("securityQuestionsService");
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.service.MyAccountService#getMyAccount()
+	 */
 	public MyAccountModel getMyAccount() throws IllegalArgumentException {
 		UserService userService = getUserService();
 		User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
@@ -74,6 +106,9 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		return extractModel(user);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.service.MyAccountService#saveMyAccount(mat.client.myAccount.MyAccountModel)
+	 */
 	public SaveMyAccountResult saveMyAccount(MyAccountModel model) {		
 		SaveMyAccountResult result = new SaveMyAccountResult();
 		MyAccountModelValidator validator = new MyAccountModelValidator();
@@ -95,6 +130,9 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.service.MyAccountService#getSecurityQuestions()
+	 */
 	public SecurityQuestionsModel getSecurityQuestions() {
 		UserService userService = getUserService();
 		User user = userService.getById(LoggedInUserUtil.getLoggedInUser());
@@ -118,6 +156,9 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		return model;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.service.MyAccountService#saveSecurityQuestions(mat.client.myAccount.SecurityQuestionsModel)
+	 */
 	public SaveMyAccountResult saveSecurityQuestions(SecurityQuestionsModel model) {
 		logger.info("Saving security questions");
 		SaveMyAccountResult result = new SaveMyAccountResult();
@@ -169,6 +210,9 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.service.MyAccountService#changePassword(java.lang.String)
+	 */
 	public SaveMyAccountResult changePassword(String password) {
 		logger.info("Changing password to " + password);
 		SaveMyAccountResult result = new SaveMyAccountResult();
@@ -202,6 +246,13 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		
 	}
 	
+	/**
+	 * Call check dictionary word in password.
+	 * 
+	 * @param changedpassword
+	 *            the changedpassword
+	 * @return the string
+	 */
 	private String callCheckDictionaryWordInPassword(String changedpassword){
 		String returnMessage = "FAILURE";
 		try {
@@ -240,11 +291,18 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 				.replaceAll(">", "&gt;");
 	}
 	//US212
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.service.MyAccountService#setUserSignInDate(java.lang.String)
+	 */
 	@Override
 	public void setUserSignInDate(String userid){
 		UserService userService = getUserService();
 		userService.setUserSignInDate(userid);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.service.MyAccountService#setUserSignOutDate(java.lang.String)
+	 */
 	@Override
 	public void setUserSignOutDate(String userid) {
 		UserService userService = getUserService();

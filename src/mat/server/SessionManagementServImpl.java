@@ -6,11 +6,18 @@ import mat.model.User;
 import mat.server.service.UserService;
 
 
+/**
+ * The Class SessionManagementServImpl.
+ */
 public class SessionManagementServImpl extends SpringRemoteServiceServlet  implements SessionManagementService {
 
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 	
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.SessionManagementService#getCurrentUserRole()
+	 */
 	@Override
 	public SessionManagementService.Result getCurrentUserRole() {
 		SessionManagementService.Result result = new SessionManagementService.Result();
@@ -26,11 +33,19 @@ public class SessionManagementServImpl extends SpringRemoteServiceServlet  imple
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.SessionManagementService#renewSession()
+	 */
 	@Override 
 	public void renewSession() {
 		// do nothing
 	}
 
+	/**
+	 * Gets the user service.
+	 * 
+	 * @return the user service
+	 */
 	private UserService getUserService() {
 		return (UserService)context.getBean("userService");
 	}

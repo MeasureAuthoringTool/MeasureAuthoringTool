@@ -17,16 +17,29 @@ import mat.shared.FileNameUtility;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+/**
+ * The Class BulkExportServlet.
+ */
 public class BulkExportServlet extends HttpServlet {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 4539514145289378238L;
+	
+	/** The context. */
 	protected ApplicationContext context;
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		doPost(req, resp);
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
@@ -56,11 +69,23 @@ public class BulkExportServlet extends HttpServlet {
 			}
 	}
 	
+	/**
+	 * Gets the service.
+	 * 
+	 * @return the service
+	 */
 	private SimpleEMeasureService getService(){
 		SimpleEMeasureService service = (SimpleEMeasureService) context.getBean("eMeasureService");
 		return service;
 	}
 	
+	/**
+	 * Human readable byte count.
+	 * 
+	 * @param bytes
+	 *            the bytes
+	 * @return the string
+	 */
 	private String humanReadableByteCount(long bytes) {
 	    int unit = 1024;
 	    if (bytes < unit) return bytes + " B";

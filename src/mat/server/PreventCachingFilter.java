@@ -15,12 +15,24 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+/**
+ * The Class PreventCachingFilter.
+ */
 public class PreventCachingFilter implements Filter{
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(PreventCachingFilter.class);
+	
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#destroy()
+	 */
 	@Override
 	public void destroy() {
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
@@ -78,6 +90,9 @@ public class PreventCachingFilter implements Filter{
 //		chain.doFilter(request, response);
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+	 */
 	@Override
 	public void init(FilterConfig arg0) throws ServletException {
 	}

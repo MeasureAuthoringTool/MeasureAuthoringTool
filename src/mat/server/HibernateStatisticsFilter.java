@@ -17,15 +17,27 @@ import org.hibernate.stat.Statistics;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
+/**
+ * The Class HibernateStatisticsFilter.
+ */
 public class HibernateStatisticsFilter implements Filter {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(HibernateStatisticsFilter.class);
 
+	/** The context. */
 	private ApplicationContext context;
 	
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#destroy()
+	 */
 	@Override
 	public void destroy() {
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+	 */
 	@Override
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
@@ -48,6 +60,9 @@ public class HibernateStatisticsFilter implements Filter {
 		chain.doFilter(request, response);
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
+	 */
 	@Override
 	public void init(FilterConfig config) throws ServletException {
 		this.context =

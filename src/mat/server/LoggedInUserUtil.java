@@ -10,12 +10,28 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * The Class LoggedInUserUtil.
+ */
 public class LoggedInUserUtil {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(LoggedInUserUtil.class);
+	
+	/** The logged in user. */
 	private static String loggedInUser;
+	
+	/** The logged in user email. */
 	private static String loggedInUserEmail;
+	
+	/** The logged in login id. */
 	private static String loggedInLoginId;
 	
+	/**
+	 * Gets the token.
+	 * 
+	 * @return the token
+	 */
 	private static UsernamePasswordAuthenticationToken getToken() {
 		//re-factored to support Anonymous user US 439
 		UsernamePasswordAuthenticationToken token = null;
@@ -34,10 +50,21 @@ public class LoggedInUserUtil {
 		return token;
 	}
 	
+	/**
+	 * Sets the logged in user.
+	 * 
+	 * @param u
+	 *            the new logged in user
+	 */
 	public static void setLoggedInUser(String u) {
 		loggedInUser = u;
 	}
 	
+	/**
+	 * Gets the logged in user.
+	 * 
+	 * @return the logged in user
+	 */
 	public static String getLoggedInUser() {
 		if(loggedInUser != null) {
 			return loggedInUser;
@@ -51,10 +78,22 @@ public class LoggedInUserUtil {
 			return userName;
 		}
 	}
+	
+	/**
+	 * Sets the logged in login id.
+	 * 
+	 * @param loginid
+	 *            the new logged in login id
+	 */
 	public static void setLoggedInLoginId(String loginid) {
 		loggedInLoginId = loginid;
 	}
 	
+	/**
+	 * Gets the logged in login id.
+	 * 
+	 * @return the logged in login id
+	 */
 	public static String getLoggedInLoginId() {
 		if(loggedInLoginId != null) {
 			return loggedInLoginId;
@@ -68,9 +107,22 @@ public class LoggedInUserUtil {
 			return loginId;
 		}
 	}
+	
+	/**
+	 * Sets the logged in user email.
+	 * 
+	 * @param e
+	 *            the new logged in user email
+	 */
 	public static void setLoggedInUserEmail(String e) {
 		loggedInUserEmail = e;
 	}
+	
+	/**
+	 * Gets the logged in user email address.
+	 * 
+	 * @return the logged in user email address
+	 */
 	public static String getLoggedInUserEmailAddress() {
 		if(loggedInUserEmail != null) {
 			return loggedInUserEmail;
@@ -84,6 +136,11 @@ public class LoggedInUserUtil {
 		return emailAddress;
 	}
 	
+	/**
+	 * Gets the logged in user role.
+	 * 
+	 * @return the logged in user role
+	 */
 	public static String getLoggedInUserRole() {
 		String role = null;
 		UsernamePasswordAuthenticationToken token = getToken();

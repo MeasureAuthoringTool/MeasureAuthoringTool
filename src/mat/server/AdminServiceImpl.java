@@ -17,11 +17,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+/**
+ * The Class AdminServiceImpl.
+ */
 @SuppressWarnings("serial")
 public class AdminServiceImpl extends SpringRemoteServiceServlet implements AdminService{
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(AdminServiceImpl.class);
 	
 
+	/* (non-Javadoc)
+	 * @see mat.client.admin.service.AdminService#getUser(java.lang.String)
+	 */
 	@Override
 	public ManageUsersDetailModel getUser(String key) throws InCorrectUserRoleException {
 		checkAdminUser();
@@ -30,6 +38,9 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		return extractUserModel(user);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.admin.service.AdminService#saveUpdateUser(mat.client.admin.ManageUsersDetailModel)
+	 */
 	@Override
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException {
 		checkAdminUser();
@@ -51,10 +62,24 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 
 
 
+	/**
+	 * Gets the checks if is active.
+	 * 
+	 * @param status
+	 *            the status
+	 * @return the checks if is active
+	 */
 	private boolean getIsActive(Status status) {
 		return status.getDescription().equalsIgnoreCase("Active");
 	}
 	
+	/**
+	 * Extract user model.
+	 * 
+	 * @param user
+	 *            the user
+	 * @return the manage users detail model
+	 */
 	private ManageUsersDetailModel extractUserModel(User user) {
 		ManageUsersDetailModel model = new ManageUsersDetailModel();
 		model.setUserID(user.getId());
@@ -77,11 +102,25 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		model.setCurrentUserCanUnlock(v);
 		return model;
 	}
+	
+	/**
+	 * Checks if is current user admin for user.
+	 * 
+	 * @param user
+	 *            the user
+	 * @return true, if is current user admin for user
+	 */
 	private boolean isCurrentUserAdminForUser(User user) {
 		User adminUser = getUserService().getById(LoggedInUserUtil.getLoggedInUser());
 		return getUserService().isAdminForUser(adminUser, user);
 	}
 	
+	/**
+	 * Check admin user.
+	 * 
+	 * @throws InCorrectUserRoleException
+	 *             the in correct user role exception
+	 */
 	private void checkAdminUser() throws InCorrectUserRoleException{
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		logger.info("userRole actual:"+userRole);
@@ -91,6 +130,9 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.service.AdminService#searchUsers(java.lang.String, int, int)
+	 */
 	@Override
 	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws InCorrectUserRoleException {
 		checkAdminUser();
@@ -119,16 +161,27 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		return model;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.service.AdminService#resetUserPassword(java.lang.String)
+	 */
 	public void resetUserPassword(String userid) {
 		getUserService().requestResetLockedPassword(userid);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.admin.service.AdminService#deleteUser(java.lang.String)
+	 */
 	@Override
 	public void deleteUser(String userId) throws InCorrectUserRoleException  {
 		checkAdminUser();
 		getUserService().deleteUser(userId);
 	}
 	
+	/**
+	 * Gets the user service.
+	 * 
+	 * @return the user service
+	 */
 	private UserService getUserService() {
 		return (UserService)context.getBean("userService");
 	}

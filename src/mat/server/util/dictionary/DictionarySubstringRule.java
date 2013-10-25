@@ -4,6 +4,9 @@ package mat.server.util.dictionary;
 import edu.vt.middleware.dictionary.Dictionary;
 
 
+/**
+ * The Class DictionarySubstringRule.
+ */
 public class DictionarySubstringRule extends AbstractDictionaryRule
 {
 
@@ -31,11 +34,12 @@ public class DictionarySubstringRule extends AbstractDictionaryRule
 
 
   /**
-   * Creates a new dictionary substring rule. The dictionary should be ready to
-   * use when passed to this constructor.
-   *
-   * @param  dict  to use for searching
-   */
+	 * Creates a new dictionary substring rule. The dictionary should be ready
+	 * to use when passed to this constructor.
+	 * 
+	 * @param dict
+	 *            the dict
+	 */
   public DictionarySubstringRule(final Dictionary dict)
   {
     dictionary = dict;
@@ -43,12 +47,14 @@ public class DictionarySubstringRule extends AbstractDictionaryRule
 
 
   /**
-   * Create a new dictionary substring rule. The dictionary should be ready to
-   * use when passed to this constructor. See {@link #setWordLength(int)}.
-   *
-   * @param  dict  to use for searching
-   * @param  maxWordLength number of characters to check in each dictionary word
-   */
+	 * Create a new dictionary substring rule. The dictionary should be ready to
+	 * use when passed to this constructor. See {@link #setWordLength(int)}.
+	 * 
+	 * @param dict
+	 *            the dict
+	 * @param maxWordLength
+	 *            the max word length
+	 */
   public DictionarySubstringRule(final Dictionary dict, final int maxWordLength)
   {
     super.setDictionary(dict);
@@ -57,13 +63,15 @@ public class DictionarySubstringRule extends AbstractDictionaryRule
 
 
   /**
-   * Sets the minimum number of characters that constitute a word in a password.
-   * If n = 5 and the password contains 'test', then the password is valid.
-   * However if n = 4 then 'test' will be found in the dictionary. The default
-   * value is 4.
-   *
-   * @param  n  minimum number of characters to check in each dictionary word
-   */
+	 * Sets the minimum number of characters that constitute a word in a
+	 * password. If n = 5 and the password contains 'test', then the password is
+	 * valid. However if n = 4 then 'test' will be found in the dictionary. The
+	 * default value is 4.
+	 * 
+	 * @param maxWordLength
+	 *            the new maximum substring size to consider as a possible word
+	 *            within the password
+	 */
   public void setWordLength(final int maxWordLength)
   {
     if (maxWordLength >= 1) {
@@ -86,10 +94,12 @@ public class DictionarySubstringRule extends AbstractDictionaryRule
 
 
   /**
-   * Returns Largest matched Dictionary word found in Password.
-   *
-   * @return  Largest Dictionary word found.
-   */
+	 * Returns Largest matched Dictionary word found in Password.
+	 * 
+	 * @param text
+	 *            the text
+	 * @return Largest Dictionary word found.
+	 */
   @Override
   protected String doWordSearch(final String text)
   {

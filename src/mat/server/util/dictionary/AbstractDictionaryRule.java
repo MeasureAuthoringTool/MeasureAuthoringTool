@@ -12,9 +12,13 @@ import edu.vt.middleware.password.RuleResult;
 
 
 
+/**
+ * The Class AbstractDictionaryRule.
+ */
 public abstract class AbstractDictionaryRule implements Rule
 {
 	
+	/** The Constant LOGGER. */
 	private static final Log LOGGER = LogFactory.getLog(AbstractDictionaryRule.class);
 	
   /** Error code for matching dictionary word. */
@@ -31,10 +35,11 @@ public abstract class AbstractDictionaryRule implements Rule
    private int wordLength = DEFAULT_WORD_LENGTH;
 
   /**
-   * Sets the dictionary used to search for passwords.
-   *
-   * @param  dict  to use for searching
-   */
+	 * Sets the dictionary used to search for passwords.
+	 * 
+	 * @param dict
+	 *            the new dictionary of words
+	 */
 	public void setDictionary(final Dictionary dict)
 	{
 		dictionary = dict;
@@ -42,14 +47,21 @@ public abstract class AbstractDictionaryRule implements Rule
 
 
   /**
-   * @param wordLength the wordLength to set
-   */
+	 * Sets the minimum substring size to consider as a possible word within the
+	 * password.
+	 * 
+	 * @param wordLength
+	 *            the wordLength to set
+	 */
 	public void setWordLength(int wordLength) {
 		this.wordLength = wordLength;
 	}
 
 
 	/**
+	 * Gets the minimum substring size to consider as a possible word within the
+	 * password.
+	 * 
 	 * @return the wordLength
 	 */
 	public int getWordLength() {
@@ -106,6 +118,13 @@ public abstract class AbstractDictionaryRule implements Rule
      return result;
   }
  
+  /**
+	 * Check suffix prefix.
+	 * 
+	 * @param text
+	 *            the text
+	 * @return true, if successful
+	 */
   protected boolean checkSuffixPrefix(final String text)
   {
 	  LOGGER.info("checkSuffixPrefix - Word to Be Validated : "+ text);
@@ -131,12 +150,12 @@ public abstract class AbstractDictionaryRule implements Rule
   	}
 
   /**
-   * Searches the dictionary with the supplied text.
-   *
-   * @param  text  to search dictionary with
-   *
-   * @return  matching word
-   */
+	 * Searches the dictionary with the supplied text.
+	 * 
+	 * @param text
+	 *            the text
+	 * @return matching word
+	 */
   protected abstract String doWordSearch(final String text);
 
 

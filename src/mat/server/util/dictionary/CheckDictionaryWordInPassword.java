@@ -26,11 +26,26 @@ import edu.vt.middleware.password.Rule;
 import edu.vt.middleware.password.RuleResult;
 
 /**
+ * The Class CheckDictionaryWordInPassword.
+ * 
  * @author jnarang
- *
  */
 public class CheckDictionaryWordInPassword {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CheckDictionaryWordInPassword.class);
+	
+	/**
+	 * Contains dictionary words.
+	 * 
+	 * @param passWord
+	 *            the pass word
+	 * @return true, if successful
+	 * @throws FileNotFoundException
+	 *             the file not found exception
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public static boolean containsDictionaryWords(String passWord) throws FileNotFoundException, IOException{
 		
 		String fileName = "en_US.dic";

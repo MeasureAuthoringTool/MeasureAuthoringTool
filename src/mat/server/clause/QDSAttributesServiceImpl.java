@@ -11,11 +11,19 @@ import mat.server.SpringRemoteServiceServlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * The Class QDSAttributesServiceImpl.
+ */
 @SuppressWarnings("serial")
 public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet implements QDSAttributesService {
+	
+	/** The q ds attributes dao. */
 	@Autowired
 	private QDSAttributesDAO qDSAttributesDAO;
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAttributesService#getAllDataTypeAttributes(java.lang.String)
+	 */
 	@Override
 	public List<QDSAttributes> getAllDataTypeAttributes(String qdmName) {
 		List<QDSAttributes> attrs = getDAO().findByDataType(qdmName, context);
@@ -27,6 +35,9 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet impleme
 		return attrs;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAttributesService#getAllAttributesByDataType(java.lang.String)
+	 */
 	public List<QDSAttributes> getAllAttributesByDataType(String dataTypeName){
 		List<QDSAttributes> attrs = getDAO().findByDataTypeName(dataTypeName,context);
 		List<QDSAttributes> attrs1 = getAllDataFlowAttributeName();
@@ -35,6 +46,7 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet impleme
 		return attrs;
 	}
 
+	/** The attribute comparator. */
 	private Comparator<QDSAttributes> attributeComparator = new Comparator<QDSAttributes>(){
 		@Override
 		public int compare(QDSAttributes arg0, QDSAttributes arg1) {
@@ -42,11 +54,19 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet impleme
 		}
 	};
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAttributesService#getAllDataFlowAttributeName()
+	 */
 	@Override
 	public List<QDSAttributes> getAllDataFlowAttributeName() {
 		return getDAO().getAllDataFlowAttributeName();
 	}
 	
+	/**
+	 * Gets the dao.
+	 * 
+	 * @return the dao
+	 */
 	public QDSAttributesDAO getDAO() {
 		return (QDSAttributesDAO)context.getBean("qDSAttributesDAO");
 	}

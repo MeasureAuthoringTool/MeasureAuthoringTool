@@ -29,15 +29,53 @@ import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Panel;
 
+/**
+ * The Class Login.
+ */
 public class Login extends MainLayout implements EntryPoint {
 
+	/** The content. */
 	private Panel content;
-	private LoginPresenter loginPresenter;
-	private ForgottenPasswordPresenter forgottenPwdPresenter;
+	
+	/** The forgotten login id presenter. */
 	private ForgottenLoginIdPresenter forgottenLoginIdPresenter;
+	
+	/** The forgotten pwd presenter. */
+	private ForgottenPasswordPresenter forgottenPwdPresenter;
+	
+	/** The login presenter. */
+	private LoginPresenter loginPresenter;
+	
+	/** The security questions presenter. */
 	private FirstLoginPresenter securityQuestionsPresenter;
+	
+	/** The temp pwd loging presenter. */
 	private TempPwdLoginPresenter tempPwdLogingPresenter;
 
+	//US 439.  Signing out and redirects to Login.html
+	/**
+	 * Call sign out.
+	 */
+	private void callSignOut(){
+		MatContext.get().setUMLSLoggedIn(false);
+		 MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
+
+				@Override
+				public void onFailure(final Throwable arg0) {
+					redirectToLogin();
+				}
+
+				@Override
+				public void onSuccess(final Void arg0) {
+					redirectToLogin();
+				}
+			});
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MainLayout#initEntryPoint()
+	 */
+	@Override
 	protected void initEntryPoint() {
 		MatContext.get().setCurrentModule(ConstantMessages.LOGIN_MODULE);
 		showLoadingMessage();
@@ -47,6 +85,7 @@ public class Login extends MainLayout implements EntryPoint {
 		
 		MatContext.get().getEventBus().addHandler(PasswordEmailSentEvent.TYPE, new PasswordEmailSentEvent.Handler() {
 			
+			@Override
 			public void onPasswordEmailSent(final PasswordEmailSentEvent event) {
 				content.clear();
 				loginPresenter.go(content);
@@ -56,6 +95,7 @@ public class Login extends MainLayout implements EntryPoint {
 		
 		MatContext.get().getEventBus().addHandler(ForgotLoginIDEmailSentEvent.TYPE, new ForgotLoginIDEmailSentEvent.Handler() {
 			
+			@Override
 			public void onForgotLoginIdEmailSent(final ForgotLoginIDEmailSentEvent event) {
 				content.clear();
 				loginPresenter.go(content);
@@ -64,6 +104,7 @@ public class Login extends MainLayout implements EntryPoint {
 		});
 		MatContext.get().getEventBus().addHandler(ForgottenPasswordEvent.TYPE, new ForgottenPasswordEvent.Handler() {
 			
+			@Override
 			public void onForgottenPassword(final ForgottenPasswordEvent event) {
 				content.clear();
 				forgottenPwdPresenter.go(content);
@@ -73,6 +114,7 @@ public class Login extends MainLayout implements EntryPoint {
 		// Forgot LoginId
 		MatContext.get().getEventBus().addHandler(ForgotLoginIDEvent.TYPE, new ForgotLoginIDEvent.Handler() {
 			
+			@Override
 			public void onForgottenLoginID(final ForgotLoginIDEvent event) {
 				content.clear();
 				forgottenLoginIdPresenter.go(content);
@@ -81,6 +123,7 @@ public class Login extends MainLayout implements EntryPoint {
 		
 		MatContext.get().getEventBus().addHandler(SuccessfulLoginEvent.TYPE, new SuccessfulLoginEvent.Handler() {
 			
+			@Override
 			public void onSuccessfulLogin(final SuccessfulLoginEvent event) {
 //				MatContext.get().openNewHtmlPage("/Mat.html");
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_MAT);
@@ -89,6 +132,7 @@ public class Login extends MainLayout implements EntryPoint {
 		
 		MatContext.get().getEventBus().addHandler(ReturnToLoginEvent.TYPE, new ReturnToLoginEvent.Handler() {
 			
+			@Override
 			public void onReturnToLogin(final ReturnToLoginEvent event) {
 				content.clear();
 				loginPresenter.go(content);
@@ -97,6 +141,7 @@ public class Login extends MainLayout implements EntryPoint {
 		
 		MatContext.get().getEventBus().addHandler(BackToLoginPageEvent.TYPE, new BackToLoginPageEvent.Handler() {
 			
+			@Override
 			public void onLoginFailure(final BackToLoginPageEvent event) {
 				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
 			}
@@ -133,43 +178,10 @@ public class Login extends MainLayout implements EntryPoint {
 
 
 	}
-	
-	//US 439.  Signing out and redirects to Login.html
-	private void callSignOut(){
-		MatContext.get().setUMLSLoggedIn(false);
-		 MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
-
-				@Override
-				public void onFailure(final Throwable arg0) {
-					redirectToLogin();
-				}
-
-				@Override
-				public void onSuccess(final Void arg0) {
-					redirectToLogin();
-				}
-			});
-	}
 
 	/**
-	 * Redirects to the Login.html
+	 * Inits the presenters.
 	 */
-	private void redirectToLogin() {
-		/*
-		 * Added a timer to have a delay before redirect since 
-		 * this was causing the firefox javascript exception.
-		 */
-		final Timer timer = new Timer() {
-			@Override
-			public void run() {
-				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-			}
-		};
-		timer.schedule(1000);		
-	}
-
-
-	
 	private void initPresenters() {
 		final LoginView unamePasswordView = new LoginView();
 		loginPresenter = new LoginPresenter(unamePasswordView);
@@ -186,6 +198,25 @@ public class Login extends MainLayout implements EntryPoint {
 		final TempPwdView temPwdview = new TempPwdView();
 		tempPwdLogingPresenter = new TempPwdLoginPresenter(temPwdview);
 		
+	}
+
+
+	
+	/**
+	 * Redirects to the Login.html
+	 */
+	private void redirectToLogin() {
+		/*
+		 * Added a timer to have a delay before redirect since 
+		 * this was causing the firefox javascript exception.
+		 */
+		final Timer timer = new Timer() {
+			@Override
+			public void run() {
+				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
+			}
+		};
+		timer.schedule(1000);		
 	}
 	
 }

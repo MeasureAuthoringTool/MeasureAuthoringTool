@@ -23,58 +23,180 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class MainLayout.
+ */
 public abstract class MainLayout {
 	
-	private FocusPanel content;
-	private static Panel loadingPanel;
-	private static Panel showUMLSState;
-	
-	private HorizontalFlowPanel logOutPanel;
+	/** The active umls image. */
 	private static Image activeUmlsImage;
-	private static  Image inActiveUmlsImage;
 	
-	protected static FocusableWidget skipListHolder;
-	
-	private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
+	/** The alert image. */
 	private static Image alertImage = new Image(ImageResources.INSTANCE.alert());
+	
+	/** The alert title. */
 	private static String alertTitle = ClientConstants.MAINLAYOUT_ALERT_TITLE;
+	
+	/** The Constant DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS. */
 	private static final int DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS = 500;
 	
+	/** The in active umls image. */
+	private static  Image inActiveUmlsImage;
+	
+	/** The loading panel. */
+	private static Panel loadingPanel;
+	
+	/** The loading widget. */
+	private static HTML loadingWidget = new HTML(ClientConstants.MAINLAYOUT_LOADING_WIDGET_MSG);
+	
+	/** The show umls state. */
+	private static Panel showUMLSState;
+	
+	/** The skip list holder. */
+	protected static FocusableWidget skipListHolder;
+	
+	/** The umls active status label. */
 	static HTML umlsActiveStatusLabel;
+	
+	/** The umls inactive status label. */
 	static HTML umlsInactiveStatusLabel;
 	
-	public final void onModuleLoad() {
-		
-		final Panel skipContent = buildSkipContent();
-		
-		final Panel topBanner = buildTopPanel();
-		final Panel footerPanel = buildFooterPanel();
-		final Panel contentPanel = buildContentPanel();
-		final Panel loadingPanel = buildLoadingPanel();
-		
-		final FlowPanel container = new FlowPanel();
-		container.add(topBanner);
-		container.add(loadingPanel);
-		container.add(contentPanel);
-		container.add(footerPanel);
-	
-		
-		RootPanel.get().clear();
-		if(RootPanel.get("skipContent")!= null){
-			RootPanel.get("skipContent").add(skipContent);
+	/**
+	 * clear the loading panel
+	 * remove css style
+	 * reset the loading queue.
+	 */
+	private static void delegateHideLoadingMessage(){
+		MatContext.get().getLoadingQueue().poll();
+		if(MatContext.get().getLoadingQueue().size() == 0){
+			getLoadingPanel().clear();
+			getLoadingPanel().remove(alertImage);
+			getLoadingPanel().remove(loadingWidget);
+			getLoadingPanel().removeStyleName("msg-alert");
+			getLoadingPanel().getElement().removeAttribute("role");
 		}
-		RootPanel.get("mainContent").add(container);
-		
-		initEntryPoint();
-
 	}
 	
-	private Panel buildSkipContent() {
-		 skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
-		 Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
-		 return skipListHolder;
+	/**
+	 * Gets the loading panel.
+	 *
+	 * @return the loading panel
+	 */
+	protected static Panel getLoadingPanel(){
+		return loadingPanel;
+	}
+	
+	/**
+	 * Gets the show umls state.
+	 *
+	 * @return the show umls state
+	 */
+	protected static Panel getShowUMLSState(){
+		return showUMLSState;
+	}
+	
+	/**
+	 * Gets the skip list.
+	 *
+	 * @return the skip list
+	 */
+	protected static FocusableWidget getSkipList(){
+		return skipListHolder;
 	}
 
+	/**
+	 * no arg method adds default delay to loading message hide op.
+	 */
+	public static void hideLoadingMessage(){
+		hideLoadingMessage(DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS);
+	}
+
+	
+	
+	
+	/**
+	 * delay hiding of loading message artifacts by 'delay' milliseconds
+	 * NOTE delay cannot be <= 0 else exception is thrown
+	 * public method to allow setting of delay.
+	 *
+	 * @param delay the delay
+	 */
+	public static void hideLoadingMessage(final int delay){
+		if(delay > 0){
+			final Timer timer = new Timer() {
+				@Override
+				public void run() {
+					delegateHideLoadingMessage();
+				}
+			};
+			timer.schedule(delay);
+		}
+		else{
+			delegateHideLoadingMessage();
+		}
+	}
+	
+	/**
+	 * Hide umls active.
+	 */
+	public static void hideUMLSActive(){
+		getShowUMLSState().clear();
+		getShowUMLSState().remove(activeUmlsImage);
+		getShowUMLSState().remove(umlsActiveStatusLabel);
+		
+		getShowUMLSState().add(inActiveUmlsImage);
+		getShowUMLSState().add(umlsInactiveStatusLabel);
+		getShowUMLSState().getElement().setAttribute("role", "alert");
+	}
+	
+	
+	/**
+	 * Show loading message.
+	 */
+	public static void showLoadingMessage(){
+		getLoadingPanel().clear();
+		getLoadingPanel().add(alertImage);
+		getLoadingPanel().add(loadingWidget);
+		getLoadingPanel().setStyleName("msg-alert");
+		getLoadingPanel().getElement().setAttribute("role", "alert");
+		MatContext.get().getLoadingQueue().add("node");
+	}
+	
+	/**
+	 * Show sign out message.
+	 */
+	public static void showSignOutMessage(){
+		loadingWidget = new HTML(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG); 
+		showLoadingMessage();
+	}
+	
+	/**
+	 * Show umls active.
+	 */
+	public static void showUMLSActive(){
+		getShowUMLSState().clear();
+		if(getShowUMLSState().getElement().hasChildNodes()){
+			getShowUMLSState().remove(inActiveUmlsImage);
+			getShowUMLSState().remove(umlsInactiveStatusLabel);
+		}
+		
+		getShowUMLSState().add(activeUmlsImage);
+		getShowUMLSState().add(umlsActiveStatusLabel);
+		getShowUMLSState().getElement().setAttribute("role", "alert");
+	}
+	
+	/** The content. */
+	private FocusPanel content;
+
+
+	/** The log out panel. */
+	private HorizontalFlowPanel logOutPanel;
+	
+	/**
+	 * Builds the content panel.
+	 *
+	 * @return the panel
+	 */
 	private Panel buildContentPanel() {
 		content = new FocusPanel();
 		content.getElement().setAttribute("id", "MainLayout.content");
@@ -89,70 +211,6 @@ public abstract class MainLayout {
 		Mat.removeInputBoxFromFocusPanel(content.getElement());
 		
 		return content;
-	}
-
-	
-	
-	
-	private Panel buildLoadingPanel() {
-		loadingPanel = new HorizontalPanel();
-		loadingPanel.getElement().setAttribute("id", "loadingContainer");
-		loadingPanel.getElement().setAttribute("aria-role", "loadingwidget");
-		loadingPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
-		loadingPanel.getElement().setAttribute("aria-live", "assertive");
-		loadingPanel.getElement().setAttribute("aria-atomic", "true");
-		loadingPanel.getElement().setAttribute("aria-relevant", "all");
-		
-		loadingPanel.setStylePrimaryName("mainContentPanel");
-		setId(loadingPanel, "loadingContainer");
-		alertImage.setTitle(alertTitle);
-		alertImage.getElement().setAttribute("alt", alertTitle);
-		loadingWidget.setStyleName("padLeft5px");
-		return loadingPanel;
-	}
-	
-	private Panel buildUMLStatePanel() {
-		showUMLSState = new HorizontalFlowPanel();
-		showUMLSState.getElement().setAttribute("id", "showUMLSStateContainer");
-		showUMLSState.getElement().setAttribute("aria-role", "application");
-		showUMLSState.getElement().setAttribute("aria-labelledby", "LiveRegion");
-		showUMLSState.getElement().setAttribute("aria-live", "assertive");
-		showUMLSState.getElement().setAttribute("aria-atomic", "true");
-		showUMLSState.getElement().setAttribute("aria-relevant", "all");
-		
-		activeUmlsImage = new Image(ImageResources.INSTANCE.bullet_green());
-		activeUmlsImage.setStylePrimaryName("imageMiddleAlign");
-		umlsActiveStatusLabel = new HTML("<h9>UMLS Active</h9>");
-		umlsActiveStatusLabel.setStylePrimaryName("htmlDescription");
-	
-		inActiveUmlsImage = new Image(ImageResources.INSTANCE.bullet_red());
-		inActiveUmlsImage.setStylePrimaryName("imageMiddleAlign");
-		umlsInactiveStatusLabel = new HTML("<h9>UMLS Inactive</h9>");
-		umlsInactiveStatusLabel.setStylePrimaryName("htmlDescription");
-		return showUMLSState;
-	}
-	
-	
-	public static void showUMLSActive(){
-		getShowUMLSState().clear();
-		if(getShowUMLSState().getElement().hasChildNodes()){
-			getShowUMLSState().remove(inActiveUmlsImage);
-			getShowUMLSState().remove(umlsInactiveStatusLabel);
-		}
-		
-		getShowUMLSState().add(activeUmlsImage);
-		getShowUMLSState().add(umlsActiveStatusLabel);
-		getShowUMLSState().getElement().setAttribute("role", "alert");
-	}
-	
-	public static void hideUMLSActive(){
-		getShowUMLSState().clear();
-		getShowUMLSState().remove(activeUmlsImage);
-		getShowUMLSState().remove(umlsActiveStatusLabel);
-		
-		getShowUMLSState().add(inActiveUmlsImage);
-		getShowUMLSState().add(umlsInactiveStatusLabel);
-		getShowUMLSState().getElement().setAttribute("role", "alert");
 	}
 	
 	/**
@@ -170,28 +228,44 @@ public abstract class MainLayout {
 		return footerMainPanel;
 }
 	
-	private HTML fetchAndcreateFooterLinks() {
-		MatContext.get().getLoginService().getFooterURLs(new AsyncCallback<List<String>>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				//This will create Footer links with default values.
-				//createFooterLinks(footerLinks);				
-			}
-
-			@Override
-			public void onSuccess(List<String> result) {
-				//Set the Footer URL's on the ClientConstants for use by the app in various locations.
-				ClientConstants.ACCESSIBILITY_POLICY_URL = result.get(0);
-				ClientConstants.PRIVACYPOLICY_URL = result.get(1);
-				ClientConstants.TERMSOFUSE_URL = result.get(2);
-				ClientConstants.USERGUIDE_URL = result.get(3);
-			}
+	/**
+	 * Builds the loading panel.
+	 *
+	 * @return the panel
+	 */
+	private Panel buildLoadingPanel() {
+		loadingPanel = new HorizontalPanel();
+		loadingPanel.getElement().setAttribute("id", "loadingContainer");
+		loadingPanel.getElement().setAttribute("aria-role", "loadingwidget");
+		loadingPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		loadingPanel.getElement().setAttribute("aria-live", "assertive");
+		loadingPanel.getElement().setAttribute("aria-atomic", "true");
+		loadingPanel.getElement().setAttribute("aria-relevant", "all");
 		
-		});
-		return FooterPanelBuilderUtility.buildFooterLinksPanel();
+		loadingPanel.setStylePrimaryName("mainContentPanel");
+		setId(loadingPanel, "loadingContainer");
+		alertImage.setTitle(alertTitle);
+		alertImage.getElement().setAttribute("alt", alertTitle);
+		loadingWidget.setStyleName("padLeft5px");
+		return loadingPanel;
 	}
-
-
+	
+	/**
+	 * Builds the skip content.
+	 *
+	 * @return the panel
+	 */
+	private Panel buildSkipContent() {
+		 skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
+		 Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
+		 return skipListHolder;
+	}
+	
+	/**
+	 * Builds the top panel.
+	 *
+	 * @return the panel
+	 */
 	private Panel buildTopPanel() {
 		final HorizontalPanel topBanner = new HorizontalPanel();
 		topBanner.getElement().setId("topBanner_HorizontalPanel");
@@ -219,96 +293,138 @@ public abstract class MainLayout {
 		return topBanner;      
 	}
 	
-	protected abstract void initEntryPoint();
+	/**
+	 * Builds the uml state panel.
+	 *
+	 * @return the panel
+	 */
+	private Panel buildUMLStatePanel() {
+		showUMLSState = new HorizontalFlowPanel();
+		showUMLSState.getElement().setAttribute("id", "showUMLSStateContainer");
+		showUMLSState.getElement().setAttribute("aria-role", "application");
+		showUMLSState.getElement().setAttribute("aria-labelledby", "LiveRegion");
+		showUMLSState.getElement().setAttribute("aria-live", "assertive");
+		showUMLSState.getElement().setAttribute("aria-atomic", "true");
+		showUMLSState.getElement().setAttribute("aria-relevant", "all");
+		
+		activeUmlsImage = new Image(ImageResources.INSTANCE.bullet_green());
+		activeUmlsImage.setStylePrimaryName("imageMiddleAlign");
+		umlsActiveStatusLabel = new HTML("<h9>UMLS Active</h9>");
+		umlsActiveStatusLabel.setStylePrimaryName("htmlDescription");
 	
+		inActiveUmlsImage = new Image(ImageResources.INSTANCE.bullet_red());
+		inActiveUmlsImage.setStylePrimaryName("imageMiddleAlign");
+		umlsInactiveStatusLabel = new HTML("<h9>UMLS Inactive</h9>");
+		umlsInactiveStatusLabel.setStylePrimaryName("htmlDescription");
+		return showUMLSState;
+	}
+	
+	/**
+	 * Fetch andcreate footer links.
+	 *
+	 * @return the html
+	 */
+	private HTML fetchAndcreateFooterLinks() {
+		MatContext.get().getLoginService().getFooterURLs(new AsyncCallback<List<String>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				//This will create Footer links with default values.
+				//createFooterLinks(footerLinks);				
+			}
+
+			@Override
+			public void onSuccess(List<String> result) {
+				//Set the Footer URL's on the ClientConstants for use by the app in various locations.
+				ClientConstants.ACCESSIBILITY_POLICY_URL = result.get(0);
+				ClientConstants.PRIVACYPOLICY_URL = result.get(1);
+				ClientConstants.TERMSOFUSE_URL = result.get(2);
+				ClientConstants.USERGUIDE_URL = result.get(3);
+			}
+		
+		});
+		return FooterPanelBuilderUtility.buildFooterLinksPanel();
+	}
+	
+	/**
+	 * Gets the content panel.
+	 *
+	 * @return the content panel
+	 */
 	protected  FocusPanel getContentPanel() {
 		return content;
 	}
 	
-	protected static Panel getLoadingPanel(){
-		return loadingPanel;
-	}
-	
-	protected static Panel getShowUMLSState(){
-		return showUMLSState;
-	}
-	
-	protected static FocusableWidget getSkipList(){
-		return skipListHolder;
-	}
-	
-	protected void setId(final Widget widget, final String id) {
-		DOM.setElementAttribute(widget.getElement(), "id", id);
-	}
-	
-	protected void setLogout(final HorizontalFlowPanel logOutPanel){
-		this.logOutPanel = logOutPanel;
-	}
-	
+	/**
+	 * Gets the logout panel.
+	 *
+	 * @return the logout panel
+	 */
 	protected HorizontalFlowPanel getLogoutPanel(){
 		return logOutPanel;
 	}
+	
+	/**
+	 * Gets the navigation list.
+	 *
+	 * @return the navigation list
+	 */
 	protected Widget getNavigationList(){
 		return null;
 	}
 	
-	public static void showLoadingMessage(){
-		getLoadingPanel().clear();
-		getLoadingPanel().add(alertImage);
-		getLoadingPanel().add(loadingWidget);
-		getLoadingPanel().setStyleName("msg-alert");
-		getLoadingPanel().getElement().setAttribute("role", "alert");
-		MatContext.get().getLoadingQueue().add("node");
-	}
 	
 	
+	/**
+	 * Inits the entry point.
+	 */
+	protected abstract void initEntryPoint();
 	
-	public static void showSignOutMessage(){
-		loadingWidget = new HTML(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG); 
-		showLoadingMessage();
+	/**
+	 * On module load.
+	 */
+	public final void onModuleLoad() {
+		
+		final Panel skipContent = buildSkipContent();
+		
+		final Panel topBanner = buildTopPanel();
+		final Panel footerPanel = buildFooterPanel();
+		final Panel contentPanel = buildContentPanel();
+		final Panel loadingPanel = buildLoadingPanel();
+		
+		final FlowPanel container = new FlowPanel();
+		container.add(topBanner);
+		container.add(loadingPanel);
+		container.add(contentPanel);
+		container.add(footerPanel);
+	
+		
+		RootPanel.get().clear();
+		if(RootPanel.get("skipContent")!= null){
+			RootPanel.get("skipContent").add(skipContent);
+		}
+		RootPanel.get("mainContent").add(container);
+		
+		initEntryPoint();
+
 	}
 	
 	/**
-	 * no arg method adds default delay to loading message hide op
+	 * Sets the id.
+	 *
+	 * @param widget the widget
+	 * @param id the id
 	 */
-	public static void hideLoadingMessage(){
-		hideLoadingMessage(DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS);
+	protected void setId(final Widget widget, final String id) {
+		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}
 	
 	/**
-	 * delay hiding of loading message artifacts by 'delay' milliseconds
-	 * NOTE delay cannot be <= 0 else exception is thrown
-	 * public method to allow setting of delay
+	 * Sets the logout.
+	 *
+	 * @param logOutPanel the new logout
 	 */
-	public static void hideLoadingMessage(final int delay){
-		if(delay > 0){
-			final Timer timer = new Timer() {
-				@Override
-				public void run() {
-					delegateHideLoadingMessage();
-				}
-			};
-			timer.schedule(delay);
-		}
-		else{
-			delegateHideLoadingMessage();
-		}
-	}
-	
-	/**
-	 * clear the loading panel
-	 * remove css style
-	 * reset the loading queue
-	 */
-	private static void delegateHideLoadingMessage(){
-		MatContext.get().getLoadingQueue().poll();
-		if(MatContext.get().getLoadingQueue().size() == 0){
-			getLoadingPanel().clear();
-			getLoadingPanel().remove(alertImage);
-			getLoadingPanel().remove(loadingWidget);
-			getLoadingPanel().removeStyleName("msg-alert");
-			getLoadingPanel().getElement().removeAttribute("role");
-		}
+	protected void setLogout(final HorizontalFlowPanel logOutPanel){
+		this.logOutPanel = logOutPanel;
 	}
 	
 }

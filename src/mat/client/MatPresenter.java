@@ -2,6 +2,7 @@ package mat.client;
 
 import com.google.gwt.user.client.ui.Widget;
 
+
 /**
  * MatPresenter.java.
  */
@@ -15,7 +16,10 @@ public interface MatPresenter {
 	 * Method to set view on Panel.
 	 */
 	void beforeDisplay();
+	
 	/**
+	 * Gets the widget.
+	 *
 	 * @return {@link Widget}.
 	 */
 	Widget getWidget();

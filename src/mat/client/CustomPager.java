@@ -34,12 +34,88 @@ import com.google.gwt.view.client.Range;
 public class CustomPager extends AbstractPager {
 
   /**
+   * An {@link Image} that acts as a button.
+   */
+  private static class ImageButton extends Image {
+    
+    /** The disabled. */
+    private boolean disabled;
+    
+    /** The res disabled. */
+    private final ImageResource resDisabled;
+    
+    /** The res enabled. */
+    private final ImageResource resEnabled;
+    
+    /** The style disabled. */
+    private final String styleDisabled;
+
+    /**
+     * Instantiates a new image button.
+     *
+     * @param resEnabled the res enabled
+     * @param resDiabled the res diabled
+     * @param disabledStyle the disabled style
+     */
+    public ImageButton(ImageResource resEnabled, ImageResource resDiabled,
+        String disabledStyle) {
+      super(resEnabled);
+      this.resEnabled = resEnabled;
+      resDisabled = resDiabled;
+      styleDisabled = disabledStyle;
+    }
+
+    /**
+     * Checks if is disabled.
+     *
+     * @return true, if is disabled
+     */
+    public boolean isDisabled() {
+      return disabled;
+    }
+
+    /* (non-Javadoc)
+     * @see com.google.gwt.user.client.ui.Image#onBrowserEvent(com.google.gwt.user.client.Event)
+     */
+    @Override
+    public void onBrowserEvent(Event event) {
+      // Ignore events if disabled.
+      if (disabled) {
+        return;
+      }
+      super.onBrowserEvent(event);
+    }
+
+    /**
+     * Sets the disabled.
+     *
+     * @param isDisabled the new disabled
+     */
+    public void setDisabled(boolean isDisabled) {
+      if (disabled == isDisabled) {
+        return;
+      }
+
+      disabled = isDisabled;
+      if (disabled) {
+        setResource(resDisabled);
+        getElement().getParentElement().addClassName(styleDisabled);
+      } else {
+        setResource(resEnabled);
+        getElement().getParentElement().removeClassName(styleDisabled);
+      }
+    }
+  }
+
+  /**
    * A ClientBundle that provides images for this widget.
    */
   public static interface Resources extends ClientBundle {
 
     /**
      * The image used to skip ahead multiple pages.
+     *
+     * @return the image resource
      */
     //@ImageOptions(flipRtl = true)
 	  @Source("/images/simplePagerFastForward.png")
@@ -47,6 +123,8 @@ public class CustomPager extends AbstractPager {
 
     /**
      * The disabled "fast forward" image.
+     *
+     * @return the image resource
      */
     @ImageOptions(flipRtl = true)
 	 @Source("/images/simplePagerFastForwardDisabled.png")
@@ -54,6 +132,8 @@ public class CustomPager extends AbstractPager {
 
     /**
      * The image used to go to the first page.
+     *
+     * @return the image resource
      */
     @ImageOptions(flipRtl = true)
 	@Source("/images/simplePagerFirstPage.png")
@@ -61,6 +141,8 @@ public class CustomPager extends AbstractPager {
 
     /**
      * The disabled first page image.
+     *
+     * @return the image resource
      */
     @ImageOptions(flipRtl = true)
 	@Source("/images/simplePagerFirstPageDisabled.png")
@@ -68,6 +150,8 @@ public class CustomPager extends AbstractPager {
 
     /**
      * The image used to go to the last page.
+     *
+     * @return the image resource
      */
     @ImageOptions(flipRtl = true)
 	@Source("/images/simplePagerLastPage.png")
@@ -75,6 +159,8 @@ public class CustomPager extends AbstractPager {
 
     /**
      * The disabled last page image.
+     *
+     * @return the image resource
      */
     @ImageOptions(flipRtl = true)
 	@Source("/images/simplePagerLastPageDisabled.png")
@@ -82,6 +168,8 @@ public class CustomPager extends AbstractPager {
 
     /**
      * The image used to go to the next page.
+     *
+     * @return the image resource
      */
     @ImageOptions(flipRtl = true)
 	@Source("/images/simplePagerNextPage.png")
@@ -89,6 +177,8 @@ public class CustomPager extends AbstractPager {
 
     /**
      * The disabled next page image.
+     *
+     * @return the image resource
      */
     @ImageOptions(flipRtl = true)
 	@Source("/images/simplePagerNextPageDisabled.png")
@@ -96,6 +186,8 @@ public class CustomPager extends AbstractPager {
 
     /**
      * The image used to go to the previous page.
+     *
+     * @return the image resource
      */
     @ImageOptions(flipRtl = true)
 	@Source("/images/simplePagerPreviousPage.png")
@@ -103,6 +195,8 @@ public class CustomPager extends AbstractPager {
 
     /**
      * The disabled previous page image.
+     *
+     * @return the image resource
      */
     @ImageOptions(flipRtl = true)
 	@Source("/images/simplePagerPreviousPageDisabled.png")
@@ -110,6 +204,8 @@ public class CustomPager extends AbstractPager {
 
     /**
      * The styles used in this widget.
+     *
+     * @return the style
      */
     @Source("/images/SimplePager.css")
     Style simplePagerStyle();
@@ -122,16 +218,22 @@ public class CustomPager extends AbstractPager {
 
     /**
      * Applied to buttons.
+     *
+     * @return the string
      */
     String button();
 
     /**
      * Applied to disabled buttons.
+     *
+     * @return the string
      */
     String disabledButton();
 
     /**
      * Applied to the details text.
+     *
+     * @return the string
      */
     String pageDetails();
   }
@@ -140,58 +242,26 @@ public class CustomPager extends AbstractPager {
    * The location of the text relative to the paging buttons.
    */
   public static enum TextLocation {
-    CENTER, LEFT, RIGHT;
+    
+    /** The center. */
+    CENTER, 
+ /** The left. */
+ LEFT, 
+ /** The right. */
+ RIGHT;
   }
 
-  /**
-   * An {@link Image} that acts as a button.
-   */
-  private static class ImageButton extends Image {
-    private boolean disabled;
-    private final ImageResource resDisabled;
-    private final ImageResource resEnabled;
-    private final String styleDisabled;
-
-    public ImageButton(ImageResource resEnabled, ImageResource resDiabled,
-        String disabledStyle) {
-      super(resEnabled);
-      this.resEnabled = resEnabled;
-      this.resDisabled = resDiabled;
-      this.styleDisabled = disabledStyle;
-    }
-
-    public boolean isDisabled() {
-      return disabled;
-    }
-
-    @Override
-    public void onBrowserEvent(Event event) {
-      // Ignore events if disabled.
-      if (disabled) {
-        return;
-      }
-      super.onBrowserEvent(event);
-    }
-
-    public void setDisabled(boolean isDisabled) {
-      if (this.disabled == isDisabled) {
-        return;
-      }
-
-      this.disabled = isDisabled;
-      if (disabled) {
-        setResource(resDisabled);
-        getElement().getParentElement().addClassName(styleDisabled);
-      } else {
-        setResource(resEnabled);
-        getElement().getParentElement().removeClassName(styleDisabled);
-      }
-    }
-  }
-
+  /** The default fast forward rows. */
   private static int DEFAULT_FAST_FORWARD_ROWS = 1000;
+  
+  /** The default resources. */
   private static Resources DEFAULT_RESOURCES;
 
+  /**
+   * Gets the default resources.
+   *
+   * @return the default resources
+   */
   private static Resources getDefaultResources() {
     if (DEFAULT_RESOURCES == null) {
       DEFAULT_RESOURCES = GWT.create(Resources.class);
@@ -199,10 +269,13 @@ public class CustomPager extends AbstractPager {
     return DEFAULT_RESOURCES;
   }
 
+  /** The fast forward. */
   private final ImageButton fastForward;
 
+  /** The fast forward rows. */
   private final int fastForwardRows;
 
+  /** The first page. */
   private final ImageButton firstPage;
 
   /**
@@ -210,8 +283,13 @@ public class CustomPager extends AbstractPager {
    */
   private final HTML label = new HTML();
 
+  /** The last page. */
   private final ImageButton lastPage;
+  
+  /** The next page. */
   private final ImageButton nextPage;
+  
+  /** The prev page. */
   private final ImageButton prevPage;
 
   /**
@@ -258,8 +336,8 @@ public CustomPager(TextLocation location, Resources resources,
       boolean showLastPageButton) {
     this.resources = resources;
     this.fastForwardRows = fastForwardRows;
-    this.style = (Style) resources.simplePagerStyle();
-    this.style.ensureInjected();
+    style = resources.simplePagerStyle();
+    style.ensureInjected();
 
     // Create the buttons.
     String disabledStyle = style.disabledButton();
@@ -269,7 +347,8 @@ public CustomPager(TextLocation location, Resources resources,
         resources.simplePagerFirstPageDisabled(), disabledStyle);
     firstPage.getElement().setId("firstPage_ImageButton");
     firstPage.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
+      @Override
+	public void onClick(ClickEvent event) {
         firstPage();
       }
     });
@@ -277,7 +356,7 @@ public CustomPager(TextLocation location, Resources resources,
     firstPageAnchor.addKeyDownHandler(new KeyDownHandler(){
 	@Override
 	public void onKeyDown(KeyDownEvent event) {
-		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && !firstPage.isDisabled()) {
+		if((event.getNativeKeyCode() == KeyCodes.KEY_ENTER) && !firstPage.isDisabled()) {
 			firstPage();
 		}
 	}
@@ -285,8 +364,9 @@ public CustomPager(TextLocation location, Resources resources,
     firstPageAnchor.addClickHandler(new ClickHandler() {
 		@Override
 		public void onClick(final ClickEvent event) {
-			if(!firstPage.isDisabled())
+			if(!firstPage.isDisabled()) {
 				firstPage();
+			}
 		}
 	  }
 	);
@@ -300,22 +380,24 @@ public CustomPager(TextLocation location, Resources resources,
         resources.simplePagerNextPageDisabled(), disabledStyle);
     nextPage.getElement().setId("nextPage_ImageButton");
     nextPage.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
+      @Override
+	public void onClick(ClickEvent event) {
         nextPage();
       }
     });
     nextPageAnchor.addClickHandler(new ClickHandler() {
 		@Override
 		public void onClick(final ClickEvent event ) {
-			if(!nextPage.isDisabled())
+			if(!nextPage.isDisabled()) {
 				nextPage();
+			}
 		}
 	  }
 	);
     nextPageAnchor.addKeyDownHandler(new KeyDownHandler(){
     	@Override
     	public void onKeyDown(KeyDownEvent event) {
-    		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && !nextPage.isDisabled()) {
+    		if((event.getNativeKeyCode() == KeyCodes.KEY_ENTER) && !nextPage.isDisabled()) {
     			nextPage();
     		}
     	}
@@ -329,22 +411,24 @@ public CustomPager(TextLocation location, Resources resources,
     								resources.simplePagerPreviousPageDisabled(), disabledStyle);
     prevPage.getElement().setId("prevPage_ImageButton");
     prevPage.addClickHandler(new ClickHandler() {
-      public void onClick(ClickEvent event) {
+      @Override
+	public void onClick(ClickEvent event) {
         previousPage();
       }
     });
     prevPageAnchor.addClickHandler(new ClickHandler() {
 		@Override
 		public void onClick(final ClickEvent event) {
-			if(!prevPage.isDisabled())
+			if(!prevPage.isDisabled()) {
 				previousPage();
+			}
 		}
 	  }
 	);
     prevPageAnchor.addKeyDownHandler(new KeyDownHandler(){
     	@Override
     	public void onKeyDown(KeyDownEvent event) {
-    		if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && !prevPage.isDisabled()) {
+    		if((event.getNativeKeyCode() == KeyCodes.KEY_ENTER) && !prevPage.isDisabled()) {
     			previousPage();
     		}
     	}
@@ -359,22 +443,24 @@ public CustomPager(TextLocation location, Resources resources,
     			resources.simplePagerLastPageDisabled(), disabledStyle);
     	lastPage.getElement().setId("lastPage_ImageButton");
     	lastPage.addClickHandler(new ClickHandler() {
-    		public void onClick(ClickEvent event) {
+    		@Override
+			public void onClick(ClickEvent event) {
     			lastPage();
     		}
     	});
     	lastPageAnchor.addClickHandler(new ClickHandler() {
     		@Override
     		public void onClick(final ClickEvent event) {
-    			if(!lastPage.isDisabled())
-    				lastPage();
+    			if(!lastPage.isDisabled()) {
+					lastPage();
+				}
     		}
     	  }
     	);
     	lastPageAnchor.addKeyDownHandler(new KeyDownHandler(){
     		@Override
     		public void onKeyDown(KeyDownEvent event) {
-    			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && !lastPage.isDisabled()) {
+    			if((event.getNativeKeyCode() == KeyCodes.KEY_ENTER) && !lastPage.isDisabled()) {
     				lastPage();
     			}
     		}
@@ -393,7 +479,8 @@ public CustomPager(TextLocation location, Resources resources,
     			resources.simplePagerFastForwardDisabled(), disabledStyle);
     	fastForward.getElement().setId("fastForward_ImageButton");
     	fastForward.addClickHandler(new ClickHandler() {
-    		public void onClick(ClickEvent event) {
+    		@Override
+			public void onClick(ClickEvent event) {
     			setPage(getPage() + getFastForwardPages());
     		}
     	});
@@ -463,101 +550,6 @@ public CustomPager(TextLocation location, Resources resources,
     setDisplay(null);
   }
 
-  @Override
-  public void firstPage() {
-    super.firstPage();
-  }
-
-  @Override
-  public int getPage() {
-    return super.getPage();
-  }
-
-  @Override
-  public int getPageCount() {
-    return super.getPageCount();
-  }
-
-  @Override
-  public boolean hasNextPage() {
-    return super.hasNextPage();
-  }
-
-  @Override
-  public boolean hasNextPages(int pages) {
-    return super.hasNextPages(pages);
-  }
-
-  @Override
-  public boolean hasPage(int index) {
-    return super.hasPage(index);
-  }
-
-  @Override
-  public boolean hasPreviousPage() {
-    return super.hasPreviousPage();
-  }
-
-  @Override
-  public boolean hasPreviousPages(int pages) {
-    return super.hasPreviousPages(pages);
-  }
-
-  @Override
-  public void lastPage() {
-    super.lastPage();
-  }
-
-  @Override
-  public void lastPageStart() {
-    super.lastPageStart();
-  }
-
-  @Override
-  public void nextPage() {
-    super.nextPage();
-  }
-
-  @Override
-  public void previousPage() {
-    super.previousPage();
-  }
-
-  @Override
-  public void setDisplay(HasRows display) {
-    // Enable or disable all buttons.
-    boolean disableButtons = (display == null);
-    setFastForwardDisabled(disableButtons);
-    setNextPageButtonsDisabled(disableButtons);
-    setPrevPageButtonsDisabled(disableButtons);
-    super.setDisplay(display);
-  }
-
-  @Override
-  public void setPage(int index) {
-    super.setPage(index);
-  }
-
-  @Override
-  public void setPageSize(int pageSize) {
-    super.setPageSize(pageSize);
-  }
-
-  @Override
-  public void setPageStart(int index) {
-    super.setPageStart(index);
-  }
-
-  /**
-   * Let the page know that the table is loading. Call this method to clear all
-   * data from the table and hide the current range when new data is being
-   * loaded into the table.
-   */
-  public void startLoading() {
-    getDisplay().setRowCount(0, true);
-    label.setHTML("");
-  }
-
   /**
    * Get the text to display in the pager that reflects the state of the pager.
    * 
@@ -571,13 +563,132 @@ public CustomPager(TextLocation location, Resources resources,
     int pageStart = range.getStart() + 1;
     int pageSize = range.getLength();
     int dataSize = display.getRowCount();
-    int endIndex = Math.min(dataSize, pageStart + pageSize - 1);
+    int endIndex = Math.min(dataSize, (pageStart + pageSize) - 1);
     endIndex = Math.max(pageStart, endIndex);
     boolean exact = display.isRowCountExact();
     return formatter.format(pageStart) + "-" + formatter.format(endIndex)
         + (exact ? " of " : " of over ") + formatter.format(dataSize);
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#firstPage()
+   */
+  @Override
+  public void firstPage() {
+    super.firstPage();
+  }
+
+  /**
+   * Get the number of pages to fast forward based on the current page size.
+   * 
+   * @return the number of pages to fast forward
+   */
+  private int getFastForwardPages() {
+    int pageSize = getPageSize();
+    return pageSize > 0 ? fastForwardRows / pageSize : 0;
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#getPage()
+   */
+  @Override
+  public int getPage() {
+    return super.getPage();
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#getPageCount()
+   */
+  @Override
+  public int getPageCount() {
+    return super.getPageCount();
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#hasNextPage()
+   */
+  @Override
+  public boolean hasNextPage() {
+    return super.hasNextPage();
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#hasNextPages(int)
+   */
+  @Override
+  public boolean hasNextPages(int pages) {
+    return super.hasNextPages(pages);
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#hasPage(int)
+   */
+  @Override
+  public boolean hasPage(int index) {
+    return super.hasPage(index);
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#hasPreviousPage()
+   */
+  @Override
+  public boolean hasPreviousPage() {
+    return super.hasPreviousPage();
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#hasPreviousPages(int)
+   */
+  @Override
+  public boolean hasPreviousPages(int pages) {
+    return super.hasPreviousPages(pages);
+  }
+
+  /**
+   * Check if the next button is disabled. Visible for testing.
+   *
+   * @return true, if is next button disabled
+   */
+  boolean isNextButtonDisabled() {
+    return nextPage.isDisabled();
+  }
+
+  /**
+   * Check if the previous button is disabled. Visible for testing.
+   *
+   * @return true, if is previous button disabled
+   */
+  boolean isPreviousButtonDisabled() {
+    return prevPage.isDisabled();
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#lastPage()
+   */
+  @Override
+  public void lastPage() {
+    super.lastPage();
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#lastPageStart()
+   */
+  @Override
+  public void lastPageStart() {
+    super.lastPageStart();
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#nextPage()
+   */
+  @Override
+  public void nextPage() {
+    super.nextPage();
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#onRangeOrRowCountChanged()
+   */
   @Override
   protected void onRangeOrRowCountChanged() {
     HasRows display = getDisplay();
@@ -593,28 +704,25 @@ public CustomPager(TextLocation location, Resources resources,
     }
   }
 
-  /**
-   * Check if the next button is disabled. Visible for testing.
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#previousPage()
    */
-  boolean isNextButtonDisabled() {
-    return nextPage.isDisabled();
+  @Override
+  public void previousPage() {
+    super.previousPage();
   }
 
-  /**
-   * Check if the previous button is disabled. Visible for testing.
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#setDisplay(com.google.gwt.view.client.HasRows)
    */
-  boolean isPreviousButtonDisabled() {
-    return prevPage.isDisabled();
-  }
-
-  /**
-   * Get the number of pages to fast forward based on the current page size.
-   * 
-   * @return the number of pages to fast forward
-   */
-  private int getFastForwardPages() {
-    int pageSize = getPageSize();
-    return pageSize > 0 ? fastForwardRows / pageSize : 0;
+  @Override
+  public void setDisplay(HasRows display) {
+    // Enable or disable all buttons.
+    boolean disableButtons = (display == null);
+    setFastForwardDisabled(disableButtons);
+    setNextPageButtonsDisabled(disableButtons);
+    setPrevPageButtonsDisabled(disableButtons);
+    super.setDisplay(display);
   }
 
   /**
@@ -649,6 +757,30 @@ public CustomPager(TextLocation location, Resources resources,
     }
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#setPage(int)
+   */
+  @Override
+  public void setPage(int index) {
+    super.setPage(index);
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#setPageSize(int)
+   */
+  @Override
+  public void setPageSize(int pageSize) {
+    super.setPageSize(pageSize);
+  }
+
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#setPageStart(int)
+   */
+  @Override
+  public void setPageStart(int index) {
+    super.setPageStart(index);
+  }
+
   /**
    * Enable or disable the previous page buttons.
    * 
@@ -657,5 +789,15 @@ public CustomPager(TextLocation location, Resources resources,
   private void setPrevPageButtonsDisabled(boolean disabled) {
     firstPage.setDisabled(disabled);
     prevPage.setDisabled(disabled);
+  }
+
+  /**
+   * Let the page know that the table is loading. Call this method to clear all
+   * data from the table and hide the current range when new data is being
+   * loaded into the table.
+   */
+  public void startLoading() {
+    getDisplay().setRowCount(0, true);
+    label.setHTML("");
   }
 }

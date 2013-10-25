@@ -6,9 +6,14 @@ import mat.DTO.UnitDTO;
 import mat.model.Unit;
 
 /**
- * DAO interface for Unit, UnitType and Matrix tables operation
- *
+ * DAO interface for Unit, UnitType and Matrix tables operation.
  */
 public interface UnitDAO extends IDAO<Unit, String> {
+	
+	/**
+	 * Gets the all units.
+	 * 
+	 * @return the all units
+	 */
 	public List<UnitDTO> getAllUnits();
 }

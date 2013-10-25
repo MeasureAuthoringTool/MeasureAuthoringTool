@@ -29,24 +29,54 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
+/**
+ * The Class UmlsLoginView.
+ */
 public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 
 
+	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	
+	/** The info message. */
 	private HTML infoMessage = new HTML();
+	
+	/** The info message panel. */
 	private Panel infoMessagePanel;
+	
+	/** The userid. */
 	private TextBox userid;
+	
+	/** The password. */
 	private TextBox password;
+	
+	/** The submit button. */
 	private Button submitButton;
+	
+	/** The main panel. */
 	private VerticalPanel mainPanel = new VerticalPanel();
+	
+	/** The simple panel. */
 	private SimplePanel simplePanel = new SimplePanel();
+	
+	/** The success. */
 	Label success = new Label();
+	
+	/** The umls external link. */
 	Anchor umlsExternalLink;
+	
+	/** The umls trouble logging. */
 	Anchor umlsTroubleLogging;
+	
+	/** The external link disclaimer. */
 	VerticalPanel externalLinkDisclaimer = new VerticalPanel();
+	
+	/** The button bar. */
 	SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	
+	/**
+	 * Instantiates a new umls login view.
+	 */
 	public UmlsLoginView() {
 		mainPanel.setStyleName("contentPanel");
 		mainPanel.add(new SpacerWidget());
@@ -133,6 +163,13 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		mainPanel.add(new SpacerWidget());
 	}
 
+	/**
+	 * Wrap in spacer.
+	 * 
+	 * @param w
+	 *            the w
+	 * @return the simple panel
+	 */
 	private SimplePanel wrapInSpacer(Widget w) {
 		SimplePanel spacer = new SimplePanel();
 		spacer.setStylePrimaryName("loginSpacer");
@@ -140,36 +177,58 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		return spacer;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getSubmit()
+	 */
 	@Override
 	public HasClickHandlers getSubmit() {
 		return submitButton;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getUserid()
+	 */
 	@Override
 	public HasValue<String> getUserid() {
 		return userid;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getPassword()
+	 */
 	@Override
 	public HasValue<String> getPassword() {
 		return password;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
+		/* (non-Javadoc)
+		 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getInfoMessage()
+		 */
 		@Override
 	public HasHTML getInfoMessage() {
 		return infoMessage;
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#setInfoMessageVisible(boolean)
+	 */
 	@Override
 	public void setInfoMessageVisible(boolean value) {
 		if(value){
@@ -180,39 +239,67 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		MatContext.get().setVisible(infoMessagePanel,value);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getUseridField()
+	 */
 	@Override
 	public HasKeyDownHandlers getUseridField() {
 		return userid;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getPasswordField()
+	 */
 	@Override
 	public HasKeyDownHandlers getPasswordField() {
 		return password;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#setInitialFocus()
+	 */
 	@Override
 	public void setInitialFocus() {
 		userid.setFocus(false);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getUmlsExternalLink()
+	 */
 	@Override
 	public Anchor getUmlsExternalLink() {
 		return umlsExternalLink;
 	}
 
+	/**
+	 * Sets the umls external link.
+	 * 
+	 * @param umlsExternalLink
+	 *            the new umls external link
+	 */
 	public void setUmlsExternalLink(Anchor umlsExternalLink) {
 		this.umlsExternalLink = umlsExternalLink;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getExternalLinkDisclaimer()
+	 */
 	@Override
 	public VerticalPanel getExternalLinkDisclaimer() {
 		return externalLinkDisclaimer;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getUmlsTroubleLogging()
+	 */
 	@Override
 	public Anchor getUmlsTroubleLogging() {
 		return umlsTroubleLogging;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getButtonBar()
+	 */
 	@Override
 	public SaveCancelButtonBar getButtonBar() {
 		return buttonBar;

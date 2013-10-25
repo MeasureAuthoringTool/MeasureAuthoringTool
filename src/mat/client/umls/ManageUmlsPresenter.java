@@ -24,26 +24,118 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
+/**
+ * The Class ManageUmlsPresenter.
+ */
 public class ManageUmlsPresenter implements MatPresenter{
 
+	/**
+	 * The Interface UMLSDisplay.
+	 */
 	public interface UMLSDisplay {
+		
+		/**
+		 * Gets the submit.
+		 * 
+		 * @return the submit
+		 */
 		HasClickHandlers getSubmit();
+		
+		/**
+		 * Gets the userid.
+		 * 
+		 * @return the userid
+		 */
 		HasValue<String> getUserid();
+		
+		/**
+		 * Gets the password.
+		 * 
+		 * @return the password
+		 */
 		HasValue<String> getPassword();
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return the error message display
+		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
+		/**
+		 * Gets the info message.
+		 * 
+		 * @return the info message
+		 */
 		HasHTML getInfoMessage();
 
+		/**
+		 * Sets the info message visible.
+		 * 
+		 * @param value
+		 *            the new info message visible
+		 */
 		void setInfoMessageVisible(boolean value);
+		
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
 		Widget asWidget();
+		
+		/**
+		 * Gets the userid field.
+		 * 
+		 * @return the userid field
+		 */
 		HasKeyDownHandlers getUseridField();
+		
+		/**
+		 * Gets the password field.
+		 * 
+		 * @return the password field
+		 */
 		HasKeyDownHandlers getPasswordField();
+		
+		/**
+		 * Sets the initial focus.
+		 */
 		void setInitialFocus();
+		
+		/**
+		 * Gets the umls external link.
+		 * 
+		 * @return the umls external link
+		 */
 		Anchor getUmlsExternalLink();
+		
+		/**
+		 * Gets the external link disclaimer.
+		 * 
+		 * @return the external link disclaimer
+		 */
 		VerticalPanel getExternalLinkDisclaimer();
+		
+		/**
+		 * Gets the button bar.
+		 * 
+		 * @return the button bar
+		 */
 		SaveCancelButtonBar getButtonBar() ;
+		
+		/**
+		 * Gets the umls trouble logging.
+		 * 
+		 * @return the umls trouble logging
+		 */
 		Anchor getUmlsTroubleLogging();
 	}
+	
+	/** The vsacapi service. */
 	private VSACAPIServiceAsync vsacapiService  = MatContext.get().getVsacapiServiceAsync();
+	
+	/** The display. */
 	private  UMLSDisplay display;
 
 	/**Constructor.
@@ -175,17 +267,26 @@ public class ManageUmlsPresenter implements MatPresenter{
 		display.getUserid().setValue("");
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		resetWidget();
 		display.asWidget();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 		resetWidget();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		return display.asWidget();

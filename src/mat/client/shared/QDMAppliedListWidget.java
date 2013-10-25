@@ -22,19 +22,38 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+/**
+ * The Class QDMAppliedListWidget.
+ */
 public class QDMAppliedListWidget {
 
+	/** The error message panel. */
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
+	
+	/** The success message panel. */
 	private SuccessMessageDisplay successMessagePanel;
+	
+	/** The main applied qdm panel. */
 	HorizontalPanel mainAppliedQDMPanel = new HorizontalPanel();
+	
+	/** The remove button. */
 	public Button removeButton = new Button("Remove");
+	
+	/** The last selected object. */
 	public QualityDataSetDTO  lastSelectedObject;
 	
+	/** The cell list. */
 	private CellList<QualityDataSetDTO> cellList;
 	
+	/** The pager panel. */
 	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
+	
+	/** The range label pager. */
 	RangeLabelPager rangeLabelPager = new RangeLabelPager();
 	
+	/**
+	 * Instantiates a new qDM applied list widget.
+	 */
 	public QDMAppliedListWidget(){
 		successMessagePanel = new SuccessMessageDisplay();
 		successMessagePanel.clear();
@@ -61,6 +80,13 @@ public class QDMAppliedListWidget {
 		mainAppliedQDMPanel.add(vp);
 	}
 	
+	/**
+	 * Initialize cell list content.
+	 * 
+	 * @param appliedListModel
+	 *            the applied list model
+	 * @return the cell list
+	 */
 	private CellList<QualityDataSetDTO> initializeCellListContent(final QDSAppliedListModel appliedListModel){
 
 		ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>();
@@ -181,10 +207,21 @@ public class QDMAppliedListWidget {
 		return cellsList;
 	}
 
+	/**
+	 * Check for enable.
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean checkForEnable(){
 		return MatContext.get().getMeasureLockService().checkForEditPermission();
 	}
 
+	/**
+	 * Builds the cell list.
+	 * 
+	 * @param appliedListModel
+	 *            the applied list model
+	 */
 	public  void buildCellList(QDSAppliedListModel appliedListModel) {
 		if(appliedListModel.getAppliedQDMs()!=null){
 			cellList = initializeCellListContent(appliedListModel);
@@ -198,22 +235,47 @@ public class QDMAppliedListWidget {
 		}
 	}
 
+	/**
+	 * Gets the main applied qdm panel.
+	 * 
+	 * @return the main applied qdm panel
+	 */
 	public HorizontalPanel getMainAppliedQDMPanel() {
 		return mainAppliedQDMPanel;
 	}
 	
+	/**
+	 * Gets the selected element to remove.
+	 * 
+	 * @return the selected element to remove
+	 */
 	public QualityDataSetDTO getSelectedElementToRemove() {
 		return lastSelectedObject;
 	}
 
+	/**
+	 * Gets the removes the button.
+	 * 
+	 * @return the removes the button
+	 */
 	public Button getRemoveButton() {
 		return removeButton;
 	}
 
+	/**
+	 * Gets the error message panel.
+	 * 
+	 * @return the error message panel
+	 */
 	public ErrorMessageDisplay getErrorMessagePanel() {
 		return errorMessagePanel;
 	}
 
+	/**
+	 * Gets the success message panel.
+	 * 
+	 * @return the success message panel
+	 */
 	public SuccessMessageDisplay getSuccessMessagePanel() {
 		return successMessagePanel;
 	}

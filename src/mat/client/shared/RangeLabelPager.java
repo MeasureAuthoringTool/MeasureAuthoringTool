@@ -40,6 +40,9 @@ public class RangeLabelPager extends AbstractPager {
     initWidget(label);
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#onRangeOrRowCountChanged()
+   */
   @Override
   protected void onRangeOrRowCountChanged() {
     HasRows display = getDisplay();

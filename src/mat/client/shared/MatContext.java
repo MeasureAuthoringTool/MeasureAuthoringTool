@@ -53,90 +53,150 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class MatContext.
+ */
 public class MatContext implements IsSerializable {
 	
+	/** The is umls logged in. */
 	private boolean isUMLSLoggedIn = false;
+	
+	/** The do measure lock updates. */
 	private boolean doMeasureLockUpdates = false;
+	
+	/** The do user lock updates. */
 	private boolean doUserLockUpdates = false;
 	// how often to perform lock time updates
+	/** The lock update time. */
 	private final int lockUpdateTime = 2*60*1000;
+	
+	/** The user lock update time. */
 	private final int userLockUpdateTime = 2*60*1000;
 	
+	/** The Constant PLEASE_SELECT. */
 	public static final String PLEASE_SELECT = "--Select--";
+	
+	/** The instance. */
 	private static MatContext instance = new MatContext();
 	
+	/** The current module. */
 	private String currentModule;
 	
+	/** The login service. */
 	private LoginServiceAsync loginService;
 	
+	/** The measure service. */
 	private MeasureServiceAsync measureService;
 	
+	/** The measure package service. */
 	private PackageServiceAsync measurePackageService;
 
+	/** The session service. */
 	private SessionManagementServiceAsync sessionService;
 	
+	/** The admin service. */
 	private AdminServiceAsync adminService;
 	
+	/** The my account service. */
 	private MyAccountServiceAsync myAccountService;
 	
+	/** The code list service. */
 	private CodeListServiceAsync codeListService;
 	
+	/** The vsacapi service async. */
 	private VSACAPIServiceAsync vsacapiServiceAsync;
 	
+	/** The event bus. */
 	private HandlerManager eventBus;
 	
+	/** The timeout manager. */
 	private TimeoutManager timeoutManager;
 	
+	/** The current measure info. */
 	private MeasureSelectedEvent currentMeasureInfo;
 	
+	/** The is measure deleted. */
 	private boolean isMeasureDeleted;
 	
+	/** The list box code provider. */
 	private ListBoxCodeProvider listBoxCodeProvider;
 	
+	/** The audit service. */
 	private AuditServiceAsync auditService;
 	
+	/** The user id. */
 	private String userId;
+	
+	/** The user email. */
 	private String userEmail;
+	
+	/** The login id. */
 	private String loginId;
+	
+	/** The user role. */
 	private String userRole;
 	
 	
+	/** The zoom factor service. */
 	private ZoomFactorService zoomFactorService = new ZoomFactorService();
 	
 	
+	/** The qds view. */
 	private QDSCodeListSearchView qdsView;
+	
+	/** The modify qdm pop up widget. */
 	private QDMAvailableValueSetWidget modifyQDMPopUpWidget;
 	
+	/** The manage measure search view. */
 	private ManageMeasureSearchView manageMeasureSearchView;
+	
+	/** The admin manage measure search view. */
 	private AdminManageMeasureSearchView adminManageMeasureSearchView;
+	
+	/** The manage measure search model. */
 	private ManageMeasureSearchModel manageMeasureSearchModel;
 	
+	/** The manage code list search view. */
 	private ManageCodeListSearchView manageCodeListSearchView;
 	
+	/** The manage code list search model. */
 	private AdminManageCodeListSearchModel manageCodeListSearchModel;
 	
 	
+	/** The synchronization delegate. */
 	private SynchronizationDelegate synchronizationDelegate = new SynchronizationDelegate();
 	
+	/** The error tab index. */
 	private int errorTabIndex;
 	
+	/** The is error tab. */
 	private boolean isErrorTab;
 	
+	/** The timings. */
 	public List<String> timings = new ArrayList<String>();
 	
+	/** The functions. */
 	public List<String> functions = new ArrayList<String>();
 	
+	/** The relationships. */
 	public List<String> relationships = new ArrayList<String>();
 	
+	/** The comparison ops. */
 	public List<String> comparisonOps = new ArrayList<String>();
 	
+	/** The logical ops. */
 	public List<String> logicalOps = new ArrayList<String>();
 	
+	/** The operator map key short. */
 	public Map<String, String> operatorMapKeyShort = new HashMap<String, String>();
 	
+	/** The operator map key long. */
 	public Map<String, String> operatorMapKeyLong = new HashMap<String, String>();
 	
 	
+	/**
+	 * Clear dvi messages.
+	 */
 	public void clearDVIMessages(){
 		if(qdsView !=null){
 			qdsView.getSuccessMessageDisplay().clear();
@@ -145,6 +205,9 @@ public class MatContext implements IsSerializable {
 	}
 	
 	
+	/**
+	 * Clear modify pop up messages.
+	 */
 	public void clearModifyPopUpMessages(){
 		if(modifyQDMPopUpWidget !=null){
 			modifyQDMPopUpWidget.getApplyToMeasureSuccessMsg().clear();
@@ -154,36 +217,88 @@ public class MatContext implements IsSerializable {
 		}
 	}
 		
+	/**
+	 * Gets the admin manage measure search view.
+	 * 
+	 * @return the admin manage measure search view
+	 */
 	public AdminManageMeasureSearchView getAdminManageMeasureSearchView() {
 		return adminManageMeasureSearchView;
 	}
 
+	/**
+	 * Sets the admin manage measure search view.
+	 * 
+	 * @param view
+	 *            the new admin manage measure search view
+	 */
 	public void setAdminManageMeasureSearchView(AdminManageMeasureSearchView view){
 		adminManageMeasureSearchView=view;
 	}
 		
+	/**
+	 * Sets the qDS view.
+	 * 
+	 * @param view
+	 *            the new qDS view
+	 */
 	public void setQDSView(QDSCodeListSearchView view){
 		qdsView=view;
 	}
 	
+	/**
+	 * Sets the qds applied list view.
+	 * 
+	 * @param qdsAppliedListView
+	 *            the new qds applied list view
+	 */
 	public void setQdsAppliedListView(QDSAppliedListView qdsAppliedListView) {
 	}
 	
 	//register the Value Set search messages
 	//register the property editor messages
 	
+	/**
+	 * Sets the error message1.
+	 * 
+	 * @param msg
+	 *            the new error message1
+	 */
 	public void setErrorMessage1(ErrorMessageDisplay msg){
 	}
 	
 	
+	/**
+	 * Gets the list box code provider.
+	 * 
+	 * @return the list box code provider
+	 */
 	public ListBoxCodeProvider getListBoxCodeProvider() {
 		return listBoxCodeProvider;
 	}
 
+	/**
+	 * Sets the list box code provider.
+	 * 
+	 * @param listBoxCodeProvider
+	 *            the new list box code provider
+	 */
 	public void setListBoxCodeProvider(ListBoxCodeProvider listBoxCodeProvider) {
 		this.listBoxCodeProvider = listBoxCodeProvider;
 	}
 
+	/**
+	 * Sets the user info.
+	 * 
+	 * @param userId
+	 *            the user id
+	 * @param userEmail
+	 *            the user email
+	 * @param userRole
+	 *            the user role
+	 * @param loginId
+	 *            the login id
+	 */
 	public void setUserInfo(String userId, String userEmail, String userRole,String loginId) {
 		this.userId = userId;
 		this.userEmail = userEmail;
@@ -191,6 +306,10 @@ public class MatContext implements IsSerializable {
 		this.loginId=loginId;
 		//setUserSignInDate(userId);
 	}
+	
+	/**
+	 * Instantiates a new mat context.
+	 */
 	protected MatContext(){
 		
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
@@ -220,10 +339,23 @@ public class MatContext implements IsSerializable {
 		});
 	}
 	
+	/**
+	 * Gets the event bus.
+	 * 
+	 * @return the event bus
+	 */
 	public HandlerManager getEventBus() {
 		return eventBus;
 	}
 	
+	/**
+	 * Log exception.
+	 * 
+	 * @param message
+	 *            the message
+	 * @param t
+	 *            the t
+	 */
 	public void logException(String message, Throwable t) {
 		StackTraceElement[] elementArr = t.getStackTrace();
 		for (StackTraceElement element : elementArr) {
@@ -231,6 +363,11 @@ public class MatContext implements IsSerializable {
 		}
 	}
 	
+	/**
+	 * Gets the my account service.
+	 * 
+	 * @return the my account service
+	 */
 	public MyAccountServiceAsync getMyAccountService(){
 		if(myAccountService == null){
 			myAccountService= (MyAccountServiceAsync) GWT.create(MyAccountService.class);
@@ -238,6 +375,11 @@ public class MatContext implements IsSerializable {
 		return myAccountService;
 	}
 	
+	/**
+	 * Gets the code list service.
+	 * 
+	 * @return the code list service
+	 */
 	public CodeListServiceAsync getCodeListService(){
 		if(codeListService == null){
 			codeListService= (CodeListServiceAsync) GWT.create(CodeListService.class);
@@ -245,12 +387,23 @@ public class MatContext implements IsSerializable {
 		return codeListService;
 	}
 	
+	/**
+	 * Gets the admin service.
+	 * 
+	 * @return the admin service
+	 */
 	public AdminServiceAsync getAdminService(){
 		if(adminService == null){
 			adminService = (AdminServiceAsync) GWT.create(AdminService.class);
 		}
 		return adminService;
 	}
+	
+	/**
+	 * Gets the login service.
+	 * 
+	 * @return the login service
+	 */
 	public LoginServiceAsync getLoginService(){
 		if(loginService == null){
 			loginService = (LoginServiceAsync) GWT.create(LoginService.class);
@@ -258,6 +411,11 @@ public class MatContext implements IsSerializable {
 		return loginService;
 	}
 	
+	/**
+	 * Gets the vsacapi service async.
+	 * 
+	 * @return the vsacapi service async
+	 */
 	public VSACAPIServiceAsync getVsacapiServiceAsync() {
 		if(vsacapiServiceAsync == null){
 			vsacapiServiceAsync = (VSACAPIServiceAsync) GWT.create(VSACAPIService.class);
@@ -266,11 +424,22 @@ public class MatContext implements IsSerializable {
 	}
 
 
+	/**
+	 * Sets the vsacapi service async.
+	 * 
+	 * @param vsacapiServiceAsync
+	 *            the new vsacapi service async
+	 */
 	public void setVsacapiServiceAsync(VSACAPIServiceAsync vsacapiServiceAsync) {
 		this.vsacapiServiceAsync = vsacapiServiceAsync;
 	}
 
 
+	/**
+	 * Gets the session service.
+	 * 
+	 * @return the session service
+	 */
 	private SessionManagementServiceAsync getSessionService(){
 		if(sessionService == null){
 			sessionService = (SessionManagementServiceAsync) GWT.create(SessionManagementService.class);
@@ -278,6 +447,11 @@ public class MatContext implements IsSerializable {
 		return sessionService;
 	}
 
+	/**
+	 * Gets the measure service.
+	 * 
+	 * @return the measure service
+	 */
 	public MeasureServiceAsync getMeasureService(){
 		if(measureService == null){
 			measureService = (MeasureServiceAsync) GWT.create(MeasureService.class);
@@ -285,6 +459,11 @@ public class MatContext implements IsSerializable {
 		return measureService;
 	}
 	
+	/**
+	 * Gets the audit service.
+	 * 
+	 * @return the audit service
+	 */
 	public AuditServiceAsync getAuditService(){
 		if(auditService == null){
 			auditService = (AuditServiceAsync) GWT.create(AuditService.class);
@@ -293,6 +472,11 @@ public class MatContext implements IsSerializable {
 	}
 
 	
+	/**
+	 * Gets the package service.
+	 * 
+	 * @return the package service
+	 */
 	public PackageServiceAsync getPackageService(){
 		if(measurePackageService == null){
 			measurePackageService = (PackageServiceAsync) GWT.create(PackageService.class);
@@ -300,48 +484,119 @@ public class MatContext implements IsSerializable {
 		return measurePackageService;
 	}
 	
+	/**
+	 * Gets the.
+	 * 
+	 * @return the mat context
+	 */
 	public static MatContext get(){
 		return instance;
 	}
 	
+	/**
+	 * Gets the logged in user role.
+	 * 
+	 * @return the logged in user role
+	 */
 	public String getLoggedInUserRole() {
 		return userRole;
 	}
 	
+	/**
+	 * Gets the loggedin user id.
+	 * 
+	 * @return the loggedin user id
+	 */
 	public String getLoggedinUserId(){
 		return userId;
 	}
+	
+	/**
+	 * Gets the loggedin login id.
+	 * 
+	 * @return the loggedin login id
+	 */
 	public String getLoggedinLoginId(){
 		return loginId;
 	}
+	
+	/**
+	 * Gets the logged in user email.
+	 * 
+	 * @return the logged in user email
+	 */
 	public String getLoggedInUserEmail() {
 		return userEmail;
 	}
+	
+	/**
+	 * Change password security questions.
+	 * 
+	 * @param model
+	 *            the model
+	 * @param asyncCallback
+	 *            the async callback
+	 */
 	public void changePasswordSecurityQuestions(LoginModel model, AsyncCallback<LoginResult> asyncCallback) {
 		getLoginService().changePasswordSecurityAnswers(model, asyncCallback);
 	}
 	
+	/**
+	 * Checks if is valid user.
+	 * 
+	 * @param username
+	 *            the username
+	 * @param Password
+	 *            the password
+	 * @param callback
+	 *            the callback
+	 */
 	public void isValidUser(String username, String Password,AsyncCallback<LoginModel> callback){
 		getLoginService().isValidUser(username, Password, callback);
 	}
 	
+	/**
+	 * Gets the list box data.
+	 * 
+	 * @param listBoxCallback
+	 *            the list box callback
+	 * @return the list box data
+	 */
 	public void getListBoxData(AsyncCallback<CodeListService.ListBoxData> listBoxCallback){
 		getCodeListService().getListBoxData(listBoxCallback);
 	}
 
+	/**
+	 * Gets the current user role.
+	 * 
+	 * @param userRoleCallback
+	 *            the user role callback
+	 * @return the current user role
+	 */
 	public void getCurrentUserRole(AsyncCallback<SessionManagementService.Result> userRoleCallback){
 		getSessionService().getCurrentUserRole(userRoleCallback);
 	}
 	
 	
+	/**
+	 * Restart timeout warning.
+	 */
 	public void restartTimeoutWarning() {
 		getTimeoutManager().startActivityTimers(ConstantMessages.MAT_MODULE);
 	}
 	
+	/**
+	 * Restart umls signout.
+	 */
 	public void restartUMLSSignout() {
 		getTimeoutManager().startUMLSTimer();
 	}
 
+	/**
+	 * Gets the current measure id.
+	 * 
+	 * @return the current measure id
+	 */
 	public String getCurrentMeasureId() {
 		if(currentMeasureInfo != null) {
 			return currentMeasureInfo.getMeasureId();
@@ -351,6 +606,11 @@ public class MatContext implements IsSerializable {
 		}
 	}
 
+	/**
+	 * Gets the current measure name.
+	 * 
+	 * @return the current measure name
+	 */
 	public String getCurrentMeasureName() {
 		if(currentMeasureInfo != null) {
 			return currentMeasureInfo.getMeasureName();
@@ -360,6 +620,11 @@ public class MatContext implements IsSerializable {
 		}
 	}
 	
+	/**
+	 * Gets the current measure version.
+	 * 
+	 * @return the current measure version
+	 */
 	public String getCurrentMeasureVersion() {
 		if(currentMeasureInfo != null) {
 			return currentMeasureInfo.getMeasureVersion();
@@ -369,25 +634,54 @@ public class MatContext implements IsSerializable {
 		}
 	}
 
+	/**
+	 * Sets the current measure version.
+	 * 
+	 * @param s
+	 *            the new current measure version
+	 */
 	public void setCurrentMeasureVersion(String s) {
 		if(currentMeasureInfo != null) 
 			currentMeasureInfo.setMeasureVersion(s);
 	}
 	
 	
+	/**
+	 * Sets the current measure scoring type.
+	 * 
+	 * @param s
+	 *            the new current measure scoring type
+	 */
 	public void setCurrentMeasureScoringType(String s){
 		
 		if(currentMeasureInfo!=null)
 			currentMeasureInfo.setScoringType(s);
 	}
 	
+	/**
+	 * Sets the current module.
+	 * 
+	 * @param moduleName
+	 *            the new current module
+	 */
 	public void setCurrentModule(String moduleName){
 		this.currentModule = moduleName;
 	}
 	
+	/**
+	 * Gets the current module.
+	 * 
+	 * @return the current module
+	 */
 	public String getCurrentModule(){
 		return currentModule;
 	}
+	
+	/**
+	 * Gets the current measure scoring type.
+	 * 
+	 * @return the current measure scoring type
+	 */
 	public String getCurrentMeasureScoringType(){
 		if(currentMeasureInfo != null){
 			return currentMeasureInfo.getScoringType();
@@ -397,12 +691,23 @@ public class MatContext implements IsSerializable {
 		}
 	}
 	
+	/**
+	 * Sets the current measure name.
+	 * 
+	 * @param measureName
+	 *            the new current measure name
+	 */
 	public void setCurrentMeasureName(String measureName) {
 		if(currentMeasureInfo != null) {
 			currentMeasureInfo.setMeasureName(measureName);
 		}
 	}
 	
+	/**
+	 * Gets the current short name.
+	 * 
+	 * @return the current short name
+	 */
 	public String getCurrentShortName() {
 		if(currentMeasureInfo != null) {
 			return currentMeasureInfo.getShortName();
@@ -412,12 +717,23 @@ public class MatContext implements IsSerializable {
 		}
 	}
 	
+	/**
+	 * Sets the current short name.
+	 * 
+	 * @param shortName
+	 *            the new current short name
+	 */
 	public void setCurrentShortName(String shortName) {
 		if(currentMeasureInfo != null) {
 			currentMeasureInfo.setShortName(shortName);
 		}
 	}
 	
+	/**
+	 * Checks if is current measure editable.
+	 * 
+	 * @return true, if is current measure editable
+	 */
 	public boolean isCurrentMeasureEditable() {
 		if(currentMeasureInfo != null) {
 			return currentMeasureInfo.isEditable();
@@ -427,6 +743,11 @@ public class MatContext implements IsSerializable {
 		}
 	}
 	
+	/**
+	 * Checks if is current measure locked.
+	 * 
+	 * @return true, if is current measure locked
+	 */
 	public boolean isCurrentMeasureLocked(){
 		if(currentMeasureInfo != null) {
 			return currentMeasureInfo.isLocked();
@@ -436,6 +757,9 @@ public class MatContext implements IsSerializable {
 		}
 	}
 	
+	/**
+	 * Renew session.
+	 */
 	public void renewSession() {
 		getSessionService().renewSession(new AsyncCallback<Void>() {
 
@@ -451,6 +775,12 @@ public class MatContext implements IsSerializable {
 		});
 	}
 	
+	/**
+	 * Redirect to html page.
+	 * 
+	 * @param html
+	 *            the html
+	 */
 	public void redirectToHtmlPage(String html) {
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
 		String path = Window.Location.getPath();
@@ -459,12 +789,25 @@ public class MatContext implements IsSerializable {
 		urlBuilder.setPath(path);
 		Window.Location.replace(urlBuilder.buildString());
 	}
+	
+	/**
+	 * Open url.
+	 * 
+	 * @param html
+	 *            the html
+	 */
 	public void openURL(String html){
 		Window.open(html, "User_Guide", "");
 		
 	}
 	
 	
+	/**
+	 * Open new html page.
+	 * 
+	 * @param html
+	 *            the html
+	 */
 	public void openNewHtmlPage(String html) {
 		String windowFeatures = "toolbar=no, location=no, personalbar=no, menubar=yes, scrollbars=yes, resizable=yes"; 
 		UrlBuilder urlBuilder = Window.Location.createUrlBuilder();
@@ -476,10 +819,26 @@ public class MatContext implements IsSerializable {
 		Window.open(urlBuilder.buildString(),"_blank",windowFeatures);
 	}
 	
+	/**
+	 * Sets the aria hidden.
+	 * 
+	 * @param widget
+	 *            the widget
+	 * @param value
+	 *            the value
+	 */
 	public void setAriaHidden(Widget widget, Boolean value){
 		setAriaHidden(widget, value.toString());
 	}
 	
+	/**
+	 * Sets the aria hidden.
+	 * 
+	 * @param widget
+	 *            the widget
+	 * @param value
+	 *            the value
+	 */
 	public void setAriaHidden(Widget widget, String value){
 		widget.getElement().setAttribute("aria-hidden", value);
 	}
@@ -502,17 +861,37 @@ public class MatContext implements IsSerializable {
 		//NOTE: if (visible = true) then (ARIA not hidden)
 		setAriaHidden(widget, !visible);
 	}
+	
+	/** The enable registry. */
 	public HashMap enableRegistry = new HashMap<String, Enableable>();
+	
+	/** The tab registry. */
 	public HashMap tabRegistry = new HashMap<String, TabPanel>();
 
+	/**
+	 * Gets the zoom factor service.
+	 * 
+	 * @return the zoom factor service
+	 */
 	public ZoomFactorService getZoomFactorService(){
 		return this.zoomFactorService;
 	}
 
+	/**
+	 * Gets the current measure info.
+	 * 
+	 * @return the current measure info
+	 */
 	public MeasureSelectedEvent getCurrentMeasureInfo(){
 		return currentMeasureInfo;
 	}
 
+	/**
+	 * Sets the current measure info.
+	 * 
+	 * @param evt
+	 *            the new current measure info
+	 */
 	public void setCurrentMeasureInfo(MeasureSelectedEvent evt){
 		this.currentMeasureInfo = evt;
 	}
@@ -521,8 +900,14 @@ public class MatContext implements IsSerializable {
 	 * MeasureLock Service --- contains logic to set and release the lock.
 	 *
 	 */
+	/** The measure lock service. */
 	private MeasureLockService measureLockService = new MeasureLockService();
 
+	/**
+	 * Gets the measure lock service.
+	 * 
+	 * @return the measure lock service
+	 */
 	public MeasureLockService getMeasureLockService(){
 	    return measureLockService;
 	}
@@ -537,10 +922,23 @@ public class MatContext implements IsSerializable {
 	 * when the queue is empty, then loading is done
 	 * NOTE a queue is required because >= 1 add operations could be invoked before a subsequent poll
 	 */
+	/** The loading queue. */
 	private MATQueue loadingQueue = new MATQueue();
+	
+	/**
+	 * Gets the loading queue.
+	 * 
+	 * @return the loading queue
+	 */
 	public MATQueue getLoadingQueue(){
 		return loadingQueue;
 	}
+	
+	/**
+	 * Checks if is loading.
+	 * 
+	 * @return true, if is loading
+	 */
 	public boolean isLoading(){
 		return !getLoadingQueue().isEmpty();
 	}
@@ -548,15 +946,30 @@ public class MatContext implements IsSerializable {
 	/*
 	 * Message store to prevent duplicated messages
 	 */
+	/** The message delegate. */
 	private MessageDelegate messageDelegate = new MessageDelegate();
+	
+	/**
+	 * Gets the message delegate.
+	 * 
+	 * @return the message delegate
+	 */
 	public MessageDelegate getMessageDelegate(){
 		return messageDelegate;
 	}
 
+	/**
+	 * Fire loading alert.
+	 */
 	public void fireLoadingAlert(){
 		Window.alert(MatContext.get().getMessageDelegate().getAlertLoadingMessage());
 	}
 
+	/**
+	 * Gets the timeout manager.
+	 * 
+	 * @return the timeout manager
+	 */
 	private TimeoutManager getTimeoutManager(){
 		if (timeoutManager == null){
 			timeoutManager = new TimeoutManager();
@@ -613,6 +1026,13 @@ public class MatContext implements IsSerializable {
 			t.scheduleRepeating(userLockUpdateTime);
 		}
 	}
+	
+	/**
+	 * Sets the user sign in date.
+	 * 
+	 * @param userid
+	 *            the new user sign in date
+	 */
 	public void setUserSignInDate(String userid) {
 		if (userid != null) {
 			getMyAccountService().setUserSignInDate(userid, new AsyncCallback<Void>() {
@@ -623,8 +1043,10 @@ public class MatContext implements IsSerializable {
 			});
 		}
 	}
+	
 	/**
-	 * set flag doUserLockUpdates to false the repeating process will verify based on its value
+	 * set flag doUserLockUpdates to false the repeating process will verify
+	 * based on its value.
 	 */
 	public void stopUserLockUpdate() {
 		doUserLockUpdates = false;
@@ -644,6 +1066,13 @@ public class MatContext implements IsSerializable {
 	 * where * could contain a -
 	 * return text without -<<oid>>
 	 */
+	/**
+	 * Gets the text sans oid.
+	 * 
+	 * @param text
+	 *            the text
+	 * @return the text sans oid
+	 */
 	public String getTextSansOid(String text) {
 		if (text == null) {
 			return text;
@@ -657,6 +1086,13 @@ public class MatContext implements IsSerializable {
 		}
 	}
 
+	/**
+	 * Strip off oid.
+	 * 
+	 * @param item
+	 *            the item
+	 * @return the string
+	 */
 	public String stripOffOID(String item) {
 		int idx = item.lastIndexOf('-');
 		if(idx < 0){
@@ -665,6 +1101,20 @@ public class MatContext implements IsSerializable {
 		return item.substring(0,idx).trim();
 	}
 
+	/**
+	 * Record transaction event.
+	 * 
+	 * @param primaryId
+	 *            the primary id
+	 * @param secondaryId
+	 *            the secondary id
+	 * @param activityType
+	 *            the activity type
+	 * @param additionalInfo
+	 *            the additional info
+	 * @param logLevel
+	 *            the log level
+	 */
 	public void recordTransactionEvent(String primaryId, String secondaryId, String activityType, String additionalInfo, int logLevel){
 		String userId = getLoggedinUserId();
 		String userEmail = "["+getLoggedInUserEmail()+"] ";
@@ -677,10 +1127,26 @@ public class MatContext implements IsSerializable {
 		});
 	}
 
+	/**
+	 * Gets the synchronization delegate.
+	 * 
+	 * @return the synchronization delegate
+	 */
 	public SynchronizationDelegate getSynchronizationDelegate() {
 		return synchronizationDelegate;
 	}
 
+	/**
+	 * Checks if is already signed in.
+	 * 
+	 * @param lastSignOut
+	 *            the last sign out
+	 * @param lastSignIn
+	 *            the last sign in
+	 * @param current
+	 *            the current
+	 * @return true, if is already signed in
+	 */
 	public boolean isAlreadySignedIn(Date lastSignOut, Date lastSignIn, Date current){
 		/*
 		 * ASSUMPTION: while signed in... lastSignIn is updated every 2 minutes
@@ -697,6 +1163,8 @@ public class MatContext implements IsSerializable {
 
 
 	/**
+	 * Gets the manage measure search view.
+	 * 
 	 * @return the manageMeasureSearchView
 	 */
 	public ManageMeasureSearchView getManageMeasureSearchView() {
@@ -705,7 +1173,10 @@ public class MatContext implements IsSerializable {
 
 
 	/**
-	 * @param manageMeasureSearchView the manageMeasureSearchView to set
+	 * Sets the manage measure search view.
+	 * 
+	 * @param manageMeasureSearchView
+	 *            the manageMeasureSearchView to set
 	 */
 	public void setManageMeasureSearchView(
 			ManageMeasureSearchView manageMeasureSearchView) {
@@ -714,6 +1185,8 @@ public class MatContext implements IsSerializable {
 
 
 	/**
+	 * Gets the manage measure search model.
+	 * 
 	 * @return the manageMeasureSearchModel
 	 */
 	public ManageMeasureSearchModel getManageMeasureSearchModel() {
@@ -722,7 +1195,10 @@ public class MatContext implements IsSerializable {
 
 
 	/**
-	 * @param manageMeasureSearchModel the manageMeasureSearchModel to set
+	 * Sets the manage measure search model.
+	 * 
+	 * @param manageMeasureSearchModel
+	 *            the manageMeasureSearchModel to set
 	 */
 	public void setManageMeasureSearchModel(
 			ManageMeasureSearchModel manageMeasureSearchModel) {
@@ -731,6 +1207,8 @@ public class MatContext implements IsSerializable {
 
 
 	/**
+	 * Checks if is error tab.
+	 * 
 	 * @return the isErrorTab
 	 */
 	public boolean isErrorTab() {
@@ -739,7 +1217,10 @@ public class MatContext implements IsSerializable {
 
 
 	/**
-	 * @param isErrorTab the isErrorTab to set
+	 * Sets the error tab.
+	 * 
+	 * @param isErrorTab
+	 *            the isErrorTab to set
 	 */
 	public void setErrorTab(boolean isErrorTab) {
 		this.isErrorTab = isErrorTab;
@@ -747,6 +1228,8 @@ public class MatContext implements IsSerializable {
 
 
 	/**
+	 * Gets the error tab index.
+	 * 
 	 * @return the errorTabIndex
 	 */
 	public int getErrorTabIndex() {
@@ -755,7 +1238,10 @@ public class MatContext implements IsSerializable {
 
 
 	/**
-	 * @param errorTabIndex the errorTabIndex to set
+	 * Sets the error tab index.
+	 * 
+	 * @param errorTabIndex
+	 *            the errorTabIndex to set
 	 */
 	public void setErrorTabIndex(int errorTabIndex) {
 		this.errorTabIndex = errorTabIndex;
@@ -763,7 +1249,10 @@ public class MatContext implements IsSerializable {
 
 
 	/**
-	 * @param manageCodeListSearchView the manageCodeListSearchView to set
+	 * Sets the manage code list search view.
+	 * 
+	 * @param manageCodeListSearchView
+	 *            the manageCodeListSearchView to set
 	 */
 	public void setManageCodeListSearchView(ManageCodeListSearchView manageCodeListSearchView) {
 		this.manageCodeListSearchView = manageCodeListSearchView;
@@ -771,6 +1260,8 @@ public class MatContext implements IsSerializable {
 
 
 	/**
+	 * Gets the manage code list search view.
+	 * 
 	 * @return the manageCodeListSearchView
 	 */
 	public ManageCodeListSearchView getManageCodeListSearchView() {
@@ -779,7 +1270,10 @@ public class MatContext implements IsSerializable {
 
 
 	/**
-	 * @param manageCodeListSearcModel the manageCodeListSearcModel to set
+	 * Sets the manage code list searc model.
+	 * 
+	 * @param manageCodeListSearchModel
+	 *            the new manage code list searc model
 	 */
 	public void setManageCodeListSearcModel(AdminManageCodeListSearchModel manageCodeListSearchModel) {
 		this.manageCodeListSearchModel =  manageCodeListSearchModel;
@@ -787,6 +1281,8 @@ public class MatContext implements IsSerializable {
 
 
 	/**
+	 * Gets the manage code list search model.
+	 * 
 	 * @return the manageCodeListSearcModel
 	 */
 	public AdminManageCodeListSearchModel getManageCodeListSearchModel() {
@@ -795,6 +1291,11 @@ public class MatContext implements IsSerializable {
 
 	/**
 	 * Method is called on SignOut/ X out / Time Out.
+	 * 
+	 * @param activityType
+	 *            the activity type
+	 * @param isRedirect
+	 *            the is redirect
 	 */
 	public void handleSignOut(String activityType, final boolean isRedirect) {
 		MatContext.get().getSynchronizationDelegate().setLogOffFlag();
@@ -819,6 +1320,11 @@ public class MatContext implements IsSerializable {
 	}
 
 
+	/**
+	 * Gets the all operators.
+	 * 
+	 * @return the all operators
+	 */
 	public void getAllOperators(){
 		getCodeListService().getAllOperators(new AsyncCallback<List<OperatorDTO>>() {
 
@@ -851,27 +1357,55 @@ public class MatContext implements IsSerializable {
 	}
 
 
+	/**
+	 * Sets the modify qdm pop up widget.
+	 * 
+	 * @param modifyQDMPopUpWidget
+	 *            the new modify qdm pop up widget
+	 */
 	public void setModifyQDMPopUpWidget(
 			QDMAvailableValueSetWidget modifyQDMPopUpWidget) {
 		this.modifyQDMPopUpWidget = modifyQDMPopUpWidget;
 	}
 
 
+	/**
+	 * Checks if is measure deleted.
+	 * 
+	 * @return true, if is measure deleted
+	 */
 	public boolean isMeasureDeleted() {
 		return isMeasureDeleted;
 	}
 
 
+	/**
+	 * Sets the measure deleted.
+	 * 
+	 * @param isMeasureDeleted
+	 *            the new measure deleted
+	 */
 	public void setMeasureDeleted(boolean isMeasureDeleted) {
 		this.isMeasureDeleted = isMeasureDeleted;
 	}
 
 
+	/**
+	 * Checks if is uMLS logged in.
+	 * 
+	 * @return true, if is uMLS logged in
+	 */
 	public boolean isUMLSLoggedIn() {
 		return isUMLSLoggedIn;
 	}
 
 
+	/**
+	 * Sets the uMLS logged in.
+	 * 
+	 * @param isUMLSLoggedIn
+	 *            the new uMLS logged in
+	 */
 	public void setUMLSLoggedIn(boolean isUMLSLoggedIn) {
 		this.isUMLSLoggedIn = isUMLSLoggedIn;
 	}

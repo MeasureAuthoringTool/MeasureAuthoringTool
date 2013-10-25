@@ -20,25 +20,49 @@ import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
+/**
+ * The Class TimeoutManager.
+ */
 class TimeoutManager {
 	
+	/** The Constant WARNING_TIME. */
 	private static final int WARNING_TIME = 25 * 60 * 1000;
+	
+	/** The Constant WARNING_INTERVAL. */
 	private static final int WARNING_INTERVAL = 5 * 60 * 1000;
+	
+	/** The Constant REPEATED_WARNING_INTERVAL. */
 	private static final int REPEATED_WARNING_INTERVAL = 1 * 60 * 1000;
+	
+	/** The Constant TIMEOUTTHRESHOLD_TIME. */
 	private static final int TIMEOUTTHRESHOLD_TIME = WARNING_TIME + WARNING_INTERVAL;
+	
+	/** The alert icon. */
 	private Image alertIcon = new Image(ImageResources.INSTANCE.msg_error());
+	
+	/** The Constant UMLS_TIME_OUT. */
 	private static final int UMLS_TIME_OUT = 8 * 60 * 60 * 1000;//5 *  60 * 1000;//
+	
+	/** The warning banner widget. */
 	private static HTML warningBannerWidget ;
 	
 	
+	/** The last activity time. */
 	private long lastActivityTime = 0;
+	
+	/** The last umls sign in. */
 	private long lastUMLSSignIn =0;
 	//US 439
+	/** The active module. */
 	private volatile String activeModule = null;
 	
+	/** The time out panel. */
 	private static Panel timeOutPanel;
 
+	/** The actual time out time. */
 	private  long actualTimeOutTime;
+	
+	/** The formatted time. */
 	private  String formattedTime;
 
 	/***
@@ -61,7 +85,8 @@ class TimeoutManager {
 	    };
 
 
-	    private Timer umlsTicketTimeOut = new Timer(){
+	    /** The umls ticket time out. */
+    	private Timer umlsTicketTimeOut = new Timer(){
 
 			@Override
 			public void run() {
@@ -75,7 +100,10 @@ class TimeoutManager {
 	    	
 	    };
 	  
-	    private void invalidateVSacSession(){
+	    /**
+		 * Invalidate v sac session.
+		 */
+    	private void invalidateVSacSession(){
 	    	MatContext.get().getVsacapiServiceAsync().inValidateVsacUser(new AsyncCallback<Void>() {
 
 				@Override
@@ -97,6 +125,7 @@ class TimeoutManager {
 	 * currentTime - lastActivityTime < 30 minutes. else, fires logOff event.
 	 */
 	//US 153
+	/** The timeout warning. */
 	private Timer timeoutWarning = new Timer() {
 		public void run() {			
 			    Date today = new Date();
@@ -123,6 +152,12 @@ class TimeoutManager {
 	 * This startActivityTimer will be called everytime the user interacts within the app.
 	 * 
 	 */
+	/**
+	 * Start activity timers.
+	 * 
+	 * @param module
+	 *            the module
+	 */
 	public void startActivityTimers(String module) {
 		clearTimeOutWarning();
 		activeModule = module;
@@ -137,6 +172,9 @@ class TimeoutManager {
 		}
 	}
 	
+	/**
+	 * Start umls timer.
+	 */
 	public void startUMLSTimer(){
 		Date umlsActivityDate = new Date();
 		lastUMLSSignIn = umlsActivityDate.getTime();
@@ -146,6 +184,11 @@ class TimeoutManager {
 	
 	
 	
+	/**
+	 * Builds the time out warning panel.
+	 * 
+	 * @return the panel
+	 */
 	private Panel buildTimeOutWarningPanel(){
 		timeOutPanel = new HorizontalPanel();
 		timeOutPanel.getElement().setAttribute("id", "timeOutContainer");
@@ -163,6 +206,9 @@ class TimeoutManager {
 		return timeOutPanel;
 	}
 	
+	/**
+	 * Show time out warning.
+	 */
 	private void showTimeOutWarning(){
 		   clearTimeOutWarning();
 		   warningBannerWidget = new HTML("Warning! Your session is about to expire at " + formattedTime +
@@ -171,6 +217,9 @@ class TimeoutManager {
 		   RootPanel.get("timeOutWarning").getElement().setAttribute("role", "alert");
 	}
 	
+	/**
+	 * Clear time out warning.
+	 */
 	private void clearTimeOutWarning(){
 		if(RootPanel.get("timeOutWarning") != null){
 			RootPanel.get("timeOutWarning").getElement().setAttribute("role", "alert");
@@ -178,10 +227,21 @@ class TimeoutManager {
 		}
 	}
 	
+	/**
+	 * Sets the id.
+	 * 
+	 * @param widget
+	 *            the widget
+	 * @param id
+	 *            the id
+	 */
 	protected void setId(Widget widget, String id) {
 		DOM.setElementAttribute(widget.getElement(), "id", id);
 	}
 	
+	/**
+	 * Fire log off event.
+	 */
 	private void fireLogOffEvent(){
 		Mat.hideLoadingMessage();
 		Mat.showSignOutMessage();

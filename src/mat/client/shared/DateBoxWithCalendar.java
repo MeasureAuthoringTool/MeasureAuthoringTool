@@ -29,42 +29,97 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.datepicker.client.DatePicker;
 
+/**
+ * The Class DateBoxWithCalendar.
+ */
 public class DateBoxWithCalendar extends Composite{
+	
+	/** The Constant DATE_BOX_FORMAT_ERROR. */
 	private static final String DATE_BOX_FORMAT_ERROR = "dateBoxFormatError";
 
 	
 	
+	/** The panel. */
 	FocusPanel fPanel;
+	
+	/** The panel. */
 	private HorizontalPanel panel = new HorizontalPanel();
+	
+	/** The date box. */
 	private TextBox dateBox;
+	
+	/** The df. */
 	private DateTimeFormat df = DateTimeFormat.getFormat("MM/dd/yyyy");
+	
+	/** The pop. */
 	private PopupPanel pop;
+	
+	/** The date picker. */
 	private DatePicker datePicker;
+	
+	/** The date picker popup. */
 	private PopupPanel datePickerPopup;
+	
+	/** The show invalid message. */
 	private boolean showInvalidMessage;
+	
+	/** The value changed. */
 	private boolean valueChanged = false;
+	
+	/** The calendar. */
 	public CustomButton calendar;
 
+	/** The max length. */
 	private int maxLength;
+	
+	/** The Constant MDY. */
 	public static final int MDY = 10;
+	
+	/** The Constant MDYHMA. */
 	public static final int MDYHMA = 19;
 
+	/** The label. */
 	public String label;
+	
+	/** The inv label. */
 	public Label invLabel;
+	
+	/** The enabled. */
 	boolean enabled;
 	
+	/**
+	 * Instantiates a new date box with calendar.
+	 */
 	public DateBoxWithCalendar() {
 		this(false,"", MDY);
 	}
 	
+	/**
+	 * Instantiates a new date box with calendar.
+	 * 
+	 * @param maxLength
+	 *            the max length
+	 */
 	public DateBoxWithCalendar(int maxLength) {
 		this(false,"", maxLength);
 	}
 	
+	/**
+	 * Instantiates a new date box with calendar.
+	 * 
+	 * @param availableDateId
+	 *            the available date id
+	 */
 	public DateBoxWithCalendar(String availableDateId){
 		this(false, availableDateId, MDY);
 	}
 	
+	/**
+	 * Instantiates a new date box with calendar.
+	 * 
+	 * @param dateTimeFormat
+	 *            the date time format
+	 */
 	public DateBoxWithCalendar(DateTimeFormat dateTimeFormat) {
 		this(false,"", dateTimeFormat.getPattern().length());
 		df = dateTimeFormat;
@@ -72,6 +127,16 @@ public class DateBoxWithCalendar extends Composite{
 		dateBox.setWidth("100");
 	}
 	
+	/**
+	 * Instantiates a new date box with calendar.
+	 * 
+	 * @param showInvalidMessage
+	 *            the show invalid message
+	 * @param availableDateId
+	 *            the available date id
+	 * @param maxLength
+	 *            the max length
+	 */
 	public DateBoxWithCalendar(boolean showInvalidMessage,String availableDateId, int maxLength) {
 		this.showInvalidMessage = showInvalidMessage;
 		this.maxLength = maxLength;
@@ -119,6 +184,7 @@ public class DateBoxWithCalendar extends Composite{
 
 	}
  
+	/** The key down handler. */
 	private KeyDownHandler keyDownHandler = new KeyDownHandler() {
 		
 		@Override
@@ -127,6 +193,7 @@ public class DateBoxWithCalendar extends Composite{
 		}
 	};
 	
+	/** The focus handler. */
 	private FocusHandler focusHandler = new FocusHandler() {
 		public void onFocus(FocusEvent event) {
 			Widget source = (Widget)event.getSource();
@@ -134,6 +201,8 @@ public class DateBoxWithCalendar extends Composite{
 			hideInvalidDateMessage();
 		}
 	};
+	
+	/** The blur handler. */
 	private BlurHandler blurHandler = new BlurHandler() {
 		public void onBlur(BlurEvent event) {
 			Widget source = (Widget)event.getSource();
@@ -147,6 +216,11 @@ public class DateBoxWithCalendar extends Composite{
 		}
 	};
 	
+	/**
+	 * Checks if is date valid.
+	 * 
+	 * @return true, if is date valid
+	 */
 	private boolean isDateValid() {
 		Date testDate = new Date();
 		String value = dateBox.getValue();
@@ -163,6 +237,10 @@ public class DateBoxWithCalendar extends Composite{
 		}
 		return true;
 	}
+	
+	/**
+	 * Show invalid date message.
+	 */
 	private void showInvalidDateMessage() {
 		if(showInvalidMessage) {
 			if(pop != null) {
@@ -173,6 +251,9 @@ public class DateBoxWithCalendar extends Composite{
 		}
 	}
 
+	/**
+	 * Hide invalid date message.
+	 */
 	public void hideInvalidDateMessage() {
 		if(pop != null && pop.isShowing()) {
 			pop.hide();
@@ -180,6 +261,12 @@ public class DateBoxWithCalendar extends Composite{
 	    dateBox.removeStyleName(DATE_BOX_FORMAT_ERROR);
 	}
 	
+	/**
+	 * Inits the date box with calender.
+	 * 
+	 * @param availableDateId
+	 *            the available date id
+	 */
 	private void initDateBoxWithCalender(final String availableDateId)
 	{
 		
@@ -232,6 +319,14 @@ public class DateBoxWithCalendar extends Composite{
 		initWidget(fPanel);
 	}
 
+	/**
+	 * Format date value.
+	 * 
+	 * @param event
+	 *            the event
+	 * @param availableDateId
+	 *            the available date id
+	 */
 	private void formatDateValue(KeyUpEvent event,String availableDateId) {
 		int keyCode = event.getNativeKeyCode();
 		if(!event.isAnyModifierKeyDown()) {
@@ -282,22 +377,55 @@ public class DateBoxWithCalendar extends Composite{
 		}
 	}
 
+	/**
+	 * Adds the value change handler.
+	 * 
+	 * @param changeListner
+	 *            the change listner
+	 * @return the handler registration
+	 */
 	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> changeListner) {
 		return dateBox.addValueChangeHandler(changeListner);
 	}
 	
 
+	/**
+	 * Adds the focus handler.
+	 * 
+	 * @param fHandler
+	 *            the f handler
+	 * @return the handler registration
+	 */
 	public HandlerRegistration addFocusHandler(FocusHandler fHandler) {
 		return fPanel.addFocusHandler(fHandler);
 	}
+	
+	/**
+	 * Adds the blur handler.
+	 * 
+	 * @param bHandler
+	 *            the b handler
+	 * @return the handler registration
+	 */
 	public HandlerRegistration addBlurHandler(BlurHandler bHandler) {
 		return fPanel.addBlurHandler(bHandler);
 	}
 
+	/**
+	 * Gets the value.
+	 * 
+	 * @return the value
+	 */
 	public String getValue() {
 		return dateBox.getValue();
 	}
 
+	/**
+	 * Sets the enable css.
+	 * 
+	 * @param enabled
+	 *            the new enable css
+	 */
 	public void setEnableCSS(boolean enabled) {
 		
 		/* enabling/disabling via css style
@@ -312,6 +440,12 @@ public class DateBoxWithCalendar extends Composite{
 		calendar.setEnabled(enabled);
 	}
 
+	/**
+	 * Sets the enabled.
+	 * 
+	 * @param enabled
+	 *            the new enabled
+	 */
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
 		dateBox.setEnabled(enabled);
@@ -338,6 +472,12 @@ public class DateBoxWithCalendar extends Composite{
 		
 	}
 	
+	/**
+	 * Sets the focus.
+	 * 
+	 * @param focused
+	 *            the new focus
+	 */
 	public void setFocus(boolean focused) {
 		fPanel.setFocus(focused);
 		if(focused) {
@@ -345,27 +485,68 @@ public class DateBoxWithCalendar extends Composite{
 		}
 	}
 
+	/**
+	 * Sets the value.
+	 * 
+	 * @param value
+	 *            the new value
+	 */
 	public void setValue(String value) {
 		dateBox.setValue(value);
 	}
 
+	/**
+	 * Checks if is valid date time.
+	 * 
+	 * @return true, if is valid date time
+	 */
 	public boolean isValidDateTime() {
 		return dateBox.getValue() == null;
 	}
+	
+	/**
+	 * Gets the tab index.
+	 * 
+	 * @return the tab index
+	 */
 	public int getTabIndex() {
 		return dateBox.getTabIndex();
 	}
+	
+	/**
+	 * Sets the access key.
+	 * 
+	 * @param key
+	 *            the new access key
+	 */
 	public void setAccessKey(char key) {
 		dateBox.setAccessKey(key);
 	}
+	
+	/**
+	 * Sets the tab index.
+	 * 
+	 * @param index
+	 *            the new tab index
+	 */
 	public void setTabIndex(int index) {
 		dateBox.setTabIndex(index);
 	}
+	
+	/**
+	 * Adds the key down handler.
+	 * 
+	 * @param handler
+	 *            the handler
+	 * @return the handler registration
+	 */
 	public HandlerRegistration addKeyDownHandler(KeyDownHandler handler) {
 		return dateBox.addKeyDownHandler(handler);
 	}
 
 	/**
+	 * Gets the date box.
+	 * 
 	 * @return the dateBox
 	 */
 	public TextBox getDateBox() {
@@ -373,20 +554,38 @@ public class DateBoxWithCalendar extends Composite{
 	}
 
 	/**
+	 * Gets the calendar.
+	 * 
 	 * @return the calendar
 	 */
 	public CustomButton getCalendar() {
 		return calendar;
 	}
 
+	/**
+	 * Gets the label.
+	 * 
+	 * @return the label
+	 */
 	public String getLabel() {
 		return label;
 	}
 
+	/**
+	 * Sets the label.
+	 * 
+	 * @param label
+	 *            the new label
+	 */
 	public void setLabel(String label) {
 		this.label = label;
 	}
 	
+	/**
+	 * Checks if is enabled.
+	 * 
+	 * @return true, if is enabled
+	 */
 	public boolean isEnabled(){
 		return this.enabled;
 	}

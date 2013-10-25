@@ -53,13 +53,11 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 	 * Search button - {@link PrimaryButton}.
 	 */
 	private PrimaryButton searchButton;
-	/**
-	 * {@link DisclosurePanel}.
-	 */
+	
+	/** The search filter disclosure panel. {@link DisclosurePanel}. */
 	private DisclosurePanel searchFilterDisclosurePanel = new DisclosurePanel();
-	/**
-	 * {@link WatermarkedTextBox}.
-	 */
+	
+	/** The search input. {@link WatermarkedTextBox}. */
 	private WatermarkedTextBox searchInput = new WatermarkedTextBox();
 	/**
 	 * Selected filter value - {@link Integer}.
@@ -194,25 +192,37 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		image.setResource(url, action);
 		return image;
 	}
+	
 	/**
+	 * Gets the search button - {@link PrimaryButton}.
+	 * 
 	 * @return the button - {@link Button}.
 	 */
 	public final PrimaryButton getSearchButton() {
 		return searchButton;
 	}
+	
 	/**
+	 * Gets the search filter disclosure panel.
+	 * 
 	 * @return the searchFilterDisclosurePanel- {@link DisclosurePanel}.
 	 */
 	public final DisclosurePanel getSearchFilterDisclosurePanel() {
 		return searchFilterDisclosurePanel;
 	}
+	
 	/**
+	 * Gets the search input.
+	 * 
 	 * @return the textBox {@link TextBox}.
 	 */
 	public final TextBox getSearchInput() {
 		return searchInput;
 	}
+	
 	/**
+	 * Gets the selected filter value - {@link Integer}.
+	 * 
 	 * @return the selectedFilter - {@link Integer}.
 	 */
 	public final int getSelectedFilter() {
@@ -236,21 +246,30 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		allMeasuresCheckBox.setValue(false);
 		setSelectedFilter(MY_MEASURES);
 	}
+	
 	/**
+	 * Sets the search button - {@link PrimaryButton}.
+	 * 
 	 * @param searchButton
 	 *            the searchButton to set.
 	 */
 	public final void setSearchButton(PrimaryButton searchButton) {
 		this.searchButton = searchButton;
 	}
+	
 	/**
+	 * Sets the search input.
+	 * 
 	 * @param textBox
 	 *            the textBox to set.
 	 */
 	public final void setSearchInput(WatermarkedTextBox textBox) {
 		searchInput = textBox;
 	}
+	
 	/**
+	 * Sets the selected filter value - {@link Integer}.
+	 * 
 	 * @param selectedFilter
 	 *            the selectedFilter to set.
 	 */

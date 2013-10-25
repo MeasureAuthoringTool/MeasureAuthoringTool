@@ -13,15 +13,30 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class WarningMessageDisplay.
+ */
 public class WarningMessageDisplay extends Composite implements WarningMessageDisplayInterface {
+	
+	/** The h panel. */
 	private HorizontalPanel hPanel;
+	
+	/** The warning icon. */
 	private Image warningIcon = new Image(ImageResources.INSTANCE.msg_error());
 	
+	/** The image panel. */
 	private FlowPanel imagePanel;
+	
+	/** The msg panel. */
 	private FlowPanel msgPanel;
+	
+	/** The buttons. */
 	private List<SecondaryButton> buttons = new ArrayList<SecondaryButton>();
 	
 	
+	/**
+	 * Instantiates a new warning message display.
+	 */
 	public WarningMessageDisplay() {
 		hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
@@ -35,6 +50,9 @@ public class WarningMessageDisplay extends Composite implements WarningMessageDi
 		initWidget(hPanel);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.WarningMessageDisplayInterface#clear()
+	 */
 	@Override
 	public void clear() {
 		hPanel.removeStyleName("warningMessage");
@@ -51,6 +69,9 @@ public class WarningMessageDisplay extends Composite implements WarningMessageDi
 		
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.WarningMessageDisplayInterface#setMessages(java.util.List)
+	 */
 	@Override
 	public void setMessages(List<String> messages) {
 		hPanel.addStyleName("warningMessage");
@@ -66,6 +87,9 @@ public class WarningMessageDisplay extends Composite implements WarningMessageDi
 		setFocus();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.WarningMessageDisplayInterface#setMessage(java.lang.String)
+	 */
 	@Override
 	public void setMessage(String message) {
 		hPanel.addStyleName("warningMessage");
@@ -77,10 +101,20 @@ public class WarningMessageDisplay extends Composite implements WarningMessageDi
 		setFocus();
 	}
 	
+	/**
+	 * Wrap.
+	 * 
+	 * @param arg
+	 *            the arg
+	 * @return the widget
+	 */
 	private Widget wrap(String arg) {
 		return new HTML(arg);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.WarningMessageDisplayInterface#setFocus()
+	 */
 	@Override
 	public void setFocus(){
 		try{
@@ -99,6 +133,9 @@ public class WarningMessageDisplay extends Composite implements WarningMessageDi
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.WarningMessageDisplayInterface#setMessageWithButtons(java.lang.String, java.util.List)
+	 */
 	@Override
 	public void setMessageWithButtons(String message, List<String> buttonNames) {
 		hPanel.addStyleName("alertMessage");
@@ -119,6 +156,8 @@ public class WarningMessageDisplay extends Composite implements WarningMessageDi
 
 
 	/**
+	 * Gets the buttons.
+	 * 
 	 * @return the buttons
 	 */
 	public List<SecondaryButton> getButtons() {
@@ -126,7 +165,10 @@ public class WarningMessageDisplay extends Composite implements WarningMessageDi
 	}
 
 	/**
-	 * @param buttons the buttons to set
+	 * Sets the buttons.
+	 * 
+	 * @param buttons
+	 *            the buttons to set
 	 */
 	public void setButtons(List<SecondaryButton> buttons) {
 		this.buttons = buttons;

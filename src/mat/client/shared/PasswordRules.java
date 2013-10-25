@@ -5,8 +5,14 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 
+/**
+ * The Class PasswordRules.
+ */
 public class PasswordRules extends Composite {
 
+	/**
+	 * Instantiates a new password rules.
+	 */
 	public PasswordRules() {
 		FlowPanel fPanel = new FlowPanel();
 		fPanel.getElement().setId("fPanel_FlowPanel");

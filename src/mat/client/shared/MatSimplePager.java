@@ -5,17 +5,41 @@ import mat.client.CustomPager;
 import com.google.gwt.view.client.Range;
 
 //public class MatSimplePager extends SimplePager {
+/**
+ * The Class MatSimplePager.
+ */
 public class MatSimplePager extends CustomPager {
+	
+	/**
+	 * Instantiates a new mat simple pager.
+	 */
 	public MatSimplePager() {
 		this.setRangeLimited(true);
 	}
 
+	/**
+	 * Instantiates a new mat simple pager.
+	 * 
+	 * @param location
+	 *            the location
+	 * @param resources
+	 *            the resources
+	 * @param showFastForwardButton
+	 *            the show fast forward button
+	 * @param fastForwardRows
+	 *            the fast forward rows
+	 * @param showLastPageButton
+	 *            the show last page button
+	 */
 	public MatSimplePager(TextLocation location, Resources resources, boolean showFastForwardButton, int fastForwardRows, boolean showLastPageButton) {
 		super(location, resources, showFastForwardButton, fastForwardRows, showLastPageButton);
 		this.setRangeLimited(true);
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.CustomPager#setPageStart(int)
+	 */
 	public void setPageStart(int index) {
 
 		if (this.getDisplay() != null) {
@@ -32,8 +56,12 @@ public class MatSimplePager extends CustomPager {
 	}
 	
 	/**
-	 * Custom method to add tool tip and tab index on First,Next,Previous and Last Page icons.
-	 * */
+	 * Custom method to add tool tip and tab index on First,Next,Previous and
+	 * Last Page icons.
+	 * 
+	 * @param spager
+	 *            the new tool tip and tab index
+	 */
 	
 	public void setToolTipAndTabIndex(MatSimplePager spager ){
 		/*final NodeList<Element> tdElems = spager.getElement().getElementsByTagName("td");

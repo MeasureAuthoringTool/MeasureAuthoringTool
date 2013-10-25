@@ -34,6 +34,12 @@ public class DialogBoxWithCloseButton extends DialogBox {
      */
     private HTML textHTML = new HTML();
 
+	/**
+	 * Instantiates a new dialog box with close button.
+	 * 
+	 * @param text
+	 *            the text
+	 */
 	public DialogBoxWithCloseButton(final String text) {
 		super(false, true);
 		setGlassEnabled(true);
@@ -50,6 +56,14 @@ public class DialogBoxWithCloseButton extends DialogBox {
 		closeWidget.getElement().setAttribute("tabIndex", "0");
 
 		setCaption(text);
+		
+		/*Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            @Override
+            public void execute() {
+            	closeWidget.getElement().setAttribute("tabIndex", "0"); 
+            	closeWidget.getElement().focus();
+            }
+        });*/
 	}
 
 	/**
@@ -76,9 +90,12 @@ public class DialogBoxWithCloseButton extends DialogBox {
 	 * Close handler, which will hide the dialog box .
 	 */
 	private class DialogBoxCloseHandler {
+		
 		/**
 		 * Hides this DialogBox.
+		 * 
 		 * @param event
+		 *            the event
 		 */
 		public void onClick(final Event event) {
 			hide();
@@ -114,7 +131,9 @@ public class DialogBoxWithCloseButton extends DialogBox {
 
 	/**
 	 * Overrides the browser event from the DialogBox.
-	 * @param event.
+	 * 
+	 * @param event
+	 *            the event
 	 */
 	@Override
 	public final void onBrowserEvent(final Event event) {
@@ -137,11 +156,17 @@ public class DialogBoxWithCloseButton extends DialogBox {
 		super.onBrowserEvent(event);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.DialogBox#getText()
+	 */
 	@Override
 	public final String getText() {
 		return textHTML.getText();
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.DialogBox#setText(java.lang.String)
+	 */
 	@Override
 	public final void setText(final String text) {
 		textHTML.setText(text);

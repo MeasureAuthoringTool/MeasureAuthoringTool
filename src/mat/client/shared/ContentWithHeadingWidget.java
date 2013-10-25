@@ -6,15 +6,33 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ContentWithHeadingWidget.
+ */
 public class ContentWithHeadingWidget extends Composite{
 	
 	
+	/** The heading. */
 	HTML heading = new HTML();
+	
+	/** The code list info. */
 	SimplePanel codeListInfo = new SimplePanel(); 
+	
+	/** The content. */
 	SimplePanel content = new SimplePanel();
+	
+	/** The footer. */
 	SimplePanel footer = new SimplePanel();
+	
+	/** The header holder. */
 	FocusableWidget headerHolder = new FocusableWidget(heading);
+	
+	/** The embedded link holder. */
 	SimplePanel embeddedLinkHolder = new SimplePanel();
+	
+	/**
+	 * Instantiates a new content with heading widget.
+	 */
 	public ContentWithHeadingWidget() {
 		codeListInfo.getElement().setId("codeListInfo_SimplePanel");
 		content.getElement().setId("content_SimplePanel");
@@ -36,12 +54,31 @@ public class ContentWithHeadingWidget extends Composite{
 		sPanel.add(vPanel);
 		initWidget(sPanel);		
 	}
+	
+	/**
+	 * Instantiates a new content with heading widget.
+	 * 
+	 * @param contentWidget
+	 *            the content widget
+	 * @param headingStr
+	 *            the heading str
+	 * @param linkName
+	 *            the link name
+	 */
 	public ContentWithHeadingWidget(Widget contentWidget, String headingStr,String linkName) {
 		this();
 		setHeading(headingStr,linkName);
 		setContent(contentWidget);
 	}
 	
+	/**
+	 * Sets the heading.
+	 * 
+	 * @param text
+	 *            the text
+	 * @param linkName
+	 *            the link name
+	 */
 	public void setHeading(String text,String linkName) {
 		String linkStr = SkipListBuilder.buildEmbeddedString(linkName);
 		heading.setHTML(linkStr +"<h1>" + text + "</h1>");
@@ -54,15 +91,34 @@ public class ContentWithHeadingWidget extends Composite{
 	}*/
 	
 	
+	/**
+	 * Sets the code list info.
+	 * 
+	 * @param w
+	 *            the new code list info
+	 */
 	public void setCodeListInfo(Widget w){
 		codeListInfo.clear();
 		codeListInfo.add(w);
 	}
 	
+	/**
+	 * Sets the content.
+	 * 
+	 * @param w
+	 *            the new content
+	 */
 	public void setContent(Widget w) {
 		content.clear();
 		content.add(w);
 	}
+	
+	/**
+	 * Sets the footer.
+	 * 
+	 * @param w
+	 *            the new footer
+	 */
 	public void setFooter(Widget w){
 		footer.clear();
 		footer.add(w);

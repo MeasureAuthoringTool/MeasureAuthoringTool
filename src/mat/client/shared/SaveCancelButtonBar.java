@@ -5,11 +5,20 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 
+/**
+ * The Class SaveCancelButtonBar.
+ */
 public class SaveCancelButtonBar extends Composite {
 
+	/** The save button. */
 	private Button saveButton = new PrimaryButton("Save","primaryButton");
+	
+	/** The cancel button. */
 	private Button cancelButton = new SecondaryButton("Cancel");
 	
+	/**
+	 * Instantiates a new save cancel button bar.
+	 */
 	public SaveCancelButtonBar() {
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setId("buttonLayout_HorizontalPanel");
@@ -24,9 +33,20 @@ public class SaveCancelButtonBar extends Composite {
 		initWidget(buttonLayout);
 	}
 	
+	/**
+	 * Gets the save button.
+	 * 
+	 * @return the save button
+	 */
 	public Button getSaveButton() {
 		return saveButton;
 	}
+	
+	/**
+	 * Gets the cancel button.
+	 * 
+	 * @return the cancel button
+	 */
 	public Button getCancelButton() {
 		return cancelButton;
 	}

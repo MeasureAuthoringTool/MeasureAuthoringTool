@@ -8,9 +8,15 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 
+/**
+ * The Class PhoneNumberWidget.
+ */
 public class PhoneNumberWidget extends Composite {
+	
+	/** The phone number. */
 	private TextBox phoneNumber = new TextBox();
 	
+	/** The key up handler. */
 	private static KeyUpHandler keyUpHandler = new KeyUpHandler() {
 		
 		@Override
@@ -53,6 +59,9 @@ public class PhoneNumberWidget extends Composite {
 		}
 	};
 	
+	/**
+	 * Instantiates a new phone number widget.
+	 */
 	public PhoneNumberWidget() {
 		phoneNumber.getElement().setId("phoneNumber_TextBox");
 		phoneNumber.setMaxLength(12);
@@ -68,6 +77,12 @@ public class PhoneNumberWidget extends Composite {
 		
 		phoneNumber.addKeyUpHandler(keyUpHandler);
 	}
+	
+	/**
+	 * Gets the phone number.
+	 * 
+	 * @return the phone number
+	 */
 	public HasValue<String> getPhoneNumber() {
 		return phoneNumber;
 	}

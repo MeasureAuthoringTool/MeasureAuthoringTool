@@ -13,13 +13,11 @@ import com.google.gwt.user.client.ui.TextBox;
  */
 public class WatermarkedTextBox extends TextBox implements BlurHandler, FocusHandler
 {
-	/**
-	 * {@link BlurHandler}.
-	 */
+	
+	/** The blur handler. {@link BlurHandler}. */
 	private HandlerRegistration blurHandler;
-	/**
-	 * {@link FocusHandler}.
-	 */
+	
+	/** The focus handler. {@link FocusHandler}. */
 	private HandlerRegistration focusHandler;
 	/**
 	 * Water mark text String.
@@ -32,21 +30,25 @@ public class WatermarkedTextBox extends TextBox implements BlurHandler, FocusHan
 		super();
 		this.removeStyleName("gwt-textInput");
 	}
+	
 	/**
 	 * Overloaded COnstructor.
+	 * 
 	 * @param defaultValue
-	 *            {@link String}
+	 *            the default value {@link String}
 	 */
 	public WatermarkedTextBox(String defaultValue) {
 		this();
 		setText(defaultValue);
 	}
+	
 	/**
 	 * Overloaded COnstructor.
+	 * 
 	 * @param defaultValue
-	 *            {@link String}
+	 *            the default value
 	 * @param watermark
-	 *            {@link String}
+	 *            the watermark {@link String} {@link String}
 	 */
 	public WatermarkedTextBox(String defaultValue, String watermark) {
 		this(defaultValue);
@@ -90,10 +92,12 @@ public class WatermarkedTextBox extends TextBox implements BlurHandler, FocusHan
 			setText("");
 		}
 	}
+	
 	/**
 	 * Adds a water mark if the parameter is not NULL or EMPTY.
+	 * 
 	 * @param watermark
-	 *            {@link String}
+	 *            the new water mark text String {@link String}
 	 */
 	public final void setWatermark(final String watermark) {
 		this.watermark = watermark;

@@ -25,15 +25,32 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 	 * An html string representation of an unchecked radio button.
 	 */
 	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"radioButtongrp\"/>");
+	
+	/** The Constant INPUT_UNCHECKED_DISABLED. */
 	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"radio\" name=\"radioButtongrp\" disabled=\"disabled\" />");
 
+	/** The is enabled. */
 	private boolean dependsOnSelection, handlesSelection,isEnabled;
+	
+	/** The is used. */
 	private boolean isUsed;
 	
 
+	/**
+	 * Checks if is used.
+	 * 
+	 * @return true, if is used
+	 */
 	public boolean isUsed() {
 		return isUsed;
 	}
+	
+	/**
+	 * Sets the used.
+	 * 
+	 * @param isUsed
+	 *            the new used
+	 */
 	public void setUsed(boolean isUsed) {
 		this.isUsed = isUsed;
 	}
@@ -48,10 +65,8 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
  
 	/**
 	 * Constructs a new {@link RadioButtonCell} that can be configured to depend
-	 * and/or handle selection
+	 * and/or handle selection.
 	 * 
-	 * @param groupName
-	 *            HTML name attribute of the radiobutton
 	 * @param dependsOnSelection
 	 *            true if the cell depends on the selection state
 	 * @param handlesSelection
@@ -64,6 +79,16 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 		this.isEnabled =true;
 	}
 	
+	/**
+	 * Instantiates a new radio button cell.
+	 * 
+	 * @param dependsOnSelection
+	 *            the depends on selection
+	 * @param handlesSelection
+	 *            the handles selection
+	 * @param isEnabled
+	 *            the is enabled
+	 */
 	public RadioButtonCell(boolean dependsOnSelection, boolean handlesSelection,boolean isEnabled) {
 		this();
 		this.dependsOnSelection = dependsOnSelection;
@@ -71,16 +96,25 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 		this.isEnabled = isEnabled;
 	}
  
+	/* (non-Javadoc)
+	 * @see com.google.gwt.cell.client.AbstractCell#dependsOnSelection()
+	 */
 	@Override
 	public boolean dependsOnSelection() {
 		return dependsOnSelection;
 	}
  
+	/* (non-Javadoc)
+	 * @see com.google.gwt.cell.client.AbstractCell#handlesSelection()
+	 */
 	@Override
 	public boolean handlesSelection() {
 		return handlesSelection;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.cell.client.AbstractCell#onBrowserEvent(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object, com.google.gwt.dom.client.NativeEvent, com.google.gwt.cell.client.ValueUpdater)
+	 */
 	@Override
 	public void onBrowserEvent(Context context, Element parent, Boolean value,
 		      NativeEvent event, ValueUpdater<Boolean> valueUpdater) {
@@ -149,12 +183,18 @@ public class RadioButtonCell extends AbstractEditableCell<Boolean, Boolean> {
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.cell.client.AbstractEditableCell#isEditing(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+	 */
 	@Override
 	public boolean isEditing(com.google.gwt.cell.client.Cell.Context context,Element parent, Boolean value) {
 		// TODO Auto-generated method stub
 		return true;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.cell.client.AbstractCell#render(com.google.gwt.cell.client.Cell.Context, java.lang.Object, com.google.gwt.safehtml.shared.SafeHtmlBuilder)
+	 */
 	@Override
 	public void render(com.google.gwt.cell.client.Cell.Context context,
 			Boolean value, SafeHtmlBuilder sb) {

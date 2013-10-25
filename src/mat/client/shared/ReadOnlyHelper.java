@@ -3,7 +3,19 @@ package mat.client.shared;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ReadOnlyHelper.
+ */
 public class ReadOnlyHelper {
+	
+	/**
+	 * Sets the read only for current measure.
+	 * 
+	 * @param panel
+	 *            the panel
+	 * @param editable
+	 *            the editable
+	 */
 	public static void setReadOnlyForCurrentMeasure(Widget panel,boolean editable) {
 		if(!editable) {
 			ReadOnlyHelper.setReadOnly(panel.getElement());
@@ -14,6 +26,12 @@ public class ReadOnlyHelper {
 
 	}
 	
+	/**
+	 * Sets the buttons disabled for current measure.
+	 * 
+	 * @param panel
+	 *            the new buttons disabled for current measure
+	 */
 	private static void setButtonsDisabledForCurrentMeasure(Widget panel) {
 		if(MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			ReadOnlyHelper.setReadOnlyButtons(panel.getElement());
@@ -33,6 +51,12 @@ public class ReadOnlyHelper {
 		}
 	}*/
 	
+	/**
+	 * Restore read only.
+	 * 
+	 * @param element
+	 *            the element
+	 */
 	private static native void restoreReadOnly(Element element) /*-{
 		
 		var restoreReadOnly = function(list) {
@@ -71,6 +95,13 @@ public class ReadOnlyHelper {
 		}
 			
 	}-*/;
+	
+	/**
+	 * Sets the read only.
+	 * 
+	 * @param element
+	 *            the new read only
+	 */
 	private static native void setReadOnly(Element element) /*-{
 		var setReadOnly = function(list) {
 			if(! (list === undefined)) {
@@ -112,6 +143,12 @@ public class ReadOnlyHelper {
 
 	}-*/;
 	
+	/**
+	 * Restore read only buttons.
+	 * 
+	 * @param element
+	 *            the element
+	 */
 	private static native void restoreReadOnlyButtons(Element element) /*-{
 
 	var restoreDisabled = function(item) {
@@ -123,6 +160,13 @@ public class ReadOnlyHelper {
 	Array.forEach(buttons, restoreDisabled);		
 		
 }-*/;
+
+/**
+ * Sets the read only buttons.
+ * 
+ * @param element
+ *            the new read only buttons
+ */
 private static native void setReadOnlyButtons(Element element) /*-{
 	var setDisabled = function(item) {
 		if(item.originalValue === undefined) {

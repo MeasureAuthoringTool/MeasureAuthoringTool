@@ -4,10 +4,20 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.PasswordTextBox;
 
+/**
+ * The Class ChangePasswordWidget.
+ */
 public class ChangePasswordWidget extends Composite {
+	
+	/** The password. */
 	private PasswordTextBox password;
+	
+	/** The confirm password. */
 	private PasswordTextBox confirmPassword;
 	
+	/**
+	 * Instantiates a new change password widget.
+	 */
 	public ChangePasswordWidget() {
 		FlowPanel mainPanel = new FlowPanel();
 		mainPanel.getElement().setId("mainPanel_FlowPanel");
@@ -30,18 +40,40 @@ public class ChangePasswordWidget extends Composite {
 		initWidget(mainPanel);
 	}
 
+	/**
+	 * Gets the password.
+	 * 
+	 * @return the password
+	 */
 	public PasswordTextBox getPassword() {
 		return password;
 	}
 
+	/**
+	 * Sets the password.
+	 * 
+	 * @param password
+	 *            the new password
+	 */
 	public void setPassword(PasswordTextBox password) {
 		this.password = password;
 	}
 
+	/**
+	 * Gets the confirm password.
+	 * 
+	 * @return the confirm password
+	 */
 	public PasswordTextBox getConfirmPassword() {
 		return confirmPassword;
 	}
 
+	/**
+	 * Sets the confirm password.
+	 * 
+	 * @param confirmPassword
+	 *            the new confirm password
+	 */
 	public void setConfirmPassword(PasswordTextBox confirmPassword) {
 		this.confirmPassword = confirmPassword;
 	}

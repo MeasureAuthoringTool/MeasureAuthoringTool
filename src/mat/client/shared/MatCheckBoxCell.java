@@ -13,6 +13,9 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 
+/**
+ * The Class MatCheckBoxCell.
+ */
 public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 
 	/**
@@ -20,6 +23,8 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 	 */
 	
 	private static String checkBoxTitle="Click checkbox to select";
+	
+	/** The Constant INPUT_CHECKED. */
 	private static final SafeHtml INPUT_CHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" tabindex=\"0\" title=\'" + checkBoxTitle + "' checked/>");
 
 	/**
@@ -27,16 +32,34 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 	 */
 	private static final SafeHtml INPUT_UNCHECKED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" tabindex=\"0\" title=\'" + checkBoxTitle + "' />");
 
+	/** The Constant INPUT_UNCHECKED_DISABLED. */
 	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" tabindex=\"0\" disabled=\"disabled\"  title=\'" + checkBoxTitle + "' />");
 
+	/** The depends on selection. */
 	private final boolean dependsOnSelection;
+	
+	/** The handles selection. */
 	private final boolean handlesSelection;
+	
+	/** The is used. */
 	private boolean isUsed;
 	
 
+	/**
+	 * Checks if is used.
+	 * 
+	 * @return true, if is used
+	 */
 	public boolean isUsed() {
 		return isUsed;
 	}
+	
+	/**
+	 * Sets the used.
+	 * 
+	 * @param isUsed
+	 *            the new used
+	 */
 	public void setUsed(boolean isUsed) {
 		this.isUsed = isUsed;
 	}
@@ -47,6 +70,12 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 		this(false);
 	}
 	
+	/**
+	 * Instantiates a new mat check box cell.
+	 * 
+	 * @param dataSetDTO
+	 *            the data set dto
+	 */
 	public MatCheckBoxCell(QualityDataSetDTO dataSetDTO){
 		this(false);
 		this.isUsed = dataSetDTO.isUsed(); 
@@ -76,16 +105,25 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 		this.handlesSelection = handlesSelection;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.cell.client.AbstractCell#dependsOnSelection()
+	 */
 	@Override
 	public boolean dependsOnSelection() {
 		return dependsOnSelection;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.cell.client.AbstractCell#handlesSelection()
+	 */
 	@Override
 	public boolean handlesSelection() {
 		return handlesSelection;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.cell.client.AbstractCell#onBrowserEvent(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object, com.google.gwt.dom.client.NativeEvent, com.google.gwt.cell.client.ValueUpdater)
+	 */
 	@Override
 	public void onBrowserEvent(Context context, Element parent, Boolean value, 
 			NativeEvent event, ValueUpdater<Boolean> valueUpdater) {
@@ -125,12 +163,18 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.cell.client.AbstractEditableCell#isEditing(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+	 */
 	@Override
 	public boolean isEditing(com.google.gwt.cell.client.Cell.Context context,
 			Element parent, Boolean value) {
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.cell.client.AbstractCell#render(com.google.gwt.cell.client.Cell.Context, java.lang.Object, com.google.gwt.safehtml.shared.SafeHtmlBuilder)
+	 */
 	@Override
 	public void render(Context context, Boolean value, SafeHtmlBuilder sb) {
 		Boolean viewData = getViewData(context.getKey());
@@ -150,6 +194,11 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 		
 	}
 
+	/**
+	 * Check for enable.
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean checkForEnable(){
 
 		return MatContext.get().getMeasureLockService().checkForEditPermission();

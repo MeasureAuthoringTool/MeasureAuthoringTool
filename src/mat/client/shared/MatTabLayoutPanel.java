@@ -25,23 +25,44 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class MatTabLayoutPanel.
+ */
 public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHandler<Integer>, Enableable {
+	
+	/** The presenter map. */
 	private Map<Integer, MatPresenter> presenterMap = new HashMap<Integer, MatPresenter>();
+	
+	/** The selected index. */
 	private int selectedIndex = 0;
+	
+	/** The fmt. */
 	public DynamicTabBarFormatter fmt = new DynamicTabBarFormatter();
+	
+	/** The update header title. */
 	private boolean updateHeaderTitle = false;
+	
+	/** The is unsaved data. */
 	boolean isUnsavedData = false;
+	
+	/** The current selection. */
 	private int currentSelection;
+	
+	/** The save error message. */
 	private ErrorMessageDisplay saveErrorMessage;
+	
+	/** The save button. */
 	private Button saveButton;
 	
 	/**
-	 * NOTE: do not use this constructor
-	 * use MatTabLayoutPanel(boolean updateHeaderTitle) instead
-	 * setting flags as needed
-	 * TODO: either remove this constructor or prevent its use
+	 * NOTE: do not use this constructor use MatTabLayoutPanel(boolean
+	 * updateHeaderTitle) instead setting flags as needed TODO: either remove
+	 * this constructor or prevent its use.
+	 * 
 	 * @param barHeight
+	 *            the bar height
 	 * @param barUnit
+	 *            the bar unit
 	 */
 	@Deprecated
 	public MatTabLayoutPanel(double barHeight, Unit barUnit) {
@@ -50,34 +71,67 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	}
 	
 	/**
-	 * @param updateHeaderTitle perform automatic header title updates 
-	 * i.e. add right-facing arrow to the title of the new selection and remove it from the title of the old selection 
+	 * Instantiates a new mat tab layout panel.
+	 * 
+	 * @param updateHeaderTitle
+	 *            perform automatic header title updates i.e. add right-facing
+	 *            arrow to the title of the new selection and remove it from the
+	 *            title of the old selection
 	 */
 	public MatTabLayoutPanel(boolean updateHeaderTitle) {
 		addBeforeSelectionHandler(this);
 		this.updateHeaderTitle = updateHeaderTitle;
 	}
 	
+	/**
+	 * Sets the id.
+	 * 
+	 * @param id
+	 *            the new id
+	 */
 	public void setId(String id) {
 		DOM.setElementAttribute(getElement(), "id", id);
 	}
 	
+	/**
+	 * Gets the id.
+	 * 
+	 * @return the id
+	 */
 	String getId() {
 		return DOM.getElementAttribute(getElement(), "id");
 	}
 	
+	/**
+	 * Gets the selected index.
+	 * 
+	 * @return the selected index
+	 */
 	public Integer getSelectedIndex() {
 		return selectedIndex;
 	}
 	
+	/**
+	 * Sets the selected index.
+	 * 
+	 * @param selectedIndex
+	 *            the new selected index
+	 */
 	public void setSelectedIndex(Integer selectedIndex){
 		this.selectedIndex = selectedIndex;
 	}
+	
+	/**
+	 * Close.
+	 */
 	public void close() {
 		notifyCurrentTabOfClosing();
 //		selectedIndex = -1;
 	}
 	
+	/**
+	 * Notify current tab of closing.
+	 */
 	private void notifyCurrentTabOfClosing() {
 		Integer oldIndex = getSelectedIndex();
 		MatPresenter oldPresenter = presenterMap.get(oldIndex);
@@ -86,6 +140,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			oldPresenter.beforeClosingDisplay();
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.logical.shared.BeforeSelectionHandler#onBeforeSelection(com.google.gwt.event.logical.shared.BeforeSelectionEvent)
+	 */
 	@Override
 	public void onBeforeSelection(BeforeSelectionEvent<Integer> event) {
 		currentSelection =  event.getItem();
@@ -99,6 +157,9 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		}
 	}
 
+	/**
+	 * Update on before selection.
+	 */
 	private void updateOnBeforeSelection() {
 		updateHeaderSelection(currentSelection);	
 		notifyCurrentTabOfClosing();
@@ -117,13 +178,25 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 //		add(w, tabText);
 //	}
 	
-	@Override
+	/* (non-Javadoc)
+ * @see mat.client.shared.ui.MATTabPanel#add(com.google.gwt.user.client.ui.Widget, java.lang.String)
+ */
+@Override
 	public void add(Widget w, String tabText) {
 	    insert(w, tabText, true, getWidgetCount());
 	    int index = getWidgetCount() - 1;
 	    fmt.insertTitle(index, tabText);
 	}
 	
+	/**
+	 * Adds the presenter.
+	 * 
+	 * @param presenter
+	 *            the presenter
+	 * @param title
+	 *            the title
+	 * @return the int
+	 */
 	public int addPresenter(MatPresenter presenter, String title) {
 		MatContext.get().setAriaHidden(presenter.getWidget(),  "true");
 		add(presenter.getWidget(), title);
@@ -133,6 +206,13 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		return index;
 	}
 	
+	/**
+	 * Checks if is being displayed.
+	 * 
+	 * @param widget
+	 *            the widget
+	 * @return true, if is being displayed
+	 */
 	public boolean isBeingDisplayed(Widget widget) {
 		return getWidgetIndex(widget) == selectedIndex;
 	}
@@ -146,6 +226,12 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		selectTab(widgetIndex);
 		getTabBar().setTabHTML(widgetIndex, fmt.getSelectedTitle(widgetIndex));
 	}*/
+	/**
+	 * Select tab.
+	 * 
+	 * @param presenter
+	 *            the presenter
+	 */
 	public void selectTab(MatPresenter presenter) {
 		MatContext.get().setAriaHidden(presenter.getWidget(), "false");
 		int widgetIndex = 0;
@@ -158,19 +244,42 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		selectTab(widgetIndex);
 		getTabBar().setTabHTML(widgetIndex, fmt.getSelectedTitle(widgetIndex));
 	}
+	
+	/**
+	 * Select next tab.
+	 */
 	public void selectNextTab() {
 		selectTab(selectedIndex + 1);
 	}
+	
+	/**
+	 * Select this tab.
+	 */
 	public void selectThisTab() {
 		selectTab(selectedIndex);
 	}
 	
+	/**
+	 * Select previous tab.
+	 */
 	public void selectPreviousTab() {
 		selectTab(selectedIndex - 1);
 	}
+	
+	/**
+	 * Checks for next tab.
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean hasNextTab() {
 		return selectedIndex < getWidgetCount() - 1;
 	}
+	
+	/**
+	 * Checks for previous tab.
+	 * 
+	 * @return true, if successful
+	 */
 	public boolean hasPreviousTab() {
 		return selectedIndex != 0;
 	}
@@ -178,12 +287,24 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	/*
 	 * TODO may not need
 	 */
+	/**
+	 * Force select tab.
+	 * 
+	 * @param index
+	 *            the index
+	 */
 	public void forceSelectTab(int index){
 		updateHeaderSelection(index);
 		super.selectTab(index);
 		setSelectedIndex(index);
 	}
 	
+	/**
+	 * Update header selection.
+	 * 
+	 * @param index
+	 *            the index
+	 */
 	public void updateHeaderSelection(int index){
 		if(updateHeaderTitle){
 			//Strip arrow off of the tab we are leaving
@@ -196,12 +317,15 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	
 	
 	/**
-	 * On Tab Change, before the tab change happens, this method will be checked to see, 
-	 * if the selected tab is  "Measure Composer" Tab and sub Tab is "Measure Details" Tab
-	 * 	
+	 * On Tab Change, before the tab change happens, this method will be checked
+	 * to see, if the selected tab is "Measure Composer" Tab and sub Tab is
+	 * "Measure Details" Tab.
+	 * 
 	 * @param selectedIndex
+	 *            the selected index
 	 * @param currentIndex
-	 * @return
+	 *            the current index
+	 * @return true, if is unsaved data on tab
 	 */
 	private boolean isUnsavedDataOnTab(int selectedIndex, int currentIndex){
 		MatContext.get().setErrorTabIndex(-1);		
@@ -230,10 +354,13 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	}
 
 	/**
-	 * checks if the Measure Details Page data and the Measure Details DB data are the same.
-	 * If Not Same shows Error Message with Buttons
+	 * checks if the Measure Details Page data and the Measure Details DB data
+	 * are the same. If Not Same shows Error Message with Buttons
+	 * 
 	 * @param selectedIndex
+	 *            the selected index
 	 * @param metaDataPresenter
+	 *            the meta data presenter
 	 */
 	private void validateMeasureDetailsTab(int selectedIndex,
 			MetaDataPresenter metaDataPresenter) {		
@@ -253,6 +380,14 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		}
 	}
 	
+	/**
+	 * Validate clause workspace tab.
+	 * 
+	 * @param xmlTreePresenter
+	 *            the xml tree presenter
+	 * @param selectedIndex
+	 *            the selected index
+	 */
 	private void validateClauseWorkspaceTab(XmlTreePresenter xmlTreePresenter, int selectedIndex){
 		if(null ==	xmlTreePresenter.getXmlTreeDisplay()){// this will happen when there is any errors on Clause Workspace Tabs
 			return;
@@ -273,8 +408,15 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	
 	/**
 	 * On Click Events.
+	 * 
 	 * @param selIndex
+	 *            the sel index
 	 * @param btns
+	 *            the btns
+	 * @param saveErrorMessage
+	 *            the save error message
+	 * @param auditMessage
+	 *            the audit message
 	 */
 	private void handleClickEventsOnUnsavedErrorMsg(int selIndex, List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage,final String auditMessage) {
 		isUnsavedData = true;
@@ -308,6 +450,12 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	}
 	
 	 
+	/**
+	 * Show error message.
+	 * 
+	 * @param errorMessageDisplay
+	 *            the error message display
+	 */
 	private void showErrorMessage(ErrorMessageDisplay errorMessageDisplay){
 		String msg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
 		List<String> btn = new ArrayList<String>();
@@ -318,9 +466,12 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	
 	
 	/**
-	 * Checked to see if the Measure Details page Data and the DB data are the same.
+	 * Checked to see if the Measure Details page Data and the DB data are the
+	 * same.
+	 * 
 	 * @param metaDataPresenter
-	 * @return
+	 *            the meta data presenter
+	 * @return true, if is measure details same
 	 */
 	private boolean isMeasureDetailsSame(MetaDataPresenter metaDataPresenter){
 		ManageMeasureDetailModel pageData = new ManageMeasureDetailModel();
@@ -341,6 +492,8 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 
 	
 	/**
+	 * Gets the save error message.
+	 * 
 	 * @return the saveErrorMessage
 	 */
 	public ErrorMessageDisplay getSaveErrorMessage() {
@@ -348,16 +501,30 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	}
 
 	/**
-	 * @param saveErrorMessage the saveErrorMessage to set
+	 * Sets the save error message.
+	 * 
+	 * @param saveErrorMessage
+	 *            the saveErrorMessage to set
 	 */
 	public void setSaveErrorMessage(ErrorMessageDisplay saveErrorMessage) {
 		this.saveErrorMessage = saveErrorMessage;
 	}
 
+	/**
+	 * Gets the presenter map.
+	 * 
+	 * @return the presenter map
+	 */
 	public Map<Integer, MatPresenter> getPresenterMap() {
 		return presenterMap;
 	}
 
+	/**
+	 * Sets the presenter map.
+	 * 
+	 * @param presenterMap
+	 *            the presenter map
+	 */
 	public void setPresenterMap(Map<Integer, MatPresenter> presenterMap) {
 		this.presenterMap = presenterMap;
 	}

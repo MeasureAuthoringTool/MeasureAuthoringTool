@@ -81,6 +81,9 @@ public class ShowMorePagerPanel extends AbstractPager {
     return incrementSize;
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#setDisplay(com.google.gwt.view.client.HasRows)
+   */
   @Override
   public void setDisplay(HasRows display) {
     assert display instanceof Widget : "display must extend Widget";
@@ -98,6 +101,9 @@ public class ShowMorePagerPanel extends AbstractPager {
     this.incrementSize = incrementSize;
   }
 
+  /* (non-Javadoc)
+   * @see com.google.gwt.user.cellview.client.AbstractPager#onRangeOrRowCountChanged()
+   */
   @Override
   protected void onRangeOrRowCountChanged() {
   }

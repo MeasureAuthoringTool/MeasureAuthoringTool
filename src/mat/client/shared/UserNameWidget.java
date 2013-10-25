@@ -6,15 +6,32 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class UserNameWidget.
+ */
 public class UserNameWidget extends Composite {
+	
+	/** The first name. */
 	private TextBox firstName = new TextBox();
+	
+	/** The last name. */
 	private TextBox lastName = new TextBox();
+	
+	/** The middle initial. */
 	private TextBox middleInitial = new TextBox();
 
+	/** The first name label. */
 	private Widget firstNameLabel = LabelBuilder.buildRequiredLabel(firstName, "First Name");
+	
+	/** The middle initial label. */
 	private Widget  middleInitialLabel = LabelBuilder.buildLabel(middleInitial, "M. I.");
+	
+	/** The last name label. */
 	private Widget  lastNameLabel = LabelBuilder.buildRequiredLabel(lastName, "Last Name");
 	
+	/**
+	 * Instantiates a new user name widget.
+	 */
 	public UserNameWidget() {
 		firstName.getElement().setId("firstName_TextBox");
 		lastName.getElement().setId("lastName_TextBox");
@@ -40,14 +57,29 @@ public class UserNameWidget extends Composite {
 		initWidget(nameGrid);
 	}
 	
+	/**
+	 * Gets the first name.
+	 * 
+	 * @return the first name
+	 */
 	public HasValue<String> getFirstName() {
 		return firstName;
 	}
 
+	/**
+	 * Gets the last name.
+	 * 
+	 * @return the last name
+	 */
 	public HasValue<String> getLastName() {
 		return lastName;
 	}
 
+	/**
+	 * Gets the middle initial.
+	 * 
+	 * @return the middle initial
+	 */
 	public HasValue<String> getMiddleInitial() {
 		return middleInitial;
 	}

@@ -38,46 +38,105 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
+/**
+ * The Class SearchView.
+ * 
+ * @param <T>
+ *            the generic type
+ */
 public class SearchView<T> implements HasSelectionHandlers<T>, 
 	HasPageSelectionHandler, HasPageSizeSelectionHandler, HasSortHandler,HasSelectAllHandler, Enableable {
 	
+	/** The Constant PAGE_SIZE_ALL. */
 	public static final int PAGE_SIZE_ALL = Integer.MAX_VALUE;
+	
+	/** The Constant PAGE_SIZES. */
 	private static final int[] PAGE_SIZES= new int[] {50, PAGE_SIZE_ALL};
+	
+	/** The Constant HISTORY_PAGE_SIZES. */
 	private static final int[] HISTORY_PAGE_SIZES = new int[] {50, PAGE_SIZE_ALL};
+	
+	/** The Constant ARROW_DOWN. */
 	private static final String ARROW_DOWN = "\u25bc";
+	
+	/** The Constant ARROW_UP. */
 	private static final String ARROW_UP = "\u25b2";
+	
+	/** The Constant DEFAULT_PAGE. */
 	public static final int DEFAULT_PAGE = 1;
+	
+	/** The Constant DEFAULT_PAGE_SIZE. */
 	public static final int DEFAULT_PAGE_SIZE = 50;
 	
+	/** The main panel. */
 	private Panel mainPanel;
+	
+	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
 	
+	/** The page size selector. */
 	protected Panel pageSizeSelector = new FlowPanel();
+	
+	/** The page selector. */
 	protected Panel pageSelector = new HorizontalPanel();
+	
+	/** The viewing number. */
 	private HTML viewingNumber = new HTML();
+	
+	/**
+	 * Gets the viewing number.
+	 * 
+	 * @return the viewing number
+	 */
 	public HTML getViewingNumber() {
 		return viewingNumber;
 	}
+	
+	/**
+	 * Sets the viewing number.
+	 * 
+	 * @param viewingNumber
+	 *            the new viewing number
+	 */
 	public void setViewingNumber(HTML viewingNumber) {
 		this.viewingNumber = viewingNumber;
 	}
 
+	/** The data table. */
 	public Grid508 dataTable = new Grid508();
 	
+	/** The v panel for qdm table. */
 	public VerticalPanel vPanelForQDMTable = new VerticalPanel();
 	
+	/** The success message display. */
 	public SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
 	
+	/** The current page size. */
 	private int currentPageSize = DEFAULT_PAGE_SIZE;
+	
+	/** The current page. */
 	private int currentPage = DEFAULT_PAGE;
+	
+	/** The descriptor. */
 	private String descriptor = "";
 	
+	/** The sort column index. */
 	private int sortColumnIndex = 0;
 	
+	/**
+	 * Instantiates a new search view.
+	 * 
+	 * @param descriptor
+	 *            the descriptor
+	 */
 	public SearchView(String descriptor) {
 		this();
 		this.descriptor = descriptor;
 	}
+	
+	/**
+	 * Instantiates a new search view.
+	 */
 	public SearchView() {
 		dataTable.setCellPadding(5);
 		dataTable.getElement().setId("searchView_dataTable");
@@ -107,6 +166,12 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		pageSelector.getElement().setId("serachView_pageSelector");
 	}
 	
+	/**
+	 * Instantiates a new search view.
+	 * 
+	 * @param QDSCodeListView
+	 *            the qDS code list view
+	 */
 	public SearchView(boolean QDSCodeListView){
 		mainPanel = new SimplePanel();
 		mainPanel.getElement().setId("serachView_mainPanel");
@@ -120,15 +185,39 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		fPanel.add(vPanelForQDMTable);
 	}
 
+	/**
+	 * Sets the page size visible.
+	 * 
+	 * @param visible
+	 *            the new page size visible
+	 */
 	public void setPageSizeVisible(boolean visible) {
 		pageSizeSelector.setVisible(visible);
 	}
+	
+	/**
+	 * Sets the viewing number visible.
+	 * 
+	 * @param visible
+	 *            the new viewing number visible
+	 */
 	public void setViewingNumberVisible(boolean visible) {
 		viewingNumber.setVisible(visible);
 	}
+	
+	/**
+	 * Sets the page size.
+	 * 
+	 * @param i
+	 *            the new page size
+	 */
 	public void setPageSize(int i) {
 		currentPageSize = i;
 	}
+	
+	/**
+	 * Builds the page size selector.
+	 */
 	public void buildPageSizeSelector() {
 		pageSizeSelector.clear();
 		pageSelector.setHeight("30px");
@@ -140,6 +229,9 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		
 	}
 	
+	/**
+	 * Builds the history page size selector.
+	 */
 	private void buildHistoryPageSizeSelector() {
 		pageSizeSelector.clear();
 
@@ -153,7 +245,9 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 
 	/**
 	 * Build Page Selector links for a given page count.
+	 * 
 	 * @param pageCount
+	 *            the page count
 	 */
 	public void buildPageSelector(int pageCount) {
 		if(pageCount > 1){
@@ -224,10 +318,26 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 
 	}
 	
+	/**
+	 * Builds the page link.
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @return the widget
+	 */
 	private Widget buildPageLink(final int pageNumber) {
 		return buildPageLink(pageNumber, null);
 	}
 
+	/**
+	 * Builds the page link.
+	 * 
+	 * @param pageNumber
+	 *            the page number
+	 * @param mnemonic
+	 *            the mnemonic
+	 * @return the widget
+	 */
 	private Widget buildPageLink(final int pageNumber, String mnemonic) {
 		
 		Widget widget = null;
@@ -264,6 +374,17 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 	
 	
+	/**
+	 * Builds the anchor for page selection.
+	 * 
+	 * @param label
+	 *            the label
+	 * @param pageNumber
+	 *            the page number
+	 * @param mnemonic
+	 *            the mnemonic
+	 * @return the anchor
+	 */
 	private Anchor buildAnchorForPageSelection(String label, final int pageNumber, String mnemonic){
 		Anchor a = new Anchor(label);
 		a.addClickHandler(new ClickHandler() {
@@ -291,6 +412,13 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		return a;
 	}
 	
+	/**
+	 * Builds the page size link.
+	 * 
+	 * @param size
+	 *            the size
+	 * @return the widget
+	 */
 	private Widget buildPageSizeLink(final int size) {
 		String label = (size != PAGE_SIZE_ALL) ? Integer.toString(size) : "All";
 	
@@ -329,6 +457,20 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		}
 	}
 
+	/**
+	 * Builds the history data table.
+	 * 
+	 * @param results
+	 *            the results
+	 * @param pageCount
+	 *            the page count
+	 * @param totalResults
+	 *            the total results
+	 * @param currentPage
+	 *            the current page
+	 * @param pageSize
+	 *            the page size
+	 */
 	public void buildHistoryDataTable(final SearchResults<T> results, int pageCount,long totalResults,int currentPage,int pageSize){
 		if(results == null) {
 			return;
@@ -355,6 +497,15 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 
 	
+	/**
+	 * Find viewing number.
+	 * 
+	 * @param pageSize
+	 *            the page size
+	 * @param currentPage
+	 *            the current page
+	 * @return the int
+	 */
 	protected int findViewingNumber(int pageSize,int currentPage){
 		return pageSize * (currentPage - 1) + 1;	
 	}
@@ -404,21 +555,73 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}*/
 	
 	//build data table for user search
+	/**
+	 * Builds the data table.
+	 * 
+	 * @param results
+	 *            the results
+	 */
 	public void buildDataTable(final SearchResults<T> results){		
 		buildDataTable(results, true,false);//Default value for isAscending is true and isChecked is false.
 	}
 	
 	//build data table for view
+	/**
+	 * Builds the version data table.
+	 * 
+	 * @param results
+	 *            the results
+	 * @param pageCount
+	 *            the page count
+	 * @param totalResults
+	 *            the total results
+	 * @param currentPage
+	 *            the current page
+	 * @param pageSize
+	 *            the page size
+	 */
 	public void buildVersionDataTable(final SearchResults<T> results, int pageCount,long totalResults,int currentPage,int pageSize){		
 		buildDataTable(results, true,false, pageCount, totalResults, currentPage, pageSize);//Default value for isAscending is true and isChecked is false.
 	}
 	
 	//build data table for draft
+	/**
+	 * Builds the draft data table.
+	 * 
+	 * @param results
+	 *            the results
+	 * @param pageCount
+	 *            the page count
+	 * @param totalResults
+	 *            the total results
+	 * @param currentPage
+	 *            the current page
+	 * @param pageSize
+	 *            the page size
+	 */
 	public void buildDraftDataTable(final SearchResults<T> results, int pageCount,long totalResults,int currentPage,int pageSize){		
 		buildDataTable(results, true,false, pageCount, totalResults, currentPage, pageSize);//Default value for isAscending is true and isChecked is false.
 	}
 	
 	//build data table for view and draft
+	/**
+	 * Builds the data table.
+	 * 
+	 * @param results
+	 *            the results
+	 * @param isAscending
+	 *            the is ascending
+	 * @param isChecked
+	 *            the is checked
+	 * @param pageCount
+	 *            the page count
+	 * @param totalResults
+	 *            the total results
+	 * @param currentPage
+	 *            the current page
+	 * @param pageSize
+	 *            the page size
+	 */
 	public void buildDataTable(final SearchResults<T> results, boolean isAscending,boolean isChecked, int pageCount,long totalResults,int currentPage,int pageSize){
 		if(results == null) {
 			return;
@@ -436,6 +639,16 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 	
 	//build data table for user search
+	/**
+	 * Builds the data table.
+	 * 
+	 * @param results
+	 *            the results
+	 * @param isAscending
+	 *            the is ascending
+	 * @param isChecked
+	 *            the is checked
+	 */
 	public void buildDataTable(final SearchResults<T> results, boolean isAscending,boolean isChecked){
 		if(results == null) {
 			return;
@@ -452,6 +665,20 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		buildPageSizeSelector();
 	}
 	
+	/**
+	 * Builds the search results column headers.
+	 * 
+	 * @param numRows
+	 *            the num rows
+	 * @param numColumns
+	 *            the num columns
+	 * @param results
+	 *            the results
+	 * @param isAscending
+	 *            the is ascending
+	 * @param isChecked
+	 *            the is checked
+	 */
 	public void buildSearchResultsColumnHeaders(int numRows,int numColumns,SearchResults<T> results, boolean isAscending,boolean isChecked){
 		boolean isClearAll = false;
 		for(int i = 0; i < numColumns; i++) {
@@ -600,6 +827,16 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		dataTable.getRowFormatter().addStyleName(0, "header");
 	}
 	
+	/**
+	 * Builds the search results.
+	 * 
+	 * @param numRows
+	 *            the num rows
+	 * @param numColumns
+	 *            the num columns
+	 * @param results
+	 *            the results
+	 */
 	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<T> results){		
 		for(int i = 0; i < numRows; i++) {
 			for(int j = 0; j < numColumns; j++) {
@@ -619,6 +856,16 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		}
 	}
 	
+	/**
+	 * Adds the click handler.
+	 * 
+	 * @param w
+	 *            the w
+	 * @param results
+	 *            the results
+	 * @param rowIndex
+	 *            the row index
+	 */
 	protected void addClickHandler(HasClickHandlers w, final SearchResults<T> results, final int rowIndex){
 		w.addClickHandler(new ClickHandler() {
 			@Override
@@ -629,6 +876,16 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		});
 	}
 	
+	/**
+	 * Builds the history search results.
+	 * 
+	 * @param numRows
+	 *            the num rows
+	 * @param numColumns
+	 *            the num columns
+	 * @param results
+	 *            the results
+	 */
 	private void buildHistorySearchResults(int numRows,int numColumns,final SearchResults<T> results){
 		int tableRow = 1;
 		String rowStyle = "odd";
@@ -665,6 +922,16 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 
 	
+	/**
+	 * Sets the viewing range2.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 * @param total
+	 *            the total
+	 */
 	protected void setViewingRange2(long start, long end, long total) {
 		if(total == 0) {
 //			((HTML) viewingNumber.getWidget()).setHTML("No Records Found");
@@ -684,6 +951,16 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	
 	
 	
+	/**
+	 * Sets the viewing range.
+	 * 
+	 * @param start
+	 *            the start
+	 * @param end
+	 *            the end
+	 * @param total
+	 *            the total
+	 */
 	public void setViewingRange(long start, long end, long total) {
 		if(total == 0) {
 //			((HTML) viewingNumber.getWidget()).setHTML("No Records Found");
@@ -702,57 +979,100 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	}
 	
 	
+	/**
+	 * As widget.
+	 * 
+	 * @return the widget
+	 */
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.shared.HasHandlers#fireEvent(com.google.gwt.event.shared.GwtEvent)
+	 */
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
+	 */
 	@Override
 	public HandlerRegistration addSelectionHandler(
 			SelectionHandler<T> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.HasPageSelectionHandler#addPageSelectionHandler(mat.client.shared.search.PageSelectionEventHandler)
+	 */
 	@Override
 	public HandlerRegistration addPageSelectionHandler(
 			PageSelectionEventHandler handler) {
 		return handlerManager.addHandler(PageSelectionEvent.getType(), handler);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.HasPageSizeSelectionHandler#addPageSizeSelectionHandler(mat.client.shared.search.PageSizeSelectionEventHandler)
+	 */
 	@Override
 	public HandlerRegistration addPageSizeSelectionHandler(
 			PageSizeSelectionEventHandler handler) {
 		return handlerManager.addHandler(PageSizeSelectionEvent.getType(), handler);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.HasSortHandler#addPageSortHandler(mat.client.shared.search.PageSortEventHandler)
+	 */
 	@Override
 	public HandlerRegistration addPageSortHandler(PageSortEventHandler handler) {
 		return handlerManager.addHandler(PageSortEvent.getType(), handler);
 	}
 
+	/**
+	 * Gets the page size.
+	 * 
+	 * @return the page size
+	 */
 	public int getPageSize() {
 		return currentPageSize;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.HasSelectAllHandler#addSelectAllHandler(mat.client.shared.search.SelectAllEventHandler)
+	 */
 	@Override
 	public HandlerRegistration addSelectAllHandler(SelectAllEventHandler handler) {
 		return handlerManager.addHandler(SelectAllEvent.TYPE, handler);
 	}
 	
+	/**
+	 * Gets the current page.
+	 * 
+	 * @return the current page
+	 */
 	public int getCurrentPage() {
 		return currentPage;
 	}
 
+	/**
+	 * Sets the current page.
+	 * 
+	 * @param pageNumber
+	 *            the new current page
+	 */
 	public void setCurrentPage(int pageNumber) {
 		currentPage = pageNumber;
 	}
 	
 	/**
-	 * implementation of Enableable interface
-	 * consider setting enablement of search page components
+	 * implementation of Enableable interface consider setting enablement of
+	 * search page components.
+	 * 
+	 * @param enabled
+	 *            the new enabled
 	 */
 	public void setEnabled(boolean enabled){
 		
@@ -772,19 +1092,31 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		}
 		
 	}
+	
 	/**
+	 * Gets the data table.
+	 * 
 	 * @return the dataTable
 	 */
 	public Grid508 getDataTable() {
 		return dataTable;
 	}
+	
 	/**
-	 * @param dataTable the dataTable to set
+	 * Sets the data table.
+	 * 
+	 * @param dataTable
+	 *            the dataTable to set
 	 */
 	public void setDataTable(Grid508 dataTable) {
 		this.dataTable = dataTable;
 	}
 	
+	/**
+	 * Gets the v panel for qdm table.
+	 * 
+	 * @return the v panel for qdm table
+	 */
 	public VerticalPanel getvPanelForQDMTable() {
 		return vPanelForQDMTable;
 	}

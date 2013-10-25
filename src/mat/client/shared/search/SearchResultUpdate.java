@@ -4,8 +4,21 @@ import mat.shared.StringUtility;
 
 import com.google.gwt.user.client.ui.TextBox;
 
+/**
+ * The Class SearchResultUpdate.
+ */
 public class SearchResultUpdate {
 
+	/**
+	 * Update.
+	 * 
+	 * @param result
+	 *            the result
+	 * @param searchTextBox
+	 *            the search text box
+	 * @param lastSearchText
+	 *            the last search text
+	 */
 	public void update(SearchResults<?> result, TextBox searchTextBox, String lastSearchText){
 		if(result.getResultsTotal() == 0 && !lastSearchText.isEmpty()){
 			String searchTitle = "No Records returned.";

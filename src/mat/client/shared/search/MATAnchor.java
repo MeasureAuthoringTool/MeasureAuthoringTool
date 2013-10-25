@@ -5,20 +5,29 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Anchor;
 
 /**
+ * The Class MATAnchor.
  * 
  * @author aschmidt
- *
  */
 public class MATAnchor extends Anchor{
 	
 	
+	/**
+	 * Instantiates a new mAT anchor.
+	 * 
+	 * @param label
+	 *            the label
+	 */
 	public MATAnchor(String label) {
 		super(label);
 	}
 
 	
 	/**
-	 * ensure events are not propagated if not enabled
+	 * ensure events are not propagated if not enabled.
+	 * 
+	 * @param event
+	 *            the event
 	 */
 	@Override
 	public void onBrowserEvent(Event event) {

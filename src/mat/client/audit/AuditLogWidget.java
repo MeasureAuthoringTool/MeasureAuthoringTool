@@ -11,8 +11,23 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
+/**
+ * The Class AuditLogWidget.
+ */
 public class AuditLogWidget extends Composite {
 
+	/**
+	 * Instantiates a new audit log widget.
+	 * 
+	 * @param activityType
+	 *            the activity type
+	 * @param userId
+	 *            the user id
+	 * @param timeStamp
+	 *            the time stamp
+	 * @param additionalInfo
+	 *            the additional info
+	 */
 	public AuditLogWidget(String activityType, String userId, Date timeStamp, String additionalInfo) {
 		VerticalPanel auditLogPanel = new VerticalPanel();
 		auditLogPanel.setWidth("100%");

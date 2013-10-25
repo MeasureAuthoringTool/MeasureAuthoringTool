@@ -9,9 +9,17 @@ import mat.client.shared.NameValuePair;
 import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle;
 
+/**
+ * The Class OrganizationSuggestOracle.
+ */
 public class OrganizationSuggestOracle extends SuggestOracle {
+	
+	/** The options. */
 	private List<NameValuePair> options = new ArrayList<NameValuePair>();
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.SuggestOracle#requestSuggestions(com.google.gwt.user.client.ui.SuggestOracle.Request, com.google.gwt.user.client.ui.SuggestOracle.Callback)
+	 */
 	@Override
 	public void requestSuggestions(final Request request, final Callback callback) {
 		final int limit = request.getLimit();
@@ -30,9 +38,21 @@ public class OrganizationSuggestOracle extends SuggestOracle {
 	callback.onSuggestionsReady(request, response);
 	}
 
+	/**
+	 * Sets the organization values.
+	 * 
+	 * @param options
+	 *            the new organization values
+	 */
 	public void setOrganizationValues(List<NameValuePair> options) {
 		this.options = options;
 	}
+	
+	/**
+	 * Gets the organization values.
+	 * 
+	 * @return the organization values
+	 */
 	public List<NameValuePair> getOrganizationValues() {
 		return options;
 	}

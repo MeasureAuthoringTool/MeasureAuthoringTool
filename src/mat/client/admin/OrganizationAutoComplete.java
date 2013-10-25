@@ -14,11 +14,23 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 
+/**
+ * The Class OrganizationAutoComplete.
+ */
 public class OrganizationAutoComplete extends Composite implements HasValue<String> {
+	
+	/** The my oracle. */
 	private OrganizationSuggestOracle myOracle = new OrganizationSuggestOracle();
+	
+	/** The s box. */
 	private SuggestBox sBox;
+	
+	/** The value. */
 	private String value;
 
+	/**
+	 * Instantiates a new organization auto complete.
+	 */
 	public OrganizationAutoComplete() {
 		sBox = new SuggestBox(myOracle);
 		initWidget(sBox);
@@ -38,26 +50,44 @@ public class OrganizationAutoComplete extends Composite implements HasValue<Stri
 		});
 	}
 
+	/**
+	 * Sets the organization values.
+	 * 
+	 * @param options
+	 *            the new organization values
+	 */
 	public void setOrganizationValues(List<NameValuePair> options) {
 		myOracle.setOrganizationValues(options);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.logical.shared.HasValueChangeHandlers#addValueChangeHandler(com.google.gwt.event.logical.shared.ValueChangeHandler)
+	 */
 	@Override
 	public HandlerRegistration addValueChangeHandler(
 			ValueChangeHandler<String> handler) {
 		throw new RuntimeException("Not Implemented");
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.HasValue#getValue()
+	 */
 	@Override
 	public String getValue() {
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object)
+	 */
 	@Override
 	public void setValue(String value) {
 		setValue(value, false);
 	}
 
+	/* (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.HasValue#setValue(java.lang.Object, boolean)
+	 */
 	@Override
 	public void setValue(String value, boolean fireEvents) {
 		for (NameValuePair nvp : myOracle.getOrganizationValues()) {

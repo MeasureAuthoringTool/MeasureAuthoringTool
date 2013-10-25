@@ -41,53 +41,253 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ManageUsersPresenter.
+ */
 public class ManageUsersPresenter implements MatPresenter {
+	
+	/**
+	 * The Interface SearchDisplay.
+	 */
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay {
+		
+		/**
+		 * Gets the creates the new button.
+		 * 
+		 * @return the creates the new button
+		 */
 		HasClickHandlers getCreateNewButton();
+		
+		/**
+		 * Gets the generate csv file button.
+		 * 
+		 * @return the generate csv file button
+		 */
 		Button getGenerateCSVFileButton();
+		
+		/**
+		 * Gets the select id for edit tool.
+		 * 
+		 * @return the select id for edit tool
+		 */
 		HasSelectionHandlers<ManageUsersSearchModel.Result> getSelectIdForEditTool();
+		
+		/**
+		 * Builds the data table.
+		 * 
+		 * @param results
+		 *            the results
+		 */
 		void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results);
 	}
+	
+	/**
+	 * The Interface DetailDisplay.
+	 */
 	public static interface DetailDisplay {
+		
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
 		Widget asWidget();
 
+		/**
+		 * Gets the save button.
+		 * 
+		 * @return the save button
+		 */
 		HasClickHandlers getSaveButton();
+		
+		/**
+		 * Gets the cancel button.
+		 * 
+		 * @return the cancel button
+		 */
 		HasClickHandlers getCancelButton();
 		//public HasClickHandlers getDeleteUserButton();
 
+		/**
+		 * Gets the first name.
+		 * 
+		 * @return the first name
+		 */
 		HasValue<String> getFirstName();
+		
+		/**
+		 * Gets the last name.
+		 * 
+		 * @return the last name
+		 */
 		HasValue<String> getLastName();
+		
+		/**
+		 * Gets the middle initial.
+		 * 
+		 * @return the middle initial
+		 */
 		HasValue<String> getMiddleInitial();
+		
+		/**
+		 * Gets the login id.
+		 * 
+		 * @return the login id
+		 */
 		Label getLoginId();
+		
+		/**
+		 * Gets the title.
+		 * 
+		 * @return the title
+		 */
 		HasValue<String> getTitle();
+		
+		/**
+		 * Gets the email address.
+		 * 
+		 * @return the email address
+		 */
 		HasValue<String> getEmailAddress();
+		
+		/**
+		 * Gets the phone number.
+		 * 
+		 * @return the phone number
+		 */
 		HasValue<String> getPhoneNumber();
+		
+		/**
+		 * Gets the organization.
+		 * 
+		 * @return the organization
+		 */
 		HasValue<String> getOrganization();
+		
+		/**
+		 * Gets the role.
+		 * 
+		 * @return the role
+		 */
 		HasValue<String> getRole();
+		
+		/**
+		 * Gets the oid.
+		 * 
+		 * @return the oid
+		 */
 		HasValue<String> getOid();
 		//public HasValue<String> getRootOid();
 
+		/**
+		 * Gets the checks if is active.
+		 * 
+		 * @return the checks if is active
+		 */
 		HasValue<Boolean> getIsActive();
+		
+		/**
+		 * Gets the checks if is revoked.
+		 * 
+		 * @return the checks if is revoked
+		 */
 		HasValue<Boolean> getIsRevoked();
+		
+		/**
+		 * Gets the checks if is org user.
+		 * 
+		 * @return the checks if is org user
+		 */
 		HasValue<Boolean> getIsOrgUser();
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return the error message display
+		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
+		/**
+		 * Gets the success message display.
+		 * 
+		 * @return the success message display
+		 */
 		SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		
+		/**
+		 * Sets the user is active editable.
+		 * 
+		 * @param b
+		 *            the new user is active editable
+		 */
 		void setUserIsActiveEditable(boolean b);
 		//public void setUserIsDeletable(boolean b);
+		/**
+		 * Sets the user locked.
+		 * 
+		 * @param b
+		 *            the new user locked
+		 */
 		void setUserLocked(boolean b);
+		
+		/**
+		 * Sets the show revoked status.
+		 * 
+		 * @param b
+		 *            the new show revoked status
+		 */
 		void setShowRevokedStatus(boolean b);
+		
+		/**
+		 * Sets the show unlock option.
+		 * 
+		 * @param b
+		 *            the new show unlock option
+		 */
 		void setShowUnlockOption(boolean b);
+		
+		/**
+		 * Gets the reset password button.
+		 * 
+		 * @return the reset password button
+		 */
 		HasClickHandlers getResetPasswordButton();
+		
+		/**
+		 * Sets the title.
+		 * 
+		 * @param title
+		 *            the new title
+		 */
 		void setTitle(String title);
 	}
 
+	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
+	
+	/** The search display. */
 	private SearchDisplay searchDisplay;
+	
+	/** The detail display. */
 	private DetailDisplay detailDisplay;
+	
+	/** The current details. */
 	private ManageUsersDetailModel currentDetails;
+	
+	/** The start index. */
 	private int startIndex = 1;
+	
+	/** The last search key. */
 	private String lastSearchKey;
 
+	/**
+	 * Instantiates a new manage users presenter.
+	 * 
+	 * @param sDisplayArg
+	 *            the s display arg
+	 * @param dDisplayArg
+	 *            the d display arg
+	 */
 	public ManageUsersPresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg) {
 		this.searchDisplay = sDisplayArg;
 		this.detailDisplay = dDisplayArg;
@@ -207,12 +407,18 @@ public class ManageUsersPresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Display search.
+	 */
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
 		search("", 1, searchDisplay.getPageSize());
 	}
 
+	/**
+	 * Display detail.
+	 */
 	private void displayDetail() {
 		resetMessages();
 		setUserDetailsToView();
@@ -221,6 +427,9 @@ public class ManageUsersPresenter implements MatPresenter {
 		Mat.focusSkipLists("Manage Users");
 	}
 
+	/**
+	 * Update.
+	 */
 	private void update() {
 		resetMessages();
 		updateUserDetailsFromView();
@@ -256,22 +465,37 @@ public class ManageUsersPresenter implements MatPresenter {
 		}
 	}
 
+	/**
+	 * Reset messages.
+	 */
 	private void resetMessages() {
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
 	}
 
+	/**
+	 * Creates the new.
+	 */
 	private void createNew() {
 		detailDisplay.setTitle("Add a User");
 		currentDetails = new ManageUsersDetailModel();
 		displayDetail();
 	}
 
+	/**
+	 * Generate csv of active user emails.
+	 */
 	private void generateCSVOfActiveUserEmails() {
 		String url = GWT.getModuleBaseURL() + "export?format=exportActiveNonAdminUsersCSV";
 		Window.open(url + "&type=save", "_self", "");
 	}
 
+	/**
+	 * Edits the.
+	 * 
+	 * @param name
+	 *            the name
+	 */
 	private void edit(String name) {
 		detailDisplay.setTitle("Update a User");
 		MatContext.get().getAdminService().getUser(name, new AsyncCallback<ManageUsersDetailModel>() {
@@ -291,6 +515,16 @@ public class ManageUsersPresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Search.
+	 * 
+	 * @param key
+	 *            the key
+	 * @param startIndex
+	 *            the start index
+	 * @param pageSize
+	 *            the page size
+	 */
 	private void search(String key, int startIndex, int pageSize) {
 		lastSearchKey = key;
 		showSearchingBusy(true);
@@ -319,6 +553,9 @@ public class ManageUsersPresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Call sign out.
+	 */
 	private void callSignOut() {
 		 MatContext.get().getLoginService().signOut(new AsyncCallback<Void>() {
 			@Override
@@ -333,6 +570,9 @@ public class ManageUsersPresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Redirect to login.
+	 */
 	private void redirectToLogin() {
 		/*
 		 * Added a timer to have a delay before redirect since
@@ -347,6 +587,12 @@ public class ManageUsersPresenter implements MatPresenter {
 		timer.schedule(1000);
 	}
 
+	/**
+	 * Show searching busy.
+	 * 
+	 * @param busy
+	 *            the busy
+	 */
 	private void showSearchingBusy(boolean busy) {
 		if (busy) {
 			Mat.showLoadingMessage();
@@ -357,21 +603,33 @@ public class ManageUsersPresenter implements MatPresenter {
 		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		return panel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		displaySearch();
 		Mat.focusSkipLists("Manage Users");
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 	}
 
+	/**
+	 * Sets the user details to view.
+	 */
 	private void setUserDetailsToView() {
 		detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
 		detailDisplay.getLastName().setValue(currentDetails.getLastName());
@@ -403,6 +661,9 @@ public class ManageUsersPresenter implements MatPresenter {
 		//detailDisplay.getRootOid().setValue(currentDetails.getRootOid());
 	}
 
+	/**
+	 * Update user details from view.
+	 */
 	private void updateUserDetailsFromView() {
 		currentDetails.setFirstName(detailDisplay.getFirstName().getValue());
 		currentDetails.setLastName(detailDisplay.getLastName().getValue());
@@ -417,6 +678,15 @@ public class ManageUsersPresenter implements MatPresenter {
 		currentDetails.setRole(detailDisplay.getRole().getValue());
 	}
 
+	/**
+	 * Gets the widget with heading.
+	 * 
+	 * @param widget
+	 *            the widget
+	 * @param heading
+	 *            the heading
+	 * @return the widget with heading
+	 */
 	public Widget getWidgetWithHeading(Widget widget, String heading) {
 		FlowPanel vPanel = new FlowPanel();
 		Label h = new Label(heading);
@@ -429,6 +699,13 @@ public class ManageUsersPresenter implements MatPresenter {
 		return vPanel;
 	}
 
+	/**
+	 * Checks if is valid.
+	 * 
+	 * @param model
+	 *            the model
+	 * @return true, if is valid
+	 */
 	private boolean isValid(ManageUsersDetailModel model) {
 		AdminManageUserModelValidator test = new AdminManageUserModelValidator();
 		List<String> message = test.isValidUsersDetail(model);

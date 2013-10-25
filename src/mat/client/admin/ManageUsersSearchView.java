@@ -21,15 +21,28 @@ import com.google.gwt.user.client.ui.Widget;
 /**ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay.**/
 public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay {
 
+	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 
+	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 
+	/** The search text. */
 	private TextBox searchText = new TextBox();
+	
+	/** The search label. */
 	private Widget searchLabel = LabelBuilder.buildLabel(searchText, "Search for a User");
+	
+	/** The view. */
 	private SearchView<ManageUsersSearchModel.Result> view = new SearchView<ManageUsersSearchModel.Result>("Users");
+	
+	/** The search button. */
 	private Button searchButton = new SecondaryButton("Search");
+	
+	/** The create new button. */
 	private Button createNewButton = new SecondaryButton("Add New User");
+	
+	/** The generate csv file button. */
 	private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
 
 	/**Constructor.**/
@@ -56,42 +69,82 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		containerPanel.setContent(mainPanel);
 		containerPanel.setHeading("Manage Users", "Manage Users");
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return containerPanel;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getGenerateCSVFileButton()
+	 */
 	@Override
 	public Button getGenerateCSVFileButton() {
 		return generateCSVFileButton;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getCreateNewButton()
+	 */
 	@Override
 	public HasClickHandlers getCreateNewButton() {
 		return createNewButton;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchDisplay#getSearchButton()
+	 */
 	@Override
 	public HasClickHandlers getSearchButton() {
 		return searchButton;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#getSelectIdForEditTool()
+	 */
 	@Override
 	public HasSelectionHandlers<ManageUsersSearchModel.Result> getSelectIdForEditTool() {
 		return view;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
+	 */
 	@Override
 	public void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results) {
 		view.buildDataTable(results);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchDisplay#getPageSize()
+	 */
 	@Override
 	public int getPageSize() {
 		return view.getPageSize();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchDisplay#getPageSelectionTool()
+	 */
 	@Override
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return view;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchDisplay#getPageSizeSelectionTool()
+	 */
 	@Override
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return view;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchDisplay#getSearchString()
+	 */
 	@Override
 	public HasValue<String> getSearchString() {
 		return searchText;

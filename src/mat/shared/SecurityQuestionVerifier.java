@@ -7,13 +7,33 @@ import java.util.Set;
 
 import mat.client.shared.MatContext;
 
+/**
+ * The Class SecurityQuestionVerifier.
+ */
 public class SecurityQuestionVerifier {
 	
+	/** The message. */
 	private List<String> message = new ArrayList<String>();
 	
 	//
 	// use a value object for the parameters?
 	//
+	/**
+	 * Instantiates a new security question verifier.
+	 * 
+	 * @param question1
+	 *            the question1
+	 * @param answer1
+	 *            the answer1
+	 * @param question2
+	 *            the question2
+	 * @param answer2
+	 *            the answer2
+	 * @param question3
+	 *            the question3
+	 * @param answer3
+	 *            the answer3
+	 */
 	public SecurityQuestionVerifier(String question1, String answer1,
 				String question2, String answer2, String question3, 
 				String answer3) {
@@ -44,9 +64,20 @@ public class SecurityQuestionVerifier {
 		
 	}
 	
+	/**
+	 * Gets the messages.
+	 * 
+	 * @return the messages
+	 */
 	public List<String> getMessages() {
 		return message;
 	}
+	
+	/**
+	 * Checks if is valid.
+	 * 
+	 * @return true, if is valid
+	 */
 	public boolean isValid() {
 		return message.size() == 0;
 	}

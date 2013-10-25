@@ -1,13 +1,20 @@
 package mat.shared;
 
+/**
+ * The Class StringUtility.
+ */
 public class StringUtility {
 	
+	/** The nl. */
 	public final String nl = "\r\n";
+	
 	/**
-	 * for input "blah18", should return 18-1 
-	 * naming convention starts at 1, code logic is zero based
+	 * for input "blah18", should return 18-1 naming convention starts at 1,
+	 * code logic is zero based.
+	 * 
 	 * @param name
-	 * @return
+	 *            the name
+	 * @return the pos
 	 */
 	public int getPos(String name) {
 		int val = 0 ;
@@ -24,15 +31,36 @@ public class StringUtility {
 		return val-1;
 	}
 	
+	/**
+	 * Checks if is int.
+	 * 
+	 * @param a
+	 *            the a
+	 * @return true, if is int
+	 */
 	private boolean isInt(char a){
 		return Character.isDigit(a);
 	}
 	
 	
+	/**
+	 * Checks if is empty or null.
+	 * 
+	 * @param str
+	 *            the str
+	 * @return true, if is empty or null
+	 */
 	public boolean isEmptyOrNull(String str){
 		return str == null || str.isEmpty();
 	}
 	
+	/**
+	 * Strip off number.
+	 * 
+	 * @param s
+	 *            the s
+	 * @return the string
+	 */
 	public String stripOffNumber(String s){
 		boolean flag = true;
 		int strLen = s.length();
@@ -49,6 +77,13 @@ public class StringUtility {
 	}
 	
 	
+	/**
+	 * Trim leading zeros.
+	 * 
+	 * @param numberStr
+	 *            the number str
+	 * @return the string
+	 */
 	public String trimLeadingZeros(String numberStr){
 		return numberStr.replaceFirst("^0+(?!$)", "");
 	}

@@ -10,12 +10,20 @@ import mat.client.admin.ManageUsersDetailModel;
 import mat.client.shared.MatContext;
 
 /**
+ * The Class AdminManageUserModelValidator.
+ * 
  * @author jnarang
- *
  */
 public class AdminManageUserModelValidator {
 	
 	
+	/**
+	 * Checks if is valid users detail.
+	 * 
+	 * @param model
+	 *            the model
+	 * @return the list
+	 */
 	public List<String> isValidUsersDetail(ManageUsersDetailModel model) {
 		List<String> message = new ArrayList<String>();
 		

@@ -1,16 +1,41 @@
 package mat.shared;
 
+/**
+ * The Class DateStringValidator.
+ */
 public class DateStringValidator {
 	/* TODO add static validation codes */
+	/** The valid. */
 	public static int VALID = 0;
+	
+	/** The invalid month. */
 	public static int INVALID_MONTH = 1;
+	
+	/** The invalid day. */
 	public static int INVALID_DAY = 2;
+	
+	/** The invalid year. */
 	public static int INVALID_YEAR = 3;
+	
+	/** The invalid hour. */
 	public static int INVALID_HOUR = 4;
+	
+	/** The invalid minute. */
 	public static int INVALID_MINUTE = 5;
+	
+	/** The invalid am pm. */
 	public static int INVALID_AM_PM = 6;
+	
+	/** The invalid date. */
 	public static int INVALID_DATE = 7;
 	
+	/**
+	 * Checks if is valid date string.
+	 * 
+	 * @param lmStr
+	 *            the lm str
+	 * @return the int
+	 */
 	public int isValidDateString(String lmStr){
 		
 		int dateLen = lmStr.length();

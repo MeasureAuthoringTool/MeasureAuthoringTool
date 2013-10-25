@@ -11,14 +11,25 @@ import mat.client.shared.MatContext;
 import mat.model.Code;
 
 /**
- * @author vandavar
- * Server-Side Validator for the ListObject Model
- *
+ * The Class ListObjectModelValidator.
+ * 
+ * @author vandavar Server-Side Validator for the ListObject Model
  */
 public class ListObjectModelValidator {
 	
+	/**
+	 * The Class CodeModelValidator.
+	 */
 	public static class  CodeModelValidator{
-	    public List<String> validate(Code codemodel){
+	    
+    	/**
+		 * Validate.
+		 * 
+		 * @param codemodel
+		 *            the codemodel
+		 * @return the list
+		 */
+    	public List<String> validate(Code codemodel){
 	    	List<String> messages = new ArrayList<String>();
 	    	if("".equals(codemodel.getCode().trim())) {
 				messages.add(MatContext.get().getMessageDelegate().getCodeRequiredMessage());
@@ -32,6 +43,13 @@ public class ListObjectModelValidator {
 	
 
 	
+	/**
+	 * Validate list object.
+	 * 
+	 * @param model
+	 *            the model
+	 * @return the list
+	 */
 	public List<String> ValidateListObject(ManageCodeListDetailModel model){	
 		 List<String> messages = new ArrayList<String>();
 		if(model.getIsGrouped()){
@@ -66,6 +84,13 @@ public class ListObjectModelValidator {
 		
 	}
     
+	/**
+	 * Validatecode listonly fields.
+	 * 
+	 * @param model
+	 *            the model
+	 * @return the list
+	 */
 	public List<String> validatecodeListonlyFields(ManageCodeListDetailModel model){
 		 List<String> messages = new ArrayList<String>();
 			if("".equals(model.getCodeSystem().trim())) {

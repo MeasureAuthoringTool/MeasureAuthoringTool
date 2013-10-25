@@ -21,29 +21,119 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class MeasureNotesPresenter.
+ */
 public class MeasureNotesPresenter implements MatPresenter{
 	
- 	MeasureServiceAsync service = MatContext.get().getMeasureService();
+ 	/** The service. */
+	 MeasureServiceAsync service = MatContext.get().getMeasureService();
  	 		
- 	private NotesDisplay notesDisplay; 
+ 	/** The notes display. */
+	 private NotesDisplay notesDisplay; 
  	
- 	public static interface NotesDisplay {
+ 	/**
+		 * The Interface NotesDisplay.
+		 */
+	 public static interface NotesDisplay {
+		
+		/**
+		 * Gets the save button.
+		 * 
+		 * @return the save button
+		 */
 		public HasClickHandlers getSaveButton();
+		
+		/**
+		 * Gets the cancel button.
+		 * 
+		 * @return the cancel button
+		 */
 		public HasClickHandlers getCancelButton();
+		
+		/**
+		 * Gets the export button.
+		 * 
+		 * @return the export button
+		 */
 		public HasClickHandlers getExportButton();
+		
+		/**
+		 * Cancel composed note.
+		 */
 		public void cancelComposedNote();
+		
+		/**
+		 * Gets the measure note composer.
+		 * 
+		 * @return the measure note composer
+		 */
 		public TextArea getMeasureNoteComposer();
+		
+		/**
+		 * Gets the success message display.
+		 * 
+		 * @return the success message display
+		 */
 		public SuccessMessageDisplay getSuccessMessageDisplay();
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return the error message display
+		 */
 		public ErrorMessageDisplay getErrorMessageDisplay();
+		
+		/**
+		 * Gets the measure note title.
+		 * 
+		 * @return the measure note title
+		 */
 		public TextBox getMeasureNoteTitle();
+		
+		/**
+		 * Gets the notes result.
+		 * 
+		 * @return the notes result
+		 */
 		public MeasureNotesModel getNotesResult();
+		
+		/**
+		 * Display view.
+		 */
 		public void displayView();
+		
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
 		public Widget asWidget();
+		
+		/**
+		 * Sets the observer.
+		 * 
+		 * @param observer
+		 *            the new observer
+		 */
 		public void setObserver(Observer observer);
+		
+		/**
+		 * Sets the notes result.
+		 * 
+		 * @param notesResult
+		 *            the new notes result
+		 */
 		public void setNotesResult(MeasureNotesModel notesResult);
 	}
  	 
- 	public MeasureNotesPresenter(NotesDisplay notesDisplay){
+ 	/**
+		 * Instantiates a new measure notes presenter.
+		 * 
+		 * @param notesDisplay
+		 *            the notes display
+		 */
+	 public MeasureNotesPresenter(NotesDisplay notesDisplay){
  		this.notesDisplay=notesDisplay; 		
  		notesDisplay.getExportButton().addClickHandler(new ClickHandler() { 
  			@Override
@@ -67,6 +157,9 @@ public class MeasureNotesPresenter implements MatPresenter{
  		}); 
  	}
 
+	/**
+	 * Generate csv to export measure notes.
+	 */
 	private void generateCSVToExportMeasureNotes(){
 		MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null, "MEASURE_NOTES_EXPORT", "Measure Notes Exported", ConstantMessages.DB_LOG);
 		String url = GWT.getModuleBaseURL() + "export?id=" + MatContext.get().getCurrentMeasureId() + "&format=exportMeasureNotesForMeasure";
@@ -167,10 +260,12 @@ public class MeasureNotesPresenter implements MatPresenter{
  	}
  	
  	/**
- 	 * Show or Hide Loading Message.
- 	 * Show Loading Message when 'busy' is true and hide Loading Message when 'busy' is false. 
- 	 * @param busy
- 	 */
+		 * Show or Hide Loading Message. Show Loading Message when 'busy' is
+		 * true and hide Loading Message when 'busy' is false.
+		 * 
+		 * @param busy
+		 *            the busy
+		 */
  	private void showSearchingBusy(boolean busy){
 		if(busy)
 			Mat.showLoadingMessage();
@@ -430,17 +525,28 @@ public class MeasureNotesPresenter implements MatPresenter{
 		notesDisplay.getMeasureNoteTitle().setText("");
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		resetWidget();
 		search();		
 		notesDisplay.asWidget();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 		resetWidget();
 		notesDisplay.asWidget();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		return notesDisplay.asWidget();

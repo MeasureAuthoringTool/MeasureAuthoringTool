@@ -11,47 +11,83 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class UserShareInfoAdapter.
+ */
 class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
+	
+	/** The headers. */
 	private static String[] headers = new String[] { "User", "Organization", "Share" };
+	
+	/** The widths. */
 	private static String[] widths = new String[] { "40%", "40%", "12%" };
 
+	/** The data. */
 	private ManageMeasureShareModel data = new ManageMeasureShareModel();
+	
+	/**
+	 * Sets the data.
+	 * 
+	 * @param data
+	 *            the new data
+	 */
 	public void setData(ManageMeasureShareModel data) {
 		this.data = data;
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSortable(int)
+	 */
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return false;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getNumberOfColumns()
+	 */
 	@Override
 	public int getNumberOfColumns() {
 		return headers.length;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getNumberOfRows()
+	 */
 	@Override
 	public int getNumberOfRows() {
 		return data.getNumberOfRows();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getColumnHeader(int)
+	 */
 	@Override
 	public String getColumnHeader(int columnIndex) {
 		return headers[columnIndex];
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getColumnWidth(int)
+	 */
 	@Override
 	public String getColumnWidth(int columnIndex) {
 		return widths[columnIndex];
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnFiresSelection(int)
+	 */
 	@Override
 	public boolean isColumnFiresSelection(int columnIndex) {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getValue(int, int)
+	 */
 	@Override
 	public Widget getValue(int row, int column) {
 		Widget value;
@@ -72,6 +108,13 @@ class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
 		return value;
 	}
 	
+	/**
+	 * Builds the share checkbox panel.
+	 * 
+	 * @param dto
+	 *            the dto
+	 * @return the widget
+	 */
 	private Widget buildShareCheckboxPanel(final MeasureShareDTO dto) {
 		FlowPanel fPanel = new FlowPanel();
 		fPanel.setTitle("Share");
@@ -107,28 +150,43 @@ class UserShareInfoAdapter implements SearchResults<MeasureShareDTO> {
 		return fPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getStartIndex()
+	 */
 	@Override
 	public int getStartIndex() {
 		return data.getStartIndex();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getResultsTotal()
+	 */
 	@Override
 	public int getResultsTotal() {
 		return data.getResultsTotal();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getKey(int)
+	 */
 	@Override
 	public String getKey(int row) {
 		return data.get(row).getUserId();
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#get(int)
+	 */
 	@Override
 	public MeasureShareDTO get(int row) {
 		return data.get(row);
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
+	 */
 	@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return false;

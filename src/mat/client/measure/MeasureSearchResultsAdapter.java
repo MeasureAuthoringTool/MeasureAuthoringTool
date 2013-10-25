@@ -18,24 +18,87 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class MeasureSearchResultsAdapter.
+ */
 class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchModel.Result> {
 	
+	/** The headers. */
 	private static String[] headers = new String[] { "Measure Name", "Version", "Finalized Date", "Status", "History" ,"Edit","Share", "Clone", "ExportClear"};
+	
+	/** The widths. */
 	private static String[] widths = new String[] { "35%", "16%", "16%", "8%", "5%","5%", "5%", "5%", "5%", "12%" };
 
+	/**
+	 * The Interface Observer.
+	 */
 	public static interface Observer {
+		
+		/**
+		 * On edit clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onEditClicked(ManageMeasureSearchModel.Result result);
+		
+		/**
+		 * On clone clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onCloneClicked(ManageMeasureSearchModel.Result result);
+		
+		/**
+		 * On share clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onShareClicked(ManageMeasureSearchModel.Result result);
+		
+		/**
+		 * On export clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onExportClicked(ManageMeasureSearchModel.Result result);
+		
+		/**
+		 * On history clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onHistoryClicked(ManageMeasureSearchModel.Result result);		
+		
+		/**
+		 * On export selected clicked.
+		 * 
+		 * @param checkBox
+		 *            the check box
+		 */
 		public void onExportSelectedClicked(CustomCheckBox checkBox);
 	}
 		
+	/** The data. */
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
+	
+	/** The observer. */
 	private Observer observer;
+	
+	/** The click handler. */
 	private ClickHandler clickHandler = buildClickHandler();
 
+	/**
+	 * Gets the result for id.
+	 * 
+	 * @param id
+	 *            the id
+	 * @return the result for id
+	 */
 	private ManageMeasureSearchModel.Result getResultForId(String id) {
 		for(int i = 0; i < data.getNumberOfRows(); i++) {
 			if(id.equals(data.getKey(i))) {
@@ -46,46 +109,80 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		return null;
 	}
 	
+	/**
+	 * Sets the observer.
+	 * 
+	 * @param observer
+	 *            the new observer
+	 */
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
+	
+	/**
+	 * Sets the data.
+	 * 
+	 * @param data
+	 *            the new data
+	 */
 	public void setData(ManageMeasureSearchModel data) {
 		this.data = data;
 		
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSortable(int)
+	 */
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return false;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getNumberOfColumns()
+	 */
 	@Override
 	public int getNumberOfColumns() {
 		return headers.length;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getNumberOfRows()
+	 */
 	@Override
 	public int getNumberOfRows() {
 		return data.getNumberOfRows();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getColumnHeader(int)
+	 */
 	@Override
 	public String getColumnHeader(int columnIndex) {
 		return headers[columnIndex];
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getColumnWidth(int)
+	 */
 	@Override
 	public String getColumnWidth(int columnIndex) {
 		return widths[columnIndex];
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnFiresSelection(int)
+	 */
 	@Override
 	public boolean isColumnFiresSelection(int columnIndex) {
 		return columnIndex == 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getValue(int, int)
+	 */
 	@Override
 	public Widget getValue(int row, int column) {
 		Widget value = null;
@@ -148,6 +245,17 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		return value;
 	}
 	
+	/**
+	 * Gets the image.
+	 * 
+	 * @param action
+	 *            the action
+	 * @param url
+	 *            the url
+	 * @param key
+	 *            the key
+	 * @return the image
+	 */
 	private Widget getImage(String action, ImageResource url, String key) {
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
@@ -167,6 +275,17 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 		return holder;
 	}
 	
+	/**
+	 * Gets the image read only.
+	 * 
+	 * @param action
+	 *            the action
+	 * @param url
+	 *            the url
+	 * @param key
+	 *            the key
+	 * @return the image read only
+	 */
 	private Widget getImageReadOnly(String action, ImageResource url, String key) {
 		SimplePanel holder = new SimplePanel();
 		holder.setStyleName("searchTableCenteredHolder");
@@ -186,6 +305,19 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	}
 	
 	
+	/**
+	 * Gets the image and check box.
+	 * 
+	 * @param action
+	 *            the action
+	 * @param url
+	 *            the url
+	 * @param key
+	 *            the key
+	 * @param name
+	 *            the name
+	 * @return the image and check box
+	 */
 	private Widget getImageAndCheckBox(String action, ImageResource url, String key,String name){
 		HorizontalPanel hPanel = new HorizontalPanel();
 		hPanel.getElement().setId("hPanel_HorizontalPanel");
@@ -211,16 +343,46 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 	}
 	
 	
+	/**
+	 * Adds the listener.
+	 * 
+	 * @param image
+	 *            the image
+	 */
 	private void addListener(CustomButton image) {
 		image.addClickHandler(clickHandler);
 	}
+	
+	/**
+	 * Sets the image style.
+	 * 
+	 * @param image
+	 *            the new image style
+	 */
 	private void setImageStyle(FocusableImageButton image) {
 		image.setStylePrimaryName("measureSearchResultIcon");
 	}
+	
+	/**
+	 * Sets the id.
+	 * 
+	 * @param image
+	 *            the image
+	 * @param action
+	 *            the action
+	 * @param key
+	 *            the key
+	 */
 	private void setId(CustomButton image, String action, String key) {
 		String id = action + "_" + key;
 		image.getElement().setAttribute("id", id);
 	}
+	
+	/**
+	 * Builds the click handler.
+	 * 
+	 * @return the click handler
+	 */
 	private ClickHandler buildClickHandler() {
 		return new ClickHandler() {
 			@Override
@@ -252,37 +414,55 @@ class MeasureSearchResultsAdapter implements SearchResults<ManageMeasureSearchMo
 			}
 		};
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getStartIndex()
+	 */
 	@Override
 	public int getStartIndex() {
 		return data.getStartIndex();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getResultsTotal()
+	 */
 	@Override
 	public int getResultsTotal() {
 		return data.getResultsTotal();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#getKey(int)
+	 */
 	@Override
 	public String getKey(int row) {
 		return data.get(row).getId();
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#get(int)
+	 */
 	@Override
 	public ManageMeasureSearchModel.Result get(int row) {
 		return data.get(row);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
+	 */
 	@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return false;
 	}
 
 	/**
-	 * TODO make use of a utility class ex. DateUtility.java though it must be usable on the client side
-	 * currently it is not usable on the client side
+	 * TODO make use of a utility class ex. DateUtility.java though it must be
+	 * usable on the client side currently it is not usable on the client side
+	 * 
 	 * @param ts
-	 * @return
+	 *            the ts
+	 * @return the string
 	 */
 	public String convertTimestampToString(Timestamp ts){
 		int hours = ts.getHours();

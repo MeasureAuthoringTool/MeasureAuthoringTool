@@ -2,19 +2,29 @@ package mat.client.measure;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * The Class PeriodModel.
+ */
 public class PeriodModel implements IsSerializable{
 
+	/** The uuid. */
 	private String uuid;
 	
+	/** The start date. */
 	private String startDate;
 	
+	/** The stop date. */
 	private String stopDate;
 	
+	/** The start date uuid. */
 	private String startDateUuid;
 	
+	/** The stop date uuid. */
 	private String stopDateUuid;
 
 	/**
+	 * Gets the uuid.
+	 * 
 	 * @return the uuid
 	 */
 	public String getUuid() {
@@ -22,13 +32,18 @@ public class PeriodModel implements IsSerializable{
 	}
 
 	/**
-	 * @param uuid the uuid to set
+	 * Sets the uuid.
+	 * 
+	 * @param uuid
+	 *            the uuid to set
 	 */
 	public void setUuid(String uuid) {
 		this.uuid = uuid;
 	}
 
 	/**
+	 * Gets the start date.
+	 * 
 	 * @return the startDate
 	 */
 	public String getStartDate() {
@@ -36,13 +51,18 @@ public class PeriodModel implements IsSerializable{
 	}
 
 	/**
-	 * @param startDate the startDate to set
+	 * Sets the start date.
+	 * 
+	 * @param startDate
+	 *            the startDate to set
 	 */
 	public void setStartDate(String startDate) {
 		this.startDate = startDate;
 	}
 
 	/**
+	 * Gets the stop date.
+	 * 
 	 * @return the stopDate
 	 */
 	public String getStopDate() {
@@ -50,13 +70,18 @@ public class PeriodModel implements IsSerializable{
 	}
 
 	/**
-	 * @param stopDate the stopDate to set
+	 * Sets the stop date.
+	 * 
+	 * @param stopDate
+	 *            the stopDate to set
 	 */
 	public void setStopDate(String stopDate) {
 		this.stopDate = stopDate;
 	}
 
 	/**
+	 * Gets the start date uuid.
+	 * 
 	 * @return the startDateUuid
 	 */
 	public String getStartDateUuid() {
@@ -64,13 +89,18 @@ public class PeriodModel implements IsSerializable{
 	}
 
 	/**
-	 * @param startDateUuid the startDateUuid to set
+	 * Sets the start date uuid.
+	 * 
+	 * @param startDateUuid
+	 *            the startDateUuid to set
 	 */
 	public void setStartDateUuid(String startDateUuid) {
 		this.startDateUuid = startDateUuid;
 	}
 
 	/**
+	 * Gets the stop date uuid.
+	 * 
 	 * @return the stopDateUuid
 	 */
 	public String getStopDateUuid() {
@@ -78,12 +108,18 @@ public class PeriodModel implements IsSerializable{
 	}
 
 	/**
-	 * @param stopDateUuid the stopDateUuid to set
+	 * Sets the stop date uuid.
+	 * 
+	 * @param stopDateUuid
+	 *            the stopDateUuid to set
 	 */
 	public void setStopDateUuid(String stopDateUuid) {
 		this.stopDateUuid = stopDateUuid;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "PeriodModel [uuid=" + uuid + ", startDate=" + startDate

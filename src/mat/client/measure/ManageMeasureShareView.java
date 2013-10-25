@@ -20,15 +20,32 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ManageMeasureShareView.
+ */
 public class ManageMeasureShareView implements ShareDisplay {
+	
+	/** The content. */
 	private FlowPanel content = new FlowPanel();
+	
+	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	
+	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The measure name label. */
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
+	
+	/** The private check. */
 	private CheckBox privateCheck = new CheckBox("Private Measure");
 	
+	/** The search view. */
 	private SearchView<MeasureShareDTO> searchView = new SearchView<MeasureShareDTO>("Users");
 	
+	/**
+	 * Instantiates a new manage measure share view.
+	 */
 	public ManageMeasureShareView() {
 		content.setStylePrimaryName("contentPanel");
 		content.addStyleName("leftAligned");
@@ -51,55 +68,89 @@ public class ManageMeasureShareView implements ShareDisplay {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getShareButton()
+	 */
 	@Override
 	public HasClickHandlers getShareButton() {
 		return buttonBar.getSaveButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return content;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#setMeasureName(java.lang.String)
+	 */
 	@Override
 	public void setMeasureName(String name) {
 		measureNameLabel.setMeasureName(name);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#buildDataTable(mat.client.shared.search.SearchResults)
+	 */
 	@Override
 	public void buildDataTable(SearchResults<MeasureShareDTO> results) {
 		searchView.buildDataTable(results);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getCancelButton()
+	 */
 	@Override
 	public HasClickHandlers getCancelButton() {
 		return buttonBar.getCancelButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSelectionTool()
+	 */
 	@Override
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return searchView;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSizeSelectionTool()
+	 */
 	@Override
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return searchView;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSize()
+	 */
 	@Override
 	public int getPageSize() {
 		return searchView.getPageSize();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#privateCheckbox()
+	 */
 	@Override
 	public HasValueChangeHandlers<Boolean> privateCheckbox() {
 		return privateCheck;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#setPrivate(boolean)
+	 */
 	@Override
 	public void setPrivate(boolean isPrivate) {
 		privateCheck.setValue(isPrivate);

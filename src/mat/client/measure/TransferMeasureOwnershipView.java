@@ -24,16 +24,38 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
 
+/**
+ * The Class TransferMeasureOwnershipView.
+ */
 public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.TransferDisplay {
 	
+	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
+	
+	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
+	
+	/** The buttons. */
 	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
+	
+	/** The success messages. */
 	protected SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	
+	/** The error messages. */
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The view. */
 	private SearchView<mat.client.measure.TransferMeasureOwnerShipModel.Result> view = new SearchView<TransferMeasureOwnerShipModel.Result>("Users");
+	
+	/** The value set name panel. */
 	HorizontalPanel valueSetNamePanel = new HorizontalPanel();
+	
+	/** The data table. */
 	public Grid508 dataTable = view.getDataTable();
+	
+	/**
+	 * Instantiates a new transfer measure ownership view.
+	 */
 	public TransferMeasureOwnershipView() {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
@@ -58,12 +80,19 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		containerPanel.setContent(mainPanel);
 		
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return containerPanel;
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#buildDataTable(mat.client.shared.search.SearchResults)
+	 */
 	@Override
 	public void buildDataTable(SearchResults<TransferMeasureOwnerShipModel.Result> results) {
 		if(results == null) {
@@ -79,6 +108,10 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		view.buildPageSizeSelector();
 		
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#buildHTMLForMeasures(java.util.List)
+	 */
 	@Override
 	public void buildHTMLForMeasures(List<ManageMeasureSearchModel.Result> measureList){
 		valueSetNamePanel.clear();
@@ -93,40 +126,75 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		HTML paragraphHtml = new HTML(paragraph.toString());
 		valueSetNamePanel.add(paragraphHtml);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSaveButton()
+	 */
 	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttons.getSaveButton();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getCancelButton()
+	 */
 	@Override
 	public HasClickHandlers getCancelButton() {
 		
 		return buttons.getCancelButton();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSelectedValue()
+	 */
 	@Override
 	public String getSelectedValue() {
 		return null;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSuccessMessageDisplay()
+	 */
 	@Override
 	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
 		return successMessages;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getPageSelectionTool()
+	 */
 	@Override
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return view;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getPageSizeSelectionTool()
+	 */
 	@Override
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return view;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getPageSize()
+	 */
 	@Override
 	public int getPageSize() {
 		return view.getPageSize();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#clearAllRadioButtons(mat.client.measure.metadata.Grid508)
+	 */
 	@Override
 	public void clearAllRadioButtons(Grid508 dataTable){
 		int rows = dataTable.getRowCount();
@@ -146,9 +214,15 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	
 	
 	/**
-	 * Method to build User Results
+	 * Method to build User Results.
 	 * 
-	 * */
+	 * @param numRows
+	 *            the num rows
+	 * @param numColumns
+	 *            the num columns
+	 * @param results
+	 *            the results
+	 */
 	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<TransferMeasureOwnerShipModel.Result> results){		
 		for(int i = 0; i < numRows; i++) {
 			for(int j = 0; j < numColumns; j++) {
@@ -168,9 +242,19 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getDataTable()
+	 */
 	public Grid508 getDataTable() {
 		return view.getDataTable();
 	}
+	
+	/**
+	 * Sets the data table.
+	 * 
+	 * @param dataTable
+	 *            the new data table
+	 */
 	public void setDataTable(Grid508 dataTable) {
 		this.dataTable = dataTable;
 	}

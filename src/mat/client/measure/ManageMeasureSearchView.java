@@ -32,30 +32,65 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ManageMeasureSearchView.
+ */
 public class ManageMeasureSearchView implements
 ManageMeasurePresenter.SearchDisplay {
 
+	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
+	
+	/** The search button. */
 	private Button searchButton = new PrimaryButton("Search",
 			"primaryGreyLeftButton");
+	
+	/** The search input. */
 	private TextBox searchInput = new TextBox();
+	
+	/** The search focus holder. */
 	private FocusableWidget searchFocusHolder;
+	
+	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The measure search filter widget. */
 	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget();
 	
+	/** The view. */
 	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView(
 			"Measures");
+	
+	/** The create button. */
 	private Button createButton = new SecondaryButton("Create");
+	
+	/** The options. */
 	private ListBoxMVP options = new ListBoxMVP();
+	
+	/** The msfp. */
 	private MeasureSearchFilterPanel msfp = new MeasureSearchFilterPanel();
+	
+	/** The bulk export button. */
 	private Button bulkExportButton = new PrimaryButton("Export Selected");
+	
+	/** The form. */
 	final FormPanel form = new FormPanel();
 
+	/** The error messages for bulk export. */
 	private ErrorMessageDisplay errorMessagesForBulkExport = new ErrorMessageDisplay();
+	
+	/** The error measure deletion. */
 	private ErrorMessageDisplay errorMeasureDeletion = new ErrorMessageDisplay();
+	
+	/** The success measure deletion. */
 	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
+	
+	/** The current user role. */
 	String currentUserRole = MatContext.get().getLoggedInUserRole();
 
+	/**
+	 * Instantiates a new manage measure search view.
+	 */
 	public ManageMeasureSearchView() {
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel");
@@ -113,6 +148,11 @@ ManageMeasurePresenter.SearchDisplay {
 
 	}
 
+	/**
+	 * Builds the search widget.
+	 * 
+	 * @return the widget
+	 */
 	private Widget buildSearchWidget() {
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizontalPanel");
@@ -128,6 +168,15 @@ ManageMeasurePresenter.SearchDisplay {
 		return hp;
 	}
 
+	/**
+	 * Builds the bottom button widget.
+	 * 
+	 * @param button
+	 *            the button
+	 * @param errorMessageDisplay
+	 *            the error message display
+	 * @return the widget
+	 */
 	private Widget buildBottomButtonWidget(PrimaryButton button,
 			ErrorMessageDisplay errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
@@ -140,72 +189,114 @@ ManageMeasurePresenter.SearchDisplay {
 		return form;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchButton()
+	 */
 	@Override
 	public HasClickHandlers getSearchButton() {
 		return measureSearchFilterWidget.getSearchButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchString()
+	 */
 	@Override
 	public HasValue<String> getSearchString() {
 		return measureSearchFilterWidget.getSearchInput();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getCreateButton()
+	 */
 	@Override
 	public HasClickHandlers getCreateButton() {
 		return createButton;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectIdForEditTool()
+	 */
 	@Override
 	public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool() {
 		return view;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
+	 */
 	@Override
 	public void buildDataTable(
 			SearchResults<ManageMeasureSearchModel.Result> results) {
 		view.buildDataTable(results);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSize()
+	 */
 	@Override
 	public int getPageSize() {
 		return view.getPageSize();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSelectionTool()
+	 */
 	@Override
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return view;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSizeSelectionTool()
+	 */
 	@Override
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return view;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getErrorMessageDisplayForBulkExport()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplayForBulkExport() {
 		return errorMessagesForBulkExport;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getBulkExportButton()
+	 */
 	@Override
 	public HasClickHandlers getBulkExportButton() {
 		return bulkExportButton;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getForm()
+	 */
 	@Override
 	public FormPanel getForm() {
 		return form;
 	}
 
+	/**
+	 * Load list box options.
+	 */
 	private void loadListBoxOptions() {
 		options.addItem(ConstantMessages.DEFAULT_SELECT);
 		options.addItem(ConstantMessages.CREATE_NEW_MEASURE);
@@ -214,32 +305,43 @@ ManageMeasurePresenter.SearchDisplay {
 	}
 
 	/**
-	 * (non-Javadoc)
+	 * (non-Javadoc).
 	 * 
-	 * @see
-	 * mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedOption
-	 * 
+	 * @return the selected option
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedOption
 	 */
 	@Override
 	public String getSelectedOption() {
 		return options.getItemText(options.getSelectedIndex());
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#clearSelections()
+	 */
 	@Override
 	public void clearSelections() {
 		options.setSelectedIndex(0);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getMeasureDataTable()
+	 */
 	@Override
 	public Grid508 getMeasureDataTable() {
 		return view.getDataTable();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getExportSelectedButton()
+	 */
 	@Override
 	public Button getExportSelectedButton() {
 		return bulkExportButton;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#clearBulkExportCheckBoxes(mat.client.measure.metadata.Grid508)
+	 */
 	@Override
 	public void clearBulkExportCheckBoxes(Grid508 dataTable) {
 		int rows = dataTable.getRowCount();
@@ -297,29 +399,52 @@ ManageMeasurePresenter.SearchDisplay {
 		return msfp;
 	}*/
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getErrorMeasureDeletion()
+	 */
 	public ErrorMessageDisplay getErrorMeasureDeletion() {
 		return errorMeasureDeletion;
 	}
 
+	/**
+	 * Sets the error measure deletion.
+	 * 
+	 * @param errorMeasureDeletion
+	 *            the new error measure deletion
+	 */
 	public void setErrorMeasureDeletion(ErrorMessageDisplay errorMeasureDeletion) {
 		this.errorMeasureDeletion = errorMeasureDeletion;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSuccessMeasureDeletion()
+	 */
 	public SuccessMessageDisplay getSuccessMeasureDeletion() {
 		return successMeasureDeletion;
 	}
 
+	/**
+	 * Sets the success measure deletion.
+	 * 
+	 * @param successMeasureDeletion
+	 *            the new success measure deletion
+	 */
 	public void setSuccessMeasureDeletion(
 			SuccessMessageDisplay successMeasureDeletion) {
 		this.successMeasureDeletion = successMeasureDeletion;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedFilter()
+	 */
 	@Override
 	public int getSelectedFilter() {
 		return measureSearchFilterWidget.getSelectedFilter();
 	}
 
 	/**
+	 * Gets the measure search filter widget.
+	 * 
 	 * @return the dropDown
 	 */
 	
@@ -329,7 +454,10 @@ ManageMeasurePresenter.SearchDisplay {
 
 	
 	/**
-	 * @param measureSearchFilterWidget the measureSearchFilterWidget to set
+	 * Sets the measure search filter widget.
+	 * 
+	 * @param measureSearchFilterWidget
+	 *            the measureSearchFilterWidget to set
 	 */
 	public void setMeasureSearchFilterWidget(MeasureSearchFilterWidget measureSearchFilterWidget) {
 		this.measureSearchFilterWidget = measureSearchFilterWidget;

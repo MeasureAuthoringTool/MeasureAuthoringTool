@@ -14,12 +14,26 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ManageDraftMeasureModel.
+ */
 class ManageDraftMeasureModel extends PagingFacade<ManageMeasureSearchModel.Result> {
+	
+	/** The headers. */
 	private static String[] headers = new String[] { "Select","Measure Name","Version"};
+	
+	/** The widths. */
 	private static String[] widths = new String[] { "2%", "80%","10%"};
 
+	/** The radio button map. */
 	private HashMap<ManageMeasureSearchModel.Result, RadioButton> radioButtonMap = new HashMap<ManageMeasureSearchModel.Result, RadioButton>();
 	
+	/**
+	 * Instantiates a new manage draft measure model.
+	 * 
+	 * @param data
+	 *            the data
+	 */
 	public ManageDraftMeasureModel(List<ManageMeasureSearchModel.Result> data) {
 		super(data);
 		for(ManageMeasureSearchModel.Result c : data) {
@@ -41,20 +55,33 @@ class ManageDraftMeasureModel extends PagingFacade<ManageMeasureSearchModel.Resu
 		}
 	}
 	
+	/** The data. */
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
 	
 	
+	/**
+	 * Sets the data.
+	 * 
+	 * @param data
+	 *            the new data
+	 */
 	public void setData(ManageMeasureSearchModel data) {
 		this.data = data;
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#isColumnSortable(int)
+	 */
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return false;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getNumberOfColumns()
+	 */
 	@Override
 	public int getNumberOfColumns() {
 		return headers.length;
@@ -62,16 +89,25 @@ class ManageDraftMeasureModel extends PagingFacade<ManageMeasureSearchModel.Resu
 
 	
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getColumnHeader(int)
+	 */
 	@Override
 	public String getColumnHeader(int columnIndex) {
 		return headers[columnIndex];
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getColumnWidth(int)
+	 */
 	@Override
 	public String getColumnWidth(int columnIndex) {
 		return widths[columnIndex];
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#isColumnFiresSelection(int)
+	 */
 	@Override
 	public boolean isColumnFiresSelection(int columnIndex) {
 		return false;
@@ -80,6 +116,9 @@ class ManageDraftMeasureModel extends PagingFacade<ManageMeasureSearchModel.Resu
 	
 	
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
+	 */
 	@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return false;
@@ -87,12 +126,18 @@ class ManageDraftMeasureModel extends PagingFacade<ManageMeasureSearchModel.Resu
 
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getKey(java.lang.Object)
+	 */
 	@Override
 	public String getKey(Result dataObject) {
 		return null;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getValueImpl(java.lang.Object, int)
+	 */
 	@Override
 	public Widget getValueImpl(ManageMeasureSearchModel.Result measure, int column) {
 		Widget value = null;
@@ -114,6 +159,11 @@ class ManageDraftMeasureModel extends PagingFacade<ManageMeasureSearchModel.Resu
 		return value;
 	}
 	
+	/**
+	 * Gets the selected measure.
+	 * 
+	 * @return the selected measure
+	 */
 	public ManageMeasureSearchModel.Result getSelectedMeasure() {
 		ManageMeasureSearchModel.Result r = new ManageMeasureSearchModel.Result();
 		List<ManageMeasureSearchModel.Result> data = getData();

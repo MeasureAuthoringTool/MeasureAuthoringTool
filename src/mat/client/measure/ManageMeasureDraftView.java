@@ -20,17 +20,28 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
- * @author vandavar
- * An view class to manage the widgets for the DRAFT creation.
+ * The Class ManageMeasureDraftView.
+ * 
+ * @author vandavar An view class to manage the widgets for the DRAFT creation.
  */
 public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDisplay{
 	
+	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
+	
+	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
+	
+	/** The view. */
 	private SearchView<ManageMeasureSearchModel.Result> view = 
 		new SearchView<ManageMeasureSearchModel.Result>("Measures");
 	
+	/**
+	 * Instantiates a new manage measure draft view.
+	 */
 	public ManageMeasureDraftView(){
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
@@ -46,54 +57,88 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 		buttonPanel.setWidth("100%");
 		mainPanel.add(buttonBar);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.BaseDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return mainPanel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#getSaveButton()
+	 */
 	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttonBar.getSaveButton();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#getCancelButton()
+	 */
 	@Override
 	public HasClickHandlers getCancelButton() {
 		return buttonBar.getCancelButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#buildDataTable(mat.client.shared.search.SearchResults, int, long, int, int)
+	 */
 	@Override
 	public void buildDataTable(SearchResults<Result> results,int pageCount,long totalResults,int currentPage,int pageSize) {
 		view.buildDraftDataTable(results,pageCount,totalResults,currentPage,pageSize);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#getPageSize()
+	 */
 	public int getPageSize() {
 		return view.getPageSize();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#setPageSize(int)
+	 */
 	public void setPageSize(int pageSize){
 		view.setPageSize(pageSize);
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#getCurrentPage()
+	 */
 	public int getCurrentPage(){
 		return view.getCurrentPage();
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#setCurrentPage(int)
+	 */
 	public void setCurrentPage(int pageNumber){
 		view.setCurrentPage(pageNumber);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#getPageSelectionTool()
+	 */
 	@Override
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return view;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#getPageSizeSelectionTool()
+	 */
 	@Override
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return view;

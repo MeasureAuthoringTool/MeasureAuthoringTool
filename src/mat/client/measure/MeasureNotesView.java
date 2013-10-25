@@ -32,62 +32,141 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class MeasureNotesView.
+ */
 public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
+	
+	/** The container panel. */
 	private VerticalPanel containerPanel = new VerticalPanel();	
+	
+	/** The simple panel. */
 	private SimplePanel simplePanel = new SimplePanel();
+	
+	/** The flow panel. */
 	private FlowPanel flowPanel = new FlowPanel ();
+	
+	/** The measure note composer. */
 	private TextAreaWithMaxLength measureNoteComposer = new TextAreaWithMaxLength();
+	
+	/** The measure note title. */
 	private TextBox measureNoteTitle = new TextBox();
+	
+	/** The export button. */
 	private Button exportButton = new PrimaryButton("Export Notes","primaryButton");
+	
+	/** The save button. */
 	private Button saveButton = new PrimaryButton("Save","primaryButton");
+	
+	/** The cancel button. */
 	private Button cancelButton = new SecondaryButton("Cancel");
+	
+	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The success message display. */
 	public SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
+	
+	/** The notes result. */
 	MeasureNotesModel notesResult = new MeasureNotesModel();	
+	
+	/** The editable. */
 	private boolean editable = false;	
+	
+	/** The click handler. */
 	private ClickHandler clickHandler = buildClickHandler();	
+	
+	/** The observer. */
 	private Observer observer;
 	
+	/**
+	 * The Interface Observer.
+	 */
 	public static interface Observer {
+		
+		/**
+		 * On delete clicked.
+		 * 
+		 * @param result
+		 *            the result
+		 */
 		public void onDeleteClicked(MeasureNoteDTO result);
+		
+		/**
+		 * On save clicked.
+		 * 
+		 * @param measureNoteDTO
+		 *            the measure note dto
+		 */
 		public void onSaveClicked(MeasureNoteDTO measureNoteDTO);
 	}
 		
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#setObserver(mat.client.measure.MeasureNotesView.Observer)
+	 */
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getExportButton()
+	 */
 	public HasClickHandlers getExportButton() {
 		return exportButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getSaveButton()
+	 */
 	public HasClickHandlers getSaveButton() {
 		return saveButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getCancelButton()
+	 */
 	public HasClickHandlers getCancelButton() {
 		return cancelButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getMeasureNoteComposer()
+	 */
 	public TextAreaWithMaxLength getMeasureNoteComposer() {
 		return measureNoteComposer;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getMeasureNoteTitle()
+	 */
 	public TextBox getMeasureNoteTitle() {
 		return measureNoteTitle;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getNotesResult()
+	 */
 	public MeasureNotesModel getNotesResult() {
 		return notesResult;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#setNotesResult(mat.client.measure.MeasureNotesModel)
+	 */
 	public void setNotesResult(MeasureNotesModel notesResult) {
 		this.notesResult = notesResult;
 	}
 
+	/**
+	 * Instantiates a new measure notes view.
+	 */
 	public MeasureNotesView(){
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#displayView()
+	 */
 	public void displayView() {
 		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		flowPanel.clear();
@@ -118,6 +197,11 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		containerPanel.add(fPanel);
 	}
 	
+	/**
+	 * Builds the measure composer.
+	 * 
+	 * @return the widget
+	 */
 	private Widget buildMeasureComposer(){
 		  FlowPanel composerPanel = new FlowPanel();
 		  composerPanel.setWidth("875px");
@@ -167,27 +251,52 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#asWidget()
+	 */
 	public Widget asWidget() {
 		return containerPanel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getErrorMessageDisplay()
+	 */
 	public ErrorMessageDisplay getErrorMessageDisplay() {
 		return errorMessages;
 	}
 		
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getSuccessMessageDisplay()
+	 */
 	public SuccessMessageDisplay getSuccessMessageDisplay() {
 		return successMessageDisplay;
 	}
 
+	/**
+	 * Sets the success message display.
+	 * 
+	 * @param successMessageDisplay
+	 *            the new success message display
+	 */
 	public void setSuccessMessageDisplay(SuccessMessageDisplay successMessageDisplay) {
 		this.successMessageDisplay = successMessageDisplay;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#cancelComposedNote()
+	 */
 	public void cancelComposedNote() {
 		getMeasureNoteComposer().setText("");
 		getMeasureNoteTitle().setText("");
 	}
 	
+	/**
+	 * Builds the data table.
+	 * 
+	 * @param results
+	 *            the results
+	 * @return the scroll panel
+	 */
 	public ScrollPanel buildDataTable(MeasureNotesModel results) {
 		ScrollPanel scrollPanel = new ScrollPanel();
 		VerticalPanel mainPanel = new VerticalPanel();
@@ -213,6 +322,11 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return scrollPanel;
 	}
 	
+	/**
+	 * Creates the table header widget.
+	 * 
+	 * @return the widget
+	 */
 	private Widget createTableHeaderWidget() {			
 			HorizontalPanel headerPanel = new HorizontalPanel();
 			headerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -281,6 +395,14 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	}
 	
 	
+	/**
+	 * Creates the disclosure panel.
+	 * 
+	 * @param mainPanel
+	 *            the main panel
+	 * @param result
+	 *            the result
+	 */
 	private void createDisclosurePanel(VerticalPanel mainPanel, MeasureNoteDTO result){
 		DisclosurePanel notesDisclosurePanel = new DisclosurePanel();
 		notesDisclosurePanel.setAnimationEnabled(true);
@@ -302,6 +424,13 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		mainPanel.add(widgetPanel);				
 	}
 	
+	/**
+	 * Creates the disclosure content widget.
+	 * 
+	 * @param result
+	 *            the result
+	 * @return the widget
+	 */
 	private Widget createDisclosureContentWidget(MeasureNoteDTO result) {
 		TextBox title = new TextBox();
 		title.setTitle("Measure Notes Title");
@@ -359,6 +488,15 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return vPanel;
 	}
 	
+	/**
+	 * Creates the disclosure header widget.
+	 * 
+	 * @param result
+	 *            the result
+	 * @param notesDisclosurePanel
+	 *            the notes disclosure panel
+	 * @return the widget
+	 */
 	private Widget createDisclosureHeaderWidget(MeasureNoteDTO result, final DisclosurePanel notesDisclosurePanel) {
 		HorizontalPanel headerPanel = new HorizontalPanel();
 		headerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
@@ -440,6 +578,17 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return headerPanel;
 	}
 	
+	/**
+	 * Gets the image.
+	 * 
+	 * @param action
+	 *            the action
+	 * @param url
+	 *            the url
+	 * @param key
+	 *            the key
+	 * @return the image
+	 */
 	private Widget getImage(String action, ImageResource url, String key) {
 	
 		CustomButton image = new CustomButton();
@@ -452,15 +601,36 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return image;
 	}
 	
+	/**
+	 * Sets the id.
+	 * 
+	 * @param image
+	 *            the image
+	 * @param action
+	 *            the action
+	 * @param key
+	 *            the key
+	 */
 	private void setId(Widget image, String action, String key) {
 		String id = action + "_" + key;
 		image.getElement().setAttribute("id", id);
 	}
 	
+	/**
+	 * Adds the listener.
+	 * 
+	 * @param image
+	 *            the image
+	 */
 	private void addListener(CustomButton image) {
 		image.addClickHandler(clickHandler);
 	}
 	
+	/**
+	 * Builds the click handler.
+	 * 
+	 * @return the click handler
+	 */
 	private ClickHandler buildClickHandler() {
 		return new ClickHandler() {
 			@Override
@@ -503,6 +673,11 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		};
 	}
 	
+	/**
+	 * Cancel click handler.
+	 * 
+	 * @return the click handler
+	 */
 	private ClickHandler cancelClickHandler() {		
 		return new ClickHandler() {			
 			@Override
@@ -526,6 +701,13 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		};
 	}
 	
+	/**
+	 * Gets the result for id.
+	 * 
+	 * @param id
+	 *            the id
+	 * @return the result for id
+	 */
 	private MeasureNoteDTO getResultForId(String id) {
 		MeasureNoteDTO result = null;
 		for(MeasureNoteDTO measureNoteDTO : notesResult.getData()){
@@ -537,11 +719,19 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		return result;
 	}
 	
+	/**
+	 * Clear messages.
+	 */
 	private void clearMessages() {
 		successMessageDisplay.clear();
 		errorMessages.clear();
 	}
 	
+	/**
+	 * Gets the focus handler.
+	 * 
+	 * @return the focus handler
+	 */
 	private FocusHandler getFocusHandler() {
 		return new FocusHandler() {			
 			@Override

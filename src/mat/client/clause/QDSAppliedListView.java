@@ -35,46 +35,90 @@ import com.google.gwt.view.client.SingleSelectionModel;
 
 
 
+/**
+ * The Class QDSAppliedListView.
+ */
 public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDisplay {
+	
+	/** The container panel. */
 	private SimplePanel containerPanel = new SimplePanel();
+	
+	/** The error message panel. */
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
+	
+	/** The success message panel. */
 	private SuccessMessageDisplay successMessagePanel;
 	
+	/** The remove button. */
 	public Button removeButton = new Button("Remove");
+	
+	/** The modify. */
 	public Button modify = new Button("Modify");
+	
+	/** The update vsac button. */
 	public Button updateVsacButton = new Button("Update from VSAC");
+	
+	/** The last selected object. */
 	public QualityDataSetDTO  lastSelectedObject;
+	
+	/** The applied qdm list. */
 	private ArrayList<QualityDataSetDTO> appliedQDMList;
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getSelectedElementToRemove()
+	 */
 	@Override
 	public QualityDataSetDTO getSelectedElementToRemove() {
 		return lastSelectedObject;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getRemoveButton()
+	 */
 	@Override
 	public Button getRemoveButton() {
 		return removeButton;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getUpdateVsacButton()
+	 */
 	@Override
 	public Button getUpdateVsacButton() {
 		return updateVsacButton;
 	}
 
+	/** The cell list. */
 	private CellList<QualityDataSetDTO> cellList;
 	
+	/** The pager panel. */
 	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
+	
+	/** The range label pager. */
 	RangeLabelPager rangeLabelPager = new RangeLabelPager();
 
+	/**
+	 * Gets the success message panel.
+	 * 
+	 * @return the success message panel
+	 */
 	public SuccessMessageDisplay getSuccessMessagePanel(){
 		return successMessagePanel;
 	}
 
+	/**
+	 * Gets the error message panel.
+	 * 
+	 * @return the error message panel
+	 */
 	public ErrorMessageDisplay getErrorMessagePanel(){
 		return errorMessagePanel;
 	}
 
+	/**
+	 * Instantiates a new qDS applied list view.
+	 */
 	public QDSAppliedListView() {
 		successMessagePanel = new SuccessMessageDisplay();
 		successMessagePanel.clear();
@@ -119,21 +163,37 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		MatContext.get().setQdsAppliedListView(this);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return containerPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessagePanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getApplyToMeasureSuccessMsg()
+	 */
 	@Override
 	public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg() {
 		return successMessagePanel;
 	}
 
+	/**
+	 * Initialize cell list content.
+	 * 
+	 * @param appliedListModel
+	 *            the applied list model
+	 * @return the cell list
+	 */
 	private CellList<QualityDataSetDTO> initializeCellListContent(final QDSAppliedListModel appliedListModel){
 
 		ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>();
@@ -261,10 +321,18 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		return cellsList;
 	}
 
+	/**
+	 * Check for enable.
+	 * 
+	 * @return true, if successful
+	 */
 	private boolean checkForEnable(){
 		return MatContext.get().getMeasureLockService().checkForEditPermission();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#buildCellList(mat.client.clause.QDSAppliedListModel)
+	 */
 	@Override
 	public  void buildCellList(QDSAppliedListModel appliedListModel) {
 		if(appliedListModel.getAppliedQDMs()!=null){
@@ -281,20 +349,34 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getModifyButton()
+	 */
 	@Override
 	public Button getModifyButton() {
 		return modify;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getAllAppliedQDMList()
+	 */
 	@Override
 	public List<QualityDataSetDTO> getAllAppliedQDMList() {
 		return getAppliedQDMList();
 	}
 
+	/**
+	 * Gets the applied qdm list.
+	 * 
+	 * @return the applied qdm list
+	 */
 	public ArrayList<QualityDataSetDTO> getAppliedQDMList() {
 		return appliedQDMList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#setAppliedQDMList(java.util.ArrayList)
+	 */
 	@Override
 	public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList) {
 		this.appliedQDMList = appliedQDMList;

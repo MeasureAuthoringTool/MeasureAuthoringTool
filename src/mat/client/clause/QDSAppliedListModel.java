@@ -4,19 +4,30 @@ import java.util.List;
 
 import mat.model.QualityDataSetDTO;
 
+/**
+ * The Class QDSAppliedListModel.
+ */
 public class QDSAppliedListModel {
 	
+	/** The applied qd ms. */
 	private List<QualityDataSetDTO> appliedQDMs;
 	//private HashSet<QualityDataSetDTO> removeQDMs;
+	/** The last selected. */
 	private QualityDataSetDTO lastSelected;
+	
 	/**
-	 * @param appliedQDMs the appliedQDMs to set
+	 * Sets the applied qd ms.
+	 * 
+	 * @param appliedQDMs
+	 *            the appliedQDMs to set
 	 */
 	public void setAppliedQDMs(List<QualityDataSetDTO> appliedQDMs) {
 		this.appliedQDMs = appliedQDMs;
 	}
 
 	/**
+	 * Gets the applied qd ms.
+	 * 
 	 * @return the appliedQDMs
 	 */
 	public List<QualityDataSetDTO> getAppliedQDMs() {
@@ -24,7 +35,10 @@ public class QDSAppliedListModel {
 	}
 
 	/**
-	 * @param set the removeQDMs to set
+	 * Sets the last selected.
+	 * 
+	 * @param lastSelected
+	 *            the new last selected
 	 *//*
 	public void setRemoveQDMs(Set<QualityDataSetDTO> set) {
 		this.removeQDMs = (HashSet<QualityDataSetDTO>) set;
@@ -45,6 +59,8 @@ public class QDSAppliedListModel {
 	}
 
 	/**
+	 * Gets the last selected.
+	 * 
 	 * @return the lastSelected
 	 */
 	public QualityDataSetDTO getLastSelected() {

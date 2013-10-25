@@ -63,17 +63,17 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 * QualityDataSet List.
 	 */
 	private ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
-	/**
-	 * {@link QualityDataSetDTO} instance.
-	 */
+	
+	/** The modify value set dto. {@link QualityDataSetDTO} instance. */
 	private final QualityDataSetDTO modifyValueSetDTO;
+	
 	/**
-	 * {@link QDSAppliedListPresenter} search display instance.
+	 * The qds applied list presenter display. {@link QDSAppliedListPresenter}
+	 * search display instance.
 	 */
 	private final mat.client.clause.QDSAppliedListPresenter.SearchDisplay qdsAppliedListPresenterDisplay;
-	/**
-	 * {@link VSACAPIServiceAsync} instance.
-	 */
+	
+	/** The vsacapi service. {@link VSACAPIServiceAsync} instance. */
 	private final VSACAPIServiceAsync vsacapiService = MatContext.get()
 			.getVsacapiServiceAsync();
 	/**
@@ -86,12 +86,17 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 * QDMAvailableValueSetPresenter's view interface.
 	 */
 	interface SearchDisplay {
+		
 		/**
+		 * Gets the specific occurrence input.
+		 * 
 		 * @return {@link CustomCheckBox}
 		 */
 		CustomCheckBox getSpecificOccurrenceInput();
 
 		/**
+		 * Gets the data type value.
+		 * 
 		 * @param inputListBox
 		 *            - {@link ListBoxMVP}
 		 * @return {@link String}
@@ -99,16 +104,22 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		String getDataTypeValue(ListBoxMVP inputListBox);
 
 		/**
+		 * Gets the apply to measure success msg.
+		 * 
 		 * @return {@link SuccessMessageDisplayInterface}
 		 */
 		SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 
 		/**
+		 * Gets the error message display.
+		 * 
 		 * @return {@link ErrorMessageDisplayInterface}
 		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
 
 		/**
+		 * Gets the data type text.
+		 * 
 		 * @param inputListBox
 		 *            - {@link ListBoxMVP}
 		 * @return {@link String}
@@ -116,77 +127,107 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		String getDataTypeText(ListBoxMVP inputListBox);
 
 		/**
+		 * Gets the disclosure panel.
+		 * 
 		 * @return {@link DisclosurePanel}
 		 */
 		DisclosurePanel getDisclosurePanel();
 
 		/**
+		 * Gets the psuedo qdm to measure.
+		 * 
 		 * @return {@link Button}
 		 */
 		Button getPsuedoQDMToMeasure();
 
 		/**
+		 * Gets the user defined input.
+		 * 
 		 * @return {@link TextBox}
 		 */
 		TextBox getUserDefinedInput();
 
 		/**
+		 * Gets the all data type input.
+		 * 
 		 * @return {@link ListBoxMVP}
 		 */
 		ListBoxMVP getAllDataTypeInput();
 
 		/**
+		 * Sets the all data type options.
+		 * 
 		 * @param texts
 		 *            List of {@link HasListBox}
 		 */
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
 
 		/**
+		 * Gets the disclosure panel vsac.
+		 * 
 		 * @return {@link DisclosurePanel}
 		 */
 		DisclosurePanel getDisclosurePanelVSAC();
 
 		/**
+		 * Gets the success message user defined panel.
+		 * 
 		 * @return {@link SuccessMessageDisplay}
 		 */
 		SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
 
 		/**
+		 * Gets the error message user defined panel.
+		 * 
 		 * @return {@link ErrorMessageDisplay}
 		 */
 		ErrorMessageDisplay getErrorMessageUserDefinedPanel();
 
 		/**
+		 * Gets the oID input.
+		 * 
 		 * @return {@link TextBox}
 		 */
 		TextBox getOIDInput();
 
 		/**
+		 * Gets the version input.
+		 * 
 		 * @return {@link DateBoxWithCalendar}
 		 */
 		DateBoxWithCalendar getVersionInput();
 
 		/**
+		 * Gets the retrieve button.
+		 * 
 		 * @return {@link Button}
 		 */
 		Button getRetrieveButton();
 
 		/**
+		 * Gets the value set details panel.
+		 * 
 		 * @return {@link VerticalPanel}
 		 */
 		VerticalPanel getValueSetDetailsPanel();
 
 		/**
+		 * Gets the data types list box.
+		 * 
 		 * @return {@link ListBoxMVP}
 		 */
 		ListBoxMVP getDataTypesListBox();
 
 		/**
+		 * Gets the success message display.
+		 * 
 		 * @return {@link SuccessMessageDisplay}
 		 */
 		SuccessMessageDisplay getSuccessMessageDisplay();
 
 		/**
+		 * Sets the data types list box options.
+		 * 
 		 * @param texts
 		 *            - {@link List} of {@link HasListBox}
 		 */
@@ -198,17 +239,23 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		void clearVSACValueSetMessages();
 
 		/**
+		 * Builds the value set details widget.
+		 * 
 		 * @param matValueSets
 		 *            - ArrayList of {@link MatValueSet}
 		 */
 		void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets);
 
 		/**
+		 * Gets the apply to measure button.
+		 * 
 		 * @return {@link Button}
 		 */
 		Button getApplyToMeasureButton();
 
 		/**
+		 * Gets the current mat value set.
+		 * 
 		 * @return {@link MatValueSet}
 		 */
 		MatValueSet getCurrentMatValueSet();
@@ -219,6 +266,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		void resetVSACValueSetWidget();
 
 		/**
+		 * As widget.
+		 * 
 		 * @return {@link Widget}
 		 */
 		Widget asWidget();
@@ -343,6 +392,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	}
 
 	/**
+	 * Search value set in vsac.
+	 * 
 	 * @param oid
 	 *            - {@link String}
 	 * @param version
@@ -386,7 +437,10 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	}
 
 	/**
+	 * Convert message.
+	 * 
 	 * @param id
+	 *            the id
 	 * @return String
 	 */
 	private String convertMessage(int id) {
@@ -612,6 +666,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	}
 
 	/**
+	 * Filter timing qd ms.
+	 * 
 	 * @param result
 	 *            - {@link ArrayList} of {@link QualityDataSetDTO}
 	 */
@@ -629,8 +685,10 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 
 	/**
 	 * This method is used in searching all available Value sets for pop up.
-	 * @param  busy - Boolean busy status.
-	 **/
+	 * 
+	 * @param busy
+	 *            the busy
+	 */
 	private void showSearchingBusy(final boolean busy) {
 		if (busy) {
 			Mat.showLoadingMessage();
@@ -675,15 +733,26 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			}
 		});
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		return searchDisplay.asWidget();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		displaySearch();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 

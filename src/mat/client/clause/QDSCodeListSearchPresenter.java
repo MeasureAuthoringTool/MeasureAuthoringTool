@@ -78,35 +78,200 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	 * QDSCodeListSearchView Implements this SearchDisplay.
 	 */
 	public  interface SearchDisplay {
+		
+		/**
+		 * Gets the data type widget.
+		 * 
+		 * @return the data type widget
+		 */
 		Widget getDataTypeWidget();
+		
+		/**
+		 * Gets the specific occurrence input.
+		 * 
+		 * @return the specific occurrence input
+		 */
 		CustomCheckBox getSpecificOccurrenceInput();
+		
+		/**
+		 * Gets the data type value.
+		 * 
+		 * @param inputListBox
+		 *            the input list box
+		 * @return the data type value
+		 */
 		String getDataTypeValue(ListBoxMVP inputListBox);
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return the error message display
+		 */
 		ErrorMessageDisplay getErrorMessageDisplay();
+		
+		/**
+		 * Gets the data type text.
+		 * 
+		 * @param inputListBox
+		 *            the input list box
+		 * @return the data type text
+		 */
 		String getDataTypeText(ListBoxMVP inputListBox);
+		
+		/**
+		 * Gets the disclosure panel.
+		 * 
+		 * @return the disclosure panel
+		 */
 		DisclosurePanel getDisclosurePanel();
+		
+		/**
+		 * Gets the psuedo qdm to measure.
+		 * 
+		 * @return the psuedo qdm to measure
+		 */
 		Button getPsuedoQDMToMeasure();
+		
+		/**
+		 * Gets the user defined input.
+		 * 
+		 * @return the user defined input
+		 */
 		TextBox getUserDefinedInput();
+		
+		/**
+		 * Gets the all data type input.
+		 * 
+		 * @return the all data type input
+		 */
 		ListBoxMVP getAllDataTypeInput();
+		
+		/**
+		 * Sets the all data type options.
+		 * 
+		 * @param texts
+		 *            the new all data type options
+		 */
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
+		
+		/**
+		 * Gets the disclosure panel vsac.
+		 * 
+		 * @return the disclosure panel vsac
+		 */
 		DisclosurePanel getDisclosurePanelVSAC();
+		
+		/**
+		 * Gets the success message user defined panel.
+		 * 
+		 * @return the success message user defined panel
+		 */
 		SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
+		
+		/**
+		 * Gets the error message user defined panel.
+		 * 
+		 * @return the error message user defined panel
+		 */
 		ErrorMessageDisplay getErrorMessageUserDefinedPanel();
+		
+		/**
+		 * Gets the oID input.
+		 * 
+		 * @return the oID input
+		 */
 		TextBox getOIDInput();
+		
+		/**
+		 * Gets the version input.
+		 * 
+		 * @return the version input
+		 */
 		DateBoxWithCalendar getVersionInput();
+		
+		/**
+		 * Gets the retrieve button.
+		 * 
+		 * @return the retrieve button
+		 */
 		Button getRetrieveButton();
+		
+		/**
+		 * Gets the value set details panel.
+		 * 
+		 * @return the value set details panel
+		 */
 		VerticalPanel getValueSetDetailsPanel();
+		
+		/**
+		 * Gets the data types list box.
+		 * 
+		 * @return the data types list box
+		 */
 		ListBoxMVP getDataTypesListBox();
+		
+		/**
+		 * Gets the success message display.
+		 * 
+		 * @return the success message display
+		 */
 		SuccessMessageDisplay getSuccessMessageDisplay();
+		
+		/**
+		 * Sets the data types list box options.
+		 * 
+		 * @param texts
+		 *            the new data types list box options
+		 */
 		void setDataTypesListBoxOptions(List<? extends HasListBox> texts);
+		
+		/**
+		 * Clear vsac value set messages.
+		 */
 		void clearVSACValueSetMessages();
+		
+		/**
+		 * Builds the value set details widget.
+		 * 
+		 * @param matValueSets
+		 *            the mat value sets
+		 */
 		void buildValueSetDetailsWidget(
 				ArrayList<MatValueSet> matValueSets);
+		
+		/**
+		 * Gets the apply to measure button.
+		 * 
+		 * @return the apply to measure button
+		 */
 		Button getApplyToMeasureButton();
+		
+		/**
+		 * Gets the current mat value set.
+		 * 
+		 * @return the current mat value set
+		 */
 		MatValueSet getCurrentMatValueSet();
+		
+		/**
+		 * Reset vsac value set widget.
+		 */
 		void resetVSACValueSetWidget();
+		
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
 		Widget asWidget();
 	}
 
+	/**
+	 * Instantiates a new qDS code list search presenter.
+	 * 
+	 * @param sDisplayArg
+	 *            the s display arg
+	 */
 	public QDSCodeListSearchPresenter(final SearchDisplay sDisplayArg) {
 		searchDisplay = sDisplayArg;
 
@@ -216,8 +381,12 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}
 
 	/**
-	 * @param oid - {@link String}.
-	 * @param version - {@link String}.
+	 * Search value set in vsac.
+	 * 
+	 * @param oid
+	 *            - {@link String}.
+	 * @param version
+	 *            - {@link String}.
 	 */
 	private void searchValueSetInVsac(final String oid, final String version) {
 
@@ -263,7 +432,10 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}
 
 	/**
-	 * @param id - {@link Integer}.
+	 * Convert message.
+	 * 
+	 * @param id
+	 *            - {@link Integer}.
 	 * @return String - {@link String}.
 	 */
 	private String convertMessage(final int id) {
@@ -286,7 +458,11 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}
 
 	/**
-	 * @param isUserDefined - {@link Boolean}.
+	 * Gets the list of applied qd ms.
+	 * 
+	 * @param isUserDefined
+	 *            - {@link Boolean}.
+	 * @return the list of applied qd ms
 	 */
 	private void getListOfAppliedQDMs(final boolean isUserDefined) {
 		String measureId = MatContext.get().getCurrentMeasureId();
@@ -557,7 +733,10 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}
 
 	/**
-	 * @param qdmXMLString - {@link String}.
+	 * Save measure xml.
+	 * 
+	 * @param qdmXMLString
+	 *            - {@link String}.
 	 */
 	private void saveMeasureXML(final String qdmXMLString) {
 		final String nodeName = "qdm";
@@ -586,6 +765,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}
 
 	/**
+	 * Gets the widget.
+	 * 
 	 * @return {@link Widget}.
 	 */
 	@Override
@@ -608,12 +789,18 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getPsuedoQDMToMeasure().setEnabled(editable);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public  void beforeDisplay() {
 		displaySearch();
 		setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();

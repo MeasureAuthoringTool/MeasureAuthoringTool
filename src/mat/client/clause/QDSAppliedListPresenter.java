@@ -55,62 +55,86 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	 * class.
 	 */
 	public static interface SearchDisplay {
+		
 		/**
+		 * Gets the apply to measure success msg.
+		 * 
 		 * @return {@link SuccessMessageDisplayInterface}
 		 */
 		SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
 
 		/**
+		 * Gets the error message display.
+		 * 
 		 * @return {@link ErrorMessageDisplayInterface}
 		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
 
 		/**
+		 * As widget.
+		 * 
 		 * @return {@link Widget}
 		 */
 		Widget asWidget();
 
 		/**
+		 * Builds the cell list.
+		 * 
 		 * @param appliedListModel
 		 *            - {@link QDSAppliedListModel}
 		 */
 		void buildCellList(QDSAppliedListModel appliedListModel);
 
 		/**
+		 * Gets the removes the button.
+		 * 
 		 * @return {@link Button}
 		 */
 		Button getRemoveButton();
 
 		/**
+		 * Gets the modify button.
+		 * 
 		 * @return {@link Button}
 		 */
 		Button getModifyButton();
 
 		/**
+		 * Gets the update vsac button.
+		 * 
 		 * @return {@link Button}
 		 */
 		Button getUpdateVsacButton();
 
 		/**
+		 * Gets the selected element to remove.
+		 * 
 		 * @return {@link QualityDataSetDTO}
 		 */
 		QualityDataSetDTO getSelectedElementToRemove();
 
 		/**
+		 * Gets the all applied qdm list.
+		 * 
 		 * @return {@link List} of {@link QualityDataSetDTO}
 		 */
 		List<QualityDataSetDTO> getAllAppliedQDMList();
 
 		/**
+		 * Sets the applied qdm list.
+		 * 
 		 * @param appliedQDMList
-		 *            {@link ArrayList} of {@link QualityDataSetDTO}
+		 *            the new applied qdm list {@link ArrayList} of
+		 *            {@link QualityDataSetDTO}
 		 */
 		void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList);
 	}
 
 	/**
+	 * Instantiates a new qDS applied list presenter.
+	 * 
 	 * @param sDisplayArg
-	 *            {@link SearchDisplay}
+	 *            the s display arg {@link SearchDisplay}
 	 */
 	public QDSAppliedListPresenter(SearchDisplay sDisplayArg) {
 		searchDisplay = sDisplayArg;
@@ -303,8 +327,10 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	/**
 	 * Method for fetching all applied Value Sets in a measure which is loaded
 	 * in context.
+	 * 
 	 * @param checkForSupplementData
 	 *            - {@link Boolean}
+	 * @return the applied qdm list
 	 */
 	public final void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
@@ -360,6 +386,9 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		searchDisplay.getUpdateVsacButton().setEnabled(!busy);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		resetQDSFields();
@@ -367,10 +396,16 @@ public class QDSAppliedListPresenter implements MatPresenter {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		return panel;

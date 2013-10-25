@@ -14,8 +14,15 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class ModifyQDMDialogBox.
+ */
 public class ModifyQDMDialogBox {
+	
+	/** The dialog box. */
 	private static DialogBoxWithCloseButton dialogBox = new DialogBoxWithCloseButton(StringUtils.EMPTY);
+	
+	/** The handler registration. */
 	static HandlerRegistration handlerRegistration;
 
 	/**

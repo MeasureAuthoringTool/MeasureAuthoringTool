@@ -48,34 +48,76 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
+/**
+ * The Class QDMAvailableValueSetWidget.
+ */
 public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter.SearchDisplay {
 	
+	/** The main panel. */
 	HorizontalPanel mainPanel = new HorizontalPanel();
 	
+	/** The disclosure panel. */
 	private DisclosurePanel disclosurePanel = new DisclosurePanel("Element without VSAC value set");
+	
+	/** The disclosure panel vsac. */
 	private DisclosurePanel disclosurePanelVSAC = new DisclosurePanel("Element with VSAC value set");
+	
+	/** The user defined input. */
 	private TextBox userDefinedInput = new TextBox();
+	
+	/** The psuedo qdm to measure. */
 	private Button psuedoQDMToMeasure = new PrimaryButton("Apply to Measure", "primaryButton");
+	
+	/** The error message panel. */
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
+	
+	/** The success message panel. */
 	private SuccessMessageDisplay successMessagePanel = new SuccessMessageDisplay();
+	
+	/** The error message user defined panel. */
 	private ErrorMessageDisplay errorMessageUserDefinedPanel = new ErrorMessageDisplay();
+	
+	/** The success message user defined panel. */
 	private SuccessMessageDisplay successMessageUserDefinedPanel = new SuccessMessageDisplay();
+	
+	/** The all data type input. */
 	private ListBoxMVP allDataTypeInput = new ListBoxMVP();
+    
+    /** The caution msg str. */
     private String cautionMsgStr = "<div style=\"padding-left:5px;\">"
     						+ "WARNING: Changing the datatype for an applied QDM element "
     						+ "will automatically delete invalid attributes "
     						+ "<br/> associated with this element in the Clause Workspace. </div>";
+    
+    /** The oid input. */
     private TextBox oidInput = new TextBox();	
+	
+	/** The version input. */
 	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
+	
+	/** The retrieve button. */
 	Button retrieveButton = new PrimaryButton("Search","primaryMetaDataButton");
+	
+	/** The data types list box. */
 	private ListBoxMVP dataTypesListBox = new ListBoxMVP();
+	
+	/** The apply to measure button. */
 	private Button applyToMeasureButton = new PrimaryButton("Apply to Measure","primaryButton");
+	
+	/** The cancel button. */
 	private Button cancelButton = new SecondaryButton("Cancel");
+	
+	/** The specific occurrence. */
 	private CustomCheckBox specificOccurrence = new CustomCheckBox(ConstantMessages.TOOLTIP_FOR_OCCURRENCE, "Specific Occurrence",true); //US 450
+	
+	/** The value set details panel. */
 	VerticalPanel valueSetDetailsPanel = new VerticalPanel();
+	
+	/** The current mat value set. */
 	MatValueSet currentMatValueSet;
 	
 	
+	/** The data type change handler. */
 	private  ValueChangeHandler<String> dataTypeChangeHandler = new ValueChangeHandler<String>() {
 		@Override
 		public void onValueChange(ValueChangeEvent<String> event) {
@@ -99,6 +141,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		}
 	};
 	
+	/**
+	 * Instantiates a new qDM available value set widget.
+	 */
 	public QDMAvailableValueSetWidget(){		
 		VerticalPanel vp = new VerticalPanel();
 		vp.getElement().setAttribute("id", "ModifyVerticalPanel");
@@ -118,6 +163,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		
 	}	
 	
+	/**
+	 * Builds the user defined disclosure widget.
+	 * 
+	 * @return the widget
+	 */
 	private Widget buildUserDefinedDisclosureWidget(){
 		HorizontalPanel horiPanel = new HorizontalPanel();
 		VerticalPanel valueSetPanel = new VerticalPanel();
@@ -164,6 +214,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return disclosurePanel;
 	}
 	
+	/**
+	 * Builds the element with vsac value set widget.
+	 * 
+	 * @return the widget
+	 */
 	private Widget buildElementWithVSACValueSetWidget(){		
 		VerticalPanel mainPanel = new VerticalPanel();
 		mainPanel.getElement().setId("mainPanel_VerticalPanel");
@@ -183,6 +238,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return disclosurePanelVSAC;		
 	}
 	
+	/**
+	 * Builds the search panel.
+	 * 
+	 * @return the widget
+	 */
 	private Widget buildSearchPanel() {
 		VerticalPanel searchPanel = new VerticalPanel();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
@@ -215,6 +275,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return searchPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#buildValueSetDetailsWidget(java.util.ArrayList)
+	 */
 	public void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets) {
 		
 		MatValueSet matValueSet = matValueSets.get(0);
@@ -231,6 +294,13 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		valueSetDetailsPanel.add(createDataTypeWidget());
 	}
 	
+	/**
+	 * Creates the grouping members cell table.
+	 * 
+	 * @param matValueSet
+	 *            the mat value set
+	 * @return the widget
+	 */
 	private Widget createGroupingMembersCellTable(MatValueSet matValueSet) {
 		List<MatValueSet> groupedMatValueSets = matValueSet.getGroupedValueSet(); 
 		
@@ -293,6 +363,13 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return groupingPanel;
 	}
 
+	/**
+	 * Creates the details widget.
+	 * 
+	 * @param matValueSet
+	 *            the mat value set
+	 * @return the widget
+	 */
 	private Widget createDetailsWidget(MatValueSet matValueSet) {
 		VerticalPanel detailsPanel = new VerticalPanel();
 		detailsPanel.getElement().setId("detailsPanel_VerticalPanel");
@@ -335,6 +412,13 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return detailsPanel;
 	}
 	
+	/**
+	 * Gets the code system.
+	 * 
+	 * @param matValueSet
+	 *            the mat value set
+	 * @return the code system
+	 */
 	private String getCodeSystem(MatValueSet matValueSet) {		
 		if(matValueSet.isGrouping()) {
 			String codeSystem = StringUtils.EMPTY;
@@ -356,6 +440,17 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		}		
 	}
 	
+	/**
+	 * Creates the html.
+	 * 
+	 * @param value
+	 *            the value
+	 * @param id
+	 *            the id
+	 * @param styles
+	 *            the styles
+	 * @return the html
+	 */
 	private HTML createHTML(String value, String id, String styles) {
 		HTML html = new HTML(value);		
 		if(id!=null && !id.trim().isEmpty()) {
@@ -375,6 +470,11 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return html;
 	}
 
+	/**
+	 * Creates the data type widget.
+	 * 
+	 * @return the widget
+	 */
 	private Widget createDataTypeWidget() {
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.getElement().setId("vPanel_VerticalPanel");
@@ -417,27 +517,42 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return vPanel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getSpecificOccurrenceInput()
+	 */
 	@Override
 	public CustomCheckBox getSpecificOccurrenceInput(){
 		return specificOccurrence;
 	}	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessagePanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getSuccessMessageDisplay()
+	 */
 	@Override
 	public SuccessMessageDisplay getSuccessMessageDisplay() {
 		return successMessagePanel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#clearVSACValueSetMessages()
+	 */
 	@Override
 	public void clearVSACValueSetMessages() {
 		getSuccessMessageDisplay().clear();
 		getErrorMessageDisplay().clear();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getDataTypeValue(mat.client.shared.ListBoxMVP)
+	 */
 	@Override
 	public String getDataTypeValue(ListBoxMVP inputListBox) {
 		if(inputListBox.getSelectedIndex() >= 0) {
@@ -448,6 +563,16 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		}
 	}	
 	
+	/**
+	 * Sets the list box items.
+	 * 
+	 * @param listBox
+	 *            the list box
+	 * @param itemList
+	 *            the item list
+	 * @param defaultOption
+	 *            the default option
+	 */
 	public void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption){
 		listBox.clear();
 		listBox.addItem(defaultOption,"");
@@ -458,92 +583,182 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#setAllDataTypeOptions(java.util.List)
+	 */
 	@Override
 	public void setAllDataTypeOptions(List<? extends HasListBox> texts) {
 		setListBoxItems(allDataTypeInput, texts, MatContext.PLEASE_SELECT);
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getApplyToMeasureSuccessMsg()
+	 */
 	@Override
 	public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg() {
 		return successMessagePanel;
 	}
 
+	/**
+	 * Gets the main panel.
+	 * 
+	 * @return the main panel
+	 */
 	public HorizontalPanel getMainPanel() {
 		return mainPanel;
 	}
 	
+	/**
+	 * Gets the success message panel.
+	 * 
+	 * @return the success message panel
+	 */
 	public SuccessMessageDisplay getSuccessMessagePanel(){
 		return successMessagePanel;
 	}
 	
+	/**
+	 * Gets the error message panel.
+	 * 
+	 * @return the error message panel
+	 */
 	public ErrorMessageDisplay getErrorMessagePanel(){
 		return errorMessagePanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return getMainPanel();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getUserDefinedInput()
+	 */
 	public TextBox getUserDefinedInput() {
 		return userDefinedInput;
 	}
 
+	/**
+	 * Sets the user defined input.
+	 * 
+	 * @param userDefinedInput
+	 *            the new user defined input
+	 */
 	public void setUserDefinedInput(TextBox userDefinedInput) {
 		this.userDefinedInput = userDefinedInput;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getDisclosurePanel()
+	 */
 	public DisclosurePanel getDisclosurePanel() {
 		return disclosurePanel;
 	}
 
+	/**
+	 * Sets the disclosure panel.
+	 * 
+	 * @param disclosurePanel
+	 *            the new disclosure panel
+	 */
 	public void setDisclosurePanel(DisclosurePanel disclosurePanel) {
 		this.disclosurePanel = disclosurePanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getPsuedoQDMToMeasure()
+	 */
 	public Button getPsuedoQDMToMeasure() {
 		return psuedoQDMToMeasure;
 	}
 
+	/**
+	 * Sets the psuedo qdm to measure.
+	 * 
+	 * @param psuedoQDMToMeasure
+	 *            the new psuedo qdm to measure
+	 */
 	public void setPsuedoQDMToMeasure(Button psuedoQDMToMeasure) {
 		this.psuedoQDMToMeasure = psuedoQDMToMeasure;
 	}	
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getAllDataTypeInput()
+	 */
 	public ListBoxMVP getAllDataTypeInput() {
 		return allDataTypeInput;
 	}
 
+	/**
+	 * Sets the all data type input.
+	 * 
+	 * @param allDataTypeInput
+	 *            the new all data type input
+	 */
 	public void setAllDataTypeInput(ListBoxMVP allDataTypeInput) {
 		this.allDataTypeInput = allDataTypeInput;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getDisclosurePanelVSAC()
+	 */
 	public DisclosurePanel getDisclosurePanelVSAC() {
 		return disclosurePanelVSAC;
 	}
 
+	/**
+	 * Sets the disclosure panel vsac.
+	 * 
+	 * @param disclosurePanelVSAC
+	 *            the new disclosure panel vsac
+	 */
 	public void setDisclosurePanelVSAC(DisclosurePanel disclosurePanelVSAC) {
 		this.disclosurePanelVSAC = disclosurePanelVSAC;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getErrorMessageUserDefinedPanel()
+	 */
 	public ErrorMessageDisplay getErrorMessageUserDefinedPanel() {
 		return errorMessageUserDefinedPanel;
 	}
 
+	/**
+	 * Sets the error message user defined panel.
+	 * 
+	 * @param errorMessageUserDefinedPanel
+	 *            the new error message user defined panel
+	 */
 	public void setErrorMessageUserDefinedPanel(
 			ErrorMessageDisplay errorMessageUserDefinedPanel) {
 		this.errorMessageUserDefinedPanel = errorMessageUserDefinedPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getSuccessMessageUserDefinedPanel()
+	 */
 	public SuccessMessageDisplay getSuccessMessageUserDefinedPanel() {
 		return successMessageUserDefinedPanel;
 	}
 
+	/**
+	 * Sets the success message user defined panel.
+	 * 
+	 * @param successMessageUserDefinedPanel
+	 *            the new success message user defined panel
+	 */
 	public void setSuccessMessageUserDefinedPanel(
 			SuccessMessageDisplay successMessageUserDefinedPanel) {
 		this.successMessageUserDefinedPanel = successMessageUserDefinedPanel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getDataTypeText(mat.client.shared.ListBoxMVP)
+	 */
 	@Override
 	public String getDataTypeText(ListBoxMVP inputListBox) {
 		if(inputListBox.getSelectedIndex() >= 0) {
@@ -554,6 +769,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#resetVSACValueSetWidget()
+	 */
 	@Override
 	public void resetVSACValueSetWidget() {
 		getOIDInput().setValue(StringUtils.EMPTY);
@@ -561,45 +779,75 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		getValueSetDetailsPanel().setVisible(false);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#setDataTypesListBoxOptions(java.util.List)
+	 */
 	@Override
 	public void setDataTypesListBoxOptions(List<? extends HasListBox> texts) {
 		setListBoxItems(dataTypesListBox, texts, MatContext.PLEASE_SELECT);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getOIDInput()
+	 */
 	@Override
 	public TextBox getOIDInput() {
 		return oidInput;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getVersionInput()
+	 */
 	@Override
 	public DateBoxWithCalendar getVersionInput() {
 		return versionInput;
 	}
 
+	/**
+	 * Sets the version input.
+	 * 
+	 * @param versionInput
+	 *            the new version input
+	 */
 	public void setVersionInput(DateBoxWithCalendar versionInput) {
 		this.versionInput = versionInput;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getRetrieveButton()
+	 */
 	@Override
 	public Button getRetrieveButton() {
 		return retrieveButton;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getValueSetDetailsPanel()
+	 */
 	@Override
 	public VerticalPanel getValueSetDetailsPanel() {
 		return valueSetDetailsPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getDataTypesListBox()
+	 */
 	@Override
 	public ListBoxMVP getDataTypesListBox() {
 		return dataTypesListBox;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getApplyToMeasureButton()
+	 */
 	@Override
 	public Button getApplyToMeasureButton() {
 		return applyToMeasureButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getCurrentMatValueSet()
+	 */
 	@Override
 	public MatValueSet getCurrentMatValueSet() {
 		return currentMatValueSet;

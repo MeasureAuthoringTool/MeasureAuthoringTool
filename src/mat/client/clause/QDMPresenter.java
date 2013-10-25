@@ -16,12 +16,26 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
+/**
+ * The Class QDMPresenter.
+ */
 public class QDMPresenter implements MatPresenter{
+	
+	/** The code list search presenter. */
 	private QDSCodeListSearchPresenter codeListSearchPresenter;
+	
+	/** The qds applied list presenter. */
 	private QDSAppliedListPresenter qdsAppliedListPresenter;
+	
+	/** The QDM content widget. */
 	private SimplePanel QDMContentWidget = new SimplePanel();
+	
+	/** The tab layout. */
 	private MatTabLayoutPanel tabLayout;
 	
+	/**
+	 * Instantiates a new qDM presenter.
+	 */
 	public QDMPresenter() {
 		QDSCodeListSearchView qdsCodeList = new QDSCodeListSearchView();
 		codeListSearchPresenter = new QDSCodeListSearchPresenter(qdsCodeList);
@@ -29,12 +43,18 @@ public class QDMPresenter implements MatPresenter{
 		qdsAppliedListPresenter = new QDSAppliedListPresenter(appliedListView);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		return QDMContentWidget;
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public void beforeDisplay() {
@@ -72,6 +92,10 @@ public class QDMPresenter implements MatPresenter{
 			codeListSearchPresenter.beforeDisplay();
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override 
 	public void beforeClosingDisplay() {
 		tabLayout.close();

@@ -14,10 +14,6 @@ import com.google.gwt.user.client.ui.TextBox;
 public class WatermarkedTextBox extends TextBox implements BlurHandler, FocusHandler
 {
 	/**
-	 * Water mark text String.
-	 */
-	private String watermark;
-	/**
 	 * {@link BlurHandler}.
 	 */
 	private HandlerRegistration blurHandler;
@@ -25,16 +21,17 @@ public class WatermarkedTextBox extends TextBox implements BlurHandler, FocusHan
 	 * {@link FocusHandler}.
 	 */
 	private HandlerRegistration focusHandler;
-
+	/**
+	 * Water mark text String.
+	 */
+	private String watermark;
 	/**
 	 * Default Constructor .
 	 */
 	public WatermarkedTextBox() {
 		super();
-		// this.setStylePrimaryName("textInput");
 		this.removeStyleName("gwt-textInput");
 	}
-
 	/**
 	 * Overloaded COnstructor.
 	 * @param defaultValue
@@ -44,7 +41,6 @@ public class WatermarkedTextBox extends TextBox implements BlurHandler, FocusHan
 		this();
 		setText(defaultValue);
 	}
-
 	/**
 	 * Overloaded COnstructor.
 	 * @param defaultValue
@@ -56,37 +52,6 @@ public class WatermarkedTextBox extends TextBox implements BlurHandler, FocusHan
 		this(defaultValue);
 		setWatermark(watermark);
 	}
-
-	/**
-	 * Adds a water mark if the parameter is not NULL or EMPTY.
-	 * @param watermark
-	 *            {@link String}
-	 */
-	public final void setWatermark(final String watermark) {
-		this.watermark = watermark;
-
-		if ((watermark != null) && (watermark != "")) {
-			blurHandler = addBlurHandler(this);
-			focusHandler = addFocusHandler(this);
-			enableWatermark();
-		} else {
-			// Remove handlers
-			blurHandler.removeHandler();
-			focusHandler.removeHandler();
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event
-	 * .dom.client.BlurEvent)
-	 */
-	@Override
-	public void onBlur(BlurEvent event) {
-		enableWatermark();
-	}
-
 	/**
 	 * If no text is entered in Text box, water mark style is applied on text
 	 * box.
@@ -99,7 +64,16 @@ public class WatermarkedTextBox extends TextBox implements BlurHandler, FocusHan
 			addStyleName("textInput-watermark"); // ("watermark");
 		}
 	}
-
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * com.google.gwt.event.dom.client.BlurHandler#onBlur(com.google.gwt.event
+	 * .dom.client.BlurEvent)
+	 */
+	@Override
+	public final void onBlur(BlurEvent event) {
+		enableWatermark();
+	}
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -107,13 +81,30 @@ public class WatermarkedTextBox extends TextBox implements BlurHandler, FocusHan
 	 * .dom.client.FocusEvent)
 	 */
 	@Override
-	public void onFocus(FocusEvent event) {
+	public final void onFocus(FocusEvent event) {
 		// removeStyleDependentName("watermark");
 		removeStyleName("textInput-watermark");
 		addStyleName("textInput");
 		if (getText().equalsIgnoreCase(watermark)) {
 			// Hide watermark
 			setText("");
+		}
+	}
+	/**
+	 * Adds a water mark if the parameter is not NULL or EMPTY.
+	 * @param watermark
+	 *            {@link String}
+	 */
+	public final void setWatermark(final String watermark) {
+		this.watermark = watermark;
+		if ((watermark != null) && (watermark != "")) {
+			blurHandler = addBlurHandler(this);
+			focusHandler = addFocusHandler(this);
+			enableWatermark();
+		} else {
+			// Remove handlers
+			blurHandler.removeHandler();
+			focusHandler.removeHandler();
 		}
 	}
 }

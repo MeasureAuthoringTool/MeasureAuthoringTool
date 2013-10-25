@@ -19,8 +19,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 public class XmlTreePresenter {
-	
-	
+
 	interface TreeResources extends CellTree.Resources {
 		@Source("mat/client/images/plus.png")
 		ImageResource cellTreeClosedItem();
@@ -33,7 +32,7 @@ public class XmlTreePresenter {
 
 		/*
 		 * @Source("mat/client/images/cms_gov_footer.png")
-		 * 
+		 *
 		 * @ImageOptions(repeatStyle = RepeatStyle.Horizontal, flipRtl = true)
 		 * ImageResource cellTreeSelectedBackground();
 		 */
@@ -62,7 +61,7 @@ public class XmlTreePresenter {
 			panel.clear();
 			String xml = originalXML;
 			XmlTreeView xmlTreeView = new XmlTreeView(
-					XmlConversionlHelper.createCellTreeNode(xml, rootNode));// converts
+					XmlConversionlHelper.createCellTreeNode(xml, rootNode)); // converts
 																			// XML
 																			// to
 																			// TreeModel
@@ -209,5 +208,4 @@ public class XmlTreePresenter {
 	public final void setXmlTreeDisplay(final XmlTreeDisplay xmlTreeDisplay) {
 		this.xmlTreeDisplay = xmlTreeDisplay;
 	}
-
 }

@@ -14,189 +14,337 @@ import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
 /**MeasurePackageService.java.**/
 public interface MeasurePackageService {
+	
 	/**
-	 * @return long
-	 * **/
+	 * Count.
+	 * 
+	 * @return long *
+	 */
 	long count();
+	
 	/**
-	 * @param searchText - String.
-	 * @return {@link Long#}
-	 * **/
+	 * Count.
+	 * 
+	 * @param searchText
+	 *            - String.
+	 * @return {@link Long#} *
+	 */
 	long count(String searchText);
+	
 	/**
-	 * @param startIndex - {@link Integer}.
-	 * @param numResults - {@link Integer}.
-	 * @return {@link List} of {@link MeasureShareDTO}.
-	 * **/
+	 * Search.
+	 * 
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param numResults
+	 *            - {@link Integer}.
+	 * @return {@link List} of {@link MeasureShareDTO}. *
+	 */
 	List<MeasureShareDTO> search(int startIndex, int numResults);
+	
 	/**
-	 *@param startIndex - {@link Integer}.
-	 *@param numResults - {@link Integer}.
-	 *@return {@link List} of {@link MeasureShareDTO}.
-	 * **/
+	 * Search measures for version.
+	 * 
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param numResults
+	 *            - {@link Integer}.
+	 * @return {@link List} of {@link MeasureShareDTO}. *
+	 */
 	List<MeasureShareDTO> searchMeasuresForVersion(int startIndex,
 			int numResults);
+	
 	/**
-	 *@return {@link Long}.
-	 * **/
+	 * Count measures for version.
+	 * 
+	 * @return {@link Long}. *
+	 */
 	long countMeasuresForVersion();
+	
 	/**
-	 *@return {@link Long}.
-	 * **/
+	 * Count measures for draft.
+	 * 
+	 * @return {@link Long}. *
+	 */
 	long countMeasuresForDraft();
+	
 	/**
-	 *@param startIndex - {@link Integer}.
-	 *@param numResults - {@link Integer}.
-	 *@return {@link List} {@link MeasureShareDTO}.
-	 * **/
+	 * Search measures for draft.
+	 * 
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param numResults
+	 *            - {@link Integer}.
+	 * @return {@link List} {@link MeasureShareDTO}. *
+	 */
 	List<MeasureShareDTO> searchMeasuresForDraft(int startIndex,
 			int numResults);
+	
 	/**
-	 * @param searchText - {@link String}.
-	 * @param startIndex - {@link Integer}.
-	 * @param numResults - {@link Integer}.
-	  *@return {@link List} {@link MeasureShareDTO}.
-	 * **/
+	 * Search.
+	 * 
+	 * @param searchText
+	 *            - {@link String}.
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param numResults
+	 *            - {@link Integer}.
+	 * @return {@link List} {@link MeasureShareDTO}. *
+	 */
 	List<MeasureShareDTO> search(String searchText, int startIndex,
 			int numResults);
+	
 	/**
-	 * @param  measurePackage - {@link Measure}.
-	 *
-	 * **/
+	 * Save.
+	 * 
+	 * @param measurePackage
+	 *            the measure package
+	 */
 	void save(Measure measurePackage);
+	
 	/**
-	 * @param id - {@link String}.
-	 * @return {@link Measure}.
-	 * **/
+	 * Gets the by id.
+	 * 
+	 * @param id
+	 *            - {@link String}.
+	 * @return {@link Measure}. *
+	 */
 	Measure getById(String id);
+	
 	/**
-	 * @param measureSetId - {@link String}.
-	 * @return {@link String}.
-	 * **/
+	 * Find out maximum version number.
+	 * 
+	 * @param measureSetId
+	 *            - {@link String}.
+	 * @return {@link String}. *
+	 */
 	String findOutMaximumVersionNumber(String measureSetId);
+	
 	/**
-	 * @param measureId - {@link String}.
-	 * @param measureSetId - {@link String}.
-	 * @return {@link String}.
-	 * **/
+	 * Find out version number.
+	 * 
+	 * @param measureId
+	 *            - {@link String}.
+	 * @param measureSetId
+	 *            - {@link String}.
+	 * @return {@link String}. *
+	 */
 	String findOutVersionNumber(String measureId, String measureSetId);
+	
 	/**
-	 * @param measureId - {@link String}.
-	 * @param startIndex - {@link Integer}.
-	 * @param pageSize - {@link Integer}.
+	 * Gets the users for share.
+	 * 
+	 * @param measureId
+	 *            - {@link String}.
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param pageSize
+	 *            - {@link Integer}.
 	 * @return {@link List} {@link MeasureShareDTO}.
-	 **/
+	 */
 	List<MeasureShareDTO> getUsersForShare(String measureId,
 			int startIndex, int pageSize);
+	
 	/**
-	 *@return {@link Integer}.
-	 * **/
+	 * Count users for measure share.
+	 * 
+	 * @return {@link Integer}. *
+	 */
 	int countUsersForMeasureShare();
+	
 	/**
-	 * @param model - {@link ManageMeasureShareModel}.
-	 * **/
+	 * Update users share.
+	 * 
+	 * @param model
+	 *            - {@link ManageMeasureShareModel}. *
+	 */
 	void updateUsersShare(ManageMeasureShareModel model);
+	
 	/**
-	 *@param m - {@link Measure}.
-	 * **/
+	 * Update locked out date.
+	 * 
+	 * @param m
+	 *            - {@link Measure}. *
+	 */
 	void updateLockedOutDate(Measure m);
+	
 	/**
-	 *@param key - {@link String}.
-	 *@param matValueSetList - {@link ArrayList} of {@link MatValueSet}.
-	 *@return {@link ValidateMeasureResult}.
-	 *@throws Exception - {@link Exception}.
-	 **/
+	 * Validate measure for export.
+	 * 
+	 * @param key
+	 *            - {@link String}.
+	 * @param matValueSetList
+	 *            - {@link ArrayList} of {@link MatValueSet}.
+	 * @return {@link ValidateMeasureResult}.
+	 * @throws Exception
+	 *             - {@link Exception}.
+	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
 			ArrayList<MatValueSet> matValueSetList) throws Exception;
+	
 	/**
-	 *@param id - {@link String}.
-	 *@return {@link MeasureSet}.
-	 * **/
+	 * Find measure set.
+	 * 
+	 * @param id
+	 *            - {@link String}.
+	 * @return {@link MeasureSet}. *
+	 */
 	MeasureSet findMeasureSet(String id);
+	
 	/**
-	 *@param measureSet - {@link MeasureSet}.
-	 * **/
+	 * Save.
+	 * 
+	 * @param measureSet
+	 *            - {@link MeasureSet}. *
+	 */
 	void save(MeasureSet measureSet);
+	
 	/**
-	 *@return {@link String}.
-	 * **/
+	 * Gets the unique oid.
+	 * 
+	 * @return {@link String}. *
+	 */
 	String getUniqueOid();
+	
 	/**
-	 *@param dataTypeName - {@link String}.
-	 *@param categoryId - {@link String}.
-	 *@return {@link DataType}.
-	 * **/
+	 * Find data type for supplimental code list.
+	 * 
+	 * @param dataTypeName
+	 *            - {@link String}.
+	 * @param categoryId
+	 *            - {@link String}.
+	 * @return {@link DataType}. *
+	 */
 	DataType findDataTypeForSupplimentalCodeList(String dataTypeName,
 			String categoryId);
+	
 	/**
-	 *@param measureId - {@link String}.
-	 * **/
+	 * Delete existing packages.
+	 * 
+	 * @param measureId
+	 *            - {@link String}. *
+	 */
 	void deleteExistingPackages(String measureId);
+	
 	/**
-	 *@param qds - {@link QualityDataSet}.
-	 * **/
+	 * Save supplimental qdm.
+	 * 
+	 * @param qds
+	 *            - {@link QualityDataSet}. *
+	 */
 	void saveSupplimentalQDM(QualityDataSet qds);
+	
 	/**
-	 *@param id - {@link String}
-	 *@return {@link Boolean}.
-	 * **/
+	 * Checks if is measure locked.
+	 * 
+	 * @param id
+	 *            - {@link String}
+	 * @return {@link Boolean}. *
+	 */
 	boolean isMeasureLocked(String id);
+	
 	/**
-	 *@return {@link Integer}.
-	 * **/
+	 * Gets the max e measure id.
+	 * 
+	 * @return {@link Integer}. *
+	 */
 	int getMaxEMeasureId();
+	
 	/**
-	 *@param measure - {@link Measure}
-	 *@return {@link Integer}.
-	 * **/
+	 * Save and return max e measure id.
+	 * 
+	 * @param measure
+	 *            - {@link Measure}
+	 * @return {@link Integer}. *
+	 */
 	int saveAndReturnMaxEMeasureId(Measure measure);
+	
 	/**
-	 *@param list - {@link List} of {@link String}.
-	 *@param toEmail - {@link String}.
-	 *
-	 * **/
+	 * Transfer measure owner ship to user.
+	 * 
+	 * @param list
+	 *            - {@link List} of {@link String}.
+	 * @param toEmail
+	 *            - {@link String}.
+	 * 
+	 *            *
+	 */
 	void transferMeasureOwnerShipToUser(List<String> list, String toEmail);
+	
 	/**
-	 *@param searchText - {@link String}.
-	 *@param startIndex - {@link Integer}.
-	 *@param numResults - {@link Integer}.
-	 *@param filter - {@link Integer}.
-	 *@return {@link List} of {@link MeasureShareDTO}.
-	 * **/
+	 * Search with filter.
+	 * 
+	 * @param searchText
+	 *            - {@link String}.
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param numResults
+	 *            - {@link Integer}.
+	 * @param filter
+	 *            - {@link Integer}.
+	 * @return {@link List} of {@link MeasureShareDTO}. *
+	 */
 	List<MeasureShareDTO> searchWithFilter(String searchText, int startIndex,
 			int numResults, int filter);
 	
 	/**
-	 *@param searchText - {@link String}.
-	 *@param startIndex - {@link Integer}.
-	 *@param numResults - {@link Integer}.
-	 *@param filter - {@link Integer}.
-	 *@return {@link List} of {@link MeasureShareDTO}.
-	 * **/
+	 * Search for admin with filter.
+	 * 
+	 * @param searchText
+	 *            - {@link String}.
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param numResults
+	 *            - {@link Integer}.
+	 * @param filter
+	 *            - {@link Integer}.
+	 * @return {@link List} of {@link MeasureShareDTO}. *
+	 */
 	List<MeasureShareDTO> searchForAdminWithFilter(String searchText, int startIndex,
 			int numResults, int filter);
+	
 	/**
-	 *@param filter - {@link Integer}.
-	 *@return {@link Long}
-	 * **/
+	 * Count.
+	 * 
+	 * @param filter
+	 *            - {@link Integer}.
+	 * @return {@link Long} *
+	 */
 	long count(int filter);
+	
 	/**
-	 *@param measureId - {@link String}.
-	 *@return {@link MeasureXmlModel}.
-	 * **/
+	 * Gets the measure xml for measure.
+	 * 
+	 * @param measureId
+	 *            - {@link String}.
+	 * @return {@link MeasureXmlModel}. *
+	 */
 	MeasureXmlModel getMeasureXmlForMeasure(String measureId);
+	
 	/**
-	 *@param measureXmlModel - {@link MeasureXmlModel}.
-	 * **/
+	 * Save measure xml.
+	 * 
+	 * @param measureXmlModel
+	 *            - {@link MeasureXmlModel}. *
+	 */
 	void saveMeasureXml(MeasureXmlModel measureXmlModel);
+	
 	/**
-	 *@param stewardName - {@link String}.
-	 *@return {@link String}.
-	 * **/
+	 * Retrieve steward oid.
+	 * 
+	 * @param stewardName
+	 *            - {@link String}.
+	 * @return {@link String}. *
+	 */
 	String retrieveStewardOID(String stewardName);
+	
 	/**
-	 *@param measureId - {@link String}.
-	 *@param isPrivate - {@link Boolean}.
-	 * **/
+	 * Update private column in measure.
+	 * 
+	 * @param measureId
+	 *            - {@link String}.
+	 * @param isPrivate
+	 *            - {@link Boolean}. *
+	 */
 	void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
 }

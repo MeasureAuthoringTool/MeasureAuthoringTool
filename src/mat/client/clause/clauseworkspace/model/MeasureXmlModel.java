@@ -3,15 +3,15 @@ package mat.client.clause.clauseworkspace.model;
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 public class MeasureXmlModel implements IsSerializable {
-	
+
 	private String meausreExportId;
-	
+
 	private String measureId;
-	
+
 	private String xml;
-	
+
 	private String toReplaceNode;
-	
+
 	private String parentNode;
 
 	/**
@@ -55,7 +55,7 @@ public class MeasureXmlModel implements IsSerializable {
 	public void setXml(String xml) {
 		this.xml = xml;
 	}
-	
+
 	public String getToReplaceNode() {
 		return toReplaceNode;
 	}

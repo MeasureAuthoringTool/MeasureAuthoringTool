@@ -25,7 +25,7 @@ public class CellTreeNodeImpl implements CellTreeNode {
 	Map<String, Object> extraInformationMap = new HashMap<String, Object>();
 
 	private String uuid;
-	
+
 	private boolean isValid = true;
 
 	@Override
@@ -71,7 +71,7 @@ public class CellTreeNodeImpl implements CellTreeNode {
 			cellTreeNode.setUUID(UUIDUtilClient.uuid());
 		}
 
-		this.setOpen(true);// open parent
+		this.setOpen(true); // open parent
 		return appendChild(cellTreeNode);
 	}
 
@@ -339,7 +339,6 @@ public class CellTreeNodeImpl implements CellTreeNode {
 	@Override
 	public void setValidNode(boolean isValid) {
 		this.isValid = isValid;
-		
 	}
 
 	@Override

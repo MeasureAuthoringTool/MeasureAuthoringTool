@@ -10,8 +10,7 @@ import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 /**
- * Client interface for Audit Service
- *
+ * Client interface for Audit Service.
  */
 @RemoteServiceRelativePath("auditService")
 public interface AuditService extends RemoteService {

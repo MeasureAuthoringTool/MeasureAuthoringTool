@@ -5,26 +5,26 @@ import java.util.List;
 public class TreeModel {
 
 	private String name;
-	
+
 	private List<TreeModel> childs;
-	
+
 	private TreeModel parent;
-	
+
 	private String label;
-	
+
 	private boolean isEditable = true;
-	
+
 	private boolean isRemovable = true;
-	
+
 	private boolean isOpen;
 
 
 	public TreeModel() { }
-	
+
 	public boolean hasChildrens() {
         return childs != null && childs.size() > 0;
     }
-	
+
 	public String getName() {
 		return name;
 	}

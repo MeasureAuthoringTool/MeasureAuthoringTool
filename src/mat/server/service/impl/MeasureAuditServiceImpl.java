@@ -18,26 +18,34 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Service implementation for Measure Audit Service
- *
+ * Service implementation for Measure Audit Service.
  */
 public class MeasureAuditServiceImpl implements MeasureAuditService{
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(MeasureAuditServiceImpl.class);
 	
+	/** The measure dao. */
 	@Autowired
 	private MeasureDAO measureDAO;
 
+	/** The measure audit log dao. */
 	@Autowired
 	private MeasureAuditLogDAO measureAuditLogDAO;
 	
+	/** The code list audit log dao. */
 	@Autowired
 	private CodeListAuditLogDAO codeListAuditLogDAO; 
 	
+	/** The quality data set dao. */
 	@Autowired
 	private QualityDataSetDAO qualityDataSetDAO; 
 	
 	/* Records the custom measure event to the MeasureAuditLog table.
 	 * @see mat.server.service.MeasureAuditService#recordMeasureEvent(java.lang.String, java.lang.String, java.lang.String)
+	 */
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureAuditService#recordMeasureEvent(java.lang.String, java.lang.String, java.lang.String, boolean)
 	 */
 	@Override
 	public boolean recordMeasureEvent(String measureId, String event, String additionalInfo, boolean isChildLogRequired){
@@ -60,6 +68,9 @@ public class MeasureAuditServiceImpl implements MeasureAuditService{
 
 	/* Search and returns the list of events starts with the start index and the given number of rows
 	 * @see mat.server.service.MeasureAuditService#executeSearch(java.lang.String, int, int)
+	 */
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureAuditService#executeSearch(java.lang.String, int, int, java.util.List)
 	 */
 	@Override
 	public SearchHistoryDTO executeSearch(String measureId, int startIndex, int numberOfRows,List<String> filterList){

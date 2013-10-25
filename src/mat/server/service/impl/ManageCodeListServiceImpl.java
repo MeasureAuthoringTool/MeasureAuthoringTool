@@ -80,73 +80,105 @@ import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+/**
+ * The Class ManageCodeListServiceImpl.
+ */
 public class ManageCodeListServiceImpl implements CodeListService {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory
 			.getLog(ManageCodeListServiceImpl.class);
+	
+	/** The Constant DEFAULT_PAGE_SIZE. */
 	private static final int DEFAULT_PAGE_SIZE = 50;
+	
+	/** The Constant ASCII_START. */
 	private static final int ASCII_START = 90;
 
+	/** The list object dao. */
 	@Autowired
 	private ListObjectDAO listObjectDAO;
 
+	/** The list object ltdao. */
 	@Autowired
 	private ListObjectLTDAO listObjectLTDAO;
 
+	/** The code list dao. */
 	@Autowired
 	private CodeListDAO codeListDAO;
 
+	/** The category dao. */
 	@Autowired
 	private CategoryDAO categoryDAO;
 
+	/** The code system dao. */
 	@Autowired
 	private CodeSystemDAO codeSystemDAO;
 
+	/** The user dao. */
 	@Autowired
 	private UserDAO userDAO;
 
+	/** The code dao. */
 	@Autowired
 	private CodeDAO codeDAO;
 
+	/** The object status dao. */
 	@Autowired
 	private ObjectStatusDAO objectStatusDAO;
 
+	/** The quality data set dao. */
 	@Autowired
 	private QualityDataSetDAO qualityDataSetDAO;
 
+	/** The data type dao. */
 	@Autowired
 	private DataTypeDAO dataTypeDAO;
 
+	/** The steward dao. */
 	@Autowired
 	private StewardDAO stewardDAO;
 
+	/** The author dao. */
 	@Autowired
 	private AuthorDAO authorDAO;
 
+	/** The measure type dao. */
 	@Autowired
 	private MeasureTypeDAO measureTypeDAO;
 
+	/** The measure dao. */
 	@Autowired
 	private mat.dao.clause.MeasureDAO measureDAO;
 
+	/** The measure score dao. */
 	@Autowired
 	private MeasureScoreDAO measureScoreDAO;
 
+	/** The unit dao. */
 	@Autowired
 	private UnitDAO unitDAO;
 
+	/** The unit type dao. */
 	@Autowired
 	private UnitTypeDAO unitTypeDAO;
 
+	/** The unit type matrix dao. */
 	@Autowired
 	private UnitTypeMatrixDAO unitTypeMatrixDAO;
 
+	/** The code list audit log dao. */
 	@Autowired
 	private CodeListAuditLogDAO codeListAuditLogDAO;
 
+	/** The operator dao. */
 	@Autowired
 	private OperatorDAO operatorDAO;
 
 	/* US566 */
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#search(java.lang.String, int, int, java.lang.String, boolean, boolean, int)
+	 */
 	@Override
 	public List<CodeListSearchDTO> search(String searchText, int startIndex,
 			int pageSize, String sortColumn, boolean isAsc,
@@ -171,6 +203,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return codeList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#search(java.lang.String, int, int, java.lang.String, boolean, boolean, int, java.lang.String)
+	 */
 	@Override
 	public List<CodeListSearchDTO> search(String searchText, int startIndex,
 			int pageSize, String sortColumn, boolean isAsc,
@@ -196,6 +231,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return retList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#countSearchResultsWithFilter(java.lang.String, boolean, int)
+	 */
 	@Override
 	public int countSearchResultsWithFilter(final String searchText,
 			final boolean defaultCodeList, final int filter) {
@@ -204,6 +242,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				loggedInUserid, defaultCodeList, filter);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getListBoxData()
+	 */
 	@Override
 	public mat.client.codelist.service.CodeListService.ListBoxData getListBoxData() {
 		mat.client.codelist.service.CodeListService.ListBoxData data =
@@ -229,6 +270,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return data;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getAllUnits()
+	 */
 	@Override
 	public List<UnitDTO> getAllUnits() {
 		List<UnitDTO> data = unitDAO.getAllUnits();
@@ -236,6 +280,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	// US 413. Added Steward Other parameter
+	/**
+	 * Checks if is code list unique.
+	 * 
+	 * @param currentDetails
+	 *            the current details
+	 * @return true, if is code list unique
+	 */
 	public boolean isCodeListUnique(ManageCodeListDetailModel currentDetails) {
 		boolean unique = true;
 		// US 413 added parameter steward other
@@ -251,18 +302,39 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return unique;
 	}
 
+	/**
+	 * Checks if is code list last modified date unique.
+	 * 
+	 * @param currentDetails
+	 *            the current details
+	 * @param ts
+	 *            the ts
+	 * @return true, if is code list last modified date unique
+	 */
 	boolean isCodeListLastModifiedDateUnique(
 			ManageCodeListDetailModel currentDetails, Timestamp ts) {
 		List<CodeList> cls = codeListDAO.getCodeList(currentDetails, ts);
 		return cls.isEmpty();
 	}
 
+	/**
+	 * Checks if is grouped code list last modified date unique.
+	 * 
+	 * @param currentDetails
+	 *            the current details
+	 * @param ts
+	 *            the ts
+	 * @return true, if is grouped code list last modified date unique
+	 */
 	boolean isGroupedCodeListLastModifiedDateUnique(
 			ManageCodeListDetailModel currentDetails, Timestamp ts) {
 		List<ListObject> los = listObjectDAO.getListObject(currentDetails, ts);
 		return los.isEmpty();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#saveorUpdateCodeList(mat.client.codelist.ManageCodeListDetailModel)
+	 */
 	@Override
 	public SaveUpdateCodeListResult saveorUpdateCodeList(
 			ManageCodeListDetailModel currentDetails)
@@ -397,6 +469,12 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return result;
 	}
 
+	/**
+	 * Log complete event.
+	 * 
+	 * @param codeList
+	 *            the code list
+	 */
 	private void logCompleteEvent(CodeList codeList) {
 		if ((codeList.getCodeSystem() != null)
 				&& (codeList.getCodeSystem().getDescription() != null)
@@ -413,6 +491,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	// US 413. Added Steward Other parameter
+	/**
+	 * Checks if is grouped code list unique.
+	 * 
+	 * @param currentDetails
+	 *            the current details
+	 * @return true, if is grouped code list unique
+	 */
 	public boolean isGroupedCodeListUnique(
 			ManageCodeListDetailModel currentDetails) {
 		boolean unique = true;
@@ -428,6 +513,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return unique;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#saveorUpdateGroupedCodeList(mat.client.codelist.ManageCodeListDetailModel)
+	 */
 	@Override
 	public SaveUpdateCodeListResult saveorUpdateGroupedCodeList(
 			ManageCodeListDetailModel currentDetails)
@@ -544,6 +632,12 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return result;
 	}
 
+	/**
+	 * Log group complete event.
+	 * 
+	 * @param codeList
+	 *            the code list
+	 */
 	private void logGroupCompleteEvent(ListObject codeList) {
 		if ((codeList.getCodeSystem() != null)
 				&& (codeList.getCodeSystem().getDescription() != null)
@@ -560,6 +654,15 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	// US 383. check if oid changed for event logging purpose.
+	/**
+	 * Checks if is oid change.
+	 * 
+	 * @param oldOID
+	 *            the old oid
+	 * @param newOID
+	 *            the new oid
+	 * @return true, if is oid change
+	 */
 	private boolean isOidChange(String oldOID, String newOID) {
 		if (StringUtils.isNotBlank(oldOID) && StringUtils.isNotBlank(newOID)) {
 			if (!oldOID.equalsIgnoreCase(newOID)) {
@@ -570,6 +673,15 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	// US 551. check if name changed for event logging purpose.
+	/**
+	 * Checks if is name change.
+	 * 
+	 * @param oldName
+	 *            the old name
+	 * @param newName
+	 *            the new name
+	 * @return true, if is name change
+	 */
 	private boolean isNameChange(String oldName, String newName) {
 		if (StringUtils.isNotBlank(oldName) && StringUtils.isNotBlank(newName)) {
 			if (!oldName.equalsIgnoreCase(newName)) {
@@ -580,6 +692,15 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	// US 551. check if last modified date changed for event logging purpose.
+	/**
+	 * Checks if is last modified date change.
+	 * 
+	 * @param oldDate
+	 *            the old date
+	 * @param newDate
+	 *            the new date
+	 * @return true, if is last modified date change
+	 */
 	private boolean isLastModifiedDateChange(String oldDate, String newDate) {
 		if (StringUtils.isNotBlank(oldDate) && StringUtils.isNotBlank(newDate)) {
 			if (!oldDate.equalsIgnoreCase(newDate)) {
@@ -589,6 +710,12 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return false;
 	}
 
+	/**
+	 * Filter code lists for current category.
+	 * 
+	 * @param listObject
+	 *            the list object
+	 */
 	public void filterCodeListsForCurrentCategory(ListObject listObject) {
 
 		if (listObject.getCodesLists() != null) {
@@ -604,6 +731,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 	}
 
+	/**
+	 * Sets the model fields on code list.
+	 * 
+	 * @param model
+	 *            the model
+	 * @param codeList
+	 *            the code list
+	 */
 	private void setModelFieldsOnCodeList(ManageCodeListDetailModel model,
 			CodeList codeList) {
 		setModelFieldsOnListObject(model, codeList);
@@ -611,6 +746,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		codeList.setCodeSystemVersion(model.getCodeSystemVersion());
 	}
 
+	/**
+	 * Sets the model fields on list object.
+	 * 
+	 * @param model
+	 *            the model
+	 * @param listObject
+	 *            the list object
+	 */
 	private void setModelFieldsOnListObject(ManageCodeListDetailModel model,
 			ListObject listObject) {
 		if (StringUtils.isNotBlank(model.getMeasureId())) {
@@ -661,12 +804,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	/**
-	 * @param codeList
-	 *            This method is the server-side validation for adding a
-	 *            codeList with same name and same taxonomy. This method will be
-	 *            useful if for some reason, the user is using proxy tool to
-	 *            hijack. Todo need to send the validation message(may not need
-	 *            one,but just in case.)
+	 * Check for duplicate code list.
+	 * 
+	 * @param currentcodeList
+	 *            the currentcode list
+	 * @param listObject
+	 *            the list object
+	 * @return true, if successful
 	 */
 	private boolean checkForDuplicateCodeList(CodeList currentcodeList,
 			ListObject listObject) {
@@ -684,21 +828,47 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return duplicateExists;
 	}
 
+	/**
+	 * Gets the category.
+	 * 
+	 * @param value
+	 *            the value
+	 * @return the category
+	 */
 	private Category getCategory(String value) {
 		Category category = categoryDAO.find(value);
 		return category;
 	}
 
+	/**
+	 * Gets the code system.
+	 * 
+	 * @param value
+	 *            the value
+	 * @return the code system
+	 */
 	private CodeSystem getCodeSystem(String value) {
 		CodeSystem codeSystem = codeSystemDAO.find(value);
 		return codeSystem;
 	}
 
+	/**
+	 * Gets the steward.
+	 * 
+	 * @param value
+	 *            the value
+	 * @return the steward
+	 */
 	private MeasureSteward getSteward(String value) {
 		MeasureSteward steward_org = stewardDAO.find(value);
 		return steward_org;
 	}
 
+	/**
+	 * Gets the logged in user.
+	 * 
+	 * @return the logged in user
+	 */
 	private User getLoggedInUser() {
 		String userId = LoggedInUserUtil.getLoggedInUser();
 		User user = userDAO.find(userId);
@@ -709,6 +879,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 * private ObjectStatus getUserStatus(String key){ ObjectStatus status =
 	 * (ObjectStatus)objectStatusDAO.find(key); return status; }
 	 */
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getCodeList(java.lang.String)
+	 */
 	@Override
 	public ManageCodeListDetailModel getCodeList(String key) {
 		ManageCodeListDetailModel codeListModel = new ManageCodeListDetailModel();
@@ -717,6 +890,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return codeListModel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getGroupedCodeList(java.lang.String)
+	 */
 	@Override
 	public ManageCodeListDetailModel getGroupedCodeList(String key) {
 		ManageCodeListDetailModel codeListModel = new ManageCodeListDetailModel();
@@ -725,6 +901,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return codeListModel;
 	}
 
+	/**
+	 * Find page count for code lists.
+	 * 
+	 * @param codeLists
+	 *            the code lists
+	 * @return the int
+	 */
 	private int findPageCountForCodeLists(List<GroupedCodeListDTO> codeLists) {
 		int totalRows = codeLists.size();
 		int numberOfRowsPerPage = DEFAULT_PAGE_SIZE;
@@ -734,6 +917,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return pageCount;
 	}
 
+	/**
+	 * Sets the list object on model.
+	 * 
+	 * @param codeList
+	 *            the code list
+	 * @param codeListModel
+	 *            the code list model
+	 */
 	private void setListObjectOnModel(ListObject codeList,
 			ManageCodeListDetailModel codeListModel) {
 		codeListModel.setCategory(codeList.getCategory().getId());
@@ -778,6 +969,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 	}
 
+	/**
+	 * Sets the code liston model.
+	 * 
+	 * @param codeList
+	 *            the code list
+	 * @param codeListModel
+	 *            the code list model
+	 */
 	private void setCodeListonModel(CodeList codeList,
 			ManageCodeListDetailModel codeListModel) {
 		// Always by default the model will have only 50 codes.
@@ -794,6 +993,15 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 	}
 
+	/**
+	 * Gets the only filtered codes.
+	 * 
+	 * @param pageSize
+	 *            the page size
+	 * @param codes
+	 *            the codes
+	 * @return the only filtered codes
+	 */
 	private ArrayList<Code> getOnlyFilteredCodes(int pageSize,
 			ArrayList<Code> codes) {
 		ArrayList<Code> codesList = new ArrayList<Code>();
@@ -809,6 +1017,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return codesList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getCodeSystemsForCategory(java.lang.String)
+	 */
 	@Override
 	public List<? extends HasListBox> getCodeSystemsForCategory(
 			String categoryId) {
@@ -840,6 +1051,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return retList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getCodeListsForCategory(java.lang.String)
+	 */
 	@Override
 	public List<? extends HasListBox> getCodeListsForCategory(String categoryId) {
 		List<HasListBoxDTO> retList = new ArrayList<HasListBoxDTO>();
@@ -859,6 +1073,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return retList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getQDSDataTypeForCategory(java.lang.String)
+	 */
 	@Override
 	public List<? extends HasListBox> getQDSDataTypeForCategory(
 			String categoryId) {
@@ -875,6 +1092,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return retList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getAllDataTypes()
+	 */
 	@Override
 	public List<? extends HasListBox> getAllDataTypes() {
 		List<DataTypeDTO> retList = new ArrayList<DataTypeDTO>();
@@ -894,6 +1114,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return retList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#deleteCodes(java.lang.String, java.util.List)
+	 */
 	@Override
 	public ManageCodeListDetailModel deleteCodes(final String key,
 			final List<Code> codes) {
@@ -905,6 +1128,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return detailModel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#saveQDStoMeasure(java.lang.String, java.lang.String, mat.model.MatValueSet, boolean, java.lang.String, java.util.ArrayList)
+	 */
 	@Override
 	public final SaveUpdateCodeListResult saveQDStoMeasure(
 			final String measureId, final String dataType,
@@ -970,6 +1196,17 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 * how many occurrence exists for the given dataType not for the specific
 	 * occurrence.
 	 */
+	/**
+	 * Check for occurrence count vsac api.
+	 * 
+	 * @param dataTypeId
+	 *            the data type id
+	 * @param matValueSet
+	 *            the mat value set
+	 * @param appliedQDM
+	 *            the applied qdm
+	 * @return the int
+	 */
 	private int checkForOccurrenceCountVsacApi(final String dataTypeId,
 			final MatValueSet matValueSet,
 			final ArrayList<QualityDataSetDTO> appliedQDM) {
@@ -997,12 +1234,19 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	/**
+	 * Check for duplicates.
+	 * 
 	 * @param dataType
+	 *            the data type
 	 * @param matValueSet
+	 *            the mat value set
 	 * @param codeList
+	 *            the code list
 	 * @param appliedQDM
+	 *            the applied qdm
 	 * @param isVSACValueSet
-	 * @return
+	 *            the is vsac value set
+	 * @return true, if successful
 	 */
 	private boolean checkForDuplicates(final String dataType, final MatValueSet matValueSet, final CodeListSearchDTO codeList,
 			final ArrayList<QualityDataSetDTO> appliedQDM, boolean isVSACValueSet){
@@ -1071,11 +1315,17 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	/**
+	 * Update user define qdm in element look up.
+	 * 
 	 * @param dataType
+	 *            the data type
 	 * @param codeList
+	 *            the code list
 	 * @param qualityDataSetDTO
+	 *            the quality data set dto
 	 * @param appliedQDM
-	 * @param wrapper
+	 *            the applied qdm
+	 * @return the save update code list result
 	 */
 	private SaveUpdateCodeListResult updateUserDefineQDMInElementLookUp(final String dataType, final CodeListSearchDTO codeList,
 			final QualityDataSetDTO qualityDataSetDTO, final ArrayList<QualityDataSetDTO> appliedQDM) {
@@ -1107,12 +1357,21 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	}
 
 	/**
+	 * Update vsac value set in element look up.
+	 * 
 	 * @param dataType
+	 *            the data type
 	 * @param matValueSet
+	 *            the mat value set
 	 * @param qualityDataSetDTO
+	 *            the quality data set dto
 	 * @param isSpecificOccurrence
+	 *            the is specific occurrence
+	 * @param version
+	 *            the version
 	 * @param appliedQDM
-	 * @param result
+	 *            the applied qdm
+	 * @return the save update code list result
 	 */
 	private SaveUpdateCodeListResult updateVSACValueSetInElementLookUp(final String dataType, final MatValueSet matValueSet,
 			final QualityDataSetDTO qualityDataSetDTO, final boolean isSpecificOccurrence, String version,
@@ -1189,6 +1448,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return result;
 	}
 
+	/**
+	 * Sort quality data set list.
+	 * 
+	 * @param finalList
+	 *            the final list
+	 * @return the array list
+	 */
 	private ArrayList<QualityDataSetDTO> sortQualityDataSetList(
 			final ArrayList<QualityDataSetDTO> finalList) {
 
@@ -1204,6 +1470,15 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 	}
 
+	/**
+	 * Modify applied element list.
+	 * 
+	 * @param dataSetDTO
+	 *            the data set dto
+	 * @param appliedQDM
+	 *            the applied qdm
+	 * @return the quality data model wrapper
+	 */
 	QualityDataModelWrapper modifyAppliedElementList(
 			final QualityDataSetDTO dataSetDTO,
 			final ArrayList<QualityDataSetDTO> appliedQDM) {
@@ -1221,6 +1496,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return wrapper;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#saveUserDefinedQDStoMeasure(java.lang.String, java.lang.String, java.lang.String, java.util.ArrayList)
+	 */
 	@Override
 	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(
 			final String measureId, final String dataType, final String codeListName,
@@ -1323,6 +1601,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return stream;
 	}
 
+	/**
+	 * Sets the dto values from model.
+	 * 
+	 * @param cl
+	 *            the cl
+	 * @param dto
+	 *            the dto
+	 */
 	void setDTOValuesFromModel(final ListObject cl, final CodeListSearchDTO dto) {
 		dto.setCategoryCode(cl.getCategory().getId());
 		dto.setCategoryDisplay(cl.getCategory().getDescription());
@@ -1342,12 +1628,18 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getQDSElements(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public java.util.List<QualityDataSetDTO> getQDSElements(final String measureId,
 			final String version) {
 		return qualityDataSetDAO.getQDSElements(false, measureId);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#saveDefaultCodeList(mat.model.User)
+	 */
 	@Override
 	public SaveUpdateCodeListResult saveDefaultCodeList(final User createdUser)
 			throws CodeListNotUniqueException {
@@ -1368,6 +1660,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return result;
 	}
 
+	/**
+	 * Insertdefault code list.
+	 * 
+	 * @param createdUser
+	 *            the created user
+	 * @param codeListName
+	 *            the code list name
+	 */
 	private void insertdefaultCodeList(final User createdUser, final String codeListName) {
 		CodeList codeList = new CodeList();
 		String oid = generateUniqueOid(null);
@@ -1392,6 +1692,14 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		listObjectDAO.save(defaultObject);
 	}
 
+	/**
+	 * Insert ready to use code list.
+	 * 
+	 * @param createdUser
+	 *            the created user
+	 * @param codeListName
+	 *            the code list name
+	 */
 	private void insertReadyToUseCodeList(User createdUser, String codeListName) {
 		CodeList codeList = new CodeList();
 		if (codeListName
@@ -1431,6 +1739,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		listObjectDAO.save(defaultObject);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#generateUniqueOid(mat.client.codelist.ManageCodeListDetailModel)
+	 */
 	@Override
 	public String generateUniqueOid(ManageCodeListDetailModel currentDetails) {
 		User user = (currentDetails != null) && (currentDetails.getID() != null) ? listObjectDAO
@@ -1440,6 +1751,15 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				return oid;
 	}
 
+	/**
+	 * Oid already exists.
+	 * 
+	 * @param oid
+	 *            the oid
+	 * @param id
+	 *            the id
+	 * @return the boolean
+	 */
 	public Boolean oidAlreadyExists(String oid, String id) {
 		if ((oid == null) || (oid.length() == 0)) {
 			return false;
@@ -1447,6 +1767,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return listObjectDAO.countListObjectsByOidAndNotId(oid, id) > 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getGroupedCodeListCodeSystemsForCategory(java.lang.String)
+	 */
 	@Override
 	public String getGroupedCodeListCodeSystemsForCategory(String categoryId) {
 
@@ -1461,6 +1784,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#searchValueSetsForDraft(int, int)
+	 */
 	@Override
 	public ManageValueSetSearchModel searchValueSetsForDraft(int startIndex,
 			int pageSize) {
@@ -1482,6 +1808,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return model;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#createDraft(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public ManageValueSetSearchModel createDraft(String id, String oid) {
 
@@ -1506,6 +1835,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return model;
 	}
 
+	/**
+	 * Find page count for codes.
+	 * 
+	 * @param codes
+	 *            the codes
+	 * @return the int
+	 */
 	private int findPageCountForCodes(List<Code> codes) {
 		int totalRows = codes.size();
 		int numberOfRowsPerPage = DEFAULT_PAGE_SIZE;
@@ -1515,11 +1851,23 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return pageCount;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getCodes(java.lang.String, int, int)
+	 */
 	@Override
 	public List<Code> getCodes(String codeListId, int startIndex, int pageSize) {
 		return codeDAO.searchCodes(codeListId, startIndex, pageSize);
 	}
 
+	/**
+	 * Gets the and validate last modified date.
+	 * 
+	 * @param lastModifiedStr
+	 *            the last modified str
+	 * @return the and validate last modified date
+	 * @throws InvalidLastModifiedDateException
+	 *             the invalid last modified date exception
+	 */
 	private Timestamp getAndValidateLastModifiedDate(String lastModifiedStr)
 			throws InvalidLastModifiedDateException {
 		Timestamp ts = null;
@@ -1543,6 +1891,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return ts;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#isCodeAlreadyExists(java.lang.String, mat.model.Code)
+	 */
 	@Override
 	public boolean isCodeAlreadyExists(String codeListId, Code code) {
 		CodeList codeList = codeListDAO.find(codeListId);
@@ -1556,6 +1907,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return codeExists;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getSupplimentalCodeList()
+	 */
 	@Override
 	public List<ListObject> getSupplimentalCodeList() {
 		List<ListObject> listOfSuppElements = listObjectDAO
@@ -1563,6 +1917,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return listOfSuppElements;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#createClone(java.lang.String)
+	 */
 	@Override
 	public ManageValueSetSearchModel createClone(String id) {
 		ManageValueSetSearchModel model = new ManageValueSetSearchModel();
@@ -1591,6 +1948,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		return model;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#transferOwnerShipToUser(java.util.List, java.lang.String)
+	 */
 	@Override
 	public void transferOwnerShipToUser(List<String> list, String toEmail) {
 
@@ -1615,16 +1975,25 @@ public class ManageCodeListServiceImpl implements CodeListService {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getTimingOperators()
+	 */
 	@Override
 	public List<OperatorDTO> getTimingOperators() {
 		return operatorDAO.getRelTimingperators();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getRelAssociationsOperators()
+	 */
 	@Override
 	public List<OperatorDTO> getRelAssociationsOperators() {
 		return operatorDAO.getRelAssociationsOperators();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListService#getAllOperators()
+	 */
 	@Override
 	public List<OperatorDTO> getAllOperators() {
 		return operatorDAO.getAllOperators();

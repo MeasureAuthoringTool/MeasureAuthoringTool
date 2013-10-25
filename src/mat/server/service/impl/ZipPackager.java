@@ -20,6 +20,27 @@ import org.apache.tools.zip.ZipOutputStream;
  */
 public class ZipPackager {
 	
+	/**
+	 * Gets the zip barr.
+	 * 
+	 * @param emeasureName
+	 *            the emeasure name
+	 * @param wkbkbarr
+	 *            the wkbkbarr
+	 * @param emeasureXMLStr
+	 *            the emeasure xml str
+	 * @param emeasureHTMLStr
+	 *            the emeasure html str
+	 * @param emeasureXSLUrl
+	 *            the emeasure xsl url
+	 * @param packageDate
+	 *            the package date
+	 * @param simpleXmlStr
+	 *            the simple xml str
+	 * @return the zip barr
+	 * @throws Exception
+	 *             the exception
+	 */
 	public byte[] getZipBarr(String emeasureName, byte[] wkbkbarr, String emeasureXMLStr, String emeasureHTMLStr, String emeasureXSLUrl, String packageDate, String simpleXmlStr) throws Exception{
 		byte[] ret = null;
 		
@@ -59,6 +80,19 @@ public class ZipPackager {
 		}
 		return ret;
 	}
+	
+	/**
+	 * Adds the bytes to zip.
+	 * 
+	 * @param path
+	 *            the path
+	 * @param input
+	 *            the input
+	 * @param zip
+	 *            the zip
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void addBytesToZip(String path, byte[] input, ZipOutputStream zip) throws Exception {
 		ZipEntry entry = new ZipEntry(path);
         entry.setSize(input.length);
@@ -67,6 +101,30 @@ public class ZipPackager {
         zip.closeEntry();
 	}
 	
+	/**
+	 * Creates the bulk export zip.
+	 * 
+	 * @param emeasureName
+	 *            the emeasure name
+	 * @param wkbkbarr
+	 *            the wkbkbarr
+	 * @param emeasureXMLStr
+	 *            the emeasure xml str
+	 * @param emeasureHTMLStr
+	 *            the emeasure html str
+	 * @param emeasureXSLUrl
+	 *            the emeasure xsl url
+	 * @param packageDate
+	 *            the package date
+	 * @param simpleXmlStr
+	 *            the simple xml str
+	 * @param filesMap
+	 *            the files map
+	 * @param seqNum
+	 *            the seq num
+	 * @throws Exception
+	 *             the exception
+	 */
 	public void createBulkExportZip(String emeasureName, byte[] wkbkbarr, String emeasureXMLStr, String emeasureHTMLStr,
 			String emeasureXSLUrl, String packageDate, String simpleXmlStr, Map<String, byte[]> filesMap, String seqNum) throws Exception{
 		

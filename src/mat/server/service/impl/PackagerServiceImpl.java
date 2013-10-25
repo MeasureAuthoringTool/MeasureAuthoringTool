@@ -37,22 +37,42 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+/**
+ * The Class PackagerServiceImpl.
+ */
 public class PackagerServiceImpl implements PackagerService {
 
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(PackagerServiceImpl.class);
+	
+	/** The Constant SUPPLEMENT_DATA_ELEMENTS. */
 	private static final String SUPPLEMENT_DATA_ELEMENTS = "supplementalDataElements";
+	
+	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF. */
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef/@id";
+	
+	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION. */
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION = "/measure/supplementalDataElements/elementRef[@id";
+	
+	/** The Constant MEASURE. */
 	private static final String MEASURE ="measure";
+	
+	/** The measure xmldao. */
 	@Autowired 
 	private MeasureXMLDAO measureXMLDAO;
 	
 	/**
-	 * Creates measureGrouping XML chunk from MeasurePackageDetail using castor and "MeasurePackageClauseDetail.xml" mapping file.
-	 * Finds the Group Node in the Measure_Xml using the sequence number from MeasurePackageDetail
-	 * if the Group present deletes that Group in Measure_Xml and appends the new Group from measureGrouping XML to the measureGrouping node in Measure_Xml
-	 * if the Group not Present appends the new Group from measureGrouping XML to the parent measureGrouping node in Measure_XML
-	 * Finally Save the Measure_xml
+	 * Creates measureGrouping XML chunk from MeasurePackageDetail using castor
+	 * and "MeasurePackageClauseDetail.xml" mapping file. Finds the Group Node
+	 * in the Measure_Xml using the sequence number from MeasurePackageDetail if
+	 * the Group present deletes that Group in Measure_Xml and appends the new
+	 * Group from measureGrouping XML to the measureGrouping node in Measure_Xml
+	 * if the Group not Present appends the new Group from measureGrouping XML
+	 * to the parent measureGrouping node in Measure_XML Finally Save the
+	 * Measure_xml
+	 * 
+	 * @param detail
+	 *            the detail
 	 */
 	@Override
 	public void save(MeasurePackageDetail detail) {
@@ -84,6 +104,13 @@ public class PackagerServiceImpl implements PackagerService {
 	}
 
 	
+	/**
+	 * Creates the grouping xml.
+	 * 
+	 * @param detail
+	 *            the detail
+	 * @return the string
+	 */
 	private String createGroupingXml(
 			MeasurePackageDetail detail) {
 		Collections.sort(detail.getPackageClauses());
@@ -224,6 +251,13 @@ public class PackagerServiceImpl implements PackagerService {
 		return overview;
 	}
 
+	/**
+	 * Gets the intersection of qdm and sde.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @return the intersection of qdm and sde
+	 */
 	private Map<String,ArrayList<QualityDataSetDTO>> getIntersectionOfQDMAndSDE(String measureId){
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		Map<String,ArrayList<QualityDataSetDTO>> finalMap = new HashMap<String,ArrayList<QualityDataSetDTO>>();
@@ -235,6 +269,17 @@ public class PackagerServiceImpl implements PackagerService {
 	}
 
 
+	/**
+	 * Creates the measure package clause detail.
+	 * 
+	 * @param id
+	 *            the id
+	 * @param name
+	 *            the name
+	 * @param type
+	 *            the type
+	 * @return the measure package clause detail
+	 */
 	private MeasurePackageClauseDetail createMeasurePackageClauseDetail(String id, String name, String type) {
 		MeasurePackageClauseDetail detail = new MeasurePackageClauseDetail();
 		detail.setId(id);
@@ -244,6 +289,9 @@ public class PackagerServiceImpl implements PackagerService {
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.PackagerService#delete(mat.client.measurepackage.MeasurePackageDetail)
+	 */
 	@Override
 	public void delete(MeasurePackageDetail detail) {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
@@ -264,6 +312,9 @@ public class PackagerServiceImpl implements PackagerService {
 	}
 
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.PackagerService#saveQDMData(mat.client.measurepackage.MeasurePackageDetail)
+	 */
 	@Override
 	public void saveQDMData(MeasurePackageDetail detail) {
 		ArrayList<QualityDataSetDTO> supplementDataElementsAll = (ArrayList<QualityDataSetDTO>) detail.getSuppDataElements();
@@ -296,8 +347,13 @@ public class PackagerServiceImpl implements PackagerService {
 	}
 	
 	 /**
-     * Method to create XML from QualityDataModelWrapper object for supplementalDataElement .
-     * */
+	 * Method to create XML from QualityDataModelWrapper object for
+	 * supplementalDataElement .
+	 * 
+	 * @param qualityDataSetDTO
+	 *            the quality data set dto
+	 * @return the byte array output stream
+	 */
     private ByteArrayOutputStream convertQDMOToSuppleDataXML(QualityDataModelWrapper qualityDataSetDTO) {
 		logger.info("In PackagerServiceImpl.convertQDMOToSuppleDataXML()");
 		Mapping mapping = new Mapping();

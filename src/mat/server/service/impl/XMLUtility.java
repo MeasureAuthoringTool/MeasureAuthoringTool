@@ -12,8 +12,20 @@ import javax.xml.transform.stream.StreamSource;
 
 import net.sf.saxon.TransformerFactoryImpl;
 
+/**
+ * The Class XMLUtility.
+ */
 public class XMLUtility {
 
+	/**
+	 * Apply xsl.
+	 * 
+	 * @param input
+	 *            the input
+	 * @param xslt
+	 *            the xslt
+	 * @return the string
+	 */
 	public String applyXSL(String input, String xslt) 
 	{
 		//This system property sets the TransformFactory to use the Saxon TransformerFactoryImpl method
@@ -39,6 +51,14 @@ public class XMLUtility {
 		result = new String(outStream.toByteArray());
 		return result;
 	}
+	
+	/**
+	 * Gets the xML resource.
+	 * 
+	 * @param name
+	 *            the name
+	 * @return the xML resource
+	 */
 	public String getXMLResource(String name) {
 		return getClass().getResource(name).toExternalForm();
 	}

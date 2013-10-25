@@ -9,17 +9,22 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Service implementation for Transaction Audit Service
+ * Service implementation for Transaction Audit Service.
+ * 
  * @author aschmidt
- *
  */
 public class TransactionAuditServiceImpl implements TransactionAuditService{
 
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(TransactionAuditServiceImpl.class);
 	
+	/** The transaction audit log dao. */
 	@Autowired
 	private TransactionAuditLogDAO transactionAuditLogDAO;
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.TransactionAuditService#recordTransactionEvent(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, int)
+	 */
 	@Override
 	public boolean recordTransactionEvent(String primaryId, String secondaryId,
 			String activityType, String userId, String additionalInfo, int logLevel) {

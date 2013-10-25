@@ -111,6 +111,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	/**MeasureExportDAO.**/
 	private HSSFWorkbook wkbk = null;
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.SimpleEMeasureService#exportMeasureIntoSimpleXML(java.lang.String, java.lang.String, java.util.List)
+	 */
 	@Override
 	public final ExportResult exportMeasureIntoSimpleXML(final String measureId,
 			final String xmlString, final List<MatValueSet> matValueSets)
@@ -183,10 +186,15 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	/**
-	 *@param nodeList - NodeList.
-	 *@param masterRefID - List of QualityDataSetDTO.
-	 *@param finalIdList - List of String.
-	 * **/
+	 * Find and add dto.
+	 * 
+	 * @param nodeList
+	 *            - NodeList.
+	 * @param masterRefID
+	 *            - List of QualityDataSetDTO.
+	 * @param finalIdList
+	 *            - List of String. *
+	 */
 	private void findAndAddDTO(final NodeList nodeList,
 			final List<QualityDataSetDTO> masterRefID,
 			final List<String> finalIdList) {
@@ -203,9 +211,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	/**
-	 * @param measureId - String.
-	 * @return Measure.
-	 * **/
+	 * Gets the measure name.
+	 * 
+	 * @param measureId
+	 *            - String.
+	 * @return Measure. *
+	 */
 	private mat.model.clause.Measure getMeasureName(final String measureId) {
 		MeasurePackageService measureService = (MeasurePackageService) context
 				.getBean("measurePackageService");
@@ -213,6 +224,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return measure;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.SimpleEMeasureService#getSimpleXML(java.lang.String)
+	 */
 	@Override
 	public final ExportResult getSimpleXML(final String measureId) throws Exception {
 		mat.model.clause.Measure measure = measureDAO.find(measureId);
@@ -224,6 +238,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.SimpleEMeasureService#getEMeasureXML(java.lang.String)
+	 */
 	@Override
 	public final ExportResult getEMeasureXML(final String measureId) throws Exception {
 
@@ -231,12 +248,17 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return getEMeasureXML(measureId, measureExport);
 	}
 
-	/***
-	 *@param measureId - String.
-	 *@param measureExport - MeasureExport.
-	 *@return ExportResult.
-	 *@throws Exception - Exception.
-	 * */
+	/**
+	 * *.
+	 * 
+	 * @param measureId
+	 *            - String.
+	 * @param measureExport
+	 *            - MeasureExport.
+	 * @return ExportResult.
+	 * @throws Exception
+	 *             - Exception.
+	 */
 	public final ExportResult getEMeasureXML(final String measureId,
 			final MeasureExport measureExport) throws Exception {
 		XMLUtility xmlUtility = new XMLUtility();
@@ -252,6 +274,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.SimpleEMeasureService#getEMeasureHTML(java.lang.String)
+	 */
 	@Override
 	public final ExportResult getEMeasureHTML(final String measureId)
 			throws Exception {
@@ -262,9 +287,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	/**
-	 *@param emeasureXMLStr - String.
-	 *@return String.
-	 * **/
+	 * Emeasure xml to emeasure html.
+	 * 
+	 * @param emeasureXMLStr
+	 *            - String.
+	 * @return String. *
+	 */
 	private String emeasureXMLToEmeasureHTML(final String emeasureXMLStr) {
 		XMLUtility xmlUtility = new XMLUtility();
 		String html = xmlUtility.applyXSL(emeasureXMLStr,
@@ -272,21 +300,31 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return html;
 	}
 
-	/***
-	 *@param ctx - ApplicationContext.
-	 * */
+	/**
+	 * *.
+	 * 
+	 * @param ctx
+	 *            - ApplicationContext.
+	 */
 	public void setApplicationContext(final ApplicationContext ctx) {
 		this.context = ctx;
 	}
 
 	/**
-	 *@param measureId - String.
-	 *@param allQDMs - List.
-	 *@param supplementalQDMS - List.
-	 *@param matValueSets - List.
-	 *@return HSSFWorkbook
-	 *@throws Exception - Exception.
-	 * ***/
+	 * Creates the e measure xls.
+	 * 
+	 * @param measureId
+	 *            - String.
+	 * @param allQDMs
+	 *            - List.
+	 * @param supplementalQDMS
+	 *            - List.
+	 * @param matValueSets
+	 *            - List.
+	 * @return HSSFWorkbook
+	 * @throws Exception
+	 *             - Exception. **
+	 */
 	public final HSSFWorkbook createEMeasureXLS(final String measureId,
 			final List<String> allQDMs, final List<String> supplementalQDMS,
 			final List<MatValueSet> matValueSets) throws Exception {
@@ -297,14 +335,20 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	/**
-	 *@return HSSFWorkbook
-	 *@throws Exception - Exception.
-	 * **/
+	 * Creates the error e measure xls.
+	 * 
+	 * @return HSSFWorkbook
+	 * @throws Exception
+	 *             - Exception. *
+	 */
 	public final HSSFWorkbook createErrorEMeasureXLS() throws Exception {
 		CodeListXLSGenerator clgen = new CodeListXLSGenerator();
 		return clgen.getErrorXLS();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.SimpleEMeasureService#getEMeasureXLS(java.lang.String)
+	 */
 	@Override
 	public final ExportResult getEMeasureXLS(final String measureId) throws Exception {
 		ExportResult result = new ExportResult();
@@ -321,6 +365,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.SimpleEMeasureService#getValueSetXLS(java.lang.String)
+	 */
 	@Override
 	public final ExportResult getValueSetXLS(final String valueSetId)
 			throws Exception {
@@ -342,16 +389,23 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	/**
-	 *@param hssfwkbk - HSSFWorkbook.
-	 *@return byte[].
-	 *@throws IOException - IOException.
-	 * **/
+	 * Gets the hSSF workbook bytes.
+	 * 
+	 * @param hssfwkbk
+	 *            - HSSFWorkbook.
+	 * @return byte[].
+	 * @throws IOException
+	 *             - IOException. *
+	 */
 	private byte[] getHSSFWorkbookBytes(final HSSFWorkbook hssfwkbk)
 			throws IOException {
 		CodeListXLSGenerator clgen = new CodeListXLSGenerator();
 		return clgen.getHSSFWorkbookBytes(hssfwkbk);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.SimpleEMeasureService#getEMeasureZIP(java.lang.String)
+	 */
 	@Override
 	public final ExportResult getEMeasureZIP(final String measureId) throws Exception {
 		ExportResult result = new ExportResult();
@@ -362,11 +416,16 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	/**
-	 *@param measureId - String.
-	 * @param me - MeasureExport.
+	 * Gets the zip barr.
+	 * 
+	 * @param measureId
+	 *            - String.
+	 * @param me
+	 *            - MeasureExport.
 	 * @return byte[].
-	 * @throws Exception - Exception.
-	 * **/
+	 * @throws Exception
+	 *             - Exception. *
+	 */
 	public final byte[] getZipBarr(final String measureId, final MeasureExport me)
 			throws Exception {
 		byte[] wkbkbarr = null;
@@ -396,9 +455,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	/**
-	 *@param measureId - String.
-	 *@return MeasureExport.
-	 * **/
+	 * Gets the measure export.
+	 * 
+	 * @param measureId
+	 *            - String.
+	 * @return MeasureExport. *
+	 */
 	private MeasureExport getMeasureExport(final String measureId) {
 		MeasureExport measureExport = measureExportDAO
 				.findForMeasure(measureId);
@@ -443,7 +505,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	/**
-	 *
+	 * Convert timestamp to string.
+	 * 
 	 * @param ts
 	 *            - Time Stamp.
 	 * @return yyyymmddhhss-zzzz
@@ -463,9 +526,12 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	/**
-	 * @param i -Integer.
-	 * @return String.
-	 * **/
+	 * Gets the two digit string.
+	 * 
+	 * @param i
+	 *            -Integer.
+	 * @return String. *
+	 */
 	private String getTwoDigitString(final int i) {
 		String ret = i + "";
 		if (ret.length() == 1) {
@@ -482,6 +548,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return wkbk;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.SimpleEMeasureService#getBulkExportZIP(java.lang.String[])
+	 */
 	@Override
 	public final ExportResult getBulkExportZIP(final String[] measureIds)
 			throws Exception {
@@ -517,13 +586,21 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 
 	/**
-	 *@param measureId - String.
-	 *@param me - MeasureExport.
-	 *@param filesMap - Map.
-	 *@param seqNum - String.
-	 *@throws Exception - Exception.
-	 *
-	 * **/
+	 * Creates the files in bulk zip.
+	 * 
+	 * @param measureId
+	 *            - String.
+	 * @param me
+	 *            - MeasureExport.
+	 * @param filesMap
+	 *            - Map.
+	 * @param seqNum
+	 *            - String.
+	 * @throws Exception
+	 *             - Exception.
+	 * 
+	 *             *
+	 */
 	public final void createFilesInBulkZip(final String measureId,
 			final MeasureExport me, final Map<String, byte[]> filesMap,
 			final String seqNum) throws Exception {

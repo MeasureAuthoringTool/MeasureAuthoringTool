@@ -1,7 +1,17 @@
 package mat.server.service.impl;
 
+/**
+ * The Class DotCompare.
+ */
 public class DotCompare{
 	//TODO revisit this logic an NFE exception occurs in some test data where an oid contains "09"
+	/**
+	 * Decode helper.
+	 * 
+	 * @param n
+	 *            the n
+	 * @return the int
+	 */
 	int decodeHelper(String n){
 		if(n.length()==0)
 			return 0;
@@ -13,7 +23,16 @@ public class DotCompare{
 		}
 	}
 	
-	 public int dotNotationCompare(String a, String b){
+	 /**
+	 * Dot notation compare.
+	 * 
+	 * @param a
+	 *            the a
+	 * @param b
+	 *            the b
+	 * @return the int
+	 */
+ 	public int dotNotationCompare(String a, String b){
 		 boolean aIsNum;
 		 boolean bIsNum;
 		 

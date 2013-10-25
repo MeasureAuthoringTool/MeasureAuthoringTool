@@ -14,9 +14,17 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Query;
 import org.hibernate.classic.Session;
 
+/**
+ * The Class PackagerDAO.
+ */
 public class PackagerDAO extends GenericDAO<Packager, String> implements mat.dao.clause.PackagerDAO {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(PackagerDAO.class);
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.PackagerDAO#getForMeasure(java.lang.String)
+	 */
 	@Override
 	public List<Packager> getForMeasure(String measureId) {
 		SearchCriteria criteria = new SearchCriteria("measure.id", measureId, PropertyOperator.EQ, null);
@@ -28,6 +36,9 @@ public class PackagerDAO extends GenericDAO<Packager, String> implements mat.dao
 		return results;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.PackagerDAO#getNumberOfPackagesForMeasure(java.lang.String)
+	 */
 	@Override
 	public long getNumberOfPackagesForMeasure(String measureId) {
 		SearchCriteria criteria = new SearchCriteria("measure.id", measureId, PropertyOperator.EQ, null);
@@ -36,6 +47,9 @@ public class PackagerDAO extends GenericDAO<Packager, String> implements mat.dao
 		return results;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.PackagerDAO#deletePackage(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void deletePackage(String measureId, String sequence) {
 		logger.info("Deleting package " + sequence + " for measure " + measureId);
@@ -48,6 +62,9 @@ public class PackagerDAO extends GenericDAO<Packager, String> implements mat.dao
 
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.PackagerDAO#deleteAllPackages(java.lang.String)
+	 */
 	@Override
 	public void deleteAllPackages(String measureId) {
 		logger.info("Deleting All existing packages for measure " + measureId);

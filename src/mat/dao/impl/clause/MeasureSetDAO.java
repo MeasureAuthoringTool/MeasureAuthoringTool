@@ -12,22 +12,44 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
+/**
+ * The Class MeasureSetDAO.
+ */
 public class MeasureSetDAO extends GenericDAO<MeasureSet, String> implements mat.dao.clause.MeasureSetDAO {
 	
+	/** The lock threshold. */
 	private final long lockThreshold = 3*60*1000; //3 minutes   
 	
+	/** The d ao service. */
 	private DAOService dAOService = null;
+	
+	/** The context. */
 	private ApplicationContext context = null;
 	
+	/**
+	 * Instantiates a new measure set dao.
+	 */
 	public MeasureSetDAO () {
 		
 	}
 	
+	/**
+	 * Instantiates a new measure set dao.
+	 * 
+	 * @param dAOService
+	 *            the d ao service
+	 */
 	public MeasureSetDAO (DAOService dAOService) {
 		//allow to test using DAOService
 		this.dAOService = dAOService;
 	}
 	
+	/**
+	 * Instantiates a new measure set dao.
+	 * 
+	 * @param context
+	 *            the context
+	 */
 	public MeasureSetDAO(ApplicationContext context) {
 		this.context = context;
 	}
@@ -35,6 +57,9 @@ public class MeasureSetDAO extends GenericDAO<MeasureSet, String> implements mat
 	
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureSetDAO#saveMeasureSet(mat.model.clause.MeasureSet)
+	 */
 	public void saveMeasureSet(MeasureSet measureSet) {
 		if (dAOService!=null) {
 			//allow to test using DAOService
@@ -43,6 +68,9 @@ public class MeasureSetDAO extends GenericDAO<MeasureSet, String> implements mat
 			
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureSetDAO#findMeasureSet(java.lang.String)
+	 */
 	public MeasureSet findMeasureSet(String measureSetId) {
 		MeasureSet measureSet = null;
 		Session session = getSessionFactory().getCurrentSession();

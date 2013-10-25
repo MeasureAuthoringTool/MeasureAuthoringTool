@@ -41,9 +41,12 @@ mat.dao.clause.MeasureXMLDAO {
 	}
 
 	/**
-	 *@param measureId - {@link String}.
-	 *@return {@link MeasureXML}.
-	 * **/
+	 * Find for measure.
+	 * 
+	 * @param measureId
+	 *            - {@link String}.
+	 * @return {@link MeasureXML}. *
+	 */
 	@Override
 	public final MeasureXML findForMeasure(final String measureId) {
 		Criteria criteria = getSessionFactory().getCurrentSession()
@@ -91,10 +94,15 @@ mat.dao.clause.MeasureXMLDAO {
 	}
 
 	/**
-	 *@param measureId - {@link String}.
-	 *@param isClone - {@link Boolean}.
-	 *@param uuidMap - {@link HashMap}.
-	 *@return {@link QualityDataModelWrapper}.
+	 * Creates the supplimental qdm.
+	 * 
+	 * @param measureId
+	 *            - {@link String}.
+	 * @param isClone
+	 *            - {@link Boolean}.
+	 * @param uuidMap
+	 *            - {@link HashMap}.
+	 * @return {@link QualityDataModelWrapper}.
 	 */
 	@Override
 	public final QualityDataModelWrapper createSupplimentalQDM(final String measureId,

@@ -14,9 +14,15 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
+/**
+ * The Class QDSAttributesDAO.
+ */
 public class QDSAttributesDAO extends GenericDAO<QDSAttributes, String> implements mat.dao.clause.QDSAttributesDAO {
 
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.QDSAttributesDAO#findByDataType(java.lang.String, org.springframework.context.ApplicationContext)
+	 */
 	public List<QDSAttributes> findByDataType(String qdmname, ApplicationContext context) {
 		
 		qdmname = MatContext.get().getTextSansOid(qdmname);
@@ -33,6 +39,9 @@ public class QDSAttributesDAO extends GenericDAO<QDSAttributes, String> implemen
 		return criteria.list();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.QDSAttributesDAO#findByDataTypeName(java.lang.String, org.springframework.context.ApplicationContext)
+	 */
 	public List<QDSAttributes> findByDataTypeName(String dataTypeName, ApplicationContext context){
 		DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
 		DataType dataType = getDataTypeFromName(dataTypeName, dataTypeDAO);
@@ -48,19 +57,26 @@ public class QDSAttributesDAO extends GenericDAO<QDSAttributes, String> implemen
 		return criteria.list();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.QDSAttributesDAO#getAllDataFlowAttributeName()
+	 */
 	public List<QDSAttributes> getAllDataFlowAttributeName() {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(QDSAttributes.class);
 		criteria.add(Restrictions.eq("qDSAttributeType", "Data Flow"));
 		return criteria.list();
 	}
+	
 	/**
 	 * attributeName alone does not uniquely identify a QDSAttributes record
-	 * while attributeName and dataTypeName do
-	 * there should not be a need to search by attributeName alone 
+	 * while attributeName and dataTypeName do there should not be a need to
+	 * search by attributeName alone.
+	 * 
 	 * @param attributeName
+	 *            the attribute name
 	 * @param dataTypeName
-	 * @return
+	 *            the data type name
+	 * @return the qDS attributes
 	 */
 	@Override
 	public QDSAttributes findByNameAndDataType(String attributeName, String dataTypeName) {
@@ -92,15 +108,17 @@ public class QDSAttributesDAO extends GenericDAO<QDSAttributes, String> implemen
 	}
 	
 	/**
+	 * Gets the data type from qdm name.
 	 * 
-	 * @param qdmname could be of the form: 
-	 * <<value set name>>:<<data type>>
-	 * where <<value set name>> and <<data type>> could contain one or more ':'
-	 * so...
-	 * s(1):...:s(n-2):s(n-1):s(n):
+	 * @param qdmname
+	 *            could be of the form: <<value set name>>:<<data type>> where
+	 *            <<value set name>> and <<data type>> could contain one or more
+	 *            ':' so... s(1):...:s(n-2):s(n-1):s(n):
 	 * 
-	 * begin with s(n)
-	 * @return
+	 *            begin with s(n)
+	 * @param dataTypeDAO
+	 *            the data type dao
+	 * @return the data type from qdm name
 	 */
 	public DataType getDataTypeFromQDMName(String qdmname, DataTypeDAO dataTypeDAO){
 		String[] namePieces = qdmname.split(":");
@@ -122,6 +140,15 @@ public class QDSAttributesDAO extends GenericDAO<QDSAttributes, String> implemen
 		return dataType;
 	}
 	
+	/**
+	 * Gets the data type from name.
+	 * 
+	 * @param dataTypeName
+	 *            the data type name
+	 * @param dataTypeDAO
+	 *            the data type dao
+	 * @return the data type from name
+	 */
 	private DataType getDataTypeFromName(String dataTypeName,DataTypeDAO dataTypeDAO){
 		DataType dataType = dataTypeDAO.findByDataTypeName(dataTypeName);
 		return dataType;

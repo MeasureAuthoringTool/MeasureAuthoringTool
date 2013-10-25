@@ -9,9 +9,15 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * The Class AttributeDetailsDAO.
+ */
 public class AttributeDetailsDAO extends GenericDAO<AttributeDetails, String> implements mat.dao.clause.AttributeDetailsDAO {
 
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.AttributeDetailsDAO#findByName(java.lang.String)
+	 */
 	public AttributeDetails findByName(String attrName) {
 		
 		Session session = getSessionFactory().getCurrentSession();

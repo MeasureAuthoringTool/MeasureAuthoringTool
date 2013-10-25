@@ -8,9 +8,15 @@ import mat.model.clause.MeasureExport;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * The Class MeasureExportDAO.
+ */
 public class MeasureExportDAO extends GenericDAO<MeasureExport, String> 
 	implements mat.dao.clause.MeasureExportDAO {
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureExportDAO#findForMeasure(java.lang.String)
+	 */
 	@Override
 	public MeasureExport findForMeasure(String measureId) {
 		Criteria criteria = getSessionFactory().getCurrentSession().createCriteria(MeasureExport.class);

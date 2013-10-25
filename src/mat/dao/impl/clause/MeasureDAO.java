@@ -40,27 +40,63 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
+/**
+ * The Class MeasureDAO.
+ */
 public class MeasureDAO extends GenericDAO<Measure, String> implements
 		mat.dao.clause.MeasureDAO {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(MeasureDAO.class);
+	
+	/** The lock threshold. */
 	private final long lockThreshold = 3 * 60 * 1000; // 3 minutes
 
+	/** The d ao service. */
 	private DAOService dAOService = null;
+	
+	/** The context. */
 	private ApplicationContext context = null;
 
+	/**
+	 * Instantiates a new measure dao.
+	 */
 	public MeasureDAO() {
 
 	}
 
+	/**
+	 * Instantiates a new measure dao.
+	 * 
+	 * @param dAOService
+	 *            the d ao service
+	 */
 	public MeasureDAO(DAOService dAOService) {
 		// allow to test using DAOService
 		this.dAOService = dAOService;
 	}
 
+	/**
+	 * Instantiates a new measure dao.
+	 * 
+	 * @param context
+	 *            the context
+	 */
 	public MeasureDAO(ApplicationContext context) {
 		this.context = context;
 	}
 
+	/**
+	 * Cloner.
+	 * 
+	 * @param currentDetails
+	 *            the current details
+	 * @param context
+	 *            the context
+	 * @param m
+	 *            the m
+	 * @return the measure
+	 */
 	private Measure cloner(ManageMeasureDetailModel currentDetails,
 			ApplicationContext context, Measure m) {
 
@@ -90,6 +126,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return cloned;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#saveMeasure(mat.model.clause.Measure)
+	 */
 	public void saveMeasure(Measure measure) {
 		if (dAOService != null) {
 			// allow to test using DAOService
@@ -100,6 +139,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#countUsersForMeasureShare()
+	 */
 	@Override
 	public int countUsersForMeasureShare() {
 		Criteria criteria = getSessionFactory().getCurrentSession()
@@ -113,6 +155,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 	/**
 	 * This method returns a List of MeasureShareDTO objects which have
 	 * userId,firstname,lastname and sharelevel for the given measureId.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @param startIndex
+	 *            the start index
+	 * @param pageSize
+	 *            the page size
+	 * @return the measure share info for measure
 	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForMeasure(
@@ -160,6 +210,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 			return orderedDTOList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#getMeasureShareForMeasure(java.lang.String)
+	 */
 	@Override
 	public List<MeasureShare> getMeasureShareForMeasure(String measureId) {
 		List<MeasureShare> measureShare = new ArrayList<MeasureShare>();
@@ -172,6 +225,13 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return measureShare;
 	}
 
+	/**
+	 * Builds the measure share for user criteria.
+	 * 
+	 * @param user
+	 *            the user
+	 * @return the criteria
+	 */
 	private Criteria buildMeasureShareForUserCriteria(User user) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(Measure.class);
@@ -186,6 +246,15 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return mCriteria;
 	}
 
+	/**
+	 * Builds the measure share for user criteria with filter.
+	 * 
+	 * @param user
+	 *            the user
+	 * @param filter
+	 *            the filter
+	 * @return the criteria
+	 */
 	private Criteria buildMeasureShareForUserCriteriaWithFilter(User user,
 			int filter) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
@@ -202,6 +271,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return mCriteria;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#countMeasureShareInfoForUser(mat.model.User)
+	 */
 	@Override
 	public int countMeasureShareInfoForUser(User user) {
 		Criteria mCriteria = buildMeasureShareForUserCriteria(user);
@@ -211,24 +283,40 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return measureList.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#countMeasureForVersion(mat.model.User)
+	 */
 	@Override
 	public int countMeasureForVersion(User user) {
 		List<MeasureShareDTO> dtoList = getMeasuresForVersion(user);
 		return dtoList.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#countMeasureForDraft(mat.model.User)
+	 */
 	@Override
 	public int countMeasureForDraft(User user) {
 		List<MeasureShareDTO> dtoList = getMeasuresForDraft(user);
 		return dtoList.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUser(mat.model.User, int, int)
+	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUser(User user,
 			int startIndex, int pageSize) {
 		return getMeasureShareInfoForUser("", user, startIndex, pageSize);
 	}
 
+	/**
+	 * Extract dto from measure.
+	 * 
+	 * @param measure
+	 *            the measure
+	 * @return the measure share dto
+	 */
 	private MeasureShareDTO extractDTOFromMeasure(Measure measure) {
 		MeasureShareDTO dto = new MeasureShareDTO();
 
@@ -263,8 +351,10 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 	}
 
 	/**
+	 * Checks if is locked.
 	 * 
 	 * @param lockedOutDate
+	 *            the locked out date
 	 * @return false if current time - lockedOutDate < the lock threshold
 	 */
 	private boolean isLocked(Date lockedOutDate) {
@@ -282,6 +372,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return locked;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#findByOwnerId(java.lang.String)
+	 */
 	public java.util.List<Measure> findByOwnerId(String measureOwnerId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(Measure.class);
@@ -289,6 +382,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return criteria.list();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUser(java.lang.String, mat.model.User, int, int)
+	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUser(String searchText,
 			User user, int startIndex, int pageSize) {
@@ -366,6 +462,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 			return orderedDTOList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUserWithFilter(java.lang.String, mat.model.User, int, int, int)
+	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(
 			String searchText, User user, int startIndex, int pageSize,
@@ -448,6 +547,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 			return orderedDTOList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#countMeasureShareInfoForUser(java.lang.String, mat.model.User)
+	 */
 	@Override
 	public int countMeasureShareInfoForUser(String searchText, User user) {
 
@@ -469,6 +571,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return count;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#countMeasureShareInfoForUser(int, mat.model.User)
+	 */
 	@Override
 	public int countMeasureShareInfoForUser(int filter, User user) {
 		Criteria mCriteria = buildMeasureShareForUserCriteriaWithFilter(user,
@@ -510,6 +615,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#findMaxVersion(java.lang.String)
+	 */
 	public String findMaxVersion(String measureSetId) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(Measure.class);
@@ -522,6 +630,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return maxVersion;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#findMaxOfMinVersion(java.lang.String, java.lang.String)
+	 */
 	public String findMaxOfMinVersion(String measureSetId, String version) {
 		logger.info("In MeasureDao.findMaxOfMinVersion()");
 		String maxOfMinVersion = version;
@@ -589,6 +700,13 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 			return dtoList;
 	}
 
+	/**
+	 * Gets the measures for draft.
+	 * 
+	 * @param user
+	 *            the user
+	 * @return the measures for draft
+	 */
 	public List<MeasureShareDTO> getMeasuresForDraft(User user) {
 		List<MeasureShareDTO> orderedDTOList = getMeasureShareInfoForUser(user,
 				0, Integer.MAX_VALUE);
@@ -625,6 +743,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return dtoList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#getMeasuresForVersion(mat.model.User, int, int)
+	 */
 	@Override
 	public List<MeasureShareDTO> getMeasuresForVersion(User user,
 			int startIndex, int pageSize) {
@@ -636,6 +757,13 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 			return dtoList;
 	}
 
+	/**
+	 * Gets the measures for version.
+	 * 
+	 * @param user
+	 *            the user
+	 * @return the measures for version
+	 */
 	public List<MeasureShareDTO> getMeasuresForVersion(User user) {
 		List<MeasureShareDTO> orderedDTOList = getMeasureShareInfoForUser(user,
 				0, Integer.MAX_VALUE);
@@ -661,6 +789,13 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return dtoList;
 	}
 
+	/**
+	 * Sort measure list.
+	 * 
+	 * @param measureResultList
+	 *            the measure result list
+	 * @return the list
+	 */
 	private List<Measure> sortMeasureList(List<Measure> measureResultList) {
 		// generate sortable lists
 		List<List<Measure>> measureLists = new ArrayList<List<Measure>>();
@@ -704,7 +839,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 	/*
 	 * assumption: measures here are all part of the same measure set
 	 */
+	/**
+	 * The Class MeasureComparator.
+	 */
 	class MeasureComparator implements Comparator<Measure> {
+		
+		/* (non-Javadoc)
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
 		@Override
 		public int compare(Measure o1, Measure o2) {
 			// 1 if either isDraft
@@ -714,6 +856,15 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 			return ret;
 		}
 
+		/**
+		 * Compare double strings.
+		 * 
+		 * @param s1
+		 *            the s1
+		 * @param s2
+		 *            the s2
+		 * @return the int
+		 */
 		private int compareDoubleStrings(String s1, String s2) {
 			Double d1 = Double.parseDouble(s1);
 			Double d2 = Double.parseDouble(s2);
@@ -724,7 +875,14 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 	/*
 	 * assumption: each measure in this list is part of the same measure set
 	 */
+	/**
+	 * The Class MeasureListComparator.
+	 */
 	class MeasureListComparator implements Comparator<List<Measure>> {
+		
+		/* (non-Javadoc)
+		 * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+		 */
 		@Override
 		public int compare(List<Measure> o1, List<Measure> o2) {
 			String v1 = o1.get(0).getDescription();
@@ -735,10 +893,11 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 
 	/**
 	 * for all measure sets referenced in measures in ms, return all measures
-	 * that are members of the set
+	 * that are members of the set.
 	 * 
 	 * @param ms
-	 * @return
+	 *            the ms
+	 * @return the all measures in set
 	 */
 	@Override
 	public List<Measure> getAllMeasuresInSet(List<Measure> ms) {
@@ -756,6 +915,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return sortMeasureList(ms);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#isMeasureLocked(java.lang.String)
+	 */
 	@Override
 	public boolean isMeasureLocked(String measureId) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -772,6 +934,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		return locked;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#getMaxEMeasureId()
+	 */
 	@Override
 	public int getMaxEMeasureId() {
 		Session session = getSessionFactory().getCurrentSession();
@@ -786,6 +951,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#saveandReturnMaxEMeasureId(mat.model.clause.Measure)
+	 */
 	@Override
 	public int saveandReturnMaxEMeasureId(Measure measure) {
 		int eMeasureId = getMaxEMeasureId() + 1;
@@ -800,6 +968,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#updatePrivateColumnInMeasure(java.lang.String, boolean)
+	 */
 	@Override
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate) {
 		Session session = getSessionFactory().openSession();
@@ -818,6 +989,9 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUserWithFilter(java.lang.String, int, int, int)
+	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(
 			String searchText, int startIndex, int pageSize, int filter) {
@@ -893,10 +1067,15 @@ public class MeasureDAO extends GenericDAO<Measure, String> implements
 	}
 
 	/**
+	 * Search results for measure.
+	 * 
 	 * @param searchTextLC
+	 *            the search text lc
 	 * @param stringUtility
+	 *            the string utility
 	 * @param measure
-	 * @return
+	 *            the measure
+	 * @return true, if successful
 	 */
 	private boolean searchResultsForMeasure(String searchTextLC,
 			StringUtility stringUtility, Measure measure) {

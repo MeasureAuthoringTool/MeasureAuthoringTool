@@ -14,9 +14,17 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * The Class OperatorDAO.
+ */
 public class OperatorDAO extends GenericDAO<Operator, String> implements mat.dao.clause.OperatorDAO{
+
+/** The Constant logger. */
 private static final Log logger = LogFactory.getLog(OperatorDAO.class);
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.OperatorDAO#getLogicalOperators()
+	 */
 	public List<OperatorDTO> getLogicalOperators(){
 		List<OperatorDTO> OperatorDTOList = new ArrayList<OperatorDTO>();
 		logger.info("Getting all the Logical Operators from the Operator table");
@@ -37,6 +45,9 @@ private static final Log logger = LogFactory.getLog(OperatorDAO.class);
 		return OperatorDTOList;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.OperatorDAO#getRelTimingperators()
+	 */
 	public List<OperatorDTO> getRelTimingperators(){
 		List<OperatorDTO> OperatorDTOList = new ArrayList<OperatorDTO>();
 		logger.info("Getting all Relative Timing Operators from the Operator table");
@@ -57,6 +68,9 @@ private static final Log logger = LogFactory.getLog(OperatorDAO.class);
 		return OperatorDTOList;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.OperatorDAO#getRelAssociationsOperators()
+	 */
 	public List<OperatorDTO> getRelAssociationsOperators(){
 		List<OperatorDTO> OperatorDTOList = new ArrayList<OperatorDTO>();
 		logger.info("Getting all Relative Associations Operators from the Operator table");
@@ -77,6 +91,9 @@ private static final Log logger = LogFactory.getLog(OperatorDAO.class);
 		return OperatorDTOList;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.OperatorDAO#getAllOperators()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<OperatorDTO> getAllOperators() {

@@ -1,7 +1,17 @@
 package mat.dao.impl.clause;
 
+/**
+ * The Class NumericSuffix.
+ */
 public class NumericSuffix {
 
+	/**
+	 * Decode helper.
+	 * 
+	 * @param n
+	 *            the n
+	 * @return the int
+	 */
 	private int decodeHelper(String n){
 		if(n.length()==0)
 			return 0;
@@ -13,6 +23,14 @@ public class NumericSuffix {
 			return 0;
 		}
 	}
+	
+	/**
+	 * Split suffix.
+	 * 
+	 * @param s
+	 *            the s
+	 * @return the string[]
+	 */
 	private String[] splitSuffix(String s){	
 		String[] sArr = s.split("[0-9]+$");
 		String s1 = "";
@@ -26,6 +44,16 @@ public class NumericSuffix {
 		ret[1]=s2;
 		return ret;
 	}
+	
+	/**
+	 * Compare.
+	 * 
+	 * @param a
+	 *            the a
+	 * @param b
+	 *            the b
+	 * @return the int
+	 */
 	public int compare(String a, String b){
 		String[] aSplit = splitSuffix(a.trim());
 		String[] bSplit = splitSuffix(b.trim());

@@ -2,8 +2,14 @@ package mat.server.model;
 
 import org.exolab.castor.mapping.GeneralizedFieldHandler;
 
+/**
+ * The Class MeasureDetailsHandler.
+ */
 public class MeasureDetailsHandler extends GeneralizedFieldHandler{
 
+	/* (non-Javadoc)
+	 * @see org.exolab.castor.mapping.GeneralizedFieldHandler#convertUponGet(java.lang.Object)
+	 */
 	@Override
 	public Object convertUponGet(Object value) {
 		if(value instanceof Integer){
@@ -16,12 +22,18 @@ public class MeasureDetailsHandler extends GeneralizedFieldHandler{
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.exolab.castor.mapping.GeneralizedFieldHandler#convertUponSet(java.lang.Object)
+	 */
 	@Override
 	public Object convertUponSet(Object arg0) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.exolab.castor.mapping.GeneralizedFieldHandler#getFieldType()
+	 */
 	@Override
 	public Class getFieldType() {
 		// TODO Auto-generated method stub

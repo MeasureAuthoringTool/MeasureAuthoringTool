@@ -60,8 +60,8 @@ public class OrganizationAutoComplete extends Composite implements HasValue<Stri
 
 	@Override
 	public void setValue(String value, boolean fireEvents) {
-		for(NameValuePair nvp : myOracle.getOrganizationValues()) {
-			if(nvp.getName().equals(value)) {
+		for (NameValuePair nvp : myOracle.getOrganizationValues()) {
+			if (nvp.getName().equals(value)) {
 				this.value = nvp.getName();
 				sBox.setValue(nvp.getValue());
 			}

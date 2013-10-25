@@ -17,7 +17,7 @@ public class OrganizationSuggestOracle extends SuggestOracle {
 		final int limit = request.getLimit();
 		final String query = request.getQuery();
 
-		Collection<SuggestOracle.Suggestion> suggestions = 
+		Collection<SuggestOracle.Suggestion> suggestions =
 			new ArrayList<SuggestOracle.Suggestion>();
 		for (int i = 0; i < options.size() && suggestions.size() < limit; i++) {
 			if (options.get(i).getValue().toUpperCase().startsWith(query.toUpperCase())) {

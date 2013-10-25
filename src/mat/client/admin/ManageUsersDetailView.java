@@ -31,9 +31,9 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ManageUsersDetailView 
+public class ManageUsersDetailView
 	implements ManageUsersPresenter.DetailDisplay {
-	
+
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 
 	private SimplePanel mainPanel = new SimplePanel();
@@ -169,7 +169,7 @@ public class ManageUsersDetailView
 		fPanel.add(buttonPanel);
 		mainPanel.add(fPanel);
 		containerPanel.setContent(mainPanel);
-		//containerPanel.setEmbeddedLink("Manage Users");		
+		//containerPanel.setEmbeddedLink("Manage Users");
 		title.setWidth("196px");
 		organization.setWidth("196px");
 		oid.setWidth("196px");

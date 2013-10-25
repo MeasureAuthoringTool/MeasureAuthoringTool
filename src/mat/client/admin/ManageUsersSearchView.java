@@ -80,7 +80,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	public void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results) {
 		view.buildDataTable(results);
 	}
-	@Override 
+	@Override
 	public int getPageSize() {
 		return view.getPageSize();
 	}

@@ -1,8 +1,8 @@
 /**
  * All the methods of this interface are to be called by a user with an 'Administrator' role.
- * The actual implementation of this interface on the server side should make sure to 
+ * The actual implementation of this interface on the server side should make sure to
  * check the session and verify that the current logged in user has an Administrator role.
- * If not, then we throw a InCorrectUserRoleException. 
+ * If not, then we throw a InCorrectUserRoleException.
  */
 package mat.client.admin.service;
 

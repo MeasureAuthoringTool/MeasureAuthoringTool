@@ -54,7 +54,7 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 			return loginId;
 		}
 	}
-	
+
 	private static String[] headers = new String[] {"Name", "Organization"};
 	private static String[] widths = new String[] {"50%", "50%"};
 

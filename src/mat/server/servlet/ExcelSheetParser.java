@@ -17,10 +17,24 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 
+/**
+ * The Class ExcelSheetParser.
+ */
 public class ExcelSheetParser {
 	
 	
 	
+	/**
+	 * Read excel.
+	 * 
+	 * @param fileInputStream
+	 *            the file input stream
+	 * @param fileName
+	 *            the file name
+	 * @return the hash set
+	 * @throws ExcelParsingException
+	 *             the excel parsing exception
+	 */
 	public HashSet<Code> readExcel(InputStream fileInputStream,String fileName) throws ExcelParsingException{
 		Workbook workbook = null;
 		Sheet s = null;

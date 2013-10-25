@@ -30,11 +30,20 @@ import com.oreilly.servlet.MultipartRequest;
 
 
 
+/**
+ * The Class FileUploadServlet.
+ */
 public class FileUploadServlet extends HttpServlet{
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
+	
+	/** The context. */
 	protected ApplicationContext context;
 
+	/* (non-Javadoc)
+	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
+	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {   
 		context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 		response.setContentType("text/html");
@@ -68,6 +77,18 @@ public class FileUploadServlet extends HttpServlet{
 	}
 
 
+	/**
+	 * Send file to parser.
+	 * 
+	 * @param fis
+	 *            the fis
+	 * @param codeListID
+	 *            the code list id
+	 * @param out
+	 *            the out
+	 * @param fileName
+	 *            the file name
+	 */
 	public void  sendFileToParser(FileInputStream fis,String codeListID,PrintWriter out,String fileName){
 		ExcelSheetParser xlParser = new ExcelSheetParser();
 		HashSet<Code> setofCodes = null;
@@ -117,6 +138,11 @@ public class FileUploadServlet extends HttpServlet{
 		
 	}
 
+	/**
+	 * Gets the code list service.
+	 * 
+	 * @return the code list service
+	 */
 	public CodeListService getCodeListService() {
 		return (CodeListService)context.getBean("codeListService");
 	}

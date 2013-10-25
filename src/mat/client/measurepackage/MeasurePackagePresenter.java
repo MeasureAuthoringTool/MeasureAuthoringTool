@@ -31,50 +31,245 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class MeasurePackagePresenter.
+ */
 public class MeasurePackagePresenter implements MatPresenter {
+	
+	/** The empty panel. */
 	private SimplePanel emptyPanel = new SimplePanel();
+	
+	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
 
+	/**
+	 * The Interface MeasurePackageSelectionHandler.
+	 */
 	public static interface MeasurePackageSelectionHandler {
+		
+		/**
+		 * On selection.
+		 * 
+		 * @param detail
+		 *            the detail
+		 */
 		public void onSelection(MeasurePackageDetail detail);
 	}
 
+	/** The vsacapi service async. */
 	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
 			.getVsacapiServiceAsync();
 
+	/**
+	 * The Interface View.
+	 */
 	public static interface View {
+		
+		/**
+		 * Sets the clauses.
+		 * 
+		 * @param clauses
+		 *            the new clauses
+		 */
 		void setClauses(List<MeasurePackageClauseDetail> clauses);
+		
+		/**
+		 * Sets the clauses in package.
+		 * 
+		 * @param list
+		 *            the new clauses in package
+		 */
 		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
+		
+		/**
+		 * Gets the clauses in package.
+		 * 
+		 * @return the clauses in package
+		 */
 		List<MeasurePackageClauseDetail> getClausesInPackage();
+		
+		/**
+		 * Sets the package name.
+		 * 
+		 * @param name
+		 *            the new package name
+		 */
 		void setPackageName(String name);
+		
+		/**
+		 * Gets the adds the clauses to package button.
+		 * 
+		 * @return the adds the clauses to package button
+		 */
 		HasClickHandlers getAddClausesToPackageButton();
+		
+		/**
+		 * Gets the creates the new button.
+		 * 
+		 * @return the creates the new button
+		 */
 		HasClickHandlers getCreateNewButton();
+		
+		/**
+		 * Sets the measure packages.
+		 * 
+		 * @param packages
+		 *            the new measure packages
+		 */
 		void setMeasurePackages(List<MeasurePackageDetail> packages);
+		
+		/**
+		 * Gets the package measure button.
+		 * 
+		 * @return the package measure button
+		 */
 		HasClickHandlers getPackageMeasureButton();
+		
+		/**
+		 * Gets the package error message display.
+		 * 
+		 * @return the package error message display
+		 */
 		ErrorMessageDisplayInterface getPackageErrorMessageDisplay();
+		
+		/**
+		 * Gets the measure error message display.
+		 * 
+		 * @return the measure error message display
+		 */
 		ErrorMessageDisplayInterface getMeasureErrorMessageDisplay();
+		
+		/**
+		 * Gets the package success message display.
+		 * 
+		 * @return the package success message display
+		 */
 		SuccessMessageDisplayInterface getPackageSuccessMessageDisplay();
+		
+		/**
+		 * Gets the supp data success message display.
+		 * 
+		 * @return the supp data success message display
+		 */
 		SuccessMessageDisplayInterface getSuppDataSuccessMessageDisplay();
+		
+		/**
+		 * Gets the measure package success msg.
+		 * 
+		 * @return the measure package success msg
+		 */
 		SuccessMessageDisplayInterface getMeasurePackageSuccessMsg();
+		
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
 		Widget asWidget();
+		
+		/**
+		 * Sets the selection handler.
+		 * 
+		 * @param handler
+		 *            the new selection handler
+		 */
 		void setSelectionHandler(MeasurePackageSelectionHandler handler);
+		
+		/**
+		 * Sets the deletion handler.
+		 * 
+		 * @param handler
+		 *            the new deletion handler
+		 */
 		void setDeletionHandler(MeasurePackageSelectionHandler handler);
+		
+		/**
+		 * Sets the view is editable.
+		 * 
+		 * @param b
+		 *            the b
+		 * @param packages
+		 *            the packages
+		 */
 		void setViewIsEditable(boolean b,
 				List<MeasurePackageDetail> packages);
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return the error message display
+		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
+		/**
+		 * Sets the qDM elements in supp elements.
+		 * 
+		 * @param list
+		 *            the new qDM elements in supp elements
+		 */
 		void setQDMElementsInSuppElements(List<QualityDataSetDTO> list);
+		
+		/**
+		 * Sets the qDM elements.
+		 * 
+		 * @param clauses
+		 *            the new qDM elements
+		 */
 		void setQDMElements(List<QualityDataSetDTO> clauses);
+		
+		/**
+		 * Gets the qDM elements in supp elements.
+		 * 
+		 * @return the qDM elements in supp elements
+		 */
 		List<QualityDataSetDTO> getQDMElementsInSuppElements();
+		
+		/**
+		 * Gets the qDM elements.
+		 * 
+		 * @return the qDM elements
+		 */
 		List<QualityDataSetDTO> getQDMElements();
+		
+		/**
+		 * Gets the adds the qdm elements to measure button.
+		 * 
+		 * @return the adds the qdm elements to measure button
+		 */
 		HasClickHandlers getAddQDMElementsToMeasureButton();
+		
+		/**
+		 * Gets the qDM error message display.
+		 * 
+		 * @return the qDM error message display
+		 */
 		ErrorMessageDisplayInterface getQDMErrorMessageDisplay();
+		
+		/**
+		 * Gets the measure package warning msg.
+		 * 
+		 * @return the measure package warning msg
+		 */
 		WarningMessageDisplay getMeasurePackageWarningMsg();
+		
+		/**
+		 * Gets the include vsac data.
+		 * 
+		 * @return the include vsac data
+		 */
 		CustomCheckBox getIncludeVSACData();
 	}
 
+	/** The view. */
 	private View view;
+	
+	/** The current detail. */
 	private MeasurePackageDetail currentDetail;
+	
+	/** The model. */
 	private ManageMeasureDetailModel model;
+	
+	/** The overview. */
 	private MeasurePackageOverview overview;
 
 	/**
@@ -332,6 +527,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getMeasurePackageWarningMsg().clear();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		Mat.hideLoadingMessage();
@@ -348,13 +546,19 @@ public class MeasurePackagePresenter implements MatPresenter {
 		Mat.focusSkipLists("MeasureComposer");
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 
 	}
 
 	/**
-	 * @param measurePackageId - String.
+	 * Sets the measure package.
+	 * 
+	 * @param measurePackageId
+	 *            - String.
 	 */
 	private void setMeasurePackage(final String measurePackageId) {
 		for (MeasurePackageDetail detail : overview.getPackages()) {
@@ -606,7 +810,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	/**
 	 * get Measure Package Overview.
-	 * @param measureId - String.
+	 * 
+	 * @param measureId
+	 *            - String.
+	 * @return the measure package overview
 	 */
 	private void getMeasurePackageOverview(final String measureId) {
 		MatContext
@@ -660,7 +867,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 	/**
 	 * get Measure.
-	 * @param measureId - String.
+	 * 
+	 * @param measureId
+	 *            - String.
+	 * @return the measure
 	 */
 	private void getMeasure(final String measureId) {
 		MatContext

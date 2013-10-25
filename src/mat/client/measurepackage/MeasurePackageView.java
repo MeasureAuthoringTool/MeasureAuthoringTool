@@ -40,56 +40,137 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 
+/**
+ * The Class MeasurePackageView.
+ */
 public class MeasurePackageView implements MeasurePackagePresenter.View {
 
+	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The qdm error messages. */
 	private ErrorMessageDisplay qdmErrorMessages = new ErrorMessageDisplay();
+	
+	/** The measure error messages. */
 	private ErrorMessageDisplay measureErrorMessages = new ErrorMessageDisplay();
+	
+	/** The package success messages. */
 	private SuccessMessageDisplay packageSuccessMessages = new SuccessMessageDisplay();
+	
+	/** The supp data success messages. */
 	private SuccessMessageDisplay suppDataSuccessMessages = new SuccessMessageDisplay();
+	
+	/** The measure package success msg. */
 	private SuccessMessageDisplay measurePackageSuccessMsg = new SuccessMessageDisplay();
+	
+	/** The measure package warning msg. */
 	private WarningMessageDisplay measurePackageWarningMsg = new WarningMessageDisplay();
+	
+	/** The content. */
 	private FlowPanel content = new FlowPanel();
+	
+	/** The package name. */
 	private Label packageName = new Label();
+	
+	/** The clauses list box. */
 	private ListBox clausesListBox = new ListBox();
+	
+	/** The packaged clauses list box. */
 	private ListBox packagedClausesListBox = new ListBox();
+	
+	/** The add clauses to package. */
 	private PrimaryButton addClausesToPackage = new PrimaryButton("Save Grouping","primaryButton");
+	
+	/** The packages table. */
 	private Grid packagesTable = new Grid508();
+	
+	/** The package measure. */
 	private PrimaryButton packageMeasure = new PrimaryButton("Create Measure Package","primaryButton");
+	
+	/** The create new. */
 	private PrimaryButton createNew = new PrimaryButton("Create New Grouping");
 
+	/** The add clause right. */
 	private FocusPanel addClauseRight = buildAddButton(ImageResources.INSTANCE.addRight());
+	
+	/** The add clause left. */
 	private FocusPanel addClauseLeft = buildAddButton(ImageResources.INSTANCE.addLeft());
+	
+	/** The add all clause right. */
 	private FocusPanel addAllClauseRight = buildDoubleAddButton(ImageResources.INSTANCE.addAllRight());
+	
+	/** The add all clause left. */
 	private FocusPanel addAllClauseLeft = buildDoubleAddButton(ImageResources.INSTANCE.addAllLeft());
+	
+	/** The add qdm right. */
 	private FocusPanel addQDMRight = buildAddButton(ImageResources.INSTANCE.addRight());
+	
+	/** The add qdm left. */
 	private FocusPanel addQDMLeft = buildAddButton(ImageResources.INSTANCE.addLeft());
+	
+	/** The add all qdm right. */
 	private FocusPanel addAllQDMRight = buildDoubleAddButton(ImageResources.INSTANCE.addAllRight());
+	
+	/** The add all qdm left. */
 	private FocusPanel addAllQDMLeft = buildDoubleAddButton(ImageResources.INSTANCE.addAllLeft());
+	
+	/** The add clause button panel. */
 	private Widget addClauseButtonPanel = buildClauseAddButtonWidget(); 
+	
+	/** The edit handler. */
 	private MeasurePackageSelectionHandler editHandler;
+	
+	/** The delete handler. */
 	private MeasurePackageSelectionHandler deleteHandler;
+	
+	/** The clause id map. */
 	private Map<String, MeasurePackageClauseDetail> clauseIdMap = new HashMap<String,MeasurePackageClauseDetail>();
 
+	/** The clauses panel. */
 	private FlowPanel clausesPanel = new FlowPanel();
+	
+	/** The packaged panel. */
 	private FlowPanel packagedPanel = new FlowPanel();
+	
+	/** The view or edit label. */
 	private Label viewOrEditLabel = new Label();
 
 	//MatTabLayoutPanel packageTabPanel;
+	/** The qdm elements list box. */
 	private ListBox qdmElementsListBox = new ListBox();
+	
+	/** The supp elements list box. */
 	private ListBox suppElementsListBox = new ListBox();
+	
+	/** The qdm element id map. */
 	private Map<String, QualityDataSetDTO> qdmElementIdMap = new HashMap<String,QualityDataSetDTO>();
+	
+	/** The add qdm element button panel. */
 	private Widget addQDMElementButtonPanel = buildQDMElementAddButtonWidget();
+	
+	/** The qdm elements panel. */
 	private FlowPanel qdmElementsPanel = new FlowPanel();
+	
+	/** The supp elements panel. */
 	private FlowPanel suppElementsPanel = new FlowPanel();
+	
+	/** The add qdm elements to measure. */
 	private PrimaryButton addQDMElementsToMeasure = new PrimaryButton("Save Supplemental Data Elements","primaryButton");
+	
+	/** The qdm tab name. */
 	private Label qdmTabName = new Label("Supplemental Data Elements");
+	
+	/** The list visible count. */
 	private int listVisibleCount=10;
 	//int currentPackageTab = 1;
 
+	/** The include vsac data. */
 	private CustomCheckBox includeVSACData = new CustomCheckBox("Select 'Include VSAC value set data' to create "
 			+ "a measure package with VSAC data.", "Include VSAC value set data", true);
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#setViewIsEditable(boolean, java.util.List)
+	 */
 	@Override
 	public final void setViewIsEditable(final boolean b, final List<MeasurePackageDetail> packages) {
 		/*MatContext.get().setVisible(addToPackage,b);
@@ -121,6 +202,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 
 	}
 
+	/**
+	 * Instantiates a new measure package view.
+	 */
 	public MeasurePackageView() {
 		//packageTabPanel = new MatTabLayoutPanel(false);
 		addClauseLeftRightClickHandlers();
@@ -162,6 +246,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		content.setStyleName("contentPanel");
 	}
 
+	/**
+	 * Adds the clause left right click handlers.
+	 */
 	private void addClauseLeftRightClickHandlers() {
 
 		addClauseRight.addClickHandler(new ClickHandler() {
@@ -191,6 +278,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	}
 
 	// QDM elements
+	/**
+	 * Adds the qdm element left right click handlers.
+	 */
 	private void addQDMElementLeftRightClickHandlers() {
 
 		addQDMRight.addClickHandler(new ClickHandler() {
@@ -219,6 +309,11 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		});
 	}
 
+	/**
+	 * Builds the clause left right panel.
+	 * 
+	 * @return the panel
+	 */
 	private Panel buildClauseLeftRightPanel() {
 		FlowPanel topContainer = new FlowPanel();
 		packageName.addStyleName("bold");
@@ -255,6 +350,11 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	}
 
 	// QDM elements
+	/**
+	 * Builds the qdm element left right panel.
+	 * 
+	 * @return the panel
+	 */
 	private Panel buildQDMElementLeftRightPanel() {
 		FlowPanel qdmTopContainer = new FlowPanel();
 		qdmTabName.addStyleName("bold");
@@ -290,6 +390,13 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		return qdmTopContainer;
 	}
 
+	/**
+	 * Builds the add button.
+	 * 
+	 * @param imageUrl
+	 *            the image url
+	 * @return the focus panel
+	 */
 	private FocusPanel buildAddButton(ImageResource imageUrl) {
 		FocusPanel fPanel = new FocusPanel();
 		fPanel.add(new Image(imageUrl));
@@ -298,6 +405,13 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		return fPanel;
 	}
 
+	/**
+	 * Builds the double add button.
+	 * 
+	 * @param imageUrl
+	 *            the image url
+	 * @return the focus panel
+	 */
 	private FocusPanel buildDoubleAddButton(ImageResource imageUrl) {
 		FocusPanel focusPanel = new FocusPanel();
 		FlowPanel fPanel = new FlowPanel();
@@ -309,6 +423,11 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		return focusPanel;
 	}
 
+	/**
+	 * Builds the clause add button widget.
+	 * 
+	 * @return the widget
+	 */
 	private Widget buildClauseAddButtonWidget() {
 		FlowPanel panel = new FlowPanel();
 		panel.setStyleName("measurePackageAddButtonPanel");
@@ -329,6 +448,11 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	}
 
 	// QDM elements
+	/**
+	 * Builds the qdm element add button widget.
+	 * 
+	 * @return the widget
+	 */
 	private Widget buildQDMElementAddButtonWidget() {
 		FlowPanel panel = new FlowPanel();
 		panel.setStyleName("measurePackageAddButtonPanel");
@@ -348,17 +472,31 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		return panel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#setClausesInPackage(java.util.List)
+	 */
 	@Override
 	public final void setClausesInPackage(final List<MeasurePackageClauseDetail> clauses) {
 		setClauseItems(packagedClausesListBox, clauses);
 	}
 
 	// QDM elements list
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#setQDMElementsInSuppElements(java.util.List)
+	 */
 	@Override
 	public final void setQDMElementsInSuppElements(final List<QualityDataSetDTO> clauses) {
 		setQDMElementsItems(suppElementsListBox, clauses);
 	}
 
+	/**
+	 * Sets the clause items.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @param valuesArg
+	 *            the values arg
+	 */
 	private void setClauseItems(final ListBox lb, final List<MeasurePackageClauseDetail> valuesArg) {
 		List<MeasurePackageClauseDetail> values = new ArrayList<MeasurePackageClauseDetail>();
 		values.addAll(valuesArg);
@@ -372,6 +510,14 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	}
 
 	// QDM elements
+	/**
+	 * Sets the qdm elements items.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @param valuesArg
+	 *            the values arg
+	 */
 	private void setQDMElementsItems(final ListBox lb, final List<QualityDataSetDTO> valuesArg) {
 		List<QualityDataSetDTO> values = new ArrayList<QualityDataSetDTO>();
 		values.addAll(valuesArg);
@@ -384,6 +530,14 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 	}
 
+	/**
+	 * Adds the clause item.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @param nvp
+	 *            the nvp
+	 */
 	private void addClauseItem(final ListBox lb, final MeasurePackageClauseDetail nvp) {
 		List<MeasurePackageClauseDetail> list = getClauseItems(lb);
 		list.add(nvp);
@@ -391,6 +545,14 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		setClauseItems(lb, list);
 	}
 
+	/**
+	 * Adds the clause items.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @param nvpList
+	 *            the nvp list
+	 */
 	private void addClauseItems(final ListBox lb, final List<MeasurePackageClauseDetail> nvpList) {
 		List<MeasurePackageClauseDetail> list = getClauseItems(lb);
 		list.addAll(nvpList);
@@ -398,6 +560,14 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	}
 
 	// QDM elements
+	/**
+	 * Adds the qdm element item.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @param nvp
+	 *            the nvp
+	 */
 	private void addQDMElementItem(final ListBox lb, final QualityDataSetDTO nvp) {
 		List<QualityDataSetDTO> list = getQDMElementsItems(lb);
 		list.add(nvp);
@@ -406,12 +576,27 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	}
 
 	// QDM elements
+	/**
+	 * Adds the qdm element items.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @param nvpList
+	 *            the nvp list
+	 */
 	private void addQDMElementItems(final ListBox lb, final List<QualityDataSetDTO> nvpList) {
 		List<QualityDataSetDTO> list = getQDMElementsItems(lb);
 		list.addAll(nvpList);
 		setQDMElementsItems(lb, list);
 	}
 
+	/**
+	 * Gets the clause selected value.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @return the clause selected value
+	 */
 	private MeasurePackageClauseDetail getClauseSelectedValue(final ListBox lb) {
 		int index = lb.getSelectedIndex();
 		MeasurePackageClauseDetail nvp = null;
@@ -422,6 +607,13 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	}
 
 	// QDM elements
+	/**
+	 * Gets the qDM element selected value.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @return the qDM element selected value
+	 */
 	private QualityDataSetDTO getQDMElementSelectedValue(final ListBox lb) {
 		int index = lb.getSelectedIndex();
 		QualityDataSetDTO nvp = null;
@@ -431,6 +623,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		return nvp;
 	}
 
+	/**
+	 * Adds the clause right.
+	 */
 	private void addClauseRight() {
 		MeasurePackageClauseDetail nvp = getClauseSelectedValue(clausesListBox);
 		if (nvp != null) {
@@ -439,6 +634,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 	}
 
+	/**
+	 * Adds the clause left.
+	 */
 	private void addClauseLeft() {
 		MeasurePackageClauseDetail nvp = getClauseSelectedValue(packagedClausesListBox);
 		if (nvp != null) {
@@ -447,17 +645,26 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 	}
 
+	/**
+	 * Adds the all clauses right.
+	 */
 	private void addAllClausesRight() {
 		addClauseItems(packagedClausesListBox, getClauseItems(clausesListBox));
 		clausesListBox.clear();
 	}
 
+	/**
+	 * Adds the all clauses left.
+	 */
 	private void addAllClausesLeft() {
 		addClauseItems(clausesListBox, getClauseItems(packagedClausesListBox));
 		packagedClausesListBox.clear();
 	}
 
 	// QDM elements
+	/**
+	 * Adds the qdm element right.
+	 */
 	private void addQDMElementRight() {
 		QualityDataSetDTO nvp = getQDMElementSelectedValue(qdmElementsListBox);
 		if (nvp != null) {
@@ -466,6 +673,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 	}
 
+	/**
+	 * Adds the qdm element left.
+	 */
 	private void addQDMElementLeft() {
 		QualityDataSetDTO nvp = getQDMElementSelectedValue(suppElementsListBox);
 		if (nvp != null) {
@@ -474,27 +684,46 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 	}
 
+	/**
+	 * Adds the all qdm elements right.
+	 */
 	private void addAllQDMElementsRight() {
 		addQDMElementItems(suppElementsListBox, getQDMElementsItems(qdmElementsListBox));
 		qdmElementsListBox.clear();
 	}
 
+	/**
+	 * Adds the all qdm elements left.
+	 */
 	private void addAllQDMElementsLeft() {
 		addQDMElementItems(qdmElementsListBox, getQDMElementsItems(suppElementsListBox));
 		suppElementsListBox.clear();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#setClauses(java.util.List)
+	 */
 	@Override
 	public final void setClauses(final List<MeasurePackageClauseDetail> clauses) {
 		setClauseItems(clausesListBox, clauses);
 	}
 
 	// QDM elements
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#setQDMElements(java.util.List)
+	 */
 	@Override
 	public final void setQDMElements(final List<QualityDataSetDTO> clauses) {
 		setQDMElementsItems(qdmElementsListBox, clauses);
 	}
 
+	/**
+	 * Gets the clause items.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @return the clause items
+	 */
 	private List<MeasurePackageClauseDetail> getClauseItems(final ListBox lb) {
 		List<MeasurePackageClauseDetail> list = new ArrayList<MeasurePackageClauseDetail>();
 		for (int i = 0; i < lb.getItemCount(); i++) {
@@ -504,6 +733,14 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		return list;
 	}
 
+	/**
+	 * Removes the clause item.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @param nvp
+	 *            the nvp
+	 */
 	private void removeClauseItem(final ListBox lb, final MeasurePackageClauseDetail nvp) {
 		for (int i = 0; i < lb.getItemCount(); i++) {
 			if (lb.getValue(i).equals(nvp.getId())) {
@@ -514,6 +751,13 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	}
 
 	// QDM elements
+	/**
+	 * Gets the qDM elements items.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @return the qDM elements items
+	 */
 	private List<QualityDataSetDTO> getQDMElementsItems(final ListBox lb) {
 		List<QualityDataSetDTO> list = new ArrayList<QualityDataSetDTO>();
 		for (int i = 0; i < lb.getItemCount(); i++) {
@@ -524,6 +768,14 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 	}
 
 	// QDM elements
+	/**
+	 * Removes the qdm element item.
+	 * 
+	 * @param lb
+	 *            the lb
+	 * @param nvp
+	 *            the nvp
+	 */
 	private void removeQDMElementItem(final ListBox lb, final QualityDataSetDTO nvp) {
 		for (int i = 0; i < lb.getItemCount(); i++) {
 			if (lb.getValue(i).equals(nvp.getId() + nvp.getDataType())) {
@@ -533,33 +785,54 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getClausesInPackage()
+	 */
 	@Override
 	public final List<MeasurePackageClauseDetail> getClausesInPackage() {
 		return getClauseItems(packagedClausesListBox);
 	}
 
 	// QDM elements
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getQDMElements()
+	 */
 	@Override
 	public final List<QualityDataSetDTO> getQDMElements() {
 		return getQDMElementsItems(qdmElementsListBox);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getQDMElementsInSuppElements()
+	 */
 	@Override
 	public final List<QualityDataSetDTO> getQDMElementsInSuppElements() {
 		return getQDMElementsItems(suppElementsListBox);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getAddClausesToPackageButton()
+	 */
 	@Override
 	public final HasClickHandlers getAddClausesToPackageButton() {
 		return addClausesToPackage;
 	}
 
 	// QDM elements
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getAddQDMElementsToMeasureButton()
+	 */
 	@Override
 	public final HasClickHandlers getAddQDMElementsToMeasureButton() {
 		return addQDMElementsToMeasure;
 	}
 
+	/**
+	 * Builds the table header.
+	 * 
+	 * @param table
+	 *            the table
+	 */
 	private void buildTableHeader(final Grid table) {
 		table.getRowFormatter().addStyleName(0, "header");
 		table.setText(0, 0, "Measure Grouping");
@@ -567,6 +840,9 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		table.setText(0, 2, "Delete");
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#setMeasurePackages(java.util.List)
+	 */
 	@Override
 	public final void setMeasurePackages(final List<MeasurePackageDetail> packages) {
 		int columnSize = 3;
@@ -616,6 +892,13 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		}
 	}
 
+	/**
+	 * Creates the image holder.
+	 * 
+	 * @param image
+	 *            the image
+	 * @return the panel
+	 */
 	private Panel createImageHolder(final CustomButton image) {
 		image.setStylePrimaryName("invisibleButtonText");
 		SimplePanel holder = new SimplePanel();
@@ -624,74 +907,120 @@ public class MeasurePackageView implements MeasurePackagePresenter.View {
 		return holder;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getPackageMeasureButton()
+	 */
 	@Override
 	public final HasClickHandlers getPackageMeasureButton() {
 		return packageMeasure;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#asWidget()
+	 */
 	@Override
 	public final Widget asWidget() {
 		return content;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getPackageErrorMessageDisplay()
+	 */
 	@Override
 	public final ErrorMessageDisplayInterface getPackageErrorMessageDisplay() {
 		return errorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getQDMErrorMessageDisplay()
+	 */
 	@Override
 	public final ErrorMessageDisplayInterface getQDMErrorMessageDisplay() {
 		return qdmErrorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getCreateNewButton()
+	 */
 	@Override
 	public final HasClickHandlers getCreateNewButton() {
 		return createNew;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#setPackageName(java.lang.String)
+	 */
 	@Override
 	public final void setPackageName(final String name) {
 		packageName.setText(name);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#setSelectionHandler(mat.client.measurepackage.MeasurePackagePresenter.MeasurePackageSelectionHandler)
+	 */
 	@Override
 	public final void setSelectionHandler(final MeasurePackageSelectionHandler handler) {
 		this.editHandler = handler;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#setDeletionHandler(mat.client.measurepackage.MeasurePackagePresenter.MeasurePackageSelectionHandler)
+	 */
 	@Override
 	public final void setDeletionHandler(final MeasurePackageSelectionHandler handler) {
 		this.deleteHandler = handler;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getPackageSuccessMessageDisplay()
+	 */
 	@Override
 	public final SuccessMessageDisplayInterface getPackageSuccessMessageDisplay() {
 		return packageSuccessMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getSuppDataSuccessMessageDisplay()
+	 */
 	@Override
 	public final SuccessMessageDisplayInterface getSuppDataSuccessMessageDisplay() {
 		return suppDataSuccessMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getMeasureErrorMessageDisplay()
+	 */
 	@Override
 	public final ErrorMessageDisplayInterface getMeasureErrorMessageDisplay() {
 		return measureErrorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getMeasurePackageSuccessMsg()
+	 */
 	@Override
 	public final SuccessMessageDisplayInterface getMeasurePackageSuccessMsg() {
 		return measurePackageSuccessMsg;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getErrorMessageDisplay()
+	 */
 	@Override
 	public final ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return measureErrorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getMeasurePackageWarningMsg()
+	 */
 	public WarningMessageDisplay getMeasurePackageWarningMsg() {
 		return measurePackageWarningMsg;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.View#getIncludeVSACData()
+	 */
 	@Override
 	public CustomCheckBox getIncludeVSACData() {
 		return includeVSACData;

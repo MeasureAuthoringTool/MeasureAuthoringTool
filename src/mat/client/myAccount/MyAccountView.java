@@ -12,11 +12,33 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class MyAccountView.
+ */
 public class MyAccountView implements MyAccountPresenter.Display {
+	
+	/** The fp. */
 	private FlowPanel fp = new FlowPanel();
+	
+	/** The tab layout. */
 	private MatTabLayoutPanel tabLayout;
+	
+	/** The pip. */
 	private PersonalInformationPresenter pip;
+	
+	/** The my account tab. */
 	private final String MY_ACCOUNT_TAB = "accountTab";
+	
+	/**
+	 * Instantiates a new my account view.
+	 * 
+	 * @param pip
+	 *            the pip
+	 * @param sqp
+	 *            the sqp
+	 * @param cpp
+	 *            the cpp
+	 */
 	public MyAccountView(PersonalInformationPresenter pip,
 			SecurityQuestionsPresenter sqp, 
 			ChangePasswordPresenter cpp) {
@@ -48,17 +70,36 @@ public class MyAccountView implements MyAccountPresenter.Display {
 			}});
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.MyAccountPresenter.Display#beforeDisplay()
+	 */
 	public void beforeDisplay() {
 		fp.add(tabLayout);
 		pip.beforeDisplay();
 		tabLayout.selectTab(pip);
 	}
 
+	/**
+	 * The Class EnterKeyDownHandler.
+	 */
 	class EnterKeyDownHandler implements KeyDownHandler {
+		
+		/** The i. */
 		private int i = 0;
+		
+		/**
+		 * Instantiates a new enter key down handler.
+		 * 
+		 * @param index
+		 *            the index
+		 */
 		public EnterKeyDownHandler(int index){
 			i = index;
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.event.dom.client.KeyDownHandler#onKeyDown(com.google.gwt.event.dom.client.KeyDownEvent)
+		 */
 		@Override
 		public void onKeyDown(KeyDownEvent event) {
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER){
@@ -67,6 +108,9 @@ public class MyAccountView implements MyAccountPresenter.Display {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.MyAccountPresenter.Display#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		return fp;

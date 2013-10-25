@@ -25,27 +25,57 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class PersonalInformationView.
+ */
 public class PersonalInformationView implements PersonalInformationPresenter.Display {
+	
+	/** The v panel. */
 	private FlowPanel vPanel;
 	
+	/** The heading panel. */
 	private ContentWithHeadingWidget headingPanel;
+	
+	/** The name widget. */
 	private UserNameWidget nameWidget = new UserNameWidget();
 	
+	/** The title. */
 	private TextBox title = new TextBox();
+	
+	/** The email address. */
 	private TextBox emailAddress = new EmailAddressTextBox();
+	
+	/** The login id. */
 	private Label loginId = new Label();
 	
 	
+	/** The oid. */
 	private TextBox oid = new TextBox();
 	//private TextBox rootOid = new TextBox();
+	/** The organization. */
 	private TextBox organization = new TextBox();
+	
+	/** The password. */
 	private TextBox password = new TextBox();
+	
+	/** The phone widget. */
 	private PhoneNumberWidget phoneWidget = new PhoneNumberWidget();
+	
+	/** The password edit info widget. */
 	private PasswordEditInfoWidget passwordEditInfoWidget = new PasswordEditInfoWidget();
+	
+	/** The buttons. */
 	private SaveCancelButtonBar buttons = new SaveCancelButtonBar();
+	
+	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The success messages. */
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 
+	/**
+	 * Instantiates a new personal information view.
+	 */
 	public PersonalInformationView() {
 		
 		
@@ -105,11 +135,25 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getSuccessMessageDisplay()
+	 */
 	@Override
 	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
 		return successMessages;
 	}
 	
+	/**
+	 * Builds the cell.
+	 * 
+	 * @param labelStr
+	 *            the label str
+	 * @param inputField
+	 *            the input field
+	 * @param required
+	 *            the required
+	 * @return the panel
+	 */
 	private Panel buildCell(String labelStr, TextBox inputField, boolean required) {
 		VerticalPanel panel = new VerticalPanel();
 		Widget label;
@@ -125,61 +169,98 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		return panel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#asWidget()
+	 */
 	@Override
 	public Widget asWidget() {
 		return headingPanel;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getFirstName()
+	 */
 	@Override
 	public HasValue<String> getFirstName() {
 		return nameWidget.getFirstName();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getLastName()
+	 */
 	@Override
 	public HasValue<String> getLastName() {
 		return nameWidget.getLastName();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getMiddleInitial()
+	 */
 	@Override
 	public HasValue<String> getMiddleInitial() {
 		return nameWidget.getMiddleInitial();
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getTitle()
+	 */
 	@Override
 	public HasValue<String> getTitle() {
 		return title;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getEmailAddress()
+	 */
 	@Override
 	public HasValue<String> getEmailAddress() {
 		return emailAddress;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getPhoneNumber()
+	 */
 	@Override
 	public HasValue<String> getPhoneNumber() {
 		return phoneWidget.getPhoneNumber();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getSaveButton()
+	 */
 	@Override
 	public HasClickHandlers getSaveButton() {
 		return buttons.getSaveButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getCancelButton()
+	 */
 	@Override
 	public HasClickHandlers getCancelButton() {
 		return buttons.getCancelButton();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getOrganisation()
+	 */
 	@Override
 	public HasValue<String> getOrganisation() {
 		return organization;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getOID()
+	 */
 	@Override
 	public HasValue<String> getOID() {
 		return oid;
@@ -190,16 +271,25 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		return rootOid;
 	}*/
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getPassword()
+	 */
 	@Override
 	public HasValue<String> getPassword() {
 		return passwordEditInfoWidget.getPassword();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getLoginId()
+	 */
 	@Override
 	public Label getLoginId() {
 		return loginId;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getPasswordEditInfoWidget()
+	 */
 	@Override
 	public PasswordEditInfoWidget getPasswordEditInfoWidget() {
 		return passwordEditInfoWidget;

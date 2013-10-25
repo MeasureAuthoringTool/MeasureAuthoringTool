@@ -30,38 +30,185 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class SecurityQuestionsPresenter.
+ */
 public class SecurityQuestionsPresenter implements MatPresenter {
+	
+	/** The login service. */
 	LoginServiceAsync loginService = (LoginServiceAsync) MatContext.get().getLoginService();
 	
+	/**
+	 * The Interface Display.
+	 */
 	public static interface Display {
+		
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
 		Widget asWidget();
+		
+		/**
+		 * Adds the question texts.
+		 * 
+		 * @param texts
+		 *            the texts
+		 */
 		void addQuestionTexts(List<NameValuePair> texts);
+		
+		/**
+		 * Gets the question1.
+		 * 
+		 * @return the question1
+		 */
 		HasValue<String> getQuestion1();
+		
+		/**
+		 * Gets the answer1.
+		 * 
+		 * @return the answer1
+		 */
 		HasValue<String> getAnswer1();
+		
+		/**
+		 * Gets the question2.
+		 * 
+		 * @return the question2
+		 */
 		HasValue<String> getQuestion2();
+		
+		/**
+		 * Gets the answer2.
+		 * 
+		 * @return the answer2
+		 */
 		HasValue<String> getAnswer2();
+		
+		/**
+		 * Gets the question3.
+		 * 
+		 * @return the question3
+		 */
 		HasValue<String> getQuestion3();
+		
+		/**
+		 * Gets the answer3.
+		 * 
+		 * @return the answer3
+		 */
 		HasValue<String> getAnswer3();
+		
+		/**
+		 * Gets the password.
+		 * 
+		 * @return the password
+		 */
 		HasValue<String> getPassword();
+		
+		/**
+		 * Gets the save button.
+		 * 
+		 * @return the save button
+		 */
 		HasClickHandlers getSaveButton();
+		
+		/**
+		 * Gets the cancel button.
+		 * 
+		 * @return the cancel button
+		 */
 		HasClickHandlers getCancelButton();
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return the error message display
+		 */
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
+		/**
+		 * Gets the success message display.
+		 * 
+		 * @return the success message display
+		 */
 		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		
+		/**
+		 * Gets the security questions widget.
+		 * 
+		 * @return the security questions widget
+		 */
 		SecurityQuestionWithMaskedAnswerWidget getSecurityQuestionsWidget();
+		
+		/**
+		 * Gets the answer text1.
+		 * 
+		 * @return the answer text1
+		 */
 		public String getAnswerText1();
+		
+		/**
+		 * Gets the answer text2.
+		 * 
+		 * @return the answer text2
+		 */
 		public String getAnswerText2();
+		
+		/**
+		 * Gets the answer text3.
+		 * 
+		 * @return the answer text3
+		 */
 		public String getAnswerText3();
+		
+		/**
+		 * Sets the answer text1.
+		 * 
+		 * @param answerText1
+		 *            the new answer text1
+		 */
 		public void setAnswerText1(String answerText1);
+		
+		/**
+		 * Sets the answer text2.
+		 * 
+		 * @param answerText2
+		 *            the new answer text2
+		 */
 		public void setAnswerText2(String answerText2);
+		
+		/**
+		 * Sets the answer text3.
+		 * 
+		 * @param answerText3
+		 *            the new answer text3
+		 */
 		public void setAnswerText3(String answerText3);
+		
+		/**
+		 * Gets the password edit info widget.
+		 * 
+		 * @return the password edit info widget
+		 */
 		PasswordEditInfoWidget getPasswordEditInfoWidget();
 
 	}
 	
+	/** The display. */
 	private Display display;
+	
+	/** The current values. */
 	private SecurityQuestionsModel currentValues;
 	
 	
+	/**
+	 * Instantiates a new security questions presenter.
+	 * 
+	 * @param displayArg
+	 *            the display arg
+	 */
 	public SecurityQuestionsPresenter(Display displayArg) {
 		this.display = displayArg;
 			
@@ -180,6 +327,12 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		});
 	}
 
+	/**
+	 * Save security questions.
+	 * 
+	 * @param password
+	 *            the password
+	 */
 	private void saveSecurityQuestions(String password){
 		 loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String,String>>(){ 
 				@Override
@@ -230,6 +383,9 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		 }
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		
@@ -251,14 +407,26 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		});
 		Mat.focusSkipLists("SecurityInfo");
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override 
 	public void beforeClosingDisplay() {	
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	public Widget getWidget() {
 		return display.asWidget();
 	}
 	
+	/**
+	 * Gets the values.
+	 * 
+	 * @return the values
+	 */
 	private SecurityQuestionsModel getValues() {
 		SecurityQuestionsModel model = new SecurityQuestionsModel();
 		model.setQuestion1(display.getQuestion1().getValue());
@@ -269,6 +437,13 @@ public class SecurityQuestionsPresenter implements MatPresenter {
 		model.setQuestion3Answer(display.getAnswerText3());
 		return model;
 	}
+	
+	/**
+	 * Sets the values.
+	 * 
+	 * @param result
+	 *            the new values
+	 */
 	private void setValues(SecurityQuestionsModel result) {
 		display.setAnswerText1(result.getQuestion1Answer());
 		display.getAnswer1().setValue(display.getSecurityQuestionsWidget().maskAnswers(result.getQuestion1Answer()));

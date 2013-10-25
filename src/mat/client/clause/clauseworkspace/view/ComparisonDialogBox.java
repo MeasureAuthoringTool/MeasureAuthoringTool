@@ -27,11 +27,23 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 //import com.google.gwt.user.client.DOM;
 
 
+/**
+ * The Class ComparisonDialogBox.
+ */
 public class ComparisonDialogBox{
 
+	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(true,true);
 
 
+	/**
+	 * Show comparison dialog box.
+	 * 
+	 * @param xmlTreeDisplay
+	 *            the xml tree display
+	 * @param cellTreeNode
+	 *            the cell tree node
+	 */
 	public static void showComparisonDialogBox(final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
 
 		dialogBox.setGlassEnabled(true);
@@ -199,7 +211,18 @@ public class ComparisonDialogBox{
 
 	/**
 	 * Method to set attributes to CellTreeNode extraInformation.
-	 * */ 
+	 * 
+	 * @param functionOrTiming
+	 *            the function or timing
+	 * @param operator
+	 *            the operator
+	 * @param quantity
+	 *            the quantity
+	 * @param unit
+	 *            the unit
+	 * @param xmlTreeDisplay
+	 *            the xml tree display
+	 */ 
 	private static void saveAttributesToNode(String functionOrTiming, String operator, String quantity, String unit, XmlTreeDisplay xmlTreeDisplay){
 		Map<String,String> extraAttributes = new HashMap<String,String>();
 		if(!operator.contains("Select")){
@@ -237,7 +260,10 @@ public class ComparisonDialogBox{
 
 	/**
 	 * TextBox allow only Digits.
-	 * */
+	 * 
+	 * @param quantity
+	 *            the quantity
+	 */
 	private static void addHandlerToQuantityTextBox(TextBox quantity){
 
 		quantity.addKeyPressHandler(new KeyPressHandler(){

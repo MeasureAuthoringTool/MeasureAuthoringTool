@@ -40,49 +40,124 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Node;
 
+/**
+ * The Class QDMAttributeDialogBox.
+ */
 public class QDMAttributeDialogBox {
+	
+	/** The Constant NEGATION_RATIONALE. */
 	private static final String NEGATION_RATIONALE = "negation rationale";
+	
+	/** The Constant INSTANCE. */
 	private static final String INSTANCE = "instance";
 	// Declare all constants
+	/** The Constant DATATYPE. */
 	static final String DATATYPE = "datatype";
+	
+	/** The Constant GREATER_THAN_OR_EQUAL_TO. */
 	private static final String GREATER_THAN_OR_EQUAL_TO = "-- Greater Than Or Equal To";
+	
+	/** The Constant LESS_THAN_OR_EQUAL_TO. */
 	private static final String LESS_THAN_OR_EQUAL_TO = "-- Less Than Or Equal To";
+	
+	/** The Constant EQUAL_TO. */
 	private static final String EQUAL_TO = "-- Equal To";
+	
+	/** The Constant GREATER_THAN. */
 	private static final String GREATER_THAN = "-- Greater Than";
+	
+	/** The Constant LESS_THAN. */
 	private static final String LESS_THAN = "-- Less Than";
+	
+	/** The Constant COMPARISON. */
 	private static final String COMPARISON = "Comparison";
+	
+	/** The Constant UNIT. */
 	private static final String UNIT = "unit";
+	
+	/** The Constant COMPARISON_VALUE. */
 	private static final String COMPARISON_VALUE = "comparisonValue";
+	
+	/** The Constant QDM_UUID. */
 	private static final String QDM_UUID = "qdmUUID";
+	
+	/** The Constant ID. */
 	private static final String ID = "id";
+	
+	/** The Constant MODE. */
 	private static final String MODE = "mode";
+	
+	/** The Constant VALUE_SET. */
 	private static final String VALUE_SET = "Value Set";
+	
+	/** The Constant CHECK_IF_PRESENT. */
 	private static final String CHECK_IF_PRESENT = "Check if Present";
+	
+	/** The Constant NAME. */
 	private static final String NAME = "name";
+	
+	/** The Constant ATTRIBUTE. */
 	static final String ATTRIBUTE = "attribute";
+	
+	/** The Constant ATTRIBUTES. */
 	private static final String ATTRIBUTES = "attributes";
+	
+	/** The Constant QDM_ATTRIBUTES_ERROR_TITLE. */
 	private static final String QDM_ATTRIBUTES_ERROR_TITLE = "QDM Attributes. Please correct the rows below in red.";
+	
+	/** The Constant QDM_ATTRIBUTES_TITLE. */
 	private static final String QDM_ATTRIBUTES_TITLE = "QDM Attributes.";
+	
+	/** The Constant QDM_ATTRIBUTE_INVALID_ROW. */
 	private static final String QDM_ATTRIBUTE_INVALID_ROW = "qdm_attribute_invalidRow";
+	
+	/** The Constant QDM_ATTRIBUTE_INVALID_ROW_RIGHT. */
 	private static final String QDM_ATTRIBUTE_INVALID_ROW_RIGHT = "qdm_attribute_invalidRow_right";
+	
+	/** The Constant QDM_ATTRIBUTE_INVALID_ROW_LEFT. */
 	private static final String QDM_ATTRIBUTE_INVALID_ROW_LEFT = "qdm_attribute_invalidRow_left";
+	
+	/** The Constant SELECT. */
 	private static final String SELECT = "Select";
+	
+	/** The Constant UUID. */
 	private static final String UUID = "uuid";
 
+	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
+	
+	/** The Constant unitNames. */
 	private static final List<String> unitNames = new ArrayList<String>();
+	
+	/** The Constant attributeList. */
 	private static final List<String> attributeList = new ArrayList<String>();
+	
+	/** The grid. */
 	private static Grid grid;
 
+	/**
+	 * The Class DeleteSelectedClickHandler.
+	 */
 	private static final class DeleteSelectedClickHandler implements
 			ClickHandler {
+		
+		/** The grid. */
 		private final Grid grid;
 
+		/**
+		 * Instantiates a new delete selected click handler.
+		 * 
+		 * @param grid
+		 *            the grid
+		 */
 		private DeleteSelectedClickHandler(Grid grid) {
 			this.grid = grid;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+		 */
 		@Override
 		public void onClick(ClickEvent event) {
 			int rowCount = grid.getRowCount();
@@ -103,16 +178,34 @@ public class QDMAttributeDialogBox {
 		}
 	}
 
+	/**
+	 * The Class QDMAttributeGridClickHandler.
+	 */
 	private static final class QDMAttributeGridClickHandler implements
 			ClickHandler {
+		
+		/** The grid. */
 		private final Grid grid;
+		
+		/** The last row. */
 		private int lastRow = -1;
+		
+		/** The last col. */
 		private int lastCol = -1;
 
+		/**
+		 * Instantiates a new qDM attribute grid click handler.
+		 * 
+		 * @param grid
+		 *            the grid
+		 */
 		private QDMAttributeGridClickHandler(Grid grid) {
 			this.grid = grid;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+		 */
 		@Override
 		public void onClick(ClickEvent event) {
 			HTMLTable.Cell cell = grid.getCellForEvent(event);
@@ -203,18 +296,40 @@ public class QDMAttributeDialogBox {
 		}
 	}
 
+	/**
+	 * The Class AddNewQDMAttributeClickHandler.
+	 */
 	private static final class AddNewQDMAttributeClickHandler implements
 			ClickHandler {
+		
+		/** The mode. */
 		private final List<String> mode;
+		
+		/** The grid. */
 		private final Grid grid;
+		
+		/** The row node. */
 		private static CellTreeNode rowNode;
 
+		/**
+		 * Instantiates a new adds the new qdm attribute click handler.
+		 * 
+		 * @param qdmDataTypeName
+		 *            the qdm data type name
+		 * @param mode
+		 *            the mode
+		 * @param grid
+		 *            the grid
+		 */
 		private AddNewQDMAttributeClickHandler(String qdmDataTypeName,
 				List<String> mode, Grid grid) {
 			this.mode = mode;
 			this.grid = grid;
 		}
 
+		/* (non-Javadoc)
+		 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+		 */
 		@Override
 		public void onClick(ClickEvent event) {
 			CellTreeNode node = rowNode;
@@ -274,8 +389,15 @@ public class QDMAttributeDialogBox {
 		}
 	}
 
+	/**
+	 * The Class DigitsOnlyKeyPressHandler.
+	 */
 	private static final class DigitsOnlyKeyPressHandler implements
 			KeyPressHandler {
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
+		 */
 		@Override
 		public void onKeyPress(KeyPressEvent event) {
 			TextBox sender = (TextBox) event.getSource();
@@ -292,6 +414,14 @@ public class QDMAttributeDialogBox {
 		}
 	}
 
+	/**
+	 * Show qdm attribute dialog box.
+	 * 
+	 * @param xmlTreeDisplay
+	 *            the xml tree display
+	 * @param cellTreeNode
+	 *            the cell tree node
+	 */
 	public static void showQDMAttributeDialogBox(XmlTreeDisplay xmlTreeDisplay,
 			CellTreeNode cellTreeNode) {
 		// If the CellTreeNode type isn't CellTreeNode.ELEMENT_REF_NODE then
@@ -335,8 +465,11 @@ public class QDMAttributeDialogBox {
 	 * Remove all attribute names used in other rows from modeListBox.
 	 * 
 	 * @param table
+	 *            the table
 	 * @param rowIndex
+	 *            the row index
 	 * @param attributeListBox
+	 *            the attribute list box
 	 */
 	public static void updateAttributeListBox(Grid table, int rowIndex,
 			ListBox attributeListBox) {
@@ -362,6 +495,14 @@ public class QDMAttributeDialogBox {
 		}
 	}
 
+	/**
+	 * Update attribute list boxes.
+	 * 
+	 * @param table
+	 *            the table
+	 * @param row
+	 *            the row
+	 */
 	public static void updateAttributeListBoxes(Grid table, int row) {
 		for (int i = 0; i < grid.getRowCount(); i++) {
 			if (i == row) {
@@ -389,6 +530,18 @@ public class QDMAttributeDialogBox {
 		}
 	}
 
+	/**
+	 * Builds the and display dialog box.
+	 * 
+	 * @param qdmDataType
+	 *            the qdm data type
+	 * @param mode
+	 *            the mode
+	 * @param xmlTreeDisplay
+	 *            the xml tree display
+	 * @param cellTreeNode
+	 *            the cell tree node
+	 */
 	private static void buildAndDisplayDialogBox(String qdmDataType,
 			List<String> mode, final XmlTreeDisplay xmlTreeDisplay,
 			final CellTreeNode cellTreeNode) {
@@ -483,6 +636,13 @@ public class QDMAttributeDialogBox {
 		qdmAttributeDialogBox.center();
 	}
 
+	/**
+	 * Validate rows.
+	 * 
+	 * @param qdmAttributeDialogBox
+	 *            the qdm attribute dialog box
+	 * @return true, if successful
+	 */
 	protected static boolean validateRows(DialogBox qdmAttributeDialogBox) {
 		int rowCount = grid.getRowCount();
 		List<Integer> inValidRows = new ArrayList<Integer>();
@@ -548,9 +708,14 @@ public class QDMAttributeDialogBox {
 	}
 
 	/**
+	 * Sets the grid row styles.
+	 * 
 	 * @param qdmAttributeDialogBox
+	 *            the qdm attribute dialog box
 	 * @param rowCount
+	 *            the row count
 	 * @param inValidRows
+	 *            the in valid rows
 	 */
 	private static void setGridRowStyles(DialogBox qdmAttributeDialogBox,
 			int rowCount, List<Integer> inValidRows) {
@@ -585,6 +750,12 @@ public class QDMAttributeDialogBox {
 		}
 	}
 
+	/**
+	 * Save to model.
+	 * 
+	 * @param xmlTreeDisplay
+	 *            the xml tree display
+	 */
 	@SuppressWarnings("unchecked")
 	protected static void saveToModel(XmlTreeDisplay xmlTreeDisplay) {
 		int rowCount = grid.getRowCount();
@@ -646,12 +817,19 @@ public class QDMAttributeDialogBox {
 	 * pop-up DialogBox.
 	 * 
 	 * @param dialogContents
-	 * @param attributeList
+	 *            the dialog contents
+	 * @param qdmDataType
+	 *            the qdm data type
 	 * @param mode
-	 * @param cellTreeNode
+	 *            the mode
 	 * @param xmlTreeDisplay
-	 * @param addNewButton
+	 *            the xml tree display
+	 * @param cellTreeNode
+	 *            the cell tree node
 	 * @param deleteSelectedButton
+	 *            the delete selected button
+	 * @param addNewButton
+	 *            the add new button
 	 */
 	private static void addTableToPanel(VerticalPanel dialogContents,
 			final String qdmDataType, final List<String> mode,
@@ -704,6 +882,14 @@ public class QDMAttributeDialogBox {
 		t.schedule(500);
 	}
 
+	/**
+	 * Sets the exiting attribute in grid.
+	 * 
+	 * @param attributenode
+	 *            the attributenode
+	 * @param row
+	 *            the row
+	 */
 	private static void setExitingAttributeInGrid(CellTreeNode attributenode,
 			int row) {
 		if (attributenode == null) {
@@ -787,6 +973,11 @@ public class QDMAttributeDialogBox {
 		}
 	}
 
+	/**
+	 * Creates the qdm list box.
+	 * 
+	 * @return the list box
+	 */
 	private static ListBox createQdmListBox() {
 		ListBox qdmListBox = new ListBox(false);
 		qdmListBox.setVisibleItemCount(1);
@@ -806,6 +997,11 @@ public class QDMAttributeDialogBox {
 		return qdmListBox;
 	}
 
+	/**
+	 * Gets the mode list.
+	 * 
+	 * @return the mode list
+	 */
 	private static List<String> getModeList() {
 		List<String> modeList = new ArrayList<String>();
 
@@ -825,10 +1021,16 @@ public class QDMAttributeDialogBox {
 	 * This method will check all the QDM elements in ElementLookup node and
 	 * return the names of QDM elements of datatype 'attribute'.
 	 * 
-	 * @param cellTreeNode
-	 * @param xmlTreeDisplay
+	 * @param dataType
+	 *            the data type
+	 * @param isOccuranceQDM
+	 *            the is occurance qdm
 	 * @param mode2
-	 * @return
+	 *            the mode2
+	 * @param xmlTreeDisplay
+	 *            the xml tree display
+	 * @param cellTreeNode
+	 *            the cell tree node
 	 */
 	/*
 	 * private static List<String> getQDMElementNames(){ List<String>
@@ -883,6 +1085,12 @@ public class QDMAttributeDialogBox {
 	 * qdmNode; } } return null; }
 	 */
 
+	/**
+	 * Sets the tool tip for each element in listbox.
+	 * 
+	 * @param listBox
+	 *            the new tool tip for each element in listbox
+	 */
 	private static void setToolTipForEachElementInListbox(ListBox listBox) {
 		// Set tooltips for each element in listbox
 		SelectElement selectElement = SelectElement.as(listBox.getElement());
@@ -894,6 +1102,12 @@ public class QDMAttributeDialogBox {
 		}
 	}
 
+	/**
+	 * Sets the tool tip for each element in qdm list box.
+	 * 
+	 * @param listBox
+	 *            the new tool tip for each element in qdm list box
+	 */
 	private static void setToolTipForEachElementInQdmListBox(ListBox listBox) {
 		SelectElement selectElement = SelectElement.as(listBox.getElement());
 		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement

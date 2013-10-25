@@ -20,48 +20,89 @@ import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.xml.client.Node;
 
+/**
+ * The Class ClauseWorkspaceContextMenu.
+ */
 public class ClauseWorkspaceContextMenu {
 	
+	/**
+	 * The Interface Template.
+	 */
 	interface Template extends SafeHtmlTemplates {
-	    @Template("<table width=\"100%\"><tr><td>{0}</td><td align=\"right\">{1}</td></tr></table>")
+	    
+    	/**
+		 * Menu table.
+		 * 
+		 * @param name
+		 *            the name
+		 * @param shortCut
+		 *            the short cut
+		 * @return the safe html
+		 */
+    	@Template("<table width=\"100%\"><tr><td>{0}</td><td align=\"right\">{1}</td></tr></table>")
 	    SafeHtml menuTable(String name, String shortCut);
 	}
 	
+	/** The Constant template. */
 	private static final Template template = GWT.create(Template.class);
 
+	/** The xml tree display. */
 	XmlTreeDisplay xmlTreeDisplay;
 
+	/** The add menu. */
 	MenuItem addMenu;
 	
+	/** The add menu lhs. */
 	MenuItem addMenuLHS;
 	
+	/** The add menu rhs. */
 	MenuItem addMenuRHS;
 
+	/** The copy menu. */
 	MenuItem copyMenu;
 
+	/** The paste menu. */
 	MenuItem pasteMenu;
 
+	/** The delete menu. */
 	MenuItem deleteMenu;
 	
+	/** The cut menu. */
 	MenuItem cutMenu;
 	
+	/** The edit menu. */
 	MenuItem editMenu;
 	
+	/** The edit qdm menu. */
 	MenuItem editQDMMenu;
 	
+	/** The popup menu bar. */
 	MenuBar popupMenuBar = new MenuBar(true);
 	
+	/** The sub menu bar. */
 	MenuBar subMenuBar;
 	
+	/** The separator. */
 	MenuItemSeparator separator = new MenuItemSeparator();
 
+	/** The popup panel. */
 	PopupPanel popupPanel;
 	
+	/** The paste cmd. */
 	Command pasteCmd;
 	
+	/** The expand menu. */
 	MenuItem expandMenu;
 	
 	
+	/**
+	 * Instantiates a new clause workspace context menu.
+	 * 
+	 * @param treeDisplay
+	 *            the tree display
+	 * @param popPanel
+	 *            the pop panel
+	 */
 	public ClauseWorkspaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		this.xmlTreeDisplay = treeDisplay;
 		xmlTreeDisplay.setDirty(false);
@@ -117,8 +158,11 @@ public class ClauseWorkspaceContextMenu {
 
 
 	/**
-	 * Method displays the rightClick options based on the nodeType of the node selected on CellTree
+	 * Method displays the rightClick options based on the nodeType of the node
+	 * selected on CellTree.
+	 * 
 	 * @param popupPanel
+	 *            the popup panel
 	 */
 	public void displayMenuItems( final PopupPanel popupPanel){
 		popupMenuBar.clearItems();
@@ -353,6 +397,9 @@ public class ClauseWorkspaceContextMenu {
 		}
 	}
 
+	/**
+	 * Show hide expand menu.
+	 */
 	private void showHideExpandMenu(){
 		if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 			expandMenu.setEnabled(true);
@@ -361,6 +408,14 @@ public class ClauseWorkspaceContextMenu {
 		}
 	}
 	
+	/**
+	 * Creates the qdm attribute menu item.
+	 * 
+	 * @param menuBar
+	 *            the menu bar
+	 * @param cellTreeNode
+	 *            the cell tree node
+	 */
 	private void createQDMAttributeMenuItem(MenuBar menuBar, final CellTreeNode cellTreeNode) {
 		Command addQDMAttributeCmd = new Command() {
 			public void execute() {
@@ -374,9 +429,13 @@ public class ClauseWorkspaceContextMenu {
 	}
 	
 	/**
-	 * Check if the Data Type for the selected node is "Timing Element" and disable the menuItem.
+	 * Check if the Data Type for the selected node is "Timing Element" and
+	 * disable the menuItem.
+	 * 
 	 * @param cellTreeNode
+	 *            the cell tree node
 	 * @param item
+	 *            the item
 	 */
 	private void checkForTimingElementDataType(CellTreeNode cellTreeNode,
 			MenuItem item) {
@@ -395,11 +454,22 @@ public class ClauseWorkspaceContextMenu {
 		}
 	}
 
+	/**
+	 * Show qdm attribute popup.
+	 * 
+	 * @param cellTreeNode
+	 *            the cell tree node
+	 */
 	protected void showQDMAttributePopup(CellTreeNode cellTreeNode) {
 		QDMAttributeDialogBox.showQDMAttributeDialogBox(xmlTreeDisplay,cellTreeNode);
 	}
 
 
+	/**
+	 * Creates the menu bar with timing func and qdm.
+	 * 
+	 * @return the menu bar
+	 */
 	private MenuBar createMenuBarWithTimingFuncAndQDM(){
 		MenuBar menuBar = new MenuBar(true);
 		popupMenuBar.setAutoOpen(true);
@@ -415,6 +485,12 @@ public class ClauseWorkspaceContextMenu {
 		return menuBar;
 	}
 	
+	/**
+	 * Creates the add qdm_ menu item.
+	 * 
+	 * @param menuBar
+	 *            the menu bar
+	 */
 	private void createAddQDM_MenuItem(MenuBar menuBar) {
 		Command addQDMCmd = new Command() {
 			public void execute() {
@@ -426,19 +502,30 @@ public class ClauseWorkspaceContextMenu {
 		menuBar.addItem(item);
 	}
 
+	/**
+	 * Show qdm popup.
+	 * 
+	 * @param isAdd
+	 *            the is add
+	 */
 	protected void showQDMPopup(boolean isAdd) {
 		QDMDialogBox.showQDMDialogBox(xmlTreeDisplay,isAdd);
 	}
 
 	/**
-	 * Method iterates through the menuNames and creates MenuItems, 
-	 * on selection of a MenuItem , a child node is created and added to the selected node 
-	 * with the name and label set to selected menuItem's name and the nodeType set to the passed nodeType value.
+	 * Method iterates through the menuNames and creates MenuItems, on selection
+	 * of a MenuItem , a child node is created and added to the selected node
+	 * with the name and label set to selected menuItem's name and the nodeType
+	 * set to the passed nodeType value.
 	 * 
-	 * and @param nodeType passed  
+	 * and @param nodeType passed
+	 * 
 	 * @param menuNames
+	 *            the menu names
 	 * @param nodeType
+	 *            the node type
 	 * @param menuBar
+	 *            the menu bar
 	 */
 	private void createAddMenus(List<String> menuNames, final short nodeType, MenuBar menuBar){
 		for (final String name : menuNames) {
@@ -456,10 +543,14 @@ public class ClauseWorkspaceContextMenu {
 	
 	
 	/**
-	 * Method iterates through the editMenuNames and creates MenuItems, 
-	 * on selection of a MenuItem, the selected node's name and label is updated with the selected menuItem's name.
+	 * Method iterates through the editMenuNames and creates MenuItems, on
+	 * selection of a MenuItem, the selected node's name and label is updated
+	 * with the selected menuItem's name.
+	 * 
 	 * @param editMenuNames
+	 *            the edit menu names
 	 * @param subMenuBar
+	 *            the sub menu bar
 	 */
 	private void createEditMenus(List<String> editMenuNames, MenuBar subMenuBar){
 		for (final String editMenuName : editMenuNames) {
@@ -478,6 +569,9 @@ public class ClauseWorkspaceContextMenu {
 	}
 	
 
+	/**
+	 * Paste root node type item.
+	 */
 	protected void pasteRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getCopiedNode().getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
@@ -491,6 +585,9 @@ public class ClauseWorkspaceContextMenu {
 	}
 
 
+	/**
+	 * Adds the root node type item.
+	 */
 	protected void addRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getSelectedNode().getChilds().get(0).getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
@@ -502,6 +599,9 @@ public class ClauseWorkspaceContextMenu {
 	}
 
 
+	/**
+	 * Adds the common menus.
+	 */
 	private void addCommonMenus(){
 		popupMenuBar.addItem(copyMenu);
 		popupMenuBar.addItem(pasteMenu);
@@ -513,11 +613,25 @@ public class ClauseWorkspaceContextMenu {
 	}
 
 
+	/**
+	 * Gets the adds the menu name.
+	 * 
+	 * @param selectedNode
+	 *            the selected node
+	 * @return the adds the menu name
+	 */
 	private String getAddMenuName(CellTreeNode selectedNode){
 		return "Add" + " " +  selectedNode.getName().substring(0, selectedNode.getName().lastIndexOf(" "));
 	}
 
 
+	/**
+	 * Gets the next highest sequence.
+	 * 
+	 * @param selectedNode
+	 *            the selected node
+	 * @return the next highest sequence
+	 */
 	private int getNextHighestSequence(CellTreeNode selectedNode){
 		SortedSet<Integer> sortedName = new TreeSet<Integer>();
 		Integer lastInt = 0;

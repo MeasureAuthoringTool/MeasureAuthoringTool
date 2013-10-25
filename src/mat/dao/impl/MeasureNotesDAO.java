@@ -15,10 +15,17 @@ import org.hibernate.criterion.Restrictions;
 
 
 
+/**
+ * The Class MeasureNotesDAO.
+ */
 public class MeasureNotesDAO extends GenericDAO<MeasureNotes, String> implements mat.dao.MeasureNotesDAO{
 
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(MeasureNotesDAO.class);
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.MeasureNotesDAO#getAllMeasureNotesByMeasureID(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<MeasureNotes> getAllMeasureNotesByMeasureID(String measureId) {

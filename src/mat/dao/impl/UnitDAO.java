@@ -14,15 +14,18 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 
 /**
- * DAO implementation for Unit table
- *
+ * DAO implementation for Unit table.
  */
 
 public class UnitDAO extends GenericDAO<Unit, String> implements mat.dao.UnitDAO {
 	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(UnitDAO.class);
 	
 	/* Retrieve all units from the UNIT table
+	 * @see mat.dao.UnitDAO#getAllUnits()
+	 */
+	/* (non-Javadoc)
 	 * @see mat.dao.UnitDAO#getAllUnits()
 	 */
 	public List<UnitDTO> getAllUnits(){

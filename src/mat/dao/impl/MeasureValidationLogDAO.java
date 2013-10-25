@@ -10,14 +10,22 @@ import mat.server.LoggedInUserUtil;
 import org.hibernate.Session;
 
 /**
- * Validation Log implementation of a save op
+ * Validation Log implementation of a save op.
+ * 
  * @author aschmidt
- *
  */
 public class MeasureValidationLogDAO extends GenericDAO<MeasureValidationLog, String> implements mat.dao.MeasureValidationLogDAO{
 
 	/**
-	 * perform a save op using the non-derivable fields of a validation event
+	 * perform a save op using the non-derivable fields of a validation event.
+	 * 
+	 * @param measure
+	 *            the measure
+	 * @param event
+	 *            the event
+	 * @param interimBarr
+	 *            the interim barr
+	 * @return true, if successful
 	 */
 	@Override
 	public boolean recordMeasureValidationEvent(Measure measure, String event, byte[] interimBarr) {

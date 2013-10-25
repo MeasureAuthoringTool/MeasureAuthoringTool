@@ -15,14 +15,38 @@ import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * The Class ListObjectSearchCriteriaBuilder.
+ */
 class ListObjectSearchCriteriaBuilder {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(ListObjectSearchCriteriaBuilder.class);
 	
+	/** The session factory. */
 	private SessionFactory sessionFactory;
+	
+	/** The search class. */
 	private Class searchClass;
+	
+	/** The search text. */
 	private String searchText;
+	
+	/** The show default code list. */
 	private boolean showDefaultCodeList;
 	
+	/**
+	 * Instantiates a new list object search criteria builder.
+	 * 
+	 * @param sessionFactory
+	 *            the session factory
+	 * @param searchClass
+	 *            the search class
+	 * @param searchText
+	 *            the search text
+	 * @param defaultCodeList
+	 *            the default code list
+	 */
 	ListObjectSearchCriteriaBuilder(SessionFactory sessionFactory, Class searchClass, String searchText,boolean defaultCodeList) { 
 		this.sessionFactory = sessionFactory;
 		this.searchClass = searchClass;
@@ -30,6 +54,13 @@ class ListObjectSearchCriteriaBuilder {
 		this.showDefaultCodeList = defaultCodeList;
 	}
 	
+	/**
+	 * Gets the search fields.
+	 * 
+	 * @param text
+	 *            the text
+	 * @return the search fields
+	 */
 	protected List<Criterion> getSearchFields(String text) {
 		List<Criterion> retList = new ArrayList<Criterion>();
 		retList.add(Restrictions.ilike("id", text));
@@ -42,6 +73,13 @@ class ListObjectSearchCriteriaBuilder {
 		
 		return retList;
 	}
+	
+	/**
+	 * Adds the aliases.
+	 * 
+	 * @param criteria
+	 *            the criteria
+	 */
 	protected void addAliases(DetachedCriteria criteria) {
 		criteria.createAlias("codeSystem", "cs");
 		criteria.createAlias("steward", "st");
@@ -49,6 +87,11 @@ class ListObjectSearchCriteriaBuilder {
 		criteria.createAlias("gcl.codeList", "cl", Criteria.LEFT_JOIN);
 	}
 	
+	/**
+	 * Builds the base criteria for i ds.
+	 * 
+	 * @return the detached criteria
+	 */
 	final DetachedCriteria buildBaseCriteriaForIDs() {
 		DetachedCriteria criteria = DetachedCriteria.forClass(searchClass);
 		String text = "%" + searchText + "%";
@@ -87,6 +130,11 @@ class ListObjectSearchCriteriaBuilder {
 	 * Measurement Period, Measurement Period Start 
 	 * NOTE: Measurement Period End are taken care of by restricting Category '22'
 	 */
+	/**
+	 * Default value set criteria.
+	 * 
+	 * @return the criterion
+	 */
 	public final Criterion defaultValueSetCriteria(){
 		Criterion readyToUseCriterion = Restrictions.or
 				(Restrictions.eq("oid",ConstantMessages.BIRTH_DATE_OID),
@@ -102,6 +150,11 @@ class ListObjectSearchCriteriaBuilder {
 	 * check for OID inclusion in the set of ready to use list objects 
 	 * the value set oids here are:
 	 * Race, Ethnicity, Gender, Payer
+	 */
+	/**
+	 * Supplemental value set criteria.
+	 * 
+	 * @return the criterion
 	 */
 	public final Criterion supplementalValueSetCriteria(){
 		Criterion readyToUseCriterion = Restrictions.or(
@@ -119,11 +172,21 @@ class ListObjectSearchCriteriaBuilder {
 	 * Catergory id = 22 means (Measurement Timing) 
 	 *
 	 */
+	/**
+	 * Default code list criteria.
+	 * 
+	 * @return the criterion
+	 */
 	public final Criterion defaultCodeListCriteria(){
 		Criterion defaultCodeList = Restrictions.eq("category.id","22");
 		return defaultCodeList;
 	}
 	
+	/**
+	 * Adds the common code list criteria.
+	 * 
+	 * @return the criterion
+	 */
 	public final Criterion addCommonCodeListCriteria(){
 		Criterion commonCodeList = Restrictions.or(defaultCodeListCriteria(), defaultValueSetCriteria());
 		return commonCodeList;
@@ -131,6 +194,15 @@ class ListObjectSearchCriteriaBuilder {
 	
 	//Note:- Supplemental VS should never been shown in the CodeList Search Screen and QDM box.(since object owner for supp VS is null, that is taken
 	// care for Free.)
+	/**
+	 * Adds the owner criteria.
+	 * 
+	 * @param criteria
+	 *            the criteria
+	 * @param userId
+	 *            the user id
+	 * @return the detached criteria
+	 */
 	final DetachedCriteria addOwnerCriteria(DetachedCriteria criteria, String userId) {
 		if(showDefaultCodeList){
 			return criteria.add(Restrictions.or(addCommonCodeListCriteria(),Restrictions.eq("objectOwner.id", userId)));
@@ -139,6 +211,15 @@ class ListObjectSearchCriteriaBuilder {
 		}
 	}
 
+	/**
+	 * Adds the measure criteria.
+	 * 
+	 * @param criteria
+	 *            the criteria
+	 * @param measure
+	 *            the measure
+	 * @return the detached criteria
+	 */
 	final DetachedCriteria addMeasureCriteria(DetachedCriteria criteria, Measure measure) {
 		criteria.createAlias("qualityDataSets", "qds", Criteria.LEFT_JOIN);
 		criteria.add(Restrictions.eq("objectOwner.id", measure.getOwner().getId()));

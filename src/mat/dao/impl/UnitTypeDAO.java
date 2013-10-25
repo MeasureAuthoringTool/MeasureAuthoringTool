@@ -12,15 +12,18 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 /**
- * DAO implementation for UnitType table
- *
+ * DAO implementation for UnitType table.
  */
 
 public class UnitTypeDAO extends GenericDAO<UnitType, String> implements mat.dao.UnitTypeDAO {
 	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(UnitTypeDAO.class);
 	
 	/* Retrieve all unit types from the UNIT_TYPE table
+	 * @see mat.dao.UnitTypeDAO#getAllUnitTypes()
+	 */
+	/* (non-Javadoc)
 	 * @see mat.dao.UnitTypeDAO#getAllUnitTypes()
 	 */
 	public List<UnitTypeDTO> getAllUnitTypes(){

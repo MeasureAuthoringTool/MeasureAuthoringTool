@@ -11,10 +11,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
+/**
+ * The Class AuthorDAO.
+ */
 public class AuthorDAO extends GenericDAO<Author, String> implements mat.dao.AuthorDAO {
 	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(AuthorDAO.class);
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.AuthorDAO#getAllAuthors()
+	 */
 	public List<AuthorDTO> getAllAuthors(){
 		
 		List<AuthorDTO> AuthorDTOList = new ArrayList<AuthorDTO>();

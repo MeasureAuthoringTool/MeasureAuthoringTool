@@ -21,10 +21,18 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
 
+/**
+ * The Class CodeListDAO.
+ */
 public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao.CodeListDAO {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CodeListDAO.class);
 	
 
+	/* (non-Javadoc)
+	 * @see mat.dao.CodeListDAO#getCodeListsForCategoryByMeasure(java.lang.String, mat.model.clause.Measure)
+	 */
 	@Override
 	public List<CodeList> getCodeListsForCategoryByMeasure(String categoryId,
 			Measure measure) {
@@ -41,6 +49,9 @@ public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao
 	}
 
 	//US 413. Include condition for Steward Other value.
+	/* (non-Javadoc)
+	 * @see mat.dao.CodeListDAO#getCodeList(mat.client.codelist.ManageCodeListDetailModel, java.lang.String)
+	 */
 	@Override
 	public CodeList getCodeList(ManageCodeListDetailModel currentDetails, String userid) {
 		CodeList cl = find(currentDetails.getID());
@@ -66,6 +77,9 @@ public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.CodeListDAO#getValueSetsForCategory(java.lang.String)
+	 */
 	@Override
 	public List<CodeList> getValueSetsForCategory(String categoryId) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -87,6 +101,9 @@ public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao
 		return ret;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.CodeListDAO#getCodes(java.lang.String)
+	 */
 	public Set<CodesDTO> getCodes(String codeListId){
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(CodeList.class);
@@ -103,6 +120,9 @@ public class CodeListDAO extends GenericDAO<CodeList, String> implements mat.dao
 		return setDTO;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.CodeListDAO#getCodeList(mat.client.codelist.ManageCodeListDetailModel, java.sql.Timestamp)
+	 */
 	@Override
 	public List<CodeList> getCodeList(ManageCodeListDetailModel currentDetails, Timestamp ts) {
 		CodeList cl = find(currentDetails.getID());

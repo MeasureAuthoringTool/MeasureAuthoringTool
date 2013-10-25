@@ -18,12 +18,14 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 /**
- * DAO implementation of Code List Audit Log
- *
+ * DAO implementation of Code List Audit Log.
  */
 public class CodeListAuditLogDAO extends GenericDAO<CodeListAuditLog, String> implements mat.dao.CodeListAuditLogDAO{
 	
 	/* Records the custom code list event to the CodeListAuditLog table
+	 * @see mat.dao.CodeListAuditLogDAO#recordCodeListEvent(mat.model.ListObject, java.lang.String, java.lang.String)
+	 */
+	/* (non-Javadoc)
 	 * @see mat.dao.CodeListAuditLogDAO#recordCodeListEvent(mat.model.ListObject, java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -50,6 +52,9 @@ public class CodeListAuditLogDAO extends GenericDAO<CodeListAuditLog, String> im
 	
 	/* Search and returns the list of events starts with the start index and the given number of rows
 	 * @see mat.dao.CodeListAuditLogDAO#searchHistory(java.lang.String, int, int)
+	 */
+	/* (non-Javadoc)
+	 * @see mat.dao.CodeListAuditLogDAO#searchHistory(java.lang.String, int, int, java.util.List)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -91,6 +96,18 @@ public class CodeListAuditLogDAO extends GenericDAO<CodeListAuditLog, String> im
 
 	/* Returns the number of page count for a given code list and the total number of rows
 	 * @see mat.dao.CodeListAuditLogDAO#numberOfPages(java.lang.String, int)
+	 */
+	/**
+	 * Sets the pages and rows.
+	 * 
+	 * @param codeListId
+	 *            the code list id
+	 * @param numberOfRows
+	 *            the number of rows
+	 * @param filterList
+	 *            the filter list
+	 * @param searchHistoryDTO
+	 *            the search history dto
 	 */
 	@SuppressWarnings("rawtypes")
 	private void setPagesAndRows(String codeListId, int numberOfRows, List<String> filterList, SearchHistoryDTO searchHistoryDTO){

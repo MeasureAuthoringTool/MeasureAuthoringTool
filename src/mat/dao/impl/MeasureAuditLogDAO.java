@@ -18,12 +18,14 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 
 /**
- * DAO implementation of Measure Audit Log
- *
+ * DAO implementation of Measure Audit Log.
  */
 public class MeasureAuditLogDAO extends GenericDAO<MeasureAuditLog, String> implements mat.dao.MeasureAuditLogDAO{
 	
 	/* Records the custom measure event to the MeasureAuditLog table 
+	 * @see mat.dao.MeasureAuditLogDAO#recordMeasureEvent(mat.model.clause.Measure, java.lang.String, java.lang.String)
+	 */
+	/* (non-Javadoc)
 	 * @see mat.dao.MeasureAuditLogDAO#recordMeasureEvent(mat.model.clause.Measure, java.lang.String, java.lang.String)
 	 */
 	@Override
@@ -49,6 +51,9 @@ public class MeasureAuditLogDAO extends GenericDAO<MeasureAuditLog, String> impl
 	
 	/* Search and returns the list of events starts with the start index and the given number of rows
 	 * @see mat.dao.MeasureAuditLogDAO#searchHistory(java.lang.String, int, int)
+	 */
+	/* (non-Javadoc)
+	 * @see mat.dao.MeasureAuditLogDAO#searchHistory(java.lang.String, int, int, java.util.List)
 	 */
 	@Override
 	@SuppressWarnings("unchecked")
@@ -85,6 +90,18 @@ public class MeasureAuditLogDAO extends GenericDAO<MeasureAuditLog, String> impl
 		return searchHistoryDTO; 
 	}
 	
+	/**
+	 * Sets the pages and rows.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @param numberOfRows
+	 *            the number of rows
+	 * @param filterList
+	 *            the filter list
+	 * @param searchHistoryDTO
+	 *            the search history dto
+	 */
 	@SuppressWarnings("rawtypes")
 	private void setPagesAndRows(String measureId, int numberOfRows, List<String> filterList, SearchHistoryDTO searchHistoryDTO){
 		int pageCount = 0;

@@ -15,9 +15,21 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * The Class QualityDataSetDAO.
+ */
 public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implements mat.dao.QualityDataSetDAO {
 	
 	
+	/**
+	 * Gets the qDS query string.
+	 * 
+	 * @param showSDEs
+	 *            the show sd es
+	 * @param measureId
+	 *            the measure id
+	 * @return the qDS query string
+	 */
 	private String getQDSQueryString(boolean showSDEs, String measureId){
 		String query = "select q.id from mat.model.QualityDataSet q, mat.model.ListObject l " +
 				"where q.measureId.id = '"+measureId+"' " + "and l.id = q.listObject.id ";
@@ -30,6 +42,10 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		}
 		return query;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.dao.QualityDataSetDAO#getQDSElements(boolean, java.lang.String)
+	 */
 	@Override
 	public java.util.List<QualityDataSetDTO> getQDSElements(boolean showSDEs, String measureId){
 		
@@ -61,6 +77,9 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		return dtos;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.QualityDataSetDAO#getQDSElementsFor(java.lang.String, java.lang.String)
+	 */
 	public java.util.List<QualityDataSetDTO> getQDSElementsFor(String measureId, String listObjectId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(QualityDataSet.class);
@@ -79,6 +98,9 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		return dtos;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.QualityDataSetDAO#cloneQDSElements(java.lang.String, mat.model.clause.Measure)
+	 */
 	public void cloneQDSElements(String measureId, mat.model.clause.Measure clonedMeasure) {
 
 		java.util.List<QualityDataSet> clonedQDSs = getForMeasure(clonedMeasure.getId());
@@ -101,6 +123,15 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	}
 	
 	
+	/**
+	 * Removeduplicate.
+	 * 
+	 * @param origQDSs
+	 *            the orig qd ss
+	 * @param clonedQDSs
+	 *            the cloned qd ss
+	 * @return the list
+	 */
 	private List<QualityDataSet> removeduplicate(List<QualityDataSet> origQDSs,
 			List<QualityDataSet> clonedQDSs) {
 
@@ -127,6 +158,9 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		return temp;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.QualityDataSetDAO#generateUniqueOid()
+	 */
 	@Override
 	public String generateUniqueOid() {
 		Session session = getSessionFactory().getCurrentSession();
@@ -137,6 +171,9 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		return retStr;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.QualityDataSetDAO#getForMeasure(java.lang.String)
+	 */
 	@Override
 	public List<QualityDataSet> getForMeasure(String measureId) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -146,6 +183,9 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		return qds;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.QualityDataSetDAO#getQDSElementsFor(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<QualityDataSet> getQDSElementsFor(String measureId,
 			String codeListId, String dataTypeId, String occurrence) {
@@ -162,6 +202,9 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.QualityDataSetDAO#updateListObjectId(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public void updateListObjectId(String oldLOID, String newLOID) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -173,6 +216,13 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		updateQDMTerms(newLOID);
 	}
 	
+	/**
+	 * Gets the by list object.
+	 * 
+	 * @param listObjectId
+	 *            the list object id
+	 * @return the by list object
+	 */
 	public List<QualityDataSet> getByListObject(String listObjectId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(QualityDataSet.class);
@@ -182,6 +232,12 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		return qds;
 	}
 	
+	/**
+	 * Update qdm terms.
+	 * 
+	 * @param newLOID
+	 *            the new loid
+	 */
 	public void updateQDMTerms(String newLOID) {
 		List<QualityDataSet> qdss = getByListObject(newLOID);
 		
@@ -223,12 +279,26 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		}
 	}
 	
+	/**
+	 * Update qdm term.
+	 * 
+	 * @param newID
+	 *            the new id
+	 * @param oldID
+	 *            the old id
+	 */
 	public void updateQDMTerm(String newID, String oldID){
 		Session session = getSessionFactory().getCurrentSession();
 		SQLQuery query = session.createSQLQuery("update QDM_TERM t set t.QDM_ELEMENT_ID = '"+newID+"' where t.QDM_ELEMENT_ID = '"+oldID+"';");
 		int ret = query.executeUpdate();
 	}
 	
+	/**
+	 * Delete old qdm.
+	 * 
+	 * @param oldID
+	 *            the old id
+	 */
 	public void deleteOldQDM(String oldID){
 		Session session = getSessionFactory().getCurrentSession();
 		SQLQuery query = session.createSQLQuery("delete from QUALITY_DATA_MODEL where QUALITY_DATA_MODEL_ID = '"+oldID+"';");

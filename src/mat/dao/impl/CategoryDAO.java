@@ -11,10 +11,17 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
+/**
+ * The Class CategoryDAO.
+ */
 public class CategoryDAO extends GenericDAO<Category, String> implements mat.dao.CategoryDAO {
 	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CategoryDAO.class);
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.CategoryDAO#getAllCategories()
+	 */
 	public List<CategoryDTO> getAllCategories(){
 		
 		List<CategoryDTO> categoryDTOList = new ArrayList<CategoryDTO>();

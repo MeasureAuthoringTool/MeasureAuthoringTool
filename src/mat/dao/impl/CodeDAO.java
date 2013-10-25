@@ -12,8 +12,14 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * The Class CodeDAO.
+ */
 public class CodeDAO extends GenericDAO<Code, String> implements mat.dao.CodeDAO {
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.CodeDAO#deleteCodes(java.util.List)
+	 */
 	public void deleteCodes(List<Code> codes){
 		Session session = getSessionFactory().getCurrentSession();
 	                String hql = "delete from mat.model.Code c where c in (:codesList)";
@@ -29,6 +35,9 @@ public class CodeDAO extends GenericDAO<Code, String> implements mat.dao.CodeDAO
 		}
 
 
+	/* (non-Javadoc)
+	 * @see mat.dao.CodeDAO#searchCodes(java.lang.String, int, int)
+	 */
 	@Override
 	public List<Code> searchCodes(String codeListId, int startIndex, int pageSize) {
 		
@@ -46,6 +55,17 @@ public class CodeDAO extends GenericDAO<Code, String> implements mat.dao.CodeDAO
 			return results;
 	}
 	
+	/**
+	 * Gets the only filtered codes.
+	 * 
+	 * @param pageSize
+	 *            the page size
+	 * @param codes
+	 *            the codes
+	 * @param startIndex
+	 *            the start index
+	 * @return the only filtered codes
+	 */
 	private ArrayList<Code> getOnlyFilteredCodes(int pageSize, ArrayList<Code> codes,int startIndex){
 		ArrayList<Code> codesList = new ArrayList<Code>();
 		int counter = 1;

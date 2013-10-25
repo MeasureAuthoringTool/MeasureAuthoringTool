@@ -10,8 +10,14 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+/**
+ * The Class UserPasswordDAO.
+ */
 public class UserPasswordDAO extends GenericDAO<UserPassword, String> implements mat.dao.UserPasswordDAO {
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.UserPasswordDAO#getUserPasswordInfo(java.lang.String)
+	 */
 	public UserPassword getUserPasswordInfo(String userId)throws UsernameNotFoundException{
 		 Session session = getSessionFactory().getCurrentSession();
 		 Criteria criteria = session.createCriteria(UserPassword.class);

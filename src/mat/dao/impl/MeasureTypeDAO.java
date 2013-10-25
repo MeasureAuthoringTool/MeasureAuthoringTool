@@ -12,10 +12,17 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 
+/**
+ * The Class MeasureTypeDAO.
+ */
 public class MeasureTypeDAO extends GenericDAO<MeasureType, String> implements mat.dao.MeasureTypeDAO {
 	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(MeasureTypeDAO.class);
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.MeasureTypeDAO#getAllMeasureTypes()
+	 */
 	public List<MeasureTypeDTO> getAllMeasureTypes(){
 		
 		List<MeasureTypeDTO> measureTypeList = new ArrayList<MeasureTypeDTO>();

@@ -11,10 +11,18 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
+/**
+ * The Class ObjectStatusDAO.
+ */
 public class ObjectStatusDAO extends GenericDAO<ObjectStatus, String> implements mat.dao.ObjectStatusDAO {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CodeSystemDAO.class);
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.ObjectStatusDAO#getAllObjectStatus()
+	 */
 	public List<ObjectStatusDTO> getAllObjectStatus(){
 		List<ObjectStatusDTO> objectStatusDTOList = new ArrayList<ObjectStatusDTO>();
 		logger.info("Getting all the codeSystem from the category table");

@@ -12,10 +12,17 @@ import org.apache.commons.logging.LogFactory;
 import org.hibernate.Session;
 
 
+/**
+ * The Class StewardDAO.
+ */
 public class StewardDAO extends GenericDAO<MeasureSteward, String> implements mat.dao.StewardDAO {
 	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(StewardDAO.class);
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.StewardDAO#getAllStewardOrg()
+	 */
 	public List<StewardDTO> getAllStewardOrg(){
 		
 		List<StewardDTO> StewardDTOList = new ArrayList<StewardDTO>();

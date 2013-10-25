@@ -18,9 +18,13 @@ import org.hibernate.Session;
  */
 public class MeasureScoreDAO extends GenericDAO<MeasureScore, String> implements mat.dao.MeasureScoreDAO{
 	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(MeasureScoreDAO.class);
 	
 	/* Retrieves all the measure scores configured in the table
+	 * @see mat.dao.MeasureScoreDAO#getAllMeasureScores()
+	 */
+	/* (non-Javadoc)
 	 * @see mat.dao.MeasureScoreDAO#getAllMeasureScores()
 	 */
 	public List<MeasureScoreDTO> getAllMeasureScores(){

@@ -24,13 +24,19 @@ import org.hibernate.event.PreUpdateEventListener;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * This class has been re-factored completely to support US 170 and 383
- *
+ * This class has been re-factored completely to support US 170 and 383.
+ * 
+ * @see AuditEventEvent
  */
 @Transactional
 public class AuditEventListener implements  PreDeleteEventListener, PreInsertEventListener, PreUpdateEventListener {
+	
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 224312334238542737L;
 	
+	/* (non-Javadoc)
+	 * @see org.hibernate.event.PreDeleteEventListener#onPreDelete(org.hibernate.event.PreDeleteEvent)
+	 */
 	@Override
 	public boolean onPreDelete(PreDeleteEvent arg0) {
 		if(shouldAudit(arg0.getEntity(), ConstantMessages.DELETE)) {
@@ -40,6 +46,9 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 		return false;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.hibernate.event.PreUpdateEventListener#onPreUpdate(org.hibernate.event.PreUpdateEvent)
+	 */
 	@Override
 	public boolean onPreUpdate(PreUpdateEvent arg0) {
 		if(shouldAudit(arg0.getEntity(), ConstantMessages.UPDATE)) {
@@ -50,6 +59,9 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 		return false;
 	}
  
+	/* (non-Javadoc)
+	 * @see org.hibernate.event.PreInsertEventListener#onPreInsert(org.hibernate.event.PreInsertEvent)
+	 */
 	@Override
 	public boolean onPreInsert(PreInsertEvent arg0) {
 		if(shouldAudit(arg0.getEntity(), ConstantMessages.INSERT)) {
@@ -59,6 +71,15 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 		return false;
 	}
 
+	/**
+	 * Should audit.
+	 * 
+	 * @param obj
+	 *            the obj
+	 * @param event
+	 *            the event
+	 * @return true, if successful
+	 */
 	private boolean shouldAudit(Object obj, String event) {
 		if(event.equals(ConstantMessages.INSERT)){
 			return obj instanceof Measure ||  
@@ -69,6 +90,15 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 		}
 	}
 	
+	/**
+	 * Creates the log object.
+	 * 
+	 * @param obj
+	 *            the obj
+	 * @param activity
+	 *            the activity
+	 * @return the object
+	 */
 	private Object createLogObject(Object obj, String activity) {
 		// for some reason, if this object is created in the same session,
 		// it is only sometimes inserted into the database 
@@ -133,6 +163,14 @@ public class AuditEventListener implements  PreDeleteEventListener, PreInsertEve
 		return returnObject;
 	}
 	
+	/**
+	 * Save or update.
+	 * 
+	 * @param eventSource
+	 *            the event source
+	 * @param obj
+	 *            the obj
+	 */
 	private void saveOrUpdate(EventSource eventSource, Object obj){
 		Session session = eventSource.getSessionFactory().openSession();
 		try{			

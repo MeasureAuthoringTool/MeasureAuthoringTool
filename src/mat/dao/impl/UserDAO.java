@@ -18,10 +18,18 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/**
+ * The Class UserDAO.
+ */
 public class UserDAO extends GenericDAO<User, String> implements
 		mat.dao.UserDAO {
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(UserDAO.class);
 
+	/* (non-Javadoc)
+	 * @see mat.dao.search.GenericDAO#delete(ID[])
+	 */
 	@Override
 	public void delete(String... ids) {
 		for (String s : ids) {
@@ -30,11 +38,20 @@ public class UserDAO extends GenericDAO<User, String> implements
 		}
 	}
 
+	/**
+	 * Delete.
+	 * 
+	 * @param id
+	 *            the id
+	 */
 	public void delete(String id) {
 
 		System.out.println("Howdy");
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#expireTemporaryPasswords(java.util.Date)
+	 */
 	@Override
 	public void expireTemporaryPasswords(Date targetDate) {
 		Session session = getSessionFactory().openSession();
@@ -61,6 +78,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#unlockUsers(java.util.Date)
+	 */
 	@Override
 	public void unlockUsers(Date unlockDate) {
 		Session session = getSessionFactory().openSession();
@@ -85,6 +105,13 @@ public class UserDAO extends GenericDAO<User, String> implements
 		}
 	}
 
+	/**
+	 * Creates the search criteria.
+	 * 
+	 * @param text
+	 *            the text
+	 * @return the criteria
+	 */
 	private Criteria createSearchCriteria(String text) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(User.class);
@@ -95,6 +122,13 @@ public class UserDAO extends GenericDAO<User, String> implements
 		return criteria;
 	}
 
+	/**
+	 * Creates the search criteria non admin user.
+	 * 
+	 * @param text
+	 *            the text
+	 * @return the criteria
+	 */
 	private Criteria createSearchCriteriaNonAdminUser(String text) {
 
 		Session session = getSessionFactory().getCurrentSession();
@@ -107,6 +141,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 		return criteria;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#searchForUsersByName(java.lang.String, int, int)
+	 */
 	@SuppressWarnings("unchecked")
 	public List<User> searchForUsersByName(String name, int startIndex,
 			int numResults) {
@@ -120,6 +157,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#searchNonAdminUsers(java.lang.String, int, int)
+	 */
 	@SuppressWarnings("unchecked")
 	public List<User> searchNonAdminUsers(String name, int startIndex,
 			int numResults) {
@@ -133,6 +173,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#getAllNonAdminActiveUsers()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<User> getAllNonAdminActiveUsers() {
@@ -144,18 +187,27 @@ public class UserDAO extends GenericDAO<User, String> implements
 		return criteria.list();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#countSearchResults(java.lang.String)
+	 */
 	public int countSearchResults(String text) {
 		Criteria criteria = createSearchCriteria(text);
 		criteria.setProjection(Projections.rowCount());
 		return ((Long) criteria.uniqueResult()).intValue();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#countSearchResultsNonAdmin(java.lang.String)
+	 */
 	public int countSearchResultsNonAdmin(String text) {
 		Criteria criteria = createSearchCriteriaNonAdminUser(text);
 		criteria.setProjection(Projections.rowCount());
 		return ((Long) criteria.uniqueResult()).intValue();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#getUser(java.lang.String)
+	 */
 	@SuppressWarnings("rawtypes")
 	public UserDetails getUser(String userId) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -171,6 +223,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#userExists(java.lang.String)
+	 */
 	@Override
 	public Boolean userExists(String userid) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -180,6 +235,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 		return ((Long) criteria.uniqueResult()) > 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#findUniqueLoginId(java.lang.String)
+	 */
 	@Override
 	public boolean findUniqueLoginId(String loginId) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -189,6 +247,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 		return ((Long) criteria.uniqueResult()) > 0;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#findByEmail(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public User findByEmail(String email) {
@@ -203,6 +264,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#findByLoginId(java.lang.String)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public User findByLoginId(String loginId) {
@@ -217,6 +281,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#saveUserDetails(mat.server.model.MatUserDetails)
+	 */
 	public void saveUserDetails(MatUserDetails userdetails) {
 		Session session = null;
 		Transaction transaction = null;
@@ -234,6 +301,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 	}
 
 	// US212
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#setUserSignInDate(java.lang.String)
+	 */
 	@Override
 	public void setUserSignInDate(String userid) {
 		User u = find(userid);
@@ -243,6 +313,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 	}
 
 	// US212
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#setUserSignOutDate(java.lang.String)
+	 */
 	@Override
 	public void setUserSignOutDate(String userid) {
 		User u = find(userid);
@@ -251,6 +324,9 @@ public class UserDAO extends GenericDAO<User, String> implements
 		save(u);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.UserDAO#getRandomSecurityQuestion(java.lang.String)
+	 */
 	@Override
 	public String getRandomSecurityQuestion(String userLoginId) {
 
@@ -275,6 +351,13 @@ public class UserDAO extends GenericDAO<User, String> implements
 		return question;
 	}
 
+	/**
+	 * Gets the security question by id.
+	 * 
+	 * @param questionId
+	 *            the question id
+	 * @return the security question by id
+	 */
 	public SecurityQuestions getSecurityQuestionById(String questionId) {
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(SecurityQuestions.class);
@@ -283,6 +366,11 @@ public class UserDAO extends GenericDAO<User, String> implements
 		return results.get(0);
 	}
 
+	/**
+	 * Gets the random security question.
+	 * 
+	 * @return the random security question
+	 */
 	public String getRandomSecurityQuestion() {
 		String query = "select QUESTION from SECURITY_QUESTIONS";
 		query += " order by rand() LIMIT 1";

@@ -9,9 +9,15 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
+/**
+ * The Class SecurityQuestionsDAO.
+ */
 public class SecurityQuestionsDAO extends GenericDAO<SecurityQuestions, String> implements mat.dao.SecurityQuestionsDAO{
 	
 		
+	/* (non-Javadoc)
+	 * @see mat.dao.SecurityQuestionsDAO#getSecurityQuestions()
+	 */
 	@Override
 	public List<SecurityQuestions> getSecurityQuestions(){
 		return this.find();
@@ -21,6 +27,9 @@ public class SecurityQuestionsDAO extends GenericDAO<SecurityQuestions, String> 
 //		return results;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.dao.SecurityQuestionsDAO#getSecurityQuestionObj(java.lang.String)
+	 */
 	@Override 
 	public SecurityQuestions getSecurityQuestionObj(String question){
 		Session session = getSessionFactory().getCurrentSession();

@@ -2,19 +2,29 @@ package mat.client.clause.clauseworkspace.model;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+/**
+ * The Class MeasureXmlModel.
+ */
 public class MeasureXmlModel implements IsSerializable {
 
+	/** The meausre export id. */
 	private String meausreExportId;
 
+	/** The measure id. */
 	private String measureId;
 
+	/** The xml. */
 	private String xml;
 
+	/** The to replace node. */
 	private String toReplaceNode;
 
+	/** The parent node. */
 	private String parentNode;
 
 	/**
+	 * Gets the meausre export id.
+	 * 
 	 * @return the meausreExportId
 	 */
 	public String getMeausreExportId() {
@@ -22,13 +32,18 @@ public class MeasureXmlModel implements IsSerializable {
 	}
 
 	/**
-	 * @param meausreExportId the meausreExportId to set
+	 * Sets the meausre export id.
+	 * 
+	 * @param meausreExportId
+	 *            the meausreExportId to set
 	 */
 	public void setMeausreExportId(String meausreExportId) {
 		this.meausreExportId = meausreExportId;
 	}
 
 	/**
+	 * Gets the measure id.
+	 * 
 	 * @return the measureId
 	 */
 	public String getMeasureId() {
@@ -36,13 +51,18 @@ public class MeasureXmlModel implements IsSerializable {
 	}
 
 	/**
-	 * @param measureId the measureId to set
+	 * Sets the measure id.
+	 * 
+	 * @param measureId
+	 *            the measureId to set
 	 */
 	public void setMeasureId(String measureId) {
 		this.measureId = measureId;
 	}
 
 	/**
+	 * Gets the xml.
+	 * 
 	 * @return the xml
 	 */
 	public String getXml() {
@@ -50,21 +70,37 @@ public class MeasureXmlModel implements IsSerializable {
 	}
 
 	/**
-	 * @param xml the xml to set
+	 * Sets the xml.
+	 * 
+	 * @param xml
+	 *            the xml to set
 	 */
 	public void setXml(String xml) {
 		this.xml = xml;
 	}
 
+	/**
+	 * Gets the to replace node.
+	 * 
+	 * @return the to replace node
+	 */
 	public String getToReplaceNode() {
 		return toReplaceNode;
 	}
 
+	/**
+	 * Sets the to replace node.
+	 * 
+	 * @param toReplaceNode
+	 *            the new to replace node
+	 */
 	public void setToReplaceNode(String toReplaceNode) {
 		this.toReplaceNode = toReplaceNode;
 	}
 
 	/**
+	 * Gets the parent node.
+	 * 
 	 * @return the parentNode
 	 */
 	public String getParentNode() {
@@ -72,7 +108,10 @@ public class MeasureXmlModel implements IsSerializable {
 	}
 
 	/**
-	 * @param parentNode the parentNode to set
+	 * Sets the parent node.
+	 * 
+	 * @param parentNode
+	 *            the parentNode to set
 	 */
 	public void setParentNode(String parentNode) {
 		this.parentNode = parentNode;

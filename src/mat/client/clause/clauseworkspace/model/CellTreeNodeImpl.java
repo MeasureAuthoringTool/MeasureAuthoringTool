@@ -12,13 +12,11 @@ import mat.shared.UUIDUtilClient;
  * CellTreeNodeImpl.java.
  */
 public class CellTreeNodeImpl implements CellTreeNode {
-	/**
-	 * {@link List} of child {@link CellTreeNode}.
-	 */
+	
+	/** The childs. {@link List} of child {@link CellTreeNode}. */
 	private List<CellTreeNode> childs;
-	/**
-	 * {@link HashMap} of Node's extra information.
-	 */
+	
+	/** The extra information map. {@link HashMap} of Node's extra information. */
 	private Map<String, Object> extraInformationMap = new HashMap<String, Object>();
 	/**
 	 * Node open/close status.
@@ -98,7 +96,10 @@ public class CellTreeNodeImpl implements CellTreeNode {
 		this.setOpen(true); // open parent
 		return appendChild(cellTreeNode);
 	}
+	
 	/**
+	 * Creates the copy childs.
+	 * 
 	 * @param childNodes
 	 *            - {@link List} of {@link CellTreeNode}.
 	 * @param parentNode
@@ -116,7 +117,10 @@ public class CellTreeNodeImpl implements CellTreeNode {
 			}
 		}
 	}
+	
 	/**
+	 * Creates the copy of tree model.
+	 * 
 	 * @param model
 	 *            - {@link CellTreeNode}.
 	 * @return {@link CellTreeNode}.
@@ -186,7 +190,10 @@ public class CellTreeNodeImpl implements CellTreeNode {
 	public Object getExtraInformation(String key) {
 		return extraInformationMap.get(key);
 	}
+	
 	/**
+	 * Gets the extra information map.
+	 * 
 	 * @return the extraInformationMap
 	 */
 	public Map<String, Object> getExtraInformationMap() {
@@ -402,7 +409,10 @@ public class CellTreeNodeImpl implements CellTreeNode {
 	public void setExtraInformation(String key, Object value) {
 		extraInformationMap.put(key, value);
 	}
+	
 	/**
+	 * Sets the extra information map.
+	 * 
 	 * @param extraInformationMap
 	 *            the extraInformationMap to set
 	 */

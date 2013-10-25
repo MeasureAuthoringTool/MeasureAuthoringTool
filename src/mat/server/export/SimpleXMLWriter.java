@@ -10,17 +10,35 @@ import mat.server.service.impl.XMLUtility;
 
 import com.thoughtworks.xstream.XStream;
 
+/**
+ * The Class SimpleXMLWriter.
+ */
 public class SimpleXMLWriter {
 	
+	/** The Constant CONVERSION_FILE_FILTER. */
 	private static final String CONVERSION_FILE_FILTER="xsl/filter.xsl";
 	
 	
+	/**
+	 * Filter xsl.
+	 * 
+	 * @param xmlStr
+	 *            the xml str
+	 * @return the string
+	 */
 	private String filterXSL(String xmlStr) {
 		XMLUtility xmlUtility = new XMLUtility();
 		String tempXML = xmlUtility.applyXSL(xmlStr, xmlUtility.getXMLResource(CONVERSION_FILE_FILTER));
 		return tempXML;
 	}
 	
+	/**
+	 * Clean manually.
+	 * 
+	 * @param xmlStr
+	 *            the xml str
+	 * @return the string
+	 */
 	private String cleanManually(String xmlStr) {
 		//using an array of string so it can be referenced by "reference" 
 		List<String> strContainer = new ArrayList<String>();
@@ -109,6 +127,19 @@ public class SimpleXMLWriter {
 		return strContainer.get(0);
 	}
 	
+	/**
+	 * Search and replace.
+	 * 
+	 * @param search
+	 *            the search
+	 * @param replace
+	 *            the replace
+	 * @param inString
+	 *            the in string
+	 * @param strContainer
+	 *            the str container
+	 * @return true, if successful
+	 */
 	private boolean searchAndReplace(String search, String replace, String inString, List<String> strContainer) {
 		
 		Pattern rangePattern;
@@ -122,6 +153,14 @@ public class SimpleXMLWriter {
 		return x;
 	}
 	
+	/**
+	 * Sets the attributes.
+	 * 
+	 * @param cls
+	 *            the cls
+	 * @param xstream
+	 *            the xstream
+	 */
 	private void setAttributes(Class cls, XStream xstream) {
 		Field[] fields = cls.getDeclaredFields();
 		for (Field field : fields) {
@@ -138,6 +177,14 @@ public class SimpleXMLWriter {
 		}
 	}
 	
+	/**
+	 * Sets the alias.
+	 * 
+	 * @param cls
+	 *            the cls
+	 * @param xstream
+	 *            the xstream
+	 */
 	private void setAlias(Class cls, XStream xstream) {
 		xstream.alias(convertFirstCharactertoLowercase(cls.getSimpleName()), cls);
 	}
@@ -146,12 +193,27 @@ public class SimpleXMLWriter {
 	 * the measurepopulation has been named as measurePopulation and measureobservation has been named
 	 * as measureObservation.
 	 */
+	/**
+	 * Convert first characterto lowercase.
+	 * 
+	 * @param name
+	 *            the name
+	 * @return the string
+	 */
 	private String convertFirstCharactertoLowercase(String name){
 		String firstCharacter = name.substring(0,1);
 		String remainingCharacters = name.substring(1, name.length());
 		return firstCharacter.toLowerCase() + remainingCharacters;
 	}
 	
+	/**
+	 * Removes the collection tags.
+	 * 
+	 * @param cls
+	 *            the cls
+	 * @param xstream
+	 *            the xstream
+	 */
 	private void removeCollectionTags(Class cls,  XStream xstream) {
 		Field[] fields = cls.getDeclaredFields();
 		for (Field field : fields) {
@@ -162,6 +224,15 @@ public class SimpleXMLWriter {
 		}
 	}
 	
+	/**
+	 * Gets the classes.
+	 * 
+	 * @param cls
+	 *            the cls
+	 * @param classList
+	 *            the class list
+	 * @return the classes
+	 */
 	private void getClasses(Class cls, List<Class<?>> classList) {
 		Field[] fields = cls.getDeclaredFields();
 		for (Field field : fields) {
@@ -200,6 +271,16 @@ public class SimpleXMLWriter {
 				getClasses(cls.getSuperclass(), classList);
 		}
 	}
+	
+	/**
+	 * Checks if is in list.
+	 * 
+	 * @param list
+	 *            the list
+	 * @param key
+	 *            the key
+	 * @return true, if is in list
+	 */
 	private boolean isInList(List<Class<?>> list, String key) {
 		for (Class<?> c : list) {
 			if (c.getName().equalsIgnoreCase(key)) {

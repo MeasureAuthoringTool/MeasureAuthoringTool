@@ -13,15 +13,18 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
- * Service implementation for Code List Audit Service
- *
+ * Service implementation for Code List Audit Service.
  */
 public class CodeListAuditServiceImpl implements CodeListAuditService{
+	
+	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(CodeListAuditServiceImpl.class);
 	
+	/** The list object dao. */
 	@Autowired
 	private ListObjectDAO listObjectDAO;
 
+	/** The code list audit log dao. */
 	@Autowired
 	private CodeListAuditLogDAO codeListAuditLogDAO;
 	
@@ -38,6 +41,9 @@ public class CodeListAuditServiceImpl implements CodeListAuditService{
 	
 	/* Search and returns the list of events starts with the start index and the given number of rows
 	 * @see mat.server.service.CodeListAuditService#executeSearch(java.lang.String, int, int)
+	 */
+	/* (non-Javadoc)
+	 * @see mat.server.service.CodeListAuditService#executeSearch(java.lang.String, int, int, java.util.List)
 	 */
 	@Override
 	public SearchHistoryDTO executeSearch(String codeListId, int startIndex, int numberOfRows,List<String> filterList){

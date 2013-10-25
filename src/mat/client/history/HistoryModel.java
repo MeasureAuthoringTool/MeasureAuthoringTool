@@ -11,40 +11,70 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class HistoryModel.
+ */
 public class HistoryModel extends PagingFacade<AuditLogDTO> implements IsSerializable{
 
+	/** The headers. */
 	private static String[] headers = new String[] {"Log Entry"};
+	
+	/** The widths. */
 	private static String[] widths = new String[] { "100%"};
 	
+	/**
+	 * Instantiates a new history model.
+	 * 
+	 * @param data
+	 *            the data
+	 */
 	public HistoryModel(List<AuditLogDTO> data) {
 		super(data);		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getNumberOfColumns()
+	 */
 	@Override
 	public int getNumberOfColumns() {
 		return headers.length;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getColumnHeader(int)
+	 */
 	@Override
 	public String getColumnHeader(int columnIndex) {
 		return headers[columnIndex];
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#isColumnSortable(int)
+	 */
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getColumnWidth(int)
+	 */
 	@Override
 	public String getColumnWidth(int columnIndex) {
 		return widths[columnIndex];
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getKey(java.lang.Object)
+	 */
 	@Override
 	public String getKey(AuditLogDTO dataObject) {
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#getValueImpl(java.lang.Object, int)
+	 */
 	@Override
 	public Widget getValueImpl(AuditLogDTO auditLogDTO, int column) {
 		//System.out.println("COLUMN:" + column);
@@ -78,11 +108,17 @@ public class HistoryModel extends PagingFacade<AuditLogDTO> implements IsSeriali
 		return value;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.PagingFacade#isColumnFiresSelection(int)
+	 */
 	@Override
 	public boolean isColumnFiresSelection(int columnIndex) {
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
+	 */
 	@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return false;

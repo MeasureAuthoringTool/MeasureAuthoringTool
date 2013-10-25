@@ -26,28 +26,67 @@ import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+/**
+ * The Class HistoryBaseView.
+ */
 public abstract class HistoryBaseView {
 	
 	
+	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
+	
+	/** The log entry label. */
 	Label logEntryLabel = new Label();
+	
+	/** The add comment. */
 	Label addComment = new Label();
+	
+	/** The save button. */
 	private Button saveButton;
+	
+	/** The clear button. */
 	private Button clearButton;
+	
+	/** The go back link. */
 	protected Anchor goBackLink = new Anchor("");
+	
+	/** The horizontal panel. */
 	protected HorizontalPanel horizontalPanel = new HorizontalPanel();
+	
+	/** The input text. */
 	protected TextArea	inputText = new TextArea();
+	
+	/** The add comment panel. */
 	protected VerticalPanel addCommentPanel = new VerticalPanel();
+	
+	/** The comment buttons. */
 	private SaveCancelButtonBar commentButtons = new SaveCancelButtonBar();
+	
+	/** The name text. */
 	protected Label nameText = new Label("");
+	
+	/** The log entry panel. */
 	private VerticalPanel logEntryPanel = new VerticalPanel();
+	
+	/** The container panel. */
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
+	
+	/** The success messages. */
 	protected SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	
+	/** The error messages. */
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	/** The view. */
 	protected SearchView<AuditLogDTO> view = getSearchView();
+	
+	/** The err msg. */
 	private ErrorMessageDisplay errMsg = new ErrorMessageDisplay();
 	
 	
+	/**
+	 * Instantiates a new history base view.
+	 */
 	public HistoryBaseView(){
 		mainPanel.add(errMsg);
 		mainPanel.setStylePrimaryName("searchResultsContainer");
@@ -96,10 +135,24 @@ public abstract class HistoryBaseView {
 		
 		
 	}
+	
+	/**
+	 * As widget.
+	 * 
+	 * @return the widget
+	 */
 	public Widget asWidget() {
 		return mainPanel;
 	}
 
+	/**
+	 * Sets the parent name.
+	 * 
+	 * @param label
+	 *            the label
+	 * @param name
+	 *            the name
+	 */
 	protected void setParentName(String label, String name) {
 		Label parentLabel = new Label(label);
 		Label parentName = new Label(name);
@@ -108,82 +161,178 @@ public abstract class HistoryBaseView {
 	}
 	
 	
+	/**
+	 * Gets the save button.
+	 * 
+	 * @return the save button
+	 */
 	public HasClickHandlers getSaveButton() {
 		return saveButton;
 	}
 
 	
+	/**
+	 * Gets the clear button.
+	 * 
+	 * @return the clear button
+	 */
 	public HasClickHandlers getClearButton() {
 		return clearButton;
 	}
 
 	
+	/**
+	 * Gets the user comment.
+	 * 
+	 * @return the user comment
+	 */
 	public HasValue<String> getUserComment() {
 		return inputText;
 	}
 	
 
+	/**
+	 * Gets the success message display.
+	 * 
+	 * @return the success message display
+	 */
 	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
 		return successMessages;
 	}
 
 	
+	/**
+	 * Gets the error message display.
+	 * 
+	 * @return the error message display
+	 */
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
 
+	/**
+	 * Gets the page selection tool.
+	 * 
+	 * @return the page selection tool
+	 */
 	public HasPageSelectionHandler getPageSelectionTool() {
 		return view;
 	}
 
+	/**
+	 * Gets the page size selection tool.
+	 * 
+	 * @return the page size selection tool
+	 */
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return view;
 	}
 
+	/**
+	 * Gets the page size.
+	 * 
+	 * @return the page size
+	 */
 	public int getPageSize() {
 		return view.getPageSize();
 	}
 
+	/**
+	 * Sets the page size.
+	 * 
+	 * @param pageSize
+	 *            the new page size
+	 */
 	public void setPageSize(int pageSize){
 		view.setPageSize(pageSize);
 	}
 	
 	
+	/**
+	 * Gets the current page.
+	 * 
+	 * @return the current page
+	 */
 	public int getCurrentPage(){
 		return view.getCurrentPage();
 	}
 
 	
+	/**
+	 * Sets the current page.
+	 * 
+	 * @param pageNumber
+	 *            the new current page
+	 */
 	public void setCurrentPage(int pageNumber){
 		view.setCurrentPage(pageNumber);
 	}
 	
 	
+	/**
+	 * Builds the data table.
+	 * 
+	 * @param results
+	 *            the results
+	 * @param pageCount
+	 *            the page count
+	 * @param totalResults
+	 *            the total results
+	 * @param currentPage
+	 *            the current page
+	 * @param pageSize
+	 *            the page size
+	 */
 	public void buildDataTable(SearchResults<AuditLogDTO> results,int pageCount,long totalResults,int currentPage,int pageSize) {
 		view.buildHistoryDataTable(results,pageCount,totalResults,currentPage,pageSize);
 	}
 	
 
+	/**
+	 * Gets the search view.
+	 * 
+	 * @return the search view
+	 */
 	public SearchView<AuditLogDTO> getSearchView() {
 		if(view == null) {
 			view = new SearchView<AuditLogDTO>();
 		}
 		return view;
 	}
+	
+	/**
+	 * Sets the error message.
+	 * 
+	 * @param s
+	 *            the new error message
+	 */
 	public void setErrorMessage(String s){
 		errMsg.clear();
 		errMsg.setMessage(s);
 	}
+	
+	/**
+	 * Clear error message.
+	 */
 	public void clearErrorMessage(){
 		errMsg.clear();
 	}
 	
+	/**
+	 * Reset.
+	 */
 	public void reset(){
 		clearErrorMessage();
 		inputText.setText("");
 		view.setCurrentPage(SearchView.DEFAULT_PAGE);
 	}
 	
+	/**
+	 * Sets the user comments read only.
+	 * 
+	 * @param b
+	 *            the new user comments read only
+	 */
 	public void setUserCommentsReadOnly(boolean b){
 		inputText.setReadOnly(b);
 		saveButton.setEnabled(!b);

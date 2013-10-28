@@ -1,6 +1,5 @@
 package mat.client.codelist.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -12,8 +11,6 @@ import mat.client.codelist.ManageCodeListSearchModel;
 import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
 import mat.model.Code;
-import mat.model.CodeListSearchDTO;
-import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
 
@@ -690,25 +687,5 @@ public interface CodeListService extends RemoteService {
 	 */
 	public void transferOwnerShipToUser(List<String> list, String toEmail);
 	
-	/**
-	 * Update code list to measure.
-	 * 
-	 * @param dataType
-	 *            the data type
-	 * @param matValueSet
-	 *            the mat value set
-	 * @param codeListSearchDTO
-	 *            the code list search dto
-	 * @param qualityDataSetDTO
-	 *            the quality data set dto
-	 * @param isSpecificOccurrence
-	 *            the is specific occurrence
-	 * @param version
-	 *            the version
-	 * @param appliedQDMList
-	 *            the applied qdm list
-	 * @return the save update code list result
-	 */
-	SaveUpdateCodeListResult updateCodeListToMeasure(String dataType, MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO,
-			QualityDataSetDTO qualityDataSetDTO, Boolean isSpecificOccurrence, String version, ArrayList<QualityDataSetDTO> appliedQDMList);
+	SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject);
 }

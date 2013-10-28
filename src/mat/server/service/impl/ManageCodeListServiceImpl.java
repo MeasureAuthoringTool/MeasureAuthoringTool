@@ -1849,57 +1849,43 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	
 	/*
 	 * (non-Javadoc)
-	 * @see
-	 * mat.server.service.CodeListService#updateQDStoMeasure(java.lang.String,
-	 * mat.model.MatValueSet, mat.model.CodeListSearchDTO,
-	 * mat.model.QualityDataSetDTO, boolean, java.lang.String,
-	 * java.util.ArrayList)
+	 * @see mat.server.service.CodeListService#updateQDStoMeasure(mat.model.
+	 * MatValueSetTransferObject)
 	 */
 	@Override
-	public final SaveUpdateCodeListResult updateQDStoMeasure(
-			final String dataType, final MatValueSet matValueSet,
-			final CodeListSearchDTO codeList, final QualityDataSetDTO qualityDataSetDTO, final boolean isSpecificOccurrence,
-			String version, final ArrayList<QualityDataSetDTO> appliedQDM) {
-		
+	public final SaveUpdateCodeListResult updateQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject) {
 		SaveUpdateCodeListResult result = null;
-		
-		if (matValueSet != null) {
-			result = updateVSACValueSetInElementLookUp(dataType, matValueSet, qualityDataSetDTO, isSpecificOccurrence, version, appliedQDM);
-		} else if (codeList != null) {
-			result = updateUserDefineQDMInElementLookUp(dataType, codeList, qualityDataSetDTO, appliedQDM);
+		if (matValueSetTransferObject.getMatValueSet() != null) {
+			result = updateVSACValueSetInElementLookUp(matValueSetTransferObject);
+		} else if (matValueSetTransferObject.getCodeListSearchDTO() != null) {
+			result = updateUserDefineQDMInElementLookUp(matValueSetTransferObject);
 		}
 		return result;
 	}
-	
 	/**
 	 * Update user define qdm in element look up.
-	 * 
-	 * @param dataType
-	 *            the data type
-	 * @param codeList
-	 *            the code list
-	 * @param qualityDataSetDTO
-	 *            the quality data set dto
-	 * @param appliedQDM
-	 *            the applied qdm
-	 * @return the save update code list result
+	 * @param matValueSetTransferObject
+	 *            - mat Value Set Transfer Object
+	 * @return SaveUpdateCodeListResult
 	 */
-	private SaveUpdateCodeListResult updateUserDefineQDMInElementLookUp(final String dataType, final CodeListSearchDTO codeList,
-			final QualityDataSetDTO qualityDataSetDTO, final ArrayList<QualityDataSetDTO> appliedQDM) {
+	private SaveUpdateCodeListResult updateUserDefineQDMInElementLookUp(MatValueSetTransferObject matValueSetTransferObject) {
 		QualityDataModelWrapper wrapper = new QualityDataModelWrapper();
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		if (!checkForDuplicates(dataType, null, codeList, appliedQDM, false)) {
+		if (!checkForDuplicates(matValueSetTransferObject.getDatatype(), null, matValueSetTransferObject.getCodeListSearchDTO(),
+				(ArrayList<QualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList(), false)) {
 			ArrayList<QualityDataSetDTO> qdsList = new ArrayList<QualityDataSetDTO>();
 			wrapper.setQualityDataDTO(qdsList);
-			QualityDataSetDTO qds = qualityDataSetDTO;
-			DataType dt = dataTypeDAO.find(dataType);
+			QualityDataSetDTO qds = matValueSetTransferObject.getQualityDataSetDTO();
+			DataType dt = dataTypeDAO.find(matValueSetTransferObject.getDatatype());
 			qds.setDataType(dt.getDescription());
 			qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
 			qds.setId(UUID.randomUUID().toString());
-			qds.setCodeListName(codeList.getName());
+			qds.setCodeListName(matValueSetTransferObject.getCodeListSearchDTO().getName());
 			qds.setTaxonomy(ConstantMessages.USER_DEFINED_QDM_NAME);
 			qds.setOccurrenceText(null);
-			wrapper = modifyAppliedElementList(qds, appliedQDM);
+			qds.setVersion("1.0");
+			wrapper = modifyAppliedElementList(qds, (ArrayList<QualityDataSetDTO>)
+					matValueSetTransferObject.getAppliedQDMList());
 			String qdmXMLString = addAppliedQDMInMeasureXML(wrapper);
 			result.setSuccess(true);
 			result.setAppliedQDMList(sortQualityDataSetList(wrapper
@@ -1912,36 +1898,23 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 		return result;
 	}
-	
 	/**
 	 * Update vsac value set in element look up.
-	 * 
-	 * @param dataType
-	 *            the data type
-	 * @param matValueSet
-	 *            the mat value set
-	 * @param qualityDataSetDTO
-	 *            the quality data set dto
-	 * @param isSpecificOccurrence
-	 *            the is specific occurrence
-	 * @param version
-	 *            the version
-	 * @param appliedQDM
-	 *            the applied qdm
-	 * @return the save update code list result
+	 * @param matValueSetTransferObject
+	 *            - mat Value Set Transfer Object
+	 * @return SaveUpdateCodeListResult
 	 */
-	private SaveUpdateCodeListResult updateVSACValueSetInElementLookUp(final String dataType, final MatValueSet matValueSet,
-			final QualityDataSetDTO qualityDataSetDTO, final boolean isSpecificOccurrence, String version,
-			final ArrayList<QualityDataSetDTO> appliedQDM
+	private SaveUpdateCodeListResult updateVSACValueSetInElementLookUp(MatValueSetTransferObject matValueSetTransferObject
 			) {
-		
 		SaveUpdateCodeListResult result = new SaveUpdateCodeListResult();
-		if (isSpecificOccurrence) {
-			QualityDataSetDTO qds = qualityDataSetDTO;
+		if (matValueSetTransferObject.isSpecificOccurrence()) {
+			QualityDataSetDTO qds = matValueSetTransferObject.getQualityDataSetDTO();
+			String dataType = matValueSetTransferObject.getDatatype();
 			if (dataType != null) {
 				DataType dt = dataTypeDAO.find(dataType);
 				qds.setDataType(dt.getDescription());
 			}
+			MatValueSet matValueSet = matValueSetTransferObject.getMatValueSet();
 			qds.setOid(matValueSet.getID());
 			qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 			qds.setCodeListName(matValueSet.getDisplayName());
@@ -1950,32 +1923,35 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			} else {
 				qds.setTaxonomy(matValueSet.getCodeSystemName());
 			}
-			if ((version != null) && StringUtils.isNotEmpty(version)) {
-				qds.setVersion(version.trim());
+			if ((matValueSetTransferObject.getVersion() != null) && StringUtils.isNotEmpty(
+					matValueSetTransferObject.getVersion())) {
+				qds.setVersion(matValueSetTransferObject.getVersion().trim());
 			} else {
 				qds.setVersion("1.0");
 			}
-			
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
-					matValueSet, appliedQDM);
+					matValueSet, (ArrayList<QualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
 			if (occurrenceCount < ASCII_START) { // Alphabet ASCII Integer Values.
 				char occTxt = (char) occurrenceCount;
 				qds.setOccurrenceText("Occurrence" + " " + occTxt);
-				QualityDataModelWrapper wrapper = modifyAppliedElementList(qds, appliedQDM);
+				QualityDataModelWrapper wrapper = modifyAppliedElementList(qds,
+						(ArrayList<QualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
 				result.setOccurrenceMessage(qds.getOccurrenceText());
 				result.setSuccess(true);
 				result.setAppliedQDMList(sortQualityDataSetList(wrapper
 						.getQualityDataDTO()));
 				result.setDataSetDTO(qds);
 			}
-			
 		} else { // Treat as regular QDM
-			if (!checkForDuplicates(dataType, matValueSet, null, appliedQDM, true)) {
-				QualityDataSetDTO qds = qualityDataSetDTO;
+			if (!checkForDuplicates(matValueSetTransferObject.getDatatype(), matValueSetTransferObject.getMatValueSet(),
+					null, (ArrayList<QualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList(), true)) {
+				QualityDataSetDTO qds = matValueSetTransferObject.getQualityDataSetDTO();
+				String dataType = matValueSetTransferObject.getDatatype();
 				if (dataType != null) {
 					DataType dt = dataTypeDAO.find(dataType);
 					qds.setDataType(dt.getDescription());
 				}
+				MatValueSet matValueSet = matValueSetTransferObject.getMatValueSet();
 				qds.setOid(matValueSet.getID());
 				qds.setId(UUID.randomUUID().toString().replaceAll("-", ""));
 				qds.setCodeListName(matValueSet.getDisplayName());
@@ -1984,14 +1960,15 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				} else {
 					qds.setTaxonomy(matValueSet.getCodeSystemName());
 				}
-				if ((version != null) && StringUtils.isNotEmpty(version)) {
-					qds.setVersion(version.trim());
+				if ((matValueSetTransferObject.getVersion() != null) && StringUtils.isNotEmpty(
+						matValueSetTransferObject.getVersion())) {
+					qds.setVersion(matValueSetTransferObject.getVersion().trim());
 				} else {
 					qds.setVersion("1.0");
 				}
 				qds.setOccurrenceText("");
-				
-				QualityDataModelWrapper wrapper  = modifyAppliedElementList(qds, appliedQDM);
+				QualityDataModelWrapper wrapper = modifyAppliedElementList(qds,
+						(ArrayList<QualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
 				result.setOccurrenceMessage(qds.getOccurrenceText());
 				result.setSuccess(true);
 				result.setAppliedQDMList(sortQualityDataSetList(wrapper

@@ -17,9 +17,7 @@ import mat.client.codelist.ManageValueSetSearchModel;
 import mat.client.codelist.TransferOwnerShipModel;
 import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.model.Code;
-import mat.model.CodeListSearchDTO;
 import mat.model.GroupedCodeListDTO;
-import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
 import mat.model.User;
@@ -510,16 +508,18 @@ implements mat.client.codelist.service.CodeListService {
 		cls.transferOwnerShipToUser(list, toEmail);
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.codelist.service.CodeListService#updateCodeListToMeasure(java.lang.String, mat.model.MatValueSet, mat.model.CodeListSearchDTO, mat.model.QualityDataSetDTO, java.lang.Boolean, java.lang.String, java.util.ArrayList)
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * mat.client.codelist.service.CodeListService#updateCodeListToMeasure(mat
+	 * .model.MatValueSetTransferObject)
 	 */
 	@Override
-	public SaveUpdateCodeListResult updateCodeListToMeasure(String dataType,
-			MatValueSet matValueSet, CodeListSearchDTO codeListSearchDTO,QualityDataSetDTO qualityDataSetDTO,
-			Boolean isSpecificOccurrence, String version, ArrayList<QualityDataSetDTO> appliedQDMList) {
+	public SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject) {
 		
-		return getCodeListService().updateQDStoMeasure(dataType, matValueSet, codeListSearchDTO, qualityDataSetDTO, isSpecificOccurrence,
-				version, appliedQDMList);
+		return getCodeListService().updateQDStoMeasure(matValueSetTransferObject);
 	}
 	
 	

@@ -1,6 +1,5 @@
 package mat.server.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mat.DTO.OperatorDTO;
@@ -12,7 +11,6 @@ import mat.client.codelist.service.SaveUpdateCodeListResult;
 import mat.model.Code;
 import mat.model.CodeListSearchDTO;
 import mat.model.ListObject;
-import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
 import mat.model.User;
@@ -354,43 +352,12 @@ public interface CodeListService {
 	/*
 	 * Update qds to measure.
 	 * 
-	 * @param dataType the data type
-	 * 
-	 * @param matValueSet the mat value set
-	 * 
-	 * @param codeList the code list
-	 * 
-	 * @param qualityDataSetDTO the quality data set dto
-	 * 
-	 * @param isSpecificOccurrence the is specific occurrence
-	 * 
-	 * @param version the version
-	 * 
-	 * @param appliedQDM the applied qdm
+	 * @param matValueSetTransferObject the mat Value Set Transfer Object
 	 * 
 	 * @return the save update code list result
 	 */
-	/**
-	 * Update qd sto measure.
-	 * 
-	 * @param dataType
-	 *            the data type
-	 * @param matValueSet
-	 *            the mat value set
-	 * @param codeList
-	 *            the code list
-	 * @param qualityDataSetDTO
-	 *            the quality data set dto
-	 * @param isSpecificOccurrence
-	 *            the is specific occurrence
-	 * @param version
-	 *            the version
-	 * @param appliedQDM
-	 *            the applied qdm
-	 * @return the save update code list result
-	 */
-	SaveUpdateCodeListResult updateQDStoMeasure(String dataType, MatValueSet matValueSet, CodeListSearchDTO codeList,
-			QualityDataSetDTO qualityDataSetDTO, boolean isSpecificOccurrence, String version, ArrayList<QualityDataSetDTO> appliedQDM);
+
+	SaveUpdateCodeListResult updateQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject);
 	
 	
 }

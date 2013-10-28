@@ -907,7 +907,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						== CellTreeNode.TIMING_NODE || node.getNodeType() == CellTreeNode.RELATIONSHIP_NODE) {
 				// this check is performed since IE was giving JavaScriptError after removing a node and closing all nodes.
 					subTree = treeNode.setChildOpen(i, true, true);
-					if (subTree != null && subTree.getChildCount() >= 2) {
+					if (subTree != null && subTree.getChildCount() == 2) {
 						if (!node.getValidNode()) {
 							editNode(true, node, subTree);
 						}

@@ -37,11 +37,11 @@ public abstract class XLSGenerator {
 	protected final int oid = 1;
 	protected final int lastModified = 2;
 	protected final int standardconcept = 3;
-	protected final int standardcategory = 4;
-	protected final int standardtaxonomy = 5;
-	protected final int standardtaxonomyversion = 6;
-	protected final int code = 7;
-	protected final int codedescription = 8;
+	/* protected final int standardcategory = 4; */
+	protected final int standardtaxonomy = 4;
+	protected final int standardtaxonomyversion = 5;
+	protected final int code = 6;
+	protected final int codedescription = 7;
 	protected final String AUTHOR = "eMeasureTool";
 	protected final String TITLE = "Value Set Export";
 	protected final String SUBJECT = "Value Set Export";
@@ -59,14 +59,15 @@ public abstract class XLSGenerator {
 		 * @return int.
 		 */
 
+		@Override
 		public final int compareTo(final RowCacheItem o) {
 			DotCompare dc = new DotCompare();
 			int ret;
-			ret = dc.dotNotationCompare(this.values[oid], o.values[oid]);
+			ret = dc.dotNotationCompare(values[oid], o.values[oid]);
 			if (ret != 0) {
 				return ret;
 			}
-			return dc.dotNotationCompare(this.values[code], o.values[code]);
+			return dc.dotNotationCompare(values[code], o.values[code]);
 		}
 	}
 	/**
@@ -119,7 +120,7 @@ public abstract class XLSGenerator {
 	 * WorkBook Header.
 	 * **/
 	private final String[] HEADER_STRINGS = { "Value Set Developer",
-			"Value Set OID", "Last Modified", "Value Set Name", "QDM Category",
+			"Value Set OID", "Last Modified", "Value Set Name",
 			"Code System", "Code System Version", "Code", "Descriptor" };
 
 	/**
@@ -165,29 +166,31 @@ public abstract class XLSGenerator {
 			final HSSFCellStyle style) {
 		HSSFRow row = wkst.createRow(rownum);
 		row.createCell(measuredeveloper, HSSFCell.CELL_TYPE_STRING)
-				.setCellValue(values[measuredeveloper]);
+		.setCellValue(values[measuredeveloper]);
 		row.createCell(oid, HSSFCell.CELL_TYPE_STRING)
-				.setCellValue(values[oid]);
+		.setCellValue(values[oid]);
 		row.createCell(lastModified, HSSFCell.CELL_TYPE_STRING).setCellValue(
 				values[lastModified]);
 		row.createCell(standardconcept, HSSFCell.CELL_TYPE_STRING)
-				.setCellValue(values[standardconcept]);
-		row.createCell(standardcategory, HSSFCell.CELL_TYPE_STRING)
-				.setCellValue(values[standardcategory]);
+		.setCellValue(values[standardconcept]);
+		/*
+		 * row.createCell(standardcategory, HSSFCell.CELL_TYPE_STRING)
+		 * .setCellValue(values[standardcategory]);
+		 */
 		row.createCell(standardtaxonomy, HSSFCell.CELL_TYPE_STRING)
-				.setCellValue(values[standardtaxonomy]);
+		.setCellValue(values[standardtaxonomy]);
 		row.createCell(standardtaxonomyversion, HSSFCell.CELL_TYPE_STRING)
-				.setCellValue(values[standardtaxonomyversion]);
+		.setCellValue(values[standardtaxonomyversion]);
 		row.createCell(code, HSSFCell.CELL_TYPE_STRING).setCellValue(
 				values[code]);
 		row.createCell(codedescription, HSSFCell.CELL_TYPE_STRING)
-				.setCellValue(values[codedescription]);
+		.setCellValue(values[codedescription]);
 		if (style != null) {
 			row.getCell(measuredeveloper).setCellStyle(style);
 			row.getCell(oid).setCellStyle(style);
 			row.getCell(lastModified).setCellStyle(style);
 			row.getCell(standardconcept).setCellStyle(style);
-			row.getCell(standardcategory).setCellStyle(style);
+			/* row.getCell(standardcategory).setCellStyle(style); */
 			row.getCell(standardtaxonomy).setCellStyle(style);
 			row.getCell(standardtaxonomyversion).setCellStyle(style);
 			row.getCell(code).setCellStyle(style);
@@ -204,7 +207,7 @@ public abstract class XLSGenerator {
 		sizeColumn(wkst, (short) oid);
 		sizeColumn(wkst, (short) lastModified);
 		sizeColumn(wkst, (short) standardconcept);
-		sizeColumn(wkst, (short) standardcategory);
+		/* sizeColumn(wkst, (short) standardcategory); */
 		sizeColumn(wkst, (short) standardtaxonomy);
 		sizeColumn(wkst, (short) standardtaxonomyversion);
 		sizeColumn(wkst, (short) code);
@@ -295,9 +298,9 @@ public abstract class XLSGenerator {
 		HSSFWorkbook wkbk = new HSSFWorkbook();
 		HSSFSheet wkst = wkbk.createSheet("Sheet 1");
 		wkst.createRow(0)
-				.createCell(0)
-				.setCellValue("Measure must be re-packaged to capture the Value Set export."
-						+ " Please re-package and try again.");
+		.createCell(0)
+		.setCellValue("Measure must be re-packaged to capture the Value Set export."
+				+ " Please re-package and try again.");
 		return wkbk;
 	}
 
@@ -337,15 +340,17 @@ public abstract class XLSGenerator {
 				+ "'!$C$1");
 		generateName(wkbk, names[standardconcept], "'" + wkst.getSheetName()
 				+ "'!$D$1");
-		generateName(wkbk, names[standardcategory], "'" + wkst.getSheetName()
-				+ "'!$E$1");
+		/*
+		 * generateName(wkbk, names[standardcategory], "'" + wkst.getSheetName()
+		 * + "'!$E$1");
+		 */
 		generateName(wkbk, names[standardtaxonomy], "'" + wkst.getSheetName()
-				+ "'!$F$1");
+				+ "'!$E$1");
 		generateName(wkbk, names[standardtaxonomyversion],
-				"'" + wkst.getSheetName() + "'!$G$1");
-		generateName(wkbk, names[code], "'" + wkst.getSheetName() + "'!$H$1");
+				"'" + wkst.getSheetName() + "'!$F$1");
+		generateName(wkbk, names[code], "'" + wkst.getSheetName() + "'!$G$1");
 		generateName(wkbk, names[codedescription], "'" + wkst.getSheetName()
-				+ "'!$I$1");
+				+ "'!$H$1");
 
 		return headerRow;
 	}
@@ -376,14 +381,14 @@ public abstract class XLSGenerator {
 
 		String measureDeveloper = "";
 		// US 178, Using steward organization name for SDE !!.
-		if (lo.getSteward() != null
+		if ((lo.getSteward() != null)
 				&& !lo.getSteward().getOrgName().equalsIgnoreCase("Other")) {
 			measureDeveloper = lo.getSteward().getOrgName();
 		} else if (lo.getStewardOther() != null) {
 			measureDeveloper = lo.getStewardOther();
 		}
 		String standardConcept = lo.getName();
-		String category = lo.getCategory().getDescription();
+		// String category = lo.getCategory().getDescription();
 		String taxonomy = lo.getCodeSystem().getDescription();
 		String taxonomyVersion = lo.getCodeSystemVersion();
 		String oid = lo.getOid();
@@ -395,7 +400,7 @@ public abstract class XLSGenerator {
 				String code = "";
 				String description = "";
 				cacheRow(new String[] {measureDeveloper, oid,
-						valueSetLastModified, standardConcept, category,
+						valueSetLastModified, standardConcept,
 						taxonomy, taxonomyVersion, code, description }, null);
 			}
 			Set<Code> codeSet = new HashSet<Code>();
@@ -405,23 +410,20 @@ public abstract class XLSGenerator {
 			for (Code c : codeSet) {
 				String code = c.getCode();
 				String description = c.getDescription();
-				cacheRow(new String[] {measureDeveloper, oid,
-						valueSetLastModified, standardConcept, category,
+				cacheRow(new String[] { measureDeveloper, oid, valueSetLastModified, standardConcept,
 						taxonomy, taxonomyVersion, code, description }, null);
 			}
 		} else {
 			if (lo.getCodesLists().isEmpty()) {
 				String code = "";
 				String description = "";
-				cacheRow(new String[] {measureDeveloper, oid,
-						valueSetLastModified, standardConcept, category,
+				cacheRow(new String[] { measureDeveloper, oid, valueSetLastModified, standardConcept,
 						taxonomy, taxonomyVersion, code, description }, null);
 			}
 			for (GroupedCodeList gcl : lo.getCodesLists()) {
 				String code = gcl.getCodeList().getOid();
 				String description = gcl.getDescription();
-				cacheRow(new String[] {measureDeveloper, oid,
-						valueSetLastModified, standardConcept, category,
+				cacheRow(new String[] { measureDeveloper, oid, valueSetLastModified, standardConcept,
 						taxonomy, taxonomyVersion, code, description }, null);
 				cacheXLSRow(gcl.getCodeList(), listObjectDAO, vsPackageDate);
 			}

@@ -15,14 +15,14 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
  * **/
 public class ValueSetXLSGenerator extends XLSGenerator {
 
-/**
- *@param loid - String.
- *@param names - String Array.
- *@param wkbk -HSSFWorkbook.
- * @param lo - ListObject.
- * **/
-public final void addValueSetWorkSheet(final String loid, final String[] names,
-		final HSSFWorkbook wkbk, final ListObject lo) {
+	/**
+	 *@param loid - String.
+	 *@param names - String Array.
+	 *@param wkbk -HSSFWorkbook.
+	 * @param lo - ListObject.
+	 * **/
+	public final void addValueSetWorkSheet(final String loid, final String[] names,
+			final HSSFWorkbook wkbk, final ListObject lo) {
 		String sheetName = stripInvalidChars(lo.getName());
 
 		HSSFCellStyle style = wkbk.createCellStyle();
@@ -35,17 +35,17 @@ public final void addValueSetWorkSheet(final String loid, final String[] names,
 		rowCache.clear();
 		sizeColumns(wkst);
 	}
-/**
- *@param loid - String.
- * @param lo - ListObject.
- * @return HSSFWorkbook.
- * **/
+	/**
+	 *@param loid - String.
+	 * @param lo - ListObject.
+	 * @return HSSFWorkbook.
+	 * **/
 
 	public final HSSFWorkbook getXLS(final String loid, final ListObject lo) {
 
 		HSSFWorkbook wkbk = new HSSFWorkbook();
 		createMetaData(wkbk);
-		addDisclaimer(wkbk);
+		// addDisclaimer(wkbk);
 		// adding measure value set
 		addValueSetWorkSheet(loid, getNAME_STRINGS(), wkbk, lo);
 		return wkbk;

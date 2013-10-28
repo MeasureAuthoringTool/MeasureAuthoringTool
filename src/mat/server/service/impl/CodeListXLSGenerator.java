@@ -19,15 +19,15 @@ public class CodeListXLSGenerator extends XLSGenerator{
 
 	/** SVS Column name.**/
 	private final String[] svsNameString = {
-		"ValueSetDeveloper_SVS",
-		"ValueSetOID_SVS",
-		"LastModified_SVS",
-		"ValueSetName_SVS",
-		"QDMCategory_SVS",
-		"CodeSystem_SVS",
-		"CodeSystemVersion_SVS",
-		"Code_SVS",
-		"Descriptor_SVS"};
+			"ValueSetDeveloper_SVS",
+			"ValueSetOID_SVS",
+			"LastModified_SVS",
+			"ValueSetName_SVS",
+			"QDMCategory_SVS",
+			"CodeSystem_SVS",
+			"CodeSystemVersion_SVS",
+			"Code_SVS",
+	"Descriptor_SVS"};
 
 	/** List of String containing qdm OID.**/
 	private List<String> qdmOIDs = new ArrayList<String>();
@@ -60,7 +60,7 @@ public class CodeListXLSGenerator extends XLSGenerator{
 
 		HSSFWorkbook wkbk = new HSSFWorkbook();
 		createMetaData(wkbk);
-		addDisclaimer(wkbk);
+		// addDisclaimer(wkbk);
 		//adding measure value set
 		String sheetName = stripInvalidChars(m.getaBBRName());
 		addVsacValueSetWorkSheet(sheetName, getNAME_STRINGS() , m , wkbk, qdmRefId, matValueSets);
@@ -100,6 +100,7 @@ public class CodeListXLSGenerator extends XLSGenerator{
 	 *
 	 * **/
 
+	@Override
 	protected final void cacheXLSRow(final MatValueSet lo) {
 
 		if (lo == null) {
@@ -107,9 +108,9 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		}
 
 		if (!qdmOIDs.contains(lo.getID())) {
-				qdmOIDs.add(lo.getID());
-				processXLSRow(lo);
-			}
+			qdmOIDs.add(lo.getID());
+			processXLSRow(lo);
+		}
 
 	}
 

@@ -1493,9 +1493,11 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		}
 		return result;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.CodeListService#saveUserDefinedQDStoMeasure(java.lang.String, java.lang.String, java.lang.String, java.util.ArrayList)
+	/*
+	 * (non-Javadoc)
+	 * @see mat.server.service.CodeListService#saveUserDefinedQDStoMeasure
+	 * (java.lang.String, java.lang.String, java.lang.String,
+	 * java.util.ArrayList)
 	 */
 	@Override
 	public SaveUpdateCodeListResult saveUserDefinedQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject) {
@@ -1508,10 +1510,11 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		DataType dt = dataTypeDAO.find(dataType);
 		boolean isQDSExist = false;
 		for (QualityDataSetDTO dataSetDTO : existingQDSList) {
-			if(dataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+			if (dataSetDTO.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
 				if (dt.getDescription().equalsIgnoreCase(dataSetDTO.getDataType())
-						&& (dataSetDTO.getCodeListName().equalsIgnoreCase(matValueSetTransferObject.getUserDefinedText()))
-						&& (dataSetDTO.getOccurrenceText() == null)) {
+						&& (dataSetDTO.getCodeListName().equalsIgnoreCase(
+								matValueSetTransferObject.getUserDefinedText()))
+								&& (dataSetDTO.getOccurrenceText() == null)) {
 					// if the same dataType exists and the occurrenceText is also
 					// null
 					// then there is a any occurrence exists for that dataType.
@@ -1523,7 +1526,6 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		if (!isQDSExist) {
 			wrapper.setQualityDataDTO(qdsList);
 			QualityDataSetDTO qds = new QualityDataSetDTO();
-			
 			qds.setDataType(dt.getDescription());
 			qds.setOid(ConstantMessages.USER_DEFINED_QDM_OID);
 			qds.setId(UUID.randomUUID().toString());
@@ -1540,9 +1542,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
 		}
 		return result;
-		
 	}
-	
 	/* US566 */
 	/* (non-Javadoc)
 	 * @see mat.server.service.CodeListService#search(java.lang.String, int, int, java.lang.String, boolean, boolean, int)
@@ -1551,28 +1551,16 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	public List<CodeListSearchDTO> search(String searchText, int startIndex,
 			int pageSize, String sortColumn, boolean isAsc,
 			boolean defaultCodeList, int filter) {
-		
 		String loggedInUserid = LoggedInUserUtil.getLoggedInUser();
 		List<CodeListSearchDTO> codeList = listObjectDAO.searchWithFilter(
 				searchText, loggedInUserid, startIndex - 1, pageSize,
 				sortColumn, isAsc, defaultCodeList, filter);
-		/*
-		 * if(defaultCodeList){ List<CodeListSearchDTO> filteredCodeList = new
-		 * ArrayList<CodeListSearchDTO>(); for(CodeListSearchDTO codeListDTO :
-		 * codeList) { if(codeListDTO.getOid() != null &&
-		 * !codeListDTO.getOid().equals(ConstantMessages.GENDER_OID) &&
-		 * !codeListDTO.getOid().equals(ConstantMessages.RACE_OID) &&
-		 * !codeListDTO.getOid().equals(ConstantMessages.ETHNICITY_OID) &&
-		 * !codeListDTO.getOid().equals(ConstantMessages.PAYER_OID)){
-		 * filteredCodeList.add(codeListDTO); } else System.out.println(); }
-		 * codeList = filteredCodeList; }
-		 */
-		
 		return codeList;
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.CodeListService#search(java.lang.String, int, int, java.lang.String, boolean, boolean, int, java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * @see mat.server.service.CodeListService#search(java.lang.String, int,
+	 * int, java.lang.String, boolean, boolean, int, java.lang.String)
 	 */
 	@Override
 	public List<CodeListSearchDTO> search(String searchText, int startIndex,

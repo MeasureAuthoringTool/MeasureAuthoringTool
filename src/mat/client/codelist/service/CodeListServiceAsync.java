@@ -14,6 +14,7 @@ import mat.client.codelist.TransferOwnerShipModel;
 import mat.model.Code;
 import mat.model.CodeListSearchDTO;
 import mat.model.MatValueSet;
+import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -23,6 +24,265 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
  * The Interface CodeListServiceAsync.
  */
 public interface CodeListServiceAsync {
+	
+	//US193
+	/**
+	 * Creates the clone.
+	 * 
+	 * @param id
+	 *            the id
+	 * @param asyncCallback
+	 *            the async callback
+	 */
+	public void createClone(String id, AsyncCallback<ManageValueSetSearchModel> asyncCallback);
+	
+	/**
+	 * Creates the draft.
+	 * 
+	 * @param id
+	 *            the id
+	 * @param oid
+	 *            the oid
+	 * @param asyncCallback
+	 *            the async callback
+	 */
+	public void createDraft(String id, String oid, AsyncCallback<ManageValueSetSearchModel> asyncCallback);
+	
+	/**
+	 * Delete codes.
+	 * 
+	 * @param codeListID
+	 *            the code list id
+	 * @param Codes
+	 *            the codes
+	 * @param callback
+	 *            the callback
+	 */
+	void deleteCodes(String codeListID, List<Code> Codes,
+			AsyncCallback<ManageCodeListDetailModel> callback);
+	
+	/**
+	 * Generate unique oid.
+	 * 
+	 * @param currentDetails
+	 *            the current details
+	 * @param callBack
+	 *            the call back
+	 */
+	public void generateUniqueOid(ManageCodeListDetailModel currentDetails, AsyncCallback<String> callBack);
+	
+	/**
+	 * Gets the all data types.
+	 * 
+	 * @param asyncCallback
+	 *            the async callback
+	 * @return the all data types
+	 */
+	public void getAllDataTypes(
+			AsyncCallback<List<? extends HasListBox>> asyncCallback);
+	
+	/**
+	 * Gets the all operators.
+	 * 
+	 * @param callback
+	 *            the callback
+	 * @return the all operators
+	 */
+	void getAllOperators(AsyncCallback<List<OperatorDTO>> callback);
+	
+	/**
+	 * Gets the all units.
+	 * 
+	 * @param callback
+	 *            the callback
+	 * @return the all units
+	 */
+	void getAllUnits(AsyncCallback<List<String>> callback);
+	
+	/**
+	 * Gets the code list.
+	 * 
+	 * @param key
+	 *            the key
+	 * @param callback
+	 *            the callback
+	 * @return the code list
+	 */
+	public void getCodeList(String key,
+			AsyncCallback<ManageCodeListDetailModel> callback);
+	
+	/**
+	 * Gets the code lists for category.
+	 * 
+	 * @param category
+	 *            the category
+	 * @param callback
+	 *            the callback
+	 * @return the code lists for category
+	 */
+	public void getCodeListsForCategory(String category, AsyncCallback<List<? extends HasListBox>> callback);
+	
+	/**
+	 * Gets the codes.
+	 * 
+	 * @param codeListId
+	 *            the code list id
+	 * @param startIndex
+	 *            the start index
+	 * @param pageSize
+	 *            the page size
+	 * @param callback
+	 *            the callback
+	 * @return the codes
+	 */
+	public void getCodes(String codeListId,int startIndex,int pageSize,AsyncCallback<List<Code>> callback);
+	
+	/**
+	 * Gets the code systems for category.
+	 * 
+	 * @param category
+	 *            the category
+	 * @param callback
+	 *            the callback
+	 * @return the code systems for category
+	 */
+	public void getCodeSystemsForCategory(String category, AsyncCallback<List<? extends HasListBox>> callback);
+	
+	/**
+	 * Gets the grouped code list.
+	 * 
+	 * @param key
+	 *            the key
+	 * @param callback
+	 *            the callback
+	 * @return the grouped code list
+	 */
+	public void getGroupedCodeList(String key,
+			AsyncCallback<ManageCodeListDetailModel> callback);
+	
+	/**
+	 * Gets the grouped code list.
+	 * 
+	 * @param key
+	 *            the key
+	 * @param startIndex
+	 *            the start index
+	 * @param pageSize
+	 *            the page size
+	 * @param callback
+	 *            the callback
+	 * @return the grouped code list
+	 */
+	public void getGroupedCodeList(String key, int startIndex, int pageSize,
+			AsyncCallback<ManageCodeListDetailModel> callback);
+	
+	
+	/**
+	 * Gets the list box data.
+	 * 
+	 * @param callback
+	 *            the callback
+	 * @return the list box data
+	 */
+	void getListBoxData(AsyncCallback<CodeListService.ListBoxData> callback);
+	
+	/**
+	 * Gets the qDS data type for category.
+	 * 
+	 * @param category
+	 *            the category
+	 * @param callback
+	 *            the callback
+	 * @return the qDS data type for category
+	 */
+	public void getQDSDataTypeForCategory(String category, AsyncCallback<List<? extends HasListBox>> callback);
+	
+	/**
+	 * Gets the qDS elements.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @param vertsion
+	 *            the vertsion
+	 * @param callback
+	 *            the callback
+	 * @return the qDS elements
+	 */
+	public void getQDSElements(String measureId, String vertsion, AsyncCallback<List<QualityDataSetDTO>> callback);
+	
+	/**
+	 * Gets the rel associations operators.
+	 * 
+	 * @param callback
+	 *            the callback
+	 * @return the rel associations operators
+	 */
+	void getRelAssociationsOperators(AsyncCallback<Map<String, String>> callback);
+	
+	/**
+	 * Gets the timing operators.
+	 * 
+	 * @param callback
+	 *            the callback
+	 * @return the timing operators
+	 */
+	void getTimingOperators(AsyncCallback<Map<String, String>> callback);
+	/**
+	 * Checks if is code already exists.
+	 * 
+	 * @param codeListId
+	 *            the code list id
+	 * @param code
+	 *            the code
+	 * @param callback
+	 *            the callback
+	 */
+	public void isCodeAlreadyExists(String codeListId, Code code,AsyncCallback<Boolean> callback);
+	
+	/**
+	 * Saveor update code list.
+	 * 
+	 * @param currentDetails
+	 *            the current details
+	 * @param callback
+	 *            the callback
+	 */
+	void saveorUpdateCodeList(ManageCodeListDetailModel currentDetails,
+			AsyncCallback<SaveUpdateCodeListResult> callback);
+	
+	/**
+	 * Save or update grouped code list.
+	 * 
+	 * @param currentDetails
+	 *            the current details
+	 * @param callback
+	 *            the callback
+	 */
+	void saveorUpdateGroupedCodeList(ManageCodeListDetailModel currentDetails,
+			AsyncCallback<SaveUpdateCodeListResult> callback);
+	
+	/**
+	 * Save qd sto measure.
+	 * 
+	 * @param matValueSetTransferObject
+	 *            the mat value set transfer object
+	 * @param callback
+	 *            the callback
+	 */
+	void saveQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject,
+			AsyncCallback<SaveUpdateCodeListResult> callback);
+	
+	/**
+	 * Save user defined qds to measure.
+	 * 
+	 * @param matValueSetTransferObject
+	 *            the mat value set transfer object
+	 * @param asyncCallback
+	 *            the async callback
+	 */
+	public void saveUserDefinedQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject,
+			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
+	
 	
 	/**
 	 * Search.
@@ -47,7 +307,7 @@ public interface CodeListServiceAsync {
 	public void search(String searchText,
 			int startIndex, int pageSize, String sortColumn, boolean isAsc, boolean defaultCodeList, int filter,
 			AsyncCallback<ManageCodeListSearchModel> callback);
-
+	
 	/**
 	 * Search.
 	 * 
@@ -74,213 +334,7 @@ public interface CodeListServiceAsync {
 			int startIndex, int pageSize, String sortColumn, boolean isAsc, boolean defaultCodeList, int filter,
 			String categoryId,
 			AsyncCallback<ManageCodeListSearchModel> callback);
-
-	/**
-	 * Gets the code list.
-	 * 
-	 * @param key
-	 *            the key
-	 * @param callback
-	 *            the callback
-	 * @return the code list
-	 */
-	public void getCodeList(String key,
-			AsyncCallback<ManageCodeListDetailModel> callback);
 	
-	/**
-	 * Gets the grouped code list.
-	 * 
-	 * @param key
-	 *            the key
-	 * @param callback
-	 *            the callback
-	 * @return the grouped code list
-	 */
-	public void getGroupedCodeList(String key,
-			AsyncCallback<ManageCodeListDetailModel> callback);
-
-	/**
-	 * Gets the grouped code list.
-	 * 
-	 * @param key
-	 *            the key
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param callback
-	 *            the callback
-	 * @return the grouped code list
-	 */
-	public void getGroupedCodeList(String key, int startIndex, int pageSize,
-			AsyncCallback<ManageCodeListDetailModel> callback);
-	
-	/**
-	 * Gets the codes.
-	 * 
-	 * @param codeListId
-	 *            the code list id
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param callback
-	 *            the callback
-	 * @return the codes
-	 */
-	public void getCodes(String codeListId,int startIndex,int pageSize,AsyncCallback<List<Code>> callback);
-
-	/**
-	 * Checks if is code already exists.
-	 * 
-	 * @param codeListId
-	 *            the code list id
-	 * @param code
-	 *            the code
-	 * @param callback
-	 *            the callback
-	 */
-	public void isCodeAlreadyExists(String codeListId, Code code,AsyncCallback<Boolean> callback);
-	
-	/**
-	 * Gets the list box data.
-	 * 
-	 * @param callback
-	 *            the callback
-	 * @return the list box data
-	 */
-	void getListBoxData(AsyncCallback<CodeListService.ListBoxData> callback);
-
-	/**
-	 * Saveor update code list.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @param callback
-	 *            the callback
-	 */
-	void saveorUpdateCodeList(ManageCodeListDetailModel currentDetails,
-			AsyncCallback<SaveUpdateCodeListResult> callback);
-
-	/**
-	 * Saveor update grouped code list.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @param callback
-	 *            the callback
-	 */
-	void saveorUpdateGroupedCodeList(ManageCodeListDetailModel currentDetails,
-			AsyncCallback<SaveUpdateCodeListResult> callback);
-
-	/**
-	 * Gets the code systems for category.
-	 * 
-	 * @param category
-	 *            the category
-	 * @param callback
-	 *            the callback
-	 * @return the code systems for category
-	 */
-	public void getCodeSystemsForCategory(String category, AsyncCallback<List<? extends HasListBox>> callback);
-	
-	/**
-	 * Gets the code lists for category.
-	 * 
-	 * @param category
-	 *            the category
-	 * @param callback
-	 *            the callback
-	 * @return the code lists for category
-	 */
-	public void getCodeListsForCategory(String category, AsyncCallback<List<? extends HasListBox>> callback);
-	
-	/**
-	 * Gets the qDS data type for category.
-	 * 
-	 * @param category
-	 *            the category
-	 * @param callback
-	 *            the callback
-	 * @return the qDS data type for category
-	 */
-	public void getQDSDataTypeForCategory(String category, AsyncCallback<List<? extends HasListBox>> callback);
-
-
-	/**
-	 * Delete codes.
-	 * 
-	 * @param codeListID
-	 *            the code list id
-	 * @param Codes
-	 *            the codes
-	 * @param callback
-	 *            the callback
-	 */
-	void deleteCodes(String codeListID, List<Code> Codes,
-			AsyncCallback<ManageCodeListDetailModel> callback);
-
-	/*void addCodeListToMeasure(String measureId, String dataType,CodeListSearchDTO codeList,boolean isSpecificOccurrence,ArrayList<QualityDataSetDTO> appliedQDMs,
-			AsyncCallback<SaveUpdateCodeListResult> callback);*/
-
-	/**
-	 * Gets the qDS elements.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param vertsion
-	 *            the vertsion
-	 * @param callback
-	 *            the callback
-	 * @return the qDS elements
-	 */
-	public void getQDSElements(String measureId, String vertsion, AsyncCallback<List<QualityDataSetDTO>> callback);
-
-	/**
-	 * Generate unique oid.
-	 * 
-	 * @param currentDetails
-	 *            the current details
-	 * @param callBack
-	 *            the call back
-	 */
-	public void generateUniqueOid(ManageCodeListDetailModel currentDetails, AsyncCallback<String> callBack);
-
-	/**
-	 * Search value sets for draft.
-	 * 
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param asyncCallback
-	 *            the async callback
-	 */
-	public void searchValueSetsForDraft(int startIndex, int pageSize,
-			AsyncCallback<ManageValueSetSearchModel> asyncCallback);
-
-	/**
-	 * Creates the draft.
-	 * 
-	 * @param id
-	 *            the id
-	 * @param oid
-	 *            the oid
-	 * @param asyncCallback
-	 *            the async callback
-	 */
-	public void createDraft(String id, String oid, AsyncCallback<ManageValueSetSearchModel> asyncCallback);
-	//US193
-	/**
-	 * Creates the clone.
-	 * 
-	 * @param id
-	 *            the id
-	 * @param asyncCallback
-	 *            the async callback
-	 */
-	public void createClone(String id, AsyncCallback<ManageValueSetSearchModel> asyncCallback);
-
 	/**
 	 * Search for admin.
 	 * 
@@ -304,20 +358,7 @@ public interface CodeListServiceAsync {
 	void searchForAdmin(String searchText, int startIndex, int pageSize,
 			String sortColumn, boolean isAsc, boolean defaultCodeList,
 			int filter, AsyncCallback<AdminManageCodeListSearchModel> callback);
-
-	/**
-	 * Transfer owner ship to user.
-	 * 
-	 * @param list
-	 *            the list
-	 * @param toEmail
-	 *            the to email
-	 * @param callback
-	 *            the callback
-	 */
-	void transferOwnerShipToUser(List<String> list, String toEmail,
-			AsyncCallback<Void> callback);
-
+	
 	/**
 	 * Search users.
 	 * 
@@ -330,43 +371,33 @@ public interface CodeListServiceAsync {
 	 */
 	void searchUsers(int startIndex, int pageSize,
 			AsyncCallback<TransferOwnerShipModel> callback);
-
+	
 	/**
-	 * Gets the timing operators.
+	 * Search value sets for draft.
 	 * 
+	 * @param startIndex
+	 *            the start index
+	 * @param pageSize
+	 *            the page size
+	 * @param asyncCallback
+	 *            the async callback
+	 */
+	public void searchValueSetsForDraft(int startIndex, int pageSize,
+			AsyncCallback<ManageValueSetSearchModel> asyncCallback);
+	
+	/**
+	 * Transfer owner ship to user.
+	 * 
+	 * @param list
+	 *            the list
+	 * @param toEmail
+	 *            the to email
 	 * @param callback
 	 *            the callback
-	 * @return the timing operators
 	 */
-	void getTimingOperators(AsyncCallback<Map<String, String>> callback);
-
-	/**
-	 * Gets the all units.
-	 * 
-	 * @param callback
-	 *            the callback
-	 * @return the all units
-	 */
-	void getAllUnits(AsyncCallback<List<String>> callback);
-
-	/**
-	 * Gets the rel associations operators.
-	 * 
-	 * @param callback
-	 *            the callback
-	 * @return the rel associations operators
-	 */
-	void getRelAssociationsOperators(AsyncCallback<Map<String, String>> callback);
-
-	/**
-	 * Gets the all operators.
-	 * 
-	 * @param callback
-	 *            the callback
-	 * @return the all operators
-	 */
-	void getAllOperators(AsyncCallback<List<OperatorDTO>> callback);
-
+	void transferOwnerShipToUser(List<String> list, String toEmail,
+			AsyncCallback<Void> callback);
+	
 	/**
 	 * Update code list to measure.
 	 * 
@@ -389,56 +420,6 @@ public interface CodeListServiceAsync {
 	 */
 	void updateCodeListToMeasure(String dataType, MatValueSet matValueSet,
 			CodeListSearchDTO codeListSearchDTO, QualityDataSetDTO qualityDataSetDTO,
- Boolean isSpecificOccurrence, String version, ArrayList<QualityDataSetDTO> appliedQDMList,
+			Boolean isSpecificOccurrence, String version, ArrayList<QualityDataSetDTO> appliedQDMList,
 			AsyncCallback<SaveUpdateCodeListResult> asyncCallback);
-
-	/**
-	 * Gets the all data types.
-	 * 
-	 * @param asyncCallback
-	 *            the async callback
-	 * @return the all data types
-	 */
-	public void getAllDataTypes(
-			AsyncCallback<List<? extends HasListBox>> asyncCallback);
-
-	/**
-	 * Save user defined qd sto measure.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param dataType
-	 *            the data type
-	 * @param codeList
-	 *            the code list
-	 * @param appliedQDMs
-	 *            the applied qd ms
-	 * @param callback
-	 *            the callback
-	 */
-	void saveUserDefinedQDStoMeasure(String measureId, String dataType,String codeList,ArrayList<QualityDataSetDTO> appliedQDMs,
-			AsyncCallback<SaveUpdateCodeListResult> callback);
-	
-	/**
-	 * Save qd sto measure.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param dataType
-	 *            the data type
-	 * @param matValueSet
-	 *            the mat value set
-	 * @param isSpecificOccurrence
-	 *            the is specific occurrence
-	 * @param version
-	 *            the version
-	 * @param appliedQDM
-	 *            the applied qdm
-	 * @param callback
-	 *            the callback
-	 */
-	void saveQDStoMeasure(String measureId, String dataType,
-			MatValueSet matValueSet, boolean isSpecificOccurrence,
-			String version, ArrayList<QualityDataSetDTO> appliedQDM,
-			AsyncCallback<SaveUpdateCodeListResult> callback);
 }

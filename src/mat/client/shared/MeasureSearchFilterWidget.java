@@ -58,7 +58,7 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 	private DisclosurePanel searchFilterDisclosurePanel = new DisclosurePanel();
 	
 	/** The search input. {@link WatermarkedTextBox}. */
-	private WatermarkedTextBox searchInput = new WatermarkedTextBox();
+	private TextBox searchInput = new TextBox();
 	/**
 	 * Selected filter value - {@link Integer}.
 	 */
@@ -67,7 +67,7 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 	 * Default Constructor.
 	 */
 	public MeasureSearchFilterWidget() {
-		searchInput.setWatermark("Search");
+		// searchInput.setWatermark("Search");
 		searchButton = new PrimaryButton("Go", "primaryButton");
 		searchButton.addClickHandler(this);
 		searchInput.getElement().getStyle().setHeight(TEXT_BOX_HT, Unit.PX);

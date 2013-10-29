@@ -13,7 +13,50 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("vsacapi")
 public interface VSACAPIService extends RemoteService {
-
+	
+	/**
+	 * Gets the value set by oid and version.
+	 * 
+	 * @param OID
+	 *            the oid
+	 * @param version
+	 *            the version
+	 * @return the value set by oid and version
+	 */
+	/* VsacApiResult getValueSetByOIDAndVersion(String OID, String version); */
+	
+	VsacApiResult getValueSetByOIDAndVersionOrEffectiveDate(String oid, String version, String effectiveDate);
+	
+	/**
+	 * In validate vsac user.
+	 */
+	void inValidateVsacUser();
+	
+	/**
+	 * Checks if is already signed in.
+	 * 
+	 * @return true, if is already signed in
+	 */
+	boolean isAlreadySignedIn();
+	
+	/**
+	 * Update all vsac value sets at package.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @return the vsac api result
+	 */
+	VsacApiResult updateAllVSACValueSetsAtPackage(String measureId);
+	
+	/**
+	 * Update vsac value sets.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @return the vsac api result
+	 */
+	VsacApiResult updateVSACValueSets(String measureId);
+	
 	/**
 	 * Validate vsac user.
 	 * 
@@ -24,46 +67,5 @@ public interface VSACAPIService extends RemoteService {
 	 * @return true, if successful
 	 */
 	boolean validateVsacUser(String userName, String password);
-
-	/**
-	 * Gets the value set by oid and version.
-	 * 
-	 * @param OID
-	 *            the oid
-	 * @param version
-	 *            the version
-	 * @return the value set by oid and version
-	 */
-	VsacApiResult getValueSetByOIDAndVersion(String OID, String version);
-
-	/**
-	 * In validate vsac user.
-	 */
-	void inValidateVsacUser();
-
-	/**
-	 * Checks if is already signed in.
-	 * 
-	 * @return true, if is already signed in
-	 */
-	boolean isAlreadySignedIn();
-
-	/**
-	 * Update vsac value sets.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @return the vsac api result
-	 */
-	VsacApiResult updateVSACValueSets(String measureId);
-
-	/**
-	 * Update all vsac value sets at package.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @return the vsac api result
-	 */
-	VsacApiResult updateAllVSACValueSetsAtPackage(String measureId);
-
+	
 }

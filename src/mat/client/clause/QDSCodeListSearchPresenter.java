@@ -356,8 +356,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			public void onClick(final ClickEvent event) {
 				MatContext.get().clearDVIMessages();
 				isUSerDefined = false;
+				// To Do: Pass Effective date.
 				searchValueSetInVsac(searchDisplay.getOIDInput().getValue(),
-						searchDisplay.getVersionInput().getValue());
+						searchDisplay.getVersionInput().getValue(), null);
 			}
 		});
 		
@@ -761,7 +762,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	 * @param version
 	 *            - {@link String}.
 	 */
-	private void searchValueSetInVsac(final String oid, final String version) {
+	private void searchValueSetInVsac(final String oid, final String version, final String effectiveDate) {
 		
 		if (!MatContext.get().isUMLSLoggedIn()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(
@@ -779,7 +780,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			}
 			
 			showSearchingBusy(true);
-			vsacapiService.getValueSetByOIDAndVersion(oid, version, new AsyncCallback<VsacApiResult>() {
+			vsacapiService.getValueSetByOIDAndVersionOrEffectiveDate(oid, version, effectiveDate, new AsyncCallback<VsacApiResult>() {
 				@Override
 				public void onFailure(final Throwable caught) {
 					searchDisplay.getErrorMessageDisplay().setMessage(

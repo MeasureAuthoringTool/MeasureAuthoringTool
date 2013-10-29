@@ -377,8 +377,9 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				searchDisplay.clearVSACValueSetMessages();
+				// To Do Pass Effective date.
 				searchValueSetInVsac(searchDisplay.getOIDInput().getValue(),
-						searchDisplay.getVersionInput().getValue());
+						searchDisplay.getVersionInput().getValue(), null);
 			}
 		});
 	}
@@ -605,7 +606,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 * @param version
 	 *            - {@link String}
 	 */
-	private void searchValueSetInVsac(String oid, String version) {
+	private void searchValueSetInVsac(String oid, String version, String effectiveDate) {
 		if (!MatContext.get().isUMLSLoggedIn()) { //UMLS Login Validation
 			searchDisplay.getErrorMessageDisplay().setMessage(
 					MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
@@ -618,7 +619,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			return;
 		}
 		showSearchingBusy(true);
-		vsacapiService.getValueSetByOIDAndVersion(oid, version, new AsyncCallback<VsacApiResult>() {
+		vsacapiService.getValueSetByOIDAndVersionOrEffectiveDate(oid, version, effectiveDate, new AsyncCallback<VsacApiResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(

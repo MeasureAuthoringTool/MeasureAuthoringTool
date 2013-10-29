@@ -1335,11 +1335,13 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			qds.setTaxonomy(matValueSet.getCodeSystemName());
 		}
 		qds.setUuid(UUID.randomUUID().toString());
-		
 		if (valueSetTransferObject.isVersionDate()) {
 			qds.setVersion(valueSetTransferObject.getQueryDate());
 		} else {
 			qds.setVersion("1.0");
+		}
+		if (valueSetTransferObject.isEffectiveDate()) {
+			qds.setEffectiveDate(valueSetTransferObject.getQueryDate());
 		}
 		if (valueSetTransferObject.isSpecificOccurrence()) {
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
@@ -1787,6 +1789,9 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				qds.setVersion(matValueSetTransferObject.getQueryDate());
 			} else {
 				qds.setVersion("1.0");
+			}
+			if (matValueSetTransferObject.isEffectiveDate()) {
+				qds.setEffectiveDate(matValueSetTransferObject.getQueryDate());
 			}
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
 					matValueSet, (ArrayList<QualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());

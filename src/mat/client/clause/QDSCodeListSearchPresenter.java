@@ -615,7 +615,11 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		matValueSetTransferObject.setMatValueSet(searchDisplay.getCurrentMatValueSet());
 		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
 		matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
-		matValueSetTransferObject.setVersion(searchDisplay.getVersionInput().getValue());
+		if (searchDisplay.getVersionInput().getValue() != null) {
+			matValueSetTransferObject.setEffectiveDate(false);
+			matValueSetTransferObject.setVersionDate(true);
+			matValueSetTransferObject.setQueryDate(searchDisplay.getVersionInput().getValue());
+		}
 		matValueSetTransferObject.setMeasureId(measureID);
 		matValueSetTransferObject.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
 		return matValueSetTransferObject;

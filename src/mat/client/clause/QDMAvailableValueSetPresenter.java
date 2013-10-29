@@ -689,7 +689,11 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		matValueSetTransferObject.setQualityDataSetDTO(qualityDataSetDTO);
 		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
 		matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
-		matValueSetTransferObject.setVersion(searchDisplay.getVersionInput().getValue());
+		if (searchDisplay.getVersionInput().getValue() != null) {
+			matValueSetTransferObject.setEffectiveDate(false);
+			matValueSetTransferObject.setVersionDate(true);
+			matValueSetTransferObject.setQueryDate(searchDisplay.getVersionInput().getValue());
+		}
 		MatContext.get().getCodeListService().updateCodeListToMeasure(matValueSetTransferObject,
 				new AsyncCallback<SaveUpdateCodeListResult>() {
 			@Override

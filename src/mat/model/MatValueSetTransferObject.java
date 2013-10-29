@@ -19,11 +19,14 @@ public class MatValueSetTransferObject implements IsSerializable {
 	/** The datatype. */
 	String datatype;
 	
-	/** The effective date. */
-	String effectiveDate;
+	/** The is effective date. */
+	boolean isEffectiveDate;
 	
 	/** The is specific occurrence. */
 	boolean isSpecificOccurrence;
+	
+	/** The is version date. */
+	boolean isVersionDate;
 	
 	/** The mat value set. */
 	MatValueSet matValueSet;
@@ -34,11 +37,11 @@ public class MatValueSetTransferObject implements IsSerializable {
 	/** The quality data set dto. */
 	QualityDataSetDTO qualityDataSetDTO;
 	
+	/** The Query date. */
+	String queryDate;
+	
 	/** The user defined text. */
 	String userDefinedText;
-	
-	/** The version. */
-	String version;
 	
 	/**
 	 * Gets the applied qdm list.
@@ -65,15 +68,6 @@ public class MatValueSetTransferObject implements IsSerializable {
 	 */
 	public String getDatatype() {
 		return datatype;
-	}
-	
-	/**
-	 * Gets the effective date.
-	 * 
-	 * @return the effectiveDate
-	 */
-	public String getEffectiveDate() {
-		return effectiveDate;
 	}
 	
 	/**
@@ -104,6 +98,15 @@ public class MatValueSetTransferObject implements IsSerializable {
 	}
 	
 	/**
+	 * Gets the Query date.
+	 * 
+	 * @return the queryDate
+	 */
+	public String getQueryDate() {
+		return queryDate;
+	}
+	
+	/**
 	 * Gets the user defined text.
 	 * 
 	 * @return the userDefinedText
@@ -113,12 +116,12 @@ public class MatValueSetTransferObject implements IsSerializable {
 	}
 	
 	/**
-	 * Gets the version.
+	 * Checks if is effective date.
 	 * 
-	 * @return the version
+	 * @return the isEffectiveDate
 	 */
-	public String getVersion() {
-		return version;
+	public boolean isEffectiveDate() {
+		return isEffectiveDate;
 	}
 	
 	/**
@@ -128,6 +131,15 @@ public class MatValueSetTransferObject implements IsSerializable {
 	 */
 	public boolean isSpecificOccurrence() {
 		return isSpecificOccurrence;
+	}
+	
+	/**
+	 * Checks if is version date.
+	 * 
+	 * @return the isVersionDate
+	 */
+	public boolean isVersionDate() {
+		return isVersionDate;
 	}
 	
 	/**
@@ -163,11 +175,11 @@ public class MatValueSetTransferObject implements IsSerializable {
 	/**
 	 * Sets the effective date.
 	 * 
-	 * @param effectiveDate
-	 *            the effectiveDate to set
+	 * @param isEffectiveDate
+	 *            the isEffectiveDate to set
 	 */
-	public void setEffectiveDate(String effectiveDate) {
-		this.effectiveDate = effectiveDate;
+	public void setEffectiveDate(boolean isEffectiveDate) {
+		this.isEffectiveDate = isEffectiveDate;
 	}
 	
 	/**
@@ -201,6 +213,16 @@ public class MatValueSetTransferObject implements IsSerializable {
 	}
 	
 	/**
+	 * Sets the Query date.
+	 * 
+	 * @param queryDate
+	 *            the queryDate to set
+	 */
+	public void setQueryDate(String queryDate) {
+		this.queryDate = queryDate;
+	}
+	
+	/**
 	 * Sets the specific occurrence.
 	 * 
 	 * @param isSpecificOccurrence
@@ -221,13 +243,12 @@ public class MatValueSetTransferObject implements IsSerializable {
 	}
 	
 	/**
-	 * Sets the version.
+	 * Sets the version date.
 	 * 
-	 * @param version
-	 *            the version to set
+	 * @param isVersionDate
+	 *            the isVersionDate to set
 	 */
-	public void setVersion(String version) {
-		this.version = version;
+	public void setVersionDate(boolean isVersionDate) {
+		this.isVersionDate = isVersionDate;
 	}
-	
 }

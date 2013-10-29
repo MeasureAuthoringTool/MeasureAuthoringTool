@@ -29,6 +29,9 @@
 					<field name="version" type="java.lang.String">
 						<bind-xml name="version" node="attribute" />
 					</field>
+					<field name="effectiveDate" type="java.lang.String">
+                        <bind-xml name="effectiveDate" node="attribute" />
+                    </field>
 					<field name="codeSystemName" type="java.lang.String">
 						<bind-xml name="codeSystemName" node="attribute" />
 					</field>

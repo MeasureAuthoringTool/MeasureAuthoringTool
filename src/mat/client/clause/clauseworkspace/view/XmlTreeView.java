@@ -912,7 +912,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							editNode(true, node, subTree);
 						}
 					} else {
-
 						editNode(false, node, subTree);
 						if (isValid) {
 							isValid = false;

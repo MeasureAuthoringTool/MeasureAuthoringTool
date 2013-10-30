@@ -1792,6 +1792,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 			if (matValueSetTransferObject.isEffectiveDate()) {
 				qds.setEffectiveDate(matValueSetTransferObject.getQueryDate());
+			} else {
+				qds.setEffectiveDate(null);
 			}
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
 					matValueSet, (ArrayList<QualityDataSetDTO>) matValueSetTransferObject.getAppliedQDMList());
@@ -1827,6 +1829,11 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					qds.setVersion(matValueSetTransferObject.getQueryDate());
 				} else {
 					qds.setVersion("1.0");
+				}
+				if (matValueSetTransferObject.isEffectiveDate()) {
+					qds.setEffectiveDate(matValueSetTransferObject.getQueryDate());
+				} else {
+					qds.setEffectiveDate(null);
 				}
 				qds.setOccurrenceText("");
 				QualityDataModelWrapper wrapper = modifyAppliedElementList(qds,

@@ -368,7 +368,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	@Override
 	public final boolean validateVsacUser(final String userName, final String password) {
 		LOGGER.info("Start VSACAPIServiceImpl validateVsacUser");
-		String eightHourTicketForUser = new VSACTicketService().getTicketGrantingTicket(userName, password);
+		String eightHourTicketForUser = new VSACTicketService(PROXY_HOST, PROXY_PORT).getTicketGrantingTicket(userName, password);
 		UMLSSessionTicket.put(getThreadLocalRequest().getSession().getId(), eightHourTicketForUser);
 		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: " + " Ticket issued for 8 hours: " + eightHourTicketForUser);
 		return eightHourTicketForUser != null;

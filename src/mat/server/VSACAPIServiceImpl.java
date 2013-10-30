@@ -33,6 +33,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	private static final Log LOGGER = LogFactory.getLog(VSACAPIServiceImpl.class);
 	/** serialVersionUID for VSACAPIServiceImpl class. **/
 	private static final long serialVersionUID = -6645961609626183169L;
+	private static final String PROXY_HOST = System.getProperty("vsac_proxy_host");
+	private static final int PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
 	
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
@@ -102,7 +104,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		String eightHourTicket = UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId());
 		if (eightHourTicket != null) {
 			if ((oid != null) && StringUtils.isNotEmpty(oid) && StringUtils.isNotBlank(oid)) {
-				ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
+				LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
+				ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket,PROXY_HOST,PROXY_PORT);
 				ValueSetsResponse vsr = null;
 				if ((version != null) && StringUtils.isNotEmpty(version)) {
 					vsr = dao.getMultipleValueSetsResponseByOIDAndVersion(oid.trim(), version);
@@ -161,7 +164,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				String[] groupedValueSetOid = element.split(":");
 				// If Check To avoid junk data.
 				if (groupedValueSetOid.length == 2) {
-					ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(eightHourTicket);
+					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
+					ValueSetsResponseDAO daoGroupped = new ValueSetsResponseDAO(eightHourTicket,PROXY_HOST,PROXY_PORT);
 					ValueSetsResponse vsrGrouped = daoGroupped.getMultipleValueSetsResponseByOID(
 							groupedValueSetOid[0].trim());
 					VSACValueSetWrapper wrapperGrouped = convertXmltoValueSet(vsrGrouped.getXmlPayLoad());
@@ -215,7 +219,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					continue;
 				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
 						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
-					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
+					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
+					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket,PROXY_HOST,PROXY_PORT);
 					ValueSetsResponse vsr = new ValueSetsResponse();
 					try {
 						vsr = dao.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid());
@@ -250,7 +255,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					}
 				} else if (!"1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
 						|| !"1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
-					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket);
+					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
+					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket,PROXY_HOST,PROXY_PORT);
 					ValueSetsResponse vsr = new ValueSetsResponse();
 					try {
 						vsr = dao.getMultipleValueSetsResponseByOIDAndVersion(
@@ -308,8 +314,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 							+ "for following type Supplemental data or User defined or Timing Element.");
 					continue;
 				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
+					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
 					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(UMLSSessionTicket.
-							getTicket(getThreadLocalRequest().getSession().getId()));
+							getTicket(getThreadLocalRequest().getSession().getId()),PROXY_HOST,PROXY_PORT);
 					ValueSetsResponse vsr = new ValueSetsResponse();
 					try {
 						vsr = dao.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid());

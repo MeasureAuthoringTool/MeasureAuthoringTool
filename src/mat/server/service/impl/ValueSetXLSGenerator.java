@@ -16,11 +16,17 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 public class ValueSetXLSGenerator extends XLSGenerator {
 
 	/**
-	 *@param loid - String.
-	 *@param names - String Array.
-	 *@param wkbk -HSSFWorkbook.
-	 * @param lo - ListObject.
-	 * **/
+	 * Adds the value set work sheet.
+	 * 
+	 * @param loid
+	 *            - String.
+	 * @param names
+	 *            - String Array.
+	 * @param wkbk
+	 *            -HSSFWorkbook.
+	 * @param lo
+	 *            - ListObject. *
+	 */
 	public final void addValueSetWorkSheet(final String loid, final String[] names,
 			final HSSFWorkbook wkbk, final ListObject lo) {
 		String sheetName = stripInvalidChars(lo.getName());
@@ -35,11 +41,16 @@ public class ValueSetXLSGenerator extends XLSGenerator {
 		rowCache.clear();
 		sizeColumns(wkst);
 	}
+	
 	/**
-	 *@param loid - String.
-	 * @param lo - ListObject.
-	 * @return HSSFWorkbook.
-	 * **/
+	 * Gets the xls.
+	 * 
+	 * @param loid
+	 *            - String.
+	 * @param lo
+	 *            - ListObject.
+	 * @return HSSFWorkbook. *
+	 */
 
 	public final HSSFWorkbook getXLS(final String loid, final ListObject lo) {
 
@@ -51,6 +62,9 @@ public class ValueSetXLSGenerator extends XLSGenerator {
 		return wkbk;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.impl.XLSGenerator#cacheXLSRow(mat.model.ListObject, mat.dao.ListObjectDAO, java.sql.Timestamp)
+	 */
 	@Override
 	protected final void cacheXLSRow(final ListObject lo, final ListObjectDAO listObjectDAO,
 			final Timestamp vsPackageDate) {
@@ -59,6 +73,9 @@ public class ValueSetXLSGenerator extends XLSGenerator {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.impl.XLSGenerator#getErrorXLS()
+	 */
 	@Override
 	public final HSSFWorkbook getErrorXLS() {
 		HSSFWorkbook wkbk = new HSSFWorkbook();
@@ -67,6 +84,9 @@ public class ValueSetXLSGenerator extends XLSGenerator {
 		return wkbk;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.impl.XLSGenerator#cacheXLSRow(mat.model.MatValueSet)
+	 */
 	@Override
 	protected void cacheXLSRow(final MatValueSet lo) {
 

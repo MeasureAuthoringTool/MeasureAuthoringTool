@@ -89,8 +89,14 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	/** The oid input. */
 	private TextBox oidInput = new TextBox();	
 	
-	/** The version input. */
-	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
+	/** Version */
+	private CustomCheckBox version = new CustomCheckBox("Select Version", "Version", 1);
+	
+	/** Effective Date */
+	private CustomCheckBox effectiveDate = new CustomCheckBox("Select Effective Date", "Effective Date", 1);
+	
+	/** The date input. */
+	private DateBoxWithCalendar dateInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
 	
 	/** The retrieve button. */
 	private Button retrieveButton = new PrimaryButton("Search","primaryMetaDataButton");
@@ -134,6 +140,26 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		    else {
 		    	specificOccurrence.setEnabled(true);
 		    }
+		}
+	};
+	
+	/** Version change handler. */
+	private  ValueChangeHandler<Boolean> versionChangeHandler = new ValueChangeHandler<Boolean>() {
+		@Override
+		public void onValueChange(ValueChangeEvent<Boolean> event) {
+			if(version.getValue().equals(Boolean.TRUE)) {
+				effectiveDate.setValue(Boolean.FALSE);
+			}
+		}
+	};
+	
+	/** EffectiveDate change handler. */
+	private  ValueChangeHandler<Boolean> effectiveDateChangeHandler = new ValueChangeHandler<Boolean>() {
+		@Override
+		public void onValueChange(ValueChangeEvent<Boolean> event) {
+			if(effectiveDate.getValue().equals(Boolean.TRUE)) {
+				version.setValue(Boolean.FALSE);
+			}
 		}
 	};
 		
@@ -249,26 +275,34 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		searchHeader.setStyleName("valueSetHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");
 		searchPanel.add(searchHeader);
-		searchPanel.add(new SpacerWidget());		
+		searchPanel.add(new SpacerWidget());
 		oidInput.getElement().setId("oidInput_TextBox");
 		oidInput.getElement().setAttribute("tabIndex", "0");
 		oidInput.setTitle("Enter OID");
 		oidInput.setWidth("300px");
-		oidInput.setMaxLength(200);		
-		versionInput.getElement().setId("versionInput_DateBoxWithCalendar");
-		versionInput.setTitle("Enter version");
-		versionInput.getElement().setAttribute("tabIndex", "0");
+		oidInput.setMaxLength(200);
+		HorizontalPanel versionEffectiveDatePanel = new HorizontalPanel();
+		versionEffectiveDatePanel.getElement().setId("versionEffectiveDate_HorizontalPanel");
+		versionEffectiveDatePanel.add(version);
+		versionEffectiveDatePanel.add(effectiveDate);
+		version.addValueChangeHandler(versionChangeHandler);
+		effectiveDate.addValueChangeHandler(effectiveDateChangeHandler);
+		effectiveDate.addStyleName("secondLabel");		
+		versionEffectiveDatePanel.addStyleName("marginTop");
+		dateInput.getElement().setId("dateInput_DateBoxWithCalendar");
+		dateInput.setTitle("Enter Date");
+		dateInput.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
-		retrieveButton.setTitle("Search");		
-		Grid queryGrid = new Grid(3,2);
+		retrieveButton.setTitle("Search");
+		Grid queryGrid = new Grid(5, 1);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
-		queryGrid.setWidget(0, 1, oidInput);
-		queryGrid.setWidget(1, 0, LabelBuilder.buildLabel(new Label(), "Version (Optional):"));
-		queryGrid.setWidget(1, 1, versionInput);
-		queryGrid.setWidget(2, 0, retrieveButton);
+		queryGrid.setWidget(1, 0, oidInput);
+		queryGrid.setWidget(2, 0, versionEffectiveDatePanel);
+		queryGrid.setWidget(3, 0, dateInput);
+		queryGrid.setWidget(4, 0, retrieveButton);
 		queryGrid.setStyleName("secondLabel");
-		searchPanel.add(queryGrid);				
+		searchPanel.add(queryGrid);
 		return searchPanel;
 	}
 
@@ -736,7 +770,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	@Override
 	public void resetVSACValueSetWidget() {
 		getOIDInput().setValue(StringUtils.EMPTY);
-		getVersionInput().setValue(StringUtils.EMPTY);
+		getDateInput().setValue(StringUtils.EMPTY);
 		getValueSetDetailsPanel().setVisible(false);
 	}
 
@@ -764,22 +798,32 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		return oidInput;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.clause.QDSCodeListSearchPresenter.SearchDisplay#getVersionInput()
+	/**
+	 * Gets the version.
+	 *
+	 * @return the version
 	 */
 	@Override
-	public DateBoxWithCalendar getVersionInput() {
-		return versionInput;
+	public CustomCheckBox getVersion() {
+		return version;
+	}
+	
+	/**
+	 * Gets the effective date.
+	 *
+	 * @return the effective date
+	 */
+	@Override
+	public CustomCheckBox getEffectiveDate() {
+		return effectiveDate;
 	}
 
-	/**
-	 * Sets the version input.
-	 * 
-	 * @param versionInput
-	 *            the new version input
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSCodeListSearchPresenter.SearchDisplay#getDateInput()
 	 */
-	public void setVersionInput(DateBoxWithCalendar versionInput) {
-		this.versionInput = versionInput;
+	@Override
+	public DateBoxWithCalendar getDateInput() {
+		return dateInput;
 	}
 	
 	/* (non-Javadoc)

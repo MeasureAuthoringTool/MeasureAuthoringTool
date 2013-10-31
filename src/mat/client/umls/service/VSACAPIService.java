@@ -17,10 +17,12 @@ public interface VSACAPIService extends RemoteService {
 	/**
 	 * Gets the value set by oid and version.
 	 * 
-	 * @param OID
+	 * @param oid
 	 *            the oid
 	 * @param version
 	 *            the version
+	 * @param effectiveDate
+	 *            the effective date
 	 * @return the value set by oid and version
 	 */
 	/* VsacApiResult getValueSetByOIDAndVersion(String OID, String version); */

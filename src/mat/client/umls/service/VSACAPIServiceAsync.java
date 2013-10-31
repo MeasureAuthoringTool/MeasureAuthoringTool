@@ -18,6 +18,7 @@ public interface VSACAPIServiceAsync {
 	 *            the effective date
 	 * @param callback
 	 *            the callback
+	 * @return the value set by oid and version or effective date
 	 */
 	void getValueSetByOIDAndVersionOrEffectiveDate(String oid, String version, String effectiveDate,
 			AsyncCallback<VsacApiResult> callback);

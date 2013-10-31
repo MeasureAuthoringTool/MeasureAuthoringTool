@@ -370,12 +370,12 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				MatContext.get().clearDVIMessages();
 				isUSerDefined = false;
 				String version = null;
-				String effectiveDate = null;				
+				String effectiveDate = null;
 				if(searchDisplay.getVersion().getValue().equals(Boolean.TRUE)) {
 					version = searchDisplay.getDateInput().getValue();
 				} else if(searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
 					effectiveDate = searchDisplay.getDateInput().getValue();
-				}				
+				}
 				searchValueSetInVsac(searchDisplay.getOIDInput().getValue(), version, effectiveDate);
 			}
 		});
@@ -779,67 +779,71 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			}
 		});
 	}
-	
+
 	/**
 	 * Search value set in vsac.
-	 * 
+	 *
 	 * @param oid
 	 *            - {@link String}.
 	 * @param version
 	 *            - {@link String}.
+	 * @param effectiveDate
+	 *            - {@link String}.
 	 */
 	private void searchValueSetInVsac(final String oid, final String version, final String effectiveDate) {
-		
+
+		searchDisplay.getValueSetDetailsPanel().setVisible(false);
+
 		if (!MatContext.get().isUMLSLoggedIn()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(
-					MatContext.get().getMessageDelegate()
-					.getUMLS_NOT_LOGGEDIN());
+					MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 			return;
-		} else {
-			// OID validation.
-			if ((oid == null) || oid.trim().isEmpty()) {
-				searchDisplay.getErrorMessageDisplay().setMessage(
-						MatContext.get().getMessageDelegate()
-						.getUMLS_OID_REQUIRED());
-				searchDisplay.getValueSetDetailsPanel().setVisible(false);
-				return;
-			}
-			
-			//Version and EffectiveDate validation
-			if((searchDisplay.getVersion().getValue().equals(Boolean.TRUE) && (version == null || version.trim().isEmpty()))
-					|| (searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE) && (effectiveDate == null || effectiveDate.trim().isEmpty()))) {
-				searchDisplay.getErrorMessageDisplay().setMessage("Please enter date or uncheck version/effective date.");
-				searchDisplay.getValueSetDetailsPanel().setVisible(false);
-				return;
-			}
-			
-			
-			showSearchingBusy(true);
-			vsacapiService.getValueSetByOIDAndVersionOrEffectiveDate(oid, version, effectiveDate, new AsyncCallback<VsacApiResult>() {
-				@Override
-				public void onFailure(final Throwable caught) {
-					searchDisplay.getErrorMessageDisplay().setMessage(
-							MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
-					searchDisplay.getValueSetDetailsPanel().setVisible(false);
-					showSearchingBusy(false);
-				}
-				
-				@Override
-				public void onSuccess(final VsacApiResult result) {
-					if (result.isSuccess()) {
-						searchDisplay.buildValueSetDetailsWidget(result.getVsacResponse());
-						searchDisplay.getValueSetDetailsPanel().setVisible(true);
-					} else {
-						String message = convertMessage(result.getFailureReason());
-						searchDisplay.getErrorMessageDisplay().setMessage(message);
-						searchDisplay.getValueSetDetailsPanel().setVisible(false);
-					}
-					showSearchingBusy(false);
-				}
-			});
 		}
+
+		// OID validation.
+		if ((oid == null) || oid.trim().isEmpty()) {
+			searchDisplay.getErrorMessageDisplay().setMessage(
+					MatContext.get().getMessageDelegate()
+					.getUMLS_OID_REQUIRED());
+			//searchDisplay.getValueSetDetailsPanel().setVisible(false);
+			return;
+		}
+
+		//Version and EffectiveDate validation
+		if ((searchDisplay.getVersion().getValue().equals(Boolean.TRUE)
+						&& (version == null || version.trim().isEmpty()))
+				|| (searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)
+						&& (effectiveDate == null || effectiveDate.trim().isEmpty()))) {
+			searchDisplay.getErrorMessageDisplay().setMessage("Please enter date or uncheck version/effective date.");
+			//searchDisplay.getValueSetDetailsPanel().setVisible(false);
+			return;
+		}
+
+		showSearchingBusy(true);
+		vsacapiService.getValueSetByOIDAndVersionOrEffectiveDate(oid, version, effectiveDate, new AsyncCallback<VsacApiResult>() {
+			@Override
+			public void onFailure(final Throwable caught) {
+				searchDisplay.getErrorMessageDisplay().setMessage(
+						MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
+				//searchDisplay.getValueSetDetailsPanel().setVisible(false);
+				showSearchingBusy(false);
+			}
+
+			@Override
+			public void onSuccess(final VsacApiResult result) {
+				if (result.isSuccess()) {
+					searchDisplay.buildValueSetDetailsWidget(result.getVsacResponse());
+					searchDisplay.getValueSetDetailsPanel().setVisible(true);
+				} else {
+					String message = convertMessage(result.getFailureReason());
+					searchDisplay.getErrorMessageDisplay().setMessage(message);
+					//searchDisplay.getValueSetDetailsPanel().setVisible(false);
+				}
+				showSearchingBusy(false);
+			}
+		});
 	}
-	
+
 	/**
 	 * This method is used to set all the widgets to read only mode.
 	 * @param editable - {@link Boolean}
@@ -848,7 +852,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		//Widgets in "Element with VSAC Value Set" panel.
 		searchDisplay.getRetrieveButton().setEnabled(editable);
 		searchDisplay.getOIDInput().setEnabled(editable);
-		searchDisplay.getDateInput().setEnabled(editable);
+		searchDisplay.getVersion().setEnabled(editable);
+		searchDisplay.getEffectiveDate().setEnabled(editable);
 		//Widgets in "Element without VSAC Value Set" panel.
 		searchDisplay.getUserDefinedInput().setEnabled(editable);
 		searchDisplay.getAllDataTypeInput().setEnabled(editable);
@@ -868,6 +873,10 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		busyLoading = busy;
 		searchDisplay.getRetrieveButton().setEnabled(!busy);
 		searchDisplay.getOIDInput().setEnabled(!busy);
-		searchDisplay.getDateInput().setEnabled(!busy);
+		searchDisplay.getVersion().setEnabled(!busy);
+		searchDisplay.getEffectiveDate().setEnabled(!busy);		
+		if(searchDisplay.getVersion().getValue().equals(Boolean.TRUE) || searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
+			searchDisplay.getDateInput().setEnabled(!busy);
+		}
 	}
 }

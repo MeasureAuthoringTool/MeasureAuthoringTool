@@ -125,44 +125,50 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		public void onValueChange(ValueChangeEvent<String> event) {
 			specificOccurrence.setValue(false);
 			String selectedValue = event.getValue();
-		    if(!selectedValue.isEmpty()&& !selectedValue.equals("")){
+		    if (!selectedValue.isEmpty() && !selectedValue.equals("")) {
 		    	applyToMeasureButton.setEnabled(true);
-		    }
-		    else{
+		    } else {
 		    	applyToMeasureButton.setEnabled(false);
 		    }
-		    
-		    ListBoxMVP listbox = (ListBoxMVP)event.getSource();
-		    if(listbox.getItemText(listbox.getSelectedIndex()).equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
+
+		    ListBoxMVP listbox = (ListBoxMVP) event.getSource();
+		    if (listbox.getItemText(listbox.getSelectedIndex()).equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
 		    	specificOccurrence.setValue(false);
 		    	specificOccurrence.setEnabled(false);
-		    }
-		    else {
+		    } else {
 		    	specificOccurrence.setEnabled(true);
 		    }
 		}
 	};
-	
+
 	/** Version change handler. */
 	private  ValueChangeHandler<Boolean> versionChangeHandler = new ValueChangeHandler<Boolean>() {
 		@Override
 		public void onValueChange(ValueChangeEvent<Boolean> event) {
-			if(version.getValue().equals(Boolean.TRUE)) {
+			if (version.getValue().equals(Boolean.TRUE)) {
 				effectiveDate.setValue(Boolean.FALSE);
+				dateInput.setEnabled(true);
+			} else {
+				dateInput.setValue(StringUtils.EMPTY);
+				dateInput.setEnabled(false);
 			}
 		}
 	};
-	
+
 	/** EffectiveDate change handler. */
 	private  ValueChangeHandler<Boolean> effectiveDateChangeHandler = new ValueChangeHandler<Boolean>() {
 		@Override
 		public void onValueChange(ValueChangeEvent<Boolean> event) {
-			if(effectiveDate.getValue().equals(Boolean.TRUE)) {
+			if (effectiveDate.getValue().equals(Boolean.TRUE)) {
 				version.setValue(Boolean.FALSE);
+				dateInput.setEnabled(true);
+			} else {
+				dateInput.setValue(StringUtils.EMPTY);
+				dateInput.setEnabled(false);
 			}
 		}
 	};
-		
+
 	/**
 	 * Instantiates a new qDS code list search view.
 	 */
@@ -292,6 +298,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		dateInput.getElement().setId("dateInput_DateBoxWithCalendar");
 		dateInput.setTitle("Enter Date");
 		dateInput.getElement().setAttribute("tabIndex", "0");
+		dateInput.setEnabled(false);
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.setTitle("Search");
@@ -770,6 +777,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	@Override
 	public void resetVSACValueSetWidget() {
 		getOIDInput().setValue(StringUtils.EMPTY);
+		getVersion().setValue(Boolean.FALSE);
+		getEffectiveDate().setValue(Boolean.FALSE);
 		getDateInput().setValue(StringUtils.EMPTY);
 		getValueSetDetailsPanel().setVisible(false);
 	}

@@ -206,14 +206,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		 * @return {@link VerticalPanel}
 		 */
 		VerticalPanel getValueSetDetailsPanel();
-		
-		/**
-		 * Gets the version input.
-		 * 
-		 * @return {@link DateBoxWithCalendar}
-		 */
-		DateBoxWithCalendar getVersionInput();
-		
+
 		/**
 		 * Reset VSACValueSetWidget - Clear's OID and version input's.
 		 */
@@ -234,6 +227,27 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		 *            - {@link List} of {@link HasListBox}
 		 */
 		void setDataTypesListBoxOptions(List<? extends HasListBox> texts);
+		
+		/**
+		 * Gets the date input.
+		 *
+		 * @return the date input {@link DateBoxWithCalendar}
+		 */
+		DateBoxWithCalendar getDateInput();
+		
+		/**
+		 * Gets the effective date.
+		 *
+		 * @return the effective date
+		 */
+		CustomCheckBox getEffectiveDate();
+		
+		/**
+		 * Gets the version.
+		 *
+		 * @return the version
+		 */
+		CustomCheckBox getVersion();
 	}
 	
 	/**
@@ -377,9 +391,14 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				searchDisplay.clearVSACValueSetMessages();
-				// To Do Pass Effective date.
-				searchValueSetInVsac(searchDisplay.getOIDInput().getValue(),
-						searchDisplay.getVersionInput().getValue(), null);
+				String version = null;
+				String effectiveDate = null;
+				if(searchDisplay.getVersion().getValue().equals(Boolean.TRUE)) {
+					version = searchDisplay.getDateInput().getValue();
+				} else if(searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
+					effectiveDate = searchDisplay.getDateInput().getValue();
+				}
+				searchValueSetInVsac(searchDisplay.getOIDInput().getValue(), version, effectiveDate);
 			}
 		});
 	}
@@ -607,27 +626,42 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 *            - {@link String}
 	 */
 	private void searchValueSetInVsac(String oid, String version, String effectiveDate) {
+		
+		searchDisplay.getValueSetDetailsPanel().setVisible(false);
+		
 		if (!MatContext.get().isUMLSLoggedIn()) { //UMLS Login Validation
 			searchDisplay.getErrorMessageDisplay().setMessage(
 					MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 			return;
 		}
+
 		//OID validation.
 		if ((oid == null) || oid.trim().isEmpty()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
-			searchDisplay.getValueSetDetailsPanel().setVisible(false);
+			//searchDisplay.getValueSetDetailsPanel().setVisible(false);
 			return;
 		}
+
+		//Version and EffectiveDate validation
+		if ((searchDisplay.getVersion().getValue().equals(Boolean.TRUE)
+						&& (version == null || version.trim().isEmpty()))
+				|| (searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)
+						&& (effectiveDate == null || effectiveDate.trim().isEmpty()))) {
+			searchDisplay.getErrorMessageDisplay().setMessage("Please enter date or uncheck version/effective date.");
+			//searchDisplay.getValueSetDetailsPanel().setVisible(false);
+			return;
+		}
+
 		showSearchingBusy(true);
 		vsacapiService.getValueSetByOIDAndVersionOrEffectiveDate(oid, version, effectiveDate, new AsyncCallback<VsacApiResult>() {
 			@Override
 			public void onFailure(final Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(
 						MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
-				searchDisplay.getValueSetDetailsPanel().setVisible(false);
+				//searchDisplay.getValueSetDetailsPanel().setVisible(false);
 				showSearchingBusy(false);
 			}
-			
+
 			@Override
 			public void onSuccess(final VsacApiResult result) {
 				if (result.isSuccess()) {
@@ -636,7 +670,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				} else {
 					String message = convertMessage(result.getFailureReason());
 					searchDisplay.getErrorMessageDisplay().setMessage(message);
-					searchDisplay.getValueSetDetailsPanel().setVisible(false);
+					//searchDisplay.getValueSetDetailsPanel().setVisible(false);
 				}
 				showSearchingBusy(false);
 			}
@@ -658,7 +692,11 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		busyLoading = busy;
 		searchDisplay.getRetrieveButton().setEnabled(!busy);
 		searchDisplay.getOIDInput().setEnabled(!busy);
-		searchDisplay.getVersionInput().setEnabled(!busy);
+		searchDisplay.getVersion().setEnabled(!busy);
+		searchDisplay.getEffectiveDate().setEnabled(!busy);
+		if(searchDisplay.getVersion().getValue().equals(Boolean.TRUE) || searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
+			searchDisplay.getDateInput().setEnabled(!busy);
+		}
 	}
 	
 	/**
@@ -690,10 +728,18 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		matValueSetTransferObject.setQualityDataSetDTO(qualityDataSetDTO);
 		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
 		matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
-		if ((searchDisplay.getVersionInput().getValue() != null) && !searchDisplay.getVersionInput().getValue().trim().isEmpty()) {
-			matValueSetTransferObject.setEffectiveDate(false);
-			matValueSetTransferObject.setVersionDate(true);
-			matValueSetTransferObject.setQueryDate(searchDisplay.getVersionInput().getValue());
+		if (searchDisplay.getDateInput().getValue() != null && !searchDisplay.getDateInput().getValue().trim().isEmpty()) {
+			if(searchDisplay.getVersion().getValue().equals(Boolean.TRUE)) {
+				matValueSetTransferObject.setVersionDate(true);
+				matValueSetTransferObject.setEffectiveDate(false);
+			} else if(searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
+				matValueSetTransferObject.setEffectiveDate(true);
+				matValueSetTransferObject.setVersionDate(false);
+			} else {
+				matValueSetTransferObject.setEffectiveDate(false);
+				matValueSetTransferObject.setVersionDate(false);
+			}			
+			matValueSetTransferObject.setQueryDate(searchDisplay.getDateInput().getValue());
 		}
 		MatContext.get().getCodeListService().updateCodeListToMeasure(matValueSetTransferObject,
 				new AsyncCallback<SaveUpdateCodeListResult>() {

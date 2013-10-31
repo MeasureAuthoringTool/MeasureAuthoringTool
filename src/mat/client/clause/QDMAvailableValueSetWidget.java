@@ -92,8 +92,14 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
     /** The oid input. */
     private TextBox oidInput = new TextBox();	
 	
-	/** The version input. */
-	private DateBoxWithCalendar versionInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
+    /** Version */
+	private CustomCheckBox version = new CustomCheckBox("Select Version", "Version", 1);
+	
+	/** Effective Date */
+	private CustomCheckBox effectiveDate = new CustomCheckBox("Select Effective Date", "Effective Date", 1);
+	
+	/** The date input. */
+	private DateBoxWithCalendar dateInput = new DateBoxWithCalendar(DateTimeFormat.getFormat("yyyyMMdd"));
 	
 	/** The retrieve button. */
 	Button retrieveButton = new PrimaryButton("Search","primaryMetaDataButton");
@@ -123,31 +129,57 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		public void onValueChange(ValueChangeEvent<String> event) {
 			specificOccurrence.setValue(false);
 			String selectedValue = event.getValue();
-		    if(!selectedValue.isEmpty()&& !selectedValue.equals("")){
+		    if (!selectedValue.isEmpty() && !selectedValue.equals("")) {
 		    	applyToMeasureButton.setEnabled(true);
-		    }
-		    else{
+		    } else {
 		    	applyToMeasureButton.setEnabled(false);
 		    }
-		    
-		    ListBoxMVP listbox = (ListBoxMVP)event.getSource();
-		    if(listbox.getItemText(listbox.getSelectedIndex()).equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
+
+		    ListBoxMVP listbox = (ListBoxMVP) event.getSource();
+		    if (listbox.getItemText(listbox.getSelectedIndex()).equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
 		    	specificOccurrence.setValue(false);
 		    	specificOccurrence.setEnabled(false);
-		    }
-		    else {
+		    } else {
 		    	specificOccurrence.setEnabled(true);
 		    }
 		}
 	};
-	
+
+	/** Version change handler. */
+	private  ValueChangeHandler<Boolean> versionChangeHandler = new ValueChangeHandler<Boolean>() {
+		@Override
+		public void onValueChange(ValueChangeEvent<Boolean> event) {
+			if (version.getValue().equals(Boolean.TRUE)) {
+				effectiveDate.setValue(Boolean.FALSE);
+				dateInput.setEnabled(true);
+			} else {
+				dateInput.setValue(StringUtils.EMPTY);
+				dateInput.setEnabled(false);
+			}
+		}
+	};
+
+	/** EffectiveDate change handler. */
+	private  ValueChangeHandler<Boolean> effectiveDateChangeHandler = new ValueChangeHandler<Boolean>() {
+		@Override
+		public void onValueChange(ValueChangeEvent<Boolean> event) {
+			if (effectiveDate.getValue().equals(Boolean.TRUE)) {
+				version.setValue(Boolean.FALSE);
+				dateInput.setEnabled(true);
+			} else {
+				dateInput.setValue(StringUtils.EMPTY);
+				dateInput.setEnabled(false);
+			}
+		}
+	};
+
 	/**
 	 * Instantiates a new qDM available value set widget.
 	 */
-	public QDMAvailableValueSetWidget(){		
+	public QDMAvailableValueSetWidget() {
 		VerticalPanel vp = new VerticalPanel();
 		vp.getElement().setAttribute("id", "ModifyVerticalPanel");
-		vp.setWidth("100%");		
+		vp.setWidth("100%");
 		vp.add(buildElementWithVSACValueSetWidget());
 		vp.add(new SpacerWidget());
 		vp.add(buildUserDefinedDisclosureWidget());
@@ -257,19 +289,28 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		oidInput.getElement().setAttribute("tabIndex", "0");
 		oidInput.setTitle("Enter OID");
 		oidInput.setWidth("300px");
-		oidInput.setMaxLength(200);		
-		versionInput.getElement().setId("versionInput_DateBoxWithCalendar");
-		versionInput.setTitle("Enter version");
-		versionInput.getElement().setAttribute("tabIndex", "0");
+		oidInput.setMaxLength(200);
+		HorizontalPanel versionEffectiveDatePanel = new HorizontalPanel();
+		versionEffectiveDatePanel.getElement().setId("versionEffectiveDate_HorizontalPanel");
+		versionEffectiveDatePanel.add(version);
+		versionEffectiveDatePanel.add(effectiveDate);
+		version.addValueChangeHandler(versionChangeHandler);
+		effectiveDate.addValueChangeHandler(effectiveDateChangeHandler);
+		effectiveDate.addStyleName("secondLabel");		
+		versionEffectiveDatePanel.addStyleName("marginTop");
+		dateInput.getElement().setId("versionInput_DateBoxWithCalendar");
+		dateInput.setTitle("Enter version");
+		dateInput.getElement().setAttribute("tabIndex", "0");
+		dateInput.setEnabled(false);
 		retrieveButton.getElement().setId("retrieveButton_Button");
 		retrieveButton.getElement().setAttribute("tabIndex", "0");
 		retrieveButton.setTitle("Search");
-		Grid queryGrid = new Grid(3,2);
+		Grid queryGrid = new Grid(5, 1);
 		queryGrid.setWidget(0, 0, LabelBuilder.buildRequiredLabel(new Label(), "OID:"));
-		queryGrid.setWidget(0, 1, oidInput);
-		queryGrid.setWidget(1, 0, LabelBuilder.buildLabel("Version (Optional):", "Version (Optional):"));
-		queryGrid.setWidget(1, 1, versionInput);
-		queryGrid.setWidget(2, 0, retrieveButton);
+		queryGrid.setWidget(1, 0, oidInput);
+		queryGrid.setWidget(2, 0, versionEffectiveDatePanel);
+		queryGrid.setWidget(3, 0, dateInput);
+		queryGrid.setWidget(4, 0, retrieveButton);
 		queryGrid.setStyleName("secondLabel");
 		searchPanel.add(queryGrid);
 		return searchPanel;
@@ -775,7 +816,9 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	@Override
 	public void resetVSACValueSetWidget() {
 		getOIDInput().setValue(StringUtils.EMPTY);
-		getVersionInput().setValue(StringUtils.EMPTY);
+		getVersion().setValue(Boolean.FALSE);
+		getEffectiveDate().setValue(Boolean.FALSE);
+		getDateInput().setValue(StringUtils.EMPTY);
 		getValueSetDetailsPanel().setVisible(false);
 	}
 	
@@ -795,23 +838,33 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		return oidInput;
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getVersionInput()
+	/**
+	 * Gets the version.
+	 *
+	 * @return the version
 	 */
 	@Override
-	public DateBoxWithCalendar getVersionInput() {
-		return versionInput;
+	public CustomCheckBox getVersion() {
+		return version;
 	}
-
+	
 	/**
-	 * Sets the version input.
-	 * 
-	 * @param versionInput
-	 *            the new version input
+	 * Gets the effective date.
+	 *
+	 * @return the effective date
 	 */
-	public void setVersionInput(DateBoxWithCalendar versionInput) {
-		this.versionInput = versionInput;
+	@Override
+	public CustomCheckBox getEffectiveDate() {
+		return effectiveDate;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getDateInput()
+	 */
+	@Override
+	public DateBoxWithCalendar getDateInput() {
+		return dateInput;
+	}	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#getRetrieveButton()

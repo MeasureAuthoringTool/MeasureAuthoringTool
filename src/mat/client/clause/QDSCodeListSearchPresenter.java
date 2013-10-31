@@ -41,205 +41,204 @@ import com.google.gwt.user.client.ui.Widget;
 
 /**QDSCodeListSearchPresenter.java.**/
 public class QDSCodeListSearchPresenter implements MatPresenter {
-	
+
 	/**
 	 * QDSCodeListSearchView Implements this SearchDisplay.
 	 */
 	public  interface SearchDisplay {
-		
 		/**
 		 * As widget.
-		 * 
+		 *
 		 * @return the widget
 		 */
 		Widget asWidget();
-		
+
 		/**
 		 * Builds the value set details widget.
-		 * 
+		 *
 		 * @param matValueSets
 		 *            the mat value sets
 		 */
 		void buildValueSetDetailsWidget(
 				ArrayList<MatValueSet> matValueSets);
-		
+
 		/**
 		 * Clear vsac value set messages.
 		 */
 		void clearVSACValueSetMessages();
-		
+
 		/**
 		 * Gets the all data type input.
-		 * 
+		 *
 		 * @return the all data type input
 		 */
 		ListBoxMVP getAllDataTypeInput();
-		
+
 		/**
 		 * Gets the apply to measure button.
-		 * 
+		 *
 		 * @return the apply to measure button
 		 */
 		Button getApplyToMeasureButton();
-		
+
 		/**
 		 * Gets the current mat value set.
-		 * 
+		 *
 		 * @return the current mat value set
 		 */
 		MatValueSet getCurrentMatValueSet();
-		
+
 		/**
 		 * Gets the data types list box.
-		 * 
+		 *
 		 * @return the data types list box
 		 */
 		ListBoxMVP getDataTypesListBox();
-		
+
 		/**
 		 * Gets the data type text.
-		 * 
+		 *
 		 * @param inputListBox
 		 *            the input list box
 		 * @return the data type text
 		 */
 		String getDataTypeText(ListBoxMVP inputListBox);
-		
+
 		/**
 		 * Gets the data type value.
-		 * 
+		 *
 		 * @param inputListBox
 		 *            the input list box
 		 * @return the data type value
 		 */
 		String getDataTypeValue(ListBoxMVP inputListBox);
-		
+
 		/**
 		 * Gets the data type widget.
-		 * 
+		 *
 		 * @return the data type widget
 		 */
 		Widget getDataTypeWidget();
-		
+
 		/**
 		 * Gets the disclosure panel.
-		 * 
+		 *
 		 * @return the disclosure panel
 		 */
 		DisclosurePanel getDisclosurePanel();
-		
+
 		/**
 		 * Gets the disclosure panel vsac.
-		 * 
+		 *
 		 * @return the disclosure panel vsac
 		 */
 		DisclosurePanel getDisclosurePanelVSAC();
-		
+
 		/**
 		 * Gets the error message display.
-		 * 
+		 *
 		 * @return the error message display
 		 */
 		ErrorMessageDisplay getErrorMessageDisplay();
-		
+
 		/**
 		 * Gets the error message user defined panel.
-		 * 
+		 *
 		 * @return the error message user defined panel
 		 */
 		ErrorMessageDisplay getErrorMessageUserDefinedPanel();
-		
+
 		/**
 		 * Gets the oID input.
-		 * 
+		 *
 		 * @return the oID input
 		 */
 		TextBox getOIDInput();
-		
+
 		/**
 		 * Gets the psuedo qdm to measure.
-		 * 
+		 *
 		 * @return the psuedo qdm to measure
 		 */
 		Button getPsuedoQDMToMeasure();
-		
+
 		/**
 		 * Gets the retrieve button.
-		 * 
+		 *
 		 * @return the retrieve button
 		 */
 		Button getRetrieveButton();
-		
+
 		/**
 		 * Gets the specific occurrence input.
-		 * 
+		 *
 		 * @return the specific occurrence input
 		 */
 		CustomCheckBox getSpecificOccurrenceInput();
-		
+
 		/**
 		 * Gets the success message display.
-		 * 
+		 *
 		 * @return the success message display
 		 */
 		SuccessMessageDisplay getSuccessMessageDisplay();
-		
+
 		/**
 		 * Gets the success message user defined panel.
-		 * 
+		 *
 		 * @return the success message user defined panel
 		 */
 		SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
-		
+
 		/**
 		 * Gets the user defined input.
-		 * 
+		 *
 		 * @return the user defined input
 		 */
 		TextBox getUserDefinedInput();
-		
+
 		/**
 		 * Gets the value set details panel.
-		 * 
+		 *
 		 * @return the value set details panel
 		 */
 		VerticalPanel getValueSetDetailsPanel();
-		
+
 		/**
 		 * Reset vsac value set widget.
 		 */
 		void resetVSACValueSetWidget();
-		
+
 		/**
 		 * Sets the all data type options.
-		 * 
+		 *
 		 * @param texts
 		 *            the new all data type options
 		 */
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
-		
+
 		/**
 		 * Sets the data types list box options.
-		 * 
+		 *
 		 * @param texts
 		 *            the new data types list box options
 		 */
 		void setDataTypesListBoxOptions(List<? extends HasListBox> texts);
-		
+
 		/**
 		 * Gets the date input.
 		 *
 		 * @return the date input
 		 */
 		DateBoxWithCalendar getDateInput();
-		
+
 		/**
 		 * Gets the effective date.
 		 *
 		 * @return the effective date
 		 */
 		CustomCheckBox getEffectiveDate();
-		
+
 		/**
 		 * Gets the version.
 		 *
@@ -247,48 +246,53 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		 */
 		CustomCheckBox getVersion();
 	}
+
 	/**
 	 * ArrayList of All appliedQDM's.
 	 */
 	private ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
+
 	/**
 	 * When retrieving value set from VSAC, "Loading Please Wait..." message is displayed.
 	 * busyLoading is set true when retrieving value set from VSAC otherwise it is set false.
 	 */
 	private boolean busyLoading;
+
 	/**
 	 * boolean isUserDefined.
 	 */
 	private boolean isUSerDefined = false;
+
 	/**
 	 * Simple Panel Object.
 	 */
 	private SimplePanel panel = new SimplePanel();
+
 	/**
 	 * SearchDisplay Object.
 	 */
 	private SearchDisplay searchDisplay;
-	
+
 	/**
 	 * MeasureService object.
 	 */
 	private final MeasureServiceAsync service = MatContext.get().getMeasureService();
-	
+
 	/**
 	 * VSACService object.
 	 */
 	private final VSACAPIServiceAsync vsacapiService = MatContext.get()
 			.getVsacapiServiceAsync();
-	
+
 	/**
 	 * Instantiates a new qDS code list search presenter.
-	 * 
+	 *
 	 * @param sDisplayArg
 	 *            the SearchDisplay
 	 */
 	public QDSCodeListSearchPresenter(final SearchDisplay sDisplayArg) {
 		searchDisplay = sDisplayArg;
-		
+
 		//Element without VSAC value set - OPEN Handler
 		searchDisplay.getDisclosurePanel().addOpenHandler(new OpenHandler<DisclosurePanel>() {
 			@Override
@@ -301,6 +305,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				}
 			}
 		});
+
 		//Element without VSAC value set - CLOSE Handler
 		searchDisplay.getDisclosurePanel().addCloseHandler(new CloseHandler<DisclosurePanel>() {
 			@Override
@@ -313,7 +318,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				}
 			}
 		});
-		
+
 		//Element with VSAC value set - OPEN Handler.
 		searchDisplay.getDisclosurePanelVSAC().addOpenHandler(new OpenHandler<DisclosurePanel>() {
 			@Override
@@ -324,6 +329,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				}
 			}
 		});
+
 		//Element with VSAC value set - CLOSE Handler.
 		searchDisplay.getDisclosurePanelVSAC().addCloseHandler(new CloseHandler<DisclosurePanel>() {
 			@Override
@@ -337,7 +343,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				}
 			}
 		});
-		
+
 		searchDisplay.getUserDefinedInput().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -345,16 +351,15 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				searchDisplay.getErrorMessageUserDefinedPanel().clear();
 			}
 		});
-		
+
 		searchDisplay.getAllDataTypeInput().addFocusHandler(new FocusHandler() {
 			@Override
 			public void onFocus(final FocusEvent event) {
 				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 				searchDisplay.getErrorMessageUserDefinedPanel().clear();
-				
 			}
 		});
-		
+
 		searchDisplay.getPsuedoQDMToMeasure().addClickHandler(
 				new ClickHandler() {
 					@Override
@@ -371,9 +376,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				isUSerDefined = false;
 				String version = null;
 				String effectiveDate = null;
-				if(searchDisplay.getVersion().getValue().equals(Boolean.TRUE)) {
+				if (searchDisplay.getVersion().getValue().equals(Boolean.TRUE)) {
 					version = searchDisplay.getDateInput().getValue();
-				} else if(searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
+				} else if (searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
 					effectiveDate = searchDisplay.getDateInput().getValue();
 				}
 				searchValueSetInVsac(searchDisplay.getOIDInput().getValue(), version, effectiveDate);
@@ -390,7 +395,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 					}
 				});
 	}
-	
+
 	/**
 	 * Service call to add User defined QDS into Measure xml.
 	 */
@@ -400,7 +405,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
 				&& !searchDisplay.getDataTypeText(
 						searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-			
+
 			String dataType = searchDisplay.getDataTypeValue(searchDisplay.getAllDataTypeInput());
 			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, false,
 					MatContext.get().getCurrentMeasureId());
@@ -416,7 +421,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 									.getMessageDelegate()
 									.getGenericErrorMessage());
 						}
-						
+
 						@SuppressWarnings("static-access")
 						@Override
 						public void onSuccess(
@@ -458,10 +463,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
 					MatContext.get().getMessageDelegate()
 					.getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
-			
 		}
 	}
-	
+
 	/**
 	 * Service call to add VSAC QDS into Measure xml.
 	 */
@@ -471,19 +475,18 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		final String dataType;
 		final String dataTypeText;
 		final boolean isSpecificOccurrence;
-		
+
 		dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
-		
+
 		if (searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox()).equalsIgnoreCase("--Select--")) {
 			dataTypeText = dataType;
 		} else {
 			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
 		}
-		
+
 		isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
 		String measureID = MatContext.get().getCurrentMeasureId();
-		
-		
+
 		if (!dataType.isEmpty() && !dataType.equals("")) {
 			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, isSpecificOccurrence,
 					measureID);
@@ -500,7 +503,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 					.setMessage(
 							MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
-				
+
 				@Override
 				public void onSuccess(final SaveUpdateCodeListResult result) {
 					String message = "";
@@ -560,7 +563,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 					.getVALIDATION_MSG_DATA_TYPE_VSAC());
 		}
 	}
-	
+
 	/**
 	 * Based on isUserDefined boolean - Service call to Add value set with VSAC QDS or
 	 * User defined Value set is made.
@@ -573,7 +576,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			addQDSWithOutValueSet();
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
@@ -584,7 +587,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getDisclosurePanel().setOpen(false);
 		searchDisplay.getDisclosurePanelVSAC().setOpen(true);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeDisplay()
 	 */
@@ -593,10 +596,10 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		displaySearch();
 		setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
 	}
-	
+
 	/**
 	 * Convert message.
-	 * 
+	 *
 	 * @param id
 	 *            - {@link Integer}.
 	 * @return String - {@link String}.
@@ -612,14 +615,14 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				message = MatContext.get().getMessageDelegate()
 				.getUMLS_OID_REQUIRED();
 				break;
-				
+
 			default:
 				message = MatContext.get().getMessageDelegate()
 				.getUnknownFailMessage();
 		}
 		return message;
 	}
-	
+
 	/**
 	 * @param dataType
 	 * @param isSpecificOccurrence
@@ -634,11 +637,11 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		matValueSetTransferObject.setMatValueSet(searchDisplay.getCurrentMatValueSet());
 		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
 		matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
-		if (searchDisplay.getDateInput().getValue() != null && !searchDisplay.getDateInput().getValue().trim().isEmpty()) {			
-			if(searchDisplay.getVersion().getValue().equals(Boolean.TRUE)) {
+		if (searchDisplay.getDateInput().getValue() != null && !searchDisplay.getDateInput().getValue().trim().isEmpty()) {
+			if (searchDisplay.getVersion().getValue().equals(Boolean.TRUE)) {
 				matValueSetTransferObject.setVersionDate(true);
 				matValueSetTransferObject.setEffectiveDate(false);
-			} else if(searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
+			} else if (searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
 				matValueSetTransferObject.setEffectiveDate(true);
 				matValueSetTransferObject.setVersionDate(false);
 			} else {
@@ -651,7 +654,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		matValueSetTransferObject.setUserDefinedText(searchDisplay.getUserDefinedInput().getText());
 		return matValueSetTransferObject;
 	}
-	
+
 	/**
 	 * Method to show Widget on Create Element Tab.
 	 */
@@ -664,26 +667,25 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
 	}
-	
+
 	/**
 	 * Gets the list of applied qdm.
-	 * 
+	 *
 	 * @param isUserDefined
 	 *            - {@link Boolean}.
-	 * @return the list of applied qdm
 	 */
 	private void getListOfAppliedQDMs(final boolean isUserDefined) {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if ((measureId != null) && !measureId.equals("")) {
 			service.getAppliedQDMFromMeasureXml(measureId, true,
 					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
-				
+
 				@Override
 				public void onFailure(final Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate()
 							.getGenericErrorMessage());
 				}
-				
+
 				@Override
 				public void onSuccess(
 						final ArrayList<QualityDataSetDTO> result) {
@@ -691,20 +693,19 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 					addSelectedCodeListtoMeasure(isUserDefined);
 				}
 			});
-			
 		}
 	}
-	
+
 	/**
 	 * Gets the widget.
-	 * 
+	 *
 	 * @return {@link Widget}.
 	 */
 	@Override
 	public final Widget getWidget() {
 		return panel;
 	}
-	
+
 	/**
 	 * When retrieving value set from VSAC, "Loading Please Wait..." message is displayed.
 	 * @return true if "Loading Please Wait..." message is displaying(In other words, when retrieving value set from VSAC)
@@ -713,7 +714,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	public boolean isBusyLoading() {
 		return busyLoading;
 	}
-	
+
 	/**
 	 * Populates all data types from DB for Element's with and Element's without VSAC drop down.
 	 */
@@ -723,7 +724,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		.getListBoxCodeProvider()
 		.getAllDataType(
 				new AsyncCallback<List<? extends HasListBox>>() {
-					
+
 					@Override
 					public void onFailure(final Throwable caught) {
 						searchDisplay
@@ -734,7 +735,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 								.getMessageDelegate()
 								.getGenericErrorMessage());
 					}
-					
+
 					@Override
 					public void onSuccess(
 							final List<? extends HasListBox> result) {
@@ -745,12 +746,11 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 						.setDataTypesListBoxOptions(result);
 					}
 				});
-		
 	}
-	
+
 	/**
 	 * Save measure xml.
-	 * 
+	 *
 	 * @param qdmXMLString
 	 *            - {@link String}.
 	 */
@@ -762,20 +762,20 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		exportModal.setToReplaceNode("qdm");
 		System.out.println("XML " + qdmXMLString);
 		exportModal.setXml(qdmXMLString);
-		
+
 		service.appendAndSaveNode(exportModal, nodeName,
 				new AsyncCallback<Void>() {
-			
+
 			@Override
 			public void onFailure(final Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(
 						MatContext.get().getMessageDelegate()
 						.getGenericErrorMessage());
 			}
-			
+
 			@Override
 			public void onSuccess(final Void result) {
-				
+
 			}
 		});
 	}
@@ -859,7 +859,7 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getAllDataTypeInput().setEnabled(editable);
 		searchDisplay.getPsuedoQDMToMeasure().setEnabled(editable);
 	}
-	
+
 	/**
 	 * Method to show loading message and disable Retrieve button , OID and version Input boxes.
 	 * @param busy - {@link Boolean}.
@@ -874,8 +874,9 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		searchDisplay.getRetrieveButton().setEnabled(!busy);
 		searchDisplay.getOIDInput().setEnabled(!busy);
 		searchDisplay.getVersion().setEnabled(!busy);
-		searchDisplay.getEffectiveDate().setEnabled(!busy);		
-		if(searchDisplay.getVersion().getValue().equals(Boolean.TRUE) || searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
+		searchDisplay.getEffectiveDate().setEnabled(!busy);
+		if (searchDisplay.getVersion().getValue().equals(Boolean.TRUE)
+				|| searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)) {
 			searchDisplay.getDateInput().setEnabled(!busy);
 		}
 	}

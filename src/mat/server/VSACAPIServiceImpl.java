@@ -33,7 +33,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	private static final Log LOGGER = LogFactory.getLog(VSACAPIServiceImpl.class);
 	/** serialVersionUID for VSACAPIServiceImpl class. **/
 	private static final long serialVersionUID = -6645961609626183169L;
+	
+	/** The Constant PROXY_HOST. */
 	private static final String PROXY_HOST = System.getProperty("vsac_proxy_host");
+	
+	/** The Constant PROXY_PORT. */
 	private static final int PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
 	
 	/**

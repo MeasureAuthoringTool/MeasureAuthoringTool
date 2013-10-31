@@ -1914,8 +1914,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/**
 	 * This method updates MeasureXML - ElementRef's under
 	 * SupplementalDataElement Node
-	 * 
-	 * **/
+	 * @param processor
+	 *            the processor
+	 * @param modifyWithDTO
+	 *            QualityDataSetDTO
+	 * @param modifyDTO
+	 *            QualityDataSetDTO
+	 */
 	private void updateSupplementalDataElement(final XmlProcessor processor, final QualityDataSetDTO modifyWithDTO,
 			final QualityDataSetDTO modifyDTO) {
 		

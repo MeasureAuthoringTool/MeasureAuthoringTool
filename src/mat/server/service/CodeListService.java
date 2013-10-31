@@ -357,6 +357,13 @@ public interface CodeListService {
 	 * @return the save update code list result
 	 */
 
+	/**
+	 * Update qds to measure.
+	 * 
+	 * @param matValueSetTransferObject
+	 *            the MatValueSetTransferObject object
+	 * @return the SaveUpdateCodeListResult
+	 */
 	SaveUpdateCodeListResult updateQDStoMeasure(MatValueSetTransferObject matValueSetTransferObject);
 	
 	

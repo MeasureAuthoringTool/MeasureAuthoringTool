@@ -687,5 +687,12 @@ public interface CodeListService extends RemoteService {
 	 */
 	public void transferOwnerShipToUser(List<String> list, String toEmail);
 	
+	/**
+	 * Update code list to measure.
+	 * 
+	 * @param matValueSetTransferObject
+	 *            the mat value set transfer object
+	 * @return the save update code list result
+	 */
 	SaveUpdateCodeListResult updateCodeListToMeasure(MatValueSetTransferObject matValueSetTransferObject);
 }

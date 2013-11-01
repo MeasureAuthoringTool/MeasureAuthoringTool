@@ -76,6 +76,20 @@ public class ContentWithHeadingWidget extends Composite{
 		setContent(contentWidget);
 	}
 	
+	/**
+	 * @return the buttonPanel
+	 */
+	public HorizontalPanel getButtonPanel() {
+		return buttonPanel;
+	}
+	
+	/*public void setEmbeddedLink(String linkName){
+		Widget w = SkipListBuilder.buildEmbeddedLink(linkName);
+		embeddedLinkHolder.clear();
+		embeddedLinkHolder.add(w);
+	}*/
+	
+	
 	/** @param text
 	 * @param linkName
 	 * @param createElement
@@ -86,12 +100,12 @@ public class ContentWithHeadingWidget extends Composite{
 		buttonPanel.add(searchButton);
 	}
 	
-	/*public void setEmbeddedLink(String linkName){
-		Widget w = SkipListBuilder.buildEmbeddedLink(linkName);
-		embeddedLinkHolder.clear();
-		embeddedLinkHolder.add(w);
-	}*/
-	
+	/**
+	 * @param buttonPanel the buttonPanel to set
+	 */
+	public void setButtonPanel(HorizontalPanel buttonPanel) {
+		this.buttonPanel = buttonPanel;
+	}
 	
 	/**
 	 * Sets the code list info.
@@ -115,13 +129,10 @@ public class ContentWithHeadingWidget extends Composite{
 		content.add(w);
 	}
 	
-	/**
-	 * Sets the footer.
+	/** Sets the footer.
 	 * 
-	 * @param w
-	 *            the new footer
-	 */
-	public void setFooter(Widget w){
+	 * @param w the new footer */
+	public void setFooter(Widget w) {
 		footer.clear();
 		footer.add(w);
 	}

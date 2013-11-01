@@ -1122,7 +1122,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if (searchDisplay != null) {
 			searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
 			searchDisplayHandlers(searchDisplay);
-			panel.setButtonPanel(new Button("Create Measure"), searchDisplay.getZoomButton());
 		}
 		if (adminSearchDisplay != null) {
 			adminSearchDisplayHandlers(adminSearchDisplay);
@@ -1638,6 +1637,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * Display detail for add.
 	 */
 	private void displayDetailForAdd() {
+		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Create New Measure", "MainContent");
 		setDetailsToView();
 		detailDisplay.showMeasureName(false);
@@ -1654,6 +1654,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.showMeasureName(true);
 		detailDisplay.getMeasScoringChoice().setValueMetadata(
 				currentDetails.getMeasScoring());
+		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Clone Measure", "MainContent");
 		panel.setContent(detailDisplay.asWidget());
 		Mat.focusSkipLists("MainContent");
@@ -1663,6 +1664,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * Display detail for edit.
 	 */
 	private void displayDetailForEdit() {
+		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Edit Measure", "MainContent");
 		detailDisplay.showMeasureName(false);
 		detailDisplay.showCautionMsg(true);
@@ -1688,7 +1690,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				.getLoggedInUserRole())) {
 			heading = "Measures > History";
 		}
-		
+		panel.getButtonPanel().clear();
 		panel.setHeading(heading, "MainContent");
 		searchHistory(measureId, startIndex, pageSize);
 		historyDisplay.setMeasureId(measureId);
@@ -1718,6 +1720,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 			filter = searchDisplay.getSelectedFilter();
 			search(searchDisplay.getSearchString().getValue(), 1,
 					searchDisplay.getPageSize(), filter);
+			panel.getButtonPanel().clear();
+			panel.setButtonPanel(new Button("Create Measure"), searchDisplay.getZoomButton());
 			panel.setContent(searchDisplay.asWidget());
 		}
 		// MAT-1929: Retain filters at measure library screen. commented
@@ -1726,6 +1730,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		//panel.setHeading(heading, "MainContent");
 		panel.setHeading(heading, "MainContent");
+		
 		// panel.setEmbeddedLink("MainContent");
 		Mat.focusSkipLists("MainContent");
 	}
@@ -1741,6 +1746,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private void displayShare(String id, String name) {
 		getShareDetails(id, 1);
 		shareDisplay.setMeasureName(name);
+		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Measure Sharing", "MainContent");
 		panel.setContent(shareDisplay.asWidget());
 		Mat.focusSkipLists("MainContent");
@@ -2018,6 +2024,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		currentExportId = id;
 		exportDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Export", "MainContent");
 		panel.setContent(exportDisplay.asWidget());
 		exportDisplay.setMeasureName(name);

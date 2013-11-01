@@ -1364,7 +1364,13 @@ padding: 2px;
 	padding-top:25px;
 }
 .createMeasurePanelMeasureLib{
-	padding-left:50px;
+	padding-left:65px;
+}
+
+.headingButton{
+	padding-left: 670px;
+    padding-top: 7px;
+    vertical-align: top;
 }
 
 .searchWidget{

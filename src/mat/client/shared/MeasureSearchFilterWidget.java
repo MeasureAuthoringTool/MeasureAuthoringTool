@@ -154,9 +154,10 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		contentWidget.add(allMeasurePanel);
 		HorizontalPanel headerWidget = new HorizontalPanel();
 		headerWidget.getElement().setId("MeasureSearchFilterWidget_HorizontalPanelHeaderWidget");
-		CustomButton zoomButton = (CustomButton) getImage("Search",
-				ImageResources.INSTANCE.search_zoom(), "Search");
-		zoomButton.setEnabled(false);
+		/*
+		 * CustomButton zoomButton = (CustomButton) getImage("Search", ImageResources.INSTANCE.search_zoom(), "Search");
+		 * zoomButton.setEnabled(false);
+		 */
 		CustomButton filterButton = (CustomButton) getImage("Click to select filter",
 				ImageResources.INSTANCE.arrow_filter(), "Click to select filter");
 		filterButton.addClickHandler(new ClickHandler() {
@@ -170,7 +171,7 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		editButtonPanel.getElement().setId("MeasureSearchFilterWidget_HorizontalPanelEditButton");
 		editButtonPanel
 		.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-		editButtonPanel.add(zoomButton);
+		// editButtonPanel.add(zoomButton);
 		editButtonPanel.add(filterButton);
 		headerWidget.add(editButtonPanel);
 		searchFilterDisclosurePanel.setContent(contentWidget);

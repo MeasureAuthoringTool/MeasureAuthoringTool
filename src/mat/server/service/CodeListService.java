@@ -349,14 +349,6 @@ public interface CodeListService {
 	 */
 	void transferOwnerShipToUser(List<String> list, String toEmail);
 	
-	/*
-	 * Update qds to measure.
-	 * 
-	 * @param matValueSetTransferObject the mat Value Set Transfer Object
-	 * 
-	 * @return the save update code list result
-	 */
-
 	/**
 	 * Update qds to measure.
 	 * 

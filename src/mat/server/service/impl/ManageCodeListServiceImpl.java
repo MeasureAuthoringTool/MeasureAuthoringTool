@@ -1335,8 +1335,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			qds.setTaxonomy(matValueSet.getCodeSystemName());
 		}
 		qds.setUuid(UUID.randomUUID().toString());
-		if (valueSetTransferObject.isVersionDate()) {
-			qds.setVersion(valueSetTransferObject.getQueryDate());
+		if (valueSetTransferObject.isVersionDate() || valueSetTransferObject.isEffectiveDate()) {
+			qds.setVersion(valueSetTransferObject.getMatValueSet().getVersion());
 		} else {
 			qds.setVersion("1.0");
 		}
@@ -1785,8 +1785,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			} else {
 				qds.setTaxonomy(matValueSet.getCodeSystemName());
 			}
-			if (matValueSetTransferObject.isVersionDate()) {
-				qds.setVersion(matValueSetTransferObject.getQueryDate());
+			if (matValueSetTransferObject.isVersionDate() || matValueSetTransferObject.isEffectiveDate()) {
+				qds.setVersion(matValueSetTransferObject.getMatValueSet().getVersion());
 			} else {
 				qds.setVersion("1.0");
 			}
@@ -1825,8 +1825,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				} else {
 					qds.setTaxonomy(matValueSet.getCodeSystemName());
 				}
-				if (matValueSetTransferObject.isVersionDate()) {
-					qds.setVersion(matValueSetTransferObject.getQueryDate());
+				if (matValueSetTransferObject.isVersionDate() || matValueSetTransferObject.isEffectiveDate()) {
+					qds.setVersion(matValueSetTransferObject.getMatValueSet().getVersion());
 				} else {
 					qds.setVersion("1.0");
 				}

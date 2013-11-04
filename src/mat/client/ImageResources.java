@@ -159,7 +159,7 @@ public interface ImageResources extends ClientBundle {
 	 *
 	 * @return the image resource
 	 */
-	@Source("images/createMeasure.jpg")
+	@Source("images/createMeasure.png")
 	ImageResource createMeasure();
 	
 	/**
@@ -320,6 +320,6 @@ public interface ImageResources extends ClientBundle {
 	 *
 	 * @return the image resource
 	 */
-	@Source("images/search_zoom.png")
+	@Source("images/search.png")
 	ImageResource search_zoom();
 }

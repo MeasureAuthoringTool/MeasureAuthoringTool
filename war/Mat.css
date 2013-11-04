@@ -1368,13 +1368,12 @@ padding: 2px;
 }
 
 .headingButton{
-	padding-left: 670px;
+	padding-left: 740px;
     padding-top: 7px;
     vertical-align: top;
 }
 
 .searchWidget{
-    /*  border: 1px solid #0964A2; */
     border:1px solid lightgray;
     -moz-box-sizing: border-box;
     background-image: url("images/bg_box-blue.png");
@@ -1384,7 +1383,7 @@ padding: 2px;
     padding-right: 10px;
     padding-top: 8px;
     font-size:.8em;
-    margin-left:350px; 
+    margin-left:650px; 
     margin-right:auto;
 }
 .searchWidgetLabel{

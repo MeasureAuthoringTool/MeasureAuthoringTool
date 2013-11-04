@@ -1724,6 +1724,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 			panel.setContent(adminSearchDisplay.asWidget());
 		} else {
 			// MAT-1929 : Retain filters at measure library screen
+			searchDisplay.getCreateMeasureWidget().setVisible(false);
+			isCreateMeasureWidgetVisible = false;
 			searchDisplay.getMeasureSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
 			filter = searchDisplay.getSelectedFilter();
 			search(searchDisplay.getSearchString().getValue(), 1,

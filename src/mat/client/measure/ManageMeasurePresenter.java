@@ -21,6 +21,7 @@ import mat.client.measure.service.MeasureCloningService;
 import mat.client.measure.service.MeasureCloningServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.CreateMeasureWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -603,6 +604,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public HasClickHandlers getCreateButton();
 		
+		CustomButton getCreateMeasureButton();
+		
+		CreateMeasureWidget getCreateMeasureWidget();
+		
 		/**
 		 * Gets the error measure deletion.
 		 * 
@@ -666,6 +671,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
 		
+		/*public MeasureSearchFilterPanel getMeasureSearchFilterPanel();*/
+		
 		/**
 		 * Gets the search button.
 		 * 
@@ -679,8 +686,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the search string
 		 */
 		public HasValue<String> getSearchString();
-		
-		/*public MeasureSearchFilterPanel getMeasureSearchFilterPanel();*/
 		
 		/**
 		 * Gets the selected filter.
@@ -1033,6 +1038,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	/** The is clone. */
 	private boolean isClone;
 	
+	boolean isCreateMeasureWidgetVisible = false;
+	
 	/** The is measure deleted. */
 	private boolean isMeasureDeleted = false;
 	
@@ -1121,6 +1128,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		displaySearch();
 		if (searchDisplay != null) {
 			searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
+			searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
 			searchDisplayHandlers(searchDisplay);
 		}
 		if (adminSearchDisplay != null) {
@@ -1721,7 +1729,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			search(searchDisplay.getSearchString().getValue(), 1,
 					searchDisplay.getPageSize(), filter);
 			panel.getButtonPanel().clear();
-			panel.setButtonPanel(new Button("Create Measure"), searchDisplay.getZoomButton());
+			panel.setButtonPanel(searchDisplay.getCreateMeasureButton(), searchDisplay.getZoomButton());
 			panel.setContent(searchDisplay.asWidget());
 		}
 		// MAT-1929: Retain filters at measure library screen. commented
@@ -2809,11 +2817,27 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		searchDisplay.getZoomButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (isCreateMeasureWidgetVisible) {
+					isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
+					searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
+				}
+				isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
+				searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
+			}
+		});
+		
+		searchDisplay.getCreateMeasureButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
-				searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
+				if (isMeasureSearchFilterVisible) {
+					isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
+					searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
+				}
+				isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
+				searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
 			}
 		});
 		searchDisplay.getBulkExportButton().addClickHandler(new ClickHandler() {

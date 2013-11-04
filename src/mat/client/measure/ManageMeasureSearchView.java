@@ -3,27 +3,23 @@ package mat.client.measure;
 import mat.client.ImageResources;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
+import mat.client.shared.CreateMeasureWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
-import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
-import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
-import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -44,7 +40,14 @@ ManageMeasurePresenter.SearchDisplay {
 	private Button bulkExportButton = new PrimaryButton("Export Selected");
 	
 	/** The create button. */
-	private Button createButton = new SecondaryButton("Create");
+	/*
+	 * private Button createButton = new SecondaryButton("Create");
+	 */
+	
+	CustomButton createMeasureButton = (CustomButton) getImage("Create Measure",
+			ImageResources.INSTANCE.createMeasure(), "Create Measure");
+	
+	private CreateMeasureWidget createMeasureWidget = new CreateMeasureWidget();
 	
 	/** The current user role. */
 	String currentUserRole = MatContext.get().getLoggedInUserRole();
@@ -61,20 +64,21 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The form. */
 	final FormPanel form = new FormPanel();
 	
+	/** The msfp. */
+	/*
+	 * private MeasureSearchFilterPanel msfp = new MeasureSearchFilterPanel();
+	 */
+	
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	/** The measure search filter widget. */
 	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget();
 	
-	/** The msfp. */
-	/*
-	 * private MeasureSearchFilterPanel msfp = new MeasureSearchFilterPanel();
-	 */
-	
 	/** The options. */
-	private ListBoxMVP options = new ListBoxMVP();
-	
+	/*
+	 * private ListBoxMVP options = new ListBoxMVP();
+	 */
 	/** The search button. */
 	private Button searchButton = new PrimaryButton("Search",
 			"primaryGreyLeftButton");
@@ -100,8 +104,9 @@ ManageMeasurePresenter.SearchDisplay {
 	public ManageMeasureSearchView() {
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
 		mainHorizontalPanel.getElement().setId("panel_MainHorizontalPanel");
-		options.getElement().setId("options_ListBoxMVP");
-		createButton.getElement().setId("createButton_Button");
+		/*
+		 * options.getElement().setId("options_ListBoxMVP"); createButton.getElement().setId("createButton_Button");
+		 */
 		searchInput.getElement().setId("searchInput_TextBox");
 		searchButton.getElement().setId("searchButton_Button");
 		bulkExportButton.getElement().setId("bulkExportButton_Button");
@@ -109,34 +114,34 @@ ManageMeasurePresenter.SearchDisplay {
 		mainPanel.setStyleName("contentPanel");
 		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
-		loadListBoxOptions();
+		// loadListBoxOptions();
 		
-		VerticalPanel createVP = new VerticalPanel();
-		createVP.getElement().setId("panel_createVP");
-		createVP.add(LabelBuilder.buildLabel("Create", "Create Measure"));
-		createVP.add(new SpacerWidget());
-		createVP.add(options);
-		options.setName("Create");
-		DOM.setElementAttribute(options.getElement(), "id", "Create Measure");
+		/*
+		 * VerticalPanel createVP = new VerticalPanel(); createVP.getElement().setId("panel_createVP");
+		 * createVP.add(LabelBuilder.buildLabel("Create", "Create Measure")); createVP.add(new SpacerWidget()); createVP.add(options);
+		 * options.setName("Create"); DOM.setElementAttribute(options.getElement(), "id", "Create Measure");
+		 */
 		/*createVP.setStylePrimaryName("createMeasurePanelMeasureLib");*/
 		HorizontalPanel createHP = new HorizontalPanel();
 		createHP.getElement().setId("panel_createHP");
-		createHP.add(createVP);
-		VerticalPanel createButtonVP = new VerticalPanel();
-		createButtonVP.getElement().setId("panel_createButtonVP");
-		createButton.setTitle("Create");
-		createButtonVP.add(createButton);
-		createButtonVP.setStylePrimaryName("searchWidgetMeasureLibrary");
+		/* createHP.add(createVP); */
+		/*	VerticalPanel createButtonVP = new VerticalPanel();
+		createButtonVP.getElement().setId("panel_createButtonVP");*/
+		/*
+		 * createButton.setTitle("Create"); createButtonVP.add(createButton);
+		 */
+		//createButtonVP.setStylePrimaryName("searchWidgetMeasureLibrary");
 		//createHP.add(dropDown);
-		createHP.add(createButtonVP);
+		//createHP.add(createButtonVP);
 		VerticalPanel measureFilterVP = new VerticalPanel();
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
 		measureFilterVP.add(new SpacerWidget());
 		/*measureFilterVP.add(msfp.getPanel());*/
+		measureFilterVP.add(createMeasureWidget);
 		measureFilterVP.add(measureSearchFilterWidget);
 		/*mainHorizontalPanel.add(new SpacerWidget());
 		mainHorizontalPanel.add(buildSearchWidget());*/
-		mainHorizontalPanel.add(createHP);
+		// mainHorizontalPanel.add(createHP);
 		mainHorizontalPanel.add(measureFilterVP);
 		mainPanel.add(mainHorizontalPanel);
 		
@@ -268,7 +273,7 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	@Override
 	public void clearSelections() {
-		options.setSelectedIndex(0);
+		createMeasureWidget.getOptions().setSelectedIndex(0);
 	}
 	
 	/* (non-Javadoc)
@@ -284,7 +289,23 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	@Override
 	public HasClickHandlers getCreateButton() {
-		return createButton;
+		return createMeasureWidget.getCreateMeasure();
+	}
+	
+	/**
+	 * @return the createMeasureButton
+	 */
+	@Override
+	public CustomButton getCreateMeasureButton() {
+		return createMeasureButton;
+	}
+	
+	/**
+	 * @return the createMeasureWidget
+	 */
+	@Override
+	public CreateMeasureWidget getCreateMeasureWidget() {
+		return createMeasureWidget;
 	}
 	
 	/* (non-Javadoc)
@@ -393,6 +414,11 @@ ManageMeasurePresenter.SearchDisplay {
 		return view;
 	}
 	
+	/*@Override
+	public MeasureSearchFilterPanel getMeasureSearchFilterPanel() {
+		return msfp;
+	}*/
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchString()
 	 */
@@ -408,11 +434,6 @@ ManageMeasurePresenter.SearchDisplay {
 	public HasValue<String> getSearchString() {
 		return measureSearchFilterWidget.getSearchInput();
 	}
-	
-	/*@Override
-	public MeasureSearchFilterPanel getMeasureSearchFilterPanel() {
-		return msfp;
-	}*/
 	
 	@Override
 	public int getSelectedFilter() {
@@ -430,7 +451,7 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	@Override
 	public String getSelectedOption() {
-		return options.getItemText(options.getSelectedIndex());
+		return createMeasureWidget.getOptions().getItemText(createMeasureWidget.getOptions().getSelectedIndex());
 	}
 	
 	/* (non-Javadoc)
@@ -446,20 +467,32 @@ ManageMeasurePresenter.SearchDisplay {
 		return successMeasureDeletion;
 	}
 	
+	/** Load list box options. */
+	/*
+	 * private void loadListBoxOptions() { options.addItem(ConstantMessages.DEFAULT_SELECT);
+	 * options.addItem(ConstantMessages.CREATE_NEW_MEASURE); options.addItem(ConstantMessages.CREATE_NEW_VERSION);
+	 * options.addItem(ConstantMessages.CREATE_NEW_DRAFT); }
+	 */
+	
 	@Override
 	/** @return the zoomButton */
 	public CustomButton getZoomButton() {
 		return zoomButton;
 	}
 	
-	/** Load list box options. */
-	private void loadListBoxOptions() {
-		options.addItem(ConstantMessages.DEFAULT_SELECT);
-		options.addItem(ConstantMessages.CREATE_NEW_MEASURE);
-		options.addItem(ConstantMessages.CREATE_NEW_VERSION);
-		options.addItem(ConstantMessages.CREATE_NEW_DRAFT);
-	}
 	
+	/**
+	 * @param createMeasureButton the createMeasureButton to set
+	 */
+	public void setCreateMeasureButton(CustomButton createMeasureButton) {
+		this.createMeasureButton = createMeasureButton;
+	}
+	/**
+	 * @param createMeasureWidget the createMeasureWidget to set
+	 */
+	public void setCreateMeasureWidget(CreateMeasureWidget createMeasureWidget) {
+		this.createMeasureWidget = createMeasureWidget;
+	}
 	
 	/**
 	 * Sets the error measure deletion.
@@ -470,22 +503,17 @@ ManageMeasurePresenter.SearchDisplay {
 	public void setErrorMeasureDeletion(ErrorMessageDisplay errorMeasureDeletion) {
 		this.errorMeasureDeletion = errorMeasureDeletion;
 	}
-	/**
-	 * Sets the measure search filter widget.
+	
+	/** Sets the measure search filter widget.
 	 * 
-	 * @param measureSearchFilterWidget
-	 *            the measureSearchFilterWidget to set
-	 */
+	 * @param measureSearchFilterWidget the measureSearchFilterWidget to set */
 	public void setMeasureSearchFilterWidget(MeasureSearchFilterWidget measureSearchFilterWidget) {
 		this.measureSearchFilterWidget = measureSearchFilterWidget;
 	}
 	
-	/**
-	 * Sets the success measure deletion.
+	/** Sets the success measure deletion.
 	 * 
-	 * @param successMeasureDeletion
-	 *            the new success measure deletion
-	 */
+	 * @param successMeasureDeletion the new success measure deletion */
 	public void setSuccessMeasureDeletion(
 			SuccessMessageDisplay successMeasureDeletion) {
 		this.successMeasureDeletion = successMeasureDeletion;

@@ -122,6 +122,9 @@ public class MessageDelegate {
 	
 	/** The Constant VALUE_SET_DRAFT_SAVED. */
 	public static final String VALUE_SET_DRAFT_SAVED = "Value Set successfully saved as a draft.";
+
+	/** The Constant VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED. */
+	public static final String VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED = "Value set version or effective date has been selected. Please enter a date to continue.";
 	
 	/**
 	 * Gets the measure save server error message.
@@ -479,7 +482,7 @@ public class MessageDelegate {
 	
 	/** The vsac update successfull. */
 	private final String VSAC_UPDATE_SUCCESSFULL = "Successfully updated applied QDM list with VSAC data.";
-	
+
 	/**
 	 * Gets the abv name required message.
 	 * 
@@ -1803,5 +1806,14 @@ public class MessageDelegate {
 	 */
 	public String getVSAC_UPDATE_SUCCESSFULL() {
 		return VSAC_UPDATE_SUCCESSFULL;
+	}
+	
+	/**
+	 * Gets the vsac version or effective date required.
+	 *
+	 * @return the vsac version or effective date required
+	 */
+	public String getVSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED() {
+		return VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED;
 	}
 }

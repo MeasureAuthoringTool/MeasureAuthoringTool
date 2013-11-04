@@ -805,7 +805,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			searchDisplay.getErrorMessageDisplay().setMessage(
 					MatContext.get().getMessageDelegate()
 					.getUMLS_OID_REQUIRED());
-			//searchDisplay.getValueSetDetailsPanel().setVisible(false);
 			return;
 		}
 
@@ -814,8 +813,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 						&& (version == null || version.trim().isEmpty()))
 				|| (searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)
 						&& (effectiveDate == null || effectiveDate.trim().isEmpty()))) {
-			searchDisplay.getErrorMessageDisplay().setMessage("Please enter date or uncheck version/effective date.");
-			//searchDisplay.getValueSetDetailsPanel().setVisible(false);
+			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
+										             .getVSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED());
 			return;
 		}
 
@@ -825,7 +824,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 			public void onFailure(final Throwable caught) {
 				searchDisplay.getErrorMessageDisplay().setMessage(
 						MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
-				//searchDisplay.getValueSetDetailsPanel().setVisible(false);
 				showSearchingBusy(false);
 			}
 
@@ -837,7 +835,6 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 				} else {
 					String message = convertMessage(result.getFailureReason());
 					searchDisplay.getErrorMessageDisplay().setMessage(message);
-					//searchDisplay.getValueSetDetailsPanel().setVisible(false);
 				}
 				showSearchingBusy(false);
 			}

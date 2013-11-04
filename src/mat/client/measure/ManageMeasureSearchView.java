@@ -112,43 +112,19 @@ ManageMeasurePresenter.SearchDisplay {
 		bulkExportButton.getElement().setId("bulkExportButton_Button");
 		mainPanel.getElement().setId("measureLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
-		mainPanel.add(errorMessages);
-		mainPanel.add(new SpacerWidget());
-		// loadListBoxOptions();
-		
-		/*
-		 * VerticalPanel createVP = new VerticalPanel(); createVP.getElement().setId("panel_createVP");
-		 * createVP.add(LabelBuilder.buildLabel("Create", "Create Measure")); createVP.add(new SpacerWidget()); createVP.add(options);
-		 * options.setName("Create"); DOM.setElementAttribute(options.getElement(), "id", "Create Measure");
-		 */
-		/*createVP.setStylePrimaryName("createMeasurePanelMeasureLib");*/
 		HorizontalPanel createHP = new HorizontalPanel();
 		createHP.getElement().setId("panel_createHP");
-		/* createHP.add(createVP); */
-		/*	VerticalPanel createButtonVP = new VerticalPanel();
-		createButtonVP.getElement().setId("panel_createButtonVP");*/
-		/*
-		 * createButton.setTitle("Create"); createButtonVP.add(createButton);
-		 */
-		//createButtonVP.setStylePrimaryName("searchWidgetMeasureLibrary");
-		//createHP.add(dropDown);
-		//createHP.add(createButtonVP);
 		VerticalPanel measureFilterVP = new VerticalPanel();
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
 		measureFilterVP.add(new SpacerWidget());
-		/*measureFilterVP.add(msfp.getPanel());*/
 		measureFilterVP.add(createMeasureWidget);
 		measureFilterVP.add(measureSearchFilterWidget);
-		/*mainHorizontalPanel.add(new SpacerWidget());
-		mainHorizontalPanel.add(buildSearchWidget());*/
-		// mainHorizontalPanel.add(createHP);
 		mainHorizontalPanel.add(measureFilterVP);
 		mainPanel.add(mainHorizontalPanel);
-		
 		mainPanel.add(successMeasureDeletion);
 		mainPanel.add(errorMeasureDeletion);
 		mainPanel.add(new SpacerWidget());
-		/*mainPanel.add(dropDown);*/
+		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(view.asWidget());
 		mainPanel

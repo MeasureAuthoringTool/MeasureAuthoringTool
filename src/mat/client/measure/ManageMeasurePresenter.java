@@ -2821,6 +2821,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getZoomButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+				searchDisplay.getErrorMessageDisplay().clear();
 				if (isCreateMeasureWidgetVisible) {
 					isCreateMeasureWidgetVisible = !isCreateMeasureWidgetVisible;
 					searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
@@ -2834,6 +2838,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+				searchDisplay.getErrorMessageDisplay().clear();
 				if (isMeasureSearchFilterVisible) {
 					isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
 					searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);

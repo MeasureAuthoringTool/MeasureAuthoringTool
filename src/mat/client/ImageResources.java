@@ -8,15 +8,15 @@ import com.google.gwt.resources.client.ClientBundle;
 import com.google.gwt.resources.client.ImageResource;
 
 /**
- * An Client bundle is a construct used to improve application performance by reducing the number of 
+ * An Client bundle is a construct used to improve application performance by reducing the number of
  * round trip HTTP requests to the server to fetch images
  * 
  * 
  *  An Client bundle is a composition of many images into a single image, along with an interface for
- *  accessing the individual images from within the composite. Users can define an image bundle that 
- *  contains the images used by their application, and GWT will automatically create the composite image 
- *  and provide an implementation of the interface for accessing each individual image. 
- *  Instead of a round trip to the server for each image, only one round trip to the server for the 
+ *  accessing the individual images from within the composite. Users can define an image bundle that
+ *  contains the images used by their application, and GWT will automatically create the composite image
+ *  and provide an implementation of the interface for accessing each individual image.
+ *  Instead of a round trip to the server for each image, only one round trip to the server for the
  *  composite image is needed.
 
 
@@ -35,7 +35,7 @@ public interface ImageResources extends ClientBundle {
 	 * @return the image resource
 	 */
 	@Source("images/addAllLeft.png")
-	 ImageResource addAllLeft();
+	ImageResource addAllLeft();
 	
 	
 	/**
@@ -44,7 +44,7 @@ public interface ImageResources extends ClientBundle {
 	 * @return the image resource
 	 */
 	@Source("images/addAllRight.png")
-	 ImageResource addAllRight();
+	ImageResource addAllRight();
 	
 	/**
 	 * Adds the image.
@@ -52,7 +52,7 @@ public interface ImageResources extends ClientBundle {
 	 * @return the image resource
 	 */
 	@Source("images/addImage.png")
-	 ImageResource addImage();
+	ImageResource addImage();
 	
 	/**
 	 * Adds the left.
@@ -60,7 +60,7 @@ public interface ImageResources extends ClientBundle {
 	 * @return the image resource
 	 */
 	@Source("images/addLeft.png")
-	 ImageResource addLeft();
+	ImageResource addLeft();
 	
 	/**
 	 * Adds the right.
@@ -68,7 +68,7 @@ public interface ImageResources extends ClientBundle {
 	 * @return the image resource
 	 */
 	@Source("images/addRight.png")
-	 ImageResource addRight();
+	ImageResource addRight();
 	
 	/**
 	 * Alert.
@@ -117,7 +117,7 @@ public interface ImageResources extends ClientBundle {
 	 * @return the image resource
 	 */
 	@Source("images/calendar.gif")
-	 ImageResource calendar();
+	ImageResource calendar();
 	
 	/**
 	 * Clock.
@@ -151,8 +151,16 @@ public interface ImageResources extends ClientBundle {
 	 * @return the image resource
 	 */
 	@Source("images/collapsed.gif")
-	 ImageResource collapsed();
+	ImageResource collapsed();
 	
+	
+	/**
+	 * createMeasure.
+	 *
+	 * @return the image resource
+	 */
+	@Source("images/createMeasure.jpg")
+	ImageResource createMeasure();
 	
 	/**
 	 * Expanded.
@@ -160,7 +168,8 @@ public interface ImageResources extends ClientBundle {
 	 * @return the image resource
 	 */
 	@Source("images/expanded.gif")
-	 ImageResource expanded();
+	ImageResource expanded();
+	
 	
 	/**
 	 * G_close panel.
@@ -170,14 +179,13 @@ public interface ImageResources extends ClientBundle {
 	@Source("images/close_panel.png")
 	ImageResource g_closePanel();
 	
-	
 	/**
 	 * G_delete.
 	 *
 	 * @return the image resource
 	 */
 	@Source("images/g_delete.png")
-	 ImageResource g_delete();
+	ImageResource g_delete();
 	
 	/**
 	 * G_header_title.
@@ -209,7 +217,7 @@ public interface ImageResources extends ClientBundle {
 	 * @return the image resource
 	 */
 	@Source("images/g_package_edit.png")
-	 ImageResource g_package_edit();
+	ImageResource g_package_edit();
 	
 	/**
 	 * G_package_go.

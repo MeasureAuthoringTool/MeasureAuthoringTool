@@ -106,9 +106,9 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		if (lo == null) {
 			return;
 		}
-
-		if (!qdmOIDs.contains(lo.getID())) {
-			qdmOIDs.add(lo.getID());
+		String OIDAndVersion = lo.getID()+":"+lo.getVersion();
+		if (!qdmOIDs.contains(OIDAndVersion)) {
+			qdmOIDs.add(OIDAndVersion);
 			processXLSRow(lo);
 		}
 

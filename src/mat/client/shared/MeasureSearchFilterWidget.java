@@ -3,6 +3,7 @@ package mat.client.shared;
 import mat.client.ImageResources;
 import mat.client.measure.metadata.CustomCheckBox;
 
+import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -86,6 +87,9 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		createDisclosurePanel(horizontalPanel);
 		horizontalPanel.add(searchInput);
 		horizontalPanel.add(searchButton);
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("SearchWidgetDisplayed"),
+				"SearchWidgetDisplayed");
+		topPanel.add(invisibleLabel);
 		topPanel.add(horizontalPanel);
 		fp.add(searchFilterDisclosurePanel);
 		fp.setStylePrimaryName("filterDisclosurePanel");
@@ -93,6 +97,13 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		horizontalPanel.setStylePrimaryName("searchWidget");
 		resetFilter();
 		addHandlersToCheckBox();
+		Element element = topPanel.getElement();
+		element.setAttribute("aria-role", "panel");
+		element.setAttribute("aria-labelledby", "SearchWidgetDisplayed");
+		element.setAttribute("aria-live", "assertive");
+		element.setAttribute("aria-atomic", "true");
+		element.setAttribute("aria-relevant", "all");
+		element.setAttribute("role", "alert");
 		// All composites must call initWidget() in their constructors.
 		initWidget(topPanel);
 	}

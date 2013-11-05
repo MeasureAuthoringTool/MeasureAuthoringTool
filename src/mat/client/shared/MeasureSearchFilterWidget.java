@@ -68,7 +68,7 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 	 */
 	public MeasureSearchFilterWidget() {
 		// searchInput.setWatermark("Search");
-		searchButton = new PrimaryButton("Go", "primaryButton");
+		searchButton = new PrimaryButton("Search", "primaryButton");
 		searchButton.addClickHandler(this);
 		searchInput.getElement().getStyle().setHeight(TEXT_BOX_HT, Unit.PX);
 		/*

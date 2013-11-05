@@ -3,6 +3,7 @@ package mat.client.measure.metadata;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.dom.client.LabelElement;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -12,6 +13,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.EventListener;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.Window.Navigator;
 import com.google.gwt.user.client.ui.ButtonBase;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.HasName;
@@ -121,6 +124,11 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
 	  
     inputElem = InputElement.as(elem);
     labelElem = Document.get().createLabelElement();
+    labelElem.addClassName("customCheckBoxLabel");
+	inputElem.addClassName("customCheckBox");
+	if(isFirefoxBrowser()) {
+		inputElem.getStyle().setTop(2, Unit.PX);
+	}
    
     getElement().appendChild(inputElem);
     /**508 fix - Check box with no label should not render label tag inside Input tag.**/
@@ -142,6 +150,18 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
   }
   
   /**
+   * Checks if the browser is firefox browser.
+   *
+   * @return true, if the browser is firefox browser else returns false.
+   */
+  private boolean isFirefoxBrowser() {
+	  if(Navigator.getUserAgent().toLowerCase().contains("firefox")) {
+		return true;
+	  }
+	  return false;
+  }
+
+  	/**
 	 * Instantiates a new custom check box.
 	 * 
 	 * @param elem
@@ -157,6 +177,12 @@ public class CustomCheckBox extends ButtonBase implements HasName, HasValue<Bool
  
 	    inputElem = InputElement.as(elem);
 	    labelElem = Document.get().createLabelElement();
+	    labelElem.addClassName("customCheckBoxLabel");
+		inputElem.addClassName("customCheckBox");
+		if(isFirefoxBrowser()) {
+			inputElem.getStyle().setTop(2, Unit.PX);
+		}
+		
 	   if (labelOrder > 2) {
 		   getElement().appendChild(inputElem);
 		   getElement().appendChild(labelElem);

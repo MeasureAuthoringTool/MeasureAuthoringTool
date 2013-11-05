@@ -1809,7 +1809,23 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				result.setDataSetDTO(qds);
 			}
 		} else { // Treat as regular QDM
+			List<QualityDataSetDTO> origAppliedQDMList = matValueSetTransferObject.getAppliedQDMList();
+			List<QualityDataSetDTO> tempAppliedQDMList = new ArrayList<QualityDataSetDTO>();  
+			tempAppliedQDMList.addAll(matValueSetTransferObject.getAppliedQDMList());
+			//Removing the QDS that is being modified from the tempAppliedQDMList.
+			Iterator<QualityDataSetDTO> iterator = tempAppliedQDMList.iterator();
+			while (iterator.hasNext()) {
+				QualityDataSetDTO qualityDataSetDTO = iterator.next();
+				if (qualityDataSetDTO.getUuid().equals(matValueSetTransferObject.getQualityDataSetDTO().getUuid())) {
+					iterator.remove();
+					break;
+				}
+			}
+			matValueSetTransferObject.setAppliedQDMList(tempAppliedQDMList);
+			
 			if (!checkForDuplicates(matValueSetTransferObject, true)) {
+				matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
+				
 				QualityDataSetDTO qds = matValueSetTransferObject.getQualityDataSetDTO();
 				String dataType = matValueSetTransferObject.getDatatype();
 				if (dataType != null) {
@@ -1844,6 +1860,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 						.getQualityDataDTO()));
 				result.setDataSetDTO(qds);
 			} else {
+				matValueSetTransferObject.setAppliedQDMList(origAppliedQDMList);
+				
 				result.setSuccess(true);
 				result.setFailureReason(SaveUpdateCodeListResult.ALREADY_EXISTS);
 			}

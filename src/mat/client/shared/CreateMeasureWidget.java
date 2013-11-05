@@ -24,7 +24,7 @@ public class CreateMeasureWidget extends Composite {
 		options.getElement().getStyle().setMarginRight(10, Unit.PX);
 		options.getElement().getStyle().setMarginBottom(7, Unit.PX);
 		options.getElement().getStyle().setHeight(25, Unit.PX);
-
+		
 		createMeasure.getElement().setId("createMeasure_Button");
 		options.setName("Create Measure Options");
 		DOM.setElementAttribute(options.getElement(), "id", "CreateMeasureWidget");
@@ -35,15 +35,15 @@ public class CreateMeasureWidget extends Composite {
 		loadListBoxOptions();
 		horizontalPanel.add(options);
 		horizontalPanel.add(createMeasure);
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("CreateWidgetDisplayed"),
-				"CreateWidgetDisplayed");
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("CreateWidgetDisplayedSelectOptionsFromComboBox"),
+				"CreateWidgetDisplayedSelectOptionsFromComboBox");
 		topPanel.add(invisibleLabel);
 		topPanel.add(horizontalPanel);
 		horizontalPanel.setStylePrimaryName("searchWidget");
 		// All composites must call initWidget() in their constructors.
 		Element element = topPanel.getElement();
 		element.setAttribute("aria-role", "panel");
-		element.setAttribute("aria-labelledby", "CreateWidgetDisplayed");
+		element.setAttribute("aria-labelledby", "CreateWidgetDisplayedSelectOptionsFromComboBox");
 		element.setAttribute("aria-live", "assertive");
 		element.setAttribute("aria-atomic", "true");
 		element.setAttribute("aria-relevant", "all");

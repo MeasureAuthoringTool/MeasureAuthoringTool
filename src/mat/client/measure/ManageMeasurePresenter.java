@@ -1558,6 +1558,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getErrorMeasureDeletion().clear();
 		draftDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Create Draft of Existing Measure",
 				"MainContent");
 		panel.setContent(draftDisplay.asWidget());
@@ -1599,6 +1600,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		searchDisplay.getSuccessMeasureDeletion().clear();
 		searchDisplay.getErrorMeasureDeletion().clear();
+		panel.getButtonPanel().clear();
 		panel.setHeading("My Measures > Create Measure Version of Draft",
 				"MainContent");
 		panel.setContent(versionDisplay.asWidget());

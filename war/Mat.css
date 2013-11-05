@@ -1045,7 +1045,7 @@ padding: 2px;
 
 .contentWithHeadingHeader {
      position: relative;
-     margin-right:730px;
+     width: 840px;
 }
 .contentWithHeadingHeader h1 {
 	font-size:1.2em;

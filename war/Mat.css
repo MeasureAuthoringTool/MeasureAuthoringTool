@@ -1045,6 +1045,7 @@ padding: 2px;
 
 .contentWithHeadingHeader {
      position: relative;
+     margin-right:730px;
 }
 .contentWithHeadingHeader h1 {
 	font-size:1.2em;
@@ -1368,8 +1369,7 @@ padding: 2px;
 }
 
 .headingButton{
-	padding-left: 740px;
-    padding-top: 7px;
+	padding-top: 7px;
     vertical-align: top;
 }
 

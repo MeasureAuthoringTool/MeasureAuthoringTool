@@ -20,11 +20,11 @@ public class CreateMeasureWidget extends Composite {
 	/** Default Constructor. */
 	public CreateMeasureWidget() {
 		// searchInput.setWatermark("Search");
-		createMeasure = new PrimaryButton("Go", "primaryButton");
+		createMeasure = new PrimaryButton("Create", "primaryButton");
 		options.getElement().getStyle().setMarginLeft(15, Unit.PX);
-		options.getElement().getStyle().setMarginRight(5, Unit.PX);
-		options.getElement().getStyle().setMarginBottom(5, Unit.PX);
-		options.getElement().getStyle().setHeight(23, Unit.PX);
+		options.getElement().getStyle().setMarginRight(10, Unit.PX);
+		options.getElement().getStyle().setMarginBottom(7, Unit.PX);
+		options.getElement().getStyle().setHeight(25, Unit.PX);
 		options.getElement().setId("options_ListBoxMVP");
 		createMeasure.getElement().setId("createMeasure_Button");
 		options.setName("Create");

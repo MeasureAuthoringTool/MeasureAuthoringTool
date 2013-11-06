@@ -295,6 +295,8 @@ public class MessageDelegate {
 	private final String MEASURE_PACKAGE_UMLS_NOT_LOGGED_IN = "Measure packaged successfully. "
 			+ "Value set data is not included in the measure package as you are not logged into UMLS.";
 	
+	private final String MEASURE_PACKAGE_FAILED_VSAC_TIMEOUT = "Measure Package Failed. VSAC request timed out. Please contact HelpDesk.";
+	
 	/** The measure selection error. */
 	private final String MEASURE_SELECTION_ERROR = "Please select at least one measure";
 	
@@ -1043,6 +1045,15 @@ public class MessageDelegate {
 	 */
 	public String getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN() {
 		return MEASURE_PACKAGE_UMLS_NOT_LOGGED_IN;
+	}
+	
+	/**
+	 * Gets the measure package failed due to vsac timeout message.
+	 * 
+	 * @return String the MEASURE_PACKAGE_FAILED_VSAC_TIMEOUT
+	 */
+	public String getMEASURE_PACKAGE_VSAC_TIMEOUT() {
+		return MEASURE_PACKAGE_FAILED_VSAC_TIMEOUT;
 	}
 	
 	/**

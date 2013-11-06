@@ -778,6 +778,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		getVersion().setValue(Boolean.FALSE);
 		getEffectiveDate().setValue(Boolean.FALSE);
 		getDateInput().setValue(StringUtils.EMPTY);
+		getDateInput().setEnabled(false);
 		getValueSetDetailsPanel().setVisible(false);
 	}
 

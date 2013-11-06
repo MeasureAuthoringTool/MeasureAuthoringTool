@@ -103,14 +103,14 @@ public abstract class MainLayout {
 	protected static FocusableWidget getSkipList(){
 		return skipListHolder;
 	}
-
+	
 	/**
 	 * no arg method adds default delay to loading message hide op.
 	 */
 	public static void hideLoadingMessage(){
 		hideLoadingMessage(DEFAULT_LOADING_MSAGE_DELAY_IN_MILLISECONDS);
 	}
-
+	
 	
 	
 	
@@ -166,7 +166,7 @@ public abstract class MainLayout {
 	 * Show sign out message.
 	 */
 	public static void showSignOutMessage(){
-		loadingWidget = new HTML(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG); 
+		loadingWidget = new HTML(ClientConstants.MAINLAYOUT_SIGNOUT_WIDGET_MSG);
 		showLoadingMessage();
 	}
 	
@@ -187,8 +187,8 @@ public abstract class MainLayout {
 	
 	/** The content. */
 	private FocusPanel content;
-
-
+	
+	
 	/** The log out panel. */
 	private HorizontalFlowPanel logOutPanel;
 	
@@ -214,7 +214,7 @@ public abstract class MainLayout {
 	}
 	
 	/**
-	 * Builds the Footer Panel for the Login and Mat View. Currently, it displays the 
+	 * Builds the Footer Panel for the Login and Mat View. Currently, it displays the
 	 * 'Accessibility Policy' , 'Terms Of Use' , 'Privacy Policy' 'User Guide' links with CMS LOGO.
 	 * @return Panel
 	 */
@@ -222,11 +222,11 @@ public abstract class MainLayout {
 		
 		FlowPanel footerMainPanel = new FlowPanel();
 		footerMainPanel.getElement().setId("footerMainPanel_FlowPanel");
-		footerMainPanel.setStylePrimaryName("footer");		
+		footerMainPanel.setStylePrimaryName("footer");
 		footerMainPanel.add(FooterPanelBuilderUtility.buildFooterLogoPanel());
 		footerMainPanel.add(fetchAndcreateFooterLinks());
 		return footerMainPanel;
-}
+	}
 	
 	/**
 	 * Builds the loading panel.
@@ -256,9 +256,9 @@ public abstract class MainLayout {
 	 * @return the panel
 	 */
 	private Panel buildSkipContent() {
-		 skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
-		 Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
-		 return skipListHolder;
+		skipListHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Main Content"));
+		Mat.removeInputBoxFromFocusPanel(skipListHolder.getElement());
+		return skipListHolder;
 	}
 	
 	/**
@@ -290,7 +290,7 @@ public abstract class MainLayout {
 		vp.addStyleName("logoutAndUMLSPanel");
 		topBanner.add(vp);
 		
-		return topBanner;      
+		return topBanner;
 	}
 	
 	/**
@@ -306,19 +306,18 @@ public abstract class MainLayout {
 		showUMLSState.getElement().setAttribute("aria-live", "assertive");
 		showUMLSState.getElement().setAttribute("aria-atomic", "true");
 		showUMLSState.getElement().setAttribute("aria-relevant", "all");
-		
 		activeUmlsImage = new Image(ImageResources.INSTANCE.bullet_green());
 		activeUmlsImage.setStylePrimaryName("imageMiddleAlign");
 		umlsActiveStatusLabel = new HTML("<h9>UMLS Active</h9>");
+		umlsActiveStatusLabel.getElement().setAttribute("tabIndex", "0");
 		umlsActiveStatusLabel.setStylePrimaryName("htmlDescription");
-	
 		inActiveUmlsImage = new Image(ImageResources.INSTANCE.bullet_red());
 		inActiveUmlsImage.setStylePrimaryName("imageMiddleAlign");
 		umlsInactiveStatusLabel = new HTML("<h9>UMLS Inactive</h9>");
+		umlsInactiveStatusLabel.getElement().setAttribute("tabIndex", "0");
 		umlsInactiveStatusLabel.setStylePrimaryName("htmlDescription");
 		return showUMLSState;
 	}
-	
 	/**
 	 * Fetch andcreate footer links.
 	 *
@@ -329,9 +328,9 @@ public abstract class MainLayout {
 			@Override
 			public void onFailure(Throwable caught) {
 				//This will create Footer links with default values.
-				//createFooterLinks(footerLinks);				
+				//createFooterLinks(footerLinks);
 			}
-
+			
 			@Override
 			public void onSuccess(List<String> result) {
 				//Set the Footer URL's on the ClientConstants for use by the app in various locations.
@@ -340,7 +339,7 @@ public abstract class MainLayout {
 				ClientConstants.TERMSOFUSE_URL = result.get(2);
 				ClientConstants.USERGUIDE_URL = result.get(3);
 			}
-		
+			
 		});
 		return FooterPanelBuilderUtility.buildFooterLinksPanel();
 	}
@@ -396,7 +395,7 @@ public abstract class MainLayout {
 		container.add(loadingPanel);
 		container.add(contentPanel);
 		container.add(footerPanel);
-	
+		
 		
 		RootPanel.get().clear();
 		if(RootPanel.get("skipContent")!= null){
@@ -405,7 +404,7 @@ public abstract class MainLayout {
 		RootPanel.get("mainContent").add(container);
 		
 		initEntryPoint();
-
+		
 	}
 	
 	/**

@@ -63,18 +63,18 @@ public abstract class XLSGenerator {
 	 * WorkBook Header.
 	 * **/
 	private final String[] HEADER_STRINGS = { "Value Set Developer",
-			"Value Set OID", "Last Modified", "Value Set Name",
+			"Value Set OID", "Revision Date", "Value Set Name",
 			"Code System", "Code System Version", "Code", "Descriptor" };
 	protected final String KEYWORDS = "Value Set, OID, Export, Measure, Code, Descriptor";
-	protected final int lastModified = 2;
 	protected final int measuredeveloper = 0;
 	/**
 	 * WorkBook Content.
 	 * **/
 	private final String[] NAME_STRINGS = { "ValueSetDeveloper",
-			"ValueSetOID", "LastModified", "ValueSetName", "QDMCategory",
+			"ValueSetOID", "RevisionDate", "ValueSetName", "QDMCategory",
 			"CodeSystem", "CodeSystemVersion", "Code", "Descriptor" };
 	protected final int oid = 1;
+	protected final int revisionDate = 2;
 	protected ArrayList<RowCacheItem> rowCache = new ArrayList<RowCacheItem>();
 	protected final int standardconcept = 3;
 	/* protected final int standardcategory = 4; */
@@ -136,13 +136,6 @@ public abstract class XLSGenerator {
 	protected abstract void cacheXLSRow(MatValueSet lo);
 	
 	/**
-	 * Gets the list of unique qdm oids.
-	 *
-	 * @return the list of unique qdm oids.
-	 */
-	protected abstract List<String> getQdmOIDs();
-	
-	/**
 	 *@param wkst - HSSFSheet.
 	 *@param values - String Array.
 	 *@param names - String Array.
@@ -158,7 +151,7 @@ public abstract class XLSGenerator {
 		generateName(wkbk, names[measuredeveloper], "'" + wkst.getSheetName()
 				+ "'!$A$1");
 		generateName(wkbk, names[oid], "'" + wkst.getSheetName() + "'!$B$1");
-		generateName(wkbk, names[lastModified], "'" + wkst.getSheetName()
+		generateName(wkbk, names[revisionDate], "'" + wkst.getSheetName()
 				+ "'!$C$1");
 		generateName(wkbk, names[standardconcept], "'" + wkst.getSheetName()
 				+ "'!$D$1");
@@ -242,8 +235,8 @@ public abstract class XLSGenerator {
 		.setCellValue(values[measuredeveloper]);
 		row.createCell(oid, HSSFCell.CELL_TYPE_STRING)
 		.setCellValue(values[oid]);
-		row.createCell(lastModified, HSSFCell.CELL_TYPE_STRING).setCellValue(
-				values[lastModified]);
+		row.createCell(revisionDate, HSSFCell.CELL_TYPE_STRING).setCellValue(
+				values[revisionDate]);
 		row.createCell(standardconcept, HSSFCell.CELL_TYPE_STRING)
 		.setCellValue(values[standardconcept]);
 		/*
@@ -261,7 +254,7 @@ public abstract class XLSGenerator {
 		if (style != null) {
 			row.getCell(measuredeveloper).setCellStyle(style);
 			row.getCell(oid).setCellStyle(style);
-			row.getCell(lastModified).setCellStyle(style);
+			row.getCell(revisionDate).setCellStyle(style);
 			row.getCell(standardconcept).setCellStyle(style);
 			/* row.getCell(standardcategory).setCellStyle(style); */
 			row.getCell(standardtaxonomy).setCellStyle(style);
@@ -327,6 +320,13 @@ public abstract class XLSGenerator {
 	public String[] getNAME_STRINGS() {
 		return NAME_STRINGS;
 	}
+	
+	/**
+	 * Gets the list of unique qdm oids.
+	 *
+	 * @return the list of unique qdm oids.
+	 */
+	protected abstract List<String> getQdmOIDs();
 	
 	/**
 	 *@param measureId - String.
@@ -437,7 +437,7 @@ public abstract class XLSGenerator {
 				// description = gcl.getDescription();
 				
 				String OIDAndVersion = gcl.getID()+":"+gcl.getVersion();
-				if (!getQdmOIDs().contains(OIDAndVersion)) {				
+				if (!getQdmOIDs().contains(OIDAndVersion)) {
 					cacheRow(new String[] {measureDeveloper, oid,
 							valueSetLastModified, standardConcept,
 							taxonomy, taxonomyVersion, code, description }, null);
@@ -483,7 +483,7 @@ public abstract class XLSGenerator {
 	protected final void sizeColumns(final HSSFSheet wkst) {
 		sizeColumn(wkst, (short) measuredeveloper);
 		sizeColumn(wkst, (short) oid);
-		sizeColumn(wkst, (short) lastModified);
+		sizeColumn(wkst, (short) revisionDate);
 		sizeColumn(wkst, (short) standardconcept);
 		/* sizeColumn(wkst, (short) standardcategory); */
 		sizeColumn(wkst, (short) standardtaxonomy);

@@ -39,20 +39,32 @@ public class DateBoxWithCalendar extends Composite{
 
 	
 	
-	/** The panel. */
-	FocusPanel fPanel;
+	/** The Constant MDY. */
+	public static final int MDY = 10;
 	
-	/** The panel. */
-	private HorizontalPanel panel = new HorizontalPanel();
+	/** The Constant MDYHMA. */
+	public static final int MDYHMA = 19;
+	
+	/** The blur handler. */
+	private BlurHandler blurHandler = new BlurHandler() {
+		@Override
+		public void onBlur(BlurEvent event) {
+			Widget source = (Widget)event.getSource();
+			source.setStylePrimaryName("no-border");
+			if(!isDateValid()) {
+				showInvalidDateMessage();
+			}
+			valueChanged = false;
+		    ValueChangeEvent.fire(dateBox, dateBox.getValue());
+			
+		}
+	};
+	
+	/** The calendar. */
+	public CustomButton calendar;
 	
 	/** The date box. */
 	private TextBox dateBox;
-	
-	/** The df. */
-	private DateTimeFormat df = DateTimeFormat.getFormat("MM/dd/yyyy");
-	
-	/** The pop. */
-	private PopupPanel pop;
 	
 	/** The date picker. */
 	private DatePicker datePicker;
@@ -60,71 +72,60 @@ public class DateBoxWithCalendar extends Composite{
 	/** The date picker popup. */
 	private PopupPanel datePickerPopup;
 	
+	/** The df. */
+	private DateTimeFormat df = DateTimeFormat.getFormat("MM/dd/yyyy");
+	
+	/** The enabled. */
+	boolean enabled;
+	
+	/** The focus handler. */
+	private FocusHandler focusHandler = new FocusHandler() {
+		@Override
+		public void onFocus(FocusEvent event) {
+			Widget source = (Widget)event.getSource();
+			source.setStylePrimaryName("focus-border");
+			hideInvalidDateMessage();
+		}
+	};
+
+	/** The panel. */
+	FocusPanel fPanel;
+	
+	/** The inv label. */
+	public Label invLabel;
+	
+	/** The key down handler. */
+	private KeyDownHandler keyDownHandler = new KeyDownHandler() {
+		
+		@Override
+		public void onKeyDown(KeyDownEvent event) {
+			datePickerPopup.hide();
+		}
+	};
+
+	/** The label. */
+	public String label;
+	
+	/** The max length. */
+	private int maxLength;
+	
+	/** The panel. */
+	private HorizontalPanel panel = new HorizontalPanel();
+	
+	/** The pop. */
+	private PopupPanel pop;
+	
 	/** The show invalid message. */
 	private boolean showInvalidMessage;
 	
 	/** The value changed. */
 	private boolean valueChanged = false;
 	
-	/** The calendar. */
-	public CustomButton calendar;
-
-	/** The max length. */
-	private int maxLength;
-	
-	/** The Constant MDY. */
-	public static final int MDY = 10;
-	
-	/** The Constant MDYHMA. */
-	public static final int MDYHMA = 19;
-
-	/** The label. */
-	public String label;
-	
-	/** The inv label. */
-	public Label invLabel;
-	
-	/** The enabled. */
-	boolean enabled;
-	
 	/**
 	 * Instantiates a new date box with calendar.
 	 */
 	public DateBoxWithCalendar() {
 		this(false,"", MDY);
-	}
-	
-	/**
-	 * Instantiates a new date box with calendar.
-	 * 
-	 * @param maxLength
-	 *            the max length
-	 */
-	public DateBoxWithCalendar(int maxLength) {
-		this(false,"", maxLength);
-	}
-	
-	/**
-	 * Instantiates a new date box with calendar.
-	 * 
-	 * @param availableDateId
-	 *            the available date id
-	 */
-	public DateBoxWithCalendar(String availableDateId){
-		this(false, availableDateId, MDY);
-	}
-	
-	/**
-	 * Instantiates a new date box with calendar.
-	 * 
-	 * @param dateTimeFormat
-	 *            the date time format
-	 */
-	public DateBoxWithCalendar(DateTimeFormat dateTimeFormat) {
-		this(false,"", dateTimeFormat.getPattern().length());
-		df = dateTimeFormat;
-		dateBox.setTitle("Enter date in "+dateTimeFormat.getPattern().toUpperCase());
-		dateBox.setWidth("100");
 	}
 	
 	/**
@@ -156,14 +157,16 @@ public class DateBoxWithCalendar extends Composite{
 		dateBox.setMaxLength(maxLength);
 		int width = maxLength == MDYHMA ? 150 : 100;
 		dateBox.setWidth("150");
-		if(maxLength == MDY)
+		if(maxLength == MDY) {
 			dateBox.setTitle("Enter a date in MM/DD/YYYY");
-		else
+		} else {
 			dateBox.setTitle("Enter a date in MM/DD/YYYY hh:mm aa format.");
+		}
 		datePicker = new DatePicker();
 		
 	    datePicker.addValueChangeHandler(new ValueChangeHandler<Date>() {
-	        public void onValueChange(ValueChangeEvent<Date> event) {
+	        @Override
+			public void onValueChange(ValueChangeEvent<Date> event) {
 	          Date date = event.getValue();
 	          String dateString = df.format(date);
 	          dateBox.setText(dateString);
@@ -184,78 +187,194 @@ public class DateBoxWithCalendar extends Composite{
 
 	}
  
-	/** The key down handler. */
-	private KeyDownHandler keyDownHandler = new KeyDownHandler() {
-		
-		@Override
-		public void onKeyDown(KeyDownEvent event) {
-			datePickerPopup.hide();
-		}
-	};
-	
-	/** The focus handler. */
-	private FocusHandler focusHandler = new FocusHandler() {
-		public void onFocus(FocusEvent event) {
-			Widget source = (Widget)event.getSource();
-			source.setStylePrimaryName("focus-border");
-			hideInvalidDateMessage();
-		}
-	};
-	
-	/** The blur handler. */
-	private BlurHandler blurHandler = new BlurHandler() {
-		public void onBlur(BlurEvent event) {
-			Widget source = (Widget)event.getSource();
-			source.setStylePrimaryName("no-border");
-			if(!isDateValid()) {
-				showInvalidDateMessage();
-			}
-			valueChanged = false;
-		    ValueChangeEvent.fire(dateBox, dateBox.getValue());
-			
-		}
-	};
-	
 	/**
-	 * Checks if is date valid.
+	 * Instantiates a new date box with calendar.
 	 * 
-	 * @return true, if is date valid
+	 * @param dateTimeFormat
+	 *            the date time format
 	 */
-	private boolean isDateValid() {
-		Date testDate = new Date();
-		String value = dateBox.getValue();
-		if(value != null && value.length() > 0) {
-			if(value.length() != 10) {
-				return false;
-			}
-			else {
-				int result = df.parse(value, 0, testDate);
-				if(result == 0 || !df.format(testDate).equals(value)) {
-					return false;
-				}
-			}
-		}
-		return true;
+	public DateBoxWithCalendar(DateTimeFormat dateTimeFormat) {
+		this(false,"", dateTimeFormat.getPattern().length());
+		df = dateTimeFormat;
+		dateBox.setTitle("Enter date in "+dateTimeFormat.getPattern().toUpperCase());
+		dateBox.setHeight("20px");
+		dateBox.setWidth("100");
 	}
 	
 	/**
-	 * Show invalid date message.
+	 * Instantiates a new date box with calendar.
+	 * 
+	 * @param maxLength
+	 *            the max length
 	 */
-	private void showInvalidDateMessage() {
-		if(showInvalidMessage) {
-			if(pop != null) {
-				pop.setPopupPosition(dateBox.getAbsoluteLeft()+50, dateBox.getAbsoluteTop()+15);
-			  	pop.show();
+	public DateBoxWithCalendar(int maxLength) {
+		this(false,"", maxLength);
+	}
+	
+	/**
+	 * Instantiates a new date box with calendar.
+	 * 
+	 * @param availableDateId
+	 *            the available date id
+	 */
+	public DateBoxWithCalendar(String availableDateId){
+		this(false, availableDateId, MDY);
+	}
+	
+	/**
+	 * Adds the blur handler.
+	 * 
+	 * @param bHandler
+	 *            the b handler
+	 * @return the handler registration
+	 */
+	public HandlerRegistration addBlurHandler(BlurHandler bHandler) {
+		return fPanel.addBlurHandler(bHandler);
+	}
+	
+	/**
+	 * Adds the focus handler.
+	 * 
+	 * @param fHandler
+	 *            the f handler
+	 * @return the handler registration
+	 */
+	public HandlerRegistration addFocusHandler(FocusHandler fHandler) {
+		return fPanel.addFocusHandler(fHandler);
+	}
+
+	/**
+	 * Adds the key down handler.
+	 * 
+	 * @param handler
+	 *            the handler
+	 * @return the handler registration
+	 */
+	public HandlerRegistration addKeyDownHandler(KeyDownHandler handler) {
+		return dateBox.addKeyDownHandler(handler);
+	}
+	
+	/**
+	 * Adds the value change handler.
+	 * 
+	 * @param changeListner
+	 *            the change listner
+	 * @return the handler registration
+	 */
+	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> changeListner) {
+		return dateBox.addValueChangeHandler(changeListner);
+	}
+
+	/**
+	 * Format date value.
+	 * 
+	 * @param event
+	 *            the event
+	 * @param availableDateId
+	 *            the available date id
+	 */
+	private void formatDateValue(KeyUpEvent event,String availableDateId) {
+		int keyCode = event.getNativeKeyCode();
+		if(!event.isAnyModifierKeyDown()) {
+			int curCursPos = dateBox.getCursorPos();
+			String value = dateBox.getValue();
+			String newValue = "";
+			
+			for(int i = 0; (i < value.length()) && (newValue.length() < maxLength); i++) {
+				char c = value.charAt(i);
+				if(availableDateId.equals("") && (i < MDY)){
+					if((Character.isDigit(c) || (c == 'x')|| (c == 'X'))) {
+						newValue += c;
+					}
+				}else{
+					if(Character.isDigit(c) && ((i < MDY) || (i==11) || (i==12) || (i==14) || (i==15))){
+						newValue += c;
+					}
+				}
+				
+				if(((maxLength == MDY) || (maxLength == MDYHMA)) && ((newValue.length() == 2) || (newValue.length() == 5))) {
+					newValue += "/";
+				}
+				else if(maxLength == MDYHMA){
+					if((newValue.length() == 10) || (newValue.length() == 16)){
+						newValue += " ";
+					}else if(newValue.length() == 13){
+						newValue += ":";
+					}else if(newValue.length() == 17){
+						if((c=='a') || (c=='A')){
+							newValue+="AM";
+						}else if((c=='p') || (c=='P')) {
+							newValue+="PM";
+						}
+					}
+				}
 			}
-	        dateBox.addStyleName(DATE_BOX_FORMAT_ERROR);
+			if(((curCursPos == 2) || (curCursPos == 5) || (curCursPos == 10) || (curCursPos == 16) || (curCursPos == 13)) && 
+					(keyCode != KeyCodes.KEY_BACKSPACE) &&
+					(keyCode != KeyCodes.KEY_LEFT) &&
+					((maxLength == MDY) || (maxLength == MDYHMA))) {
+				curCursPos++;
+			}
+			dateBox.setValue(newValue);
+			if(curCursPos > newValue.length()) {
+				curCursPos = newValue.length();
+			}
+			dateBox.setCursorPos(curCursPos);
+			valueChanged = true;
 		}
+	}
+
+	/**
+	 * Gets the calendar.
+	 * 
+	 * @return the calendar
+	 */
+	public CustomButton getCalendar() {
+		return calendar;
+	}
+	
+
+	/**
+	 * Gets the date box.
+	 * 
+	 * @return the dateBox
+	 */
+	public TextBox getDateBox() {
+		return dateBox;
+	}
+	
+	/**
+	 * Gets the label.
+	 * 
+	 * @return the label
+	 */
+	public String getLabel() {
+		return label;
+	}
+
+	/**
+	 * Gets the tab index.
+	 * 
+	 * @return the tab index
+	 */
+	public int getTabIndex() {
+		return dateBox.getTabIndex();
+	}
+
+	/**
+	 * Gets the value.
+	 * 
+	 * @return the value
+	 */
+	public String getValue() {
+		return dateBox.getValue();
 	}
 
 	/**
 	 * Hide invalid date message.
 	 */
 	public void hideInvalidDateMessage() {
-		if(pop != null && pop.isShowing()) {
+		if((pop != null) && pop.isShowing()) {
 			pop.hide();
 		}
 	    dateBox.removeStyleName(DATE_BOX_FORMAT_ERROR);
@@ -278,12 +397,13 @@ public class DateBoxWithCalendar extends Composite{
 		calendar.setStylePrimaryName("invisibleButtonText");
 		calendar.setResource(ImageResources.INSTANCE.calendar(), "Calendar");
 		calendar.addClickHandler(new ClickHandler() {			
+			@Override
 			public void onClick(ClickEvent event) {
 				if(!datePickerPopup.isShowing() && calendar.isEnabled()) {
 					Date date = new Date();
-					if(dateBox.getValue() != null &&
-							dateBox.getValue().length() > 0 &&
-							df.parseStrict(dateBox.getValue(), 0, date) > 0) {						
+					if((dateBox.getValue() != null) &&
+							(dateBox.getValue().length() > 0) &&
+							(df.parseStrict(dateBox.getValue(), 0, date) > 0)) {						
 						datePicker.setValue(date);
 						datePicker.setCurrentMonth(date);
 					}
@@ -303,13 +423,15 @@ public class DateBoxWithCalendar extends Composite{
 		dateBox.addFocusHandler(focusHandler);
 		dateBox.addBlurHandler(blurHandler);
 	    dateBox.addKeyUpHandler(new KeyUpHandler() {
+			@Override
 			public void onKeyUp(KeyUpEvent event) {
 				formatDateValue(event,availableDateId);
 			}
 		});
 	    dateBox.addKeyDownHandler(new KeyDownHandler() {
+			@Override
 			public void onKeyDown(KeyDownEvent event) {
-				if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER && valueChanged) {
+				if((event.getNativeKeyCode() == KeyCodes.KEY_ENTER) && valueChanged) {
 					 ValueChangeEvent.fire(dateBox, dateBox.getValue());
 					 valueChanged = false;
 				}
@@ -320,106 +442,55 @@ public class DateBoxWithCalendar extends Composite{
 	}
 
 	/**
-	 * Format date value.
+	 * Checks if is date valid.
 	 * 
-	 * @param event
-	 *            the event
-	 * @param availableDateId
-	 *            the available date id
+	 * @return true, if is date valid
 	 */
-	private void formatDateValue(KeyUpEvent event,String availableDateId) {
-		int keyCode = event.getNativeKeyCode();
-		if(!event.isAnyModifierKeyDown()) {
-			int curCursPos = dateBox.getCursorPos();
-			String value = dateBox.getValue();
-			String newValue = "";
-			
-			for(int i = 0; i < value.length() && newValue.length() < maxLength; i++) {
-				char c = value.charAt(i);
-				if(availableDateId.equals("") && i < MDY){
-					if((Character.isDigit(c) || c == 'x'|| c == 'X')) {
-						newValue += c;
-					}
-				}else{
-					if(Character.isDigit(c) && (i < MDY || i==11 || i==12 || i==14 || i==15)){
-						newValue += c;
-					}
-				}
-				
-				if((maxLength == MDY || maxLength == MDYHMA) && (newValue.length() == 2 || newValue.length() == 5)) {
-					newValue += "/";
-				}
-				else if(maxLength == MDYHMA){
-					if(newValue.length() == 10 || newValue.length() == 16){
-						newValue += " ";
-					}else if(newValue.length() == 13){
-						newValue += ":";
-					}else if(newValue.length() == 17){
-						if(c=='a' || c=='A'){
-							newValue+="AM";
-						}else if(c=='p' || c=='P')
-							newValue+="PM";
-					}
+	private boolean isDateValid() {
+		Date testDate = new Date();
+		String value = dateBox.getValue();
+		if((value != null) && (value.length() > 0)) {
+			if(value.length() != 10) {
+				return false;
+			}
+			else {
+				int result = df.parse(value, 0, testDate);
+				if((result == 0) || !df.format(testDate).equals(value)) {
+					return false;
 				}
 			}
-			if((curCursPos == 2 || curCursPos == 5 || curCursPos == 10 || curCursPos == 16 || curCursPos == 13) && 
-					keyCode != KeyCodes.KEY_BACKSPACE &&
-					keyCode != KeyCodes.KEY_LEFT &&
-					(maxLength == MDY || maxLength == MDYHMA)) {
-				curCursPos++;
-			}
-			dateBox.setValue(newValue);
-			if(curCursPos > newValue.length()) {
-				curCursPos = newValue.length();
-			}
-			dateBox.setCursorPos(curCursPos);
-			valueChanged = true;
 		}
+		return true;
 	}
 
 	/**
-	 * Adds the value change handler.
+	 * Checks if is enabled.
 	 * 
-	 * @param changeListner
-	 *            the change listner
-	 * @return the handler registration
+	 * @return true, if is enabled
 	 */
-	public HandlerRegistration addValueChangeHandler(ValueChangeHandler<String> changeListner) {
-		return dateBox.addValueChangeHandler(changeListner);
-	}
-	
-
-	/**
-	 * Adds the focus handler.
-	 * 
-	 * @param fHandler
-	 *            the f handler
-	 * @return the handler registration
-	 */
-	public HandlerRegistration addFocusHandler(FocusHandler fHandler) {
-		return fPanel.addFocusHandler(fHandler);
+	public boolean isEnabled(){
+		return enabled;
 	}
 	
 	/**
-	 * Adds the blur handler.
+	 * Checks if is valid date time.
 	 * 
-	 * @param bHandler
-	 *            the b handler
-	 * @return the handler registration
+	 * @return true, if is valid date time
 	 */
-	public HandlerRegistration addBlurHandler(BlurHandler bHandler) {
-		return fPanel.addBlurHandler(bHandler);
+	public boolean isValidDateTime() {
+		return dateBox.getValue() == null;
 	}
-
+	
 	/**
-	 * Gets the value.
+	 * Sets the access key.
 	 * 
-	 * @return the value
+	 * @param key
+	 *            the new access key
 	 */
-	public String getValue() {
-		return dateBox.getValue();
+	public void setAccessKey(char key) {
+		dateBox.setAccessKey(key);
 	}
-
+	
 	/**
 	 * Sets the enable css.
 	 * 
@@ -432,14 +503,15 @@ public class DateBoxWithCalendar extends Composite{
 		 * as the setEnabled method is not refreshing properly when
 		 * in transition from disabled to enabled state 
 		 */
-		if(enabled)
+		if(enabled) {
 			dateBox.setStyleName("gwt-TextBox");
-		else
+		} else {
 			dateBox.setStyleName("gwt-TextBox-readonly");
+		}
 		//calendar.enableImage(enabled);
 		calendar.setEnabled(enabled);
 	}
-
+	
 	/**
 	 * Sets the enabled.
 	 * 
@@ -471,7 +543,7 @@ public class DateBoxWithCalendar extends Composite{
 		}
 		
 	}
-	
+
 	/**
 	 * Sets the focus.
 	 * 
@@ -486,43 +558,15 @@ public class DateBoxWithCalendar extends Composite{
 	}
 
 	/**
-	 * Sets the value.
+	 * Sets the label.
 	 * 
-	 * @param value
-	 *            the new value
+	 * @param label
+	 *            the new label
 	 */
-	public void setValue(String value) {
-		dateBox.setValue(value);
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
-	/**
-	 * Checks if is valid date time.
-	 * 
-	 * @return true, if is valid date time
-	 */
-	public boolean isValidDateTime() {
-		return dateBox.getValue() == null;
-	}
-	
-	/**
-	 * Gets the tab index.
-	 * 
-	 * @return the tab index
-	 */
-	public int getTabIndex() {
-		return dateBox.getTabIndex();
-	}
-	
-	/**
-	 * Sets the access key.
-	 * 
-	 * @param key
-	 *            the new access key
-	 */
-	public void setAccessKey(char key) {
-		dateBox.setAccessKey(key);
-	}
-	
 	/**
 	 * Sets the tab index.
 	 * 
@@ -532,62 +576,28 @@ public class DateBoxWithCalendar extends Composite{
 	public void setTabIndex(int index) {
 		dateBox.setTabIndex(index);
 	}
-	
-	/**
-	 * Adds the key down handler.
-	 * 
-	 * @param handler
-	 *            the handler
-	 * @return the handler registration
-	 */
-	public HandlerRegistration addKeyDownHandler(KeyDownHandler handler) {
-		return dateBox.addKeyDownHandler(handler);
-	}
 
 	/**
-	 * Gets the date box.
+	 * Sets the value.
 	 * 
-	 * @return the dateBox
+	 * @param value
+	 *            the new value
 	 */
-	public TextBox getDateBox() {
-		return dateBox;
-	}
-
-	/**
-	 * Gets the calendar.
-	 * 
-	 * @return the calendar
-	 */
-	public CustomButton getCalendar() {
-		return calendar;
-	}
-
-	/**
-	 * Gets the label.
-	 * 
-	 * @return the label
-	 */
-	public String getLabel() {
-		return label;
-	}
-
-	/**
-	 * Sets the label.
-	 * 
-	 * @param label
-	 *            the new label
-	 */
-	public void setLabel(String label) {
-		this.label = label;
+	public void setValue(String value) {
+		dateBox.setValue(value);
 	}
 	
 	/**
-	 * Checks if is enabled.
-	 * 
-	 * @return true, if is enabled
+	 * Show invalid date message.
 	 */
-	public boolean isEnabled(){
-		return this.enabled;
+	private void showInvalidDateMessage() {
+		if(showInvalidMessage) {
+			if(pop != null) {
+				pop.setPopupPosition(dateBox.getAbsoluteLeft()+50, dateBox.getAbsoluteTop()+15);
+			  	pop.show();
+			}
+	        dateBox.addStyleName(DATE_BOX_FORMAT_ERROR);
+		}
 	}
 
 }

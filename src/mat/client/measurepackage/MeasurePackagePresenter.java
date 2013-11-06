@@ -975,6 +975,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 							view.getMeasurePackageWarningMsg()
 							.setMessage(MatContext.get().getMessageDelegate()
 									.getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN());
+						}else if(VsacApiResult.VSAC_REQUEST_TIMEOUT == updateVsacResult.getFailureReason()){
+							view.getMeasureErrorMessageDisplay()
+							  .setMessage(MatContext.get().getMessageDelegate()
+								.getMEASURE_PACKAGE_VSAC_TIMEOUT());
 						}
 					} else {
 						view.getMeasureErrorMessageDisplay()

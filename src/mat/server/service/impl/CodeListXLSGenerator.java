@@ -61,6 +61,7 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		HSSFWorkbook wkbk = new HSSFWorkbook();
 		createMetaData(wkbk);
 		// addDisclaimer(wkbk);
+		qdmOIDs.clear();
 		//adding measure value set
 		String sheetName = stripInvalidChars(m.getaBBRName());
 		addVsacValueSetWorkSheet(sheetName, getNAME_STRINGS() , m , wkbk, qdmRefId, matValueSets);
@@ -112,6 +113,14 @@ public class CodeListXLSGenerator extends XLSGenerator{
 			processXLSRow(lo);
 		}
 
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.impl.XLSGenerator#getQdmOIDs()
+	 */
+	@Override
+	protected List<String> getQdmOIDs() {
+		return qdmOIDs;
 	}
 
 	/**

@@ -7,6 +7,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import mat.dao.ListObjectDAO;
@@ -133,6 +134,13 @@ public abstract class XLSGenerator {
 	 *
 	 * **/
 	protected abstract void cacheXLSRow(MatValueSet lo);
+	
+	/**
+	 * Gets the list of unique qdm oids.
+	 *
+	 * @return the list of unique qdm oids.
+	 */
+	protected abstract List<String> getQdmOIDs();
 	
 	/**
 	 *@param wkst - HSSFSheet.
@@ -427,10 +435,14 @@ public abstract class XLSGenerator {
 			for (MatValueSet gcl : lo.getGroupedValueSet()) {
 				code = gcl.getID();
 				// description = gcl.getDescription();
-				cacheRow(new String[] {measureDeveloper, oid,
-						valueSetLastModified, standardConcept,
-						taxonomy, taxonomyVersion, code, description }, null);
-				cacheXLSRow(gcl);
+				
+				String OIDAndVersion = gcl.getID()+":"+gcl.getVersion();
+				if (!getQdmOIDs().contains(OIDAndVersion)) {				
+					cacheRow(new String[] {measureDeveloper, oid,
+							valueSetLastModified, standardConcept,
+							taxonomy, taxonomyVersion, code, description }, null);
+					cacheXLSRow(gcl);
+				}
 			}
 		} else {
 			String taxonomy = lo.getConceptList().getConceptList().get(0)

@@ -1,6 +1,7 @@
 package mat.server.service.impl;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 import mat.dao.ListObjectDAO;
 import mat.model.ListObject;
@@ -90,5 +91,13 @@ public class ValueSetXLSGenerator extends XLSGenerator {
 	@Override
 	protected void cacheXLSRow(final MatValueSet lo) {
 
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.impl.XLSGenerator#getQdmOIDs()
+	 */
+	@Override
+	protected List<String> getQdmOIDs() {
+		return null;
 	}
 }

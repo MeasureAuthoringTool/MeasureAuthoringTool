@@ -3,6 +3,10 @@ package mat.server;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
@@ -31,14 +35,14 @@ import org.xml.sax.InputSource;
 public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VSACAPIService {
 	/** Logger for VSACAPIServiceImpl class. **/
 	private static final Log LOGGER = LogFactory.getLog(VSACAPIServiceImpl.class);
-	/** serialVersionUID for VSACAPIServiceImpl class. **/
-	private static final long serialVersionUID = -6645961609626183169L;
-	
 	/** The Constant PROXY_HOST. */
 	private static final String PROXY_HOST = System.getProperty("vsac_proxy_host");
 	
 	/** The Constant PROXY_PORT. */
 	private static final int PROXY_PORT = Integer.parseInt(System.getProperty("vsac_proxy_port"));
+	
+	/** serialVersionUID for VSACAPIServiceImpl class. **/
+	private static final long serialVersionUID = -6645961609626183169L;
 	
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
@@ -198,6 +202,23 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		LOGGER.info("End VSACAPIServiceImpl isAlreadySignedIn: ");
 		return eightHourTicketForUser != null;
 	}
+	
+	/** Method to Iterate through Map of Quality Data set DTO(modify With) as key and Quality Data Set DTO (modifiable) as Value and update
+	 * Measure XML by calling {@link MeasureLibraryServiceImpl} method 'updateMeasureXML'.
+	 * @param map - HaspMap
+	 * @param measureId - String */
+	private void updateAllInMeasureXml(HashMap<QualityDataSetDTO, QualityDataSetDTO> map, String measureId) {
+		LOGGER.info("Start VSACAPIServiceImpl updateAllInMeasureXml :");
+		Iterator<Entry<QualityDataSetDTO, QualityDataSetDTO>> it = map.entrySet().iterator();
+		while (it.hasNext()) {
+			Map.Entry<QualityDataSetDTO, QualityDataSetDTO> entrySet = it.next();
+			LOGGER.info("Calling updateMeasureXML for : " + entrySet.getKey().getOid());
+			getMeasureLibraryService().updateMeasureXML(entrySet.getKey(),
+					entrySet.getValue(), measureId);
+			LOGGER.info("Successfully updated Measure XML for  : " + entrySet.getKey().getOid());
+		}
+		LOGGER.info("End VSACAPIServiceImpl updateAllInMeasureXml :");
+	}
 	/***
 	 * Method to update valueset's without versions from VSAC in Measure XML.
 	 * Skip Timing elements and User defined QDM. Supplemental Data Elements are considered here.
@@ -213,6 +234,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
 					getAppliedQDMFromMeasureXml(measureId, false);
 			ArrayList<MatValueSet> matValueSetList = new ArrayList<MatValueSet>();
+			HashMap<QualityDataSetDTO, QualityDataSetDTO> updateInMeasureXml =
+					new HashMap<QualityDataSetDTO, QualityDataSetDTO>();
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
 				LOGGER.info("OID ====" + qualityDataSetDTO.getOid());
 				// Filter out Timing Element and User defined QDM's.
@@ -223,8 +246,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					continue;
 				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
 						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
-					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
-					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket,PROXY_HOST,PROXY_PORT);
+					// Only Update Measure XML for those which have version as 1.0 or 1.
+					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
+					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket, PROXY_HOST, PROXY_PORT);
 					ValueSetsResponse vsr = new ValueSetsResponse();
 					try {
 						vsr = dao.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid());
@@ -250,17 +274,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 											getConceptList().get(0).getCodeSystemName());
 								}
 								matValueSetList.add(matValueSet);
-								// Code which updated Measure XML against each
-								// modifiable QDM.
-								getMeasureLibraryService().updateMeasureXML(qualityDataSetDTO,
-										toBeModifiedQDM, measureId);
+								updateInMeasureXml.put(qualityDataSetDTO, toBeModifiedQDM);
 							}
 						}
 					}
-				} else if (!"1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
-						|| !"1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
-					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
-					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket,PROXY_HOST,PROXY_PORT);
+				} else { // Add specific version other then 1.0 QDM in matValueSetList - Used for Value set sheet creation.
+					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
+					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket, PROXY_HOST, PROXY_PORT);
 					ValueSetsResponse vsr = new ValueSetsResponse();
 					try {
 						vsr = dao.getMultipleValueSetsResponseByOIDAndVersion(
@@ -282,6 +302,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					}
 				}
 			}
+			// Call to update Measure XML.
+			updateAllInMeasureXml(updateInMeasureXml, measureId);
 			result.setSuccess(true);
 			result.setVsacResponse(matValueSetList);
 		} else {
@@ -291,7 +313,6 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		}
 		return result;
 	}
-	
 	/***
 	 * Method to update valueset's without versions from VSAC in Measure XML.
 	 * Skip supplemental Data Elements and Timing elements and User defined QDM.
@@ -307,6 +328,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		if (isAlreadySignedIn()) {
 			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
 					getAppliedQDMFromMeasureXml(measureId, false);
+			HashMap<QualityDataSetDTO, QualityDataSetDTO> updateInMeasureXml =
+					new HashMap<QualityDataSetDTO, QualityDataSetDTO>();
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
 				LOGGER.info(" VSACAPIServiceImpl updateVSACValueSets :: OID:: " + qualityDataSetDTO.getOid());
 				// Filter out Timing Element , User defined QDM's and
@@ -318,9 +341,9 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 							+ "for following type Supplemental data or User defined or Timing Element.");
 					continue;
 				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
-					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
+					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
 					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(UMLSSessionTicket.
-							getTicket(getThreadLocalRequest().getSession().getId()),PROXY_HOST,PROXY_PORT);
+							getTicket(getThreadLocalRequest().getSession().getId()), PROXY_HOST, PROXY_PORT);
 					ValueSetsResponse vsr = new ValueSetsResponse();
 					try {
 						vsr = dao.getMultipleValueSetsResponseByOID(qualityDataSetDTO.getOid());
@@ -343,16 +366,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 									qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
 											getConceptList().get(0).getCodeSystemName());
 								}
-								// Code which updated Measure XML against each
-								// modifiable QDM.
-								getMeasureLibraryService().updateMeasureXML(qualityDataSetDTO,
-										toBeModifiedQDM, measureId);
+								updateInMeasureXml.put(qualityDataSetDTO, toBeModifiedQDM);
 							}
 						}
 					}
-					
 				}
 			}
+			updateAllInMeasureXml(updateInMeasureXml, measureId);
 			result.setSuccess(true);
 		} else {
 			result.setSuccess(false);
@@ -362,7 +382,6 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		LOGGER.info("End VSACAPIServiceImpl updateVSACValueSets method :");
 		return result;
 	}
-	
 	/**
 	 *Method to authenticate user at VSAC and save eightHourTicket into UMLSSessionMap for valid user.
 	 *@param userName - String.

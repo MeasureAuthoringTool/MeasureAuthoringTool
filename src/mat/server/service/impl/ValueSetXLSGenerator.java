@@ -92,12 +92,4 @@ public class ValueSetXLSGenerator extends XLSGenerator {
 	protected void cacheXLSRow(final MatValueSet lo) {
 
 	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.impl.XLSGenerator#getQdmOIDs()
-	 */
-	@Override
-	protected List<String> getQdmOIDs() {
-		return null;
-	}
 }

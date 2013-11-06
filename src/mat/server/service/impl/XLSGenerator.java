@@ -320,14 +320,7 @@ public abstract class XLSGenerator {
 	public String[] getNAME_STRINGS() {
 		return NAME_STRINGS;
 	}
-	
-	/**
-	 * Gets the list of unique qdm oids.
-	 *
-	 * @return the list of unique qdm oids.
-	 */
-	protected abstract List<String> getQdmOIDs();
-	
+
 	/**
 	 *@param measureId - String.
 	 *@param measureExportDAO - MeasureExportDAO.
@@ -435,14 +428,10 @@ public abstract class XLSGenerator {
 			for (MatValueSet gcl : lo.getGroupedValueSet()) {
 				code = gcl.getID();
 				// description = gcl.getDescription();
-				
-				String OIDAndVersion = gcl.getID()+":"+gcl.getVersion();
-				if (!getQdmOIDs().contains(OIDAndVersion)) {
-					cacheRow(new String[] {measureDeveloper, oid,
-							valueSetLastModified, standardConcept,
-							taxonomy, taxonomyVersion, code, description }, null);
-					cacheXLSRow(gcl);
-				}
+				cacheRow(new String[] {measureDeveloper, oid,
+						valueSetLastModified, standardConcept,
+						taxonomy, taxonomyVersion, code, description }, null);
+				cacheXLSRow(gcl);
 			}
 		} else {
 			String taxonomy = lo.getConceptList().getConceptList().get(0)

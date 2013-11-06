@@ -114,14 +114,6 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		}
 
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.impl.XLSGenerator#getQdmOIDs()
-	 */
-	@Override
-	protected List<String> getQdmOIDs() {
-		return qdmOIDs;
-	}
 
 	/**
 	 *@param id - String qdm Id.

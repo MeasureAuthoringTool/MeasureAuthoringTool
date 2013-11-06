@@ -17,7 +17,10 @@ public class VsacApiResult implements IsSerializable {
 	
 	/** The Constant OID_REQUIRED. */
 	public  final static int OID_REQUIRED = 2;
-
+	
+	/** The Constant VSAC REQUEST TIMED OUT. */
+	public  final static int VSAC_REQUEST_TIMEOUT = 3;
+	
 	/** The failure reason. */
 	private int failureReason;
 	

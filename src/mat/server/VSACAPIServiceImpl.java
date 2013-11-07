@@ -258,6 +258,16 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 								+ qualityDataSetDTO.getDataType());
 					}
 					if (vsr != null) {
+						if(vsr.isFailResponse()){
+							LOGGER.info("Value Set reterival failed at VSAC for OID :"
+									+ qualityDataSetDTO.getOid() + " with Data Type : "
+									+ qualityDataSetDTO.getDataType() + ". Reason:"+vsr.getFailReason());
+							//inValidateVsacUser();
+							//MatContext.get().setUMLSLoggedIn(false);
+							result.setSuccess(false);
+							result.setFailureReason(vsr.getFailReason());
+							return result;
+						}
 						if ((vsr.getXmlPayLoad() != null) && StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {
 							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
 							MatValueSet matValueSet = wrapper.getValueSetList().get(0);

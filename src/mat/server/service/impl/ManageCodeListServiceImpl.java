@@ -1341,7 +1341,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			qds.setVersion("1.0");
 		}
 		if (valueSetTransferObject.isEffectiveDate()) {
-			qds.setEffectiveDate(valueSetTransferObject.getQueryDate());
+			qds.setEffectiveDate(valueSetTransferObject.getMatValueSet().getRevisionDate());
 		}
 		if (valueSetTransferObject.isSpecificOccurrence()) {
 			int occurrenceCount = checkForOccurrenceCountVsacApi(dataType,
@@ -1791,7 +1791,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 				qds.setVersion("1.0");
 			}
 			if (matValueSetTransferObject.isEffectiveDate()) {
-				qds.setEffectiveDate(matValueSetTransferObject.getQueryDate());
+				qds.setEffectiveDate(matValueSetTransferObject.getMatValueSet().getRevisionDate());
 			} else {
 				qds.setEffectiveDate(null);
 			}
@@ -1810,7 +1810,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 			}
 		} else { // Treat as regular QDM
 			List<QualityDataSetDTO> origAppliedQDMList = matValueSetTransferObject.getAppliedQDMList();
-			List<QualityDataSetDTO> tempAppliedQDMList = new ArrayList<QualityDataSetDTO>();  
+			List<QualityDataSetDTO> tempAppliedQDMList = new ArrayList<QualityDataSetDTO>();
 			tempAppliedQDMList.addAll(matValueSetTransferObject.getAppliedQDMList());
 			//Removing the QDS that is being modified from the tempAppliedQDMList.
 			Iterator<QualityDataSetDTO> iterator = tempAppliedQDMList.iterator();
@@ -1847,7 +1847,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					qds.setVersion("1.0");
 				}
 				if (matValueSetTransferObject.isEffectiveDate()) {
-					qds.setEffectiveDate(matValueSetTransferObject.getQueryDate());
+					qds.setEffectiveDate(matValueSetTransferObject.getMatValueSet().getRevisionDate());
 				} else {
 					qds.setEffectiveDate(null);
 				}

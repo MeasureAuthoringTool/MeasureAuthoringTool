@@ -320,18 +320,20 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 	 * @see mat.client.clause.QDMAvailableValueSetPresenter.SearchDisplay#buildValueSetDetailsWidget(java.util.ArrayList)
 	 */
 	public void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets) {
-		MatValueSet matValueSet = matValueSets.get(0);
-		currentMatValueSet = matValueSet;
-		valueSetDetailsPanel.clear();
-		valueSetDetailsPanel.add(createDetailsWidget(matValueSet));
-		if (matValueSet.isGrouping()) {
+		if (matValueSets != null) {
+			MatValueSet matValueSet = matValueSets.get(0);
+			currentMatValueSet = matValueSet;
+			valueSetDetailsPanel.clear();
+			valueSetDetailsPanel.add(createDetailsWidget(matValueSet));
+			if (matValueSet.isGrouping()) {
+				valueSetDetailsPanel.add(new SpacerWidget());
+				valueSetDetailsPanel.add(createGroupingMembersCellTable(matValueSet));
+			}
 			valueSetDetailsPanel.add(new SpacerWidget());
-			valueSetDetailsPanel.add(createGroupingMembersCellTable(matValueSet));
+			valueSetDetailsPanel.add(new SpacerWidget());
+			valueSetDetailsPanel.add(new SpacerWidget());
+			valueSetDetailsPanel.add(createDataTypeWidget());
 		}
-		valueSetDetailsPanel.add(new SpacerWidget());
-		valueSetDetailsPanel.add(new SpacerWidget());
-		valueSetDetailsPanel.add(new SpacerWidget());
-		valueSetDetailsPanel.add(createDataTypeWidget());
 	}
 
 	/**

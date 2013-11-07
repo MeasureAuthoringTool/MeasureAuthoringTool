@@ -112,26 +112,27 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		String eightHourTicket = UMLSSessionTicket.getTicket(getThreadLocalRequest().getSession().getId());
 		if (eightHourTicket != null) {
 			if ((oid != null) && StringUtils.isNotEmpty(oid) && StringUtils.isNotBlank(oid)) {
-				LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:"+PROXY_HOST+":"+PROXY_PORT);
-				ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket,PROXY_HOST,PROXY_PORT);
+				LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
+				ValueSetsResponseDAO dao = new ValueSetsResponseDAO(eightHourTicket, PROXY_HOST, PROXY_PORT);
 				ValueSetsResponse vsr = null;
 				if ((version != null) && StringUtils.isNotEmpty(version)) {
 					vsr = dao.getMultipleValueSetsResponseByOIDAndVersion(oid.trim(), version);
-					result.setSuccess(true);
 				} else if ((effectiveDate != null) && StringUtils.isNotEmpty(effectiveDate)) {
 					vsr = dao.getMultipleValueSetsResponseByOIDAndEffectiveDate(oid, effectiveDate);
-					result.setSuccess(true);
 				} else {
 					vsr = dao.getMultipleValueSetsResponseByOID(oid.trim());
-					result.setSuccess(true);
 				}
 				if (!vsr.getXmlPayLoad().isEmpty()) {
+					result.setSuccess(true);
 					VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
 					for (MatValueSet valueSet : wrapper.getValueSetList()) {
 						handleVSACGroupedValueSet(eightHourTicket, valueSet);
 					}
 					result.setVsacResponse(wrapper.getValueSetList());
 					LOGGER.info("Successfully converted valueset object from vsac xml payload.");
+				} else {
+					result.setSuccess(false);
+					LOGGER.info("Unable to reterive value set in VSAC.");
 				}
 			} else {
 				result.setSuccess(false);

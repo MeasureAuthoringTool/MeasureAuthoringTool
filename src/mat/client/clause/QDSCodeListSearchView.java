@@ -438,12 +438,14 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		details.setWidget(1, 0, createHTML(matValueSet.getDisplayName(), "NameValue", null));
 		details.setWidget(0, 1, createHTML("OID:", "OID", "valueSetMarginLeft"));
 		details.setWidget(1, 1, createHTML(matValueSet.getID(), "oidValue", "valueSetMarginLeft"));
-		details.setWidget(0, 2, createHTML("Code System:", "Code System", "valueSetMarginLeft"));
+		details.setWidget(0, 2, createHTML("Code System:", "CodeSystem", "valueSetMarginLeft"));
 		details.setWidget(1, 2, createHTML(getCodeSystem(matValueSet), "CodeSystemValue", "valueSetMarginLeft"));
 		details.setWidget(2, 0, createHTML("Type:", "Type", "valueSetMarginTop"));
 		details.setWidget(3, 0, createHTML(matValueSet.getType(), "TypeValue", null));
 		details.setWidget(2, 1, createHTML("Version:", "Version", "valueSetMarginLeft,valueSetMarginTop"));
 		details.setWidget(3, 1, createHTML(matValueSet.getVersion(), "VersionValue", "valueSetMarginLeft"));
+		details.setWidget(2, 2, createHTML("Effective Date:", "EffectiveDate", "valueSetMarginLeft,valueSetMarginTop"));
+		details.setWidget(3, 2, createHTML(matValueSet.getRevisionDate(), "EffectiveDateValue", "valueSetMarginLeft"));
 		details.setWidget(4, 0, createHTML("Steward:", "Steward", "valueSetMarginTop"));
 		details.setWidget(5, 0, createHTML(matValueSet.getSource(), "StewardValue", null));
 		details.setWidget(4, 1, createHTML("Status:", "Status", "valueSetMarginLeft,valueSetMarginTop"));

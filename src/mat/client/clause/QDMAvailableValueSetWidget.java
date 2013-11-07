@@ -445,6 +445,8 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 		details.setWidget(3, 0, createHTML(matValueSet.getType(), "TypeValue", null));
 		details.setWidget(2, 1, createHTML("Version:", "Version", "valueSetMarginLeft,valueSetMarginTop"));
 		details.setWidget(3, 1, createHTML(matValueSet.getVersion(),"VersionValue", "valueSetMarginLeft"));
+		details.setWidget(2, 2, createHTML("Effective Date:", "EffectiveDate", "valueSetMarginLeft,valueSetMarginTop"));
+		details.setWidget(3, 2, createHTML(matValueSet.getRevisionDate(), "EffectiveDateValue", "valueSetMarginLeft"));
 		details.setWidget(4, 0, createHTML("Steward:", "Steward", "valueSetMarginTop"));
 		details.setWidget(5, 0, createHTML(matValueSet.getSource(), "StewardValue", null));
 		details.setWidget(4, 1, createHTML("Status:", "Status", "valueSetMarginLeft,valueSetMarginTop"));

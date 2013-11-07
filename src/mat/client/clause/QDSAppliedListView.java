@@ -257,22 +257,26 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			@Override
 			public String getValue(QualityDataSetDTO object) {
 				String value;
-				String oidVersionDetails = "";
+				String QDMDetails = "";
 				if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-					oidVersionDetails = "(User defined)";
+					QDMDetails = "(User defined)";
 				} else {
 					String version = object.getVersion();
-					if (version.equals("1.0") || version.equals("1")) {
-						version = "Latest Version";
+					String effectiveDate = object.getEffectiveDate();
+					if (effectiveDate != null) {
+						QDMDetails = "(OID: " + object.getOid() + ", Effective Date: " + effectiveDate + ")";
+					} else if (!version.equals("1.0") && !version.equals("1")) {
+						QDMDetails = "(OID: " + object.getOid() + ", Version: " + version + ")";
+					} else {
+						QDMDetails = "(OID: " + object.getOid() + ")";
 					}
-					oidVersionDetails = "(OID: " + object.getOid() + " Version: " + version + ")";
 				}
 
 				if (object.getOccurrenceText() != null && !object.getOccurrenceText().equals("")) {
 					value = object.getOccurrenceText() + " of " + object.getCodeListName() + ": " + object.getDataType()
-							 + ", " + oidVersionDetails;
+							 + " " + QDMDetails;
 				} else {
-					value = object.getCodeListName() + ": " + object.getDataType() + ", " + oidVersionDetails;
+					value = object.getCodeListName() + ": " + object.getDataType() + " " + QDMDetails;
 				}
 
 				return value;

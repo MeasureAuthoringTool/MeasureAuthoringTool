@@ -1043,7 +1043,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	/** The is measure deleted. */
 	private boolean isMeasureDeleted = false;
 	
-	boolean isMeasureSearchFilterVisible = false;
+	boolean isMeasureSearchFilterVisible = true;
 	
 	/** The listof measures. */
 	List<ManageMeasureSearchModel.Result> listofMeasures = new ArrayList<ManageMeasureSearchModel.Result>();
@@ -1727,6 +1727,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		} else {
 			// MAT-1929 : Retain filters at measure library screen
 			searchDisplay.getCreateMeasureWidget().setVisible(false);
+			searchDisplay.getMeasureSearchFilterWidget().setVisible(true);
 			isCreateMeasureWidgetVisible = false;
 			searchDisplay.getMeasureSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
 			filter = searchDisplay.getSelectedFilter();
@@ -2833,6 +2834,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 				isMeasureSearchFilterVisible = !isMeasureSearchFilterVisible;
 				searchDisplay.getMeasureSearchFilterWidget().setVisible(isMeasureSearchFilterVisible);
+
 			}
 		});
 		

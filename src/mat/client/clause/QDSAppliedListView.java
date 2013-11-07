@@ -13,6 +13,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
@@ -39,32 +40,31 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * The Class QDSAppliedListView.
  */
 public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDisplay {
-	
+
 	/** The container panel. */
 	private SimplePanel containerPanel = new SimplePanel();
-	
+
 	/** The error message panel. */
 	private ErrorMessageDisplay errorMessagePanel = new ErrorMessageDisplay();
-	
+
 	/** The success message panel. */
 	private SuccessMessageDisplay successMessagePanel;
-	
+
 	/** The remove button. */
 	public Button removeButton = new Button("Remove");
-	
+
 	/** The modify. */
 	public Button modify = new Button("Modify");
-	
+
 	/** The update vsac button. */
 	public Button updateVsacButton = new Button("Update from VSAC");
-	
+
 	/** The last selected object. */
 	public QualityDataSetDTO  lastSelectedObject;
-	
+
 	/** The applied qdm list. */
 	private ArrayList<QualityDataSetDTO> appliedQDMList;
-	
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getSelectedElementToRemove()
 	 */
@@ -91,28 +91,28 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 	/** The cell list. */
 	private CellList<QualityDataSetDTO> cellList;
-	
+
 	/** The pager panel. */
 	ShowMorePagerPanel pagerPanel = new ShowMorePagerPanel();
-	
+
 	/** The range label pager. */
 	RangeLabelPager rangeLabelPager = new RangeLabelPager();
 
 	/**
 	 * Gets the success message panel.
-	 * 
+	 *
 	 * @return the success message panel
 	 */
-	public SuccessMessageDisplay getSuccessMessagePanel(){
+	public SuccessMessageDisplay getSuccessMessagePanel() {
 		return successMessagePanel;
 	}
 
 	/**
 	 * Gets the error message panel.
-	 * 
+	 *
 	 * @return the error message panel
 	 */
-	public ErrorMessageDisplay getErrorMessagePanel(){
+	public ErrorMessageDisplay getErrorMessagePanel() {
 		return errorMessagePanel;
 	}
 
@@ -133,7 +133,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(new SpacerWidget());
 		vp.add(errorMessagePanel);
 		vp.add(successMessagePanel);
-		
+
 		vp.add(new SpacerWidget());
 		vp.add(mainPanelNormal);
 		vp.add(new SpacerWidget());
@@ -189,27 +189,26 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 	/**
 	 * Initialize cell list content.
-	 * 
+	 *
 	 * @param appliedListModel
 	 *            the applied list model
 	 * @return the cell list
 	 */
-	private CellList<QualityDataSetDTO> initializeCellListContent(final QDSAppliedListModel appliedListModel){
+	private CellList<QualityDataSetDTO> initializeCellListContent(final QDSAppliedListModel appliedListModel) {
 
 		ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>();
 		//final MultiSelectionModel<QualityDataSetDTO> selectionModel = new MultiSelectionModel<QualityDataSetDTO>();
 		 final SingleSelectionModel<QualityDataSetDTO> selectionModel = new SingleSelectionModel<QualityDataSetDTO>();
 		// cellList.setSelectionModel(selectionModel);
-		hasCells.add(new HasCell<QualityDataSetDTO, Boolean>(){
+		hasCells.add(new HasCell<QualityDataSetDTO, Boolean>() {
 
 		//	private MatCheckBoxCell cbCell = new MatCheckBoxCell();
-			private RadioButtonCell cbCell = new RadioButtonCell(true,true);
+			private RadioButtonCell cbCell = new RadioButtonCell(true, true);
 			@Override
 			public Cell<Boolean> getCell() {
 				return cbCell;
 			}
 
-			
 			@Override
 			public Boolean getValue(QualityDataSetDTO object) {
 				cbCell.setUsed(object.isUsed());
@@ -241,14 +240,13 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					}
 				};
 			} });
-		
-		
-		hasCells.add(new HasCell<QualityDataSetDTO, String>(){
+
+		hasCells.add(new HasCell<QualityDataSetDTO, String>() {
 			private TextCell cell = new TextCell();
 			@SuppressWarnings("unchecked")
 			@Override
 			public Cell<String> getCell() {
-				return (Cell)cell;
+				return (Cell) cell;
 			}
 
 			@Override
@@ -259,16 +257,30 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			@Override
 			public String getValue(QualityDataSetDTO object) {
 				String value;
-				if(object.getOccurrenceText()!= null && !object.getOccurrenceText().equals(""))
-					value = object.getOccurrenceText() + " of "+object.getCodeListName() + ": " + object.getDataType() ;
-				else
-					value= object.getCodeListName() + ": " + object.getDataType() ;
-				
+				String oidVersionDetails = "";
+				if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+					oidVersionDetails = "(User defined)";
+				} else {
+					String version = object.getVersion();
+					if (version.equals("1.0") || version.equals("1")) {
+						version = "Latest Version";
+					}
+					oidVersionDetails = "(OID: " + object.getOid() + " Version: " + version + ")";
+				}
+
+				if (object.getOccurrenceText() != null && !object.getOccurrenceText().equals("")) {
+					value = object.getOccurrenceText() + " of " + object.getCodeListName() + ": " + object.getDataType()
+							 + ", " + oidVersionDetails;
+				} else {
+					value = object.getCodeListName() + ": " + object.getDataType() + ", " + oidVersionDetails;
+				}
+
 				return value;
-			}});
+			}
+		});
 
 
-		Cell<QualityDataSetDTO> myClassCell = new CompositeCell<QualityDataSetDTO>(hasCells){
+		Cell<QualityDataSetDTO> myClassCell = new CompositeCell<QualityDataSetDTO>(hasCells) {
 			@Override
 			public void render(Context context, QualityDataSetDTO value, SafeHtmlBuilder sb)
 			{
@@ -277,15 +289,14 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				sb.appendHtmlConstant("</tr></tbody></table>");
 			}
 			@Override
-			protected Element getContainerElement(Element parent)
-			{
+			protected Element getContainerElement(Element parent) {
 				// Return the first TR element in the table.
 				return parent.getFirstChildElement().getFirstChildElement().getFirstChildElement();
 			}
 
 			@Override
-			protected <X> void render(Context context, QualityDataSetDTO value, SafeHtmlBuilder sb, HasCell<QualityDataSetDTO, X> hasCell)
-			{
+			protected <X> void render(Context context, QualityDataSetDTO value, SafeHtmlBuilder sb,
+									HasCell<QualityDataSetDTO, X> hasCell) {
 				// this renders each of the cells inside the composite cell in a new table cell
 				Cell<X> cell = hasCell.getCell();
 				sb.appendHtmlConstant("<td style='font-size:100%;'>");
@@ -306,16 +317,14 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				/*listToRemove = new ArrayList<QualityDataSetDTO>(appliedListModel.getRemoveQDMs());
 				for(int i=0;i<listToRemove.size();i++){
 					System.out.println("QDM IDS=======>>>>" + listToRemove.get(i).getUuid());
-					
+
 				}*/
 				appliedListModel.setLastSelected(selectionModel.getSelectedObject());
 				System.out.println("appliedListModel.getLastSelected() =======>>>>" + appliedListModel.getLastSelected());
-				
+
 			}
 		});
-		
-		
-		
+
 		cellsList.setSelectionModel(selectionModel, DefaultSelectionEventManager.<QualityDataSetDTO>createDefaultManager());
 		//removeButton.setEnabled(checkForEnable());
 		return cellsList;
@@ -323,10 +332,10 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 	/**
 	 * Check for enable.
-	 * 
+	 *
 	 * @return true, if successful
 	 */
-	private boolean checkForEnable(){
+	private boolean checkForEnable() {
 		return MatContext.get().getMeasureLockService().checkForEditPermission();
 	}
 
@@ -334,18 +343,18 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#buildCellList(mat.client.clause.QDSAppliedListModel)
 	 */
 	@Override
-	public  void buildCellList(QDSAppliedListModel appliedListModel) {
-		if(appliedListModel.getAppliedQDMs()!=null){
+	public void buildCellList(QDSAppliedListModel appliedListModel) {
+		if (appliedListModel.getAppliedQDMs() != null) {
 			cellList = initializeCellListContent(appliedListModel);
 			cellList.setPageSize(15);
 			cellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-			ListDataProvider<QualityDataSetDTO> dataProvider = new ListDataProvider<QualityDataSetDTO>(appliedListModel.getAppliedQDMs()); 
-			dataProvider.addDataDisplay(cellList); 
+			ListDataProvider<QualityDataSetDTO> dataProvider = new ListDataProvider<QualityDataSetDTO>(appliedListModel.getAppliedQDMs());
+			dataProvider.addDataDisplay(cellList);
 			pagerPanel.addStyleName("scrollable");
 			pagerPanel.setDisplay(cellList);
 			rangeLabelPager.setDisplay(cellList);
 			removeButton.setEnabled(false);
-			modify.setEnabled(checkForEnable() && appliedListModel.getLastSelected()!=null ?true:false);
+			modify.setEnabled(checkForEnable() && appliedListModel.getLastSelected() != null ? true : false);
 		}
 	}
 
@@ -367,7 +376,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 
 	/**
 	 * Gets the applied qdm list.
-	 * 
+	 *
 	 * @return the applied qdm list
 	 */
 	public ArrayList<QualityDataSetDTO> getAppliedQDMList() {

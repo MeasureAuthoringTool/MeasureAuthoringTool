@@ -44,7 +44,7 @@ import com.google.gwt.user.client.ui.Widget;
  * QDMAvailableValueSetPresenter class.
  */
 public class QDMAvailableValueSetPresenter  implements MatPresenter {
-
+	
 	/**
 	 * QDMAvailableValueSetPresenter's view interface.
 	 */
@@ -55,7 +55,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		 * @return {@link Widget}
 		 */
 		Widget asWidget();
-
+		
 		/**
 		 * Builds the value set details widget.
 		 *
@@ -63,47 +63,47 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		 *            - ArrayList of {@link MatValueSet}
 		 */
 		void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets);
-
+		
 		/**
 		 * Remove all Success and failure messages.
 		 */
 		void clearVSACValueSetMessages();
-
+		
 		/**
 		 * Gets the all data type input.
 		 *
 		 * @return {@link ListBoxMVP}
 		 */
 		ListBoxMVP getAllDataTypeInput();
-
+		
 		/**
 		 * Gets the apply to measure button.
 		 *
 		 * @return {@link Button}
 		 */
 		Button getApplyToMeasureButton();
-
+		
 		/**
 		 * Gets the apply to measure success msg.
 		 *
 		 * @return {@link SuccessMessageDisplayInterface}
 		 */
 		SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
-
+		
 		/**
 		 * Gets the current mat value set.
 		 *
 		 * @return {@link MatValueSet}
 		 */
 		MatValueSet getCurrentMatValueSet();
-
+		
 		/**
 		 * Gets the data types list box.
 		 *
 		 * @return {@link ListBoxMVP}
 		 */
 		ListBoxMVP getDataTypesListBox();
-
+		
 		/**
 		 * Gets the data type text.
 		 *
@@ -112,7 +112,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		 * @return {@link String}
 		 */
 		String getDataTypeText(ListBoxMVP inputListBox);
-
+		
 		/**
 		 * Gets the data type value.
 		 *
@@ -121,96 +121,117 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		 * @return {@link String}
 		 */
 		String getDataTypeValue(ListBoxMVP inputListBox);
-
+		
+		/**
+		 * Gets the date input.
+		 *
+		 * @return the date input {@link DateBoxWithCalendar}
+		 */
+		DateBoxWithCalendar getDateInput();
+		
 		/**
 		 * Gets the disclosure panel.
 		 *
 		 * @return {@link DisclosurePanel}
 		 */
 		DisclosurePanel getDisclosurePanel();
-
+		
 		/**
 		 * Gets the disclosure panel vsac.
 		 *
 		 * @return {@link DisclosurePanel}
 		 */
 		DisclosurePanel getDisclosurePanelVSAC();
-
+		
+		/**
+		 * Gets the effective date.
+		 *
+		 * @return the effective date
+		 */
+		CustomCheckBox getEffectiveDate();
+		
 		/**
 		 * Gets the error message display.
 		 *
 		 * @return {@link ErrorMessageDisplayInterface}
 		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
-
+		
 		/**
 		 * Gets the error message user defined panel.
 		 *
 		 * @return {@link ErrorMessageDisplay}
 		 */
 		ErrorMessageDisplay getErrorMessageUserDefinedPanel();
-
+		
 		/**
 		 * Gets the oID input.
 		 *
 		 * @return {@link TextBox}
 		 */
 		TextBox getOIDInput();
-
+		
 		/**
 		 * Gets the psuedo qdm to measure.
 		 *
 		 * @return {@link Button}
 		 */
 		Button getPsuedoQDMToMeasure();
-
+		
 		/**
 		 * Gets the retrieve button.
 		 *
 		 * @return {@link Button}
 		 */
 		Button getRetrieveButton();
-
+		
 		/**
 		 * Gets the specific occurrence input.
 		 *
 		 * @return {@link CustomCheckBox}
 		 */
 		CustomCheckBox getSpecificOccurrenceInput();
-
+		
 		/**
 		 * Gets the success message display.
 		 *
 		 * @return {@link SuccessMessageDisplay}
 		 */
 		SuccessMessageDisplay getSuccessMessageDisplay();
-
+		
 		/**
 		 * Gets the success message user defined panel.
 		 *
 		 * @return {@link SuccessMessageDisplay}
 		 */
 		SuccessMessageDisplay getSuccessMessageUserDefinedPanel();
-
+		
 		/**
 		 * Gets the user defined input.
 		 *
 		 * @return {@link TextBox}
 		 */
 		TextBox getUserDefinedInput();
-
+		
 		/**
 		 * Gets the value set details panel.
 		 *
 		 * @return {@link VerticalPanel}
 		 */
 		VerticalPanel getValueSetDetailsPanel();
-
+		
+		/**
+		 * Gets the version.
+		 *
+		 * @return the version
+		 */
+		CustomCheckBox getVersion();
+		
 		/**
 		 * Reset VSACValueSetWidget - Clear's OID and version input's.
 		 */
 		void resetVSACValueSetWidget();
-
+		
 		/**
 		 * Sets the all data type options.
 		 *
@@ -218,7 +239,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		 *            List of {@link HasListBox}
 		 */
 		void setAllDataTypeOptions(List<? extends HasListBox> texts);
-
+		
 		/**
 		 * Sets the data types list box options.
 		 *
@@ -226,34 +247,13 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		 *            - {@link List} of {@link HasListBox}
 		 */
 		void setDataTypesListBoxOptions(List<? extends HasListBox> texts);
-
-		/**
-		 * Gets the date input.
-		 *
-		 * @return the date input {@link DateBoxWithCalendar}
-		 */
-		DateBoxWithCalendar getDateInput();
-
-		/**
-		 * Gets the effective date.
-		 *
-		 * @return the effective date
-		 */
-		CustomCheckBox getEffectiveDate();
-
-		/**
-		 * Gets the version.
-		 *
-		 * @return the version
-		 */
-		CustomCheckBox getVersion();
 	}
-
+	
 	/**
 	 * QualityDataSet List.
 	 */
 	private ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
-
+	
 	/**
 	 * When retrieving value set from VSAC, "Loading Please Wait..." message is displayed.
 	 * busyLoading is set true when retrieving value set from VSAC otherwise it is set false.
@@ -263,16 +263,16 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 * MatValueSet instance.
 	 */
 	private MatValueSet currentMatValueSet;
-
+	
 	/**
 	 * Measure Service instance.
 	 */
 	private final MeasureServiceAsync measureService = MatContext.get()
 			.getMeasureService();
-
+	
 	/** The modify value set dto. {@link QualityDataSetDTO} instance. */
 	private final QualityDataSetDTO modifyValueSetDTO;
-
+	
 	/**
 	 * The qds applied list presenter display. {@link QDSAppliedListPresenter}
 	 * search display instance.
@@ -282,11 +282,11 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 * SearchDisplay instance.
 	 */
 	private final SearchDisplay searchDisplay;
-
+	
 	/** The vsacapi service. {@link VSACAPIServiceAsync} instance. */
 	private final VSACAPIServiceAsync vsacapiService = MatContext.get()
 			.getVsacapiServiceAsync();
-
+	
 	/**
 	 * Constructor.
 	 * @param sDisplayArg
@@ -303,7 +303,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		modifyValueSetDTO = dataSetDTO;
 		this.qdsAppliedListPresenterDisplay = qdsAppliedListPresenterDisplay;
 		appliedQDMList = (ArrayList<QualityDataSetDTO>) qdsAppliedListPresenterDisplay.getAllAppliedQDMList();
-
+		
 		//Element without VSAC value set - OPEN Handler
 		searchDisplay.getDisclosurePanel().addOpenHandler(new OpenHandler<DisclosurePanel>() {
 			@Override
@@ -316,7 +316,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				}
 			}
 		});
-
+		
 		//Element without VSAC value set - CLOSE Handler
 		searchDisplay.getDisclosurePanel().addCloseHandler(new CloseHandler<DisclosurePanel>() {
 			@Override
@@ -329,7 +329,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				}
 			}
 		});
-
+		
 		//Element with VSAC value set - OPEN Handler.
 		searchDisplay.getDisclosurePanelVSAC().addOpenHandler(new OpenHandler<DisclosurePanel>() {
 			@Override
@@ -340,7 +340,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				}
 			}
 		});
-
+		
 		//Element with VSAC value set - CLOSE Handler.
 		searchDisplay.getDisclosurePanelVSAC().addCloseHandler(new CloseHandler<DisclosurePanel>() {
 			@Override
@@ -354,7 +354,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				}
 			}
 		});
-
+		
 		searchDisplay.getUserDefinedInput().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -362,13 +362,13 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				searchDisplay.getErrorMessageUserDefinedPanel().clear();
 			}
 		});
-
+		
 		searchDisplay.getAllDataTypeInput().addFocusHandler(new FocusHandler() {
 			@Override
 			public void onFocus(final FocusEvent event) {
 				searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 				searchDisplay.getErrorMessageUserDefinedPanel().clear();
-
+				
 			}
 		});
 		searchDisplay.getPsuedoQDMToMeasure().addClickHandler(new ClickHandler() {
@@ -377,7 +377,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				modifyQDM(true);
 			}
 		});
-
+		
 		searchDisplay.getApplyToMeasureButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -385,7 +385,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				modifyQDM(false);
 			}
 		});
-
+		
 		searchDisplay.getRetrieveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -401,15 +401,15 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			}
 		});
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
 	@Override
 	public void beforeClosingDisplay() {
-
+		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeDisplay()
 	 */
@@ -417,7 +417,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	public void beforeDisplay() {
 		displaySearch();
 	}
-
+	
 	/**
 	 * Convert message.
 	 *
@@ -434,11 +434,12 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			case VsacApiResult.OID_REQUIRED:
 				message = MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED();
 				break;
-			default: message = MatContext.get().getMessageDelegate().getUnknownFailMessage();
+			default:
+				message = MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED();
 		}
 		return message;
 	}
-
+	
 	/**
 	 * This method shows AvailableValueSet Widget in pop up.
 	 * */
@@ -450,7 +451,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
 	}
-
+	
 	/**
 	 * Filter timing qdms.
 	 *
@@ -468,7 +469,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		}
 		result.removeAll(timingQDMs);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()
 	 */
@@ -476,7 +477,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	public Widget getWidget() {
 		return searchDisplay.asWidget();
 	}
-
+	
 	/**
 	 * When retrieving value set from VSAC, "Loading Please Wait..." message is displayed.
 	 * @return true if "Loading Please Wait..." message is displaying(In other words, when retrieving value set from VSAC)
@@ -485,7 +486,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	public final boolean isBusyLoading() {
 		return busyLoading;
 	}
-
+	
 	/**
 	 * Method to find if selected Available value set is a valid modifiable selection.
 	 *  If yes, then call to updateAppliedQDMList method is made.
@@ -498,7 +499,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			modifyQDMWithOutValueSet();
 		}
 	}
-
+	
 	/**
 	 * Server call to modify QDM without VSAC value set.
 	 */
@@ -536,7 +537,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 					MatContext.get().getMessageDelegate().getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
 		}
 	}
-
+	
 	/**
 	 * Server call to modify QDM with VSAC value set.
 	 */
@@ -549,11 +550,11 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			String dataType;
 			String dataTypeText;
 			Boolean isSpecificOccurrence = false;
-
+			
 			dataType = searchDisplay.getDataTypeValue(searchDisplay.getDataTypesListBox());
 			dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getDataTypesListBox());
 			isSpecificOccurrence = searchDisplay.getSpecificOccurrenceInput().getValue();
-
+			
 			if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
 					|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
 				if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())) {
@@ -576,19 +577,19 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 					getMessageDelegate().getMODIFY_QDM_SELECT_ATLEAST_ONE());
 		}
 	}
-
+	
 	/**
 	 * Get All data types from DB and populates in AllDataTypeOptions and
 	 * DataTypeListBoxOptions.
 	 */
 	private void populateAllDataType() {
 		MatContext.get().getListBoxCodeProvider().getAllDataType(new AsyncCallback<List<? extends HasListBox>>() {
-
+			
 			@Override
 			public void onFailure(final Throwable caught) {
-
+				
 			}
-
+			
 			@Override
 			public void onSuccess(final List<? extends HasListBox> result) {
 				Collections.sort(result, new HasListBox.Comparator());
@@ -597,7 +598,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			}
 		});
 	}
-
+	
 	/**
 	 * This method is used to reload Applied QDM List.
 	 **/
@@ -606,7 +607,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		filterTimingQDMs(appliedQDMList);
 		appliedListModel.setAppliedQDMs(appliedQDMList);
 		qdsAppliedListPresenterDisplay.buildCellList(appliedListModel);
-
+		
 		/*
 		 * Setting appliedQDMList in qdsAppliedListPresenterDisplay. Whenever
 		 * this modify pop up is opened this.appliedQDMList is set with
@@ -615,7 +616,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		 */
 		qdsAppliedListPresenterDisplay.setAppliedQDMList(appliedQDMList);
 	}
-
+	
 	/**
 	 * Search value set in vsac.
 	 *
@@ -627,31 +628,31 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 *            - {@link String}
 	 */
 	private void searchValueSetInVsac(String oid, String version, String effectiveDate) {
-
+		
 		searchDisplay.getValueSetDetailsPanel().setVisible(false);
-
+		
 		if (!MatContext.get().isUMLSLoggedIn()) { //UMLS Login Validation
 			searchDisplay.getErrorMessageDisplay().setMessage(
 					MatContext.get().getMessageDelegate().getUMLS_NOT_LOGGEDIN());
 			return;
 		}
-
+		
 		//OID validation.
 		if ((oid == null) || oid.trim().isEmpty()) {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUMLS_OID_REQUIRED());
 			return;
 		}
-
+		
 		//Version and EffectiveDate validation
 		if ((searchDisplay.getVersion().getValue().equals(Boolean.TRUE)
-						&& (version == null || version.trim().isEmpty()))
+				&& ((version == null) || version.trim().isEmpty()))
 				|| (searchDisplay.getEffectiveDate().getValue().equals(Boolean.TRUE)
-						&& (effectiveDate == null || effectiveDate.trim().isEmpty()))) {
+						&& ((effectiveDate == null) || effectiveDate.trim().isEmpty()))) {
 			searchDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
-											     .getVSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED());
+					.getVSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED());
 			return;
 		}
-
+		
 		showSearchingBusy(true);
 		vsacapiService.getValueSetByOIDAndVersionOrEffectiveDate(oid, version, effectiveDate, new AsyncCallback<VsacApiResult>() {
 			@Override
@@ -660,7 +661,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 						MatContext.get().getMessageDelegate().getVSAC_RETRIEVE_FAILED());
 				showSearchingBusy(false);
 			}
-
+			
 			@Override
 			public void onSuccess(final VsacApiResult result) {
 				if (result.isSuccess()) {
@@ -674,7 +675,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			}
 		});
 	}
-
+	
 	/**
 	 * This method is used in searching all available Value sets for pop up.
 	 *
@@ -697,7 +698,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			searchDisplay.getDateInput().setEnabled(!busy);
 		}
 	}
-
+	
 	/**
 	 * This method is used to update QDM element selected for modification. All
 	 * check's for attributes and non attributes , Occurrence and non
@@ -727,7 +728,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		matValueSetTransferObject.setQualityDataSetDTO(qualityDataSetDTO);
 		matValueSetTransferObject.setAppliedQDMList(appliedQDMList);
 		matValueSetTransferObject.setSpecificOccurrence(isSpecificOccurrence);
-		if (searchDisplay.getDateInput().getValue() != null && !searchDisplay.getDateInput().getValue().trim().isEmpty()) {
+		if ((searchDisplay.getDateInput().getValue() != null) && !searchDisplay.getDateInput().getValue().trim().isEmpty()) {
 			if (searchDisplay.getVersion().getValue().equals(Boolean.TRUE)) {
 				matValueSetTransferObject.setVersionDate(true);
 				matValueSetTransferObject.setEffectiveDate(false);
@@ -769,7 +770,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			}
 		});
 	}
-
+	
 	/**
 	 * This method updates MeasureXML - ElementLookUpNode,ElementRef's under
 	 * Population Node and Stratification Node, SupplementDataElements. It also
@@ -787,7 +788,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 			final QualityDataSetDTO modifyableDTO, final boolean isUserDefined) {
 		measureService.updateMeasureXML(modifyWithDTO, modifyableDTO,
 				MatContext.get().getCurrentMeasureId(), new AsyncCallback<Void>() {
-
+			
 			@Override
 			public void onFailure(final Throwable caught) {
 				if (!isUserDefined) {
@@ -798,7 +799,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 							MatContext.get().getMessageDelegate().getGenericErrorMessage());
 				}
 			}
-
+			
 			@Override
 			public void onSuccess(final Void result) {
 				if (!isUserDefined) {

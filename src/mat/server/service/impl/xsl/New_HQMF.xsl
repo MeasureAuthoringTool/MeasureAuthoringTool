@@ -10,7 +10,7 @@
     <xsl:include href="qds_datatype_patterns.xsl"/>
     <xsl:include href="measureDetails.xsl"/>
 
-
+	
     <xsl:variable name="smallcase" select="'abcdefghijklmnopqrstuvwxyz'"/>
     <xsl:variable name="uppercase" select="'ABCDEFGHIJKLMNOPQRSTUVWXYZ'"/>
 
@@ -1151,8 +1151,8 @@
 		                                                                              [not(@instance)])"
 		                        />
 		                    </xsl:variable>
-		                    <!--<test><xsl:value-of select="$this_datatype"/> and <xsl:value-of select="$count_preceeding"/></test>-->
-		                    <xsl:if test="$count_preceeding = 0">
+							<!-- <test><xsl:value-of select="$this_datatype"/> and <xsl:value-of select="$count_preceeding"/></test> -->
+		                    <xsl:if test="@instance or $count_preceeding = 0">
 		                        <xsl:apply-templates select="." mode="datacriteria"/>
 		                    </xsl:if>
                         </xsl:otherwise>
@@ -1266,14 +1266,50 @@
                 select="count(preceding-sibling::qdm[@suppDataElement != 'true']
                 [@oid = $this_oid]
                 [@datatype != ('attribute','Timing Element')]
-                [@datatype=$this_datatype])"
+                [@datatype=$this_datatype]
+                [not(@instance)])"
             />
         </xsl:variable>
-        <xsl:if test="$count_preceeding = 0">
+        
+        <xsl:choose>
+        	<xsl:when test="@instance">
+        		<entry typeCode="COMP" instanceInd="true">
+					<observation classCode="OBS" moodCode="DEF">
+						<templateId>
+							<xsl:attribute name="root">
+								<xsl:value-of select="$the_tidrootMapping/PatternMapping/pattern[@dataType=lower-case(@datatype)]/@root"/>
+							</xsl:attribute>
+						</templateId>
+						<id root="{@id}"/>
+						<sourceOf typeCode="DRIV">
+						  	<localVariableName><xsl:value-of select="@name"/></localVariableName>
+							<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
+								<id>
+									<xsl:attribute name="root">
+										<xsl:value-of select="following-sibling::qdm[@datatype=$this_datatype][not(@instance)][@oid = $this_oid][1]/@id"/>
+									</xsl:attribute>
+								</id> 
+							</observation>
+						</sourceOf>
+					</observation>
+				</entry>
+        	</xsl:when>
+        	<xsl:otherwise>
+        		<xsl:if test="$count_preceeding = 0">
+		            <entry typeCode="DRIV">
+		            	<xsl:apply-templates select="."/>
+		            </entry>
+        		</xsl:if>
+        	</xsl:otherwise>
+        </xsl:choose>
+      <!--   <xsl:if test="@instance or $count_preceeding = 0">
             <entry typeCode="DRIV">
+            	<xsl:if test="@instance">
+            		<xsl:attribute name="instanceInd">true</xsl:attribute>
+            	</xsl:if>
                 <xsl:apply-templates select="."/>
             </entry>
-        </xsl:if>
+        </xsl:if> -->
         <!-- Handle QDM's which have 'negation rationale' attributes -->
         <xsl:if test="name() = 'qdm'">
             <xsl:variable name="uuid">

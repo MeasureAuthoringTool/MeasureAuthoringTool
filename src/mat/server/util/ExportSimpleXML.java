@@ -212,10 +212,45 @@ public class ExportSimpleXML {
 		addUUIDToFunctions(originalDoc);
 		//modify the <startDate> and <stopDate> tags to have date in YYYYMMDD format
 		modifyHeaderStart_Stop_Dates(originalDoc);
-		
+		modifyElementLookUpForOccurances(originalDoc);
 		return transform(originalDoc);
 	}
 	
+	private static void modifyElementLookUpForOccurances(Document originalDoc) throws XPathExpressionException {
+		NodeList allOccuranceQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm[@instance]", originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		List<String> qdmOID_Datatype_List = new ArrayList<String>();
+		
+		for(int i=0;i<allOccuranceQDMs.getLength();i++){
+			Node qdmNode = allOccuranceQDMs.item(i);
+			String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
+			String datatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+			String instance = qdmNode.getAttributes().getNamedItem("instance").getNodeValue();
+			System.out.println("Instance:"+instance);
+			if(qdmOID_Datatype_List.contains(datatype + oid)){
+				continue;
+			}else{
+				qdmOID_Datatype_List.add(datatype + oid);
+			}
+			System.out.println("/measure/elementLookUp/qdm[@datatype="+datatype+"][@oid="+oid+"][not(@instance)]");
+			NodeList nonOccuranceQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm[@datatype='"+datatype+"'][@oid='"+oid+"'][not(@instance)]", 
+					originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			if(nonOccuranceQDMs.getLength() > 0){
+				Node nonOccuranceQDM = nonOccuranceQDMs.item(0);
+				Node parentNode = nonOccuranceQDM.getParentNode();
+				parentNode.removeChild(nonOccuranceQDM);
+				parentNode.appendChild(nonOccuranceQDM.cloneNode(true));
+			}else{
+				Node newNode = qdmNode.cloneNode(true);
+				Node parentNode = qdmNode.getParentNode();
+				newNode.getAttributes().removeNamedItem("instance");
+				String uuid = UUID.randomUUID().toString();
+				newNode.getAttributes().getNamedItem("uuid").setNodeValue(uuid);
+				newNode.getAttributes().getNamedItem("id").setNodeValue(uuid);
+				parentNode.appendChild(newNode);
+			}
+		}
+	}
+
 	/**
 	 * Transform.
 	 * 

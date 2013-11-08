@@ -1277,7 +1277,7 @@
 					<observation classCode="OBS" moodCode="DEF">
 						<templateId>
 							<xsl:attribute name="root">
-								<xsl:value-of select="$the_tidrootMapping/PatternMapping/pattern[@dataType=lower-case(@datatype)]/@root"/>
+								<xsl:value-of select="$the_tidrootMapping/PatternMapping/pattern[@dataType=lower-case($this_datatype)]/@root"/>
 							</xsl:attribute>
 						</templateId>
 						<id root="{@id}"/>

@@ -79,11 +79,11 @@
 		<xsl:variable name="rdisplayname">
 			<xsl:variable name="uuidVal"><xsl:value-of select="parent::elementRef/@id"/></xsl:variable>
 			<xsl:choose>
-				<xsl:when test="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy='GROUPING'">
-					<xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@name"/><!-- <xsl:text> Value Set </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy"/> -->
+				<xsl:when test="/measure/elementLookUp/*[@id=$qdmUUID]/@taxonomy='GROUPING'">
+					<xsl:value-of select="/measure/elementLookUp/*[@id=$qdmUUID]/@name"/><!-- <xsl:text> Value Set </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy"/> -->
 				</xsl:when>
-				<xsl:when test="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy">
-					<xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@name"/><!-- <xsl:text> </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$uuidVal]/@taxonomy"/><xsl:text> Value Set</xsl:text> -->
+				<xsl:when test="/measure/elementLookUp/*[@id=$qdmUUID]/@taxonomy">
+					<xsl:value-of select="/measure/elementLookUp/*[@id=$qdmUUID]/@name"/><xsl:text> </xsl:text><xsl:value-of select="/measure/elementLookUp/*[@id=$qdmUUID]/@taxonomy"/><xsl:text> Value Set</xsl:text>
 				</xsl:when>
 			</xsl:choose>
 		</xsl:variable>
@@ -368,7 +368,7 @@
 				<sourceOf typeCode="RSON">
 					<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 						<code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4"/>
-						<value xsi:type="ANYNonNull" notDoneDisplayName="{$rdisplayname}"/>
+						<value xsi:type="CD" code="{$poid}" displayName="{$rdisplayname}"/>
 						<xsl:if test="contains(lower-case(@mode),'is not present') or contains(lower-case(@name),'is not present')">
 							<valueNegationInd/>
 						</xsl:if>
@@ -857,7 +857,7 @@
 				<sourceOf typeCode="RSON">
 					<observation classCode="OBS" moodCode="EVN" isCriterionInd="true">
 						<code code="ASSERTION" codeSystem="2.16.840.1.113883.5.4"/>
-						<value xsi:type="ANYNonNull" notDoneDisplayName="{$rdisplayname}"/>
+						<value xsi:type="CD" notDoneDisplayName="{$rdisplayname}"/>
 						<xsl:if test="contains(@value,'is not present') or contains(@name,'is not present')">
 							<valueNegationInd/>
 						</xsl:if>

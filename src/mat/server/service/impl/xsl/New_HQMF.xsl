@@ -422,7 +422,7 @@
                 </xsl:when>
                 <xsl:when test="name() = 'functionalOp'">
                     <xsl:choose>
-                    	<xsl:when test="@type=('FIRST','SECOND', 'THIRD', 'FOURTH', 'FIFTH', 'RECENT', 'LAST', 'RELATIVEFIRST','RELATIVESECOND')">
+                    	<xsl:when test="@type=('FIRST','SECOND', 'THIRD', 'FOURTH', 'FIFTH', 'MOST RECENT', 'LAST', 'RELATIVEFIRST','RELATIVESECOND')">
                     		<xsl:apply-templates select="."/>
                     	</xsl:when>
                     	<xsl:otherwise>
@@ -448,7 +448,7 @@
         <xsl:param name="conj"/>
         
         <xsl:choose>
-        	<xsl:when test="@type=('FIRST','SECOND', 'THIRD', 'FOURTH', 'FIFTH', 'RECENT', 'LAST', 'RELATIVEFIRST','RELATIVESECOND')">
+        	<xsl:when test="@type=('FIRST','SECOND', 'THIRD', 'FOURTH', 'FIFTH', 'MOST RECENT', 'LAST', 'RELATIVEFIRST','RELATIVESECOND')">
         		<xsl:call-template name="processSubsetFunctions">
 					<xsl:with-param name="conj">
 						<xsl:value-of select="$conj" />

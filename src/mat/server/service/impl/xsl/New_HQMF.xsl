@@ -456,8 +456,30 @@
 				</xsl:call-template>
         	</xsl:when>
         	<xsl:otherwise>
-        	
-        <xsl:variable name="isNot">
+     	        <xsl:choose>
+			        <xsl:when test="string-length($conj) > 0">
+			        	<sourceOf typeCode="PRCN">
+			        		<conjunctionCode code="{$conj}"/>
+			        		<xsl:call-template name="normalFunction">
+			        			<xsl:with-param name="conj"><xsl:value-of select="$conj"/> </xsl:with-param>
+			        		</xsl:call-template>
+			        	</sourceOf>
+			        </xsl:when>
+			        <xsl:otherwise>
+			        	<xsl:call-template name="normalFunction">
+			        			<xsl:with-param name="conj"><xsl:value-of select="$conj"/> </xsl:with-param>
+			        		</xsl:call-template>
+			        </xsl:otherwise>
+		        </xsl:choose>
+        </xsl:otherwise>
+      </xsl:choose>
+      
+    </xsl:template>
+    
+    <xsl:template name="normalFunction">
+    	<xsl:param name="conj"/>
+    	
+    	 <xsl:variable name="isNot">
             <xsl:apply-templates select="child::*[1]" mode="isChildOfNot"/>
         </xsl:variable>
         <xsl:variable name="mname">
@@ -490,11 +512,7 @@
             </xsl:for-each>
             <xsl:text>)</xsl:text>
         </xsl:variable>
-        
-        <sourceOf typeCode="PRCN">
-        <xsl:if test="string-length($conj) > 0">    
-            <conjunctionCode code="{$conj}"/>
-        </xsl:if>
+    	
         <observation classCode="OBS" moodCode="DEF" derivationExprInd="true" showArgsInd="true">
             <templateId root="{$mc-tid-root}"/>
             <id root="{@uuid}"/>
@@ -615,9 +633,6 @@
 
             </xsl:for-each>
         </observation>
-        </sourceOf>
-        </xsl:otherwise>
-        </xsl:choose>
     </xsl:template>
     
     <xsl:template name="subsetFunctions">
@@ -1051,10 +1066,10 @@
                     <xsl:for-each select="measureObservations/clause/logicalOp/*">
                         <xsl:choose>
                             <xsl:when test="name() = 'functionalOp'">
-                                <entry typeCode="DRIV" derivationExprInd="true" showArgsInd="true">
-                                    <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                                <entry typeCode="DRIV">
+                                    
                                         <xsl:apply-templates select="."/>
-                                    </act>
+                                    
                                 </entry>
                             </xsl:when>
                             <xsl:otherwise>

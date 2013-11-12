@@ -44,6 +44,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	/** serialVersionUID for VSACAPIServiceImpl class. **/
 	private static final long serialVersionUID = -6645961609626183169L;
 	
+	private static final int TIME_OUT_FAILURE_CODE = 3;
+	
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
 	 * Castor.
@@ -259,10 +261,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 								+ qualityDataSetDTO.getDataType());
 					}
 					if (vsr != null) {
-						if(vsr.isFailResponse()){
+						if (vsr.isFailResponse() && (vsr.getFailReason() == TIME_OUT_FAILURE_CODE)) {
 							LOGGER.info("Value Set reterival failed at VSAC for OID :"
 									+ qualityDataSetDTO.getOid() + " with Data Type : "
-									+ qualityDataSetDTO.getDataType() + ". Reason:"+vsr.getFailReason());
+									+ qualityDataSetDTO.getDataType()
+									+ ". Failure Reason:" + vsr.getFailReason());
 							//inValidateVsacUser();
 							//MatContext.get().setUMLSLoggedIn(false);
 							result.setSuccess(false);
@@ -364,6 +367,17 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 								+ qualityDataSetDTO.getDataType());
 					}
 					if (vsr != null) {
+						if (vsr.isFailResponse() && (vsr.getFailReason() == TIME_OUT_FAILURE_CODE)) {
+							LOGGER.info("Value Set reterival failed at VSAC for OID :"
+									+ qualityDataSetDTO.getOid() + " with Data Type : "
+									+ qualityDataSetDTO.getDataType() + ". Failure Reason: "
+									+ vsr.getFailReason());
+							// inValidateVsacUser();
+							// MatContext.get().setUMLSLoggedIn(false);
+							result.setSuccess(false);
+							result.setFailureReason(vsr.getFailReason());
+							return result;
+						}
 						if ((vsr.getXmlPayLoad() != null) && StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {
 							VSACValueSetWrapper wrapper = convertXmltoValueSet(vsr.getXmlPayLoad());
 							MatValueSet matValueSet = wrapper.getValueSetList().get(0);

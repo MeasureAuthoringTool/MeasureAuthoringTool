@@ -26,30 +26,7 @@ import com.google.gwt.user.client.ui.Widget;
  * QDSAppliedListPresenter.java.
  */
 public class QDSAppliedListPresenter implements MatPresenter {
-
-	/**
-	 * SimplePanel Instance.
-	 */
-	private SimplePanel panel = new SimplePanel();
-	/**
-	 * SearchDisplay instance.
-	 */
-	private SearchDisplay searchDisplay;
-	/**
-	 * List of all Applied QDM's.
-	 */
-	private ArrayList<QualityDataSetDTO> allQdsList = new ArrayList<QualityDataSetDTO>();
-
-	/**
-	 * Measure Service Instance.
-	 */
-	private MeasureServiceAsync service = MatContext.get().getMeasureService();
-	/**
-	 * VSACAPIService Instance.
-	 */
-	private VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
-
-
+	
 	/**
 	 * Search Display inner interface which is implemented by QDSAppliedListView
 	 * class.
@@ -57,69 +34,66 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	public static interface SearchDisplay {
 		
 		/**
-		 * Gets the apply to measure success msg.
-		 * 
-		 * @return {@link SuccessMessageDisplayInterface}
-		 */
-		SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
-
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return {@link ErrorMessageDisplayInterface}
-		 */
-		ErrorMessageDisplayInterface getErrorMessageDisplay();
-
-		/**
 		 * As widget.
 		 * 
 		 * @return {@link Widget}
 		 */
 		Widget asWidget();
-
-		/**
-		 * Builds the cell list.
+		
+		/** Builds the cell Table.
 		 * 
-		 * @param appliedListModel
-		 *            - {@link QDSAppliedListModel}
-		 */
-		void buildCellList(QDSAppliedListModel appliedListModel);
-
-		/**
-		 * Gets the removes the button.
-		 * 
-		 * @return {@link Button}
-		 */
-		Button getRemoveButton();
-
-		/**
-		 * Gets the modify button.
-		 * 
-		 * @return {@link Button}
-		 */
-		Button getModifyButton();
-
-		/**
-		 * Gets the update vsac button.
-		 * 
-		 * @return {@link Button}
-		 */
-		Button getUpdateVsacButton();
-
-		/**
-		 * Gets the selected element to remove.
-		 * 
-		 * @return {@link QualityDataSetDTO}
-		 */
-		QualityDataSetDTO getSelectedElementToRemove();
-
+		 * @param appliedListModel - {@link QDSAppliedListModel} */
+		void buildCellTable(QDSAppliedListModel appliedListModel);
+		
 		/**
 		 * Gets the all applied qdm list.
 		 * 
 		 * @return {@link List} of {@link QualityDataSetDTO}
 		 */
 		List<QualityDataSetDTO> getAllAppliedQDMList();
-
+		
+		/**
+		 * Gets the apply to measure success msg.
+		 * 
+		 * @return {@link SuccessMessageDisplayInterface}
+		 */
+		SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg();
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return {@link ErrorMessageDisplayInterface}
+		 */
+		ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
+		/**
+		 * Gets the modify button.
+		 * 
+		 * @return {@link Button}
+		 */
+		Button getModifyButton();
+		
+		/**
+		 * Gets the removes the button.
+		 * 
+		 * @return {@link Button}
+		 */
+		Button getRemoveButton();
+		
+		/**
+		 * Gets the selected element to remove.
+		 * 
+		 * @return {@link QualityDataSetDTO}
+		 */
+		QualityDataSetDTO getSelectedElementToRemove();
+		
+		/**
+		 * Gets the update vsac button.
+		 * 
+		 * @return {@link Button}
+		 */
+		Button getUpdateVsacButton();
+		
 		/**
 		 * Sets the applied qdm list.
 		 * 
@@ -129,7 +103,30 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		 */
 		void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList);
 	}
-
+	/**
+	 * List of all Applied QDM's.
+	 */
+	private ArrayList<QualityDataSetDTO> allQdsList = new ArrayList<QualityDataSetDTO>();
+	/**
+	 * SimplePanel Instance.
+	 */
+	private SimplePanel panel = new SimplePanel();
+	
+	/**
+	 * SearchDisplay instance.
+	 */
+	private SearchDisplay searchDisplay;
+	/**
+	 * Measure Service Instance.
+	 */
+	private MeasureServiceAsync service = MatContext.get().getMeasureService();
+	
+	
+	/**
+	 * VSACAPIService Instance.
+	 */
+	private VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get().getVsacapiServiceAsync();
+	
 	/**
 	 * Instantiates a new qDS applied list presenter.
 	 * 
@@ -140,7 +137,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		searchDisplay = sDisplayArg;
 		getAppliedQDMList(true);
 		searchDisplay.getRemoveButton().addClickHandler(new ClickHandler() {
-
+			
 			@Override
 			public void onClick(final ClickEvent event) {
 				resetQDSFields();
@@ -148,15 +145,15 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					service.getAppliedQDMFromMeasureXml(MatContext.get()
 							.getCurrentMeasureId(), false,
 							new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
-
+						
 						@Override
 						public void onFailure(final Throwable caught) {
 							Window.alert(MatContext.get()
 									.getMessageDelegate()
 									.getGenericErrorMessage());
-
+							
 						}
-
+						
 						@Override
 						public void onSuccess(
 								final ArrayList<QualityDataSetDTO> result) {
@@ -179,9 +176,9 @@ public class QDSAppliedListPresenter implements MatPresenter {
 								.setAppliedQDMList(allQdsList);
 								saveMeasureXML(allQdsList);
 							}
-
+							
 						}
-
+						
 					});
 				} else {
 					searchDisplay
@@ -190,9 +187,9 @@ public class QDSAppliedListPresenter implements MatPresenter {
 							"Please select at least one unused value set to delete.");
 				}
 			}
-
+			
 		});
-
+		
 		searchDisplay.getModifyButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -208,7 +205,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 				}
 			}
 		});
-
+		
 		searchDisplay.getUpdateVsacButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -217,34 +214,24 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			}
 		});
 	}
-
-	/**
-	 * Service Call to updateVsacValueSet.
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
-	private void updateVSACValueSets() {
-		showSearchingBusy(true);
-		vsacapiServiceAsync.updateVSACValueSets(MatContext.get().getCurrentMeasureId(), new AsyncCallback<VsacApiResult>() {
-
-			@Override
-			public void onFailure(final Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				showSearchingBusy(false);
-			}
-
-			@Override
-			public void onSuccess(final VsacApiResult result) {
-				showSearchingBusy(false);
-				if (result.isSuccess()) {
-					searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
-							MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
-					getAppliedQDMList(true);
-				} else {
-					searchDisplay.getErrorMessageDisplay().setMessage(convertMessage(result.getFailureReason()));
-				}
-			}
-		});
+	@Override
+	public void beforeClosingDisplay() {
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
+	@Override
+	public void beforeDisplay() {
+		resetQDSFields();
+		loadAppliedListData();
+		
+	}
+	
 	/**
 	 * Method to get Message against failure reason.
 	 * @param id
@@ -254,63 +241,17 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	private String convertMessage(int id) {
 		String message;
 		switch (id) {
-		case VsacApiResult.UMLS_NOT_LOGGEDIN:
-			message = MatContext.get().getMessageDelegate()
-			.getUMLS_NOT_LOGGEDIN();
-			break;
-		default:
-			message = MatContext.get().getMessageDelegate()
-			.getUnknownFailMessage();
+			case VsacApiResult.UMLS_NOT_LOGGEDIN:
+				message = MatContext.get().getMessageDelegate()
+				.getUMLS_NOT_LOGGEDIN();
+				break;
+			default:
+				message = MatContext.get().getMessageDelegate()
+				.getUnknownFailMessage();
 		}
 		return message;
 	}
-
-	/**
-	 * Service Call to create and save QDM's in Element Look Up tag.
-	 * @param list
-	 *            - {@link ArrayList} of {@link QualityDataSetDTO}
-	 */
-	private void saveMeasureXML(final ArrayList<QualityDataSetDTO> list) {
-		service.createAndSaveElementLookUp(list, MatContext.get()
-				.getCurrentMeasureId(), new AsyncCallback<Void>() {
-
-			@Override
-			public void onFailure(final Throwable caught) {
-				Window.alert(MatContext.get().getMessageDelegate()
-						.getGenericErrorMessage());
-
-			}
-
-			@Override
-			public void onSuccess(final Void result) {
-				allQdsList.removeAll(allQdsList);
-				resetQDSFields();
-				loadAppliedListData();
-				searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
-						"Successfully removed selected QDM element.");
-
-			}
-		});
-	}
-
-	/**
-	 * Method to load Applied QDM's List in to view.
-	 */
-	final void loadAppliedListData() {
-		panel.clear();
-		getAppliedQDMList(true);
-		displaySearch();
-	}
-
-	/**
-	 * Method to reset Success and Error Messages.
-	 */
-	public final void resetQDSFields() {
-		searchDisplay.getApplyToMeasureSuccessMsg().clear();
-		searchDisplay.getErrorMessageDisplay().clear();
-
-	}
-
+	
 	/**
 	 * Method to put view on Main Panel.
 	 */
@@ -323,7 +264,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		}
 		panel.add(searchDisplay.asWidget());
 	}
-
+	
 	/**
 	 * Method for fetching all applied Value Sets in a measure which is loaded
 	 * in context.
@@ -338,23 +279,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 			service.getAppliedQDMFromMeasureXml(measureId,
 					checkForSupplementData,
 					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
-
-				@Override
-				public void onFailure(final Throwable caught) {
-					Window.alert(MatContext.get().getMessageDelegate()
-							.getGenericErrorMessage());
-				}
-
-				@Override
-				public void onSuccess(
-						final ArrayList<QualityDataSetDTO> result) {
-					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-					filterTimingQDMs(result);
-					appliedListModel.setAppliedQDMs(result);
-					searchDisplay.buildCellList(appliedListModel);
-					searchDisplay.setAppliedQDMList(result);
-				}
-
+				
 				private void filterTimingQDMs(
 						ArrayList<QualityDataSetDTO> result) {
 					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
@@ -366,12 +291,82 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					}
 					result.removeAll(timingQDMs);
 				}
+				
+				@Override
+				public void onFailure(final Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+				}
+				
+				@Override
+				public void onSuccess(
+						final ArrayList<QualityDataSetDTO> result) {
+					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+					filterTimingQDMs(result);
+					appliedListModel.setAppliedQDMs(result);
+							searchDisplay.buildCellTable(appliedListModel);
+					searchDisplay.setAppliedQDMList(result);
+				}
 			});
-
+			
 		}
-
+		
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
+	@Override
+	public Widget getWidget() {
+		return panel;
+	}
+	
+	/**
+	 * Method to load Applied QDM's List in to view.
+	 */
+	final void loadAppliedListData() {
+		panel.clear();
+		getAppliedQDMList(true);
+		displaySearch();
+	}
+	
+	/**
+	 * Method to reset Success and Error Messages.
+	 */
+	public final void resetQDSFields() {
+		searchDisplay.getApplyToMeasureSuccessMsg().clear();
+		searchDisplay.getErrorMessageDisplay().clear();
+		
+	}
+	
+	/**
+	 * Service Call to create and save QDM's in Element Look Up tag.
+	 * @param list
+	 *            - {@link ArrayList} of {@link QualityDataSetDTO}
+	 */
+	private void saveMeasureXML(final ArrayList<QualityDataSetDTO> list) {
+		service.createAndSaveElementLookUp(list, MatContext.get()
+				.getCurrentMeasureId(), new AsyncCallback<Void>() {
+			
+			@Override
+			public void onFailure(final Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate()
+						.getGenericErrorMessage());
+				
+			}
+			
+			@Override
+			public void onSuccess(final Void result) {
+				allQdsList.removeAll(allQdsList);
+				resetQDSFields();
+				loadAppliedListData();
+				searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
+						"Successfully removed selected QDM element.");
+				
+			}
+		});
+	}
+	
 	/**
 	 * Method to show/hide Loading please wait message.
 	 * @param busy
@@ -385,30 +380,32 @@ public class QDSAppliedListPresenter implements MatPresenter {
 		}
 		searchDisplay.getUpdateVsacButton().setEnabled(!busy);
 	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeDisplay()
+	
+	/**
+	 * Service Call to updateVsacValueSet.
 	 */
-	@Override
-	public void beforeDisplay() {
-		resetQDSFields();
-		loadAppliedListData();
-
+	private void updateVSACValueSets() {
+		showSearchingBusy(true);
+		vsacapiServiceAsync.updateVSACValueSets(MatContext.get().getCurrentMeasureId(), new AsyncCallback<VsacApiResult>() {
+			
+			@Override
+			public void onFailure(final Throwable caught) {
+				Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				showSearchingBusy(false);
+			}
+			
+			@Override
+			public void onSuccess(final VsacApiResult result) {
+				showSearchingBusy(false);
+				if (result.isSuccess()) {
+					searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
+							MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
+					getAppliedQDMList(true);
+				} else {
+					searchDisplay.getErrorMessageDisplay().setMessage(convertMessage(result.getFailureReason()));
+				}
+			}
+		});
 	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#beforeClosingDisplay()
-	 */
-	@Override
-	public void beforeClosingDisplay() {
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.MatPresenter#getWidget()
-	 */
-	@Override
-	public Widget getWidget() {
-		return panel;
-	}
-
+	
 }

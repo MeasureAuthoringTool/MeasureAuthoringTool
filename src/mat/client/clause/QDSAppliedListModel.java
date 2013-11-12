@@ -16,16 +16,6 @@ public class QDSAppliedListModel {
 	private QualityDataSetDTO lastSelected;
 	
 	/**
-	 * Sets the applied qd ms.
-	 * 
-	 * @param appliedQDMs
-	 *            the appliedQDMs to set
-	 */
-	public void setAppliedQDMs(List<QualityDataSetDTO> appliedQDMs) {
-		this.appliedQDMs = appliedQDMs;
-	}
-
-	/**
 	 * Gets the applied qd ms.
 	 * 
 	 * @return the appliedQDMs
@@ -33,7 +23,7 @@ public class QDSAppliedListModel {
 	public List<QualityDataSetDTO> getAppliedQDMs() {
 		return appliedQDMs;
 	}
-
+	
 	/**
 	 * Sets the last selected.
 	 * 
@@ -44,19 +34,14 @@ public class QDSAppliedListModel {
 		this.removeQDMs = (HashSet<QualityDataSetDTO>) set;
 	}
 
-	*//**
-	 * @return the removeQDMs
-	 *//*
+	  *//**
+	  * @return the removeQDMs
+	  *//*
 	public HashSet<QualityDataSetDTO> getRemoveQDMs() {
 		return removeQDMs;
 	}*/
-
-	/**
-	 * @param lastSelected the lastSelected to set
-	 */
-	public void setLastSelected(QualityDataSetDTO lastSelected) {
-		this.lastSelected = lastSelected;
-	}
+	
+	
 
 	/**
 	 * Gets the last selected.
@@ -66,7 +51,22 @@ public class QDSAppliedListModel {
 	public QualityDataSetDTO getLastSelected() {
 		return lastSelected;
 	}
-
 	
-
+	/**
+	 * Sets the applied qd ms.
+	 * 
+	 * @param appliedQDMs
+	 *            the appliedQDMs to set
+	 */
+	public void setAppliedQDMs(List<QualityDataSetDTO> appliedQDMs) {
+		this.appliedQDMs = appliedQDMs;
+	}
+	
+	/**
+	 * @param lastSelected the lastSelected to set
+	 */
+	public void setLastSelected(QualityDataSetDTO lastSelected) {
+		this.lastSelected = lastSelected;
+	}
+	
 }

@@ -606,7 +606,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 		filterTimingQDMs(appliedQDMList);
 		appliedListModel.setAppliedQDMs(appliedQDMList);
-		qdsAppliedListPresenterDisplay.buildCellList(appliedListModel);
+		qdsAppliedListPresenterDisplay.buildCellTable(appliedListModel);
 		
 		/*
 		 * Setting appliedQDMList in qdsAppliedListPresenterDisplay. Whenever

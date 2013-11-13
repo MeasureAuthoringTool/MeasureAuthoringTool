@@ -183,7 +183,6 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 	
 	@Override
 	public CustomButton getZoomButton() {
-		// TODO Auto-generated method stub
 		return zoomButton;
 	}
 	/* (non-Javadoc)

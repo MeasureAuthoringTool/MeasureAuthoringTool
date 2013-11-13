@@ -196,7 +196,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				public SafeHtml getValue(QualityDataSetDTO object) {
 					StringBuilder title = new StringBuilder();
 					String version = null;
-					if (object.getVersion().equalsIgnoreCase("1.0")) {
+					if (object.getVersion().equalsIgnoreCase("1.0") || object.getVersion().equalsIgnoreCase("1")) {
 						title = title.append("Version : ").append("Most Recent");
 						version = "Most Recent";
 					} else {

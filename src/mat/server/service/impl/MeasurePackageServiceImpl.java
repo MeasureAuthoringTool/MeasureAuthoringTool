@@ -148,9 +148,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	 * @see mat.server.service.MeasurePackageService#countMeasuresForDraft()
 	 */
 	@Override
-	public long countMeasuresForDraft() {
+	public long countMeasuresForDraft(String searchText) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.countMeasureForDraft(user);
+		return measurePackageDAO.countMeasureForDraft(searchText, user);
 	}
 	
 	/* (non-Javadoc)

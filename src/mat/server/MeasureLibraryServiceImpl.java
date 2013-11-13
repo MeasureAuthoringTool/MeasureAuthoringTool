@@ -1351,7 +1351,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
 		List<MeasureShareDTO> measureList = getService().searchMeasuresForDraft(searchText,startIndex, pageSize);
 		searchModel.setStartIndex(startIndex);
-		searchModel.setResultsTotal((int) getService().countMeasuresForDraft());
+		searchModel.setResultsTotal((int) getService().countMeasuresForDraft(searchText));
 		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 		searchModel.setData(detailModelList);
 		for (MeasureShareDTO dto : measureList) {

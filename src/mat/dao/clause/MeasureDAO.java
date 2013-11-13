@@ -13,6 +13,8 @@ import mat.model.clause.MeasureShareDTO;
  */
 public interface MeasureDAO extends IDAO<Measure, String> {
 	
+	int countMeasureForDraft(String searchText, User user);
+	
 	/**
 	 * Count measure for draft.
 	 * 
@@ -20,7 +22,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 *            the user
 	 * @return the int
 	 */
-	public int countMeasureForDraft(User user);
+	/* public int countMeasureForDraft(User user); */
 	
 	/**
 	 * Count measure for version.

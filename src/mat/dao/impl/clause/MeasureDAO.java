@@ -238,8 +238,8 @@ mat.dao.clause.MeasureDAO {
 	 * @see mat.dao.clause.MeasureDAO#countMeasureForDraft(mat.model.User)
 	 */
 	@Override
-	public int countMeasureForDraft(User user) {
-		List<MeasureShareDTO> dtoList = getMeasuresForDraft(user);
+	public int countMeasureForDraft(String searchText, User user) {
+		List<MeasureShareDTO> dtoList = getMeasuresForDraft(searchText, user);
 		return dtoList.size();
 	}
 	
@@ -530,7 +530,7 @@ mat.dao.clause.MeasureDAO {
 	 *            the user
 	 * @return the measures for draft
 	 */
-	public List<MeasureShareDTO> getMeasuresForDraft(String searchText,User user) {
+	public List<MeasureShareDTO> getMeasuresForDraft(String searchText, User user) {
 		List<MeasureShareDTO> orderedDTOList = getMeasureShareInfoForUser(searchText,user,
 				0, Integer.MAX_VALUE);
 		

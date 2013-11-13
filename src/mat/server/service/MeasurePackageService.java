@@ -45,7 +45,9 @@ public interface MeasurePackageService {
 	 * 
 	 * @return {@link Long}. *
 	 */
-	long countMeasuresForDraft();
+	/* long countMeasuresForDraft(); */
+	
+	long countMeasuresForDraft(String searchText);
 	
 	/**
 	 * Count measures for version.

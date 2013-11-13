@@ -1761,7 +1761,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
 				.getLoggedInUserRole())) {
 			heading = "";
-			filter = searchDisplay.getMeasureSearchFilterWidget().ALL_MEASURES;// ALL Measures
+			filter = 1;// ALL Measures
 			search(adminSearchDisplay.getSearchString().getValue(), 1,
 					Integer.MAX_VALUE, filter);
 			panel.setContent(adminSearchDisplay.asWidget());

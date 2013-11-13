@@ -25,41 +25,20 @@ public interface MeasurePackageService {
 	/**
 	 * Count.
 	 * 
+	 * @param filter
+	 *            - {@link Integer}.
+	 * @return {@link Long} *
+	 */
+	long count(int filter);
+	
+	/**
+	 * Count.
+	 * 
 	 * @param searchText
 	 *            - String.
 	 * @return {@link Long#} *
 	 */
 	long count(String searchText);
-	
-	/**
-	 * Search.
-	 * 
-	 * @param startIndex
-	 *            - {@link Integer}.
-	 * @param numResults
-	 *            - {@link Integer}.
-	 * @return {@link List} of {@link MeasureShareDTO}. *
-	 */
-	List<MeasureShareDTO> search(int startIndex, int numResults);
-	
-	/**
-	 * Search measures for version.
-	 * 
-	 * @param startIndex
-	 *            - {@link Integer}.
-	 * @param numResults
-	 *            - {@link Integer}.
-	 * @return {@link List} of {@link MeasureShareDTO}. *
-	 */
-	List<MeasureShareDTO> searchMeasuresForVersion(int startIndex,
-			int numResults);
-	
-	/**
-	 * Count measures for version.
-	 * 
-	 * @return {@link Long}. *
-	 */
-	long countMeasuresForVersion();
 	
 	/**
 	 * Count measures for draft.
@@ -69,47 +48,47 @@ public interface MeasurePackageService {
 	long countMeasuresForDraft();
 	
 	/**
-	 * Search measures for draft.
+	 * Count measures for version.
 	 * 
-	 * @param startIndex
-	 *            - {@link Integer}.
-	 * @param numResults
-	 *            - {@link Integer}.
-	 * @return {@link List} {@link MeasureShareDTO}. *
+	 * @return {@link Long}. *
 	 */
-	List<MeasureShareDTO> searchMeasuresForDraft(int startIndex,
-			int numResults);
+	long countMeasuresForVersion();
 	
 	/**
-	 * Search.
+	 * Count users for measure share.
 	 * 
-	 * @param searchText
+	 * @return {@link Integer}. *
+	 */
+	int countUsersForMeasureShare();
+	
+	/**
+	 * Delete existing packages.
+	 * 
+	 * @param measureId
+	 *            - {@link String}. *
+	 */
+	void deleteExistingPackages(String measureId);
+	
+	/**
+	 * Find data type for supplimental code list.
+	 * 
+	 * @param dataTypeName
 	 *            - {@link String}.
-	 * @param startIndex
-	 *            - {@link Integer}.
-	 * @param numResults
-	 *            - {@link Integer}.
-	 * @return {@link List} {@link MeasureShareDTO}. *
+	 * @param categoryId
+	 *            - {@link String}.
+	 * @return {@link DataType}. *
 	 */
-	List<MeasureShareDTO> search(String searchText, int startIndex,
-			int numResults);
+	DataType findDataTypeForSupplimentalCodeList(String dataTypeName,
+			String categoryId);
 	
 	/**
-	 * Save.
-	 * 
-	 * @param measurePackage
-	 *            the measure package
-	 */
-	void save(Measure measurePackage);
-	
-	/**
-	 * Gets the by id.
+	 * Find measure set.
 	 * 
 	 * @param id
 	 *            - {@link String}.
-	 * @return {@link Measure}. *
+	 * @return {@link MeasureSet}. *
 	 */
-	Measure getById(String id);
+	MeasureSet findMeasureSet(String id);
 	
 	/**
 	 * Find out maximum version number.
@@ -132,6 +111,38 @@ public interface MeasurePackageService {
 	String findOutVersionNumber(String measureId, String measureSetId);
 	
 	/**
+	 * Gets the by id.
+	 * 
+	 * @param id
+	 *            - {@link String}.
+	 * @return {@link Measure}. *
+	 */
+	Measure getById(String id);
+	
+	/**
+	 * Gets the max e measure id.
+	 * 
+	 * @return {@link Integer}. *
+	 */
+	int getMaxEMeasureId();
+	
+	/**
+	 * Gets the measure xml for measure.
+	 * 
+	 * @param measureId
+	 *            - {@link String}.
+	 * @return {@link MeasureXmlModel}. *
+	 */
+	MeasureXmlModel getMeasureXmlForMeasure(String measureId);
+	
+	/**
+	 * Gets the unique oid.
+	 * 
+	 * @return {@link String}. *
+	 */
+	String getUniqueOid();
+	
+	/**
 	 * Gets the users for share.
 	 * 
 	 * @param measureId
@@ -146,95 +157,6 @@ public interface MeasurePackageService {
 			int startIndex, int pageSize);
 	
 	/**
-	 * Count users for measure share.
-	 * 
-	 * @return {@link Integer}. *
-	 */
-	int countUsersForMeasureShare();
-	
-	/**
-	 * Update users share.
-	 * 
-	 * @param model
-	 *            - {@link ManageMeasureShareModel}. *
-	 */
-	void updateUsersShare(ManageMeasureShareModel model);
-	
-	/**
-	 * Update locked out date.
-	 * 
-	 * @param m
-	 *            - {@link Measure}. *
-	 */
-	void updateLockedOutDate(Measure m);
-	
-	/**
-	 * Validate measure for export.
-	 * 
-	 * @param key
-	 *            - {@link String}.
-	 * @param matValueSetList
-	 *            - {@link ArrayList} of {@link MatValueSet}.
-	 * @return {@link ValidateMeasureResult}.
-	 * @throws Exception
-	 *             - {@link Exception}.
-	 */
-	ValidateMeasureResult validateMeasureForExport(String key,
-			ArrayList<MatValueSet> matValueSetList) throws Exception;
-	
-	/**
-	 * Find measure set.
-	 * 
-	 * @param id
-	 *            - {@link String}.
-	 * @return {@link MeasureSet}. *
-	 */
-	MeasureSet findMeasureSet(String id);
-	
-	/**
-	 * Save.
-	 * 
-	 * @param measureSet
-	 *            - {@link MeasureSet}. *
-	 */
-	void save(MeasureSet measureSet);
-	
-	/**
-	 * Gets the unique oid.
-	 * 
-	 * @return {@link String}. *
-	 */
-	String getUniqueOid();
-	
-	/**
-	 * Find data type for supplimental code list.
-	 * 
-	 * @param dataTypeName
-	 *            - {@link String}.
-	 * @param categoryId
-	 *            - {@link String}.
-	 * @return {@link DataType}. *
-	 */
-	DataType findDataTypeForSupplimentalCodeList(String dataTypeName,
-			String categoryId);
-	
-	/**
-	 * Delete existing packages.
-	 * 
-	 * @param measureId
-	 *            - {@link String}. *
-	 */
-	void deleteExistingPackages(String measureId);
-	
-	/**
-	 * Save supplimental qdm.
-	 * 
-	 * @param qds
-	 *            - {@link QualityDataSet}. *
-	 */
-	void saveSupplimentalQDM(QualityDataSet qds);
-	
-	/**
 	 * Checks if is measure locked.
 	 * 
 	 * @param id
@@ -244,11 +166,29 @@ public interface MeasurePackageService {
 	boolean isMeasureLocked(String id);
 	
 	/**
-	 * Gets the max e measure id.
+	 * Retrieve steward oid.
 	 * 
-	 * @return {@link Integer}. *
+	 * @param stewardName
+	 *            - {@link String}.
+	 * @return {@link String}. *
 	 */
-	int getMaxEMeasureId();
+	String retrieveStewardOID(String stewardName);
+	
+	/**
+	 * Save.
+	 * 
+	 * @param measurePackage
+	 *            the measure package
+	 */
+	void save(Measure measurePackage);
+	
+	/**
+	 * Save.
+	 * 
+	 * @param measureSet
+	 *            - {@link MeasureSet}. *
+	 */
+	void save(MeasureSet measureSet);
 	
 	/**
 	 * Save and return max e measure id.
@@ -260,19 +200,34 @@ public interface MeasurePackageService {
 	int saveAndReturnMaxEMeasureId(Measure measure);
 	
 	/**
-	 * Transfer measure owner ship to user.
+	 * Save measure xml.
 	 * 
-	 * @param list
-	 *            - {@link List} of {@link String}.
-	 * @param toEmail
-	 *            - {@link String}.
-	 * 
-	 *            *
+	 * @param measureXmlModel
+	 *            - {@link MeasureXmlModel}. *
 	 */
-	void transferMeasureOwnerShipToUser(List<String> list, String toEmail);
+	void saveMeasureXml(MeasureXmlModel measureXmlModel);
 	
 	/**
-	 * Search with filter.
+	 * Save supplimental qdm.
+	 * 
+	 * @param qds
+	 *            - {@link QualityDataSet}. *
+	 */
+	void saveSupplimentalQDM(QualityDataSet qds);
+	
+	/**
+	 * Search.
+	 * 
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param numResults
+	 *            - {@link Integer}.
+	 * @return {@link List} of {@link MeasureShareDTO}. *
+	 */
+	List<MeasureShareDTO> search(int startIndex, int numResults);
+	
+	/**
+	 * Search.
 	 * 
 	 * @param searchText
 	 *            - {@link String}.
@@ -280,12 +235,10 @@ public interface MeasurePackageService {
 	 *            - {@link Integer}.
 	 * @param numResults
 	 *            - {@link Integer}.
-	 * @param filter
-	 *            - {@link Integer}.
-	 * @return {@link List} of {@link MeasureShareDTO}. *
+	 * @return {@link List} {@link MeasureShareDTO}. *
 	 */
-	List<MeasureShareDTO> searchWithFilter(String searchText, int startIndex,
-			int numResults, int filter);
+	List<MeasureShareDTO> search(String searchText, int startIndex,
+			int numResults);
 	
 	/**
 	 * Search for admin with filter.
@@ -304,39 +257,67 @@ public interface MeasurePackageService {
 			int numResults, int filter);
 	
 	/**
-	 * Count.
+	 * Search measures for draft.
 	 * 
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param numResults
+	 *            - {@link Integer}.
+	 * @return {@link List} {@link MeasureShareDTO}. *
+	 */
+	/*
+	 * List<MeasureShareDTO> searchMeasuresForDraft(int startIndex, int numResults);
+	 */
+	
+	List<MeasureShareDTO> searchMeasuresForDraft(String searchText, int startIndex, int numResults);
+	
+	/**
+	 * Search measures for version.
+	 * 
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param numResults
+	 *            - {@link Integer}.
+	 * @return {@link List} of {@link MeasureShareDTO}. *
+	 */
+	List<MeasureShareDTO> searchMeasuresForVersion(int startIndex,
+			int numResults);
+	
+	/**
+	 * Search with filter.
+	 * 
+	 * @param searchText
+	 *            - {@link String}.
+	 * @param startIndex
+	 *            - {@link Integer}.
+	 * @param numResults
+	 *            - {@link Integer}.
 	 * @param filter
 	 *            - {@link Integer}.
-	 * @return {@link Long} *
+	 * @return {@link List} of {@link MeasureShareDTO}. *
 	 */
-	long count(int filter);
+	List<MeasureShareDTO> searchWithFilter(String searchText, int startIndex,
+			int numResults, int filter);
 	
 	/**
-	 * Gets the measure xml for measure.
+	 * Transfer measure owner ship to user.
 	 * 
-	 * @param measureId
+	 * @param list
+	 *            - {@link List} of {@link String}.
+	 * @param toEmail
 	 *            - {@link String}.
-	 * @return {@link MeasureXmlModel}. *
+	 * 
+	 *            *
 	 */
-	MeasureXmlModel getMeasureXmlForMeasure(String measureId);
+	void transferMeasureOwnerShipToUser(List<String> list, String toEmail);
 	
 	/**
-	 * Save measure xml.
+	 * Update locked out date.
 	 * 
-	 * @param measureXmlModel
-	 *            - {@link MeasureXmlModel}. *
+	 * @param m
+	 *            - {@link Measure}. *
 	 */
-	void saveMeasureXml(MeasureXmlModel measureXmlModel);
-	
-	/**
-	 * Retrieve steward oid.
-	 * 
-	 * @param stewardName
-	 *            - {@link String}.
-	 * @return {@link String}. *
-	 */
-	String retrieveStewardOID(String stewardName);
+	void updateLockedOutDate(Measure m);
 	
 	/**
 	 * Update private column in measure.
@@ -347,4 +328,26 @@ public interface MeasurePackageService {
 	 *            - {@link Boolean}. *
 	 */
 	void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
+	
+	/**
+	 * Update users share.
+	 * 
+	 * @param model
+	 *            - {@link ManageMeasureShareModel}. *
+	 */
+	void updateUsersShare(ManageMeasureShareModel model);
+	
+	/**
+	 * Validate measure for export.
+	 * 
+	 * @param key
+	 *            - {@link String}.
+	 * @param matValueSetList
+	 *            - {@link ArrayList} of {@link MatValueSet}.
+	 * @return {@link ValidateMeasureResult}.
+	 * @throws Exception
+	 *             - {@link Exception}.
+	 */
+	ValidateMeasureResult validateMeasureForExport(String key,
+			ArrayList<MatValueSet> matValueSetList) throws Exception;
 }

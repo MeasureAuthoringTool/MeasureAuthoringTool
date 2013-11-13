@@ -1344,12 +1344,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#searchMeasuresForDraft(int, int)
 	 */
 	@Override
-	public final ManageMeasureSearchModel searchMeasuresForDraft(final int startIndex, final int pageSize) {
+	public final ManageMeasureSearchModel searchMeasuresForDraft(final String searchText, final int startIndex, final int pageSize) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-		List<MeasureShareDTO> measureList = getService().searchMeasuresForDraft(startIndex, pageSize);
+		List<MeasureShareDTO> measureList = getService().searchMeasuresForDraft(searchText,startIndex, pageSize);
 		searchModel.setStartIndex(startIndex);
 		searchModel.setResultsTotal((int) getService().countMeasuresForDraft());
 		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();

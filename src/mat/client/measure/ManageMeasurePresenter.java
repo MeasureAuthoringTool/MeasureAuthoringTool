@@ -30,6 +30,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SearchWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.SynchronizationDelegate;
@@ -268,7 +269,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * The Interface DraftDisplay.
 	 */
 	public static interface DraftDisplay extends BaseDisplay {
-		
 		/**
 		 * Builds the data table.
 		 * 
@@ -286,14 +286,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public void buildDataTable(
 				SearchResults<ManageMeasureSearchModel.Result> results,
 				int pageCount, long totalResults, int currentPage, int pageSize);
-		
 		/**
 		 * Gets the cancel button.
 		 * 
 		 * @return the cancel button
 		 */
 		public HasClickHandlers getCancelButton();
-		
 		/**
 		 * Gets the current page.
 		 * 
@@ -328,6 +326,21 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the save button
 		 */
 		public HasClickHandlers getSaveButton();
+		
+		/**
+		 * @return search button on search Widget.
+		 */
+		HasClickHandlers getSearchButton();
+		
+		/**
+		 * @return SearchWidget.
+		 */
+		SearchWidget getSearchWidget();
+		
+		/**
+		 * @return Zoom button.
+		 */
+		CustomButton getZoomButton();
 		
 		/**
 		 * Sets the current page.
@@ -998,6 +1011,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private ClickHandler cancelClickHandler = new ClickHandler() {
 		@Override
 		public void onClick(ClickEvent event) {
+			draftDisplay.getSearchWidget().getSearchInput().setValue("");
 			detailDisplay.getName().setValue("");
 			detailDisplay.getShortName().setValue("");
 			searchDisplay.clearSelections();
@@ -1044,6 +1058,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	private boolean isMeasureDeleted = false;
 	
 	boolean isMeasureSearchFilterVisible = true;
+	
+	boolean isSearchFilterVisible = true;
 	
 	/** The listof measures. */
 	List<ManageMeasureSearchModel.Result> listofMeasures = new ArrayList<ManageMeasureSearchModel.Result>();
@@ -1553,12 +1569,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 		int pageNumber = draftDisplay.getCurrentPage();
 		int pageSize = draftDisplay.getPageSize();
 		int startIndex = pageSize * (pageNumber - 1);
-		searchMeasuresForDraft(startIndex, draftDisplay.getPageSize());
+		searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText(), startIndex, draftDisplay.getPageSize());
 		searchDisplay.getSuccessMeasureDeletion().clear();
 		searchDisplay.getErrorMeasureDeletion().clear();
 		draftDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		panel.getButtonPanel().clear();
+		panel.setButtonPanel(null, draftDisplay.getZoomButton());
+		draftDisplay.getSearchWidget().setVisible(false);
+		isSearchFilterVisible = false;
 		panel.setHeading("My Measures > Create Draft of Existing Measure",
 				"MainContent");
 		panel.setContent(draftDisplay.asWidget());
@@ -1825,6 +1844,26 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the draft display
 	 */
 	private void draftDisplayHandlers(final DraftDisplay draftDisplay) {
+		
+		draftDisplay.getZoomButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+				searchDisplay.getErrorMessageDisplay().clear();
+				draftDisplay.getErrorMessageDisplay().clear();
+				isSearchFilterVisible = !isSearchFilterVisible;
+				draftDisplay.getSearchWidget().setVisible(isSearchFilterVisible);
+			}
+		});
+		draftDisplay.getSearchButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText(), startIndex, draftDisplay
+						.getPageSize());
+			}
+		});
 		draftDisplay.getPageSelectionTool().addPageSelectionHandler(
 				new PageSelectionEventHandler() {
 					@Override
@@ -1857,7 +1896,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						draftDisplay.setCurrentPage(pageNumber);
 						int pageSize = draftDisplay.getPageSize();
 						int startIndex = pageSize * (pageNumber - 1);
-						searchMeasuresForDraft(startIndex,
+						searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText(), startIndex,
 								draftDisplay.getPageSize());
 					}
 				});
@@ -1866,7 +1905,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onPageSizeSelection(PageSizeSelectionEvent event) {
 						draftDisplay.setPageSize(event.getPageSize());
-						searchMeasuresForDraft(startIndex,
+						searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText(), startIndex,
 								draftDisplay.getPageSize());
 					}
 				});
@@ -2981,49 +3020,50 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @param pageSize
 	 *            the page size
 	 */
-	private void searchMeasuresForDraft(int startIndex, int pageSize) {
-		
-		MatContext
-		.get()
-		.getMeasureService()
-		.searchMeasuresForDraft(startIndex, pageSize,
-				new AsyncCallback<ManageMeasureSearchModel>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				draftDisplay
-				.getErrorMessageDisplay()
-				.setMessage(
-						MatContext
-						.get()
-						.getMessageDelegate()
-						.getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(
-						null,
-						null,
-						null,
-						"Unhandled Exception: "
-								+ caught.getLocalizedMessage(),
-								0);
-			}
-			
-			@Override
-			public void onSuccess(
-					ManageMeasureSearchModel result) {
-				draftMeasureResults = new ManageDraftMeasureModel(
-						result.getData());
-				draftMeasureResults.setPageSize(result
-						.getData().size());
-				draftMeasureResults.setTotalPages(result
-						.getPageCount());
-				draftDisplay.buildDataTable(
-						draftMeasureResults,
-						result.getPageCount(),
-						result.getResultsTotal(),
-						draftDisplay.getCurrentPage(),
-						draftDisplay.getPageSize());
-			}
-		});
-		
+	private void searchMeasuresForDraft(String searchText, int startIndex, int pageSize) {
+		final String lastSearchText = (searchText != null) ? searchText
+				.trim() : null;
+				MatContext
+				.get()
+				.getMeasureService()
+				.searchMeasuresForDraft(lastSearchText, startIndex, pageSize,
+						new AsyncCallback<ManageMeasureSearchModel>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						draftDisplay
+						.getErrorMessageDisplay()
+						.setMessage(
+								MatContext
+								.get()
+								.getMessageDelegate()
+								.getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(
+								null,
+								null,
+								null,
+								"Unhandled Exception: "
+										+ caught.getLocalizedMessage(),
+										0);
+					}
+					
+					@Override
+					public void onSuccess(
+							ManageMeasureSearchModel result) {
+						draftMeasureResults = new ManageDraftMeasureModel(
+								result.getData());
+						draftMeasureResults.setPageSize(result
+								.getData().size());
+						draftMeasureResults.setTotalPages(result
+								.getPageCount());
+						draftDisplay.buildDataTable(
+								draftMeasureResults,
+								result.getPageCount(),
+								result.getResultsTotal(),
+								draftDisplay.getCurrentPage(),
+								draftDisplay.getPageSize());
+					}
+				});
+				
 	}
 	
 	/**

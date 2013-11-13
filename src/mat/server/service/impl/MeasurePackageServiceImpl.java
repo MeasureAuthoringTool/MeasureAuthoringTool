@@ -52,68 +52,71 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(MeasurePackageServiceImpl.class);
-
-	/** The measure package dao. */
+	
+	/** The data type dao. */
 	@Autowired
-	private MeasureDAO measurePackageDAO;
+	private DataTypeDAO dataTypeDAO;
+	
+	/** The e measure service. */
+	@Autowired
+	private SimpleEMeasureService eMeasureService;
+	
+	/** The measure audit log dao. */
+	@Autowired
+	private MeasureAuditLogDAO measureAuditLogDAO;
+	
+	/** The measure dao. */
+	@Autowired
+	private MeasureDAO measureDAO;
 	
 	/** The measure export dao. */
 	@Autowired
 	private MeasureExportDAO measureExportDAO;
 	
-	/** The user dao. */
+	/** The measure package dao. */
 	@Autowired
-	private UserDAO userDAO;
+	private MeasureDAO measurePackageDAO;
 	
-	/** The share level dao. */
+	/** The measure set dao. */
 	@Autowired
-	private ShareLevelDAO shareLevelDAO;
+	private MeasureSetDAO measureSetDAO;
 	
 	/** The measure share dao. */
 	@Autowired
 	private MeasureShareDAO measureShareDAO;
 	
-	/** The measure dao. */
-	@Autowired
-	private MeasureDAO measureDAO;
-
-	/** The packager dao. */
-	@Autowired
-	private PackagerDAO packagerDAO;
-
-	/** The measure audit log dao. */
-	@Autowired 
-	private MeasureAuditLogDAO measureAuditLogDAO;
-
-	/** The e measure service. */
-	@Autowired 
-	private SimpleEMeasureService eMeasureService;
-
-	/** The measure set dao. */
-	@Autowired
-	private MeasureSetDAO measureSetDAO;
-
-	/** The quality data set dao. */
-	@Autowired
-	private QualityDataSetDAO qualityDataSetDAO;
-
-	/** The data type dao. */
-	@Autowired
-	private DataTypeDAO dataTypeDAO;
-
 	/** The measure xmldao. */
 	@Autowired
 	private MeasureXMLDAO measureXMLDAO;
-
+	
+	/** The packager dao. */
+	@Autowired
+	private PackagerDAO packagerDAO;
+	
+	/** The quality data set dao. */
+	@Autowired
+	private QualityDataSetDAO qualityDataSetDAO;
+	
+	/** The share level dao. */
+	@Autowired
+	private ShareLevelDAO shareLevelDAO;
+	
 	/** The steward dao. */
 	@Autowired
 	private StewardDAO stewardDAO;
-
+	
+	/** The user dao. */
+	@Autowired
+	private UserDAO userDAO;
+	
 	//	@Override
 	//	public void clone(Measure measurePackage, String newCloneName) {
 	//		measurePackageDAO.clone(measurePackage, newCloneName);
 	//	}
-
+	
+	/** The validator. */
+	private ValidationUtility validator = new ValidationUtility();
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#count()
 	 */
@@ -122,16 +125,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measurePackageDAO.countMeasureShareInfoForUser(user);
 	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#count(java.lang.String)
-	 */
-	@Override
-	public long count(final String searchText) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.countMeasureShareInfoForUser(searchText, user);
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#count(int)
 	 */
@@ -140,90 +134,34 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measurePackageDAO.countMeasureShareInfoForUser(filter, user);
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#search(int, int)
+	 * @see mat.server.service.MeasurePackageService#count(java.lang.String)
 	 */
 	@Override
-	public List<MeasureShareDTO> search(final int startIndex,
-			final int numResults) {
+	public long count(final String searchText) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasureShareInfoForUser(user, startIndex - 1, numResults);
+		return measurePackageDAO.countMeasureShareInfoForUser(searchText, user);
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#updateUsersShare(mat.client.measure.ManageMeasureShareModel)
+	 * @see mat.server.service.MeasurePackageService#countMeasuresForDraft()
 	 */
 	@Override
-	public void updateUsersShare(final ManageMeasureShareModel model) {
-		StringBuffer auditLogAdditionlInfo = new StringBuffer("Measure shared with ");
-		StringBuffer auditLogForModifyRemove = new StringBuffer("Measure shared status revoked with ");
-		MeasureShare measureShare = null;
-		boolean first = true;
-		boolean firstRemove = true;
-		boolean recordShareEvent = false;
-		boolean recordRevokeShareEvent = false;
-		for (int i = 0; i < model.getNumberOfRows(); i++) {
-			MeasureShareDTO dto = model.get(i);
-			if (dto.getShareLevel() != null && !"".equals(dto.getShareLevel())) {
-				User user = userDAO.find(dto.getUserId());
-				ShareLevel sLevel = shareLevelDAO.find(dto.getShareLevel());
-				measureShare = null;
-				for (MeasureShare ms : user.getMeasureShares()) {
-					if (ms.getMeasure().getId().equals(model.getMeasureId())) {
-						measureShare = ms;
-						break;
-					}
-				}
-
-				if (measureShare == null && ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
-					recordShareEvent = true;
-					measureShare = new MeasureShare();
-					measureShare.setMeasure(measurePackageDAO.find(model.getMeasureId()));
-					measureShare.setShareUser(user);
-					User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-					measureShare.setOwner(currentUser);
-					user.getMeasureShares().add(measureShare);
-					currentUser.getOwnedMeasureShares().add(measureShare);
-					logger.info("Sharing " + measureShare.getMeasure().getId() + " with " + user.getId()
-							+ " at level " + sLevel.getDescription());
-					if (!first) { //first time, don't add the comma.
-						auditLogAdditionlInfo.append(", ");
-					}
-					first = false;
-					auditLogAdditionlInfo.append(user.getEmailAddress());
-
-					measureShare.setShareLevel(sLevel);
-					measureShareDAO.save(measureShare);
-				} else if (!ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
-					recordRevokeShareEvent = true;
-					measureShareDAO.delete(measureShare.getId());
-					logger.info("Removing Sharing " + measureShare.getMeasure().getId()
-							+ " with " + user.getId()
-							+ " at level " + sLevel.getDescription());
-					System.out.println("Removing Sharing " + measureShare.getMeasure().getId()
-							+ " with " + user.getId() + " at level " + sLevel.getDescription());
-					if (!firstRemove) { //first time, don't add the comma.
-						auditLogForModifyRemove.append(", ");
-					}
-					firstRemove = false;
-					auditLogForModifyRemove.append(user.getEmailAddress());
-				}
-			}
-		}
-
-		//US 170. Log share event
-		if (recordShareEvent || recordRevokeShareEvent) {
-			if (recordShareEvent && recordRevokeShareEvent) {
-				auditLogAdditionlInfo.append("\n").append(auditLogForModifyRemove);
-			} else if (recordRevokeShareEvent) {
-				auditLogAdditionlInfo = new StringBuffer(auditLogForModifyRemove);
-			}
-			measureAuditLogDAO.recordMeasureEvent(measureShare.getMeasure(),
-					"Measure Shared", auditLogAdditionlInfo.toString());
-		}
+	public long countMeasuresForDraft() {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.countMeasureForDraft(user);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#countMeasuresForVersion()
+	 */
+	@Override
+	public long countMeasuresForVersion(){
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.countMeasureForVersion(user);
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#countUsersForMeasureShare()
 	 */
@@ -231,7 +169,175 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public int countUsersForMeasureShare() {
 		return measurePackageDAO.countUsersForMeasureShare();
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#deleteExistingPackages(java.lang.String)
+	 */
+	@Override
+	public void deleteExistingPackages(final String measureId) {
+		packagerDAO.deleteAllPackages(measureId);
+		
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#findDataTypeForSupplimentalCodeList(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public DataType findDataTypeForSupplimentalCodeList(final String dataTypeName , final String categoryId){
+		return dataTypeDAO.findDataTypeForSupplimentalCodeList(dataTypeName, categoryId);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#findMeasureSet(java.lang.String)
+	 */
+	@Override
+	public MeasureSet findMeasureSet(final String id) {
+		return measureSetDAO.findMeasureSet(id);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#findOutMaximumVersionNumber(java.lang.String)
+	 */
+	@Override
+	public String findOutMaximumVersionNumber(final String measureSetId) {
+		return measureDAO.findMaxVersion(measureSetId);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#findOutVersionNumber(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public String findOutVersionNumber(final String measureId, final String measureSetId) {
+		return measureDAO.findMaxOfMinVersion(measureId, measureSetId);
+	}
+	
+	
+	//TODO422:
+	/**
+	 * Generate export.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @param message
+	 *            the message
+	 * @param matValueSetList
+	 *            the mat value set list
+	 * @throws Exception
+	 *             the exception
+	 */
+	private void generateExport(final String measureId, final List<String> message ,
+			final List<MatValueSet> matValueSetList) throws Exception {
+		
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
+		String exportedXML = ExportSimpleXML.export(measureXML, message);
+		if (exportedXML.length() == 0) {
+			return;
+		}
+		SimpleEMeasureService.ExportResult exportResult =
+				eMeasureService.exportMeasureIntoSimpleXML(measureId, exportedXML, matValueSetList);
+		
+		//replace all @id attributes of <elementLookUp>/<qdm> with @uuid attribute value
+		exportedXML = ExportSimpleXML.setQDMIdAsUUID(exportedXML);
+		
+		Measure measure = measureDAO.find(measureId);
+		MeasureExport export = measureExportDAO.findForMeasure(measureId);
+		if (export == null) {
+			export = new MeasureExport();
+			export.setMeasure(measure);
+		}
+		export.setSimpleXML(exportedXML);
+		export.setCodeListBarr(exportResult.wkbkbarr);
+		measure.setExportedDate(new Date());
+		measureDAO.save(measure);
+		measureExportDAO.save(export);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#getById(java.lang.String)
+	 */
+	@Override
+	public Measure getById(final String id) {
+		return measurePackageDAO.find(id);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#getMaxEMeasureId()
+	 */
+	@Override
+	public int getMaxEMeasureId() {
+		return measureDAO.getMaxEMeasureId();
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#getMeasureXmlForMeasure(java.lang.String)
+	 */
+	@Override
+	public MeasureXmlModel getMeasureXmlForMeasure(final String measureId) {
+		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
+		if (measureXML != null) {
+			MeasureXmlModel exportModal = new MeasureXmlModel();
+			exportModal.setMeasureId(measureXML.getMeasure_id());
+			exportModal.setMeausreExportId(measureXML.getId());
+			exportModal.setXml(measureXML.getMeasureXMLAsString());
+			return exportModal;
+		}
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#getUniqueOid()
+	 */
+	@Override
+	public String getUniqueOid() {
+		return qualityDataSetDAO.generateUniqueOid();
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#getUsersForShare(java.lang.String, int, int)
+	 */
+	@Override
+	public List<MeasureShareDTO> getUsersForShare(final String measureId, final int startIndex, final int pageSize) {
+		return measurePackageDAO.getMeasureShareInfoForMeasure(measureId, startIndex - 1, pageSize);
+	}
+	
+	/**
+	 * Gets the validator.
+	 * 
+	 * @return the validator
+	 */
+	public ValidationUtility getValidator() {
+		return validator;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#isMeasureLocked(java.lang.String)
+	 */
+	@Override
+	public boolean isMeasureLocked(final String id) {
+		boolean isLocked = measureDAO.isMeasureLocked(id);
+		return isLocked;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#retrieveStewardOID(java.lang.String)
+	 */
+	@Override
+	public String retrieveStewardOID(final String stewardName) {
+		String oid = null;
+		SearchCriteria criteria = new SearchCriteria("orgName",
+				stewardName.trim(), PropertyOperator.EQ, null);
+		CriteriaQuery query = new CriteriaQuery(criteria);
+		List<MeasureSteward> stewards = stewardDAO.find(query);
+		
+		if ((stewards != null) && !stewards.isEmpty()) {
+			MeasureSteward stw = stewards.get(0);
+			oid = stw.getOrgOid();
+		}
+		
+		return oid;
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#save(mat.model.clause.Measure)
 	 */
@@ -253,223 +359,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public void save(final MeasureSet measureSet) {
 		measureSetDAO.save(measureSet);
 	}
-
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#updateLockedOutDate(mat.model.clause.Measure)
-	 */
-	@Override
-	public void updateLockedOutDate(final Measure m) {
-		measurePackageDAO.resetLockDate(m);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getById(java.lang.String)
-	 */
-	@Override
-	public Measure getById(final String id) {
-		return measurePackageDAO.find(id);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#findMeasureSet(java.lang.String)
-	 */
-	@Override
-	public MeasureSet findMeasureSet(final String id) {
-		return measureSetDAO.findMeasureSet(id);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getUsersForShare(java.lang.String, int, int)
-	 */
-	@Override
-	public List<MeasureShareDTO> getUsersForShare(final String measureId, final int startIndex, final int pageSize) {
-		return measurePackageDAO.getMeasureShareInfoForMeasure(measureId, startIndex - 1, pageSize);
-	}
-
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#validateMeasureForExport(java.lang.String, java.util.ArrayList)
-	 */
-	@Override
-	public ValidateMeasureResult validateMeasureForExport(final String key,
-			final ArrayList<MatValueSet> matValueSetsList) throws Exception {
-		List<String> message = new ArrayList<String>();
-		generateExport(key, message, matValueSetsList);
-		ValidateMeasureResult result = new ValidateMeasureResult();
-		result.setValid(message.size() == 0);
-		result.setValidationMessages(message);
-		return result;
-	}
-
-	//TODO422:
-	/**
-	 * Generate export.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param message
-	 *            the message
-	 * @param matValueSetList
-	 *            the mat value set list
-	 * @throws Exception
-	 *             the exception
-	 */
-	private void generateExport(final String measureId, final List<String> message ,
-			final List<MatValueSet> matValueSetList) throws Exception {
-
-		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
-		String exportedXML = ExportSimpleXML.export(measureXML, message);
-		if (exportedXML.length() == 0) {
-			return;
-		}
-		SimpleEMeasureService.ExportResult exportResult =
-			eMeasureService.exportMeasureIntoSimpleXML(measureId, exportedXML, matValueSetList);
-
-		//replace all @id attributes of <elementLookUp>/<qdm> with @uuid attribute value
-		exportedXML = ExportSimpleXML.setQDMIdAsUUID(exportedXML);
-
-		Measure measure = measureDAO.find(measureId);
-		MeasureExport export = measureExportDAO.findForMeasure(measureId);
-		if (export == null) {
-			export = new MeasureExport();
-			export.setMeasure(measure);
-		}
-		export.setSimpleXML(exportedXML);
-		export.setCodeListBarr(exportResult.wkbkbarr);
-		measure.setExportedDate(new Date());
-		measureDAO.save(measure);
-		measureExportDAO.save(export);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#search(java.lang.String, int, int)
-	 */
-	@Override
-	public List<MeasureShareDTO> search(final String searchText, final int startIndex, final int numResults) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasureShareInfoForUser(searchText,  user, startIndex - 1, numResults);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#searchWithFilter(java.lang.String, int, int, int)
-	 */
-	@Override
-	public List<MeasureShareDTO> searchWithFilter(final String searchText, final int startIndex,
-			final int numResults, final int filter) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText,  user, startIndex - 1, numResults, filter);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#searchForAdminWithFilter(java.lang.String, int, int, int)
-	 */
-	@Override
-	public List<MeasureShareDTO> searchForAdminWithFilter(String searchText,
-			int startIndex, int numResults, int filter) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText, startIndex - 1, numResults, filter);
-	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#findOutMaximumVersionNumber(java.lang.String)
-	 */
-	@Override
-	public String findOutMaximumVersionNumber(final String measureSetId) {
-		return measureDAO.findMaxVersion(measureSetId);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#findOutVersionNumber(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public String findOutVersionNumber(final String measureId, final String measureSetId) {
-		return measureDAO.findMaxOfMinVersion(measureId, measureSetId);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#searchMeasuresForDraft(int, int)
-	 */
-	@Override
-	public List<MeasureShareDTO> searchMeasuresForDraft(final int startIndex,
-			final int numResults) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasuresForDraft(user, startIndex, numResults);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#searchMeasuresForVersion(int, int)
-	 */
-	@Override
-	public List<MeasureShareDTO> searchMeasuresForVersion(final int startIndex,
-			final int numResults) {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasuresForVersion(user, startIndex, numResults);
-	}	
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#countMeasuresForVersion()
-	 */
-	public long countMeasuresForVersion(){
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.countMeasureForVersion(user);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#countMeasuresForDraft()
-	 */
-	@Override
-	public long countMeasuresForDraft() {
-		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.countMeasureForDraft(user);
-	}
-
-
-
-	/** The validator. */
-	private ValidationUtility validator = new ValidationUtility();
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getUniqueOid()
-	 */
-	@Override
-	public String getUniqueOid() {
-		return qualityDataSetDAO.generateUniqueOid();
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#findDataTypeForSupplimentalCodeList(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public DataType findDataTypeForSupplimentalCodeList(final String dataTypeName , final String categoryId){
-		return dataTypeDAO.findDataTypeForSupplimentalCodeList(dataTypeName, categoryId);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#saveSupplimentalQDM(mat.model.QualityDataSet)
-	 */
-	@Override
-	public void saveSupplimentalQDM(final QualityDataSet qds) {
-		qualityDataSetDAO.save(qds);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#isMeasureLocked(java.lang.String)
-	 */
-	@Override
-	public boolean isMeasureLocked(final String id) {
-		boolean isLocked = measureDAO.isMeasureLocked(id);
-		return isLocked;
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getMaxEMeasureId()
-	 */
-	@Override
-	public int getMaxEMeasureId() {
-		return measureDAO.getMaxEMeasureId();
-	}
-
+	
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#saveAndReturnMaxEMeasureId(mat.model.clause.Measure)
 	 */
@@ -477,64 +369,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public int saveAndReturnMaxEMeasureId(final Measure measure) {
 		return measureDAO.saveandReturnMaxEMeasureId(measure);
 	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#deleteExistingPackages(java.lang.String)
-	 */
-	@Override
-	public void deleteExistingPackages(final String measureId) {
-		packagerDAO.deleteAllPackages(measureId);
-
-	}
 	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#transferMeasureOwnerShipToUser(java.util.List, java.lang.String)
-	 */
-	@Override
-	public void transferMeasureOwnerShipToUser(final List<String> list, final String toEmail) {
-		User userTo = userDAO.findByEmail(toEmail);
-
-		for (int i = 0; i < list.size(); i++) {
-			Measure measure = measureDAO.find(list.get(i));
-			List<Measure> ms = new ArrayList <Measure>();
-			ms.add(measure);
-			//Get All Family Measures for each Measure
-			List<Measure> allMeasures = measureDAO.getAllMeasuresInSet(ms);
-			for (int j = 0; j < allMeasures.size(); j++) {
-				String additionalInfo = "Measure Owner transferred from "
-			                 + allMeasures.get(j).getOwner().getEmailAddress() + " to " + toEmail;
-				allMeasures.get(j).setOwner(userTo);
-				measureDAO.saveMeasure(allMeasures.get(j));
-				measureAuditLogDAO.recordMeasureEvent(allMeasures.get(j), "Measure Ownership Changed", additionalInfo);
-				additionalInfo = "";
-
-			}
-			List<MeasureShare> measureShareInfo = measureDAO.getMeasureShareForMeasure(list.get(i));
-			for (int k = 0; k < measureShareInfo.size(); k++) {
-				measureShareInfo.get(k).setOwner(userTo);
-				measureShareDAO.save(measureShareInfo.get(k));
-			}
-
-		}
-
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#getMeasureXmlForMeasure(java.lang.String)
-	 */
-	@Override
-	public MeasureXmlModel getMeasureXmlForMeasure(final String measureId) {
-		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
-		if (measureXML != null) {
-			MeasureXmlModel exportModal = new MeasureXmlModel();
-			exportModal.setMeasureId(measureXML.getMeasure_id());
-			exportModal.setMeausreExportId(measureXML.getId());
-			exportModal.setXml(measureXML.getMeasureXMLAsString());
-			return exportModal;
-		}
-		return null;
-	}
-
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#saveMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
 	 */
@@ -550,43 +385,77 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		measureXMLDAO.save(measureXML);
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#retrieveStewardOID(java.lang.String)
+	 * @see mat.server.service.MeasurePackageService#saveSupplimentalQDM(mat.model.QualityDataSet)
 	 */
-	public String retrieveStewardOID(final String stewardName) {
-		String oid = null;
-		SearchCriteria criteria = new SearchCriteria("orgName",
-				stewardName.trim(), PropertyOperator.EQ, null);
-		CriteriaQuery query = new CriteriaQuery(criteria);
-		List<MeasureSteward> stewards = stewardDAO.find(query);
-
-		if (stewards != null && !stewards.isEmpty()) {
-			MeasureSteward stw = stewards.get(0);
-			oid = stw.getOrgOid();
-		}
-
-		return oid;
+	@Override
+	public void saveSupplimentalQDM(final QualityDataSet qds) {
+		qualityDataSetDAO.save(qds);
 	}
-
+	
 	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#updatePrivateColumnInMeasure(java.lang.String, boolean)
+	 * @see mat.server.service.MeasurePackageService#search(int, int)
 	 */
-	public void updatePrivateColumnInMeasure(final String measureId, final boolean isPrivate){
-		measureDAO.updatePrivateColumnInMeasure(measureId, isPrivate);
-		measureAuditLogDAO.recordMeasureEvent(getById(measureId), isPrivate
-				? "Measure Private " : "Measure Public", "");
+	@Override
+	public List<MeasureShareDTO> search(final int startIndex,
+			final int numResults) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.getMeasureShareInfoForUser(user, startIndex - 1, numResults);
 	}
-
-	/**
-	 * Gets the validator.
-	 * 
-	 * @return the validator
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#search(java.lang.String, int, int)
 	 */
-	public ValidationUtility getValidator() {
-		return validator;
+	@Override
+	public List<MeasureShareDTO> search(final String searchText, final int startIndex, final int numResults) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.getMeasureShareInfoForUser(searchText,  user, startIndex - 1, numResults);
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#searchForAdminWithFilter(java.lang.String, int, int, int)
+	 */
+	@Override
+	public List<MeasureShareDTO> searchForAdminWithFilter(String searchText,
+			int startIndex, int numResults, int filter) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText, startIndex - 1, numResults, filter);
+	}
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#searchMeasuresForDraft(int, int)
+	 */
+	/*
+	 * @Override public List<MeasureShareDTO> searchMeasuresForDraft(final int startIndex, final int numResults) { User user =
+	 * userDAO.find(LoggedInUserUtil.getLoggedInUser()); return measurePackageDAO.getMeasuresForDraft(user, startIndex, numResults); }
+	 */
+	@Override
+	public List<MeasureShareDTO> searchMeasuresForDraft(final String searchText ,final int startIndex,
+			final int numResults) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.getMeasuresForDraft(searchText, user, startIndex, numResults);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#searchMeasuresForVersion(int, int)
+	 */
+	@Override
+	public List<MeasureShareDTO> searchMeasuresForVersion(final int startIndex,
+			final int numResults) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.getMeasuresForVersion(user, startIndex, numResults);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#searchWithFilter(java.lang.String, int, int, int)
+	 */
+	@Override
+	public List<MeasureShareDTO> searchWithFilter(final String searchText, final int startIndex,
+			final int numResults, final int filter) {
+		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText,  user, startIndex - 1, numResults, filter);
+	}
+	
 	/**
 	 * Sets the validator.
 	 * 
@@ -596,5 +465,142 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	public void setValidator(ValidationUtility validator) {
 		this.validator = validator;
 	}
-
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#transferMeasureOwnerShipToUser(java.util.List, java.lang.String)
+	 */
+	@Override
+	public void transferMeasureOwnerShipToUser(final List<String> list, final String toEmail) {
+		User userTo = userDAO.findByEmail(toEmail);
+		
+		for (int i = 0; i < list.size(); i++) {
+			Measure measure = measureDAO.find(list.get(i));
+			List<Measure> ms = new ArrayList <Measure>();
+			ms.add(measure);
+			//Get All Family Measures for each Measure
+			List<Measure> allMeasures = measureDAO.getAllMeasuresInSet(ms);
+			for (int j = 0; j < allMeasures.size(); j++) {
+				String additionalInfo = "Measure Owner transferred from "
+						+ allMeasures.get(j).getOwner().getEmailAddress() + " to " + toEmail;
+				allMeasures.get(j).setOwner(userTo);
+				measureDAO.saveMeasure(allMeasures.get(j));
+				measureAuditLogDAO.recordMeasureEvent(allMeasures.get(j), "Measure Ownership Changed", additionalInfo);
+				additionalInfo = "";
+				
+			}
+			List<MeasureShare> measureShareInfo = measureDAO.getMeasureShareForMeasure(list.get(i));
+			for (int k = 0; k < measureShareInfo.size(); k++) {
+				measureShareInfo.get(k).setOwner(userTo);
+				measureShareDAO.save(measureShareInfo.get(k));
+			}
+			
+		}
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#updateLockedOutDate(mat.model.clause.Measure)
+	 */
+	@Override
+	public void updateLockedOutDate(final Measure m) {
+		measurePackageDAO.resetLockDate(m);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#updatePrivateColumnInMeasure(java.lang.String, boolean)
+	 */
+	@Override
+	public void updatePrivateColumnInMeasure(final String measureId, final boolean isPrivate){
+		measureDAO.updatePrivateColumnInMeasure(measureId, isPrivate);
+		measureAuditLogDAO.recordMeasureEvent(getById(measureId), isPrivate
+				? "Measure Private " : "Measure Public", "");
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#updateUsersShare(mat.client.measure.ManageMeasureShareModel)
+	 */
+	@Override
+	public void updateUsersShare(final ManageMeasureShareModel model) {
+		StringBuffer auditLogAdditionlInfo = new StringBuffer("Measure shared with ");
+		StringBuffer auditLogForModifyRemove = new StringBuffer("Measure shared status revoked with ");
+		MeasureShare measureShare = null;
+		boolean first = true;
+		boolean firstRemove = true;
+		boolean recordShareEvent = false;
+		boolean recordRevokeShareEvent = false;
+		for (int i = 0; i < model.getNumberOfRows(); i++) {
+			MeasureShareDTO dto = model.get(i);
+			if ((dto.getShareLevel() != null) && !"".equals(dto.getShareLevel())) {
+				User user = userDAO.find(dto.getUserId());
+				ShareLevel sLevel = shareLevelDAO.find(dto.getShareLevel());
+				measureShare = null;
+				for (MeasureShare ms : user.getMeasureShares()) {
+					if (ms.getMeasure().getId().equals(model.getMeasureId())) {
+						measureShare = ms;
+						break;
+					}
+				}
+				
+				if ((measureShare == null) && ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
+					recordShareEvent = true;
+					measureShare = new MeasureShare();
+					measureShare.setMeasure(measurePackageDAO.find(model.getMeasureId()));
+					measureShare.setShareUser(user);
+					User currentUser = userDAO.find(LoggedInUserUtil.getLoggedInUser());
+					measureShare.setOwner(currentUser);
+					user.getMeasureShares().add(measureShare);
+					currentUser.getOwnedMeasureShares().add(measureShare);
+					logger.info("Sharing " + measureShare.getMeasure().getId() + " with " + user.getId()
+							+ " at level " + sLevel.getDescription());
+					if (!first) { //first time, don't add the comma.
+						auditLogAdditionlInfo.append(", ");
+					}
+					first = false;
+					auditLogAdditionlInfo.append(user.getEmailAddress());
+					
+					measureShare.setShareLevel(sLevel);
+					measureShareDAO.save(measureShare);
+				} else if (!ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) {
+					recordRevokeShareEvent = true;
+					measureShareDAO.delete(measureShare.getId());
+					logger.info("Removing Sharing " + measureShare.getMeasure().getId()
+							+ " with " + user.getId()
+							+ " at level " + sLevel.getDescription());
+					System.out.println("Removing Sharing " + measureShare.getMeasure().getId()
+							+ " with " + user.getId() + " at level " + sLevel.getDescription());
+					if (!firstRemove) { //first time, don't add the comma.
+						auditLogForModifyRemove.append(", ");
+					}
+					firstRemove = false;
+					auditLogForModifyRemove.append(user.getEmailAddress());
+				}
+			}
+		}
+		
+		//US 170. Log share event
+		if (recordShareEvent || recordRevokeShareEvent) {
+			if (recordShareEvent && recordRevokeShareEvent) {
+				auditLogAdditionlInfo.append("\n").append(auditLogForModifyRemove);
+			} else if (recordRevokeShareEvent) {
+				auditLogAdditionlInfo = new StringBuffer(auditLogForModifyRemove);
+			}
+			measureAuditLogDAO.recordMeasureEvent(measureShare.getMeasure(),
+					"Measure Shared", auditLogAdditionlInfo.toString());
+		}
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#validateMeasureForExport(java.lang.String, java.util.ArrayList)
+	 */
+	@Override
+	public ValidateMeasureResult validateMeasureForExport(final String key,
+			final ArrayList<MatValueSet> matValueSetsList) throws Exception {
+		List<String> message = new ArrayList<String>();
+		generateExport(key, message, matValueSetsList);
+		ValidateMeasureResult result = new ValidateMeasureResult();
+		result.setValid(message.size() == 0);
+		result.setValidationMessages(message);
+		return result;
+	}
+	
 }

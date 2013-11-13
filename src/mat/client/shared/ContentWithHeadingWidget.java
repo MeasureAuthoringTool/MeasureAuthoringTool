@@ -95,9 +95,12 @@ public class ContentWithHeadingWidget extends Composite{
 	 * @param createElement
 	 * @param searchButton */
 	public void setButtonPanel( Button createElement, Button searchButton) {
-		
-		buttonPanel.add(createElement);
-		buttonPanel.add(searchButton);
+		if (createElement != null) {
+			buttonPanel.add(createElement);
+		}
+		if (searchButton != null) {
+			buttonPanel.add(searchButton);
+		}
 	}
 	
 	/**

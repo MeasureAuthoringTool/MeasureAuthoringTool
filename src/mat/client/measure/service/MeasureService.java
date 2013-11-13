@@ -24,6 +24,84 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface MeasureService extends RemoteService {
 	
 	/**
+	 * Append and save node.
+	 * 
+	 * @param measureXmlModel
+	 *            the measure xml model
+	 * @param nodeName
+	 *            the node name
+	 */
+	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
+	
+	/**
+	 * Clone measure xml.
+	 * 
+	 * @param creatingDraft
+	 *            the creating draft
+	 * @param oldMeasureId
+	 *            the old measure id
+	 * @param clonedMeasureId
+	 *            the cloned measure id
+	 */
+	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId, String clonedMeasureId);
+	
+	/**
+	 * Creates the and save element look up.
+	 * 
+	 * @param list
+	 *            the list
+	 * @param measureID
+	 *            the measure id
+	 */
+	void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list,
+			String measureID);
+	
+	/**
+	 * Delete measure notes.
+	 * 
+	 * @param measureNoteDTO
+	 *            the measure note dto
+	 */
+	void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO);
+	
+	/**
+	 * Generate and save max emeasure id.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @return the int
+	 */
+	int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
+	
+	/**
+	 * Gets the all measure notes by measure id.
+	 * 
+	 * @param measureID
+	 *            the measure id
+	 * @return the all measure notes by measure id
+	 */
+	MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID);
+	
+	/**
+	 * Gets the applied qdm from measure xml.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @param checkForSupplementData
+	 *            the check for supplement data
+	 * @return the applied qdm from measure xml
+	 */
+	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
+			boolean checkForSupplementData);
+	
+	/**
+	 * Gets the max e measure id.
+	 * 
+	 * @return the max e measure id
+	 */
+	int getMaxEMeasureId();
+	
+	/**
 	 * Gets the measure.
 	 * 
 	 * @param key
@@ -33,6 +111,48 @@ public interface MeasureService extends RemoteService {
 	ManageMeasureDetailModel getMeasure(String key);
 	
 	/**
+	 * Gets the measure xml for measure.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @return the measure xml for measure
+	 */
+	MeasureXmlModel getMeasureXmlForMeasure(String measureId);
+	
+	/**
+	 * Gets the users for share.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @param startIndex
+	 *            the start index
+	 * @param pageSize
+	 *            the page size
+	 * @return the users for share
+	 */
+	ManageMeasureShareModel getUsersForShare(String measureId, int startIndex, int pageSize);
+	
+	/**
+	 * Checks if is measure locked.
+	 * 
+	 * @param id
+	 *            the id
+	 * @return true, if is measure locked
+	 */
+	boolean isMeasureLocked(String id);
+	
+	/**
+	 * Reset locked date.
+	 * 
+	 * @param measureId
+	 *            the measure id
+	 * @param userId
+	 *            the user id
+	 * @return the save measure result
+	 */
+	SaveMeasureResult resetLockedDate(String measureId,String userId);
+	
+	/**
 	 * Save.
 	 * 
 	 * @param model
@@ -40,6 +160,14 @@ public interface MeasureService extends RemoteService {
 	 * @return the save measure result
 	 */
 	SaveMeasureResult save(ManageMeasureDetailModel model);
+	
+	/**
+	 * Save and delete measure.
+	 * 
+	 * @param measureID
+	 *            the measure id
+	 */
+	void saveAndDeleteMeasure(String measureID);
 	
 	/**
 	 * Save finalized version.
@@ -64,6 +192,29 @@ public interface MeasureService extends RemoteService {
 	SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model);
 	
 	/**
+	 * Save measure note.
+	 * 
+	 * @param noteTitle
+	 *            the note title
+	 * @param noteDescription
+	 *            the note description
+	 * @param string
+	 *            the string
+	 * @param string2
+	 *            the string2
+	 */
+	void saveMeasureNote(String noteTitle, String noteDescription,
+			String string, String string2);
+	
+	/**
+	 * Save measure xml.
+	 * 
+	 * @param measureXmlModel
+	 *            the measure xml model
+	 */
+	void saveMeasureXml(MeasureXmlModel measureXmlModel);
+	
+	/**
 	 * Search.
 	 * 
 	 * @param searchText
@@ -80,47 +231,17 @@ public interface MeasureService extends RemoteService {
 			int pageSize, int filter);
 	
 	/**
-	 * Gets the users for share.
+	 * Search measures for draft.
 	 * 
-	 * @param measureId
-	 *            the measure id
 	 * @param startIndex
 	 *            the start index
 	 * @param pageSize
 	 *            the page size
-	 * @return the users for share
+	 * @return the manage measure search model
 	 */
-	ManageMeasureShareModel getUsersForShare(String measureId, int startIndex, int pageSize);
+	/* ManageMeasureSearchModel searchMeasuresForDraft(int startIndex, int pageSize); */
 	
-	/**
-	 * Update users share.
-	 * 
-	 * @param model
-	 *            the model
-	 */
-	void updateUsersShare(ManageMeasureShareModel model);
-	
-	/**
-	 * Update locked date.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param userId
-	 *            the user id
-	 * @return the save measure result
-	 */
-	SaveMeasureResult updateLockedDate(String measureId,String userId);
-	
-	/**
-	 * Reset locked date.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param userId
-	 *            the user id
-	 * @return the save measure result
-	 */
-	SaveMeasureResult resetLockedDate(String measureId,String userId);
+	ManageMeasureSearchModel searchMeasuresForDraft(String searchText, int startIndex, int pageSize);
 	
 	/**
 	 * Search measures for version.
@@ -133,42 +254,6 @@ public interface MeasureService extends RemoteService {
 	 */
 	ManageMeasureSearchModel searchMeasuresForVersion(int startIndex,
 			int pageSize);
-	
-	/**
-	 * Search measures for draft.
-	 * 
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @return the manage measure search model
-	 */
-	ManageMeasureSearchModel searchMeasuresForDraft(int startIndex, int pageSize);
-	
-	/**
-	 * Checks if is measure locked.
-	 * 
-	 * @param id
-	 *            the id
-	 * @return true, if is measure locked
-	 */
-	boolean isMeasureLocked(String id);
-	
-	/**
-	 * Gets the max e measure id.
-	 * 
-	 * @return the max e measure id
-	 */
-	int getMaxEMeasureId();
-	
-	/**
-	 * Generate and save max emeasure id.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @return the int
-	 */
-	int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
 	
 	/**
 	 * Search users.
@@ -192,72 +277,25 @@ public interface MeasureService extends RemoteService {
 	void transferOwnerShipToUser(List<String> list, String toEmail);
 	
 	/**
-	 * Gets the measure xml for measure.
+	 * Update locked date.
 	 * 
 	 * @param measureId
 	 *            the measure id
-	 * @return the measure xml for measure
+	 * @param userId
+	 *            the user id
+	 * @return the save measure result
 	 */
-	MeasureXmlModel getMeasureXmlForMeasure(String measureId);
+	SaveMeasureResult updateLockedDate(String measureId,String userId);
 	
 	/**
-	 * Save measure xml.
+	 * Update measure notes.
 	 * 
-	 * @param measureXmlModel
-	 *            the measure xml model
+	 * @param measureNoteDTO
+	 *            the measure note dto
+	 * @param userId
+	 *            the user id
 	 */
-	void saveMeasureXml(MeasureXmlModel measureXmlModel);
-	
-	/**
-	 * Clone measure xml.
-	 * 
-	 * @param creatingDraft
-	 *            the creating draft
-	 * @param oldMeasureId
-	 *            the old measure id
-	 * @param clonedMeasureId
-	 *            the cloned measure id
-	 */
-	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId, String clonedMeasureId);
-	
-	/**
-	 * Append and save node.
-	 * 
-	 * @param measureXmlModel
-	 *            the measure xml model
-	 * @param nodeName
-	 *            the node name
-	 */
-	void appendAndSaveNode(MeasureXmlModel measureXmlModel, String nodeName);
-	
-	/**
-	 * Creates the and save element look up.
-	 * 
-	 * @param list
-	 *            the list
-	 * @param measureID
-	 *            the measure id
-	 */
-	void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list,
-			String measureID);
-	
-	/**
-	 * Save and delete measure.
-	 * 
-	 * @param measureID
-	 *            the measure id
-	 */
-	void saveAndDeleteMeasure(String measureID);
-	
-	/**
-	 * Update private column in measure.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param isPrivate
-	 *            the is private
-	 */
-	void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
+	void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId);
 	
 	/**
 	 * Update measure xml.
@@ -273,58 +311,22 @@ public interface MeasureService extends RemoteService {
 			QualityDataSetDTO modifyDTO, String measureId);
 	
 	/**
-	 * Save measure note.
-	 * 
-	 * @param noteTitle
-	 *            the note title
-	 * @param noteDescription
-	 *            the note description
-	 * @param string
-	 *            the string
-	 * @param string2
-	 *            the string2
-	 */
-	void saveMeasureNote(String noteTitle, String noteDescription,
-			String string, String string2);
-	
-	/**
-	 * Gets the all measure notes by measure id.
-	 * 
-	 * @param measureID
-	 *            the measure id
-	 * @return the all measure notes by measure id
-	 */
-	MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID);
-	
-	/**
-	 * Delete measure notes.
-	 * 
-	 * @param measureNoteDTO
-	 *            the measure note dto
-	 */
-	void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO);
-	
-	/**
-	 * Update measure notes.
-	 * 
-	 * @param measureNoteDTO
-	 *            the measure note dto
-	 * @param userId
-	 *            the user id
-	 */
-	void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId);
-	
-	/**
-	 * Gets the applied qdm from measure xml.
+	 * Update private column in measure.
 	 * 
 	 * @param measureId
 	 *            the measure id
-	 * @param checkForSupplementData
-	 *            the check for supplement data
-	 * @return the applied qdm from measure xml
+	 * @param isPrivate
+	 *            the is private
 	 */
-	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
-			boolean checkForSupplementData);
+	void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
+	
+	/**
+	 * Update users share.
+	 * 
+	 * @param model
+	 *            the model
+	 */
+	void updateUsersShare(ManageMeasureShareModel model);
 	
 	/**
 	 * Validate measure for export.

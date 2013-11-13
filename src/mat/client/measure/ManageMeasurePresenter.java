@@ -985,6 +985,21 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public HasClickHandlers getSaveButton();
 		
 		/**
+		 * @return search Button from search widget.
+		 */
+		HasClickHandlers getSearchButton();
+		
+		/**
+		 * @return search widget.
+		 */
+		SearchWidget getSearchWidget();
+		
+		/**
+		 * @return zoom button.
+		 */
+		CustomButton getZoomButton();
+		
+		/**
 		 * Sets the current page.
 		 * 
 		 * @param pageNumber
@@ -1012,6 +1027,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		@Override
 		public void onClick(ClickEvent event) {
 			draftDisplay.getSearchWidget().getSearchInput().setValue("");
+			versionDisplay.getSearchWidget().getSearchInput().setValue("");
 			detailDisplay.getName().setValue("");
 			detailDisplay.getShortName().setValue("");
 			searchDisplay.clearSelections();
@@ -1059,7 +1075,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	boolean isMeasureSearchFilterVisible = true;
 	
-	boolean isSearchFilterVisible = true;
+	boolean isSearchVisibleOnDraft = true;
+	
+	boolean isSearchVisibleOnVersion = true;
 	
 	/** The listof measures. */
 	List<ManageMeasureSearchModel.Result> listofMeasures = new ArrayList<ManageMeasureSearchModel.Result>();
@@ -1577,7 +1595,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.getButtonPanel().clear();
 		panel.setButtonPanel(null, draftDisplay.getZoomButton());
 		draftDisplay.getSearchWidget().setVisible(false);
-		isSearchFilterVisible = false;
+		isSearchVisibleOnDraft = false;
 		panel.setHeading("My Measures > Create Draft of Existing Measure",
 				"MainContent");
 		panel.setContent(draftDisplay.asWidget());
@@ -1614,12 +1632,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 		int pageNumber = versionDisplay.getCurrentPage();
 		int pageSize = versionDisplay.getPageSize();
 		int startIndex = pageSize * (pageNumber - 1);
-		searchMeasuresForVersion(startIndex, versionDisplay.getPageSize());
+		searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getValue(), startIndex, versionDisplay
+				.getPageSize());
 		versionDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		searchDisplay.getSuccessMeasureDeletion().clear();
 		searchDisplay.getErrorMeasureDeletion().clear();
 		panel.getButtonPanel().clear();
+		panel.setButtonPanel(null, versionDisplay.getZoomButton());
+		versionDisplay.getSearchWidget().setVisible(false);
+		isSearchVisibleOnVersion = false;
 		panel.setHeading("My Measures > Create Measure Version of Draft",
 				"MainContent");
 		panel.setContent(versionDisplay.asWidget());
@@ -1845,6 +1867,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void draftDisplayHandlers(final DraftDisplay draftDisplay) {
 		
+		TextBox searchWidget = (draftDisplay.getSearchWidget().getSearchInput());
+		searchWidget.addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					((Button) draftDisplay.getSearchButton()).click();
+				}
+			}
+		});
+		
 		draftDisplay.getZoomButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1853,8 +1886,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 				searchDisplay.getErrorMessageDisplay().clear();
 				draftDisplay.getErrorMessageDisplay().clear();
-				isSearchFilterVisible = !isSearchFilterVisible;
-				draftDisplay.getSearchWidget().setVisible(isSearchFilterVisible);
+				isSearchVisibleOnDraft = !isSearchVisibleOnDraft;
+				draftDisplay.getSearchWidget().setVisible(isSearchVisibleOnDraft);
 			}
 		});
 		draftDisplay.getSearchButton().addClickHandler(new ClickHandler() {
@@ -3074,49 +3107,50 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @param pageSize
 	 *            the page size
 	 */
-	private void searchMeasuresForVersion(int startIndex, int pageSize) {
-		
-		MatContext
-		.get()
-		.getMeasureService()
-		.searchMeasuresForVersion(startIndex, pageSize,
-				new AsyncCallback<ManageMeasureSearchModel>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				versionDisplay
-				.getErrorMessageDisplay()
-				.setMessage(
-						MatContext
-						.get()
-						.getMessageDelegate()
-						.getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(
-						null,
-						null,
-						null,
-						"Unhandled Exception: "
-								+ caught.getLocalizedMessage(),
-								0);
-			}
-			
-			@Override
-			public void onSuccess(
-					ManageMeasureSearchModel result) {
-				versionMeasureResults = new ManageVersionMeasureModel(
-						result.getData());
-				versionMeasureResults.setPageSize(result
-						.getData().size());
-				versionMeasureResults.setTotalPages(result
-						.getPageCount());
-				versionDisplay.buildDataTable(
-						versionMeasureResults,
-						result.getPageCount(),
-						result.getResultsTotal(),
-						versionDisplay.getCurrentPage(),
-						versionDisplay.getPageSize());
-			}
-		});
-		
+	private void searchMeasuresForVersion(String searchText, int startIndex, int pageSize) {
+		final String lastSearchText = (searchText != null) ? searchText
+				.trim() : null;
+				MatContext
+				.get()
+				.getMeasureService()
+				.searchMeasuresForVersion(lastSearchText, startIndex, pageSize,
+						new AsyncCallback<ManageMeasureSearchModel>() {
+					@Override
+					public void onFailure(Throwable caught) {
+						versionDisplay
+						.getErrorMessageDisplay()
+						.setMessage(
+								MatContext
+								.get()
+								.getMessageDelegate()
+								.getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(
+								null,
+								null,
+								null,
+								"Unhandled Exception: "
+										+ caught.getLocalizedMessage(),
+										0);
+					}
+					
+					@Override
+					public void onSuccess(
+							ManageMeasureSearchModel result) {
+						versionMeasureResults = new ManageVersionMeasureModel(
+								result.getData());
+						versionMeasureResults.setPageSize(result
+								.getData().size());
+						versionMeasureResults.setTotalPages(result
+								.getPageCount());
+						versionDisplay.buildDataTable(
+								versionMeasureResults,
+								result.getPageCount(),
+								result.getResultsTotal(),
+								versionDisplay.getCurrentPage(),
+								versionDisplay.getPageSize());
+					}
+				});
+				
 	}
 	
 	/**
@@ -3513,6 +3547,34 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the version display
 	 */
 	private void versionDisplayHandlers(final VersionDisplay versionDisplay) {
+		TextBox searchWidget = (versionDisplay.getSearchWidget().getSearchInput());
+		searchWidget.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+				if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+					((Button) versionDisplay.getSearchButton()).click();
+				}
+			}
+		});
+		versionDisplay.getZoomButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+				searchDisplay.getErrorMessageDisplay().clear();
+				versionDisplay.getErrorMessageDisplay().clear();
+				isSearchVisibleOnVersion = !isSearchVisibleOnVersion;
+				versionDisplay.getSearchWidget().setVisible(isSearchVisibleOnVersion);
+			}
+		});
+		versionDisplay.getSearchButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getText(), startIndex, draftDisplay
+						.getPageSize());
+			}
+		});
 		
 		versionDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -3566,7 +3628,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						versionDisplay.setCurrentPage(pageNumber);
 						int pageSize = versionDisplay.getPageSize();
 						int startIndex = pageSize * (pageNumber - 1);
-						searchMeasuresForVersion(startIndex,
+						searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getValue(), startIndex,
 								versionDisplay.getPageSize());
 					}
 				});
@@ -3576,7 +3638,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onPageSizeSelection(PageSizeSelectionEvent event) {
 						versionDisplay.setPageSize(event.getPageSize());
-						searchMeasuresForVersion(startIndex,
+						searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getValue(), startIndex,
 								versionDisplay.getPageSize());
 					}
 				});

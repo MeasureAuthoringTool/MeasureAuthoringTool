@@ -247,8 +247,8 @@ mat.dao.clause.MeasureDAO {
 	 * @see mat.dao.clause.MeasureDAO#countMeasureForVersion(mat.model.User)
 	 */
 	@Override
-	public int countMeasureForVersion(User user) {
-		List<MeasureShareDTO> dtoList = getMeasuresForVersion(user);
+	public int countMeasureForVersion(String searchText, User user) {
+		List<MeasureShareDTO> dtoList = getMeasuresForVersion(searchText, user);
 		return dtoList.size();
 	}
 	
@@ -645,8 +645,8 @@ mat.dao.clause.MeasureDAO {
 	 *            the user
 	 * @return the measures for version
 	 */
-	public List<MeasureShareDTO> getMeasuresForVersion(User user) {
-		List<MeasureShareDTO> orderedDTOList = getMeasureShareInfoForUser(user,
+	public List<MeasureShareDTO> getMeasuresForVersion(String searchText,User user) {
+		List<MeasureShareDTO> orderedDTOList = getMeasureShareInfoForUser(searchText,user,
 				0, Integer.MAX_VALUE);
 		List<MeasureShareDTO> dtoList = new ArrayList<MeasureShareDTO>();
 		for (MeasureShareDTO dto : orderedDTOList) {
@@ -675,9 +675,9 @@ mat.dao.clause.MeasureDAO {
 	 * @see mat.dao.clause.MeasureDAO#getMeasuresForVersion(mat.model.User, int, int)
 	 */
 	@Override
-	public List<MeasureShareDTO> getMeasuresForVersion(User user,
+	public List<MeasureShareDTO> getMeasuresForVersion(String searchText,User user,
 			int startIndex, int pageSize) {
-		List<MeasureShareDTO> dtoList = getMeasuresForVersion(user);
+		List<MeasureShareDTO> dtoList = getMeasuresForVersion(searchText, user);
 		if (pageSize < dtoList.size()) {
 			return dtoList.subList(startIndex,
 					Math.min(startIndex + pageSize, dtoList.size()));

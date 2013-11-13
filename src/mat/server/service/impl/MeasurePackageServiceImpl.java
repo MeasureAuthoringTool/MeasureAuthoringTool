@@ -157,9 +157,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	 * @see mat.server.service.MeasurePackageService#countMeasuresForVersion()
 	 */
 	@Override
-	public long countMeasuresForVersion(){
+	public long countMeasuresForVersion(String searchText) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.countMeasureForVersion(user);
+		return measurePackageDAO.countMeasureForVersion(searchText, user);
 	}
 	
 	/* (non-Javadoc)
@@ -440,10 +440,10 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	 * @see mat.server.service.MeasurePackageService#searchMeasuresForVersion(int, int)
 	 */
 	@Override
-	public List<MeasureShareDTO> searchMeasuresForVersion(final int startIndex,
+	public List<MeasureShareDTO> searchMeasuresForVersion(String searchText, final int startIndex,
 			final int numResults) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasuresForVersion(user, startIndex, numResults);
+		return measurePackageDAO.getMeasuresForVersion(searchText, user, startIndex, numResults);
 	}
 	
 	/* (non-Javadoc)

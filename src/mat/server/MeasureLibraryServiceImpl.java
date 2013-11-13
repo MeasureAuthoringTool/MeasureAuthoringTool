@@ -1365,14 +1365,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#searchMeasuresForVersion(int, int)
 	 */
 	@Override
-	public final ManageMeasureSearchModel searchMeasuresForVersion(final int startIndex, final int pageSize) {
+	public final ManageMeasureSearchModel searchMeasuresForVersion(final String searchText, final int startIndex, final int pageSize) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-		List<MeasureShareDTO> measureList = getService().searchMeasuresForVersion(startIndex, pageSize);
+		List<MeasureShareDTO> measureList = getService().searchMeasuresForVersion(searchText, startIndex, pageSize);
 		searchModel.setStartIndex(startIndex);
-		searchModel.setResultsTotal((int) getService().countMeasuresForVersion());
+		searchModel.setResultsTotal((int) getService().countMeasuresForVersion(searchText));
 		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 		searchModel.setData(detailModelList);
 		

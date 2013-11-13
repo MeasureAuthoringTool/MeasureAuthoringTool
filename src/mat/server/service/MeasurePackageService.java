@@ -54,7 +54,9 @@ public interface MeasurePackageService {
 	 * 
 	 * @return {@link Long}. *
 	 */
-	long countMeasuresForVersion();
+	/* long countMeasuresForVersion(); */
+	
+	long countMeasuresForVersion(String searchText);
 	
 	/**
 	 * Count users for measure share.
@@ -282,8 +284,11 @@ public interface MeasurePackageService {
 	 *            - {@link Integer}.
 	 * @return {@link List} of {@link MeasureShareDTO}. *
 	 */
-	List<MeasureShareDTO> searchMeasuresForVersion(int startIndex,
-			int numResults);
+	/*
+	 * List<MeasureShareDTO> searchMeasuresForVersion(int startIndex, int numResults);
+	 */
+	
+	List<MeasureShareDTO> searchMeasuresForVersion(String searchText, int startIndex, int numResults);
 	
 	/**
 	 * Search with filter.

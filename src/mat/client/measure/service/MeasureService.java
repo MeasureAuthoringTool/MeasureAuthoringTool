@@ -252,8 +252,11 @@ public interface MeasureService extends RemoteService {
 	 *            the page size
 	 * @return the manage measure search model
 	 */
-	ManageMeasureSearchModel searchMeasuresForVersion(int startIndex,
-			int pageSize);
+	/*
+	 * ManageMeasureSearchModel searchMeasuresForVersion(int startIndex, int pageSize);
+	 */
+	
+	ManageMeasureSearchModel searchMeasuresForVersion(String searchText, int startIndex, int pageSize);
 	
 	/**
 	 * Search users.

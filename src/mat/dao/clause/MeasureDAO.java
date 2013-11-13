@@ -24,6 +24,8 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 */
 	/* public int countMeasureForDraft(User user); */
 	
+	
+
 	/**
 	 * Count measure for version.
 	 * 
@@ -31,8 +33,8 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 *            the user
 	 * @return the int
 	 */
-	public int countMeasureForVersion(User user);
-	
+	/* public int countMeasureForVersion(User user); */
+	int countMeasureForVersion(String searchText, User user);
 	/**
 	 * Count measure share info for user.
 	 * 
@@ -118,6 +120,8 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	
 	List<MeasureShareDTO> getMeasuresForDraft(String text, User user, int startIndex, int pageSize);
 	
+	
+	
 	/**
 	 * Gets the measures for draft.
 	 * 
@@ -130,7 +134,6 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the measures for draft
 	 */
 	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex, int pageSize);
-	
 	/**
 	 * Gets the measures for version.
 	 * 
@@ -142,7 +145,8 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 *            the page size
 	 * @return the measures for version
 	 */
-	public List<MeasureShareDTO> getMeasuresForVersion(User user, int startIndex, int pageSize);
+	/* public List<MeasureShareDTO> getMeasuresForVersion(User user, int startIndex, int pageSize); */
+	List<MeasureShareDTO> getMeasuresForVersion(String searchText, User user, int startIndex, int pageSize);
 	
 	/**
 	 * Gets the measure share for measure.

@@ -2,6 +2,9 @@ package mat.client;
 
 import java.util.Date;
 
+import mat.client.admin.ManageOrganizationDetailView;
+import mat.client.admin.ManageOrganizationPresenter;
+import mat.client.admin.ManageOrganizationView;
 import mat.client.admin.ManageUsersDetailView;
 import mat.client.admin.ManageUsersPresenter;
 import mat.client.admin.ManageUsersSearchView;
@@ -202,11 +205,18 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		}
 	};
 	
-	/**
-	 * Builds the admin presenter.
-	 *
-	 * @return the mat presenter
-	 */
+	private MatPresenter buildAdminOrganizationPresenter() {
+		ManageOrganizationView musd = new ManageOrganizationView();
+		ManageOrganizationDetailView mudd = new ManageOrganizationDetailView();
+		ManageOrganizationPresenter organizationPresenter =
+				new ManageOrganizationPresenter(musd, mudd);
+		
+		return organizationPresenter;
+	}
+	
+	/** Builds the admin presenter.
+	 * 
+	 * @return the mat presenter */
 	private MatPresenter buildAdminPresenter() {
 		ManageUsersSearchView musd = new ManageUsersSearchView();
 		ManageUsersDetailView mudd = new ManageUsersDetailView();
@@ -215,7 +225,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		
 		return mup;
 	}
-	
 	
 	/**
 	 * Builds the measure composer.
@@ -518,6 +527,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			title = ClientConstants.TITLE_ADMIN;
 			tabIndex = mainTabLayout.addPresenter(adminPresenter, mainTabLayout.fmt.normalTitle(title));
 			
+			title = "Manage Organizations";
+			tabIndex = mainTabLayout.addPresenter(buildAdminOrganizationPresenter(), mainTabLayout.fmt.normalTitle(title));
+
 			title = ClientConstants.TITLE_MY_ACCOUNT;
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 			/**

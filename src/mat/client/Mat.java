@@ -1,13 +1,7 @@
 package mat.client;
 
 import java.util.Date;
-
-import mat.client.admin.ManageOrganizationDetailView;
-import mat.client.admin.ManageOrganizationPresenter;
-import mat.client.admin.ManageOrganizationView;
-import mat.client.admin.ManageUsersDetailView;
-import mat.client.admin.ManageUsersPresenter;
-import mat.client.admin.ManageUsersSearchView;
+import mat.client.admin.ManageAdminPresenter;
 import mat.client.codelist.CodeListController;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.events.EditCodeListEvent;
@@ -46,7 +40,6 @@ import mat.client.umls.UmlsLoginView;
 import mat.client.util.ClientConstants;
 import mat.model.SecurityRole;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -205,25 +198,12 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		}
 	};
 	
-	private MatPresenter buildAdminOrganizationPresenter() {
-		ManageOrganizationView musd = new ManageOrganizationView();
-		ManageOrganizationDetailView mudd = new ManageOrganizationDetailView();
-		ManageOrganizationPresenter organizationPresenter =
-				new ManageOrganizationPresenter(musd, mudd);
-		
-		return organizationPresenter;
-	}
-	
 	/** Builds the admin presenter.
 	 * 
 	 * @return the mat presenter */
 	private MatPresenter buildAdminPresenter() {
-		ManageUsersSearchView musd = new ManageUsersSearchView();
-		ManageUsersDetailView mudd = new ManageUsersDetailView();
-		ManageUsersPresenter mup =
-				new ManageUsersPresenter(musd, mudd);
-		
-		return mup;
+		ManageAdminPresenter adminPresenter = new ManageAdminPresenter();
+		return adminPresenter;
 	}
 	
 	/**
@@ -527,9 +507,6 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			title = ClientConstants.TITLE_ADMIN;
 			tabIndex = mainTabLayout.addPresenter(adminPresenter, mainTabLayout.fmt.normalTitle(title));
 			
-			title = "Manage Organizations";
-			tabIndex = mainTabLayout.addPresenter(buildAdminOrganizationPresenter(), mainTabLayout.fmt.normalTitle(title));
-
 			title = ClientConstants.TITLE_MY_ACCOUNT;
 			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 			/**

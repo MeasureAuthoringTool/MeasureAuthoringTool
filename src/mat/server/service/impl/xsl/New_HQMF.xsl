@@ -539,12 +539,12 @@
                     <localVariableName>
                         <xsl:value-of select="$var"/>
                     </localVariableName>
-                    <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+                    <!--  <act classCode="ACT" moodCode="EVN" isCriterionInd="true"> -->
                         <xsl:choose>
                             <xsl:when test="name(.)='logicalOp' and (count(*) > 0)">
                                 <xsl:if test="string-length($conj) > 0">
                                     <sourceOf typeCode="PRCN">
-<!--                                        <conjunctionCode code="{$conj}"/>-->
+                                       <conjunctionCode code="{$conj}"/>
                                         <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->
                                         <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
                                             <xsl:if test="$isNot = 'true' ">
@@ -583,11 +583,12 @@
                             <xsl:when test="name(.)='elementRef'">
                                 <xsl:choose>
                                     <xsl:when test="string-length($conj) > 0">
-                                        <xsl:apply-templates select="." mode="handleElementRef">
-                                            <!--<xsl:with-param name="conj">
+                                    	<xsl:apply-templates select="."/>
+                                    	<!-- <xsl:apply-templates select="." mode="handleElementRef">
+                                            <xsl:with-param name="conj">
                                                 <xsl:value-of select="$conj"/>
-                                            </xsl:with-param>-->
-                                        </xsl:apply-templates>
+                                            </xsl:with-param>
+                                        </xsl:apply-templates> -->
                                     </xsl:when>
                                     <xsl:otherwise>
                                         <xsl:variable name="isLHS_RelationalOp">
@@ -596,16 +597,16 @@
                                         </xsl:variable>
                                         <xsl:choose>
                                             <xsl:when test="$isLHS_RelationalOp='true'">
-                                                <sourceOf typeCode="PRCN">
+                                                <!-- <sourceOf typeCode="PRCN"> -->
                                                   <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->
                                                   <xsl:apply-templates select="."/>
-                                                </sourceOf>
+                                                <!-- </sourceOf> -->
                                             </xsl:when>
                                             <xsl:otherwise>
                                                 <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->
-                                                <sourceOf typeCode="PRCN">
+                                                <!--  <sourceOf typeCode="PRCN"> -->
                                                     <xsl:apply-templates select="."/>
-                                                </sourceOf>
+                                                <!-- </sourceOf> -->
                                             </xsl:otherwise>
                                         </xsl:choose>
 
@@ -613,9 +614,9 @@
                                 </xsl:choose>
                             </xsl:when>
                             <xsl:when test="name(.)='relationalOp'">
-                                <sourceOf typeCode="PRCN">
+<!--                                 <sourceOf typeCode="PRCN"> -->
                                     <xsl:apply-templates select="."/>
-                                </sourceOf>
+<!--                                 </sourceOf> -->
                             </xsl:when>
                             <xsl:when test="name(.)='functionalOp'">
                                 <xsl:apply-templates select=".">
@@ -628,7 +629,7 @@
                                 <xsl:apply-templates select="."/>
                             </xsl:otherwise>
                         </xsl:choose>
-                    </act>
+                    <!-- </act> -->
                 </sourceOf>
 
             </xsl:for-each>
@@ -715,8 +716,10 @@
 									</sourceOf>
 								</xsl:when>
 								<xsl:otherwise>
+									
 									<!--<xsl:apply-templates select="." mode="handleFunctionalOps"/> -->
 									<xsl:apply-templates select="." mode="topmost" />
+									
 								</xsl:otherwise>
 							</xsl:choose>
 
@@ -749,9 +752,9 @@
 						</xsl:choose>
 					</xsl:when>
 					<xsl:when test="name(.)='relationalOp'">
-						<sourceOf typeCode="PRCN">
+<!-- 						<sourceOf typeCode="PRCN"> -->
 							<xsl:apply-templates select="." />
-						</sourceOf>
+<!-- 						</sourceOf> -->
 					</xsl:when>
 					<xsl:when test="name(.)='functionalOp'">
 						<xsl:apply-templates select=".">
@@ -844,6 +847,7 @@
     
     <xsl:template match="elementRef" mode="handleElementRef">
         <xsl:param name="conj"/>
+                
         <sourceOf typeCode="PRCN">
             <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->
             <xsl:if test="string-length($conj) > 0">

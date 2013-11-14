@@ -57,7 +57,7 @@ IsSerializable {
 	}
 	
 	/** The headers. */
-	private static String[] headers = new String[] { "Organization Name", "Organization Id" };
+	private static String[] headers = new String[] { "Organization", "OID" };
 	
 	/** The widths. */
 	private static String[] widths = new String[] {"50%", "50%"};

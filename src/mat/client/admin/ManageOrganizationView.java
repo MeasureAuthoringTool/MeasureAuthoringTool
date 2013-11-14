@@ -8,7 +8,6 @@ import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -41,11 +40,11 @@ public class ManageOrganizationView implements ManageOrganizationPresenter.Searc
 	
 	
 	/** The view. */
-	private SearchView<ManageUsersSearchModel.Result> view = new SearchView<ManageUsersSearchModel.Result>("Users");
+	private SearchView<ManageOrganizationSearchModel.Result> view = new SearchView<ManageOrganizationSearchModel.Result>("Users");
 	
 	/** Constructor. **/
 	public ManageOrganizationView() {
-		view.buildDataTable(new ManageUsersSearchModel());
+		view.buildDataTable(new ManageOrganizationSearchModel());
 		searchText.setWidth("256px");
 		
 		mainPanel.add(new SpacerWidget());
@@ -82,7 +81,7 @@ public class ManageOrganizationView implements ManageOrganizationPresenter.Searc
 	 * @see mat.client.admin.ManageUsersPresenter.SearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
 	 */
 	@Override
-	public void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results) {
+	public void buildDataTable(SearchResults<ManageOrganizationSearchModel.Result> results) {
 		view.buildDataTable(results);
 	}
 	

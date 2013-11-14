@@ -2,7 +2,6 @@ package mat.client.admin;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -11,7 +10,6 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
 import mat.shared.AdminManageUserModelValidator;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -78,7 +76,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		/** Builds the data table.
 		 * 
 		 * @param results the results */
-		void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results);
+		void buildDataTable(SearchResults<ManageOrganizationSearchModel.Result> results);
 		
 		/** Gets the creates the new button.
 		 * 

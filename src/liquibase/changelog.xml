@@ -131,4 +131,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint_20_US_MAT_1337.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint_20_US_MAT_2270.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-24_US2551.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-27_US321.xml"/>
 	</databaseChangeLog>

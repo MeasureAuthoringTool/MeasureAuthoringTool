@@ -12,6 +12,7 @@ import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
+import mat.model.RecentMSRActivityLog;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -127,6 +128,16 @@ public interface MeasureServiceAsync {
 	 * @return the measure
 	 */
 	void getMeasure(String key, AsyncCallback<ManageMeasureDetailModel> callback);
+	
+	/**
+	 * Gets the measure and logs in this measure as recently used measure in recent measure activity log.
+	 *
+	 * @param measureId the measure id
+	 * @param userId the user id
+	 * @param callback the callback
+	 * @return the measure and log recent measure
+	 */
+	void getMeasureAndLogRecentMeasure(String measureId, String userId, AsyncCallback<ManageMeasureDetailModel> callback);
 	
 	/**
 	 * Gets the measure xml for measure.
@@ -369,4 +380,13 @@ public interface MeasureServiceAsync {
 	 *            the callback
 	 */
 	void validateMeasureForExport(String key, ArrayList<MatValueSet> matValueSetList, AsyncCallback<ValidateMeasureResult> callback);
+	
+	/**
+	 * Gets recently used measures by the given user ID in the descending order of time from recent measure activity log.
+	 *
+	 * @param userId the user id
+	 * @param callback the callback
+	 * @return the recent measure activity log
+	 */
+	void getRecentMeasureActivityLog(String userId, AsyncCallback<List<RecentMSRActivityLog>> callback);
 }

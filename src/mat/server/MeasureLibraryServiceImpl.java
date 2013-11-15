@@ -30,6 +30,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
 import mat.dao.MeasureNotesDAO;
+import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.QDSAttributesDAO;
@@ -39,6 +40,7 @@ import mat.model.MeasureNotes;
 import mat.model.MeasureType;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
+import mat.model.RecentMSRActivityLog;
 import mat.model.SecurityRole;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -118,6 +120,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/** The user service. */
 	@Autowired
 	private UserService userService;
+	
+	@Autowired
+	private RecentMSRActivityLogDAO recentMSRActivityLogDAO;
 	
 	/** The x path. */
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -1970,4 +1975,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#recordRecentMeasureActivity(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void recordRecentMeasureActivity(String measureId, String userId) {
+		recentMSRActivityLogDAO.recordRecentMeasureActivity(measureId, userId);
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getRecentMeasureActivityLog(java.lang.String)
+	 */
+	@Override
+	public List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId) {
+		return recentMSRActivityLogDAO.getRecentMeasureActivityLog(userId);
+	}
 }

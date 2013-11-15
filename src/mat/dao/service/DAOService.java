@@ -16,6 +16,7 @@ import mat.dao.MeasureScoreDAO;
 import mat.dao.MeasureValidationLogDAO;
 import mat.dao.ObjectStatusDAO;
 import mat.dao.QualityDataSetDAO;
+import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.SecurityRoleDAO;
 import mat.dao.StatusDAO;
 import mat.dao.StewardDAO;
@@ -144,6 +145,9 @@ public class DAOService {
 	/** The measure validation log dao. */
 	private MeasureValidationLogDAO measureValidationLogDAO;
 //	private SecurityQuestionsDAO securityQuestionsDAO;
+	
+	/** The recent msr activity log dao. */
+	private RecentMSRActivityLogDAO recentMSRActivityLogDAO;
 
 
 	/**
@@ -796,6 +800,20 @@ public QDSAttributeDetailsDAO getqDSAttributeDetailsDAO() {
 	 */
 	public void setMeasureNotesDAO(MeasureNotesDAO measureNotesDAO) {
 		this.measureNotesDAO = measureNotesDAO;
+	}
+
+	/**
+	 * @return the recentMSRActivityLogDAO
+	 */
+	public RecentMSRActivityLogDAO getRecentMSRActivityLogDAO() {
+		return recentMSRActivityLogDAO;
+	}
+
+	/**
+	 * @param recentMSRActivityLogDAO the recentMSRActivityLogDAO to set
+	 */
+	public void setRecentMSRActivityLogDAO(RecentMSRActivityLogDAO recentMSRActivityLogDAO) {
+		this.recentMSRActivityLogDAO = recentMSRActivityLogDAO;
 	}
 	
 	/**

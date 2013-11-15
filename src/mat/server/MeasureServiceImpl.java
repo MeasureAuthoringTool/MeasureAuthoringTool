@@ -16,6 +16,7 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
+import mat.model.RecentMSRActivityLog;
 import mat.server.service.MeasureLibraryService;
 
 /**
@@ -103,6 +104,18 @@ MeasureService {
 	@Override
 	public ManageMeasureDetailModel getMeasure(String key) {
 		return this.getMeasureLibraryService().getMeasure(key);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getMeasureAndLogRecentMeasure(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String measureId, String userId) {
+		ManageMeasureDetailModel manageMeasureDetailModel = getMeasure(measureId);
+		if(manageMeasureDetailModel != null){
+			getMeasureLibraryService().recordRecentMeasureActivity(measureId, userId);
+		}
+		return manageMeasureDetailModel;
 	}
 	
 	/**
@@ -296,4 +309,11 @@ MeasureService {
 		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getRecentMeasureActivityLog(java.lang.String)
+	 */
+	@Override
+	public List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId) {
+		return this.getMeasureLibraryService().getRecentMeasureActivityLog(userId);
+	}	
 }

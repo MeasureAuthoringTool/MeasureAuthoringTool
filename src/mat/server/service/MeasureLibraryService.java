@@ -15,6 +15,7 @@ import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
+import mat.model.RecentMSRActivityLog;
 import mat.server.util.XmlProcessor;
 
 /**
@@ -356,4 +357,20 @@ public interface MeasureLibraryService {
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
 			ArrayList<MatValueSet> matValueSetList) throws MatException;
+	
+	/**
+	 * Record measure in recent measure activity log for the given measure ID and user ID. 
+	 *
+	 * @param measureId the measure id
+	 * @param userId the user id
+	 */
+	void recordRecentMeasureActivity(String measureId, String userId);
+	
+	/**
+	 * Gets recently used measures by the given user ID in the descending order of time from recent measure activity log.
+	 *
+	 * @param userId the user id
+	 * @return the recent measure activity log
+	 */
+	List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId);
 }

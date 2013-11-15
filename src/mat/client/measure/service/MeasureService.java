@@ -13,6 +13,7 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
+import mat.model.RecentMSRActivityLog;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -109,6 +110,15 @@ public interface MeasureService extends RemoteService {
 	 * @return the measure
 	 */
 	ManageMeasureDetailModel getMeasure(String key);
+	
+	/**
+	 * Gets the measure and logs in this measure as recently used measure in recent measure activity log.
+	 *
+	 * @param measureId the measure id
+	 * @param userId the user id
+	 * @return the measure and log recent measure
+	 */
+	ManageMeasureDetailModel getMeasureAndLogRecentMeasure(String measureId, String userId);
 	
 	/**
 	 * Gets the measure xml for measure.
@@ -344,4 +354,12 @@ public interface MeasureService extends RemoteService {
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
 			ArrayList<MatValueSet> matValueSetList) throws MatException;
+	
+	/**
+	 * Gets recently used measures by the given user ID in the descending order of time from recent measure activity log.
+	 *
+	 * @param userId the user id
+	 * @return the recent measure activity log
+	 */
+	List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId);
 }

@@ -276,6 +276,10 @@
 	<bean id="measureNotesDAO"
         class="mat.dao.impl.MeasureNotesDAO" parent="baseDAO">
     </bean>
+    
+    <bean id="recentMSRActivityLogDAO"
+			class="mat.dao.impl.RecentMSRActivityLogDAO" parent="baseDAO">
+	</bean>
 
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
@@ -317,6 +321,7 @@
 		<property name="matFlagDAO" ref="matFlagDAO"/>
 		<property name="measureXMLDAO" ref="measureXMLDAO"/>
 		<property name="measureNotesDAO" ref="measureNotesDAO"/>
+		<property name="recentMSRActivityLogDAO" ref="recentMSRActivityLogDAO"/>
 	</bean>
      
 </beans>

@@ -38,7 +38,7 @@ public class CreateMeasureWidget extends Composite {
 				"CreateWidgetDisplayedSelectOptionsFromComboBox");
 		topPanel.add(invisibleLabel);
 		topPanel.add(horizontalPanel);
-		horizontalPanel.setStylePrimaryName("searchWidget");
+		horizontalPanel.setStylePrimaryName("measureLibrarySearchWidget");
 		// All composites must call initWidget() in their constructors.
 		Element element = topPanel.getElement();
 		element.setAttribute("aria-role", "panel");

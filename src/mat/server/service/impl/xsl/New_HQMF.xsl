@@ -575,7 +575,9 @@
                                         </xsl:when>
                                         <xsl:otherwise>
                                             <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->
+                                            <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
                                             <xsl:apply-templates select="." mode="topmost"/>
+                                            </act>
                                         </xsl:otherwise>
                                     </xsl:choose>
 
@@ -620,11 +622,14 @@
 <!--                                 </sourceOf> -->
                             </xsl:when>
                             <xsl:when test="name(.)='functionalOp'">
-                                <xsl:apply-templates select=".">
+                            	
+                                	<xsl:apply-templates select="."/>
+                               
                                     <!--<xsl:with-param name="conj">
                                         <xsl:value-of select="$conj"/>
                                     </xsl:with-param>-->
-                                </xsl:apply-templates>
+                                	
+                                 
                             </xsl:when>
                             <xsl:otherwise>
                                 <xsl:apply-templates select="."/>

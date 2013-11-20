@@ -1,7 +1,6 @@
 package mat.dao.clause;
 
 import java.util.List;
-
 import mat.dao.IDAO;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -25,7 +24,7 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	/* public int countMeasureForDraft(User user); */
 	
 	
-
+	
 	/**
 	 * Count measure for version.
 	 * 
@@ -171,6 +170,13 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	public List<MeasureShareDTO> getMeasureShareInfoForMeasure(String measureId, int startIndex, int pageSize);
 	
 	/**
+	 * @param user
+	 * @param measureId
+	 * @return
+	 */
+	List<MeasureShareDTO> getMeasureShareInfoForMeasureAndUser(String user, String measureId);
+	
+	/**
 	 * Gets the measure share info for user.
 	 * 
 	 * @param searchText
@@ -265,7 +271,6 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 *            the measure
 	 */
 	public void saveMeasure(Measure measure);
-	
 	/**
 	 * Update private column in measure.
 	 * 

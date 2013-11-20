@@ -2,7 +2,6 @@ package mat.server;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -81,6 +80,13 @@ MeasureService {
 		return this.getMeasureLibraryService().getAllMeasureNotesByMeasureID(measureID);
 	}
 	
+	/** @param userId - String userId.
+	 * @return ManageMeasureSearchModel */
+	@Override
+	public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId) {
+		return this.getMeasureLibraryService().getAllRecentMeasureForUser(userId);
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#getAppliedQDMFromMeasureXml(java.lang.String, boolean)
 	 */
@@ -133,6 +139,14 @@ MeasureService {
 	@Override
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId) {
 		return this.getMeasureLibraryService().getMeasureXmlForMeasure(measureId);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getRecentMeasureActivityLog(java.lang.String)
+	 */
+	@Override
+	public List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId) {
+		return this.getMeasureLibraryService().getRecentMeasureActivityLog(userId);
 	}
 	
 	/* (non-Javadoc)
@@ -299,7 +313,6 @@ MeasureService {
 	public void updateUsersShare(ManageMeasureShareModel model) {
 		this.getMeasureLibraryService().updateUsersShare(model);
 	}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#validateMeasureForExport(java.lang.String, java.util.ArrayList)
 	 */
@@ -308,12 +321,4 @@ MeasureService {
 			throws MatException {
 		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList);
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#getRecentMeasureActivityLog(java.lang.String)
-	 */
-	@Override
-	public List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId) {
-		return this.getMeasureLibraryService().getRecentMeasureActivityLog(userId);
-	}	
 }

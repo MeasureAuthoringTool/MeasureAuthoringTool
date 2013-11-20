@@ -2,7 +2,6 @@ package mat.client.measure.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -14,7 +13,6 @@ import mat.client.shared.MatException;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -84,6 +82,12 @@ public interface MeasureService extends RemoteService {
 	MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID);
 	
 	/**
+	 * @param userId
+	 * @return
+	 */
+	ManageMeasureSearchModel getAllRecentMeasureForUser(String userId);
+	
+	/**
 	 * Gets the applied qdm from measure xml.
 	 * 
 	 * @param measureId
@@ -128,6 +132,14 @@ public interface MeasureService extends RemoteService {
 	 * @return the measure xml for measure
 	 */
 	MeasureXmlModel getMeasureXmlForMeasure(String measureId);
+	
+	/**
+	 * Gets recently used measures by the given user ID in the descending order of time from recent measure activity log.
+	 *
+	 * @param userId the user id
+	 * @return the recent measure activity log
+	 */
+	List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId);
 	
 	/**
 	 * Gets the users for share.
@@ -340,7 +352,6 @@ public interface MeasureService extends RemoteService {
 	 *            the model
 	 */
 	void updateUsersShare(ManageMeasureShareModel model);
-	
 	/**
 	 * Validate measure for export.
 	 * 
@@ -354,12 +365,4 @@ public interface MeasureService extends RemoteService {
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
 			ArrayList<MatValueSet> matValueSetList) throws MatException;
-	
-	/**
-	 * Gets recently used measures by the given user ID in the descending order of time from recent measure activity log.
-	 *
-	 * @param userId the user id
-	 * @return the recent measure activity log
-	 */
-	List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId);
 }

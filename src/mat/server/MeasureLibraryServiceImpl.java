@@ -12,11 +12,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -61,7 +59,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -117,12 +114,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Autowired
 	private QDSAttributesDAO qDSAttributesDAO;
 	
+	@Autowired
+	private RecentMSRActivityLogDAO recentMSRActivityLogDAO;
+	
 	/** The user service. */
 	@Autowired
 	private UserService userService;
-	
-	@Autowired
-	private RecentMSRActivityLogDAO recentMSRActivityLogDAO;
 	
 	/** The x path. */
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -725,6 +722,46 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		measureNotesModel.setData(data);
 		return measureNotesModel;
 	}
+	@Override
+	public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId) {
+		
+		ArrayList<RecentMSRActivityLog> recentMeasureActivityList = (ArrayList<RecentMSRActivityLog>)
+				recentMSRActivityLogDAO.getRecentMeasureActivityLog(userId);
+		ManageMeasureSearchModel manageMeasureSearchModel = new ManageMeasureSearchModel();
+		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
+		manageMeasureSearchModel.setData(detailModelList);
+		String currentUserId = LoggedInUserUtil.getLoggedInUser();
+		String userRole = LoggedInUserUtil.getLoggedInUserRole();
+		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
+		for (RecentMSRActivityLog activityLog : recentMeasureActivityList) {
+			Measure measure = getMeasureDAO().find(activityLog.getMeasureId());
+			User user = getUserService().getById(activityLog.getUserId());
+			ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
+			detail.setName(measure.getDescription());
+			detail.setShortName(measure.getaBBRName());
+			detail.setId(measure.getId());
+			detail.setDraft(measure.isDraft());
+			detail.setExportable(measure.getExportedDate() != null); // to show export icon.
+			detail.setStatus(measure.getMeasureStatus());
+			String formattedVersion = MeasureUtility.getVersionText(measure.getVersion(),
+					measure.isDraft());
+			detail.setVersion(formattedVersion);
+			detail.setFinalizedDate(measure.getFinalizedDate());
+			detail.setOwnerfirstName(user.getFirstName());
+			detail.setOwnerLastName(user.getLastName());
+			detail.setOwnerEmailAddress(user.getEmailAddress());
+			detail.setMeasureSetId(measure.getMeasureSet().getId());
+			List<MeasureShareDTO> measureShare = getMeasureDAO().getMeasureShareInfoForMeasureAndUser(user.getId(), measure.getId());
+			detail.setEditable((currentUserId.equals(measure.getOwner().getId()) || isSuperUser || ShareLevel.MODIFY_ID.equals(
+					measureShare.get(0).getShareLevel())) && measure.isDraft());
+			if (measure.getIsPrivate() && user.getId().equalsIgnoreCase(userId)) {
+				detailModelList.add(detail);
+			} else {
+				detailModelList.add(detail);
+			}
+		}
+		return manageMeasureSearchModel;
+	}
 	
 	/**
 	 * Gets the and validate value set date.
@@ -913,6 +950,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return pageCount;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getRecentMeasureActivityLog(java.lang.String)
+	 */
+	@Override
+	public List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId) {
+		return recentMSRActivityLogDAO.getRecentMeasureActivityLog(userId);
+	}
+	
 	/**
 	 * Gets the service.
 	 * 
@@ -1013,6 +1058,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasurePackageService service = getService();
 		boolean isLocked = service.isMeasureLocked(id);
 		return isLocked;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#recordRecentMeasureActivity(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public void recordRecentMeasureActivity(String measureId, String userId) {
+		recentMSRActivityLogDAO.recordRecentMeasureActivity(measureId, userId);
 	}
 	
 	/**
@@ -1960,8 +2013,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final void updateUsersShare(final ManageMeasureShareModel model) {
 		getService().updateUsersShare(model);
 	}
-	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see mat.server.service.MeasureLibraryService#validateMeasureForExport(java.lang.String, java.util.ArrayList)
 	 */
 	@Override
@@ -1973,21 +2027,5 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			logger.info("Exception validating export for " + key, exc);
 			throw new MatException(exc.getMessage());
 		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasureLibraryService#recordRecentMeasureActivity(java.lang.String, java.lang.String)
-	 */
-	@Override
-	public void recordRecentMeasureActivity(String measureId, String userId) {
-		recentMSRActivityLogDAO.recordRecentMeasureActivity(measureId, userId);
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.server.service.MeasureLibraryService#getRecentMeasureActivityLog(java.lang.String)
-	 */
-	@Override
-	public List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId) {
-		return recentMSRActivityLogDAO.getRecentMeasureActivityLog(userId);
 	}
 }

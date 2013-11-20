@@ -9,6 +9,7 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasureSearchFilterWidget;
+import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -16,7 +17,6 @@ import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
@@ -73,7 +73,11 @@ ManageMeasurePresenter.SearchDisplay {
 	private FlowPanel mainPanel = new FlowPanel();
 	
 	/** The measure search filter widget. */
-	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget();
+	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget("measureLibrarySearchWidget",
+			"measureLibraryFilterDisclosurePanel");
+	
+	private MostRecentMeasureWidget mostRecentMeasureWidget = new MostRecentMeasureWidget();
+	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
 	
 	/** The options. */
 	/*
@@ -96,10 +100,8 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The view. */
 	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView(
 			"Measures");
-	
 	CustomButton zoomButton = (CustomButton) getImage("Search",
 			ImageResources.INSTANCE.search_zoom(), "Search");
-	
 	/** Instantiates a new manage measure search view. */
 	public ManageMeasureSearchView() {
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
@@ -112,14 +114,15 @@ ManageMeasurePresenter.SearchDisplay {
 		bulkExportButton.getElement().setId("bulkExportButton_Button");
 		mainPanel.getElement().setId("measureLibrary_MainPanel");
 		mainPanel.setStyleName("contentPanel");
-		HorizontalPanel createHP = new HorizontalPanel();
-		createHP.getElement().setId("panel_createHP");
 		VerticalPanel measureFilterVP = new VerticalPanel();
+		measureFilterVP.setWidth("100px");
 		measureFilterVP.getElement().setId("panel_measureFilterVP");
-		measureFilterVP.add(new SpacerWidget());
 		measureFilterVP.add(createMeasureWidget);
 		measureFilterVP.add(measureSearchFilterWidget);
+		buildMostRecentWidget();
+		mainHorizontalPanel.add(mostRecentVerticalPanel);
 		mainHorizontalPanel.add(measureFilterVP);
+		
 		mainPanel.add(mainHorizontalPanel);
 		mainPanel.add(successMeasureDeletion);
 		mainPanel.add(errorMeasureDeletion);
@@ -164,13 +167,20 @@ ManageMeasurePresenter.SearchDisplay {
 		return form;
 	}
 	
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
 	 */
 	@Override
 	public void buildDataTable(
 			SearchResults<ManageMeasureSearchModel.Result> results) {
 		view.buildDataTable(results);
+	}
+	@Override
+	public void buildMostRecentWidget() {
+		mostRecentVerticalPanel.clear();
+		mostRecentVerticalPanel.add(mostRecentMeasureWidget.buildMostRecentWidget());
 	}
 	
 	/**
@@ -366,6 +376,14 @@ ManageMeasurePresenter.SearchDisplay {
 		return measureSearchFilterWidget;
 	}
 	
+	/**
+	 * @return the mostRecentMeasureWidget
+	 */
+	@Override
+	public MostRecentMeasureWidget getMostRecentMeasureWidget() {
+		return mostRecentMeasureWidget;
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSize()
 	 */
@@ -382,6 +400,11 @@ ManageMeasurePresenter.SearchDisplay {
 		return view.getPageSize();
 	}
 	
+	/*@Override
+	public MeasureSearchFilterPanel getMeasureSearchFilterPanel() {
+		return msfp;
+	}*/
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchButton()
 	 */
@@ -389,11 +412,6 @@ ManageMeasurePresenter.SearchDisplay {
 	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
 		return view;
 	}
-	
-	/*@Override
-	public MeasureSearchFilterPanel getMeasureSearchFilterPanel() {
-		return msfp;
-	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchString()
@@ -443,6 +461,7 @@ ManageMeasurePresenter.SearchDisplay {
 		return successMeasureDeletion;
 	}
 	
+	
 	/** Load list box options. */
 	/*
 	 * private void loadListBoxOptions() { options.addItem(ConstantMessages.DEFAULT_SELECT);
@@ -455,11 +474,7 @@ ManageMeasurePresenter.SearchDisplay {
 	public CustomButton getZoomButton() {
 		return zoomButton;
 	}
-	
-	
-	/**
-	 * @param createMeasureButton the createMeasureButton to set
-	 */
+	/** @param createMeasureButton the createMeasureButton to set */
 	public void setCreateMeasureButton(CustomButton createMeasureButton) {
 		this.createMeasureButton = createMeasureButton;
 	}

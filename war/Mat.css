@@ -160,6 +160,18 @@ body#main select, body#main input, body#main textarea {
   	cursor: hand;
 }
 
+.customExportButton {
+    background: url("images/g_package_go.gif");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+    cursor: pointer;
+    cursor: hand;
+}
+
 .primaryGreyButton {
     background: url("images/bg_btnGrey-secondary.png");
     background-repeat: repeat-x;
@@ -1405,10 +1417,40 @@ padding: 2px;
     overflow: hidden;
 }
 
+.recentSearchPanel {
+    background-color: #FFFFFF;
+    border-color: #E8EEF7 #E8EEF7 #E8EFF7;
+    border-style: solid;
+    border-width: 3px;
+    margin-left: 4px;
+   margin-top: 8px;
+    width: 600px;
+}
+
 .filterDisclosurePanel{
-    margin-left:645px; 
+    margin-left:345px; 
     margin-right:auto;
     margin-top:0.5px;
+}
+
+.measureLibraryFilterDisclosurePanel{
+    margin-left:45px; 
+    margin-right:auto;
+    margin-top:0.5px;
+}
+
+.measureLibrarySearchWidget{
+    border:1px solid lightgray;
+    -moz-box-sizing: border-box;
+    background-image: url("images/bg_box-blue.png");
+    background-repeat:repeat-x;
+    vertical-align: middle;
+    text-align: left;
+    padding-right: 10px;
+    padding-top: 8px;
+    font-size:.8em;
+    margin-left:50px; 
+    margin-right:auto;
 }
 
 .invisibleButtonTextMeasureLibrary{

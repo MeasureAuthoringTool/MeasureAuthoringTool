@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
-
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.search.GenericDAO;
@@ -27,7 +26,6 @@ import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.shared.StringUtility;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -760,7 +758,23 @@ mat.dao.clause.MeasureDAO {
 			return orderedDTOList;
 		}
 	}
-	
+	@Override
+	public List<MeasureShareDTO> getMeasureShareInfoForMeasureAndUser(String user, String measureId) {
+		Criteria shareCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(MeasureShare.class);
+		shareCriteria.add(Restrictions.eq("shareUser.id", user));
+		shareCriteria.add(Restrictions.eq("measure.id", measureId));
+		List<MeasureShare> shareList = shareCriteria.list();
+		List<MeasureShareDTO> shareDTOList = new ArrayList<MeasureShareDTO>();
+		for (MeasureShare share : shareList) {
+			MeasureShareDTO dto = new MeasureShareDTO();
+			dto.setShareLevel(share.getShareLevel().getId());
+			dto.setMeasureId(measureId);
+			dto.setOwnerUserId(user);
+			shareDTOList.add(dto);
+		}
+		return shareDTOList;
+	}
 	/* (non-Javadoc)
 	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUser(java.lang.String, mat.model.User, int, int)
 	 */

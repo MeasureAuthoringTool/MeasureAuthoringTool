@@ -2,7 +2,6 @@ package mat.server.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -51,7 +50,7 @@ public interface MeasureLibraryService {
 	 * @param clonedMeasureId
 	 *            the cloned measure id
 	 */
-	public void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
+	void cloneMeasureXml(boolean creatingDraft, String oldMeasureId,
 			String clonedMeasureId);
 	
 	/**
@@ -71,7 +70,7 @@ public interface MeasureLibraryService {
 	 * @param measureNoteDTO
 	 *            the measure note dto
 	 */
-	public void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO);
+	void deleteMeasureNotes(MeasureNoteDTO measureNoteDTO);
 	
 	/**
 	 * Generate and save max emeasure id.
@@ -80,7 +79,7 @@ public interface MeasureLibraryService {
 	 *            the measure id
 	 * @return the int
 	 */
-	public int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
+	int generateAndSaveMaxEmeasureId(ManageMeasureDetailModel measureId);
 	
 	/**
 	 * Gets the all measure notes by measure id.
@@ -89,7 +88,11 @@ public interface MeasureLibraryService {
 	 *            the measure id
 	 * @return the all measure notes by measure id
 	 */
-	public MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID);
+	MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID);
+	
+	/** @param userId
+	 * @return */
+	ManageMeasureSearchModel getAllRecentMeasureForUser(String userId);
 	
 	/**
 	 * Gets the applied qdm from measure xml.
@@ -108,7 +111,7 @@ public interface MeasureLibraryService {
 	 * 
 	 * @return the max e measure id
 	 */
-	public int getMaxEMeasureId();
+	int getMaxEMeasureId();
 	
 	/**
 	 * Gets the measure.
@@ -117,7 +120,7 @@ public interface MeasureLibraryService {
 	 *            the key
 	 * @return the measure
 	 */
-	public ManageMeasureDetailModel getMeasure(String key);
+	ManageMeasureDetailModel getMeasure(String key);
 	
 	/**
 	 * Gets the measure xml for measure.
@@ -127,6 +130,14 @@ public interface MeasureLibraryService {
 	 * @return the measure xml for measure
 	 */
 	public MeasureXmlModel getMeasureXmlForMeasure(String measureId);
+	
+	/**
+	 * Gets recently used measures by the given user ID in the descending order of time from recent measure activity log.
+	 *
+	 * @param userId the user id
+	 * @return the recent measure activity log
+	 */
+	List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId);
 	
 	/**
 	 * Gets the users for share.
@@ -139,7 +150,7 @@ public interface MeasureLibraryService {
 	 *            the page size
 	 * @return the users for share
 	 */
-	public ManageMeasureShareModel getUsersForShare(String measureId,
+	ManageMeasureShareModel getUsersForShare(String measureId,
 			int startIndex, int pageSize);
 	
 	/**
@@ -149,7 +160,15 @@ public interface MeasureLibraryService {
 	 *            the id
 	 * @return true, if is measure locked
 	 */
-	public boolean isMeasureLocked(String id);
+	boolean isMeasureLocked(String id);
+	
+	/**
+	 * Record measure in recent measure activity log for the given measure ID and user ID.
+	 *
+	 * @param measureId the measure id
+	 * @param userId the user id
+	 */
+	void recordRecentMeasureActivity(String measureId, String userId);
 	
 	/**
 	 * Reset locked date.
@@ -169,7 +188,7 @@ public interface MeasureLibraryService {
 	 *            the model
 	 * @return the save measure result
 	 */
-	public SaveMeasureResult save(ManageMeasureDetailModel model);
+	SaveMeasureResult save(ManageMeasureDetailModel model);
 	
 	/**
 	 * Save and delete measure.
@@ -190,7 +209,7 @@ public interface MeasureLibraryService {
 	 *            the version
 	 * @return the save measure result
 	 */
-	public SaveMeasureResult saveFinalizedVersion(String measureId,
+	SaveMeasureResult saveFinalizedVersion(String measureId,
 			boolean isMajor, String version);
 	
 	/**
@@ -200,7 +219,8 @@ public interface MeasureLibraryService {
 	 *            the model
 	 * @return the save measure result
 	 */
-	public SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model);
+	SaveMeasureResult saveMeasureDetails(ManageMeasureDetailModel model);
+	
 	
 	/**
 	 * Save measure note.
@@ -214,7 +234,7 @@ public interface MeasureLibraryService {
 	 * @param string2
 	 *            the string2
 	 */
-	public void saveMeasureNote(String noteTitle, String noteDescription,
+	void saveMeasureNote(String noteTitle, String noteDescription,
 			String string, String string2);
 	
 	/**
@@ -223,7 +243,7 @@ public interface MeasureLibraryService {
 	 * @param measureXmlModel
 	 *            the measure xml model
 	 */
-	public void saveMeasureXml(MeasureXmlModel measureXmlModel);
+	void saveMeasureXml(MeasureXmlModel measureXmlModel);
 	
 	/**
 	 * Search.
@@ -240,7 +260,6 @@ public interface MeasureLibraryService {
 	 */
 	ManageMeasureSearchModel search(String searchText, int startIndex,
 			int pageSize, int filter);
-	
 	
 	/**
 	 * Search measures for draft.
@@ -279,7 +298,7 @@ public interface MeasureLibraryService {
 	 *            the page size
 	 * @return the transfer measure owner ship model
 	 */
-	public TransferMeasureOwnerShipModel searchUsers(int startIndex,
+	TransferMeasureOwnerShipModel searchUsers(int startIndex,
 			int pageSize);
 	
 	/**
@@ -301,7 +320,7 @@ public interface MeasureLibraryService {
 	 *            the user id
 	 * @return the save measure result
 	 */
-	public SaveMeasureResult updateLockedDate(String measureId, String userId);
+	SaveMeasureResult updateLockedDate(String measureId, String userId);
 	
 	/**
 	 * Update measure notes.
@@ -311,7 +330,7 @@ public interface MeasureLibraryService {
 	 * @param userId
 	 *            the user id
 	 */
-	public void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId);
+	void updateMeasureNotes(MeasureNoteDTO measureNoteDTO, String userId);
 	
 	/**
 	 * Update measure xml.
@@ -334,7 +353,7 @@ public interface MeasureLibraryService {
 	 * @param isPrivate
 	 *            the is private
 	 */
-	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
+	void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
 	
 	/**
 	 * Update users share.
@@ -342,8 +361,7 @@ public interface MeasureLibraryService {
 	 * @param model
 	 *            the model
 	 */
-	public void updateUsersShare(ManageMeasureShareModel model);
-	
+	void updateUsersShare(ManageMeasureShareModel model);
 	/**
 	 * Validate measure for export.
 	 * 
@@ -357,20 +375,4 @@ public interface MeasureLibraryService {
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
 			ArrayList<MatValueSet> matValueSetList) throws MatException;
-	
-	/**
-	 * Record measure in recent measure activity log for the given measure ID and user ID. 
-	 *
-	 * @param measureId the measure id
-	 * @param userId the user id
-	 */
-	void recordRecentMeasureActivity(String measureId, String userId);
-	
-	/**
-	 * Gets recently used measures by the given user ID in the descending order of time from recent measure activity log.
-	 *
-	 * @param userId the user id
-	 * @return the recent measure activity log
-	 */
-	List<RecentMSRActivityLog> getRecentMeasureActivityLog(String userId);
 }

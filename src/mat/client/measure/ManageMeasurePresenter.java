@@ -2,7 +2,6 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
@@ -29,6 +28,7 @@ import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.MessageDelegate;
+import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SearchWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -45,7 +45,6 @@ import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
 import mat.model.clause.MeasureShareDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -590,6 +589,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public void buildDataTable(
 				SearchResults<ManageMeasureSearchModel.Result> results);
 		
+		void buildMostRecentWidget();
+		
 		/**
 		 * Clear bulk export check boxes.
 		 * 
@@ -663,12 +664,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		MeasureSearchFilterWidget getMeasureSearchFilterWidget();
 		
+		MostRecentMeasureWidget getMostRecentMeasureWidget();
+		
 		/**
 		 * Gets the page selection tool.
 		 * 
 		 * @return the page selection tool
 		 */
 		public HasPageSelectionHandler getPageSelectionTool();
+		
+		/*public MeasureSearchFilterPanel getMeasureSearchFilterPanel();*/
 		
 		/**
 		 * Gets the page size.
@@ -683,8 +688,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the page size selection tool
 		 */
 		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
-		
-		/*public MeasureSearchFilterPanel getMeasureSearchFilterPanel();*/
 		
 		/**
 		 * Gets the search button.
@@ -720,7 +723,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the select id for edit tool
 		 */
 		public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool();
-		
 		/**
 		 * Gets the success measure deletion.
 		 * 
@@ -1775,6 +1777,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			filter = searchDisplay.getSelectedFilter();
 			search(searchDisplay.getSearchString().getValue(), 1,
 					searchDisplay.getPageSize(), filter);
+			searchRecentMeasures();
 			panel.getButtonPanel().clear();
 			panel.setButtonPanel(searchDisplay.getCreateMeasureButton(), searchDisplay.getZoomButton());
 			panel.setContent(searchDisplay.asWidget());
@@ -1790,14 +1793,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		Mat.focusSkipLists("MainContent");
 	}
 	
-	/**
-	 * Display share.
+	/** Display share.
 	 * 
-	 * @param id
-	 *            the id
-	 * @param name
-	 *            the name
-	 */
+	 * @param id the id
+	 * @param name the name */
 	private void displayShare(String id, String name) {
 		getShareDetails(id, 1);
 		shareDisplay.setMeasureName(name);
@@ -1806,7 +1805,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(shareDisplay.asWidget());
 		Mat.focusSkipLists("MainContent");
 	}
-	
 	/**
 	 * Display transfer view.
 	 * 
@@ -2803,6 +2801,68 @@ public class ManageMeasurePresenter implements MatPresenter {
 					}
 				});
 		
+		searchDisplay.getMostRecentMeasureWidget().getSelectIdForEditTool().addSelectionHandler(
+				new SelectionHandler<ManageMeasureSearchModel.Result>() {
+					@Override
+					public void onSelection(
+							SelectionEvent<ManageMeasureSearchModel.Result> event) {
+						searchDisplay.getErrorMeasureDeletion().clear();
+						searchDisplay.getSuccessMeasureDeletion().clear();
+						measureDeletion = false;
+						isMeasureDeleted = false;
+						if (!currentUserRole
+								.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
+							final String mid = event.getSelectedItem().getId();
+							Result result = event.getSelectedItem();
+							final String name = result.getName();
+							final String version = result.getVersion();
+							final String shortName = result.getShortName();
+							final String scoringType = result.getScoringType();
+							final boolean isEditable = result.isEditable();
+							final boolean isMeasureLocked = result
+									.isMeasureLocked();
+							final String userId = result.getLockedUserId(result
+									.getLockedUserInfo());
+							MatContext.get().getMeasureLockService()
+							.isMeasureLocked(mid);
+							Command waitForLockCheck = new Command() {
+								@Override
+								public void execute() {
+									SynchronizationDelegate synchDel = MatContext
+											.get().getSynchronizationDelegate();
+									if (!synchDel.isCheckingLock()) {
+										if (!synchDel.measureIsLocked()) {
+											fireMeasureSelectedEvent(mid,
+													version, name, shortName,
+													scoringType, isEditable,
+													isMeasureLocked, userId);
+											if (isEditable) {
+												MatContext
+												.get()
+												.getMeasureLockService()
+												.setMeasureLock();
+											}
+										} else {
+											fireMeasureSelectedEvent(mid,
+													version, name, shortName,
+													scoringType, false,
+													isMeasureLocked, userId);
+											if (isEditable) {
+												MatContext
+												.get()
+												.getMeasureLockService()
+												.setMeasureLock();
+											}
+										}
+									} else {
+										DeferredCommand.addCommand(this);
+									}
+								}
+							};
+							waitForLockCheck.execute();
+						}
+					}
+				});
 		searchDisplay.getCreateButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -3153,9 +3213,32 @@ public class ManageMeasurePresenter implements MatPresenter {
 				
 	}
 	
+	/** Method to Load most recent Used Measures for Logged In User. */
+	private void searchRecentMeasures() {
+		MatContext.get().getMeasureService().getAllRecentMeasureForUser(MatContext.get().getLoggedinUserId(),
+				new AsyncCallback<ManageMeasureSearchModel>() {
+			@Override
+			public void onFailure(Throwable caught) {
+			}
+			@Override
+			public void onSuccess(ManageMeasureSearchModel result) {
+				searchDisplay.getMostRecentMeasureWidget().setMeasureSearchModel(result);
+				searchDisplay.getMostRecentMeasureWidget().setObserver(new MostRecentMeasureWidget.Observer() {
+					@Override
+					public void onExportClicked(Result result) {
+								measureDeletion = false;
+								isMeasureDeleted = false;
+								searchDisplay.getSuccessMeasureDeletion().clear();
+								searchDisplay.getErrorMeasureDeletion().clear();
+								export(result.getId(), result.getName());
+					}
+				});
+				searchDisplay.buildMostRecentWidget();
+			}
+		});
+	}
 	/**
 	 * Sets the bulk export measure ids.
-	 * 
 	 * @param bulkExportMeasureIds
 	 *            the bulkExportMeasureIds to set
 	 */

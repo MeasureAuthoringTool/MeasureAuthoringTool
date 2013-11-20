@@ -2,7 +2,6 @@ package mat.client.measure.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -13,7 +12,6 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -95,6 +93,12 @@ public interface MeasureServiceAsync {
 			AsyncCallback<MeasureNotesModel> callback);
 	
 	/**
+	 * @param userId
+	 * @param callback
+	 */
+	void getAllRecentMeasureForUser(String userId, AsyncCallback<ManageMeasureSearchModel> callback);
+	
+	/**
 	 * Gets the applied qdm from measure xml.
 	 * 
 	 * @param measureId
@@ -150,6 +154,15 @@ public interface MeasureServiceAsync {
 	 */
 	void getMeasureXmlForMeasure(String measureId,
 			AsyncCallback<MeasureXmlModel> callback);
+	
+	/**
+	 * Gets recently used measures by the given user ID in the descending order of time from recent measure activity log.
+	 *
+	 * @param userId the user id
+	 * @param callback the callback
+	 * @return the recent measure activity log
+	 */
+	void getRecentMeasureActivityLog(String userId, AsyncCallback<List<RecentMSRActivityLog>> callback);
 	
 	/**
 	 * Gets the users for share.
@@ -368,7 +381,6 @@ public interface MeasureServiceAsync {
 	 *            the callback
 	 */
 	void updateUsersShare(ManageMeasureShareModel model, AsyncCallback<Void> callback);
-	
 	/**
 	 * Validate measure for export.
 	 * 
@@ -380,13 +392,4 @@ public interface MeasureServiceAsync {
 	 *            the callback
 	 */
 	void validateMeasureForExport(String key, ArrayList<MatValueSet> matValueSetList, AsyncCallback<ValidateMeasureResult> callback);
-	
-	/**
-	 * Gets recently used measures by the given user ID in the descending order of time from recent measure activity log.
-	 *
-	 * @param userId the user id
-	 * @param callback the callback
-	 * @return the recent measure activity log
-	 */
-	void getRecentMeasureActivityLog(String userId, AsyncCallback<List<RecentMSRActivityLog>> callback);
 }

@@ -681,7 +681,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		// Collections.sort(attrs, attributeComparator);
 		return attrs;
 	}
-	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getAllMeasureNotesByMeasureID(java.lang.String)
 	 */
@@ -689,7 +688,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final MeasureNotesModel getAllMeasureNotesByMeasureID(final String measureID) {
 		MeasureNotesModel measureNotesModel = new MeasureNotesModel();
 		ArrayList<MeasureNoteDTO> data = new ArrayList<MeasureNoteDTO>();
-		
 		Measure measure = getMeasureDAO().find(measureID);
 		if (measure != null) {
 			List<MeasureNotes> measureNotesList = getMeasureNotesService().getAllMeasureNotesByMeasureID(measureID);
@@ -699,13 +697,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						MeasureNoteDTO measureNoteDTO = new MeasureNoteDTO();
 						measureNoteDTO.setMeasureId(measureID);
 						measureNoteDTO.setId(measureNotes.getId());
-						
 						if (measureNotes.getModifyUser() != null) {
-							measureNoteDTO.setLastModifiedByEmailAddress(measureNotes.getModifyUser().getEmailAddress());
+							measureNoteDTO.setLastModifiedByEmailAddress(
+									measureNotes.getModifyUser().getEmailAddress());
 						} else if (measureNotes.getCreateUser() != null) {
-							measureNoteDTO.setLastModifiedByEmailAddress(measureNotes.getCreateUser().getEmailAddress());
+							measureNoteDTO.setLastModifiedByEmailAddress(
+									measureNotes.getCreateUser().getEmailAddress());
 						}
-						
 						measureNoteDTO.setNoteDesc(measureNotes.getNoteDesc());
 						measureNoteDTO.setNoteTitle(measureNotes.getNoteTitle());
 						Date lastModifiedDate = measureNotes.getLastModifiedDate();
@@ -713,7 +711,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						if (lastModifiedDate != null) {
 							measureNoteDTO.setLastModifiedDate(dateFormat.format(lastModifiedDate));
 						}
-						
 						data.add(measureNoteDTO);
 					}
 				}
@@ -722,9 +719,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		measureNotesModel.setData(data);
 		return measureNotesModel;
 	}
+	/*
+	 * (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getAllRecentMeasureForUser(java.lang.String)
+	 */
 	@Override
 	public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId) {
-		
 		ArrayList<RecentMSRActivityLog> recentMeasureActivityList = (ArrayList<RecentMSRActivityLog>)
 				recentMSRActivityLogDAO.getRecentMeasureActivityLog(userId);
 		ManageMeasureSearchModel manageMeasureSearchModel = new ManageMeasureSearchModel();
@@ -735,7 +735,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		for (RecentMSRActivityLog activityLog : recentMeasureActivityList) {
 			Measure measure = getMeasureDAO().find(activityLog.getMeasureId());
-			User user = getUserService().getById(activityLog.getUserId());
 			ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
 			detail.setName(measure.getDescription());
 			detail.setShortName(measure.getaBBRName());
@@ -747,18 +746,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					measure.isDraft());
 			detail.setVersion(formattedVersion);
 			detail.setFinalizedDate(measure.getFinalizedDate());
-			detail.setOwnerfirstName(user.getFirstName());
-			detail.setOwnerLastName(user.getLastName());
-			detail.setOwnerEmailAddress(user.getEmailAddress());
+			detail.setOwnerfirstName(measure.getOwner().getFirstName());
+			detail.setOwnerLastName(measure.getOwner().getLastName());
+			detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
 			detail.setMeasureSetId(measure.getMeasureSet().getId());
-			List<MeasureShareDTO> measureShare = getMeasureDAO().getMeasureShareInfoForMeasureAndUser(user.getId(), measure.getId());
-			detail.setEditable((currentUserId.equals(measure.getOwner().getId()) || isSuperUser || ShareLevel.MODIFY_ID.equals(
-					measureShare.get(0).getShareLevel())) && measure.isDraft());
-			if (measure.getIsPrivate() && user.getId().equalsIgnoreCase(userId)) {
-				detailModelList.add(detail);
+			detail.setScoringType(measure.getMeasureScoring());
+			detail.setMeasureLocked(measure.getLockedOutDate() != null);
+			List<MeasureShareDTO> measureShare = getMeasureDAO().
+					getMeasureShareInfoForMeasureAndUser(measure.getOwner().getId(), measure.getId());
+			if (measureShare.size() > 0) {
+				detail.setEditable((currentUserId.equals(measure.getOwner().getId()) || isSuperUser
+						|| ShareLevel.MODIFY_ID.equals(
+								measureShare.get(0).getShareLevel())) && measure.isDraft());
 			} else {
-				detailModelList.add(detail);
+				detail.setEditable((currentUserId.equals(measure.getOwner().getId()) || isSuperUser));
 			}
+			detailModelList.add(detail);
 		}
 		return manageMeasureSearchModel;
 	}

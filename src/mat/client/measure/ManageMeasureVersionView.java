@@ -21,6 +21,7 @@ import mat.client.shared.search.SearchResults;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.FontWeight;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.ImageResource;
@@ -84,10 +85,16 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
 		mainPanel.add(searchWidget);
-		mainPanel.add(new Label("Select a Draft to create a Measure Version."));
+		mainPanel.add(new SpacerWidget());
+		Label selectDraftLabel = new Label("Select a Draft to create a Measure Version.");
+		selectDraftLabel.getElement().setId("selectDraftLabel_Label");
+		selectDraftLabel.getElement().getStyle().setFontSize(15, Unit.PX);
+		selectDraftLabel.getElement().getStyle().setFontWeight(FontWeight.BOLD);
+		mainPanel.add(selectDraftLabel);
 		mainPanel.add(new SpacerWidget());
 		
-		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");		
+		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");	
+		cellTablePanel.setWidth("100%");
 		mainPanel.add(cellTablePanel);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(errorMessages);
@@ -143,6 +150,10 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		spager.setDisplay(cellTable);
         spager.setPageSize(25);
         spager.setToolTipAndTabIndex(spager);
+        cellTable.setWidth("77%");
+        cellTable.setColumnWidth(0, 15.0, Unit.PCT);
+        cellTable.setColumnWidth(1, 63.0, Unit.PCT);
+        cellTable.setColumnWidth(2, 22.0, Unit.PCT);
         cellTablePanel.clear();
         cellTablePanel.add(cellTable);
         cellTablePanel.add(new SpacerWidget());

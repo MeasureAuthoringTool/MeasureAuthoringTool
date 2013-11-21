@@ -1397,6 +1397,7 @@ padding: 2px;
     font-size:.8em;
     margin-left:650px; 
     margin-right:auto;
+    margin-top:8px;
 }
 .searchWidgetLabel{
 	font-size: 11px;
@@ -1424,9 +1425,14 @@ padding: 2px;
     border-width: 3px;
     margin-left: 4px;
    margin-top: 8px;
-    width: 600px;
+    width: 550px;
 }
 
+.recentSearchHeader{
+    background-color: #DCE9F5; 
+    font-weight: bold;
+    padding: 5px;
+}
 .filterDisclosurePanel{
     margin-left:345px; 
     margin-right:auto;
@@ -1434,7 +1440,7 @@ padding: 2px;
 }
 
 .measureLibraryFilterDisclosurePanel{
-    margin-left:45px; 
+    margin-left:80px; 
     margin-right:auto;
     margin-top:0.5px;
 }
@@ -1449,8 +1455,9 @@ padding: 2px;
     padding-right: 10px;
     padding-top: 8px;
     font-size:.8em;
-    margin-left:50px; 
+    margin-left:85px; 
     margin-right:auto;
+    margin-top:8px;
 }
 
 .invisibleButtonTextMeasureLibrary{

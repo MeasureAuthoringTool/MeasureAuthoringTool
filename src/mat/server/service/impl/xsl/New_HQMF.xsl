@@ -562,7 +562,7 @@
                                     </xsl:variable>
                                     <xsl:choose>
                                         <xsl:when test="$isRHS_RelationalOp='true'">
-                                            <sourceOf typeCode="PRCN">
+                                            <!-- <sourceOf typeCode="PRCN"> -->
                                                 <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>  -->
                                                 <act classCode="ACT" moodCode="EVN"
                                                     isCriterionInd="true">
@@ -571,7 +571,7 @@
                                                     </xsl:if>
                                                     <xsl:apply-templates select="." mode="topmost"/>
                                                 </act>
-                                            </sourceOf>
+                                            <!-- </sourceOf> -->
                                         </xsl:when>
                                         <xsl:otherwise>
                                             <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->
@@ -713,7 +713,7 @@
 							
 							<xsl:choose>
 								<xsl:when test="$isRHS_RelationalOp='true'">
-									<sourceOf typeCode="PRCN">
+									<!-- <sourceOf typeCode="PRCN"> -->
 										<!--<xsl:apply-templates select="." mode="handleFunctionalOps"/> -->
 										<act classCode="ACT" moodCode="EVN" isCriterionInd="true">
 											<xsl:if test="$isNot = 'true' ">
@@ -721,7 +721,7 @@
 											</xsl:if>
 											<xsl:apply-templates select="." mode="topmost" />
 										</act>
-									</sourceOf>
+									<!-- </sourceOf> -->
 								</xsl:when>
 								<xsl:otherwise>
 									

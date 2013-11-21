@@ -426,9 +426,9 @@
                     		<xsl:apply-templates select="."/>
                     	</xsl:when>
                     	<xsl:otherwise>
-                    		<act classCode="ACT" moodCode="EVN" isCriterionInd="true">
+<!--                     	<act classCode="ACT" moodCode="EVN" isCriterionInd="true"> -->
 		                        <xsl:apply-templates select="."/>
-                    		</act>
+<!--                     	</act> -->
                     	</xsl:otherwise>
                     </xsl:choose>
                     
@@ -576,7 +576,7 @@
                                         <xsl:otherwise>
                                             <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->
                                             <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
-                                            <xsl:apply-templates select="." mode="topmost"/>
+                                           		 <xsl:apply-templates select="." mode="topmost"/>
                                             </act>
                                         </xsl:otherwise>
                                     </xsl:choose>
@@ -598,6 +598,7 @@
                                             <xsl:apply-templates mode="isRelationalOp_LHS"
                                                 select=".."/>
                                         </xsl:variable>
+                                        
                                         <xsl:choose>
                                             <xsl:when test="$isLHS_RelationalOp='true'">
                                                 <!-- <sourceOf typeCode="PRCN"> -->
@@ -709,6 +710,7 @@
 								<xsl:apply-templates mode="isRelationalOp_RHS"
 									select=".." />
 							</xsl:variable>
+							
 							<xsl:choose>
 								<xsl:when test="$isRHS_RelationalOp='true'">
 									<sourceOf typeCode="PRCN">

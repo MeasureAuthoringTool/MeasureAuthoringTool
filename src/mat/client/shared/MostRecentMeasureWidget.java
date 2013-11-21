@@ -50,7 +50,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<a tabindex=\"0\" title='" + object.getName() + "'>");
+					sb.appendHtmlConstant("<a cursor=\"pointer\" cursor=\"hand\" tabindex=\"0\" title='" + object.getName() + "'>");
 					sb.appendEscaped(object.getName());
 					sb.appendHtmlConstant("</a>");
 					return sb.toSafeHtml();
@@ -108,9 +108,9 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 			
 			table.addColumn(exportColumn,
 					SafeHtmlUtils.fromSafeConstant("<span title='Export' tabindex=\"0\">" + "Export" + "</span>"));
-			table.setColumnWidth(0, 5.0, Unit.PCT);
-			table.setColumnWidth(1, 5.0, Unit.PCT);
-			table.setColumnWidth(2, 2.0, Unit.PCT);
+			table.setColumnWidth(0, 65.0, Unit.PCT);
+			table.setColumnWidth(1, 30.0, Unit.PCT);
+			table.setColumnWidth(2, 5.0, Unit.PCT);
 			
 			
 		}
@@ -145,7 +145,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		searchPanel.setStyleName("recentSearchPanel");
 		Label searchHeader = new Label("Recent Acitvity");
 		searchHeader.getElement().setId("searchHeader_Label");
-		searchHeader.setStyleName("valueSetHeader");
+		searchHeader.setStyleName("recentSearchHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");
 		searchPanel.add(searchHeader);
 		searchPanel.add(new SpacerWidget());

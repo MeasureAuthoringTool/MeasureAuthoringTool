@@ -291,7 +291,13 @@ public interface MeasureServiceAsync {
 	
 	void searchMeasuresForDraft(String searchText, int startIndex, int pageSize, AsyncCallback<ManageMeasureSearchModel> callback);
 	
-	void searchMeasuresForVersion(String searchText, int startIndex, int pageSize, AsyncCallback<ManageMeasureSearchModel> callback);
+	/**
+	 * Search measures for version.
+	 *
+	 * @param searchText the search text
+	 * @param callback the callback
+	 */
+	void searchMeasuresForVersion(String searchText, AsyncCallback<ManageMeasureSearchModel> callback);
 	
 	/**
 	 * Search users.

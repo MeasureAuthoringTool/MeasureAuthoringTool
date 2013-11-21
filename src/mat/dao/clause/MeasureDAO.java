@@ -133,19 +133,15 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the measures for draft
 	 */
 	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex, int pageSize);
+
 	/**
 	 * Gets the measures for version.
-	 * 
-	 * @param user
-	 *            the user
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
+	 *
+	 * @param searchText the search text
+	 * @param user the user
 	 * @return the measures for version
 	 */
-	/* public List<MeasureShareDTO> getMeasuresForVersion(User user, int startIndex, int pageSize); */
-	List<MeasureShareDTO> getMeasuresForVersion(String searchText, User user, int startIndex, int pageSize);
+	List<MeasureShareDTO> getMeasuresForVersion(String searchText, User user);
 	
 	/**
 	 * Gets the measure share for measure.

@@ -436,14 +436,14 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measurePackageDAO.getMeasuresForDraft(searchText, user, startIndex, numResults);
 	}
 	
+	
 	/* (non-Javadoc)
-	 * @see mat.server.service.MeasurePackageService#searchMeasuresForVersion(int, int)
+	 * @see mat.server.service.MeasurePackageService#searchMeasuresForVersion(java.lang.String)
 	 */
 	@Override
-	public List<MeasureShareDTO> searchMeasuresForVersion(String searchText, final int startIndex,
-			final int numResults) {
+	public List<MeasureShareDTO> searchMeasuresForVersion(String searchText) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasuresForVersion(searchText, user, startIndex, numResults);
+		return measurePackageDAO.getMeasuresForVersion(searchText, user);
 	}
 	
 	/* (non-Javadoc)

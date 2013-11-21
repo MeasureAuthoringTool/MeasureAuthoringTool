@@ -1419,17 +1419,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return searchModel;
 	}
 	
+	
 	/* (non-Javadoc)
-	 * @see mat.server.service.MeasureLibraryService#searchMeasuresForVersion(int, int)
+	 * @see mat.server.service.MeasureLibraryService#searchMeasuresForVersion(java.lang.String)
 	 */
 	@Override
-	public final ManageMeasureSearchModel searchMeasuresForVersion(final String searchText, final int startIndex, final int pageSize) {
+	public final ManageMeasureSearchModel searchMeasuresForVersion(final String searchText) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-		List<MeasureShareDTO> measureList = getService().searchMeasuresForVersion(searchText, startIndex, pageSize);
-		searchModel.setStartIndex(startIndex);
+		List<MeasureShareDTO> measureList = getService().searchMeasuresForVersion(searchText);
 		searchModel.setResultsTotal((int) getService().countMeasuresForVersion(searchText));
 		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 		searchModel.setData(detailModelList);
@@ -1437,7 +1437,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		for (MeasureShareDTO dto : measureList) {
 			setDTOtoModel(detailModelList, dto, currentUserId, isSuperUser);
 		}
-		searchModel.setPageCount(getPageCount(searchModel.getResultsTotal(), pageSize));
 		return searchModel;
 	}
 	

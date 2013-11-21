@@ -277,18 +277,12 @@ public interface MeasurePackageService {
 	
 	/**
 	 * Search measures for version.
-	 * 
-	 * @param startIndex
-	 *            - {@link Integer}.
-	 * @param numResults
-	 *            - {@link Integer}.
-	 * @return {@link List} of {@link MeasureShareDTO}. *
+	 *
+	 * @param searchText
+	 * 				- {@link String}.
+	 * @return {@link List} of {@link MeasureShareDTO}.
 	 */
-	/*
-	 * List<MeasureShareDTO> searchMeasuresForVersion(int startIndex, int numResults);
-	 */
-	
-	List<MeasureShareDTO> searchMeasuresForVersion(String searchText, int startIndex, int numResults);
+	List<MeasureShareDTO> searchMeasuresForVersion(String searchText);
 	
 	/**
 	 * Search with filter.

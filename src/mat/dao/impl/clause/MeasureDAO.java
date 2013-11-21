@@ -638,11 +638,12 @@ mat.dao.clause.MeasureDAO {
 	
 	/**
 	 * Gets the measures for version.
-	 * 
-	 * @param user
-	 *            the user
+	 *
+	 * @param searchText the search text
+	 * @param user the user
 	 * @return the measures for version
 	 */
+	@Override
 	public List<MeasureShareDTO> getMeasuresForVersion(String searchText,User user) {
 		List<MeasureShareDTO> orderedDTOList = getMeasureShareInfoForUser(searchText,user,
 				0, Integer.MAX_VALUE);
@@ -669,10 +670,7 @@ mat.dao.clause.MeasureDAO {
 		return dtoList;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.dao.clause.MeasureDAO#getMeasuresForVersion(mat.model.User, int, int)
-	 */
-	@Override
+	/*@Override
 	public List<MeasureShareDTO> getMeasuresForVersion(String searchText,User user,
 			int startIndex, int pageSize) {
 		List<MeasureShareDTO> dtoList = getMeasuresForVersion(searchText, user);
@@ -682,7 +680,7 @@ mat.dao.clause.MeasureDAO {
 		} else {
 			return dtoList;
 		}
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.dao.clause.MeasureDAO#getMeasureShareForMeasure(java.lang.String)

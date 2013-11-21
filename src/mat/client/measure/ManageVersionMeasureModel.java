@@ -169,7 +169,7 @@ public class ManageVersionMeasureModel extends PagingFacade<ManageMeasureSearchM
 	 * 
 	 * @return the selected measure
 	 */
-	public ManageMeasureSearchModel.Result getSelectedMeasure() {
+	/*public ManageMeasureSearchModel.Result getSelectedMeasure() {
 		ManageMeasureSearchModel.Result r = new ManageMeasureSearchModel.Result();
 		List<ManageMeasureSearchModel.Result> data = getData();
 		for(int i = 0; i < data.size(); i++) {
@@ -180,7 +180,10 @@ public class ManageVersionMeasureModel extends PagingFacade<ManageMeasureSearchM
 			}
 		}
 		return r;
-	}
+	}*/
 	
+	public List<ManageMeasureSearchModel.Result> getDataList() {
+		return getData();
+	}
 
 }

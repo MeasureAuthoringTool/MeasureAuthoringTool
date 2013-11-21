@@ -245,12 +245,11 @@ MeasureService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#searchMeasuresForVersion(int, int)
+	 * @see mat.client.measure.service.MeasureService#searchMeasuresForVersion(java.lang.String)
 	 */
 	@Override
-	public ManageMeasureSearchModel searchMeasuresForVersion(String searchText, int startIndex,
-			int pageSize) {
-		return this.getMeasureLibraryService().searchMeasuresForVersion(searchText, startIndex, pageSize);
+	public ManageMeasureSearchModel searchMeasuresForVersion(String searchText) {
+		return this.getMeasureLibraryService().searchMeasuresForVersion(searchText);
 	}
 	
 	/* (non-Javadoc)

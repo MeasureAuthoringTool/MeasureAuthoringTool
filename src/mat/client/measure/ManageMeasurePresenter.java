@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
@@ -45,6 +46,7 @@ import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
 import mat.model.clause.MeasureShareDTO;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -723,6 +725,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the select id for edit tool
 		 */
 		public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool();
+		
 		/**
 		 * Gets the success measure deletion.
 		 * 
@@ -917,74 +920,36 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @param results
 		 *            the results
-		 * @param pageCount
-		 *            the page count
-		 * @param totalResults
-		 *            the total results
-		 * @param currentPage
-		 *            the current page
-		 * @param pageSize
-		 *            the page size
 		 */
-		public void buildDataTable(
-				SearchResults<ManageMeasureSearchModel.Result> results,
-				int pageCount, long totalResults, int currentPage, int pageSize);
+		void buildDataTable(SearchResults<ManageMeasureSearchModel.Result> results);
 		
 		/**
 		 * Gets the cancel button.
 		 * 
 		 * @return the cancel button
 		 */
-		public HasClickHandlers getCancelButton();
-		
-		/**
-		 * Gets the current page.
-		 * 
-		 * @return the current page
-		 */
-		public int getCurrentPage();
-		
+		HasClickHandlers getCancelButton();
+				
 		/**
 		 * Gets the major radio button.
 		 * 
 		 * @return the major radio button
 		 */
-		public RadioButton getMajorRadioButton();
+		RadioButton getMajorRadioButton();
 		
 		/**
 		 * Gets the minor radio button.
 		 * 
 		 * @return the minor radio button
 		 */
-		public RadioButton getMinorRadioButton();
-		
-		/**
-		 * Gets the page selection tool.
-		 * 
-		 * @return the page selection tool
-		 */
-		public HasPageSelectionHandler getPageSelectionTool();
-		
-		/**
-		 * Gets the page size.
-		 * 
-		 * @return the page size
-		 */
-		public int getPageSize();
-		
-		/**
-		 * Gets the page size selection tool.
-		 * 
-		 * @return the page size selection tool
-		 */
-		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
-		
+		RadioButton getMinorRadioButton();
+				
 		/**
 		 * Gets the save button.
 		 * 
 		 * @return the save button
 		 */
-		public HasClickHandlers getSaveButton();
+		HasClickHandlers getSaveButton();
 		
 		/**
 		 * @return search Button from search widget.
@@ -1000,22 +965,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return zoom button.
 		 */
 		CustomButton getZoomButton();
-		
+				
 		/**
-		 * Sets the current page.
-		 * 
-		 * @param pageNumber
-		 *            the new current page
+		 * Gets the selected measure.
+		 *
+		 * @return the selected measure
 		 */
-		public void setCurrentPage(int pageNumber);
-		
-		/**
-		 * Sets the page size.
-		 * 
-		 * @param pageNumber
-		 *            the new page size
-		 */
-		public void setPageSize(int pageNumber);
+		Result getSelectedMeasure();
 	}
 	
 	/** The admin search display. */
@@ -1631,11 +1587,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * Creates the version.
 	 */
 	private void createVersion() {
-		int pageNumber = versionDisplay.getCurrentPage();
-		int pageSize = versionDisplay.getPageSize();
-		int startIndex = pageSize * (pageNumber - 1);
-		searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getValue(), startIndex, versionDisplay
-				.getPageSize());
+		searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getValue());
 		versionDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		searchDisplay.getSuccessMeasureDeletion().clear();
@@ -1805,6 +1757,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setContent(shareDisplay.asWidget());
 		Mat.focusSkipLists("MainContent");
 	}
+	
 	/**
 	 * Display transfer view.
 	 * 
@@ -3162,52 +3115,26 @@ public class ManageMeasurePresenter implements MatPresenter {
 	/**
 	 * Search measures for version.
 	 * 
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
+	 * @param searchText
+	 *            the search Text
 	 */
-	private void searchMeasuresForVersion(String searchText, int startIndex, int pageSize) {
-		final String lastSearchText = (searchText != null) ? searchText
-				.trim() : null;
-				MatContext
-				.get()
-				.getMeasureService()
-				.searchMeasuresForVersion(lastSearchText, startIndex, pageSize,
-						new AsyncCallback<ManageMeasureSearchModel>() {
+	private void searchMeasuresForVersion(String searchText) {
+		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
+				MatContext.get().getMeasureService()
+						.searchMeasuresForVersion(lastSearchText, new AsyncCallback<ManageMeasureSearchModel>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						versionDisplay
-						.getErrorMessageDisplay()
-						.setMessage(
-								MatContext
-								.get()
-								.getMessageDelegate()
-								.getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(
-								null,
-								null,
-								null,
-								"Unhandled Exception: "
-										+ caught.getLocalizedMessage(),
-										0);
+						versionDisplay.getErrorMessageDisplay().setMessage(
+								MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(null, null, null,
+								"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 					}
 					
 					@Override
 					public void onSuccess(
 							ManageMeasureSearchModel result) {
-						versionMeasureResults = new ManageVersionMeasureModel(
-								result.getData());
-						versionMeasureResults.setPageSize(result
-								.getData().size());
-						versionMeasureResults.setTotalPages(result
-								.getPageCount());
-						versionDisplay.buildDataTable(
-								versionMeasureResults,
-								result.getPageCount(),
-								result.getResultsTotal(),
-								versionDisplay.getCurrentPage(),
-								versionDisplay.getPageSize());
+						versionMeasureResults = new ManageVersionMeasureModel(result.getData());
+						versionDisplay.buildDataTable(versionMeasureResults);
 					}
 				});
 				
@@ -3639,6 +3566,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 			}
 		});
+		
 		versionDisplay.getZoomButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -3651,20 +3579,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 				versionDisplay.getSearchWidget().setVisible(isSearchVisibleOnVersion);
 			}
 		});
+		
 		versionDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getText(), startIndex, draftDisplay
-						.getPageSize());
+				searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getText());
 			}
 		});
 		
 		versionDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				ManageMeasureSearchModel.Result selectedMeasure = versionMeasureResults
-						.getSelectedMeasure();
-				if ((selectedMeasure.getId() != null)
+				ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
+				if ((selectedMeasure !=null && selectedMeasure.getId() != null)
 						&& (versionDisplay.getMajorRadioButton().getValue() || versionDisplay
 								.getMinorRadioButton().getValue())) {
 					saveFinalizedVersion(selectedMeasure.getId(),
@@ -3677,54 +3604,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							"Please select a Measure Name to version and select a version type of Major or Minor.");
 				}
 			}
-		});
-		
-		versionDisplay.getPageSelectionTool().addPageSelectionHandler(
-				new PageSelectionEventHandler() {
-					@Override
-					public void onPageSelection(PageSelectionEvent event) {
-						int pageNumber = event.getPageNumber();
-						if (pageNumber == -1) { // if next button clicked
-							if (versionDisplay.getCurrentPage() == versionMeasureResults
-									.getTotalpages()) {
-								pageNumber = versionDisplay.getCurrentPage();
-							} else {
-								pageNumber = versionDisplay.getCurrentPage() + 1;
-							}
-						} else if (pageNumber == 0) { // if first button clicked
-							pageNumber = 1;
-						} else if (pageNumber == -19) { // if first button
-							// clicked
-							if (versionDisplay.getCurrentPage() == 1) {
-								pageNumber = versionDisplay.getCurrentPage();
-							} else {
-								pageNumber = versionDisplay.getCurrentPage() - 1;
-							}
-						} else if (pageNumber == -9) { // if first button
-							// clicked
-							if (versionDisplay.getCurrentPage() == 1) {
-								pageNumber = versionDisplay.getCurrentPage();
-							} else {
-								pageNumber = versionDisplay.getCurrentPage() - 1;
-							}
-						}
-						versionDisplay.setCurrentPage(pageNumber);
-						int pageSize = versionDisplay.getPageSize();
-						int startIndex = pageSize * (pageNumber - 1);
-						searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getValue(), startIndex,
-								versionDisplay.getPageSize());
-					}
-				});
-		versionDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
-				new PageSizeSelectionEventHandler() {
-					
-					@Override
-					public void onPageSizeSelection(PageSizeSelectionEvent event) {
-						versionDisplay.setPageSize(event.getPageSize());
-						searchMeasuresForVersion(versionDisplay.getSearchWidget().getSearchInput().getValue(), startIndex,
-								versionDisplay.getPageSize());
-					}
-				});
+		});		
 		
 		versionDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 		

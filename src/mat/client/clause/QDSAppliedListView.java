@@ -2,7 +2,6 @@ package mat.client.clause;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.client.CustomPager;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -14,7 +13,6 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -27,7 +25,9 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -120,11 +120,11 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	private CellTable<QualityDataSetDTO> addColumnToTable(final CellTable<QualityDataSetDTO> table,
 			ListHandler<QualityDataSetDTO> sortHandler) {
 		if (table.getColumnCount() != TABLE_COL_COUNT) {
-			final RadioButtonCell cbCell = new RadioButtonCell(true, true);
-			Column<QualityDataSetDTO, Boolean> radioButtonColumn = new Column<QualityDataSetDTO, Boolean>(cbCell) {
+			final RadioButtonCell rbCell = new RadioButtonCell(true, true);
+			Column<QualityDataSetDTO, Boolean> radioButtonColumn = new Column<QualityDataSetDTO, Boolean>(rbCell) {
 				@Override
 				public Boolean getValue(QualityDataSetDTO qualityDataSetDTO) {
-					cbCell.setUsed(qualityDataSetDTO.isUsed());
+					rbCell.setUsed(qualityDataSetDTO.isUsed());
 					return table.getSelectionModel().isSelected(qualityDataSetDTO);
 				}
 			};
@@ -164,7 +164,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					return getColumnToolTip(value, title);
 				}
 			};
-			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Name' tabindex=\"0\">" + "Name" + "</span>"));
+			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant(
+					"<span title='Name' tabindex=\"0\">" + "Name" + "</span>"));
 			Column<QualityDataSetDTO, SafeHtml> dataTypeColumn = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(QualityDataSetDTO object) {
@@ -274,16 +275,15 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	 */
 	@Override
 	public void buildCellTable(QDSAppliedListModel appliedListModel) {
-		if (appliedListModel.getAppliedQDMs() != null) {
-			/*cellList = initializeCellListContent(appliedListModel);
-			cellList.setPageSize(15);
-			cellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-			ListDataProvider<QualityDataSetDTO> dataProvider =
-			new ListDataProvider<QualityDataSetDTO>(appliedListModel.getAppliedQDMs());
-			dataProvider.addDataDisplay(cellList);
-			pagerPanel.addStyleName("scrollable");
-			pagerPanel.setDisplay(cellList);
-			rangeLabelPager.setDisplay(cellList);*/
+		cellTablePanel.clear();
+		cellTablePanel.setStyleName("QdmAppliedListSearchPanel");
+		Label searchHeader = new Label("Applied QDM Elements");
+		searchHeader.getElement().setId("searchHeader_Label");
+		searchHeader.setStyleName("recentSearchHeader");
+		searchHeader.getElement().setAttribute("tabIndex", "0");
+		cellTablePanel.add(searchHeader);
+		cellTablePanel.add(new SpacerWidget());
+		if ((appliedListModel.getAppliedQDMs() != null) && (appliedListModel.getAppliedQDMs().size() > 0)) {
 			CellTable<QualityDataSetDTO> table = new CellTable<QualityDataSetDTO>();
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
@@ -302,12 +302,19 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			spager.setDisplay(table);
 			spager.setPageStart(0);
 			spager.setToolTipAndTabIndex(spager);
-			cellTablePanel.clear();
+			/* cellTablePanel.clear(); */
 			cellTablePanel.add(table);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);
 			removeButton.setEnabled(false);
 			modify.setEnabled(checkForEnable() && (appliedListModel.getLastSelected() != null) ? true : false);
+			updateVsacButton.setEnabled(true);
+		} else {
+			HTML desc = new HTML("<p> No Applied QDM Elements.</p>");
+			cellTablePanel.add(desc);
+			removeButton.setEnabled(false);
+			modify.setEnabled(false);
+			updateVsacButton.setEnabled(false);
 		}
 	}
 	/**
@@ -349,7 +356,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	 * @return the column tool tip
 	 */
 	private SafeHtml getColumnToolTip(String columnText, StringBuilder title) {
-		String htmlConstant = "<html>" + "<head> </head> <Body><span title='" + title + "'>" + columnText + "</span></body>"
+		String htmlConstant = "<html>" + "<head> </head> <Body><span tabIndex = \"0\" title='" + title + "'>" + columnText
+				+ "</span></body>"
 				+ "</html>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}

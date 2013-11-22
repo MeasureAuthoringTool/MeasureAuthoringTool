@@ -29,28 +29,37 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
 /** @author jnarang */
 public class MostRecentMeasureWidget extends Composite implements HasSelectionHandlers<ManageMeasureSearchModel.Result> {
+	/** @author jnarang */
 	public static interface Observer {
 		/** On export clicked.
-		 * 
 		 * @param result the result */
-		public void onExportClicked(ManageMeasureSearchModel.Result result);
+		void onExportClicked(ManageMeasureSearchModel.Result result);
 	}
-	CellTable<ManageMeasureSearchModel.Result> cellTable = new CellTable<ManageMeasureSearchModel.Result>();
-	
+	/** Cell Table Column Count. */
+	private static final int MAX_TABLE_COLUMN_SIZE = 3;
+	/** Cell Table Instance. */
+	private CellTable<ManageMeasureSearchModel.Result> cellTable = new CellTable<ManageMeasureSearchModel.Result>();
+	/** HandlerManager Instance. */
 	private HandlerManager handlerManager = new HandlerManager(this);
-	ManageMeasureSearchModel measureSearchModel;
+	/** ManageMeasureSearchModel Instance. */
+	private ManageMeasureSearchModel measureSearchModel;
+	/** Observer Instance. */
 	private Observer observer;
-	VerticalPanel searchPanel = new VerticalPanel();
+	/** VerticalPanel Instance which hold's View for Most Recent Measure. */
+	private VerticalPanel searchPanel = new VerticalPanel();
+	/** Method to Add Column's in Table.
+	 * @param table
+	 * @return */
 	private CellTable<ManageMeasureSearchModel.Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table) {
-		
-		if (table.getColumnCount() != 3) {
-			
-			Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-					new ClickableSafeHtmlCell()) {
+		if (table.getColumnCount() != MAX_TABLE_COLUMN_SIZE) {
+			Column<ManageMeasureSearchModel.Result, SafeHtml> measureName =
+					new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+							new ClickableSafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<a cursor=\"pointer\" cursor=\"hand\" tabindex=\"0\" title='" + object.getName() + "'>");
+					sb.appendHtmlConstant("<a cursor=\"pointer\" cursor=\"hand\" tabindex=\"0\" title='"
+							+ object.getName() + "'>");
 					sb.appendEscaped(object.getName());
 					sb.appendHtmlConstant("</a>");
 					return sb.toSafeHtml();
@@ -63,9 +72,8 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 					SelectionEvent.fire(MostRecentMeasureWidget.this, object);
 				}
 			});
-			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name' tabindex=\"0\">" +"Measure Name"+ "</span>"));
-			
-			
+			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant(
+					"<span title='Measure Name Column' tabindex=\"0\">" + "Measure Name" + "</span>"));
 			Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 					new MatSafeHTMLCell()) {
 				@Override
@@ -73,17 +81,17 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 					return getColumnToolTip(object.getVersion());
 				}
 			};
-			table.addColumn(version, SafeHtmlUtils.fromSafeConstant("<span title='Version' tabindex=\"0\">" + "Version" + "</span>"));
-			
+			table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
+					"<span title='Version' tabindex=\"0\">" + "Version" + "</span>"));
 			Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
 			Column<Result, String> exportColumn = new Column<ManageMeasureSearchModel.Result, String>(exportButton) {
 				@Override
 				public String getValue(ManageMeasureSearchModel.Result object) {
 					return "Export";
 				}
-				
 				@Override
-				public void onBrowserEvent(Context context, Element elem, final ManageMeasureSearchModel.Result object, NativeEvent event) {
+				public void onBrowserEvent(Context context, Element elem,
+						final ManageMeasureSearchModel.Result object, NativeEvent event) {
 					if ((object != null) && object.isExportable()) {
 						super.onBrowserEvent(context, elem, object, event);
 					}
@@ -103,26 +111,25 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 					}
 				}
 			});
-			
-			
-			
 			table.addColumn(exportColumn,
 					SafeHtmlUtils.fromSafeConstant("<span title='Export' tabindex=\"0\">" + "Export" + "</span>"));
 			table.setColumnWidth(0, 65.0, Unit.PCT);
 			table.setColumnWidth(1, 30.0, Unit.PCT);
 			table.setColumnWidth(2, 5.0, Unit.PCT);
-			
-			
 		}
 		return table;
 	}
-	
+	/*
+	 * (non-Javadoc)
+	 * @see com.google.gwt.event.logical.shared.HasSelectionHandlers#addSelectionHandler
+	 * (com.google.gwt.event.logical.shared.SelectionHandler)
+	 */
 	@Override
 	public HandlerRegistration addSelectionHandler(SelectionHandler<ManageMeasureSearchModel.Result> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
+	/** Method to create Recent Measure Cell Table. */
 	void buildCellTable() {
-		
 		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
 		ArrayList<ManageMeasureSearchModel.Result> selectedMeasureList = new ArrayList<Result>();
@@ -136,14 +143,12 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		sortProvider.addDataDisplay(cellTable);
 		searchPanel.add(cellTable);
 	}
-	
+	/** @return VerticalPanel. */
 	public VerticalPanel buildMostRecentWidget() {
 		searchPanel.clear();
-		// searchPanel.getElement().getStyle().setHeight(100, Unit.PX);
-		// searchPanel.getElement().getStyle().setWidth(450, Unit.PX);
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("recentSearchPanel");
-		Label searchHeader = new Label("Recent Acitvity");
+		Label searchHeader = new Label("Recent Activity");
 		searchHeader.getElement().setId("searchHeader_Label");
 		searchHeader.setStyleName("recentSearchHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");
@@ -157,27 +162,30 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		}
 		return searchPanel;
 	}
+	/*
+	 * (non-Javadoc)
+	 * @see com.google.gwt.user.client.ui.Widget#fireEvent(com.google.gwt.event.shared.GwtEvent)
+	 */
 	@Override
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
 	/**
 	 * Gets the column tool tip.
-	 * 
 	 * @param title
 	 *            the title
 	 * @return the column tool tip
 	 */
-	private SafeHtml getColumnToolTip(String title){
+	private SafeHtml getColumnToolTip(String title) {
 		String htmlConstant = "<html>" + "<head> </head> <Body><span title='" + title + "'>" + title + "</span></body>" + "</html>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
-	
 	/** @return the measureSearchModel */
 	public ManageMeasureSearchModel getMeasureSearchModel() {
 		return measureSearchModel;
 	}
 	
+	/** @return */
 	public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool() {
 		return this;
 	}
@@ -186,7 +194,6 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		this.measureSearchModel = measureSearchModel;
 	}
 	/** Sets the observer.
-	 * 
 	 * @param observer the new observer */
 	public void setObserver(Observer observer) {
 		this.observer = observer;

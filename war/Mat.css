@@ -1428,6 +1428,16 @@ padding: 2px;
     width: 550px;
 }
 
+.QdmAppliedListSearchPanel {
+    background-color: #FFFFFF;
+    border-color: #E8EEF7 #E8EEF7 #E8EFF7;
+    border-style: solid;
+    border-width: 3px;
+    margin-left: 4px;
+   margin-top: 8px;
+    width: 850px;
+}
+
 .recentSearchHeader{
     background-color: #DCE9F5; 
     font-weight: bold;

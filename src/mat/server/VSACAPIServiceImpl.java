@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
@@ -17,7 +16,6 @@ import mat.server.service.MeasureLibraryService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.UMLSSessionTicket;
 import mat.shared.ConstantMessages;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -283,11 +281,19 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 									qualityDataSetDTO.setTaxonomy(ConstantMessages.
 											GROUPING_CODE_SYSTEM);
 									handleVSACGroupedValueSet(eightHourTicket, matValueSet);
+									if (matValueSet.getGroupedValueSet().size() != 0) {
+										matValueSetList.add(matValueSet);
+									}
 								} else {
-									qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
-											getConceptList().get(0).getCodeSystemName());
+									if (matValueSet.getConceptList().getConceptList() != null) {
+										qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
+												getConceptList().get(0).
+												getCodeSystemName());
+										matValueSetList.add(matValueSet);
+									} else {
+										qualityDataSetDTO.setTaxonomy(StringUtils.EMPTY);
+									}
 								}
-								matValueSetList.add(matValueSet);
 								updateInMeasureXml.put(qualityDataSetDTO, toBeModifiedQDM);
 							}
 						}
@@ -310,7 +316,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 							if (matValueSet != null) {
 								matValueSet.setQdmId(qualityDataSetDTO.getId());
 								handleVSACGroupedValueSet(eightHourTicket, matValueSet);
-								matValueSetList.add(matValueSet);
+								if (matValueSet.isGrouping()
+										&& (matValueSet.getGroupedValueSet().size() != 0)) {
+									matValueSetList.add(matValueSet);
+								} else if (matValueSet.getConceptList().getConceptList() != null) {
+									matValueSetList.add(matValueSet);
+								}
 							}
 						}
 					}
@@ -388,8 +399,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 									qualityDataSetDTO.setTaxonomy(ConstantMessages.
 											GROUPING_CODE_SYSTEM);
 								} else {
-									qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
-											getConceptList().get(0).getCodeSystemName());
+									if (matValueSet.getConceptList().getConceptList() != null) {
+										qualityDataSetDTO.setTaxonomy(matValueSet.getConceptList().
+												getConceptList().get(0).getCodeSystemName());
+									} else {
+										qualityDataSetDTO.setTaxonomy(StringUtils.EMPTY);
+									}
 								}
 								updateInMeasureXml.put(qualityDataSetDTO, toBeModifiedQDM);
 							}

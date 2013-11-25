@@ -197,16 +197,20 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				public SafeHtml getValue(QualityDataSetDTO object) {
 					StringBuilder title = new StringBuilder();
 					String version = null;
-					if (object.getVersion().equalsIgnoreCase("1.0") || object.getVersion().equalsIgnoreCase("1")) {
-						title = title.append("Version : ").append("Most Recent");
-						version = "Most Recent";
-					} else {
-						if (object.getEffectiveDate() == null) {
-							title = title.append("Version : ").append(object.getVersion());
-							version = object.getVersion();
+					if (!object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
+						if (object.getVersion().equalsIgnoreCase("1.0") || object.getVersion().equalsIgnoreCase("1")) {
+							title = title.append("Version : ").append("Most Recent");
+							version = "Most Recent";
 						} else {
-							version = "";
+							if (object.getEffectiveDate() == null) {
+								title = title.append("Version : ").append(object.getVersion());
+								version = object.getVersion();
+							} else {
+								version = "";
+							}
 						}
+					} else {
+						version = "";
 					}
 					return getColumnToolTip(version, title);
 				}

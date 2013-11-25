@@ -723,8 +723,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getAllRecentMeasureForUser(java.lang.String)
 	 */
+	/** Method to retrieve all Recently searched measure's for the logged in User from 'Recent_MSR_Activity_Log' table.
+	 * @param userId - String logged in user id.
+	 * @return {@link ManageMeasureSearchModel}. **/
 	@Override
 	public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId) {
+		// Call to fetch
 		ArrayList<RecentMSRActivityLog> recentMeasureActivityList = (ArrayList<RecentMSRActivityLog>)
 				recentMSRActivityLogDAO.getRecentMeasureActivityLog(userId);
 		ManageMeasureSearchModel manageMeasureSearchModel = new ManageMeasureSearchModel();
@@ -789,7 +793,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#getAppliedQDMFromMeasureXml(java.lang.String, boolean)
 	 */
 	@Override
-	public final ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(final String measureId, final boolean checkForSupplementData) {
+	public final ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(final String measureId,
+			final boolean checkForSupplementData) {
 		MeasureXmlModel measureXmlModel = getMeasureXmlForMeasure(measureId);
 		QualityDataModelWrapper details = convertXmltoQualityDataDTOModel(measureXmlModel);
 		ArrayList<QualityDataSetDTO> finalList = new ArrayList<QualityDataSetDTO>();
@@ -1385,13 +1390,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				detailModelList.add(detail);
 			}
 		} else {
-			
 			List<MeasureShareDTO> measureList = getService().searchWithFilter(searchText, startIndex, pageSize, filter);
 			searchModel.setStartIndex(startIndex);
 			searchModel.setResultsTotal((int) getService().count(filter));
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			searchModel.setData(detailModelList);
-			
 			for (MeasureShareDTO dto : measureList) {
 				ManageMeasureSearchModel.Result detail = extractMeasureSearchModelDetail(currentUserId, isSuperUser, dto);
 				detailModelList.add(detail);

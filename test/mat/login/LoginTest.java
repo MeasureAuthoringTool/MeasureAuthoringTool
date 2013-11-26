@@ -10,7 +10,6 @@ import mat.server.model.MatUserDetails;
 import mat.server.service.UserIDNotUnique;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 public class LoginTest extends SpringInitializationTest{
 	String username = "logintest";
@@ -26,8 +25,8 @@ public class LoginTest extends SpringInitializationTest{
 			user.setFirstName("First");
 			user.setLastName("Time");
 			user.setPhoneNumber("123-123-1234");
-			user.setOrgOID("1");
-			user.setOrganizationName("Organization");
+			//user.setOrgOID("1");
+			//user.setOrganizationName("Organization");
 			user.setEmailAddress(username);
 			SecurityRole sRole = new SecurityRole();
 			sRole.setId("1");

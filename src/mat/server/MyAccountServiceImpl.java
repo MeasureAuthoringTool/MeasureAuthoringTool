@@ -70,8 +70,8 @@ public class MyAccountServiceImpl extends SpringRemoteServiceServlet implements
 		user.setEmailAddress(model.getEmailAddress());
 		user.setPhoneNumber(model.getPhoneNumber());
 		user.setTitle(model.getTitle());
-		user.setOrganizationName(model.getOrganisation());
-		user.setOrgOID(model.getOid());
+		//user.setOrganizationName(model.getOrganisation());
+		//user.setOrgOID(model.getOid());
 		//user.setRootOID(model.getRootoid());
 		//user.setLoginId(model.getLoginId());
 		

@@ -23,8 +23,8 @@ public class UserDAOTestHelper{
 		user.setFirstName("Admin");
 		user.setLastName("user");
 		user.setPhoneNumber("phone no");
-		user.setOrganizationName("organizationName");
-		user.setOrgOID("org OID");
+		//user.setOrganizationName("organizationName");
+		//user.setOrgOID("org OID");
 		user.setStatus(s);
 		user.setSecurityRole(sr);
 		user.setSignInDate(new Date());		

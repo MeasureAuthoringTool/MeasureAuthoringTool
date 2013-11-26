@@ -51,11 +51,13 @@ public class User  {
 	/** The locked out date. */
 	private Timestamp lockedOutDate;
 	
+	private Organization organization;
+	
 	/** The organization name. */
-	private String organizationName;
+	//private String organizationName;
 	
 	/** The org oid. */
-	private String orgOID;
+	//private String orgOID;
 	//private String rootOID;
 	/** The password. */
 	private UserPassword password;
@@ -258,7 +260,11 @@ public class User  {
 	 * @return the organization name
 	 */
 	public String getOrganizationName() {
-		return organizationName;
+		String orgName = "";
+		if(this.organization != null){
+			orgName = this.organization.getOrganizationName();
+		}
+		return orgName;
 	}
 	
 	/**
@@ -267,9 +273,9 @@ public class User  {
 	 * @param organizationName
 	 *            the new organization name
 	 */
-	public void setOrganizationName(String organizationName) {
+	/*public void setOrganizationName(String organizationName) {
 		this.organizationName = organizationName;
-	}
+	}*/
 	
 	/**
 	 * Gets the org oid.
@@ -277,6 +283,10 @@ public class User  {
 	 * @return the org oid
 	 */
 	public String getOrgOID() {
+		String orgOID = "";
+		if(this.organization != null){
+			orgOID = this.organization.getOrganizationOID();
+		}
 		return orgOID;
 	}
 	
@@ -286,9 +296,9 @@ public class User  {
 	 * @param orgOID
 	 *            the new org oid
 	 */
-	public void setOrgOID(String orgOID) {
+	/*public void setOrgOID(String orgOID) {
 		this.orgOID = orgOID;
-	}
+	}*/
 	
 	/**
 	 * Removed Root OID from User. But for legacy code purpose, getRootOID() method just returns blank string.
@@ -522,6 +532,14 @@ public class User  {
 	 */
 	public String getLoginId() {
 		return loginId;
+	}
+	
+	public Organization getOrganization() {
+		return organization;
+	}
+
+	public void setOrganization(Organization organization) {
+		this.organization = organization;
 	}
 
 }

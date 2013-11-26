@@ -6,11 +6,9 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.RequiredIndicator;
 import mat.client.shared.SaveCancelButtonBar;
-import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -59,9 +57,6 @@ implements ManageOrganizationPresenter.DetailDisplay {
 	/** The required. */
 	private HTML required = new HTML(RequiredIndicator.get() + " indicates required field");
 	
-	/** The reset password. */
-	private SecondaryButton resetPassword = new SecondaryButton("Reset Password");
-	
 	/** The success messages. */
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 	/** The title. */
@@ -104,22 +99,14 @@ implements ManageOrganizationPresenter.DetailDisplay {
 		rightPanel.add(new SpacerWidget());
 		rightPanel.add(new SpacerWidget());
 		
-		/*
-		 * rightPanel.add(LabelBuilder.buildRequiredLabel(rootOid, rootOidLabel)); rightPanel.add(rootOid); rightPanel.add(new
-		 * SpacerWidget());
-		 */
-		
-		
 		SimplePanel buttonPanel = new SimplePanel();
 		buttonPanel.add(buttonBar);
 		buttonPanel.setWidth("100%");
-		// deleteButton.addStyleName("floatRight");
-		// fPanel.add(deleteButton);
 		fPanel.add(buttonPanel);
 		fPanel.add(new SpacerWidget());
 		mainPanel.add(fPanel);
 		containerPanel.setContent(mainPanel);
-		// containerPanel.setEmbeddedLink("Manage Users");
+
 		title.setWidth("196px");
 		organization.setWidth("196px");
 		oid.setWidth("196px");

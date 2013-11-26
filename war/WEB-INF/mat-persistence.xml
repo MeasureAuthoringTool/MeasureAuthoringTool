@@ -29,14 +29,6 @@
 		<property name="changeLog" value="classpath:/liquibase/changelog.xml"  />
 		<property name="contexts" value="prod" />
 	</bean>
-
-	<!-- <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-		dev db server
-		<property name="url" value="jdbc:mysql://***REMOVED***:3306/MAT_NEW_TS"/>
-        <property name="username" value="jnarang"/>
-        <property name="password" value="***REMOVED***"/>
-    </bean> -->
     
    <!--  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
@@ -54,6 +46,13 @@
          <property name="username" value="mat_newer_ts_usr"/>
          <property name="password" value="***REMOVED***"/>  -->
     </bean>
+    
+   <!--  <bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+        <property name="url" value="jdbc:mysql://mat-test-db01:3306/MAT_APP"/>
+        <property name="username" value="***REMOVED***"/>
+        <property name="password" value="***REMOVED***"/>  
+    </bean> -->
 
 	<context:annotation-config />
 	
@@ -304,6 +303,9 @@
 			class="mat.dao.impl.RecentMSRActivityLogDAO" parent="baseDAO">
 	</bean>
 	
+	<bean id="organizationDAO"
+            class="mat.dao.impl.OrganizationDAO" parent="baseDAO">
+    </bean>
 	<bean id="daoService" class="mat.dao.service.DAOService" >
 		<property name="auditLogDAO" ref="auditLogDAO"/>
 		<property name="securityRoleDAO" ref="securityRoleDAO"/>
@@ -345,6 +347,7 @@
 		<property name="measureXMLDAO" ref="measureXMLDAO"/>
 		<property name="measureNotesDAO" ref="measureNotesDAO"/>
 		<property name="recentMSRActivityLogDAO" ref="recentMSRActivityLogDAO"/>
+		<property name="organizationDAO" ref="organizationDAO"/>
 	</bean>
 	 
 </beans>

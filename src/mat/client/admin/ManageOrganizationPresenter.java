@@ -7,8 +7,12 @@ import mat.client.MatPresenter;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.shared.search.PageSelectionEvent;
+import mat.client.shared.search.PageSelectionEventHandler;
+import mat.client.shared.search.PageSizeSelectionEvent;
+import mat.client.shared.search.PageSizeSelectionEventHandler;
+import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
-import mat.client.util.ClientConstants;
 import mat.shared.AdminManageUserModelValidator;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -16,7 +20,10 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.user.client.Timer;
+import com.google.gwt.event.logical.shared.HasSelectionHandlers;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
@@ -25,7 +32,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
-/** The Class ManageUsersPresenter. */
+/** The Class ManageOrganizationPresenter. */
 public class ManageOrganizationPresenter implements MatPresenter {
 	
 	/** The Interface DetailDisplay. */
@@ -40,8 +47,6 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		 * 
 		 * @return the cancel button */
 		HasClickHandlers getCancelButton();
-		
-		// public HasClickHandlers getDeleteUserButton();
 		
 		/** Gets the error message display.
 		 * 
@@ -82,6 +87,10 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		 * 
 		 * @return the creates the new button */
 		HasClickHandlers getCreateNewButton();
+		/** Gets the select id for edit tool.
+		 * 
+		 * @return the select id for edit tool */
+		HasSelectionHandlers<ManageOrganizationSearchModel.Result> getSelectIdForEditTool();
 	}
 	
 	/** The current details. */
@@ -102,7 +111,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	/** The start index. */
 	private int startIndex = 1;
 	
-	/** Instantiates a new manage users presenter.
+	/** Instantiates a new manage Organizations presenter.
 	 * 
 	 * @param sDisplayArg the s display arg
 	 * @param dDisplayArg the d display arg */
@@ -149,6 +158,26 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				search(key, startIndex, searchDisplay.getPageSize());
 			}
 		});
+		searchDisplay.getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<ManageOrganizationSearchModel.Result>() {
+			@Override
+			public void onSelection(SelectionEvent<ManageOrganizationSearchModel.Result> event) {
+				edit(event.getSelectedItem().getOid());
+			}
+		});
+		searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
+			@Override
+			public void onPageSelection(PageSelectionEvent event) {
+				startIndex = (searchDisplay.getPageSize() * (event.getPageNumber() - 1)) + 1;
+				search(lastSearchKey, startIndex, searchDisplay.getPageSize());
+			}
+		});
+		searchDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
+			@Override
+			public void onPageSizeSelection(PageSizeSelectionEvent event) {
+				searchDisplay.getSearchString().setValue("");
+				search("", startIndex, searchDisplay.getPageSize());
+			}
+		});
 	}
 	
 	/*
@@ -168,7 +197,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	@Override
 	public void beforeDisplay() {
 		displaySearch();
-		Mat.focusSkipLists("Manage Users");
+		Mat.focusSkipLists("Manage Organizations");
 	}
 	
 	/** Creates the new. */
@@ -180,10 +209,10 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	/** Display detail. */
 	private void displayDetail() {
 		resetMessages();
-		setUserDetailsToView();
+		setOrganizationDetailsToView();
 		panel.clear();
 		panel.add(detailDisplay.asWidget());
-		Mat.focusSkipLists("Manage Users");
+		Mat.focusSkipLists("Manage Organizations");
 	}
 	
 	/** Display search. */
@@ -196,16 +225,22 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	/** Edits the.
 	 * 
 	 * @param name the name */
-	private void edit(String name) {
-		/*
-		 * MatContext.get().getAdminService().getUser(name, new AsyncCallback<ManageUsersDetailModel>() {
-		 * 
-		 * @Override public void onFailure(Throwable caught) { detailDisplay.getErrorMessageDisplay()
-		 * .setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage()); MatContext.get().recordTransactionEvent(null, null,
-		 * null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0); }
-		 * 
-		 * @Override public void onSuccess(ManageUsersDetailModel result) { currentDetails = result; displayDetail(); } });
-		 */
+	private void edit(String key) {
+		MatContext.get().getAdminService().getOrganization(key,
+				new AsyncCallback<ManageOrganizationDetailModel>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				detailDisplay.getErrorMessageDisplay()
+				.setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null,
+						null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+			}
+			@Override
+			public void onSuccess(ManageOrganizationDetailModel result) {
+				currentDetails = result;
+				displayDetail();
+			}
+		});
 	}
 	
 	/*
@@ -252,20 +287,6 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		return valid;
 	}
 	
-	/** Redirect to login. */
-	private void redirectToLogin() {
-		/*
-		 * Added a timer to have a delay before redirect since this was causing the firefox javascript exception.
-		 */
-		final Timer timer = new Timer() {
-			@Override
-			public void run() {
-				MatContext.get().redirectToHtmlPage(ClientConstants.HTML_LOGIN);
-			}
-		};
-		timer.schedule(1000);
-	}
-	
 	/** Reset messages. */
 	private void resetMessages() {
 		detailDisplay.getErrorMessageDisplay().clear();
@@ -279,25 +300,34 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	 * @param pageSize the page size */
 	private void search(String key, int startIndex, int pageSize) {
 		lastSearchKey = key;
-		// showSearchingBusy(true);
-		/*
-		 * MatContext.get().getAdminService().searchUsers(key, startIndex, pageSize, new AsyncCallback<ManageUsersSearchModel>() {
-		 * 
-		 * @Override public void onFailure(Throwable caught) { detailDisplay.getErrorMessageDisplay()
-		 * .setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage()); MatContext.get().recordTransactionEvent(null, null,
-		 * null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0); showSearchingBusy(false); if (caught instanceof
-		 * InCorrectUserRoleException) { callSignOut(); } }
-		 * 
-		 * @Override public void onSuccess(ManageUsersSearchModel result) { SearchResultUpdate sru = new SearchResultUpdate();
-		 * sru.update(result, (TextBox) searchDisplay.getSearchString(), lastSearchKey); sru = null; searchDisplay.buildDataTable(result);
-		 * showSearchingBusy(false); Mat.focusSkipLists("Manage Users"); } });
-		 */
+		showSearchingBusy(true);
+		MatContext.get().getAdminService().searchOrganization(key, startIndex, pageSize,
+				new AsyncCallback<ManageOrganizationSearchModel>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				detailDisplay.getErrorMessageDisplay()
+				.setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null,
+						null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+				showSearchingBusy(false);
+				
+			}
+			@Override
+			public void onSuccess(ManageOrganizationSearchModel result) {
+				SearchResultUpdate sru = new SearchResultUpdate();
+				sru.update(result, (TextBox) searchDisplay.getSearchString(), lastSearchKey);
+				sru = null;
+				searchDisplay.buildDataTable(result);
+				showSearchingBusy(false);
+				Mat.focusSkipLists("Manage Users");
+			}
+		});
 	}
 	
 	/** Sets the user details to view. */
-	private void setUserDetailsToView() {
+	private void setOrganizationDetailsToView() {
 		detailDisplay.getOid().setValue(currentDetails.getOid());
-		// detailDisplay.getRootOid().setValue(currentDetails.getRootOid());
+		detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
 	}
 	
 	/** Show searching busy.
@@ -316,7 +346,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	/** Update. */
 	private void update() {
 		resetMessages();
-		updateUserDetailsFromView();
+		updateOrganizationDetailsFromView();
 		if (isValid(currentDetails)) {
 			/*
 			 * MatContext.get().getAdminService().saveUpdateUser(currentDetails, new AsyncCallback<SaveUpdateUserResult>() {
@@ -334,10 +364,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		}
 	}
 	
-	/**
-	 * Update user details from view.
-	 */
-	private void updateUserDetailsFromView() {
+	/** Update Organization details from view. */
+	private void updateOrganizationDetailsFromView() {
 		currentDetails.setOid(detailDisplay.getOid().getValue());
 	}
 }

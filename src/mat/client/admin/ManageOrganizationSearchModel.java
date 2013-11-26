@@ -16,14 +16,14 @@ IsSerializable {
 	 * The Class Result.
 	 */
 	public static class Result implements IsSerializable {
-		
+		private String key;
 		private String oid;
 		/** The org name. */
 		private String orgName;
 		
 		public String getKey() {
 			// TODO Auto-generated method stub
-			return null;
+			return key;
 		}
 		/**
 		 * @return the oid
@@ -38,6 +38,12 @@ IsSerializable {
 		 */
 		public String getOrgName() {
 			return orgName;
+		}
+		/**
+		 * @param orgId the orgId to set
+		 */
+		public void setKey(String key) {
+			this.key = key;
 		}
 		/**
 		 * @param oid the oid to set

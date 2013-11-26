@@ -6,10 +6,11 @@
  */
 package mat.client.admin.service;
 
+import mat.client.admin.ManageOrganizationDetailModel;
+import mat.client.admin.ManageOrganizationSearchModel;
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.ManageUsersSearchModel;
 import mat.shared.InCorrectUserRoleException;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -18,6 +19,18 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
  */
 @RemoteServiceRelativePath("admin")
 public interface AdminService extends RemoteService {
+	
+	/**
+	 * Delete user.
+	 * 
+	 * @param userId
+	 *            the user id
+	 * @throws InCorrectUserRoleException
+	 *             the in correct user role exception
+	 */
+	public void deleteUser(String userId) throws InCorrectUserRoleException;
+	
+	ManageOrganizationDetailModel getOrganization(String key);
 	
 	/**
 	 * Gets the user.
@@ -31,6 +44,16 @@ public interface AdminService extends RemoteService {
 	public ManageUsersDetailModel getUser(String key) throws InCorrectUserRoleException;
 	
 	/**
+	 * Reset user password.
+	 * 
+	 * @param userid
+	 *            the userid
+	 * @throws InCorrectUserRoleException
+	 *             the in correct user role exception
+	 */
+	public void resetUserPassword(String userid) throws InCorrectUserRoleException;
+	
+	/**
 	 * Save update user.
 	 * 
 	 * @param model
@@ -40,7 +63,7 @@ public interface AdminService extends RemoteService {
 	 *             the in correct user role exception
 	 */
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException;
-
+	ManageOrganizationSearchModel searchOrganization(String key, int startIndex, int pageSize);
 	/**
 	 * Search users.
 	 * 
@@ -55,24 +78,4 @@ public interface AdminService extends RemoteService {
 	 *             the in correct user role exception
 	 */
 	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws InCorrectUserRoleException;
-	
-	/**
-	 * Delete user.
-	 * 
-	 * @param userId
-	 *            the user id
-	 * @throws InCorrectUserRoleException
-	 *             the in correct user role exception
-	 */
-	public void deleteUser(String userId) throws InCorrectUserRoleException;
-	
-	/**
-	 * Reset user password.
-	 * 
-	 * @param userid
-	 *            the userid
-	 * @throws InCorrectUserRoleException
-	 *             the in correct user role exception
-	 */
-	public void resetUserPassword(String userid) throws InCorrectUserRoleException;
 }

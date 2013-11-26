@@ -422,6 +422,8 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
 		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText, startIndex - 1, numResults, filter);
 	}
+	
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasurePackageService#searchMeasuresForDraft(int, int)
 	 */
@@ -429,11 +431,16 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	 * @Override public List<MeasureShareDTO> searchMeasuresForDraft(final int startIndex, final int numResults) { User user =
 	 * userDAO.find(LoggedInUserUtil.getLoggedInUser()); return measurePackageDAO.getMeasuresForDraft(user, startIndex, numResults); }
 	 */
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#searchMeasuresForDraft(java.lang.String)
+	 */
 	@Override
-	public List<MeasureShareDTO> searchMeasuresForDraft(final String searchText ,final int startIndex,
-			final int numResults) {
+	public List<MeasureShareDTO> searchMeasuresForDraft(final String searchText) {
 		User user = userDAO.find(LoggedInUserUtil.getLoggedInUser());
-		return measurePackageDAO.getMeasuresForDraft(searchText, user, startIndex, numResults);
+		return measurePackageDAO.getMeasuresForDraft(searchText, user);
 	}
 	
 	

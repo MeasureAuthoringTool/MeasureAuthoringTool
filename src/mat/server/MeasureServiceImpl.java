@@ -236,14 +236,13 @@ MeasureService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.measure.service.MeasureService#searchMeasuresForDraft(int, int)
+	 * @see mat.client.measure.service.MeasureService#searchMeasuresForDraft(java.lang.String)
 	 */
 	@Override
-	public ManageMeasureSearchModel searchMeasuresForDraft(String searchText,int startIndex,
-			int pageSize) {
-		return this.getMeasureLibraryService().searchMeasuresForDraft(searchText,startIndex, pageSize);
+	public ManageMeasureSearchModel searchMeasuresForDraft(String searchText) {
+		return this.getMeasureLibraryService().searchMeasuresForDraft(searchText);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#searchMeasuresForVersion(java.lang.String)
 	 */
@@ -251,7 +250,7 @@ MeasureService {
 	public ManageMeasureSearchModel searchMeasuresForVersion(String searchText) {
 		return this.getMeasureLibraryService().searchMeasuresForVersion(searchText);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#searchUsers(int, int)
 	 */
@@ -260,7 +259,7 @@ MeasureService {
 			int pageSize) {
 		return this.getMeasureLibraryService().searchUsers(startIndex, pageSize);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#transferOwnerShipToUser(java.util.List, java.lang.String)
 	 */

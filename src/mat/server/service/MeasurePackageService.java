@@ -262,18 +262,12 @@ public interface MeasurePackageService {
 	
 	/**
 	 * Search measures for draft.
-	 * 
-	 * @param startIndex
-	 *            - {@link Integer}.
-	 * @param numResults
-	 *            - {@link Integer}.
-	 * @return {@link List} {@link MeasureShareDTO}. *
-	 */
-	/*
-	 * List<MeasureShareDTO> searchMeasuresForDraft(int startIndex, int numResults);
-	 */
-	
-	List<MeasureShareDTO> searchMeasuresForDraft(String searchText, int startIndex, int numResults);
+	 *
+	 * @param searchText
+	 * 				- {@link String}.
+	 * @return {@link List} {@link MeasureShareDTO}.
+	 */		
+	List<MeasureShareDTO> searchMeasuresForDraft(String searchText);
 	
 	/**
 	 * Search measures for version.

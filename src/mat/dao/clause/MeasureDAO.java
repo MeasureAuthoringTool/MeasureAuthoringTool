@@ -116,10 +116,15 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the max e measure id
 	 */
 	public int getMaxEMeasureId();
-	
-	List<MeasureShareDTO> getMeasuresForDraft(String text, User user, int startIndex, int pageSize);
-	
-	
+		
+	/**
+	 * Gets the measures for draft.
+	 *
+	 * @param text the text
+	 * @param user the user
+	 * @return the measures for draft
+	 */
+	List<MeasureShareDTO> getMeasuresForDraft(String text, User user);	
 	
 	/**
 	 * Gets the measures for draft.

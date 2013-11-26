@@ -775,7 +775,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * 
 	 * @param valueSetDateStr
 	 *            - {@link String}.
-	 * @return the and validate value set date
 	 * @throws InvalidValueSetDateException
 	 *             - {@link Exception}. *
 	 */
@@ -783,7 +782,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (StringUtils.isNotBlank(valueSetDateStr)) {
 			DateStringValidator dsv = new DateStringValidator();
 			int validationCode = dsv.isValidDateString(valueSetDateStr);
-			if (validationCode != dsv.VALID) {
+			if (validationCode != DateStringValidator.VALID) {
 				throw new InvalidValueSetDateException();
 			}
 		}
@@ -950,13 +949,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 *            - {@link Integer}.
 	 * @return {@link Integer}. *
 	 */
-	private int getPageCount(final long totalRows, final int numberOfRows) {
+	/*private int getPageCount(final long totalRows, final int numberOfRows) {
 		int pageCount = 0;
 		int mod = (int) (totalRows % numberOfRows);
 		pageCount = (int) (totalRows / numberOfRows);
 		pageCount = (mod > 0) ? (pageCount + 1) : pageCount;
 		return pageCount;
-	}
+	}*/
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getRecentMeasureActivityLog(java.lang.String)
@@ -1405,23 +1404,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.server.service.MeasureLibraryService#searchMeasuresForDraft(int, int)
+	 * @see mat.server.service.MeasureLibraryService#searchMeasuresForDraft(java.lang.String)
 	 */
 	@Override
-	public final ManageMeasureSearchModel searchMeasuresForDraft(final String searchText, final int startIndex, final int pageSize) {
+	public final ManageMeasureSearchModel searchMeasuresForDraft(final String searchText) {
 		String currentUserId = LoggedInUserUtil.getLoggedInUser();
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-		List<MeasureShareDTO> measureList = getService().searchMeasuresForDraft(searchText,startIndex, pageSize);
-		searchModel.setStartIndex(startIndex);
+		List<MeasureShareDTO> measureList = getService().searchMeasuresForDraft(searchText);
 		searchModel.setResultsTotal((int) getService().countMeasuresForDraft(searchText));
 		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 		searchModel.setData(detailModelList);
 		for (MeasureShareDTO dto : measureList) {
 			setDTOtoModel(detailModelList, dto, currentUserId, isSuperUser);
 		}
-		searchModel.setPageCount(getPageCount(searchModel.getResultsTotal(), pageSize));
 		return searchModel;
 	}
 	

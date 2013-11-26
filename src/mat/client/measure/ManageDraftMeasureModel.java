@@ -164,7 +164,7 @@ class ManageDraftMeasureModel extends PagingFacade<ManageMeasureSearchModel.Resu
 	 * 
 	 * @return the selected measure
 	 */
-	public ManageMeasureSearchModel.Result getSelectedMeasure() {
+	/*public ManageMeasureSearchModel.Result getSelectedMeasure() {
 		ManageMeasureSearchModel.Result r = new ManageMeasureSearchModel.Result();
 		List<ManageMeasureSearchModel.Result> data = getData();
 		for(int i = 0; i < data.size(); i++) {
@@ -175,7 +175,9 @@ class ManageDraftMeasureModel extends PagingFacade<ManageMeasureSearchModel.Resu
 			}
 		}
 		return r;
-	}
+	}*/
 	
-
+	public List<ManageMeasureSearchModel.Result> getDataList() {
+		return getData();
+	}
 }

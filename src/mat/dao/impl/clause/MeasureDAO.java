@@ -523,11 +523,12 @@ mat.dao.clause.MeasureDAO {
 	
 	/**
 	 * Gets the measures for draft.
-	 * 
-	 * @param user
-	 *            the user
+	 *
+	 * @param searchText the search text
+	 * @param user the user
 	 * @return the measures for draft
 	 */
+	@Override
 	public List<MeasureShareDTO> getMeasuresForDraft(String searchText, User user) {
 		List<MeasureShareDTO> orderedDTOList = getMeasureShareInfoForUser(searchText,user,
 				0, Integer.MAX_VALUE);
@@ -565,7 +566,7 @@ mat.dao.clause.MeasureDAO {
 		return dtoList;
 	}
 	
-	@Override
+	/*@Override
 	public List<MeasureShareDTO> getMeasuresForDraft(String text,User user, int startIndex,
 			int pageSize) {
 		List<MeasureShareDTO> dtoList = getMeasuresForDraft(text, user);
@@ -575,7 +576,7 @@ mat.dao.clause.MeasureDAO {
 		} else {
 			return dtoList;
 		}
-	}
+	}*/
 	
 	/** Gets the measures for draft.
 	 * 
@@ -625,8 +626,7 @@ mat.dao.clause.MeasureDAO {
 	 * int)
 	 */
 	@Override
-	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex,
-			int pageSize) {
+	public List<MeasureShareDTO> getMeasuresForDraft(User user, int startIndex, int pageSize) {
 		List<MeasureShareDTO> dtoList = getMeasuresForDraft(user);
 		if (pageSize < dtoList.size()) {
 			return dtoList.subList(startIndex,

@@ -275,58 +275,21 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @param results
 		 *            the results
-		 * @param pageCount
-		 *            the page count
-		 * @param totalResults
-		 *            the total results
-		 * @param currentPage
-		 *            the current page
-		 * @param pageSize
-		 *            the page size
 		 */
-		public void buildDataTable(
-				SearchResults<ManageMeasureSearchModel.Result> results,
-				int pageCount, long totalResults, int currentPage, int pageSize);
+		void buildDataTable(SearchResults<ManageMeasureSearchModel.Result> results);
 		/**
 		 * Gets the cancel button.
 		 * 
 		 * @return the cancel button
 		 */
-		public HasClickHandlers getCancelButton();
-		/**
-		 * Gets the current page.
-		 * 
-		 * @return the current page
-		 */
-		public int getCurrentPage();
-		
-		/**
-		 * Gets the page selection tool.
-		 * 
-		 * @return the page selection tool
-		 */
-		public HasPageSelectionHandler getPageSelectionTool();
-		
-		/**
-		 * Gets the page size.
-		 * 
-		 * @return the page size
-		 */
-		public int getPageSize();
-		
-		/**
-		 * Gets the page size selection tool.
-		 * 
-		 * @return the page size selection tool
-		 */
-		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
-		
+		HasClickHandlers getCancelButton();
+				
 		/**
 		 * Gets the save button.
 		 * 
 		 * @return the save button
 		 */
-		public HasClickHandlers getSaveButton();
+		HasClickHandlers getSaveButton();
 		
 		/**
 		 * @return search button on search Widget.
@@ -342,22 +305,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return Zoom button.
 		 */
 		CustomButton getZoomButton();
-		
+				
 		/**
-		 * Sets the current page.
-		 * 
-		 * @param pageNumber
-		 *            the new current page
+		 * Gets the selected measure.
+		 *
+		 * @return the selected measure
 		 */
-		public void setCurrentPage(int pageNumber);
-		
-		/**
-		 * Sets the page size.
-		 * 
-		 * @param pageNumber
-		 *            the new page size
-		 */
-		public void setPageSize(int pageNumber);
+		Result getSelectedMeasure();
 	}
 	
 	/**
@@ -1542,10 +1496,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * Creates the draft.
 	 */
 	private void createDraft() {
-		int pageNumber = draftDisplay.getCurrentPage();
-		int pageSize = draftDisplay.getPageSize();
-		int startIndex = pageSize * (pageNumber - 1);
-		searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText(), startIndex, draftDisplay.getPageSize());
+		searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText());
 		searchDisplay.getSuccessMeasureDeletion().clear();
 		searchDisplay.getErrorMeasureDeletion().clear();
 		draftDisplay.getErrorMessageDisplay().clear();
@@ -1554,8 +1505,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setButtonPanel(null, draftDisplay.getZoomButton());
 		draftDisplay.getSearchWidget().setVisible(false);
 		isSearchVisibleOnDraft = false;
-		panel.setHeading("My Measures > Create Draft of Existing Measure",
-				"MainContent");
+		panel.setHeading("My Measures > Create Draft of Existing Measure", "MainContent");
 		panel.setContent(draftDisplay.asWidget());
 		Mat.focusSkipLists("MainContent");
 	}
@@ -1566,10 +1516,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @param currentDetails
 	 *            the current details
 	 */
-	private void createDraftOfSelectedVersion(
-			ManageMeasureDetailModel currentDetails) {
-		cloneMeasure(currentDetails, true);
-		
+	private void createDraftOfSelectedVersion(ManageMeasureDetailModel currentDetails) {
+		cloneMeasure(currentDetails, true);		
 	}
 	
 	/**
@@ -1596,8 +1544,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setButtonPanel(null, versionDisplay.getZoomButton());
 		versionDisplay.getSearchWidget().setVisible(false);
 		isSearchVisibleOnVersion = false;
-		panel.setHeading("My Measures > Create Measure Version of Draft",
-				"MainContent");
+		panel.setHeading("My Measures > Create Measure Version of Draft", "MainContent");
 		panel.setContent(versionDisplay.asWidget());
 		Mat.focusSkipLists("MainContent");
 		clearRadioButtonSelection();
@@ -1841,96 +1788,32 @@ public class ManageMeasurePresenter implements MatPresenter {
 				draftDisplay.getSearchWidget().setVisible(isSearchVisibleOnDraft);
 			}
 		});
+		
 		draftDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText(), startIndex, draftDisplay
-						.getPageSize());
+				searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText());
 			}
 		});
-		draftDisplay.getPageSelectionTool().addPageSelectionHandler(
-				new PageSelectionEventHandler() {
-					@Override
-					public void onPageSelection(PageSelectionEvent event) {
-						int pageNumber = event.getPageNumber();
-						if (pageNumber == -1) { // if next button clicked
-							if (draftDisplay.getCurrentPage() == draftMeasureResults
-									.getTotalpages()) {
-								pageNumber = draftDisplay.getCurrentPage();
-							} else {
-								pageNumber = draftDisplay.getCurrentPage() + 1;
-							}
-						} else if (pageNumber == 0) { // if first button clicked
-							pageNumber = 1;
-						} else if (pageNumber == -19) { // if first button
-							// clicked
-							if (draftDisplay.getCurrentPage() == 1) {
-								pageNumber = draftDisplay.getCurrentPage();
-							} else {
-								pageNumber = draftDisplay.getCurrentPage() - 1;
-							}
-						} else if (pageNumber == -9) { // if first button
-							// clicked
-							if (draftDisplay.getCurrentPage() == 1) {
-								pageNumber = draftDisplay.getCurrentPage();
-							} else {
-								pageNumber = draftDisplay.getCurrentPage() - 1;
-							}
-						}
-						draftDisplay.setCurrentPage(pageNumber);
-						int pageSize = draftDisplay.getPageSize();
-						int startIndex = pageSize * (pageNumber - 1);
-						searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText(), startIndex,
-								draftDisplay.getPageSize());
-					}
-				});
-		draftDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
-				new PageSizeSelectionEventHandler() {
-					@Override
-					public void onPageSizeSelection(PageSizeSelectionEvent event) {
-						draftDisplay.setPageSize(event.getPageSize());
-						searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText(), startIndex,
-								draftDisplay.getPageSize());
-					}
-				});
+				
 		draftDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				// O&M 17
 				((Button) draftDisplay.getSaveButton()).setEnabled(false);
 				
-				ManageMeasureSearchModel.Result selectedMeasure = draftMeasureResults
-						.getSelectedMeasure();
-				if (selectedMeasure.getId() != null) {
-					MatContext
-					.get()
-					.getMeasureService()
-					.getMeasure(
-							selectedMeasure.getId(),
+				ManageMeasureSearchModel.Result selectedMeasure = draftDisplay.getSelectedMeasure();
+				if (selectedMeasure != null && selectedMeasure.getId() != null) {
+					MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(), 
 							new AsyncCallback<ManageMeasureDetailModel>() {
-								
 								@Override
 								public void onFailure(Throwable caught) {
 									// O&M 17
-									((Button) draftDisplay
-											.getSaveButton())
-											.setEnabled(true);
-									draftDisplay
-									.getErrorMessageDisplay()
-									.setMessage(
-											MatContext
-											.get()
-											.getMessageDelegate()
-											.getGenericErrorMessage());
-									MatContext
-									.get()
-									.recordTransactionEvent(
-											null,
-											null,
-											null,
-											"Unhandled Exception: "
-													+ caught.getLocalizedMessage(),
-													0);
+									((Button) draftDisplay.getSaveButton()).setEnabled(true);
+									draftDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+											.getMessageDelegate().getGenericErrorMessage());
+									MatContext.get().recordTransactionEvent(null, null,	null, 
+										"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 								}
 								
 								@Override
@@ -1943,10 +1826,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 				} else {
 					// O&M 17
 					((Button) draftDisplay.getSaveButton()).setEnabled(true);
-					draftDisplay
-					.getErrorMessageDisplay()
-					.setMessage(
-							"Please select a Measure Version to create a Draft.");
+					draftDisplay.getErrorMessageDisplay()
+						.setMessage("Please select a Measure Version to create a Draft.");
 				}
 				
 			}
@@ -3066,47 +2947,22 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @param pageSize
 	 *            the page size
 	 */
-	private void searchMeasuresForDraft(String searchText, int startIndex, int pageSize) {
-		final String lastSearchText = (searchText != null) ? searchText
-				.trim() : null;
-				MatContext
-				.get()
-				.getMeasureService()
-				.searchMeasuresForDraft(lastSearchText, startIndex, pageSize,
+	private void searchMeasuresForDraft(String searchText) {
+		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
+				MatContext.get().getMeasureService().searchMeasuresForDraft(lastSearchText, 
 						new AsyncCallback<ManageMeasureSearchModel>() {
 					@Override
 					public void onFailure(Throwable caught) {
-						draftDisplay
-						.getErrorMessageDisplay()
-						.setMessage(
-								MatContext
-								.get()
-								.getMessageDelegate()
-								.getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(
-								null,
-								null,
-								null,
-								"Unhandled Exception: "
-										+ caught.getLocalizedMessage(),
-										0);
+						draftDisplay.getErrorMessageDisplay().setMessage(
+								MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						MatContext.get().recordTransactionEvent(null, null, null,
+								"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 					}
 					
 					@Override
-					public void onSuccess(
-							ManageMeasureSearchModel result) {
-						draftMeasureResults = new ManageDraftMeasureModel(
-								result.getData());
-						draftMeasureResults.setPageSize(result
-								.getData().size());
-						draftMeasureResults.setTotalPages(result
-								.getPageCount());
-						draftDisplay.buildDataTable(
-								draftMeasureResults,
-								result.getPageCount(),
-								result.getResultsTotal(),
-								draftDisplay.getCurrentPage(),
-								draftDisplay.getPageSize());
+					public void onSuccess(ManageMeasureSearchModel result) {
+						draftMeasureResults = new ManageDraftMeasureModel(result.getData());
+						draftDisplay.buildDataTable(draftMeasureResults);								
 					}
 				});
 				

@@ -106,9 +106,11 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		vPanel.add(buildCell("Title", title, false));
 		vPanel.add(new SpacerWidget());
 		
+		organization.setEnabled(false);
 		vPanel.add(buildCell("Organization", organization, true));
 		vPanel.add(new SpacerWidget());
 		
+		oid.setEnabled(false);
 		vPanel.add(buildCell("Organization OID", oid, true));
 		vPanel.add(new SpacerWidget());
 		

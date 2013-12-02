@@ -90,7 +90,7 @@ public class CellTreeNodeImpl implements CellTreeNode {
 		cellTreeNode.setLabel(nodeLabel);
 		cellTreeNode.setNodeType(nodesType);
 		cellTreeNode.setOpen(true);
-		if (nodeType == CLAUSE_NODE) {
+		if (cellTreeNode.getNodeType() == CLAUSE_NODE) {
 			cellTreeNode.setUUID(UUIDUtilClient.uuid());
 		}
 		this.setOpen(true); // open parent

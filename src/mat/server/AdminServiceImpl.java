@@ -2,6 +2,8 @@ package mat.server;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import mat.DTO.OrganizationDTO;
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
 import mat.client.admin.ManageUsersDetailModel;
@@ -86,6 +88,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		model.setOid(user.getOrgOID());
 		// model.setRootOid(user.getRootOID());
 		model.setOrganization(user.getOrganizationName());
+		model.setOrganizationId(user.getOrganizationId());
 		boolean v = isCurrentUserAdminForUser(user);
 		model.setCurrentUserCanChangeAccountStatus(v);
 		model.setCurrentUserCanUnlock(v);
@@ -242,6 +245,21 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		logger.info("Searching users on " + key + " with page size " + pageSize);
 		
 		return model;
+	}
+	
+	@Override
+	public List<OrganizationDTO> getAllOrganizations() {
+		List<OrganizationDTO> organizationDTOs = new ArrayList<OrganizationDTO>();
+		List<Organization> organizations = getOrganizationDAO().getAllOrganizations();
+		for (Organization organization : organizations) {
+			OrganizationDTO organizationDTO = new OrganizationDTO();
+			organizationDTO.setId(String.valueOf(organization.getId()));
+			organizationDTO.setName(organization.getOrganizationName());
+			organizationDTO.setOID(organization.getOrganizationOID());
+			organizationDTOs.add(organizationDTO);
+		}
+		logger.info("Getting all organizations.");
+		return organizationDTOs;
 	}
 	
 }

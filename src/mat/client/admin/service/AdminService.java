@@ -6,6 +6,9 @@
  */
 package mat.client.admin.service;
 
+import java.util.List;
+
+import mat.DTO.OrganizationDTO;
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
 import mat.client.admin.ManageUsersDetailModel;
@@ -78,4 +81,6 @@ public interface AdminService extends RemoteService {
 	 *             the in correct user role exception
 	 */
 	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws InCorrectUserRoleException;
+	
+	List<OrganizationDTO> getAllOrganizations();
 }

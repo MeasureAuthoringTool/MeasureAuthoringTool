@@ -1,12 +1,19 @@
 package mat.client.admin;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import mat.DTO.OrganizationDTO;
 import mat.client.ImageResources;
+import mat.client.codelist.HasListBox;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.EmailAddressTextBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.FocusableImageButton;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.PhoneNumberWidget;
 import mat.client.shared.RequiredIndicator;
@@ -18,6 +25,7 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.UserNameWidget;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.GwtEvent;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -26,6 +34,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
@@ -99,7 +108,7 @@ public class ManageUsersDetailView
 	private RadioButton orgSuperUserRadio = new RadioButton("role", "Top Level User");
 	
 	/** The organization. */
-	private TextBox organization = new TextBox();
+	private ListBoxMVP organizationListBox = new ListBoxMVP();
 	
 	/** The active status. */
 	private RadioButton activeStatus = new RadioButton("status", "Active");
@@ -118,6 +127,9 @@ public class ManageUsersDetailView
 	
 	/** The success messages. */
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	
+	/** The organizations map. */
+	private Map<String, OrganizationDTO> organizationsMap = new HashMap<String, OrganizationDTO>();
 
 	/**
 	 * Instantiates a new manage users detail view.
@@ -190,8 +202,21 @@ public class ManageUsersDetailView
 		rightPanel.add(roleRadioPanel);
 		rightPanel.add(new SpacerWidget());
 
-		rightPanel.add(LabelBuilder.buildRequiredLabel(organization, organizationLabel));
-		rightPanel.add(organization);
+		rightPanel.add(LabelBuilder.buildRequiredLabel(organizationListBox, organizationLabel));
+		rightPanel.add(organizationListBox);
+		organizationListBox.addValueChangeHandler(new ValueChangeHandler<String>() {
+			@Override
+			public void onValueChange(ValueChangeEvent<String> event) {
+				OrganizationDTO orgDTO =  organizationsMap.get(organizationListBox.getValue());
+				if (orgDTO != null) {
+					oid.setValue(orgDTO.getOID());
+					oid.setTitle(orgDTO.getOID());
+				} else {
+					oid.setValue("");
+					oid.setTitle("");
+				}
+			}
+		});
 		rightPanel.add(new SpacerWidget());
 
 		rightPanel.add(LabelBuilder.buildRequiredLabel(oid, oidLabel));
@@ -221,14 +246,14 @@ public class ManageUsersDetailView
 		containerPanel.setContent(mainPanel);
 		//containerPanel.setEmbeddedLink("Manage Users");
 		title.setWidth("196px");
-		organization.setWidth("196px");
+		//organization.setWidth("196px");
 		oid.setWidth("196px");
 		//rootOid.setWidth("196px");
-
-		oid.setMaxLength(50);
+		oid.setEnabled(false);
+		//oid.setMaxLength(50);
 		//rootOid.setMaxLength(50);
 		title.setMaxLength(32);
-		organization.setMaxLength(80);
+		//organization.setMaxLength(80);
 	}
 
 	/* (non-Javadoc)
@@ -312,13 +337,25 @@ public class ManageUsersDetailView
 		return phoneWidget.getPhoneNumber();
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getOrganization()
-	 */
 	@Override
-	public HasValue<String> getOrganization() {
-		return organization;
+	public ListBoxMVP getOrganizationListBox() {
+		return organizationListBox;
 	}
+	
+	@Override
+	public void populateOrganizations(List<? extends HasListBox> organizations) {
+		setListBoxItems(organizationListBox, organizations, MatContext.PLEASE_SELECT);
+	}
+	
+	public void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption){
+		listBox.clear();
+		listBox.addItem(defaultOption,"");
+		if (itemList != null) {
+			for (HasListBox listBoxContent : itemList) {
+				listBox.addItem(listBoxContent.getItem(), "" + listBoxContent.getValue());
+			}
+		}
+	}	
 
 	/* (non-Javadoc)
 	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getIsActive()
@@ -436,7 +473,7 @@ public class ManageUsersDetailView
 	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getOid()
 	 */
 	@Override
-	public HasValue<String> getOid() {
+	public TextBox getOid() {
 		return oid;
 	}
 
@@ -486,5 +523,21 @@ public class ManageUsersDetailView
 	@Override
 	public Label getLoginId() {
 		return loginId;
+	}
+
+	/**
+	 * @return the organizationsMap
+	 */
+	@Override
+	public Map<String, OrganizationDTO> getOrganizationsMap() {
+		return organizationsMap;
+	}
+
+	/**
+	 * @param organizationsMap the organizationsMap to set
+	 */
+	@Override
+	public void setOrganizationsMap(Map<String, OrganizationDTO> organizationsMap) {
+		this.organizationsMap = organizationsMap;
 	}
 }

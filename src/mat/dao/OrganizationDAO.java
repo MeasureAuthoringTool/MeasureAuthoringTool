@@ -3,7 +3,7 @@ package mat.dao;
 import java.util.List;
 import mat.model.Organization;
 /** The Interface UserDAO. */
-public interface OrganizationDAO extends IDAO<Organization, String> {
+public interface OrganizationDAO extends IDAO<Organization, Long> {
 	
 	/** @param text
 	 * @return */
@@ -17,4 +17,11 @@ public interface OrganizationDAO extends IDAO<Organization, String> {
 	 * @param numResults
 	 * @return */
 	List<Organization> searchOrganization(String name, int startIndex, int numResults);
+	
+	/**
+	 * Gets all the organizations.
+	 *
+	 * @return The list of all organizations
+	 */
+	List<Organization> getAllOrganizations();	
 }

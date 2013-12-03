@@ -1,5 +1,6 @@
 package mat.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
@@ -9,7 +10,7 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-public class OrganizationDAO extends GenericDAO<Organization, String> implements
+public class OrganizationDAO extends GenericDAO<Organization, Long> implements
 mat.dao.OrganizationDAO {
 	@Override
 	public int countSearchResults(String text) {
@@ -17,6 +18,7 @@ mat.dao.OrganizationDAO {
 		criteria.setProjection(Projections.rowCount());
 		return ((Long) criteria.uniqueResult()).intValue();
 	}
+	
 	/**
 	 * Creates the search criteria.
 	 * 
@@ -30,6 +32,7 @@ mat.dao.OrganizationDAO {
 		criteria.add(Restrictions.ilike("organizationName", "%" + text + "%"));
 		return criteria;
 	}
+	
 	@Override
 	public Organization findByOid(String oid) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -41,6 +44,7 @@ mat.dao.OrganizationDAO {
 			return null;
 		}
 	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -62,6 +66,7 @@ mat.dao.OrganizationDAO {
 			closeSession(session);
 		}
 	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -77,4 +82,18 @@ mat.dao.OrganizationDAO {
 		}
 		return criteria.list();
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.dao.OrganizationDAO#getAllOrganizations()
+	 */
+	@Override
+	public List<Organization> getAllOrganizations() {
+		List<Organization> organizations = new ArrayList<Organization>();
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(Organization.class);
+		if (!criteria.list().isEmpty()) {
+			organizations = criteria.list();
+		}
+		return organizations;
+	}	
 }

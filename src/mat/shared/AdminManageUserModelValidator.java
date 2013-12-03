@@ -52,7 +52,7 @@ public class AdminManageUserModelValidator {
 			message.add(MatContext.get().getMessageDelegate().getPhoneTenDigitMessage());
 		}	
 		
-		if("".equals(model.getOrganization().trim())) {
+		if("".equals(model.getOrganizationId().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getOrgRequiredMessage());
 		}
 		if("".equals(model.getOid().trim())) {

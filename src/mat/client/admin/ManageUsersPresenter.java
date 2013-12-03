@@ -2,12 +2,17 @@ package mat.client.admin;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import mat.DTO.OrganizationDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.admin.service.SaveUpdateUserResult;
+import mat.client.codelist.HasListBox;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.PageSelectionEvent;
@@ -157,13 +162,19 @@ public class ManageUsersPresenter implements MatPresenter {
 		 */
 		HasValue<String> getPhoneNumber();
 		
-		/**
-		 * Gets the organization.
-		 * 
-		 * @return the organization
-		 */
-		HasValue<String> getOrganization();
 		
+		/**
+		 * Gets the organization list box.
+		 *
+		 * @return the organization list box
+		 */
+		ListBoxMVP getOrganizationListBox();
+		
+		void populateOrganizations(List<? extends HasListBox> organizations);
+		
+		void setOrganizationsMap(Map<String, OrganizationDTO> organizationsMap);
+		
+		Map<String, OrganizationDTO> getOrganizationsMap();
 		/**
 		 * Gets the role.
 		 * 
@@ -176,7 +187,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		 * 
 		 * @return the oid
 		 */
-		HasValue<String> getOid();
+		TextBox getOid();
 		//public HasValue<String> getRootOid();
 
 		/**
@@ -413,18 +424,41 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
-		search("", 1, searchDisplay.getPageSize());
+		search("", 1, searchDisplay.getPageSize());		
 	}
-
+	
 	/**
 	 * Display detail.
 	 */
 	private void displayDetail() {
 		resetMessages();
-		setUserDetailsToView();
+		populateOrganizations();		
 		panel.clear();
 		panel.add(detailDisplay.asWidget());
 		Mat.focusSkipLists("Manage Users");
+	}
+	
+	/**
+	 * Populate organizations in OrganizationListBox.
+	 */
+	private void populateOrganizations() {
+		MatContext.get().getAdminService().getAllOrganizations(new AsyncCallback<List<OrganizationDTO>>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				
+			}
+			@Override
+			public void onSuccess(List<OrganizationDTO> result) {
+				detailDisplay.populateOrganizations(result);				
+				Map<String, OrganizationDTO> orgMap = new HashMap<String, OrganizationDTO>();
+				for(OrganizationDTO organizationDTO : result) {
+					orgMap.put(organizationDTO.getId(), organizationDTO);
+				}
+				detailDisplay.setOrganizationsMap(orgMap);
+				
+				setUserDetailsToView();
+			}
+		});
 	}
 
 	/**
@@ -630,7 +664,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	/**
 	 * Sets the user details to view.
 	 */
-	private void setUserDetailsToView() {
+	private void setUserDetailsToView() { 
 		detailDisplay.getFirstName().setValue(currentDetails.getFirstName());
 		detailDisplay.getLastName().setValue(currentDetails.getLastName());
 		detailDisplay.getMiddleInitial().setValue(currentDetails.getMiddleInitial());
@@ -638,7 +672,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.getTitle().setValue(currentDetails.getTitle());
 		detailDisplay.getEmailAddress().setValue(currentDetails.getEmailAddress());
 		detailDisplay.getPhoneNumber().setValue(currentDetails.getPhoneNumber());
-		detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
+		detailDisplay.getOrganizationListBox().setValue(currentDetails.getOrganizationId());
 		detailDisplay.getIsActive().setValue(currentDetails.isActive());
 		if (!currentDetails.isActive()) {
 			detailDisplay.getIsRevoked().setValue(true);
@@ -658,6 +692,7 @@ public class ManageUsersPresenter implements MatPresenter {
 		detailDisplay.setShowUnlockOption(currentDetails.isCurrentUserCanUnlock() && currentDetails.isActive());
 		detailDisplay.getRole().setValue(currentDetails.getRole());
 		detailDisplay.getOid().setValue(currentDetails.getOid());
+		detailDisplay.getOid().setTitle(currentDetails.getOid());
 		//detailDisplay.getRootOid().setValue(currentDetails.getRootOid());
 	}
 
@@ -670,12 +705,20 @@ public class ManageUsersPresenter implements MatPresenter {
 		currentDetails.setMiddleInitial(detailDisplay.getMiddleInitial().getValue());
 		currentDetails.setTitle(detailDisplay.getTitle().getValue());
 		currentDetails.setEmailAddress(detailDisplay.getEmailAddress().getValue());
-		currentDetails.setPhoneNumber(detailDisplay.getPhoneNumber().getValue());
-		currentDetails.setOrganization(detailDisplay.getOrganization().getValue());
-		currentDetails.setActive(detailDisplay.getIsActive().getValue());
-		currentDetails.setOid(detailDisplay.getOid().getValue());
+		currentDetails.setPhoneNumber(detailDisplay.getPhoneNumber().getValue());		
+		currentDetails.setActive(detailDisplay.getIsActive().getValue());		
 		//currentDetails.setRootOid(detailDisplay.getRootOid().getValue());
 		currentDetails.setRole(detailDisplay.getRole().getValue());
+		
+		currentDetails.setOid(detailDisplay.getOid().getValue());
+		String orgId = detailDisplay.getOrganizationListBox().getValue();
+		currentDetails.setOrganizationId(orgId);
+		OrganizationDTO orgDTO =  detailDisplay.getOrganizationsMap().get(orgId);
+		if (orgDTO != null) {
+			currentDetails.setOrganization(orgDTO.getName());
+		} else {
+			currentDetails.setOrganization("");
+		}
 	}
 
 	/**

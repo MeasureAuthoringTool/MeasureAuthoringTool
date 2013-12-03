@@ -300,6 +300,15 @@ public class User  {
 		this.orgOID = orgOID;
 	}*/
 	
+	
+	public String getOrganizationId() {
+		String orgId = "";
+		if(this.organization != null){
+			orgId = String.valueOf(this.organization.getId());
+		}
+		return orgId;
+	}
+	
 	/**
 	 * Removed Root OID from User. But for legacy code purpose, getRootOID() method just returns blank string.
 	 * @return Blank String

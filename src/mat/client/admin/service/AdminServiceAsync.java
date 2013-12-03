@@ -1,5 +1,8 @@
 package mat.client.admin.service;
 
+import java.util.List;
+
+import mat.DTO.OrganizationDTO;
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
 import mat.client.admin.ManageUsersDetailModel;
@@ -67,4 +70,6 @@ public interface AdminServiceAsync {
 	 *            the callback
 	 */
 	public void searchUsers(String key, int startIndex, int pageSize, AsyncCallback<ManageUsersSearchModel> callback);
+	
+	void getAllOrganizations(AsyncCallback<List<OrganizationDTO>> callback);
 }

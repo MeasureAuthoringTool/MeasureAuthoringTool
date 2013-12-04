@@ -1364,22 +1364,25 @@ private void setAuthorsListOnView() {
 		clearMessages();
 	}
 	
-	/**
-	 * Gets the measure and logs in this measure as recently used measure in recent measure activity log.
-	 */
+	/** Gets the measure and logs in this measure as recently used measure in recent measure activity log.
+	 * 
+	 * @return the measure and log recent measure */
 	private void getMeasureAndLogRecentMeasure() {
 		MatContext.get().getMeasureService().getMeasureAndLogRecentMeasure(MatContext.get().getCurrentMeasureId(), 
 				MatContext.get().getLoggedinUserId(), getAsyncCallBack());
 	}
 
-	/**
-	 * Gets the measure detail.
-	 */
+	/** Gets the measure detail.
+	 * 
+	 * @return the measure detail */
 	private void getMeasureDetail(){
 		MatContext.get().getMeasureService().getMeasure(MatContext.get().getCurrentMeasureId(), 
 				getAsyncCallBack());
 	}
 
+	/** Gets the async call back.
+	 * 
+	 * @return the async call back */
 	private AsyncCallback<ManageMeasureDetailModel> getAsyncCallBack() {
 		return new AsyncCallback<ManageMeasureDetailModel>(){
 			final long callbackRequestTime = lastRequestTime;

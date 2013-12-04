@@ -10,7 +10,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
-
 import mat.client.login.LoginModel;
 import mat.client.shared.MatContext;
 import mat.dao.UserDAO;
@@ -23,7 +22,6 @@ import mat.server.model.MatUserDetails;
 import mat.server.service.LoginCredentialService;
 import mat.server.service.SecurityQuestionsService;
 import mat.server.service.UserService;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,26 +32,241 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextImpl;
 import org.springframework.security.core.userdetails.UserDetails;
 
+/** The Class LoginCredentialServiceImpl. */
 public class LoginCredentialServiceImpl implements LoginCredentialService {
-
+	/** The current time stamp. */
+	private static Timestamp currentTimeStamp;
+	/** The Constant logger. */
 	private static final Log logger = LogFactory
 			.getLog(LoginCredentialServiceImpl.class);
-	private static LoginModel loginModel1;
-	private static MatUserDetails userDetails1;
-	private static Timestamp currentTimeStamp;
-
+	/** The validate user login model. */
+	private static LoginModel validateUserLoginModel;
+	/** The validate user mat user details. */
+	private static MatUserDetails validateUserMatUserDetails;
+	/** The hibernate user service. */
 	@Autowired
 	private HibernateUserDetailService hibernateUserService;
-
-	@Autowired
-	private UserService userService;
-
+	/** The security questions service. */
 	@Autowired
 	private SecurityQuestionsService securityQuestionsService;
-
+	/** The user dao. */
 	@Autowired
-	UserDAO userDAO;
-
+	private UserDAO userDAO;
+	/** The user service. */
+	@Autowired
+	private UserService userService;
+	/*
+	 * (non-Javadoc)
+	 * @see mat.server.service.LoginCredentialService#changePasswordSecurityAnswers(mat.client.login.LoginModel)
+	 */
+	@Override
+	public boolean changePasswordSecurityAnswers(LoginModel model) {
+		logger.info("First time login, changing password and security answers");
+		logger.info("Changing password");
+		boolean result = false;
+		User user = userService.getById(model.getUserId());
+		userService.setUserPassword(user, model.getPassword(), false);
+		user.getPassword().setInitial(false);
+		logger.info("Saving security questions");
+		List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
+		while (secQuestions.size() < 3) {
+			UserSecurityQuestion newQuestion = new UserSecurityQuestion();
+			secQuestions.add(newQuestion);
+		}
+		String newQuestion1 = model.getQuestion1();
+		SecurityQuestions secQue1 = securityQuestionsService
+				.getSecurityQuestionObj(newQuestion1);
+		secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
+		secQuestions.get(0).setSecurityQuestions(secQue1);
+		secQuestions.get(0).setSecurityAnswer(model.getQuestion1Answer());
+		String newQuestion2 = model.getQuestion2();
+		SecurityQuestions secQue2 = securityQuestionsService
+				.getSecurityQuestionObj(newQuestion2);
+		secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
+		secQuestions.get(1).setSecurityQuestions(secQue2);
+		secQuestions.get(1).setSecurityAnswer(model.getQuestion2Answer());
+		String newQuestion3 = model.getQuestion3();
+		SecurityQuestions secQue3 = securityQuestionsService
+				.getSecurityQuestionObj(newQuestion3);
+		secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
+		secQuestions.get(2).setSecurityQuestions(secQue3);
+		secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
+		user.setSecurityQuestions(secQuestions);
+		userService.saveExisting(user);
+		MatUserDetails userDetails = (MatUserDetails) hibernateUserService
+				.loadUserByUsername(user.getLoginId());
+		if (userDetails != null) {
+			setAuthenticationToken(userDetails);
+			result = true;
+		} else {
+			model.setErrorMessage(MatContext.get().getMessageDelegate()
+					.getGenericErrorMessage());
+			result = false;
+		}
+		return result;
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see mat.server.service.LoginCredentialService#changeTempPassword(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public LoginModel changeTempPassword(String email, String changedpassword) {
+		logger.info("Changing the temporary Password");
+		logger.info("Changing the temporary Password for user " + email);
+		LoginModel loginModel = new LoginModel();
+		MatUserDetails userDetails = (MatUserDetails) hibernateUserService
+				.loadUserByUsername(email);
+		UserPassword userPassword = userDetails.getUserPassword();
+		String hashPassword = userService.getPasswordHash(
+				userPassword.getSalt(), changedpassword);
+		Date currentDate = new Date();
+		Timestamp currentTimeStamp = new Timestamp(currentDate.getTime());
+		userPassword.setPassword(hashPassword);
+		userPassword.setCreatedDate(currentTimeStamp);
+		userPassword.setTemporaryPassword(false);
+		hibernateUserService.saveUserDetails(userDetails);
+		setAuthenticationToken(userDetails);
+		loginModel = loginModelSetter(loginModel, userDetails);
+		hibernateUserService.saveUserDetails(userDetails);
+		logger.info("Roles for " + email + ": "
+				+ userDetails.getRoles().getDescription());
+		return loginModel;
+	}
+	/* Checks for first login failed attempt 
+	 * */
+	/** First failed login.
+	 * @param userId the user id
+	 * @param currentPasswordlockCounter the current password lock counter
+	 * @return the login model */
+	private LoginModel firstFailedLogin(String userId, int currentPasswordlockCounter) {
+		logger.debug("First failed login attempt");
+		// FIRST FAILED LOGIN ATTEMPT
+		validateUserLoginModel.setErrorMessage(MatContext.get()
+				.getMessageDelegate().getLoginFailedMessage());
+		validateUserMatUserDetails.getUserPassword().setPasswordlockCounter(
+				currentPasswordlockCounter + 1);
+		validateUserMatUserDetails.getUserPassword().setFirstFailedAttemptTime(
+				currentTimeStamp);
+		return validateUserLoginModel;
+	}
+	//to check the number of failed login attempts and increment the password lock counter
+	/** Increment password lock counter.
+	 * @param userId the user id
+	 * @param password the password
+	 * @return the login model */
+	private LoginModel incrementPassLockCounter(String userId, String password) {
+		logger.debug("Authentication Exception, need to log the failed attempts and increment the lockCounter");
+		validateUserLoginModel.setLoginFailedEvent(true);
+		validateUserLoginModel.setUserId(userId);
+		int currentPasswordlockCounter = validateUserMatUserDetails.getUserPassword()
+				.getPasswordlockCounter();
+		logger.info("CurrentPasswordLockCounter value:"
+				+ currentPasswordlockCounter);
+		if (validateUserMatUserDetails.getLockedOutDate() != null) {
+			logger.debug("User locked out");
+			validateUserLoginModel.setErrorMessage(MatContext.get()
+					.getMessageDelegate().getAccountLocked2Message());
+		}
+		switch (currentPasswordlockCounter) {
+			case 0:
+				validateUserLoginModel = firstFailedLogin(userId, currentPasswordlockCounter);
+				break;
+			case 1:
+				validateUserLoginModel = secondFailedLogin(userId, currentPasswordlockCounter);
+				break;
+			case 2:
+				validateUserLoginModel = thirdFailedLogin(userId);
+				break;
+			default:
+				// USER LOCKED OUT
+				logger.info("USER LOCKED OUT :" + userId);
+		} // end of switch.
+		hibernateUserService.saveUserDetails(validateUserMatUserDetails);
+		return validateUserLoginModel;
+	}
+	//Invokes if the user is already signed in
+	/** Checks if is already signed in.
+	 * @param userId the user id
+	 * @return the login model */
+	private LoginModel isAlreadySignedIn(String userId) {
+		// USER ALREADY LOGGED IN
+		logger.info("USER ALREADY LOGGED IN :" + userId);
+		validateUserLoginModel.setErrorMessage(MatContext.get()
+				.getMessageDelegate()
+				.getLoginFailedAlreadyLoggedInMessage());
+		validateUserLoginModel.setLoginFailedEvent(true);
+		return validateUserLoginModel;
+	}
+	//checks if the validUserDetails is not null and invokes isValidLogin() and incrementPassLockCounter() methods
+	/** Checks if is login is null.
+	 * @param userId the user id
+	 * @param password the password
+	 * @return the login model */
+	private LoginModel isValidUserDetailsNotNull(String userId, String password) {
+		String hashPassword = userService.getPasswordHash(validateUserMatUserDetails
+				.getUserPassword().getSalt(), password);
+		if (validateUserMatUserDetails.getStatus().getId().equals("2")) {
+			// REVOKED USER NO
+			logger.info("User status is 2, revoked");
+			validateUserLoginModel.setLoginFailedEvent(true);
+			validateUserLoginModel.setErrorMessage(MatContext.get()
+					.getMessageDelegate().getAccountRevokedMessage());
+			validateUserLoginModel.setUserId(userId);
+			// loginModel.setEmail(userDetails.getEmailAddress());
+			validateUserLoginModel.setLoginId(validateUserMatUserDetails.getLoginId());
+		} else if (hashPassword.equalsIgnoreCase(validateUserMatUserDetails
+				.getUserPassword().getPassword())
+				&& (validateUserMatUserDetails.getUserPassword().getPasswordlockCounter() < 3)
+				&& (validateUserMatUserDetails.getUserPassword().getForgotPwdlockCounter() < 3)) {
+			validateUserLoginModel = isValidLogin(userId, password);
+		} else {
+			validateUserLoginModel = incrementPassLockCounter(userId, password);
+		} // end of else
+		return validateUserLoginModel;
+	}
+	//checks to see if password is matched and sets AuthenticationToken for the validateUserMatUserDetails
+	/** Checks if is pass matched.
+	 * @param userId the user id
+	 * @return the login model */
+	private LoginModel isPasswordMatched(String userId) {
+		logger.debug("Password matched, not locked out");
+		if (!validateUserMatUserDetails.getUserPassword().isInitial()
+				&& !validateUserMatUserDetails.getUserPassword()
+				.isTemporaryPassword()) {
+			setAuthenticationToken(validateUserMatUserDetails);
+		}
+		validateUserLoginModel = loginModelSetter(validateUserLoginModel, validateUserMatUserDetails);
+		// userDetails.setSignInDate(currentTimeStamp);
+		hibernateUserService.saveUserDetails(validateUserMatUserDetails);
+		logger.info("Roles for " + userId + ": "
+				+ validateUserMatUserDetails.getRoles().getDescription());
+		return validateUserLoginModel;
+	}
+	//check to see if it is a valid login and invokes methods to validate pass and temp Password Expiration
+	/** Checks if is valid login.
+	 * @param userId the user id
+	 * @param password the password
+	 * @return the login model */
+	private LoginModel isValidLogin(String userId, String password) {
+		Date lastSignIn = validateUserMatUserDetails.getSignInDate();
+		Date lastSignOut = validateUserMatUserDetails.getSignOutDate();
+		boolean alreadySignedIn = MatContext.get().isAlreadySignedIn(
+				lastSignOut, lastSignIn, currentTimeStamp);
+		if (alreadySignedIn) {
+			validateUserLoginModel = isAlreadySignedIn(userId);
+		} else if (validateUserMatUserDetails.getUserPassword().isInitial()
+				|| validateUserMatUserDetails.getUserPassword()
+				.isTemporaryPassword()) {
+			validateUserLoginModel = temporaryPasswordExpiration(userId);
+		} else {
+			validateUserLoginModel = isPasswordMatched(userId);
+		}
+		return validateUserLoginModel;
+	}
+	/*
+	 * (non-Javadoc)
+	 * @see mat.server.service.LoginCredentialService#isValidPassword(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean isValidPassword(String userId, String password) {
 		logger.info("LoginCredentialServiceImpl: isValidPassword start :  ");
@@ -66,7 +279,6 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 					.getPassword())) {
 				logger.info("LoginCredentialServiceImpl: isValidPassword end : password matched. ");
 				return true;
-
 			} else {
 				logger.info("LoginCredentialServiceImpl: isValidPassword end : password mismatched. ");
 				return false;
@@ -76,256 +288,73 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			return false;
 		}
 	}
-
-	//user login validation
+	//to check the user login validation
+	/*
+	 * (non-Javadoc)
+	 * @see mat.server.service.LoginCredentialService#isValidUser(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public LoginModel isValidUser(String userId, String password) {
-		
-		loginModel1=new LoginModel();
-		Date currentDate=new Date();
+		validateUserLoginModel = new LoginModel();
+		Date currentDate = new Date();
 		currentTimeStamp = new Timestamp(currentDate.getTime());
-		loginModel1=isValidIdPass(userId,password);
-		logger.info("loginModel.isLoginFailedEvent():"+loginModel1.isLoginFailedEvent());
-		if (!loginModel1.isLoginFailedEvent()) {
+		validateUserLoginModel = isValidUserIdPassword(userId, password);
+		logger.info("loginModel.isLoginFailedEvent():" + validateUserLoginModel.isLoginFailedEvent());
+		if (!validateUserLoginModel.isLoginFailedEvent()) {
 			onSuccessLogin(userId);
 		}
-		return loginModel1;
+		return validateUserLoginModel;
 	}
-	
-	
-	//to check for password validity
-	private LoginModel isValidIdPass(String userId, String password)
-	{
-		userDetails1 = (MatUserDetails) hibernateUserService
+	//to check for the user password validity
+	/** Checks if is valid user id password.
+	 * @param userId the user id
+	 * @param password the password
+	 * @return the login model */
+	private LoginModel isValidUserIdPassword(String userId, String password) {
+		validateUserMatUserDetails = (MatUserDetails) hibernateUserService
 				.loadUserByUsername(userId);
-			
-		if (userDetails1 != null) {
-			loginModel1=isLoginIsNull(userId,password);
-         } else { // user not found
-        	 loginModel1.setLoginFailedEvent(true);
-        	 loginModel1.setErrorMessage(MatContext.get().getMessageDelegate()
+		if (validateUserMatUserDetails != null) {
+			validateUserLoginModel = isValidUserDetailsNotNull(userId, password);
+		} else { // user not found
+			validateUserLoginModel.setLoginFailedEvent(true);
+			validateUserLoginModel.setErrorMessage(MatContext.get().getMessageDelegate()
 					.getLoginFailedMessage());
 		}
-	return loginModel1;
+		return validateUserLoginModel;
 	}
-	
-	//to check if login is null
-	private LoginModel isLoginIsNull(String userId, String password){
-		
-		String hashPassword = userService.getPasswordHash(userDetails1
-				.getUserPassword().getSalt(), password);
-		if (userDetails1.getStatus().getId().equals("2")) {
-			// REVOKED USER NO
-			logger.info("User status is 2, revoked");
-			loginModel1.setLoginFailedEvent(true);
-			loginModel1.setErrorMessage(MatContext.get()
-					.getMessageDelegate().getAccountRevokedMessage());
-			loginModel1.setUserId(userId);
-			// loginModel.setEmail(userDetails.getEmailAddress());
-			loginModel1.setLoginId(userDetails1.getLoginId());
-		} else if (hashPassword.equalsIgnoreCase(userDetails1
-				.getUserPassword().getPassword())
-				&& userDetails1.getUserPassword().getPasswordlockCounter() < 3
-				&& userDetails1.getUserPassword().getForgotPwdlockCounter() < 3) {
-			loginModel1=isValidLogin(userId,password);
-
-			} else {
-				loginModel1=incrPassLockCounter(userId,password);
-			
-			}// end of else
-
-	return loginModel1;
+	/*
+	 * (non-Javadoc)
+	 * @see mat.server.service.LoginCredentialService#loadUserByUsername(java.lang.String)
+	 */
+	@Override
+	public UserDetails loadUserByUsername(String userId) {
+		// UserDAO userDAO = (UserDAO)context.getBean("userDAO");
+		return userDAO.getUser(userId);
 	}
-	
-	//to check number of failed login attempts
-	private LoginModel incrPassLockCounter(String userId, String password){
-		 
-			logger.debug("Authentication Exception, need to log the failed attempts and increment the lockCounter");
-			loginModel1.setLoginFailedEvent(true);
-			loginModel1.setUserId(userId);
-			int currentPasswordlockCounter = userDetails1.getUserPassword()
-					.getPasswordlockCounter();
-			logger.info("CurrentPasswordLockCounter value:"
-					+ currentPasswordlockCounter);
-			if (userDetails1.getLockedOutDate() != null) {
-				logger.debug("User locked out");
-				loginModel1.setErrorMessage(MatContext.get()
-						.getMessageDelegate().getAccountLocked2Message());
-			}
-			switch (currentPasswordlockCounter) {
-			case 0:
-				loginModel1=firstFailedLogin(userId,currentPasswordlockCounter);
-				break;
-			case 1:
-				loginModel1=secondFailedLogin(userId, currentPasswordlockCounter);
-				break;
-			case 2:
-				loginModel1=thirdFailedLogin(userId);
-				break;
-			default:
-				// USER LOCKED OUT
-				logger.info("USER LOCKED OUT :" + userId);
-			}// end of switch
-			hibernateUserService.saveUserDetails(userDetails1);
-
-		 return loginModel1;
-	 }
-	
-	   //first failed login attempt
-	private LoginModel firstFailedLogin(String userId,int currentPasswordlockCounter){
-			
-			logger.debug("First failed login attempt");
-			// FIRST FAILED LOGIN ATTEMPT
-			loginModel1.setErrorMessage(MatContext.get()
-					.getMessageDelegate().getLoginFailedMessage());
-			userDetails1.getUserPassword().setPasswordlockCounter(
-					currentPasswordlockCounter + 1);
-			userDetails1.getUserPassword().setFirstFailedAttemptTime(
-					currentTimeStamp);
-			return loginModel1;
-	 }
-		
-		//second failed login attempt
-	private LoginModel secondFailedLogin(String userId,int currentPasswordlockCounter){
-			
-			logger.debug("Second failed login attempt");
-			// SECOND FAILED LOGIN ATTEMPT
-			Timestamp firstFailedAttemptTime = userDetails1
-					.getUserPassword().getFirstFailedAttemptTime();
-			long difference = currentTimeStamp.getTime()
-					- firstFailedAttemptTime.getTime();
-			long MinuteDifference = difference / (60 * 1000);
-			if (MinuteDifference > 15) {
-				loginModel1.setErrorMessage(MatContext.get()
-						.getMessageDelegate().getLoginFailedMessage());
-				logger.info("MinuteDifference:" + MinuteDifference);
-				logger.info("Since the minuteDifference is greater than 15 minutes, update the failedAttemptTime");
-				userDetails1.getUserPassword()
-						.setFirstFailedAttemptTime(currentTimeStamp);
-			} else {
-				loginModel1.setErrorMessage(MatContext.get()
-						.getMessageDelegate()
-						.getSecondAttemptFailedMessage());
-				userDetails1.getUserPassword().setPasswordlockCounter(
-						currentPasswordlockCounter + 1);
-			}
-			return loginModel1;
-		}
-       
-		//third failed login attempt
-	private LoginModel thirdFailedLogin(String userId){
-		
-			// USER THIRD FAILED LOGIN ATTEMPT
-			logger.info("USER THIRD FAILED LOGIN ATTEMPT :" + userId);
-			Timestamp updatedFailedAttemptTime = userDetails1
-					.getUserPassword().getFirstFailedAttemptTime();
-			long timeDifference = currentTimeStamp.getTime()
-					- updatedFailedAttemptTime.getTime();
-			long minDifference = timeDifference / (60 * 1000);
-			if (minDifference > 15) {
-				logger.debug("MinuteDifference:" + minDifference);
-				logger.debug("Since the minuteDifference is greater than 15 minutes, update the failedAttemptTime");
-				loginModel1.setErrorMessage(MatContext.get()
-						.getMessageDelegate().getLoginFailedMessage());
-				userDetails1.getUserPassword()
-						.setFirstFailedAttemptTime(currentTimeStamp);
-				userDetails1.getUserPassword().setPasswordlockCounter(1);
-			} else {
-				loginModel1.setErrorMessage(MatContext.get()
-						.getMessageDelegate()
-						.getAccountLocked2Message());
-				userDetails1.setLockedOutDate(currentTimeStamp);
-				userDetails1.getUserPassword().setPasswordlockCounter(3);
-				logger.debug("Locking user out");
-			}
-			return loginModel1;
-		}
-	 
-	 //check to see if it is a valid login
-	private LoginModel isValidLogin(String userId,String password){
-		
-		Date lastSignIn = userDetails1.getSignInDate();
-		Date lastSignOut = userDetails1.getSignOutDate();
-
-		boolean alreadySignedIn = MatContext.get().isAlreadySignedIn(
-				lastSignOut, lastSignIn, currentTimeStamp);
-
-		if (alreadySignedIn) {
-			loginModel1=isAlreadySignedIn(userId);
-			
-		}else if(userDetails1.getUserPassword().isInitial()
-				|| userDetails1.getUserPassword()
-				.isTemporaryPassword()){
-			
-			loginModel1=tempPassExpiration(userId);
-			
-			}else {
-				loginModel1=isPassMatched(userId);
-		}
-	return loginModel1;
+	/** Login model setter.
+	 * @param loginmodel the login model
+	 * @param userDetails the user details
+	 * @return the login model */
+	private LoginModel loginModelSetter(LoginModel loginmodel,
+			MatUserDetails userDetails) {
+		LoginModel loginModel = loginmodel;
+		loginModel.setRole(userDetails.getRoles());
+		loginModel
+		.setInitialPassword(userDetails.getUserPassword().isInitial());
+		loginModel.setTemporaryPassword(userDetails.getUserPassword()
+				.isTemporaryPassword());
+		loginModel.setUserId(userDetails.getId());
+		loginModel.setEmail(userDetails.getEmailAddress());
+		loginModel.setLoginId(userDetails.getLoginId());
+		return loginModel;
 	}
-	 
-	//check if already signed in
-	private LoginModel isAlreadySignedIn(String userId){
-		
-		// USER ALREADY LOGGED IN
-					logger.info("USER ALREADY LOGGED IN :" + userId);
-					loginModel1.setErrorMessage(MatContext.get()
-							.getMessageDelegate()
-							.getLoginFailedAlreadyLoggedInMessage());
-					loginModel1.setLoginFailedEvent(true);
-		 return loginModel1;
-	 }
-	 
-	 //to check the expiration of intial or temp password
-	private LoginModel tempPassExpiration(String userId){
-		
-		//If this is a temporary or initial password, check for 5 day limit
-		Date createDate = userDetails1.getUserPassword().getCreatedDate();
-		Calendar calendar = GregorianCalendar.getInstance();
-		calendar.setTime(createDate);
-		calendar.roll(Calendar.DAY_OF_MONTH, 5);
-		
-		Calendar calendarForToday = GregorianCalendar.getInstance();
-		if(calendarForToday.after(calendar)){
-			logger.info("USER Temp or Initial Password has expired :" + userId);
-			loginModel1.setErrorMessage(MatContext.get()
-					.getMessageDelegate()
-					.getLoginFailedTempPasswordExpiredMessage());
-			loginModel1.setLoginFailedEvent(true);
-		}else{
-			loginModel1 = loginModelSetter(loginModel1, userDetails1);
-			// userDetails.setSignInDate(currentTimeStamp);
-			hibernateUserService.saveUserDetails(userDetails1);
-			logger.info("Roles for " + userId + ": "
-					+ userDetails1.getRoles().getDescription());
-		}
-		return loginModel1;
-	}
-
-	//check if password is matched
-	private LoginModel isPassMatched(String userId){
-
-		logger.debug("Password matched, not locked out");
-		if (!userDetails1.getUserPassword().isInitial()
-				&& !userDetails1.getUserPassword()
-						.isTemporaryPassword()) {
-			setAuthenticationToken(userDetails1);
-		}
-		loginModel1 = loginModelSetter(loginModel1, userDetails1);
-		// userDetails.setSignInDate(currentTimeStamp);
-		hibernateUserService.saveUserDetails(userDetails1);
-		logger.info("Roles for " + userId + ": "
-				+ userDetails1.getRoles().getDescription());
-		return loginModel1;
-	}
-	
-	//to check login failed attempts
-	private void onSuccessLogin(String userId){
-		
-		logger.info(userDetails1.getLoginId() + " has logged in.");
+	//invokes On Success User Login and displays ChartReport 
+	/** On success login.
+	 * 
+	 * @param userId the user id */
+	private void onSuccessLogin(String userId) {
+		logger.info(validateUserMatUserDetails.getLoginId() + " has logged in.");
 		String s = "\nlogin_success\n";
-
 		String chartReport = "CHARTREPORT";
 		List<MemoryPoolMXBean> pbeans = ManagementFactory
 				.getMemoryPoolMXBeans();
@@ -338,44 +367,94 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			s += "poolPeak:      \t" + mused.getUsed() + " ";
 			s += "poolMax:       \t" + mused.getMax() + "\n\n";
 		}
-
+		
 		MemoryMXBean bean = ManagementFactory.getMemoryMXBean();
 		// bean.setVerbose(true);
-
+		
 		MemoryUsage mu = bean.getNonHeapMemoryUsage();
 		// [MemoryUsage]
 		// \nNonHeap|init:<<val>>|committed:<<val>>|max:<<val>>|used:<<val>>
 		// \nHeap|init:<<val>>|committed:<<val>>|max:<<val>>|used:<<val>>
-
+		
 		s += "PermGen init:      \t" + mu.getInit() + "\n";
 		s += "PermGen committed: \t" + mu.getCommitted() + " ";
 		s += "PermGen Max:       \t" + mu.getMax() + " ";
 		s += "PermGen Used:      \t" + mu.getUsed() + " ";
 		chartReport += " " + mu.getUsed();
 		// ManagementFactory.
-
+		
 		mu = bean.getHeapMemoryUsage();
 		// Heap|init:<<val>>|committed:<<val>>|max:<<val>>|used:<<val>>
 		s += "Heap init:      \t" + mu.getInit() + " ";
 		s += "Heap committed: \t" + mu.getCommitted() + " ";
 		s += "Heap Max:       \t" + mu.getMax() + " ";
 		s += "Heap Used:      \t" + mu.getUsed() + "\n";
-
+		
 		chartReport += " " + mu.getUsed();
-
+		
 		ThreadMXBean tBean = ManagementFactory.getThreadMXBean();
 		s += "Threads running:   \t" + tBean.getThreadCount() + "\n";
 		chartReport += " " + tBean.getThreadCount();
 		chartReport += " " + System.currentTimeMillis();
-
+		
 		// Log logger = LogFactory.getLog(PreventCachingFilter.class);
 		chartReport += "\n";
 		s += "/login_success\n" + chartReport;
 		logger.info(s);
 	}
 	
-
+	//Checks for Second login failed attempt 
+	/** Second failed login.
+	 * 
+	 * @param userId the user id
+	 * @param currentPasswordlockCounter the current passwordlock counter
+	 * @return the login model */
+	private LoginModel secondFailedLogin(String userId, int currentPasswordlockCounter) {
+		logger.debug("Second failed login attempt");
+		// SECOND FAILED LOGIN ATTEMPT
+		Timestamp firstFailedAttemptTime = validateUserMatUserDetails
+				.getUserPassword().getFirstFailedAttemptTime();
+		long difference = currentTimeStamp.getTime()
+				- firstFailedAttemptTime.getTime();
+		long minuteDifference = difference / (60 * 1000);
+		if (minuteDifference > 15) {
+			validateUserLoginModel.setErrorMessage(MatContext.get()
+					.getMessageDelegate().getLoginFailedMessage());
+			logger.info("MinuteDifference:" + minuteDifference);
+			logger.info("Since the minuteDifference is greater than 15 minutes, update the failedAttemptTime");
+			validateUserMatUserDetails.getUserPassword()
+			.setFirstFailedAttemptTime(currentTimeStamp);
+		} else {
+			validateUserLoginModel.setErrorMessage(MatContext.get()
+					.getMessageDelegate()
+					.getSecondAttemptFailedMessage());
+			validateUserMatUserDetails.getUserPassword().setPasswordlockCounter(
+					currentPasswordlockCounter + 1);
+		}
+		return validateUserLoginModel;
+	}
 	
+	/** Sets the authentication token.
+	 * 
+	 * @param userDetails the new authentication token */
+	private void setAuthenticationToken(MatUserDetails userDetails) {
+		logger.debug("Setting authentication token");
+		Authentication auth = new UsernamePasswordAuthenticationToken(
+				userDetails.getId(), userDetails.getUserPassword()
+				.getPassword(), userDetails.getAuthorities());
+		
+		// US 170. set additional details for history event
+		((UsernamePasswordAuthenticationToken) auth).setDetails(userDetails);
+		SecurityContext sc = new SecurityContextImpl();
+		sc.setAuthentication(auth);
+		SecurityContextHolder.setContext(sc);
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see mat.server.service.LoginCredentialService#signOut()
+	 */
 	@Override
 	public void signOut() {
 		// as of US212 update to user sign out date
@@ -385,126 +464,69 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		 * if(userid != null) { Date currentDate = new Date(); Timestamp
 		 * currentTimeStamp = new Timestamp(currentDate.getTime()); User user =
 		 * userService.getById(userid);
-		 * 
 		 * if(user != null){ user.setSignOutDate(currentTimeStamp);
 		 * userService.saveExisting(user); } }
 		 */
 		SecurityContextHolder.clearContext();
 	}
-
-	@Override
-	public LoginModel changeTempPassword(String email, String changedpassword) {
-		logger.info("Changing the temporary Password");
-		logger.info("Changing the temporary Password for user " + email);
-		LoginModel loginModel = new LoginModel();
-
-		MatUserDetails userDetails = (MatUserDetails) hibernateUserService
-				.loadUserByUsername(email);
-		UserPassword userPassword = userDetails.getUserPassword();
-		String hashPassword = userService.getPasswordHash(
-				userPassword.getSalt(), changedpassword);
-		Date currentDate = new Date();
-		Timestamp currentTimeStamp = new Timestamp(currentDate.getTime());
-		userPassword.setPassword(hashPassword);
-		userPassword.setCreatedDate(currentTimeStamp);
-		userPassword.setTemporaryPassword(false);
-		hibernateUserService.saveUserDetails(userDetails);
-
-		setAuthenticationToken(userDetails);
-		loginModel = loginModelSetter(loginModel, userDetails);
-
-		hibernateUserService.saveUserDetails(userDetails);
-
-		logger.info("Roles for " + email + ": "
-				+ userDetails.getRoles().getDescription());
-		return loginModel;
-
-	}
-
-	private void setAuthenticationToken(MatUserDetails userDetails) {
-		logger.debug("Setting authentication token");
-		Authentication auth = new UsernamePasswordAuthenticationToken(
-				userDetails.getId(), userDetails.getUserPassword()
-						.getPassword(), userDetails.getAuthorities());
-
-		// US 170. set additional details for history event
-		((UsernamePasswordAuthenticationToken) auth).setDetails(userDetails);
-		SecurityContext sc = new SecurityContextImpl();
-		sc.setAuthentication(auth);
-		SecurityContextHolder.setContext(sc);
-	}
-
-	private LoginModel loginModelSetter(LoginModel loginmodel,
-			MatUserDetails userDetails) {
-		LoginModel loginModel = loginmodel;
-		loginModel.setRole(userDetails.getRoles());
-		loginModel
-				.setInitialPassword(userDetails.getUserPassword().isInitial());
-		loginModel.setTemporaryPassword(userDetails.getUserPassword()
-				.isTemporaryPassword());
-		loginModel.setUserId(userDetails.getId());
-		loginModel.setEmail(userDetails.getEmailAddress());
-		loginModel.setLoginId(userDetails.getLoginId());
-		return loginModel;
-	}
-
-	@Override
-	public boolean changePasswordSecurityAnswers(LoginModel model) {
-		logger.info("First time login, changing password and security answers");
-		logger.info("Changing password");
-		boolean result = false;
-		User user = userService.getById(model.getUserId());
-		userService.setUserPassword(user, model.getPassword(), false);
-		user.getPassword().setInitial(false);
-
-		logger.info("Saving security questions");
-		List<UserSecurityQuestion> secQuestions = user.getSecurityQuestions();
-		while (secQuestions.size() < 3) {
-			UserSecurityQuestion newQuestion = new UserSecurityQuestion();
-			secQuestions.add(newQuestion);
+	//to check the 5 day limit for temporary password expiration
+	/** Temp pass expiration.
+	 * @param userId the user id
+	 * @return the login model */
+	private LoginModel temporaryPasswordExpiration(String userId) {
+		//If this is a temporary or initial password, check for 5 day limit
+		Date createDate = validateUserMatUserDetails.getUserPassword().getCreatedDate();
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(createDate);
+		calendar.roll(Calendar.DAY_OF_MONTH, 5);
+		Calendar calendarForToday = GregorianCalendar.getInstance();
+		if (calendarForToday.after(calendar)) {
+			logger.info("USER Temp or Initial Password has expired :" + userId);
+			validateUserLoginModel.setErrorMessage(MatContext.get()
+					.getMessageDelegate()
+					.getLoginFailedTempPasswordExpiredMessage());
+			validateUserLoginModel.setLoginFailedEvent(true);
+		}else{
+			validateUserLoginModel = loginModelSetter(validateUserLoginModel, validateUserMatUserDetails);
+			// userDetails.setSignInDate(currentTimeStamp);
+			hibernateUserService.saveUserDetails(validateUserMatUserDetails);
+			logger.info("Roles for " + userId + ": "
+					+ validateUserMatUserDetails.getRoles().getDescription());
 		}
-
-		String newQuestion1 = model.getQuestion1();
-		SecurityQuestions secQue1 = securityQuestionsService
-				.getSecurityQuestionObj(newQuestion1);
-		secQuestions.get(0).setSecurityQuestionId(secQue1.getQuestionId());
-		secQuestions.get(0).setSecurityQuestions(secQue1);
-		secQuestions.get(0).setSecurityAnswer(model.getQuestion1Answer());
-
-		String newQuestion2 = model.getQuestion2();
-		SecurityQuestions secQue2 = securityQuestionsService
-				.getSecurityQuestionObj(newQuestion2);
-		secQuestions.get(1).setSecurityQuestionId(secQue2.getQuestionId());
-		secQuestions.get(1).setSecurityQuestions(secQue2);
-		secQuestions.get(1).setSecurityAnswer(model.getQuestion2Answer());
-
-		String newQuestion3 = model.getQuestion3();
-		SecurityQuestions secQue3 = securityQuestionsService
-				.getSecurityQuestionObj(newQuestion3);
-		secQuestions.get(2).setSecurityQuestionId(secQue3.getQuestionId());
-		secQuestions.get(2).setSecurityQuestions(secQue3);
-		secQuestions.get(2).setSecurityAnswer(model.getQuestion3Answer());
-		user.setSecurityQuestions(secQuestions);
-		userService.saveExisting(user);
-
-		MatUserDetails userDetails = (MatUserDetails) hibernateUserService
-				.loadUserByUsername(user.getLoginId());
-		if (userDetails != null) {
-			setAuthenticationToken(userDetails);
-			result = true;
+		return validateUserLoginModel;
+	}
+	
+	//Checks for Third login failed attempt and locks the user account.
+	/** Third failed login.
+	 * 
+	 * @param userId the user id
+	 * @return the login model */
+	private LoginModel thirdFailedLogin(String userId) {
+		
+		// USER THIRD FAILED LOGIN ATTEMPT
+		logger.info("USER THIRD FAILED LOGIN ATTEMPT :" + userId);
+		Timestamp updatedFailedAttemptTime = validateUserMatUserDetails
+				.getUserPassword().getFirstFailedAttemptTime();
+		long timeDifference = currentTimeStamp.getTime()
+				- updatedFailedAttemptTime.getTime();
+		long minDifference = timeDifference / (60 * 1000);
+		if (minDifference > 15) {
+			logger.debug("MinuteDifference:" + minDifference);
+			logger.debug("Since the minuteDifference is greater than 15 minutes, update the failedAttemptTime");
+			validateUserLoginModel.setErrorMessage(MatContext.get()
+					.getMessageDelegate().getLoginFailedMessage());
+			validateUserMatUserDetails.getUserPassword()
+			.setFirstFailedAttemptTime(currentTimeStamp);
+			validateUserMatUserDetails.getUserPassword().setPasswordlockCounter(1);
 		} else {
-			model.setErrorMessage(MatContext.get().getMessageDelegate()
-					.getGenericErrorMessage());
-			result = false;
+			validateUserLoginModel.setErrorMessage(MatContext.get()
+					.getMessageDelegate()
+					.getAccountLocked2Message());
+			validateUserMatUserDetails.setLockedOutDate(currentTimeStamp);
+			validateUserMatUserDetails.getUserPassword().setPasswordlockCounter(3);
+			logger.debug("Locking user out");
 		}
-		return result;
-
+		return validateUserLoginModel;
 	}
-
-	@Override
-	public UserDetails loadUserByUsername(String userId) {
-		// UserDAO userDAO = (UserDAO)context.getBean("userDAO");
-		return userDAO.getUser(userId);
-	}
-
+	
 }

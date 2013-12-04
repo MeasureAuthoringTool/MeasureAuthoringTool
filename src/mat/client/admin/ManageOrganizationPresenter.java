@@ -14,7 +14,6 @@ import mat.client.shared.search.PageSizeSelectionEvent;
 import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
-import mat.shared.AdminManageUserModelValidator;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -35,100 +34,69 @@ import com.google.gwt.user.client.ui.Widget;
 
 /** The Class ManageOrganizationPresenter. */
 public class ManageOrganizationPresenter implements MatPresenter {
-	
 	/** The Interface DetailDisplay. */
 	public static interface DetailDisplay {
-		
 		/** As widget.
-		 * 
 		 * @return the widget */
 		Widget asWidget();
-		
 		/** Gets the cancel button.
-		 * 
 		 * @return the cancel button */
 		HasClickHandlers getCancelButton();
-		
 		/** Gets the error message display.
-		 * 
 		 * @return the error message display */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
-		
 		/** Gets the oid.
-		 * 
 		 * @return the oid */
 		HasValue<String> getOid();
-		
-		
 		/** Gets the organization.
-		 * 
 		 * @return the organization */
 		HasValue<String> getOrganization();
-		
 		/** Gets the save button.
-		 * 
 		 * @return the save button */
 		HasClickHandlers getSaveButton();
-		
 		/** Gets the success message display.
-		 * 
 		 * @return the success message display */
 		SuccessMessageDisplayInterface getSuccessMessageDisplay();
 	}
-	
 	/** The Interface SearchDisplay. */
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay {
-		
 		/** Builds the data table.
-		 * 
 		 * @param results the results */
 		void buildDataTable(SearchResults<ManageOrganizationSearchModel.Result> results);
-		
 		/** Gets the creates the new button.
-		 * 
 		 * @return the creates the new button */
 		HasClickHandlers getCreateNewButton();
 		/** Gets the select id for edit tool.
-		 * 
 		 * @return the select id for edit tool */
 		HasSelectionHandlers<ManageOrganizationSearchModel.Result> getSelectIdForEditTool();
 	}
-	
 	/** The current details. */
 	private ManageOrganizationDetailModel currentDetails;
-	
 	/** The detail display. */
 	private DetailDisplay detailDisplay;
 	/** The last search key. */
 	private String lastSearchKey;
-	
 	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
-	
 	/** The search display. */
 	private SearchDisplay searchDisplay;
-	
 	/** The start index. */
 	private int startIndex = 1;
-	
+	/** ManageOrganizationDetailModel updatedDetails. */
 	private ManageOrganizationDetailModel updatedDetails;
-	
 	/** Instantiates a new manage Organizations presenter.
-	 * 
 	 * @param sDisplayArg the s display arg
 	 * @param dDisplayArg the d display arg */
 	public ManageOrganizationPresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg) {
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
 		displaySearch();
-		
 		searchDisplay.getCreateNewButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				createNew();
 			}
 		});
-		
 		TextBox searchWidget = (TextBox) (searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
 			@Override
@@ -138,21 +106,18 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				}
 			}
 		});
-		
 		detailDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				update();
 			}
 		});
-		
 		detailDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				displaySearch();
 			}
 		});
-		
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -181,19 +146,15 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			}
 		});
 	}
-	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
 	@Override
 	public void beforeClosingDisplay() {
 	}
-	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see mat.client.MatPresenter#beforeDisplay()
 	 */
 	@Override
@@ -201,13 +162,11 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		displaySearch();
 		Mat.focusSkipLists("Manage Organizations");
 	}
-	
 	/** Creates the new. */
 	private void createNew() {
 		currentDetails = new ManageOrganizationDetailModel();
 		displayDetail();
 	}
-	
 	/** Display detail. */
 	private void displayDetail() {
 		resetMessages();
@@ -216,17 +175,14 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		panel.add(detailDisplay.asWidget());
 		Mat.focusSkipLists("Manage Organizations");
 	}
-	
 	/** Display search. */
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
 		search("", 1, searchDisplay.getPageSize());
 	}
-	
 	/** Edits the.
-	 * 
-	 * @param name the name */
+	 * @param key the key */
 	private void edit(String key) {
 		MatContext.get().getAdminService().getOrganization(key,
 				new AsyncCallback<ManageOrganizationDetailModel>() {
@@ -244,19 +200,15 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			}
 		});
 	}
-	
 	/*
 	 * (non-Javadoc)
-	 * 
 	 * @see mat.client.MatPresenter#getWidget()
 	 */
 	@Override
 	public Widget getWidget() {
 		return panel;
 	}
-	
 	/** Gets the widget with heading.
-	 * 
 	 * @param widget the widget
 	 * @param heading the heading
 	 * @return the widget with heading */
@@ -271,32 +223,12 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		widget.addStyleName("myAccountPanelContent");
 		return vPanel;
 	}
-	
-	/** Checks if is valid.
-	 * 
-	 * @param model the model
-	 * @return true, if is valid */
-	private boolean isValid(ManageOrganizationDetailModel model) {
-		AdminManageUserModelValidator test = new AdminManageUserModelValidator();
-		List<String> message = new ArrayList<String>(); // test.isValidUsersDetail(model);
-		
-		boolean valid = message.size() == 0;
-		if (!valid) {
-			detailDisplay.getErrorMessageDisplay().setMessages(message);
-		} else {
-			detailDisplay.getErrorMessageDisplay().clear();
-		}
-		return valid;
-	}
-	
 	/** Reset messages. */
 	private void resetMessages() {
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
 	}
-	
 	/** Search.
-	 * 
 	 * @param key the key
 	 * @param startIndex the start index
 	 * @param pageSize the page size */
@@ -312,7 +244,6 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				MatContext.get().recordTransactionEvent(null, null,
 						null, "Unhandled Exception: " + caught.getLocalizedMessage(), 0);
 				showSearchingBusy(false);
-				
 			}
 			@Override
 			public void onSuccess(ManageOrganizationSearchModel result) {
@@ -325,15 +256,12 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			}
 		});
 	}
-	
 	/** Sets the user details to view. */
 	private void setOrganizationDetailsToView() {
 		detailDisplay.getOid().setValue(currentDetails.getOid());
 		detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
 	}
-	
 	/** Show searching busy.
-	 * 
 	 * @param busy the busy */
 	private void showSearchingBusy(boolean busy) {
 		if (busy) {
@@ -344,12 +272,10 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
 		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
 	}
-	
 	/** Update. */
 	private void update() {
 		resetMessages();
 		updateOrganizationDetailsFromView();
-		// if (isValid(currentDetails)) {
 		MatContext.get().getAdminService().saveUpdateOrganization(currentDetails, updatedDetails,
 				new AsyncCallback<SaveUpdateOrganizationResult>() {
 			@Override
@@ -368,15 +294,14 @@ public class ManageOrganizationPresenter implements MatPresenter {
 							messages.add("OID Not Unique");
 							break;
 						default:
-							messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+							messages.add(MatContext.get().getMessageDelegate()
+									.getUnknownErrorMessage(result.getFailureReason()));
 					}
 					detailDisplay.getErrorMessageDisplay().setMessages(messages);
 				}
 			}
 		});
-		// }
 	}
-	
 	/** Update Organization details from view. */
 	private void updateOrganizationDetailsFromView() {
 		updatedDetails = new ManageOrganizationDetailModel();

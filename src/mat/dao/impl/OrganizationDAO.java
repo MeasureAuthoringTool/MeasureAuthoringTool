@@ -10,8 +10,14 @@ import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+
+/** The Class OrganizationDAO. */
 public class OrganizationDAO extends GenericDAO<Organization, Long> implements
 mat.dao.OrganizationDAO {
+	
+	/* (non-Javadoc)
+	 * @see mat.dao.OrganizationDAO#countSearchResults(java.lang.String)
+	 */
 	@Override
 	public int countSearchResults(String text) {
 		Criteria criteria = createSearchCriteria(text);
@@ -31,6 +37,10 @@ mat.dao.OrganizationDAO {
 		criteria.add(Restrictions.ilike("organizationName", "%" + text + "%"));
 		return criteria;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.dao.OrganizationDAO#findByOid(java.lang.String)
+	 */
 	@Override
 	public Organization findByOid(String oid) {
 		Session session = getSessionFactory().getCurrentSession();

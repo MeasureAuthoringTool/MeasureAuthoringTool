@@ -13,6 +13,7 @@ import org.hibernate.criterion.Restrictions;
 import mat.dao.search.GenericDAO;
 import mat.model.RecentMSRActivityLog;
 
+/** The Class RecentMSRActivityLogDAO. */
 public class RecentMSRActivityLogDAO extends GenericDAO<RecentMSRActivityLog, String> implements mat.dao.RecentMSRActivityLogDAO {
 
 	/** The Constant logger. */

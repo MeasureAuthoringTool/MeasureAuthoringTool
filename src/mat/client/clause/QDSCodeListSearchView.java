@@ -470,9 +470,12 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 				ListIterator<MatValueSet> itr = groupedMatValueSets.listIterator();
 				while (itr.hasNext()) {
 					MatValueSet groupedMatValueSet = itr.next();
-					codeSystem += groupedMatValueSet.getCodeSystemName();
-					if (itr.hasNext()) {
-						codeSystem += ", ";
+					String codeSystemName = groupedMatValueSet.getCodeSystemName();
+					if (codeSystemName != null) {
+						codeSystem += codeSystemName;
+						if (itr.hasNext() && !codeSystem.trim().isEmpty() && codeSystemName.trim().isEmpty()) {
+							codeSystem += ", ";
+						}
 					}
 				}
 			}

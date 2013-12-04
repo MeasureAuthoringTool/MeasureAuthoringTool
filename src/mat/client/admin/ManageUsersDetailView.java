@@ -4,9 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.DTO.OrganizationDTO;
 import mat.client.ImageResources;
-import mat.client.codelist.HasListBox;
+import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.EmailAddressTextBox;
 import mat.client.shared.ErrorMessageDisplay;
@@ -129,7 +128,7 @@ public class ManageUsersDetailView
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 	
 	/** The organizations map. */
-	private Map<String, OrganizationDTO> organizationsMap = new HashMap<String, OrganizationDTO>();
+	private Map<String, Result> organizationsMap = new HashMap<String, Result>();
 
 	/**
 	 * Instantiates a new manage users detail view.
@@ -207,10 +206,10 @@ public class ManageUsersDetailView
 		organizationListBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
-				OrganizationDTO orgDTO =  organizationsMap.get(organizationListBox.getValue());
-				if (orgDTO != null) {
-					oid.setValue(orgDTO.getOID());
-					oid.setTitle(orgDTO.getOID());
+				Result organization =  organizationsMap.get(organizationListBox.getValue());
+				if (organization != null) {
+					oid.setValue(organization.getOid());
+					oid.setTitle(organization.getOid());
 				} else {
 					oid.setValue("");
 					oid.setTitle("");
@@ -343,16 +342,23 @@ public class ManageUsersDetailView
 	}
 	
 	@Override
-	public void populateOrganizations(List<? extends HasListBox> organizations) {
+	public void populateOrganizations(List<Result> organizations) {
 		setListBoxItems(organizationListBox, organizations, MatContext.PLEASE_SELECT);
 	}
 	
-	public void setListBoxItems(ListBox listBox, List<? extends HasListBox> itemList, String defaultOption){
+	/**
+	 * Sets the list box items.
+	 *
+	 * @param listBox the list box
+	 * @param organizations the organizations
+	 * @param defaultOption the default option
+	 */
+	public void setListBoxItems(ListBox listBox, List<Result> organizations, String defaultOption) {
 		listBox.clear();
-		listBox.addItem(defaultOption,"");
-		if (itemList != null) {
-			for (HasListBox listBoxContent : itemList) {
-				listBox.addItem(listBoxContent.getItem(), "" + listBoxContent.getValue());
+		listBox.addItem(defaultOption, "");
+		if (organizations != null) {
+			for (Result organization : organizations) {
+				listBox.addItem(organization.getOrgName(), "" + organization.getId());
 			}
 		}
 	}	
@@ -529,7 +535,7 @@ public class ManageUsersDetailView
 	 * @return the organizationsMap
 	 */
 	@Override
-	public Map<String, OrganizationDTO> getOrganizationsMap() {
+	public Map<String, Result> getOrganizationsMap() {
 		return organizationsMap;
 	}
 
@@ -537,7 +543,7 @@ public class ManageUsersDetailView
 	 * @param organizationsMap the organizationsMap to set
 	 */
 	@Override
-	public void setOrganizationsMap(Map<String, OrganizationDTO> organizationsMap) {
+	public void setOrganizationsMap(Map<String, Result> organizationsMap) {
 		this.organizationsMap = organizationsMap;
 	}
 }

@@ -15,44 +15,63 @@ IsSerializable {
 	/**
 	 * The Class Result.
 	 */
-	public static class Result implements IsSerializable {
-		private String key;
+	public static class Result implements IsSerializable {		
+		/** The organization id. */
+		private String id;
+		
+		/** The organization oid. */
 		private String oid;
-		/** The org name. */
+		
+		/** The organization name. */
 		private String orgName;
 		
-		public String getKey() {
-			// TODO Auto-generated method stub
-			return key;
-		}
 		/**
+		 * Gets the organization id.
+		 * 
+		 * @return the id
+		 */
+		public String getId() {
+			return id;
+		}
+		
+		/**
+		 * Sets the organization id.
+		 *
+		 * @param id the new id
+		 */
+		public void setId(String id) {
+			this.id = id;
+		}
+		
+		/**
+		 * Gets the organization oid.
+		 * 
 		 * @return the oid
 		 */
 		public String getOid() {
 			return oid;
 		}
+				
 		/**
-		 * Gets the org name.
+		 * Sets the organization oid.
+		 *
+		 * @param oid the oid to set
+		 */
+		public void setOid(String oid) {
+			this.oid = oid;
+		}
+		
+		/**
+		 * Gets the organization name.
 		 * 
 		 * @return the org name
 		 */
 		public String getOrgName() {
 			return orgName;
 		}
+		
 		/**
-		 * @param orgId the orgId to set
-		 */
-		public void setKey(String key) {
-			this.key = key;
-		}
-		/**
-		 * @param oid the oid to set
-		 */
-		public void setOid(String oid) {
-			this.oid = oid;
-		}
-		/**
-		 * Sets the org name.
+		 * Sets the organization name.
 		 * 
 		 * @param orgName
 		 *            the new org name
@@ -106,7 +125,7 @@ IsSerializable {
 	 */
 	@Override
 	public String getKey(int row) {
-		return data.get(row).getKey();
+		return data.get(row).getId();
 	}
 	
 	/* (non-Javadoc)
@@ -183,6 +202,15 @@ IsSerializable {
 	@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return false;
+	}
+	
+	/**
+	 * Gets the data which is a list of ManageOrganizationSearchModel.Result.
+	 *
+	 * @return the data
+	 */
+	public List<Result> getData() {
+		return data;
 	}
 	
 	/**

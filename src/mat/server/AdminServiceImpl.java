@@ -3,7 +3,6 @@ package mat.server;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.DTO.OrganizationDTO;
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
 import mat.client.admin.ManageUsersDetailModel;
@@ -229,7 +228,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			ManageOrganizationSearchModel.Result r = new ManageOrganizationSearchModel.Result();
 			r.setOrgName(org.getOrganizationName());
 			r.setOid(org.getOrganizationOID());
-			r.setKey(Long.toString(org.getId()));
+			r.setId(Long.toString(org.getId()));
 			detailList.add(r);
 		}
 		model.setData(detailList);
@@ -268,18 +267,23 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		
 		return model;
 	}
+	
 	@Override
-	public List<OrganizationDTO> getAllOrganizations() {
-		List<OrganizationDTO> organizationDTOs = new ArrayList<OrganizationDTO>();
-		List<Organization> organizations = getOrganizationDAO().getAllOrganizations();
+	public ManageOrganizationSearchModel getAllOrganizations() {
+		ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
+		List<ManageOrganizationSearchModel.Result> results = new ArrayList<ManageOrganizationSearchModel.Result>();
+		
+		List<Organization> organizations = getOrganizationDAO().getAllOrganizations();		
 		for (Organization organization : organizations) {
-			OrganizationDTO organizationDTO = new OrganizationDTO();
-			organizationDTO.setId(String.valueOf(organization.getId()));
-			organizationDTO.setName(organization.getOrganizationName());
-			organizationDTO.setOID(organization.getOrganizationOID());
-			organizationDTOs.add(organizationDTO);
+			ManageOrganizationSearchModel.Result result = new ManageOrganizationSearchModel.Result();
+			result.setId(String.valueOf(organization.getId()));
+			result.setOrgName(organization.getOrganizationName());
+			result.setOid(organization.getOrganizationOID());
+			results.add(result);
 		}
+		model.setData(results);		
 		logger.info("Getting all organizations.");
-		return organizationDTOs;
+		
+		return model;
 	}
 }

@@ -6,11 +6,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.DTO.OrganizationDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.admin.ManageOrganizationSearchModel.Result;
 import mat.client.admin.service.SaveUpdateUserResult;
-import mat.client.codelist.HasListBox;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -170,11 +169,26 @@ public class ManageUsersPresenter implements MatPresenter {
 		 */
 		ListBoxMVP getOrganizationListBox();
 		
-		void populateOrganizations(List<? extends HasListBox> organizations);
+		/**
+		 * Populate organizations.
+		 *
+		 * @param organizations the organizations
+		 */
+		void populateOrganizations(List<Result> organizations);
 		
-		void setOrganizationsMap(Map<String, OrganizationDTO> organizationsMap);
+		/**
+		 * Sets the organizations map.
+		 *
+		 * @param organizationsMap the organizations map
+		 */
+		void setOrganizationsMap(Map<String, Result> organizationsMap);
 		
-		Map<String, OrganizationDTO> getOrganizationsMap();
+		/**
+		 * Gets the organizations map.
+		 *
+		 * @return the organizations map
+		 */
+		Map<String, Result> getOrganizationsMap();
 		/**
 		 * Gets the role.
 		 * 
@@ -442,17 +456,19 @@ public class ManageUsersPresenter implements MatPresenter {
 	 * Populate organizations in OrganizationListBox.
 	 */
 	private void populateOrganizations() {
-		MatContext.get().getAdminService().getAllOrganizations(new AsyncCallback<List<OrganizationDTO>>() {
+		MatContext.get().getAdminService().getAllOrganizations(new AsyncCallback<ManageOrganizationSearchModel>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				
 			}
 			@Override
-			public void onSuccess(List<OrganizationDTO> result) {
-				detailDisplay.populateOrganizations(result);				
-				Map<String, OrganizationDTO> orgMap = new HashMap<String, OrganizationDTO>();
-				for(OrganizationDTO organizationDTO : result) {
-					orgMap.put(organizationDTO.getId(), organizationDTO);
+			public void onSuccess(ManageOrganizationSearchModel model) {
+				List<Result> results = model.getData();				
+				detailDisplay.populateOrganizations(results);	
+				
+				Map<String, Result> orgMap = new HashMap<String, Result>();
+				for(Result organization : results) {
+					orgMap.put(organization.getId(), organization);
 				}
 				detailDisplay.setOrganizationsMap(orgMap);
 				
@@ -713,9 +729,9 @@ public class ManageUsersPresenter implements MatPresenter {
 		currentDetails.setOid(detailDisplay.getOid().getValue());
 		String orgId = detailDisplay.getOrganizationListBox().getValue();
 		currentDetails.setOrganizationId(orgId);
-		OrganizationDTO orgDTO =  detailDisplay.getOrganizationsMap().get(orgId);
-		if (orgDTO != null) {
-			currentDetails.setOrganization(orgDTO.getName());
+		Result organization =  detailDisplay.getOrganizationsMap().get(orgId);
+		if (organization != null) {
+			currentDetails.setOrganization(organization.getOrgName());
 		} else {
 			currentDetails.setOrganization("");
 		}

@@ -66,7 +66,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<a href=\"#\" tabindex=\"0\" "
+					sb.appendHtmlConstant("<a href=\"#\" "
 							+ "style=\"text-decoration:none\" title='" + object.getName()
 							+ "' >");
 					sb.appendEscaped(object.getName()); sb.appendHtmlConstant("</a>"); return sb.toSafeHtml(); } };
@@ -78,7 +78,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 						}
 					});
 					table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant(
-							"<span title='Measure Name Column' tabindex=\"0\">" + "Measure Name" + "</span>"));
+							"<span title='Measure Name Column'>" + "Measure Name" + "</span>"));
 					Column<ManageMeasureSearchModel.Result, SafeHtml> version =
 							new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 									new MatSafeHTMLCell()) {
@@ -88,7 +88,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 						}
 					};
 					table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
-							"<span title='Version' tabindex=\"0\">" + "Version" + "</span>"));
+							"<span title='Version'>" + "Version" + "</span>"));
 					Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
 					Column<Result, String> exportColumn =
 							new Column<ManageMeasureSearchModel.Result, String>(exportButton) {
@@ -120,7 +120,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 						}
 					});
 					table.addColumn(exportColumn,
-							SafeHtmlUtils.fromSafeConstant("<span title='Export' tabindex=\"0\">"
+					SafeHtmlUtils.fromSafeConstant("<span title='Export'>"
 									+ "Export" + "</span>"));
 					table.setColumnWidth(0, 65.0, Unit.PCT);
 					table.setColumnWidth(1, 30.0, Unit.PCT);

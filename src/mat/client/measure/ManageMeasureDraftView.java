@@ -267,19 +267,25 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 		return buttonBar.getSaveButton();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#getSearchButton()
+	 */
 	@Override
 	public HasClickHandlers getSearchButton() {
 		return searchWidget.getSearchButton();
 	}
 	
-	/**
-	 * @return the searchWidget
-	 */
+	/** Gets the measure search filter widget.
+	 * 
+	 * @return the searchWidget */
 	@Override
 	public SearchWidget getSearchWidget() {
 		return searchWidget;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#getZoomButton()
+	 */
 	@Override
 	public CustomButton getZoomButton() {
 		return zoomButton;

@@ -291,19 +291,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		HasClickHandlers getSaveButton();
 		
-		/**
-		 * @return search button on search Widget.
-		 */
+		/** Gets the search button.
+		 * 
+		 * @return search button on search Widget. */
 		HasClickHandlers getSearchButton();
 		
-		/**
-		 * @return SearchWidget.
-		 */
+		/** Gets the search widget.
+		 * 
+		 * @return SearchWidget. */
 		SearchWidget getSearchWidget();
 		
-		/**
-		 * @return Zoom button.
-		 */
+		/** Gets the zoom button.
+		 * 
+		 * @return Zoom button. */
 		CustomButton getZoomButton();
 				
 		/**
@@ -545,6 +545,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public void buildDataTable(
 				SearchResults<ManageMeasureSearchModel.Result> results);
 		
+		/** Builds the most recent widget. */
 		void buildMostRecentWidget();
 		
 		/**
@@ -574,8 +575,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public HasClickHandlers getCreateButton();
 		
+		/** Gets the creates the measure button.
+		 * 
+		 * @return the creates the measure button */
 		CustomButton getCreateMeasureButton();
 		
+		/** Gets the creates the measure widget.
+		 * 
+		 * @return the creates the measure widget */
 		CreateMeasureWidget getCreateMeasureWidget();
 		
 		/**
@@ -620,6 +627,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		MeasureSearchFilterWidget getMeasureSearchFilterWidget();
 		
+		/** Gets the most recent measure widget.
+		 * 
+		 * @return the most recent measure widget */
 		MostRecentMeasureWidget getMostRecentMeasureWidget();
 		
 		/**
@@ -687,6 +697,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public SuccessMessageDisplay getSuccessMeasureDeletion();
 		
+		/** Gets the zoom button.
+		 * 
+		 * @return the zoom button */
 		CustomButton getZoomButton();
 	}
 	
@@ -905,19 +918,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		HasClickHandlers getSaveButton();
 		
-		/**
-		 * @return search Button from search widget.
-		 */
+		/** Gets the search button.
+		 * 
+		 * @return search Button from search widget. */
 		HasClickHandlers getSearchButton();
 		
-		/**
-		 * @return search widget.
-		 */
+		/** Gets the search widget.
+		 * 
+		 * @return search widget. */
 		SearchWidget getSearchWidget();
 		
-		/**
-		 * @return zoom button.
-		 */
+		/** Gets the zoom button.
+		 * 
+		 * @return zoom button. */
 		CustomButton getZoomButton();
 				
 		/**
@@ -980,15 +993,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 	/** The is clone. */
 	private boolean isClone;
 	
+	/** The is create measure widget visible. */
 	boolean isCreateMeasureWidgetVisible = false;
 	
 	/** The is measure deleted. */
 	private boolean isMeasureDeleted = false;
 	
+	/** The is measure search filter visible. */
 	boolean isMeasureSearchFilterVisible = true;
 	
+	/** The is search visible on draft. */
 	boolean isSearchVisibleOnDraft = true;
 	
+	/** The is search visible on version. */
 	boolean isSearchVisibleOnVersion = true;
 	
 	/** The listof measures. */
@@ -2939,14 +2956,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		});
 	}
 	
-	/**
-	 * Search measures for draft.
+	/** Search measures for draft.
 	 * 
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 */
+	 * @param searchText the search text */
 	private void searchMeasuresForDraft(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
 				MatContext.get().getMeasureService().searchMeasuresForDraft(lastSearchText, 

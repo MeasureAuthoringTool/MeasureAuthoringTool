@@ -188,13 +188,10 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		return selectionModel.getSelectedObject();
 	}
 
-	/**
-	 * Adds the column to table.
-	 *
+	/** Adds the column to table.
+	 * 
 	 * @param cellTable the cell table
-	 * @param sortHandler the sort handler
-	 * @return the cell table
-	 */
+	 * @return the cell table */
 	private CellTable<Result> addColumnToTable(final CellTable<Result> cellTable) {
 		Column<Result, Boolean> radioButtonColumn = new Column<Result, Boolean>(new RadioButtonCell(true, true)) {
 			@Override
@@ -297,19 +294,25 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		return buttonBar.getSaveButton();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.VersionDisplay#getSearchButton()
+	 */
 	@Override
 	public HasClickHandlers getSearchButton() {
 		return searchWidget.getSearchButton();
 	}
 
-	/**
-	 * @return the searchWidget
-	 */
+	/** Gets the measure search filter widget.
+	 * 
+	 * @return the searchWidget */
 	@Override
 	public SearchWidget getSearchWidget() {
 		return searchWidget;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.VersionDisplay#getZoomButton()
+	 */
 	@Override
 	public CustomButton getZoomButton() {
 		return zoomButton;

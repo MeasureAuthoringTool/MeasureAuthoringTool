@@ -47,6 +47,7 @@ ManageMeasurePresenter.SearchDisplay {
 	CustomButton createMeasureButton = (CustomButton) getImage("Create Measure",
 			ImageResources.INSTANCE.createMeasure(), "Create Measure");
 	
+	/** The create measure widget. */
 	private CreateMeasureWidget createMeasureWidget = new CreateMeasureWidget();
 	
 	/** The current user role. */
@@ -76,7 +77,10 @@ ManageMeasurePresenter.SearchDisplay {
 	private MeasureSearchFilterWidget measureSearchFilterWidget = new MeasureSearchFilterWidget("measureLibrarySearchWidget",
 			"measureLibraryFilterDisclosurePanel");
 	
+	/** The most recent measure widget. */
 	private MostRecentMeasureWidget mostRecentMeasureWidget = new MostRecentMeasureWidget();
+	
+	/** The most recent vertical panel. */
 	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
 	
 	/** The options. */
@@ -100,6 +104,8 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The view. */
 	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView(
 			"Measures");
+	
+	/** The zoom button. */
 	CustomButton zoomButton = (CustomButton) getImage("Search",
 			ImageResources.INSTANCE.search_zoom(), "Search");
 	/** Instantiates a new manage measure search view. */
@@ -177,17 +183,20 @@ ManageMeasurePresenter.SearchDisplay {
 			SearchResults<ManageMeasureSearchModel.Result> results) {
 		view.buildDataTable(results);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildMostRecentWidget()
+	 */
 	@Override
 	public void buildMostRecentWidget() {
 		mostRecentVerticalPanel.clear();
 		mostRecentVerticalPanel.add(mostRecentMeasureWidget.buildMostRecentWidget());
 	}
 	
-	/**
-	 * Builds the search widget.
+	/** Builds the search widget.
 	 * 
-	 * @return the widget
-	 */
+	 * @param dataTable the data table
+	 * @return the widget */
 	/*
 	 * private Widget buildSearchWidget() { HorizontalPanel hp = new
 	 * HorizontalPanel(); hp.getElement().setId("hp_HorizontalPanel");
@@ -278,17 +287,17 @@ ManageMeasurePresenter.SearchDisplay {
 		return createMeasureWidget.getCreateMeasure();
 	}
 	
-	/**
-	 * @return the createMeasureButton
-	 */
+	/** Gets the create button.
+	 * 
+	 * @return the createMeasureButton */
 	@Override
 	public CustomButton getCreateMeasureButton() {
 		return createMeasureButton;
 	}
 	
-	/**
-	 * @return the createMeasureWidget
-	 */
+	/** Gets the creates the measure widget.
+	 * 
+	 * @return the createMeasureWidget */
 	@Override
 	public CreateMeasureWidget getCreateMeasureWidget() {
 		return createMeasureWidget;
@@ -357,6 +366,9 @@ ManageMeasurePresenter.SearchDisplay {
 		return image;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getMeasureDataTable()
+	 */
 	@Override
 	public Grid508 getMeasureDataTable() {
 		return view.getDataTable();
@@ -376,9 +388,9 @@ ManageMeasurePresenter.SearchDisplay {
 		return measureSearchFilterWidget;
 	}
 	
-	/**
-	 * @return the mostRecentMeasureWidget
-	 */
+	/** Gets the most recent measure widget.
+	 * 
+	 * @return the mostRecentMeasureWidget */
 	@Override
 	public MostRecentMeasureWidget getMostRecentMeasureWidget() {
 		return mostRecentMeasureWidget;
@@ -429,6 +441,9 @@ ManageMeasurePresenter.SearchDisplay {
 		return measureSearchFilterWidget.getSearchInput();
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSelectedFilter()
+	 */
 	@Override
 	public int getSelectedFilter() {
 		return measureSearchFilterWidget.getSelectedFilter();
@@ -456,13 +471,18 @@ ManageMeasurePresenter.SearchDisplay {
 		return view;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSuccessMeasureDeletion()
+	 */
 	@Override
 	public SuccessMessageDisplay getSuccessMeasureDeletion() {
 		return successMeasureDeletion;
 	}
 	
 	
-	/** Load list box options. */
+	/** Load list box options.
+	 * 
+	 * @return the zoom button */
 	/*
 	 * private void loadListBoxOptions() { options.addItem(ConstantMessages.DEFAULT_SELECT);
 	 * options.addItem(ConstantMessages.CREATE_NEW_MEASURE); options.addItem(ConstantMessages.CREATE_NEW_VERSION);
@@ -474,13 +494,17 @@ ManageMeasurePresenter.SearchDisplay {
 	public CustomButton getZoomButton() {
 		return zoomButton;
 	}
-	/** @param createMeasureButton the createMeasureButton to set */
+	
+	/** Sets the create button.
+	 * 
+	 * @param createMeasureButton the createMeasureButton to set */
 	public void setCreateMeasureButton(CustomButton createMeasureButton) {
 		this.createMeasureButton = createMeasureButton;
 	}
-	/**
-	 * @param createMeasureWidget the createMeasureWidget to set
-	 */
+	
+	/** Sets the creates the measure widget.
+	 * 
+	 * @param createMeasureWidget the createMeasureWidget to set */
 	public void setCreateMeasureWidget(CreateMeasureWidget createMeasureWidget) {
 		this.createMeasureWidget = createMeasureWidget;
 	}

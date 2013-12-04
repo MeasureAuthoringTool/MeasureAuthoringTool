@@ -63,9 +63,11 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 	 * Selected filter value - {@link Integer}.
 	 */
 	private int selectedFilter;
-	/**
-	 * Default Constructor.
-	 */
+	
+	/** Default Constructor.
+	 * 
+	 * @param cssStyleTopPanel the css style top panel
+	 * @param cssStyleDisclosurePanel the css style disclosure panel */
 	public MeasureSearchFilterWidget(String cssStyleTopPanel, String cssStyleDisclosurePanel) {
 		// searchInput.setWatermark("Search");
 		searchButton = new PrimaryButton("Search", "primaryButton");

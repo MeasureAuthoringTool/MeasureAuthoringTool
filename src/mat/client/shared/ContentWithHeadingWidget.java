@@ -14,6 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ContentWithHeadingWidget extends Composite{
 	
 	
+	/** The button panel. */
 	HorizontalPanel buttonPanel = new HorizontalPanel();
 	
 	/** The code list info. */
@@ -32,6 +33,8 @@ public class ContentWithHeadingWidget extends Composite{
 	HTML heading = new HTML();
 	/** The header holder. */
 	FocusableWidget headingHolder = new FocusableWidget(heading);
+	
+	/** The Flow panel. */
 	FlowPanel vPanel = new FlowPanel();
 	/**
 	 * Instantiates a new content with heading widget.
@@ -76,9 +79,9 @@ public class ContentWithHeadingWidget extends Composite{
 		setContent(contentWidget);
 	}
 	
-	/**
-	 * @return the buttonPanel
-	 */
+	/** Gets the button panel.
+	 * 
+	 * @return the buttonPanel */
 	public HorizontalPanel getButtonPanel() {
 		return buttonPanel;
 	}
@@ -90,10 +93,10 @@ public class ContentWithHeadingWidget extends Composite{
 	}*/
 	
 	
-	/** @param text
-	 * @param linkName
-	 * @param createElement
-	 * @param searchButton */
+	/** Sets the button panel.
+	 * 
+	 * @param createElement the create element
+	 * @param searchButton the search button */
 	public void setButtonPanel( Button createElement, Button searchButton) {
 		if (createElement != null) {
 			buttonPanel.add(createElement);
@@ -103,9 +106,9 @@ public class ContentWithHeadingWidget extends Composite{
 		}
 	}
 	
-	/**
-	 * @param buttonPanel the buttonPanel to set
-	 */
+	/** Sets the button panel.
+	 * 
+	 * @param buttonPanel the buttonPanel to set */
 	public void setButtonPanel(HorizontalPanel buttonPanel) {
 		this.buttonPanel = buttonPanel;
 	}

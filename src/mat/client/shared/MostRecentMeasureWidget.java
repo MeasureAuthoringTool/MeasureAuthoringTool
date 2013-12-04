@@ -27,9 +27,15 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.view.client.ListDataProvider;
-/** @author jnarang */
+
+/** The Class MostRecentMeasureWidget.
+ * 
+ * @author jnarang */
 public class MostRecentMeasureWidget extends Composite implements HasSelectionHandlers<ManageMeasureSearchModel.Result> {
-	/** @author jnarang. */
+	
+	/** The Interface Observer.
+	 * 
+	 * @author jnarang. */
 	public static interface Observer {
 		/** On export clicked.
 		 * @param result the result */
@@ -47,9 +53,11 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 	private Observer observer;
 	/** VerticalPanel Instance which hold's View for Most Recent Measure. */
 	private VerticalPanel searchPanel = new VerticalPanel();
+	
 	/** Method to Add Column's in Table.
-	 * @param table
-	 * @return */
+	 * 
+	 * @param table the table
+	 * @return the cell table */
 	private CellTable<ManageMeasureSearchModel.Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table) {
 		if (table.getColumnCount() != MAX_TABLE_COLUMN_SIZE) {
 			Column<ManageMeasureSearchModel.Result, SafeHtml> measureName =
@@ -144,7 +152,10 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		sortProvider.addDataDisplay(cellTable);
 		searchPanel.add(cellTable);
 	}
-	/** @return VerticalPanel. */
+	
+	/** Builds the most recent widget.
+	 * 
+	 * @return VerticalPanel. */
 	public VerticalPanel buildMostRecentWidget() {
 		searchPanel.clear();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
@@ -181,16 +192,24 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		String htmlConstant = "<html>" + "<head> </head> <Body><span title='" + title + "'>" + title + "</span></body>" + "</html>";
 		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
-	/** @return the measureSearchModel */
+	
+	/** Gets the manageMeasureSearchModel Instance.
+	 * 
+	 * @return the measureSearchModel */
 	public ManageMeasureSearchModel getMeasureSearchModel() {
 		return measureSearchModel;
 	}
 	
-	/** @return */
+	/** Gets the select id for edit tool.
+	 * 
+	 * @return the select id for edit tool */
 	public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool() {
 		return this;
 	}
-	/** @param measureSearchModel the measureSearchModel to set */
+	
+	/** Sets the manageMeasureSearchModel Instance.
+	 * 
+	 * @param measureSearchModel the measureSearchModel to set */
 	public void setMeasureSearchModel(ManageMeasureSearchModel measureSearchModel) {
 		this.measureSearchModel = measureSearchModel;
 	}

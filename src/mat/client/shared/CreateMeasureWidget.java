@@ -49,29 +49,39 @@ public class CreateMeasureWidget extends Composite {
 		element.setAttribute("role", "alert");
 		initWidget(topPanel);
 	}
-	/** @return the createMeasure */
+	
+	/** Gets the search button - {@link PrimaryButton}.
+	 * 
+	 * @return the createMeasure */
 	public PrimaryButton getCreateMeasure() {
 		return createMeasure;
 	}
-	/** @return the options */
+	
+	/** Gets the options.
+	 * 
+	 * @return the options */
 	public ListBoxMVP getOptions() {
 		return options;
 	}
+	
+	/** Load list box options. */
 	private void loadListBoxOptions() {
 		options.addItem(ConstantMessages.DEFAULT_SELECT);
 		options.addItem(ConstantMessages.CREATE_NEW_MEASURE);
 		options.addItem(ConstantMessages.CREATE_NEW_VERSION);
 		options.addItem(ConstantMessages.CREATE_NEW_DRAFT);
 	}
-	/**
-	 * @param createMeasure the createMeasure to set
-	 */
+	
+	/** Sets the search button - {@link PrimaryButton}.
+	 * 
+	 * @param createMeasure the createMeasure to set */
 	public void setCreateMeasure(PrimaryButton createMeasure) {
 		this.createMeasure = createMeasure;
 	}
-	/**
-	 * @param options the options to set
-	 */
+	
+	/** Sets the options.
+	 * 
+	 * @param options the options to set */
 	public void setOptions(ListBoxMVP options) {
 		this.options = options;
 	}

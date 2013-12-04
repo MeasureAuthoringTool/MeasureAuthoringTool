@@ -57,6 +57,10 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		/** Gets the success message display.
 		 * @return the success message display */
 		SuccessMessageDisplayInterface getSuccessMessageDisplay();
+		/** Sets the title.
+		 * 
+		 * @param title the new title */
+		void setTitle(String title);
 	}
 	/** The Interface SearchDisplay. */
 	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay {
@@ -164,6 +168,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	}
 	/** Creates the new. */
 	private void createNew() {
+		detailDisplay.setTitle("Add a Organization");
 		currentDetails = new ManageOrganizationDetailModel();
 		displayDetail();
 	}
@@ -184,6 +189,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	/** Edits the.
 	 * @param key the key */
 	private void edit(String key) {
+		detailDisplay.setTitle("Update a Organization");
 		MatContext.get().getAdminService().getOrganization(key,
 				new AsyncCallback<ManageOrganizationDetailModel>() {
 			@Override
@@ -291,7 +297,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 					switch (result.getFailureReason()) {
 						case
 						SaveUpdateOrganizationResult.OID_NOT_UNIQUE:
-							messages.add("OID Not Unique");
+							messages.add("OID already exists.");
 							break;
 						default:
 							messages.add(MatContext.get().getMessageDelegate()

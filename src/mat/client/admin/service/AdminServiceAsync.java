@@ -21,6 +21,11 @@ public interface AdminServiceAsync {
 	 */
 	public void deleteUser(String userid, AsyncCallback<Void> callback);
 	
+	/** Gets the organization.
+	 * 
+	 * @param key the key
+	 * @param callback the callback
+	 * @return the organization */
 	void getOrganization(String key, AsyncCallback<ManageOrganizationDetailModel> callback);
 	
 	/**
@@ -43,6 +48,11 @@ public interface AdminServiceAsync {
 	 */
 	public void resetUserPassword(String userid, AsyncCallback<Void> callback);
 	
+	/** Save update organization.
+	 * 
+	 * @param currentModel the current model
+	 * @param updatedModel the updated model
+	 * @param callback the callback */
 	void saveUpdateOrganization(ManageOrganizationDetailModel currentModel, ManageOrganizationDetailModel updatedModel,
 			AsyncCallback<SaveUpdateOrganizationResult> callback);
 	
@@ -56,6 +66,12 @@ public interface AdminServiceAsync {
 	 */
 	public void saveUpdateUser(ManageUsersDetailModel model, AsyncCallback<SaveUpdateUserResult> callback);
 	
+	/** Search organization.
+	 * 
+	 * @param key the key
+	 * @param startIndex the start index
+	 * @param pageSize the page size
+	 * @param callback the callback */
 	public void searchOrganization(String key, int startIndex, int pageSize, AsyncCallback<ManageOrganizationSearchModel> callback);
 	/**
 	 * Search users.
@@ -71,5 +87,9 @@ public interface AdminServiceAsync {
 	 */
 	public void searchUsers(String key, int startIndex, int pageSize, AsyncCallback<ManageUsersSearchModel> callback);
 	
+	/** Gets the all organizations.
+	 * 
+	 * @param callback the callback
+	 * @return the all organizations */
 	void getAllOrganizations(AsyncCallback<ManageOrganizationSearchModel> callback);
 }

@@ -30,6 +30,10 @@ public interface AdminService extends RemoteService {
 	 */
 	public void deleteUser(String userId) throws InCorrectUserRoleException;
 	
+	/** Gets the organization.
+	 * 
+	 * @param key the key
+	 * @return the organization */
 	ManageOrganizationDetailModel getOrganization(String key);
 	
 	/**
@@ -53,6 +57,11 @@ public interface AdminService extends RemoteService {
 	 */
 	public void resetUserPassword(String userid) throws InCorrectUserRoleException;
 	
+	/** Save update organization.
+	 * 
+	 * @param currentModel the current model
+	 * @param updatedModel the updated model
+	 * @return the save update organization result */
 	SaveUpdateOrganizationResult saveUpdateOrganization(ManageOrganizationDetailModel currentModel,
 			ManageOrganizationDetailModel updatedModel);
 	/**
@@ -65,6 +74,13 @@ public interface AdminService extends RemoteService {
 	 *             the in correct user role exception
 	 */
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException;
+	
+	/** Search organization.
+	 * 
+	 * @param key the key
+	 * @param startIndex the start index
+	 * @param pageSize the page size
+	 * @return the manage organization search model */
 	ManageOrganizationSearchModel searchOrganization(String key, int startIndex, int pageSize);
 	/**
 	 * Search users.
@@ -81,5 +97,8 @@ public interface AdminService extends RemoteService {
 	 */
 	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws InCorrectUserRoleException;
 	
+	/** Gets the all organizations.
+	 * 
+	 * @return the all organizations */
 	ManageOrganizationSearchModel getAllOrganizations();
 }

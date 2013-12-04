@@ -108,11 +108,12 @@ public class MatValueSet implements IsSerializable {
 	 * @return String Code System Name.
 	 */
 	public String getCodeSystemName() {
-		if(getConceptList()!=null) {
+		if (getConceptList() != null) {
 			List<MatConcept> matConcepts = getConceptList().getConceptList();
-			if(matConcepts!=null && !matConcepts.isEmpty()) {
-				if(matConcepts.get(0)!=null)
+			if (matConcepts != null && !matConcepts.isEmpty()) {
+				if (matConcepts.get(0) != null) {
 					return matConcepts.get(0).getCodeSystemName();
+				}
 			}
 		}
 		return StringUtils.EMPTY;

@@ -7,9 +7,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-
 import mat.dao.ListObjectDAO;
 import mat.dao.clause.MeasureExportDAO;
 import mat.model.Code;
@@ -21,7 +19,6 @@ import mat.model.MatValueSet;
 import mat.model.clause.MeasureExport;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
-
 import org.apache.poi.hpsf.SummaryInformation;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
@@ -320,7 +317,7 @@ public abstract class XLSGenerator {
 	public String[] getNAME_STRINGS() {
 		return NAME_STRINGS;
 	}
-
+	
 	/**
 	 *@param measureId - String.
 	 *@param measureExportDAO - MeasureExportDAO.
@@ -416,10 +413,14 @@ public abstract class XLSGenerator {
 		if (ConstantMessages.GROUPING_CODE_SYSTEM
 				.equalsIgnoreCase(lo.getType())) {
 			String taxonomy = ConstantMessages.GROUPING_CODE_SYSTEM;
-			String taxonomyVersion = lo.getGroupedValueSet().get(0)
-					.getConceptList().getConceptList().get(0)
-					.getCodeSystemVersion();
+			String taxonomyVersion = "";
 			String description = "";
+			if (lo.getGroupedValueSet().get(0)
+					.getConceptList().getConceptList() != null) {
+				taxonomyVersion = lo.getGroupedValueSet().get(0)
+						.getConceptList().getConceptList().get(0)
+						.getCodeSystemVersion();
+			}
 			if (lo.getGroupedValueSet().size() == 0) {
 				cacheRow(new String[] {measureDeveloper, oid,
 						valueSetLastModified, standardConcept, taxonomy,
@@ -434,22 +435,27 @@ public abstract class XLSGenerator {
 				cacheXLSRow(gcl);
 			}
 		} else {
-			String taxonomy = lo.getConceptList().getConceptList().get(0)
-					.getCodeSystemName();
-			String taxonomyVersion = lo.getConceptList().getConceptList()
-					.get(0).getCodeSystemVersion();
+			String taxonomyVersion = "";
+			String taxonomy = "";
 			String description = "";
-			if (lo.getConceptList().getConceptList().size() == 0) {
-				cacheRow(new String[] {measureDeveloper, oid,
-						valueSetLastModified, standardConcept,
-						taxonomy, taxonomyVersion, code, description }, null);
-			}
-			for (MatConcept concept : lo.getConceptList().getConceptList()) {
-				code = concept.getCode();
-				description = concept.getDisplayName();
-				cacheRow(new String[] {measureDeveloper, oid,
-						valueSetLastModified, standardConcept,
-						taxonomy, taxonomyVersion, code, description }, null);
+			if (lo.getConceptList().getConceptList() != null) {
+				taxonomy = lo.getConceptList().getConceptList().get(0)
+						.getCodeSystemName();
+				taxonomyVersion = lo.getConceptList().getConceptList().get(0)
+						.getCodeSystemVersion();
+				if ((lo.getConceptList().getConceptList().size() == 0)) {
+					cacheRow(new String[] {measureDeveloper, oid,
+							valueSetLastModified, standardConcept,
+							taxonomy, taxonomyVersion, code, description }, null);
+				}
+
+				for (MatConcept concept : lo.getConceptList().getConceptList()) {
+					code = concept.getCode();
+					description = concept.getDisplayName();
+					cacheRow(new String[] {measureDeveloper, oid,
+							valueSetLastModified, standardConcept,
+							taxonomy, taxonomyVersion, code, description }, null);
+				}
 			}
 		}
 	}

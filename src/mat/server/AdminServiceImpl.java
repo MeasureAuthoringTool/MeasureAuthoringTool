@@ -29,12 +29,11 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(AdminServiceImpl.class);
-	/** The context. */
-	/*
-	 * @Autowired private ApplicationContext context;
-	 */
 	
 	/**
+	 * 
+	 * @throws InCorrectUserRoleException the in correct user role exception 
+		
 	 * Check admin user.
 	 * 
 	 * @throws InCorrectUserRoleException
@@ -57,6 +56,10 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		getUserService().deleteUser(userId);
 	}
 	
+	/** Extract organization model.
+	 * 
+	 * @param organization the organization
+	 * @return the manage organization detail model */
 	private ManageOrganizationDetailModel extractOrganizationModel(Organization organization) {
 		ManageOrganizationDetailModel model = new ManageOrganizationDetailModel();
 		if (organization != null) {
@@ -107,6 +110,9 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		return status.getDescription().equalsIgnoreCase("Active");
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.service.AdminService#getOrganization(java.lang.String)
+	 */
 	@Override
 	public ManageOrganizationDetailModel getOrganization(String key) {
 		logger.info("Retrieving organization for OID " + key);
@@ -166,7 +172,11 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		getUserService().requestResetLockedPassword(userid);
 	}
 	
-	/** @param model */
+	/** Save update organization.
+	 * 
+	 * @param currentModel the current model
+	 * @param updatedModel the updated model
+	 * @return the save update organization result */
 	@Override
 	public SaveUpdateOrganizationResult saveUpdateOrganization(ManageOrganizationDetailModel currentModel,
 			ManageOrganizationDetailModel updatedModel) {
@@ -217,6 +227,10 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		}
 		return result;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.service.AdminService#searchOrganization(java.lang.String, int, int)
+	 */
 	@Override
 	public ManageOrganizationSearchModel searchOrganization(String key, int startIndex, int pageSize)
 	{
@@ -268,6 +282,9 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		return model;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.service.AdminService#getAllOrganizations()
+	 */
 	@Override
 	public ManageOrganizationSearchModel getAllOrganizations() {
 		ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();

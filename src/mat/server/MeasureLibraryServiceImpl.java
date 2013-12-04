@@ -114,6 +114,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Autowired
 	private QDSAttributesDAO qDSAttributesDAO;
 	
+	/** The recent msr activity log dao. */
 	@Autowired
 	private RecentMSRActivityLogDAO recentMSRActivityLogDAO;
 	
@@ -770,14 +771,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return manageMeasureSearchModel;
 	}
 	
-	/**
-	 * Gets the and validate value set date.
+	/** Gets the and validate value set date.
 	 * 
-	 * @param valueSetDateStr
-	 *            - {@link String}.
-	 * @throws InvalidValueSetDateException
-	 *             - {@link Exception}. *
-	 */
+	 * @param valueSetDateStr - {@link String}.
+	 * @return the and validate value set date
+	 * @throws InvalidValueSetDateException - {@link Exception}. * */
 	private void getAndValidateValueSetDate(final String valueSetDateStr) throws InvalidValueSetDateException {
 		if (StringUtils.isNotBlank(valueSetDateStr)) {
 			DateStringValidator dsv = new DateStringValidator();
@@ -940,15 +938,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return measureXmlModel;
 	}
 	
-	/**
-	 * Gets the page count.
+	/** Gets the page count.
 	 * 
-	 * @param totalRows
-	 *            - {@link Long}.
-	 * @param numberOfRows
-	 *            - {@link Integer}.
-	 * @return {@link Integer}. *
-	 */
+	 * @param userId the user id
+	 * @return {@link Integer}. * */
 	/*private int getPageCount(final long totalRows, final int numberOfRows) {
 		int pageCount = 0;
 		int mod = (int) (totalRows % numberOfRows);
@@ -1667,18 +1660,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 	
-	/**
-	 * This method updates MeasureXML - Attributes Nodes
+	/** This method updates MeasureXML - Attributes Nodes
 	 * 
 	 * *.
 	 * 
-	 * @param processor
-	 *            the processor
-	 * @param modifyWithDTO
-	 *            the modify with dto
-	 * @param modifyDTO
-	 *            the modify dto
-	 */
+	 * @param list the list
+	 * @param toEmail the to email */
 	
 	/*
 	 * private void updateAttributes(final XmlProcessor processor, final
@@ -1971,16 +1958,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		getService().updatePrivateColumnInMeasure(measureId, isPrivate);
 	}
 	
-	/**
-	 * This method updates MeasureXML - ElementRef's under
-	 * SupplementalDataElement Node
-	 * @param processor
-	 *            the processor
-	 * @param modifyWithDTO
-	 *            QualityDataSetDTO
-	 * @param modifyDTO
-	 *            QualityDataSetDTO
-	 */
+	/** This method updates MeasureXML - ElementRef's under SupplementalDataElement Node.
+	 * 
+	 * @param processor the processor
+	 * @param modifyWithDTO QualityDataSetDTO
+	 * @param modifyDTO QualityDataSetDTO */
 	private void updateSupplementalDataElement(final XmlProcessor processor, final QualityDataSetDTO modifyWithDTO,
 			final QualityDataSetDTO modifyDTO) {
 		

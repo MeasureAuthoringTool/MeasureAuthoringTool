@@ -80,7 +80,9 @@ MeasureService {
 		return this.getMeasureLibraryService().getAllMeasureNotesByMeasureID(measureID);
 	}
 	
-	/** @param userId - String userId.
+	/** Gets the all recent measure for user.
+	 * 
+	 * @param userId - String userId.
 	 * @return ManageMeasureSearchModel */
 	@Override
 	public ManageMeasureSearchModel getAllRecentMeasureForUser(String userId) {

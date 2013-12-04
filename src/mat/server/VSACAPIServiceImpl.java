@@ -42,6 +42,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	/** serialVersionUID for VSACAPIServiceImpl class. **/
 	private static final long serialVersionUID = -6645961609626183169L;
 	
+	/** The Constant TIME_OUT_FAILURE_CODE. */
 	private static final int TIME_OUT_FAILURE_CODE = 3;
 	
 	/**

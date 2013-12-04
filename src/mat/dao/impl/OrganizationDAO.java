@@ -18,7 +18,6 @@ mat.dao.OrganizationDAO {
 		criteria.setProjection(Projections.rowCount());
 		return ((Long) criteria.uniqueResult()).intValue();
 	}
-	
 	/**
 	 * Creates the search criteria.
 	 * 
@@ -32,7 +31,6 @@ mat.dao.OrganizationDAO {
 		criteria.add(Restrictions.ilike("organizationName", "%" + text + "%"));
 		return criteria;
 	}
-	
 	@Override
 	public Organization findByOid(String oid) {
 		Session session = getSessionFactory().getCurrentSession();
@@ -44,7 +42,19 @@ mat.dao.OrganizationDAO {
 			return null;
 		}
 	}
-	
+	/* (non-Javadoc)
+	 * @see mat.dao.OrganizationDAO#getAllOrganizations()
+	 */
+	@Override
+	public List<Organization> getAllOrganizations() {
+		List<Organization> organizations = new ArrayList<Organization>();
+		Session session = getSessionFactory().getCurrentSession();
+		Criteria criteria = session.createCriteria(Organization.class);
+		if (!criteria.list().isEmpty()) {
+			organizations = criteria.list();
+		}
+		return organizations;
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -82,18 +92,4 @@ mat.dao.OrganizationDAO {
 		}
 		return criteria.list();
 	}
-	
-	/* (non-Javadoc)
-	 * @see mat.dao.OrganizationDAO#getAllOrganizations()
-	 */
-	@Override
-	public List<Organization> getAllOrganizations() {
-		List<Organization> organizations = new ArrayList<Organization>();
-		Session session = getSessionFactory().getCurrentSession();
-		Criteria criteria = session.createCriteria(Organization.class);
-		if (!criteria.list().isEmpty()) {
-			organizations = criteria.list();
-		}
-		return organizations;
-	}	
 }

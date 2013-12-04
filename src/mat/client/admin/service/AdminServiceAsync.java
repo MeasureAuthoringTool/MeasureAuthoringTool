@@ -46,6 +46,9 @@ public interface AdminServiceAsync {
 	 */
 	public void resetUserPassword(String userid, AsyncCallback<Void> callback);
 	
+	void saveUpdateOrganization(ManageOrganizationDetailModel currentModel, ManageOrganizationDetailModel updatedModel,
+			AsyncCallback<SaveUpdateOrganizationResult> callback);
+	
 	/**
 	 * Save update user.
 	 * 

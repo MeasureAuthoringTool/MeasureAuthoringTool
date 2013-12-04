@@ -5,12 +5,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 /** The Class ManageUsersDetailModel. */
 public class ManageOrganizationDetailModel implements IsSerializable {
 	
+	/** The is existing Organization. */
+	private boolean isExistingOrg;
+	
 	/** The oid. */
 	private String oid;
 	
 	/** The organization. */
 	private String organization;
-	
 	
 	/** Do trim.
 	 * 
@@ -53,4 +55,18 @@ public class ManageOrganizationDetailModel implements IsSerializable {
 		this.organization = doTrim(organization);
 	}
 
+	/**
+	 * @return the isExistingOrg
+	 */
+	public boolean isExistingOrg() {
+		return isExistingOrg;
+	}
+
+	/**
+	 * @param isExistingOrg the isExistingOrg to set
+	 */
+	public void setExistingOrg(boolean isExistingOrg) {
+		this.isExistingOrg = isExistingOrg;
+	}
+	
 }

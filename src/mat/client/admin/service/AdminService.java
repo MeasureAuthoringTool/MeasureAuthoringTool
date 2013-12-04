@@ -56,6 +56,8 @@ public interface AdminService extends RemoteService {
 	 */
 	public void resetUserPassword(String userid) throws InCorrectUserRoleException;
 	
+	SaveUpdateOrganizationResult saveUpdateOrganization(ManageOrganizationDetailModel currentModel,
+			ManageOrganizationDetailModel updatedModel);
 	/**
 	 * Save update user.
 	 * 

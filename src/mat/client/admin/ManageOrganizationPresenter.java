@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.admin.service.SaveUpdateOrganizationResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -98,7 +99,6 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	
 	/** The detail display. */
 	private DetailDisplay detailDisplay;
-	
 	/** The last search key. */
 	private String lastSearchKey;
 	
@@ -110,6 +110,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	
 	/** The start index. */
 	private int startIndex = 1;
+	
+	private ManageOrganizationDetailModel updatedDetails;
 	
 	/** Instantiates a new manage Organizations presenter.
 	 * 
@@ -347,25 +349,38 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	private void update() {
 		resetMessages();
 		updateOrganizationDetailsFromView();
-		if (isValid(currentDetails)) {
-			/*
-			 * MatContext.get().getAdminService().saveUpdateUser(currentDetails, new AsyncCallback<SaveUpdateUserResult>() {
-			 * 
-			 * @Override public void onFailure(Throwable caught) {
-			 * detailDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage()); }
-			 * 
-			 * @Override public void onSuccess(SaveUpdateUserResult result) { if (result.isSuccess()) { displaySearch(); } else {
-			 * List<String> messages = new ArrayList<String>(); switch (result.getFailureReason()) { case
-			 * SaveUpdateUserResult.ID_NOT_UNIQUE: messages.add(MatContext.get().getMessageDelegate() .getEmailAlreadyExistsMessage());
-			 * break; case SaveUpdateUserResult.SERVER_SIDE_VALIDATION: messages = result.getMessages(); break; default:
-			 * messages.add(MatContext.get().getMessageDelegate() .getUnknownErrorMessage(result.getFailureReason())); }
-			 * detailDisplay.getErrorMessageDisplay().setMessages(messages); } } });
-			 */
-		}
+		// if (isValid(currentDetails)) {
+		MatContext.get().getAdminService().saveUpdateOrganization(currentDetails, updatedDetails,
+				new AsyncCallback<SaveUpdateOrganizationResult>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				detailDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
+			}
+			@Override
+			public void onSuccess(SaveUpdateOrganizationResult result) {
+				if (result.isSuccess()) {
+					displaySearch();
+				} else {
+					List<String> messages = new ArrayList<String>();
+					switch (result.getFailureReason()) {
+						case
+						SaveUpdateOrganizationResult.OID_NOT_UNIQUE:
+							messages.add("OID Not Unique");
+							break;
+						default:
+							messages.add(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+					}
+					detailDisplay.getErrorMessageDisplay().setMessages(messages);
+				}
+			}
+		});
+		// }
 	}
 	
 	/** Update Organization details from view. */
 	private void updateOrganizationDetailsFromView() {
-		currentDetails.setOid(detailDisplay.getOid().getValue());
+		updatedDetails = new ManageOrganizationDetailModel();
+		updatedDetails.setOid(detailDisplay.getOid().getValue());
+		updatedDetails.setOrganization(detailDisplay.getOrganization().getValue());
 	}
 }

@@ -106,7 +106,7 @@ implements ManageOrganizationPresenter.DetailDisplay {
 		fPanel.add(new SpacerWidget());
 		mainPanel.add(fPanel);
 		containerPanel.setContent(mainPanel);
-
+		
 		title.setWidth("196px");
 		organization.setWidth("196px");
 		oid.setWidth("196px");
@@ -190,6 +190,9 @@ implements ManageOrganizationPresenter.DetailDisplay {
 		return successMessages;
 	}
 	
-	
+	@Override
+	public void setTitle(String title) {
+		containerPanel.setHeading(title, "Manage Organizations");
+	}
 	
 }

@@ -64,7 +64,7 @@ public class ManageOrganizationView implements ManageOrganizationPresenter.Searc
 		mainPanel.add(view.asWidget());
 		mainPanel.setStyleName("contentPanel");
 		containerPanel.setContent(mainPanel);
-		// containerPanel.setHeading("Manage Organizations", "Manage Organizations");
+		containerPanel.setHeading("Manage Organizations", "Manage Organizations");
 	}
 	
 	/*

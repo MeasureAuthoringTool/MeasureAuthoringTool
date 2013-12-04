@@ -40,20 +40,18 @@ public interface MeasurePackageService {
 	 */
 	long count(String searchText);
 	
-	/**
-	 * Count measures for draft.
+	/** Count measures for draft.
 	 * 
-	 * @return {@link Long}. *
-	 */
+	 * @param searchText the search text
+	 * @return {@link Long}. * */
 	/* long countMeasuresForDraft(); */
 	
 	long countMeasuresForDraft(String searchText);
 	
-	/**
-	 * Count measures for version.
+	/** Count measures for version.
 	 * 
-	 * @return {@link Long}. *
-	 */
+	 * @param searchText the search text
+	 * @return {@link Long}. * */
 	/* long countMeasuresForVersion(); */
 	
 	long countMeasuresForVersion(String searchText);

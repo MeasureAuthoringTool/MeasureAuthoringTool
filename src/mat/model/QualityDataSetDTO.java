@@ -35,6 +35,7 @@ public class QualityDataSetDTO implements IsSerializable {
 	/** The data type. */
 	private String dataType;
 	
+	/** The effective date. */
 	private String effectiveDate;
 	
 	/** The id. */
@@ -105,9 +106,9 @@ public class QualityDataSetDTO implements IsSerializable {
 		return dataType;
 	}
 	
-	/**
-	 * @return the effectiveDate
-	 */
+	/** Gets the effective date.
+	 * 
+	 * @return the effectiveDate */
 	public String getEffectiveDate() {
 		return effectiveDate;
 	}
@@ -232,9 +233,9 @@ public class QualityDataSetDTO implements IsSerializable {
 		this.dataType = dataType;
 	}
 	
-	/**
-	 * @param effectiveDate the effectiveDate to set
-	 */
+	/** Sets the effective date.
+	 * 
+	 * @param effectiveDate the effectiveDate to set */
 	public void setEffectiveDate(String effectiveDate) {
 		this.effectiveDate = effectiveDate;
 	}

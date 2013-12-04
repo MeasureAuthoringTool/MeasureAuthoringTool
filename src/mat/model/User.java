@@ -51,6 +51,7 @@ public class User  {
 	/** The locked out date. */
 	private Timestamp lockedOutDate;
 	
+	/** The organization. */
 	private Organization organization;
 	
 	/** The organization name. */
@@ -267,8 +268,7 @@ public class User  {
 		return orgName;
 	}
 	
-	/**
-	 * Sets the organization name.
+	/** Sets the organization name.
 	 * 
 	 * @param organizationName
 	 *            the new organization name
@@ -290,12 +290,9 @@ public class User  {
 		return orgOID;
 	}
 	
-	/**
-	 * Sets the org oid.
+	/** Sets the org oid.
 	 * 
-	 * @param orgOID
-	 *            the new org oid
-	 */
+	 * @return the organization id */
 	/*public void setOrgOID(String orgOID) {
 		this.orgOID = orgOID;
 	}*/
@@ -543,10 +540,16 @@ public class User  {
 		return loginId;
 	}
 	
+	/** Gets the organization.
+	 * 
+	 * @return the organization */
 	public Organization getOrganization() {
 		return organization;
 	}
 
+	/** Sets the organization.
+	 * 
+	 * @param organization the new organization */
 	public void setOrganization(Organization organization) {
 		this.organization = organization;
 	}

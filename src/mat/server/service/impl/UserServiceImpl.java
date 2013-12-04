@@ -100,6 +100,7 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private TransactionAuditLogDAO transactionAuditLogDAO;
 	
+	/** The organization dao. */
 	@Autowired
 	private OrganizationDAO organizationDAO;
 	

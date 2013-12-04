@@ -15,6 +15,7 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+/** The Class CodeListXLSGenerator. */
 public class CodeListXLSGenerator extends XLSGenerator{
 
 	/** SVS Column name.**/
@@ -33,16 +34,15 @@ public class CodeListXLSGenerator extends XLSGenerator{
 	private List<String> qdmOIDs = new ArrayList<String>();
 
 
-	/**
-	 *@param m - Measure Object.
-	 *@param allQDMs - List of String.
-	 *@param qualityDataSetDAO - QualityDataSetDAO.
-	 *@param listObjectDAO - ListObjectDAO.
-	 *@param supplementalQDMS - List of String.
-	 *@param matValueSets - List of MatValueSet.
-	 *
-	 *@return HSSFWorkbook.
-	 * **/
+	/** Gets the xls.
+	 * 
+	 * @param m - Measure Object.
+	 * @param allQDMs - List of String.
+	 * @param qualityDataSetDAO - QualityDataSetDAO.
+	 * @param listObjectDAO - ListObjectDAO.
+	 * @param supplementalQDMS - List of String.
+	 * @param matValueSets - List of MatValueSet.
+	 * @return HSSFWorkbook. * */
 	public final HSSFWorkbook getXLS(final Measure m, final List<String> allQDMs,
 			final QualityDataSetDAO qualityDataSetDAO,
 			final ListObjectDAO listObjectDAO, final List<String> supplementalQDMS,
@@ -71,15 +71,16 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		return wkbk;
 	}
 
-	/**
-	 *@param sheetName -String.
-	 *@param names - String Array.
-	 *@param m - Measure.
-	 *@param wkbk - HSSFWorkbook.
-	 *@param supplementalQDMS - List of String.
-	 *@param matValueSetList - List of MatValueSet.
-	 *
-	 * **/
+	/** Adds the vsac value set work sheet.
+	 * 
+	 * @param sheetName -String.
+	 * @param names - String Array.
+	 * @param m - Measure.
+	 * @param wkbk - HSSFWorkbook.
+	 * @param supplementalQDMS - List of String.
+	 * @param matValueSetList - List of MatValueSet.
+	 * 
+	 *        * */
 	public final void addVsacValueSetWorkSheet(final String sheetName, final String[] names, final Measure m,
 			final HSSFWorkbook wkbk, final List<MatValueSet> supplementalQDMS,
 			final List<MatValueSet> matValueSetList) {
@@ -96,10 +97,11 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		sizeColumns(wkst);
 	}
 
-	/**
-	 *@param lo - MatValueSet Object
-	 *
-	 * **/
+	/** Cache xls row.
+	 * 
+	 * @param lo - MatValueSet Object
+	 * 
+	 *        * */
 
 	@Override
 	protected final void cacheXLSRow(final MatValueSet lo) {
@@ -115,12 +117,11 @@ public class CodeListXLSGenerator extends XLSGenerator{
 
 	}
 
-	/**
-	 *@param id - String qdm Id.
-	 *@param matValueSets - List of MatValueSet.
-	 *
-	 *@return MatValueSet.
-	 * */
+	/** Find in list.
+	 * 
+	 * @param id - String qdm Id.
+	 * @param matValueSets - List of MatValueSet.
+	 * @return MatValueSet. */
 	private MatValueSet findInList(final String id , final List<MatValueSet> matValueSets) {
 		MatValueSet result = null;
 		if (matValueSets != null) {
@@ -134,6 +135,9 @@ public class CodeListXLSGenerator extends XLSGenerator{
 		return result;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.server.service.impl.XLSGenerator#cacheXLSRow(mat.model.ListObject, mat.dao.ListObjectDAO, java.sql.Timestamp)
+	 */
 	@Override
 	protected final void cacheXLSRow(ListObject lo, final ListObjectDAO listObjectDAO, final Timestamp vsPackageDate){
 		//Make sure we have the most recent non-draft value set from that OID that is before the timestamp

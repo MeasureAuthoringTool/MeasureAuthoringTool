@@ -29,10 +29,16 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.Name;
 
+/** The Class XLSGenerator. */
 public abstract class XLSGenerator {
 	
+	/** The Class RowCacheItem. */
 	protected class RowCacheItem implements Comparable<RowCacheItem> {
+		
+		/** The style. */
 		public HSSFCellStyle style;
+		
+		/** The values. */
 		public String[] values;
 		
 		/**
@@ -53,8 +59,14 @@ public abstract class XLSGenerator {
 			return dc.dotNotationCompare(values[code], o.values[code]);
 		}
 	}
+	
+	/** The author. */
 	protected final String AUTHOR = "eMeasureTool";
+	
+	/** The code. */
 	protected final int code = 6;
+	
+	/** The codedescription. */
 	protected final int codedescription = 7;
 	/**
 	 * WorkBook Header.
@@ -62,7 +74,11 @@ public abstract class XLSGenerator {
 	private final String[] HEADER_STRINGS = { "Value Set Developer",
 			"Value Set OID", "Revision Date", "Value Set Name",
 			"Code System", "Code System Version", "Code", "Descriptor" };
+	
+	/** The keywords. */
 	protected final String KEYWORDS = "Value Set, OID, Export, Measure, Code, Descriptor";
+	
+	/** The measuredeveloper. */
 	protected final int measuredeveloper = 0;
 	/**
 	 * WorkBook Content.
@@ -70,21 +86,34 @@ public abstract class XLSGenerator {
 	private final String[] NAME_STRINGS = { "ValueSetDeveloper",
 			"ValueSetOID", "RevisionDate", "ValueSetName", "QDMCategory",
 			"CodeSystem", "CodeSystemVersion", "Code", "Descriptor" };
+	
+	/** The oid. */
 	protected final int oid = 1;
+	
+	/** The revision date. */
 	protected final int revisionDate = 2;
+	
+	/** The row cache. */
 	protected ArrayList<RowCacheItem> rowCache = new ArrayList<RowCacheItem>();
+	
+	/** The standardconcept. */
 	protected final int standardconcept = 3;
 	/* protected final int standardcategory = 4; */
+	/** The standardtaxonomy. */
 	protected final int standardtaxonomy = 4;
 	
+	/** The standardtaxonomyversion. */
 	protected final int standardtaxonomyversion = 5;
+	
+	/** The subject. */
 	protected final String SUBJECT = "Value Set Export";
 	
+	/** The title. */
 	protected final String TITLE = "Value Set Export";
 	
-	/**
-	 *@param wkbk - HSSFWorkbook.
-	 * **/
+	/** Adds the disclaimer.
+	 * 
+	 * @param wkbk - HSSFWorkbook. * */
 	protected final void addDisclaimer(final HSSFWorkbook wkbk) {
 		String disclaimerText = "The codes that you are exporting directly reflect the codes you entered into the "
 				+ "Measure Authoring Tool.  These codes may be owned by a third party and "
@@ -106,10 +135,10 @@ public abstract class XLSGenerator {
 		cell.setCellStyle(style);
 	}
 	
-	/**
-	 *@param values - String array.
-	 *@param style - HSSFCellStyle.
-	 * **/
+	/** Cache row.
+	 * 
+	 * @param values - String array.
+	 * @param style - HSSFCellStyle. * */
 	protected final void cacheRow(final String[] values, final HSSFCellStyle style) {
 		RowCacheItem row = new RowCacheItem();
 		row.values = values.clone();
@@ -117,29 +146,31 @@ public abstract class XLSGenerator {
 		rowCache.add(row);
 	}
 	
-	/**
-	 *@param lo - ListObject.
-	 *@param listObjectDAO - ListObjectDAO.
-	 *@param vsPackageDate - Time stamp.
-	 *
-	 * **/
+	/** Cache xls row.
+	 * 
+	 * @param lo - ListObject.
+	 * @param listObjectDAO - ListObjectDAO.
+	 * @param vsPackageDate - Time stamp.
+	 * 
+	 *        * */
 	protected abstract void cacheXLSRow(ListObject lo,
 			ListObjectDAO listObjectDAO, Timestamp vsPackageDate);
 	
-	/**
-	 *@param lo - MatValueSet.
-	 *
-	 * **/
+	/** Cache xls row.
+	 * 
+	 * @param lo - MatValueSet.
+	 * 
+	 *        * */
 	protected abstract void cacheXLSRow(MatValueSet lo);
 	
-	/**
-	 *@param wkst - HSSFSheet.
-	 *@param values - String Array.
-	 *@param names - String Array.
-	 *@param rownum - Integer.
-	 *@param style -HSSFCellStyle.
-	 *@return HSSFRow.
-	 * **/
+	/** Creates the header row.
+	 * 
+	 * @param wkst - HSSFSheet.
+	 * @param values - String Array.
+	 * @param names - String Array.
+	 * @param rownum - Integer.
+	 * @param style -HSSFCellStyle.
+	 * @return HSSFRow. * */
 	public final HSSFRow createHeaderRow(final HSSFSheet wkst, final String[] values,
 			final String[] names, final int rownum, final HSSFCellStyle style) {
 		HSSFRow headerRow = createXLSRow(wkst, values, rownum, style);
@@ -167,10 +198,11 @@ public abstract class XLSGenerator {
 		return headerRow;
 	}
 	
-	/**
-	 *@param wkbk - HSSFWorkbook.
-	 *
-	 * **/
+	/** Creates the meta data.
+	 * 
+	 * @param wkbk - HSSFWorkbook.
+	 * 
+	 *        * */
 	public final void createMetaData(final HSSFWorkbook wkbk) {
 		// Author: eMeasureTool, Title: Value Set Export, Subject: Value Set
 		// Export, Keywords: Value Set, OID, Export, Measure, Code, Descriptor
@@ -182,12 +214,12 @@ public abstract class XLSGenerator {
 		si.setKeywords(KEYWORDS);
 	}
 	
-	/**
-	 *@param wkbk -HSSFWorkbook.
-	 *@param style -HSSFCellStyle.
-	 *@param sheetName - String.
-	 *@return  HSSFSheet.
-	 * **/
+	/** Creates the sheet.
+	 * 
+	 * @param wkbk -HSSFWorkbook.
+	 * @param style -HSSFCellStyle.
+	 * @param sheetName - String.
+	 * @return HSSFSheet. * */
 	
 	protected final HSSFSheet createSheet(final HSSFWorkbook wkbk, final HSSFCellStyle style,
 			final String sheetName) {
@@ -207,24 +239,24 @@ public abstract class XLSGenerator {
 		return wkst;
 	}
 	
-	/**
-	 *@param wkst - HSSFSheet.
-	 *@param values - String Array.
-	 *@param style - HSSFCellStyle.
-	 *@return HSSFRow.
-	 * **/
+	/** Creates the xls row.
+	 * 
+	 * @param wkst - HSSFSheet.
+	 * @param values - String Array.
+	 * @param style - HSSFCellStyle.
+	 * @return HSSFRow. * */
 	protected final HSSFRow createXLSRow(final HSSFSheet wkst, final String[] values,
 			final HSSFCellStyle style) {
 		return createXLSRow(wkst, values, wkst.getLastRowNum() + 1, style);
 	}
 	
-	/**
-	 *@param wkst - HSSFSheet.
-	 *@param values - String Array.
-	 *@param rownum - Integer.
-	 *@param style - HSSFCellStyle.
-	 *@return HSSFRow.
-	 * **/
+	/** Creates the xls row.
+	 * 
+	 * @param wkst - HSSFSheet.
+	 * @param values - String Array.
+	 * @param rownum - Integer.
+	 * @param style - HSSFCellStyle.
+	 * @return HSSFRow. * */
 	protected final HSSFRow createXLSRow(final HSSFSheet wkst, final String[] values, final int rownum,
 			final HSSFCellStyle style) {
 		HSSFRow row = wkst.createRow(rownum);
@@ -262,11 +294,11 @@ public abstract class XLSGenerator {
 		return row;
 	}
 	
-	/**
-	 *@param wkbk - HSSFWorkbook.
-	 *@param nameStr - String.
-	 *@param referenceStr - String.
-	 * **/
+	/** Generate name.
+	 * 
+	 * @param wkbk - HSSFWorkbook.
+	 * @param nameStr - String.
+	 * @param referenceStr - String. * */
 	protected final void generateName(final HSSFWorkbook wkbk, final String nameStr,
 			final String referenceStr) {
 		// names are required for 508 testing
@@ -275,9 +307,9 @@ public abstract class XLSGenerator {
 		name.setRefersToFormula(referenceStr);
 	}
 	
-	/**
-	 *@return HSSFWorkbook.
-	 * **/
+	/** Gets the error xls.
+	 * 
+	 * @return HSSFWorkbook. * */
 	public HSSFWorkbook getErrorXLS() {
 		HSSFWorkbook wkbk = new HSSFWorkbook();
 		HSSFSheet wkst = wkbk.createSheet("Sheet 1");
@@ -288,9 +320,9 @@ public abstract class XLSGenerator {
 		return wkbk;
 	}
 	
-	/**
-	 * @return the hEADER_STRINGS
-	 */
+	/** Gets the header strings.
+	 * 
+	 * @return the hEADER_STRINGS */
 	public String[] getHEADER_STRINGS() {
 		return HEADER_STRINGS;
 	}
@@ -311,18 +343,18 @@ public abstract class XLSGenerator {
 		return barr;
 	}
 	
-	/**
-	 * @return the nAME_STRINGS
-	 */
+	/** Gets the name strings.
+	 * 
+	 * @return the nAME_STRINGS */
 	public String[] getNAME_STRINGS() {
 		return NAME_STRINGS;
 	}
 	
-	/**
-	 *@param measureId - String.
-	 *@param measureExportDAO - MeasureExportDAO.
-	 *@return HSSFWorkbook.
-	 * **/
+	/** Gets the xls.
+	 * 
+	 * @param measureId - String.
+	 * @param measureExportDAO - MeasureExportDAO.
+	 * @return HSSFWorkbook. * */
 	public final HSSFWorkbook getXLS(final String measureId,
 			final MeasureExportDAO measureExportDAO) {
 		MeasureExport me = measureExportDAO.findForMeasure(measureId);
@@ -338,12 +370,13 @@ public abstract class XLSGenerator {
 		}
 	}
 	
-	/**
-	 *@param lo - ListObject.
-	 *@param listObjectDAO - ListObjectDAO.
-	 *@param vsPackageDate - Timestamp.
-	 *
-	 * **/
+	/** Process xls row.
+	 * 
+	 * @param lo - ListObject.
+	 * @param listObjectDAO - ListObjectDAO.
+	 * @param vsPackageDate - Timestamp.
+	 * 
+	 *        * */
 	protected final void processXLSRow(final ListObject lo, final ListObjectDAO listObjectDAO,
 			final Timestamp vsPackageDate) {
 		
@@ -398,10 +431,11 @@ public abstract class XLSGenerator {
 		}
 	}
 	
-	/**
-	 *@param lo - MatValueSet.
-	 *
-	 * **/
+	/** Process xls row.
+	 * 
+	 * @param lo - MatValueSet.
+	 * 
+	 *        * */
 	protected final void processXLSRow(final MatValueSet lo) {
 		
 		String measureDeveloper = "";
@@ -460,10 +494,10 @@ public abstract class XLSGenerator {
 		}
 	}
 	
-	/**
-	 *@param wkst - HSSFSheet.
-	 *@param col - Short.
-	 * **/
+	/** Size column.
+	 * 
+	 * @param wkst - HSSFSheet.
+	 * @param col - Short. * */
 	private void sizeColumn(final HSSFSheet wkst, final short col) {
 		try {
 			wkst.autoSizeColumn(col);
@@ -472,9 +506,9 @@ public abstract class XLSGenerator {
 		}
 	}
 	
-	/**
-	 *@param wkst - HSSFSheet.
-	 * **/
+	/** Size columns.
+	 * 
+	 * @param wkst - HSSFSheet. * */
 	protected final void sizeColumns(final HSSFSheet wkst) {
 		sizeColumn(wkst, (short) measuredeveloper);
 		sizeColumn(wkst, (short) oid);
@@ -487,10 +521,10 @@ public abstract class XLSGenerator {
 		sizeColumn(wkst, (short) codedescription);
 	}
 	
-	/**
-	 *@param repStr - String.
-	 *@return String.
-	 * **/
+	/** Strip invalid chars.
+	 * 
+	 * @param repStr - String.
+	 * @return String. * */
 	protected final String stripInvalidChars(final String repStr) {
 		StringBuffer sb = new StringBuffer();
 		String acceptableStr = " `~1!2@3#4$5%6^7&89(0)-_=+qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM,<.>{}|";
@@ -508,9 +542,9 @@ public abstract class XLSGenerator {
 		
 	}
 	
-	/**
-	 *@param wkst - HSSFSheet.
-	 * **/
+	/** Write row cache.
+	 * 
+	 * @param wkst - HSSFSheet. * */
 	protected final void writeRowCache(final HSSFSheet wkst) {
 		Collections.sort(rowCache);
 		for (RowCacheItem row : rowCache) {

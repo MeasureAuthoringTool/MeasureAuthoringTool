@@ -10,6 +10,8 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 /** The Class ManageAdminPresenter. */
 public class ManageAdminPresenter implements MatPresenter {
+	
+	/** The admin account tab. */
 	private final String ADMIN_ACCOUNT_TAB = "adminAccountTab";
 	/** The Admin content widget. */
 	private SimplePanel adminContentWidget = new SimplePanel();

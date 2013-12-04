@@ -190,6 +190,9 @@ implements ManageOrganizationPresenter.DetailDisplay {
 		return successMessages;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageOrganizationPresenter.DetailDisplay#setTitle(java.lang.String)
+	 */
 	@Override
 	public void setTitle(String title) {
 		containerPanel.setHeading(title, "Manage Organizations");

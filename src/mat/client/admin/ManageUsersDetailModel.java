@@ -34,6 +34,7 @@ public class ManageUsersDetailModel implements IsSerializable {
 	/** The organization. */
 	private String organization;
 	
+	/** The organization id. */
 	private String organizationId;
 	
 	/** The oid. */
@@ -391,16 +392,16 @@ public class ManageUsersDetailModel implements IsSerializable {
 		return loginId;
 	}
 
-	/**
-	 * @return the organizationId
-	 */
+	/** Gets the organization id.
+	 * 
+	 * @return the organizationId */
 	public String getOrganizationId() {
 		return organizationId;
 	}
 
-	/**
-	 * @param organizationId the organizationId to set
-	 */
+	/** Sets the organization id.
+	 * 
+	 * @param organizationId the organizationId to set */
 	public void setOrganizationId(String organizationId) {
 		this.organizationId = organizationId;
 	}

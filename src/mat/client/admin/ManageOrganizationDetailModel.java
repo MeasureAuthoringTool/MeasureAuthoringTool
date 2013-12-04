@@ -55,16 +55,16 @@ public class ManageOrganizationDetailModel implements IsSerializable {
 		this.organization = doTrim(organization);
 	}
 
-	/**
-	 * @return the isExistingOrg
-	 */
+	/** Checks if is existing org.
+	 * 
+	 * @return the isExistingOrg */
 	public boolean isExistingOrg() {
 		return isExistingOrg;
 	}
 
-	/**
-	 * @param isExistingOrg the isExistingOrg to set
-	 */
+	/** Sets the existing org.
+	 * 
+	 * @param isExistingOrg the isExistingOrg to set */
 	public void setExistingOrg(boolean isExistingOrg) {
 		this.isExistingOrg = isExistingOrg;
 	}

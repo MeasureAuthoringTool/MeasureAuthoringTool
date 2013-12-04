@@ -150,6 +150,9 @@ public class ManageOrganizationView implements ManageOrganizationPresenter.Searc
 		return searchText;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageOrganizationPresenter.SearchDisplay#getSelectIdForEditTool()
+	 */
 	@Override
 	public HasSelectionHandlers<ManageOrganizationSearchModel.Result> getSelectIdForEditTool() {
 		return view;

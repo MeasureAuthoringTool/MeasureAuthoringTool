@@ -336,11 +336,17 @@ public class ManageUsersDetailView
 		return phoneWidget.getPhoneNumber();
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#getOrganizationListBox()
+	 */
 	@Override
 	public ListBoxMVP getOrganizationListBox() {
 		return organizationListBox;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.ManageUsersPresenter.DetailDisplay#populateOrganizations(java.util.List)
+	 */
 	@Override
 	public void populateOrganizations(List<Result> organizations) {
 		setListBoxItems(organizationListBox, organizations, MatContext.PLEASE_SELECT);
@@ -531,17 +537,17 @@ public class ManageUsersDetailView
 		return loginId;
 	}
 
-	/**
-	 * @return the organizationsMap
-	 */
+	/** Gets the organizations map.
+	 * 
+	 * @return the organizationsMap */
 	@Override
 	public Map<String, Result> getOrganizationsMap() {
 		return organizationsMap;
 	}
 
-	/**
-	 * @param organizationsMap the organizationsMap to set
-	 */
+	/** Sets the organizations map.
+	 * 
+	 * @param organizationsMap the organizationsMap to set */
 	@Override
 	public void setOrganizationsMap(Map<String, Result> organizationsMap) {
 		this.organizationsMap = organizationsMap;

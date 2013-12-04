@@ -92,10 +92,11 @@ public interface MeasureServiceAsync {
 	void getAllMeasureNotesByMeasureID(String measureID,
 			AsyncCallback<MeasureNotesModel> callback);
 	
-	/**
-	 * @param userId
-	 * @param callback
-	 */
+	/** Gets the all recent measure for user.
+	 * 
+	 * @param userId the user id
+	 * @param callback the callback
+	 * @return the all recent measure for user */
 	void getAllRecentMeasureForUser(String userId, AsyncCallback<ManageMeasureSearchModel> callback);
 	
 	/**

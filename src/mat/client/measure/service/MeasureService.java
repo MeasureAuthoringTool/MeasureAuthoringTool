@@ -81,10 +81,10 @@ public interface MeasureService extends RemoteService {
 	 */
 	MeasureNotesModel getAllMeasureNotesByMeasureID(String measureID);
 	
-	/**
-	 * @param userId
-	 * @return
-	 */
+	/** Gets the all recent measure for user.
+	 * 
+	 * @param userId the user id
+	 * @return the all recent measure for user */
 	ManageMeasureSearchModel getAllRecentMeasureForUser(String userId);
 	
 	/**

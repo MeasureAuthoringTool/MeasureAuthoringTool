@@ -71,6 +71,10 @@ public class SearchWidget extends Composite implements ClickHandler {
 	public final TextBox getSearchInput() {
 		return searchInput;
 	}
+	
+	/* (non-Javadoc)
+	 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
+	 */
 	@Override
 	public void onClick(ClickEvent event) {
 		

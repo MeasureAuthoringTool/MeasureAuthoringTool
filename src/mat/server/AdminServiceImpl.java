@@ -2,7 +2,6 @@ package mat.server;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.client.admin.ManageOrganizationDetailModel;
 import mat.client.admin.ManageOrganizationSearchModel;
 import mat.client.admin.ManageUsersDetailModel;
@@ -15,6 +14,7 @@ import mat.model.Organization;
 import mat.model.Status;
 import mat.model.User;
 import mat.server.service.UserService;
+import mat.shared.AdminManageOrganizationModelValidator;
 import mat.shared.AdminManageUserModelValidator;
 import mat.shared.InCorrectUserRoleException;
 import org.apache.commons.logging.Log;
@@ -32,7 +32,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	
 	/**
 	 * 
-	 * @throws InCorrectUserRoleException the in correct user role exception 
+	 * @throws InCorrectUserRoleException the in correct user role exception
 		
 	 * Check admin user.
 	 * 
@@ -99,6 +99,28 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		return model;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.admin.service.AdminService#getAllOrganizations()
+	 */
+	@Override
+	public ManageOrganizationSearchModel getAllOrganizations() {
+		ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
+		List<ManageOrganizationSearchModel.Result> results = new ArrayList<ManageOrganizationSearchModel.Result>();
+		
+		List<Organization> organizations = getOrganizationDAO().getAllOrganizations();
+		for (Organization organization : organizations) {
+			ManageOrganizationSearchModel.Result result = new ManageOrganizationSearchModel.Result();
+			result.setId(String.valueOf(organization.getId()));
+			result.setOrgName(organization.getOrganizationName());
+			result.setOid(organization.getOrganizationOID());
+			results.add(result);
+		}
+		model.setData(results);
+		logger.info("Getting all organizations.");
+		
+		return model;
+	}
+	
 	/**
 	 * Gets the checks if is active.
 	 * 
@@ -128,7 +150,6 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	private OrganizationDAO getOrganizationDAO() {
 		return ((OrganizationDAO) context.getBean("organizationDAO"));
 	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -141,6 +162,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		User user = getUserService().getById(key);
 		return extractUserModel(user);
 	}
+	
 	/**
 	 * Gets the user service.
 	 * 
@@ -182,26 +204,38 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			ManageOrganizationDetailModel updatedModel) {
 		SaveUpdateOrganizationResult saveUpdateOrganizationResult = new SaveUpdateOrganizationResult();
 		Organization organization = null;
-		if (currentModel.isExistingOrg()) {
-			organization = getOrganizationDAO().findByOid(currentModel.getOid());
-			organization.setOrganizationName(updatedModel.getOrganization());
-			organization.setOrganizationOID(updatedModel.getOid());
-		} else {
-			organization = new Organization();
-			if (getOrganizationDAO().findByOid(updatedModel.getOid()) != null) {
+		AdminManageOrganizationModelValidator test = new AdminManageOrganizationModelValidator();
+		List<String> messages = test.isValidOrganizationDetail(updatedModel);
+		SaveUpdateUserResult result = new SaveUpdateUserResult();
+		if(messages.size()!=0){
+			for(String message: messages){
+				logger.info("Server-Side Validation failed for SaveUpdateOrganizationResult And failure Message is :" + message);
+			}
+			result.setSuccess(false);
+			result.setMessages(messages);
+			result.setFailureReason(SaveUpdateOrganizationResult.SERVER_SIDE_VALIDATION);
+		}else{
+			if (currentModel.isExistingOrg()) {
+				organization = getOrganizationDAO().findByOid(currentModel.getOid());
+				organization.setOrganizationName(updatedModel.getOrganization());
+				organization.setOrganizationOID(updatedModel.getOid());
+			} else {
+				organization = new Organization();
+				if (getOrganizationDAO().findByOid(updatedModel.getOid()) != null) {
+					saveUpdateOrganizationResult.setSuccess(false);
+					saveUpdateOrganizationResult.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
+					return saveUpdateOrganizationResult;
+				}
+				organization.setOrganizationName(updatedModel.getOrganization());
+				organization.setOrganizationOID(updatedModel.getOid());
+			}
+			try {
+				getOrganizationDAO().saveOrganization(organization);
+				saveUpdateOrganizationResult.setSuccess(true);
+			} catch (Exception exception) {
 				saveUpdateOrganizationResult.setSuccess(false);
 				saveUpdateOrganizationResult.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
-				return saveUpdateOrganizationResult;
 			}
-			organization.setOrganizationName(updatedModel.getOrganization());
-			organization.setOrganizationOID(updatedModel.getOid());
-		}
-		try {
-			getOrganizationDAO().saveOrganization(organization);
-			saveUpdateOrganizationResult.setSuccess(true);
-		} catch (Exception exception) {
-			saveUpdateOrganizationResult.setSuccess(false);
-			saveUpdateOrganizationResult.setFailureReason(SaveUpdateOrganizationResult.OID_NOT_UNIQUE);
 		}
 		return saveUpdateOrganizationResult;
 	}
@@ -227,7 +261,6 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		}
 		return result;
 	}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.service.AdminService#searchOrganization(java.lang.String, int, int)
 	 */
@@ -251,6 +284,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		logger.info("Searching Organization on " + key + " with page size " + pageSize);
 		return model;
 	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.admin.service.AdminService#searchUsers(java.lang.String, int, int)
 	 */
@@ -278,28 +312,6 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		model.setStartIndex(startIndex);
 		model.setResultsTotal(getUserService().countSearchResults(key));
 		logger.info("Searching users on " + key + " with page size " + pageSize);
-		
-		return model;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.admin.service.AdminService#getAllOrganizations()
-	 */
-	@Override
-	public ManageOrganizationSearchModel getAllOrganizations() {
-		ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
-		List<ManageOrganizationSearchModel.Result> results = new ArrayList<ManageOrganizationSearchModel.Result>();
-		
-		List<Organization> organizations = getOrganizationDAO().getAllOrganizations();		
-		for (Organization organization : organizations) {
-			ManageOrganizationSearchModel.Result result = new ManageOrganizationSearchModel.Result();
-			result.setId(String.valueOf(organization.getId()));
-			result.setOrgName(organization.getOrganizationName());
-			result.setOid(organization.getOrganizationOID());
-			results.add(result);
-		}
-		model.setData(results);		
-		logger.info("Getting all organizations.");
 		
 		return model;
 	}

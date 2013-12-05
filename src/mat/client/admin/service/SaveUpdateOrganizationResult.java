@@ -11,6 +11,5 @@ public class SaveUpdateOrganizationResult extends GenericResult {
 	/** The Constant OID_NOT_UNIQUE. */
 	public static final int OID_NOT_UNIQUE = 1;
 	
-	/** The Constant ROOT_OID_NOT_UNIQUE. */
-	public static final int ROOT_OID_NOT_UNIQUE = 2;
+	public static final int SERVER_SIDE_VALIDATION = 2;
 }

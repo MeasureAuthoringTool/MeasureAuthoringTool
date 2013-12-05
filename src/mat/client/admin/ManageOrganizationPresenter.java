@@ -315,6 +315,10 @@ public class ManageOrganizationPresenter implements MatPresenter {
 							SaveUpdateOrganizationResult.OID_NOT_UNIQUE:
 								messages.add("OID already exists.");
 								break;
+									case
+							SaveUpdateOrganizationResult.SERVER_SIDE_VALIDATION:
+								messages = result.getMessages();
+								break;
 							default:
 								messages.add(MatContext.get().getMessageDelegate()
 										.getUnknownErrorMessage(result.getFailureReason()));

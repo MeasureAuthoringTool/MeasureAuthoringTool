@@ -120,7 +120,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 						}
 					});
 					table.addColumn(exportColumn,
-					SafeHtmlUtils.fromSafeConstant("<span title='Export'>"
+							SafeHtmlUtils.fromSafeConstant("<span title='Export'>"
 									+ "Export" + "</span>"));
 					table.setColumnWidth(0, 65.0, Unit.PCT);
 					table.setColumnWidth(1, 30.0, Unit.PCT);
@@ -150,8 +150,19 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		sortProvider.getList().addAll(measureSearchModel.getData());
 		cellTable = addColumnToTable(cellTable);
 		sortProvider.addDataDisplay(cellTable);
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("MostRecentMeasureActivityTable"),
+				"MostRecentMeasureActivityTable");
+		cellTable.getElement().setAttribute("id", "MostRecentActivityCellTable");
+		cellTable.getElement().setAttribute("Summary", "Recent Measure Activity Table.");
+		searchPanel.add(invisibleLabel);
 		searchPanel.add(cellTable);
-		searchPanel.getElement().setAttribute("Summary", "Recent Measure Activity Table.");
+		Element element = searchPanel.getElement();
+		element.setAttribute("aria-role", "panel");
+		element.setAttribute("aria-labelledby", "MostRecentMeasureActivityTable");
+		element.setAttribute("aria-live", "assertive");
+		element.setAttribute("aria-atomic", "true");
+		element.setAttribute("aria-relevant", "all");
+		element.setAttribute("role", "alert");
 	}
 	
 	/** Builds the most recent widget.

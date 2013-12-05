@@ -151,6 +151,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		cellTable = addColumnToTable(cellTable);
 		sortProvider.addDataDisplay(cellTable);
 		searchPanel.add(cellTable);
+		searchPanel.getElement().setAttribute("Summary", "Recent Measure Activity Table.");
 	}
 	
 	/** Builds the most recent widget.

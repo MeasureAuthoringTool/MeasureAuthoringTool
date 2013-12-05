@@ -138,8 +138,8 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
 	/** Method to create Recent Measure Cell Table. */
-	void buildCellTable() {
-		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+	private void buildCellTable() {
+		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
 		ArrayList<ManageMeasureSearchModel.Result> selectedMeasureList = new ArrayList<Result>();
 		selectedMeasureList.addAll(measureSearchModel.getData());
@@ -150,19 +150,13 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		sortProvider.getList().addAll(measureSearchModel.getData());
 		cellTable = addColumnToTable(cellTable);
 		sortProvider.addDataDisplay(cellTable);
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("MostRecentMeasureActivityTable"),
-				"MostRecentMeasureActivityTable");
 		cellTable.getElement().setAttribute("id", "MostRecentActivityCellTable");
 		cellTable.getElement().setAttribute("Summary", "Recent Measure Activity Table.");
-		searchPanel.add(invisibleLabel);
+		cellTable.setSkipRowHoverCheck(true);
+		cellTable.setTitle("Recent Activity Table");
 		searchPanel.add(cellTable);
-		Element element = cellTable.getElement();
-		element.setAttribute("aria-role", "grid");
-		element.setAttribute("aria-labelledby", "MostRecentMeasureActivityTable");
-		element.setAttribute("aria-live", "assertive");
-		element.setAttribute("aria-atomic", "true");
-		element.setAttribute("aria-relevant", "all");
-		element.setAttribute("role", "alert");
+		
+		
 	}
 	
 	/** Builds the most recent widget.
@@ -172,12 +166,17 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		searchPanel.clear();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("recentSearchPanel");
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("MostRecentMeasureActivityTable"),
+				"MostRecentMeasureActivityTable");
 		Label searchHeader = new Label("Recent Activity");
 		searchHeader.getElement().setId("searchHeader_Label");
 		searchHeader.setStyleName("recentSearchHeader");
 		searchHeader.getElement().setAttribute("tabIndex", "0");
+		searchPanel.add(invisibleLabel);
 		searchPanel.add(searchHeader);
 		searchPanel.add(new SpacerWidget());
+		Element element = searchHeader.getElement();
+		element.setAttribute("aria-labelledby", "MostRecentMeasureActivityTable");
 		if ((measureSearchModel != null) && (measureSearchModel.getData().size() > 0)) {
 			buildCellTable();
 		} else {

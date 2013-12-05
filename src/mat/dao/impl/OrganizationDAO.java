@@ -24,6 +24,7 @@ mat.dao.OrganizationDAO {
 		criteria.setProjection(Projections.rowCount());
 		return ((Long) criteria.uniqueResult()).intValue();
 	}
+	
 	/**
 	 * Creates the search criteria.
 	 * 
@@ -52,6 +53,7 @@ mat.dao.OrganizationDAO {
 			return null;
 		}
 	}
+	
 	/* (non-Javadoc)
 	 * @see mat.dao.OrganizationDAO#getAllOrganizations()
 	 */
@@ -60,11 +62,13 @@ mat.dao.OrganizationDAO {
 		List<Organization> organizations = new ArrayList<Organization>();
 		Session session = getSessionFactory().getCurrentSession();
 		Criteria criteria = session.createCriteria(Organization.class);
+		criteria.addOrder(Order.asc("organizationName"));
 		if (!criteria.list().isEmpty()) {
 			organizations = criteria.list();
 		}
 		return organizations;
 	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

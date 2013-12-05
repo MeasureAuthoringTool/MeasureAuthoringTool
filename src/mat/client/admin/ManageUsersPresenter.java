@@ -465,7 +465,6 @@ public class ManageUsersPresenter implements MatPresenter {
 			@Override
 			public void onSuccess(ManageOrganizationSearchModel model) {
 				List<Result> results = model.getData();	
-				Collections.sort(results);
 				detailDisplay.populateOrganizations(results);	
 				
 				Map<String, Result> orgMap = new HashMap<String, Result>();

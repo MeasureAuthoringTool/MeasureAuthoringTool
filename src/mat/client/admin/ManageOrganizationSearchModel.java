@@ -15,7 +15,7 @@ IsSerializable {
 	/**
 	 * The Class Result.
 	 */
-	public static class Result implements IsSerializable, Comparable<Result> {		
+	public static class Result implements IsSerializable {		
 		/** The organization id. */
 		private String id;
 		
@@ -78,11 +78,6 @@ IsSerializable {
 		 */
 		public void setOrgName(String orgName) {
 			this.orgName = orgName;
-		}
-
-		@Override
-		public int compareTo(Result o) {
-			return this.orgName.compareToIgnoreCase(o.orgName);
 		}
 	}
 	

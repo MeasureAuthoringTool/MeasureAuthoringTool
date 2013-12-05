@@ -297,7 +297,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	private void update() {
 		resetMessages();
 		updateOrganizationDetailsFromView();
-		if (isValid(currentDetails)) {
+		if (isValid(updatedDetails)) {
 			MatContext.get().getAdminService().saveUpdateOrganization(currentDetails, updatedDetails,
 					new AsyncCallback<SaveUpdateOrganizationResult>() {
 				@Override
@@ -315,7 +315,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 							SaveUpdateOrganizationResult.OID_NOT_UNIQUE:
 								messages.add("OID already exists.");
 								break;
-									case
+							case
 							SaveUpdateOrganizationResult.SERVER_SIDE_VALIDATION:
 								messages = result.getMessages();
 								break;

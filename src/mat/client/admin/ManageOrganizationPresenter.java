@@ -14,6 +14,7 @@ import mat.client.shared.search.PageSizeSelectionEvent;
 import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
+import mat.shared.AdminManageOrganizationModelValidator;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -229,6 +230,20 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		widget.addStyleName("myAccountPanelContent");
 		return vPanel;
 	}
+	/** @param model
+	 * @return */
+	private boolean isValid(ManageOrganizationDetailModel model) {
+		AdminManageOrganizationModelValidator test = new AdminManageOrganizationModelValidator();
+		List<String> message = test.isValidOrganizationDetail(model);
+		
+		boolean valid = message.size() == 0;
+		if (!valid) {
+			detailDisplay.getErrorMessageDisplay().setMessages(message);
+		} else {
+			detailDisplay.getErrorMessageDisplay().clear();
+		}
+		return valid;
+	}
 	/** Reset messages. */
 	private void resetMessages() {
 		detailDisplay.getErrorMessageDisplay().clear();
@@ -282,31 +297,33 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	private void update() {
 		resetMessages();
 		updateOrganizationDetailsFromView();
-		MatContext.get().getAdminService().saveUpdateOrganization(currentDetails, updatedDetails,
-				new AsyncCallback<SaveUpdateOrganizationResult>() {
-			@Override
-			public void onFailure(Throwable caught) {
-				detailDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
-			}
-			@Override
-			public void onSuccess(SaveUpdateOrganizationResult result) {
-				if (result.isSuccess()) {
-					displaySearch();
-				} else {
-					List<String> messages = new ArrayList<String>();
-					switch (result.getFailureReason()) {
-						case
-						SaveUpdateOrganizationResult.OID_NOT_UNIQUE:
-							messages.add("OID already exists.");
-							break;
-						default:
-							messages.add(MatContext.get().getMessageDelegate()
-									.getUnknownErrorMessage(result.getFailureReason()));
-					}
-					detailDisplay.getErrorMessageDisplay().setMessages(messages);
+		if (isValid(currentDetails)) {
+			MatContext.get().getAdminService().saveUpdateOrganization(currentDetails, updatedDetails,
+					new AsyncCallback<SaveUpdateOrganizationResult>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					detailDisplay.getErrorMessageDisplay().setMessage(caught.getLocalizedMessage());
 				}
-			}
-		});
+				@Override
+				public void onSuccess(SaveUpdateOrganizationResult result) {
+					if (result.isSuccess()) {
+						displaySearch();
+					} else {
+						List<String> messages = new ArrayList<String>();
+						switch (result.getFailureReason()) {
+							case
+							SaveUpdateOrganizationResult.OID_NOT_UNIQUE:
+								messages.add("OID already exists.");
+								break;
+							default:
+								messages.add(MatContext.get().getMessageDelegate()
+										.getUnknownErrorMessage(result.getFailureReason()));
+						}
+						detailDisplay.getErrorMessageDisplay().setMessages(messages);
+					}
+				}
+			});
+		}
 	}
 	/** Update Organization details from view. */
 	private void updateOrganizationDetailsFromView() {

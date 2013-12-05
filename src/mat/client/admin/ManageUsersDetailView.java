@@ -359,12 +359,12 @@ public class ManageUsersDetailView
 	 * @param organizations the organizations
 	 * @param defaultOption the default option
 	 */
-	public void setListBoxItems(ListBox listBox, List<Result> organizations, String defaultOption) {
+	public void setListBoxItems(ListBoxMVP listBox, List<Result> organizations, String defaultOption) {
 		listBox.clear();
 		listBox.addItem(defaultOption, "");
 		if (organizations != null) {
 			for (Result organization : organizations) {
-				listBox.addItem(organization.getOrgName(), "" + organization.getId());
+				listBox.insertItem(organization.getOrgName(), "" + organization.getId(), organization.getOrgName());
 			}
 		}
 	}	

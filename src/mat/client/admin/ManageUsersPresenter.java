@@ -2,6 +2,7 @@ package mat.client.admin;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -463,7 +464,8 @@ public class ManageUsersPresenter implements MatPresenter {
 			}
 			@Override
 			public void onSuccess(ManageOrganizationSearchModel model) {
-				List<Result> results = model.getData();				
+				List<Result> results = model.getData();	
+				Collections.sort(results);
 				detailDisplay.populateOrganizations(results);	
 				
 				Map<String, Result> orgMap = new HashMap<String, Result>();

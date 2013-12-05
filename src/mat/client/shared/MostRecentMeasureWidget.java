@@ -157,7 +157,12 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		searchPanel.add(invisibleLabel);
 		searchPanel.add(cellTable);
 		Element element = cellTable.getElement();
+		element.setAttribute("aria-role", "grid");
 		element.setAttribute("aria-labelledby", "MostRecentMeasureActivityTable");
+		element.setAttribute("aria-live", "assertive");
+		element.setAttribute("aria-atomic", "true");
+		element.setAttribute("aria-relevant", "all");
+		element.setAttribute("role", "alert");
 	}
 	
 	/** Builds the most recent widget.

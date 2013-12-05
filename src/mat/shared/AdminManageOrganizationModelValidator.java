@@ -20,7 +20,7 @@ public class AdminManageOrganizationModelValidator {
 	 * 
 	 * @param model the model
 	 * @return the list */
-	public List<String> isValidUsersDetail(ManageOrganizationDetailModel model) {
+	public List<String> isValidOrganizationDetail(ManageOrganizationDetailModel model) {
 		List<String> message = new ArrayList<String>();
 		if ("".equals(model.getOrganization().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getOrgRequiredMessage());

@@ -601,7 +601,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 	 */
 	@Override
 	public ValidateMeasureResult validateMeasureForExport(final String key,
-			final ArrayList<MatValueSet> matValueSetsList) throws Exception {
+			final List<MatValueSet> matValueSetsList) throws Exception {
 		List<String> message = new ArrayList<String>();
 		generateExport(key, message, matValueSetsList);
 		ValidateMeasureResult result = new ValidateMeasureResult();

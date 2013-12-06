@@ -2003,7 +2003,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#validateMeasureForExport(java.lang.String, java.util.ArrayList)
 	 */
 	@Override
-	public final ValidateMeasureResult validateMeasureForExport(final String key, final ArrayList<MatValueSet> matValueSetList)
+	public final ValidateMeasureResult validateMeasureForExport(final String key, final List<MatValueSet> matValueSetList)
 			throws MatException {
 		try {
 			return getService().validateMeasureForExport(key, matValueSetList);

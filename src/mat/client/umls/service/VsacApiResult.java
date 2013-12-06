@@ -1,6 +1,7 @@
 package mat.client.umls.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mat.model.MatValueSet;
 
@@ -28,7 +29,9 @@ public class VsacApiResult implements IsSerializable {
 	private boolean isSuccess;
 	
 	/** The vsac response. */
-	private ArrayList<MatValueSet> vsacResponse;
+	private List<MatValueSet> vsacResponse;
+	
+	private List<String> retrievalFailedOIDs;
 
 	/**
 	 * Checks if is success.
@@ -73,7 +76,7 @@ public class VsacApiResult implements IsSerializable {
 	 * 
 	 * @return the vsac response
 	 */
-	public ArrayList<MatValueSet> getVsacResponse() {
+	public List<MatValueSet> getVsacResponse() {
 		return vsacResponse;
 	}
 	
@@ -85,6 +88,14 @@ public class VsacApiResult implements IsSerializable {
 	 */
 	public void setVsacResponse(ArrayList<MatValueSet> vsacResponse) {
 		this.vsacResponse = vsacResponse;
+	}
+
+	public void setRetrievalFailedOIDs(List<String> retrievalFailedOIDs) {
+		this.retrievalFailedOIDs = retrievalFailedOIDs;
+	}
+
+	public List<String> getRetrievalFailedOIDs() {
+		return retrievalFailedOIDs;
 	}
 
 }

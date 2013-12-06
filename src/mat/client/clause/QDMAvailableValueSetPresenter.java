@@ -62,7 +62,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		 * @param matValueSets
 		 *            - ArrayList of {@link MatValueSet}
 		 */
-		void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets);
+		void buildValueSetDetailsWidget(List<MatValueSet> matValueSets);
 		
 		/**
 		 * Remove all Success and failure messages.

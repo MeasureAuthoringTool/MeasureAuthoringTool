@@ -57,11 +57,11 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 		/**
 		 * Builds the value set details widget.
 		 *
-		 * @param matValueSets
+		 * @param list
 		 *            the mat value sets
 		 */
 		void buildValueSetDetailsWidget(
-				ArrayList<MatValueSet> matValueSets);
+				List<MatValueSet> list);
 		
 		/**
 		 * Clear vsac value set messages.

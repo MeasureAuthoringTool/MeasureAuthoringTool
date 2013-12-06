@@ -32,4 +32,8 @@ public interface SuccessMessageDisplayInterface {
 	 * Sets the focus.
 	 */
 	public void setFocus();
+
+	public void setAmberMessage(String packageSuccessAmberMessage);
+
+	
 }

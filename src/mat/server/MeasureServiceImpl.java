@@ -317,7 +317,7 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#validateMeasureForExport(java.lang.String, java.util.ArrayList)
 	 */
 	@Override
-	public ValidateMeasureResult validateMeasureForExport(String key , ArrayList<MatValueSet> matValueSetList)
+	public ValidateMeasureResult validateMeasureForExport(String key , List<MatValueSet> matValueSetList)
 			throws MatException {
 		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList);
 	}

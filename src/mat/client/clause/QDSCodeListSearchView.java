@@ -1,6 +1,5 @@
 package mat.client.clause;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -317,7 +316,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 	/* (non-Javadoc)
 	 * @see mat.client.clause.QDSCodeListSearchPresenter.SearchDisplay#buildValueSetDetailsWidget(java.util.ArrayList)
 	 */
-	public void buildValueSetDetailsWidget(ArrayList<MatValueSet> matValueSets) {
+	public void buildValueSetDetailsWidget(List<MatValueSet> matValueSets) {
 		if (matValueSets != null) {
 			MatValueSet matValueSet = matValueSets.get(0);
 			currentMatValueSet = matValueSet;

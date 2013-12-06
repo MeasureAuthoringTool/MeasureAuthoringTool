@@ -18,6 +18,10 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class SuccessMessageDisplay extends Composite implements SuccessMessageDisplayInterface {
 	
+	private static final String SUCCESS_MESSAGE = "successMessage";
+
+	private static final String SUCCESS_AMBER_MESSAGE = "successAmberMessage";
+
 	/** The h panel. */
 	private HorizontalPanel hPanel;
 	
@@ -54,7 +58,8 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 	 */
 	@Override
 	public void clear() {
-		hPanel.removeStyleName("successMessage");
+		hPanel.removeStyleName(SUCCESS_MESSAGE);
+		hPanel.getElement().removeAttribute("style");
 		msgPanel.clear();
 		hPanel.remove(imagePanel);
 		hPanel.remove(msgPanel);
@@ -66,7 +71,8 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 	@Override
 	public void setMessages(List<String> messages) {
 		if(messages.size() > 0){
-			hPanel.addStyleName("successMessage");
+			hPanel.removeStyleName(SUCCESS_AMBER_MESSAGE);
+			hPanel.addStyleName(SUCCESS_MESSAGE);
 			msgPanel.clear();
 			hPanel.add(imagePanel);
 			hPanel.add(msgPanel);
@@ -85,7 +91,8 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 	@Override
 	public void setMessage(String message) {
 		if(!message.isEmpty()){
-			hPanel.addStyleName("successMessage");
+			hPanel.removeStyleName(SUCCESS_AMBER_MESSAGE);
+			hPanel.addStyleName(SUCCESS_MESSAGE);
 			msgPanel.clear();
 			hPanel.add(imagePanel);
 			hPanel.add(msgPanel);
@@ -95,6 +102,7 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 		}
 	}
 	
+
 	/**
 	 * Wrap.
 	 * 
@@ -126,6 +134,20 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 		    //focus to the invisible control." 
 			//do nothing.
 		}
+	}
+
+	@Override
+	public void setAmberMessage(String message) {
+		if(!message.isEmpty()){
+			hPanel.addStyleName(SUCCESS_AMBER_MESSAGE);
+			msgPanel.clear();
+			hPanel.add(imagePanel);
+			hPanel.add(msgPanel);
+			msgPanel.add(wrap(message));
+			msgPanel.add(new SpacerWidget());
+			setFocus();
+		}
+		
 	}
 	
 }

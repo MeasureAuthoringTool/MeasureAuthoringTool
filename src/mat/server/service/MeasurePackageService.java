@@ -342,5 +342,5 @@ public interface MeasurePackageService {
 	 *             - {@link Exception}.
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
-			ArrayList<MatValueSet> matValueSetList) throws Exception;
+			List<MatValueSet> matValueSetList) throws Exception;
 }

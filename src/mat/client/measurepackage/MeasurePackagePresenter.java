@@ -939,7 +939,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	private void validateMeasureAndExport(final String measureId,
 			final VsacApiResult updateVsacResult) {
-		ArrayList<MatValueSet> vsacResponse = null;
+		List<MatValueSet> vsacResponse = null;
 		if (updateVsacResult != null) {
 			vsacResponse = updateVsacResult.getVsacResponse();
 		}
@@ -965,9 +965,15 @@ public class MeasurePackagePresenter implements MatPresenter {
 				Mat.hideLoadingMessage();
 				if (updateVsacResult != null) {
 					if (result.isValid() && updateVsacResult.isSuccess()) {
-						view.getMeasurePackageSuccessMsg()
-						.setMessage(MatContext.get().getMessageDelegate()
-								.getPackageSuccessMessage());
+						if(updateVsacResult.getRetrievalFailedOIDs().size() > 0){
+							view.getMeasurePackageSuccessMsg()
+							.setAmberMessage(MatContext.get().getMessageDelegate()
+									.getPackageSuccessAmberMessage());
+						}else{
+							view.getMeasurePackageSuccessMsg()
+							.setMessage(MatContext.get().getMessageDelegate()
+									.getPackageSuccessMessage());
+						}
 						
 					} else if (result.isValid() && !updateVsacResult.isSuccess()) {
 						if (updateVsacResult.getFailureReason()

@@ -353,5 +353,5 @@ public interface MeasureService extends RemoteService {
 	 *             the mat exception
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
-			ArrayList<MatValueSet> matValueSetList) throws MatException;
+			List<MatValueSet> matValueSetList) throws MatException;
 }

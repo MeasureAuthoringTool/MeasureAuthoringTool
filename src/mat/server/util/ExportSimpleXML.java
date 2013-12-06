@@ -341,8 +341,7 @@ public class ExportSimpleXML {
 	 * This method will go through individual <group> tags and each
 	 * <packageClause> child. For each <packageClause> it will copy the original
 	 * <clause> to <group> and remove the <packageClause> tag. Finally, at the
-	 * end of the method it will remove the <populations> and
-	 * <measureObservations> tags from the document.
+	 * end of the method it will remove the <populations> tag from the document.
 	 * 
 	 * @param originalDoc
 	 *            the original doc

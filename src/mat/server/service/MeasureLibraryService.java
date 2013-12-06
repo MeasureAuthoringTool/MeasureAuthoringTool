@@ -365,5 +365,5 @@ public interface MeasureLibraryService {
 	 *             the mat exception
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
-			ArrayList<MatValueSet> matValueSetList) throws MatException;
+			List<MatValueSet> matValueSetList) throws MatException;
 }

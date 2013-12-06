@@ -404,5 +404,5 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void validateMeasureForExport(String key, ArrayList<MatValueSet> matValueSetList, AsyncCallback<ValidateMeasureResult> callback);
+	void validateMeasureForExport(String key, List<MatValueSet> matValueSetList, AsyncCallback<ValidateMeasureResult> callback);
 }

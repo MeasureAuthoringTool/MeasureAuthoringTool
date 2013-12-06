@@ -47,14 +47,15 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	
 	/** The login id. */
 	private Label loginId = new Label();
-	
-	
+		
 	/** The oid. */
 	private TextBox oid = new TextBox();
+	
 	//private TextBox rootOid = new TextBox();
+	
 	/** The organization. */
 	private TextBox organization = new TextBox();
-	
+					
 	/** The password. */
 	private TextBox password = new TextBox();
 	
@@ -103,15 +104,18 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 		//vPanel.add(buildCell("User ID", loginId, false));
 		//vPanel.add(new SpacerWidget());
 		
+		title.setWidth("200px");
 		vPanel.add(buildCell("Title", title, false));
 		vPanel.add(new SpacerWidget());
 		
 		organization.setEnabled(false);
-		vPanel.add(buildCell("Organization", organization, true));
+		organization.setWidth("200px");
+		vPanel.add(buildCell("Organization", organization, true));		
 		vPanel.add(new SpacerWidget());
 		
 		oid.setEnabled(false);
-		vPanel.add(buildCell("Organization OID", oid, true));
+		oid.setWidth("200px");
+		vPanel.add(buildCell("Organization OID", oid, true));		
 		vPanel.add(new SpacerWidget());
 		
 		/*vPanel.add(buildCell("Root OID", rootOid, true));
@@ -256,7 +260,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getOrganisation()
 	 */
 	@Override
-	public HasValue<String> getOrganisation() {
+	public TextBox getOrganisation() {
 		return organization;
 	}
 
@@ -264,7 +268,7 @@ public class PersonalInformationView implements PersonalInformationPresenter.Dis
 	 * @see mat.client.myAccount.PersonalInformationPresenter.Display#getOID()
 	 */
 	@Override
-	public HasValue<String> getOID() {
+	public TextBox getOID() {
 		return oid;
 	}
 

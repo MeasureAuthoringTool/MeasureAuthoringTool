@@ -22,6 +22,7 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -99,14 +100,14 @@ public class PersonalInformationPresenter implements MatPresenter {
 		 * 
 		 * @return the organisation
 		 */
-		HasValue<String> getOrganisation();
+		TextBox getOrganisation();
 		
 		/**
 		 * Gets the oid.
 		 * 
 		 * @return the oid
 		 */
-		HasValue<String> getOID();
+		TextBox getOID();
 		//HasValue<String> getRootOID();
 		/**
 		 * Gets the password.
@@ -302,11 +303,23 @@ public class PersonalInformationPresenter implements MatPresenter {
 		display.getLoginId().setText(model.getLoginId());
 		display.getPhoneNumber().setValue(model.getPhoneNumber());
 		display.getOrganisation().setValue(model.getOrganisation());
+		display.getOrganisation().setTitle(model.getOrganisation());
+		display.getOrganisation().setWidth(getRequiredWidth(display.getOrganisation().getValue().length()));
 		display.getOID().setValue(model.getOid());
+		display.getOID().setTitle(model.getOid());
+		display.getOID().setWidth(getRequiredWidth(display.getOID().getValue().length()));
 		//display.getRootOID().setValue(model.getRootoid());
 		display.getPassword().setValue("");
 	}
 	
+	private String getRequiredWidth(int length) {
+		length = (int) (length * 6.5);
+		if (length < 200) {
+			length = 200;
+		}		
+		return length+"px";
+	}
+
 	/**
 	 * Gets the values.
 	 * 

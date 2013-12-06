@@ -483,7 +483,7 @@ body#main select, body#main input, body#main textarea {
 	/*color: green;
 	font-size: .8em;
 	font-weight: bold;*/
-	  background: /*url('images/success.png')*/ no-repeat scroll 6px 50% #F4FDEF;
+	background: /*url('images/success.png')*/ no-repeat scroll 6px 50% #F4FDEF;
     border: 1px solid #ACDFA7;
     color: #000000;
     display: block;
@@ -491,9 +491,17 @@ body#main select, body#main input, body#main textarea {
     margin: 2px auto 14px;
     padding: 6px 6px 6px 30px;
     text-align: left;
-	
-	
-	
+}
+
+.successAmberMessage {
+	background: /*url('images/success.png')*/ no-repeat scroll 6px 50% #FFBF00;
+    border: 1px solid #ACDFA7;
+    color: #000000;
+    display: block;
+    font-weight: bold;
+    margin: 2px auto 14px;
+    padding: 6px 6px 6px 30px;
+    text-align: left;
 }
 
 .warningMessage {

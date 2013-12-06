@@ -12,6 +12,7 @@
 	<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" >
      <meta http-equiv="X-UA-Compatible" content="IE=8" >
      <LINK REL="SHORTCUT ICON"  href="favicon.ico">
+    <style> body { display : none;} </style> 
     <!--                                                               -->
     <!-- Consider inlining CSS to reduce the number of requested files -->
     <!--                                                               -->
@@ -38,6 +39,15 @@
   <!--                                           -->
   <body id="main">
 
+    <script> 
+		if (self == top) {
+		  var theBody = document.getElementsByTagName('body')[0];
+		  theBody.style.display = "block";
+		} else { 
+		  top.location = self.location; 
+		}
+	</script>
+    		
     <!-- OPTIONAL: include this if you want history support -->
   <!--  <iframe src="javascript:''" id="__gwt_historyFrame" title="mat" tabIndex='-1' style="position:absolute;width:0;height:0;border:0"></iframe> -->
     

@@ -486,7 +486,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 					.getMessageDelegate()
 					.getLoginFailedTempPasswordExpiredMessage());
 			validateUserLoginModel.setLoginFailedEvent(true);
-		}else{
+			} else {
 			validateUserLoginModel = loginModelSetter(validateUserLoginModel, validateUserMatUserDetails);
 			// userDetails.setSignInDate(currentTimeStamp);
 			hibernateUserService.saveUserDetails(validateUserMatUserDetails);

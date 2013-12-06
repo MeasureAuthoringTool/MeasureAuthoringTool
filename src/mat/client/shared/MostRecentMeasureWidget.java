@@ -10,6 +10,7 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -58,8 +59,13 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 	 * 
 	 * @param table the table
 	 * @return the cell table */
-	private CellTable<ManageMeasureSearchModel.Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table) {
+	private CellTable<Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table) {
 		if (table.getColumnCount() != MAX_TABLE_COLUMN_SIZE) {
+			Element element = cellTable.getElement();
+			element.setAttribute("aria-labelledby", "MostRecentMeasureActivityTable");
+			com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
+			TableCaptionElement caption = elem.createCaption();
+			caption.appendChild(new HTML("<h4 class=\"invisible\"> Recent Measure Acitivity Table. </h4>").getElement());
 			Column<ManageMeasureSearchModel.Result, SafeHtml> measureName =
 					new Column<ManageMeasureSearchModel.Result, SafeHtml>(new
 							ClickableSafeHtmlCell()) {
@@ -156,8 +162,6 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		cellTable.getElement().setAttribute("Summary", "Recent Measure Activity Table.");
 		searchPanel.add(invisibleLabel);
 		searchPanel.add(cellTable);
-		Element element = cellTable.getElement();
-		element.setAttribute("aria-labelledby", "MostRecentMeasureActivityTable");
 	}
 	
 	/** Builds the most recent widget.

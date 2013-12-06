@@ -472,7 +472,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 					String codeSystemName = groupedMatValueSet.getCodeSystemName();
 					if (codeSystemName != null) {
 						codeSystem += codeSystemName;
-						if (itr.hasNext() && !codeSystem.trim().isEmpty() && codeSystemName.trim().isEmpty()) {
+						if (itr.hasNext() && !codeSystem.trim().isEmpty() && !codeSystemName.trim().isEmpty()) {
 							codeSystem += ", ";
 						}
 					}

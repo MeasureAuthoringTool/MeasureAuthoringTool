@@ -469,10 +469,13 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 			if (groupedMatValueSets != null) {
 				ListIterator<MatValueSet> itr = groupedMatValueSets.listIterator();
 				while (itr.hasNext()) {
-					MatValueSet groupedMatValueSet = itr.next();
-					codeSystem += groupedMatValueSet.getCodeSystemName();
-					if (itr.hasNext()) {
-						codeSystem += ", ";
+					MatValueSet groupedMatValueSet = itr.next();					
+					String codeSystemName = groupedMatValueSet.getCodeSystemName();
+					if (codeSystemName != null) {
+						codeSystem += codeSystemName;
+						if (itr.hasNext() && !codeSystem.trim().isEmpty() && !codeSystemName.trim().isEmpty()) {
+							codeSystem += ", ";
+						}
 					}
 				}
 			}

@@ -196,18 +196,11 @@ implements ManageUsersPresenter.DetailDisplay {
 		roleRadioPanel.add(radioPanel2);
 		roleRadioPanel.add(radioPanel3);
 		rightPanel.add(roleRadioPanel);
-		rightPanel.add(new SpacerWidget());
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("OrganizationOidUpdated"),
-				"OrganizationOidUpdated");
-		oid.getElement().setAttribute("id", "orgTextBox");
-		oid.getElement().setAttribute("aria-role", "Panel");
-		oid.getElement().setAttribute("aria-live", "assertive");
-		oid.getElement().setAttribute("aria-atomic", "true");
-		oid.getElement().setAttribute("aria-relevant", "all");
-		oid.getElement().setAttribute("role", "alert");
+		rightPanel.add(new SpacerWidget());		
+		
 		rightPanel.add(LabelBuilder.buildRequiredLabel(organizationListBox, organizationLabel));
-		rightPanel.add(organizationListBox);
-		rightPanel.add(invisibleLabel);
+		rightPanel.add(organizationListBox);		
+		rightPanel.add(new SpacerWidget());
 		organizationListBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override
 			public void onValueChange(ValueChangeEvent<String> event) {
@@ -215,6 +208,13 @@ implements ManageUsersPresenter.DetailDisplay {
 				if (organization != null) {
 					oid.setValue(organization.getOid());
 					oid.setTitle(organization.getOid());
+					
+					oid.getElement().setAttribute("id", "orgTextBox");
+					oid.getElement().setAttribute("aria-role", "Panel");
+					oid.getElement().setAttribute("aria-live", "assertive");
+					oid.getElement().setAttribute("aria-atomic", "true");
+					oid.getElement().setAttribute("aria-relevant", "all");
+					oid.getElement().setAttribute("role", "alert");
 					oid.getElement().setAttribute("aria-labelledby", "OrganizationOidUpdated");
 				} else {
 					oid.setValue("");
@@ -222,8 +222,10 @@ implements ManageUsersPresenter.DetailDisplay {
 				}
 			}
 		});
-		rightPanel.add(new SpacerWidget());
 		
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("OrganizationOidUpdated"),
+				"OrganizationOidUpdated");
+		rightPanel.add(invisibleLabel);
 		rightPanel.add(LabelBuilder.buildRequiredLabel(oid, oidLabel));
 		rightPanel.add(oid);
 		rightPanel.add(new SpacerWidget());

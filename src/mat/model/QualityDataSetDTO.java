@@ -38,6 +38,8 @@ public class QualityDataSetDTO implements IsSerializable {
 	/** The effective date. */
 	private String effectiveDate;
 	
+	private boolean hasModifiedAtVSAC;
+	
 	/** The id. */
 	private String id;
 	
@@ -64,7 +66,6 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	/** The version. */
 	private String version;
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -111,6 +112,13 @@ public class QualityDataSetDTO implements IsSerializable {
 	 * @return the effectiveDate */
 	public String getEffectiveDate() {
 		return effectiveDate;
+	}
+	
+	/**
+	 * @return the hasModifiedAtVSAC
+	 */
+	public boolean getHasModifiedAtVSAC() {
+		return hasModifiedAtVSAC;
 	}
 	
 	/**
@@ -241,6 +249,13 @@ public class QualityDataSetDTO implements IsSerializable {
 	}
 	
 	/**
+	 * @param hasModifiedAtVSAC the hasModifiedAtVSAC to set
+	 */
+	public void setHasModifiedAtVSAC(boolean hasModifiedAtVSAC) {
+		this.hasModifiedAtVSAC = hasModifiedAtVSAC;
+	}
+	
+	/**
 	 * Sets the id.
 	 * 
 	 * @param id
@@ -320,6 +335,8 @@ public class QualityDataSetDTO implements IsSerializable {
 		this.uuid = uuid;
 	}
 	
+	
+	
 	/**
 	 * Sets the version.
 	 * 
@@ -329,6 +346,8 @@ public class QualityDataSetDTO implements IsSerializable {
 	public void setVersion(String version) {
 		this.version = version;
 	}
+	
+	
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()

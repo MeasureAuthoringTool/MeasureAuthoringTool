@@ -54,6 +54,7 @@ public class FooterPanelBuilderUtility {
 		html = html.replaceAll("\\{terms-of-use\\}", ClientConstants.TERMSOFUSE_URL);
 		html = html.replaceAll("\\{privacy-policy\\}", ClientConstants.PRIVACYPOLICY_URL);
 		html = html.replaceAll("\\{user-guide\\}", ClientConstants.USERGUIDE_URL);
+		html = html.replaceAll("\\{contact-us\\}", ClientConstants.CONTACTUS_URL);
 		
 		HTML htmlPanel = new HTML(html);
 		htmlPanel.addClickHandler(new ClickHandler() {
@@ -169,6 +170,13 @@ private static String logosHTML =
 					"<li style=\"display: inline-block;*display: inline;\"> "+
 						"<a title=\"User Guide\" target=\"_blank\" href=\"{user-guide}\"> "+
 							"User Guide "+
+						"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
+						"</a> "+
+					"</li> "+
+					"<li style=\"display: inline-block;*display: inline;\"><b> | </b></li> "+
+					"<li style=\"display: inline-block;*display: inline;\"> "+
+						"<a title=\"Contact Us\" target=\"_blank\" href=\"{contact-us}\"> "+
+							"Contact Us "+
 						"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
 						"</a> "+
 					"</li> "+

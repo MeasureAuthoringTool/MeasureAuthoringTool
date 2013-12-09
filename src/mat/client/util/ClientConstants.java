@@ -109,9 +109,11 @@ public class ClientConstants {
 	/** The userguide url. */
 	public static String USERGUIDE_URL="https://www.emeasuretool.cms.gov/documents/10179/13108/MAT+User+Guide/c50cc2fb-01ee-4b97-9cd1-2e33feca8763";
 	
+	/** The Constant TEXT_CONTACT_US . */
+	public final static String TEXT_CONTACT_US ="Contact Us";
 	
-	
-	
+	/** The contactus url. */
+	public static String CONTACTUS_URL="https://nqfdev.telligen.org/web/guest/contact-us-form";
 	
 	
 	

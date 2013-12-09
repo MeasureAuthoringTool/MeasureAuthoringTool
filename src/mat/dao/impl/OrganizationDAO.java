@@ -24,7 +24,6 @@ mat.dao.OrganizationDAO {
 		criteria.setProjection(Projections.rowCount());
 		return ((Long) criteria.uniqueResult()).intValue();
 	}
-	
 	/**
 	 * Creates the search criteria.
 	 * 
@@ -53,7 +52,6 @@ mat.dao.OrganizationDAO {
 			return null;
 		}
 	}
-	
 	/* (non-Javadoc)
 	 * @see mat.dao.OrganizationDAO#getAllOrganizations()
 	 */
@@ -68,7 +66,6 @@ mat.dao.OrganizationDAO {
 		}
 		return organizations;
 	}
-	
 	/*
 	 * (non-Javadoc)
 	 * 

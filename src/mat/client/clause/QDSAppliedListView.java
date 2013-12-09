@@ -161,7 +161,12 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 						value = object.getCodeListName();
 						title = title.append("Name : ").append(value);
 					}
-					return getColumnToolTip(value, title);
+					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(object.getOid())) {
+						return getNameColumnToolTip(value, title, true, true);
+					} else {
+						return getNameColumnToolTip(value, title, object.getHasModifiedAtVSAC(), false);
+					}
+					// return getColumnToolTip(value, title);
 				}
 			};
 			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant(
@@ -236,11 +241,11 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					"<span title='Effective Date' tabindex=\"0\">" + "Effective Date"
 							+ "</span>"));
 			table.setColumnWidth(0, 2.0, Unit.PCT);
-			table.setColumnWidth(1, 20.0, Unit.PCT);
+			table.setColumnWidth(1, 25.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
 			table.setColumnWidth(3, 25.0, Unit.PCT);
 			table.setColumnWidth(4, 10.0, Unit.PCT);
-			table.setColumnWidth(5, 15.0, Unit.PCT);
+			table.setColumnWidth(5, 10.0, Unit.PCT);
 		}
 		return table;
 	}
@@ -386,6 +391,30 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	@Override
 	public Button getModifyButton() {
 		return modify;
+	}
+	private SafeHtml getNameColumnToolTip(String columnText, StringBuilder title, boolean hasImage, boolean isUserDefined) {
+		if (hasImage && !isUserDefined) {
+			String htmlConstant = "<html>"
+					+ "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"QDM Updated From VSAC.\"/>"
+					+ "<span tabIndex = \"0\" title='" + title + "'>"
+					+ columnText
+					+ "</span></body>"
+					+ "</html>";
+			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
+		} else if (hasImage && isUserDefined) {
+			String htmlConstant = "<html>"
+					+ "<head> </head> <Body><img src =\"images/userDefinedWarning.png\" alt=\"User Defined.\"/>"
+					+ "<span tabIndex = \"0\" title='" + title + "'>"
+					+ columnText
+					+ "</span></body>"
+					+ "</html>";
+			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
+		} else {
+			String htmlConstant = "<html>" + "<head> </head> <Body><span tabIndex = \"0\" title='" + title + "'>" + columnText
+					+ "</span></body>"
+					+ "</html>";
+			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
+		}
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getRemoveButton()

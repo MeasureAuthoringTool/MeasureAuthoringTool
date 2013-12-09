@@ -3,7 +3,6 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -13,7 +12,6 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -304,7 +302,7 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 					filterTimingQDMs(result);
 					appliedListModel.setAppliedQDMs(result);
-							searchDisplay.buildCellTable(appliedListModel);
+					searchDisplay.buildCellTable(appliedListModel);
 					searchDisplay.setAppliedQDMList(result);
 				}
 			});
@@ -400,7 +398,11 @@ public class QDSAppliedListPresenter implements MatPresenter {
 				if (result.isSuccess()) {
 					searchDisplay.getApplyToMeasureSuccessMsg().setMessage(
 							MatContext.get().getMessageDelegate().getVSAC_UPDATE_SUCCESSFULL());
-					getAppliedQDMList(true);
+					// getAppliedQDMList(true);
+					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+					appliedListModel.setAppliedQDMs(result.getUpdatedQualityDataDTOLIst());
+					searchDisplay.buildCellTable(appliedListModel);
+					searchDisplay.setAppliedQDMList((ArrayList<QualityDataSetDTO>) result.getUpdatedQualityDataDTOLIst());
 				} else {
 					searchDisplay.getErrorMessageDisplay().setMessage(convertMessage(result.getFailureReason()));
 				}

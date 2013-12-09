@@ -162,9 +162,11 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 						title = title.append("Name : ").append(value);
 					}
 					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(object.getOid())) {
-						return getNameColumnToolTip(value, title, true, true);
+						return getNameColumnToolTip(value, title, object.getHasModifiedAtVSAC(),
+								object.isUserDefined());
 					} else {
-						return getNameColumnToolTip(value, title, object.getHasModifiedAtVSAC(), false);
+						return getNameColumnToolTip(value, title, object.getHasModifiedAtVSAC(),
+								object.isUserDefined());
 					}
 					// return getColumnToolTip(value, title);
 				}
@@ -392,7 +394,13 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	public Button getModifyButton() {
 		return modify;
 	}
-	private SafeHtml getNameColumnToolTip(String columnText, StringBuilder title, boolean hasImage, boolean isUserDefined) {
+	/** @param columnText - String.
+	 * @param title - StringBuilder.
+	 * @param hasImage - Boolean.
+	 * @param isUserDefined Boolean.
+	 * @return */
+	private SafeHtml getNameColumnToolTip(String columnText, StringBuilder title, boolean hasImage,
+			boolean isUserDefined) {
 		if (hasImage && !isUserDefined) {
 			String htmlConstant = "<html>"
 					+ "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"QDM Updated From VSAC.\"/>"
@@ -453,32 +461,38 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	 * ArrayList<HasCell<QualityDataSetDTO, ?>> hasCells = new ArrayList<HasCell<QualityDataSetDTO, ?>>(); // final
 	 * MultiSelectionModel<QualityDataSetDTO> selectionModel = new MultiSelectionModel<QualityDataSetDTO>(); final
 	 * SingleSelectionModel<QualityDataSetDTO> selectionModel = new SingleSelectionModel<QualityDataSetDTO>(); //
-	 * cellList.setSelectionModel(selectionModel); hasCells.add(new HasCell<QualityDataSetDTO, Boolean>() {
-	 * // private MatCheckBoxCell cbCell = new MatCheckBoxCell(); private RadioButtonCell cbCell = new RadioButtonCell(true, true);
+	 * cellList.setSelectionModel(selectionModel); hasCells.add(new HasCell<QualityDataSetDTO, Boolean>() { // private MatCheckBoxCell
+	 * cbCell = new MatCheckBoxCell(); private RadioButtonCell cbCell = new RadioButtonCell(true, true);
+	 * 
 	 * @Override public Cell<Boolean> getCell() { return cbCell; }
-	 * @Override public FieldUpdater<QualityDataSetDTO, Boolean> getFieldUpdater() { return new FieldUpdater<QualityDataSetDTO,
-	 * Boolean>() {
+	 * 
+	 * @Override public FieldUpdater<QualityDataSetDTO, Boolean> getFieldUpdater() { return new FieldUpdater<QualityDataSetDTO, Boolean>() {
+	 * 
 	 * @Override public void update(int index, QualityDataSetDTO object, Boolean value) { errorMessagePanel.clear(); lastSelectedObject =
 	 * object; if (checkForEnable()) { modify.setEnabled(true); updateVsacButton.setEnabled(true); if (object.isUsed()) {
 	 * removeButton.setEnabled(false); } else { removeButton.setEnabled(true); } } else { removeButton.setEnabled(false);
-	 * modify.setEnabled(false); updateVsacButton.setEnabled(false); }
-	 * } }; }
+	 * modify.setEnabled(false); updateVsacButton.setEnabled(false); } } }; }
+	 * 
 	 * @Override public Boolean getValue(QualityDataSetDTO object) { cbCell.setUsed(object.isUsed()); return
-	 * selectionModel.isSelected(object); } });
-	 * hasCells.add(new HasCell<QualityDataSetDTO, String>() { private TextCell cell = new TextCell();
+	 * selectionModel.isSelected(object); } }); hasCells.add(new HasCell<QualityDataSetDTO, String>() { private TextCell cell = new
+	 * TextCell();
+	 * 
 	 * @SuppressWarnings("unchecked")
+	 * 
 	 * @Override public Cell<String> getCell() { return cell; }
+	 * 
 	 * @Override public FieldUpdater<QualityDataSetDTO, String> getFieldUpdater() { return null; }
+	 * 
 	 * @Override public String getValue(QualityDataSetDTO object) { String value; String QDMDetails = ""; if
 	 * (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) { QDMDetails = "(User defined)"; } else { String version =
 	 * object.getVersion(); String effectiveDate = object.getEffectiveDate(); if (effectiveDate != null) { QDMDetails = "(OID: " +
 	 * object.getOid() + ", Effective Date: " + effectiveDate + ")"; } else if (!version.equals("1.0") && !version.equals("1")) { QDMDetails
-	 * = "(OID: " + object.getOid() + ", Version: " + version + ")"; } else { QDMDetails = "(OID: " + object.getOid() + ")"; } }
-	 * if ((object.getOccurrenceText() != null) && !object.getOccurrenceText().equals("")) { value = object.getOccurrenceText() + " of " +
+	 * = "(OID: " + object.getOid() + ", Version: " + version + ")"; } else { QDMDetails = "(OID: " + object.getOid() + ")"; } } if
+	 * ((object.getOccurrenceText() != null) && !object.getOccurrenceText().equals("")) { value = object.getOccurrenceText() + " of " +
 	 * object.getCodeListName() + ": " + object.getDataType() + " " + QDMDetails; } else { value = object.getCodeListName() + ": " +
-	 * object.getDataType() + " " + QDMDetails; }
-	 * return value; } });
-	 * Cell<QualityDataSetDTO> myClassCell = new CompositeCell<QualityDataSetDTO>(hasCells) {
+	 * object.getDataType() + " " + QDMDetails; } return value; } }); Cell<QualityDataSetDTO> myClassCell = new
+	 * CompositeCell<QualityDataSetDTO>(hasCells) {
+	 * 
 	 * @Override protected Element getContainerElement(Element parent) { // Return the first TR element in the table. return
 	 * parent.getFirstChildElement().getFirstChildElement().getFirstChildElement(); }
 	 * 

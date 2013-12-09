@@ -169,7 +169,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	}
 	/** Creates the new. */
 	private void createNew() {
-		detailDisplay.setTitle("Add a Organization");
+		detailDisplay.setTitle("Add an Organization");
 		currentDetails = new ManageOrganizationDetailModel();
 		displayDetail();
 	}
@@ -190,7 +190,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	/** Edits the.
 	 * @param key the key */
 	private void edit(String key) {
-		detailDisplay.setTitle("Update a Organization");
+		detailDisplay.setTitle("Update an Organization");
 		MatContext.get().getAdminService().getOrganization(key,
 				new AsyncCallback<ManageOrganizationDetailModel>() {
 			@Override

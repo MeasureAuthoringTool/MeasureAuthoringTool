@@ -38,13 +38,16 @@ public class QualityDataSetDTO implements IsSerializable {
 	/** The effective date. */
 	private String effectiveDate;
 	
+	/** QDM Modified At VSAC. */
 	private boolean hasModifiedAtVSAC;
-	
 	/** The id. */
 	private String id;
 	
 	/** The is used. */
 	private boolean isUsed;
+	
+	/** QDM is UserDefined type. */
+	private boolean isUserDefined;
 	
 	/** The occurrence text. */
 	private String occurrenceText;
@@ -212,6 +215,13 @@ public class QualityDataSetDTO implements IsSerializable {
 	}
 	
 	/**
+	 * @return the isUserDefined
+	 */
+	public boolean isUserDefined() {
+		return isUserDefined;
+	}
+	
+	/**
 	 * Sets the code list name.
 	 * 
 	 * @param codeListName
@@ -324,6 +334,17 @@ public class QualityDataSetDTO implements IsSerializable {
 	public void setUsed(boolean isUsed) {
 		this.isUsed = isUsed;
 	}
+	
+	
+	
+	/**
+	 * @param isUserDefined the isUserDefined to set
+	 */
+	public void setUserDefined(boolean isUserDefined) {
+		this.isUserDefined = isUserDefined;
+	}
+	
+	
 	
 	/**
 	 * Sets the uuid.

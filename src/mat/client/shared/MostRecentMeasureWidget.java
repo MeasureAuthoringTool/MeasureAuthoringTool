@@ -167,7 +167,6 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 	}
 	
 	/** Builds the most recent widget.
-	 * 
 	 * @return VerticalPanel. */
 	public VerticalPanel buildMostRecentWidget() {
 		searchPanel.clear();
@@ -176,7 +175,13 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		if ((measureSearchModel != null) && (measureSearchModel.getData().size() > 0)) {
 			buildCellTable();
 		} else {
+			Label searchHeader = new Label("Recent Activity");
+			searchHeader.getElement().setId("searchHeader_Label");
+			searchHeader.setStyleName("recentSearchHeader");
+			searchHeader.getElement().setAttribute("tabIndex", "0");
 			HTML desc = new HTML("<p> No Recent Activity</p>");
+			searchPanel.add(searchHeader);
+			searchPanel.add(new SpacerWidget());
 			searchPanel.add(desc);
 		}
 		return searchPanel;

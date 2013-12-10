@@ -323,7 +323,13 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			modify.setEnabled(checkForEnable() && (appliedListModel.getLastSelected() != null) ? true : false);
 			updateVsacButton.setEnabled(true);
 		} else {
+			Label searchHeader = new Label("Applied QDM Elements");
+			searchHeader.getElement().setId("searchHeader_Label");
+			searchHeader.setStyleName("recentSearchHeader");
+			searchHeader.getElement().setAttribute("tabIndex", "0");
 			HTML desc = new HTML("<p> No Applied QDM Elements.</p>");
+			cellTablePanel.add(searchHeader);
+			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(desc);
 			removeButton.setEnabled(false);
 			modify.setEnabled(false);

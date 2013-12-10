@@ -17,6 +17,7 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -120,6 +121,13 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	private CellTable<QualityDataSetDTO> addColumnToTable(final CellTable<QualityDataSetDTO> table,
 			ListHandler<QualityDataSetDTO> sortHandler) {
 		if (table.getColumnCount() != TABLE_COL_COUNT) {
+			Label searchHeader = new Label("Applied QDM Elements");
+			searchHeader.getElement().setId("searchHeader_Label");
+			searchHeader.setStyleName("recentSearchHeader");
+			searchHeader.getElement().setAttribute("tabIndex", "0");
+			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
+			TableCaptionElement caption = elem.createCaption();
+			caption.appendChild(searchHeader.getElement());
 			final RadioButtonCell rbCell = new RadioButtonCell(true, true);
 			Column<QualityDataSetDTO, Boolean> radioButtonColumn = new Column<QualityDataSetDTO, Boolean>(rbCell) {
 				@Override
@@ -288,12 +296,6 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	public void buildCellTable(QDSAppliedListModel appliedListModel) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("QdmAppliedListSearchPanel");
-		Label searchHeader = new Label("Applied QDM Elements");
-		searchHeader.getElement().setId("searchHeader_Label");
-		searchHeader.setStyleName("recentSearchHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
-		cellTablePanel.add(searchHeader);
-		cellTablePanel.add(new SpacerWidget());
 		if ((appliedListModel.getAppliedQDMs() != null) && (appliedListModel.getAppliedQDMs().size() > 0)) {
 			CellTable<QualityDataSetDTO> table = new CellTable<QualityDataSetDTO>();
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);

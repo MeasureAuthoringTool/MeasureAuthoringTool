@@ -1450,6 +1450,7 @@ padding: 2px;
     background-color: #DCE9F5; 
     font-weight: bold;
     padding: 5px;
+    text-align:left;
 }
 .filterDisclosurePanel{
     margin-left:345px; 

@@ -37,7 +37,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.SingleSelectionModel;
 
 /**
  * The Class ManageMeasureShareView.
@@ -63,7 +62,9 @@ public class ManageMeasureShareView implements ShareDisplay {
 	/** The search view. */
 	private SearchView<MeasureShareDTO> searchView = new SearchView<MeasureShareDTO>("Users");
 	/** The selection model. */
-	private SingleSelectionModel<MeasureShareDTO> selectionModel;
+	/*
+	 * private SingleSelectionModel<MeasureShareDTO> selectionModel;
+	 */
 	/**
 	 * Instantiates a new manage measure share view.
 	 */

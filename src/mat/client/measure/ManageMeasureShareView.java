@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mat.client.CustomPager;
 import mat.client.measure.ManageMeasurePresenter.ShareDisplay;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatCheckBoxCell;
@@ -29,7 +30,6 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
-import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
@@ -57,8 +57,9 @@ public class ManageMeasureShareView implements ShareDisplay {
 	private MeasureNameLabel measureNameLabel = new MeasureNameLabel();
 	
 	/** The private check. */
-	private CheckBox privateCheck = new CheckBox("Private Measure");
-	
+	// private CheckBox privateCheck = new CheckBox("Private Measure");
+	private CustomCheckBox privateCheck = new CustomCheckBox("Select 'Private Measure' to make "
+			+ "a Measure Private.", "Private Measure", true);
 	/** The search view. */
 	private SearchView<MeasureShareDTO> searchView = new SearchView<MeasureShareDTO>("Users");
 	/** The selection model. */

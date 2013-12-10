@@ -248,6 +248,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
 					LOGGER.info("QDM filtered as it is of either for following type "
 							+ "(User defined or Timing Element.");
+					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
+						// To show warning message on Measure Package screen added
+						// User define oid to notFoundOidList.
+						notFoundOIDList.add(qualityDataSetDTO.getOid());
+					}
 					continue;
 				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
 						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
@@ -269,24 +274,17 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 								+ ". Failure Reason:" + vsr.getFailReason());
 						if (vsr.isFailResponse()) {
 							int failReason = vsr.getFailReason();
-							switch(failReason){
-								case VSAC_TIME_OUT_FAILURE_CODE:
-								{
-									LOGGER.info("Value Set reterival failed at VSAC for OID :"
-											+ qualityDataSetDTO.getOid() + " with Data Type : "
-											+ qualityDataSetDTO.getDataType()
-											+ ". Failure Reason:" + vsr.getFailReason());
-									//inValidateVsacUser();
-									//MatContext.get().setUMLSLoggedIn(false);
-									result.setSuccess(false);
-									result.setFailureReason(vsr.getFailReason());
-									return result;
-								}
-								case VSAC_REQUEST_FAILURE_CODE:
-								{
-									notFoundOIDList.add(qualityDataSetDTO.getOid());
-									continue;
-								}
+							if (failReason == VSAC_TIME_OUT_FAILURE_CODE) {
+								LOGGER.info("Value Set reterival failed at VSAC for OID :"
+										+ qualityDataSetDTO.getOid() + " with Data Type : "
+										+ qualityDataSetDTO.getDataType()
+										+ ". Failure Reason:" + vsr.getFailReason());
+								result.setSuccess(false);
+								result.setFailureReason(vsr.getFailReason());
+								return result;
+							} else if (failReason == VSAC_REQUEST_FAILURE_CODE) {
+								notFoundOIDList.add(qualityDataSetDTO.getOid());
+								continue;
 							}
 						}
 						if ((vsr.getXmlPayLoad() != null) && StringUtils.isNotEmpty(vsr.getXmlPayLoad())) {

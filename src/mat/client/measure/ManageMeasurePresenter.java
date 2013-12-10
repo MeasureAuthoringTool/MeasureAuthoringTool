@@ -2,7 +2,6 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
@@ -44,9 +43,7 @@ import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
-import mat.model.clause.MeasureShareDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -283,7 +280,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the cancel button
 		 */
 		HasClickHandlers getCancelButton();
-				
+		
 		/**
 		 * Gets the save button.
 		 * 
@@ -301,17 +298,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return SearchWidget. */
 		SearchWidget getSearchWidget();
 		
-		/** Gets the zoom button.
-		 * 
-		 * @return Zoom button. */
-		CustomButton getZoomButton();
-				
 		/**
 		 * Gets the selected measure.
 		 *
 		 * @return the selected measure
 		 */
 		Result getSelectedMeasure();
+		
+		/** Gets the zoom button.
+		 * 
+		 * @return Zoom button. */
+		CustomButton getZoomButton();
 	}
 	
 	/**
@@ -714,7 +711,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @param results
 		 *            the results
 		 */
-		public void buildDataTable(SearchResults<MeasureShareDTO> results);
+		public void buildDataTable(UserShareInfoAdapter adapter);
 		
 		/**
 		 * Gets the cancel button.
@@ -896,7 +893,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the cancel button
 		 */
 		HasClickHandlers getCancelButton();
-				
+		
 		/**
 		 * Gets the major radio button.
 		 * 
@@ -910,7 +907,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the minor radio button
 		 */
 		RadioButton getMinorRadioButton();
-				
+		
 		/**
 		 * Gets the save button.
 		 * 
@@ -928,17 +925,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return search widget. */
 		SearchWidget getSearchWidget();
 		
-		/** Gets the zoom button.
-		 * 
-		 * @return zoom button. */
-		CustomButton getZoomButton();
-				
 		/**
 		 * Gets the selected measure.
 		 *
 		 * @return the selected measure
 		 */
 		Result getSelectedMeasure();
+		
+		/** Gets the zoom button.
+		 * 
+		 * @return zoom button. */
+		CustomButton getZoomButton();
 	}
 	
 	/** The admin search display. */
@@ -1534,7 +1531,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the current details
 	 */
 	private void createDraftOfSelectedVersion(ManageMeasureDetailModel currentDetails) {
-		cloneMeasure(currentDetails, true);		
+		cloneMeasure(currentDetails, true);
 	}
 	
 	/**
@@ -1812,7 +1809,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				searchMeasuresForDraft(draftDisplay.getSearchWidget().getSearchInput().getText());
 			}
 		});
-				
+		
 		draftDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -1820,31 +1817,31 @@ public class ManageMeasurePresenter implements MatPresenter {
 				((Button) draftDisplay.getSaveButton()).setEnabled(false);
 				
 				ManageMeasureSearchModel.Result selectedMeasure = draftDisplay.getSelectedMeasure();
-				if (selectedMeasure != null && selectedMeasure.getId() != null) {
-					MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(), 
+				if ((selectedMeasure != null) && (selectedMeasure.getId() != null)) {
+					MatContext.get().getMeasureService().getMeasure(selectedMeasure.getId(),
 							new AsyncCallback<ManageMeasureDetailModel>() {
-								@Override
-								public void onFailure(Throwable caught) {
-									// O&M 17
-									((Button) draftDisplay.getSaveButton()).setEnabled(true);
-									draftDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
-											.getMessageDelegate().getGenericErrorMessage());
-									MatContext.get().recordTransactionEvent(null, null,	null, 
-										"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-								}
-								
-								@Override
-								public void onSuccess(
-										ManageMeasureDetailModel result) {
-									currentDetails = result;
-									createDraftOfSelectedVersion(currentDetails);
-								}
-							});
+						@Override
+						public void onFailure(Throwable caught) {
+							// O&M 17
+							((Button) draftDisplay.getSaveButton()).setEnabled(true);
+							draftDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+									.getMessageDelegate().getGenericErrorMessage());
+							MatContext.get().recordTransactionEvent(null, null,	null,
+									"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+						}
+						
+						@Override
+						public void onSuccess(
+								ManageMeasureDetailModel result) {
+							currentDetails = result;
+							createDraftOfSelectedVersion(currentDetails);
+						}
+					});
 				} else {
 					// O&M 17
 					((Button) draftDisplay.getSaveButton()).setEnabled(true);
 					draftDisplay.getErrorMessageDisplay()
-						.setMessage("Please select a Measure Version to create a Draft.");
+					.setMessage("Please select a Measure Version to create a Draft.");
 				}
 				
 			}
@@ -2961,23 +2958,23 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @param searchText the search text */
 	private void searchMeasuresForDraft(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
-				MatContext.get().getMeasureService().searchMeasuresForDraft(lastSearchText, 
-						new AsyncCallback<ManageMeasureSearchModel>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						draftDisplay.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(null, null, null,
-								"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-					}
-					
-					@Override
-					public void onSuccess(ManageMeasureSearchModel result) {
-						draftMeasureResults = new ManageDraftMeasureModel(result.getData());
-						draftDisplay.buildDataTable(draftMeasureResults);								
-					}
-				});
-				
+		MatContext.get().getMeasureService().searchMeasuresForDraft(lastSearchText,
+				new AsyncCallback<ManageMeasureSearchModel>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				draftDisplay.getErrorMessageDisplay().setMessage(
+						MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null,
+						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+			}
+			
+			@Override
+			public void onSuccess(ManageMeasureSearchModel result) {
+				draftMeasureResults = new ManageDraftMeasureModel(result.getData());
+				draftDisplay.buildDataTable(draftMeasureResults);
+			}
+		});
+		
 	}
 	
 	/**
@@ -2988,24 +2985,24 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void searchMeasuresForVersion(String searchText) {
 		final String lastSearchText = (searchText != null) ? searchText.trim() : null;
-				MatContext.get().getMeasureService()
-						.searchMeasuresForVersion(lastSearchText, new AsyncCallback<ManageMeasureSearchModel>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						versionDisplay.getErrorMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().getGenericErrorMessage());
-						MatContext.get().recordTransactionEvent(null, null, null,
-								"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
-					}
-					
-					@Override
-					public void onSuccess(
-							ManageMeasureSearchModel result) {
-						versionMeasureResults = new ManageVersionMeasureModel(result.getData());
-						versionDisplay.buildDataTable(versionMeasureResults);
-					}
-				});
-				
+		MatContext.get().getMeasureService()
+		.searchMeasuresForVersion(lastSearchText, new AsyncCallback<ManageMeasureSearchModel>() {
+			@Override
+			public void onFailure(Throwable caught) {
+				versionDisplay.getErrorMessageDisplay().setMessage(
+						MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null,
+						"Unhandled Exception: " + caught.getLocalizedMessage(), 0);
+			}
+			
+			@Override
+			public void onSuccess(
+					ManageMeasureSearchModel result) {
+				versionMeasureResults = new ManageVersionMeasureModel(result.getData());
+				versionDisplay.buildDataTable(versionMeasureResults);
+			}
+		});
+		
 	}
 	
 	/** Method to Load most recent Used Measures for Logged In User. */
@@ -3021,11 +3018,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 				searchDisplay.getMostRecentMeasureWidget().setObserver(new MostRecentMeasureWidget.Observer() {
 					@Override
 					public void onExportClicked(Result result) {
-								measureDeletion = false;
-								isMeasureDeleted = false;
-								searchDisplay.getSuccessMeasureDeletion().clear();
-								searchDisplay.getErrorMeasureDeletion().clear();
-								export(result.getId(), result.getName());
+						measureDeletion = false;
+						isMeasureDeleted = false;
+						searchDisplay.getSuccessMeasureDeletion().clear();
+						searchDisplay.getErrorMeasureDeletion().clear();
+						export(result.getId(), result.getName());
 					}
 				});
 				searchDisplay.buildMostRecentWidget();
@@ -3459,7 +3456,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				ManageMeasureSearchModel.Result selectedMeasure = versionDisplay.getSelectedMeasure();
-				if ((selectedMeasure !=null && selectedMeasure.getId() != null)
+				if (((selectedMeasure !=null) && (selectedMeasure.getId() != null))
 						&& (versionDisplay.getMajorRadioButton().getValue() || versionDisplay
 								.getMinorRadioButton().getValue())) {
 					saveFinalizedVersion(selectedMeasure.getId(),
@@ -3472,7 +3469,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							"Please select a Measure Name to version and select a version type of Major or Minor.");
 				}
 			}
-		});		
+		});
 		
 		versionDisplay.getCancelButton().addClickHandler(cancelClickHandler);
 		

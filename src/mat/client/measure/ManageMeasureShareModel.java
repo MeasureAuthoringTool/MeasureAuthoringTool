@@ -1,9 +1,7 @@
 package mat.client.measure;
 
 import java.util.List;
-
 import mat.model.clause.MeasureShareDTO;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -14,32 +12,68 @@ public class ManageMeasureShareModel implements IsSerializable {
 	/** The data. */
 	private List<MeasureShareDTO> data;
 	
+	/** The is private. */
+	private boolean isPrivate;
 	/** The measure id. */
 	private String measureId;
 	
 	/** The measure name. */
 	private String measureName;
 	
-	/** The start index. */
-	private int startIndex;
-	
 	/** The results total. */
 	private int resultsTotal;
 	
-	/** The is private. */
-	private boolean isPrivate;
+	/** The start index. */
+	private int startIndex;
 	
 	/**
-	 * Sets the data.
+	 * Gets the.
 	 * 
-	 * @param data
-	 *            the new data
+	 * @param row
+	 *            the row
+	 * @return the measure share dto
 	 */
-	public void setData(List<MeasureShareDTO> data) {
-		this.data = data;
+	public MeasureShareDTO get(int row) {
+		return data.get(row);
 	}
 	
-
+	/**
+	 * @return the data
+	 */
+	public List<MeasureShareDTO> getData() {
+		return data;
+	}
+	
+	
+	/**
+	 * Gets the key.
+	 * 
+	 * @param row
+	 *            the row
+	 * @return the key
+	 */
+	public String getKey(int row) {
+		return data.get(row).getUserId();
+	}
+	
+	/**
+	 * Gets the measure id.
+	 * 
+	 * @return the measure id
+	 */
+	public String getMeasureId() {
+		return measureId;
+	}
+	
+	/**
+	 * Gets the measure name.
+	 * 
+	 * @return the measure name
+	 */
+	public String getMeasureName() {
+		return measureName;
+	}
+	
 	/**
 	 * Gets the number of rows.
 	 * 
@@ -47,25 +81,6 @@ public class ManageMeasureShareModel implements IsSerializable {
 	 */
 	public int getNumberOfRows() {
 		return data != null ? data.size() : 0;
-	}
-
-	/**
-	 * Gets the start index.
-	 * 
-	 * @return the start index
-	 */
-	public int getStartIndex() {
-		return startIndex;
-	}
-	
-	/**
-	 * Sets the start index.
-	 * 
-	 * @param startIndex
-	 *            the new start index
-	 */
-	public void setStartIndex(int startIndex) {
-		this.startIndex = startIndex;
 	}
 	
 	/**
@@ -78,48 +93,35 @@ public class ManageMeasureShareModel implements IsSerializable {
 	}
 	
 	/**
-	 * Sets the results total.
+	 * Gets the start index.
 	 * 
-	 * @param resultsTotal
-	 *            the new results total
+	 * @return the start index
 	 */
-	public void setResultsTotal(int resultsTotal) {
-		this.resultsTotal = resultsTotal;
+	public int getStartIndex() {
+		return startIndex;
 	}
-
+	
 	/**
-	 * Gets the key.
+	 * Checks if is private.
 	 * 
-	 * @param row
-	 *            the row
-	 * @return the key
+	 * @return true, if is private
 	 */
-	public String getKey(int row) {
-		return data.get(row).getUserId();
+	public boolean isPrivate() {
+		return isPrivate;
 	}
-
+	
+	
 	/**
-	 * Gets the.
+	 * Sets the data.
 	 * 
-	 * @param row
-	 *            the row
-	 * @return the measure share dto
+	 * @param data
+	 *            the new data
 	 */
-	public MeasureShareDTO get(int row) {
-		return data.get(row);
+	public void setData(List<MeasureShareDTO> data) {
+		this.data = data;
 	}
-
-
-	/**
-	 * Gets the measure id.
-	 * 
-	 * @return the measure id
-	 */
-	public String getMeasureId() {
-		return measureId;
-	}
-
-
+	
+	
 	/**
 	 * Sets the measure id.
 	 * 
@@ -129,18 +131,8 @@ public class ManageMeasureShareModel implements IsSerializable {
 	public void setMeasureId(String measureId) {
 		this.measureId = measureId;
 	}
-
-
-	/**
-	 * Gets the measure name.
-	 * 
-	 * @return the measure name
-	 */
-	public String getMeasureName() {
-		return measureName;
-	}
-
-
+	
+	
 	/**
 	 * Sets the measure name.
 	 * 
@@ -150,18 +142,8 @@ public class ManageMeasureShareModel implements IsSerializable {
 	public void setMeasureName(String measureName) {
 		this.measureName = measureName;
 	}
-
-
-	/**
-	 * Checks if is private.
-	 * 
-	 * @return true, if is private
-	 */
-	public boolean isPrivate() {
-		return isPrivate;
-	}
-
-
+	
+	
 	/**
 	 * Sets the private.
 	 * 
@@ -171,5 +153,27 @@ public class ManageMeasureShareModel implements IsSerializable {
 	public void setPrivate(boolean isPrivate) {
 		this.isPrivate = isPrivate;
 	}
-
+	
+	
+	/**
+	 * Sets the results total.
+	 * 
+	 * @param resultsTotal
+	 *            the new results total
+	 */
+	public void setResultsTotal(int resultsTotal) {
+		this.resultsTotal = resultsTotal;
+	}
+	
+	
+	/**
+	 * Sets the start index.
+	 * 
+	 * @param startIndex
+	 *            the new start index
+	 */
+	public void setStartIndex(int startIndex) {
+		this.startIndex = startIndex;
+	}
+	
 }

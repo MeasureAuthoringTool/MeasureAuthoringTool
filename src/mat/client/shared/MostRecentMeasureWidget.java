@@ -61,11 +61,13 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 	 * @return the cell table */
 	private CellTable<Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table) {
 		if (table.getColumnCount() != MAX_TABLE_COLUMN_SIZE) {
-			Element element = cellTable.getElement();
-			element.setAttribute("aria-labelledby", "MostRecentMeasureActivityTable");
+			Label searchHeader = new Label("Recent Activity");
+			searchHeader.getElement().setId("searchHeader_Label");
+			searchHeader.setStyleName("recentSearchHeader");
+			searchHeader.getElement().setAttribute("tabIndex", "0");
 			com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
-			caption.appendChild(new HTML("<h4 class=\"invisible\"> Recent Measure Acitivity Table. </h4>").getElement());
+			caption.appendChild(searchHeader.getElement());
 			Column<ManageMeasureSearchModel.Result, SafeHtml> measureName =
 					new Column<ManageMeasureSearchModel.Result, SafeHtml>(new
 							ClickableSafeHtmlCell()) {
@@ -171,12 +173,6 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		searchPanel.clear();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("recentSearchPanel");
-		Label searchHeader = new Label("Recent Activity");
-		searchHeader.getElement().setId("searchHeader_Label");
-		searchHeader.setStyleName("recentSearchHeader");
-		searchHeader.getElement().setAttribute("tabIndex", "0");
-		searchPanel.add(searchHeader);
-		searchPanel.add(new SpacerWidget());
 		if ((measureSearchModel != null) && (measureSearchModel.getData().size() > 0)) {
 			buildCellTable();
 		} else {

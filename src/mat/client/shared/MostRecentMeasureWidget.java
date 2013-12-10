@@ -64,7 +64,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 			Label searchHeader = new Label("Recent Activity");
 			searchHeader.getElement().setId("searchHeader_Label");
 			searchHeader.setStyleName("recentSearchHeader");
-			searchHeader.getElement().setAttribute("tabIndex", "0");
+			// searchHeader.getElement().setAttribute("tabIndex", "0");
 			com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
 			caption.appendChild(searchHeader.getElement());
@@ -164,6 +164,13 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		cellTable.getElement().setAttribute("Summary", "Recent Measure Activity Table.");
 		searchPanel.add(invisibleLabel);
 		searchPanel.add(cellTable);
+		Element element = searchPanel.getElement();
+		element.setAttribute("aria-role", "panel");
+		element.setAttribute("aria-labelledby", "MostRecentMeasureActivityTable");
+		element.setAttribute("aria-live", "assertive");
+		element.setAttribute("aria-atomic", "true");
+		element.setAttribute("aria-relevant", "all");
+		element.setAttribute("role", "alert");
 	}
 	
 	/** Builds the most recent widget.
@@ -172,6 +179,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		searchPanel.clear();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("recentSearchPanel");
+		searchPanel.getElement().setAttribute("tabIndex", "0");
 		if ((measureSearchModel != null) && (measureSearchModel.getData().size() > 0)) {
 			buildCellTable();
 		} else {

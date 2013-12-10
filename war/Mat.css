@@ -494,8 +494,8 @@ body#main select, body#main input, body#main textarea {
 }
 
 .successAmberMessage {
-	background: /*url('images/success.png')*/ no-repeat scroll 6px 50% #FFBF00;
-    border: 1px solid #ACDFA7;
+	background: /*url('images/success.png')*/ no-repeat scroll 6px 50% #EEC99E;
+    border: 1px solid #D28021;
     color: #000000;
     display: block;
     font-weight: bold;

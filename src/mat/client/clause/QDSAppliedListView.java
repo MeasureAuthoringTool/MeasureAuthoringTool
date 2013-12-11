@@ -5,6 +5,7 @@ import java.util.List;
 import mat.client.CustomPager;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.RadioButtonCell;
@@ -315,7 +316,16 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			spager.setDisplay(table);
 			spager.setPageStart(0);
 			spager.setToolTipAndTabIndex(spager);
-			/* cellTablePanel.clear(); */
+			Label invisibleLabel = (Label) LabelBuilder
+					.buildInvisibleLabel(
+							"appliedQDMTableSummary",
+							"In the following table Applied QDM Name are given in the Second column,"
+									+ "with the DataType in the third column , the OID in the fourth"
+									+ "column , Version and Effective date in fifth and sixth"
+									+ "columns respectively.First column contains options to select.");
+			table.getElement().setAttribute("id", "AppliedQDMTable");
+			table.getElement().setAttribute("aria-describedby", "appliedQDMTableSummary");
+			cellTablePanel.add(invisibleLabel);
 			cellTablePanel.add(table);
 			cellTablePanel.add(new SpacerWidget());
 			cellTablePanel.add(spager);

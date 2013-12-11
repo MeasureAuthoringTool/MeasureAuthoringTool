@@ -54,9 +54,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 	private Observer observer;
 	/** VerticalPanel Instance which hold's View for Most Recent Measure. */
 	private VerticalPanel searchPanel = new VerticalPanel();
-	
 	/** Method to Add Column's in Table.
-	 * 
 	 * @param table the table
 	 * @return the cell table */
 	private CellTable<Result> addColumnToTable(final CellTable<ManageMeasureSearchModel.Result> table) {
@@ -64,7 +62,6 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 			Label searchHeader = new Label("Recent Activity");
 			searchHeader.getElement().setId("searchHeader_Label");
 			searchHeader.setStyleName("recentSearchHeader");
-			// searchHeader.getElement().setAttribute("tabIndex", "0");
 			com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
 			caption.appendChild(searchHeader.getElement());
@@ -158,21 +155,17 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		sortProvider.getList().addAll(measureSearchModel.getData());
 		cellTable = addColumnToTable(cellTable);
 		sortProvider.addDataDisplay(cellTable);
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("MostRecentMeasureActivityTable"),
-				"MostRecentMeasureActivityTable");
+		Label invisibleLabel = (Label) LabelBuilder
+				.buildInvisibleLabel(
+						"recentActivitySummary",
+						"In the following table Recently Selected Measure Name are given in the first column,"
+								+ "with the Version in the second column and the export in the third"
+								+ "column.");
 		cellTable.getElement().setAttribute("id", "MostRecentActivityCellTable");
-		cellTable.getElement().setAttribute("Summary", "Recent Measure Activity Table.");
+		cellTable.getElement().setAttribute("aria-describedby", "recentActivitySummary");
 		searchPanel.add(invisibleLabel);
 		searchPanel.add(cellTable);
-		Element element = searchPanel.getElement();
-		element.setAttribute("aria-role", "panel");
-		element.setAttribute("aria-labelledby", "MostRecentMeasureActivityTable");
-		element.setAttribute("aria-live", "assertive");
-		element.setAttribute("aria-atomic", "true");
-		element.setAttribute("aria-relevant", "all");
-		element.setAttribute("role", "alert");
 	}
-	
 	/** Builds the most recent widget.
 	 * @return VerticalPanel. */
 	public VerticalPanel buildMostRecentWidget() {
@@ -180,6 +173,12 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("recentSearchPanel");
 		searchPanel.getElement().setAttribute("tabIndex", "0");
+		/*
+		 * Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("RecentActivityTable"), "RecentActivityTable");
+		 * searchPanel.add(invisibleLabel); Element element = searchPanel.getElement(); element.setAttribute("aria-role", "panel");
+		 * element.setAttribute("aria-labelledby", "RecentActivityTable"); element.setAttribute("aria-live", "assertive");
+		 * element.setAttribute("aria-atomic", "true"); element.setAttribute("aria-relevant", "all"); element.setAttribute("role", "alert");
+		 */
 		if ((measureSearchModel != null) && (measureSearchModel.getData().size() > 0)) {
 			buildCellTable();
 		} else {

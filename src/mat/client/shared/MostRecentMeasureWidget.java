@@ -3,6 +3,7 @@ package mat.client.shared;
 import java.util.ArrayList;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
@@ -89,7 +90,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 									new MatSafeHTMLCell()) {
 						@Override
 						public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-							return getColumnToolTip(object.getVersion());
+							return CellTableUtility.getColumnToolTip(object.getVersion());
 						}
 					};
 					table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
@@ -201,17 +202,8 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
-	/**
-	 * Gets the column tool tip.
-	 * @param title
-	 *            the title
-	 * @return the column tool tip
-	 */
-	private SafeHtml getColumnToolTip(String title) {
-		String htmlConstant = "<html>" + "<head> </head> <Body><span title='" + title + "'>" + title + "</span></body>" + "</html>";
-		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
-	}
 	
+
 	/** Gets the manageMeasureSearchModel Instance.
 	 * 
 	 * @return the measureSearchModel */

@@ -172,7 +172,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		searchPanel.clear();
 		searchPanel.getElement().setId("searchPanel_VerticalPanel");
 		searchPanel.setStyleName("recentSearchPanel");
-		searchPanel.getElement().setAttribute("tabIndex", "0");
+		// searchPanel.getElement().setAttribute("tabIndex", "0");
 		/*
 		 * Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(new Label("RecentActivityTable"), "RecentActivityTable");
 		 * searchPanel.add(invisibleLabel); Element element = searchPanel.getElement(); element.setAttribute("aria-role", "panel");

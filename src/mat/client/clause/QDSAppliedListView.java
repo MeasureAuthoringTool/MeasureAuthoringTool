@@ -411,7 +411,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			boolean isUserDefined) {
 		if (hasImage && !isUserDefined) {
 			String htmlConstant = "<html>"
-					+ "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"QDM Updated From VSAC.\"/>"
+					+ "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"QDM Updated From VSAC.\""
+					+ "title = \"QDM Updated From VSAC.\"/>"
 					+ "<span tabIndex = \"0\" title='" + title + "'>"
 					+ columnText
 					+ "</span></body>"
@@ -419,7 +420,9 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 		} else if (hasImage && isUserDefined) {
 			String htmlConstant = "<html>"
-					+ "<head> </head> <Body><img src =\"images/userDefinedWarning.png\" alt=\"User Defined.\"/>"
+					+ "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
+					+ "alt=\"Warning : QDM not Updated.\""
+					+ " title=\"QDM Not Updated.\"/>"
 					+ "<span tabIndex = \"0\" title='" + title + "'>"
 					+ columnText
 					+ "</span></body>"

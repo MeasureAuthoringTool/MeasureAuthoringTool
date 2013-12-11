@@ -68,7 +68,7 @@ public class AdminServiceImplTest extends SpringInitializationTest {
 	@Test
 	public void searchForAUser(){
 		System.out.println("Searching for the user");
-		List<User> searchResults =  getUserService().searchForUsersByName(userDetails.getFirstName(), 0, 10);
+		List<User> searchResults =  getUserService().searchForUsersByName(userDetails.getFirstName());
 		
 		if(searchResults.size()> 0){
 			System.out.println("More than one user exist with the same name"+ userDetails.getFirstName());

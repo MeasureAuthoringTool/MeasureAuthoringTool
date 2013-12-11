@@ -42,7 +42,7 @@ public abstract class SpringInitializationTest extends TestCase {
 	
 	@Before
 	public void setLoggedInUser() {
-		User user = getUserService().searchForUsersByName("", 1, 1).get(0);
+		User user = getUserService().searchForUsersByName("").get(0);
 		LoggedInUserUtil.setLoggedInUser(user.getId());
 		LoggedInUserUtil.setLoggedInUserEmail(user.getEmailAddress());
 	}

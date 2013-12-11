@@ -12,6 +12,7 @@ import mat.client.shared.RadioButtonCell;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
+import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -187,7 +188,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				public SafeHtml getValue(QualityDataSetDTO object) {
 					StringBuilder title = new StringBuilder();
 					title = title.append("Datatype : ").append(object.getDataType());
-					return getColumnToolTip(object.getDataType(), title);
+					return CellTableUtility.getColumnToolTip(object.getDataType(), title.toString());
 				}
 			};
 			table.addColumn(dataTypeColumn, SafeHtmlUtils.fromSafeConstant("<span title='Datatype' tabindex=\"0\">" + "Datatype"
@@ -204,7 +205,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 						title = title.append("OID : ").append(object.getOid());
 						oid = object.getOid();
 					}
-					return getColumnToolTip(oid, title);
+					return CellTableUtility.getColumnToolTip(oid, title.toString());
 				}
 			};
 			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title='OID' tabindex=\"0\">" + "OID" + "</span>"));
@@ -228,7 +229,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					} else {
 						version = "";
 					}
-					return getColumnToolTip(version, title);
+					return CellTableUtility.getColumnToolTip(version, title.toString());
 				}
 			};
 			table.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title='Version' tabindex=\"0\">" + "Version"
@@ -245,7 +246,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					} else {
 						title = title.append("Effective Date : ").append("No Effective Date Selected");
 					}
-					return getColumnToolTip(effectiveDate, title);
+					return CellTableUtility.getColumnToolTip(effectiveDate, title.toString());
 				}
 			};
 			table.addColumn(effectiveDateColumn, SafeHtmlUtils.fromSafeConstant(
@@ -322,7 +323,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 							"In the following table Applied QDM Name are given in the Second column,"
 									+ "with the DataType in the third column , the OID in the fourth"
 									+ "column , Version and Effective date in fifth and sixth"
-									+ "columns respectively.First column contains options to select.");
+									+ "columns respectively ,First column contains options to select.");
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby", "appliedQDMTableSummary");
 			cellTablePanel.add(invisibleLabel);
@@ -332,6 +333,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			removeButton.setEnabled(false);
 			modify.setEnabled(checkForEnable() && (appliedListModel.getLastSelected() != null) ? true : false);
 			updateVsacButton.setEnabled(true);
+			
 		} else {
 			Label searchHeader = new Label("Applied QDM Elements");
 			searchHeader.getElement().setId("searchHeader_Label");
@@ -376,20 +378,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	public SuccessMessageDisplayInterface getApplyToMeasureSuccessMsg() {
 		return successMessagePanel;
 	}
-	/**
-	 * Gets the column tool tip.
-	 * @param columnText
-	 *            the column text
-	 * @param title
-	 *            the title
-	 * @return the column tool tip
-	 */
-	private SafeHtml getColumnToolTip(String columnText, StringBuilder title) {
-		String htmlConstant = "<html>" + "<head> </head> <Body><span tabIndex = \"0\" title='" + title + "'>" + columnText
-				+ "</span></body>"
-				+ "</html>";
-		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
-	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.QDSAppliedListPresenter.SearchDisplay#getErrorMessageDisplay()
 	 */

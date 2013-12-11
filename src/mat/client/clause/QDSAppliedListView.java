@@ -171,10 +171,10 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					}
 					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(object.getOid())) {
 						return getNameColumnToolTip(value, title, object.getHasModifiedAtVSAC(),
-								object.isUserDefined());
+								object.isNotFoundInVSAC());
 					} else {
 						return getNameColumnToolTip(value, title, object.getHasModifiedAtVSAC(),
-								object.isUserDefined());
+								object.isNotFoundInVSAC());
 					}
 					// return getColumnToolTip(value, title);
 				}

@@ -386,7 +386,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 					LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: QDM filtered as it is of either"
 							+ "for following type Supplemental data or User defined or Timing Element.");
 					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
-						toBeModifiedQDM.setUserDefined(true);
+						toBeModifiedQDM.setNotFoundInVSAC(true);
 						toBeModifiedQDM.setHasModifiedAtVSAC(true);
 						modifiedQDMList.add(toBeModifiedQDM);
 					}
@@ -435,7 +435,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 								toBeModifiedQDM.setHasModifiedAtVSAC(true); // Used at Applied QDM Tab
 								//to show icons in CellTable.
 							}
+						} else {
+							toBeModifiedQDM.setHasModifiedAtVSAC(true);
+							toBeModifiedQDM.setNotFoundInVSAC(true);
 						}
+					} else {
+						toBeModifiedQDM.setHasModifiedAtVSAC(true);
+						toBeModifiedQDM.setNotFoundInVSAC(true);
 					}
 				}
 				modifiedQDMList.add(toBeModifiedQDM);

@@ -465,7 +465,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 				timingQDMs.add(qdsDTO);
 			} else {
 				qdsDTO.setHasModifiedAtVSAC(false);
-				qdsDTO.setUserDefined(false);
+				qdsDTO.setNotFoundInVSAC(false);
 			}
 		}
 		result.removeAll(timingQDMs);

@@ -19,13 +19,9 @@ public interface UserService {
 	 * 
 	 * @param orgId
 	 *            the org id
-	 * @param startIndex
-	 *            the start index
-	 * @param numResults
-	 *            the num results
 	 * @return the list
 	 */
-	public List<User> searchForUsersByName(String orgId, int startIndex, int numResults);
+	public List<User> searchForUsersByName(String orgId);
 	
 	/**
 	 * Count search results.

@@ -286,14 +286,14 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.admin.service.AdminService#searchUsers(java.lang.String, int, int)
+	 * @see mat.client.admin.service.AdminService#searchUsers(java.lang.String)
 	 */
 	@Override
-	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws InCorrectUserRoleException {
+	public ManageUsersSearchModel searchUsers(String key) throws InCorrectUserRoleException {
 		checkAdminUser();
 		
 		UserService userService = getUserService();
-		List<User> searchResults = userService.searchForUsersByName(key, startIndex, pageSize);
+		List<User> searchResults = userService.searchForUsersByName(key);
 		logger.info("User search returned " + searchResults.size());
 		
 		ManageUsersSearchModel model = new  ManageUsersSearchModel();
@@ -305,13 +305,17 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			r.setOrgName(user.getOrganizationName());
 			r.setKey(user.getId());
 			r.setLoginId(user.getLoginId());
+			if (user.getStatus() != null) {
+				r.setStatus(user.getStatus().getDescription());
+			}
 			detailList.add(r);
 		}
 		model.setData(detailList);
 		
-		model.setStartIndex(startIndex);
-		model.setResultsTotal(getUserService().countSearchResults(key));
-		logger.info("Searching users on " + key + " with page size " + pageSize);
+		//model.setStartIndex(startIndex);
+		//model.setResultsTotal(getUserService().countSearchResults(key));
+		//logger.info("Searching users on " + key + " with page size " + pageSize);
+		logger.info("Searching users on " + key);
 		
 		return model;
 	}

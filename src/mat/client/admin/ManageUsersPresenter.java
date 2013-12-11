@@ -14,10 +14,6 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.PageSelectionEvent;
-import mat.client.shared.search.PageSelectionEventHandler;
-import mat.client.shared.search.PageSizeSelectionEvent;
-import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
@@ -53,7 +49,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	/**
 	 * The Interface SearchDisplay.
 	 */
-	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay {
+	public static interface SearchDisplay {
 		
 		/**
 		 * Gets the creates the new button.
@@ -83,6 +79,27 @@ public class ManageUsersPresenter implements MatPresenter {
 		 *            the results
 		 */
 		void buildDataTable(SearchResults<ManageUsersSearchModel.Result> results);
+		
+		 /**
+ 		 * As widget.
+ 		 *
+ 		 * @return the widget
+ 		 */
+ 		Widget asWidget();
+		 
+		 /**
+ 		 * Gets the search button.
+ 		 *
+ 		 * @return the search button
+ 		 */
+ 		HasClickHandlers getSearchButton();
+		 
+		 /**
+ 		 * Gets the search string.
+ 		 *
+ 		 * @return the search string
+ 		 */
+ 		HasValue<String> getSearchString();
 	}
 	
 	/**
@@ -339,7 +356,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			}
 		});
 
-		searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
+		/*searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
 			@Override
 			public void onPageSelection(PageSelectionEvent event) {
 				startIndex = searchDisplay.getPageSize() * (event.getPageNumber() - 1) + 1;
@@ -353,7 +370,7 @@ public class ManageUsersPresenter implements MatPresenter {
 				searchDisplay.getSearchString().setValue("");
 				search("", startIndex, searchDisplay.getPageSize());
 			}
-		});
+		});*/
 
 		TextBox searchWidget = (TextBox) (searchDisplay.getSearchString());
 		searchWidget.addKeyUpHandler(new KeyUpHandler() {
@@ -427,7 +444,7 @@ public class ManageUsersPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				String key = searchDisplay.getSearchString().getValue();
-				search(key, startIndex, searchDisplay.getPageSize());
+				search(key);
 			}
 		});
 	}
@@ -438,7 +455,7 @@ public class ManageUsersPresenter implements MatPresenter {
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
-		search("", 1, searchDisplay.getPageSize());		
+		search("");		
 	}
 	
 	/**
@@ -570,16 +587,11 @@ public class ManageUsersPresenter implements MatPresenter {
 	 * 
 	 * @param key
 	 *            the key
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
 	 */
-	private void search(String key, int startIndex, int pageSize) {
+	private void search(String key) {
 		lastSearchKey = key;
 		showSearchingBusy(true);
-		MatContext.get().getAdminService().searchUsers(key, startIndex, pageSize,
-				new AsyncCallback<ManageUsersSearchModel>() {
+		MatContext.get().getAdminService().searchUsers(key, new AsyncCallback<ManageUsersSearchModel>() {
 			@Override
 			public void onSuccess(ManageUsersSearchModel result) {
 				SearchResultUpdate sru = new SearchResultUpdate();

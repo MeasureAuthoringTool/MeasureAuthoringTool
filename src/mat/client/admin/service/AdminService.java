@@ -82,20 +82,17 @@ public interface AdminService extends RemoteService {
 	 * @param pageSize the page size
 	 * @return the manage organization search model */
 	ManageOrganizationSearchModel searchOrganization(String key, int startIndex, int pageSize);
+	
 	/**
 	 * Search users.
 	 * 
 	 * @param key
 	 *            the key
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
 	 * @return the manage users search model
 	 * @throws InCorrectUserRoleException
 	 *             the in correct user role exception
 	 */
-	public ManageUsersSearchModel searchUsers(String key, int startIndex, int pageSize) throws InCorrectUserRoleException;
+	public ManageUsersSearchModel searchUsers(String key) throws InCorrectUserRoleException;
 	
 	/** Gets the all organizations.
 	 * 

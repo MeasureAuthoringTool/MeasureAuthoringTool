@@ -18,13 +18,9 @@ public interface UserDAO extends IDAO<User, String> {
 	 * 
 	 * @param name
 	 *            the name
-	 * @param startIndex
-	 *            the start index
-	 * @param numResults
-	 *            the num results
 	 * @return the list
 	 */
-	public List<User> searchForUsersByName(String name, int startIndex, int numResults);
+	public List<User> searchForUsersByName(String name);
 	
 	/**
 	 * Count search results.

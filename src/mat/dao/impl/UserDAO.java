@@ -142,17 +142,16 @@ public class UserDAO extends GenericDAO<User, String> implements
 	}
 
 	/* (non-Javadoc)
-	 * @see mat.dao.UserDAO#searchForUsersByName(java.lang.String, int, int)
+	 * @see mat.dao.UserDAO#searchForUsersByName(java.lang.String)
 	 */
 	@SuppressWarnings("unchecked")
-	public List<User> searchForUsersByName(String name, int startIndex,
-			int numResults) {
+	public List<User> searchForUsersByName(String name) {
 		Criteria criteria = createSearchCriteria(name);
 		criteria.addOrder(Order.asc("lastName"));
-		criteria.setFirstResult(startIndex);
+		/*criteria.setFirstResult(startIndex);
 		if (numResults > 0) {
 			criteria.setMaxResults(numResults);
-		}
+		}*/
 		return criteria.list();
 
 	}

@@ -451,14 +451,14 @@ public class UserServiceImpl implements UserService {
 	
 	
 	/* (non-Javadoc)
-	 * @see mat.server.service.UserService#searchForUsersByName(java.lang.String, int, int)
+	 * @see mat.server.service.UserService#searchForUsersByName(java.lang.String)
 	 */
 	@Override
-	public List<User> searchForUsersByName(String orgId, int startIndex, int numResults) {
+	public List<User> searchForUsersByName(String orgId) {
 		if(orgId == null) {
 			orgId = "";
 		}
-		return userDAO.searchForUsersByName(orgId, startIndex - 1, numResults);
+		return userDAO.searchForUsersByName(orgId);
 	}
 	
 	/* (non-Javadoc)

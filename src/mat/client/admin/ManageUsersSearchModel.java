@@ -34,6 +34,9 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		/** The login id. */
 		private String loginId;
 		
+		/** The status. */
+		private String status;
+		
 		/**
 		 * Gets the key.
 		 * 
@@ -127,6 +130,20 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 		 */
 		public String getLoginId() {
 			return loginId;
+		}
+
+		/**
+		 * @return the status
+		 */
+		public String getStatus() {
+			return status;
+		}
+
+		/**
+		 * @param status the status to set
+		 */
+		public void setStatus(String status) {
+			this.status = status;
 		}
 	}
 
@@ -282,5 +299,14 @@ public class ManageUsersSearchModel implements SearchResults<ManageUsersSearchMo
 	@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return false;
+	}
+	
+	/**
+	 * Gets the data list.
+	 *
+	 * @return the data list
+	 */
+	public List<Result> getDataList() {
+		return data;
 	}
 }

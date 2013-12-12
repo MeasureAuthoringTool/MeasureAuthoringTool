@@ -391,7 +391,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 						modifiedQDMList.add(toBeModifiedQDM);
 					}
 					continue;
-				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
+				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
+						|| "1".equalsIgnoreCase(qualityDataSetDTO.getVersion())) {
 					LOGGER.info("Start ValueSetsResponseDAO...Using Proxy:" + PROXY_HOST + ":" + PROXY_PORT);
 					ValueSetsResponseDAO dao = new ValueSetsResponseDAO(UMLSSessionTicket.
 							getTicket(getThreadLocalRequest().getSession().getId()), PROXY_HOST, PROXY_PORT);

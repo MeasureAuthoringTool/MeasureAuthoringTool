@@ -175,54 +175,56 @@ public class ManageMeasureShareView implements ShareDisplay {
 		cellTablePanel.setStyleName("QdmAppliedListSearchPanel");
 		/*
 		 * cellTablePanel.add(searchHeader); cellTablePanel.add(new SpacerWidget());
-		 */if ((adapter.getData().getData() != null) && (adapter.getData().getData().size() > 0)) {
-			 CellTable<MeasureShareDTO> cellTable = new CellTable<MeasureShareDTO>();
-			 ListDataProvider<MeasureShareDTO> sortProvider = new ListDataProvider<MeasureShareDTO>();
-			 List<MeasureShareDTO> measureShareList = new ArrayList<MeasureShareDTO>();
-			 measureShareList.addAll(adapter.getData().getData());
-			 cellTable.setPageSize(PAGE_SIZE);
-			 cellTable.redraw();
-			 cellTable.setRowCount(measureShareList.size(), true);
-			 // cellTable.setSelectionModel(getSelectionModelWithHandler());
-			 sortProvider.refresh();
-			 sortProvider.getList().addAll(measureShareList);
-			 cellTable = addColumnToTable(cellTable);
-			 sortProvider.addDataDisplay(cellTable);
-			 CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-			 MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-			 spager.setPageStart(0);
-			 spager.setDisplay(cellTable);
-			 spager.setPageSize(PAGE_SIZE);
-			 spager.setToolTipAndTabIndex(spager);
-			 cellTable.setWidth("100%");
-			 cellTable.setColumnWidth(0, 40.0, Unit.PCT);
-			 cellTable.setColumnWidth(1, 40.0, Unit.PCT);
-			 cellTable.setColumnWidth(2, 20.0, Unit.PCT);
-			 Label invisibleLabel = (Label) LabelBuilder
-					 .buildInvisibleLabel(
-							 "measureShareSummary",
-							 "In the following table User Name are given in the First column,"
-									 + "with the Version in the third column and options can be"
-									 + "selected from first column.");
-			 cellTable.getElement().setAttribute("id", "measureDraftFromVersionCellTable");
-			 cellTable.getElement().setAttribute("aria-describedby", "measureDraftSummary");
-			 cellTablePanel.add(invisibleLabel);
-			 cellTablePanel.add(cellTable);
-			 cellTablePanel.add(new SpacerWidget());
-			 cellTablePanel.add(spager);
-			 /*
-			  * cellTable.addCellPreviewHandler(new Handler<MeasureShareDTO>() {
-			  * 
-			  * @Override public void onCellPreview(CellPreviewEvent<MeasureShareDTO> event) { if
-			  * ("mouseover".equals(event.getNativeEvent().getType())) { Element cellElement =
-			  * event.getNativeEvent().getEventTarget().cast(); cellElement.setTitle("cell contents go here."); } } });
-			  */
-		 } else {
-			 HTML desc = new HTML("<p> No Users available for sharing.</p>");
-			 cellTablePanel.add(desc);
-		 }
-		 
-		 
+		 */
+		if ((adapter.getData().getData() != null)
+				&& (adapter.getData().getData().size() > 0)) {
+			CellTable<MeasureShareDTO> cellTable = new CellTable<MeasureShareDTO>();
+			ListDataProvider<MeasureShareDTO> sortProvider = new ListDataProvider<MeasureShareDTO>();
+			List<MeasureShareDTO> measureShareList = new ArrayList<MeasureShareDTO>();
+			measureShareList.addAll(adapter.getData().getData());
+			cellTable.setPageSize(PAGE_SIZE);
+			cellTable.redraw();
+			cellTable.setRowCount(measureShareList.size(), true);
+			// cellTable.setSelectionModel(getSelectionModelWithHandler());
+			sortProvider.refresh();
+			sortProvider.getList().addAll(measureShareList);
+			cellTable = addColumnToTable(cellTable);
+			sortProvider.addDataDisplay(cellTable);
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			spager.setPageStart(0);
+			spager.setDisplay(cellTable);
+			spager.setPageSize(PAGE_SIZE);
+			spager.setToolTipAndTabIndex(spager);
+			cellTable.setWidth("100%");
+			cellTable.setColumnWidth(0, 40.0, Unit.PCT);
+			cellTable.setColumnWidth(1, 40.0, Unit.PCT);
+			cellTable.setColumnWidth(2, 20.0, Unit.PCT);
+			Label invisibleLabel = (Label) LabelBuilder
+					.buildInvisibleLabel(
+							"measureShareSummary",
+							"In the following table User Name are given in the First column,"
+									+ "with the Organization in the Second column and options can be"
+									+ "selected from third column.");
+			cellTable.getElement().setAttribute("id", "measureDraftFromVersionCellTable");
+			cellTable.getElement().setAttribute("aria-describedby", "measureDraftSummary");
+			cellTablePanel.add(invisibleLabel);
+			cellTablePanel.add(cellTable);
+			cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(spager);
+			/*
+			 * cellTable.addCellPreviewHandler(new Handler<MeasureShareDTO>() {
+			 * 
+			 * @Override public void onCellPreview(CellPreviewEvent<MeasureShareDTO> event) { if
+			 * ("mouseover".equals(event.getNativeEvent().getType())) { Element cellElement =
+			 * event.getNativeEvent().getEventTarget().cast(); cellElement.setTitle("cell contents go here."); } } });
+			 */
+		} else {
+			HTML desc = new HTML("<p> No Users available for sharing.</p>");
+			cellTablePanel.add(desc);
+		}
+		
+		
 	}
 	/*
 	 * (non-Javadoc)

@@ -420,7 +420,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		} else if (hasImage && isUserDefined) {
 			String htmlConstant = "<html>"
 					+ "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
-					+ "alt=\"Warning : QDM not Updated.\""
+					+ "alt=\"Warning : QDM not available in VSAC.\""
 					+ " title=\"QDM Not Updated.\"/>"
 					+ "<span tabIndex = \"0\" title='" + title + "'>"
 					+ columnText

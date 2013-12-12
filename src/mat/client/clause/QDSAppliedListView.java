@@ -421,7 +421,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			String htmlConstant = "<html>"
 					+ "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
 					+ "alt=\"Warning : QDM not available in VSAC.\""
-					+ " title=\"QDM Not Updated.\"/>"
+					+ " title=\"QDM not available in VSAC.\"/>"
 					+ "<span tabIndex = \"0\" title='" + title + "'>"
 					+ columnText
 					+ "</span></body>"

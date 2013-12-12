@@ -253,11 +253,11 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					"<span title='Effective Date' tabindex=\"0\">" + "Effective Date"
 							+ "</span>"));
 			table.setColumnWidth(0, 2.0, Unit.PCT);
-			table.setColumnWidth(1, 25.0, Unit.PCT);
+			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
 			table.setColumnWidth(3, 25.0, Unit.PCT);
 			table.setColumnWidth(4, 10.0, Unit.PCT);
-			table.setColumnWidth(5, 10.0, Unit.PCT);
+			table.setColumnWidth(5, 15.0, Unit.PCT);
 		}
 		return table;
 	}

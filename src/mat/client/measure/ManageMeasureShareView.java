@@ -7,6 +7,7 @@ import mat.client.measure.ManageMeasurePresenter.ShareDisplay;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MeasureNameLabel;
@@ -43,6 +44,7 @@ import com.google.gwt.view.client.ListDataProvider;
  */
 public class ManageMeasureShareView implements ShareDisplay {
 	
+	private static final int PAGE_SIZE = 25;
 	/** The button bar. */
 	private SaveCancelButtonBar buttonBar = new SaveCancelButtonBar();
 	/** The cell table panel. */
@@ -149,7 +151,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 				}
 			}
 		});
-		cellTable.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Check for Share' tabindex=\"0\">" + "Share"
+		cellTable.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Check for Share'>" + "Share"
 				+ "</span>"));
 		return cellTable;
 	}
@@ -178,7 +180,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 			 ListDataProvider<MeasureShareDTO> sortProvider = new ListDataProvider<MeasureShareDTO>();
 			 List<MeasureShareDTO> measureShareList = new ArrayList<MeasureShareDTO>();
 			 measureShareList.addAll(adapter.getData().getData());
-			 cellTable.setPageSize(25);
+			 cellTable.setPageSize(PAGE_SIZE);
 			 cellTable.redraw();
 			 cellTable.setRowCount(measureShareList.size(), true);
 			 // cellTable.setSelectionModel(getSelectionModelWithHandler());
@@ -190,12 +192,21 @@ public class ManageMeasureShareView implements ShareDisplay {
 			 MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
 			 spager.setPageStart(0);
 			 spager.setDisplay(cellTable);
-			 spager.setPageSize(25);
+			 spager.setPageSize(PAGE_SIZE);
 			 spager.setToolTipAndTabIndex(spager);
 			 cellTable.setWidth("100%");
 			 cellTable.setColumnWidth(0, 40.0, Unit.PCT);
 			 cellTable.setColumnWidth(1, 40.0, Unit.PCT);
 			 cellTable.setColumnWidth(2, 20.0, Unit.PCT);
+			 Label invisibleLabel = (Label) LabelBuilder
+					 .buildInvisibleLabel(
+							 "measureShareSummary",
+							 "In the following table User Name are given in the First column,"
+									 + "with the Version in the third column and options can be"
+									 + "selected from first column.");
+			 cellTable.getElement().setAttribute("id", "measureDraftFromVersionCellTable");
+			 cellTable.getElement().setAttribute("aria-describedby", "measureDraftSummary");
+			 cellTablePanel.add(invisibleLabel);
 			 cellTablePanel.add(cellTable);
 			 cellTablePanel.add(new SpacerWidget());
 			 cellTablePanel.add(spager);

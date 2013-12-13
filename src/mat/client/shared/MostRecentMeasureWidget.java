@@ -72,65 +72,68 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<a href=\"#\" "
+					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
 							+ "style=\"text-decoration:none\" title='" + object.getName()
 							+ "' >");
-					sb.appendEscaped(object.getName()); sb.appendHtmlConstant("</a>"); return sb.toSafeHtml(); } };
-					measureName.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
-						@Override
-						public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
-							MatContext.get().clearDVIMessages();
-							SelectionEvent.fire(MostRecentMeasureWidget.this, object);
-						}
-					});
-					table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant(
-							"<span title='Measure Name Column'>" + "Measure Name" + "</span>"));
-					Column<ManageMeasureSearchModel.Result, SafeHtml> version =
-							new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-									new MatSafeHTMLCell()) {
-						@Override
-						public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-							return CellTableUtility.getColumnToolTip(object.getVersion());
-						}
-					};
-					table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
-							"<span title='Version'>" + "Version" + "</span>"));
-					Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
-					Column<Result, String> exportColumn =
-							new Column<ManageMeasureSearchModel.Result, String>(exportButton) {
-						@Override
-						public String getValue(ManageMeasureSearchModel.Result object) {
-							return "Export";
-						}
-						@Override
-						public void onBrowserEvent(Context context, Element elem,
-								final ManageMeasureSearchModel.Result object, NativeEvent event) {
-							if ((object != null) && object.isExportable()) {
-								super.onBrowserEvent(context, elem, object, event);
-							}
-						}
-						@Override
-						public void render(Cell.Context context, ManageMeasureSearchModel.Result object,
-								SafeHtmlBuilder sb) {
-							if (object.isExportable()) {
-								super.render(context, object, sb);
-							}
-						}
-					};
-					exportColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
-						@Override
-						public void update(int index, ManageMeasureSearchModel.Result object, String value) {
-							if ((object != null) && object.isExportable()) {
-								observer.onExportClicked(object);
-							}
-						}
-					});
-					table.addColumn(exportColumn,
-							SafeHtmlUtils.fromSafeConstant("<span title='Export'>"
-									+ "Export" + "</span>"));
-					table.setColumnWidth(0, 65.0, Unit.PCT);
-					table.setColumnWidth(1, 30.0, Unit.PCT);
-					table.setColumnWidth(2, 5.0, Unit.PCT);
+					sb.appendEscaped(object.getName());
+					sb.appendHtmlConstant("</a>");
+					return sb.toSafeHtml();
+				}
+			};
+			measureName.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
+				@Override
+				public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
+					SelectionEvent.fire(MostRecentMeasureWidget.this, object);
+				}
+			});
+			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant(
+					"<span title='Measure Name Column'>" + "Measure Name" + "</span>"));
+			Column<ManageMeasureSearchModel.Result, SafeHtml> version =
+					new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+							new MatSafeHTMLCell()) {
+				@Override
+				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+					return CellTableUtility.getColumnToolTip(object.getVersion());
+				}
+			};
+			table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
+					"<span title='Version'>" + "Version" + "</span>"));
+			Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
+			Column<Result, String> exportColumn =
+					new Column<ManageMeasureSearchModel.Result, String>(exportButton) {
+				@Override
+				public String getValue(ManageMeasureSearchModel.Result object) {
+					return "Export";
+				}
+				@Override
+				public void onBrowserEvent(Context context, Element elem,
+						final ManageMeasureSearchModel.Result object, NativeEvent event) {
+					if ((object != null) && object.isExportable()) {
+						super.onBrowserEvent(context, elem, object, event);
+					}
+				}
+				@Override
+				public void render(Cell.Context context, ManageMeasureSearchModel.Result object,
+						SafeHtmlBuilder sb) {
+					if (object.isExportable()) {
+						super.render(context, object, sb);
+					}
+				}
+			};
+			exportColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
+				@Override
+				public void update(int index, ManageMeasureSearchModel.Result object, String value) {
+					if ((object != null) && object.isExportable()) {
+						observer.onExportClicked(object);
+					}
+				}
+			});
+			table.addColumn(exportColumn,
+					SafeHtmlUtils.fromSafeConstant("<span title='Export'>"
+							+ "Export" + "</span>"));
+			table.setColumnWidth(0, 65.0, Unit.PCT);
+			table.setColumnWidth(1, 30.0, Unit.PCT);
+			table.setColumnWidth(2, 5.0, Unit.PCT);
 		}
 		return table;
 	}
@@ -203,7 +206,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		handlerManager.fireEvent(event);
 	}
 	
-
+	
 	/** Gets the manageMeasureSearchModel Instance.
 	 * 
 	 * @return the measureSearchModel */

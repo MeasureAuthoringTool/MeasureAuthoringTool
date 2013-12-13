@@ -545,7 +545,7 @@
                                 <xsl:if test="string-length($conj) > 0">
                                 	<act classCode="ACT" moodCode="EVN" isCriterionInd="true">
 	                                    <sourceOf typeCode="PRCN">
-	                                       <conjunctionCode code="{$conj}"/>
+	                                       <!--  <conjunctionCode code="{$conj}"/> -->
 	                                        <!--<xsl:apply-templates select="." mode="handleFunctionalOps"/>-->
 	                                        <act classCode="ACT" moodCode="EVN" isCriterionInd="true">
 	                                            <xsl:if test="$isNot = 'true' ">

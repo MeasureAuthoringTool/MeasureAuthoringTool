@@ -102,7 +102,7 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 				cellTable.getSelectionModel().setSelected(object, true);
 			}
 		});
-		cellTable.addColumn(radioButtonColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select' tabindex=\"0\">"
+		cellTable.addColumn(radioButtonColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
 				+ "Select" + "</span>"));
 		Column<Result, SafeHtml> measureNameColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
@@ -111,7 +111,7 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 				return CellTableUtility.getColumnToolTip(object.getName(), title);
 			}
 		};
-		cellTable.addColumn(measureNameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name' tabindex=\"0\">"
+		cellTable.addColumn(measureNameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'>"
 				+ "Measure Name" + "</span>"));
 		Column<Result, SafeHtml> versionColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
@@ -120,7 +120,7 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 				return CellTableUtility.getColumnToolTip(object.getVersion(), title);
 			}
 		};
-		cellTable.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title='Version' tabindex=\"0\">"
+		cellTable.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title='Version'>"
 				+ "Version" + "</span>"));
 		return cellTable;
 	}

@@ -18,21 +18,21 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class SuccessMessageDisplay extends Composite implements SuccessMessageDisplayInterface {
 	
-	private static final String SUCCESS_MESSAGE = "successMessage";
-
 	private static final String SUCCESS_AMBER_MESSAGE = "successAmberMessage";
+
+	private static final String SUCCESS_MESSAGE = "successMessage";
 
 	/** The h panel. */
 	private HorizontalPanel hPanel;
-	
-	/** The success icon. */
-	private Image successIcon = new Image(ImageResources.INSTANCE.msg_success());
 	
 	/** The image panel. */
 	private FlowPanel imagePanel;
 	
 	/** The msg panel. */
 	private FlowPanel msgPanel;
+	
+	/** The success icon. */
+	private Image successIcon = new Image(ImageResources.INSTANCE.msg_success());
 	
 	
 	
@@ -59,40 +59,17 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 	@Override
 	public void clear() {
 		hPanel.removeStyleName(SUCCESS_MESSAGE);
+		hPanel.removeStyleName(SUCCESS_AMBER_MESSAGE);
 		hPanel.getElement().removeAttribute("style");
 		msgPanel.clear();
 		hPanel.remove(imagePanel);
 		hPanel.remove(msgPanel);
 	}
 
-	/* (non-Javadoc)
-	 * @see mat.client.shared.SuccessMessageDisplayInterface#setMessages(java.util.List)
-	 */
 	@Override
-	public void setMessages(List<String> messages) {
-		if(messages.size() > 0){
-			hPanel.removeStyleName(SUCCESS_AMBER_MESSAGE);
-			hPanel.addStyleName(SUCCESS_MESSAGE);
-			msgPanel.clear();
-			hPanel.add(imagePanel);
-			hPanel.add(msgPanel);
-			
-			for(String message : messages) {
-				msgPanel.add(wrap(message));
-			}
-			hPanel.add(new SpacerWidget());
-			setFocus();
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see mat.client.shared.SuccessMessageDisplayInterface#setMessage(java.lang.String)
-	 */
-	@Override
-	public void setMessage(String message) {
+	public void setAmberMessage(String message) {
 		if(!message.isEmpty()){
-			hPanel.removeStyleName(SUCCESS_AMBER_MESSAGE);
-			hPanel.addStyleName(SUCCESS_MESSAGE);
+			hPanel.addStyleName(SUCCESS_AMBER_MESSAGE);
 			msgPanel.clear();
 			hPanel.add(imagePanel);
 			hPanel.add(msgPanel);
@@ -100,20 +77,9 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 			msgPanel.add(new SpacerWidget());
 			setFocus();
 		}
+		
 	}
-	
 
-	/**
-	 * Wrap.
-	 * 
-	 * @param arg
-	 *            the arg
-	 * @return the widget
-	 */
-	private Widget wrap(String arg) {
-		return new HTML(arg);
-	}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.shared.SuccessMessageDisplayInterface#setFocus()
 	 */
@@ -135,11 +101,16 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 			//do nothing.
 		}
 	}
+	
 
+	/* (non-Javadoc)
+	 * @see mat.client.shared.SuccessMessageDisplayInterface#setMessage(java.lang.String)
+	 */
 	@Override
-	public void setAmberMessage(String message) {
+	public void setMessage(String message) {
 		if(!message.isEmpty()){
-			hPanel.addStyleName(SUCCESS_AMBER_MESSAGE);
+			hPanel.removeStyleName(SUCCESS_AMBER_MESSAGE);
+			hPanel.addStyleName(SUCCESS_MESSAGE);
 			msgPanel.clear();
 			hPanel.add(imagePanel);
 			hPanel.add(msgPanel);
@@ -147,7 +118,37 @@ public class SuccessMessageDisplay extends Composite implements SuccessMessageDi
 			msgPanel.add(new SpacerWidget());
 			setFocus();
 		}
-		
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.shared.SuccessMessageDisplayInterface#setMessages(java.util.List)
+	 */
+	@Override
+	public void setMessages(List<String> messages) {
+		if(messages.size() > 0){
+			hPanel.removeStyleName(SUCCESS_AMBER_MESSAGE);
+			hPanel.addStyleName(SUCCESS_MESSAGE);
+			msgPanel.clear();
+			hPanel.add(imagePanel);
+			hPanel.add(msgPanel);
+			
+			for(String message : messages) {
+				msgPanel.add(wrap(message));
+			}
+			hPanel.add(new SpacerWidget());
+			setFocus();
+		}
+	}
+
+	/**
+	 * Wrap.
+	 * 
+	 * @param arg
+	 *            the arg
+	 * @return the widget
+	 */
+	private Widget wrap(String arg) {
+		return new HTML(arg);
 	}
 	
 }

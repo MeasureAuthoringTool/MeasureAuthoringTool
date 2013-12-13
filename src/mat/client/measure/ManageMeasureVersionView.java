@@ -133,7 +133,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 			}
 		});
 		cellTable.addColumn(radioButtonColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'"
-				+ " tabindex=\"0\">" + "Select" + "</span>"));
+				+ ">" + "Select" + "</span>"));
 		Column<Result, SafeHtml> measureNameColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
@@ -142,7 +142,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 			}
 		};
 		cellTable.addColumn(measureNameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'"
-				+ " tabindex=\"0\">" + "Measure Name" + "</span>"));
+				+ ">" + "Measure Name" + "</span>"));
 		Column<Result, SafeHtml> versionColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
@@ -151,7 +151,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 			}
 		};
 		cellTable.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title='Version'"
-				+ " tabindex=\"0\">" + "Version" + "</span>"));
+				+ ">" + "Version" + "</span>"));
 		return cellTable;
 	}
 	/* (non-Javadoc)

@@ -1433,7 +1433,7 @@ padding: 2px;
     width: 550px;
 }
 
-.QdmAppliedListSearchPanel {
+.cellTablePanel {
     background-color: #FFFFFF;
     border-color: #E8EEF7 #E8EEF7 #E8EFF7;
     border-style: solid;
@@ -1708,13 +1708,4 @@ padding: 2px;
     vertical-align: bottom;
     position: relative;
     overflow: hidden;
-}
-
-.cellTablePanel {
-    background-color: #FFFFFF;
-    border-color: #E8EEF7 #E8EEF7 #E8EFF7;
-    border-style: solid;
-    border-width: 3px;
-    margin-left: 4px;
-    margin-top: 8px;
 }

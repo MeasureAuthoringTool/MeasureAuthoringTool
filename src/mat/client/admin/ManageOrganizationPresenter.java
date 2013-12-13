@@ -8,10 +8,6 @@ import mat.client.admin.service.SaveUpdateOrganizationResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.PageSelectionEvent;
-import mat.client.shared.search.PageSelectionEventHandler;
-import mat.client.shared.search.PageSizeSelectionEvent;
-import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.shared.AdminManageOrganizationModelValidator;
@@ -64,7 +60,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		void setTitle(String title);
 	}
 	/** The Interface SearchDisplay. */
-	public static interface SearchDisplay extends mat.client.shared.search.SearchDisplay {
+	public static interface SearchDisplay {
 		/** Builds the data table.
 		 * @param results the results */
 		void buildDataTable(SearchResults<ManageOrganizationSearchModel.Result> results);
@@ -74,6 +70,27 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		/** Gets the select id for edit tool.
 		 * @return the select id for edit tool */
 		HasSelectionHandlers<ManageOrganizationSearchModel.Result> getSelectIdForEditTool();
+		
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
+		Widget asWidget();
+		
+		/**
+		 * Gets the search button.
+		 *
+		 * @return the search button
+		 */
+		HasClickHandlers getSearchButton();
+		
+		/**
+		 * Gets the search string.
+		 *
+		 * @return the search string
+		 */
+		HasValue<String> getSearchString();
 	}
 	/** The current details. */
 	private ManageOrganizationDetailModel currentDetails;
@@ -86,7 +103,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	/** The search display. */
 	private SearchDisplay searchDisplay;
 	/** The start index. */
-	private int startIndex = 1;
+	//private int startIndex = 1;
 	/** ManageOrganizationDetailModel updatedDetails. */
 	private ManageOrganizationDetailModel updatedDetails;
 	/** Instantiates a new manage Organizations presenter.
@@ -127,7 +144,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				String key = searchDisplay.getSearchString().getValue();
-				search(key, startIndex, searchDisplay.getPageSize());
+				search(key);
 			}
 		});
 		searchDisplay.getSelectIdForEditTool().addSelectionHandler(new SelectionHandler<ManageOrganizationSearchModel.Result>() {
@@ -135,21 +152,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			public void onSelection(SelectionEvent<ManageOrganizationSearchModel.Result> event) {
 				edit(event.getSelectedItem().getOid());
 			}
-		});
-		searchDisplay.getPageSelectionTool().addPageSelectionHandler(new PageSelectionEventHandler() {
-			@Override
-			public void onPageSelection(PageSelectionEvent event) {
-				startIndex = (searchDisplay.getPageSize() * (event.getPageNumber() - 1)) + 1;
-				search(lastSearchKey, startIndex, searchDisplay.getPageSize());
-			}
-		});
-		searchDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
-			@Override
-			public void onPageSizeSelection(PageSizeSelectionEvent event) {
-				searchDisplay.getSearchString().setValue("");
-				search("", startIndex, searchDisplay.getPageSize());
-			}
-		});
+		});		
 	}
 	/*
 	 * (non-Javadoc)
@@ -185,7 +188,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	private void displaySearch() {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
-		search("", 1, searchDisplay.getPageSize());
+		search("");
 	}
 	/** Edits the.
 	 * @param key the key */
@@ -249,15 +252,14 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
 	}
+	
 	/** Search.
 	 * @param key the key
-	 * @param startIndex the start index
-	 * @param pageSize the page size */
-	private void search(String key, int startIndex, int pageSize) {
+	 */
+	private void search(String key) {
 		lastSearchKey = key;
 		showSearchingBusy(true);
-		MatContext.get().getAdminService().searchOrganization(key, startIndex, pageSize,
-				new AsyncCallback<ManageOrganizationSearchModel>() {
+		MatContext.get().getAdminService().searchOrganization(key, new AsyncCallback<ManageOrganizationSearchModel>() {
 			@Override
 			public void onFailure(Throwable caught) {
 				detailDisplay.getErrorMessageDisplay()
@@ -277,11 +279,13 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			}
 		});
 	}
+	
 	/** Sets the user details to view. */
 	private void setOrganizationDetailsToView() {
 		detailDisplay.getOid().setValue(currentDetails.getOid());
 		detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
 	}
+	
 	/** Show searching busy.
 	 * @param busy the busy */
 	private void showSearchingBusy(boolean busy) {

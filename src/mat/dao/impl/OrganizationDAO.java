@@ -91,16 +91,16 @@ mat.dao.OrganizationDAO {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see mat.dao.OrganizationDAO#searchOrganization(java.lang.String, int, int)
+	 * @see mat.dao.OrganizationDAO#searchOrganization(java.lang.String)
 	 */
 	@Override
-	public List<Organization> searchOrganization(String name, int startIndex, int numResults) {
+	public List<Organization> searchOrganization(String name) {
 		Criteria criteria = createSearchCriteria(name);
 		criteria.addOrder(Order.asc("organizationName"));
-		criteria.setFirstResult(startIndex);
+		/*criteria.setFirstResult(startIndex);
 		if (numResults > 0) {
 			criteria.setMaxResults(numResults);
-		}
+		}*/
 		return criteria.list();
 	}
 }

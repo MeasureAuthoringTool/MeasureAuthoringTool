@@ -262,12 +262,12 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		return result;
 	}
 	/* (non-Javadoc)
-	 * @see mat.client.admin.service.AdminService#searchOrganization(java.lang.String, int, int)
+	 * @see mat.client.admin.service.AdminService#searchOrganization(java.lang.String)
 	 */
 	@Override
-	public ManageOrganizationSearchModel searchOrganization(String key, int startIndex, int pageSize)
+	public ManageOrganizationSearchModel searchOrganization(String key)
 	{
-		List<Organization> searchResults = getOrganizationDAO().searchOrganization(key, startIndex - 1, pageSize);
+		List<Organization> searchResults = getOrganizationDAO().searchOrganization(key);
 		logger.info("Organization search returned " + searchResults.size());
 		ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
 		List<ManageOrganizationSearchModel.Result> detailList = new ArrayList<ManageOrganizationSearchModel.Result>();
@@ -279,9 +279,9 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 			detailList.add(r);
 		}
 		model.setData(detailList);
-		model.setStartIndex(startIndex);
-		model.setResultsTotal(getOrganizationDAO().countSearchResults(key));
-		logger.info("Searching Organization on " + key + " with page size " + pageSize);
+		//model.setStartIndex(startIndex);
+		//model.setResultsTotal(getOrganizationDAO().countSearchResults(key));
+		logger.info("Searching Organization on " + key);
 		return model;
 	}
 	

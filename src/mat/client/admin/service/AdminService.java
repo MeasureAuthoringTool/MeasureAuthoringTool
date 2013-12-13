@@ -78,10 +78,8 @@ public interface AdminService extends RemoteService {
 	/** Search organization.
 	 * 
 	 * @param key the key
-	 * @param startIndex the start index
-	 * @param pageSize the page size
 	 * @return the manage organization search model */
-	ManageOrganizationSearchModel searchOrganization(String key, int startIndex, int pageSize);
+	ManageOrganizationSearchModel searchOrganization(String key);
 	
 	/**
 	 * Search users.

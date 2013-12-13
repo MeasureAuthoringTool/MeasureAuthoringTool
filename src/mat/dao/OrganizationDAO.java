@@ -13,10 +13,8 @@ public interface OrganizationDAO extends IDAO<Organization, Long> {
 	/** @param entity */
 	void saveOrganization(Organization entity);
 	/** @param name
-	 * @param startIndex
-	 * @param numResults
 	 * @return */
-	List<Organization> searchOrganization(String name, int startIndex, int numResults);
+	List<Organization> searchOrganization(String name);
 	
 	/**
 	 * Gets all the organizations.

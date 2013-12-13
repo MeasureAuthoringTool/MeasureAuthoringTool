@@ -190,7 +190,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		spager.setPageStart(0);
 		spager.setDisplay(cellTable);
 		spager.setPageSize(PAGE_SIZE);
-		spager.setToolTipAndTabIndex(spager);
+		/* spager.setToolTipAndTabIndex(spager); */
 		cellTable.setWidth("100%");
 		cellTable.setColumnWidth(0, 15.0, Unit.PCT);
 		cellTable.setColumnWidth(1, 63.0, Unit.PCT);

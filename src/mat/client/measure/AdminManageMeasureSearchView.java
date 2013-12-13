@@ -136,7 +136,7 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		sortProvider.addDataDisplay(cellTable);
 		spager.setDisplay(cellTable);
 		spager.setPageSize(PAGE_SIZE);
-		spager.setToolTipAndTabIndex(spager);
+		/* spager.setToolTipAndTabIndex(spager); */
 		view.getvPanelForQDMTable().clear();
 		Label invisibleLabel = (Label) LabelBuilder
 				.buildInvisibleLabel(

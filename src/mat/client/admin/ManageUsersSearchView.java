@@ -13,6 +13,7 @@ import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.search.SearchResults;
+import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 
 import com.google.gwt.cell.client.FieldUpdater;
@@ -99,7 +100,6 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		
 		mainPanel.setStyleName("contentPanel");
 		containerPanel.setContent(mainPanel);
-		containerPanel.setHeading("Manage Users", "Manage Users");
 	}
 	
 	/* (non-Javadoc)
@@ -176,7 +176,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
         cellTablePanel.add(new SpacerWidget());
         cellTablePanel.add(spager);
         
-        Label cellTableCaption = new Label("Users");
+        Label cellTableCaption = new Label("Manage Users");
 		cellTableCaption.getElement().setId("cellTableCaption_Label");
 		cellTableCaption.setStyleName("recentSearchHeader");
 		cellTableCaption.getElement().setAttribute("tabIndex", "0");
@@ -211,7 +211,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {			
 			@Override
 			public SafeHtml getValue(Result object) {
-				return getColumnValueWithToolTip("Organization", object.getOrgName());
+				return CellTableUtility.getColumnToolTip(object.getOrgName(), "Organization: " + object.getOrgName());
 			}
 		};
 		cellTable.addColumn(organizationColumn, SafeHtmlUtils.fromSafeConstant("<span title='Organization' tabindex=\"0\">" +"Organization"+ "</span>"));
@@ -219,24 +219,12 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		Column<Result, SafeHtml> statusColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {			
 			@Override
 			public SafeHtml getValue(Result object) {
-				return getColumnValueWithToolTip("Status", object.getStatus());
+				return CellTableUtility.getColumnToolTip(object.getStatus(), "Status: " + object.getStatus());
 			}
 		};
 		cellTable.addColumn(statusColumn, SafeHtmlUtils.fromSafeConstant("<span title='Status' tabindex=\"0\">" +"Status"+ "</span>"));
 		
 		return cellTable;
-	}
-
-	/**
-	 * Gets the column value with tool tip.
-	 *
-	 * @param columnName the column name
-	 * @param columnValue the column value
-	 * @return the column value with tool tip
-	 */
-	private SafeHtml getColumnValueWithToolTip(String columnName, String columnValue){
-		String htmlConstant = "<span tabindex=\"0\" title='" + columnName + ": " + columnValue + "'>"+ columnValue + "</span>";
-		return new SafeHtmlBuilder().appendHtmlConstant(htmlConstant).toSafeHtml();
 	}
 	
 	@Override

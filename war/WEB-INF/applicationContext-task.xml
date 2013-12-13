@@ -42,7 +42,7 @@
 		<property name="velocityEngine" ref="velocityEngine"/>
 	</bean>
 	
-	<!-- bean for scheduling password change warning email for 45 day limit -->
+	<!-- bean for scheduling password change warning email for 45 day limit and expiry email for 60 day limit -->
 	<bean id="sendPasswordChangeEmailTask" class="mat.server.service.jobs.CheckUserChangePasswordLimit" >
 		<property name="userDAO" ref="userDAO"/>
 		<property name="userService" ref="userService"/>
@@ -52,6 +52,8 @@
 		<property name ="passwordexpiryDayLimit" value="${mat.password.expiry.dayLimit}"/>
 		<property name="warningMailTemplate" value="${mat.password.warning.email.template}"/>
 		<property name="warningMailSubject" value="${mat.password.warning.email.subject}"/>
+		<property name="expiryMailTemplate" value="${mat.password.expiry.email.template}"/>
+		<property name="expiryMailSubject" value="${mat.password.expiry.email.subject}"/>
 		<property name="velocityEngine" ref="velocityEngine"/>
 	</bean>
 	
@@ -97,7 +99,7 @@
 	
 	<bean id="cronPasswordChangeEmailTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<property name="jobDetail" ref="sendPasswordChangeEmailTaskDetail" />
-		<property name="cronExpression" value="0 30 2 * * ?" />
+		<property name="cronExpression" value="0 49 15 * * ?" />
 		 <!-- <property name="cronExpression" value="0 10 15 * * ?" />-->
  	</bean> 
 

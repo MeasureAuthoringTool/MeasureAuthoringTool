@@ -1,8 +1,10 @@
 package mat.server.service.jobs;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +51,12 @@ public class CheckUserChangePasswordLimit {
 	/** The warning mail subject. */
 	private String warningMailSubject;
 	
+	/** The expiry mail template. */
+	private String expiryMailTemplate;
+	
+	/** The expiry mail subject. */
+	private String expiryMailSubject;
+	
 	/** The velocity engine. */
 	private VelocityEngine velocityEngine;
 	
@@ -56,13 +64,49 @@ public class CheckUserChangePasswordLimit {
 	private final static String WARNING_EMAIL_FLAG = "WARNING";
 	
 	/** The Constant EXPIRY_EMAIL_FLAG. */
-	private final static String EXPIRY_DATE_FLAG = "EXPIRED";
+	private final static String EXPIRY_EMAIL_FLAG = "EXPIRED";
 	
 	/** The user service. */
 	private UserService userService;
 	
 	
+	/**
+	 * Gets the expiry mail template.
+	 *
+	 * @return the expiry mail template
+	 */
+	public String getExpiryMailTemplate() {
+		return expiryMailTemplate;
+	}
 
+	/**
+	 * Sets the expiry mail template.
+	 *
+	 * @param expiryMailTemplate the new expiry mail template
+	 */
+	public void setExpiryMailTemplate(String expiryMailTemplate) {
+		this.expiryMailTemplate = expiryMailTemplate;
+	}
+
+	/**
+	 * Gets the expiry mail subject.
+	 *
+	 * @return the expiry mail subject
+	 */
+	public String getExpiryMailSubject() {
+		return expiryMailSubject;
+	}
+
+	/**
+	 * Sets the expiry mail subject.
+	 *
+	 * @param expiryMailSubject the new expiry mail subject
+	 */
+	public void setExpiryMailSubject(String expiryMailSubject) {
+		this.expiryMailSubject = expiryMailSubject;
+	}
+
+	
 	/**
 	 * Gets the user dao.
 	 *
@@ -234,13 +278,15 @@ public class CheckUserChangePasswordLimit {
 		return WARNING_EMAIL_FLAG;
 	}
 
+	
+
 	/**
-	 * Gets the expiry date flag.
+	 * Gets the expiry email flag.
 	 *
-	 * @return the expiry date flag
+	 * @return the expiry email flag
 	 */
-	public static String getExpiryDateFlag() {
-		return EXPIRY_DATE_FLAG;
+	public static String getExpiryEmailFlag() {
+		return EXPIRY_EMAIL_FLAG;
 	}
 
 	/**
@@ -255,7 +301,7 @@ public class CheckUserChangePasswordLimit {
 		logger.info(" :: CheckUserPasswordLimitDays Method START :: ");
 		
 		CheckUserLoginPasswordDays(passwordwarningDayLimit,WARNING_EMAIL_FLAG);
-		CheckUserLoginPasswordDays(passwordexpiryDayLimit,EXPIRY_DATE_FLAG);
+		CheckUserLoginPasswordDays(passwordexpiryDayLimit,EXPIRY_EMAIL_FLAG);
 		
 		logger.info(" :: CheckUserPasswordLimitDays Method END :: ");
 		
@@ -277,6 +323,16 @@ public class CheckUserChangePasswordLimit {
 				final Map<String, Object> model= new HashMap<String, Object>();
 				final Map<String, String> content= new HashMap<String, String>();
 				
+				if(passwordwarningDayLimit==noOfDaysPasswordLimit){
+					
+					final String expiryDate=getFormattedExpiryDate(new Date(),15);
+					content.put("passwordWarningDate",expiryDate );
+				}
+				else if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
+					final String expiryDate=getFormattedExpiryDate(new Date(),5);
+					content.put("passwordExpiryDate",expiryDate );
+				}
+				
 				for(User user:emailUsers){
 					
 					//Send 45days password limit email for all the users in the list.
@@ -288,10 +344,21 @@ public class CheckUserChangePasswordLimit {
 					
 					model.put("content", content);
 					String text = null;
+					if(WARNING_EMAIL_FLAG.equals(emailType)){
 						text = VelocityEngineUtils.mergeTemplateIntoString(
 					               velocityEngine, warningMailTemplate,model);
 						simpleMailMessage.setText(text);
 						simpleMailMessage.setSubject(warningMailSubject);
+					}
+					else if (EXPIRY_EMAIL_FLAG.equals(emailType)){
+						text = VelocityEngineUtils.mergeTemplateIntoString(
+					               velocityEngine, expiryMailTemplate, model);
+						simpleMailMessage.setText(text);
+						simpleMailMessage.setSubject(expiryMailSubject);
+						
+						//Update Termination Date for User.
+						//updateUserTerminationDate(user);
+					}	
 					mailSender.send(simpleMailMessage);
 					content.clear();
 					model.clear();
@@ -315,7 +382,6 @@ public class CheckUserChangePasswordLimit {
 		
 		final List<User> returnUserList = new ArrayList<User>();
 		final Date passwordDaysAgo=getPasswordNumberOfDaysAgo((int)passwordDayLimit);
-		
 	    logger.info(passwordDayLimit + "passwordDaysAgo:"+passwordDaysAgo);
 		
 	    for(User user:users){
@@ -337,12 +403,15 @@ public class CheckUserChangePasswordLimit {
 					}else{
 					logger.info("User:"+user.getEmailAddress()+" who's last password was not "+ passwordDayLimit +" days ago.");
 					}
-				}// for User Password Greater than 60days
-			 
-			else if(passwordexpiryDayLimit==passwordDayLimit){
+				}
+			
+			    // for User Password Greater than 60days
+			 else if(passwordexpiryDayLimit==passwordDayLimit){
 				
-				if(lastPasswordCreatedDate.before((passwordDaysAgo))){
+				if(lastPasswordCreatedDate.before((passwordDaysAgo)) 
+						|| lastPasswordCreatedDate.equals(passwordDaysAgo)){
 					logger.info("User:"+user.getEmailAddress()+" who's last password was more than "+ passwordDayLimit +" days ago.");
+					returnUserList.add(user);
 					//user.getPassword().setInitial(true);
 					user.getPassword().setTemporaryPassword(true);
 					user.getPassword().setCreatedDate(DateUtils.truncate(new Date(),Calendar.DATE));
@@ -373,7 +442,7 @@ public class CheckUserChangePasswordLimit {
 		
 		Date numberOfDaysAgo;
 		numberOfDaysAgo=DateUtils.truncate(new Date(),Calendar.DATE);
-		numberOfDaysAgo=DateUtils.addDays(numberOfDaysAgo, noOfDaysPasswordLimit+1);
+		numberOfDaysAgo=DateUtils.addDays(numberOfDaysAgo, noOfDaysPasswordLimit);
 		
 		logger.info(" :: getPasswordNumberOfDaysAgo Method END :: " + numberOfDaysAgo);
 		return numberOfDaysAgo;
@@ -402,6 +471,23 @@ public class CheckUserChangePasswordLimit {
 		
 		return isValidUser;
    }
+   
+   /**
+    * Gets the formatted expiry date.
+    *
+    * @param startDate the start date
+    * @param willExpireIn the will expire in
+    * @return the formatted expiry date
+    */
+   private String getFormattedExpiryDate(Date startDate,int willExpireIn){
+		Calendar calendar = GregorianCalendar.getInstance();
+		calendar.setTime(startDate);
+		calendar.roll(Calendar.DAY_OF_MONTH, willExpireIn);
+		
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEEE, MMMMM d, yyyy");
+		String returnDateString  = simpleDateFormat.format(calendar.getTime());
+		return returnDateString;
+	}
 
 
 }

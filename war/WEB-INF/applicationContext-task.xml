@@ -42,6 +42,19 @@
 		<property name="velocityEngine" ref="velocityEngine"/>
 	</bean>
 	
+	<!-- bean for scheduling password change warning email for 45 day limit -->
+	<bean id="sendPasswordChangeEmailTask" class="mat.server.service.jobs.CheckUserChangePasswordLimit" >
+		<property name="userDAO" ref="userDAO"/>
+		<property name="userService" ref="userService"/>
+		<property name ="mailSender" ref="mailSender"/>
+		<property name ="simpleMailMessage" ref="userLastLoginTemplateMessage"/>
+		<property name ="passwordwarningDayLimit" value="${mat.password.warning.dayLimit}"/>
+		<property name ="passwordexpiryDayLimit" value="${mat.password.expiry.dayLimit}"/>
+		<property name="warningMailTemplate" value="${mat.password.warning.email.template}"/>
+		<property name="warningMailSubject" value="${mat.password.warning.email.subject}"/>
+		<property name="velocityEngine" ref="velocityEngine"/>
+	</bean>
+	
 	<!-- <bean id="checkUserLoginTask" class="mat.server.service.jobs.TestLoginForUser" >
 		<property name="userDAO" ref="userDAO"/>
 		<property name="loginService" ref="loginService"/>
@@ -69,6 +82,12 @@
  		<property name="targetObject" ref="sendEmailTask" />
 		<property name="targetMethod" value="checkUserLastLogin" />
  	</bean>
+ 	
+ 	<!-- bean for scheduling password change warning email for 45 day limit -->
+ 	<bean id="sendPasswordChangeEmailTaskDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+ 		<property name="targetObject" ref="sendPasswordChangeEmailTask" />
+		<property name="targetMethod" value="CheckUserPasswordLimitDays" />
+ 	</bean>
 	
 	<bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
  		<property name="jobDetail" ref="sendEmailTaskDetail" />
@@ -76,12 +95,19 @@
 		 <!-- <property name="cronExpression" value="0 10 15 * * ?" />-->
  	</bean> 
 	
+	<bean id="cronPasswordChangeEmailTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+ 		<property name="jobDetail" ref="sendPasswordChangeEmailTaskDetail" />
+		<property name="cronExpression" value="0 30 2 * * ?" />
+		 <!-- <property name="cronExpression" value="0 10 15 * * ?" />-->
+ 	</bean> 
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
 				<ref bean="cronTrigger" />
+				 <ref bean="cronPasswordChangeEmailTrigger" /> 
 				<ref bean="simpleTrigger" />
+				
 <!-- 				<ref bean="simpleLoginTrigger"/> -->
 			</list>
 		</property>

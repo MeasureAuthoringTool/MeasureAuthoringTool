@@ -203,11 +203,11 @@ public class ManageMeasureShareView implements ShareDisplay {
 			Label invisibleLabel = (Label) LabelBuilder
 					.buildInvisibleLabel(
 							"measureShareSummary",
-							"In the following table User Name are given in the First column,"
+							"In the following Measure Share table User Name are given in the First column,"
 									+ "with the Organization in the Second column and options can be"
-									+ "selected from third column.");
-			cellTable.getElement().setAttribute("id", "measureDraftFromVersionCellTable");
-			cellTable.getElement().setAttribute("aria-describedby", "measureDraftSummary");
+									+ " selected from third column.");
+			cellTable.getElement().setAttribute("id", "measureShareCellTable");
+			cellTable.getElement().setAttribute("aria-describedby", "measureShareSummary");
 			cellTablePanel.add(invisibleLabel);
 			cellTablePanel.add(cellTable);
 			cellTablePanel.add(new SpacerWidget());

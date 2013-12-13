@@ -55,42 +55,38 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		 * @return the success message display */
 		SuccessMessageDisplayInterface getSuccessMessageDisplay();
 		/** Sets the title.
-		 * 
 		 * @param title the new title */
 		void setTitle(String title);
 	}
 	/** The Interface SearchDisplay. */
 	public static interface SearchDisplay {
-		/** Builds the data table.
-		 * @param results the results */
-		void buildDataTable(SearchResults<ManageOrganizationSearchModel.Result> results);
-		/** Gets the creates the new button.
-		 * @return the creates the new button */
-		HasClickHandlers getCreateNewButton();
-		/** Gets the select id for edit tool.
-		 * @return the select id for edit tool */
-		HasSelectionHandlers<ManageOrganizationSearchModel.Result> getSelectIdForEditTool();
-		
 		/**
 		 * As widget.
 		 *
 		 * @return the widget
 		 */
 		Widget asWidget();
-		
+		/** Builds the data table.
+		 * @param results the results */
+		void buildDataTable(SearchResults<ManageOrganizationSearchModel.Result> results);
+		/** Gets the creates the new button.
+		 * @return the creates the new button */
+		HasClickHandlers getCreateNewButton();
 		/**
 		 * Gets the search button.
 		 *
 		 * @return the search button
 		 */
 		HasClickHandlers getSearchButton();
-		
 		/**
 		 * Gets the search string.
 		 *
 		 * @return the search string
 		 */
 		HasValue<String> getSearchString();
+		/** Gets the select id for edit tool.
+		 * @return the select id for edit tool */
+		HasSelectionHandlers<ManageOrganizationSearchModel.Result> getSelectIdForEditTool();
 	}
 	/** The current details. */
 	private ManageOrganizationDetailModel currentDetails;
@@ -102,13 +98,11 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	private SimplePanel panel = new SimplePanel();
 	/** The search display. */
 	private SearchDisplay searchDisplay;
-	/** The start index. */
-	//private int startIndex = 1;
 	/** ManageOrganizationDetailModel updatedDetails. */
 	private ManageOrganizationDetailModel updatedDetails;
 	/** Instantiates a new manage Organizations presenter.
-	 * @param sDisplayArg the s display arg
-	 * @param dDisplayArg the d display arg */
+	 * @param sDisplayArg the SearchDisplay
+	 * @param dDisplayArg the DetailDisplay */
 	public ManageOrganizationPresenter(SearchDisplay sDisplayArg, DetailDisplay dDisplayArg) {
 		searchDisplay = sDisplayArg;
 		detailDisplay = dDisplayArg;
@@ -152,7 +146,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			public void onSelection(SelectionEvent<ManageOrganizationSearchModel.Result> event) {
 				edit(event.getSelectedItem().getOid());
 			}
-		});		
+		});
 	}
 	/*
 	 * (non-Javadoc)
@@ -233,12 +227,11 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		widget.addStyleName("myAccountPanelContent");
 		return vPanel;
 	}
-	/** @param model
-	 * @return */
+	/** @param model - ManageOrganizationDetailModel.
+	 * @return boolean - isValid */
 	private boolean isValid(ManageOrganizationDetailModel model) {
-		AdminManageOrganizationModelValidator test = new AdminManageOrganizationModelValidator();
-		List<String> message = test.isValidOrganizationDetail(model);
-		
+		AdminManageOrganizationModelValidator adminManageOrganizationModelValidator = new AdminManageOrganizationModelValidator();
+		List<String> message = adminManageOrganizationModelValidator.isValidOrganizationDetail(model);
 		boolean valid = message.size() == 0;
 		if (!valid) {
 			detailDisplay.getErrorMessageDisplay().setMessages(message);
@@ -252,7 +245,6 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		detailDisplay.getErrorMessageDisplay().clear();
 		detailDisplay.getSuccessMessageDisplay().clear();
 	}
-	
 	/** Search.
 	 * @param key the key
 	 */
@@ -275,17 +267,15 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				sru = null;
 				searchDisplay.buildDataTable(result);
 				showSearchingBusy(false);
-				Mat.focusSkipLists("Manage Users");
+				Mat.focusSkipLists("Manage Organizations");
 			}
 		});
 	}
-	
 	/** Sets the user details to view. */
 	private void setOrganizationDetailsToView() {
 		detailDisplay.getOid().setValue(currentDetails.getOid());
 		detailDisplay.getOrganization().setValue(currentDetails.getOrganization());
 	}
-	
 	/** Show searching busy.
 	 * @param busy the busy */
 	private void showSearchingBusy(boolean busy) {

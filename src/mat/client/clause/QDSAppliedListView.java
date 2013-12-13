@@ -298,7 +298,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	@Override
 	public void buildCellTable(QDSAppliedListModel appliedListModel) {
 		cellTablePanel.clear();
-		cellTablePanel.setStyleName("QdmAppliedListSearchPanel");
+		cellTablePanel.setStyleName("cellTablePanel");
 		if ((appliedListModel.getAppliedQDMs() != null) && (appliedListModel.getAppliedQDMs().size() > 0)) {
 			CellTable<QualityDataSetDTO> table = new CellTable<QualityDataSetDTO>();
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -317,7 +317,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
 			spager.setDisplay(table);
 			spager.setPageStart(0);
-			spager.setToolTipAndTabIndex(spager);
+			/* spager.setToolTipAndTabIndex(spager); */
 			Label invisibleLabel = (Label) LabelBuilder
 					.buildInvisibleLabel(
 							"appliedQDMTableSummary",

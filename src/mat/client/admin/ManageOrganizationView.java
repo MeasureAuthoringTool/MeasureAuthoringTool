@@ -81,7 +81,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		searchButton.addStyleName("userSearchButton");
 		mainPanel.add(searchButton);
 		mainPanel.add(new SpacerWidget());
-		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
+		cellTablePanel.getElement().setId("manageOrganizationCellTablePanel_VerticalPanel");
 		cellTablePanel.setWidth("98%");
 		mainPanel.add(cellTablePanel);
 		mainPanel.setStyleName("contentPanel");
@@ -95,7 +95,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	 */
 	private CellTable<Result> addColumnToTable(CellTable<Result> cellTable) {
 		Label cellTableCaption = new Label("Manage Organizations");
-		cellTableCaption.getElement().setId("cellTableCaption_Label");
+		cellTableCaption.getElement().setId("manageOrgCellTableCaption_Label");
 		cellTableCaption.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();

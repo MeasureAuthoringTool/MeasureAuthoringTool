@@ -335,13 +335,13 @@ public class CheckUserChangePasswordLimit {
 					//15 days Expiry Date 
 					if(passwordwarningDayLimit==noOfDaysPasswordLimit){
 						
-						final String expiryDate=getFormattedExpiryDate(new Date(),15);
+						final String expiryDate=getFormattedExpiryDate(new Date(),15-1);
 						content.put("passwordWarningDate",expiryDate );
 					}
 					//5 days Expiry Date
 					else if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
 						
-						final String expiryDate=getFormattedExpiryDate(new Date(),5);
+						final String expiryDate=getFormattedExpiryDate(new Date(),5-1);
 						content.put("passwordExpiryDate",expiryDate );
 					}
 					

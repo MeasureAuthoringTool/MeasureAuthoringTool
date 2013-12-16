@@ -68,7 +68,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 			ListHandler<ManageMeasureSearchModel.Result> sortHandler) {
 		if (table.getColumnCount() != COL_SIZE) {
 			Label searchHeader = new Label("Select Measures to Transfer Ownership.");
-			searchHeader.getElement().setId("searchHeader_Label");
+			searchHeader.getElement().setId("measureTransferOwnerShipCellTableCaption_Label");
 			searchHeader.setStyleName("recentSearchHeader");
 			searchHeader.getElement().setAttribute("tabIndex", "0");
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
@@ -102,6 +102,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 					return CellTableUtility.getColumnToolTip(object.getOwnerfirstName()
+							+ "  " + object.getOwnerLastName(),object.getOwnerfirstName()
 							+ "  " + object.getOwnerLastName());
 				}
 			};
@@ -124,7 +125,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-					return CellTableUtility.getColumnToolTip(object.getOwnerEmailAddress());
+					return CellTableUtility.getColumnToolTip(object.getOwnerEmailAddress(),object.getOwnerEmailAddress());
 				}
 			};
 			ownerEmailAddress.setSortable(true);
@@ -147,7 +148,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-					return CellTableUtility.getColumnToolTip("" + object.geteMeasureId());
+					return CellTableUtility.getColumnToolTip("" + object.geteMeasureId(), "" + object.geteMeasureId());
 				}
 			};
 			table.addColumn(eMeasureID, SafeHtmlUtils.fromSafeConstant("<span title='eMeasure Id'>"

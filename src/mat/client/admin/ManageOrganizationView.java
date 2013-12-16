@@ -100,6 +100,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTableCaption.getElement());
+		cellTableCaption.getElement().setAttribute("tabIndex", "0");
 		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {

@@ -97,6 +97,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTableCaption.getElement());
+		cellTableCaption.getElement().setAttribute("tabIndex", "0");
 		Column<Result, SafeHtml> nameColumn = new Column<Result, SafeHtml>(new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {

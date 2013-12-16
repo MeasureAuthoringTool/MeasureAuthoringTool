@@ -92,7 +92,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 	 * @return */
 	private CellTable<Result> addColumnToTable(final CellTable<Result> cellTable) {
 		Label cellTableCaption = new Label("Manage Users");
-		cellTableCaption.getElement().setId("cellTableCaption_Label");
+		cellTableCaption.getElement().setId("manageUserCellTableCaption_Label");
 		cellTableCaption.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();

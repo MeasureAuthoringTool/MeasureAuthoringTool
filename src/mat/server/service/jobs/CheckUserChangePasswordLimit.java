@@ -323,16 +323,6 @@ public class CheckUserChangePasswordLimit {
 				final Map<String, Object> model= new HashMap<String, Object>();
 				final Map<String, String> content= new HashMap<String, String>();
 				
-				if(passwordwarningDayLimit==noOfDaysPasswordLimit){
-					
-					final String expiryDate=getFormattedExpiryDate(new Date(),15);
-					content.put("passwordWarningDate",expiryDate );
-				}
-				else if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
-					final String expiryDate=getFormattedExpiryDate(new Date(),5);
-					content.put("passwordExpiryDate",expiryDate );
-				}
-				
 				for(User user:emailUsers){
 					
 					//Send 45days password limit email for all the users in the list.
@@ -341,6 +331,19 @@ public class CheckUserChangePasswordLimit {
 					
 					//Creation of the model map can be its own method.
 					content.put("User", "Measure Authoring Tool User");
+					
+					//15 days Expiry Date 
+					if(passwordwarningDayLimit==noOfDaysPasswordLimit){
+						
+						final String expiryDate=getFormattedExpiryDate(new Date(),15);
+						content.put("passwordWarningDate",expiryDate );
+					}
+					//5 days Expiry Date
+					else if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
+						
+						final String expiryDate=getFormattedExpiryDate(new Date(),5);
+						content.put("passwordExpiryDate",expiryDate );
+					}
 					
 					model.put("content", content);
 					String text = null;

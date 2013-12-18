@@ -138,13 +138,12 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		spager.setPageSize(PAGE_SIZE);
 		/* spager.setToolTipAndTabIndex(spager); */
 		view.getvPanelForQDMTable().clear();
-		Label invisibleLabel = (Label) LabelBuilder
-				.buildInvisibleLabel(
-						"measureOwnerShipSummary",
-						"In the following Measure OwnerShip Transfer table Measure Name are given in the "
-								+ "first column, Owner name in Second column, Owner Email"
-								+ " Id in  Third column, eMeasureId in fourth Column, History in"
-								+ " fifth column  and Options to select in sixth Column.");
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
+				"measureOwnerShipSummary",
+				"In the following Transfer Ownership table, Measure Name is given in the first column, "
+						+ "Owner in the second column, Owner Email Address in the third Column,"
+						+ "eMeasure ID in the fourth column, History in the fifth column and "
+						+ "Transfer in the sixth column with Check boxes positioned to the right of the table");
 		cellTable.getElement().setAttribute("id", "measureOwnerShipCellTable");
 		cellTable.getElement().setAttribute("aria-describedby", "measureOwnerShipSummary");
 		view.getvPanelForQDMTable().setStyleName("cellTablePanel");

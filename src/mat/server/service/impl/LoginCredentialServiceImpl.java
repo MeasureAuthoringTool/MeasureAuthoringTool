@@ -34,15 +34,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 /** The Class LoginCredentialServiceImpl. */
 public class LoginCredentialServiceImpl implements LoginCredentialService {
+	
 	/** The current time stamp. */
 	private static Timestamp currentTimeStamp;
 	/** The Constant logger. */
 	private static final Log logger = LogFactory
 			.getLog(LoginCredentialServiceImpl.class);
-	/** The validate user login model. */
-	private static LoginModel validateUserLoginModel;
-	/** The validate user mat user details. */
-	private static MatUserDetails validateUserMatUserDetails;
 	/** The hibernate user service. */
 	@Autowired
 	private HibernateUserDetailService hibernateUserService;
@@ -138,7 +135,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * @param userId the user id
 	 * @param currentPasswordlockCounter the current password lock counter
 	 * @return the login model */
-	private LoginModel firstFailedLogin(String userId, int currentPasswordlockCounter) {
+	private LoginModel firstFailedLogin(String userId, int currentPasswordlockCounter,LoginModel validateUserLoginModel
+			,MatUserDetails validateUserMatUserDetails) {
 		logger.debug("First failed login attempt");
 		// FIRST FAILED LOGIN ATTEMPT
 		validateUserLoginModel.setErrorMessage(MatContext.get()
@@ -154,7 +152,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * @param userId the user id
 	 * @param password the password
 	 * @return the login model */
-	private LoginModel incrementPassLockCounter(String userId, String password) {
+	private LoginModel incrementPassLockCounter(String userId, String password,LoginModel validateUserLoginModel
+			,MatUserDetails validateUserMatUserDetails) {
 		logger.debug("Authentication Exception, need to log the failed attempts and increment the lockCounter");
 		validateUserLoginModel.setLoginFailedEvent(true);
 		validateUserLoginModel.setUserId(userId);
@@ -169,13 +168,16 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 		switch (currentPasswordlockCounter) {
 			case 0:
-				validateUserLoginModel = firstFailedLogin(userId, currentPasswordlockCounter);
+				validateUserLoginModel = firstFailedLogin(userId, currentPasswordlockCounter,validateUserLoginModel,
+						validateUserMatUserDetails);
 				break;
 			case 1:
-				validateUserLoginModel = secondFailedLogin(userId, currentPasswordlockCounter);
+				validateUserLoginModel = secondFailedLogin(userId, currentPasswordlockCounter,validateUserLoginModel,
+						validateUserMatUserDetails);
 				break;
 			case 2:
-				validateUserLoginModel = thirdFailedLogin(userId);
+				validateUserLoginModel = thirdFailedLogin(userId,validateUserLoginModel,
+						validateUserMatUserDetails);
 				break;
 			default:
 				// USER LOCKED OUT
@@ -188,7 +190,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	/** Checks if is already signed in.
 	 * @param userId the user id
 	 * @return the login model */
-	private LoginModel isAlreadySignedIn(String userId) {
+	private LoginModel isAlreadySignedIn(String userId,LoginModel validateUserLoginModel) {
 		// USER ALREADY LOGGED IN
 		logger.info("USER ALREADY LOGGED IN :" + userId);
 		validateUserLoginModel.setErrorMessage(MatContext.get()
@@ -202,7 +204,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * @param userId the user id
 	 * @param password the password
 	 * @return the login model */
-	private LoginModel isValidUserDetailsNotNull(String userId, String password) {
+	private LoginModel isValidUserDetailsNotNull(String userId, String password,LoginModel validateUserLoginModel,
+			MatUserDetails validateUserMatUserDetails) {
 		String hashPassword = userService.getPasswordHash(validateUserMatUserDetails
 				.getUserPassword().getSalt(), password);
 		if (validateUserMatUserDetails.getStatus().getId().equals("2")) {
@@ -218,9 +221,11 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 				.getUserPassword().getPassword())
 				&& (validateUserMatUserDetails.getUserPassword().getPasswordlockCounter() < 3)
 				&& (validateUserMatUserDetails.getUserPassword().getForgotPwdlockCounter() < 3)) {
-			validateUserLoginModel = isValidLogin(userId, password);
+			validateUserLoginModel = isValidLogin(userId, password,validateUserLoginModel,
+					validateUserMatUserDetails);
 		} else {
-			validateUserLoginModel = incrementPassLockCounter(userId, password);
+			validateUserLoginModel = incrementPassLockCounter(userId, password,validateUserLoginModel,
+					validateUserMatUserDetails);
 		} // end of else
 		return validateUserLoginModel;
 	}
@@ -228,7 +233,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	/** Checks if is pass matched.
 	 * @param userId the user id
 	 * @return the login model */
-	private LoginModel isPasswordMatched(String userId) {
+	private LoginModel isPasswordMatched(String userId,LoginModel validateUserLoginModel,
+			MatUserDetails validateUserMatUserDetails) {
 		logger.debug("Password matched, not locked out");
 		if (!validateUserMatUserDetails.getUserPassword().isInitial()
 				&& !validateUserMatUserDetails.getUserPassword()
@@ -247,19 +253,22 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * @param userId the user id
 	 * @param password the password
 	 * @return the login model */
-	private LoginModel isValidLogin(String userId, String password) {
+	private LoginModel isValidLogin(String userId, String password,LoginModel validateUserLoginModel,
+			MatUserDetails validateUserMatUserDetails) {
 		Date lastSignIn = validateUserMatUserDetails.getSignInDate();
 		Date lastSignOut = validateUserMatUserDetails.getSignOutDate();
 		boolean alreadySignedIn = MatContext.get().isAlreadySignedIn(
 				lastSignOut, lastSignIn, currentTimeStamp);
 		if (alreadySignedIn) {
-			validateUserLoginModel = isAlreadySignedIn(userId);
+			validateUserLoginModel = isAlreadySignedIn(userId,validateUserLoginModel);
 		} else if (validateUserMatUserDetails.getUserPassword().isInitial()
 				|| validateUserMatUserDetails.getUserPassword()
 				.isTemporaryPassword()) {
-			validateUserLoginModel = temporaryPasswordExpiration(userId);
+			validateUserLoginModel = temporaryPasswordExpiration(userId,validateUserLoginModel,
+					validateUserMatUserDetails);
 		} else {
-			validateUserLoginModel = isPasswordMatched(userId);
+			validateUserLoginModel = isPasswordMatched(userId,validateUserLoginModel,
+					validateUserMatUserDetails);
 		}
 		return validateUserLoginModel;
 	}
@@ -295,13 +304,16 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 */
 	@Override
 	public LoginModel isValidUser(String userId, String password) {
-		validateUserLoginModel = new LoginModel();
+		LoginModel validateUserLoginModel = new LoginModel();
+		MatUserDetails validateUserMatUserDetails = (MatUserDetails) hibernateUserService
+				.loadUserByUsername(userId);
 		Date currentDate = new Date();
 		currentTimeStamp = new Timestamp(currentDate.getTime());
-		validateUserLoginModel = isValidUserIdPassword(userId, password);
+		validateUserLoginModel = isValidUserIdPassword(userId, password,validateUserLoginModel,
+				validateUserMatUserDetails);
 		logger.info("loginModel.isLoginFailedEvent():" + validateUserLoginModel.isLoginFailedEvent());
 		if (!validateUserLoginModel.isLoginFailedEvent()) {
-			onSuccessLogin(userId);
+			onSuccessLogin(userId,validateUserMatUserDetails);
 		}
 		return validateUserLoginModel;
 	}
@@ -310,11 +322,12 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * @param userId the user id
 	 * @param password the password
 	 * @return the login model */
-	private LoginModel isValidUserIdPassword(String userId, String password) {
-		validateUserMatUserDetails = (MatUserDetails) hibernateUserService
-				.loadUserByUsername(userId);
+	private LoginModel isValidUserIdPassword(String userId, String password,LoginModel validateUserLoginModel,
+			MatUserDetails validateUserMatUserDetails) {
+		
 		if (validateUserMatUserDetails != null) {
-			validateUserLoginModel = isValidUserDetailsNotNull(userId, password);
+			validateUserLoginModel = isValidUserDetailsNotNull(userId, password,validateUserLoginModel,
+					validateUserMatUserDetails);
 		} else { // user not found
 			validateUserLoginModel.setLoginFailedEvent(true);
 			validateUserLoginModel.setErrorMessage(MatContext.get().getMessageDelegate()
@@ -352,7 +365,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	/** On success login.
 	 * 
 	 * @param userId the user id */
-	private void onSuccessLogin(String userId) {
+	private void onSuccessLogin(String userId,MatUserDetails validateUserMatUserDetails) {
 		logger.info(validateUserMatUserDetails.getLoginId() + " has logged in.");
 		String s = "\nlogin_success\n";
 		String chartReport = "CHARTREPORT";
@@ -409,7 +422,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * @param userId the user id
 	 * @param currentPasswordlockCounter the current passwordlock counter
 	 * @return the login model */
-	private LoginModel secondFailedLogin(String userId, int currentPasswordlockCounter) {
+	private LoginModel secondFailedLogin(String userId, int currentPasswordlockCounter,LoginModel validateUserLoginModel,
+			MatUserDetails validateUserMatUserDetails) {
 		logger.debug("Second failed login attempt");
 		// SECOND FAILED LOGIN ATTEMPT
 		Timestamp firstFailedAttemptTime = validateUserMatUserDetails
@@ -473,7 +487,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	/** Temp pass expiration.
 	 * @param userId the user id
 	 * @return the login model */
-	private LoginModel temporaryPasswordExpiration(String userId) {
+	private LoginModel temporaryPasswordExpiration(String userId,LoginModel validateUserLoginModel,
+			MatUserDetails validateUserMatUserDetails) {
 		//If this is a temporary or initial password, check for 5 day limit
 		Date createDate = validateUserMatUserDetails.getUserPassword().getCreatedDate();
 		Calendar calendar = GregorianCalendar.getInstance();
@@ -485,7 +500,9 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			validateUserLoginModel.setErrorMessage(MatContext.get()
 					.getMessageDelegate()
 					.getLoginFailedTempPasswordExpiredMessage());
+			validateUserMatUserDetails.setLockedOutDate(currentTimeStamp);
 			validateUserLoginModel.setLoginFailedEvent(true);
+			hibernateUserService.saveUserDetails(validateUserMatUserDetails);
 			} else {
 			validateUserLoginModel = loginModelSetter(validateUserLoginModel, validateUserMatUserDetails);
 			// userDetails.setSignInDate(currentTimeStamp);
@@ -501,7 +518,8 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	 * 
 	 * @param userId the user id
 	 * @return the login model */
-	private LoginModel thirdFailedLogin(String userId) {
+	private LoginModel thirdFailedLogin(String userId,LoginModel validateUserLoginModel,
+			MatUserDetails validateUserMatUserDetails) {
 		
 		// USER THIRD FAILED LOGIN ATTEMPT
 		logger.info("USER THIRD FAILED LOGIN ATTEMPT :" + userId);
@@ -528,5 +546,6 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		}
 		return validateUserLoginModel;
 	}
+	
 	
 }

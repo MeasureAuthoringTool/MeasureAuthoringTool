@@ -166,12 +166,12 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(cellTablePanelHeader.getElement());
-		Label invisibleLabel = (Label) LabelBuilder
-				.buildInvisibleLabel(
-						"measureDraftSummary",
-						"In the following table Measure Name are given in the second column,"
-								+ "with the Version in the third column and options can be"
-								+ "selected from first column.");
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
+				"measureDraftSummary",
+				"In the Following Draft of Existing Measure table, a radio button is positioned to the left "
+						+ "of the table with a select column header followed by Measure name in second column "
+						+ "and version in the third column. The draft Measures are listed alphabetically "
+						+ "in a table.");
 		cellTable.getElement().setAttribute("id", "measureDraftFromVersionCellTable");
 		cellTable.getElement().setAttribute("aria-describedby", "measureDraftSummary");
 		cellTablePanel.add(invisibleLabel);

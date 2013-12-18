@@ -1354,7 +1354,7 @@
                     <entry typeCode="DRIV">
                         <xsl:apply-templates select="$rootNode//elementLookUp/qdm[@uuid=$uuid]">
                             <xsl:with-param name="process_Neg_RatId">
-                                <xsl:value-of select="$uuid"/>
+                                <xsl:value-of select="$qdmuuid"/>
                             </xsl:with-param>
                         </xsl:apply-templates>
                     </entry>

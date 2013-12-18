@@ -173,11 +173,10 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		cellTable.setWidth("100%");
 		cellTable.setColumnWidth(0, CELLTABLE_COLUMN_WIDTH, Unit.PCT);
 		cellTable.setColumnWidth(1, CELLTABLE_COLUMN_WIDTH, Unit.PCT);
-		Label invisibleLabel = (Label) LabelBuilder
-				.buildInvisibleLabel(
-						"manageOrganizationSummary",
-						"In the following Manage Organization table Organization Names are given"
-								+ " in first Column, OID in Second Column.");
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
+				"manageOrganizationSummary",
+				"In the following Manage organizations table, Organization is given in the first column "
+						+ "and OID in the Third Column.");
 		cellTable.getElement().setAttribute("id", "manageOrganizationCellTable");
 		cellTable.getElement().setAttribute("aria-describedby", "manageOrganizationSummary");
 		cellTablePanel.add(invisibleLabel);

@@ -162,9 +162,8 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		Label invisibleLabel = (Label) LabelBuilder
 				.buildInvisibleLabel(
 						"recentActivitySummary",
-						"In the following table Recently Selected Measure Name are given in the first column,"
-								+ "with the Version in the second column and the export in the third"
-								+ "column.");
+						"In the following Recent Activity table, Measure Name is given in first column,"
+								+ " Version in second column and Export in third column.");
 		cellTable.getElement().setAttribute("id", "MostRecentActivityCellTable");
 		cellTable.getElement().setAttribute("aria-describedby", "recentActivitySummary");
 		searchPanel.add(invisibleLabel);

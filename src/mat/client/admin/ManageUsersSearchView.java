@@ -173,12 +173,10 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 		cellTable.setColumnWidth(0, 35.0, Unit.PCT);
 		cellTable.setColumnWidth(1, 45.0, Unit.PCT);
 		cellTable.setColumnWidth(2, 20.0, Unit.PCT);
-		Label invisibleLabel = (Label) LabelBuilder
-				.buildInvisibleLabel(
-						"manageUsersSummary",
-						"In the following Manage User table User Names are given"
-								+ " in first Column, Organization in Second Column"
-								+ " and status in third Column.");
+		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
+				"manageUsersSummary",
+				"In the Following Manage users table, Name is given in the first column, Organization in "
+						+ "second column and Status in the third column.");
 		cellTable.getElement().setAttribute("id", "manageUsersCellTable");
 		cellTable.getElement().setAttribute("aria-describedby", "manageUsersSummary");
 		cellTablePanel.add(invisibleLabel);

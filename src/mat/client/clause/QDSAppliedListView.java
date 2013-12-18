@@ -321,10 +321,12 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			Label invisibleLabel = (Label) LabelBuilder
 					.buildInvisibleLabel(
 							"appliedQDMTableSummary",
-							"In the following table Applied QDM Name are given in the Second column,"
-									+ "with the DataType in the third column , the OID in the fourth"
-									+ "column , Version and Effective date in fifth and sixth"
-									+ "columns respectively ,First column contains options to select.");
+							"In the Following Applied QDM Elements table a radio button is positioned to "
+									+ "the left of the table with a select Column header followed by "
+									+ "QDM name in second column, Datatype in third column, OID in "
+									+ "fourth column, Version in fifth column and Effective date in "
+									+ "sixth column. The Applied QDM elements are listed alphabetically"
+									+ " in a table.  ");
 			table.getElement().setAttribute("id", "AppliedQDMTable");
 			table.getElement().setAttribute("aria-describedby", "appliedQDMTableSummary");
 			cellTablePanel.add(invisibleLabel);

@@ -3,11 +3,15 @@ package mat.server;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.SimpleFormatter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -42,6 +46,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class LoginServiceImpl.
  */
@@ -409,6 +414,53 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		return resultMap;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#validateNewPassword(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public HashMap<String, String> validateNewPassword(String userID,String newPassword) {
+		HashMap<String, String> resultMap = new HashMap<String, String>();
+		UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+		MatUserDetails userDetails = (MatUserDetails) userDAO.getUser(userID);
+		String ifMatched = FAILURE;
+		
+		if (userDetails != null) {
+			UserService userService = (UserService) context
+					.getBean("userService");
+			String hashPassword = userService.getPasswordHash(userDetails
+					.getUserPassword().getSalt(), newPassword);
+			if (hashPassword.equalsIgnoreCase(userDetails.getUserPassword()
+					.getPassword())) {
+				ifMatched = SUCCESS;
+			} 
+		}
+		
+		resultMap.put("result", ifMatched);
+		return resultMap;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.login.service.LoginService#validatePasswordCreationDate(java.lang.String, java.util.Date)
+	 */
+	@Override
+	public HashMap<String, String> validatePasswordCreationDate(String userID,Date currentDate) {
+		HashMap<String, String> resultMap = new HashMap<String, String>();
+		UserDAO userDAO = (UserDAO) context.getBean("userDAO");
+		MatUserDetails userDetails = (MatUserDetails) userDAO.getUser(userID);
+		String ifMatched = FAILURE;
+		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+		String createDate=format.format(currentDate);
+		String passwordCreationDate=format.format(userDetails.getUserPassword().getCreatedDate());
+		if (userDetails != null) {
+			if(createDate.equals(passwordCreationDate)){
+				ifMatched=SUCCESS;
+				}
+		}
+		  
+		resultMap.put("result", ifMatched);
+		return resultMap;
+	}
+	
 	/**
 	 * Redirect to html page.
 	 * 
@@ -499,5 +551,9 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 		logger.info("Found...." + context.getBean("securityQuestionsService"));
 		return securityQuestionsService.getSecurityQuestions();
 	}
+
+	
+
+	
 
 }

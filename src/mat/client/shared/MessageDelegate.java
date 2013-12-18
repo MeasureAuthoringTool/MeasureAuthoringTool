@@ -2,6 +2,7 @@ package mat.client.shared;
 
 import mat.shared.ConstantMessages;
 
+// TODO: Auto-generated Javadoc
 /**
  * Message store to prevent duplicated messages final String fields and their
  * getters.
@@ -348,6 +349,12 @@ public class MessageDelegate {
 	
 	/** The password mismatch. */
 	private final String PASSWORD_MISMATCH = "Your new password and confirm password do not match.";
+	
+	/** The is not prevoius password. */
+	private final String IS_NOT_PREVOIUS_PASSWORD="New password cannot be same as current password.";
+	
+	/** The change old password. */
+	private final String CHANGE_OLD_PASSWORD="Password needs to be at least one day old before you can change it again.";
 	
 	/** The password mismatch error message. */
 	private final String PASSWORD_MISMATCH_ERROR_MESSAGE = "Incorrect password supplied.Try again";
@@ -1276,6 +1283,11 @@ public class MessageDelegate {
 		return PACKAGE_SUCCESS;
 	}
 	
+	/**
+	 * Gets the package success amber message.
+	 *
+	 * @return the package success amber message
+	 */
 	public final String getPackageSuccessAmberMessage() {
 		return PACKAGE_SUCCESS_VSAC_OID_MISSING;
 	}
@@ -1834,5 +1846,23 @@ public class MessageDelegate {
 	 */
 	public String getVSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED() {
 		return VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED;
+	}
+	
+	/**
+	 * Gets the checks if is not prevoius password.
+	 *
+	 * @return the checks if is not prevoius password
+	 */
+	public String getIS_NOT_PREVOIUS_PASSWORD() {
+		return IS_NOT_PREVOIUS_PASSWORD;
+	}
+
+	/**
+	 * Gets the change old password.
+	 *
+	 * @return the change old password
+	 */
+	public String getCHANGE_OLD_PASSWORD() {
+		return CHANGE_OLD_PASSWORD;
 	}
 }

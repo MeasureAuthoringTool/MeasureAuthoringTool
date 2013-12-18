@@ -5,12 +5,12 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
+import java.util.Map;
+import java.util.TreeMap;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import mat.model.MeasureNotes;
 import mat.model.User;
 import mat.server.service.MeasureNotesService;
@@ -19,7 +19,6 @@ import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.service.UserService;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,6 +35,9 @@ public class ExportServlet extends HttpServlet {
 	
 	/** The Constant EXPORT_ACTIVE_NON_ADMIN_USERS_CSV. */
 	private static final String EXPORT_ACTIVE_NON_ADMIN_USERS_CSV = "exportActiveNonAdminUsersCSV";
+	
+	/** The Constant EXPORT_ACTIVE_OID_CSV. */
+	private static final String EXPORT_ACTIVE_OID_CSV = "exportActiveOIDCSV";
 	
 	/** The Constant VALUESET. */
 	private static final String VALUESET = "valueset";
@@ -95,13 +97,13 @@ public class ExportServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-
+		
 		String id = req.getParameter(ID_PARAM);
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
-
+		
 		ExportResult export = null;
-
+		
 		FileNameUtility fnu = new FileNameUtility();
 		try {
 			if (SIMPLEXML.equals(format)) {
@@ -156,6 +158,18 @@ public class ExportServlet extends HttpServlet {
 					resp.getOutputStream().write(csvFileString.getBytes());
 					resp.getOutputStream().close();
 				}
+			} else if (EXPORT_ACTIVE_OID_CSV.equals(format)) {
+				String userRole = LoggedInUserUtil.getLoggedInUserRole();
+				if ("Administrator".equalsIgnoreCase(userRole)) {
+					String csvFileString = generateCSVOfActiveUserOIDs();
+					Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+					String activeUserCSVDate = formatter.format(new Date());
+					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+							+ fnu.getCSVFileName("activeOrganizationOids", activeUserCSVDate) + ";");
+					resp.setContentType("text/csv");
+					resp.getOutputStream().write(csvFileString.getBytes());
+					resp.getOutputStream().close();
+				}
 			} else if ("exportMeasureNotesForMeasure".equals(format)) {
 				String csvFileString = generateCSVToExportMeasureNotes(id);
 				Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -174,7 +188,7 @@ public class ExportServlet extends HttpServlet {
 			resp.getOutputStream().println(export.export);
 		}
 	}
-
+	
 	/**
 	 * Generate csv to export measure notes.
 	 * 
@@ -185,7 +199,7 @@ public class ExportServlet extends HttpServlet {
 	private String generateCSVToExportMeasureNotes(final String measureId) {
 		logger.info("Generating CSV of Measure Notes...");
 		List<MeasureNotes> allMeasureNotes = getMeasureNoteService().getAllMeasureNotesByMeasureID(measureId);
-
+		
 		StringBuilder csvStringBuilder = new StringBuilder();
 		//Add the header row
 		csvStringBuilder.append("Title,Description,LastModifiedDate,Created By,Modified By");
@@ -208,7 +222,7 @@ public class ExportServlet extends HttpServlet {
 		}
 		return csvStringBuilder.toString();
 	}
-
+	
 	/**
 	 * Converts a date into a date time string of "MM/dd/yyyy hh:mm:ss a z" format.
 	 * @param date - date to be formated into a string.
@@ -222,7 +236,7 @@ public class ExportServlet extends HttpServlet {
 		}
 		return dateString;
 	}
-
+	
 	/**
 	 * Generate csv of active user emails.
 	 * 
@@ -234,11 +248,49 @@ public class ExportServlet extends HttpServlet {
 		logger.info("Generating CSV of email addrs for all Active Users...");
 		//Get all the active users
 		List<User> allNonAdminActiveUsersList = getUserService().getAllNonAdminActiveUsers();
-
+		
 		//Iterate through the 'allNonAdminActiveUsersList' and generate a csv
 		return createCSVOfAllNonAdminActiveUsers(allNonAdminActiveUsersList);
 	}
-
+	
+	/**
+	 * Generate csv of active OIDs.
+	 * @return the string
+	 */
+	private String generateCSVOfActiveUserOIDs() {
+		logger.info("Generating CSV of Active User OID's...");
+		//Get all the active users
+		List<User> allNonTerminatedUsersList = getUserService().searchForNonTerminatedUsers();
+		Map<String, String> activeOidsMap = new TreeMap<String, String>();
+		for (User user : allNonTerminatedUsersList) {
+			activeOidsMap.put(user.getOrgOID(), user.getOrganizationName());
+		}
+		
+		//Iterate through the 'allNonTerminatedUsersList' and generate a csv
+		return createCSVOfAllActiveUsersOID(activeOidsMap);
+	}
+	
+	/**
+	 * Creates the csv of Active User's OIDs.
+	 * 
+	 * @param activeOidsMap
+	 *            Map of Distinct OID's
+	 * @return the string
+	 */
+	private String createCSVOfAllActiveUsersOID(
+			final Map<String, String> activeOidsMap) {
+		
+		StringBuilder csvStringBuilder = new StringBuilder();
+		//Add the header row
+		csvStringBuilder.append("Organization,Organization Id");
+		csvStringBuilder.append("\r\n");
+		//Add data rows
+		for (Map.Entry<String, String> entry : activeOidsMap.entrySet()) {
+			csvStringBuilder.append("\"" + entry.getValue() + "\",\"" + entry.getKey() +  "\"");
+			csvStringBuilder.append("\r\n");
+		}
+		return csvStringBuilder.toString();
+	}
 	/**
 	 * Creates the csv of all non admin active users.
 	 * 
@@ -248,7 +300,7 @@ public class ExportServlet extends HttpServlet {
 	 */
 	private String createCSVOfAllNonAdminActiveUsers(
 			final List<User> allNonAdminActiveUsersList) {
-
+		
 		StringBuilder csvStringBuilder = new StringBuilder();
 		//Add the header row
 		csvStringBuilder.append("Last Name,First Name,Email Address,Organization,Organization Id");
@@ -262,7 +314,7 @@ public class ExportServlet extends HttpServlet {
 		}
 		return csvStringBuilder.toString();
 	}
-
+	
 	/**
 	 * Gets the service.
 	 * 
@@ -281,7 +333,7 @@ public class ExportServlet extends HttpServlet {
 	private UserService getUserService() {
 		return (UserService) context.getBean("userService");
 	}
-
+	
 	/**
 	 * Gets the measure note service.
 	 * 

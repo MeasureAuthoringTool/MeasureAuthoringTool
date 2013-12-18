@@ -55,6 +55,8 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
 	/** The create new button. */
 	private Button createNewButton = new PrimaryButton("Add New Organization", "primaryGreyButton");
+	/** The generate csv file button. */
+	private Button generateCSVFileButton = new SecondaryButton("Generate CSV File");
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
 	/** The main panel. */
@@ -71,6 +73,8 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 		mainPanel.add(new SpacerWidget());
 		HorizontalPanel buttonPanel = new HorizontalPanel();
 		buttonPanel.add(createNewButton);
+		buttonPanel.add(generateCSVFileButton);
+		generateCSVFileButton.setTitle("Generate CSV file of Active OID's.");
 		buttonPanel.getElement().getStyle().setMarginLeft(MARGIN_VALUE, Unit.PX);
 		mainPanel.add(buttonPanel);
 		mainPanel.add(new SpacerWidget());
@@ -192,6 +196,10 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 	@Override
 	public HasClickHandlers getCreateNewButton() {
 		return createNewButton;
+	}
+	@Override
+	public Button getGenerateCSVFileButton() {
+		return generateCSVFileButton;
 	}
 	/*
 	 * (non-Javadoc)

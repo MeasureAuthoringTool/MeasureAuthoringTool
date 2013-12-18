@@ -207,14 +207,15 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		AdminManageOrganizationModelValidator test = new AdminManageOrganizationModelValidator();
 		List<String> messages = test.isValidOrganizationDetail(updatedModel);
 		SaveUpdateUserResult result = new SaveUpdateUserResult();
-		if(messages.size()!=0){
-			for(String message: messages){
-				logger.info("Server-Side Validation failed for SaveUpdateOrganizationResult And failure Message is :" + message);
+		if (messages.size() != 0) {
+			for (String message: messages) {
+				logger.info("Server-Side Validation failed for"
+						+ " SaveUpdateOrganizationResult And failure Message is :" + message);
 			}
 			result.setSuccess(false);
 			result.setMessages(messages);
 			result.setFailureReason(SaveUpdateOrganizationResult.SERVER_SIDE_VALIDATION);
-		}else{
+		} else {
 			if (currentModel.isExistingOrg()) {
 				organization = getOrganizationDAO().findByOid(currentModel.getOid());
 				organization.setOrganizationName(updatedModel.getOrganization());
@@ -247,16 +248,17 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	public SaveUpdateUserResult saveUpdateUser(ManageUsersDetailModel model) throws InCorrectUserRoleException {
 		checkAdminUser();
 		AdminManageUserModelValidator test = new AdminManageUserModelValidator();
-		List<String>  messages= test.isValidUsersDetail(model);
+		List<String>  messages = test.isValidUsersDetail(model);
 		SaveUpdateUserResult result = new SaveUpdateUserResult();
-		if(messages.size()!=0){
-			for(String message: messages){
-				logger.info("Server-Side Validation failed for SaveUpdateUserResult for Login ID: "+model.getLoginId()+ " And failure Message is :"+ message);
+		if (messages.size() != 0) {
+			for (String message: messages) {
+				logger.info("Server-Side Validation failed for SaveUpdateUserResult for Login ID: "
+						+ model.getLoginId() + " And failure Message is :" + message);
 			}
 			result.setSuccess(false);
 			result.setMessages(messages);
 			result.setFailureReason(SaveUpdateUserResult.SERVER_SIDE_VALIDATION);
-		}else{
+		} else {
 			result = getUserService().saveUpdateUser(model);
 		}
 		return result;
@@ -265,8 +267,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 	 * @see mat.client.admin.service.AdminService#searchOrganization(java.lang.String)
 	 */
 	@Override
-	public ManageOrganizationSearchModel searchOrganization(String key)
-	{
+	public ManageOrganizationSearchModel searchOrganization(String key)	{
 		List<Organization> searchResults = getOrganizationDAO().searchOrganization(key);
 		logger.info("Organization search returned " + searchResults.size());
 		ManageOrganizationSearchModel model = new ManageOrganizationSearchModel();
@@ -298,7 +299,7 @@ public class AdminServiceImpl extends SpringRemoteServiceServlet implements Admi
 		
 		ManageUsersSearchModel model = new  ManageUsersSearchModel();
 		List<ManageUsersSearchModel.Result> detailList = new ArrayList<ManageUsersSearchModel.Result>();
-		for(User user : searchResults) {
+		for (User user : searchResults) {
 			ManageUsersSearchModel.Result r = new ManageUsersSearchModel.Result();
 			r.setFirstName(user.getFirstName());
 			r.setLastName(user.getLastName());

@@ -2,10 +2,8 @@ package mat.dao;
 
 import java.util.Date;
 import java.util.List;
-
 import mat.model.User;
 import mat.server.model.MatUserDetails;
-
 import org.springframework.security.core.userdetails.UserDetails;
 
 /**
@@ -21,6 +19,8 @@ public interface UserDAO extends IDAO<User, String> {
 	 * @return the list
 	 */
 	public List<User> searchForUsersByName(String name);
+	
+	public List<User> searchForNonTerminatedUser();
 	
 	/**
 	 * Count search results.

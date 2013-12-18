@@ -11,6 +11,7 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.shared.AdminManageOrganizationModelValidator;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -20,6 +21,7 @@ import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -87,6 +89,7 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		/** Gets the select id for edit tool.
 		 * @return the select id for edit tool */
 		HasSelectionHandlers<ManageOrganizationSearchModel.Result> getSelectIdForEditTool();
+		Button getGenerateCSVFileButton();
 	}
 	/** The current details. */
 	private ManageOrganizationDetailModel currentDetails;
@@ -111,6 +114,13 @@ public class ManageOrganizationPresenter implements MatPresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				createNew();
+			}
+		});
+		
+		searchDisplay.getGenerateCSVFileButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				generateCSVForActiveOids();
 			}
 		});
 		TextBox searchWidget = (TextBox) (searchDisplay.getSearchString());
@@ -183,6 +193,13 @@ public class ManageOrganizationPresenter implements MatPresenter {
 		panel.clear();
 		panel.add(searchDisplay.asWidget());
 		search("");
+	}
+	/**
+	 * Generate csv of active user emails.
+	 */
+	private void generateCSVForActiveOids() {
+		String url = GWT.getModuleBaseURL() + "export?format=exportActiveOIDCSV";
+		Window.open(url + "&type=save", "_self", "");
 	}
 	/** Edits the.
 	 * @param key the key */

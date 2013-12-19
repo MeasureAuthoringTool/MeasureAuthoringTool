@@ -1,18 +1,10 @@
 package mat.client.myAccount;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-
-import org.apache.commons.lang.time.DateUtils;
-
-
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
@@ -323,7 +315,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 				String result = (String)resultMap.get("result");
 				if(result.equals("SUCCESS")){
 					display.getSuccessMessageDisplay().clear();
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getIS_NOT_PREVOIUS_PASSWORD());
+					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getIS_NOT_PREVIOUS_PASSWORD());
 				}
 				else{
 					try {
@@ -332,8 +324,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 						e.printStackTrace();
 					}
 				}
-				
-				
 			}
 			
 		});
@@ -349,7 +339,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 	public void ValidatePasswordCreation() throws IOException{
 		
 		Date currentDate=new Date();
-	   // SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
 		loginService.validatePasswordCreationDate(MatContext.get().getLoggedinLoginId(),currentDate, new AsyncCallback<HashMap<String,String>>(){
 
 			@Override
@@ -383,9 +372,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 			
 			
 		});
-		
-		
-		
 	}
 		
 }

@@ -253,7 +253,8 @@ public class FirstLoginPresenter {
 			public void onBlur(BlurEvent event) {
 				if(!(display.getSecurityQuestionsWidget().getAnswer1().getText()).isEmpty())
 					display.getSecurityQuestionsWidget().setAnswerText1(display.getSecurityQuestionsWidget().getAnswer1().getText());
-				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText1()));
+				display.getSecurityQuestionsWidget().getAnswer1().setText(display.getSecurityQuestionsWidget().maskAnswers(
+						display.getSecurityQuestionsWidget().getAnswerText1()));
 			}
 		});
 		
@@ -272,7 +273,8 @@ public class FirstLoginPresenter {
 				if(!(display.getSecurityQuestionsWidget().getAnswer2().getText()).isEmpty())
 					display.getSecurityQuestionsWidget().setAnswerText2(display.getSecurityQuestionsWidget().getAnswer2().getText());
 					
-				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText2()));
+				display.getSecurityQuestionsWidget().getAnswer2().setText(display.getSecurityQuestionsWidget().maskAnswers(
+						display.getSecurityQuestionsWidget().getAnswerText2()));
 			}
 		});
 		display.getSecurityQuestionsWidget().getAnswer3().addFocusHandler(new FocusHandler() {
@@ -288,7 +290,8 @@ public class FirstLoginPresenter {
 			public void onBlur(BlurEvent event) {
 				if(!(display.getSecurityQuestionsWidget().getAnswer3().getText()).isEmpty())
 					display.getSecurityQuestionsWidget().setAnswerText3(display.getSecurityQuestionsWidget().getAnswer3().getText());
-				display.getSecurityQuestionsWidget().getAnswer3().setText(display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText3()));
+				display.getSecurityQuestionsWidget().getAnswer3().setText(
+						display.getSecurityQuestionsWidget().maskAnswers(display.getSecurityQuestionsWidget().getAnswerText3()));
 			}
 		});
 		display.getSubmit().addClickHandler(new ClickHandler() {
@@ -343,7 +346,8 @@ public class FirstLoginPresenter {
 	 */
 	public void ValidateChangedPassword(final PasswordVerifier verifier,final SecurityQuestionVerifier sverifier){
 		
-		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(), new AsyncCallback<HashMap<String,String>>(){
+		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(), 
+				new AsyncCallback<HashMap<String,String>>(){
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -356,7 +360,8 @@ public class FirstLoginPresenter {
 				
 				String result = (String)resultMap.get("result");
 				if(result.equals("SUCCESS")){
-					display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getIS_NOT_PREVIOUS_PASSWORD());
+					display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
+							.getIS_NOT_PREVIOUS_PASSWORD());
 				}else {
 					onSuccessFirstLogin(verifier,sverifier);
 				}
@@ -392,10 +397,12 @@ public class FirstLoginPresenter {
 								display.getSecurityErrorMessageDisplay().setMessages(result.getMessages());
 								break;
 							case LoginResult.DICTIONARY_EXCEPTION:
-								display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+								display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate()
+										.getMustNotContainDictionaryWordMessage());
 								break;
 							default:
-								display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+								display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().
+										getUnknownErrorMessage(result.getFailureReason()));
 						}
 						
 					}

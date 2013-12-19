@@ -350,11 +350,11 @@ public class MessageDelegate {
 	/** The password mismatch. */
 	private final String PASSWORD_MISMATCH = "Your new password and confirm password do not match.";
 	
-	/** The is not prevoius password. */
-	private final String IS_NOT_PREVOIUS_PASSWORD="New password cannot be same as current password.";
+	/** The is not previous password. */
+	private final String IS_NOT_PREVIOUS_PASSWORD="New password cannot be same as current password.";
 	
 	/** The change old password. */
-	private final String CHANGE_OLD_PASSWORD="Password needs to be at least one day old before you can change it again.";
+	private final String CHANGE_OLD_PASSWORD="Password needs to be at least one day old before you can change it. Try again.";
 	
 	/** The password mismatch error message. */
 	private final String PASSWORD_MISMATCH_ERROR_MESSAGE = "Incorrect password supplied.Try again";
@@ -1849,12 +1849,12 @@ public class MessageDelegate {
 	}
 	
 	/**
-	 * Gets the checks if is not prevoius password.
+	 * Gets the checks if is not previous password.
 	 *
-	 * @return the checks if is not prevoius password
+	 * @return the checks if is not previous password
 	 */
-	public String getIS_NOT_PREVOIUS_PASSWORD() {
-		return IS_NOT_PREVOIUS_PASSWORD;
+	public String getIS_NOT_PREVIOUS_PASSWORD() {
+		return IS_NOT_PREVIOUS_PASSWORD;
 	}
 
 	/**

@@ -1,7 +1,6 @@
 package mat.client.login;
 
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -307,11 +306,6 @@ public class FirstLoginPresenter {
 						display.getPasswordErrorMessageDisplay().setMessages(verifier.getMessages());
 					}else{
 						display.getPasswordErrorMessageDisplay().clear();
-					    try {
-							ValidateChangedPassword();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
 					}
 
 					SecurityQuestionVerifier sverifier = 
@@ -326,38 +320,8 @@ public class FirstLoginPresenter {
 					}else{
 						display.getSecurityErrorMessageDisplay().clear();
 					}
-
-					if(verifier.isValid() && sverifier.isValid()) {
-						
-						MatContext.get().changePasswordSecurityQuestions(getValues(), new AsyncCallback<LoginResult>() {
-							@Override
-							public void onFailure(Throwable caught) {
-								display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-							}
-							@Override
-							public void onSuccess(LoginResult result) {
-								if(result.isSuccess()){
-									MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
-								}else {
-									switch(result.getFailureReason()) {
-										case LoginResult.SERVER_SIDE_VALIDATION_SECURITY_QUESTIONS:
-											display.getPasswordErrorMessageDisplay().setMessages(result.getMessages());
-											break;
-										case LoginResult.SERVER_SIDE_VALIDATION_PASSWORD:
-											display.getSecurityErrorMessageDisplay().setMessages(result.getMessages());
-											break;
-										case LoginResult.DICTIONARY_EXCEPTION:
-											display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
-											break;
-										default:
-											display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
-									}
-									
-								}
-							}
-						});
-				}
-
+					
+					ValidateChangedPassword(verifier,sverifier);
 			}
 		});
 
@@ -374,9 +338,10 @@ public class FirstLoginPresenter {
 	/**
 	 * Validate changed password.
 	 *
-	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @param verifier the verifier
+	 * @param sverifier the sverifier
 	 */
-	public void ValidateChangedPassword() throws IOException{
+	public void ValidateChangedPassword(final PasswordVerifier verifier,final SecurityQuestionVerifier sverifier){
 		
 		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(), new AsyncCallback<HashMap<String,String>>(){
 
@@ -392,11 +357,51 @@ public class FirstLoginPresenter {
 				String result = (String)resultMap.get("result");
 				if(result.equals("SUCCESS")){
 					display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getIS_NOT_PREVIOUS_PASSWORD());
+				}else {
+					onSuccessFirstLogin(verifier,sverifier);
 				}
 			}
 			
 		});
 		
+	}
+	
+	/**
+	 * On success temp pwd login.
+	 *
+	 * @param verifier the verifier
+	 * @param sverifier the sverifier
+	 */
+	public void onSuccessFirstLogin(PasswordVerifier verifier,SecurityQuestionVerifier sverifier){
+		if(verifier.isValid() && sverifier.isValid()) {
+			MatContext.get().changePasswordSecurityQuestions(getValues(), new AsyncCallback<LoginResult>() {
+				@Override
+				public void onFailure(Throwable caught) {
+					display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				}
+				@Override
+				public void onSuccess(LoginResult result) {
+					if(result.isSuccess()){
+						MatContext.get().getEventBus().fireEvent(new SuccessfulLoginEvent());
+					}else {
+						switch(result.getFailureReason()) {
+							case LoginResult.SERVER_SIDE_VALIDATION_SECURITY_QUESTIONS:
+								display.getPasswordErrorMessageDisplay().setMessages(result.getMessages());
+								break;
+							case LoginResult.SERVER_SIDE_VALIDATION_PASSWORD:
+								display.getSecurityErrorMessageDisplay().setMessages(result.getMessages());
+								break;
+							case LoginResult.DICTIONARY_EXCEPTION:
+								display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMustNotContainDictionaryWordMessage());
+								break;
+							default:
+								display.getSecurityErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getUnknownErrorMessage(result.getFailureReason()));
+						}
+						
+					}
+				}
+			});
+	}
 	}
 	
 	/**

@@ -1,12 +1,16 @@
 package mat.client.login;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.event.SuccessfulLoginEvent;
 import mat.client.login.service.LoginResult;
+import mat.client.login.service.LoginServiceAsync;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
@@ -27,11 +31,14 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class FirstLoginPresenter.
  */
 public class FirstLoginPresenter {
 	
+	/** The login service. */
+	LoginServiceAsync loginService = (LoginServiceAsync) MatContext.get().getLoginService();
 	/**
 	 * The Interface Display.
 	 */
@@ -301,6 +308,11 @@ public class FirstLoginPresenter {
 						display.getPasswordErrorMessageDisplay().setMessages(verifier.getMessages());
 					}else{
 						display.getPasswordErrorMessageDisplay().clear();
+					    try {
+							ValidateChangedPassword();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 
 					SecurityQuestionVerifier sverifier = 
@@ -345,7 +357,6 @@ public class FirstLoginPresenter {
 								}
 							}
 						});
-					
 				}
 
 			}
@@ -361,6 +372,33 @@ public class FirstLoginPresenter {
 	}
 
 	
+	/**
+	 * Validate changed password.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void ValidateChangedPassword() throws IOException{
+		
+		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(), new AsyncCallback<HashMap<String,String>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+			}
+
+			@Override
+			public void onSuccess(HashMap<String, String> resultMap) {
+				
+				String result = (String)resultMap.get("result");
+				if(result.equals("SUCCESS")){
+					display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getIS_NOT_PREVIOUS_PASSWORD());
+				}
+			}
+			
+		});
+		
+	}
 	
 	/**
 	 * Load security questions.
@@ -445,4 +483,6 @@ public class FirstLoginPresenter {
 		loadSecurityQuestions();
 		container.add(display.asWidget());
 	}
+	
+
 }

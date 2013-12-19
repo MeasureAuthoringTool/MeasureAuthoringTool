@@ -375,7 +375,6 @@ public class TempPwdLoginPresenter {
 			}
 			
 		});
-		
 	}
 	
 
@@ -501,46 +500,4 @@ public class TempPwdLoginPresenter {
 		});
 		Mat.focusSkipLists("SecurityInfo");
 	}
-	
-	/*public void ValidatePasswordCreation() throws IOException{
-		
-		Date currentDate=new Date();
-	   // SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
-		loginService.validatePasswordCreationDate(MatContext.get().getLoggedinLoginId(),currentDate, new AsyncCallback<HashMap<String,String>>(){
-
-			@Override
-			public void onFailure(Throwable caught) {
-				display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
-				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
-			}
-
-			*//**
-			 * On success.
-			 *
-			 * @param resultMap the result map
-			 *//*
-			@Override
-			public void onSuccess(HashMap<String, String> resultMap) {
-				
-				String result = (String)resultMap.get("result");
-				if(result.equals("SUCCESS")){
-					display.getSuccessMessageDisplay().clear();
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getCHANGE_OLD_PASSWORD());
-				}
-				else{
-					try {
-						ValidateChangedPassword();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				
-			}
-			
-			
-		});
-		
-		
-		
-	}*/
 }

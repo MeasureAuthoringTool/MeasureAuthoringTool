@@ -1,12 +1,15 @@
 package mat.client.login;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import mat.client.Mat;
 import mat.client.event.ReturnToLoginEvent;
 import mat.client.event.SuccessfulLoginEvent;
 import mat.client.login.service.LoginResult;
+import mat.client.login.service.LoginServiceAsync;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.NameValuePair;
@@ -29,11 +32,14 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HasWidgets;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class TempPwdLoginPresenter.
  */
 public class TempPwdLoginPresenter {
-		
+	
+	/** The login service. */
+	LoginServiceAsync loginService = (LoginServiceAsync) MatContext.get().getLoginService();
 		/**
 		 * The Interface Display.
 		 */
@@ -280,6 +286,12 @@ public class TempPwdLoginPresenter {
 						display.getPasswordErrorMessageDisplay().setMessages(verifier.getMessages());
 					}else{
 						display.getPasswordErrorMessageDisplay().clear();
+						try {
+							ValidateChangedPassword();
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
 					}
 
 					SecurityQuestionVerifier sverifier = 
@@ -323,7 +335,6 @@ public class TempPwdLoginPresenter {
 								}
 							}
 						});
-					
 				}
 
 			}
@@ -337,6 +348,37 @@ public class TempPwdLoginPresenter {
 			}
 		});
 	}
+	
+	
+	/**
+	 * Validate changed password.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void ValidateChangedPassword() throws IOException{
+		
+		loginService.validateNewPassword(MatContext.get().getLoggedinLoginId(), display.getPassword().getValue(), new AsyncCallback<HashMap<String,String>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+			}
+
+			@Override
+			public void onSuccess(HashMap<String, String> resultMap) {
+				
+				String result = (String)resultMap.get("result");
+				if(result.equals("SUCCESS")){
+					display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getIS_NOT_PREVIOUS_PASSWORD());
+				}
+			}
+			
+		});
+		
+	}
+	
+
 
 	/**
 	 * Load security questions.
@@ -459,4 +501,46 @@ public class TempPwdLoginPresenter {
 		});
 		Mat.focusSkipLists("SecurityInfo");
 	}
+	
+	/*public void ValidatePasswordCreation() throws IOException{
+		
+		Date currentDate=new Date();
+	   // SimpleDateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd");
+		loginService.validatePasswordCreationDate(MatContext.get().getLoggedinLoginId(),currentDate, new AsyncCallback<HashMap<String,String>>(){
+
+			@Override
+			public void onFailure(Throwable caught) {
+				display.getPasswordErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+				MatContext.get().recordTransactionEvent(null, null, null, "Unhandled Exception: "+caught.getLocalizedMessage(), 0);
+			}
+
+			*//**
+			 * On success.
+			 *
+			 * @param resultMap the result map
+			 *//*
+			@Override
+			public void onSuccess(HashMap<String, String> resultMap) {
+				
+				String result = (String)resultMap.get("result");
+				if(result.equals("SUCCESS")){
+					display.getSuccessMessageDisplay().clear();
+					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getCHANGE_OLD_PASSWORD());
+				}
+				else{
+					try {
+						ValidateChangedPassword();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+				
+			}
+			
+			
+		});
+		
+		
+		
+	}*/
 }

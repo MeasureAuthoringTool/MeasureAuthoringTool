@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class PasswordRules.
  */
@@ -19,7 +20,7 @@ public class PasswordRules extends Composite {
 		Label rules = new Label("Password Rules");
 		rules.addStyleName("bold");
 		HTML desc = new HTML("Passwords must not consist of a single dictionary word with letters, numbers and symbols. <br><br>" +
-		                     " Previous Password cannot be reused. <br><br>"+ " A password needs to be at least one day old before you can change it again. <br><br>"+
+		                     " Current Password cannot be reused. <br><br>"+ " A password needs to be at least one day old before you can change it again. <br><br>"+
 				            " Passwords must be between 8 and 16 characters and contain at least one of each of  the following:" 
 							);
 		desc.addStyleName("passwordRulesDescription");

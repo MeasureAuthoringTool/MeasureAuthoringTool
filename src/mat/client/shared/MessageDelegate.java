@@ -123,7 +123,7 @@ public class MessageDelegate {
 	
 	/** The Constant VALUE_SET_DRAFT_SAVED. */
 	public static final String VALUE_SET_DRAFT_SAVED = "Value Set successfully saved as a draft.";
-
+	
 	/** The Constant VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED. */
 	public static final String VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED = "Value set version or effective date has been selected. Please enter a date to continue.";
 	
@@ -345,7 +345,7 @@ public class MessageDelegate {
 	private final String PACKAGE_SUCCESS = "Measure packaged successfully. Please access the Measure Library to export the measure.";
 	
 	/** The package success with some OID's not retrived from VSAC. */
-	private final String PACKAGE_SUCCESS_VSAC_OID_MISSING = "Measure packaged successfully. One or more OID(s) could not be updated from VSAC.";
+	private final String PACKAGE_SUCCESS_VSAC_OID_MISSING = "Measure packaged successfully. One or more OIDs could not be updated from VSAC.";
 	
 	/** The password mismatch. */
 	private final String PASSWORD_MISMATCH = "Your new password and confirm password do not match.";
@@ -495,7 +495,7 @@ public class MessageDelegate {
 	
 	/** The vsac update successfull. */
 	private final String VSAC_UPDATE_SUCCESSFULL = "Successfully updated applied QDM list with VSAC data.";
-
+	
 	/**
 	 * Gets the abv name required message.
 	 * 

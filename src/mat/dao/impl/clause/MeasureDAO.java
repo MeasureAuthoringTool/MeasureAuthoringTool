@@ -716,6 +716,8 @@ mat.dao.clause.MeasureDAO {
 		Criteria userCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(User.class);
 		userCriteria.add(Restrictions.eq("securityRole.id", "3"));
+		//Added restriction for Active user's for User story MAT:2900.
+		userCriteria.add(Restrictions.eq("status.id", "1"));
 		userCriteria.add(Restrictions.ne("id",
 				LoggedInUserUtil.getLoggedInUser()));
 		userCriteria.setFirstResult(startIndex);

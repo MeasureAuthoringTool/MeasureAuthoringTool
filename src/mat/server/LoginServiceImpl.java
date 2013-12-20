@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -43,7 +45,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import com.google.gwt.http.client.UrlBuilder;
 import com.google.gwt.user.client.Window;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class LoginServiceImpl.
  */
@@ -437,23 +439,23 @@ public class LoginServiceImpl extends SpringRemoteServiceServlet implements
 	}
 	
 	/* (non-Javadoc)
-	 * @see mat.client.login.service.LoginService#validatePasswordCreationDate(java.lang.String, java.util.Date)
+	 * @see mat.client.login.service.LoginService#validatePasswordCreationDate(java.lang.String)
 	 */
 	@Override
-	public HashMap<String, String> validatePasswordCreationDate(String userID,Date currentDate) {
+	public HashMap<String, String> validatePasswordCreationDate(String userID) {
 		HashMap<String, String> resultMap = new HashMap<String, String>();
 		UserDAO userDAO = (UserDAO) context.getBean("userDAO");
 		MatUserDetails userDetails = (MatUserDetails) userDAO.getUser(userID);
 		String ifMatched = FAILURE;
-		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-		String createDate=format.format(currentDate);
-		String passwordCreationDate=format.format(userDetails.getUserPassword().getCreatedDate());
+		Calendar calender = GregorianCalendar.getInstance();
+	    SimpleDateFormat currentDateFormat=new SimpleDateFormat("yyyy-MM-dd");
+	    String currentDate = currentDateFormat.format(calender.getTime());
+		String passwordCreationDate=currentDateFormat.format(userDetails.getUserPassword().getCreatedDate());
 		if (userDetails != null) {
-			if(createDate.equals(passwordCreationDate)){
+			if(currentDate.equals(passwordCreationDate)){
 				ifMatched=SUCCESS;
 				}
 		}
-		  
 		resultMap.put("result", ifMatched);
 		return resultMap;
 	}

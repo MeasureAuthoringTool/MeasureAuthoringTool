@@ -1,7 +1,6 @@
 package mat.client.login.service;
 
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,7 +13,7 @@ import mat.shared.ForgottenPasswordResult;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Interface LoginService.
  */
@@ -154,10 +153,9 @@ public interface LoginService extends RemoteService {
 	 * Validate password creation date.
 	 *
 	 * @param userID the user id
-	 * @param currentDate the current date
 	 * @return the hash map
 	 */
-	public HashMap<String,String> validatePasswordCreationDate(String userID,Date currentDate);
+	public HashMap<String,String> validatePasswordCreationDate(String userID);
 	
 	/**
 	 * Validate new password.

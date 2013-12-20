@@ -2,7 +2,6 @@ package mat.client.myAccount;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,7 +23,6 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Widget;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ChangePasswordPresenter.
  */
@@ -275,7 +273,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 							}
 						}
 					});
-		
 	}
 	
 	/**
@@ -331,15 +328,14 @@ public class ChangePasswordPresenter implements MatPresenter {
 		}
 	}
 	
-	/**
+	/** for validating Password Creation with current date and restricting 
+	 * user to change password on the same day of new password creation.
 	 * Validate password creation Dates.
 	 *
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void ValidatePasswordCreation() throws IOException{
-		
-		Date currentDate=new Date();
-		loginService.validatePasswordCreationDate(MatContext.get().getLoggedinLoginId(),currentDate, new AsyncCallback<HashMap<String,String>>(){
+		loginService.validatePasswordCreationDate(MatContext.get().getLoggedinLoginId(), new AsyncCallback<HashMap<String,String>>(){
 
 			@Override
 			public void onFailure(Throwable caught) {
@@ -369,8 +365,6 @@ public class ChangePasswordPresenter implements MatPresenter {
 				}
 				
 			}
-			
-			
 		});
 	}
 		

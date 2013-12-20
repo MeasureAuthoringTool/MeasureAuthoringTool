@@ -1,7 +1,6 @@
 package mat.client.login.service;
 
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import mat.shared.ForgottenPasswordResult;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Interface LoginServiceAsync.
  */
@@ -177,10 +176,9 @@ public interface LoginServiceAsync extends AsynchronousService{
 	 * Validate password creation date.
 	 *
 	 * @param userID the user id
-	 * @param currentDate the current date
 	 * @param callback the callback
 	 */
-	void validatePasswordCreationDate(String userID,Date currentDate,AsyncCallback<HashMap<String,String>> callback);
+	void validatePasswordCreationDate(String userID,AsyncCallback<HashMap<String,String>> callback);
 	/**
 	 * Validate new password.
 	 *

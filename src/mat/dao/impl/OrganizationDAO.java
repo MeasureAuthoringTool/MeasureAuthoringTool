@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import mat.dao.search.GenericDAO;
 import mat.model.Organization;
+
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
@@ -97,6 +99,10 @@ mat.dao.OrganizationDAO {
 	public List<Organization> searchOrganization(String name) {
 		Criteria criteria = createSearchCriteria(name);
 		criteria.addOrder(Order.asc("organizationName"));
+		criteria.add(Restrictions.isNotNull("organizationName"))
+			.add(Restrictions.ne("organizationName", StringUtils.EMPTY))
+			.add(Restrictions.isNotNull("organizationOID"))
+			.add(Restrictions.ne("organizationOID", StringUtils.EMPTY));
 		/*criteria.setFirstResult(startIndex);
 		if (numResults > 0) {
 			criteria.setMaxResults(numResults);

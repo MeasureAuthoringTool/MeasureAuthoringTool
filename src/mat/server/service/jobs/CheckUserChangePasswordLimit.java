@@ -332,14 +332,8 @@ public class CheckUserChangePasswordLimit {
 					//Creation of the model map can be its own method.
 					content.put("User", "Measure Authoring Tool User");
 					
-					//15 days Expiry Date 
-					if(passwordwarningDayLimit==noOfDaysPasswordLimit){
-						
-						final String expiryDate=getFormattedExpiryDate(new Date(),15-1);
-						content.put("passwordWarningDate",expiryDate );
-					}
 					//5 days Expiry Date
-					else if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
+				     if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
 						
 						final String expiryDate=getFormattedExpiryDate(new Date(),5-1);
 						content.put("passwordExpiryDate",expiryDate );
@@ -485,8 +479,7 @@ public class CheckUserChangePasswordLimit {
    private String getFormattedExpiryDate(Date startDate,int willExpireIn){
 		Calendar calendar = GregorianCalendar.getInstance();
 		calendar.setTime(startDate);
-		calendar.roll(Calendar.DAY_OF_MONTH, willExpireIn);
-		
+		calendar.add(Calendar.DATE, willExpireIn);
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEEE, MMMMM d, yyyy");
 		String returnDateString  = simpleDateFormat.format(calendar.getTime());
 		return returnDateString;

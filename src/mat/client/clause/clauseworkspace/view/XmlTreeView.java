@@ -134,7 +134,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private CellTreeNode copiedNode;
 	
 	/** The popup panel. */
-	private PopupPanel popupPanel = new PopupPanel(true);
+	private PopupPanel popupPanel = new PopupPanel(true, false);
 	
 	/** The clause workspace context menu. */
 	private ClauseWorkspaceContextMenu clauseWorkspaceContextMenu = new ClauseWorkspaceContextMenu(this, popupPanel);
@@ -499,7 +499,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			if (event.getType().equals(BrowserEvents.CONTEXTMENU)){
 				event.preventDefault();
 				event.stopPropagation();
-				if (MatContext.get().getMeasureLockService().checkForEditPermission()){
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					onRightClick(value, (Event) event, parent);
 				}
 			} else {

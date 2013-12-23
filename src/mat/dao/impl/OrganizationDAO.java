@@ -99,9 +99,7 @@ mat.dao.OrganizationDAO {
 	public List<Organization> searchOrganization(String name) {
 		Criteria criteria = createSearchCriteria(name);
 		criteria.addOrder(Order.asc("organizationName"));
-		criteria.add(Restrictions.isNotNull("organizationName"))
-			.add(Restrictions.ne("organizationName", StringUtils.EMPTY))
-			.add(Restrictions.isNotNull("organizationOID"))
+		criteria.add(Restrictions.ne("organizationName", StringUtils.EMPTY))			
 			.add(Restrictions.ne("organizationOID", StringUtils.EMPTY));
 		/*criteria.setFirstResult(startIndex);
 		if (numResults > 0) {

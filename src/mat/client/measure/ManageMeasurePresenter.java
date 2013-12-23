@@ -2049,7 +2049,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		MatContext
 		.get()
 		.getMeasureService()
-		.getUsersForShare(id, startIndex, shareDisplay.getPageSize(),
+		.getUsersForShare(id, startIndex, Integer.MAX_VALUE,
 				new AsyncCallback<ManageMeasureShareModel>() {
 			@Override
 			public void onFailure(Throwable caught) {

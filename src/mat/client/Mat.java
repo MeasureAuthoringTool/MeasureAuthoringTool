@@ -2,10 +2,7 @@ package mat.client;
 
 import java.util.Date;
 import mat.client.admin.ManageAdminPresenter;
-import mat.client.codelist.CodeListController;
 import mat.client.codelist.ListBoxCodeProvider;
-import mat.client.codelist.events.EditCodeListEvent;
-import mat.client.codelist.events.EditGroupedCodeListEvent;
 import mat.client.event.BackToLoginPageEvent;
 import mat.client.event.BackToMeasureLibraryPage;
 import mat.client.event.LogoffEvent;

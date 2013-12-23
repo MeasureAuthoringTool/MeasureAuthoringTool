@@ -140,7 +140,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 	private ClosingEvent closingEvent;
 	
 	/** The code list controller. */
-	private CodeListController codeListController;
+	//private CodeListController codeListController;
 	
 	/** The current user role. */
 	String currentUserRole = ClientConstants.USER_STATUS_NOT_LOGGEDIN;
@@ -415,7 +415,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			}
 		});
 		
-		MatContext.get().getEventBus().addHandler(EditGroupedCodeListEvent.TYPE, new EditGroupedCodeListEvent.Handler(){
+		/*MatContext.get().getEventBus().addHandler(EditGroupedCodeListEvent.TYPE, new EditGroupedCodeListEvent.Handler(){
 			@Override
 			public void onEditGroupedCodeList(EditGroupedCodeListEvent event) {
 				mainTabLayout.selectTab(codeListController);
@@ -430,7 +430,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				mainTabLayout.selectTab(codeListController);
 				focusSkipLists("Value Set Library");
 			}
-		});
+		});*/
 		
 		GWT.setUncaughtExceptionHandler(new GWT.UncaughtExceptionHandler() {
 			@Override
@@ -480,10 +480,10 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
 			
 			
-			codeListController = new CodeListController();
+			/*codeListController = new CodeListController();
 			title = ClientConstants.TITLE_VALUE_SET_LIB;
 			tabIndex = mainTabLayout.addPresenter(codeListController, mainTabLayout.fmt.normalTitle(title));
-			
+			*/
 			measureLibrary = buildMeasureLibraryWidget(false);
 			title = ClientConstants.TITLE_MEASURE_LIB;
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));

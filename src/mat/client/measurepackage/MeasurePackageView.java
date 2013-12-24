@@ -9,7 +9,7 @@ import java.util.Map;
 import mat.client.ImageResources;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
-import mat.client.measurepackage.MeasurePackagePresenter.MeasurePackageSelectionHandler;
+import mat.client.measurepackage.MeasurePackagePresenter_Old.MeasurePackageSelectionHandler;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
@@ -43,7 +43,7 @@ import com.google.gwt.user.client.ui.Widget;
 /**
  * The Class MeasurePackageView.
  */
-public class MeasurePackageView implements MeasurePackagePresenter.View {
+public class MeasurePackageView implements MeasurePackagePresenter_Old.View {
 
 	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();

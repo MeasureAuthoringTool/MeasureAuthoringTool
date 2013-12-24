@@ -11,8 +11,10 @@ import mat.client.measure.metadata.AddEditMeasureTypeView;
 import mat.client.measure.metadata.MetaDataPresenter;
 import mat.client.measure.metadata.MetaDataView;
 import mat.client.measure.metadata.events.ContinueToMeasurePackageEvent;
+import mat.client.measurepackage.MeasurePackagePresenter;
 import mat.client.measurepackage.MeasurePackagePresenter_Old;
 import mat.client.measurepackage.MeasurePackageView;
+import mat.client.measurepackage.MeasurePackagerView;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
@@ -100,8 +102,10 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	/** The measure notes presenter. */
 	private MeasureNotesPresenter measureNotesPresenter = new MeasureNotesPresenter(new MeasureNotesView());
 	
-	/** The measure package presenter. */
-	private MeasurePackagePresenter_Old measurePackagePresenter ;
+	/** The measure package old presenter. */
+	private MeasurePackagePresenter_Old measurePackagePresenter_old ;
+	
+	private MeasurePackagePresenter measurePackagePresenter;
 	
 	/** The meta data presenter. */
 	private MetaDataPresenter metaDataPresenter ;
@@ -119,14 +123,16 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
 		subSkipContentHolder.getElement().setId("subSkipContentHolder_SimplePanel");
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
-		measurePackagePresenter = (MeasurePackagePresenter_Old) buildMeasurePackageWidget();
+		measurePackagePresenter_old = (MeasurePackagePresenter_Old) buildOldMeasurePackageWidget();
+		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
 		qdmPresenter = buildQDMPresenter();
 		measureComposerTabLayout = new MatTabLayoutPanel(true);
 		measureComposerTabLayout.setId("measureComposerTabLayout");
 		measureComposerTabLayout.addPresenter(metaDataPresenter,"Measure Details");
 		measureComposerTabLayout.addPresenter(qdmPresenter,"QDM Elements");
 		measureComposerTabLayout.addPresenter(clauseWorkspacePresenter, "Clause Workspace");
-		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Old Measure Packager");
+		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager");
+		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 		measureComposerTabLayout.addPresenter(measureNotesPresenter, "Measure Notes");
 		
 		measureComposerTabLayout.setHeight("98%");
@@ -205,7 +211,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		MatContext.get().getEventBus().addHandler(ContinueToMeasurePackageEvent.TYPE, new ContinueToMeasurePackageEvent.Handler() {
 			@Override
 			public void onContinueToMeasurePackage(ContinueToMeasurePackageEvent event) {
-				measureComposerTabLayout.selectTab(measurePackagePresenter);
+				measureComposerTabLayout.selectTab(measurePackagePresenter_old);
 				buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 				buttonBar.setPageNamesOnState();
 			}
@@ -314,15 +320,27 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	}
 	
 	/**
-	 * Builds the measure package widget.
+	 * Builds the Old measure package widget.
 	 *
 	 * @return the mat presenter
 	 */
-	private MatPresenter buildMeasurePackageWidget() {
+	private MatPresenter buildOldMeasurePackageWidget() {
 		MeasurePackageView mpv = new MeasurePackageView();
 		MeasurePackagePresenter_Old mpp = new MeasurePackagePresenter_Old(mpv);
 		mpp.getWidget();
 		return mpp;
+	}
+	
+	/**
+	 * Builds the  measure package widget.
+	 *
+	 * @return the mat presenter
+	 */
+	private MatPresenter buildMeasurePackageWidget() {
+		MeasurePackagerView measurePackagerView = new MeasurePackagerView();
+		MeasurePackagePresenter measurePackagePresenter = new MeasurePackagePresenter(measurePackagerView);
+		measurePackagePresenter.getWidget();
+		return measurePackagePresenter;
 	}
 	
 	

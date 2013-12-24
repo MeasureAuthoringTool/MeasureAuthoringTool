@@ -71,7 +71,7 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 		mainPanel.addStyleName("leftAligned");
 		mainPanel.add(searchWidget);
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
-		cellTablePanel.setWidth("77%");
+		cellTablePanel.setWidth("99%");
 		mainPanel.add(cellTablePanel);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(errorMessages);

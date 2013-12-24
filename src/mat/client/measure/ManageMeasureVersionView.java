@@ -91,7 +91,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		mainPanel.add(new SpacerWidget());
 		
 		cellTablePanel.getElement().setId("cellTablePanel_VerticalPanel");
-		cellTablePanel.setWidth("77%");
+		cellTablePanel.setWidth("99%");
 		mainPanel.add(cellTablePanel);
 		mainPanel.add(new SpacerWidget());
 		

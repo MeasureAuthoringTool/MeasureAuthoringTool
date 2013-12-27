@@ -312,7 +312,7 @@ public class ChangePasswordPresenter implements MatPresenter {
 				String result = (String)resultMap.get("result");
 				if(result.equals("SUCCESS")){
 					display.getSuccessMessageDisplay().clear();
-					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getIS_NOT_PREVIOUS_PASSWORD());
+					display.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getIS_NOT_CURRENT_PASSWORD());
 				}
 				else{
 					try {

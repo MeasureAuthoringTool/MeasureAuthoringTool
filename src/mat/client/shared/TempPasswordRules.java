@@ -9,18 +9,18 @@ import com.google.gwt.user.client.ui.Label;
 /**
  * The Class PasswordRules.
  */
-public class PasswordRules extends Composite {
+public class TempPasswordRules extends Composite {
 
 	/**
 	 * Instantiates a new password rules.
 	 */
-	public PasswordRules() {
+	public TempPasswordRules() {
 		FlowPanel fPanel = new FlowPanel();
 		fPanel.getElement().setId("fPanel_FlowPanel");
 		Label rules = new Label("Password Rules");
 		rules.addStyleName("bold");
 		HTML desc = new HTML("Passwords must not consist of a single dictionary word with letters, numbers and symbols. <br><br>" +
-		                     " Current password cannot be reused. <br><br>"+ " A Password needs to be at least one day old before you can change it again. <br><br>"+
+		                     " Previous password cannot be reused. <br><br>"+ " A Password needs to be at least one day old before you can change it again. <br><br>"+
 				            " Passwords must be between 8 and 16 characters and contain at least one of each of  the following:" 
 							);
 		desc.addStyleName("passwordRulesDescription");

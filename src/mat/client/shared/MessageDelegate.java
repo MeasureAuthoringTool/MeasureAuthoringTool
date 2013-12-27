@@ -351,7 +351,10 @@ public class MessageDelegate {
 	private final String PASSWORD_MISMATCH = "Your new password and confirm password do not match.";
 	
 	/** The is not previous password. */
-	private final String IS_NOT_PREVIOUS_PASSWORD="New password cannot be same as current password.";
+	private final String IS_NOT_CURRENT_PASSWORD="New password cannot be same as current password.";
+	
+	/** The is previous password cannot be reused. */
+	private final String IS_NOT_PREVIOUS_PASSWORD="Previous password cannot be reused. Try again.";
 	
 	/** The change old password. */
 	private final String CHANGE_OLD_PASSWORD="Password needs to be at least one day old before you can change it. Try again.";
@@ -1864,5 +1867,14 @@ public class MessageDelegate {
 	 */
 	public String getCHANGE_OLD_PASSWORD() {
 		return CHANGE_OLD_PASSWORD;
+	}
+	
+	/**
+	 * Gets the checks if is not current password.
+	 *
+	 * @return the checks if is not current password
+	 */
+	public String getIS_NOT_CURRENT_PASSWORD() {
+		return IS_NOT_CURRENT_PASSWORD;
 	}
 }

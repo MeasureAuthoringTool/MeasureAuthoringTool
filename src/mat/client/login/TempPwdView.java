@@ -6,10 +6,10 @@ import mat.client.shared.ChangePasswordWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.NameValuePair;
-import mat.client.shared.PasswordRules;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecurityQuestionWithMaskedAnswerWidget;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.TempPasswordRules;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.HTML;
@@ -84,7 +84,7 @@ public class TempPwdView implements TempPwdLoginPresenter.Display {
 		bluePanel.add(buildInstructions("Change Password"));
 		hPanel.add(changePasswordWidget);
 		
-		PasswordRules rules = new PasswordRules();
+		TempPasswordRules rules = new TempPasswordRules();
 		rules.addStyleName("leftAligned_small_text");
 		rules.addStyleName("myAccountPasswordRules");
 		hPanel.add(rules);

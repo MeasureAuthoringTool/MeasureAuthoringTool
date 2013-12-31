@@ -210,7 +210,7 @@ public class UserServiceImpl implements UserService {
 	private String getFormattedExpiryDate(Date startDate,int willExpireIn){
 		Calendar calendar = GregorianCalendar.getInstance();
 		calendar.setTime(startDate);
-		calendar.roll(Calendar.DAY_OF_MONTH, willExpireIn);
+		calendar.add(Calendar.DAY_OF_MONTH, willExpireIn);
 		
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("EEEEE, MMMMM d, yyyy");
 		String returnDateString  = simpleDateFormat.format(calendar.getTime());

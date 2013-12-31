@@ -540,7 +540,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		Date createDate = validateUserMatUserDetails.getUserPassword().getCreatedDate();
 		Calendar calendar = GregorianCalendar.getInstance();
 		calendar.setTime(createDate);
-		calendar.roll(Calendar.DAY_OF_MONTH, 5);
+		calendar.add(Calendar.DAY_OF_MONTH, 5);
 		Calendar calendarForToday = GregorianCalendar.getInstance();
 		if (calendarForToday.after(calendar)) {
 			logger.info("USER Temp or Initial Password has expired :" + userId);

@@ -6,7 +6,6 @@ package mat.client.util;
 import mat.client.ImageResources;
 import mat.client.shared.MatContext;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -34,7 +33,7 @@ public class FooterPanelBuilderUtility {
 		Image logoHHS = new Image(ImageResources.INSTANCE.hhslogo());
 		logoHHS.getElement().setId("footer-cms-logo");
 		addClickHandlerToRestartTimeout(logoHHS);
-				
+		
 		html = html.replaceAll("\\{img_cms_logo\\}", logoCMS.toString());
 		html = html.replaceAll("\\{img_hhs_logo\\}", logoHHS.toString());
 		
@@ -54,7 +53,7 @@ public class FooterPanelBuilderUtility {
 		html = html.replaceAll("\\{terms-of-use\\}", ClientConstants.TERMSOFUSE_URL);
 		html = html.replaceAll("\\{privacy-policy\\}", ClientConstants.PRIVACYPOLICY_URL);
 		html = html.replaceAll("\\{user-guide\\}", ClientConstants.USERGUIDE_URL);
-		//html = html.replaceAll("\\{contact-us\\}", ClientConstants.CONTACTUS_URL);
+		html = html.replaceAll("\\{contact-us\\}", ClientConstants.CONTACTUS_URL);
 		
 		HTML htmlPanel = new HTML(html);
 		htmlPanel.addClickHandler(new ClickHandler() {
@@ -64,12 +63,12 @@ public class FooterPanelBuilderUtility {
 					MatContext.get().restartTimeoutWarning();
 				}
 			}
-		  }
-		);
+		}
+				);
 		
 		return htmlPanel;
 	}
-
+	
 	/**
 	 * Adds the click handler to restart timeout.
 	 * 
@@ -84,104 +83,104 @@ public class FooterPanelBuilderUtility {
 					MatContext.get().restartTimeoutWarning();
 				}
 			}
-		  }
-		);
+		}
+				);
 	}
-
-//	public static Anchor createFooterLink(final String text,final String styleName,final String module,final String htmlPage,final String URL){
-//		final Anchor anchor = new Anchor(text);
-//		anchor.setTitle(text);
-//		anchor.getElement().setAttribute("alt", text);
-//		
-//		anchor.addClickHandler(
-//			new ClickHandler() {
-//				@Override
-//				public void onClick(final ClickEvent event) {
-//					if(!MatContext.get().getCurrentModule().equalsIgnoreCase(module)){
-//						MatContext.get().restartTimeoutWarning();
-//					}
-//				}
-//			});
-//		
-//		return anchor;
-//	}
+	
+	//	public static Anchor createFooterLink(final String text,final String styleName,final String module,final String htmlPage,final String URL){
+	//		final Anchor anchor = new Anchor(text);
+	//		anchor.setTitle(text);
+	//		anchor.getElement().setAttribute("alt", text);
+	//
+	//		anchor.addClickHandler(
+	//			new ClickHandler() {
+	//				@Override
+	//				public void onClick(final ClickEvent event) {
+	//					if(!MatContext.get().getCurrentModule().equalsIgnoreCase(module)){
+	//						MatContext.get().restartTimeoutWarning();
+	//					}
+	//				}
+	//			});
+	//
+	//		return anchor;
+	//	}
 	
 	
 	/** The logos html. */
-private static String logosHTML = 
-		"<div class=\"cms-address-bar\"> "+
-			"<div id=\"footer-cms-logo-wrapper\" align=\"left\"> " +
-				"<a id=\"footer_cms_logo_link\" title=\"CMS home page\" href=\"http://www.cms.gov/\" target=\"_blank\"> " +
-				"<h4 style=\"font-size:0;\">CMS.gov</h4>" + 
-				"{img_cms_logo}" +
-				"</a> "+	
-			"</div> " +
-			"<div id=\"footer-address-text\"> " +
-				"A federal government website managed by the Centers for Medicare " +
-				"&amp; Medicaid Services <br> 7500 Security Boulevard, " +
-				"Baltimore, MD 21244" +
-			"</div> "+
-			"<div id=\"footer-hhs-logo-wrapper\" align=\"right\"> " +
-				"<div id=\"footer_hhs_logo\"> " +
+	private static String logosHTML =
+			"<div class=\"cms-address-bar\"> "+
+					"<div id=\"footer-cms-logo-wrapper\" align=\"left\"> " +
+					"<a id=\"footer_cms_logo_link\" title=\"CMS home page\" href=\"http://www.cms.gov/\" target=\"_blank\"> " +
+					"<h4 style=\"font-size:0;\">CMS.gov</h4>" +
+					"{img_cms_logo}" +
+					"</a> "+
+					"</div> " +
+					"<div id=\"footer-address-text\"> " +
+					"A federal government website managed by the Centers for Medicare " +
+					"&amp; Medicaid Services <br> 7500 Security Boulevard, " +
+					"Baltimore, MD 21244" +
+					"</div> "+
+					"<div id=\"footer-hhs-logo-wrapper\" align=\"right\"> " +
+					"<div id=\"footer_hhs_logo\"> " +
 					"<a id=\"footer_hhs_logo_link\" title=\"Health and Human Services home page\" href=\"http://www.hhs.gov/\" target=\"_blank\"> " +
 					"<h4 style=\"font-size:0;\">hhs.gov</h4>" +
 					"{img_hhs_logo} " +
 					"</a> "+
-				"</div>" +
-			"</div>" +
-		"</div>";
+					"</div>" +
+					"</div>" +
+					"</div>";
 	
 	
 	/** The footer link html. */
-	private static String footerLinkHTML = 
-		"<div class=\"custom-footer-nav\"> "+
-		"<div> "+
-			 "<div class=\"content\"> "+
-				 "<h2>Helpful Links</h2> "+
-				 "<ul style=\"list-style: none;\"> "+
-					 "<li style=\"display: inline-block;*display: inline;\"> "+
-						 "<a title=\"Accessibility Policy\" target=\"_blank\" href=\"{accessibility-policy}\"> "+
-							 "Accessibility Policy "+
-						 "<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
-						"</a> "+
+	private static String footerLinkHTML =
+			"<div class=\"custom-footer-nav\"> "+
+					"<div> "+
+					"<div class=\"content\"> "+
+					"<h2>Helpful Links</h2> "+
+					"<ul style=\"list-style: none;\"> "+
+					"<li style=\"display: inline-block;*display: inline;\"> "+
+					"<a title=\"Accessibility Policy\" target=\"_blank\" href=\"{accessibility-policy}\"> "+
+					"Accessibility Policy "+
+					"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
+					"</a> "+
 					"</li> "+
 					"<li style=\"display: inline-block;*display: inline;\"><b> | </b></li> "+
 					"<li style=\"display: inline-block;*display: inline;\"> "+
-						"<a title=\"Privacy Policy\" target=\"_blank\" href=\"{privacy-policy}\"> "+
-							"Privacy Policy "+
-						"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
-						"</a> "+
+					"<a title=\"Privacy Policy\" target=\"_blank\" href=\"{privacy-policy}\"> "+
+					"Privacy Policy "+
+					"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
+					"</a> "+
 					"</li> "+
 					"<li style=\"display: inline-block;*display: inline;\"><b> | </b></li> "+
 					"<li style=\"display: inline-block;*display: inline;\"> "+
-						"<a title=\"Terms Of Use\" target=\"_blank\" href=\"{terms-of-use}\"> "+
-							"Terms Of Use "+
-						"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
-						"</a> "+
+					"<a title=\"Terms Of Use\" target=\"_blank\" href=\"{terms-of-use}\"> "+
+					"Terms Of Use "+
+					"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
+					"</a> "+
 					"</li> "+
 					"<li style=\"display: inline-block;*display: inline;\"><b> | </b></li> "+
 					"<li style=\"display: inline-block;*display: inline;\"> "+
-						"<a title=\"Freedom of Information Act\" target=\"_blank\" "+ "href=\"http://www.cms.gov/center/freedom-of-information-act-center.html\"> "+
-							"Freedom of Information Act  "+
-						"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
-						"</a> "+
+					"<a title=\"Freedom of Information Act\" target=\"_blank\" "+ "href=\"http://www.cms.gov/center/freedom-of-information-act-center.html\"> "+
+					"Freedom of Information Act  "+
+					"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
+					"</a> "+
 					"</li> "+
 					"<li style=\"display: inline-block;*display: inline;\"><b> | </b></li> "+
 					"<li style=\"display: inline-block;*display: inline;\"> "+
-						"<a title=\"User Guide\" target=\"_blank\" href=\"{user-guide}\"> "+
-							"User Guide "+
-						"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
-						"</a> "+
+					"<a title=\"User Guide\" target=\"_blank\" href=\"{user-guide}\"> "+
+					"User Guide "+
+					"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
+					"</a> "+
 					"</li> "+
-					/*"<li style=\"display: inline-block;*display: inline;\"><b> | </b></li> "+
+					"<li style=\"display: inline-block;*display: inline;\"><b> | </b></li> "+
 					"<li style=\"display: inline-block;*display: inline;\"> "+
-						"<a title=\"Contact Us\" target=\"_blank\" href=\"{contact-us}\"> "+
-							"Contact Us "+
-						"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
-						"</a> "+
-					"</li> "*/+
-				"</ul> "+
-			"</div> "+
-		"</div> "+
-	"</div> ";
+					"<a title=\"Contact Us\" target=\"_blank\" href=\"{contact-us}\"> "+
+					"Contact Us "+
+					"<span class=\"customLinkDisclaimer\"> - Opens in a new window</span> "+
+					"</a> "+
+					"</li> "+
+					"</ul> "+
+					"</div> "+
+					"</div> "+
+					"</div> ";
 }

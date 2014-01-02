@@ -112,9 +112,9 @@ public class ClientConstants {
 	/** The Constant TEXT_CONTACT_US . */
 	public final static String TEXT_CONTACT_US ="Contact Us";
 	
-	/** The contactus url.
-    public static String CONTACTUS_URL="https://nqfdev.telligen.org/web/guest/contact-us-form"; */
-
+	/** The contactus url.*/
+	public static String CONTACTUS_URL="https://nqfdev.telligen.org/web/guest/contact-us-form";
+	
 	
 	
 }

@@ -244,7 +244,7 @@ MeasureService {
 	public ManageMeasureSearchModel searchMeasuresForDraft(String searchText) {
 		return this.getMeasureLibraryService().searchMeasuresForDraft(searchText);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#searchMeasuresForVersion(java.lang.String)
 	 */
@@ -252,7 +252,7 @@ MeasureService {
 	public ManageMeasureSearchModel searchMeasuresForVersion(String searchText) {
 		return this.getMeasureLibraryService().searchMeasuresForVersion(searchText);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#searchUsers(int, int)
 	 */
@@ -261,7 +261,7 @@ MeasureService {
 			int pageSize) {
 		return this.getMeasureLibraryService().searchUsers(startIndex, pageSize);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#transferOwnerShipToUser(java.util.List, java.lang.String)
 	 */
@@ -320,5 +320,10 @@ MeasureService {
 	public ValidateMeasureResult validateMeasureForExport(String key , List<MatValueSet> matValueSetList)
 			throws MatException {
 		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList);
+	}
+	
+	@Override
+	public SaveMeasureResult saveMeasureAtPackage(ManageMeasureDetailModel model) {
+		return this.getMeasureLibraryService().saveMeasureAtPackage(model);
 	}
 }

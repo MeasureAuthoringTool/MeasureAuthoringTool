@@ -405,4 +405,11 @@ public interface MeasureServiceAsync {
 	 *            the callback
 	 */
 	void validateMeasureForExport(String key, List<MatValueSet> matValueSetList, AsyncCallback<ValidateMeasureResult> callback);
+	
+	/**
+	 * Save Called To update Revision Number at Create New Package button Click.
+	 * @param model -ManageMeasureDetailModel.
+	 * @param callback
+	 */
+	void saveMeasureAtPackage(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 }

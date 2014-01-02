@@ -230,6 +230,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			// draft have to be
 			// created..
 			Measure measure = getService().getById(clonedMeasureId);// get the
+			// Cloned Measure Revision Number reset to '000' when cloned.
+			measure.setRevisionNumber("000");
 			// Cloned
 			// version
 			// of the
@@ -267,14 +269,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				.getPeriodModel().getStartDate() : null);
 		manageMeasureDetailModel.setMeasToPeriod(manageMeasureDetailModel.getPeriodModel() != null ? manageMeasureDetailModel
 				.getPeriodModel().getStopDate() : null);
-		manageMeasureDetailModel.setEndorseByNQF((StringUtils.isNotBlank(manageMeasureDetailModel.getEndorsement()) ? true : false));
-		manageMeasureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(String.valueOf(measure.getVersionNumber())));
+		manageMeasureDetailModel.setEndorseByNQF((StringUtils.isNotBlank(
+				manageMeasureDetailModel.getEndorsement()) ? true : false));
+		manageMeasureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(),
+				String.valueOf(measure.getVersionNumber())));
 		manageMeasureDetailModel.setVersionNumber(MeasureUtility.getVersionText(manageMeasureDetailModel.getOrgVersionNumber(),
 				measure.isDraft()));
 		manageMeasureDetailModel.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
 		manageMeasureDetailModel.setDraft(measure.isDraft());
 		manageMeasureDetailModel.setValueSetDate(DateUtility.convertDateToStringNoTime(measure.getValueSetDate()));
-		manageMeasureDetailModel.setNqfId(manageMeasureDetailModel.getNqfModel() != null ? manageMeasureDetailModel.getNqfModel()
+		manageMeasureDetailModel.setNqfId(manageMeasureDetailModel.getNqfModel() != null ?
+				manageMeasureDetailModel.getNqfModel()
 				.getExtension() : null);
 		manageMeasureDetailModel.seteMeasureId(measure.geteMeasureId());
 		manageMeasureDetailModel.setMeasureOwnerId(measure.getOwner().getId());
@@ -420,7 +425,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		model.setName(measure.getDescription());
 		model.setShortName(measure.getaBBRName());
 		model.setMeasScoring(measure.getMeasureScoring());
-		model.setOrgVersionNumber(MeasureUtility.formatVersionText(String.valueOf(measure.getVersionNumber())));
+		model.setOrgVersionNumber(MeasureUtility.formatVersionText(measure.getRevisionNumber(),
+				String.valueOf(measure.getVersionNumber())));
 		model.setVersionNumber(MeasureUtility.getVersionText(model.getOrgVersionNumber(), measure.isDraft()));
 		model.setFinalizedDate(DateUtility.convertDateToString(measure.getFinalizedDate()));
 		model.setDraft(measure.isDraft());
@@ -1137,12 +1143,32 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		rs.setSuccess(false);
 		return rs;
 	}
-	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#saveMeasureAtPackage(mat.client.measure.ManageMeasureDetailModel)
+	 */
+	@Override
+	public SaveMeasureResult saveMeasureAtPackage(ManageMeasureDetailModel model) {
+		Measure measure = getService().getById(model.getId());
+		Integer revisionNumber = new Integer(000);
+		if ((measure.getRevisionNumber() != null) && StringUtils.isNotEmpty(measure.getRevisionNumber())) {
+			revisionNumber = Integer.parseInt(measure.getRevisionNumber());
+			revisionNumber = revisionNumber + 1;
+			measure.setRevisionNumber(String.format("%03d", revisionNumber));
+			model.setRevisionNumber(String.format("%03d", revisionNumber));
+		} else {
+			revisionNumber = revisionNumber + 1;
+			measure.setRevisionNumber(String.format("%03d", revisionNumber));
+			model.setRevisionNumber(String.format("%03d", revisionNumber));
+		}
+		getService().save(measure);
+		SaveMeasureResult result = save(model);
+		return result;
+	}
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#save(mat.client.measure.ManageMeasureDetailModel)
 	 */
 	@Override
-	public final SaveMeasureResult save(final ManageMeasureDetailModel model) {
+	public final SaveMeasureResult save(ManageMeasureDetailModel model) {
 		
 		Measure pkg = null;
 		MeasureSet measureSet = null;
@@ -1150,6 +1176,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			// editing an existing measure
 			pkg = getService().getById(model.getId());
 			model.setVersionNumber(pkg.getVersion());
+			if (pkg.isDraft()) {
+				model.setRevisionNumber(pkg.getRevisionNumber());
+			} else {
+				model.setRevisionNumber("000");
+			}
 			if (pkg.getMeasureSet().getId() != null) {
 				measureSet = getService().findMeasureSet(pkg.getMeasureSet().getId());
 			}
@@ -1163,6 +1194,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			pkg = new Measure();
 			model.setMeasureStatus("In Progress");
+			model.setRevisionNumber("000");
 			measureSet = new MeasureSet();
 			measureSet.setId(UUID.randomUUID().toString());
 			getService().save(measureSet);
@@ -1271,6 +1303,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				getService().save(measure);
 			}
 		}
+		model.setRevisionNumber(measure.getRevisionNumber());
 		logger.info("Saving Measure_Xml");
 		saveMeasureXml(createMeasureXmlModel(model, measure, MEASURE_DETAILS, MEASURE));
 		SaveMeasureResult result = new SaveMeasureResult();
@@ -1475,8 +1508,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.info("In MeasureLibraryServiceImpl.setAdditionalAttrsForMeasureXml()");
 		measureDetailModel.setId(measure.getId());
 		measureDetailModel.setMeasureSetId(measure.getMeasureSet() != null ? measure.getMeasureSet().getId() : null);
-		measureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(String.valueOf(measure.getVersionNumber())));
-		measureDetailModel.setVersionNumber(MeasureUtility.getVersionText(measureDetailModel.getOrgVersionNumber(), measure.isDraft()));
+		measureDetailModel.setOrgVersionNumber(MeasureUtility.formatVersionText(
+				measureDetailModel.getRevisionNumber(), String.valueOf(measure.getVersionNumber())));
+		measureDetailModel.setVersionNumber(MeasureUtility.getVersionText(measureDetailModel.getOrgVersionNumber(),
+				measureDetailModel.getRevisionNumber(), measure.isDraft()));
 		measureDetailModel.setId(UuidUtility.idToUuid(measureDetailModel.getId())); // have
 		// to
 		// change
@@ -1650,6 +1685,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		measure.setMeasureScoring(model.getMeasScoring());
 		measure.setVersion(model.getVersionNumber());
 		measure.setDraft(model.isDraft());
+		measure.setRevisionNumber(model.getRevisionNumber());
 		measure.setMeasureStatus(model.getMeasureStatus());
 		measure.seteMeasureId(model.geteMeasureId());
 		if ((model.getFinalizedDate() != null) && !model.getFinalizedDate().equals("")) {

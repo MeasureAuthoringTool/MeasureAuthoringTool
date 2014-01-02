@@ -3,6 +3,9 @@ package mat.client.measurepackage;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -10,7 +13,8 @@ import mat.client.shared.WarningMessageDisplay;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -25,6 +29,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	/** The view. */
 	private PackageView view;
+	/** The model. */
+	private ManageMeasureDetailModel model;
 	/**
 	 * The Interface View.
 	 */
@@ -82,10 +88,20 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				Window.alert("I will soon Update Revision Number");
-				
+				((Button) view.getPackageMeasureButton()).setEnabled(false);
+				MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
+					
+					@Override
+					public void onFailure(Throwable caught) {
+						((Button) view.getPackageMeasureButton()).setEnabled(true);
+					}
+					
+					@Override
+					public void onSuccess(SaveMeasureResult result) {
+						((Button) view.getPackageMeasureButton()).setEnabled(true);
+					}
+				});
 			}
-			
 		});
 	}
 	/**
@@ -98,26 +114,39 @@ public class MeasurePackagePresenter implements MatPresenter {
 	@Override
 	public void beforeClosingDisplay() {
 	}
-	
 	@Override
 	public void beforeDisplay() {
 		if ((MatContext.get().getCurrentMeasureId() != null)
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
-			
+			getMeasure(MatContext.get().getCurrentMeasureId());
 		} else {
 			displayEmpty();
 		}
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackage");
 		Mat.focusSkipLists("MeasureComposer");
-		
 	}
-	
 	@Override
 	public Widget getWidget() {
 		panel.clear();
 		panel.add(view.asWidget());
 		return panel;
 	}
-	
-	
+	private void getMeasure(final String measureId) {
+		MatContext
+		.get()
+		.getMeasureService()
+		.getMeasure(measureId,
+				new AsyncCallback<ManageMeasureDetailModel>() {
+			@Override
+			public void onFailure(final Throwable caught) {
+				view.getPackageErrorMessageDisplay()
+				.setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+			}
+			@Override
+			public void onSuccess(
+					final ManageMeasureDetailModel result) {
+				model = result;
+			}
+		});
+	}
 }

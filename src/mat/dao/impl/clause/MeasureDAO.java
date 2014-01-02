@@ -338,7 +338,7 @@ mat.dao.clause.MeasureDAO {
 		dto.setMeasureSetId(measure.getMeasureSet().getId());
 		dto.seteMeasureId(measure.geteMeasureId());
 		dto.setPrivateMeasure(measure.getIsPrivate());
-		
+		dto.setRevisionNumber(measure.getRevisionNumber());
 		boolean isLocked = isLocked(measure.getLockedOutDate());
 		dto.setLocked(isLocked);
 		if (isLocked && (measure.getLockedUser() != null)) {
@@ -900,6 +900,7 @@ mat.dao.clause.MeasureDAO {
 	/* (non-Javadoc)
 	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForUserWithFilter(java.lang.String, mat.model.User, int, int, int)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForUserWithFilter(
 			String searchText, User user, int startIndex, int pageSize,

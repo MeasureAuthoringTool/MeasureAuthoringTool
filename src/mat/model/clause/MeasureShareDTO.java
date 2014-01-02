@@ -1,9 +1,7 @@
 package mat.model.clause;
 
 import java.sql.Timestamp;
-
 import mat.model.LockedUserInfo;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -66,6 +64,9 @@ public class MeasureShareDTO implements IsSerializable {
 	
 	/** The version. */
 	private String version;
+	
+	/** The Revision. */
+	private String revisionNumber;
 	
 	/** The measure set id. */
 	private String measureSetId;
@@ -454,7 +455,21 @@ public class MeasureShareDTO implements IsSerializable {
 	public void seteMeasureId(int eMeasureId) {
 		this.eMeasureId = eMeasureId;
 	}
+
+	/**
+	 * @return the revisionNumber
+	 */
+	public String getRevisionNumber() {
+		return revisionNumber;
+	}
+
+	/**
+	 * @param revisionNumber the revisionNumber to set
+	 */
+	public void setRevisionNumber(String revisionNumber) {
+		this.revisionNumber = revisionNumber;
+	}
 	
 	
-		
+	
 }

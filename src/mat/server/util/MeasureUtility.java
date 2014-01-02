@@ -24,11 +24,12 @@ public class MeasureUtility {
 	public static String getVersionText(String version, boolean isDraft){
 		
 		String mVersion = formatVersionText(version);
-	
-		if(isDraft)
+		
+		if(isDraft) {
 			return "Draft based on v"+mVersion;
-		else
+		} else {
 			return "v"+mVersion;
+		}
 	}
 	
 	/**
@@ -40,13 +41,14 @@ public class MeasureUtility {
 	 *            the is draft
 	 * @return the clause library version prefix
 	 */
-	public static String getClauseLibraryVersionPrefix(String version, boolean isDraft){
+	public static String getClauseLibraryVersionPrefix(String version, boolean isDraft) {
 		String mVersion = formatVersionText(version);
 		
-		if(isDraft)
+		if(isDraft) {
 			return "(D"+mVersion+")";
-		else
+		} else {
 			return "(v"+mVersion+")";
+		}
 	}
 	
 	/**
@@ -56,12 +58,37 @@ public class MeasureUtility {
 	 *            the version
 	 * @return the string
 	 */
-	public static String formatVersionText(String version){
+	public static String formatVersionText(String version) {
 		StringUtility su = new StringUtility();
 		String[] versionArr = version.split("\\.");
 		String majorVersion = su.trimLeadingZeros(versionArr[0]);
 		String minorVersion = su.trimLeadingZeros(versionArr[1]);
-		String modifiedVersion =  majorVersion + "." + minorVersion;
+		if (versionArr.length > 2) {
+			String revisionNumber = versionArr[2];
+			String modifiedVersion =  majorVersion + "." + minorVersion + "." + revisionNumber;
+			return modifiedVersion;
+		} else {
+			String modifiedVersion =  majorVersion + "." + minorVersion;
+			return modifiedVersion;
+		}
+	}
+	
+	public static String getVersionText(String orgVersionNumber, String revisionNumber, boolean draft) {
+		String mVersion = formatVersionText(orgVersionNumber);
+		
+		if(draft) {
+			return "Draft based on v" + mVersion + "." + revisionNumber;
+		} else {
+			return "v" + mVersion;
+		}
+	}
+	
+	public static String formatVersionText(String revisionNumber, String version) {
+		StringUtility su = new StringUtility();
+		String[] versionArr = version.split("\\.");
+		String majorVersion = su.trimLeadingZeros(versionArr[0]);
+		String minorVersion = su.trimLeadingZeros(versionArr[1]);
+		String modifiedVersion =  majorVersion + "." + minorVersion + "." + revisionNumber;
 		return modifiedVersion;
 	}
 	

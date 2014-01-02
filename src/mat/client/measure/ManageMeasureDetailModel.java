@@ -5,7 +5,6 @@ import java.util.List;
 import mat.model.Author;
 import mat.model.MeasureType;
 import mat.shared.model.util.MeasureDetailsUtil;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -24,6 +23,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	
 	/** The version number. */
 	private String versionNumber = "0.0";
+	/** The revision number. */
+	private String revisionNumber = "000";
 	
 	/** The measure id. */
 	private String measureId;
@@ -48,7 +49,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	
 	/** The meas steward. */
 	private String measSteward;
-
+	
 	//US 413. Support Steward Other
 	/** The meas steward other. */
 	private String measStewardOther;
@@ -239,7 +240,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	public void setReferencesList(List<String> referencesList) {
 		this.referencesList = referencesList;
 	}
-		
+	
 	/**
 	 * Gets the author list.
 	 * 
@@ -743,9 +744,9 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 * @return the string
 	 */
 	private String doTrim(String str){
-		return str != null && str.trim().length() > 0 ? str.trim() : null;
+		return (str != null) && (str.trim().length() > 0) ? str.trim() : null;
 	}
-
+	
 	/**
 	 * Gets the measure set id.
 	 * 
@@ -1049,7 +1050,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	public void seteMeasureId(int eMeasureId) {
 		this.eMeasureId = eMeasureId;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Object#hashCode()
 	 */
@@ -1057,103 +1058,103 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
+		result = (prime * result)
 				+ ((toCompareAuthor == null) ? 0 : toCompareAuthor.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((clinicalRecomms == null) ? 0 : clinicalRecomms.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((copyright == null) ? 0 : copyright.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((definitions == null) ? 0 : definitions.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((denominator == null) ? 0 : denominator.hashCode());
-		result = prime
-				* result
+		result = (prime
+				* result)
 				+ ((denominatorExceptions == null) ? 0 : denominatorExceptions
 						.hashCode());
-		result = prime
-				* result
+		result = (prime
+				* result)
 				+ ((denominatorExclusions == null) ? 0 : denominatorExclusions
 						.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((description == null) ? 0 : description.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((disclaimer == null) ? 0 : disclaimer.hashCode());
-		result = prime * result + (draft ? 1231 : 1237);
-		result = prime * result + eMeasureId;
-		result = prime * result
+		result = (prime * result) + (draft ? 1231 : 1237);
+		result = (prime * result) + eMeasureId;
+		result = (prime * result)
 				+ ((endorseByNQF == null) ? 0 : endorseByNQF.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((finalizedDate == null) ? 0 : finalizedDate.hashCode());
-		result = prime * result + ((groupId == null) ? 0 : groupId.hashCode());
-		result = prime * result
+		result = (prime * result) + ((groupId == null) ? 0 : groupId.hashCode());
+		result = (prime * result)
 				+ ((groupName == null) ? 0 : groupName.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((guidance == null) ? 0 : guidance.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result
+		result = (prime * result) + ((id == null) ? 0 : id.hashCode());
+		result = (prime * result)
 				+ ((improvNotations == null) ? 0 : improvNotations.hashCode());
-		result = prime
-				* result
+		result = (prime
+				* result)
 				+ ((initialPatientPop == null) ? 0 : initialPatientPop
 						.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((measFromPeriod == null) ? 0 : measFromPeriod.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((measScoring == null) ? 0 : measScoring.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((measSteward == null) ? 0 : measSteward.hashCode());
-		result = prime
-				* result
+		result = (prime
+				* result)
 				+ ((measStewardOther == null) ? 0 : measStewardOther.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((measToPeriod == null) ? 0 : measToPeriod.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((measureId == null) ? 0 : measureId.hashCode());
-		result = prime
-				* result
+		result = (prime
+				* result)
 				+ ((measureObservations == null) ? 0 : measureObservations
 						.hashCode());
-		result = prime
-				* result
+		result = (prime
+				* result)
 				+ ((measurePopulation == null) ? 0 : measurePopulation
 						.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((measureSetId == null) ? 0 : measureSetId.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((measureStatus == null) ? 0 : measureStatus.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((toCompareMeasure == null) ? 0 : toCompareMeasure.hashCode());
-		result = prime * result + ((name == null) ? 0 : name.hashCode());
-		result = prime * result + ((nqfId == null) ? 0 : nqfId.hashCode());
-		result = prime * result
+		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
+		result = (prime * result) + ((nqfId == null) ? 0 : nqfId.hashCode());
+		result = (prime * result)
 				+ ((numerator == null) ? 0 : numerator.hashCode());
-		result = prime
-				* result
+		result = (prime
+				* result)
 				+ ((numeratorExclusions == null) ? 0 : numeratorExclusions
 						.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((rateAggregation == null) ? 0 : rateAggregation.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((rationale == null) ? 0 : rationale.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((referencesList == null) ? 0 : referencesList.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((riskAdjustment == null) ? 0 : riskAdjustment.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((shortName == null) ? 0 : shortName.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((stratification == null) ? 0 : stratification.hashCode());
-		result = prime
-				* result
+		result = (prime
+				* result)
 				+ ((supplementalData == null) ? 0 : supplementalData.hashCode());
-		result = prime
-				* result
+		result = (prime
+				* result)
 				+ ((transmissionFormat == null) ? 0 : transmissionFormat
 						.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((valueSetDate == null) ? 0 : valueSetDate.hashCode());
-		result = prime * result
+		result = (prime * result)
 				+ ((versionNumber == null) ? 0 : versionNumber.hashCode());
 		return result;
 	}
@@ -1162,209 +1163,288 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		ManageMeasureDetailModel other = (ManageMeasureDetailModel) obj;
 		if (toCompareAuthor == null) {
-			if (other.toCompareAuthor != null)
+			if (other.toCompareAuthor != null) {
 				return false;
-		} else if (!isEqual(toCompareAuthor, other.toCompareAuthor))
+			}
+		} else if (!isEqual(toCompareAuthor, other.toCompareAuthor)) {
 			return false;
+		}
 		if (trimToNull(clinicalRecomms) == null) {
-			if (trimToNull(other.clinicalRecomms) != null)
+			if (trimToNull(other.clinicalRecomms) != null) {
 				return false;
-		} else if (!trimToNull(clinicalRecomms).equals(trimToNull(other.clinicalRecomms)))
+			}
+		} else if (!trimToNull(clinicalRecomms).equals(trimToNull(other.clinicalRecomms))) {
 			return false;
+		}
 		if (trimToNull(copyright) == null) {
-			if (trimToNull(other.copyright) != null)
+			if (trimToNull(other.copyright) != null) {
 				return false;
-		} else if (!trimToNull(copyright).equals(trimToNull(other.copyright)))
+			}
+		} else if (!trimToNull(copyright).equals(trimToNull(other.copyright))) {
 			return false;
+		}
 		if (trimToNull(definitions) == null) {
-			if (trimToNull(other.definitions) != null)
+			if (trimToNull(other.definitions) != null) {
 				return false;
-		} else if (!trimToNull(definitions).equals(trimToNull(other.definitions)))
+			}
+		} else if (!trimToNull(definitions).equals(trimToNull(other.definitions))) {
 			return false;
+		}
 		if (trimToNull(denominator) == null) {
-			if (trimToNull(other.denominator) != null)
+			if (trimToNull(other.denominator) != null) {
 				return false;
-		} else if (!trimToNull(denominator).equals(trimToNull(other.denominator)))
+			}
+		} else if (!trimToNull(denominator).equals(trimToNull(other.denominator))) {
 			return false;
+		}
 		if (trimToNull(denominatorExceptions) == null) {
-			if (trimToNull(other.denominatorExceptions) != null)
+			if (trimToNull(other.denominatorExceptions) != null) {
 				return false;
-		} else if (!trimToNull(denominatorExceptions).equals(trimToNull(other.denominatorExceptions)))
+			}
+		} else if (!trimToNull(denominatorExceptions).equals(trimToNull(other.denominatorExceptions))) {
 			return false;
+		}
 		if (trimToNull(denominatorExclusions) == null) {
-			if (trimToNull(other.denominatorExclusions) != null)
+			if (trimToNull(other.denominatorExclusions) != null) {
 				return false;
-		} else if (!trimToNull(denominatorExclusions).equals(trimToNull(other.denominatorExclusions)))
+			}
+		} else if (!trimToNull(denominatorExclusions).equals(trimToNull(other.denominatorExclusions))) {
 			return false;
+		}
 		if (trimToNull(description) == null) {
-			if (trimToNull(other.description) != null)
+			if (trimToNull(other.description) != null) {
 				return false;
-		} else if (!trimToNull(description).equals(trimToNull(other.description)))
+			}
+		} else if (!trimToNull(description).equals(trimToNull(other.description))) {
 			return false;
+		}
 		if (trimToNull(disclaimer) == null) {
-			if (trimToNull(other.disclaimer) != null)
+			if (trimToNull(other.disclaimer) != null) {
 				return false;
-		} else if (!trimToNull(disclaimer).equals(trimToNull(other.disclaimer)))
+			}
+		} else if (!trimToNull(disclaimer).equals(trimToNull(other.disclaimer))) {
 			return false;
-		if (eMeasureId != other.eMeasureId)
+		}
+		if (eMeasureId != other.eMeasureId) {
 			return false;
+		}
 		endorseByNQF = endorseByNQF == null ? false : endorseByNQF.booleanValue();
 		other.endorseByNQF = other.endorseByNQF == null ? false : other.endorseByNQF.booleanValue();
-		if (!endorseByNQF.equals(other.endorseByNQF))
+		if (!endorseByNQF.equals(other.endorseByNQF)) {
 			return false;
+		}
 		if (trimToNull(finalizedDate) == null) {
-			if (trimToNull(other.finalizedDate) != null)
+			if (trimToNull(other.finalizedDate) != null) {
 				return false;
-		} else if (!trimToNull(finalizedDate).equals(trimToNull(other.finalizedDate)))
+			}
+		} else if (!trimToNull(finalizedDate).equals(trimToNull(other.finalizedDate))) {
 			return false;
+		}
 		if (trimToNull(groupId) == null) {
-			if (trimToNull(other.groupId) != null)
+			if (trimToNull(other.groupId) != null) {
 				return false;
-		} else if (!trimToNull(groupId).equals(trimToNull(other.groupId)))
+			}
+		} else if (!trimToNull(groupId).equals(trimToNull(other.groupId))) {
 			return false;
+		}
 		if (trimToNull(groupName) == null) {
-			if (trimToNull(other.groupName) != null)
+			if (trimToNull(other.groupName) != null) {
 				return false;
-		} else if (!trimToNull(groupName).equals(trimToNull(other.groupName)))
+			}
+		} else if (!trimToNull(groupName).equals(trimToNull(other.groupName))) {
 			return false;
+		}
 		if (trimToNull(guidance) == null) {
-			if (trimToNull(other.guidance) != null)
+			if (trimToNull(other.guidance) != null) {
 				return false;
-		} else if (!trimToNull(guidance).equals(trimToNull(other.guidance)))
+			}
+		} else if (!trimToNull(guidance).equals(trimToNull(other.guidance))) {
 			return false;
+		}
 		if (trimToNull(improvNotations) == null) {
-			if (trimToNull(other.improvNotations) != null)
+			if (trimToNull(other.improvNotations) != null) {
 				return false;
-		} else if (!trimToNull(improvNotations).equals(trimToNull(other.improvNotations)))
+			}
+		} else if (!trimToNull(improvNotations).equals(trimToNull(other.improvNotations))) {
 			return false;
+		}
 		if (trimToNull(initialPatientPop) == null) {
-			if (trimToNull(other.initialPatientPop) != null)
+			if (trimToNull(other.initialPatientPop) != null) {
 				return false;
-		} else if (!trimToNull(initialPatientPop).equals(trimToNull(other.initialPatientPop)))
+			}
+		} else if (!trimToNull(initialPatientPop).equals(trimToNull(other.initialPatientPop))) {
 			return false;
+		}
 		if (trimToNull(measFromPeriod) == null) {
-			if (trimToNull(other.measFromPeriod) != null)
+			if (trimToNull(other.measFromPeriod) != null) {
 				return false;
-		} else if (!trimToNull(measFromPeriod).equals(trimToNull(other.measFromPeriod)))
+			}
+		} else if (!trimToNull(measFromPeriod).equals(trimToNull(other.measFromPeriod))) {
 			return false;
+		}
 		if (trimToNull(measSteward) == null) {
-			if (trimToNull(other.measSteward) != null)
+			if (trimToNull(other.measSteward) != null) {
 				return false;
+			}
 		} else if(trimToNull(measSteward).equals("Other")){
 			if (trimToNull(measStewardOther) == null) {
-				if (trimToNull(other.measStewardOther) != null)
+				if (trimToNull(other.measStewardOther) != null) {
 					return false;
-			} else if (!trimToNull(measStewardOther).equals(trimToNull(other.measStewardOther)))
+				}
+			} else if (!trimToNull(measStewardOther).equals(trimToNull(other.measStewardOther))) {
 				return false;
+			}
 		}else if (!trimToNull(measSteward).equals(trimToNull(other.measSteward))){
 			return false;
-		} 
+		}
 		if (trimToNull(measToPeriod) == null) {
-			if (trimToNull(other.measToPeriod) != null)
+			if (trimToNull(other.measToPeriod) != null) {
 				return false;
-		} else if (!trimToNull(measToPeriod).equals(trimToNull(other.measToPeriod)))
+			}
+		} else if (!trimToNull(measToPeriod).equals(trimToNull(other.measToPeriod))) {
 			return false;
+		}
 		if (trimToNull(measureId) == null) {
-			if (trimToNull(other.measureId) != null)
+			if (trimToNull(other.measureId) != null) {
 				return false;
-		} else if (!trimToNull(measureId).equals(trimToNull(other.measureId)))
+			}
+		} else if (!trimToNull(measureId).equals(trimToNull(other.measureId))) {
 			return false;
+		}
 		if (trimToNull(measureObservations) == null) {
-			if (trimToNull(other.measureObservations) != null)
+			if (trimToNull(other.measureObservations) != null) {
 				return false;
-		} else if (!trimToNull(measureObservations).equals(trimToNull(other.measureObservations)))
+			}
+		} else if (!trimToNull(measureObservations).equals(trimToNull(other.measureObservations))) {
 			return false;
+		}
 		if (trimToNull(measurePopulation) == null) {
-			if (trimToNull(other.measurePopulation) != null)
+			if (trimToNull(other.measurePopulation) != null) {
 				return false;
-		} else if (!trimToNull(measurePopulation).equals(trimToNull(other.measurePopulation)))
+			}
+		} else if (!trimToNull(measurePopulation).equals(trimToNull(other.measurePopulation))) {
 			return false;
+		}
 		if (trimToNull(measureSetId) == null) {
-			if (trimToNull(other.measureSetId) != null)
+			if (trimToNull(other.measureSetId) != null) {
 				return false;
-		} else if (!trimToNull(measureSetId).equals(trimToNull(other.measureSetId)))
+			}
+		} else if (!trimToNull(measureSetId).equals(trimToNull(other.measureSetId))) {
 			return false;
+		}
 		if (trimToNull(measureStatus) == null) {
-			if (trimToNull(other.measureStatus) != null)
+			if (trimToNull(other.measureStatus) != null) {
 				return false;
-		} else if (!trimToNull(measureStatus).equals(trimToNull(other.measureStatus)))
+			}
+		} else if (!trimToNull(measureStatus).equals(trimToNull(other.measureStatus))) {
 			return false;
+		}
 		if (toCompareMeasure == null) {
-			if (other.toCompareMeasure != null)
+			if (other.toCompareMeasure != null) {
 				return false;
-		} else if (!isEqual(toCompareMeasure, other.toCompareMeasure))
+			}
+		} else if (!isEqual(toCompareMeasure, other.toCompareMeasure)) {
 			return false;
+		}
 		if (trimToNull(name) == null) {
-			if (trimToNull(other.name) != null)
+			if (trimToNull(other.name) != null) {
 				return false;
-		} else if (!trimToNull(name).equals(trimToNull(other.name)))
+			}
+		} else if (!trimToNull(name).equals(trimToNull(other.name))) {
 			return false;
+		}
 		if (trimToNull(nqfId) == null) {
-			if (trimToNull(other.nqfId) != null)
+			if (trimToNull(other.nqfId) != null) {
 				return false;
-		} else if (!trimToNull(nqfId).equals(trimToNull(other.nqfId)))
+			}
+		} else if (!trimToNull(nqfId).equals(trimToNull(other.nqfId))) {
 			return false;
+		}
 		if (trimToNull(numerator) == null) {
-			if (trimToNull(other.numerator) != null)
+			if (trimToNull(other.numerator) != null) {
 				return false;
-		} else if (!trimToNull(numerator).equals(trimToNull(other.numerator)))
+			}
+		} else if (!trimToNull(numerator).equals(trimToNull(other.numerator))) {
 			return false;
+		}
 		if (trimToNull(numeratorExclusions) == null) {
-			if (trimToNull(other.numeratorExclusions) != null)
+			if (trimToNull(other.numeratorExclusions) != null) {
 				return false;
-		} else if (!trimToNull(numeratorExclusions).equals(trimToNull(other.numeratorExclusions)))
+			}
+		} else if (!trimToNull(numeratorExclusions).equals(trimToNull(other.numeratorExclusions))) {
 			return false;
+		}
 		if (trimToNull(rateAggregation) == null) {
-			if (trimToNull(other.rateAggregation) != null)
+			if (trimToNull(other.rateAggregation) != null) {
 				return false;
-		} else if (!trimToNull(rateAggregation).equals(trimToNull(other.rateAggregation)))
+			}
+		} else if (!trimToNull(rateAggregation).equals(trimToNull(other.rateAggregation))) {
 			return false;
+		}
 		if (trimToNull(rationale) == null) {
-			if (trimToNull(other.rationale) != null)
+			if (trimToNull(other.rationale) != null) {
 				return false;
-		} else if (!trimToNull(rationale).equals(trimToNull(other.rationale)))
+			}
+		} else if (!trimToNull(rationale).equals(trimToNull(other.rationale))) {
 			return false;
+		}
 		if (referencesList == null) {
-			if (other.referencesList != null)
+			if (other.referencesList != null) {
 				return false;
-		} else if (!isEqual(MeasureDetailsUtil.getTrimmedList(referencesList),MeasureDetailsUtil.getTrimmedList(other.referencesList)))
+			}
+		} else if (!isEqual(MeasureDetailsUtil.getTrimmedList(referencesList),
+				MeasureDetailsUtil.getTrimmedList(other.referencesList))) {
 			return false;
+		}
 		if (trimToNull(riskAdjustment) == null) {
-			if (trimToNull(other.riskAdjustment) != null)
+			if (trimToNull(other.riskAdjustment) != null) {
 				return false;
-		} else if (!trimToNull(riskAdjustment).equals(trimToNull(other.riskAdjustment)))
+			}
+		} else if (!trimToNull(riskAdjustment).equals(trimToNull(other.riskAdjustment))) {
 			return false;
+		}
 		if (trimToNull(shortName) == null) {
-			if (trimToNull(other.shortName) != null)
+			if (trimToNull(other.shortName) != null) {
 				return false;
-		} else if (!trimToNull(shortName).equals(trimToNull(other.shortName)))
+			}
+		} else if (!trimToNull(shortName).equals(trimToNull(other.shortName))) {
 			return false;
+		}
 		if (trimToNull(stratification) == null) {
-			if (trimToNull(other.stratification) != null)
+			if (trimToNull(other.stratification) != null) {
 				return false;
-		} else if (!trimToNull(stratification).equals(trimToNull(other.stratification)))
+			}
+		} else if (!trimToNull(stratification).equals(trimToNull(other.stratification))) {
 			return false;
+		}
 		if (trimToNull(supplementalData) == null) {
-			if (trimToNull(other.supplementalData) != null)
+			if (trimToNull(other.supplementalData) != null) {
 				return false;
-		} else if (!trimToNull(supplementalData).equals(trimToNull(other.supplementalData)))
+			}
+		} else if (!trimToNull(supplementalData).equals(trimToNull(other.supplementalData))) {
 			return false;
+		}
 		if (trimToNull(transmissionFormat) == null) {
-			if (trimToNull(other.transmissionFormat) != null)
+			if (trimToNull(other.transmissionFormat) != null) {
 				return false;
-		} else if (!trimToNull(transmissionFormat).equals(trimToNull(other.transmissionFormat)))
+			}
+		} else if (!trimToNull(transmissionFormat).equals(trimToNull(other.transmissionFormat))) {
 			return false;
+		}
 		return true;
 	}
-
+	
 	
 	
 	/**
@@ -1377,29 +1457,31 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 * @return true, if is equal
 	 */
 	public boolean isEqual(List listA, List listB) {
-	    if (listA.size() != listB.size()) return false;
-	    for (int i=0; i<listA.size(); i++) {
-	    	if(listA.get(i) instanceof Author){
-	    		Author author = (Author) listA.get(i);
-	    		Author otherAuthor = (Author) listB.get(i);
-	    		if(author.compare(author, otherAuthor) != 0){
-	    			return false;
-	    		}
-	    	}else if(listA.get(i) instanceof MeasureType){
-	    		MeasureType measureType = (MeasureType) listA.get(i);
-	    		MeasureType otherMeasureType = (MeasureType) listB.get(i);
-	    		if(measureType.compare(measureType, otherMeasureType) != 0){
-	    			return false;
-	    		}
-	    	}else if(listA.get(i) instanceof String){	    		
-	    		String val1 = (String)listA.get(i);
-	    		String val2 = (String)listB.get(i);
-	    		if(val1.compareTo(val2) != 0){
-	    			return false;
-	    		}
-	    	}
-	    }
-	    return true;
+		if (listA.size() != listB.size()) {
+			return false;
+		}
+		for (int i=0; i<listA.size(); i++) {
+			if(listA.get(i) instanceof Author){
+				Author author = (Author) listA.get(i);
+				Author otherAuthor = (Author) listB.get(i);
+				if(author.compare(author, otherAuthor) != 0){
+					return false;
+				}
+			}else if(listA.get(i) instanceof MeasureType){
+				MeasureType measureType = (MeasureType) listA.get(i);
+				MeasureType otherMeasureType = (MeasureType) listB.get(i);
+				if(measureType.compare(measureType, otherMeasureType) != 0){
+					return false;
+				}
+			}else if(listA.get(i) instanceof String){
+				String val1 = (String)listA.get(i);
+				String val2 = (String)listB.get(i);
+				if(val1.compareTo(val2) != 0){
+					return false;
+				}
+			}
+		}
+		return true;
 	}
 	
 	
@@ -1456,7 +1538,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	public void setToCompareMeasure(List<MeasureType> toCompareMeasure) {
 		this.toCompareMeasure = toCompareMeasure;
 	}
-
+	
 	/**
 	 * Gets the qlty measure set uuid.
 	 * 
@@ -1681,6 +1763,20 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 */
 	public void setMeasureOwnerId(String measureOwnerId) {
 		this.measureOwnerId = measureOwnerId;
+	}
+	
+	/**
+	 * @return the revisionNumber
+	 */
+	public String getRevisionNumber() {
+		return revisionNumber;
+	}
+	
+	/**
+	 * @param revisionNumber the revisionNumber to set
+	 */
+	public void setRevisionNumber(String revisionNumber) {
+		this.revisionNumber = revisionNumber;
 	}
 	
 	

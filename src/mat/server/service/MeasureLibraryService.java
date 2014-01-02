@@ -366,4 +366,10 @@ public interface MeasureLibraryService {
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
 			List<MatValueSet> matValueSetList) throws MatException;
+	
+	/**
+	 * @param model
+	 * @return
+	 */
+	SaveMeasureResult saveMeasureAtPackage(ManageMeasureDetailModel model);
 }

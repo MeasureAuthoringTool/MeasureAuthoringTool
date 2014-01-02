@@ -3,13 +3,12 @@ package mat.model.clause;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Set;
-
 import mat.model.User;
 
 /**
  * The Class Measure.
  */
-public class Measure{
+public class Measure {
 	
 	/** The id. */
 	private String id;
@@ -25,6 +24,9 @@ public class Measure{
 	
 	/** The version. */
 	private String version;
+	
+	/** The Revision Number. */
+	private String revisionNumber;
 	
 	/** The measure status. */
 	private String measureStatus;
@@ -58,7 +60,7 @@ public class Measure{
 	
 	/** The e measure id. */
 	private int eMeasureId;
-
+	
 	//private String deleted;
 	/** The is private. */
 	private boolean isPrivate;
@@ -197,7 +199,7 @@ public class Measure{
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
+	
 	/**
 	 * Gets the minor version int.
 	 * 
@@ -205,12 +207,12 @@ public class Measure{
 	 */
 	public int getMinorVersionInt(){
 		int minVersion = 0;
-		if(version!=null && !version.isEmpty()){
+		if ((version != null) && !version.isEmpty()) {
 			int decimalIndex = version.indexOf('.');
-			if(decimalIndex < 0){
+			if (decimalIndex < 0) {
 				minVersion = 0;
-			}else{
-				minVersion = Integer.valueOf(version.substring(decimalIndex+1)).intValue();
+			} else {
+			 	minVersion = Integer.valueOf(version.substring(decimalIndex+1)).intValue();
 			}
 		}
 		return minVersion;
@@ -222,9 +224,9 @@ public class Measure{
 	 * @return the minor version str
 	 */
 	public String getMinorVersionStr(){
-		return getMinorVersionInt()+"";
+		return getMinorVersionInt() + "";
 	}
-
+	
 	/**
 	 * Gets the major version int.
 	 * 
@@ -232,15 +234,15 @@ public class Measure{
 	 */
 	public int getMajorVersionInt(){
 		int maxVersion = 0;
-		if(version!=null && !version.isEmpty()){
+		if ((version != null) && !version.isEmpty()) {
 			int decimalIndex = version.indexOf('.');
-			if(decimalIndex < 0){
+			if (decimalIndex < 0) {
 				maxVersion = Integer.valueOf(version).intValue();
-			}else{
+			} else {
 				maxVersion = Integer.valueOf(version.substring(0, decimalIndex)).intValue();
 			}
 		}
-		return maxVersion;	
+		return maxVersion;
 	}
 	
 	/**
@@ -249,7 +251,7 @@ public class Measure{
 	 * @return the major version str
 	 */
 	public String getMajorVersionStr(){
-		return getMajorVersionInt()+"";	
+		return getMajorVersionInt() + "";
 	}
 	
 	/**
@@ -259,12 +261,12 @@ public class Measure{
 	 */
 	public double getVersionNumber(){
 		double versionNumber = 0;
-		if(version!=null && !version.isEmpty()){
+		if ((version != null) && !version.isEmpty()) {
 			versionNumber = Double.valueOf(version).doubleValue();
 		}
 		return versionNumber;
 	}
-
+	
 	
 	/**
 	 * Gets the version.
@@ -302,7 +304,7 @@ public class Measure{
 	 */
 	public void setMeasureScoring(String measureScoring) {
 		this.measureScoring = measureScoring;
-	}	
+	}
 	
 	/**
 	 * Gets the measure status.
@@ -360,7 +362,7 @@ public class Measure{
 	public void setShares(Set<MeasureShare> shares) {
 		this.shares = shares;
 	}
-
+	
 	/**
 	 * Gets the exported date.
 	 * 
@@ -436,7 +438,7 @@ public class Measure{
 	public void seteMeasureId(int eMeasureId) {
 		this.eMeasureId = eMeasureId;
 	}
-
+	
 	/*public String getDeleted() {
 		return deleted;
 	}
@@ -460,5 +462,19 @@ public class Measure{
 	 */
 	public void setIsPrivate(boolean isPrivate) {
 		this.isPrivate = isPrivate;
+	}
+	
+	/**
+	 * @return the revisionNumber
+	 */
+	public String getRevisionNumber() {
+		return revisionNumber;
+	}
+	
+	/**
+	 * @param revisionNumber the revisionNumber to set
+	 */
+	public void setRevisionNumber(String revisionNumber) {
+		this.revisionNumber = revisionNumber;
 	}
 }

@@ -1,5 +1,7 @@
 package mat.client.shared.search;
 
+import mat.client.measure.ManageMeasureSearchModel;
+
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -111,4 +113,6 @@ public interface SearchResults<T> {
 	 * @return the value
 	 */
 	Widget getValue(int row, int column);
+
+
 }

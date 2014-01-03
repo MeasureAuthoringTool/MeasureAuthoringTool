@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import mat.client.Enableable;
 import mat.client.event.MATClickHandler;
+import mat.client.measure.MeasureSearchResultsAdapter;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.LabelBuilder;
@@ -160,10 +161,27 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		fPanel.add(new SpacerWidget());
 		fPanel.add(successMessageDisplay);
 		fPanel.add(new SpacerWidget());
-		fPanel.add(dataTable);	
+		//fPanel.add(dataTable);	
 		fPanel.add(new SpacerWidget());
 		fPanel.add(pageSelector);
 		pageSelector.getElement().setId("serachView_pageSelector");
+	}
+	
+	/**
+	 * Initiates measure search view
+	 * 
+	 * */
+	public void buildCellTable(MeasureSearchResultsAdapter searchResults){	
+	}
+	
+	public void buildImageTextCell(SearchResults searchResults){
+		
+	}
+	
+	
+		
+	public void clearBulkExportBoxes(){
+		
 	}
 	
 	/**
@@ -1120,4 +1138,7 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 	public VerticalPanel getvPanelForQDMTable() {
 		return vPanelForQDMTable;
 	}
+	
+	
+	
 }

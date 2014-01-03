@@ -1,6 +1,9 @@
 package mat.client.measure;
 
+import java.util.List;
+
 import mat.client.ImageResources;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.CreateMeasureWidget;
@@ -11,6 +14,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.search.HasPageSelectionHandler;
@@ -39,6 +43,8 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The bulk export button. */
 	private Button bulkExportButton = new PrimaryButton("Export Selected");
 	
+	private Button clearButton = new PrimaryButton("Clear All", "primaryGreyLeftButton");
+	
 	/** The create button. */
 	/*
 	 * private Button createButton = new SecondaryButton("Create");
@@ -65,6 +71,8 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The form. */
 	final FormPanel form = new FormPanel();
 	
+	private List<Result> selectedMeasureList;
+	
 	/** The msfp. */
 	/*
 	 * private MeasureSearchFilterPanel msfp = new MeasureSearchFilterPanel();
@@ -82,6 +90,8 @@ ManageMeasurePresenter.SearchDisplay {
 	
 	/** The most recent vertical panel. */
 	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
+	
+	MeasureSearchView measureSearchView;
 	
 	/** The options. */
 	/*
@@ -102,8 +112,7 @@ ManageMeasurePresenter.SearchDisplay {
 	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
 	
 	/** The view. */
-	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView(
-			"Measures");
+	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView("Measures");
 	
 	/** The zoom button. */
 	CustomButton zoomButton = (CustomButton) getImage("Search",
@@ -139,7 +148,7 @@ ManageMeasurePresenter.SearchDisplay {
 		mainPanel
 		.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
 		mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,
-				errorMessagesForBulkExport));
+				(PrimaryButton) clearButton,errorMessagesForBulkExport));
 		MatContext.get().setManageMeasureSearchView(this);
 		
 	}
@@ -161,17 +170,21 @@ ManageMeasurePresenter.SearchDisplay {
 	 *            the error message display
 	 * @return the widget
 	 */
-	private Widget buildBottomButtonWidget(PrimaryButton button,
+	private Widget buildBottomButtonWidget(PrimaryButton bulkExportButton,PrimaryButton clearButton,
 			ErrorMessageDisplay errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.getElement().setId("measureLibrary_bottomPanel");
 		flowPanel.add(errorMessageDisplay);
 		flowPanel.setStyleName("rightAlignButton");
-		flowPanel.add(button);
+		bulkExportButton.setTitle("Bulk Export");
+		clearButton.setTitle("Clear");
+		flowPanel.add(bulkExportButton);
+		//flowPanel.add(clearButton);
 		form.setWidget(flowPanel);
 		form.getElement().setId("measureLibrary_bottomPanelForm");
 		return form;
 	}
+	
 	
 	/*
 	 * (non-Javadoc)
@@ -180,9 +193,19 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	@Override
 	public void buildDataTable(
-			SearchResults<ManageMeasureSearchModel.Result> results) {
-		view.buildDataTable(results);
+			MeasureSearchResultsAdapter searchResults) {
+		//view.buildImageTextCell(searchResults);
+		//view.buildDataTable(results);
+		view.buildCellTable(searchResults);
 	}
+	
+	
+	
+//	@Override
+//	public void buildDataTable() {
+//		
+//		view.buildCellTable();
+//	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildMostRecentWidget()
@@ -396,6 +419,11 @@ ManageMeasurePresenter.SearchDisplay {
 		return mostRecentMeasureWidget;
 	}
 	
+//	@Override
+//	public MeasureSearchView getMeasureSearchView() {
+//		return measureSearchView;
+//	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSize()
 	 */
@@ -533,5 +561,31 @@ ManageMeasurePresenter.SearchDisplay {
 			SuccessMessageDisplay successMeasureDeletion) {
 		this.successMeasureDeletion = successMeasureDeletion;
 	}
+
+	@Override
+	public void buildDataTable() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	public void setClearButton(Button clearButton) {
+		this.clearButton = clearButton;
+	}
+
+	@Override
+	public HasClickHandlers getClearButton() {
+		// TODO Auto-generated method stub
+		return clearButton;
+	}
+
+	@Override
+	public void clearBulkExportBoxes() {
+		
+		view.clearBulkExportBoxes();
+	}
+
+	
+	
 	
 }

@@ -556,8 +556,23 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	/** The selected transfer ids. */
 	private List<String> selectedTransferIds;
 	
+	private List<Boolean> isMeasureFamily;
+	
+	public List<Boolean> getIsMeasureFamily() {
+		return isMeasureFamily;
+	}
+
+	public void setIsMeasureFamily(List<Boolean> isMeasureFamily) {
+		this.isMeasureFamily = isMeasureFamily;
+	}
+
+
 	/** The selected transfer results. */
 	private ArrayList<Result> selectedTransferResults;
+
+	private ArrayList<Result> selectedExportResults;
+	
+	
 	
 	
 	/**
@@ -769,6 +784,10 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	public void setSelectedTransferResults(ArrayList<Result> selectedTransferResults) {
 		this.selectedTransferResults = selectedTransferResults;
 	}
+	
+	public void setSelectedExportResults(ArrayList<Result> selectedExportResults) {
+		this.selectedExportResults = selectedExportResults;
+	}
 
 	/**
 	 * Gets the selected transfer results.
@@ -779,8 +798,9 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		return selectedTransferResults;
 	}
 
-	
-
+	public List<Result> getSelectedExportResults() {
+		return selectedExportResults;
+	}
 
 	
 }

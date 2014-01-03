@@ -540,7 +540,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 *            the results
 		 */
 		public void buildDataTable(
-				SearchResults<ManageMeasureSearchModel.Result> results);
+				MeasureSearchResultsAdapter results);
+		
+		public void buildDataTable();
 		
 		/** Builds the most recent widget. */
 		void buildMostRecentWidget();
@@ -629,6 +631,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the most recent measure widget */
 		MostRecentMeasureWidget getMostRecentMeasureWidget();
 		
+		//MeasureSearchView getMeasureSearchView();
+		
 		/**
 		 * Gets the page selection tool.
 		 * 
@@ -698,6 +702,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the zoom button */
 		CustomButton getZoomButton();
+
+		HasClickHandlers getClearButton();
+
+		void clearBulkExportBoxes();
 	}
 	
 	/**
@@ -1221,6 +1229,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 			
 			@Override
+			public void onExportSelectedClicked(Result result) {
+				measureDeletion = false;
+				isMeasureDeleted = false;
+				searchDisplay.getSuccessMeasureDeletion().clear();
+				searchDisplay.getErrorMeasureDeletion().clear();
+				searchDisplay.getErrorMessageDisplayForBulkExport().clear();
+				updateExportedIDs(result, manageMeasureSearchModel);
+				
+			}
+			@Override
 			public void onExportSelectedClicked(CustomCheckBox checkBox) {
 				measureDeletion = false;
 				isMeasureDeleted = false;
@@ -1270,6 +1288,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 				searchDisplay.getErrorMeasureDeletion().clear();
 				displayShare(result.getId(), result.getName());
 			}
+
+			
 		});
 		
 	}
@@ -2524,6 +2544,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 							MatContext.get()
 							.setManageMeasureSearchModel(
 									manageMeasureSearchModel);
+							//searchDisplay.getMeasureSearchView().setMeasureSearchModel(result);
+							
 							
 							if ((result.getResultsTotal() == 0)
 									&& !lastSearchText.isEmpty()) {
@@ -2568,6 +2590,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							sru.update(result, (TextBox) searchDisplay
 									.getSearchString(), lastSearchText);
 							searchDisplay.buildDataTable(searchResults);
+							//searchDisplay.buildDataTable();
 							showSearchingBusy(false);
 							
 						}
@@ -3414,6 +3437,27 @@ public class ManageMeasurePresenter implements MatPresenter {
 			
 		}
 	}
+	
+	private void updateExportedIDs(Result result, ManageMeasureSearchModel model) {
+		if (result.isExportable()) {
+			List<String> selectedIdList = model.getSelectedExportIds();
+			if (!selectedIdList.contains(result.getId())) {
+				//model.getSelectedExportResults().add(result);
+				selectedIdList.add(result.getId());
+			}
+		} 
+//		else {
+//			for (int i = 0; i < model.getSelectedTransferIds().size(); i++) {
+//				if (result.getId().equals(model.getSelec().get(i)
+//						.getId())) {
+//					model.getSelectedTransferIds().remove(i);
+//					model.getSelectedTransferResults().remove(i);
+//				}
+//			}
+//			
+//		}
+	}
+	
 	
 	/**
 	 * Version display handlers.

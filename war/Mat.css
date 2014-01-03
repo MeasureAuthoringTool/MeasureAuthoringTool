@@ -160,6 +160,19 @@ body#main select, body#main input, body#main textarea {
   	cursor: hand;
 }
 
+.customCascadeButton {
+    background: url("images/application_cascade.png");
+    background-position:center;
+	background-repeat:no-repeat;
+	height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+  	cursor: pointer;
+  	cursor: hand;
+}
+
+
 .customExportButton {
     background: url("images/g_package_go.gif");
     background-position:center;
@@ -171,6 +184,55 @@ body#main select, body#main input, body#main textarea {
     cursor: pointer;
     cursor: hand;
 }
+
+.customEditButton {
+    background: url("images/g_package_edit.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.customReadOnlyButton {
+    background: url("images/application_view_detail_1.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.customShareButton {
+    background: url("images/g_package_share.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+    cursor: pointer;
+    cursor: hand;
+}
+
+.customCloneButton {
+    background: url("images/g_page_copy.gif");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+    cursor: pointer;
+    cursor: hand;
+}
+
 
 .primaryGreyButton {
     background: url("images/bg_btnGrey-secondary.png");

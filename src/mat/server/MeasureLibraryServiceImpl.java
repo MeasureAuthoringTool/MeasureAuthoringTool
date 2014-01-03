@@ -1267,6 +1267,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 		}
 		ManageMeasureDetailModel mDetail = getMeasure(measureId);
+		// Need to check for logic when to mark a measure as completed.
+		//mDetail.setMeasureStatus("Complete");
 		SaveMeasureResult rs = new SaveMeasureResult();
 		int endIndex = versionNumber.indexOf('.');
 		String majorVersionNumber = versionNumber.substring(0, endIndex);

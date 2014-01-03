@@ -242,6 +242,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The save error display. */
 	private ErrorMessageDisplay saveErrorDisplay = new ErrorMessageDisplay();
 	
+	/** The measure population exclusions input. */
+	protected TextAreaWithMaxLength  measurePopulationExclusionsInput = new TextAreaWithMaxLength ();
+	
 	
 	/**
 	 * Instantiates a new meta data view.
@@ -527,8 +530,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(LabelBuilder.buildLabel(setNameInput, "Measure Set"));
 		fPanel.add(setNameInput);
 		setNameInput.addKeyDownHandler(keyDownHandler);
-		//fPanel.add(new SpacerWidget());
+		fPanel.add(new SpacerWidget());
 		
+		fPanel.add(LabelBuilder.buildLabel(measurePopulationExclusionsInput, "Measure Population Exclusions"));
+		fPanel.add(measurePopulationExclusionsInput);
+		measurePopulationExclusionsInput.addKeyDownHandler(keyDownHandler);
 		
 		AddRowButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -600,6 +606,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measureObservationsInput.setMaxLength(15000);
 		eMeasureIdentifierInput.setReadOnly(true);
 		eMeasureIdentifierInput.setMaxLength(6);
+		measurePopulationExclusionsInput.setSize("500px","100px");
+		measurePopulationExclusionsInput.setMaxLength(15000);
 		generateeMeasureIDButton.setEnabled(true);
 		String emeasureIdMSG = "Once an eMeasure Identifier (Measure Authoring Tool) has been generated it may not be modified or removed for any draft or version of a measure.";
 		generateeMeasureIDButton.setTitle(emeasureIdMSG);
@@ -770,7 +778,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return setNameInput;
 	}
 	
-	
+	@Override
+	public HasValue<String> getMeasurePopulationExclusions() {
+		return measurePopulationExclusionsInput;
+	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#geteMeasureIdentifier()

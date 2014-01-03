@@ -247,6 +247,11 @@
       <bind-xml name="measurePopulationDescription" node="element"/>
     </field>
     
+    <field name="measurePopulationExclusions"
+           type="java.lang.String">
+      <bind-xml name="measurePopulationExclusionsDescription" node="element"/>
+    </field>
+    
     <field name="measureObservations"
            type="java.lang.String">
       <bind-xml name="measureObservationsDescription" node="element"/>

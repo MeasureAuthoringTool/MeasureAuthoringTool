@@ -502,7 +502,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 * 
 		 * @return the delete measure
 		 */
-		public Button getDeleteMeasure();	
+		public Button getDeleteMeasure();
+
+		HasValue<String> getMeasurePopulationExclusions();	
 		
 	}
 	
@@ -1041,7 +1043,7 @@ private void setAuthorsListOnView() {
 		metaDataDisplay.getDenominatorExceptions().setValue(currentMeasureDetail.getDenominatorExceptions());
 		metaDataDisplay.getMeasurePopulation().setValue(currentMeasureDetail.getMeasurePopulation());
 		metaDataDisplay.getMeasureObservations().setValue(currentMeasureDetail.getMeasureObservations());
-
+		metaDataDisplay.getMeasurePopulationExclusions().setValue(currentMeasureDetail.getMeasurePopulationExclusions());
 				
 		metaDataDisplay.getCopyright().setValue(currentMeasureDetail.getCopyright());
 		if(currentMeasureDetail.getEndorseByNQF()!= null && currentMeasureDetail.getEndorseByNQF().equals(true)){
@@ -1246,6 +1248,7 @@ private void setAuthorsListOnView() {
 		currentMeasureDetail.setToCompareAuthor(dbAuthorList);
 		currentMeasureDetail.setToCompareMeasure(dbMeasureTypeList);
 		currentMeasureDetail.setNqfId(metaDataDisplay.getNqfId().getValue());
+		currentMeasureDetail.setMeasurePopulationExclusions(metaDataDisplay.getMeasurePopulationExclusions().getValue());
 		if(metaDataDisplay.getEmeasureId().getValue() != null && !metaDataDisplay.getEmeasureId().getValue().equals("")){
 			currentMeasureDetail.seteMeasureId(new Integer(metaDataDisplay.getEmeasureId().getValue()));
 		}

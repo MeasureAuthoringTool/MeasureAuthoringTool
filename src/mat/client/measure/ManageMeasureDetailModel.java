@@ -184,6 +184,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	/** The measure owner id. */
 	private String measureOwnerId;
 	
+	private String measurePopulationExclusions;
+	
 	/**
 	 * Checks if is deleted.
 	 * 
@@ -1777,6 +1779,21 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 */
 	public void setRevisionNumber(String revisionNumber) {
 		this.revisionNumber = revisionNumber;
+	}
+
+	/**
+	 * @return the measurePopulationExclusions
+	 */
+	public String getMeasurePopulationExclusions() {
+		return measurePopulationExclusions;
+	}
+
+	/**
+	 * @param measurePopulationExclusions the measurePopulationExclusions to set
+	 */
+	public void setMeasurePopulationExclusions(
+			String measurePopulationExclusions) {
+		this.measurePopulationExclusions = measurePopulationExclusions;
 	}
 	
 	

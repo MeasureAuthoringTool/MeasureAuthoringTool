@@ -121,6 +121,9 @@ public class XmlProcessor {
 
 	/** The Constant MEASURE_POPULATIONS. */
 	private static final String MEASURE_POPULATIONS = "measurePopulations";
+	
+	/** The Constant MEASURE_POPULATION_EXCLUSIONS. */
+	private static final String MEASURE_POPULATION_EXCLUSIONS = "measurePopulationExclusions";
 
 	/** The Constant INITIAL_PATIENT_POPULATIONS. */
 	private static final String INITIAL_PATIENT_POPULATIONS = "initialPatientPopulations";
@@ -175,6 +178,7 @@ public class XmlProcessor {
 		constantsMap.put("denominatorExclusions", "Denominator Exclusions");
 		constantsMap.put("denominatorExceptions", "Denominator Exceptions");
 		constantsMap.put("measurePopulations", "Measure Populations");
+		constantsMap.put("measurePopulationExclusions", "Measure Population Exclusions");
 		constantsMap.put("numeratorExclusions", "Numerator Exclusions");
 
 		constantsMap.put("Measure Observations", "Measure Observation");
@@ -696,7 +700,7 @@ public class XmlProcessor {
 			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
 		} else if (PROPOR.equals(scoringType.toUpperCase())) {
 			// Numerator Exclusions, Measure Populations
-			xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
+			//xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
 		} else if (SCORING_TYPE_CONTVAR.equals(scoringType.toUpperCase())) {
@@ -734,6 +738,7 @@ public class XmlProcessor {
 		} else if (PROPOR.equals(scoringType)) {
 			scoreBasedNodes.add(INITIAL_PATIENT_POPULATIONS);
 			scoreBasedNodes.add(NUMERATORS);
+			scoreBasedNodes.add(NUMERATOR_EXCLUSIONS);
 			scoreBasedNodes.add(DENOMINATORS);
 			scoreBasedNodes.add(DENOMINATOR_EXCLUSIONS);
 			scoreBasedNodes.add(DENOMINATOR_EXCEPTIONS);

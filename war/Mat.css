@@ -81,6 +81,13 @@ body#main select, body#main input, body#main textarea {
 	background: #ECECEC;
 }
 
+.pos_fixed
+{
+position:fixed;
+top:30px;
+left:50px;
+}
+
 .gwt-TextBox{
 	vertical-align: middle!important;
 }
@@ -94,7 +101,11 @@ body#main select, body#main input, body#main textarea {
 }
 
 .textEmptySpaces{
-	text-indent: 2em;
+	/*text-indent: 2em;
+	 color: light blue;*/ 
+	background-color: transparent; 
+	border-color: transparent;
+	width:30px; 
 }
 
 

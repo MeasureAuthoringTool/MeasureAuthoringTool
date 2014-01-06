@@ -187,7 +187,7 @@ public static interface Observer {
 	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable() {
 		final MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = 
 				new MultiSelectionModel<ManageMeasureSearchModel.Result>();
-		table.setSelectionModel(selectionModel);
+		//table.setSelectionModel(selectionModel);
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
 			List<String> measureSetID=new ArrayList<String>();
@@ -202,9 +202,10 @@ public static interface Observer {
 				if(rowindex>0){
 					if(object.getMeasureSetId().equalsIgnoreCase(measureSetID.get(rowindex-1))){
 						sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" >" + 
-								"<p class='"+textCssClass+"' title='" +object.getName()+"'>"+object.getName()+"</p></a>");
-						
+								+ "style=\"text-decoration:none\" >" + 
+								"<button class='textEmptySpaces' disabled='disabled'></button>");
+						sb.appendHtmlConstant("<span title='" +object.getName()+"'>"+object.getName()+"</span>");
+						sb.appendHtmlConstant("</a>");
 						}	
 					else{
 						sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
@@ -213,13 +214,6 @@ public static interface Observer {
 								+"'" + "class='"+cssClass + "'></button>");
 						sb.appendHtmlConstant("<span title='" +object.getName()+"'>"+object.getName()+"</span>");
 						sb.appendHtmlConstant("</a>");
-						
-//						sb.appendHtmlConstant("<table><tr><th><a href=\"javascript:void(0);\" "
-//								+ "style=\"text-decoration:none\" >" + 
-//								"<button title='"+object.getName() 
-//								+"'" + "class='"+cssClass + "'></button></a></th>");
-//						sb.appendHtmlConstant("<th><a><span title='" +object.getName()+"'>"+object.getName()+"</span>");
-//						sb.appendHtmlConstant("</a></th></tr></table>");
 					}
 				}
 				else{
@@ -467,14 +461,14 @@ public static interface Observer {
 		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
 	    selectedMeasureList = new ArrayList<Result>();
 		selectedMeasureList.addAll(results.getData());
-		//table.setRowData(selectedMeasureList);
-		table.setPageSize(25);
+		table.setRowData(selectedMeasureList);
+		//table.setPageSize(25);
 		table.redraw();
 		table.setRowCount(selectedMeasureList.size(), true);
 		sortProvider.refresh();
 		sortProvider.getList().addAll(results.getData());
 		table = addColumnToTable();
-	//	buildTableCssStyle();
+		buildTableCssStyle();
 		sortProvider.addDataDisplay(table);
 		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
@@ -652,39 +646,42 @@ public Widget asWidget() {
 //	}
 	
 	
-//	public void buildTableCssStyle(){
-//
-//		int tablesize=table.getRowCount();
-//		boolean EVEN=true;
-//		for(int rows=0;rows<tablesize;rows++){
-//			if(rows>0){
-//				if(EVEN==true){ 
-//					if(selectedMeasureList.get(rows).getMeasureSetId()
-//						.equalsIgnoreCase(selectedMeasureList.get(rows-1).getMeasureSetId())){
-//						table.getRowElement(rows).setClassName("cellTableOddRow");
-//						}
-//					else{
-//						table.getRowElement(rows).setClassName("cellTableEvenRow");
-//						EVEN=false;
-//						}
-//					}
-//				else{
-//					if(selectedMeasureList.get(rows).getMeasureSetId()
-//							.equalsIgnoreCase(selectedMeasureList.get(rows-1).getMeasureSetId())){
-//						table.getRowElement(rows).setClassName("cellTableEvenRow");
-//						EVEN=true;
-//						}
-//					else{
-//						table.getRowElement(rows).setClassName("cellTableOddRow");
-//						EVEN=false;
-//						}	
-//					}
-//				}
-//			else{
-//				table.getRowElement(rows).setClassName("cellTableOddRow");
-//				}
-//			}
-//		}
+	public void buildTableCssStyle(){
+
+		int tableSize=table.getRowCount();
+		if(tableSize>25){
+			tableSize=25;
+		}
+		boolean EVEN=true;
+		for(int rows=0;rows<tableSize;rows++){
+			if(rows>0){
+				if(EVEN==true){ 
+					if(selectedMeasureList.get(rows).getMeasureSetId()
+						.equalsIgnoreCase(selectedMeasureList.get(rows-1).getMeasureSetId())){
+						table.getRowElement(rows).setClassName("cellTableOddRow");
+						}
+					else{
+						table.getRowElement(rows).setClassName("cellTableEvenRow");
+						EVEN=false;
+						}
+					}
+				else{
+					if(selectedMeasureList.get(rows).getMeasureSetId()
+							.equalsIgnoreCase(selectedMeasureList.get(rows-1).getMeasureSetId())){
+						table.getRowElement(rows).setClassName("cellTableEvenRow");
+						EVEN=true;
+						}
+					else{
+						table.getRowElement(rows).setClassName("cellTableOddRow");
+						EVEN=false;
+						}	
+					}
+				}
+			else{
+				table.getRowElement(rows).setClassName("cellTableOddRow");
+				}
+			}
+		}
 	
     /**
      * Builds the image text cell.

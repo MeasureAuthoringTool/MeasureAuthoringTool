@@ -426,8 +426,8 @@ public static interface Observer {
 		Column<Result, Boolean> bulkExportColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(bulkExportCheckbox) {
 			@Override
 			public Boolean getValue(ManageMeasureSearchModel.Result object) {
-				//return !object.isExportable();
-				return selectionModel.isSelected(object);
+				return !object.isExportable();
+				//return selectionModel.isSelected(object);
 			}
 			
 			@Override
@@ -442,7 +442,7 @@ public static interface Observer {
 			@Override
 			public void update(int index, ManageMeasureSearchModel.Result object, Boolean value) {
 				object.setExportable(value);
-				selectionModel.setSelected(object, value);
+				//selectionModel.setSelected(object, value);
 				observer.onExportSelectedClicked(object);
 			}
 		});

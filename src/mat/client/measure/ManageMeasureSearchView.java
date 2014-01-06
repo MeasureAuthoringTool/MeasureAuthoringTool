@@ -4,6 +4,7 @@ import java.util.List;
 
 import mat.client.ImageResources;
 import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.CreateMeasureWidget;
@@ -91,7 +92,7 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The most recent vertical panel. */
 	VerticalPanel mostRecentVerticalPanel = new VerticalPanel();
 	
-	MeasureSearchView measureSearchView;
+	//MeasureSearchView measureSearchView;
 	
 	/** The options. */
 	/*
@@ -111,8 +112,12 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The success measure deletion. */
 	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
 	
+	private SearchView<ManageMeasureSearchModel.Result> view  =new SearchView<ManageMeasureSearchModel.Result>();
+	
+	MeasureSearchView searchView;
+	
 	/** The view. */
-	SearchView<ManageMeasureSearchModel.Result> view = new MeasureSearchView("Measures");
+	MeasureSearchView measureSearchView = new MeasureSearchView("Measures");
 	
 	/** The zoom button. */
 	CustomButton zoomButton = (CustomButton) getImage("Search",
@@ -144,7 +149,7 @@ ManageMeasurePresenter.SearchDisplay {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(errorMessages);
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(view.asWidget());
+		mainPanel.add(measureSearchView.asWidget());
 		mainPanel
 		.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
 		mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,
@@ -193,10 +198,10 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	@Override
 	public void buildDataTable(
-			MeasureSearchResultsAdapter searchResults) {
+			ManageMeasureSearchModel manageMeasureSearchModel) {
 		//view.buildImageTextCell(searchResults);
 		//view.buildDataTable(results);
-		view.buildCellTable(searchResults);
+		measureSearchView.buildCellTable(manageMeasureSearchModel);
 	}
 	
 	
@@ -419,11 +424,11 @@ ManageMeasurePresenter.SearchDisplay {
 		return mostRecentMeasureWidget;
 	}
 	
-//	@Override
-//	public MeasureSearchView getMeasureSearchView() {
-//		return measureSearchView;
-//	}
-	
+	@Override
+	public MeasureSearchView getMeasureSearchView() {
+		return measureSearchView;
+	}
+//	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSize()
 	 */
@@ -496,7 +501,7 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	@Override
 	public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool() {
-		return view;
+		return measureSearchView;
 	}
 	
 	/* (non-Javadoc)
@@ -582,7 +587,13 @@ ManageMeasurePresenter.SearchDisplay {
 	@Override
 	public void clearBulkExportBoxes() {
 		
-		view.clearBulkExportBoxes();
+	//	view.clearBulkExportBoxes();
+	}
+
+	@Override
+	public void setObserver(Observer observer) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	

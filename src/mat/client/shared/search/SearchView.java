@@ -161,29 +161,14 @@ public class SearchView<T> implements HasSelectionHandlers<T>,
 		fPanel.add(new SpacerWidget());
 		fPanel.add(successMessageDisplay);
 		fPanel.add(new SpacerWidget());
-		//fPanel.add(dataTable);	
+		fPanel.add(dataTable);	
 		fPanel.add(new SpacerWidget());
 		fPanel.add(pageSelector);
 		pageSelector.getElement().setId("serachView_pageSelector");
 	}
 	
-	/**
-	 * Initiates measure search view
-	 * 
-	 * */
-	public void buildCellTable(MeasureSearchResultsAdapter searchResults){	
-	}
 	
-	public void buildImageTextCell(SearchResults searchResults){
-		
-	}
-	
-	
-		
-	public void clearBulkExportBoxes(){
-		
-	}
-	
+
 	/**
 	 * Instantiates a new search view.
 	 * 

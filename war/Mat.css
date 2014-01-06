@@ -73,6 +73,14 @@ body#main select, body#main input, body#main textarea {
 	height: 100%;
 }
 
+.cellTableEvenRow{
+	background: #ffffff;
+}
+
+.cellTableOddRow{
+	background: #ECECEC;
+}
+
 .gwt-TextBox{
 	vertical-align: middle!important;
 }
@@ -83,6 +91,10 @@ body#main select, body#main input, body#main textarea {
 	background-color:rgb(243,247,245);
 	padding: 10px;
 	overflow: auto;
+}
+
+.textEmptySpaces{
+	text-indent: 2em;
 }
 
 

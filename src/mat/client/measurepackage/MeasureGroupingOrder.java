@@ -26,8 +26,11 @@ public enum MeasureGroupingOrder {
 	/** The measure population. */
 	measurePopulation("7"),
 	
+	/** The measure population exclusions. */
+	measurePopulationExclusions("8"),
+	
 	/** The measure observation. */
-	measureObservation("8");
+	measureObservation("9");
 	 
 	/** The status code. */
 	private String statusCode;

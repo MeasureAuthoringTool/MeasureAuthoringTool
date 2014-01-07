@@ -2,6 +2,7 @@ package mat.client.measure.metadata;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.client.codelist.HasListBox;
 import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
 import mat.client.shared.DateBoxWithCalendar;
@@ -19,6 +20,7 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.TextAreaWithMaxLength;
 import mat.model.Author;
 import mat.model.MeasureType;
+
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -140,6 +142,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The measure population input. */
 	protected TextAreaWithMaxLength  measurePopulationInput = new TextAreaWithMaxLength ();
 	
+	/** The measure population exclusions input. */
+	protected TextAreaWithMaxLength  measurePopulationExclusionsInput = new TextAreaWithMaxLength ();
+	
 	/** The measure observations input. */
 	protected TextAreaWithMaxLength  measureObservationsInput = new TextAreaWithMaxLength ();
 	
@@ -241,10 +246,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The save error display. */
 	private ErrorMessageDisplay saveErrorDisplay = new ErrorMessageDisplay();
-	
-	/** The measure population exclusions input. */
-	protected TextAreaWithMaxLength  measurePopulationExclusionsInput = new TextAreaWithMaxLength ();
-	
+		
 	
 	/**
 	 * Instantiates a new meta data view.
@@ -517,6 +519,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measurePopulationInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
+		fPanel.add(LabelBuilder.buildLabel(measurePopulationExclusionsInput, "Measure Population Exclusions"));
+		fPanel.add(measurePopulationExclusionsInput);
+		measurePopulationExclusionsInput.addKeyDownHandler(keyDownHandler);
+		fPanel.add(new SpacerWidget());
+		
 		fPanel.add(LabelBuilder.buildLabel(measureObservationsInput, "Measure Observations"));
 		fPanel.add(measureObservationsInput);
 		measureObservationsInput.addKeyDownHandler(keyDownHandler);
@@ -532,9 +539,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		setNameInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
-		fPanel.add(LabelBuilder.buildLabel(measurePopulationExclusionsInput, "Measure Population Exclusions"));
-		fPanel.add(measurePopulationExclusionsInput);
-		measurePopulationExclusionsInput.addKeyDownHandler(keyDownHandler);
 		
 		AddRowButton.addClickHandler(new ClickHandler() {
 			@Override
@@ -602,12 +606,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		denominatorExceptionsInput.setMaxLength(15000);
 		measurePopulationInput.setSize("500px", "100px");
 		measurePopulationInput.setMaxLength(15000);
+		measurePopulationExclusionsInput.setSize("500px","100px");
+		measurePopulationExclusionsInput.setMaxLength(15000);		
 		measureObservationsInput.setSize("500px", "100px");
 		measureObservationsInput.setMaxLength(15000);
 		eMeasureIdentifierInput.setReadOnly(true);
 		eMeasureIdentifierInput.setMaxLength(6);
-		measurePopulationExclusionsInput.setSize("500px","100px");
-		measurePopulationExclusionsInput.setMaxLength(15000);
 		generateeMeasureIDButton.setEnabled(true);
 		String emeasureIdMSG = "Once an eMeasure Identifier (Measure Authoring Tool) has been generated it may not be modified or removed for any draft or version of a measure.";
 		generateeMeasureIDButton.setTitle(emeasureIdMSG);

@@ -88,6 +88,9 @@ public class XmlProcessor {
 
 	/** The Constant XPATH_MEASURE_POPULATIONS. */
 	private static final String XPATH_MEASURE_POPULATIONS = "/measure/populations/measurePopulations";
+	
+	/** The Constant XPATH_MEASURE_POPULATION_EXCLUSIONS. */
+	private static final String XPATH_MEASURE_POPULATION_EXCLUSIONS = "/measure/populations/measurePopulationExclusions";
 
 	/** The Constant XPATH_DENOMINATOR_EXCEPTIONS. */
 	private static final String XPATH_DENOMINATOR_EXCEPTIONS = "/measure/populations/denominatorExceptions";
@@ -164,7 +167,7 @@ public class XmlProcessor {
 	/** The Constant POPULATIONS. */
 	private static final String[] POPULATIONS = { INITIAL_PATIENT_POPULATIONS,
 			NUMERATORS, NUMERATOR_EXCLUSIONS, DENOMINATORS,
-			DENOMINATOR_EXCLUSIONS, DENOMINATOR_EXCEPTIONS, MEASURE_POPULATIONS };
+			DENOMINATOR_EXCLUSIONS, DENOMINATOR_EXCEPTIONS, MEASURE_POPULATIONS,MEASURE_POPULATION_EXCLUSIONS };
 
 	static {
 		constantsMap.put("populations", "Populations");
@@ -190,6 +193,7 @@ public class XmlProcessor {
 		constantsMap.put("Denominator Exclusions", "Denominator Exclusions");
 		constantsMap.put("Denominator Exceptions", "Denominator Exceptions");
 		constantsMap.put("Measure Populations", "Measure Population");
+		constantsMap.put("Measure Population Exclusions", "Measure Population Exclusions");
 		constantsMap.put("Numerator Exclusions", "Numerator Exclusions");
 
 	}
@@ -697,11 +701,13 @@ public class XmlProcessor {
 			// Denominator Exceptions, Measure Populations
 			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
+			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
 		} else if (PROPOR.equals(scoringType.toUpperCase())) {
-			// Numerator Exclusions, Measure Populations
+			// Measure Population Exlusions, Measure Populations
 			//xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
+			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
 		} else if (SCORING_TYPE_CONTVAR.equals(scoringType.toUpperCase())) {
 			// Numerators,Numerator Exclusions, Denominators, Denominator
@@ -735,6 +741,7 @@ public class XmlProcessor {
 		if (SCORING_TYPE_CONTVAR.equals(scoringType)) {
 			scoreBasedNodes.add(INITIAL_PATIENT_POPULATIONS);
 			scoreBasedNodes.add(MEASURE_POPULATIONS);
+			scoreBasedNodes.add(MEASURE_POPULATION_EXCLUSIONS);
 		} else if (PROPOR.equals(scoringType)) {
 			scoreBasedNodes.add(INITIAL_PATIENT_POPULATIONS);
 			scoreBasedNodes.add(NUMERATORS);
@@ -873,7 +880,7 @@ public class XmlProcessor {
 		// Take the child nodeList & re-arrange it according to this order
 		// "Initial Patient Populations", "Numerators", "Numerator Exclusions",
 		// "Denominators", "Denominator Exclusions",
-		// "Denominator Exceptions", "Measure Populations"
+		// "Denominator Exceptions", "Measure Populations", "Measure Population Exclusions"
 		for (int i = 0; i < XmlProcessor.POPULATIONS.length; i++) {
 			String populationsChild = XmlProcessor.POPULATIONS[i];
 			Node populationsChildNode = null;

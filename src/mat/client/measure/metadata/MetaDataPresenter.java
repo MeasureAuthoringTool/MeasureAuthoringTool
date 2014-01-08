@@ -351,7 +351,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 * 
 		 * @return the initial patient pop
 		 */
-		public HasValue<String> getInitialPatientPop();
+		public HasValue<String> getInitialPop();
 		
 		/**
 		 * Gets the denominator.
@@ -1035,7 +1035,7 @@ private void setAuthorsListOnView() {
 		metaDataDisplay.getDisclaimer().setValue(currentMeasureDetail.getDisclaimer());
 		metaDataDisplay.getRiskAdjustment().setValue(currentMeasureDetail.getRiskAdjustment());
 		metaDataDisplay.getRateAggregation().setValue(currentMeasureDetail.getRateAggregation());
-		metaDataDisplay.getInitialPatientPop().setValue(currentMeasureDetail.getInitialPatientPop());
+		metaDataDisplay.getInitialPop().setValue(currentMeasureDetail.getInitialPop());
 		metaDataDisplay.getDenominator().setValue(currentMeasureDetail.getDenominator());
 		metaDataDisplay.getDenominatorExclusions().setValue(currentMeasureDetail.getDenominatorExclusions());
 		metaDataDisplay.getNumerator().setValue(currentMeasureDetail.getNumerator());
@@ -1208,7 +1208,7 @@ private void setAuthorsListOnView() {
 		currentMeasureDetail.setDisclaimer (metaDataDisplay.getDisclaimer().getValue());
 		currentMeasureDetail.setRiskAdjustment(metaDataDisplay.getRiskAdjustment().getValue());
 		currentMeasureDetail.setRateAggregation(metaDataDisplay.getRateAggregation().getValue());
-		currentMeasureDetail.setInitialPatientPop(metaDataDisplay.getInitialPatientPop().getValue());
+		currentMeasureDetail.setInitialPop(metaDataDisplay.getInitialPop().getValue());
 		currentMeasureDetail.setDenominator(metaDataDisplay.getDenominator().getValue());
 		currentMeasureDetail.setDenominatorExclusions(metaDataDisplay.getDenominatorExclusions().getValue());
 		currentMeasureDetail.setNumerator(metaDataDisplay.getNumerator().getValue());

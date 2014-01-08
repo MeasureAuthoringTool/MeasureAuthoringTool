@@ -5,6 +5,7 @@ import java.util.List;
 import mat.model.Author;
 import mat.model.MeasureType;
 import mat.shared.model.util.MeasureDetailsUtil;
+
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 /**
@@ -127,7 +128,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	private String rateAggregation;
 	
 	/** The initial patient pop. */
-	private String initialPatientPop;
+	private String initialPop;
 	
 	/** The denominator. */
 	private String denominator;
@@ -281,6 +282,14 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		this.measureTypeList = measureTypeList;
 	}
 	
+	public String getInitialPop() {
+		return initialPop;
+	}
+
+	public void setInitialPop(String initialPop) {
+		this.initialPop = initialPop;
+	}
+
 	/**
 	 * Gets the version number.
 	 * 
@@ -883,25 +892,6 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	}
 	
 	/**
-	 * Sets the initial patient pop.
-	 * 
-	 * @param initialPatientPop
-	 *            the new initial patient pop
-	 */
-	public void setInitialPatientPop(String initialPatientPop) {
-		this.initialPatientPop = doTrim(initialPatientPop);
-	}
-	
-	/**
-	 * Gets the initial patient pop.
-	 * 
-	 * @return the initial patient pop
-	 */
-	public String getInitialPatientPop() {
-		return initialPatientPop;
-	}
-	
-	/**
 	 * Sets the denominator.
 	 * 
 	 * @param denominator
@@ -1098,7 +1088,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				+ ((improvNotations == null) ? 0 : improvNotations.hashCode());
 		result = (prime
 				* result)
-				+ ((initialPatientPop == null) ? 0 : initialPatientPop
+				+ ((initialPop == null) ? 0 : initialPop
 						.hashCode());
 		result = (prime * result)
 				+ ((measFromPeriod == null) ? 0 : measFromPeriod.hashCode());
@@ -1281,11 +1271,11 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		} else if (!trimToNull(improvNotations).equals(trimToNull(other.improvNotations))) {
 			return false;
 		}
-		if (trimToNull(initialPatientPop) == null) {
-			if (trimToNull(other.initialPatientPop) != null) {
+		if (trimToNull(initialPop) == null) {
+			if (trimToNull(other.initialPop) != null) {
 				return false;
 			}
-		} else if (!trimToNull(initialPatientPop).equals(trimToNull(other.initialPatientPop))) {
+		} else if (!trimToNull(initialPop).equals(trimToNull(other.initialPop))) {
 			return false;
 		}
 		if (trimToNull(measFromPeriod) == null) {
@@ -1695,7 +1685,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				+ valueSetDate + ", supplementalData=" + supplementalData
 				+ ", disclaimer=" + disclaimer + ", riskAdjustment="
 				+ riskAdjustment + ", rateAggregation=" + rateAggregation
-				+ ", initialPatientPop=" + initialPatientPop + ", denominator="
+				+ ", initialPop=" + initialPop + ", denominator="
 				+ denominator + ", denominatorExclusions="
 				+ denominatorExclusions + ", numerator=" + numerator
 				+ ", numeratorExclusions=" + numeratorExclusions
@@ -1793,7 +1783,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 */
 	public void setMeasurePopulationExclusions(
 			String measurePopulationExclusions) {
-		this.measurePopulationExclusions = doTrim(measurePopulationExclusions);
+		this.measurePopulationExclusions = measurePopulationExclusions;
 	}
 	
 	

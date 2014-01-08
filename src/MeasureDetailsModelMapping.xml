@@ -212,7 +212,7 @@
       <bind-xml name="transmissionFormat" node="element"/>
     </field>
     
- 	<field name="initialPatientPop"
+ 	<field name="initialPop"
            type="java.lang.String">
       <bind-xml name="initialPopDescription" node="element"/>
     </field>   

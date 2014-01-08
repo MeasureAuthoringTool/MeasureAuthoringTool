@@ -122,7 +122,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected TextAreaWithMaxLength  rateAggregationInput  = new TextAreaWithMaxLength ();
 	
 	/** The initial patient pop input. */
-	protected TextAreaWithMaxLength  initialPatientPopInput  = new TextAreaWithMaxLength ();
+	protected TextAreaWithMaxLength  initialPopInput  = new TextAreaWithMaxLength ();
 	
 	/** The denominator input. */
 	protected TextAreaWithMaxLength  denominatorInput = new TextAreaWithMaxLength ();
@@ -485,9 +485,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());
 		
 		
-		fPanel.add(LabelBuilder.buildLabel(initialPatientPopInput, "Initial Patient Population"));
-		fPanel.add(initialPatientPopInput);
-		initialPatientPopInput.addKeyDownHandler(keyDownHandler);
+		fPanel.add(LabelBuilder.buildLabel(initialPopInput, "Initial Population"));
+		fPanel.add(initialPopInput);
+		initialPopInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(denominatorInput, "Denominator"));
@@ -592,8 +592,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		supplementalDataInput.setMaxLength(15000);
 		supplementalDataInput.setSize("500px", "100px");
 		
-		initialPatientPopInput.setSize("500px", "100px");
-		initialPatientPopInput.setMaxLength(15000);
+		initialPopInput.setSize("500px", "100px");
+		initialPopInput.setMaxLength(15000);
 		denominatorInput.setSize("500px", "100px");
 		denominatorInput.setMaxLength(15000);
 		denominatorExclusionsInput.setSize("500px", "100px");
@@ -889,8 +889,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getInitialPatientPop()
 	 */
 	@Override
-	public HasValue<String> getInitialPatientPop() {
-		return initialPatientPopInput;
+	public HasValue<String> getInitialPop() {
+		return initialPopInput;
 	}
 	
 	/* (non-Javadoc)

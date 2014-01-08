@@ -57,11 +57,12 @@ public class OnetimeMeasureXMLUpdateTask {
 		logger.info("Get all Measure Ids");
 		List<Measure> measureList = getMeasureDAO().find();
 		
+		logger.info("\r\n\r\nUpdating all Measure XML's based to replace IPP by IP and save them back.");
+		updateIPP_To_IP(measureList);
+		
 		logger.info("\r\n\r\nUpdating all Measure XML's based on the scoring types and save them back.");
 		checkForScoringAndUpdate(measureList);
 		
-		logger.info("\r\n\r\nUpdating all Measure XML's based to replace IPP by IP and save them back.");
-		updateIPP_To_IP(measureList);
 	}
 
 	private void checkForScoringAndUpdate(List<Measure> measureList) {
@@ -96,8 +97,9 @@ public class OnetimeMeasureXMLUpdateTask {
 					measureXmlModel.getXml());
 			try {
 				xmlProcessor.renameIPP_To_IP(xmlProcessor.getOriginalDoc());
-				measureXmlModel.setXml(xmlProcessor.transform(xmlProcessor
-						.getOriginalDoc()));
+				String measureXML = xmlProcessor.transform(xmlProcessor
+						.getOriginalDoc());
+				measureXmlModel.setXml(measureXML);
 				getMeasurePackageService().saveMeasureXml(measureXmlModel);
 			} catch (XPathExpressionException e) {
 				// TODO Auto-generated catch block

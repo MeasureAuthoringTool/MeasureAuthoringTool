@@ -724,13 +724,20 @@ public class XmlProcessor {
 		String type = "type";
 		String initialPopulation = "initialPopulation";
 		String XPATH_OLD_INITIAL_PATIENT_POPULATIONS = "/measure/populations/initialPatientPopulations";
+		String XPATH_OLD_MSR_DETAILS_PATIENT_POPULATIONS = "/measure/measureDetails/initialPatientPopDescription";
 		
 		if(document == null){
 			return;
 		}
 		
+		//replace the <initialPatientPopDescription> tag in <measureDetails> with <initialPopDescription>
+		Node initialPatientPopDescription = findNode(document, XPATH_OLD_MSR_DETAILS_PATIENT_POPULATIONS);
+		if(initialPatientPopDescription != null){
+			document.renameNode(initialPatientPopDescription, "", "initialPopDescription");
+		}
+		
 		//find initialPatientPopulations tag
-		Node initialPopulationsNode = findNode(originalDoc, XPATH_OLD_INITIAL_PATIENT_POPULATIONS);
+		Node initialPopulationsNode = findNode(document, XPATH_OLD_INITIAL_PATIENT_POPULATIONS);
 		if (initialPopulationsNode == null) {
 			return;
 		}

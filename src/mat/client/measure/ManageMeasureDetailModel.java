@@ -1793,7 +1793,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 */
 	public void setMeasurePopulationExclusions(
 			String measurePopulationExclusions) {
-		this.measurePopulationExclusions = measurePopulationExclusions;
+		this.measurePopulationExclusions = doTrim(measurePopulationExclusions);
 	}
 	
 	

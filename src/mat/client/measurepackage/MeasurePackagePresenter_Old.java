@@ -738,8 +738,6 @@ public class MeasurePackagePresenter_Old implements MatPresenter {
 			}
 			/* no Numerator Exclusions, Measure Population, Measure Observations */
 			if ((countDetailsWithType(detailList,
-					ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) != 0)
-					|| (countDetailsWithType(detailList,
 							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
 							|| (countDetailsWithType(detailList,
 									ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)) {

@@ -141,15 +141,11 @@
 	
 	<!-- One time scheduled task for sending emails end. -->
 	
-	<!-- One time update all measures with Timing Elements i.e.  -->
-	<!-- 
-		 2.16.840.1.113883.3.67.1.101.1.53 : Measurement Period
-	     2.16.840.1.113883.3.67.1.101.1.54 : Measurement Start Date
-	     2.16.840.1.113883.3.67.1.101.1.55 : Measurement End Date 
-	-->
+	<!-- One time update all measures.  -->
 	
-	<bean id="onetimeMeasureXMLUpdateTask" class="mat.server.service.jobs.OnetimeMeasureXMLUpdateTask">
-	    <property name="measureXMLDAO" ref="measureXMLDAO"/>
+	<bean id="onetimeMeasureXMLUpdateTask" class="mat.server.service.jobs.temprory.OnetimeMeasureXMLUpdateTask">
+	    <property name="measureDAO" ref="measureDAO"/>
+	    <property name="measurePackageService" ref="measurePackageService"/>
 	    <property name="measureLibraryService" ref="measureLibraryService"/>
 		<property name="matFlagDAO" ref="matFlagDAO"/>
 	</bean>
@@ -157,7 +153,7 @@
 	<bean id="oneTimeMeasureXMLUpdateJob" 
  	class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
 	 	<property name="targetObject" ref="onetimeMeasureXMLUpdateTask" />
-		<property name="targetMethod" value="updateMeasureXMLsForTimingElements" />
+		<property name="targetMethod" value="updateMeasureXMLs" />
  	</bean>
  	
 	<bean id="simpleTrigger" 
@@ -166,4 +162,6 @@
 		<property name="repeatCount" value="0" />
 		<property name="startDelay" value="2000" />
 	</bean>	
+	
+	
 </beans>

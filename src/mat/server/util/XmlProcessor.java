@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -19,11 +20,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -714,6 +717,48 @@ public class XmlProcessor {
 		}
 	}
 	
+	public void renameIPP_To_IP(Document document) throws XPathExpressionException {
+		
+		String displayName = "displayName";
+		String clause = "clause";
+		String type = "type";
+		String initialPopulation = "initialPopulation";
+		String XPATH_OLD_INITIAL_PATIENT_POPULATIONS = "/measure/populations/initialPatientPopulations";
+		
+		if(document == null){
+			return;
+		}
+		
+		//find initialPatientPopulations tag
+		Node initialPopulationsNode = findNode(originalDoc, XPATH_OLD_INITIAL_PATIENT_POPULATIONS);
+		if (initialPopulationsNode == null) {
+			return;
+		}
+		
+		//Also change the value of the 'displayName' attribute
+		initialPopulationsNode.getAttributes().getNamedItem(displayName).setNodeValue("Initial Populations");
+						
+		//within 'initialPopulations' tag, for all 'clause' tags, rename the 'displayName' attribute
+		//from 'Initial Patient Population 1' to 'Initial Population 1'.
+		//Also change 'type' attribute to 'initialPopulation'
+		NodeList childNodes = initialPopulationsNode.getChildNodes();
+		for (int i = 0; i < childNodes.getLength(); i++) {
+			Node childNode = childNodes.item(i);
+			if(clause.equals(childNode.getNodeName())){
+				childNode.getAttributes().getNamedItem(type).setNodeValue(initialPopulation);
+				
+				String clauseDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
+				if(clauseDisplayName.indexOf(" Patient ") > 0){
+					clauseDisplayName = clauseDisplayName.replaceAll(" Patient ", " ");
+				}
+				childNode.getAttributes().getNamedItem(displayName).setNodeValue(clauseDisplayName);
+			}
+		}
+		
+		//rename 'initialPatientPopulations' to 'initialPopulations'.
+		document.renameNode(initialPopulationsNode, "", INITIAL_POPULATIONS);
+	}
+
 	/**
 	 * This method looks at the Scoring Type for a measure and adds nodes based
 	 * on the value of Scoring Type.

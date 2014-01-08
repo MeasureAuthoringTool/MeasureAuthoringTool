@@ -6,7 +6,7 @@ package mat.client.measurepackage;
 public enum MeasureGroupingOrder {
 	
 	/** The initial patient population. */
-	initialPatientPopulation("1"), 
+	initialPopulation("1"), 
 	
 	/** The denominator. */
 	denominator("2"), 

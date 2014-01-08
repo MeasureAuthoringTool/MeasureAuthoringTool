@@ -70,7 +70,7 @@ public  class ConstantMessages {
 		
 		//From MAT_APP.CONTEXT
 		/** The Constant POPULATION_CONTEXT_ID. */
-		public static final String POPULATION_CONTEXT_ID= "initialPatientPopulation";
+		public static final String POPULATION_CONTEXT_ID= "initialPopulation";
 		
 		/** The Constant NUMERATOR_CONTEXT_ID. */
 		public static final String NUMERATOR_CONTEXT_ID = "numerator";

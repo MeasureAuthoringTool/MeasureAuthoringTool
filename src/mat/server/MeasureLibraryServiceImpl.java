@@ -12,9 +12,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -59,6 +61,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -941,8 +944,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		if (measureXmlModel == null) {
 			logger.info("Measure XML is null");
+		}else{
+			logger.info("XML ::: " + measureXmlModel.getXml());
 		}
-		logger.info("XML ::: " + measureXmlModel.getXml());
 		return measureXmlModel;
 	}
 	

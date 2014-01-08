@@ -335,7 +335,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			cellTablePanel.add(spager);
 			removeButton.setEnabled(false);
 			modify.setEnabled(checkForEnable() && (appliedListModel.getLastSelected() != null) ? true : false);
-			updateVsacButton.setEnabled(true);
+			updateVsacButton.setEnabled(checkForEnable());
 			
 		} else {
 			Label searchHeader = new Label("Applied QDM Elements");

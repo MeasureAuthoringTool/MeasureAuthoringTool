@@ -73,6 +73,7 @@ import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ManageMeasurePresenter.
  */
@@ -542,8 +543,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public void buildDataTable(
 				ManageMeasureSearchModel manageMeasureSearchModel);
-		
-		public void buildDataTable();
+	
 		
 		/** Builds the most recent widget. */
 		void buildMostRecentWidget();
@@ -632,6 +632,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the most recent measure widget */
 		MostRecentMeasureWidget getMostRecentMeasureWidget();
 		
+		/**
+		 * Gets the measure search view.
+		 *
+		 * @return the measure search view
+		 */
 		MeasureSearchView getMeasureSearchView();
 		
 		/**
@@ -704,11 +709,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the zoom button */
 		CustomButton getZoomButton();
 
-		HasClickHandlers getClearButton();
-
-		void clearBulkExportBoxes();
-
-		public void setObserver(Observer observer);
 	}
 	
 	/**
@@ -718,9 +718,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		/**
 		 * Builds the data table.
-		 * 
-		 * @param results
-		 *            the results
+		 *
+		 * @param adapter the adapter
 		 */
 		public void buildDataTable(UserShareInfoAdapter adapter);
 		
@@ -1190,9 +1189,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	/**
 	 * Handlers for Non Admin Search Results.
-	 * 
-	 * @param searchResults
-	 *            the search results
+	 *
+	 * @param adminSearchDisplay the admin search display
 	 */
 //	private void addHandlersToAdaptor(MeasureSearchView searchResults) {
 //		
@@ -2508,6 +2506,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 					});
 				} else {
+					pageSize = Integer.MAX_VALUE;
 					showSearchingBusy(true);
 					MatContext
 					.get()
@@ -3545,6 +3544,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 	}
 	
+	/**
+	 * Update exported i ds.
+	 *
+	 * @param result the result
+	 * @param model the model
+	 */
 	private void updateExportedIDs(Result result, ManageMeasureSearchModel model) {
 		if (result.isExportable()) {
 			List<String> selectedIdList = model.getSelectedExportIds();

@@ -35,6 +35,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ManageMeasureSearchView.
  */
@@ -43,8 +44,6 @@ ManageMeasurePresenter.SearchDisplay {
 	
 	/** The bulk export button. */
 	private Button bulkExportButton = new PrimaryButton("Export Selected");
-	
-	private Button clearButton = new PrimaryButton("Clear All", "primaryGreyLeftButton");
 	
 	/** The create button. */
 	/*
@@ -72,6 +71,7 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The form. */
 	final FormPanel form = new FormPanel();
 	
+	/** The selected measure list. */
 	private List<Result> selectedMeasureList;
 	
 	/** The msfp. */
@@ -112,8 +112,10 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The success measure deletion. */
 	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
 	
+	/** The view. */
 	private SearchView<ManageMeasureSearchModel.Result> view  =new SearchView<ManageMeasureSearchModel.Result>();
 	
+	/** The search view. */
 	MeasureSearchView searchView;
 	
 	/** The view. */
@@ -142,7 +144,6 @@ ManageMeasurePresenter.SearchDisplay {
 		buildMostRecentWidget();
 		mainHorizontalPanel.add(mostRecentVerticalPanel);
 		mainHorizontalPanel.add(measureFilterVP);
-		
 		mainPanel.add(mainHorizontalPanel);
 		mainPanel.add(successMeasureDeletion);
 		mainPanel.add(errorMeasureDeletion);
@@ -152,8 +153,10 @@ ManageMeasurePresenter.SearchDisplay {
 		mainPanel.add(measureSearchView.asWidget());
 		mainPanel
 		.add(ManageLoadingView.buildLoadingPanel("loadingPanelExport"));
+		mainPanel.add(new SpacerWidget());
+		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,
-				(PrimaryButton) clearButton,errorMessagesForBulkExport));
+				      errorMessagesForBulkExport));
 		MatContext.get().setManageMeasureSearchView(this);
 		
 	}
@@ -168,23 +171,19 @@ ManageMeasurePresenter.SearchDisplay {
 	
 	/**
 	 * Builds the bottom button widget.
-	 * 
-	 * @param button
-	 *            the button
-	 * @param errorMessageDisplay
-	 *            the error message display
+	 *
+	 * @param bulkExportButton the bulk export button
+	 * @param errorMessageDisplay the error message display
 	 * @return the widget
 	 */
-	private Widget buildBottomButtonWidget(PrimaryButton bulkExportButton,PrimaryButton clearButton,
+	private Widget buildBottomButtonWidget(PrimaryButton bulkExportButton,
 			ErrorMessageDisplay errorMessageDisplay) {
 		FlowPanel flowPanel = new FlowPanel();
 		flowPanel.getElement().setId("measureLibrary_bottomPanel");
 		flowPanel.add(errorMessageDisplay);
 		flowPanel.setStyleName("rightAlignButton");
 		bulkExportButton.setTitle("Bulk Export");
-		clearButton.setTitle("Clear");
 		flowPanel.add(bulkExportButton);
-		//flowPanel.add(clearButton);
 		form.setWidget(flowPanel);
 		form.getElement().setId("measureLibrary_bottomPanelForm");
 		return form;
@@ -197,21 +196,12 @@ ManageMeasurePresenter.SearchDisplay {
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
 	 */
 	@Override
-	public void buildDataTable(
-			ManageMeasureSearchModel manageMeasureSearchModel) {
-		//view.buildImageTextCell(searchResults);
-		//view.buildDataTable(results);
+	public void buildDataTable(ManageMeasureSearchModel 
+			manageMeasureSearchModel) {
 		measureSearchView.buildCellTable(manageMeasureSearchModel);
 	}
 	
-	
-	
-//	@Override
-//	public void buildDataTable() {
-//		
-//		view.buildCellTable();
-//	}
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildMostRecentWidget()
 	 */
@@ -424,6 +414,9 @@ ManageMeasurePresenter.SearchDisplay {
 		return mostRecentMeasureWidget;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getMeasureSearchView()
+	 */
 	@Override
 	public MeasureSearchView getMeasureSearchView() {
 		return measureSearchView;
@@ -567,36 +560,6 @@ ManageMeasurePresenter.SearchDisplay {
 		this.successMeasureDeletion = successMeasureDeletion;
 	}
 
-	@Override
-	public void buildDataTable() {
-		// TODO Auto-generated method stub
-		
-	}
 
-
-	public void setClearButton(Button clearButton) {
-		this.clearButton = clearButton;
-	}
-
-	@Override
-	public HasClickHandlers getClearButton() {
-		// TODO Auto-generated method stub
-		return clearButton;
-	}
-
-	@Override
-	public void clearBulkExportBoxes() {
-		
-	//	view.clearBulkExportBoxes();
-	}
-
-	@Override
-	public void setObserver(Observer observer) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	
-	
 	
 }

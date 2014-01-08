@@ -185,9 +185,13 @@ public static interface Observer {
 	}
 	
 	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable() {
-		final MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = 
-				new MultiSelectionModel<ManageMeasureSearchModel.Result>();
-		//table.setSelectionModel(selectionModel);
+	
+		Label measureSearchHeader = new Label("Measure List");
+		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
+		measureSearchHeader.setStyleName("recentSearchHeader");
+		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
+		TableCaptionElement caption = elem.createCaption();
+		caption.appendChild(measureSearchHeader.getElement());
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
 			List<String> measureSetID=new ArrayList<String>();
@@ -209,18 +213,16 @@ public static interface Observer {
 						}	
 					else{
 						sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
-								+ "style=\"text-decoration:none\" >" + 
-								"<button title='"+object.getName() 
-								+"'" + "class='"+cssClass + "'></button>");
+								+ "style=\"text-decoration:none\" >");  
+					    sb.appendHtmlConstant("<button type=\"button\" title='" + object.getName() + "' tabindex=\"0\" class=\" "+cssClass+"\"></button>");
 						sb.appendHtmlConstant("<span title='" +object.getName()+"'>"+object.getName()+"</span>");
 						sb.appendHtmlConstant("</a>");
 					}
 				}
 				else{
 					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" >" + 
-							"<button title='"+object.getName() 
-							+"'" + "class='"+cssClass + "'></button>");
+							+ "style=\"text-decoration:none\" >");  
+				    sb.appendHtmlConstant("<button type=\"button\" title='" + object.getName() + "' tabindex=\"0\" class=\" "+cssClass+"\"></button>");
 					sb.appendHtmlConstant("<span title='" +object.getName()+"'>"+object.getName()+"</span>");
 					sb.appendHtmlConstant("</a>");
 				}
@@ -294,8 +296,7 @@ public static interface Observer {
 								if(object.isEditable()){
 									title="Edit";
 									cssClass="customEditButton";
-									sb.appendHtmlConstant("<button title='"+title
-											+"'" + "class='"+cssClass + "'></button>");
+									sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" "+cssClass+"\"></button>");
 								}else{
 									title="ReadOnly";
 									cssClass="customReadOnlyButton";
@@ -393,35 +394,11 @@ public static interface Observer {
 		table.addColumn(exportColumn, SafeHtmlUtils.fromSafeConstant("<span title='Export'>" + "Export"
 						+ "</span>"));
 		
-		
-//		CheckboxCell headerCheckbox = new CheckboxCell();
-//		Header<Boolean> bulkExportHeader = new Header<Boolean>(headerCheckbox) {
-//
-//			@Override
-//			public Boolean getValue() {
-//				return false;
-//			}
-//		};
-//
-//		bulkExportHeader.setUpdater(new ValueUpdater<Boolean>() {
-//
-//			@Override
-//			public void update(Boolean value) {
-//				List<ManageMeasureSearchModel.Result> displayedItems = table.getVisibleItems();
-//
-//				for (ManageMeasureSearchModel.Result msg : displayedItems) {
-//					selectionModel.setSelected(msg, value);
-//
-//				}
-//			}
-//		});
-		
 		Cell<Boolean> bulkExportCheckbox = new MatCheckBoxCell();
 		Column<Result, Boolean> bulkExportColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(bulkExportCheckbox) {
 			@Override
 			public Boolean getValue(ManageMeasureSearchModel.Result object) {
 				return !object.isExportable();
-				//return selectionModel.isSelected(object);
 			}
 			
 			@Override
@@ -436,11 +413,9 @@ public static interface Observer {
 			@Override
 			public void update(int index, ManageMeasureSearchModel.Result object, Boolean value) {
 				object.setExportable(value);
-				//selectionModel.setSelected(object, value);
 				observer.onExportSelectedClicked(object);
 			}
 		});
-		//table.addColumn(bulkExportColumn, bulkExportHeader);
 		table.addColumn(bulkExportColumn, SafeHtmlUtils.fromSafeConstant("<span title='Check for Bulk Export'>"
 				+ "Bulk Export </span>"));
 		

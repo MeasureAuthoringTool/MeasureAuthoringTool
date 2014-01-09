@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,13 +19,11 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -723,17 +720,36 @@ public class XmlProcessor {
 		String clause = "clause";
 		String type = "type";
 		String initialPopulation = "initialPopulation";
+		String initialPatientPopulation = "initialPatientPopulation";
 		String XPATH_OLD_INITIAL_PATIENT_POPULATIONS = "/measure/populations/initialPatientPopulations";
 		String XPATH_OLD_MSR_DETAILS_PATIENT_POPULATIONS = "/measure/measureDetails/initialPatientPopDescription";
+		String XPATH_OLD_MEASURE_GROUPING_PACKAGE_CLAUSE = "/measure/measureGrouping/*/packageClause";
 		
-		if(document == null){
+		if (document == null) {
 			return;
 		}
 		
 		//replace the <initialPatientPopDescription> tag in <measureDetails> with <initialPopDescription>
 		Node initialPatientPopDescription = findNode(document, XPATH_OLD_MSR_DETAILS_PATIENT_POPULATIONS);
-		if(initialPatientPopDescription != null){
+		if (initialPatientPopDescription != null) {
 			document.renameNode(initialPatientPopDescription, "", "initialPopDescription");
+		}
+		//Find and Replace IPP to IP in measureGrouping/group/packageClause.
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		NodeList nodesPackageClauses = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_GROUPING_PACKAGE_CLAUSE,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		for (int i = 0; i < nodesPackageClauses.getLength(); i++) {
+			Node childNode = nodesPackageClauses.item(i);
+			String packageClauseType = childNode.getAttributes().getNamedItem("type").getNodeValue();
+			String packageClauseName = childNode.getAttributes().getNamedItem("name").getNodeValue();
+			if (packageClauseType.equalsIgnoreCase(initialPatientPopulation)) {
+				childNode.getAttributes().getNamedItem(type).setNodeValue(initialPopulation);
+				if (packageClauseName.indexOf(" Patient ") > 0) {
+					packageClauseName = packageClauseName.replaceAll(" Patient ", " ");
+				}
+				childNode.getAttributes().getNamedItem("name").setNodeValue(packageClauseName);
+			}
 		}
 		
 		//find initialPatientPopulations tag
@@ -744,18 +760,18 @@ public class XmlProcessor {
 		
 		//Also change the value of the 'displayName' attribute
 		initialPopulationsNode.getAttributes().getNamedItem(displayName).setNodeValue("Initial Populations");
-						
+		
 		//within 'initialPopulations' tag, for all 'clause' tags, rename the 'displayName' attribute
 		//from 'Initial Patient Population 1' to 'Initial Population 1'.
 		//Also change 'type' attribute to 'initialPopulation'
 		NodeList childNodes = initialPopulationsNode.getChildNodes();
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node childNode = childNodes.item(i);
-			if(clause.equals(childNode.getNodeName())){
+			if (clause.equals(childNode.getNodeName())) {
 				childNode.getAttributes().getNamedItem(type).setNodeValue(initialPopulation);
 				
 				String clauseDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
-				if(clauseDisplayName.indexOf(" Patient ") > 0){
+				if (clauseDisplayName.indexOf(" Patient ") > 0) {
 					clauseDisplayName = clauseDisplayName.replaceAll(" Patient ", " ");
 				}
 				childNode.getAttributes().getNamedItem(displayName).setNodeValue(clauseDisplayName);
@@ -765,7 +781,7 @@ public class XmlProcessor {
 		//rename 'initialPatientPopulations' to 'initialPopulations'.
 		document.renameNode(initialPopulationsNode, "", INITIAL_POPULATIONS);
 	}
-
+	
 	/**
 	 * This method looks at the Scoring Type for a measure and adds nodes based
 	 * on the value of Scoring Type.

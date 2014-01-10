@@ -12,11 +12,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -61,7 +59,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -766,7 +763,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
 			detail.setMeasureSetId(measure.getMeasureSet().getId());
 			detail.setScoringType(measure.getMeasureScoring());
-			detail.setMeasureLocked(measure.getLockedOutDate() != null);
+			detail.setMeasureLocked(getMeasureDAO().isMeasureLocked(measure.getId()));
 			List<MeasureShareDTO> measureShare = getMeasureDAO().
 					getMeasureShareInfoForMeasureAndUser(measure.getOwner().getId(), measure.getId());
 			if (measureShare.size() > 0) {

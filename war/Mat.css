@@ -74,11 +74,11 @@ body#main select, body#main input, body#main textarea {
 }
 
 .cellTableEvenRow{
-	background: #ffffff;
+	background: #blue !important;
 }
 
 .cellTableOddRow{
-	background: #ECECEC;
+	background: #red !important;
 }
 
 .pos_fixed
@@ -86,6 +86,14 @@ body#main select, body#main input, body#main textarea {
 position:fixed;
 top:30px;
 left:50px;
+}
+
+.bluetext{ 
+	background: blue !important;
+}
+
+.redtext{
+	background: #f3f7fb !important;
 }
 
 .gwt-TextBox{
@@ -101,11 +109,24 @@ left:50px;
 }
 
 .textEmptySpaces{
-	/*text-indent: 2em;
-	 color: light blue;*/ 
 	background-color: transparent; 
 	border-color: transparent;
-	width:30px; 
+	width:30px;
+}
+
+.transButtonWidth{
+	background-color: transparent; 
+	border-color: transparent;
+	width:48px;
+}
+.emptySpaces{
+ text-indent: 1em;
+}
+
+.textCssStyle{
+	font-size:70%;
+    color:blue;
+    text-decoration:underline	
 }
 
 
@@ -226,10 +247,9 @@ left:50px;
     background-repeat:no-repeat;
     height: 25px;
     width: 30px;
-    border: 0px;
     font-size: 0;
-    cursor: pointer;
-    cursor: hand;
+    border: 0px;
+    cursor: text;
 }
 
 .customShareButton {
@@ -238,8 +258,8 @@ left:50px;
     background-repeat:no-repeat;
     height: 25px;
     width: 30px;
-    border: 0px;
     font-size: 0;
+    border: 0px;
     cursor: pointer;
     cursor: hand;
 }

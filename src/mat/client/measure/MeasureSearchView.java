@@ -2,38 +2,32 @@ package mat.client.measure;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import mat.client.CustomPager;
-import mat.client.ImageResources;
 import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.MeasureSearchResultsAdapter.Observer;
 import mat.client.measure.metadata.CustomCheckBox;
-import mat.client.shared.HorizontalFlowPanel;
+import mat.client.resource.CellTableResource;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
-import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
 import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
-import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.search.SearchResults;
-import mat.client.shared.search.SearchView;
 import mat.client.util.CellTableUtility;
-import mat.client.util.ClientConstants;
 import mat.shared.ClickableSafeHtmlCell;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
+import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
@@ -44,16 +38,14 @@ import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.CellTable.Resources;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.Header;
-import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.cellview.client.RowStyles;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Panel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -93,8 +85,6 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	
 	/** The observer. */
 	private Observer observer;
-	
-	private int tableRowCount;
 	
     private CellTable<ManageMeasureSearchModel.Result> table;
 	
@@ -159,6 +149,9 @@ public static interface Observer {
 		 * @param result the result
 		 */
 		public void onExportSelectedClicked(ManageMeasureSearchModel.Result result);
+		
+		
+		public void onClearAllBulkExportClicked();
 	}
 	
 	/**
@@ -192,6 +185,8 @@ public static interface Observer {
 		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
+		final MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
+		table.setSelectionModel(selectionModel);
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
 			List<String> measureSetID=new ArrayList<String>();
@@ -200,7 +195,6 @@ public static interface Observer {
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String cssClass="customCascadeButton";
-				String textCssClass="textEmptySpaces";
 				measureSetID.add(object.getMeasureSetId());
 				
 				if(rowindex>0){
@@ -300,8 +294,7 @@ public static interface Observer {
 								}else{
 									title="ReadOnly";
 									cssClass="customReadOnlyButton";
-									sb.appendHtmlConstant("<button title='"+title
-											+"'" + "class='"+cssClass + "' disabled='disabled' ></button>");
+									sb.appendHtmlConstant("<div title='"+ title +"' class='"+ cssClass +"'></div>");
 								}
 								return sb.toSafeHtml();
 						}	
@@ -354,71 +347,122 @@ public static interface Observer {
 					}
 				});
 				table.addColumn(cloneColumn, SafeHtmlUtils.fromSafeConstant("<span title='Clone'>" + "Clone" + "</span>"));
-
-
-
-		// export Column
-		Cell<String> exportButton = new MatButtonCell("Click to Export","customExportButton");
-		Column<Result, String> exportColumn = new Column<ManageMeasureSearchModel.Result, String>(exportButton) 
-				{
+		
+		    //Export Column header
+			Header<SafeHtml> bulkExportColumnHeader=new Header<SafeHtml>(new ClickableSafeHtmlCell()) {
+			
+			String cssClass="transButtonWidth";
+			String title="Click to Clear All";
 			@Override
-			public String getValue(ManageMeasureSearchModel.Result object) {
-				return "Export";
+			public SafeHtml getValue() {
+				SafeHtmlBuilder sb=new SafeHtmlBuilder();
+				sb.appendHtmlConstant("<span>Export</span><button type=\"button\" title='" +
+				title + "' tabindex=\"0\" class=\" "+cssClass+"\"><span class='textCssStyle'>(Clear)</span></button>");
+				return sb.toSafeHtml();
 			}
 
-			@Override
-			public void onBrowserEvent(Context context, Element elem,
-					final ManageMeasureSearchModel.Result object,
-					NativeEvent event) {
-				if ((object != null) && object.isExportable()) {
-					super.onBrowserEvent(context, elem, object, event);
-				}
-			}
-
-			@Override
-			public void render(Cell.Context context,
-					ManageMeasureSearchModel.Result object, SafeHtmlBuilder sb) {
-				if (object.isExportable()) {
-					super.render(context, object, sb);
-				}
-			}
 		};
-		exportColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
+		
+		bulkExportColumnHeader.setUpdater(new ValueUpdater<SafeHtml>() {
+
+			@Override
+			public void update(SafeHtml value) {
+				List<Result> displayedItems=new ArrayList<Result>();// = table.getVisibleItems();
+				displayedItems.addAll(selectedMeasureList);
+				for (ManageMeasureSearchModel.Result msg : displayedItems) {
+					selectionModel.setSelected(msg, false);
+				}
+			}
+
+		});
+				final List<HasCell<Result, ?>> cells = new LinkedList<HasCell<Result, ?>>();
+				cells.add(new HasCell<Result, String>() {
+					Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
+
+					public Cell<String> getCell() {
+						return exportButton;
+					}
+					
 					@Override
-					public void update(int index,ManageMeasureSearchModel.Result object, String value) {
-						if ((object != null) && object.isExportable()) {
-							observer.onExportClicked(object);
+					public String getValue(Result object) {
+						return "Export";
+					}
+					
+					public FieldUpdater<Result, String> getFieldUpdater() {
+						return new FieldUpdater<Result, String>() {
+							@Override
+							public void update(int index, Result object, String value) {
+								observer.onExportClicked(object);		
+							}
+						};
+					}
+
+
+					
+				});
+				
+				cells.add(new HasCell<Result, Boolean>() {
+					private CheckboxCell cell = new CheckboxCell(false, true);
+
+					public Cell<Boolean> getCell() {
+						return cell;
+					}
+
+					@Override
+					public Boolean getValue(Result object) {
+						return selectionModel.isSelected(object);
+					}
+
+					public FieldUpdater<Result, Boolean> getFieldUpdater() {
+						return new FieldUpdater<Result, Boolean>() {
+							public void update(int index, Result object,
+									Boolean isCBChecked) {
+								selectionModel.setSelected(object, isCBChecked);
+								observer.onExportSelectedClicked(object);
+							}
+						};
+					}
+
+				});
+				
+				
+				CompositeCell<Result> cell = new CompositeCell<Result>(cells) {
+
+					@Override
+					public void render(Context context, Result object, SafeHtmlBuilder sb) {
+						sb.appendHtmlConstant("<table><tbody><tr>");
+						for (HasCell<Result, ?> hasCell : cells) {
+							render(context, object, sb, hasCell);
+						}
+						sb.appendHtmlConstant("</tr></tbody></table>");
+					}
+
+					@Override
+					protected <X> void render(Context context, Result object,
+							SafeHtmlBuilder sb, HasCell<Result, X> hasCell) {
+						if (object.isExportable()) {
+						Cell<X> cell = hasCell.getCell();
+						sb.appendHtmlConstant("<td tabindex=\"0\" class=\"emptySpaces\">");
+						cell.render(context, hasCell.getValue(object), sb);
+						sb.appendHtmlConstant("</td>");
 						}
 					}
-				});
-		table.addColumn(exportColumn, SafeHtmlUtils.fromSafeConstant("<span title='Export'>" + "Export"
-						+ "</span>"));
-		
-		Cell<Boolean> bulkExportCheckbox = new MatCheckBoxCell();
-		Column<Result, Boolean> bulkExportColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(bulkExportCheckbox) {
-			@Override
-			public Boolean getValue(ManageMeasureSearchModel.Result object) {
-				return !object.isExportable();
-			}
-			
-			@Override
-			public void render(Cell.Context context,
-					ManageMeasureSearchModel.Result object, SafeHtmlBuilder sb) {
-				if (object.isExportable()) {
-					super.render(context, object, sb);
-				}
-			}
-		};
-		bulkExportColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
-			@Override
-			public void update(int index, ManageMeasureSearchModel.Result object, Boolean value) {
-				object.setExportable(value);
-				observer.onExportSelectedClicked(object);
-			}
-		});
-		table.addColumn(bulkExportColumn, SafeHtmlUtils.fromSafeConstant("<span title='Check for Bulk Export'>"
-				+ "Bulk Export </span>"));
-		
+
+					@Override
+					protected Element getContainerElement(Element parent) {
+						return parent.getFirstChildElement().getFirstChildElement()
+								.getFirstChildElement();
+					}
+
+				};
+				table.addColumn(new Column<Result, Result>(cell) {
+					@Override
+					public Result getValue(Result object) {
+						return object;
+					}
+				},bulkExportColumnHeader );
+				
+				
 		return table;
 	}
 	
@@ -437,7 +481,7 @@ public static interface Observer {
 	    selectedMeasureList = new ArrayList<Result>();
 		selectedMeasureList.addAll(results.getData());
 		table.setRowData(selectedMeasureList);
-		//table.setPageSize(25);
+		table.setPageSize(PAGE_SIZE);
 		table.redraw();
 		table.setRowCount(selectedMeasureList.size(), true);
 		sortProvider.refresh();
@@ -451,18 +495,51 @@ public static interface Observer {
 		spager.setDisplay(table);
 		spager.setPageSize(PAGE_SIZE);
 		table.setWidth("100%");
-		table.setColumnWidth(0, 35.0, Unit.PCT);
-		table.setColumnWidth(1, 25.0, Unit.PCT);
-		table.setColumnWidth(2, 25.0, Unit.PCT);
+//		table.setRowStyles(new RowStyles<ManageMeasureSearchModel.Result>() {
+//			List<String> measuresetID = new ArrayList<String>();
+//			Boolean EVEN = true;
+//			@Override
+//			public String getStyleNames(ManageMeasureSearchModel.Result rowObject, int rowIndex) {
+//				measuresetID.add(rowObject.getMeasureSetId());
+//				if (rowIndex != 0) {
+//					if (EVEN == true) {
+//						if (rowObject.getMeasureSetId().equalsIgnoreCase(
+//								measuresetID.get(rowIndex - 1))) {
+//							return "bluetext";
+//						} else {
+//							EVEN = false;
+//							return "redtext";
+//						}
+//					} else {
+//						if (rowObject.getMeasureSetId().equalsIgnoreCase(
+//								measuresetID.get(rowIndex - 1))) {
+//							EVEN = false;
+//							return "redtext";
+//						} else {
+//							EVEN = true;
+//							return "bluetext";
+//						}
+//					}
+//				} else {
+//					return "bluetext";
+//				}
+//
+//			}
+//		});
+
+		table.setColumnWidth(0, 33.0, Unit.PCT);
+		table.setColumnWidth(1, 15.0, Unit.PCT);
+		table.setColumnWidth(2, 16.0, Unit.PCT);
 		table.setColumnWidth(3, 5.0, Unit.PCT);
 		table.setColumnWidth(4, 5.0, Unit.PCT);
 		table.setColumnWidth(5, 5.0, Unit.PCT);
 		table.setColumnWidth(6, 5.0, Unit.PCT);
-		table.setColumnWidth(7, 5.0, Unit.PCT);
-		table.setColumnWidth(8, 5.0, Unit.PCT);
+		table.setColumnWidth(7, 20.0, Unit.PCT);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
-						"In the following Recent Activity table, Measure Name is given in first column,"
-								+ " Version in second column and Export in third column.");
+						"In the following Measure List table, Measure Name is given in first column,"
+								+ " Version in second column, Finalized Date in third column," +
+								"History in fourht column, Edit in fifth column, Share in sixth column" +
+								"Clone in seventh column and Export in eight column.");
 		table.getElement().setAttribute("id", "MeasureSearchCellTable");
 		table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
 		cellTablePanel.add(invisibleLabel);
@@ -471,21 +548,7 @@ public static interface Observer {
 		cellTablePanel.add(spager);
 	}
 	
-    
-    /**
-     * Clear bulk export boxes.
-     */
-    public void clearBulkExportBoxes(){
-//    	for (ManageMeasureSearchModel.Result result : selectedMeasureList) {
-//			result.setExportable(false);
-//		}
-//    	MeasureSearchResultsAdapter adapter = new MeasureSearchResultsAdapter();
-//		adapter.getData().setData(selectedMeasureList);
-//		buildCellTable(adapter);
-	}
-	
 
-	
 	/* (non-Javadoc)
  * @see mat.client.shared.search.SearchView#asWidget()
  */

@@ -2432,7 +2432,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 								ManageMeasureSearchModel result) {
 							
 							//MeasureSearchResultsAdapter searchResults = new MeasureSearchResultsAdapter();
-						    MeasureSearchView measureSearchView=new MeasureSearchView();
+						  //  MeasureSearchView measureSearchView=new MeasureSearchView();
 							//addHandlersToAdaptor(measureSearview);
 							
 							searchDisplay.getMeasureSearchView().setObserver(new MeasureSearchView.Observer() {
@@ -2471,13 +2471,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 								}
 								
 								@Override
-								public void onExportSelectedClicked(Result result) {
+								public void onExportSelectedClicked(Result result,boolean isCBChecked) {
 									measureDeletion = false;
 									isMeasureDeleted = false;
 									searchDisplay.getSuccessMeasureDeletion().clear();
 									searchDisplay.getErrorMeasureDeletion().clear();
 									searchDisplay.getErrorMessageDisplayForBulkExport().clear();
-									updateExportedIDs(result, manageMeasureSearchModel);
+									updateExportedIDs(result, manageMeasureSearchModel,isCBChecked);
 									
 								}
 								@Override
@@ -2538,9 +2538,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 											manageMeasureSearchModel.getSelectedExportResults());
 									manageMeasureSearchModel.getSelectedExportIds().removeAll(
 											manageMeasureSearchModel.getSelectedExportIds());
-									int filter = 1;
-									search(searchDisplay.getSearchString().getValue(), 1,
-											Integer.MAX_VALUE, filter);
 									
 								}
 								
@@ -2552,8 +2549,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 							MatContext.get()
 							.setManageMeasureSearchModel(
 									manageMeasureSearchModel);
-							//searchDisplay.getMeasureSearchView().setMeasureSearchModel(result);
-							
 							
 							if ((result.getResultsTotal() == 0)
 									&& !lastSearchText.isEmpty()) {
@@ -2597,6 +2592,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							SearchResultUpdate sru = new SearchResultUpdate();
 							sru.update(result, (TextBox) searchDisplay
 									.getSearchString(), lastSearchText);
+							updateMeasureFamily(manageMeasureSearchModel);
 							searchDisplay.buildDataTable(manageMeasureSearchModel);
 							showSearchingBusy(false);
 							
@@ -2604,6 +2600,33 @@ public class ManageMeasurePresenter implements MatPresenter {
 							
 					});
 				}
+	}
+	
+	//TODO 
+	
+	/**
+	 * Update measure family.
+	 *
+	 * @param manageMeasureSearchModel the manage measure search model
+	 */
+	public void updateMeasureFamily(ManageMeasureSearchModel manageMeasureSearchModel){
+		boolean isFamily=false;
+		if(manageMeasureSearchModel!=null)
+		{   List<Result> result=new ArrayList<ManageMeasureSearchModel.Result>();
+		    result.addAll(manageMeasureSearchModel.getData());
+		   for(int i=0;i<result.size();i++){
+		      if(i>0){
+			   if(result.get(i).getMeasureSetId().equalsIgnoreCase(
+					   result.get(i-1).getMeasureSetId()))
+		    	  result.get(i).setMeasureFamily(!isFamily);
+			   else
+				   result.get(i).setMeasureFamily(isFamily);
+			   }
+		      else{
+		    	  result.get(i).setMeasureFamily(isFamily);
+		      }
+		    } 
+		}
 	}
 	
 	/**
@@ -2887,9 +2910,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 							MatContext.get().getMessageDelegate()
 							.getMeasureSelectionError());
 				} else {
-					searchDisplay.clearBulkExportCheckBoxes(searchDisplay
-							.getMeasureDataTable());
+//					searchDisplay.clearBulkExportCheckBoxes(searchDisplay
+//							.getMeasureDataTable());
+					//search(searchText, shareStartIndex, pageSize, filter)
+					int filter = searchDisplay.getSelectedFilter();
 					bulkExport(manageMeasureSearchModel.getSelectedExportIds());
+					search(searchDisplay.getSearchString().getValue(), startIndex,
+							searchDisplay.getPageSize(), filter);
 				}
 			}
 		});
@@ -3455,9 +3482,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *
 	 * @param result the result
 	 * @param model the model
+	 * @param isCBChecked the is cb checked
 	 */
-	private void updateExportedIDs(Result result, ManageMeasureSearchModel model) {
-		if (result.isExportable()) {
+	private void updateExportedIDs(Result result, ManageMeasureSearchModel model,
+			boolean isCBChecked) {
+		if (isCBChecked) {
 			List<String> selectedIdList = model.getSelectedExportIds();
 			if (!selectedIdList.contains(result.getId())) {
 				model.getSelectedExportResults().add(result);

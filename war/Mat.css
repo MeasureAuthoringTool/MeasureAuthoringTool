@@ -74,11 +74,11 @@ body#main select, body#main input, body#main textarea {
 }
 
 .cellTableEvenRow{
-	background: #blue !important;
+	background: #f3f7fb !important;
 }
 
 .cellTableOddRow{
-	background: #red !important;
+	background: #ffffff !important;
 }
 
 .pos_fixed
@@ -88,11 +88,11 @@ top:30px;
 left:50px;
 }
 
-.bluetext{ 
-	background: blue !important;
+.cellTableOddRow{ 
+	background: #ffffff !important;
 }
 
-.redtext{
+.cellTableEvenRow{
 	background: #f3f7fb !important;
 }
 
@@ -250,6 +250,10 @@ left:50px;
     font-size: 0;
     border: 0px;
     cursor: text;
+}
+
+.customCompositeEmptyCell{
+	cursor: text;
 }
 
 .customShareButton {

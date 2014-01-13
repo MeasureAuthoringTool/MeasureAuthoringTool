@@ -10,6 +10,7 @@ import mat.model.LockedUserInfo;
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ManageMeasureSearchModel.
  */
@@ -86,7 +87,29 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		/** The e measure id. */
 		private int eMeasureId;
 		
+		/** The is measure family. */
+		private boolean isMeasureFamily;
 		
+		
+		
+		/**
+		 * Checks if is measure family.
+		 *
+		 * @return true, if is measure family
+		 */
+		public boolean isMeasureFamily(){
+			return isMeasureFamily;
+		}
+		
+		/**
+		 * Sets the measure family.
+		 *
+		 * @param isMeasureFamily the new measure family
+		 */
+		public void setMeasureFamily(boolean isMeasureFamily) {
+			this.isMeasureFamily = isMeasureFamily;
+		}
+
 		/**
 		 * Gets the locked user info.
 		 * 
@@ -555,21 +578,11 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 	
 	/** The selected transfer ids. */
 	private List<String> selectedTransferIds;
-	
-	private List<Boolean> isMeasureFamily;
-	
-	public List<Boolean> getIsMeasureFamily() {
-		return isMeasureFamily;
-	}
-
-	public void setIsMeasureFamily(List<Boolean> isMeasureFamily) {
-		this.isMeasureFamily = isMeasureFamily;
-	}
-
 
 	/** The selected transfer results. */
 	private ArrayList<Result> selectedTransferResults;
 
+	/** The selected export results. */
 	private ArrayList<Result> selectedExportResults;
 	
 	
@@ -785,6 +798,11 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		this.selectedTransferResults = selectedTransferResults;
 	}
 	
+	/**
+	 * Sets the selected export results.
+	 *
+	 * @param selectedExportResults the new selected export results
+	 */
 	public void setSelectedExportResults(ArrayList<Result> selectedExportResults) {
 		this.selectedExportResults = selectedExportResults;
 	}
@@ -798,6 +816,11 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		return selectedTransferResults;
 	}
 
+	/**
+	 * Gets the selected export results.
+	 *
+	 * @return the selected export results
+	 */
 	public List<Result> getSelectedExportResults() {
 		return selectedExportResults;
 	}

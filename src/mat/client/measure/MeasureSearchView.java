@@ -222,7 +222,7 @@ public static interface Observer {
 					sb.appendHtmlConstant("<span title='" +object.getName()+"'>"+object.getName()+"</span>");
 					sb.appendHtmlConstant("</a>");
 				}else{
-					sb.appendHtmlConstant("<a href=\"jaWSvascript:void(0);\" "
+					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
 							+ "style=\"text-decoration:none\" >");  
 				    sb.appendHtmlConstant("<button type=\"button\" title='" + object.getName() + "' tabindex=\"0\" class=\" "+cssClass+"\"></button>");
 				    sb.appendHtmlConstant("<span title='" +object.getName()+"'>"+object.getName()+"</span>");

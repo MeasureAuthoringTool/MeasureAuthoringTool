@@ -133,6 +133,12 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 			String contextPath = ((WebApplicationContext)applicationContext).getServletContext().getContextPath();
 			System.out.println("$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%----------->ContextPath:"+contextPath);
 			
+			String realPath = ((WebApplicationContext)applicationContext).getServletContext().getRealPath("Login.html");
+			System.out.println("$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%----------->realPath:"+realPath);
+			
+			String realContextPath = ((WebApplicationContext)applicationContext).getServletContext().getRealPath(contextPath);
+			System.out.println("$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%----------->realContextPath:"+realContextPath);
+			
 			String serverInfo = ((WebApplicationContext)applicationContext).getServletContext().getServerInfo();
 			System.out.println("$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%----------->serverInfo:"+serverInfo);
 			

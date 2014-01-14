@@ -45,7 +45,7 @@ import org.xml.sax.SAXException;
 public class XmlProcessor {
 	
 	private static final String COHORT = "COHORT";
-
+	
 	/** The Constant MEASUREMENT_END_DATE_OID. */
 	private static final String MEASUREMENT_END_DATE_OID = "2.16.840.1.113883.3.67.1.101.1.55";
 	
@@ -708,7 +708,16 @@ public class XmlProcessor {
 			xPathList.add(XPATH_DENOMINATOR);
 			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
 			xPathList.add(XPATH_DENOMINATOR_EXCLUSIONS);
-		} 
+		} else if (COHORT.equals(scoringType.toUpperCase())) {
+			xPathList.add(XPATH_NUMERATORS);
+			xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
+			xPathList.add(XPATH_DENOMINATOR);
+			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
+			xPathList.add(XPATH_DENOMINATOR_EXCLUSIONS);
+			xPathList.add(XPATH_MEASURE_POPULATIONS);
+			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
+			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
+		}
 		for (String xPathString : xPathList) {
 			Node node = findNode(originalDoc, xPathString);
 			removeFromParent(node);

@@ -20,7 +20,6 @@ import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 
 import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CheckboxCell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
@@ -44,7 +43,6 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.RowStyles;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -101,6 +99,8 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	
 	/** The cell table odd row. */
 	public String cellTableOddRow="cellTableOddRow";
+	
+	Label measureSearchHeader;
 
 /**
  * The Interface Observer.
@@ -201,7 +201,7 @@ public static interface Observer {
 	 */
 	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable() {
 	
-		Label measureSearchHeader = new Label("Measure List");
+		Label measureSearchHeader = new Label();
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
 		measureSearchHeader.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
@@ -219,13 +219,13 @@ public static interface Observer {
 					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
 							+ "style=\"text-decoration:none\" >" + 
 							"<button class='textEmptySpaces' disabled='disabled'></button>");
-					sb.appendHtmlConstant("<span title='" +object.getName()+"'>"+object.getName()+"</span>");
+					sb.appendHtmlConstant("<span title=\" "+ object.getName() +"\">"+object.getName()+"</span>");
 					sb.appendHtmlConstant("</a>");
 				}else{
 					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
 							+ "style=\"text-decoration:none\" >");  
-				    sb.appendHtmlConstant("<button type=\"button\" title='" + object.getName() + "' tabindex=\"0\" class=\" "+cssClass+"\"></button>");
-				    sb.appendHtmlConstant("<span title='" +object.getName()+"'>"+object.getName()+"</span>");
+				    sb.appendHtmlConstant("<button type=\"button\" title=\"" + object.getName() + "\" tabindex=\"-1\" class=\" "+cssClass+"\"></button>");
+				    sb.appendHtmlConstant("<span title=\" "+ object.getName() +"\">"+object.getName()+"</span>");
 					sb.appendHtmlConstant("</a>");
 				}
 				return sb.toSafeHtml();
@@ -747,42 +747,6 @@ public static interface Observer {
 		});
 	}
 	
-//	public void buildTableCssStyle(){
-//
-//		int tableSize=table.getRowCount();
-//		if(tableSize>25){
-//			tableSize=25;
-//		}
-//		boolean EVEN=true;
-//		for(int rows=0;rows<tableSize;rows++){
-//			if(rows>0){
-//				if(EVEN==true){ 
-//					if(selectedMeasureList.get(rows).getMeasureSetId()
-//						.equalsIgnoreCase(selectedMeasureList.get(rows-1).getMeasureSetId())){
-//						table.getRowElement(rows).setClassName("cellTableOddRow");
-//						}
-//					else{
-//						table.getRowElement(rows).setClassName("cellTableEvenRow");
-//						EVEN=false;
-//						}
-//					}
-//				else{
-//					if(selectedMeasureList.get(rows).getMeasureSetId()
-//							.equalsIgnoreCase(selectedMeasureList.get(rows-1).getMeasureSetId())){
-//						table.getRowElement(rows).setClassName("cellTableEvenRow");
-//						EVEN=true;
-//						}
-//					else{
-//						table.getRowElement(rows).setClassName("cellTableOddRow");
-//						EVEN=false;
-//						}	
-//					}
-//				}
-//			else{
-//				table.getRowElement(rows).setClassName("cellTableOddRow");
-//				}
-//			}
-//		}
 	
     /**
      * Builds the image text cell.

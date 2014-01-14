@@ -158,7 +158,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				}
 			});
 			table.addColumn(radioButtonColumn, SafeHtmlUtils.fromSafeConstant(
-					"<span title='Select to Modify'>Select</span>"));
+					"<span title=\"Select to Modify\">Select</span>"));
 			Column<QualityDataSetDTO, SafeHtml> nameColumn = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(QualityDataSetDTO object) {
@@ -182,7 +182,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				}
 			};
 			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant(
-					"<span title='Name'>" + "Name" + "</span>"));
+					"<span title=\"Name\">" + "Name" + "</span>"));
 			Column<QualityDataSetDTO, SafeHtml> dataTypeColumn = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(QualityDataSetDTO object) {
@@ -191,7 +191,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					return CellTableUtility.getColumnToolTip(object.getDataType(), title.toString());
 				}
 			};
-			table.addColumn(dataTypeColumn, SafeHtmlUtils.fromSafeConstant("<span title='Datatype'>" + "Datatype"
+			table.addColumn(dataTypeColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Datatype\">" + "Datatype"
 					+ "</span>"));
 			Column<QualityDataSetDTO, SafeHtml> oidColumn = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
 				@Override
@@ -208,7 +208,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					return CellTableUtility.getColumnToolTip(oid, title.toString());
 				}
 			};
-			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title='OID'>" + "OID" + "</span>"));
+			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
 			Column<QualityDataSetDTO, SafeHtml> versionColumn = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
 				@Override
 				public SafeHtml getValue(QualityDataSetDTO object) {
@@ -233,7 +233,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					return CellTableUtility.getColumnToolTip(version, title.toString());
 				}
 			};
-			table.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title='Version'>" + "Version"
+			table.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Version\">" + "Version"
 					+ "</span>"));
 			Column<QualityDataSetDTO, SafeHtml> effectiveDateColumn = new Column<QualityDataSetDTO,
 					SafeHtml>(new SafeHtmlCell()) {
@@ -251,7 +251,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 				}
 			};
 			table.addColumn(effectiveDateColumn, SafeHtmlUtils.fromSafeConstant(
-					"<span title='Effective Date' tabindex=\"0\">" + "Effective Date"
+					"<span title=\"Effective Date\" tabindex=\"0\">" + "Effective Date"
 							+ "</span>"));
 			table.setColumnWidth(0, 2.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);

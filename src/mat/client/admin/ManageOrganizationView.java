@@ -111,7 +111,7 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
 				safeHtmlBuilder.appendHtmlConstant("<a href=\"javascript:void(0);\" "
 						+ " style=\"text-decoration:none\" "
-						+ "title='Organization: " + object.getOrgName() + "' >");
+						+ "title=\"Organization: " + object.getOrgName() + "\" >");
 				safeHtmlBuilder.appendEscaped(object.getOrgName());
 				safeHtmlBuilder.appendHtmlConstant("</a>");
 				return safeHtmlBuilder.toSafeHtml();
@@ -124,14 +124,14 @@ HasSelectionHandlers<ManageOrganizationSearchModel.Result> {
 			}
 		});
 		cellTable.addColumn(organizationColumn,
-				SafeHtmlUtils.fromSafeConstant("<span title='Organization' >" + "Organization" + "</span>"));
+				SafeHtmlUtils.fromSafeConstant("<span title=\"Organization\" >" + "Organization" + "</span>"));
 		Column<Result, SafeHtml> oidColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
 				return CellTableUtility.getColumnToolTip(object.getOid(), "OID: " + object.getOid());
 			}
 		};
-		cellTable.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title='OID'>" + "OID" + "</span>"));
+		cellTable.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
 		return cellTable;
 	}
 	@Override

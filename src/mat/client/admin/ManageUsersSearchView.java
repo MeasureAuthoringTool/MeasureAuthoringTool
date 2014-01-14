@@ -104,7 +104,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 				SafeHtmlBuilder safeHtmlBuilder = new SafeHtmlBuilder();
 				safeHtmlBuilder.appendHtmlConstant("<a href=\"javascript:void(0);\" "
 						+ "style=\"text-decoration:none\" "
-						+ "title='Name: " + object.getFirstName() + " " + object.getLastName() + "' >");
+						+ "title=\"Name: " + object.getFirstName() + " " + object.getLastName() + "\" >");
 				safeHtmlBuilder.appendEscaped(object.getFirstName() + " " + object.getLastName());
 				safeHtmlBuilder.appendHtmlConstant("</a>");
 				return safeHtmlBuilder.toSafeHtml();
@@ -117,7 +117,7 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 				SelectionEvent.fire(ManageUsersSearchView.this, object);
 			}
 		});
-		cellTable.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Name'>" + "Name" + "</span>"));
+		cellTable.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Name\">" + "Name" + "</span>"));
 		Column<Result, SafeHtml> organizationColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
@@ -125,14 +125,14 @@ public class ManageUsersSearchView implements ManageUsersPresenter.SearchDisplay
 			}
 		};
 		cellTable.addColumn(organizationColumn, SafeHtmlUtils.fromSafeConstant(
-				"<span title='Organization'>" + "Organization" + "</span>"));
+				"<span title=\"Organization\">" + "Organization" + "</span>"));
 		Column<Result, SafeHtml> statusColumn = new Column<Result, SafeHtml>(new SafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(Result object) {
 				return CellTableUtility.getColumnToolTip(object.getStatus(), "Status: " + object.getStatus());
 			}
 		};
-		cellTable.addColumn(statusColumn, SafeHtmlUtils.fromSafeConstant("<span title='Status'>" + "Status" + "</span>"));
+		cellTable.addColumn(statusColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Status\">" + "Status" + "</span>"));
 		return cellTable;
 	}
 	@Override

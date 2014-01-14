@@ -95,7 +95,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					return -1;
 				}
 			});
-			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'>"
+			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title=\"Measure Name\">"
 					+ "Measure Name" + "</span>"));
 			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerName = new Column<
 					ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
@@ -120,7 +120,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					return -1;
 				}
 			});
-			table.addColumn(ownerName, SafeHtmlUtils.fromSafeConstant("<span title='Owner'>" + "Owner" + "</span>"));
+			table.addColumn(ownerName, SafeHtmlUtils.fromSafeConstant("<span title=\"Owner\">" + "Owner" + "</span>"));
 			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerEmailAddress = new Column<
 					ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
@@ -142,7 +142,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					return -1;
 				}
 			});
-			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title='Owner E-mail Address'>"
+			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title=\"Owner E-mail Address\">"
 					+ "Owner E-mail Address" + "</span>"));
 			Column<ManageMeasureSearchModel.Result, SafeHtml> eMeasureID = new Column<ManageMeasureSearchModel.Result,
 					SafeHtml>(new MatSafeHTMLCell()) {
@@ -151,7 +151,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					return CellTableUtility.getColumnToolTip("" + object.geteMeasureId(), "" + object.geteMeasureId());
 				}
 			};
-			table.addColumn(eMeasureID, SafeHtmlUtils.fromSafeConstant("<span title='eMeasure Id'>"
+			table.addColumn(eMeasureID, SafeHtmlUtils.fromSafeConstant("<span title=\"eMeasure Id\">"
 					+ "eMeasure Id" + "</span>"));
 			Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
 			Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
@@ -166,7 +166,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					observer.onHistoryClicked(object);
 				}
 			});
-			table.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>" + "History" + "</span>"));
+			table.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"History\">" + "History" + "</span>"));
 			Cell<Boolean> transferCB = new MatCheckBoxCell();
 			Column<Result, Boolean> transferColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(transferCB) {
 				@Override
@@ -181,7 +181,7 @@ public class AdminMeasureSearchResultAdaptor implements SearchResults<ManageMeas
 					observer.onTransferSelectedClicked(object);
 				}
 			});
-			table.addColumn(transferColumn, SafeHtmlUtils.fromSafeConstant("<span title='Check for Ownership Transfer'>"
+			table.addColumn(transferColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Check for Ownership Transfer\">"
 					+ "Transfer </span>"));
 			table.setColumnWidth(0, 30.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);

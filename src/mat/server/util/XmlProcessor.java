@@ -44,6 +44,8 @@ import org.xml.sax.SAXException;
  */
 public class XmlProcessor {
 	
+	private static final String COHORT = "COHORT";
+
 	/** The Constant MEASUREMENT_END_DATE_OID. */
 	private static final String MEASUREMENT_END_DATE_OID = "2.16.840.1.113883.3.67.1.101.1.55";
 	
@@ -706,8 +708,7 @@ public class XmlProcessor {
 			xPathList.add(XPATH_DENOMINATOR);
 			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
 			xPathList.add(XPATH_DENOMINATOR_EXCLUSIONS);
-		}
-		
+		} 
 		for (String xPathString : xPathList) {
 			Node node = findNode(originalDoc, xPathString);
 			removeFromParent(node);
@@ -812,8 +813,9 @@ public class XmlProcessor {
 			scoreBasedNodes.add(NUMERATOR_EXCLUSIONS);
 			scoreBasedNodes.add(DENOMINATORS);
 			scoreBasedNodes.add(DENOMINATOR_EXCLUSIONS);
+		} else if (COHORT.equals(scoringType)) {
+			scoreBasedNodes.add(INITIAL_POPULATIONS);
 		}
-		
 		Node populationsNode = findNode(originalDoc, XPATH_POPULATIONS);
 		if (populationsNode == null) {
 			populationsNode = addPopulationsNode();

@@ -2,7 +2,6 @@ package mat.shared.model.util;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.shared.ConstantMessages;
 
 /**
@@ -44,18 +43,19 @@ public class MeasureDetailsUtil {
 	 *            the scoring
 	 * @return the scoring abbr
 	 */
-	public static String getScoringAbbr(String scoring){
+	public static String getScoringAbbr(String scoring) {
 		String abbr = "";
-		if(scoring.equalsIgnoreCase(ConstantMessages.CONTINUOUS_VARIABLE_SCORING)){
+		if (scoring.equalsIgnoreCase(ConstantMessages.CONTINUOUS_VARIABLE_SCORING)) {
 			abbr = "CONTVAR";
-		}else if(scoring.equalsIgnoreCase(ConstantMessages.PROPORTION_SCORING)){
+		} else if (scoring.equalsIgnoreCase(ConstantMessages.PROPORTION_SCORING)) {
 			abbr = "PROPOR";
-		}else if(scoring.equalsIgnoreCase(ConstantMessages.RATIO_SCORING)){
+		} else if (scoring.equalsIgnoreCase(ConstantMessages.RATIO_SCORING)) {
 			abbr = "RATIO";
+		} else if (scoring.equalsIgnoreCase(ConstantMessages.COHORT_SCORING)) {
+			abbr = "COHORT";
 		}
 		return abbr;
 	}
-	
 	/**
 	 * Gets the trimmed list.
 	 * 
@@ -65,7 +65,7 @@ public class MeasureDetailsUtil {
 	 */
 	public static List<String> getTrimmedList(List<String> listA){
 		ArrayList<String> newAList = new ArrayList<String>();
-		if(listA != null && listA.size() > 0){
+		if((listA != null) && (listA.size() > 0)){
 			for (String aStr : listA) {
 				String val = trimToNull(aStr);
 				if(null != val){
@@ -75,7 +75,7 @@ public class MeasureDetailsUtil {
 		}
 		return newAList;
 	}
-
+	
 	/**
 	 * Trim to null.
 	 * 
@@ -91,5 +91,5 @@ public class MeasureDetailsUtil {
 		}
 		return value;
 	}
-
+	
 }

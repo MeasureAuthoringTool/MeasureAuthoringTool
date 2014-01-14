@@ -1,10 +1,6 @@
 package mat.client.measure;
 
-import java.util.List;
-
 import mat.client.ImageResources;
-import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.CreateMeasureWidget;
@@ -15,13 +11,12 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
-import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
+
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
@@ -71,8 +66,7 @@ ManageMeasurePresenter.SearchDisplay {
 	/** The form. */
 	final FormPanel form = new FormPanel();
 	
-	/** The selected measure list. */
-	private List<Result> selectedMeasureList;
+	
 	
 	/** The msfp. */
 	/*

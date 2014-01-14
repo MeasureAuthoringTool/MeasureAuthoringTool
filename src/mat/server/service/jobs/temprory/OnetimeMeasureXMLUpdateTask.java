@@ -15,11 +15,15 @@ import mat.server.util.XmlProcessor;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.web.context.WebApplicationContext;
 
 /**
  * The Class OnetimeMeasureXMLUpdateTask.
  */
-public class OnetimeMeasureXMLUpdateTask {
+public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 
 	/** The Constant logger. */
 	private static final Log logger = LogFactory
@@ -36,6 +40,8 @@ public class OnetimeMeasureXMLUpdateTask {
 
 	/** The mat flag dao. */
 	private MatFlagDAO matFlagDAO;
+	
+	private ApplicationContext applicationContext;
 
 	/**
 	 * Update measure xmls for based on new changes for Scoring type.
@@ -122,6 +128,20 @@ public class OnetimeMeasureXMLUpdateTask {
 			matFlagDAO.save(flag);
 			result = true;
 		}
+		
+		if(this.applicationContext instanceof WebApplicationContext){
+			String contextPath = ((WebApplicationContext)applicationContext).getServletContext().getContextPath();
+			System.out.println("$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%----------->ContextPath:"+contextPath);
+			
+			String serverInfo = ((WebApplicationContext)applicationContext).getServletContext().getServerInfo();
+			System.out.println("$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%----------->serverInfo:"+serverInfo);
+			
+			String ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE = ((WebApplicationContext) applicationContext).ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE;
+			System.out.println("$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%----------->ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE:"+ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE);
+			
+			String contextClassName = applicationContext.getClass().getName();
+			System.out.println("$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%----------->contextClassName:"+contextClassName);
+		}
 
 		return result;
 	}
@@ -179,5 +199,12 @@ public class OnetimeMeasureXMLUpdateTask {
 
 	public MeasurePackageService getMeasurePackageService() {
 		return measurePackageService;
+	}
+
+	@Override
+	public void setApplicationContext(ApplicationContext arg0)
+			throws BeansException {
+		this.applicationContext = arg0;
+		
 	}
 }

@@ -17,7 +17,6 @@ import mat.client.shared.RadioButtonCell;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -135,7 +134,7 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 	 * @see mat.client.measure.ManageMeasurePresenter.DraftDisplay#buildDataTable(mat.client.shared.search.SearchResults)
 	 */
 	@Override
-	public void buildDataTable(SearchResults<Result> results) {
+	public void buildDataTable(ManageDraftMeasureModel results) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		Label cellTablePanelHeader = new Label("Select a Measure Version to create a Draft.");
@@ -144,13 +143,13 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 		CellTable<ManageMeasureSearchModel.Result> cellTable = new CellTable<ManageMeasureSearchModel.Result>();
 		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
 		List<Result> measureList = new ArrayList<Result>();
-		measureList.addAll(((ManageDraftMeasureModel) results).getDataList());
+		measureList.addAll((results.getDataList()));
 		cellTable.setPageSize(PAGE_SIZE);
 		cellTable.redraw();
 		cellTable.setRowCount(measureList.size(), true);
 		cellTable.setSelectionModel(getSelectionModelWithHandler());
 		sortProvider.refresh();
-		sortProvider.getList().addAll(((ManageDraftMeasureModel) results).getDataList());
+		sortProvider.getList().addAll(results.getDataList());
 		cellTable = addColumnToTable(cellTable);
 		sortProvider.addDataDisplay(cellTable);
 		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);

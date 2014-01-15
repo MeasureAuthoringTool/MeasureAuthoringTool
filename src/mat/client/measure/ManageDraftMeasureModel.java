@@ -14,8 +14,12 @@ class ManageDraftMeasureModel {
 	 *            the new data
 	 */
 	public void setData(ManageMeasureSearchModel manageMeasureSearchModel) {
-		this.data = manageMeasureSearchModel;
+		data = manageMeasureSearchModel;
 	}
+	/**
+	 * Get List of Results from {@link ManageMeasureSearchModel}.
+	 * @return {@link List} of {@link ManageMeasureSearchModel.Result}
+	 */
 	public List<ManageMeasureSearchModel.Result> getDataList() {
 		return data.getData();
 	}

@@ -100,7 +100,19 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	/** The cell table odd row. */
 	public String cellTableOddRow="cellTableOddRow";
 	
-	Label measureSearchHeader;
+	public String measureListLabel="";
+	
+	MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
+
+
+  public String getMeasureListLabel() {
+		return measureListLabel;
+	}
+
+
+	public void setMeasureListLabel(String measureListLabel) {
+		this.measureListLabel = measureListLabel;
+	}
 
 /**
  * The Interface Observer.
@@ -201,13 +213,13 @@ public static interface Observer {
 	 */
 	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable() {
 	
-		Label measureSearchHeader = new Label();
+		Label measureSearchHeader = new Label(getMeasureListLabel());
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
 		measureSearchHeader.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
-		final MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
+		selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
 		table.setSelectionModel(selectionModel);
 		Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new ClickableSafeHtmlCell()) {
@@ -381,12 +393,7 @@ public static interface Observer {
 
 			@Override
 			public void update(SafeHtml value) {
-				List<Result> displayedItems=new ArrayList<Result>();// = table.getVisibleItems();
-				displayedItems.addAll(selectedMeasureList);
-				for (ManageMeasureSearchModel.Result msg : displayedItems) {
-					selectionModel.setSelected(msg, false);
-				}
-			    observer.onClearAllBulkExportClicked();
+				clearBulkExportCheckBoxes();
 			}
 
 		});
@@ -483,7 +490,16 @@ public static interface Observer {
 		return table;
 	}
 	
-    
+   
+	public void clearBulkExportCheckBoxes(){
+		List<Result> displayedItems=new ArrayList<Result>();// = table.getVisibleItems();
+		displayedItems.addAll(selectedMeasureList);
+		for (ManageMeasureSearchModel.Result msg : displayedItems) {
+			selectionModel.setSelected(msg, false);
+		}
+	    observer.onClearAllBulkExportClicked();
+	}
+	
 	/**
 	 * Builds the cell table.
 	 *

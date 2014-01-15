@@ -2434,7 +2434,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 							//MeasureSearchResultsAdapter searchResults = new MeasureSearchResultsAdapter();
 						  //  MeasureSearchView measureSearchView=new MeasureSearchView();
 							//addHandlersToAdaptor(measureSearview);
-							
+							if(searchDisplay.getMeasureSearchFilterWidget().
+									getSelectedFilter()!=0){
+								searchDisplay.getMeasureSearchView().setMeasureListLabel("All Measures");
+							}
+							else{
+								searchDisplay.getMeasureSearchView().setMeasureListLabel("My Measures");
+							}
 							searchDisplay.getMeasureSearchView().setObserver(new MeasureSearchView.Observer() {
 								@Override
 								public void onCloneClicked(ManageMeasureSearchModel.Result result) {
@@ -2914,9 +2920,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 //							.getMeasureDataTable());
 					//search(searchText, shareStartIndex, pageSize, filter)
 					int filter = searchDisplay.getSelectedFilter();
+//					search(searchDisplay.getSearchString().getValue(), startIndex,
+//							searchDisplay.getPageSize(), filter);
 					bulkExport(manageMeasureSearchModel.getSelectedExportIds());
-					search(searchDisplay.getSearchString().getValue(), startIndex,
-							searchDisplay.getPageSize(), filter);
+					searchDisplay.getMeasureSearchView().clearBulkExportCheckBoxes();
+					
 				}
 			}
 		});

@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
 import mat.client.CustomPager;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -15,10 +14,8 @@ import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -50,154 +47,108 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureSearchView.
- * 
- * @author aschmidt
+ * @author jnarang
+ *
  */
-public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSearchModel.Result>{
-
-	/** The odd. */
-	boolean odd = false;
-	
-	/** The add image. */
-	boolean addImage = true;
-	
+public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSearchModel.Result> {
 	/** The cell table panel. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
-	
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
-		
 	/** The Constant PAGE_SIZE. */
-	private static final int PAGE_SIZE = 25;	
-	
+	private static final int PAGE_SIZE = 25;
 	/** The selected measure list. */
-	List<ManageMeasureSearchModel.Result> selectedMeasureList ;
-	
+	private List<ManageMeasureSearchModel.Result> selectedMeasureList;
 	/** The handler manager. */
 	private HandlerManager handlerManager = new HandlerManager(this);
-	
 	/** The data. */
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
-	
 	/** The observer. */
 	private Observer observer;
-	
-    /** The table. */
-    private CellTable<ManageMeasureSearchModel.Result> table;
-    
-    /** The even. */
-    public Boolean EVEN;
-    
+	/** The table. */
+	private CellTable<ManageMeasureSearchModel.Result> table;
+	/** The even. */
+	private Boolean even;
 	/** The cell table css style. */
-	public List<String> cellTableCssStyle;
-	
+	private List<String> cellTableCssStyle;
 	/** The cell table even row. */
-	public String cellTableEvenRow="cellTableEvenRow";
-	
+	private String cellTableEvenRow = "cellTableEvenRow";
 	/** The cell table odd row. */
-	public String cellTableOddRow="cellTableOddRow";
-	
-	public String measureListLabel="";
-	
-	MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
-
-
-  public String getMeasureListLabel() {
-		return measureListLabel;
-	}
-
-
-	public void setMeasureListLabel(String measureListLabel) {
-		this.measureListLabel = measureListLabel;
-	}
-
-/**
- * The Interface Observer.
- */
-public static interface Observer {
-		
+	private String cellTableOddRow = "cellTableOddRow";
+	/**
+	 * Measure Library Table Title.
+	 */
+	private String measureListLabel;
+	/**
+	 * MultiSelectionModel on Cell Table.
+	 */
+	private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
+	/**
+	 * The Interface Observer.
+	 */
+	public static interface Observer {
 		/**
 		 * On edit clicked.
-		 * 
 		 * @param result
 		 *            the result
 		 */
-		public void onEditClicked(ManageMeasureSearchModel.Result result);
-		
+		void onEditClicked(ManageMeasureSearchModel.Result result);
 		/**
 		 * On clone clicked.
-		 * 
 		 * @param result
 		 *            the result
 		 */
-		public void onCloneClicked(ManageMeasureSearchModel.Result result);
-		
+		void onCloneClicked(ManageMeasureSearchModel.Result result);
 		/**
 		 * On share clicked.
-		 * 
 		 * @param result
 		 *            the result
 		 */
-		public void onShareClicked(ManageMeasureSearchModel.Result result);
-		
+		void onShareClicked(ManageMeasureSearchModel.Result result);
 		/**
 		 * On export clicked.
-		 * 
 		 * @param result
 		 *            the result
 		 */
-		public void onExportClicked(ManageMeasureSearchModel.Result result);
-		
+		void onExportClicked(ManageMeasureSearchModel.Result result);
 		/**
 		 * On history clicked.
-		 * 
 		 * @param result
 		 *            the result
 		 */
-		public void onHistoryClicked(ManageMeasureSearchModel.Result result);	
-		
+		void onHistoryClicked(ManageMeasureSearchModel.Result result);
 		/**
 		 * On export selected clicked.
-		 * 
 		 * @param checkBox
 		 *            the check box
 		 */
-		public void onExportSelectedClicked(CustomCheckBox checkBox);
-		
+		void onExportSelectedClicked(CustomCheckBox checkBox);
 		/**
 		 * On export selected clicked.
 		 *
 		 * @param result the result
-		 * @param isCBChecked the is cb checked
+		 * @param isCBChecked the Boolean.
 		 */
-		public void onExportSelectedClicked(ManageMeasureSearchModel.Result result,boolean  isCBChecked);
-		
-		
-		
+		void onExportSelectedClicked(ManageMeasureSearchModel.Result result, boolean  isCBChecked);
 		/**
 		 * On clear all bulk export clicked.
 		 */
-		public void onClearAllBulkExportClicked();
+		void onClearAllBulkExportClicked();
 	}
-	
 	/**
 	 * Instantiates a new measure search view.
-	 * 
-	 * @param string
+	 * @param view
 	 *            the string
 	 */
-	public MeasureSearchView(String string) {
+	public MeasureSearchView(String view) {
 		this();
 	}
-	
-	
 	/**
 	 * Instantiates a new measure search view.
 	 */
-	public MeasureSearchView(){
+	public MeasureSearchView() {
 		mainPanel.getElement().setId("measureserachView_mainPanel");
 		mainPanel.setStylePrimaryName("measureSearchResultsContainer");
 		mainPanel.add(new SpacerWidget());
@@ -205,14 +156,12 @@ public static interface Observer {
 		mainPanel.add(cellTablePanel);
 		mainPanel.setStyleName("serachView_mainPanel");
 	}
-	
 	/**
 	 * Adds the column to table.
 	 *
 	 * @return the cell table
 	 */
-	public CellTable<ManageMeasureSearchModel.Result> addColumnToTable() {
-	
+	private CellTable<ManageMeasureSearchModel.Result> addColumnToTable() {
 		Label measureSearchHeader = new Label(getMeasureListLabel());
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
 		measureSearchHeader.setStyleName("recentSearchHeader");
@@ -225,34 +174,33 @@ public static interface Observer {
 				new ClickableSafeHtmlCell()) {
 			@Override
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-			 	SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				String cssClass="customCascadeButton";
-				if(object.isMeasureFamily()){
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				String cssClass = "customCascadeButton";
+				if (object.isMeasureFamily()) {
 					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" >" + 
-							"<button class='textEmptySpaces' disabled='disabled'></button>");
-					sb.appendHtmlConstant("<span title=\" "+ object.getName() +"\">"+object.getName()+"</span>");
+							+ "style=\"text-decoration:none\" >"
+							+ "<button class='textEmptySpaces' disabled='disabled'></button>");
+					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\">" + object.getName() + "</span>");
 					sb.appendHtmlConstant("</a>");
-				}else{
+				} else {
 					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" >");  
-				    sb.appendHtmlConstant("<button type=\"button\" title=\"" + object.getName() + "\" tabindex=\"-1\" class=\" "+cssClass+"\"></button>");
-				    sb.appendHtmlConstant("<span title=\" "+ object.getName() +"\">"+object.getName()+"</span>");
+							+ "style=\"text-decoration:none\" >");
+					sb.appendHtmlConstant("<button type=\"button\" title=\""
+							+ object.getName() + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
+					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\">" + object.getName() + "</span>");
 					sb.appendHtmlConstant("</a>");
 				}
 				return sb.toSafeHtml();
 			}
 		};
 		measureName.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
-					@Override
-					public void update(int index,ManageMeasureSearchModel.Result object,
-							SafeHtml value) {
-						SelectionEvent.fire(MeasureSearchView.this,object);
-					}
-				});
+			@Override
+			public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
+				SelectionEvent.fire(MeasureSearchView.this, object);
+			}
+		});
 		table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name Column'>"
-						+ "Measure Name" + "</span>"));
-
+				+ "Measure Name" + "</span>"));
 		// Version Column
 		Column<ManageMeasureSearchModel.Result, SafeHtml> version = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
 				new MatSafeHTMLCell()) {
@@ -264,36 +212,31 @@ public static interface Observer {
 		table.addColumn(version, SafeHtmlUtils
 				.fromSafeConstant("<span title='Version'>" + "Version"
 						+ "</span>"));
-
 		//Finalized Date
-				Column<ManageMeasureSearchModel.Result, SafeHtml> finalizedDate = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-						new MatSafeHTMLCell()) {
-					@Override
-					public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-						if(object.getFinalizedDate()!=null){
-						  return CellTableUtility.getColumnToolTip(convertTimestampToString(object.getFinalizedDate()));
-						}
-						else{
-							SafeHtmlBuilder sb=new SafeHtmlBuilder();
-							sb.appendHtmlConstant("<span tabindex=\"-1\"><span>");
-							return sb.toSafeHtml();
-						}
-					}
-				};
-				table.addColumn(finalizedDate, SafeHtmlUtils
-						.fromSafeConstant("<span title='Finalized Date'>" + "Finalized Date"
-								+ "</span>"));
-				
+		Column<ManageMeasureSearchModel.Result, SafeHtml> finalizedDate = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+				new MatSafeHTMLCell()) {
+			@Override
+			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+				if (object.getFinalizedDate() != null) {
+					return CellTableUtility.getColumnToolTip(convertTimestampToString(object.getFinalizedDate()));
+				} else {
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					sb.appendHtmlConstant("<span tabindex=\"-1\"><span>");
+					return sb.toSafeHtml();
+				}
+			}
+		};
+		table.addColumn(finalizedDate, SafeHtmlUtils
+				.fromSafeConstant("<span title='Finalized Date'>" + "Finalized Date"
+						+ "</span>"));
 		//History
-				
-				Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
-				Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) 
-						{
-					@Override
-					public String getValue(ManageMeasureSearchModel.Result object) {
-						return "History";
-					}
-					
+		Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
+		Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton)
+				{
+			@Override
+			public String getValue(ManageMeasureSearchModel.Result object) {
+				return "History";
+			}
 				};
 				historyColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
 					@Override
@@ -301,70 +244,62 @@ public static interface Observer {
 						observer.onHistoryClicked(object);
 					}
 				});
-				table.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>" + "History" + "</span>"));
-				
-		//Edit
-				
-				Column<ManageMeasureSearchModel.Result, SafeHtml> editColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(
-						new ClickableSafeHtmlCell()){
-
-							@Override
-							public SafeHtml getValue(Result object) {
-								SafeHtmlBuilder sb= new SafeHtmlBuilder();
-								String title;
-								String cssClass;
-								if(object.isEditable()){
-									title="Edit";
-									cssClass="customEditButton";
-									sb.appendHtmlConstant("<button type=\"button\" title='" + title + "' tabindex=\"0\" class=\" "+cssClass+"\"></button>");
-								}else{
-									title="ReadOnly";
-									cssClass="customReadOnlyButton";
-									sb.appendHtmlConstant("<div title='"+ title +"' class='"+ cssClass +"'></div>");
-								}
-								return sb.toSafeHtml();
-						}	
-				};
-				
-				editColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
-		         		@Override
-						public void update(int index, Result object,
-								SafeHtml value) {
-		         			if(object.isEditable()){
-		         			observer.onEditClicked(object);
-		         			}
+				table.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title='History'>"
+						+ "History" + "</span>"));
+				//Edit
+				Column<ManageMeasureSearchModel.Result, SafeHtml> editColumn =
+						new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+								new ClickableSafeHtmlCell()) {
+					@Override
+					public SafeHtml getValue(Result object) {
+						SafeHtmlBuilder sb = new SafeHtmlBuilder();
+						String title;
+						String cssClass;
+						if (object.isEditable()) {
+							title = "Edit";
+							cssClass = "customEditButton";
+							sb.appendHtmlConstant("<button type=\"button\" title='"
+									+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+						} else {
+							title = "ReadOnly";
+							cssClass = "customReadOnlyButton";
+							sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
 						}
+						return sb.toSafeHtml();
+					}
+				};
+				editColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
+					@Override
+					public void update(int index, Result object,
+							SafeHtml value) {
+						if (object.isEditable()) {
+							observer.onEditClicked(object);
+						}
+					}
 				});
 				table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
-				
-				
-		//Share
+				//Share
 				Cell<String> shareButton = new MatButtonCell("Click to view sharable", "customShareButton");
-				Column<Result, String> shareColumn = new Column<ManageMeasureSearchModel.Result, String>(shareButton) 
-						{
+				Column<Result, String> shareColumn = new Column<ManageMeasureSearchModel.Result, String>(shareButton) {
 					@Override
 					public String getValue(ManageMeasureSearchModel.Result object) {
 						return "Share";
 					}
-					
 				};
 				shareColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
 					@Override
 					public void update(int index, ManageMeasureSearchModel.Result object, String value) {
-					  observer.onShareClicked(object);
+						observer.onShareClicked(object);
 					}
 				});
 				table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
-				
-		//Clone
+				//Clone
 				Cell<String> cloneButton = new MatButtonCell("Click to view cloneable", "customCloneButton");
-				Column<Result, String> cloneColumn = new Column<ManageMeasureSearchModel.Result, String>(cloneButton) 
-						{
+				Column<Result, String> cloneColumn = new Column<ManageMeasureSearchModel.Result, String>(cloneButton) {
 					@Override
 					public String getValue(ManageMeasureSearchModel.Result object) {
 						return "Clone";
 					}
-					
 				};
 				cloneColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
 					@Override
@@ -373,81 +308,69 @@ public static interface Observer {
 					}
 				});
 				table.addColumn(cloneColumn, SafeHtmlUtils.fromSafeConstant("<span title='Clone'>" + "Clone" + "</span>"));
-		
-		    //Export Column header
+				//Export Column header
 				Header<SafeHtml> bulkExportColumnHeader = new Header<SafeHtml>(new ClickableSafeHtmlCell()) {
-			
-			String cssClass="transButtonWidth";
-			String title="Click to Clear All";
-			@Override
-			public SafeHtml getValue() {
-				SafeHtmlBuilder sb=new SafeHtmlBuilder();
-				sb.appendHtmlConstant("<span>Export</span><button type=\"button\" title='" +
-				title + "' tabindex=\"0\" class=\" "+cssClass+"\"><span class='textCssStyle'>(Clear)</span></button>");
-				return sb.toSafeHtml();
-			}
-
-		};
-		
-		bulkExportColumnHeader.setUpdater(new ValueUpdater<SafeHtml>() {
-
-			@Override
-			public void update(SafeHtml value) {
-				clearBulkExportCheckBoxes();
-			}
-
-		});
-		
+					private String cssClass = "transButtonWidth";
+					private String title = "Click to Clear All";
+					@Override
+					public SafeHtml getValue() {
+						SafeHtmlBuilder sb = new SafeHtmlBuilder();
+						sb.appendHtmlConstant("<span>Export</span><button type=\"button\" title='"
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\">"
+								+ "<span class='textCssStyle'>(Clear)</span></button>");
+						return sb.toSafeHtml();
+					}
+				};
+				bulkExportColumnHeader.setUpdater(new ValueUpdater<SafeHtml>() {
+					@Override
+					public void update(SafeHtml value) {
+						clearBulkExportCheckBoxes();
+					}
+				});
 				final List<HasCell<Result, ?>> cells = new LinkedList<HasCell<Result, ?>>();
 				cells.add(new HasCell<Result, String>() {
-					Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
-
+					private Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
+					@Override
 					public Cell<String> getCell() {
 						return exportButton;
 					}
-					
 					@Override
 					public String getValue(Result object) {
 						return "Export";
 					}
-					
+					@Override
 					public FieldUpdater<Result, String> getFieldUpdater() {
 						return new FieldUpdater<Result, String>() {
 							@Override
 							public void update(int index, Result object, String value) {
-								observer.onExportClicked(object);		
+								observer.onExportClicked(object);
 							}
 						};
 					}
 				});
-				
 				cells.add(new HasCell<Result, Boolean>() {
 					private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
-
+					@Override
 					public Cell<Boolean> getCell() {
 						return cell;
 					}
-
 					@Override
 					public Boolean getValue(Result object) {
 						return selectionModel.isSelected(object);
 					}
-
+					@Override
 					public FieldUpdater<Result, Boolean> getFieldUpdater() {
 						return new FieldUpdater<Result, Boolean>() {
+							@Override
 							public void update(int index, Result object,
 									Boolean isCBChecked) {
 								selectionModel.setSelected(object, isCBChecked);
-								observer.onExportSelectedClicked(object,isCBChecked);
+								observer.onExportSelectedClicked(object, isCBChecked);
 							}
 						};
 					}
-
 				});
-				
-				
 				CompositeCell<Result> cell = new CompositeCell<Result>(cells) {
-
 					@Override
 					public void render(Context context, Result object, SafeHtmlBuilder sb) {
 						sb.appendHtmlConstant("<table><tbody><tr>");
@@ -456,50 +379,43 @@ public static interface Observer {
 						}
 						sb.appendHtmlConstant("</tr></tbody></table>");
 					}
-
 					@Override
 					protected <X> void render(Context context, Result object,
 							SafeHtmlBuilder sb, HasCell<Result, X> hasCell) {
-						
 						Cell<X> cell = hasCell.getCell();
 						sb.appendHtmlConstant("<td class=\"emptySpaces\">");
 						if (object.isExportable()) {
-						cell.render(context, hasCell.getValue(object), sb);
-						}else{
+							cell.render(context, hasCell.getValue(object), sb);
+						} else {
 							sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
 						}
 						sb.appendHtmlConstant("</td>");
-						
 					}
-
 					@Override
 					protected Element getContainerElement(Element parent) {
 						return parent.getFirstChildElement().getFirstChildElement()
 								.getFirstChildElement();
 					}
-
 				};
 				table.addColumn(new Column<Result, Result>(cell) {
 					@Override
 					public Result getValue(Result object) {
 						return object;
 					}
-				},bulkExportColumnHeader );
-				
-				
-		return table;
+				}, bulkExportColumnHeader);
+				return table;
 	}
-	
-   
+	/**
+	 *
+	 */
 	public void clearBulkExportCheckBoxes(){
-		List<Result> displayedItems=new ArrayList<Result>();// = table.getVisibleItems();
+		List<Result> displayedItems = new ArrayList<Result>();
 		displayedItems.addAll(selectedMeasureList);
 		for (ManageMeasureSearchModel.Result msg : displayedItems) {
 			selectionModel.setSelected(msg, false);
 		}
-	    observer.onClearAllBulkExportClicked();
+		observer.onClearAllBulkExportClicked();
 	}
-	
 	/**
 	 * Builds the cell table.
 	 *
@@ -508,7 +424,7 @@ public static interface Observer {
 	public void buildCellTable(ManageMeasureSearchModel results) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
-		table = new CellTable<ManageMeasureSearchModel.Result>(25,
+		table = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
 				(Resources) GWT.create(CellTableResource.class));
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
@@ -538,10 +454,10 @@ public static interface Observer {
 		table.setColumnWidth(6, 5.0, Unit.PCT);
 		table.setColumnWidth(7, 20.0, Unit.PCT);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
-						"In the following Measure List table, Measure Name is given in first column,"
-								+ " Version in second column, Finalized Date in third column," +
-								"History in fourht column, Edit in fifth column, Share in sixth column" +
-								"Clone in seventh column and Export in eight column.");
+				"In the following Measure List table, Measure Name is given in first column,"
+						+ " Version in second column, Finalized Date in third column,"
+						+ "History in fourth column, Edit in fifth column, Share in sixth column"
+						+ "Clone in seventh column and Export in eight column.");
 		table.getElement().setAttribute("id", "MeasureSearchCellTable");
 		table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
 		cellTablePanel.add(invisibleLabel);
@@ -549,12 +465,61 @@ public static interface Observer {
 		cellTablePanel.add(new SpacerWidget());
 		cellTablePanel.add(spager);
 	}
-	
-
+	/**
+	 * 
+	 */
+	private void buildCellTableCssStyle() {
+		cellTableCssStyle = new ArrayList<String>();
+		for (int i = 0; i < selectedMeasureList.size(); i++) {
+			cellTableCssStyle.add(i, null);
+		}
+		table.setRowStyles(new RowStyles<ManageMeasureSearchModel.Result>() {
+			@Override
+			public String getStyleNames(ManageMeasureSearchModel.Result rowObject, int rowIndex) {
+				if (rowIndex != 0) {
+					if (cellTableCssStyle.get(rowIndex) == null) {
+						if (even) {
+							if (rowObject.getMeasureSetId().equalsIgnoreCase(
+									selectedMeasureList.get(rowIndex - 1).getMeasureSetId())) {
+								even = true;
+								cellTableCssStyle.add(rowIndex, cellTableOddRow);
+								return cellTableOddRow;
+							} else {
+								even = false;
+								cellTableCssStyle.add(rowIndex, cellTableEvenRow);
+								return cellTableEvenRow;
+							}
+						} else {
+							if (rowObject.getMeasureSetId().equalsIgnoreCase(
+									selectedMeasureList.get(rowIndex - 1).getMeasureSetId())) {
+								even = false;
+								cellTableCssStyle.add(rowIndex, cellTableEvenRow);
+								return cellTableEvenRow;
+							} else {
+								even = true;
+								cellTableCssStyle.add(rowIndex, cellTableOddRow);
+								return cellTableOddRow;
+							}
+						}
+					} else {
+						return cellTableCssStyle.get(rowIndex);
+					}
+				} else {
+					if (cellTableCssStyle.get(rowIndex) == null) {
+						even = true;
+						cellTableCssStyle.add(rowIndex, cellTableOddRow);
+						return cellTableOddRow;
+					} else {
+						return cellTableCssStyle.get(rowIndex);
+					}
+				}
+			}
+		});
+	}
 	/* (non-Javadoc)
- * @see mat.client.shared.search.SearchView#asWidget()
- */
-/**
+	 * @see mat.client.shared.search.SearchView#asWidget()
+	 */
+	/**
 	 * As widget.
 	 *
 	 * @return the widget
@@ -562,7 +527,6 @@ public static interface Observer {
 	public Widget asWidget() {
 		return mainPanel;
 	}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchView#fireEvent(com.google.gwt.event.shared.GwtEvent)
 	 */
@@ -570,7 +534,6 @@ public static interface Observer {
 	public void fireEvent(GwtEvent<?> event) {
 		handlerManager.fireEvent(event);
 	}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchView#addSelectionHandler(com.google.gwt.event.logical.shared.SelectionHandler)
 	 */
@@ -578,7 +541,6 @@ public static interface Observer {
 	public HandlerRegistration addSelectionHandler(SelectionHandler<ManageMeasureSearchModel.Result> handler) {
 		return handlerManager.addHandler(SelectionEvent.getType(), handler);
 	}
-	
 	/**
 	 * Gets the select id for edit tool.
 	 *
@@ -587,9 +549,6 @@ public static interface Observer {
 	public HasSelectionHandlers<ManageMeasureSearchModel.Result> getSelectIdForEditTool() {
 		return this;
 	}
-	
-	
-	
 	/**
 	 * Gets the data.
 	 *
@@ -598,8 +557,6 @@ public static interface Observer {
 	public ManageMeasureSearchModel getData() {
 		return data;
 	}
-
-
 	/**
 	 * Sets the data.
 	 *
@@ -608,8 +565,6 @@ public static interface Observer {
 	public void setData(ManageMeasureSearchModel data) {
 		this.data = data;
 	}
-
-
 	/**
 	 * Gets the observer.
 	 *
@@ -618,8 +573,6 @@ public static interface Observer {
 	public Observer getObserver() {
 		return observer;
 	}
-
-
 	/**
 	 * Sets the observer.
 	 *
@@ -628,239 +581,40 @@ public static interface Observer {
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
-
-
 	/**
-	 * assumption made: results are sorted by the time they are given here.
-	 *
+	 * Getter measureListLabel.
+	 * @return String.
 	 */
-//	@Override
-//	protected void buildSearchResults(int numRows,int numColumns,final SearchResults results){
-//		
-//		for(int i = 0; i < numRows; i++) {
-//			
-//			if(i > 0){
-//				ManageMeasureSearchModel.Result result = (ManageMeasureSearchModel.Result)results.get(i);
-//				String currentMid = result.getMeasureSetId();
-//				result = (ManageMeasureSearchModel.Result)results.get(i-1);
-//				String previousMid = result.getMeasureSetId();
-//				if(!currentMid.equalsIgnoreCase(previousMid)){
-//					odd = !odd;
-//					addImage = true;
-//					result.setTransferable(true);
-//				}else{
-//					addImage = false;
-//				}
-//			}else{
-//				odd = false;
-//				addImage = true;
-//			}
-//			if(addImage){
-//				((ManageMeasureSearchModel.Result)results.get(i)).setTransferable(true);
-//			}
-//				
-//			for(int j = 0; j < numColumns; j++) {
-//				if(results.isColumnFiresSelection(j)) {
-//					String innerText = results.getValue(i, j).getElement().getInnerText();
-//					innerText = addSpaces(innerText, 27);
-//					Widget a = null;
-//					final int rowIndex = i;
-//					String currentUserRole = MatContext.get().getLoggedInUserRole();
-//					if(!currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)){
-//						Anchor anchor = new Anchor(innerText);
-//						addClickHandler(anchor, results, rowIndex);
-//						a = anchor;
-//					}else{
-//						Label label = new Label(innerText);
-//						a= label;
-//					}
-//					
-//					Panel holder = new HorizontalFlowPanel();
-//					SimplePanel innerPanel = new SimplePanel();
-//					if(addImage){
-//						innerPanel.setStylePrimaryName("pad-right5px");
-//						Image image = createImage(rowIndex, results, innerText);
-//						innerPanel.add(image);
-//						holder.add(innerPanel);
-//						holder.add(a);
-//					}else{
-//						innerPanel.setStylePrimaryName("pad-left21px");
-//						innerPanel.add(a);
-//						holder.add(innerPanel);
-//					}
-//					
-//					dataTable.setWidget(i+1, j, holder);
-//				}
-//				else {
-//					dataTable.setWidget(i+1, j,results.getValue(i, j));
-//				}
-//			}
-//			if(odd){
-//				dataTable.getRowFormatter().addStyleName(i + 1, "odd");
-//			}else{
-//				//if already set to 'odd' and we are just refreshing, then 'odd' has to be removed
-//				dataTable.getRowFormatter().removeStyleName(i + 1, "odd");
-//			}
-//		}
-//	}
-	
-	public void buildCellTableCssStyle(){
-		cellTableCssStyle=new ArrayList<String>();
-		for(int i=0;i<selectedMeasureList.size();i++){
-			cellTableCssStyle.add(i, null);
-		}
-		table.setRowStyles(new RowStyles<ManageMeasureSearchModel.Result>() {
-			@Override
-			public String getStyleNames(ManageMeasureSearchModel.Result rowObject, int rowIndex) {
-				
-				if (rowIndex != 0) {
-					
-				  if(cellTableCssStyle.get(rowIndex)==null){
-	                  
-					  if (EVEN==true) {
-						if (rowObject.getMeasureSetId().equalsIgnoreCase(
-								selectedMeasureList.get(rowIndex - 1).getMeasureSetId())) {
-							EVEN=true;
-							cellTableCssStyle.add(rowIndex, cellTableOddRow);
-							return cellTableOddRow;
-						} else {
-							EVEN=false;
-							cellTableCssStyle.add(rowIndex, cellTableEvenRow);
-							return cellTableEvenRow;
-						}
-					} else {
-						if (rowObject.getMeasureSetId().equalsIgnoreCase(
-								selectedMeasureList.get(rowIndex - 1).getMeasureSetId())) {
-							EVEN=false;
-							cellTableCssStyle.add(rowIndex, cellTableEvenRow);
-							return cellTableEvenRow;
-						} else {
-							EVEN=true;
-							cellTableCssStyle.add(rowIndex, cellTableOddRow);
-							return cellTableOddRow;
-						}
-					}
-				}
-				
-				else{
-					return cellTableCssStyle.get(rowIndex);
-				}
-			}
-				else{
-					
-					if(cellTableCssStyle.get(rowIndex)==null){
-					EVEN=true;
-					cellTableCssStyle.add(rowIndex, cellTableOddRow);
-					return cellTableOddRow;
-					}
-					
-					else{
-						return cellTableCssStyle.get(rowIndex);
-					}
-				}			
-			}
-		
-		});
+	public String getMeasureListLabel() {
+		return measureListLabel;
 	}
-	
-	
-    /**
-     * Builds the image text cell.
-     *
-     * @param results the results
-     */
-    public void buildImageTextCell(SearchResults results){
-		int numRows=results.getNumberOfRows();
-		int numCols=results.getNumberOfColumns();
-		
-          for(int i = 0; i < numRows; i++) {
-			
-			if(i > 0){
-				ManageMeasureSearchModel.Result result = (ManageMeasureSearchModel.Result)results.get(i);
-				String currentMid = result.getMeasureSetId();
-				result = (ManageMeasureSearchModel.Result)results.get(i-1);
-				String previousMid = result.getMeasureSetId();
-				if(!currentMid.equalsIgnoreCase(previousMid)){
-					odd = !odd;
-					addImage = true;
-					result.setTransferable(true);
-				}else{
-					addImage = false;
-				}
-			}else{
-				odd = false;
-				addImage = true;
-			}
-			
-			
-}
-		
-		
-	}
-	
 	/**
-	 * Adds the spaces.
-	 * 
-	 * @param in
-	 *            the in
-	 * @param frequency
-	 *            the frequency
-	 * @return the string
+	 *Set measureListLabel.
+	 * @param measureListLabel
 	 */
-	private String addSpaces(String in, int frequency){
-		
-		if(in.length() <= frequency)
-			return in;
-		
-		char[] inArr = in.toCharArray();
-		StringBuffer sb = new StringBuffer();
-		int i = 0;
-		for(char c : inArr){
-			if(i == frequency){
-				sb.append(' ');
-				i = 0;
-			}else if(c == ' ')
-				i = 0;
-			else
-				i++;
-			sb.append(c);
-		}
-			
-		return sb.toString();
+	public void setMeasureListLabel(String measureListLabel) {
+		this.measureListLabel = measureListLabel;
 	}
-	
 	/**
-	 * Creates the image.
-	 *
-	 * @param ts the ts
-	 * @return the image
+	 * @param ts - Timestamp.
+	 * @return String.
 	 */
-//	private Image createImage(final int rowIndex,final SearchResults results, String text){
-//		Image image = new Image(ImageResources.INSTANCE.application_cascade());
-//		image.setTitle(text);
-//		image.getElement().setAttribute("alt", text);
-//		image.setStylePrimaryName("measureSearchResultIcon");
-//		addClickHandler(image, results, rowIndex);
-//		return image;
-//	}
-	
-	public String convertTimestampToString(Timestamp ts){
+	private String convertTimestampToString(Timestamp ts) {
 		String tsStr;
-		if(ts==null){
-			tsStr="";
-			}else{
-		int hours = ts.getHours();
-		String ap = hours < 12 ? "AM" : "PM";
-		int modhours = hours % 12;
-		String mins = ts.getMinutes()+"";
-		if(mins.length()==1)
-			mins = "0"+mins;
-		
-		String hoursStr = modhours == 0 ? "12" : modhours+"";
-		
-		tsStr = (ts.getMonth()+1)+"/"+ts.getDate()+"/"+(ts.getYear()+1900)+" "+hoursStr+":"+mins+" "+ap;
+		if (ts == null) {
+			tsStr = "";
+		} else {
+			int hours = ts.getHours();
+			String ap = hours < 12 ? "AM" : "PM";
+			int modhours = hours % 12;
+			String mins = ts.getMinutes() + "";
+			if (mins.length() == 1) {
+				mins = "0" + mins;
+			}
+			String hoursStr = modhours == 0 ? "12" : modhours+"";
+			tsStr = (ts.getMonth() + 1) + "/" + ts.getDate() + "/" + (ts.getYear() + 1900) + " "
+					+ hoursStr + ":" + mins + " "+ap;
 		}
 		return tsStr;
 	}
-	
 }

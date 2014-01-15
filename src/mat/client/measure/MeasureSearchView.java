@@ -161,6 +161,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 *
 	 * @return the cell table
 	 */
+	//TO DO : Consider re factoring this method as code lines are more then 150.
 	private CellTable<ManageMeasureSearchModel.Result> addColumnToTable() {
 		Label measureSearchHeader = new Label(getMeasureListLabel());
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");

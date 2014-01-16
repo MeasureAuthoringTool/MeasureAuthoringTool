@@ -178,18 +178,23 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String cssClass = "customCascadeButton";
 				if (object.isMeasureFamily()) {
-					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" tabindex=\"-1\" >"
-							+ "<button class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
-					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+					sb.appendHtmlConstant("<a id='container' href=\"javascript:void(0);\" "
+							+ "style=\"text-decoration:none\" tabindex=\"-1\">"
+							+ "<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
+					sb.appendHtmlConstant("<span id='div2' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
 					sb.appendHtmlConstant("</a>");
 				} else {
-					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
+					sb.appendHtmlConstant("<div id='container'><a href=\"javascript:void(0);\" "
+							+ "style=\"text-decoration:none\" tabindex=\"-1\">"
+							+ "<div id='div1'><button class='"+ cssClass +"' tabindex=\"-1\"></button></div>");
+					sb.appendHtmlConstant("<div id='div2'><span class='textAlign' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span></div>");
+					sb.appendHtmlConstant("</a></div>");
+					/*sb.appendHtmlConstant("<a id='container' href=\"javascript:void(0);\" "
 							+ "style=\"text-decoration:none\" tabindex=\"-1\" >");
-					sb.appendHtmlConstant("<button type=\"button\" title=\""
+					sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\""
 							+ object.getName() + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
-					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
-					sb.appendHtmlConstant("</a>");
+					sb.appendHtmlConstant("<span id='div2' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
+					sb.appendHtmlConstant("</a>");*/
 				}
 				return sb.toSafeHtml();
 			}
@@ -350,6 +355,8 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 						};
 					}
 				});
+				
+				
 				cells.add(new HasCell<Result, Boolean>() {
 					private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
 					@Override
@@ -366,9 +373,18 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 							@Override
 							public void update(int index, Result object,
 									Boolean isCBChecked) {
-								selectionModel.setSelected(object, isCBChecked);
-								observer.onExportSelectedClicked(object, isCBChecked);
-							}
+//								if(isCBChecked){
+//									int size=selectionModel.getSelectedSet().size();
+//									if(selectionModel.getSelectedSet().size()>9){
+//										observer.onExportSelectedClicked(object, isCBChecked);
+//									}
+//									else{
+										selectionModel.setSelected(object, isCBChecked);
+										observer.onExportSelectedClicked(object, isCBChecked);
+										}
+								//}
+								
+							//}
 						};
 					}
 				});
@@ -407,6 +423,14 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				}, bulkExportColumnHeader);
 				return table;
 	}
+	
+//	public void clearBulkExportCheckBox(Result object){
+//		 {
+//		selectionModel.setSelected(object, false);
+//		}
+//		//observer.onClearAllBulkExportClicked();
+//	}
+	
 	/**
 	 *
 	 */

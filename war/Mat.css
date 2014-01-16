@@ -115,6 +115,25 @@ left:50px;
 	cursor: hand;
 }
 
+#container{ 
+    width: 250px; 
+}
+
+#div1{
+    float: left;
+    width:30px; 
+    margin-left: 0;
+}
+#div2{
+    float:left; 
+    width:220px; 
+    margin-right:0;
+}
+
+.textAlign{
+ text-align: justify;	
+}
+
 .transButtonWidth{
 	background-color: transparent; 
 	border-color: transparent;

@@ -3250,6 +3250,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			Mat.hideLoadingMessage();
 		}
 		((Button) searchDisplay.getSearchButton()).setEnabled(!busy);
+		((Button) searchDisplay.getBulkExportButton()).setEnabled(!busy);
 		((TextBox) (searchDisplay.getSearchString())).setEnabled(!busy);
 		
 	}

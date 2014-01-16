@@ -179,16 +179,16 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				String cssClass = "customCascadeButton";
 				if (object.isMeasureFamily()) {
 					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" >"
-							+ "<button class='textEmptySpaces' disabled='disabled'></button>");
-					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\">" + object.getName() + "</span>");
+							+ "style=\"text-decoration:none\" tabindex=\"-1\" >"
+							+ "<button class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
+					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
 					sb.appendHtmlConstant("</a>");
 				} else {
 					sb.appendHtmlConstant("<a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" >");
+							+ "style=\"text-decoration:none\" tabindex=\"-1\" >");
 					sb.appendHtmlConstant("<button type=\"button\" title=\""
 							+ object.getName() + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
-					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\">" + object.getName() + "</span>");
+					sb.appendHtmlConstant("<span title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
 					sb.appendHtmlConstant("</a>");
 				}
 				return sb.toSafeHtml();
@@ -220,11 +220,12 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				if (object.getFinalizedDate() != null) {
 					return CellTableUtility.getColumnToolTip(convertTimestampToString(object.getFinalizedDate()));
-				} else {
-					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-					sb.appendHtmlConstant("<span tabindex=\"-1\"><span>");
-					return sb.toSafeHtml();
-				}
+				} //else {
+//					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+//					sb.appendHtmlConstant("<span tabindex=\"-1\"><span>");
+//					return sb.toSafeHtml();
+				//}
+				return null;
 			}
 		};
 		table.addColumn(finalizedDate, SafeHtmlUtils

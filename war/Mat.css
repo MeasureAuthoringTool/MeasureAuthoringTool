@@ -112,6 +112,7 @@ left:50px;
 	background-color: transparent; 
 	border-color: transparent;
 	width:30px;
+	cursor: hand;
 }
 
 .transButtonWidth{
@@ -126,7 +127,8 @@ left:50px;
 .textCssStyle{
 	font-size:70%;
     color:blue;
-    text-decoration:underline	
+    text-decoration:underline;	
+    cursor: hand;
 }
 
 

@@ -167,6 +167,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
 		measureSearchHeader.setStyleName("recentSearchHeader");
 		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
+		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
 		selectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
@@ -178,23 +179,19 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String cssClass = "customCascadeButton";
 				if (object.isMeasureFamily()) {
-					sb.appendHtmlConstant("<a id='container' href=\"javascript:void(0);\" "
+					sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
 							+ "style=\"text-decoration:none\" tabindex=\"-1\">"
 							+ "<button id='div1' class='textEmptySpaces' tabindex=\"-1\" disabled='disabled'></button>");
 					sb.appendHtmlConstant("<span id='div2' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
-					sb.appendHtmlConstant("</a>");
-				} else {
-					sb.appendHtmlConstant("<div id='container'><a href=\"javascript:void(0);\" "
-							+ "style=\"text-decoration:none\" tabindex=\"-1\">"
-							+ "<div id='div1'><button class='"+ cssClass +"' tabindex=\"-1\"></button></div>");
-					sb.appendHtmlConstant("<div id='div2'><span class='textAlign' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span></div>");
 					sb.appendHtmlConstant("</a></div>");
-					/*sb.appendHtmlConstant("<a id='container' href=\"javascript:void(0);\" "
+				} else {
+					
+					sb.appendHtmlConstant("<div id='container' tabindex=\"-1\"><a href=\"javascript:void(0);\" "
 							+ "style=\"text-decoration:none\" tabindex=\"-1\" >");
 					sb.appendHtmlConstant("<button id='div1' type=\"button\" title=\""
 							+ object.getName() + "\" tabindex=\"-1\" class=\" " + cssClass + "\"></button>");
 					sb.appendHtmlConstant("<span id='div2' title=\" " + object.getName() + "\" tabindex=\"0\">" + object.getName() + "</span>");
-					sb.appendHtmlConstant("</a>");*/
+					sb.appendHtmlConstant("</a></div>");
 				}
 				return sb.toSafeHtml();
 			}

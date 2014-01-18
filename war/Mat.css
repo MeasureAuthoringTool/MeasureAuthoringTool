@@ -88,14 +88,6 @@ top:30px;
 left:50px;
 }
 
-.cellTableOddRow{ 
-	background: #ffffff !important;
-}
-
-.cellTableEvenRow{
-	background: #f3f7fb !important;
-}
-
 .gwt-TextBox{
 	vertical-align: middle!important;
 }

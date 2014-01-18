@@ -41,6 +41,7 @@ import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSe
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -447,6 +448,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	public void buildCellTable(ManageMeasureSearchModel results) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
+		if(results.getData()!=null && results.getData().size() > 0){
 		table = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
 				(Resources) GWT.create(CellTableResource.class));
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -468,13 +470,13 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		spager.setDisplay(table);
 		spager.setPageSize(PAGE_SIZE);
 		table.setWidth("100%");
-		table.setColumnWidth(0, 33.0, Unit.PCT);
-		table.setColumnWidth(1, 15.0, Unit.PCT);
-		table.setColumnWidth(2, 16.0, Unit.PCT);
-		table.setColumnWidth(3, 5.0, Unit.PCT);
-		table.setColumnWidth(4, 5.0, Unit.PCT);
-		table.setColumnWidth(5, 5.0, Unit.PCT);
-		table.setColumnWidth(6, 5.0, Unit.PCT);
+		table.setColumnWidth(0, 35.0, Unit.PCT);
+		table.setColumnWidth(1, 18.0, Unit.PCT);
+		table.setColumnWidth(2, 20.0, Unit.PCT);
+		table.setColumnWidth(3, 2.0, Unit.PCT);
+		table.setColumnWidth(4, 2.0, Unit.PCT);
+		table.setColumnWidth(5, 2.0, Unit.PCT);
+		table.setColumnWidth(6, 2.0, Unit.PCT);
 		table.setColumnWidth(7, 20.0, Unit.PCT);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
 				"In the following Measure List table, Measure Name is given in first column,"
@@ -487,6 +489,19 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		cellTablePanel.add(table);
 		cellTablePanel.add(new SpacerWidget());
 		cellTablePanel.add(spager);
+		}
+		
+		else{
+			Label measureSearchHeader = new Label(getMeasureListLabel());
+			measureSearchHeader.getElement().setId("measureSearchHeader_Label");
+			measureSearchHeader.setStyleName("recentSearchHeader");
+			measureSearchHeader.getElement().setAttribute("tabIndex", "0");
+			HTML desc = new HTML("<p> No "+ getMeasureListLabel()+".</p>");
+			cellTablePanel.add(measureSearchHeader);
+			cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(desc);
+			
+		}
 	}
 	/**
 	 * 

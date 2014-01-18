@@ -244,7 +244,7 @@
 	<target name="pmd" depends="init" description="Generates a pmd report of code convention violations.">
 		<pmd>
 			<formatter type="html" toFile="${pmddoc}/pmd_src_report.html" toConsole="true"/>
-			<ruleset>/rulesets/basic.xml</ruleset>
+			<ruleset>rulesets/java/basic.xml,java-imports,java-basic,java-j2ee</ruleset>
 			<fileset dir="src/mat">
 				<include name="**/*.java"/>
 			</fileset>

@@ -2436,10 +2436,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 							if(searchDisplay.getMeasureSearchFilterWidget().
 									getSelectedFilter()!=0){
 								searchDisplay.getMeasureSearchView().setMeasureListLabel("All Measures");
-							}
-							else{
+							}else{
 								searchDisplay.getMeasureSearchView().setMeasureListLabel("My Measures");
 							}
+							if(result.getData().size()>0){
+								searchDisplay.getExportSelectedButton().setVisible(true);
+							}
+							else{
+								searchDisplay.getExportSelectedButton().setVisible(false);
+							}
+							
 							searchDisplay.getMeasureSearchView().setObserver(new MeasureSearchView.Observer() {
 								@Override
 								public void onCloneClicked(ManageMeasureSearchModel.Result result) {

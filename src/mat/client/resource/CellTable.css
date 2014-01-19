@@ -57,21 +57,21 @@ border-left:1px solid black !important;
 }
 
 .cellTableHoveredRow {
-  background: #ffffcc;
+  background: #eee !important;
 }
 
 .cellTableHoveredRowCell {
   /* border: selectionBorderWidth solid #eee; */
-  border: selectionBorderWidth solid #ffffff;
+  /* border: selectionBorderWidth solid #ffffcc !important; */
 }
 
 .cellTableKeyboardSelectedRow {
   /*background: #ffc;*/
-  border: selectionBorderWidth solid #ffffff;
+  /* border: selectionBorderWidth solid #ffffcc !important; */
 }
 
 .cellTableKeyboardSelectedRowCell {
-  border: selectionBorderWidth solid #ffc;
+  /* border: selectionBorderWidth solid #eee !important; */
 }
 /*CellTabel Row Selection */
 .cellTableSelectedRow {
@@ -82,17 +82,17 @@ border-left:1px solid black !important;
 }
 
 .cellTableSelectedRowCell {
-    background-color: #628cd5;
-   /* border: selectionBorderWidth solid #628cd5;
-  border: selectionBorderWidth solid #ffffff;
+    /* background-color: #628cd5;
+   border: selectionBorderWidth solid #628cd5;
+  border: selectionBorderWidth solid #ffffff; */
 }
 
-/**
- * The keyboard selected cell is visible over selection.
+
+ /* The keyboard selected cell is visible over selection.*/
 
 .cellTableKeyboardSelectedCell {
- /*  border: selectionBorderWidth solid #d7dde8; */
- border: selectionBorderWidth solid #ffffff;
+   /* border: selectionBorderWidth solid #d7dde8; */
+  /*  border: selectionBorderWidth solid #ffc !important; */
 }
 
 @sprite .cellTableLoading {

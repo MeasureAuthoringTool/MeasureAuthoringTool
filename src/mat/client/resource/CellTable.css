@@ -82,9 +82,9 @@ border-left:1px solid black !important;
 }
 
 .cellTableSelectedRowCell {
-    /* background-color: #628cd5;
+    background-color: #628cd5;
    border: selectionBorderWidth solid #628cd5;
-  border: selectionBorderWidth solid #ffffff; */
+  /* border: selectionBorderWidth solid #ffffff; */
 }
 
 

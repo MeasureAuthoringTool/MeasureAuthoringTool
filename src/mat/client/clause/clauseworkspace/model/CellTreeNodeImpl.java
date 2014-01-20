@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.shared.UUIDUtilClient;
 
 /**
@@ -249,7 +249,7 @@ public class CellTreeNodeImpl implements CellTreeNode {
 			if ("Value Set".equalsIgnoreCase(modeName)) {
 				String qdmId = (String) attributeNode
 						.getExtraInformation("qdmUUID");
-				String qdmName = ClauseConstants.getElementLookUpName().get(
+				String qdmName = PopulationWorkSpaceConstants.getElementLookUpName().get(
 						qdmId);
 				stringBuilder.append(": '").append(qdmName).append("'");
 			} else if (!("Check if Present".equalsIgnoreCase(modeName))) {
@@ -305,16 +305,16 @@ public class CellTreeNodeImpl implements CellTreeNode {
 	public String getTitle() {
 		String title = getName();
 		String nodeLabel = getName();
-		if (nodeLabel.length() > ClauseConstants.LABEL_MAX_LENGTH) {
-			nodeLabel = nodeLabel.substring(0, ClauseConstants.LABEL_MAX_LENGTH - 1)
+		if (nodeLabel.length() > PopulationWorkSpaceConstants.LABEL_MAX_LENGTH) {
+			nodeLabel = nodeLabel.substring(0, PopulationWorkSpaceConstants.LABEL_MAX_LENGTH - 1)
 					.concat("...");
 		}
 		if (getNodeType() == CellTreeNode.ELEMENT_REF_NODE) { // checking if QDM
 			// node
 			String oid = "";
-			if (ClauseConstants.getElementLookUpNode().get(
+			if (PopulationWorkSpaceConstants.getElementLookUpNode().get(
 					getName() + "~" + getUUID()) != null) {
-				oid = ClauseConstants.getElementLookUpNode()
+				oid = PopulationWorkSpaceConstants.getElementLookUpNode()
 						.get(getName() + "~" + getUUID()).getAttributes()
 						.getNamedItem("oid").getNodeValue(); // getting the OID
 				// for the QDM
@@ -333,7 +333,7 @@ public class CellTreeNodeImpl implements CellTreeNode {
 				// attribute name else directly add
 				// the attribute name to name
 				String qdmAttr = getQdmAttribute();
-				if ((qdmAttr.length() + name.length()) > ClauseConstants.LABEL_MAX_LENGTH) {
+				if ((qdmAttr.length() + name.length()) > PopulationWorkSpaceConstants.LABEL_MAX_LENGTH) {
 					nodeLabel = nodeLabel + " (" + attrCount + ")";
 				} else {
 					nodeLabel = getName() + qdmAttr;

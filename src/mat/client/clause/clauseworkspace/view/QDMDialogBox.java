@@ -5,7 +5,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 
 import com.google.gwt.dom.client.Document;
@@ -216,7 +216,7 @@ public class QDMDialogBox {
 	 */
 	private static void addQDMNamesToListBox(ListBox listBox,
 			String currentSelectedQDMUuid) {
-		Set<Entry<String, Node>> elementLookUpNodes = ClauseConstants
+		Set<Entry<String, Node>> elementLookUpNodes = PopulationWorkSpaceConstants
 				.getElementLookUpNode().entrySet();
 		for (Entry<String, Node> elementLookup : elementLookUpNodes) {
 			Node node = elementLookup.getValue();
@@ -224,7 +224,7 @@ public class QDMDialogBox {
 			if (!isDataTypeAttrib(node)) {
 				String key = elementLookup.getKey();
 				String uuid = key.substring(key.lastIndexOf("~") + 1);
-				String item = ClauseConstants.getElementLookUpName().get(uuid);
+				String item = PopulationWorkSpaceConstants.getElementLookUpName().get(uuid);
 				listBox.addItem(item, uuid);
 				if (uuid.equals(currentSelectedQDMUuid)) {
 					listBox.setItemSelected(listBox.getItemCount() - 1, true);
@@ -241,8 +241,8 @@ public class QDMDialogBox {
 			String uuid = options.getItem(i).getAttribute("value");
 
 			String oid = "";
-			if (ClauseConstants.getElementLookUpNode().get(text + "~" + uuid) != null) {
-				oid = ClauseConstants.getElementLookUpNode()
+			if (PopulationWorkSpaceConstants.getElementLookUpNode().get(text + "~" + uuid) != null) {
+				oid = PopulationWorkSpaceConstants.getElementLookUpNode()
 						.get(text + "~" + uuid).getAttributes()
 						.getNamedItem("oid").getNodeValue();
 			}
@@ -278,7 +278,7 @@ public class QDMDialogBox {
 	 */
 	private static MultiWordSuggestOracle createSuggestOracle() {
 		MultiWordSuggestOracle multiWordSuggestOracle = new MultiWordSuggestOracle();
-		multiWordSuggestOracle.addAll(ClauseConstants.getElementLookUpName()
+		multiWordSuggestOracle.addAll(PopulationWorkSpaceConstants.getElementLookUpName()
 				.values());
 		return multiWordSuggestOracle;
 	}

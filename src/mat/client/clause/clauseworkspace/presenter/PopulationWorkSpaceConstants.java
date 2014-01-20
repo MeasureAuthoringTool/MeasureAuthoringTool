@@ -8,7 +8,7 @@ import com.google.gwt.xml.client.Node;
 /**
  * The Class ClauseConstants.
  */
-public class ClauseConstants {
+public class PopulationWorkSpaceConstants {
 	
 	/** The constants map. */
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
@@ -217,7 +217,7 @@ public class ClauseConstants {
 	 *            the functions to set
 	 */
 	public static void setFunctions(Map<String, String> functions) {
-		ClauseConstants.functions = functions;
+		PopulationWorkSpaceConstants.functions = functions;
 	}
 	
 	/**

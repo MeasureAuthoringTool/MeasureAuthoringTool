@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
 import com.google.gwt.core.client.GWT;
@@ -452,8 +452,8 @@ public class ClauseWorkspaceContextMenu {
 		if(cellTreeNode.getNodeType() != CellTreeNode.ELEMENT_REF_NODE){
 			return;
 		}
-		String qdmName = ClauseConstants.getElementLookUpName().get(cellTreeNode.getUUID());
-		Node qdmNode = ClauseConstants.getElementLookUpNode().get(qdmName + "~" + cellTreeNode.getUUID());
+		String qdmName = PopulationWorkSpaceConstants.getElementLookUpName().get(cellTreeNode.getUUID());
+		Node qdmNode = PopulationWorkSpaceConstants.getElementLookUpNode().get(qdmName + "~" + cellTreeNode.getUUID());
 		//Could not find the qdm node in elemenentLookup tag
 		if(qdmNode == null){
 			return;
@@ -606,7 +606,7 @@ public class ClauseWorkspaceContextMenu {
 		String name =clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber ;
 		
 		CellTreeNode clauseNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.CLAUSE_NODE);
-		clauseNode.createChild(ClauseConstants.AND, ClauseConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
+		clauseNode.createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}
 	

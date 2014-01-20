@@ -8,7 +8,7 @@ import java.util.Map;
 import mat.client.Enableable;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
-import mat.client.clause.clauseworkspace.presenter.ClauseWorkspacePresenter;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
 import mat.client.clause.clauseworkspace.presenter.XmlTreePresenter;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.metadata.MetaDataPresenter;
@@ -338,14 +338,14 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 				validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
 			}else if(composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 2){
 				int clauseWorkspaceTab = 2;
-				ClauseWorkspacePresenter clauseWorkspacePresenter = (ClauseWorkspacePresenter) composerPresenter.getMeasureComposerTabLayout().presenterMap.get(clauseWorkspaceTab);
+				PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter) composerPresenter.getMeasureComposerTabLayout().presenterMap.get(clauseWorkspaceTab);
 				validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 			}
 		}else if(selectedIndex == 0 && previousPresenter instanceof MetaDataPresenter){
 			MetaDataPresenter metaDataPresenter = (MetaDataPresenter)previousPresenter;
 			validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
-		}else if(selectedIndex == 2 && previousPresenter instanceof ClauseWorkspacePresenter){
-			ClauseWorkspacePresenter clauseWorkspacePresenter = (ClauseWorkspacePresenter)previousPresenter;
+		}else if(selectedIndex == 2 && previousPresenter instanceof PopulationWorkspacePresenter){
+			PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter)previousPresenter;
 			validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 		}else if(previousPresenter instanceof XmlTreePresenter){
 			validateClauseWorkspaceTab((XmlTreePresenter)previousPresenter, selectedIndex);

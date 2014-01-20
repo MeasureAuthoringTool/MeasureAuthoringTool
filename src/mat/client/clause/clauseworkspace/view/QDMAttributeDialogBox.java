@@ -8,7 +8,7 @@ import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
-import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.model.clause.QDSAttributes;
 
@@ -432,9 +432,9 @@ public class QDMAttributeDialogBox {
 		unitNames.clear();
 		attributeList.clear();
 
-		String qdmName = ClauseConstants.getElementLookUpName().get(
+		String qdmName = PopulationWorkSpaceConstants.getElementLookUpName().get(
 				cellTreeNode.getUUID());
-		Node qdmNode = ClauseConstants.getElementLookUpNode().get(
+		Node qdmNode = PopulationWorkSpaceConstants.getElementLookUpNode().get(
 				qdmName + "~" + cellTreeNode.getUUID());
 		// Could not find the qdm node in elemenentLookup tag
 		if (qdmNode == null) {
@@ -452,7 +452,7 @@ public class QDMAttributeDialogBox {
 
 		// unitNames.addAll(getUnitNameList());
 		unitNames.add("");
-		unitNames.addAll(ClauseConstants.units);
+		unitNames.addAll(PopulationWorkSpaceConstants.units);
 
 		List<String> mode = getModeList();
 		findAttributesForDataType(qdmDataType, isOccuranceQDM, mode,
@@ -926,7 +926,7 @@ public class QDMAttributeDialogBox {
 
 				String qdmId = (String) attributenode
 						.getExtraInformation(QDM_UUID);
-				if (ClauseConstants.getElementLookUpName().containsKey(qdmId)) {
+				if (PopulationWorkSpaceConstants.getElementLookUpName().containsKey(qdmId)) {
 					for (int r = 0; r < qdmListBox.getItemCount(); r++) {
 						if (qdmId.equals(qdmListBox.getValue(r))) {
 							qdmListBox.setSelectedIndex(r);
@@ -982,7 +982,7 @@ public class QDMAttributeDialogBox {
 		ListBox qdmListBox = new ListBox(false);
 		qdmListBox.setVisibleItemCount(1);
 		qdmListBox.setWidth("8em");
-		for (Entry<String, Node> qdm : ClauseConstants.getElementLookUpNode()
+		for (Entry<String, Node> qdm : PopulationWorkSpaceConstants.getElementLookUpNode()
 				.entrySet()) {
 			Node qdmNode = qdm.getValue();
 			String dataType = qdmNode.getAttributes().getNamedItem(DATATYPE)
@@ -991,7 +991,7 @@ public class QDMAttributeDialogBox {
 					.getNodeValue();
 			if (ATTRIBUTE.equals(dataType)) {
 				qdmListBox.addItem(
-						ClauseConstants.getElementLookUpName().get(uuid), uuid);
+						PopulationWorkSpaceConstants.getElementLookUpName().get(uuid), uuid);
 			}
 		}
 		return qdmListBox;
@@ -1115,7 +1115,7 @@ public class QDMAttributeDialogBox {
 		for (int i = 0; i < options.getLength(); i++) {
 			String text = options.getItem(i).getText();
 			String uuid = options.getItem(i).getAttribute("value");
-			String oid = ClauseConstants.getElementLookUpNode()
+			String oid = PopulationWorkSpaceConstants.getElementLookUpNode()
 					.get(text + "~" + uuid).getAttributes().getNamedItem("oid")
 					.getNodeValue();
 			String title = text + " (" + oid + ")";

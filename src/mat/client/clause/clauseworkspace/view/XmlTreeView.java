@@ -1,7 +1,7 @@
 package mat.client.clause.clauseworkspace.view;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
-import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
@@ -779,13 +779,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		if(selectedNode != null){
 			short nodeType = selectedNode.getNodeType();
 			if(event.isControlKeyDown()){
-				if(keyCode == ClauseConstants.COPY_C){//COPY
+				if(keyCode == PopulationWorkSpaceConstants.COPY_C){//COPY
 					if((nodeType != CellTreeNode.MASTER_ROOT_NODE) && (nodeType != CellTreeNode.ROOT_NODE)){
 						popupPanel.hide();
 						copy();
 					}
 					
-				}else if(keyCode == ClauseConstants.PASTE_V){//PASTE
+				}else if(keyCode == PopulationWorkSpaceConstants.PASTE_V){//PASTE
 					boolean canPaste = false;
 					popupPanel.hide();
 					if(copiedNode != null){
@@ -816,7 +816,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 					}
 					
-				}else if(keyCode == ClauseConstants.CUT_X){//CUT
+				}else if(keyCode == PopulationWorkSpaceConstants.CUT_X){//CUT
 					popupPanel.hide();
 					if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
 							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
@@ -827,7 +827,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						isDirty = true;
 					}
 				}
-			}else if(keyCode == ClauseConstants.DELETE_DELETE){//DELETE
+			}else if(keyCode == PopulationWorkSpaceConstants.DELETE_DELETE){//DELETE
 				popupPanel.hide();
 				if(((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
 						&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
@@ -839,11 +839,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 			}
 		}
-		if((event.isShiftKeyDown() && ((keyCode == ClauseConstants.PLUS_FF) || (keyCode == ClauseConstants.PLUS_IE)))){
+		if((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.PLUS_FF) || (keyCode == PopulationWorkSpaceConstants.PLUS_IE)))){
 			//EXPAND/COLLAPSE (+(Shift +) Expand| - Collapse)
 			popupPanel.hide();
 			openAllNodes(cellTree.getRootTreeNode());
-		}else if((event.isShiftKeyDown() && ((keyCode == ClauseConstants.MINUS_FF) || (keyCode == ClauseConstants.MINUS_IE)))){
+		}else if((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.MINUS_FF) || (keyCode == PopulationWorkSpaceConstants.MINUS_IE)))){
 			popupPanel.hide();
 			closeNodes(cellTree.getRootTreeNode());
 		}

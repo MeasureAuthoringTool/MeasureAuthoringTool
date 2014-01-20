@@ -12,7 +12,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
-import mat.client.clause.clauseworkspace.presenter.ClauseConstants;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
@@ -96,9 +96,9 @@ public class PackagerServiceImpl implements PackagerService {
 				String xpathGrpUuid = XmlProcessor.XPATH_FIND_GROUP_CLAUSE;
 				for (int i = 0; i < measureClauses.getLength(); i++) {
 					NamedNodeMap namedNodeMap = measureClauses.item(i).getAttributes();
-					Node uuidNode = namedNodeMap.getNamedItem(ClauseConstants.UUID);
-					Node displayNameNode = namedNodeMap.getNamedItem(ClauseConstants.DISPLAY_NAME);
-					Node typeNode = namedNodeMap.getNamedItem(ClauseConstants.TYPE);
+					Node uuidNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.UUID);
+					Node displayNameNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.DISPLAY_NAME);
+					Node typeNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.TYPE);
 					clauses.add(createMeasurePackageClauseDetail(
 							uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue()));
 					//adding all Clause type uuid's
@@ -141,7 +141,7 @@ public class PackagerServiceImpl implements PackagerService {
 					//Iterate through the PACKAGECLAUSE nodes and  convert it into
 					//MeasurePackageClauseDetail add it to the list in MeasurePackageDetail
 					for (int j = 0; j < pkgClauses.getLength(); j++) {
-						if (!ClauseConstants.PACKAGE_CLAUSE_NODE.equals(
+						if (!PopulationWorkSpaceConstants.PACKAGE_CLAUSE_NODE.equals(
 								pkgClauses.item(j).getNodeName())) {
 							// group node can contain tab or new lines
 							// which can be counted as it's child.Those should be filtered.
@@ -151,10 +151,10 @@ public class PackagerServiceImpl implements PackagerService {
 						detail.getPackageClauses().add(
 								createMeasurePackageClauseDetail(
 										pkgClauseMap.getNamedItem(
-												ClauseConstants.UUID).getNodeValue()
+												PopulationWorkSpaceConstants.UUID).getNodeValue()
 												, pkgClauseMap.getNamedItem("name").
 												getNodeValue(), pkgClauseMap.getNamedItem(
-												ClauseConstants.TYPE).getNodeValue()));
+												PopulationWorkSpaceConstants.TYPE).getNodeValue()));
 					}
 				}
 			}

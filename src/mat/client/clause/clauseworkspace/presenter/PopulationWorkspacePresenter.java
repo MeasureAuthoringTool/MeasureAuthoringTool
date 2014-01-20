@@ -25,7 +25,7 @@ import com.google.gwt.xml.client.XMLParser;
 /**
  * The Class ClauseWorkspacePresenter.
  */
-public class ClauseWorkspacePresenter implements MatPresenter {
+public class PopulationWorkspacePresenter implements MatPresenter {
 	
 	/** The simplepanel. */
 	private SimplePanel simplepanel = new SimplePanel();
@@ -37,7 +37,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
 	/** The clause workspace tabs. */
-	private MatTabLayoutPanel clauseWorkspaceTabs;
+	private MatTabLayoutPanel populationWorkspaceTabs;
 	
 	/** The population clause presenter. */
 	private PopulationClausePresenter populationClausePresenter = new PopulationClausePresenter();
@@ -51,7 +51,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	/**
 	 * Instantiates a new clause workspace presenter.
 	 */
-	public ClauseWorkspacePresenter() {
+	public PopulationWorkspacePresenter() {
 		simplepanel.setStyleName("contentPanel");
 		simplepanel.add(flowPanel);
 		MatContext.get().getAllOperators();
@@ -71,7 +71,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 			
 			@Override
 			public void onSuccess(List<String> result) {
-				ClauseConstants.units = (ArrayList<String>) result;
+				PopulationWorkSpaceConstants.units = (ArrayList<String>) result;
 			}
 		});
 	}
@@ -102,25 +102,25 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 							if ("PROPOR".equals(scoringIdAttributeValue)
 									|| "RATIO".equals(scoringIdAttributeValue)
 									|| "COHORT".equals(scoringIdAttributeValue)) {
-								clauseWorkspaceTabs = new MatTabLayoutPanel(true);
-								clauseWorkspaceTabs.setId("clauseWorkspce");
-								clauseWorkspaceTabs.addPresenter(
+								populationWorkspaceTabs = new MatTabLayoutPanel(true);
+								populationWorkspaceTabs.setId("clauseWorkspce");
+								populationWorkspaceTabs.addPresenter(
 										populationClausePresenter, "Populations");
-								clauseWorkspaceTabs.addPresenter(
+								populationWorkspaceTabs.addPresenter(
 										stratificationClausePresenter, "Stratification");
 							} else {
-								clauseWorkspaceTabs = new MatTabLayoutPanel(true);
-								clauseWorkspaceTabs.setId("clauseWorkspce");
-								clauseWorkspaceTabs.addPresenter(
+								populationWorkspaceTabs = new MatTabLayoutPanel(true);
+								populationWorkspaceTabs.setId("clauseWorkspce");
+								populationWorkspaceTabs.addPresenter(
 										populationClausePresenter, "Populations");
-								clauseWorkspaceTabs.addPresenter(
+								populationWorkspaceTabs.addPresenter(
 										measureObsClausePresenter, "Measure Observations");
-								clauseWorkspaceTabs.addPresenter(
+								populationWorkspaceTabs.addPresenter(
 										stratificationClausePresenter, "Stratification");
 							}
 							flowPanel.clear();
 							flowPanel.add(new SpacerWidget());
-							flowPanel.add(clauseWorkspaceTabs);
+							flowPanel.add(populationWorkspaceTabs);
 							
 							String newXML = document.getDocumentElement().toString();
 							
@@ -128,28 +128,28 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 							measureObsClausePresenter.setOriginalXML(newXML);
 							stratificationClausePresenter.setOriginalXML(newXML);
 							setQdmElementsMap(xml);
-							clauseWorkspaceTabs.selectTab(populationClausePresenter);
+							populationWorkspaceTabs.selectTab(populationClausePresenter);
 							populationClausePresenter.beforeDisplay();
 						} else {
 							clearPanelAndShowError("Measure Scoring missing in Measure Xml "
 									+ currentMeasureId);
 						}
 					} catch (Exception e) {
-						clearPanelAndShowError("Exception Occured in Clause Workspace "
+						clearPanelAndShowError("Exception Occured in Population Workspace "
 								+ currentMeasureId);
 					}
 				}
 				
 				@Override
 				public void onFailure(Throwable caught) {
-					System.out.println("Server call failed in ClauseWorkspacePresenter.setXMLOnTabs()"
+					System.out.println("Server call failed in PopulationWorkspacePresenter.setXMLOnTabs()"
 							+ " in service.getMeasureXmlForMeasure");
-					clearPanelAndShowError("Loading Measure Xml failed in Clause Workspace"
+					clearPanelAndShowError("Loading Measure Xml failed in Population Workspace"
 							+ currentMeasureId);
 				}
 			});
 		} else {
-			clearPanelAndShowError("Measure Id is null in Clause Workspace");
+			clearPanelAndShowError("Measure Id is null in Population Workspace");
 		}
 	}
 	
@@ -161,9 +161,9 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	 */
 	private void clearPanelAndShowError(String auditMessage){
 		//simplepanel.clear();
-		clauseWorkspaceTabs = new MatTabLayoutPanel(true);
-		clauseWorkspaceTabs.setId("clauseWorkspce");
-		clauseWorkspaceTabs.addPresenter(populationClausePresenter, "Populations");
+		populationWorkspaceTabs = new MatTabLayoutPanel(true);
+		populationWorkspaceTabs.setId("PopulationWorkspce");
+		populationWorkspaceTabs.addPresenter(populationClausePresenter, "Populations");
 		MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(),
 				null, "CW_TAB_EVENT", auditMessage, ConstantMessages.DB_LOG);
 		Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
@@ -176,8 +176,8 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	 *            the new qdm elements map
 	 */
 	private void setQdmElementsMap(String xml) {
-		ClauseConstants.elementLookUpName = new TreeMap<String, String>();
-		ClauseConstants.elementLookUpNode = new TreeMap<String, Node>();
+		PopulationWorkSpaceConstants.elementLookUpName = new TreeMap<String, String>();
+		PopulationWorkSpaceConstants.elementLookUpNode = new TreeMap<String, Node>();
 		Document document = XMLParser.parse(xml);
 		NodeList nodeList = document.getElementsByTagName("elementLookUp");
 		if ((null != nodeList) && (nodeList.getLength() > 0)) {
@@ -198,8 +198,8 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 						}
 						
 						String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
-						ClauseConstants.elementLookUpNode.put(name + "~" + uuid, qdms.item(i));
-						ClauseConstants.elementLookUpName.put(uuid, name);
+						PopulationWorkSpaceConstants.elementLookUpNode.put(name + "~" + uuid, qdms.item(i));
+						PopulationWorkSpaceConstants.elementLookUpName.put(uuid, name);
 					}
 				}
 			}
@@ -236,7 +236,7 @@ public class ClauseWorkspacePresenter implements MatPresenter {
 	 * @return the selected tree presenter
 	 */
 	public XmlTreePresenter getSelectedTreePresenter() {
-		MatPresenter matPresenter = clauseWorkspaceTabs.getPresenterMap().get(clauseWorkspaceTabs.getSelectedIndex());
+		MatPresenter matPresenter = populationWorkspaceTabs.getPresenterMap().get(populationWorkspaceTabs.getSelectedIndex());
 		return (XmlTreePresenter) matPresenter;
 	}
 }

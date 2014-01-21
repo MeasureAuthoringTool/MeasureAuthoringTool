@@ -1,6 +1,7 @@
 package mat.client;
 
 import mat.client.clause.QDMPresenter;
+import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
 import mat.client.event.MATClickHandler;
 import mat.client.event.MeasureSelectedEvent;
@@ -84,7 +85,11 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	/** The button bar. */
 	private PreviousContinueButtonBar buttonBar = new PreviousContinueButtonBar();
 	
-	/** The clause workspace presenter. */
+	/**
+	 * The Clause Workspace presenter.
+	 */
+	private ClauseWorkSpacePresenter clauseWorkSpacePresenter = new ClauseWorkSpacePresenter();
+	/** The Population workspace presenter. */
 	private PopulationWorkspacePresenter populationWorkspacePresenter = new PopulationWorkspacePresenter();
 	
 	/** The empty widget. */
@@ -130,6 +135,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.setId("measureComposerTabLayout");
 		measureComposerTabLayout.addPresenter(metaDataPresenter,"Measure Details");
 		measureComposerTabLayout.addPresenter(qdmPresenter,"QDM Elements");
+		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Population Workspace");
 		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager");
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");

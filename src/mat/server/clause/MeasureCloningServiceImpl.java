@@ -5,6 +5,7 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -14,6 +15,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.MeasureCloningService;
@@ -34,6 +36,7 @@ import mat.server.service.MeasureNotesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.model.util.MeasureDetailsUtil;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -162,6 +165,7 @@ implements MeasureCloningService {
 				clonedMeasure.setMeasureSet(measure.getMeasureSet());
 				clonedMeasure.setVersion(measure.getVersion());
 				clonedMeasure.setRevisionNumber("000");
+				clonedMeasure.seteMeasureId(measure.geteMeasureId());
 				measureDAO.saveMeasure(clonedMeasure);
 				saveMeasureNotesInDraftMeasure(clonedMeasure.getId(), measure);
 				createNewMeasureDetailsForDraft();

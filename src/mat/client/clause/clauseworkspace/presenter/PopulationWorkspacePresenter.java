@@ -34,7 +34,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	FlowPanel flowPanel = new FlowPanel();
 	
 	/** The service. */
-	MeasureServiceAsync service = MatContext.get().getMeasureService();
+	private MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
 	/** The clause workspace tabs. */
 	private MatTabLayoutPanel populationWorkspaceTabs;
@@ -54,8 +54,8 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	public PopulationWorkspacePresenter() {
 		simplepanel.setStyleName("contentPanel");
 		simplepanel.add(flowPanel);
-		MatContext.get().getAllOperators();
-		loadAllUnits();
+		//MatContext.get().getAllOperators();
+		//loadAllUnits();
 	}
 	
 	/**
@@ -82,7 +82,6 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	private void setXMLOnTabs() {
 		final String currentMeasureId = MatContext.get().getCurrentMeasureId();
 		if ((currentMeasureId != null) && !"".equals(currentMeasureId)) {
-			MeasureServiceAsync service = MatContext.get().getMeasureService();
 			service.getMeasureXmlForMeasure(MatContext.get()
 					.getCurrentMeasureId(),
 					new AsyncCallback<MeasureXmlModel>() { // Loading the measure's SimpleXML from the Measure_XML table

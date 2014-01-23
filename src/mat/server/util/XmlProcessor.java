@@ -85,6 +85,9 @@ public class XmlProcessor {
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP = "/measure/elementLookUp";
 	
+	/** The Constant XPATH_MEASURE_SUBTREE_LOOKUP. */
+	private static final String XPATH_MEASURE_SUBTREE_LOOKUP = "/measure/subTreeLookUp";
+	
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
 	
@@ -900,6 +903,14 @@ public class XmlProcessor {
 			.insertBefore(elementLookUp_Element,
 					supplementaDataElements_Element.getNextSibling());
 		}
+		if (findNode(originalDoc, XPATH_MEASURE_SUBTREE_LOOKUP) == null) {
+			Element subTreeLookUp_Element = originalDoc
+					.createElement("subTreeLookUp");
+			((Element) supplementaDataElements_Element.getParentNode())
+			.insertBefore(subTreeLookUp_Element,
+					supplementaDataElements_Element.getNextSibling());
+		}
+		
 		// create Measure Grouping node
 		if (findNode(originalDoc, XPATH_MEASURE_GROUPING) == null) {
 			Element measureGrouping_Element = originalDoc
@@ -1007,7 +1018,7 @@ public class XmlProcessor {
 	 * @param node
 	 *            the node
 	 */
-	private void removeFromParent(Node node) {
+	public void removeFromParent(Node node) {
 		if (node != null) {
 			Node parentNode = node.getParentNode();
 			parentNode.removeChild(node);
@@ -1253,3 +1264,4 @@ public class XmlProcessor {
 		return missingTimingElementList;
 	}
 }
+

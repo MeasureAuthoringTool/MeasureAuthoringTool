@@ -43,7 +43,10 @@ public interface CellTreeNode {
 	 * Timing Node.
 	 */
 	short TIMING_NODE = 5;
-	
+	/**
+	 * Sub tree Node.
+	 */
+	short SUBTREE_NODE = 10;
 	/**
 	 * Append child.
 	 * 

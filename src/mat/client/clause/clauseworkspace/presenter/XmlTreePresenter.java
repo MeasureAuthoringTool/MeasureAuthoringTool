@@ -8,13 +8,13 @@ import mat.client.clause.clauseworkspace.view.XmlTreeView;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -22,7 +22,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * The Class XmlTreePresenter.
  */
 public class XmlTreePresenter {
-
+	
 	/**
 	 * The Interface TreeResources.
 	 */
@@ -31,21 +31,24 @@ public class XmlTreePresenter {
 		/* (non-Javadoc)
 		 * @see com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeClosedItem()
 		 */
+		@Override
 		@Source("mat/client/images/plus.png")
 		ImageResource cellTreeClosedItem();
-
+		
 		/* (non-Javadoc)
 		 * @see com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeOpenItem()
 		 */
+		@Override
 		@Source("mat/client/images/minus.png")
 		ImageResource cellTreeOpenItem();
-
+		
 		/* (non-Javadoc)
 		 * @see com.google.gwt.user.cellview.client.CellTree.Resources#cellTreeStyle()
 		 */
+		@Override
 		@Source("mat/client/images/CwCellTree.css")
 		CellTree.Style cellTreeStyle();
-
+		
 		/*
 		 * @Source("mat/client/images/cms_gov_footer.png")
 		 *
@@ -53,7 +56,7 @@ public class XmlTreePresenter {
 		 * ImageResource cellTreeSelectedBackground();
 		 */
 	}
-
+	
 	/** The xml tree display. */
 	XmlTreeDisplay xmlTreeDisplay;
 	
@@ -68,7 +71,7 @@ public class XmlTreePresenter {
 	
 	/** The panel. */
 	SimplePanel panel;
-
+	
 	/**
 	 * This member variable is used to pass the original measure XML to
 	 * XmlTreePresenter class which will then be used to construct the CellTree.
@@ -78,7 +81,7 @@ public class XmlTreePresenter {
 	 * method.
 	 */
 	private String originalXML = "";
-
+	
 	/**
 	 * Load xml tree.
 	 * 
@@ -86,28 +89,28 @@ public class XmlTreePresenter {
 	 *            the panel
 	 */
 	public final void loadXmlTree(SimplePanel panel) {
-
+		
 		if (originalXML.length() > 0) {
 			this.panel = panel;
 			panel.clear();
 			String xml = originalXML;
 			XmlTreeView xmlTreeView = new XmlTreeView(
 					XmlConversionlHelper.createCellTreeNode(xml, rootNode)); // converts
-																			// XML
-																			// to
-																			// TreeModel
-																			// Object
-																			// and
-																			// sets
-																			// to
-																			// XmlTreeView
+			// XML
+			// to
+			// TreeModel
+			// Object
+			// and
+			// sets
+			// to
+			// XmlTreeView
 			// CellTree cellTree = new CellTree(xmlTreeView, null);
 			CellTree.Resources resource = GWT.create(TreeResources.class);
 			CellTree cellTree = new CellTree(xmlTreeView, null, resource);// CellTree
-																		  // Creation
+			// Creation
 			cellTree.setDefaultNodeSize(500);// this will get rid of the show
-											 // more link on the bottom of the
-											 // Tree
+			// more link on the bottom of the
+			// Tree
 			xmlTreeView.createPageView(cellTree); // Page Layout
 			cellTree.setTabIndex(0);
 			// This is Open Population Node by default in Population Tab.
@@ -118,7 +121,7 @@ public class XmlTreePresenter {
 					treeNode.setChildOpen(i, true, true);
 				}
 			}
-			xmlTreeDisplay = (XmlTreeDisplay) xmlTreeView;
+			xmlTreeDisplay = xmlTreeView;
 			xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
 					.checkForEditPermission());
 			panel.clear();
@@ -130,9 +133,63 @@ public class XmlTreePresenter {
 		}
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("ClauseWorkspaceTree");
 		Mat.focusSkipLists("MeasureComposer");
-
+		
 	}
-
+	
+	/**
+	 * Method to create Clause Work space View.
+	 * @param clauseWorkSpacePanel
+	 */
+	public final void loadClauseWorkSpaceView(SimplePanel clauseWorkSpacePanel){
+		panel = clauseWorkSpacePanel;
+		XmlTreeView xmlTreeView = new XmlTreeView(null);
+		xmlTreeView.createClauseWorkSpacePageView(null);
+		xmlTreeDisplay = xmlTreeView;
+		xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());
+		panel.clear();
+		panel.add(xmlTreeDisplay.asWidget());
+		invokeCreateNewClauseHandler();
+		invokeSaveSubTreeHandler();
+	}
+	
+	/**
+	 * Method to invoke Create SubTree Node Handler.
+	 */
+	private void invokeCreateNewClauseHandler() {
+		xmlTreeDisplay.getCreateSubTree().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (!xmlTreeDisplay.isDirty()) {
+					if ((xmlTreeDisplay.getSubTreeTextBox().getValue() != null)
+							&& (xmlTreeDisplay.getSubTreeTextBox().getValue().trim().length() > 0)) {
+						XmlTreeView xmlTreeView = (XmlTreeView) xmlTreeDisplay;
+						CellTreeNode subTree = XmlConversionlHelper.createSubTreeNode(
+								xmlTreeDisplay.getSubTreeTextBox().getValue());
+						xmlTreeView.createRootNode(subTree);
+						CellTree.Resources resource = GWT.create(TreeResources.class);
+						CellTree cellTree = new CellTree(xmlTreeView, null, resource);// CellTree
+						// Creation
+						cellTree.setDefaultNodeSize(500); // this will get rid of the show
+						// more link on the bottom of the
+						// Tree
+						xmlTreeView.createClauseWorkSpacePageView(cellTree); // Page Layout
+						cellTree.setTabIndex(0);
+						xmlTreeDisplay = xmlTreeView;
+						xmlTreeDisplay.clearMessages();
+						xmlTreeDisplay.setDirty(true);
+						xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
+								.checkForEditPermission());
+						panel.clear();
+						panel.add(xmlTreeDisplay.asWidget());
+						setRootNode(xmlTreeDisplay.getSubTreeTextBox().getValue());
+					}
+				} else {
+					Window.alert(" Root Node for SubTree is :: " + xmlTreeDisplay.getSubTreeTextBox().getValue() + " No saved !!!! ");
+				}
+			}
+		});
+	}
 	/**
 	 * Creates the measure export model.
 	 * 
@@ -148,9 +205,23 @@ public class XmlTreePresenter {
 		exportModal.setXml(xml);
 		return exportModal;
 	}
-
+	
 	/**
-	 * Invoke save handler.
+	 * Measure XML modal for SubTree/SubTreeLookUp.
+	 * @param xml
+	 * @return
+	 */
+	private MeasureXmlModel createMeasureXmlModel(final String xml) {
+		MeasureXmlModel exportModal = new MeasureXmlModel();
+		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
+		exportModal.setToReplaceNode("subTree");
+		exportModal.setParentNode("/measure/subTreeLookUp");
+		exportModal.setXml(xml);
+		return exportModal;
+	}
+	
+	/**
+	 * Invoke Population Work Space save handler.
 	 */
 	private void invokeSaveHandler() {
 		xmlTreeDisplay.getSaveButton().addClickHandler(new ClickHandler() {
@@ -167,31 +238,69 @@ public class XmlTreePresenter {
 						.getXmlTree().getRootTreeNode().getChildValue(0);
 				final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper
 						.createXmlFromTree(cellTreeNode));
-
 				service.saveMeasureXml(measureXmlModel,
 						new AsyncCallback<Void>() {
-
-							@Override
-							public void onFailure(final Throwable caught) {
-							}
-
-							@Override
-							public void onSuccess(final Void result) {
-								xmlTreeDisplay.getWarningMessageDisplay().clear();
-								xmlTreeDisplay
-										.getSuccessMessageDisplay()
-										.setMessage(
-												"Changes are successfully saved.");
-								setOriginalXML(measureXmlModel.getXml());
-								System.out.println("originalXML is:"
-										+ getOriginalXML());
-							}
-						});
+					@Override
+					public void onFailure(final Throwable caught) {
+					}
+					@Override
+					public void onSuccess(final Void result) {
+						xmlTreeDisplay.getWarningMessageDisplay().clear();
+						xmlTreeDisplay
+						.getSuccessMessageDisplay()
+						.setMessage(
+								"Changes are successfully saved.");
+						setOriginalXML(measureXmlModel.getXml());
+						System.out.println("originalXML is:"
+								+ getOriginalXML());
+					}
+				});
 			}
 		});
-
 	}
-
+	/**
+	 * Invoke Clause Work Space save handler.
+	 */
+	private void invokeSaveSubTreeHandler() {
+		xmlTreeDisplay.getSaveBtnClauseWorkSpace().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				if (xmlTreeDisplay.getXmlTree() != null) {
+					xmlTreeDisplay.clearMessages();
+					xmlTreeDisplay.setDirty(false);
+					MatContext.get().recordTransactionEvent(
+							MatContext.get().getCurrentMeasureId(), null,
+							"CLAUSEWORKSPACE_TAB_SAVE_EVENT",
+							rootNode.toUpperCase().concat(" Saved."),
+							ConstantMessages.DB_LOG);
+					CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay
+							.getXmlTree().getRootTreeNode().getChildValue(0);
+					String nodeUUID = cellTreeNode.getUUID();
+					String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode);
+					System.out.println("Generated XML  :: " + xml);
+					System.out.println("nodeUUID  :: " + nodeUUID);
+					final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
+					service.saveSubTreeInMeasureXml(measureXmlModel,nodeUUID,
+							new AsyncCallback<Void>() {
+						@Override
+						public void onFailure(final Throwable caught) {
+						}
+						@Override
+						public void onSuccess(final Void result) {
+							xmlTreeDisplay.getWarningMessageDisplay().clear();
+							xmlTreeDisplay
+							.getSuccessMessageDisplay()
+							.setMessage(
+									"Changes are successfully saved.");
+							setOriginalXML(measureXmlModel.getXml());
+							System.out.println("originalXML is:"
+									+ getOriginalXML());
+						}
+					});
+				}
+			}
+		});
+	}
 	/**
 	 * Invoke validate handler.
 	 */
@@ -219,18 +328,14 @@ public class XmlTreePresenter {
 				}
 			}
 		});
-
 	}
-
 	/**
 	 * Gets the root node.
-	 * 
 	 * @return the rootNode
 	 */
 	public final String getRootNode() {
 		return rootNode;
 	}
-
 	/**
 	 * Sets the root node.
 	 * 
@@ -240,7 +345,7 @@ public class XmlTreePresenter {
 	public final void setRootNode(final String rootNode) {
 		this.rootNode = rootNode;
 	}
-
+	
 	/**
 	 * Sets the this member variable is used to pass the original measure XML to
 	 * XmlTreePresenter class which will then be used to construct the CellTree.
@@ -253,7 +358,7 @@ public class XmlTreePresenter {
 	public final void setOriginalXML(final String originalXML) {
 		this.originalXML = originalXML;
 	}
-
+	
 	/**
 	 * Gets the this member variable is used to pass the original measure XML to
 	 * XmlTreePresenter class which will then be used to construct the CellTree.
@@ -265,7 +370,7 @@ public class XmlTreePresenter {
 	public final String getOriginalXML() {
 		return originalXML;
 	}
-
+	
 	/**
 	 * Gets the xml tree display.
 	 * 
@@ -274,7 +379,7 @@ public class XmlTreePresenter {
 	public final XmlTreeDisplay getXmlTreeDisplay() {
 		return xmlTreeDisplay;
 	}
-
+	
 	/**
 	 * Sets the xml tree display.
 	 * 

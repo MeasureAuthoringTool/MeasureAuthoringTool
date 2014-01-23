@@ -267,7 +267,7 @@ public interface MeasureService extends RemoteService {
 	 * @return the manage measure search model
 	 */
 	ManageMeasureSearchModel searchMeasuresForDraft(String searchText);
-
+	
 	/**
 	 * Search measures for version.
 	 *
@@ -361,4 +361,6 @@ public interface MeasureService extends RemoteService {
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
 			List<MatValueSet> matValueSetList) throws MatException;
+	
+	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID);
 }

@@ -412,4 +412,6 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 */
 	void saveMeasureAtPackage(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
+	
+	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID, AsyncCallback<Void> callback);
 }

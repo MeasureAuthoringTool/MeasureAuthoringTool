@@ -40,6 +40,7 @@ import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -106,11 +107,28 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The validate btn. */
 	private Button validateBtn = new SecondaryButton("Validate");
 	
+	/** The save btn. */
+	private Button saveBtnClauseWorkSpace = new PrimaryButton("Save", "primaryButton");
+	
+	/** The validate btn. */
+	private Button validateBtnClauseWorkSpace = new SecondaryButton("Validate");
+	
+	/** The subTree Textbox btn. */
+	private TextBox subTreeTextBox = new TextBox();;
+	/** The validate btn. */
+	private Button createSubTree = new Button("Create New SubTree");
+	
 	/** The button expand. */
 	private Button buttonExpand = new Button();
 	
 	/** The button collapse. */
 	private Button buttonCollapse = new Button();
+	
+	/** The button expand. */
+	private Button buttonExpandClauseWorkSpace = new Button();
+	
+	/** The button collapse. */
+	private Button buttonCollapseClauseWorkSpace = new Button();
 	
 	/** The error message display. */
 	private ErrorMessageDisplay errorMessageDisplay = new ErrorMessageDisplay();
@@ -151,15 +169,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	public XmlTreeView(CellTreeNode cellTreeNode) {
 		clearMessages();
-		createRootNode(cellTreeNode);
-		addHandlers();
+		if (cellTreeNode != null) {
+			createRootNode(cellTreeNode);
+			addHandlers();
+		}
 		mainPanel.getElement().setId("mainPanel_FlowPanel");
 		saveBtn.getElement().setId("saveBtn_Button");
 		buttonExpand.getElement().setId("buttonExpand_Button");
 		buttonCollapse.getElement().setId("buttonCollapse_Button");
 	}
-	
-	
+
 	/**
 	 * Creates the Root Node in the CellTree. Sets the Root node to the ListData
 	 * Provider.
@@ -167,8 +186,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param cellTreeNode
 	 *            the cell tree node
 	 */
-	private void createRootNode(CellTreeNode cellTreeNode) {
-		nodeDataProvider = new ListDataProvider<CellTreeNode>(cellTreeNode.getChilds());
+	@Override
+	public void createRootNode(CellTreeNode cellTreeNode) {
+		if ((cellTreeNode.getChilds() != null) && (cellTreeNode.getChilds().size() > 0)) {
+			nodeDataProvider = new ListDataProvider<CellTreeNode>(cellTreeNode.getChilds());
+		}
 	}
 	
 	
@@ -181,15 +203,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void createPageView(CellTree cellTree) {
 		this.cellTree = cellTree;
 		mainPanel.setStyleName("div-wrapper"); //main div
-		
 		SimplePanel leftPanel = new SimplePanel();
 		leftPanel.getElement().setId("leftPanel_SimplePanel");
 		leftPanel.setStyleName("div-first bottomPadding10px"); //left side div which will  have tree
-		
 		SimplePanel rightPanel = new SimplePanel();
 		rightPanel.getElement().setId("rightPanel_SimplePanel");
 		rightPanel.setStyleName("div-second"); //right div having tree creation inputs.
-		
 		VerticalPanel treePanel =  new VerticalPanel();
 		treePanel.getElement().setId("treePanel_VerticalPanel");
 		HorizontalPanel expandCollapse  = new HorizontalPanel();
@@ -204,11 +223,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		expandCollapse.add(buttonCollapse);
 		buttonExpand.setFocus(true);
 		buttonCollapse.setVisible(true);
-		
 		treePanel.add(expandCollapse);
 		treePanel.add(cellTree);
+		cellTreeHandlers();
 		leftPanel.add(treePanel);
-		
 		SimplePanel bottomSavePanel = new SimplePanel();
 		bottomSavePanel.getElement().setId("bottomSavePanel_SimplePanel");
 		bottomSavePanel.setStyleName("div-first buttonPadding");
@@ -225,7 +243,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		vp.add(warningMessageDisplay);
 		vp.add(savePanel);
 		bottomSavePanel.add(vp);
-		
 		SimplePanel errPanel = new SimplePanel();
 		errPanel.getElement().setId("errPanel_SimplePanel");
 		errPanel.add(errorMessageDisplay);
@@ -235,9 +252,76 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		mainPanel.add(bottomSavePanel);
 		focusPanel.addKeyDownHandler(this);
 		focusPanel.addFocusHandler(this);
-		cellTreeHandlers();
 	}
 	
+	/**
+	 * Page Widget's for Clause WorkSpace.
+	 * @param cellTree
+	 */
+	public void createClauseWorkSpacePageView(CellTree cellTree) {
+		this.cellTree = cellTree;
+		mainPanel.clear();
+		mainPanel.setStyleName("div-wrapper"); //main div
+		SimplePanel leftPanel = new SimplePanel();
+		leftPanel.getElement().setId("leftPanel_SimplePanelCW");
+		leftPanel.setStyleName("div-first bottomPadding10px"); //left side div which will  have tree
+		SimplePanel rightPanel = new SimplePanel();
+		rightPanel.getElement().setId("rightPanel_SimplePanelCW");
+		rightPanel.setStyleName("div-second"); //right div having tree creation inputs.
+		VerticalPanel treePanel =  new VerticalPanel();
+		treePanel.getElement().setId("treePanel_VerticalPanelCW");
+		HorizontalPanel expandCollapse  = new HorizontalPanel();
+		expandCollapse.getElement().setId("expandCollapse_HorizontalPanelCW");
+		expandCollapse.setStyleName("leftAndTopPadding");
+		expandCollapse.setSize("100px", "20px");
+		buttonExpandClauseWorkSpace.setStylePrimaryName("expandAllButton");
+		buttonCollapseClauseWorkSpace.setStylePrimaryName("collapseAllButton");
+		buttonExpandClauseWorkSpace.setTitle("Expand All (Shift +)");
+		buttonCollapseClauseWorkSpace.setTitle("Collapse All (Shift -)");
+		expandCollapse.add(buttonExpandClauseWorkSpace);
+		expandCollapse.add(buttonCollapseClauseWorkSpace);
+		buttonExpandClauseWorkSpace.setFocus(true);
+		buttonCollapseClauseWorkSpace.setVisible(true);
+		HorizontalPanel createSubTreePanel  = new HorizontalPanel();
+		createSubTreePanel.add(subTreeTextBox);
+		createSubTreePanel.add(createSubTree);
+		if (cellTree != null) {
+			treePanel.add(createSubTreePanel);
+			treePanel.add(expandCollapse);
+			treePanel.add(cellTree);
+			addCWExpandCollapseButtonHandler();
+			cellTreeHandlers();
+		} else {
+			treePanel.add(createSubTreePanel);
+			treePanel.setHeight("100%");
+		}
+		leftPanel.add(treePanel);
+		SimplePanel bottomSavePanel = new SimplePanel();
+		bottomSavePanel.getElement().setId("bottomSavePanel_SimplePanelCW");
+		bottomSavePanel.setStyleName("div-first buttonPadding");
+		VerticalPanel vp = new VerticalPanel();
+		HorizontalPanel savePanel = new HorizontalPanel();
+		savePanel.getElement().setId("savePanel_VerticalPanelCW");
+		savePanel.add(new SpacerWidget());
+		//		savePanel.add(errorMessageDisplay);
+		vp.add(successMessageDisplay);
+		//		saveBtn.setTitle("Ctrl+Alt+s");
+		savePanel.add(saveBtnClauseWorkSpace);
+		validateBtnClauseWorkSpace.setTitle("Validate");
+		savePanel.add(validateBtnClauseWorkSpace);
+		vp.add(warningMessageDisplay);
+		vp.add(savePanel);
+		bottomSavePanel.add(vp);
+		SimplePanel errPanel = new SimplePanel();
+		errPanel.getElement().setId("errPanel_SimplePanelCW");
+		errPanel.add(errorMessageDisplay);
+		mainPanel.add(errPanel);
+		mainPanel.add(leftPanel);
+		mainPanel.add(rightPanel);
+		mainPanel.add(bottomSavePanel);
+		focusPanel.addKeyDownHandler(this);
+		focusPanel.addFocusHandler(this);
+	}
 	/**
 	 * Selection Handler, Tree Open and Close Handlers Defined.
 	 */
@@ -412,6 +496,30 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		});
 		
 		buttonCollapse.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				clearMessages();
+				closeNodes(cellTree.getRootTreeNode());
+				buttonExpand.setVisible(true);
+				buttonCollapse.setVisible(true);
+			}
+		});
+	}
+	/**
+	 * Expand/Collapse button Handle's for Clause Work Space buttons.
+	 */
+	private void addCWExpandCollapseButtonHandler() {
+		buttonExpandClauseWorkSpace.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				clearMessages();
+				openAllNodes(cellTree.getRootTreeNode());
+				buttonExpand.setVisible(true);
+				buttonCollapse.setVisible(true);
+			}
+		});
+		
+		buttonCollapseClauseWorkSpace.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				clearMessages();
@@ -717,6 +825,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * 
 	 * @return the cell tree
 	 */
+	@Override
 	public CellTree getCellTree() {
 		return cellTree;
 	}
@@ -728,6 +837,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param cellTree
 	 *            the new cell tree
 	 */
+	@Override
 	public void setCellTree(CellTree cellTree) {
 		this.cellTree = cellTree;
 	}
@@ -1019,5 +1129,135 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public void setValid(boolean isValid) {
 		this.isValid = isValid;
+	}
+	
+	
+	
+	/**
+	 * @return the createSubTree
+	 */
+	@Override
+	public Button getCreateSubTree() {
+		return createSubTree;
+	}
+	
+	
+	
+	/**
+	 * @param createSubTree the createSubTree to set
+	 */
+	public void setCreateSubTree(Button createSubTree) {
+		this.createSubTree = createSubTree;
+	}
+	
+	
+	
+	/**
+	 * @return the buttonExpandClauseWorkSpace
+	 */
+	public Button getButtonExpandClauseWorkSpace() {
+		return buttonExpandClauseWorkSpace;
+	}
+	
+	
+	
+	/**
+	 * @param buttonExpandClauseWorkSpace the buttonExpandClauseWorkSpace to set
+	 */
+	public void setButtonExpandClauseWorkSpace(Button buttonExpandClauseWorkSpace) {
+		this.buttonExpandClauseWorkSpace = buttonExpandClauseWorkSpace;
+	}
+	
+	
+	
+	/**
+	 * @return the buttonCollapseClauseWorkSpace
+	 */
+	public Button getButtonCollapseClauseWorkSpace() {
+		return buttonCollapseClauseWorkSpace;
+	}
+	
+	
+	
+	/**
+	 * @param buttonCollapseClauseWorkSpace the buttonCollapseClauseWorkSpace to set
+	 */
+	public void setButtonCollapseClauseWorkSpace(Button buttonCollapseClauseWorkSpace) {
+		this.buttonCollapseClauseWorkSpace = buttonCollapseClauseWorkSpace;
+	}
+	
+	
+	/*
+	 *//**
+	 * @return the clauseCellTree
+	 *//*
+	public CellTree getClauseCellTree() {
+		return clauseCellTree;
+	}
+	
+	
+	
+	  *//**
+	  * @param clauseCellTree the clauseCellTree to set
+	  *//*
+	public void setClauseCellTree(CellTree clauseCellTree) {
+		this.clauseCellTree = clauseCellTree;
+	}
+	   */
+	
+	
+	/**
+	 * @return the saveBtnClauseWorkSpace
+	 */
+	@Override
+	public Button getSaveBtnClauseWorkSpace() {
+		return saveBtnClauseWorkSpace;
+	}
+	
+	
+	
+	/**
+	 * @param saveBtnClauseWorkSpace the saveBtnClauseWorkSpace to set
+	 */
+	public void setSaveBtnClauseWorkSpace(Button saveBtnClauseWorkSpace) {
+		this.saveBtnClauseWorkSpace = saveBtnClauseWorkSpace;
+	}
+	
+	
+	
+	/**
+	 * @return the validateBtnClauseWorkSpace
+	 */
+	@Override
+	public Button getValidateBtnClauseWorkSpace() {
+		return validateBtnClauseWorkSpace;
+	}
+	
+	
+	
+	/**
+	 * @param validateBtnClauseWorkSpace the validateBtnClauseWorkSpace to set
+	 */
+	public void setValidateBtnClauseWorkSpace(Button validateBtnClauseWorkSpace) {
+		this.validateBtnClauseWorkSpace = validateBtnClauseWorkSpace;
+	}
+	
+	
+	
+	/**
+	 * @return the subTreeTextBox
+	 */
+	@Override
+	public TextBox getSubTreeTextBox() {
+		return subTreeTextBox;
+	}
+	
+	
+	
+	/**
+	 * @param subTreeTextBox the subTreeTextBox to set
+	 */
+	public void setSubTreeTextBox(TextBox subTreeTextBox) {
+		this.subTreeTextBox = subTreeTextBox;
 	}
 }

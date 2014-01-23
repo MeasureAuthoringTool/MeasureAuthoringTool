@@ -73,6 +73,7 @@ import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -137,6 +138,52 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			getService().saveMeasureXml(measureXmlModel);
 		}
 		
+	}
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#saveSubTreeInMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
+	 */
+	@Override
+	public void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID) {
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
+		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			try {
+				Node subTreeLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc()
+						, measureXmlModel.getParentNode());
+				// Add subTreeLookUp node if not available in MeasureXml.
+				if (subTreeLookUpNode == null) {
+					String xPathSupplementalDataElement = "/measure/supplementalDataElements";
+					Node supplementaDataElementsElement = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
+							xPathSupplementalDataElement);
+					String tagNameSubTeeLookUp = "subTreeLookUp";
+					Element subTreeLookUpElement = xmlProcessor.getOriginalDoc()
+							.createElement(tagNameSubTeeLookUp);
+					((Element) supplementaDataElementsElement.getParentNode())
+					.insertBefore(subTreeLookUpElement,
+							supplementaDataElementsElement.getNextSibling());
+					xmlProcessor.setOriginalXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+				}
+				// If Node already exist's and its a update then existing node will be removed from Parent Node
+				// and updated node will be added.
+				String xPathForSubTree = "/measure/subTreeLookUp/subTree";
+				NodeList subTreeNodeForUUID = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForSubTree);
+				for (int i = 0; i < subTreeNodeForUUID.getLength(); i++) {
+					Node newNode = subTreeNodeForUUID.item(i);
+					if (newNode.getAttributes().getNamedItem("uuid").getNodeValue().equals(nodeUUID)) {
+						xmlProcessor.removeFromParent(newNode);
+						break;
+					}
+				}
+				xmlModel.setXml(xmlProcessor.getOriginalXml());
+				String result = callAppendNode(xmlModel, measureXmlModel.getXml()
+						, measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
+				measureXmlModel.setXml(result);
+				getService().saveMeasureXml(measureXmlModel);
+			} catch (XPathExpressionException exception) {
+				// TODO Auto-generated catch block
+				exception.printStackTrace();
+			}
+		}
 	}
 	
 	/**

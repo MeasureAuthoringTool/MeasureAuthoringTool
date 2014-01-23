@@ -83,6 +83,10 @@ public class PopulationWorkSpaceConstants {
 	
 	/** The Constant FUNC_NAME. */
 	public static final String FUNC_NAME = "functionalOp";
+	/**
+	 * The Constant for SUBTREE_NAME.
+	 */
+	public static final String SUBTREE_NAME = "subTree";
 	
 	/** The Constant MINUS_NUMPAD. */
 	public static final int MINUS_NUMPAD = 109;

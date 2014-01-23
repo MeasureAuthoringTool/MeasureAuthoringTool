@@ -372,4 +372,11 @@ public interface MeasureLibraryService {
 	 * @return
 	 */
 	SaveMeasureResult saveMeasureAtPackage(ManageMeasureDetailModel model);
+	
+	/**
+	 * Save SubTree - Append new node if new else update exisiting subTreeNode in measureXml.
+	 * @param measureXmlModel
+	 * @param nodeUUID
+	 */
+	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID);
 }

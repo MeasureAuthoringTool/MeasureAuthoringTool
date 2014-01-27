@@ -65,11 +65,15 @@ public class XmlConversionlHelper {
 		CellTreeNode parent = new CellTreeNodeImpl();
 		CellTreeNode mainNode = new CellTreeNodeImpl();
 		List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
-		if((rootName !=null) && (rootName.trim().length() >0)) {
-			parent.setName(rootName);
-			parent.setLabel(rootName);
-			parent.setNodeType(CellTreeNode.SUBTREE_NODE);
-			parent.setUUID(UUIDUtilClient.uuid());
+		List<CellTreeNode> parentchilds = new ArrayList<CellTreeNode>();
+		if ((rootName != null) && (rootName.trim().length() > 0)) {
+			parent.setName("SubTree");
+			parent.setLabel("SubTree");
+			parent.setNodeType(CellTreeNode.SUBTREE_ROOT_NODE);
+			CellTreeNode parentChild = createChild(rootName, rootName, CellTreeNodeImpl.SUBTREE_NODE, parent);
+			parentChild.setUUID(UUIDUtilClient.uuid());
+			parentchilds.add(parentChild);
+			parent.setChilds(parentchilds);
 			childs.add(parent);
 			mainNode.setChilds(childs);
 		}
@@ -130,7 +134,8 @@ public class XmlConversionlHelper {
 			childs.add(clauseNode);
 			parent.setChilds(childs);
 			List<CellTreeNode> logicalOp = new ArrayList<CellTreeNode>();
-			logicalOp.add(createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE, clauseNode));
+			logicalOp.add(createChild(PopulationWorkSpaceConstants.AND
+					, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE, clauseNode));
 			clauseNode.setChilds(logicalOp);
 		}
 		return parent;
@@ -477,6 +482,9 @@ public class XmlConversionlHelper {
 					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
 					element.setAttribute(PopulationWorkSpaceConstants.TYPE, MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
 				}
+				break;
+			case CellTreeNode.SUBTREE_ROOT_NODE:
+				element = document.createElement(PopulationWorkSpaceConstants.SUBTREE_ROOT_NAME);
 				break;
 			case CellTreeNode.SUBTREE_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.SUBTREE_NAME);

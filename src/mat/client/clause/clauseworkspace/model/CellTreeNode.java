@@ -48,6 +48,10 @@ public interface CellTreeNode {
 	 */
 	short SUBTREE_NODE = 10;
 	/**
+	 * Sub tree Root Node.
+	 */
+	short SUBTREE_ROOT_NODE = 11;
+	/**
 	 * Append child.
 	 * 
 	 * @param child

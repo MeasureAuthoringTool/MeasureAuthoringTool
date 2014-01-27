@@ -88,6 +88,11 @@ public class PopulationWorkSpaceConstants {
 	 */
 	public static final String SUBTREE_NAME = "subTree";
 	
+	/**
+	 * The Constant for SUBTREE_NAME.
+	 */
+	public static final String SUBTREE_ROOT_NAME = "subTrees";
+	
 	/** The Constant MINUS_NUMPAD. */
 	public static final int MINUS_NUMPAD = 109;
 	

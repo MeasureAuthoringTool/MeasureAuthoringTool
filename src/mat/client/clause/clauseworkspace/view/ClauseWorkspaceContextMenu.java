@@ -447,6 +447,16 @@ public class ClauseWorkspaceContextMenu {
 						popupMenuBar.addItem(editMenu);
 					}
 				}
+				Command editSubTreeCmd = new Command() {
+					@Override
+					public void execute() {
+						popupPanel.hide();
+						EditSubTreeDialogBox.showEditDialogBox(xmlTreeDisplay
+								, xmlTreeDisplay.getSelectedNode());
+					}
+				};
+				MenuItem editSubTreeMenu = new MenuItem("Edit", true, editSubTreeCmd);
+				popupMenuBar.addItem(editSubTreeMenu);
 				/*if ((xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)
 						&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)) {
 					cutMenu.setEnabled(true);
@@ -455,6 +465,9 @@ public class ClauseWorkspaceContextMenu {
 					editMenu = new MenuItem("Edit", true, subMenuBar);
 					popupMenuBar.addItem(editMenu);
 				}*/
+				break;
+			case CellTreeNode.SUBTREE_ROOT_NODE:
+				addCommonMenus();
 				break;
 			default:
 				break;
@@ -593,7 +606,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param menuBar
 	 *            the menu bar
 	 */
-	private void createAddMenus(List<String> menuNames, final short nodeType, MenuBar menuBar){
+	private void createAddMenus(List<String> menuNames, final short nodeType, MenuBar menuBar) {
 		for (final String name : menuNames) {
 			Command addCmd = new Command() {
 				@Override

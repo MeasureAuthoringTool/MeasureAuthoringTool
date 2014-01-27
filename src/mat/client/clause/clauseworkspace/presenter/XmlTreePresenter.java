@@ -190,6 +190,7 @@ public class XmlTreePresenter {
 						panel.clear();
 						panel.add(xmlTreeDisplay.asWidget());
 						setRootNode(xmlTreeDisplay.getSubTreeTextBox().getValue());
+						xmlTreeDisplay.getSubTreeTextBox().setValue("");
 					}
 				} else {
 					Window.alert(" Root Node for SubTree is :: "
@@ -275,36 +276,41 @@ public class XmlTreePresenter {
 			public void onClick(final ClickEvent event) {
 				if (xmlTreeDisplay.getXmlTree() != null) {
 					xmlTreeDisplay.clearMessages();
-					xmlTreeDisplay.setDirty(false);
-					MatContext.get().recordTransactionEvent(
-							MatContext.get().getCurrentMeasureId(), null,
-							"CLAUSEWORKSPACE_TAB_SAVE_EVENT",
-							rootNode.toUpperCase().concat(" Saved."),
-							ConstantMessages.DB_LOG);
-					CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay
-							.getXmlTree().getRootTreeNode().getChildValue(0);
-					String nodeUUID = cellTreeNode.getUUID();
-					String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode);
-					System.out.println("Generated XML  :: " + xml);
-					System.out.println("nodeUUID  :: " + nodeUUID);
-					final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
-					service.saveSubTreeInMeasureXml(measureXmlModel, nodeUUID,
-							new AsyncCallback<Void>() {
-						@Override
-						public void onFailure(final Throwable caught) {
-						}
-						@Override
-						public void onSuccess(final Void result) {
-							xmlTreeDisplay.getWarningMessageDisplay().clear();
-							xmlTreeDisplay
-							.getSuccessMessageDisplay()
-							.setMessage(
-									"Changes are successfully saved.");
-							setOriginalXML(measureXmlModel.getXml());
-							System.out.println("originalXML is:"
-									+ getOriginalXML());
-						}
-					});
+					CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
+							.getXmlTree().getRootTreeNode().getChildValue(0));
+					if (cellTreeNode.hasChildren()) {
+						xmlTreeDisplay.setDirty(false);
+						MatContext.get().recordTransactionEvent(
+								MatContext.get().getCurrentMeasureId(), null,
+								"CLAUSEWORKSPACE_TAB_SAVE_EVENT",
+								rootNode.toUpperCase().concat(" Saved."),
+								ConstantMessages.DB_LOG);
+						String nodeUUID = cellTreeNode.getChilds().get(0).getUUID();
+						String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode.getChilds().get(0));
+						System.out.println("Generated XML  :: " + xml);
+						System.out.println("nodeUUID  :: " + nodeUUID);
+						final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
+						service.saveSubTreeInMeasureXml(measureXmlModel, nodeUUID,
+								new AsyncCallback<Void>() {
+							@Override
+							public void onFailure(final Throwable caught) {
+							}
+							@Override
+							public void onSuccess(final Void result) {
+								xmlTreeDisplay.getWarningMessageDisplay().clear();
+								xmlTreeDisplay
+								.getSuccessMessageDisplay()
+								.setMessage(
+										"Changes are successfully saved.");
+								setOriginalXML(measureXmlModel.getXml());
+								System.out.println("originalXML is:"
+										+ getOriginalXML());
+							}
+						});
+					} else {
+						xmlTreeDisplay.getErrorMessageDisplay().setMessage(
+								"Unable to save clause as no child found");
+					}
 				}
 			}
 		});

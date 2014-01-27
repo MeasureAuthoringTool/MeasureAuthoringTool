@@ -4,6 +4,7 @@ import java.util.List;
 
 import mat.model.Author;
 import mat.model.MeasureType;
+import mat.model.QualityDataSetDTO;
 import mat.shared.model.util.MeasureDetailsUtil;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
@@ -100,6 +101,16 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	/** The measure type list. */
 	private List<MeasureType> measureTypeList;
 	
+	private List<QualityDataSetDTO> qdsSelectedList;
+	
+	public List<QualityDataSetDTO> getQdsSelectedList() {
+		return qdsSelectedList;
+	}
+
+	public void setQdsSelectedList(List<QualityDataSetDTO> qdsSelectedList) {
+		this.qdsSelectedList = qdsSelectedList;
+	}
+
 	/** The to compare author. */
 	private List<Author> toCompareAuthor;
 	
@@ -1679,7 +1690,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				+ ", improvNotations=" + improvNotations + ", stratification="
 				+ stratification + ", referencesList=" + referencesList
 				+ ", authorList=" + authorList + ", measureTypeList="
-				+ measureTypeList + ", toCompareAuthor=" + toCompareAuthor
+				+ measureTypeList + ", qdsSelectedList="+ qdsSelectedList 
+				+ ", toCompareAuthor=" + toCompareAuthor
 				+ ", toCompareMeasure=" + toCompareMeasure + ", draft=" + draft
 				+ ", measureSetId=" + measureSetId + ", valueSetDate="
 				+ valueSetDate + ", supplementalData=" + supplementalData

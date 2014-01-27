@@ -7,6 +7,7 @@ import java.util.List;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.clause.QDSAppliedListModel;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.event.BackToMeasureLibraryPage;
@@ -25,6 +26,7 @@ import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.search.SearchView;
 import mat.model.Author;
 import mat.model.MeasureType;
+import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -36,6 +38,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.event.shared.HandlerManager;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.HasValue;
@@ -44,6 +47,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MetaDataPresenter.
  */
@@ -504,7 +508,33 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 */
 		public Button getDeleteMeasure();
 
-		HasValue<String> getMeasurePopulationExclusions();	
+		/**
+		 * Gets the measure population exclusions.
+		 *
+		 * @return the measure population exclusions
+		 */
+		HasValue<String> getMeasurePopulationExclusions();
+
+		/**
+		 * Builds the cell table.
+		 *
+		 * @param appliedListModel the applied list model
+		 */
+		public void buildCellTable(QDSAppliedListModel appliedListModel);
+
+		/**
+		 * Sets the applied qdm list.
+		 *
+		 * @param result the new applied qdm list
+		 */
+		public void setAppliedQDMList(ArrayList<QualityDataSetDTO> result);	
+		
+		/**
+		 * Gets the qdm selected list.
+		 *
+		 * @return the qdm selected list
+		 */
+		public List<QualityDataSetDTO> getQdmSelectedList();
 		
 	}
 	
@@ -619,7 +649,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	/** The is measure details loaded. */
 	private boolean isMeasureDetailsLoaded = false;
 	
-	
+	/** The service. */
+	private MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
 	/**
 	 * Instantiates a new meta data presenter.
@@ -845,6 +876,54 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		emptyWidget.add(new Label("No Measure Selected"));
 	}
 	
+	//TODO by Ravi
+	
+	/**
+	 * Gets the applied qdm list.
+	 *
+	 * @param checkForSupplementData the check for supplement data
+	 * @return the applied qdm list
+	 */
+	public final void getAppliedQDMList(boolean checkForSupplementData) {
+		String measureId = MatContext.get().getCurrentMeasureId();
+		if ((measureId != null) && !measureId.equals("")) {
+			service.getAppliedQDMFromMeasureXml(measureId,
+					checkForSupplementData,
+					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
+				
+				private void filterTimingQDMs(
+						ArrayList<QualityDataSetDTO> result) {
+					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
+					for (QualityDataSetDTO qdsDTO : result) {
+						if ("Timing Element".equals(qdsDTO
+								.getDataType())) {
+							timingQDMs.add(qdsDTO);
+						}
+					}
+					result.removeAll(timingQDMs);
+				}
+				
+				@Override
+				public void onFailure(final Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+				}
+				
+				@Override
+				public void onSuccess(
+						final ArrayList<QualityDataSetDTO> result) {
+					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+					filterTimingQDMs(result);
+					appliedListModel.setAppliedQDMs(result);
+					metaDataDisplay.buildCellTable(appliedListModel);
+					metaDataDisplay.setAppliedQDMList(result);
+				}
+			});
+			
+		}
+		
+	}
+	
 	/**
 	 * Fire successfull deletion event.
 	 * 
@@ -988,6 +1067,7 @@ private void setAuthorsListOnView() {
 	 * Display detail.
 	 */
 	public void displayDetail(){
+		getAppliedQDMList(true);
 		previousContinueButtons.setVisible(true);
 		prepopulateFields();
 		panel.clear();
@@ -1245,6 +1325,7 @@ private void setAuthorsListOnView() {
 		currentMeasureDetail.setVersionNumber(metaDataDisplay.getVersionNumber().getText());
 		currentMeasureDetail.setAuthorList(authorList);
 		currentMeasureDetail.setMeasureTypeList(measureTypeList);
+		currentMeasureDetail.setQdsSelectedList(metaDataDisplay.getQdmSelectedList());
 		currentMeasureDetail.setToCompareAuthor(dbAuthorList);
 		currentMeasureDetail.setToCompareMeasure(dbMeasureTypeList);
 		currentMeasureDetail.setNqfId(metaDataDisplay.getNqfId().getValue());
@@ -1349,6 +1430,7 @@ private void setAuthorsListOnView() {
 				isMeasureDetailsLoaded = false;
 			}
 		}
+		getAppliedQDMList(true);
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MetaData");
 		Mat.focusSkipLists("MeasureComposer");
 		clearMessages();

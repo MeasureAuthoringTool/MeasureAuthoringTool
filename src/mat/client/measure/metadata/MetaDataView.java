@@ -1,8 +1,14 @@
 package mat.client.measure.metadata;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import mat.client.CustomPager;
+import mat.client.clause.QDSAppliedListModel;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
 import mat.client.shared.DateBoxWithCalendar;
@@ -11,7 +17,9 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
@@ -20,7 +28,19 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.TextAreaWithMaxLength;
 import mat.model.Author;
 import mat.model.MeasureType;
+import mat.model.QualityDataSetDTO;
+import mat.server.service.impl.CodeListAuditServiceImpl;
+import mat.shared.ConstantMessages;
 
+import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CompositeCell;
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -31,23 +51,37 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.cellview.client.CellList;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
+import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
-import com.google.gwt.user.client.ui.HTMLTable.Cell;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.HorizontalSplitPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.MultiSelectionModel;
 
 /**
  * The Class MetaDataView.
@@ -99,6 +133,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	//US 413. Added panel and input box for Steward Other option.
 	/** The empty text box holder. */
 	protected VerticalPanel emptyTextBoxHolder = new VerticalPanel();
+	
+	protected VerticalPanel qdmItemCountListVPanel = new VerticalPanel();
+	
+	protected ScrollPanel qdmItemCountListSPanel = new ScrollPanel();
 	
 	/** The measure steward other input. */
 	protected TextBox measureStewardOtherInput = new TextBox();
@@ -188,10 +226,22 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The endorsed by nqf. */
 	protected Label endorsedByNQF = new Label();
 	
+	protected Label itemLabel = new Label();
+	
 	/** The counter. */
 	private int counter = 0;
 	
-	
+	private int itemCounter=0;
+		
+	public int getItemCounter() {
+		return itemCounter;
+	}
+
+	public void setItemCounter(int itemCounter) {
+		this.itemCounter = itemCounter;
+	}
+
+
 	/** The No. */
 	protected RadioButton No = new RadioButton("NQFgroup","No");
 	
@@ -246,8 +296,32 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The save error display. */
 	private ErrorMessageDisplay saveErrorDisplay = new ErrorMessageDisplay();
-		
 	
+	private CellList<QualityDataSetDTO> cellsList;
+	
+	private ArrayList<QualityDataSetDTO> appliedQDMList;
+	
+	private MultiSelectionModel<QualityDataSetDTO> selectionModel;
+	
+	private CellTable<QualityDataSetDTO> cellTable;
+	
+	private HorizontalPanel horzPanel = new HorizontalPanel();
+	
+	private ListBox qdmSelectedListBox = new ListBox();
+	
+	VerticalPanel qdmSelectedListVPanel=new VerticalPanel();
+	
+	ScrollPanel qdmSelectedListSPanel=new ScrollPanel();
+	
+	private Grid508 dataTable=new Grid508();
+	
+	private List<QualityDataSetDTO> qdmSelectedList;
+	
+    @Override
+	public List<QualityDataSetDTO> getQdmSelectedList() {
+		return qdmSelectedList;
+	}
+
 	/**
 	 * Instantiates a new meta data view.
 	 */
@@ -263,9 +337,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		mainPanel.add(mainContent);
 		mainPanel.setStyleName("contentPanel");
 		DOM.setElementAttribute(mainPanel.getElement(), "id", "MetaDataView.containerPanel");
-		
 		focusPanel.add(mainPanel);
-		
 		
 	}
 	
@@ -426,6 +498,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(LabelBuilder.buildLabel(measureTypeListBox, "Measure Type"));
 		fPanel.add(emptyMeasureTypePanel);
 		fPanel.add(addEditMeasureType);
+		fPanel.add(new SpacerWidget());
+		
+		//TODO by Ravi
+		//qdmSelectedListBox.addItem("No Items Selected");
+		//itemLabel.setText("  "+itemCounter +" value sets selected");
+		fPanel.add(LabelBuilder.buildLabel(cellTable, "ItemCount:"));
+		fPanel.add(horzPanel);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(stratificationInput , "Stratification"));
@@ -592,6 +671,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		supplementalDataInput.setMaxLength(15000);
 		supplementalDataInput.setSize("500px", "100px");
 		
+		
 		initialPopInput.setSize("500px", "100px");
 		initialPopInput.setMaxLength(15000);
 		denominatorInput.setSize("500px", "100px");
@@ -618,6 +698,276 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		eMeasureIdentifierInput.setTitle(emeasureIdMSG);
 		return fPanel;
 	}
+	
+	private CellTable<QualityDataSetDTO> addColumnToTable(CellTable<QualityDataSetDTO> cellTable,
+			ListHandler<QualityDataSetDTO> sortHandler){
+			MatCheckBoxCell qdmCheckBox=new MatCheckBoxCell(false,true);
+			/*itemLabel.setText("  0 value sets selected");*/
+			Column<QualityDataSetDTO, Boolean> chkBoxColumn = new  Column<QualityDataSetDTO, Boolean>(qdmCheckBox){
+
+				@Override
+				public Boolean getValue(QualityDataSetDTO object) {
+					return selectionModel.isSelected(object);
+				}
+			};
+			
+			chkBoxColumn.setFieldUpdater(new FieldUpdater<QualityDataSetDTO, Boolean>() {
+				
+				@Override
+				public void update(int index, QualityDataSetDTO object, Boolean value) {
+					selectionModel.setSelected(object, value);
+					buildQDMSelectedList(object,value);
+				}
+			});
+			cellTable.addColumn(chkBoxColumn, "Select");
+			
+			Column<QualityDataSetDTO,SafeHtml> codeListName = new Column<QualityDataSetDTO, SafeHtml>( new SafeHtmlCell()) {
+				
+				@Override
+				public SafeHtml getValue(QualityDataSetDTO object) {
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();  
+					String value; 
+					  String QDMDetails = ""; 
+					  
+					  if(object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) { 
+						  QDMDetails = "(User defined)"; 
+						  } 
+					  else 
+					  { 
+						  String version = object.getVersion(); 
+						  String effectiveDate = object.getEffectiveDate(); 
+						  
+						  if (effectiveDate != null) { 
+							  
+							  QDMDetails = "(OID: " +object.getOid() + ", Effective Date: " + effectiveDate + ")"; 
+							  } 
+						  else if (!version.equals("1.0") && !version.equals("1")) 
+						  { 
+							  QDMDetails = "(OID: " + object.getOid() + ", Version: " + version + ")"; 
+							  } 
+						  else 
+						  { 
+							  QDMDetails = "(OID: " + object.getOid() + ")"; 
+							  } 
+						  } 
+					  
+					  if((object.getOccurrenceText() != null) && !object.getOccurrenceText().equals("")) { 
+						  value = object.getOccurrenceText() + " of " + object.getCodeListName(); 
+						  sb.appendHtmlConstant("<span title=\""+ QDMDetails +" \" tabIndex=\"0\" >"+ value +" </span>");
+						  
+					  } 
+					  else { 
+						  value = object.getCodeListName();
+						  sb.appendHtmlConstant("<span title=\""+ QDMDetails +" \" tabIndex=\"0\">"+ value +" </span>");
+						  } 
+					  
+					return sb.toSafeHtml();
+				}
+			};
+			
+			cellTable.addColumn(codeListName, "Name");
+			
+         Column<QualityDataSetDTO,SafeHtml> vsacDataType = new Column<QualityDataSetDTO, SafeHtml>( new SafeHtmlCell()) {
+				
+				@Override
+				public SafeHtml getValue(QualityDataSetDTO object) {
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();  
+				    sb.appendHtmlConstant("<span title=\""+ object.getDataType() +" \" tabIndex=\"0\" >"+ 
+					                object.getDataType() +" </span>");
+						  
+					return sb.toSafeHtml();
+				}
+			};
+			
+			cellTable.addColumn(vsacDataType, "DataType");
+	
+	     cellTable.setWidth("100%");
+	     cellTable.setColumnWidth(0, 5, Unit.PCT);
+	     cellTable.setColumnWidth(0, 10, Unit.PCT);
+	     cellTable.setColumnWidth(0, 10, Unit.PCT);
+		
+    return cellTable;
+	}
+	
+	private CellTable<QualityDataSetDTO> addQDMSelectionListTable(CellTable<QualityDataSetDTO> table){
+		
+		Column<QualityDataSetDTO,SafeHtml> codeListName = new Column<QualityDataSetDTO, SafeHtml>( new SafeHtmlCell()) {
+			
+			@Override
+			public SafeHtml getValue(QualityDataSetDTO object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();  
+				String value; 
+				  String QDMDetails = ""; 
+				  
+				  if(object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) { 
+					  QDMDetails = "(User defined)"; 
+					  } 
+				  else 
+				  { 
+					  String version = object.getVersion(); 
+					  String effectiveDate = object.getEffectiveDate(); 
+					  
+					  if (effectiveDate != null) { 
+						  
+						  QDMDetails = "(OID: " +object.getOid() + ", Effective Date: " + effectiveDate + ")"; 
+						  } 
+					  else if (!version.equals("1.0") && !version.equals("1")) 
+					  { 
+						  QDMDetails = "(OID: " + object.getOid() + ", Version: " + version + ")"; 
+						  } 
+					  else 
+					  { 
+						  QDMDetails = "(OID: " + object.getOid() + ")"; 
+						  } 
+					  } 
+				  
+				  if((object.getOccurrenceText() != null) && !object.getOccurrenceText().equals("")) { 
+					  value = object.getOccurrenceText() + " of " + object.getCodeListName(); 
+					  sb.appendHtmlConstant("<span title=\""+ QDMDetails +" \" tabIndex=\"0\" >"+ value +" </span>");
+					  
+				  } 
+				  else { 
+					  value = object.getCodeListName();
+					  sb.appendHtmlConstant("<span title=\""+ QDMDetails +" \" tabIndex=\"0\">"+ value +" </span>");
+					  } 
+				  
+				return sb.toSafeHtml();
+			}
+		};
+		
+		table.addColumn(codeListName, "Name");
+		
+        Column<QualityDataSetDTO,SafeHtml> vsacDataType = new Column<QualityDataSetDTO, SafeHtml>( new SafeHtmlCell()) {
+			
+			@Override
+			public SafeHtml getValue(QualityDataSetDTO object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();  
+			    sb.appendHtmlConstant("<span title=\""+ object.getDataType() +" \" tabIndex=\"0\" >"+ 
+				                object.getDataType() +" </span>");
+					  
+				return sb.toSafeHtml();
+			}
+		};
+		
+		table.addColumn(vsacDataType, "DataType");
+		table.setWidth("100%");
+		table.setColumnWidth(0, 15, Unit.PCT);
+		table.setColumnWidth(1, 10, Unit.PCT);
+		
+		return table;
+	}
+	
+	@Override
+	public void buildCellTable(QDSAppliedListModel appliedListModel){
+		
+		qdmItemCountListVPanel.clear();
+		qdmSelectedListVPanel.clear();
+		qdmItemCountListVPanel.setStyleName("cellTablePanel");
+		dataTable.clear();
+		if ((appliedListModel.getAppliedQDMs() != null) && (appliedListModel.getAppliedQDMs().size() > 0)) {
+			cellTable = new CellTable<QualityDataSetDTO>();
+			qdmSelectedList = new ArrayList<QualityDataSetDTO>();
+			selectionModel = new MultiSelectionModel<QualityDataSetDTO>();
+			cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
+			cellTable.setSelectionModel(selectionModel);
+			cellTable.setRowData(appliedListModel.getAppliedQDMs());
+			cellTable.setRowCount(appliedListModel.getAppliedQDMs().size());
+			cellTable.redraw();
+			sortProvider.refresh();
+			sortProvider.getList().addAll(appliedListModel.getAppliedQDMs());
+			ListHandler<QualityDataSetDTO> sortHandler = new ListHandler<QualityDataSetDTO>(sortProvider.getList());
+			cellTable.addColumnSortHandler(sortHandler);
+			cellTable = addColumnToTable(cellTable, sortHandler);
+			sortProvider.addDataDisplay(cellTable);
+			Label invisibleLabel = (Label) LabelBuilder
+					.buildInvisibleLabel(
+							"appliedQDMTableSummary",
+							"In the Following Applied QDM Elements table a checkBoxCell is positioned to "
+									+ "the left of the table with a select Column header followed by "
+									+ "QDM name in second column and Datatype in third column. " +
+									"The Applied QDM elements are listed alphabetically in a table.  ");
+			cellTable.getElement().setAttribute("id", "AppliedQDMTable");
+			cellTable.getElement().setAttribute("aria-describedby", "appliedQDMTableSummary");
+			qdmItemCountListSPanel.setSize("400px", "200px");
+			qdmItemCountListSPanel.setWidget(cellTable);
+			qdmItemCountListVPanel.setBorderWidth(1);
+			qdmItemCountListVPanel.setWidth("400px");
+			/*HTML dec = new HTML("<p>Items Count:"+appliedListModel.getAppliedQDMs().size()+"</p>");
+			qdmItemCountListVPanel.add(dec);*/
+			qdmItemCountListVPanel.add(qdmItemCountListSPanel);
+			horzPanel.add(qdmItemCountListVPanel);
+			if(qdmSelectedList.size()==0){
+				qdmSelectedListVPanel.clear();
+				HTML desc = new HTML("<p> No Selected QDM Elements.</p>");
+				qdmSelectedListVPanel.setWidth("200px"); 
+				qdmSelectedListVPanel.add(desc);
+				horzPanel.add(qdmSelectedListVPanel);
+			}
+		}
+		else{
+			
+			Label searchHeader = new Label("Applied QDM Elements");
+			searchHeader.getElement().setId("searchHeader_Label");
+			searchHeader.setStyleName("recentSearchHeader");
+			searchHeader.getElement().setAttribute("tabIndex", "0");
+			qdmItemCountListVPanel.clear();
+			HTML desc = new HTML("<p> No Applied QDM Elements.</p>");
+			qdmItemCountListVPanel.setBorderWidth(1);
+			qdmItemCountListVPanel.setWidth("200px"); 
+			qdmItemCountListVPanel.add(desc);
+		}
+	}
+	
+	private void buildQDMSelectedList(QualityDataSetDTO object,Boolean value){
+		
+		    qdmSelectedListSPanel.clear();
+		    qdmSelectedListVPanel.clear();
+		    VerticalPanel simplePanel=new VerticalPanel();
+		    CellTable<QualityDataSetDTO> table = new CellTable<QualityDataSetDTO>();
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			ListDataProvider<QualityDataSetDTO> qdmSelectedListsortProvider = new ListDataProvider<QualityDataSetDTO>();
+			qdmSelectedListsortProvider.refresh();
+			if(value){
+			qdmSelectedList.add(object);
+			}
+			else{
+				//int num = selectionModel.getSelectedSet().size();
+				for(int i=0;i<selectionModel.getSelectedSet().size()+1;i++){
+					if(qdmSelectedList.get(i)==object){
+						qdmSelectedList.remove(i);
+						break;
+					}
+				}
+			}
+			if(qdmSelectedList.size()!=0){
+				table.setRowData(qdmSelectedList);
+				table.setRowCount(qdmSelectedList.size());
+			qdmSelectedListsortProvider.getList().addAll(qdmSelectedList);
+			table=addQDMSelectionListTable(table);
+			table.redraw();
+			qdmSelectedListsortProvider.addDataDisplay(table);
+			qdmSelectedListSPanel.setSize("400px", "200px");
+			qdmSelectedListSPanel.setWidget(table);
+			qdmSelectedListVPanel.add(qdmSelectedListSPanel);
+			qdmSelectedListVPanel.setBorderWidth(1);
+			qdmSelectedListVPanel.setWidth("400px");
+			simplePanel.add(new SpacerWidget());
+			simplePanel.add(qdmSelectedListVPanel);
+			horzPanel.add(simplePanel);
+			}
+			else{
+				qdmSelectedListVPanel.clear();
+				HTML desc = new HTML("<p> No Selected QDM Elements.</p>");
+				qdmSelectedListVPanel.setBorderWidth(1);
+				qdmSelectedListVPanel.setWidth("200px"); 
+				qdmSelectedListVPanel.add(desc);
+				horzPanel.add(qdmSelectedListVPanel);
+			}
+			
+	}
+	
+
 	
 	/**
 	 * Wrap radio button.
@@ -1131,7 +1481,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			@Override
 			public void onClick(ClickEvent event) {
 				clearErrorMsg();
-				Cell cell = referenceTable.getCellForEvent(event);
+				com.google.gwt.user.client.ui.HTMLTable.Cell cell = referenceTable.getCellForEvent(event);
 				int clickedRowIndex = cell.getRowIndex();
 				removeRow(referenceTable,clickedRowIndex);
 				
@@ -1204,7 +1554,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 							
 							@Override
 							public void onClick(ClickEvent event) {
-								Cell cell = referenceTable.getCellForEvent(event);
+								com.google.gwt.user.client.ui.HTMLTable.Cell cell = referenceTable.getCellForEvent(event);
 								int clickedRowIndex = cell.getRowIndex();
 								removeRow(referenceTable,clickedRowIndex);
 							}
@@ -1476,6 +1826,18 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	private void clearErrorMsg(){
 		getSaveErrorMsg().clear();
+	}
+
+
+	/*@Override
+	public void buildCellList(QDSAppliedListModel appliedListModel) {
+		initializeQDMCellListContent(appliedListModel);
+	}*/
+
+
+	@Override
+	public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList) {
+		this.appliedQDMList=appliedQDMList;
 	}
 	
 }

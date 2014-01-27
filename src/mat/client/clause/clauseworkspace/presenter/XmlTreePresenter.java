@@ -182,6 +182,14 @@ public class XmlTreePresenter {
 						// Tree
 						xmlTreeView.createClauseWorkSpacePageView(cellTree); // Page Layout
 						cellTree.setTabIndex(0);
+						// This will open the tree by default.
+						TreeNode treeNode = cellTree.getRootTreeNode();
+						for (int i = 0; i < treeNode.getChildCount(); i++) {
+							if (((CellTreeNode) treeNode.getChildValue(i)).getNodeType()
+									== CellTreeNode.SUBTREE_ROOT_NODE) {
+								treeNode.setChildOpen(i, true, true);
+							}
+						}
 						xmlTreeDisplay = xmlTreeView;
 						xmlTreeDisplay.clearMessages();
 						xmlTreeDisplay.setDirty(true);

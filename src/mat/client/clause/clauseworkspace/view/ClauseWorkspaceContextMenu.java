@@ -467,6 +467,21 @@ public class ClauseWorkspaceContextMenu {
 				}*/
 				break;
 			case CellTreeNode.SUBTREE_ROOT_NODE:
+				Command addSubTreeCmd = new Command() {
+					@Override
+					public void execute() {
+						popupPanel.hide();
+						EditSubTreeDialogBox.showAddDialogBox(xmlTreeDisplay
+								, xmlTreeDisplay.getSelectedNode());
+					}
+				};
+				MenuItem addSubTreeMenu = new MenuItem("Add SubTree", true, addSubTreeCmd);
+				popupMenuBar.addItem(addSubTreeMenu);
+				popupMenuBar.addSeparator(separator);
+				if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_ROOT_NODE)
+						&& xmlTreeDisplay.getSelectedNode().hasChildren()) {
+					addSubTreeMenu.setEnabled(false);
+				}
 				addCommonMenus();
 				break;
 			default:

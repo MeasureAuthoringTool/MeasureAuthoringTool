@@ -23,6 +23,9 @@ public class PopulationWorkSpaceConstants {
 	/** The Constant LOG_OP. */
 	public static final String LOG_OP = "logicalOp";
 	
+	/** The Constant LOG_OP. */
+	public static final String CLAUSE = "Clause";
+	
 	/** The Constant CLAUSE_TYPE. */
 	public static final String CLAUSE_TYPE = "clause";
 	

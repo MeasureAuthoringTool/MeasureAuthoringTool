@@ -7,7 +7,6 @@ import mat.client.shared.WarningMessageDisplay;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -244,21 +243,6 @@ public interface XmlTreeDisplay {
 	/**
 	 * @return
 	 */
-	Button getCreateSubTree();
-	
-	/**
-	 * @return
-	 */
-	TextBox getSubTreeTextBox();
-	
-	/**
-	 * @param cellTreeNode
-	 */
-	void createRootNode(CellTreeNode cellTreeNode);
-	
-	/**
-	 * @return
-	 */
 	CellTree getCellTree();
 	
 	/**
@@ -275,4 +259,6 @@ public interface XmlTreeDisplay {
 	 * @return
 	 */
 	Button getValidateBtnClauseWorkSpace();
+	
+	Button getClearClauseWorkSpace();
 }

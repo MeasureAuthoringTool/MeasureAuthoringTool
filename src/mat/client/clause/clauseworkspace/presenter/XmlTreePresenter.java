@@ -14,7 +14,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.SimplePanel;
 
@@ -102,15 +101,7 @@ public class XmlTreePresenter {
 			String xml = originalXML;
 			XmlTreeView xmlTreeView = new XmlTreeView(
 					XmlConversionlHelper.createCellTreeNode(xml, rootNode)); // converts
-			// XML
-			// to
-			// TreeModel
-			// Object
-			// and
-			// sets
-			// to
-			// XmlTreeView
-			// CellTree cellTree = new CellTree(xmlTreeView, null);
+			// XML to TreeModel Object and sets to XmlTreeView CellTree cellTree = new CellTree(xmlTreeView, null);
 			CellTree.Resources resource = GWT.create(TreeResources.class);
 			CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
 			// Creation
@@ -148,64 +139,35 @@ public class XmlTreePresenter {
 	 */
 	public final void loadClauseWorkSpaceView(SimplePanel clauseWorkSpacePanel) {
 		panel = clauseWorkSpacePanel;
-		XmlTreeView xmlTreeView = new XmlTreeView(null);
-		xmlTreeView.createClauseWorkSpacePageView(null);
+		CellTreeNode subTree = XmlConversionlHelper.createRootClauseNode();
+		XmlTreeView xmlTreeView = new XmlTreeView(subTree);
+		/*xmlTreeView.createRootNode(subTree);*/
+		CellTree.Resources resource = GWT.create(TreeResources.class);
+		CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
+		// Creation
+		cellTree.setDefaultNodeSize(NODESIZE);  // this will get rid of the show
+		// more link on the bottom of the
+		// Tree
+		xmlTreeView.createClauseWorkSpacePageView(cellTree); // Page Layout
+		cellTree.setTabIndex(0);
+		// This will open the tree by default.
+		TreeNode treeNode = cellTree.getRootTreeNode();
+		for (int i = 0; i < treeNode.getChildCount(); i++) {
+			if (((CellTreeNode) treeNode.getChildValue(i)).getNodeType()
+					== CellTreeNode.SUBTREE_ROOT_NODE) {
+				treeNode.setChildOpen(i, true, true);
+			}
+		}
+		setRootNode(cellTree.getRootTreeNode().toString());
 		xmlTreeDisplay = xmlTreeView;
 		xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
 				.checkForEditPermission());
 		panel.clear();
 		panel.add(xmlTreeDisplay.asWidget());
-		invokeCreateNewClauseHandler();
-		invokeSaveSubTreeHandler();
+		//	invokeCreateNewClauseHandler();
+		invokeSaveHandler();
 		invokeValidateHandler();
-	}
-	
-	/**
-	 * Method to invoke Create SubTree Node Handler.
-	 */
-	private void invokeCreateNewClauseHandler() {
-		xmlTreeDisplay.getCreateSubTree().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				if (!xmlTreeDisplay.isDirty()) {
-					if ((xmlTreeDisplay.getSubTreeTextBox().getValue() != null)
-							&& (xmlTreeDisplay.getSubTreeTextBox().getValue().trim().length() > 0)) {
-						XmlTreeView xmlTreeView = (XmlTreeView) xmlTreeDisplay;
-						CellTreeNode subTree = XmlConversionlHelper.createSubTreeNode(
-								xmlTreeDisplay.getSubTreeTextBox().getValue());
-						xmlTreeView.createRootNode(subTree);
-						CellTree.Resources resource = GWT.create(TreeResources.class);
-						CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
-						// Creation
-						cellTree.setDefaultNodeSize(NODESIZE);  // this will get rid of the show
-						// more link on the bottom of the
-						// Tree
-						xmlTreeView.createClauseWorkSpacePageView(cellTree); // Page Layout
-						cellTree.setTabIndex(0);
-						// This will open the tree by default.
-						TreeNode treeNode = cellTree.getRootTreeNode();
-						for (int i = 0; i < treeNode.getChildCount(); i++) {
-							if (((CellTreeNode) treeNode.getChildValue(i)).getNodeType()
-									== CellTreeNode.SUBTREE_ROOT_NODE) {
-								treeNode.setChildOpen(i, true, true);
-							}
-						}
-						xmlTreeDisplay = xmlTreeView;
-						xmlTreeDisplay.clearMessages();
-						xmlTreeDisplay.setDirty(true);
-						xmlTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
-								.checkForEditPermission());
-						panel.clear();
-						panel.add(xmlTreeDisplay.asWidget());
-						setRootNode(xmlTreeDisplay.getSubTreeTextBox().getValue());
-						xmlTreeDisplay.getSubTreeTextBox().setValue("");
-					}
-				} else {
-					Window.alert(" Root Node for SubTree is :: "
-							+ xmlTreeDisplay.getSubTreeTextBox().getValue() + " No saved !!!! ");
-				}
-			}
-		});
+		invokeClearHandler();
 	}
 	/**
 	 * Creates the measure export model.
@@ -274,11 +236,7 @@ public class XmlTreePresenter {
 				});
 			}
 		});
-	}
-	/**
-	 * Invoke Clause Work Space save handler.
-	 */
-	private void invokeSaveSubTreeHandler() {
+		
 		xmlTreeDisplay.getSaveBtnClauseWorkSpace().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -374,6 +332,16 @@ public class XmlTreePresenter {
 								getCLAUSE_WORK_SPACE_VALIDATION_SUCCESS());
 					}
 				}
+			}
+		});
+	}
+	
+	void invokeClearHandler(){
+		xmlTreeDisplay.getClearClauseWorkSpace().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				panel.clear();
+				loadClauseWorkSpaceView(panel);
 			}
 		});
 	}

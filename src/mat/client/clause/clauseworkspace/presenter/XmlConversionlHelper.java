@@ -6,7 +6,6 @@ import java.util.List;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.shared.MatContext;
-import mat.shared.UUIDUtilClient;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NamedNodeMap;
@@ -57,26 +56,28 @@ public class XmlConversionlHelper {
 	}
 	
 	/**
-	 * Method to create Root Node for Sub Tree Node in Clause WorkSpace.
-	 * @param rootName
-	 * @return
+	 * Method to create Root Clause Node for Sub Tree Node in Clause WorkSpace.
+	 * @return CellTreeNode
 	 */
-	public static CellTreeNode createSubTreeNode(String rootName){
+	public static CellTreeNode createRootClauseNode() {
 		CellTreeNode parent = new CellTreeNodeImpl();
 		CellTreeNode mainNode = new CellTreeNodeImpl();
 		List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
 		List<CellTreeNode> parentchilds = new ArrayList<CellTreeNode>();
-		if ((rootName != null) && (rootName.trim().length() > 0)) {
-			parent.setName("SubTree");
-			parent.setLabel("SubTree");
-			parent.setNodeType(CellTreeNode.SUBTREE_ROOT_NODE);
-			CellTreeNode parentChild = createChild(rootName, rootName, CellTreeNodeImpl.SUBTREE_NODE, parent);
+		//if ((rootName != null) && (rootName.trim().length() > 0)) {
+		parent.setName(PopulationWorkSpaceConstants.CLAUSE);
+		parent.setLabel(PopulationWorkSpaceConstants.CLAUSE);
+		parent.setNodeType(CellTreeNode.SUBTREE_ROOT_NODE);
+		/*CellTreeNode parentChild = createChild(rootName, rootName, CellTreeNodeImpl.SUBTREE_NODE, parent);
 			parentChild.setUUID(UUIDUtilClient.uuid());
-			parentchilds.add(parentChild);
-			parent.setChilds(parentchilds);
-			childs.add(parent);
-			mainNode.setChilds(childs);
-		}
+			parentChild.setOpen(true);
+			parentchilds.add(parentChild);*/
+		parent.setChilds(parentchilds);
+		parent.setOpen(true);
+		childs.add(parent);
+		mainNode.setChilds(childs);
+		
+		//}
 		return mainNode;
 	}
 	

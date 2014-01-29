@@ -144,6 +144,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID) {
+		logger.info("Inside saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
@@ -152,6 +153,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						, measureXmlModel.getParentNode());
 				// Add subTreeLookUp node if not available in MeasureXml.
 				if (subTreeLookUpNode == null) {
+					logger.info("Adding subTreeNodeLookUp Node for measure Id "
+							+ measureXmlModel.getMeasureId() + " .");
 					String xPathSupplementalDataElement = "/measure/supplementalDataElements";
 					Node supplementaDataElementsElement = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(),
 							xPathSupplementalDataElement);
@@ -170,7 +173,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				for (int i = 0; i < subTreeNodeForUUID.getLength(); i++) {
 					Node newNode = subTreeNodeForUUID.item(i);
 					if (newNode.getAttributes().getNamedItem("uuid").getNodeValue().equals(nodeUUID)) {
+						logger.info("Replacing SubTreeNode for UUID " + nodeUUID + " .");
 						xmlProcessor.removeFromParent(newNode);
+						xmlProcessor.setOriginalXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
 						break;
 					}
 				}
@@ -180,10 +185,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measureXmlModel.setXml(result);
 				getService().saveMeasureXml(measureXmlModel);
 			} catch (XPathExpressionException exception) {
-				// TODO Auto-generated catch block
 				exception.printStackTrace();
 			}
 		}
+		logger.info("End saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");
 	}
 	
 	/**

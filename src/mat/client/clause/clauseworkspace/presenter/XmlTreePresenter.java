@@ -4,6 +4,8 @@ import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
+import mat.client.clause.clauseworkspace.view.PopulationWorkSpaceContextMenu;
 import mat.client.clause.clauseworkspace.view.XmlTreeView;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
@@ -15,6 +17,7 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
 /**
@@ -26,7 +29,10 @@ public class XmlTreePresenter {
 	 * Cell Tree Node Size to remove show more.
 	 */
 	private static final int NODESIZE = 500;
-	
+	/**
+	 * Pop up Panel for Right Context Menu.
+	 */
+	private PopupPanel popupPanel = new PopupPanel(true, false);
 	/**
 	 * The Interface TreeResources.
 	 */
@@ -102,6 +108,8 @@ public class XmlTreePresenter {
 			XmlTreeView xmlTreeView = new XmlTreeView(
 					XmlConversionlHelper.createCellTreeNode(xml, rootNode)); // converts
 			// XML to TreeModel Object and sets to XmlTreeView CellTree cellTree = new CellTree(xmlTreeView, null);
+			
+			xmlTreeView.setClauseWorkspaceContextMenu(new PopulationWorkSpaceContextMenu(xmlTreeView, popupPanel));
 			CellTree.Resources resource = GWT.create(TreeResources.class);
 			CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
 			// Creation
@@ -141,6 +149,7 @@ public class XmlTreePresenter {
 		panel = clauseWorkSpacePanel;
 		CellTreeNode subTree = XmlConversionlHelper.createRootClauseNode();
 		XmlTreeView xmlTreeView = new XmlTreeView(subTree);
+		xmlTreeView.setClauseWorkspaceContextMenu(new ClauseWorkspaceContextMenu(xmlTreeView, popupPanel));
 		/*xmlTreeView.createRootNode(subTree);*/
 		CellTree.Resources resource = GWT.create(TreeResources.class);
 		CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree

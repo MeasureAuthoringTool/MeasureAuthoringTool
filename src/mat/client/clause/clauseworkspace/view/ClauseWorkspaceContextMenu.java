@@ -178,83 +178,6 @@ public class ClauseWorkspaceContextMenu {
 		cutMenu.setEnabled(false);
 		showHideExpandMenu();
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
-			case CellTreeNode.MASTER_ROOT_NODE:
-				addCommonMenus();
-				break;
-			case CellTreeNode.ROOT_NODE:
-				Command addNodeCmd = new Command() {
-					@Override
-					public void execute() {
-						xmlTreeDisplay.setDirty(true);
-						popupPanel.hide();
-						addRootNodeTypeItem();
-					}
-				};
-				addMenu = new MenuItem(getAddMenuName(xmlTreeDisplay.getSelectedNode().getChilds().get(0))
-						, true, addNodeCmd);
-				popupMenuBar.addItem(addMenu);
-				popupMenuBar.addSeparator(separator);
-				addCommonMenus();
-				addMenu.setEnabled(true);
-				copyMenu.setEnabled(false);
-				deleteMenu.setEnabled(false);
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& xmlTreeDisplay.getCopiedNode().getParent().equals(xmlTreeDisplay.getSelectedNode())) {
-					pasteMenu.setEnabled(true);
-				}
-				cutMenu.setEnabled(false);
-				break;
-			case CellTreeNode.CLAUSE_NODE:
-				addCommonMenus();
-				copyMenu.setEnabled(true);
-				pasteMenu.setEnabled(false);
-				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
-					deleteMenu.setEnabled(true);
-				}
-				cutMenu.setEnabled(false);
-				break;
-			case CellTreeNode.LOGICAL_OP_NODE:
-				//Commented for User story MAT-3167.
-				/*subMenuBar = new MenuBar(true);
-				popupMenuBar.setAutoOpen(true);
-				subMenuBar.setAutoOpen(true);
-				createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
-						, subMenuBar); // creating logical Operators Menu 2nd level
-				createAddQDM_MenuItem(subMenuBar);
-				MenuBar timingMenuBar = new MenuBar(true);
-				subMenuBar.addItem("Timing", timingMenuBar); //Timing menu 2nd level
-				createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE
-						, timingMenuBar); // Timing sub menus 3rd level
-				MenuBar functionsMenuBar = new MenuBar(true);
-				subMenuBar.addItem("Functions", functionsMenuBar); //functions menu 2nd level
-				createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
-						, functionsMenuBar); // functions sub menus 3rd level
-				MenuBar relMenuBar = new MenuBar(true);
-				subMenuBar.addItem("Relationship", relMenuBar); //functions menu 2nd level
-				createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
-						, relMenuBar); // Timing sub menus 3rd level
-				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
-				popupMenuBar.addItem(addMenu);
-				popupMenuBar.addSeparator(separator);
-				addCommonMenus();
-				copyMenu.setEnabled(true);
-				//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
-					pasteMenu.setEnabled(true);
-				}
-				if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
-					deleteMenu.setEnabled(true);
-				}
-				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
-						&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)) {
-					cutMenu.setEnabled(true);
-					subMenuBar = new MenuBar(true);
-					createEditMenus(MatContext.get().logicalOps, subMenuBar);
-					editMenu = new MenuItem("Edit", true, subMenuBar);
-					popupMenuBar.addItem(editMenu);
-				}*/
-				break;
 			case CellTreeNode.TIMING_NODE:
 				MenuBar subMenuBarLHS = createMenuBarWithTimingFuncAndQDM();
 				addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
@@ -494,7 +417,7 @@ public class ClauseWorkspaceContextMenu {
 	/**
 	 * Show hide expand menu.
 	 */
-	private void showHideExpandMenu(){
+	protected void showHideExpandMenu(){
 		if(xmlTreeDisplay.getSelectedNode().hasChildren()){
 			expandMenu.setEnabled(true);
 		}else{
@@ -510,7 +433,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param cellTreeNode
 	 *            the cell tree node
 	 */
-	private void createQDMAttributeMenuItem(MenuBar menuBar, final CellTreeNode cellTreeNode) {
+	protected void createQDMAttributeMenuItem(MenuBar menuBar, final CellTreeNode cellTreeNode) {
 		Command addQDMAttributeCmd = new Command() {
 			@Override
 			public void execute() {
@@ -532,7 +455,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param item
 	 *            the item
 	 */
-	private void checkForTimingElementDataType(CellTreeNode cellTreeNode,
+	protected void checkForTimingElementDataType(CellTreeNode cellTreeNode,
 			MenuItem item) {
 		if(cellTreeNode.getNodeType() != CellTreeNode.ELEMENT_REF_NODE){
 			return;
@@ -565,7 +488,7 @@ public class ClauseWorkspaceContextMenu {
 	 * 
 	 * @return the menu bar
 	 */
-	private MenuBar createMenuBarWithTimingFuncAndQDM() {
+	protected MenuBar createMenuBarWithTimingFuncAndQDM() {
 		MenuBar menuBar = new MenuBar(true);
 		popupMenuBar.setAutoOpen(true);
 		menuBar.setAutoOpen(true);
@@ -587,7 +510,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param menuBar
 	 *            the menu bar
 	 */
-	private void createAddQDM_MenuItem(MenuBar menuBar) {
+	protected void createAddQDM_MenuItem(MenuBar menuBar) {
 		Command addQDMCmd = new Command() {
 			@Override
 			public void execute() {
@@ -624,7 +547,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param menuBar
 	 *            the menu bar
 	 */
-	private void createAddMenus(List<String> menuNames, final short nodeType, MenuBar menuBar) {
+	protected void createAddMenus(List<String> menuNames, final short nodeType, MenuBar menuBar) {
 		for (final String name : menuNames) {
 			Command addCmd = new Command() {
 				@Override
@@ -650,7 +573,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param subMenuBar
 	 *            the sub menu bar
 	 */
-	private void createEditMenus(List<String> editMenuNames, MenuBar subMenuBar){
+	protected void createEditMenus(List<String> editMenuNames, MenuBar subMenuBar){
 		for (final String editMenuName : editMenuNames) {
 			Command timingCmd = new Command() {
 				
@@ -702,7 +625,7 @@ public class ClauseWorkspaceContextMenu {
 	/**
 	 * Adds the common menus.
 	 */
-	private void addCommonMenus() {
+	protected void addCommonMenus() {
 		popupMenuBar.addItem(copyMenu);
 		popupMenuBar.addItem(pasteMenu);
 		popupMenuBar.addItem(cutMenu);
@@ -713,6 +636,7 @@ public class ClauseWorkspaceContextMenu {
 		//MATTabPanel fp = new MATTabPanel();
 		//fp.add(popupMenuBar,"");
 		//fp.selectTab(0);
+		/*popupPanel.clear();*/
 		popupPanel.add(popupMenuBar);
 	}
 	
@@ -724,7 +648,7 @@ public class ClauseWorkspaceContextMenu {
 	 *            the selected node
 	 * @return the adds the menu name
 	 */
-	private String getAddMenuName(CellTreeNode selectedNode){
+	protected String getAddMenuName(CellTreeNode selectedNode){
 		return "Add" + " " +  selectedNode.getName().substring(0, selectedNode.getName().lastIndexOf(" "));
 	}
 	

@@ -156,10 +156,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private CellTreeNode copiedNode;
 	
 	/** The popup panel. */
-	private PopupPanel popupPanel = new PopupPanel(true, false);
+	private PopupPanel popupPanel; // = new PopupPanel(true, false);
 	
 	/** The clause workspace context menu. */
-	private ClauseWorkspaceContextMenu clauseWorkspaceContextMenu = new ClauseWorkspaceContextMenu(this, popupPanel);
+	private ClauseWorkspaceContextMenu clauseWorkspaceContextMenu; //= new ClauseWorkspaceContextMenu(this, popupPanel);
 	
 	/** The is dirty. */
 	private boolean isDirty = false;
@@ -171,7 +171,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param cellTreeNode
 	 *            the cell tree node
 	 */
-	public XmlTreeView(CellTreeNode cellTreeNode) {
+	public XmlTreeView(CellTreeNode cellTreeNode ) {
 		clearMessages();
 		if (cellTreeNode != null) {
 			createRootNode(cellTreeNode);
@@ -881,9 +881,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param clauseWorkspaceContextMenu
 	 *            the clauseWorkspaceContextMenu to set
 	 */
+	@Override
 	public void setClauseWorkspaceContextMenu(
 			ClauseWorkspaceContextMenu clauseWorkspaceContextMenu) {
 		this.clauseWorkspaceContextMenu = clauseWorkspaceContextMenu;
+		popupPanel = clauseWorkspaceContextMenu.popupPanel;
 	}
 	
 	

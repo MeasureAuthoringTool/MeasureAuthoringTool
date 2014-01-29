@@ -315,12 +315,20 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	private Grid508 dataTable=new Grid508();
 	
-	private List<QualityDataSetDTO> qdmSelectedList;
+	VerticalPanel vPanel=new VerticalPanel();
 	
-    @Override
+	private  List<QualityDataSetDTO> qdmSelectedList;
+	
+	@Override
+    public  void setQdmSelectedList(List<QualityDataSetDTO> qdmSelectedList) {
+		this.qdmSelectedList = qdmSelectedList;
+	}
+
+	@Override
 	public List<QualityDataSetDTO> getQdmSelectedList() {
 		return qdmSelectedList;
 	}
+ 
 
 	/**
 	 * Instantiates a new meta data view.
@@ -699,15 +707,29 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return fPanel;
 	}
 	
-	private CellTable<QualityDataSetDTO> addColumnToTable(CellTable<QualityDataSetDTO> cellTable,
-			ListHandler<QualityDataSetDTO> sortHandler){
-			MatCheckBoxCell qdmCheckBox=new MatCheckBoxCell(false,true);
+	//TODO by Ravi
+	private CellTable<QualityDataSetDTO> addColumnToTable(CellTable<QualityDataSetDTO> cellTable,boolean isEditable){
+		
+		MatCheckBoxCell qdmCheckBox=new MatCheckBoxCell(false,true,!isEditable);
 			/*itemLabel.setText("  0 value sets selected");*/
 			Column<QualityDataSetDTO, Boolean> chkBoxColumn = new  Column<QualityDataSetDTO, Boolean>(qdmCheckBox){
 
 				@Override
 				public Boolean getValue(QualityDataSetDTO object) {
-					return selectionModel.isSelected(object);
+					int num=qdmSelectedList.size();
+					if(qdmSelectedList.size()>0){
+					for(int i=0;i<qdmSelectedList.size();i++){
+						String uuid=qdmSelectedList.get(i).getUuid();
+						if(qdmSelectedList.get(i).getUuid().equalsIgnoreCase(object.getUuid())){
+							object.setUsedMD(true);
+							break;
+						}
+					}
+					}
+					else{
+					object.setUsedMD(false);
+					}
+					return object.isUsedMD();
 				}
 			};
 			
@@ -716,7 +738,19 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				@Override
 				public void update(int index, QualityDataSetDTO object, Boolean value) {
 					selectionModel.setSelected(object, value);
-					buildQDMSelectedList(object,value);
+					if(value){
+						qdmSelectedList.add(object);
+					}
+					else{
+						int num = qdmSelectedList.size();
+						for(int i=0;i<qdmSelectedList.size();i++){
+							if(qdmSelectedList.get(i).getUuid().equalsIgnoreCase(object.getUuid())){
+								qdmSelectedList.remove(i);
+								break;
+							}
+						}
+					}
+					//buildQDMSelectedList(object,value);
 				}
 			});
 			cellTable.addColumn(chkBoxColumn, "Select");
@@ -858,15 +892,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	@Override
-	public void buildCellTable(QDSAppliedListModel appliedListModel){
+	public void buildCellTable(QDSAppliedListModel appliedListModel,boolean isEditable){
 		
 		qdmItemCountListVPanel.clear();
 		qdmSelectedListVPanel.clear();
+		vPanel.clear();
 		qdmItemCountListVPanel.setStyleName("cellTablePanel");
 		dataTable.clear();
 		if ((appliedListModel.getAppliedQDMs() != null) && (appliedListModel.getAppliedQDMs().size() > 0)) {
 			cellTable = new CellTable<QualityDataSetDTO>();
-			qdmSelectedList = new ArrayList<QualityDataSetDTO>();
 			selectionModel = new MultiSelectionModel<QualityDataSetDTO>();
 			cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
@@ -878,7 +912,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			sortProvider.getList().addAll(appliedListModel.getAppliedQDMs());
 			ListHandler<QualityDataSetDTO> sortHandler = new ListHandler<QualityDataSetDTO>(sortProvider.getList());
 			cellTable.addColumnSortHandler(sortHandler);
-			cellTable = addColumnToTable(cellTable, sortHandler);
+			cellTable = addColumnToTable(cellTable,isEditable);
 			sortProvider.addDataDisplay(cellTable);
 			Label invisibleLabel = (Label) LabelBuilder
 					.buildInvisibleLabel(
@@ -893,16 +927,20 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			qdmItemCountListSPanel.setWidget(cellTable);
 			qdmItemCountListVPanel.setBorderWidth(1);
 			qdmItemCountListVPanel.setWidth("400px");
-			/*HTML dec = new HTML("<p>Items Count:"+appliedListModel.getAppliedQDMs().size()+"</p>");
-			qdmItemCountListVPanel.add(dec);*/
 			qdmItemCountListVPanel.add(qdmItemCountListSPanel);
 			horzPanel.add(qdmItemCountListVPanel);
+			vPanel.setWidth("50px");
+			horzPanel.add(vPanel);
+			buildQDMSelectedList(appliedListModel.getAppliedQDMs());
 			if(qdmSelectedList.size()==0){
 				qdmSelectedListVPanel.clear();
+				VerticalPanel simplePanel=new VerticalPanel();
 				HTML desc = new HTML("<p> No Selected QDM Elements.</p>");
 				qdmSelectedListVPanel.setWidth("200px"); 
 				qdmSelectedListVPanel.add(desc);
-				horzPanel.add(qdmSelectedListVPanel);
+				simplePanel.add(new SpacerWidget());
+				simplePanel.add(qdmSelectedListVPanel);
+				horzPanel.add(simplePanel);
 			}
 		}
 		else{
@@ -916,10 +954,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			qdmItemCountListVPanel.setBorderWidth(1);
 			qdmItemCountListVPanel.setWidth("200px"); 
 			qdmItemCountListVPanel.add(desc);
+			horzPanel.add(qdmItemCountListVPanel);
 		}
 	}
 	
-	private void buildQDMSelectedList(QualityDataSetDTO object,Boolean value){
+	private void buildQDMSelectedList(List<QualityDataSetDTO> selectedList){
 		
 		    qdmSelectedListSPanel.clear();
 		    qdmSelectedListVPanel.clear();
@@ -928,19 +967,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			ListDataProvider<QualityDataSetDTO> qdmSelectedListsortProvider = new ListDataProvider<QualityDataSetDTO>();
 			qdmSelectedListsortProvider.refresh();
-			if(value){
-			qdmSelectedList.add(object);
-			}
-			else{
-				//int num = selectionModel.getSelectedSet().size();
-				for(int i=0;i<selectionModel.getSelectedSet().size()+1;i++){
-					if(qdmSelectedList.get(i)==object){
-						qdmSelectedList.remove(i);
-						break;
+			if(qdmSelectedList.size()!=0){
+				for(int i=0;i<qdmSelectedList.size();i++){
+					for(int j=0;j<selectedList.size();j++){
+						if(qdmSelectedList.get(i).getUuid().equalsIgnoreCase(selectedList.get(j).getUuid())){
+							qdmSelectedList.set(i,selectedList.get(j));
+							break;
+						}
 					}
 				}
-			}
-			if(qdmSelectedList.size()!=0){
 				table.setRowData(qdmSelectedList);
 				table.setRowCount(qdmSelectedList.size());
 			qdmSelectedListsortProvider.getList().addAll(qdmSelectedList);

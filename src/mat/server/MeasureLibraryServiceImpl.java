@@ -695,6 +695,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XPATH_EXPRESSION = XPATH_EXPRESSION.concat("'").concat(dataSetDTO.getUuid()).
 					concat("' or /measure//clause//@qdmUUID= '").concat(dataSetDTO.getUuid()).
 					concat("' or /measure/supplementalDataElements//@id='").concat(dataSetDTO.getUuid())
+					.concat("' or /measure/measureDetails/itemCount//@id='").concat(dataSetDTO.getUuid())
 					.concat("'");
 			
 			try {

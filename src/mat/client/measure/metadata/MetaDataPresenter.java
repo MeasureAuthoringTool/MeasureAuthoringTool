@@ -519,8 +519,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 * Builds the cell table.
 		 *
 		 * @param appliedListModel the applied list model
+		 * @param list 
 		 */
-		public void buildCellTable(QDSAppliedListModel appliedListModel);
+		public void buildCellTable(QDSAppliedListModel appliedListModel,
+				boolean isEditable);
 
 		/**
 		 * Sets the applied qdm list.
@@ -535,6 +537,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 * @return the qdm selected list
 		 */
 		public List<QualityDataSetDTO> getQdmSelectedList();
+		
+		public void setQdmSelectedList(List<QualityDataSetDTO> qdmSelectedList);
 		
 	}
 	
@@ -915,8 +919,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 					filterTimingQDMs(result);
 					appliedListModel.setAppliedQDMs(result);
-					metaDataDisplay.buildCellTable(appliedListModel);
+					/*metaDataDisplay.setQdmSelectedList(currentMeasureDetail.getQdsSelectedList());*/
+					metaDataDisplay.buildCellTable(appliedListModel,editable);
 					metaDataDisplay.setAppliedQDMList(result);
+					
 				}
 			});
 			
@@ -1067,7 +1073,6 @@ private void setAuthorsListOnView() {
 	 * Display detail.
 	 */
 	public void displayDetail(){
-		getAppliedQDMList(true);
 		previousContinueButtons.setVisible(true);
 		prepopulateFields();
 		panel.clear();
@@ -1182,6 +1187,15 @@ private void setAuthorsListOnView() {
 		dbMeasureTypeList.clear();
 		dbMeasureTypeList.addAll(currentMeasureDetail.getMeasureTypeList());
 		measureTypeList = currentMeasureDetail.getMeasureTypeList();
+		if(currentMeasureDetail.getQdsSelectedList()!=null){
+		metaDataDisplay.setQdmSelectedList(currentMeasureDetail.getQdsSelectedList());
+		}
+		else{
+			List<QualityDataSetDTO> qdmList=new ArrayList<QualityDataSetDTO>();
+			metaDataDisplay.setQdmSelectedList(qdmList);
+			currentMeasureDetail.setQdsSelectedList(qdmList);
+		}
+		getAppliedQDMList(true);
 		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		if(currentMeasureDetail.getReferencesList()!= null){
 			metaDataDisplay.setReferenceValues(currentMeasureDetail.getReferencesList(), editable);

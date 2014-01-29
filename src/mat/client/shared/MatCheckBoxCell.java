@@ -34,6 +34,8 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 
 	/** The Constant INPUT_UNCHECKED_DISABLED. */
 	private static final SafeHtml INPUT_UNCHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" tabindex=\"0\" disabled=\"disabled\"  title=\"" + checkBoxTitle + "\" />");
+	
+	private static final SafeHtml INPUT_CHECKED_DISABLED = SafeHtmlUtils.fromSafeConstant("<input type=\"checkbox\" tabindex=\"0\" disabled=\"disabled\"  title=\"" + checkBoxTitle + "\" checked/>");
 
 	/** The depends on selection. */
 	private final boolean dependsOnSelection;
@@ -68,6 +70,13 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 	 */
 	public MatCheckBoxCell() {
 		this(false);
+	}
+	
+	public MatCheckBoxCell(boolean dependsOnSelection, boolean handlesSelection,boolean isEditable) {
+		super(BrowserEvents.CHANGE, BrowserEvents.KEYDOWN);
+		this.dependsOnSelection = dependsOnSelection;
+		this.handlesSelection = handlesSelection;
+		this.isUsed=isEditable;
 	}
 	
 	/**
@@ -189,7 +198,11 @@ public class MatCheckBoxCell extends AbstractEditableCell<Boolean,Boolean> {
 				sb.append(INPUT_UNCHECKED);
 			}
 		}else{
-			sb.append(INPUT_UNCHECKED_DISABLED);
+			if (value != null && ((viewData != null) ? viewData : value)) {
+				sb.append(INPUT_CHECKED_DISABLED);
+			} else {
+				sb.append(INPUT_UNCHECKED_DISABLED);
+			}
 		}
 		
 	}

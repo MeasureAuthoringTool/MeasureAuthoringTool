@@ -104,7 +104,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private Button saveBtn = new PrimaryButton("Save", "primaryButton");
 	
 	/** The validate btn. */
-	private Button validateBtn = new SecondaryButton("Validate");
+	//Commented Validate Button from Population Work Space as part of Mat-3162
+	//	private Button validateBtn = new SecondaryButton("Validate");
 	
 	/** The save btn. */
 	private Button saveBtnClauseWorkSpace = new PrimaryButton("Save", "primaryButton");
@@ -241,8 +242,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		vp.add(successMessageDisplay);
 		//		saveBtn.setTitle("Ctrl+Alt+s");
 		savePanel.add(saveBtn);
-		validateBtn.setTitle("Validate");
-		savePanel.add(validateBtn);
+		//Commented Validate Button from Population Work Space as part of Mat-3162
+		//validateBtn.setTitle("Validate");
+		//savePanel.add(validateBtn);
 		vp.add(warningMessageDisplay);
 		vp.add(savePanel);
 		bottomSavePanel.add(vp);
@@ -730,10 +732,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * 
 	 * @return the validateBtn
 	 */
-	@Override
+	//Commented Validate Button from Population Work Space as part of Mat-3162
+	/*@Override
 	public Button getValidateBtn() {
 		return validateBtn;
-	}
+	}*/
 	
 	
 	/* (non-Javadoc)

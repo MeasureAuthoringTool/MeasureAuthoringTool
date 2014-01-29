@@ -285,7 +285,8 @@ public class XmlTreePresenter {
 	 * Invoke validate handler.
 	 */
 	final void invokeValidateHandler() {
-		xmlTreeDisplay.getValidateBtn().addClickHandler(new ClickHandler() {
+		//Commented Validate Button from Population Work Space as part of Mat-3162
+		/*xmlTreeDisplay.getValidateBtn().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
@@ -307,7 +308,7 @@ public class XmlTreePresenter {
 							MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_VALIDATION_SUCCESS());
 				}
 			}
-		});
+		});*/
 		xmlTreeDisplay.getValidateBtnClauseWorkSpace().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {

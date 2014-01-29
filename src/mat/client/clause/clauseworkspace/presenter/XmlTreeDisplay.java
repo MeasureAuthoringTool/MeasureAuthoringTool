@@ -192,7 +192,8 @@ public interface XmlTreeDisplay {
 	 * 
 	 * @return the validate btn
 	 */
-	Button getValidateBtn();
+	//Commented Validate Button from Population Work Space as part of Mat-3162
+	//Button getValidateBtn();
 	
 	/**
 	 * Validate cell tree nodes.

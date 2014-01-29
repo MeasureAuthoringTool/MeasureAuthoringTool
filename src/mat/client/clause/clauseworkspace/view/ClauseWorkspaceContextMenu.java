@@ -214,7 +214,8 @@ public class ClauseWorkspaceContextMenu {
 				cutMenu.setEnabled(false);
 				break;
 			case CellTreeNode.LOGICAL_OP_NODE:
-				subMenuBar = new MenuBar(true);
+				//Commented for User story MAT-3167.
+				/*subMenuBar = new MenuBar(true);
 				popupMenuBar.setAutoOpen(true);
 				subMenuBar.setAutoOpen(true);
 				createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
@@ -252,7 +253,7 @@ public class ClauseWorkspaceContextMenu {
 					createEditMenus(MatContext.get().logicalOps, subMenuBar);
 					editMenu = new MenuItem("Edit", true, subMenuBar);
 					popupMenuBar.addItem(editMenu);
-				}
+				}*/
 				break;
 			case CellTreeNode.TIMING_NODE:
 				MenuBar subMenuBarLHS = createMenuBarWithTimingFuncAndQDM();
@@ -321,8 +322,9 @@ public class ClauseWorkspaceContextMenu {
 				subMenuBar = new MenuBar(true);
 				popupMenuBar.setAutoOpen(true);
 				subMenuBar.setAutoOpen(true);
-				createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
-						, subMenuBar); // creating logical Operators Menu 2nd level
+				//Commented for User story MAT-3167.
+				//createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
+				//		, subMenuBar); // creating logical Operators Menu 2nd level
 				createAddQDM_MenuItem(subMenuBar);
 				MenuBar timing = new MenuBar(true);
 				subMenuBar.addItem("Timing", timing); //Timing menu 2nd level
@@ -567,7 +569,8 @@ public class ClauseWorkspaceContextMenu {
 		MenuBar menuBar = new MenuBar(true);
 		popupMenuBar.setAutoOpen(true);
 		menuBar.setAutoOpen(true);
-		createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE, menuBar);// creating logical Operators Menu 2nd level
+		//Commented for User story MAT-3167.
+		//createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE, menuBar);// creating logical Operators Menu 2nd level
 		createAddQDM_MenuItem(menuBar);
 		MenuBar timingMenuBar = new MenuBar(true);
 		menuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level

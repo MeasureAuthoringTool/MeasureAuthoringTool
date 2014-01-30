@@ -827,7 +827,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
     return cellTable;
 	}
 	
-	private CellTable<QualityDataSetDTO> addQDMSelectionListTable(CellTable<QualityDataSetDTO> table){
+	/*private CellTable<QualityDataSetDTO> addQDMSelectionListTable(CellTable<QualityDataSetDTO> table){
 		
 		Column<QualityDataSetDTO,SafeHtml> codeListName = new Column<QualityDataSetDTO, SafeHtml>( new SafeHtmlCell()) {
 			
@@ -893,13 +893,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		table.setColumnWidth(1, 10, Unit.PCT);
 		
 		return table;
-	}
+	}*/
 	
 	@Override
 	public void buildCellTable(QDSAppliedListModel appliedListModel,boolean isEditable){
 		horzPanel.clear();
 		qdmItemCountListVPanel.clear();
 		qdmItemCountListSPanel.clear();
+		qdmSelectedListVPanel.clear();
 		vPanel.clear();
 		qdmItemCountListSPanel.setStyleName("cellTablePanel");
 		if ((appliedListModel.getAppliedQDMs() != null) && (appliedListModel.getAppliedQDMs().size() > 0)) {
@@ -926,18 +927,25 @@ public class MetaDataView implements MetaDataDetailDisplay{
 									"The Applied QDM elements are listed alphabetically in a table.  ");
 			cellTable.getElement().setAttribute("id", "AppliedQDMTable");
 			cellTable.getElement().setAttribute("aria-describedby", "appliedQDMTableSummary");
-			qdmItemCountListVPanel.add(LabelBuilder.buildLabel(cellTable, "ItemCount:"));
+			qdmItemCountListVPanel.add(LabelBuilder.buildLabel(cellTable, " Items Counted - Optional"));
 			qdmItemCountListSPanel.setSize("400px", "200px");
 			qdmItemCountListSPanel.setWidget(cellTable);
 			qdmItemCountListVPanel.add(qdmItemCountListSPanel);
 			horzPanel.add(qdmItemCountListVPanel);
-			vPanel.setWidth("50px");
+			vPanel.setWidth("10px");
 			horzPanel.add(vPanel);
-			buildQDMSelectedList(appliedListModel.getAppliedQDMs());
+			SimplePanel sPanel=new SimplePanel();
+			sPanel.setHeight("100px");
+			qdmSelectedListVPanel.add(sPanel);
+			Label labelbuilder=(Label)LabelBuilder
+					.buildLabel(cellTable, "Selected Items: "+qdmSelectedList.size());
+			qdmSelectedListVPanel.add(labelbuilder);
+			horzPanel.add(qdmSelectedListVPanel);
+			//buildQDMSelectedList(appliedListModel.getAppliedQDMs());
 		}
 		else{
 			HTML desc = new HTML("<p> No Applied QDM Elements.</p>");
-			qdmItemCountListVPanel.add(LabelBuilder.buildLabel(cellTable, "ItemCount:"));
+			qdmItemCountListVPanel.add(LabelBuilder.buildLabel(cellTable, " Items Counted - Optional"));
 			qdmItemCountListSPanel.setSize("200px", "50px");
 			qdmItemCountListSPanel.setWidget(desc); 
 			qdmItemCountListVPanel.add(qdmItemCountListSPanel);
@@ -945,48 +953,48 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		}
 	}
 	
-	private void buildQDMSelectedList(List<QualityDataSetDTO> selectedList){
-		
-		    qdmSelectedListVPanel.clear();
-		    qdmSelectedListSPanel.clear();
-		    qdmSelectedListSPanel.setStyleName("cellTablePanel");
-		    SimplePanel simplePanel=new SimplePanel();
-		   table = new CellTable<QualityDataSetDTO>();
-			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			ListDataProvider<QualityDataSetDTO> qdmSelectedListsortProvider = new ListDataProvider<QualityDataSetDTO>();
-			qdmSelectedListsortProvider.refresh();
-			if(qdmSelectedList.size()!=0){
-				for(int i=0;i<qdmSelectedList.size();i++){
-					for(int j=0;j<selectedList.size();j++){
-						if(qdmSelectedList.get(i).getUuid().equalsIgnoreCase(selectedList.get(j).getUuid())){
-							qdmSelectedList.set(i,selectedList.get(j));
-							break;
-						}
-					}
-				}
-				table.setRowData(qdmSelectedList);
-				table.setRowCount(qdmSelectedList.size());
-			qdmSelectedListsortProvider.getList().addAll(qdmSelectedList);
-			table=addQDMSelectionListTable(table);
-			table.redraw();
-			qdmSelectedListsortProvider.addDataDisplay(table);
-			qdmSelectedListVPanel.add(LabelBuilder.buildLabel(table, "Selected Items:"+qdmSelectedList.size()));
-			qdmSelectedListSPanel.setSize("400px", "200px");
-			qdmSelectedListSPanel.setWidget(table);
-			qdmSelectedListVPanel.add(qdmSelectedListSPanel);
-			//qdmSelectedListVPanel.setWidth("400px");
-			horzPanel.add(qdmSelectedListVPanel);
-			}
-			else{
-				HTML desc = new HTML("<p> No Selected QDM Elements.</p>");
-				qdmSelectedListVPanel.add(LabelBuilder.buildLabel(table, "Selected Items:"+qdmSelectedList.size()));
-				qdmSelectedListSPanel.setSize("200px", "50px");
-				qdmSelectedListSPanel.setWidget(desc);
-				qdmSelectedListVPanel.add(qdmSelectedListSPanel);
-				horzPanel.add(qdmSelectedListVPanel);
-			}
-			
-	}
+//	private void buildQDMSelectedList(List<QualityDataSetDTO> selectedList){
+//		
+//		    qdmSelectedListVPanel.clear();
+//		    qdmSelectedListSPanel.clear();
+//		    qdmSelectedListSPanel.setStyleName("cellTablePanel");
+//		    SimplePanel simplePanel=new SimplePanel();
+//		   table = new CellTable<QualityDataSetDTO>();
+//			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+//			ListDataProvider<QualityDataSetDTO> qdmSelectedListsortProvider = new ListDataProvider<QualityDataSetDTO>();
+//			qdmSelectedListsortProvider.refresh();
+//			if(qdmSelectedList.size()!=0){
+//				for(int i=0;i<qdmSelectedList.size();i++){
+//					for(int j=0;j<selectedList.size();j++){
+//						if(qdmSelectedList.get(i).getUuid().equalsIgnoreCase(selectedList.get(j).getUuid())){
+//							qdmSelectedList.set(i,selectedList.get(j));
+//							break;
+//						}
+//					}
+//				}
+//				table.setRowData(qdmSelectedList);
+//				table.setRowCount(qdmSelectedList.size());
+//			qdmSelectedListsortProvider.getList().addAll(qdmSelectedList);
+//			table=addQDMSelectionListTable(table);
+//			table.redraw();
+//			qdmSelectedListsortProvider.addDataDisplay(table);
+//			qdmSelectedListVPanel.add(LabelBuilder.buildLabel(table, "Selected Items:"+qdmSelectedList.size()));
+//			qdmSelectedListSPanel.setSize("400px", "200px");
+//			qdmSelectedListSPanel.setWidget(table);
+//			qdmSelectedListVPanel.add(qdmSelectedListSPanel);
+//			//qdmSelectedListVPanel.setWidth("400px");
+//			horzPanel.add(qdmSelectedListVPanel);
+//			}
+//			else{
+//				HTML desc = new HTML("<p> No Selected QDM Elements.</p>");
+//				qdmSelectedListVPanel.add(LabelBuilder.buildLabel(table, "Selected Items:"+qdmSelectedList.size()));
+//				qdmSelectedListSPanel.setSize("200px", "50px");
+//				qdmSelectedListSPanel.setWidget(desc);
+//				qdmSelectedListVPanel.add(qdmSelectedListSPanel);
+//				horzPanel.add(qdmSelectedListVPanel);
+//			}
+//			
+//	}
 	
 
 	

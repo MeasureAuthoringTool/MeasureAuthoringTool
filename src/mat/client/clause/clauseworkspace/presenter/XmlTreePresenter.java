@@ -2,7 +2,6 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -292,7 +291,7 @@ public class XmlTreePresenter {
 						});
 					} else {
 						xmlTreeDisplay.getErrorMessageDisplay().setMessage(
-								"Unable to save clause as no child found");
+								"Unable to save clause as no subTree found under it.");
 					}
 				}
 			}
@@ -354,49 +353,59 @@ public class XmlTreePresenter {
 		});
 	}
 	
-	void invokeClearHandler(){
+	/**
+	 * Clear button Handler.
+	 */
+	private void invokeClearHandler() {
 		xmlTreeDisplay.getClearClauseWorkSpace().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
-				if(xmlTreeDisplay.isDirty()){
-				isUnsavedData = true;
-				showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
-				xmlTreeDisplay.getErrorMessageDisplay().getButtons().get(0).setFocus(true);
-				String auditMessage =getRootNode().toUpperCase()+"_TAB_YES_CLICKED";
-				handleClickEventsOnUnsavedErrorMsg(xmlTreeDisplay.getErrorMessageDisplay().getButtons(),xmlTreeDisplay.getErrorMessageDisplay(),auditMessage);
-				}
-				else{
+				if (xmlTreeDisplay.isDirty()) {
+					isUnsavedData = true;
+					showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
+					xmlTreeDisplay.getErrorMessageDisplay().getButtons().get(0).setFocus(true);
+					String auditMessage = getRootNode().toUpperCase() + "_TAB_YES_CLICKED";
+					handleClickEventsOnUnsavedErrorMsg(xmlTreeDisplay.getErrorMessageDisplay().getButtons()
+							, xmlTreeDisplay.getErrorMessageDisplay(), auditMessage);
+				} else {
 					isUnsavedData = false;
 				}
 			}
 		});
 	}
 	
-	private void showErrorMessage(ErrorMessageDisplay errorMessageDisplay){
+	/**
+	 * @param errorMessageDisplay -ErrorMessageDisplay.
+	 */
+	private void showErrorMessage(ErrorMessageDisplay errorMessageDisplay) {
 		String msg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
 		List<String> btn = new ArrayList<String>();
 		btn.add("Yes");
 		btn.add("No");
 		errorMessageDisplay.setMessageWithButtons(msg, btn);
 	}
-	
-	private void handleClickEventsOnUnsavedErrorMsg(List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage,final String auditMessage) {
+	/**
+	 * @param btns -List.
+	 * @param saveErrorMessage - ErrorMessageDisplay.
+	 * @param auditMessage -String.
+	 */
+	private void handleClickEventsOnUnsavedErrorMsg(List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage
+			, final String auditMessage) {
 		isUnsavedData = true;
 		ClickHandler clickHandler = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				isUnsavedData = false;
-				SecondaryButton button = (SecondaryButton)event.getSource();
-				if("Yes".equals(button.getText())){// do not navigate, set focus to the Save button on the Page and clear cell tree
-//					if(auditMessage!=null){
-//						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null,auditMessage, auditMessage, ConstantMessages.DB_LOG);
-//					}
+				SecondaryButton button = (SecondaryButton) event.getSource();
+				 // If Yes - do not navigate, set focus to the Save button on the Page and clear cell tree
+				// // Else -do not navigate, set focus to the Save button on the Page
+				if ("Yes".equals(button.getText())) {
 					saveErrorMessage.clear();
 					xmlTreeDisplay.setDirty(false);
 					panel.clear();
 					loadClauseWorkSpaceView(panel);
-				}else if("No".equals(button.getText())){// do not navigate, set focus to the Save button on the Page
+				} else if ("No".equals(button.getText())) {
 					saveErrorMessage.clear();
 				}
 			}
@@ -404,8 +413,7 @@ public class XmlTreePresenter {
 		for (SecondaryButton secondaryButton : btns) {
 			secondaryButton.addClickHandler(clickHandler);
 		}
-		
-		if(isUnsavedData){
+		if (isUnsavedData) {
 			MatContext.get().setErrorTab(true);
 		}
 	}

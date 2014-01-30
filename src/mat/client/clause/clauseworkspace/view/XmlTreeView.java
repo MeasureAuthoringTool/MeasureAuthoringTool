@@ -164,7 +164,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The is dirty. */
 	private boolean isDirty = false;
 	
+	private ErrorMessageDisplay clearErrorDisplay = new ErrorMessageDisplay();
 	
+	
+	@Override
+	public ErrorMessageDisplay getClearErrorDisplay() {
+		return clearErrorDisplay;
+	}
+
 	/**
 	 * Instantiates a new xml tree view.
 	 * 

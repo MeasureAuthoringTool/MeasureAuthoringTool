@@ -265,4 +265,6 @@ public interface XmlTreeDisplay {
 	Button getClearClauseWorkSpace();
 	
 	void setClauseWorkspaceContextMenu(ClauseWorkspaceContextMenu clauseWorkspaceContextMenu);
+	
+	public ErrorMessageDisplay getClearErrorDisplay();
 }

@@ -1,5 +1,8 @@
 package mat.client.clause.clauseworkspace.presenter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -8,7 +11,9 @@ import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
 import mat.client.clause.clauseworkspace.view.PopulationWorkSpaceContextMenu;
 import mat.client.clause.clauseworkspace.view.XmlTreeView;
 import mat.client.measure.service.MeasureServiceAsync;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
+import mat.client.shared.SecondaryButton;
 import mat.shared.ConstantMessages;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -29,6 +34,9 @@ public class XmlTreePresenter {
 	 * Cell Tree Node Size to remove show more.
 	 */
 	private static final int NODESIZE = 500;
+	
+	
+	boolean isUnsavedData = false;
 	/**
 	 * Pop up Panel for Right Context Menu.
 	 */
@@ -350,11 +358,58 @@ public class XmlTreePresenter {
 		xmlTreeDisplay.getClearClauseWorkSpace().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				panel.clear();
-				loadClauseWorkSpaceView(panel);
+				xmlTreeDisplay.clearMessages();
+				if(xmlTreeDisplay.isDirty()){
+				isUnsavedData = true;
+				showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
+				xmlTreeDisplay.getErrorMessageDisplay().getButtons().get(0).setFocus(true);
+				String auditMessage =getRootNode().toUpperCase()+"_TAB_YES_CLICKED";
+				handleClickEventsOnUnsavedErrorMsg(xmlTreeDisplay.getErrorMessageDisplay().getButtons(),xmlTreeDisplay.getErrorMessageDisplay(),auditMessage);
+				}
+				else{
+					isUnsavedData = false;
+				}
 			}
 		});
 	}
+	
+	private void showErrorMessage(ErrorMessageDisplay errorMessageDisplay){
+		String msg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
+		List<String> btn = new ArrayList<String>();
+		btn.add("Yes");
+		btn.add("No");
+		errorMessageDisplay.setMessageWithButtons(msg, btn);
+	}
+	
+	private void handleClickEventsOnUnsavedErrorMsg(List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage,final String auditMessage) {
+		isUnsavedData = true;
+		ClickHandler clickHandler = new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				isUnsavedData = false;
+				SecondaryButton button = (SecondaryButton)event.getSource();
+				if("Yes".equals(button.getText())){// do not navigate, set focus to the Save button on the Page and clear cell tree
+//					if(auditMessage!=null){
+//						MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null,auditMessage, auditMessage, ConstantMessages.DB_LOG);
+//					}
+					saveErrorMessage.clear();
+					xmlTreeDisplay.setDirty(false);
+					panel.clear();
+					loadClauseWorkSpaceView(panel);
+				}else if("No".equals(button.getText())){// do not navigate, set focus to the Save button on the Page
+					saveErrorMessage.clear();
+				}
+			}
+		};
+		for (SecondaryButton secondaryButton : btns) {
+			secondaryButton.addClickHandler(clickHandler);
+		}
+		
+		if(isUnsavedData){
+			MatContext.get().setErrorTab(true);
+		}
+	}
+	
 	/**
 	 * Gets the root node.
 	 * @return the rootNode

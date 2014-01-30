@@ -102,14 +102,6 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	private List<MeasureType> measureTypeList;
 	
 	private List<QualityDataSetDTO> qdsSelectedList;
-	
-	public List<QualityDataSetDTO> getQdsSelectedList() {
-		return qdsSelectedList;
-	}
-
-	public void setQdsSelectedList(List<QualityDataSetDTO> qdsSelectedList) {
-		this.qdsSelectedList = qdsSelectedList;
-	}
 
 	/** The to compare author. */
 	private List<Author> toCompareAuthor;
@@ -117,6 +109,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	/** The to compare measure. */
 	private List<MeasureType> toCompareMeasure;
 	
+	 private List<QualityDataSetDTO> toCompareItemCount ;
+
 	/** The draft. */
 	private boolean draft = true;
 	
@@ -1128,6 +1122,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				+ ((measureStatus == null) ? 0 : measureStatus.hashCode());
 		result = (prime * result)
 				+ ((toCompareMeasure == null) ? 0 : toCompareMeasure.hashCode());
+		result=(prime*result)
+				+((toCompareItemCount == null) ? 0 : toCompareItemCount.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((nqfId == null) ? 0 : nqfId.hashCode());
 		result = (prime * result)
@@ -1360,6 +1356,15 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		} else if (!isEqual(toCompareMeasure, other.toCompareMeasure)) {
 			return false;
 		}
+		
+		if (toCompareItemCount == null) {
+			if (other.toCompareItemCount != null) {
+				return false;
+			}
+		} else if (!isEqual(toCompareItemCount, other.toCompareItemCount)) {
+			return false;
+		}
+		
 		if (trimToNull(name) == null) {
 			if (trimToNull(other.name) != null) {
 				return false;
@@ -1541,6 +1546,22 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	public void setToCompareMeasure(List<MeasureType> toCompareMeasure) {
 		this.toCompareMeasure = toCompareMeasure;
 	}
+
+	public List<QualityDataSetDTO> getQdsSelectedList() {
+		return qdsSelectedList;
+	}
+
+	public void setQdsSelectedList(List<QualityDataSetDTO> qdsSelectedList) {
+		this.qdsSelectedList = qdsSelectedList;
+	}
+
+	public List<QualityDataSetDTO> getToCompareItemCount() {
+		return toCompareItemCount;
+	}
+
+	public void setToCompareItemCount(List<QualityDataSetDTO> toCompareItemCount) {
+		this.toCompareItemCount = toCompareItemCount;
+	}
 	
 	/**
 	 * Gets the qlty measure set uuid.
@@ -1692,7 +1713,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				+ ", authorList=" + authorList + ", measureTypeList="
 				+ measureTypeList + ", qdsSelectedList="+ qdsSelectedList 
 				+ ", toCompareAuthor=" + toCompareAuthor
-				+ ", toCompareMeasure=" + toCompareMeasure + ", draft=" + draft
+				+ ", toCompareMeasure=" + toCompareMeasure 
+				+", toCompareItemCount=" + toCompareItemCount + ", draft=" + draft
 				+ ", measureSetId=" + measureSetId + ", valueSetDate="
 				+ valueSetDate + ", supplementalData=" + supplementalData
 				+ ", disclaimer=" + disclaimer + ", riskAdjustment="

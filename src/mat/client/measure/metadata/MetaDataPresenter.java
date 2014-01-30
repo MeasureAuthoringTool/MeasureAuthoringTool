@@ -629,6 +629,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	/** The db measure type list. */
 	private List<MeasureType> dbMeasureTypeList = new ArrayList<MeasureType>();
 	
+	private List<QualityDataSetDTO> dbQDMSelectedList = new ArrayList<QualityDataSetDTO>();
+	
 	/** The empty widget. */
 	private SimplePanel emptyWidget = new SimplePanel();
 	
@@ -1195,6 +1197,8 @@ private void setAuthorsListOnView() {
 			metaDataDisplay.setQdmSelectedList(qdmList);
 			currentMeasureDetail.setQdsSelectedList(qdmList);
 		}
+		dbQDMSelectedList.clear();
+		dbQDMSelectedList.addAll(currentMeasureDetail.getQdsSelectedList());
 		getAppliedQDMList(true);
 		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		if(currentMeasureDetail.getReferencesList()!= null){
@@ -1342,6 +1346,7 @@ private void setAuthorsListOnView() {
 		currentMeasureDetail.setQdsSelectedList(metaDataDisplay.getQdmSelectedList());
 		currentMeasureDetail.setToCompareAuthor(dbAuthorList);
 		currentMeasureDetail.setToCompareMeasure(dbMeasureTypeList);
+		currentMeasureDetail.setToCompareItemCount(dbQDMSelectedList);
 		currentMeasureDetail.setNqfId(metaDataDisplay.getNqfId().getValue());
 		currentMeasureDetail.setMeasurePopulationExclusions(metaDataDisplay.getMeasurePopulationExclusions().getValue());
 		if(metaDataDisplay.getEmeasureId().getValue() != null && !metaDataDisplay.getEmeasureId().getValue().equals("")){
@@ -1712,6 +1717,14 @@ private void setAuthorsListOnView() {
 	 */
 	public void setDbMeasureTypeList(List<MeasureType> dbMeasureTypeList) {
 		this.dbMeasureTypeList = dbMeasureTypeList;
+	}
+	
+	public List<QualityDataSetDTO> getDbQDMSelectedList() {
+		return dbQDMSelectedList;
+	}
+
+	public void setDbQDMSelectedList(List<QualityDataSetDTO> dbQDMSelectedList) {
+		this.dbQDMSelectedList = dbQDMSelectedList;
 	}
 	
 	/**

@@ -32,7 +32,7 @@ public class EditSubTreeDialogBox {
 		final TextBox subTreeName = new TextBox();
 		subTreeName.getElement().setId("quantity_TextBox");
 		subTreeName.setWidth("150px");
-		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New SubTree Name");
+		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents.add(lableNewSubTreeName);
 		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(subTreeName);
@@ -83,7 +83,7 @@ public class EditSubTreeDialogBox {
 		final TextBox subTreeName = new TextBox();
 		subTreeName.getElement().setId("quantity_TextBox");
 		subTreeName.setWidth("150px");
-		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New SubTree Name");
+		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents.add(lableNewSubTreeName);
 		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(subTreeName);

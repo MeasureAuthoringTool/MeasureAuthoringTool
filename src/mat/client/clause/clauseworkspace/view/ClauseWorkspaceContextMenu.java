@@ -400,7 +400,7 @@ public class ClauseWorkspaceContextMenu {
 								, xmlTreeDisplay.getSelectedNode());
 					}
 				};
-				MenuItem addSubTreeMenu = new MenuItem("Add SubTree", true, addSubTreeCmd);
+				MenuItem addSubTreeMenu = new MenuItem("Add New Clause", true, addSubTreeCmd);
 				popupMenuBar.addItem(addSubTreeMenu);
 				popupMenuBar.addSeparator(separator);
 				if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_ROOT_NODE)

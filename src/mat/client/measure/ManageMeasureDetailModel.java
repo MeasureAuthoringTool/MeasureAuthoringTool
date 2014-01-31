@@ -9,10 +9,11 @@ import mat.shared.model.util.MeasureDetailsUtil;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ManageMeasureDetailModel.
  */
-public class ManageMeasureDetailModel implements IsSerializable{
+public class ManageMeasureDetailModel implements IsSerializable {
 	
 	/** The id. */
 	private String id;
@@ -101,6 +102,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	/** The measure type list. */
 	private List<MeasureType> measureTypeList;
 	
+	/** The qds selected list. */
 	private List<QualityDataSetDTO> qdsSelectedList;
 
 	/** The to compare author. */
@@ -109,7 +111,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	/** The to compare measure. */
 	private List<MeasureType> toCompareMeasure;
 	
-	 private List<QualityDataSetDTO> toCompareItemCount ;
+	 /** The to compare item count. */
+ 	private List<QualityDataSetDTO> toCompareItemCount;
 
 	/** The draft. */
 	private boolean draft = true;
@@ -190,6 +193,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	/** The measure owner id. */
 	private String measureOwnerId;
 	
+	/** The measure population exclusions. */
 	private String measurePopulationExclusions;
 	
 	/**
@@ -287,10 +291,20 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		this.measureTypeList = measureTypeList;
 	}
 	
+	/**
+	 * Gets the initial pop.
+	 *
+	 * @return the initial pop
+	 */
 	public String getInitialPop() {
 		return initialPop;
 	}
 
+	/**
+	 * Sets the initial pop.
+	 *
+	 * @param initialPop the new initial pop
+	 */
 	public void setInitialPop(String initialPop) {
 		this.initialPop = initialPop;
 	}
@@ -759,7 +773,7 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 *            the str
 	 * @return the string
 	 */
-	private String doTrim(String str){
+	private String doTrim(String str) {
 		return (str != null) && (str.trim().length() > 0) ? str.trim() : null;
 	}
 	
@@ -1122,8 +1136,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				+ ((measureStatus == null) ? 0 : measureStatus.hashCode());
 		result = (prime * result)
 				+ ((toCompareMeasure == null) ? 0 : toCompareMeasure.hashCode());
-		result=(prime*result)
-				+((toCompareItemCount == null) ? 0 : toCompareItemCount.hashCode());
+		result = (prime * result)
+				+ ((toCompareItemCount == null) ? 0 : toCompareItemCount.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((nqfId == null) ? 0 : nqfId.hashCode());
 		result = (prime * result)
@@ -1468,23 +1482,23 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		if (listA.size() != listB.size()) {
 			return false;
 		}
-		for (int i=0; i<listA.size(); i++) {
-			if(listA.get(i) instanceof Author){
+		for (int i = 0; i < listA.size(); i++) {
+			if (listA.get(i) instanceof Author) {
 				Author author = (Author) listA.get(i);
 				Author otherAuthor = (Author) listB.get(i);
-				if(author.compare(author, otherAuthor) != 0){
+				if (author.compare(author, otherAuthor) != 0) {
 					return false;
 				}
-			}else if(listA.get(i) instanceof MeasureType){
+			} else if (listA.get(i) instanceof MeasureType) {
 				MeasureType measureType = (MeasureType) listA.get(i);
 				MeasureType otherMeasureType = (MeasureType) listB.get(i);
-				if(measureType.compare(measureType, otherMeasureType) != 0){
+				if (measureType.compare(measureType, otherMeasureType) != 0) {
 					return false;
 				}
-			}else if(listA.get(i) instanceof String){
-				String val1 = (String)listA.get(i);
-				String val2 = (String)listB.get(i);
-				if(val1.compareTo(val2) != 0){
+			} else if (listA.get(i) instanceof String) {
+				String val1 = (String) listA.get(i);
+				String val2 = (String) listB.get(i);
+				if (val1.compareTo(val2) != 0) {
 					return false;
 				}
 			}
@@ -1500,8 +1514,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 *            the value
 	 * @return the string
 	 */
-	private String trimToNull(String value){
-		if(null != value){
+	private String trimToNull(String value) {
+		if (null != value) {
 			value = value.replaceAll("[\r\n]", "");
 			value = value.equals("") ? null : value.trim();
 			
@@ -1547,18 +1561,38 @@ public class ManageMeasureDetailModel implements IsSerializable{
 		this.toCompareMeasure = toCompareMeasure;
 	}
 
+	/**
+	 * Gets the qds selected list.
+	 *
+	 * @return the qds selected list
+	 */
 	public List<QualityDataSetDTO> getQdsSelectedList() {
 		return qdsSelectedList;
 	}
 
+	/**
+	 * Sets the qds selected list.
+	 *
+	 * @param qdsSelectedList the new qds selected list
+	 */
 	public void setQdsSelectedList(List<QualityDataSetDTO> qdsSelectedList) {
 		this.qdsSelectedList = qdsSelectedList;
 	}
 
+	/**
+	 * Gets the to compare item count.
+	 *
+	 * @return the to compare item count
+	 */
 	public List<QualityDataSetDTO> getToCompareItemCount() {
 		return toCompareItemCount;
 	}
 
+	/**
+	 * Sets the to compare item count.
+	 *
+	 * @param toCompareItemCount the new to compare item count
+	 */
 	public void setToCompareItemCount(List<QualityDataSetDTO> toCompareItemCount) {
 		this.toCompareItemCount = toCompareItemCount;
 	}
@@ -1587,8 +1621,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	 * 
 	 * @return the steward
 	 */
-	public String getSteward(){
-		if(this.measSteward != null && this.measSteward.equalsIgnoreCase("Other")){
+	public String getSteward() {
+		if (this.measSteward != null && this.measSteward.equalsIgnoreCase("Other")) {
 			return null;
 		}
 		return this.measSteward;
@@ -1711,10 +1745,10 @@ public class ManageMeasureDetailModel implements IsSerializable{
 				+ ", improvNotations=" + improvNotations + ", stratification="
 				+ stratification + ", referencesList=" + referencesList
 				+ ", authorList=" + authorList + ", measureTypeList="
-				+ measureTypeList + ", qdsSelectedList="+ qdsSelectedList 
+				+ measureTypeList + ", qdsSelectedList=" + qdsSelectedList 
 				+ ", toCompareAuthor=" + toCompareAuthor
 				+ ", toCompareMeasure=" + toCompareMeasure 
-				+", toCompareItemCount=" + toCompareItemCount + ", draft=" + draft
+				+ ", toCompareItemCount=" + toCompareItemCount + ", draft=" + draft
 				+ ", measureSetId=" + measureSetId + ", valueSetDate="
 				+ valueSetDate + ", supplementalData=" + supplementalData
 				+ ", disclaimer=" + disclaimer + ", riskAdjustment="
@@ -1792,6 +1826,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	}
 	
 	/**
+	 * Gets the revision number.
+	 *
 	 * @return the revisionNumber
 	 */
 	public String getRevisionNumber() {
@@ -1799,6 +1835,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	}
 	
 	/**
+	 * Sets the revision number.
+	 *
 	 * @param revisionNumber the revisionNumber to set
 	 */
 	public void setRevisionNumber(String revisionNumber) {
@@ -1806,6 +1844,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	}
 
 	/**
+	 * Gets the measure population exclusions.
+	 *
 	 * @return the measurePopulationExclusions
 	 */
 	public String getMeasurePopulationExclusions() {
@@ -1813,6 +1853,8 @@ public class ManageMeasureDetailModel implements IsSerializable{
 	}
 
 	/**
+	 * Sets the measure population exclusions.
+	 *
 	 * @param measurePopulationExclusions the measurePopulationExclusions to set
 	 */
 	public void setMeasurePopulationExclusions(

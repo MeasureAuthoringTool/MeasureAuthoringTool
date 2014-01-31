@@ -1,13 +1,8 @@
 package mat.client.measure.metadata;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import mat.client.CustomPager;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
@@ -19,7 +14,6 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
-import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
@@ -29,17 +23,10 @@ import mat.client.shared.TextAreaWithMaxLength;
 import mat.model.Author;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
-import mat.server.service.impl.CodeListAuditServiceImpl;
 import mat.shared.ConstantMessages;
 
-import com.google.gwt.cell.client.Cell;
-import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
-import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -62,15 +49,12 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.FlexTable.FlexCellFormatter;
-import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.CellPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.HorizontalSplitPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -79,10 +63,10 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MetaDataView.
  */
@@ -94,6 +78,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The focus panel. */
 	protected FocusPanel focusPanel = new FocusPanel();
 	
+	/** The cell table panel. */
 	protected FlowPanel cellTablePanel=new  FlowPanel();
 	
 	/** The success messages. */
@@ -136,8 +121,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The empty text box holder. */
 	protected VerticalPanel emptyTextBoxHolder = new VerticalPanel();
 	
+	/** The qdm item count list v panel. */
 	protected VerticalPanel qdmItemCountListVPanel = new VerticalPanel();
 	
+	/** The qdm item count list s panel. */
 	protected ScrollPanel qdmItemCountListSPanel = new ScrollPanel();
 	
 	/** The measure steward other input. */
@@ -228,22 +215,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The endorsed by nqf. */
 	protected Label endorsedByNQF = new Label();
 	
+	/** The item label. */
 	protected Label itemLabel = new Label();
 	
 	/** The counter. */
 	private int counter = 0;
 	
-	private int itemCounter=0;
-		
-	public int getItemCounter() {
-		return itemCounter;
-	}
-
-	public void setItemCounter(int itemCounter) {
-		this.itemCounter = itemCounter;
-	}
-
-
 	/** The No. */
 	protected RadioButton No = new RadioButton("NQFgroup","No");
 	
@@ -299,40 +276,31 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The save error display. */
 	private ErrorMessageDisplay saveErrorDisplay = new ErrorMessageDisplay();
 	
-	private CellList<QualityDataSetDTO> cellsList;
-	
-	private ArrayList<QualityDataSetDTO> appliedQDMList;
-	
+	/** The selection model. */
 	private MultiSelectionModel<QualityDataSetDTO> selectionModel;
 	
+	/** The cell table. */
 	private CellTable<QualityDataSetDTO> cellTable;
 	
-	 private CellTable<QualityDataSetDTO> table;
+	 /** The table. */
+ 	//private CellTable<QualityDataSetDTO> table;
 	
+	/** The horz panel. */
 	private HorizontalPanel horzPanel = new HorizontalPanel();
 	
-	private ListBox qdmSelectedListBox = new ListBox();
-	
+	/** The qdm selected list v panel. */
 	VerticalPanel qdmSelectedListVPanel=new VerticalPanel();
 	
+	/** The qdm selected list s panel. */
 	ScrollPanel qdmSelectedListSPanel=new ScrollPanel();
 	
-	private Grid508 dataTable=new Grid508();
-	
+	/** The v panel. */
 	VerticalPanel vPanel=new VerticalPanel();
 	
+	/** The qdm selected list. */
 	private  List<QualityDataSetDTO> qdmSelectedList;
 	
-	@Override
-    public  void setQdmSelectedList(List<QualityDataSetDTO> qdmSelectedList) {
-		this.qdmSelectedList = qdmSelectedList;
-	}
-
-	@Override
-	public List<QualityDataSetDTO> getQdmSelectedList() {
-		return qdmSelectedList;
-	}
- 
+	
 
 	/**
 	 * Instantiates a new meta data view.
@@ -359,7 +327,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * 
 	 * @return the widget
 	 */
-	private Widget buildLeftSideForm(){
+	private Widget buildLeftSideForm() {
 		ChangeHandler changeHandler = new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
@@ -512,15 +480,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(addEditMeasureType);
 		fPanel.add(new SpacerWidget());
 		
-		//TODO by Ravi
-		//qdmSelectedListBox.addItem("No Items Selected");
-		//itemLabel.setText("  "+itemCounter +" value sets selected");
-		//fPanel.add(LabelBuilder.buildLabel(cellTable, "ItemCount:"));
+		fPanel.add(LabelBuilder.buildLabel(cellTable, " Items Counted - Optional"));
 		fPanel.add(horzPanel);
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(stratificationInput , "Stratification"));
-		fPanel.add(stratificationInput );
+		fPanel.add(stratificationInput);
 		stratificationInput.addKeyDownHandler(keyDownHandler);
 		fPanel.add(new SpacerWidget());
 		
@@ -649,27 +614,27 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		codeSystemVersionInput.setMaxLength(255);
 		rationaleInput.setMaxLength(15000);
 		NQFIDInput.setMaxLength(64);
-		descriptionInput.setSize("500px","100px");
+		descriptionInput.setSize("500px", "100px");
 		descriptionInput.setMaxLength(15000);
-		copyrightInput.setSize("500px","100px");
+		copyrightInput.setSize("500px", "100px");
 		copyrightInput.setMaxLength(15000);
-		disclaimerInput.setSize("500px","100px");
+		disclaimerInput.setSize("500px", "100px");
 		disclaimerInput.setMaxLength(15000);
 		rationaleInput.setMaxLength(15000);
 		rationaleInput.setSize("500px", "100px");
 		stratificationInput.setSize("500px", "100px");
 		stratificationInput.setMaxLength(15000);
-		riskAdjustmentInput.setSize("500px","100px");
+		riskAdjustmentInput.setSize("500px", "100px");
 		riskAdjustmentInput.setMaxLength(15000);
-		rateAggregationInput.setSize("500px","100px");
+		rateAggregationInput.setSize("500px", "100px");
 		rateAggregationInput.setMaxLength(15000);
 		
-		setNameInput.setSize("500px","50px");
+		setNameInput.setSize("500px", "50px");
 		setNameInput.setMaxLength(155);
 		
 		measureStewardOtherInput.setMaxLength(200);
 		measureStewardOtherInput.setWidth("415px");
-		clinicalStmtInput.setSize("500px","100px");
+		clinicalStmtInput.setSize("500px", "100px");
 		clinicalStmtInput.setMaxLength(15000);
 		improvementNotationInput.setSize("500px", "100px");
 		improvementNotationInput.setMaxLength(15000);
@@ -712,25 +677,28 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	//TODO by Ravi
-	private CellTable<QualityDataSetDTO> addColumnToTable(CellTable<QualityDataSetDTO> cellTable,boolean isEditable){
+	/**
+	 * Adds the column to table.
+	 *
+	 * @param cellTable the cell table
+	 * @param isEditable the is editable
+	 * @return the cell table
+	 */
+	private CellTable<QualityDataSetDTO> addColumnToTable(CellTable<QualityDataSetDTO> cellTable, boolean isEditable) {
 		
-		MatCheckBoxCell qdmCheckBox=new MatCheckBoxCell(false,true,!isEditable);
-			/*itemLabel.setText("  0 value sets selected");*/
-			Column<QualityDataSetDTO, Boolean> chkBoxColumn = new  Column<QualityDataSetDTO, Boolean>(qdmCheckBox){
+		MatCheckBoxCell qdmCheckBox = new MatCheckBoxCell(false, true, !isEditable);
+			Column<QualityDataSetDTO, Boolean> chkBoxColumn = new  Column<QualityDataSetDTO, Boolean>(qdmCheckBox) {
 
 				@Override
 				public Boolean getValue(QualityDataSetDTO object) {
-					int num=qdmSelectedList.size();
-					if(qdmSelectedList.size()>0){
-					for(int i=0;i<qdmSelectedList.size();i++){
-						String uuid=qdmSelectedList.get(i).getUuid();
-						if(qdmSelectedList.get(i).getUuid().equalsIgnoreCase(object.getUuid())){
+					if (qdmSelectedList.size() > 0) {
+					for (int i = 0; i < qdmSelectedList.size(); i++) {
+						if (qdmSelectedList.get(i).getUuid().equalsIgnoreCase(object.getUuid())) {
 							object.setUsedMD(true);
 							break;
 						}
 					}
-					}
-					else{
+				} else {
 					object.setUsedMD(false);
 					}
 					return object.isUsedMD();
@@ -742,24 +710,24 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				@Override
 				public void update(int index, QualityDataSetDTO object, Boolean value) {
 					selectionModel.setSelected(object, value);
-					if(value){
+					if (value) {
 						qdmSelectedList.add(object);
-					}
-					else{
-						int num = qdmSelectedList.size();
-						for(int i=0;i<qdmSelectedList.size();i++){
-							if(qdmSelectedList.get(i).getUuid().equalsIgnoreCase(object.getUuid())){
+					} else {
+						for (int i = 0; i < qdmSelectedList.size(); i++) {
+							if (qdmSelectedList.get(i).getUuid().equalsIgnoreCase(object.getUuid())) {
 								qdmSelectedList.remove(i);
 								break;
 							}
 						}
+	                
 					}
+					itemLabel.setText("Selected Items: " + qdmSelectedList.size());
 					//buildQDMSelectedList(object,value);
 				}
 			});
 			cellTable.addColumn(chkBoxColumn, "Select");
 			
-			Column<QualityDataSetDTO,SafeHtml> codeListName = new Column<QualityDataSetDTO, SafeHtml>( new SafeHtmlCell()) {
+			Column<QualityDataSetDTO, SafeHtml> codeListName = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
 				
 				@Override
 				public SafeHtml getValue(QualityDataSetDTO object) {
@@ -767,36 +735,31 @@ public class MetaDataView implements MetaDataDetailDisplay{
 					String value; 
 					  String QDMDetails = ""; 
 					  
-					  if(object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) { 
+					  if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) { 
 						  QDMDetails = "(User defined)"; 
-						  } 
-					  else 
-					  { 
+						  }  else { 
 						  String version = object.getVersion(); 
 						  String effectiveDate = object.getEffectiveDate(); 
 						  
 						  if (effectiveDate != null) { 
 							  
-							  QDMDetails = "(OID: " +object.getOid() + ", Effective Date: " + effectiveDate + ")"; 
-							  } 
-						  else if (!version.equals("1.0") && !version.equals("1")) 
-						  { 
-							  QDMDetails = "(OID: " + object.getOid() + ", Version: " + version + ")"; 
-							  } 
-						  else 
-						  { 
-							  QDMDetails = "(OID: " + object.getOid() + ")"; 
+							  QDMDetails = "(OID: " + object.getOid() + ", Effective Date: " + effectiveDate + ")"; 
+							  }  else if (!version.equals("1.0") && !version.equals("1")) { 
+							  
+								  QDMDetails = "(OID: " + object.getOid() + ", Version: " + version + ")"; 
+							  } else { 
+							 
+								  QDMDetails = "(OID: " + object.getOid() + ")"; 
 							  } 
 						  } 
 					  
-					  if((object.getOccurrenceText() != null) && !object.getOccurrenceText().equals("")) { 
+					  if ((object.getOccurrenceText() != null) && !object.getOccurrenceText().equals("")) { 
 						  value = object.getOccurrenceText() + " of " + object.getCodeListName(); 
-						  sb.appendHtmlConstant("<span title=\""+ QDMDetails +" \" tabIndex=\"0\" >"+ value +" </span>");
+						  sb.appendHtmlConstant("<span title=\"" + QDMDetails + " \" tabIndex=\"0\" >" + value + " </span>");
 						  
-					  } 
-					  else { 
+					  } else { 
 						  value = object.getCodeListName();
-						  sb.appendHtmlConstant("<span title=\""+ QDMDetails +" \" tabIndex=\"0\">"+ value +" </span>");
+						  sb.appendHtmlConstant("<span title=\"" + QDMDetails + " \" tabIndex=\"0\">" + value + " </span>");
 						  } 
 					  
 					return sb.toSafeHtml();
@@ -805,13 +768,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			
 			cellTable.addColumn(codeListName, "Name");
 			
-         Column<QualityDataSetDTO,SafeHtml> vsacDataType = new Column<QualityDataSetDTO, SafeHtml>( new SafeHtmlCell()) {
+         Column<QualityDataSetDTO, SafeHtml> vsacDataType = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
 				
 				@Override
 				public SafeHtml getValue(QualityDataSetDTO object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();  
-				    sb.appendHtmlConstant("<span title=\""+ object.getDataType() +" \" tabIndex=\"0\" >"+ 
-					                object.getDataType() +" </span>");
+				    sb.appendHtmlConstant("<span title=\"" + object.getDataType() + " \" tabIndex=\"0\" >" 
+					+ object.getDataType() + " </span>");
 						  
 					return sb.toSafeHtml();
 				}
@@ -821,8 +784,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	     cellTable.setWidth("100%");
 	     cellTable.setColumnWidth(0, 5, Unit.PCT);
-	     cellTable.setColumnWidth(0, 10, Unit.PCT);
-	     cellTable.setColumnWidth(0, 10, Unit.PCT);
+	     cellTable.setColumnWidth(1, 10, Unit.PCT);
+	     cellTable.setColumnWidth(2, 10, Unit.PCT);
 		
     return cellTable;
 	}
@@ -895,9 +858,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return table;
 	}*/
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildCellTable
+	 * (mat.client.clause.QDSAppliedListModel, boolean)
+	 */
 	@Override
-	public void buildCellTable(QDSAppliedListModel appliedListModel,boolean isEditable){
-		horzPanel.clear();
+	public void buildCellTable(QDSAppliedListModel appliedListModel, boolean isEditable) {
+		horzPanel.clear(); 
 		qdmItemCountListVPanel.clear();
 		qdmItemCountListSPanel.clear();
 		qdmSelectedListVPanel.clear();
@@ -916,36 +883,33 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			sortProvider.getList().addAll(appliedListModel.getAppliedQDMs());
 			ListHandler<QualityDataSetDTO> sortHandler = new ListHandler<QualityDataSetDTO>(sortProvider.getList());
 			cellTable.addColumnSortHandler(sortHandler);
-			cellTable = addColumnToTable(cellTable,isEditable);
+			cellTable = addColumnToTable(cellTable, isEditable);
+			updateQDMSelectedList(appliedListModel.getAppliedQDMs());
 			sortProvider.addDataDisplay(cellTable);
 			Label invisibleLabel = (Label) LabelBuilder
 					.buildInvisibleLabel(
 							"appliedQDMTableSummary",
 							"In the Following Applied QDM Elements table a checkBoxCell is positioned to "
 									+ "the left of the table with a select Column header followed by "
-									+ "QDM name in second column and Datatype in third column. " +
-									"The Applied QDM elements are listed alphabetically in a table.  ");
+									+ "QDM name in second column and Datatype in third column. " 
+									+ "The Applied QDM elements are listed alphabetically in a table.");
 			cellTable.getElement().setAttribute("id", "AppliedQDMTable");
 			cellTable.getElement().setAttribute("aria-describedby", "appliedQDMTableSummary");
-			qdmItemCountListVPanel.add(LabelBuilder.buildLabel(cellTable, " Items Counted - Optional"));
-			qdmItemCountListSPanel.setSize("400px", "200px");
+			qdmItemCountListSPanel.setSize("500px", "150px");
 			qdmItemCountListSPanel.setWidget(cellTable);
 			qdmItemCountListVPanel.add(qdmItemCountListSPanel);
 			horzPanel.add(qdmItemCountListVPanel);
 			vPanel.setWidth("10px");
 			horzPanel.add(vPanel);
-			SimplePanel sPanel=new SimplePanel();
-			sPanel.setHeight("100px");
+			SimplePanel sPanel = new SimplePanel();
+			sPanel.setHeight("75px");
 			qdmSelectedListVPanel.add(sPanel);
-			Label labelbuilder=(Label)LabelBuilder
-					.buildLabel(cellTable, "Selected Items: "+qdmSelectedList.size());
-			qdmSelectedListVPanel.add(labelbuilder);
+			itemLabel.setText("Selected Items: " + qdmSelectedList.size());
+			qdmSelectedListVPanel.add(itemLabel);
 			horzPanel.add(qdmSelectedListVPanel);
 			//buildQDMSelectedList(appliedListModel.getAppliedQDMs());
-		}
-		else{
+		} else{
 			HTML desc = new HTML("<p> No Applied QDM Elements.</p>");
-			qdmItemCountListVPanel.add(LabelBuilder.buildLabel(cellTable, " Items Counted - Optional"));
 			qdmItemCountListSPanel.setSize("200px", "50px");
 			qdmItemCountListSPanel.setWidget(desc); 
 			qdmItemCountListVPanel.add(qdmItemCountListSPanel);
@@ -953,6 +917,24 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		}
 	}
 	
+	/**
+	 * Update qdm selected list.
+	 *
+	 * @param selectedList the selected list
+	 */
+	public void updateQDMSelectedList(List<QualityDataSetDTO> selectedList) {
+		if (qdmSelectedList.size() != 0) {
+			for (int i = 0; i < qdmSelectedList.size(); i++) {
+			for (int j = 0; j < selectedList.size(); j++) {
+					if (qdmSelectedList.get(i).getUuid().equalsIgnoreCase(selectedList.get(j).getUuid())) {
+						qdmSelectedList.set(i, selectedList.get(j));
+						break;
+					}
+				}
+			}
+		}
+		
+	}
 //	private void buildQDMSelectedList(List<QualityDataSetDTO> selectedList){
 //		
 //		    qdmSelectedListVPanel.clear();
@@ -963,15 +945,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 //			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 //			ListDataProvider<QualityDataSetDTO> qdmSelectedListsortProvider = new ListDataProvider<QualityDataSetDTO>();
 //			qdmSelectedListsortProvider.refresh();
-//			if(qdmSelectedList.size()!=0){
-//				for(int i=0;i<qdmSelectedList.size();i++){
-//					for(int j=0;j<selectedList.size();j++){
-//						if(qdmSelectedList.get(i).getUuid().equalsIgnoreCase(selectedList.get(j).getUuid())){
-//							qdmSelectedList.set(i,selectedList.get(j));
-//							break;
-//						}
-//					}
-//				}
+//			
 //				table.setRowData(qdmSelectedList);
 //				table.setRowCount(qdmSelectedList.size());
 //			qdmSelectedListsortProvider.getList().addAll(qdmSelectedList);
@@ -1110,14 +1084,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @param defaultText
 	 *            the default text
 	 */
-	private void setListBoxOptions(ListBox input, List<? extends HasListBox> itemList,String defaultText) {
+	private void setListBoxOptions(ListBox input, List<? extends HasListBox> itemList, String defaultText) {
 		input.clear();
-		if(defaultText != null) {
+		if (defaultText != null) {
 			input.addItem(defaultText, "");
 		}
-		if(itemList != null){
-			for(HasListBox listBoxContent : itemList){
-				input.addItem(listBoxContent.getItem(),"" +listBoxContent.getValue());
+		if (itemList != null) {
+			for (HasListBox listBoxContent : itemList) {
+				input.addItem(listBoxContent.getItem(), "" + listBoxContent.getValue());
 			}
 		}
 	}
@@ -1161,6 +1135,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return setNameInput;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getMeasurePopulationExclusions()
+	 */
 	@Override
 	public HasValue<String> getMeasurePopulationExclusions() {
 		return measurePopulationExclusionsInput;
@@ -1178,7 +1155,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getNqfId()
 	 */
 	@Override
-	public HasValue<String> getNqfId(){
+	public HasValue<String> getNqfId() {
 		return NQFIDInput;
 	}
 	
@@ -1445,10 +1422,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setAuthorsList(java.util.List)
 	 */
 	@Override
-	public void setAuthorsList(List<Author> authorList){
+	public void setAuthorsList(List<Author> authorList) {
 		emptyAuthorsPanel.clear();
 		authorListBox.clear();
-		for(Author author: authorList){
+		for (Author author: authorList) {
 			authorListBox.addItem(author.getAuthorName());
 		}
 		emptyAuthorsPanel.add(authorListBox);
@@ -1458,10 +1435,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setMeasureTypeList(java.util.List)
 	 */
 	@Override
-	public void setMeasureTypeList(List<MeasureType> measureType){
+	public void setMeasureTypeList(List<MeasureType> measureType) {
 		emptyMeasureTypePanel.clear();
 		measureTypeListBox.clear();
-		for(MeasureType mt:measureType){
+		for (MeasureType mt: measureType) {
 			measureTypeListBox.addItem(mt.getDescription());
 		}
 		emptyMeasureTypePanel.add(measureTypeListBox);
@@ -1496,15 +1473,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @param reference
 	 *            the reference
 	 */
-	private void  addRow(FlexTable reference){
+	private void  addRow(FlexTable reference) {
 		TextAreaWithMaxLength newReferenceBox = createReferenceInput();
 		++counter;
-		String dynamicLabel = "Reference"+counter;
+		String dynamicLabel = "Reference" + counter;
 		Widget newReferenceBoxLabel = LabelBuilder.buildInvisibleLabel(newReferenceBox, dynamicLabel);
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.add(newReferenceBoxLabel);
 		hp.add(newReferenceBox);
-		Button newremoveButton = new PrimaryButton("Remove","primaryGreyLeftButton");
+		Button newremoveButton = new PrimaryButton("Remove", "primaryGreyLeftButton");
 		newremoveButton.addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -1512,14 +1489,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				clearErrorMsg();
 				com.google.gwt.user.client.ui.HTMLTable.Cell cell = referenceTable.getCellForEvent(event);
 				int clickedRowIndex = cell.getRowIndex();
-				removeRow(referenceTable,clickedRowIndex);
+				removeRow(referenceTable, clickedRowIndex);
 				
 			}
 		});
 		int numRows = referenceTable.getRowCount();
 		referenceTable.setWidget(numRows, 0, hp);
 		//referenceTable.setWidget(numRows, 1, new SimplePanel());
-		referenceTable.setWidget(numRows, 1,newremoveButton);
+		referenceTable.setWidget(numRows, 1, newremoveButton);
 		referenceTable.getFlexCellFormatter().setRowSpan(0, 1, numRows + 1);
 		referenceArrayList.add(newReferenceBox);
 	}
@@ -1532,13 +1509,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @param rowIndex
 	 *            the row index
 	 */
-	private void removeRow(FlexTable reference,int rowIndex){
+	private void removeRow(FlexTable reference, int rowIndex) {
 		int numRows = reference.getRowCount();
-		if(referenceTable.getWidget(rowIndex, 0) instanceof HorizontalPanel){
+		if (referenceTable.getWidget(rowIndex, 0) instanceof HorizontalPanel) {
 			HorizontalPanel horizontalPanel =  (HorizontalPanel) referenceTable.getWidget(rowIndex, 0);
 			TextAreaWithMaxLength areaWithMaxLength = (TextAreaWithMaxLength) horizontalPanel.getWidget(1);
 			referenceArrayList.remove(areaWithMaxLength);
-		}else if (referenceTable.getWidget(rowIndex, 0) instanceof TextAreaWithMaxLength){
+		} else if (referenceTable.getWidget(rowIndex, 0) instanceof TextAreaWithMaxLength) {
 			referenceArrayList.remove(referenceTable.getWidget(rowIndex, 0));
 		}
 		referenceTable.removeRow(rowIndex);
@@ -1552,7 +1529,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	@Override
 	public List<String> getReferenceValues() {
 		ArrayList<String> referenceValues = new ArrayList<String>();
-		for(TextAreaWithMaxLength referenceBox: referenceArrayList){
+		for (TextAreaWithMaxLength referenceBox: referenceArrayList) {
 			referenceValues.add(referenceBox.getValue());
 		}
 		return referenceValues;
@@ -1565,27 +1542,27 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public void setReferenceValues(List<String> values, boolean editable) {
-		if((values != null) && !values.isEmpty()){
+		if ((values != null) && !values.isEmpty()) {
 			clearReferences();
-			for(int i=0;i<values.size();i++){
+			for (int i = 0; i < values.size(); i++) {
 				TextAreaWithMaxLength newReferenceBox = createReferenceInput();
 				newReferenceBox.setValue(values.get(i));
 				newReferenceBox.setEnabled(editable);
-				if(i == 0){
-					referenceTable.setWidget(0, 0,newReferenceBox);
+				if (i == 0) {
+					referenceTable.setWidget(0, 0, newReferenceBox);
 					referenceTable.setWidget(0, 1, new SimplePanel());
 					referenceTable.setWidget(0, 2, AddRowButton);
-				}else{
+				} else {
 					referenceTable.setWidget(i, 0, newReferenceBox);
-					if(editable) {
-						Button newRemoveButton = new PrimaryButton("Remove","primaryGreyLeftButton");
+					if (editable) {
+						Button newRemoveButton = new PrimaryButton("Remove", "primaryGreyLeftButton");
 						newRemoveButton.addClickHandler(new ClickHandler() {
 							
 							@Override
 							public void onClick(ClickEvent event) {
 								com.google.gwt.user.client.ui.HTMLTable.Cell cell = referenceTable.getCellForEvent(event);
 								int clickedRowIndex = cell.getRowIndex();
-								removeRow(referenceTable,clickedRowIndex);
+								removeRow(referenceTable, clickedRowIndex);
 							}
 						});
 						referenceTable.setWidget(i, 1, new SimplePanel());
@@ -1595,10 +1572,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				referenceArrayList.add(newReferenceBox);
 			}
 			referencePlaceHolder.add(referenceTable);
-		}else if(values.isEmpty()){
+		} else if (values.isEmpty()) {
 			clearReferences();
 			TextAreaWithMaxLength newReferenceBox = createReferenceInput();
-			referenceTable.setWidget(0, 0,newReferenceBox);
+			referenceTable.setWidget(0, 0, newReferenceBox);
 			referenceTable.setWidget(0, 1, new SimplePanel());
 			referenceTable.setWidget(0, 2, AddRowButton);
 			referenceArrayList.add(newReferenceBox);
@@ -1612,9 +1589,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @param referenceInput
 	 *            the reference input
 	 */
-	private void buildReferenceTable(TextAreaWithMaxLength referenceInput){
+	private void buildReferenceTable(TextAreaWithMaxLength referenceInput) {
 		clearReferences();
-		referenceTable.setWidget(0, 0,referenceInput);
+		referenceTable.setWidget(0, 0, referenceInput);
 		referenceArrayList.add(referenceInput);
 		referenceTable.setWidget(0, 1, new SimplePanel());
 		referenceTable.setWidget(0, 2, AddRowButton);
@@ -1624,13 +1601,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/**
 	 * Clear references.
 	 */
-	private void clearReferences(){
+	private void clearReferences() {
 		referencePlaceHolder.clear();
 		referenceTable.clear();
 		referenceTable.removeAllRows();
 		referenceArrayList.clear();
 		FlexCellFormatter cellFormatter = referenceTable.getFlexCellFormatter();
-		cellFormatter.setHorizontalAlignment(0, 1,HasHorizontalAlignment.ALIGN_LEFT);
+		cellFormatter.setHorizontalAlignment(0, 1, HasHorizontalAlignment.ALIGN_LEFT);
 	}
 	
 	
@@ -1754,7 +1731,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/**
 	 * Local method to clear out the Steward other panel.
 	 */
-	private void clearOtherPanel(){
+	private void clearOtherPanel() {
 		measureStewardOtherInput.setValue(null);
 		emptyTextBoxHolder.clear();
 	}
@@ -1853,7 +1830,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/**
 	 * Clear error msg.
 	 */
-	private void clearErrorMsg(){
+	private void clearErrorMsg() {
 		getSaveErrorMsg().clear();
 	}
 
@@ -1864,9 +1841,28 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}*/
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setAppliedQDMList(java.util.ArrayList)
+	 */
 	@Override
 	public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList) {
-		this.appliedQDMList=appliedQDMList;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setQdmSelectedList(java.util.List)
+	 */
+	@Override
+    public void setQdmSelectedList(List<QualityDataSetDTO> qdmSelectedList) {
+		this.qdmSelectedList = qdmSelectedList;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getQdmSelectedList()
+	 */
+	@Override
+	public List<QualityDataSetDTO> getQdmSelectedList() {
+		return qdmSelectedList;
+	}
+ 
 	
 }

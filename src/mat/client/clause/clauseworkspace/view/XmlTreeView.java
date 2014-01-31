@@ -50,7 +50,7 @@ import com.google.gwt.view.client.TreeViewModel;
 /**
  * The Class XmlTreeView.
  */
-public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel, KeyDownHandler, FocusHandler{
+public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel, KeyDownHandler, FocusHandler {
 	
 	/**
 	 * The Interface Template.
@@ -618,7 +618,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		@Override
 		public void onBrowserEvent(Context context, Element parent, CellTreeNode value,
 				NativeEvent event, ValueUpdater<CellTreeNode> valueUpdater) {
-			if (event.getType().equals(BrowserEvents.CONTEXTMENU)){
+			if (event.getType().equals(BrowserEvents.CONTEXTMENU)) {
 				event.preventDefault();
 				event.stopPropagation();
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
@@ -639,7 +639,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 *            the cell tree node
 	 * @return the style class
 	 */
-	private String getStyleClass(CellTreeNode cellTreeNode){
+	private String getStyleClass(CellTreeNode cellTreeNode) {
 		
 		if (cellTreeNode.getValidNode() != false) {
 			switch (cellTreeNode.getNodeType()) {
@@ -660,7 +660,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public CellTreeNode addNode(String value, String label, short nodeType) {
 		CellTreeNode childNode = null;
-		if((selectedNode != null) &&  (value != null) && (value.trim().length() > 0)){//if nodeTex textbox is not empty
+		if ((selectedNode != null) &&  (value != null) && (value.trim().length() > 0)) { //if nodeTex textbox is not empty
 			childNode = selectedNode.createChild(value, label, nodeType);
 			closeSelectedOpenNodes(cellTree.getRootTreeNode());
 			selectionModel.setSelected(selectedNode, true);
@@ -672,7 +672,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#refreshCellTreeAfterAdding(mat.client.clause.clauseworkspace.model.CellTreeNode)
 	 */
 	@Override
-	public void refreshCellTreeAfterAdding(CellTreeNode selectedNode){
+	public void refreshCellTreeAfterAdding(CellTreeNode selectedNode) {
 		closeSelectedOpenNodes(cellTree.getRootTreeNode());
 		selectionModel.setSelected(selectedNode, true);
 	}
@@ -682,7 +682,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	@Override
 	public void removeNode() {
-		if(selectedNode != null){
+		if (selectedNode != null) {
 			CellTreeNode parent = selectedNode.getParent();
 			parent.removeChild(selectedNode);
 			closeParentOpenNodes(cellTree.getRootTreeNode());
@@ -816,7 +816,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	@Override
 	public void paste() {
-		if(selectedNode != null){
+		if (selectedNode != null) {
 			CellTreeNode pasteNode = copiedNode.cloneNode();
 			selectedNode.appendChild(pasteNode);
 			closeSelectedOpenNodes(cellTree.getRootTreeNode());
@@ -864,7 +864,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	@Override
 	public void editNode(String name, String label) {
-		if(selectedNode != null){
+		if (selectedNode != null) {
 			selectedNode.setName(name);
 			selectedNode.setLabel(label);
 			closeParentOpenNodes(cellTree.getRootTreeNode());
@@ -903,74 +903,77 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void onKeyDown(KeyDownEvent event) {
 		//		System.out.println(event.getNativeKeyCode());
 		int keyCode = event.getNativeKeyCode();
-		if(selectedNode != null){
+		if (selectedNode != null) {
 			short nodeType = selectedNode.getNodeType();
-			if(event.isControlKeyDown()){
-				if(keyCode == PopulationWorkSpaceConstants.COPY_C){//COPY
-					if((nodeType != CellTreeNode.MASTER_ROOT_NODE) && (nodeType != CellTreeNode.ROOT_NODE)){
+			if (event.isControlKeyDown()) {
+				if (keyCode == PopulationWorkSpaceConstants.COPY_C) { //COPY
+					if ((nodeType != CellTreeNode.MASTER_ROOT_NODE) && (nodeType != CellTreeNode.ROOT_NODE)) {
 						popupPanel.hide();
 						copy();
 					}
 					
-				}else if(keyCode == PopulationWorkSpaceConstants.PASTE_V){//PASTE
+				} else if (keyCode == PopulationWorkSpaceConstants.PASTE_V) { //PASTE
 					boolean canPaste = false;
 					popupPanel.hide();
-					if(copiedNode != null){
+					if (copiedNode != null) {
 						switch (selectedNode.getNodeType()) {
 							case CellTreeNode.ROOT_NODE:
-								if(selectedNode.equals(copiedNode.getParent())){
+								if (selectedNode.equals(copiedNode.getParent())) {
 									clauseWorkspaceContextMenu.pasteRootNodeTypeItem();
 									isDirty = true;
 								}
 								break;
 							case CellTreeNode.LOGICAL_OP_NODE: case CellTreeNode.FUNCTIONS_NODE:
-								if(copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE){
+								if (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) {
 									canPaste = true;
 								}
 								break;
 							case CellTreeNode.TIMING_NODE:
-								if((copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
-										&& ((selectedNode.getChilds() == null) || (selectedNode.getChilds().size() < 2))){
+								if ((copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
+										&& ((selectedNode.getChilds() == null) || (selectedNode.getChilds().size() < 2))) {
 									canPaste = true;
 								}
 								break;
 							default:
 								break;
 						}
-						if(canPaste){
+						if (canPaste) {
 							paste();
 							isDirty = true;
 						}
 					}
 					
-				}else if(keyCode == PopulationWorkSpaceConstants.CUT_X){//CUT
+				} else if (keyCode == PopulationWorkSpaceConstants.CUT_X) { //CUT
 					popupPanel.hide();
-					if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
+					if ((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
 							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
 							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
-							&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)){
+							&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
 						copy();
 						removeNode();
 						isDirty = true;
 					}
 				}
-			}else if(keyCode == PopulationWorkSpaceConstants.DELETE_DELETE){//DELETE
+			} else if (keyCode == PopulationWorkSpaceConstants.DELETE_DELETE) { //DELETE
 				popupPanel.hide();
-				if(((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
+				if (((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
 						&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
 						&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
 						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE))
-						|| ((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE) && (selectedNode.getParent().getChilds().size() > 1) )){
+						|| ((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE) 
+								&& (selectedNode.getParent().getChilds().size() > 1))) {
 					removeNode();
 					isDirty = true;
 				}
 			}
 		}
-		if((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.PLUS_FF) || (keyCode == PopulationWorkSpaceConstants.PLUS_IE)))){
+		if ((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.PLUS_FF) 
+				|| (keyCode == PopulationWorkSpaceConstants.PLUS_IE)))) {
 			//EXPAND/COLLAPSE (+(Shift +) Expand| - Collapse)
 			popupPanel.hide();
 			openAllNodes(cellTree.getRootTreeNode());
-		}else if((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.MINUS_FF) || (keyCode == PopulationWorkSpaceConstants.MINUS_IE)))){
+		} else if ((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.MINUS_FF) 
+				|| (keyCode == PopulationWorkSpaceConstants.MINUS_IE)))) {
 			popupPanel.hide();
 			closeNodes(cellTree.getRootTreeNode());
 		}
@@ -1022,19 +1025,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	@Override
 	public void expandSelected(TreeNode treeNode) {
-		if(treeNode != null){
+		if (treeNode != null) {
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				TreeNode subTree = null;
-				if(treeNode.getChildValue(i).equals(selectedNode)){// this check is performed since IE was giving JavaScriptError after removing a node and closing all nodes.
+				if (treeNode.getChildValue(i).equals(selectedNode)) { // this check is performed since IE was giving JavaScriptError after removing a node and closing all nodes.
 					// to avoid that we are closing the parent of the removed node.
 					subTree = treeNode.setChildOpen(i, true, true);
-					if ((subTree != null) && (subTree.getChildCount() > 0)){
+					if ((subTree != null) && (subTree.getChildCount() > 0)) {
 						openAllNodes(subTree);
 					}
 					break;
 				}
 				subTree = treeNode.setChildOpen(i, ((CellTreeNode)treeNode.getChildValue(i)).isOpen(), ((CellTreeNode)treeNode.getChildValue(i)).isOpen());
-				if ((subTree != null) && (subTree.getChildCount() > 0)){
+				if ((subTree != null) && (subTree.getChildCount() > 0)) {
 					expandSelected(subTree);
 				}
 			}
@@ -1085,7 +1088,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public CellTreeNode addNode(String name, String label, String uuid,
 			short nodeType) {
 		CellTreeNode childNode = null;
-		if((selectedNode != null) &&  (name != null) && (name.trim().length() > 0)){//if nodeTex textbox is not empty
+		if ((selectedNode != null) &&  (name != null) && (name.trim().length() > 0)) { //if nodeTex textbox is not empty
 			childNode = selectedNode.createChild(name, label, nodeType);
 			childNode.setUUID(uuid);
 			closeSelectedOpenNodes(cellTree.getRootTreeNode());
@@ -1100,7 +1103,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	@Override
 	public void editNode(String name, String label, String uuid) {
-		if(selectedNode != null){
+		if (selectedNode != null) {
 			selectedNode.setName(name);
 			selectedNode.setLabel(label);
 			selectedNode.setUUID(uuid);

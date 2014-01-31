@@ -39,6 +39,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class XmlProcessor.
  */
@@ -88,11 +89,14 @@ public class XmlProcessor {
 	/** The Constant XPATH_MEASURE_SUBTREE_LOOKUP. */
 	private static final String XPATH_MEASURE_SUBTREE_LOOKUP = "/measure/subTreeLookUp";
 	
-	private static final String XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT="/measure/measureDetails/itemCount";
+	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT. */
+	private static final String XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT = "/measure/measureDetails/itemCount";
 	
-	private static final String XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE="/measure/measureDetails/types";
+	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE. */
+	private static final String XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE = "/measure/measureDetails/types";
 	
-	private static final String XPATH_MEASURE_MEASURE_DETAILS_SCORING="/measure/measureDetails/scoring";
+	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_SCORING. */
+	private static final String XPATH_MEASURE_MEASURE_DETAILS_SCORING = "/measure/measureDetails/scoring";
 	
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
@@ -726,6 +730,12 @@ public class XmlProcessor {
 		}
 	}
 	
+	/**
+	 * Rename ip p_ to_ ip.
+	 *
+	 * @param document the document
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	public void renameIPP_To_IP(Document document) throws XPathExpressionException {
 		
 		String displayName = "displayName";
@@ -920,14 +930,13 @@ public class XmlProcessor {
 		if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT) == null) {
 			Element itemCount_Element = originalDoc
 					.createElement("itemCount");
-			if(findNode(originalDoc,XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE)==null){
-			Node scoring_Element=findNode(originalDoc,XPATH_MEASURE_MEASURE_DETAILS_SCORING);
+			if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE) == null) {
+			Node scoring_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_SCORING);
 			((Element) scoring_Element.getParentNode())
 			.insertBefore(itemCount_Element,
 					scoring_Element.getNextSibling());
-			}
-			else{
-				Node measure_Type_Element=findNode(originalDoc,XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE);
+			} else {
+				Node measure_Type_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE);
 				((Element) measure_Type_Element.getParentNode())
 				.insertBefore(itemCount_Element,
 						measure_Type_Element.getNextSibling());

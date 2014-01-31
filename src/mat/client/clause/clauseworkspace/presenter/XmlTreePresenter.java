@@ -24,6 +24,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class XmlTreePresenter.
  */
@@ -35,7 +36,8 @@ public class XmlTreePresenter {
 	private static final int NODESIZE = 500;
 	
 	
-	boolean isUnsavedData = false;
+	/** The is unsaved data. */
+	private boolean isUnsavedData = false;
 	/**
 	 * Pop up Panel for Right Context Menu.
 	 */
@@ -376,6 +378,8 @@ public class XmlTreePresenter {
 	}
 	
 	/**
+	 * Show error message.
+	 *
 	 * @param errorMessageDisplay -ErrorMessageDisplay.
 	 */
 	private void showErrorMessage(ErrorMessageDisplay errorMessageDisplay) {
@@ -385,7 +389,10 @@ public class XmlTreePresenter {
 		btn.add("No");
 		errorMessageDisplay.setMessageWithButtons(msg, btn);
 	}
+	
 	/**
+	 * Handle click events on unsaved error msg.
+	 *
 	 * @param btns -List.
 	 * @param saveErrorMessage - ErrorMessageDisplay.
 	 * @param auditMessage -String.

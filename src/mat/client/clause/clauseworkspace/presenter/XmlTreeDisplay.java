@@ -10,6 +10,7 @@ import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface XmlTreeDisplay.
  */
@@ -190,7 +191,8 @@ public interface XmlTreeDisplay {
 	
 	/**
 	 * Gets the validate btn.
-	 * 
+	 *
+	 * @param treeNode the tree node
 	 * @return the validate btn
 	 */
 	//Commented Validate Button from Population Work Space as part of Mat-3162
@@ -243,28 +245,51 @@ public interface XmlTreeDisplay {
 	void setValid(boolean isValid);
 	
 	/**
-	 * @return
+	 * Gets the cell tree.
+	 *
+	 * @return the cell tree
 	 */
 	CellTree getCellTree();
 	
 	/**
-	 * @param cellTree
+	 * Sets the cell tree.
+	 *
+	 * @param cellTree the new cell tree
 	 */
 	void setCellTree(CellTree cellTree);
 	
 	/**
-	 * @return
+	 * Gets the save btn clause work space.
+	 *
+	 * @return the save btn clause work space
 	 */
 	Button getSaveBtnClauseWorkSpace();
 	
 	/**
-	 * @return
+	 * Gets the validate btn clause work space.
+	 *
+	 * @return the validate btn clause work space
 	 */
 	Button getValidateBtnClauseWorkSpace();
 	
+	/**
+	 * Gets the clear clause work space.
+	 *
+	 * @return the clear clause work space
+	 */
 	Button getClearClauseWorkSpace();
 	
+	/**
+	 * Sets the clause workspace context menu.
+	 *
+	 * @param clauseWorkspaceContextMenu the new clause workspace context menu
+	 */
 	void setClauseWorkspaceContextMenu(ClauseWorkspaceContextMenu clauseWorkspaceContextMenu);
 	
+	/**
+	 * Gets the clear error display.
+	 *
+	 * @return the clear error display
+	 */
 	public ErrorMessageDisplay getClearErrorDisplay();
 }

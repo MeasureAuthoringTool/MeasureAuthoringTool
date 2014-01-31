@@ -30,7 +30,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 /**
  * The Class ComparisonDialogBox.
  */
-public class ComparisonDialogBox{
+public class ComparisonDialogBox {
 
 	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(true,true);
@@ -62,48 +62,52 @@ public class ComparisonDialogBox{
 		DOM.setStyleAttribute(dialogBox.getElement(), "top", "155px");*/
 		dialogBox.setWidget(dialogContents);
 		@SuppressWarnings("unchecked")
-		HashMap<String,String> extraAttributesMap = (HashMap<String, String>) cellTreeNode.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
+		HashMap<String, String> extraAttributesMap = (HashMap<String, String>) cellTreeNode
+		                                 .getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 
 		final ListBoxMVP listAllTimeOrFunction = new ListBoxMVP();
-		String timingOrFuncMethod ="--Select--";
-		String operatorMethod="--Select--";
-		String quantityValue ="";
-		String unitType ="--Select--";
+		String timingOrFuncMethod = "--Select--";
+		String operatorMethod = "--Select--";
+		String quantityValue = "";
+		String unitType = "--Select--";
 
-		if(extraAttributesMap!=null){
+		if (extraAttributesMap != null) {
 			timingOrFuncMethod =  extraAttributesMap.get(PopulationWorkSpaceConstants.TYPE);
 			timingOrFuncMethod =  MatContext.get().operatorMapKeyShort.containsKey(timingOrFuncMethod) 
 					? MatContext.get().operatorMapKeyShort.get(timingOrFuncMethod) : "--Select--";
-			operatorMethod = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE) ? extraAttributesMap.get(PopulationWorkSpaceConstants.OPERATOR_TYPE) : operatorMethod;
-			quantityValue = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.QUANTITY) ? extraAttributesMap.get(PopulationWorkSpaceConstants.QUANTITY) : quantityValue;
-			unitType = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.UNIT) ? extraAttributesMap.get(PopulationWorkSpaceConstants.UNIT) : unitType;
-			if(operatorMethod.trim().length() == 0){
+			operatorMethod = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE) 
+					? extraAttributesMap.get(PopulationWorkSpaceConstants.OPERATOR_TYPE) : operatorMethod;
+			quantityValue = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.QUANTITY) 
+					? extraAttributesMap.get(PopulationWorkSpaceConstants.QUANTITY) : quantityValue;
+			unitType = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.UNIT) 
+					? extraAttributesMap.get(PopulationWorkSpaceConstants.UNIT) : unitType;
+			if (operatorMethod.trim().length() == 0) {
 				operatorMethod = "--Select--";
 			}
-			if(unitType.trim().length() == 0){
+			if (unitType.trim().length() == 0) {
 				unitType = "--Select--";
 			}
-		}else{
+		} else {
 			timingOrFuncMethod = cellTreeNode.getLabel();
 		}
 		String labelForListBox = null;
 		List<String> keys = null;
 		//List for Timing or Function based on Node Type.
-		if(cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE){
+		if (cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE) {
 			keys = MatContext.get().timings;
 			labelForListBox = "Timing";
-		}else{
+		} else {
 			keys = MatContext.get().functions;
 			labelForListBox = "Functions";
 		}
 		
-		if(timingOrFuncMethod.contains("Select")){ //added is null check for Functions which are not in recent list but exists in prod like COUNTDISTINCT 
+		if (timingOrFuncMethod.contains("Select")) { //added is null check for Functions which are not in recent list but exists in prod like COUNTDISTINCT 
 			listAllTimeOrFunction.addItem(timingOrFuncMethod);
 		}
 			
-		for(int i=0; i < keys.size(); i++){
+		for (int i = 0; i < keys.size(); i++) {
 			listAllTimeOrFunction.addItem(keys.get(i));
-			if(keys.get(i).equalsIgnoreCase(timingOrFuncMethod)){
+			if (keys.get(i).equalsIgnoreCase(timingOrFuncMethod)) {
 				listAllTimeOrFunction.setSelectedIndex(i);
 			}
 		}
@@ -119,11 +123,11 @@ public class ComparisonDialogBox{
 		final ListBoxMVP listAllOperator = new ListBoxMVP();
 		// listAllOperator.addItem("--Select--");
 		List<String> comparisonOpKeys = MatContext.get().comparisonOps;
-		if(operatorMethod.contains("Select"))
+		if (operatorMethod.contains("Select"))
 			listAllOperator.addItem(operatorMethod);
-		for(int i=0; i < comparisonOpKeys.size(); i++){
+		for (int i = 0; i < comparisonOpKeys.size(); i++) {
 			listAllOperator.addItem(comparisonOpKeys.get(i));
-			if(comparisonOpKeys.get(i).equalsIgnoreCase(operatorMethod)){
+			if (comparisonOpKeys.get(i).equalsIgnoreCase(operatorMethod)) {
 				listAllOperator.setSelectedIndex(i);
 			}
 		}
@@ -137,7 +141,7 @@ public class ComparisonDialogBox{
 		//Qunatity Text Box.
 		final TextBox quantity = new TextBox();
 		quantity.getElement().setId("quantity_TextBox");
-		if(quantityValue!=null){
+		if (quantityValue != null) {
 			quantity.setValue(quantityValue);
 		}
 		quantity.setWidth("150px");
@@ -152,20 +156,20 @@ public class ComparisonDialogBox{
 
 		//List of Units.
 		final ListBoxMVP listAllUnits = new ListBoxMVP();
-		if(unitType.contains("Select"))
+		if (unitType.contains("Select"))
 			listAllUnits.addItem(unitType);
-		if(cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE){
+		if (cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE) {
 			//Show list starting from seconds till Year for Timing. Since list is reterived in sorted order, Year comes at 7th index.
-			for(int i=0;i<7;i++){
+			for (int i = 0; i < 7; i++) {
 				listAllUnits.addItem(PopulationWorkSpaceConstants.units.get(i));
-				if((PopulationWorkSpaceConstants.units.get(i)).equalsIgnoreCase(unitType)){
+				if ((PopulationWorkSpaceConstants.units.get(i)).equalsIgnoreCase(unitType)) {
 					listAllUnits.setSelectedIndex(i);
 				}
 			}
-		}else{
-			for(int i=0;i<PopulationWorkSpaceConstants.units.size();i++){
+		} else {
+			for (int i = 0; i < PopulationWorkSpaceConstants.units.size(); i++) {
 				listAllUnits.addItem(PopulationWorkSpaceConstants.units.get(i));
-				if((PopulationWorkSpaceConstants.units.get(i)).equalsIgnoreCase(unitType)){
+				if ((PopulationWorkSpaceConstants.units.get(i)).equalsIgnoreCase(unitType)) {
 					listAllUnits.setSelectedIndex(i);
 				}
 			}
@@ -182,7 +186,8 @@ public class ComparisonDialogBox{
 			@Override
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
-				saveAttributesToNode(listAllTimeOrFunction.getValue(), listAllOperator.getValue(),quantity.getValue(),listAllUnits.getValue(),xmlTreeDisplay);
+				saveAttributesToNode(listAllTimeOrFunction.getValue(), 
+						listAllOperator.getValue(), quantity.getValue(), listAllUnits.getValue(), xmlTreeDisplay);
 				xmlTreeDisplay.setDirty(true);
 			}
 		});
@@ -223,31 +228,34 @@ public class ComparisonDialogBox{
 	 * @param xmlTreeDisplay
 	 *            the xml tree display
 	 */ 
-	private static void saveAttributesToNode(String functionOrTiming, String operator, String quantity, String unit, XmlTreeDisplay xmlTreeDisplay){
-		Map<String,String> extraAttributes = new HashMap<String,String>();
-		if(!operator.contains("Select")){
+	private static void saveAttributesToNode(String functionOrTiming, String operator, 
+			String quantity, String unit, XmlTreeDisplay xmlTreeDisplay) {
+		Map<String, String> extraAttributes = new HashMap<String, String>();
+		if (!operator.contains("Select")) {
 			extraAttributes.put(PopulationWorkSpaceConstants.OPERATOR_TYPE, operator);
-		}else{
-			operator="";
+		} else {
+			operator = "";
 		}
-		if(!unit.contains("Select")){
+		if (!unit.contains("Select")) {
 			extraAttributes.put(PopulationWorkSpaceConstants.UNIT, unit);
+		} else {
+			unit = "";
 		}
-		else{
-			unit="";
-		}
-		if(!functionOrTiming.contains("Select")){
+		if (!functionOrTiming.contains("Select")) {
 			extraAttributes.put(PopulationWorkSpaceConstants.TYPE, MatContext.get().operatorMapKeyLong.get(functionOrTiming));
 			StringBuilder displayName = new StringBuilder();
-			if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.TIMING_NODE){
+			if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.TIMING_NODE) {
 //				String operatorType = ClauseConstants.getComparisonOperatorMap().containsKey(operator) ? ClauseConstants.getComparisonOperatorMap().get(operator) : " ";
-				String operatorType = MatContext.get().operatorMapKeyLong.containsKey(operator) ? MatContext.get().operatorMapKeyLong.get(operator) : " ";
+				String operatorType = MatContext.get().operatorMapKeyLong.containsKey(operator) 
+						? MatContext.get().operatorMapKeyLong.get(operator) : " ";
 //				StringBuilder operatorTypeKey = new StringBuilder(operatorType);
-				displayName.append(operatorType).append(" ").append(quantity).append(" ").append(unit).append(" ").append(functionOrTiming);
-			}
-			else if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-				String operatorType = MatContext.get().operatorMapKeyLong.containsKey(operator) ? MatContext.get().operatorMapKeyLong.get(operator) : " ";
-				displayName.append(functionOrTiming).append(" ").append(operatorType).append(" ").append(quantity).append(" ").append(unit);
+				displayName.append(operatorType).append(" ").append(quantity).append(" ")
+				   .append(unit).append(" ").append(functionOrTiming);
+			} else if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE) {
+				String operatorType = MatContext.get().operatorMapKeyLong.containsKey(operator) 
+						? MatContext.get().operatorMapKeyLong.get(operator) : " ";
+				displayName.append(functionOrTiming).append(" ").append(operatorType).append(" ")
+				   .append(quantity).append(" ").append(unit);
 			}
 			extraAttributes.put(PopulationWorkSpaceConstants.DISPLAY_NAME, displayName.toString());
 			xmlTreeDisplay.editNode(displayName.toString(), displayName.toString());
@@ -264,18 +272,18 @@ public class ComparisonDialogBox{
 	 * @param quantity
 	 *            the quantity
 	 */
-	private static void addHandlerToQuantityTextBox(TextBox quantity){
+	private static void addHandlerToQuantityTextBox(TextBox quantity) {
 
-		quantity.addKeyPressHandler(new KeyPressHandler(){
+		quantity.addKeyPressHandler(new KeyPressHandler() {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
 				if (!Character.isDigit(event.getCharCode()) 
 						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_TAB 
-						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_BACKSPACE){
+						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_BACKSPACE) {
 					((TextBox) event.getSource()).cancelKey();
 				}
 
-			}});
+			} });
 	}
 
 }

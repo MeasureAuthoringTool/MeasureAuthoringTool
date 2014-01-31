@@ -19,6 +19,10 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.XMLParser;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ClauseWorkSpacePresenter.
+ */
 public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPresenter {
 	/** The simplepanel. */
 	private SimplePanel simplepanel = new SimplePanel();
@@ -29,6 +33,9 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 	/** The service. */
 	MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
+	/**
+	 * Instantiates a new clause work space presenter.
+	 */
 	public ClauseWorkSpacePresenter() {
 		simplepanel.setStyleName("contentPanel");
 		simplepanel.add(flowPanel);
@@ -53,7 +60,11 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 			}
 		});
 	}
-	private void loadMeasureXML(){
+	
+	/**
+	 * Load measure xml.
+	 */
+	private void loadMeasureXML() {
 		final String currentMeasureId = MatContext.get().getCurrentMeasureId();
 		if ((currentMeasureId != null) && !"".equals(currentMeasureId)) {
 			service.getMeasureXmlForMeasure(MatContext.get()
@@ -109,16 +120,26 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 			}
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		loadMeasureXML();
 		loadClauseWorkSpaceView(simplepanel);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		return simplepanel;

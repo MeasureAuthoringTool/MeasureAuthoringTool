@@ -107,7 +107,7 @@ public class ClauseWorkspaceContextMenu {
 		popupPanel = popPanel;
 		Command copyCmd = new Command() {
 			@Override
-			public void execute( ) {
+			public void execute() {
 				popupPanel.hide();
 				xmlTreeDisplay.copy();
 			}
@@ -116,7 +116,7 @@ public class ClauseWorkspaceContextMenu {
 		
 		Command deleteCmd = new Command() {
 			@Override
-			public void execute( ) {
+			public void execute() {
 				xmlTreeDisplay.setDirty(true);
 				popupPanel.hide();
 				xmlTreeDisplay.removeNode();
@@ -125,7 +125,7 @@ public class ClauseWorkspaceContextMenu {
 		deleteMenu = new MenuItem(template.menuTable("Delete", "Delete"), deleteCmd);
 		Command cutCmd = new Command() {
 			@Override
-			public void execute( ) {
+			public void execute() {
 				xmlTreeDisplay.setDirty(true);
 				popupPanel.hide();
 				xmlTreeDisplay.copy();
@@ -138,9 +138,9 @@ public class ClauseWorkspaceContextMenu {
 			@Override
 			public void execute() {
 				xmlTreeDisplay.setDirty(true);
-				if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.ROOT_NODE){
+				if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.ROOT_NODE) {
 					pasteRootNodeTypeItem();
-				}else{
+				} else {
 					xmlTreeDisplay.paste();
 				}
 				popupPanel.hide();
@@ -150,7 +150,7 @@ public class ClauseWorkspaceContextMenu {
 		
 		Command expandCmd = new Command() {
 			@Override
-			public void execute( ) {
+			public void execute() {
 				popupPanel.hide();
 				xmlTreeDisplay.expandSelected(xmlTreeDisplay.getXmlTree().getRootTreeNode());
 			}
@@ -167,7 +167,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param popupPanel
 	 *            the popup panel
 	 */
-	public void displayMenuItems( final PopupPanel popupPanel){
+	public void displayMenuItems( final PopupPanel popupPanel) {
 		popupMenuBar.clearItems();
 		popupMenuBar.setFocusOnHoverEnabled(true);
 		popupMenuBar.focus();
@@ -417,10 +417,10 @@ public class ClauseWorkspaceContextMenu {
 	/**
 	 * Show hide expand menu.
 	 */
-	protected void showHideExpandMenu(){
-		if(xmlTreeDisplay.getSelectedNode().hasChildren()){
+	protected void showHideExpandMenu() {
+		if (xmlTreeDisplay.getSelectedNode().hasChildren()) {
 			expandMenu.setEnabled(true);
-		}else{
+		} else {
 			expandMenu.setEnabled(false);
 		}
 	}
@@ -441,9 +441,9 @@ public class ClauseWorkspaceContextMenu {
 				showQDMAttributePopup(cellTreeNode);
 			}
 		};
-		MenuItem item = new MenuItem(template.menuTable("Edit Attributes", ""),addQDMAttributeCmd);
+		MenuItem item = new MenuItem(template.menuTable("Edit Attributes", ""), addQDMAttributeCmd);
 		menuBar.addItem(item);
-		checkForTimingElementDataType(cellTreeNode,item);
+		checkForTimingElementDataType(cellTreeNode, item);
 	}
 	
 	/**
@@ -457,17 +457,17 @@ public class ClauseWorkspaceContextMenu {
 	 */
 	protected void checkForTimingElementDataType(CellTreeNode cellTreeNode,
 			MenuItem item) {
-		if(cellTreeNode.getNodeType() != CellTreeNode.ELEMENT_REF_NODE){
+		if (cellTreeNode.getNodeType() != CellTreeNode.ELEMENT_REF_NODE) {
 			return;
 		}
 		String qdmName = PopulationWorkSpaceConstants.getElementLookUpName().get(cellTreeNode.getUUID());
 		Node qdmNode = PopulationWorkSpaceConstants.getElementLookUpNode().get(qdmName + "~" + cellTreeNode.getUUID());
 		//Could not find the qdm node in elemenentLookup tag
-		if(qdmNode == null){
+		if (qdmNode == null) {
 			return;
 		}
 		String qdmDataType = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
-		if("Timing Element".equals(qdmDataType)){
+		if ("Timing Element".equals(qdmDataType)) {
 			item.setEnabled(false);
 		}
 	}
@@ -479,7 +479,7 @@ public class ClauseWorkspaceContextMenu {
 	 *            the cell tree node
 	 */
 	protected void showQDMAttributePopup(CellTreeNode cellTreeNode) {
-		QDMAttributeDialogBox.showQDMAttributeDialogBox(xmlTreeDisplay,cellTreeNode);
+		QDMAttributeDialogBox.showQDMAttributeDialogBox(xmlTreeDisplay, cellTreeNode);
 	}
 	
 	
@@ -493,14 +493,15 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.setAutoOpen(true);
 		menuBar.setAutoOpen(true);
 		//Commented for User story MAT-3167.
-		//createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE, menuBar);// creating logical Operators Menu 2nd level
+		//createAddMenus(MatContext.get().logicalOps, 
+		//CellTreeNode.LOGICAL_OP_NODE, menuBar);// creating logical Operators Menu 2nd level
 		createAddQDM_MenuItem(menuBar);
 		MenuBar timingMenuBar = new MenuBar(true);
-		menuBar.addItem("Timing", timingMenuBar);//Timing menu 2nd level
-		createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timingMenuBar);// Timing sub menus 3rd level
+		menuBar.addItem("Timing", timingMenuBar); //Timing menu 2nd level
+		createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timingMenuBar); // Timing sub menus 3rd level
 		MenuBar functionsMenuBar = new MenuBar(true);
-		menuBar.addItem("Functions", functionsMenuBar);//functions menu 2nd level
-		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar);// functions sub menus 3rd level
+		menuBar.addItem("Functions", functionsMenuBar); //functions menu 2nd level
+		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar); // functions sub menus 3rd level
 		return menuBar;
 	}
 	
@@ -518,7 +519,7 @@ public class ClauseWorkspaceContextMenu {
 				showQDMPopup(true);
 			}
 		};
-		MenuItem item = new MenuItem("QDM Element",true,addQDMCmd);
+		MenuItem item = new MenuItem("QDM Element", true,addQDMCmd);
 		menuBar.addItem(item);
 	}
 	
@@ -529,7 +530,7 @@ public class ClauseWorkspaceContextMenu {
 	 *            the is add
 	 */
 	protected void showQDMPopup(boolean isAdd) {
-		QDMDialogBox.showQDMDialogBox(xmlTreeDisplay,isAdd);
+		QDMDialogBox.showQDMDialogBox(xmlTreeDisplay, isAdd);
 	}
 	
 	/**
@@ -573,7 +574,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param subMenuBar
 	 *            the sub menu bar
 	 */
-	protected void createEditMenus(List<String> editMenuNames, MenuBar subMenuBar){
+	protected void createEditMenus(List<String> editMenuNames, MenuBar subMenuBar) {
 		for (final String editMenuName : editMenuNames) {
 			Command timingCmd = new Command() {
 				
@@ -598,13 +599,13 @@ public class ClauseWorkspaceContextMenu {
 	protected void pasteRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getCopiedNode().getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
-		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber ;
+		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber;
 		CellTreeNode pasteNode = xmlTreeDisplay.getCopiedNode().cloneNode();
 		pasteNode.setName(name);
 		pasteNode.setLabel(name);
 		xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
-		xmlTreeDisplay.setCopiedNode(pasteNode);//make the new pasted node as the copied node
+		xmlTreeDisplay.setCopiedNode(pasteNode); //make the new pasted node as the copied node
 	}
 	
 	
@@ -614,7 +615,7 @@ public class ClauseWorkspaceContextMenu {
 	protected void addRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getSelectedNode().getChilds().get(0).getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
-		String name =clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber ;
+		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber;
 		
 		CellTreeNode clauseNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.CLAUSE_NODE);
 		clauseNode.createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
@@ -648,7 +649,7 @@ public class ClauseWorkspaceContextMenu {
 	 *            the selected node
 	 * @return the adds the menu name
 	 */
-	protected String getAddMenuName(CellTreeNode selectedNode){
+	protected String getAddMenuName(CellTreeNode selectedNode) {
 		return "Add" + " " +  selectedNode.getName().substring(0, selectedNode.getName().lastIndexOf(" "));
 	}
 	
@@ -660,12 +661,12 @@ public class ClauseWorkspaceContextMenu {
 	 *            the selected node
 	 * @return the next highest sequence
 	 */
-	private int getNextHighestSequence(CellTreeNode selectedNode){
+	private int getNextHighestSequence(CellTreeNode selectedNode) {
 		SortedSet<Integer> sortedName = new TreeSet<Integer>();
 		Integer lastInt = 0;
 		sortedName.add(lastInt);
-		if(selectedNode.getNodeType() == CellTreeNode.ROOT_NODE){
-			if(selectedNode.hasChildren()){
+		if (selectedNode.getNodeType() == CellTreeNode.ROOT_NODE) {
+			if (selectedNode.hasChildren()) {
 				for (CellTreeNode treeNode : selectedNode.getChilds()) {
 					String clauseNodeName = treeNode.getName().substring(treeNode.getName().lastIndexOf(" ")).trim();
 					try {
@@ -674,11 +675,11 @@ public class ClauseWorkspaceContextMenu {
 						// TODO: handle exception
 						e.printStackTrace();
 					}
-					if(lastInt > 0){
+					if (lastInt > 0) {
 						sortedName.add(lastInt);
 					}
 				}
-			}else{
+			} else {
 				return 1;
 			}
 			

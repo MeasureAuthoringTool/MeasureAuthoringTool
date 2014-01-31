@@ -51,7 +51,9 @@ public class PopulationWorkSpaceConstants {
 	public static final String MASTER_ROOT_NODE_POPULATION = "Populations";
 	
 	/** The Constant ROOT_NODES. */
-	public static final String ROOT_NODES = "|strata|measureObservations|numerators|denominators|numeratorExclusions|initialPopulations|denominatorExclusions|denominatorExceptions|measurePopulations|measurePopulationExclusions";
+	public static final String ROOT_NODES = "|strata|measureObservations|numerators|denominators|numeratorExclusions"
+	                                      + "|initialPopulations|denominatorExclusions|denominatorExceptions|measurePopulations" 
+			                              + "|measurePopulationExclusions";
 	
 	/** Constants added for RighClick SubMenus. */
 	
@@ -147,7 +149,7 @@ public class PopulationWorkSpaceConstants {
 		constantsMap.put("Denominator Exclusions", "denominatorExclusions");
 		constantsMap.put("Denominator Exceptions", "denominatorExceptions");
 		constantsMap.put("Measure Populations", "measurePopulations");
-		constantsMap.put("Measure Population Exclusions","measurePopulationExclusions");
+		constantsMap.put("Measure Population Exclusions", "measurePopulationExclusions");
 		constantsMap.put("Numerator Exclusions", "numeratorExclusions");
 		constantsMap.put("Populations", "populations");
 	}

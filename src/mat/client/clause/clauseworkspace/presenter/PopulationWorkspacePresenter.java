@@ -158,7 +158,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	 * @param auditMessage
 	 *            the audit message
 	 */
-	private void clearPanelAndShowError(String auditMessage){
+	private void clearPanelAndShowError(String auditMessage) {
 		//simplepanel.clear();
 		populationWorkspaceTabs = new MatTabLayoutPanel(true);
 		populationWorkspaceTabs.setId("PopulationWorkspce");

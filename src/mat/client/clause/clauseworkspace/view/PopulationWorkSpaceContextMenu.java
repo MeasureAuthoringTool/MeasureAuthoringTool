@@ -2,7 +2,9 @@ package mat.client.clause.clauseworkspace.view;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.shared.MatContext;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
 
@@ -69,12 +71,30 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				cutMenu.setEnabled(false);
 				break;
 			case CellTreeNode.LOGICAL_OP_NODE:
+				subMenuBar = new MenuBar(true);
+				subMenuBar.setAutoOpen(true);
+				createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
+						, subMenuBar); // creating logical Operators Menu 2nd level
+				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
+				popupMenuBar.addItem(addMenu);
 				addCommonMenus();
-				copyMenu.setEnabled(false);
-				cutMenu.setEnabled(false);
-				deleteMenu.setEnabled(true);
-				pasteMenu.setEnabled(false);
-				expandMenu.setEnabled(true);
+				copyMenu.setEnabled(true);
+				//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
+				if ((xmlTreeDisplay.getCopiedNode() != null)
+						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
+					pasteMenu.setEnabled(true);
+				}
+				if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
+					deleteMenu.setEnabled(true);
+				}
+				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
+						&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)) {
+					cutMenu.setEnabled(true);
+					subMenuBar = new MenuBar(true);
+					createEditMenus(MatContext.get().logicalOps, subMenuBar);
+					editMenu = new MenuItem("Edit", true, subMenuBar);
+					popupMenuBar.addItem(editMenu);
+				}
 				break;
 			case CellTreeNode.TIMING_NODE:
 				addCommonMenus();

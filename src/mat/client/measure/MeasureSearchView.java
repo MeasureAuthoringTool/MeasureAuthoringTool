@@ -224,9 +224,9 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				if (object.getFinalizedDate() != null) {
 					return CellTableUtility.getColumnToolTip(convertTimestampToString(object.getFinalizedDate()));
 				} //else {
-//					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-//					sb.appendHtmlConstant("<span tabindex=\"-1\"><span>");
-//					return sb.toSafeHtml();
+				//					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+				//					sb.appendHtmlConstant("<span tabindex=\"-1\"><span>");
+				//					return sb.toSafeHtml();
 				//}
 				return null;
 			}
@@ -261,8 +261,14 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 						String title;
 						String cssClass;
 						if (object.isEditable()) {
-							title = "Edit";
-							cssClass = "customEditButton";
+							if (object.isMeasureLocked()) {
+								String emailAddress = object.getLockedUserInfo().getEmailAddress();
+								title = "Measure in use by " + emailAddress;
+								cssClass = "customLockedButton";
+							} else {
+								title = "Edit";
+								cssClass = "customEditButton";
+							}
 							sb.appendHtmlConstant("<button type=\"button\" title='"
 									+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
 						} else {
@@ -422,12 +428,12 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				return table;
 	}
 	
-//	public void clearBulkExportCheckBox(Result object){
-//		 {
-//		selectionModel.setSelected(object, false);
-//		}
-//		//observer.onClearAllBulkExportClicked();
-//	}
+	//	public void clearBulkExportCheckBox(Result object){
+	//		 {
+	//		selectionModel.setSelected(object, false);
+	//		}
+	//		//observer.onClearAllBulkExportClicked();
+	//	}
 	
 	/**
 	 *
@@ -448,47 +454,47 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	public void buildCellTable(ManageMeasureSearchModel results) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
-		if(results.getData()!=null && results.getData().size() > 0){
-		table = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
-				(Resources) GWT.create(CellTableResource.class));
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
-		selectedMeasureList = new ArrayList<Result>();
-		selectedMeasureList.addAll(results.getData());
-		table.setRowData(selectedMeasureList);
-		table.setPageSize(PAGE_SIZE);
-		table.redraw();
-		table.setRowCount(selectedMeasureList.size(), true);
-		sortProvider.refresh();
-		sortProvider.getList().addAll(results.getData());
-		table = addColumnToTable();
-		sortProvider.addDataDisplay(table);
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-		spager.setPageStart(0);
-		buildCellTableCssStyle();
-		spager.setDisplay(table);
-		spager.setPageSize(PAGE_SIZE);
-		table.setWidth("100%");
-		table.setColumnWidth(0, 35.0, Unit.PCT);
-		table.setColumnWidth(1, 18.0, Unit.PCT);
-		table.setColumnWidth(2, 20.0, Unit.PCT);
-		table.setColumnWidth(3, 2.0, Unit.PCT);
-		table.setColumnWidth(4, 2.0, Unit.PCT);
-		table.setColumnWidth(5, 2.0, Unit.PCT);
-		table.setColumnWidth(6, 2.0, Unit.PCT);
-		table.setColumnWidth(7, 20.0, Unit.PCT);
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
-				"In the following Measure List table, Measure Name is given in first column,"
-						+ " Version in second column, Finalized Date in third column,"
-						+ "History in fourth column, Edit in fifth column, Share in sixth column"
-						+ "Clone in seventh column and Export in eight column.");
-		table.getElement().setAttribute("id", "MeasureSearchCellTable");
-		table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
-		cellTablePanel.add(invisibleLabel);
-		cellTablePanel.add(table);
-		cellTablePanel.add(new SpacerWidget());
-		cellTablePanel.add(spager);
+		if((results.getData()!=null) && (results.getData().size() > 0)){
+			table = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
+					(Resources) GWT.create(CellTableResource.class));
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
+			selectedMeasureList = new ArrayList<Result>();
+			selectedMeasureList.addAll(results.getData());
+			table.setRowData(selectedMeasureList);
+			table.setPageSize(PAGE_SIZE);
+			table.redraw();
+			table.setRowCount(selectedMeasureList.size(), true);
+			sortProvider.refresh();
+			sortProvider.getList().addAll(results.getData());
+			table = addColumnToTable();
+			sortProvider.addDataDisplay(table);
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			spager.setPageStart(0);
+			buildCellTableCssStyle();
+			spager.setDisplay(table);
+			spager.setPageSize(PAGE_SIZE);
+			table.setWidth("100%");
+			table.setColumnWidth(0, 35.0, Unit.PCT);
+			table.setColumnWidth(1, 18.0, Unit.PCT);
+			table.setColumnWidth(2, 20.0, Unit.PCT);
+			table.setColumnWidth(3, 2.0, Unit.PCT);
+			table.setColumnWidth(4, 2.0, Unit.PCT);
+			table.setColumnWidth(5, 2.0, Unit.PCT);
+			table.setColumnWidth(6, 2.0, Unit.PCT);
+			table.setColumnWidth(7, 20.0, Unit.PCT);
+			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
+					"In the following Measure List table, Measure Name is given in first column,"
+							+ " Version in second column, Finalized Date in third column,"
+							+ "History in fourth column, Edit in fifth column, Share in sixth column"
+							+ "Clone in seventh column and Export in eight column.");
+			table.getElement().setAttribute("id", "MeasureSearchCellTable");
+			table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
+			cellTablePanel.add(invisibleLabel);
+			cellTablePanel.add(table);
+			cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(spager);
 		}
 		
 		else{

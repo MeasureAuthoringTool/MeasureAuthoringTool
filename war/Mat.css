@@ -253,7 +253,17 @@ left:50px;
     cursor: pointer;
     cursor: hand;
 }
-
+.customLockedButton {
+    background: url("images/g_lock.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+    cursor: pointer;
+    cursor: hand;
+}
 .customReadOnlyButton {
     background: url("images/application_view_detail_1.png");
     background-position:center;

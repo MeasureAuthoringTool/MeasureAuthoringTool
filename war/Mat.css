@@ -254,7 +254,7 @@ left:50px;
     cursor: hand;
 }
 .customLockedButton {
-    background: url("images/g_lock.png");
+    background: url("images/g_lock.gif");
     background-position:center;
     background-repeat:no-repeat;
     height: 25px;

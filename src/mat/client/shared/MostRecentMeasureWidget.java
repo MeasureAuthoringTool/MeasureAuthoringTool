@@ -42,9 +42,15 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 		/** On export clicked.
 		 * @param result the result */
 		void onExportClicked(ManageMeasureSearchModel.Result result);
+		/**
+		 * On edit clicked.
+		 * @param result
+		 *            the result
+		 */
+		void onEditClicked(ManageMeasureSearchModel.Result result);
 	}
 	/** Cell Table Column Count. */
-	private static final int MAX_TABLE_COLUMN_SIZE = 3;
+	private static final int MAX_TABLE_COLUMN_SIZE = 4;
 	/** Cell Table Instance. */
 	private CellTable<ManageMeasureSearchModel.Result> cellTable = new CellTable<ManageMeasureSearchModel.Result>();
 	/** HandlerManager Instance. */
@@ -98,6 +104,45 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 			};
 			table.addColumn(version, SafeHtmlUtils.fromSafeConstant(
 					"<span title='Version'>" + "Version" + "</span>"));
+			//Edit
+			Column<ManageMeasureSearchModel.Result, SafeHtml> editColumn =
+					new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+							new ClickableSafeHtmlCell()) {
+				@Override
+				public SafeHtml getValue(Result object) {
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					String title;
+					String cssClass;
+					if (object.isEditable()) {
+						if (object.isMeasureLocked()) {
+							String emailAddress = object.getLockedUserInfo().getEmailAddress();
+							title = "Measure in use by " + emailAddress;
+							cssClass = "customLockedButton";
+						} else {
+							title = "Edit";
+							cssClass = "customEditButton";
+						}
+						sb.appendHtmlConstant("<button type=\"button\" title='"
+								+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+					} else {
+						title = "ReadOnly";
+						cssClass = "customReadOnlyButton";
+						sb.appendHtmlConstant("<div title='" + title + "' class='" + cssClass + "'></div>");
+					}
+					return sb.toSafeHtml();
+				}
+			};
+			editColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
+				@Override
+				public void update(int index, Result object,
+						SafeHtml value) {
+					if (object.isEditable()) {
+						observer.onEditClicked(object);
+					}
+				}
+			});
+			table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
+			
 			Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
 			Column<Result, String> exportColumn =
 					new Column<ManageMeasureSearchModel.Result, String>(exportButton) {
@@ -131,9 +176,11 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 			table.addColumn(exportColumn,
 					SafeHtmlUtils.fromSafeConstant("<span title='Export'>"
 							+ "Export" + "</span>"));
-			table.setColumnWidth(0, 65.0, Unit.PCT);
+			
+			table.setColumnWidth(0, 60.0, Unit.PCT);
 			table.setColumnWidth(1, 30.0, Unit.PCT);
 			table.setColumnWidth(2, 5.0, Unit.PCT);
+			table.setColumnWidth(3, 5.0, Unit.PCT);
 		}
 		return table;
 	}

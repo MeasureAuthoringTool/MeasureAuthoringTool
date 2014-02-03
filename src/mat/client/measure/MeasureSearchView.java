@@ -283,7 +283,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					@Override
 					public void update(int index, Result object,
 							SafeHtml value) {
-						if (object.isEditable()) {
+						if (object.isEditable() && !object.isMeasureLocked()) {
 							observer.onEditClicked(object);
 						}
 					}
@@ -377,17 +377,17 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 							@Override
 							public void update(int index, Result object,
 									Boolean isCBChecked) {
-//								if(isCBChecked){
-//									int size=selectionModel.getSelectedSet().size();
-//									if(selectionModel.getSelectedSet().size()>9){
-//										observer.onExportSelectedClicked(object, isCBChecked);
-//									}
-//									else{
-										selectionModel.setSelected(object, isCBChecked);
-										observer.onExportSelectedClicked(object, isCBChecked);
-										}
-								//}
-								
+								//								if(isCBChecked){
+								//									int size=selectionModel.getSelectedSet().size();
+								//									if(selectionModel.getSelectedSet().size()>9){
+								//										observer.onExportSelectedClicked(object, isCBChecked);
+								//									}
+								//									else{
+								selectionModel.setSelected(object, isCBChecked);
+								observer.onExportSelectedClicked(object, isCBChecked);
+							}
+							//}
+							
 							//}
 						};
 					}

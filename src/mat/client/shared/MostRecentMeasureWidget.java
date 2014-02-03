@@ -136,7 +136,7 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 				@Override
 				public void update(int index, Result object,
 						SafeHtml value) {
-					if (object.isEditable()) {
+					if (object.isEditable() && !object.isMeasureLocked()) {
 						observer.onEditClicked(object);
 					}
 				}

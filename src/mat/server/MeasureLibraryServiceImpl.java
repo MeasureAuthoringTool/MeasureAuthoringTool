@@ -33,6 +33,7 @@ import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.model.Author;
+import mat.model.LockedUserInfo;
 import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
 import mat.model.MeasureType;
@@ -816,7 +817,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			detail.setOwnerEmailAddress(measure.getOwner().getEmailAddress());
 			detail.setMeasureSetId(measure.getMeasureSet().getId());
 			detail.setScoringType(measure.getMeasureScoring());
-			detail.setMeasureLocked(getMeasureDAO().isMeasureLocked(measure.getId()));
+			boolean isLocked = getMeasureDAO().isMeasureLocked(measure.getId());
+			detail.setMeasureLocked(isLocked);
+			
 			List<MeasureShareDTO> measureShare = getMeasureDAO().
 					getMeasureShareInfoForMeasureAndUser(measure.getOwner().getId(), measure.getId());
 			if (measureShare.size() > 0) {
@@ -826,6 +829,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			} else {
 				detail.setEditable((currentUserId.equals(measure.getOwner().getId()) || isSuperUser)
 						&& measure.isDraft());
+			}
+			if (isLocked && (measure.getLockedUser() != null)) {
+				LockedUserInfo lockedUserInfo = new LockedUserInfo();
+				lockedUserInfo.setUserId(measure.getLockedUser().getId());
+				lockedUserInfo.setEmailAddress(measure.getLockedUser()
+						.getEmailAddress());
+				lockedUserInfo.setFirstName(measure.getLockedUser().getFirstName());
+				lockedUserInfo.setLastName(measure.getLockedUser().getLastName());
+				detail.setLockedUserInfo(lockedUserInfo);
 			}
 			detailModelList.add(detail);
 		}

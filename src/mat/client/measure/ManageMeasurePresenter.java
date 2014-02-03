@@ -3098,6 +3098,22 @@ public class ManageMeasurePresenter implements MatPresenter {
 						export(result.getId(), result.getName());
 					}
 					
+					@Override
+					public void onEditClicked(Result result) {
+						// When edit has been clicked, no need to fire measureSelected
+						// Event.
+						// fireMeasureSelectedEvent(result.getId(),
+						// result.getName(), result.getShortName(),
+						// result.getScoringType(),result.isEditable(),result.isMeasureLocked(),
+						// result.getLockedUserId(result.getLockedUserInfo()));
+						measureDeletion = false;
+						isMeasureDeleted = false;
+						searchDisplay.getSuccessMeasureDeletion().clear();
+						searchDisplay.getErrorMeasureDeletion().clear();
+						edit(result.getId());
+						
+					}
+					
 					
 					
 					
@@ -3505,19 +3521,18 @@ public class ManageMeasurePresenter implements MatPresenter {
 			boolean isCBChecked) {
 		List<String> selectedIdList = model.getSelectedExportIds();;
 		if (isCBChecked) {
-			 if (!selectedIdList.contains(result.getId())) {
+			if (!selectedIdList.contains(result.getId())) {
 				model.getSelectedExportResults().add(result);
 				selectedIdList.add(result.getId());
 			}
-		}
-		else {
-//			if(selectedIdList.size()>9){
-//				searchDisplay
-//				.getErrorMessageDisplayForBulkExport()
-//				.setMessage(
-//						"Export file has a limit of 90 measures");
-//				searchDisplay.getExportSelectedButton().setFocus(true);
-//			}
+		} else {
+			//			if(selectedIdList.size()>9){
+			//				searchDisplay
+			//				.getErrorMessageDisplayForBulkExport()
+			//				.setMessage(
+			//						"Export file has a limit of 90 measures");
+			//				searchDisplay.getExportSelectedButton().setFocus(true);
+			//			}
 			for (int i = 0; i < model.getSelectedExportIds().size(); i++) {
 				if (result.getId().equals(model.getSelectedExportResults().get(i)
 						.getId())) {

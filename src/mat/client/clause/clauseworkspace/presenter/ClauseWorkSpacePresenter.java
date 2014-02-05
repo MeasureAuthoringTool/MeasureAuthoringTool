@@ -74,6 +74,7 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 				public void onSuccess(MeasureXmlModel result) {
 					String xml = result != null ? result.getXml() : null;
 					setQdmElementsMap(xml);
+					setSubTreeElementsMap(xml);
 				}
 				@Override
 				public void onFailure(Throwable caught) {
@@ -84,6 +85,29 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 		}
 	}
 	
+	/**
+	 * Method to Reterive SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
+	 * Also it retrieves Name and UUID and put it in subTreeNodeName map for display.
+	 * @param xml - String.
+	 */
+	private void setSubTreeElementsMap(String xml) {
+		PopulationWorkSpaceConstants.subTreeLookUpName = new TreeMap<String, String>();
+		PopulationWorkSpaceConstants.subTreeLookUpNode = new TreeMap<String, Node>();
+		Document document = XMLParser.parse(xml);
+		NodeList nodeList = document.getElementsByTagName("subTreeLookUp");
+		if ((null != nodeList) && (nodeList.getLength() > 0)) {
+			NodeList subTree = nodeList.item(0).getChildNodes();
+			for (int i = 0; i < subTree.getLength(); i++) {
+				if ("subTree".equals(subTree.item(i).getNodeName())) {
+					NamedNodeMap namedNodeMap = subTree.item(i).getAttributes();
+					String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
+					String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
+					PopulationWorkSpaceConstants.subTreeLookUpNode.put(name + "~" + uuid, subTree.item(i));
+					PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
+				}
+			}
+		}
+	}
 	/**
 	 * Sets the qdm elements map.
 	 * 

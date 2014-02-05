@@ -313,6 +313,9 @@ public class XmlConversionlHelper {
 				} else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.ELEMENT_REF)) {
 					cellTreeNodeType = CellTreeNode.ELEMENT_REF_NODE;
 					uuid =  node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.ID).getNodeValue();
+				}else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.SUBTREE_REF)) {
+					cellTreeNodeType = CellTreeNode.SUBTREE_REF_NODE;
+					uuid =  node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.ID).getNodeValue();
 				} else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.FUNC_NAME)) {
 					cellTreeNodeType = CellTreeNode.FUNCTIONS_NODE;
 					HashMap<String, String> map = new HashMap<String, String>();
@@ -419,35 +422,35 @@ public class XmlConversionlHelper {
 				HashMap<String, String> map = (HashMap<String, String>) cellTreeNode.getExtraInformation(
 						PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 				if (map != null) {
-					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, 
+					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME,
 							map.get(PopulationWorkSpaceConstants.DISPLAY_NAME));
 					//String typeValue = ClauseConstants.getTimingOperators().containsKey(map.get(ClauseConstants.TYPE))
-					//	? ClauseConstants.getTimingOperators().get(map.get(ClauseConstants.TYPE)): 
+					//	? ClauseConstants.getTimingOperators().get(map.get(ClauseConstants.TYPE)):
 					//  map.get(ClauseConstants.DISPLAY_NAME);
 					String typeValue = map.get(PopulationWorkSpaceConstants.TYPE);
 					element.setAttribute(PopulationWorkSpaceConstants.TYPE, typeValue);
 					if (map.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE)) {
-						element.setAttribute(PopulationWorkSpaceConstants.OPERATOR_TYPE, 
+						element.setAttribute(PopulationWorkSpaceConstants.OPERATOR_TYPE,
 								map.get(PopulationWorkSpaceConstants.OPERATOR_TYPE));
 					}
 					if (map.containsKey(PopulationWorkSpaceConstants.QUANTITY)) {
-						element.setAttribute(PopulationWorkSpaceConstants.QUANTITY, 
+						element.setAttribute(PopulationWorkSpaceConstants.QUANTITY,
 								map.get(PopulationWorkSpaceConstants.QUANTITY));
 					}
 					if (map.containsKey(PopulationWorkSpaceConstants.UNIT)) {
-						element.setAttribute(PopulationWorkSpaceConstants.UNIT, 
+						element.setAttribute(PopulationWorkSpaceConstants.UNIT,
 								map.get(PopulationWorkSpaceConstants.UNIT));
 					}
 				} else {
 					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
-					element.setAttribute(PopulationWorkSpaceConstants.TYPE, 
+					element.setAttribute(PopulationWorkSpaceConstants.TYPE,
 							MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
 				}
 				break;
 			case CellTreeNode.RELATIONSHIP_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.RELATIONAL_OP);
 				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
-				element.setAttribute(PopulationWorkSpaceConstants.TYPE, 
+				element.setAttribute(PopulationWorkSpaceConstants.TYPE,
 						MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
 				break;
 			case CellTreeNode.ELEMENT_REF_NODE:
@@ -476,25 +479,25 @@ public class XmlConversionlHelper {
 				HashMap<String, String> functionMap = (HashMap<String, String>) cellTreeNode.getExtraInformation(
 						PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 				if (functionMap != null) {
-					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, 
+					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME,
 							functionMap.get(PopulationWorkSpaceConstants.DISPLAY_NAME));
-					element.setAttribute(PopulationWorkSpaceConstants.TYPE, 
+					element.setAttribute(PopulationWorkSpaceConstants.TYPE,
 							functionMap.get(PopulationWorkSpaceConstants.TYPE));
 					if (functionMap.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE)) {
 						element.setAttribute(PopulationWorkSpaceConstants.OPERATOR_TYPE,
 								functionMap.get(PopulationWorkSpaceConstants.OPERATOR_TYPE));
 					}
 					if (functionMap.containsKey(PopulationWorkSpaceConstants.QUANTITY)) {
-						element.setAttribute(PopulationWorkSpaceConstants.QUANTITY, 
+						element.setAttribute(PopulationWorkSpaceConstants.QUANTITY,
 								functionMap.get(PopulationWorkSpaceConstants.QUANTITY));
 					}
 					if (functionMap.containsKey(PopulationWorkSpaceConstants.UNIT)) {
-						element.setAttribute(PopulationWorkSpaceConstants.UNIT, 
+						element.setAttribute(PopulationWorkSpaceConstants.UNIT,
 								functionMap.get(PopulationWorkSpaceConstants.UNIT));
 					}
 				} else {
 					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
-					element.setAttribute(PopulationWorkSpaceConstants.TYPE, 
+					element.setAttribute(PopulationWorkSpaceConstants.TYPE,
 							MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
 				}
 				break;
@@ -505,6 +508,12 @@ public class XmlConversionlHelper {
 				element = document.createElement(PopulationWorkSpaceConstants.SUBTREE_NAME);
 				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
 				element.setAttribute(PopulationWorkSpaceConstants.UUID, cellTreeNode.getUUID());
+				break;
+			case CellTreeNode.SUBTREE_REF_NODE:
+				element = document.createElement(PopulationWorkSpaceConstants.SUBTREE_REF);
+				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
+				element.setAttribute(PopulationWorkSpaceConstants.ID, cellTreeNode.getUUID());
+				element.setAttribute(PopulationWorkSpaceConstants.TYPE, "subTree");
 				break;
 			default:
 				element = document.createElement(cellTreeNode.getName());

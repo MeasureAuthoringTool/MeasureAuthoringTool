@@ -14,8 +14,8 @@ import com.google.gwt.user.client.ui.PopupPanel;
  */
 public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	/**
-	 * @param treeDisplay
-	 * @param popPanel
+	 * @param treeDisplay - XmlTreeDisplay.
+	 * @param popPanel - PopupPanel.
 	 */
 	public PopulationWorkSpaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		super(treeDisplay, popPanel);
@@ -72,9 +72,11 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 			case CellTreeNode.LOGICAL_OP_NODE:
 				subMenuBar = new MenuBar(true);
+				popupMenuBar.setAutoOpen(true);
 				subMenuBar.setAutoOpen(true);
 				createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
 						, subMenuBar); // creating logical Operators Menu 2nd level
+				createAddClauseMenuItem(subMenuBar);
 				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 				popupMenuBar.addItem(addMenu);
 				addCommonMenus();
@@ -128,8 +130,39 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				pasteMenu.setEnabled(false);
 				expandMenu.setEnabled(true);
 				break;
+			case CellTreeNode.SUBTREE_REF_NODE:
+				subMenuBar = new MenuBar(true);
+				popupMenuBar.setAutoOpen(true);
+				subMenuBar.setAutoOpen(true);
+				addCommonMenus();
+				deleteMenu.setEnabled(true);
+				Command editClauseCmd = new Command() {
+					@Override
+					public void execute() {
+						popupPanel.hide();
+						//To edit the Clause element
+						SubTreeDialogBox.showSubTreeDialogBox(xmlTreeDisplay, false);
+					}
+				};
+				editMenu = new MenuItem("Edit", true, editClauseCmd);
+				popupMenuBar.addItem(editMenu);
+				break;
 			default:
 				break;
 		}
+	}
+	/**
+	 * @param menuBar - MenuBar.
+	 */
+	private void createAddClauseMenuItem(MenuBar menuBar) {
+		Command addClauseCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				SubTreeDialogBox.showSubTreeDialogBox(xmlTreeDisplay, true);
+			}
+		};
+		MenuItem item = new MenuItem("Clause", true, addClauseCmd);
+		menuBar.addItem(item);
 	}
 }

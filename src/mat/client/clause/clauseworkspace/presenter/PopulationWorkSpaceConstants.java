@@ -52,8 +52,8 @@ public class PopulationWorkSpaceConstants {
 	
 	/** The Constant ROOT_NODES. */
 	public static final String ROOT_NODES = "|strata|measureObservations|numerators|denominators|numeratorExclusions"
-	                                      + "|initialPopulations|denominatorExclusions|denominatorExceptions|measurePopulations" 
-			                              + "|measurePopulationExclusions";
+			+ "|initialPopulations|denominatorExclusions|denominatorExceptions|measurePopulations"
+			+ "|measurePopulationExclusions";
 	
 	/** Constants added for RighClick SubMenus. */
 	
@@ -71,8 +71,16 @@ public class PopulationWorkSpaceConstants {
 	/** The element look up node. */
 	public static Map<String, Node> elementLookUpNode;
 	
+	/** The element look up name. */
+	public static Map<String, String> subTreeLookUpName;
+	/** The element look up node. */
+	public static Map<String, Node> subTreeLookUpNode;
+	
 	/** The Constant ELEMENT_REF. */
 	public static final String ELEMENT_REF = "elementRef";
+	
+	/** The Constant SubTree_REF. */
+	public static final String SUBTREE_REF = "subTreeRef";
 	
 	/** The Constant ATTRIBUTE. */
 	public static final String ATTRIBUTE = "attribute";
@@ -214,7 +222,19 @@ public class PopulationWorkSpaceConstants {
 	public static Map<String, Node> getElementLookUpNode() {
 		return elementLookUpNode;
 	}
+	/**
+	 * @return the subTreeLookUpName
+	 */
+	public static Map<String, String> getSubTreeLookUpName() {
+		return subTreeLookUpName;
+	}
 	
+	/**
+	 * @return the subTreeLookUpNode
+	 */
+	public static Map<String, Node> getSubTreeLookUpNode() {
+		return subTreeLookUpNode;
+	}
 	/**
 	 * Gets the functions.
 	 * 

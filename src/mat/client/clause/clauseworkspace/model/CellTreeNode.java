@@ -51,6 +51,11 @@ public interface CellTreeNode {
 	 * Sub tree Root Node.
 	 */
 	short SUBTREE_ROOT_NODE = 11;
+	
+	/**
+	 * Sub tree Ref Node.
+	 */
+	short SUBTREE_REF_NODE = 12;
 	/**
 	 * Append child.
 	 * 

@@ -372,6 +372,9 @@ public class XmlTreePresenter {
 							, xmlTreeDisplay.getErrorMessageDisplay(), auditMessage);
 				} else {
 					isUnsavedData = false;
+					xmlTreeDisplay.setDirty(false);
+					panel.clear();
+					loadClauseWorkSpaceView(panel);
 				}
 			}
 		});
@@ -405,7 +408,7 @@ public class XmlTreePresenter {
 			public void onClick(ClickEvent event) {
 				isUnsavedData = false;
 				SecondaryButton button = (SecondaryButton) event.getSource();
-				 // If Yes - do not navigate, set focus to the Save button on the Page and clear cell tree
+				// If Yes - do not navigate, set focus to the Save button on the Page and clear cell tree
 				// // Else -do not navigate, set focus to the Save button on the Page
 				if ("Yes".equals(button.getText())) {
 					saveErrorMessage.clear();

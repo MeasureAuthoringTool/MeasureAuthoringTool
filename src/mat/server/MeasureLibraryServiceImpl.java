@@ -80,6 +80,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureLibraryServiceImpl.
  */
@@ -1974,7 +1975,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					// updateAttributes(processor, modifyWithDTO, modifyDTO);
 				} else {
 					// Update all elementRef's in Populations and Stratification
-					updatePopulationAndStratification(processor, modifyWithDTO, modifyDTO);
+					//updatePopulationAndStratification(processor, modifyWithDTO, modifyDTO);
+					
+					//Update all elementRef's in SubTreeLookUp
+					updateSubTreeLookUp(processor, modifyWithDTO, modifyDTO);
+					
+					//Update all elementRef's in ItemCount
+					updateItemCount(processor, modifyWithDTO, modifyDTO);
 				}
 				
 				// update elementLookUp Tag
@@ -1995,6 +2002,82 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	/**
+	 * Update sub tree look up.
+	 *
+	 * @param processor the processor
+	 * @param modifyWithDTO the modify with dto
+	 * @param modifyDTO the modify dto
+	 */
+	private void updateSubTreeLookUp(final XmlProcessor processor, final QualityDataSetDTO modifyWithDTO,
+			final QualityDataSetDTO modifyDTO) {
+		
+		logger.debug(" MeasureLibraryServiceImpl: updateSubTreeLookUp Start :  ");
+		// XPath to find All elementRef's under subTreeLookUp element nodes for to be modified QDM.
+		String XPATH_EXPRESSION_SubTreeLookUp_ELEMENTREF = "/measure//subTreeLookUp//elementRef[@id='"
+				+ modifyDTO.getUuid() + "']";
+		try {
+			NodeList nodesClauseWorkSpace = (NodeList) xPath.evaluate(XPATH_EXPRESSION_SubTreeLookUp_ELEMENTREF,
+					processor.getOriginalDoc(),	XPathConstants.NODESET);
+			ArrayList<QDSAttributes> attr = (ArrayList<QDSAttributes>) getAllDataTypeAttributes(modifyWithDTO.getDataType());
+			for (int i = 0; i < nodesClauseWorkSpace.getLength(); i++) {
+				Node newNode = nodesClauseWorkSpace.item(i);
+				String displayName = new String();
+				if (!StringUtils.isBlank(modifyWithDTO.getOccurrenceText())) {
+					displayName = displayName.concat(modifyWithDTO.getOccurrenceText() + " of ");
+				}
+				displayName = displayName.concat(modifyWithDTO.getCodeListName() + " : " + modifyWithDTO.getDataType());
+				
+				newNode.getAttributes().getNamedItem("displayName").setNodeValue(displayName);
+			}
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+			
+		}
+		logger.debug(" MeasureLibraryServiceImpl: updateSubTreeLookUp End :  ");
+	}
+	
+	/**
+	 * Update item count.
+	 *
+	 * @param processor the processor
+	 * @param modifyWithDTO the modify with dto
+	 * @param modifyDTO the modify dto
+	 */
+	private void updateItemCount(final XmlProcessor processor, final QualityDataSetDTO modifyWithDTO,
+			final QualityDataSetDTO modifyDTO) {
+		
+		logger.debug(" MeasureLibraryServiceImpl: updateItemCount Start :  ");
+		// XPath to find All elementRef's under itemCount element nodes for to be modified QDM.
+		String XPATH_EXPRESSION_ItemCount_ELEMENTREF = "/measure//measureDetails//itemCount//elementRef[@id='"
+				+ modifyDTO.getUuid() + "']";
+		try {
+			NodeList nodesItemCount = (NodeList) xPath.evaluate(XPATH_EXPRESSION_ItemCount_ELEMENTREF,
+					processor.getOriginalDoc(),	XPathConstants.NODESET);
+			for (int i = 0; i < nodesItemCount.getLength(); i++) {
+				Node newNode = nodesItemCount.item(i);
+				String instance = new String();
+				String name = new String();
+				String dataType = new String();
+				String oid = new String();
+				if (!StringUtils.isBlank(modifyWithDTO.getOccurrenceText())) {
+					instance = instance.concat(modifyWithDTO.getOccurrenceText() + " of ");
+					newNode.getAttributes().getNamedItem("instance").setNodeValue(instance);
+				}
+				name = modifyWithDTO.getCodeListName();
+				dataType = modifyWithDTO.getDataType();
+				oid = modifyWithDTO.getOid();
+				newNode.getAttributes().getNamedItem("name").setNodeValue(name);
+				newNode.getAttributes().getNamedItem("dataType").setNodeValue(dataType);
+				newNode.getAttributes().getNamedItem("oid").setNodeValue(oid);
+			}
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+			
+		}
+		logger.debug(" MeasureLibraryServiceImpl: updateItemCount End :  ");
+	}
+	
+	/**
 	 * This method updates MeasureXML - ElementRef's under Population and
 	 * Stratification Node
 	 * 
@@ -2012,7 +2095,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		logger.debug(" MeasureLibraryServiceImpl: updatePopulationAndStratification Start :  ");
 		// XPath to find All elementRef's under clause element nodes for to be modified QDM.
-		String XPATH_EXPRESSION_CLAUSE_ELEMENTREF = "/measure//clause//elementRef[@id='"
+		String XPATH_EXPRESSION_CLAUSE_ELEMENTREF = "/measure//subTreeLookUp//elementRef[@id='"
 				+ modifyDTO.getUuid() + "']";
 		try {
 			NodeList nodesClauseWorkSpace = (NodeList) xPath.evaluate(XPATH_EXPRESSION_CLAUSE_ELEMENTREF,

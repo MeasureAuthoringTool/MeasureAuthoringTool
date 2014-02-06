@@ -20,6 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.WebApplicationContext;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class OnetimeMeasureXMLUpdateTask.
  */
@@ -41,6 +42,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 	/** The mat flag dao. */
 	private MatFlagDAO matFlagDAO;
 	
+	/** The application context. */
 	private ApplicationContext applicationContext;
 
 	/**
@@ -64,13 +66,21 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 		List<Measure> measureList = getMeasureDAO().find();
 		
 		logger.info("\r\n\r\nUpdating all Measure XML's based to replace IPP by IP and save them back.");
-		updateIPP_To_IP(measureList);
+     	updateIPP_To_IP(measureList);
+		
+		logger.info("\r\n\r\nUpdating all Measure XML's based to replace SBOD by SBE and save them back.");
+		renameTimingConventions(measureList);
 		
 		logger.info("\r\n\r\nUpdating all Measure XML's based on the scoring types and save them back.");
 		checkForScoringAndUpdate(measureList);
 		
 	}
 
+	/**
+	 * Check for scoring and update.
+	 *
+	 * @param measureList the measure list
+	 */
 	private void checkForScoringAndUpdate(List<Measure> measureList) {
 		for (Measure measure : measureList) {
 			logger.info("\r\n\r\nCheck for scoring for Measure:"+measure.getaBBRName());
@@ -87,6 +97,11 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 		}
 	}
 
+	/**
+	 * Update ip p_ to_ ip.
+	 *
+	 * @param measureList the measure list
+	 */
 	private void updateIPP_To_IP(List<Measure> measureList) {
 		for (Measure measure : measureList) {
 			logger.info("\r\n\r\nUpdate IPP to IP for Measure:"+measure.getaBBRName());
@@ -112,6 +127,39 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	/**
+	 * Rename timing conventions.
+	 *
+	 * @param measureList the measure list
+	 */
+	private void renameTimingConventions(List<Measure> measureList){
+		for (Measure measure : measureList) {
+			logger.info("\r\n\r\nUpdate SBOD to SBE for Measure:"+measure.getaBBRName());
+			MeasureXmlModel measureXmlModel = getMeasureLibraryService()
+					.getMeasureXmlForMeasure(measure.getId());
+			
+			if(measureXmlModel == null || measureXmlModel.getXml() == null || measureXmlModel.getXml().trim().length() == 0){
+				logger.info("	Measure XML for:"+measure.getaBBRName()+" is blank or null. Skipping this measure.");
+				continue;
+			}
+			// update Starts Before or During to Starts Before End and 
+			// Ends Before or During to Ends Before End
+			
+			XmlProcessor xmlProcessor = new XmlProcessor(
+					measureXmlModel.getXml());
+			try {
+				xmlProcessor.renameTimingConventions(xmlProcessor.getOriginalDoc());
+				String measureXML = xmlProcessor.transform(xmlProcessor
+						.getOriginalDoc());
+				measureXmlModel.setXml(measureXML);
+				getMeasurePackageService().saveMeasureXml(measureXmlModel);
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
+		}
+		
 	}
 
 	/**
@@ -191,22 +239,45 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 		return matFlagDAO;
 	}
 
+	/**
+	 * Sets the measure dao.
+	 *
+	 * @param measureDAO the new measure dao
+	 */
 	public void setMeasureDAO(MeasureDAO measureDAO) {
 		this.measureDAO = measureDAO;
 	}
 
+	/**
+	 * Gets the measure dao.
+	 *
+	 * @return the measure dao
+	 */
 	public MeasureDAO getMeasureDAO() {
 		return measureDAO;
 	}
 
+	/**
+	 * Sets the measure package service.
+	 *
+	 * @param measurePackageService the new measure package service
+	 */
 	public void setMeasurePackageService(MeasurePackageService measurePackageService) {
 		this.measurePackageService = measurePackageService;
 	}
 
+	/**
+	 * Gets the measure package service.
+	 *
+	 * @return the measure package service
+	 */
 	public MeasurePackageService getMeasurePackageService() {
 		return measurePackageService;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
+	 */
 	@Override
 	public void setApplicationContext(ApplicationContext arg0)
 			throws BeansException {

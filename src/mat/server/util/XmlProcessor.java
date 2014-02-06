@@ -164,6 +164,12 @@ public class XmlProcessor {
 	/** The Constant XPATH_FIND_GROUP_CLAUSE. */
 	public static final String XPATH_FIND_GROUP_CLAUSE = "/measure/measureGrouping/group[packageClause[";
 	
+	/** The Constant XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD. */
+	public static final String XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD="/measure//*/relationalOp[@type='SBOD']";
+	
+	/** The Constant XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD. */
+	public static final String XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD="/measure//*/relationalOp[@type='EBOD']";
+	
 	/** The constants map. */
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
 	
@@ -804,6 +810,46 @@ public class XmlProcessor {
 		document.renameNode(initialPopulationsNode, "", INITIAL_POPULATIONS);
 	}
 	
+	/**
+	 * Rename timing conventions.
+	 *
+	 * @param document the document
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	public void renameTimingConventions(Document document) throws XPathExpressionException {
+		 
+		String displayName = "displayName";
+		String type = "type";
+		String starts_before_or_during="Starts Before Or During";
+		String ends_before_or_during="Ends Before Or During";
+		 
+		 javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		
+		 //replace relationalOp attribute values for displayName and type from SBOD to SBE
+		 NodeList nodesRelationalOpsSBOD = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD,
+					originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		 for (int i = 0; i < nodesRelationalOpsSBOD.getLength(); i++) {
+			 Node childNode =  nodesRelationalOpsSBOD.item(i);
+			 String relationalOpDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
+			 relationalOpDisplayName = relationalOpDisplayName.replace(starts_before_or_during, "Starts Before End");
+			 childNode.getAttributes().getNamedItem(displayName).setNodeValue(relationalOpDisplayName);
+			 childNode.getAttributes().getNamedItem(type).setNodeValue("SBE");
+		 }
+		 
+		 //replace relationalOp attribute values for displayName and type from EBOD to EBE
+		 NodeList nodesRelationalOpsEBOD = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD,
+					originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		 for (int i = 0; i < nodesRelationalOpsEBOD.getLength(); i++) {
+			 Node childNode =  nodesRelationalOpsEBOD.item(i);
+			 String relationalOpDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
+			 relationalOpDisplayName = relationalOpDisplayName.replace(ends_before_or_during, "Ends Before End");
+			 childNode.getAttributes().getNamedItem(displayName).setNodeValue(relationalOpDisplayName);
+			 childNode.getAttributes().getNamedItem(type).setNodeValue("EBE");
+		 }
+		
+	}
+	
+    
 	/**
 	 * This method looks at the Scoring Type for a measure and adds nodes based
 	 * on the value of Scoring Type.

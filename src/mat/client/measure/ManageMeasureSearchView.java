@@ -16,7 +16,6 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchView;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
@@ -107,7 +106,7 @@ ManageMeasurePresenter.SearchDisplay {
 	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
 	
 	/** The view. */
-	private SearchView<ManageMeasureSearchModel.Result> view  =new SearchView<ManageMeasureSearchModel.Result>();
+	private SearchView<ManageMeasureSearchModel.Result> view  = new SearchView<ManageMeasureSearchModel.Result>();
 	
 	/** The search view. */
 	MeasureSearchView searchView;
@@ -150,7 +149,7 @@ ManageMeasurePresenter.SearchDisplay {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buildBottomButtonWidget((PrimaryButton) bulkExportButton,
-				      errorMessagesForBulkExport));
+				errorMessagesForBulkExport));
 		MatContext.get().setManageMeasureSearchView(this);
 		
 	}
@@ -190,12 +189,12 @@ ManageMeasurePresenter.SearchDisplay {
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
 	 */
 	@Override
-	public void buildDataTable(ManageMeasureSearchModel 
+	public void buildDataTable(ManageMeasureSearchModel
 			manageMeasureSearchModel) {
 		measureSearchView.buildCellTable(manageMeasureSearchModel);
 	}
 	
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildMostRecentWidget()
 	 */
@@ -375,6 +374,7 @@ ManageMeasurePresenter.SearchDisplay {
 		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
 		image.setTitle(action);
 		image.setResource(url, action);
+		image.getElement().setAttribute("id", "MeasureSearchButton");
 		return image;
 	}
 	
@@ -415,7 +415,7 @@ ManageMeasurePresenter.SearchDisplay {
 	public MeasureSearchView getMeasureSearchView() {
 		return measureSearchView;
 	}
-//	
+	//
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSize()
 	 */
@@ -553,7 +553,7 @@ ManageMeasurePresenter.SearchDisplay {
 			SuccessMessageDisplay successMeasureDeletion) {
 		this.successMeasureDeletion = successMeasureDeletion;
 	}
-
-
+	
+	
 	
 }

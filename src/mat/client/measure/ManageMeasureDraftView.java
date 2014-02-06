@@ -209,6 +209,7 @@ public class ManageMeasureDraftView implements ManageMeasurePresenter.DraftDispl
 		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
 		image.setTitle(action);
 		image.setResource(url, action);
+		image.getElement().setAttribute("id", "MeasureSearchButton");
 		return image;
 	}
 	

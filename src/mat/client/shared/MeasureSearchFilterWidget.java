@@ -79,6 +79,7 @@ public class MeasureSearchFilterWidget extends Composite implements ClickHandler
 		 * searchInput.getElement().setPropertyString("placeholder", "Search");
 		 */
 		searchButton.getElement().getStyle().setMarginLeft(SEARCH_BTN_MRGN_LEFT, Unit.PX);
+		searchButton.getElement().setAttribute("id", "MeasureSearchWidgetButton");
 		VerticalPanel topPanel = new VerticalPanel();
 		topPanel.setWidth("100px");
 		topPanel.getElement().setId("MeasureSearchFilterWidget_verticalPanel");

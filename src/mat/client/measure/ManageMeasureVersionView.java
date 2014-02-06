@@ -242,6 +242,7 @@ public class ManageMeasureVersionView implements ManageMeasurePresenter.VersionD
 		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
 		image.setTitle(action);
 		image.setResource(url, action);
+		image.getElement().setAttribute("id", "MeasureSearchButton");
 		return image;
 	}
 	

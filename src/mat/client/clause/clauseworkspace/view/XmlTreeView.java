@@ -1,11 +1,14 @@
 package mat.client.clause.clauseworkspace.view;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -16,12 +19,16 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.BlurEvent;
+import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.KeyPressEvent;
+import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
@@ -37,9 +44,12 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
@@ -51,6 +61,8 @@ import com.google.gwt.view.client.TreeViewModel;
  * The Class XmlTreeView.
  */
 public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewModel, KeyDownHandler, FocusHandler {
+	
+	private static final int COMMENT_MAX_LENGTH = 250;
 	
 	/**
 	 * The Interface Template.
@@ -116,6 +128,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The Clear btn. */
 	private Button clearClauseWorkSpace = new SecondaryButton("Clear");
 	
+	private SaveCancelButtonBar commentButtons = new SaveCancelButtonBar();
+	private TextArea commentArea = new TextArea();
+	
 	/** The subTree Textbox btn. *//*
 	private TextBox subTreeTextBox = new TextBox();;*/
 	/** The validate btn. *//*
@@ -171,7 +186,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public ErrorMessageDisplay getClearErrorDisplay() {
 		return clearErrorDisplay;
 	}
-
+	
 	/**
 	 * Instantiates a new xml tree view.
 	 * 
@@ -219,7 +234,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		leftPanel.setStyleName("div-first bottomPadding10px"); //left side div which will  have tree
 		SimplePanel rightPanel = new SimplePanel();
 		rightPanel.getElement().setId("rightPanel_SimplePanel");
-		rightPanel.setStyleName("div-second"); //right div having tree creation inputs.
+		rightPanel.setStyleName("div-second-comment-box"); //right div having tree creation inputs.
 		VerticalPanel treePanel =  new VerticalPanel();
 		treePanel.getElement().setId("treePanel_VerticalPanel");
 		HorizontalPanel expandCollapse  = new HorizontalPanel();
@@ -252,12 +267,34 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		//Commented Validate Button from Population Work Space as part of Mat-3162
 		//validateBtn.setTitle("Validate");
 		//savePanel.add(validateBtn);
-		vp.add(warningMessageDisplay);
+		//vp.add(warningMessageDisplay);
 		vp.add(savePanel);
 		bottomSavePanel.add(vp);
 		SimplePanel errPanel = new SimplePanel();
 		errPanel.getElement().setId("errPanel_SimplePanel");
 		errPanel.add(errorMessageDisplay);
+		VerticalPanel addCommentPanel = new VerticalPanel();
+		addCommentPanel.add(new SpacerWidget());
+		Label addComment = new Label();
+		addCommentPanel.add(LabelBuilder.buildLabel(addComment, "Add/Edit Comment (Max 250 Characters)"));
+		commentArea.getElement().setAttribute("id", "AddComment");
+		addCommentPanel.add(commentArea);
+		addCommentPanel.add(commentButtons);
+		HorizontalPanel remainCharsPanel = new HorizontalPanel();
+		remainCharsPanel.add(new HTML("You have&nbsp;"));
+		final Label remainingCharsLabel = new Label("250");
+		remainCharsPanel.add(remainingCharsLabel);
+		remainCharsPanel.add(new HTML("&nbsp;characters left."));
+		addCommentPanel.add(new SpacerWidget());
+		addCommentPanel.add(remainCharsPanel);
+		commentAreaHandlers(remainingCharsLabel);
+		commentArea.getElement().setAttribute("maxlength", "250");
+		commentArea.setText("");
+		commentArea.setHeight("80px");
+		commentArea.setWidth("250px");
+		addCommentPanel.addStyleName("addCommentPanel");
+		setCommentsBoxReadOnly(true);
+		rightPanel.add(addCommentPanel);
 		mainPanel.add(errPanel);
 		mainPanel.add(leftPanel);
 		mainPanel.add(rightPanel);
@@ -267,7 +304,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	/**
-	 * Page Widget's for Clause WorkSpace.
+	 * Page View for Clause WorkSpace.
 	 * @param cellTree
 	 */
 	public void createClauseWorkSpacePageView(CellTree cellTree) {
@@ -294,17 +331,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		expandCollapse.add(buttonCollapseClauseWorkSpace);
 		buttonExpandClauseWorkSpace.setFocus(true);
 		buttonCollapseClauseWorkSpace.setVisible(true);
-		/*HorizontalPanel createSubTreePanel  = new HorizontalPanel();
-		createSubTreePanel.add(subTreeTextBox);
-		createSubTreePanel.add(createSubTree);*/
 		if (cellTree != null) {
-			//treePanel.add(createSubTreePanel);
 			treePanel.add(expandCollapse);
 			treePanel.add(cellTree);
 			addCWExpandCollapseButtonHandler();
 			cellTreeHandlers();
 		} else {
-			//treePanel.add(createSubTreePanel);
 			treePanel.setHeight("100%");
 		}
 		leftPanel.add(treePanel);
@@ -337,18 +369,60 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		focusPanel.addFocusHandler(this);
 	}
 	/**
+	 * Comment Area Handler for population Clause Work Space.
+	 * @param remainingCharsLabel - Label.
+	 */
+	private void commentAreaHandlers(final Label remainingCharsLabel) {
+		commentArea.addKeyPressHandler(new KeyPressHandler()
+		{
+			@Override
+			public void onKeyPress(KeyPressEvent event) {
+				onTextAreaContentChanged(remainingCharsLabel);
+			}
+		});
+		commentArea.addFocusHandler(new FocusHandler()
+		{
+			@Override
+			public void onFocus(FocusEvent event) {
+				onTextAreaContentChanged(remainingCharsLabel);
+			}
+		});
+		//onFocusLost previously
+		commentArea.addBlurHandler(new BlurHandler()
+		{
+			@Override
+			public void onBlur(BlurEvent event)	{
+				onTextAreaContentChanged(remainingCharsLabel);
+			}
+		});
+	}
+	
+	/**
+	 * Checks max limit of character count on comment Area and display's remaining character count.
+	 * @param remainingCharsLabel - Label.
+	 */
+	private void onTextAreaContentChanged(final Label remainingCharsLabel) {
+		int counter = new Integer(commentArea.getText().length()).intValue();
+		int charsRemaining = COMMENT_MAX_LENGTH - counter;
+		remainingCharsLabel.setText("" + charsRemaining);
+		/*if (charsRemaining >= 0)
+		{
+			remainingCharsLabel.setStyleName("my_form_under_140_chars");
+		} else {
+			remainingCharsLabel.setStyleName("my_form_over_140_chars");
+		}*/
+	}
+	/**
 	 * Selection Handler, Tree Open and Close Handlers Defined.
 	 */
 	private void cellTreeHandlers() {
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				// assigning the selected object to the selectedNode variable.
 				selectedNode = selectionModel.getSelectedObject();
 			}
 		});
-		
 		/**
 		 * This handler is implemented to save the open state of the Celltree in CellTreeNode Object
 		 * Set to isOpen boolean in CellTreeNode.
@@ -357,7 +431,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		 * so using this boolean we will know which node was already in opened state and closed state.
 		 */
 		cellTree.addOpenHandler(new OpenHandler<TreeNode>() {
-			
 			@Override
 			public void onOpen(OpenEvent<TreeNode> event) {
 				CellTreeNode node = (CellTreeNode) event.getTarget().getValue();
@@ -585,7 +658,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		 * Instantiates a new node cell.
 		 */
 		public NodeCell() {
-			super(BrowserEvents.CONTEXTMENU);
+			super(BrowserEvents.CLICK,BrowserEvents.CONTEXTMENU);
 		}
 		
 		/* (non-Javadoc)
@@ -623,6 +696,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				event.stopPropagation();
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					onRightClick(value, (Event) event, parent);
+				}
+			} else if (event.getType().equals(BrowserEvents.CLICK)) {
+				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
+							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
+						setCommentsBoxReadOnly(false);
+					} else {
+						setCommentsBoxReadOnly(true);
+					}
 				}
 			} else {
 				super.onBrowserEvent(context, parent, value, event, valueUpdater);
@@ -960,19 +1042,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
 						&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
 						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE))
-						|| ((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE) 
+						|| ((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE)
 								&& (selectedNode.getParent().getChilds().size() > 1))) {
 					removeNode();
 					isDirty = true;
 				}
 			}
 		}
-		if ((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.PLUS_FF) 
+		if ((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.PLUS_FF)
 				|| (keyCode == PopulationWorkSpaceConstants.PLUS_IE)))) {
 			//EXPAND/COLLAPSE (+(Shift +) Expand| - Collapse)
 			popupPanel.hide();
 			openAllNodes(cellTree.getRootTreeNode());
-		} else if ((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.MINUS_FF) 
+		} else if ((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.MINUS_FF)
 				|| (keyCode == PopulationWorkSpaceConstants.MINUS_IE)))) {
 			popupPanel.hide();
 			closeNodes(cellTree.getRootTreeNode());
@@ -1278,7 +1360,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		this.clearClauseWorkSpace = clearClauseWorkSpace;
 	}
 	
-	
+	private void setCommentsBoxReadOnly(boolean b){
+		commentArea.setReadOnly(b);
+		commentButtons.getSaveButton().setEnabled(!b);
+		commentButtons.getCancelButton().setEnabled(!b);
+	}
 	
 	/**
 	 * @return the subTreeTextBox

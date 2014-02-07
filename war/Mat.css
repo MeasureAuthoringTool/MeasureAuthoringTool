@@ -1212,6 +1212,18 @@ padding: 2px;
     margin: 6px;
 }
 
+.addCommentPanel {
+    -moz-box-sizing:border-box;
+    background-color:#F0F0F0;
+    border:1px solid #C0C0C0;
+    height:98%;
+    overflow:auto;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom:5px;
+    margin: 6px;
+    margin-left : 30px;
+}
 
 .contentPanel {
     padding: 5px;
@@ -1400,7 +1412,7 @@ padding: 2px;
 }
 
 .div-wrapper{
-	width: 900px;
+	width: 920px;
 	position: relative;
 	overflow: hidden; 
 }
@@ -1417,6 +1429,12 @@ padding: 2px;
 	border-style: inset;
 	border-color: gray;
 	border-width: thin;
+}
+
+.div-second-comment-box{
+    width:320px;
+    overflow:hidden;
+    float: right;
 }
 
 .leftpadding4px{

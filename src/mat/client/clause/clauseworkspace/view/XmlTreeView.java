@@ -377,6 +377,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		{
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
+				// In IE maxLength is not working.
+				if (commentArea.getText().length() >= COMMENT_MAX_LENGTH) {
+					event.preventDefault();
+				}
 				onTextAreaContentChanged(remainingCharsLabel);
 			}
 		});
@@ -405,6 +409,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		int counter = new Integer(commentArea.getText().length()).intValue();
 		int charsRemaining = COMMENT_MAX_LENGTH - counter;
 		remainingCharsLabel.setText("" + charsRemaining);
+		
 		/*if (charsRemaining >= 0)
 		{
 			remainingCharsLabel.setStyleName("my_form_under_140_chars");

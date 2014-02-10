@@ -5,6 +5,7 @@ import java.util.List;
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
 import mat.client.clause.clauseworkspace.view.PopulationWorkSpaceContextMenu;
@@ -29,7 +30,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
  * The Class XmlTreePresenter.
  */
 public class XmlTreePresenter {
-	
+	private static final String COMMENT = "COMMENT";
 	/**
 	 * Cell Tree Node Size to remove show more.
 	 */
@@ -297,6 +298,29 @@ public class XmlTreePresenter {
 					}
 				}
 			}
+		});
+		xmlTreeDisplay.getCommentButtons().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				@SuppressWarnings("unchecked")
+				List<CellTreeNode> commentList = (List<CellTreeNode>) xmlTreeDisplay
+				.getSelectedNode().getExtraInformation(COMMENT);
+				if (commentList == null) {
+					commentList = new ArrayList<CellTreeNode>();
+				}
+				commentList.clear();
+				CellTreeNode node = new CellTreeNodeImpl();
+				node.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
+				node.setNodeType(CellTreeNode.COMMENT_NODE);
+				node.setNodeText(xmlTreeDisplay.getCommentArea().getText());
+				commentList.add(node);
+				
+				xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
+				String xml = XmlConversionlHelper.createXmlFromTree(xmlTreeDisplay.getSelectedNode());
+				System.out.println(xml);
+				
+			}
+			
 		});
 	}
 	/**

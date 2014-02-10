@@ -1,5 +1,6 @@
 package mat.client.clause.clauseworkspace.view;
 
+import java.util.List;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -8,7 +9,6 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -128,7 +128,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The Clear btn. */
 	private Button clearClauseWorkSpace = new SecondaryButton("Clear");
 	
-	private SaveCancelButtonBar commentButtons = new SaveCancelButtonBar();
+	private Button commentButtons = new Button("Ok");
 	private TextArea commentArea = new TextArea();
 	
 	/** The subTree Textbox btn. *//*
@@ -279,6 +279,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		addCommentPanel.add(LabelBuilder.buildLabel(addComment, "Add/Edit Comment (Max 250 Characters)"));
 		commentArea.getElement().setAttribute("id", "AddComment");
 		addCommentPanel.add(commentArea);
+		commentButtons.setTitle("Ok");
 		addCommentPanel.add(commentButtons);
 		HorizontalPanel remainCharsPanel = new HorizontalPanel();
 		remainCharsPanel.add(new HTML("You have&nbsp;"));
@@ -381,6 +382,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if (commentArea.getText().length() >= COMMENT_MAX_LENGTH) {
 					event.preventDefault();
 				}
+				setDirty(true);
 				onTextAreaContentChanged(remainingCharsLabel);
 			}
 		});
@@ -693,6 +695,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		/* (non-Javadoc)
 		 * @see com.google.gwt.cell.client.AbstractCell#onBrowserEvent(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object, com.google.gwt.dom.client.NativeEvent, com.google.gwt.cell.client.ValueUpdater)
 		 */
+		@SuppressWarnings("unchecked")
 		@Override
 		public void onBrowserEvent(Context context, Element parent, CellTreeNode value,
 				NativeEvent event, ValueUpdater<CellTreeNode> valueUpdater) {
@@ -706,8 +709,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
 							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
+						commentArea.setText("");
+						List<CellTreeNode> childNode = (List<CellTreeNode>) value.
+								getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+						if (childNode != null) {
+							for (CellTreeNode cellTreeNode : childNode) {
+								if (cellTreeNode.getNodeType() == cellTreeNode.COMMENT_NODE) {
+									commentArea.setText(cellTreeNode.getNodeText());
+								}
+							}
+						}
 						setCommentsBoxReadOnly(false);
 					} else {
+						commentArea.setText("");
 						setCommentsBoxReadOnly(true);
 					}
 				}
@@ -1367,8 +1381,23 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	private void setCommentsBoxReadOnly(boolean b){
 		commentArea.setReadOnly(b);
-		commentButtons.getSaveButton().setEnabled(!b);
-		commentButtons.getCancelButton().setEnabled(!b);
+		commentButtons.setEnabled(!b);
+	}
+	
+	/**
+	 * @return the commentButtons
+	 */
+	@Override
+	public Button getCommentButtons() {
+		return commentButtons;
+	}
+	
+	/**
+	 * @return the commentArea
+	 */
+	@Override
+	public TextArea getCommentArea() {
+		return commentArea;
 	}
 	
 	/**

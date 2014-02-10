@@ -47,6 +47,8 @@ public class PopulationWorkSpaceConstants {
 	/** The Constant AND. */
 	public static final String AND = "AND";
 	
+	public static final String COMMENTS = "COMMENT";
+	
 	/** The Constant MASTER_ROOT_NODE_POPULATION. */
 	public static final String MASTER_ROOT_NODE_POPULATION = "Populations";
 	
@@ -105,6 +107,11 @@ public class PopulationWorkSpaceConstants {
 	 * The Constant for SUBTREE_NAME.
 	 */
 	public static final String SUBTREE_ROOT_NAME = "subTrees";
+	
+	/**
+	 * The Constant for COMMENT_NODE_NAME.
+	 */
+	public static final String COMMENT_NODE_NAME = "comment";
 	
 	/** The Constant MINUS_NUMPAD. */
 	public static final int MINUS_NUMPAD = 109;

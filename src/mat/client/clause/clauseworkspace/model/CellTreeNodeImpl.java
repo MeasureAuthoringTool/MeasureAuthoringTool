@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.shared.UUIDUtilClient;
 
@@ -46,6 +45,8 @@ public class CellTreeNodeImpl implements CellTreeNode {
 	 * Node UUID information.
 	 */
 	private String uuid;
+	
+	private String nodeText;
 	/*
 	 * (non-Javadoc)
 	 * @see
@@ -486,5 +487,19 @@ public class CellTreeNodeImpl implements CellTreeNode {
 	@Override
 	public void setValidNode(boolean isNodeValid) {
 		isValid = isNodeValid;
+	}
+	/**
+	 * @return the nodeText
+	 */
+	@Override
+	public String getNodeText() {
+		return nodeText;
+	}
+	/**
+	 * @param nodeText the nodeText to set
+	 */
+	@Override
+	public void setNodeText(String nodeText) {
+		this.nodeText = nodeText;
 	}
 }

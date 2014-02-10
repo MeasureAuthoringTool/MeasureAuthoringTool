@@ -56,6 +56,11 @@ public interface CellTreeNode {
 	 * Sub tree Ref Node.
 	 */
 	short SUBTREE_REF_NODE = 12;
+	
+	/**
+	 * Comment Node.
+	 */
+	short COMMENT_NODE = 13;
 	/**
 	 * Append child.
 	 * 
@@ -252,4 +257,14 @@ public interface CellTreeNode {
 	 *            - {@link Boolean}
 	 */
 	void setValidNode(boolean isValid);
+	
+	/**
+	 * @return Node Text
+	 */
+	String getNodeText();
+	
+	/**
+	 * @param nodeText - String.
+	 */
+	void setNodeText(String nodeText);
 }

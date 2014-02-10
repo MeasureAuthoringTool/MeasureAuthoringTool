@@ -6,11 +6,13 @@ import java.util.List;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.shared.MatContext;
+import org.apache.commons.lang.StringUtils;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
+import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
 
 /**
@@ -24,7 +26,6 @@ public class XmlConversionlHelper {
 	/**
 	 * Creates CellTreeNode object which has list of children objects and a
 	 * parent object from the XML.
-	 * 
 	 * @param xml
 	 *            the xml
 	 * @param tagName
@@ -54,7 +55,6 @@ public class XmlConversionlHelper {
 		}
 		return mainNode;
 	}
-	
 	/**
 	 * Method to create Root Clause Node for Sub Tree Node in Clause WorkSpace.
 	 * @return CellTreeNode
@@ -64,26 +64,17 @@ public class XmlConversionlHelper {
 		CellTreeNode mainNode = new CellTreeNodeImpl();
 		List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
 		List<CellTreeNode> parentchilds = new ArrayList<CellTreeNode>();
-		//if ((rootName != null) && (rootName.trim().length() > 0)) {
 		parent.setName(PopulationWorkSpaceConstants.CLAUSE);
 		parent.setLabel(PopulationWorkSpaceConstants.CLAUSE);
 		parent.setNodeType(CellTreeNode.SUBTREE_ROOT_NODE);
-		/*CellTreeNode parentChild = createChild(rootName, rootName, CellTreeNodeImpl.SUBTREE_NODE, parent);
-			parentChild.setUUID(UUIDUtilClient.uuid());
-			parentChild.setOpen(true);
-			parentchilds.add(parentChild);*/
 		parent.setChilds(parentchilds);
 		parent.setOpen(true);
 		childs.add(parent);
 		mainNode.setChilds(childs);
-		
-		//}
 		return mainNode;
 	}
-	
 	/**
 	 * Creates the root node.
-	 * 
 	 * @param tagName
 	 *            the tag name
 	 * @return the cell tree node
@@ -174,6 +165,7 @@ public class XmlConversionlHelper {
 	 * @param childs
 	 *            the childs
 	 */
+	@SuppressWarnings("unchecked")
 	private static void createCellTreeNodeChilds(CellTreeNode parent, Node root, List<CellTreeNode> childs) {
 		String nodeName = root.getNodeName();
 		String nodeValue = root.hasAttributes()
@@ -197,7 +189,8 @@ public class XmlConversionlHelper {
 					Node node = nodes.item(i);
 					String name = node.getNodeName().replaceAll("\n\r", "").trim();
 					//if(!(name.equalsIgnoreCase("#text") && name.isEmpty())){
-					if ((name.length() > 0) && !name.equalsIgnoreCase("#text") && !name.equalsIgnoreCase("attribute")) {
+					if ((name.length() > 0) && !name.equalsIgnoreCase("#text") && !name.equalsIgnoreCase("attribute")
+							&& !name.equalsIgnoreCase("comment")) {
 						createCellTreeNodeChilds(child, node, childs);
 					}
 					/**
@@ -217,6 +210,22 @@ public class XmlConversionlHelper {
 							cellNode.setExtraInformation(attrib.getNodeName(), attrib.getNodeValue());
 						}
 						attributeList.add(cellNode);
+					} else if (name.equalsIgnoreCase(PopulationWorkSpaceConstants.COMMENTS)) {
+						Object comments = child.getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+						if (comments == null) {
+							comments = new ArrayList<CellTreeNode>();
+							child.setExtraInformation(PopulationWorkSpaceConstants.COMMENTS, comments);
+						}
+						List<CellTreeNode> commentList = (List<CellTreeNode>) comments;
+						CellTreeNode cellNode = new CellTreeNodeImpl();
+						if (node.hasChildNodes()) {
+							cellNode.setNodeText(node.getChildNodes().item(0).getNodeValue());
+						} else {
+							cellNode.setNodeText(StringUtils.EMPTY);
+						}
+						cellNode.setNodeType(CellTreeNode.COMMENT_NODE);
+						cellNode.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
+						commentList.add(cellNode);
 					}
 				}
 	}
@@ -392,6 +401,7 @@ public class XmlConversionlHelper {
 	 *            the document
 	 * @return the node name
 	 */
+	@SuppressWarnings("unchecked")
 	private static Element getNodeName(CellTreeNode cellTreeNode, Document document) {
 		Element element = null;
 		switch (cellTreeNode.getNodeType()) {
@@ -414,11 +424,23 @@ public class XmlConversionlHelper {
 				element = document.createElement(PopulationWorkSpaceConstants.LOG_OP);
 				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
 				element.setAttribute(PopulationWorkSpaceConstants.TYPE, toCamelCase(cellTreeNode.getName()));
+				List<CellTreeNode> commentList = (List<CellTreeNode>) cellTreeNode.getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+				if (commentList != null) {
+					for (CellTreeNode commentNode:commentList) {
+						Element commentElement = document.createElement(
+								PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
+						Text commentNodeText = document.createTextNode(commentNode.getNodeText());
+						commentElement.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME
+								, commentNode.getName());
+						commentElement.setAttribute(PopulationWorkSpaceConstants.TYPE, commentNode.getName());
+						commentElement.appendChild(commentNodeText);
+						element.appendChild(commentElement);
+						
+					}
+				}
 				break;
 			case CellTreeNode.TIMING_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.RELATIONAL_OP);
-				
-				@SuppressWarnings("unchecked")
 				HashMap<String, String> map = (HashMap<String, String>) cellTreeNode.getExtraInformation(
 						PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 				if (map != null) {
@@ -514,6 +536,20 @@ public class XmlConversionlHelper {
 				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
 				element.setAttribute(PopulationWorkSpaceConstants.ID, cellTreeNode.getUUID());
 				element.setAttribute(PopulationWorkSpaceConstants.TYPE, "subTree");
+				List<CellTreeNode> commentInSubTreeList = (List<CellTreeNode>)
+						cellTreeNode.getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+				if (commentInSubTreeList != null) {
+					for (CellTreeNode commentNode:commentInSubTreeList) {
+						Element commentElement = document.createElement(
+								PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
+						Text commentNodeText = document.createTextNode(commentNode.getNodeText());
+						commentElement.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME
+								, commentNode.getName());
+						commentElement.setAttribute(PopulationWorkSpaceConstants.TYPE, commentNode.getName());
+						commentElement.appendChild(commentNodeText);
+						element.appendChild(commentElement);
+					}
+				}
 				break;
 			default:
 				element = document.createElement(cellTreeNode.getName());

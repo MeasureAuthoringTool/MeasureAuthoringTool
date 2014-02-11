@@ -158,6 +158,28 @@ public class CellTreeNodeImpl implements CellTreeNode {
 				}
 				copyModel.setExtraInformation("attributes", extraAttrList);
 			}
+		} else if ((model.getNodeType() == LOGICAL_OP_NODE)
+				|| (model.getNodeType() == SUBTREE_REF_NODE)) {
+			@SuppressWarnings("unchecked")
+			List<CellTreeNode> attributes = (List<CellTreeNode>) model
+			.getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+			// MAT-2282 : Bug fix ends.
+			if (attributes != null) {
+				List<CellTreeNode> extraAttrList = new ArrayList<CellTreeNode>();
+				for (CellTreeNode cellTreeNode : attributes) {
+					CellTreeNode attrNode = new CellTreeNodeImpl();
+					attrNode.setName(cellTreeNode.getName());
+					attrNode.setNodeType(cellTreeNode.getNodeType());
+					attrNode.setNodeText(cellTreeNode.getNodeText());
+					Map<String, Object> extraInfoAttr = new HashMap<String, Object>();
+					extraInfoAttr.putAll(((CellTreeNodeImpl) cellTreeNode)
+							.getExtraInformationMap());
+					((CellTreeNodeImpl) attrNode)
+					.setExtraInformationMap(extraInfoAttr);
+					extraAttrList.add(attrNode);
+				}
+				copyModel.setExtraInformation(PopulationWorkSpaceConstants.COMMENTS, extraAttrList);
+			}
 		} else {
 			extraInfos.putAll(((CellTreeNodeImpl) model)
 					.getExtraInformationMap());

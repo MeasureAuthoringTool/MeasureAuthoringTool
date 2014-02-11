@@ -13,7 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import mat.model.MeasureNotes;
 import mat.model.User;
+import mat.model.clause.Measure;
+import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasureNotesService;
+import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.service.UserService;
@@ -97,11 +100,14 @@ public class ExportServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 		context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+		MeasurePackageService service = getMeasurePackageService();
+		MeasureLibraryService measureLibraryService = getMeasureLibraryService();
 		
-		String id = req.getParameter(ID_PARAM);
+	    String id = req.getParameter(ID_PARAM);
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
-		
+		String matVersion [] ={"_v3","_v4"}; 
+		Measure measure = service.getById(id);
 		ExportResult export = null;
 		
 		FileNameUtility fnu = new FileNameUtility();
@@ -109,8 +115,17 @@ public class ExportServlet extends HttpServlet {
 			if (SIMPLEXML.equals(format)) {
 				export = getService().getSimpleXML(id);
 				if (SAVE.equals(type)) {
+					if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))) {
 					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getSimpleXMLName(export.measureName));
+							+ fnu.getSimpleXMLName(export.measureName + matVersion[0])); 
+					}
+					else if(measure.getExportedDate().equals(measureLibraryService
+							.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
+							 || measure.getExportedDate().after(measureLibraryService
+									 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+						resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+								+ fnu.getSimpleXMLName(export.measureName + matVersion[1])); 
+					}
 				} else {
 					resp.setHeader(CONTENT_TYPE, TEXT_XML);
 				}
@@ -120,28 +135,60 @@ public class ExportServlet extends HttpServlet {
 					resp.setHeader(CONTENT_TYPE, TEXT_HTML);
 				} else if (SAVE.equals(type)) {
 					export = getService().getEMeasureXML(id);
+					if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
 					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getEmeasureXMLName(export.measureName));
+							+ fnu.getEmeasureXMLName(export.measureName + matVersion[0]));
+					}
+					else if(measure.getExportedDate().equals(measureLibraryService
+							.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
+							 || measure.getExportedDate().after(measureLibraryService
+									 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+						resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+								+ fnu.getEmeasureXMLName(export.measureName + matVersion[1]));
+					}
 				}
 			} else if (CODELIST.equals(format)) {
 				export = getService().getEMeasureXLS(id);
+				if(measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-						+ fnu.getEmeasureXLSName(export.measureName, export.packageDate));
+						+ fnu.getEmeasureXLSName(export.measureName + matVersion[0], export.packageDate));
+				} else if(measure.getExportedDate().equals(measureLibraryService
+						.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
+						 || measure.getExportedDate().after(measureLibraryService
+								 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+							+ fnu.getEmeasureXLSName(export.measureName + matVersion[1], export.packageDate));
+				}
 				resp.setContentType("application/vnd.ms-excel");
 				resp.getOutputStream().write(export.wkbkbarr);
 				resp.getOutputStream().close();
 				export.wkbkbarr = null;
 			} else if (ZIP.equals(format)) {
 				export = getService().getEMeasureZIP(id);
-				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName));
+				if(measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + matVersion[0]));
+				} else if(measure.getExportedDate().equals(measureLibraryService
+						.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
+						 || measure.getExportedDate().after(measureLibraryService
+								 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + matVersion[1]));
+				}
 				resp.setContentType("application/zip");
 				resp.getOutputStream().write(export.zipbarr);
 				resp.getOutputStream().close();
 				export.zipbarr = null;
 			} else if (VALUESET.equals(format)) {
 				export = getService().getValueSetXLS(id);
+				 if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-						+ fnu.getValueSetXLSName(export.valueSetName, export.lastModifiedDate));
+						+ fnu.getValueSetXLSName(export.valueSetName + matVersion[0], export.lastModifiedDate));
+				 } else if(measure.getExportedDate().equals(measureLibraryService
+							.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
+							 || measure.getExportedDate().after(measureLibraryService
+									 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+					 resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+								+ fnu.getValueSetXLSName(export.valueSetName + matVersion[1], export.lastModifiedDate));
+				 }
 				resp.setContentType("application/vnd.ms-excel");
 				resp.getOutputStream().write(export.wkbkbarr);
 				resp.getOutputStream().close();
@@ -341,5 +388,13 @@ public class ExportServlet extends HttpServlet {
 	 */
 	private MeasureNotesService getMeasureNoteService() {
 		return (MeasureNotesService) context.getBean("measureNotesService");
+	}
+	
+	private MeasurePackageService getMeasurePackageService() {
+		return (MeasurePackageService) context.getBean("measurePackageService");
+	}
+	
+	private MeasureLibraryService getMeasureLibraryService(){
+		return (MeasureLibraryService) context.getBean("measureLibraryService");
 	}
 }

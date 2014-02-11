@@ -1,6 +1,7 @@
 package mat.server.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -379,4 +380,8 @@ public interface MeasureLibraryService {
 	 * @param nodeUUID
 	 */
 	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID);
+
+	String getReleaseDate();
+	
+	Date getFormattedReleaseDate(String releaseDate);
 }

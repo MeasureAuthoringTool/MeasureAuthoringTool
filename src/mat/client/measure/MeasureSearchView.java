@@ -20,6 +20,7 @@ import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -223,11 +224,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
 				if (object.getFinalizedDate() != null) {
 					return CellTableUtility.getColumnToolTip(convertTimestampToString(object.getFinalizedDate()));
-				} //else {
-				//					SafeHtmlBuilder sb = new SafeHtmlBuilder();
-				//					sb.appendHtmlConstant("<span tabindex=\"-1\"><span>");
-				//					return sb.toSafeHtml();
-				//}
+				} 
 				return null;
 			}
 		};
@@ -339,7 +336,75 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					}
 				});
 				final List<HasCell<Result, ?>> cells = new LinkedList<HasCell<Result, ?>>();
-				cells.add(new HasCell<Result, String>() {
+				cells.add(new HasCell<Result, SafeHtml>() {
+                    
+					SafeHtmlCell matVersion = new SafeHtmlCell();
+					@Override
+					public Cell<SafeHtml> getCell() {
+						return matVersion;
+					}
+
+					@Override
+					public FieldUpdater<Result, SafeHtml> getFieldUpdater() {
+						return null;
+					}
+
+					@Override
+					public SafeHtml getValue(Result object) {
+						SafeHtmlBuilder sb = new SafeHtmlBuilder();
+						if(object.isHQMFR1()){
+						sb.appendHtmlConstant("<sup style='font-size:120%;' title=\"v3\">v3</sup>");
+						} else {
+							sb.appendHtmlConstant("<sup style='font-size:120%;' title=\"v4\">v4</sup>");
+						}
+						return sb.toSafeHtml();
+					}
+					
+					
+				});
+				cells.add(new HasCell<Result, SafeHtml>() {
+
+					ClickableSafeHtmlCell exportButonCell = new ClickableSafeHtmlCell();
+					
+					@Override
+					public Cell<SafeHtml> getCell() {
+						return exportButonCell;
+					}
+
+					@Override
+					public FieldUpdater<Result, SafeHtml> getFieldUpdater() {
+						
+						return new FieldUpdater<Result, SafeHtml>() {
+							@Override
+							public void update(int index, Result object, SafeHtml value) {
+								if ((object != null) && object.isExportable()) {
+								observer.onExportClicked(object);
+								}
+							}
+						};
+					}
+
+					@Override
+					public SafeHtml getValue(Result object) {
+						SafeHtmlBuilder sb = new SafeHtmlBuilder();
+						String title;
+						String cssClass = "customExportButton";
+						
+						if(object.isHQMFR1()){
+							title = "Click to Export MAT v3";
+							
+							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
+									+ "' tabindex=\"0\" class=\" " + cssClass + "\"/>");	
+						} else {
+							title = "Click to Export MAT v4";
+							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
+									+ "' tabindex=\"0\" class=\" " + cssClass + "\"/>");	
+						}
+						return sb.toSafeHtml();
+					}
+					
+				});
+				/*cells.add(new HasCell<Result, String>() {
 					private Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
 					@Override
 					public Cell<String> getCell() {
@@ -358,7 +423,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 							}
 						};
 					}
-				});
+				});*/
 				
 				
 				cells.add(new HasCell<Result, Boolean>() {
@@ -377,18 +442,9 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 							@Override
 							public void update(int index, Result object,
 									Boolean isCBChecked) {
-								//								if(isCBChecked){
-								//									int size=selectionModel.getSelectedSet().size();
-								//									if(selectionModel.getSelectedSet().size()>9){
-								//										observer.onExportSelectedClicked(object, isCBChecked);
-								//									}
-								//									else{
 								selectionModel.setSelected(object, isCBChecked);
 								observer.onExportSelectedClicked(object, isCBChecked);
 							}
-							//}
-							
-							//}
 						};
 					}
 				});
@@ -406,7 +462,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 							SafeHtmlBuilder sb, HasCell<Result, X> hasCell) {
 						Cell<X> cell = hasCell.getCell();
 						sb.appendHtmlConstant("<td class=\"emptySpaces\">");
-						if (object.isExportable()) {
+						if ((object != null) && object.isExportable()) {
 							cell.render(context, hasCell.getValue(object), sb);
 						} else {
 							sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
@@ -428,12 +484,6 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				return table;
 	}
 	
-	//	public void clearBulkExportCheckBox(Result object){
-	//		 {
-	//		selectionModel.setSelected(object, false);
-	//		}
-	//		//observer.onClearAllBulkExportClicked();
-	//	}
 	
 	/**
 	 *

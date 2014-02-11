@@ -6,6 +6,7 @@ import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -95,6 +96,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/** The Constant MEASURE_DETAILS. */
 	private static final String MEASURE_DETAILS = "measureDetails";
 	
+	private String releaseDate;
+	
+	public String getReleaseDate() {
+		return releaseDate;
+	}
+	public void setReleaseDate(String releaseDate) {
+		this.releaseDate = releaseDate;
+	}
+
 	/**
 	 * Comparator.
 	 * **/
@@ -631,6 +641,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			final MeasureShareDTO dto) {
 		boolean isOwner = currentUserId.equals(dto.getOwnerUserId());
 		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
+		Measure measure = getMeasureDAO().find(dto.getMeasureId());
 		detail.setName(dto.getMeasureName());
 		detail.setShortName(dto.getShortName());
 		detail.setScoringType(dto.getScoringType());
@@ -641,6 +652,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setClonable(isOwner || isSuperUser);
 		detail.setEditable((isOwner || isSuperUser || ShareLevel.MODIFY_ID.equals(dto.getShareLevel())) && dto.isDraft());
 		detail.setExportable(dto.isPackaged());
+		detail.setHQMFR1(measure.getExportedDate() != null && measure.getExportedDate()
+				.before(getFormattedReleaseDate(releaseDate)));
+		detail.setHQMFR2(measure.getExportedDate() != null && (measure.getExportedDate()
+				.after(getFormattedReleaseDate(releaseDate)) 
+				|| measure.getExportedDate().equals(getFormattedReleaseDate(releaseDate))));
 		detail.setSharable(isOwner || isSuperUser);
 		detail.setMeasureLocked(dto.isLocked());
 		detail.setLockedUserInfo(dto.getLockedUserInfo());
@@ -808,6 +824,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			detail.setId(measure.getId());
 			detail.setDraft(measure.isDraft());
 			detail.setExportable(measure.getExportedDate() != null); // to show export icon.
+			detail.setHQMFR1(measure.getExportedDate() != null && measure.getExportedDate()
+					.before(getFormattedReleaseDate(releaseDate)));
+			detail.setHQMFR2(measure.getExportedDate() != null && (measure.getExportedDate()
+					.after(getFormattedReleaseDate(releaseDate)) 
+					|| measure.getExportedDate().equals(getFormattedReleaseDate(releaseDate))));
 			detail.setStatus(measure.getMeasureStatus());
 			String formattedVersion = MeasureUtility.getVersionText(measure.getVersion(),
 					measure.isDraft());
@@ -2194,5 +2215,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			logger.info("Exception validating export for " + key, exc);
 			throw new MatException(exc.getMessage());
 		}
+	}
+	
+	@Override
+	public Date getFormattedReleaseDate(String releaseDate){
+		
+		SimpleDateFormat formatter = new SimpleDateFormat("MM-dd-yyyy");
+		Date date = new Date();
+		try {
+			date = formatter.parse(releaseDate);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return date;
 	}
 }

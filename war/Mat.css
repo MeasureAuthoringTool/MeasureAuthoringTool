@@ -1213,9 +1213,13 @@ padding: 2px;
 }
 
 .addCommentPanel {
-    -moz-box-sizing:border-box;
+   /*  -moz-box-sizing:border-box;
     background-color:#F0F0F0;
-    border:1px solid #C0C0C0;
+    border:1px solid #C0C0C0; */
+     border:1px solid lightgray;
+    -moz-box-sizing: border-box;
+    background-image: url("images/bg_box-blue.png");
+    background-repeat:repeat-x;
     height:98%;
     overflow:auto;
     padding-left: 10px;

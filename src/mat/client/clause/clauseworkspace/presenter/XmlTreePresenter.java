@@ -243,6 +243,7 @@ public class XmlTreePresenter {
 					}
 					@Override
 					public void onSuccess(final Void result) {
+						xmlTreeDisplay.getSuccessMessageAddCommentDisplay().clear();
 						xmlTreeDisplay.getWarningMessageDisplay().clear();
 						xmlTreeDisplay
 						.getSuccessMessageDisplay()
@@ -302,6 +303,7 @@ public class XmlTreePresenter {
 		xmlTreeDisplay.getCommentButtons().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().clear();
 				@SuppressWarnings("unchecked")
 				List<CellTreeNode> commentList = (List<CellTreeNode>) xmlTreeDisplay
 				.getSelectedNode().getExtraInformation(COMMENT);
@@ -316,9 +318,10 @@ public class XmlTreePresenter {
 				commentList.add(node);
 				
 				xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
-				String xml = XmlConversionlHelper.createXmlFromTree(xmlTreeDisplay.getSelectedNode());
-				System.out.println(xml);
+				/*	String xml = XmlConversionlHelper.createXmlFromTree(xmlTreeDisplay.getSelectedNode());
+				System.out.println(xml);*/
 				
+				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setMessage("Comment Added");
 			}
 			
 		});

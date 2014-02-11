@@ -128,7 +128,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The Clear btn. */
 	private Button clearClauseWorkSpace = new SecondaryButton("Clear");
 	
+	/**
+	 * Comment Ok Button.
+	 */
 	private Button commentButtons = new Button("Ok");
+	/**
+	 * Comment Input Text area.
+	 */
 	private TextArea commentArea = new TextArea();
 	
 	/** The subTree Textbox btn. *//*
@@ -154,6 +160,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The success message display. */
 	private SuccessMessageDisplay successMessageDisplay = new SuccessMessageDisplay();
+	
+	/** The success message display. */
+	private SuccessMessageDisplay successMessageAddCommentDisplay = new SuccessMessageDisplay();
 	
 	/** The warning message display. */
 	private WarningMessageDisplay warningMessageDisplay = new WarningMessageDisplay();
@@ -260,9 +269,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		HorizontalPanel savePanel = new HorizontalPanel();
 		savePanel.getElement().setId("savePanel_VerticalPanel");
 		savePanel.add(new SpacerWidget());
-		//		savePanel.add(errorMessageDisplay);
 		vp.add(successMessageDisplay);
-		//		saveBtn.setTitle("Ctrl+Alt+s");
 		savePanel.add(saveBtn);
 		//Commented Validate Button from Population Work Space as part of Mat-3162
 		//validateBtn.setTitle("Validate");
@@ -274,21 +281,25 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		errPanel.getElement().setId("errPanel_SimplePanel");
 		errPanel.add(errorMessageDisplay);
 		VerticalPanel addCommentPanel = new VerticalPanel();
+		addCommentPanel.getElement().setId("addCommentPanel_VPanel");
 		addCommentPanel.add(new SpacerWidget());
 		Label addComment = new Label();
-		addCommentPanel.add(LabelBuilder.buildLabel(addComment, "Add/Edit Comment (Max 250 Characters)"));
-		commentArea.getElement().setAttribute("id", "AddComment");
+		addCommentPanel.add(LabelBuilder.buildLabel(addComment, "Add/Edit Comment"));
+		commentArea.getElement().setAttribute("id", "addComment_TextArea");
+		addCommentPanel.add(new SpacerWidget());
 		addCommentPanel.add(commentArea);
-		commentButtons.setTitle("Ok");
-		addCommentPanel.add(commentButtons);
 		HorizontalPanel remainCharsPanel = new HorizontalPanel();
-		remainCharsPanel.add(new HTML("You have&nbsp;"));
+		remainCharsPanel.add(new HTML("Remaining &nbsp;"));
 		final Label remainingCharsLabel = new Label("250");
 		remainCharsPanel.add(remainingCharsLabel);
-		remainCharsPanel.add(new HTML("&nbsp;characters left."));
-		addCommentPanel.add(new SpacerWidget());
+		remainCharsPanel.add(new HTML("&nbsp;characters."));
 		addCommentPanel.add(remainCharsPanel);
 		commentAreaHandlers(remainingCharsLabel);
+		addCommentPanel.add(successMessageAddCommentDisplay);
+		addCommentPanel.add(new SpacerWidget());
+		commentButtons.setTitle("Ok");
+		commentButtons.getElement().setId("addCommentOk_Button");
+		addCommentPanel.add(commentButtons);
 		commentArea.getElement().setAttribute("maxlength", "250");
 		commentArea.setText("");
 		commentArea.setHeight("80px");
@@ -378,9 +389,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		{
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
-				// In IE maxLength is not working.
-				if (commentArea.getText().length() >= COMMENT_MAX_LENGTH) {
-					event.preventDefault();
+				// In IE maxLength is not working, it is showing negative number's.
+				//event.preventDefault() method works for IE but not in FF. So adding subString fix.
+				if (commentArea.getText().length() > COMMENT_MAX_LENGTH) {
+					commentArea.setText(commentArea.getText().substring(0, COMMENT_MAX_LENGTH));
 				}
 				setDirty(true);
 				onTextAreaContentChanged(remainingCharsLabel);
@@ -411,13 +423,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		int counter = new Integer(commentArea.getText().length()).intValue();
 		int charsRemaining = COMMENT_MAX_LENGTH - counter;
 		remainingCharsLabel.setText("" + charsRemaining);
-		
-		/*if (charsRemaining >= 0)
-		{
-			remainingCharsLabel.setStyleName("my_form_under_140_chars");
-		} else {
-			remainingCharsLabel.setStyleName("my_form_over_140_chars");
-		}*/
 	}
 	/**
 	 * Selection Handler, Tree Open and Close Handlers Defined.
@@ -700,12 +705,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		public void onBrowserEvent(Context context, Element parent, CellTreeNode value,
 				NativeEvent event, ValueUpdater<CellTreeNode> valueUpdater) {
 			if (event.getType().equals(BrowserEvents.CONTEXTMENU)) {
+				successMessageAddCommentDisplay.clear();
 				event.preventDefault();
 				event.stopPropagation();
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					onRightClick(value, (Event) event, parent);
 				}
 			} else if (event.getType().equals(BrowserEvents.CLICK)) {
+				successMessageAddCommentDisplay.clear();
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
 							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
@@ -864,6 +871,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return successMessageDisplay;
 	}
 	
+	
+	/**
+	 * @return the successMessageAddCommentDisplay
+	 */
+	@Override
+	public SuccessMessageDisplay getSuccessMessageAddCommentDisplay() {
+		return successMessageAddCommentDisplay;
+	}
+	
+	/**
+	 * @param successMessageAddCommentDisplay the successMessageAddCommentDisplay to set
+	 */
+	public void setSuccessMessageAddCommentDisplay(SuccessMessageDisplay successMessageAddCommentDisplay) {
+		this.successMessageAddCommentDisplay = successMessageAddCommentDisplay;
+	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getErrorMessageDisplay()

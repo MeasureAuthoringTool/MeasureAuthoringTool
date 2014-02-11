@@ -303,4 +303,10 @@ public interface XmlTreeDisplay {
 	 * @return TextArea.
 	 */
 	TextArea getCommentArea();
+	
+	/**
+	 * Success Message Panel for Add Comment.
+	 * @return
+	 */
+	SuccessMessageDisplay getSuccessMessageAddCommentDisplay();
 }

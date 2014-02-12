@@ -27,6 +27,8 @@ import mat.shared.ConstantMessages;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.dom.client.Style.Unit;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -299,6 +301,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The qdm selected list. */
 	private  List<QualityDataSetDTO> qdmSelectedList;
+	
+    /** The element. */
+    private  Element element;
 	
 	
 
@@ -685,7 +690,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @return the cell table
 	 */
 	private CellTable<QualityDataSetDTO> addColumnToTable(CellTable<QualityDataSetDTO> cellTable, boolean isEditable) {
-		
+		Label itemCountHeader = new Label("ItemCount List");
+		itemCountHeader.getElement().setId("itemCountHeader_Label");
+		itemCountHeader.setStyleName("recentSearchHeader");
+		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
+		itemCountHeader.getElement().setAttribute("tabIndex", "0");
+		TableCaptionElement caption = elem.createCaption();
+		caption.appendChild(itemCountHeader.getElement());
 		MatCheckBoxCell qdmCheckBox = new MatCheckBoxCell(false, true, !isEditable);
 			Column<QualityDataSetDTO, Boolean> chkBoxColumn = new  Column<QualityDataSetDTO, Boolean>(qdmCheckBox) {
 
@@ -722,6 +733,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	                
 					}
 					itemLabel.setText("Selected Items: " + qdmSelectedList.size());
+					element.setAttribute("aria-role", "panel");
+					element.setAttribute("aria-labelledby", "selectedItemsSummary");
+					element.setAttribute("aria-live", "assertive");
+					element.setAttribute("aria-atomic", "true");
+					element.setAttribute("aria-relevant", "all");
+					element.setAttribute("role", "alert");
 					//buildQDMSelectedList(object,value);
 				}
 			});
@@ -893,10 +910,14 @@ public class MetaDataView implements MetaDataDetailDisplay{
 									+ "the left of the table with a select Column header followed by "
 									+ "QDM name in second column and Datatype in third column. " 
 									+ "The Applied QDM elements are listed alphabetically in a table.");
+			Label label = (Label)LabelBuilder
+					.buildInvisibleLabel("selectedItemsSummary","Selected Items: " + qdmSelectedList.size());
 			cellTable.getElement().setAttribute("id", "AppliedQDMTable");
 			cellTable.getElement().setAttribute("aria-describedby", "appliedQDMTableSummary");
 			qdmItemCountListSPanel.setSize("500px", "150px");
+			qdmItemCountListSPanel.add(invisibleLabel);
 			qdmItemCountListSPanel.setWidget(cellTable);
+			qdmItemCountListVPanel.add(label);
 			qdmItemCountListVPanel.add(qdmItemCountListSPanel);
 			horzPanel.add(qdmItemCountListVPanel);
 			vPanel.setWidth("10px");
@@ -906,6 +927,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			qdmSelectedListVPanel.add(sPanel);
 			itemLabel.setText("Selected Items: " + qdmSelectedList.size());
 			qdmSelectedListVPanel.add(itemLabel);
+		    element = qdmSelectedListVPanel.getElement();
+//			element.setAttribute("tabIndex", "0");
 			horzPanel.add(qdmSelectedListVPanel);
 			//buildQDMSelectedList(appliedListModel.getAppliedQDMs());
 		} else{

@@ -10,8 +10,8 @@
         context="prod" >
 
         <sql>
-         Update Operator set LONG_NAME='Starts Before End' ,Short_NAME='SBE' where ID = '14';
-         Update Operator set LONG_NAME='Ends Before End' ,Short_NAME='EBE' where ID = '7'; 
+         UPDATE OPERATOR SET LONG_NAME='Starts Before End' ,Short_NAME='SBE' WHERE ID = '14';
+         UPDATE OPERATOR SET LONG_NAME='Ends Before End' ,Short_NAME='EBE' WHERE ID = '7'; 
         </sql>
     </changeSet>
 </databaseChangeLog>

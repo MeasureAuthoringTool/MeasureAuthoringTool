@@ -106,10 +106,11 @@ public class ExportServlet extends HttpServlet {
 	    String id = req.getParameter(ID_PARAM);
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
-		String matVersion [] ={"_v3","_v4"}; 
+		String[] matVersion ={"_v3","_v4"}; 
 		Measure measure = service.getById(id);
 		ExportResult export = null;
-		
+		Date exportDate = measure.getExportedDate();
+		Date releaseDate = measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate());
 		FileNameUtility fnu = new FileNameUtility();
 		try {
 			if (SIMPLEXML.equals(format)) {
@@ -164,7 +165,7 @@ public class ExportServlet extends HttpServlet {
 				resp.getOutputStream().close();
 				export.wkbkbarr = null;
 			} else if (ZIP.equals(format)) {
-				export = getService().getEMeasureZIP(id);
+				export = getService().getEMeasureZIP(id,exportDate,releaseDate);
 				if(measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME + fnu.getZipName(export.measureName + matVersion[0]));
 				} else if(measure.getExportedDate().equals(measureLibraryService

@@ -407,11 +407,11 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @see mat.server.service.SimpleEMeasureService#getEMeasureZIP(java.lang.String)
 	 */
 	@Override
-	public final ExportResult getEMeasureZIP(final String measureId) throws Exception {
+	public final ExportResult getEMeasureZIP(final String measureId,final Date exportDate, final Date releaseDate) throws Exception {
 		ExportResult result = new ExportResult();
 		result.measureName = getMeasureName(measureId).getaBBRName();
 		MeasureExport me = getMeasureExport(measureId);
-		result.zipbarr = getZipBarr(measureId, me);
+		result.zipbarr = getZipBarr(measureId,exportDate,releaseDate, me);
 		return result;
 	}
 
@@ -426,7 +426,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @throws Exception
 	 *             - Exception. *
 	 */
-	public final byte[] getZipBarr(final String measureId, final MeasureExport me)
+	public final byte[] getZipBarr(final String measureId,Date exportDate, final Date releaseDate, final MeasureExport me)
 			throws Exception {
 		byte[] wkbkbarr = null;
 		if (me.getCodeList() == null) {
@@ -450,7 +450,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
 
 		ZipPackager zp = new ZipPackager();
-		return zp.getZipBarr(emeasureName, wkbkbarr, emeasureXMLStr,
+		return zp.getZipBarr(emeasureName,exportDate, releaseDate, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr);
 	}
 
@@ -552,20 +552,21 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * @see mat.server.service.SimpleEMeasureService#getBulkExportZIP(java.lang.String[])
 	 */
 	@Override
-	public final ExportResult getBulkExportZIP(final String[] measureIds)
+	public final ExportResult getBulkExportZIP(final String[] measureIds, final Date[] exportDates, final Date releasDate )
 			throws Exception {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ZipOutputStream zip = new ZipOutputStream(baos);
 		Map<String, byte[]> filesMap = new HashMap<String, byte[]>();
 		ExportResult result = null;
 		int fileNameCounter = 1;
-		DecimalFormat format = new DecimalFormat("#00");
-
-		for (String measureId : measureIds) {
+	    DecimalFormat format = new DecimalFormat("#00");
+		Date exportDate;
+	    for (String measureId : measureIds) {
 			result = new ExportResult();
 			result.measureName = getMeasureName(measureId).getaBBRName();
+			exportDate = getMeasureName(measureId).getExportedDate();
 			MeasureExport me = getMeasureExport(measureId);
-			createFilesInBulkZip(measureId, me, filesMap,
+			createFilesInBulkZip(measureId,exportDate, releasDate, me, filesMap,
 					format.format(fileNameCounter++));
 		}
 
@@ -601,7 +602,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	 * 
 	 *             *
 	 */
-	public final void createFilesInBulkZip(final String measureId,
+	public final void createFilesInBulkZip(final String measureId,final Date exportDate, final Date releaseDate,
 			final MeasureExport me, final Map<String, byte[]> filesMap,
 			final String seqNum) throws Exception {
 		byte[] wkbkbarr = null;
@@ -625,7 +626,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
 
 		ZipPackager zp = new ZipPackager();
-		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr,
+		zp.createBulkExportZip(emeasureName,exportDate,releaseDate, wkbkbarr, emeasureXMLStr,
 				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, filesMap,
 				seqNum);
 	}

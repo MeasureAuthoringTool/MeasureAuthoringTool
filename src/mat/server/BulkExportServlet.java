@@ -3,6 +3,7 @@ package mat.server;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
+import java.util.Date;
 import java.util.zip.ZipException;
 
 import javax.servlet.ServletException;
@@ -10,6 +11,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import mat.model.clause.Measure;
+import mat.server.service.MeasureLibraryService;
+import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.shared.FileNameUtility;
@@ -45,12 +49,22 @@ public class BulkExportServlet extends HttpServlet {
 			throws ServletException, IOException {
 		context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 		String[] measureIds = req.getParameterValues("id");
+		MeasurePackageService service = getMeasurePackageService();
+		MeasureLibraryService measureLibraryService = getMeasureLibraryService();
+		Date releaseDate = measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate());
+		Date[] exportDates = new Date[measureIds.length]; 
+		Measure measure;
+		int count = measureIds.length;
+		for(int i=0;i<measureIds.length;i++){
+			measure = service.getById(measureIds[i]);
+			exportDates[i] = measure.getExportedDate();
+		}
 		
 		ExportResult export = null;
 		
 		FileNameUtility fnu = new FileNameUtility();
 		try {
-				export = getService().getBulkExportZIP(measureIds);
+				export = getService().getBulkExportZIP(measureIds,exportDates,releaseDate);
 				resp.setHeader("Content-Disposition", "attachment; filename="+ fnu.getBulkZipName("Export"));
 				resp.setContentType("application/zip");
 				resp.getOutputStream().write(export.zipbarr);
@@ -77,6 +91,14 @@ public class BulkExportServlet extends HttpServlet {
 	private SimpleEMeasureService getService(){
 		SimpleEMeasureService service = (SimpleEMeasureService) context.getBean("eMeasureService");
 		return service;
+	}
+	
+	private MeasurePackageService getMeasurePackageService() {
+		return (MeasurePackageService) context.getBean("measurePackageService");
+	}
+	
+	private MeasureLibraryService getMeasureLibraryService(){
+		return (MeasureLibraryService) context.getBean("measureLibraryService");
 	}
 	
 	/**

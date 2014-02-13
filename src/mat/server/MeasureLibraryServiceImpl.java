@@ -2039,7 +2039,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		try {
 			NodeList nodesClauseWorkSpace = (NodeList) xPath.evaluate(XPATH_EXPRESSION_SubTreeLookUp_ELEMENTREF,
 					processor.getOriginalDoc(),	XPathConstants.NODESET);
-			ArrayList<QDSAttributes> attr = (ArrayList<QDSAttributes>) getAllDataTypeAttributes(modifyWithDTO.getDataType());
 			for (int i = 0; i < nodesClauseWorkSpace.getLength(); i++) {
 				Node newNode = nodesClauseWorkSpace.item(i);
 				String displayName = new String();

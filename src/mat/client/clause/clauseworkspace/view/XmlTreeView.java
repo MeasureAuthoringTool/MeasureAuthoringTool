@@ -37,6 +37,7 @@ import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
@@ -632,11 +633,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	
+	/**
+	 * Comment Area Text class. This is written to add remaining Character's functionality.
+	 *
+	 */
 	public class CommentAreaTextBox extends TextArea {
-		// property for holding maximum length.
+		/**
+		 * property for holding maximum length.
+		 */
 		private int maxLength;
-		
-		// Constructor
+		/**
+		 * Constructor
+		 * @param maxLen
+		 */
 		public CommentAreaTextBox(int maxLen) {
 			
 			super(Document.get().createTextAreaElement());
@@ -650,20 +659,20 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				@Override
 				public void onValueChange(ValueChangeEvent<String> event) {
 					
-					String text;
+					String commentAreaUpdatedText;
 					CommentAreaTextBox.this.setText(event.getValue());
 					
 					try {
-						text = CommentAreaTextBox.this.getText();
+						commentAreaUpdatedText = CommentAreaTextBox.this.getText();
 					} catch (Exception e) {
-						text = "";
+						commentAreaUpdatedText = "";
 					}
-					if (text.length() >= maxLength) {
-						String newText = text.substring(0,
+					if (commentAreaUpdatedText.length() >= maxLength) {
+						String subStringText = commentAreaUpdatedText.substring(0,
 								maxLength);
-						CommentAreaTextBox.this.setValue(newText);
+						CommentAreaTextBox.this.setValue(subStringText);
 					} else {
-						CommentAreaTextBox.this.setValue(text);
+						CommentAreaTextBox.this.setValue(commentAreaUpdatedText);
 					}
 					
 					onTextAreaContentChanged(remainingCharsLabel);
@@ -681,12 +690,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		 */
 		@Override
 		public void onBrowserEvent(Event event) {
-			
-			String str;
+			String commentAreaContent;
 			try {
-				str = CommentAreaTextBox.this.getText();
+				commentAreaContent = CommentAreaTextBox.this.getText();
 			} catch (Exception e) {
-				str = "";
+				commentAreaContent = "";
 			}
 			// Checking for paste event
 			if (event.getTypeInt() == Event.ONPASTE) {
@@ -701,7 +709,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}
 			// Checking for keyUp event.
 			if ((event.getTypeInt() == Event.ONKEYDOWN)
-					&& (str.length() > maxLength)
+					&& (commentAreaContent.length() > maxLength)
 					&& (event.getKeyCode() != KeyCodes.KEY_LEFT)
 					&& (event.getKeyCode() != KeyCodes.KEY_TAB)
 					&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
@@ -711,7 +719,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					&& (event.getKeyCode() != KeyCodes.KEY_CTRL)) {
 				event.preventDefault();
 			} else if ((event.getTypeInt() == Event.ONKEYDOWN)
-					&& (str.length() <= maxLength)) {
+					&& (commentAreaContent.length() <= maxLength)) {
 				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 					@Override
 					public void execute() {
@@ -722,12 +730,18 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}
 		}
 		
-		// Getter for maximum length.
+		/**
+		 * Getter for maximum length.
+		 * @return - int.
+		 */
 		public int getMaxLength() {
 			return maxLength;
 		}
 		
-		// Setter for maximum length.
+		/**
+		 * Setter for maximum length.
+		 * @param maxLength
+		 */
 		public void setMaxLength(int maxLength) {
 			this.maxLength = maxLength;
 		}

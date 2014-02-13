@@ -635,7 +635,7 @@ left:50px;
     display: block;
     font-weight: bold;
     margin: 2px 10px 14px;
-    padding: 6px 6px 6px 30px;
+    padding: 6px 6px 0px 30px;
     text-align: left;
 }
 

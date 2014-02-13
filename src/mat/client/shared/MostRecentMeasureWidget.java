@@ -1,13 +1,19 @@
 package mat.client.shared;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.util.CellTableUtility;
 import mat.shared.ClickableSafeHtmlCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
@@ -143,67 +149,117 @@ public class MostRecentMeasureWidget extends Composite implements HasSelectionHa
 			});
 			table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
 			
-//			Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
-//			Column<Result, String> exportColumn =
-//					new Column<ManageMeasureSearchModel.Result, String>(exportButton) {
-//				@Override
-//				public String getValue(ManageMeasureSearchModel.Result object) {
-//					return "Export";
-//				}
-//				@Override
-//				public void onBrowserEvent(Context context, Element elem,
-//						final ManageMeasureSearchModel.Result object, NativeEvent event) {
-//					if ((object != null) && object.isExportable()) {
-//						super.onBrowserEvent(context, elem, object, event);
-//					}
-//				}
-//				@Override
-//				public void render(Cell.Context context, ManageMeasureSearchModel.Result object,
-//						SafeHtmlBuilder sb) {
-//					if (object.isExportable()) {
-//						super.render(context, object, sb);
-//					}
-//				}
-//			};
-			
-			
-			Cell<SafeHtml> exportButton = new ClickableSafeHtmlCell();
-			Column<Result,SafeHtml> exportColumn = new Column<ManageMeasureSearchModel.Result, SafeHtml>(exportButton) {
+			final List<HasCell<Result, ?>> cells = new LinkedList<HasCell<Result, ?>>();
+			cells.add(new HasCell<Result, SafeHtml>() {
+                
+				SafeHtmlCell matVersion = new SafeHtmlCell();
+				@Override
+				public Cell<SafeHtml> getCell() {
+					return matVersion;
+				}
+
+				@Override
+				public FieldUpdater<Result, SafeHtml> getFieldUpdater() {
+					return null;
+				}
+
+				@Override
+				public SafeHtml getValue(Result object) {
+					SafeHtmlBuilder sb = new SafeHtmlBuilder();
+					String matVersion="";
+					if(object.isHQMFR1()){
+						matVersion = "v3";
+					sb.appendHtmlConstant("<span title=\""+ matVersion +"\">"+ matVersion +"</span>");
+					} else {
+						matVersion = "v4";
+						sb.appendHtmlConstant("<span title=\""+ matVersion +"\">"+ matVersion +"</span>");
+					}
+					return sb.toSafeHtml();
+				}
+				
+				
+			});
+			cells.add(new HasCell<Result, SafeHtml>() {
+
+				ClickableSafeHtmlCell exportButonCell = new ClickableSafeHtmlCell();
+				
+				@Override
+				public Cell<SafeHtml> getCell() {
+					return exportButonCell;
+				}
+
+				@Override
+				public FieldUpdater<Result, SafeHtml> getFieldUpdater() {
+					
+					return new FieldUpdater<Result, SafeHtml>() {
+						@Override
+						public void update(int index, Result object, SafeHtml value) {
+							if ((object != null) && object.isExportable()) {
+							observer.onExportClicked(object);
+							}
+						}
+					};
+				}
 
 				@Override
 				public SafeHtml getValue(Result object) {
 					SafeHtmlBuilder sb = new SafeHtmlBuilder();
 					String title;
 					String cssClass = "customExportButton";
-					if ((object != null) && object.isExportable()) {
-						if(object.isHQMFR1()){
-							title = "Click to Export MATv3";
-							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-									+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
-							} else {
-								title = "Click to Export MATv4";
-								sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-										+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
-								}
-						}
+					
+					if(object.isHQMFR1()){
+						title = "Click to Export MAT v3";
+						sb.appendHtmlConstant("<button type=\"button\" title='" + title 
+								+ "' tabindex=\"0\" class=\" " + cssClass + "\"/>");		
+					} else {
+						title = "Click to Export MAT v4";
+						sb.appendHtmlConstant("<button  type=\"button\" title='" + title 
+								+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
+					}
 					return sb.toSafeHtml();
-					}
-				};
-			exportColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
-				@Override
-				public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
-					if ((object != null) && object.isExportable()) {
-						observer.onExportClicked(object);
-					}
 				}
+				
 			});
-			table.addColumn(exportColumn,
-					SafeHtmlUtils.fromSafeConstant("<span title='Export'>"
-							+ "Export" + "</span>"));
-			table.setColumnWidth(0, 60.0, Unit.PCT);
-			table.setColumnWidth(1, 30.0, Unit.PCT);
+			
+			CompositeCell<Result> cell = new CompositeCell<Result>(cells) {
+				@Override
+				public void render(Context context, Result object, SafeHtmlBuilder sb) {
+					sb.appendHtmlConstant("<table><tbody><tr id='container2'>");
+					for (HasCell<Result, ?> hasCell : cells) {
+						render(context, object, sb, hasCell);
+					}
+					sb.appendHtmlConstant("</tr></tbody></table>");
+				}
+				@Override
+				protected <X> void render(Context context, Result object,
+						SafeHtmlBuilder sb, HasCell<Result, X> hasCell) {
+					Cell<X> cell = hasCell.getCell();
+					sb.appendHtmlConstant("<td id='div3' class='emptySpaces'>");
+					if ((object != null) && object.isExportable()) {
+						cell.render(context, hasCell.getValue(object), sb);
+					} else {
+						sb.appendHtmlConstant("<span tabindex=\"-1\"></span>");
+					}
+					sb.appendHtmlConstant("</td>");
+				}
+				@Override
+				protected Element getContainerElement(Element parent) {
+					return parent.getFirstChildElement().getFirstChildElement()
+							.getFirstChildElement();
+				}
+			};
+			
+			table.addColumn(new Column<Result, Result>(cell) {
+				@Override
+				public Result getValue(Result object) {
+					return object;
+				}
+			}, SafeHtmlUtils.fromSafeConstant("<span title='Export'>" + "Export" + "</span>"));
+			
+			table.setColumnWidth(0, 50.0, Unit.PCT);
+			table.setColumnWidth(1, 25.0, Unit.PCT);
 			table.setColumnWidth(2, 5.0, Unit.PCT);
-			table.setColumnWidth(3, 5.0, Unit.PCT);
+			table.setColumnWidth(3, 20.0, Unit.PCT);
 		}
 		return table;
 	}

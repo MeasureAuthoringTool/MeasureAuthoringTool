@@ -22,6 +22,7 @@ import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.cell.client.ValueUpdater;
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.Style.Unit;
@@ -352,10 +353,13 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					@Override
 					public SafeHtml getValue(Result object) {
 						SafeHtmlBuilder sb = new SafeHtmlBuilder();
+						String matVersion="";
 						if(object.isHQMFR1()){
-						sb.appendHtmlConstant("<sup style='font-size:120%;' title=\"v3\">v3</sup>");
+							matVersion = "v3";
+						sb.appendHtmlConstant("<span title=\""+ matVersion +"\">"+ matVersion +"</span>");
 						} else {
-							sb.appendHtmlConstant("<sup style='font-size:120%;' title=\"v4\">v4</sup>");
+							matVersion = "v4";
+							sb.appendHtmlConstant("<span title=\""+ matVersion +"\">"+ matVersion +"</span>");
 						}
 						return sb.toSafeHtml();
 					}
@@ -392,41 +396,19 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 						
 						if(object.isHQMFR1()){
 							title = "Click to Export MAT v3";
-							
 							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-									+ "' tabindex=\"0\" class=\" " + cssClass + "\"/>");	
+									+ "' tabindex=\"0\" class=\" " + cssClass + "\"/>");		
 						} else {
 							title = "Click to Export MAT v4";
-							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
-									+ "' tabindex=\"0\" class=\" " + cssClass + "\"/>");	
+							sb.appendHtmlConstant("<button  type=\"button\" title='" + title 
+									+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
 						}
 						return sb.toSafeHtml();
 					}
 					
 				});
-				/*cells.add(new HasCell<Result, String>() {
-					private Cell<String> exportButton = new MatButtonCell("Click to Export", "customExportButton");
-					@Override
-					public Cell<String> getCell() {
-						return exportButton;
-					}
-					@Override
-					public String getValue(Result object) {
-						return "Export";
-					}
-					@Override
-					public FieldUpdater<Result, String> getFieldUpdater() {
-						return new FieldUpdater<Result, String>() {
-							@Override
-							public void update(int index, Result object, String value) {
-								observer.onExportClicked(object);
-							}
-						};
-					}
-				});*/
 				
-				
-				cells.add(new HasCell<Result, Boolean>() {
+					cells.add(new HasCell<Result, Boolean>() {
 					private MatCheckBoxCell cell = new MatCheckBoxCell(false, true);
 					@Override
 					public Cell<Boolean> getCell() {
@@ -451,7 +433,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				CompositeCell<Result> cell = new CompositeCell<Result>(cells) {
 					@Override
 					public void render(Context context, Result object, SafeHtmlBuilder sb) {
-						sb.appendHtmlConstant("<table><tbody><tr>");
+						sb.appendHtmlConstant("<table><tbody><tr id='container3'>");
 						for (HasCell<Result, ?> hasCell : cells) {
 							render(context, object, sb, hasCell);
 						}
@@ -461,7 +443,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					protected <X> void render(Context context, Result object,
 							SafeHtmlBuilder sb, HasCell<Result, X> hasCell) {
 						Cell<X> cell = hasCell.getCell();
-						sb.appendHtmlConstant("<td class=\"emptySpaces\">");
+						sb.appendHtmlConstant("<td id='div4' class='emptySpaces'>");
 						if ((object != null) && object.isExportable()) {
 							cell.render(context, hasCell.getValue(object), sb);
 						} else {
@@ -526,14 +508,14 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			spager.setDisplay(table);
 			spager.setPageSize(PAGE_SIZE);
 			table.setWidth("100%");
-			table.setColumnWidth(0, 35.0, Unit.PCT);
-			table.setColumnWidth(1, 18.0, Unit.PCT);
-			table.setColumnWidth(2, 20.0, Unit.PCT);
+			table.setColumnWidth(0, 25.0, Unit.PCT);
+			table.setColumnWidth(1, 20.0, Unit.PCT);
+			table.setColumnWidth(2, 23.0, Unit.PCT);
 			table.setColumnWidth(3, 2.0, Unit.PCT);
 			table.setColumnWidth(4, 2.0, Unit.PCT);
 			table.setColumnWidth(5, 2.0, Unit.PCT);
 			table.setColumnWidth(6, 2.0, Unit.PCT);
-			table.setColumnWidth(7, 20.0, Unit.PCT);
+			table.setColumnWidth(7, 22.0, Unit.PCT);
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
 					"In the following Measure List table, Measure Name is given in first column,"
 							+ " Version in second column, Finalized Date in third column,"

@@ -122,6 +122,25 @@ left:50px;
     margin-right:0;
 }
 
+#container2{ 
+    width: 30px; 
+}
+
+#container3{ 
+    width: 90px; 
+}
+
+#div3{
+    float: left;
+    width:15px; 
+    margin-left: 0;
+}
+
+#div4{
+    float: left; 
+    margin-left: 0;
+}
+
 .textAlign{
  text-align: justify;	
 }
@@ -132,7 +151,7 @@ left:50px;
 	width:48px;
 }
 .emptySpaces{
- text-indent: 1em;
+ text-indent: 5px;
 }
 
 .textCssStyle{

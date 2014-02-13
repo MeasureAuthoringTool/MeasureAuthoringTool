@@ -179,7 +179,7 @@ public class ZipPackager {
             String matVersion[] = {"_v3","_v4"};
 			if(exportDate.before(releaseDate)){
 				
-				parentPath = fnu.getParentPath(emeasureName + matVersion[0]);
+				parentPath = fnu.getParentPath(seqNum +"_"+ emeasureName + matVersion[0]);
 				emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eMeasure.xsl";
 				emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + matVersion[0]);
 				emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + matVersion[0]);
@@ -187,7 +187,7 @@ public class ZipPackager {
 				simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + matVersion[0]);
 			} else if(exportDate.after(releaseDate) || exportDate.equals(releaseDate) ){
 				
-				parentPath = fnu.getParentPath(emeasureName + matVersion[1]);
+				parentPath = fnu.getParentPath(seqNum +"_"+ emeasureName + matVersion[1]);
 				emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eMeasure.xsl";
 				emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + matVersion[1]);
 				emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + matVersion[1]);

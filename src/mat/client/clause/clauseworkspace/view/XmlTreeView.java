@@ -17,26 +17,26 @@ import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
-import com.google.gwt.event.dom.client.BlurEvent;
-import com.google.gwt.event.dom.client.BlurHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
@@ -298,7 +298,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		Label addComment = new Label();
 		addCommentPanel.add(LabelBuilder.buildLabel(addComment, "Add/Edit Comment"));
 		commentArea.getElement().setAttribute("id", "addComment_TextArea");
-		commentArea.commentAreaHandlers(remainingCharsLabel);
 		addCommentPanel.add(new SpacerWidget());
 		addCommentPanel.add(commentArea);
 		HorizontalPanel remainCharsPanel = new HorizontalPanel();
@@ -632,88 +631,105 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return false;
 	}
 	
-	/**
-	 * @author jnarang
-	 *
-	 */
+	
 	public class CommentAreaTextBox extends TextArea {
-		/**
-		 * Comment Area Max Length.
-		 */
-		private int commentAreaMaxLength;
-		/**
-		 * @param maxLength -Int.
-		 */
-		public CommentAreaTextBox(int maxLength) {
-			super();
-			setCommentLength(maxLength);
-			sinkEvents(Event.ONPASTE);
+		// property for holding maximum length.
+		private int maxLength;
+		
+		// Constructor
+		public CommentAreaTextBox(int maxLen) {
+			
+			super(Document.get().createTextAreaElement());
+			maxLength = maxLen;
+			setStyleName("gwt-TextArea");
+			sinkEvents(Event.ONPASTE | Event.ONKEYDOWN | Event.ONKEYPRESS);
+			
+			CommentAreaTextBox.this
+			.addValueChangeHandler(new ValueChangeHandler<String>() {
+				
+				@Override
+				public void onValueChange(ValueChangeEvent<String> event) {
+					
+					String text;
+					CommentAreaTextBox.this.setText(event.getValue());
+					
+					try {
+						text = CommentAreaTextBox.this.getText();
+					} catch (Exception e) {
+						text = "";
+					}
+					if (text.length() >= maxLength) {
+						String newText = text.substring(0,
+								maxLength);
+						CommentAreaTextBox.this.setValue(newText);
+					} else {
+						CommentAreaTextBox.this.setValue(text);
+					}
+					
+					onTextAreaContentChanged(remainingCharsLabel);
+					
+				}
+			});
+			
 		}
-		/* (non-Javadoc)
-		 * @see com.google.gwt.user.client.ui.ValueBoxBase#onBrowserEvent(com.google.gwt.user.client.Event)
+		
+		/**
+		 * Description: Takes the browser event.
+		 *
+		 * @param event
+		 *            declared.
 		 */
 		@Override
 		public void onBrowserEvent(Event event) {
-			super.onBrowserEvent(event);
-			switch (event.getTypeInt()) {
-				case Event.ONPASTE:
-					event.stopPropagation();
-					event.preventDefault();
-					break;
-				default:
-					break;
+			
+			String str;
+			try {
+				str = CommentAreaTextBox.this.getText();
+			} catch (Exception e) {
+				str = "";
+			}
+			// Checking for paste event
+			if (event.getTypeInt() == Event.ONPASTE) {
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					@Override
+					public void execute() {
+						ValueChangeEvent.fire(CommentAreaTextBox.this,
+								CommentAreaTextBox.this.getText());
+					}
+				});
+				return;
+			}
+			// Checking for keyUp event.
+			if ((event.getTypeInt() == Event.ONKEYDOWN)
+					&& (str.length() > maxLength)
+					&& (event.getKeyCode() != KeyCodes.KEY_LEFT)
+					&& (event.getKeyCode() != KeyCodes.KEY_TAB)
+					&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
+					&& (event.getKeyCode() != KeyCodes.KEY_DELETE)
+					&& (event.getKeyCode() != KeyCodes.KEY_BACKSPACE)
+					&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)
+					&& (event.getKeyCode() != KeyCodes.KEY_CTRL)) {
+				event.preventDefault();
+			} else if ((event.getTypeInt() == Event.ONKEYDOWN)
+					&& (str.length() <= maxLength)) {
+				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+					@Override
+					public void execute() {
+						ValueChangeEvent.fire(CommentAreaTextBox.this,
+								CommentAreaTextBox.this.getText());
+					}
+				});
 			}
 		}
-		/**
-		 * @return the commentAreaMaxLength.
-		 */
-		public int getCommentLength() {
-			return commentAreaMaxLength;
+		
+		// Getter for maximum length.
+		public int getMaxLength() {
+			return maxLength;
 		}
-		/**
-		 * @param commentAreaMaxLength the commentAreaMaxLength to set
-		 */
-		private void setCommentLength(int commentAreaMaxLength) {
-			this.commentAreaMaxLength = commentAreaMaxLength;
-		}
-		/**
-		 * Comment Area Handler for population Clause Work Space.
-		 * @param remainingCharsLbel - Label.
-		 */
-		private void commentAreaHandlers(final Label remainingCharsLbel) {
-			commentArea.addKeyPressHandler(new KeyPressHandler()
-			{
-				@Override
-				public void onKeyPress(KeyPressEvent event) {
-					// In IE maxLength is not working, it is showing negative number's.
-					//event.preventDefault() method works for IE but not in FF. So adding subString fix.
-					if (commentArea.getText().length() > COMMENT_MAX_LENGTH) {
-						commentArea.setText(commentArea.getText().substring(0, COMMENT_MAX_LENGTH));
-					}
-					onTextAreaContentChanged(remainingCharsLbel);
-				}
-			});
-			commentArea.addFocusHandler(new FocusHandler()
-			{
-				@Override
-				public void onFocus(FocusEvent event) {
-					if (commentArea.getText().length() > COMMENT_MAX_LENGTH) {
-						commentArea.setText(commentArea.getText().substring(0, COMMENT_MAX_LENGTH));
-					}
-					onTextAreaContentChanged(remainingCharsLbel);
-				}
-			});
-			//onFocusLost previously
-			commentArea.addBlurHandler(new BlurHandler()
-			{
-				@Override
-				public void onBlur(BlurEvent event)	{
-					if (commentArea.getText().length() > COMMENT_MAX_LENGTH) {
-						commentArea.setText(commentArea.getText().substring(0, COMMENT_MAX_LENGTH));
-					}
-					onTextAreaContentChanged(remainingCharsLbel);
-				}
-			});
+		
+		// Setter for maximum length.
+		public void setMaxLength(int maxLength) {
+			this.maxLength = maxLength;
 		}
 	}
 	/**

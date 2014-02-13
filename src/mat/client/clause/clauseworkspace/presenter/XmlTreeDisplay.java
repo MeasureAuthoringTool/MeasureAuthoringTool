@@ -8,7 +8,6 @@ import mat.client.shared.WarningMessageDisplay;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO: Auto-generated Javadoc
@@ -302,7 +301,7 @@ public interface XmlTreeDisplay {
 	/**
 	 * @return TextArea.
 	 */
-	TextArea getCommentArea();
+	mat.client.clause.clauseworkspace.view.XmlTreeView.CommentAreaTextBox getCommentArea();
 	
 	/**
 	 * Success Message Panel for Add Comment.

@@ -243,6 +243,8 @@ public class XmlTreePresenter {
 					}
 					@Override
 					public void onSuccess(final Void result) {
+						xmlTreeDisplay.getSuccessMessageAddCommentDisplay()
+						.removeStyleName("successMessageCommentPanel");
 						xmlTreeDisplay.getSuccessMessageAddCommentDisplay().clear();
 						xmlTreeDisplay.getWarningMessageDisplay().clear();
 						xmlTreeDisplay
@@ -320,7 +322,7 @@ public class XmlTreePresenter {
 				xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
 				/*	String xml = XmlConversionlHelper.createXmlFromTree(xmlTreeDisplay.getSelectedNode());
 				System.out.println(xml);*/
-				
+				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setStylePrimaryName("successMessageCommentPanel");
 				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setMessage("Comment Added");
 			}
 			

@@ -14,9 +14,11 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
 import com.google.gwt.cell.client.AbstractCell;
+import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.BrowserEvents;
+import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.BlurEvent;
@@ -105,6 +107,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The is valid. */
 	private boolean isValid = true;
 	
+	private Label remainingCharsLabel = new Label("250");
 	
 	/** The focus panel. */
 	private FocusPanel focusPanel = new FocusPanel(mainPanel);
@@ -131,17 +134,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/**
 	 * Comment Ok Button.
 	 */
-	private Button commentButtons = new Button("Ok");
+	private Button commentButtons = new Button("OK");
 	/**
 	 * Comment Input Text area.
 	 */
-	private TextArea commentArea = new TextArea();
-	
-	/** The subTree Textbox btn. *//*
-	private TextBox subTreeTextBox = new TextBox();;*/
-	/** The validate btn. *//*
-	CustomButton createSubTree = (CustomButton) getImage("Create New Clause",
-			ImageResources.INSTANCE.createMeasure(), "Create New Clause");*/
+	private CommentAreaTextBox commentArea = new CommentAreaTextBox(COMMENT_MAX_LENGTH);
 	
 	/** The button expand. */
 	private Button buttonExpand = new Button();
@@ -189,8 +186,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private boolean isDirty = false;
 	
 	private ErrorMessageDisplay clearErrorDisplay = new ErrorMessageDisplay();
-	
-	
 	@Override
 	public ErrorMessageDisplay getClearErrorDisplay() {
 		return clearErrorDisplay;
@@ -290,16 +285,20 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		addCommentPanel.add(commentArea);
 		HorizontalPanel remainCharsPanel = new HorizontalPanel();
 		remainCharsPanel.add(new HTML("Remaining &nbsp;"));
-		final Label remainingCharsLabel = new Label("250");
+		
 		remainCharsPanel.add(remainingCharsLabel);
 		remainCharsPanel.add(new HTML("&nbsp;characters."));
 		addCommentPanel.add(remainCharsPanel);
-		commentAreaHandlers(remainingCharsLabel);
-		addCommentPanel.add(successMessageAddCommentDisplay);
-		addCommentPanel.add(new SpacerWidget());
+		
+		HorizontalPanel buttonAndMessagePanel = new HorizontalPanel();
+		buttonAndMessagePanel.getElement().setId("buttonAndMessage_hPanel");
 		commentButtons.setTitle("Ok");
+		
 		commentButtons.getElement().setId("addCommentOk_Button");
-		addCommentPanel.add(commentButtons);
+		buttonAndMessagePanel.add(commentButtons);
+		buttonAndMessagePanel.add(successMessageAddCommentDisplay);
+		addCommentPanel.add(new SpacerWidget());
+		addCommentPanel.add(buttonAndMessagePanel);
 		commentArea.getElement().setAttribute("maxlength", "250");
 		commentArea.setText("");
 		commentArea.setHeight("80px");
@@ -380,40 +379,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		focusPanel.addKeyDownHandler(this);
 		focusPanel.addFocusHandler(this);
 	}
-	/**
-	 * Comment Area Handler for population Clause Work Space.
-	 * @param remainingCharsLabel - Label.
-	 */
-	private void commentAreaHandlers(final Label remainingCharsLabel) {
-		commentArea.addKeyPressHandler(new KeyPressHandler()
-		{
-			@Override
-			public void onKeyPress(KeyPressEvent event) {
-				// In IE maxLength is not working, it is showing negative number's.
-				//event.preventDefault() method works for IE but not in FF. So adding subString fix.
-				if (commentArea.getText().length() > COMMENT_MAX_LENGTH) {
-					commentArea.setText(commentArea.getText().substring(0, COMMENT_MAX_LENGTH));
-				}
-				setDirty(true);
-				onTextAreaContentChanged(remainingCharsLabel);
-			}
-		});
-		commentArea.addFocusHandler(new FocusHandler()
-		{
-			@Override
-			public void onFocus(FocusEvent event) {
-				onTextAreaContentChanged(remainingCharsLabel);
-			}
-		});
-		//onFocusLost previously
-		commentArea.addBlurHandler(new BlurHandler()
-		{
-			@Override
-			public void onBlur(BlurEvent event)	{
-				onTextAreaContentChanged(remainingCharsLabel);
-			}
-		});
-	}
+	
 	
 	/**
 	 * Checks max limit of character count on comment Area and display's remaining character count.
@@ -660,17 +626,104 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return false;
 	}
 	
-	
+	/**
+	 * @author jnarang
+	 *
+	 */
+	public class CommentAreaTextBox extends TextArea{
+		private int COMMENT_MAX_LENGTH = 250;
+		public CommentAreaTextBox(int maxLength) {
+			super();
+			setCOMMENT_MAX_LENGTH(maxLength);
+			sinkEvents(Event.ONPASTE);
+		}
+		@Override
+		public void onBrowserEvent(Event event)
+		{
+			super.onBrowserEvent(event);
+			switch (event.getTypeInt())
+			{
+				case Event.ONPASTE:
+				{
+					event.stopPropagation();
+					event.preventDefault();
+					break;
+				}
+			}
+		}
+		/**
+		 * @return the cOMMENT_MAX_LENGTH
+		 */
+		public int getCOMMENT_MAX_LENGTH() {
+			return COMMENT_MAX_LENGTH;
+		}
+		/**
+		 * @param cOMMENT_MAX_LENGTH the cOMMENT_MAX_LENGTH to set
+		 */
+		public void setCOMMENT_MAX_LENGTH(int cOMMENT_MAX_LENGTH) {
+			COMMENT_MAX_LENGTH = cOMMENT_MAX_LENGTH;
+		}
+		
+		/**
+		 * Comment Area Handler for population Clause Work Space.
+		 * @param remainingCharsLabel - Label.
+		 */
+		public void commentAreaHandlers(final Label remainingCharsLabel) {
+			this.addKeyPressHandler(new KeyPressHandler()
+			{
+				@Override
+				public void onKeyPress(KeyPressEvent event) {
+					// In IE maxLength is not working, it is showing negative number's.
+					//event.preventDefault() method works for IE but not in FF. So adding subString fix.
+					if (commentArea.getText().length() > COMMENT_MAX_LENGTH) {
+						commentArea.setText(commentArea.getText().substring(0, COMMENT_MAX_LENGTH));
+					}
+					setDirty(true);
+					onTextAreaContentChanged(remainingCharsLabel);
+				}
+			});
+			
+			this.addFocusHandler(new FocusHandler()
+			{
+				@Override
+				public void onFocus(FocusEvent event) {
+					if (commentArea.getText().length() > COMMENT_MAX_LENGTH) {
+						commentArea.setText(commentArea.getText().substring(0, COMMENT_MAX_LENGTH));
+					}
+					setDirty(true);
+					onTextAreaContentChanged(remainingCharsLabel);
+				}
+			});
+			//onFocusLost previously
+			this.addBlurHandler(new BlurHandler()
+			{
+				@Override
+				public void onBlur(BlurEvent event)	{
+					if (commentArea.getText().length() > COMMENT_MAX_LENGTH) {
+						commentArea.setText(commentArea.getText().substring(0, COMMENT_MAX_LENGTH));
+					}
+					setDirty(true);
+					onTextAreaContentChanged(remainingCharsLabel);
+				}
+			});
+			
+			
+			
+		}
+		
+		
+	}
 	/**
 	 * The Class NodeCell.
 	 */
 	public class NodeCell extends AbstractCell<CellTreeNode> {
-		
 		/**
 		 * Instantiates a new node cell.
 		 */
 		public NodeCell() {
-			super(BrowserEvents.CLICK,BrowserEvents.CONTEXTMENU);
+			super(BrowserEvents.CLICK, BrowserEvents.FOCUS, BrowserEvents.CONTEXTMENU);
+			/*onAttach();*/
+			
 		}
 		
 		/* (non-Javadoc)
@@ -697,6 +750,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}
 		}
 		
+		@Override
+		public boolean resetFocus(com.google.gwt.cell.client.Cell.Context context, Element parent, CellTreeNode value) {
+			this.onBrowserEvent(context, parent, value, Document.get().createFocusEvent(), null);
+			return super.resetFocus(context, parent, value);
+		}
+		
 		/* (non-Javadoc)
 		 * @see com.google.gwt.cell.client.AbstractCell#onBrowserEvent(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object, com.google.gwt.dom.client.NativeEvent, com.google.gwt.cell.client.ValueUpdater)
 		 */
@@ -705,13 +764,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		public void onBrowserEvent(Context context, Element parent, CellTreeNode value,
 				NativeEvent event, ValueUpdater<CellTreeNode> valueUpdater) {
 			if (event.getType().equals(BrowserEvents.CONTEXTMENU)) {
+				successMessageAddCommentDisplay.removeStyleName("successMessageCommentPanel");
 				successMessageAddCommentDisplay.clear();
 				event.preventDefault();
 				event.stopPropagation();
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					onRightClick(value, (Event) event, parent);
 				}
-			} else if (event.getType().equals(BrowserEvents.CLICK)) {
+			} else if (event.getType().equals(BrowserEvents.CLICK)
+					|| event.getType().equalsIgnoreCase(BrowserEvents.FOCUS)) {
+				successMessageAddCommentDisplay.removeStyleName("successMessageCommentPanel");
 				successMessageAddCommentDisplay.clear();
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
@@ -726,9 +788,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								}
 							}
 						}
+						onTextAreaContentChanged(remainingCharsLabel);
 						setCommentsBoxReadOnly(false);
 					} else {
 						commentArea.setText("");
+						onTextAreaContentChanged(remainingCharsLabel);
 						setCommentsBoxReadOnly(true);
 					}
 				}
@@ -753,6 +817,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			switch (cellTreeNode.getNodeType()) {
 				case CellTreeNode.ROOT_NODE:
 					return "cellTreeRootNode";
+					
 				default:
 					break;
 			}
@@ -795,6 +860,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			parent.removeChild(selectedNode);
 			closeParentOpenNodes(cellTree.getRootTreeNode());
 			selectionModel.setSelected(parent, true);
+			((NodeCell)getNodeInfo(parent).getCell()).onBrowserEvent(new Context(0, 0, null), null, parent, Document.get().createFocusEvent(), null);
+			//((NodeCell)parent).onBrowserEvent(new Context(0, 0, null), null, parent, Document.get().createFocusEvent(), null);
 		}
 	}
 	
@@ -1418,24 +1485,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @return the commentArea
 	 */
 	@Override
-	public TextArea getCommentArea() {
+	public CommentAreaTextBox getCommentArea() {
 		return commentArea;
 	}
-	
-	/**
-	 * @return the subTreeTextBox
-	 */
-	/*@Override
-	public TextBox getSubTreeTextBox() {
-		return subTreeTextBox;
-	}*/
-	
-	
-	
-	/**
-	 * @param subTreeTextBox the subTreeTextBox to set
-	 */
-	/*public void setSubTreeTextBox(TextBox subTreeTextBox) {
-		this.subTreeTextBox = subTreeTextBox;
-	}*/
 }

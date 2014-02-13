@@ -625,6 +625,20 @@ left:50px;
     text-align: left;
 }
 
+.successMessageCommentPanel {
+    /*color: green;
+    font-size: .8em;
+    font-weight: bold;*/
+    background: /*url('images/success.png')*/ no-repeat scroll 6px 50% #F4FDEF;
+    border: 1px solid #ACDFA7;
+    color: #000000;
+    display: block;
+    font-weight: bold;
+    margin: 2px 10px 14px;
+    padding: 6px 6px 6px 30px;
+    text-align: left;
+}
+
 .successAmberMessage {
 	background: /*url('images/success.png')*/ no-repeat scroll 6px 50% #EEC99E;
     border: 1px solid #D28021;

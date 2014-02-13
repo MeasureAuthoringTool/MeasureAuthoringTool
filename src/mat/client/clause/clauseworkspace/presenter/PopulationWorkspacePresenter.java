@@ -120,14 +120,11 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 							flowPanel.clear();
 							flowPanel.add(new SpacerWidget());
 							flowPanel.add(populationWorkspaceTabs);
-							
 							String newXML = document.getDocumentElement().toString();
-							
 							populationClausePresenter.setOriginalXML(newXML);
 							measureObsClausePresenter.setOriginalXML(newXML);
 							stratificationClausePresenter.setOriginalXML(newXML);
-							setQdmElementsMap(xml);
-							setSubTreeElementsMap(xml);
+							setQdmElementsAndSubTreeLookUpMap(xml);
 							populationWorkspaceTabs.selectTab(populationClausePresenter);
 							populationClausePresenter.beforeDisplay();
 						} else {
@@ -170,14 +167,18 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	}
 	
 	/**
-	 * Sets the qdm elements map.
+	 * Sets the qdm elements map also  reterives SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
 	 * 
 	 * @param xml
 	 *            the new qdm elements map
 	 */
-	private void setQdmElementsMap(String xml) {
+	private void setQdmElementsAndSubTreeLookUpMap(String xml) {
 		PopulationWorkSpaceConstants.elementLookUpName = new TreeMap<String, String>();
 		PopulationWorkSpaceConstants.elementLookUpNode = new TreeMap<String, Node>();
+		
+		PopulationWorkSpaceConstants.subTreeLookUpName = new TreeMap<String, String>();
+		PopulationWorkSpaceConstants.subTreeLookUpNode = new TreeMap<String, Node>();
+		
 		Document document = XMLParser.parse(xml);
 		NodeList nodeList = document.getElementsByTagName("elementLookUp");
 		if ((null != nodeList) && (nodeList.getLength() > 0)) {
@@ -204,19 +205,10 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 				}
 			}
 		}
-	}
-	/**
-	 * Method to Reterive SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
-	 * Also it retrieves Name and UUID and put it in subTreeNodeName map for display.
-	 * @param xml - String.
-	 */
-	private void setSubTreeElementsMap(String xml) {
-		PopulationWorkSpaceConstants.subTreeLookUpName = new TreeMap<String, String>();
-		PopulationWorkSpaceConstants.subTreeLookUpNode = new TreeMap<String, Node>();
-		Document document = XMLParser.parse(xml);
-		NodeList nodeList = document.getElementsByTagName("subTreeLookUp");
-		if ((null != nodeList) && (nodeList.getLength() > 0)) {
-			NodeList subTree = nodeList.item(0).getChildNodes();
+		
+		NodeList subTreesNodeList = document.getElementsByTagName("subTreeLookUp");
+		if ((null != subTreesNodeList) && (subTreesNodeList.getLength() > 0)) {
+			NodeList subTree = subTreesNodeList.item(0).getChildNodes();
 			for (int i = 0; i < subTree.getLength(); i++) {
 				if ("subTree".equals(subTree.item(i).getNodeName())) {
 					NamedNodeMap namedNodeMap = subTree.item(i).getAttributes();

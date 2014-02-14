@@ -233,7 +233,20 @@ public class XmlTreePresenter {
 						ConstantMessages.DB_LOG);
 				if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)
 						|| (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_REF_NODE)) {
-					addCommentToSelectedNode();
+					@SuppressWarnings("unchecked")
+					List<CellTreeNode> commentList = (List<CellTreeNode>) xmlTreeDisplay
+					.getSelectedNode().getExtraInformation(COMMENT);
+					if (commentList == null) {
+						commentList = new ArrayList<CellTreeNode>();
+					}
+					commentList.clear();
+					CellTreeNode node = new CellTreeNodeImpl();
+					node.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
+					node.setNodeType(CellTreeNode.COMMENT_NODE);
+					node.setNodeText(xmlTreeDisplay.getCommentArea().getText());
+					commentList.add(node);
+					
+					xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
 				}
 				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay
 						.getXmlTree().getRootTreeNode().getChildValue(0);
@@ -308,17 +321,29 @@ public class XmlTreePresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().clear();
-				addCommentToSelectedNode();
+				@SuppressWarnings("unchecked")
+				List<CellTreeNode> commentList = (List<CellTreeNode>) xmlTreeDisplay
+				.getSelectedNode().getExtraInformation(COMMENT);
+				if (commentList == null) {
+					commentList = new ArrayList<CellTreeNode>();
+				}
+				commentList.clear();
+				CellTreeNode node = new CellTreeNodeImpl();
+				node.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
+				node.setNodeType(CellTreeNode.COMMENT_NODE);
+				node.setNodeText(xmlTreeDisplay.getCommentArea().getText());
+				commentList.add(node);
+				
+				xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
 				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setStylePrimaryName("successMessageCommentPanel");
 				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setMessage("Comment Added");
 			}
 		});
 	}
-	
 	/**
 	 *  Add Comment Node in Logical Ops/ SubTree Ref Node.
-	 */
-	private void addCommentToSelectedNode() {
+	 *//*
+	void addCommentToSelectedNode() {
 		@SuppressWarnings("unchecked")
 		List<CellTreeNode> commentList = (List<CellTreeNode>) xmlTreeDisplay
 		.getSelectedNode().getExtraInformation(COMMENT);
@@ -334,6 +359,7 @@ public class XmlTreePresenter {
 		
 		xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
 	}
+	  */
 	/**
 	 * Invoke validate handler.
 	 */

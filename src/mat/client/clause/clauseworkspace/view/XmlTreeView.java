@@ -1254,7 +1254,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		closeParentOpenNodes(cellTree.getRootTreeNode());
 	}
 	@Override
-	public void addCommentNode(){
+	public void addCommentNodeToSelectedNode(){
 		if ((getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)
 				|| (getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_REF_NODE)) {
 			List<CellTreeNode> nodeCommentList = (List<CellTreeNode>) getSelectedNode().getExtraInformation(COMMENT);

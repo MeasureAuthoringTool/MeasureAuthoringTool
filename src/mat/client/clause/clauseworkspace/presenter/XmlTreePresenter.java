@@ -231,7 +231,7 @@ public class XmlTreePresenter {
 						rootNode.toUpperCase() + "_TAB_SAVE_EVENT",
 						rootNode.toUpperCase().concat(" Saved."),
 						ConstantMessages.DB_LOG);
-				//xmlTreeDisplay.addCommentNode();
+				xmlTreeDisplay.addCommentNodeToSelectedNode();
 				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay
 						.getXmlTree().getRootTreeNode().getChildValue(0);
 				final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper

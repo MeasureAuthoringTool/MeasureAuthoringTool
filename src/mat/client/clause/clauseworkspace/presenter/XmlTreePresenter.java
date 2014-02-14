@@ -233,20 +233,18 @@ public class XmlTreePresenter {
 						ConstantMessages.DB_LOG);
 				if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)
 						|| (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_REF_NODE)) {
-					@SuppressWarnings("unchecked")
-					List<CellTreeNode> commentList = (List<CellTreeNode>) xmlTreeDisplay
-					.getSelectedNode().getExtraInformation(COMMENT);
-					if (commentList == null) {
-						commentList = new ArrayList<CellTreeNode>();
+					List<CellTreeNode> nodeCommentList = (List<CellTreeNode>) xmlTreeDisplay
+							.getSelectedNode().getExtraInformation(COMMENT);
+					if (nodeCommentList == null) {
+						nodeCommentList = new ArrayList<CellTreeNode>();
 					}
-					commentList.clear();
-					CellTreeNode node = new CellTreeNodeImpl();
-					node.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
-					node.setNodeType(CellTreeNode.COMMENT_NODE);
-					node.setNodeText(xmlTreeDisplay.getCommentArea().getText());
-					commentList.add(node);
-					
-					xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
+					nodeCommentList.clear();
+					CellTreeNode commentNode = new CellTreeNodeImpl();
+					commentNode.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
+					commentNode.setNodeType(CellTreeNode.COMMENT_NODE);
+					commentNode.setNodeText(xmlTreeDisplay.getCommentArea().getText());
+					nodeCommentList.add(commentNode);
+					xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, nodeCommentList);
 				}
 				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay
 						.getXmlTree().getRootTreeNode().getChildValue(0);
@@ -340,26 +338,6 @@ public class XmlTreePresenter {
 			}
 		});
 	}
-	/**
-	 *  Add Comment Node in Logical Ops/ SubTree Ref Node.
-	 *//*
-	void addCommentToSelectedNode() {
-		@SuppressWarnings("unchecked")
-		List<CellTreeNode> commentList = (List<CellTreeNode>) xmlTreeDisplay
-		.getSelectedNode().getExtraInformation(COMMENT);
-		if (commentList == null) {
-			commentList = new ArrayList<CellTreeNode>();
-		}
-		commentList.clear();
-		CellTreeNode node = new CellTreeNodeImpl();
-		node.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
-		node.setNodeType(CellTreeNode.COMMENT_NODE);
-		node.setNodeText(xmlTreeDisplay.getCommentArea().getText());
-		commentList.add(node);
-		
-		xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
-	}
-	  */
 	/**
 	 * Invoke validate handler.
 	 */

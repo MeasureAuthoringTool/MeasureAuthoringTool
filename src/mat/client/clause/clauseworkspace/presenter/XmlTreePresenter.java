@@ -183,7 +183,6 @@ public class XmlTreePresenter {
 				.checkForEditPermission());
 		panel.clear();
 		panel.add(xmlTreeDisplay.asWidget());
-		//	invokeCreateNewClauseHandler();
 		invokeSaveHandler();
 		invokeValidateHandler();
 		invokeClearHandler();
@@ -232,6 +231,10 @@ public class XmlTreePresenter {
 						rootNode.toUpperCase() + "_TAB_SAVE_EVENT",
 						rootNode.toUpperCase().concat(" Saved."),
 						ConstantMessages.DB_LOG);
+				if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)
+						|| (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_REF_NODE)) {
+					addCommentToSelectedNode();
+				}
 				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay
 						.getXmlTree().getRootTreeNode().getChildValue(0);
 				final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper
@@ -258,7 +261,6 @@ public class XmlTreePresenter {
 				});
 			}
 		});
-		
 		xmlTreeDisplay.getSaveBtnClauseWorkSpace().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -306,27 +308,31 @@ public class XmlTreePresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().clear();
-				@SuppressWarnings("unchecked")
-				List<CellTreeNode> commentList = (List<CellTreeNode>) xmlTreeDisplay
-				.getSelectedNode().getExtraInformation(COMMENT);
-				if (commentList == null) {
-					commentList = new ArrayList<CellTreeNode>();
-				}
-				commentList.clear();
-				CellTreeNode node = new CellTreeNodeImpl();
-				node.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
-				node.setNodeType(CellTreeNode.COMMENT_NODE);
-				node.setNodeText(xmlTreeDisplay.getCommentArea().getText());
-				commentList.add(node);
-				
-				xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
-				/*	String xml = XmlConversionlHelper.createXmlFromTree(xmlTreeDisplay.getSelectedNode());
-				System.out.println(xml);*/
+				addCommentToSelectedNode();
 				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setStylePrimaryName("successMessageCommentPanel");
 				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setMessage("Comment Added");
 			}
-			
 		});
+	}
+	
+	/**
+	 *  Add Comment Node in Logical Ops/ SubTree Ref Node.
+	 */
+	private void addCommentToSelectedNode() {
+		@SuppressWarnings("unchecked")
+		List<CellTreeNode> commentList = (List<CellTreeNode>) xmlTreeDisplay
+		.getSelectedNode().getExtraInformation(COMMENT);
+		if (commentList == null) {
+			commentList = new ArrayList<CellTreeNode>();
+		}
+		commentList.clear();
+		CellTreeNode node = new CellTreeNodeImpl();
+		node.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
+		node.setNodeType(CellTreeNode.COMMENT_NODE);
+		node.setNodeText(xmlTreeDisplay.getCommentArea().getText());
+		commentList.add(node);
+		
+		xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
 	}
 	/**
 	 * Invoke validate handler.

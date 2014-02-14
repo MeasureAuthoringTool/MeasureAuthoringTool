@@ -231,21 +231,7 @@ public class XmlTreePresenter {
 						rootNode.toUpperCase() + "_TAB_SAVE_EVENT",
 						rootNode.toUpperCase().concat(" Saved."),
 						ConstantMessages.DB_LOG);
-				if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)
-						|| (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_REF_NODE)) {
-					List<CellTreeNode> nodeCommentList = (List<CellTreeNode>) xmlTreeDisplay
-							.getSelectedNode().getExtraInformation(COMMENT);
-					if (nodeCommentList == null) {
-						nodeCommentList = new ArrayList<CellTreeNode>();
-					}
-					nodeCommentList.clear();
-					CellTreeNode commentNode = new CellTreeNodeImpl();
-					commentNode.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
-					commentNode.setNodeType(CellTreeNode.COMMENT_NODE);
-					commentNode.setNodeText(xmlTreeDisplay.getCommentArea().getText());
-					nodeCommentList.add(commentNode);
-					xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, nodeCommentList);
-				}
+				xmlTreeDisplay.addCommentNode();
 				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay
 						.getXmlTree().getRootTreeNode().getChildValue(0);
 				final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper

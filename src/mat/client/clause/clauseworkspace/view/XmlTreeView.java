@@ -1,5 +1,6 @@
 package mat.client.clause.clauseworkspace.view;
 
+import java.util.ArrayList;
 import java.util.List;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
@@ -135,7 +136,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The Clear btn. */
 	private Button clearClauseWorkSpace = new SecondaryButton("Clear");
-	
+	private static final String COMMENT = "COMMENT";
 	/**
 	 * Comment Ok Button.
 	 */
@@ -681,7 +682,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			});
 			
 		}
-		
 		/**
 		 * Description: Takes the browser event.
 		 *
@@ -1253,7 +1253,23 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		selectedNode = node;
 		closeParentOpenNodes(cellTree.getRootTreeNode());
 	}
-	
+	@Override
+	public void addCommentNode(){
+		if ((getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)
+				|| (getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_REF_NODE)) {
+			List<CellTreeNode> nodeCommentList = (List<CellTreeNode>) getSelectedNode().getExtraInformation(COMMENT);
+			if (nodeCommentList == null) {
+				nodeCommentList = new ArrayList<CellTreeNode>();
+			}
+			nodeCommentList.clear();
+			CellTreeNode commentNode = new CellTreeNodeImpl();
+			commentNode.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
+			commentNode.setNodeType(CellTreeNode.COMMENT_NODE);
+			commentNode.setNodeText(getCommentArea().getText());
+			nodeCommentList.add(commentNode);
+			getSelectedNode().setExtraInformation(COMMENT, nodeCommentList);
+		}
+	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getWarningMessageDisplay()

@@ -308,4 +308,6 @@ public interface XmlTreeDisplay {
 	 * @return
 	 */
 	SuccessMessageDisplay getSuccessMessageAddCommentDisplay();
+	
+	void addCommentNode();
 }

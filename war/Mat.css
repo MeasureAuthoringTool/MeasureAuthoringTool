@@ -116,29 +116,11 @@ left:50px;
     width:30px; 
     margin-left: 0;
 }
+
 #div2{
     float:left; 
     width:220px; 
     margin-right:0;
-}
-
-#container2{ 
-    width: 30px; 
-}
-
-#container3{ 
-    width: 90px; 
-}
-
-#div3{
-    float: left;
-    width:15px; 
-    margin-left: 0;
-}
-
-#div4{
-    float: left; 
-    margin-left: 0;
 }
 
 .textAlign{
@@ -260,6 +242,20 @@ left:50px;
     cursor: pointer;
     cursor: hand;
 }
+
+.customExportButtonRed {
+    background: url("images/g_package_go_v4.gif");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+    cursor: pointer;
+    cursor: hand;
+}
+
+
 
 .customEditButton {
     background: url("images/g_package_edit.png");

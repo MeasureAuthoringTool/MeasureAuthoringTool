@@ -338,35 +338,6 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				});
 				final List<HasCell<Result, ?>> cells = new LinkedList<HasCell<Result, ?>>();
 				cells.add(new HasCell<Result, SafeHtml>() {
-                    
-					SafeHtmlCell matVersion = new SafeHtmlCell();
-					@Override
-					public Cell<SafeHtml> getCell() {
-						return matVersion;
-					}
-
-					@Override
-					public FieldUpdater<Result, SafeHtml> getFieldUpdater() {
-						return null;
-					}
-
-					@Override
-					public SafeHtml getValue(Result object) {
-						SafeHtmlBuilder sb = new SafeHtmlBuilder();
-						String matVersion="";
-						if(object.isHQMFR1()){
-							matVersion = "v3";
-						sb.appendHtmlConstant("<span title=\""+ matVersion +"\">"+ matVersion +"</span>");
-						} else {
-							matVersion = "v4";
-							sb.appendHtmlConstant("<span title=\""+ matVersion +"\">"+ matVersion +"</span>");
-						}
-						return sb.toSafeHtml();
-					}
-					
-					
-				});
-				cells.add(new HasCell<Result, SafeHtml>() {
 
 					ClickableSafeHtmlCell exportButonCell = new ClickableSafeHtmlCell();
 					
@@ -391,14 +362,17 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					@Override
 					public SafeHtml getValue(Result object) {
 						SafeHtmlBuilder sb = new SafeHtmlBuilder();
-						String title;
-						String cssClass = "customExportButton";
+						String title = "";
+						String cssClass = "";
 						
 						if(object.isHQMFR1()){
+							
+							cssClass = "customExportButton";
 							title = "Click to Export MAT v3";
 							sb.appendHtmlConstant("<button type=\"button\" title='" + title 
 									+ "' tabindex=\"0\" class=\" " + cssClass + "\"/>");		
 						} else {
+							cssClass = "customExportButtonRed";
 							title = "Click to Export MAT v4";
 							sb.appendHtmlConstant("<button  type=\"button\" title='" + title 
 									+ "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");	
@@ -433,7 +407,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				CompositeCell<Result> cell = new CompositeCell<Result>(cells) {
 					@Override
 					public void render(Context context, Result object, SafeHtmlBuilder sb) {
-						sb.appendHtmlConstant("<table><tbody><tr id='container3'>");
+						sb.appendHtmlConstant("<table><tbody><tr>");
 						for (HasCell<Result, ?> hasCell : cells) {
 							render(context, object, sb, hasCell);
 						}
@@ -443,7 +417,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					protected <X> void render(Context context, Result object,
 							SafeHtmlBuilder sb, HasCell<Result, X> hasCell) {
 						Cell<X> cell = hasCell.getCell();
-						sb.appendHtmlConstant("<td id='div4' class='emptySpaces'>");
+						sb.appendHtmlConstant("<td class='emptySpaces'>");
 						if ((object != null) && object.isExportable()) {
 							cell.render(context, hasCell.getValue(object), sb);
 						} else {

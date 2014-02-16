@@ -74,6 +74,7 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 				public void onSuccess(MeasureXmlModel result) {
 					String xml = result != null ? result.getXml() : null;
 					setQdmElementsAndSubTreeLookUpMap(xml);
+					loadClauseWorkSpaceView(simplepanel);
 				}
 				@Override
 				public void onFailure(Throwable caught) {
@@ -151,7 +152,7 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 	@Override
 	public void beforeDisplay() {
 		loadMeasureXML();
-		loadClauseWorkSpaceView(simplepanel);
+//		loadClauseWorkSpaceView(simplepanel);
 	}
 	
 	/* (non-Javadoc)

@@ -2,6 +2,7 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -22,8 +23,14 @@ import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.xml.client.Document;
+import com.google.gwt.xml.client.NamedNodeMap;
+import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
+import com.google.gwt.xml.client.XMLParser;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -186,7 +193,81 @@ public class XmlTreePresenter {
 		invokeSaveHandler();
 		invokeValidateHandler();
 		invokeClearHandler();
+		addShowClauseHandler();
 	}
+	private void addShowClauseHandler() {
+		this.xmlTreeDisplay.getShowClauseButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				ListBox clauseNamesListBox = xmlTreeDisplay.getClauseNamesListBox();
+				if(clauseNamesListBox != null){
+					int selectedIndex  = clauseNamesListBox.getSelectedIndex();
+					if(selectedIndex != -1){
+						final String selectedClauseName = clauseNamesListBox.getItemText(selectedIndex);
+						final String selectedClauseUUID = clauseNamesListBox.getValue(selectedIndex);
+						System.out.println("Selected clause name and uuid is:"+selectedClauseName+":"+selectedClauseUUID);
+						
+						final CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
+								.getXmlTree().getRootTreeNode().getChildValue(0));
+												
+						if(cellTreeNode.getChilds().size() > 0){
+							if (xmlTreeDisplay.isDirty()) {
+								isUnsavedData = true;
+								showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
+								xmlTreeDisplay.getErrorMessageDisplay().getButtons().get(0).setFocus(true);
+								String auditMessage = getRootNode().toUpperCase() + "_TAB_YES_CLICKED";
+																
+								ClickHandler clickHandler = new ClickHandler() {
+									@Override
+									public void onClick(ClickEvent event) {
+										isUnsavedData = false;
+										SecondaryButton button = (SecondaryButton) event.getSource();
+										// If Yes - do not navigate, set focus to the Save button on the Page and clear cell tree
+										// // Else -do not navigate, set focus to the Save button on the Page
+										if ("Yes".equals(button.getText())) {
+											xmlTreeDisplay.getErrorMessageDisplay().clear();
+											xmlTreeDisplay.setDirty(false);
+											
+											changeClause(cellTreeNode, selectedClauseName, selectedClauseUUID);
+											
+										} else if ("No".equals(button.getText())) {
+											xmlTreeDisplay.getErrorMessageDisplay().clear();
+										}
+									}
+								};
+								
+								for (SecondaryButton secondaryButton : xmlTreeDisplay.getErrorMessageDisplay().getButtons()) {
+									secondaryButton.addClickHandler(clickHandler);
+								}
+								if (isUnsavedData) {
+									MatContext.get().setErrorTab(true);
+								}
+							}else{
+								changeClause(cellTreeNode, selectedClauseName, selectedClauseUUID);
+							}
+							
+						}						
+					}
+				}
+			}
+		});		
+	}
+	
+	private void changeClause(CellTreeNode cellTreeNode, String selectedClauseName, String selectedClauseUUID){
+		CellTreeNode childNode = cellTreeNode.getChilds().get(0);
+		System.out.println("clearing out:"+childNode.getName());
+		cellTreeNode.removeChild(childNode);
+		
+		Node node = PopulationWorkSpaceConstants.subTreeLookUpNode.get(selectedClauseName + "~" + selectedClauseUUID);
+		CellTreeNode subTreeCellTreeNode = XmlConversionlHelper.createCellTreeNode(node, selectedClauseName);
+		
+		cellTreeNode.appendChild(subTreeCellTreeNode.getChilds().get(0));
+		
+		xmlTreeDisplay.getXmlTree().getRootTreeNode().setChildOpen(0, false);
+		xmlTreeDisplay.getXmlTree().getRootTreeNode().setChildOpen(0, true);
+	}
+
 	/**
 	 * Creates the measure export model.
 	 * 
@@ -263,7 +344,7 @@ public class XmlTreePresenter {
 			public void onClick(final ClickEvent event) {
 				if (xmlTreeDisplay.getXmlTree() != null) {
 					xmlTreeDisplay.clearMessages();
-					CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
+					final CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
 							.getXmlTree().getRootTreeNode().getChildValue(0));
 					if (cellTreeNode.hasChildren()) {
 						xmlTreeDisplay.setDirty(false);
@@ -272,7 +353,7 @@ public class XmlTreePresenter {
 								"CLAUSEWORKSPACE_TAB_SAVE_EVENT",
 								rootNode.toUpperCase().concat(" Saved."),
 								ConstantMessages.DB_LOG);
-						String nodeUUID = cellTreeNode.getChilds().get(0).getUUID();
+						final String nodeUUID = cellTreeNode.getChilds().get(0).getUUID();
 						String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode.getChilds().get(0));
 						System.out.println("Generated XML  :: " + xml);
 						System.out.println("nodeUUID  :: " + nodeUUID);
@@ -290,6 +371,9 @@ public class XmlTreePresenter {
 								.setMessage(
 										"Changes are successfully saved.");
 								setOriginalXML(measureXmlModel.getXml());
+								updateSubTreeElementsMap(getOriginalXML());
+								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
+								xmlTreeDisplay.updateSuggestOracle();
 								System.out.println("originalXML is:"
 										+ getOriginalXML());
 							}
@@ -324,6 +408,32 @@ public class XmlTreePresenter {
 			}
 		});
 	}
+	/**
+	 * Method to Reterive SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
+	 * Also it retrieves Name and UUID and put it in subTreeNodeName map for display.
+	 * @param xml - String.
+	 */
+	protected void updateSubTreeElementsMap(String xml) {
+		if(PopulationWorkSpaceConstants.subTreeLookUpName == null){
+			PopulationWorkSpaceConstants.subTreeLookUpName = new TreeMap<String, String>();
+		}
+		if(PopulationWorkSpaceConstants.subTreeLookUpNode == null){
+			PopulationWorkSpaceConstants.subTreeLookUpNode = new TreeMap<String, com.google.gwt.xml.client.Node>();
+		}
+		Document document = XMLParser.parse(xml);
+		NodeList nodeList = document.getElementsByTagName("subTree");
+		if ((null != nodeList) && (nodeList.getLength() > 0)) {
+			for (int i = 0; i < nodeList.getLength(); i++) {
+				NamedNodeMap namedNodeMap = nodeList.item(i).getAttributes();
+				String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
+				String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
+				PopulationWorkSpaceConstants.subTreeLookUpNode.put(name + "~" + uuid, nodeList.item(i));
+				PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
+			}
+		}
+		System.out.println("PopulationWorkSpaceConstants.subTreeLookUpName:"+PopulationWorkSpaceConstants.subTreeLookUpName);
+	}
+	
 	/**
 	 * Invoke validate handler.
 	 */

@@ -2,6 +2,7 @@ package mat.client.clause.clauseworkspace.view;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -14,6 +15,7 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -24,6 +26,8 @@ import com.google.gwt.dom.client.BrowserEvents;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -35,6 +39,8 @@ import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
+import com.google.gwt.event.logical.shared.SelectionEvent;
+import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
@@ -49,10 +55,15 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ListBox;
+import com.google.gwt.user.client.ui.MultiWordSuggestOracle;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.SuggestBox;
+import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -189,6 +200,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The popup panel. */
 	private PopupPanel popupPanel;
+	
+	/** ListBox for subtree names */ 
+	ListBox subTreeNameListBox;
+	
+	/** Suggestbox for subtree items on RHS */
+	SuggestBox searchSuggestTextBox;
+	
+	/** button to open a clause tree */
+	private Button openClauseButton;
 	
 	/** The clause workspace context menu. */
 	private ClauseWorkspaceContextMenu clauseWorkspaceContextMenu;
@@ -338,9 +358,47 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		SimplePanel leftPanel = new SimplePanel();
 		leftPanel.getElement().setId("leftPanel_SimplePanelCW");
 		leftPanel.setStyleName("div-first bottomPadding10px"); //left side div which will  have tree
-		SimplePanel rightPanel = new SimplePanel();
-		rightPanel.getElement().setId("rightPanel_SimplePanelCW");
-		rightPanel.setStyleName("div-second"); //right div having tree creation inputs.
+			
+		
+		VerticalPanel rightVerticalPanel = new VerticalPanel();
+		rightVerticalPanel.setSpacing(10);
+		rightVerticalPanel.setStyleName("div-second"); 
+		rightVerticalPanel.setWidth("290px");
+		rightVerticalPanel.setHeight("200px");
+		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelCW");
+		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+
+		searchSuggestTextBox = new SuggestBox();
+		updateSuggestOracle();
+		searchSuggestTextBox.setWidth("250px");
+		searchSuggestTextBox.setText("Search");
+		searchSuggestTextBox.getElement().setId("searchTextBox_TextBoxCW");
+		
+		searchSuggestTextBox.getValueBox().addClickHandler(new ClickHandler() {
+
+			@Override
+			public void onClick(ClickEvent event) {
+				if ("Search".equals(searchSuggestTextBox.getText())) {
+					searchSuggestTextBox.setText("");
+				}
+			}
+		});
+						
+		subTreeNameListBox = new ListBox();
+		subTreeNameListBox.setWidth("250px");
+		subTreeNameListBox.setVisibleItemCount(10);
+		clearAndAddClauseNamesToListBox();
+		
+		addSuggestHandler(searchSuggestTextBox, subTreeNameListBox);
+		addListBoxHandler(subTreeNameListBox, searchSuggestTextBox);
+		
+		openClauseButton = new Button("Show Clause.");
+				
+		rightVerticalPanel.add(searchSuggestTextBox);
+		rightVerticalPanel.add(subTreeNameListBox);
+		rightVerticalPanel.add(openClauseButton);
+		rightVerticalPanel.setCellHorizontalAlignment(openClauseButton, HasHorizontalAlignment.ALIGN_LEFT);
+				
 		VerticalPanel treePanel =  new VerticalPanel();
 		treePanel.getElement().setId("treePanel_VerticalPanelCW");
 		HorizontalPanel expandCollapse  = new HorizontalPanel();
@@ -387,13 +445,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		errPanel.add(errorMessageDisplay);
 		mainPanel.add(errPanel);
 		mainPanel.add(leftPanel);
-		mainPanel.add(rightPanel);
+		mainPanel.add(rightVerticalPanel);
 		mainPanel.add(bottomSavePanel);
 		focusPanel.addKeyDownHandler(this);
 		focusPanel.addFocusHandler(this);
 	}
-	
-	
 	/**
 	 * Checks max limit of character count on comment Area and display's remaining character count.
 	 * @param remainingCharsLbel - Label.
@@ -403,6 +459,90 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		int charsRemaining = COMMENT_MAX_LENGTH - counter;
 		remainingCharsLbel.setText("" + charsRemaining);
 	}
+	
+	@Override
+	public Button getShowClauseButton(){
+		return this.openClauseButton;
+	}
+	
+	@Override
+	public ListBox getClauseNamesListBox(){
+		return this.subTreeNameListBox;
+	}
+	
+	/**
+	 * Adds the suggest handler.
+	 * 
+	 * @param suggestBox
+	 *            the suggest box
+	 * @param listBox
+	 *            the list box
+	 */
+	private void addSuggestHandler(final SuggestBox suggestBox,
+			final ListBox listBox) {
+		suggestBox.addSelectionHandler(new SelectionHandler<Suggestion>() {
+
+			@Override
+			public void onSelection(SelectionEvent<Suggestion> event) {
+				String selectedQDMName = event.getSelectedItem()
+						.getReplacementString();
+				for (int i = 0; i < listBox.getItemCount(); i++) {
+					if (selectedQDMName.equals(listBox.getItemText(i))) {
+						listBox.setItemSelected(i, true);
+						break;
+					}
+				}
+			}
+		});
+	}
+	
+	/**
+	 * Adds the list box handler.
+	 * 
+	 * @param listBox
+	 *            the list box
+	 * @param suggestBox
+	 *            the suggest box
+	 * @param xmlTreeDisplay
+	 *            the xml tree display
+	 * @param dialogBox
+	 *            the dialog box
+	 * @param isAdd
+	 *            the is add
+	 */
+	private void addListBoxHandler(final ListBox listBox,
+			final SuggestBox suggestBox) {
+		listBox.addChangeHandler(new ChangeHandler() {
+			@Override
+			public void onChange(ChangeEvent event) {
+				int selectedIndex = listBox.getSelectedIndex();
+				String selectedItem = listBox.getItemText(selectedIndex);
+				suggestBox.setText(selectedItem);
+			}
+		});
+	}
+	
+	@Override
+	public void clearAndAddClauseNamesToListBox() {		
+		if(this.subTreeNameListBox != null){
+			this.subTreeNameListBox.clear();
+			for(String clauseUUID:PopulationWorkSpaceConstants.subTreeLookUpName.keySet()){
+				this.subTreeNameListBox.addItem(PopulationWorkSpaceConstants.subTreeLookUpName.get(clauseUUID), clauseUUID);
+			}		
+		}
+	}
+	
+	@Override
+	public void updateSuggestOracle(){
+		if(this.searchSuggestTextBox != null){
+			MultiWordSuggestOracle multiWordSuggestOracle = (MultiWordSuggestOracle)this.searchSuggestTextBox.getSuggestOracle();
+			multiWordSuggestOracle.clear();
+			multiWordSuggestOracle.addAll(PopulationWorkSpaceConstants.subTreeLookUpName
+					.values());
+		}
+	}
+		
+
 	/**
 	 * Selection Handler, Tree Open and Close Handlers Defined.
 	 */
@@ -878,6 +1018,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			parent.removeChild(selectedNode);
 			closeParentOpenNodes(cellTree.getRootTreeNode());
 			selectionModel.setSelected(parent, true);
+			
 			// This is done to invoke focus event on Parent node to show Inline comment in Comment Area.
 			((NodeCell) getNodeInfo(parent).getCell()).
 			onBrowserEvent(new Context(0, 0, null), null, parent, Document.get().createFocusEvent(), null);
@@ -1443,6 +1584,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public Button getCommentButtons() {
 		return commentButtons;
 	}
+	
 	
 	/**
 	 * @return the commentArea

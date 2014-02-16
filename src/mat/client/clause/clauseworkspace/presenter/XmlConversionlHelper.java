@@ -6,6 +6,7 @@ import java.util.List;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.shared.MatContext;
+
 import org.apache.commons.lang.StringUtils;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
@@ -33,21 +34,39 @@ public class XmlConversionlHelper {
 	 * @return CellTreeNode
 	 */
 	public static CellTreeNode createCellTreeNode(String xml, String tagName) {
+		
+		CellTreeNode mainNode = new CellTreeNodeImpl();
+		if ((xml != null) && (xml.trim().length() > 0)) {
+			Document document = XMLParser.parse(xml);
+			mainNode = createCellTreeNode(document, tagName);
+		}
+		return mainNode;
+	}
+	
+	/**
+	 * Creates CellTreeNode object which has list of children objects and a
+	 * parent object from the XML.
+	 * 
+	 * @param document
+	 *            XML DOM object
+	 * @param tagName
+	 *            the tag name
+	 * @return CellTreeNode
+	 */
+	public static CellTreeNode createCellTreeNode(Document doc, String tagName) {
 		Node node = null;
 		CellTreeNode mainNode = new CellTreeNodeImpl();
 		List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
-		Document document = null;
-		if ((xml != null) && (xml.trim().length() > 0)) {
-			document = XMLParser.parse(xml);
-			NodeList nodeList = document.getElementsByTagName(tagName);
-			if (nodeList.getLength() > 0) {
-				node = nodeList.item(0);
-			}
-			if (node != null) {
-				mainNode.setName(tagName);
-				createCellTreeNodeChilds(mainNode, node, childs);
-			}
+						
+		NodeList nodeList = doc.getElementsByTagName(tagName);
+		if (nodeList.getLength() > 0) {
+			node = nodeList.item(0);
 		}
+		if (node != null) {
+			mainNode.setName(tagName);
+			createCellTreeNodeChilds(mainNode, node, childs);
+		}
+		
 		if (node == null) {
 			mainNode.setName(tagName);
 			childs.add(createRootNode(tagName));
@@ -55,6 +74,35 @@ public class XmlConversionlHelper {
 		}
 		return mainNode;
 	}
+	
+	/**
+	 * Creates CellTreeNode object which has list of children objects and a
+	 * parent object from the XML.
+	 * 
+	 * @param document
+	 *            XML DOM object
+	 * @param tagName
+	 *            the tag name
+	 * @return CellTreeNode
+	 */
+	public static CellTreeNode createCellTreeNode(Node node, String tagName) {
+		
+		CellTreeNode mainNode = new CellTreeNodeImpl();
+		List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
+				
+		if (node != null) {
+			mainNode.setName(tagName);
+			createCellTreeNodeChilds(mainNode, node, childs);
+		}
+		
+		if (node == null) {
+			mainNode.setName(tagName);
+			childs.add(createRootNode(tagName));
+			mainNode.setChilds(childs);
+		}
+		return mainNode;
+	}
+	
 	/**
 	 * Method to create Root Clause Node for Sub Tree Node in Clause WorkSpace.
 	 * @return CellTreeNode
@@ -170,7 +218,7 @@ public class XmlConversionlHelper {
 		String nodeName = root.getNodeName();
 		String nodeValue = root.hasAttributes()
 				? root.getAttributes().getNamedItem(PopulationWorkSpaceConstants.DISPLAY_NAME).getNodeValue() : nodeName;
-				
+		
 				CellTreeNode child = new CellTreeNodeImpl(); //child Object
 				if (nodeValue.length() > 0) {
 					setCellTreeNodeValues(root, parent, child, childs); // Create complete child Object with parent and sub Childs
@@ -303,7 +351,11 @@ public class XmlConversionlHelper {
 					uuid = node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue();
 				} else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.LOG_OP)) {
 					cellTreeNodeType = CellTreeNode.LOGICAL_OP_NODE;
-				} else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.RELATIONAL_OP)) {
+				} else if(nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.SUBTREE_NAME)) {
+					cellTreeNodeType = CellTreeNode.SUBTREE_NODE;
+					uuid = node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue();
+				}
+				else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.RELATIONAL_OP)) {
 					String type = node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.TYPE).getNodeValue();
 					String longName = MatContext.get().operatorMapKeyShort.get(type);
 					if (MatContext.get().relationships.contains(longName)) {

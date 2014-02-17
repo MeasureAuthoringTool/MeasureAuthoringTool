@@ -210,6 +210,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** button to open a clause tree */
 	private Button openClauseButton;
 	
+	/** button to delete a clause tree */
+	private Button deleteClauseButton;
+	
 	/** The clause workspace context menu. */
 	private ClauseWorkspaceContextMenu clauseWorkspaceContextMenu;
 	
@@ -367,6 +370,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		rightVerticalPanel.setHeight("200px");
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelCW");
 		rightVerticalPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+		
+		Label clauseLibraryLabel = new Label("Clause Library");
+		clauseLibraryLabel.setStyleName("clauseLibraryLabel");
 
 		searchSuggestTextBox = new SuggestBox();
 		updateSuggestOracle();
@@ -393,12 +399,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		addListBoxHandler(subTreeNameListBox, searchSuggestTextBox);
 		
 		openClauseButton = new Button("Show Clause.");
+		deleteClauseButton = new Button("Delete Clause.");
+		HorizontalPanel clauseButtonPanel = new HorizontalPanel();
+		clauseButtonPanel.setWidth("100%");
+		clauseButtonPanel.add(openClauseButton);
+		clauseButtonPanel.add(deleteClauseButton);
+		clauseButtonPanel.setCellHorizontalAlignment(openClauseButton, HasHorizontalAlignment.ALIGN_LEFT);
+		clauseButtonPanel.setCellHorizontalAlignment(deleteClauseButton, HasHorizontalAlignment.ALIGN_RIGHT);
 				
+		rightVerticalPanel.add(clauseLibraryLabel);
 		rightVerticalPanel.add(searchSuggestTextBox);
 		rightVerticalPanel.add(subTreeNameListBox);
-		rightVerticalPanel.add(openClauseButton);
-		rightVerticalPanel.setCellHorizontalAlignment(openClauseButton, HasHorizontalAlignment.ALIGN_LEFT);
-				
+		rightVerticalPanel.add(clauseButtonPanel);
+					
 		VerticalPanel treePanel =  new VerticalPanel();
 		treePanel.getElement().setId("treePanel_VerticalPanelCW");
 		HorizontalPanel expandCollapse  = new HorizontalPanel();

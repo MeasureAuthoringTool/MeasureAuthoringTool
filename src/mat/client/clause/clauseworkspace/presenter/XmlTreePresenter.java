@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -16,6 +17,7 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SecondaryButton;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -247,6 +249,8 @@ public class XmlTreePresenter {
 								changeClause(cellTreeNode, selectedClauseName, selectedClauseUUID);
 							}
 							
+						}else{
+							changeClause(cellTreeNode, selectedClauseName, selectedClauseUUID);
 						}						
 					}
 				}
@@ -255,9 +259,12 @@ public class XmlTreePresenter {
 	}
 	
 	private void changeClause(CellTreeNode cellTreeNode, String selectedClauseName, String selectedClauseUUID){
-		CellTreeNode childNode = cellTreeNode.getChilds().get(0);
-		System.out.println("clearing out:"+childNode.getName());
-		cellTreeNode.removeChild(childNode);
+		
+		if(cellTreeNode.getChilds().size() > 0){
+			CellTreeNode childNode = cellTreeNode.getChilds().get(0);
+			System.out.println("clearing out:"+childNode.getName());
+			cellTreeNode.removeChild(childNode);
+		}
 		
 		Node node = PopulationWorkSpaceConstants.subTreeLookUpNode.get(selectedClauseName + "~" + selectedClauseUUID);
 		CellTreeNode subTreeCellTreeNode = XmlConversionlHelper.createCellTreeNode(node, selectedClauseName);
@@ -290,12 +297,12 @@ public class XmlTreePresenter {
 	 * @return MeasureXmlModel.
 	 */
 	private MeasureXmlModel createMeasureXmlModel(final String xml) {
-		MeasureXmlModel exportModal = new MeasureXmlModel();
-		exportModal.setMeasureId(MatContext.get().getCurrentMeasureId());
-		exportModal.setToReplaceNode("subTree");
-		exportModal.setParentNode("/measure/subTreeLookUp");
-		exportModal.setXml(xml);
-		return exportModal;
+		MeasureXmlModel exportModel = new MeasureXmlModel();
+		exportModel.setMeasureId(MatContext.get().getCurrentMeasureId());
+		exportModel.setToReplaceNode("subTree");
+		exportModel.setParentNode("/measure/subTreeLookUp");
+		exportModel.setXml(xml);
+		return exportModel;
 	}
 	
 	/**

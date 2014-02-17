@@ -399,6 +399,9 @@ public class XmlTreePresenter {
 				xmlTreeDisplay.clearMessages();
 				String measureId = MatContext.get().getCurrentMeasureId();
 				final int selectedClauseindex = xmlTreeDisplay.getClauseNamesListBox().getSelectedIndex();
+				if(selectedClauseindex < 0){
+					return;
+				}
 				final String clauseUUID = xmlTreeDisplay.getClauseNamesListBox().getValue(selectedClauseindex);
 				final String clauseName = xmlTreeDisplay.getClauseNamesListBox().getItemText(selectedClauseindex);
 				

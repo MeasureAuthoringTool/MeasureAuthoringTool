@@ -208,10 +208,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	SuggestBox searchSuggestTextBox;
 	
 	/** button to open a clause tree */
-	private Button openClauseButton = new Button("Show Clause.");
+	private Button openClauseButton = new Button("Show Clause");
 	
 	/** button to delete a clause tree */
-	private Button deleteClauseButton = new Button("Delete Clause.");
+	private Button deleteClauseButton = new Button("Delete Clause");
 	
 	/** The clause workspace context menu. */
 	private ClauseWorkspaceContextMenu clauseWorkspaceContextMenu;

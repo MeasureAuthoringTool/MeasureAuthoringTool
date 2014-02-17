@@ -385,4 +385,6 @@ public interface MeasureLibraryService {
 	boolean checkAndDeleteSubTree(String measureId, String subTreeUUID);
 
 	Date getFormattedReleaseDate(String releaseDate);
+
+	String getReleaseDate();
 }

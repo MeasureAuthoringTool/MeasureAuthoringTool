@@ -1457,11 +1457,12 @@ padding: 2px;
 }
 
 .div-second{
-	width:290px; 
 	overflow:hidden;
-	border-style: inset;
-	border-color: gray;
-	border-width: thin;
+  	border-color: #7c92b3 #7c92b3 #7c92b3 #7c92b3;
+  	border-width: 2px 2px 2px 2px;
+  	border-style: solid solid solid solid;
+  	margin-top: 5px;
+  	padding: 5px;	
 }
 
 .div-second-comment-box{
@@ -1894,4 +1895,8 @@ padding: 2px;
     vertical-align: bottom;
     position: relative;
     overflow: hidden;
+}
+
+.clauseLibraryLabel{
+   border-bottom: 1px solid black;
 }

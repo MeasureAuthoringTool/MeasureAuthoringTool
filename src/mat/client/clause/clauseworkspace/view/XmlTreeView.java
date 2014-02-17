@@ -208,10 +208,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	SuggestBox searchSuggestTextBox;
 	
 	/** button to open a clause tree */
-	private Button openClauseButton;
+	private Button openClauseButton = new Button("Show Clause.");
 	
 	/** button to delete a clause tree */
-	private Button deleteClauseButton;
+	private Button deleteClauseButton = new Button("Delete Clause.");
 	
 	/** The clause workspace context menu. */
 	private ClauseWorkspaceContextMenu clauseWorkspaceContextMenu;
@@ -397,9 +397,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		addSuggestHandler(searchSuggestTextBox, subTreeNameListBox);
 		addListBoxHandler(subTreeNameListBox, searchSuggestTextBox);
-		
-		openClauseButton = new Button("Show Clause.");
-		deleteClauseButton = new Button("Delete Clause.");
+				
 		HorizontalPanel clauseButtonPanel = new HorizontalPanel();
 		clauseButtonPanel.setWidth("100%");
 		clauseButtonPanel.add(openClauseButton);
@@ -476,6 +474,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public Button getShowClauseButton(){
 		return this.openClauseButton;
+	}
+	
+	@Override
+	public Button getDeleteClauseButton(){
+		return this.deleteClauseButton;
 	}
 	
 	@Override

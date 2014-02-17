@@ -3,6 +3,7 @@ package mat.server.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -381,7 +382,7 @@ public interface MeasureLibraryService {
 	 */
 	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID);
 
-	String getReleaseDate();
-	
+	boolean checkAndDeleteSubTree(String measureId, String subTreeUUID);
+
 	Date getFormattedReleaseDate(String releaseDate);
 }

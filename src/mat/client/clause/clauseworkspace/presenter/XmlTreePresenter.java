@@ -392,6 +392,50 @@ public class XmlTreePresenter {
 				}
 			}
 		});
+		xmlTreeDisplay.getDeleteClauseButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				xmlTreeDisplay.clearMessages();
+				String measureId = MatContext.get().getCurrentMeasureId();
+				final int selectedClauseindex = xmlTreeDisplay.getClauseNamesListBox().getSelectedIndex();
+				final String clauseUUID = xmlTreeDisplay.getClauseNamesListBox().getValue(selectedClauseindex);
+				final String clauseName = xmlTreeDisplay.getClauseNamesListBox().getItemText(selectedClauseindex);
+				
+				final CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
+						.getXmlTree().getRootTreeNode().getChildValue(0));
+				if(cellTreeNode.getChilds().size() > 0){
+					CellTreeNode childNode = cellTreeNode.getChilds().get(0);
+					System.out.println("current clause is:"+childNode.getName());
+					if(childNode.getName().equals(clauseName)){
+						return;
+					}
+				}
+				
+				service.checkAndDeleteSubTree(measureId, clauseUUID, new AsyncCallback<Boolean>() {
+					@Override
+					public void onSuccess(Boolean result) {
+						if(result){
+							xmlTreeDisplay
+							.getSuccessMessageDisplay()
+							.setMessage(
+									"Clause successfully deleted.");
+							xmlTreeDisplay.getClauseNamesListBox().removeItem(selectedClauseindex);
+							PopulationWorkSpaceConstants.subTreeLookUpNode.remove(clauseName + "~" + clauseUUID);
+							PopulationWorkSpaceConstants.subTreeLookUpName.remove(clauseUUID);
+							xmlTreeDisplay.updateSuggestOracle();
+						}else{
+							xmlTreeDisplay.getErrorMessageDisplay().setMessage(
+							"Unable to delete clause as it is referenced in populations.");
+						}
+						
+					}
+					@Override
+					public void onFailure(Throwable caught) {
+					}
+				});
+			}
+		});
 		xmlTreeDisplay.getCommentButtons().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

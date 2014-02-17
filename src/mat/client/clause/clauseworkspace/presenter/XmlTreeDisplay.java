@@ -320,4 +320,6 @@ public interface XmlTreeDisplay {
 	public abstract ListBox getClauseNamesListBox();
 
 	public abstract Button getShowClauseButton();
+
+	Button getDeleteClauseButton();
 }

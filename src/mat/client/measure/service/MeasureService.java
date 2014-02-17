@@ -2,6 +2,7 @@ package mat.client.measure.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -13,6 +14,7 @@ import mat.client.shared.MatException;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -363,4 +365,6 @@ public interface MeasureService extends RemoteService {
 			List<MatValueSet> matValueSetList) throws MatException;
 	
 	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID);
+
+	boolean checkAndDeleteSubTree(String measureId, String subTreeUUID);
 }

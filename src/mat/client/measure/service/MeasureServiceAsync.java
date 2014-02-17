@@ -2,6 +2,7 @@ package mat.client.measure.service;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -12,6 +13,7 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -414,4 +416,7 @@ public interface MeasureServiceAsync {
 	void saveMeasureAtPackage(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	
 	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID, AsyncCallback<Void> callback);
+
+	void checkAndDeleteSubTree(String measureId, String subTreeUUID,
+			AsyncCallback<Boolean> callback);
 }

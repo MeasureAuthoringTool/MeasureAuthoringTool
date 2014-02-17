@@ -151,6 +151,36 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		
 	}
+	
+	@Override
+	public boolean checkAndDeleteSubTree(String measureId, String subTreeUUID){
+		logger.info("Inside checkAndDeleteSubTree Method for measure Id " + measureId);
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			try {
+				NodeList subTreeRefNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTreeRef[@id='"+subTreeUUID+"']");
+				if(subTreeRefNodeList.getLength() > 0){
+					return false;
+				}
+				
+				Node subTreeNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@uuid='"+subTreeUUID+"']");
+				if(subTreeNode != null){
+					Node parentNode = subTreeNode.getParentNode();
+					parentNode.removeChild(subTreeNode);
+				}
+				xmlModel.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+				getService().saveMeasureXml(xmlModel);
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return true;
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#saveSubTreeInMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */

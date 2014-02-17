@@ -1,7 +1,12 @@
 package mat.client.clause.clauseworkspace.view;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
@@ -71,6 +76,8 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
+
+
 
 /**
  * The Class XmlTreeView.
@@ -531,6 +538,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		listBox.addChangeHandler(new ChangeHandler() {
 			@Override
 			public void onChange(ChangeEvent event) {
+				System.out.println("listbox change event:"+event.getAssociatedType().getName());
 				int selectedIndex = listBox.getSelectedIndex();
 				String selectedItem = listBox.getItemText(selectedIndex);
 				suggestBox.setText(selectedItem);
@@ -542,11 +550,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void clearAndAddClauseNamesToListBox() {		
 		if(this.subTreeNameListBox != null){
 			this.subTreeNameListBox.clear();
-			for(String clauseUUID:PopulationWorkSpaceConstants.subTreeLookUpName.keySet()){
-				this.subTreeNameListBox.addItem(PopulationWorkSpaceConstants.subTreeLookUpName.get(clauseUUID), clauseUUID);
-			}		
+			List<Entry<String,String>> subTreeNameEntries = new LinkedList<Map.Entry<String,String>>(PopulationWorkSpaceConstants.subTreeLookUpName.entrySet());
+			Collections.sort(subTreeNameEntries, new Comparator<Entry<String, String>>() {
+				@Override
+				public int compare(Entry<String, String> o1,
+						Entry<String, String> o2) {
+					return o1.getValue().compareTo(o2.getValue());
+				}
+			});
+			
+			for(Entry<String, String> entry:subTreeNameEntries){
+				this.subTreeNameListBox.addItem(entry.getValue(),entry.getKey());
+			}
 		}
 	}
+		
 	
 	@Override
 	public void updateSuggestOracle(){

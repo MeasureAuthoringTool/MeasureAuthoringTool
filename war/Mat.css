@@ -1457,12 +1457,16 @@ padding: 2px;
 }
 
 .div-second{
+	 /*  -moz-box-sizing:border-box;
+    background-color:#F0F0F0;
+    border:1px solid #C0C0C0; */
+	border:1px solid lightgray;
+    -moz-box-sizing: border-box;
+    background-image: url("images/bg_box-blue.png");
+    background-repeat:repeat-x;
 	overflow:hidden;
-  	border-color: #7c92b3 #7c92b3 #7c92b3 #7c92b3;
-  	border-width: 2px 2px 2px 2px;
-  	border-style: solid solid solid solid;
   	margin-top: 5px;
-  	padding: 5px;	
+  	padding: 2px 5px 5px 5px;	
 }
 
 .div-second-comment-box{
@@ -1505,7 +1509,9 @@ padding: 2px;
    
 }
 
-
+.clauseLibraryLabel{
+   border-bottom: 3px solid #B8B8D9;
+}
 .popupMenuBar{
 	background: #888888;
 	box-shadow: 2px 2px 4px #888888; 
@@ -1897,6 +1903,3 @@ padding: 2px;
     overflow: hidden;
 }
 
-.clauseLibraryLabel{
-   border-bottom: 1px solid black;
-}

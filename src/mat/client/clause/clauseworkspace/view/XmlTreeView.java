@@ -416,6 +416,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		rightVerticalPanel.add(searchSuggestTextBox);
 		rightVerticalPanel.add(subTreeNameListBox);
 		rightVerticalPanel.add(clauseButtonPanel);
+		
+		rightVerticalPanel.setCellHorizontalAlignment(clauseLibraryLabel, HasHorizontalAlignment.ALIGN_LEFT);
 					
 		VerticalPanel treePanel =  new VerticalPanel();
 		treePanel.getElement().setId("treePanel_VerticalPanelCW");

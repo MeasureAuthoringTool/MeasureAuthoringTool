@@ -4,6 +4,7 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.shared.UUIDUtilClient;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.Button;
@@ -23,6 +24,7 @@ public class EditSubTreeDialogBox {
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.setText("Edit");
 		dialogBox.setTitle("Edit");
+		String existingSubTreeName = cellTreeNode.getName();
 		// Create a table to layout the content
 		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.setWidth("20em");
@@ -32,6 +34,7 @@ public class EditSubTreeDialogBox {
 		final TextBox subTreeName = new TextBox();
 		subTreeName.getElement().setId("quantity_TextBox");
 		subTreeName.setWidth("150px");
+		subTreeName.setText(existingSubTreeName);
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents.add(lableNewSubTreeName);
 		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);

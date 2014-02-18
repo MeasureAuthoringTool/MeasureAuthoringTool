@@ -909,16 +909,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				event.preventDefault();
 			} else if ((event.getTypeInt() == Event.ONKEYDOWN)
 					&& (commentAreaContent.length() <= maxLength)) {
-				Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-					@Override
-					public void execute() {
-						ValueChangeEvent.fire(CommentAreaTextBox.this,
-								CommentAreaTextBox.this.getText());
-					}
-				});
+				if (!event.getCtrlKey()) {
+					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+						@Override
+						public void execute() {
+							ValueChangeEvent.fire(CommentAreaTextBox.this,
+									CommentAreaTextBox.this.getText());
+						}
+					});
+				}
 			}
 		}
-		
 		/**
 		 * Getter for maximum length.
 		 * @return - int.

@@ -1141,6 +1141,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public void setEnabled(boolean enabled) {
 		saveBtn.setEnabled(enabled);
+		saveBtnClauseWorkSpace.setEnabled(enabled);
+		deleteClauseButton.setEnabled(enabled);
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getSelectedNode()

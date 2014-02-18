@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -20,7 +19,6 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -210,7 +208,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The popup panel. */
 	private PopupPanel popupPanel;
 	
-	/** ListBox for subtree names */ 
+	/** ListBox for subtree names */
 	ListBox subTreeNameListBox;
 	
 	/** Suggestbox for subtree items on RHS */
@@ -374,7 +372,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		VerticalPanel rightVerticalPanel = new VerticalPanel();
 		rightVerticalPanel.setSpacing(10);
-		rightVerticalPanel.setStyleName("div-second"); 
+		rightVerticalPanel.setStyleName("div-second");
 		rightVerticalPanel.setWidth("290px");
 		rightVerticalPanel.setHeight("200px");
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelCW");
@@ -382,7 +380,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		Label clauseLibraryLabel = new Label("Clause Library");
 		//clauseLibraryLabel.setStyleName("clauseLibraryLabel");
-
+		
 		searchSuggestTextBox = new SuggestBox();
 		updateSuggestOracle();
 		searchSuggestTextBox.setWidth("250px");
@@ -390,7 +388,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		searchSuggestTextBox.getElement().setId("searchTextBox_TextBoxCW");
 		
 		searchSuggestTextBox.getValueBox().addClickHandler(new ClickHandler() {
-
+			
 			@Override
 			public void onClick(ClickEvent event) {
 				if ("Search".equals(searchSuggestTextBox.getText())) {
@@ -398,7 +396,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 			}
 		});
-						
+		
 		subTreeNameListBox = new ListBox();
 		subTreeNameListBox.setWidth("250px");
 		subTreeNameListBox.setVisibleItemCount(10);
@@ -406,21 +404,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		addSuggestHandler(searchSuggestTextBox, subTreeNameListBox);
 		addListBoxHandler(subTreeNameListBox, searchSuggestTextBox);
-				
+		
 		HorizontalPanel clauseButtonPanel = new HorizontalPanel();
 		clauseButtonPanel.setWidth("100%");
 		clauseButtonPanel.add(openClauseButton);
 		clauseButtonPanel.add(deleteClauseButton);
 		clauseButtonPanel.setCellHorizontalAlignment(openClauseButton, HasHorizontalAlignment.ALIGN_LEFT);
 		clauseButtonPanel.setCellHorizontalAlignment(deleteClauseButton, HasHorizontalAlignment.ALIGN_RIGHT);
-				
+		
 		rightVerticalPanel.add(clauseLibraryLabel);
 		rightVerticalPanel.add(searchSuggestTextBox);
 		rightVerticalPanel.add(subTreeNameListBox);
 		rightVerticalPanel.add(clauseButtonPanel);
 		
 		rightVerticalPanel.setCellHorizontalAlignment(clauseLibraryLabel, HasHorizontalAlignment.ALIGN_LEFT);
-					
+		
 		VerticalPanel treePanel =  new VerticalPanel();
 		treePanel.getElement().setId("treePanel_VerticalPanelCW");
 		HorizontalPanel expandCollapse  = new HorizontalPanel();
@@ -508,7 +506,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private void addSuggestHandler(final SuggestBox suggestBox,
 			final ListBox listBox) {
 		suggestBox.addSelectionHandler(new SelectionHandler<Suggestion>() {
-
+			
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
 				String selectedQDMName = event.getSelectedItem()
@@ -579,7 +577,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}
 		}
 	}
-		
+	
 	
 	@Override
 	public void updateSuggestOracle(){
@@ -590,8 +588,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					.values());
 		}
 	}
-		
-
+	
+	
 	/**
 	 * Selection Handler, Tree Open and Close Handlers Defined.
 	 */
@@ -1010,7 +1008,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						setCommentsBoxReadOnly(true);
 					}
 				}
-			} else {
+			}  else {
 				super.onBrowserEvent(context, parent, value, event, valueUpdater);
 			}
 		}
@@ -1449,21 +1447,27 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		selectedNode = node;
 		closeParentOpenNodes(cellTree.getRootTreeNode());
 	}
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#addCommentNodeToSelectedNode()
+	 */
+	@SuppressWarnings("unchecked")
 	@Override
-	public void addCommentNodeToSelectedNode(){
-		if ((getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)
-				|| (getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_REF_NODE)) {
-			List<CellTreeNode> nodeCommentList = (List<CellTreeNode>) getSelectedNode().getExtraInformation(COMMENT);
-			if (nodeCommentList == null) {
-				nodeCommentList = new ArrayList<CellTreeNode>();
+	public void addCommentNodeToSelectedNode() {
+		if (((getSelectedNode() != null))) {
+			if ((getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)
+					|| (getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_REF_NODE)) {
+				List<CellTreeNode> nodeCommentList = (List<CellTreeNode>) getSelectedNode().getExtraInformation(COMMENT);
+				if (nodeCommentList == null) {
+					nodeCommentList = new ArrayList<CellTreeNode>();
+				}
+				nodeCommentList.clear();
+				CellTreeNode commentNode = new CellTreeNodeImpl();
+				commentNode.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
+				commentNode.setNodeType(CellTreeNode.COMMENT_NODE);
+				commentNode.setNodeText(getCommentArea().getText());
+				nodeCommentList.add(commentNode);
+				getSelectedNode().setExtraInformation(COMMENT, nodeCommentList);
 			}
-			nodeCommentList.clear();
-			CellTreeNode commentNode = new CellTreeNodeImpl();
-			commentNode.setName(PopulationWorkSpaceConstants.COMMENT_NODE_NAME);
-			commentNode.setNodeType(CellTreeNode.COMMENT_NODE);
-			commentNode.setNodeText(getCommentArea().getText());
-			nodeCommentList.add(commentNode);
-			getSelectedNode().setExtraInformation(COMMENT, nodeCommentList);
 		}
 	}
 	

@@ -32,12 +32,15 @@ import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.google.gwt.xml.client.Text;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -91,6 +94,15 @@ public class XmlProcessor {
 	
 	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT. */
 	private static final String XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT = "/measure/measureDetails/itemCount";
+	
+	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_EMEASUREID. */
+	private static final String XPATH_MEASURE_MEASURE_DETAILS_EMEASUREID = "/measure/measureDetails/emeasureid";
+	
+	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE. */
+	private static final String XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE = "/measure/measureDetails/finalizedDate";
+	
+	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_GUID. */
+	private static final String XPATH_MEASURE_MEASURE_DETAILS_GUID = "/measure/measureDetails/guid";
 	
 	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE. */
 	private static final String XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE = "/measure/measureDetails/types";
@@ -1055,6 +1067,33 @@ public class XmlProcessor {
 		measureElement.insertBefore(populationsElem,
 				measureDetailsNode.getNextSibling());
 		return populationsElem;
+	}
+	
+	/**
+	 * Creates the emeasure id node.
+	 *
+	 * @param emeasureId the emeasure id
+	 * @throws XPathExpressionException the x path expression exception
+	 * @throws DOMException the dOM exception
+	 */
+	public void createEmeasureIdNode(int emeasureId) throws XPathExpressionException, DOMException{
+		
+		if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_EMEASUREID) == null) {
+			Element emeasureID_Element = originalDoc
+					.createElement("emeasureid");
+			emeasureID_Element.appendChild(originalDoc.createTextNode(Integer.toString(emeasureId)));
+			if (findNode(originalDoc,XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE) == null) {
+			Node guid_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_GUID);
+			((Element) guid_Element.getParentNode())
+			.insertBefore(emeasureID_Element,
+					guid_Element); 
+			} else {
+				Node finalizeddate_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE);
+				((Element) finalizeddate_Element.getParentNode())
+				.insertBefore(emeasureID_Element,
+						finalizeddate_Element); 
+			}
+		}
 	}
 	
 	/**

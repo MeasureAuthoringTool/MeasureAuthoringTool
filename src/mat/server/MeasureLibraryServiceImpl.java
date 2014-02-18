@@ -75,6 +75,7 @@ import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -94,13 +95,27 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private static final String MEASURE = "measure";
 	
 	/** The Constant MEASURE_DETAILS. */
-	private static final String MEASURE_DETAILS = "measureDetails";
+	private static final String MEASURE_DETAILS = "/measure/measureDetails";
 	
+/** The Constant EMEASUREID. */
+private static final String EMEASUREID = "emeasureid";
+	
+	
+	/** The release date. */
 	private String releaseDate;
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getReleaseDate()
+	 */
 	public String getReleaseDate() {
 		return releaseDate;
 	}
+	
+	/**
+	 * Sets the release date.
+	 *
+	 * @param releaseDate the new release date
+	 */
 	public void setReleaseDate(String releaseDate) {
 		this.releaseDate = releaseDate;
 	}
@@ -152,6 +167,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#checkAndDeleteSubTree(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean checkAndDeleteSubTree(String measureId, String subTreeUUID){
 		logger.info("Inside checkAndDeleteSubTree Method for measure Id " + measureId);
@@ -771,9 +789,37 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public final int generateAndSaveMaxEmeasureId(final ManageMeasureDetailModel measureModel) {
 		MeasurePackageService service = getService();
 		Measure meas = service.getById(measureModel.getId());
-		return service.saveAndReturnMaxEMeasureId(meas);
+		int eMeasureId = service.saveAndReturnMaxEMeasureId(meas);
+		measureModel.seteMeasureId(eMeasureId);
+		saveMaxEmeasureIdinMeasureXML(measureModel);
+		return eMeasureId;
 	}
 	
+	/**
+	 * Save max emeasure idin measure xml.
+	 *
+	 * @param measureModel the measure model
+	 */
+	public void saveMaxEmeasureIdinMeasureXML(ManageMeasureDetailModel measureModel){
+		
+		MeasureXmlModel model = getMeasureXmlForMeasure(measureModel.getId());
+		XmlProcessor xmlProcessor = new XmlProcessor(model.getXml());
+		
+		try {
+			
+			xmlProcessor.createEmeasureIdNode(measureModel.geteMeasureId());
+			String newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
+			model.setXml(newXml);
+			
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		} catch (DOMException e) {
+			e.printStackTrace();
+		}
+		
+		getService().saveMeasureXml(model);
+	}
+
 	/**
 	 * Gets the all data type attributes.
 	 * 
@@ -2246,6 +2292,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getFormattedReleaseDate(java.lang.String)
+	 */
 	@Override
 	public Date getFormattedReleaseDate(String releaseDate){
 		

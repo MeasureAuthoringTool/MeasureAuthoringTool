@@ -1092,7 +1092,6 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		result = (prime * result)
 				+ ((disclaimer == null) ? 0 : disclaimer.hashCode());
 		result = (prime * result) + (draft ? 1231 : 1237);
-		result = (prime * result) + eMeasureId;
 		result = (prime * result)
 				+ ((endorseByNQF == null) ? 0 : endorseByNQF.hashCode());
 		result = (prime * result)
@@ -1247,9 +1246,6 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				return false;
 			}
 		} else if (!trimToNull(disclaimer).equals(trimToNull(other.disclaimer))) {
-			return false;
-		}
-		if (eMeasureId != other.eMeasureId) {
 			return false;
 		}
 		endorseByNQF = endorseByNQF == null ? false : endorseByNQF.booleanValue();

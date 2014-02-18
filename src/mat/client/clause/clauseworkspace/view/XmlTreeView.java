@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -20,7 +19,6 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -208,7 +206,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The popup panel. */
 	private PopupPanel popupPanel;
 	
-	/** ListBox for subtree names */ 
+	/** ListBox for subtree names */
 	ListBox subTreeNameListBox;
 	
 	/** Suggestbox for subtree items on RHS */
@@ -368,11 +366,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		SimplePanel leftPanel = new SimplePanel();
 		leftPanel.getElement().setId("leftPanel_SimplePanelCW");
 		leftPanel.setStyleName("div-first bottomPadding10px"); //left side div which will  have tree
-			
+		
 		
 		VerticalPanel rightVerticalPanel = new VerticalPanel();
 		rightVerticalPanel.setSpacing(10);
-		rightVerticalPanel.setStyleName("div-second"); 
+		rightVerticalPanel.setStyleName("div-second");
 		rightVerticalPanel.setWidth("290px");
 		rightVerticalPanel.setHeight("200px");
 		rightVerticalPanel.getElement().setId("rhsVerticalPanel_VerticalPanelCW");
@@ -380,7 +378,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		Label clauseLibraryLabel = new Label("Clause Library");
 		clauseLibraryLabel.setStyleName("clauseLibraryLabel");
-
+		
 		searchSuggestTextBox = new SuggestBox();
 		updateSuggestOracle();
 		searchSuggestTextBox.setWidth("250px");
@@ -388,7 +386,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		searchSuggestTextBox.getElement().setId("searchTextBox_TextBoxCW");
 		
 		searchSuggestTextBox.getValueBox().addClickHandler(new ClickHandler() {
-
+			
 			@Override
 			public void onClick(ClickEvent event) {
 				if ("Search".equals(searchSuggestTextBox.getText())) {
@@ -396,7 +394,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 			}
 		});
-						
+		
 		subTreeNameListBox = new ListBox();
 		subTreeNameListBox.setWidth("250px");
 		subTreeNameListBox.setVisibleItemCount(10);
@@ -404,21 +402,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		addSuggestHandler(searchSuggestTextBox, subTreeNameListBox);
 		addListBoxHandler(subTreeNameListBox, searchSuggestTextBox);
-				
+		
 		HorizontalPanel clauseButtonPanel = new HorizontalPanel();
 		clauseButtonPanel.setWidth("100%");
 		clauseButtonPanel.add(openClauseButton);
 		clauseButtonPanel.add(deleteClauseButton);
 		clauseButtonPanel.setCellHorizontalAlignment(openClauseButton, HasHorizontalAlignment.ALIGN_LEFT);
 		clauseButtonPanel.setCellHorizontalAlignment(deleteClauseButton, HasHorizontalAlignment.ALIGN_RIGHT);
-				
+		
 		rightVerticalPanel.add(clauseLibraryLabel);
 		rightVerticalPanel.add(searchSuggestTextBox);
 		rightVerticalPanel.add(subTreeNameListBox);
 		rightVerticalPanel.add(clauseButtonPanel);
 		
 		rightVerticalPanel.setCellHorizontalAlignment(clauseLibraryLabel, HasHorizontalAlignment.ALIGN_LEFT);
-					
+		
 		VerticalPanel treePanel =  new VerticalPanel();
 		treePanel.getElement().setId("treePanel_VerticalPanelCW");
 		HorizontalPanel expandCollapse  = new HorizontalPanel();
@@ -506,7 +504,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private void addSuggestHandler(final SuggestBox suggestBox,
 			final ListBox listBox) {
 		suggestBox.addSelectionHandler(new SelectionHandler<Suggestion>() {
-
+			
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
 				String selectedQDMName = event.getSelectedItem()
@@ -566,7 +564,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}
 		}
 	}
-		
 	
 	@Override
 	public void updateSuggestOracle(){
@@ -577,8 +574,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					.values());
 		}
 	}
-		
-
+	
+	
 	/**
 	 * Selection Handler, Tree Open and Close Handlers Defined.
 	 */
@@ -851,7 +848,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					} else {
 						CommentAreaTextBox.this.setValue(commentAreaUpdatedText);
 					}
-					
+					setDirty(true);
 					onTextAreaContentChanged(remainingCharsLabel);
 					
 				}
@@ -989,7 +986,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 						onTextAreaContentChanged(remainingCharsLabel);
 						setCommentsBoxReadOnly(false);
-						setDirty(true);
+						/*setDirty(true);*/
 					} else {
 						commentArea.setText("");
 						onTextAreaContentChanged(remainingCharsLabel);
@@ -1223,7 +1220,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public void onKeyDown(KeyDownEvent event) {
 		int keyCode = event.getNativeKeyCode();
-		if (selectedNode != null) {
+		Element element = Element.as(event.getNativeEvent().getEventTarget());
+		System.out.println("Element - ID" + element.getId());
+		System.out.println("Element - getElementsByTagName" + element.getElementsByTagName("TextArea"));
+		if (!element.getId().equalsIgnoreCase("addComment_TextArea") && (selectedNode != null)) {
 			short nodeType = selectedNode.getNodeType();
 			if (event.isControlKeyDown()) {
 				if (keyCode == PopulationWorkSpaceConstants.COPY_C) { //COPY

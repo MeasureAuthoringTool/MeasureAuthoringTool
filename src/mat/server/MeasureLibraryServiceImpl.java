@@ -2048,13 +2048,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				} else {
 					// Update all elementRef's in Populations and Stratification
 					//updatePopulationAndStratification(processor, modifyWithDTO, modifyDTO);
-					
-					//Update all elementRef's in SubTreeLookUp
-					updateSubTreeLookUp(processor, modifyWithDTO, modifyDTO);
-					
-					//Update all elementRef's in ItemCount
-					updateItemCount(processor, modifyWithDTO, modifyDTO);
 				}
+				
+				//Update all elementRef's in SubTreeLookUp
+				updateSubTreeLookUp(processor, modifyWithDTO, modifyDTO);
+				
+				//Update all elementRef's in ItemCount
+				updateItemCount(processor, modifyWithDTO, modifyDTO);
 				
 				// update elementLookUp Tag
 				updateElementLookUp(processor, modifyWithDTO, modifyDTO);

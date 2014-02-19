@@ -118,6 +118,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		 */
 		@Template("<div class=\"{0}\" title=\"{1}\" aria-role=\"treeitem\">{2}</div>")
 		SafeHtml outerDivItem(String classes, String title, String content);
+		
+		@Template("<div class=\"{0}\" title=\"{1}\" aria-role=\"treeitem\">{2} <span class =\"populationWorkSpaceCommentNode\">*</span></div>")
+		SafeHtml outerDivItemWithSpan(String classes, String title, String content);
+		
 	}
 	
 	/** The Constant template. */
@@ -961,9 +965,35 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						cellTreeNode.getLabel() != null
 						? cellTreeNode.getLabel() : cellTreeNode.getName()));
 			} else {
-				sb.append(template.outerDivItem(getStyleClass(cellTreeNode), cellTreeNode.getTitle(),
-						cellTreeNode.getLabel() != null
-						? cellTreeNode.getLabel() : cellTreeNode.getName()));
+				if((cellTreeNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)
+						|| (cellTreeNode.getNodeType() == CellTreeNode.SUBTREE_REF_NODE) ){
+					boolean foundComment = false;
+					List<CellTreeNode> childNode = (List<CellTreeNode>) cellTreeNode.
+							getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+					if (childNode != null) {
+						for (CellTreeNode treeNode : childNode) {
+							if ((treeNode.getNodeText() != null)
+									&& (treeNode.getNodeText().length() > 0)
+									&& (treeNode.getNodeText().trim() != StringUtils.EMPTY)) {
+								sb.append(template.outerDivItemWithSpan(getStyleClass(cellTreeNode), cellTreeNode.getTitle(),
+										cellTreeNode.getLabel() != null
+										? cellTreeNode.getLabel() : cellTreeNode.getName()));
+								foundComment = true;
+								break;
+							}
+						}
+					}
+					if(!foundComment) {
+						sb.append(template.outerDivItem(getStyleClass(cellTreeNode), cellTreeNode.getTitle(),
+								cellTreeNode.getLabel() != null
+								? cellTreeNode.getLabel() : cellTreeNode.getName()));
+					}
+					
+				} else {
+					sb.append(template.outerDivItem(getStyleClass(cellTreeNode), cellTreeNode.getTitle(),
+							cellTreeNode.getLabel() != null
+							? cellTreeNode.getLabel() : cellTreeNode.getName()));
+				}
 			}
 		}
 		/* (non-Javadoc)
@@ -1042,22 +1072,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			switch (cellTreeNode.getNodeType()) {
 				case CellTreeNode.ROOT_NODE:
 					return "cellTreeRootNode";
-				case CellTreeNode.LOGICAL_OP_NODE:
-				case CellTreeNode.SUBTREE_REF_NODE:
-					String style = "cellTreeRootNode";
-					List<CellTreeNode> childNode = (List<CellTreeNode>) cellTreeNode.
-							getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
-					if (childNode != null) {
-						for (CellTreeNode treeNode : childNode) {
-							if ((treeNode.getNodeText() != null)
-									&& (treeNode.getNodeText().length() > 0)
-									&& (treeNode.getNodeText().trim() != StringUtils.EMPTY)) {
-								style = "populationWorkSpaceCommentNode";
-								break;
-							}
-						}
-					}
-					return style;
 				default:
 					break;
 			}

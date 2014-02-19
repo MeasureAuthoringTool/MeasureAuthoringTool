@@ -201,12 +201,12 @@ public class ExportSimpleXML {
 	 *             the x path expression exception
 	 */
 	private static String traverseXML(Document originalDoc) throws XPathExpressionException {		
-		List<String> usedQDMIds = getUsedQDMIds(originalDoc);
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
-		
-		//using the above 2 lists we need to traverse the originalDoc and remove the unnecessary nodes
-		//removeBlankStratificationClauses(originalDoc);
+		//using the above list we need to traverse the originalDoc and remove the unused Clauses
 		removeUnwantedClauses(usedClauseIds, originalDoc);
+		
+		List<String> usedQDMIds = getUsedQDMIds(originalDoc);
+		//using the above list we need to traverse the originalDoc and remove the unused QDM's
 		removeUnWantedQDMs(usedQDMIds, originalDoc);
 		expandAndHandleGrouping(originalDoc);
 		addUUIDToFunctions(originalDoc);

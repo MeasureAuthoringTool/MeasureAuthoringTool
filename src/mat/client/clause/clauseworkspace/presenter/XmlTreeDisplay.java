@@ -5,7 +5,6 @@ import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
-
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Button;
@@ -311,15 +310,33 @@ public interface XmlTreeDisplay {
 	 */
 	SuccessMessageDisplay getSuccessMessageAddCommentDisplay();
 	
+	/**
+	 *  On Save, Comment Added to Selected Nodes are also Saved.
+	 */
 	void addCommentNodeToSelectedNode();
 	
+	/**
+	 * 
+	 */
 	public abstract void updateSuggestOracle();
-
+	
+	/**
+	 * 
+	 */
 	public abstract void clearAndAddClauseNamesToListBox();
-
+	
+	/**
+	 * @return
+	 */
 	public abstract ListBox getClauseNamesListBox();
-
+	
+	/**
+	 * @return
+	 */
 	public abstract Button getShowClauseButton();
-
+	
+	/**
+	 * @return
+	 */
 	Button getDeleteClauseButton();
 }

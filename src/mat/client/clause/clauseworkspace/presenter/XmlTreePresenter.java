@@ -3,7 +3,6 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -17,7 +16,6 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SecondaryButton;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -197,8 +195,11 @@ public class XmlTreePresenter {
 		invokeClearHandler();
 		addShowClauseHandler();
 	}
+	/**
+	 * 
+	 */
 	private void addShowClauseHandler() {
-		this.xmlTreeDisplay.getShowClauseButton().addClickHandler(new ClickHandler() {
+		xmlTreeDisplay.getShowClauseButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
@@ -208,18 +209,19 @@ public class XmlTreePresenter {
 					if(selectedIndex != -1){
 						final String selectedClauseName = clauseNamesListBox.getItemText(selectedIndex);
 						final String selectedClauseUUID = clauseNamesListBox.getValue(selectedIndex);
-						System.out.println("Selected clause name and uuid is:"+selectedClauseName+":"+selectedClauseUUID);
+						System.out.println("Selected clause name and uuid is :"
+								+ selectedClauseName + ":" + selectedClauseUUID);
 						
 						final CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
 								.getXmlTree().getRootTreeNode().getChildValue(0));
-												
+						
 						if(cellTreeNode.getChilds().size() > 0){
 							if (xmlTreeDisplay.isDirty()) {
 								isUnsavedData = true;
 								showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
 								xmlTreeDisplay.getErrorMessageDisplay().getButtons().get(0).setFocus(true);
 								String auditMessage = getRootNode().toUpperCase() + "_TAB_YES_CLICKED";
-																
+								
 								ClickHandler clickHandler = new ClickHandler() {
 									@Override
 									public void onClick(ClickEvent event) {
@@ -251,11 +253,11 @@ public class XmlTreePresenter {
 							
 						}else{
 							changeClause(cellTreeNode, selectedClauseName, selectedClauseUUID);
-						}						
+						}
 					}
 				}
 			}
-		});		
+		});
 	}
 	
 	private void changeClause(CellTreeNode cellTreeNode, String selectedClauseName, String selectedClauseUUID){
@@ -274,7 +276,7 @@ public class XmlTreePresenter {
 		xmlTreeDisplay.getXmlTree().getRootTreeNode().setChildOpen(0, false);
 		xmlTreeDisplay.getXmlTree().getRootTreeNode().setChildOpen(0, true);
 	}
-
+	
 	/**
 	 * Creates the measure export model.
 	 * 
@@ -418,7 +420,7 @@ public class XmlTreePresenter {
 				service.checkAndDeleteSubTree(measureId, clauseUUID, new AsyncCallback<Boolean>() {
 					@Override
 					public void onSuccess(Boolean result) {
-						if(result){
+						if (result) {
 							xmlTreeDisplay
 							.getSuccessMessageDisplay()
 							.setMessage(
@@ -427,9 +429,9 @@ public class XmlTreePresenter {
 							PopulationWorkSpaceConstants.subTreeLookUpNode.remove(clauseName + "~" + clauseUUID);
 							PopulationWorkSpaceConstants.subTreeLookUpName.remove(clauseUUID);
 							xmlTreeDisplay.updateSuggestOracle();
-						}else{
+						} else {
 							xmlTreeDisplay.getErrorMessageDisplay().setMessage(
-							"Unable to delete clause as it is referenced in populations.");
+									"Unable to delete clause as it is referenced in populations.");
 						}
 						
 					}
@@ -455,8 +457,9 @@ public class XmlTreePresenter {
 				node.setNodeType(CellTreeNode.COMMENT_NODE);
 				node.setNodeText(xmlTreeDisplay.getCommentArea().getText());
 				commentList.add(node);
-				
+				/*CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();*/
 				xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
+				xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode().getParent());
 				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setStylePrimaryName("successMessageCommentPanel");
 				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setMessage("Comment Added");
 			}

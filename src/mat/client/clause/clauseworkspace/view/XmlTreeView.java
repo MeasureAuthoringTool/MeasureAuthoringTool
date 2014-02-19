@@ -19,6 +19,7 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
+import org.apache.commons.lang.StringUtils;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -482,17 +483,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	@Override
 	public Button getShowClauseButton(){
-		return this.openClauseButton;
+		return openClauseButton;
 	}
 	
 	@Override
 	public Button getDeleteClauseButton(){
-		return this.deleteClauseButton;
+		return deleteClauseButton;
 	}
 	
 	@Override
 	public ListBox getClauseNamesListBox(){
-		return this.subTreeNameListBox;
+		return subTreeNameListBox;
 	}
 	
 	/**
@@ -846,28 +847,26 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				
 				@Override
 				public void onValueChange(ValueChangeEvent<String> event) {
-					
-					String commentAreaUpdatedText;
-					CommentAreaTextBox.this.setText(event.getValue());
-					
-					try {
-						commentAreaUpdatedText = CommentAreaTextBox.this.getText();
-					} catch (Exception e) {
-						commentAreaUpdatedText = "";
+					if (!CommentAreaTextBox.this.isReadOnly()) {
+						String commentAreaUpdatedText;
+						CommentAreaTextBox.this.setText(event.getValue());
+						try {
+							commentAreaUpdatedText = CommentAreaTextBox.this.getText();
+						} catch (Exception e) {
+							commentAreaUpdatedText = "";
+						}
+						if (commentAreaUpdatedText.length() >= maxLength) {
+							String subStringText = commentAreaUpdatedText.substring(0,
+									maxLength);
+							CommentAreaTextBox.this.setValue(subStringText);
+						} else {
+							CommentAreaTextBox.this.setValue(commentAreaUpdatedText);
+						}
+						setDirty(true);
+						onTextAreaContentChanged(remainingCharsLabel);
 					}
-					if (commentAreaUpdatedText.length() >= maxLength) {
-						String subStringText = commentAreaUpdatedText.substring(0,
-								maxLength);
-						CommentAreaTextBox.this.setValue(subStringText);
-					} else {
-						CommentAreaTextBox.this.setValue(commentAreaUpdatedText);
-					}
-					setDirty(true);
-					onTextAreaContentChanged(remainingCharsLabel);
-					
 				}
 			});
-			
 		}
 		/**
 		 * Description: Takes the browser event.
@@ -1007,6 +1006,24 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						onTextAreaContentChanged(remainingCharsLabel);
 						setCommentsBoxReadOnly(true);
 					}
+				} else {
+					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
+							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
+						commentArea.setText("");
+						List<CellTreeNode> childNode = (List<CellTreeNode>) value.
+								getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+						if (childNode != null) {
+							for (CellTreeNode cellTreeNode : childNode) {
+								if (cellTreeNode.getNodeType() == cellTreeNode.COMMENT_NODE) {
+									commentArea.setText(cellTreeNode.getNodeText());
+								}
+							}
+						}
+						onTextAreaContentChanged(remainingCharsLabel);
+					}
+					
+					setCommentsBoxReadOnly(true);
+					
 				}
 			}  else {
 				super.onBrowserEvent(context, parent, value, event, valueUpdater);
@@ -1019,11 +1036,28 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 *            the cell tree node
 	 * @return the style class
 	 */
+	@SuppressWarnings("unchecked")
 	private String getStyleClass(CellTreeNode cellTreeNode) {
 		if (cellTreeNode.getValidNode()) {
 			switch (cellTreeNode.getNodeType()) {
 				case CellTreeNode.ROOT_NODE:
 					return "cellTreeRootNode";
+				case CellTreeNode.LOGICAL_OP_NODE:
+				case CellTreeNode.SUBTREE_REF_NODE:
+					String style = "cellTreeRootNode";
+					List<CellTreeNode> childNode = (List<CellTreeNode>) cellTreeNode.
+							getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+					if (childNode != null) {
+						for (CellTreeNode treeNode : childNode) {
+							if ((treeNode.getNodeText() != null)
+									&& (treeNode.getNodeText().length() > 0)
+									&& (treeNode.getNodeText().trim() != StringUtils.EMPTY)) {
+								style = "populationWorkSpaceCommentNode";
+								break;
+							}
+						}
+					}
+					return style;
 				default:
 					break;
 			}

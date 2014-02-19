@@ -499,6 +499,8 @@ public class MessageDelegate {
 	/** The vsac update successfull. */
 	private final String VSAC_UPDATE_SUCCESSFULL = "Successfully updated applied QDM list with VSAC data.";
 	
+	
+	private final String COMMENT_ADDED_SUCCESSFULLY ="Comment Added";
 	/**
 	 * Gets the abv name required message.
 	 * 
@@ -1859,7 +1861,7 @@ public class MessageDelegate {
 	public String getIS_NOT_PREVIOUS_PASSWORD() {
 		return IS_NOT_PREVIOUS_PASSWORD;
 	}
-
+	
 	/**
 	 * Gets the change old password.
 	 *
@@ -1876,5 +1878,12 @@ public class MessageDelegate {
 	 */
 	public String getIS_NOT_CURRENT_PASSWORD() {
 		return IS_NOT_CURRENT_PASSWORD;
+	}
+
+	/**
+	 * @return the cOMMENT_ADDED_SUCCESSFULLY
+	 */
+	public String getCOMMENT_ADDED_SUCCESSFULLY() {
+		return COMMENT_ADDED_SUCCESSFULLY;
 	}
 }

@@ -461,7 +461,8 @@ public class XmlTreePresenter {
 				xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
 				xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode().getParent());
 				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setStylePrimaryName("successMessageCommentPanel");
-				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setMessage("Comment Added");
+				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setMessage(
+						MatContext.get().getMessageDelegate().getCOMMENT_ADDED_SUCCESSFULLY());
 			}
 		});
 	}

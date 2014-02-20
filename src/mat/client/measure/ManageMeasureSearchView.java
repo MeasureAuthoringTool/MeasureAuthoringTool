@@ -45,7 +45,7 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	
 	CustomButton createMeasureButton = (CustomButton) getImage("Create Measure",
-			ImageResources.INSTANCE.createMeasure(), "Create Measure");
+			ImageResources.INSTANCE.createMeasure(), "Create Measure" , "createMeasurePlusButton");
 	
 	/** The create measure widget. */
 	private CreateMeasureWidget createMeasureWidget = new CreateMeasureWidget();
@@ -116,7 +116,7 @@ ManageMeasurePresenter.SearchDisplay {
 	
 	/** The zoom button. */
 	CustomButton zoomButton = (CustomButton) getImage("Search",
-			ImageResources.INSTANCE.search_zoom(), "Search");
+			ImageResources.INSTANCE.search_zoom(), "Search" , "MeasureSearchButton");
 	/** Instantiates a new manage measure search view. */
 	public ManageMeasureSearchView() {
 		HorizontalPanel mainHorizontalPanel = new HorizontalPanel();
@@ -368,13 +368,13 @@ ManageMeasurePresenter.SearchDisplay {
 	 *            - {@link String}.
 	 * @return - {@link Widget}.
 	 */
-	private Widget getImage(String action, ImageResource url, String key) {
+	private Widget getImage(String action, ImageResource url, String key , String id) {
 		CustomButton image = new CustomButton();
 		image.removeStyleName("gwt-button");
 		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
 		image.setTitle(action);
 		image.setResource(url, action);
-		image.getElement().setAttribute("id", "MeasureSearchButton");
+		image.getElement().setAttribute("id", id);
 		return image;
 	}
 	

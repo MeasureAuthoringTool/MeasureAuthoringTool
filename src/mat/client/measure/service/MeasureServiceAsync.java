@@ -415,7 +415,7 @@ public interface MeasureServiceAsync {
 	 */
 	void saveMeasureAtPackage(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	
-	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID, AsyncCallback<Void> callback);
+	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID, AsyncCallback<Void> callback);
 
 	void checkAndDeleteSubTree(String measureId, String subTreeUUID,
 			AsyncCallback<Boolean> callback);

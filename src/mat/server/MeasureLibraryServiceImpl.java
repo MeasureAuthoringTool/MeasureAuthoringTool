@@ -5,17 +5,19 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -61,6 +63,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -185,10 +188,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#saveSubTreeInMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */
 	@Override
-	public void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID) {
+	public void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID) {
 		logger.info("Inside saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
+			System.out.println("Measure XML is:"+xmlModel.getXml());
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			try {
 				Node subTreeLookUpNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc()
@@ -210,24 +214,40 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				}
 				// If Node already exist's and its a update then existing node will be removed from Parent Node
 				// and updated node will be added.
-				String xPathForSubTree = "/measure/subTreeLookUp/subTree";
+				String xPathForSubTree = "/measure/subTreeLookUp/subTree[@uuid='"+nodeUUID+"']";
 				NodeList subTreeNodeForUUID = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForSubTree);
-				for (int i = 0; i < subTreeNodeForUUID.getLength(); i++) {
-					Node newNode = subTreeNodeForUUID.item(i);
+				
+				if(subTreeNodeForUUID.getLength() == 0){
+					xmlProcessor.appendNode(measureXmlModel.getXml(), measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
+				}else{
+					Node newNode = subTreeNodeForUUID.item(0);
 					if (newNode.getAttributes().getNamedItem("uuid").getNodeValue().equals(nodeUUID)) {
 						logger.info("Replacing SubTreeNode for UUID " + nodeUUID + " .");
 						xmlProcessor.removeFromParent(newNode);
-						xmlProcessor.setOriginalXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
-						break;
+						xmlProcessor.appendNode(measureXmlModel.getXml(), measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
+						
+						//In case the name of the subTree has changed we need to make sure to find all the subTreeRef tags and change the name in them as well.
+						NodeList subTreeRefNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTreeRef[@id='"+nodeUUID+"']");
+						if(subTreeRefNodeList.getLength() > 0){
+							for(int k=0;k<subTreeRefNodeList.getLength();k++){
+								Node subTreeRefNode = subTreeRefNodeList.item(k);
+								subTreeRefNode.getAttributes().getNamedItem("displayName").setNodeValue(nodeName);
+							}							
+						}
 					}
 				}
-				xmlModel.setXml(xmlProcessor.getOriginalXml());
-				String result = callAppendNode(xmlModel, measureXmlModel.getXml()
-						, measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
-				measureXmlModel.setXml(result);
+				xmlProcessor.setOriginalXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+				
+				measureXmlModel.setXml(xmlProcessor.getOriginalXml());
 				getService().saveMeasureXml(measureXmlModel);
 			} catch (XPathExpressionException exception) {
 				exception.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		logger.info("End saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");

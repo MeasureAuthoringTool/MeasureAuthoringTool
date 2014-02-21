@@ -364,7 +364,8 @@ public interface MeasureService extends RemoteService {
 	ValidateMeasureResult validateMeasureForExport(String key,
 			List<MatValueSet> matValueSetList) throws MatException;
 	
-	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeUUID);
+	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel,
+			String nodeName, String nodeUUID);
 
 	boolean checkAndDeleteSubTree(String measureId, String subTreeUUID);
 }

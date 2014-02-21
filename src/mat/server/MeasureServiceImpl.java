@@ -328,8 +328,8 @@ MeasureService {
 		return this.getMeasureLibraryService().saveMeasureAtPackage(model);
 	}
 	@Override
-	public void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel , String nodeUUID) {
-		this.getMeasureLibraryService().saveSubTreeInMeasureXml(measureXmlModel , nodeUUID);
+	public void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel , String nodeName, String nodeUUID) {
+		this.getMeasureLibraryService().saveSubTreeInMeasureXml(measureXmlModel , nodeName, nodeUUID);
 	}
 	@Override
 	public boolean checkAndDeleteSubTree(String measureId, String subTreeUUID){

@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -16,6 +17,7 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SecondaryButton;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -363,11 +365,12 @@ public class XmlTreePresenter {
 								rootNode.toUpperCase().concat(" Saved."),
 								ConstantMessages.DB_LOG);
 						final String nodeUUID = cellTreeNode.getChilds().get(0).getUUID();
+						final String nodeName = cellTreeNode.getChilds().get(0).getName();
 						String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode.getChilds().get(0));
 						System.out.println("Generated XML  :: " + xml);
 						System.out.println("nodeUUID  :: " + nodeUUID);
 						final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
-						service.saveSubTreeInMeasureXml(measureXmlModel, nodeUUID,
+						service.saveSubTreeInMeasureXml(measureXmlModel, nodeName, nodeUUID,
 								new AsyncCallback<Void>() {
 							@Override
 							public void onFailure(final Throwable caught) {

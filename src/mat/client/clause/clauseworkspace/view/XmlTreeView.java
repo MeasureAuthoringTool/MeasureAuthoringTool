@@ -119,7 +119,18 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		@Template("<div class=\"{0}\" title=\"{1}\" aria-role=\"treeitem\">{2}</div>")
 		SafeHtml outerDivItem(String classes, String title, String content);
 		
-		@Template("<div class=\"{0}\" title=\"{1}\" aria-role=\"treeitem\">{2} <span class =\"populationWorkSpaceCommentNode\">*</span></div>")
+		/**
+		 * Div for Nodes with Comment.
+		 * @param classes
+		 *            the classes
+		 * @param title
+		 *            the title
+		 * @param content
+		 *            the content
+		 * @return the safe html
+		 */
+		@Template("<div class=\"{0}\" title=\"{1}\" aria-role=\"treeitem\">{2}"
+				+ "<span class =\"populationWorkSpaceCommentNode\">&nbsp;(C)</span></div>")
 		SafeHtml outerDivItemWithSpan(String classes, String title, String content);
 		
 	}

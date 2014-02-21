@@ -3,7 +3,6 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -11,7 +10,6 @@ import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.model.clause.QDSAttributes;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
@@ -122,7 +120,7 @@ public class QDMAttributeDialogBox {
 	
 	/** The Constant UUID. */
 	private static final String UUID = "uuid";
-
+	
 	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
@@ -135,16 +133,16 @@ public class QDMAttributeDialogBox {
 	
 	/** The grid. */
 	private static Grid grid;
-
+	
 	/**
 	 * The Class DeleteSelectedClickHandler.
 	 */
 	private static final class DeleteSelectedClickHandler implements
-			ClickHandler {
+	ClickHandler {
 		
 		/** The grid. */
 		private final Grid grid;
-
+		
 		/**
 		 * Instantiates a new delete selected click handler.
 		 * 
@@ -154,7 +152,7 @@ public class QDMAttributeDialogBox {
 		private DeleteSelectedClickHandler(Grid grid) {
 			this.grid = grid;
 		}
-
+		
 		/* (non-Javadoc)
 		 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
 		 */
@@ -177,12 +175,12 @@ public class QDMAttributeDialogBox {
 			}
 		}
 	}
-
+	
 	/**
 	 * The Class QDMAttributeGridClickHandler.
 	 */
 	private static final class QDMAttributeGridClickHandler implements
-			ClickHandler {
+	ClickHandler {
 		
 		/** The grid. */
 		private final Grid grid;
@@ -192,7 +190,7 @@ public class QDMAttributeDialogBox {
 		
 		/** The last col. */
 		private int lastCol = -1;
-
+		
 		/**
 		 * Instantiates a new qDM attribute grid click handler.
 		 * 
@@ -202,7 +200,7 @@ public class QDMAttributeDialogBox {
 		private QDMAttributeGridClickHandler(Grid grid) {
 			this.grid = grid;
 		}
-
+		
 		/* (non-Javadoc)
 		 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
 		 */
@@ -217,13 +215,13 @@ public class QDMAttributeDialogBox {
 			if (cell == null) {
 				return;
 			}
-
-			if (cell.getRowIndex() != lastRow && cell.getCellIndex() != lastCol) {
+			
+			if ((cell.getRowIndex() != lastRow) && (cell.getCellIndex() != lastCol)) {
 				lastRow = cell.getRowIndex();
 				lastCol = cell.getCellIndex();
 				return;
 			}
-
+			
 			Widget widget = grid.getWidget(cell.getRowIndex(),
 					cell.getCellIndex());
 			if (cell.getCellIndex() == 1) {
@@ -237,7 +235,7 @@ public class QDMAttributeDialogBox {
 							.getSelectedIndex());
 				}
 				int rowNum = cell.getRowIndex();
-
+				
 				if (QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text)) {
 					ListBox modeListBox = (ListBox) grid.getWidget(rowNum, 2);
 					modeListBox.setSelectedIndex(0);
@@ -246,14 +244,14 @@ public class QDMAttributeDialogBox {
 					ListBox modeListBox = (ListBox) grid.getWidget(rowNum, 2);
 					modeListBox.setEnabled(true);
 				}
-
+				
 			} else if (cell.getCellIndex() == 2) {
 				ListBox modeListBox = (ListBox) widget;
-
+				
 				String text = modeListBox.getItemText(modeListBox
 						.getSelectedIndex());
 				int rowNum = cell.getRowIndex();
-
+				
 				if (QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text)
 						|| CHECK_IF_PRESENT.equalsIgnoreCase(text)
 						|| COMPARISON.equalsIgnoreCase(text)) {
@@ -271,36 +269,36 @@ public class QDMAttributeDialogBox {
 					panel.setWidth("8em");
 					panel.setSpacing(0);
 					panel.getElement().setId("panel_HorizontalPanel");
-
+					
 					TextBox textBox = new TextBox();
 					textBox.getElement().setId("textBox_TextBox_3_" + rowNum);
 					textBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
 					textBox.setWidth("3em");
 					textBox.setHeight("19");
-
+					
 					ListBox units = new ListBox(false);
 					units.setVisibleItemCount(1);
 					units.setWidth("5em");
-
+					
 					for (String unitName : unitNames) {
 						units.addItem(unitName);
 					}
 					setToolTipForEachElementInListbox(units);
-
+					
 					panel.add(textBox);
 					panel.add(units);
-
+					
 					grid.setWidget(rowNum, 3, panel);
 				}
 			}
 		}
 	}
-
+	
 	/**
 	 * The Class AddNewQDMAttributeClickHandler.
 	 */
 	private static final class AddNewQDMAttributeClickHandler implements
-			ClickHandler {
+	ClickHandler {
 		
 		/** The mode. */
 		private final List<String> mode;
@@ -310,7 +308,7 @@ public class QDMAttributeDialogBox {
 		
 		/** The row node. */
 		private static CellTreeNode rowNode;
-
+		
 		/**
 		 * Instantiates a new adds the new qdm attribute click handler.
 		 * 
@@ -326,7 +324,7 @@ public class QDMAttributeDialogBox {
 			this.mode = mode;
 			this.grid = grid;
 		}
-
+		
 		/* (non-Javadoc)
 		 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
 		 */
@@ -341,21 +339,21 @@ public class QDMAttributeDialogBox {
 			final ListBox attributeListBox = new ListBox(false);
 			grid.resizeRows(grid.getRowCount() + 1);
 			final int i = grid.getRowCount() - 1;
-
+			
 			CheckBox checkBox = new CheckBox();
 			grid.setWidget(i, 0, checkBox);
 			grid.getCellFormatter().setVerticalAlignment(i, 0,
 					HasVerticalAlignment.ALIGN_MIDDLE);
-
+			
 			attributeListBox.setVisibleItemCount(1);
 			attributeListBox.setWidth("8em");
 			attributeListBox.addItem(QDMAttributeDialogBox.SELECT, "" + i);
-
+			
 			for (String attribName : attributeList) {
 				attributeListBox.addItem(attribName);
 			}
 			setToolTipForEachElementInListbox(attributeListBox);
-
+			
 			// Set the attribute name
 			for (int j = 0; j < attributeListBox.getItemCount(); j++) {
 				if (attributeListBox.getItemText(j).equals(attributeName)) {
@@ -364,7 +362,7 @@ public class QDMAttributeDialogBox {
 				}
 			}
 			grid.setWidget(i, 1, attributeListBox);
-
+			
 			final ListBox modeListBox = new ListBox(false);
 			modeListBox.setVisibleItemCount(1);
 			modeListBox.setWidth("8em");
@@ -372,28 +370,28 @@ public class QDMAttributeDialogBox {
 			for (String modeName : mode) {
 				String modeValue = (modeName.startsWith("--")) ? modeName
 						.substring(2).trim() : modeName;
-				modeListBox.addItem(modeName, modeValue);
+						modeListBox.addItem(modeName, modeValue);
 			}
 			modeListBox.setEnabled(false);
 			setToolTipForEachElementInListbox(modeListBox);
 			grid.setWidget(i, 2, modeListBox);
-
+			
 			TextBox textBox = new TextBox();
 			textBox.getElement().setId("textBox_TextBox_3_" + i);
 			textBox.setEnabled(false);
 			textBox.setWidth("8em");
 			grid.setWidget(i, 3, textBox);
-
+			
 			setExitingAttributeInGrid(node, i);
 			updateAttributeListBox(grid, i, attributeListBox);
 		}
 	}
-
+	
 	/**
 	 * The Class DigitsOnlyKeyPressHandler.
 	 */
 	private static final class DigitsOnlyKeyPressHandler implements
-			KeyPressHandler {
+	KeyPressHandler {
 		
 		/* (non-Javadoc)
 		 * @see com.google.gwt.event.dom.client.KeyPressHandler#onKeyPress(com.google.gwt.event.dom.client.KeyPressEvent)
@@ -404,16 +402,16 @@ public class QDMAttributeDialogBox {
 			if (sender.isReadOnly() || !sender.isEnabled()) {
 				return;
 			}
-
+			
 			Character charCode = event.getCharCode();
 			int unicodeCharCode = event.getUnicodeCharCode();
 			// allow digits, and non-characters
-			if (!(Character.isDigit(charCode) || unicodeCharCode == 0 || charCode == '.')) {
+			if (!(Character.isDigit(charCode) || (unicodeCharCode == 0) || (charCode == '.'))) {
 				sender.cancelKey();
 			}
 		}
 	}
-
+	
 	/**
 	 * Show qdm attribute dialog box.
 	 * 
@@ -431,7 +429,7 @@ public class QDMAttributeDialogBox {
 		}
 		unitNames.clear();
 		attributeList.clear();
-
+		
 		String qdmName = PopulationWorkSpaceConstants.getElementLookUpName().get(
 				cellTreeNode.getUUID());
 		Node qdmNode = PopulationWorkSpaceConstants.getElementLookUpNode().get(
@@ -449,18 +447,18 @@ public class QDMAttributeDialogBox {
 		// findAttributesForDataType(qdmDataType,isOccuranceQDM);
 		grid = new Grid(0, 4);
 		grid.addClickHandler(new QDMAttributeGridClickHandler(grid));
-
+		
 		// unitNames.addAll(getUnitNameList());
 		unitNames.add("");
 		unitNames.addAll(PopulationWorkSpaceConstants.units);
-
+		
 		List<String> mode = getModeList();
 		findAttributesForDataType(qdmDataType, isOccuranceQDM, mode,
 				xmlTreeDisplay, cellTreeNode);
 		// buildAndDisplayDialogBox(qdmDataType, mode,xmlTreeDisplay,
 		// cellTreeNode);
 	}
-
+	
 	/**
 	 * Remove all attribute names used in other rows from modeListBox.
 	 * 
@@ -494,7 +492,7 @@ public class QDMAttributeDialogBox {
 			}
 		}
 	}
-
+	
 	/**
 	 * Update attribute list boxes.
 	 * 
@@ -529,7 +527,7 @@ public class QDMAttributeDialogBox {
 			}
 		}
 	}
-
+	
 	/**
 	 * Builds the and display dialog box.
 	 * 
@@ -545,19 +543,19 @@ public class QDMAttributeDialogBox {
 	private static void buildAndDisplayDialogBox(String qdmDataType,
 			List<String> mode, final XmlTreeDisplay xmlTreeDisplay,
 			final CellTreeNode cellTreeNode) {
-
+		
 		final DialogBox qdmAttributeDialogBox = new DialogBox(false, true);
 		qdmAttributeDialogBox.getElement().setId("qdmAttributeDialog");
 		qdmAttributeDialogBox.setGlassEnabled(true);
 		qdmAttributeDialogBox.setAnimationEnabled(true);
 		qdmAttributeDialogBox.setText(QDM_ATTRIBUTES_TITLE);
-
+		
 		// Create a table to layout the content
 		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
-
+		
 		qdmAttributeDialogBox.setWidget(dialogContents);
-
+		
 		// Add a Add New button
 		Button addNewButton = new Button("Add New");
 		addNewButton.getElement().setId("addNewButton_Button");
@@ -569,20 +567,20 @@ public class QDMAttributeDialogBox {
 		deleteSelectedButton.getElement().setId("deleteSelectedButton_Button");
 		deleteSelectedButton.addClickHandler(new DeleteSelectedClickHandler(
 				grid));
-
+		
 		HorizontalPanel horizontalDeleteAddNewPanel = new HorizontalPanel();
 		horizontalDeleteAddNewPanel.getElement().setId(
 				"horizontalDeleteAddNewPanel_HorizontalPanel");
 		horizontalDeleteAddNewPanel.setSpacing(5);
-
+		
 		horizontalDeleteAddNewPanel.add(addNewButton);
 		horizontalDeleteAddNewPanel.setCellHorizontalAlignment(addNewButton,
 				HasHorizontalAlignment.ALIGN_LEFT);
-
+		
 		horizontalDeleteAddNewPanel.add(deleteSelectedButton);
 		horizontalDeleteAddNewPanel.setCellHorizontalAlignment(
 				deleteSelectedButton, HasHorizontalAlignment.ALIGN_LEFT);
-
+		
 		// Add a Close button at the bottom of the dialog
 		Button closeButton = new Button("Cancel", new ClickHandler() {
 			@Override
@@ -591,7 +589,7 @@ public class QDMAttributeDialogBox {
 			}
 		});
 		closeButton.getElement().setId("closeButton_Button");
-
+		
 		// Add a Save button at the bottom of the dialog
 		Button saveButton = new Button("OK", new ClickHandler() {
 			@Override
@@ -607,35 +605,35 @@ public class QDMAttributeDialogBox {
 			}
 		});
 		saveButton.getElement().setId("saveButton_Button");
-
+		
 		HorizontalPanel horizontalSaveClosePanel = new HorizontalPanel();
 		horizontalSaveClosePanel.getElement().setId(
 				"horizontalSaveClosePanel_HorizontalPanel");
 		horizontalSaveClosePanel.setSpacing(5);
-
+		
 		horizontalSaveClosePanel.add(saveButton);
 		horizontalSaveClosePanel.setCellHorizontalAlignment(saveButton,
 				HasHorizontalAlignment.ALIGN_RIGHT);
-
+		
 		horizontalSaveClosePanel.add(closeButton);
 		horizontalSaveClosePanel.setCellHorizontalAlignment(closeButton,
 				HasHorizontalAlignment.ALIGN_RIGHT);
-
+		
 		addTableToPanel(dialogContents, qdmDataType, mode, xmlTreeDisplay,
 				cellTreeNode, deleteSelectedButton, addNewButton);
-
+		
 		dialogContents.add(horizontalDeleteAddNewPanel);
 		dialogContents.setCellHorizontalAlignment(horizontalDeleteAddNewPanel,
 				HasHorizontalAlignment.ALIGN_LEFT);
-
+		
 		dialogContents.add(horizontalSaveClosePanel);
 		dialogContents.setCellHorizontalAlignment(horizontalSaveClosePanel,
 				HasHorizontalAlignment.ALIGN_RIGHT);
-
+		
 		dialogContents.setHeight("21em");
 		qdmAttributeDialogBox.center();
 	}
-
+	
 	/**
 	 * Validate rows.
 	 * 
@@ -646,7 +644,7 @@ public class QDMAttributeDialogBox {
 	protected static boolean validateRows(DialogBox qdmAttributeDialogBox) {
 		int rowCount = grid.getRowCount();
 		List<Integer> inValidRows = new ArrayList<Integer>();
-
+		
 		// Go through all the rows & collect all the invalid row numbers in a
 		// list 'inValidRows'
 		for (int i = 0; i < rowCount; i++) {
@@ -668,7 +666,7 @@ public class QDMAttributeDialogBox {
 							}
 							String qdmName = qdmListBox.getItemText(qdmListBox
 									.getSelectedIndex());
-							if (qdmName == null || qdmName.length() == 0) {
+							if ((qdmName == null) || (qdmName.length() == 0)) {
 								inValidRows.add(i);
 								continue;
 							}
@@ -680,9 +678,9 @@ public class QDMAttributeDialogBox {
 									.getWidget(i, 3);
 							TextBox valueBox = (TextBox) hPanel.getWidget(0);
 							ListBox unitBox = (ListBox) hPanel.getWidget(1);
-
+							
 							String value = valueBox.getText();
-							if (value == null || value.length() == 0) {
+							if ((value == null) || (value.length() == 0)) {
 								inValidRows.add(i);
 								continue;
 							}
@@ -706,7 +704,7 @@ public class QDMAttributeDialogBox {
 		setGridRowStyles(qdmAttributeDialogBox, rowCount, inValidRows);
 		return (inValidRows.size() == 0);
 	}
-
+	
 	/**
 	 * Sets the grid row styles.
 	 * 
@@ -749,7 +747,7 @@ public class QDMAttributeDialogBox {
 			}
 		}
 	}
-
+	
 	/**
 	 * Save to model.
 	 * 
@@ -765,23 +763,23 @@ public class QDMAttributeDialogBox {
 			attributeList = new ArrayList<CellTreeNode>();
 		}
 		attributeList.clear();
-
+		
 		for (int i = 0; i < rowCount; i++) {
 			CellTreeNode attributeNode = new CellTreeNodeImpl();
 			attributeNode.setName(ATTRIBUTE);
 			attributeNode.setNodeType(CellTreeNode.ATTRIBUTE_NODE);
-
+			
 			ListBox attributeListBox = ((ListBox) grid.getWidget(i, 1));
 			String attributeName = attributeListBox
 					.getItemText(attributeListBox.getSelectedIndex());
 			attributeNode.setExtraInformation(NAME, attributeName);
-
+			
 			ListBox modeListBox = ((ListBox) grid.getWidget(i, 2));
 			// String modeName =
 			// modeListBox.getItemText(modeListBox.getSelectedIndex());
 			String modeName = modeListBox.getValue(modeListBox
 					.getSelectedIndex());
-
+			
 			if (CHECK_IF_PRESENT.equals(modeName) || VALUE_SET.equals(modeName)) {
 				attributeNode.setExtraInformation(MODE, modeName);
 				if (VALUE_SET.equals(modeName)) {
@@ -792,11 +790,11 @@ public class QDMAttributeDialogBox {
 				}
 			} else {
 				attributeNode.setExtraInformation(MODE, modeName);
-
+				
 				HorizontalPanel hPanel = (HorizontalPanel) grid.getWidget(i, 3);
 				TextBox valueBox = (TextBox) hPanel.getWidget(0);
 				ListBox unitBox = (ListBox) hPanel.getWidget(1);
-
+				
 				attributeNode.setExtraInformation(COMPARISON_VALUE,
 						valueBox.getText());
 				String unitName = unitBox.getItemText(unitBox
@@ -809,9 +807,9 @@ public class QDMAttributeDialogBox {
 		}
 		xmlTreeDisplay.getSelectedNode().setExtraInformation(ATTRIBUTES,
 				attributeList);
-
+		
 	}
-
+	
 	/**
 	 * This method will create the actual table to be placed and shown in the
 	 * pop-up DialogBox.
@@ -835,25 +833,26 @@ public class QDMAttributeDialogBox {
 			final String qdmDataType, final List<String> mode,
 			XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode,
 			Button deleteSelectedButton, final Button addNewButton) {
-
+		
 		ScrollPanel scrollPanel = new ScrollPanel();
 		scrollPanel.setSize("28em", "19em");
 		scrollPanel.getElement().setId("scrollPanel_ScrollPanel");
-
+		
 		DecoratorPanel decoratorPanel = new DecoratorPanel();
 		scrollPanel.setWidget(grid);
 		decoratorPanel.setWidget(scrollPanel);
 		dialogContents.add(decoratorPanel);
-
+		
 		dialogContents.setCellHorizontalAlignment(decoratorPanel,
 				HasHorizontalAlignment.ALIGN_LEFT);
-
+		
 		final List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode
 				.getExtraInformation(ATTRIBUTES);
 		final int rows = (attributeNodeList == null) ? 0 : attributeNodeList
 				.size();
-
+		
 		Timer t = new Timer() {
+			@Override
 			public void run() {
 				if (rows == 0) {
 					// Add a blank attribute row to the table for the user to
@@ -870,7 +869,7 @@ public class QDMAttributeDialogBox {
 						DomEvent.fireNativeEvent(
 								Document.get().createClickEvent(0, 0, 0, 0, 0,
 										false, false, false, false),
-								addNewButton);
+										addNewButton);
 					}
 					for (int j = 0; j < grid.getRowCount(); j++) {
 						updateAttributeListBox(grid, j,
@@ -881,7 +880,7 @@ public class QDMAttributeDialogBox {
 		};
 		t.schedule(500);
 	}
-
+	
 	/**
 	 * Sets the exiting attribute in grid.
 	 * 
@@ -895,7 +894,7 @@ public class QDMAttributeDialogBox {
 		if (attributenode == null) {
 			return;
 		}
-
+		
 		// Set the attribute name
 		String attributeName = (String) attributenode.getExtraInformation(NAME);
 		ListBox attributeNameListBox = (ListBox) grid.getWidget(row, 1);
@@ -923,7 +922,7 @@ public class QDMAttributeDialogBox {
 				ListBox qdmListBox = createQdmListBox();
 				setToolTipForEachElementInQdmListBox(qdmListBox);
 				grid.setWidget(row, 3, qdmListBox);
-
+				
 				String qdmId = (String) attributenode
 						.getExtraInformation(QDM_UUID);
 				if (PopulationWorkSpaceConstants.getElementLookUpName().containsKey(qdmId)) {
@@ -941,7 +940,7 @@ public class QDMAttributeDialogBox {
 				panel.getElement().setId("panel_HorizontalPanel");
 				panel.setWidth("8em");
 				panel.setSpacing(0);
-
+				
 				TextBox textBox = new TextBox();
 				textBox.getElement().setId("textBox_TextBox_4");
 				textBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
@@ -949,11 +948,11 @@ public class QDMAttributeDialogBox {
 				textBox.setHeight("19");
 				textBox.setValue((String) attributenode
 						.getExtraInformation(COMPARISON_VALUE));
-
+				
 				ListBox units = new ListBox(false);
 				units.setVisibleItemCount(1);
 				units.setWidth("5em");
-
+				
 				for (String unitName : unitNames) {
 					units.addItem(unitName);
 				}
@@ -967,12 +966,12 @@ public class QDMAttributeDialogBox {
 				}
 				panel.add(textBox);
 				panel.add(units);
-
+				
 				grid.setWidget(row, 3, panel);
 			}
 		}
 	}
-
+	
 	/**
 	 * Creates the qdm list box.
 	 * 
@@ -996,7 +995,7 @@ public class QDMAttributeDialogBox {
 		}
 		return qdmListBox;
 	}
-
+	
 	/**
 	 * Gets the mode list.
 	 * 
@@ -1004,7 +1003,7 @@ public class QDMAttributeDialogBox {
 	 */
 	private static List<String> getModeList() {
 		List<String> modeList = new ArrayList<String>();
-
+		
 		modeList.add(CHECK_IF_PRESENT);
 		modeList.add(COMPARISON);
 		modeList.add(LESS_THAN);
@@ -1013,10 +1012,10 @@ public class QDMAttributeDialogBox {
 		modeList.add(LESS_THAN_OR_EQUAL_TO);
 		modeList.add(GREATER_THAN_OR_EQUAL_TO);
 		modeList.add(VALUE_SET);
-
+		
 		return modeList;
 	}
-
+	
 	/**
 	 * This method will check all the QDM elements in ElementLookup node and
 	 * return the names of QDM elements of datatype 'attribute'.
@@ -1044,37 +1043,37 @@ public class QDMAttributeDialogBox {
 	 * qdmNameList.add(ClauseConstants.getElementLookUpName().get(uuid)); } }
 	 * return qdmNameList; }
 	 */
-
+	
 	private static void findAttributesForDataType(final String dataType,
 			final boolean isOccuranceQDM, final List<String> mode2,
 			final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
 		attributeService.getAllAttributesByDataType(dataType,
 				new AsyncCallback<List<QDSAttributes>>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						caught.printStackTrace();
-						System.out
-								.println("Error retrieving data type attributes. "
-										+ caught.getMessage());
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				caught.printStackTrace();
+				System.out
+				.println("Error retrieving data type attributes. "
+						+ caught.getMessage());
+			}
+			
+			@Override
+			public void onSuccess(List<QDSAttributes> result) {
+				for (QDSAttributes qdsAttributes : result) {
+					if (isOccuranceQDM
+							&& NEGATION_RATIONALE.equals(qdsAttributes
+									.getName())) {
+						continue;
 					}
-
-					@Override
-					public void onSuccess(List<QDSAttributes> result) {
-						for (QDSAttributes qdsAttributes : result) {
-							if (isOccuranceQDM
-									&& NEGATION_RATIONALE.equals(qdsAttributes
-											.getName())) {
-								continue;
-							}
-							attributeList.add(qdsAttributes.getName());
-						}
-						buildAndDisplayDialogBox(dataType, mode2,
-								xmlTreeDisplay, cellTreeNode);
-					}
-				});
+					attributeList.add(qdsAttributes.getName());
+				}
+				buildAndDisplayDialogBox(dataType, mode2,
+						xmlTreeDisplay, cellTreeNode);
+			}
+		});
 	}
-
+	
 	/*
 	 * private static Node findElementLookUpNode(String name) {
 	 * Set<Entry<String, Node>> qdmNames =
@@ -1084,7 +1083,7 @@ public class QDMAttributeDialogBox {
 	 * ClauseConstants.getElementLookUpNode().get(qdmName.getKey()); return
 	 * qdmNode; } } return null; }
 	 */
-
+	
 	/**
 	 * Sets the tool tip for each element in listbox.
 	 * 
@@ -1101,7 +1100,7 @@ public class QDMAttributeDialogBox {
 			optionElement.setTitle(optionElement.getInnerText());
 		}
 	}
-
+	
 	/**
 	 * Sets the tool tip for each element in qdm list box.
 	 * 
@@ -1115,10 +1114,15 @@ public class QDMAttributeDialogBox {
 		for (int i = 0; i < options.getLength(); i++) {
 			String text = options.getItem(i).getText();
 			String uuid = options.getItem(i).getAttribute("value");
-			String oid = PopulationWorkSpaceConstants.getElementLookUpNode()
-					.get(text + "~" + uuid).getAttributes().getNamedItem("oid")
-					.getNodeValue();
-			String title = text + " (" + oid + ")";
+			String oid = "";
+			String title = text;
+			if (PopulationWorkSpaceConstants.getElementLookUpNode()
+					.get(text + "~" + uuid) != null) {
+				oid = PopulationWorkSpaceConstants.getElementLookUpNode()
+						.get(text + "~" + uuid).getAttributes().getNamedItem("oid")
+						.getNodeValue();
+				title = title.concat(" (" + oid + ")");
+			}
 			OptionElement optionElement = options.getItem(i);
 			optionElement.setTitle(title);
 		}

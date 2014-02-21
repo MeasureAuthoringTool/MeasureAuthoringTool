@@ -189,6 +189,10 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 					String isSupplementData = namedNodeMap.getNamedItem("suppDataElement").getNodeValue();
 					if (isSupplementData.equals("false")) { //filter supplementDataElements from elementLookUp
 						String name = namedNodeMap.getNamedItem("name").getNodeValue();
+						// Prod Issue fixed : qdm name has trailing spaces which is reterived frm VSAC.
+						//So QDM attribute dialog box is throwing error in FF.To fix that spaces are removed from start and end.
+						name = name.trim();
+						//name = name.replaceAll("^\\s+|\\s+$", "");
 						
 						if (namedNodeMap.getNamedItem("instance") != null) {
 							name = namedNodeMap.getNamedItem("instance").getNodeValue() + " of " + name;
@@ -213,6 +217,9 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 				if ("subTree".equals(subTree.item(i).getNodeName())) {
 					NamedNodeMap namedNodeMap = subTree.item(i).getAttributes();
 					String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
+					// SubTree name might has trailing spaces.
+					name = name.trim();
+//					name = name.replaceAll("^\\s+|\\s+$", "");
 					String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 					PopulationWorkSpaceConstants.subTreeLookUpNode.put(name + "~" + uuid, subTree.item(i));
 					PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);

@@ -28,10 +28,10 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 	private SimplePanel simplepanel = new SimplePanel();
 	
 	/** The flow panel. */
-	FlowPanel flowPanel = new FlowPanel();
+	private FlowPanel flowPanel = new FlowPanel();
 	
 	/** The service. */
-	MeasureServiceAsync service = MatContext.get().getMeasureService();
+	private MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
 	/**
 	 * Instantiates a new clause work space presenter.
@@ -93,10 +93,8 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 	private void setQdmElementsAndSubTreeLookUpMap(String xml) {
 		PopulationWorkSpaceConstants.elementLookUpName = new TreeMap<String, String>();
 		PopulationWorkSpaceConstants.elementLookUpNode = new TreeMap<String, Node>();
-		
 		PopulationWorkSpaceConstants.subTreeLookUpName = new TreeMap<String, String>();
 		PopulationWorkSpaceConstants.subTreeLookUpNode = new TreeMap<String, Node>();
-		
 		Document document = XMLParser.parse(xml);
 		NodeList nodeList = document.getElementsByTagName("elementLookUp");
 		if ((null != nodeList) && (nodeList.getLength() > 0)) {
@@ -108,18 +106,16 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 					if (isSupplementData.equals("false")) { //filter supplementDataElements from elementLookUp
 						String name = namedNodeMap.getNamedItem("name").getNodeValue();
 						// Prod Issue fixed : qdm name has trailing spaces which is reterived frm VSAC.
-						//So QDM attribute dialog box is throwing error in FF.To fix that spaces are removed from start and end.
+						//So QDM attribute dialog box is throwing error in FF.
+						//To fix that spaces are removed from start and end.
 						name = name.trim();
 						//name = name.replaceAll("^\\s+|\\s+$", "");
-						
 						if (namedNodeMap.getNamedItem("instance") != null) {
 							name = namedNodeMap.getNamedItem("instance").getNodeValue() + " of " + name;
 						}
-						
 						if (namedNodeMap.getNamedItem("datatype") != null) {
 							name = name + " : " + namedNodeMap.getNamedItem("datatype").getNodeValue();
 						}
-						
 						String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 						PopulationWorkSpaceConstants.elementLookUpNode.put(name + "~" + uuid, qdms.item(i));
 						PopulationWorkSpaceConstants.elementLookUpName.put(uuid, name);
@@ -127,7 +123,6 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 				}
 			}
 		}
-		
 		NodeList subTreesNodeList = document.getElementsByTagName("subTreeLookUp");
 		if ((null != subTreesNodeList) && (subTreesNodeList.getLength() > 0)) {
 			NodeList subTree = subTreesNodeList.item(0).getChildNodes();

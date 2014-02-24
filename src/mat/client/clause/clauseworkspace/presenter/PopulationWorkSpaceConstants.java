@@ -24,6 +24,9 @@ public class PopulationWorkSpaceConstants {
 	public static final String LOG_OP = "logicalOp";
 	
 	/** The Constant LOG_OP. */
+	public static final String SET_OP = "setOp";
+	
+	/** The Constant LOG_OP. */
 	public static final String CLAUSE = "Clause";
 	
 	/** The Constant CLAUSE_TYPE. */

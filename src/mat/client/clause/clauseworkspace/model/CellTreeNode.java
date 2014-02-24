@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.model;
 import java.util.List;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * CellTreeNode Interface.
  */
@@ -61,6 +62,10 @@ public interface CellTreeNode {
 	 * Comment Node.
 	 */
 	short COMMENT_NODE = 13;
+	
+	
+	/** The set op node. */
+	short SET_OP_NODE = 14;
 	/**
 	 * Append child.
 	 * 
@@ -259,11 +264,15 @@ public interface CellTreeNode {
 	void setValidNode(boolean isValid);
 	
 	/**
+	 * Gets the node text.
+	 *
 	 * @return Node Text
 	 */
 	String getNodeText();
 	
 	/**
+	 * Sets the node text.
+	 *
 	 * @param nodeText - String.
 	 */
 	void setNodeText(String nodeText);

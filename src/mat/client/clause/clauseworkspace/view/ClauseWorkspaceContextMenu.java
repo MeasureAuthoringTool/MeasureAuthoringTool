@@ -253,13 +253,61 @@ public class ClauseWorkspaceContextMenu {
 				cutMenu.setEnabled(true);
 				deleteMenu.setEnabled(true);
 				break;
+				
+				//new node for union and intersection
+			case CellTreeNode.SET_OP_NODE:
+				subMenuBar = new MenuBar(true);
+				popupMenuBar.setAutoOpen(true);
+				subMenuBar.setAutoOpen(true);
+				createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
+						, subMenuBar);
+				createAddQDM_MenuItem(subMenuBar);
+				MenuBar timingSetOpMenuBar = new MenuBar(true);
+				subMenuBar.addItem("Timing", timingSetOpMenuBar); //Timing menu 2nd level
+				createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timingSetOpMenuBar); // Timing sub menus 3rd level
+				MenuBar functionsSetOpMenuBar = new MenuBar(true);
+				subMenuBar.addItem("Functions", functionsSetOpMenuBar); //functions menu 2nd level
+				createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
+						, functionsSetOpMenuBar); // functions sub menus 3rd level
+				MenuBar relSetOpMenuBar = new MenuBar(true);
+				subMenuBar.addItem("Relationship", relSetOpMenuBar); //functions menu 2nd level
+				createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
+						, relSetOpMenuBar); // Timing sub menus 3rd level
+				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
+				popupMenuBar.addItem(addMenu);
+				popupMenuBar.addSeparator(separator);
+				addCommonMenus();
+				copyMenu.setEnabled(true);
+				//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
+				if ((xmlTreeDisplay.getCopiedNode() != null)
+						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
+					pasteMenu.setEnabled(true);
+				}
+				deleteMenu.setEnabled(true);
+				
+				short parentNode = xmlTreeDisplay.getSelectedNode().getParent().getNodeType();
+				short childNode = xmlTreeDisplay.getSelectedNode().getNodeType();
+				
+				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.SUBTREE_NODE)
+						&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SET_OP_NODE)) {
+				cutMenu.setEnabled(true);
+				subMenuBar = new MenuBar(true);
+				createEditMenus(MatContext.get().setOps, subMenuBar);
+				editMenu = new MenuItem("Edit", true, subMenuBar);
+				popupMenuBar.addItem(editMenu);
+				}
+				break;
+				
+				
 			case CellTreeNode.FUNCTIONS_NODE:
 				subMenuBar = new MenuBar(true);
 				popupMenuBar.setAutoOpen(true);
 				subMenuBar.setAutoOpen(true);
 				//Commented for User story MAT-3167.
-				//createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
-				//		, subMenuBar); // creating logical Operators Menu 2nd level
+				/*createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
+						, subMenuBar);*/ // creating logical Operators Menu 2nd level
+				//createAddUnion_MenuItem(subMenuBar);
+				//createAddIntersection_MenuItem(subMenuBar);
 				createAddQDM_MenuItem(subMenuBar);
 				MenuBar timing = new MenuBar(true);
 				subMenuBar.addItem("Timing", timing); //Timing menu 2nd level
@@ -341,7 +389,11 @@ public class ClauseWorkspaceContextMenu {
 			case CellTreeNode.SUBTREE_NODE:
 				subMenuBar = new MenuBar(true);
 				popupMenuBar.setAutoOpen(true);
-				subMenuBar.setAutoOpen(true);
+				subMenuBar.setAutoOpen(true); 
+				createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
+						, subMenuBar);
+				//createAddUnion_MenuItem(subMenuBar);
+				//createAddIntersection_MenuItem(subMenuBar);
 				createAddQDM_MenuItem(subMenuBar);
 				MenuBar timingSubTreeMenuBar = new MenuBar(true);
 				subMenuBar.addItem("Timing", timingSubTreeMenuBar); //Timing menu 2nd level
@@ -351,10 +403,10 @@ public class ClauseWorkspaceContextMenu {
 				subMenuBar.addItem("Functions", functionsSubTreeMenuBar); //functions menu 2nd level
 				createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
 						, functionsSubTreeMenuBar); // functions sub menus 3rd level
-				MenuBar relSubTreeMenuBar = new MenuBar(true);
-				subMenuBar.addItem("Relationship", relSubTreeMenuBar); //functions menu 2nd level
+				MenuBar relSubTreeMenuBar2 = new MenuBar(true);
+				subMenuBar.addItem("Relationship", relSubTreeMenuBar2); //functions menu 2nd level
 				createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
-						, relSubTreeMenuBar); // Timing sub menus 3rd level
+						, relSubTreeMenuBar2); // Relationship sub menus 3rd level
 				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 				popupMenuBar.addItem(addMenu);
 				popupMenuBar.addSeparator(separator);
@@ -507,6 +559,8 @@ public class ClauseWorkspaceContextMenu {
 		//Commented for User story MAT-3167.
 		//createAddMenus(MatContext.get().logicalOps,
 		//CellTreeNode.LOGICAL_OP_NODE, menuBar);// creating logical Operators Menu 2nd level
+		//createAddUnion_MenuItem(menuBar);
+		//createAddIntersection_MenuItem(menuBar);
 		createAddQDM_MenuItem(menuBar);
 		MenuBar timingMenuBar = new MenuBar(true);
 		menuBar.addItem("Timing", timingMenuBar); //Timing menu 2nd level
@@ -535,6 +589,29 @@ public class ClauseWorkspaceContextMenu {
 		menuBar.addItem(item);
 	}
 	
+	protected void createAddUnion_MenuItem(MenuBar menuBar){
+		Command addQDMCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				//showQDMPopup(true);
+			}
+		};
+		MenuItem union_item = new MenuItem("UNION", true,addQDMCmd);
+		menuBar.addItem(union_item);
+	}
+	
+	protected void createAddIntersection_MenuItem(MenuBar menuBar){
+		Command addQDMCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				//showQDMPopup(true);
+			}
+		};
+		MenuItem intersection_item = new MenuItem("INTERSECTION", true,addQDMCmd);
+		menuBar.addItem(intersection_item);
+	}
 	/**
 	 * Show qdm popup.
 	 * 

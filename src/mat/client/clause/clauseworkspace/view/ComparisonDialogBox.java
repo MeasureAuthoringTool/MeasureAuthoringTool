@@ -12,6 +12,8 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
@@ -125,10 +127,12 @@ public class ComparisonDialogBox {
 		List<String> comparisonOpKeys = MatContext.get().comparisonOps;
 		if (operatorMethod.contains("Select"))
 			listAllOperator.addItem(operatorMethod);
+		else 
+			listAllOperator.addItem("--Select--");
 		for (int i = 0; i < comparisonOpKeys.size(); i++) {
 			listAllOperator.addItem(comparisonOpKeys.get(i));
 			if (comparisonOpKeys.get(i).equalsIgnoreCase(operatorMethod)) {
-				listAllOperator.setSelectedIndex(i);
+				listAllOperator.setSelectedIndex(i+1);
 			}
 		}
 		listAllOperator.setWidth("150px");
@@ -156,21 +160,22 @@ public class ComparisonDialogBox {
 
 		//List of Units.
 		final ListBoxMVP listAllUnits = new ListBoxMVP();
-		if (unitType.contains("Select"))
-			listAllUnits.addItem(unitType);
+//		if (unitType.contains("Select"))
+//			listAllUnits.addItem(unitType);
+		listAllUnits.addItem("--Select--");
 		if (cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE) {
 			//Show list starting from seconds till Year for Timing. Since list is reterived in sorted order, Year comes at 7th index.
 			for (int i = 0; i < 7; i++) {
 				listAllUnits.addItem(PopulationWorkSpaceConstants.units.get(i));
 				if ((PopulationWorkSpaceConstants.units.get(i)).equalsIgnoreCase(unitType)) {
-					listAllUnits.setSelectedIndex(i);
+					listAllUnits.setSelectedIndex(i+1);
 				}
 			}
 		} else {
 			for (int i = 0; i < PopulationWorkSpaceConstants.units.size(); i++) {
 				listAllUnits.addItem(PopulationWorkSpaceConstants.units.get(i));
 				if ((PopulationWorkSpaceConstants.units.get(i)).equalsIgnoreCase(unitType)) {
-					listAllUnits.setSelectedIndex(i);
+					listAllUnits.setSelectedIndex(i+1);
 				}
 			}
 
@@ -181,6 +186,18 @@ public class ComparisonDialogBox {
 		dialogContents.setCellHorizontalAlignment(lableUnits, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(listAllUnits);
 		dialogContents.setCellHorizontalAlignment(listAllUnits, HasHorizontalAlignment.ALIGN_LEFT);
+		
+		
+		//changeHandler for listAllOperator
+		listAllOperator.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				updateQuantityandUnits(quantity,listAllUnits);
+				
+			}
+		});
+				
 		// Add a Save button at the bottom of the dialog
 		Button save = new Button("OK", new ClickHandler() {
 			@Override
@@ -284,6 +301,12 @@ public class ComparisonDialogBox {
 				}
 
 			} });
+	}
+	
+	private static void updateQuantityandUnits(TextBox quantity,ListBoxMVP listAllUnits){
+		String quantityValue ="";
+		quantity.setValue(quantityValue);
+		listAllUnits.setSelectedIndex(0);
 	}
 
 }

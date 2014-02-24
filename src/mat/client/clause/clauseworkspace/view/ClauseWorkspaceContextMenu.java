@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.xml.client.Node;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ClauseWorkspaceContextMenu.
  */
@@ -283,11 +284,7 @@ public class ClauseWorkspaceContextMenu {
 						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
 					pasteMenu.setEnabled(true);
 				}
-				deleteMenu.setEnabled(true);
-				
-				short parentNode = xmlTreeDisplay.getSelectedNode().getParent().getNodeType();
-				short childNode = xmlTreeDisplay.getSelectedNode().getNodeType();
-				
+				deleteMenu.setEnabled(true);		
 				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.SUBTREE_NODE)
 						&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SET_OP_NODE)) {
 				cutMenu.setEnabled(true);
@@ -589,6 +586,11 @@ public class ClauseWorkspaceContextMenu {
 		menuBar.addItem(item);
 	}
 	
+	/**
+	 * Creates the add union_ menu item.
+	 *
+	 * @param menuBar the menu bar
+	 */
 	protected void createAddUnion_MenuItem(MenuBar menuBar){
 		Command addQDMCmd = new Command() {
 			@Override
@@ -601,6 +603,11 @@ public class ClauseWorkspaceContextMenu {
 		menuBar.addItem(union_item);
 	}
 	
+	/**
+	 * Creates the add intersection_ menu item.
+	 *
+	 * @param menuBar the menu bar
+	 */
 	protected void createAddIntersection_MenuItem(MenuBar menuBar){
 		Command addQDMCmd = new Command() {
 			@Override

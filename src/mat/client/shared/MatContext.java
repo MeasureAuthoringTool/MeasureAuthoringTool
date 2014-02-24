@@ -54,6 +54,7 @@ import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 import java.util.Collections;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MatContext.
  */
@@ -188,6 +189,7 @@ public class MatContext implements IsSerializable {
 	/** The logical ops. */
 	public List<String> logicalOps = new ArrayList<String>();
 	
+	/** The set ops. */
 	public List<String> setOps = new ArrayList<String>();
 	
 	/** The operator map key short. */

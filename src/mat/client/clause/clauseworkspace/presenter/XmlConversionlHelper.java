@@ -16,6 +16,7 @@ import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.Text;
 import com.google.gwt.xml.client.XMLParser;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class XmlConversionlHelper.
  */
@@ -46,11 +47,9 @@ public class XmlConversionlHelper {
 	/**
 	 * Creates CellTreeNode object which has list of children objects and a
 	 * parent object from the XML.
-	 * 
-	 * @param document
-	 *            XML DOM object
-	 * @param tagName
-	 *            the tag name
+	 *
+	 * @param doc the doc
+	 * @param tagName the tag name
 	 * @return CellTreeNode
 	 */
 	public static CellTreeNode createCellTreeNode(Document doc, String tagName) {
@@ -78,11 +77,9 @@ public class XmlConversionlHelper {
 	/**
 	 * Creates CellTreeNode object which has list of children objects and a
 	 * parent object from the XML.
-	 * 
-	 * @param document
-	 *            XML DOM object
-	 * @param tagName
-	 *            the tag name
+	 *
+	 * @param node the node
+	 * @param tagName the tag name
 	 * @return CellTreeNode
 	 */
 	public static CellTreeNode createCellTreeNode(Node node, String tagName) {

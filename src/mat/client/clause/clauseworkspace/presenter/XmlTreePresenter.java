@@ -3,7 +3,6 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
-
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -17,7 +16,6 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SecondaryButton;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -447,7 +445,7 @@ public class XmlTreePresenter {
 		xmlTreeDisplay.getCommentButtons().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().clear();
+				xmlTreeDisplay.getSuccessMessageDisplay().clear();
 				@SuppressWarnings("unchecked")
 				List<CellTreeNode> commentList = (List<CellTreeNode>) xmlTreeDisplay
 				.getSelectedNode().getExtraInformation(COMMENT);
@@ -460,11 +458,10 @@ public class XmlTreePresenter {
 				node.setNodeType(CellTreeNode.COMMENT_NODE);
 				node.setNodeText(xmlTreeDisplay.getCommentArea().getText());
 				commentList.add(node);
-				/*CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();*/
 				xmlTreeDisplay.getSelectedNode().setExtraInformation(COMMENT, commentList);
-				xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode().getParent());
-				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setStylePrimaryName("successMessageCommentPanel");
-				xmlTreeDisplay.getSuccessMessageAddCommentDisplay().setMessage(
+				xmlTreeDisplay.refreshCellTreeAfterAddingComment(xmlTreeDisplay.getSelectedNode());
+				
+				xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
 						MatContext.get().getMessageDelegate().getCOMMENT_ADDED_SUCCESSFULLY());
 			}
 		});

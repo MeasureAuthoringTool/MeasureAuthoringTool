@@ -339,4 +339,6 @@ public interface XmlTreeDisplay {
 	 * @return
 	 */
 	Button getDeleteClauseButton();
+	
+	void refreshCellTreeAfterAddingComment(CellTreeNode selectedNode);
 }

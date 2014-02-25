@@ -553,9 +553,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	@Override
-	public void clearAndAddClauseNamesToListBox() {		
-		if(this.subTreeNameListBox != null){
-			this.subTreeNameListBox.clear();
+	public void clearAndAddClauseNamesToListBox() {
+		if(subTreeNameListBox != null){
+			subTreeNameListBox.clear();
 			List<Entry<String,String>> subTreeNameEntries = new LinkedList<Map.Entry<String,String>>(PopulationWorkSpaceConstants.subTreeLookUpName.entrySet());
 			Collections.sort(subTreeNameEntries, new Comparator<Entry<String, String>>() {
 				@Override
@@ -566,11 +566,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			});
 			
 			for(Entry<String, String> entry:subTreeNameEntries){
-				this.subTreeNameListBox.addItem(entry.getValue(),entry.getKey());
+				subTreeNameListBox.addItem(entry.getValue(),entry.getKey());
 			}
 			
 			// Set tooltips for each element in listbox
-			SelectElement selectElement = SelectElement.as(this.subTreeNameListBox.getElement());
+			SelectElement selectElement = SelectElement.as(subTreeNameListBox.getElement());
 			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
 					.getOptions();
 			for (int i = 0; i < options.getLength(); i++) {
@@ -584,8 +584,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	@Override
 	public void updateSuggestOracle(){
-		if(this.searchSuggestTextBox != null){
-			MultiWordSuggestOracle multiWordSuggestOracle = (MultiWordSuggestOracle)this.searchSuggestTextBox.getSuggestOracle();
+		if(searchSuggestTextBox != null){
+			MultiWordSuggestOracle multiWordSuggestOracle = (MultiWordSuggestOracle)searchSuggestTextBox.getSuggestOracle();
 			multiWordSuggestOracle.clear();
 			multiWordSuggestOracle.addAll(PopulationWorkSpaceConstants.subTreeLookUpName
 					.values());
@@ -696,7 +696,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}
 		}
 	}
-	
 	
 	/**
 	 * This method is called after adding a child node to the parent. After
@@ -1102,6 +1101,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		selectionModel.setSelected(selectedNode, true);
 	}
 	
+	@Override
+	public void refreshCellTreeAfterAddingComment(CellTreeNode selectedNode) {
+		closeNodes(cellTree.getRootTreeNode());
+		openAllNodes(cellTree.getRootTreeNode());
+		selectionModel.setSelected(selectedNode, false);
+	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#removeNode()
 	 */

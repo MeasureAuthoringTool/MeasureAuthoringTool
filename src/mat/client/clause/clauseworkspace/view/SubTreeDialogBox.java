@@ -177,10 +177,10 @@ public class SubTreeDialogBox {
 			
 			@Override
 			public void onSelection(SelectionEvent<Suggestion> event) {
-				String selectedQDMName = event.getSelectedItem()
+				String selectedSubTreeName = event.getSelectedItem()
 						.getReplacementString();
 				for (int i = 0; i < listBox.getItemCount(); i++) {
-					if (selectedQDMName.equals(listBox.getItemText(i))) {
+					if (selectedSubTreeName.equals(listBox.getItemText(i))) {
 						listBox.setItemSelected(i, true);
 						break;
 					}
@@ -190,31 +190,28 @@ public class SubTreeDialogBox {
 	}
 	
 	/**
-	 * Adds the qdm names to list box.
+	 * Adds the SubTree names to list box.
 	 * 
 	 * @param listBox
 	 *            the list box
-	 * @param currentSelectedQDMUuid
-	 *            the current selected qdm uuid
+	 * @param currentSelectedSubTreeUuid
+	 *            the current selected SubTree uuid
 	 */
 	private static void addSubTreeNamesToListBox(ListBox listBox,
-			String currentSelectedQDMUuid) {
+			String currentSelectedSubTreeUuid) {
 		Set<Entry<String, Node>> subTreeLookUpNodes = PopulationWorkSpaceConstants
 				.getSubTreeLookUpNode().entrySet();
 		for (Entry<String, Node> subTreeLookup : subTreeLookUpNodes) {
-			Node node = subTreeLookup.getValue();
-			
-			//	if (!isDataTypeAttrib(node)) {
 			String key = subTreeLookup.getKey();
 			String uuid = key.substring(key.lastIndexOf("~") + 1);
-			String item = PopulationWorkSpaceConstants.getSubTreeLookUpName().get(uuid);
-			listBox.addItem(item, uuid);
-			if (uuid.equals(currentSelectedQDMUuid)) {
+			if (PopulationWorkSpaceConstants.getSubTreeLookUpName().get(uuid) != null) {
+				String item = PopulationWorkSpaceConstants.getSubTreeLookUpName().get(uuid);
+				listBox.addItem(item, uuid);
+			}
+			if (uuid.equals(currentSelectedSubTreeUuid)) {
 				listBox.setItemSelected(listBox.getItemCount() - 1, true);
 			}
-			//}
 		}
-		
 		// Set tooltips for each element in listbox
 		SelectElement selectElement = SelectElement.as(listBox.getElement());
 		com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement

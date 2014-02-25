@@ -1,11 +1,18 @@
 package mat.client.measure;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import mat.client.CustomPager;
+import mat.client.measure.TransferMeasureOwnerShipModel.Result;
 import mat.client.measure.metadata.Grid508;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatSimplePager;
+import mat.client.shared.PrimaryButton;
+import mat.client.shared.RadioButtonCell;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -14,16 +21,37 @@ import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
+import mat.client.util.CellTableUtility;
+import mat.model.QualityDataSetDTO;
 
+import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
+import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
+import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SingleSelectionModel;
+
+import elemental.html.RadioNodeList;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class TransferMeasureOwnershipView.
  */
@@ -53,6 +81,23 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	/** The data table. */
 	public Grid508 dataTable = view.getDataTable();
 	
+	/** The table. */
+	private CellTable<TransferMeasureOwnerShipModel.Result> table;
+	
+	 /** The selection model. */
+ 	private SingleSelectionModel<TransferMeasureOwnerShipModel.Result> selectionModel;
+	
+	/** The cell table panel. */
+	VerticalPanel cellTablePanel = new VerticalPanel();
+	
+	/** The search button. */
+	private Button searchButton = new PrimaryButton("Search", "primaryGreyLeftButton");
+	/** The search input. */
+	private TextBox searchInput = new TextBox();
+	
+	/** The Constant PAGE_SIZE. */
+	private static final int PAGE_SIZE = 25;
+	
 	/**
 	 * Instantiates a new transfer measure ownership view.
 	 */
@@ -61,7 +106,8 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(valueSetNamePanel);
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(view.asWidget());
+		//mainPanel.add(view.asWidget());
+		mainPanel.add(cellTablePanel);
 		mainPanel.setStyleName("contentPanel");
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.getElement().setId("hp_HorizontalPanel");
@@ -212,7 +258,125 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		}
 	}
 	
+     /**
+      * Adds the column to table.
+      *
+      * @return the cell table
+      */
+     private CellTable<TransferMeasureOwnerShipModel.Result> addColumnToTable() {
+    	 
+    	   Label searchHeader = new Label("Active MAT User List");
+			searchHeader.getElement().setId("searchHeader_Label");
+			searchHeader.setStyleName("recentSearchHeader");
+			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
+			TableCaptionElement caption = elem.createCaption();
+			caption.appendChild(searchHeader.getElement());
+			selectionModel = new SingleSelectionModel<TransferMeasureOwnerShipModel.Result>();
+			Column<TransferMeasureOwnerShipModel.Result,SafeHtml> userName = new 
+					Column<TransferMeasureOwnerShipModel.Result,SafeHtml>(new SafeHtmlCell()){
+				@Override
+				public SafeHtml getValue(Result object) {
+					return CellTableUtility.getColumnToolTip(object.getFirstName() + " " + object.getLastName());
+					}
+				};
+				table.addColumn(userName,SafeHtmlUtils.fromSafeConstant(
+						"<span title='Name'>" + "Name" + "</span>"));
+		   
+		    Column<TransferMeasureOwnerShipModel.Result,SafeHtml> emailAddress = new 
+		    		Column<TransferMeasureOwnerShipModel.Result,SafeHtml>(new SafeHtmlCell()){
+		    	@Override
+		    	public SafeHtml getValue(Result object) {
+		    		return CellTableUtility.getColumnToolTip(object.getFirstName() + " " + object.getLastName());
+		    		}
+		    	};
+		    	table.addColumn(emailAddress,SafeHtmlUtils.fromSafeConstant(
+		    			"<span title='Email Address'>" + "Email Address" + "</span>"));
+				 
+		    RadioButtonCell radioButtonCell = new RadioButtonCell(true, true);
+		    Column<TransferMeasureOwnerShipModel.Result,Boolean> selectUser = new 
+		    		Column<TransferMeasureOwnerShipModel.Result,Boolean>(radioButtonCell){
+		    	@Override
+		    	public Boolean getValue(Result object) {
+		    		return selectionModel.isSelected(object);
+		    		}
+		    	};
+		    	
+		    	selectUser.setFieldUpdater(new FieldUpdater<TransferMeasureOwnerShipModel.Result, Boolean>() {
+					
+					@Override
+					public void update(int index, Result object, Boolean value) {
+						selectionModel.setSelected(object, value);
+						object.setSelected(selectionModel.isSelected(object));
+					}
+				});	
+		    	table.addColumn(selectUser, SafeHtmlUtils.fromSafeConstant(
+							"<span title='Select'>" + "Select" + "</span>"));
+		
+		return table;
+	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#buildCellTable(mat.client.measure.TransferMeasureOwnerShipModel)
+	 */
+	@Override
+	public void buildCellTable(TransferMeasureOwnerShipModel results) {
+		cellTablePanel.clear();
+		table = new CellTable<TransferMeasureOwnerShipModel.Result>();
+		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		ListDataProvider<TransferMeasureOwnerShipModel.Result> sortProvider = new ListDataProvider<TransferMeasureOwnerShipModel.Result>();
+		ArrayList<TransferMeasureOwnerShipModel.Result> selectedMeasureList = new ArrayList<TransferMeasureOwnerShipModel.Result>();
+		selectedMeasureList.addAll(results.getData());
+		table.setPageSize(PAGE_SIZE);
+		table.redraw();
+		table.setRowCount(selectedMeasureList.size(), true);
+		sortProvider.refresh();
+		sortProvider.getList().addAll(results.getData());
+		table = addColumnToTable();
+		sortProvider.addDataDisplay(table);
+		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+		spager.setPageStart(0);
+		spager.setDisplay(table);
+		spager.setPageSize(PAGE_SIZE);
+		table.setWidth("100%");
+		table.setColumnWidth(0, 45.0, Unit.PCT);
+		table.setColumnWidth(1, 45.0, Unit.PCT);
+		table.setColumnWidth(2, 10.0, Unit.PCT);
+		Label invisibleLabel = (Label) LabelBuilder
+				.buildInvisibleLabel(
+						"activeMATUsersListSummary",
+						"In the following Active MAT User List table, Name is given in first column,"
+								+ " Email Address in second column and Select in third column.");
+		table.getElement().setAttribute("id", "MeasureSearchCellTable");
+		table.getElement().setAttribute("aria-describedby", "activeMATUsersListSummary");
+		cellTablePanel.setWidth("100%");
+		cellTablePanel.add(invisibleLabel);
+		cellTablePanel.add(buildSearchWidget());
+		cellTablePanel.add(new SpacerWidget());
+		cellTablePanel.add(table);
+		cellTablePanel.add(new SpacerWidget());
+		cellTablePanel.add(spager);
+		
+	}
+	
+	
+	/**
+	 * Builds the search widget.
+	 *
+	 * @return the widget
+	 */
+	private Widget buildSearchWidget() {
+		HorizontalPanel hp = new HorizontalPanel();
+		FlowPanel fp1 = new FlowPanel();
+		fp1.add(searchInput);
+		searchButton.setTitle("Search");
+		fp1.add(searchButton);
+		fp1.add(new SpacerWidget());
+		hp.add(fp1);
+		return hp;
+	}
+	
+
 	/**
 	 * Method to build User Results.
 	 * 
@@ -257,6 +421,22 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	 */
 	public void setDataTable(Grid508 dataTable) {
 		this.dataTable = dataTable;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSearchButton()
+	 */
+	@Override
+	public HasClickHandlers getSearchButton() {
+		return searchButton;
+	}
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#getSearchString()
+	 */
+	@Override
+	public HasValue<String> getSearchString() {
+		return searchInput;
 	}
 	
 	

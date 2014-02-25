@@ -18,6 +18,7 @@ import mat.model.RecentMSRActivityLog;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface MeasureService.
  */
@@ -280,14 +281,13 @@ public interface MeasureService extends RemoteService {
 	
 	/**
 	 * Search users.
-	 * 
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
+	 *
+	 * @param searchText the search text
+	 * @param startIndex the start index
+	 * @param pageSize the page size
 	 * @return the transfer measure owner ship model
 	 */
-	TransferMeasureOwnerShipModel searchUsers(int startIndex, int pageSize);
+	TransferMeasureOwnerShipModel searchUsers(String searchText, int startIndex, int pageSize);
 	
 	/**
 	 * Transfer owner ship to user.
@@ -364,8 +364,22 @@ public interface MeasureService extends RemoteService {
 	ValidateMeasureResult validateMeasureForExport(String key,
 			List<MatValueSet> matValueSetList) throws MatException;
 	
+	/**
+	 * Save sub tree in measure xml.
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @param nodeName the node name
+	 * @param nodeUUID the node uuid
+	 */
 	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel,
 			String nodeName, String nodeUUID);
 
+	/**
+	 * Check and delete sub tree.
+	 *
+	 * @param measureId the measure id
+	 * @param subTreeUUID the sub tree uuid
+	 * @return true, if successful
+	 */
 	boolean checkAndDeleteSubTree(String measureId, String subTreeUUID);
 }

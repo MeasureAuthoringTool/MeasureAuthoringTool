@@ -19,6 +19,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.util.XmlProcessor;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface MeasureLibraryService.
  */
@@ -284,14 +285,13 @@ public interface MeasureLibraryService {
 	
 	/**
 	 * Search users.
-	 * 
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
+	 *
+	 * @param searchText the search text
+	 * @param startIndex the start index
+	 * @param pageSize the page size
 	 * @return the transfer measure owner ship model
 	 */
-	TransferMeasureOwnerShipModel searchUsers(int startIndex,
+	TransferMeasureOwnerShipModel searchUsers(String searchText, int startIndex,
 			int pageSize);
 	
 	/**
@@ -370,21 +370,43 @@ public interface MeasureLibraryService {
 			List<MatValueSet> matValueSetList) throws MatException;
 	
 	/**
-	 * @param model
-	 * @return
+	 * Save measure at package.
+	 *
+	 * @param model the model
+	 * @return the save measure result
 	 */
 	SaveMeasureResult saveMeasureAtPackage(ManageMeasureDetailModel model);
 	
 	/**
 	 * Save SubTree - Append new node if new else update exisiting subTreeNode in measureXml.
-	 * @param measureXmlModel
-	 * @param nodeUUID
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @param nodeName the node name
+	 * @param nodeUUID the node uuid
 	 */
 	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID);
 
+	/**
+	 * Check and delete sub tree.
+	 *
+	 * @param measureId the measure id
+	 * @param subTreeUUID the sub tree uuid
+	 * @return true, if successful
+	 */
 	boolean checkAndDeleteSubTree(String measureId, String subTreeUUID);
 
+	/**
+	 * Gets the formatted release date.
+	 *
+	 * @param releaseDate the release date
+	 * @return the formatted release date
+	 */
 	Date getFormattedReleaseDate(String releaseDate);
 
+	/**
+	 * Gets the release date.
+	 *
+	 * @return the release date
+	 */
 	String getReleaseDate();
 }

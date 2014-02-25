@@ -803,6 +803,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 				SearchResults<TransferMeasureOwnerShipModel.Result> results);
 		
 		/**
+		 * Builds the cell table.
+		 *
+		 * @param results the results
+		 */
+		void buildCellTable( TransferMeasureOwnerShipModel results);
+		
+		/**
 		 * Builds the html for measures.
 		 * 
 		 * @param measureList
@@ -881,6 +888,20 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the success message display
 		 */
 		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
+
+		/**
+		 * Gets the search button.
+		 *
+		 * @return the search button
+		 */
+		HasClickHandlers getSearchButton();
+
+		/**
+		 * Gets the search string.
+		 *
+		 * @return the search string
+		 */
+		HasValue<String> getSearchString();
 	}
 	
 	/**
@@ -1213,7 +1234,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 					@Override
 					public void onClick(ClickEvent event) {
 						// adminSearchDisplay.clearTransferCheckBoxes();
-						displayTransferView(startIndex,
+						transferDisplay.getSearchString().setValue("");
+						displayTransferView("",startIndex,
 								transferDisplay.getPageSize());
 					}
 				});
@@ -1634,15 +1656,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	/**
 	 * Display transfer view.
-	 * 
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
+	 *
+	 * @param searchString the search string
+	 * @param startIndex the start index
+	 * @param pageSize the page size
 	 */
-	private void displayTransferView(int startIndex, int pageSize) {
+	private void displayTransferView(String searchString, int startIndex, int pageSize) {
 		final ArrayList<ManageMeasureSearchModel.Result> transferMeasureResults = (ArrayList<Result>) manageMeasureSearchModel
 				.getSelectedTransferResults();
+		pageSize = Integer.MAX_VALUE;
 		adminSearchDisplay.getErrorMessageDisplay().clear();
 		adminSearchDisplay.getErrorMessagesForTransferOS().clear();
 		transferDisplay.getErrorMessageDisplay().clear();
@@ -1651,7 +1673,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			MatContext
 			.get()
 			.getMeasureService()
-			.searchUsers(startIndex, pageSize,
+			.searchUsers(searchString, startIndex, pageSize,
 					new AsyncCallback<TransferMeasureOwnerShipModel>() {
 				
 				@Override
@@ -1667,7 +1689,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 						TransferMeasureOwnerShipModel result) {
 					transferDisplay
 					.buildHTMLForMeasures(transferMeasureResults);
-					transferDisplay.buildDataTable(result);
+					//transferDisplay.buildDataTable(result);
+					transferDisplay.buildCellTable(result);
 					panel.setHeading(
 							"Measure Library Ownership >  Measure Ownership Transfer",
 							"MainContent");
@@ -3257,6 +3280,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		}
 		((Button) adminSearchDisplay.getSearchButton()).setEnabled(!busy);
 		((TextBox) (adminSearchDisplay.getSearchString())).setEnabled(!busy);
+		((Button) transferDisplay.getSearchButton()).setEnabled(!busy);
+		((TextBox) (transferDisplay.getSearchString())).setEnabled(!busy);
+		
 	}
 	
 	/**
@@ -3372,13 +3398,23 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
+		transferDisplay.getSearchButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				transferDisplay.getSuccessMessageDisplay().clear();
+				displayTransferView(transferDisplay.getSearchString().getValue(),startIndex,
+						transferDisplay.getPageSize());
+				
+			}
+		});
+		
 		transferDisplay.getPageSelectionTool().addPageSelectionHandler(
 				new PageSelectionEventHandler() {
 					@Override
 					public void onPageSelection(PageSelectionEvent event) {
 						int startIndex = (transferDisplay.getPageSize()
 								* (event.getPageNumber() - 1)) + 1;
-						displayTransferView(startIndex,
+						displayTransferView("",startIndex,
 								transferDisplay.getPageSize());
 					}
 				});
@@ -3386,7 +3422,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				new PageSizeSelectionEventHandler() {
 					@Override
 					public void onPageSizeSelection(PageSizeSelectionEvent event) {
-						displayTransferView(startIndex,
+						displayTransferView("",startIndex,
 								transferDisplay.getPageSize());
 					}
 				});

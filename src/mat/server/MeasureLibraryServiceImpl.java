@@ -99,11 +99,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/** The Constant MEASURE_DETAILS. */
 	private static final String MEASURE_DETAILS = "measureDetails";
 	
+	/** The release date. */
 	private String releaseDate;
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getReleaseDate()
+	 */
 	public String getReleaseDate() {
 		return releaseDate;
 	}
+	
+	/**
+	 * Sets the release date.
+	 *
+	 * @param releaseDate the new release date
+	 */
 	public void setReleaseDate(String releaseDate) {
 		this.releaseDate = releaseDate;
 	}
@@ -155,6 +165,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#checkAndDeleteSubTree(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean checkAndDeleteSubTree(String measureId, String subTreeUUID){
 		logger.info("Inside checkAndDeleteSubTree Method for measure Id " + measureId);
@@ -797,6 +810,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return eMeasureId;
 	}
 	
+    /**
+     * Save max emeasure idin measure xml.
+     *
+     * @param measureModel the measure model
+     */
     public void saveMaxEmeasureIdinMeasureXML(ManageMeasureDetailModel measureModel){
 		
 		MeasureXmlModel model = getMeasureXmlForMeasure(measureModel.getId());
@@ -1640,9 +1658,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#searchUsers(int, int)
 	 */
 	@Override
-	public final TransferMeasureOwnerShipModel searchUsers(final int startIndex, final int pageSize) {
+	public final TransferMeasureOwnerShipModel searchUsers(final String searchText, final int startIndex, final int pageSize) {
 		UserService usersService = getUserService();
-		List<User> searchResults = usersService.searchNonAdminUsers("", startIndex, pageSize);
+		List<User> searchResults;
+		if(searchText.equals("")){
+			searchResults = usersService.searchNonAdminUsers("", startIndex, pageSize);
+		}
+		else{
+			searchResults = usersService.searchNonAdminUsers(searchText, startIndex, pageSize);
+		}
 		logger.info("User search returned " + searchResults.size());
 		
 		TransferMeasureOwnerShipModel result = new TransferMeasureOwnerShipModel();
@@ -2287,6 +2311,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getFormattedReleaseDate(java.lang.String)
+	 */
 	@Override
 	public Date getFormattedReleaseDate(String releaseDate){
 		

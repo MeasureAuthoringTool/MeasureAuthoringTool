@@ -16,6 +16,7 @@ import mat.model.RecentMSRActivityLog;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface MeasureServiceAsync.
  */
@@ -310,15 +311,13 @@ public interface MeasureServiceAsync {
 	
 	/**
 	 * Search users.
-	 * 
-	 * @param startIndex
-	 *            the start index
-	 * @param pageSize
-	 *            the page size
-	 * @param callback
-	 *            the callback
+	 *
+	 * @param searchText the search text
+	 * @param startIndex the start index
+	 * @param pageSize the page size
+	 * @param callback the callback
 	 */
-	void searchUsers(int startIndex, int pageSize,
+	void searchUsers(String searchText, int startIndex, int pageSize,
 			AsyncCallback<TransferMeasureOwnerShipModel> callback);
 	
 	/**
@@ -410,13 +409,29 @@ public interface MeasureServiceAsync {
 	
 	/**
 	 * Save Called To update Revision Number at Create New Package button Click.
+	 *
 	 * @param model -ManageMeasureDetailModel.
-	 * @param callback
+	 * @param callback the callback
 	 */
 	void saveMeasureAtPackage(ManageMeasureDetailModel model, AsyncCallback<SaveMeasureResult> callback);
 	
+	/**
+	 * Save sub tree in measure xml.
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @param nodeName the node name
+	 * @param nodeUUID the node uuid
+	 * @param callback the callback
+	 */
 	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID, AsyncCallback<Void> callback);
 
+	/**
+	 * Check and delete sub tree.
+	 *
+	 * @param measureId the measure id
+	 * @param subTreeUUID the sub tree uuid
+	 * @param callback the callback
+	 */
 	void checkAndDeleteSubTree(String measureId, String subTreeUUID,
 			AsyncCallback<Boolean> callback);
 }

@@ -500,7 +500,7 @@ public class MessageDelegate {
 	private final String VSAC_UPDATE_SUCCESSFULL = "Successfully updated applied QDM list with VSAC data.";
 	
 	
-	private final String COMMENT_ADDED_SUCCESSFULLY ="Comment Added";
+	private final String COMMENT_ADDED_SUCCESSFULLY ="Comment Changes Added.";
 	/**
 	 * Gets the abv name required message.
 	 * 
@@ -1879,7 +1879,7 @@ public class MessageDelegate {
 	public String getIS_NOT_CURRENT_PASSWORD() {
 		return IS_NOT_CURRENT_PASSWORD;
 	}
-
+	
 	/**
 	 * @return the cOMMENT_ADDED_SUCCESSFULLY
 	 */

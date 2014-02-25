@@ -73,7 +73,8 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	
 	/** The view. */
-	private SearchView<mat.client.measure.TransferMeasureOwnerShipModel.Result> view = new SearchView<TransferMeasureOwnerShipModel.Result>("Users");
+	private SearchView<mat.client.measure.TransferMeasureOwnerShipModel.Result> view = new 
+			SearchView<TransferMeasureOwnerShipModel.Result>("Users");
 	
 	/** The value set name panel. */
 	HorizontalPanel valueSetNamePanel = new HorizontalPanel();
@@ -286,7 +287,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		    		Column<TransferMeasureOwnerShipModel.Result,SafeHtml>(new SafeHtmlCell()){
 		    	@Override
 		    	public SafeHtml getValue(Result object) {
-		    		return CellTableUtility.getColumnToolTip(object.getFirstName() + " " + object.getLastName());
+		    		return CellTableUtility.getColumnToolTip(object.getEmailId());
 		    		}
 		    	};
 		    	table.addColumn(emailAddress,SafeHtmlUtils.fromSafeConstant(

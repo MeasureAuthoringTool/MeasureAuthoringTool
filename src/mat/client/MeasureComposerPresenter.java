@@ -17,6 +17,7 @@ import mat.client.measurepackage.MeasurePackagePresenter_Old;
 import mat.client.measurepackage.MeasurePackageView;
 import mat.client.measurepackage.MeasurePackagerView;
 import mat.client.shared.ContentWithHeadingWidget;
+import mat.client.shared.FocusableWidget;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.PreviousContinueButtonBar;
@@ -69,7 +70,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	}
 	
 	/** The sub skip content holder. */
-	private static SimplePanel subSkipContentHolder = new SimplePanel();
+	private static FocusableWidget subSkipContentHolder;
 	
 	/**
 	 * Sets the sub skip embedded link.
@@ -77,9 +78,14 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	 * @param name the new sub skip embedded link
 	 */
 	public static void setSubSkipEmbeddedLink(String name) {
+		if(subSkipContentHolder == null) {
+			subSkipContentHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Sub Content"));
+		}
+		Mat.removeInputBoxFromFocusPanel(subSkipContentHolder.getElement());
 		Widget w = SkipListBuilder.buildSubSkipList(name);
 		subSkipContentHolder.clear();
 		subSkipContentHolder.add(w);
+		subSkipContentHolder.setFocus(true);
 	}
 	
 	/** The button bar. */
@@ -126,7 +132,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	public MeasureComposerPresenter() {
 		buttonBar.getElement().setId("buttonBar_PreviousContinueButtonBar");
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
-		subSkipContentHolder.getElement().setId("subSkipContentHolder_SimplePanel");
+		
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
 		measurePackagePresenter_old = (MeasurePackagePresenter_Old) buildOldMeasurePackageWidget();
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
@@ -291,8 +297,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 			measureComposerContent.setHeading(heading, "MeasureComposer");
 			FlowPanel fp = new FlowPanel();
 			fp.getElement().setId("fp_FlowPanel");
-			subSkipContentHolder.clear();
-			subSkipContentHolder.add(SkipListBuilder.buildSubSkipList("CodeList"));
+			setSubSkipEmbeddedLink("MetaDataView.containerPanel");
 			fp.add(subSkipContentHolder);
 			fp.add(measureComposerTabLayout);
 			measureComposerContent.setContent(fp);
@@ -305,7 +310,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 			measureComposerContent.setContent(emptyWidget);
 			MatContext.get().setVisible(buttonBar, false);
 		}
-		Mat.focusSkipLists("MeasureComposer");
+		Mat.focusSkipLists("MainContent");
 		buttonBar.state = measureComposerTabLayout.getSelectedIndex();
 		buttonBar.setPageNamesOnState();
 	}

@@ -3,6 +3,7 @@ package mat.client.shared;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -34,6 +35,7 @@ public class ContentWithHeadingWidget extends Composite{
 	/** The header holder. */
 	FocusableWidget headingHolder = new FocusableWidget(heading);
 	
+	FocusPanel sPanel = new FocusPanel();
 	/** The Flow panel. */
 	FlowPanel vPanel = new FlowPanel();
 	/**
@@ -57,9 +59,10 @@ public class ContentWithHeadingWidget extends Composite{
 		vPanel.addStyleName("contentWithHeadingPanel");
 		vPanel.add(footer);
 		footer.addStyleName("returnLink");
-		SimplePanel sPanel = new SimplePanel();
+		
 		sPanel.getElement().setId("sPanel_SimplePanel");
 		sPanel.add(vPanel);
+		sPanel.setFocus(true);
 		initWidget(sPanel);
 	}
 	
@@ -143,6 +146,9 @@ public class ContentWithHeadingWidget extends Composite{
 		footer.add(w);
 	}
 	
+	public void setFocus(boolean focus){
+		sPanel.setFocus(focus);
+	}
 	/**
 	 * Sets the heading.
 	 * 

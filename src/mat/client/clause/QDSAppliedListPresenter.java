@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
@@ -227,6 +228,9 @@ public class QDSAppliedListPresenter implements MatPresenter {
 	public void beforeDisplay() {
 		resetQDSFields();
 		loadAppliedListData();
+		MeasureComposerPresenter.setSubSkipEmbeddedLink("subQDMAPPliedListContainerPanel");
+		Mat.focusSkipLists("MeasureComposer");
+		
 		
 	}
 	

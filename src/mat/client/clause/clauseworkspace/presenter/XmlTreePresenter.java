@@ -115,11 +115,11 @@ public class XmlTreePresenter {
 	 * @param populationWorkSpacePanel
 	 *            the SimplePanel
 	 */
-	public final void loadXmlTree(SimplePanel populationWorkSpacePanel) {
+	public final void loadXmlTree(SimplePanel populationWorkSpacePanel, String panelName) {
 		
 		if (originalXML.length() > 0) {
 			panel = populationWorkSpacePanel;
-			
+			panel.getElement().setAttribute("id", panelName);
 			panel.clear();
 			String xml = originalXML;
 			XmlTreeView xmlTreeView = new XmlTreeView(
@@ -153,7 +153,7 @@ public class XmlTreePresenter {
 		} else {
 			Mat.hideLoadingMessage();
 		}
-		MeasureComposerPresenter.setSubSkipEmbeddedLink("ClauseWorkspaceTree");
+		MeasureComposerPresenter.setSubSkipEmbeddedLink(panelName);
 		Mat.focusSkipLists("MeasureComposer");
 		
 	}
@@ -164,6 +164,7 @@ public class XmlTreePresenter {
 	 */
 	public final void loadClauseWorkSpaceView(SimplePanel clauseWorkSpacePanel) {
 		panel = clauseWorkSpacePanel;
+		panel.getElement().setAttribute("id", "ClauseWorkSpacePanel");
 		CellTreeNode subTree = XmlConversionlHelper.createRootClauseNode();
 		XmlTreeView xmlTreeView = new XmlTreeView(subTree);
 		xmlTreeView.setClauseWorkspaceContextMenu(new ClauseWorkspaceContextMenu(xmlTreeView, popupPanel));

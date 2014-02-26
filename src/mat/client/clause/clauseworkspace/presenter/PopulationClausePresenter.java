@@ -3,7 +3,6 @@ package mat.client.clause.clauseworkspace.presenter;
 import mat.client.MatPresenter;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
-
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -42,7 +41,7 @@ public class PopulationClausePresenter extends XmlTreePresenter implements MatPr
 	@Override
 	public void beforeDisplay() {
 		panel.clear();
-		loadXmlTree(panel);
+		loadXmlTree(panel,"populationsPanel");
 	}
 	/*
 	 * (non-Javadoc)

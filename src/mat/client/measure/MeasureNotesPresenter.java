@@ -3,13 +3,13 @@ package mat.client.measure;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
 import mat.client.measure.MeasureNotesView.Observer;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -26,16 +26,16 @@ import com.google.gwt.user.client.ui.Widget;
  */
 public class MeasureNotesPresenter implements MatPresenter{
 	
- 	/** The service. */
-	 MeasureServiceAsync service = MatContext.get().getMeasureService();
- 	 		
- 	/** The notes display. */
-	 private NotesDisplay notesDisplay; 
- 	
- 	/**
-		 * The Interface NotesDisplay.
-		 */
-	 public static interface NotesDisplay {
+	/** The service. */
+	MeasureServiceAsync service = MatContext.get().getMeasureService();
+	
+	/** The notes display. */
+	private NotesDisplay notesDisplay;
+	
+	/**
+	 * The Interface NotesDisplay.
+	 */
+	public static interface NotesDisplay {
 		
 		/**
 		 * Gets the save button.
@@ -126,60 +126,60 @@ public class MeasureNotesPresenter implements MatPresenter{
 		 */
 		public void setNotesResult(MeasureNotesModel notesResult);
 	}
- 	 
- 	/**
-		 * Instantiates a new measure notes presenter.
-		 * 
-		 * @param notesDisplay
-		 *            the notes display
-		 */
-	 public MeasureNotesPresenter(NotesDisplay notesDisplay){
- 		this.notesDisplay=notesDisplay; 		
- 		notesDisplay.getExportButton().addClickHandler(new ClickHandler() { 
- 			@Override
- 			public void onClick(ClickEvent event) {
- 				generateCSVToExportMeasureNotes();
- 			}
- 		});
- 		 		
- 		notesDisplay.getSaveButton().addClickHandler(new ClickHandler() {
- 			@Override
- 			public void onClick(ClickEvent event) {
- 				saveMeasureNote();
- 			}
- 		}); 
- 		 				
- 		notesDisplay.getCancelButton().addClickHandler(new ClickHandler() {
- 			@Override
- 			public void onClick(ClickEvent event) {
- 				resetWidget();
- 			}			
- 		}); 
- 	}
-
+	
+	/**
+	 * Instantiates a new measure notes presenter.
+	 * 
+	 * @param notesDisplay
+	 *            the notes display
+	 */
+	public MeasureNotesPresenter(NotesDisplay notesDisplay){
+		this.notesDisplay=notesDisplay;
+		notesDisplay.getExportButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				generateCSVToExportMeasureNotes();
+			}
+		});
+		
+		notesDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				saveMeasureNote();
+			}
+		});
+		
+		notesDisplay.getCancelButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				resetWidget();
+			}
+		});
+	}
+	
 	/**
 	 * Generate csv to export measure notes.
 	 */
 	private void generateCSVToExportMeasureNotes(){
 		MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null, "MEASURE_NOTES_EXPORT", "Measure Notes Exported", ConstantMessages.DB_LOG);
 		String url = GWT.getModuleBaseURL() + "export?id=" + MatContext.get().getCurrentMeasureId() + "&format=exportMeasureNotesForMeasure";
-		Window.open(url + "&type=save", "_self", "");		
+		Window.open(url + "&type=save", "_self", "");
 	}
- 	
+	
 	/**
 	 * Retrieving all the Measure Notes of the current measure id and displaying.
-	 * MeasureNotesView.Observer is set here onSuccess method. 
+	 * MeasureNotesView.Observer is set here onSuccess method.
 	 */
- 	private void search(){
- 		String measureID = MatContext.get().getCurrentMeasureId();
- 		showSearchingBusy(true);
- 		service.getAllMeasureNotesByMeasureID(measureID, new AsyncCallback<MeasureNotesModel>() {
- 			@Override
+	private void search(){
+		String measureID = MatContext.get().getCurrentMeasureId();
+		showSearchingBusy(true);
+		service.getAllMeasureNotesByMeasureID(measureID, new AsyncCallback<MeasureNotesModel>() {
+			@Override
 			public void onSuccess(MeasureNotesModel result) {
- 				showSearchingBusy(false);
- 				notesDisplay.setNotesResult(result);
- 				notesDisplay.displayView();
- 				notesDisplay.setObserver(new Observer() {
+				showSearchingBusy(false);
+				notesDisplay.setNotesResult(result);
+				notesDisplay.displayView();
+				notesDisplay.setObserver(new Observer() {
 					@Override
 					public void onDeleteClicked(MeasureNoteDTO result) {
 						service.deleteMeasureNotes(result, new AsyncCallback<Void>() {
@@ -197,16 +197,16 @@ public class MeasureNotesPresenter implements MatPresenter{
 							}
 						});
 					}
-
+					
 					@Override
 					public void onSaveClicked(MeasureNoteDTO measureNoteDTO) {
-						service.updateMeasureNotes(measureNoteDTO, MatContext.get().getLoggedinUserId(), new AsyncCallback<Void>() {							
+						service.updateMeasureNotes(measureNoteDTO, MatContext.get().getLoggedinUserId(), new AsyncCallback<Void>() {
 							@Override
 							public void onSuccess(Void result) {
 								clearMessages();
 								notesDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_SAVE_SUCCESS_MESSAGE());
 								search();
-							}							
+							}
 							@Override
 							public void onFailure(Throwable caught) {
 								clearMessages();
@@ -215,25 +215,25 @@ public class MeasureNotesPresenter implements MatPresenter{
 						});
 					}
 				});
- 			}
+			}
 			@Override
 			public void onFailure(Throwable caught) {
 				clearMessages();
 				notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 			}
-						
-		}); 		
- 	}
- 	
- 	/**
- 	 * Saving Measure Notes.
- 	 */
- 	private void saveMeasureNote(){
- 		String noteTitle = notesDisplay.getMeasureNoteTitle().getText();
- 		String noteDescription = notesDisplay.getMeasureNoteComposer().getText();
- 		if(noteTitle != null && !noteTitle.isEmpty() && noteDescription != null && !noteDescription.isEmpty()){
- 			showSearchingBusy(true);
- 			service.saveMeasureNote(noteTitle, noteDescription,MatContext.get().getCurrentMeasureId(),MatContext.get().getLoggedinUserId(), new AsyncCallback<Void>() {
+			
+		});
+	}
+	
+	/**
+	 * Saving Measure Notes.
+	 */
+	private void saveMeasureNote(){
+		String noteTitle = notesDisplay.getMeasureNoteTitle().getText();
+		String noteDescription = notesDisplay.getMeasureNoteComposer().getText();
+		if((noteTitle != null) && !noteTitle.isEmpty() && (noteDescription != null) && !noteDescription.isEmpty()){
+			showSearchingBusy(true);
+			service.saveMeasureNote(noteTitle, noteDescription,MatContext.get().getCurrentMeasureId(),MatContext.get().getLoggedinUserId(), new AsyncCallback<Void>() {
 				
 				@Override
 				public void onSuccess(Void result) {
@@ -252,33 +252,34 @@ public class MeasureNotesPresenter implements MatPresenter{
 					notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getGenericErrorMessage());
 					
 				}
-			});		 			
- 		}else{
- 			notesDisplay.getSuccessMessageDisplay().clear();
- 			notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_REQUIRED_MESSAGE());
- 		}
- 	}
- 	
- 	/**
-		 * Show or Hide Loading Message. Show Loading Message when 'busy' is
-		 * true and hide Loading Message when 'busy' is false.
-		 * 
-		 * @param busy
-		 *            the busy
-		 */
- 	private void showSearchingBusy(boolean busy){
-		if(busy)
+			});
+		}else{
+			notesDisplay.getSuccessMessageDisplay().clear();
+			notesDisplay.getErrorMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMEASURE_NOTES_REQUIRED_MESSAGE());
+		}
+	}
+	
+	/**
+	 * Show or Hide Loading Message. Show Loading Message when 'busy' is
+	 * true and hide Loading Message when 'busy' is false.
+	 * 
+	 * @param busy
+	 *            the busy
+	 */
+	private void showSearchingBusy(boolean busy){
+		if(busy) {
 			Mat.showLoadingMessage();
-		else
+		} else {
 			Mat.hideLoadingMessage();
+		}
 		
 		((Button)notesDisplay.getSaveButton()).setEnabled(!busy);
 		((Button)notesDisplay.getCancelButton()).setEnabled(!busy);
 	}
- 	
- 	//TO Do : This Native Jave code can be used to create CSV on client side. Presently it works for FF not in IE. IE10 has included support for blob. When Mat will move to IE 10 this can be used.
 	
- 	/*private native void generateCSVFile()-{
+	//TO Do : This Native Jave code can be used to create CSV on client side. Presently it works for FF not in IE. IE10 has included support for blob. When Mat will move to IE 10 this can be used.
+	
+	/*private native void generateCSVFile()-{
 		var data = [["name1", "city1", "some other info"], ["name2", "city2", "more info"]];
 		var csvContent = data[0];
 		function joinData(infoArray, index){
@@ -513,8 +514,8 @@ public class MeasureNotesPresenter implements MatPresenter{
 	private void clearMessages() {
 		notesDisplay.getSuccessMessageDisplay().clear();
 		notesDisplay.getErrorMessageDisplay().clear();
-	}		
-
+	}
+	
 	/**
 	 * Clear the Measure Title and Measure Description input fields.
 	 * Clear Success Message and Error Message display.
@@ -531,8 +532,10 @@ public class MeasureNotesPresenter implements MatPresenter{
 	@Override
 	public void beforeDisplay() {
 		resetWidget();
-		search();		
+		search();
 		notesDisplay.asWidget();
+		MeasureComposerPresenter.setSubSkipEmbeddedLink("contentPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 	
 	/* (non-Javadoc)
@@ -552,4 +555,4 @@ public class MeasureNotesPresenter implements MatPresenter{
 		return notesDisplay.asWidget();
 	}
 	
-}	
+}

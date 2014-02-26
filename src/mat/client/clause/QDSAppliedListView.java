@@ -112,6 +112,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		vp.add(buttonLayout);
 		vp.add(new SpacerWidget());
 		mainPanel.add(vp);
+		containerPanel.getElement().setAttribute("id", "subQDMAPPliedListContainerPanel");
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("qdsContentPanel");
 		MatContext.get().setQdsAppliedListView(this);

@@ -1,13 +1,14 @@
 package mat.client.clause;
 
 
+import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.SpacerWidget;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.event.logical.shared.SelectionEvent;
 import com.google.gwt.event.logical.shared.SelectionHandler;
 import com.google.gwt.user.client.History;
@@ -88,6 +89,8 @@ public class QDMPresenter implements MatPresenter{
 			fp.add(tabLayout);
 			QDMContentWidget.clear();
 			QDMContentWidget.add(fp);
+			MeasureComposerPresenter.setSubSkipEmbeddedLink("subContainerPanel");
+			Mat.focusSkipLists("MeasureComposure");
 			tabLayout.selectTab(codeListSearchPresenter);
 			codeListSearchPresenter.beforeDisplay();
 		}
@@ -96,7 +99,7 @@ public class QDMPresenter implements MatPresenter{
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
-	@Override 
+	@Override
 	public void beforeClosingDisplay() {
 		tabLayout.close();
 		tabLayout.updateHeaderSelection(0);

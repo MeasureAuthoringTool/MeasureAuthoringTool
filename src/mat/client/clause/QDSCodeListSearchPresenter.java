@@ -3,9 +3,9 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.event.QDSElementCreatedEvent;
 import mat.client.codelist.HasListBox;
@@ -22,7 +22,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -596,6 +595,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	public  void beforeDisplay() {
 		displaySearch();
 		setWidgetsReadOnly(MatContext.get().getMeasureLockService().checkForEditPermission());
+		MeasureComposerPresenter.setSubSkipEmbeddedLink("subContainerPanel");
+		Mat.focusSkipLists("MeasureComposer");
 	}
 	
 	/**

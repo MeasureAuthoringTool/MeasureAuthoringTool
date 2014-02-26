@@ -3,7 +3,6 @@ package mat.client.measure.metadata;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -28,7 +27,6 @@ import mat.model.Author;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -1454,7 +1452,7 @@ private void setAuthorsListOnView() {
 			}
 		}
 		getAppliedQDMList(true);
-		MeasureComposerPresenter.setSubSkipEmbeddedLink("MetaData");
+		MeasureComposerPresenter.setSubSkipEmbeddedLink("MetaDataView.containerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 		clearMessages();
 	}

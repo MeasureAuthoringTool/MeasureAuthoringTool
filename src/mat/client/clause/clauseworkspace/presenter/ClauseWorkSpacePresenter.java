@@ -3,7 +3,9 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+import mat.client.Mat;
 import mat.client.MatPresenter;
+import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -154,6 +156,8 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 	@Override
 	public void beforeDisplay() {
 		loadMeasureXML();
+		MeasureComposerPresenter.setSubSkipEmbeddedLink("ClauseWorkSpacePanel");
+		Mat.focusSkipLists("MeasureComposer");
 		//		loadClauseWorkSpaceView(simplepanel);
 	}
 	

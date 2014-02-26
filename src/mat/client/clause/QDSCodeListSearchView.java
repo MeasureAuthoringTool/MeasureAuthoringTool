@@ -183,7 +183,7 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		mainPanel.getElement().setId("mainPanel_HorizontalPanel");
 		mainPanel.setWidth("100%");
 		mainPanel.add(vp);
-		containerPanel.getElement().setId("containerPanel_SimplePanel");
+		containerPanel.getElement().setId("subContainerPanel");
 		containerPanel.setWidth("100%");
 		containerPanel.add(mainPanel);
 		containerPanel.setStyleName("qdsContentPanel");

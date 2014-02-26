@@ -11,7 +11,6 @@ import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
-
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.user.client.ui.Anchor;
@@ -33,8 +32,8 @@ import com.google.gwt.user.client.ui.Widget;
  * The Class UmlsLoginView.
  */
 public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
-
-
+	
+	
 	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	
@@ -79,6 +78,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	 */
 	public UmlsLoginView() {
 		mainPanel.setStyleName("contentPanel");
+		mainPanel.getElement().setAttribute("id", "umlsContent");
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		Grid infoGrid = new Grid(2,2);
@@ -135,7 +135,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		
 		password.setWidth("200px");
 		simplePanel.add(loginPanel);
-	
+		
 		mainPanel.add(simplePanel);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
@@ -162,7 +162,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 	}
-
+	
 	/**
 	 * Wrap in spacer.
 	 * 
@@ -176,7 +176,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		spacer.add(w);
 		return spacer;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getSubmit()
 	 */
@@ -184,7 +184,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	public HasClickHandlers getSubmit() {
 		return submitButton;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getUserid()
 	 */
@@ -192,7 +192,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	public HasValue<String> getUserid() {
 		return userid;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getPassword()
 	 */
@@ -200,7 +200,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	public HasValue<String> getPassword() {
 		return password;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#asWidget()
 	 */
@@ -208,15 +208,15 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	public Widget asWidget() {
 		return mainPanel;
 	}
-
-		/* (non-Javadoc)
-		 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getInfoMessage()
-		 */
-		@Override
+	
+	/* (non-Javadoc)
+	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getInfoMessage()
+	 */
+	@Override
 	public HasHTML getInfoMessage() {
 		return infoMessage;
 	}
-
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getErrorMessageDisplay()
@@ -238,7 +238,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 		}
 		MatContext.get().setVisible(infoMessagePanel,value);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getUseridField()
 	 */
@@ -246,7 +246,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	public HasKeyDownHandlers getUseridField() {
 		return userid;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getPasswordField()
 	 */
@@ -254,7 +254,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	public HasKeyDownHandlers getPasswordField() {
 		return password;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#setInitialFocus()
 	 */
@@ -262,7 +262,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	public void setInitialFocus() {
 		userid.setFocus(false);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getUmlsExternalLink()
 	 */
@@ -270,7 +270,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	public Anchor getUmlsExternalLink() {
 		return umlsExternalLink;
 	}
-
+	
 	/**
 	 * Sets the umls external link.
 	 * 
@@ -280,7 +280,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	public void setUmlsExternalLink(Anchor umlsExternalLink) {
 		this.umlsExternalLink = umlsExternalLink;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getExternalLinkDisclaimer()
 	 */
@@ -296,7 +296,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	public Anchor getUmlsTroubleLogging() {
 		return umlsTroubleLogging;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.umls.ManageUmlsPresenter.UMLSDisplay#getButtonBar()
 	 */

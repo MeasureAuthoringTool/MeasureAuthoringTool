@@ -894,7 +894,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				});
 				return;
 			}
-			// Checking for keyUp event.
+			// Checking for key Down event.
 			if ((event.getTypeInt() == Event.ONKEYDOWN)
 					&& (commentAreaContent.length() > maxLength)
 					&& (event.getKeyCode() != KeyCodes.KEY_LEFT)
@@ -907,14 +907,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				event.preventDefault();
 			} else if ((event.getTypeInt() == Event.ONKEYDOWN)
 					&& (commentAreaContent.length() <= maxLength)) {
-				if (!event.getCtrlKey()) {
-					Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-						@Override
-						public void execute() {
-							ValueChangeEvent.fire(CommentAreaTextBox.this,
-									CommentAreaTextBox.this.getText());
-						}
-					});
+				if ((event.getKeyCode() != KeyCodes.KEY_LEFT)
+						&& (event.getKeyCode() != KeyCodes.KEY_TAB)
+						&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
+						&& (event.getKeyCode() != KeyCodes.KEY_DELETE)
+						&& (event.getKeyCode() != KeyCodes.KEY_BACKSPACE)
+						&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)) {
+					if (!event.getCtrlKey()) {
+						Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+							@Override
+							public void execute() {
+								ValueChangeEvent.fire(CommentAreaTextBox.this,
+										CommentAreaTextBox.this.getText());
+							}
+						});
+					}
 				}
 			}
 		}

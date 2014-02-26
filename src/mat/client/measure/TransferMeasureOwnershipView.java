@@ -269,15 +269,18 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
     	   Label searchHeader = new Label("Active MAT User List");
 			searchHeader.getElement().setId("searchHeader_Label");
 			searchHeader.setStyleName("recentSearchHeader");
+			searchHeader.getElement().setAttribute("tabIndex", "0");
 			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
 			TableCaptionElement caption = elem.createCaption();
 			caption.appendChild(searchHeader.getElement());
 			selectionModel = new SingleSelectionModel<TransferMeasureOwnerShipModel.Result>();
+			table.setSelectionModel(selectionModel);
 			Column<TransferMeasureOwnerShipModel.Result,SafeHtml> userName = new 
 					Column<TransferMeasureOwnerShipModel.Result,SafeHtml>(new SafeHtmlCell()){
 				@Override
 				public SafeHtml getValue(Result object) {
-					return CellTableUtility.getColumnToolTip(object.getFirstName() + " " + object.getLastName());
+					return CellTableUtility.getColumnToolTip(object.getFirstName() + " " + object.getLastName(), 
+							object.getFirstName() + " " + object.getLastName());
 					}
 				};
 				table.addColumn(userName,SafeHtmlUtils.fromSafeConstant(
@@ -287,7 +290,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		    		Column<TransferMeasureOwnerShipModel.Result,SafeHtml>(new SafeHtmlCell()){
 		    	@Override
 		    	public SafeHtml getValue(Result object) {
-		    		return CellTableUtility.getColumnToolTip(object.getEmailId());
+		    		return CellTableUtility.getColumnToolTip(object.getEmailId(), object.getEmailId());
 		    		}
 		    	};
 		    	table.addColumn(emailAddress,SafeHtmlUtils.fromSafeConstant(

@@ -910,7 +910,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if ((event.getKeyCode() != KeyCodes.KEY_LEFT)
 						&& (event.getKeyCode() != KeyCodes.KEY_TAB)
 						&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
-						&& (event.getKeyCode() != KeyCodes.KEY_DELETE)
 						&& (event.getKeyCode() != KeyCodes.KEY_BACKSPACE)
 						&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)) {
 					if (!event.getCtrlKey()) {

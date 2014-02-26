@@ -910,7 +910,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if ((event.getKeyCode() != KeyCodes.KEY_LEFT)
 						&& (event.getKeyCode() != KeyCodes.KEY_TAB)
 						&& (event.getKeyCode() != KeyCodes.KEY_RIGHT)
-						&& (event.getKeyCode() != KeyCodes.KEY_BACKSPACE)
 						&& (event.getKeyCode() != KeyCodes.KEY_SHIFT)) {
 					if (!event.getCtrlKey()) {
 						Scheduler.get().scheduleDeferred(new ScheduledCommand() {
@@ -1007,8 +1006,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		public void onBrowserEvent(Context context, Element parent, CellTreeNode value,
 				NativeEvent event, ValueUpdater<CellTreeNode> valueUpdater) {
 			if (event.getType().equals(BrowserEvents.CONTEXTMENU)) {
-				successMessageAddCommentDisplay.removeStyleName("successMessageCommentPanel");
-				successMessageAddCommentDisplay.clear();
+				/*successMessageAddCommentDisplay.removeStyleName("successMessageCommentPanel");*/
+				successMessageDisplay.clear();
 				event.preventDefault();
 				event.stopPropagation();
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
@@ -1016,8 +1015,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 			} else if (event.getType().equals(BrowserEvents.CLICK)
 					|| event.getType().equalsIgnoreCase(BrowserEvents.FOCUS)) {
-				successMessageAddCommentDisplay.removeStyleName("successMessageCommentPanel");
-				successMessageAddCommentDisplay.clear();
+				
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
 							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
@@ -1059,6 +1057,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					
 				}
 			}  else {
+				successMessageDisplay.clear();
 				super.onBrowserEvent(context, parent, value, event, valueUpdater);
 			}
 		}

@@ -888,14 +888,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the success message display
 		 */
 		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
-
+		
 		/**
 		 * Gets the search button.
 		 *
 		 * @return the search button
 		 */
 		HasClickHandlers getSearchButton();
-
+		
 		/**
 		 * Gets the search string.
 		 *
@@ -1605,7 +1605,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displaySearch() {
 		
-		String heading = "";
+		String heading = "Measure Library";
 		int filter;
 		
 		if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()

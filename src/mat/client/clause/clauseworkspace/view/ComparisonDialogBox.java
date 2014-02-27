@@ -363,6 +363,7 @@ public class ComparisonDialogBox {
 //				StringBuilder operatorTypeKey = new StringBuilder(operatorType);
 						if(operator.equals("")){
 							displayName.append(functionOrTiming);
+							//extraAttributes.remove("quantity");
 							} else {
 								displayName.append(operatorType).append(" ").append(quantity).append(" ")
 								.append(unit).append(" ").append(functionOrTiming);
@@ -372,6 +373,7 @@ public class ComparisonDialogBox {
 						? MatContext.get().operatorMapKeyLong.get(operator) : " ";
 						if(operator.equals("")){
 				displayName.append(functionOrTiming);
+				//extraAttributes.remove("quantity");
 				}
 						else{
 							displayName.append(functionOrTiming).append(" ").append(operatorType).append(" ")
@@ -382,8 +384,9 @@ public class ComparisonDialogBox {
 			xmlTreeDisplay.editNode(displayName.toString(), displayName.toString());
 		}
 
+		if(!operator.equals("")){
 		extraAttributes.put(PopulationWorkSpaceConstants.QUANTITY, quantity);
-
+		}
 		xmlTreeDisplay.getSelectedNode().setExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES, extraAttributes);
 	}
 
@@ -469,21 +472,4 @@ public class ComparisonDialogBox {
 		return hPanel;
 	} 
 	
-//	public static void setWidget(){
-//		hPanel = new HorizontalPanel();
-//		hPanel.clear();
-//		String validateErrorDisplay = "Please Enter the fields below in Red.";
-//		Label label = new Label(validateErrorDisplay);
-//		errorIcon.getElement().setAttribute("alt", "ErrorMessage");
-//		imagePanel.getElement().setId("imagePanel_FlowPanel");
-//		imagePanel.setTitle("Error");
-//		imagePanel.add(errorIcon);
-//		msgPanel.getElement().setId("msgPanel_FlowPanel");
-//		msgPanel.add(label);
-//		hPanel.getElement().setId("hPanel_HorizontalPanel");
-//		hPanel.setStyleName("alertMessageDialogBox");
-//		hPanel.add(imagePanel);
-//		hPanel.add(msgPanel);
-//		setFocus(hPanel);
-//	}
 }

@@ -92,6 +92,10 @@ left:50px;
 	vertical-align: middle!important;
 }
 
+.gwt-TextBoxRed{
+	border: 2px dotted #FF0000 ;
+}
+
 .manageCodeRightForm{
 	margin-top: 5%;
 	border: 1px solid;
@@ -603,6 +607,19 @@ left:50px;
     font-weight: bold;
     margin: 2px auto 14px;
     padding: 6px 6px 6px 30px;
+    text-align: left;
+	
+	
+}
+
+.alertMessageDialogBox {
+	 background: no-repeat scroll 6px 50% #FFDDDD;
+    border: 1px solid #FF0000;
+    color: #000000;
+    display: block;
+    font-weight: bold;
+    margin: 2px auto 14px;
+    padding-left: 5px;
     text-align: left;
 	
 	

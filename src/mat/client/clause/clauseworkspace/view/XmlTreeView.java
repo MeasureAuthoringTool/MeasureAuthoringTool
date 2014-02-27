@@ -203,7 +203,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The success message display. */
 	private SuccessMessageDisplay successMessageAddCommentDisplay = new SuccessMessageDisplay();
-	
+	VerticalPanel addCommentPanel;
 	/**
 	 * clear Error Display.
 	 */
@@ -328,7 +328,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		SimplePanel errPanel = new SimplePanel();
 		errPanel.getElement().setId("errPanel_SimplePanel");
 		errPanel.add(errorMessageDisplay);
-		VerticalPanel addCommentPanel = addCommentPanelToRightPanel();
+		addCommentPanel = addCommentPanelToRightPanel();
+		addCommentPanel.setVisible(false);
 		rightPanel.add(addCommentPanel);
 		mainPanel.add(errPanel);
 		mainPanel.add(leftPanel);
@@ -1021,6 +1022,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
 							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
+						addCommentPanel.setVisible(true);
 						commentArea.setText("");
 						List<CellTreeNode> childNode = (List<CellTreeNode>) value.
 								getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
@@ -1035,13 +1037,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						setCommentsBoxReadOnly(false);
 						/*setDirty(true);*/
 					} else {
+						addCommentPanel.setVisible(false);
 						commentArea.setText("");
 						onTextAreaContentChanged(remainingCharsLabel);
 						setCommentsBoxReadOnly(true);
 					}
 				} else {
+					addCommentPanel.setVisible(false);
 					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
 							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
+						addCommentPanel.setVisible(true);
 						commentArea.setText("");
 						List<CellTreeNode> childNode = (List<CellTreeNode>) value.
 								getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);

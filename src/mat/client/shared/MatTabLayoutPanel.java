@@ -7,6 +7,7 @@ import java.util.Map;
 import mat.client.Enableable;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.clause.clauseworkspace.presenter.ClauseWorkSpacePresenter;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
 import mat.client.clause.clauseworkspace.presenter.XmlTreePresenter;
 import mat.client.measure.ManageMeasureDetailModel;
@@ -335,10 +336,15 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 0) {
 				MetaDataPresenter metaDataPresenter = composerPresenter.getMetaDataPresenter();
 				validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
-			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 3) {
-				int clauseWorkspaceTab = 3;
-				PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter)
+			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 2) {
+				int clauseWorkspaceTab = 2;
+				ClauseWorkSpacePresenter clauseWorkspacePresenter = (ClauseWorkSpacePresenter)
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(clauseWorkspaceTab);
+				validateClauseWorkspaceTab(clauseWorkspacePresenter, selectedIndex);
+			} else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 3) {
+				int populationWorkspaceTab = 3;
+				PopulationWorkspacePresenter clauseWorkspacePresenter = (PopulationWorkspacePresenter)
+						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(populationWorkspaceTab);
 				validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 			}
 		} else if ((selectedIndex == 0) && (previousPresenter instanceof MetaDataPresenter)) {

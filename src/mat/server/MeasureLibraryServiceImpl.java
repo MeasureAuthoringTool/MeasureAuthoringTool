@@ -777,9 +777,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		for (QualityDataSetDTO dataSetDTO : appliedQDMList) {
-			String XPATH_EXPRESSION = "/measure//clause//@id=";
+			String XPATH_EXPRESSION = "/measure//subTree//elementRef/@id=";
 			XPATH_EXPRESSION = XPATH_EXPRESSION.concat("'").concat(dataSetDTO.getUuid()).
-					concat("' or /measure//clause//@qdmUUID= '").concat(dataSetDTO.getUuid()).
+					concat("' or /measure//subTree//elementRef/attribute/@qdmUUID= '").concat(dataSetDTO.getUuid()).
 					concat("' or /measure/supplementalDataElements//@id='").concat(dataSetDTO.getUuid())
 					.concat("' or /measure/measureDetails/itemCount//@id='").concat(dataSetDTO.getUuid())
 					.concat("'");

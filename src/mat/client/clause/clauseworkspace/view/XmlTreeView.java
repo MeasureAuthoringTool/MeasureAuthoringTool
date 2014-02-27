@@ -850,6 +850,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				public void onValueChange(ValueChangeEvent<String> event) {
 					if (!CommentAreaTextBox.this.isReadOnly()) {
 						String commentAreaUpdatedText;
+						int pos = getCursorPos();
 						CommentAreaTextBox.this.setText(event.getValue());
 						try {
 							commentAreaUpdatedText = CommentAreaTextBox.this.getText();
@@ -863,6 +864,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						} else {
 							CommentAreaTextBox.this.setValue(commentAreaUpdatedText);
 						}
+						setCursorPos(pos);
 						setDirty(true);
 						onTextAreaContentChanged(remainingCharsLabel);
 					}

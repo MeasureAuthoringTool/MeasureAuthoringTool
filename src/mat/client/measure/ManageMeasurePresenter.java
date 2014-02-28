@@ -1475,9 +1475,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setButtonPanel(null, draftDisplay.getZoomButton());
 		draftDisplay.getSearchWidget().setVisible(false);
 		isSearchVisibleOnDraft = false;
-		panel.setHeading("My Measures > Create Draft of Existing Measure", "MainContent");
+		panel.setHeading("My Measures > Create Draft of Existing Measure", "MeasureLibrary");
 		panel.setContent(draftDisplay.asWidget());
-		Mat.focusSkipLists("MainContent");
+		Mat.focusSkipLists("MeasureLibrary");
 	}
 	
 	/**
@@ -1498,7 +1498,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		currentDetails = new ManageMeasureDetailModel();
 		displayDetailForAdd();
-		Mat.focusSkipLists("MainContent");
+		Mat.focusSkipLists("MeasureLibrary");
 	}
 	
 	/**
@@ -1514,9 +1514,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		panel.setButtonPanel(null, versionDisplay.getZoomButton());
 		versionDisplay.getSearchWidget().setVisible(false);
 		isSearchVisibleOnVersion = false;
-		panel.setHeading("My Measures > Create Measure Version of Draft", "MainContent");
+		panel.setHeading("My Measures > Create Measure Version of Draft", "MeasureLibrary");
 		panel.setContent(versionDisplay.asWidget());
-		Mat.focusSkipLists("MainContent");
+		Mat.focusSkipLists("MeasureLibrary");
 		clearRadioButtonSelection();
 	}
 	
@@ -1560,7 +1560,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displayDetailForAdd() {
 		panel.getButtonPanel().clear();
-		panel.setHeading("My Measures > Create New Measure", "MainContent");
+		panel.setHeading("My Measures > Create New Measure", "MeasureLibrary");
 		setDetailsToView();
 		detailDisplay.showMeasureName(false);
 		detailDisplay.showCautionMsg(false);
@@ -1577,9 +1577,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		detailDisplay.getMeasScoringChoice().setValueMetadata(
 				currentDetails.getMeasScoring());
 		panel.getButtonPanel().clear();
-		panel.setHeading("My Measures > Clone Measure", "MainContent");
+		panel.setHeading("My Measures > Clone Measure", "MeasureLibrary");
 		panel.setContent(detailDisplay.asWidget());
-		Mat.focusSkipLists("MainContent");
+		Mat.focusSkipLists("MeasureLibrary");
 	}
 	
 	/**
@@ -1587,7 +1587,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displayDetailForEdit() {
 		panel.getButtonPanel().clear();
-		panel.setHeading("My Measures > Edit Measure", "MainContent");
+		panel.setHeading("My Measures > Edit Measure", "MeasureLibrary");
 		detailDisplay.showMeasureName(false);
 		detailDisplay.showCautionMsg(true);
 		setDetailsToView();
@@ -1613,12 +1613,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 			heading = "Measures > History";
 		}
 		panel.getButtonPanel().clear();
-		panel.setHeading(heading, "MainContent");
+		panel.setHeading(heading, "MeasureLibrary");
 		searchHistory(measureId, startIndex, pageSize);
 		historyDisplay.setMeasureId(measureId);
 		historyDisplay.setMeasureName(measureName);
 		panel.setContent(historyDisplay.asWidget());
-		Mat.focusSkipLists("MainContent");
+		Mat.focusSkipLists("MeasureLibrary");
 	}
 	
 	/**
@@ -1665,7 +1665,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		// panel.setEmbeddedLink("MainContent");
 		panel.setContent(fp);
-		Mat.focusSkipLists("MainContent");
+		Mat.focusSkipLists("MeasureLibrary");
 	}
 	
 	/** Display share.
@@ -1676,9 +1676,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		getShareDetails(id, 1);
 		shareDisplay.setMeasureName(name);
 		panel.getButtonPanel().clear();
-		panel.setHeading("My Measures > Measure Sharing", "MainContent");
+		panel.setHeading("My Measures > Measure Sharing", "MeasureLibrary");
 		panel.setContent(shareDisplay.asWidget());
-		Mat.focusSkipLists("MainContent");
+		Mat.focusSkipLists("MeasureLibrary");
 	}
 	
 	/**
@@ -1720,7 +1720,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					transferDisplay.buildCellTable(result);
 					panel.setHeading(
 							"Measure Library Ownership >  Measure Ownership Transfer",
-							"MainContent");
+							"MeasureLibrary");
 					panel.setContent(transferDisplay.asWidget());
 					showAdminSearchingBusy(false);
 					model = result;
@@ -1920,10 +1920,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 		exportDisplay.getErrorMessageDisplay().clear();
 		searchDisplay.getErrorMessageDisplayForBulkExport().clear();
 		panel.getButtonPanel().clear();
-		panel.setHeading("My Measures > Export", "MainContent");
+		panel.setHeading("My Measures > Export", "MeasureLibrary");
 		panel.setContent(exportDisplay.asWidget());
 		exportDisplay.setMeasureName(name);
-		Mat.focusSkipLists("MainContent");
+		Mat.focusSkipLists("MeasureLibrary");
 	}
 	
 	/**

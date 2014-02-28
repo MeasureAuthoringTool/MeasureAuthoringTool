@@ -2,7 +2,7 @@ package mat.client.umls;
 
 import mat.client.Mat;
 import mat.client.MatPresenter;
-import mat.client.MeasureComposerPresenter;
+import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SaveCancelButtonBar;
@@ -18,6 +18,7 @@ import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Anchor;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -134,6 +135,8 @@ public class ManageUmlsPresenter implements MatPresenter{
 	
 	/** The display. */
 	private  UMLSDisplay display;
+	/** The panel. */
+	private ContentWithHeadingWidget panel = new ContentWithHeadingWidget();
 	
 	/**Key down handler to trap enter key.**/
 	private KeyDownHandler submitOnEnterHandler = new KeyDownHandler() {
@@ -212,10 +215,14 @@ public class ManageUmlsPresenter implements MatPresenter{
 	 */
 	@Override
 	public void beforeDisplay() {
+		String heading = "";
+		panel.setHeading(heading, "UmlsLogin");
+		FlowPanel fp = new FlowPanel();
+		fp.getElement().setId("fp_FlowPanel");
 		resetWidget();
-		display.asWidget();
-		MeasureComposerPresenter.setSubSkipEmbeddedLink("umlsContent");
-		Mat.focusSkipLists("MainContent");
+		fp.add(display.asWidget());
+		panel.setContent(fp);
+		Mat.focusSkipLists("UmlsLogin");
 	}
 	
 	/* (non-Javadoc)
@@ -223,7 +230,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	 */
 	@Override
 	public Widget getWidget() {
-		return display.asWidget();
+		return panel;
 	}
 	
 	/**private method to invalidate UMLS's session by clearing UMLSSession Map for current HTTP session ID.**/

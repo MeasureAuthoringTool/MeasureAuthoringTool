@@ -77,7 +77,7 @@ public class UmlsLoginView implements ManageUmlsPresenter.UMLSDisplay  {
 	 * Instantiates a new umls login view.
 	 */
 	public UmlsLoginView() {
-		mainPanel.setStyleName("contentPanel");
+		mainPanel.setStyleName("umlscontentPanel");
 		mainPanel.getElement().setAttribute("id", "umlsContent");
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());

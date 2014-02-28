@@ -1282,6 +1282,14 @@ padding: 2px;
     border:1px solid #C0C0C0;
 }
 
+.umlscontentPanel {
+    padding: 5px;
+    -moz-box-sizing:border-box;
+    background-color:white;
+    border:1px solid #C0C0C0;
+    width:100%;
+}
+
 .qdsContentPanel{
 	padding: 5px;
 	position: relative;

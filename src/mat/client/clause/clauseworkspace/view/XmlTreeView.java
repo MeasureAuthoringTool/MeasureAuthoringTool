@@ -431,6 +431,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		clauseButtonPanel.setCellHorizontalAlignment(deleteClauseButton, HasHorizontalAlignment.ALIGN_RIGHT);
 		
 		rightVerticalPanel.add(clauseLibraryLabel);
+		searchSuggestTextBox.getElement().setAttribute("id", "searchSuggestTextBox");
 		rightVerticalPanel.add(searchSuggestTextBox);
 		rightVerticalPanel.add(subTreeNameListBox);
 		rightVerticalPanel.add(clauseButtonPanel);
@@ -1299,11 +1300,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void onKeyDown(KeyDownEvent event) {
 		int keyCode = event.getNativeKeyCode();
 		Element element = Element.as(event.getNativeEvent().getEventTarget());
-		System.out.println("Element - ID" + element.getId());
-		System.out.println("Element - getElementsByTagName" + element.getElementsByTagName("TextArea"));
 		// This is done to avoid executing Delete/Cut/Paste key board short cuts
-		// to be executed on nodes when they event is triggered in Comment text area.
-		if (!element.getId().equalsIgnoreCase("addComment_TextArea") && (selectedNode != null)) {
+		// to be executed on nodes when they event is triggered in Comment text area
+		//in Population Work Space or suggestion Text Area in ClauseWorkSpace.
+		if (element.getId().equalsIgnoreCase("addComment_TextArea")
+				|| element.getId().equalsIgnoreCase("searchSuggestTextBox")) {
+			System.out.println("Element - ID" + element.getId());
+			
+			return;
+		}
+		if (selectedNode != null) {
 			short nodeType = selectedNode.getNodeType();
 			if (event.isControlKeyDown()) {
 				if (keyCode == PopulationWorkSpaceConstants.COPY_C) { //COPY

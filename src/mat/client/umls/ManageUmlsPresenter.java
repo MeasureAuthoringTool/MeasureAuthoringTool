@@ -215,7 +215,7 @@ public class ManageUmlsPresenter implements MatPresenter{
 	 */
 	@Override
 	public void beforeDisplay() {
-		String heading = "";
+		String heading = "UMLS Account Login";
 		panel.setHeading(heading, "UmlsLogin");
 		FlowPanel fp = new FlowPanel();
 		fp.getElement().setId("fp_FlowPanel");

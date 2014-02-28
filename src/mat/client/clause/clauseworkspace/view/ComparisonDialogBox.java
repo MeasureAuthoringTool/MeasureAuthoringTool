@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+// TODO: Auto-generated Javadoc
 //import com.google.gwt.user.client.DOM;
 
 
@@ -43,17 +44,6 @@ public class ComparisonDialogBox {
 	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(true,true);
 	
-	
-	
-	/** The image panel. */
-	public static FlowPanel imagePanel = new FlowPanel();
-    
-	/** The msg panel. */
-	public static FlowPanel msgPanel = new FlowPanel();
-	
-	/** The error icon. */
-	public static Image errorIcon = new Image(ImageResources.INSTANCE.msg_error());
-
 
 	/**
 	 * Show comparison dialog box.
@@ -223,6 +213,7 @@ public class ComparisonDialogBox {
 			public void onChange(ChangeEvent event) {
 				hPanel.clear();
 				if (listAllOperator.getValue().contains("Select")){
+					dialogContents.remove(0);
 					quantity.removeStyleName("gwt-TextBoxRed");
 					listAllUnits.removeStyleName("gwt-TextBoxRed");
 					quantity.setEnabled(false);

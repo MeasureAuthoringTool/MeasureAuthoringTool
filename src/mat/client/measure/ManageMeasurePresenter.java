@@ -24,6 +24,7 @@ import mat.client.shared.CreateMeasureWidget;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
+import mat.client.shared.FocusableWidget;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasureSearchFilterWidget;
@@ -31,6 +32,7 @@ import mat.client.shared.MessageDelegate;
 import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SearchWidget;
+import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.SynchronizationDelegate;
@@ -1035,6 +1037,25 @@ public class ManageMeasurePresenter implements MatPresenter {
 	/** The is search visible on version. */
 	boolean isSearchVisibleOnVersion = true;
 	
+	/** The sub skip content holder. */
+	private static FocusableWidget subSkipContentHolder;
+	
+	/**
+	 * Sets the sub skip embedded link.
+	 *
+	 * @param name the new sub skip embedded link
+	 */
+	public static void setSubSkipEmbeddedLink(String name) {
+		if (subSkipContentHolder == null) {
+			subSkipContentHolder = new FocusableWidget(SkipListBuilder.buildSkipList("Skip to Sub Content"));
+		}
+		Mat.removeInputBoxFromFocusPanel(subSkipContentHolder.getElement());
+		Widget w = SkipListBuilder.buildSubSkipList(name);
+		subSkipContentHolder.clear();
+		subSkipContentHolder.add(w);
+		subSkipContentHolder.setFocus(true);
+	}
+	
 	/** The listof measures. */
 	List<ManageMeasureSearchModel.Result> listofMeasures = new ArrayList<ManageMeasureSearchModel.Result>();
 	
@@ -1290,7 +1311,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		// screen.This message is commented since loading Please message was
 		// getting removed when search was performed.
 		// Mat.hideLoadingMessage();
-		Mat.focusSkipLists("MainContent");
+		Mat.focusSkipLists("MeasureLibrary");
 	}
 	
 	/**
@@ -1607,14 +1628,19 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		String heading = "Measure Library";
 		int filter;
-		
+		panel.setHeading(heading, "MeasureLibrary");
+		setSubSkipEmbeddedLink("measureserachView_mainPanel");
+		FlowPanel fp = new FlowPanel();
+		fp.getElement().setId("fp_FlowPanel");
+		/*setSubSkipEmbeddedLink("measureserachView_mainPanel");
+		fp.add(subSkipContentHolder);*/
 		if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
 				.getLoggedInUserRole())) {
 			heading = "";
 			filter = 1;// ALL Measures
 			search(adminSearchDisplay.getSearchString().getValue(), 1,
 					Integer.MAX_VALUE, filter);
-			panel.setContent(adminSearchDisplay.asWidget());
+			fp.add(adminSearchDisplay.asWidget());
 		} else {
 			// MAT-1929 : Retain filters at measure library screen
 			searchDisplay.getCreateMeasureWidget().setVisible(false);
@@ -1628,16 +1654,17 @@ public class ManageMeasurePresenter implements MatPresenter {
 			searchRecentMeasures();
 			panel.getButtonPanel().clear();
 			panel.setButtonPanel(searchDisplay.getCreateMeasureButton(), searchDisplay.getZoomButton());
-			panel.setContent(searchDisplay.asWidget());
+			fp.add(searchDisplay.asWidget());
 		}
 		// MAT-1929: Retain filters at measure library screen. commented
 		// resetFilters method to retain filter state.
 		// searchDisplay.getMeasureSearchFilterPanel().resetFilter();
 		
 		//panel.setHeading(heading, "MainContent");
-		panel.setHeading(heading, "MainContent");
+		
 		
 		// panel.setEmbeddedLink("MainContent");
+		panel.setContent(fp);
 		Mat.focusSkipLists("MainContent");
 	}
 	

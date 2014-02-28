@@ -353,10 +353,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		addCommentPanel.add(new SpacerWidget());
 		addCommentPanel.add(commentArea);
 		HorizontalPanel remainCharsPanel = new HorizontalPanel();
-		remainCharsPanel.add(new HTML("Remaining &nbsp;"));
-		
 		remainCharsPanel.add(remainingCharsLabel);
-		remainCharsPanel.add(new HTML("&nbsp;characters."));
+		remainCharsPanel.add(new HTML("&nbsp;characters remaining."));
 		addCommentPanel.add(remainCharsPanel);
 		
 		HorizontalPanel buttonAndMessagePanel = new HorizontalPanel();

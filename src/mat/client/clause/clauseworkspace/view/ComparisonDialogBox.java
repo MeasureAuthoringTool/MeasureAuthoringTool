@@ -215,7 +215,6 @@ public class ComparisonDialogBox {
 				if (listAllOperator.getValue().contains("Select")){
 					dialogContents.remove(0);
 					quantity.removeStyleName("gwt-TextBoxRed");
-					listAllUnits.removeStyleName("gwt-TextBoxRed");
 					quantity.setEnabled(false);
 					listAllUnits.setEnabled(false);
 				}
@@ -232,17 +231,6 @@ public class ComparisonDialogBox {
 			@Override
 			public void onClick(ClickEvent event) {
 				quantity.removeStyleName("gwt-TextBoxRed");
-				
-			}
-		});
-		
-		listAllUnits.addChangeHandler(new ChangeHandler() {
-			
-			@Override
-			public void onChange(ChangeEvent event) {
-				if(!listAllUnits.getValue().equals("Select")){
-					listAllUnits.removeStyleName("gwt-TextBoxRed");
-				}
 				
 			}
 		});
@@ -306,11 +294,6 @@ public class ComparisonDialogBox {
 		} else {
 			if(quantity.getValue().equals("") ){
 				quantity.setStyleName("gwt-TextBoxRed");
-				isValid = false;
-			}
-		
-		    if(listAllUnits.getValue().contains("Select")){
-				listAllUnits.setStyleName("gwt-TextBoxRed");
 				isValid = false;
 			}
 		}
@@ -446,8 +429,8 @@ public class ComparisonDialogBox {
 		FlowPanel imagePanel = new FlowPanel();
 		FlowPanel msgPanel = new FlowPanel();
 		Image errorIcon = new Image(ImageResources.INSTANCE.msg_error());
-		String validateErrorDisplay = "Please Enter the fields below in Red.";
-		Label label = new Label(validateErrorDisplay);
+		Label label = new Label(MatContext.get()
+				.getMessageDelegate().getComparisonDiloagBoxErrorDisplay());
 		errorIcon.getElement().setAttribute("alt", "ErrorMessage");
 		imagePanel.getElement().setId("imagePanel_FlowPanel");
 		imagePanel.setTitle("Error");

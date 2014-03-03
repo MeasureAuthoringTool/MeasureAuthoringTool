@@ -127,6 +127,9 @@ public class MessageDelegate {
 	/** The Constant VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED. */
 	public static final String VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED = "Value set version or effective date has been selected. Please enter a date to continue.";
 	
+	
+	
+
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -501,6 +504,8 @@ public class MessageDelegate {
 	
 	
 	private final String COMMENT_ADDED_SUCCESSFULLY ="Comment Changes Added.";
+	
+	private final String COMPARISON_DILOAG_BOX_ERROR_DISPLAY="Please enter Quantity field.";
 	/**
 	 * Gets the abv name required message.
 	 * 
@@ -1885,5 +1890,9 @@ public class MessageDelegate {
 	 */
 	public String getCOMMENT_ADDED_SUCCESSFULLY() {
 		return COMMENT_ADDED_SUCCESSFULLY;
+	}
+	
+	public String getComparisonDiloagBoxErrorDisplay() {
+		return COMPARISON_DILOAG_BOX_ERROR_DISPLAY;
 	}
 }

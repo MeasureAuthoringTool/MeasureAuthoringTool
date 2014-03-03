@@ -26,12 +26,13 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AdminManageMeasureSearchView.
  */
 public class AdminManageMeasureSearchView implements ManageMeasurePresenter.AdminSearchDisplay {
 	/** Cell Table Page Size. */
-	private static final int PAGE_SIZE = 50;
+	private static final int PAGE_SIZE = 25;
 	/** The clear button. */
 	private Button clearButton = new PrimaryButton("Clear All", "primaryGreyLeftButton");
 	/** The error message panel. */

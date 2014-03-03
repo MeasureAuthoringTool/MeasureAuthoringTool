@@ -796,15 +796,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public Widget asWidget();
 		
 		/**
-		 * Builds the data table.
-		 * 
-		 * @param results
-		 *            the results
-		 */
-		void buildDataTable(
-				SearchResults<TransferMeasureOwnerShipModel.Result> results);
-		
-		/**
 		 * Builds the cell table.
 		 *
 		 * @param results the results
@@ -821,14 +812,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 				List<ManageMeasureSearchModel.Result> measureList);
 		
 		/**
-		 * Clear all radio buttons.
-		 * 
-		 * @param dataTable
-		 *            the data table
-		 */
-		void clearAllRadioButtons(Grid508 dataTable);
-		
-		/**
 		 * Gets the cancel button.
 		 * 
 		 * @return the cancel button
@@ -836,39 +819,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public HasClickHandlers getCancelButton();
 		
 		/**
-		 * Gets the data table.
-		 * 
-		 * @return the data table
-		 */
-		public Grid508 getDataTable();
-		
-		/**
 		 * Gets the error message display.
 		 * 
 		 * @return the error message display
 		 */
 		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		
-		/**
-		 * Gets the page selection tool.
-		 * 
-		 * @return the page selection tool
-		 */
-		public HasPageSelectionHandler getPageSelectionTool();
-		
-		/**
-		 * Gets the page size.
-		 * 
-		 * @return the page size
-		 */
-		public int getPageSize();
-		
-		/**
-		 * Gets the page size selection tool.
-		 * 
-		 * @return the page size selection tool
-		 */
-		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
 		
 		/**
 		 * Gets the save button.
@@ -904,6 +859,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the search string
 		 */
 		HasValue<String> getSearchString();
+		
+		/**
+		 * Clear radio buttons.
+		 */
+		public void clearRadioButtons();
 	}
 	
 	/**
@@ -1254,10 +1214,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 				new ClickHandler() {
 					@Override
 					public void onClick(ClickEvent event) {
-						// adminSearchDisplay.clearTransferCheckBoxes();
+						 adminSearchDisplay.clearTransferCheckBoxes();
 						transferDisplay.getSearchString().setValue("");
 						displayTransferView("",startIndex,
-								transferDisplay.getPageSize());
+								Integer.MAX_VALUE);
 					}
 				});
 		
@@ -1714,9 +1674,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 				@Override
 				public void onSuccess(
 						TransferMeasureOwnerShipModel result) {
+				
 					transferDisplay
 					.buildHTMLForMeasures(transferMeasureResults);
-					//transferDisplay.buildDataTable(result);
 					transferDisplay.buildCellTable(result);
 					panel.setHeading(
 							"Measure Library Ownership >  Measure Ownership Transfer",
@@ -2480,9 +2440,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 						public void onSuccess(
 								ManageMeasureSearchModel result) {
 							
-							//MeasureSearchResultsAdapter searchResults = new MeasureSearchResultsAdapter();
-							//  MeasureSearchView measureSearchView=new MeasureSearchView();
-							//addHandlersToAdaptor(measureSearview);
 							if(searchDisplay.getMeasureSearchFilterWidget().
 									getSelectedFilter()!=0){
 								searchDisplay.getMeasureSearchView().setMeasureListLabel("All Measures");
@@ -2663,8 +2620,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 	}
 	
-	//TODO
-	
+
 	/**
 	 * Update measure family.
 	 *
@@ -3365,14 +3321,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 												.get()
 												.getMessageDelegate()
 												.getGenericErrorMessage());
-										manageMeasureSearchModel
-										.getSelectedTransferIds()
-										.clear();
-										manageMeasureSearchModel
-										.getSelectedTransferResults()
-										.clear();
 										model.getData().get(rowIndex)
 										.setSelected(false);
+										transferDisplay.clearRadioButtons();
 									}
 									
 									@Override
@@ -3385,14 +3336,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 												.getMessageDelegate()
 												.getTransferOwnershipSuccess()
 												+ emailTo);
-										manageMeasureSearchModel
-										.getSelectedTransferIds()
-										.clear();
-										manageMeasureSearchModel
-										.getSelectedTransferResults()
-										.clear();
 										model.getData().get(rowIndex)
 										.setSelected(false);
+										transferDisplay.clearRadioButtons();
 									}
 								});
 					}
@@ -3403,9 +3349,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							MatContext.get().getMessageDelegate()
 							.getUserRequiredErrorMessage());
 				}
-				
-				transferDisplay.clearAllRadioButtons(transferDisplay
-						.getDataTable());
+
 			}
 			
 		});
@@ -3430,29 +3374,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				transferDisplay.getSuccessMessageDisplay().clear();
 				displayTransferView(transferDisplay.getSearchString().getValue(),startIndex,
-						transferDisplay.getPageSize());
+						Integer.MAX_VALUE);
 				
 			}
 		});
-		
-		transferDisplay.getPageSelectionTool().addPageSelectionHandler(
-				new PageSelectionEventHandler() {
-					@Override
-					public void onPageSelection(PageSelectionEvent event) {
-						int startIndex = (transferDisplay.getPageSize()
-								* (event.getPageNumber() - 1)) + 1;
-						displayTransferView("",startIndex,
-								transferDisplay.getPageSize());
-					}
-				});
-		transferDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
-				new PageSizeSelectionEventHandler() {
-					@Override
-					public void onPageSizeSelection(PageSizeSelectionEvent event) {
-						displayTransferView("",startIndex,
-								transferDisplay.getPageSize());
-					}
-				});
 	}
 	
 	/**

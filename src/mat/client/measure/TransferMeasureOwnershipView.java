@@ -57,8 +57,7 @@ import elemental.html.RadioNodeList;
  */
 public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.TransferDisplay {
 	
-	/** The container panel. */
-	private ContentWithHeadingWidget containerPanel = new ContentWithHeadingWidget();
+	
 	
 	/** The main panel. */
 	private FlowPanel mainPanel = new FlowPanel();
@@ -79,9 +78,6 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	/** The value set name panel. */
 	HorizontalPanel valueSetNamePanel = new HorizontalPanel();
 	
-	/** The data table. */
-	public Grid508 dataTable = view.getDataTable();
-	
 	/** The table. */
 	private CellTable<TransferMeasureOwnerShipModel.Result> table;
 	
@@ -95,6 +91,9 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	private Button searchButton = new PrimaryButton("Search", "primaryGreyLeftButton");
 	/** The search input. */
 	private TextBox searchInput = new TextBox();
+	
+	/** The selected measure list. */
+	private ArrayList<TransferMeasureOwnerShipModel.Result> selectedMeasureList;
 	
 	/** The Constant PAGE_SIZE. */
 	private static final int PAGE_SIZE = 25;
@@ -124,7 +123,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		mainPanel.add(hp);
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
-		containerPanel.setContent(mainPanel);
+	
 		
 	}
 	
@@ -133,27 +132,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	 */
 	@Override
 	public Widget asWidget() {
-		return containerPanel;
-	}
-
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#buildDataTable(mat.client.shared.search.SearchResults)
-	 */
-	@Override
-	public void buildDataTable(SearchResults<TransferMeasureOwnerShipModel.Result> results) {
-		if(results == null) {
-			return;
-		}
-		int numRows = results.getNumberOfRows();
-		int numColumns = results.getNumberOfColumns();
-		dataTable.clear();
-		dataTable.resize((int)numRows + 1, (int)numColumns);
-		view.buildSearchResultsColumnHeaders(numRows,numColumns,results, false,false);
-		buildSearchResults(numRows,numColumns,results);
-        view.setViewingRange(results.getStartIndex(),results.getStartIndex() + numRows - 1,results.getResultsTotal());
-		view.buildPageSizeSelector();
-		
+		return mainPanel;
 	}
 	
 	/* (non-Javadoc)
@@ -215,49 +194,6 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		return successMessages;
 	}
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getPageSelectionTool()
-	 */
-	@Override
-	public HasPageSelectionHandler getPageSelectionTool() {
-		return view;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getPageSizeSelectionTool()
-	 */
-	@Override
-	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
-		return view;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getPageSize()
-	 */
-	@Override
-	public int getPageSize() {
-		return view.getPageSize();
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#clearAllRadioButtons(mat.client.measure.metadata.Grid508)
-	 */
-	@Override
-	public void clearAllRadioButtons(Grid508 dataTable){
-		int rows = dataTable.getRowCount();
-		int cols = dataTable.getColumnCount();
-		for(int i = 0; i < rows; i++){
-			for(int j = 0; j < cols; j++){
-				Widget w = getDataTable().getWidget(i, j);
-				if(w instanceof RadioButton){
-					RadioButton rb = ((RadioButton)w);	
-					if(rb.getValue()){
-						rb.setValue(false);										
-					}
-				}
-			}
-		}
-	}
 	
      /**
       * Adds the column to table.
@@ -280,7 +216,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 				@Override
 				public SafeHtml getValue(Result object) {
 					return CellTableUtility.getColumnToolTip(object.getFirstName() + " " + object.getLastName(), 
-							object.getFirstName() + " " + object.getLastName());
+							"Name "+object.getFirstName() + " " + object.getLastName());
 					}
 				};
 				table.addColumn(userName,SafeHtmlUtils.fromSafeConstant(
@@ -290,7 +226,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		    		Column<TransferMeasureOwnerShipModel.Result,SafeHtml>(new SafeHtmlCell()){
 		    	@Override
 		    	public SafeHtml getValue(Result object) {
-		    		return CellTableUtility.getColumnToolTip(object.getEmailId(), object.getEmailId());
+		    		return CellTableUtility.getColumnToolTip(object.getEmailId(), "Email Address "+object.getEmailId());
 		    		}
 		    	};
 		    	table.addColumn(emailAddress,SafeHtmlUtils.fromSafeConstant(
@@ -328,7 +264,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		table = new CellTable<TransferMeasureOwnerShipModel.Result>();
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<TransferMeasureOwnerShipModel.Result> sortProvider = new ListDataProvider<TransferMeasureOwnerShipModel.Result>();
-		ArrayList<TransferMeasureOwnerShipModel.Result> selectedMeasureList = new ArrayList<TransferMeasureOwnerShipModel.Result>();
+		selectedMeasureList = new ArrayList<TransferMeasureOwnerShipModel.Result>();
 		selectedMeasureList.addAll(results.getData());
 		table.setPageSize(PAGE_SIZE);
 		table.redraw();
@@ -351,7 +287,7 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 						"activeMATUsersListSummary",
 						"In the following Active MAT User List table, Name is given in first column,"
 								+ " Email Address in second column and Select in third column.");
-		table.getElement().setAttribute("id", "MeasureSearchCellTable");
+		table.getElement().setAttribute("id", "UserCellTable");
 		table.getElement().setAttribute("aria-describedby", "activeMATUsersListSummary");
 		cellTablePanel.setWidth("100%");
 		cellTablePanel.add(invisibleLabel);
@@ -361,6 +297,18 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		cellTablePanel.add(new SpacerWidget());
 		cellTablePanel.add(spager);
 		
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#clearRadioButtons()
+	 */
+	@Override
+	public void clearRadioButtons(){
+		List<Result> displayedItems = new ArrayList<Result>();
+		displayedItems.addAll(selectedMeasureList);
+		for (TransferMeasureOwnerShipModel.Result msg : displayedItems) {
+			selectionModel.setSelected(msg, false);
+		}
 	}
 	
 	
@@ -379,54 +327,6 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 		hp.add(fp1);
 		return hp;
 	}
-	
-
-	/**
-	 * Method to build User Results.
-	 * 
-	 * @param numRows
-	 *            the num rows
-	 * @param numColumns
-	 *            the num columns
-	 * @param results
-	 *            the results
-	 */
-	protected void buildSearchResults(int numRows,int numColumns,final SearchResults<TransferMeasureOwnerShipModel.Result> results){		
-		for(int i = 0; i < numRows; i++) {
-			for(int j = 0; j < numColumns; j++) {
-				if(results.isColumnFiresSelection(j)) {
-					String innerText = results.getValue(i, j).getElement().getInnerText();
-					Label a = new Label();
-					a.setText(innerText);
-					dataTable.setWidget(i+1, j, a);
-				}
-				else {
-					dataTable.setWidget(i+1, j,results.getValue(i, j));
-				}
-			}
-			if(i % 2 == 0) {
-				dataTable.getRowFormatter().addStyleName(i + 1, "odd");
-			}
-		}
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getDataTable()
-	 */
-	public Grid508 getDataTable() {
-		return view.getDataTable();
-	}
-	
-	/**
-	 * Sets the data table.
-	 * 
-	 * @param dataTable
-	 *            the new data table
-	 */
-	public void setDataTable(Grid508 dataTable) {
-		this.dataTable = dataTable;
-	}
-
 
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.TransferDisplay#getSearchButton()

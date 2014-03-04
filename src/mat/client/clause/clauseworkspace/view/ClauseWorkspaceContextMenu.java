@@ -9,8 +9,8 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -40,10 +40,20 @@ public class ClauseWorkspaceContextMenu {
 		 */
 		@Template("<table tabindex =\"0\"width=\"100%\"><tr><td>{0}</td><td align=\"right\">{1}</td></tr></table>")
 		SafeHtml menuTable(String name, String shortCut);
+		
+		/**
+		 * @param name - Menu Item Name.
+		 * @param shortCut - Short Cut Key text.
+		 * @param imageSource - Image source.
+		 * @return SafeHtml.
+		 */
+		@Template("<table tabindex =\"0\"width=\"100%\"><tr><td>{0}</td><td align=\"right\">{1}"
+				+ "<img src=\"{2}\"/></td></tr></table>")
+		SafeHtml menuTableWithIcon(String name, String shortCut, SafeUri imageSource);
 	}
 	
 	/** The Constant template. */
-	private static final Template template = GWT.create(Template.class);
+	protected static final Template template = GWT.create(Template.class);
 	
 	/** The xml tree display. */
 	XmlTreeDisplay xmlTreeDisplay;
@@ -59,6 +69,16 @@ public class ClauseWorkspaceContextMenu {
 	
 	/** The copy menu. */
 	MenuItem copyMenu;
+	
+	/**
+	 * Move Up Menu.
+	 */
+	MenuItem moveUpMenu;
+	
+	/**
+	 * MOve Down Menu.
+	 */
+	MenuItem moveDownMenu;
 	
 	/** The paste menu. */
 	MenuItem pasteMenu;
@@ -224,6 +244,12 @@ public class ClauseWorkspaceContextMenu {
 				if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
 					deleteMenu.setEnabled(true);
 				}
+				addMoveUpMenu(popupPanel);
+				popupMenuBar.addItem(moveUpMenu);
+				moveUpMenu.setEnabled(checkIfTopChildNode());
+				addMoveDownMenu(popupPanel);
+				popupMenuBar.addItem(moveDownMenu);
+				moveDownMenu.setEnabled(checkIfLastChildNode());
 				Command editCmd = new Command() {
 					@Override
 					public void execute() {
@@ -253,6 +279,12 @@ public class ClauseWorkspaceContextMenu {
 				pasteMenu.setEnabled(false);
 				cutMenu.setEnabled(true);
 				deleteMenu.setEnabled(true);
+				addMoveUpMenu(popupPanel);
+				popupMenuBar.addItem(moveUpMenu);
+				moveUpMenu.setEnabled(checkIfTopChildNode());
+				addMoveDownMenu(popupPanel);
+				popupMenuBar.addItem(moveDownMenu);
+				moveDownMenu.setEnabled(checkIfLastChildNode());
 				break;
 				
 				//new node for union and intersection
@@ -265,7 +297,8 @@ public class ClauseWorkspaceContextMenu {
 				createAddQDM_MenuItem(subMenuBar);
 				MenuBar timingSetOpMenuBar = new MenuBar(true);
 				subMenuBar.addItem("Timing", timingSetOpMenuBar); //Timing menu 2nd level
-				createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timingSetOpMenuBar); // Timing sub menus 3rd level
+				createAddMenus(MatContext.get().timings,
+						CellTreeNode.TIMING_NODE, timingSetOpMenuBar); // Timing sub menus 3rd level
 				MenuBar functionsSetOpMenuBar = new MenuBar(true);
 				subMenuBar.addItem("Functions", functionsSetOpMenuBar); //functions menu 2nd level
 				createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
@@ -284,18 +317,22 @@ public class ClauseWorkspaceContextMenu {
 						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
 					pasteMenu.setEnabled(true);
 				}
-				deleteMenu.setEnabled(true);		
+				deleteMenu.setEnabled(true);
+				addMoveUpMenu(popupPanel);
+				popupMenuBar.addItem(moveUpMenu);
+				moveUpMenu.setEnabled(checkIfTopChildNode());
+				addMoveDownMenu(popupPanel);
+				popupMenuBar.addItem(moveDownMenu);
+				moveDownMenu.setEnabled(checkIfLastChildNode());
 				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.SUBTREE_NODE)
 						&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SET_OP_NODE)) {
-				cutMenu.setEnabled(true);
-				subMenuBar = new MenuBar(true);
-				createEditMenus(MatContext.get().setOps, subMenuBar);
-				editMenu = new MenuItem("Edit", true, subMenuBar);
-				popupMenuBar.addItem(editMenu);
+					cutMenu.setEnabled(true);
+					subMenuBar = new MenuBar(true);
+					createEditMenus(MatContext.get().setOps, subMenuBar);
+					editMenu = new MenuItem("Edit", true, subMenuBar);
+					popupMenuBar.addItem(editMenu);
 				}
 				break;
-				
-				
 			case CellTreeNode.FUNCTIONS_NODE:
 				subMenuBar = new MenuBar(true);
 				popupMenuBar.setAutoOpen(true);
@@ -325,6 +362,12 @@ public class ClauseWorkspaceContextMenu {
 				}
 				cutMenu.setEnabled(true);
 				deleteMenu.setEnabled(true);
+				addMoveUpMenu(popupPanel);
+				popupMenuBar.addItem(moveUpMenu);
+				moveUpMenu.setEnabled(checkIfTopChildNode());
+				addMoveDownMenu(popupPanel);
+				popupMenuBar.addItem(moveDownMenu);
+				moveDownMenu.setEnabled(checkIfLastChildNode());
 				Command editFunctionsCmd = new Command() {
 					@Override
 					public void execute() {
@@ -377,6 +420,12 @@ public class ClauseWorkspaceContextMenu {
 				if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
 					deleteMenu.setEnabled(true);
 				}
+				addMoveUpMenu(popupPanel);
+				popupMenuBar.addItem(moveUpMenu);
+				moveUpMenu.setEnabled(checkIfTopChildNode());
+				addMoveDownMenu(popupPanel);
+				popupMenuBar.addItem(moveDownMenu);
+				moveDownMenu.setEnabled(checkIfLastChildNode());
 				MenuBar subMenuBarEdit = new MenuBar(true);
 				createEditMenus(MatContext.get().relationships, subMenuBarEdit);
 				editMenu = new MenuItem("Edit", true, subMenuBarEdit);
@@ -386,7 +435,7 @@ public class ClauseWorkspaceContextMenu {
 			case CellTreeNode.SUBTREE_NODE:
 				subMenuBar = new MenuBar(true);
 				popupMenuBar.setAutoOpen(true);
-				subMenuBar.setAutoOpen(true); 
+				subMenuBar.setAutoOpen(true);
 				createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
 						, subMenuBar);
 				//createAddUnion_MenuItem(subMenuBar);
@@ -685,10 +734,6 @@ public class ClauseWorkspaceContextMenu {
 			subMenuBar.addItem(timingMenus);
 		}
 	}
-	
-	
-	
-	
 	/**
 	 * Paste root node type item.
 	 */
@@ -729,11 +774,6 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.addItem(deleteMenu);
 		popupMenuBar.addItem(expandMenu);
 		popupMenuBar.setVisible(true);
-		//popupMenuBar.selectItem(copyMenu);
-		//MATTabPanel fp = new MATTabPanel();
-		//fp.add(popupMenuBar,"");
-		//fp.selectTab(0);
-		/*popupPanel.clear();*/
 		popupPanel.add(popupMenuBar);
 	}
 	
@@ -749,7 +789,80 @@ public class ClauseWorkspaceContextMenu {
 		return "Add" + " " +  selectedNode.getName().substring(0, selectedNode.getName().lastIndexOf(" "));
 	}
 	
-	
+	/**
+	 * Menu - Move Up.
+	 * @param popupPanel - PopupPanel.
+	 */
+	protected final void addMoveUpMenu(final PopupPanel popupPanel) {
+		Command moveUpCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				xmlTreeDisplay.moveUp();
+			}
+		};
+		SafeUri uri = new SafeUri() {
+			@Override
+			public String asString() {
+				return "/images/go_up.png";
+			}
+		};
+		moveUpMenu = new MenuItem(template.menuTableWithIcon("Move Up", "", uri), moveUpCmd);
+	}
+	/**
+	 * Menu - Move Down.
+	 * @param popupPanel -PopupPanel.
+	 */
+	protected final void addMoveDownMenu(final PopupPanel popupPanel) {
+		Command moveDownCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				xmlTreeDisplay.moveDown();
+			}
+		};
+		SafeUri uri = new SafeUri() {
+			@Override
+			public String asString() {
+				return "/images/go_down.png";
+			}
+		};
+		moveDownMenu = new MenuItem(template.menuTableWithIcon("Move Down", "" , uri), moveDownCmd);
+	}
+	/**
+	 * Move Up Menu is set Enabled if selected node is not the first child of its parent node.
+	 * @return boolean.
+	 */
+	protected final boolean checkIfTopChildNode() {
+		CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
+		CellTreeNode parentNode = selectedNode.getParent();
+		if ((parentNode.getChilds() == null) || (parentNode.getChilds().size() <= 1)) {
+			return false;
+		}
+		for (int i = 0; i <= parentNode.getChilds().size(); i++) {
+			if (selectedNode.equals(selectedNode.getParent().getChilds().get(i))) {
+				return i > 0;
+			}
+		}
+		return true;
+	}
+	/**
+	 * Move down menu is set to enabled if the selected node is not the last child of its parent node.
+	 * @return boolean.
+	 */
+	protected final boolean checkIfLastChildNode() {
+		CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
+		CellTreeNode parentNode = selectedNode.getParent();
+		if ((parentNode.getChilds() == null) || (parentNode.getChilds().size() <= 1)) {
+			return false;
+		}
+		for (int i = 0; i <= parentNode.getChilds().size(); i++) {
+			if (selectedNode.equals(selectedNode.getParent().getChilds().get(i))) {
+				return !(i == (parentNode.getChilds().size() - 1));
+			}
+		}
+		return true;
+	}
 	/**
 	 * Gets the next highest sequence.
 	 * 

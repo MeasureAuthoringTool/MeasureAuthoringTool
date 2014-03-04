@@ -17,6 +17,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	 * @param treeDisplay - XmlTreeDisplay.
 	 * @param popPanel - PopupPanel.
 	 */
+	
 	public PopulationWorkSpaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		super(treeDisplay, popPanel);
 	}
@@ -63,6 +64,8 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 			case CellTreeNode.CLAUSE_NODE:
 				addCommonMenus();
+				
+				
 				copyMenu.setEnabled(true);
 				pasteMenu.setEnabled(false);
 				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
@@ -92,6 +95,12 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
 						&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)) {
 					cutMenu.setEnabled(true);
+					addMoveUpMenu(popupPanel);
+					popupMenuBar.addItem(moveUpMenu);
+					moveUpMenu.setEnabled(checkIfTopChildNode());
+					addMoveDownMenu(popupPanel);
+					popupMenuBar.addItem(moveDownMenu);
+					moveDownMenu.setEnabled(checkIfLastChildNode());
 					subMenuBar = new MenuBar(true);
 					createEditMenus(MatContext.get().logicalOps, subMenuBar);
 					editMenu = new MenuItem("Edit", true, subMenuBar);
@@ -135,6 +144,12 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				popupMenuBar.setAutoOpen(true);
 				subMenuBar.setAutoOpen(true);
 				addCommonMenus();
+				addMoveUpMenu(popupPanel);
+				popupMenuBar.addItem(moveUpMenu);
+				moveUpMenu.setEnabled(checkIfTopChildNode());
+				addMoveDownMenu(popupPanel);
+				popupMenuBar.addItem(moveDownMenu);
+				moveDownMenu.setEnabled(checkIfLastChildNode());
 				deleteMenu.setEnabled(true);
 				Command editClauseCmd = new Command() {
 					@Override
@@ -151,6 +166,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 		}
 	}
+	
 	/**
 	 * @param menuBar - MenuBar.
 	 */

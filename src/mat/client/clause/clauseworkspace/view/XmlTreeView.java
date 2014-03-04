@@ -1247,6 +1247,62 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			copiedNode = pasteNode;
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#moveUp()
+	 */
+	@Override
+	public void moveUp() {
+		
+		if (selectedNode != null) {
+			int index = 0;
+			for (int i = 0; i <= selectedNode.getParent().getChilds().size(); i++) {
+				if (selectedNode.equals(selectedNode.getParent().getChilds().get(i))) {
+					index = i;
+					System.out.println("Index found ---- " + index);
+					CellTreeNode parentNode = selectedNode.getParent();
+					CellTreeNode nodeToMoveUp = selectedNode.cloneNode();
+					nodeToMoveUp.setParent(parentNode);
+					parentNode.getChilds().add(index - 1, nodeToMoveUp);
+					selectedNode.getParent().removeChild(selectedNode);
+					selectionModel.setSelected(nodeToMoveUp, true);
+					closeNodes(cellTree.getRootTreeNode());
+					openAllNodes(cellTree.getRootTreeNode());
+					selectionModel.setSelected(nodeToMoveUp, true);
+					break;
+				}
+			}
+		}
+		
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#moveDown()
+	 */
+	@Override
+	public void moveDown() {
+		
+		if (selectedNode != null) {
+			int index = 0;
+			for (int i = 0; i <= selectedNode.getParent().getChilds().size(); i++) {
+				if (selectedNode.equals(selectedNode.getParent().getChilds().get(i))) {
+					index = i;
+					System.out.println("Index found ---- " + index);
+					CellTreeNode parentNode = selectedNode.getParent();
+					CellTreeNode nodeToMoveDown = selectedNode.cloneNode();
+					nodeToMoveDown.setParent(parentNode);
+					selectedNode.getParent().removeChild(selectedNode);
+					parentNode.getChilds().add(index + 1, nodeToMoveDown);
+					selectionModel.setSelected(nodeToMoveDown, true);
+					closeNodes(cellTree.getRootTreeNode());
+					openAllNodes(cellTree.getRootTreeNode());
+					selectionModel.setSelected(nodeToMoveDown, true);
+					break;
+				}
+			}
+		}
+		
+	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getCopiedNode()
 	 */
@@ -1685,4 +1741,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public CommentAreaTextBox getCommentArea() {
 		return commentArea;
 	}
+	
+	
 }

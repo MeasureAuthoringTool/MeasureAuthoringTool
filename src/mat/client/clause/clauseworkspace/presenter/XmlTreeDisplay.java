@@ -103,6 +103,11 @@ public interface XmlTreeDisplay {
 	public void copy();
 	
 	/**
+	 * Move Node up in List.
+	 */
+	public void moveUp();
+	
+	/**
 	 * Paste.
 	 */
 	public void paste();
@@ -340,5 +345,14 @@ public interface XmlTreeDisplay {
 	 */
 	Button getDeleteClauseButton();
 	
+	/**
+	 * Refresh Cell Node to show inline comment indicator.
+	 * @param selectedNode - CellTreeNode.
+	 */
 	void refreshCellTreeAfterAddingComment(CellTreeNode selectedNode);
+	
+	/**
+	 * Move Node Down in List.
+	 */
+	void moveDown();
 }

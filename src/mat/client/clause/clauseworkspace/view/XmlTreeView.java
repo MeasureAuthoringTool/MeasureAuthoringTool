@@ -19,6 +19,7 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
+import mat.shared.UUIDUtilClient;
 import org.apache.commons.lang.StringUtils;
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
@@ -104,8 +105,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		 *            the content
 		 * @return the safe html
 		 */
-		@Template("<div class=\"{0}\" title=\"{1}\" aria-role=\"tree\">{2}</div>")
-		SafeHtml outerDiv(String classes, String title, String content);
+		@Template("<div class=\"{0}\" id=\"{1}\" title=\"{2}\" aria-role=\"tree\">{3}</div>")
+		SafeHtml outerDiv(String classes, String id , String title, String content);
 		/**
 		 * Outer div for Tree Item.
 		 * @param classes
@@ -116,8 +117,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		 *            the content
 		 * @return the safe html
 		 */
-		@Template("<div class=\"{0}\" title=\"{1}\" aria-role=\"treeitem\">{2}</div>")
-		SafeHtml outerDivItem(String classes, String title, String content);
+		@Template("<div class=\"{0}\" id=\"{1}\" title=\"{2}\" aria-role=\"treeitem\">{3}</div>")
+		SafeHtml outerDivItem(String classes,String id, String title, String content);
 		
 		/**
 		 * Div for Nodes with Comment.
@@ -129,9 +130,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		 *            the content
 		 * @return the safe html
 		 */
-		@Template("<div class=\"{0}\" title=\"{1}\" aria-role=\"treeitem\">{2}"
+		@Template("<div class=\"{0}\" id=\"{1}\" title=\"{2}\" aria-role=\"treeitem\">{3}"
 				+ "<span class =\"populationWorkSpaceCommentNode\">&nbsp;(C)</span></div>")
-		SafeHtml outerDivItemWithSpan(String classes, String title, String content);
+		SafeHtml outerDivItemWithSpan(String classes, String id, String title, String content);
+		
 		
 	}
 	
@@ -967,6 +969,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					|| (cellTreeNode.getNodeType()
 							== CellTreeNode.ROOT_NODE)) {
 				sb.append(template.outerDiv(getStyleClass(cellTreeNode), cellTreeNode.getTitle(),
+						UUIDUtilClient.uuid().concat("_treeNode"),
 						cellTreeNode.getLabel() != null
 						? cellTreeNode.getLabel() : cellTreeNode.getName()));
 			} else {
@@ -980,7 +983,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							if ((treeNode.getNodeText() != null)
 									&& (treeNode.getNodeText().length() > 0)
 									&& (treeNode.getNodeText().trim() != StringUtils.EMPTY)) {
-								sb.append(template.outerDivItemWithSpan(getStyleClass(cellTreeNode), cellTreeNode.getTitle(),
+								sb.append(template.outerDivItemWithSpan(getStyleClass(cellTreeNode),
+										UUIDUtilClient.uuid().concat("_treeNode"), cellTreeNode.getTitle(),
 										cellTreeNode.getLabel() != null
 										? cellTreeNode.getLabel() : cellTreeNode.getName()));
 								foundComment = true;
@@ -989,17 +993,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 					}
 					if(!foundComment) {
-						sb.append(template.outerDivItem(getStyleClass(cellTreeNode), cellTreeNode.getTitle(),
+						sb.append(template.outerDivItem(getStyleClass(cellTreeNode),
+								UUIDUtilClient.uuid().concat("_treeNode"), cellTreeNode.getTitle(),
 								cellTreeNode.getLabel() != null
 								? cellTreeNode.getLabel() : cellTreeNode.getName()));
 					}
 					
 				} else {
-					sb.append(template.outerDivItem(getStyleClass(cellTreeNode), cellTreeNode.getTitle(),
+					sb.append(template.outerDivItem(getStyleClass(cellTreeNode),UUIDUtilClient.uuid().concat("_treeNode"), cellTreeNode.getTitle(),
 							cellTreeNode.getLabel() != null
 							? cellTreeNode.getLabel() : cellTreeNode.getName()));
 				}
 			}
+			
 		}
 		/* (non-Javadoc)
 		 * @see com.google.gwt.cell.client.AbstractCell#onBrowserEvent(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object, com.google.gwt.dom.client.NativeEvent, com.google.gwt.cell.client.ValueUpdater)
@@ -1358,7 +1364,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public void onKeyDown(KeyDownEvent event) {
 		int keyCode = event.getNativeKeyCode();
-		Element element = Element.as(event.getNativeEvent().getEventTarget());
+		/*Element element = Element.as(event.getNativeEvent().getEventTarget());
 		// This is done to avoid executing Delete/Cut/Paste key board short cuts
 		// to be executed on nodes when they event is triggered in Comment text area
 		//in Population Work Space or suggestion Text Area in ClauseWorkSpace
@@ -1369,12 +1375,27 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			System.out.println("Element - ID" + element.getId());
 			
 			return;
+		}*/
+		Element element = Element.as(event.getNativeEvent().getEventTarget());
+		System.out.println("Element - ID" + element.getAttribute("id"));
+		System.out.println("Element - getElementsByTagName" + element.getElementsByTagName("div"));
+		String id= StringUtils.EMPTY;
+		// This is done to avoid executing Delete/Cut/Paste key board short cuts
+		// to be executed on nodes when they event is triggered in Comment text area.
+		if ((element.getElementsByTagName("div") != null)
+				&& (element.getElementsByTagName("div").getLength() > 0)) {
+			id = element.getElementsByTagName("div").getItem(0).getAttribute("id");
+			System.out.println("Element - ID" + id);
+		}
+		if (!(id.toLowerCase()).contains("treenode".toLowerCase())) {
+			return;
 		}
 		if (selectedNode != null) {
 			short nodeType = selectedNode.getNodeType();
 			if (event.isControlKeyDown()) {
 				if (keyCode == PopulationWorkSpaceConstants.COPY_C) { //COPY
-					if ((nodeType != CellTreeNode.MASTER_ROOT_NODE) && (nodeType != CellTreeNode.ROOT_NODE)) {
+					if ((nodeType != CellTreeNode.MASTER_ROOT_NODE) && (nodeType != CellTreeNode.ROOT_NODE)
+							&& (selectedNode.getNodeType() != CellTreeNode.SUBTREE_ROOT_NODE)) {
 						popupPanel.hide();
 						copy();
 					}
@@ -1414,6 +1435,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					if ((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
 							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
 							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
+							&& (selectedNode.getNodeType() != CellTreeNode.SUBTREE_ROOT_NODE)
 							&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
 						copy();
 						removeNode();
@@ -1424,6 +1446,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				popupPanel.hide();
 				if (((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
 						&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
+						&& (selectedNode.getNodeType() != CellTreeNode.SUBTREE_ROOT_NODE)
 						&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
 						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE))
 						|| ((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE)

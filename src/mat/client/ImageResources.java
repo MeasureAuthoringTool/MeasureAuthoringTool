@@ -322,4 +322,20 @@ public interface ImageResources extends ClientBundle {
 	 */
 	@Source("images/search.png")
 	ImageResource search_zoom();
+	
+	/**
+	 * Go Up image.
+	 *
+	 * @return the image resource
+	 */
+	@Source("images/go_up.png")
+	ImageResource go_up();
+	
+	/**
+	 * Go down image.
+	 *
+	 * @return the image resource
+	 */
+	@Source("images/go_down.png")
+	ImageResource go_down();
 }

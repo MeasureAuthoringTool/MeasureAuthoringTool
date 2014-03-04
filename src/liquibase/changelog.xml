@@ -141,5 +141,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-35_anatomical_approach_site_attrib.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-35_add_other_attribs.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-35_delete_anatomical_structure_attrib.xml"/>
-		<include file="classpath:/liquibase/deploy_Sprint-35_delete_data_types_and_related_attribs.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-35_delete_data_types_and_assoc_attribs.xml"/>
 	</databaseChangeLog>

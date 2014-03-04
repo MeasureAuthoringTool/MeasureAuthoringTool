@@ -1270,6 +1270,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					closeNodes(cellTree.getRootTreeNode());
 					openAllNodes(cellTree.getRootTreeNode());
 					selectionModel.setSelected(nodeToMoveUp, true);
+					isDirty = true;
 					break;
 				}
 			}
@@ -1298,6 +1299,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					closeNodes(cellTree.getRootTreeNode());
 					openAllNodes(cellTree.getRootTreeNode());
 					selectionModel.setSelected(nodeToMoveDown, true);
+					isDirty = true;
 					break;
 				}
 			}

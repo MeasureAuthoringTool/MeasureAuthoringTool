@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
@@ -13,6 +14,7 @@ import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.MenuItemSeparator;
@@ -805,9 +807,12 @@ public class ClauseWorkspaceContextMenu {
 		SafeUri uri = new SafeUri() {
 			@Override
 			public String asString() {
-				return "./images/go_up.png";
+				Image moveUpIcon = new Image(ImageResources.INSTANCE.go_up());
+				return moveUpIcon.getUrl();
 			}
 		};
+		
+		
 		moveUpMenu = new MenuItem(template.menuTableWithIcon("Move Up", "", uri), moveUpCmd);
 	}
 	/**
@@ -825,7 +830,8 @@ public class ClauseWorkspaceContextMenu {
 		SafeUri uri = new SafeUri() {
 			@Override
 			public String asString() {
-				return "./images/go_down.png";
+				Image moveDownIcon = new Image(ImageResources.INSTANCE.go_down());
+				return moveDownIcon.getUrl();
 			}
 		};
 		moveDownMenu = new MenuItem(template.menuTableWithIcon("Move Down", "" , uri), moveDownCmd);

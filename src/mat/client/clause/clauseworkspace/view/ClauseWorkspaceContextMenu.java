@@ -9,6 +9,7 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
@@ -804,7 +805,7 @@ public class ClauseWorkspaceContextMenu {
 		SafeUri uri = new SafeUri() {
 			@Override
 			public String asString() {
-				return "/images/go_up.png";
+				return "./images/go_up.png";
 			}
 		};
 		moveUpMenu = new MenuItem(template.menuTableWithIcon("Move Up", "", uri), moveUpCmd);
@@ -824,7 +825,7 @@ public class ClauseWorkspaceContextMenu {
 		SafeUri uri = new SafeUri() {
 			@Override
 			public String asString() {
-				return "/images/go_down.png";
+				return "./images/go_down.png";
 			}
 		};
 		moveDownMenu = new MenuItem(template.menuTableWithIcon("Move Down", "" , uri), moveDownCmd);

@@ -10,6 +10,19 @@
         context="prod" >
 
         <sql>
+            DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID = 
+			(select dt.DATA_TYPE_ID from DATA_TYPE dt where 
+			DESCRIPTION = 'Diagnostic Study, Result' and CATEGORY_ID=6);
+			
+			delete from DATA_TYPE where DESCRIPTION = 'Diagnostic Study, Result' and CATEGORY_ID=6;
+			
+			DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID = 
+			(select dt.DATA_TYPE_ID from DATA_TYPE dt where 
+			DESCRIPTION = 'Functional Status, Result' and CATEGORY_ID=8);
+			
+			delete from DATA_TYPE where 
+			DESCRIPTION = 'Functional Status, Result' and CATEGORY_ID=8;            
+            
 			DELETE FROM QDM_ATTRIBUTES WHERE DATA_TYPE_ID = 
 			(select dt.DATA_TYPE_ID from DATA_TYPE dt where 
 			DESCRIPTION = 'Intervention, Result' and CATEGORY_ID=10);

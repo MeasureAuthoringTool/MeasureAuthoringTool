@@ -418,6 +418,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		subTreeNameListBox = new ListBox();
 		subTreeNameListBox.setWidth("250px");
 		subTreeNameListBox.setVisibleItemCount(10);
+		subTreeNameListBox.getElement().setAttribute("id", "subTreeListBox");
 		clearAndAddClauseNamesToListBox();
 		
 		addSuggestHandler(searchSuggestTextBox, subTreeNameListBox);
@@ -1358,9 +1359,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		Element element = Element.as(event.getNativeEvent().getEventTarget());
 		// This is done to avoid executing Delete/Cut/Paste key board short cuts
 		// to be executed on nodes when they event is triggered in Comment text area
-		//in Population Work Space or suggestion Text Area in ClauseWorkSpace.
+		//in Population Work Space or suggestion Text Area in ClauseWorkSpace
+		//or List item from Clause Library.
 		if (element.getId().equalsIgnoreCase("addComment_TextArea")
-				|| element.getId().equalsIgnoreCase("searchSuggestTextBox")) {
+				|| element.getId().equalsIgnoreCase("searchSuggestTextBox")
+				|| element.getId().equalsIgnoreCase("subTreeListBox")) {
 			System.out.println("Element - ID" + element.getId());
 			
 			return;

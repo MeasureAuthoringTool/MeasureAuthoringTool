@@ -1,5 +1,7 @@
 package mat.client.measurepackage;
 
+import java.util.List;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -8,8 +10,11 @@ import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
+import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
+import mat.model.QualityDataSetDTO;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -18,6 +23,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackagePresenter.
  */
@@ -31,6 +37,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private PackageView view;
 	/** The model. */
 	private ManageMeasureDetailModel model;
+	
+	/** The current detail. */
+	private MeasurePackageDetail currentDetail;
+	
+	/** The overview. */
+	private MeasurePackageOverview overview;
+	
 	/**
 	 * The Interface View.
 	 */
@@ -76,13 +89,56 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * @return the package success message display
 		 */
 		SuccessMessageDisplayInterface getPackageSuccessMessageDisplay();
+		
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
 		Widget asWidget();
+		
+		/**
+		 * Sets the qDM elements in supp elements.
+		 *
+		 * @param clauses the new qDM elements in supp elements
+		 */
+		void setQDMElementsInSuppElements(List<QualityDataSetDTO> clauses);
+		
+		/**
+		 * Gets the qDM elements in supp elements.
+		 *
+		 * @return the qDM elements in supp elements
+		 */
+		List<QualityDataSetDTO> getQDMElementsInSuppElements();
+		
+		/**
+		 * Sets the qDM elements.
+		 *
+		 * @param clauses the new qDM elements
+		 */
+		void setQDMElements(List<QualityDataSetDTO> clauses);
+		
+		/**
+		 * Gets the qDM elements.
+		 *
+		 * @return the qDM elements
+		 */
+		List<QualityDataSetDTO> getQDMElements();
 	}
+	
+	/**
+	 * Instantiates a new measure package presenter.
+	 *
+	 * @param packageView the package view
+	 */
 	public MeasurePackagePresenter(PackageView packageView) {
 		view = packageView;
 		addAllHandlers();
 	}
 	
+	/**
+	 * Adds the all handlers.
+	 */
 	private void addAllHandlers() {
 		view.getPackageMeasureButton().addClickHandler(new ClickHandler() {
 			
@@ -111,9 +167,17 @@ public class MeasurePackagePresenter implements MatPresenter {
 		panel.clear();
 		panel.add(emptyPanel);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeClosingDisplay()
+	 */
 	@Override
 	public void beforeClosingDisplay() {
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#beforeDisplay()
+	 */
 	@Override
 	public void beforeDisplay() {
 		if ((MatContext.get().getCurrentMeasureId() != null)
@@ -125,12 +189,97 @@ public class MeasurePackagePresenter implements MatPresenter {
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackage");
 		Mat.focusSkipLists("MeasureComposer");
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.MatPresenter#getWidget()
+	 */
 	@Override
 	public Widget getWidget() {
 		panel.clear();
 		panel.add(view.asWidget());
 		return panel;
 	}
+	
+	/**
+	 * get Measure Package Overview.
+	 * 
+	 * @param measureId
+	 *            - String.
+	 * @return the measure package overview
+	 */
+	private void getMeasurePackageOverview(final String measureId) {
+		MatContext
+		.get()
+		.getPackageService()
+		.getClausesAndPackagesForMeasure(measureId,
+				new AsyncCallback<MeasurePackageOverview>() {
+			@Override
+			public void onFailure(final Throwable caught) {
+				view.getPackageErrorMessageDisplay()
+				.setMessage(
+						MatContext
+						.get()
+						.getMessageDelegate()
+						.getGenericErrorMessage());
+			}
+			
+			@Override
+			public void onSuccess(final MeasurePackageOverview result) {
+				if ((currentDetail != null)
+						&& !currentDetail.getMeasureId()
+						.equalsIgnoreCase(measureId)) {
+					currentDetail = null; // This will make sure
+					// the package
+					// information are not
+					// cached across
+					// measures.
+				}
+				setOverview(result);
+			}
+		});
+	}
+		
+		/**
+		 * set Overview.
+		 * @param result - MeasurePackageOverview.
+		 */
+		private void setOverview(final MeasurePackageOverview result) {
+			overview = result;
+			//view.setClauses(result.getClauses());
+			// QDM elements
+			view.setQDMElements(result.getQdmElements());
+			
+			//view.setMeasurePackages(result.getPackages());
+			
+			if (result.getPackages().size() > 0) {
+				if (currentDetail != null) {
+					for (int i = 0; i < result.getPackages().size(); i++) {
+						MeasurePackageDetail mpDetail = result.getPackages().get(i);
+						if (mpDetail.getSequence().equalsIgnoreCase(
+								currentDetail.getSequence())) {
+							setMeasurePackage(result.getPackages().get(i)
+									.getSequence());
+						}
+					}
+				} else {
+					setMeasurePackage(result.getPackages().get(0).getSequence());
+				}
+				
+			} else {
+				setNewMeasurePackage();
+			}
+			
+//			ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(),
+//					isEditable());
+			//view.setViewIsEditable(isEditable(), result.getPackages());
+		}
+	
+	/**
+	 * Gets the measure.
+	 *
+	 * @param measureId the measure id
+	 * @return the measure
+	 */
 	private void getMeasure(final String measureId) {
 		MatContext
 		.get()
@@ -146,7 +295,82 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onSuccess(
 					final ManageMeasureDetailModel result) {
 				model = result;
+				getMeasurePackageOverview(MatContext.get()
+						.getCurrentMeasureId());
+				displayMeasurePackageWorkspace();
 			}
 		});
 	}
+	/**
+	 * set New MeasurePackage.
+	 */
+	private void setNewMeasurePackage() {
+		currentDetail = new MeasurePackageDetail();
+		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
+		currentDetail.setSequence(Integer
+				.toString(getMaxSequence(overview) + 1));
+		//view.setMeasurePackages(overview.getPackages());
+		setMeasurePackageDetailsOnView();
+	}
+	
+	/**
+	 * Sets the measure package.
+	 *
+	 * @param measurePackageId the new measure package
+	 */
+	private void setMeasurePackage(final String measurePackageId) {
+		for (MeasurePackageDetail detail : overview.getPackages()) {
+			if (detail.getSequence().equals(measurePackageId)) {
+				currentDetail = detail;
+				setMeasurePackageDetailsOnView();
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * setMeasurePackageDetailsOnView.
+	 */
+	private void setMeasurePackageDetailsOnView() {
+//		List<MeasurePackageClauseDetail> packageClauses = currentDetail
+//				.getPackageClauses();
+//	    List<MeasurePackageClauseDetail> remainingClauses = removeClauses(
+//				overview.getClauses(), packageClauses);
+//		
+//		view.setPackageName(currentDetail.getPackageName());
+//		view.setClausesInPackage(packageClauses);
+//		view.setClauses(remainingClauses);
+		view.setQDMElementsInSuppElements(overview.getSuppDataElements());
+		view.setQDMElements(overview.getQdmElements());
+	}
+	
+	/**
+	 * Display MeasurePackage Workspace.
+	 */
+	private void displayMeasurePackageWorkspace() {
+		panel.clear();
+		panel.add(view.asWidget());
+		// view.setTabIndex();
+	}
+	
+	/**
+	 * Gets the max sequence.
+	 *
+	 * @param measurePackageOverview the measure package overview
+	 * @return the max sequence
+	 */
+	private int getMaxSequence(final MeasurePackageOverview measurePackageOverview) {
+		int max = 0;
+		for (MeasurePackageDetail detail : measurePackageOverview.getPackages()) {
+			int seqInt = Integer.parseInt(detail.getSequence());
+			if (seqInt > max) {
+				max = seqInt;
+			}
+		}
+		return max;
+	}
+
+
 }
+
+

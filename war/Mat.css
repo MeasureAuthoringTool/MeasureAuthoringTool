@@ -1933,3 +1933,33 @@ padding: 2px;
     overflow: hidden;
 }
 
+.newGreySecondaryButton{
+	background: url("images/bg_btnGrey-secondary.png");
+    background-repeat:repeat-x;
+    font-weight: bold;
+    border:1px solid #C0C0C0;
+    -moz-box-sizing:border-box;
+    height: 15px;
+    width: 30px;
+    text-align: center;
+    vertical-align: middle;
+    padding:5px;
+    cursor: pointer;
+}
+
+.newGreySecondaryButton img {
+	padding:1px;
+}
+
+.measurePackageLeftRightPanelHolder{
+	border:1px solid #ADD8E6;
+	-moz-box-sizing:border-box;
+	padding:5px;
+}
+
+.measurePackageLeftRightPanel .newColumn {
+	margin-top: 14px;
+	margin-left: 14px;
+	margin-right: 14px;
+	float: left;
+}

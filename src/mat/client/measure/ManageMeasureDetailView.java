@@ -83,9 +83,11 @@ public class ManageMeasureDetailView
 		
 		mainPanel.setStylePrimaryName("contentPanel");
 		mainPanel.addStyleName("leftAligned");
+		mainPanel.getElement().setId("mainPanel_SimplePanel");
 
 
 		FlowPanel fPanel = new FlowPanel();
+		fPanel.getElement().setId("fPanel_FlowPanel");
 		fPanel.setWidth("90%");	
 		fPanel.setHeight("100%");
 		fPanel.add(measureNameLabel);
@@ -97,6 +99,7 @@ public class ManageMeasureDetailView
 		fPanel.add(errorMessages);
 		
 		FlowPanel leftPanel = new FlowPanel();
+		leftPanel.getElement().setId("leftPanel_FlowPanel");
 		fPanel.add(leftPanel);
 		
 		leftPanel.add(LabelBuilder.buildLabel(name, nameLabel));
@@ -109,6 +112,7 @@ public class ManageMeasureDetailView
 		leftPanel.add(new SpacerWidget());
 		//US 195 Adding Static Caution Message
 		HorizontalPanel hp = new HorizontalPanel();
+		leftPanel.getElement().setId("hp_HorizontalPanel");
 		hp.add(measScoringInput);
 		hp.add(new HTML("&nbsp;"));
 		hp.add(cautionMsgPlaceHolder);
@@ -119,9 +123,11 @@ public class ManageMeasureDetailView
 		leftPanel.add(new SpacerWidget());
 
 		SimplePanel buttonPanel = new SimplePanel();
+		buttonPanel.getElement().setId("buttonPanel_SimplePanel");
 		buttonBar.getSaveButton().setText("Save and Continue");
 		buttonBar.getSaveButton().setTitle("Save and Continue");
 		buttonBar.getCancelButton().setTitle("Cancel");
+		buttonBar.getElement().setId("buttonBar_SaveCancelButtonBar");
 		buttonPanel.add(buttonBar);
 		buttonPanel.setWidth("100%");
 		fPanel.add(buttonPanel);

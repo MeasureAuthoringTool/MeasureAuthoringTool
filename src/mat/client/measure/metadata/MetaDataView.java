@@ -28,8 +28,8 @@ import mat.shared.ConstantMessages;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -42,7 +42,6 @@ import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
@@ -314,8 +313,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		//referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
 		
 		HorizontalPanel mainContent = new HorizontalPanel();
+		mainContent.getElement().setId("mainContent_HorizontalPanel");
 		mainPanel.setStylePrimaryName("searchResultsContainer");
 		mainPanel.addStyleName("leftAligned");
+		mainPanel.getElement().setId("mainPanel_FlowPanel01");
 		
 		mainContent.add(buildLeftSideForm());
 		mainPanel.add(saveErrorDisplay);
@@ -323,6 +324,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		mainPanel.setStyleName("contentPanel");
 		DOM.setElementAttribute(mainPanel.getElement(), "id", "MetaDataView.containerPanel");
 		focusPanel.add(mainPanel);
+		focusPanel.getElement().setId("focusPanel_FocusPanel01");
 		
 	}
 	
@@ -360,13 +362,16 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		authorListBox.setVisibleItemCount(5);
 		authorListBox.addChangeHandler(changeHandler);
+		authorListBox.getElement().setId("authorListBox_ListBox");
 		
 		measureTypeListBox.setVisibleItemCount(5);
 		measureTypeListBox.addChangeHandler(changeHandler);
+		measureTypeListBox.getElement().setId("measureTypeListBox_ListBox");
 		
 		FlowPanel fPanel = new FlowPanel();
 		
 		fPanel.setStyleName("leftSideForm");
+		fPanel.getElement().setId("fPanel_FlowPanelLeft");
 		
 		
 		
@@ -389,6 +394,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());
 		
 		HorizontalFlowPanel horizontalPanel = new HorizontalFlowPanel();
+		horizontalPanel.getElement().setId("horizontalPanel_HorizontalFlowPanelLeft");
 		horizontalPanel.add(LabelBuilder.buildLabel(eMeasureIdentifierInput, "eMeasure Identifier (Measure Authoring Tool)"));
 		Widget optionLabelWidget = LabelBuilder.buildLabel(eMeasureIdentifierInput, " - Optional");
 		optionLabelWidget.setStyleName("generate-emeasureid-button");
@@ -398,6 +404,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(eMeasureIdentifierInput);
 		fPanel.add(generateeMeasureIDButton);
 		generateeMeasureIDButton.addClickHandler(clickHandler);
+		generateeMeasureIDButton.getElement().setId("generateeMeasureIDButton_Button");
 		fPanel.add(new SpacerWidget());
 		
 		fPanel.add(LabelBuilder.buildLabel(finalizedDate, "Finalized Date"));
@@ -423,6 +430,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());
 		
 		HorizontalPanel measurePeriodPanel = new HorizontalPanel();
+		measurePeriodPanel.getElement().setId("measurePeriodPanel_HorizontalPanel");
 		Label fromLabel = new Label("From");
 		fromLabel.addStyleName("firstLabel");
 		measurePeriodPanel.add(fromLabel);
@@ -441,6 +449,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 		//US 413. Included for measure steward other option.
 		VerticalPanel verStewardPanel = new VerticalPanel();
+		verStewardPanel.getElement().setId("verStewardPanel_verStewardPanel");
 		verStewardPanel.add(LabelBuilder.buildLabel(measureStewardInput, "Measure Steward"));
 		verStewardPanel.add(measureStewardInput);
 		verStewardPanel.add(new SpacerWidget());

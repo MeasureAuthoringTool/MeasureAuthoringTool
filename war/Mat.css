@@ -294,6 +294,46 @@ left:50px;
     cursor: text;
 }
 
+.customAddRightButton {
+    background: url("images/addRight.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    background-color:#D3D3D3; 
+    height: 25px;
+    width: 30px;
+    cursor: hand;
+}
+
+.customAddLeftButton {
+    background: url("images/addLeft.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    background-color:#D3D3D3;
+    height: 25px;
+    width: 30px;
+    cursor: hand;
+}
+
+.customAddALlRightButton {
+    background: url("images/addAllRight.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    background-color:#D3D3D3;
+    height: 25px;
+    width: 30px;
+    cursor: hand;
+}
+
+.customAddAllLeftButton {
+    background: url("images/addAllLeft.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    background-color:#D3D3D3;
+    height: 25px;
+    width: 30px;
+    cursor: hand;
+}
+
 .customCompositeEmptyCell{
 	cursor: text;
 }
@@ -1962,4 +2002,8 @@ padding: 2px;
 	margin-left: 14px;
 	margin-right: 14px;
 	float: left;
+}
+
+.thirdLabel{
+	margin-top : 30px;
 }

@@ -124,6 +124,29 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * @return the qDM elements
 		 */
 		List<QualityDataSetDTO> getQDMElements();
+		
+		/**
+		 * Gets the adds the qdm elements to measure button.
+		 *
+		 * @return the adds the qdm elements to measure button
+		 */
+		HasClickHandlers getAddQDMElementsToMeasureButton();
+		
+		/**
+		 * Gets the supp data success message display.
+		 *
+		 * @return the supp data success message display
+		 */
+		SuccessMessageDisplayInterface getSuppDataSuccessMessageDisplay();
+		
+		/**
+		 * Sets the view is editable.
+		 *
+		 * @param b the b
+		 * @param packages the packages
+		 */
+		void setViewIsEditable(boolean b,
+				List<MeasurePackageDetail> packages);
 	}
 	
 	/**
@@ -144,6 +167,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(false);
 				MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
 					
@@ -159,6 +183,68 @@ public class MeasurePackagePresenter implements MatPresenter {
 				});
 			}
 		});
+		
+		view.getAddQDMElementsToMeasureButton().addClickHandler(
+				new ClickHandler() {
+					@Override
+					public void onClick(final ClickEvent event) {
+						clearMessages();
+						updateSuppDataDetailsFromView();
+						MatContext
+						.get()
+						.getPackageService()
+						.saveQDMData(currentDetail,
+								new AsyncCallback<Void>() {
+							@Override
+							public void onFailure(final Throwable caught) {
+								view.getPackageErrorMessageDisplay().
+								setMessage(MatContext.get().
+										getMessageDelegate().
+										getUnableToProcessMessage());
+							}
+							
+							@Override
+							public void onSuccess(final Void result) {
+								if (!overview.getPackages().contains(
+										currentDetail)) {
+									if ((currentDetail
+											.getPackageClauses() != null)
+											&& (currentDetail.
+													getPackageClauses()
+													.size() > 0)) {
+										overview.getPackages()
+										.add(currentDetail);
+									}
+									overview.setQdmElements(
+											currentDetail
+											.getQdmElements());
+									overview.
+									setSuppDataElements(currentDetail
+											.getSuppDataElements());
+									setOverview(overview);
+								}
+								view.getSuppDataSuccessMessageDisplay()
+								.setMessage(MatContext.get()
+										.getMessageDelegate()
+										.getSuppDataSavedMessage());
+							}
+						});
+					}
+				});
+	}
+	
+	
+	/**
+	 * Clear messages.
+	 */
+	private void clearMessages() {
+		view.getPackageSuccessMessageDisplay().clear();
+		view.getSuppDataSuccessMessageDisplay().clear();
+		view.getPackageErrorMessageDisplay().clear();
+		//view.getMeasureErrorMessageDisplay().clear();
+		view.getMeasurePackageSuccessMsg().clear();
+		view.getErrorMessageDisplay().clear();
+		view.getMeasurePackageWarningMsg().clear();
 	}
 	/**
 	 * Display Empty.
@@ -180,6 +266,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeDisplay() {
+		Mat.hideLoadingMessage();
+		clearMessages();
 		if ((MatContext.get().getCurrentMeasureId() != null)
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
 			getMeasure(MatContext.get().getCurrentMeasureId());
@@ -238,7 +326,15 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 	}
-		
+	
+	/**
+	 * Update supp data details from view.
+	 */
+	private void updateSuppDataDetailsFromView() {
+		currentDetail.setSuppDataElements(view.getQDMElementsInSuppElements());
+		currentDetail.setQdmElements(view.getQDMElements());
+	}
+	
 		/**
 		 * set Overview.
 		 * @param result - MeasurePackageOverview.
@@ -269,11 +365,21 @@ public class MeasurePackagePresenter implements MatPresenter {
 				setNewMeasurePackage();
 			}
 			
-//			ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(),
-//					isEditable());
-			//view.setViewIsEditable(isEditable(), result.getPackages());
+			ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(),
+					isEditable());
+			view.setViewIsEditable(isEditable(), result.getPackages());
 		}
 	
+		/**
+		 * Checks if is editable.
+		 *
+		 * @return true, if is editable
+		 */
+		private boolean isEditable() {
+			return MatContext.get().getMeasureLockService()
+					.checkForEditPermission();
+		}
+		
 	/**
 	 * Gets the measure.
 	 *

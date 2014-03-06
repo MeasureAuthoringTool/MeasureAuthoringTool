@@ -10,17 +10,20 @@ import mat.client.ImageResources;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
 import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -31,23 +34,23 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MeasurePackagerView.
+ */
 public class MeasurePackagerView implements MeasurePackagePresenter.PackageView {
 
 	/** The add qdm right. */
-	private FocusPanel addQDMRight = buildAddButton(ImageResources.INSTANCE
-			.addRight());
+	private Button addQDMRight = buildAddButton("customAddRightButton");
 
 	/** The add qdm left. */
-	private FocusPanel addQDMLeft = buildAddButton(ImageResources.INSTANCE
-			.addLeft());
+	private Button addQDMLeft = buildAddButton("customAddLeftButton");
 
 	/** The add all qdm right. */
-	private FocusPanel addAllQDMRight = buildDoubleAddButton(ImageResources.INSTANCE
-			.addAllRight());
+	private Button addAllQDMRight = buildDoubleAddButton("customAddALlRightButton");
 
 	/** The add all qdm left. */
-	private FocusPanel addAllQDMLeft = buildDoubleAddButton(ImageResources.INSTANCE
-			.addAllLeft());
+	private Button addAllQDMLeft = buildDoubleAddButton("customAddAllLeftButton");
 
 	/** The qdm element id map. */
 	private Map<String, QualityDataSetDTO> qdmElementIdMap = new HashMap<String, QualityDataSetDTO>();
@@ -60,6 +63,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private WarningMessageDisplay measurePackageWarningMsg = new WarningMessageDisplay();
 	/** The package success messages. */
 	private SuccessMessageDisplay packageSuccessMessages = new SuccessMessageDisplay();
+	
+	/** The supp data success messages. */
+	private SuccessMessageDisplay suppDataSuccessMessages = new SuccessMessageDisplay();
+	
 	/** The package measure. */
 	private PrimaryButton packageMeasure = new PrimaryButton(
 			"Create Measure Package", "primaryButton");
@@ -91,7 +98,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private int listVisibleCount = 10;
 
 	/**
-	 * Constructor
+	 * Constructor.
 	 */
 	public MeasurePackagerView() {
 		addQDMElementLeftRightClickHandlers();
@@ -156,22 +163,17 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		SimplePanel panel = new SimplePanel();
 		FlowPanel qdmTopContainer = new FlowPanel();
 		VerticalPanel vPanel = new VerticalPanel();
-		// qdmTopContainer.setWidth("700px");
 		qdmTabName.setStyleName("valueSetHeader");
 		qdmTopContainer.add(qdmTabName);
-		// qdmTopContainer.add(qdmErrorMessages);
-		// qdmTopContainer.add(suppDataSuccessMessages);
+		qdmTopContainer.add(suppDataSuccessMessages);
 		qdmElementsPanel.addStyleName("newColumn");
 		suppElementsPanel.addStyleName("newColumn");
 		addQDMElementButtonPanel.addStyleName("column");
-		// qdmElementsListBox.setStyleName("secondLabel");
-		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmElementsListBox,
-				"QDM Elements");
+		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmElementsListBox,"QDM Elements");
 		qdmElementsLabel.addStyleName("bold");
 		qdmElementsPanel.add(qdmElementsLabel);
 		qdmElementsPanel.add(qdmElementsListBox);
-		Widget suppElementsLabel = LabelBuilder.buildLabel(suppElementsListBox,
-				"Supplemental Data Elements");
+		Widget suppElementsLabel = LabelBuilder.buildLabel(suppElementsListBox,"Supplemental Data Elements");
 		suppElementsLabel.addStyleName("bold");
 		suppElementsPanel.add(suppElementsLabel);
 		suppElementsPanel.add(suppElementsListBox);
@@ -195,9 +197,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		return panel;
 	}
 
+	/**
+	 * Builds the qdm element add button widget.
+	 *
+	 * @return the widget
+	 */
 	private Widget buildQDMElementAddButtonWidget() {
-		FlowPanel panel = new FlowPanel();
-		panel.setStyleName("measurePackageAddButtonPanel");
+		VerticalPanel panel = new VerticalPanel();
+		panel.setStyleName("thirdLabel");
 		addQDMRight.setTitle("Add QDM element to Supplemental Data Elements");
 		addQDMRight.getElement().setAttribute("alt","Add QDM element to Supplemental Data Elements");
 		addQDMLeft.setTitle("Remove QDM Element from Supplemental Data Elements");
@@ -207,37 +214,65 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		addAllQDMLeft.setTitle("Remove all QDM Elements from Supplemental Data Elements");
 		addAllQDMLeft.getElement().setAttribute("alt","Remove all QDM Elements from Supplemental Data Elements");
 		panel.add(addQDMRight);
+		panel.add(new SpacerWidget());
+		panel.add(new SpacerWidget());
 		panel.add(addQDMLeft);
 		panel.add(new SpacerWidget());
+		panel.add(new SpacerWidget());
 		panel.add(addAllQDMRight);
+		panel.add(new SpacerWidget());
+		panel.add(new SpacerWidget());
 		panel.add(addAllQDMLeft);
 		return panel;
 	}
 
-	private FocusPanel buildAddButton(ImageResource imageUrl) {
-		FocusPanel fPanel = new FocusPanel();
-		fPanel.add(new Image(imageUrl));
-		fPanel.setStylePrimaryName("newGreySecondaryButton");
-		fPanel.addStyleName("measurePackageAddButton");
-		return fPanel;
+	/**
+	 * Builds the add button.
+	 *
+	 * @param imageUrl the image url
+	 * @return the button
+	 */
+	private Button buildAddButton(String imageUrl) {
+//		FocusPanel fPanel = new FocusPanel();
+//		fPanel.add(new Image(imageUrl));
+//		fPanel.setStylePrimaryName("greySecondaryButton");
+//		fPanel.addStyleName("measurePackageAddButton");
+		Button btn = new Button();
+		btn.setStyleName(imageUrl);
+		return btn;
 	}
 
-	private FocusPanel buildDoubleAddButton(ImageResource imageUrl) {
-		FocusPanel focusPanel = new FocusPanel();
-		FlowPanel fPanel = new FlowPanel();
-		fPanel.add(new Image(imageUrl));
-		fPanel.add(new Image(imageUrl));
-		focusPanel.add(fPanel);
-		focusPanel.setStylePrimaryName("newGreySecondaryButton");
-		focusPanel.addStyleName("measurePackageAddButton");
-		return focusPanel;
+	/**
+	 * Builds the double add button.
+	 *
+	 * @param imageUrl the image url
+	 * @return the button
+	 */
+	private Button buildDoubleAddButton(String imageUrl) {
+//		FocusPanel focusPanel = new FocusPanel();
+//		FlowPanel fPanel = new FlowPanel();
+//		fPanel.add(new Image(imageUrl));
+//		fPanel.add(new Image(imageUrl));
+//		focusPanel.add(fPanel);
+//		focusPanel.setStylePrimaryName("greySecondaryButton");
+//		focusPanel.addStyleName("measurePackageAddButton");
+		
+		Button btn = new Button();
+		btn.setStyleName(imageUrl);
+		return btn;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setQDMElementsInSuppElements(java.util.List)
+	 */
 	@Override
 	public final void setQDMElementsInSuppElements(final List<QualityDataSetDTO> clauses) {
 		setQDMElementsItems(suppElementsListBox, clauses);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getQDMElementsInSuppElements()
+	 */
 	@Override
 	public final List<QualityDataSetDTO> getQDMElementsInSuppElements() {
 		return getQDMElementsItems(suppElementsListBox);
@@ -280,6 +315,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		return list;
 	}
 
+	/**
+	 * Adds the qdm element right.
+	 */
 	private void addQDMElementRight() {
 		QualityDataSetDTO nvp = getQDMElementSelectedValue(qdmElementsListBox);
 		if (nvp != null) {
@@ -382,22 +420,46 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			}
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setViewIsEditable(boolean, java.util.List)
+	 */
+	@Override
+	public final void setViewIsEditable(final boolean b, final List<MeasurePackageDetail> packages) {
+		
+		packageMeasure.setEnabled(b);
+		addQDMElementsToMeasure.setEnabled(b);
+		qdmElementsPanel.setVisible(b);
 
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setQDMElements(java.util.List)
+	 */
 	@Override
 	public final void setQDMElements(final List<QualityDataSetDTO> clauses) {
 		setQDMElementsItems(qdmElementsListBox, clauses);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getQDMElements()
+	 */
 	@Override
 	public final List<QualityDataSetDTO> getQDMElements() {
 		return getQDMElementsItems(qdmElementsListBox);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
 		return errorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getMeasurePackageSuccessMsg()
+	 */
 	@Override
 	public SuccessMessageDisplayInterface getMeasurePackageSuccessMsg() {
 		return measurePackageSuccessMsg;
@@ -411,24 +473,52 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		return measurePackageWarningMsg;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getPackageErrorMessageDisplay()
+	 */
 	@Override
 	public ErrorMessageDisplayInterface getPackageErrorMessageDisplay() {
 		return errorMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getPackageMeasureButton()
+	 */
 	@Override
 	public HasClickHandlers getPackageMeasureButton() {
 		return packageMeasure;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getPackageSuccessMessageDisplay()
+	 */
 	@Override
 	public SuccessMessageDisplayInterface getPackageSuccessMessageDisplay() {
 		return packageSuccessMessages;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#asWidget()
+	 */
 	@Override
 	public final Widget asWidget() {
 		return content;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getAddQDMElementsToMeasureButton()
+	 */
+	@Override
+	public final HasClickHandlers getAddQDMElementsToMeasureButton() {
+		return addQDMElementsToMeasure;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getSuppDataSuccessMessageDisplay()
+	 */
+	@Override
+	public final SuccessMessageDisplayInterface getSuppDataSuccessMessageDisplay() {
+		return suppDataSuccessMessages;
 	}
 
 }

@@ -570,7 +570,7 @@ left:50px;
 }
  .scrollable {
       height: 250px;
-      width: 850px;
+      width: 250px;
       border: 1px solid #ccc;
       text-align: left;
  }
@@ -2002,8 +2002,4 @@ padding: 2px;
 	margin-left: 14px;
 	margin-right: 14px;
 	float: left;
-}
-
-.thirdLabel{
-	margin-top : 30px;
 }

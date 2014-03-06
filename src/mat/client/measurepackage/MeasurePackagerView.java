@@ -200,7 +200,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	private Widget buildQDMElementAddButtonWidget() {
 		VerticalPanel panel = new VerticalPanel();
-		panel.setStyleName("thirdLabel");
+		panel.setStyleName("qdmElementAddButtonPanel");
 		addQDMRight.setTitle("Add QDM element to Supplemental Data Elements");
 		addQDMRight.getElement().setAttribute("alt","Add QDM element to Supplemental Data Elements");
 		addQDMLeft.setTitle("Remove QDM Element from Supplemental Data Elements");

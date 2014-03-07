@@ -98,8 +98,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public MeasurePackagerView() {
 		addQDMElementLeftRightClickHandlers();
 		Panel topQDMElementContainer = buildQDMElementLeftRightPanel();
-		content.add(cellListWithContextMenu.getWidget());
-		content.add(new SpacerWidget());
+		/*content.add(cellListWithContextMenu.getWidget());
+		content.add(new SpacerWidget());*/
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 		content.add(topQDMElementContainer);

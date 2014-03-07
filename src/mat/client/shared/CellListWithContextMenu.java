@@ -1,28 +1,25 @@
 package mat.client.shared;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Set;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
 import com.google.gwt.cell.client.TextCell;
-import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.dom.client.Element;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.SelectionChangeEvent;
 
 public class CellListWithContextMenu {
 	CellList<String> cellList;
@@ -38,6 +35,7 @@ public class CellListWithContextMenu {
 	 */
 	public CellList<String> getCellList() {
 		cellList = new CellList<String>(getSampleCompositeCell());
+		final MultiSelectionModel<String> selectionModel = new MultiSelectionModel<String>();
 		cellList.setPageSize(10);
 		cellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		ArrayList<String> populationList = new ArrayList<String>();
@@ -52,6 +50,13 @@ public class CellListWithContextMenu {
 		populationList.add("Measure Observation 3");
 		ListDataProvider<String> dataProvider = new ListDataProvider<String>(populationList);
 		dataProvider.addDataDisplay(cellList);
+		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				System.out.println("selectionModel.getSelectedSet()" + selectionModel.getSelectedSet());
+			}
+		});
+		cellList.setSelectionModel(selectionModel, DefaultSelectionEventManager.<String> createDefaultManager());
 		return cellList;
 	}
 	
@@ -74,7 +79,15 @@ public class CellListWithContextMenu {
 			
 			@Override
 			public FieldUpdater<String, Boolean> getFieldUpdater() {
-				return null;
+				return new FieldUpdater<String, Boolean>() {
+					
+					@Override
+					public void update(int index, String object, Boolean value) {
+						System.out.println("object ==== >" + object);
+						System.out.println("Value ==== >" + value);
+					}
+					
+				};
 			}
 			
 			@Override
@@ -82,7 +95,7 @@ public class CellListWithContextMenu {
 				return selectionModel.isSelected(object);
 			} });
 		
-		hasCells.add(new HasCell<String, String>(){
+		hasCells.add(new HasCell<String, String>() {
 			private TextCell cell = new TextCell();
 			@Override
 			public Cell<String> getCell() {
@@ -102,7 +115,7 @@ public class CellListWithContextMenu {
 		
 		
 		Cell<String> myClassCell = new CompositeCell<String>(hasCells) {
-			@Override
+			/*@Override
 			public Set getConsumedEvents() {
 				return Collections.singleton("click");
 			}
@@ -110,11 +123,11 @@ public class CellListWithContextMenu {
 			@Override
 			public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context, Element parent, String value,
 					NativeEvent event, ValueUpdater<String> valueUpdater) {
-				/*super.onBrowserEvent(context, parent, value, event, valueUpdater);*/
+				super.onBrowserEvent(context, parent, value, event, valueUpdater);
 				event.preventDefault();
 				event.stopPropagation();
 				Window.alert(" right click on " + value);
-			}
+			}*/
 			@Override
 			public void render(Context context, String value, SafeHtmlBuilder sb)
 			{

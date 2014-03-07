@@ -229,10 +229,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @return the button
 	 */
 	private Button buildAddButton(String imageUrl) {
-		//		FocusPanel fPanel = new FocusPanel();
-		//		fPanel.add(new Image(imageUrl));
-		//		fPanel.setStylePrimaryName("greySecondaryButton");
-		//		fPanel.addStyleName("measurePackageAddButton");
 		Button btn = new Button();
 		btn.setStyleName(imageUrl);
 		return btn;
@@ -245,14 +241,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @return the button
 	 */
 	private Button buildDoubleAddButton(String imageUrl) {
-		//		FocusPanel focusPanel = new FocusPanel();
-		//		FlowPanel fPanel = new FlowPanel();
-		//		fPanel.add(new Image(imageUrl));
-		//		fPanel.add(new Image(imageUrl));
-		//		focusPanel.add(fPanel);
-		//		focusPanel.setStylePrimaryName("greySecondaryButton");
-		//		focusPanel.addStyleName("measurePackageAddButton");
-		
 		Button btn = new Button();
 		btn.setStyleName(imageUrl);
 		return btn;

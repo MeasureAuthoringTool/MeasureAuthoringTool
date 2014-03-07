@@ -569,10 +569,13 @@ left:50px;
 	float:right;
 }
  .scrollable {
-      height: 250px;
-      width: 250px;
+      height: 300px;
+      width: 200px;
       border: 1px solid #ccc;
       text-align: left;
+      margin-left:14px;
+      margin-right:14px;
+      
  }
 
  .qdmCellList{

@@ -5,8 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import mat.client.CustomPager;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
@@ -17,6 +15,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.OpenEvent;
+import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellList;
@@ -38,7 +38,6 @@ import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
-import com.google.gwt.view.client.SingleSelectionModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -112,6 +111,10 @@ public class CellListWithContextMenu {
 	
 	private ScrollPanel associatedPanel = new ScrollPanel();
 	
+	private ScrollPanel initialPopPanel1 = new ScrollPanel();
+	
+	private ScrollPanel initialPopPanel2 = new ScrollPanel();
+	
 	/**
 	 * Gets the cell list.
 	 *
@@ -120,7 +123,7 @@ public class CellListWithContextMenu {
 	public CellList<String> getRightCellList() {
 		rightCellList = new CellList<String>(new TextCell());
 		final MultiSelectionModel<String> selectionModel = new MultiSelectionModel<String>();
-		rightCellList.setPageSize(10);
+		//rightCellList.setPageSize(10);
 		rightCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		ArrayList<String> populationList = new ArrayList<String>();
 		populationList.add("Initial Population 1");
@@ -132,17 +135,23 @@ public class CellListWithContextMenu {
 		populationList.add("Measure Observation 1");
 		populationList.add("Measure Observation 2");
 		populationList.add("Measure Observation 3");
+		populationList.add("Initial Population 1");
+		populationList.add("Initial Population 2");
+		populationList.add("Initial Population 3");
 		ListDataProvider<String> dataProvider = new ListDataProvider<String>(populationList);
 		dataProvider.addDataDisplay(rightCellList);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				System.out.println("selectionModel.getSelectedSet()" + selectionModel.getSelectedSet());
-//				addCellTable();
-//				//getAssociatedCellList();
-//				getButtonPanel();
-//				disclosurePanelItemCountTable.setOpen(true);
-//				disclosurePanelAssociations.setOpen(true);
+				addCellTable();
+				//getAssociatedCellList();
+				getButtonPanel();
+				disclosurePanelItemCountTable.setOpen(true);
+				disclosurePanelAssociations.setOpen(false);
+				disclosurePanelItemCountTable.setVisible(true);
+				disclosurePanelAssociations.setVisible(true);
+				
 			}
 		});
 		rightCellList.setSelectionModel(selectionModel, DefaultSelectionEventManager.<String> createDefaultManager());
@@ -153,7 +162,7 @@ public class CellListWithContextMenu {
 		//leftCellList = new CellList<String>(getSampleCompositeCell());
 		leftCellList = new CellList<String>(new TextCell());
 		final MultiSelectionModel<String> selectionModel = new MultiSelectionModel<String>();
-		leftCellList.setPageSize(10);
+		//leftCellList.setPageSize(10);
 		leftCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		ArrayList<String> populationList = new ArrayList<String>();
 		populationList.add("Initial Population 1");
@@ -165,17 +174,26 @@ public class CellListWithContextMenu {
 		populationList.add("Measure Observation 1");
 		populationList.add("Measure Observation 2");
 		populationList.add("Measure Observation 3");
+//		populationList.add("Initial Population 1");
+//		populationList.add("Initial Population 2");
+//		populationList.add("Initial Population 3");
+//		populationList.add("Measure Population 1");
+//		populationList.add("Measure Population 2");
+//		populationList.add("Measure Population Exclusions 1");
+//		populationList.add("Measure Observation 1");
 		ListDataProvider<String> dataProvider = new ListDataProvider<String>(populationList);
 		dataProvider.addDataDisplay(leftCellList);
 		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				System.out.println("selectionModel.getSelectedSet()" + selectionModel.getSelectedSet());
-				addCellTable();
+				/*addCellTable();
 				//getAssociatedCellList();
 				getButtonPanel();
 				disclosurePanelItemCountTable.setOpen(true);
-				disclosurePanelAssociations.setOpen(true);
+				disclosurePanelAssociations.setOpen(true);*/
+				disclosurePanelItemCountTable.setVisible(false);
+				disclosurePanelAssociations.setVisible(false);
 			}
 		});
 		leftCellList.setSelectionModel(selectionModel, DefaultSelectionEventManager.<String> createDefaultManager());
@@ -340,9 +358,8 @@ public class CellListWithContextMenu {
 		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		disclosurePanelItemCountTable.add(panel);
-		//disclosurePanelItemCountTable.add(buttonPanel);
-		
 		disclosurePanelItemCountTable.setOpen(false);
+		disclosurePanelItemCountTable.setVisible(false);
 		return disclosurePanelItemCountTable;
 		
 	}
@@ -370,8 +387,11 @@ public class CellListWithContextMenu {
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
-		disclosurePanelAssociations.add(associatedPanel);
+		initialPopPanel1.add(getLeftCellList());
+		disclosurePanelAssociations.add(initialPopPanel1);
+//		disclosurePanelAssociations.add(getLeftCellList());
 		disclosurePanelAssociations.setOpen(false);
+		disclosurePanelAssociations.setVisible(false);
 		return disclosurePanelAssociations;
 		
 	}
@@ -408,24 +428,22 @@ public class CellListWithContextMenu {
 	
 	private void addQDMButtonClickHandlers() {
 		
-		saveItemcountList.addClickHandler(new ClickHandler() {
+		disclosurePanelItemCountTable.addOpenHandler(new OpenHandler<DisclosurePanel>() {
 			
 			@Override
-			public void onClick(ClickEvent event) {
-				
-				List<QualityDataSetDTO> list= new ArrayList<CellListWithContextMenu.QualityDataSetDTO>();
-				list.addAll(itemCountSelection.getSelectedSet());
-				for(int i=0; i<itemCountSelection.getSelectedSet().size();i++){
-					itemCountSelection.isSelected(list.get(0));
-				}
+			public void onOpen(OpenEvent<DisclosurePanel> event) {
+				disclosurePanelItemCountTable.setOpen(true);
+				disclosurePanelAssociations.setOpen(false);
 			}
 		});
 		
-		cancelItemcountList.addClickHandler(new ClickHandler() {
+		
+		disclosurePanelAssociations.addOpenHandler(new OpenHandler<DisclosurePanel>() {
 			
 			@Override
-			public void onClick(ClickEvent event) {
-				
+			public void onOpen(OpenEvent<DisclosurePanel> event) {
+				disclosurePanelAssociations.setOpen(true);
+				disclosurePanelItemCountTable.setOpen(false);
 				
 			}
 		});
@@ -475,8 +493,8 @@ public class CellListWithContextMenu {
 	      table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			table.setSelectionModel(itemCountSelection);
 
-			MatCheckBoxCell rdBtnCell = new MatCheckBoxCell();
-			Column<QualityDataSetDTO, Boolean> selectColumn = new Column<QualityDataSetDTO, Boolean>(rdBtnCell){
+			MatCheckBoxCell chkBtnCell = new MatCheckBoxCell(false,true);
+			Column<QualityDataSetDTO, Boolean> selectColumn = new Column<QualityDataSetDTO, Boolean>(chkBtnCell){
 
 				@Override
 				public Boolean getValue(QualityDataSetDTO object) {
@@ -584,4 +602,6 @@ public class CellListWithContextMenu {
 		panel.add(addAllQDMLeft);
 		return panel;
 	}
+	
+	
 }

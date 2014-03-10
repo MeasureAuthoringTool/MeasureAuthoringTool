@@ -45,7 +45,7 @@ public class SubTreeDialogBox {
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.setText("Double Click to Select SubTree Element.");
 		dialogBox.setTitle("Double Click to Select SubTree Element.");
-		
+		dialogBox.getElement().setAttribute("id", "SubTreeDialogBox");
 		// Create a table to layout the content
 		VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.setWidth("20em");

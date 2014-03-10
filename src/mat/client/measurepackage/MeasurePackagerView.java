@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mat.client.shared.CellListWithContextMenu;
+import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
@@ -90,7 +90,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The list visible count. */
 	private final int listVisibleCount = 10;
 	
-	CellListWithContextMenu cellListWithContextMenu = new CellListWithContextMenu();
+	MeasurePackageClauseCellListWidget cellListWithContextMenu = new MeasurePackageClauseCellListWidget();
 	
 	/**
 	 * Constructor.

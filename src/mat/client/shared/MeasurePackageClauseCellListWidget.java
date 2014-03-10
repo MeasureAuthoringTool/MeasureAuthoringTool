@@ -27,6 +27,7 @@ import com.google.gwt.user.cellview.client.TextColumn;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
@@ -40,9 +41,9 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class CellListWithContextMenu.
+ * The Class MeasurePackageClauseCellListWidget.
  */
-public class CellListWithContextMenu {
+public class MeasurePackageClauseCellListWidget {
 	
 	/** The cell list. */
 	private CellList<MeasurePackageClauseDetail> leftCellList;
@@ -86,13 +87,14 @@ public class CellListWithContextMenu {
 	private FlowPanel itemCountButtonPanel = new FlowPanel();
 	/** The range label pager. */
 	private RangeLabelPager rightRangeLabelPager = new RangeLabelPager();
+	/** The range label pager. */
 	private RangeLabelPager leftRangeLabelPager = new RangeLabelPager();
 	/** The disclosure panel item count table. */
 	private DisclosurePanel disclosurePanelItemCountTable = new DisclosurePanel("Add/Edit Item Count");
 	/** The disclosure panel associations. */
 	private DisclosurePanel disclosurePanelAssociations = new DisclosurePanel("Add Associations");
 	/** The main flow panel. */
-	FlowPanel mainFlowPanel = new FlowPanel();
+	private FlowPanel mainFlowPanel = new FlowPanel();
 	/** The add Grouping to measure. */
 	private PrimaryButton saveGrouping = new PrimaryButton("Save Grouping", "primaryButton");
 	/** The save itemcount list. */
@@ -106,10 +108,12 @@ public class CellListWithContextMenu {
 	private MultiSelectionModel<QualityDataSetDTO> itemCountSelection;
 	/**
 	 * Clauses Selection Model.	 */
-	private MultiSelectionModel<MeasurePackageClauseDetail> leftCellListSelectionModel = new MultiSelectionModel<MeasurePackageClauseDetail>();
+	private MultiSelectionModel<MeasurePackageClauseDetail> leftCellListSelectionModel
+	= new MultiSelectionModel<MeasurePackageClauseDetail>();
 	/**
 	 * Grouping Selection Model.	 */
-	private MultiSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel = new MultiSelectionModel<MeasurePackageClauseDetail>();
+	private MultiSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel =
+			new MultiSelectionModel<MeasurePackageClauseDetail>();
 	/** The add Clause Right. */
 	private Button addClauseRight = buildAddButton("customAddRightButton");
 	/** The add Clause left. */
@@ -118,7 +122,14 @@ public class CellListWithContextMenu {
 	private Button addAllClauseRight = buildDoubleAddButton("customAddALlRightButton");
 	/** The add all Clause left. */
 	private Button addAllClauseLeft = buildDoubleAddButton("customAddAllLeftButton");
-	ListDataProvider<MeasurePackageClauseDetail> leftCellListDataProvider;
+	/**
+	 * List Data Provider for Right(Package Clauses) cell List.
+	 */
+	private ListDataProvider<MeasurePackageClauseDetail> rightCellListDataProvider;
+	/**
+	 * List Data Provider for Left(Clause) cell List.
+	 */
+	private ListDataProvider<MeasurePackageClauseDetail> leftCellListDataProvider;
 	/** The Constant ITEMCOUNTLIST. */
 	private static final List<QualityDataSetDTO> ITEMCOUNTLIST = Arrays.asList(
 			new QualityDataSetDTO("AMI1 I9","Diagnosis, Active"),
@@ -133,7 +144,7 @@ public class CellListWithContextMenu {
 	
 	private ScrollPanel associatedPanel = new ScrollPanel();
 	
-	private ScrollPanel initialPopPanel1 = new ScrollPanel();
+	
 	
 	private ScrollPanel initialPopPanel2 = new ScrollPanel();
 	private ArrayList<MeasurePackageClauseDetail> groupingPopulationList = new ArrayList<MeasurePackageClauseDetail>();
@@ -176,8 +187,8 @@ public class CellListWithContextMenu {
 		rightCellList = new CellList<MeasurePackageClauseDetail>(new ClauseCell());
 		rightCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		
-		ListDataProvider<MeasurePackageClauseDetail> dataProvider = new ListDataProvider<MeasurePackageClauseDetail>(groupingPopulationList);
-		dataProvider.addDataDisplay(rightCellList);
+		rightCellListDataProvider = new ListDataProvider<MeasurePackageClauseDetail>(groupingPopulationList);
+		rightCellListDataProvider.addDataDisplay(rightCellList);
 		rightCellListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
@@ -400,8 +411,9 @@ public class CellListWithContextMenu {
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
-		initialPopPanel1.add(getLeftCellList());
-		disclosurePanelAssociations.add(initialPopPanel1);
+		ScrollPanel associateListScrollPanel = new ScrollPanel();
+		associateListScrollPanel.add(getLeftCellList());
+		disclosurePanelAssociations.add(associateListScrollPanel);
 		//		disclosurePanelAssociations.add(getLeftCellList());
 		disclosurePanelAssociations.setOpen(false);
 		disclosurePanelAssociations.setVisible(false);
@@ -412,12 +424,12 @@ public class CellListWithContextMenu {
 	/**
 	 * Instantiates a new cell list with context menu.
 	 */
-	public CellListWithContextMenu() {
+	public MeasurePackageClauseCellListWidget() {
 		addClickHandlersToDisclosurePanels();
-		leftPagerPanel.addStyleName("scrollable");
+		leftPagerPanel.addStyleName("measurePackageCellListscrollable");
 		leftPagerPanel.setDisplay(getLeftCellList());
 		leftRangeLabelPager.setDisplay(getLeftCellList());
-		rightPagerPanel.addStyleName("scrollable");
+		rightPagerPanel.addStyleName("measurePackageCellListscrollable");
 		rightPagerPanel.setDisplay(getRightCellList());
 		rightRangeLabelPager.setDisplay(getRightCellList());
 		Label qdmTabName = new Label("Measure Package Grouping");
@@ -425,9 +437,16 @@ public class CellListWithContextMenu {
 		mainFlowPanel.add(qdmTabName);
 		mainFlowPanel.add(new SpacerWidget());
 		HorizontalPanel hp = new HorizontalPanel();
-		hp.add(leftPagerPanel);
+		VerticalPanel leftCellListVPanel = new VerticalPanel();
+		leftCellListVPanel.add(new HTML("<b style='margin-left:15px;'> Clauses </b>"));
+		leftCellListVPanel.add(leftPagerPanel);
+		VerticalPanel rightCellListVPanel = new VerticalPanel();
+		rightCellListVPanel.add(new HTML("<b style='margin-left:15px;'> Package Grouping </b>"));
+		rightCellListVPanel.add(rightPagerPanel);
+		
+		hp.add(leftCellListVPanel);
 		hp.add(buildClauseAddButtonWidget());
-		hp.add(rightPagerPanel);
+		hp.add(rightCellListVPanel);
 		VerticalPanel vp = new VerticalPanel();
 		vp.add(buildItemCountWidget());
 		vp.add(buildAddAssociationWidget());
@@ -514,11 +533,11 @@ public class CellListWithContextMenu {
 				return itemCountSelection.isSelected(object);
 			}};
 			
-			selectColumn.setFieldUpdater(new FieldUpdater<CellListWithContextMenu.QualityDataSetDTO, Boolean>() {
+			selectColumn.setFieldUpdater(new FieldUpdater<MeasurePackageClauseCellListWidget.QualityDataSetDTO, Boolean>() {
 				
 				@Override
 				public void update(int index,
-						mat.client.shared.CellListWithContextMenu.QualityDataSetDTO object,
+						mat.client.shared.MeasurePackageClauseCellListWidget.QualityDataSetDTO object,
 						Boolean value) {
 					
 					itemCountSelection.setSelected(object, value);
@@ -628,15 +647,13 @@ public class CellListWithContextMenu {
 		interface Templates extends SafeHtmlTemplates {
 			/**
 			 * The template for this Cell, which includes styles and a value.
-			 * 
-			 * @param styles the styles to include in the style attribute of the div
 			 * @param value the safe value. Since the value type is {@link SafeHtml},
 			 *          it will not be escaped before including it in the template.
 			 *          Alternatively, you could make the value type String, in which
 			 *          case the value would be escaped.
 			 * @return a {@link SafeHtml} instance
 			 */
-			@SafeHtmlTemplates.Template("<div>{0}</div>")
+			@SafeHtmlTemplates.Template("<div style=\"margin-left:5px;\">{0}</div>")
 			SafeHtml cell(SafeHtml value);
 		}
 		

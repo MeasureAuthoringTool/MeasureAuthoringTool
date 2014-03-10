@@ -4,7 +4,6 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -12,7 +11,6 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
-
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -40,11 +38,11 @@ import com.google.gwt.user.client.ui.Widget;
  * The Class ComparisonDialogBox.
  */
 public class ComparisonDialogBox {
-
+	
 	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(true,true);
 	
-
+	
 	/**
 	 * Show comparison dialog box.
 	 * 
@@ -58,6 +56,7 @@ public class ComparisonDialogBox {
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.setText("Edit");
 		dialogBox.setTitle("Edit");
+		dialogBox.getElement().setAttribute("id", "ComparisonDialogBox");
 		final HorizontalPanel hPanel = new HorizontalPanel();
 		final VerticalPanel dialogContents = new VerticalPanel();
 		// Create a table to layout the content
@@ -65,7 +64,7 @@ public class ComparisonDialogBox {
 		dialogContents.setWidth("21em");
 		dialogContents.setSpacing(5);
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
-		//- POC to change width and height for dialogBox. - Success 
+		//- POC to change width and height for dialogBox. - Success
 		//dialogContents.setWidth("50em");
 		/*DOM.setStyleAttribute(dialogBox.getElement(), "width", "950px");
 		DOM.setStyleAttribute(dialogBox.getElement(), "height", "950px");
@@ -73,8 +72,8 @@ public class ComparisonDialogBox {
 		dialogBox.setWidget(dialogContents);
 		@SuppressWarnings("unchecked")
 		HashMap<String, String> extraAttributesMap = (HashMap<String, String>) cellTreeNode
-		                                 .getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
-
+		.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
+		
 		final ListBoxMVP listAllTimeOrFunction = new ListBoxMVP();
 		String timingOrFuncMethod = "--Select--";
 		String operatorMethod = "--Select--";
@@ -82,20 +81,20 @@ public class ComparisonDialogBox {
 		String unitType = "--Select--";
 		if (extraAttributesMap != null) {
 			timingOrFuncMethod =  extraAttributesMap.get(PopulationWorkSpaceConstants.TYPE);
-			timingOrFuncMethod =  MatContext.get().operatorMapKeyShort.containsKey(timingOrFuncMethod) 
+			timingOrFuncMethod =  MatContext.get().operatorMapKeyShort.containsKey(timingOrFuncMethod)
 					? MatContext.get().operatorMapKeyShort.get(timingOrFuncMethod) : "--Select--";
-			operatorMethod = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE) 
-					? extraAttributesMap.get(PopulationWorkSpaceConstants.OPERATOR_TYPE) : operatorMethod;
-			quantityValue = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.QUANTITY) 
-					? extraAttributesMap.get(PopulationWorkSpaceConstants.QUANTITY) : quantityValue;
-			unitType = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.UNIT) 
-					? extraAttributesMap.get(PopulationWorkSpaceConstants.UNIT) : unitType;
-			if (operatorMethod.trim().length() == 0) {
-				operatorMethod = "--Select--";
-			}
-			if (unitType.trim().length() == 0) {
-				unitType = "--Select--";
-			}
+					operatorMethod = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.OPERATOR_TYPE)
+							? extraAttributesMap.get(PopulationWorkSpaceConstants.OPERATOR_TYPE) : operatorMethod;
+							quantityValue = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.QUANTITY)
+									? extraAttributesMap.get(PopulationWorkSpaceConstants.QUANTITY) : quantityValue;
+									unitType = extraAttributesMap.containsKey(PopulationWorkSpaceConstants.UNIT)
+											? extraAttributesMap.get(PopulationWorkSpaceConstants.UNIT) : unitType;
+											if (operatorMethod.trim().length() == 0) {
+												operatorMethod = "--Select--";
+											}
+											if (unitType.trim().length() == 0) {
+												unitType = "--Select--";
+											}
 		} else {
 			timingOrFuncMethod = cellTreeNode.getLabel();
 		}
@@ -110,10 +109,10 @@ public class ComparisonDialogBox {
 			labelForListBox = "Functions";
 		}
 		
-		if (timingOrFuncMethod.contains("Select")) { //added is null check for Functions which are not in recent list but exists in prod like COUNTDISTINCT 
+		if (timingOrFuncMethod.contains("Select")) { //added is null check for Functions which are not in recent list but exists in prod like COUNTDISTINCT
 			listAllTimeOrFunction.addItem(timingOrFuncMethod);
 		}
-			
+		
 		for (int i = 0; i < keys.size(); i++) {
 			listAllTimeOrFunction.addItem(keys.get(i));
 			if (keys.get(i).equalsIgnoreCase(timingOrFuncMethod)) {
@@ -129,15 +128,16 @@ public class ComparisonDialogBox {
 		dialogContents.setCellHorizontalAlignment(lableListBoxTimingOrFunction, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(listAllTimeOrFunction);
 		dialogContents.setCellHorizontalAlignment(listAllTimeOrFunction, HasHorizontalAlignment.ALIGN_LEFT);
-
+		
 		//List of Operators.
 		final ListBoxMVP listAllOperator = new ListBoxMVP();
 		// listAllOperator.addItem("--Select--");
 		List<String> comparisonOpKeys = MatContext.get().comparisonOps;
-		if (operatorMethod.contains("Select"))
+		if (operatorMethod.contains("Select")) {
 			listAllOperator.addItem(operatorMethod);
-		else 
+		} else {
 			listAllOperator.addItem("--Select--");
+		}
 		for (int i = 0; i < comparisonOpKeys.size(); i++) {
 			listAllOperator.addItem(comparisonOpKeys.get(i));
 			if (comparisonOpKeys.get(i).equalsIgnoreCase(operatorMethod)) {
@@ -150,7 +150,7 @@ public class ComparisonDialogBox {
 		dialogContents.setCellHorizontalAlignment(lableOperator, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(listAllOperator);
 		dialogContents.setCellHorizontalAlignment(listAllOperator, HasHorizontalAlignment.ALIGN_LEFT);
-
+		
 		//Qunatity Text Box.
 		final TextBox quantity = new TextBox();
 		quantity.getElement().setId("quantity_TextBox");
@@ -165,12 +165,12 @@ public class ComparisonDialogBox {
 		dialogContents.setCellHorizontalAlignment(lableQuantity, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(quantity);
 		dialogContents.setCellHorizontalAlignment(quantity, HasHorizontalAlignment.ALIGN_LEFT);
-
-
+		
+		
 		//List of Units.
 		final ListBoxMVP listAllUnits = new ListBoxMVP();
-//		if (unitType.contains("Select"))
-//			listAllUnits.addItem(unitType);
+		//		if (unitType.contains("Select"))
+		//			listAllUnits.addItem(unitType);
 		listAllUnits.addItem("--Select--");
 		if (cellTreeNode.getNodeType() == CellTreeNode.TIMING_NODE) {
 			//Show list starting from seconds till Year for Timing. Since list is retrieved in sorted order, Year comes at 7th index.
@@ -187,7 +187,7 @@ public class ComparisonDialogBox {
 					listAllUnits.setSelectedIndex(i+1);
 				}
 			}
-
+			
 		}
 		listAllUnits.setWidth("150px");
 		Label lableUnits = (Label) LabelBuilder.buildLabel(listAllTimeOrFunction, "Units");
@@ -243,8 +243,8 @@ public class ComparisonDialogBox {
 				if(validateQuantity(listAllOperator.getValue(),quantity,listAllUnits)){
 					dialogContents.clear();
 					dialogBox.hide();
-					saveAttributesToNode(listAllTimeOrFunction.getValue(), 
-						listAllOperator.getValue(), quantity.getValue(), listAllUnits.getValue(), xmlTreeDisplay);
+					saveAttributesToNode(listAllTimeOrFunction.getValue(),
+							listAllOperator.getValue(), quantity.getValue(), listAllUnits.getValue(), xmlTreeDisplay);
 					xmlTreeDisplay.setDirty(true);
 				}
 				else{
@@ -274,7 +274,7 @@ public class ComparisonDialogBox {
 		dialogContents.add(buttonPanel);
 		dialogBox.center();
 		dialogBox.show();
-
+		
 	}
 	
 	/**
@@ -299,7 +299,7 @@ public class ComparisonDialogBox {
 		}
 		return isValid;
 	}
-
+	
 	/**
 	 * Method to set attributes to CellTreeNode extraInformation.
 	 * 
@@ -313,8 +313,8 @@ public class ComparisonDialogBox {
 	 *            the unit
 	 * @param xmlTreeDisplay
 	 *            the xml tree display
-	 */ 
-	private static void saveAttributesToNode(String functionOrTiming, String operator, 
+	 */
+	private static void saveAttributesToNode(String functionOrTiming, String operator,
 			String quantity, String unit, XmlTreeDisplay xmlTreeDisplay) {
 		Map<String, String> extraAttributes = new HashMap<String, String>();
 		if (!operator.contains("Select")) {
@@ -331,39 +331,39 @@ public class ComparisonDialogBox {
 			extraAttributes.put(PopulationWorkSpaceConstants.TYPE, MatContext.get().operatorMapKeyLong.get(functionOrTiming));
 			StringBuilder displayName = new StringBuilder();
 			if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.TIMING_NODE) {
-//				String operatorType = ClauseConstants.getComparisonOperatorMap().containsKey(operator) ? ClauseConstants.getComparisonOperatorMap().get(operator) : " ";
-				String operatorType = MatContext.get().operatorMapKeyLong.containsKey(operator) 
+				//				String operatorType = ClauseConstants.getComparisonOperatorMap().containsKey(operator) ? ClauseConstants.getComparisonOperatorMap().get(operator) : " ";
+				String operatorType = MatContext.get().operatorMapKeyLong.containsKey(operator)
 						? MatContext.get().operatorMapKeyLong.get(operator) : " ";
-//				StringBuilder operatorTypeKey = new StringBuilder(operatorType);
+						//				StringBuilder operatorTypeKey = new StringBuilder(operatorType);
 						if(operator.equals("")){
 							displayName.append(functionOrTiming);
 							//extraAttributes.remove("quantity");
-							} else {
-								displayName.append(operatorType).append(" ").append(quantity).append(" ")
-								.append(unit).append(" ").append(functionOrTiming);
-								}
+						} else {
+							displayName.append(operatorType).append(" ").append(quantity).append(" ")
+							.append(unit).append(" ").append(functionOrTiming);
+						}
 			} else if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE) {
-				String operatorType = MatContext.get().operatorMapKeyLong.containsKey(operator) 
+				String operatorType = MatContext.get().operatorMapKeyLong.containsKey(operator)
 						? MatContext.get().operatorMapKeyLong.get(operator) : " ";
 						if(operator.equals("")){
-				displayName.append(functionOrTiming);
-				//extraAttributes.remove("quantity");
-				}
+							displayName.append(functionOrTiming);
+							//extraAttributes.remove("quantity");
+						}
 						else{
 							displayName.append(functionOrTiming).append(" ").append(operatorType).append(" ")
-							   .append(quantity).append(" ").append(unit);
+							.append(quantity).append(" ").append(unit);
 						}
 			}
 			extraAttributes.put(PopulationWorkSpaceConstants.DISPLAY_NAME, displayName.toString());
 			xmlTreeDisplay.editNode(displayName.toString(), displayName.toString());
 		}
-
+		
 		if(!operator.equals("")){
-		extraAttributes.put(PopulationWorkSpaceConstants.QUANTITY, quantity);
+			extraAttributes.put(PopulationWorkSpaceConstants.QUANTITY, quantity);
 		}
 		xmlTreeDisplay.getSelectedNode().setExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES, extraAttributes);
 	}
-
+	
 	/**
 	 * TextBox allow only Digits.
 	 * 
@@ -371,16 +371,16 @@ public class ComparisonDialogBox {
 	 *            the quantity
 	 */
 	private static void addHandlerToQuantityTextBox(TextBox quantity) {
-
+		
 		quantity.addKeyPressHandler(new KeyPressHandler() {
 			@Override
 			public void onKeyPress(KeyPressEvent event) {
-				if (!Character.isDigit(event.getCharCode()) 
-						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_TAB 
-						&& event.getNativeEvent().getKeyCode() != KeyCodes.KEY_BACKSPACE) {
+				if (!Character.isDigit(event.getCharCode())
+						&& (event.getNativeEvent().getKeyCode() != KeyCodes.KEY_TAB)
+						&& (event.getNativeEvent().getKeyCode() != KeyCodes.KEY_BACKSPACE)) {
 					((TextBox) event.getSource()).cancelKey();
 				}
-
+				
 			} });
 	}
 	
@@ -403,21 +403,21 @@ public class ComparisonDialogBox {
 	 */
 	public static void setFocus(HorizontalPanel hPanel){
 		try{
-		hPanel.getElement().focus();
-		hPanel.getElement().setAttribute("id", "ErrorMessage");
-		hPanel.getElement().setAttribute("aria-role", "image");
-		hPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
-		hPanel.getElement().setAttribute("aria-live", "assertive");
-		hPanel.getElement().setAttribute("aria-atomic", "true");
-		hPanel.getElement().setAttribute("aria-relevant", "all");
-		hPanel.getElement().setAttribute("role", "alert");
+			hPanel.getElement().focus();
+			hPanel.getElement().setAttribute("id", "ErrorMessage");
+			hPanel.getElement().setAttribute("aria-role", "image");
+			hPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
+			hPanel.getElement().setAttribute("aria-live", "assertive");
+			hPanel.getElement().setAttribute("aria-atomic", "true");
+			hPanel.getElement().setAttribute("aria-relevant", "all");
+			hPanel.getElement().setAttribute("role", "alert");
 		}catch(JavaScriptException e){
 			//This try/catch block is needed for IE7 since it is throwing exception "cannot move
-		    //focus to the invisible control." 
+			//focus to the invisible control."
 			//do nothing.
 		}
 	}
-   
+	
 	/**
 	 * Gets the widget.
 	 *
@@ -444,6 +444,6 @@ public class ComparisonDialogBox {
 		hPanel.add(msgPanel);
 		setFocus(hPanel);
 		return hPanel;
-	} 
+	}
 	
 }

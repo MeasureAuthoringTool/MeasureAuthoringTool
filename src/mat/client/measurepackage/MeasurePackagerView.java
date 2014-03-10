@@ -98,8 +98,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public MeasurePackagerView() {
 		addQDMElementLeftRightClickHandlers();
 		Panel topQDMElementContainer = buildQDMElementLeftRightPanel();
-		/*content.add(cellListWithContextMenu.getWidget());
-		content.add(new SpacerWidget());*/
+		content.add(cellListWithContextMenu.getWidget());
+		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 		content.add(topQDMElementContainer);
@@ -503,6 +503,27 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	@Override
 	public final SuccessMessageDisplayInterface getSuppDataSuccessMessageDisplay() {
 		return suppDataSuccessMessages;
+	}
+	
+	@Override
+	public void setClauses(List<MeasurePackageClauseDetail> clauses) {
+		cellListWithContextMenu.setClausesPopulationList(clauses);
+		cellListWithContextMenu.getLeftPagerPanel().setDisplay(cellListWithContextMenu.getLeftCellList());
+		cellListWithContextMenu.getLeftRangeLabelPager().setDisplay(cellListWithContextMenu.getLeftCellList());
+	}
+	
+	@Override
+	public void setPackageName(String name) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Override
+	public void setClausesInPackage(List<MeasurePackageClauseDetail> list) {
+		cellListWithContextMenu.setGroupingPopulationList(list);
+		cellListWithContextMenu.getRightPagerPanel().setDisplay(cellListWithContextMenu.getRightCellList());
+		cellListWithContextMenu.getRightRangeLabelPager().setDisplay(cellListWithContextMenu.getRightCellList());
+		
 	}
 	
 }

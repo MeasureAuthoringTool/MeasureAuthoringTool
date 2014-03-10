@@ -1,12 +1,11 @@
 package mat.client.measurepackage;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
@@ -14,7 +13,6 @@ import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
 import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -147,6 +145,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 */
 		void setViewIsEditable(boolean b,
 				List<MeasurePackageDetail> packages);
+		void setClauses(List<MeasurePackageClauseDetail> clauses);
+		void setPackageName(String name);
+		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
+		//void setMeasurePackages(List<MeasurePackageDetail> packages);
 	}
 	
 	/**
@@ -335,51 +337,51 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail.setQdmElements(view.getQDMElements());
 	}
 	
-		/**
-		 * set Overview.
-		 * @param result - MeasurePackageOverview.
-		 */
-		private void setOverview(final MeasurePackageOverview result) {
-			overview = result;
-			//view.setClauses(result.getClauses());
-			// QDM elements
-			view.setQDMElements(result.getQdmElements());
-			
-			//view.setMeasurePackages(result.getPackages());
-			
-			if (result.getPackages().size() > 0) {
-				if (currentDetail != null) {
-					for (int i = 0; i < result.getPackages().size(); i++) {
-						MeasurePackageDetail mpDetail = result.getPackages().get(i);
-						if (mpDetail.getSequence().equalsIgnoreCase(
-								currentDetail.getSequence())) {
-							setMeasurePackage(result.getPackages().get(i)
-									.getSequence());
-						}
+	/**
+	 * set Overview.
+	 * @param result - MeasurePackageOverview.
+	 */
+	private void setOverview(final MeasurePackageOverview result) {
+		overview = result;
+		view.setClauses(result.getClauses());
+		// QDM elements
+		view.setQDMElements(result.getQdmElements());
+		
+		/*view.setMeasurePackages(result.getPackages());*/
+		
+		if (result.getPackages().size() > 0) {
+			if (currentDetail != null) {
+				for (int i = 0; i < result.getPackages().size(); i++) {
+					MeasurePackageDetail mpDetail = result.getPackages().get(i);
+					if (mpDetail.getSequence().equalsIgnoreCase(
+							currentDetail.getSequence())) {
+						setMeasurePackage(result.getPackages().get(i)
+								.getSequence());
 					}
-				} else {
-					setMeasurePackage(result.getPackages().get(0).getSequence());
 				}
-				
 			} else {
-				setNewMeasurePackage();
+				setMeasurePackage(result.getPackages().get(0).getSequence());
 			}
 			
-			ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(),
-					isEditable());
-			view.setViewIsEditable(isEditable(), result.getPackages());
-		}
-	
-		/**
-		 * Checks if is editable.
-		 *
-		 * @return true, if is editable
-		 */
-		private boolean isEditable() {
-			return MatContext.get().getMeasureLockService()
-					.checkForEditPermission();
+		} else {
+			setNewMeasurePackage();
 		}
 		
+		ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(),
+				isEditable());
+		view.setViewIsEditable(isEditable(), result.getPackages());
+	}
+	
+	/**
+	 * Checks if is editable.
+	 *
+	 * @return true, if is editable
+	 */
+	private boolean isEditable() {
+		return MatContext.get().getMeasureLockService()
+				.checkForEditPermission();
+	}
+	
 	/**
 	 * Gets the measure.
 	 *
@@ -438,18 +440,33 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * setMeasurePackageDetailsOnView.
 	 */
 	private void setMeasurePackageDetailsOnView() {
-//		List<MeasurePackageClauseDetail> packageClauses = currentDetail
-//				.getPackageClauses();
-//	    List<MeasurePackageClauseDetail> remainingClauses = removeClauses(
-//				overview.getClauses(), packageClauses);
-//		
-//		view.setPackageName(currentDetail.getPackageName());
-//		view.setClausesInPackage(packageClauses);
-//		view.setClauses(remainingClauses);
+		List<MeasurePackageClauseDetail> packageClauses = currentDetail
+				.getPackageClauses();
+		List<MeasurePackageClauseDetail> remainingClauses = removeClauses(
+				overview.getClauses(), packageClauses);
+		
+		view.setPackageName(currentDetail.getPackageName());
+		view.setClausesInPackage(packageClauses);
+		view.setClauses(remainingClauses);
 		view.setQDMElementsInSuppElements(overview.getSuppDataElements());
 		view.setQDMElements(overview.getQdmElements());
 	}
 	
+	private List<MeasurePackageClauseDetail> removeClauses(
+			final List<MeasurePackageClauseDetail> master,
+			final List<MeasurePackageClauseDetail> toRemove) {
+		List<MeasurePackageClauseDetail> newList = new ArrayList<MeasurePackageClauseDetail>();
+		newList.addAll(master);
+		for (MeasurePackageClauseDetail remove : toRemove) {
+			for (int i = 0; i < newList.size(); i++) {
+				if (newList.get(i).getId().equals(remove.getId())) {
+					newList.remove(i);
+					break;
+				}
+			}
+		}
+		return newList;
+	}
 	/**
 	 * Display MeasurePackage Workspace.
 	 */
@@ -475,8 +492,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		}
 		return max;
 	}
-
-
+	
+	
 }
 
 

@@ -577,7 +577,17 @@ left:50px;
       margin-right:14px;
       
  }
-
+ 
+  .measurePackageCellListscrollable {
+      height: 200px;
+      width: 220px;
+      border: 1px solid #ccc;
+      text-align: left;
+      margin-left:14px;
+      margin-right:14px;
+      margin-top:3px;
+ }
+ 
  .qdmCellList{
  	margin-top:-12px;
  	margin-left:10px;

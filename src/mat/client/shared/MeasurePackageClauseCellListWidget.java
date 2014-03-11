@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 import mat.client.CustomPager;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
+import mat.model.QualityDataSetDTO;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -94,7 +96,7 @@ public class MeasurePackageClauseCellListWidget {
 	/** The cancel itemcount list. */
 	private SecondaryButton cancelItemcountList = new SecondaryButton("Cancel");
 	/** The pagesize. */
-	private final int PAGESIZE = 5;
+	private final int PAGESIZE = 3;
 	/** The add Clause Right. */
 	private Button addClauseRight = buildAddButton("customAddRightButton");
 	/** The add Clause left. */
@@ -116,13 +118,18 @@ public class MeasurePackageClauseCellListWidget {
 	/** List Data Provider for Left(Clause) cell List. */
 	private ListDataProvider<MeasurePackageClauseDetail> leftCellListDataProvider;
 	/** The Constant ITEMCOUNTLIST. */
-	private static final List<QualityDataSetDTO> ITEMCOUNTLIST = Arrays.asList(
-			new QualityDataSetDTO("AMI1 I9","Diagnosis, Active"),
-			new QualityDataSetDTO("birth date","Patient Characteristic Birthdate"),
-			new QualityDataSetDTO("Hemodialysis ","Procedure, Performed"),
-			new QualityDataSetDTO("birth date","Patient Characteristic Birthdate"),
-			new QualityDataSetDTO("birth date","Patient Characteristic Birthdate"),
-			new QualityDataSetDTO("birth date","Patient Characteristic Birthdate"));
+    private CellTable<QualityDataSetDTO> table;
+	
+	private List<QualityDataSetDTO> appliedQdmList;
+	/** The Constant ITEMCOUNTLIST. */
+	
+	public List<QualityDataSetDTO> getAppliedQdmList() {
+		return appliedQdmList;
+	}
+
+	public void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList) {
+		this.appliedQdmList = appliedQdmList;
+	}
 	
 	/** The panel. */
 	private VerticalPanel panel = new VerticalPanel();
@@ -149,20 +156,20 @@ public class MeasurePackageClauseCellListWidget {
 				}
 				System.out.println("selectionModel.getSelectedObject()" + rightCellListSelectionModel.getSelectedObject());
 				MeasurePackageClauseDetail measurePackageClauseDetail = rightCellListSelectionModel.getSelectedObject();
-				if (((measurePackageClauseDetail.getType().equals("denominatorExclusions"))
-						|| (measurePackageClauseDetail.getType().equals("numeratorExclusions")))) {
+				if (((measurePackageClauseDetail.getType().equals("denominator"))
+						|| (measurePackageClauseDetail.getType().equals("numerator")))) {
 					addCellTable();
 					getItemCountTableButtonPanel();
 					disclosurePanelItemCountTable.setVisible(true);
 					disclosurePanelAssociations.setVisible(true);
-					disclosurePanelItemCountTable.setOpen(true);
+					disclosurePanelItemCountTable.setOpen(false);
 					disclosurePanelAssociations.setOpen(false);
 				} else {
 					addCellTable();
 					getItemCountTableButtonPanel();
 					disclosurePanelItemCountTable.setVisible(true);
 					disclosurePanelAssociations.setVisible(false);
-					disclosurePanelItemCountTable.setOpen(true);
+					disclosurePanelItemCountTable.setOpen(false);
 					disclosurePanelAssociations.setOpen(false);
 				}
 			}
@@ -208,103 +215,7 @@ public class MeasurePackageClauseCellListWidget {
 	public Widget getWidget(){
 		return mainFlowPanel;
 	}
-	/**
-	 * Gets the sample composite cell.
-	 *
-	 * @return the sample composite cell
-	 */
-	/*public Cell getSampleCompositeCell()
-	{
-		ArrayList<HasCell<String, ?>> hasCells = new ArrayList<HasCell<String, ?>>();
-		final MultiSelectionModel<String> selectionModel = new MultiSelectionModel<String>();
-		hasCells.add(new HasCell<String, Boolean>() {
-			//private CheckboxCell cbCell = new CheckboxCell(true, false);
-			
-			private MatCheckBoxCell cbCell = new MatCheckBoxCell();
-			@Override
-			public Cell<Boolean> getCell() {
-				return cbCell;
-			}
-			
-			@Override
-			public FieldUpdater<String, Boolean> getFieldUpdater() {
-				return new FieldUpdater<String, Boolean>() {
-					
-					@Override
-					public void update(int index, String object, Boolean value) {
-						System.out.println("object ==== >" + object);
-						System.out.println("Value ==== >" + value);
-					}
-					
-				};
-			}
-			
-			@Override
-			public Boolean getValue(String object) {
-				return selectionModel.isSelected(object);
-			} });
-		
-		hasCells.add(new HasCell<String, String>() {
-			private TextCell cell = new TextCell();
-			@Override
-			public Cell<String> getCell() {
-				return cell;
-			}
-			
-			@Override
-			public FieldUpdater<String, String> getFieldUpdater() {
-				return null;
-			}
-			
-			@Override
-			public String getValue(String object) {
-				String value;
-				return object;
-			}});
-		
-		
-		Cell<String> myClassCell = new CompositeCell<String>(hasCells) {
-			@Override
-			public Set getConsumedEvents() {
-				return Collections.singleton("click");
-			}
-			
-			@Override
-			public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context, Element parent, String value,
-					NativeEvent event, ValueUpdater<String> valueUpdater) {
-				super.onBrowserEvent(context, parent, value, event, valueUpdater);
-				event.preventDefault();
-				event.stopPropagation();
-				Window.alert(" right click on " + value);
-			}
-			@Override
-			public void render(Context context, String value, SafeHtmlBuilder sb)
-			{
-				sb.appendHtmlConstant("<table><tbody><tr>");
-				super.render(context, value, sb);
-				sb.appendHtmlConstant("</tr></tbody></table>");
-			}
-			@Override
-			protected Element getContainerElement(Element parent)
-			{
-				// Return the first TR element in the table.
-				return parent.getFirstChildElement().getFirstChildElement().getFirstChildElement();
-			}
-			
-			@Override
-			protected <X> void render(Context context, String value, SafeHtmlBuilder sb, HasCell<String, X> hasCell)
-			{
-				// this renders each of the cells inside the composite cell in a new table cell
-				Cell<X> cell = hasCell.getCell();
-				sb.appendHtmlConstant("<td style='font-size:100%;'>");
-				cell.render(context, hasCell.getValue(value), sb);
-				sb.appendHtmlConstant("</font></td>");
-			}
-			
-		};
-		
-		return myClassCell;
-	}*/
+
 	/**
 	 * Builds the item count widget.
 	 *
@@ -420,30 +331,54 @@ public class MeasurePackageClauseCellListWidget {
 	private Widget getItemCountTableButtonPanel() {
 		itemCountButtonPanel.addStyleName("rightAlignButton");
 		itemCountButtonPanel.add(saveItemcountList);
-		itemCountButtonPanel.add(cancelItemcountList);
+		//itemCountButtonPanel.add(cancelItemcountList);
 		return itemCountButtonPanel;
 	}
-	/**
-	 * The Class QualityDataSetDTO.
-	 */
-	private static class QualityDataSetDTO {
+	
+	
+	public CellTable<QualityDataSetDTO> addColumntoTable(){
+		MatCheckBoxCell chkBtnCell = new MatCheckBoxCell(false,true);
+		Column<QualityDataSetDTO, Boolean> selectColumn = new Column<QualityDataSetDTO, Boolean>(chkBtnCell){
+			
+			@Override
+			public Boolean getValue(QualityDataSetDTO object) {
+				return itemCountSelection.isSelected(object);
+			}};
+			
+			selectColumn.setFieldUpdater(new FieldUpdater<QualityDataSetDTO, Boolean>() {
+				
+				@Override
+				public void update(int index,QualityDataSetDTO object,
+						Boolean value) {
+					
+					itemCountSelection.setSelected(object, value);
+				}
+			});
+			
+			table.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select"
+					+ "</span>"));
+			
+			TextColumn<QualityDataSetDTO> dateColumn = new TextColumn<QualityDataSetDTO>() {
+				@Override
+				public String getValue(QualityDataSetDTO object) {
+					return object.getCodeListName();
+				}
+			};
+			table.addColumn(dateColumn, SafeHtmlUtils
+					.fromSafeConstant("<span title='Name'>" + "Name"
+							+ "</span>"));
+			
+			TextColumn<QualityDataSetDTO> addressColumn = new TextColumn<QualityDataSetDTO>() {
+				@Override
+				public String getValue(QualityDataSetDTO object) {
+					return object.getDataType();
+				}
+			};
+			table.addColumn(addressColumn, SafeHtmlUtils.fromSafeConstant("<span title='Data Type'>" + "Data Type"
+					+ "</span>"));
+			
+			return table;
 		
-		/** The data type. */
-		private final String dataType;
-		
-		/** The name. */
-		private final String name;
-		
-		/**
-		 * Instantiates a new quality data set dto.
-		 *
-		 * @param name the name
-		 * @param dataType the data type
-		 */
-		public QualityDataSetDTO(String name, String dataType) {
-			this.name = name;
-			this.dataType = dataType;
-		}
 	}
 	
 	/**
@@ -451,66 +386,39 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @return the panel
 	 */
-	private Panel addCellTable() {
-		panel.clear();
-		CellTable<QualityDataSetDTO> table = new CellTable<QualityDataSetDTO>();
-		itemCountSelection = new MultiSelectionModel<QualityDataSetDTO>();
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		table.setSelectionModel(itemCountSelection);
-		MatCheckBoxCell chkBtnCell = new MatCheckBoxCell(false, true);
-		Column<QualityDataSetDTO, Boolean> selectColumn = new Column<QualityDataSetDTO, Boolean>(chkBtnCell){
-			@Override
-			public Boolean getValue(QualityDataSetDTO object) {
-				return itemCountSelection.isSelected(object);
-			}
-		};
-		selectColumn.setFieldUpdater(new FieldUpdater<MeasurePackageClauseCellListWidget.QualityDataSetDTO, Boolean>() {
-			@Override
-			public void update(int index,
-					mat.client.shared.MeasurePackageClauseCellListWidget.QualityDataSetDTO object,
-					Boolean value) {
-				itemCountSelection.setSelected(object, value);
-			}
-		});
-		table.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select"
-				+ "</span>"));
-		TextColumn<QualityDataSetDTO> dateColumn = new TextColumn<QualityDataSetDTO>() {
-			@Override
-			public String getValue(QualityDataSetDTO object) {
-				return object.name;
-			}
-		};
-		table.addColumn(dateColumn, SafeHtmlUtils
-				.fromSafeConstant("<span title='Name'>" + "Name"
-						+ "</span>"));
-		TextColumn<QualityDataSetDTO> addressColumn = new TextColumn<QualityDataSetDTO>() {
-			@Override
-			public String getValue(QualityDataSetDTO object) {
-				return object.dataType;
-			}
-		};
-		table.addColumn(addressColumn, SafeHtmlUtils.fromSafeConstant("<span title='Data Type'>" + "Data Type"
-				+ "</span>"));
-		ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
-		table.setPageSize(PAGESIZE);
-		table.setRowCount(ITEMCOUNTLIST.size(), true);
-		table.setRowData(ITEMCOUNTLIST);
-		sortProvider.refresh();
-		sortProvider.getList().addAll(ITEMCOUNTLIST);
-		sortProvider.addDataDisplay(table);
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-		spager.setPageStart(0);
-		spager.setDisplay(table);
-		spager.setPageSize(PAGESIZE);
-		panel.setStylePrimaryName("valueSetSearchPanel");
-		panel.add(table);
-		panel.add(new SpacerWidget());
-		panel.add(spager);
-		panel.add(new SpacerWidget());
-		panel.add(itemCountButtonPanel);
-		return panel;
+	public Panel addCellTable(){
+		    panel.clear();
+		    table = new CellTable<QualityDataSetDTO>();
+		    itemCountSelection = new MultiSelectionModel<QualityDataSetDTO>();
+		    table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		    table.setSelectionModel(itemCountSelection);
+			ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
+			table.setPageSize(PAGESIZE);
+			table.setRowData(getAppliedQdmList());
+			table.setRowCount(getAppliedQdmList().size(), true);
+			sortProvider.refresh();
+			sortProvider.getList().addAll(getAppliedQdmList());
+			table = addColumntoTable();
+			sortProvider.addDataDisplay(table);
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			spager.setPageStart(0);
+			spager.setDisplay(table);
+			spager.setPageSize(PAGESIZE);
+			panel.setStylePrimaryName("valueSetSearchPanel");
+			panel.add(table);
+			panel.add(new SpacerWidget());
+			panel.add(spager);
+			panel.add(new SpacerWidget());
+			panel.add(itemCountButtonPanel);
+			return panel;
 	}
+	/**
+	 * Adds the cell table.
+	 *
+	 * @return the panel
+	 */
+	
 	/**
 	 * Builds the add button.
 	 *

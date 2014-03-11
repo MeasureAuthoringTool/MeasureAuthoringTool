@@ -334,6 +334,18 @@ left:50px;
     cursor: hand;
 }
 
+.customDeleteButton {
+    background: url("images/g_delete.png");
+    background-position:center;
+    background-repeat:no-repeat;
+    height: 25px;
+    width: 30px;
+    border: 0px;
+    font-size: 0;
+    cursor: pointer;
+    cursor: hand;
+}
+
 .customCompositeEmptyCell{
 	cursor: text;
 }
@@ -569,7 +581,7 @@ left:50px;
 	float:right;
 }
  .scrollable {
-      height: 300px;
+      height: 200px;
       width: 200px;
       border: 1px solid #ccc;
       text-align: left;
@@ -1935,11 +1947,20 @@ padding: 2px;
     padding: 0px 0px 8px 0px;
 }
 .valueSetHeader{
-	background-color: #6B97B8; 
+	background-color: #6B97B8;
 	font-size: small;
     font-weight: bold;
     color: white;
     padding: 5px;
+}
+
+ .measureGroupingTableHeader{
+	background-color: #6B97B8;
+	font-size: small;
+    font-weight: bold;
+    color: white;
+    padding: 5px;
+    text-align: left;
 }
 .valueSetMarginTop{
 	margin-top: 4px;

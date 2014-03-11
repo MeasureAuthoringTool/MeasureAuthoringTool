@@ -5,8 +5,11 @@ import java.util.List;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.clause.QDSAppliedListModel;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
+import mat.client.measurepackage.MeasurePackagerView.Observer;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasurePackageClauseCellListWidget;
@@ -17,6 +20,7 @@ import mat.model.QualityDataSetDTO;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -42,6 +46,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	/** The overview. */
 	private MeasurePackageOverview overview;
+
+	private MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
 	/**
 	 * The Interface View.
@@ -151,6 +157,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
 		void setMeasurePackages(List<MeasurePackageDetail> packages);
 		MeasurePackageClauseCellListWidget getPackageGroupingWidget();
+		void setObserver(Observer observer);
+		void buildQDMListCellTable(QDSAppliedListModel appliedListModel);
+		HasClickHandlers getCreateNewButton();
+		void buildCellTable(List<MeasurePackageDetail> packages);
 	}
 	
 	/**
@@ -167,6 +177,15 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * Adds the all handlers.
 	 */
 	private void addAllHandlers() {
+		
+		view.getCreateNewButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				clearMessages();
+				setNewMeasurePackage();
+			}
+		});
+		
 		view.getPackageMeasureButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -237,6 +256,45 @@ public class MeasurePackagePresenter implements MatPresenter {
 				});
 	}
 	
+	public final void getAppliedQDMList(boolean checkForSupplementData) {
+		String measureId = MatContext.get().getCurrentMeasureId();
+		if ((measureId != null) && !measureId.equals("")) {
+			service.getAppliedQDMFromMeasureXml(measureId,
+					checkForSupplementData,
+					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
+				
+				private void filterTimingQDMs(
+						ArrayList<QualityDataSetDTO> result) {
+					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
+					for (QualityDataSetDTO qdsDTO : result) {
+						if ("Timing Element".equals(qdsDTO
+								.getDataType())) {
+							timingQDMs.add(qdsDTO);
+						}
+					}
+					result.removeAll(timingQDMs);
+				}
+				
+				@Override
+				public void onFailure(final Throwable caught) {
+					Window.alert(MatContext.get().getMessageDelegate()
+							.getGenericErrorMessage());
+				}
+				
+				@Override
+				public void onSuccess(
+						final ArrayList<QualityDataSetDTO> result) {
+					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
+					filterTimingQDMs(result);
+					appliedListModel.setAppliedQDMs(result);
+					view.buildQDMListCellTable(appliedListModel);
+					
+				}
+			});
+			
+		}
+		
+	}
 	
 	/**
 	 * Clear messages.
@@ -282,6 +340,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		}
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackage");
 		Mat.focusSkipLists("MeasureComposer");
+		getAppliedQDMList(true);
 	}
 	
 	/* (non-Javadoc)
@@ -331,6 +390,23 @@ public class MeasurePackagePresenter implements MatPresenter {
 				setOverview(result);
 			}
 		});
+		
+         view.setObserver(new MeasurePackagerView.Observer() {
+			
+			@Override
+			public void onEditClicked(MeasurePackageDetail detail) {
+				currentDetail = detail;
+				clearMessages();
+				setMeasurePackageDetailsOnView();
+				
+			}
+			
+			@Override
+			public void onDeleteClicked(MeasurePackageDetail detail) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
 	}
 	
 	/**
@@ -351,8 +427,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		// QDM elements
 		view.setQDMElements(result.getQdmElements());
 		
-		view.setMeasurePackages(result.getPackages());
-		
+		//view.setMeasurePackages(result.getPackages());
+		view.buildCellTable(result.getPackages());
 		if (result.getPackages().size() > 0) {
 			if (currentDetail != null) {
 				for (int i = 0; i < result.getPackages().size(); i++) {
@@ -421,6 +497,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
 		currentDetail.setSequence(Integer
 				.toString(getMaxSequence(overview) + 1));
+		view.buildCellTable(overview.getPackages());
 		//view.setMeasurePackages(overview.getPackages());
 		setMeasurePackageDetailsOnView();
 	}

@@ -149,7 +149,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		void setClauses(List<MeasurePackageClauseDetail> clauses);
 		void setPackageName(String name);
 		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
-		//void setMeasurePackages(List<MeasurePackageDetail> packages);
+		void setMeasurePackages(List<MeasurePackageDetail> packages);
 		MeasurePackageClauseCellListWidget getPackageGroupingWidget();
 	}
 	
@@ -351,7 +351,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		// QDM elements
 		view.setQDMElements(result.getQdmElements());
 		
-		/*view.setMeasurePackages(result.getPackages());*/
+		view.setMeasurePackages(result.getPackages());
 		
 		if (result.getPackages().size() > 0) {
 			if (currentDetail != null) {

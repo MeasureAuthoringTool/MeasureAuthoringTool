@@ -2,6 +2,7 @@ package mat.client.shared;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import mat.client.CustomPager;
@@ -12,6 +13,8 @@ import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.OpenEvent;
 import com.google.gwt.event.logical.shared.OpenHandler;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
@@ -39,6 +42,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
+
 
 /**
  * The Class MeasurePackageClauseCellListWidget.
@@ -137,6 +141,12 @@ public class MeasurePackageClauseCellListWidget {
 		rightCellListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
+				if (rightCellListSelectionModel.getSelectedObject() == null) {
+					return;
+				}
+				if(leftCellListSelectionModel.getSelectedObject() !=null) {
+					leftCellListSelectionModel.clear();
+				}
 				System.out.println("selectionModel.getSelectedObject()" + rightCellListSelectionModel.getSelectedObject());
 				MeasurePackageClauseDetail measurePackageClauseDetail = rightCellListSelectionModel.getSelectedObject();
 				if (((measurePackageClauseDetail.getType().equals("denominatorExclusions"))
@@ -175,6 +185,12 @@ public class MeasurePackageClauseCellListWidget {
 		leftCellListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
+				if (leftCellListSelectionModel.getSelectedObject() == null) {
+					return;
+				}
+				if(rightCellListSelectionModel.getSelectedObject() !=null) {
+					rightCellListSelectionModel.clear();
+				}
 				System.out.println("selectionModel.getSelectedSet()" + leftCellListSelectionModel.getSelectedSet());
 				disclosurePanelItemCountTable.setVisible(false);
 				disclosurePanelAssociations.setVisible(false);
@@ -542,7 +558,76 @@ public class MeasurePackageClauseCellListWidget {
 		clauseButtonPanel.add(new SpacerWidget());
 		clauseButtonPanel.add(new SpacerWidget());
 		clauseButtonPanel.add(addAllClauseLeft);
+		clauseButtonHandlers();
 		return clauseButtonPanel;
+	}
+	
+	private void clauseButtonHandlers(){
+		addClauseRight.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if ((clausesPopulationList.size() > 0)
+						&& (leftCellListSelectionModel.getSelectedObject() != null)) {
+					groupingPopulationList.add(leftCellListSelectionModel.getSelectedObject());
+					clausesPopulationList.remove(leftCellListSelectionModel.getSelectedObject());
+					Collections.sort(groupingPopulationList);
+					Collections.sort(clausesPopulationList);
+					getRightPagerPanel().setDisplay(getRightCellList());
+					getLeftPagerPanel().setDisplay(getLeftCellList());
+					leftCellListSelectionModel.clear();
+					
+				}
+			}
+		});
+		addClauseLeft.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if ((groupingPopulationList.size() > 0)
+						&& (rightCellListSelectionModel.getSelectedObject() != null)) {
+					clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
+					groupingPopulationList.remove(rightCellListSelectionModel.getSelectedObject());
+					Collections.sort(groupingPopulationList);
+					Collections.sort(clausesPopulationList);
+					getRightPagerPanel().setDisplay(getRightCellList());
+					getLeftPagerPanel().setDisplay(getLeftCellList());
+					rightCellListSelectionModel.clear();
+					disclosurePanelAssociations.setVisible(false);
+					disclosurePanelItemCountTable.setVisible(false);
+				}
+			}
+		});
+		
+		addAllClauseRight.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (clausesPopulationList.size() != 0) {
+					groupingPopulationList.addAll(clausesPopulationList);
+					clausesPopulationList.removeAll(clausesPopulationList);
+					Collections.sort(groupingPopulationList);
+					rightCellListSelectionModel.clear();
+					leftCellListSelectionModel.clear();
+					getRightPagerPanel().setDisplay(getRightCellList());
+					getLeftPagerPanel().setDisplay(getLeftCellList());
+				}
+			}
+		});
+		
+		addAllClauseLeft.addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				if (groupingPopulationList.size() != 0) {
+					clausesPopulationList.addAll(groupingPopulationList);
+					groupingPopulationList.removeAll(groupingPopulationList);
+					Collections.sort(clausesPopulationList);
+					rightCellListSelectionModel.clear();
+					leftCellListSelectionModel.clear();
+					getRightPagerPanel().setDisplay(getRightCellList());
+					getLeftPagerPanel().setDisplay(getLeftCellList());
+					disclosurePanelAssociations.setVisible(false);
+					disclosurePanelItemCountTable.setVisible(false);
+				}
+			}
+		});
 	}
 	/**
 	 * Clause Cell Class.

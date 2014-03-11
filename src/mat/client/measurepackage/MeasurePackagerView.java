@@ -508,6 +508,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	@Override
 	public void setClauses(List<MeasurePackageClauseDetail> clauses) {
+		packageGroupingWidget.getClausesPopulationList().clear();
 		packageGroupingWidget.setClausesPopulationList(clauses);
 		packageGroupingWidget.getLeftPagerPanel().setDisplay(packageGroupingWidget.getLeftCellList());
 		packageGroupingWidget.getLeftRangeLabelPager().setDisplay(packageGroupingWidget.getLeftCellList());
@@ -533,6 +534,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	@Override
 	public MeasurePackageClauseCellListWidget getPackageGroupingWidget() {
 		return packageGroupingWidget;
+	}
+	
+	@Override
+	public void setMeasurePackages(List<MeasurePackageDetail> packages) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

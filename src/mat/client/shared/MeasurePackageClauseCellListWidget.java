@@ -38,13 +38,29 @@ import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
+import com.google.gwt.view.client.SingleSelectionModel;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackageClauseCellListWidget.
  */
 public class MeasurePackageClauseCellListWidget {
-	
+	/**
+	 * The HTML templates used to render the cell.
+	 */
+	interface Templates extends SafeHtmlTemplates {
+		/**
+		 * The template for this Cell, which includes styles and a value.
+		 * @param value the safe value. Since the value type is {@link SafeHtml},
+		 *          it will not be escaped before including it in the template.
+		 *          Alternatively, you could make the value type String, in which
+		 *          case the value would be escaped.
+		 * @return a {@link SafeHtml} instance
+		 */
+		@SafeHtmlTemplates.Template("<div style=\"margin-left:5px;\">{0}</div>")
+		SafeHtml cell(SafeHtml value);
+	}
+	/** Create a singleton instance of the templates used to render the cell. */
+	private static Templates templates = GWT.create(Templates.class);
 	/** The cell list. */
 	private CellList<MeasurePackageClauseDetail> leftCellList;
 	/** The cell list. */
@@ -55,34 +71,6 @@ public class MeasurePackageClauseCellListWidget {
 	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel();
 	/** The Left cell LIst pager panel. */
 	private ShowMorePagerPanel leftPagerPanel = new ShowMorePagerPanel();
-	/**
-	 * @return the rightPagerPanel
-	 */
-	public ShowMorePagerPanel getRightPagerPanel() {
-		return rightPagerPanel;
-	}
-	
-	/**
-	 * @return the leftPagerPanel
-	 */
-	public ShowMorePagerPanel getLeftPagerPanel() {
-		return leftPagerPanel;
-	}
-	
-	/**
-	 * @return the rightRangeLabelPager
-	 */
-	public RangeLabelPager getRightRangeLabelPager() {
-		return rightRangeLabelPager;
-	}
-	
-	/**
-	 * @return the leftRangeLabelPager
-	 */
-	public RangeLabelPager getLeftRangeLabelPager() {
-		return leftRangeLabelPager;
-	}
-	
 	/** Flow Panel for OK-Cancel buttons in Item Count Table. **/
 	private FlowPanel itemCountButtonPanel = new FlowPanel();
 	/** The range label pager. */
@@ -103,17 +91,6 @@ public class MeasurePackageClauseCellListWidget {
 	private SecondaryButton cancelItemcountList = new SecondaryButton("Cancel");
 	/** The pagesize. */
 	private final int PAGESIZE = 5;
-	/**
-	 * Item Count Table Selection Model. */
-	private MultiSelectionModel<QualityDataSetDTO> itemCountSelection;
-	/**
-	 * Clauses Selection Model.	 */
-	private MultiSelectionModel<MeasurePackageClauseDetail> leftCellListSelectionModel
-	= new MultiSelectionModel<MeasurePackageClauseDetail>();
-	/**
-	 * Grouping Selection Model.	 */
-	private MultiSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel =
-			new MultiSelectionModel<MeasurePackageClauseDetail>();
 	/** The add Clause Right. */
 	private Button addClauseRight = buildAddButton("customAddRightButton");
 	/** The add Clause left. */
@@ -122,13 +99,17 @@ public class MeasurePackageClauseCellListWidget {
 	private Button addAllClauseRight = buildDoubleAddButton("customAddALlRightButton");
 	/** The add all Clause left. */
 	private Button addAllClauseLeft = buildDoubleAddButton("customAddAllLeftButton");
-	/**
-	 * List Data Provider for Right(Package Clauses) cell List.
-	 */
+	/** Item Count Table Selection Model. */
+	private MultiSelectionModel<QualityDataSetDTO> itemCountSelection;
+	/** Clauses Selection Model.	 */
+	private SingleSelectionModel<MeasurePackageClauseDetail> leftCellListSelectionModel	=
+			new SingleSelectionModel<MeasurePackageClauseDetail>();
+	/** Grouping Selection Model.	 */
+	private SingleSelectionModel<MeasurePackageClauseDetail> rightCellListSelectionModel =
+			new SingleSelectionModel<MeasurePackageClauseDetail>();
+	/** List Data Provider for Right(Package Clauses) cell List.*/
 	private ListDataProvider<MeasurePackageClauseDetail> rightCellListDataProvider;
-	/**
-	 * List Data Provider for Left(Clause) cell List.
-	 */
+	/** List Data Provider for Left(Clause) cell List. */
 	private ListDataProvider<MeasurePackageClauseDetail> leftCellListDataProvider;
 	/** The Constant ITEMCOUNTLIST. */
 	private static final List<QualityDataSetDTO> ITEMCOUNTLIST = Arrays.asList(
@@ -142,71 +123,50 @@ public class MeasurePackageClauseCellListWidget {
 	/** The panel. */
 	private VerticalPanel panel = new VerticalPanel();
 	
-	private ScrollPanel associatedPanel = new ScrollPanel();
-	
-	
-	
-	private ScrollPanel initialPopPanel2 = new ScrollPanel();
-	private ArrayList<MeasurePackageClauseDetail> groupingPopulationList = new ArrayList<MeasurePackageClauseDetail>();
-	/**
-	 * @return the groupingPopulationList
-	 */
-	public ArrayList<MeasurePackageClauseDetail> getGroupingPopulationList() {
-		return groupingPopulationList;
-	}
-	
-	/**
-	 * @param groupingPopulationList the groupingPopulationList to set
-	 */
-	public void setGroupingPopulationList(List<MeasurePackageClauseDetail> groupingPopulationList) {
-		this.groupingPopulationList = (ArrayList<MeasurePackageClauseDetail>) groupingPopulationList;
-	}
-	
-	/**
-	 * @return the clausesPopulationList
-	 */
-	public ArrayList<MeasurePackageClauseDetail> getClausesPopulationList() {
-		return clausesPopulationList;
-	}
-	
-	/**
-	 * @param clauses the clausesPopulationList to set
-	 */
-	public void setClausesPopulationList(List<MeasurePackageClauseDetail> clauses) {
-		clausesPopulationList = (ArrayList<MeasurePackageClauseDetail>) clauses;
-	}
-	
-	ArrayList<MeasurePackageClauseDetail> clausesPopulationList = new ArrayList<MeasurePackageClauseDetail>();
-	
-	/**
-	 * Gets the cell list.
-	 *
-	 * @return the cellList
-	 */
+	/** List of Elements in Grouping List. */
+	private ArrayList<MeasurePackageClauseDetail> groupingPopulationList =
+			new ArrayList<MeasurePackageClauseDetail>();
+	/** List of Elements in Clause List.*/
+	private ArrayList<MeasurePackageClauseDetail> clausesPopulationList =
+			new ArrayList<MeasurePackageClauseDetail>();
+	/*** Gets the Grouping cell list.
+	 * @return the cellList.	 */
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
 		rightCellList = new CellList<MeasurePackageClauseDetail>(new ClauseCell());
 		rightCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-		
-		rightCellListDataProvider = new ListDataProvider<MeasurePackageClauseDetail>(groupingPopulationList);
-		rightCellListDataProvider.addDataDisplay(rightCellList);
 		rightCellListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				System.out.println("selectionModel.getSelectedSet()" + rightCellListSelectionModel.getSelectedSet());
-				addCellTable();
-				//getAssociatedCellList();
-				getItemCountTableButtonPanel();
-				disclosurePanelItemCountTable.setOpen(true);
-				disclosurePanelAssociations.setOpen(false);
-				disclosurePanelItemCountTable.setVisible(true);
-				disclosurePanelAssociations.setVisible(true);
-				
+				System.out.println("selectionModel.getSelectedObject()" + rightCellListSelectionModel.getSelectedObject());
+				MeasurePackageClauseDetail measurePackageClauseDetail = rightCellListSelectionModel.getSelectedObject();
+				if (((measurePackageClauseDetail.getType().equals("denominatorExclusions"))
+						|| (measurePackageClauseDetail.getType().equals("numeratorExclusions")))) {
+					addCellTable();
+					getItemCountTableButtonPanel();
+					disclosurePanelItemCountTable.setVisible(true);
+					disclosurePanelAssociations.setVisible(true);
+					disclosurePanelItemCountTable.setOpen(true);
+					disclosurePanelAssociations.setOpen(false);
+				} else {
+					addCellTable();
+					getItemCountTableButtonPanel();
+					disclosurePanelItemCountTable.setVisible(true);
+					disclosurePanelAssociations.setVisible(false);
+					disclosurePanelItemCountTable.setOpen(true);
+					disclosurePanelAssociations.setOpen(false);
+				}
 			}
 		});
-		rightCellList.setSelectionModel(rightCellListSelectionModel, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+		rightCellListDataProvider = new ListDataProvider<MeasurePackageClauseDetail>(groupingPopulationList);
+		rightCellListDataProvider.addDataDisplay(rightCellList);
+		rightCellList.setSelectionModel(rightCellListSelectionModel
+				, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
 		return rightCellList;
 	}
-	
+	/**
+	 * Gets the Clause Cell List.
+	 * @return CellList.
+	 */
 	public CellList<MeasurePackageClauseDetail> getLeftCellList() {
 		leftCellList = new CellList<MeasurePackageClauseDetail>(new ClauseCell());
 		leftCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
@@ -220,34 +180,10 @@ public class MeasurePackageClauseCellListWidget {
 				disclosurePanelAssociations.setVisible(false);
 			}
 		});
-		leftCellList.setSelectionModel(leftCellListSelectionModel, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+		leftCellList.setSelectionModel(leftCellListSelectionModel
+				, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
 		return leftCellList;
 	}
-	
-	//	public Widget getAssociatedCellList() {
-	//		associatedPanel.clear();
-	//		associatedCellList = new CellList<String>(getSampleCompositeCell());
-	//		final MultiSelectionModel<String> selectionModel = new MultiSelectionModel<String>();
-	//		//associatedCellList.setPageSize(5);
-	//		associatedCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-	//		ArrayList<String> populationList = new ArrayList<String>();
-	//		populationList.add("Initial Population 1");
-	//		populationList.add("Initial Population 2");
-	//		populationList.add("Initial Population 3");
-	//		populationList.add("Measure Population 1");
-	//		populationList.add("Measure Population 2");
-	//		populationList.add("Measure Population Exclusions 1");
-	//		populationList.add("Measure Observation 1");
-	//		populationList.add("Measure Observation 2");
-	//		populationList.add("Measure Observation 3");
-	//		ListDataProvider<String> dataProvider = new ListDataProvider<String>(populationList);
-	//		dataProvider.addDataDisplay(associatedCellList);
-	//		associatedPanel.setHeight("200px");
-	//		associatedPanel.setAlwaysShowScrollBars(true);
-	//		associatedPanel.add(associatedCellList);
-	//		return associatedPanel;
-	//	}
-	
 	/**
 	 * Gets the widget.
 	 *
@@ -256,7 +192,6 @@ public class MeasurePackageClauseCellListWidget {
 	public Widget getWidget(){
 		return mainFlowPanel;
 	}
-	
 	/**
 	 * Gets the sample composite cell.
 	 *
@@ -354,8 +289,6 @@ public class MeasurePackageClauseCellListWidget {
 		
 		return myClassCell;
 	}*/
-	
-	
 	/**
 	 * Builds the item count widget.
 	 *
@@ -368,16 +301,12 @@ public class MeasurePackageClauseCellListWidget {
 		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchCriteriaPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.addStyleName("leftAligned");
-		
 		HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
 		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchHorizontalPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
-		
 		searchCriteriaPanel.add(searchHorizontalPanel);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
-		
-		
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
@@ -385,42 +314,33 @@ public class MeasurePackageClauseCellListWidget {
 		disclosurePanelItemCountTable.setOpen(false);
 		disclosurePanelItemCountTable.setVisible(false);
 		return disclosurePanelItemCountTable;
-		
 	}
-	
-	
 	/**
 	 * Builds the add association widget.
 	 *
 	 * @return the widget
 	 */
-	private Widget buildAddAssociationWidget(){
+	private Widget buildAddAssociationWidget() {
 		FlowPanel searchCriteriaPanel = new FlowPanel();
 		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchCriteriaPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.addStyleName("leftAligned");
-		
 		HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
 		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchHorizontalPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
-		
 		searchCriteriaPanel.add(searchHorizontalPanel);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
-		
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		ScrollPanel associateListScrollPanel = new ScrollPanel();
 		associateListScrollPanel.add(getLeftCellList());
 		disclosurePanelAssociations.add(associateListScrollPanel);
-		//		disclosurePanelAssociations.add(getLeftCellList());
 		disclosurePanelAssociations.setOpen(false);
-		disclosurePanelAssociations.setVisible(false);
+		disclosurePanelAssociations.setVisible(true);
 		return disclosurePanelAssociations;
-		
 	}
-	
 	/**
 	 * Instantiates a new cell list with context menu.
 	 */
@@ -432,9 +352,9 @@ public class MeasurePackageClauseCellListWidget {
 		rightPagerPanel.addStyleName("measurePackageCellListscrollable");
 		rightPagerPanel.setDisplay(getRightCellList());
 		rightRangeLabelPager.setDisplay(getRightCellList());
-		Label qdmTabName = new Label("Measure Package Grouping");
-		qdmTabName.setStyleName("valueSetHeader");
-		mainFlowPanel.add(qdmTabName);
+		Label packageTabName = new Label("Package Grouping");
+		packageTabName.setStyleName("valueSetHeader");
+		mainFlowPanel.add(packageTabName);
 		mainFlowPanel.add(new SpacerWidget());
 		HorizontalPanel hp = new HorizontalPanel();
 		VerticalPanel leftCellListVPanel = new VerticalPanel();
@@ -443,11 +363,12 @@ public class MeasurePackageClauseCellListWidget {
 		VerticalPanel rightCellListVPanel = new VerticalPanel();
 		rightCellListVPanel.add(new HTML("<b style='margin-left:15px;'> Package Grouping </b>"));
 		rightCellListVPanel.add(rightPagerPanel);
-		
 		hp.add(leftCellListVPanel);
 		hp.add(buildClauseAddButtonWidget());
 		hp.add(rightCellListVPanel);
 		VerticalPanel vp = new VerticalPanel();
+		disclosurePanelItemCountTable.clear();;
+		disclosurePanelAssociations.clear();
 		vp.add(buildItemCountWidget());
 		vp.add(buildAddAssociationWidget());
 		hp.add(vp);
@@ -456,40 +377,36 @@ public class MeasurePackageClauseCellListWidget {
 		mainFlowPanel.add(saveGrouping);
 		mainFlowPanel.setStylePrimaryName("valueSetSearchPanel");
 	}
-	
-	
+	/**
+	 * Click Handlers for Disclosure Panel.
+	 */
 	private void addClickHandlersToDisclosurePanels() {
-		
 		disclosurePanelItemCountTable.addOpenHandler(new OpenHandler<DisclosurePanel>() {
-			
 			@Override
 			public void onOpen(OpenEvent<DisclosurePanel> event) {
 				disclosurePanelItemCountTable.setOpen(true);
 				disclosurePanelAssociations.setOpen(false);
 			}
 		});
-		
-		
 		disclosurePanelAssociations.addOpenHandler(new OpenHandler<DisclosurePanel>() {
-			
 			@Override
 			public void onOpen(OpenEvent<DisclosurePanel> event) {
 				disclosurePanelAssociations.setOpen(true);
 				disclosurePanelItemCountTable.setOpen(false);
-				
 			}
 		});
-		
 	}
 	
-	public Widget getItemCountTableButtonPanel(){
+	/**
+	 * Build Ok - Cancel Button Widget in Item Count Disclosure Panel.
+	 * @return Widget.
+	 */
+	private Widget getItemCountTableButtonPanel() {
 		itemCountButtonPanel.addStyleName("rightAlignButton");
 		itemCountButtonPanel.add(saveItemcountList);
 		itemCountButtonPanel.add(cancelItemcountList);
-		
 		return itemCountButtonPanel;
 	}
-	
 	/**
 	 * The Class QualityDataSetDTO.
 	 */
@@ -507,7 +424,7 @@ public class MeasurePackageClauseCellListWidget {
 		 * @param name the name
 		 * @param dataType the data type
 		 */
-		public QualityDataSetDTO(String name,String dataType) {
+		public QualityDataSetDTO(String name, String dataType) {
 			this.name = name;
 			this.dataType = dataType;
 		}
@@ -518,75 +435,66 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @return the panel
 	 */
-	public Panel addCellTable(){
+	private Panel addCellTable() {
 		panel.clear();
 		CellTable<QualityDataSetDTO> table = new CellTable<QualityDataSetDTO>();
 		itemCountSelection = new MultiSelectionModel<QualityDataSetDTO>();
 		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		table.setSelectionModel(itemCountSelection);
-		
-		MatCheckBoxCell chkBtnCell = new MatCheckBoxCell(false,true);
+		MatCheckBoxCell chkBtnCell = new MatCheckBoxCell(false, true);
 		Column<QualityDataSetDTO, Boolean> selectColumn = new Column<QualityDataSetDTO, Boolean>(chkBtnCell){
-			
 			@Override
 			public Boolean getValue(QualityDataSetDTO object) {
 				return itemCountSelection.isSelected(object);
-			}};
-			
-			selectColumn.setFieldUpdater(new FieldUpdater<MeasurePackageClauseCellListWidget.QualityDataSetDTO, Boolean>() {
-				
-				@Override
-				public void update(int index,
-						mat.client.shared.MeasurePackageClauseCellListWidget.QualityDataSetDTO object,
-						Boolean value) {
-					
-					itemCountSelection.setSelected(object, value);
-				}
-			});
-			
-			table.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select"
-					+ "</span>"));
-			
-			TextColumn<QualityDataSetDTO> dateColumn = new TextColumn<QualityDataSetDTO>() {
-				@Override
-				public String getValue(QualityDataSetDTO object) {
-					return object.name;
-				}
-			};
-			table.addColumn(dateColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title='Name'>" + "Name"
-							+ "</span>"));
-			
-			TextColumn<QualityDataSetDTO> addressColumn = new TextColumn<QualityDataSetDTO>() {
-				@Override
-				public String getValue(QualityDataSetDTO object) {
-					return object.dataType;
-				}
-			};
-			table.addColumn(addressColumn, SafeHtmlUtils.fromSafeConstant("<span title='Data Type'>" + "Data Type"
-					+ "</span>"));
-			ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
-			table.setPageSize(PAGESIZE);
-			table.setRowCount(ITEMCOUNTLIST.size(), true);
-			table.setRowData(ITEMCOUNTLIST);
-			sortProvider.refresh();
-			sortProvider.getList().addAll(ITEMCOUNTLIST);
-			sortProvider.addDataDisplay(table);
-			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-			spager.setPageStart(0);
-			spager.setDisplay(table);
-			spager.setPageSize(PAGESIZE);
-			panel.setStylePrimaryName("valueSetSearchPanel");
-			panel.add(table);
-			panel.add(new SpacerWidget());
-			panel.add(spager);
-			panel.add(new SpacerWidget());
-			panel.add(itemCountButtonPanel);
-			return panel;
-			
+			}
+		};
+		selectColumn.setFieldUpdater(new FieldUpdater<MeasurePackageClauseCellListWidget.QualityDataSetDTO, Boolean>() {
+			@Override
+			public void update(int index,
+					mat.client.shared.MeasurePackageClauseCellListWidget.QualityDataSetDTO object,
+					Boolean value) {
+				itemCountSelection.setSelected(object, value);
+			}
+		});
+		table.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select"
+				+ "</span>"));
+		TextColumn<QualityDataSetDTO> dateColumn = new TextColumn<QualityDataSetDTO>() {
+			@Override
+			public String getValue(QualityDataSetDTO object) {
+				return object.name;
+			}
+		};
+		table.addColumn(dateColumn, SafeHtmlUtils
+				.fromSafeConstant("<span title='Name'>" + "Name"
+						+ "</span>"));
+		TextColumn<QualityDataSetDTO> addressColumn = new TextColumn<QualityDataSetDTO>() {
+			@Override
+			public String getValue(QualityDataSetDTO object) {
+				return object.dataType;
+			}
+		};
+		table.addColumn(addressColumn, SafeHtmlUtils.fromSafeConstant("<span title='Data Type'>" + "Data Type"
+				+ "</span>"));
+		ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
+		table.setPageSize(PAGESIZE);
+		table.setRowCount(ITEMCOUNTLIST.size(), true);
+		table.setRowData(ITEMCOUNTLIST);
+		sortProvider.refresh();
+		sortProvider.getList().addAll(ITEMCOUNTLIST);
+		sortProvider.addDataDisplay(table);
+		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+		spager.setPageStart(0);
+		spager.setDisplay(table);
+		spager.setPageSize(PAGESIZE);
+		panel.setStylePrimaryName("valueSetSearchPanel");
+		panel.add(table);
+		panel.add(new SpacerWidget());
+		panel.add(spager);
+		panel.add(new SpacerWidget());
+		panel.add(itemCountButtonPanel);
+		return panel;
 	}
-	
 	/**
 	 * Builds the add button.
 	 *
@@ -598,7 +506,6 @@ public class MeasurePackageClauseCellListWidget {
 		btn.setStyleName(imageUrl);
 		return btn;
 	}
-	
 	/**
 	 * Builds the double add button.
 	 *
@@ -610,9 +517,8 @@ public class MeasurePackageClauseCellListWidget {
 		btn.setStyleName(imageUrl);
 		return btn;
 	}
-	
 	/**
-	 * @return
+	 * @return - Widget.
 	 */
 	private Widget buildClauseAddButtonWidget() {
 		VerticalPanel clauseButtonPanel = new VerticalPanel();
@@ -638,90 +544,113 @@ public class MeasurePackageClauseCellListWidget {
 		clauseButtonPanel.add(addAllClauseLeft);
 		return clauseButtonPanel;
 	}
-	
-	static class ClauseCell implements Cell<MeasurePackageClauseDetail> {
-		
-		/**
-		 * The HTML templates used to render the cell.
-		 */
-		interface Templates extends SafeHtmlTemplates {
-			/**
-			 * The template for this Cell, which includes styles and a value.
-			 * @param value the safe value. Since the value type is {@link SafeHtml},
-			 *          it will not be escaped before including it in the template.
-			 *          Alternatively, you could make the value type String, in which
-			 *          case the value would be escaped.
-			 * @return a {@link SafeHtml} instance
-			 */
-			@SafeHtmlTemplates.Template("<div style=\"margin-left:5px;\">{0}</div>")
-			SafeHtml cell(SafeHtml value);
-		}
-		
-		/**
-		 * Create a singleton instance of the templates used to render the cell.
-		 */
-		private static Templates templates = GWT.create(Templates.class);
-		
-		
-		
-		
+	/**
+	 * Clause Cell Class.
+	 *
+	 */
+	class ClauseCell implements Cell<MeasurePackageClauseDetail> {
 		@Override
 		public void render(com.google.gwt.cell.client.Cell.Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb) {
 			if (value == null) {
 				return;
 			}
-			
-			if(value.getName() != null) {
+			if (value.getName() != null) {
 				// If the value comes from the user, we escape it to avoid XSS attacks.
 				SafeHtml safeValue = SafeHtmlUtils.fromString(value.getName());
-				
 				SafeHtml rendered = templates.cell(safeValue);
 				sb.append(rendered);
 			}
-			
 		}
-		
 		@Override
 		public boolean dependsOnSelection() {
 			// TODO Auto-generated method stub
 			return false;
 		}
-		
 		@Override
 		public Set<String> getConsumedEvents() {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
 		@Override
 		public boolean handlesSelection() {
 			// TODO Auto-generated method stub
 			return false;
 		}
-		
 		@Override
-		public boolean isEditing(com.google.gwt.cell.client.Cell.Context context, Element parent, MeasurePackageClauseDetail value) {
+		public boolean isEditing(com.google.gwt.cell.client.Cell.Context context
+				, Element parent, MeasurePackageClauseDetail value) {
 			// TODO Auto-generated method stub
 			return false;
 		}
-		
 		@Override
-		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context, Element parent, MeasurePackageClauseDetail value,
+		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
+				, Element parent, MeasurePackageClauseDetail value,
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
-			// TODO Auto-generated method stub
-			
 		}
-		
 		@Override
-		public boolean resetFocus(com.google.gwt.cell.client.Cell.Context context, Element parent, MeasurePackageClauseDetail value) {
+		public boolean resetFocus(com.google.gwt.cell.client.Cell.Context context
+				, Element parent, MeasurePackageClauseDetail value) {
 			// TODO Auto-generated method stub
 			return false;
 		}
-		
 		@Override
 		public void setValue(com.google.gwt.cell.client.Cell.Context context, Element parent, MeasurePackageClauseDetail value) {
 			// TODO Auto-generated method stub
-			
 		}
 	}
+	/**
+	 * @return the groupingPopulationList
+	 */
+	public ArrayList<MeasurePackageClauseDetail> getGroupingPopulationList() {
+		return groupingPopulationList;
+	}
+	
+	/**
+	 * @param groupingPopulationList the groupingPopulationList to set
+	 */
+	public void setGroupingPopulationList(List<MeasurePackageClauseDetail> groupingPopulationList) {
+		this.groupingPopulationList = (ArrayList<MeasurePackageClauseDetail>) groupingPopulationList;
+	}
+	
+	/**
+	 * @return the clausesPopulationList
+	 */
+	public ArrayList<MeasurePackageClauseDetail> getClausesPopulationList() {
+		return clausesPopulationList;
+	}
+	
+	/**
+	 * @param clauses the clausesPopulationList to set
+	 */
+	public void setClausesPopulationList(List<MeasurePackageClauseDetail> clauses) {
+		clausesPopulationList = (ArrayList<MeasurePackageClauseDetail>) clauses;
+	}
+	/**
+	 * @return the rightPagerPanel
+	 */
+	public ShowMorePagerPanel getRightPagerPanel() {
+		return rightPagerPanel;
+	}
+	
+	/**
+	 * @return the leftPagerPanel
+	 */
+	public ShowMorePagerPanel getLeftPagerPanel() {
+		return leftPagerPanel;
+	}
+	
+	/**
+	 * @return the rightRangeLabelPager
+	 */
+	public RangeLabelPager getRightRangeLabelPager() {
+		return rightRangeLabelPager;
+	}
+	
+	/**
+	 * @return the leftRangeLabelPager
+	 */
+	public RangeLabelPager getLeftRangeLabelPager() {
+		return leftRangeLabelPager;
+	}
+	
 }

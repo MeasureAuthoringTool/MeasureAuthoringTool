@@ -335,7 +335,7 @@ left:50px;
 }
 
 .customDeleteButton {
-    background: url("images/g_delete.png");
+    background: url("images/trash.png");
     background-position:center;
     background-repeat:no-repeat;
     height: 25px;

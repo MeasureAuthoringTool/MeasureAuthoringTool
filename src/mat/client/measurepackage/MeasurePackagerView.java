@@ -5,10 +5,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
+import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
@@ -90,7 +90,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The list visible count. */
 	private final int listVisibleCount = 10;
 	
-	MeasurePackageClauseCellListWidget cellListWithContextMenu = new MeasurePackageClauseCellListWidget();
+	/**	MeasurePackageClauseListWidget. *  */
+	private MeasurePackageClauseCellListWidget packageGroupingWidget = new MeasurePackageClauseCellListWidget();
 	
 	/**
 	 * Constructor.
@@ -98,7 +99,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public MeasurePackagerView() {
 		addQDMElementLeftRightClickHandlers();
 		Panel topQDMElementContainer = buildQDMElementLeftRightPanel();
-		content.add(cellListWithContextMenu.getWidget());
+		content.add(packageGroupingWidget.getWidget());
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
@@ -507,9 +508,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	@Override
 	public void setClauses(List<MeasurePackageClauseDetail> clauses) {
-		cellListWithContextMenu.setClausesPopulationList(clauses);
-		cellListWithContextMenu.getLeftPagerPanel().setDisplay(cellListWithContextMenu.getLeftCellList());
-		cellListWithContextMenu.getLeftRangeLabelPager().setDisplay(cellListWithContextMenu.getLeftCellList());
+		packageGroupingWidget.setClausesPopulationList(clauses);
+		packageGroupingWidget.getLeftPagerPanel().setDisplay(packageGroupingWidget.getLeftCellList());
+		packageGroupingWidget.getLeftRangeLabelPager().setDisplay(packageGroupingWidget.getLeftCellList());
 	}
 	
 	@Override
@@ -520,10 +521,18 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	@Override
 	public void setClausesInPackage(List<MeasurePackageClauseDetail> list) {
-		cellListWithContextMenu.setGroupingPopulationList(list);
-		cellListWithContextMenu.getRightPagerPanel().setDisplay(cellListWithContextMenu.getRightCellList());
-		cellListWithContextMenu.getRightRangeLabelPager().setDisplay(cellListWithContextMenu.getRightCellList());
+		packageGroupingWidget.setGroupingPopulationList(list);
+		packageGroupingWidget.getRightPagerPanel().setDisplay(packageGroupingWidget.getRightCellList());
+		packageGroupingWidget.getRightRangeLabelPager().setDisplay(packageGroupingWidget.getRightCellList());
 		
+	}
+	
+	/**
+	 * @return the packageGroupingWidget
+	 */
+	@Override
+	public MeasurePackageClauseCellListWidget getPackageGroupingWidget() {
+		return packageGroupingWidget;
 	}
 	
 }

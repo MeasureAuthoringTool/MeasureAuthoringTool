@@ -9,6 +9,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
+import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
@@ -149,6 +150,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		void setPackageName(String name);
 		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
 		//void setMeasurePackages(List<MeasurePackageDetail> packages);
+		MeasurePackageClauseCellListWidget getPackageGroupingWidget();
 	}
 	
 	/**
@@ -261,6 +263,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeClosingDisplay() {
+		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+		view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 	}
 	
 	/* (non-Javadoc)

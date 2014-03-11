@@ -338,7 +338,7 @@ public class MeasurePackageClauseCellListWidget {
 		associateListScrollPanel.add(getLeftCellList());
 		disclosurePanelAssociations.add(associateListScrollPanel);
 		disclosurePanelAssociations.setOpen(false);
-		disclosurePanelAssociations.setVisible(true);
+		disclosurePanelAssociations.setVisible(false);
 		return disclosurePanelAssociations;
 	}
 	/**
@@ -367,7 +367,7 @@ public class MeasurePackageClauseCellListWidget {
 		hp.add(buildClauseAddButtonWidget());
 		hp.add(rightCellListVPanel);
 		VerticalPanel vp = new VerticalPanel();
-		disclosurePanelItemCountTable.clear();;
+		disclosurePanelItemCountTable.clear();
 		disclosurePanelAssociations.clear();
 		vp.add(buildItemCountWidget());
 		vp.add(buildAddAssociationWidget());
@@ -651,6 +651,18 @@ public class MeasurePackageClauseCellListWidget {
 	 */
 	public RangeLabelPager getLeftRangeLabelPager() {
 		return leftRangeLabelPager;
+	}
+	/**
+	 * @return the disclosurePanelItemCountTable
+	 */
+	public DisclosurePanel getDisclosurePanelItemCountTable() {
+		return disclosurePanelItemCountTable;
+	}
+	/**
+	 * @return the disclosurePanelAssociations
+	 */
+	public DisclosurePanel getDisclosurePanelAssociations() {
+		return disclosurePanelAssociations;
 	}
 	
 }

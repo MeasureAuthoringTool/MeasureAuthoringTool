@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import mat.client.CustomPager;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.shared.ErrorMessageDisplay;
@@ -21,7 +20,6 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
 import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -130,7 +128,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/**	MeasurePackageClauseListWidget. *  */
 	private MeasurePackageClauseCellListWidget packageGroupingWidget = new MeasurePackageClauseCellListWidget();
 	
-    private PrimaryButton createNew = new PrimaryButton("Create New Grouping");
+	private PrimaryButton createNew = new PrimaryButton("Create New Grouping");
 	
 	private Label viewOrEditLabel = new Label();
 	
@@ -138,7 +136,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	
-	private List<MeasurePackageDetail> selectedMeasureList;
+	private List<MeasurePackageDetail> measureGroupingList;
 	
 	private Observer observer;
 	
@@ -150,7 +148,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public Observer getObserver() {
 		return observer;
 	}
-
+	
 	@Override
 	public void setObserver(Observer observer) {
 		this.observer = observer;
@@ -289,18 +287,18 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		return panel;
 	}
 	
-    private CellTable<MeasurePackageDetail> addColumnToTable() {
+	private CellTable<MeasurePackageDetail> addColumnToTable() {
 		
 		Column<MeasurePackageDetail, SafeHtml> measureGrouping = new Column<MeasurePackageDetail, SafeHtml>(new SafeHtmlCell()){
-
+			
 			@Override
 			public SafeHtml getValue(MeasurePackageDetail object) {
 				return CellTableUtility.getColumnToolTip(object.getPackageName());
 			}};
 			table.addColumn(measureGrouping, SafeHtmlUtils.fromSafeConstant("<span title='Grouping'>" + "Grouping"
-							+ "</span>"));
-		
-			Cell<String> editButtonCell = new MatButtonCell("Click to Edit Measure Grouping","customEditButton");
+					+ "</span>"));
+			
+			Cell<String> editButtonCell = new MatButtonCell("Click to Edit Measure Grouping", "customEditButton");
 			Column<MeasurePackageDetail, String> editColumn = new Column<MeasurePackageDetail, String>(editButtonCell) {
 				
 				@Override
@@ -319,9 +317,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			});
 			
 			table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit"
-							+ "</span>"));
+					+ "</span>"));
 			
-			Cell<String> deleteButtonCell = new MatButtonCell("Click to Delete Measure Grouping","customDeleteButton");
+			Cell<String> deleteButtonCell = new MatButtonCell("Click to Delete Measure Grouping", "customDeleteButton");
 			Column<MeasurePackageDetail, String> deleteColumn = new Column<MeasurePackageDetail, String>(deleteButtonCell) {
 				
 				@Override
@@ -330,57 +328,58 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				}
 			};
 			table.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete"
-							+ "</span>"));
+					+ "</span>"));
 			
 			
-		return table;
+			return table;
 	}
 	
 	
 	@Override
-	public void buildCellTable(final List<MeasurePackageDetail> packages){
+	public void buildCellTable(final List<MeasurePackageDetail> packages) {
 		cellTablePanel.clear();
-		if(packages!=null && packages.size()>0){
-	    table = new CellTable<MeasurePackageDetail>();
-		Label measureSearchHeader = new Label("Measure Grouping List");
-		measureSearchHeader.getElement().setId("measureGroupingHeader_Label");
-		measureSearchHeader.setStyleName("measureGroupingTableHeader");
-		com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
-		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
-		TableCaptionElement caption = elem.createCaption();
-		caption.appendChild(measureSearchHeader.getElement());
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<MeasurePackageDetail>();
-		selectedMeasureList = new ArrayList<MeasurePackageDetail>();
-		selectedMeasureList.addAll(packages);
-		table.setRowData(selectedMeasureList);
-		table.setPageSize(2);
-		table.redraw();
-		table.setRowCount(selectedMeasureList.size(), true);
-		sortProvider.refresh();
-		sortProvider.getList().addAll(selectedMeasureList);
-		table = addColumnToTable();
-		sortProvider.addDataDisplay(table);
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-		spager.setPageStart(0);
-		spager.setDisplay(table);
-		spager.setPageSize(2);
-		table.setWidth("100%");
-		table.setColumnWidth(0, 60.0, Unit.PCT);
-		table.setColumnWidth(1, 20.0, Unit.PCT);
-		table.setColumnWidth(2, 20.0, Unit.PCT);
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureGroupingSummary",
-				"In the following Measure Grouping List table, Grouping Name is given in first column,"
-						+ " Edit in second column and Delete in third column.");
-		table.getElement().setAttribute("id", "MeasureGroupingCellTable");
-		table.getElement().setAttribute("aria-describedby", "measureGroupingSummary");
-		cellTablePanel.add(invisibleLabel);
-		cellTablePanel.add(table);
-		cellTablePanel.add(new SpacerWidget());
-		cellTablePanel.add(spager);
+		if ((packages != null) && (packages.size() > 0)) {
+			table = new CellTable<MeasurePackageDetail>();
+			Label measureSearchHeader = new Label("Measure Grouping List");
+			measureSearchHeader.getElement().setId("measureGroupingHeader_Label");
+			measureSearchHeader.setStyleName("measureGroupingTableHeader");
+			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
+			measureSearchHeader.getElement().setAttribute("tabIndex", "0");
+			TableCaptionElement caption = elem.createCaption();
+			caption.appendChild(measureSearchHeader.getElement());
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<MeasurePackageDetail>();
+			measureGroupingList = new ArrayList<MeasurePackageDetail>();
+			measureGroupingList.addAll(packages);
+			table.setRowData(measureGroupingList);
+			table.setPageSize(2);
+			table.redraw();
+			table.setRowCount(measureGroupingList.size(), true);
+			sortProvider.refresh();
+			sortProvider.getList().addAll(measureGroupingList);
+			table = addColumnToTable();
+			sortProvider.addDataDisplay(table);
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			table.setWidth("100%");
+			table.setColumnWidth(0, 60.0, Unit.PCT);
+			table.setColumnWidth(1, 20.0, Unit.PCT);
+			table.setColumnWidth(2, 20.0, Unit.PCT);
+			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureGroupingSummary",
+					"In the following Measure Grouping List table, Grouping Name is given in first column,"
+							+ " Edit in second column and Delete in third column.");
+			table.getElement().setAttribute("id", "MeasureGroupingCellTable");
+			table.getElement().setAttribute("aria-describedby", "measureGroupingSummary");
+			cellTablePanel.add(invisibleLabel);
+			cellTablePanel.add(table);
+			if ((measureGroupingList != null) && (measureGroupingList.size() > 2)) {
+				MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+				spager.setPageStart(0);
+				spager.setDisplay(table);
+				spager.setPageSize(2);
+				cellTablePanel.add(new SpacerWidget());
+				cellTablePanel.add(spager);
+			}
 		}
-		
 	}
 	
 	/**
@@ -676,7 +675,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	@Override
 	public void setPackageName(String name) {
-		// TODO Auto-generated method stub
+		packageGroupingWidget.getPackageName().setText(name);
 		
 	}
 	
@@ -697,16 +696,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	@Override
-	public void setMeasurePackages(List<MeasurePackageDetail> packages) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
 	public void buildQDMListCellTable(QDSAppliedListModel appliedListModel) {
 		packageGroupingWidget.setAppliedQdmList(appliedListModel.getAppliedQDMs());
 	}
-
+	
 	@Override
 	public HasClickHandlers getCreateNewButton() {
 		return createNew;

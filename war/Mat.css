@@ -1962,6 +1962,11 @@ padding: 2px;
     padding: 5px;
     text-align: left;
 }
+
+.measureGroupPackageName{
+	font-weight:bold;
+	margin-left:15px;
+}
 .valueSetMarginTop{
 	margin-top: 4px;
 }

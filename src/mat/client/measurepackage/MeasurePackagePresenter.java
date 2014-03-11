@@ -46,7 +46,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	/** The overview. */
 	private MeasurePackageOverview overview;
-
+	
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
 	/**
@@ -155,7 +155,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		void setClauses(List<MeasurePackageClauseDetail> clauses);
 		void setPackageName(String name);
 		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
-		void setMeasurePackages(List<MeasurePackageDetail> packages);
+		
 		MeasurePackageClauseCellListWidget getPackageGroupingWidget();
 		void setObserver(Observer observer);
 		void buildQDMListCellTable(QDSAppliedListModel appliedListModel);
@@ -314,6 +314,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private void displayEmpty() {
 		panel.clear();
 		panel.add(emptyPanel);
+		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+		view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 	}
 	
 	/* (non-Javadoc)
@@ -321,8 +323,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeClosingDisplay() {
-		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
-		view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
+		
 	}
 	
 	/* (non-Javadoc)
@@ -391,7 +392,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 		
-         view.setObserver(new MeasurePackagerView.Observer() {
+		view.setObserver(new MeasurePackagerView.Observer() {
 			
 			@Override
 			public void onEditClicked(MeasurePackageDetail detail) {
@@ -426,8 +427,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClauses(result.getClauses());
 		// QDM elements
 		view.setQDMElements(result.getQdmElements());
-		
-		//view.setMeasurePackages(result.getPackages());
 		view.buildCellTable(result.getPackages());
 		if (result.getPackages().size() > 0) {
 			if (currentDetail != null) {

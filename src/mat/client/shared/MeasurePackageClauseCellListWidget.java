@@ -1,14 +1,12 @@
 package mat.client.shared;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import mat.client.CustomPager;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -94,7 +92,7 @@ public class MeasurePackageClauseCellListWidget {
 	/** The save itemcount list. */
 	private SecondaryButton saveItemcountList = new SecondaryButton("Ok");
 	/** The cancel itemcount list. */
-	private SecondaryButton cancelItemcountList = new SecondaryButton("Cancel");
+	//private SecondaryButton cancelItemcountList = new SecondaryButton("Cancel");
 	/** The pagesize. */
 	private final int PAGESIZE = 3;
 	/** The add Clause Right. */
@@ -105,6 +103,8 @@ public class MeasurePackageClauseCellListWidget {
 	private Button addAllClauseRight = buildDoubleAddButton("customAddALlRightButton");
 	/** The add all Clause left. */
 	private Button addAllClauseLeft = buildDoubleAddButton("customAddAllLeftButton");
+	/** The package name. */
+	private Label packageName = new Label();
 	/** Item Count Table Selection Model. */
 	private MultiSelectionModel<QualityDataSetDTO> itemCountSelection;
 	/** Clauses Selection Model.	 */
@@ -118,22 +118,11 @@ public class MeasurePackageClauseCellListWidget {
 	/** List Data Provider for Left(Clause) cell List. */
 	private ListDataProvider<MeasurePackageClauseDetail> leftCellListDataProvider;
 	/** The Constant ITEMCOUNTLIST. */
-    private CellTable<QualityDataSetDTO> table;
-	
+	private CellTable<QualityDataSetDTO> table;
+	/** Applied QDM List.**/
 	private List<QualityDataSetDTO> appliedQdmList;
-	/** The Constant ITEMCOUNTLIST. */
-	
-	public List<QualityDataSetDTO> getAppliedQdmList() {
-		return appliedQdmList;
-	}
-
-	public void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList) {
-		this.appliedQdmList = appliedQdmList;
-	}
-	
 	/** The panel. */
 	private VerticalPanel panel = new VerticalPanel();
-	
 	/** List of Elements in Grouping List. */
 	private ArrayList<MeasurePackageClauseDetail> groupingPopulationList =
 			new ArrayList<MeasurePackageClauseDetail>();
@@ -215,7 +204,7 @@ public class MeasurePackageClauseCellListWidget {
 	public Widget getWidget(){
 		return mainFlowPanel;
 	}
-
+	
 	/**
 	 * Builds the item count widget.
 	 *
@@ -299,6 +288,8 @@ public class MeasurePackageClauseCellListWidget {
 		vp.add(buildItemCountWidget());
 		vp.add(buildAddAssociationWidget());
 		hp.add(vp);
+		packageName.addStyleName("measureGroupPackageName");
+		mainFlowPanel.add(packageName);
 		mainFlowPanel.add(hp);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(saveGrouping);
@@ -378,7 +369,7 @@ public class MeasurePackageClauseCellListWidget {
 					+ "</span>"));
 			
 			return table;
-		
+			
 	}
 	
 	/**
@@ -387,31 +378,31 @@ public class MeasurePackageClauseCellListWidget {
 	 * @return the panel
 	 */
 	public Panel addCellTable(){
-		    panel.clear();
-		    table = new CellTable<QualityDataSetDTO>();
-		    itemCountSelection = new MultiSelectionModel<QualityDataSetDTO>();
-		    table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		    table.setSelectionModel(itemCountSelection);
-			ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
-			table.setPageSize(PAGESIZE);
-			table.setRowData(getAppliedQdmList());
-			table.setRowCount(getAppliedQdmList().size(), true);
-			sortProvider.refresh();
-			sortProvider.getList().addAll(getAppliedQdmList());
-			table = addColumntoTable();
-			sortProvider.addDataDisplay(table);
-			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-			spager.setPageStart(0);
-			spager.setDisplay(table);
-			spager.setPageSize(PAGESIZE);
-			panel.setStylePrimaryName("valueSetSearchPanel");
-			panel.add(table);
-			panel.add(new SpacerWidget());
-			panel.add(spager);
-			panel.add(new SpacerWidget());
-			panel.add(itemCountButtonPanel);
-			return panel;
+		panel.clear();
+		table = new CellTable<QualityDataSetDTO>();
+		itemCountSelection = new MultiSelectionModel<QualityDataSetDTO>();
+		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+		table.setSelectionModel(itemCountSelection);
+		ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
+		table.setPageSize(PAGESIZE);
+		table.setRowData(getAppliedQdmList());
+		table.setRowCount(getAppliedQdmList().size(), true);
+		sortProvider.refresh();
+		sortProvider.getList().addAll(getAppliedQdmList());
+		table = addColumntoTable();
+		sortProvider.addDataDisplay(table);
+		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+		spager.setPageStart(0);
+		spager.setDisplay(table);
+		spager.setPageSize(PAGESIZE);
+		panel.setStylePrimaryName("valueSetSearchPanel");
+		panel.add(table);
+		panel.add(new SpacerWidget());
+		panel.add(spager);
+		panel.add(new SpacerWidget());
+		panel.add(itemCountButtonPanel);
+		return panel;
 	}
 	/**
 	 * Adds the cell table.
@@ -657,5 +648,27 @@ public class MeasurePackageClauseCellListWidget {
 	public DisclosurePanel getDisclosurePanelAssociations() {
 		return disclosurePanelAssociations;
 	}
+	
+	public List<QualityDataSetDTO> getAppliedQdmList() {
+		return appliedQdmList;
+	}
+	
+	public void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList) {
+		this.appliedQdmList = appliedQdmList;
+	}
+	/**
+	 * @return the packageName
+	 */
+	public Label getPackageName() {
+		return packageName;
+	}
+	/**
+	 * @param packageName the packageName to set
+	 */
+	public void setPackageName(Label packageName) {
+		this.packageName = packageName;
+	}
+	
+	
 	
 }

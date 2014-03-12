@@ -202,6 +202,7 @@ public class MeasurePackageClauseCellListWidget {
 	 * @return the widget
 	 */
 	public Widget getWidget(){
+		mainFlowPanel.getElement().setAttribute("id", "MeasurePackageClauseWidget_FlowPanel");
 		return mainFlowPanel;
 	}
 	
@@ -210,21 +211,21 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @return the widget
 	 */
-	private Widget buildItemCountWidget(){
+	private Widget buildItemCountWidget() {
 		panel.clear();
 		disclosurePanelItemCountTable.clear();
 		FlowPanel searchCriteriaPanel = new FlowPanel();
-		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchCriteriaPanel");
+		searchCriteriaPanel.getElement().setAttribute("id", "MeasurePackageClause_FlowPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.addStyleName("leftAligned");
 		HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
-		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchHorizontalPanel");
+		searchCriteriaPanel.getElement().setAttribute("id", "MeasurePackageClause_HorizontalPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(searchHorizontalPanel);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
 		HorizontalPanel buttonLayout = new HorizontalPanel();
-		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
+		buttonLayout.getElement().setAttribute("id", "MeasurePackageClauseButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		disclosurePanelItemCountTable.add(panel);
 		disclosurePanelItemCountTable.setOpen(false);
@@ -238,17 +239,17 @@ public class MeasurePackageClauseCellListWidget {
 	 */
 	private Widget buildAddAssociationWidget() {
 		FlowPanel searchCriteriaPanel = new FlowPanel();
-		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchCriteriaPanel");
+		searchCriteriaPanel.getElement().setAttribute("id", "MeasurePackageClauseAssoWidgt_FlowPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.addStyleName("leftAligned");
 		HorizontalPanel searchHorizontalPanel = new HorizontalPanel();
-		searchCriteriaPanel.getElement().setAttribute("id", "ModifySearchHorizontalPanel");
+		searchCriteriaPanel.getElement().setAttribute("id", "MeasurePackageClauseAssoWidgt_HoriPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(searchHorizontalPanel);
 		searchCriteriaPanel.add(new SpacerWidget());
 		searchCriteriaPanel.add(new SpacerWidget());
 		HorizontalPanel buttonLayout = new HorizontalPanel();
-		buttonLayout.getElement().setAttribute("id", "ModifyButtonLayout");
+		buttonLayout.getElement().setAttribute("id", "MeasurePackageClauseAssoWidgtButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		ScrollPanel associateListScrollPanel = new ScrollPanel();
 		associateListScrollPanel.add(getLeftCellList());
@@ -261,6 +262,8 @@ public class MeasurePackageClauseCellListWidget {
 	 * Instantiates a new cell list with context menu.
 	 */
 	public MeasurePackageClauseCellListWidget() {
+		disclosurePanelAssociations.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_DisclosurePanel");
+		disclosurePanelItemCountTable.getElement().setAttribute("id", "MeasurePackageClause_ItemCnt_DisclosurePanel");
 		addClickHandlersToDisclosurePanels();
 		leftPagerPanel.addStyleName("measurePackageCellListscrollable");
 		leftPagerPanel.setDisplay(getLeftCellList());
@@ -269,25 +272,30 @@ public class MeasurePackageClauseCellListWidget {
 		rightPagerPanel.setDisplay(getRightCellList());
 		rightRangeLabelPager.setDisplay(getRightCellList());
 		Label packageTabName = new Label("Package Grouping");
+		packageTabName.getElement().setAttribute("id", "MeasurePackageClause_PackageHeading_Lbl");
 		packageTabName.setStyleName("valueSetHeader");
 		mainFlowPanel.add(packageTabName);
 		mainFlowPanel.add(new SpacerWidget());
 		HorizontalPanel hp = new HorizontalPanel();
 		VerticalPanel leftCellListVPanel = new VerticalPanel();
+		leftCellListVPanel.getElement().setAttribute("id", "MeasurePackageClause_LeftCellListVPanel");
 		leftCellListVPanel.add(new HTML("<b style='margin-left:15px;'> Clauses </b>"));
 		leftCellListVPanel.add(leftPagerPanel);
 		VerticalPanel rightCellListVPanel = new VerticalPanel();
+		rightCellListVPanel.getElement().setAttribute("id", "MeasurePackageClause_RightCellListVPanel");
 		rightCellListVPanel.add(new HTML("<b style='margin-left:15px;'> Package Grouping </b>"));
 		rightCellListVPanel.add(rightPagerPanel);
 		hp.add(leftCellListVPanel);
 		hp.add(buildClauseAddButtonWidget());
 		hp.add(rightCellListVPanel);
 		VerticalPanel vp = new VerticalPanel();
+		vp.getElement().setAttribute("id", "MeasurePackageClause_MainVPanel");
 		disclosurePanelItemCountTable.clear();
 		disclosurePanelAssociations.clear();
 		vp.add(buildItemCountWidget());
 		vp.add(buildAddAssociationWidget());
 		hp.add(vp);
+		hp.getElement().setAttribute("id", "MeasurePackageClause_MainHoriPanel");
 		packageName.addStyleName("measureGroupPackageName");
 		mainFlowPanel.add(packageName);
 		mainFlowPanel.add(hp);

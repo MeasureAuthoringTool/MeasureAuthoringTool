@@ -49,40 +49,34 @@ import com.google.gwt.view.client.ListDataProvider;
  * The Class MeasurePackagerView.
  */
 public class MeasurePackagerView implements MeasurePackagePresenter.PackageView {
-	
-	
-	public static interface Observer {
+	/**
+	 * Observer Interface.
+	 *
+	 */
+	interface Observer {
 		/**
 		 * On edit clicked.
-		 * @param result
-		 *            the result
+		 * @param detail
+		 *            the MeasurePackageDetail
 		 */
 		void onEditClicked(MeasurePackageDetail detail);
 		/**
 		 * On clone clicked.
-		 * @param result
-		 *            the result
+		 * @param detail
+		 *            the MeasurePackageDetail
 		 */
 		void onDeleteClicked(MeasurePackageDetail detail);
-		
 	}
-	
-	
 	/** The add qdm right. */
-	private Button addQDMRight = buildAddButton("customAddRightButton");
-	
+	private Button addQDMRight = buildAddButton("customAddRightButton", "addQDMRight");
 	/** The add qdm left. */
-	private Button addQDMLeft = buildAddButton("customAddLeftButton");
-	
+	private Button addQDMLeft = buildAddButton("customAddLeftButton", "addQDMLeft");
 	/** The add all qdm right. */
-	private Button addAllQDMRight = buildDoubleAddButton("customAddALlRightButton");
-	
+	private Button addAllQDMRight = buildDoubleAddButton("customAddALlRightButton", "addAllToRight");
 	/** The add all qdm left. */
-	private Button addAllQDMLeft = buildDoubleAddButton("customAddAllLeftButton");
-	
+	private Button addAllQDMLeft = buildDoubleAddButton("customAddAllLeftButton", "addAllToLeft");
 	/** The qdm element id map. */
 	private Map<String, QualityDataSetDTO> qdmElementIdMap = new HashMap<String, QualityDataSetDTO>();
-	
 	/** The error messages. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	/** The measure package success msg. */
@@ -91,69 +85,41 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private WarningMessageDisplay measurePackageWarningMsg = new WarningMessageDisplay();
 	/** The package success messages. */
 	private SuccessMessageDisplay packageSuccessMessages = new SuccessMessageDisplay();
-	
 	/** The supp data success messages. */
 	private SuccessMessageDisplay suppDataSuccessMessages = new SuccessMessageDisplay();
-	
 	/** The package measure. */
 	private PrimaryButton packageMeasure = new PrimaryButton(
 			"Create Measure Package", "primaryButton");
 	/** The content. */
 	private FlowPanel content = new FlowPanel();
-	
 	/** The qdm elements list box. */
 	private ListBox qdmElementsListBox = new ListBox();
-	
 	/** The supp elements list box. */
 	private ListBox suppElementsListBox = new ListBox();
-	
 	/** The add qdm element button panel. */
 	private Widget addQDMElementButtonPanel = buildQDMElementAddButtonWidget();
-	
 	/** The qdm elements panel. */
 	private FlowPanel qdmElementsPanel = new FlowPanel();
-	
 	/** The supp elements panel. */
 	private FlowPanel suppElementsPanel = new FlowPanel();
-	
 	/** The add qdm elements to measure. */
 	private PrimaryButton addQDMElementsToMeasure = new PrimaryButton("Save Supplemental Data Elements", "primaryButton");
-	
 	/** The qdm tab name. */
-	private Label qdmTabName = new Label("Supplemental Data Elements");
-	
+	private Label supplementalDataElementHeader = new Label("Supplemental Data Elements");
 	/** The list visible count. */
 	private final int listVisibleCount = 10;
-	
 	/**	MeasurePackageClauseListWidget. *  */
 	private MeasurePackageClauseCellListWidget packageGroupingWidget = new MeasurePackageClauseCellListWidget();
-	
+	/** The Create New Grouping Button. */
 	private PrimaryButton createNew = new PrimaryButton("Create New Grouping");
-	
-	private Label viewOrEditLabel = new Label();
-	
+	/** The CellTable for Measure Grouping. */
 	private CellTable<MeasurePackageDetail> table;
-	
+	/** The Vertical Panel for Cell Table. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
-	
+	/** The measureGrouping List. */
 	private List<MeasurePackageDetail> measureGroupingList;
-	
+	/** The Observer. */
 	private Observer observer;
-	
-	private ErrorMessageDisplay measureErrorMessages = new ErrorMessageDisplay();
-	
-	private  CellTable<QualityDataSetDTO> cellTable;
-	
-	
-	public Observer getObserver() {
-		return observer;
-	}
-	
-	@Override
-	public void setObserver(Observer observer) {
-		this.observer = observer;
-	}
-	
 	/**
 	 * Constructor.
 	 */
@@ -161,6 +127,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		addQDMElementLeftRightClickHandlers();
 		Panel topQDMElementContainer = buildQDMElementLeftRightPanel();
 		cellTablePanel.removeStyleName("valueSetSearchPanel");
+		content.getElement().setAttribute("id", "MeasurePackagerContentFlowPanel");
+		createNew.getElement().setAttribute("id", "CreateNewGroupingButton");
 		content.add(cellTablePanel);
 		content.add(new SpacerWidget());
 		content.add(createNew);
@@ -181,13 +149,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		suppElementsListBox.setVisibleItemCount(listVisibleCount);
 		content.setStyleName("contentPanel");
 	}
-	
-	// QDM elements
 	/**
 	 * Adds the qdm element left right click handlers.
 	 */
 	private void addQDMElementLeftRightClickHandlers() {
-		
 		addQDMRight.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
@@ -213,36 +178,38 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			}
 		});
 	}
-	
-	// QDM elements
 	/**
 	 * Builds the qdm element left right panel.
-	 * 
 	 * @return the panel
 	 */
 	private Panel buildQDMElementLeftRightPanel() {
 		SimplePanel panel = new SimplePanel();
+		panel.getElement().setAttribute("id", "QDMLeftRightButtonSimplePanel");
 		FlowPanel qdmTopContainer = new FlowPanel();
+		qdmTopContainer.getElement().setAttribute("id", "QDMTopContainerFlowPanel");
 		VerticalPanel vPanel = new VerticalPanel();
-		qdmTabName.setStyleName("valueSetHeader");
-		qdmTopContainer.add(qdmTabName);
+		vPanel.getElement().setAttribute("id", "QDMLeftRightButtonVerticalPanel");
+		supplementalDataElementHeader.setStyleName("valueSetHeader");
+		supplementalDataElementHeader.getElement().setAttribute("id", "SupplementalDataElementHeadingLabel");
+		qdmTopContainer.add(supplementalDataElementHeader);
 		qdmTopContainer.add(suppDataSuccessMessages);
 		qdmElementsPanel.addStyleName("newColumn");
+		qdmElementsPanel.getElement().setAttribute("id", "QDMElementFlowPanel");
 		suppElementsPanel.addStyleName("newColumn");
+		suppElementsPanel.getElement().setAttribute("id", "SuppElementFlowPanel");
 		addQDMElementButtonPanel.addStyleName("column");
-		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmElementsListBox,"QDM Elements");
+		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmElementsListBox, "QDM Elements");
 		qdmElementsLabel.addStyleName("bold");
 		qdmElementsPanel.add(qdmElementsLabel);
 		qdmElementsPanel.add(qdmElementsListBox);
-		Widget suppElementsLabel = LabelBuilder.buildLabel(suppElementsListBox,"Supplemental Data Elements");
+		Widget suppElementsLabel = LabelBuilder.buildLabel(suppElementsListBox, "Supplemental Data Elements");
 		suppElementsLabel.addStyleName("bold");
 		suppElementsPanel.add(suppElementsLabel);
 		suppElementsPanel.add(suppElementsListBox);
-		
 		SimplePanel wrapper = new SimplePanel();
+		wrapper.getElement().setAttribute("id", "QdmElementPanelSimplePanel");
 		wrapper.setStylePrimaryName("measurePackageAddButtonHolder");
 		wrapper.add(addQDMElementsToMeasure);
-		
 		suppElementsPanel.add(new SpacerWidget());
 		suppElementsPanel.add(wrapper);
 		vPanel.add(suppElementsPanel);
@@ -257,7 +224,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		panel.add(qdmTopContainer);
 		return panel;
 	}
-	
 	/**
 	 * Builds the qdm element add button widget.
 	 *
@@ -265,15 +231,16 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	private Widget buildQDMElementAddButtonWidget() {
 		VerticalPanel panel = new VerticalPanel();
+		panel.getElement().setAttribute("id", "QDMButtonVerticalPanel");
 		panel.setStyleName("qdmElementAddButtonPanel");
 		addQDMRight.setTitle("Add QDM element to Supplemental Data Elements");
-		addQDMRight.getElement().setAttribute("alt","Add QDM element to Supplemental Data Elements");
+		addQDMRight.getElement().setAttribute("alt", "Add QDM element to Supplemental Data Elements");
 		addQDMLeft.setTitle("Remove QDM Element from Supplemental Data Elements");
-		addQDMLeft.getElement().setAttribute("alt","Remove QDM Element from Supplemental Data Elements");
+		addQDMLeft.getElement().setAttribute("alt", "Remove QDM Element from Supplemental Data Elements");
 		addAllQDMRight.setTitle("Add all QDM Elements to Supplemental Data Elements");
-		addAllQDMRight.getElement().setAttribute("alt","Add all QDM Elements to Supplemental Data Elements");
+		addAllQDMRight.getElement().setAttribute("alt", "Add all QDM Elements to Supplemental Data Elements");
 		addAllQDMLeft.setTitle("Remove all QDM Elements from Supplemental Data Elements");
-		addAllQDMLeft.getElement().setAttribute("alt","Remove all QDM Elements from Supplemental Data Elements");
+		addAllQDMLeft.getElement().setAttribute("alt", "Remove all QDM Elements from Supplemental Data Elements");
 		panel.add(addQDMRight);
 		panel.add(new SpacerWidget());
 		panel.add(new SpacerWidget());
@@ -287,6 +254,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		return panel;
 	}
 	
+	/**
+	 * Add columns to Measure Grouping Cell Table.
+	 * @return CelTable
+	 */
 	private CellTable<MeasurePackageDetail> addColumnToTable() {
 		
 		Column<MeasurePackageDetail, SafeHtml> measureGrouping = new Column<MeasurePackageDetail, SafeHtml>(new SafeHtmlCell()){
@@ -294,47 +265,51 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			@Override
 			public SafeHtml getValue(MeasurePackageDetail object) {
 				return CellTableUtility.getColumnToolTip(object.getPackageName());
-			}};
-			table.addColumn(measureGrouping, SafeHtmlUtils.fromSafeConstant("<span title='Grouping'>" + "Grouping"
-					+ "</span>"));
+			}
+		};
+		table.addColumn(measureGrouping, SafeHtmlUtils.fromSafeConstant("<span title='Grouping'>" + "Grouping"
+				+ "</span>"));
+		
+		Cell<String> editButtonCell = new MatButtonCell("Click to Edit Measure Grouping", "customEditButton");
+		Column<MeasurePackageDetail, String> editColumn = new Column<MeasurePackageDetail, String>(editButtonCell) {
 			
-			Cell<String> editButtonCell = new MatButtonCell("Click to Edit Measure Grouping", "customEditButton");
-			Column<MeasurePackageDetail, String> editColumn = new Column<MeasurePackageDetail, String>(editButtonCell) {
+			@Override
+			public String getValue(MeasurePackageDetail object) {
+				return "Edit";
+			}
+		};
+		
+		editColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, String>() {
+			
+			@Override
+			public void update(int index, MeasurePackageDetail object, String value) {
 				
-				@Override
-				public String getValue(MeasurePackageDetail object) {
-					return "Edit";
-				}
-			};
+				observer.onEditClicked(object);
+			}
+		});
+		
+		table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit"
+				+ "</span>"));
+		
+		Cell<String> deleteButtonCell = new MatButtonCell("Click to Delete Measure Grouping", "customDeleteButton");
+		Column<MeasurePackageDetail, String> deleteColumn = new Column<MeasurePackageDetail, String>(deleteButtonCell) {
 			
-			editColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, String>() {
-				
-				@Override
-				public void update(int index, MeasurePackageDetail object, String value) {
-					
-					observer.onEditClicked(object);
-				}
-			});
-			
-			table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit"
-					+ "</span>"));
-			
-			Cell<String> deleteButtonCell = new MatButtonCell("Click to Delete Measure Grouping", "customDeleteButton");
-			Column<MeasurePackageDetail, String> deleteColumn = new Column<MeasurePackageDetail, String>(deleteButtonCell) {
-				
-				@Override
-				public String getValue(MeasurePackageDetail object) {
-					return "Delete";
-				}
-			};
-			table.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete"
-					+ "</span>"));
-			
-			
-			return table;
+			@Override
+			public String getValue(MeasurePackageDetail object) {
+				return "Delete";
+			}
+		};
+		table.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete"
+				+ "</span>"));
+		
+		
+		return table;
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#buildCellTable(java.util.List)
+	 */
 	@Override
 	public void buildCellTable(final List<MeasurePackageDetail> packages) {
 		cellTablePanel.clear();
@@ -385,14 +360,18 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		}
 	}
 	
+	
+	
 	/**
 	 * Builds the add button.
 	 *
-	 * @param imageUrl the image url
-	 * @return the button
+	 * @param imageUrl the image url.
+	 * @param id button Id.
+	 * @return button.
 	 */
-	private Button buildAddButton(String imageUrl) {
+	private Button buildAddButton(String imageUrl, String id) {
 		Button btn = new Button();
+		btn.getElement().setAttribute("id", id);
 		btn.setStyleName(imageUrl);
 		return btn;
 	}
@@ -401,10 +380,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * Builds the double add button.
 	 *
 	 * @param imageUrl the image url
+	 * @param id button Id.
 	 * @return the button
 	 */
-	private Button buildDoubleAddButton(String imageUrl) {
+	private Button buildDoubleAddButton(String imageUrl, String id) {
 		Button btn = new Button();
+		btn.getElement().setAttribute("id", id);
 		btn.setStyleName(imageUrl);
 		return btn;
 	}
@@ -716,6 +697,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	@Override
 	public HasClickHandlers getCreateNewButton() {
 		return createNew;
+	}
+	public Observer getObserver() {
+		return observer;
+	}
+	
+	@Override
+	public void setObserver(Observer observer) {
+		this.observer = observer;
 	}
 	
 }

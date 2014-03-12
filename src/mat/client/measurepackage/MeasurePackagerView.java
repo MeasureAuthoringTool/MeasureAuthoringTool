@@ -160,6 +160,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public MeasurePackagerView() {
 		addQDMElementLeftRightClickHandlers();
 		Panel topQDMElementContainer = buildQDMElementLeftRightPanel();
+		cellTablePanel.removeStyleName("valueSetSearchPanel");
 		content.add(cellTablePanel);
 		content.add(new SpacerWidget());
 		content.add(createNew);
@@ -179,7 +180,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		qdmElementsListBox.setVisibleItemCount(listVisibleCount);
 		suppElementsListBox.setVisibleItemCount(listVisibleCount);
 		content.setStyleName("contentPanel");
-		cellTablePanel.setStylePrimaryName("valueSetSearchPanel");
 	}
 	
 	// QDM elements
@@ -379,6 +379,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				cellTablePanel.add(new SpacerWidget());
 				cellTablePanel.add(spager);
 			}
+			cellTablePanel.setStylePrimaryName("valueSetSearchPanel");
+		} else {
+			cellTablePanel.removeStyleName("valueSetSearchPanel");
 		}
 	}
 	
@@ -665,6 +668,9 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		return suppDataSuccessMessages;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setClauses(java.util.List)
+	 */
 	@Override
 	public void setClauses(List<MeasurePackageClauseDetail> clauses) {
 		packageGroupingWidget.getClausesPopulationList().clear();
@@ -673,12 +679,18 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		packageGroupingWidget.getLeftRangeLabelPager().setDisplay(packageGroupingWidget.getLeftCellList());
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setPackageName(java.lang.String)
+	 */
 	@Override
 	public void setPackageName(String name) {
 		packageGroupingWidget.getPackageName().setText(name);
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setClausesInPackage(java.util.List)
+	 */
 	@Override
 	public void setClausesInPackage(List<MeasurePackageClauseDetail> list) {
 		packageGroupingWidget.getGroupingPopulationList().clear();
@@ -697,7 +709,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	
 	@Override
-	public void buildQDMListCellTable(QDSAppliedListModel appliedListModel) {
+	public void setAppliedQdmList(QDSAppliedListModel appliedListModel) {
 		packageGroupingWidget.setAppliedQdmList(appliedListModel.getAppliedQDMs());
 	}
 	

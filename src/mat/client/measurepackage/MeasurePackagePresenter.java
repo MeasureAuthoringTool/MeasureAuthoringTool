@@ -42,14 +42,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private ManageMeasureDetailModel model;
 	
 	/** The current detail. */
-	private MeasurePackageDetail currentDetail= null;
+	private MeasurePackageDetail currentDetail = null;
 	
 	/** The packageOverview. */
 	private MeasurePackageOverview packageOverview;
 	
 	private static  MeasureServiceAsync service = MatContext.get().getMeasureService();
-	
-	List<MeasurePackageClauseDetail> packageClauses = new ArrayList<MeasurePackageClauseDetail>();
 	
 	/**
 	 * The Interface View.
@@ -154,14 +152,38 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 */
 		void setViewIsEditable(boolean b,
 				List<MeasurePackageDetail> packages);
+		/**
+		 * @param clauses
+		 */
 		void setClauses(List<MeasurePackageClauseDetail> clauses);
+		/**
+		 * @param name
+		 */
 		void setPackageName(String name);
+		/**
+		 * @param list
+		 */
 		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
 		
+		/**
+		 * @return
+		 */
 		MeasurePackageClauseCellListWidget getPackageGroupingWidget();
+		/**
+		 * @param observer
+		 */
 		void setObserver(Observer observer);
-		void buildQDMListCellTable(QDSAppliedListModel appliedListModel);
+		/**
+		 * @param appliedListModel
+		 */
+		void setAppliedQdmList(QDSAppliedListModel appliedListModel);
+		/**
+		 * @return
+		 */
 		HasClickHandlers getCreateNewButton();
+		/**
+		 * @param packages
+		 */
 		void buildCellTable(List<MeasurePackageDetail> packages);
 	}
 	
@@ -290,7 +312,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 					filterTimingQDMs(result);
 					appliedListModel.setAppliedQDMs(result);
-					view.buildQDMListCellTable(appliedListModel);
+					view.setAppliedQdmList(appliedListModel);
 					
 				}
 			});
@@ -525,7 +547,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * setMeasurePackageDetailsOnView.
 	 */
 	private void setMeasurePackageDetailsOnView() {
-//		MeasurePackageOverview tempOverview = packageOverview;
 		List<MeasurePackageClauseDetail> packageClauses = currentDetail
 				.getPackageClauses();
 		List<MeasurePackageClauseDetail> remainingClauses = removeClauses(
@@ -535,7 +556,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClauses(remainingClauses);
 		view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
 		view.setQDMElements(packageOverview.getQdmElements());
-		//packageOverview= tempOverview;
 	}
 	
 	private List<MeasurePackageClauseDetail> removeClauses(
@@ -544,16 +564,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 		List<MeasurePackageClauseDetail> newList = new ArrayList<MeasurePackageClauseDetail>();
 		newList.addAll(master);
 		for (MeasurePackageClauseDetail remove : toRemove) {
-			
 			for (int i = 0; i < newList.size(); i++) {
 				if (newList.get(i).getId().equals(remove.getId())) {
 					newList.remove(i);
 					break;
 				}
 			}
-		
 		}
-		System.out.println("packageOverview Size: "+packageOverview.getClauses().size());
 		return newList;
 	}
 	/**

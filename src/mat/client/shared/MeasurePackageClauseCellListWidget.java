@@ -49,19 +49,20 @@ import com.google.gwt.view.client.SingleSelectionModel;
  */
 public class MeasurePackageClauseCellListWidget {
 	/**
-	 * The HTML templates used to render the cell.
+	 * The HTML templates used to render the ClauseCell.
 	 */
 	interface Templates extends SafeHtmlTemplates {
 		/**
 		 * The template for this Cell, which includes styles and a value.
+		 * @param title - Title for div.
 		 * @param value the safe value. Since the value type is {@link SafeHtml},
 		 *          it will not be escaped before including it in the template.
 		 *          Alternatively, you could make the value type String, in which
 		 *          case the value would be escaped.
 		 * @return a {@link SafeHtml} instance
 		 */
-		@SafeHtmlTemplates.Template("<div style=\"margin-left:5px;\">{0}</div>")
-		SafeHtml cell(SafeHtml value);
+		@SafeHtmlTemplates.Template("<div title=\"{0}\" style=\"margin-left:5px;\">{1}</div>")
+		SafeHtml cell(String title, SafeHtml value);
 	}
 	/** Create a singleton instance of the templates used to render the cell. */
 	private static Templates templates = GWT.create(Templates.class);
@@ -96,13 +97,13 @@ public class MeasurePackageClauseCellListWidget {
 	/** The pagesize. */
 	private final int PAGESIZE = 3;
 	/** The add Clause Right. */
-	private Button addClauseRight = buildAddButton("customAddRightButton");
+	private Button addClauseRight = buildAddButton("customAddRightButton", "AddClauseToRight");
 	/** The add Clause left. */
-	private Button addClauseLeft = buildAddButton("customAddLeftButton");
+	private Button addClauseLeft = buildAddButton("customAddLeftButton", "AddClauseToLeft");
 	/** The add all Clause right. */
-	private Button addAllClauseRight = buildDoubleAddButton("customAddALlRightButton");
+	private Button addAllClauseRight = buildDoubleAddButton("customAddALlRightButton", "AddAllClauseToRight");
 	/** The add all Clause left. */
-	private Button addAllClauseLeft = buildDoubleAddButton("customAddAllLeftButton");
+	private Button addAllClauseLeft = buildDoubleAddButton("customAddAllLeftButton", "AddAllClauseToLeft");
 	/** The package name. */
 	private Label packageName = new Label();
 	/** Item Count Table Selection Model. */
@@ -140,21 +141,21 @@ public class MeasurePackageClauseCellListWidget {
 				if (rightCellListSelectionModel.getSelectedObject() == null) {
 					return;
 				}
-				if(leftCellListSelectionModel.getSelectedObject() !=null) {
+				if (leftCellListSelectionModel.getSelectedObject() != null) {
 					leftCellListSelectionModel.clear();
 				}
 				System.out.println("selectionModel.getSelectedObject()" + rightCellListSelectionModel.getSelectedObject());
 				MeasurePackageClauseDetail measurePackageClauseDetail = rightCellListSelectionModel.getSelectedObject();
 				if (((measurePackageClauseDetail.getType().equals("denominator"))
 						|| (measurePackageClauseDetail.getType().equals("numerator")))) {
-					addCellTable();
+					buildCellTable();
 					getItemCountTableButtonPanel();
 					disclosurePanelItemCountTable.setVisible(true);
 					disclosurePanelAssociations.setVisible(true);
 					disclosurePanelItemCountTable.setOpen(false);
 					disclosurePanelAssociations.setOpen(false);
 				} else {
-					addCellTable();
+					buildCellTable();
 					getItemCountTableButtonPanel();
 					disclosurePanelItemCountTable.setVisible(true);
 					disclosurePanelAssociations.setVisible(false);
@@ -184,7 +185,7 @@ public class MeasurePackageClauseCellListWidget {
 				if (leftCellListSelectionModel.getSelectedObject() == null) {
 					return;
 				}
-				if(rightCellListSelectionModel.getSelectedObject() !=null) {
+				if (rightCellListSelectionModel.getSelectedObject() != null) {
 					rightCellListSelectionModel.clear();
 				}
 				System.out.println("selectionModel.getSelectedSet()" + leftCellListSelectionModel.getSelectedSet());
@@ -201,11 +202,10 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @return the widget
 	 */
-	public Widget getWidget(){
+	public final Widget getWidget() {
 		mainFlowPanel.getElement().setAttribute("id", "MeasurePackageClauseWidget_FlowPanel");
 		return mainFlowPanel;
 	}
-	
 	/**
 	 * Builds the item count widget.
 	 *
@@ -322,7 +322,6 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		});
 	}
-	
 	/**
 	 * Build Ok - Cancel Button Widget in Item Count Disclosure Panel.
 	 * @return Widget.
@@ -333,59 +332,52 @@ public class MeasurePackageClauseCellListWidget {
 		//itemCountButtonPanel.add(cancelItemcountList);
 		return itemCountButtonPanel;
 	}
-	
-	
-	public CellTable<QualityDataSetDTO> addColumntoTable(){
-		MatCheckBoxCell chkBtnCell = new MatCheckBoxCell(false,true);
+	/**
+	 * Add Columns to Item Count Cell Table.
+	 * @return CellTable.
+	 */
+	private CellTable<QualityDataSetDTO> addColumntoTable() {
+		MatCheckBoxCell chkBtnCell = new MatCheckBoxCell(false , true);
 		Column<QualityDataSetDTO, Boolean> selectColumn = new Column<QualityDataSetDTO, Boolean>(chkBtnCell){
-			
 			@Override
 			public Boolean getValue(QualityDataSetDTO object) {
 				return itemCountSelection.isSelected(object);
-			}};
-			
-			selectColumn.setFieldUpdater(new FieldUpdater<QualityDataSetDTO, Boolean>() {
-				
-				@Override
-				public void update(int index,QualityDataSetDTO object,
-						Boolean value) {
-					
-					itemCountSelection.setSelected(object, value);
-				}
-			});
-			
-			table.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select"
-					+ "</span>"));
-			
-			TextColumn<QualityDataSetDTO> dateColumn = new TextColumn<QualityDataSetDTO>() {
-				@Override
-				public String getValue(QualityDataSetDTO object) {
-					return object.getCodeListName();
-				}
-			};
-			table.addColumn(dateColumn, SafeHtmlUtils
-					.fromSafeConstant("<span title='Name'>" + "Name"
-							+ "</span>"));
-			
-			TextColumn<QualityDataSetDTO> addressColumn = new TextColumn<QualityDataSetDTO>() {
-				@Override
-				public String getValue(QualityDataSetDTO object) {
-					return object.getDataType();
-				}
-			};
-			table.addColumn(addressColumn, SafeHtmlUtils.fromSafeConstant("<span title='Data Type'>" + "Data Type"
-					+ "</span>"));
-			
-			return table;
-			
+			}
+		};
+		selectColumn.setFieldUpdater(new FieldUpdater<QualityDataSetDTO, Boolean>() {
+			@Override
+			public void update(int index, QualityDataSetDTO object,
+					Boolean value) {
+				itemCountSelection.setSelected(object, value);
+			}
+		});
+		table.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select"
+				+ "</span>"));
+		TextColumn<QualityDataSetDTO> dateColumn = new TextColumn<QualityDataSetDTO>() {
+			@Override
+			public String getValue(QualityDataSetDTO object) {
+				return object.getCodeListName();
+			}
+		};
+		table.addColumn(dateColumn, SafeHtmlUtils
+				.fromSafeConstant("<span title='Name'>" + "Name"
+						+ "</span>"));
+		TextColumn<QualityDataSetDTO> addressColumn = new TextColumn<QualityDataSetDTO>() {
+			@Override
+			public String getValue(QualityDataSetDTO object) {
+				return object.getDataType();
+			}
+		};
+		table.addColumn(addressColumn, SafeHtmlUtils.fromSafeConstant("<span title='Data Type'>" + "Data Type"
+				+ "</span>"));
+		return table;
 	}
-	
 	/**
 	 * Adds the cell table.
 	 *
 	 * @return the panel
 	 */
-	public Panel addCellTable(){
+	private Panel buildCellTable() {
 		panel.clear();
 		table = new CellTable<QualityDataSetDTO>();
 		itemCountSelection = new MultiSelectionModel<QualityDataSetDTO>();
@@ -413,19 +405,15 @@ public class MeasurePackageClauseCellListWidget {
 		return panel;
 	}
 	/**
-	 * Adds the cell table.
-	 *
-	 * @return the panel
-	 */
-	
-	/**
 	 * Builds the add button.
 	 *
 	 * @param imageUrl the image url
+	 * @param id - String.
 	 * @return the button
 	 */
-	private Button buildAddButton(String imageUrl) {
+	private Button buildAddButton(String imageUrl , String id) {
 		Button btn = new Button();
+		btn.getElement().setAttribute("id", id);
 		btn.setStyleName(imageUrl);
 		return btn;
 	}
@@ -433,14 +421,17 @@ public class MeasurePackageClauseCellListWidget {
 	 * Builds the double add button.
 	 *
 	 * @param imageUrl the image url
+	 * @param id - String Id.
 	 * @return the button
 	 */
-	private Button buildDoubleAddButton(String imageUrl) {
+	private Button buildDoubleAddButton(String imageUrl , String id) {
 		Button btn = new Button();
+		btn.getElement().setAttribute("id", id);
 		btn.setStyleName(imageUrl);
 		return btn;
 	}
 	/**
+	 * Widget to add Left/right/leftAll/RightAll button's.
 	 * @return - Widget.
 	 */
 	private Widget buildClauseAddButtonWidget() {
@@ -468,8 +459,10 @@ public class MeasurePackageClauseCellListWidget {
 		clauseButtonHandlers();
 		return clauseButtonPanel;
 	}
-	
-	private void clauseButtonHandlers(){
+	/**
+	 * Button Left/Right/LeftAll/RightAll handler's.
+	 */
+	private void clauseButtonHandlers() {
 		addClauseRight.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -482,7 +475,6 @@ public class MeasurePackageClauseCellListWidget {
 					getRightPagerPanel().setDisplay(getRightCellList());
 					getLeftPagerPanel().setDisplay(getLeftCellList());
 					leftCellListSelectionModel.clear();
-					
 				}
 			}
 		});
@@ -503,7 +495,6 @@ public class MeasurePackageClauseCellListWidget {
 				}
 			}
 		});
-		
 		addAllClauseRight.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -518,7 +509,6 @@ public class MeasurePackageClauseCellListWidget {
 				}
 			}
 		});
-		
 		addAllClauseLeft.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -547,9 +537,8 @@ public class MeasurePackageClauseCellListWidget {
 				return;
 			}
 			if (value.getName() != null) {
-				// If the value comes from the user, we escape it to avoid XSS attacks.
 				SafeHtml safeValue = SafeHtmlUtils.fromString(value.getName());
-				SafeHtml rendered = templates.cell(safeValue);
+				SafeHtml rendered = templates.cell(value.getName(), safeValue);
 				sb.append(rendered);
 			}
 		}
@@ -676,7 +665,4 @@ public class MeasurePackageClauseCellListWidget {
 	public void setPackageName(Label packageName) {
 		this.packageName = packageName;
 	}
-	
-	
-	
 }

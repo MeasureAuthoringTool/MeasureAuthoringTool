@@ -42,12 +42,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private ManageMeasureDetailModel model;
 	
 	/** The current detail. */
-	private MeasurePackageDetail currentDetail;
+	private MeasurePackageDetail currentDetail= null;
 	
-	/** The overview. */
-	private MeasurePackageOverview overview;
+	/** The packageOverview. */
+	private MeasurePackageOverview packageOverview;
 	
-	private MeasureServiceAsync service = MatContext.get().getMeasureService();
+	private static  MeasureServiceAsync service = MatContext.get().getMeasureService();
+	
+	List<MeasurePackageClauseDetail> packageClauses = new ArrayList<MeasurePackageClauseDetail>();
 	
 	/**
 	 * The Interface View.
@@ -182,6 +184,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				clearMessages();
+				System.out.println("Overview Object"+ packageOverview.getClauses().size());
 				setNewMeasurePackage();
 			}
 		});
@@ -228,23 +231,23 @@ public class MeasurePackagePresenter implements MatPresenter {
 							
 							@Override
 							public void onSuccess(final Void result) {
-								if (!overview.getPackages().contains(
+								if (!packageOverview.getPackages().contains(
 										currentDetail)) {
 									if ((currentDetail
 											.getPackageClauses() != null)
 											&& (currentDetail.
 													getPackageClauses()
 													.size() > 0)) {
-										overview.getPackages()
+										packageOverview.getPackages()
 										.add(currentDetail);
 									}
-									overview.setQdmElements(
+									packageOverview.setQdmElements(
 											currentDetail
 											.getQdmElements());
-									overview.
+									packageOverview.
 									setSuppDataElements(currentDetail
 											.getSuppDataElements());
-									setOverview(overview);
+									setOverview(packageOverview);
 								}
 								view.getSuppDataSuccessMessageDisplay()
 								.setMessage(MatContext.get()
@@ -323,7 +326,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	@Override
 	public void beforeClosingDisplay() {
-		
+		currentDetail = null;
+		packageOverview = null;
 	}
 	
 	/* (non-Javadoc)
@@ -336,12 +340,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 		if ((MatContext.get().getCurrentMeasureId() != null)
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
 			getMeasure(MatContext.get().getCurrentMeasureId());
+			getAppliedQDMList(true);
 		} else {
 			displayEmpty();
 		}
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackage");
 		Mat.focusSkipLists("MeasureComposer");
-		getAppliedQDMList(true);
+		
 	}
 	
 	/* (non-Javadoc)
@@ -359,7 +364,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * 
 	 * @param measureId
 	 *            - String.
-	 * @return the measure package overview
+	 * @return the measure package packageOverview
 	 */
 	private void getMeasurePackageOverview(final String measureId) {
 		MatContext
@@ -423,7 +428,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * @param result - MeasurePackageOverview.
 	 */
 	private void setOverview(final MeasurePackageOverview result) {
-		overview = result;
+		packageOverview = result;
 		view.setClauses(result.getClauses());
 		// QDM elements
 		view.setQDMElements(result.getQdmElements());
@@ -495,9 +500,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail = new MeasurePackageDetail();
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
 		currentDetail.setSequence(Integer
-				.toString(getMaxSequence(overview) + 1));
-		view.buildCellTable(overview.getPackages());
-		//view.setMeasurePackages(overview.getPackages());
+				.toString(getMaxSequence(packageOverview) + 1));
+		view.buildCellTable(packageOverview.getPackages());
+		//view.setMeasurePackages(packageOverview.getPackages());
 		setMeasurePackageDetailsOnView();
 	}
 	
@@ -507,7 +512,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * @param measurePackageId the new measure package
 	 */
 	private void setMeasurePackage(final String measurePackageId) {
-		for (MeasurePackageDetail detail : overview.getPackages()) {
+		for (MeasurePackageDetail detail : packageOverview.getPackages()) {
 			if (detail.getSequence().equals(measurePackageId)) {
 				currentDetail = detail;
 				setMeasurePackageDetailsOnView();
@@ -520,16 +525,17 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * setMeasurePackageDetailsOnView.
 	 */
 	private void setMeasurePackageDetailsOnView() {
+//		MeasurePackageOverview tempOverview = packageOverview;
 		List<MeasurePackageClauseDetail> packageClauses = currentDetail
 				.getPackageClauses();
 		List<MeasurePackageClauseDetail> remainingClauses = removeClauses(
-				overview.getClauses(), packageClauses);
-		
+				packageOverview.getClauses(), packageClauses);
 		view.setPackageName(currentDetail.getPackageName());
 		view.setClausesInPackage(packageClauses);
 		view.setClauses(remainingClauses);
-		view.setQDMElementsInSuppElements(overview.getSuppDataElements());
-		view.setQDMElements(overview.getQdmElements());
+		view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
+		view.setQDMElements(packageOverview.getQdmElements());
+		//packageOverview= tempOverview;
 	}
 	
 	private List<MeasurePackageClauseDetail> removeClauses(
@@ -538,13 +544,16 @@ public class MeasurePackagePresenter implements MatPresenter {
 		List<MeasurePackageClauseDetail> newList = new ArrayList<MeasurePackageClauseDetail>();
 		newList.addAll(master);
 		for (MeasurePackageClauseDetail remove : toRemove) {
+			
 			for (int i = 0; i < newList.size(); i++) {
 				if (newList.get(i).getId().equals(remove.getId())) {
 					newList.remove(i);
 					break;
 				}
 			}
+		
 		}
+		System.out.println("packageOverview Size: "+packageOverview.getClauses().size());
 		return newList;
 	}
 	/**
@@ -559,7 +568,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/**
 	 * Gets the max sequence.
 	 *
-	 * @param measurePackageOverview the measure package overview
+	 * @param measurePackageOverview the measure package packageOverview
 	 * @return the max sequence
 	 */
 	private int getMaxSequence(final MeasurePackageOverview measurePackageOverview) {

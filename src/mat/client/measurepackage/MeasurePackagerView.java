@@ -668,7 +668,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	@Override
 	public void setClauses(List<MeasurePackageClauseDetail> clauses) {
 		packageGroupingWidget.getClausesPopulationList().clear();
-		packageGroupingWidget.setClausesPopulationList(clauses);
+		packageGroupingWidget.getClausesPopulationList().addAll(clauses);
 		packageGroupingWidget.getLeftPagerPanel().setDisplay(packageGroupingWidget.getLeftCellList());
 		packageGroupingWidget.getLeftRangeLabelPager().setDisplay(packageGroupingWidget.getLeftCellList());
 	}
@@ -681,7 +681,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	@Override
 	public void setClausesInPackage(List<MeasurePackageClauseDetail> list) {
-		packageGroupingWidget.setGroupingPopulationList(list);
+		packageGroupingWidget.getGroupingPopulationList().clear();
+		packageGroupingWidget.getGroupingPopulationList().addAll(list);
 		packageGroupingWidget.getRightPagerPanel().setDisplay(packageGroupingWidget.getRightCellList());
 		packageGroupingWidget.getRightRangeLabelPager().setDisplay(packageGroupingWidget.getRightCellList());
 		

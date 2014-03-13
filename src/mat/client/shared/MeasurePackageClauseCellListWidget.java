@@ -148,14 +148,14 @@ public class MeasurePackageClauseCellListWidget {
 				MeasurePackageClauseDetail measurePackageClauseDetail = rightCellListSelectionModel.getSelectedObject();
 				if (((measurePackageClauseDetail.getType().equals("denominator"))
 						|| (measurePackageClauseDetail.getType().equals("numerator")))) {
-					buildCellTable();
+					buildItemCountCellTable();
 					getItemCountTableButtonPanel();
 					disclosurePanelItemCountTable.setVisible(true);
 					disclosurePanelAssociations.setVisible(true);
 					disclosurePanelItemCountTable.setOpen(false);
 					disclosurePanelAssociations.setOpen(false);
 				} else {
-					buildCellTable();
+					buildItemCountCellTable();
 					getItemCountTableButtonPanel();
 					disclosurePanelItemCountTable.setVisible(true);
 					disclosurePanelAssociations.setVisible(false);
@@ -377,31 +377,42 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @return the panel
 	 */
-	private Panel buildCellTable() {
+	private Panel buildItemCountCellTable() {
 		panel.clear();
-		table = new CellTable<QualityDataSetDTO>();
-		itemCountSelection = new MultiSelectionModel<QualityDataSetDTO>();
-		table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-		table.setSelectionModel(itemCountSelection);
-		ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
-		table.setPageSize(PAGESIZE);
-		table.setRowData(getAppliedQdmList());
-		table.setRowCount(getAppliedQdmList().size(), true);
-		sortProvider.refresh();
-		sortProvider.getList().addAll(getAppliedQdmList());
-		table = addColumntoTable();
-		sortProvider.addDataDisplay(table);
-		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-		spager.setPageStart(0);
-		spager.setDisplay(table);
-		spager.setPageSize(PAGESIZE);
-		panel.setStylePrimaryName("valueSetSearchPanel");
-		panel.add(table);
-		panel.add(new SpacerWidget());
-		panel.add(spager);
-		panel.add(new SpacerWidget());
-		panel.add(itemCountButtonPanel);
+		if (getAppliedQdmList().size() > 0) {
+			table = new CellTable<QualityDataSetDTO>();
+			itemCountSelection = new MultiSelectionModel<QualityDataSetDTO>();
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			table.setSelectionModel(itemCountSelection);
+			ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
+			table.setPageSize(PAGESIZE);
+			table.setRowData(getAppliedQdmList());
+			table.setRowCount(getAppliedQdmList().size(), true);
+			sortProvider.refresh();
+			sortProvider.getList().addAll(getAppliedQdmList());
+			table = addColumntoTable();
+			sortProvider.addDataDisplay(table);
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			spager.setPageStart(0);
+			spager.setDisplay(table);
+			spager.setPageSize(PAGESIZE);
+			panel.setStylePrimaryName("valueSetSearchPanel");
+			panel.add(table);
+			panel.add(new SpacerWidget());
+			panel.add(spager);
+			panel.add(new SpacerWidget());
+			panel.add(itemCountButtonPanel);
+		} else {
+			panel.setStylePrimaryName("valueSetSearchPanel");
+			panel.add(new SpacerWidget());
+			panel.add(new SpacerWidget());
+			panel.add(new SpacerWidget());
+			panel.add(new HTML("<b>No Applied Elements.</b>"));
+			panel.add(new SpacerWidget());
+			panel.add(new SpacerWidget());
+			panel.add(new SpacerWidget());
+		}
 		return panel;
 	}
 	/**

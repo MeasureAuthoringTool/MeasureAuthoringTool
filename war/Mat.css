@@ -590,6 +590,15 @@ left:50px;
       
  }
  
+ .measurePackagerSupplementalDatascrollable {
+      height: 200px;
+      width: 200px;
+      border: 1px solid #ccc;
+      text-align: left;
+      margin-right:14px;
+      margin-top:3px;
+ }
+ 
   .measurePackageCellListscrollable {
       height: 200px;
       width: 220px;

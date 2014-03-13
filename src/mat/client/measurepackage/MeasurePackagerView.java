@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import mat.client.CustomPager;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.shared.ErrorMessageDisplay;
@@ -14,35 +16,37 @@ import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.PrimaryButton;
-import mat.client.shared.ShowMorePagerPanel;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
 
-import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
-import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -74,6 +78,22 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		 */
 		void onDeleteClicked(MeasurePackageDetail detail);
 	}
+	
+	interface Templates extends SafeHtmlTemplates {
+		/**
+		 * The template for this Cell, which includes styles and a value.
+		 * @param title - Title for div.
+		 * @param value the safe value. Since the value type is {@link SafeHtml},
+		 *          it will not be escaped before including it in the template.
+		 *          Alternatively, you could make the value type String, in which
+		 *          case the value would be escaped.
+		 * @return a {@link SafeHtml} instance
+		 */
+		@SafeHtmlTemplates.Template("<div title=\"{0}\" style=\"margin-left:5px;white-space:nowrap;\">{1}</div>")
+		SafeHtml cell(String title, SafeHtml value);
+	}
+	/** Create a singleton instance of the templates used to render the cell. */
+	private static Templates templates = GWT.create(Templates.class);
 	/** The add qdm right. */
 	private Button addQDMRight = buildAddButton("customAddRightButton", "addQDMRight");
 	/** The add qdm left. */
@@ -99,12 +119,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			"Create Measure Package", "primaryButton");
 	/** The content. */
 	private FlowPanel content = new FlowPanel();
-	/** The qdm elements list box. */
-	//private ListBox qdmElementsListBox = new ListBox();
-	
-	/** The supp elements list box. */
-	//private ListBox suppElementsListBox = new ListBox();
-	
 	/** The add qdm element button panel. */
 	private Widget addQDMElementButtonPanel = buildQDMElementAddButtonWidget();
 	/** The qdm elements panel. */
@@ -162,8 +176,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(packageMeasure);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
-		//qdmCellList.setVisibleItemCount(listVisibleCount);
-		//supDataCellList.setVisibleItemCount(listVisibleCount);
 		content.setStyleName("contentPanel");
 	}
 	/**
@@ -218,43 +230,21 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		suppElementsPanel.addStyleName("newColumn");
 		suppElementsPanel.getElement().setAttribute("id", "SuppElementFlowPanel");
 		addQDMElementButtonPanel.addStyleName("column");
-
-		qdmCellList = new CellList<String>(new TextCell()); 
-		//qdmCellList.setPageSize(listVisibleCount);
-		//qdmCellList.addStyleName("scrollable");
-		
+		qdmCellList = new CellList<String>(new ClauseCell()); 
 		qdmSelModel = new SingleSelectionModel<String>();
 		qdmCellList.setSelectionModel(qdmSelModel);
-		
-		
 		qdmListProv = new ListDataProvider<String>();
 		qdmListProv.addDataDisplay(qdmCellList);
-		
-		
 		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmCellList,"QDM Elements");
 		qdmElementsLabel.addStyleName("bold");
 		sPanel.add(qdmElementsLabel);
-		
-		//ScrollPanel qdmScrollPan = new ScrollPanel();
-		//qdmScrollPan.setAlwaysShowScrollBars(false);
-		//qdmScrollPan.add(qdmCellList);
-		VerticalPanel vpanel = new VerticalPanel();
 		ScrollPanel leftPagerPanel = new ScrollPanel();
-		leftPagerPanel.addStyleName("scrollable");
-		//leftPagerPanel.setDisplay(qdmCellList);
-		//vpanel.setBorderWidth(1);
-		vpanel.add(qdmCellList);
-		vpanel.setWidth("400px");
-		leftPagerPanel.setSize("200px", "200px");
+		leftPagerPanel.addStyleName("measurePackagerSupplementalDatascrollable");
+		leftPagerPanel.setSize("320px", "200px");
 		leftPagerPanel.setAlwaysShowScrollBars(true);
-		leftPagerPanel.add(vpanel);
+		leftPagerPanel.add(qdmCellList);
 		sPanel.add(leftPagerPanel);
-		
-		
-		supDataCellList = new CellList<String>(new TextCell());
-		//supDataCellList.setPageSize(listVisibleCount);
-		//supDataCellList.addStyleName("scrollable");
-		
+		supDataCellList = new CellList<String>(new ClauseCell());
 		supListProv = new ListDataProvider<String>();
 		supListProv.addDataDisplay(supDataCellList);
 		
@@ -263,41 +253,17 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		
 		Widget suppElementsLabel = LabelBuilder.buildLabel(supDataCellList,"Supplemental Data Elements");
 		suppElementsLabel.addStyleName("bold");
-		//suppElementsPanel.add(suppElementsLabel);
-		//suppElementsPanel.add(supDataCellList);
 		
-		SimplePanel wrapper = new SimplePanel();
-		wrapper.getElement().setAttribute("id", "QdmElementPanelSimplePanel");
-		wrapper.setStylePrimaryName("measurePackageAddButtonHolder");
-		wrapper.add(addQDMElementsToMeasure);
-		
-		
-		VerticalPanel vpanel2 = new VerticalPanel();
 		ScrollPanel rightPagerPanel = new ScrollPanel();
-		rightPagerPanel.addStyleName("scrollable");
-		vpanel2.add(supDataCellList);
-		vpanel2.setWidth("400px");
-		rightPagerPanel.setSize("200px", "200px");
+		rightPagerPanel.addStyleName("measurePackagerSupplementalDatascrollable");
+		rightPagerPanel.setSize("320px", "200px");
 		rightPagerPanel.setAlwaysShowScrollBars(true);
-		rightPagerPanel.add(vpanel2);
-		
-		
-		/*ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel();
-		rightPagerPanel.addStyleName("measurePackageCellListscrollable");
-		rightPagerPanel.setDisplay(supDataCellList);*/
-		
+		rightPagerPanel.add(supDataCellList);	
 		vPanel.add(suppElementsLabel);
 		vPanel.add(rightPagerPanel);
-		
 		suppElementsPanel.add(vPanel);
-		
 		sPanel.add(new SpacerWidget());
-		sPanel.add(wrapper);
-		
 		qdmElementsPanel.add(sPanel);
-		
-		
-		
 		qdmTopContainer.add(qdmElementsPanel);
 		qdmTopContainer.add(addQDMElementButtonPanel);
 		qdmTopContainer.add(suppElementsPanel);
@@ -306,6 +272,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		qdmTopContainer.add(spacer);
 		qdmTopContainer.setStylePrimaryName("valueSetSearchPanel");
 		panel.setStylePrimaryName("measurePackageLeftRightPanel");
+		qdmTopContainer.add(addQDMElementsToMeasure);
 		panel.add(qdmTopContainer);
 		return panel;
 	}
@@ -533,6 +500,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	private void addQDMElementRight() {
 		QualityDataSetDTO nvp = getQDMElementSelectedValue(qdmSelModel);
+		qdmSelModel.clear();
 		if (nvp != null) {
 			removeQDMElementItem(qdmListProv, nvp);
 			addQDMElementItem(supListProv, nvp);
@@ -544,6 +512,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	private void addQDMElementLeft() {
 		QualityDataSetDTO nvp = getQDMElementSelectedValue(supDataSelModel);
+		supDataSelModel.clear();
 		if (nvp != null) {
 			removeQDMElementItem(supListProv, nvp);
 			addQDMElementItem(qdmListProv, nvp);
@@ -554,6 +523,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * Adds the all qdm elements right.
 	 */
 	private void addAllQDMElementsRight() {
+		qdmSelModel.clear();
+		supDataSelModel.clear();
 		addQDMElementItems(supListProv,
 				getQDMElementsItems(qdmListProv));
 		qdmListProv.getList().clear();
@@ -563,6 +534,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * Adds the all qdm elements left.
 	 */
 	private void addAllQDMElementsLeft() {
+		qdmSelModel.clear();
+		supDataSelModel.clear();
 		addQDMElementItems(qdmListProv,
 				getQDMElementsItems(supListProv));
 		supListProv.getList().clear();
@@ -792,5 +765,63 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
+	@Override
+	public HasClickHandlers getAddClausesToPackageButton() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
+	/**
+	 * Clause Cell Class.
+	 *
+	 */
+	class ClauseCell implements Cell<String> {
+		@Override
+		public void render(com.google.gwt.cell.client.Cell.Context context, String value, SafeHtmlBuilder sb) {
+			if (value == null) {
+				return;
+			}
+			if (value!= null) {
+				SafeHtml safeValue = SafeHtmlUtils.fromString(value);
+				SafeHtml rendered = templates.cell(value, safeValue);
+				sb.append(rendered);
+			}
+		}
+		@Override
+		public boolean dependsOnSelection() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public Set<String> getConsumedEvents() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		@Override
+		public boolean handlesSelection() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public boolean isEditing(com.google.gwt.cell.client.Cell.Context context
+				, Element parent, String value) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
+				, Element parent, String value,
+				NativeEvent event, ValueUpdater<String> valueUpdater) {
+		}
+		@Override
+		public boolean resetFocus(com.google.gwt.cell.client.Cell.Context context
+				, Element parent, String value) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public void setValue(com.google.gwt.cell.client.Cell.Context context, Element parent, String value) {
+			// TODO Auto-generated method stub
+		}
+	}
 }

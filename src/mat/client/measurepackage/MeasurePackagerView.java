@@ -14,12 +14,15 @@ import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.PrimaryButton;
+import mat.client.shared.ShowMorePagerPanel;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
 import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
+
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -30,6 +33,8 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
@@ -39,10 +44,12 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SingleSelectionModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -93,9 +100,11 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The content. */
 	private FlowPanel content = new FlowPanel();
 	/** The qdm elements list box. */
-	private ListBox qdmElementsListBox = new ListBox();
+	//private ListBox qdmElementsListBox = new ListBox();
+	
 	/** The supp elements list box. */
-	private ListBox suppElementsListBox = new ListBox();
+	//private ListBox suppElementsListBox = new ListBox();
+	
 	/** The add qdm element button panel. */
 	private Widget addQDMElementButtonPanel = buildQDMElementAddButtonWidget();
 	/** The qdm elements panel. */
@@ -120,6 +129,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private List<MeasurePackageDetail> measureGroupingList;
 	/** The Observer. */
 	private Observer observer;
+	
+	//added for adding cell list
+	CellList<String> qdmCellList;
+	ListDataProvider<String> qdmListProv;
+	CellList<String> supDataCellList;
+	ListDataProvider<String> supListProv;
+	SingleSelectionModel<String> qdmSelModel;
+	SingleSelectionModel<String> supDataSelModel;
 	/**
 	 * Constructor.
 	 */
@@ -145,8 +162,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(packageMeasure);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
-		qdmElementsListBox.setVisibleItemCount(listVisibleCount);
-		suppElementsListBox.setVisibleItemCount(listVisibleCount);
+		//qdmCellList.setVisibleItemCount(listVisibleCount);
+		//supDataCellList.setVisibleItemCount(listVisibleCount);
 		content.setStyleName("contentPanel");
 	}
 	/**
@@ -183,11 +200,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @return the panel
 	 */
 	private Panel buildQDMElementLeftRightPanel() {
+		qdmElementsPanel.clear();
+		suppElementsPanel.clear();
 		SimplePanel panel = new SimplePanel();
 		panel.getElement().setAttribute("id", "QDMLeftRightButtonSimplePanel");
 		FlowPanel qdmTopContainer = new FlowPanel();
 		qdmTopContainer.getElement().setAttribute("id", "QDMTopContainerFlowPanel");
 		VerticalPanel vPanel = new VerticalPanel();
+		VerticalPanel sPanel = new VerticalPanel();
 		vPanel.getElement().setAttribute("id", "QDMLeftRightButtonVerticalPanel");
 		supplementalDataElementHeader.setStyleName("valueSetHeader");
 		supplementalDataElementHeader.getElement().setAttribute("id", "SupplementalDataElementHeadingLabel");
@@ -198,24 +218,89 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		suppElementsPanel.addStyleName("newColumn");
 		suppElementsPanel.getElement().setAttribute("id", "SuppElementFlowPanel");
 		addQDMElementButtonPanel.addStyleName("column");
-		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmElementsListBox, "QDM Elements");
+
+		qdmCellList = new CellList<String>(new TextCell()); 
+		//qdmCellList.setPageSize(listVisibleCount);
+		//qdmCellList.addStyleName("scrollable");
+		
+		qdmSelModel = new SingleSelectionModel<String>();
+		qdmCellList.setSelectionModel(qdmSelModel);
+		
+		
+		qdmListProv = new ListDataProvider<String>();
+		qdmListProv.addDataDisplay(qdmCellList);
+		
+		
+		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmCellList,"QDM Elements");
 		qdmElementsLabel.addStyleName("bold");
-		qdmElementsPanel.add(qdmElementsLabel);
-		qdmElementsPanel.add(qdmElementsListBox);
-		Widget suppElementsLabel = LabelBuilder.buildLabel(suppElementsListBox, "Supplemental Data Elements");
+		sPanel.add(qdmElementsLabel);
+		
+		//ScrollPanel qdmScrollPan = new ScrollPanel();
+		//qdmScrollPan.setAlwaysShowScrollBars(false);
+		//qdmScrollPan.add(qdmCellList);
+		VerticalPanel vpanel = new VerticalPanel();
+		ScrollPanel leftPagerPanel = new ScrollPanel();
+		leftPagerPanel.addStyleName("scrollable");
+		//leftPagerPanel.setDisplay(qdmCellList);
+		//vpanel.setBorderWidth(1);
+		vpanel.add(qdmCellList);
+		vpanel.setWidth("400px");
+		leftPagerPanel.setSize("200px", "200px");
+		leftPagerPanel.setAlwaysShowScrollBars(true);
+		leftPagerPanel.add(vpanel);
+		sPanel.add(leftPagerPanel);
+		
+		
+		supDataCellList = new CellList<String>(new TextCell());
+		//supDataCellList.setPageSize(listVisibleCount);
+		//supDataCellList.addStyleName("scrollable");
+		
+		supListProv = new ListDataProvider<String>();
+		supListProv.addDataDisplay(supDataCellList);
+		
+		supDataSelModel = new SingleSelectionModel<String>();
+		supDataCellList.setSelectionModel(supDataSelModel);
+		
+		Widget suppElementsLabel = LabelBuilder.buildLabel(supDataCellList,"Supplemental Data Elements");
 		suppElementsLabel.addStyleName("bold");
-		suppElementsPanel.add(suppElementsLabel);
-		suppElementsPanel.add(suppElementsListBox);
+		//suppElementsPanel.add(suppElementsLabel);
+		//suppElementsPanel.add(supDataCellList);
+		
 		SimplePanel wrapper = new SimplePanel();
 		wrapper.getElement().setAttribute("id", "QdmElementPanelSimplePanel");
 		wrapper.setStylePrimaryName("measurePackageAddButtonHolder");
 		wrapper.add(addQDMElementsToMeasure);
-		suppElementsPanel.add(new SpacerWidget());
-		suppElementsPanel.add(wrapper);
-		vPanel.add(suppElementsPanel);
+		
+		
+		VerticalPanel vpanel2 = new VerticalPanel();
+		ScrollPanel rightPagerPanel = new ScrollPanel();
+		rightPagerPanel.addStyleName("scrollable");
+		vpanel2.add(supDataCellList);
+		vpanel2.setWidth("400px");
+		rightPagerPanel.setSize("200px", "200px");
+		rightPagerPanel.setAlwaysShowScrollBars(true);
+		rightPagerPanel.add(vpanel2);
+		
+		
+		/*ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel();
+		rightPagerPanel.addStyleName("measurePackageCellListscrollable");
+		rightPagerPanel.setDisplay(supDataCellList);*/
+		
+		vPanel.add(suppElementsLabel);
+		vPanel.add(rightPagerPanel);
+		
+		suppElementsPanel.add(vPanel);
+		
+		sPanel.add(new SpacerWidget());
+		sPanel.add(wrapper);
+		
+		qdmElementsPanel.add(sPanel);
+		
+		
+		
 		qdmTopContainer.add(qdmElementsPanel);
 		qdmTopContainer.add(addQDMElementButtonPanel);
-		qdmTopContainer.add(vPanel);
+		qdmTopContainer.add(suppElementsPanel);
 		SpacerWidget spacer = new SpacerWidget();
 		spacer.setStylePrimaryName("clearBoth");
 		qdmTopContainer.add(spacer);
@@ -395,7 +480,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final void setQDMElementsInSuppElements(final List<QualityDataSetDTO> clauses) {
-		setQDMElementsItems(suppElementsListBox, clauses);
+		setQDMElementsItems(supListProv, clauses);
 	}
 	
 	/* (non-Javadoc)
@@ -403,7 +488,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final List<QualityDataSetDTO> getQDMElementsInSuppElements() {
-		return getQDMElementsItems(suppElementsListBox);
+		return getQDMElementsItems(supListProv);
 	}
 	
 	// QDM elements
@@ -415,14 +500,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @param valuesArg
 	 *            the values arg
 	 */
-	private void setQDMElementsItems(final ListBox lb,final List<QualityDataSetDTO> valuesArg) {
+	private void setQDMElementsItems(final ListDataProvider<String> lb,final List<QualityDataSetDTO> valuesArg) {
 		List<QualityDataSetDTO> values = new ArrayList<QualityDataSetDTO>();
 		values.addAll(valuesArg);
 		Collections.sort(values, new QualityDataSetDTO.Comparator());
-		lb.clear();
+		lb.getList().clear();
 		for (QualityDataSetDTO nvp : values) {
-			lb.addItem(nvp.getQDMElement(), nvp.getId() + nvp.getDataType());
-			qdmElementIdMap.put(nvp.getId() + nvp.getDataType(), nvp);
+			lb.getList().add(nvp.getQDMElement());
+			qdmElementIdMap.put(nvp.getQDMElement(), nvp);
 		}
 	}
 	
@@ -434,10 +519,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 *            the lb
 	 * @return the qDM elements items
 	 */
-	private List<QualityDataSetDTO> getQDMElementsItems(final ListBox lb) {
+	private List<QualityDataSetDTO> getQDMElementsItems(final ListDataProvider<String> lb) {
 		List<QualityDataSetDTO> list = new ArrayList<QualityDataSetDTO>();
-		for (int i = 0; i < lb.getItemCount(); i++) {
-			QualityDataSetDTO detail = qdmElementIdMap.get(lb.getValue(i));
+		for (int i = 0; i < lb.getList().size(); i++) {
+			QualityDataSetDTO detail = qdmElementIdMap.get(lb.getList().get(i));
 			list.add(detail);
 		}
 		return list;
@@ -447,10 +532,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * Adds the qdm element right.
 	 */
 	private void addQDMElementRight() {
-		QualityDataSetDTO nvp = getQDMElementSelectedValue(qdmElementsListBox);
+		QualityDataSetDTO nvp = getQDMElementSelectedValue(qdmSelModel);
 		if (nvp != null) {
-			removeQDMElementItem(qdmElementsListBox, nvp);
-			addQDMElementItem(suppElementsListBox, nvp);
+			removeQDMElementItem(qdmListProv, nvp);
+			addQDMElementItem(supListProv, nvp);
 		}
 	}
 	
@@ -458,10 +543,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * Adds the qdm element left.
 	 */
 	private void addQDMElementLeft() {
-		QualityDataSetDTO nvp = getQDMElementSelectedValue(suppElementsListBox);
+		QualityDataSetDTO nvp = getQDMElementSelectedValue(supDataSelModel);
 		if (nvp != null) {
-			removeQDMElementItem(suppElementsListBox, nvp);
-			addQDMElementItem(qdmElementsListBox, nvp);
+			removeQDMElementItem(supListProv, nvp);
+			addQDMElementItem(qdmListProv, nvp);
 		}
 	}
 	
@@ -469,18 +554,18 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * Adds the all qdm elements right.
 	 */
 	private void addAllQDMElementsRight() {
-		addQDMElementItems(suppElementsListBox,
-				getQDMElementsItems(qdmElementsListBox));
-		qdmElementsListBox.clear();
+		addQDMElementItems(supListProv,
+				getQDMElementsItems(qdmListProv));
+		qdmListProv.getList().clear();
 	}
 	
 	/**
 	 * Adds the all qdm elements left.
 	 */
 	private void addAllQDMElementsLeft() {
-		addQDMElementItems(qdmElementsListBox,
-				getQDMElementsItems(suppElementsListBox));
-		suppElementsListBox.clear();
+		addQDMElementItems(qdmListProv,
+				getQDMElementsItems(supListProv));
+		supListProv.getList().clear();
 	}
 	
 	// QDM elements
@@ -492,7 +577,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @param nvp
 	 *            the nvp
 	 */
-	private void addQDMElementItem(final ListBox lb, final QualityDataSetDTO nvp) {
+	private void addQDMElementItem(final ListDataProvider<String> lb, final QualityDataSetDTO nvp) {
 		List<QualityDataSetDTO> list = getQDMElementsItems(lb);
 		list.add(nvp);
 		Collections.sort(list, new QualityDataSetDTO.Comparator());
@@ -508,7 +593,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @param nvpList
 	 *            the nvp list
 	 */
-	private void addQDMElementItems(final ListBox lb,final List<QualityDataSetDTO> nvpList) {
+	private void addQDMElementItems(final ListDataProvider<String> lb,final List<QualityDataSetDTO> nvpList) {
 		List<QualityDataSetDTO> list = getQDMElementsItems(lb);
 		list.addAll(nvpList);
 		setQDMElementsItems(lb, list);
@@ -522,11 +607,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 *            the lb
 	 * @return the qDM element selected value
 	 */
-	private QualityDataSetDTO getQDMElementSelectedValue(final ListBox lb) {
-		int index = lb.getSelectedIndex();
+	private QualityDataSetDTO getQDMElementSelectedValue(final SingleSelectionModel<String> lb) {
+		
+		String index = lb.getSelectedObject();
 		QualityDataSetDTO nvp = null;
-		if (index >= 0) {
-			nvp = qdmElementIdMap.get(lb.getValue(index));
+		if (index != null) {
+			nvp = qdmElementIdMap.get(index);
 		}
 		return nvp;
 	}
@@ -540,10 +626,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * @param nvp
 	 *            the nvp
 	 */
-	private void removeQDMElementItem(final ListBox lb,final QualityDataSetDTO nvp) {
-		for (int i = 0; i < lb.getItemCount(); i++) {
-			if (lb.getValue(i).equals(nvp.getId() + nvp.getDataType())) {
-				lb.removeItem(i);
+	private void removeQDMElementItem(final ListDataProvider<String> lb,final QualityDataSetDTO nvp) {
+		for (int i = 0; i < lb.getList().size(); i++) {
+			if (lb.getList().get(i).equals(nvp.getQDMElement())) {
+				lb.getList().remove(i);
 				break;
 			}
 		}
@@ -566,7 +652,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final void setQDMElements(final List<QualityDataSetDTO> clauses) {
-		setQDMElementsItems(qdmElementsListBox, clauses);
+		setQDMElementsItems(qdmListProv, clauses);
 	}
 	
 	/* (non-Javadoc)
@@ -574,7 +660,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final List<QualityDataSetDTO> getQDMElements() {
-		return getQDMElementsItems(qdmElementsListBox);
+		return getQDMElementsItems(qdmListProv);
 	}
 	
 	/* (non-Javadoc)

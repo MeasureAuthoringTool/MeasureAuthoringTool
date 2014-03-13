@@ -765,11 +765,11 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	public void setObserver(Observer observer) {
 		this.observer = observer;
 	}
-	@Override
-	public HasClickHandlers getAddClausesToPackageButton() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+//	@Override
+//	public HasClickHandlers getAddClausesToPackageButton() {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 	
 	/**
 	 * Clause Cell Class.

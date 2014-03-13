@@ -350,6 +350,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	public void beforeClosingDisplay() {
 		currentDetail = null;
 		packageOverview = null;
+		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+		view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 	}
 	
 	/* (non-Javadoc)

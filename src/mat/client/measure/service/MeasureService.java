@@ -382,4 +382,6 @@ public interface MeasureService extends RemoteService {
 	 * @return true, if successful
 	 */
 	boolean checkAndDeleteSubTree(String measureId, String subTreeUUID);
+
+	boolean isSubTreeReferredInLogic(String measureId, String subTreeUUID);
 }

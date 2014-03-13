@@ -434,4 +434,7 @@ public interface MeasureServiceAsync {
 	 */
 	void checkAndDeleteSubTree(String measureId, String subTreeUUID,
 			AsyncCallback<Boolean> callback);
+
+	void isSubTreeReferredInLogic(String measureId, String subTreeUUID,
+			AsyncCallback<Boolean> callback);
 }

@@ -347,4 +347,12 @@ MeasureService {
 	public boolean checkAndDeleteSubTree(String measureId, String subTreeUUID){
 		return this.getMeasureLibraryService().checkAndDeleteSubTree(measureId, subTreeUUID);
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#isSubTreeReferredInLogic(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public boolean isSubTreeReferredInLogic(String measureId, String subTreeUUID){
+		return this.getMeasureLibraryService().isSubTreeReferredInLogic(measureId, subTreeUUID);
+	}
 }

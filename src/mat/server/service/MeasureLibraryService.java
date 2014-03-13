@@ -409,4 +409,6 @@ public interface MeasureLibraryService {
 	 * @return the release date
 	 */
 	String getReleaseDate();
+
+	boolean isSubTreeReferredInLogic(String measureId, String subTreeUUID);
 }

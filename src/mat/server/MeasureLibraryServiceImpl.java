@@ -197,6 +197,27 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return true;
 	}
 	
+	@Override
+	public boolean isSubTreeReferredInLogic(String measureId, String subTreeUUID){
+		logger.info("Inside isSubTreeReferredInLogic Method for measure Id " + measureId);
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			try {
+				NodeList subTreeRefNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTreeRef[@id='"+subTreeUUID+"']");
+				if(subTreeRefNodeList.getLength() > 0){
+					return true;
+				}
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return false;
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#saveSubTreeInMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */

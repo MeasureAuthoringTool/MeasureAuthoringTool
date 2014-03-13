@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeMap;
+
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -16,7 +17,10 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SecondaryButton;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.resources.client.ImageResource;
@@ -194,12 +198,56 @@ public class XmlTreePresenter {
 		invokeSaveHandler();
 		invokeValidateHandler();
 		invokeClearHandler();
-		addShowClauseHandler();
+		addClauseHandler();
 	}
 	/**
 	 * 
 	 */
-	private void addShowClauseHandler() {
+	private void addClauseHandler() {
+		
+		xmlTreeDisplay.getClauseNamesListBox().addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				System.out.println("listbox change event caught in XmlTreePresenter:"+event.getAssociatedType().getName());
+				int selectedIndex = xmlTreeDisplay.getClauseNamesListBox().getSelectedIndex();
+				String selectedItemUUID = xmlTreeDisplay.getClauseNamesListBox().getValue(selectedIndex);
+				String selectedItemName = xmlTreeDisplay.getClauseNamesListBox().getItemText(selectedIndex);
+				String measureId = MatContext.get().getCurrentMeasureId();
+				CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
+						.getXmlTree().getRootTreeNode().getChildValue(0));
+				boolean checkIfUsedInLogic = true;
+				
+				if(cellTreeNode.getChilds().size() > 0){
+					CellTreeNode childNode = cellTreeNode.getChilds().get(0);
+					String nodeName = childNode.getName();
+					if(nodeName.equals(selectedItemName)){
+						System.out.println("The clause is already being displayed on the LHS tree. Disable Delete Clause button now.");
+						xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
+						checkIfUsedInLogic = false;
+					}
+				}
+				
+				if(checkIfUsedInLogic){
+					service.isSubTreeReferredInLogic(measureId, selectedItemUUID, new AsyncCallback<Boolean>() {
+	
+						@Override
+						public void onFailure(Throwable caught) {
+							// TODO Auto-generated method stub
+							
+						}
+	
+						@Override
+						public void onSuccess(Boolean result) {						
+							xmlTreeDisplay.getDeleteClauseButton().setEnabled(!result);		
+						}
+					});
+				}
+			}
+			
+		});
+		
+		
 		xmlTreeDisplay.getShowClauseButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -210,6 +258,10 @@ public class XmlTreePresenter {
 					if(selectedIndex != -1){
 						final String selectedClauseName = clauseNamesListBox.getItemText(selectedIndex);
 						final String selectedClauseUUID = clauseNamesListBox.getValue(selectedIndex);
+						
+						//Disable the Delete Clause button so that user cannot delete the currently editing clauses.
+						xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
+						
 						System.out.println("Selected clause name and uuid is :"
 								+ selectedClauseName + ":" + selectedClauseUUID);
 						

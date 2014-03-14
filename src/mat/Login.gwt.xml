@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <module rename-to='login'>
 	<inherits name="com.google.gwt.user.User" />
-    <inherits name='gwt.g2d.g2d'/>
-    <inherits name='org.vaadin.gwtgraphics.GWTGraphics'/>
+    <inherits name="com.google.gwt.logging.Logging"/>
     <inherits name='com.google.gwt.user.theme.standard.Standard' />
     <inherits name="com.google.gwt.xml.XML" />
     <!-- Compiling gwt code only for ie7,ie8& firefox 3 & above. -->

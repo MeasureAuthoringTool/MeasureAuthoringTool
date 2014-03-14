@@ -12,8 +12,7 @@
 	<!-- <inherits name='com.google.gwt.user.theme.dark.Dark'/>     -->
     
 	<!-- Other module inherits                                      -->
-    <inherits name='gwt.g2d.g2d'/>
-    <inherits name='org.vaadin.gwtgraphics.GWTGraphics'/>
+    <inherits name="com.google.gwt.logging.Logging"/>
     <inherits name="com.google.gwt.xml.XML" />
 	<inherits name ="com.google.gwt.json.JSON" />
 	<!-- This is the third party jar,added for GWT client side logging. 

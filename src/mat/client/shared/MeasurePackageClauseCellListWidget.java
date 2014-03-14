@@ -40,6 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
+import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
@@ -166,8 +167,13 @@ public class MeasurePackageClauseCellListWidget {
 		});
 		rightCellListDataProvider = new ListDataProvider<MeasurePackageClauseDetail>(groupingPopulationList);
 		rightCellListDataProvider.addDataDisplay(rightCellList);
-		rightCellList.setSelectionModel(rightCellListSelectionModel
-				, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			rightCellList.setSelectionModel(rightCellListSelectionModel
+					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+		} else {
+			rightCellList.setSelectionModel(new NoSelectionModel<MeasurePackageClauseDetail>()
+					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+		}
 		return rightCellList;
 	}
 	/**
@@ -193,8 +199,13 @@ public class MeasurePackageClauseCellListWidget {
 				disclosurePanelAssociations.setVisible(false);
 			}
 		});
-		leftCellList.setSelectionModel(leftCellListSelectionModel
-				, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			leftCellList.setSelectionModel(leftCellListSelectionModel
+					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+		} else {
+			leftCellList.setSelectionModel(new NoSelectionModel<MeasurePackageClauseDetail>()
+					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+		}
 		return leftCellList;
 	}
 	/**
@@ -468,6 +479,17 @@ public class MeasurePackageClauseCellListWidget {
 		clauseButtonPanel.add(new SpacerWidget());
 		clauseButtonPanel.add(addAllClauseLeft);
 		clauseButtonHandlers();
+		if (!MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			addClauseRight.setEnabled(false);
+			addClauseLeft.setEnabled(false);
+			addAllClauseRight.setEnabled(false);
+			addAllClauseLeft.setEnabled(false);
+		} else {
+			addClauseRight.setEnabled(true);
+			addClauseLeft.setEnabled(true);
+			addAllClauseRight.setEnabled(true);
+			addAllClauseLeft.setEnabled(true);
+		}
 		return clauseButtonPanel;
 	}
 	/**
@@ -675,5 +697,17 @@ public class MeasurePackageClauseCellListWidget {
 	 */
 	public void setPackageName(Label packageName) {
 		this.packageName = packageName;
+	}
+	/**
+	 * @return the saveGrouping
+	 */
+	public PrimaryButton getSaveGrouping() {
+		return saveGrouping;
+	}
+	/**
+	 * @param saveGrouping the saveGrouping to set
+	 */
+	public void setSaveGrouping(PrimaryButton saveGrouping) {
+		this.saveGrouping = saveGrouping;
 	}
 }

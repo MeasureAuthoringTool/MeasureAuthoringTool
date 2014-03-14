@@ -51,7 +51,6 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
-import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 // TODO: Auto-generated Javadoc
@@ -230,12 +229,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		suppElementsPanel.getElement().setAttribute("id", "SuppElementFlowPanel");
 		addQDMElementButtonPanel.addStyleName("column");
 		qdmCellList = new CellList<String>(new ClauseCell());
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-			qdmSelModel = new SingleSelectionModel<String>();
-			qdmCellList.setSelectionModel(qdmSelModel);
-		} else {
-			qdmCellList.setSelectionModel(new NoSelectionModel<String>());
-		}
+		//if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+		qdmSelModel = new SingleSelectionModel<String>();
+		qdmCellList.setSelectionModel(qdmSelModel);
+		//} else {
+		//	qdmCellList.setSelectionModel(new NoSelectionModel<String>());
+		//}
 		qdmListProv = new ListDataProvider<String>();
 		qdmListProv.addDataDisplay(qdmCellList);
 		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmCellList, "QDM Elements");
@@ -250,12 +249,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		supDataCellList = new CellList<String>(new ClauseCell());
 		supListProv = new ListDataProvider<String>();
 		supListProv.addDataDisplay(supDataCellList);
-		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
-			supDataSelModel = new SingleSelectionModel<String>();
-			supDataCellList.setSelectionModel(supDataSelModel);
-		} else {
-			supDataCellList.setSelectionModel(new NoSelectionModel<String>());
-		}
+		//if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+		supDataSelModel = new SingleSelectionModel<String>();
+		supDataCellList.setSelectionModel(supDataSelModel);
+		//} else {
+		//	supDataCellList.setSelectionModel(new NoSelectionModel<String>());
+		//}
 		Widget suppElementsLabel = LabelBuilder.buildLabel(supDataCellList, "Supplemental Data Elements");
 		suppElementsLabel.addStyleName("bold");
 		

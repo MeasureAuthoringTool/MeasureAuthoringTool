@@ -1272,7 +1272,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					nodeToMoveUp.setParent(parentNode);
 					parentNode.getChilds().add(index - 1, nodeToMoveUp);
 					selectedNode.getParent().removeChild(selectedNode);
-					selectionModel.setSelected(nodeToMoveUp, true);
+					selectionModel.setSelected(nodeToMoveUp, false);
 					closeNodes(cellTree.getRootTreeNode());
 					openAllNodes(cellTree.getRootTreeNode());
 					selectionModel.setSelected(nodeToMoveUp, false);
@@ -1301,7 +1301,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					nodeToMoveDown.setParent(parentNode);
 					selectedNode.getParent().removeChild(selectedNode);
 					parentNode.getChilds().add(index + 1, nodeToMoveDown);
-					selectionModel.setSelected(nodeToMoveDown, true);
+					selectionModel.setSelected(nodeToMoveDown, false);
 					closeNodes(cellTree.getRootTreeNode());
 					openAllNodes(cellTree.getRootTreeNode());
 					selectionModel.setSelected(nodeToMoveDown, false);

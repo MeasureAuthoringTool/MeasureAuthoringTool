@@ -40,8 +40,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.google.gwt.xml.client.Text;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class XmlProcessor.
@@ -159,7 +157,8 @@ public class XmlProcessor {
 	private static final String INITIAL_POPULATIONS = "initialPopulations";
 	
 	/** The Constant XPATH_MEASURE_CLAUSE. */
-	public static final String XPATH_MEASURE_CLAUSE = "/measure/populations/*/clause | /measure/*/clause[@type !='stratum']";
+	//	public static final String XPATH_MEASURE_CLAUSE = "/measure/populations/*/clause | /measure/*/clause[@type !='stratum']";
+	public static final String XPATH_MEASURE_CLAUSE = "/measure/populations/*/clause | /measure/*/clause";
 	
 	/** The Constant XPATH_MEASURE_GROUPING. */
 	public static final String XPATH_MEASURE_GROUPING = "/measure/measureGrouping";
@@ -829,39 +828,39 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	public void renameTimingConventions(Document document) throws XPathExpressionException {
-		 
+		
 		String displayName = "displayName";
 		String type = "type";
 		String starts_before_or_during="Starts Before Or During";
 		String ends_before_or_during="Ends Before Or During";
-		 
-		 javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		
-		 //replace relationalOp attribute values for displayName and type from SBOD to SBE
-		 NodeList nodesRelationalOpsSBOD = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD,
-					originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		 for (int i = 0; i < nodesRelationalOpsSBOD.getLength(); i++) {
-			 Node childNode =  nodesRelationalOpsSBOD.item(i);
-			 String relationalOpDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
-			 relationalOpDisplayName = relationalOpDisplayName.replace(starts_before_or_during, "Starts Before End");
-			 childNode.getAttributes().getNamedItem(displayName).setNodeValue(relationalOpDisplayName);
-			 childNode.getAttributes().getNamedItem(type).setNodeValue("SBE");
-		 }
-		 
-		 //replace relationalOp attribute values for displayName and type from EBOD to EBE
-		 NodeList nodesRelationalOpsEBOD = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD,
-					originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		 for (int i = 0; i < nodesRelationalOpsEBOD.getLength(); i++) {
-			 Node childNode =  nodesRelationalOpsEBOD.item(i);
-			 String relationalOpDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
-			 relationalOpDisplayName = relationalOpDisplayName.replace(ends_before_or_during, "Ends Before End");
-			 childNode.getAttributes().getNamedItem(displayName).setNodeValue(relationalOpDisplayName);
-			 childNode.getAttributes().getNamedItem(type).setNodeValue("EBE");
-		 }
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		
+		//replace relationalOp attribute values for displayName and type from SBOD to SBE
+		NodeList nodesRelationalOpsSBOD = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for (int i = 0; i < nodesRelationalOpsSBOD.getLength(); i++) {
+			Node childNode =  nodesRelationalOpsSBOD.item(i);
+			String relationalOpDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
+			relationalOpDisplayName = relationalOpDisplayName.replace(starts_before_or_during, "Starts Before End");
+			childNode.getAttributes().getNamedItem(displayName).setNodeValue(relationalOpDisplayName);
+			childNode.getAttributes().getNamedItem(type).setNodeValue("SBE");
+		}
+		
+		//replace relationalOp attribute values for displayName and type from EBOD to EBE
+		NodeList nodesRelationalOpsEBOD = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		for (int i = 0; i < nodesRelationalOpsEBOD.getLength(); i++) {
+			Node childNode =  nodesRelationalOpsEBOD.item(i);
+			String relationalOpDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
+			relationalOpDisplayName = relationalOpDisplayName.replace(ends_before_or_during, "Ends Before End");
+			childNode.getAttributes().getNamedItem(displayName).setNodeValue(relationalOpDisplayName);
+			childNode.getAttributes().getNamedItem(type).setNodeValue("EBE");
+		}
 		
 	}
 	
-    
+	
 	/**
 	 * This method looks at the Scoring Type for a measure and adds nodes based
 	 * on the value of Scoring Type.
@@ -989,10 +988,10 @@ public class XmlProcessor {
 			Element itemCount_Element = originalDoc
 					.createElement("itemCount");
 			if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE) == null) {
-			Node scoring_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_SCORING);
-			((Element) scoring_Element.getParentNode())
-			.insertBefore(itemCount_Element,
-					scoring_Element.getNextSibling());
+				Node scoring_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_SCORING);
+				((Element) scoring_Element.getParentNode())
+				.insertBefore(itemCount_Element,
+						scoring_Element.getNextSibling());
 			} else {
 				Node measure_Type_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE);
 				((Element) measure_Type_Element.getParentNode())
@@ -1083,15 +1082,15 @@ public class XmlProcessor {
 					.createElement("emeasureid");
 			emeasureID_Element.appendChild(originalDoc.createTextNode(Integer.toString(emeasureId)));
 			if (findNode(originalDoc,XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE) == null) {
-			Node guid_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_GUID);
-			((Element) guid_Element.getParentNode())
-			.insertBefore(emeasureID_Element,
-					guid_Element); 
+				Node guid_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_GUID);
+				((Element) guid_Element.getParentNode())
+				.insertBefore(emeasureID_Element,
+						guid_Element);
 			} else {
 				Node finalizeddate_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE);
 				((Element) finalizeddate_Element.getParentNode())
 				.insertBefore(emeasureID_Element,
-						finalizeddate_Element); 
+						finalizeddate_Element);
 			}
 		}
 	}
@@ -1197,11 +1196,11 @@ public class XmlProcessor {
 		return (NodeList) expr.evaluate(document, XPathConstants.NODESET);
 	}
 	
-//	public void addEmptyItemCountNode(){
-//		NodeList nodes=originalDoc.getElementsByTagName("scoring");
-//		Element itemCountElement=originalDoc.createElement("itemCount");
-//		nodes.item(0).getParentNode().insertBefore(itemCountElement,null);
-//	}
+	//	public void addEmptyItemCountNode(){
+	//		NodeList nodes=originalDoc.getElementsByTagName("scoring");
+	//		Element itemCountElement=originalDoc.createElement("itemCount");
+	//		nodes.item(0).getParentNode().insertBefore(itemCountElement,null);
+	//	}
 	/**
 	 * Gets the original doc.
 	 * 

@@ -6,16 +6,16 @@ package mat.client.measurepackage;
 public enum MeasureGroupingOrder {
 	
 	/** The initial patient population. */
-	initialPopulation("1"), 
+	initialPopulation("1"),
 	
 	/** The denominator. */
-	denominator("2"), 
+	denominator("2"),
 	
 	/** The denominator exclusions. */
 	denominatorExclusions("3"),
 	
 	/** The denominator exceptions. */
-	denominatorExceptions("4"), 
+	denominatorExceptions("4"),
 	
 	/** The numerator. */
 	numerator("5"),
@@ -30,11 +30,14 @@ public enum MeasureGroupingOrder {
 	measurePopulationExclusions("8"),
 	
 	/** The measure observation. */
-	measureObservation("9");
-	 
+	measureObservation("9"),
+	
+	stratum("10");
+	
+	
 	/** The status code. */
 	private String statusCode;
- 
+	
 	/**
 	 * Instantiates a new measure grouping order.
 	 * 
@@ -44,7 +47,7 @@ public enum MeasureGroupingOrder {
 	private MeasureGroupingOrder(String status) {
 		statusCode = status;
 	}
- 
+	
 	/**
 	 * Gets the status code.
 	 * 
@@ -53,5 +56,5 @@ public enum MeasureGroupingOrder {
 	public String getStatusCode() {
 		return statusCode;
 	}
- 
+	
 }

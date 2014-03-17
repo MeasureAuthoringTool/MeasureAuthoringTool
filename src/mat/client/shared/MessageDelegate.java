@@ -207,7 +207,7 @@ public class MessageDelegate {
 	 */
 	/** The continuous variable wrong num. */
 	private final String CONTINUOUS_VARIABLE_WRONG_NUM = "For a Continuous Variable measure, a grouping must contain exactly one of each of the following: "
-			+ "Population, Measure Population, and Measure Observation.";
+			+ "Population, Measure Population, Measure Observation and Stratifier.";
 	
 	/** The delete measure warning message. */
 	private final String DELETE_MEASURE_WARNING_MESSAGE = "Deleting a draft or version of a measure will"
@@ -392,7 +392,7 @@ public class MessageDelegate {
 	 */
 	/** The proportion wrong num. */
 	private final String PROPORTION_WRONG_NUM = "For a Proportion measure, a grouping must contain exactly one of each of the following: "
-			+ "Population and Denominator.";
+			+ "Population, Denominator and Stratifer.";
 	
 	/** The ratio may not contain. */
 	private final String RATIO_MAY_NOT_CONTAIN = "For a Ratio measure, a grouping may not contain a Denominator Exception, Measure Observation, or Measure Population.";
@@ -405,10 +405,10 @@ public class MessageDelegate {
 	 */
 	/** The ratio wrong num. */
 	private final String RATIO_WRONG_NUM = "For a Ratio measure, a grouping must contain exactly one of each of the following: "
-			+ "Population, Denominator, and Numerator.";
+			+ "Population, Denominator, Numerator and Stratifier.";
 	
 	private final String COHORT_WRONG_NUM = "For a Cohort measure, a grouping must contain exactly one of each of the following: "
-			+ "Population.";
+			+ "Population and Stratifier.";
 	
 	/** The rationale required. */
 	private final String RATIONALE_REQUIRED = "Rationale is required.";

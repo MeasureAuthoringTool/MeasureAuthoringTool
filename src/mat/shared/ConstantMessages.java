@@ -99,6 +99,8 @@ public  class ConstantMessages {
 	/** The Constant STRATIFICATION_CONTEXT_ID. */
 	public static final String STRATIFICATION_CONTEXT_ID = "stratification";
 	
+	public static final String STRATIFIER_CONTEXT_ID = "stratum";
+	
 	/** The Constant USER_DEFINED_CONTEXT_ID. */
 	public static final String USER_DEFINED_CONTEXT_ID = "10";
 	

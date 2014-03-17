@@ -131,6 +131,7 @@ public class MeasurePackageClauseCellListWidget {
 	/** List of Elements in Clause List.*/
 	private ArrayList<MeasurePackageClauseDetail> clausesPopulationList =
 			new ArrayList<MeasurePackageClauseDetail>();
+	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
@@ -309,6 +310,7 @@ public class MeasurePackageClauseCellListWidget {
 		hp.getElement().setAttribute("id", "MeasurePackageClause_MainHoriPanel");
 		packageName.addStyleName("measureGroupPackageName");
 		mainFlowPanel.add(packageName);
+		mainFlowPanel.add(errorMessages);
 		mainFlowPanel.add(hp);
 		mainFlowPanel.add(new SpacerWidget());
 		mainFlowPanel.add(saveGrouping);
@@ -722,5 +724,17 @@ public class MeasurePackageClauseCellListWidget {
 	 */
 	public Button getAddAllClauseLeft() {
 		return addAllClauseLeft;
+	}
+	/**
+	 * @return the errorMessages
+	 */
+	public ErrorMessageDisplay getErrorMessages() {
+		return errorMessages;
+	}
+	/**
+	 * @param errorMessages the errorMessages to set
+	 */
+	public void setErrorMessages(ErrorMessageDisplay errorMessages) {
+		this.errorMessages = errorMessages;
 	}
 }

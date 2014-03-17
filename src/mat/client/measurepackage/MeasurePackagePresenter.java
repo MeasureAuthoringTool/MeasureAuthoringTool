@@ -17,6 +17,7 @@ import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
 import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -279,7 +280,192 @@ public class MeasurePackagePresenter implements MatPresenter {
 						});
 					}
 				});
+		
+		view.getPackageGroupingWidget().getSaveGrouping().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				clearMessages();
+				updateDetailsFromView();
+				if (isValid()) {
+					MatContext.get().getPackageService()
+					.save(currentDetail, new AsyncCallback<Void>() {
+						@Override
+						public void onFailure(final Throwable caught) {
+							/*view.getQDMErrorMessageDisplay().setMessage(
+								MatContext.get().getMessageDelegate().getUnableToProcessMessage());*/
+							Window.alert("I failed");
+						}
+						
+						@Override
+						public void onSuccess(final Void result) {
+							if (!packageOverview.getPackages().contains(
+									currentDetail)) {
+								packageOverview.getPackages().add(
+										currentDetail);
+								setOverview(packageOverview);
+							}
+							view.getPackageSuccessMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate().getGroupingSavedMessage());
+						}
+					});
+				}
+			}
+		});
 	}
+	
+	private boolean isValid() {
+		List<MeasurePackageClauseDetail> detailList = view
+				.getPackageGroupingWidget().getGroupingPopulationList();
+		List<String> messages = new ArrayList<String>();
+		
+		String scoring = MatContext.get().getCurrentMeasureScoringType();
+		
+		// TODO refactor this into a common shared class so the server can use
+		// it for validation also
+		if (ConstantMessages.CONTINUOUS_VARIABLE_SCORING
+				.equalsIgnoreCase(scoring)) {
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getContinuousVariableWrongNumMessage());
+			}
+			
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.NUMERATOR_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) != 0)
+							|| (countDetailsWithType(detailList,
+									ConstantMessages.DENOMINATOR_CONTEXT_ID) != 0)
+									|| (countDetailsWithType(detailList,
+											ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) != 0)
+											|| (countDetailsWithType(detailList,
+													ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getContinuousVariableMayNotContainMessage());
+			}
+			
+		} else if (ConstantMessages.PROPORTION_SCORING.equalsIgnoreCase(scoring)) { /*
+		 * PROPORTION at least one and only one Population,
+		 * Denominator at least one or more Numerator zero or
+		 * one Denominator Exclusions Denominator Exceptions and
+		 * no Numerator Exclusions, Measure Population, Measure
+		 * Observations
+		 */
+			/*
+			 * at least one and only one Population, Denominator
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionWrongNumMessage());
+			}
+			/*
+			 * at least one or more Numerator
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.NUMERATOR_CONTEXT_ID) < 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionTooFewMessage());
+			}
+			/*
+			 * zero or one Denominator Exclusions, Denominator Exceptions
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) > 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionTooManyMessage());
+			}
+			/* no Numerator Exclusions, Measure Population, Measure Observations */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionMayNotContainMessage());
+			}
+		} else if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) { /*
+		 * at least one and only one Population, Denominator,
+		 * Numerator, zero or one Denominator Exclusions and no
+		 * Denominator Exceptions, Measure Observation, Measure
+		 * Population
+		 */
+			
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
+							|| (countDetailsWithType(detailList,
+									ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getRatioWrongNumMessage());
+			}
+			/*
+			 * zero or one Denominator Exclusions
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) > 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getRatioTooManyMessage());
+			}
+			
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)
+							|| (countDetailsWithType(detailList,
+									ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
+									
+					) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getRatioMayNotContainMessage());
+			}
+		} else if (ConstantMessages.COHORT_SCORING.equalsIgnoreCase(scoring)) {
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)) {
+				messages.add(MatContext.get().getMessageDelegate().getCOHORT_WRONG_NUM());
+			}
+		}
+		if (messages.size() > 0) {
+			view.getPackageErrorMessageDisplay().setMessages(messages);
+		} else {
+			view.getPackageErrorMessageDisplay().clear();
+		}
+		return messages.size() == 0;
+	}
+	
+	/**
+	 * countDetailsWithType.
+	 * @param detailList - List of MeasurePackageClauseDetail.
+	 * @param type - String.
+	 *
+	 * @return Integer.
+	 */
+	private int countDetailsWithType(
+			final List<MeasurePackageClauseDetail> detailList, final String type) {
+		int count = 0;
+		for (MeasurePackageClauseDetail detail : detailList) {
+			if (type.equals(detail.getType())) {
+				count++;
+			}
+		}
+		return count;
+	}
+	/**
+	 * updateDetailsFromView.
+	 */
+	private void updateDetailsFromView() {
+		currentDetail.setPackageClauses(view.getPackageGroupingWidget().getGroupingPopulationList());
+		currentDetail.setValueSetDate(null);
+	}
+	
 	
 	public final void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
@@ -338,7 +524,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	private void displayEmpty() {
 		panel.clear();
-		panel.add(emptyPanel);
+		//panel.add(emptyPanel);
+		panel.add(view.asWidget());
 		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 		view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 	}

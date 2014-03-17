@@ -129,7 +129,7 @@ public class MessageDelegate {
 	
 	
 	
-
+	
 	/**
 	 * Gets the measure save server error message.
 	 * 
@@ -406,6 +406,9 @@ public class MessageDelegate {
 	/** The ratio wrong num. */
 	private final String RATIO_WRONG_NUM = "For a Ratio measure, a grouping must contain exactly one of each of the following: "
 			+ "Population, Denominator, and Numerator.";
+	
+	private final String COHORT_WRONG_NUM = "For a Cohort measure, a grouping must contain exactly one of each of the following: "
+			+ "Population.";
 	
 	/** The rationale required. */
 	private final String RATIONALE_REQUIRED = "Rationale is required.";
@@ -1890,6 +1893,13 @@ public class MessageDelegate {
 	 */
 	public String getCOMMENT_ADDED_SUCCESSFULLY() {
 		return COMMENT_ADDED_SUCCESSFULLY;
+	}
+	
+	/**
+	 * @return the cOHORT_WRONG_NUM
+	 */
+	public String getCOHORT_WRONG_NUM() {
+		return COHORT_WRONG_NUM;
 	}
 	
 	public String getComparisonDiloagBoxErrorDisplay() {

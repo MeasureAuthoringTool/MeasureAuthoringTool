@@ -327,7 +327,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 			if ((countDetailsWithType(detailList,
 					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
 					|| (countDetailsWithType(detailList,
-							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 1)) {
+							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 1)
+							|| (countDetailsWithType(detailList,
+									ConstantMessages.STRATIFIER_CONTEXT_ID) != 1)) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getContinuousVariableWrongNumMessage());
 			}
@@ -359,7 +361,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 			if ((countDetailsWithType(detailList,
 					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
 					|| (countDetailsWithType(detailList,
-							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)) {
+							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
+							|| (countDetailsWithType(detailList,
+									ConstantMessages.STRATIFIER_CONTEXT_ID) != 1)) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getProportionWrongNumMessage());
 			}
@@ -401,7 +405,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 					|| (countDetailsWithType(detailList,
 							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
 							|| (countDetailsWithType(detailList,
-									ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)) {
+									ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
+									|| (countDetailsWithType(detailList,
+											ConstantMessages.STRATIFIER_CONTEXT_ID) != 1)) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioWrongNumMessage());
 			}
@@ -429,7 +435,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		} else if (ConstantMessages.COHORT_SCORING.equalsIgnoreCase(scoring)) {
 			if ((countDetailsWithType(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID) != 1)) {
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.STRATIFIER_CONTEXT_ID) != 1)) {
 				messages.add(MatContext.get().getMessageDelegate().getCOHORT_WRONG_NUM());
 			}
 		}

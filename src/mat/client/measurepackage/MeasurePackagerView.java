@@ -628,6 +628,11 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		addAllQDMRight.setEnabled(b);
 		addQDMLeft.setEnabled(b);
 		addQDMRight.setEnabled(b);
+		packageGroupingWidget.getAddClauseRight().setEnabled(b);
+		packageGroupingWidget.getAddClauseLeft().setEnabled(b);
+		packageGroupingWidget.getAddAllClauseRight().setEnabled(b);
+		packageGroupingWidget.getAddAllClauseLeft().setEnabled(b);
+		
 		
 	}
 	

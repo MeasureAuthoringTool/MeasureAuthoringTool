@@ -479,17 +479,6 @@ public class MeasurePackageClauseCellListWidget {
 		clauseButtonPanel.add(new SpacerWidget());
 		clauseButtonPanel.add(addAllClauseLeft);
 		clauseButtonHandlers();
-		if (!MatContext.get().getMeasureLockService().checkForEditPermission()) {
-			addClauseRight.setEnabled(false);
-			addClauseLeft.setEnabled(false);
-			addAllClauseRight.setEnabled(false);
-			addAllClauseLeft.setEnabled(false);
-		} else {
-			addClauseRight.setEnabled(true);
-			addClauseLeft.setEnabled(true);
-			addAllClauseRight.setEnabled(true);
-			addAllClauseLeft.setEnabled(true);
-		}
 		return clauseButtonPanel;
 	}
 	/**
@@ -709,5 +698,29 @@ public class MeasurePackageClauseCellListWidget {
 	 */
 	public void setSaveGrouping(PrimaryButton saveGrouping) {
 		this.saveGrouping = saveGrouping;
+	}
+	/**
+	 * @return the addClauseRight
+	 */
+	public Button getAddClauseRight() {
+		return addClauseRight;
+	}
+	/**
+	 * @return the addClauseLeft
+	 */
+	public Button getAddClauseLeft() {
+		return addClauseLeft;
+	}
+	/**
+	 * @return the addAllClauseRight
+	 */
+	public Button getAddAllClauseRight() {
+		return addAllClauseRight;
+	}
+	/**
+	 * @return the addAllClauseLeft
+	 */
+	public Button getAddAllClauseLeft() {
+		return addAllClauseLeft;
 	}
 }

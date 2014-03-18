@@ -196,9 +196,9 @@ public class MeasurePackageClauseCellListWidget {
 				if (leftCellListSelectionModel.getSelectedObject() == null) {
 					return;
 				}
-				if (rightCellListSelectionModel.getSelectedObject() != null) {
-					rightCellListSelectionModel.clear();
-				}
+				//if (rightCellListSelectionModel.getSelectedObject() != null) {
+				rightCellListSelectionModel.clear();
+				//}
 				System.out.println("selectionModel.getSelectedSet()" + leftCellListSelectionModel.getSelectedSet());
 				disclosurePanelItemCountTable.setVisible(false);
 				disclosurePanelAssociations.setVisible(false);
@@ -595,6 +595,7 @@ public class MeasurePackageClauseCellListWidget {
 		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value,
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
+			leftCellListSelectionModel.clear();
 			if (((value.getType().equals("denominator"))
 					|| (value.getType().equals("numerator")))) {
 				buildItemCountCellTable();

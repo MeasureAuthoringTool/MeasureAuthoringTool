@@ -510,14 +510,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 					filterTimingQDMs(result);
 					appliedListModel.setAppliedQDMs(result);
 					view.setAppliedQdmList(appliedListModel);
-					
 				}
 			});
-			
 		}
-		
 	}
-	
 	/**
 	 * Clear messages.
 	 */
@@ -540,7 +536,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 		view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 	}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeClosingDisplay()
 	 */
@@ -551,7 +546,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 		view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 	}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#beforeDisplay()
 	 */
@@ -568,9 +562,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		}
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MeasurePackage");
 		Mat.focusSkipLists("MeasureComposer");
-		
 	}
-	
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()
 	 */
@@ -580,13 +572,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 		panel.add(view.asWidget());
 		return panel;
 	}
-	
 	/**
 	 * get Measure Package Overview.
-	 * 
 	 * @param measureId
 	 *            - String.
-	 * @return the measure package packageOverview
 	 */
 	private void getMeasurePackageOverview(final String measureId) {
 		MatContext
@@ -603,7 +592,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 						.getMessageDelegate()
 						.getGenericErrorMessage());
 			}
-			
 			@Override
 			public void onSuccess(final MeasurePackageOverview result) {
 				if ((currentDetail != null)
@@ -618,17 +606,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 				setOverview(result);
 			}
 		});
-		
 		view.setObserver(new MeasurePackagerView.Observer() {
-			
 			@Override
 			public void onEditClicked(MeasurePackageDetail detail) {
 				currentDetail = detail;
 				clearMessages();
 				setMeasurePackageDetailsOnView();
-				
 			}
-			
 			@Override
 			public void onDeleteClicked(MeasurePackageDetail detail) {
 				clearMessages();
@@ -636,7 +620,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 	}
-	
 	/**
 	 * Update supp data details from view.
 	 */
@@ -644,7 +627,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail.setSuppDataElements(view.getQDMElementsInSuppElements());
 		currentDetail.setQdmElements(view.getQDMElements());
 	}
-	
 	/**
 	 * set Overview.
 	 * @param result - MeasurePackageOverview.
@@ -668,16 +650,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 			} else {
 				setMeasurePackage(result.getPackages().get(0).getSequence());
 			}
-			
 		} else {
 			setNewMeasurePackage();
 		}
-		
 		ReadOnlyHelper.setReadOnlyForCurrentMeasure(view.asWidget(),
 				isEditable());
 		view.setViewIsEditable(isEditable(), result.getPackages());
 	}
-	
 	/**
 	 * Delete Measure Package.
 	 * @param pkg - MeasurePackageDetail.
@@ -685,14 +664,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private void deleteMeasurePackage(final MeasurePackageDetail pkg) {
 		MatContext.get().getPackageService()
 		.delete(pkg, new AsyncCallback<Void>() {
-			
 			@Override
 			public void onFailure(final Throwable caught) {
 				view.getPackageErrorMessageDisplay().setMessage(
 						MatContext.get().getMessageDelegate()
 						.getGenericErrorMessage());
 			}
-			
 			@Override
 			public void onSuccess(final Void result) {
 				packageOverview.getPackages().remove(pkg);
@@ -702,7 +679,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 				}
 				setOverview(packageOverview);
 			}
-			
 		});
 	}
 	/**
@@ -714,12 +690,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 		return MatContext.get().getMeasureLockService()
 				.checkForEditPermission();
 	}
-	
 	/**
 	 * Gets the measure.
 	 *
 	 * @param measureId the measure id
-	 * @return the measure
 	 */
 	private void getMeasure(final String measureId) {
 		MatContext
@@ -754,7 +728,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		//view.setMeasurePackages(packageOverview.getPackages());
 		setMeasurePackageDetailsOnView();
 	}
-	
 	/**
 	 * Sets the measure package.
 	 *
@@ -769,7 +742,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		}
 	}
-	
 	/**
 	 * setMeasurePackageDetailsOnView.
 	 */
@@ -784,7 +756,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
 		view.setQDMElements(packageOverview.getQdmElements());
 	}
-	
+	/**
+	 * @param master - master List of Clauses.
+	 * @param toRemove - List from where to Remove.
+	 * @return List.
+	 */
 	private List<MeasurePackageClauseDetail> removeClauses(
 			final List<MeasurePackageClauseDetail> master,
 			final List<MeasurePackageClauseDetail> toRemove) {
@@ -808,7 +784,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		panel.add(view.asWidget());
 		// view.setTabIndex();
 	}
-	
 	/**
 	 * Gets the max sequence.
 	 *
@@ -825,8 +800,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		}
 		return max;
 	}
-	
-	
 }
 
 

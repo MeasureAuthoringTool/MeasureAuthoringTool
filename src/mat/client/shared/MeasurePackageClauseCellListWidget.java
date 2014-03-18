@@ -71,8 +71,8 @@ public class MeasurePackageClauseCellListWidget {
 	private CellList<MeasurePackageClauseDetail> leftCellList;
 	/** The cell list. */
 	private CellList<MeasurePackageClauseDetail> rightCellList;
-	/** The cell list. */
-	private CellList<String> associatedCellList;
+	/** The Association cell list. */
+	private CellList<MeasurePackageClauseDetail> associatedCellList;
 	/** The Right cell LIst pager panel. */
 	private ShowMorePagerPanel rightPagerPanel = new ShowMorePagerPanel();
 	/** The Left cell LIst pager panel. */
@@ -131,13 +131,17 @@ public class MeasurePackageClauseCellListWidget {
 	/** List of Elements in Clause List.*/
 	private ArrayList<MeasurePackageClauseDetail> clausesPopulationList =
 			new ArrayList<MeasurePackageClauseDetail>();
+	/** List of Elements in Association Population List.*/
+	private ArrayList<MeasurePackageClauseDetail> associatedPopulationList =
+			new ArrayList<MeasurePackageClauseDetail>();
+	/** Error Message in Package Grouping Section. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
-		rightCellList = new CellList<MeasurePackageClauseDetail>(new ClauseCell());
+		rightCellList = new CellList<MeasurePackageClauseDetail>(new RightClauseCell());
 		rightCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-		rightCellListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+		/*rightCellListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				if (rightCellListSelectionModel.getSelectedObject() == null) {
@@ -165,7 +169,7 @@ public class MeasurePackageClauseCellListWidget {
 					disclosurePanelAssociations.setOpen(false);
 				}
 			}
-		});
+		});*/
 		rightCellListDataProvider = new ListDataProvider<MeasurePackageClauseDetail>(groupingPopulationList);
 		rightCellListDataProvider.addDataDisplay(rightCellList);
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
@@ -182,7 +186,7 @@ public class MeasurePackageClauseCellListWidget {
 	 * @return CellList.
 	 */
 	public CellList<MeasurePackageClauseDetail> getLeftCellList() {
-		leftCellList = new CellList<MeasurePackageClauseDetail>(new ClauseCell());
+		leftCellList = new CellList<MeasurePackageClauseDetail>(new LeftClauseCell());
 		leftCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		leftCellListDataProvider = new ListDataProvider<MeasurePackageClauseDetail>(clausesPopulationList);
 		leftCellListDataProvider.addDataDisplay(leftCellList);
@@ -554,7 +558,73 @@ public class MeasurePackageClauseCellListWidget {
 	 * Clause Cell Class.
 	 *
 	 */
-	class ClauseCell implements Cell<MeasurePackageClauseDetail> {
+	class RightClauseCell implements Cell<MeasurePackageClauseDetail> {
+		@Override
+		public void render(com.google.gwt.cell.client.Cell.Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb) {
+			if (value == null) {
+				return;
+			}
+			if (value.getName() != null) {
+				SafeHtml safeValue = SafeHtmlUtils.fromString(value.getName());
+				SafeHtml rendered = templates.cell(value.getName(), safeValue);
+				sb.append(rendered);
+			}
+		}
+		@Override
+		public boolean dependsOnSelection() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public Set<String> getConsumedEvents() {
+			// TODO Auto-generated method stub
+			return Collections.singleton("click");
+		}
+		@Override
+		public boolean handlesSelection() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public boolean isEditing(com.google.gwt.cell.client.Cell.Context context
+				, Element parent, MeasurePackageClauseDetail value) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
+				, Element parent, MeasurePackageClauseDetail value,
+				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
+			if (((value.getType().equals("denominator"))
+					|| (value.getType().equals("numerator")))) {
+				buildItemCountCellTable();
+				getItemCountTableButtonPanel();
+				disclosurePanelItemCountTable.setVisible(true);
+				disclosurePanelAssociations.setVisible(true);
+				disclosurePanelItemCountTable.setOpen(false);
+				disclosurePanelAssociations.setOpen(false);
+			} else {
+				buildItemCountCellTable();
+				getItemCountTableButtonPanel();
+				disclosurePanelItemCountTable.setVisible(true);
+				disclosurePanelAssociations.setVisible(false);
+				disclosurePanelItemCountTable.setOpen(false);
+				disclosurePanelAssociations.setOpen(false);
+			}
+		}
+		@Override
+		public boolean resetFocus(com.google.gwt.cell.client.Cell.Context context
+				, Element parent, MeasurePackageClauseDetail value) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+		@Override
+		public void setValue(com.google.gwt.cell.client.Cell.Context context, Element parent, MeasurePackageClauseDetail value) {
+			// TODO Auto-generated method stub
+		}
+	}
+	
+	class LeftClauseCell implements Cell<MeasurePackageClauseDetail> {
 		@Override
 		public void render(com.google.gwt.cell.client.Cell.Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb) {
 			if (value == null) {
@@ -736,5 +806,29 @@ public class MeasurePackageClauseCellListWidget {
 	 */
 	public void setErrorMessages(ErrorMessageDisplay errorMessages) {
 		this.errorMessages = errorMessages;
+	}
+	/**
+	 * @return the associatedCellList
+	 */
+	public CellList<MeasurePackageClauseDetail> getAssociatedCellList() {
+		return associatedCellList;
+	}
+	/**
+	 * @param associatedCellList the associatedCellList to set
+	 */
+	public void setAssociatedCellList(CellList<MeasurePackageClauseDetail> associatedCellList) {
+		this.associatedCellList = associatedCellList;
+	}
+	/**
+	 * @return the associatedPopulationList
+	 */
+	public ArrayList<MeasurePackageClauseDetail> getAssociatedPopulationList() {
+		return associatedPopulationList;
+	}
+	/**
+	 * @param associatedPopulationList the associatedPopulationList to set
+	 */
+	public void setAssociatedPopulationList(ArrayList<MeasurePackageClauseDetail> associatedPopulationList) {
+		this.associatedPopulationList = associatedPopulationList;
 	}
 }

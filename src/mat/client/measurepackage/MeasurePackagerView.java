@@ -137,11 +137,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The Create New Grouping Button. */
 	private PrimaryButton createNew = new PrimaryButton("Create New Grouping");
 	/** The CellTable for Measure Grouping. */
-	private CellTable<MeasurePackageDetail> table;
+	
 	/** The Vertical Panel for Cell Table. */
 	private VerticalPanel cellTablePanel = new VerticalPanel();
 	/** The measureGrouping List. */
-	private List<MeasurePackageDetail> measureGroupingList;
 	/** The Observer. */
 	private Observer observer;
 	
@@ -303,7 +302,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		rightPagerPanel.addStyleName("measurePackagerSupplementalDatascrollable");
 		rightPagerPanel.setSize("320px", "200px");
 		rightPagerPanel.setAlwaysShowScrollBars(true);
-		rightPagerPanel.add(getSupCellList());	
+		rightPagerPanel.add(getSupCellList());
 		vPanel.add(suppElementsLabel);
 		vPanel.add(rightPagerPanel);
 		suppElementsPanel.add(vPanel);
@@ -325,14 +324,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private CellList<QualityDataSetDTO> getQdmCellList()
 	{
 		//left cell list initialization
-		qdmCellList = new CellList<QualityDataSetDTO>(new ClauseCell()); 
+		qdmCellList = new CellList<QualityDataSetDTO>(new ClauseCell());
 		qdmCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		qdmSelModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				if (qdmSelModel.getSelectedObject() == null) {
-				return;
+					return;
 				}
 				if (supDataSelModel.getSelectedObject()!=null){
 					supDataSelModel.clear();
@@ -357,7 +356,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
 				if (supDataSelModel.getSelectedObject() == null) {
-				return;
+					return;
 				}
 				if (qdmSelModel.getSelectedObject()!=null){
 					qdmSelModel.clear();
@@ -403,7 +402,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * Add columns to Measure Grouping Cell Table.
 	 * @return CelTable
 	 */
-	private CellTable<MeasurePackageDetail> addColumnToTable() {
+	private  void addColumnToTable(CellTable<MeasurePackageDetail> table) {
 		Column<MeasurePackageDetail, SafeHtml> measureGrouping = new Column<MeasurePackageDetail, SafeHtml>(new SafeHtmlCell()){
 			@Override
 			public SafeHtml getValue(MeasurePackageDetail object) {
@@ -450,16 +449,15 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			table.setColumnWidth(0, 80.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 		}
-		return table;
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#buildCellTable(java.util.List)
 	 */
 	@Override
-	public void buildCellTable(final List<MeasurePackageDetail> packages) {
+	public void buildCellTable(List<MeasurePackageDetail> packages) {
 		cellTablePanel.clear();
 		if ((packages != null) && (packages.size() > 0)) {
-			table = new CellTable<MeasurePackageDetail>();
+			CellTable<MeasurePackageDetail> table = new CellTable<MeasurePackageDetail>();
 			Label measureSearchHeader = new Label("Measure Grouping List");
 			measureSearchHeader.getElement().setId("measureGroupingHeader_Label");
 			measureSearchHeader.setStyleName("measureGroupingTableHeader");
@@ -469,7 +467,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			caption.appendChild(measureSearchHeader.getElement());
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			ListDataProvider<MeasurePackageDetail> sortProvider = new ListDataProvider<MeasurePackageDetail>();
-			measureGroupingList = new ArrayList<MeasurePackageDetail>();
+			List<MeasurePackageDetail> measureGroupingList = new ArrayList<MeasurePackageDetail>();
 			measureGroupingList.addAll(packages);
 			table.setRowData(measureGroupingList);
 			table.setPageSize(2);
@@ -477,7 +475,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			table.setRowCount(measureGroupingList.size(), true);
 			sortProvider.refresh();
 			sortProvider.getList().addAll(measureGroupingList);
-			table = addColumnToTable();
+			addColumnToTable(table);
 			sortProvider.addDataDisplay(table);
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 			table.setWidth("100%");
@@ -739,14 +737,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		public boolean isEditing(
 				com.google.gwt.cell.client.Cell.Context context,
 				Element parent, QualityDataSetDTO value) {
-		return false;
+			return false;
 		}
 		@Override
 		public void onBrowserEvent(
 				com.google.gwt.cell.client.Cell.Context context,
 				Element parent, QualityDataSetDTO value, NativeEvent event,
 				ValueUpdater<QualityDataSetDTO> valueUpdater) {
-				
+			
 		}
 		@Override
 		public boolean resetFocus(

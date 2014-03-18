@@ -300,8 +300,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 						public void onSuccess(final Void result) {
 							if (!packageOverview.getPackages().contains(
 									currentDetail)) {
+								MeasurePackageDetail newDetails = new MeasurePackageDetail();
+								newDetails.setMeasureId(currentDetail.getMeasureId());
+								newDetails.getPackageClauses().addAll(currentDetail.getPackageClauses());
+								newDetails.setSequence(currentDetail.getSequence());
 								packageOverview.getPackages().add(
-										currentDetail);
+										newDetails);
 								setOverview(packageOverview);
 							}
 							view.getPackageSuccessMessageDisplay().setMessage(
@@ -473,6 +477,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * updateDetailsFromView.
 	 */
 	private void updateDetailsFromView() {
+		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
 		currentDetail.setPackageClauses(view.getPackageGroupingWidget().getGroupingPopulationList());
 		currentDetail.setValueSetDate(null);
 	}
@@ -609,6 +614,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setObserver(new MeasurePackagerView.Observer() {
 			@Override
 			public void onEditClicked(MeasurePackageDetail detail) {
+				currentDetail = new MeasurePackageDetail();
 				currentDetail = detail;
 				clearMessages();
 				setMeasurePackageDetailsOnView();
@@ -631,12 +637,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * set Overview.
 	 * @param result - MeasurePackageOverview.
 	 */
-	private void setOverview(final MeasurePackageOverview result) {
+	private void setOverview(MeasurePackageOverview result) {
 		packageOverview = result;
-		view.setClauses(result.getClauses());
+		List <MeasurePackageClauseDetail> clauseList = new ArrayList<MeasurePackageClauseDetail>(result.getClauses());
+		view.setClauses(clauseList);
 		// QDM elements
 		view.setQDMElements(result.getQdmElements());
-		view.buildCellTable(result.getPackages());
+		List<MeasurePackageDetail> packageList = new ArrayList<MeasurePackageDetail>(result.getPackages());
+		view.buildCellTable(packageList);
 		if (result.getPackages().size() > 0) {
 			if (currentDetail != null) {
 				for (int i = 0; i < result.getPackages().size(); i++) {
@@ -724,7 +732,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
 		currentDetail.setSequence(Integer
 				.toString(getMaxSequence(packageOverview) + 1));
-		view.buildCellTable(packageOverview.getPackages());
+		List<MeasurePackageDetail> packageList = new ArrayList<MeasurePackageDetail>(packageOverview.getPackages());
+		view.buildCellTable(packageList);
 		//view.setMeasurePackages(packageOverview.getPackages());
 		setMeasurePackageDetailsOnView();
 	}

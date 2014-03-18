@@ -298,16 +298,19 @@ public class MeasurePackagePresenter implements MatPresenter {
 						
 						@Override
 						public void onSuccess(final Void result) {
-							if (!packageOverview.getPackages().contains(
+							/*if (!packageOverview.getPackages().contains(
 									currentDetail)) {
 								MeasurePackageDetail newDetails = new MeasurePackageDetail();
 								newDetails.setMeasureId(currentDetail.getMeasureId());
-								newDetails.getPackageClauses().addAll(currentDetail.getPackageClauses());
+								List<MeasurePackageClauseDetail> allPackages = new ArrayList<MeasurePackageClauseDetail>(currentDetail.getPackageClauses());
+								newDetails.getPackageClauses().addAll(allPackages);
 								newDetails.setSequence(currentDetail.getSequence());
 								packageOverview.getPackages().add(
 										newDetails);
 								setOverview(packageOverview);
-							}
+							}*/
+							getMeasurePackageOverview(MatContext.get()
+									.getCurrentMeasureId());
 							view.getPackageSuccessMessageDisplay().setMessage(
 									MatContext.get().getMessageDelegate().getGroupingSavedMessage());
 						}

@@ -2,9 +2,7 @@ package mat.client.measurepackage;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import mat.client.CustomPager;
 import mat.client.clause.QDSAppliedListModel;
@@ -41,6 +39,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -51,6 +50,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 // TODO: Auto-generated Javadoc
@@ -91,7 +91,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		 *          case the value would be escaped.
 		 * @return a {@link SafeHtml} instance
 		 */
-		@SafeHtmlTemplates.Template("<div title=\"{0}\" style=\"margin-left:5px;white-space:nowrap;\">{1}</div>")
+		@SafeHtmlTemplates.Template("<div title=\"{0}\" style=\"margin-left:5px;margin-right:5px;white-space:nowrap;\">{1}</div>")
 		SafeHtml cell(String title, SafeHtml value);
 	}
 	/** Create a singleton instance of the templates used to render the cell. */
@@ -104,8 +104,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private Button addAllQDMRight = buildDoubleAddButton("customAddALlRightButton", "addAllToRight");
 	/** The add all qdm left. */
 	private Button addAllQDMLeft = buildDoubleAddButton("customAddAllLeftButton", "addAllToLeft");
-	/** The qdm element id map. */
-	private Map<String, QualityDataSetDTO> qdmElementIdMap = new HashMap<String, QualityDataSetDTO>();
+	
 	/** The error messages. */
 	
 	/** The measure package success msg. */
@@ -145,18 +144,22 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private List<MeasurePackageDetail> measureGroupingList;
 	/** The Observer. */
 	private Observer observer;
-	/** QDM Cell List.*/
-	private CellList<String> qdmCellList;
-	/**QDM Cell List Data Provider. */
-	private ListDataProvider<String> qdmListProv;
-	/** Supplemental Data Element Cell List.*/
-	private CellList<String> supDataCellList;
-	/**Supplemental Data Element Cell List Data Provider. */
-	private ListDataProvider<String> supListProv;
-	/**QDM Cell List Selection Model. */
-	private SingleSelectionModel<String> qdmSelModel;
-	/**Supplemental Data Element Cell List Selection Model. */
-	private SingleSelectionModel<String> supDataSelModel;
+	
+	//added for adding cell list
+	private CellList<QualityDataSetDTO> qdmCellList;
+	private ListDataProvider<QualityDataSetDTO> qdmListProv;
+	private ArrayList<QualityDataSetDTO> qdmPopulationList = new ArrayList<QualityDataSetDTO>();
+	private CellList<QualityDataSetDTO> supDataCellList;
+	private ListDataProvider<QualityDataSetDTO> supListProv;
+	private ArrayList<QualityDataSetDTO> supPopulationList = new ArrayList<QualityDataSetDTO>();
+	private SingleSelectionModel<QualityDataSetDTO> qdmSelModel	=
+			new SingleSelectionModel<QualityDataSetDTO>();
+	private SingleSelectionModel<QualityDataSetDTO> supDataSelModel =
+			new SingleSelectionModel<QualityDataSetDTO>();
+	
+	private ScrollPanel leftPagerPanel = new ScrollPanel();
+	private ScrollPanel rightPagerPanel = new ScrollPanel();
+	
 	/**
 	 * Constructor.
 	 */
@@ -184,32 +187,75 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(new SpacerWidget());
 		content.setStyleName("contentPanel");
 	}
+	
 	/**
-	 * Adds the qdm element left right click handlers.
+	 * Button Left/Right/LeftAll/RightAll handler's.
 	 */
 	private void addQDMElementLeftRightClickHandlers() {
 		addQDMRight.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(final ClickEvent event) {
-				addQDMElementRight();
+			public void onClick(ClickEvent event) {
+				if ((qdmPopulationList.size() > 0)
+						&& (qdmSelModel.getSelectedObject() != null)) {
+					supPopulationList.add(qdmSelModel.getSelectedObject());
+					qdmPopulationList.remove(qdmSelModel.getSelectedObject());
+					Collections.sort(supPopulationList , new QualityDataSetDTO.Comparator());
+					Collections.sort(qdmPopulationList, new QualityDataSetDTO.Comparator());
+					rightPagerPanel.clear();
+					rightPagerPanel.add(getSupCellList());
+					leftPagerPanel.clear();
+					leftPagerPanel.add(getQdmCellList());
+					qdmSelModel.clear();
+				}
 			}
 		});
 		addQDMLeft.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(final ClickEvent event) {
-				addQDMElementLeft();
+			public void onClick(ClickEvent event) {
+				if ((supPopulationList.size() > 0)
+						&& (supDataSelModel.getSelectedObject() != null)) {
+					qdmPopulationList.add(supDataSelModel.getSelectedObject());
+					supPopulationList.remove(supDataSelModel.getSelectedObject());
+					Collections.sort(supPopulationList , new QualityDataSetDTO.Comparator());
+					Collections.sort(qdmPopulationList, new QualityDataSetDTO.Comparator());
+					rightPagerPanel.clear();
+					rightPagerPanel.add(getSupCellList());
+					leftPagerPanel.clear();
+					leftPagerPanel.add(getQdmCellList());
+					supDataSelModel.clear();
+				}
 			}
 		});
 		addAllQDMRight.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(final ClickEvent event) {
-				addAllQDMElementsRight();
+			public void onClick(ClickEvent event) {
+				if (qdmPopulationList.size() != 0) {
+					supPopulationList.addAll(qdmPopulationList);
+					qdmPopulationList.removeAll(qdmPopulationList);
+					Collections.sort(supPopulationList , new QualityDataSetDTO.Comparator());
+					supDataSelModel.clear();
+					qdmSelModel.clear();
+					rightPagerPanel.clear();
+					rightPagerPanel.add(getSupCellList());
+					leftPagerPanel.clear();
+					leftPagerPanel.add(getQdmCellList());
+				}
 			}
 		});
 		addAllQDMLeft.addClickHandler(new ClickHandler() {
 			@Override
-			public void onClick(final ClickEvent event) {
-				addAllQDMElementsLeft();
+			public void onClick(ClickEvent event) {
+				if (supPopulationList.size() != 0) {
+					qdmPopulationList.addAll(supPopulationList);
+					supPopulationList.removeAll(supPopulationList);
+					Collections.sort(qdmPopulationList , new QualityDataSetDTO.Comparator());
+					supDataSelModel.clear();
+					qdmSelModel.clear();
+					rightPagerPanel.clear();
+					rightPagerPanel.add(getSupCellList());
+					leftPagerPanel.clear();
+					leftPagerPanel.add(getQdmCellList());
+				}
 			}
 		});
 	}
@@ -236,32 +282,28 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		suppElementsPanel.addStyleName("newColumn");
 		suppElementsPanel.getElement().setAttribute("id", "SuppElementFlowPanel");
 		addQDMElementButtonPanel.addStyleName("column");
-		qdmCellList = new CellList<String>(new QualityDataSetCell());
-		qdmSelModel = new SingleSelectionModel<String>();
-		qdmCellList.setSelectionModel(qdmSelModel);
-		qdmListProv = new ListDataProvider<String>();
-		qdmListProv.addDataDisplay(qdmCellList);
-		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmCellList, "QDM Elements");
+		
+		Widget qdmElementsLabel = LabelBuilder.buildLabel(qdmCellList,"QDM Elements");
 		qdmElementsLabel.addStyleName("bold");
 		sPanel.add(qdmElementsLabel);
-		ScrollPanel leftPagerPanel = new ScrollPanel();
+		
 		leftPagerPanel.addStyleName("measurePackagerSupplementalDatascrollable");
 		leftPagerPanel.setSize("320px", "200px");
 		leftPagerPanel.setAlwaysShowScrollBars(true);
-		leftPagerPanel.add(qdmCellList);
+		leftPagerPanel.add(getQdmCellList());
+		
 		sPanel.add(leftPagerPanel);
-		supDataCellList = new CellList<String>(new QualityDataSetCell());
-		supListProv = new ListDataProvider<String>();
-		supListProv.addDataDisplay(supDataCellList);
-		supDataSelModel = new SingleSelectionModel<String>();
-		supDataCellList.setSelectionModel(supDataSelModel);
-		Widget suppElementsLabel = LabelBuilder.buildLabel(supDataCellList, "Supplemental Data Elements");
+		
+		
+		
+		Widget suppElementsLabel = LabelBuilder.buildLabel(supDataCellList,"Supplemental Data Elements");
 		suppElementsLabel.addStyleName("bold");
-		ScrollPanel rightPagerPanel = new ScrollPanel();
+		
+		
 		rightPagerPanel.addStyleName("measurePackagerSupplementalDatascrollable");
 		rightPagerPanel.setSize("320px", "200px");
 		rightPagerPanel.setAlwaysShowScrollBars(true);
-		rightPagerPanel.add(supDataCellList);
+		rightPagerPanel.add(getSupCellList());	
 		vPanel.add(suppElementsLabel);
 		vPanel.add(rightPagerPanel);
 		suppElementsPanel.add(vPanel);
@@ -279,6 +321,55 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		panel.add(qdmTopContainer);
 		return panel;
 	}
+	
+	private CellList<QualityDataSetDTO> getQdmCellList()
+	{
+		//left cell list initialization
+		qdmCellList = new CellList<QualityDataSetDTO>(new ClauseCell()); 
+		qdmCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
+		qdmSelModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				if (qdmSelModel.getSelectedObject() == null) {
+				return;
+				}
+				if (supDataSelModel.getSelectedObject()!=null){
+					supDataSelModel.clear();
+				}
+			}
+		});
+		qdmCellList.setSelectionModel(qdmSelModel);
+		qdmListProv = new ListDataProvider<QualityDataSetDTO>(qdmPopulationList);
+		qdmListProv.addDataDisplay(qdmCellList);
+		//End
+		return qdmCellList;
+	}
+	private CellList<QualityDataSetDTO> getSupCellList()
+	{
+		//left cell list initialization
+		supDataCellList = new CellList<QualityDataSetDTO>(new ClauseCell());
+		supDataCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
+		supListProv = new ListDataProvider<QualityDataSetDTO>(supPopulationList);
+		supListProv.addDataDisplay(supDataCellList);
+		supDataSelModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				if (supDataSelModel.getSelectedObject() == null) {
+				return;
+				}
+				if (qdmSelModel.getSelectedObject()!=null){
+					qdmSelModel.clear();
+				}
+				
+			}
+		});
+		supDataCellList.setSelectionModel(supDataSelModel);
+		//End
+		return supDataCellList;
+	}
+	
 	/**
 	 * Builds the qdm element add button widget.
 	 *
@@ -441,142 +532,24 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final void setQDMElementsInSuppElements(final List<QualityDataSetDTO> clauses) {
-		setQDMElementsItems(supListProv, clauses);
+		supPopulationList.clear();
+		supPopulationList.addAll(clauses);
+		Collections.sort(supPopulationList, new QualityDataSetDTO.Comparator());
+		
+		rightPagerPanel.clear();
+		rightPagerPanel.add(getSupCellList());
+		supDataSelModel.clear();
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getQDMElementsInSuppElements()
 	 */
 	@Override
 	public final List<QualityDataSetDTO> getQDMElementsInSuppElements() {
-		return getQDMElementsItems(supListProv);
+		return supPopulationList;
 	}
-	/**
-	 * Sets the qdm elements items.
-	 * @param lb
-	 *            the lb
-	 * @param valuesArg
-	 *            the values arg
-	 */
-	private void setQDMElementsItems(final ListDataProvider<String> lb, List<QualityDataSetDTO> valuesArg) {
-		List<QualityDataSetDTO> values = new ArrayList<QualityDataSetDTO>();
-		values.addAll(valuesArg);
-		Collections.sort(values, new QualityDataSetDTO.Comparator());
-		lb.getList().clear();
-		for (QualityDataSetDTO nvp : values) {
-			lb.getList().add(nvp.getQDMElement());
-			qdmElementIdMap.put(nvp.getQDMElement(), nvp);
-		}
-	}
-	/**
-	 * Gets the qDM elements items.
-	 * @param lb
-	 *            the lb
-	 * @return the qDM elements items
-	 */
-	private List<QualityDataSetDTO> getQDMElementsItems(final ListDataProvider<String> lb) {
-		List<QualityDataSetDTO> list = new ArrayList<QualityDataSetDTO>();
-		for (int i = 0; i < lb.getList().size(); i++) {
-			QualityDataSetDTO detail = qdmElementIdMap.get(lb.getList().get(i));
-			list.add(detail);
-		}
-		return list;
-	}
-	/**
-	 * Adds the qdm element right.
-	 */
-	private void addQDMElementRight() {
-		QualityDataSetDTO nvp = getQDMElementSelectedValue(qdmSelModel);
-		qdmSelModel.clear();
-		if (nvp != null) {
-			removeQDMElementItem(qdmListProv, nvp);
-			addQDMElementItem(supListProv, nvp);
-		}
-	}
-	/**
-	 * Adds the qdm element left.
-	 */
-	private void addQDMElementLeft() {
-		QualityDataSetDTO nvp = getQDMElementSelectedValue(supDataSelModel);
-		supDataSelModel.clear();
-		if (nvp != null) {
-			removeQDMElementItem(supListProv, nvp);
-			addQDMElementItem(qdmListProv, nvp);
-		}
-	}
-	/**
-	 * Adds the all qdm elements right.
-	 */
-	private void addAllQDMElementsRight() {
-		qdmSelModel.clear();
-		supDataSelModel.clear();
-		addQDMElementItems(supListProv,
-				getQDMElementsItems(qdmListProv));
-		qdmListProv.getList().clear();
-	}
-	/**
-	 * Adds the all qdm elements left.
-	 */
-	private void addAllQDMElementsLeft() {
-		qdmSelModel.clear();
-		supDataSelModel.clear();
-		addQDMElementItems(qdmListProv,
-				getQDMElementsItems(supListProv));
-		supListProv.getList().clear();
-	}
-	/**
-	 * Adds the qdm element item.
-	 * @param lb
-	 *            the lb
-	 * @param nvp
-	 *            the nvp
-	 */
-	private void addQDMElementItem(final ListDataProvider<String> lb, final QualityDataSetDTO nvp) {
-		List<QualityDataSetDTO> list = getQDMElementsItems(lb);
-		list.add(nvp);
-		Collections.sort(list, new QualityDataSetDTO.Comparator());
-		setQDMElementsItems(lb, list);
-	}
-	/**
-	 * Adds the qdm element items.
-	 * @param lb
-	 *            the lb
-	 * @param nvpList
-	 *            the nvp list
-	 */
-	private void addQDMElementItems(final ListDataProvider<String> lb, List<QualityDataSetDTO> nvpList) {
-		List<QualityDataSetDTO> list = getQDMElementsItems(lb);
-		list.addAll(nvpList);
-		setQDMElementsItems(lb, list);
-	}
-	/**
-	 * Gets the qDM element selected value.
-	 * @param lb
-	 *            the lb
-	 * @return the qDM element selected value
-	 */
-	private QualityDataSetDTO getQDMElementSelectedValue(final SingleSelectionModel<String> lb) {
-		String index = lb.getSelectedObject();
-		QualityDataSetDTO nvp = null;
-		if (index != null) {
-			nvp = qdmElementIdMap.get(index);
-		}
-		return nvp;
-	}
-	/**
-	 * Removes the qdm element item.
-	 * @param lb
-	 *            the lb
-	 * @param nvp
-	 *            the nvp
-	 */
-	private void removeQDMElementItem(final ListDataProvider<String> lb, QualityDataSetDTO nvp) {
-		for (int i = 0; i < lb.getList().size(); i++) {
-			if (lb.getList().get(i).equals(nvp.getQDMElement())) {
-				lb.getList().remove(i);
-				break;
-			}
-		}
-	}
+	
+	
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#setViewIsEditable(boolean, java.util.List)
 	 */
@@ -605,14 +578,19 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final void setQDMElements(final List<QualityDataSetDTO> clauses) {
-		setQDMElementsItems(qdmListProv, clauses);
+		qdmPopulationList.clear();
+		qdmPopulationList.addAll(clauses);
+		Collections.sort(qdmPopulationList, new QualityDataSetDTO.Comparator());
+		leftPagerPanel.clear();
+		leftPagerPanel.add(getQdmCellList());
+		qdmSelModel.clear();
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getQDMElements()
 	 */
 	@Override
 	public final List<QualityDataSetDTO> getQDMElements() {
-		return getQDMElementsItems(qdmListProv);
+		return qdmPopulationList;
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getErrorMessageDisplay()
@@ -733,15 +711,15 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 * Clause Cell Class.
 	 *
 	 */
-	class QualityDataSetCell implements Cell<String> {
+	class ClauseCell implements Cell<QualityDataSetDTO> {
 		@Override
-		public void render(com.google.gwt.cell.client.Cell.Context context, String value, SafeHtmlBuilder sb) {
+		public void render(com.google.gwt.cell.client.Cell.Context context, QualityDataSetDTO value, SafeHtmlBuilder sb) {
 			if (value == null) {
 				return;
 			}
-			if (value != null) {
-				SafeHtml safeValue = SafeHtmlUtils.fromString(value);
-				SafeHtml rendered = templates.cell(value, safeValue);
+			if (value.getQDMElement() != null) {
+				SafeHtml safeValue = SafeHtmlUtils.fromString(value.getQDMElement());
+				SafeHtml rendered = templates.cell(value.getQDMElement(), safeValue);
 				sb.append(rendered);
 			}
 		}
@@ -758,22 +736,27 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			return false;
 		}
 		@Override
-		public boolean isEditing(com.google.gwt.cell.client.Cell.Context context
-				, Element parent, String value) {
+		public boolean isEditing(
+				com.google.gwt.cell.client.Cell.Context context,
+				Element parent, QualityDataSetDTO value) {
+		return false;
+		}
+		@Override
+		public void onBrowserEvent(
+				com.google.gwt.cell.client.Cell.Context context,
+				Element parent, QualityDataSetDTO value, NativeEvent event,
+				ValueUpdater<QualityDataSetDTO> valueUpdater) {
+				
+		}
+		@Override
+		public boolean resetFocus(
+				com.google.gwt.cell.client.Cell.Context context,
+				Element parent, QualityDataSetDTO value) {
 			return false;
 		}
 		@Override
-		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
-				, Element parent, String value,
-				NativeEvent event, ValueUpdater<String> valueUpdater) {
-		}
-		@Override
-		public boolean resetFocus(com.google.gwt.cell.client.Cell.Context context
-				, Element parent, String value) {
-			return false;
-		}
-		@Override
-		public void setValue(com.google.gwt.cell.client.Cell.Context context, Element parent, String value) {
+		public void setValue(com.google.gwt.cell.client.Cell.Context context,
+				Element parent, QualityDataSetDTO value) {
 		}
 	}
 }

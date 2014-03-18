@@ -344,6 +344,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 					return "Delete";
 				}
 			};
+			deleteColumn.setFieldUpdater(new FieldUpdater<MeasurePackageDetail, String>() {
+				@Override
+				public void update(int index, MeasurePackageDetail object, String value) {
+					observer.onDeleteClicked(object);
+				}
+			});
 			table.addColumn(deleteColumn, SafeHtmlUtils.fromSafeConstant("<span title='Delete'>" + "Delete"
 					+ "</span>"));
 			table.setColumnWidth(0, 60.0, Unit.PCT);

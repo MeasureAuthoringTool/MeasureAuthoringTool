@@ -312,7 +312,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 	}
-	
+	/**
+	 * Valid grouping check.
+	 * @return boolean.
+	 */
 	private boolean isValid() {
 		List<MeasurePackageClauseDetail> detailList = view
 				.getPackageGroupingWidget().getGroupingPopulationList();
@@ -628,8 +631,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 			
 			@Override
 			public void onDeleteClicked(MeasurePackageDetail detail) {
-				// TODO Auto-generated method stub
-				
+				clearMessages();
+				deleteMeasurePackage(detail);
 			}
 		});
 	}
@@ -675,6 +678,33 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setViewIsEditable(isEditable(), result.getPackages());
 	}
 	
+	/**
+	 * Delete Measure Package.
+	 * @param pkg - MeasurePackageDetail.
+	 */
+	private void deleteMeasurePackage(final MeasurePackageDetail pkg) {
+		MatContext.get().getPackageService()
+		.delete(pkg, new AsyncCallback<Void>() {
+			
+			@Override
+			public void onFailure(final Throwable caught) {
+				view.getPackageErrorMessageDisplay().setMessage(
+						MatContext.get().getMessageDelegate()
+						.getGenericErrorMessage());
+			}
+			
+			@Override
+			public void onSuccess(final Void result) {
+				packageOverview.getPackages().remove(pkg);
+				if (currentDetail.getSequence().equals(
+						pkg.getSequence())) {
+					currentDetail = null;
+				}
+				setOverview(packageOverview);
+			}
+			
+		});
+	}
 	/**
 	 * Checks if is editable.
 	 *
@@ -744,8 +774,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * setMeasurePackageDetailsOnView.
 	 */
 	private void setMeasurePackageDetailsOnView() {
-		List<MeasurePackageClauseDetail> packageClauses = currentDetail
-				.getPackageClauses();
+		List<MeasurePackageClauseDetail> packageClauses = new ArrayList<MeasurePackageClauseDetail>(currentDetail
+				.getPackageClauses());
 		List<MeasurePackageClauseDetail> remainingClauses = removeClauses(
 				packageOverview.getClauses(), packageClauses);
 		view.setPackageName(currentDetail.getPackageName());

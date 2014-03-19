@@ -7,6 +7,7 @@ import java.util.Set;
 import mat.client.CustomPager;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -596,8 +597,11 @@ public class MeasurePackageClauseCellListWidget {
 				, Element parent, MeasurePackageClauseDetail value,
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
 			leftCellListSelectionModel.clear();
-			if (((value.getType().equals("denominator"))
-					|| (value.getType().equals("numerator")))) {
+			String scoring = MatContext.get().getCurrentMeasureScoringType();
+			//Show Association only for Ratio Measures.
+			if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)
+					&& ((value.getType().equals("denominator"))
+							|| (value.getType().equals("numerator")))) {
 				buildItemCountCellTable();
 				getItemCountTableButtonPanel();
 				disclosurePanelItemCountTable.setVisible(true);

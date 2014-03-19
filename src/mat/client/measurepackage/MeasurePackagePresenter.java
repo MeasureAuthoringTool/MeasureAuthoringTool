@@ -254,24 +254,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 							
 							@Override
 							public void onSuccess(final Void result) {
-								if (!packageOverview.getPackages().contains(
-										currentDetail)) {
-									if ((currentDetail
-											.getPackageClauses() != null)
-											&& (currentDetail.
-													getPackageClauses()
-													.size() > 0)) {
-										packageOverview.getPackages()
-										.add(currentDetail);
-									}
-									packageOverview.setQdmElements(
-											currentDetail
-											.getQdmElements());
-									packageOverview.
-									setSuppDataElements(currentDetail
-											.getSuppDataElements());
-									setOverview(packageOverview);
-								}
+								getMeasurePackageOverview(MatContext.get()
+										.getCurrentMeasureId());
+								view.getPackageSuccessMessageDisplay().setMessage(
+										MatContext.get().getMessageDelegate().getGroupingSavedMessage());
 								view.getSuppDataSuccessMessageDisplay()
 								.setMessage(MatContext.get()
 										.getMessageDelegate()
@@ -298,17 +284,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 						
 						@Override
 						public void onSuccess(final Void result) {
-							/*if (!packageOverview.getPackages().contains(
-									currentDetail)) {
-								MeasurePackageDetail newDetails = new MeasurePackageDetail();
-								newDetails.setMeasureId(currentDetail.getMeasureId());
-								List<MeasurePackageClauseDetail> allPackages = new ArrayList<MeasurePackageClauseDetail>(currentDetail.getPackageClauses());
-								newDetails.getPackageClauses().addAll(allPackages);
-								newDetails.setSequence(currentDetail.getSequence());
-								packageOverview.getPackages().add(
-										newDetails);
-								setOverview(packageOverview);
-							}*/
 							getMeasurePackageOverview(MatContext.get()
 									.getCurrentMeasureId());
 							view.getPackageSuccessMessageDisplay().setMessage(

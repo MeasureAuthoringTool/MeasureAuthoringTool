@@ -49,7 +49,9 @@ import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.DefaultSelectionEventManager;
 import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
@@ -338,9 +340,17 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				}
 			}
 		});
-		qdmCellList.setSelectionModel(qdmSelModel);
 		qdmListProv = new ListDataProvider<QualityDataSetDTO>(qdmPopulationList);
 		qdmListProv.addDataDisplay(qdmCellList);
+		
+		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			qdmCellList.setSelectionModel(qdmSelModel
+					, DefaultSelectionEventManager.<QualityDataSetDTO> createDefaultManager());
+		} else {
+			qdmCellList.setSelectionModel(new NoSelectionModel<QualityDataSetDTO>()
+					, DefaultSelectionEventManager.<QualityDataSetDTO> createDefaultManager());
+		}
+		
 		//End
 		return qdmCellList;
 	}
@@ -364,7 +374,14 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 				
 			}
 		});
-		supDataCellList.setSelectionModel(supDataSelModel);
+		
+		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+			supDataCellList.setSelectionModel(supDataSelModel
+					, DefaultSelectionEventManager.<QualityDataSetDTO> createDefaultManager());
+		} else {
+			supDataCellList.setSelectionModel(new NoSelectionModel<QualityDataSetDTO>()
+					, DefaultSelectionEventManager.<QualityDataSetDTO> createDefaultManager());
+		}
 		//End
 		return supDataCellList;
 	}

@@ -384,11 +384,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 */
 			
 			if ((countDetailsWithType(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
 					|| (countDetailsWithType(detailList,
-							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
-							|| (countDetailsWithType(detailList,
-									ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
+							ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioWrongNumMessage());
@@ -403,15 +401,19 @@ public class MeasurePackagePresenter implements MatPresenter {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioTooManyMessage());
 			}
-			
+			/*
+			 * Not more than two populations are allowed.
+			 * */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) > 2)) {
+				messages.add(MatContext.get().getMessageDelegate().getRATIO_TOO_MANY_POPULATIONS());
+			}
 			if ((countDetailsWithType(detailList,
 					ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0)
 					|| (countDetailsWithType(detailList,
 							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)
 							|| (countDetailsWithType(detailList,
-									ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
-									
-					) {
+									ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioMayNotContainMessage());
 			}
@@ -457,6 +459,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 	
 	
+	/**
+	 * Get Applied QDM List for Item Count Table.
+	 * @param checkForSupplementData - Boolean.
+	 */
 	public final void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if ((measureId != null) && !measureId.equals("")) {
@@ -582,6 +588,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 					// cached across
 					// measures.
 				}
+				
 				setOverview(result);
 			}
 		});

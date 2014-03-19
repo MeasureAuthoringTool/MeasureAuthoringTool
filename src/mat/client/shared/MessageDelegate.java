@@ -400,12 +400,13 @@ public class MessageDelegate {
 	/** The ratio too many. */
 	private final String RATIO_TOO_MANY = "For a Ratio measure, a grouping may not contain more than one of each of the following: Denominator Exclusion and Numerator Exclusion.";
 	
+	private final String RATIO_TOO_MANY_POPULATIONS = "For a Ratio measure, a grouping may not contain more than two of the following: Populations.";
 	/*
 	 * RATIO
 	 */
 	/** The ratio wrong num. */
 	private final String RATIO_WRONG_NUM = "For a Ratio measure, a grouping must contain exactly one of each of the following: "
-			+ "Population, Denominator, and Numerator.";
+			+ "Denominator and Numerator.";
 	
 	private final String COHORT_WRONG_NUM = "For a Cohort measure, a grouping must contain exactly one of each of the following: "
 			+ "Population.";
@@ -1904,5 +1905,12 @@ public class MessageDelegate {
 	
 	public String getComparisonDiloagBoxErrorDisplay() {
 		return COMPARISON_DILOAG_BOX_ERROR_DISPLAY;
+	}
+
+	/**
+	 * @return the rATIO_TOO_MANY_POPULATIONS
+	 */
+	public String getRATIO_TOO_MANY_POPULATIONS() {
+		return RATIO_TOO_MANY_POPULATIONS;
 	}
 }

@@ -539,7 +539,7 @@ public class MeasurePackageClauseCellListWidget {
 		return count;
 	}
 	/**
-	 * Clause Cell Class.
+	 * Right CellList Clause Cell Class.
 	 *
 	 */
 	class RightClauseCell implements Cell<MeasurePackageClauseDetail> {
@@ -579,33 +579,35 @@ public class MeasurePackageClauseCellListWidget {
 		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value,
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
-			leftCellListSelectionModel.clear();
-			String scoring = MatContext.get().getCurrentMeasureScoringType();
-			//Show Association only for Ratio Measures.
-			if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)
-					&& ((value.getType().equals("denominator"))
-							|| (value.getType().equals("numerator")))) {
-				buildItemCountCellTable();
-				getItemCountTableButtonPanel();
-				disclosurePanelItemCountTable.setVisible(true);
-				disclosurePanelItemCountTable.setOpen(false);
-				// If More than one Populations are added in Grouping, Add Association Widget is shown
-				// otherwise available population is added to Denominator and Numerator Association List.
-				if (countDetailsWithType(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) {
-					disclosurePanelAssociations.setVisible(true);
-					disclosurePanelAssociations.setOpen(false);
-				} else  {
+			if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+				leftCellListSelectionModel.clear();
+				String scoring = MatContext.get().getCurrentMeasureScoringType();
+				//Show Association only for Ratio Measures.
+				if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)
+						&& ((value.getType().equals("denominator"))
+								|| (value.getType().equals("numerator")))) {
+					buildItemCountCellTable();
+					getItemCountTableButtonPanel();
+					disclosurePanelItemCountTable.setVisible(true);
+					disclosurePanelItemCountTable.setOpen(false);
+					// If More than one Populations are added in Grouping, Add Association Widget is shown
+					// otherwise available population is added to Denominator and Numerator Association List.
+					if (countDetailsWithType(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) {
+						disclosurePanelAssociations.setVisible(true);
+						disclosurePanelAssociations.setOpen(false);
+					} else  {
+						disclosurePanelAssociations.setVisible(false);
+						disclosurePanelAssociations.setOpen(false);
+					}
+				} else {
+					buildItemCountCellTable();
+					getItemCountTableButtonPanel();
+					disclosurePanelItemCountTable.setVisible(true);
 					disclosurePanelAssociations.setVisible(false);
+					disclosurePanelItemCountTable.setOpen(false);
 					disclosurePanelAssociations.setOpen(false);
+					associatedPopulationList.clear();
 				}
-			} else {
-				buildItemCountCellTable();
-				getItemCountTableButtonPanel();
-				disclosurePanelItemCountTable.setVisible(true);
-				disclosurePanelAssociations.setVisible(false);
-				disclosurePanelItemCountTable.setOpen(false);
-				disclosurePanelAssociations.setOpen(false);
-				associatedPopulationList.clear();
 			}
 		}
 		@Override
@@ -619,7 +621,10 @@ public class MeasurePackageClauseCellListWidget {
 			// TODO Auto-generated method stub
 		}
 	}
-	
+	/**
+	 * Left CellList Clause Cell Class.
+	 *
+	 */
 	class LeftClauseCell implements Cell<MeasurePackageClauseDetail> {
 		@Override
 		public void render(com.google.gwt.cell.client.Cell.Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb) {

@@ -132,8 +132,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private PrimaryButton addQDMElementsToMeasure = new PrimaryButton("Save Supplemental Data Elements", "primaryButton");
 	/** The qdm tab name. */
 	private Label supplementalDataElementHeader = new Label("Supplemental Data Elements");
-	/** The list visible count. */
-	private final int listVisibleCount = 10;
 	/**	MeasurePackageClauseListWidget. *  */
 	private MeasurePackageClauseCellListWidget packageGroupingWidget = new MeasurePackageClauseCellListWidget();
 	/** The Create New Grouping Button. */
@@ -417,7 +415,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	}
 	/**
 	 * Add columns to Measure Grouping Cell Table.
-	 * @return CelTable
+	 * @param table -  CellTable.
 	 */
 	private  void addColumnToTable(CellTable<MeasurePackageDetail> table) {
 		Column<MeasurePackageDetail, SafeHtml> measureGrouping = new Column<MeasurePackageDetail, SafeHtml>(new SafeHtmlCell()){

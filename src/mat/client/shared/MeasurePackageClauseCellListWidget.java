@@ -142,35 +142,6 @@ public class MeasurePackageClauseCellListWidget {
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
 		rightCellList = new CellList<MeasurePackageClauseDetail>(new RightClauseCell());
 		rightCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
-		/*rightCellListSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				if (rightCellListSelectionModel.getSelectedObject() == null) {
-					return;
-				}
-				if (leftCellListSelectionModel.getSelectedObject() != null) {
-					leftCellListSelectionModel.clear();
-				}
-				System.out.println("selectionModel.getSelectedObject()" + rightCellListSelectionModel.getSelectedObject());
-				MeasurePackageClauseDetail measurePackageClauseDetail = rightCellListSelectionModel.getSelectedObject();
-				if (((measurePackageClauseDetail.getType().equals("denominator"))
-						|| (measurePackageClauseDetail.getType().equals("numerator")))) {
-					buildItemCountCellTable();
-					getItemCountTableButtonPanel();
-					disclosurePanelItemCountTable.setVisible(true);
-					disclosurePanelAssociations.setVisible(true);
-					disclosurePanelItemCountTable.setOpen(false);
-					disclosurePanelAssociations.setOpen(false);
-				} else {
-					buildItemCountCellTable();
-					getItemCountTableButtonPanel();
-					disclosurePanelItemCountTable.setVisible(true);
-					disclosurePanelAssociations.setVisible(false);
-					disclosurePanelItemCountTable.setOpen(false);
-					disclosurePanelAssociations.setOpen(false);
-				}
-			}
-		});*/
 		rightCellListDataProvider = new ListDataProvider<MeasurePackageClauseDetail>(groupingPopulationList);
 		rightCellListDataProvider.addDataDisplay(rightCellList);
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
@@ -555,6 +526,18 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		});
 	}
+	
+	private int countDetailsWithType(
+			List<MeasurePackageClauseDetail> clauseList,  String type) {
+		int count = 0;
+		for (MeasurePackageClauseDetail detail : clauseList) {
+			if (type.equals(detail.getType())) {
+				associatedPopulationList.add(detail);
+				count++;
+			}
+		}
+		return count;
+	}
 	/**
 	 * Clause Cell Class.
 	 *
@@ -605,9 +588,16 @@ public class MeasurePackageClauseCellListWidget {
 				buildItemCountCellTable();
 				getItemCountTableButtonPanel();
 				disclosurePanelItemCountTable.setVisible(true);
-				disclosurePanelAssociations.setVisible(true);
 				disclosurePanelItemCountTable.setOpen(false);
-				disclosurePanelAssociations.setOpen(false);
+				// If More than one Populations are added in Grouping, Add Association Widget is shown
+				// otherwise available population is added to Denominator and Numerator Association List.
+				if (countDetailsWithType(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) {
+					disclosurePanelAssociations.setVisible(true);
+					disclosurePanelAssociations.setOpen(false);
+				} else  {
+					disclosurePanelAssociations.setVisible(false);
+					disclosurePanelAssociations.setOpen(false);
+				}
 			} else {
 				buildItemCountCellTable();
 				getItemCountTableButtonPanel();
@@ -615,6 +605,7 @@ public class MeasurePackageClauseCellListWidget {
 				disclosurePanelAssociations.setVisible(false);
 				disclosurePanelItemCountTable.setOpen(false);
 				disclosurePanelAssociations.setOpen(false);
+				associatedPopulationList.clear();
 			}
 		}
 		@Override

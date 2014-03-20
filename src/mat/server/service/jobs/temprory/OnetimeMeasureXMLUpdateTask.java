@@ -1,6 +1,5 @@
 package mat.server.service.jobs.temprory;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -61,25 +60,29 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 		}
 		
 		logger.info("Get all Measure Ids");
-		//Measure measure = getMeasureDAO().find("8ae4529344db35420144db365f3e0008");
+		//Measure measure = getMeasureDAO().find("8a4d92813418f6e201341a590f460438");
 		List<Measure> measureList = getMeasureDAO().find();
 		//List<Measure> measureList = new ArrayList<Measure>();
 		//measureList.add(measure);
 		logger.info("\r\n\r\nUpdating all Measure XML's based to replace IPP by IP and save them back.");
-		//updateIPP_To_IP(measureList);
+		updateIPP_To_IP(measureList);
 		
 		logger.info("\r\n\r\nUpdating all Measure XML's based to replace SBOD by SBE and save them back.");
-		//renameTimingConventions(measureList);
+		renameTimingConventions(measureList);
 		
 		logger.info("\r\n\r\nUpdating all Measure XML's based on the scoring types and save them back.");
-		//checkForScoringAndUpdate(measureList);
+		checkForScoringAndUpdate(measureList);
 		
-		logger.info("\r\n\r\nUpdating all Measure XML's based on the scoring types and save them back.");
-		checkForRatioMeasures(measureList);
+		//logger.info("\r\n\r\nUpdating all Measure XML's based on the Ratio scoring type and save them back.");
+		//checkForRatioMeasures(measureList);
 		
 	}
 	
-	private void checkForRatioMeasures(List<Measure> measureList) {
+	/**
+	 * Add Measure Observations in Ratio Measure types.
+	 * @param measureList - List.
+	 */
+	/*private void checkForRatioMeasures(List<Measure> measureList) {
 		List <Measure> ratioMeasures = new ArrayList<Measure>();
 		for (Measure measure : measureList) {
 			if(measure.getMeasureScoring().equalsIgnoreCase("ratio")){
@@ -87,7 +90,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 			}
 		}
 		checkForScoringAndUpdate(ratioMeasures);
-	}
+	}*/
 	
 	/**
 	 * Check for scoring and update.

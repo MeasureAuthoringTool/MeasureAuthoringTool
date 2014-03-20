@@ -9,7 +9,10 @@ import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -28,6 +31,7 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.TextColumn;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -36,6 +40,7 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
@@ -94,8 +99,6 @@ public class MeasurePackageClauseCellListWidget {
 	private PrimaryButton saveGrouping = new PrimaryButton("Save Grouping", "primaryButton");
 	/** The save itemcount list. */
 	private SecondaryButton saveItemcountList = new SecondaryButton("Ok");
-	/** The cancel itemcount list. */
-	//private SecondaryButton cancelItemcountList = new SecondaryButton("Cancel");
 	/** The pagesize. */
 	private final int PAGESIZE = 3;
 	/** The add Clause Right. */
@@ -126,6 +129,8 @@ public class MeasurePackageClauseCellListWidget {
 	private List<QualityDataSetDTO> appliedQdmList;
 	/** The panel. */
 	private VerticalPanel panel = new VerticalPanel();
+	
+	private VerticalPanel vPanel = new VerticalPanel();
 	/** List of Elements in Grouping List. */
 	private ArrayList<MeasurePackageClauseDetail> groupingPopulationList =
 			new ArrayList<MeasurePackageClauseDetail>();
@@ -135,8 +140,12 @@ public class MeasurePackageClauseCellListWidget {
 	/** List of Elements in Association Population List.*/
 	private ArrayList<MeasurePackageClauseDetail> associatedPopulationList =
 			new ArrayList<MeasurePackageClauseDetail>();
+	private CellList<MeasurePackageClauseDetail> associatedPOPCellList;
 	/** Error Message in Package Grouping Section. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	
+	private SingleSelectionModel<MeasurePackageClauseDetail> associatedSelectionModel;
+	
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
@@ -226,6 +235,7 @@ public class MeasurePackageClauseCellListWidget {
 	 * @return the widget
 	 */
 	private Widget buildAddAssociationWidget() {
+		disclosurePanelAssociations.clear();
 		FlowPanel searchCriteriaPanel = new FlowPanel();
 		searchCriteriaPanel.getElement().setAttribute("id", "MeasurePackageClauseAssoWidgt_FlowPanel");
 		searchCriteriaPanel.add(new SpacerWidget());
@@ -240,8 +250,8 @@ public class MeasurePackageClauseCellListWidget {
 		buttonLayout.getElement().setAttribute("id", "MeasurePackageClauseAssoWidgtButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
 		ScrollPanel associateListScrollPanel = new ScrollPanel();
-		associateListScrollPanel.add(getLeftCellList());
-		disclosurePanelAssociations.add(associateListScrollPanel);
+		//associateListScrollPanel.add(getAssociatedPOPCellListWidget());
+		disclosurePanelAssociations.add(vPanel);
 		disclosurePanelAssociations.setOpen(false);
 		disclosurePanelAssociations.setVisible(false);
 		return disclosurePanelAssociations;
@@ -318,7 +328,6 @@ public class MeasurePackageClauseCellListWidget {
 	private Widget getItemCountTableButtonPanel() {
 		itemCountButtonPanel.addStyleName("rightAlignButton");
 		itemCountButtonPanel.add(saveItemcountList);
-		//itemCountButtonPanel.add(cancelItemcountList);
 		return itemCountButtonPanel;
 	}
 	/**
@@ -403,6 +412,125 @@ public class MeasurePackageClauseCellListWidget {
 			panel.add(new SpacerWidget());
 		}
 		return panel;
+	}
+	
+	
+	public Panel getAssociatedPOPCellListWidget(){
+		vPanel.clear();
+	    vPanel.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_VerticalPanel");
+	    associatedSelectionModel = new SingleSelectionModel<MeasurePackageClauseDetail>();
+		associatedPOPCellList = new CellList<MeasurePackageClauseDetail>(getAssociatedPOPCompositeCell());
+		associatedSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
+			
+			@Override
+			public void onSelectionChange(SelectionChangeEvent event) {
+				
+				Window.alert("Associated Selection handler:"+ associatedSelectionModel.getSelectedObject().getName());
+			}
+		});
+		associatedPOPCellList.setSelectionModel(associatedSelectionModel,
+				DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+		associatedPOPCellList.setPageSize(10);
+		associatedPOPCellList.setRowData(associatedPopulationList);
+		associatedPOPCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
+		ListDataProvider<MeasurePackageClauseDetail> dataProvider = 
+				new ListDataProvider<MeasurePackageClauseDetail>(associatedPopulationList);
+		dataProvider.addDataDisplay(associatedPOPCellList);
+		vPanel.setSize("200px", "200px");
+		vPanel.add(associatedPOPCellList);
+		return vPanel; 
+	}
+	
+	public Cell<MeasurePackageClauseDetail> getAssociatedPOPCompositeCell()
+	{
+		ArrayList<HasCell<MeasurePackageClauseDetail, ?>> hasCells = new ArrayList<HasCell<MeasurePackageClauseDetail, ?>>();
+		
+		hasCells.add(new HasCell<MeasurePackageClauseDetail, Boolean>() {
+			
+		 private RadioButtonCell rbCell = new RadioButtonCell(true, true);
+			@Override
+			
+			public Cell<Boolean> getCell() {
+				return rbCell;
+			}
+			
+			@Override
+			public FieldUpdater<MeasurePackageClauseDetail, Boolean> getFieldUpdater() {
+				return new FieldUpdater<MeasurePackageClauseDetail, Boolean>() {
+					
+					@Override
+					public void update(int index,
+							MeasurePackageClauseDetail object, Boolean value) {
+						Window.alert("RadioButton Clicked:"+ object.getName());
+						associatedSelectionModel.setSelected(object, value);
+					}
+				};
+			}
+			
+			@Override
+			public Boolean getValue(MeasurePackageClauseDetail object) {
+				return associatedSelectionModel.isSelected(object);
+			} });
+		
+		hasCells.add(new HasCell<MeasurePackageClauseDetail, String>(){
+			private TextCell cell = new TextCell();
+			@Override
+			public Cell<String> getCell() {
+				return cell;
+			}
+			
+			
+			@Override
+			public String getValue(MeasurePackageClauseDetail object) {
+				return object.getName();
+			}
+
+
+			@Override
+			public FieldUpdater<MeasurePackageClauseDetail, String> getFieldUpdater() {
+			
+				return new FieldUpdater<MeasurePackageClauseDetail, String>() {
+					
+					@Override
+					public void update(int index, MeasurePackageClauseDetail object,
+							String value) {
+						
+						
+					}
+				};
+			}});
+		
+		
+		Cell<MeasurePackageClauseDetail> myClassCell = new CompositeCell<MeasurePackageClauseDetail>(hasCells) {
+			
+			
+			@Override
+			public void render(Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb)
+			{
+				sb.appendHtmlConstant("<table><tbody><tr>");
+				super.render(context, value, sb);
+				sb.appendHtmlConstant("</tr></tbody></table>");
+			}
+			@Override
+			protected Element getContainerElement(Element parent)
+			{
+				// Return the first TR element in the table.
+				return parent.getFirstChildElement().getFirstChildElement().getFirstChildElement();
+			}
+			
+			@Override
+			protected <X> void render(Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb, HasCell<MeasurePackageClauseDetail, X> hasCell)
+			{
+				// this renders each of the cells inside the composite cell in a new table cell
+				Cell<X> cell = hasCell.getCell();
+				sb.appendHtmlConstant("<td style='font-size:100%;'>");
+				cell.render(context, hasCell.getValue(value), sb);
+				sb.appendHtmlConstant("</font></td>");
+			}
+			
+		};
+		
+		return myClassCell;
 	}
 	/**
 	 * Builds the add button.
@@ -529,9 +657,10 @@ public class MeasurePackageClauseCellListWidget {
 	
 	private int countDetailsWithType(
 			List<MeasurePackageClauseDetail> clauseList,  String type) {
+		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
 		int count = 0;
 		for (MeasurePackageClauseDetail detail : clauseList) {
-			if (type.equals(detail.getType())) {
+			if (type.equals(detail.getType()) && !associatedPopulationList.contains(detail)) {
 				associatedPopulationList.add(detail);
 				count++;
 			}
@@ -588,11 +717,13 @@ public class MeasurePackageClauseCellListWidget {
 								|| (value.getType().equals("numerator")))) {
 					buildItemCountCellTable();
 					getItemCountTableButtonPanel();
+					//getAssociatedPOPCellListWidget();
 					disclosurePanelItemCountTable.setVisible(true);
 					disclosurePanelItemCountTable.setOpen(false);
 					// If More than one Populations are added in Grouping, Add Association Widget is shown
 					// otherwise available population is added to Denominator and Numerator Association List.
-					if (countDetailsWithType(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) == 2) {
+					if (countDetailsWithType(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) >= 2) {
+						getAssociatedPOPCellListWidget();
 						disclosurePanelAssociations.setVisible(true);
 						disclosurePanelAssociations.setOpen(false);
 					} else  {
@@ -602,6 +733,7 @@ public class MeasurePackageClauseCellListWidget {
 				} else {
 					buildItemCountCellTable();
 					getItemCountTableButtonPanel();
+					//getAssociatedPOPCellListWidget();
 					disclosurePanelItemCountTable.setVisible(true);
 					disclosurePanelAssociations.setVisible(false);
 					disclosurePanelItemCountTable.setOpen(false);

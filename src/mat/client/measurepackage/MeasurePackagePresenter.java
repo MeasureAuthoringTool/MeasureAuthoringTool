@@ -207,6 +207,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				clearMessages();
+				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+				view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 				System.out.println("Overview Object"+ packageOverview.getClauses().size());
 				setNewMeasurePackage();
 			}
@@ -271,6 +273,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onClick(final ClickEvent event) {
 				clearMessages();
+				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+				view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 				updateDetailsFromView();
 				if (isValid()) {
 					MatContext.get().getPackageService()

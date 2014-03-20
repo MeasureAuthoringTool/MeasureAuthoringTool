@@ -1,5 +1,6 @@
 package mat.server.service.jobs.temprory;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.xml.xpath.XPathExpressionException;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -65,14 +66,27 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 		//List<Measure> measureList = new ArrayList<Measure>();
 		//measureList.add(measure);
 		logger.info("\r\n\r\nUpdating all Measure XML's based to replace IPP by IP and save them back.");
-		updateIPP_To_IP(measureList);
+		//updateIPP_To_IP(measureList);
 		
 		logger.info("\r\n\r\nUpdating all Measure XML's based to replace SBOD by SBE and save them back.");
-		renameTimingConventions(measureList);
+		//renameTimingConventions(measureList);
 		
 		logger.info("\r\n\r\nUpdating all Measure XML's based on the scoring types and save them back.");
-		checkForScoringAndUpdate(measureList);
+		//checkForScoringAndUpdate(measureList);
 		
+		logger.info("\r\n\r\nUpdating all Measure XML's based on the scoring types and save them back.");
+		checkForRatioMeasures(measureList);
+		
+	}
+	
+	private void checkForRatioMeasures(List<Measure> measureList) {
+		List <Measure> ratioMeasures = new ArrayList<Measure>();
+		for (Measure measure : measureList) {
+			if(measure.getMeasureScoring().equalsIgnoreCase("ratio")){
+				ratioMeasures.add(measure);
+			}
+		}
+		checkForScoringAndUpdate(ratioMeasures);
 	}
 	
 	/**

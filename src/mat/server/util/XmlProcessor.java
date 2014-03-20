@@ -990,9 +990,11 @@ public class XmlProcessor {
 					.createElement("itemCount");
 			if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE) == null) {
 				Node scoring_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_SCORING);
-				((Element) scoring_Element.getParentNode())
-				.insertBefore(itemCount_Element,
-						scoring_Element.getNextSibling());
+				if(scoring_Element != null) {
+					((Element) scoring_Element.getParentNode())
+					.insertBefore(itemCount_Element,
+							scoring_Element.getNextSibling());
+				}
 			} else {
 				Node measure_Type_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE);
 				((Element) measure_Type_Element.getParentNode())

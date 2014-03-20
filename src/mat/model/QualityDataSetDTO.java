@@ -50,6 +50,18 @@ public class QualityDataSetDTO implements IsSerializable {
 	/** The is used md. */
 	private boolean isUsedMD;
 	
+	private boolean isUsedMP;
+	
+	public boolean isUsedMP() {
+		return isUsedMP;
+	}
+
+
+	public void setUsedMP(boolean isUsedMP) {
+		this.isUsedMP = isUsedMP;
+	}
+
+
 	/**
 	 * Checks if is used md.
 	 *

@@ -2,16 +2,21 @@ package mat.client.shared;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+
 import mat.client.CustomPager;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
+import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
@@ -40,7 +45,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
@@ -146,6 +150,11 @@ public class MeasurePackageClauseCellListWidget {
 	
 	private SingleSelectionModel<MeasurePackageClauseDetail> associatedSelectionModel;
 	
+	private Map<String, MeasurePackageClauseDetail>  map = new HashMap<String, MeasurePackageClauseDetail>();
+	
+	private List<QualityDataSetDTO> itemCountSelectionList ;
+	
+	
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
@@ -249,8 +258,6 @@ public class MeasurePackageClauseCellListWidget {
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setAttribute("id", "MeasurePackageClauseAssoWidgtButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
-		ScrollPanel associateListScrollPanel = new ScrollPanel();
-		//associateListScrollPanel.add(getAssociatedPOPCellListWidget());
 		disclosurePanelAssociations.add(vPanel);
 		disclosurePanelAssociations.setOpen(false);
 		disclosurePanelAssociations.setVisible(false);
@@ -321,6 +328,17 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		});
 	}
+	
+	private void addClickHandlersToAddItemCountList(){
+		saveItemcountList.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				System.out.println("Selected ItemCountList: "+ itemCountSelectionList.size());
+				map.get(rightCellListSelectionModel.getSelectedObject().getName()).setItemCountList(itemCountSelectionList);
+			}
+		});
+	}
 	/**
 	 * Build Ok - Cancel Button Widget in Item Count Disclosure Panel.
 	 * @return Widget.
@@ -339,35 +357,100 @@ public class MeasurePackageClauseCellListWidget {
 		Column<QualityDataSetDTO, Boolean> selectColumn = new Column<QualityDataSetDTO, Boolean>(chkBtnCell){
 			@Override
 			public Boolean getValue(QualityDataSetDTO object) {
-				return itemCountSelection.isSelected(object);
-			}
+				object.setUsedMP(false);
+				if ((itemCountSelectionList!=null)&& (itemCountSelectionList.size() > 0)) {
+					for (int i = 0; i < itemCountSelectionList.size(); i++) {
+						if (itemCountSelectionList.get(i).getUuid().equalsIgnoreCase(object.getUuid())) {
+							object.setUsedMP(true);
+							break;
+						}
+					}
+				} else {
+					object.setUsedMP(false);
+					}
+					return object.isUsedMP();
+				}
 		};
 		selectColumn.setFieldUpdater(new FieldUpdater<QualityDataSetDTO, Boolean>() {
 			@Override
 			public void update(int index, QualityDataSetDTO object,
 					Boolean value) {
 				itemCountSelection.setSelected(object, value);
+				if (value) {
+					itemCountSelectionList.add(object);
+				} else {
+					for (int i = 0; i < itemCountSelectionList.size(); i++) {
+						if (itemCountSelectionList.get(i).getUuid().equalsIgnoreCase(object.getUuid())) {
+							itemCountSelectionList.remove(i);
+							break;
+						}
+					}
+                
+				}
 			}
 		});
 		table.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select"
 				+ "</span>"));
-		TextColumn<QualityDataSetDTO> dateColumn = new TextColumn<QualityDataSetDTO>() {
+		
+		
+		Column<QualityDataSetDTO, SafeHtml> codeListName = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
+			
 			@Override
-			public String getValue(QualityDataSetDTO object) {
-				return object.getCodeListName();
+			public SafeHtml getValue(QualityDataSetDTO object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();  
+				String value; 
+				  String QDMDetails = ""; 
+				  
+				  if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) { 
+					  QDMDetails = "(User defined)"; 
+					  }  else { 
+					  String version = object.getVersion(); 
+					  String effectiveDate = object.getEffectiveDate(); 
+					  
+					  if (effectiveDate != null) { 
+						  
+						  QDMDetails = "(OID: " + object.getOid() + ", Effective Date: " + effectiveDate + ")"; 
+						  }  else if (!version.equals("1.0") && !version.equals("1")) { 
+						  
+							  QDMDetails = "(OID: " + object.getOid() + ", Version: " + version + ")"; 
+						  } else { 
+						 
+							  QDMDetails = "(OID: " + object.getOid() + ")"; 
+						  } 
+					  } 
+				  
+				  if ((object.getOccurrenceText() != null) && !object.getOccurrenceText().equals("")) { 
+					  value = object.getOccurrenceText() + " of " + object.getCodeListName(); 
+					  sb.appendHtmlConstant("<span title=\"" + QDMDetails + " \" tabIndex=\"0\" >" + value + " </span>");
+					  
+				  } else { 
+					  value = object.getCodeListName();
+					  sb.appendHtmlConstant("<span title=\"" + QDMDetails + " \" tabIndex=\"0\">" + value + " </span>");
+					  } 
+				  
+				return sb.toSafeHtml();
 			}
 		};
-		table.addColumn(dateColumn, SafeHtmlUtils
-				.fromSafeConstant("<span title='Name'>" + "Name"
+		
+		table.addColumn(codeListName, SafeHtmlUtils.fromSafeConstant("<span title='Name'>" + "Name"
 						+ "</span>"));
-		TextColumn<QualityDataSetDTO> addressColumn = new TextColumn<QualityDataSetDTO>() {
+		
+		
+		Column<QualityDataSetDTO, SafeHtml> vsacDataType = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
+			
 			@Override
-			public String getValue(QualityDataSetDTO object) {
-				return object.getDataType();
+			public SafeHtml getValue(QualityDataSetDTO object) {
+				SafeHtmlBuilder sb = new SafeHtmlBuilder();  
+			    sb.appendHtmlConstant("<span title=\"" + object.getDataType() + " \" tabIndex=\"0\" >" 
+				+ object.getDataType() + " </span>");
+					  
+				return sb.toSafeHtml();
 			}
 		};
-		table.addColumn(addressColumn, SafeHtmlUtils.fromSafeConstant("<span title='Data Type'>" + "Data Type"
+		
+		table.addColumn(vsacDataType, SafeHtmlUtils.fromSafeConstant("<span title='Data Type'>" + "Data Type"
 				+ "</span>"));
+		
 		return table;
 	}
 	/**
@@ -414,6 +497,9 @@ public class MeasurePackageClauseCellListWidget {
 		return panel;
 	}
 	
+	public List<QualityDataSetDTO> getItemCountSelectionList() {
+		return itemCountSelectionList;
+	}
 	
 	public Panel getAssociatedPOPCellListWidget(){
 		vPanel.clear();
@@ -461,7 +547,7 @@ public class MeasurePackageClauseCellListWidget {
 					@Override
 					public void update(int index,
 							MeasurePackageClauseDetail object, Boolean value) {
-						Window.alert("RadioButton Clicked:"+ object.getName());
+						//Window.alert("RadioButton Clicked:"+ object.getName());
 						associatedSelectionModel.setSelected(object, value);
 					}
 				};
@@ -708,6 +794,14 @@ public class MeasurePackageClauseCellListWidget {
 		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value,
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
+			addClickHandlersToAddItemCountList();
+			itemCountSelectionList = new ArrayList<QualityDataSetDTO>();
+			map.put(rightCellListSelectionModel.getSelectedObject().getName(),rightCellListSelectionModel.getSelectedObject());
+			    	MeasurePackageClauseDetail measureDetail = map.get(rightCellListSelectionModel.getSelectedObject().getName());
+			    	if(measureDetail.getItemCountList()!=null && measureDetail.getItemCountList().size()>0){
+			    	itemCountSelectionList = measureDetail.getItemCountList();
+			    	}
+			    System.out.println("ItemCountList :"+itemCountSelectionList);
 			if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 				leftCellListSelectionModel.clear();
 				String scoring = MatContext.get().getCurrentMeasureScoringType();

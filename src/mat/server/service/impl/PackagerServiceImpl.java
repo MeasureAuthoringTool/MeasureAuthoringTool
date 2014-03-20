@@ -87,11 +87,13 @@ public class PackagerServiceImpl implements PackagerService {
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		boolean isGroupRemoved = false;
+		List<QualityDataSetDTO> qdmSelectedList;
 		try {
 			// get all CLAUSE type nodes except for Stratum.
 			NodeList measureClauses = processor.findNodeList(processor.getOriginalDoc(),
 					XmlProcessor.XPATH_MEASURE_CLAUSE);
 			if ((null != measureClauses) && (measureClauses.getLength() > 0)) {
+				qdmSelectedList = new ArrayList<QualityDataSetDTO>();
 				// find the GROUP/PACKAGECLAUSES that are not in the main CLAUSE nodes using the clause node UUID
 				String xpathGrpUuid = XmlProcessor.XPATH_FIND_GROUP_CLAUSE;
 				for (int i = 0; i < measureClauses.getLength(); i++) {
@@ -100,7 +102,8 @@ public class PackagerServiceImpl implements PackagerService {
 					Node displayNameNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.DISPLAY_NAME);
 					Node typeNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.TYPE);
 					clauses.add(createMeasurePackageClauseDetail(
-							uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue()));
+							uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue(),
+							qdmSelectedList));
 					//adding all Clause type uuid's
 					xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and";
 				}
@@ -122,7 +125,6 @@ public class PackagerServiceImpl implements PackagerService {
 					XmlProcessor.XPATH_MEASURE_GROUPING_GROUP); // XPath to get all Group
 			Map<Integer, MeasurePackageDetail> seqDetailMap =
 					new HashMap<Integer, MeasurePackageDetail>();
-			
 			// iterate through the measure groupings and get the sequence number
 			//attribute and insert in a map with sequence as key and MeasurePackageDetail as value
 			if ((measureGroups != null) && (measureGroups.getLength() > 0)) {
@@ -141,12 +143,29 @@ public class PackagerServiceImpl implements PackagerService {
 					//Iterate through the PACKAGECLAUSE nodes and  convert it into
 					//MeasurePackageClauseDetail add it to the list in MeasurePackageDetail
 					for (int j = 0; j < pkgClauses.getLength(); j++) {
+						qdmSelectedList = new ArrayList<QualityDataSetDTO>();
 						if (!PopulationWorkSpaceConstants.PACKAGE_CLAUSE_NODE.equals(
 								pkgClauses.item(j).getNodeName())) {
 							// group node can contain tab or new lines
 							// which can be counted as it's child.Those should be filtered.
 							continue;
 						}
+						
+						NodeList itemCountNodeList = pkgClauses.item(j).getChildNodes();
+						for(int k = 0; k < itemCountNodeList.getLength(); k++){
+							if(itemCountNodeList.item(k).getNodeName().equals("itemCount")){
+								NodeList elementRefNode = itemCountNodeList.item(k).getChildNodes();
+								for(int l = 0; l < elementRefNode.getLength(); l++){
+									QualityDataSetDTO qdmSet = new QualityDataSetDTO();
+									Node newNode = elementRefNode.item(l);
+									qdmSet.setCodeListName(newNode.getAttributes().getNamedItem("name").getNodeValue());
+									qdmSet.setDataType(newNode.getAttributes().getNamedItem("dataType").getNodeValue());
+									qdmSet.setUuid(newNode.getAttributes().getNamedItem("id").getNodeValue());
+									qdmSelectedList.add(qdmSet);
+								}
+							}
+						}
+						
 						NamedNodeMap pkgClauseMap = pkgClauses.item(j).getAttributes();
 						detail.getPackageClauses().add(
 								createMeasurePackageClauseDetail(
@@ -154,7 +173,8 @@ public class PackagerServiceImpl implements PackagerService {
 												PopulationWorkSpaceConstants.UUID).getNodeValue()
 												, pkgClauseMap.getNamedItem("name").
 												getNodeValue(), pkgClauseMap.getNamedItem(
-												PopulationWorkSpaceConstants.TYPE).getNodeValue()));
+												PopulationWorkSpaceConstants.TYPE).getNodeValue(), 
+												qdmSelectedList));
 					}
 				}
 			}
@@ -254,11 +274,13 @@ public class PackagerServiceImpl implements PackagerService {
 	 *            the type
 	 * @return the measure package clause detail
 	 */
-	private MeasurePackageClauseDetail createMeasurePackageClauseDetail(String id, String name, String type) {
+	private MeasurePackageClauseDetail createMeasurePackageClauseDetail(String id, String name, String type,
+			List<QualityDataSetDTO> itemCountList) {
 		MeasurePackageClauseDetail detail = new MeasurePackageClauseDetail();
 		detail.setId(id);
 		detail.setName(name);
 		detail.setType(type);
+		detail.setItemCountList(itemCountList);
 		return detail;
 	}
 	

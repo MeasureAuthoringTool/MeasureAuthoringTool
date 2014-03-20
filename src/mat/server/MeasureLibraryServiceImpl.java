@@ -1138,9 +1138,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		if (measureXmlModel == null) {
 			logger.info("Measure XML is null");
-		}else{
-			logger.info("XML ::: " + measureXmlModel.getXml());
 		}
+//		else{
+//			logger.info("XML ::: " + measureXmlModel.getXml());
+//		}
 		return measureXmlModel;
 	}
 	

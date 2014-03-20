@@ -716,7 +716,7 @@ public class XmlProcessor {
 			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
-			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
+			/*xPathList.add(XPATH_MEASURE_OBSERVATIONS);*/
 		} else if (PROPOR.equals(scoringType.toUpperCase())) {
 			// Measure Population Exlusions, Measure Populations
 			//xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
@@ -923,7 +923,8 @@ public class XmlProcessor {
 		 */
 		Node measureObservationsNode = findNode(originalDoc,
 				XPATH_MEASURE_OBSERVATIONS);
-		if (SCORING_TYPE_CONTVAR.equals(scoringType)) {
+		if (SCORING_TYPE_CONTVAR.equals(scoringType)
+				|| RATIO.equals(scoringType)) {
 			if (measureObservationsNode == null) {
 				// Create a new measureObservations element.
 				String nodeName = "measureObservations";

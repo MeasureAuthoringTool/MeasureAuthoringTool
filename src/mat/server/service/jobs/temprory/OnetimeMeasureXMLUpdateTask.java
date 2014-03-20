@@ -1,9 +1,7 @@
 package mat.server.service.jobs.temprory;
 
 import java.util.List;
-
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.dao.MatFlagDAO;
 import mat.dao.clause.MeasureDAO;
@@ -12,7 +10,6 @@ import mat.model.clause.Measure;
 import mat.server.service.MeasureLibraryService;
 import mat.server.service.MeasurePackageService;
 import mat.server.util.XmlProcessor;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.BeansException;
@@ -25,48 +22,50 @@ import org.springframework.web.context.WebApplicationContext;
  * The Class OnetimeMeasureXMLUpdateTask.
  */
 public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
-
+	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory
 			.getLog(OnetimeMeasureXMLUpdateTask.class);
-
+	
 	/** The measure xmldao. */
 	private MeasureDAO measureDAO;
-
+	
 	/** The measure library service. */
 	private MeasureLibraryService measureLibraryService;
 	
 	/** The measure package service. */
 	private MeasurePackageService measurePackageService;
-
+	
 	/** The mat flag dao. */
 	private MatFlagDAO matFlagDAO;
 	
 	/** The application context. */
 	private ApplicationContext applicationContext;
-
+	
 	/**
 	 * Update measure xmls for based on new changes for Scoring type.
 	 * Also update measure XML's for IPP to IP renaming.
 	 * 
-	 * This is not the most efficient way to achieve the measure XML updates, but we 
+	 * This is not the most efficient way to achieve the measure XML updates, but we
 	 * are setting this as a class which will be run once and then discarded.
 	 * And so we are trying to reuse the already written code in service classes.
 	 * The effort to reuse makes us do repeated database reads between classes.
 	 */
 	public void updateMeasureXMLs() {
 		logger.info("Starting one time update Measure XMLs For Timing Elements task....");
-
+		
 		if (!doesJobNeedExecution()) {
 			logger.info("Figured that one time update Measure XMLs task doesnt need execution...stopping task.");
 			return;
 		}
-
-		logger.info("Get all Measure Ids");
-		List<Measure> measureList = getMeasureDAO().find();
 		
+		logger.info("Get all Measure Ids");
+		//Measure measure = getMeasureDAO().find("8ae4529344db35420144db365f3e0008");
+		List<Measure> measureList = getMeasureDAO().find();
+		//List<Measure> measureList = new ArrayList<Measure>();
+		//measureList.add(measure);
 		logger.info("\r\n\r\nUpdating all Measure XML's based to replace IPP by IP and save them back.");
-     	updateIPP_To_IP(measureList);
+		updateIPP_To_IP(measureList);
 		
 		logger.info("\r\n\r\nUpdating all Measure XML's based to replace SBOD by SBE and save them back.");
 		renameTimingConventions(measureList);
@@ -75,7 +74,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 		checkForScoringAndUpdate(measureList);
 		
 	}
-
+	
 	/**
 	 * Check for scoring and update.
 	 *
@@ -85,7 +84,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 		for (Measure measure : measureList) {
 			logger.info("\r\n\r\nCheck for scoring for Measure:"+measure.getaBBRName());
 			MeasureXmlModel measureXmlModel = getMeasureLibraryService().getMeasureXmlForMeasure(measure.getId());
-			if(measureXmlModel == null || measureXmlModel.getXml() == null || measureXmlModel.getXml().trim().length() == 0){
+			if((measureXmlModel == null) || (measureXmlModel.getXml() == null) || (measureXmlModel.getXml().trim().length() == 0)){
 				logger.info("	Measure XML for:"+measure.getaBBRName()+" is blank or null. Skipping this measure.");
 				continue;
 			}
@@ -96,7 +95,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 			getMeasurePackageService().saveMeasureXml(measureXmlModel);
 		}
 	}
-
+	
 	/**
 	 * Update ip p_ to_ ip.
 	 *
@@ -108,7 +107,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 			MeasureXmlModel measureXmlModel = getMeasureLibraryService()
 					.getMeasureXmlForMeasure(measure.getId());
 			
-			if(measureXmlModel == null || measureXmlModel.getXml() == null || measureXmlModel.getXml().trim().length() == 0){
+			if((measureXmlModel == null) || (measureXmlModel.getXml() == null) || (measureXmlModel.getXml().trim().length() == 0)){
 				logger.info("	Measure XML for:"+measure.getaBBRName()+" is blank or null. Skipping this measure.");
 				continue;
 			}
@@ -140,11 +139,11 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 			MeasureXmlModel measureXmlModel = getMeasureLibraryService()
 					.getMeasureXmlForMeasure(measure.getId());
 			
-			if(measureXmlModel == null || measureXmlModel.getXml() == null || measureXmlModel.getXml().trim().length() == 0){
+			if((measureXmlModel == null) || (measureXmlModel.getXml() == null) || (measureXmlModel.getXml().trim().length() == 0)){
 				logger.info("	Measure XML for:"+measure.getaBBRName()+" is blank or null. Skipping this measure.");
 				continue;
 			}
-			// update Starts Before or During to Starts Before End and 
+			// update Starts Before or During to Starts Before End and
 			// Ends Before or During to Ends Before End
 			
 			XmlProcessor xmlProcessor = new XmlProcessor(
@@ -161,7 +160,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 		}
 		
 	}
-
+	
 	/**
 	 * Does job need execution.
 	 * 
@@ -169,7 +168,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 	 */
 	private boolean doesJobNeedExecution() {
 		boolean result = false;
-
+		
 		MatFlag flag = matFlagDAO.find().get(0);
 		if (flag.getFlag().equals("0")) {
 			flag.setFlag("1");
@@ -177,7 +176,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 			result = true;
 		}
 		
-		if(this.applicationContext instanceof WebApplicationContext){
+		if(applicationContext instanceof WebApplicationContext){
 			String contextPath = ((WebApplicationContext)applicationContext).getServletContext().getContextPath();
 			System.out.println("$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%----------->ContextPath:"+contextPath);
 			
@@ -196,10 +195,10 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 			String contextClassName = applicationContext.getClass().getName();
 			System.out.println("$%$%$%$%$%$%$%$%$%$%$%$%$%$%$%----------->contextClassName:"+contextClassName);
 		}
-
+		
 		return result;
 	}
-
+	
 	/**
 	 * Sets the measure library service.
 	 * 
@@ -210,7 +209,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 			MeasureLibraryService measureLibraryService) {
 		this.measureLibraryService = measureLibraryService;
 	}
-
+	
 	/**
 	 * Gets the measure library service.
 	 * 
@@ -219,7 +218,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 	public MeasureLibraryService getMeasureLibraryService() {
 		return measureLibraryService;
 	}
-
+	
 	/**
 	 * Sets the mat flag dao.
 	 * 
@@ -229,7 +228,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 	public void setMatFlagDAO(MatFlagDAO matFlagDAO) {
 		this.matFlagDAO = matFlagDAO;
 	}
-
+	
 	/**
 	 * Gets the mat flag dao.
 	 * 
@@ -238,7 +237,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 	public MatFlagDAO getMatFlagDAO() {
 		return matFlagDAO;
 	}
-
+	
 	/**
 	 * Sets the measure dao.
 	 *
@@ -247,7 +246,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 	public void setMeasureDAO(MeasureDAO measureDAO) {
 		this.measureDAO = measureDAO;
 	}
-
+	
 	/**
 	 * Gets the measure dao.
 	 *
@@ -256,7 +255,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 	public MeasureDAO getMeasureDAO() {
 		return measureDAO;
 	}
-
+	
 	/**
 	 * Sets the measure package service.
 	 *
@@ -265,7 +264,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 	public void setMeasurePackageService(MeasurePackageService measurePackageService) {
 		this.measurePackageService = measurePackageService;
 	}
-
+	
 	/**
 	 * Gets the measure package service.
 	 *
@@ -274,14 +273,14 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 	public MeasurePackageService getMeasurePackageService() {
 		return measurePackageService;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
 	 */
 	@Override
 	public void setApplicationContext(ApplicationContext arg0)
 			throws BeansException {
-		this.applicationContext = arg0;
+		applicationContext = arg0;
 		
 	}
 }

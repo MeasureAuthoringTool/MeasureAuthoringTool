@@ -98,8 +98,11 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 									.getNamedItem("id");
 							String scoringIdAttributeValue = scoringIdAttribute.getNodeValue();
 							
-							if ("PROPOR".equals(scoringIdAttributeValue)
+							/*if ("PROPOR".equals(scoringIdAttributeValue)
 									|| "RATIO".equals(scoringIdAttributeValue)
+									|| "COHORT".equals(scoringIdAttributeValue)) {
+							 */
+							if ("PROPOR".equals(scoringIdAttributeValue)
 									|| "COHORT".equals(scoringIdAttributeValue)) {
 								populationWorkspaceTabs = new MatTabLayoutPanel(true);
 								populationWorkspaceTabs.setId("clauseWorkspce");
@@ -219,7 +222,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 					String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
 					// SubTree name might has trailing spaces.
 					name = name.trim();
-//					name = name.replaceAll("^\\s+|\\s+$", "");
+					//					name = name.replaceAll("^\\s+|\\s+$", "");
 					String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 					PopulationWorkSpaceConstants.subTreeLookUpNode.put(name + "~" + uuid, subTree.item(i));
 					PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);

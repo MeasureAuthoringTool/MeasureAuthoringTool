@@ -649,7 +649,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public SuccessMessageDisplayInterface getPackageSuccessMessageDisplay() {
-		return packageSuccessMessages;
+		return packageGroupingWidget.getSuccessMessages();
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#asWidget()

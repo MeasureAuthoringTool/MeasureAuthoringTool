@@ -10,6 +10,7 @@ import mat.client.CustomPager;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+import org.apache.commons.lang.StringUtils;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -55,6 +56,7 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * The Class MeasurePackageClauseCellListWidget.
  */
 public class MeasurePackageClauseCellListWidget {
+	private static final int ASOOCIATED_LIST_SIZE = 10;
 	/**
 	 * The HTML templates used to render the ClauseCell.
 	 */
@@ -140,14 +142,29 @@ public class MeasurePackageClauseCellListWidget {
 	/** List of Elements in Association Population List.*/
 	private ArrayList<MeasurePackageClauseDetail> associatedPopulationList =
 			new ArrayList<MeasurePackageClauseDetail>();
+	/**
+	 * 
+	 */
 	private CellList<MeasurePackageClauseDetail> associatedPOPCellList;
 	/** Error Message in Package Grouping Section. */
 	private ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
+	/**
+	 * 
+	 */
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
+	/**
+	 * 
+	 */
 	private SingleSelectionModel<MeasurePackageClauseDetail> associatedSelectionModel;
 	
+	/**
+	 * 
+	 */
 	private Map<String, MeasurePackageClauseDetail>  map = new HashMap<String, MeasurePackageClauseDetail>();
 	
+	/**
+	 * 
+	 */
 	private List<QualityDataSetDTO> itemCountSelectionList ;
 	
 	
@@ -326,13 +343,22 @@ public class MeasurePackageClauseCellListWidget {
 		});
 	}
 	
-	private void addClickHandlersToAddItemCountList(){
+	/**
+	 * Add Item count to selected populations.
+	 */
+	private void addClickHandlersToAddItemCountList() {
 		saveItemcountList.addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
-				System.out.println("Selected ItemCountList: "+ itemCountSelectionList.size());
+				errorMessages.clear();
+				successMessages.clear();
+				if (rightCellListSelectionModel.getSelectedObject() == null) {
+					return;
+				}
+				System.out.println("Selected ItemCountList: " + itemCountSelectionList.size());
 				map.get(rightCellListSelectionModel.getSelectedObject().getName()).setItemCountList(itemCountSelectionList);
+				successMessages.setMessage("Successfully added Item count(s)."
+						+ " Please click save grouping to save the changes.");
 			}
 		});
 	}
@@ -349,13 +375,14 @@ public class MeasurePackageClauseCellListWidget {
 	 * Add Columns to Item Count Cell Table.
 	 * @return CellTable.
 	 */
+	// To Do : Remove isUsedMP Flag from QualityDataSetDTO. Set isUsed running xpath while getting Applied QDM List on server side.
 	private CellTable<QualityDataSetDTO> addColumntoTable() {
 		MatCheckBoxCell chkBtnCell = new MatCheckBoxCell(false , true);
-		Column<QualityDataSetDTO, Boolean> selectColumn = new Column<QualityDataSetDTO, Boolean>(chkBtnCell){
+		Column<QualityDataSetDTO, Boolean> selectColumn = new Column<QualityDataSetDTO, Boolean>(chkBtnCell) {
 			@Override
 			public Boolean getValue(QualityDataSetDTO object) {
 				object.setUsedMP(false);
-				if ((itemCountSelectionList!=null)&& (itemCountSelectionList.size() > 0)) {
+				if ((itemCountSelectionList != null) && (itemCountSelectionList.size() > 0)) {
 					for (int i = 0; i < itemCountSelectionList.size(); i++) {
 						if (itemCountSelectionList.get(i).getUuid().equalsIgnoreCase(object.getUuid())) {
 							object.setUsedMP(true);
@@ -382,72 +409,53 @@ public class MeasurePackageClauseCellListWidget {
 							break;
 						}
 					}
-					
 				}
 			}
 		});
 		itemCountCellTable.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select"
 				+ "</span>"));
-		
-		
 		Column<QualityDataSetDTO, SafeHtml> codeListName = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
-			
 			@Override
 			public SafeHtml getValue(QualityDataSetDTO object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				String value;
-				String QDMDetails = "";
-				
+				String qdmDetails = StringUtils.EMPTY;
 				if (object.getOid().equalsIgnoreCase(ConstantMessages.USER_DEFINED_QDM_OID)) {
-					QDMDetails = "(User defined)";
+					qdmDetails = "(User defined)";
 				}  else {
 					String version = object.getVersion();
 					String effectiveDate = object.getEffectiveDate();
-					
 					if (effectiveDate != null) {
-						
-						QDMDetails = "(OID: " + object.getOid() + ", Effective Date: " + effectiveDate + ")";
+						qdmDetails = "(OID: " + object.getOid() + ", Effective Date: " + effectiveDate + ")";
 					}  else if (!version.equals("1.0") && !version.equals("1")) {
-						
-						QDMDetails = "(OID: " + object.getOid() + ", Version: " + version + ")";
+						qdmDetails = "(OID: " + object.getOid() + ", Version: " + version + ")";
 					} else {
-						
-						QDMDetails = "(OID: " + object.getOid() + ")";
+						qdmDetails = "(OID: " + object.getOid() + ")";
 					}
 				}
-				
 				if ((object.getOccurrenceText() != null) && !object.getOccurrenceText().equals("")) {
 					value = object.getOccurrenceText() + " of " + object.getCodeListName();
-					sb.appendHtmlConstant("<span title=\"" + QDMDetails + " \" tabIndex=\"0\" >" + value + " </span>");
-					
+					sb.appendHtmlConstant("<span title=\"" + qdmDetails + " \" tabIndex=\"0\" >" + value + " </span>");
 				} else {
 					value = object.getCodeListName();
-					sb.appendHtmlConstant("<span title=\"" + QDMDetails + " \" tabIndex=\"0\">" + value + " </span>");
+					sb.appendHtmlConstant("<span title=\"" + qdmDetails + " \" tabIndex=\"0\">" + value + " </span>");
 				}
-				
 				return sb.toSafeHtml();
 			}
 		};
-		
 		itemCountCellTable.addColumn(codeListName, SafeHtmlUtils.fromSafeConstant("<span title='Name'>" + "Name"
 				+ "</span>"));
-		
-		
 		Column<QualityDataSetDTO, SafeHtml> vsacDataType = new Column<QualityDataSetDTO, SafeHtml>(new SafeHtmlCell()) {
-			
 			@Override
 			public SafeHtml getValue(QualityDataSetDTO object) {
 				SafeHtmlBuilder sb = new SafeHtmlBuilder();
 				sb.appendHtmlConstant("<span title=\"" + object.getDataType() + " \" tabIndex=\"0\" >"
 						+ object.getDataType() + " </span>");
-				
 				return sb.toSafeHtml();
 			}
 		};
-		
 		itemCountCellTable.addColumn(vsacDataType, SafeHtmlUtils.fromSafeConstant("<span title='Data Type'>" + "Data Type"
 				+ "</span>"));
-		
 		return itemCountCellTable;
 	}
 	/**
@@ -494,26 +502,20 @@ public class MeasurePackageClauseCellListWidget {
 		return panel;
 	}
 	
-	public List<QualityDataSetDTO> getItemCountSelectionList() {
-		return itemCountSelectionList;
-	}
-	
 	public Panel getAssociatedPOPCellListWidget(){
 		vPanel.clear();
 		vPanel.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_VerticalPanel");
 		associatedSelectionModel = new SingleSelectionModel<MeasurePackageClauseDetail>();
 		associatedPOPCellList = new CellList<MeasurePackageClauseDetail>(getAssociatedPOPCompositeCell());
 		associatedSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				
-				Window.alert("Associated Selection handler:"+ associatedSelectionModel.getSelectedObject().getName());
+				Window.alert("Associated Selection handler:" + associatedSelectionModel.getSelectedObject().getName());
 			}
 		});
 		associatedPOPCellList.setSelectionModel(associatedSelectionModel,
 				DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
-		associatedPOPCellList.setPageSize(10);
+		associatedPOPCellList.setPageSize(ASOOCIATED_LIST_SIZE);
 		associatedPOPCellList.setRowData(associatedPopulationList);
 		associatedPOPCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		ListDataProvider<MeasurePackageClauseDetail> dataProvider =
@@ -523,87 +525,67 @@ public class MeasurePackageClauseCellListWidget {
 		vPanel.add(associatedPOPCellList);
 		return vPanel;
 	}
-	
-	public Cell<MeasurePackageClauseDetail> getAssociatedPOPCompositeCell()
-	{
+	/**
+	 * @return Cell.
+	 */
+	private Cell<MeasurePackageClauseDetail> getAssociatedPOPCompositeCell() {
 		ArrayList<HasCell<MeasurePackageClauseDetail, ?>> hasCells = new ArrayList<HasCell<MeasurePackageClauseDetail, ?>>();
-		
 		hasCells.add(new HasCell<MeasurePackageClauseDetail, Boolean>() {
-			
 			private RadioButtonCell rbCell = new RadioButtonCell(true, true);
 			@Override
-			
 			public Cell<Boolean> getCell() {
 				return rbCell;
 			}
-			
 			@Override
 			public FieldUpdater<MeasurePackageClauseDetail, Boolean> getFieldUpdater() {
 				return new FieldUpdater<MeasurePackageClauseDetail, Boolean>() {
-					
 					@Override
 					public void update(int index,
 							MeasurePackageClauseDetail object, Boolean value) {
-						//Window.alert("RadioButton Clicked:"+ object.getName());
 						associatedSelectionModel.setSelected(object, value);
 					}
 				};
 			}
-			
 			@Override
 			public Boolean getValue(MeasurePackageClauseDetail object) {
 				return associatedSelectionModel.isSelected(object);
 			} });
-		
-		hasCells.add(new HasCell<MeasurePackageClauseDetail, String>(){
+		hasCells.add(new HasCell<MeasurePackageClauseDetail, String>() {
 			private TextCell cell = new TextCell();
 			@Override
 			public Cell<String> getCell() {
 				return cell;
 			}
-			
-			
 			@Override
 			public String getValue(MeasurePackageClauseDetail object) {
 				return object.getName();
 			}
-			
-			
 			@Override
 			public FieldUpdater<MeasurePackageClauseDetail, String> getFieldUpdater() {
-				
 				return new FieldUpdater<MeasurePackageClauseDetail, String>() {
-					
 					@Override
 					public void update(int index, MeasurePackageClauseDetail object,
 							String value) {
-						
-						
 					}
 				};
-			}});
-		
-		
+			}
+		}
+				);
 		Cell<MeasurePackageClauseDetail> myClassCell = new CompositeCell<MeasurePackageClauseDetail>(hasCells) {
-			
-			
 			@Override
-			public void render(Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb)
-			{
+			public void render(Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb) {
 				sb.appendHtmlConstant("<table><tbody><tr>");
 				super.render(context, value, sb);
 				sb.appendHtmlConstant("</tr></tbody></table>");
 			}
 			@Override
-			protected Element getContainerElement(Element parent)
-			{
+			protected Element getContainerElement(Element parent) {
 				// Return the first TR element in the table.
 				return parent.getFirstChildElement().getFirstChildElement().getFirstChildElement();
 			}
-			
 			@Override
-			protected <X> void render(Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb, HasCell<MeasurePackageClauseDetail, X> hasCell)
-			{
+			protected <X> void render(Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb
+					, HasCell<MeasurePackageClauseDetail, X> hasCell) {
 				// this renders each of the cells inside the composite cell in a new table cell
 				Cell<X> cell = hasCell.getCell();
 				sb.appendHtmlConstant("<td style='font-size:100%;'>");
@@ -677,6 +659,8 @@ public class MeasurePackageClauseCellListWidget {
 		addClauseRight.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				errorMessages.clear();
+				successMessages.clear();
 				if ((clausesPopulationList.size() > 0)
 						&& (leftCellListSelectionModel.getSelectedObject() != null)) {
 					groupingPopulationList.add(leftCellListSelectionModel.getSelectedObject());
@@ -692,6 +676,8 @@ public class MeasurePackageClauseCellListWidget {
 		addClauseLeft.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				errorMessages.clear();
+				successMessages.clear();
 				if ((groupingPopulationList.size() > 0)
 						&& (rightCellListSelectionModel.getSelectedObject() != null)) {
 					clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
@@ -709,6 +695,8 @@ public class MeasurePackageClauseCellListWidget {
 		addAllClauseRight.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				errorMessages.clear();
+				successMessages.clear();
 				if (clausesPopulationList.size() != 0) {
 					groupingPopulationList.addAll(clausesPopulationList);
 					clausesPopulationList.removeAll(clausesPopulationList);
@@ -723,6 +711,8 @@ public class MeasurePackageClauseCellListWidget {
 		addAllClauseLeft.addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				errorMessages.clear();
+				successMessages.clear();
 				if (groupingPopulationList.size() != 0) {
 					clausesPopulationList.addAll(groupingPopulationList);
 					groupingPopulationList.removeAll(groupingPopulationList);
@@ -737,7 +727,12 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		});
 	}
-	
+	/**
+	 * Method to count number of Clause types.
+	 * @param clauseList -List.
+	 * @param type - String.
+	 * @return int.
+	 */
 	private int countDetailsWithType(
 			List<MeasurePackageClauseDetail> clauseList,  String type) {
 		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
@@ -793,12 +788,12 @@ public class MeasurePackageClauseCellListWidget {
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
 			addClickHandlersToAddItemCountList();
 			itemCountSelectionList = new ArrayList<QualityDataSetDTO>();
-			map.put(rightCellListSelectionModel.getSelectedObject().getName(),rightCellListSelectionModel.getSelectedObject());
+			map.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject());
 			MeasurePackageClauseDetail measureDetail = map.get(rightCellListSelectionModel.getSelectedObject().getName());
-			if((measureDetail.getItemCountList()!=null) && (measureDetail.getItemCountList().size()>0)){
+			if ((measureDetail.getItemCountList() != null) && (measureDetail.getItemCountList().size() > 0)) {
 				itemCountSelectionList = measureDetail.getItemCountList();
 			}
-			System.out.println("ItemCountList :"+itemCountSelectionList);
+			System.out.println("ItemCountList :" + itemCountSelectionList);
 			if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 				leftCellListSelectionModel.clear();
 				String scoring = MatContext.get().getCurrentMeasureScoringType();
@@ -896,6 +891,12 @@ public class MeasurePackageClauseCellListWidget {
 		public void setValue(com.google.gwt.cell.client.Cell.Context context, Element parent, MeasurePackageClauseDetail value) {
 			// TODO Auto-generated method stub
 		}
+	}
+	/**
+	 * @return List .
+	 */
+	public List<QualityDataSetDTO> getItemCountSelectionList() {
+		return itemCountSelectionList;
 	}
 	/**
 	 * @return the groupingPopulationList

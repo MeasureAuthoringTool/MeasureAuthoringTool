@@ -968,8 +968,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					== CellTreeNode.MASTER_ROOT_NODE)
 					|| (cellTreeNode.getNodeType()
 							== CellTreeNode.ROOT_NODE)) {
-				sb.append(template.outerDiv(getStyleClass(cellTreeNode), cellTreeNode.getTitle(),
-						UUIDUtilClient.uuid().concat("_treeNode"),
+				sb.append(template.outerDiv(getStyleClass(cellTreeNode), UUIDUtilClient.uuid().concat("_treeNode"),
+						cellTreeNode.getTitle(),
 						cellTreeNode.getLabel() != null
 						? cellTreeNode.getLabel() : cellTreeNode.getName()));
 			} else {
@@ -1000,7 +1000,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					}
 					
 				} else {
-					sb.append(template.outerDivItem(getStyleClass(cellTreeNode),UUIDUtilClient.uuid().concat("_treeNode"), cellTreeNode.getTitle(),
+					sb.append(template.outerDivItem(getStyleClass(cellTreeNode),UUIDUtilClient.uuid().concat("_treeNode")
+							, cellTreeNode.getTitle(),
 							cellTreeNode.getLabel() != null
 							? cellTreeNode.getLabel() : cellTreeNode.getName()));
 				}

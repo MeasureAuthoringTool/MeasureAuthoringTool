@@ -418,16 +418,17 @@ public class MeasurePackagePresenter implements MatPresenter {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioMayNotContainMessage());
 			}
-			// In case of more than 1 IP, Denominator and Numerator must contain associations.
-			int iPPCount = (countDetailsWithType(detailList,
+			// In case of two IP's, Denominator and Numerator must contain associations.
+			int iPCount = (countDetailsWithType(detailList,
 					ConstantMessages.POPULATION_CONTEXT_ID));
-			if (iPPCount > 1) {
+			if (iPCount == 2) {
 				for (MeasurePackageClauseDetail detail : detailList) {
-					if ((ConstantMessages.MEASURE_POPULATION_CONTEXT_ID).equals(detail.getType())
+					if ((ConstantMessages.DENOMINATOR_CONTEXT_ID).equals(detail.getType())
 							|| (ConstantMessages.NUMERATOR_CONTEXT_ID).equals(detail.getType())) {
 						if ((detail.getAssociatedPopulation() == null)) {
 							messages.add("For Ratio measures, in case of more than one Population ,"
-									+ "Numerator and Denominator must contain 1 association.");
+									+ " Numerator and Denominator must contain one association.");
+							break;
 						}
 					}
 				}

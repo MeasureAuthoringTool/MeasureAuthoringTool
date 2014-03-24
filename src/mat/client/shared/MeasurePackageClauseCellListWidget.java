@@ -34,7 +34,6 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardPagingPolicy.KeyboardPagingPolicy;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -131,8 +130,6 @@ public class MeasurePackageClauseCellListWidget {
 	private List<QualityDataSetDTO> appliedQdmList;
 	/** The panel. */
 	private VerticalPanel panel = new VerticalPanel();
-	
-	private VerticalPanel vPanel = new VerticalPanel();
 	/** List of Elements in Grouping List. */
 	private ArrayList<MeasurePackageClauseDetail> groupingPopulationList =
 			new ArrayList<MeasurePackageClauseDetail>();
@@ -256,7 +253,7 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 * @return the widget
 	 */
-	private Widget buildAddAssociationWidget() {
+	private Widget buildAddAssociationWidget(ArrayList<MeasurePackageClauseDetail> populationList) {
 		disclosurePanelAssociations.clear();
 		FlowPanel searchCriteriaPanel = new FlowPanel();
 		searchCriteriaPanel.getElement().setAttribute("id", "MeasurePackageClauseAssoWidgt_FlowPanel");
@@ -271,7 +268,7 @@ public class MeasurePackageClauseCellListWidget {
 		HorizontalPanel buttonLayout = new HorizontalPanel();
 		buttonLayout.getElement().setAttribute("id", "MeasurePackageClauseAssoWidgtButtonLayout");
 		buttonLayout.setStylePrimaryName("myAccountButtonLayout");
-		disclosurePanelAssociations.add(vPanel);
+		disclosurePanelAssociations.add(getAssociatedPOPCellListWidget(populationList));
 		disclosurePanelAssociations.setOpen(false);
 		disclosurePanelAssociations.setVisible(false);
 		return disclosurePanelAssociations;
@@ -311,7 +308,8 @@ public class MeasurePackageClauseCellListWidget {
 		disclosurePanelItemCountTable.clear();
 		disclosurePanelAssociations.clear();
 		vp.add(buildItemCountWidget());
-		vp.add(buildAddAssociationWidget());
+		disclosurePanelAssociations.clear();
+		vp.add(disclosurePanelAssociations);
 		hp.add(vp);
 		hp.getElement().setAttribute("id", "MeasurePackageClause_MainHoriPanel");
 		packageName.addStyleName("measureGroupPackageName");
@@ -502,26 +500,30 @@ public class MeasurePackageClauseCellListWidget {
 		return panel;
 	}
 	
-	public Panel getAssociatedPOPCellListWidget(){
-		vPanel.clear();
+	/**
+	 * @param populationList - ArrayList.
+	 * @return Vertical Panel.
+	 */
+	private Panel getAssociatedPOPCellListWidget(ArrayList<MeasurePackageClauseDetail> populationList) {
+		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_VerticalPanel");
 		associatedSelectionModel = new SingleSelectionModel<MeasurePackageClauseDetail>();
 		associatedPOPCellList = new CellList<MeasurePackageClauseDetail>(getAssociatedPOPCompositeCell());
 		associatedSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				//Window.alert("Associated Selection handler:" + associatedSelectionModel.getSelectedObject().getName());
+				/*Window.alert("Associated Selection handler:" + associatedSelectionModel.getSelectedObject().getName());*/
 			}
 		});
 		associatedPOPCellList.setSelectionModel(associatedSelectionModel,
 				DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
 		associatedPOPCellList.setPageSize(ASOOCIATED_LIST_SIZE);
-		associatedPOPCellList.setRowData(associatedPopulationList);
+		associatedPOPCellList.setRowData(populationList);
 		associatedPOPCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		ListDataProvider<MeasurePackageClauseDetail> dataProvider =
 				new ListDataProvider<MeasurePackageClauseDetail>(associatedPopulationList);
 		dataProvider.addDataDisplay(associatedPOPCellList);
-		vPanel.setSize("200px", "200px");
+		vPanel.setSize("200px", "170px");
 		vPanel.add(associatedPOPCellList);
 		return vPanel;
 	}
@@ -571,7 +573,7 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		}
 				);
-		Cell<MeasurePackageClauseDetail> myClassCell = new CompositeCell<MeasurePackageClauseDetail>(hasCells) {
+		Cell<MeasurePackageClauseDetail> associatePopulationCell = new CompositeCell<MeasurePackageClauseDetail>(hasCells) {
 			@Override
 			public void render(Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb) {
 				sb.appendHtmlConstant("<table><tbody><tr>");
@@ -595,7 +597,7 @@ public class MeasurePackageClauseCellListWidget {
 			
 		};
 		
-		return myClassCell;
+		return associatePopulationCell;
 	}
 	/**
 	 * Builds the add button.
@@ -743,8 +745,43 @@ public class MeasurePackageClauseCellListWidget {
 				count++;
 			}
 		}
+		Collections.sort(associatedPopulationList);
 		return count;
 	}
+	
+	/**
+	 * Generate's Association List for Measure Observation in Ratio Measure's.
+	 * @param clauseList - List.
+	 */
+	private void addPopulationForMeasureObservation(
+			List<MeasurePackageClauseDetail> clauseList) {
+		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+		for (MeasurePackageClauseDetail detail : clauseList) {
+			if (("denominator".equalsIgnoreCase(detail.getType())
+					|| "numerator".equalsIgnoreCase(detail.getType()))
+					&& !associatedPopulationList.contains(detail)) {
+				associatedPopulationList.add(detail);
+			}
+		}
+		Collections.sort(associatedPopulationList);
+	}
+	
+	/**
+	 * Generate's Association List for Measure Observation in Continous Measure's.
+	 * @param clauseList
+	 */
+	/*private void addMeasurePopulationForMeasureObservation(
+			List<MeasurePackageClauseDetail> clauseList) {
+		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+		for (MeasurePackageClauseDetail detail : clauseList) {
+			if (("measurePopulation".equalsIgnoreCase(detail.getType()))
+					&& !associatedPopulationList.contains(detail)) {
+				associatedPopulationList.add(detail);
+			}
+		}
+		Collections.sort(associatedPopulationList);
+	}*/
+	
 	/**
 	 * Right CellList Clause Cell Class.
 	 *
@@ -798,25 +835,37 @@ public class MeasurePackageClauseCellListWidget {
 				leftCellListSelectionModel.clear();
 				String scoring = MatContext.get().getCurrentMeasureScoringType();
 				//Show Association only for Ratio Measures.
-				if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)
-						&& ((value.getType().equals("denominator"))
-								|| (value.getType().equals("numerator")))) {
-					buildItemCountCellTable();
-					getItemCountTableButtonPanel();
-					//getAssociatedPOPCellListWidget();
-					disclosurePanelItemCountTable.setVisible(true);
-					disclosurePanelItemCountTable.setOpen(false);
-					// If More than one Populations are added in Grouping, Add Association Widget is shown
-					// otherwise available population is added to Denominator and Numerator Association List.
-					if (countDetailsWithType(groupingPopulationList, ConstantMessages.POPULATION_CONTEXT_ID) >= 2) {
-						getAssociatedPOPCellListWidget();
+				if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
+					if ((value.getType().equalsIgnoreCase("denominator"))
+							|| (value.getType().equalsIgnoreCase("numerator"))) {
+						buildItemCountCellTable();
+						getItemCountTableButtonPanel();
+						disclosurePanelItemCountTable.setVisible(true);
+						disclosurePanelItemCountTable.setOpen(false);
+						// If More than one Populations are added in Grouping, Add Association Widget is shown
+						// otherwise available population is added to Denominator and Numerator Association List.
+						if (countDetailsWithType(groupingPopulationList
+								, ConstantMessages.POPULATION_CONTEXT_ID) == 2) {
+							buildAddAssociationWidget(associatedPopulationList);
+							disclosurePanelAssociations.setVisible(true);
+							disclosurePanelAssociations.setOpen(false);
+						} else  {
+							disclosurePanelAssociations.setVisible(false);
+							disclosurePanelAssociations.setOpen(false);
+						}
+					} else if ((value.getType().equalsIgnoreCase("measureObservation"))) {
+						addPopulationForMeasureObservation(groupingPopulationList);
+						buildAddAssociationWidget(associatedPopulationList);
 						disclosurePanelAssociations.setVisible(true);
 						disclosurePanelAssociations.setOpen(false);
-					} else  {
-						disclosurePanelAssociations.setVisible(false);
-						disclosurePanelAssociations.setOpen(false);
 					}
-				} else {
+				} /*else if (ConstantMessages.CONTINUOUS_VARIABLE_SCORING.equalsIgnoreCase(scoring)
+						&& value.getType().equalsIgnoreCase("measureObservation")) {
+					addMeasurePopulationForMeasureObservation(groupingPopulationList);
+					buildAddAssociationWidget(associatedPopulationList);
+					disclosurePanelAssociations.setVisible(true);
+					disclosurePanelAssociations.setOpen(false);
+				}*/ else {
 					buildItemCountCellTable();
 					getItemCountTableButtonPanel();
 					//getAssociatedPOPCellListWidget();

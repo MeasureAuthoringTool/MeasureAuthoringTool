@@ -510,7 +510,7 @@ public class MeasurePackageClauseCellListWidget {
 		associatedSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
-				Window.alert("Associated Selection handler:" + associatedSelectionModel.getSelectedObject().getName());
+				//Window.alert("Associated Selection handler:" + associatedSelectionModel.getSelectedObject().getName());
 			}
 		});
 		associatedPOPCellList.setSelectionModel(associatedSelectionModel,
@@ -531,10 +531,10 @@ public class MeasurePackageClauseCellListWidget {
 	private Cell<MeasurePackageClauseDetail> getAssociatedPOPCompositeCell() {
 		ArrayList<HasCell<MeasurePackageClauseDetail, ?>> hasCells = new ArrayList<HasCell<MeasurePackageClauseDetail, ?>>();
 		hasCells.add(new HasCell<MeasurePackageClauseDetail, Boolean>() {
-			private RadioButtonCell rbCell = new RadioButtonCell(true, true);
+			private MatCheckBoxCell chkCell = new MatCheckBoxCell(false, true);
 			@Override
 			public Cell<Boolean> getCell() {
-				return rbCell;
+				return chkCell;
 			}
 			@Override
 			public FieldUpdater<MeasurePackageClauseDetail, Boolean> getFieldUpdater() {

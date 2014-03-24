@@ -383,8 +383,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		} else if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) { /*
 		 * at least one and only one Population, Denominator,
 		 * Numerator, zero or one Denominator Exclusions and no
-		 * Denominator Exceptions, Measure Observation, Measure
-		 * Population
+		 * Denominator Exceptions, Measure Population
+		 * May contain one or more Measure Observation.
 		 */
 			if ((countDetailsWithType(detailList,
 					ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
@@ -417,6 +417,20 @@ public class MeasurePackagePresenter implements MatPresenter {
 							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioMayNotContainMessage());
+			}
+			// In case of more than 1 IP, Denominator and Numerator must contain associations.
+			int iPPCount = (countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID));
+			if (iPPCount > 1) {
+				for (MeasurePackageClauseDetail detail : detailList) {
+					if ((ConstantMessages.MEASURE_POPULATION_CONTEXT_ID).equals(detail.getType())
+							|| (ConstantMessages.NUMERATOR_CONTEXT_ID).equals(detail.getType())) {
+						if ((detail.getAssociatedPopulation() == null)) {
+							messages.add("For Ratio measures, in case of more than one Population ,"
+									+ "Numerator and Denominator must contain 1 association.");
+						}
+					}
+				}
 			}
 		} else if (ConstantMessages.COHORT_SCORING.equalsIgnoreCase(scoring)) {
 			if ((countDetailsWithType(detailList,

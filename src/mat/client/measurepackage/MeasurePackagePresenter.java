@@ -386,7 +386,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * Denominator Exceptions, Measure Observation, Measure
 		 * Population
 		 */
-			
 			if ((countDetailsWithType(detailList,
 					ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
 					|| (countDetailsWithType(detailList,
@@ -415,9 +414,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			if ((countDetailsWithType(detailList,
 					ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0)
 					|| (countDetailsWithType(detailList,
-							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)
-							|| (countDetailsWithType(detailList,
-									ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)) {
+							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioMayNotContainMessage());
 			}

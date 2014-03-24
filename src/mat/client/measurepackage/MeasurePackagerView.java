@@ -324,7 +324,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private CellList<QualityDataSetDTO> getQdmCellList()
 	{
 		//left cell list initialization
-		qdmCellList = new CellList<QualityDataSetDTO>(new ClauseCell());
+		qdmCellList = new CellList<QualityDataSetDTO>(new QualityDataSetCell());
 		qdmCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		qdmSelModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			
@@ -355,7 +355,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private CellList<QualityDataSetDTO> getSupCellList()
 	{
 		//left cell list initialization
-		supDataCellList = new CellList<QualityDataSetDTO>(new ClauseCell());
+		supDataCellList = new CellList<QualityDataSetDTO>(new QualityDataSetCell());
 		supDataCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		supListProv = new ListDataProvider<QualityDataSetDTO>(supPopulationList);
 		supListProv.addDataDisplay(supDataCellList);
@@ -677,6 +677,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public void setClauses(List<MeasurePackageClauseDetail> clauses) {
+		Collections.sort(clauses);
 		packageGroupingWidget.getClausesPopulationList().clear();
 		packageGroupingWidget.getClausesPopulationList().addAll(clauses);
 		packageGroupingWidget.getLeftPagerPanel().setDisplay(packageGroupingWidget.getLeftCellList());
@@ -694,6 +695,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public void setClausesInPackage(List<MeasurePackageClauseDetail> list) {
+		Collections.sort(list);
 		packageGroupingWidget.getGroupingPopulationList().clear();
 		packageGroupingWidget.getGroupingPopulationList().addAll(list);
 		packageGroupingWidget.getRightPagerPanel().setDisplay(packageGroupingWidget.getRightCellList());
@@ -725,10 +727,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		this.observer = observer;
 	}
 	/**
-	 * Clause Cell Class.
+	 * QualityDataSet Cell Class.
 	 *
 	 */
-	class ClauseCell implements Cell<QualityDataSetDTO> {
+	class QualityDataSetCell implements Cell<QualityDataSetDTO> {
 		@Override
 		public void render(com.google.gwt.cell.client.Cell.Context context, QualityDataSetDTO value, SafeHtmlBuilder sb) {
 			if (value == null) {

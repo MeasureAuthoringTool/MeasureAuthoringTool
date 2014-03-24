@@ -855,9 +855,21 @@ public class MeasurePackageClauseCellListWidget {
 						}
 					} else if ((value.getType().equalsIgnoreCase("measureObservation"))) {
 						addPopulationForMeasureObservation(groupingPopulationList);
+						buildItemCountCellTable();
+						getItemCountTableButtonPanel();
 						buildAddAssociationWidget(associatedPopulationList);
+						disclosurePanelItemCountTable.setVisible(true);
+						disclosurePanelItemCountTable.setOpen(false);
 						disclosurePanelAssociations.setVisible(true);
 						disclosurePanelAssociations.setOpen(false);
+					} else {
+						buildItemCountCellTable();
+						getItemCountTableButtonPanel();
+						disclosurePanelItemCountTable.setVisible(true);
+						disclosurePanelAssociations.setVisible(false);
+						disclosurePanelItemCountTable.setOpen(false);
+						disclosurePanelAssociations.setOpen(false);
+						associatedPopulationList.clear();
 					}
 				} /*else if (ConstantMessages.CONTINUOUS_VARIABLE_SCORING.equalsIgnoreCase(scoring)
 						&& value.getType().equalsIgnoreCase("measureObservation")) {
@@ -868,7 +880,6 @@ public class MeasurePackageClauseCellListWidget {
 				}*/ else {
 					buildItemCountCellTable();
 					getItemCountTableButtonPanel();
-					//getAssociatedPOPCellListWidget();
 					disclosurePanelItemCountTable.setVisible(true);
 					disclosurePanelAssociations.setVisible(false);
 					disclosurePanelItemCountTable.setOpen(false);

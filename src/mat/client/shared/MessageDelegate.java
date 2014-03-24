@@ -395,7 +395,7 @@ public class MessageDelegate {
 			+ "Population and Denominator.";
 	
 	/** The ratio may not contain. */
-	private final String RATIO_MAY_NOT_CONTAIN = "For a Ratio measure, a grouping may not contain a Denominator Exception, Measure Observation, or Measure Population.";
+	private final String RATIO_MAY_NOT_CONTAIN = "For a Ratio measure, a grouping may not contain a Denominator Exception, or Measure Population.";
 	
 	/** The ratio too many. */
 	private final String RATIO_TOO_MANY = "For a Ratio measure, a grouping may not contain more than one of each of the following: Denominator Exclusion and Numerator Exclusion.";
@@ -1906,7 +1906,7 @@ public class MessageDelegate {
 	public String getComparisonDiloagBoxErrorDisplay() {
 		return COMPARISON_DILOAG_BOX_ERROR_DISPLAY;
 	}
-
+	
 	/**
 	 * @return the rATIO_TOO_MANY_POPULATIONS
 	 */

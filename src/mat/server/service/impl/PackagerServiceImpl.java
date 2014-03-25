@@ -7,11 +7,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
@@ -23,7 +21,6 @@ import mat.model.clause.MeasureXML;
 import mat.server.service.PackagerService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
-
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -101,8 +98,13 @@ public class PackagerServiceImpl implements PackagerService {
 					Node uuidNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.UUID);
 					Node displayNameNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.DISPLAY_NAME);
 					Node typeNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.TYPE);
+					Node associatedClauseUUIDNode = namedNodeMap.getNamedItem("associatedPopulationUUID");
+					String associatedClauseUUID = null;
+					if(associatedClauseUUIDNode != null){
+						associatedClauseUUID = associatedClauseUUIDNode.getNodeValue();
+					}
 					clauses.add(createMeasurePackageClauseDetail(
-							uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue(),
+							uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue(),associatedClauseUUID,
 							qdmSelectedList));
 					//adding all Clause type uuid's
 					xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and";
@@ -167,14 +169,20 @@ public class PackagerServiceImpl implements PackagerService {
 						}
 						
 						NamedNodeMap pkgClauseMap = pkgClauses.item(j).getAttributes();
+						Node associatedClauseNode = pkgClauseMap.getNamedItem("associatedPopulationUUID");
+						String associatedClauseNodeUuid = null;
+						if(associatedClauseNode != null) {
+							associatedClauseNodeUuid = associatedClauseNode.getNodeValue();
+						}
 						detail.getPackageClauses().add(
 								createMeasurePackageClauseDetail(
 										pkgClauseMap.getNamedItem(
 												PopulationWorkSpaceConstants.UUID).getNodeValue()
 												, pkgClauseMap.getNamedItem("name").
 												getNodeValue(), pkgClauseMap.getNamedItem(
-												PopulationWorkSpaceConstants.TYPE).getNodeValue(), 
-												qdmSelectedList));
+														PopulationWorkSpaceConstants.TYPE).getNodeValue(),
+														associatedClauseNodeUuid,
+														qdmSelectedList));
 					}
 				}
 			}
@@ -275,11 +283,12 @@ public class PackagerServiceImpl implements PackagerService {
 	 * @return the measure package clause detail
 	 */
 	private MeasurePackageClauseDetail createMeasurePackageClauseDetail(String id, String name, String type,
-			List<QualityDataSetDTO> itemCountList) {
+			String associatedPopulationUUID, List<QualityDataSetDTO> itemCountList) {
 		MeasurePackageClauseDetail detail = new MeasurePackageClauseDetail();
 		detail.setId(id);
 		detail.setName(name);
 		detail.setType(type);
+		detail.setAssociatedPopulationUUID(associatedPopulationUUID);
 		detail.setItemCountList(itemCountList);
 		return detail;
 	}
@@ -294,7 +303,7 @@ public class PackagerServiceImpl implements PackagerService {
 		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		Node groupNode = null;
 		try {
-			groupNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_GROUP_SEQ_START 
+			groupNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_GROUP_SEQ_START
 					+ detail.getSequence() +  XmlProcessor.XPATH_GROUP_SEQ_END);
 		} catch (XPathExpressionException e) {
 			logger.info("Xpath Expression is incorrect" + e);
@@ -349,10 +358,10 @@ public class PackagerServiceImpl implements PackagerService {
 		Node measureGroupingNode = null;
 		try {
 			//fetches the Group node from Measure_XML with the sequence number from MeasurePackageDetail
-			groupNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_GROUP_SEQ_START 
+			groupNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_GROUP_SEQ_START
 					+ detail.getSequence() +  XmlProcessor.XPATH_GROUP_SEQ_END);
 			//fetches the MeasureGrouping node from the Measure_xml
-			measureGroupingNode = processor.findNode(processor.getOriginalDoc(), 
+			measureGroupingNode = processor.findNode(processor.getOriginalDoc(),
 					XmlProcessor.XPATH_MEASURE_GROUPING); // get the MEASUREGROUPING node
 		} catch (XPathExpressionException e) {
 			logger.info("Xpath Expression is incorrect" + e);
@@ -364,7 +373,7 @@ public class PackagerServiceImpl implements PackagerService {
 		String measureGroupingXml = createGroupingXml(detail); //Converts MeasurePackageDetail to measureGroupingXml through castor
 		XmlProcessor measureGrpProcessor = new XmlProcessor(measureGroupingXml);
 		Node newGroupNode = measureGrpProcessor.getOriginalDoc()
-				.getElementsByTagName("measureGrouping").item(0).getFirstChild(); // get the converted XML's first child and appends it the Measure Grouping 
+				.getElementsByTagName("measureGrouping").item(0).getFirstChild(); // get the converted XML's first child and appends it the Measure Grouping
 		measureGroupingNode.appendChild(processor.getOriginalDoc().importNode(newGroupNode, true));
 		logger.info("new Group appended");
 		String xml = measureGrpProcessor.transform(processor.getOriginalDoc());
@@ -390,7 +399,7 @@ public class PackagerServiceImpl implements PackagerService {
 			try {
 				// In case all elements from SupplementDataElements are moved to QDM, this will remove all.
 				javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-				NodeList nodesSupplementalData = (NodeList) xPath.evaluate(XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF, 
+				NodeList nodesSupplementalData = (NodeList) xPath.evaluate(XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF,
 						processor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
 				for (int i = 0; i < nodesSupplementalData.getLength(); i++) {
 					String xPathString = XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION.concat("='")

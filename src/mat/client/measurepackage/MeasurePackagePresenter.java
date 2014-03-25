@@ -425,7 +425,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				for (MeasurePackageClauseDetail detail : detailList) {
 					if ((ConstantMessages.DENOMINATOR_CONTEXT_ID).equals(detail.getType())
 							|| (ConstantMessages.NUMERATOR_CONTEXT_ID).equals(detail.getType())) {
-						if ((detail.getAssociatedPopulation() == null)) {
+						if ((detail.getAssociatedPopulationUUID() == null)) {
 							messages.add("For Ratio measures, in case of more than one Population ,"
 									+ " Numerator and Denominator must contain one association.");
 							break;
@@ -558,6 +558,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 				&& !MatContext.get().getCurrentMeasureId().equals("")) {
 			getMeasure(MatContext.get().getCurrentMeasureId());
 			getAppliedQDMList(true);
+			view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
+			view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
 		} else {
 			displayEmpty();
 		}

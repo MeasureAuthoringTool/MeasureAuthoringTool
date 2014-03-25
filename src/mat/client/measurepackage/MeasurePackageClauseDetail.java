@@ -1,16 +1,15 @@
 package mat.client.measurepackage;
 
 import java.util.List;
-
-import com.google.gwt.user.client.rpc.IsSerializable;
 import mat.model.QualityDataSetDTO;
+import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackageClauseDetail.
  */
 public class MeasurePackageClauseDetail implements IsSerializable, Comparable<MeasurePackageClauseDetail> {
-
+	
 	/** The id. */
 	private String id;
 	
@@ -24,8 +23,9 @@ public class MeasurePackageClauseDetail implements IsSerializable, Comparable<Me
 	private List<QualityDataSetDTO> itemCountList;
 	
 	/** The associated population. */
-	private MeasurePackageClauseDetail associatedPopulation;
+	private String  associatedPopulationUUID;
 	
+	private boolean isAssociatedPopulation;
 	/**
 	 * Gets the id.
 	 * 
@@ -84,25 +84,6 @@ public class MeasurePackageClauseDetail implements IsSerializable, Comparable<Me
 	}
 	
 	/**
-	 * Gets the associated population.
-	 *
-	 * @return the associated population
-	 */
-	public MeasurePackageClauseDetail getAssociatedPopulation() {
-		return associatedPopulation;
-	}
-
-	/**
-	 * Sets the associated population.
-	 *
-	 * @param associatedPopulation the new associated population
-	 */
-	public void setAssociatedPopulation(
-			MeasurePackageClauseDetail associatedPopulation) {
-		this.associatedPopulation = associatedPopulation;
-	}
-
-	/**
 	 * Gets the item count list.
 	 *
 	 * @return the item count list
@@ -110,7 +91,7 @@ public class MeasurePackageClauseDetail implements IsSerializable, Comparable<Me
 	public List<QualityDataSetDTO> getItemCountList() {
 		return itemCountList;
 	}
-
+	
 	/**
 	 * Sets the item count list.
 	 *
@@ -119,7 +100,35 @@ public class MeasurePackageClauseDetail implements IsSerializable, Comparable<Me
 	public void setItemCountList(List<QualityDataSetDTO> itemCountList) {
 		this.itemCountList = itemCountList;
 	}
-
+	
+	
+	/**
+	 * @return the associatedPopulationUUID
+	 */
+	public String getAssociatedPopulationUUID() {
+		return associatedPopulationUUID;
+	}
+	
+	/**
+	 * @param associatedPopulationUUID the associatedPopulationUUID to set
+	 */
+	public void setAssociatedPopulationUUID(String associatedPopulationUUID) {
+		this.associatedPopulationUUID = associatedPopulationUUID;
+	}
+	
+	/**
+	 * @return the isAssociatedPopulation
+	 */
+	public boolean isAssociatedPopulation() {
+		return isAssociatedPopulation;
+	}
+	
+	/**
+	 * @param isAssociatedPopulation the isAssociatedPopulation to set
+	 */
+	public void setAssociatedPopulation(boolean isAssociatedPopulation) {
+		this.isAssociatedPopulation = isAssociatedPopulation;
+	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Comparable#compareTo(java.lang.Object)

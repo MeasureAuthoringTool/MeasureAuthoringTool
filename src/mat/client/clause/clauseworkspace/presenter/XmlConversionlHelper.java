@@ -3,9 +3,11 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.shared.MatContext;
+import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.lang.StringUtils;
 import com.google.gwt.xml.client.Document;
@@ -166,14 +168,26 @@ public class XmlConversionlHelper {
 		} else if ("strata".equalsIgnoreCase(tagName)) {
 			parent.setName(PopulationWorkSpaceConstants.get(tagName));
 			parent.setLabel(PopulationWorkSpaceConstants.get(tagName));
-			parent.setNodeType(CellTreeNode.ROOT_NODE);
-			CellTreeNode clauseNode = createChild("Stratum 1", "Stratum 1", CellTreeNode.CLAUSE_NODE, parent);
-			childs.add(clauseNode);
+			parent.setNodeType(CellTreeNode.MASTER_ROOT_NODE);
+			
+			CellTreeNode child = createChild("Stratification 1", "Stratification 1", CellTreeNode.ROOT_NODE, parent);
+			child.setUUID(UUIDUtilClient.uuid());
+			childs.add(child);
 			parent.setChilds(childs);
-			List<CellTreeNode> logicalOp = new ArrayList<CellTreeNode>();
-			logicalOp.add(createChild(PopulationWorkSpaceConstants.AND
-					, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE, clauseNode));
-			clauseNode.setChilds(logicalOp);
+			
+			List<CellTreeNode> clauseNode = new ArrayList<CellTreeNode>();
+			clauseNode.add(createChild("Stratum 1", "Stratum 1", CellTreeNode.CLAUSE_NODE, child));
+			clauseNode.get(0).setUUID(UUIDUtilClient.uuid());
+			child.setChilds(clauseNode);
+			
+			for (int j = 0; j < clauseNode.size(); j++) {
+				List<CellTreeNode> logicalOp = new ArrayList<CellTreeNode>();
+				logicalOp.add(createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND,
+						CellTreeNode.LOGICAL_OP_NODE, clauseNode.get(j)));
+				clauseNode.get(j).setChilds(logicalOp);
+			}
+			
+			
 		}
 		return parent;
 	}
@@ -339,10 +353,18 @@ public class XmlConversionlHelper {
 				? node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.DISPLAY_NAME).getNodeValue() : nodeName;
 				short cellTreeNodeType = 0;
 				String uuid = "";
-				if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.MASTER_ROOT_NODE_POPULATION)) {
+				if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.MASTER_ROOT_NODE_POPULATION)||
+						nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.MASTER_ROOT_NODE_STRATA) ) {
 					cellTreeNodeType =  CellTreeNode.MASTER_ROOT_NODE;
 				} else if (PopulationWorkSpaceConstants.ROOT_NODES.contains(nodeName)) {
 					cellTreeNodeType =  CellTreeNode.ROOT_NODE;
+					
+					if(node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.UUID) != null && 
+							node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue() != null )
+					{
+					uuid = node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue();
+					}
+					
 				} else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.CLAUSE_TYPE)) {
 					cellTreeNodeType =  CellTreeNode.CLAUSE_NODE;
 					uuid = node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.UUID).getNodeValue();
@@ -461,8 +483,21 @@ public class XmlConversionlHelper {
 				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
 				break;
 			case CellTreeNode.ROOT_NODE:
-				element = document.createElement(PopulationWorkSpaceConstants.get(cellTreeNode.getName()));
-				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
+
+				if(cellTreeNode.getName().contains("Stratification"))
+				{
+					
+					element = document.createElement(cellTreeNode.getName().substring(0, cellTreeNode.getName().lastIndexOf(" ")).replaceAll("S", "s"));
+					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
+					element.setAttribute(PopulationWorkSpaceConstants.UUID, cellTreeNode.getUUID());
+					
+				}
+				else
+				{
+					element = document.createElement(PopulationWorkSpaceConstants.get(cellTreeNode.getName()));
+					element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
+				}
+					
 				break;
 			case CellTreeNode.CLAUSE_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.CLAUSE_TYPE);

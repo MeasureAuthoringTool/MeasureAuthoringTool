@@ -1586,6 +1586,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			result = callAppendNode(measureXmlModel, filteredStringSupp, "elementRef", "/measure/supplementalDataElements");
 			measureXmlModel.setXml(result);
 			
+			XmlProcessor processor1 = new XmlProcessor(measureXmlModel.getXml());
+			measureXmlModel.setXml(processor1.checkForStratificationAndAdd());
+			
 		}
 		getService().saveMeasureXml(measureXmlModel);
 	}

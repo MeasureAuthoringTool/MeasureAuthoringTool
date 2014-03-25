@@ -76,6 +76,31 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 		//logger.info("\r\n\r\nUpdating all Measure XML's based on the Ratio scoring type and save them back.");
 		//checkForRatioMeasures(measureList);
 		
+		logger.info("\r\n\r\nUpdating all Measure XML's based on the stratification tag and save them back.");
+		checkForStratificationAndUpdate(measureList);
+		
+	}
+	
+	
+
+	/**
+	 * Check for stratification and update
+	 * @param measureList
+	 */
+	private void checkForStratificationAndUpdate(List<Measure> measureList) {
+		for (Measure measure : measureList) {
+			logger.info("\r\n\r\nCheck for stratification for Measure:"+measure.getaBBRName());
+			MeasureXmlModel measureXmlModel = getMeasureLibraryService().getMeasureXmlForMeasure(measure.getId());
+			if(measureXmlModel == null || measureXmlModel.getXml() == null || measureXmlModel.getXml().trim().length() == 0){
+				logger.info("	Measure XML for:"+measure.getaBBRName()+" is blank or null. Skipping this measure for stratification update.");
+				continue;
+			}
+			XmlProcessor xmlProcessor = new XmlProcessor(measureXmlModel.getXml());
+			
+			xmlProcessor.checkForStratificationAndAdd();
+			measureXmlModel.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+			getMeasurePackageService().saveMeasureXml(measureXmlModel);
+		}
 	}
 	
 	/**

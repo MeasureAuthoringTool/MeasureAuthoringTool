@@ -184,6 +184,12 @@ public class XmlProcessor {
 	/** The Constant XPATH_STRATA. */
 	private static final String XPATH_STRATA = "/measure/strata";
 	
+	/** The Constant STRATIFICATION. */
+	private static final String  STRATIFICATION= "stratification";
+	
+	/** The Constant STRATIFICATION_DISPLAYNAME. */
+	private static final String  STRATIFICATION_DISPLAYNAME= "Stratification 1";
+	
 	/** The constants map. */
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
 	
@@ -1401,13 +1407,13 @@ public class XmlProcessor {
 			
 			if(strataNode != null)
 			{
-				if(!strataNode.getChildNodes().item(0).getNodeName().equalsIgnoreCase("stratification"))
+				if(!strataNode.getChildNodes().item(0).getNodeName().equalsIgnoreCase(STRATIFICATION))
 				{
 					NodeList childs  = strataNode.getChildNodes();
 					
 					Element stratificationEle = originalDoc
-							.createElement("stratification");
-					stratificationEle.setAttribute("displayName","Stratification 1");
+							.createElement(STRATIFICATION);
+					stratificationEle.setAttribute("displayName",STRATIFICATION_DISPLAYNAME);
 					stratificationEle.setAttribute("uuid",UUIDUtilClient.uuid());
 					
 					List<Node> nCList = new ArrayList<Node>();
@@ -1436,4 +1442,3 @@ public class XmlProcessor {
 	}
 
 }
-

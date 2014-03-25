@@ -37,6 +37,25 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 		showHideExpandMenu();
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 			case CellTreeNode.MASTER_ROOT_NODE:
+				
+				if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("Stratification"))
+				{
+					Command addNodeCmd = new Command() {
+						@Override
+						public void execute() {
+							xmlTreeDisplay.setDirty(true);
+							popupPanel.hide();
+							addMasterRootNodeTypeItem();
+						}
+					};
+					addMenu = new MenuItem(getAddMenuName(xmlTreeDisplay.getSelectedNode().getChilds().get(0))
+							, true, addNodeCmd);
+					
+					popupMenuBar.addItem(addMenu);
+					popupMenuBar.addSeparator(separator);
+				}
+				
+				
 				addCommonMenus();
 				break;
 			case CellTreeNode.ROOT_NODE:
@@ -61,6 +80,13 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					pasteMenu.setEnabled(true);
 				}
 				cutMenu.setEnabled(false);
+				
+				if(xmlTreeDisplay.getSelectedNode().getName().contains("Stratification"))
+				{
+					copyMenu.setEnabled(true);
+					deleteMenu.setEnabled(true);
+				}
+				
 				break;
 			case CellTreeNode.CLAUSE_NODE:
 				addCommonMenus();
@@ -72,6 +98,10 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					deleteMenu.setEnabled(true);
 				}
 				cutMenu.setEnabled(false);
+				if(xmlTreeDisplay.getSelectedNode().getName().contains("Stratum"))
+				{
+					deleteMenu.setEnabled(false);
+				}
 				break;
 			case CellTreeNode.LOGICAL_OP_NODE:
 				subMenuBar = new MenuBar(true);
@@ -103,6 +133,14 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					moveDownMenu.setEnabled(checkIfLastChildNode());
 					subMenuBar = new MenuBar(true);
 					createEditMenus(MatContext.get().logicalOps, subMenuBar);
+					editMenu = new MenuItem("Edit", true, subMenuBar);
+					popupMenuBar.addItem(editMenu);
+				}
+				if (xmlTreeDisplay.getSelectedNode().getParent().getName().contains("Stratum")) {
+					
+					subMenuBar = new MenuBar(true);
+					createEditMenus(MatContext.get().logicalOps, subMenuBar);
+					
 					editMenu = new MenuItem("Edit", true, subMenuBar);
 					popupMenuBar.addItem(editMenu);
 				}

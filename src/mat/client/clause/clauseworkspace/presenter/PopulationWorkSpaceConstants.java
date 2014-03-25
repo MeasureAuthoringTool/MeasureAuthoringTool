@@ -57,8 +57,10 @@ public class PopulationWorkSpaceConstants {
 	/** The Constant MASTER_ROOT_NODE_POPULATION. */
 	public static final String MASTER_ROOT_NODE_POPULATION = "Populations";
 	
+	public static final String MASTER_ROOT_NODE_STRATA = "strata";
+	
 	/** The Constant ROOT_NODES. */
-	public static final String ROOT_NODES = "|strata|measureObservations|numerators|denominators|numeratorExclusions"
+	public static final String ROOT_NODES = "|Stratification|stratification|strata|measureObservations|numerators|denominators|numeratorExclusions"
 			+ "|initialPopulations|denominatorExclusions|denominatorExceptions|measurePopulations"
 			+ "|measurePopulationExclusions";
 	

@@ -766,6 +766,21 @@ public class ClauseWorkspaceContextMenu {
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}
 	
+	/**
+	 * Adds the parent root node type item.
+	 */
+	protected void addMasterRootNodeTypeItem() {
+		String rootNodeName = xmlTreeDisplay.getSelectedNode().getChilds().get(0).getName();
+		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
+		String name = rootNodeName.substring(0, rootNodeName.lastIndexOf(" ")) + " " + seqNumber;
+		
+		CellTreeNode rootNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.ROOT_NODE);
+		CellTreeNode clauseNode = rootNode.createChild("Stratum 1", "Stratum 1", CellTreeNode.CLAUSE_NODE);
+		clauseNode.createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
+		
+		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
+	}
+	
 	
 	/**
 	 * Adds the common menus.
@@ -881,7 +896,7 @@ public class ClauseWorkspaceContextMenu {
 		SortedSet<Integer> sortedName = new TreeSet<Integer>();
 		Integer lastInt = 0;
 		sortedName.add(lastInt);
-		if (selectedNode.getNodeType() == CellTreeNode.ROOT_NODE) {
+		if (selectedNode.getNodeType() == CellTreeNode.ROOT_NODE || selectedNode.getNodeType() == CellTreeNode.MASTER_ROOT_NODE) {
 			if (selectedNode.hasChildren()) {
 				for (CellTreeNode treeNode : selectedNode.getChilds()) {
 					String clauseNodeName = treeNode.getName().substring(treeNode.getName().lastIndexOf(" ")).trim();

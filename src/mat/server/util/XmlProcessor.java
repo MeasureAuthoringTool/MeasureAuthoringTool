@@ -181,6 +181,9 @@ public class XmlProcessor {
 	/** The Constant XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD. */
 	public static final String XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD="/measure//*/relationalOp[@type='EBOD']";
 	
+	/** The Constant XPATH_STRATA. */
+	private static final String XPATH_STRATA = "/measure/strata";
+	
 	/** The constants map. */
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
 	
@@ -1387,5 +1390,50 @@ public class XmlProcessor {
 		
 		return missingTimingElementList;
 	}
+	
+	public String checkForStratificationAndAdd() {
+		if (originalDoc == null) {
+			return "";
+		}
+		try {
+			
+			Node strataNode = findNode(originalDoc, XPATH_STRATA);
+			
+			if(strataNode != null)
+			{
+				if(!strataNode.getChildNodes().item(0).getNodeName().equalsIgnoreCase("stratification"))
+				{
+					NodeList childs  = strataNode.getChildNodes();
+					
+					Element stratificationEle = originalDoc
+							.createElement("stratification");
+					stratificationEle.setAttribute("displayName","Stratification 1");
+					stratificationEle.setAttribute("uuid",UUIDUtilClient.uuid());
+					
+					List<Node> nCList = new ArrayList<Node>();
+					
+					for(int i=0; i < childs.getLength() ; i++)
+					{
+						nCList.add(childs.item(i));
+						strataNode.removeChild(childs.item(i));
+					}
+					
+					for(Node cNode : nCList)
+					{
+						stratificationEle.appendChild(cNode);
+					}
+					
+					
+					strataNode.appendChild(stratificationEle);
+					
+				}
+			}
+			
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return transform(originalDoc);
+	}
+
 }
 

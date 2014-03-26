@@ -158,7 +158,7 @@ public class XmlProcessor {
 	
 	/** The Constant XPATH_MEASURE_CLAUSE. */
 	//	public static final String XPATH_MEASURE_CLAUSE = "/measure/populations/*/clause | /measure/*/clause[@type !='stratum']";
-	public static final String XPATH_MEASURE_CLAUSE = "/measure/populations/*/clause | /measure/*/clause";
+	public static final String XPATH_MEASURE_CLAUSE = "/measure/populations/*/clause | /measure/*/clause | /measure/strata/stratification | /measure/strata/Stratification";
 	
 	/** The Constant XPATH_MEASURE_GROUPING. */
 	public static final String XPATH_MEASURE_GROUPING = "/measure/measureGrouping";
@@ -185,7 +185,7 @@ public class XmlProcessor {
 	private static final String XPATH_STRATA = "/measure/strata";
 	
 	/** The Constant STRATIFICATION. */
-	private static final String  STRATIFICATION= "stratification";
+	public static final String  STRATIFICATION= "stratification";
 	
 	/** The Constant STRATIFICATION_DISPLAYNAME. */
 	private static final String  STRATIFICATION_DISPLAYNAME= "Stratification 1";

@@ -79,8 +79,30 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 		logger.info("\r\n\r\nUpdating all Measure XML's based on the stratification tag and save them back.");
 		checkForStratificationAndUpdate(measureList);
 		
+		logger.info("\r\n\r\nUpdatingold Measure XML's to update duplicate oid.");
+		checkForQdmIDAndUpdate(measureList);
+		
 	}
 	
+	/**
+	 * Check for id and update
+	 * @param measureList
+	 */
+	private void checkForQdmIDAndUpdate(List<Measure> measureList) {
+		for (Measure measure : measureList) {
+			logger.info("\r\n\r\nCheck for oid updation for Measure:"+measure.getaBBRName());
+			MeasureXmlModel measureXmlModel = getMeasureLibraryService().getMeasureXmlForMeasure(measure.getId());
+			if(measureXmlModel == null || measureXmlModel.getXml() == null || measureXmlModel.getXml().trim().length() == 0){
+				logger.info("	Measure XML for:"+measure.getaBBRName()+" is blank or null. Skipping this measure for oid update.");
+				continue;
+			}
+			XmlProcessor xmlProcessor = new XmlProcessor(measureXmlModel.getXml());
+			
+			xmlProcessor.checkForQdmIDAndUpdate();
+			measureXmlModel.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+			getMeasurePackageService().saveMeasureXml(measureXmlModel);
+		}
+	}
 	
 
 	/**

@@ -103,9 +103,19 @@ public class PackagerServiceImpl implements PackagerService {
 					if(associatedClauseUUIDNode != null){
 						associatedClauseUUID = associatedClauseUUIDNode.getNodeValue();
 					}
+	
+					if(typeNode == null)
+					{
+						clauses.add(createMeasurePackageClauseDetail(
+								uuidNode.getNodeValue(), displayNameNode.getNodeValue(), XmlProcessor.STRATIFICATION,
+								associatedClauseUUID,qdmSelectedList));
+					}
+					else
+					{
 					clauses.add(createMeasurePackageClauseDetail(
-							uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue(),associatedClauseUUID,
-							qdmSelectedList));
+							uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue(),
+							associatedClauseUUID,qdmSelectedList));
+					}
 					//adding all Clause type uuid's
 					xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and";
 				}

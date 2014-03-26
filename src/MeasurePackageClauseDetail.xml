@@ -26,6 +26,10 @@
 					<field name="type" type="java.lang.String">
 						<bind-xml name="type" node="attribute" />
 					</field>
+					
+					<field name="associatedPopulationUUID" type="java.lang.String">
+                        <bind-xml name="associatedPopulationUUID" node="attribute" />
+                    </field>
 
 					<field name="itemCountList" type="mat.model.QualityDataSetDTO"
 						collection="arraylist">

@@ -3,11 +3,14 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
+import mat.shared.UUIDUtilClient;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
@@ -775,6 +778,7 @@ public class ClauseWorkspaceContextMenu {
 		String name = rootNodeName.substring(0, rootNodeName.lastIndexOf(" ")) + " " + seqNumber;
 		
 		CellTreeNode rootNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.ROOT_NODE);
+		rootNode.setUUID(UUIDUtilClient.uuid());
 		CellTreeNode clauseNode = rootNode.createChild("Stratum 1", "Stratum 1", CellTreeNode.CLAUSE_NODE);
 		clauseNode.createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
 		

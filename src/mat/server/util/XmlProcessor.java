@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -1436,6 +1438,37 @@ public class XmlProcessor {
 			}
 			
 		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+		return transform(originalDoc);
+	}
+	
+	public String checkForQdmIDAndUpdate() {
+		if (originalDoc == null) {
+			return "";
+		}
+		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+		try {
+			
+			NodeList nodesElementLookUpAll = (NodeList) xPath.evaluate(
+					XPATH_MEASURE_ELEMENT_LOOKUP_QDM,			
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			List<String> idList = new ArrayList<String>();
+			for (int i = 0; i < nodesElementLookUpAll.getLength(); i++) {
+				Node newNode = nodesElementLookUpAll.item(i);
+				
+				String id = newNode.getAttributes().getNamedItem("id").getNodeValue().toString();
+				
+				if(idList.contains(id))
+				{
+					newNode.getAttributes().getNamedItem("id").setNodeValue(UUID.randomUUID().toString().replaceAll("-", ""));
+				}
+				else
+				{
+					idList.add(id);
+				}
+			}
+		}catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
 		return transform(originalDoc);

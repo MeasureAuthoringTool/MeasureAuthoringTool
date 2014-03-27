@@ -373,18 +373,18 @@ public class MeasurePackageClauseCellListWidget {
 		Column<QualityDataSetDTO, Boolean> selectColumn = new Column<QualityDataSetDTO, Boolean>(chkBtnCell) {
 			@Override
 			public Boolean getValue(QualityDataSetDTO object) {
-				object.setUsedMP(false);
+				boolean isSelected = false;
 				if ((itemCountSelectionList != null) && (itemCountSelectionList.size() > 0)) {
 					for (int i = 0; i < itemCountSelectionList.size(); i++) {
 						if (itemCountSelectionList.get(i).getUuid().equalsIgnoreCase(object.getUuid())) {
-							object.setUsedMP(true);
+							isSelected = true;
 							break;
 						}
 					}
 				} else {
-					object.setUsedMP(false);
+					isSelected = false;
 				}
-				return object.isUsedMP();
+				return isSelected;
 			}
 		};
 		selectColumn.setFieldUpdater(new FieldUpdater<QualityDataSetDTO, Boolean>() {
@@ -466,10 +466,21 @@ public class MeasurePackageClauseCellListWidget {
 				itemCountCellTable.setSelectionModel(itemCountSelection);
 				ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
 				itemCountCellTable.setPageSize(PAGESIZE);
-				itemCountCellTable.setRowData(getAppliedQdmList());
-				itemCountCellTable.setRowCount(getAppliedQdmList().size(), true);
+				if(itemCountSelectionList!=null && itemCountSelectionList.size()>0){
+					updateQDMSelectedList(getAppliedQdmList());
+					List<QualityDataSetDTO> selectedQDMList = new ArrayList<QualityDataSetDTO>();
+					selectedQDMList.addAll(swapQdmElements(getAppliedQdmList()));
+				itemCountCellTable.setRowData(selectedQDMList);
+				itemCountCellTable.setRowCount(selectedQDMList.size(), true);
 				sortProvider.refresh();
-				sortProvider.getList().addAll(getAppliedQdmList());
+				sortProvider.getList().addAll(selectedQDMList);
+				}
+				else{
+					itemCountCellTable.setRowData(getAppliedQdmList());
+					itemCountCellTable.setRowCount(getAppliedQdmList().size(), true);
+					sortProvider.refresh();
+					sortProvider.getList().addAll(getAppliedQdmList());
+				}
 				itemCountCellTable = addColumntoTable();
 				sortProvider.addDataDisplay(itemCountCellTable);
 				CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
@@ -501,6 +512,33 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		}
 		return panel;
+	}
+	
+	public  List<QualityDataSetDTO> swapQdmElements(List<QualityDataSetDTO> qdmList){
+		List<QualityDataSetDTO> qdmselectedList = new ArrayList<QualityDataSetDTO>();
+		qdmselectedList.addAll(itemCountSelectionList);
+				for(int i=0;i<qdmList.size();i++){
+			if(!itemCountSelectionList.contains(qdmList.get(i))){
+				qdmselectedList.add(qdmList.get(i));	
+			}
+			
+				}
+		
+		return qdmselectedList;
+		}
+	
+	public void updateQDMSelectedList(List<QualityDataSetDTO> selectedList) {
+		if (itemCountSelectionList.size() != 0) {
+			for (int i = 0; i < itemCountSelectionList.size(); i++) {
+			for (int j = 0; j < selectedList.size(); j++) {
+					if (itemCountSelectionList.get(i).getUuid().equalsIgnoreCase(selectedList.get(j).getUuid())) {
+						itemCountSelectionList.set(i, selectedList.get(j));
+						break;
+					}
+				}
+			}
+		}
+		
 	}
 	
 	/**

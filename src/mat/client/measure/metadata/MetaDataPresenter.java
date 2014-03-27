@@ -14,6 +14,7 @@ import mat.client.event.MeasureDeleteEvent;
 import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.DateBoxWithCalendar;
@@ -543,6 +544,16 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 */
 		public void setQdmSelectedList(List<QualityDataSetDTO> qdmSelectedList);
 		
+		
+
+		void buildComponentMeasuresCellTable(ManageMeasureSearchModel result,
+				boolean isEditable);
+
+		List<ManageMeasureSearchModel.Result> getComponentMeasureSelectedList();
+
+		void setComponentMeasureSelectedList(
+				List<ManageMeasureSearchModel.Result> componentMeasureSelectedList);
+		
 	}
 	
 	/**
@@ -635,6 +646,17 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	/** The db qdm selected list. */
 	private List<QualityDataSetDTO> dbQDMSelectedList = new ArrayList<QualityDataSetDTO>();
 	
+	private List<ManageMeasureSearchModel.Result> dbComponentMeasuresSelectedList = new ArrayList<ManageMeasureSearchModel.Result>();
+	
+	public List<ManageMeasureSearchModel.Result> getDbComponentMeasuresSelectedList() {
+		return dbComponentMeasuresSelectedList;
+	}
+
+	public void setDbComponentMeasuresSelectedList(
+			List<ManageMeasureSearchModel.Result> dbComponentMeasuresSelectedList) {
+		this.dbComponentMeasuresSelectedList = dbComponentMeasuresSelectedList;
+	}
+
 	/** The empty widget. */
 	private SimplePanel emptyWidget = new SimplePanel();
 	
@@ -661,6 +683,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	
 	/** The service. */
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
+	
+	
+	private ManageMeasureSearchModel manageMeasureSearchModel;
+
 	
 	/**
 	 * Instantiates a new meta data presenter.
@@ -884,6 +910,79 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 	
 	//TODO by Ravi
+	
+	public final void getComponentMeasures(){
+		searchMeasuresList("",1,Integer.MAX_VALUE,1);
+	}
+	
+	private void searchMeasuresList(String searchText, int startIndex, int pageSize,
+			int filter){
+		MatContext
+		.get()
+		.getMeasureService()
+		.search(searchText, startIndex, pageSize, filter,
+				new AsyncCallback<ManageMeasureSearchModel>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onSuccess(ManageMeasureSearchModel result) {
+						metaDataDisplay.buildComponentMeasuresCellTable(result, editable );
+						
+					}
+				});
+		
+	}
+	
+//	private void search(String searchText, int startIndex, int pageSize,
+//			int filter) {
+//		
+//		MatContext
+//		.get()
+//		.getMeasureService()
+//		.search(searchText, startIndex, pageSize, filter,
+//				new AsyncCallback<ManageMeasureSearchModel>() {
+//			@Override
+//			public void onFailure(Throwable caught) {
+////				detailDisplay
+////				.getErrorMessageDisplay()
+////				.setMessage(
+////						MatContext
+////						.get()
+////						.getMessageDelegate()
+////						.getGenericErrorMessage());
+//				MatContext
+//				.get()
+//				.recordTransactionEvent(
+//						null,
+//						null,
+//						null,
+//						"Unhandled Exception: "
+//								+ caught.getLocalizedMessage(),
+//								0);
+//		
+//			}
+//			
+//			@Override
+//			public void onSuccess(
+//					ManageMeasureSearchModel result) {
+//				
+//				manageMeasureSearchModel = result;
+//				MatContext.get()
+//				.setManageMeasureSearchModel(
+//						manageMeasureSearchModel);
+//				
+//				metaDataDisplay.buildComponentMeasuresCellTable(result, isEditable);
+//				
+//			}
+//		});
+//		
+//	}
+	
 	
 	/**
 	 * Gets the applied qdm list.
@@ -1189,6 +1288,7 @@ private void setAuthorsListOnView() {
 		dbMeasureTypeList.clear();
 		dbMeasureTypeList.addAll(currentMeasureDetail.getMeasureTypeList());
 		measureTypeList = currentMeasureDetail.getMeasureTypeList();
+		
 		if (currentMeasureDetail.getQdsSelectedList() != null) {
 		metaDataDisplay.setQdmSelectedList(currentMeasureDetail.getQdsSelectedList());
 		} else {
@@ -1198,7 +1298,20 @@ private void setAuthorsListOnView() {
 		}
 		dbQDMSelectedList.clear();
 		dbQDMSelectedList.addAll(currentMeasureDetail.getQdsSelectedList());
+		
+		//Component Measures List
+		if (currentMeasureDetail.getComponentMeasuresSelectedList() != null) {
+			metaDataDisplay.setComponentMeasureSelectedList(currentMeasureDetail.getComponentMeasuresSelectedList());
+			} else {
+				List<ManageMeasureSearchModel.Result> componentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
+				metaDataDisplay.setComponentMeasureSelectedList(componentMeasuresList);
+				currentMeasureDetail.setComponentMeasuresSelectedList(componentMeasuresList);
+			}
+		dbComponentMeasuresSelectedList.clear();
+		dbComponentMeasuresSelectedList.addAll(currentMeasureDetail.getComponentMeasuresSelectedList());
+		
 		getAppliedQDMList(true);
+		getComponentMeasures();
 		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		if (currentMeasureDetail.getReferencesList() != null) {
 			metaDataDisplay.setReferenceValues(currentMeasureDetail.getReferencesList(), editable);
@@ -1347,9 +1460,11 @@ private void setAuthorsListOnView() {
 		currentMeasureDetail.setAuthorList(authorList);
 		currentMeasureDetail.setMeasureTypeList(measureTypeList);
 		currentMeasureDetail.setQdsSelectedList(metaDataDisplay.getQdmSelectedList());
+		currentMeasureDetail.setComponentMeasuresSelectedList(metaDataDisplay.getComponentMeasureSelectedList());
 		currentMeasureDetail.setToCompareAuthor(dbAuthorList);
 		currentMeasureDetail.setToCompareMeasure(dbMeasureTypeList);
 		currentMeasureDetail.setToCompareItemCount(dbQDMSelectedList);
+		currentMeasureDetail.setToCompareComponentMeasures(dbComponentMeasuresSelectedList);
 		currentMeasureDetail.setNqfId(metaDataDisplay.getNqfId().getValue());
 		currentMeasureDetail.setMeasurePopulationExclusions(metaDataDisplay.getMeasurePopulationExclusions().getValue());
 		if (metaDataDisplay.getEmeasureId().getValue() != null && !metaDataDisplay.getEmeasureId().getValue().equals("")) {
@@ -1452,6 +1567,7 @@ private void setAuthorsListOnView() {
 			}
 		}
 		getAppliedQDMList(true);
+		getComponentMeasures();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MetaDataView.containerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 		clearMessages();
@@ -1537,7 +1653,6 @@ private void setAuthorsListOnView() {
 					fireSuccessfullDeletionEvent(false, MatContext.get()
 							.getMessageDelegate().getMeasureDeletionInvalidPwd());
 				}
-				
 			}
 		});
 	}

@@ -183,6 +183,27 @@
 				</class>
 			</bind-xml>
 		</field>
+		
+		<field name="componentMeasuresSelectedList" 
+            type="mat.client.measure.ManageMeasureSearchModel$Result"
+			collection="arraylist">
+			<bind-xml name="componentMeasures" location="componentMeasuresCount">
+				<class name="mat.client.measure.ManageMeasureSearchModel$Result">
+					<field name="name" type="java.lang.String">
+						<bind-xml name="displayName" node="attribute" />
+					</field>
+					
+					<field name="version" type="java.lang.String">
+						<bind-xml name="version" node="attribute" />
+					</field>
+					
+					<field name="id" type="java.lang.String">
+						<bind-xml name="id" node="attribute" />
+					</field>
+				</class>
+			</bind-xml>
+		</field>
+    
     
     <field name="stratification"
            type="java.lang.String">

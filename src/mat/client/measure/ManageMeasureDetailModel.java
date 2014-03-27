@@ -104,6 +104,17 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	
 	/** The qds selected list. */
 	private List<QualityDataSetDTO> qdsSelectedList;
+	
+	private List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList;
+
+	public List<ManageMeasureSearchModel.Result> getComponentMeasuresSelectedList() {
+		return componentMeasuresSelectedList;
+	}
+
+	public void setComponentMeasuresSelectedList(
+			List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList) {
+		this.componentMeasuresSelectedList = componentMeasuresSelectedList;
+	}
 
 	/** The to compare author. */
 	private List<Author> toCompareAuthor;
@@ -113,6 +124,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	
 	 /** The to compare item count. */
  	private List<QualityDataSetDTO> toCompareItemCount;
+ 	
+ 	private List<ManageMeasureSearchModel.Result> toCompareComponentMeasures;
 
 	/** The draft. */
 	private boolean draft = true;
@@ -1137,6 +1150,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ ((toCompareMeasure == null) ? 0 : toCompareMeasure.hashCode());
 		result = (prime * result)
 				+ ((toCompareItemCount == null) ? 0 : toCompareItemCount.hashCode());
+		result = (prime * result)
+				+ ((toCompareComponentMeasures == null) ? 0 : toCompareComponentMeasures.hashCode());
 		result = (prime * result) + ((name == null) ? 0 : name.hashCode());
 		result = (prime * result) + ((nqfId == null) ? 0 : nqfId.hashCode());
 		result = (prime * result)
@@ -1375,6 +1390,14 @@ public class ManageMeasureDetailModel implements IsSerializable {
 			return false;
 		}
 		
+		if(toCompareComponentMeasures == null){
+			if(other.toCompareComponentMeasures != null){
+				return false;
+			}
+		} else if(!isEqual(toCompareComponentMeasures, other.toCompareComponentMeasures)){
+			return false;
+		}
+		
 		if (trimToNull(name) == null) {
 			if (trimToNull(other.name) != null) {
 				return false;
@@ -1593,6 +1616,16 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		this.toCompareItemCount = toCompareItemCount;
 	}
 	
+	public List<ManageMeasureSearchModel.Result> getToCompareComponentMeasures() {
+		return toCompareComponentMeasures;
+	}
+
+	public void setToCompareComponentMeasures(
+			List<ManageMeasureSearchModel.Result> toCompareComponentMeasures) {
+		this.toCompareComponentMeasures = toCompareComponentMeasures;
+	}
+
+	
 	/**
 	 * Gets the qlty measure set uuid.
 	 * 
@@ -1742,9 +1775,12 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ stratification + ", referencesList=" + referencesList
 				+ ", authorList=" + authorList + ", measureTypeList="
 				+ measureTypeList + ", qdsSelectedList=" + qdsSelectedList 
+				+",componentMeasuresSelectedList=" +componentMeasuresSelectedList
 				+ ", toCompareAuthor=" + toCompareAuthor
 				+ ", toCompareMeasure=" + toCompareMeasure 
-				+ ", toCompareItemCount=" + toCompareItemCount + ", draft=" + draft
+				+ ", toCompareItemCount=" + toCompareItemCount 
+				+ ", toCompareComponentMeasures =" + toCompareComponentMeasures 
+				+", draft=" + draft
 				+ ", measureSetId=" + measureSetId + ", valueSetDate="
 				+ valueSetDate + ", supplementalData=" + supplementalData
 				+ ", disclaimer=" + disclaimer + ", riskAdjustment="

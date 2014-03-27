@@ -155,7 +155,6 @@ public class MeasurePackageClauseCellListWidget {
 	private Map<String, MeasurePackageClauseDetail>  groupingClausesMap = new HashMap<String, MeasurePackageClauseDetail>();
 	/** List of selected Item counts for Clauses.**/
 	private List<QualityDataSetDTO> itemCountSelectionList;
-	
 	private Label ItemCountLabel = new Label();
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
@@ -859,16 +858,33 @@ public class MeasurePackageClauseCellListWidget {
 				successMessages.clear();
 				if ((groupingPopulationList.size() > 0)
 						&& (rightCellListSelectionModel.getSelectedObject() != null)) {
+					String otherClauseType = null;
+					if (rightCellListSelectionModel.getSelectedObject().
+							getType().equalsIgnoreCase("Denominator")) {
+						otherClauseType = "numerator";
+					} else if (rightCellListSelectionModel.getSelectedObject().
+							getType().equalsIgnoreCase("Numerator")) {
+						otherClauseType = "Denominator";
+					}
 					//If clause if removed, and if it is associated with any other clause,
 					//all it's associations are removed.
-					/*for (MeasurePackageClauseDetail detail : groupingPopulationList) {
+					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
 						if ((detail.getAssociatedPopulationUUID() != null)
 								&& detail.getAssociatedPopulationUUID().equalsIgnoreCase(
 										rightCellListSelectionModel.getSelectedObject().getId())) {
 							detail.setAssociatedPopulationUUID(null);
 							groupingClausesMap.put(detail.getName(), detail);
+						} else if (detail.getId().equalsIgnoreCase(
+								rightCellListSelectionModel.getSelectedObject().getId())) {
+							detail.setAssociatedPopulationUUID(null);
+							groupingClausesMap.put(detail.getName(), detail);
 						}
-					}*/
+						if ((otherClauseType != null)
+								&& otherClauseType.equalsIgnoreCase(detail.getType())) {
+							detail.setAssociatedPopulationUUID(null);
+							groupingClausesMap.put(detail.getName(), detail);
+						}
+					}
 					clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
 					groupingPopulationList.remove(rightCellListSelectionModel.getSelectedObject());
 					groupingClausesMap.remove(rightCellListSelectionModel.getSelectedObject().getName());
@@ -912,9 +928,9 @@ public class MeasurePackageClauseCellListWidget {
 				errorMessages.clear();
 				successMessages.clear();
 				if (groupingPopulationList.size() != 0) {
-					/*for (MeasurePackageClauseDetail detail : groupingPopulationList) {
+					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
 						detail.setAssociatedPopulationUUID(null);
-					}*/
+					}
 					clausesPopulationList.addAll(groupingPopulationList);
 					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
 						groupingClausesMap.remove(detail.getName());

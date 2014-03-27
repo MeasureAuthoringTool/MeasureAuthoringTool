@@ -538,7 +538,7 @@ public class MeasurePackageClauseCellListWidget {
 				ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
 				itemCountCellTable.setPageSize(PAGESIZE);
 				ItemCountLabel.setText("Selected Items: " + itemCountSelectionList.size());
-				if((itemCountSelectionList!=null) && (itemCountSelectionList.size()>0)){
+				if ((itemCountSelectionList != null) && (itemCountSelectionList.size() > 0)) {
 					updateQDMSelectedList(getAppliedQdmList());
 					List<QualityDataSetDTO> selectedQDMList = new ArrayList<QualityDataSetDTO>();
 					selectedQDMList.addAll(swapQdmElements(getAppliedQdmList()));
@@ -546,8 +546,7 @@ public class MeasurePackageClauseCellListWidget {
 					itemCountCellTable.setRowCount(selectedQDMList.size(), true);
 					sortProvider.refresh();
 					sortProvider.getList().addAll(selectedQDMList);
-				}
-				else{
+				} else {
 					itemCountCellTable.setRowData(getAppliedQdmList());
 					itemCountCellTable.setRowCount(getAppliedQdmList().size(), true);
 					sortProvider.refresh();
@@ -587,7 +586,11 @@ public class MeasurePackageClauseCellListWidget {
 		return panel;
 	}
 	
-	public  List<QualityDataSetDTO> swapQdmElements(List<QualityDataSetDTO> qdmList){
+	/**
+	 * @param qdmList
+	 * @return
+	 */
+	private  List<QualityDataSetDTO> swapQdmElements(List<QualityDataSetDTO> qdmList){
 		List<QualityDataSetDTO> qdmselectedList = new ArrayList<QualityDataSetDTO>();
 		qdmselectedList.addAll(itemCountSelectionList);
 		for(int i=0;i<qdmList.size();i++){
@@ -600,7 +603,10 @@ public class MeasurePackageClauseCellListWidget {
 		return qdmselectedList;
 	}
 	
-	public void updateQDMSelectedList(List<QualityDataSetDTO> selectedList) {
+	/**
+	 * @param selectedList
+	 */
+	private void updateQDMSelectedList(List<QualityDataSetDTO> selectedList) {
 		if (itemCountSelectionList.size() != 0) {
 			for (int i = 0; i < itemCountSelectionList.size(); i++) {
 				for (int j = 0; j < selectedList.size(); j++) {
@@ -853,6 +859,16 @@ public class MeasurePackageClauseCellListWidget {
 				successMessages.clear();
 				if ((groupingPopulationList.size() > 0)
 						&& (rightCellListSelectionModel.getSelectedObject() != null)) {
+					//If clause if removed, and if it is associated with any other clause,
+					//all it's associations are removed.
+					/*for (MeasurePackageClauseDetail detail : groupingPopulationList) {
+						if ((detail.getAssociatedPopulationUUID() != null)
+								&& detail.getAssociatedPopulationUUID().equalsIgnoreCase(
+										rightCellListSelectionModel.getSelectedObject().getId())) {
+							detail.setAssociatedPopulationUUID(null);
+							groupingClausesMap.put(detail.getName(), detail);
+						}
+					}*/
 					clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
 					groupingPopulationList.remove(rightCellListSelectionModel.getSelectedObject());
 					groupingClausesMap.remove(rightCellListSelectionModel.getSelectedObject().getName());
@@ -864,7 +880,6 @@ public class MeasurePackageClauseCellListWidget {
 					disclosurePanelAssociations.setVisible(false);
 					disclosurePanelItemCountTable.setVisible(false);
 				}
-				
 			}
 		});
 		addAllClauseRight.addClickHandler(new ClickHandler() {
@@ -873,11 +888,12 @@ public class MeasurePackageClauseCellListWidget {
 				errorMessages.clear();
 				successMessages.clear();
 				if (clausesPopulationList.size() != 0) {
-					ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<MeasurePackageClauseDetail>();
+					ArrayList<MeasurePackageClauseDetail> validateGroupingList =
+							new ArrayList<MeasurePackageClauseDetail>();
 					validateGroupingList.addAll(clausesPopulationList);
 					if (isValid(validateGroupingList)) {
 						groupingPopulationList.addAll(clausesPopulationList);
-						for(MeasurePackageClauseDetail detail : groupingPopulationList){
+						for (MeasurePackageClauseDetail detail : groupingPopulationList) {
 							groupingClausesMap.put(detail.getName(), detail);
 						}
 						clausesPopulationList.removeAll(clausesPopulationList);
@@ -896,8 +912,11 @@ public class MeasurePackageClauseCellListWidget {
 				errorMessages.clear();
 				successMessages.clear();
 				if (groupingPopulationList.size() != 0) {
+					/*for (MeasurePackageClauseDetail detail : groupingPopulationList) {
+						detail.setAssociatedPopulationUUID(null);
+					}*/
 					clausesPopulationList.addAll(groupingPopulationList);
-					for(MeasurePackageClauseDetail detail : groupingPopulationList){
+					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
 						groupingClausesMap.remove(detail.getName());
 					}
 					groupingPopulationList.removeAll(groupingPopulationList);
@@ -1019,6 +1038,8 @@ public class MeasurePackageClauseCellListWidget {
 		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value,
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
+			errorMessages.clear();
+			successMessages.clear();
 			itemCountSelectionList = new ArrayList<QualityDataSetDTO>();
 			groupingClausesMap.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject());
 			MeasurePackageClauseDetail measureDetail = groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName());
@@ -1151,9 +1172,9 @@ public class MeasurePackageClauseCellListWidget {
 		if (ConstantMessages.CONTINUOUS_VARIABLE_SCORING
 				.equalsIgnoreCase(scoring)) {
 			if ((countDetailsWithType(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					ConstantMessages.POPULATION_CONTEXT_ID) > 1)
 					|| (countDetailsWithType(detailList,
-							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 1)
+							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) > 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getContinuousVariableWrongNumMessage());
@@ -1184,20 +1205,12 @@ public class MeasurePackageClauseCellListWidget {
 			 * at least one and only one Population, Denominator
 			 */
 			if ((countDetailsWithType(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					ConstantMessages.POPULATION_CONTEXT_ID) > 1)
 					|| (countDetailsWithType(detailList,
-							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
+							ConstantMessages.DENOMINATOR_CONTEXT_ID) > 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getProportionWrongNumMessage());
-			}
-			/*
-			 * at least one or more Numerator
-			 */
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.NUMERATOR_CONTEXT_ID) < 1)) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getProportionTooFewMessage());
 			}
 			/*
 			 * zero or one Denominator Exclusions, Denominator Exceptions
@@ -1224,9 +1237,9 @@ public class MeasurePackageClauseCellListWidget {
 		 * May contain one or more Measure Observation.
 		 */
 			if ((countDetailsWithType(detailList,
-					ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
+					ConstantMessages.DENOMINATOR_CONTEXT_ID) > 1)
 					|| (countDetailsWithType(detailList,
-							ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
+							ConstantMessages.NUMERATOR_CONTEXT_ID) > 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioWrongNumMessage());
@@ -1255,24 +1268,9 @@ public class MeasurePackageClauseCellListWidget {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioMayNotContainMessage());
 			}
-			// In case of two IP's, Denominator and Numerator must contain associations.
-			/*int iPCount = (countDetailsWithType(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID));
-			if (iPCount == 2) {
-				for (MeasurePackageClauseDetail detail : detailList) {
-					if ((ConstantMessages.DENOMINATOR_CONTEXT_ID).equals(detail.getType())
-							|| (ConstantMessages.NUMERATOR_CONTEXT_ID).equals(detail.getType())) {
-						if ((detail.getAssociatedPopulationUUID() == null)) {
-							messages.add("For Ratio measures, in case of more than one Population ,"
-									+ " Numerator and Denominator must contain one association.");
-							break;
-						}
-					}
-				}
-			}*/
 		} else if (ConstantMessages.COHORT_SCORING.equalsIgnoreCase(scoring)) {
-			if ((countTypeForAssociation(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) > 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate().getCOHORT_WRONG_NUM());
 			}

@@ -155,6 +155,8 @@ public class MeasurePackageClauseCellListWidget {
 	private Map<String, MeasurePackageClauseDetail>  groupingClausesMap = new HashMap<String, MeasurePackageClauseDetail>();
 	/** List of selected Item counts for Clauses.**/
 	private List<QualityDataSetDTO> itemCountSelectionList;
+	
+	private Label ItemCountLabel = new Label();
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
@@ -470,6 +472,7 @@ public class MeasurePackageClauseCellListWidget {
 						}
 					}
 				}
+				ItemCountLabel.setText("Selected Items: " + itemCountSelectionList.size());
 			}
 		});
 		itemCountCellTable.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select"
@@ -534,6 +537,7 @@ public class MeasurePackageClauseCellListWidget {
 				itemCountCellTable.setSelectionModel(itemCountSelection);
 				ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
 				itemCountCellTable.setPageSize(PAGESIZE);
+				ItemCountLabel.setText("Selected Items: " + itemCountSelectionList.size());
 				if((itemCountSelectionList!=null) && (itemCountSelectionList.size()>0)){
 					updateQDMSelectedList(getAppliedQdmList());
 					List<QualityDataSetDTO> selectedQDMList = new ArrayList<QualityDataSetDTO>();
@@ -566,6 +570,7 @@ public class MeasurePackageClauseCellListWidget {
 				panel.add(new SpacerWidget());
 				panel.add(spager);
 				panel.add(new SpacerWidget());
+				panel.add(ItemCountLabel);
 				panel.add(itemCountButtonPanel);
 				addClickHandlersToAddItemCountList(saveItemCountList);
 			} else {

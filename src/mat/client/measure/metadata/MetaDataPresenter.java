@@ -17,6 +17,7 @@ import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
+import mat.client.shared.CustomButton;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.HasVisible;
 import mat.client.shared.ListBoxMVP;
@@ -553,6 +554,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 
 		void setComponentMeasureSelectedList(
 				List<ManageMeasureSearchModel.Result> componentMeasureSelectedList);
+
+		HasValue<String> getSearchString();
+
+		CustomButton getSearchButton();
 		
 	}
 	
@@ -865,6 +870,15 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				}
 			});
 		
+		metaDataDisplay.getSearchButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				System.out.println("Search String: "+ metaDataDisplay.getSearchString().getValue());
+				searchMeasuresList(metaDataDisplay.getSearchString().getValue(),1,Integer.MAX_VALUE,1);
+			}
+		});
+		
 		metaDataDisplay.getSaveButton().addClickHandler(new ClickHandler(){
 
 			@Override
@@ -912,11 +926,15 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	//TODO by Ravi
 	
 	public final void getComponentMeasures(){
-		searchMeasuresList("",1,Integer.MAX_VALUE,1);
+		searchMeasuresList(metaDataDisplay.getSearchString().getValue(),1,Integer.MAX_VALUE,1);
 	}
 	
+
 	private void searchMeasuresList(String searchText, int startIndex, int pageSize,
 			int filter){
+		if(searchText.equalsIgnoreCase("search...")){
+			searchText = "";
+		}
 		MatContext
 		.get()
 		.getMeasureService()
@@ -926,13 +944,11 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 					@Override
 					public void onFailure(Throwable caught) {
 						// TODO Auto-generated method stub
-						
 					}
 
 					@Override
 					public void onSuccess(ManageMeasureSearchModel result) {
 						metaDataDisplay.buildComponentMeasuresCellTable(result, editable );
-						
 					}
 				});
 		

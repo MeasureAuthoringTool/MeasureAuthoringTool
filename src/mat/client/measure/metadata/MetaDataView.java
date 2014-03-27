@@ -5,17 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.CustomPager;
+import mat.client.ImageResources;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay;
+import mat.client.shared.CustomButton;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.HorizontalFlowPanel;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
+import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
@@ -47,6 +50,7 @@ import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
+import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
@@ -319,6 +323,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The qdm selected list. */
 	private  List<QualityDataSetDTO> qdmSelectedList;
 	
+	private TextBox searchString = new TextBox();
+	
 	private List<ManageMeasureSearchModel.Result> componentMeasureSelectedList;
 	
 	@Override
@@ -342,21 +348,24 @@ public class MetaDataView implements MetaDataDetailDisplay{
     VerticalPanel componentMeasuresListPanel = new VerticalPanel();
     
     private MultiSelectionModel<ManageMeasureSearchModel.Result> measuresListSelectionModel;
+    
+   // private MatButtonCell searchButton = new MatButtonCell("click to Search Measures","customSearchButton");
 	
-	
+    private CustomButton zoomSearchButton = (CustomButton) getImage("Search",
+			ImageResources.INSTANCE.searchZoom(), "Search" , "MeasureSearchButton");
 
 	/**
 	 * Instantiates a new meta data view.
 	 */
 	public MetaDataView(){
+		addClickHandlers();
 		//referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
-		
+		searchString.setText("search...");
 		HorizontalPanel mainContent = new HorizontalPanel();
 		mainContent.getElement().setId("mainContent_HorizontalPanel");
 		mainPanel.setStylePrimaryName("searchResultsContainer");
 		mainPanel.addStyleName("leftAligned");
 		mainPanel.getElement().setId("mainPanel_FlowPanel01");
-		
 		mainContent.add(buildLeftSideForm());
 		mainPanel.add(saveErrorDisplay);
 		mainPanel.add(mainContent);
@@ -364,7 +373,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		DOM.setElementAttribute(mainPanel.getElement(), "id", "MetaDataView.containerPanel");
 		focusPanel.add(mainPanel);
 		focusPanel.getElement().setId("focusPanel_FocusPanel01");
-		
 	}
 	
 	
@@ -961,8 +969,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	
-	
-	
 	private CellTable<ManageMeasureSearchModel.Result> addMeasuresColumnToTable(boolean isEditable){
 		Label measureSearchHeader = new Label("Component Measures List");
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
@@ -974,7 +980,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		MatCheckBoxCell measuresListCheckBox = new MatCheckBoxCell(false, true, !isEditable);
 		Column<ManageMeasureSearchModel.Result, Boolean> selectColumn = 
 				new Column<ManageMeasureSearchModel.Result, Boolean>(measuresListCheckBox){
-
 			@Override
 			public Boolean getValue(ManageMeasureSearchModel.Result object) {
 				boolean isSelected = false;
@@ -1064,6 +1069,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		componentMeasuresListSPanel.clear();
 		componentMeasuresListVPanel.clear();
 		componentMeasuresSelectedListVPanel.clear();
+		HorizontalPanel searchButtonPanel = new HorizontalPanel();
 		componentMeasuresListVPanel.setStyleName("cellTablePanel");
 		componentMeasureCellTable = new CellTable<ManageMeasureSearchModel.Result>();
 		componentMeasureCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -1100,7 +1106,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		componentMeasureCellTable.getElement().setAttribute("aria-describedby", "componentMeasureListSummary");
 		componentMeasuresListSPanel.add(invisibleLabel);
 		componentMeasuresListSPanel.setWidget(componentMeasureCellTable);
-		componentMeasuresListVPanel.add(label);
+		searchButtonPanel.setStyleName("floatRight");
+		searchButtonPanel.add(label);
+		searchButtonPanel.add(searchString);
+		searchButtonPanel.add(zoomSearchButton);
+		componentMeasuresListVPanel.add(searchButtonPanel);
 		componentMeasuresListVPanel.add(componentMeasuresListSPanel);
 		componentMeasuresListVPanel.add(new SpacerWidget());
 		componentMeasuresListVPanel.add(spager);
@@ -1115,6 +1125,27 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		componentMeasuresSelectedListVPanel.add(componentMeasuresLabel);
 		horzComponentMeasurePanel.add(componentMeasuresSelectedListVPanel);
 		
+	}
+	
+	private Widget getImage(String action, ImageResource url, String key , String id) {
+		CustomButton image = new CustomButton();
+		image.removeStyleName("gwt-button");
+		image.setStylePrimaryName("invisibleButtonTextMeasureLibrary");
+		image.setTitle(action);
+		image.setResource(url, action);
+		image.getElement().setAttribute("id", id);
+		return image;
+	}
+	
+	public void addClickHandlers(){
+     searchString.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				searchString.setText("");
+				
+			}
+		});
 	}
 	
 	
@@ -1136,6 +1167,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			}
 		});
 		return p;
+	}
+	
+	@Override
+	public CustomButton getSearchButton(){
+	   return zoomSearchButton;
 	}
 	
 	
@@ -1175,6 +1211,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return measScoringInput;
 	}
 	
+	@Override
+	public HasValue<String> getSearchString(){
+		return searchString;
+	}
+	
+	
+	//public HasClickHandlers getSearchButton(){
+		//return searchButton;
+	//}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseMetaDataDisplay#getErrorMessageDisplay()

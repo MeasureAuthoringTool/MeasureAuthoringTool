@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import mat.client.CustomPager;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
@@ -164,9 +165,13 @@ public class MeasurePackageClauseCellListWidget {
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			rightCellList.setSelectionModel(rightCellListSelectionModel
 					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+			for(MeasurePackageClauseDetail detail : groupingPopulationList){
+				groupingClausesMap.put(detail.getName(), detail);
+			}
 		} else {
 			rightCellList.setSelectionModel(new NoSelectionModel<MeasurePackageClauseDetail>()
 					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
+			
 		}
 		return rightCellList;
 	}
@@ -315,8 +320,9 @@ public class MeasurePackageClauseCellListWidget {
 					return;
 				}
 				System.out.println("Selected ItemCountList: " + itemCountSelectionList.size());
-				groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).setItemCountList(itemCountSelectionList);
-				successMessages.setMessage("Successfully added Item count(s)."
+				groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName())
+				.setItemCountList(itemCountSelectionList);
+				successMessages.setMessage("Successfully modified Item count(s)."
 						+ " Please click save grouping to save the changes.");
 			}
 		});
@@ -332,32 +338,94 @@ public class MeasurePackageClauseCellListWidget {
 				errorMessages.clear();
 				successMessages.clear();
 				MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
+				MeasurePackageClauseDetail otherClauseCell = null;
 				String existingUuid = groupingClausesMap.get(selectedClauseCell.getName()).getAssociatedPopulationUUID();
+				String otherClauseType = null;
 				if (selectedClauseCell.getType().equalsIgnoreCase("denominator")) {
-					associatedPopulationList.clear();
-					associatedPopulationList.addAll(denoAssociatedPopulationList);
-				} else if (selectedClauseCell.getType().equalsIgnoreCase("numerator")) {
-					associatedPopulationList.clear();
-					associatedPopulationList.addAll(numAssociatedPopulationList);
-				}
-				for (MeasurePackageClauseDetail detail : associatedPopulationList) {
-					if ((existingUuid != null)
-							&& existingUuid.equals(detail.getId())) {
-						if (detail.isAssociatedPopulation()) {
-							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-							setAssociatedPopulationUUID(detail.getId());
+					otherClauseType = "numerator";
+					for (MeasurePackageClauseDetail detail : denoAssociatedPopulationList) {
+						otherClauseCell = detail;
+						if ((existingUuid != null)
+								&& existingUuid.equals(detail.getId())) {
+							if (detail.isAssociatedPopulation()) {
+								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+								setAssociatedPopulationUUID(detail.getId());
+								otherClauseCell = null;
+							} else {
+								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+								setAssociatedPopulationUUID(null);
+								otherClauseCell = detail;
+							}
 						} else {
-							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-							setAssociatedPopulationUUID(null);
+							if (detail.isAssociatedPopulation()) {
+								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+								setAssociatedPopulationUUID(detail.getId());
+								otherClauseCell = null;
+							} else {
+								otherClauseCell = detail;
+							}
 						}
-					} else {
-						if (detail.isAssociatedPopulation()) {
-							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-							setAssociatedPopulationUUID(detail.getId());
-							break;
+					}
+				} else if (selectedClauseCell.getType().equalsIgnoreCase("numerator")) {
+					otherClauseType = "denominator";
+					for (MeasurePackageClauseDetail detail : numAssociatedPopulationList) {
+						otherClauseCell = detail;
+						if ((existingUuid != null)
+								&& existingUuid.equals(detail.getId())) {
+							if (detail.isAssociatedPopulation()) {
+								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+								setAssociatedPopulationUUID(detail.getId());
+								otherClauseCell = null;
+							} else {
+								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+								setAssociatedPopulationUUID(null);
+								otherClauseCell = detail;
+							}
+						} else {
+							if (detail.isAssociatedPopulation()) {
+								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+								setAssociatedPopulationUUID(detail.getId());
+								otherClauseCell = null;
+							} else {
+								otherClauseCell = detail;
+							}
+						}
+					}
+				} else {
+					for (MeasurePackageClauseDetail detail : associatedPopulationList) {
+						if ((existingUuid != null)
+								&& existingUuid.equals(detail.getId())) {
+							if (detail.isAssociatedPopulation()) {
+								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+								setAssociatedPopulationUUID(detail.getId());
+							} else {
+								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+								setAssociatedPopulationUUID(null);
+							}
+						} else {
+							if (detail.isAssociatedPopulation()) {
+								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+								setAssociatedPopulationUUID(detail.getId());
+								break;
+							}
 						}
 					}
 				}
+				if (otherClauseCell != null) {
+					for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
+						if (entry.getValue().getType().equalsIgnoreCase(otherClauseType)) {
+							MeasurePackageClauseDetail updateDetails = entry.getValue();
+							groupingClausesMap.get(updateDetails.getName()).
+							setAssociatedPopulationUUID(otherClauseCell.getId());
+							/*if(otherClauseType.equalsIgnoreCase("denominator")){
+								
+							}*/
+							break;
+						}
+					}
+					
+				}
+				System.out.println(groupingClausesMap);
 				successMessages.setMessage("Successfully modified Association."
 						+ " Please click save grouping to save changes.");
 			}
@@ -466,14 +534,14 @@ public class MeasurePackageClauseCellListWidget {
 				itemCountCellTable.setSelectionModel(itemCountSelection);
 				ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
 				itemCountCellTable.setPageSize(PAGESIZE);
-				if(itemCountSelectionList!=null && itemCountSelectionList.size()>0){
+				if((itemCountSelectionList!=null) && (itemCountSelectionList.size()>0)){
 					updateQDMSelectedList(getAppliedQdmList());
 					List<QualityDataSetDTO> selectedQDMList = new ArrayList<QualityDataSetDTO>();
 					selectedQDMList.addAll(swapQdmElements(getAppliedQdmList()));
-				itemCountCellTable.setRowData(selectedQDMList);
-				itemCountCellTable.setRowCount(selectedQDMList.size(), true);
-				sortProvider.refresh();
-				sortProvider.getList().addAll(selectedQDMList);
+					itemCountCellTable.setRowData(selectedQDMList);
+					itemCountCellTable.setRowCount(selectedQDMList.size(), true);
+					sortProvider.refresh();
+					sortProvider.getList().addAll(selectedQDMList);
 				}
 				else{
 					itemCountCellTable.setRowData(getAppliedQdmList());
@@ -491,7 +559,7 @@ public class MeasurePackageClauseCellListWidget {
 				panel.setStylePrimaryName("valueSetSearchPanel");
 				/** Flow Panel for OK-Cancel buttons in Item Count Table. **/
 				FlowPanel itemCountButtonPanel = new FlowPanel();
-				SecondaryButton saveItemCountList = new SecondaryButton("Ok");
+				SecondaryButton saveItemCountList = new SecondaryButton("OK");
 				itemCountButtonPanel.addStyleName("rightAlignButton");
 				itemCountButtonPanel.add(saveItemCountList);
 				panel.add(itemCountCellTable);
@@ -517,20 +585,20 @@ public class MeasurePackageClauseCellListWidget {
 	public  List<QualityDataSetDTO> swapQdmElements(List<QualityDataSetDTO> qdmList){
 		List<QualityDataSetDTO> qdmselectedList = new ArrayList<QualityDataSetDTO>();
 		qdmselectedList.addAll(itemCountSelectionList);
-				for(int i=0;i<qdmList.size();i++){
+		for(int i=0;i<qdmList.size();i++){
 			if(!itemCountSelectionList.contains(qdmList.get(i))){
-				qdmselectedList.add(qdmList.get(i));	
+				qdmselectedList.add(qdmList.get(i));
 			}
 			
-				}
+		}
 		
 		return qdmselectedList;
-		}
+	}
 	
 	public void updateQDMSelectedList(List<QualityDataSetDTO> selectedList) {
 		if (itemCountSelectionList.size() != 0) {
 			for (int i = 0; i < itemCountSelectionList.size(); i++) {
-			for (int j = 0; j < selectedList.size(); j++) {
+				for (int j = 0; j < selectedList.size(); j++) {
 					if (itemCountSelectionList.get(i).getUuid().equalsIgnoreCase(selectedList.get(j).getUuid())) {
 						itemCountSelectionList.set(i, selectedList.get(j));
 						break;
@@ -756,13 +824,20 @@ public class MeasurePackageClauseCellListWidget {
 				successMessages.clear();
 				if ((clausesPopulationList.size() > 0)
 						&& (leftCellListSelectionModel.getSelectedObject() != null)) {
-					groupingPopulationList.add(leftCellListSelectionModel.getSelectedObject());
-					clausesPopulationList.remove(leftCellListSelectionModel.getSelectedObject());
-					Collections.sort(groupingPopulationList);
-					Collections.sort(clausesPopulationList);
-					getRightPagerPanel().setDisplay(getRightCellList());
-					getLeftPagerPanel().setDisplay(getLeftCellList());
-					leftCellListSelectionModel.clear();
+					ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<MeasurePackageClauseDetail>();
+					validateGroupingList.addAll(groupingPopulationList);
+					validateGroupingList.add(leftCellListSelectionModel.getSelectedObject());
+					if (isValid(validateGroupingList)) {
+						groupingPopulationList.add(leftCellListSelectionModel.getSelectedObject());
+						groupingClausesMap.put(leftCellListSelectionModel.getSelectedObject().getName(),
+								leftCellListSelectionModel.getSelectedObject());
+						clausesPopulationList.remove(leftCellListSelectionModel.getSelectedObject());
+						Collections.sort(groupingPopulationList);
+						Collections.sort(clausesPopulationList);
+						getRightPagerPanel().setDisplay(getRightCellList());
+						getLeftPagerPanel().setDisplay(getLeftCellList());
+						leftCellListSelectionModel.clear();
+					}
 				}
 			}
 		});
@@ -775,6 +850,7 @@ public class MeasurePackageClauseCellListWidget {
 						&& (rightCellListSelectionModel.getSelectedObject() != null)) {
 					clausesPopulationList.add(rightCellListSelectionModel.getSelectedObject());
 					groupingPopulationList.remove(rightCellListSelectionModel.getSelectedObject());
+					groupingClausesMap.remove(rightCellListSelectionModel.getSelectedObject().getName());
 					Collections.sort(groupingPopulationList);
 					Collections.sort(clausesPopulationList);
 					getRightPagerPanel().setDisplay(getRightCellList());
@@ -783,6 +859,7 @@ public class MeasurePackageClauseCellListWidget {
 					disclosurePanelAssociations.setVisible(false);
 					disclosurePanelItemCountTable.setVisible(false);
 				}
+				
 			}
 		});
 		addAllClauseRight.addClickHandler(new ClickHandler() {
@@ -791,13 +868,20 @@ public class MeasurePackageClauseCellListWidget {
 				errorMessages.clear();
 				successMessages.clear();
 				if (clausesPopulationList.size() != 0) {
-					groupingPopulationList.addAll(clausesPopulationList);
-					clausesPopulationList.removeAll(clausesPopulationList);
-					Collections.sort(groupingPopulationList);
-					rightCellListSelectionModel.clear();
-					leftCellListSelectionModel.clear();
-					getRightPagerPanel().setDisplay(getRightCellList());
-					getLeftPagerPanel().setDisplay(getLeftCellList());
+					ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<MeasurePackageClauseDetail>();
+					validateGroupingList.addAll(clausesPopulationList);
+					if (isValid(validateGroupingList)) {
+						groupingPopulationList.addAll(clausesPopulationList);
+						for(MeasurePackageClauseDetail detail : groupingPopulationList){
+							groupingClausesMap.put(detail.getName(), detail);
+						}
+						clausesPopulationList.removeAll(clausesPopulationList);
+						Collections.sort(groupingPopulationList);
+						rightCellListSelectionModel.clear();
+						leftCellListSelectionModel.clear();
+						getRightPagerPanel().setDisplay(getRightCellList());
+						getLeftPagerPanel().setDisplay(getLeftCellList());
+					}
 				}
 			}
 		});
@@ -808,6 +892,9 @@ public class MeasurePackageClauseCellListWidget {
 				successMessages.clear();
 				if (groupingPopulationList.size() != 0) {
 					clausesPopulationList.addAll(groupingPopulationList);
+					for(MeasurePackageClauseDetail detail : groupingPopulationList){
+						groupingClausesMap.remove(detail.getName());
+					}
 					groupingPopulationList.removeAll(groupingPopulationList);
 					Collections.sort(clausesPopulationList);
 					rightCellListSelectionModel.clear();
@@ -826,7 +913,7 @@ public class MeasurePackageClauseCellListWidget {
 	 * @param type - String.
 	 * @return int.
 	 */
-	private int countDetailsWithType(
+	private int countTypeForAssociation(
 			List<MeasurePackageClauseDetail> clauseList,  String type) {
 		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
 		denoAssociatedPopulationList.clear();
@@ -857,6 +944,17 @@ public class MeasurePackageClauseCellListWidget {
 		return count;
 	}
 	
+	private int countDetailsWithType(
+			final List<MeasurePackageClauseDetail> detailList, final String type) {
+		int count = 0;
+		for (MeasurePackageClauseDetail detail : detailList) {
+			if (type.equals(detail.getType())) {
+				count++;
+			}
+		}
+		return count;
+	}
+	
 	/**
 	 * Generate's Association List for Measure Observation in Ratio Measure's.
 	 * @param clauseList - List.
@@ -879,23 +977,6 @@ public class MeasurePackageClauseCellListWidget {
 		}
 		Collections.sort(associatedPopulationList);
 	}
-	
-	/**
-	 * Generate's Association List for Measure Observation in Continous Measure's.
-	 * @param clauseList
-	 */
-	/*private void addMeasurePopulationForMeasureObservation(
-			List<MeasurePackageClauseDetail> clauseList) {
-		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
-		for (MeasurePackageClauseDetail detail : clauseList) {
-			if (("measurePopulation".equalsIgnoreCase(detail.getType()))
-					&& !associatedPopulationList.contains(detail)) {
-				associatedPopulationList.add(detail);
-			}
-		}
-		Collections.sort(associatedPopulationList);
-	}*/
-	
 	/**
 	 * Right CellList Clause Cell Class.
 	 *
@@ -952,7 +1033,7 @@ public class MeasurePackageClauseCellListWidget {
 						disclosurePanelItemCountTable.setOpen(false);
 						// If More than one Populations are added in Grouping, Add Association Widget is shown
 						// otherwise available population is added to Denominator and Numerator Association List.
-						if (countDetailsWithType(groupingPopulationList
+						if (countTypeForAssociation(groupingPopulationList
 								, ConstantMessages.POPULATION_CONTEXT_ID) == 2) {
 							if ((value.getType().equalsIgnoreCase("denominator"))) {
 								buildAddAssociationWidget(denoAssociatedPopulationList);
@@ -1052,6 +1133,151 @@ public class MeasurePackageClauseCellListWidget {
 		@Override
 		public void setValue(com.google.gwt.cell.client.Cell.Context context, Element parent, MeasurePackageClauseDetail value) {
 		}
+	}
+	
+	private boolean isValid(List<MeasurePackageClauseDetail> validatGroupingList) {
+		List<MeasurePackageClauseDetail> detailList = validatGroupingList;
+		List<String> messages = new ArrayList<String>();
+		
+		String scoring = MatContext.get().getCurrentMeasureScoringType();
+		
+		// TODO refactor this into a common shared class so the server can use
+		// it for validation also
+		if (ConstantMessages.CONTINUOUS_VARIABLE_SCORING
+				.equalsIgnoreCase(scoring)) {
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 1)
+					) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getContinuousVariableWrongNumMessage());
+			}
+			
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.NUMERATOR_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) != 0)
+							|| (countDetailsWithType(detailList,
+									ConstantMessages.DENOMINATOR_CONTEXT_ID) != 0)
+									|| (countDetailsWithType(detailList,
+											ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) != 0)
+											|| (countDetailsWithType(detailList,
+													ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getContinuousVariableMayNotContainMessage());
+			}
+			
+		} else if (ConstantMessages.PROPORTION_SCORING.equalsIgnoreCase(scoring)) { /*
+		 * PROPORTION at least one and only one Population,
+		 * Denominator at least one or more Numerator zero or
+		 * one Denominator Exclusions Denominator Exceptions and
+		 * no Numerator Exclusions, Measure Population, Measure
+		 * Observations
+		 */
+			/*
+			 * at least one and only one Population, Denominator
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
+					) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionWrongNumMessage());
+			}
+			/*
+			 * at least one or more Numerator
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.NUMERATOR_CONTEXT_ID) < 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionTooFewMessage());
+			}
+			/*
+			 * zero or one Denominator Exclusions, Denominator Exceptions
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) > 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionTooManyMessage());
+			}
+			/* no Numerator Exclusions, Measure Population, Measure Observations */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getProportionMayNotContainMessage());
+			}
+		} else if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) { /*
+		 * at least one and only one Population, Denominator,
+		 * Numerator, zero or one Denominator Exclusions and no
+		 * Denominator Exceptions, Measure Population
+		 * May contain one or more Measure Observation.
+		 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
+					) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getRatioWrongNumMessage());
+			}
+			/*
+			 * zero or one Denominator Exclusions
+			 */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) > 1)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getRatioTooManyMessage());
+			}
+			/*
+			 * Not more than two populations are allowed.
+			 * */
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) > 2)) {
+				messages.add(MatContext.get().getMessageDelegate().getRATIO_TOO_MANY_POPULATIONS());
+			}
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)) {
+				messages.add(MatContext.get().getMessageDelegate()
+						.getRatioMayNotContainMessage());
+			}
+			// In case of two IP's, Denominator and Numerator must contain associations.
+			/*int iPCount = (countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID));
+			if (iPCount == 2) {
+				for (MeasurePackageClauseDetail detail : detailList) {
+					if ((ConstantMessages.DENOMINATOR_CONTEXT_ID).equals(detail.getType())
+							|| (ConstantMessages.NUMERATOR_CONTEXT_ID).equals(detail.getType())) {
+						if ((detail.getAssociatedPopulationUUID() == null)) {
+							messages.add("For Ratio measures, in case of more than one Population ,"
+									+ " Numerator and Denominator must contain one association.");
+							break;
+						}
+					}
+				}
+			}*/
+		} else if (ConstantMessages.COHORT_SCORING.equalsIgnoreCase(scoring)) {
+			if ((countTypeForAssociation(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					) {
+				messages.add(MatContext.get().getMessageDelegate().getCOHORT_WRONG_NUM());
+			}
+		}
+		if (messages.size() > 0) {
+			errorMessages.setMessages(messages);
+		} else {
+			errorMessages.clear();
+		}
+		return messages.size() == 0;
 	}
 	/**
 	 * @return List .

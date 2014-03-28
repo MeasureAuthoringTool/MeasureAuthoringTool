@@ -548,16 +548,42 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		
 		
 
+		/**
+		 * Builds the component measures cell table.
+		 *
+		 * @param result the result
+		 * @param isEditable the is editable
+		 */
 		void buildComponentMeasuresCellTable(ManageMeasureSearchModel result,
 				boolean isEditable);
 
+		/**
+		 * Gets the component measure selected list.
+		 *
+		 * @return the component measure selected list
+		 */
 		List<ManageMeasureSearchModel.Result> getComponentMeasureSelectedList();
 
+		/**
+		 * Sets the component measure selected list.
+		 *
+		 * @param componentMeasureSelectedList the new component measure selected list
+		 */
 		void setComponentMeasureSelectedList(
 				List<ManageMeasureSearchModel.Result> componentMeasureSelectedList);
 
+		/**
+		 * Gets the search string.
+		 *
+		 * @return the search string
+		 */
 		HasValue<String> getSearchString();
 
+		/**
+		 * Gets the search button.
+		 *
+		 * @return the search button
+		 */
 		PrimaryButton getSearchButton();
 		
 	}
@@ -652,12 +678,23 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	/** The db qdm selected list. */
 	private List<QualityDataSetDTO> dbQDMSelectedList = new ArrayList<QualityDataSetDTO>();
 	
+	/** The db component measures selected list. */
 	private List<ManageMeasureSearchModel.Result> dbComponentMeasuresSelectedList = new ArrayList<ManageMeasureSearchModel.Result>();
 	
+	/**
+	 * Gets the db component measures selected list.
+	 *
+	 * @return the db component measures selected list
+	 */
 	public List<ManageMeasureSearchModel.Result> getDbComponentMeasuresSelectedList() {
 		return dbComponentMeasuresSelectedList;
 	}
 
+	/**
+	 * Sets the db component measures selected list.
+	 *
+	 * @param dbComponentMeasuresSelectedList the new db component measures selected list
+	 */
 	public void setDbComponentMeasuresSelectedList(
 			List<ManageMeasureSearchModel.Result> dbComponentMeasuresSelectedList) {
 		this.dbComponentMeasuresSelectedList = dbComponentMeasuresSelectedList;
@@ -691,6 +728,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
 	
+	/** The manage measure search model. */
 	private ManageMeasureSearchModel manageMeasureSearchModel;
 
 	
@@ -927,11 +965,24 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	
 	//TODO by Ravi
 	
+	/**
+	 * Gets the component measures.
+	 *
+	 * @return the component measures
+	 */
 	public final void getComponentMeasures(){
 		searchMeasuresList(metaDataDisplay.getSearchString().getValue(),1,Integer.MAX_VALUE,1);
 	}
 	
 
+	/**
+	 * Search measures list.
+	 *
+	 * @param searchText the search text
+	 * @param startIndex the start index
+	 * @param pageSize the page size
+	 * @param filter the filter
+	 */
 	private void searchMeasuresList(String searchText, int startIndex, int pageSize,
 			int filter){
 		if(searchText.equalsIgnoreCase("search...")){

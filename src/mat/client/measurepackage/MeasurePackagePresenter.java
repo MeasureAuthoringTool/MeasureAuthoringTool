@@ -48,6 +48,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/** The packageOverview. */
 	private MeasurePackageOverview packageOverview;
 	
+	/** The service. */
 	private static  MeasureServiceAsync service = MatContext.get().getMeasureService();
 	
 	/**
@@ -153,37 +154,60 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 */
 		void setViewIsEditable(boolean b,
 				List<MeasurePackageDetail> packages);
+		
 		/**
-		 * @param clauses
+		 * Sets the clauses.
+		 *
+		 * @param clauses the new clauses
 		 */
 		void setClauses(List<MeasurePackageClauseDetail> clauses);
+		
 		/**
-		 * @param name
+		 * Sets the package name.
+		 *
+		 * @param name the new package name
 		 */
 		void setPackageName(String name);
+		
 		/**
-		 * @param list
+		 * Sets the clauses in package.
+		 *
+		 * @param list the new clauses in package
 		 */
 		void setClausesInPackage(List<MeasurePackageClauseDetail> list);
 		
 		/**
-		 * @return
+		 * Gets the package grouping widget.
+		 *
+		 * @return the package grouping widget
 		 */
 		MeasurePackageClauseCellListWidget getPackageGroupingWidget();
+		
 		/**
-		 * @param observer
+		 * Sets the observer.
+		 *
+		 * @param observer the new observer
 		 */
 		void setObserver(Observer observer);
+		
 		/**
-		 * @param appliedListModel
+		 * Sets the applied qdm list.
+		 *
+		 * @param appliedListModel the new applied qdm list
 		 */
 		void setAppliedQdmList(QDSAppliedListModel appliedListModel);
+		
 		/**
-		 * @return
+		 * Gets the creates the new button.
+		 *
+		 * @return the creates the new button
 		 */
 		HasClickHandlers getCreateNewButton();
+		
 		/**
-		 * @param packages
+		 * Builds the cell table.
+		 *
+		 * @param packages the packages
 		 */
 		void buildCellTable(List<MeasurePackageDetail> packages);
 	}
@@ -479,7 +503,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	/**
 	 * Get Applied QDM List for Item Count Table.
+	 *
 	 * @param checkForSupplementData - Boolean.
+	 * @return the applied qdm list
 	 */
 	public final void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
@@ -577,10 +603,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 		panel.add(view.asWidget());
 		return panel;
 	}
+	
 	/**
 	 * get Measure Package Overview.
-	 * @param measureId
-	 *            - String.
+	 *
+	 * @param measureId - String.
+	 * @return the measure package overview
 	 */
 	private void getMeasurePackageOverview(final String measureId) {
 		MatContext
@@ -699,10 +727,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 		return MatContext.get().getMeasureLockService()
 				.checkForEditPermission();
 	}
+	
 	/**
 	 * Gets the measure.
 	 *
 	 * @param measureId the measure id
+	 * @return the measure
 	 */
 	private void getMeasure(final String measureId) {
 		MatContext
@@ -766,7 +796,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
 		view.setQDMElements(packageOverview.getQdmElements());
 	}
+	
 	/**
+	 * Removes the clauses.
+	 *
 	 * @param master - master List of Clauses.
 	 * @param toRemove - List from where to Remove.
 	 * @return List.

@@ -34,6 +34,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class PackagerServiceImpl.
  */
@@ -287,13 +288,12 @@ public class PackagerServiceImpl implements PackagerService {
 	
 	/**
 	 * Creates the measure package clause detail.
-	 * 
-	 * @param id
-	 *            the id
-	 * @param name
-	 *            the name
-	 * @param type
-	 *            the type
+	 *
+	 * @param id the id
+	 * @param name the name
+	 * @param type the type
+	 * @param associatedPopulationUUID the associated population uuid
+	 * @param itemCountList the item count list
 	 * @return the measure package clause detail
 	 */
 	private MeasurePackageClauseDetail createMeasurePackageClauseDetail(String id, String name, String type,

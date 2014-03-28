@@ -54,10 +54,13 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackageClauseCellListWidget.
  */
 public class MeasurePackageClauseCellListWidget {
+	
+	/** The Constant ASOOCIATED_LIST_SIZE. */
 	private static final int ASOOCIATED_LIST_SIZE = 10;
 	/**
 	 * The HTML templates used to render the ClauseCell.
@@ -157,8 +160,10 @@ public class MeasurePackageClauseCellListWidget {
 	/** List of selected Item counts for Clauses.**/
 	private List<QualityDataSetDTO> itemCountSelectionList;
 	
+	/** The Item count label. */
 	private Label ItemCountLabel = new Label();
 	
+	/** The clear button panel. */
 	private SimplePanel clearButtonPanel = new SimplePanel(); 
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
@@ -437,6 +442,11 @@ public class MeasurePackageClauseCellListWidget {
 		});
 	}
 	
+	/**
+	 * Adds the click handlers to clear association.
+	 *
+	 * @param secondaryButton the secondary button
+	 */
 	private void addClickHandlersToClearAssociation(SecondaryButton secondaryButton){
 		secondaryButton.addClickHandler(new ClickHandler() {
 			
@@ -610,8 +620,10 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
-	 * @param qdmList
-	 * @return
+	 * Swap qdm elements.
+	 *
+	 * @param qdmList the qdm list
+	 * @return the list
 	 */
 	private  List<QualityDataSetDTO> swapQdmElements(List<QualityDataSetDTO> qdmList){
 		List<QualityDataSetDTO> qdmselectedList = new ArrayList<QualityDataSetDTO>();
@@ -627,7 +639,9 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
-	 * @param selectedList
+	 * Update qdm selected list.
+	 *
+	 * @param selectedList the selected list
 	 */
 	private void updateQDMSelectedList(List<QualityDataSetDTO> selectedList) {
 		if (itemCountSelectionList.size() != 0) {
@@ -644,6 +658,8 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
+	 * Gets the associated pop cell list widget.
+	 *
 	 * @param populationList - ArrayList.
 	 * @return Vertical Panel.
 	 */
@@ -684,6 +700,11 @@ public class MeasurePackageClauseCellListWidget {
 		return vPanel;
 	}
 	
+	/**
+	 * Gets the clear button panel.
+	 *
+	 * @return the clear button panel
+	 */
 	private void getClearButtonPanel(){
 		clearButtonPanel.clear();
 		SecondaryButton clearAssociationInClause = new SecondaryButton("Clear");
@@ -691,7 +712,10 @@ public class MeasurePackageClauseCellListWidget {
 		clearButtonPanel.addStyleName("rightAlignButton");
 		addClickHandlersToClearAssociation(clearAssociationInClause);
 	}
+	
 	/**
+	 * Gets the associated pop composite cell.
+	 *
 	 * @return Cell.
 	 */
 	private Cell<MeasurePackageClauseDetail> getAssociatedPOPCompositeCell() {
@@ -1019,6 +1043,13 @@ public class MeasurePackageClauseCellListWidget {
 		return count;
 	}
 	
+	/**
+	 * Count details with type.
+	 *
+	 * @param detailList the detail list
+	 * @param type the type
+	 * @return the int
+	 */
 	private int countDetailsWithType(
 			final List<MeasurePackageClauseDetail> detailList, final String type) {
 		int count = 0;
@@ -1057,6 +1088,10 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 */
 	class RightClauseCell implements Cell<MeasurePackageClauseDetail> {
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#render(com.google.gwt.cell.client.Cell.Context, java.lang.Object, com.google.gwt.safehtml.shared.SafeHtmlBuilder)
+		 */
 		@Override
 		public void render(com.google.gwt.cell.client.Cell.Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb) {
 			if (value == null) {
@@ -1068,23 +1103,43 @@ public class MeasurePackageClauseCellListWidget {
 				sb.append(rendered);
 			}
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#dependsOnSelection()
+		 */
 		@Override
 		public boolean dependsOnSelection() {
 			return false;
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#getConsumedEvents()
+		 */
 		@Override
 		public Set<String> getConsumedEvents() {
 			return Collections.singleton("click");
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#handlesSelection()
+		 */
 		@Override
 		public boolean handlesSelection() {
 			return false;
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#isEditing(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+		 */
 		@Override
 		public boolean isEditing(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value) {
 			return false;
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#onBrowserEvent(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object, com.google.gwt.dom.client.NativeEvent, com.google.gwt.cell.client.ValueUpdater)
+		 */
 		@Override
 		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value,
@@ -1156,11 +1211,19 @@ public class MeasurePackageClauseCellListWidget {
 				}
 			}
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#resetFocus(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+		 */
 		@Override
 		public boolean resetFocus(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value) {
 			return false;
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#setValue(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+		 */
 		@Override
 		public void setValue(com.google.gwt.cell.client.Cell.Context context, Element parent, MeasurePackageClauseDetail value) {
 		}
@@ -1170,6 +1233,10 @@ public class MeasurePackageClauseCellListWidget {
 	 *
 	 */
 	class LeftClauseCell implements Cell<MeasurePackageClauseDetail> {
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#render(com.google.gwt.cell.client.Cell.Context, java.lang.Object, com.google.gwt.safehtml.shared.SafeHtmlBuilder)
+		 */
 		@Override
 		public void render(com.google.gwt.cell.client.Cell.Context context, MeasurePackageClauseDetail value, SafeHtmlBuilder sb) {
 			if (value == null) {
@@ -1181,38 +1248,72 @@ public class MeasurePackageClauseCellListWidget {
 				sb.append(rendered);
 			}
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#dependsOnSelection()
+		 */
 		@Override
 		public boolean dependsOnSelection() {
 			return false;
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#getConsumedEvents()
+		 */
 		@Override
 		public Set<String> getConsumedEvents() {
 			return null;
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#handlesSelection()
+		 */
 		@Override
 		public boolean handlesSelection() {
 			return false;
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#isEditing(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+		 */
 		@Override
 		public boolean isEditing(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value) {
 			return false;
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#onBrowserEvent(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object, com.google.gwt.dom.client.NativeEvent, com.google.gwt.cell.client.ValueUpdater)
+		 */
 		@Override
 		public void onBrowserEvent(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value,
 				NativeEvent event, ValueUpdater<MeasurePackageClauseDetail> valueUpdater) {
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#resetFocus(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+		 */
 		@Override
 		public boolean resetFocus(com.google.gwt.cell.client.Cell.Context context
 				, Element parent, MeasurePackageClauseDetail value) {
 			return false;
 		}
+		
+		/* (non-Javadoc)
+		 * @see com.google.gwt.cell.client.Cell#setValue(com.google.gwt.cell.client.Cell.Context, com.google.gwt.dom.client.Element, java.lang.Object)
+		 */
 		@Override
 		public void setValue(com.google.gwt.cell.client.Cell.Context context, Element parent, MeasurePackageClauseDetail value) {
 		}
 	}
 	
+	/**
+	 * Checks if is valid.
+	 *
+	 * @param validatGroupingList the validat grouping list
+	 * @return true, if is valid
+	 */
 	private boolean isValid(List<MeasurePackageClauseDetail> validatGroupingList) {
 		List<MeasurePackageClauseDetail> detailList = validatGroupingList;
 		List<String> messages = new ArrayList<String>();
@@ -1334,13 +1435,19 @@ public class MeasurePackageClauseCellListWidget {
 		}
 		return messages.size() == 0;
 	}
+	
 	/**
+	 * Gets the item count selection list.
+	 *
 	 * @return List .
 	 */
 	public List<QualityDataSetDTO> getItemCountSelectionList() {
 		return itemCountSelectionList;
 	}
+	
 	/**
+	 * Gets the grouping population list.
+	 *
 	 * @return the groupingPopulationList
 	 */
 	public ArrayList<MeasurePackageClauseDetail> getGroupingPopulationList() {
@@ -1348,6 +1455,8 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
+	 * Sets the grouping population list.
+	 *
 	 * @param groupingPopulationList the groupingPopulationList to set
 	 */
 	public void setGroupingPopulationList(List<MeasurePackageClauseDetail> groupingPopulationList) {
@@ -1355,6 +1464,8 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
+	 * Gets the clauses population list.
+	 *
 	 * @return the clausesPopulationList
 	 */
 	public ArrayList<MeasurePackageClauseDetail> getClausesPopulationList() {
@@ -1362,12 +1473,17 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
+	 * Sets the clauses population list.
+	 *
 	 * @param clauses the clausesPopulationList to set
 	 */
 	public void setClausesPopulationList(List<MeasurePackageClauseDetail> clauses) {
 		clausesPopulationList = (ArrayList<MeasurePackageClauseDetail>) clauses;
 	}
+	
 	/**
+	 * Gets the right pager panel.
+	 *
 	 * @return the rightPagerPanel
 	 */
 	public ShowMorePagerPanel getRightPagerPanel() {
@@ -1375,6 +1491,8 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
+	 * Gets the left pager panel.
+	 *
 	 * @return the leftPagerPanel
 	 */
 	public ShowMorePagerPanel getLeftPagerPanel() {
@@ -1382,6 +1500,8 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
+	 * Gets the right range label pager.
+	 *
 	 * @return the rightRangeLabelPager
 	 */
 	public RangeLabelPager getRightRangeLabelPager() {
@@ -1389,122 +1509,188 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
+	 * Gets the left range label pager.
+	 *
 	 * @return the leftRangeLabelPager
 	 */
 	public RangeLabelPager getLeftRangeLabelPager() {
 		return leftRangeLabelPager;
 	}
+	
 	/**
+	 * Gets the disclosure panel item count table.
+	 *
 	 * @return the disclosurePanelItemCountTable
 	 */
 	public DisclosurePanel getDisclosurePanelItemCountTable() {
 		return disclosurePanelItemCountTable;
 	}
+	
 	/**
+	 * Gets the disclosure panel associations.
+	 *
 	 * @return the disclosurePanelAssociations
 	 */
 	public DisclosurePanel getDisclosurePanelAssociations() {
 		return disclosurePanelAssociations;
 	}
 	
+	/**
+	 * Gets the applied qdm list.
+	 *
+	 * @return the applied qdm list
+	 */
 	public List<QualityDataSetDTO> getAppliedQdmList() {
 		return appliedQdmList;
 	}
 	
+	/**
+	 * Sets the applied qdm list.
+	 *
+	 * @param appliedQdmList the new applied qdm list
+	 */
 	public void setAppliedQdmList(List<QualityDataSetDTO> appliedQdmList) {
 		this.appliedQdmList = appliedQdmList;
 	}
+	
 	/**
+	 * Gets the package name.
+	 *
 	 * @return the packageName
 	 */
 	public Label getPackageName() {
 		return packageName;
 	}
+	
 	/**
+	 * Sets the package name.
+	 *
 	 * @param packageName the packageName to set
 	 */
 	public void setPackageName(Label packageName) {
 		this.packageName = packageName;
 	}
+	
 	/**
+	 * Gets the save grouping.
+	 *
 	 * @return the saveGrouping
 	 */
 	public PrimaryButton getSaveGrouping() {
 		return saveGrouping;
 	}
+	
 	/**
+	 * Sets the save grouping.
+	 *
 	 * @param saveGrouping the saveGrouping to set
 	 */
 	public void setSaveGrouping(PrimaryButton saveGrouping) {
 		this.saveGrouping = saveGrouping;
 	}
+	
 	/**
+	 * Gets the adds the clause right.
+	 *
 	 * @return the addClauseRight
 	 */
 	public Button getAddClauseRight() {
 		return addClauseRight;
 	}
+	
 	/**
+	 * Gets the adds the clause left.
+	 *
 	 * @return the addClauseLeft
 	 */
 	public Button getAddClauseLeft() {
 		return addClauseLeft;
 	}
+	
 	/**
+	 * Gets the adds the all clause right.
+	 *
 	 * @return the addAllClauseRight
 	 */
 	public Button getAddAllClauseRight() {
 		return addAllClauseRight;
 	}
+	
 	/**
+	 * Gets the adds the all clause left.
+	 *
 	 * @return the addAllClauseLeft
 	 */
 	public Button getAddAllClauseLeft() {
 		return addAllClauseLeft;
 	}
+	
 	/**
+	 * Gets the error messages.
+	 *
 	 * @return the errorMessages
 	 */
 	public ErrorMessageDisplay getErrorMessages() {
 		return errorMessages;
 	}
+	
 	/**
+	 * Sets the error messages.
+	 *
 	 * @param errorMessages the errorMessages to set
 	 */
 	public void setErrorMessages(ErrorMessageDisplay errorMessages) {
 		this.errorMessages = errorMessages;
 	}
+	
 	/**
+	 * Gets the success messages.
+	 *
 	 * @return the successMessages
 	 */
 	public SuccessMessageDisplay getSuccessMessages() {
 		return successMessages;
 	}
+	
 	/**
+	 * Sets the success messages.
+	 *
 	 * @param successMessages the successMessages to set
 	 */
 	public void setSuccessMessages(SuccessMessageDisplay successMessages) {
 		this.successMessages = successMessages;
 	}
+	
 	/**
+	 * Gets the associated cell list.
+	 *
 	 * @return the associatedCellList
 	 */
 	public CellList<MeasurePackageClauseDetail> getAssociatedCellList() {
 		return associatedCellList;
 	}
+	
 	/**
+	 * Sets the associated cell list.
+	 *
 	 * @param associatedCellList the associatedCellList to set
 	 */
 	public void setAssociatedCellList(CellList<MeasurePackageClauseDetail> associatedCellList) {
 		this.associatedCellList = associatedCellList;
 	}
+	
 	/**
+	 * Gets the associated population list.
+	 *
 	 * @return the associatedPopulationList
 	 */
 	public ArrayList<MeasurePackageClauseDetail> getAssociatedPopulationList() {
 		return associatedPopulationList;
 	}
+	
 	/**
+	 * Sets the associated population list.
+	 *
 	 * @param associatedPopulationList the associatedPopulationList to set
 	 */
 	public void setAssociatedPopulationList(ArrayList<MeasurePackageClauseDetail> associatedPopulationList) {

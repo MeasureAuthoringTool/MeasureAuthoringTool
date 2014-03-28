@@ -139,11 +139,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The qdm item count list v panel. */
 	protected VerticalPanel qdmItemCountListVPanel = new VerticalPanel();
 	
+	/** The component measures list v panel. */
 	protected VerticalPanel componentMeasuresListVPanel = new VerticalPanel();
 	
 	/** The qdm item count list s panel. */
 	protected ScrollPanel qdmItemCountListSPanel = new ScrollPanel();
 	
+	/** The component measures list s panel. */
 	protected ScrollPanel componentMeasuresListSPanel = new ScrollPanel();
 	
 	/** The measure steward other input. */
@@ -237,6 +239,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The item label. */
 	protected Label itemLabel = new Label();
 	
+	/** The component measures label. */
 	protected Label componentMeasuresLabel = new Label();
 	
 	/** The counter. */
@@ -309,11 +312,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The horz panel. */
 	private HorizontalPanel horzPanel = new HorizontalPanel();
 	
+	/** The horz component measure panel. */
 	private HorizontalPanel horzComponentMeasurePanel = new HorizontalPanel();
 	
 	/** The qdm selected list v panel. */
 	VerticalPanel qdmSelectedListVPanel=new VerticalPanel();
 	
+	/** The component measures selected list v panel. */
 	VerticalPanel componentMeasuresSelectedListVPanel = new VerticalPanel();
 	
 	/** The qdm selected list s panel. */
@@ -325,15 +330,23 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The qdm selected list. */
 	private  List<QualityDataSetDTO> qdmSelectedList;
 	
+	/** The search string. */
 	private TextBox searchString = new TextBox();
 	
+	/** The component measure selected list. */
 	private List<ManageMeasureSearchModel.Result> componentMeasureSelectedList;
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getComponentMeasureSelectedList()
+	 */
 	@Override
     public List<ManageMeasureSearchModel.Result> getComponentMeasureSelectedList() {
 		return componentMeasureSelectedList;
 	}
 
+    /* (non-Javadoc)
+     * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setComponentMeasureSelectedList(java.util.List)
+     */
     @Override
 	public void setComponentMeasureSelectedList(
 			List<ManageMeasureSearchModel.Result> componentMeasureSelectedList) {
@@ -343,19 +356,25 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The element. */
     private  Element element;
     
+    /** The component measure cell table. */
     private CellTable<ManageMeasureSearchModel.Result> componentMeasureCellTable; 
     
+    /** The selected measure list. */
     private List<ManageMeasureSearchModel.Result> selectedMeasureList;
     
+    /** The component measures list panel. */
     VerticalPanel componentMeasuresListPanel = new VerticalPanel();
     
+    /** The measures list selection model. */
     private MultiSelectionModel<ManageMeasureSearchModel.Result> measuresListSelectionModel;
     
    // private MatButtonCell searchButton = new MatButtonCell("click to Search Measures","customSearchButton");
 	
-    private CustomButton zoomSearchButton = (CustomButton) getImage("Search",
+    /** The zoom search button. */
+   private CustomButton zoomSearchButton = (CustomButton) getImage("Search",
 			ImageResources.INSTANCE.searchZoom(), "Search" , "MeasureSearchButton");
     
+    /** The search button. */
     private PrimaryButton searchButton = new PrimaryButton("Go");
 
 	/**
@@ -957,6 +976,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 	}
 	
+	/**
+	 * Update component measures selected list.
+	 *
+	 * @param measuresSelectedList the measures selected list
+	 */
 	public void updateComponentMeasuresSelectedList(List<ManageMeasureSearchModel.Result> measuresSelectedList) {
 		if (componentMeasureSelectedList.size() != 0) {
 			for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
@@ -972,6 +996,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	
+	/**
+	 * Adds the measures column to table.
+	 *
+	 * @param isEditable the is editable
+	 * @return the cell table
+	 */
 	private CellTable<ManageMeasureSearchModel.Result> addMeasuresColumnToTable(boolean isEditable){
 		Label measureSearchHeader = new Label("Component Measures List");
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
@@ -1066,6 +1096,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildComponentMeasuresCellTable(mat.client.measure.ManageMeasureSearchModel, boolean)
+	 */
 	@Override
 	public void buildComponentMeasuresCellTable(ManageMeasureSearchModel result, boolean isEditable){
 		horzComponentMeasurePanel.clear(); 
@@ -1136,6 +1169,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 	}
 	
+	/**
+	 * Gets the image.
+	 *
+	 * @param action the action
+	 * @param url the url
+	 * @param key the key
+	 * @param id the id
+	 * @return the image
+	 */
 	private Widget getImage(String action, ImageResource url, String key , String id) {
 		CustomButton image = new CustomButton();
 		image.removeStyleName("gwt-button");
@@ -1146,6 +1188,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return image;
 	}
 	
+	/**
+	 * Adds the click handlers.
+	 */
 	public void addClickHandlers(){
      searchString.addClickHandler(new ClickHandler() {
 			
@@ -1178,6 +1223,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return p;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getSearchButton()
+	 */
 	@Override
 	public PrimaryButton getSearchButton(){
 	   return searchButton;
@@ -1220,6 +1268,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return measScoringInput;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getSearchString()
+	 */
 	@Override
 	public HasValue<String> getSearchString(){
 		return searchString;
@@ -2064,6 +2115,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return qdmSelectedList;
 	}
 	
+	/**
+	 * Convert timestamp to string.
+	 *
+	 * @param ts the ts
+	 * @return the string
+	 */
 	private String convertTimestampToString(Timestamp ts) {
 		String tsStr;
 		if (ts == null) {

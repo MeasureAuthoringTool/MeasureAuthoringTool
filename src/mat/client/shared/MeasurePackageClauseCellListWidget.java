@@ -1348,12 +1348,14 @@ public class MeasurePackageClauseCellListWidget {
 		 * Observations
 		 */
 			/*
-			 * at least one and only one Population, Denominator
+			 * at least one and only one Population, Denominator and Numerator
 			 */
 			if ((countDetailsWithType(detailList,
 					ConstantMessages.POPULATION_CONTEXT_ID) > 1)
 					|| (countDetailsWithType(detailList,
 							ConstantMessages.DENOMINATOR_CONTEXT_ID) > 1)
+							|| (countDetailsWithType(detailList,
+							ConstantMessages.NUMERATOR_CONTEXT_ID) > 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getProportionWrongNumMessage());

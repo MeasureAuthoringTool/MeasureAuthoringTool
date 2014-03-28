@@ -376,17 +376,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
 					|| (countDetailsWithType(detailList,
 							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
+							|| (countDetailsWithType(detailList,
+							ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getProportionWrongNumMessage());
-			}
-			/*
-			 * at least one or more Numerator
-			 */
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.NUMERATOR_CONTEXT_ID) < 1)) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getProportionTooFewMessage());
 			}
 			/*
 			 * zero or one Denominator Exclusions, Denominator Exceptions

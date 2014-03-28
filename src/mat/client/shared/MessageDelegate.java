@@ -392,7 +392,7 @@ public class MessageDelegate {
 	 */
 	/** The proportion wrong num. */
 	private final String PROPORTION_WRONG_NUM = "For a Proportion measure, a grouping must contain exactly one of each of the following: "
-			+ "Population and Denominator.";
+			+ "Population, Denominator and Numerator.";
 	
 	/** The ratio may not contain. */
 	private final String RATIO_MAY_NOT_CONTAIN = "For a Ratio measure, a grouping may not contain a Denominator Exception, or Measure Population.";

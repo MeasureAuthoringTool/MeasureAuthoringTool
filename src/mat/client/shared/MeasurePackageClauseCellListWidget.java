@@ -53,6 +53,7 @@ import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackageClauseCellListWidget.
  */
@@ -420,9 +421,17 @@ public class MeasurePackageClauseCellListWidget {
 				MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
 				
 				if(selectedClauseCell.getType().equals("measureObservation")){
-					groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-					setAssociatedPopulationUUID(null);
+					groupingClausesMap.get(rightCellListSelectionModel.
+							getSelectedObject().getName()).
+							setAssociatedPopulationUUID(null);
+					buildItemCountWidget();
+					getClearButtonPanel();
+					clearPopulationForMeasureObservation(associatedPopulationList);
 					buildAddAssociationWidget(associatedPopulationList);
+					disclosurePanelItemCountTable.setVisible(true);
+					disclosurePanelItemCountTable.setOpen(false);
+					disclosurePanelAssociations.setVisible(true);
+					disclosurePanelAssociations.setOpen(true);
 					successMessages.setMessage("Successfully cleared Associations."
 							+ " Please click save grouping to save changes.");
 				}
@@ -631,6 +640,7 @@ public class MeasurePackageClauseCellListWidget {
 		vPanel.getElement().setAttribute("id", "MeasurePackageClause_AssoWgt_VerticalPanel");
 		associatedSelectionModel = new SingleSelectionModel<MeasurePackageClauseDetail>();
 		associatedPOPCellList = new CellList<MeasurePackageClauseDetail>(getAssociatedPOPCompositeCell());
+		associatedPOPCellList.redraw();
 		associatedSelectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
 			@Override
 			public void onSelectionChange(SelectionChangeEvent event) {
@@ -652,13 +662,11 @@ public class MeasurePackageClauseCellListWidget {
 		vPanel.setSize("200px", "170px");
 		vPanel.add(associatedPOPCellList);
 		HorizontalPanel associateWidgetButtonPanel = new HorizontalPanel();
-		associateWidgetButtonPanel.addStyleName("floatRight");
+		associateWidgetButtonPanel.addStyleName("floatRightButtonPanel");
 		SecondaryButton saveAssociationInClause = new SecondaryButton("OK");
-		//SecondaryButton clearAssociationInClause = new SecondaryButton("Clear");
 		associateWidgetButtonPanel.add(saveAssociationInClause);
 		associateWidgetButtonPanel.add(clearButtonPanel);
 		vPanel.add(associateWidgetButtonPanel);
-		//addClickHandlersToClearAssociation(clearAssociationInClause);
 		addClickHandlersToAddAssociation(saveAssociationInClause);
 		return vPanel;
 	}
@@ -671,8 +679,8 @@ public class MeasurePackageClauseCellListWidget {
 	private void getClearButtonPanel(){
 		clearButtonPanel.clear();
 		SecondaryButton clearAssociationInClause = new SecondaryButton("Clear");
+		clearButtonPanel.addStyleName("floatRightButtonPanel");
 		clearButtonPanel.add(clearAssociationInClause);
-		clearButtonPanel.addStyleName("rightAlignButton");
 		addClickHandlersToClearAssociation(clearAssociationInClause);
 	}
 	
@@ -1046,6 +1054,27 @@ public class MeasurePackageClauseCellListWidget {
 		}
 		Collections.sort(associatedPopulationList);
 	}
+	
+	/**
+	 * Clear population for measure observation.
+	 *
+	 * @param clauseList the clause list
+	 */
+	private void clearPopulationForMeasureObservation(
+			List<MeasurePackageClauseDetail> clauseList) {
+		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
+		for (MeasurePackageClauseDetail detail : clauseList) {
+			if (("denominator".equalsIgnoreCase(detail.getType())
+					|| "numerator".equalsIgnoreCase(detail.getType()))
+					&& !associatedPopulationList.contains(detail)) {
+					detail.setAssociatedPopulation(false);
+				associatedPopulationList.add(detail);
+			}
+		}
+		Collections.sort(associatedPopulationList);
+	}
+	
+	
 	/**
 	 * Right CellList Clause Cell Class.
 	 *
@@ -1123,6 +1152,7 @@ public class MeasurePackageClauseCellListWidget {
 				if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
 					if ((value.getType().equalsIgnoreCase("denominator"))
 							|| (value.getType().equalsIgnoreCase("numerator"))) {
+						clearButtonPanel.clear();
 						buildItemCountWidget();
 						disclosurePanelItemCountTable.setVisible(true);
 						disclosurePanelItemCountTable.setOpen(false);

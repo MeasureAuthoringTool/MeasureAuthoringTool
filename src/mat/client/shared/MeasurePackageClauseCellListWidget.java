@@ -171,6 +171,8 @@ public class MeasurePackageClauseCellListWidget {
 		rightCellList.setKeyboardPagingPolicy(KeyboardPagingPolicy.INCREASE_RANGE);
 		rightCellListDataProvider = new ListDataProvider<MeasurePackageClauseDetail>(groupingPopulationList);
 		rightCellListDataProvider.addDataDisplay(rightCellList);
+		//Clear the map and re -populate it with current clauses in Grouping List.
+		groupingClausesMap.clear();
 		if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 			rightCellList.setSelectionModel(rightCellListSelectionModel
 					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
@@ -182,6 +184,7 @@ public class MeasurePackageClauseCellListWidget {
 					, DefaultSelectionEventManager.<MeasurePackageClauseDetail> createDefaultManager());
 			
 		}
+		
 		return rightCellList;
 	}
 	/**

@@ -187,10 +187,10 @@
 		<field name="componentMeasuresSelectedList" 
             type="mat.client.measure.ManageMeasureSearchModel$Result"
 			collection="arraylist">
-			<bind-xml name="componentMeasures" location="componentMeasuresCount">
+			<bind-xml name="measure" location="componentMeasures">
 				<class name="mat.client.measure.ManageMeasureSearchModel$Result">
 					<field name="name" type="java.lang.String">
-						<bind-xml name="displayName" node="attribute" />
+						<bind-xml name="name" node="attribute" />
 					</field>
 					
 					<field name="version" type="java.lang.String">
@@ -199,6 +199,10 @@
 					
 					<field name="id" type="java.lang.String">
 						<bind-xml name="id" node="attribute" />
+					</field>
+					
+					<field name="finalizedDate" type="java.sql.Timestamp">
+						<bind-xml name="finalizedDate" node="attribute" />
 					</field>
 				</class>
 			</bind-xml>

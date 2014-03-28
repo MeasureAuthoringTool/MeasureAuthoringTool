@@ -48,6 +48,8 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.dom.client.HasKeyDownHandlers;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
+import com.google.gwt.event.dom.client.MouseOutEvent;
+import com.google.gwt.event.dom.client.MouseOutHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.resources.client.ImageResource;
@@ -353,6 +355,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
     private CustomButton zoomSearchButton = (CustomButton) getImage("Search",
 			ImageResources.INSTANCE.searchZoom(), "Search" , "MeasureSearchButton");
+    
+    private PrimaryButton searchButton = new PrimaryButton("Go");
 
 	/**
 	 * Instantiates a new meta data view.
@@ -360,7 +364,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public MetaDataView(){
 		addClickHandlers();
 		//referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
-		searchString.setText("search...");
 		HorizontalPanel mainContent = new HorizontalPanel();
 		mainContent.getElement().setId("mainContent_HorizontalPanel");
 		mainPanel.setStylePrimaryName("searchResultsContainer");
@@ -546,7 +549,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(new SpacerWidget());
 		
 		
-		fPanel.add(LabelBuilder.buildLabel(componentMeasureCellTable, " Component Measures Counted - Optional"));
+		//fPanel.add(LabelBuilder.buildLabel(componentMeasureCellTable, " Component Measures Counted - Optional"));
 		fPanel.add(horzComponentMeasurePanel);
 		fPanel.add(new SpacerWidget());
 		
@@ -1070,7 +1073,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		componentMeasuresListVPanel.clear();
 		componentMeasuresSelectedListVPanel.clear();
 		HorizontalPanel searchButtonPanel = new HorizontalPanel();
-		componentMeasuresListVPanel.setStyleName("cellTablePanel");
+		VerticalPanel vPanelHolder = new VerticalPanel();
+		HorizontalPanel horizontalHolder= new HorizontalPanel();
+		componentMeasuresListSPanel.setStyleName("cellTablePanel");
+		horizontalHolder.setStyleName("floatRight");
+		searchString.setText("search...");
 		componentMeasureCellTable = new CellTable<ManageMeasureSearchModel.Result>();
 		componentMeasureCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = 
@@ -1095,6 +1102,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		spager.setPageSize(5);
 		componentMeasureCellTable.setWidth("100%");
 		componentMeasuresListSPanel.setSize("500px", "150px");
+		searchButtonPanel.setWidth("500px");
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("componentMeasureListSummary",
 				"In the following Measure List table, Measure Name is given in first column,"
 						+ " Version in second column, Finalized Date in third column,"
@@ -1104,16 +1112,17 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				.buildInvisibleLabel("selectedComponentMeasuresSummary","Selected Items: "+ componentMeasureSelectedList.size());
 		componentMeasureCellTable.getElement().setAttribute("id", "ComponentMeasuresListCellTable");
 		componentMeasureCellTable.getElement().setAttribute("aria-describedby", "componentMeasureListSummary");
-		componentMeasuresListSPanel.add(invisibleLabel);
-		componentMeasuresListSPanel.setWidget(componentMeasureCellTable);
-		searchButtonPanel.setStyleName("floatRight");
-		searchButtonPanel.add(label);
-		searchButtonPanel.add(searchString);
-		searchButtonPanel.add(zoomSearchButton);
+		vPanelHolder.add(invisibleLabel);
+		vPanelHolder.add(componentMeasureCellTable);
+		vPanelHolder.add(new SpacerWidget());
+		vPanelHolder.add(spager);
+		componentMeasuresListSPanel.add(vPanelHolder);
+		searchButtonPanel.add(LabelBuilder.buildLabel(componentMeasureCellTable, " Component Measures Counted - Optional"));
+		horizontalHolder.add(searchString);
+		horizontalHolder.add(searchButton);
+		searchButtonPanel.add(horizontalHolder);
 		componentMeasuresListVPanel.add(searchButtonPanel);
 		componentMeasuresListVPanel.add(componentMeasuresListSPanel);
-		componentMeasuresListVPanel.add(new SpacerWidget());
-		componentMeasuresListVPanel.add(spager);
 		horzComponentMeasurePanel.add(componentMeasuresListVPanel);
 		VerticalPanel vPanel = new VerticalPanel();
 		vPanel.setWidth("10px");
@@ -1170,8 +1179,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	@Override
-	public CustomButton getSearchButton(){
-	   return zoomSearchButton;
+	public PrimaryButton getSearchButton(){
+	   return searchButton;
 	}
 	
 	

@@ -23,6 +23,7 @@ import mat.client.shared.HasVisible;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
 import mat.client.shared.MessageDelegate;
+import mat.client.shared.PrimaryButton;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.search.SearchView;
 import mat.model.Author;
@@ -557,7 +558,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 
 		HasValue<String> getSearchString();
 
-		CustomButton getSearchButton();
+		PrimaryButton getSearchButton();
 		
 	}
 	
@@ -887,6 +888,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			}
 			
 		});
+		
 		metaDataDisplay.getFocusPanel().addKeyDownHandler(new KeyDownHandler(){
 			
 			@Override

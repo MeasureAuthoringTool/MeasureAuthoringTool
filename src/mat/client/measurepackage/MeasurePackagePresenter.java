@@ -317,6 +317,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
 					|| (countDetailsWithType(detailList,
 							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 1)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 1)		
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getContinuousVariableWrongNumMessage());

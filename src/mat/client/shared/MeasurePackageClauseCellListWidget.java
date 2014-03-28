@@ -43,6 +43,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.DefaultSelectionEventManager;
@@ -155,7 +156,10 @@ public class MeasurePackageClauseCellListWidget {
 	private Map<String, MeasurePackageClauseDetail>  groupingClausesMap = new HashMap<String, MeasurePackageClauseDetail>();
 	/** List of selected Item counts for Clauses.**/
 	private List<QualityDataSetDTO> itemCountSelectionList;
+	
 	private Label ItemCountLabel = new Label();
+	
+	private SimplePanel clearButtonPanel = new SimplePanel(); 
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
@@ -432,6 +436,26 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		});
 	}
+	
+	private void addClickHandlersToClearAssociation(SecondaryButton secondaryButton){
+		secondaryButton.addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				errorMessages.clear();
+				successMessages.clear();
+				MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
+				
+				if(selectedClauseCell.getType().equals("measureObservation")){
+					groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+					setAssociatedPopulationUUID(null);
+					buildAddAssociationWidget(associatedPopulationList);
+					successMessages.setMessage("Successfully cleared Associations."
+							+ " Please click save grouping to save changes.");
+				}
+			}
+		});
+	}
 	/**
 	 * Add Columns to Item Count Cell Table.
 	 * @return CellTable.
@@ -648,13 +672,24 @@ public class MeasurePackageClauseCellListWidget {
 		associationListDataProvider.addDataDisplay(associatedPOPCellList);
 		vPanel.setSize("200px", "170px");
 		vPanel.add(associatedPOPCellList);
-		FlowPanel associateWidgetButtonPanel = new FlowPanel();
-		associateWidgetButtonPanel.addStyleName("rightAlignButton");
-		SecondaryButton saveAssociationInClause = new SecondaryButton("Ok");
+		HorizontalPanel associateWidgetButtonPanel = new HorizontalPanel();
+		associateWidgetButtonPanel.addStyleName("floatRight");
+		SecondaryButton saveAssociationInClause = new SecondaryButton("OK");
+		//SecondaryButton clearAssociationInClause = new SecondaryButton("Clear");
 		associateWidgetButtonPanel.add(saveAssociationInClause);
+		associateWidgetButtonPanel.add(clearButtonPanel);
 		vPanel.add(associateWidgetButtonPanel);
+		//addClickHandlersToClearAssociation(clearAssociationInClause);
 		addClickHandlersToAddAssociation(saveAssociationInClause);
 		return vPanel;
+	}
+	
+	private void getClearButtonPanel(){
+		clearButtonPanel.clear();
+		SecondaryButton clearAssociationInClause = new SecondaryButton("Clear");
+		clearButtonPanel.add(clearAssociationInClause);
+		clearButtonPanel.addStyleName("rightAlignButton");
+		addClickHandlersToClearAssociation(clearAssociationInClause);
 	}
 	/**
 	 * @return Cell.
@@ -1091,6 +1126,7 @@ public class MeasurePackageClauseCellListWidget {
 					} else if ((value.getType().equalsIgnoreCase("measureObservation"))) {
 						addPopulationForMeasureObservation(groupingPopulationList);
 						buildItemCountWidget();
+						getClearButtonPanel();
 						buildAddAssociationWidget(associatedPopulationList);
 						disclosurePanelItemCountTable.setVisible(true);
 						disclosurePanelItemCountTable.setOpen(false);

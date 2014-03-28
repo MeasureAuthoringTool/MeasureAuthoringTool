@@ -173,6 +173,10 @@ public class PackagerServiceImpl implements PackagerService {
 									qdmSet.setCodeListName(newNode.getAttributes().getNamedItem("name").getNodeValue());
 									qdmSet.setDataType(newNode.getAttributes().getNamedItem("dataType").getNodeValue());
 									qdmSet.setUuid(newNode.getAttributes().getNamedItem("id").getNodeValue());
+									qdmSet.setOid(newNode.getAttributes().getNamedItem("oid").getNodeValue());
+									if(newNode.getAttributes().getNamedItem("instance")!=null){
+									qdmSet.setOccurrenceText(newNode.getAttributes().getNamedItem("instance").getNodeValue());
+									}
 									qdmSelectedList.add(qdmSet);
 								}
 							}

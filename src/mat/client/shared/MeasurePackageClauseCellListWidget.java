@@ -53,8 +53,6 @@ import com.google.gwt.view.client.NoSelectionModel;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackageClauseCellListWidget.
  */
@@ -164,7 +162,7 @@ public class MeasurePackageClauseCellListWidget {
 	private Label ItemCountLabel = new Label();
 	
 	/** The clear button panel. */
-	private SimplePanel clearButtonPanel = new SimplePanel(); 
+	private SimplePanel clearButtonPanel = new SimplePanel();
 	/*** Gets the Grouping cell list.
 	 * @return the cellList.	 */
 	public CellList<MeasurePackageClauseDetail> getRightCellList() {
@@ -350,54 +348,31 @@ public class MeasurePackageClauseCellListWidget {
 				MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
 				MeasurePackageClauseDetail otherClauseCell = null;
 				String existingUuid = groupingClausesMap.get(selectedClauseCell.getName()).getAssociatedPopulationUUID();
+				ArrayList<MeasurePackageClauseDetail> interimArrayList = null;
 				String otherClauseType = null;
 				if (selectedClauseCell.getType().equalsIgnoreCase("denominator")) {
 					otherClauseType = "numerator";
-					for (MeasurePackageClauseDetail detail : denoAssociatedPopulationList) {
-						otherClauseCell = detail;
-						if ((existingUuid != null)
-								&& existingUuid.equals(detail.getId())) {
-							if (detail.isAssociatedPopulation()) {
-								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-								setAssociatedPopulationUUID(detail.getId());
-								otherClauseCell = null;
-							} else {
-								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-								setAssociatedPopulationUUID(null);
-								otherClauseCell = detail;
-							}
-						} else {
-							if (detail.isAssociatedPopulation()) {
-								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-								setAssociatedPopulationUUID(detail.getId());
-								otherClauseCell = null;
-							} else {
-								otherClauseCell = detail;
-							}
-						}
-					}
+					interimArrayList = denoAssociatedPopulationList;
 				} else if (selectedClauseCell.getType().equalsIgnoreCase("numerator")) {
 					otherClauseType = "denominator";
-					for (MeasurePackageClauseDetail detail : numAssociatedPopulationList) {
-						otherClauseCell = detail;
-						if ((existingUuid != null)
-								&& existingUuid.equals(detail.getId())) {
-							if (detail.isAssociatedPopulation()) {
-								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-								setAssociatedPopulationUUID(detail.getId());
-								otherClauseCell = null;
-							} else {
-								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-								setAssociatedPopulationUUID(null);
-								otherClauseCell = detail;
-							}
+					interimArrayList = numAssociatedPopulationList;
+				}
+				if (interimArrayList != null) {
+					for (MeasurePackageClauseDetail detail : interimArrayList) {
+						if (detail.isAssociatedPopulation()) {
+							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+							setAssociatedPopulationUUID(detail.getId());
 						} else {
-							if (detail.isAssociatedPopulation()) {
-								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-								setAssociatedPopulationUUID(detail.getId());
-								otherClauseCell = null;
-							} else {
-								otherClauseCell = detail;
+							otherClauseCell = detail;
+						}
+					}
+					if (otherClauseCell != null) {
+						for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
+							if (entry.getValue().getType().equalsIgnoreCase(otherClauseType)) {
+								MeasurePackageClauseDetail updateDetails = entry.getValue();
+								groupingClausesMap.get(updateDetails.getName()).
+								setAssociatedPopulationUUID(otherClauseCell.getId());
+								break;
 							}
 						}
 					}
@@ -406,36 +381,24 @@ public class MeasurePackageClauseCellListWidget {
 						if ((existingUuid != null)
 								&& existingUuid.equals(detail.getId())) {
 							if (detail.isAssociatedPopulation()) {
-								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-								setAssociatedPopulationUUID(detail.getId());
+								groupingClausesMap.get(rightCellListSelectionModel.
+										getSelectedObject().getName()).
+										setAssociatedPopulationUUID(detail.getId());
 							} else {
-								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-								setAssociatedPopulationUUID(null);
+								groupingClausesMap.get(rightCellListSelectionModel.
+										getSelectedObject().getName()).
+										setAssociatedPopulationUUID(null);
 							}
 						} else {
 							if (detail.isAssociatedPopulation()) {
-								groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-								setAssociatedPopulationUUID(detail.getId());
+								groupingClausesMap.get(rightCellListSelectionModel.
+										getSelectedObject().getName()).
+										setAssociatedPopulationUUID(detail.getId());
 								break;
 							}
 						}
 					}
 				}
-				if (otherClauseCell != null) {
-					for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
-						if (entry.getValue().getType().equalsIgnoreCase(otherClauseType)) {
-							MeasurePackageClauseDetail updateDetails = entry.getValue();
-							groupingClausesMap.get(updateDetails.getName()).
-							setAssociatedPopulationUUID(otherClauseCell.getId());
-							/*if(otherClauseType.equalsIgnoreCase("denominator")){
-								
-							}*/
-							break;
-						}
-					}
-					
-				}
-				System.out.println(groupingClausesMap);
 				successMessages.setMessage("Successfully modified Association."
 						+ " Please click save grouping to save changes.");
 			}

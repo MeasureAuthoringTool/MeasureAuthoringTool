@@ -21,11 +21,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -1409,7 +1411,7 @@ public class XmlProcessor {
 			
 			if(strataNode != null)
 			{
-				if(!strataNode.getChildNodes().item(0).getNodeName().equalsIgnoreCase(STRATIFICATION))
+				if(strataNode.hasChildNodes() && !(strataNode.getChildNodes().item(0).getNodeName().equalsIgnoreCase(STRATIFICATION)))
 				{
 					NodeList childs  = strataNode.getChildNodes();
 					

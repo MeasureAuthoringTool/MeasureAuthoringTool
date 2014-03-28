@@ -382,6 +382,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	public MetaDataView(){
 		addClickHandlers();
+		searchString.setHeight("20px");
 		//referenceArrayList = new ArrayList<TextAreaWithMaxLength>();
 		HorizontalPanel mainContent = new HorizontalPanel();
 		mainContent.getElement().setId("mainContent_HorizontalPanel");
@@ -1110,6 +1111,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		HorizontalPanel horizontalHolder= new HorizontalPanel();
 		componentMeasuresListSPanel.setStyleName("cellTablePanel");
 		horizontalHolder.setStyleName("floatRight");
+		searchButton.getElement().setId("componentMeasureSearch_Button");
+		searchString.getElement().setId("measureSearchInput_TextBox");
 		searchString.setText("search...");
 		componentMeasureCellTable = new CellTable<ManageMeasureSearchModel.Result>();
 		componentMeasureCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);

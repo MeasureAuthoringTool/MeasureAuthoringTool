@@ -12,6 +12,7 @@ import java.util.Map;
 import mat.dao.UserDAO;
 import mat.model.User;
 import mat.server.service.UserService;
+import mat.server.util.ServerConstants;
 
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
@@ -345,13 +346,13 @@ public class CheckUserChangePasswordLimit {
 						text = VelocityEngineUtils.mergeTemplateIntoString(
 					               velocityEngine, warningMailTemplate,model);
 						simpleMailMessage.setText(text);
-						simpleMailMessage.setSubject(warningMailSubject);
+						simpleMailMessage.setSubject(warningMailSubject + ServerConstants.getEnvName());
 					}
 					else if (EXPIRY_EMAIL_FLAG.equals(emailType)){
 						text = VelocityEngineUtils.mergeTemplateIntoString(
 					               velocityEngine, expiryMailTemplate, model);
 						simpleMailMessage.setText(text);
-						simpleMailMessage.setSubject(expiryMailSubject);
+						simpleMailMessage.setSubject(expiryMailSubject + ServerConstants.getEnvName());
 						
 						//Update Termination Date for User.
 						//updateUserTerminationDate(user);
@@ -484,6 +485,4 @@ public class CheckUserChangePasswordLimit {
 		String returnDateString  = simpleDateFormat.format(calendar.getTime());
 		return returnDateString;
 	}
-
-
 }

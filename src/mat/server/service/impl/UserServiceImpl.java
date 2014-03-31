@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.admin.service.SaveUpdateUserResult;
 import mat.client.login.service.SecurityQuestionOptions;
@@ -40,6 +41,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.ForgottenLoginIDResult;
 import mat.shared.ForgottenPasswordResult;
 import mat.shared.PasswordVerifier;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.ObjectNotFoundException;
@@ -554,7 +556,7 @@ public class UserServiceImpl implements UserService {
 	public void notifyUserOfNewAccount(User user) {
 		logger.info("In notifyUserOfNewAccount(User user)..........");
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
-		msg.setSubject(ServerConstants.NEW_ACCESS_SUBJECT);
+		msg.setSubject(ServerConstants.NEW_ACCESS_SUBJECT + ServerConstants.getEnvName());
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_WELCOME, paramsMap);
@@ -578,7 +580,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	public void notifyUserOfForgottenLoginId(User user) {
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
-		msg.setSubject(ServerConstants.FORGOT_LOGINID_SUBJECT);
+		msg.setSubject(ServerConstants.FORGOT_LOGINID_SUBJECT + ServerConstants.getEnvName());
 		HashMap<String, Object> paramsMap = new HashMap<String, Object>();
 		paramsMap.put(ConstantMessages.LOGINID, user.getLoginId());
 		String text = templateUtil.mergeTemplate(ConstantMessages.TEMPLATE_FORGOT_LOGINID, paramsMap);
@@ -1000,7 +1002,7 @@ public class UserServiceImpl implements UserService {
 	 */
 	public void notifyUserOfAccountLocked(User user) {
 		SimpleMailMessage msg = new SimpleMailMessage(templateMessage);
-		msg.setSubject(ServerConstants.ACCOUNT_LOCKED_SUBJECT);
+		msg.setSubject(ServerConstants.ACCOUNT_LOCKED_SUBJECT + ServerConstants.getEnvName());
 		String text = ServerConstants.ACCOUNT_LOCKED_MESSAGE;
 		msg.setTo(user.getEmailAddress());
 		msg.setText(text);

@@ -333,6 +333,15 @@ public class CheckUserChangePasswordLimit {
 					//Creation of the model map can be its own method.
 					content.put("User", "Measure Authoring Tool User");
 					
+					/**
+					 * If the user is not a normal user then set the user role in the email
+					 */
+					String userRole = "";
+					if(! (user.getSecurityRole().getId().trim().equals("3")) ){
+						userRole = "("+user.getSecurityRole().getDescription()+")";
+					}
+					content.put("rolename",userRole);
+					
 					//5 days Expiry Date
 				     if(passwordexpiryDayLimit==noOfDaysPasswordLimit) {
 						

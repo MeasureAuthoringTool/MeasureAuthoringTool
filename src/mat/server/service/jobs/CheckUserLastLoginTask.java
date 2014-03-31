@@ -114,6 +114,15 @@ public class CheckUserLastLoginTask {
 			content.put("firstname", user.getFirstName());
 			content.put("lastname", user.getLastName());
 			
+			/**
+			 * If the user is not a normal user then set the user role in the email
+			 */
+			String userRole = "";
+			if(! (user.getSecurityRole().getId().trim().equals("3")) ){
+				userRole = "("+user.getSecurityRole().getDescription()+")";
+			}
+			content.put("rolename",userRole);
+			
 			model.put("content", content);
 			String text = null;
 			

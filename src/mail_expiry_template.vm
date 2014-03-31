@@ -1,4 +1,4 @@
-Hi ${content.firstname} ${content.lastname}!
+Hi ${content.firstname} ${content.lastname}${content.rolename}!
 
 Your account has been inactive for 180 days and is therefore now disabled. 
 

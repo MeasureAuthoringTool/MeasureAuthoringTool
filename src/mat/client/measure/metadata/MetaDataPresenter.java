@@ -988,6 +988,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		if(searchText.equalsIgnoreCase("search...")){
 			searchText = "";
 		}
+		showAdminSearchingBusy(true);
+		metaDataDisplay.setSaveButtonEnabled(false);
 		MatContext
 		.get()
 		.getMeasureService()
@@ -996,16 +998,45 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 
 					@Override
 					public void onFailure(Throwable caught) {
-						// TODO Auto-generated method stub
+						metaDataDisplay
+						.getErrorMessageDisplay()
+						.setMessage(
+								MatContext
+								.get()
+								.getMessageDelegate()
+								.getGenericErrorMessage());
+						MatContext
+						.get()
+						.recordTransactionEvent(
+								null,
+								null,
+								null,
+								"Unhandled Exception: "
+										+ caught.getLocalizedMessage(),
+										0);
+						showAdminSearchingBusy(false);
 					}
 
 					@Override
 					public void onSuccess(ManageMeasureSearchModel result) {
 						metaDataDisplay.buildComponentMeasuresCellTable(result, editable );
+						showAdminSearchingBusy(false);
+						metaDataDisplay.setSaveButtonEnabled(true);
 					}
 				});
 		
 	}
+	
+	private void showAdminSearchingBusy(boolean busy) {
+		if (busy) {
+			Mat.showLoadingMessage();
+		} else {
+			Mat.hideLoadingMessage();
+		}
+		((Button) metaDataDisplay.getSearchButton()).setEnabled(!busy);
+		((TextBox) (metaDataDisplay.getSearchString())).setEnabled(!busy);
+	}
+
 	
 //	private void search(String searchText, int startIndex, int pageSize,
 //			int filter) {

@@ -407,11 +407,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * May contain one or more Measure Observation.
 		 */
 			if ((countDetailsWithType(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
+					ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
 					|| (countDetailsWithType(detailList,
-							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
-							|| (countDetailsWithType(detailList,
-									ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
+							ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioWrongNumMessage());
@@ -425,6 +423,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 							ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) > 1)) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioTooManyMessage());
+			}
+			if ((countDetailsWithType(detailList,
+					ConstantMessages.POPULATION_CONTEXT_ID) < 1)) {
+				messages.add(MatContext.get().getMessageDelegate().getRATIO_TOO_FEW_POPULATIONS());
 			}
 			/*
 			 * Not more than two populations are allowed.

@@ -408,6 +408,15 @@ public class MessageDelegate {
 	private final String RATIO_WRONG_NUM = "For a Ratio measure, a grouping must contain exactly one of each of the following: "
 			+ "Denominator and Numerator.";
 	
+	private final String RATIO_TOO_FEW_POPULATIONS = "For a Ratio measure, a grouping must contain at least one Population.";
+	
+	/**
+	 * @return the rATIO_TOO_FEW_POPULATIONS
+	 */
+	public String getRATIO_TOO_FEW_POPULATIONS() {
+		return RATIO_TOO_FEW_POPULATIONS;
+	}
+	
 	private final String COHORT_WRONG_NUM = "For a Cohort measure, a grouping must contain exactly one Population.";
 	
 	/** The rationale required. */

@@ -988,7 +988,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		if(searchText.equalsIgnoreCase("search...")){
 			searchText = "";
 		}
-		showAdminSearchingBusy(true);
+		//showAdminSearchingBusy(true);
 		metaDataDisplay.setSaveButtonEnabled(false);
 		MatContext
 		.get()
@@ -1014,13 +1014,13 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 								"Unhandled Exception: "
 										+ caught.getLocalizedMessage(),
 										0);
-						showAdminSearchingBusy(false);
+						//showAdminSearchingBusy(false);
 					}
 
 					@Override
 					public void onSuccess(ManageMeasureSearchModel result) {
 						metaDataDisplay.buildComponentMeasuresCellTable(result, editable );
-						showAdminSearchingBusy(false);
+						//showAdminSearchingBusy(false);
 						metaDataDisplay.setSaveButtonEnabled(true);
 					}
 				});

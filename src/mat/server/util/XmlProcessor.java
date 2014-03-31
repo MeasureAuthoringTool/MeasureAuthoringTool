@@ -1419,6 +1419,7 @@ public class XmlProcessor {
 							.createElement(STRATIFICATION);
 					stratificationEle.setAttribute("displayName",STRATIFICATION_DISPLAYNAME);
 					stratificationEle.setAttribute("uuid",UUIDUtilClient.uuid());
+					stratificationEle.setAttribute("type",STRATIFICATION);
 					
 					List<Node> nCList = new ArrayList<Node>();
 					

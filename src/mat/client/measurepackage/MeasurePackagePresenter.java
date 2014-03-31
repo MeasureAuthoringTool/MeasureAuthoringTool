@@ -341,8 +341,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
 					|| (countDetailsWithType(detailList,
 							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 1)
-					|| (countDetailsWithType(detailList,
-							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) < 1)		
+							|| (countDetailsWithType(detailList,
+									ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) < 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getContinuousVariableWrongNumMessage());
@@ -377,7 +377,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 					|| (countDetailsWithType(detailList,
 							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
 							|| (countDetailsWithType(detailList,
-							ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
+									ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getProportionWrongNumMessage());
@@ -407,9 +407,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * May contain one or more Measure Observation.
 		 */
 			if ((countDetailsWithType(detailList,
-					ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
+					ConstantMessages.POPULATION_CONTEXT_ID) != 1)
 					|| (countDetailsWithType(detailList,
-							ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
+							ConstantMessages.DENOMINATOR_CONTEXT_ID) != 1)
+							|| (countDetailsWithType(detailList,
+									ConstantMessages.NUMERATOR_CONTEXT_ID) != 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioWrongNumMessage());

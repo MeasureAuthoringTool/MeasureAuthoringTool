@@ -504,8 +504,8 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			title = ClientConstants.TITLE_ADMIN;
 			tabIndex = mainTabLayout.addPresenter(adminPresenter, mainTabLayout.fmt.normalTitle(title));
 			
-			title = ClientConstants.TITLE_MY_ACCOUNT;
-			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
+//			title = ClientConstants.TITLE_ADMIN_ACCOUNT;
+//			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 			/**
 			 * Commented Value Set Owner ship tab as part of MAT-2452 : Remove Value Set Ownership tab.
 			 * **/
@@ -516,6 +516,9 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 			measureLibrary = buildMeasureLibraryWidget(true);
 			title = ClientConstants.TITLE_MEASURE_LIB_CHANGE_OWNERSHIP;
 			tabIndex = mainTabLayout.addPresenter(measureLibrary, mainTabLayout.fmt.normalTitle(title));
+			
+			title = ClientConstants.TITLE_ADMIN_ACCOUNT;
+			tabIndex = mainTabLayout.addPresenter(buildMyAccountWidget(), mainTabLayout.fmt.normalTitle(title));
 		}
 		else {
 			Window.alert("Unrecognized user role " + currentUserRole);

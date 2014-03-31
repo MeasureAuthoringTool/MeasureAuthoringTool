@@ -1381,9 +1381,11 @@ public class MeasurePackageClauseCellListWidget {
 		 * May contain one or more Measure Observation.
 		 */
 			if ((countDetailsWithType(detailList,
-					ConstantMessages.DENOMINATOR_CONTEXT_ID) > 1)
+					ConstantMessages.POPULATION_CONTEXT_ID) > 1)
 					|| (countDetailsWithType(detailList,
-							ConstantMessages.NUMERATOR_CONTEXT_ID) > 1)
+							ConstantMessages.DENOMINATOR_CONTEXT_ID) > 1)
+							|| (countDetailsWithType(detailList,
+									ConstantMessages.NUMERATOR_CONTEXT_ID) > 1)
 					) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getRatioWrongNumMessage());

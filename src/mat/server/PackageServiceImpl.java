@@ -2,6 +2,7 @@ package mat.server;
 
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
+import mat.client.measurepackage.service.MeasurePackageSaveResult;
 import mat.client.measurepackage.service.PackageService;
 import mat.server.service.PackagerService;
 
@@ -12,7 +13,7 @@ public class PackageServiceImpl extends SpringRemoteServiceServlet implements Pa
 	
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1789210947786753971L;
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.service.PackageService#getClausesAndPackagesForMeasure(java.lang.String)
 	 */
@@ -33,15 +34,15 @@ public class PackageServiceImpl extends SpringRemoteServiceServlet implements Pa
 	private MeasurePackageOverview buildOverview(String measureId) {
 		return getPackagerService().buildOverviewForMeasure(measureId);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.service.PackageService#save(mat.client.measurepackage.MeasurePackageDetail)
 	 */
 	@Override
-	public void save(MeasurePackageDetail detail) {
-		getPackagerService().save(detail);
+	public MeasurePackageSaveResult save(MeasurePackageDetail detail) {
+		return getPackagerService().save(detail);
 	}
-
+	
 	/**
 	 * Gets the packager service.
 	 * 
@@ -66,6 +67,6 @@ public class PackageServiceImpl extends SpringRemoteServiceServlet implements Pa
 	public void saveQDMData(MeasurePackageDetail detail) {
 		getPackagerService().saveQDMData(detail);
 	}
-
+	
 	
 }

@@ -914,7 +914,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onClick(ClickEvent event) {
 				System.out.println("Search String: "+ metaDataDisplay.getSearchString().getValue());
-				searchMeasuresList(metaDataDisplay.getSearchString().getValue(),1,Integer.MAX_VALUE,1);
+				//searchMeasuresList(metaDataDisplay.getSearchString().getValue(),1,Integer.MAX_VALUE,1);
 			}
 		});
 		
@@ -971,7 +971,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	 * @return the component measures
 	 */
 	public final void getComponentMeasures(){
-		searchMeasuresList(metaDataDisplay.getSearchString().getValue(),1,Integer.MAX_VALUE,1);
+		//searchMeasuresList(metaDataDisplay.getSearchString().getValue(),1,Integer.MAX_VALUE,1);
 	}
 	
 

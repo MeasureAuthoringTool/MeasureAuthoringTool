@@ -3,7 +3,6 @@ package mat.client.measurepackage;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -22,7 +21,6 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
-
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -358,7 +356,7 @@ public class MeasurePackagePresenter_Old implements MatPresenter {
 				clearMessages();
 				updateDetailsFromView();
 				if (isValid()) {
-					MatContext.get().getPackageService()
+					/*MatContext.get().getPackageService()
 					.save(currentDetail, new AsyncCallback<Void>() {
 						@Override
 						public void onFailure(final Throwable caught) {
@@ -377,7 +375,7 @@ public class MeasurePackagePresenter_Old implements MatPresenter {
 							view.getPackageSuccessMessageDisplay().setMessage(
 									MatContext.get().getMessageDelegate().getGroupingSavedMessage());
 						}
-					});
+					});*/
 				}
 			}
 		});
@@ -738,9 +736,9 @@ public class MeasurePackagePresenter_Old implements MatPresenter {
 			}
 			/* no Numerator Exclusions, Measure Population, Measure Observations */
 			if ((countDetailsWithType(detailList,
-							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
-							|| (countDetailsWithType(detailList,
-									ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)) {
+					ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
+					|| (countDetailsWithType(detailList,
+							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)) {
 				messages.add(MatContext.get().getMessageDelegate()
 						.getProportionMayNotContainMessage());
 			}
@@ -952,7 +950,7 @@ public class MeasurePackagePresenter_Old implements MatPresenter {
 				.setEnabled(true);
 				Mat.hideLoadingMessage();
 				view.getPackageErrorMessageDisplay().setMessage(
-										MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+						MatContext.get().getMessageDelegate().getUnableToProcessMessage());
 			}
 			
 			@Override
@@ -981,8 +979,8 @@ public class MeasurePackagePresenter_Old implements MatPresenter {
 									.getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN());
 						}else if(VsacApiResult.VSAC_REQUEST_TIMEOUT == updateVsacResult.getFailureReason()){
 							view.getMeasureErrorMessageDisplay()
-							  .setMessage(MatContext.get().getMessageDelegate()
-								.getMEASURE_PACKAGE_VSAC_TIMEOUT());
+							.setMessage(MatContext.get().getMessageDelegate()
+									.getMEASURE_PACKAGE_VSAC_TIMEOUT());
 						}
 					} else {
 						view.getMeasureErrorMessageDisplay()

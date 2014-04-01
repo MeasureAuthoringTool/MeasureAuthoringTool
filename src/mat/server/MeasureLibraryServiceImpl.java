@@ -806,6 +806,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					concat("' or /measure//subTree//elementRef/attribute/@qdmUUID= '").concat(dataSetDTO.getUuid()).
 					concat("' or /measure/supplementalDataElements//@id='").concat(dataSetDTO.getUuid())
 					.concat("' or /measure/measureDetails/itemCount//@id='").concat(dataSetDTO.getUuid())
+					.concat("' or /measure//measureGrouping//packageClause//elementRef/@id='").concat(dataSetDTO.getUuid())
 					.concat("'");
 			
 			try {

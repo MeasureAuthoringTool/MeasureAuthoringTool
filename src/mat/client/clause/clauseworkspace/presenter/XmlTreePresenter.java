@@ -328,6 +328,8 @@ public class XmlTreePresenter {
 		
 		xmlTreeDisplay.getXmlTree().getRootTreeNode().setChildOpen(0, false);
 		xmlTreeDisplay.getXmlTree().getRootTreeNode().setChildOpen(0, true);
+		//the statement below will cause a programattic equivalent of clicking the Expand tree button.
+		xmlTreeDisplay.getButtonExpandClauseWorkSpace().click();
 	}
 	
 	/**

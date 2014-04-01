@@ -1655,6 +1655,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/**
 	 * @return the buttonExpandClauseWorkSpace
 	 */
+	@Override
 	public Button getButtonExpandClauseWorkSpace() {
 		return buttonExpandClauseWorkSpace;
 	}
@@ -1667,6 +1668,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/**
 	 * @return the buttonCollapseClauseWorkSpace
 	 */
+	@Override
 	public Button getButtonCollapseClauseWorkSpace() {
 		return buttonCollapseClauseWorkSpace;
 	}

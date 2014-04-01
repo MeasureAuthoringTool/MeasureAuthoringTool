@@ -355,4 +355,8 @@ public interface XmlTreeDisplay {
 	 * Move Node Down in List.
 	 */
 	void moveDown();
+
+	public abstract Button getButtonCollapseClauseWorkSpace();
+
+	public abstract Button getButtonExpandClauseWorkSpace();
 }

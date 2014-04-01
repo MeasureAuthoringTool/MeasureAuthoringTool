@@ -14,6 +14,8 @@ import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
+import mat.client.measurepackage.service.MeasurePackageSaveResult;
+import mat.client.shared.MatContext;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
@@ -21,6 +23,7 @@ import mat.model.clause.MeasureXML;
 import mat.server.service.PackagerService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
+import mat.shared.MeasurePackageClauseValidator;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -104,7 +107,7 @@ public class PackagerServiceImpl implements PackagerService {
 					if(associatedClauseUUIDNode != null){
 						associatedClauseUUID = associatedClauseUUIDNode.getNodeValue();
 					}
-	
+					
 					if(typeNode == null)
 					{
 						clauses.add(createMeasurePackageClauseDetail(
@@ -113,9 +116,9 @@ public class PackagerServiceImpl implements PackagerService {
 					}
 					else
 					{
-					clauses.add(createMeasurePackageClauseDetail(
-							uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue(),
-							associatedClauseUUID,qdmSelectedList));
+						clauses.add(createMeasurePackageClauseDetail(
+								uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue(),
+								associatedClauseUUID,qdmSelectedList));
 					}
 					//adding all Clause type uuid's
 					xpathGrpUuid = xpathGrpUuid + "@uuid != '" + uuidNode.getNodeValue() + "' and";
@@ -176,7 +179,7 @@ public class PackagerServiceImpl implements PackagerService {
 									qdmSet.setUuid(newNode.getAttributes().getNamedItem("id").getNodeValue());
 									qdmSet.setOid(newNode.getAttributes().getNamedItem("oid").getNodeValue());
 									if(newNode.getAttributes().getNamedItem("instance")!=null){
-									qdmSet.setOccurrenceText(newNode.getAttributes().getNamedItem("instance").getNodeValue());
+										qdmSet.setOccurrenceText(newNode.getAttributes().getNamedItem("instance").getNodeValue());
 									}
 									qdmSelectedList.add(qdmSet);
 								}
@@ -364,37 +367,52 @@ public class PackagerServiceImpl implements PackagerService {
 	 *            the detail
 	 */
 	@Override
-	public void save(MeasurePackageDetail detail) {
-		
-		MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
-		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
-		Node groupNode = null;
-		Node measureGroupingNode = null;
-		try {
-			//fetches the Group node from Measure_XML with the sequence number from MeasurePackageDetail
-			groupNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_GROUP_SEQ_START
-					+ detail.getSequence() +  XmlProcessor.XPATH_GROUP_SEQ_END);
-			//fetches the MeasureGrouping node from the Measure_xml
-			measureGroupingNode = processor.findNode(processor.getOriginalDoc(),
-					XmlProcessor.XPATH_MEASURE_GROUPING); // get the MEASUREGROUPING node
-		} catch (XPathExpressionException e) {
-			logger.info("Xpath Expression is incorrect" + e);
+	public MeasurePackageSaveResult save(MeasurePackageDetail detail) {
+		MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
+		List<String> messages = clauseValidator.isValidMeasurePackage(detail.getPackageClauses());
+		MeasurePackageSaveResult result = new MeasurePackageSaveResult();
+		if (messages.size() == 0) {
+			result.setSuccess(true);
+			MeasureXML measureXML = measureXMLDAO.findForMeasure(detail.getMeasureId());
+			XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
+			Node groupNode = null;
+			Node measureGroupingNode = null;
+			try {
+				//fetches the Group node from Measure_XML with the sequence number from MeasurePackageDetail
+				groupNode = processor.findNode(processor.getOriginalDoc(), XmlProcessor.XPATH_GROUP_SEQ_START
+						+ detail.getSequence() +  XmlProcessor.XPATH_GROUP_SEQ_END);
+				//fetches the MeasureGrouping node from the Measure_xml
+				measureGroupingNode = processor.findNode(processor.getOriginalDoc(),
+						XmlProcessor.XPATH_MEASURE_GROUPING); // get the MEASUREGROUPING node
+			} catch (XPathExpressionException e) {
+				logger.info("Xpath Expression is incorrect" + e);
+			}
+			if ((null != groupNode) && groupNode.hasChildNodes()) { //if Same sequence , remove and update.
+				logger.info("Removing Group with seq number" + detail.getSequence());
+				measureGroupingNode.removeChild(groupNode);
+			}
+			//Converts MeasurePackageDetail to measureGroupingXml through castor.
+			String measureGroupingXml = createGroupingXml(detail);
+			XmlProcessor measureGrpProcessor = new XmlProcessor(measureGroupingXml);
+			// get the converted XML's first child and appends it the Measure Grouping.
+			Node newGroupNode = measureGrpProcessor.getOriginalDoc()
+					.getElementsByTagName("measureGrouping").item(0).getFirstChild();
+			measureGroupingNode.appendChild(processor.getOriginalDoc().importNode(newGroupNode, true));
+			logger.info("new Group appended");
+			String xml = measureGrpProcessor.transform(processor.getOriginalDoc());
+			measureXML.setMeasureXMLAsByteArray(xml);
+			measureXMLDAO.save(measureXML);
+		} else {
+			for (String message: messages) {
+				logger.info("Server-Side Validation failed for MeasurePackageClauseValidator for Login ID: "
+						+ MatContext.get().getLoggedinLoginId() + " And failure Message is :" + message);
+			}
+			result.setSuccess(false);
+			result.setMessages(messages);
+			result.setFailureReason(MeasurePackageSaveResult.SERVER_SIDE_VALIDATION);
 		}
-		if ((null != groupNode) && groupNode.hasChildNodes()) { //if Same sequence , remove and update.
-			logger.info("Removing Group with seq number" + detail.getSequence());
-			measureGroupingNode.removeChild(groupNode);
-		}
-		String measureGroupingXml = createGroupingXml(detail); //Converts MeasurePackageDetail to measureGroupingXml through castor
-		XmlProcessor measureGrpProcessor = new XmlProcessor(measureGroupingXml);
-		Node newGroupNode = measureGrpProcessor.getOriginalDoc()
-				.getElementsByTagName("measureGrouping").item(0).getFirstChild(); // get the converted XML's first child and appends it the Measure Grouping
-		measureGroupingNode.appendChild(processor.getOriginalDoc().importNode(newGroupNode, true));
-		logger.info("new Group appended");
-		String xml = measureGrpProcessor.transform(processor.getOriginalDoc());
-		measureXML.setMeasureXMLAsByteArray(xml);
-		measureXMLDAO.save(measureXML);
+		return result;
 	}
-	
 	/* (non-Javadoc)
 	 * @see mat.server.service.PackagerService#saveQDMData(mat.client.measurepackage.MeasurePackageDetail)
 	 */

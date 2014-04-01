@@ -2,7 +2,6 @@ package mat.client.measurepackage.service;
 
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 /**
@@ -21,15 +20,7 @@ public interface PackageServiceAsync {
 	 */
 	public void getClausesAndPackagesForMeasure(String measureId, AsyncCallback<MeasurePackageOverview> callback);
 	
-	/**
-	 * Save.
-	 * 
-	 * @param detail
-	 *            the detail
-	 * @param callback
-	 *            the callback
-	 */
-	public void save(MeasurePackageDetail detail, AsyncCallback<Void> callback);
+	void save(MeasurePackageDetail detail, AsyncCallback<MeasurePackageSaveResult> callback);
 	
 	/**
 	 * Save qdm data.

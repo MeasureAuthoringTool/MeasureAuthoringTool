@@ -2,6 +2,7 @@ package mat.server.service;
 
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
+import mat.client.measurepackage.service.MeasurePackageSaveResult;
 
 /**
  * The Interface PackagerService.
@@ -23,7 +24,7 @@ public interface PackagerService {
 	 * @param detail
 	 *            the detail
 	 */
-	public void save(MeasurePackageDetail detail);
+	public MeasurePackageSaveResult save(MeasurePackageDetail detail);
 	
 	/**
 	 * Delete.

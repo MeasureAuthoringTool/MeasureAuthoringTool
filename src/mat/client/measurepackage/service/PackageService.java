@@ -3,7 +3,6 @@ package mat.client.measurepackage.service;
 import mat.client.measurepackage.MeasurePackageDetail;
 import mat.client.measurepackage.MeasurePackageOverview;
 import mat.client.shared.MatException;
-
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -30,7 +29,7 @@ public interface PackageService extends RemoteService {
 	 * @throws MatException
 	 *             the mat exception
 	 */
-	public void save(MeasurePackageDetail detail) throws MatException;
+	public MeasurePackageSaveResult save(MeasurePackageDetail detail) throws MatException;
 	
 	/**
 	 * Delete.

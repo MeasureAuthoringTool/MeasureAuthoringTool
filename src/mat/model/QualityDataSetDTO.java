@@ -46,41 +46,6 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	/** The is used. */
 	private boolean isUsed;
-	
-	/** The is used md. */
-	private boolean isUsedMD;
-	
-	private boolean isUsedMP;
-	
-	public boolean isUsedMP() {
-		return isUsedMP;
-	}
-
-
-	public void setUsedMP(boolean isUsedMP) {
-		this.isUsedMP = isUsedMP;
-	}
-
-
-	/**
-	 * Checks if is used md.
-	 *
-	 * @return true, if is used md
-	 */
-	public boolean isUsedMD() {
-		return isUsedMD;
-	}
-
-
-    /**
-     * Sets the used md.
-     *
-     * @param isUsedMD the new used md
-     */
-    public void setUsedMD(boolean isUsedMD) {
-		this.isUsedMD = isUsedMD;
-	}
-
 
 	/** QDM is not available in VSAC. */
 	private boolean notFoundInVSAC;

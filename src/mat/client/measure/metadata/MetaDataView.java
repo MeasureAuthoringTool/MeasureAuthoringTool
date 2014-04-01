@@ -60,6 +60,8 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.LoadingStateChangeEvent;
+import com.google.gwt.user.cellview.client.LoadingStateChangeEvent.LoadingState;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -70,6 +72,7 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.RadioButton;
@@ -786,17 +789,18 @@ public class MetaDataView implements MetaDataDetailDisplay{
 
 				@Override
 				public Boolean getValue(QualityDataSetDTO object) {
+					boolean isSelected = false;
 					if (qdmSelectedList.size() > 0) {
 					for (int i = 0; i < qdmSelectedList.size(); i++) {
 						if (qdmSelectedList.get(i).getUuid().equalsIgnoreCase(object.getUuid())) {
-							object.setUsedMD(true);
+							isSelected = true;
 							break;
 						}
 					}
 				} else {
-					object.setUsedMD(false);
+					isSelected = false;
 					}
-					return object.isUsedMD();
+					return isSelected;
 				}
 			};
 			
@@ -1128,6 +1132,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		componentMeasureCellTable.setRowCount(selectedMeasureList.size(), true);
 		sortProvider.refresh();
 		sortProvider.getList().addAll(result.getData());
+		updateLoadingState(componentMeasureCellTable);		
 		componentMeasureCellTable = addMeasuresColumnToTable(isEditable);
 		updateComponentMeasuresSelectedList(selectedMeasureList);
 		sortProvider.addDataDisplay(componentMeasureCellTable);
@@ -1171,6 +1176,24 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		horzComponentMeasurePanel.add(componentMeasuresSelectedListVPanel);
 		
 	}
+	
+	 /**
+ 	 * Update loading state.
+ 	 *
+ 	 * @param cellTable the cell table
+ 	 */
+ 	private void updateLoadingState(CellTable<ManageMeasureSearchModel.Result> cellTable) {
+		 int cacheSize = cellTable.getVisibleItemCount();
+		 int curPageSize = cellTable.getPageSize();
+		 if (cacheSize >= curPageSize) {
+			 cellTable.setLoadingIndicator(new Image(ImageResources.INSTANCE.g_lock()));
+		 } else if (cacheSize == 0) {
+			 cellTable.setLoadingIndicator(new Image(ImageResources.INSTANCE.g_lock()));
+		 } else {
+			 cellTable.setLoadingIndicator(new Image(ImageResources.INSTANCE.g_lock()));
+		 }
+		 }
+
 	
 	/**
 	 * Gets the image.

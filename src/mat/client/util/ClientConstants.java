@@ -95,7 +95,7 @@ public class ClientConstants {
 	/** The Constant TITLE_MY_ACCOUNT. */
 	public final static String TITLE_MY_ACCOUNT="MAT Account";
 	
-	public final static String TITLE_ADMIN_ACCOUNT="Admin Account";
+	public final static String TITLE_ADMIN_ACCOUNT="Administrator Account";
 	
 	/** The Constant TITLE_UMLS. */
 	public final static String TITLE_UMLS="UMLS Account";

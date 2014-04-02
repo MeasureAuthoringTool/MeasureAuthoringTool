@@ -48,6 +48,8 @@ public class ClauseWorkspaceContextMenu {
 		SafeHtml menuTable(String name, String shortCut);
 		
 		/**
+		 * Menu table with icon.
+		 *
 		 * @param name - Menu Item Name.
 		 * @param shortCut - Short Cut Key text.
 		 * @param imageSource - Image source.
@@ -163,9 +165,12 @@ public class ClauseWorkspaceContextMenu {
 						|| (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_REF_NODE)) {
 					xmlTreeDisplay.getCommentArea().setText("");
 					@SuppressWarnings("unchecked")
-					List<CellTreeNode> childNode = (List<CellTreeNode>) xmlTreeDisplay.getSelectedNode().getParent().
+					List<CellTreeNode> ExtraInformationchildNode = (List<CellTreeNode>) xmlTreeDisplay.getSelectedNode().getParent().
 					getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
-					xmlTreeDisplay.getCommentArea().setText(childNode.get(0).getNodeText());
+					
+					if (ExtraInformationchildNode!=null) {
+					xmlTreeDisplay.getCommentArea().setText(ExtraInformationchildNode.get(0).getNodeText());
+					}
 				}
 				xmlTreeDisplay.copy();
 				xmlTreeDisplay.removeNode();
@@ -179,6 +184,8 @@ public class ClauseWorkspaceContextMenu {
 				xmlTreeDisplay.setDirty(true);
 				if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.ROOT_NODE) {
 					pasteRootNodeTypeItem();
+				} else if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.MASTER_ROOT_NODE){
+					pasteMasterRootNodeTypeItem();
 				} else {
 					xmlTreeDisplay.paste();
 				}
@@ -755,6 +762,20 @@ public class ClauseWorkspaceContextMenu {
 		xmlTreeDisplay.setCopiedNode(pasteNode); //make the new pasted node as the copied node
 	}
 	
+	/**
+	 * Paste master root node type item.
+	 */
+	protected void pasteMasterRootNodeTypeItem() {
+		String RootNodeName = xmlTreeDisplay.getCopiedNode().getName();
+		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
+		String name = RootNodeName.substring(0, RootNodeName.lastIndexOf(" ")) + " " + seqNumber;
+		CellTreeNode pasteNode = xmlTreeDisplay.getCopiedNode().cloneNode();
+		pasteNode.setName(name);
+		pasteNode.setLabel(name);
+		xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);
+		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
+		xmlTreeDisplay.setCopiedNode(pasteNode); //make the new pasted node as the copied node
+	}
 	
 	/**
 	 * Adds the root node type item.
@@ -763,9 +784,12 @@ public class ClauseWorkspaceContextMenu {
 		String clauseNodeName = xmlTreeDisplay.getSelectedNode().getChilds().get(0).getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber;
-		
+       
 		CellTreeNode clauseNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.CLAUSE_NODE);
-		clauseNode.createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
+		if(!xmlTreeDisplay.getSelectedNode().getName().contains("Stratification")){
+			clauseNode.createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);	   
+	       }
+		
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}
 	
@@ -779,8 +803,9 @@ public class ClauseWorkspaceContextMenu {
 		
 		CellTreeNode rootNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.ROOT_NODE);
 		rootNode.setUUID(UUIDUtilClient.uuid());
-		CellTreeNode clauseNode = rootNode.createChild("Stratum 1", "Stratum 1", CellTreeNode.CLAUSE_NODE);
-		clauseNode.createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
+		//CellTreeNode clauseNode = rootNode.createChild("Stratum 1", "Stratum 1", CellTreeNode.CLAUSE_NODE);
+		rootNode.createChild("Stratum 1", "Stratum 1", CellTreeNode.CLAUSE_NODE);
+		//clauseNode.createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
 		
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}

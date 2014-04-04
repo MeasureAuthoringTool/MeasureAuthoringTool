@@ -94,6 +94,9 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				if(xmlTreeDisplay.getSelectedNode().getName().contains("Stratification"))
 				{
 					copyMenu.setEnabled(true);
+				} 
+				
+				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
 					deleteMenu.setEnabled(true);
 				}
 				

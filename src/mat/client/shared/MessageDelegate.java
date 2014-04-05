@@ -17,6 +17,11 @@ public class MessageDelegate {
 	/** The Constant CHANGES_SAVED. */
 	public static final String CHANGES_SAVED = "Changes are successfully saved.";
 	
+	/**
+	 * The Constant NO_MARKUP_ALLOWED
+	 */
+	public static final String NO_MARKUP_ALLOWED = "No markup text allowed in any textfields.";
+	
 	/** The Constant CODE_LIST_ADDED. */
 	public static final String CODE_LIST_ADDED = "Code has been successfully added to the value set.";
 	
@@ -52,6 +57,9 @@ public class MessageDelegate {
 	
 	/** The Constant LOGIN_ID_REQUIRED. */
 	public static final String LOGIN_ID_REQUIRED = "User ID is required.";
+	
+	/** The Constant EMAIL_ID_INCORRECT_FORMAT. */
+	public static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has incorrect format.";
 	
 	/** The Constant LOGIN_USER_REQUIRED. */
 	public static final String LOGIN_USER_REQUIRED = "User Name is required.";
@@ -573,6 +581,15 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the markup not allowed message.
+	 * 
+	 * @return String
+	 */
+	public String getNoMarkupAllowedMessage() {
+		return NO_MARKUP_ALLOWED;
+	}
+	
+	/**
 	 * Gets the all password fields required.
 	 * 
 	 * @return String
@@ -1033,6 +1050,15 @@ public class MessageDelegate {
 	 */
 	public String getLoginIDRequiredMessage() {
 		return LOGIN_ID_REQUIRED;
+	}
+	
+	/**
+	 * Gets the email id incorrect format message.
+	 * 
+	 * @return String
+	 */
+	public String getEmailIdFormatIncorrectMessage() {
+		return EMAIL_ID_INCORRECT_FORMAT;
 	}
 	
 	/**

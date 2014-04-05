@@ -202,7 +202,9 @@ public class PersonalInformationPresenter implements MatPresenter {
 	 *            the password
 	 */
 	private void savePersonalInformation(String password){
-		
+			display.getErrorMessageDisplay().clear();
+			display.getSuccessMessageDisplay().clear();
+			
 		    loginService.validatePassword(MatContext.get().getLoggedinLoginId(), password, new AsyncCallback<HashMap<String,String>>(){ 
 			@Override
 			public void onSuccess(HashMap<String,String> resultMap) {

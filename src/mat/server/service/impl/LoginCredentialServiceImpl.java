@@ -1,10 +1,5 @@
 package mat.server.service.impl;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryPoolMXBean;
-import java.lang.management.MemoryUsage;
-import java.lang.management.ThreadMXBean;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
@@ -130,7 +125,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 				+ userDetails.getRoles().getDescription());
 		return loginModel;
 	}
-	/* Checks for first login failed attempt 
+	/* Checks for first login failed attempt
 	 * */
 	/**
 	 * First failed login.
@@ -339,11 +334,11 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 				.loadUserByUsername(userId);
 		Date currentDate = new Date();
 		currentTimeStamp = new Timestamp(currentDate.getTime());
-		validateUserLoginModel = isValidUserIdPassword(userId, password,validateUserLoginModel,
+		validateUserLoginModel = isValidUserIdPassword(userId, password, validateUserLoginModel,
 				validateUserMatUserDetails);
 		logger.info("loginModel.isLoginFailedEvent():" + validateUserLoginModel.isLoginFailedEvent());
 		if (!validateUserLoginModel.isLoginFailedEvent()) {
-			onSuccessLogin(userId,validateUserMatUserDetails);
+			onSuccessLogin(userId, validateUserMatUserDetails);
 		}
 		return validateUserLoginModel;
 	}
@@ -396,7 +391,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		loginModel.setLoginId(userDetails.getLoginId());
 		return loginModel;
 	}
-	//invokes On Success User Login and displays ChartReport 
+	//invokes On Success User Login and displays ChartReport
 	/**
 	 * On success login.
 	 *
@@ -406,7 +401,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 	private void onSuccessLogin(String userId,MatUserDetails validateUserMatUserDetails) {
 		logger.info(validateUserMatUserDetails.getLoginId() + " has logged in.");
 		String s = "\nlogin_success\n";
-		String chartReport = "CHARTREPORT";
+		/*String chartReport = "CHARTREPORT";
 		List<MemoryPoolMXBean> pbeans = ManagementFactory
 				.getMemoryPoolMXBeans();
 		for (MemoryPoolMXBean bean : pbeans) {
@@ -450,11 +445,11 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 		
 		// Log logger = LogFactory.getLog(PreventCachingFilter.class);
 		chartReport += "\n";
-		s += "/login_success\n" + chartReport;
+		s += "/login_success\n" + chartReport;*/
 		logger.info(s);
 	}
 	
-	//Checks for Second login failed attempt 
+	//Checks for Second login failed attempt
 	/**
 	 * Second failed login.
 	 *
@@ -550,7 +545,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			validateUserMatUserDetails.setLockedOutDate(currentTimeStamp);
 			validateUserLoginModel.setLoginFailedEvent(true);
 			hibernateUserService.saveUserDetails(validateUserMatUserDetails);
-			} else {
+		} else {
 			validateUserLoginModel = loginModelSetter(validateUserLoginModel, validateUserMatUserDetails);
 			// userDetails.setSignInDate(currentTimeStamp);
 			hibernateUserService.saveUserDetails(validateUserMatUserDetails);

@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Set;
 import java.util.UUID;
-
 import mat.DTO.CodeSystemDTO;
 import mat.DTO.DataTypeDTO;
 import mat.DTO.HasListBoxDTO;
@@ -69,7 +68,6 @@ import mat.server.util.ResourceLoader;
 import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
-
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -193,7 +191,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 		int lastIndex = stream.toString().indexOf("/>", startIndex);
 		String xmlString = stream.toString().substring(startIndex,
 				lastIndex + 2);
-		logger.info("addAppliedQDMInMeasureXML Method Call xmlString :: "
+		logger.debug("addAppliedQDMInMeasureXML Method Call xmlString :: "
 				+ xmlString);
 		return xmlString;
 	}
@@ -387,7 +385,7 @@ public class ManageCodeListServiceImpl implements CodeListService {
 					stream));
 			marshaller.setMapping(mapping);
 			marshaller.marshal(qualityDataSetDTO);
-			logger.info("Marshalling of QualityDataSetDTO is successful.."
+			logger.debug("Marshalling of QualityDataSetDTO is successful.."
 					+ stream.toString());
 		} catch (Exception e) {
 			if (e instanceof IOException) {

@@ -133,9 +133,13 @@ public class MessageDelegate {
 	public static final String VALUE_SET_DRAFT_SAVED = "Value Set successfully saved as a draft.";
 	
 	/** The Constant VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED. */
-	public static final String VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED = "Value set version or effective date has been selected. Please enter a date to continue.";
-	
-	
+	public static final String VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED = "Value set version or effective date has been selected."
+			+ " Please enter a date to continue.";
+	/**
+	 * Ratio Measure - Association Required for Numerator/Denominator in case of more than 1 IP.
+	 */
+	public static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in case of more than one Population ,"
+			+ " Numerator and Denominator must contain one association.";
 	
 	
 	/**
@@ -1946,5 +1950,12 @@ public class MessageDelegate {
 	 */
 	public String getRATIO_TOO_MANY_POPULATIONS() {
 		return RATIO_TOO_MANY_POPULATIONS;
+	}
+	
+	/**
+	 * @return the ratioNumDenoAssociationRequired
+	 */
+	public String getRatioNumDenoAssociationRequired() {
+		return RATIO_NUM_DENO_ASSOCIATION_REQUIRED;
 	}
 }

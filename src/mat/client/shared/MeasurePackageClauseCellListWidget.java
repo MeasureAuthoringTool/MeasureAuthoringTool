@@ -11,6 +11,7 @@ import mat.client.CustomPager;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+import mat.shared.MeasurePackageClauseValidator;
 import org.apache.commons.lang.StringUtils;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CheckboxCell;
@@ -1300,125 +1301,12 @@ public class MeasurePackageClauseCellListWidget {
 	/**
 	 * Checks if is valid.
 	 *
-	 * @param validatGroupingList the validat grouping list
+	 * @param validatGroupingList the validate grouping list
 	 * @return true, if is valid
 	 */
 	private boolean isValid(List<MeasurePackageClauseDetail> validatGroupingList) {
-		List<MeasurePackageClauseDetail> detailList = validatGroupingList;
-		List<String> messages = new ArrayList<String>();
-		
-		String scoring = MatContext.get().getCurrentMeasureScoringType();
-		
-		// TODO refactor this into a common shared class so the server can use
-		// it for validation also
-		if (ConstantMessages.CONTINUOUS_VARIABLE_SCORING
-				.equalsIgnoreCase(scoring)) {
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID) > 1)
-					|| (countDetailsWithType(detailList,
-							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) > 1)
-					) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getContinuousVariableWrongNumMessage());
-			}
-			
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.NUMERATOR_CONTEXT_ID) != 0)
-					|| (countDetailsWithType(detailList,
-							ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) != 0)
-							|| (countDetailsWithType(detailList,
-									ConstantMessages.DENOMINATOR_CONTEXT_ID) != 0)
-									|| (countDetailsWithType(detailList,
-											ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) != 0)
-											|| (countDetailsWithType(detailList,
-													ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0)) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getContinuousVariableMayNotContainMessage());
-			}
-			
-		} else if (ConstantMessages.PROPORTION_SCORING.equalsIgnoreCase(scoring)) { /*
-		 * PROPORTION at least one and only one Population,
-		 * Denominator at least one or more Numerator zero or
-		 * one Denominator Exclusions Denominator Exceptions and
-		 * no Numerator Exclusions, Measure Population, Measure
-		 * Observations
-		 */
-			/*
-			 * at least one and only one Population, Denominator and Numerator
-			 */
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID) > 1)
-					|| (countDetailsWithType(detailList,
-							ConstantMessages.DENOMINATOR_CONTEXT_ID) > 1)
-							|| (countDetailsWithType(detailList,
-									ConstantMessages.NUMERATOR_CONTEXT_ID) > 1)
-					) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getProportionWrongNumMessage());
-			}
-			/*
-			 * zero or one Denominator Exclusions, Denominator Exceptions
-			 */
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
-					|| (countDetailsWithType(detailList,
-							ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) > 1)) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getProportionTooManyMessage());
-			}
-			/* no Numerator Exclusions, Measure Population, Measure Observations */
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)
-					|| (countDetailsWithType(detailList,
-							ConstantMessages.MEASURE_OBSERVATION_CONTEXT_ID) != 0)) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getProportionMayNotContainMessage());
-			}
-		} else if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) { /*
-		 * at least one and only one Population, Denominator,
-		 * Numerator, zero or one Denominator Exclusions and no
-		 * Denominator Exceptions, Measure Population
-		 * May contain one or more Measure Observation.
-		 */
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.DENOMINATOR_CONTEXT_ID) > 1)
-					|| (countDetailsWithType(detailList,
-							ConstantMessages.NUMERATOR_CONTEXT_ID) > 1)
-					) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getRatioWrongNumMessage());
-			}
-			/*
-			 * zero or one Denominator Exclusions
-			 */
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.DENOMINATOR_EXCLUSIONS_CONTEXT_ID) > 1)
-					|| (countDetailsWithType(detailList,
-							ConstantMessages.NUMERATOR_EXCLUSIONS_CONTEXT_ID) > 1)) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getRatioTooManyMessage());
-			}
-			/*
-			 * Not more than two populations are allowed.
-			 * */
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID) > 2)) {
-				messages.add(MatContext.get().getMessageDelegate().getRATIO_TOO_MANY_POPULATIONS());
-			}
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.DENOMINATOR_EXCEPTIONS_CONTEXT_ID) != 0)
-					|| (countDetailsWithType(detailList,
-							ConstantMessages.MEASURE_POPULATION_CONTEXT_ID) != 0)) {
-				messages.add(MatContext.get().getMessageDelegate()
-						.getRatioMayNotContainMessage());
-			}
-		} else if (ConstantMessages.COHORT_SCORING.equalsIgnoreCase(scoring)) {
-			if ((countDetailsWithType(detailList,
-					ConstantMessages.POPULATION_CONTEXT_ID) > 1)
-					) {
-				messages.add(MatContext.get().getMessageDelegate().getCOHORT_WRONG_NUM());
-			}
-		}
+		MeasurePackageClauseValidator validator = new MeasurePackageClauseValidator();
+		List<String> messages = validator.isValidClauseMove(validatGroupingList);
 		if (messages.size() > 0) {
 			errorMessages.setMessages(messages);
 		} else {
@@ -1426,7 +1314,6 @@ public class MeasurePackageClauseCellListWidget {
 		}
 		return messages.size() == 0;
 	}
-	
 	/**
 	 * Gets the item count selection list.
 	 *

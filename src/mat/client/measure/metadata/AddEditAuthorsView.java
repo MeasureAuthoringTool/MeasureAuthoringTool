@@ -19,6 +19,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AddEditAuthorsView.
  */
@@ -210,6 +211,9 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 		return otherSpecifyBox;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#buildCellTable(mat.client.measure.ManageMeasureSearchModel)
+	 */
 	@Override
 	public void buildCellTable(ManageMeasureSearchModel result) {
 		// TODO Auto-generated method stub

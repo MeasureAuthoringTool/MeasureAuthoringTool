@@ -37,6 +37,7 @@ import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureComposerPresenter.
  */
@@ -117,6 +118,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	/** The measure package old presenter. */
 	private MeasurePackagePresenter_Old measurePackagePresenter_old;
 	
+	/** The measure package presenter. */
 	private MeasurePackagePresenter measurePackagePresenter;
 	
 	/** The meta data presenter. */

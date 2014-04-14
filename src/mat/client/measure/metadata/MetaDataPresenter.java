@@ -590,12 +590,32 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 */
 		PrimaryButton getSearchButton();
 
+		/**
+		 * Gets the adds the edit cmponent measures.
+		 *
+		 * @return the adds the edit cmponent measures
+		 */
 		HasClickHandlers getAddEditCmponentMeasures();
 
+		/**
+		 * Gets the dialog box.
+		 *
+		 * @return the dialog box
+		 */
 		DialogBox getDialogBox();
 
+		/**
+		 * As component measures widget.
+		 *
+		 * @return the widget
+		 */
 		Widget asComponentMeasuresWidget();
 
+		/**
+		 * Builds the component measures selected list.
+		 *
+		 * @param result the result
+		 */
 		void buildComponentMeasuresSelectedList(List<ManageMeasureSearchModel.Result> result);
 		
 	}
@@ -655,7 +675,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 	
 	//TODO by Ravi
-    public static interface AddEditComponentMeasuresDisplay extends BaseAddEditDisplay<ManageMeasureSearchModel> {
+    /**
+	 * The Interface AddEditComponentMeasuresDisplay.
+	 */
+	public static interface AddEditComponentMeasuresDisplay extends BaseAddEditDisplay<ManageMeasureSearchModel> {
 		
 		/**
 		 * Gets the measure type.
@@ -678,8 +701,18 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 */
 		public HasValue<String> getOtherMeasureType();
 		
+		/**
+		 * Gets the measure search filter widget.
+		 *
+		 * @return the measure search filter widget
+		 */
 		MeasureSearchFilterWidget getMeasureSearchFilterWidget();
 
+		/**
+		 * Gets the selected filter.
+		 *
+		 * @return the selected filter
+		 */
 		int getSelectedFilter();
 	}
 	
@@ -698,6 +731,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	/** The add edit measure type display. */
 	private AddEditMeasureTypeDisplay addEditMeasureTypeDisplay;
 	
+	/** The add edit component measures display. */
 	private AddEditComponentMeasuresDisplay addEditComponentMeasuresDisplay;
 	
 	/** The current measure detail. */
@@ -780,18 +814,13 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	
 	/**
 	 * Instantiates a new meta data presenter.
-	 * 
-	 * @param mDisplay
-	 *            the m display
-	 * @param aDisplay
-	 *            the a display
-	 * @param mtDisplay
-	 *            the mt display
-	 * @param cmDisplay 
-	 * @param pcButtons
-	 *            the pc buttons
-	 * @param lp
-	 *            the lp
+	 *
+	 * @param mDisplay the m display
+	 * @param aDisplay the a display
+	 * @param mtDisplay the mt display
+	 * @param cmDisplay the cm display
+	 * @param pcButtons the pc buttons
+	 * @param lp the lp
 	 */
 	public MetaDataPresenter(MetaDataDetailDisplay mDisplay, AddEditAuthorsDisplay aDisplay, 
 			AddEditMeasureTypeDisplay mtDisplay, AddEditComponentMeasuresView cmDisplay, HasVisible pcButtons, ListBoxCodeProvider lp) {
@@ -1098,6 +1127,11 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		
 	}
 	
+	/**
+	 * Show admin searching busy.
+	 *
+	 * @param busy the busy
+	 */
 	private void showAdminSearchingBusy(boolean busy) {
 		if (busy) {
 			Mat.showLoadingMessage();
@@ -1688,6 +1722,9 @@ private void setAuthorsListOnView() {
 		Mat.focusSkipLists("MeasureComposer");
 	}
 	
+	/**
+	 * Display add edit component measures.
+	 */
 	private void displayAddEditComponentMeasures() {
 		isSubView = true;
 		addEditComponentMeasuresDisplay.setReturnToLink("Return to Previous");

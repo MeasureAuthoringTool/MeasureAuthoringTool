@@ -271,6 +271,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The add edit authors. */
 	private Button addEditAuthors = new PrimaryButton("Add/Edit Measure Developer(s)","primaryMetaDataButton");
 	
+	/** The add edit cmponent measures. */
 	private Button addEditCmponentMeasures = new PrimaryButton("Add/Edit Component Measures","primaryMetaDataButton");
 	
 	/** The Add row button. */
@@ -353,6 +354,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
     /** The search button. */
     private PrimaryButton searchButton = new PrimaryButton("Go");
     
+    /** The dialog box. */
     private static DialogBox dialogBox = new DialogBox(true,true);
 
 
@@ -1158,11 +1160,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 //	}
 	
 	/**
-	 * Adds the measures column to table.
-	 *
-	 * @param isEditable the is editable
-	 * @return the cell table
-	 */
+ * Adds the measures column to table.
+ *
+ * @return the cell table
+ */
 	private CellTable<ManageMeasureSearchModel.Result> addMeasuresColumnToTable(){
 		Label measureSearchHeader = new Label("Component Measures List");
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
@@ -1213,6 +1214,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildComponentMeasuresSelectedList(java.util.List)
+	 */
 	@Override
 	public void buildComponentMeasuresSelectedList(List<ManageMeasureSearchModel.Result> result){
 		horzComponentMeasurePanel.clear(); 
@@ -1349,6 +1353,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		//return mainPanel;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#asComponentMeasuresWidget()
+	 */
 	@Override
 	public Widget asComponentMeasuresWidget() {
 		return horzComponentMeasurePanel;
@@ -1430,6 +1437,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return addEditMeasureType;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getAddEditCmponentMeasures()
+	 */
 	@Override
 	public HasClickHandlers getAddEditCmponentMeasures() {
 		return addEditCmponentMeasures;
@@ -2253,6 +2263,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		this.componentMeasureSelectedList = componentMeasureSelectedList;
 	}
     
+    /* (non-Javadoc)
+     * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getDialogBox()
+     */
     @Override
     public DialogBox getDialogBox() {
 		return dialogBox;
@@ -2284,6 +2297,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildComponentMeasuresCellTable(mat.client.measure.ManageMeasureSearchModel, boolean)
+	 */
 	@Override
 	public void buildComponentMeasuresCellTable(
 			ManageMeasureSearchModel result, boolean isEditable) {

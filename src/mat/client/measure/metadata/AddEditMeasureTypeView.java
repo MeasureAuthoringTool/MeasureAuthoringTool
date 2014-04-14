@@ -3,6 +3,7 @@ package mat.client.measure.metadata;
 import java.util.List;
 
 import mat.client.codelist.HasListBox;
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
@@ -192,6 +193,12 @@ public class AddEditMeasureTypeView extends AddEditMetadataBaseView implements M
 	@Override
 	public HasValue<String> getOtherMeasureType() {
 		return otherSpecifyBox;
+	}
+
+	@Override
+	public void buildCellTable(ManageMeasureSearchModel result) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

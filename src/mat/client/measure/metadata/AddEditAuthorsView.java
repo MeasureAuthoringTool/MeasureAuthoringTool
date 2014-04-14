@@ -3,6 +3,7 @@ package mat.client.measure.metadata;
 import java.util.List;
 
 import mat.client.codelist.HasListBox;
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
@@ -207,6 +208,12 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 	@Override
 	public HasValue<String> getOtherAuthor() {
 		return otherSpecifyBox;
+	}
+
+	@Override
+	public void buildCellTable(ManageMeasureSearchModel result) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

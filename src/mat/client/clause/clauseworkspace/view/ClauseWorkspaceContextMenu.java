@@ -3,17 +3,14 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
@@ -30,6 +27,15 @@ import com.google.gwt.xml.client.Node;
  */
 public class ClauseWorkspaceContextMenu {
 	
+	/**
+	 * Constant Stratum 1 node - default Node Stratification tab.
+	 */
+	private static final String DEFAULT_STRATUM_NODE = "Stratum 1";
+	
+	/**
+	 * Constant Stratification node.
+	 */
+	private static final String STRATIFICATION = "Stratification";
 	/**
 	 * The Interface Template.
 	 */
@@ -169,7 +175,7 @@ public class ClauseWorkspaceContextMenu {
 					getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
 					
 					if (ExtraInformationchildNode!=null) {
-					xmlTreeDisplay.getCommentArea().setText(ExtraInformationchildNode.get(0).getNodeText());
+						xmlTreeDisplay.getCommentArea().setText(ExtraInformationchildNode.get(0).getNodeText());
 					}
 				}
 				xmlTreeDisplay.copy();
@@ -782,13 +788,21 @@ public class ClauseWorkspaceContextMenu {
 	 */
 	protected void addRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getSelectedNode().getChilds().get(0).getName();
+		String selectedNodeName = xmlTreeDisplay.getSelectedNode().getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber;
-       
+		
 		CellTreeNode clauseNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.CLAUSE_NODE);
-		if(!xmlTreeDisplay.getSelectedNode().getName().contains("Stratification")){
-			clauseNode.createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);	   
-	       }
+		if (!xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION)) {
+			if (PopulationWorkSpaceConstants.topNodeOperatorMap.containsKey(
+					(selectedNodeName.replaceAll("\\s+", "")).toLowerCase())) {
+				clauseNode.createChild(PopulationWorkSpaceConstants.OR,
+						PopulationWorkSpaceConstants.OR, CellTreeNode.LOGICAL_OP_NODE);
+			} else {
+				clauseNode.createChild(PopulationWorkSpaceConstants.AND,
+						PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
+			}
+		}
 		
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}
@@ -803,10 +817,7 @@ public class ClauseWorkspaceContextMenu {
 		
 		CellTreeNode rootNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.ROOT_NODE);
 		rootNode.setUUID(UUIDUtilClient.uuid());
-		//CellTreeNode clauseNode = rootNode.createChild("Stratum 1", "Stratum 1", CellTreeNode.CLAUSE_NODE);
-		rootNode.createChild("Stratum 1", "Stratum 1", CellTreeNode.CLAUSE_NODE);
-		//clauseNode.createChild(PopulationWorkSpaceConstants.AND, PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
-		
+		rootNode.createChild(DEFAULT_STRATUM_NODE, DEFAULT_STRATUM_NODE, CellTreeNode.CLAUSE_NODE);
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 	}
 	
@@ -925,7 +936,7 @@ public class ClauseWorkspaceContextMenu {
 		SortedSet<Integer> sortedName = new TreeSet<Integer>();
 		Integer lastInt = 0;
 		sortedName.add(lastInt);
-		if (selectedNode.getNodeType() == CellTreeNode.ROOT_NODE || selectedNode.getNodeType() == CellTreeNode.MASTER_ROOT_NODE) {
+		if ((selectedNode.getNodeType() == CellTreeNode.ROOT_NODE) || (selectedNode.getNodeType() == CellTreeNode.MASTER_ROOT_NODE)) {
 			if (selectedNode.hasChildren()) {
 				for (CellTreeNode treeNode : selectedNode.getChilds()) {
 					String clauseNodeName = treeNode.getName().substring(treeNode.getName().lastIndexOf(" ")).trim();

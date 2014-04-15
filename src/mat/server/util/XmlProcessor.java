@@ -195,6 +195,8 @@ public class XmlProcessor {
 	
 	/** The constants map. */
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
+	/** The constants map. */
+	private static Map<String, String> topNodeOperatorMap = new HashMap<String, String>();
 	
 	/** The Constant logger. */
 	private static final Log logger = LogFactory.getLog(XmlProcessor.class);
@@ -236,6 +238,11 @@ public class XmlProcessor {
 		constantsMap.put("Measure Populations", "Measure Population");
 		constantsMap.put("Measure Population Exclusions", "Measure Population Exclusions");
 		constantsMap.put("Numerator Exclusions", "Numerator Exclusions");
+		
+		topNodeOperatorMap.put("denominatorExclusions", "or");
+		topNodeOperatorMap.put("numeratorExclusions", "or");
+		topNodeOperatorMap.put("denominatorExceptions", "or");
+		topNodeOperatorMap.put("measurePopulationExclusions", "or");
 	}
 	/**
 	 * Instantiates a new xml processor.
@@ -1173,11 +1180,18 @@ public class XmlProcessor {
 		//logical AND is not required by stratification clause at the
 		//time of creation of new Measure But Population and Measure Observations
 		// clauses will have Logical AND by Default.
-		if(!nodeName.equalsIgnoreCase("strata")){
-			Element logicalOpElem = originalDoc.createElement("logicalOp");
-			logicalOpElem.setAttribute("displayName", "AND");
-			logicalOpElem.setAttribute("type", "and");
-			clauseChildElem.appendChild(logicalOpElem);
+		if (!nodeName.equalsIgnoreCase("strata")) {
+			if (topNodeOperatorMap.containsKey(nodeName)) {
+				Element logicalOpElem = originalDoc.createElement("logicalOp");
+				logicalOpElem.setAttribute("displayName", "OR");
+				logicalOpElem.setAttribute("type", "or");
+				clauseChildElem.appendChild(logicalOpElem);
+			} else {
+				Element logicalOpElem = originalDoc.createElement("logicalOp");
+				logicalOpElem.setAttribute("displayName", "AND");
+				logicalOpElem.setAttribute("type", "and");
+				clauseChildElem.appendChild(logicalOpElem);
+			}
 		}
 		mainChildElem.appendChild(clauseChildElem);
 		

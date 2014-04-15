@@ -51,6 +51,9 @@ public class PopulationWorkSpaceConstants {
 	/** The Constant AND. */
 	public static final String AND = "AND";
 	
+	/** The Constant OR. */
+	public static final String OR = "OR";
+	
 	/** The Constant COMMENTS. */
 	public static final String COMMENTS = "COMMENT";
 	
@@ -64,6 +67,8 @@ public class PopulationWorkSpaceConstants {
 			+ "|initialPopulations|denominatorExclusions|denominatorExceptions|measurePopulations"
 			+ "|measurePopulationExclusions";
 	
+	/** The constants map. */
+	public static Map<String, String> topNodeOperatorMap = new HashMap<String, String>();
 	/** Constants added for RighClick SubMenus. */
 	
 	public static final String[] LOGICAL_OPS = {"AND", "OR"};
@@ -174,6 +179,11 @@ public class PopulationWorkSpaceConstants {
 		constantsMap.put("Measure Population Exclusions", "measurePopulationExclusions");
 		constantsMap.put("Numerator Exclusions", "numeratorExclusions");
 		constantsMap.put("Populations", "populations");
+		
+		topNodeOperatorMap.put("denominatorexclusions", "or");
+		topNodeOperatorMap.put("numeratorexclusions", "or");
+		topNodeOperatorMap.put("denominatorexceptions", "or");
+		topNodeOperatorMap.put("measurepopulationexclusions", "or");
 	}
 	
 	/**

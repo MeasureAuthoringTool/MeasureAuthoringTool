@@ -17,6 +17,11 @@ import com.google.gwt.user.client.ui.PopupPanel;
 public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	
 	/**
+	 * Stratification Node name.
+	 */
+	private static final String STRATIFICATION = "Stratification";
+	
+	/**
 	 * Instantiates a new population work space context menu.
 	 *
 	 * @param treeDisplay - XmlTreeDisplay.
@@ -42,8 +47,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 		showHideExpandMenu();
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 			case CellTreeNode.MASTER_ROOT_NODE:
-				
-				if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("Stratification"))
+				if (xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase(STRATIFICATION))
 				{
 					Command addNodeCmd = new Command() {
 						@Override
@@ -55,17 +59,14 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					};
 					addMenu = new MenuItem(getAddMenuName(xmlTreeDisplay.getSelectedNode().getChilds().get(0))
 							, true, addNodeCmd);
-					
 					popupMenuBar.addItem(addMenu);
 					popupMenuBar.addSeparator(separator);
-					
 					if ((xmlTreeDisplay.getCopiedNode() != null)
-							&& (xmlTreeDisplay.getCopiedNode().getParent().equals(xmlTreeDisplay.getSelectedNode()))) {
+							&& (xmlTreeDisplay.getCopiedNode().getParent()
+									.equals(xmlTreeDisplay.getSelectedNode()))) {
 						pasteMenu.setEnabled(true);
 					}
 				}
-				
-				
 				addCommonMenus();
 				break;
 			case CellTreeNode.ROOT_NODE:
@@ -91,10 +92,10 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				}
 				cutMenu.setEnabled(false);
 				
-				if(xmlTreeDisplay.getSelectedNode().getName().contains("Stratification"))
+				if(xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION))
 				{
 					copyMenu.setEnabled(true);
-				} 
+				}
 				
 				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
 					deleteMenu.setEnabled(true);
@@ -117,7 +118,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						pasteMenu.setEnabled(true);
 					}
 				}
-
+				
 				addCommonMenus();
 				copyMenu.setEnabled(true);
 				//pasteMenu.setEnabled(false);
@@ -126,10 +127,10 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				}
 				cutMenu.setEnabled(false);
 				
-//				if(xmlTreeDisplay.getSelectedNode().getName().contains("Stratum"))
-//				{
-//					deleteMenu.setEnabled(false);
-//				}
+				//				if(xmlTreeDisplay.getSelectedNode().getName().contains("Stratum"))
+				//				{
+				//					deleteMenu.setEnabled(false);
+				//				}
 				break;
 			case CellTreeNode.LOGICAL_OP_NODE:
 				subMenuBar = new MenuBar(true);
@@ -148,7 +149,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.ROOT_NODE)) {
 					pasteMenu.setEnabled(true);
 				}
-				if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE 
+				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
 						|| (xmlTreeDisplay.getSelectedNode().getParent().getName().contains("Stratum"))) {
 					deleteMenu.setEnabled(true);
 				}
@@ -167,14 +168,14 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					editMenu = new MenuItem("Edit", true, subMenuBar);
 					popupMenuBar.addItem(editMenu);
 				}
-//				if (xmlTreeDisplay.getSelectedNode().getParent().getName().contains("Stratum")) {
-//					
-//					subMenuBar = new MenuBar(true);
-//					createEditMenus(MatContext.get().logicalOps, subMenuBar);
-//					
-//					editMenu = new MenuItem("Edit", true, subMenuBar);
-//					popupMenuBar.addItem(editMenu);
-//				}
+				//				if (xmlTreeDisplay.getSelectedNode().getParent().getName().contains("Stratum")) {
+				//
+				//					subMenuBar = new MenuBar(true);
+				//					createEditMenus(MatContext.get().logicalOps, subMenuBar);
+				//
+				//					editMenu = new MenuItem("Edit", true, subMenuBar);
+				//					popupMenuBar.addItem(editMenu);
+				//				}
 				break;
 			case CellTreeNode.TIMING_NODE:
 				addCommonMenus();

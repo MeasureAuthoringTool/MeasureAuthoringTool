@@ -11,6 +11,7 @@ import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
@@ -793,15 +794,16 @@ public class ClauseWorkspaceContextMenu {
 		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber;
 		
 		CellTreeNode clauseNode  = xmlTreeDisplay.getSelectedNode().createChild(name, name, CellTreeNode.CLAUSE_NODE);
+		String nodeName = selectedNodeName.replaceAll("\\s+", "").toLowerCase();
 		if (!xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION)) {
-			if (PopulationWorkSpaceConstants.topNodeOperatorMap.containsKey(
-					(selectedNodeName.replaceAll("\\s+", "")).toLowerCase())) {
-				clauseNode.createChild(PopulationWorkSpaceConstants.OR,
-						PopulationWorkSpaceConstants.OR, CellTreeNode.LOGICAL_OP_NODE);
-			} else {
+			if (PopulationWorkSpaceConstants.topNodeOperatorMap.containsKey((nodeName))) {
+				String nodeTopLogicalOperator = PopulationWorkSpaceConstants.topNodeOperatorMap.get(nodeName);
+				clauseNode.createChild(nodeTopLogicalOperator.toUpperCase(),
+						nodeTopLogicalOperator.toUpperCase(), CellTreeNode.LOGICAL_OP_NODE);
+			} /*else {
 				clauseNode.createChild(PopulationWorkSpaceConstants.AND,
 						PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
-			}
+			}*/
 		}
 		
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());

@@ -239,6 +239,11 @@ public class XmlProcessor {
 		constantsMap.put("Measure Population Exclusions", "Measure Population Exclusions");
 		constantsMap.put("Numerator Exclusions", "Numerator Exclusions");
 		
+		topNodeOperatorMap.put("measureObservations", "and");
+		topNodeOperatorMap.put("initialPopulations", "and");
+		topNodeOperatorMap.put("numerators", "and");
+		topNodeOperatorMap.put("denominators", "and");
+		topNodeOperatorMap.put("measurePopulations", "and");
 		topNodeOperatorMap.put("denominatorExclusions", "or");
 		topNodeOperatorMap.put("numeratorExclusions", "or");
 		topNodeOperatorMap.put("denominatorExceptions", "or");
@@ -246,7 +251,6 @@ public class XmlProcessor {
 	}
 	/**
 	 * Instantiates a new xml processor.
-	 * 
 	 * @param originalXml
 	 *            the original xml
 	 */
@@ -381,11 +385,10 @@ public class XmlProcessor {
 					parentNode.removeChild(oldNode); // Removing the old child
 					// node
 					if (nextSibling != null) {
+						// to maintain the order insert before the next sibling if exists
 						parentNode.insertBefore(
 								originalDoc.importNode(newNode, true),
-								nextSibling); // to maintain the order insert
-						// before the next sibling if
-						// exists
+								nextSibling);
 					} else {
 						parentNode.appendChild(originalDoc.importNode(newNode,
 								true)); // insert the new child node to the old
@@ -979,94 +982,62 @@ public class XmlProcessor {
 			}
 		}
 		// Create supplementalDataElements node
-		Node supplementaDataElements_Element = findNode(originalDoc,
+		Node supplementaDataElementsElement = findNode(originalDoc,
 				XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS);
-		if (supplementaDataElements_Element == null) {
-			supplementaDataElements_Element = originalDoc
+		if (supplementaDataElementsElement == null) {
+			supplementaDataElementsElement = originalDoc
 					.createElement("supplementalDataElements");
 			((Element) measureStratificationsNode.getParentNode())
-			.insertBefore(supplementaDataElements_Element,
+			.insertBefore(supplementaDataElementsElement,
 					measureStratificationsNode.getNextSibling());
 		}
 		// Create elementLookUp node
 		if (findNode(originalDoc, XPATH_MEASURE_ELEMENT_LOOKUP) == null) {
-			Element elementLookUp_Element = originalDoc
+			Element elementLookUpElement = originalDoc
 					.createElement("elementLookUp");
-			((Element) supplementaDataElements_Element.getParentNode())
-			.insertBefore(elementLookUp_Element,
-					supplementaDataElements_Element.getNextSibling());
+			((Element) supplementaDataElementsElement.getParentNode())
+			.insertBefore(elementLookUpElement,
+					supplementaDataElementsElement.getNextSibling());
 		}
 		if (findNode(originalDoc, XPATH_MEASURE_SUBTREE_LOOKUP) == null) {
-			Element subTreeLookUp_Element = originalDoc
+			Element subTreeLookUpElement = originalDoc
 					.createElement("subTreeLookUp");
-			((Element) supplementaDataElements_Element.getParentNode())
-			.insertBefore(subTreeLookUp_Element,
-					supplementaDataElements_Element.getNextSibling());
+			((Element) supplementaDataElementsElement.getParentNode())
+			.insertBefore(subTreeLookUpElement,
+					supplementaDataElementsElement.getNextSibling());
 		}
-		
-		//		if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT) == null) {
-		//			Element itemCount_Element = originalDoc
-		//					.createElement("itemCount");
-		//			if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE) == null) {
-		//				Node scoring_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_SCORING);
-		//				if(scoring_Element != null) {
-		//					((Element) scoring_Element.getParentNode())
-		//					.insertBefore(itemCount_Element,
-		//							scoring_Element.getNextSibling());
-		//				}
-		//			} else {
-		//				Node measure_Type_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE);
-		//				((Element) measure_Type_Element.getParentNode())
-		//				.insertBefore(itemCount_Element,
-		//						measure_Type_Element.getNextSibling());
-		//			}
-		//		}
-		
 		if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_COMPONENT_MEASURES) == null) {
-			Element componentMeasures_Element = originalDoc
+			Element componentMeasureElement = originalDoc
 					.createElement("componentMeasures");
 			if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE) == null) {
-				Node scoring_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_SCORING);
-				if(scoring_Element != null) {
-					((Element) scoring_Element.getParentNode())
-					.insertBefore(componentMeasures_Element,
-							scoring_Element.getNextSibling());
+				Node scoringElement = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_SCORING);
+				if (scoringElement != null) {
+					((Element) scoringElement.getParentNode())
+					.insertBefore(componentMeasureElement,
+							scoringElement.getNextSibling());
 				}
 			} else {
-				Node measure_Type_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE);
-				((Element) measure_Type_Element.getParentNode())
-				.insertBefore(componentMeasures_Element,
-						measure_Type_Element.getNextSibling());
+				Node measureTypeElement = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE);
+				((Element) measureTypeElement.getParentNode())
+				.insertBefore(componentMeasureElement,
+						measureTypeElement.getNextSibling());
 			}
 		}
-		
-		
 		if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT) == null) {
-			Element itemCount_Element = originalDoc
+			Element itemCountElement = originalDoc
 					.createElement("itemCount");
-			Node componentMeasures_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_COMPONENT_MEASURES);
-			((Element) componentMeasures_Element.getParentNode())
-			.insertBefore(itemCount_Element,
-					componentMeasures_Element.getNextSibling());
+			Node componentMeasuresElement = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_COMPONENT_MEASURES);
+			((Element) componentMeasuresElement.getParentNode())
+			.insertBefore(itemCountElement,
+					componentMeasuresElement.getNextSibling());
 		}
-		
-		
-		//		if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_COMPONENT_MEASURES) == null) {
-		//			Element componentMeasures_Element = originalDoc
-		//					.createElement("componentMeasures");
-		//			Node itemCount_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT);
-		//			((Element) itemCount_Element.getParentNode())
-		//			.insertBefore(componentMeasures_Element,
-		//					itemCount_Element.getNextSibling());
-		//		}
-		
 		// create Measure Grouping node
 		if (findNode(originalDoc, XPATH_MEASURE_GROUPING) == null) {
-			Element measureGrouping_Element = originalDoc
+			Element measureGroupingElement = originalDoc
 					.createElement("measureGrouping");
-			((Element) supplementaDataElements_Element.getParentNode())
-			.insertBefore(measureGrouping_Element,
-					supplementaDataElements_Element.getNextSibling());
+			((Element) supplementaDataElementsElement.getParentNode())
+			.insertBefore(measureGroupingElement,
+					supplementaDataElementsElement.getNextSibling());
 		}
 		/*
 		 * All the adding and removing can put the children of 'populations' in
@@ -1182,15 +1153,13 @@ public class XmlProcessor {
 		// clauses will have Logical AND by Default.
 		if (!nodeName.equalsIgnoreCase("strata")) {
 			if (topNodeOperatorMap.containsKey(nodeName)) {
-				Element logicalOpElem = originalDoc.createElement("logicalOp");
-				logicalOpElem.setAttribute("displayName", "OR");
-				logicalOpElem.setAttribute("type", "or");
-				clauseChildElem.appendChild(logicalOpElem);
-			} else {
-				Element logicalOpElem = originalDoc.createElement("logicalOp");
-				logicalOpElem.setAttribute("displayName", "AND");
-				logicalOpElem.setAttribute("type", "and");
-				clauseChildElem.appendChild(logicalOpElem);
+				String nodeTopLogicalOperator = topNodeOperatorMap.get(nodeName);
+				if (nodeTopLogicalOperator != null) {
+					Element logicalOpElem = originalDoc.createElement("logicalOp");
+					logicalOpElem.setAttribute("displayName", nodeTopLogicalOperator.toUpperCase());
+					logicalOpElem.setAttribute("type", nodeTopLogicalOperator);
+					clauseChildElem.appendChild(logicalOpElem);
+				}
 			}
 		}
 		mainChildElem.appendChild(clauseChildElem);

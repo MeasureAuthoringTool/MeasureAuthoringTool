@@ -37,17 +37,7 @@ mat.dao.UserDAO {
 		}
 	}
 	
-	/**
-	 * Delete.
-	 * 
-	 * @param id
-	 *            the id
-	 */
-	public void delete(String id) {
 		
-		System.out.println("Howdy");
-	}
-	
 	/* (non-Javadoc)
 	 * @see mat.dao.UserDAO#expireTemporaryPasswords(java.util.Date)
 	 */
@@ -334,7 +324,6 @@ mat.dao.UserDAO {
 	@Override
 	public String getRandomSecurityQuestion(String userLoginId) {
 		
-		System.out.println("In method getRandomSecurityQuestion");
 		
 		User user = findByLoginId(userLoginId);
 		String question = null;
@@ -359,7 +348,6 @@ mat.dao.UserDAO {
 				question = list.get(0);
 			}
 		}
-		System.out.println("question="+question);
 		
 		return question;
 	}

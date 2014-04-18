@@ -34,7 +34,6 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	private String getQDSQueryString(boolean showSDEs, String measureId){
 //		String query = "select q.id from mat.model.QualityDataSet q, mat.model.ListObject l " +
 //				"where q.measureId.id = '"+measureId+"' " + "and l.id = q.listObject.id ";
-		System.out.println("In method getQDSQueryString");
 		String query = "select q.id from mat.model.QualityDataSet q, mat.model.ListObject l " +
 		"where q.measureId.id = :measureId and l.id = q.listObject.id ";
 		if(!showSDEs){
@@ -45,7 +44,6 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 						"'"+ConstantMessages.PAYER_OID+"')";
 				
 		}
-		System.out.println("query="+query);
 		return query;
 	}
 	
@@ -216,7 +214,6 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	 */
 	@Override
 	public void updateListObjectId(String oldLOID, String newLOID) {
-		System.out.println("In method updateListObjectId");
 		Session session = getSessionFactory().getCurrentSession();
 		//update quality data model references from the list object being drafted (oldLOID) to the draft (newLOID)
 		//SQLQuery query = session.createSQLQuery("update QUALITY_DATA_MODEL q set q.LIST_OBJECT_ID = '"+newLOID+"' where q.LIST_OBJECT_ID in (select LIST_OBJECT_ID from LIST_OBJECT where OID in (select OID from LIST_OBJECT where LIST_OBJECT_ID= '"+oldLOID+"'));");
@@ -302,7 +299,6 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	 *            the old id
 	 */
 	public void updateQDMTerm(String newID, String oldID){
-		System.out.println("In method updateQDMTerm");
 		Session session = getSessionFactory().getCurrentSession();
 //		SQLQuery query = session.createSQLQuery("update QDM_TERM t set t.QDM_ELEMENT_ID = '"+newID+"' where t.QDM_ELEMENT_ID = '"+oldID+"';");
 		String sql = "update QDM_TERM t set t.QDM_ELEMENT_ID = :newID where t.QDM_ELEMENT_ID = :oldID";
@@ -319,7 +315,6 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	 *            the old id
 	 */
 	public void deleteOldQDM(String oldID){
-		System.out.println("In method deleteOldQDM");
 		Session session = getSessionFactory().getCurrentSession();
 		//SQLQuery query = session.createSQLQuery("delete from QUALITY_DATA_MODEL where QUALITY_DATA_MODEL_ID = '"+oldID+"';");
 		String sql = "delete from QUALITY_DATA_MODEL where QUALITY_DATA_MODEL_ID = :oldID";

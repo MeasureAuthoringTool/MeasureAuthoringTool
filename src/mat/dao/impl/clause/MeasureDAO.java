@@ -1015,7 +1015,6 @@ mat.dao.clause.MeasureDAO {
 		Session session = getSessionFactory().getCurrentSession();
 		//String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = '"
 		//		+ measureId + "'";
-		System.out.println("In method isMeasureLocked");
 		String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = :measureId";
 			
 		Query query = session.createQuery(sql);
@@ -1027,7 +1026,6 @@ mat.dao.clause.MeasureDAO {
 		}
 		
 		boolean locked = isLocked(lockedOutDate);
-		System.out.println("locked="+locked);
 		return locked;
 	}
 	
@@ -1053,8 +1051,6 @@ mat.dao.clause.MeasureDAO {
 			query.setString("measureId", m.getId());
 			int rowCount = query.executeUpdate();
 			tx.commit();
-			System.out.println("Rows affected: while releasing lock "
-					+ rowCount);
 		} finally {
 			rollbackUncommitted(tx);
 			closeSession(session);
@@ -1069,7 +1065,6 @@ mat.dao.clause.MeasureDAO {
 	public int saveandReturnMaxEMeasureId(Measure measure) {
 		int eMeasureId = getMaxEMeasureId() + 1;
 		MeasureSet ms = measure.getMeasureSet();
-		System.out.println("In method saveandReturnMaxEMeasureId");
 		Session session = getSessionFactory().getCurrentSession();
 //		SQLQuery query = session
 //				.createSQLQuery("update MEASURE m set m.EMEASURE_ID = "
@@ -1080,7 +1075,6 @@ mat.dao.clause.MeasureDAO {
 		query.setInteger("eMeasureId", eMeasureId);
 		query.setString("MEASURE_SET_ID", ms.getId());
 		query.executeUpdate();
-		System.out.println("eMeasureId="+eMeasureId);
 		return eMeasureId;
 		
 	}

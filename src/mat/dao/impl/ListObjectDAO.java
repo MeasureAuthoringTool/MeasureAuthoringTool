@@ -444,9 +444,15 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 			return 0;
 
 		Session session = getSessionFactory().getCurrentSession();
-		Long count = (Long) session.createQuery(
-				"SELECT COUNT(*) FROM mat.model.ListObject L WHERE L.oid='"
-						+ oid + "' AND NOT L.id='" + id + "'").uniqueResult();
+//		Long count = (Long) session.createQuery(
+//				"SELECT COUNT(*) FROM mat.model.ListObject L WHERE L.oid='"
+//						+ oid + "' AND NOT L.id='" + id + "'").uniqueResult();
+		String sql ="SELECT COUNT(*) FROM mat.model.ListObject L WHERE L.oid= :oid  AND NOT L.id= :id";
+		Query query = session.createQuery(sql);
+		query.setString("oid", oid);
+		query.setString("id",id);
+		Long count = (Long)query.uniqueResult();
+		
 		return count.intValue();
 	}
 
@@ -599,9 +605,12 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	@Override
 	public void updateFamilyOid(String oldOID, String newOID) {
 		Session session = getSessionFactory().getCurrentSession();
-		SQLQuery query = session
-				.createSQLQuery("update LIST_OBJECT lo set lo.oid = '" + newOID
-						+ "' where lo.oid = '" + oldOID + "';");
+//		SQLQuery query = session
+//				.createSQLQuery("update LIST_OBJECT lo set lo.oid = '" + newOID
+//						+ "' where lo.oid = '" + oldOID + "';");
+		SQLQuery query = session.createSQLQuery("update LIST_OBJECT lo set lo.oid = :newOID where lo.oid = :oldOID");
+		query.setString("newOID", newOID);
+		query.setString("oldOID", oldOID);
 		int ret = query.executeUpdate();
 	}
 
@@ -827,11 +836,17 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	private Criteria buildCriteriaForAppliedByUser(String searchText,
 			String loggedInUserid, boolean showdefaultCodeList) {
 		Session session = getSessionFactory().getCurrentSession();
-		List<String> loids = session
-				.createQuery(
-						"select q.listObject.oid from mat.model.QualityDataSet q where q.measureId.id in "
-								+ "(select m.id from mat.model.clause.Measure m where m.owner.id ='"
-								+ loggedInUserid + "')").list();
+//		List<String> loids = session
+//				.createQuery(
+//						"select q.listObject.oid from mat.model.QualityDataSet q where q.measureId.id in "
+//								+ "(select m.id from mat.model.clause.Measure m where m.owner.id ='"
+//								+ loggedInUserid + "')").list();
+		String sql = "select q.listObject.oid from mat.model.QualityDataSet q where q.measureId.id in " +
+				"(select m.id from mat.model.clause.Measure m where m.owner.id =:loggedInUserid)";
+		Query query = session.createQuery(sql);
+		query.setString("loggedInUserid", loggedInUserid);
+		List<String> loids = query.list();
+			
 
 		if (loids.isEmpty() && !showdefaultCodeList) {
 			return null;
@@ -1035,9 +1050,13 @@ public class ListObjectDAO extends GenericDAO<ListObject, String> implements
 	 */
 	private boolean isUniqueName(String name, User u) {
 		Session session = getSessionFactory().getCurrentSession();
-		String sql = "select count(*) from mat.model.ListObject where objectOwner.id='"
-				+ u.getId() + "' and name='" + name + "'";
+//		String sql = "select count(*) from mat.model.ListObject where objectOwner.id='"
+//				+ u.getId() + "' and name='" + name + "'";
+		String sql = "select count(*) from mat.model.ListObject where objectOwner.id=:id and name = :name";
 		Query query = session.createQuery(sql);
+		query.setString("id", u.getId());
+		query.setString("name", name);
+		
 		List<Long> list = query.list();
 		return list.get(0) == 0;
 	}

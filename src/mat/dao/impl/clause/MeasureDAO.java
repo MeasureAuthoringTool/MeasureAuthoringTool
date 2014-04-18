@@ -38,6 +38,7 @@ import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
+
 /**
  * The Class MeasureDAO.
  */
@@ -1012,9 +1013,13 @@ mat.dao.clause.MeasureDAO {
 	@Override
 	public boolean isMeasureLocked(String measureId) {
 		Session session = getSessionFactory().getCurrentSession();
-		String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = '"
-				+ measureId + "'";
+		//String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = '"
+		//		+ measureId + "'";
+		System.out.println("In method isMeasureLocked");
+		String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = :measureId";
+			
 		Query query = session.createQuery(sql);
+		query.setString("measureId", measureId);
 		List<Timestamp> result = query.list();
 		Timestamp lockedOutDate = null;
 		if (!result.isEmpty()) {
@@ -1022,6 +1027,7 @@ mat.dao.clause.MeasureDAO {
 		}
 		
 		boolean locked = isLocked(lockedOutDate);
+		System.out.println("locked="+locked);
 		return locked;
 	}
 	
@@ -1063,12 +1069,18 @@ mat.dao.clause.MeasureDAO {
 	public int saveandReturnMaxEMeasureId(Measure measure) {
 		int eMeasureId = getMaxEMeasureId() + 1;
 		MeasureSet ms = measure.getMeasureSet();
+		System.out.println("In method saveandReturnMaxEMeasureId");
 		Session session = getSessionFactory().getCurrentSession();
-		SQLQuery query = session
-				.createSQLQuery("update MEASURE m set m.EMEASURE_ID = "
-						+ eMeasureId + " where m.MEASURE_SET_ID = '"
-						+ ms.getId() + "';");
+//		SQLQuery query = session
+//				.createSQLQuery("update MEASURE m set m.EMEASURE_ID = "
+//						+ eMeasureId + " where m.MEASURE_SET_ID = '"
+//						+ ms.getId() + "';");
+		String sql = "update MEASURE m set m.EMEASURE_ID = :eMeasureId where m.MEASURE_SET_ID = :MEASURE_SET_ID";
+		SQLQuery query = session.createSQLQuery(sql);
+		query.setInteger("eMeasureId", eMeasureId);
+		query.setString("MEASURE_SET_ID", ms.getId());
 		query.executeUpdate();
+		System.out.println("eMeasureId="+eMeasureId);
 		return eMeasureId;
 		
 	}

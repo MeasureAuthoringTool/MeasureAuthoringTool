@@ -18,10 +18,12 @@ import mat.shared.DateUtility;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.Query;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+
 
 /**
  * Lightweight (no codes) ListObject data access data structure.
@@ -274,8 +276,15 @@ public class ListObjectLTDAO extends GenericDAO<ListObjectLT, String>
 	 */
 	private Criteria buildCriteriaForAppliedByUser(String searchText, String loggedInUserid, boolean showdefaultCodeList) {
 		Session session = getSessionFactory().getCurrentSession();
-		List<String> loids = session.createQuery("select q.listObject.oid from mat.model.QualityDataSet q where q.measureId.id in " +
-				"(select m.id from mat.model.clause.Measure m where m.owner.id ='"+loggedInUserid+"')").list();
+//		List<String> loids = session.createQuery("select q.listObject.oid from mat.model.QualityDataSet q where q.measureId.id in " +
+//				"(select m.id from mat.model.clause.Measure m where m.owner.id ='"+loggedInUserid+"')").list();
+		
+		String sql ="select q.listObject.oid from mat.model.QualityDataSet q where q.measureId.id in " +
+				"(select m.id from mat.model.clause.Measure m where m.owner.id =:loggedInUserid')";
+		Query query = session.createQuery(sql);
+		query.setString("loggedInUserid", loggedInUserid);
+		
+		List<String> loids = query.list();
 
 		if(loids.isEmpty() && !showdefaultCodeList){
 			return null;

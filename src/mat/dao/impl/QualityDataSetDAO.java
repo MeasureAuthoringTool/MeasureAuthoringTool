@@ -10,6 +10,7 @@ import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 
 import org.hibernate.Criteria;
+import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.criterion.Order;
@@ -31,15 +32,20 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	 * @return the qDS query string
 	 */
 	private String getQDSQueryString(boolean showSDEs, String measureId){
+//		String query = "select q.id from mat.model.QualityDataSet q, mat.model.ListObject l " +
+//				"where q.measureId.id = '"+measureId+"' " + "and l.id = q.listObject.id ";
+		System.out.println("In method getQDSQueryString");
 		String query = "select q.id from mat.model.QualityDataSet q, mat.model.ListObject l " +
-				"where q.measureId.id = '"+measureId+"' " + "and l.id = q.listObject.id ";
+		"where q.measureId.id = :measureId and l.id = q.listObject.id ";
 		if(!showSDEs){
 				query +="and  l.oid not in (" +
 						"'"+ConstantMessages.GENDER_OID+"',"+
 						"'"+ConstantMessages.ETHNICITY_OID+"',"+
 						"'"+ConstantMessages.RACE_OID+"',"+
 						"'"+ConstantMessages.PAYER_OID+"')";
+				
 		}
+		System.out.println("query="+query);
 		return query;
 	}
 	
@@ -52,8 +58,11 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 		List<QualityDataSetDTO> dtos = new ArrayList<QualityDataSetDTO>();
 		
 		Session session = getSessionFactory().getCurrentSession();
-		String query = getQDSQueryString(showSDEs, measureId);
-		List<String> qids = session.createQuery(query).list();
+		String sql = getQDSQueryString(showSDEs, measureId);
+		Query query = session.createQuery(sql);
+		query.setString("measureId", measureId);
+		
+		List<String> qids = query.list();
 		
 		if(qids.isEmpty())
 			return dtos;
@@ -207,9 +216,14 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	 */
 	@Override
 	public void updateListObjectId(String oldLOID, String newLOID) {
+		System.out.println("In method updateListObjectId");
 		Session session = getSessionFactory().getCurrentSession();
 		//update quality data model references from the list object being drafted (oldLOID) to the draft (newLOID)
-		SQLQuery query = session.createSQLQuery("update QUALITY_DATA_MODEL q set q.LIST_OBJECT_ID = '"+newLOID+"' where q.LIST_OBJECT_ID in (select LIST_OBJECT_ID from LIST_OBJECT where OID in (select OID from LIST_OBJECT where LIST_OBJECT_ID= '"+oldLOID+"'));");
+		//SQLQuery query = session.createSQLQuery("update QUALITY_DATA_MODEL q set q.LIST_OBJECT_ID = '"+newLOID+"' where q.LIST_OBJECT_ID in (select LIST_OBJECT_ID from LIST_OBJECT where OID in (select OID from LIST_OBJECT where LIST_OBJECT_ID= '"+oldLOID+"'));");
+		String sql = "update QUALITY_DATA_MODEL q set q.LIST_OBJECT_ID = :newLOID where q.LIST_OBJECT_ID in (select LIST_OBJECT_ID from LIST_OBJECT where OID in (select OID from LIST_OBJECT where LIST_OBJECT_ID= :oldLOID";
+		SQLQuery query = session.createSQLQuery(sql);
+		query.setString("newLOID", newLOID);
+		query.setString("oldLOID", oldLOID);
 		int ret = query.executeUpdate();
 		//update any qdm's that referenced the list object being drafted
 		//and delete any duplicate qdm's
@@ -288,8 +302,13 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	 *            the old id
 	 */
 	public void updateQDMTerm(String newID, String oldID){
+		System.out.println("In method updateQDMTerm");
 		Session session = getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery("update QDM_TERM t set t.QDM_ELEMENT_ID = '"+newID+"' where t.QDM_ELEMENT_ID = '"+oldID+"';");
+//		SQLQuery query = session.createSQLQuery("update QDM_TERM t set t.QDM_ELEMENT_ID = '"+newID+"' where t.QDM_ELEMENT_ID = '"+oldID+"';");
+		String sql = "update QDM_TERM t set t.QDM_ELEMENT_ID = :newID where t.QDM_ELEMENT_ID = :oldID";
+		SQLQuery query = session.createSQLQuery(sql);
+		query.setString("newID",newID);
+		query.setString("oldID", oldID);
 		int ret = query.executeUpdate();
 	}
 	
@@ -300,8 +319,12 @@ public class QualityDataSetDAO extends GenericDAO<QualityDataSet, String> implem
 	 *            the old id
 	 */
 	public void deleteOldQDM(String oldID){
+		System.out.println("In method deleteOldQDM");
 		Session session = getSessionFactory().getCurrentSession();
-		SQLQuery query = session.createSQLQuery("delete from QUALITY_DATA_MODEL where QUALITY_DATA_MODEL_ID = '"+oldID+"';");
+		//SQLQuery query = session.createSQLQuery("delete from QUALITY_DATA_MODEL where QUALITY_DATA_MODEL_ID = '"+oldID+"';");
+		String sql = "delete from QUALITY_DATA_MODEL where QUALITY_DATA_MODEL_ID = :oldID";
+		SQLQuery query = session.createSQLQuery(sql);
+		query.setString("oldID", oldID);
 		int ret = query.executeUpdate();
 	}
 	

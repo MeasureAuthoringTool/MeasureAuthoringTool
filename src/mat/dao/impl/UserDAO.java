@@ -9,6 +9,7 @@ import mat.server.model.MatUserDetails;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.Criteria;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.criterion.Order;
@@ -333,23 +334,32 @@ mat.dao.UserDAO {
 	@Override
 	public String getRandomSecurityQuestion(String userLoginId) {
 		
+		System.out.println("In method getRandomSecurityQuestion");
+		
 		User user = findByLoginId(userLoginId);
 		String question = null;
 		if (null == user) {
 			question = getRandomSecurityQuestion();
 		}else{
-			String query = "SELECT S.QUESTION FROM USER_SECURITY_QUESTIONS US JOIN SECURITY_QUESTIONS S"
-					+ " ON US.QUESTION_ID = S.QUESTION_ID WHERE US.USER_ID = '"
-					+ user.getId() + "' ORDER BY RAND() LIMIT 1";
+//			String query = "SELECT S.QUESTION FROM USER_SECURITY_QUESTIONS US JOIN SECURITY_QUESTIONS S"
+//					+ " ON US.QUESTION_ID = S.QUESTION_ID WHERE US.USER_ID = '"
+//					+ user.getId() + "' ORDER BY RAND() LIMIT 1";
+			String sql = "SELECT S.QUESTION FROM USER_SECURITY_QUESTIONS US JOIN SECURITY_QUESTIONS S"
+				+ " ON US.QUESTION_ID = S.QUESTION_ID WHERE US.USER_ID = :userId"
+				+ " ORDER BY RAND() LIMIT 1";
 			
 			Session session = getSessionFactory().getCurrentSession();
-			List<String> list = session.createSQLQuery(query).list();
+			SQLQuery query = session.createSQLQuery(sql);
+			query.setString("userId", user.getId());
+			
+			List<String> list = query.list();
 			if ((list == null) || list.isEmpty()) {
 				question = getRandomSecurityQuestion();
 			} else {
 				question = list.get(0);
 			}
 		}
+		System.out.println("question="+question);
 		
 		return question;
 	}

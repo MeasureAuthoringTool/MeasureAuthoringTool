@@ -14,7 +14,7 @@ import mat.dao.clause.MeasureExportDAO;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
 import mat.server.MeasureLibraryServiceImpl;
-import mat.server.service.impl.SimpleEMeasureServiceImpl;
+import mat.server.service.SimpleEMeasureService;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +61,7 @@ public class Sprint22Tests extends SpringInitializationTest{
 	@Autowired
 	private MeasureExportDAO measureExportDAO;
 	@Autowired
-	private SimpleEMeasureServiceImpl eMeasureService;
+	private SimpleEMeasureService eMeasureService;
 	
 	@Test
 	public void S22_US159_US160_eMeasureId_GUID_Test() throws Exception {

@@ -131,4 +131,6 @@ public interface SimpleEMeasureService {
 	ExportResult exportMeasureIntoSimpleXML(String measureId, String xmlString, List<MatValueSet> matValueSetList)
 			throws Exception;
 
+	ExportResult getHumanReadableForNode(String measureId) throws Exception;
+
 }

@@ -14,9 +14,9 @@ import mat.model.ListObjectLT;
 import mat.model.User;
 import mat.model.clause.Measure;
 import mat.server.MeasureLibraryServiceImpl;
+import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.service.impl.ManageCodeListServiceImpl;
-import mat.server.service.impl.SimpleEMeasureServiceImpl;
 import mat.server.service.impl.ValueSetXLSGenerator;
 import mat.shared.DateUtility;
 
@@ -81,7 +81,7 @@ private MeasureLibraryServiceImpl measureLibService = new MeasureLibraryServiceI
 	
 	//Start US191
 	@Autowired
-	private SimpleEMeasureServiceImpl eMeasureService;
+	private SimpleEMeasureService eMeasureService;
 	@Test
 	@Rollback
 	public void S23_US191_ExportValueSet_Test() throws Exception{

@@ -7,10 +7,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import mat.model.MeasureNotes;
 import mat.model.User;
 import mat.model.clause.Measure;
@@ -22,6 +24,7 @@ import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.service.UserService;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,6 +50,9 @@ public class ExportServlet extends HttpServlet {
 	
 	/** The Constant ZIP. */
 	private static final String ZIP = "zip";
+	
+	/** Human readable for Subtree Node **/
+	private static final String subTreeHTML = "subtreeHTML";
 	
 	/** The Constant CODELIST. */
 	private static final String CODELIST = "codelist";
@@ -178,6 +184,9 @@ public class ExportServlet extends HttpServlet {
 				resp.getOutputStream().write(export.zipbarr);
 				resp.getOutputStream().close();
 				export.zipbarr = null;
+			} else if (subTreeHTML.equals(format)){
+				export = getService().getHumanReadableForNode(id);
+				resp.setHeader(CONTENT_TYPE, TEXT_HTML);
 			} else if (VALUESET.equals(format)) {
 				export = getService().getValueSetXLS(id);
 				 if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){

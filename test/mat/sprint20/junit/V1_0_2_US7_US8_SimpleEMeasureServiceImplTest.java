@@ -4,7 +4,7 @@ import mat.dao.SpringInitializationTest;
 import mat.dao.clause.MeasureExportDAO;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureExport;
-import mat.server.service.impl.SimpleEMeasureServiceImpl;
+import mat.server.service.SimpleEMeasureService;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +13,7 @@ public class V1_0_2_US7_US8_SimpleEMeasureServiceImplTest extends SpringInitiali
 	@Autowired
 	private MeasureExportDAO measureExportDAO;
 	@Autowired
-	private SimpleEMeasureServiceImpl eMeasureService;
+	private SimpleEMeasureService eMeasureService;
 	
 	@Test
 	public void test_v1_0_2_US7_US8_MeasureExport() throws Exception {

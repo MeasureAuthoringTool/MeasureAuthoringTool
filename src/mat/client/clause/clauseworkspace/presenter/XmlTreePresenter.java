@@ -130,7 +130,8 @@ public class XmlTreePresenter {
 					XmlConversionlHelper.createCellTreeNode(xml, rootNode)); // converts
 			// XML to TreeModel Object and sets to XmlTreeView CellTree cellTree = new CellTree(xmlTreeView, null);
 			
-			xmlTreeView.setClauseWorkspaceContextMenu(new PopulationWorkSpaceContextMenu(xmlTreeView, popupPanel));
+			PopulationWorkSpaceContextMenu populationWorkspaceContextMenu = new PopulationWorkSpaceContextMenu(xmlTreeView, popupPanel);
+			xmlTreeView.setClauseWorkspaceContextMenu(populationWorkspaceContextMenu);
 			CellTree.Resources resource = GWT.create(TreeResources.class);
 			CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
 			// Creation
@@ -420,8 +421,7 @@ public class XmlTreePresenter {
 						final String nodeUUID = cellTreeNode.getChilds().get(0).getUUID();
 						final String nodeName = cellTreeNode.getChilds().get(0).getName();
 						String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode.getChilds().get(0));
-						System.out.println("Generated XML  :: " + xml);
-						System.out.println("nodeUUID  :: " + nodeUUID);
+						
 						final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
 						service.saveSubTreeInMeasureXml(measureXmlModel, nodeName, nodeUUID,
 								new AsyncCallback<Void>() {

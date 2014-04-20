@@ -302,8 +302,8 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	
 	@Override
 	public ExportResult getHumanReadableForNode(final String measureId) throws Exception{
-		ExportResult result = getEMeasureXML(measureId);
-		String html = "<html><body>Hello World.</body></html>";
+		ExportResult result = new ExportResult();
+		String html = "<html><body>This is human readable HTML. If you can read this you are definitely human. If not, err, Best of luck.</body></html>";
 		result.export = html;
 		return result;
 	}

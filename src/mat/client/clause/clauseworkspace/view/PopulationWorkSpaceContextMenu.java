@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.view;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
+
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -44,7 +45,9 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 		deleteMenu.setEnabled(false);
 		pasteMenu.setEnabled(false);
 		cutMenu.setEnabled(false);
+		viewHumanReadableMenu.setEnabled(false);
 		showHideExpandMenu();
+		System.out.println("population workspace node type:"+xmlTreeDisplay.getSelectedNode().getNodeType());
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 			case CellTreeNode.MASTER_ROOT_NODE:
 				if (xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase(STRATIFICATION))
@@ -118,8 +121,13 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						pasteMenu.setEnabled(true);
 					}
 				}
-				
 				addCommonMenus();
+				
+				//Add "View Human Readable" right click option for all populations: Start
+				popupMenuBar.addItem(viewHumanReadableMenu);
+				viewHumanReadableMenu.setEnabled(true);
+				//Add "View Human Readable" right click option for all populations: End
+				
 				copyMenu.setEnabled(true);
 				//pasteMenu.setEnabled(false);
 				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {

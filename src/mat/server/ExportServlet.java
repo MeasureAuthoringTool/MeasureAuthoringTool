@@ -84,6 +84,9 @@ public class ExportServlet extends HttpServlet {
 	/** The Constant TYPE_PARAM. */
 	private static final String TYPE_PARAM = "type";
 	
+	/** The Constant XML_PARAM. */
+	private static final String XML_PARAM = "xml";
+	
 	/** The Constant FORMAT_PARAM. */
 	private static final String FORMAT_PARAM = "format";
 	
@@ -185,7 +188,9 @@ public class ExportServlet extends HttpServlet {
 				resp.getOutputStream().close();
 				export.zipbarr = null;
 			} else if (subTreeHTML.equals(format)){
-				export = getService().getHumanReadableForNode(id);
+				String nodeXML = req.getParameter(XML_PARAM);
+				System.out.println("Export servlet received node xml:"+nodeXML);
+				export = getService().getHumanReadableForNode(nodeXML);
 				resp.setHeader(CONTENT_TYPE, TEXT_HTML);
 			} else if (VALUESET.equals(format)) {
 				export = getService().getValueSetXLS(id);

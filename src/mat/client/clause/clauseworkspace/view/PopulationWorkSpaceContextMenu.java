@@ -3,20 +3,20 @@ package mat.client.clause.clauseworkspace.view;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
-
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
-
-// TODO: Auto-generated Javadoc
 /**
  * The Class PopulationWorkSpaceContextMenu.
  *
  * @author jnarang
  */
 public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
-	
+	/**
+	 * Stratum Node name.
+	 */
+	private static final String STRATUM = "Stratum";
 	/**
 	 * Stratification Node name.
 	 */
@@ -47,11 +47,9 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 		cutMenu.setEnabled(false);
 		viewHumanReadableMenu.setEnabled(false);
 		showHideExpandMenu();
-		System.out.println("population workspace node type:"+xmlTreeDisplay.getSelectedNode().getNodeType());
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 			case CellTreeNode.MASTER_ROOT_NODE:
-				if (xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase(STRATIFICATION))
-				{
+				if (xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase(STRATIFICATION)) {
 					Command addNodeCmd = new Command() {
 						@Override
 						public void execute() {
@@ -94,19 +92,15 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					pasteMenu.setEnabled(true);
 				}
 				cutMenu.setEnabled(false);
-				
-				if(xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION))
-				{
+				if (xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION)) {
 					copyMenu.setEnabled(true);
 				}
-				
 				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
 					deleteMenu.setEnabled(true);
 				}
-				
 				break;
 			case CellTreeNode.CLAUSE_NODE:
-				if(xmlTreeDisplay.getSelectedNode().getName().contains("Stratum")){
+				if (xmlTreeDisplay.getSelectedNode().getName().contains(STRATUM)) {
 					subMenuBar = new MenuBar(true);
 					popupMenuBar.setAutoOpen(true);
 					subMenuBar.setAutoOpen(true);
@@ -115,30 +109,23 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					createAddClauseMenuItem(subMenuBar);
 					addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 					popupMenuBar.addItem(addMenu);
-					
-					if((xmlTreeDisplay.getCopiedNode() != null)
-							&& xmlTreeDisplay.getCopiedNode().getParent().equals(xmlTreeDisplay.getSelectedNode())){
+					if ((xmlTreeDisplay.getCopiedNode() != null)
+							&& xmlTreeDisplay.getCopiedNode().getParent().
+							equals(xmlTreeDisplay.getSelectedNode())) {
 						pasteMenu.setEnabled(true);
 					}
 				}
 				addCommonMenus();
-				
 				//Add "View Human Readable" right click option for all populations: Start
 				popupMenuBar.addItem(viewHumanReadableMenu);
 				viewHumanReadableMenu.setEnabled(true);
 				//Add "View Human Readable" right click option for all populations: End
-				
 				copyMenu.setEnabled(true);
 				//pasteMenu.setEnabled(false);
 				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
 					deleteMenu.setEnabled(true);
 				}
 				cutMenu.setEnabled(false);
-				
-				//				if(xmlTreeDisplay.getSelectedNode().getName().contains("Stratum"))
-				//				{
-				//					deleteMenu.setEnabled(false);
-				//				}
 				break;
 			case CellTreeNode.LOGICAL_OP_NODE:
 				subMenuBar = new MenuBar(true);
@@ -158,12 +145,12 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					pasteMenu.setEnabled(true);
 				}
 				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
-						|| (xmlTreeDisplay.getSelectedNode().getParent().getName().contains("Stratum"))) {
+						|| (xmlTreeDisplay.getSelectedNode().getParent().getName().contains(STRATUM))) {
 					deleteMenu.setEnabled(true);
 				}
 				if (((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
 						&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE))
-						|| (xmlTreeDisplay.getSelectedNode().getParent().getName().contains("Stratum"))) {
+						|| (xmlTreeDisplay.getSelectedNode().getParent().getName().contains(STRATUM))) {
 					cutMenu.setEnabled(true);
 					addMoveUpMenu(popupPanel);
 					popupMenuBar.addItem(moveUpMenu);
@@ -176,14 +163,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					editMenu = new MenuItem("Edit", true, subMenuBar);
 					popupMenuBar.addItem(editMenu);
 				}
-				//				if (xmlTreeDisplay.getSelectedNode().getParent().getName().contains("Stratum")) {
-				//
-				//					subMenuBar = new MenuBar(true);
-				//					createEditMenus(MatContext.get().logicalOps, subMenuBar);
-				//
-				//					editMenu = new MenuItem("Edit", true, subMenuBar);
-				//					popupMenuBar.addItem(editMenu);
-				//				}
 				break;
 			case CellTreeNode.TIMING_NODE:
 				addCommonMenus();
@@ -244,7 +223,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 		}
 	}
-	
 	/**
 	 * Creates the add clause menu item.
 	 *

@@ -3,7 +3,6 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -11,10 +10,8 @@ import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
-import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
@@ -26,7 +23,6 @@ import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.xml.client.Node;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ClauseWorkspaceContextMenu.
  */
@@ -116,7 +112,7 @@ public class ClauseWorkspaceContextMenu {
 	
 	/** The View Human Readable menu **/
 	MenuItem viewHumanReadableMenu;
-		
+	
 	/** The popup menu bar. */
 	MenuBar popupMenuBar = new MenuBar(true);
 	
@@ -179,11 +175,11 @@ public class ClauseWorkspaceContextMenu {
 						|| (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_REF_NODE)) {
 					xmlTreeDisplay.getCommentArea().setText("");
 					@SuppressWarnings("unchecked")
-					List<CellTreeNode> ExtraInformationchildNode = (List<CellTreeNode>) xmlTreeDisplay.getSelectedNode().getParent().
+					List<CellTreeNode> extraInformationchildNode = (List<CellTreeNode>)
+					xmlTreeDisplay.getSelectedNode().getParent().
 					getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
-					
-					if (ExtraInformationchildNode!=null) {
-						xmlTreeDisplay.getCommentArea().setText(ExtraInformationchildNode.get(0).getNodeText());
+					if (extraInformationchildNode != null) {
+						xmlTreeDisplay.getCommentArea().setText(extraInformationchildNode.get(0).getNodeText());
 					}
 				}
 				xmlTreeDisplay.copy();
@@ -198,7 +194,7 @@ public class ClauseWorkspaceContextMenu {
 				xmlTreeDisplay.setDirty(true);
 				if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.ROOT_NODE) {
 					pasteRootNodeTypeItem();
-				} else if(xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.MASTER_ROOT_NODE){
+				} else if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.MASTER_ROOT_NODE) {
 					pasteMasterRootNodeTypeItem();
 				} else {
 					xmlTreeDisplay.paste();
@@ -223,26 +219,24 @@ public class ClauseWorkspaceContextMenu {
 				System.out.println("View Human Readable clicked...");
 				popupPanel.hide();
 				CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
-				if(selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE){
+				if (selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE) {
 					String xmlForPopulationNode = XmlConversionlHelper.createXmlFromTree(selectedNode);
-					System.out.println("XML for populations node:"+xmlForPopulationNode);
+					System.out.println("XML for populations node:" + xmlForPopulationNode);
 					String measureId = MatContext.get().getCurrentMeasureId();
-					String url = GWT.getModuleBaseURL() + "export?id=" +measureId+ "&xml=" + xmlForPopulationNode+ "&format=subtreeHTML";
+					String url = GWT.getModuleBaseURL() + "export?id=" + measureId + "&xml="
+							+ xmlForPopulationNode + "&format=subtreeHTML";
 					Window.open(url + "&type=open", "_blank", "");
-				}				
+				}
 			}
 		};
 		viewHumanReadableMenu = new MenuItem(template.menuTable("View Human Readable", ""), viewHumanReadableCmd);
 		
 	}
-	
-		
 	/**
 	 * Method displays the rightClick options based on the nodeType of the node
 	 * selected on CellTree.
-	 * 
 	 * @param popupPanel
-	 *            the popup panel
+	 *            the PopupPanel
 	 */
 	public void displayMenuItems( final PopupPanel popupPanel) {
 		popupMenuBar.clearItems();
@@ -254,319 +248,355 @@ public class ClauseWorkspaceContextMenu {
 		pasteMenu.setEnabled(false);
 		cutMenu.setEnabled(false);
 		showHideExpandMenu();
-		System.out.println("Node type:"+xmlTreeDisplay.getSelectedNode().getNodeType());
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 			case CellTreeNode.TIMING_NODE:
-				MenuBar subMenuBarLHS = createMenuBarWithTimingFuncAndQDM();
-				addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
-				MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM();
-				addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
-				//Disable  RHS by default.
-				if (xmlTreeDisplay.getSelectedNode().getChilds() == null) {
-					addMenuRHS.setEnabled(false);
-				}
-				//Disable LHS when One element is added and disable RHS when two elements are added.
-				if (xmlTreeDisplay.getSelectedNode().getChilds() != null) {
-					if (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 1) {
-						addMenuLHS.setEnabled(false);
-					}
-					if ((xmlTreeDisplay.getSelectedNode().getChilds().size() == 0)
-							|| (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 2)) {
-						addMenuRHS.setEnabled(false);
-					}
-				}
-				popupMenuBar.addItem(addMenuLHS);
-				popupMenuBar.addItem(addMenuRHS);
-				popupMenuBar.addSeparator(separator);
-				addCommonMenus();
-				copyMenu.setEnabled(true);
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
-						&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
-								|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
-					pasteMenu.setEnabled(true);
-				}
-				if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
-					deleteMenu.setEnabled(true);
-				}
-				addMoveUpMenu(popupPanel);
-				popupMenuBar.addItem(moveUpMenu);
-				moveUpMenu.setEnabled(checkIfTopChildNode());
-				addMoveDownMenu(popupPanel);
-				popupMenuBar.addItem(moveDownMenu);
-				moveDownMenu.setEnabled(checkIfLastChildNode());
-				Command editCmd = new Command() {
-					@Override
-					public void execute() {
-						popupPanel.hide();
-						ComparisonDialogBox.showComparisonDialogBox(xmlTreeDisplay
-								, xmlTreeDisplay.getSelectedNode());
-					}
-				};
-				editMenu = new MenuItem("Edit", true, editCmd);
-				popupMenuBar.addItem(editMenu);
-				cutMenu.setEnabled(true);
+				timingNodePopUpMenuItems(popupPanel);
 				break;
 			case CellTreeNode.ELEMENT_REF_NODE:
-				Command editQDMCmd = new Command() {
-					@Override
-					public void execute() {
-						popupPanel.hide();
-						//To edit the QDM element
-						showQDMPopup(false);
-					}
-				};
-				editQDMMenu = new MenuItem("Edit", true, editQDMCmd);
-				popupMenuBar.addItem(editQDMMenu);
-				createQDMAttributeMenuItem(popupMenuBar, xmlTreeDisplay.getSelectedNode());
-				addCommonMenus();
-				copyMenu.setEnabled(true);
-				pasteMenu.setEnabled(false);
-				cutMenu.setEnabled(true);
-				deleteMenu.setEnabled(true);
-				addMoveUpMenu(popupPanel);
-				popupMenuBar.addItem(moveUpMenu);
-				moveUpMenu.setEnabled(checkIfTopChildNode());
-				addMoveDownMenu(popupPanel);
-				popupMenuBar.addItem(moveDownMenu);
-				moveDownMenu.setEnabled(checkIfLastChildNode());
+				elementRefNodePopUpMenuItems(popupPanel);
 				break;
-				
-				//new node for union and intersection
 			case CellTreeNode.SET_OP_NODE:
-				subMenuBar = new MenuBar(true);
-				popupMenuBar.setAutoOpen(true);
-				subMenuBar.setAutoOpen(true);
-				createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
-						, subMenuBar);
-				createAddQDM_MenuItem(subMenuBar);
-				MenuBar timingSetOpMenuBar = new MenuBar(true);
-				subMenuBar.addItem("Timing", timingSetOpMenuBar); //Timing menu 2nd level
-				createAddMenus(MatContext.get().timings,
-						CellTreeNode.TIMING_NODE, timingSetOpMenuBar); // Timing sub menus 3rd level
-				MenuBar functionsSetOpMenuBar = new MenuBar(true);
-				subMenuBar.addItem("Functions", functionsSetOpMenuBar); //functions menu 2nd level
-				createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
-						, functionsSetOpMenuBar); // functions sub menus 3rd level
-				MenuBar relSetOpMenuBar = new MenuBar(true);
-				subMenuBar.addItem("Relationship", relSetOpMenuBar); //functions menu 2nd level
-				createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
-						, relSetOpMenuBar); // Timing sub menus 3rd level
-				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
-				popupMenuBar.addItem(addMenu);
-				popupMenuBar.addSeparator(separator);
-				addCommonMenus();
-				copyMenu.setEnabled(true);
-				//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
-					pasteMenu.setEnabled(true);
-				}
-				deleteMenu.setEnabled(true);
-				addMoveUpMenu(popupPanel);
-				popupMenuBar.addItem(moveUpMenu);
-				moveUpMenu.setEnabled(checkIfTopChildNode());
-				addMoveDownMenu(popupPanel);
-				popupMenuBar.addItem(moveDownMenu);
-				moveDownMenu.setEnabled(checkIfLastChildNode());
-				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.SUBTREE_NODE)
-						&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SET_OP_NODE)) {
-					cutMenu.setEnabled(true);
-					subMenuBar = new MenuBar(true);
-					createEditMenus(MatContext.get().setOps, subMenuBar);
-					editMenu = new MenuItem("Edit", true, subMenuBar);
-					popupMenuBar.addItem(editMenu);
-				}
+				setOpsNodePopUpMenuItems(popupPanel);
 				break;
 			case CellTreeNode.FUNCTIONS_NODE:
-				subMenuBar = new MenuBar(true);
-				popupMenuBar.setAutoOpen(true);
-				subMenuBar.setAutoOpen(true);
-				//Commented for User story MAT-3167.
-				/*createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
-						, subMenuBar);*/ // creating logical Operators Menu 2nd level
-				//createAddUnion_MenuItem(subMenuBar);
-				//createAddIntersection_MenuItem(subMenuBar);
-				createAddQDM_MenuItem(subMenuBar);
-				MenuBar timing = new MenuBar(true);
-				subMenuBar.addItem("Timing", timing); //Timing menu 2nd level
-				createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timing); // Timing sub menus 3rd level
-				MenuBar functions = new MenuBar(true);
-				subMenuBar.addItem("Functions", functions); //functions menu 2nd level
-				createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
-						, functions); // functions sub menus 3rd level
-				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
-				popupMenuBar.addItem(addMenu);
-				popupMenuBar.addSeparator(separator);
-				addCommonMenus();
-				copyMenu.setEnabled(true);
-				//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
-					pasteMenu.setEnabled(true);
-				}
-				cutMenu.setEnabled(true);
-				deleteMenu.setEnabled(true);
-				addMoveUpMenu(popupPanel);
-				popupMenuBar.addItem(moveUpMenu);
-				moveUpMenu.setEnabled(checkIfTopChildNode());
-				addMoveDownMenu(popupPanel);
-				popupMenuBar.addItem(moveDownMenu);
-				moveDownMenu.setEnabled(checkIfLastChildNode());
-				Command editFunctionsCmd = new Command() {
-					@Override
-					public void execute() {
-						popupPanel.hide();
-						ComparisonDialogBox.showComparisonDialogBox(xmlTreeDisplay
-								, xmlTreeDisplay.getSelectedNode());
-					}
-				};
-				editMenu = new MenuItem("Edit", true, editFunctionsCmd);
-				popupMenuBar.addItem(editMenu);
+				functionNodePopUpMenuItems(popupPanel);
 				break;
 			case CellTreeNode.RELATIONSHIP_NODE:
-				MenuBar subMenuBarRelLHS = createMenuBarWithTimingFuncAndQDM();
-				MenuBar relAssociationMenuBar = new MenuBar(true);
-				subMenuBarRelLHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
-				createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
-						, relAssociationMenuBar); // Relationship sub menus 3rd level
-				addMenuLHS = new MenuItem("Add LHS", subMenuBarRelLHS); //LHS Sub Menu
-				MenuBar subMenuBarRelRHS = createMenuBarWithTimingFuncAndQDM();
-				MenuBar relAssociationMenuBarRHS = new MenuBar(true);
-				subMenuBarRelRHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
-				createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
-						, relAssociationMenuBarRHS); // Relationship sub menus 3rd level
-				addMenuRHS = new MenuItem("Add RHS", subMenuBarRelRHS); //RHS Sub Menu
-				//Disable  RHS by default.
-				if (xmlTreeDisplay.getSelectedNode().getChilds() == null) {
-					addMenuRHS.setEnabled(false);
-				}
-				//Disable LHS when One element is added and disable RHS when two elements are added.
-				if (xmlTreeDisplay.getSelectedNode().getChilds() != null) {
-					if (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 1) {
-						addMenuLHS.setEnabled(false);
-					}
-					if ((xmlTreeDisplay.getSelectedNode().getChilds().size() == 0)
-							|| (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 2)) {
-						addMenuRHS.setEnabled(false);
-					}
-				}
-				popupMenuBar.addItem(addMenuLHS);
-				popupMenuBar.addItem(addMenuRHS);
-				popupMenuBar.addSeparator(separator);
-				addCommonMenus();
-				copyMenu.setEnabled(true);
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
-						&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
-								|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
-					pasteMenu.setEnabled(true);
-				}
-				if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
-					deleteMenu.setEnabled(true);
-				}
-				addMoveUpMenu(popupPanel);
-				popupMenuBar.addItem(moveUpMenu);
-				moveUpMenu.setEnabled(checkIfTopChildNode());
-				addMoveDownMenu(popupPanel);
-				popupMenuBar.addItem(moveDownMenu);
-				moveDownMenu.setEnabled(checkIfLastChildNode());
-				MenuBar subMenuBarEdit = new MenuBar(true);
-				createEditMenus(MatContext.get().relationships, subMenuBarEdit);
-				editMenu = new MenuItem("Edit", true, subMenuBarEdit);
-				popupMenuBar.addItem(editMenu);
-				cutMenu.setEnabled(true);
+				relationalOpNodePopUpMenuItems(popupPanel);
 				break;
 			case CellTreeNode.SUBTREE_NODE:
-				subMenuBar = new MenuBar(true);
-				popupMenuBar.setAutoOpen(true);
-				subMenuBar.setAutoOpen(true);
-				createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
-						, subMenuBar);
-				//createAddUnion_MenuItem(subMenuBar);
-				//createAddIntersection_MenuItem(subMenuBar);
-				createAddQDM_MenuItem(subMenuBar);
-				MenuBar timingSubTreeMenuBar = new MenuBar(true);
-				subMenuBar.addItem("Timing", timingSubTreeMenuBar); //Timing menu 2nd level
-				createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE
-						, timingSubTreeMenuBar); // Timing sub menus 3rd level
-				MenuBar functionsSubTreeMenuBar = new MenuBar(true);
-				subMenuBar.addItem("Functions", functionsSubTreeMenuBar); //functions menu 2nd level
-				createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
-						, functionsSubTreeMenuBar); // functions sub menus 3rd level
-				MenuBar relSubTreeMenuBar2 = new MenuBar(true);
-				subMenuBar.addItem("Relationship", relSubTreeMenuBar2); //functions menu 2nd level
-				createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
-						, relSubTreeMenuBar2); // Relationship sub menus 3rd level
-				addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
-				popupMenuBar.addItem(addMenu);
-				popupMenuBar.addSeparator(separator);
-				addCommonMenus();
-				copyMenu.setEnabled(true);
-				if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_NODE)) {
-					// Only One child is allow in SubTree Root Node.
-					if (xmlTreeDisplay.getSelectedNode().hasChildren()) {
-						addMenu.setEnabled(false);
-						pasteMenu.setEnabled(false);
-					}
-					copyMenu.setEnabled(false);
-				}
-				//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)
-						&& (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)) {
-					pasteMenu.setEnabled(true);
-				}
-				if (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE) {
-					deleteMenu.setEnabled(true);
-					if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE) {
-						cutMenu.setEnabled(true);
-						subMenuBar = new MenuBar(true);
-						createEditMenus(MatContext.get().logicalOps, subMenuBar);
-						editMenu = new MenuItem("Edit", true, subMenuBar);
-						popupMenuBar.addItem(editMenu);
-					}
-				}
-				Command editSubTreeCmd = new Command() {
-					@Override
-					public void execute() {
-						popupPanel.hide();
-						EditSubTreeDialogBox.showEditDialogBox(xmlTreeDisplay
-								, xmlTreeDisplay.getSelectedNode());
-					}
-				};
-				MenuItem editSubTreeMenu = new MenuItem("Edit", true, editSubTreeCmd);
-				popupMenuBar.addItem(editSubTreeMenu);
-				/*if ((xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)
-						&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)) {
-					cutMenu.setEnabled(true);
-					subMenuBar = new MenuBar(true);
-					createEditMenus(MatContext.get().logicalOps, subMenuBar);
-					editMenu = new MenuItem("Edit", true, subMenuBar);
-					popupMenuBar.addItem(editMenu);
-				}*/
+				subTreeNodePopUpMenuItems(popupPanel);
 				break;
 			case CellTreeNode.SUBTREE_ROOT_NODE:
-				Command addSubTreeCmd = new Command() {
-					@Override
-					public void execute() {
-						popupPanel.hide();
-						EditSubTreeDialogBox.showAddDialogBox(xmlTreeDisplay
-								, xmlTreeDisplay.getSelectedNode());
-					}
-				};
-				MenuItem addSubTreeMenu = new MenuItem("Add New Clause", true, addSubTreeCmd);
-				popupMenuBar.addItem(addSubTreeMenu);
-				popupMenuBar.addSeparator(separator);
-				if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_ROOT_NODE)
-						&& xmlTreeDisplay.getSelectedNode().hasChildren()) {
-					addSubTreeMenu.setEnabled(false);
-				}
-				addCommonMenus();
+				subTreeRootNodePopUpMenuItems(popupPanel);
 				break;
 			default:
 				break;
 		}
+	}
+	/**
+	 * Sub Tree Root Node Pop up Menu Items.
+	 * @param popupPanel - PopupPanel.
+	 */
+	private void subTreeRootNodePopUpMenuItems(final PopupPanel popupPanel) {
+		Command addSubTreeCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				EditSubTreeDialogBox.showAddDialogBox(xmlTreeDisplay
+						, xmlTreeDisplay.getSelectedNode());
+			}
+		};
+		MenuItem addSubTreeMenu = new MenuItem("Add New Clause", true, addSubTreeCmd);
+		popupMenuBar.addItem(addSubTreeMenu);
+		popupMenuBar.addSeparator(separator);
+		if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_ROOT_NODE)
+				&& xmlTreeDisplay.getSelectedNode().hasChildren()) {
+			addSubTreeMenu.setEnabled(false);
+		}
+		addCommonMenus();
+	}
+	/**
+	 * Sub Tree Node Pop up Menu Items.
+	 * @param popupPanel -PopupPanel.
+	 */
+	private void subTreeNodePopUpMenuItems(final PopupPanel popupPanel) {
+		subMenuBar = new MenuBar(true);
+		popupMenuBar.setAutoOpen(true);
+		subMenuBar.setAutoOpen(true);
+		createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
+				, subMenuBar);
+		createAddQDM_MenuItem(subMenuBar);
+		MenuBar timingSubTreeMenuBar = new MenuBar(true);
+		subMenuBar.addItem("Timing", timingSubTreeMenuBar); //Timing menu 2nd level
+		createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE
+				, timingSubTreeMenuBar); // Timing sub menus 3rd level
+		MenuBar functionsSubTreeMenuBar = new MenuBar(true);
+		subMenuBar.addItem("Functions", functionsSubTreeMenuBar); //functions menu 2nd level
+		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
+				, functionsSubTreeMenuBar); // functions sub menus 3rd level
+		MenuBar relSubTreeMenuBar2 = new MenuBar(true);
+		subMenuBar.addItem("Relationship", relSubTreeMenuBar2); //functions menu 2nd level
+		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
+				, relSubTreeMenuBar2); // Relationship sub menus 3rd level
+		addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
+		popupMenuBar.addItem(addMenu);
+		popupMenuBar.addSeparator(separator);
+		addCommonMenus();
+		copyMenu.setEnabled(true);
+		if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_NODE)) {
+			// Only One child is allow in SubTree Root Node.
+			if (xmlTreeDisplay.getSelectedNode().hasChildren()) {
+				addMenu.setEnabled(false);
+				pasteMenu.setEnabled(false);
+			}
+			copyMenu.setEnabled(false);
+		}
+		//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
+		if ((xmlTreeDisplay.getCopiedNode() != null)
+				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)
+				&& (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)) {
+			pasteMenu.setEnabled(true);
+		}
+		if (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE) {
+			deleteMenu.setEnabled(true);
+			if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE) {
+				cutMenu.setEnabled(true);
+				subMenuBar = new MenuBar(true);
+				createEditMenus(MatContext.get().logicalOps, subMenuBar);
+				editMenu = new MenuItem("Edit", true, subMenuBar);
+				popupMenuBar.addItem(editMenu);
+			}
+		}
+		Command editSubTreeCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				EditSubTreeDialogBox.showEditDialogBox(xmlTreeDisplay
+						, xmlTreeDisplay.getSelectedNode());
+			}
+		};
+		MenuItem editSubTreeMenu = new MenuItem("Edit", true, editSubTreeCmd);
+		popupMenuBar.addItem(editSubTreeMenu);
+	}
+	
+	
+	/**
+	 * Relational Ops Node Pop up Menu Items.
+	 * @param popupPanel - PopupPanel
+	 */
+	private void relationalOpNodePopUpMenuItems(PopupPanel popupPanel) {
+		MenuBar subMenuBarRelLHS = createMenuBarWithTimingFuncAndQDM();
+		MenuBar relAssociationMenuBar = new MenuBar(true);
+		subMenuBarRelLHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
+		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
+				, relAssociationMenuBar); // Relationship sub menus 3rd level
+		addMenuLHS = new MenuItem("Add LHS", subMenuBarRelLHS); //LHS Sub Menu
+		MenuBar subMenuBarRelRHS = createMenuBarWithTimingFuncAndQDM();
+		MenuBar relAssociationMenuBarRHS = new MenuBar(true);
+		subMenuBarRelRHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
+		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
+				, relAssociationMenuBarRHS); // Relationship sub menus 3rd level
+		addMenuRHS = new MenuItem("Add RHS", subMenuBarRelRHS); //RHS Sub Menu
+		//Disable  RHS by default.
+		if (xmlTreeDisplay.getSelectedNode().getChilds() == null) {
+			addMenuRHS.setEnabled(false);
+		}
+		//Disable LHS when One element is added and disable RHS when two elements are added.
+		if (xmlTreeDisplay.getSelectedNode().getChilds() != null) {
+			if (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 1) {
+				addMenuLHS.setEnabled(false);
+			}
+			if ((xmlTreeDisplay.getSelectedNode().getChilds().size() == 0)
+					|| (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 2)) {
+				addMenuRHS.setEnabled(false);
+			}
+		}
+		popupMenuBar.addItem(addMenuLHS);
+		popupMenuBar.addItem(addMenuRHS);
+		popupMenuBar.addSeparator(separator);
+		addCommonMenus();
+		copyMenu.setEnabled(true);
+		if ((xmlTreeDisplay.getCopiedNode() != null)
+				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
+				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
+						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
+			pasteMenu.setEnabled(true);
+		}
+		if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
+			deleteMenu.setEnabled(true);
+		}
+		addMoveUpMenu(popupPanel);
+		popupMenuBar.addItem(moveUpMenu);
+		moveUpMenu.setEnabled(checkIfTopChildNode());
+		addMoveDownMenu(popupPanel);
+		popupMenuBar.addItem(moveDownMenu);
+		moveDownMenu.setEnabled(checkIfLastChildNode());
+		MenuBar subMenuBarEdit = new MenuBar(true);
+		createEditMenus(MatContext.get().relationships, subMenuBarEdit);
+		editMenu = new MenuItem("Edit", true, subMenuBarEdit);
+		popupMenuBar.addItem(editMenu);
+		cutMenu.setEnabled(true);
+	}
+	/**
+	 * Function Node Pop Up Menu Items.
+	 * @param popupPanel -PopupPanel.
+	 */
+	private void functionNodePopUpMenuItems(final PopupPanel popupPanel) {
+		subMenuBar = new MenuBar(true);
+		popupMenuBar.setAutoOpen(true);
+		subMenuBar.setAutoOpen(true);
+		//Commented for User story MAT-3167.
+		/*createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
+				, subMenuBar);*/ // creating logical Operators Menu 2nd level
+		createAddQDM_MenuItem(subMenuBar);
+		MenuBar timing = new MenuBar(true);
+		subMenuBar.addItem("Timing", timing); //Timing menu 2nd level
+		createAddMenus(MatContext.get().timings, CellTreeNode.TIMING_NODE, timing); // Timing sub menus 3rd level
+		MenuBar functions = new MenuBar(true);
+		subMenuBar.addItem("Functions", functions); //functions menu 2nd level
+		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
+				, functions); // functions sub menus 3rd level
+		addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
+		popupMenuBar.addItem(addMenu);
+		popupMenuBar.addSeparator(separator);
+		addCommonMenus();
+		copyMenu.setEnabled(true);
+		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
+		if ((xmlTreeDisplay.getCopiedNode() != null)
+				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
+			pasteMenu.setEnabled(true);
+		}
+		cutMenu.setEnabled(true);
+		deleteMenu.setEnabled(true);
+		addMoveUpMenu(popupPanel);
+		popupMenuBar.addItem(moveUpMenu);
+		moveUpMenu.setEnabled(checkIfTopChildNode());
+		addMoveDownMenu(popupPanel);
+		popupMenuBar.addItem(moveDownMenu);
+		moveDownMenu.setEnabled(checkIfLastChildNode());
+		Command editFunctionsCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				ComparisonDialogBox.showComparisonDialogBox(xmlTreeDisplay
+						, xmlTreeDisplay.getSelectedNode());
+			}
+		};
+		editMenu = new MenuItem("Edit", true, editFunctionsCmd);
+		popupMenuBar.addItem(editMenu);
+	}
+	/**
+	 * Set Op Node Pop up Menu Items.
+	 * @param popupPanel - PopupPanel.
+	 */
+	private void setOpsNodePopUpMenuItems(final PopupPanel popupPanel) {
+		subMenuBar = new MenuBar(true);
+		popupMenuBar.setAutoOpen(true);
+		subMenuBar.setAutoOpen(true);
+		createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
+				, subMenuBar);
+		createAddQDM_MenuItem(subMenuBar);
+		MenuBar timingSetOpMenuBar = new MenuBar(true);
+		subMenuBar.addItem("Timing", timingSetOpMenuBar); //Timing menu 2nd level
+		createAddMenus(MatContext.get().timings,
+				CellTreeNode.TIMING_NODE, timingSetOpMenuBar); // Timing sub menus 3rd level
+		MenuBar functionsSetOpMenuBar = new MenuBar(true);
+		subMenuBar.addItem("Functions", functionsSetOpMenuBar); //functions menu 2nd level
+		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
+				, functionsSetOpMenuBar); // functions sub menus 3rd level
+		MenuBar relSetOpMenuBar = new MenuBar(true);
+		subMenuBar.addItem("Relationship", relSetOpMenuBar); //functions menu 2nd level
+		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
+				, relSetOpMenuBar); // Timing sub menus 3rd level
+		addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
+		popupMenuBar.addItem(addMenu);
+		popupMenuBar.addSeparator(separator);
+		addCommonMenus();
+		copyMenu.setEnabled(true);
+		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
+		if ((xmlTreeDisplay.getCopiedNode() != null)
+				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
+			pasteMenu.setEnabled(true);
+		}
+		deleteMenu.setEnabled(true);
+		addMoveUpMenu(popupPanel);
+		popupMenuBar.addItem(moveUpMenu);
+		moveUpMenu.setEnabled(checkIfTopChildNode());
+		addMoveDownMenu(popupPanel);
+		popupMenuBar.addItem(moveDownMenu);
+		moveDownMenu.setEnabled(checkIfLastChildNode());
+		if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.SUBTREE_NODE)
+				&& (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SET_OP_NODE)) {
+			cutMenu.setEnabled(true);
+			subMenuBar = new MenuBar(true);
+			createEditMenus(MatContext.get().setOps, subMenuBar);
+			editMenu = new MenuItem("Edit", true, subMenuBar);
+			popupMenuBar.addItem(editMenu);
+		}
+	}
+	/**
+	 * Element Ref Node Pop Up Menu Items.
+	 * @param popupPanel - PopupPanel.
+	 */
+	private void elementRefNodePopUpMenuItems(final PopupPanel popupPanel) {
+		Command editQDMCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				//To edit the QDM element
+				showQDMPopup(false);
+			}
+		};
+		editQDMMenu = new MenuItem("Edit", true, editQDMCmd);
+		popupMenuBar.addItem(editQDMMenu);
+		createQDMAttributeMenuItem(popupMenuBar, xmlTreeDisplay.getSelectedNode());
+		addCommonMenus();
+		copyMenu.setEnabled(true);
+		pasteMenu.setEnabled(false);
+		cutMenu.setEnabled(true);
+		deleteMenu.setEnabled(true);
+		addMoveUpMenu(popupPanel);
+		popupMenuBar.addItem(moveUpMenu);
+		moveUpMenu.setEnabled(checkIfTopChildNode());
+		addMoveDownMenu(popupPanel);
+		popupMenuBar.addItem(moveDownMenu);
+		moveDownMenu.setEnabled(checkIfLastChildNode());
+	}
+	/**
+	 * Timing Node Pop Up Menu Items.
+	 * @param popupPanel - PopupPanel.
+	 */
+	private void timingNodePopUpMenuItems(final PopupPanel popupPanel) {
+		MenuBar subMenuBarLHS = createMenuBarWithTimingFuncAndQDM();
+		addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
+		MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM();
+		addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
+		//Disable  RHS by default.
+		if (xmlTreeDisplay.getSelectedNode().getChilds() == null) {
+			addMenuRHS.setEnabled(false);
+		}
+		//Disable LHS when One element is added and disable RHS when two elements are added.
+		if (xmlTreeDisplay.getSelectedNode().getChilds() != null) {
+			if (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 1) {
+				addMenuLHS.setEnabled(false);
+			}
+			if ((xmlTreeDisplay.getSelectedNode().getChilds().size() == 0)
+					|| (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 2)) {
+				addMenuRHS.setEnabled(false);
+			}
+		}
+		popupMenuBar.addItem(addMenuLHS);
+		popupMenuBar.addItem(addMenuRHS);
+		popupMenuBar.addSeparator(separator);
+		addCommonMenus();
+		copyMenu.setEnabled(true);
+		if ((xmlTreeDisplay.getCopiedNode() != null)
+				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
+				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
+						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
+			pasteMenu.setEnabled(true);
+		}
+		if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
+			deleteMenu.setEnabled(true);
+		}
+		addMoveUpMenu(popupPanel);
+		popupMenuBar.addItem(moveUpMenu);
+		moveUpMenu.setEnabled(checkIfTopChildNode());
+		addMoveDownMenu(popupPanel);
+		popupMenuBar.addItem(moveDownMenu);
+		moveDownMenu.setEnabled(checkIfLastChildNode());
+		Command editCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				ComparisonDialogBox.showComparisonDialogBox(xmlTreeDisplay
+						, xmlTreeDisplay.getSelectedNode());
+			}
+		};
+		editMenu = new MenuItem("Edit", true, editCmd);
+		popupMenuBar.addItem(editMenu);
+		cutMenu.setEnabled(true);
 	}
 	
 	/**
@@ -650,8 +680,6 @@ public class ClauseWorkspaceContextMenu {
 		//Commented for User story MAT-3167.
 		//createAddMenus(MatContext.get().logicalOps,
 		//CellTreeNode.LOGICAL_OP_NODE, menuBar);// creating logical Operators Menu 2nd level
-		//createAddUnion_MenuItem(menuBar);
-		//createAddIntersection_MenuItem(menuBar);
 		createAddQDM_MenuItem(menuBar);
 		MenuBar timingMenuBar = new MenuBar(true);
 		menuBar.addItem("Timing", timingMenuBar); //Timing menu 2nd level
@@ -676,42 +704,8 @@ public class ClauseWorkspaceContextMenu {
 				showQDMPopup(true);
 			}
 		};
-		MenuItem item = new MenuItem("QDM Element", true,addQDMCmd);
+		MenuItem item = new MenuItem("QDM Element", true, addQDMCmd);
 		menuBar.addItem(item);
-	}
-	
-	/**
-	 * Creates the add union_ menu item.
-	 *
-	 * @param menuBar the menu bar
-	 */
-	protected void createAddUnion_MenuItem(MenuBar menuBar){
-		Command addQDMCmd = new Command() {
-			@Override
-			public void execute() {
-				popupPanel.hide();
-				//showQDMPopup(true);
-			}
-		};
-		MenuItem union_item = new MenuItem("UNION", true,addQDMCmd);
-		menuBar.addItem(union_item);
-	}
-	
-	/**
-	 * Creates the add intersection_ menu item.
-	 *
-	 * @param menuBar the menu bar
-	 */
-	protected void createAddIntersection_MenuItem(MenuBar menuBar){
-		Command addQDMCmd = new Command() {
-			@Override
-			public void execute() {
-				popupPanel.hide();
-				//showQDMPopup(true);
-			}
-		};
-		MenuItem intersection_item = new MenuItem("INTERSECTION", true,addQDMCmd);
-		menuBar.addItem(intersection_item);
 	}
 	/**
 	 * Show qdm popup.
@@ -798,9 +792,9 @@ public class ClauseWorkspaceContextMenu {
 	 * Paste master root node type item.
 	 */
 	protected void pasteMasterRootNodeTypeItem() {
-		String RootNodeName = xmlTreeDisplay.getCopiedNode().getName();
+		String rootNodeName = xmlTreeDisplay.getCopiedNode().getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
-		String name = RootNodeName.substring(0, RootNodeName.lastIndexOf(" ")) + " " + seqNumber;
+		String name = rootNodeName.substring(0, rootNodeName.lastIndexOf(" ")) + " " + seqNumber;
 		CellTreeNode pasteNode = xmlTreeDisplay.getCopiedNode().cloneNode();
 		pasteNode.setName(name);
 		pasteNode.setLabel(name);
@@ -825,10 +819,7 @@ public class ClauseWorkspaceContextMenu {
 				String nodeTopLogicalOperator = PopulationWorkSpaceConstants.topNodeOperatorMap.get(nodeName);
 				clauseNode.createChild(nodeTopLogicalOperator.toUpperCase(),
 						nodeTopLogicalOperator.toUpperCase(), CellTreeNode.LOGICAL_OP_NODE);
-			} /*else {
-				clauseNode.createChild(PopulationWorkSpaceConstants.AND,
-						PopulationWorkSpaceConstants.AND, CellTreeNode.LOGICAL_OP_NODE);
-			}*/
+			}
 		}
 		
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
@@ -963,14 +954,14 @@ public class ClauseWorkspaceContextMenu {
 		SortedSet<Integer> sortedName = new TreeSet<Integer>();
 		Integer lastInt = 0;
 		sortedName.add(lastInt);
-		if ((selectedNode.getNodeType() == CellTreeNode.ROOT_NODE) || (selectedNode.getNodeType() == CellTreeNode.MASTER_ROOT_NODE)) {
+		if ((selectedNode.getNodeType() == CellTreeNode.ROOT_NODE)
+				|| (selectedNode.getNodeType() == CellTreeNode.MASTER_ROOT_NODE)) {
 			if (selectedNode.hasChildren()) {
 				for (CellTreeNode treeNode : selectedNode.getChilds()) {
 					String clauseNodeName = treeNode.getName().substring(treeNode.getName().lastIndexOf(" ")).trim();
 					try {
 						lastInt = Integer.parseInt(clauseNodeName);
 					} catch (Exception e) {
-						// TODO: handle exception
 						e.printStackTrace();
 					}
 					if (lastInt > 0) {
@@ -980,11 +971,13 @@ public class ClauseWorkspaceContextMenu {
 			} else {
 				return 1;
 			}
-			
 		}
 		return sortedName.last() + 1;
 	}
 	
+	/**
+	 * @return MenuItem.
+	 */
 	public MenuItem getViewHumanReadableMenu() {
 		return viewHumanReadableMenu;
 	}

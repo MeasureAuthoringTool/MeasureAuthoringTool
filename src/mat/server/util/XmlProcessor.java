@@ -179,19 +179,19 @@ public class XmlProcessor {
 	public static final String XPATH_FIND_GROUP_CLAUSE = "/measure/measureGrouping/group[packageClause[";
 	
 	/** The Constant XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD. */
-	public static final String XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD="/measure//*/relationalOp[@type='SBOD']";
+	public static final String XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD = "/measure//*/relationalOp[@type='SBOD']";
 	
 	/** The Constant XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD. */
-	public static final String XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD="/measure//*/relationalOp[@type='EBOD']";
+	public static final String XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD = "/measure//*/relationalOp[@type='EBOD']";
 	
 	/** The Constant XPATH_STRATA. */
 	private static final String XPATH_STRATA = "/measure/strata";
 	
 	/** The Constant STRATIFICATION. */
-	public static final String  STRATIFICATION= "stratification";
+	public static final String  STRATIFICATION = "stratification";
 	
 	/** The Constant STRATIFICATION_DISPLAYNAME. */
-	private static final String  STRATIFICATION_DISPLAYNAME= "Stratification 1";
+	private static final String  STRATIFICATION_DISPLAYNAME = "Stratification 1";
 	
 	/** The constants map. */
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
@@ -853,33 +853,33 @@ public class XmlProcessor {
 		
 		String displayName = "displayName";
 		String type = "type";
-		String starts_before_or_during="Starts Before Or During";
-		String ends_before_or_during="Ends Before Or During";
-		
+		String startsBeforeOrDuring = "Starts Before Or During";
+		String endsBeforeOrDuring = "Ends Before Or During";
+		String startBeforeEnd = "Starts Before End";
+		String endsBeforeEnd = "Ends Before End";
+		String sBE = "SBE";
+		String eBE = "EBE";
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		
 		//replace relationalOp attribute values for displayName and type from SBOD to SBE
 		NodeList nodesRelationalOpsSBOD = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for (int i = 0; i < nodesRelationalOpsSBOD.getLength(); i++) {
 			Node childNode =  nodesRelationalOpsSBOD.item(i);
 			String relationalOpDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
-			relationalOpDisplayName = relationalOpDisplayName.replace(starts_before_or_during, "Starts Before End");
+			relationalOpDisplayName = relationalOpDisplayName.replace(startsBeforeOrDuring, startBeforeEnd);
 			childNode.getAttributes().getNamedItem(displayName).setNodeValue(relationalOpDisplayName);
-			childNode.getAttributes().getNamedItem(type).setNodeValue("SBE");
+			childNode.getAttributes().getNamedItem(type).setNodeValue(sBE);
 		}
-		
 		//replace relationalOp attribute values for displayName and type from EBOD to EBE
 		NodeList nodesRelationalOpsEBOD = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for (int i = 0; i < nodesRelationalOpsEBOD.getLength(); i++) {
 			Node childNode =  nodesRelationalOpsEBOD.item(i);
 			String relationalOpDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
-			relationalOpDisplayName = relationalOpDisplayName.replace(ends_before_or_during, "Ends Before End");
+			relationalOpDisplayName = relationalOpDisplayName.replace(endsBeforeOrDuring, endsBeforeEnd);
 			childNode.getAttributes().getNamedItem(displayName).setNodeValue(relationalOpDisplayName);
-			childNode.getAttributes().getNamedItem(type).setNodeValue("EBE");
+			childNode.getAttributes().getNamedItem(type).setNodeValue(eBE);
 		}
-		
 	}
 	
 	
@@ -1109,19 +1109,19 @@ public class XmlProcessor {
 	public void createEmeasureIdNode(int emeasureId) throws XPathExpressionException, DOMException{
 		
 		if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_EMEASUREID) == null) {
-			Element emeasureID_Element = originalDoc
+			Element emeasureIDElement = originalDoc
 					.createElement("emeasureid");
-			emeasureID_Element.appendChild(originalDoc.createTextNode(Integer.toString(emeasureId)));
-			if (findNode(originalDoc,XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE) == null) {
-				Node guid_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_GUID);
-				((Element) guid_Element.getParentNode())
-				.insertBefore(emeasureID_Element,
-						guid_Element);
+			emeasureIDElement.appendChild(originalDoc.createTextNode(Integer.toString(emeasureId)));
+			if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE) == null) {
+				Node guidElement = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_GUID);
+				((Element) guidElement.getParentNode())
+				.insertBefore(emeasureIDElement,
+						guidElement);
 			} else {
-				Node finalizeddate_Element = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE);
-				((Element) finalizeddate_Element.getParentNode())
-				.insertBefore(emeasureID_Element,
-						finalizeddate_Element);
+				Node finalizedDateElement = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE);
+				((Element) finalizedDateElement.getParentNode())
+				.insertBefore(emeasureIDElement,
+						finalizedDateElement);
 			}
 		}
 	}
@@ -1424,45 +1424,35 @@ public class XmlProcessor {
 		return missingTimingElementList;
 	}
 	
+	/**
+	 * @return Xml String.
+	 */
 	public String checkForStratificationAndAdd() {
 		if (originalDoc == null) {
 			return "";
 		}
 		try {
-			
 			Node strataNode = findNode(originalDoc, XPATH_STRATA);
-			
-			if(strataNode != null)
-			{
-				if(strataNode.hasChildNodes() && !(strataNode.getChildNodes().item(0).getNodeName().equalsIgnoreCase(STRATIFICATION)))
-				{
+			if (strataNode != null) {
+				if (strataNode.hasChildNodes() && !(strataNode.getChildNodes().item(0)
+						.getNodeName().equalsIgnoreCase(STRATIFICATION))) {
 					NodeList childs  = strataNode.getChildNodes();
-					
 					Element stratificationEle = originalDoc
 							.createElement(STRATIFICATION);
-					stratificationEle.setAttribute("displayName",STRATIFICATION_DISPLAYNAME);
-					stratificationEle.setAttribute("uuid",UUIDUtilClient.uuid());
-					stratificationEle.setAttribute("type",STRATIFICATION);
-					
+					stratificationEle.setAttribute("displayName", STRATIFICATION_DISPLAYNAME);
+					stratificationEle.setAttribute("uuid", UUIDUtilClient.uuid());
+					stratificationEle.setAttribute("type", STRATIFICATION);
 					List<Node> nCList = new ArrayList<Node>();
-					
-					for(int i=0; i < childs.getLength() ; i++)
-					{
+					for (int i = 0; i < childs.getLength(); i++) {
 						nCList.add(childs.item(i));
 						strataNode.removeChild(childs.item(i));
 					}
-					
-					for(Node cNode : nCList)
-					{
+					for (Node cNode : nCList) {
 						stratificationEle.appendChild(cNode);
 					}
-					
-					
 					strataNode.appendChild(stratificationEle);
-					
 				}
 			}
-			
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}

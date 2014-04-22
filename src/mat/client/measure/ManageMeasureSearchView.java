@@ -190,8 +190,8 @@ ManageMeasurePresenter.SearchDisplay {
 	 */
 	@Override
 	public void buildDataTable(ManageMeasureSearchModel
-			manageMeasureSearchModel) {
-		measureSearchView.buildCellTable(manageMeasureSearchModel);
+			manageMeasureSearchModel, int filter, String searchText) {
+		measureSearchView.buildCellTable(manageMeasureSearchModel,filter,searchText);
 	}
 	
 	
@@ -360,12 +360,11 @@ ManageMeasurePresenter.SearchDisplay {
 	/**
 	 * Add Image on Button with invisible text. This text will be available when
 	 * css is turned off.
-	 * @param action
-	 *            - {@link String}
-	 * @param url
-	 *            - {@link ImageResource}.
-	 * @param key
-	 *            - {@link String}.
+	 *
+	 * @param action - {@link String}
+	 * @param url - {@link ImageResource}.
+	 * @param key - {@link String}.
+	 * @param id the id
 	 * @return - {@link Widget}.
 	 */
 	private Widget getImage(String action, ImageResource url, String key , String id) {

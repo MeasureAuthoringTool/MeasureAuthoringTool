@@ -73,6 +73,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.HasData;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -538,12 +540,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		/**
 		 * Builds the data table.
-		 * 
-		 * @param manageMeasureSearchModel
-		 *            the results
+		 *
+		 * @param manageMeasureSearchModel the results
+		 * @param filter the filter
+		 * @param searchText the search text
 		 */
 		public void buildDataTable(
-				ManageMeasureSearchModel manageMeasureSearchModel);
+				ManageMeasureSearchModel manageMeasureSearchModel, int filter, String searchText);
 		
 		
 		/** Builds the most recent widget. */
@@ -2296,8 +2299,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * @param filter
 	 *            the filter
 	 */
-	private void search(String searchText, int startIndex, int pageSize,
-			int filter) {
+	private void search(final String searchText, int startIndex, int pageSize,
+			final int filter) {
 		final String lastSearchText = (searchText != null) ? searchText
 				.trim() : null;
 				
@@ -2408,7 +2411,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 						}
 					});
 				} else {
-					pageSize = Integer.MAX_VALUE;
+					//pageSize = Integer.MAX_VALUE;
+					pageSize = 25;
 					showSearchingBusy(true);
 					MatContext
 					.get()
@@ -2611,7 +2615,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							sru.update(result, (TextBox) searchDisplay
 									.getSearchString(), lastSearchText);
 							updateMeasureFamily(manageMeasureSearchModel);
-							searchDisplay.buildDataTable(manageMeasureSearchModel);
+							searchDisplay.buildDataTable(manageMeasureSearchModel,filter,searchText);
 							showSearchingBusy(false);
 							
 						}

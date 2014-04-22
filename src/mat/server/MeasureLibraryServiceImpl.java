@@ -1626,9 +1626,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				detailModelList.add(detail);
 			}
 		} else {
-			List<MeasureShareDTO> measureList = getService().searchWithFilter(searchText, startIndex, pageSize, filter);
+			List<MeasureShareDTO> measureList = getService().searchWithFilter(searchText, 1, Integer.MAX_VALUE, filter);
+			List<MeasureShareDTO> measureTotalList = measureList; 
+			searchModel.setResultsTotal(measureTotalList.size());
+			if (pageSize < measureTotalList.size()) {
+				measureList =  measureTotalList.subList(startIndex-1, pageSize);
+			   }
+			else if(pageSize > measureList.size()) {
+				measureList = measureTotalList.subList(startIndex - 1, measureList.size());
+			}
 			searchModel.setStartIndex(startIndex);
-			searchModel.setResultsTotal((int) getService().count(filter));
+			//searchModel.setResultsTotal((int) getService().count(filter));
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			searchModel.setData(detailModelList);
 			for (MeasureShareDTO dto : measureList) {

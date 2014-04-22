@@ -25,6 +25,7 @@ import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
@@ -1628,6 +1629,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		} else {
 			List<MeasureShareDTO> measureList = getService().searchWithFilter(searchText, 1, Integer.MAX_VALUE, filter);
 			List<MeasureShareDTO> measureTotalList = measureList; 
+			
 			searchModel.setResultsTotal(measureTotalList.size());
 			if (pageSize < measureTotalList.size()) {
 				measureList =  measureTotalList.subList(startIndex-1, pageSize);
@@ -1636,16 +1638,40 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				measureList = measureTotalList.subList(startIndex - 1, measureList.size());
 			}
 			searchModel.setStartIndex(startIndex);
-			//searchModel.setResultsTotal((int) getService().count(filter));
 			List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
 			searchModel.setData(detailModelList);
 			for (MeasureShareDTO dto : measureList) {
 				ManageMeasureSearchModel.Result detail = extractMeasureSearchModelDetail(currentUserId, isSuperUser, dto);
 				detailModelList.add(detail);
 			}
+			updateMeasureFamily(detailModelList);
 		}
 		
 		return searchModel;
+	}
+	
+	/**
+	 * Update measure family.
+	 *
+	 * @param detailModelList the detail model list
+	 */
+	public void updateMeasureFamily(List<ManageMeasureSearchModel.Result> detailModelList){
+		boolean isFamily=false;
+		if(detailModelList!=null & detailModelList.size()>0){
+		for(int i=0;i<detailModelList.size();i++){
+			if(i>0){
+				if(detailModelList.get(i).getMeasureSetId().equalsIgnoreCase(
+						detailModelList.get(i-1).getMeasureSetId())) {
+					detailModelList.get(i).setMeasureFamily(!isFamily);
+				} else {
+					detailModelList.get(i).setMeasureFamily(isFamily);
+				}
+			}
+			else{
+				detailModelList.get(i).setMeasureFamily(isFamily);
+			}
+			}
+		}
 	}
 	
 	/* (non-Javadoc)

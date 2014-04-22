@@ -2614,7 +2614,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 							SearchResultUpdate sru = new SearchResultUpdate();
 							sru.update(result, (TextBox) searchDisplay
 									.getSearchString(), lastSearchText);
-							updateMeasureFamily(manageMeasureSearchModel);
 							searchDisplay.buildDataTable(manageMeasureSearchModel,filter,searchText);
 							showSearchingBusy(false);
 							
@@ -2624,32 +2623,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 	}
 	
-
-	/**
-	 * Update measure family.
-	 *
-	 * @param manageMeasureSearchModel the manage measure search model
-	 */
-	public void updateMeasureFamily(ManageMeasureSearchModel manageMeasureSearchModel){
-		boolean isFamily=false;
-		if(manageMeasureSearchModel!=null)
-		{   List<Result> result=new ArrayList<ManageMeasureSearchModel.Result>();
-		result.addAll(manageMeasureSearchModel.getData());
-		for(int i=0;i<result.size();i++){
-			if(i>0){
-				if(result.get(i).getMeasureSetId().equalsIgnoreCase(
-						result.get(i-1).getMeasureSetId())) {
-					result.get(i).setMeasureFamily(!isFamily);
-				} else {
-					result.get(i).setMeasureFamily(isFamily);
-				}
-			}
-			else{
-				result.get(i).setMeasureFamily(isFamily);
-			}
-		}
-		}
-	}
 	
 	/**
 	 * Search display handlers.

@@ -298,32 +298,60 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				});
 				table.addColumn(editColumn, SafeHtmlUtils.fromSafeConstant("<span title='Edit'>" + "Edit" + "</span>"));
 				//Share
-				Cell<String> shareButton = new MatButtonCell("Click to view sharable", "customShareButton");
-				Column<Result, String> shareColumn = new Column<ManageMeasureSearchModel.Result, String>(shareButton) {
-					@Override
-					public String getValue(ManageMeasureSearchModel.Result object) {
-						return "Share";
-					}
+				
+				Column<ManageMeasureSearchModel.Result, SafeHtml> shareColumn =
+					new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+							new ClickableSafeHtmlCell()) {
+                           
+								@Override
+								public SafeHtml getValue(Result object) {
+									SafeHtmlBuilder sb = new SafeHtmlBuilder();
+									String title ="Click to view sharable";
+									String cssClass = "customShareButton" ;
+									if(object.isSharable()){
+										sb.appendHtmlConstant("<button type=\"button\" title='"
+												+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+									}
+									return sb.toSafeHtml();
+								}
+					
 				};
-				shareColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
+
+				shareColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 					@Override
-					public void update(int index, ManageMeasureSearchModel.Result object, String value) {
-						observer.onShareClicked(object);
+					public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
+						if(object.isSharable())
+							observer.onShareClicked(object);
 					}
+
+					
 				});
 				table.addColumn(shareColumn, SafeHtmlUtils.fromSafeConstant("<span title='Share'>" + "Share" + "</span>"));
 				//Clone
-				Cell<String> cloneButton = new MatButtonCell("Click to view cloneable", "customCloneButton");
-				Column<Result, String> cloneColumn = new Column<ManageMeasureSearchModel.Result, String>(cloneButton) {
-					@Override
-					public String getValue(ManageMeasureSearchModel.Result object) {
-						return "Clone";
-					}
+				
+				Column<ManageMeasureSearchModel.Result, SafeHtml> cloneColumn =
+					new Column<ManageMeasureSearchModel.Result, SafeHtml>(
+							new ClickableSafeHtmlCell()) {
+                           
+								@Override
+								public SafeHtml getValue(Result object) {
+									SafeHtmlBuilder sb = new SafeHtmlBuilder();
+									String title ="Click to view cloneable";
+									String cssClass = "customCloneButton" ;
+									if(object.isSharable()){
+										sb.appendHtmlConstant("<button type=\"button\" title='"
+												+ title + "' tabindex=\"0\" class=\" " + cssClass + "\"></button>");
+									}
+									return sb.toSafeHtml();
+								}
+					
 				};
-				cloneColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
+
+				cloneColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, SafeHtml>() {
 					@Override
-					public void update(int index, ManageMeasureSearchModel.Result object, String value) {
-						observer.onCloneClicked(object);
+					public void update(int index, ManageMeasureSearchModel.Result object, SafeHtml value) {
+						if(object.isClonable())
+							observer.onCloneClicked(object);
 					}
 				});
 				table.addColumn(cloneColumn, SafeHtmlUtils.fromSafeConstant("<span title='Clone'>" + "Clone" + "</span>"));

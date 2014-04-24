@@ -90,6 +90,8 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	private String cellTableEvenRow = "cellTableEvenRow";
 	/** The cell table odd row. */
 	private String cellTableOddRow = "cellTableOddRow";
+	
+	private int index;
 	/**
 	 * Measure Library Table Title.
 	 */
@@ -574,6 +576,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		      @Override
 		      protected void onRangeChanged(HasData<ManageMeasureSearchModel.Result> display) {
 		        final int start = display.getVisibleRange().getStart();
+		        index = start;
 		        AsyncCallback<ManageMeasureSearchModel> callback = new AsyncCallback<ManageMeasureSearchModel>() {
 		          @Override
 		          public void onFailure(Throwable caught) {
@@ -641,47 +644,102 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	}
 	
 	
-	/**
-	 * Builds the cell table css style.
-	 */
 	private void buildCellTableCssStyle() {
-		
+		cellTableCssStyle = new ArrayList<String>();
+		for (int i = 0; i < selectedMeasureList.size(); i++) {
+			cellTableCssStyle.add(i, null);
+		}
 		table.setRowStyles(new RowStyles<ManageMeasureSearchModel.Result>() {
-			int index = 0;
 			@Override
 			public String getStyleNames(ManageMeasureSearchModel.Result rowObject, int rowIndex) {
-				
 				if(rowIndex > PAGE_SIZE - 1){
-					rowIndex = index;
-					index++;
+					rowIndex = rowIndex - index;
 				}
 				if (rowIndex != 0) {
+					if (cellTableCssStyle.get(rowIndex) == null) {
 						if (even) {
 							if (rowObject.getMeasureSetId().equalsIgnoreCase(
 									selectedMeasureList.get(rowIndex - 1).getMeasureSetId())) {
 								even = true;
+								cellTableCssStyle.add(rowIndex, cellTableOddRow);
 								return cellTableOddRow;
 							} else {
 								even = false;
+								cellTableCssStyle.add(rowIndex, cellTableEvenRow);
 								return cellTableEvenRow;
 							}
 						} else {
 							if (rowObject.getMeasureSetId().equalsIgnoreCase(
 									selectedMeasureList.get(rowIndex - 1).getMeasureSetId())) {
 								even = false;
+								cellTableCssStyle.add(rowIndex, cellTableEvenRow);
 								return cellTableEvenRow;
 							} else {
 								even = true;
+								cellTableCssStyle.add(rowIndex, cellTableOddRow);
 								return cellTableOddRow;
 							}
 						}
+					} else {
+						return cellTableCssStyle.get(rowIndex);
+					}
 				} else {
+					if (cellTableCssStyle.get(rowIndex) == null) {
 						even = true;
+						cellTableCssStyle.add(rowIndex, cellTableOddRow);
 						return cellTableOddRow;
+					} else {
+						return cellTableCssStyle.get(rowIndex);
+					}
 				}
 			}
 		});
 	}
+	
+	
+	/**
+	 * Builds the cell table css style.
+	 */
+//	private void buildCellTableCssStyle() {
+//		
+//		table.setRowStyles(new RowStyles<ManageMeasureSearchModel.Result>() {
+//			int index = 0;
+//			@Override
+//			public String getStyleNames(ManageMeasureSearchModel.Result rowObject, int rowIndex) {
+//				if(index > 25){
+//					index=0;
+//				}
+//				if(rowIndex > PAGE_SIZE - 1){
+//					rowIndex = index;
+//					index++;
+//				}
+//				if (rowIndex != 0) {
+//						if (even) {
+//							if (rowObject.getMeasureSetId().equalsIgnoreCase(
+//									selectedMeasureList.get(rowIndex - 1).getMeasureSetId())) {
+//								even = true;
+//								return cellTableOddRow;
+//							} else {
+//								even = false;
+//								return cellTableEvenRow;
+//							}
+//						} else {
+//							if (rowObject.getMeasureSetId().equalsIgnoreCase(
+//									selectedMeasureList.get(rowIndex - 1).getMeasureSetId())) {
+//								even = false;
+//								return cellTableEvenRow;
+//							} else {
+//								even = true;
+//								return cellTableOddRow;
+//							}
+//						}
+//				} else {
+//						even = true;
+//						return cellTableOddRow;
+//				}
+//			}
+//		});
+//	}
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchView#asWidget()
 	 */

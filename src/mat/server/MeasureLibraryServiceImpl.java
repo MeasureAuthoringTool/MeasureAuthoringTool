@@ -20,12 +20,12 @@ import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.NqfModel;
 import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
-import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
@@ -103,6 +103,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getReleaseDate()
 	 */
+	@Override
 	public String getReleaseDate() {
 		return releaseDate;
 	}
@@ -954,9 +955,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			detail.setScoringType(measure.getMeasureScoring());
 			boolean isLocked = getMeasureDAO().isMeasureLocked(measure.getId());
 			detail.setMeasureLocked(isLocked);
-			
+			// Prod issue fixed - Measure Shared with Regular users not loaded as editable measures.
 			List<MeasureShareDTO> measureShare = getMeasureDAO().
-					getMeasureShareInfoForMeasureAndUser(measure.getOwner().getId(), measure.getId());
+					getMeasureShareInfoForMeasureAndUser(currentUserId, measure.getId());
 			if (measureShare.size() > 0) {
 				detail.setEditable(((currentUserId.equals(measure.getOwner().getId()) || isSuperUser
 						|| ShareLevel.MODIFY_ID.equals(
@@ -1142,7 +1143,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (measureXmlModel == null) {
 			logger.info("Measure XML is null");
 		} else {
-					logger.debug("XML ::: " + measureXmlModel.getXml());
+			logger.debug("XML ::: " + measureXmlModel.getXml());
 		}
 		return measureXmlModel;
 	}
@@ -1628,12 +1629,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 		} else {
 			List<MeasureShareDTO> measureList = getService().searchWithFilter(searchText, 1, Integer.MAX_VALUE, filter);
-			List<MeasureShareDTO> measureTotalList = measureList; 
+			List<MeasureShareDTO> measureTotalList = measureList;
 			
 			searchModel.setResultsTotal(measureTotalList.size());
 			if (pageSize < measureTotalList.size()) {
 				measureList =  measureTotalList.subList(startIndex-1, pageSize);
-			   }
+			}
 			else if(pageSize > measureList.size()) {
 				measureList = measureTotalList.subList(startIndex - 1, measureList.size());
 			}
@@ -1657,19 +1658,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	public void updateMeasureFamily(List<ManageMeasureSearchModel.Result> detailModelList){
 		boolean isFamily=false;
-		if(detailModelList!=null & detailModelList.size()>0){
-		for(int i=0;i<detailModelList.size();i++){
-			if(i>0){
-				if(detailModelList.get(i).getMeasureSetId().equalsIgnoreCase(
-						detailModelList.get(i-1).getMeasureSetId())) {
-					detailModelList.get(i).setMeasureFamily(!isFamily);
-				} else {
+		if((detailModelList!=null) & (detailModelList.size()>0)){
+			for(int i=0;i<detailModelList.size();i++){
+				if(i>0){
+					if(detailModelList.get(i).getMeasureSetId().equalsIgnoreCase(
+							detailModelList.get(i-1).getMeasureSetId())) {
+						detailModelList.get(i).setMeasureFamily(!isFamily);
+					} else {
+						detailModelList.get(i).setMeasureFamily(isFamily);
+					}
+				}
+				else{
 					detailModelList.get(i).setMeasureFamily(isFamily);
 				}
-			}
-			else{
-				detailModelList.get(i).setMeasureFamily(isFamily);
-			}
 			}
 		}
 	}

@@ -105,16 +105,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	/** The qds selected list. */
 	private List<QualityDataSetDTO> qdsSelectedList;
 	
+	/** The component measures selected list. */
 	private List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList;
-
-	public List<ManageMeasureSearchModel.Result> getComponentMeasuresSelectedList() {
-		return componentMeasuresSelectedList;
-	}
-
-	public void setComponentMeasuresSelectedList(
-			List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList) {
-		this.componentMeasuresSelectedList = componentMeasuresSelectedList;
-	}
 
 	/** The to compare author. */
 	private List<Author> toCompareAuthor;
@@ -125,7 +117,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 /** The to compare item count. */
  	private List<QualityDataSetDTO> toCompareItemCount;
  	
- 	private List<ManageMeasureSearchModel.Result> toCompareComponentMeasures;
+ 	/** The to compare component measures. */
+	 private List<ManageMeasureSearchModel.Result> toCompareComponentMeasures;
 
 	/** The draft. */
 	private boolean draft = true;
@@ -1616,10 +1609,20 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		this.toCompareItemCount = toCompareItemCount;
 	}
 	
+	/**
+	 * Gets the to compare component measures.
+	 *
+	 * @return the to compare component measures
+	 */
 	public List<ManageMeasureSearchModel.Result> getToCompareComponentMeasures() {
 		return toCompareComponentMeasures;
 	}
 
+	/**
+	 * Sets the to compare component measures.
+	 *
+	 * @param toCompareComponentMeasures the new to compare component measures
+	 */
 	public void setToCompareComponentMeasures(
 			List<ManageMeasureSearchModel.Result> toCompareComponentMeasures) {
 		this.toCompareComponentMeasures = toCompareComponentMeasures;
@@ -1894,5 +1897,23 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		this.measurePopulationExclusions = measurePopulationExclusions;
 	}
 	
+	/**
+	 * Gets the component measures selected list.
+	 *
+	 * @return the component measures selected list
+	 */
+	public List<ManageMeasureSearchModel.Result> getComponentMeasuresSelectedList() {
+		return componentMeasuresSelectedList;
+	}
+
+	/**
+	 * Sets the component measures selected list.
+	 *
+	 * @param componentMeasuresSelectedList the new component measures selected list
+	 */
+	public void setComponentMeasuresSelectedList(
+			List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList) {
+		this.componentMeasuresSelectedList = componentMeasuresSelectedList;
+	}
 	
 }

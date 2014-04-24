@@ -28,6 +28,7 @@ import mat.client.shared.MeasureSearchFilterWidget;
 import mat.client.shared.MessageDelegate;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.ReadOnlyHelper;
+import mat.client.shared.SpacerWidget;
 import mat.client.shared.search.SearchView;
 import mat.model.Author;
 import mat.model.MeasureType;
@@ -50,6 +51,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 // TODO: Auto-generated Javadoc
@@ -595,7 +597,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 *
 		 * @return the adds the edit cmponent measures
 		 */
-		HasClickHandlers getAddEditCmponentMeasures();
+		HasClickHandlers getAddEditComponentMeasures();
 
 		/**
 		 * Gets the dialog box.
@@ -714,6 +716,43 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 * @return the selected filter
 		 */
 		int getSelectedFilter();
+		
+		/**
+		 * Gets the ret button.
+		 *
+		 * @return the ret button
+		 */
+		public Button getRetButton();
+
+		/**
+		 * Gets the addto component measures button handler.
+		 *
+		 * @return the addto component measures button handler
+		 */
+		HasClickHandlers getAddtoComponentMeasuresButtonHandler();
+
+		//HasClickHandlers getReturnButtonHandlers();
+
+		/**
+		 * Gets the search button.
+		 *
+		 * @return the search button
+		 */
+		HasClickHandlers getSearchButton();
+
+		/**
+		 * Gets the search string.
+		 *
+		 * @return the search string
+		 */
+		HasValue<String> getSearchString();
+		
+		public void setComponentMeasureSelectedList(
+				List<ManageMeasureSearchModel.Result> componentMeasureSelectedList);
+		
+		public List<ManageMeasureSearchModel.Result> getComponentMeasureSelectedList();
+		
+	
 	}
 	
 	
@@ -847,10 +886,16 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			}
 		});
 		
-		metaDataDisplay.getAddEditCmponentMeasures().addClickHandler(new ClickHandler() {
+		metaDataDisplay.getAddEditComponentMeasures().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				getMetaDataDisplay().getSaveErrorMsg().clear();
+				if (currentMeasureDetail.getComponentMeasuresSelectedList() != null) {
+					addEditComponentMeasuresDisplay.setComponentMeasureSelectedList(currentMeasureDetail.getComponentMeasuresSelectedList());
+					} else {
+						List<ManageMeasureSearchModel.Result> componentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
+						addEditComponentMeasuresDisplay.setComponentMeasureSelectedList(componentMeasuresList);
+					}
 				displayAddEditComponentMeasures();
 			}
 		});
@@ -884,6 +929,16 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				backToDetail();
 			}
 		});
+		
+		addEditComponentMeasuresDisplay.getReturnButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				isSubView = false;
+				getComponentMeasures();
+				backToDetail();
+			}
+		} );
 
 		addEditAuthorsDisplay.getSaveButton().addClickHandler(new ClickHandler() {
 			@Override
@@ -1044,16 +1099,23 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			}
 		});
 		
-		metaDataDisplay.getAddEditCmponentMeasures().addClickHandler(new ClickHandler() {
+	    addEditComponentMeasuresDisplay.getAddtoComponentMeasuresButtonHandler().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-			//getComponentMeasures();
+				currentMeasureDetail.setComponentMeasuresSelectedList(addEditComponentMeasuresDisplay.getComponentMeasureSelectedList());
 				
-				//metaDataDisplay.getDialogBox();
 			}
 		});
-		
+	    
+	    addEditComponentMeasuresDisplay.getSearchButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				
+				searchMeasuresList(addEditComponentMeasuresDisplay.getSearchString().getValue(), 1, 25, 1);
+			}
+		});
 		
 		emptyWidget.add(new Label("No Measure Selected"));
 	}
@@ -1084,7 +1146,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		if(searchText.equalsIgnoreCase("search...")){
 			searchText = "";
 		}
-		//showAdminSearchingBusy(true);
+		showAdminSearchingBusy(true);
 		metaDataDisplay.setSaveButtonEnabled(false);
 		MatContext
 		.get()
@@ -1110,7 +1172,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 								"Unhandled Exception: "
 										+ caught.getLocalizedMessage(),
 										0);
-						//showAdminSearchingBusy(false);
+						showAdminSearchingBusy(false);
 					}
 
 					@Override
@@ -1119,7 +1181,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 						///.addAll(result.getData());
 						//ComponentMeasuresDialogBox.showComponentMeasuresDialogBox(metaDataDisplay.asComponentMeasuresWidget(), list);
 						//metaDataDisplay.buildComponentMeasuresCellTable(result, editable );
-						//showAdminSearchingBusy(false);
+						showAdminSearchingBusy(false);
 						//metaDataDisplay.setSaveButtonEnabled(true);
 						addEditComponentMeasuresDisplay.buildCellTable(result);
 					}
@@ -1711,10 +1773,10 @@ private void setAuthorsListOnView() {
 	 */
 	private void displayAddEditMeasureType() {
 		isSubView = true;
+		
 		addEditMeasureTypeDisplay.setReturnToLink("Return to Previous");
 		currentMeasureTypeList = new ManageMeasureTypeModel(currentMeasureDetail.getMeasureTypeList());
 		currentMeasureTypeList.setPageSize(SearchView.PAGE_SIZE_ALL);
-		
 		addEditMeasureTypeDisplay.buildDataTable(currentMeasureTypeList);
 		panel.clear();
 		panel.add(addEditMeasureTypeDisplay.asWidget());
@@ -1727,15 +1789,22 @@ private void setAuthorsListOnView() {
 	 */
 	private void displayAddEditComponentMeasures() {
 		isSubView = true;
-		addEditComponentMeasuresDisplay.setReturnToLink("Return to Previous");
+		VerticalPanel vPanel = new VerticalPanel();
+		//addEditComponentMeasuresDisplay.setReturnToLink("Return to Previous");
 	    //getComponentMeasures();
-		searchMeasuresList("",1,Integer.MAX_VALUE,addEditComponentMeasuresDisplay.getSelectedFilter());
+		searchMeasuresList("",1,Integer.MAX_VALUE,1);
 		//currentMeasureTypeList = new ManageMeasureTypeModel(currentMeasureDetail.getMeasureTypeList());
 		//currentMeasureTypeList.setPageSize(SearchView.PAGE_SIZE_ALL);
 		
 		//addEditMeasureTypeDisplay.buildDataTable(currentMeasureTypeList);
 		panel.clear();
-		panel.add(addEditComponentMeasuresDisplay.asWidget());
+		panel.setStyleName("contentWithHeadingPanel");
+		//svPanel.setStyleName("contentPanel");
+		vPanel.add(addEditComponentMeasuresDisplay.asWidget());
+		vPanel.add(new SpacerWidget());
+		vPanel.add(new SpacerWidget());
+		vPanel.add(addEditComponentMeasuresDisplay.getRetButton());
+		panel.add(vPanel);
 		previousContinueButtons.setVisible(false);	
 		Mat.focusSkipLists("MeasureComposer");
 	}

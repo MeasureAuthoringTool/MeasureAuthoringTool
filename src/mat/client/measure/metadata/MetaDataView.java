@@ -1241,6 +1241,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		sortProvider.addDataDisplay(componentMeasureCellTable);
 		componentMeasureCellTable.setWidth("100%");
 		componentMeasuresListSPanel.setSize("500px", "150px");
+		componentMeasuresListSPanel.add(componentMeasureCellTable);
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("componentMeasureListSummary",
 				"In the following Measure List table, Measure Name is given in first column,"
 						+ " Version in second column, Finalized Date in third column,"
@@ -1441,7 +1442,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#getAddEditCmponentMeasures()
 	 */
 	@Override
-	public HasClickHandlers getAddEditCmponentMeasures() {
+	public HasClickHandlers getAddEditComponentMeasures() {
 		return addEditCmponentMeasures;
 	}
 	

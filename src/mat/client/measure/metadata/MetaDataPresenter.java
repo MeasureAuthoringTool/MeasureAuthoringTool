@@ -1140,7 +1140,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onClick(ClickEvent event) {
 				
-				searchMeasuresList(addEditComponentMeasuresDisplay.getSearchString().getValue(), 1, 20, 1);
+				searchMeasuresList(addEditComponentMeasuresDisplay.getSearchString().getValue(), 1, Integer.MAX_VALUE, 1);
 			}
 		});
 		

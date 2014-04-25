@@ -17,6 +17,7 @@ import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.shared.CustomButton;
@@ -29,6 +30,7 @@ import mat.client.shared.MessageDelegate;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SpacerWidget;
+import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.SearchView;
 import mat.model.Author;
 import mat.model.MeasureType;
@@ -752,6 +754,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		
 		public List<ManageMeasureSearchModel.Result> getComponentMeasureSelectedList();
 		
+		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
+
+		void setObserver(AddEditComponentMeasuresView.Observer observer);
+		
 	
 	}
 	
@@ -935,6 +941,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onClick(ClickEvent event) {
 				isSubView = false;
+				metaDataDisplay.setSaveButtonEnabled(editable);
 				getComponentMeasures();
 				backToDetail();
 			}
@@ -1103,6 +1110,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				addEditComponentMeasuresDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+						.getMessageDelegate().getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY());
 				currentMeasureDetail.setComponentMeasuresSelectedList(addEditComponentMeasuresDisplay.getComponentMeasureSelectedList());
 				
 			}
@@ -1146,6 +1155,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		if(searchText.equalsIgnoreCase("search...")){
 			searchText = "";
 		}
+		addEditComponentMeasuresDisplay.getSuccessMessageDisplay().clear();
 		showAdminSearchingBusy(true);
 		metaDataDisplay.setSaveButtonEnabled(false);
 		MatContext
@@ -1182,11 +1192,52 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 						//ComponentMeasuresDialogBox.showComponentMeasuresDialogBox(metaDataDisplay.asComponentMeasuresWidget(), list);
 						//metaDataDisplay.buildComponentMeasuresCellTable(result, editable );
 						showAdminSearchingBusy(false);
+						addEditComponentMeasuresDisplay.setObserver(new AddEditComponentMeasuresView.Observer() {
+							
+							@Override
+							public void onClearAllCheckBoxesClicked() {
+								
+								manageMeasureSearchModel.getSelectedExportResults().removeAll(
+										manageMeasureSearchModel.getSelectedExportResults());
+								manageMeasureSearchModel.getSelectedExportIds().removeAll(
+										manageMeasureSearchModel.getSelectedExportIds());
+							}
+
+							@Override
+							public void onExportSelectedClicked(Result result,
+									boolean isCBChecked) {
+								updateExportedIDs(result, manageMeasureSearchModel,isCBChecked);
+								
+							}
+						});
+						result.setSelectedExportIds(new ArrayList<String>());
+						result.setSelectedExportResults(new ArrayList<Result>());
+						manageMeasureSearchModel = result;
 						//metaDataDisplay.setSaveButtonEnabled(true);
 						addEditComponentMeasuresDisplay.buildCellTable(result);
 					}
 				});
 		
+	}
+	
+	private void updateExportedIDs(Result result, ManageMeasureSearchModel model,
+			boolean isCBChecked) {
+		List<String> selectedIdList = model.getSelectedExportIds();;
+		if (isCBChecked) {
+			if (!selectedIdList.contains(result.getId())) {
+				model.getSelectedExportResults().add(result);
+				selectedIdList.add(result.getId());
+			}
+		} else {
+			for (int i = 0; i < model.getSelectedExportIds().size(); i++) {
+				if (result.getId().equals(model.getSelectedExportResults().get(i)
+						.getId())) {
+					model.getSelectedExportIds().remove(i);
+					model.getSelectedExportResults().remove(i);
+				}
+			}
+			
+		}
 	}
 	
 	/**

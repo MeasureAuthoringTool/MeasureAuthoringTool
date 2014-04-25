@@ -749,16 +749,34 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 */
 		HasValue<String> getSearchString();
 		
+		/**
+		 * Sets the component measure selected list.
+		 *
+		 * @param componentMeasureSelectedList the new component measure selected list
+		 */
 		public void setComponentMeasureSelectedList(
 				List<ManageMeasureSearchModel.Result> componentMeasureSelectedList);
 		
+		/**
+		 * Gets the component measure selected list.
+		 *
+		 * @return the component measure selected list
+		 */
 		public List<ManageMeasureSearchModel.Result> getComponentMeasureSelectedList();
 		
+		/* (non-Javadoc)
+		 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#getSuccessMessageDisplay()
+		 */
 		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
 
-		void setObserver(AddEditComponentMeasuresView.Observer observer);
-		
-	
+		/**
+		 * Gets the addto component measures btn.
+		 *
+		 * @return the addto component measures btn
+		 */
+		public Button getAddtoComponentMeasuresBtn();
+
+
 	}
 	
 	
@@ -1122,7 +1140,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onClick(ClickEvent event) {
 				
-				searchMeasuresList(addEditComponentMeasuresDisplay.getSearchString().getValue(), 1, 25, 1);
+				searchMeasuresList(addEditComponentMeasuresDisplay.getSearchString().getValue(), 1, 20, 1);
 			}
 		});
 		
@@ -1150,11 +1168,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	 * @param pageSize the page size
 	 * @param filter the filter
 	 */
-	private void searchMeasuresList(String searchText, int startIndex, int pageSize,
+	private void searchMeasuresList(final String searchText, int startIndex, int pageSize,
 			int filter){
-		if(searchText.equalsIgnoreCase("search...")){
-			searchText = "";
-		}
 		addEditComponentMeasuresDisplay.getSuccessMessageDisplay().clear();
 		showAdminSearchingBusy(true);
 		metaDataDisplay.setSaveButtonEnabled(false);
@@ -1192,52 +1207,14 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 						//ComponentMeasuresDialogBox.showComponentMeasuresDialogBox(metaDataDisplay.asComponentMeasuresWidget(), list);
 						//metaDataDisplay.buildComponentMeasuresCellTable(result, editable );
 						showAdminSearchingBusy(false);
-						addEditComponentMeasuresDisplay.setObserver(new AddEditComponentMeasuresView.Observer() {
-							
-							@Override
-							public void onClearAllCheckBoxesClicked() {
-								
-								manageMeasureSearchModel.getSelectedExportResults().removeAll(
-										manageMeasureSearchModel.getSelectedExportResults());
-								manageMeasureSearchModel.getSelectedExportIds().removeAll(
-										manageMeasureSearchModel.getSelectedExportIds());
-							}
-
-							@Override
-							public void onExportSelectedClicked(Result result,
-									boolean isCBChecked) {
-								updateExportedIDs(result, manageMeasureSearchModel,isCBChecked);
-								
-							}
-						});
 						result.setSelectedExportIds(new ArrayList<String>());
 						result.setSelectedExportResults(new ArrayList<Result>());
 						manageMeasureSearchModel = result;
 						//metaDataDisplay.setSaveButtonEnabled(true);
-						addEditComponentMeasuresDisplay.buildCellTable(result);
+						addEditComponentMeasuresDisplay.buildCellTable(result,searchText);
 					}
 				});
 		
-	}
-	
-	private void updateExportedIDs(Result result, ManageMeasureSearchModel model,
-			boolean isCBChecked) {
-		List<String> selectedIdList = model.getSelectedExportIds();;
-		if (isCBChecked) {
-			if (!selectedIdList.contains(result.getId())) {
-				model.getSelectedExportResults().add(result);
-				selectedIdList.add(result.getId());
-			}
-		} else {
-			for (int i = 0; i < model.getSelectedExportIds().size(); i++) {
-				if (result.getId().equals(model.getSelectedExportResults().get(i)
-						.getId())) {
-					model.getSelectedExportIds().remove(i);
-					model.getSelectedExportResults().remove(i);
-				}
-			}
-			
-		}
 	}
 	
 	/**
@@ -1251,56 +1228,12 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		} else {
 			Mat.hideLoadingMessage();
 		}
-		((Button) metaDataDisplay.getSearchButton()).setEnabled(!busy);
-		((TextBox) (metaDataDisplay.getSearchString())).setEnabled(!busy);
+		((Button) addEditComponentMeasuresDisplay.getSearchButton()).setEnabled(!busy);
+		((TextBox) (addEditComponentMeasuresDisplay.getSearchString())).setEnabled(!busy);
+		((Button) addEditComponentMeasuresDisplay.getReturnButton()).setEnabled(!busy);
+		((Button) addEditComponentMeasuresDisplay.getAddtoComponentMeasuresBtn()).setEnabled(!busy);
 	}
 
-	
-//	private void search(String searchText, int startIndex, int pageSize,
-//			int filter) {
-//		
-//		MatContext
-//		.get()
-//		.getMeasureService()
-//		.search(searchText, startIndex, pageSize, filter,
-//				new AsyncCallback<ManageMeasureSearchModel>() {
-//			@Override
-//			public void onFailure(Throwable caught) {
-////				detailDisplay
-////				.getErrorMessageDisplay()
-////				.setMessage(
-////						MatContext
-////						.get()
-////						.getMessageDelegate()
-////						.getGenericErrorMessage());
-//				MatContext
-//				.get()
-//				.recordTransactionEvent(
-//						null,
-//						null,
-//						null,
-//						"Unhandled Exception: "
-//								+ caught.getLocalizedMessage(),
-//								0);
-//		
-//			}
-//			
-//			@Override
-//			public void onSuccess(
-//					ManageMeasureSearchModel result) {
-//				
-//				manageMeasureSearchModel = result;
-//				MatContext.get()
-//				.setManageMeasureSearchModel(
-//						manageMeasureSearchModel);
-//				
-//				metaDataDisplay.buildComponentMeasuresCellTable(result, isEditable);
-//				
-//			}
-//		});
-//		
-//	}
-	
 	
 	/**
 	 * Gets the applied qdm list.

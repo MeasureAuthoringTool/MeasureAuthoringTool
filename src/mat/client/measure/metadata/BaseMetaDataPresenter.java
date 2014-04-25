@@ -171,8 +171,9 @@ public class BaseMetaDataPresenter {
 		 * Builds the cell table.
 		 *
 		 * @param result the result
+		 * @param searchText the search text
 		 */
-		public void buildCellTable(ManageMeasureSearchModel result);
+		public void buildCellTable(ManageMeasureSearchModel result, String searchText);
 		
 		/**
 		 * Gets the save button.

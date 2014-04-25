@@ -180,15 +180,15 @@ public class PopulationWorkSpaceConstants {
 		constantsMap.put("Numerator Exclusions", "numeratorExclusions");
 		constantsMap.put("Populations", "populations");
 		
-		topNodeOperatorMap.put("measureObservations", "and");
-		topNodeOperatorMap.put("initialPopulations", "and");
+		topNodeOperatorMap.put("measureobservations", "and");
+		topNodeOperatorMap.put("initialpopulations", "and");
 		topNodeOperatorMap.put("numerators", "and");
 		topNodeOperatorMap.put("denominators", "and");
-		topNodeOperatorMap.put("measurePopulations", "and");
-		topNodeOperatorMap.put("denominatorExclusions", "or");
-		topNodeOperatorMap.put("numeratorExclusions", "or");
-		topNodeOperatorMap.put("denominatorExceptions", "or");
-		topNodeOperatorMap.put("measurePopulationExclusions", "or");
+		topNodeOperatorMap.put("measurepopulations", "and");
+		topNodeOperatorMap.put("denominatorexclusions", "or");
+		topNodeOperatorMap.put("numeratorexclusions", "or");
+		topNodeOperatorMap.put("denominatorexceptions", "or");
+		topNodeOperatorMap.put("measurepopulationexclusions", "or");
 	}
 	
 	/**

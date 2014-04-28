@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -10,12 +11,14 @@ import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
+import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeUri;
 import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
@@ -219,14 +222,27 @@ public class ClauseWorkspaceContextMenu {
 				System.out.println("View Human Readable clicked...");
 				popupPanel.hide();
 				CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
-				if (selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE) {
+				if(selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE){
 					String xmlForPopulationNode = XmlConversionlHelper.createXmlFromTree(selectedNode);
-					System.out.println("XML for populations node:" + xmlForPopulationNode);
+					System.out.println("XML for populations node:"+xmlForPopulationNode);
 					String measureId = MatContext.get().getCurrentMeasureId();
-					String url = GWT.getModuleBaseURL() + "export?id=" + measureId + "&xml="
-							+ xmlForPopulationNode + "&format=subtreeHTML";
-					Window.open(url + "&type=open", "_blank", "");
-				}
+//					String url = GWT.getModuleBaseURL() + "export?id=" +measureId+ "&xml=" + xmlForPopulationNode+ "&format=subtreeHTML";
+//					Window.open(url + "&type=open", "_blank", "");
+					
+					MatContext.get().getMeasureService().getHumanReadableForNode(measureId, xmlForPopulationNode, new AsyncCallback<String>() {
+						
+						@Override
+						public void onSuccess(String result) {
+							showHumanReadableDialogBox(result);							
+						}
+									
+
+						@Override
+						public void onFailure(Throwable caught) {
+														
+						}
+					});
+				}				
 			}
 		};
 		viewHumanReadableMenu = new MenuItem(template.menuTable("View Human Readable", ""), viewHumanReadableCmd);
@@ -979,6 +995,13 @@ public class ClauseWorkspaceContextMenu {
 		}
 		return sortedName.last() + 1;
 	}
+	
+	private native void showHumanReadableDialogBox(String result) /*-{
+		var humanReadableWindow = window.open("","_blank");
+		if(humanReadableWindow && humanReadableWindow.top){
+			humanReadableWindow.document.write(result);
+		}
+	}-*/;
 	
 	/**
 	 * @return MenuItem.

@@ -343,4 +343,6 @@ public interface MeasurePackageService {
 	 */
 	ValidateMeasureResult validateMeasureForExport(String key,
 			List<MatValueSet> matValueSetList) throws Exception;
+
+	String getHumanReadableForNode(String measureId, String populationSubXML);
 }

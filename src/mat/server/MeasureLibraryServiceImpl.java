@@ -13,6 +13,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
@@ -2431,5 +2432,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			e.printStackTrace();
 		}
 		return date;
+	}
+	
+	@Override
+	public String getHumanReadableForNode(final String measureId, final String populationSubXML){
+		String humanReadableHTML = "";
+		try {
+			humanReadableHTML = getService().getHumanReadableForNode(measureId, populationSubXML);			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return humanReadableHTML;
 	}
 }

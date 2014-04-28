@@ -437,4 +437,7 @@ public interface MeasureServiceAsync {
 
 	void isSubTreeReferredInLogic(String measureId, String subTreeUUID,
 			AsyncCallback<Boolean> callback);
+
+	void getHumanReadableForNode(String measureId, String populationSubXML,
+			AsyncCallback<String> callback);
 }

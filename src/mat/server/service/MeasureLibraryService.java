@@ -411,4 +411,6 @@ public interface MeasureLibraryService {
 	String getReleaseDate();
 
 	boolean isSubTreeReferredInLogic(String measureId, String subTreeUUID);
+
+	String getHumanReadableForNode(String measureId, String populationSubXML);
 }

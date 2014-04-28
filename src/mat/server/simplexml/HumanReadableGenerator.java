@@ -52,6 +52,7 @@ public class HumanReadableGenerator {
 	}
 
 	private static XmlProcessor expandSubTrees(String populationSubXML, String measureXML) throws XPathExpressionException {
+		
 		XmlProcessor populationXMLProcessor = new XmlProcessor(populationSubXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
 		

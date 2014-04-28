@@ -37,6 +37,7 @@ import mat.model.clause.ShareLevel;
 import mat.server.LoggedInUserUtil;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
+import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.util.ExportSimpleXML;
 import mat.shared.ValidationUtility;
 
@@ -608,6 +609,19 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		result.setValid(message.size() == 0);
 		result.setValidationMessages(message);
 		return result;
+	}
+	
+	@Override
+	public String getHumanReadableForNode(final String measureId, final String populationSubXML){
+		String humanReadableHTML = "";
+		try {
+			ExportResult exportResult = eMeasureService.getHumanReadableForNode(measureId, populationSubXML);
+			humanReadableHTML = exportResult.export;
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return humanReadableHTML;
 	}
 	
 }

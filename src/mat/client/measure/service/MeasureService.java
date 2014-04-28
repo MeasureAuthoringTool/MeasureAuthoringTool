@@ -384,4 +384,6 @@ public interface MeasureService extends RemoteService {
 	boolean checkAndDeleteSubTree(String measureId, String subTreeUUID);
 
 	boolean isSubTreeReferredInLogic(String measureId, String subTreeUUID);
+
+	String getHumanReadableForNode(String measureId, String populationSubXML);
 }

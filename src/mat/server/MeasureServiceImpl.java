@@ -324,6 +324,11 @@ MeasureService {
 		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList);
 	}
 	
+	@Override
+	public String getHumanReadableForNode(String measureId, String populationSubXML){
+		return this.getMeasureLibraryService().getHumanReadableForNode(measureId, populationSubXML);
+	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.service.MeasureService#saveMeasureAtPackage(mat.client.measure.ManageMeasureDetailModel)
 	 */

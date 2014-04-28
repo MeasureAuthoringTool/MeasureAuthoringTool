@@ -52,7 +52,7 @@ public class ExportServlet extends HttpServlet {
 	private static final String ZIP = "zip";
 	
 	/** Human readable for Subtree Node **/
-	private static final String subTreeHTML = "subtreeHTML";
+	private static final String SUBTREE_HTML = "subtreeHTML";
 	
 	/** The Constant CODELIST. */
 	private static final String CODELIST = "codelist";
@@ -187,10 +187,10 @@ public class ExportServlet extends HttpServlet {
 				resp.getOutputStream().write(export.zipbarr);
 				resp.getOutputStream().close();
 				export.zipbarr = null;
-			} else if (subTreeHTML.equals(format)){
+			} else if (SUBTREE_HTML.equals(format)){
 				String nodeXML = req.getParameter(XML_PARAM);
-				System.out.println("Export servlet received node xml:"+nodeXML);
-				export = getService().getHumanReadableForNode(nodeXML);
+				System.out.println("Export servlet received node xml:"+nodeXML +" and Measure ID:"+id);
+				export = getService().getHumanReadableForNode(id,nodeXML);
 				resp.setHeader(CONTENT_TYPE, TEXT_HTML);
 			} else if (VALUESET.equals(format)) {
 				export = getService().getValueSetXLS(id);
@@ -232,7 +232,7 @@ public class ExportServlet extends HttpServlet {
 					resp.getOutputStream().write(csvFileString.getBytes());
 					resp.getOutputStream().close();
 				}
-			} else if ("exportMeasureNotesForMeasure".equals(format)) {
+			} else if (EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format)) {
 				String csvFileString = generateCSVToExportMeasureNotes(id);
 				Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String measureNoteDate = formatter.format(new Date());

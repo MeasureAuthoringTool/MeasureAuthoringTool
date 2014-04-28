@@ -23,12 +23,15 @@ import mat.dao.ListObjectDAO;
 import mat.dao.QualityDataSetDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureExportDAO;
+import mat.dao.clause.MeasureXMLDAO;
 import mat.model.ListObject;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.clause.MeasureExport;
+import mat.model.clause.MeasureXML;
 import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
+import mat.server.simplexml.HumanReadableGenerator;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import mat.shared.StringUtility;
@@ -91,6 +94,10 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	/**MeasureDAO.**/
 	@Autowired
 	private MeasureDAO measureDAO;
+	
+	/**MeasureXMLDAO**/
+	@Autowired
+	private MeasureXMLDAO measureXMLDAO;
 
 	/**MeasureExportDAO.**/
 	@Autowired
@@ -301,9 +308,14 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	}
 	
 	@Override
-	public ExportResult getHumanReadableForNode(final String measureId) throws Exception{
+	public ExportResult getHumanReadableForNode(final String measureId, final String populationSubXML) throws Exception{
 		ExportResult result = new ExportResult();
-		String html = "<html><body>This is human readable HTML. If you can read this you are definitely human. If not, err, Best of luck.</body></html>";
+		
+		MeasureXML measureExport = measureXMLDAO.findForMeasure(measureId);
+		String measureXML = measureExport.getMeasureXMLAsString();
+		String html = HumanReadableGenerator.generateHTMLForPopulation(measureId,populationSubXML,measureXML);
+		//String html = "<html><body>This is human readable HTML. If you can read this you are definitely human. If not, err, Best of luck.</body></html>";
+		
 		result.export = html;
 		return result;
 	}

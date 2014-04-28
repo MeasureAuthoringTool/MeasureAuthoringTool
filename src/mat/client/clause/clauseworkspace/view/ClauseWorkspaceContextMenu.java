@@ -368,13 +368,14 @@ public class ClauseWorkspaceContextMenu {
 	private void relationalOpNodePopUpMenuItems(PopupPanel popupPanel) {
 		MenuBar subMenuBarRelLHS = createMenuBarWithTimingFuncAndQDM();
 		MenuBar relAssociationMenuBar = new MenuBar(true);
-		subMenuBarRelLHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
+		
+		//subMenuBarRelLHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
 		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 				, relAssociationMenuBar); // Relationship sub menus 3rd level
 		addMenuLHS = new MenuItem("Add LHS", subMenuBarRelLHS); //LHS Sub Menu
 		MenuBar subMenuBarRelRHS = createMenuBarWithTimingFuncAndQDM();
 		MenuBar relAssociationMenuBarRHS = new MenuBar(true);
-		subMenuBarRelRHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
+		//subMenuBarRelRHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
 		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 				, relAssociationMenuBarRHS); // Relationship sub menus 3rd level
 		addMenuRHS = new MenuItem("Add RHS", subMenuBarRelRHS); //RHS Sub Menu

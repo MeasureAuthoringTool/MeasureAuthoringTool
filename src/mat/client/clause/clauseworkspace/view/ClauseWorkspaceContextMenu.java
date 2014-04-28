@@ -786,7 +786,9 @@ public class ClauseWorkspaceContextMenu {
 		pasteNode.setLabel(name);
 		xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
-		xmlTreeDisplay.setCopiedNode(pasteNode); //make the new pasted node as the copied node
+		CellTreeNode clonedNode = pasteNode.cloneNode();//created new instance for pasted node
+		clonedNode.setParent(pasteNode.getParent());//set parent of the cloned node
+		xmlTreeDisplay.setCopiedNode(clonedNode); //make the new cloned node as the copied node
 	}
 	
 	/**
@@ -801,7 +803,9 @@ public class ClauseWorkspaceContextMenu {
 		pasteNode.setLabel(name);
 		xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
-		xmlTreeDisplay.setCopiedNode(pasteNode); //make the new pasted node as the copied node
+		CellTreeNode clonedNode = pasteNode.cloneNode();//created new instance for pasted node
+		clonedNode.setParent(pasteNode.getParent());//set parent of the cloned node
+		xmlTreeDisplay.setCopiedNode(clonedNode);  //make the new cloned node as the copied node
 	}
 	
 	/**

@@ -233,7 +233,7 @@ public class ClauseWorkspaceContextMenu {
 						
 						@Override
 						public void onSuccess(String result) {
-							showHumanReadableDialogBox(result);							
+							showHumanReadableDialogBox(result);
 						}
 									
 
@@ -246,7 +246,6 @@ public class ClauseWorkspaceContextMenu {
 			}
 		};
 		viewHumanReadableMenu = new MenuItem(template.menuTable("View Human Readable", ""), viewHumanReadableCmd);
-		
 	}
 	/**
 	 * Method displays the rightClick options based on the nodeType of the node
@@ -997,7 +996,7 @@ public class ClauseWorkspaceContextMenu {
 	}
 	
 	private native void showHumanReadableDialogBox(String result) /*-{
-		var humanReadableWindow = window.open("","_blank");
+		var humanReadableWindow = window.open("","HumanReadable","width=1000,height=700");
 		if(humanReadableWindow && humanReadableWindow.top){
 			humanReadableWindow.document.write(result);
 		}

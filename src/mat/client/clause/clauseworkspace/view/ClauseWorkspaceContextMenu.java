@@ -412,13 +412,16 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.addItem(addMenuRHS);
 		popupMenuBar.addSeparator(separator);
 		addCommonMenus();
-		copyMenu.setEnabled(true);
-		if ((xmlTreeDisplay.getCopiedNode() != null)
-				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
-				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
-						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
-			pasteMenu.setEnabled(true);
-		}
+		//MAT-3887 Disabling copy and paste options to avoid adding the relationship to relationship
+		copyMenu.setEnabled(false);
+//		if ((xmlTreeDisplay.getCopiedNode() != null)
+//				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
+//				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
+//						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
+//			pasteMenu.setEnabled(true);
+//		}
+		pasteMenu.setEnabled(false);
+		//End MAT-3887
 		if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
 			deleteMenu.setEnabled(true);
 		}

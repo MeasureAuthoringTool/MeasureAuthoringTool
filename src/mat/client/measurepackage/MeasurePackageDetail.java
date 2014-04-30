@@ -3,10 +3,13 @@ package mat.client.measurepackage;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.model.Author;
+import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackageDetail.
  */
@@ -30,6 +33,13 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 	/** The value set date. */
 	private String valueSetDate;
 	
+	/** The to compare package clauses. */
+	private List<MeasurePackageClauseDetail> toComparePackageClauses;
+	
+	/** The to compare supp data elements. */
+	private List<QualityDataSetDTO> toCompareSuppDataElements;
+	
+
 	/**
 	 * Gets the package name.
 	 * 
@@ -164,6 +174,109 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 		return seq1.compareTo(seq2);
 	}
 	
+	/**
+	 * Gets the to compare package clauses.
+	 *
+	 * @return the to compare package clauses
+	 */
+	public List<MeasurePackageClauseDetail> getToComparePackageClauses() {
+		return toComparePackageClauses;
+	}
+
+	/**
+	 * Sets the to compare package clauses.
+	 *
+	 * @param toComparePackageClauses the new to compare package clauses
+	 */
+	public void setToComparePackageClauses(
+			List<MeasurePackageClauseDetail> toComparePackageClauses) {
+		this.toComparePackageClauses = toComparePackageClauses;
+	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		
+		MeasurePackageDetail other = (MeasurePackageDetail) obj;
+		
+		if (toComparePackageClauses == null) {
+			if (other.toComparePackageClauses != null) {
+				return false;
+			}
+		} else if (!isEqual(toComparePackageClauses, other.toComparePackageClauses)) {
+			return false;
+		}
+		
+		if (toCompareSuppDataElements == null) {
+			if (other.toCompareSuppDataElements != null) {
+				return false;
+			}
+		} else if (!isEqual(toCompareSuppDataElements, other.toCompareSuppDataElements)) {
+			return false;
+		}
+		
+		return true;
+		
+	}
+	
+	/**
+	 * Checks if is equal.
+	 *
+	 * @param listA the list a
+	 * @param listB the list b
+	 * @return true, if is equal
+	 */
+	public boolean isEqual(List listA, List listB) {
+		if (listA.size() != listB.size()) {
+			return false;
+		}
+		for (int i = 0; i < listA.size(); i++) {
+			 if (listA.get(i) instanceof MeasurePackageClauseDetail) {
+				 MeasurePackageClauseDetail val1 = (MeasurePackageClauseDetail) listA.get(i);
+				 MeasurePackageClauseDetail val2 = (MeasurePackageClauseDetail) listB.get(i);
+				if (val1.compareTo(val2) != 0) {
+					return false;
+				}
+			}
+			 
+			 if (listA.get(i) instanceof QualityDataSetDTO) {
+				 QualityDataSetDTO val1 = (QualityDataSetDTO) listA.get(i);
+				 QualityDataSetDTO val2 = (QualityDataSetDTO) listB.get(i);
+				if (val1.compare(val1, val2) != 0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Gets the to compare supp data elements.
+	 *
+	 * @return the to compare supp data elements
+	 */
+	public List<QualityDataSetDTO> getToCompareSuppDataElements() {
+		return toCompareSuppDataElements;
+	}
+
+	/**
+	 * Sets the to compare supp data elements.
+	 *
+	 * @param toCompareSuppDataElements the new to compare supp data elements
+	 */
+	public void setToCompareSuppDataElements(
+			List<QualityDataSetDTO> toCompareSuppDataElements) {
+		this.toCompareSuppDataElements = toCompareSuppDataElements;
+	}
 
 }

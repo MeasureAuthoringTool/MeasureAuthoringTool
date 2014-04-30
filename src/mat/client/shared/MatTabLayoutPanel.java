@@ -12,6 +12,8 @@ import mat.client.clause.clauseworkspace.presenter.PopulationWorkspacePresenter;
 import mat.client.clause.clauseworkspace.presenter.XmlTreePresenter;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.metadata.MetaDataPresenter;
+import mat.client.measurepackage.MeasurePackageDetail;
+import mat.client.measurepackage.MeasurePackagePresenter;
 import mat.client.shared.ui.MATTabPanel;
 import mat.shared.ConstantMessages;
 import mat.shared.DynamicTabBarFormatter;
@@ -356,6 +358,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		} else if (previousPresenter instanceof XmlTreePresenter) {
 			validateClauseWorkspaceTab((XmlTreePresenter) previousPresenter, selectedIndex);
 		}
+		else if (previousPresenter instanceof MeasurePackagePresenter) {
+			MeasurePackagePresenter measurePackagerPresenter = (MeasurePackagePresenter) previousPresenter;
+			validateNewMeasurePackageTab(selectedIndex, measurePackagerPresenter);
+		}
 		return isUnsavedData;
 	}
 	
@@ -387,6 +393,22 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		}
 	}
 	
+	private void validateNewMeasurePackageTab(int selectedIndex, 
+			MeasurePackagePresenter measurePackagerPresenter) {
+		if (!isMeasurePackageDetailsSame(measurePackagerPresenter)) {
+			
+			saveButton = measurePackagerPresenter.getView().getPackageGroupingWidget().getSaveGrouping();
+			//saveButton = (PrimaryButton)measurePackagerPresenter.getView().getAddQDMElementsToMeasureButton();
+			showErrorMessage(measurePackagerPresenter.getView().getSaveErrorMessageDisplay());
+			measurePackagerPresenter.getView().getSaveErrorMessageDisplay().getButtons().get(0).setFocus(true);
+			handleClickEventsOnUnsavedErrorMsg(selectedIndex, measurePackagerPresenter.getView().getSaveErrorMessageDisplay().getButtons(), 
+					measurePackagerPresenter.getView().getSaveErrorMessageDisplay(), null);
+		} else {
+			isUnsavedData = false;
+		}
+		
+	}
+	
 	/**
 	 * Validate clause workspace tab.
 	 * 
@@ -412,6 +434,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			isUnsavedData = false;
 		}
 	}
+	
+	
+	
+	
 	
 	/**
 	 * On Click Events.
@@ -500,6 +526,19 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			dbData.setToCompareComponentMeasures(metaDataPresenter.getDbComponentMeasuresSelectedList());
 			return pageData.equals(dbData);
 		}
+	}
+	
+	private boolean isMeasurePackageDetailsSame(MeasurePackagePresenter measurePackagePresenter){
+		
+		MeasurePackageDetail pageData = new MeasurePackageDetail();
+		measurePackagePresenter.updateDetailsFromView(pageData);
+		measurePackagePresenter.updateSuppDataDetailsFromView(pageData);
+		MeasurePackageDetail dbData = measurePackagePresenter.getCurrentDetail();
+		pageData.setToComparePackageClauses(pageData.getPackageClauses());
+		dbData.setToComparePackageClauses(measurePackagePresenter.getDbPackageClauses());
+		pageData.setToCompareSuppDataElements(pageData.getSuppDataElements());
+		dbData.setToCompareSuppDataElements(measurePackagePresenter.getDbSuppDataElements());
+		return pageData.equals(dbData);
 	}
 	
 	

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import mat.client.CustomPager;
 import mat.client.clause.QDSAppliedListModel;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatButtonCell;
@@ -144,6 +145,12 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The Observer. */
 	private Observer observer;
 	
+	private ErrorMessageDisplay saveErrorMessageDisplay = new ErrorMessageDisplay();
+	
+	@Override
+	public ErrorMessageDisplay getSaveErrorMessageDisplay() {
+		return saveErrorMessageDisplay;
+	}
 	//added for adding cell list
 	private CellList<QualityDataSetDTO> qdmCellList;
 	private ListDataProvider<QualityDataSetDTO> qdmListProv;
@@ -168,6 +175,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		cellTablePanel.removeStyleName("valueSetSearchPanel");
 		content.getElement().setAttribute("id", "MeasurePackagerContentFlowPanel");
 		createNew.getElement().setAttribute("id", "CreateNewGroupingButton");
+		content.add(saveErrorMessageDisplay);
 		content.add(cellTablePanel);
 		content.add(new SpacerWidget());
 		content.add(createNew);

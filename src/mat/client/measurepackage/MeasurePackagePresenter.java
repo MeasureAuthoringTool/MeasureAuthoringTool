@@ -1,6 +1,7 @@
 package mat.client.measurepackage;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import mat.client.Mat;
 import mat.client.MatPresenter;
@@ -11,6 +12,7 @@ import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measurepackage.MeasurePackagerView.Observer;
 import mat.client.measurepackage.service.MeasurePackageSaveResult;
+import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasurePackageClauseCellListWidget;
@@ -40,6 +42,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	/** The view. */
 	private PackageView view;
+	
 	/** The model. */
 	private ManageMeasureDetailModel model;
 	
@@ -49,8 +52,55 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/** The packageOverview. */
 	private MeasurePackageOverview packageOverview;
 	
+	/** The db package clauses. */
+	private List<MeasurePackageClauseDetail> dbPackageClauses = new ArrayList<MeasurePackageClauseDetail>();
+	
+	/** The db supp data elements. */
+	private List<QualityDataSetDTO> dbSuppDataElements = new ArrayList<QualityDataSetDTO>();
+	
+	/**
+	 * Gets the db supp data elements.
+	 *
+	 * @return the db supp data elements
+	 */
+	public List<QualityDataSetDTO> getDbSuppDataElements() {
+		Collections.sort(dbSuppDataElements,new QualityDataSetDTO.Comparator());
+		return dbSuppDataElements;
+	}
+
+	/**
+	 * Sets the db supp data elements.
+	 *
+	 * @param dbSuppDataElements the new db supp data elements
+	 */
+	public void setDbSuppDataElements(
+			List<QualityDataSetDTO> dbSuppDataElements) {
+		this.dbSuppDataElements = dbSuppDataElements;
+	}
+
+	/**
+	 * Gets the db package clauses.
+	 *
+	 * @return the db package clauses
+	 */
+	public List<MeasurePackageClauseDetail> getDbPackageClauses() {
+		return dbPackageClauses;
+	}
+
+	/**
+	 * Sets the db package clauses.
+	 *
+	 * @param dbPackageClauses the new db package clauses
+	 */
+	public void setDbPackageClauses(
+			List<MeasurePackageClauseDetail> dbPackageClauses) {
+		this.dbPackageClauses = dbPackageClauses;
+	}
+
 	/** The service. */
 	private static  MeasureServiceAsync service = MatContext.get().getMeasureService();
+	
+	
 	
 	/**
 	 * The Interface View.
@@ -211,6 +261,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * @param packages the packages
 		 */
 		void buildCellTable(List<MeasurePackageDetail> packages);
+		
+		/**
+		 * Gets the save error message display.
+		 *
+		 * @return the save error message display
+		 */
+		ErrorMessageDisplay getSaveErrorMessageDisplay();
 	}
 	
 	/**
@@ -265,7 +322,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 					@Override
 					public void onClick(final ClickEvent event) {
 						clearMessages();
-						updateSuppDataDetailsFromView();
+						updateSuppDataDetailsFromView(currentDetail);
 						MatContext
 						.get()
 						.getPackageService()
@@ -300,7 +357,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				clearMessages();
 				view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 				view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
-				updateDetailsFromView();
+				updateDetailsFromView(currentDetail);
 				if (isValid()) {
 					MatContext.get().getPackageService()
 					.save(currentDetail, new AsyncCallback<MeasurePackageSaveResult>() {
@@ -349,10 +406,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	/**
 	 * updateDetailsFromView.
+	 *
+	 * @param currentDetail the current detail
 	 */
-	private void updateDetailsFromView() {
+	public void updateDetailsFromView(MeasurePackageDetail currentDetail) {
 		currentDetail.setMeasureId(MatContext.get().getCurrentMeasureId());
 		currentDetail.setPackageClauses(view.getPackageGroupingWidget().getGroupingPopulationList());
+		currentDetail.setToComparePackageClauses(dbPackageClauses);
 		currentDetail.setValueSetDate(null);
 	}
 	
@@ -514,9 +574,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/**
 	 * Update supp data details from view.
 	 */
-	private void updateSuppDataDetailsFromView() {
+	public void updateSuppDataDetailsFromView(MeasurePackageDetail currentDetail) {
 		currentDetail.setSuppDataElements(view.getQDMElementsInSuppElements());
 		currentDetail.setQdmElements(view.getQDMElements());
+		currentDetail.setToCompareSuppDataElements(dbSuppDataElements);
+		
 	}
 	/**
 	 * set Overview.
@@ -651,6 +713,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setClauses(remainingClauses);
 		view.setQDMElementsInSuppElements(packageOverview.getSuppDataElements());
 		view.setQDMElements(packageOverview.getQdmElements());
+		dbPackageClauses.clear();
+		dbPackageClauses.addAll(currentDetail.getPackageClauses());
+		dbSuppDataElements.clear();
+		dbSuppDataElements.addAll(packageOverview.getSuppDataElements());
+		
 	}
 	
 	/**
@@ -698,6 +765,24 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		}
 		return max;
+	}
+	
+	/**
+	 * Gets the current detail.
+	 *
+	 * @return the current detail
+	 */
+	public MeasurePackageDetail getCurrentDetail() {
+		return currentDetail;
+	}
+	
+	/**
+	 * Gets the view.
+	 *
+	 * @return the view
+	 */
+	public PackageView getView() {
+		return view;
 	}
 }
 

@@ -226,6 +226,18 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The copied node. */
 	private CellTreeNode copiedNode;
 	
+	/** The copySelected node. */
+	private CellTreeNode copySelectedNode;
+	
+	public CellTreeNode getCopySelectedNode() {
+		return copySelectedNode;
+	}
+
+	public void setCopySelectedNode(CellTreeNode copySelectedNode) {
+		this.copySelectedNode = copySelectedNode;
+	}
+
+
 	/** The popup panel. */
 	private PopupPanel popupPanel;
 	
@@ -1240,7 +1252,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	@Override
 	public void copy() {
-		copiedNode = selectedNode;
+	copiedNode = selectedNode;
+    copySelectedNode = copiedNode.cloneNode();//cloning the copied node
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#paste()

@@ -230,10 +230,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private CellTreeNode copySelectedNode;
 	
 	/** The getCopySelected node. */
+	@Override
 	public CellTreeNode getCopySelectedNode() {
 		return copySelectedNode;
 	}
 	/** The setCopySelected node. */
+	@Override
 	public void setCopySelectedNode(CellTreeNode copySelectedNode) {
 		this.copySelectedNode = copySelectedNode;
 	}

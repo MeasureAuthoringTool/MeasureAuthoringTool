@@ -26,6 +26,7 @@ import com.google.gwt.user.client.ui.MenuItemSeparator;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.xml.client.Node;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ClauseWorkspaceContextMenu.
  */
@@ -113,7 +114,7 @@ public class ClauseWorkspaceContextMenu {
 	/** The edit qdm menu. */
 	MenuItem editQDMMenu;
 	
-	/** The View Human Readable menu **/
+	/** The View Human Readable menu *. */
 	MenuItem viewHumanReadableMenu;
 	
 	/** The popup menu bar. */
@@ -1002,6 +1003,11 @@ public class ClauseWorkspaceContextMenu {
 		return sortedName.last() + 1;
 	}
 	
+	/**
+	 * Show human readable dialog box.
+	 *
+	 * @param result the result
+	 */
 	private native void showHumanReadableDialogBox(String result) /*-{
 		var humanReadableWindow = window.open("","HumanReadable","width=1000,height=700");
 		if(humanReadableWindow && humanReadableWindow.top){
@@ -1010,6 +1016,8 @@ public class ClauseWorkspaceContextMenu {
 	}-*/;
 	
 	/**
+	 * Gets the view human readable menu.
+	 *
 	 * @return MenuItem.
 	 */
 	public MenuItem getViewHumanReadableMenu() {

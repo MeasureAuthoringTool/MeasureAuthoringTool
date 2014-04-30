@@ -448,6 +448,8 @@ public class ClauseWorkspaceContextMenu {
 		//Commented for User story MAT-3167.
 		/*createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
 				, subMenuBar);*/ // creating logical Operators Menu 2nd level
+		createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
+				, subMenuBar);
 		createAddQDM_MenuItem(subMenuBar);
 		MenuBar timing = new MenuBar(true);
 		subMenuBar.addItem("Timing", timing); //Timing menu 2nd level
@@ -699,6 +701,8 @@ public class ClauseWorkspaceContextMenu {
 		//Commented for User story MAT-3167.
 		//createAddMenus(MatContext.get().logicalOps,
 		//CellTreeNode.LOGICAL_OP_NODE, menuBar);// creating logical Operators Menu 2nd level
+		createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
+				, menuBar);
 		createAddQDM_MenuItem(menuBar);
 		MenuBar timingMenuBar = new MenuBar(true);
 		menuBar.addItem("Timing", timingMenuBar); //Timing menu 2nd level

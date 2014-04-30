@@ -229,10 +229,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The copySelected node. */
 	private CellTreeNode copySelectedNode;
 	
+	/** The getCopySelected node. */
 	public CellTreeNode getCopySelectedNode() {
 		return copySelectedNode;
 	}
-
+	/** The setCopySelected node. */
 	public void setCopySelectedNode(CellTreeNode copySelectedNode) {
 		this.copySelectedNode = copySelectedNode;
 	}

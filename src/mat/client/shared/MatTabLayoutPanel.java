@@ -393,6 +393,12 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		}
 	}
 	
+	/**
+	 * Validate new measure package tab.
+	 *
+	 * @param selectedIndex the selected index
+	 * @param measurePackagerPresenter the measure packager presenter
+	 */
 	private void validateNewMeasurePackageTab(int selectedIndex, 
 			MeasurePackagePresenter measurePackagerPresenter) {
 		if (!isMeasurePackageDetailsSame(measurePackagerPresenter)) {
@@ -528,6 +534,12 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 		}
 	}
 	
+	/**
+	 * Checks if is measure package details same.
+	 *
+	 * @param measurePackagePresenter the measure package presenter
+	 * @return true, if is measure package details same
+	 */
 	private boolean isMeasurePackageDetailsSame(MeasurePackagePresenter measurePackagePresenter){
 		
 		MeasurePackageDetail pageData = new MeasurePackageDetail();

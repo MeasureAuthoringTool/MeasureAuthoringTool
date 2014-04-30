@@ -390,6 +390,13 @@ public class QualityDataSetDTO implements IsSerializable {
 		}
 	}
 	
+	/**
+	 * Compare.
+	 *
+	 * @param o1 the o1
+	 * @param o2 the o2
+	 * @return the int
+	 */
 	public int compare(QualityDataSetDTO o1, QualityDataSetDTO o2) {
 		int num = o1.getId().compareTo(o2.getId());
 		return num;

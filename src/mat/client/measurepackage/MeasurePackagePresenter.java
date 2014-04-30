@@ -571,8 +571,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 	}
+	
 	/**
 	 * Update supp data details from view.
+	 *
+	 * @param currentDetail the current detail
 	 */
 	public void updateSuppDataDetailsFromView(MeasurePackageDetail currentDetail) {
 		currentDetail.setSuppDataElements(view.getQDMElementsInSuppElements());

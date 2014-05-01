@@ -146,4 +146,5 @@
 		<include file="classpath:/liquibase/deploy_sprint-36_delete_Procedure_Result_datatype.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-37_US3755_US3760_AddRemove_Functions.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-37_add_new_timing_relationsships.xml"/>
+		<include file="classpath:/liquibase/deploy_Sprint-39_US_3872_Add AGE AT Function.xml"/>
 	</databaseChangeLog>

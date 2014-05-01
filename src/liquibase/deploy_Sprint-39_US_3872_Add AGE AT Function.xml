@@ -8,7 +8,7 @@
 	    <changeSet author="mat_dev_user" id="1"  context="prod">
 	        <sql>
 				/* Add AGE AT Function */
-	            INSERT INTO MAT_NEWERER.OPERATOR VALUES ('49', 'AGE AT','AGE AT','4');
+	            INSERT INTO OPERATOR VALUES ('49', 'AGE AT','AGE AT','4');
 	        </sql>
 	    </changeSet>
     

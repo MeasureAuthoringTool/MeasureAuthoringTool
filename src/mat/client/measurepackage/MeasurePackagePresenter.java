@@ -17,6 +17,7 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.MeasurePackageClauseCellListWidget;
 import mat.client.shared.ReadOnlyHelper;
+import mat.client.shared.SecondaryButton;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
 import mat.model.QualityDataSetDTO;
@@ -57,6 +58,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	/** The db supp data elements. */
 	private List<QualityDataSetDTO> dbSuppDataElements = new ArrayList<QualityDataSetDTO>();
+	
+	private boolean isUnsavedData = false;
 	
 	/**
 	 * Gets the db supp data elements.
@@ -414,6 +417,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail.setPackageClauses(view.getPackageGroupingWidget().getGroupingPopulationList());
 		currentDetail.setToComparePackageClauses(dbPackageClauses);
 		currentDetail.setValueSetDate(null);
+		//this.currentDetail = currentDetail;
 	}
 	
 	
@@ -559,10 +563,20 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setObserver(new MeasurePackagerView.Observer() {
 			@Override
 			public void onEditClicked(MeasurePackageDetail detail) {
+				//updateDetailsFromView(currentDetail);
+				
+				if(!view.getPackageGroupingWidget().getGroupingPopulationList().equals(dbPackageClauses)){
+					
+					showErrorMessage(view.getSaveErrorMessageDisplay());
+					view.getSaveErrorMessageDisplay().getButtons().get(0).setFocus(true);
+					handleClickEventsOnUnsavedErrorMsg(detail,view.getSaveErrorMessageDisplay().getButtons()
+							, view.getSaveErrorMessageDisplay(), null);
+				} else {
 				currentDetail = new MeasurePackageDetail();
 				currentDetail = detail;
 				clearMessages();
 				setMeasurePackageDetailsOnView();
+				}
 			}
 			@Override
 			public void onDeleteClicked(MeasurePackageDetail detail) {
@@ -570,6 +584,46 @@ public class MeasurePackagePresenter implements MatPresenter {
 				deleteMeasurePackage(detail);
 			}
 		});
+	}
+	
+	
+	private void showErrorMessage(ErrorMessageDisplay errorMessageDisplay) {
+		String msg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
+		List<String> btn = new ArrayList<String>();
+		btn.add("Yes");
+		btn.add("No");
+		errorMessageDisplay.setMessageWithButtons(msg, btn);
+	}
+	
+	private void handleClickEventsOnUnsavedErrorMsg(final MeasurePackageDetail detail, List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage
+			, final String auditMessage) {
+		isUnsavedData = true;
+		ClickHandler clickHandler = new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				isUnsavedData = false;
+				SecondaryButton button = (SecondaryButton) event.getSource();
+				// If Yes - do not navigate, set focus to the Save button on the Page and clear cell tree
+				// // Else -do not navigate, set focus to the Save button on the Page
+				if ("Yes".equals(button.getText())) {
+					saveErrorMessage.clear();
+					currentDetail = new MeasurePackageDetail();
+					currentDetail = detail;
+					clearMessages();
+					setMeasurePackageDetailsOnView();
+					
+				} else if ("No".equals(button.getText())) {
+					saveErrorMessage.clear();
+					view.getPackageGroupingWidget().getSaveGrouping().setFocus(true);
+				}
+			}
+		};
+		for (SecondaryButton secondaryButton : btns) {
+			secondaryButton.addClickHandler(clickHandler);
+		}
+		if (isUnsavedData) {
+			MatContext.get().setErrorTab(true);
+		}
 	}
 	
 	/**

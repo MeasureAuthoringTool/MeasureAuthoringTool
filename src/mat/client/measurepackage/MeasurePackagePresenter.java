@@ -59,6 +59,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/** The db supp data elements. */
 	private List<QualityDataSetDTO> dbSuppDataElements = new ArrayList<QualityDataSetDTO>();
 	
+	/** The is unsaved data. */
 	private boolean isUnsavedData = false;
 	
 	/**
@@ -587,6 +588,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 	}
 	
 	
+	/**
+	 * Show error message.
+	 *
+	 * @param errorMessageDisplay the error message display
+	 */
 	private void showErrorMessage(ErrorMessageDisplay errorMessageDisplay) {
 		String msg = MatContext.get().getMessageDelegate().getSaveErrorMsg();
 		List<String> btn = new ArrayList<String>();
@@ -595,6 +601,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 		errorMessageDisplay.setMessageWithButtons(msg, btn);
 	}
 	
+	/**
+	 * Handle click events on unsaved error msg.
+	 *
+	 * @param detail the detail
+	 * @param btns the btns
+	 * @param saveErrorMessage the save error message
+	 * @param auditMessage the audit message
+	 */
 	private void handleClickEventsOnUnsavedErrorMsg(final MeasurePackageDetail detail, List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage
 			, final String auditMessage) {
 		isUnsavedData = true;

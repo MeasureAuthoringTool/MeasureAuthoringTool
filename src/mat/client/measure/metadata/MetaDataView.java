@@ -301,6 +301,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The selection model. */
 	private MultiSelectionModel<QualityDataSetDTO> selectionModel;
 	
+	private MultiSelectionModel<ManageMeasureSearchModel.Result> measureSelectionModel;
+	
 	/** The cell table. */
 	private CellTable<QualityDataSetDTO> cellTable;
 	
@@ -1172,6 +1174,54 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
+		measureSelectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
+         MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true);
+		
+		Column<ManageMeasureSearchModel.Result, Boolean> selectColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(chbxCell) {
+			
+			@Override
+			public Boolean getValue(Result object) {
+				boolean isSelected = false;
+				if (componentMeasureSelectedList!=null && componentMeasureSelectedList.size() > 0) {
+					for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
+						if (componentMeasureSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+							isSelected = true;
+							measureSelectionModel.setSelected(object, isSelected);
+							break;
+						}
+					}
+				} else {
+					isSelected = false;
+					}
+				return isSelected;
+			}
+		};  
+		
+          selectColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
+			
+			@Override
+			public void update(int index, Result object, Boolean value) {
+				measureSelectionModel.setSelected(object, value);
+				if(value){
+					componentMeasureSelectedList.add(object);
+				}
+				else{
+					for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
+						if (componentMeasureSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+							componentMeasureSelectedList.remove(i);
+							break;
+						}
+					}
+				}
+				
+			}
+		});
+		
+		//table.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select Column'>"
+			//	+ "Select" + "</span>"));
+          componentMeasureCellTable.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
+  				+ "Select" + "</span>"));
+		
 			Column<ManageMeasureSearchModel.Result, SafeHtml> measureNameColumn = 
 					new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()){
 

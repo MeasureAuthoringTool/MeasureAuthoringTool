@@ -120,6 +120,8 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 	/** The component measure selected list. */
 	private  List<ManageMeasureSearchModel.Result> componentMeasureSelectedList;
 	
+	private int index;
+	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.AddEditComponentMeasuresDisplay#getComponentMeasureSelectedList()
 	 */
@@ -303,7 +305,7 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#buildCellTable(mat.client.measure.ManageMeasureSearchModel)
 	 */
 	@Override
-	public void buildCellTable(ManageMeasureSearchModel result,String searchText) {
+	public void buildCellTable(ManageMeasureSearchModel result,final String searchText) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		cellTablePanel.setWidth("900px");
@@ -311,30 +313,59 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 			table = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
 					(Resources) GWT.create(CellTableResource.class));
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-			ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
+			//ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
 			selectedMeasureList = new ArrayList<Result>();
 			selectedMeasureList.addAll(result.getData());
 			table.setPageSize(PAGE_SIZE);
 			table.redraw();
-			if((searchText=="") && (componentMeasureSelectedList!=null) 
-					&& (componentMeasureSelectedList.size()>0)){
-				updateComponentMeasuresSelectedList(result.getData());
-				List<ManageMeasureSearchModel.Result> componentMeasureSelectedList = new ArrayList<ManageMeasureSearchModel.Result>();
-				componentMeasureSelectedList.addAll(swapComponentMeasuresList(result.getData()));
-				selectedMeasureList.addAll(componentMeasureSelectedList);
-				table.setRowData(componentMeasureSelectedList);
-				table.setRowCount(componentMeasureSelectedList.size(), true);
-				sortProvider.refresh();
-				sortProvider.getList().addAll(componentMeasureSelectedList);
-			}
-			else{
+			AsyncDataProvider<ManageMeasureSearchModel.Result> provider = new AsyncDataProvider<ManageMeasureSearchModel.Result>() {
+			      @Override
+			      protected void onRangeChanged(HasData<ManageMeasureSearchModel.Result> display) {
+			        final int start = display.getVisibleRange().getStart();
+			        index = start;
+			        AsyncCallback<ManageMeasureSearchModel> callback = new AsyncCallback<ManageMeasureSearchModel>() {
+			          @Override
+			          public void onFailure(Throwable caught) {
+			            Window.alert(caught.getMessage());
+			          }
+			          @Override
+			          public void onSuccess(ManageMeasureSearchModel result) {
+			        	  List<ManageMeasureSearchModel.Result> manageMeasureSearchList = 
+			        			  new ArrayList<ManageMeasureSearchModel.Result>();		        	  
+			        	  manageMeasureSearchList.addAll(result.getData());
+			        	  selectedMeasureList = manageMeasureSearchList;
+			        	  buildCellTableCssStyle();
+			            updateRowData(start, manageMeasureSearchList);
+			          }
+			        };
+			        
+			        MatContext
+					.get()
+					.getMeasureService()
+					.search(searchText,start + 1, start + PAGE_SIZE, 1,callback);
+			      }
+			    };
+			 
+//			if((searchText=="") && (componentMeasureSelectedList!=null) 
+//					&& (componentMeasureSelectedList.size()>0)){
+//				updateComponentMeasuresSelectedList(result.getData());
+//				List<ManageMeasureSearchModel.Result> componentMeasureSelectedList = new ArrayList<ManageMeasureSearchModel.Result>();
+//				componentMeasureSelectedList.addAll(swapComponentMeasuresList(result.getData()));
+//				selectedMeasureList.addAll(componentMeasureSelectedList);
+//				table.setRowData(componentMeasureSelectedList);
+//				table.setRowCount(componentMeasureSelectedList.size(), true);
+//				sortProvider.refresh();
+//				sortProvider.getList().addAll(componentMeasureSelectedList);
+//			}
+//			else{
 				table.setRowData(selectedMeasureList);
-				table.setRowCount(selectedMeasureList.size(), true);
-				sortProvider.refresh();
-				sortProvider.getList().addAll(result.getData());
-			}
+				table.setRowCount(result.getResultsTotal(), true);
+				//sortProvider.refresh();
+				//sortProvider.getList().addAll(result.getData());
+			//}
 			table = addColumnToTable();
-			sortProvider.addDataDisplay(table);
+			provider.addDataDisplay(table);
+			//sortProvider.addDataDisplay(table);
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
 			spager.setPageStart(0);
@@ -383,6 +414,55 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 	/**
 	 * Builds the cell table css style.
 	 */
+//	private void buildCellTableCssStyle() {
+//		cellTableCssStyle = new ArrayList<String>();
+//		for (int i = 0; i < selectedMeasureList.size(); i++) {
+//			cellTableCssStyle.add(i, null);
+//		}
+//		table.setRowStyles(new RowStyles<ManageMeasureSearchModel.Result>() {
+//			@Override
+//			public String getStyleNames(ManageMeasureSearchModel.Result rowObject, int rowIndex) {
+//				if (rowIndex != 0) {
+//					if (cellTableCssStyle.get(rowIndex) == null) {
+//						if (even) {
+//							if (rowObject.getMeasureSetId().equalsIgnoreCase(
+//									selectedMeasureList.get(rowIndex - 1).getMeasureSetId())) {
+//								even = true;
+//								cellTableCssStyle.add(rowIndex, cellTableOddRow);
+//								return cellTableOddRow;
+//							} else {
+//								even = false;
+//								cellTableCssStyle.add(rowIndex, cellTableEvenRow);
+//								return cellTableEvenRow;
+//							}
+//						} else {
+//							if (rowObject.getMeasureSetId().equalsIgnoreCase(
+//									selectedMeasureList.get(rowIndex - 1).getMeasureSetId())) {
+//								even = false;
+//								cellTableCssStyle.add(rowIndex, cellTableEvenRow);
+//								return cellTableEvenRow;
+//							} else {
+//								even = true;
+//								cellTableCssStyle.add(rowIndex, cellTableOddRow);
+//								return cellTableOddRow;
+//							}
+//						}
+//					} else {
+//						return cellTableCssStyle.get(rowIndex);
+//					}
+//				} else {
+//					if (cellTableCssStyle.get(rowIndex) == null) {
+//						even = true;
+//						cellTableCssStyle.add(rowIndex, cellTableOddRow);
+//						return cellTableOddRow;
+//					} else {
+//						return cellTableCssStyle.get(rowIndex);
+//					}
+//				}
+//			}
+//		});
+//	}
+	
 	private void buildCellTableCssStyle() {
 		cellTableCssStyle = new ArrayList<String>();
 		for (int i = 0; i < selectedMeasureList.size(); i++) {
@@ -391,6 +471,9 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 		table.setRowStyles(new RowStyles<ManageMeasureSearchModel.Result>() {
 			@Override
 			public String getStyleNames(ManageMeasureSearchModel.Result rowObject, int rowIndex) {
+				if(rowIndex > PAGE_SIZE - 1){
+					rowIndex = rowIndex - index;
+				}
 				if (rowIndex != 0) {
 					if (cellTableCssStyle.get(rowIndex) == null) {
 						if (even) {

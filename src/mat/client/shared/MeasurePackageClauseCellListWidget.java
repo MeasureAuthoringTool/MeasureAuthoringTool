@@ -273,7 +273,7 @@ public class MeasurePackageClauseCellListWidget {
 		HorizontalPanel hp = new HorizontalPanel();
 		VerticalPanel leftCellListVPanel = new VerticalPanel();
 		leftCellListVPanel.getElement().setAttribute("id", "MeasurePackageClause_LeftCellListVPanel");
-		leftCellListVPanel.add(new HTML("<b style='margin-left:15px;'> Clauses </b>"));
+		leftCellListVPanel.add(new HTML("<b style='margin-left:15px;'> Populations </b>"));
 		leftCellListVPanel.add(leftPagerPanel);
 		VerticalPanel rightCellListVPanel = new VerticalPanel();
 		rightCellListVPanel.getElement().setAttribute("id", "MeasurePackageClause_RightCellListVPanel");

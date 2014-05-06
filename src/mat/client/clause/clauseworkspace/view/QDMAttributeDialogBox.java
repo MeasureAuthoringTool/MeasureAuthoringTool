@@ -3,36 +3,36 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+
+import mat.client.ImageResources;
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.shared.LabelBuilder;
 import mat.model.clause.QDSAttributes;
+
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.Document;
+import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
+import com.google.gwt.event.dom.client.ChangeEvent;
+import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
-import com.google.gwt.event.dom.client.DomEvent;
 import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
-import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.CheckBox;
-import com.google.gwt.user.client.ui.DecoratorPanel;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.Grid;
-import com.google.gwt.user.client.ui.HTMLTable;
-import com.google.gwt.user.client.ui.HTMLTable.CellFormatter;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
-import com.google.gwt.user.client.ui.HasVerticalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -68,7 +68,7 @@ public class QDMAttributeDialogBox {
 	private static final String LESS_THAN = "-- Less Than";
 	
 	/** The Constant COMPARISON. */
-	private static final String COMPARISON = "Comparison";
+	private static final String COMPARISON = "--Select Operator--";
 	
 	/** The Constant UNIT. */
 	private static final String UNIT = "unit";
@@ -100,20 +100,8 @@ public class QDMAttributeDialogBox {
 	/** The Constant ATTRIBUTES. */
 	private static final String ATTRIBUTES = "attributes";
 	
-	/** The Constant QDM_ATTRIBUTES_ERROR_TITLE. */
-	private static final String QDM_ATTRIBUTES_ERROR_TITLE = "QDM Attributes. Please correct the rows below in red.";
-	
 	/** The Constant QDM_ATTRIBUTES_TITLE. */
-	private static final String QDM_ATTRIBUTES_TITLE = "QDM Attributes.";
-	
-	/** The Constant QDM_ATTRIBUTE_INVALID_ROW. */
-	private static final String QDM_ATTRIBUTE_INVALID_ROW = "qdm_attribute_invalidRow";
-	
-	/** The Constant QDM_ATTRIBUTE_INVALID_ROW_RIGHT. */
-	private static final String QDM_ATTRIBUTE_INVALID_ROW_RIGHT = "qdm_attribute_invalidRow_right";
-	
-	/** The Constant QDM_ATTRIBUTE_INVALID_ROW_LEFT. */
-	private static final String QDM_ATTRIBUTE_INVALID_ROW_LEFT = "qdm_attribute_invalidRow_left";
+	private static final String QDM_ATTRIBUTES_TITLE = "Edit Attributes.";
 	
 	/** The Constant SELECT. */
 	private static final String SELECT = "Select";
@@ -131,261 +119,12 @@ public class QDMAttributeDialogBox {
 	/** The Constant attributeList. */
 	private static final List<String> attributeList = new ArrayList<String>();
 	
-	/** The grid. */
-	private static Grid grid;
+	private static  TextBox quantityTextBox = new TextBox();
 	
-	/**
-	 * The Class DeleteSelectedClickHandler.
-	 */
-	private static final class DeleteSelectedClickHandler implements
-	ClickHandler {
-		
-		/** The grid. */
-		private final Grid grid;
-		
-		/**
-		 * Instantiates a new delete selected click handler.
-		 * 
-		 * @param grid
-		 *            the grid
-		 */
-		private DeleteSelectedClickHandler(Grid grid) {
-			this.grid = grid;
-		}
-		
-		/* (non-Javadoc)
-		 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-		 */
-		@Override
-		public void onClick(ClickEvent event) {
-			int rowCount = grid.getRowCount();
-			List<Integer> selectedRowNums = new ArrayList<Integer>();
-			// collect all the row nums for checked rows.
-			for (int i = 0; i < rowCount; i++) {
-				CheckBox checkBox = (CheckBox) grid.getWidget(i, 0);
-				if (checkBox.getValue()) {
-					selectedRowNums.add(i);
-				}
-			}
-			// Iterate through the selected row nums backwards so that we delete
-			// the higher rows before the lower ones.
-			for (int i = selectedRowNums.size() - 1; i >= 0; i--) {
-				int rowNum = selectedRowNums.get(i);
-				grid.removeRow(rowNum);
-			}
-		}
-	}
+	private static  ListBox unitsListBox = new ListBox();
 	
-	/**
-	 * The Class QDMAttributeGridClickHandler.
-	 */
-	private static final class QDMAttributeGridClickHandler implements
-	ClickHandler {
-		
-		/** The grid. */
-		private final Grid grid;
-		
-		/** The last row. */
-		private int lastRow = -1;
-		
-		/** The last col. */
-		private int lastCol = -1;
-		
-		/**
-		 * Instantiates a new qDM attribute grid click handler.
-		 * 
-		 * @param grid
-		 *            the grid
-		 */
-		private QDMAttributeGridClickHandler(Grid grid) {
-			this.grid = grid;
-		}
-		
-		/* (non-Javadoc)
-		 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-		 */
-		@Override
-		public void onClick(ClickEvent event) {
-			HTMLTable.Cell cell = grid.getCellForEvent(event);
-			// This check is for clicks which are on the Grid but not
-			// necessarily on any grid row.
-			// If we dont check for this, then we can have random NullPointer
-			// Exceptions in the
-			// code below.
-			if (cell == null) {
-				return;
-			}
-			
-			if ((cell.getRowIndex() != lastRow) && (cell.getCellIndex() != lastCol)) {
-				lastRow = cell.getRowIndex();
-				lastCol = cell.getCellIndex();
-				return;
-			}
-			
-			Widget widget = grid.getWidget(cell.getRowIndex(),
-					cell.getCellIndex());
-			if (cell.getCellIndex() == 1) {
-				ListBox attributeListBox = (ListBox) widget;
-				// updateAttributeListBox(grid, cell.getRowIndex(),
-				// attributeListBox);
-				updateAttributeListBoxes(grid, cell.getRowIndex());
-				String text = SELECT;
-				if (attributeListBox.getSelectedIndex() > -1) {
-					text = attributeListBox.getItemText(attributeListBox
-							.getSelectedIndex());
-				}
-				int rowNum = cell.getRowIndex();
-				
-				if (QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text)) {
-					ListBox modeListBox = (ListBox) grid.getWidget(rowNum, 2);
-					modeListBox.setSelectedIndex(0);
-					modeListBox.setEnabled(false);
-				} else {
-					ListBox modeListBox = (ListBox) grid.getWidget(rowNum, 2);
-					modeListBox.setEnabled(true);
-				}
-				
-			} else if (cell.getCellIndex() == 2) {
-				ListBox modeListBox = (ListBox) widget;
-				
-				String text = modeListBox.getItemText(modeListBox
-						.getSelectedIndex());
-				int rowNum = cell.getRowIndex();
-				
-				if (QDMAttributeDialogBox.SELECT.equalsIgnoreCase(text)
-						|| CHECK_IF_PRESENT.equalsIgnoreCase(text)
-						|| COMPARISON.equalsIgnoreCase(text)) {
-					TextBox textBox = new TextBox();
-					textBox.getElement().setId("textBox_TextBox_3_" + rowNum);
-					textBox.setEnabled(false);
-					textBox.setWidth("8em");
-					grid.setWidget(rowNum, 3, textBox);
-				} else if (VALUE_SET.equals(text)) {
-					ListBox qdmListBox = createQdmListBox();
-					setToolTipForEachElementInQdmListBox(qdmListBox);
-					grid.setWidget(rowNum, 3, qdmListBox);
-				} else {
-					HorizontalPanel panel = new HorizontalPanel();
-					panel.setWidth("8em");
-					panel.setSpacing(0);
-					panel.getElement().setId("panel_HorizontalPanel");
-					
-					TextBox textBox = new TextBox();
-					textBox.getElement().setId("textBox_TextBox_3_" + rowNum);
-					textBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
-					textBox.setWidth("3em");
-					textBox.setHeight("19");
-					
-					ListBox units = new ListBox(false);
-					units.setVisibleItemCount(1);
-					units.setWidth("5em");
-					
-					for (String unitName : unitNames) {
-						units.addItem(unitName);
-					}
-					setToolTipForEachElementInListbox(units);
-					
-					panel.add(textBox);
-					panel.add(units);
-					
-					grid.setWidget(rowNum, 3, panel);
-				}
-			}
-		}
-	}
+	private static  ListBox qdmListBox = new ListBox();
 	
-	/**
-	 * The Class AddNewQDMAttributeClickHandler.
-	 */
-	private static final class AddNewQDMAttributeClickHandler implements
-	ClickHandler {
-		
-		/** The mode. */
-		private final List<String> mode;
-		
-		/** The grid. */
-		private final Grid grid;
-		
-		/** The row node. */
-		private static CellTreeNode rowNode;
-		
-		/**
-		 * Instantiates a new adds the new qdm attribute click handler.
-		 * 
-		 * @param qdmDataTypeName
-		 *            the qdm data type name
-		 * @param mode
-		 *            the mode
-		 * @param grid
-		 *            the grid
-		 */
-		private AddNewQDMAttributeClickHandler(String qdmDataTypeName,
-				List<String> mode, Grid grid) {
-			this.mode = mode;
-			this.grid = grid;
-		}
-		
-		/* (non-Javadoc)
-		 * @see com.google.gwt.event.dom.client.ClickHandler#onClick(com.google.gwt.event.dom.client.ClickEvent)
-		 */
-		@Override
-		public void onClick(ClickEvent event) {
-			CellTreeNode node = rowNode;
-			rowNode = null;
-			String attributeName = "";
-			if (node != null) {
-				attributeName = (String) node.getExtraInformation(NAME);
-			}
-			final ListBox attributeListBox = new ListBox(false);
-			grid.resizeRows(grid.getRowCount() + 1);
-			final int i = grid.getRowCount() - 1;
-			
-			CheckBox checkBox = new CheckBox();
-			grid.setWidget(i, 0, checkBox);
-			grid.getCellFormatter().setVerticalAlignment(i, 0,
-					HasVerticalAlignment.ALIGN_MIDDLE);
-			
-			attributeListBox.setVisibleItemCount(1);
-			attributeListBox.setWidth("8em");
-			attributeListBox.addItem(QDMAttributeDialogBox.SELECT, "" + i);
-			
-			for (String attribName : attributeList) {
-				attributeListBox.addItem(attribName);
-			}
-			setToolTipForEachElementInListbox(attributeListBox);
-			
-			// Set the attribute name
-			for (int j = 0; j < attributeListBox.getItemCount(); j++) {
-				if (attributeListBox.getItemText(j).equals(attributeName)) {
-					attributeListBox.setSelectedIndex(j);
-					break;
-				}
-			}
-			grid.setWidget(i, 1, attributeListBox);
-			
-			final ListBox modeListBox = new ListBox(false);
-			modeListBox.setVisibleItemCount(1);
-			modeListBox.setWidth("8em");
-			modeListBox.addItem(QDMAttributeDialogBox.SELECT);
-			for (String modeName : mode) {
-				String modeValue = (modeName.startsWith("--")) ? modeName
-						.substring(2).trim() : modeName;
-						modeListBox.addItem(modeName, modeValue);
-			}
-			modeListBox.setEnabled(false);
-			setToolTipForEachElementInListbox(modeListBox);
-			grid.setWidget(i, 2, modeListBox);
-			
-			TextBox textBox = new TextBox();
-			textBox.getElement().setId("textBox_TextBox_3_" + i);
-			textBox.setEnabled(false);
-			textBox.setWidth("8em");
-			grid.setWidget(i, 3, textBox);
-			
-			setExitingAttributeInGrid(node, i);
-			updateAttributeListBox(grid, i, attributeListBox);
-		}
-	}
 	
 	/**
 	 * The Class DigitsOnlyKeyPressHandler.
@@ -444,10 +183,7 @@ public class QDMAttributeDialogBox {
 		if (qdmNode.getAttributes().getNamedItem(INSTANCE) != null) {
 			isOccuranceQDM = true;
 		}
-		// findAttributesForDataType(qdmDataType,isOccuranceQDM);
-		grid = new Grid(0, 4);
-		grid.addClickHandler(new QDMAttributeGridClickHandler(grid));
-		
+			
 		// unitNames.addAll(getUnitNameList());
 		unitNames.add("");
 		unitNames.addAll(PopulationWorkSpaceConstants.units);
@@ -457,75 +193,6 @@ public class QDMAttributeDialogBox {
 				xmlTreeDisplay, cellTreeNode);
 		// buildAndDisplayDialogBox(qdmDataType, mode,xmlTreeDisplay,
 		// cellTreeNode);
-	}
-	
-	/**
-	 * Remove all attribute names used in other rows from modeListBox.
-	 * 
-	 * @param table
-	 *            the table
-	 * @param rowIndex
-	 *            the row index
-	 * @param attributeListBox
-	 *            the attribute list box
-	 */
-	public static void updateAttributeListBox(Grid table, int rowIndex,
-			ListBox attributeListBox) {
-		for (int i = 0; i < grid.getRowCount(); i++) {
-			if (i == rowIndex) {
-				continue;
-			}
-			ListBox rowListBox = (ListBox) table.getWidget(i, 1);
-			if (rowListBox.getSelectedIndex() > -1) {
-				String alreadySelectedAttribute = rowListBox
-						.getItemText(rowListBox.getSelectedIndex());
-				if (SELECT.equals(alreadySelectedAttribute)) {
-					continue;
-				}
-				for (int j = 0; j < attributeListBox.getItemCount(); j++) {
-					if (attributeListBox.getItemText(j).equals(
-							alreadySelectedAttribute)) {
-						attributeListBox.removeItem(j);
-						break;
-					}
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Update attribute list boxes.
-	 * 
-	 * @param table
-	 *            the table
-	 * @param row
-	 *            the row
-	 */
-	public static void updateAttributeListBoxes(Grid table, int row) {
-		for (int i = 0; i < grid.getRowCount(); i++) {
-			if (i == row) {
-				continue;
-			}
-			ListBox rowListBox = (ListBox) table.getWidget(i, 1);
-			if (rowListBox.getSelectedIndex() > -1) {
-				String selected = rowListBox.getItemText(rowListBox
-						.getSelectedIndex());
-				rowListBox.clear();
-				rowListBox.addItem(SELECT);
-				for (int g = 0; g < attributeList.size(); g++) {
-					String att = attributeList.get(g);
-					rowListBox.addItem(att);
-				}
-				updateAttributeListBox(grid, i, rowListBox);
-				for (int j = 0; j < rowListBox.getItemCount(); j++) {
-					String item = rowListBox.getItemText(j);
-					if (item.equals(selected)) {
-						rowListBox.setSelectedIndex(j);
-						break;
-					}
-				}
-			}
-		}
 	}
 	
 	/**
@@ -549,203 +216,218 @@ public class QDMAttributeDialogBox {
 		qdmAttributeDialogBox.setGlassEnabled(true);
 		qdmAttributeDialogBox.setAnimationEnabled(true);
 		qdmAttributeDialogBox.setText(QDM_ATTRIBUTES_TITLE);
+	
 		
 		// Create a table to layout the content
-		VerticalPanel dialogContents = new VerticalPanel();
-		dialogContents.getElement().setId("dialogContents_VerticalPanel");
-		
+		final HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.getElement().setId("qdmAttributeDialog_hPanel");
+		final VerticalPanel dialogContents = new VerticalPanel();
+		dialogContents.getElement().setId("qdmAttributeDialog_dialogContents");
+		dialogContents.setWidth("21em");
+		dialogContents.setSpacing(5);
 		qdmAttributeDialogBox.setWidget(dialogContents);
 		
-		// Add a Add New button
-		Button addNewButton = new Button("Add New");
-		addNewButton.getElement().setId("addNewButton_Button");
-		// Handler to Add New rows to the attribute table.
-		addNewButton.addClickHandler(new AddNewQDMAttributeClickHandler(
-				qdmDataType, mode, grid));
-		// Add a Delete Selected button
-		Button deleteSelectedButton = new Button("Delete Selected");
-		deleteSelectedButton.getElement().setId("deleteSelectedButton_Button");
-		deleteSelectedButton.addClickHandler(new DeleteSelectedClickHandler(
-				grid));
+		final ListBox attributeListBox = new ListBox(false);
+		attributeListBox.getElement().setId("qdmAttributeDialog_attributeListBox");
+		attributeListBox.setVisibleItemCount(1);
+		attributeListBox.setWidth("200px");
+		attributeListBox.addItem(QDMAttributeDialogBox.SELECT);
 		
-		HorizontalPanel horizontalDeleteAddNewPanel = new HorizontalPanel();
-		horizontalDeleteAddNewPanel.getElement().setId(
-				"horizontalDeleteAddNewPanel_HorizontalPanel");
-		horizontalDeleteAddNewPanel.setSpacing(5);
+		for (String attribName : attributeList) {
+			attributeListBox.addItem(attribName);
+		}
 		
-		horizontalDeleteAddNewPanel.add(addNewButton);
-		horizontalDeleteAddNewPanel.setCellHorizontalAlignment(addNewButton,
-				HasHorizontalAlignment.ALIGN_LEFT);
+		hPanel.clear();
+		dialogContents.add(hPanel);
 		
-		horizontalDeleteAddNewPanel.add(deleteSelectedButton);
-		horizontalDeleteAddNewPanel.setCellHorizontalAlignment(
-				deleteSelectedButton, HasHorizontalAlignment.ALIGN_LEFT);
+		Label attributeLabel = (Label) LabelBuilder.buildLabel(attributeListBox, "Attribute");
+		dialogContents.add(attributeLabel);
+		dialogContents.setCellHorizontalAlignment(attributeLabel, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents.setCellHorizontalAlignment(attributeListBox, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents.add(attributeListBox);
 		
-		// Add a Close button at the bottom of the dialog
-		Button closeButton = new Button("Cancel", new ClickHandler() {
+		final ListBox modeListBox = new ListBox(false);
+		modeListBox.getElement().setId("qdmAttributeDialog_modeListBox");
+		modeListBox.setVisibleItemCount(1);
+		modeListBox.setWidth("200px");
+		modeListBox.addItem(QDMAttributeDialogBox.SELECT);
+		for (String modeName : mode) {
+			String modeValue = (modeName.startsWith("--")) ? modeName
+					.substring(2).trim() : modeName;
+					modeListBox.addItem(modeName, modeValue);
+		}
+		modeListBox.setEnabled(false);
+		
+		
+		Label opearorLabel = (Label) LabelBuilder.buildLabel(attributeListBox, "Mode");
+		dialogContents.add(opearorLabel);
+		dialogContents.setCellHorizontalAlignment(opearorLabel, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents.setCellHorizontalAlignment(modeListBox, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents.add(modeListBox);
+		
+		final VerticalPanel dialogContents1 = new VerticalPanel();
+		dialogContents1.getElement().setId("qdmAttributeDialog_dialogContents1");
+		dialogContents.add(dialogContents1);
+		
+		final List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode
+		.getExtraInformation(ATTRIBUTES);
+		final int rows = (attributeNodeList == null) ? 0 : attributeNodeList
+		.size();
+		if(rows > 0){
+			CellTreeNode attributeNode = attributeNodeList.get(0);
+			setExistingAttributeInPopup(attributeNode,attributeListBox,modeListBox,dialogContents1);
+			
+		}
+		
+		attributeListBox.addChangeHandler(new ChangeHandler() {
+			
 			@Override
-			public void onClick(ClickEvent event) {
-				qdmAttributeDialogBox.hide();
+			public void onChange(ChangeEvent event) {
+				hPanel.clear();
+				hPanel.removeStyleName("alertMessageDialogBox");
+				attributeListBox.removeStyleName("gwt-TextBoxRed");
+				String selectedAttribute = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
+				if(selectedAttribute.equalsIgnoreCase("Select")){	
+					dialogContents1.clear();
+					modeListBox.setSelectedIndex(0);
+					modeListBox.setEnabled(false);
+				}
+				else{
+					modeListBox.setEnabled(true);
+				}
 			}
 		});
-		closeButton.getElement().setId("closeButton_Button");
 		
-		// Add a Save button at the bottom of the dialog
-		Button saveButton = new Button("OK", new ClickHandler() {
+
+		modeListBox.addChangeHandler(new ChangeHandler() {
+			
+			@Override
+			public void onChange(ChangeEvent event) {
+				hPanel.clear();
+				hPanel.removeStyleName("alertMessageDialogBox");
+				modeListBox.removeStyleName("gwt-TextBoxRed");
+				String selectedMode = modeListBox.getItemText(modeListBox.getSelectedIndex());
+				if (QDMAttributeDialogBox.SELECT.equalsIgnoreCase(selectedMode)
+						|| CHECK_IF_PRESENT.equalsIgnoreCase(selectedMode)
+						|| COMPARISON.equalsIgnoreCase(selectedMode)) {
+					dialogContents1.clear();
+				} else if (VALUE_SET.equals(selectedMode)) {
+					dialogContents1.clear();
+					qdmListBox = createQdmListBox();
+					qdmListBox.getElement().setId("qdmAttributeDialog_qdmListBox");
+					qdmListBox.setVisibleItemCount(1);
+					qdmListBox.setWidth("250px");
+					//setToolTipForEachElementInQdmListBox(qdmListBox);
+					Label valueSet = (Label) LabelBuilder.buildLabel(qdmListBox, "Value Set");
+					dialogContents1.add(valueSet);
+					dialogContents1.setCellHorizontalAlignment(valueSet, HasHorizontalAlignment.ALIGN_LEFT);
+					dialogContents1.setCellHorizontalAlignment(qdmListBox, HasHorizontalAlignment.ALIGN_LEFT);
+					dialogContents1.add(qdmListBox);
+				} else {
+					dialogContents1.clear();
+					quantityTextBox = new TextBox();
+					Label quantityLabel = (Label) LabelBuilder.buildLabel(quantityTextBox, "Quantity");
+					quantityTextBox.getElement().setId("qdmAttributeDialog_quantityTextBox");
+					quantityTextBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
+					quantityTextBox.setWidth("200px");
+					quantityTextBox.setHeight("19");
+					dialogContents1.add(quantityLabel);
+					dialogContents1.setCellHorizontalAlignment(quantityLabel, HasHorizontalAlignment.ALIGN_LEFT);
+					dialogContents1.setCellHorizontalAlignment(quantityTextBox, HasHorizontalAlignment.ALIGN_LEFT);
+					dialogContents1.add(quantityTextBox);
+					
+					quantityTextBox.addClickHandler(new ClickHandler() {
+						
+						@Override
+						public void onClick(ClickEvent event) {
+							quantityTextBox.removeStyleName("gwt-TextBoxRed");
+							
+						}
+					});
+					
+					unitsListBox = new ListBox(false);
+					unitsListBox.getElement().setId("qdmAttributeDialog_unitsListBox");
+					unitsListBox.setVisibleItemCount(1);
+					unitsListBox.setWidth("200px");
+	
+					Label unitsLabel = (Label) LabelBuilder.buildLabel(quantityTextBox, "Units");
+					dialogContents1.add(unitsLabel);
+					dialogContents1.setCellHorizontalAlignment(unitsLabel, HasHorizontalAlignment.ALIGN_LEFT);
+					dialogContents1.setCellHorizontalAlignment(unitsListBox, HasHorizontalAlignment.ALIGN_LEFT);
+					dialogContents1.add(unitsListBox);
+							
+					for (String unitName : unitNames) {
+						unitsListBox.addItem(unitName);
+					}
+				}
+			}
+		});
+		
+		Button okButton = new Button("OK", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				// TODO:Validate the table rows.
-				if (validateRows(qdmAttributeDialogBox)) {
-					saveToModel(xmlTreeDisplay);
-					xmlTreeDisplay.editNode(cellTreeNode.getName(),
-							cellTreeNode.getName());
+				if(!isValidAttribute(attributeListBox)){
+					hPanel.clear();
+					getWidget(hPanel,"Please select the attribute field");
+					
+				}
+				else if(!isValidMode(modeListBox)){
+					hPanel.clear();
+					getWidget(hPanel,"Please select the mode field");
+					
+				}
+				else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).startsWith("--") &&
+							! modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase(COMPARISON)){
+						if(!isValidQuantity(quantityTextBox)){
+							hPanel.clear();
+							getWidget(hPanel,"Please enter Quantity field");
+						}
+						else{
+							saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox);
+							xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
+							xmlTreeDisplay.setDirty(true);
+							qdmAttributeDialogBox.hide();
+						}
+				}
+				else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Value Set")){
+					if(qdmListBox.getSelectedIndex() == -1){
+						hPanel.clear();
+						getWidget(hPanel,"Please add attribute for Value Set selection");
+					}
+					else{
+						saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox);
+						xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
+						xmlTreeDisplay.setDirty(true);
+						qdmAttributeDialogBox.hide();
+					}
+				}
+				else{
+					saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox);
+					xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
 					xmlTreeDisplay.setDirty(true);
 					qdmAttributeDialogBox.hide();
 				}
 			}
 		});
-		saveButton.getElement().setId("saveButton_Button");
+		okButton.getElement().setId("qdmAttributeDialog_okButton");
 		
-		HorizontalPanel horizontalSaveClosePanel = new HorizontalPanel();
-		horizontalSaveClosePanel.getElement().setId(
-				"horizontalSaveClosePanel_HorizontalPanel");
-		horizontalSaveClosePanel.setSpacing(5);
-		
-		horizontalSaveClosePanel.add(saveButton);
-		horizontalSaveClosePanel.setCellHorizontalAlignment(saveButton,
-				HasHorizontalAlignment.ALIGN_RIGHT);
-		
-		horizontalSaveClosePanel.add(closeButton);
-		horizontalSaveClosePanel.setCellHorizontalAlignment(closeButton,
-				HasHorizontalAlignment.ALIGN_RIGHT);
-		
-		addTableToPanel(dialogContents, qdmDataType, mode, xmlTreeDisplay,
-				cellTreeNode, deleteSelectedButton, addNewButton);
-		
-		dialogContents.add(horizontalDeleteAddNewPanel);
-		dialogContents.setCellHorizontalAlignment(horizontalDeleteAddNewPanel,
-				HasHorizontalAlignment.ALIGN_LEFT);
-		
-		dialogContents.add(horizontalSaveClosePanel);
-		dialogContents.setCellHorizontalAlignment(horizontalSaveClosePanel,
-				HasHorizontalAlignment.ALIGN_RIGHT);
-		
-		dialogContents.setHeight("21em");
+		Button cancelButton = new Button("Cancel", new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				qdmAttributeDialogBox.hide();
+			}
+		});
+		cancelButton.getElement().setId("qdmAttributeDialog_cancelButton");
+
+		HorizontalPanel buttonPanel = new HorizontalPanel();
+		buttonPanel.getElement().setId("qdmAttributeDialog_buttonPanel");
+		buttonPanel.setSpacing(10);
+		buttonPanel.add(okButton);
+		buttonPanel.setCellHorizontalAlignment(okButton, HasHorizontalAlignment.ALIGN_RIGHT);
+		buttonPanel.add(cancelButton);
+		buttonPanel.setCellHorizontalAlignment(cancelButton, HasHorizontalAlignment.ALIGN_RIGHT);
+		dialogContents.add(buttonPanel);
 		qdmAttributeDialogBox.center();
-	}
-	
-	/**
-	 * Validate rows.
-	 * 
-	 * @param qdmAttributeDialogBox
-	 *            the qdm attribute dialog box
-	 * @return true, if successful
-	 */
-	protected static boolean validateRows(DialogBox qdmAttributeDialogBox) {
-		int rowCount = grid.getRowCount();
-		List<Integer> inValidRows = new ArrayList<Integer>();
-		
-		// Go through all the rows & collect all the invalid row numbers in a
-		// list 'inValidRows'
-		for (int i = 0; i < rowCount; i++) {
-			ListBox attributeListBox = ((ListBox) grid.getWidget(i, 1));
-			if (!QDMAttributeDialogBox.SELECT.equals(attributeListBox
-					.getItemText(attributeListBox.getSelectedIndex()))) {
-				ListBox modeListBox = ((ListBox) grid.getWidget(i, 2));
-				if (!QDMAttributeDialogBox.SELECT.equals(modeListBox
-						.getItemText(modeListBox.getSelectedIndex()))) {
-					String modeName = modeListBox.getValue(modeListBox
-							.getSelectedIndex());
-					if (!CHECK_IF_PRESENT.equals(modeName)) {
-						if (VALUE_SET.equals(modeName)) {
-							ListBox qdmListBox = ((ListBox) grid
-									.getWidget(i, 3));
-							if (qdmListBox.getItemCount() == 0) {
-								inValidRows.add(i);
-								continue;
-							}
-							String qdmName = qdmListBox.getItemText(qdmListBox
-									.getSelectedIndex());
-							if ((qdmName == null) || (qdmName.length() == 0)) {
-								inValidRows.add(i);
-								continue;
-							}
-						} else if (COMPARISON.equals(modeName)) {
-							inValidRows.add(i);
-							continue;
-						} else {
-							HorizontalPanel hPanel = (HorizontalPanel) grid
-									.getWidget(i, 3);
-							TextBox valueBox = (TextBox) hPanel.getWidget(0);
-							ListBox unitBox = (ListBox) hPanel.getWidget(1);
-							
-							String value = valueBox.getText();
-							if ((value == null) || (value.length() == 0)) {
-								inValidRows.add(i);
-								continue;
-							}
-							/*
-							 * else{ String unit =
-							 * unitBox.getItemText(unitBox.getSelectedIndex());
-							 * if(unit == null || unit.length() == 0){
-							 * inValidRows.add(i); continue; } }
-							 */
-						}
-					}
-				} else {
-					inValidRows.add(i);
-					continue;
-				}
-			} else {
-				inValidRows.add(i);
-				continue;
-			}
-		}
-		setGridRowStyles(qdmAttributeDialogBox, rowCount, inValidRows);
-		return (inValidRows.size() == 0);
-	}
-	
-	/**
-	 * Sets the grid row styles.
-	 * 
-	 * @param qdmAttributeDialogBox
-	 *            the qdm attribute dialog box
-	 * @param rowCount
-	 *            the row count
-	 * @param inValidRows
-	 *            the in valid rows
-	 */
-	private static void setGridRowStyles(DialogBox qdmAttributeDialogBox,
-			int rowCount, List<Integer> inValidRows) {
-		if (inValidRows.size() > 0) {
-			qdmAttributeDialogBox.setText(QDM_ATTRIBUTES_ERROR_TITLE);
-		} else {
-			qdmAttributeDialogBox.setText(QDM_ATTRIBUTES_TITLE);
-		}
-		CellFormatter cellFormatter = grid.getCellFormatter();
-		for (int i = 0; i < rowCount; i++) {
-			if (inValidRows.contains(i)) {
-				for (int j = 0; j < 4; j++) {
-					if (j == 0) {
-						cellFormatter.addStyleName(i, j,
-								QDM_ATTRIBUTE_INVALID_ROW_LEFT);
-					} else if (j == 3) {
-						cellFormatter.addStyleName(i, j,
-								QDM_ATTRIBUTE_INVALID_ROW_RIGHT);
-					}
-					cellFormatter.addStyleName(i, j, QDM_ATTRIBUTE_INVALID_ROW);
-				}
-			} else {
-				for (int j = 0; j < 4; j++) {
-					cellFormatter.removeStyleName(i, j,
-							QDM_ATTRIBUTE_INVALID_ROW);
-					cellFormatter.removeStyleName(i, j,
-							QDM_ATTRIBUTE_INVALID_ROW_LEFT);
-					cellFormatter.removeStyleName(i, j,
-							QDM_ATTRIBUTE_INVALID_ROW_RIGHT);
-				}
-			}
-		}
 	}
 	
 	/**
@@ -755,8 +437,8 @@ public class QDMAttributeDialogBox {
 	 *            the xml tree display
 	 */
 	@SuppressWarnings("unchecked")
-	protected static void saveToModel(XmlTreeDisplay xmlTreeDisplay) {
-		int rowCount = grid.getRowCount();
+	protected static void saveToModel(XmlTreeDisplay xmlTreeDisplay,ListBox attributeListBox,ListBox modeListBox,ListBox qdmListBox,
+			TextBox quantityTextBox,ListBox unitsListBox) {
 		List<CellTreeNode> attributeList = (List<CellTreeNode>) xmlTreeDisplay
 				.getSelectedNode().getExtraInformation(ATTRIBUTES);
 		if (attributeList == null) {
@@ -764,166 +446,69 @@ public class QDMAttributeDialogBox {
 		}
 		attributeList.clear();
 		
-		for (int i = 0; i < rowCount; i++) {
-			CellTreeNode attributeNode = new CellTreeNodeImpl();
-			attributeNode.setName(ATTRIBUTE);
-			attributeNode.setNodeType(CellTreeNode.ATTRIBUTE_NODE);
+		CellTreeNode attributeNode = new CellTreeNodeImpl();
+		attributeNode.setName(ATTRIBUTE);
+		attributeNode.setNodeType(CellTreeNode.ATTRIBUTE_NODE);
+	
+		String attributeName = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
+		attributeNode.setExtraInformation(NAME, attributeName);
+	
+		String modeName = modeListBox.getValue(modeListBox.getSelectedIndex());
 			
-			ListBox attributeListBox = ((ListBox) grid.getWidget(i, 1));
-			String attributeName = attributeListBox
-					.getItemText(attributeListBox.getSelectedIndex());
-			attributeNode.setExtraInformation(NAME, attributeName);
-			
-			ListBox modeListBox = ((ListBox) grid.getWidget(i, 2));
-			// String modeName =
-			// modeListBox.getItemText(modeListBox.getSelectedIndex());
-			String modeName = modeListBox.getValue(modeListBox
-					.getSelectedIndex());
-			
-			if (CHECK_IF_PRESENT.equals(modeName) || VALUE_SET.equals(modeName)) {
+		if (CHECK_IF_PRESENT.equals(modeName) || VALUE_SET.equals(modeName)) {
 				attributeNode.setExtraInformation(MODE, modeName);
 				if (VALUE_SET.equals(modeName)) {
-					ListBox qdmListBox = ((ListBox) grid.getWidget(i, 3));
-					String uuid = qdmListBox.getValue(qdmListBox
-							.getSelectedIndex());
+					String uuid = qdmListBox.getValue(qdmListBox.getSelectedIndex());
 					attributeNode.setExtraInformation(QDM_UUID, uuid);
 				}
-			} else {
+		}
+		else {
 				attributeNode.setExtraInformation(MODE, modeName);
-				
-				HorizontalPanel hPanel = (HorizontalPanel) grid.getWidget(i, 3);
-				TextBox valueBox = (TextBox) hPanel.getWidget(0);
-				ListBox unitBox = (ListBox) hPanel.getWidget(1);
-				
-				attributeNode.setExtraInformation(COMPARISON_VALUE,
-						valueBox.getText());
-				String unitName = unitBox.getItemText(unitBox
-						.getSelectedIndex());
+				attributeNode.setExtraInformation(COMPARISON_VALUE,quantityTextBox.getText());	
+				String unitName = unitsListBox.getItemText(unitsListBox.getSelectedIndex());
 				if (unitName.trim().length() > 0) {
 					attributeNode.setExtraInformation(UNIT, unitName);
 				}
-			}
-			attributeList.add(attributeNode);
 		}
+		attributeList.add(attributeNode);
 		xmlTreeDisplay.getSelectedNode().setExtraInformation(ATTRIBUTES,
 				attributeList);
 		
 	}
 	
-	/**
-	 * This method will create the actual table to be placed and shown in the
-	 * pop-up DialogBox.
-	 * 
-	 * @param dialogContents
-	 *            the dialog contents
-	 * @param qdmDataType
-	 *            the qdm data type
-	 * @param mode
-	 *            the mode
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
-	 * @param cellTreeNode
-	 *            the cell tree node
-	 * @param deleteSelectedButton
-	 *            the delete selected button
-	 * @param addNewButton
-	 *            the add new button
-	 */
-	private static void addTableToPanel(VerticalPanel dialogContents,
-			final String qdmDataType, final List<String> mode,
-			XmlTreeDisplay xmlTreeDisplay, CellTreeNode cellTreeNode,
-			Button deleteSelectedButton, final Button addNewButton) {
-		
-		ScrollPanel scrollPanel = new ScrollPanel();
-		scrollPanel.setSize("28em", "19em");
-		scrollPanel.getElement().setId("scrollPanel_ScrollPanel");
-		
-		DecoratorPanel decoratorPanel = new DecoratorPanel();
-		scrollPanel.setWidget(grid);
-		decoratorPanel.setWidget(scrollPanel);
-		dialogContents.add(decoratorPanel);
-		
-		dialogContents.setCellHorizontalAlignment(decoratorPanel,
-				HasHorizontalAlignment.ALIGN_LEFT);
-		
-		final List<CellTreeNode> attributeNodeList = (List<CellTreeNode>) cellTreeNode
-				.getExtraInformation(ATTRIBUTES);
-		final int rows = (attributeNodeList == null) ? 0 : attributeNodeList
-				.size();
-		
-		Timer t = new Timer() {
-			@Override
-			public void run() {
-				if (rows == 0) {
-					// Add a blank attribute row to the table for the user to
-					// fill in.
-					AddNewQDMAttributeClickHandler.rowNode = null;
-					DomEvent.fireNativeEvent(
-							Document.get().createClickEvent(0, 0, 0, 0, 0,
-									false, false, false, false), addNewButton);
-				} else {
-					for (int i = 0; i < rows; i++) {
-						// Add a blank row to the table.
-						CellTreeNode rowNode = attributeNodeList.get(i);
-						AddNewQDMAttributeClickHandler.rowNode = rowNode;
-						DomEvent.fireNativeEvent(
-								Document.get().createClickEvent(0, 0, 0, 0, 0,
-										false, false, false, false),
-										addNewButton);
-					}
-					for (int j = 0; j < grid.getRowCount(); j++) {
-						updateAttributeListBox(grid, j,
-								(ListBox) grid.getWidget(j, 1));
-					}
-				}
-			}
-		};
-		t.schedule(500);
-	}
-	
-	/**
-	 * Sets the exiting attribute in grid.
-	 * 
-	 * @param attributenode
-	 *            the attributenode
-	 * @param row
-	 *            the row
-	 */
-	private static void setExitingAttributeInGrid(CellTreeNode attributenode,
-			int row) {
-		if (attributenode == null) {
+	private static void setExistingAttributeInPopup(CellTreeNode  attributeNode,ListBox attributeListBox,ListBox modeListBox,
+			VerticalPanel dialogContents1){
+		if (attributeNode == null) {
 			return;
 		}
-		
 		// Set the attribute name
-		String attributeName = (String) attributenode.getExtraInformation(NAME);
-		ListBox attributeNameListBox = (ListBox) grid.getWidget(row, 1);
-		attributeNameListBox.setEnabled(true);
-		for (int j = 0; j < attributeNameListBox.getItemCount(); j++) {
-			if (attributeNameListBox.getItemText(j).equals(attributeName)) {
-				attributeNameListBox.setSelectedIndex(j);
+		String attributeName = (String) attributeNode.getExtraInformation(NAME);
+		attributeListBox.setEnabled(true);
+		for (int j = 0; j < attributeListBox.getItemCount(); j++) {
+			if (attributeListBox.getItemText(j).equals(attributeName)) {
+				attributeListBox.setSelectedIndex(j);
 				break;
 			}
 		}
 		// Set the mode name
-		String modeName = (String) attributenode.getExtraInformation(MODE);
-		ListBox modeNameListBox = (ListBox) grid.getWidget(row, 2);
-		modeNameListBox.setEnabled(true);
-		for (int j = 0; j < modeNameListBox.getItemCount(); j++) {
-			if (modeNameListBox.getItemText(j).equalsIgnoreCase(modeName)
-					|| modeNameListBox.getItemText(j).equalsIgnoreCase(
+		String modeName = (String) attributeNode.getExtraInformation(MODE);
+		modeListBox.setEnabled(true);
+		for (int j = 0; j < modeListBox.getItemCount(); j++) {
+			if (modeListBox.getItemText(j).equalsIgnoreCase(modeName)
+					|| modeListBox.getItemText(j).equalsIgnoreCase(
 							"-- " + modeName)) {
-				modeNameListBox.setSelectedIndex(j);
+				modeListBox.setSelectedIndex(j);
 				break;
 			}
 		}
 		if (!CHECK_IF_PRESENT.equalsIgnoreCase(modeName)) {
 			if (VALUE_SET.equalsIgnoreCase(modeName)) {
 				ListBox qdmListBox = createQdmListBox();
-				setToolTipForEachElementInQdmListBox(qdmListBox);
-				grid.setWidget(row, 3, qdmListBox);
-				
-				String qdmId = (String) attributenode
+				qdmListBox.getElement().setId("qdmAttributeDialog_qdmListBox");
+				qdmListBox.setVisibleItemCount(1);
+				qdmListBox.setWidth("250px");
+						
+				String qdmId = (String) attributeNode
 						.getExtraInformation(QDM_UUID);
 				if (PopulationWorkSpaceConstants.getElementLookUpName().containsKey(qdmId)) {
 					for (int r = 0; r < qdmListBox.getItemCount(); r++) {
@@ -933,41 +518,51 @@ public class QDMAttributeDialogBox {
 						}
 					}
 				}
+				dialogContents1.clear();
+				Label valueSet = (Label) LabelBuilder.buildLabel(qdmListBox, "Value Set");
+				dialogContents1.add(valueSet);
+				dialogContents1.setCellHorizontalAlignment(valueSet, HasHorizontalAlignment.ALIGN_LEFT);
+				dialogContents1.setCellHorizontalAlignment(qdmListBox, HasHorizontalAlignment.ALIGN_LEFT);
+				dialogContents1.add(qdmListBox);
 			}
 			// If this is a Comparison operator
 			else {
-				HorizontalPanel panel = new HorizontalPanel();
-				panel.getElement().setId("panel_HorizontalPanel");
-				panel.setWidth("8em");
-				panel.setSpacing(0);
-				
-				TextBox textBox = new TextBox();
-				textBox.getElement().setId("textBox_TextBox_4");
-				textBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
-				textBox.setWidth("3em");
-				textBox.setHeight("19");
-				textBox.setValue((String) attributenode
+				dialogContents1.clear();
+				Label quantityLabel = (Label) LabelBuilder.buildLabel(quantityTextBox, "Quantity");
+				TextBox quantityTextBox  = new TextBox();
+				quantityTextBox.getElement().setId("qdmAttributeDialog_quantityTextBox");
+				quantityTextBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
+				quantityTextBox.setWidth("200px");
+				quantityTextBox.setHeight("19");
+				quantityTextBox.setValue((String) attributeNode
 						.getExtraInformation(COMPARISON_VALUE));
+				dialogContents1.add(quantityLabel);
+				dialogContents1.setCellHorizontalAlignment(quantityLabel, HasHorizontalAlignment.ALIGN_LEFT);
+				dialogContents1.setCellHorizontalAlignment(quantityTextBox, HasHorizontalAlignment.ALIGN_LEFT);
+				dialogContents1.add(quantityTextBox);
 				
-				ListBox units = new ListBox(false);
-				units.setVisibleItemCount(1);
-				units.setWidth("5em");
+				Label unitsLabel = (Label) LabelBuilder.buildLabel(quantityTextBox, "Units");
+				ListBox unitsListBox = new ListBox(false);
+				unitsListBox.getElement().setId("qdmAttributeDialog_unitsListBox");
+				unitsListBox.setVisibleItemCount(1);
+				unitsListBox.setWidth("200px");
 				
 				for (String unitName : unitNames) {
-					units.addItem(unitName);
+					unitsListBox.addItem(unitName);
 				}
-				setToolTipForEachElementInListbox(units);
-				String unit = (String) attributenode.getExtraInformation(UNIT);
-				for (int g = 0; g < units.getItemCount(); g++) {
-					if (units.getItemText(g).equals(unit)) {
-						units.setSelectedIndex(g);
+				//setToolTipForEachElementInListbox(units);
+				String unit = (String) attributeNode.getExtraInformation(UNIT);
+				for (int g = 0; g < unitsListBox.getItemCount(); g++) {
+					if (unitsListBox.getItemText(g).equals(unit)) {
+						unitsListBox.setSelectedIndex(g);
 						break;
 					}
 				}
-				panel.add(textBox);
-				panel.add(units);
 				
-				grid.setWidget(row, 3, panel);
+				dialogContents1.add(unitsLabel);
+				dialogContents1.setCellHorizontalAlignment(unitsLabel, HasHorizontalAlignment.ALIGN_LEFT);
+				dialogContents1.setCellHorizontalAlignment(unitsListBox, HasHorizontalAlignment.ALIGN_LEFT);
+				dialogContents1.add(unitsListBox);
 			}
 		}
 	}
@@ -1005,14 +600,13 @@ public class QDMAttributeDialogBox {
 		List<String> modeList = new ArrayList<String>();
 		
 		modeList.add(CHECK_IF_PRESENT);
+		modeList.add(VALUE_SET);
 		modeList.add(COMPARISON);
 		modeList.add(LESS_THAN);
 		modeList.add(GREATER_THAN);
 		modeList.add(EQUAL_TO);
 		modeList.add(LESS_THAN_OR_EQUAL_TO);
 		modeList.add(GREATER_THAN_OR_EQUAL_TO);
-		modeList.add(VALUE_SET);
-		
 		return modeList;
 	}
 	
@@ -1127,4 +721,85 @@ public class QDMAttributeDialogBox {
 			optionElement.setTitle(title);
 		}
 	}
+	
+	
+	private static boolean isValidAttribute(ListBox attributeListBox){
+		boolean isValid = true;
+		if(attributeListBox.getItemText(attributeListBox.getSelectedIndex()).equalsIgnoreCase("Select")){
+			attributeListBox.setStyleName("gwt-TextBoxRed");
+			isValid = false;
+		}
+		return isValid;
+	}
+	
+	private static boolean isValidMode(ListBox modeListBox){
+		boolean isValid = true;
+		if(modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Select") ||
+				modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase(COMPARISON)){
+			modeListBox.setStyleName("gwt-TextBoxRed");
+			isValid = false;
+		}
+		return isValid;
+	}
+	
+	private static boolean isValidQuantity(TextBox quantityTextBox){
+		boolean isValid = true;
+		if(quantityTextBox.getValue().equals("") ){
+			quantityTextBox.setStyleName("gwt-TextBoxRed");
+			isValid = false;
+		}
+		return isValid;
+	}
+	
+	/**
+	 * Sets the focus.
+	 *
+	 * @param hPanel the new focus
+	 */
+	private static void setFocus(HorizontalPanel hPanel){
+		try{
+			hPanel.getElement().focus();
+			hPanel.getElement().setAttribute("id", "ErrorMessage");
+			hPanel.getElement().setAttribute("aria-role", "image");
+			hPanel.getElement().setAttribute("aria-labelledby", "LiveRegion");
+			hPanel.getElement().setAttribute("aria-live", "assertive");
+			hPanel.getElement().setAttribute("aria-atomic", "true");
+			hPanel.getElement().setAttribute("aria-relevant", "all");
+			hPanel.getElement().setAttribute("role", "alert");
+		}catch(JavaScriptException e){
+			//This try/catch block is needed for IE7 since it is throwing exception "cannot move
+			//focus to the invisible control."
+			//do nothing.
+		}
+	}
+	
+	
+	/**
+	 * Gets the widget.
+	 *
+	 * @param hPanel the h panel
+	 * @return the widget
+	 */
+	private static Widget getWidget(HorizontalPanel hPanel,String errorMessage){
+		hPanel.clear();
+		FlowPanel imagePanel = new FlowPanel();
+		FlowPanel msgPanel = new FlowPanel();
+		Image errorIcon = new Image(ImageResources.INSTANCE.msg_error());
+		Label label = new Label(errorMessage);
+		errorIcon.getElement().setAttribute("alt", "ErrorMessage");
+		imagePanel.getElement().setId("imagePanel_FlowPanel");
+		imagePanel.setTitle("Error");
+		imagePanel.add(errorIcon);
+		msgPanel.getElement().setId("msgPanel_FlowPanel");
+		msgPanel.add(label);
+		hPanel.clear();
+		hPanel.getElement().setId("hPanel_HorizontalPanel");
+		hPanel.setStyleName("alertMessageDialogBox");
+		hPanel.add(imagePanel);
+		hPanel.add(msgPanel);
+		setFocus(hPanel);
+		return hPanel;
+	}
+		
+	
 }

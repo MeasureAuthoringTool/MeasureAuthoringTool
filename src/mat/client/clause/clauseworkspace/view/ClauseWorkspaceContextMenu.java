@@ -1009,11 +1009,13 @@ public class ClauseWorkspaceContextMenu {
 	 * @param result the result
 	 */
 	private native void showHumanReadableDialogBox(String result) /*-{
-		var humanReadableWindow = window.open("","HumanReadable","width=1000,height=700");
-		if(humanReadableWindow && humanReadableWindow.top){
-			humanReadableWindow.document.write(result);
-		}
-	}-*/;
+	var humanReadableWindow = window.open("","","width=1000,height=700");
+	if(humanReadableWindow && humanReadableWindow.top){
+		//Populate the human readable in the new window.
+		humanReadableWindow.document.write(result);
+		humanReadableWindow.document.title = "Human Readable.";
+	}
+}-*/;
 	
 	/**
 	 * Gets the view human readable menu.

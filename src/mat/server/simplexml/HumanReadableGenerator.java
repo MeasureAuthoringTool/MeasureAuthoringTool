@@ -155,7 +155,7 @@ public class HumanReadableGenerator {
 				 */
 				NodeList childNodes = item.getChildNodes();
 				parseChild(childNodes.item(0),liElement,item);
-				liElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue()+" ");
+				liElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
 				parseChild(childNodes.item(1),liElement,item);
 			}else{
 				/**

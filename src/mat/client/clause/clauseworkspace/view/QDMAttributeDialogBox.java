@@ -101,7 +101,7 @@ public class QDMAttributeDialogBox {
 	private static final String ATTRIBUTES = "attributes";
 	
 	/** The Constant QDM_ATTRIBUTES_TITLE. */
-	private static final String QDM_ATTRIBUTES_TITLE = "Edit Attributes.";
+	private static final String QDM_ATTRIBUTES_TITLE = "Edit Attribute";
 	
 	/** The Constant SELECT. */
 	private static final String SELECT = "Select";
@@ -317,7 +317,7 @@ public class QDMAttributeDialogBox {
 					qdmListBox.getElement().setId("qdmAttributeDialog_qdmListBox");
 					qdmListBox.setVisibleItemCount(1);
 					qdmListBox.setWidth("250px");
-					//setToolTipForEachElementInQdmListBox(qdmListBox);
+			//		setToolTipForEachElementInQdmListBox(qdmListBox);
 					Label valueSet = (Label) LabelBuilder.buildLabel(qdmListBox, "Value Set");
 					dialogContents1.add(valueSet);
 					dialogContents1.setCellHorizontalAlignment(valueSet, HasHorizontalAlignment.ALIGN_LEFT);
@@ -368,12 +368,12 @@ public class QDMAttributeDialogBox {
 			public void onClick(ClickEvent event) {
 				if(!isValidAttribute(attributeListBox)){
 					hPanel.clear();
-					getWidget(hPanel,"Please select the attribute field");
+					getWidget(hPanel,"Please select Attribute field");
 					
 				}
 				else if(!isValidMode(modeListBox)){
 					hPanel.clear();
-					getWidget(hPanel,"Please select the mode field");
+					getWidget(hPanel,"Please select Mode field");
 					
 				}
 				else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).startsWith("--") &&
@@ -392,7 +392,7 @@ public class QDMAttributeDialogBox {
 				else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Value Set")){
 					if(qdmListBox.getSelectedIndex() == -1){
 						hPanel.clear();
-						getWidget(hPanel,"Please add attribute for Value Set selection");
+						getWidget(hPanel,"Please add Attribute for Value Set selection");
 					}
 					else{
 						saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox);
@@ -503,7 +503,7 @@ public class QDMAttributeDialogBox {
 		}
 		if (!CHECK_IF_PRESENT.equalsIgnoreCase(modeName)) {
 			if (VALUE_SET.equalsIgnoreCase(modeName)) {
-				ListBox qdmListBox = createQdmListBox();
+				qdmListBox = createQdmListBox();
 				qdmListBox.getElement().setId("qdmAttributeDialog_qdmListBox");
 				qdmListBox.setVisibleItemCount(1);
 				qdmListBox.setWidth("250px");
@@ -518,6 +518,7 @@ public class QDMAttributeDialogBox {
 						}
 					}
 				}
+				//setToolTipForEachElementInQdmListBox(qdmListBox);
 				dialogContents1.clear();
 				Label valueSet = (Label) LabelBuilder.buildLabel(qdmListBox, "Value Set");
 				dialogContents1.add(valueSet);
@@ -529,7 +530,7 @@ public class QDMAttributeDialogBox {
 			else {
 				dialogContents1.clear();
 				Label quantityLabel = (Label) LabelBuilder.buildLabel(quantityTextBox, "Quantity");
-				TextBox quantityTextBox  = new TextBox();
+				quantityTextBox  = new TextBox();
 				quantityTextBox.getElement().setId("qdmAttributeDialog_quantityTextBox");
 				quantityTextBox.addKeyPressHandler(new DigitsOnlyKeyPressHandler());
 				quantityTextBox.setWidth("200px");
@@ -542,7 +543,7 @@ public class QDMAttributeDialogBox {
 				dialogContents1.add(quantityTextBox);
 				
 				Label unitsLabel = (Label) LabelBuilder.buildLabel(quantityTextBox, "Units");
-				ListBox unitsListBox = new ListBox(false);
+				unitsListBox = new ListBox(false);
 				unitsListBox.getElement().setId("qdmAttributeDialog_unitsListBox");
 				unitsListBox.setVisibleItemCount(1);
 				unitsListBox.setWidth("200px");

@@ -119,8 +119,8 @@ public class HumanReadableGenerator {
 		if(LOGICAL_OP.equals(nodeName)){
 			
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
-				Element liElement = parentListElement.appendElement(HTML_LI);
-				liElement.appendText(parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase()+": ");
+				Element liElement = parentListElement.appendElement(HTML_LI);				
+				liElement.appendText(getNodeText(parentNode));
 			}
 			
 			Element ulElement = parentListElement.appendElement(HTML_UL);
@@ -138,7 +138,7 @@ public class HumanReadableGenerator {
 		}else if(SET_OP.equals(nodeName)){
 			Element liElement = parentListElement.appendElement(HTML_LI);
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
-				liElement.appendText(parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase()+": ");
+				liElement.appendText(getNodeText(parentNode));
 			}
 			Element ulElement = liElement.appendElement(HTML_UL);
 			NodeList childNodes = item.getChildNodes();
@@ -148,7 +148,7 @@ public class HumanReadableGenerator {
 		}else if(RELATIONAL_OP.equals(nodeName)){
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);
-				liElement.appendText(parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase()+": ");
+				liElement.appendText(getNodeText(parentNode));
 				/**
 				 * A relationalOp can have 2 children. First evaluate the LHS child, then add the name of the relationalOp and finally
 				 * evaluate the RHS child.
@@ -171,14 +171,14 @@ public class HumanReadableGenerator {
 		}else if(ELEMENT_REF.equals(nodeName)){
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);
-				liElement.appendText(parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase()+": "+getQDMText(item));
+				liElement.appendText(getNodeText(parentNode)+getNodeText(item));
 			}else{
-				parentListElement.appendText(getQDMText(item));
+				parentListElement.appendText(getNodeText(item));
 			}
 		}else if("functionalOp".equals(nodeName)){
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);
-				liElement.appendText(" "+parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase()+": ");
+				liElement.appendText(" "+getNodeText(parentNode));
 				liElement.appendText(getFunctionText(item));
 				NodeList childNodes = item.getChildNodes();
 				for (int i=0; i< childNodes.getLength(); i++){
@@ -197,10 +197,40 @@ public class HumanReadableGenerator {
 			Element liElement = parentListElement.appendElement(HTML_LI);
 			
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
-				liElement.appendText(" "+parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase()+": ");
+				liElement.appendText(" "+getNodeText(parentNode));
 			}
 			liElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " ");
 		}
+	}
+
+	/**
+	 * This method is used to get the correct text to add to human readable depending on the 
+	 * type of node. 
+	 * @param parentNode
+	 */
+	private static String getNodeText(Node parentNode) {
+		String parentNodeName = parentNode.getNodeName();
+		String name = "";
+		if(LOGICAL_OP.equals(parentNodeName)){
+		    name = parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
+			name += ": ";
+		}else if(SET_OP.equals(parentNodeName)){
+			name = parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
+			name += " of ";
+		}else if(ELEMENT_REF.equals(parentNodeName)){
+			//TODO: Write code to take <attributes> into account.
+			name = parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+			if(name.endsWith(" : Timing Element")){
+				name = name.substring(0,name.indexOf(" : Timing Element"));
+			}else {
+				String[] nameArr = name.split(":");
+				if(nameArr.length == 2){
+					name = nameArr[1].trim()+": "+nameArr[0].trim();
+				}
+			}
+			name = "\"" + name + "\" ";
+		}
+		return name;
 	}
 
 	private static String getFunctionText(Node item) {
@@ -218,16 +248,16 @@ public class HumanReadableGenerator {
 	 * @param item
 	 * @return
 	 */
-	private static String getQDMText(Node item) {
-		if(!ELEMENT_REF.equals(item.getNodeName())){
-			return "";
-		}
-		String displayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
-		if(displayName.endsWith(" : Timing Element")){
-			displayName = displayName.substring(0,displayName.indexOf(" : Timing Element"));
-		}
-		return "\"" + displayName + "\" ";
-	}
+//	private static String getQDMText(Node item) {
+//		if(!ELEMENT_REF.equals(item.getNodeName())){
+//			return "";
+//		}
+//		String displayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+//		if(displayName.endsWith(" : Timing Element")){
+//			displayName = displayName.substring(0,displayName.indexOf(" : Timing Element"));
+//		}
+//		return "\"" + displayName + "\" ";
+//	}
 
 	private static org.jsoup.nodes.Document createBaseHumanReadableDocument() {
 		org.jsoup.nodes.Document htmlDocument = org.jsoup.nodes.Document.createShell("");

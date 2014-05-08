@@ -301,6 +301,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The selection model. */
 	private MultiSelectionModel<QualityDataSetDTO> selectionModel;
 	
+	/** The measure selection model. */
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> measureSelectionModel;
 	
 	/** The cell table. */

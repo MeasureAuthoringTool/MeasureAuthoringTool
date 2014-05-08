@@ -780,6 +780,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	}
 	
 	
+	/** The page size. */
 	private int PAGE_SIZE = 25;
 	
 	/** The panel. */
@@ -913,9 +914,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		metaDataDisplay.getAddEditComponentMeasures().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				getMetaDataDisplay().getSaveErrorMsg().clear();
 				if (currentMeasureDetail.getComponentMeasuresSelectedList() != null) {
-					addEditComponentMeasuresDisplay.setComponentMeasureSelectedList(currentMeasureDetail.getComponentMeasuresSelectedList());
+				addEditComponentMeasuresDisplay.setComponentMeasureSelectedList(dbComponentMeasuresSelectedList);
 					} else {
 						List<ManageMeasureSearchModel.Result> componentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
 						addEditComponentMeasuresDisplay.setComponentMeasureSelectedList(componentMeasuresList);
@@ -1125,21 +1125,18 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		});
 		
 	    addEditComponentMeasuresDisplay.getAddtoComponentMeasuresButtonHandler().addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
-				addEditComponentMeasuresDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
-						.getMessageDelegate().getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY());
-				currentMeasureDetail.setComponentMeasuresSelectedList(addEditComponentMeasuresDisplay.getComponentMeasureSelectedList());
-				
+				//addEditComponentMeasuresDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+				//		.getMessageDelegate().getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY());
+				currentMeasureDetail.setComponentMeasuresSelectedList(
+						addEditComponentMeasuresDisplay.getComponentMeasureSelectedList());
 			}
 		});
 	    
 	    addEditComponentMeasuresDisplay.getSearchButton().addClickHandler(new ClickHandler() {
-			
 			@Override
 			public void onClick(ClickEvent event) {
-				
 				searchMeasuresList(addEditComponentMeasuresDisplay.getSearchString().getValue(), 1, PAGE_SIZE, 1);
 			}
 		});
@@ -1157,7 +1154,6 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	public final void getComponentMeasures(){
 		metaDataDisplay.buildComponentMeasuresSelectedList(currentMeasureDetail.getComponentMeasuresSelectedList());
 	}
-	
 	
 
 	/**
@@ -1561,6 +1557,14 @@ private void setAuthorsListOnView() {
 		dbComponentMeasuresSelectedList.clear();
 		dbComponentMeasuresSelectedList.addAll(currentMeasureDetail.getComponentMeasuresSelectedList());
 		
+//		if (currentMeasureDetail.getComponentMeasuresSelectedList() != null) {
+//			addEditComponentMeasuresDisplay.setComponentMeasureSelectedList(currentMeasureDetail.getComponentMeasuresSelectedList());
+//			} else {
+//				List<ManageMeasureSearchModel.Result> componentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
+//				addEditComponentMeasuresDisplay.setComponentMeasureSelectedList(componentMeasuresList);
+//			}
+//		
+		
 		getAppliedQDMList(true);
 		getComponentMeasures();
 		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
@@ -1757,7 +1761,6 @@ private void setAuthorsListOnView() {
 	 */
 	private void displayAddEditMeasureType() {
 		isSubView = true;
-		
 		addEditMeasureTypeDisplay.setReturnToLink("Return to Previous");
 		currentMeasureTypeList = new ManageMeasureTypeModel(currentMeasureDetail.getMeasureTypeList());
 		currentMeasureTypeList.setPageSize(SearchView.PAGE_SIZE_ALL);
@@ -1773,17 +1776,11 @@ private void setAuthorsListOnView() {
 	 */
 	private void displayAddEditComponentMeasures() {
 		isSubView = true;
+		clearMessages();
 		VerticalPanel vPanel = new VerticalPanel();
-		//addEditComponentMeasuresDisplay.setReturnToLink("Return to Previous");
-	    //getComponentMeasures();
 		searchMeasuresList("",1,PAGE_SIZE,1);
-		//currentMeasureTypeList = new ManageMeasureTypeModel(currentMeasureDetail.getMeasureTypeList());
-		//currentMeasureTypeList.setPageSize(SearchView.PAGE_SIZE_ALL);
-		
-		//addEditMeasureTypeDisplay.buildDataTable(currentMeasureTypeList);
 		panel.clear();
 		panel.setStyleName("contentWithHeadingPanel");
-		//svPanel.setStyleName("contentPanel");
 		vPanel.add(addEditComponentMeasuresDisplay.asWidget());
 		vPanel.add(new SpacerWidget());
 		vPanel.add(new SpacerWidget());

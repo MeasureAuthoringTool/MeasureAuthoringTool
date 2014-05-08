@@ -476,7 +476,7 @@ public class QDMAttributeDialogBox {
 				else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Value Set")){
 					if(qdmListBox.getSelectedIndex() == -1){
 						hPanel.clear();
-						getWidget(hPanel,"Please add Attribute for Value Set selection");
+						getWidget(hPanel,"'Please add value set to define attribute'");
 					}
 					else{
 						saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox);

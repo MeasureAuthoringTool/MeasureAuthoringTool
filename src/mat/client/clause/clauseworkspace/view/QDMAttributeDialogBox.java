@@ -236,7 +236,15 @@ public class QDMAttributeDialogBox {
 		for (String attribName : attributeList) {
 			attributeListBox.addItem(attribName);
 		}
-		
+		setToolTipForEachElementInListbox(attributeListBox);
+		if(attributeListBox.getSelectedIndex() > -1){
+			SelectElement selectElement = SelectElement.as(attributeListBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+					.getOptions();
+
+			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+			attributeListBox.setTitle(optionElement.getTitle());
+		}
 		hPanel.clear();
 		dialogContents.add(hPanel);
 		
@@ -256,6 +264,16 @@ public class QDMAttributeDialogBox {
 					.substring(2).trim() : modeName;
 					modeListBox.addItem(modeName, modeValue);
 		}
+		setToolTipForEachElementInListbox(modeListBox);
+		if(modeListBox.getSelectedIndex() > -1){
+			SelectElement selectElement = SelectElement.as(modeListBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+					.getOptions();
+
+			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+			modeListBox.setTitle(optionElement.getTitle());
+		}
+
 		modeListBox.setEnabled(false);
 		
 		
@@ -286,10 +304,26 @@ public class QDMAttributeDialogBox {
 				hPanel.clear();
 				hPanel.removeStyleName("alertMessageDialogBox");
 				attributeListBox.removeStyleName("gwt-TextBoxRed");
+				if(attributeListBox.getSelectedIndex() > -1){
+					SelectElement selectElement = SelectElement.as(attributeListBox.getElement());
+					com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+							.getOptions();
+
+					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+					attributeListBox.setTitle(optionElement.getTitle());
+				}
 				String selectedAttribute = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
 				if(selectedAttribute.equalsIgnoreCase("Select")){	
 					dialogContents1.clear();
 					modeListBox.setSelectedIndex(0);
+					if(modeListBox.getSelectedIndex() > -1){
+						SelectElement selectElement = SelectElement.as(modeListBox.getElement());
+						com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+								.getOptions();
+
+						OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+						modeListBox.setTitle(optionElement.getTitle());
+					}
 					modeListBox.setEnabled(false);
 				}
 				else{
@@ -306,6 +340,14 @@ public class QDMAttributeDialogBox {
 				hPanel.clear();
 				hPanel.removeStyleName("alertMessageDialogBox");
 				modeListBox.removeStyleName("gwt-TextBoxRed");
+				if(modeListBox.getSelectedIndex() > -1){
+					SelectElement selectElement = SelectElement.as(modeListBox.getElement());
+					com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+							.getOptions();
+
+					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+					modeListBox.setTitle(optionElement.getTitle());
+				}
 				String selectedMode = modeListBox.getItemText(modeListBox.getSelectedIndex());
 				if (QDMAttributeDialogBox.SELECT.equalsIgnoreCase(selectedMode)
 						|| CHECK_IF_PRESENT.equalsIgnoreCase(selectedMode)
@@ -317,7 +359,30 @@ public class QDMAttributeDialogBox {
 					qdmListBox.getElement().setId("qdmAttributeDialog_qdmListBox");
 					qdmListBox.setVisibleItemCount(1);
 					qdmListBox.setWidth("250px");
-			//		setToolTipForEachElementInQdmListBox(qdmListBox);
+					if(qdmListBox.getSelectedIndex()>-1){
+						setToolTipForEachElementInQdmListBox(qdmListBox);
+						SelectElement selectElement = SelectElement.as(qdmListBox.getElement());
+						com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+								.getOptions();
+						OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+						qdmListBox.setTitle(optionElement.getTitle());
+					}
+					qdmListBox.addChangeHandler(new ChangeHandler() {
+						
+						@Override
+						public void onChange(ChangeEvent event) {
+							// TODO Auto-generated method stub
+							if(qdmListBox.getSelectedIndex()>-1){
+								SelectElement selectElement = SelectElement.as(qdmListBox.getElement());
+								com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+										.getOptions();
+			
+								OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+								qdmListBox.setTitle(optionElement.getTitle());
+							}
+						}
+					});
+					
 					Label valueSet = (Label) LabelBuilder.buildLabel(qdmListBox, "Value Set");
 					dialogContents1.add(valueSet);
 					dialogContents1.setCellHorizontalAlignment(valueSet, HasHorizontalAlignment.ALIGN_LEFT);
@@ -359,6 +424,29 @@ public class QDMAttributeDialogBox {
 					for (String unitName : unitNames) {
 						unitsListBox.addItem(unitName);
 					}
+					setToolTipForEachElementInListbox(unitsListBox);
+					if(unitsListBox.getSelectedIndex() > -1){
+						SelectElement selectElement = SelectElement.as(unitsListBox.getElement());
+						com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+								.getOptions();
+
+						OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+						unitsListBox.setTitle(optionElement.getTitle());
+					}
+					unitsListBox.addChangeHandler(new ChangeHandler() {
+						
+						@Override
+						public void onChange(ChangeEvent event) {
+							if(unitsListBox.getSelectedIndex() > -1){
+								SelectElement selectElement = SelectElement.as(unitsListBox.getElement());
+								com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+										.getOptions();
+
+								OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+								unitsListBox.setTitle(optionElement.getTitle());
+							}
+						}
+					});
 				}
 			}
 		});
@@ -481,6 +569,7 @@ public class QDMAttributeDialogBox {
 		if (attributeNode == null) {
 			return;
 		}
+		
 		// Set the attribute name
 		String attributeName = (String) attributeNode.getExtraInformation(NAME);
 		attributeListBox.setEnabled(true);
@@ -489,6 +578,15 @@ public class QDMAttributeDialogBox {
 				attributeListBox.setSelectedIndex(j);
 				break;
 			}
+		}
+		
+		if(attributeListBox.getSelectedIndex() > -1){
+			SelectElement selectElement = SelectElement.as(attributeListBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+					.getOptions();
+
+			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+			attributeListBox.setTitle(optionElement.getTitle());
 		}
 		// Set the mode name
 		String modeName = (String) attributeNode.getExtraInformation(MODE);
@@ -500,6 +598,14 @@ public class QDMAttributeDialogBox {
 				modeListBox.setSelectedIndex(j);
 				break;
 			}
+		}
+		if(modeListBox.getSelectedIndex() > -1){
+			SelectElement selectElement = SelectElement.as(modeListBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+					.getOptions();
+
+			OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+			modeListBox.setTitle(optionElement.getTitle());
 		}
 		if (!CHECK_IF_PRESENT.equalsIgnoreCase(modeName)) {
 			if (VALUE_SET.equalsIgnoreCase(modeName)) {
@@ -518,7 +624,28 @@ public class QDMAttributeDialogBox {
 						}
 					}
 				}
-				//setToolTipForEachElementInQdmListBox(qdmListBox);
+				if(qdmListBox.getSelectedIndex() > -1){
+					setToolTipForEachElementInQdmListBox(qdmListBox);
+					SelectElement selectElement = SelectElement.as(qdmListBox.getElement());
+					com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+							.getOptions();
+					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+					qdmListBox.setTitle(optionElement.getTitle());
+				}
+				qdmListBox.addChangeHandler(new ChangeHandler() {
+					
+					@Override
+					public void onChange(ChangeEvent event) {
+						if(qdmListBox.getSelectedIndex() > -1){
+							SelectElement selectElement = SelectElement.as(qdmListBox.getElement());
+							com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+									.getOptions();
+		
+							OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+							qdmListBox.setTitle(optionElement.getTitle());
+						}
+					}
+				});
 				dialogContents1.clear();
 				Label valueSet = (Label) LabelBuilder.buildLabel(qdmListBox, "Value Set");
 				dialogContents1.add(valueSet);
@@ -542,6 +669,15 @@ public class QDMAttributeDialogBox {
 				dialogContents1.setCellHorizontalAlignment(quantityTextBox, HasHorizontalAlignment.ALIGN_LEFT);
 				dialogContents1.add(quantityTextBox);
 				
+				quantityTextBox.addClickHandler(new ClickHandler() {
+					
+					@Override
+					public void onClick(ClickEvent event) {
+						quantityTextBox.removeStyleName("gwt-TextBoxRed");
+						
+					}
+				});
+				
 				Label unitsLabel = (Label) LabelBuilder.buildLabel(quantityTextBox, "Units");
 				unitsListBox = new ListBox(false);
 				unitsListBox.getElement().setId("qdmAttributeDialog_unitsListBox");
@@ -560,6 +696,30 @@ public class QDMAttributeDialogBox {
 					}
 				}
 				
+				setToolTipForEachElementInListbox(unitsListBox);
+				if(unitsListBox.getSelectedIndex() > -1){
+					SelectElement selectElement = SelectElement.as(unitsListBox.getElement());
+					com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+							.getOptions();
+
+					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+					unitsListBox.setTitle(optionElement.getTitle());
+				}
+				unitsListBox.addChangeHandler(new ChangeHandler() {
+					
+					@Override
+					public void onChange(ChangeEvent event) {
+						if(unitsListBox.getSelectedIndex() > -1){
+							SelectElement selectElement = SelectElement.as(unitsListBox.getElement());
+							com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+									.getOptions();
+
+							OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
+							unitsListBox.setTitle(optionElement.getTitle());
+						}
+					}
+				});
+				
 				dialogContents1.add(unitsLabel);
 				dialogContents1.setCellHorizontalAlignment(unitsLabel, HasHorizontalAlignment.ALIGN_LEFT);
 				dialogContents1.setCellHorizontalAlignment(unitsListBox, HasHorizontalAlignment.ALIGN_LEFT);
@@ -574,7 +734,7 @@ public class QDMAttributeDialogBox {
 	 * @return the list box
 	 */
 	private static ListBox createQdmListBox() {
-		ListBox qdmListBox = new ListBox(false);
+		ListBox qdmListBox = new ListBox();
 		qdmListBox.setVisibleItemCount(1);
 		qdmListBox.setWidth("8em");
 		for (Entry<String, Node> qdm : PopulationWorkSpaceConstants.getElementLookUpNode()

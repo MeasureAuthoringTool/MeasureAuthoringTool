@@ -316,6 +316,7 @@ public class QDMAttributeDialogBox {
 				if(selectedAttribute.equalsIgnoreCase("Select")){	
 					dialogContents1.clear();
 					modeListBox.setSelectedIndex(0);
+					modeListBox.removeStyleName("gwt-TextBoxRed");
 					if(modeListBox.getSelectedIndex() > -1){
 						SelectElement selectElement = SelectElement.as(modeListBox.getElement());
 						com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
@@ -476,6 +477,7 @@ public class QDMAttributeDialogBox {
 				else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Value Set")){
 					if(qdmListBox.getSelectedIndex() == -1){
 						hPanel.clear();
+						qdmListBox.setStyleName("gwt-TextBoxRed");
 						getWidget(hPanel,"Please add value set to define attribute");
 					}
 					else{

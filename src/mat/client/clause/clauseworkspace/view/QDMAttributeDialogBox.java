@@ -356,9 +356,6 @@ public class QDMAttributeDialogBox {
 				} else if (VALUE_SET.equals(selectedMode)) {
 					dialogContents1.clear();
 					qdmListBox = createQdmListBox();
-					qdmListBox.getElement().setId("qdmAttributeDialog_qdmListBox");
-					qdmListBox.setVisibleItemCount(1);
-					qdmListBox.setWidth("250px");
 					if(qdmListBox.getSelectedIndex()>-1){
 						setToolTipForEachElementInQdmListBox(qdmListBox);
 						SelectElement selectElement = SelectElement.as(qdmListBox.getElement());
@@ -371,7 +368,6 @@ public class QDMAttributeDialogBox {
 						
 						@Override
 						public void onChange(ChangeEvent event) {
-							// TODO Auto-generated method stub
 							if(qdmListBox.getSelectedIndex()>-1){
 								SelectElement selectElement = SelectElement.as(qdmListBox.getElement());
 								com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
@@ -610,9 +606,6 @@ public class QDMAttributeDialogBox {
 		if (!CHECK_IF_PRESENT.equalsIgnoreCase(modeName)) {
 			if (VALUE_SET.equalsIgnoreCase(modeName)) {
 				qdmListBox = createQdmListBox();
-				qdmListBox.getElement().setId("qdmAttributeDialog_qdmListBox");
-				qdmListBox.setVisibleItemCount(1);
-				qdmListBox.setWidth("250px");
 						
 				String qdmId = (String) attributeNode
 						.getExtraInformation(QDM_UUID);
@@ -736,7 +729,7 @@ public class QDMAttributeDialogBox {
 	private static ListBox createQdmListBox() {
 		ListBox qdmListBox = new ListBox();
 		qdmListBox.setVisibleItemCount(1);
-		qdmListBox.setWidth("8em");
+		qdmListBox.setWidth("15em");
 		for (Entry<String, Node> qdm : PopulationWorkSpaceConstants.getElementLookUpNode()
 				.entrySet()) {
 			Node qdmNode = qdm.getValue();

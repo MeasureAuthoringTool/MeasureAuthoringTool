@@ -120,6 +120,7 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 	/** The component measure selected list. */
 	private  List<ManageMeasureSearchModel.Result> componentMeasureSelectedList;
 	
+	/** The index. */
 	private int index;
 	
 	/* (non-Javadoc)
@@ -229,7 +230,7 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 					for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
 						if (componentMeasureSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
 							isSelected = true;
-							selectionModel.setSelected(object, isSelected);
+							//selectionModel.setSelected(object, isSelected);
 							break;
 						}
 					}
@@ -522,10 +523,10 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 		List<Result> displayedItems = new ArrayList<Result>();
 		displayedItems.addAll(componentMeasureSelectedList);
 		componentMeasureSelectedList.clear();
+		table.redraw();
 		for (ManageMeasureSearchModel.Result msg : displayedItems) {
 			selectionModel.setSelected(msg, false);
 		}
-		//observer.onClearAllCheckBoxesClicked();
 	}
 	
 	/**

@@ -1214,7 +1214,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 						}
 					}
 				}
-				
+				componentMeasuresLabel.setText("Selected Items: " + componentMeasureSelectedList.size());
 			}
 		});
 		
@@ -1272,6 +1272,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void buildComponentMeasuresSelectedList(List<ManageMeasureSearchModel.Result> result){
 		horzComponentMeasurePanel.clear(); 
 		componentMeasuresListSPanel.clear();
+		componentMeasuresSelectedListVPanel.clear();
 		componentMeasuresListSPanel.setStyleName("cellTablePanel");
 		if(result.size()>0){
 		componentMeasureCellTable = new CellTable<ManageMeasureSearchModel.Result>();
@@ -1304,7 +1305,16 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		componentMeasureCellTable.getElement().setAttribute("aria-describedby", "componentMeasureListSummary");
 		componentMeasuresListVPanel.add(componentMeasuresListSPanel);
 		horzComponentMeasurePanel.add(componentMeasuresListVPanel);
+		VerticalPanel vPanel = new VerticalPanel();
+		vPanel.setWidth("10px");
+		horzComponentMeasurePanel.add(vPanel);
+		SimplePanel sPanel = new SimplePanel();
+		sPanel.setHeight("75px");
+		componentMeasuresSelectedListVPanel.add(sPanel);
+		componentMeasuresLabel.setText("Selected Items: " + componentMeasureSelectedList.size());
+		componentMeasuresSelectedListVPanel.add(componentMeasuresLabel);
 		horzComponentMeasurePanel.add(componentMeasuresSelectedListVPanel);
+		
 		} else {
 			HTML desc = new HTML("<p> No Component Measures Selected.</p>");
 			componentMeasuresListSPanel.setSize("200px", "75px");

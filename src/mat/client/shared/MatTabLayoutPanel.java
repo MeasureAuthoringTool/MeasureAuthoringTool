@@ -349,6 +349,14 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(populationWorkspaceTab);
 				validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 			}
+			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 5) {
+				int measurePackagerTab = 5;
+				MeasurePackagePresenter measurePackagerPresenter = (MeasurePackagePresenter) 
+						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(measurePackagerTab);
+				validateNewMeasurePackageTab(selectedIndex, measurePackagerPresenter);
+			}
+			
+			
 		} else if ((selectedIndex == 0) && (previousPresenter instanceof MetaDataPresenter)) {
 			MetaDataPresenter metaDataPresenter = (MetaDataPresenter) previousPresenter;
 			validateMeasureDetailsTab(selectedIndex, metaDataPresenter);
@@ -402,7 +410,8 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 	private void validateNewMeasurePackageTab(int selectedIndex, 
 			MeasurePackagePresenter measurePackagerPresenter) {
 		if (!isMeasurePackageDetailsSame(measurePackagerPresenter)) {
-			
+			saveErrorMessage = measurePackagerPresenter.getView().getSaveErrorMessageDisplay();
+			saveErrorMessage.clear();
 			saveButton = measurePackagerPresenter.getView().getPackageGroupingWidget().getSaveGrouping();
 			//saveButton = (PrimaryButton)measurePackagerPresenter.getView().getAddQDMElementsToMeasureButton();
 			showErrorMessage(measurePackagerPresenter.getView().getSaveErrorMessageDisplay());

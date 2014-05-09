@@ -136,11 +136,13 @@ public class HumanReadableGenerator {
 				parseChild(childNodes.item(i), parentListElement,parentNode);				
 			}
 		}else if(SET_OP.equals(nodeName)){
-			Element liElement = parentListElement.appendElement(HTML_LI);
+			//Element liElement = parentListElement.appendElement(HTML_LI);
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
+				Element liElement = parentListElement.appendElement(HTML_LI);
 				liElement.appendText(getNodeText(parentNode));
 			}
-			Element ulElement = liElement.appendElement(HTML_UL);
+			//Element ulElement = liElement.appendElement(HTML_UL);
+			Element ulElement = parentListElement.appendElement(HTML_UL);
 			NodeList childNodes = item.getChildNodes();
 			for (int i=0; i< childNodes.getLength(); i++){
 				parseChild(childNodes.item(i), ulElement,item);				
@@ -149,23 +151,19 @@ public class HumanReadableGenerator {
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				liElement.appendText(getNodeText(parentNode));
-				/**
-				 * A relationalOp can have 2 children. First evaluate the LHS child, then add the name of the relationalOp and finally
-				 * evaluate the RHS child.
-				 */
-				NodeList childNodes = item.getChildNodes();
-				parseChild(childNodes.item(0),liElement,item);
-				liElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
-				parseChild(childNodes.item(1),liElement,item);
+				getRelationalOpText(item, liElement);
 			}else{
+				getRelationalOpText(item, parentListElement);
 				/**
 				 * A relationalOp can have 2 children. First evaluate the LHS child, then add the name of the relationalOp and finally
 				 * evaluate the RHS child.
 				 */
-				NodeList childNodes = item.getChildNodes();
-				parseChild(childNodes.item(0),parentListElement,item);
-				parentListElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue()+" ");
-				parseChild(childNodes.item(1),parentListElement,item);
+				/*NodeList childNodes = item.getChildNodes();
+				if(childNodes.getLength() == 2){
+					parseChild(childNodes.item(0),parentListElement,item);
+					parentListElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue()+" ");
+					parseChild(childNodes.item(1),parentListElement,item);
+				}*/
 			}
 			
 		}else if(ELEMENT_REF.equals(nodeName)){
@@ -200,6 +198,27 @@ public class HumanReadableGenerator {
 				liElement.appendText(" "+getNodeText(parentNode));
 			}
 			liElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " ");
+		}
+	}
+
+	/**
+	 * @param item
+	 * @param liElement
+	 */
+	private static void getRelationalOpText(Node item, Element liElement) {
+		/**
+		 * A relationalOp can have 2 children. First evaluate the LHS child, then add the name of the relationalOp and finally
+		 * evaluate the RHS child.
+		 */
+		NodeList childNodes = item.getChildNodes();
+		if(childNodes.getLength() == 2){
+			parseChild(childNodes.item(0),liElement,item);
+			Element newLiElement = liElement;
+			if(LOGICAL_OP.equals(childNodes.item(0).getNodeName()) || SET_OP.equals(childNodes.item(0).getNodeName())){
+				newLiElement = liElement.children().last();
+			}
+			newLiElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
+			parseChild(childNodes.item(1),newLiElement,item);
 		}
 	}
 

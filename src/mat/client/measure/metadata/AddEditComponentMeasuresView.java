@@ -374,15 +374,13 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 			spager.setDisplay(table);
 			spager.setPageSize(PAGE_SIZE);
 			table.setWidth("100%");
-			table.setColumnWidth(0, 20.0, Unit.PCT);
-			table.setColumnWidth(1, 40.0, Unit.PCT);
+			table.setColumnWidth(0, 14.0, Unit.PCT);
+			table.setColumnWidth(1, 48.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
-			table.setColumnWidth(3, 20.0, Unit.PCT);
+			table.setColumnWidth(3, 18.0, Unit.PCT);
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
-					"In the following Measure List table, Measure Name is given in first column,"
-							+ " Version in second column, Finalized Date in third column,"
-							+ "History in fourth column, Edit in fifth column, Share in sixth column"
-							+ "Clone in seventh column and Export in eight column.");
+					"In the following Measure List table,Select is given in first Column, Measure Name is given in Second column,"
+							+ " Version in Third column, Finalized Date in fouth column.");
 			table.getElement().setAttribute("id", "MeasureSearchCellTable");
 			table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
 			cellTablePanel.add(invisibleLabel);

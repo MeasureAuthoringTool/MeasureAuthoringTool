@@ -53,22 +53,19 @@ public class QDMAttributeDialogBox {
 	static final String DATATYPE = "datatype";
 	
 	/** The Constant GREATER_THAN_OR_EQUAL_TO. */
-	private static final String GREATER_THAN_OR_EQUAL_TO = "-- Greater Than Or Equal To";
+	private static final String GREATER_THAN_OR_EQUAL_TO = "Greater Than Or Equal To";
 	
 	/** The Constant LESS_THAN_OR_EQUAL_TO. */
-	private static final String LESS_THAN_OR_EQUAL_TO = "-- Less Than Or Equal To";
+	private static final String LESS_THAN_OR_EQUAL_TO = "Less Than Or Equal To";
 	
 	/** The Constant EQUAL_TO. */
-	private static final String EQUAL_TO = "-- Equal To";
+	private static final String EQUAL_TO = "Equal To";
 	
 	/** The Constant GREATER_THAN. */
-	private static final String GREATER_THAN = "-- Greater Than";
+	private static final String GREATER_THAN = "Greater Than";
 	
 	/** The Constant LESS_THAN. */
-	private static final String LESS_THAN = "-- Less Than";
-	
-	/** The Constant COMPARISON. */
-	private static final String COMPARISON = "--Select Operator--";
+	private static final String LESS_THAN = "Less Than";
 	
 	/** The Constant UNIT. */
 	private static final String UNIT = "unit";
@@ -231,7 +228,7 @@ public class QDMAttributeDialogBox {
 		attributeListBox.getElement().setId("qdmAttributeDialog_attributeListBox");
 		attributeListBox.setVisibleItemCount(1);
 		attributeListBox.setWidth("200px");
-		attributeListBox.addItem(QDMAttributeDialogBox.SELECT);
+		attributeListBox.addItem("");
 		
 		for (String attribName : attributeList) {
 			attributeListBox.addItem(attribName);
@@ -312,8 +309,7 @@ public class QDMAttributeDialogBox {
 					OptionElement optionElement = options.getItem(selectElement.getSelectedIndex());
 					attributeListBox.setTitle(optionElement.getTitle());
 				}
-				String selectedAttribute = attributeListBox.getItemText(attributeListBox.getSelectedIndex());
-				if(selectedAttribute.equalsIgnoreCase("Select")){	
+				if(attributeListBox.getSelectedIndex() == 0){
 					dialogContents1.clear();
 					modeListBox.setSelectedIndex(0);
 					modeListBox.removeStyleName("gwt-TextBoxRed");
@@ -351,8 +347,7 @@ public class QDMAttributeDialogBox {
 				}
 				String selectedMode = modeListBox.getItemText(modeListBox.getSelectedIndex());
 				if (QDMAttributeDialogBox.SELECT.equalsIgnoreCase(selectedMode)
-						|| CHECK_IF_PRESENT.equalsIgnoreCase(selectedMode)
-						|| COMPARISON.equalsIgnoreCase(selectedMode)) {
+						|| CHECK_IF_PRESENT.equalsIgnoreCase(selectedMode)) {
 					dialogContents1.clear();
 				} else if (VALUE_SET.equals(selectedMode)) {
 					dialogContents1.clear();
@@ -461,8 +456,7 @@ public class QDMAttributeDialogBox {
 					getWidget(hPanel,"Please select Mode field");
 					
 				}
-				else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).startsWith("--") &&
-							! modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase(COMPARISON)){
+				else if(modeListBox.getSelectedIndex() > 2){
 						if(!isValidQuantity(quantityTextBox)){
 							hPanel.clear();
 							getWidget(hPanel,"Please enter Quantity field");
@@ -590,9 +584,7 @@ public class QDMAttributeDialogBox {
 		String modeName = (String) attributeNode.getExtraInformation(MODE);
 		modeListBox.setEnabled(true);
 		for (int j = 0; j < modeListBox.getItemCount(); j++) {
-			if (modeListBox.getItemText(j).equalsIgnoreCase(modeName)
-					|| modeListBox.getItemText(j).equalsIgnoreCase(
-							"-- " + modeName)) {
+			if (modeListBox.getItemText(j).equalsIgnoreCase(modeName)) {
 				modeListBox.setSelectedIndex(j);
 				break;
 			}
@@ -757,7 +749,6 @@ public class QDMAttributeDialogBox {
 		
 		modeList.add(CHECK_IF_PRESENT);
 		modeList.add(VALUE_SET);
-		modeList.add(COMPARISON);
 		modeList.add(LESS_THAN);
 		modeList.add(GREATER_THAN);
 		modeList.add(EQUAL_TO);
@@ -881,7 +872,7 @@ public class QDMAttributeDialogBox {
 	
 	private static boolean isValidAttribute(ListBox attributeListBox){
 		boolean isValid = true;
-		if(attributeListBox.getItemText(attributeListBox.getSelectedIndex()).equalsIgnoreCase("Select")){
+		if(attributeListBox.getSelectedIndex() == 0){
 			attributeListBox.setStyleName("gwt-TextBoxRed");
 			isValid = false;
 		}
@@ -890,8 +881,7 @@ public class QDMAttributeDialogBox {
 	
 	private static boolean isValidMode(ListBox modeListBox){
 		boolean isValid = true;
-		if(modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Select") ||
-				modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase(COMPARISON)){
+		if(modeListBox.getSelectedIndex() == 0){
 			modeListBox.setStyleName("gwt-TextBoxRed");
 			isValid = false;
 		}

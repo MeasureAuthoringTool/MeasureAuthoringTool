@@ -226,21 +226,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The copied node. */
 	private CellTreeNode copiedNode;
 	
-	/** The copySelected node. */
-	private CellTreeNode copySelectedNode;
-	
-	/** The getCopySelected node. */
-	@Override
-	public CellTreeNode getCopySelectedNode() {
-		return copySelectedNode;
-	}
-	/** The setCopySelected node. */
-	@Override
-	public void setCopySelectedNode(CellTreeNode copySelectedNode) {
-		this.copySelectedNode = copySelectedNode;
-	}
-
-
 	/** The popup panel. */
 	private PopupPanel popupPanel;
 	
@@ -1255,8 +1240,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	@Override
 	public void copy() {
-	copiedNode = selectedNode;
-    copySelectedNode = copiedNode.cloneNode();//cloning the copied node
+		copiedNode = selectedNode.cloneNode();
+		copiedNode.setParent(selectedNode.getParent());//Setting Parent node
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#paste()
@@ -1264,13 +1249,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public void paste() {
 		if (selectedNode != null) {
-			CellTreeNode pasteNode = copySelectedNode.cloneNode();//It was calling copiedNode object before
+			CellTreeNode pasteNode = copiedNode.cloneNode();//It was calling copiedNode object before
 			selectedNode.appendChild(pasteNode);
 			closeSelectedOpenNodes(cellTree.getRootTreeNode());
 			selectionModel.setSelected(selectedNode, true);
 			CellTreeNode clonedNode = pasteNode.cloneNode();//created new instance for pasted node, prevent from overriding
 			clonedNode.setParent(pasteNode.getParent());//set parent of the cloned node
-			copySelectedNode = clonedNode;//Assigning pasted value to the copySelectedNode
+			copiedNode = clonedNode;//Assigning pasted value to the copiedNode
 		}
 	}
 	

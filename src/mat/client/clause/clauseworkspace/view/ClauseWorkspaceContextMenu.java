@@ -801,34 +801,34 @@ public class ClauseWorkspaceContextMenu {
 	 * Paste root node type item.
 	 */
 	protected void pasteRootNodeTypeItem() {
-		String clauseNodeName = xmlTreeDisplay.getCopySelectedNode().getName();
+		String clauseNodeName = xmlTreeDisplay.getCopiedNode().getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber;
-		CellTreeNode pasteNode = xmlTreeDisplay.getCopySelectedNode().cloneNode();
+		CellTreeNode pasteNode = xmlTreeDisplay.getCopiedNode().cloneNode();
 		pasteNode.setName(name);
 		pasteNode.setLabel(name);
 		xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 		CellTreeNode clonedNode = pasteNode.cloneNode();//created new instance for pasted node
 		clonedNode.setParent(pasteNode.getParent());//set parent of the cloned node
-		xmlTreeDisplay.setCopySelectedNode(clonedNode); //make the new cloned node as the copied node
+		xmlTreeDisplay.setCopiedNode(clonedNode); //make the new cloned node as the copied node
 	}
 	
 	/**
 	 * Paste master root node type item.
 	 */
 	protected void pasteMasterRootNodeTypeItem() {
-		String rootNodeName = xmlTreeDisplay.getCopySelectedNode().getName();
+		String rootNodeName = xmlTreeDisplay.getCopiedNode().getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = rootNodeName.substring(0, rootNodeName.lastIndexOf(" ")) + " " + seqNumber;
-		CellTreeNode pasteNode = xmlTreeDisplay.getCopySelectedNode().cloneNode();
+		CellTreeNode pasteNode = xmlTreeDisplay.getCopiedNode().cloneNode();
 		pasteNode.setName(name);
 		pasteNode.setLabel(name);
 		xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);
 		xmlTreeDisplay.refreshCellTreeAfterAdding(xmlTreeDisplay.getSelectedNode());
 		CellTreeNode clonedNode = pasteNode.cloneNode();//created new instance for pasted node
 		clonedNode.setParent(pasteNode.getParent());//set parent of the cloned node
-		xmlTreeDisplay.setCopySelectedNode(clonedNode);  //make the new cloned node as the copied node
+		xmlTreeDisplay.setCopiedNode(clonedNode);  //make the new cloned node as the copied node
 	}
 	
 	/**

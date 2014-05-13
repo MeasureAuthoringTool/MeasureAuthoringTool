@@ -213,7 +213,6 @@ public class ComparisonDialogBox {
 			public void onChange(ChangeEvent event) {
 				hPanel.clear();
 				if (listAllOperator.getValue().contains("Select")){
-					dialogContents.remove(0);
 					quantity.removeStyleName("gwt-TextBoxRed");
 					quantity.setEnabled(false);
 					listAllUnits.setEnabled(false);

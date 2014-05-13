@@ -48,29 +48,29 @@ public class PreviousContinueButtonBar extends Composite implements HasVisible, 
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
-		} else if (state == 3) {
+		} /*else if (state == 3) {
 			state = 3;
 			setPageNames("Clause Workspace", "Old Measure Packager");
+			buttonPanel.remove(previousButton);
+			buttonPanel.remove(continueButton);
+			buttonPanel.add(previousButton);
+			buttonPanel.add(continueButton);//commented to hide the Old Measure Packager from PreviousContinueButtonBar
+		} */else if (state == 3) {
+			state = 3;
+			setPageNames("Population Workspace", "Measure Packager");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
 		} else if (state == 4) {
 			state = 4;
-			setPageNames("Population Workspace", "Measure Packager");
-			buttonPanel.remove(previousButton);
-			buttonPanel.remove(continueButton);
-			buttonPanel.add(previousButton);
-			buttonPanel.add(continueButton);
-		} else if (state == 5) {
-			state = 5;
 			setPageNames("Old Measure Packager", "Measure Notes");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);
 			buttonPanel.add(previousButton);
 			buttonPanel.add(continueButton);
-		} else if (state >= 6) {
-			state = 6;
+		} else if (state >= 5) {
+			state = 5;
 			setPageNames("Measure Packager", "UNDEFINED");
 			buttonPanel.remove(previousButton);
 			buttonPanel.remove(continueButton);

@@ -13,7 +13,7 @@
         
         insert into OPERATOR values 
 			((select concat(max(cast(aw.ID as signed))+1,'') from OPERATOR aw),
-			'Ends Concurrent with Start','ECWS','2');
+			'Ends Concurrent with Start Of','ECWS','2');
 
 		insert into OPERATOR values 
 			((select concat(max(cast(aw.ID as signed))+1,'') from OPERATOR aw),

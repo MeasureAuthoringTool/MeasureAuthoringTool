@@ -531,7 +531,7 @@ public class MessageDelegate {
 	
 	private final String COMPARISON_DILOAG_BOX_ERROR_DISPLAY="Please enter Quantity field.";
 	
-	private final String COMPONENT_MEASURES_ADDED_SUCCESSFULLY="Changes added to Component measure list. Please click on save to confirm changes.";
+	private final String COMPONENT_MEASURES_ADDED_SUCCESSFULLY="Component Measures updated successfully. Changes must be saved on the previous page.";
 	
 	public String getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY() {
 		return COMPONENT_MEASURES_ADDED_SUCCESSFULLY;

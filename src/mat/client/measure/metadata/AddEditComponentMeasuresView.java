@@ -147,7 +147,7 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 	protected Button returnButton = new PrimaryButton("Return to Previous");
 	
 	/** The addto component measures. */
-	protected Button addtoComponentMeasures = new PrimaryButton("Add to ComponentMeasures List");
+	protected Button addtoComponentMeasures = new PrimaryButton("Add to Component Measures List");
 	
 	/** The success messages. */
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();

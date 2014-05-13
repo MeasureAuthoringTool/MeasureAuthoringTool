@@ -137,7 +137,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		emptyWidget.getElement().setId("emptyWidget_SimplePanel");
 		
 		metaDataPresenter = (MetaDataPresenter) buildMeasureMetaDataPresenter();
-		measurePackagePresenter_old = (MeasurePackagePresenter_Old) buildOldMeasurePackageWidget();
+//		measurePackagePresenter_old = (MeasurePackagePresenter_Old) buildOldMeasurePackageWidget(); // added to hide the Old measure Packagerer menu
 		measurePackagePresenter = (MeasurePackagePresenter) buildMeasurePackageWidget();
 		qdmPresenter = buildQDMPresenter();
 		measureComposerTabLayout = new MatTabLayoutPanel(true);
@@ -146,7 +146,7 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 		measureComposerTabLayout.addPresenter(qdmPresenter, "QDM Elements");
 		measureComposerTabLayout.addPresenter(clauseWorkSpacePresenter, "Clause Workspace");
 		measureComposerTabLayout.addPresenter(populationWorkspacePresenter, "Population Workspace");
-		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager");
+//		measureComposerTabLayout.addPresenter(buildOldMeasurePackageWidget(), "Old Measure Packager"); // added to hide the Old measure Packagerer menu
 		measureComposerTabLayout.addPresenter(buildMeasurePackageWidget(), "Measure Packager");
 		measureComposerTabLayout.addPresenter(measureNotesPresenter, "Measure Notes");
 		
@@ -337,12 +337,14 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	 *
 	 * @return the mat presenter
 	 */
-	private MatPresenter buildOldMeasurePackageWidget() {
+	//@hari
+	//commented to remove the Old_measure Packager
+	/*private MatPresenter buildOldMeasurePackageWidget() {
 		MeasurePackageView mpv = new MeasurePackageView();
 		MeasurePackagePresenter_Old mpp = new MeasurePackagePresenter_Old(mpv);
 		mpp.getWidget();
 		return mpp;
-	}
+	}*/
 	
 	/**
 	 * Builds the  measure package widget.

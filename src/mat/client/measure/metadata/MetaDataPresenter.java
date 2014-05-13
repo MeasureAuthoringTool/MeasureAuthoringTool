@@ -1130,6 +1130,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			
 			@Override
 			public void onClick(ClickEvent event) {
+				addEditComponentMeasuresDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY());
 				currentMeasureDetail.setComponentMeasuresSelectedList(addEditComponentMeasuresDisplay.getComponentMeasureSelectedList());
 				
 			}

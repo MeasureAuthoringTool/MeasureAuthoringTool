@@ -446,20 +446,30 @@ public class QDMAttributeDialogBox {
 		Button okButton = new Button("OK", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				if(!isValidAttribute(attributeListBox)){
-					hPanel.clear();
-					getWidget(hPanel,"Please select Attribute field");
-					
-				}
-				else if(!isValidMode(modeListBox)){
-					hPanel.clear();
-					getWidget(hPanel,"Please select Mode field");
-					
-				}
-				else if(modeListBox.getSelectedIndex() > 2){
-						if(!isValidQuantity(quantityTextBox)){
+
+				if(attributeListBox.getSelectedIndex() > 0){
+					 if(!isValidMode(modeListBox)){
+						hPanel.clear();
+						getWidget(hPanel,"Please select Mode");
+						
+					}
+					else if(modeListBox.getSelectedIndex() > 2){
+							if(!isValidQuantity(quantityTextBox)){
+								hPanel.clear();
+								getWidget(hPanel,"Please enter Quantity");
+							}
+							else{
+								saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox);
+								xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
+								xmlTreeDisplay.setDirty(true);
+								qdmAttributeDialogBox.hide();
+							}
+					}
+					else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Value Set")){
+						if(qdmListBox.getSelectedIndex() == -1){
 							hPanel.clear();
-							getWidget(hPanel,"Please enter Quantity field");
+							qdmListBox.setStyleName("gwt-TextBoxRed");
+							getWidget(hPanel,"Please select Value Set");
 						}
 						else{
 							saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox);
@@ -467,12 +477,6 @@ public class QDMAttributeDialogBox {
 							xmlTreeDisplay.setDirty(true);
 							qdmAttributeDialogBox.hide();
 						}
-				}
-				else if(modeListBox.getItemText(modeListBox.getSelectedIndex()).equalsIgnoreCase("Value Set")){
-					if(qdmListBox.getSelectedIndex() == -1){
-						hPanel.clear();
-						qdmListBox.setStyleName("gwt-TextBoxRed");
-						getWidget(hPanel,"Please add value set to define attribute");
 					}
 					else{
 						saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox);
@@ -482,7 +486,9 @@ public class QDMAttributeDialogBox {
 					}
 				}
 				else{
-					saveToModel(xmlTreeDisplay,attributeListBox,modeListBox,qdmListBox,quantityTextBox,unitsListBox);
+					List<CellTreeNode> attributeList = new ArrayList<CellTreeNode>();
+					xmlTreeDisplay.getSelectedNode().setExtraInformation(ATTRIBUTES,
+							attributeList);
 					xmlTreeDisplay.editNode(cellTreeNode.getName(),cellTreeNode.getName());
 					xmlTreeDisplay.setDirty(true);
 					qdmAttributeDialogBox.hide();

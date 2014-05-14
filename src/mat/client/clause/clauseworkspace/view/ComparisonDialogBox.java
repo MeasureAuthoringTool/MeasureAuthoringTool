@@ -254,7 +254,7 @@ public class ComparisonDialogBox {
 			}
 		});
 		save.getElement().setId("save_Button");
-		// Add a Close button at the bottom of the dialog
+		// Add a Close button at the bottom of the dialog box
 		Button closeButton = new Button("Cancel", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

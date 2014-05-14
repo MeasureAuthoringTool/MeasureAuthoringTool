@@ -148,4 +148,6 @@
 		<include file="classpath:/liquibase/deploy_Sprint-37_add_new_timing_relationsships.xml"/>
 		<include file="classpath:/liquibase/deploy_Sprint-39_US_3872_Add AGE AT Function.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-40_US3982_Add_Aditional_Timing_Operators.xml"/>
+		<include file="classpath:/liquibase/deploy_sprint-40_US3962_Slightly_Alter_Timing_Names.xml"/>
+		
 	</databaseChangeLog>

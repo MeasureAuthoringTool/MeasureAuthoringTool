@@ -236,6 +236,7 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 					}
 				} else {
 					isSelected = false;
+					//selectionModel.setSelected(object, isSelected);
 					}
 				return isSelected;
 			}
@@ -521,10 +522,10 @@ public class AddEditComponentMeasuresView implements MetaDataPresenter.AddEditCo
 		List<Result> displayedItems = new ArrayList<Result>();
 		displayedItems.addAll(componentMeasureSelectedList);
 		componentMeasureSelectedList.clear();
-		table.redraw();
 		for (ManageMeasureSearchModel.Result msg : displayedItems) {
 			selectionModel.setSelected(msg, false);
 		}
+		table.redraw();
 	}
 	
 	/**

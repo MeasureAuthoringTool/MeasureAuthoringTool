@@ -40,7 +40,7 @@ import com.google.gwt.user.client.ui.Widget;
 public class ComparisonDialogBox {
 	
 	/** The dialog box. */
-	public static DialogBox dialogBox = new DialogBox(true,true);
+	public static DialogBox dialogBox = new DialogBox(false,true);
 	
 	
 	/**
@@ -212,8 +212,9 @@ public class ComparisonDialogBox {
 			@Override
 			public void onChange(ChangeEvent event) {
 				hPanel.clear();
+				hPanel.removeStyleName("alertMessageDialogBox");
+				quantity.removeStyleName("gwt-TextBoxRed");
 				if (listAllOperator.getValue().contains("Select")){
-					quantity.removeStyleName("gwt-TextBoxRed");
 					quantity.setEnabled(false);
 					listAllUnits.setEnabled(false);
 				}

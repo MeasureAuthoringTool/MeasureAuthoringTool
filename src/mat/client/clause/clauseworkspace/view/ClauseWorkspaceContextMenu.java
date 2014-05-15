@@ -226,8 +226,6 @@ public class ClauseWorkspaceContextMenu {
 				if(selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE){
 					String xmlForPopulationNode = XmlConversionlHelper.createXmlFromTree(selectedNode);
 					final String populationName = selectedNode.getName();
-					System.out.println("Popluation name:"+populationName);
-					System.out.println("XML for populations node:"+xmlForPopulationNode);
 					String measureId = MatContext.get().getCurrentMeasureId();
 //					String url = GWT.getModuleBaseURL() + "export?id=" +measureId+ "&xml=" + xmlForPopulationNode+ "&format=subtreeHTML";
 //					Window.open(url + "&type=open", "_blank", "");

@@ -49,7 +49,7 @@ public class XmlTreePresenter {
 	
 	
 	/** The is unsaved data. */
-	private boolean isUnsavedData = false;
+//	private boolean isUnsavedData = false;
 	/**
 	 * Pop up Panel for Right Context Menu.
 	 */
@@ -271,7 +271,7 @@ public class XmlTreePresenter {
 						
 						if(cellTreeNode.getChilds().size() > 0){
 							if (xmlTreeDisplay.isDirty()) {
-								isUnsavedData = true;
+								//isUnsavedData = true;
 								showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
 								xmlTreeDisplay.getErrorMessageDisplay().getButtons().get(0).setFocus(true);
 								String auditMessage = getRootNode().toUpperCase() + "_TAB_YES_CLICKED";
@@ -279,7 +279,7 @@ public class XmlTreePresenter {
 								ClickHandler clickHandler = new ClickHandler() {
 									@Override
 									public void onClick(ClickEvent event) {
-										isUnsavedData = false;
+										//isUnsavedData = false;
 										SecondaryButton button = (SecondaryButton) event.getSource();
 										// If Yes - do not navigate, set focus to the Save button on the Page and clear cell tree
 										// // Else -do not navigate, set focus to the Save button on the Page
@@ -298,9 +298,9 @@ public class XmlTreePresenter {
 								for (SecondaryButton secondaryButton : xmlTreeDisplay.getErrorMessageDisplay().getButtons()) {
 									secondaryButton.addClickHandler(clickHandler);
 								}
-								if (isUnsavedData) {
-									MatContext.get().setErrorTab(true);
-								}
+//								if (isUnsavedData) {
+//									MatContext.get().setErrorTab(true);
+//								}
 							}else{
 								changeClause(cellTreeNode, selectedClauseName, selectedClauseUUID);
 							}
@@ -614,14 +614,14 @@ public class XmlTreePresenter {
 			public void onClick(ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
 				if (xmlTreeDisplay.isDirty()) {
-					isUnsavedData = true;
+				//	isUnsavedData = true;
 					showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
 					xmlTreeDisplay.getErrorMessageDisplay().getButtons().get(0).setFocus(true);
 					String auditMessage = getRootNode().toUpperCase() + "_TAB_YES_CLICKED";
 					handleClickEventsOnUnsavedErrorMsg(xmlTreeDisplay.getErrorMessageDisplay().getButtons()
 							, xmlTreeDisplay.getErrorMessageDisplay(), auditMessage);
 				} else {
-					isUnsavedData = false;
+				//	isUnsavedData = false;
 					xmlTreeDisplay.setDirty(false);
 					panel.clear();
 					loadClauseWorkSpaceView(panel);
@@ -652,11 +652,11 @@ public class XmlTreePresenter {
 	 */
 	private void handleClickEventsOnUnsavedErrorMsg(List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage
 			, final String auditMessage) {
-		isUnsavedData = true;
+	//	isUnsavedData = true;
 		ClickHandler clickHandler = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				isUnsavedData = false;
+				//isUnsavedData = false;
 				SecondaryButton button = (SecondaryButton) event.getSource();
 				// If Yes - do not navigate, set focus to the Save button on the Page and clear cell tree
 				// // Else -do not navigate, set focus to the Save button on the Page
@@ -673,9 +673,9 @@ public class XmlTreePresenter {
 		for (SecondaryButton secondaryButton : btns) {
 			secondaryButton.addClickHandler(clickHandler);
 		}
-		if (isUnsavedData) {
-			MatContext.get().setErrorTab(true);
-		}
+//		if (isUnsavedData) {
+//			MatContext.get().setErrorTab(true);
+//		}
 	}
 	
 	/**

@@ -225,6 +225,8 @@ public class ClauseWorkspaceContextMenu {
 				CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
 				if(selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE){
 					String xmlForPopulationNode = XmlConversionlHelper.createXmlFromTree(selectedNode);
+					final String populationName = selectedNode.getName();
+					System.out.println("Popluation name:"+populationName);
 					System.out.println("XML for populations node:"+xmlForPopulationNode);
 					String measureId = MatContext.get().getCurrentMeasureId();
 //					String url = GWT.getModuleBaseURL() + "export?id=" +measureId+ "&xml=" + xmlForPopulationNode+ "&format=subtreeHTML";
@@ -234,7 +236,7 @@ public class ClauseWorkspaceContextMenu {
 						
 						@Override
 						public void onSuccess(String result) {
-							showHumanReadableDialogBox(result);
+							showHumanReadableDialogBox(result,populationName);
 						}
 									
 
@@ -1007,13 +1009,14 @@ public class ClauseWorkspaceContextMenu {
 	 * Show human readable dialog box.
 	 *
 	 * @param result the result
+	 * @param populationName 
 	 */
-	private native void showHumanReadableDialogBox(String result) /*-{
+	private native void showHumanReadableDialogBox(String result, String populationName) /*-{
 	var humanReadableWindow = window.open("","","width=1000,height=700");
 	if(humanReadableWindow && humanReadableWindow.top){
 		//Populate the human readable in the new window.
 		humanReadableWindow.document.write(result);
-		humanReadableWindow.document.title = "Human Readable.";
+		humanReadableWindow.document.title = populationName;
 	}
 }-*/;
 	

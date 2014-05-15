@@ -594,6 +594,8 @@ public class XmlTreePresenter {
 					} else {
 						xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
 								.getRootTreeNode());
+						xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
+								.getRootTreeNode());
 						xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
 								MatContext.get().getMessageDelegate().
 								getCLAUSE_WORK_SPACE_VALIDATION_SUCCESS());

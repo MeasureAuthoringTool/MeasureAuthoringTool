@@ -1052,7 +1052,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						setCommentsBoxReadOnly(true);
 					}
 				} else {
-					addCommentPanel.setVisible(false);
+					if(addCommentPanel != null) {
+						addCommentPanel.setVisible(false);
+					}
 					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
 							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
 						addCommentPanel.setVisible(true);

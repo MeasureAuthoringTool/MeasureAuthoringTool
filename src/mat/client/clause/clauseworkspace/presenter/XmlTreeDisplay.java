@@ -8,6 +8,7 @@ import mat.client.shared.WarningMessageDisplay;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -204,6 +205,21 @@ public interface XmlTreeDisplay {
 	 */
 	//Commented Validate Button from Population Work Space as part of Mat-3162
 	//Button getValidateBtn();
+	/**
+	 * Gets the validate btn populationWorkspace.
+	 *
+	 * @param treeNode the tree node
+	 * @return the validate btn
+	 */
+	Button getValidateBtnPopulationWorkspace();
+	/**
+	 * Validate cell tree nodes populationWorkspace.
+	 * 
+	 * @param treeNode
+	 *            the tree node
+	 * @return true, if successful
+	 */
+	boolean validateCellTreeNodesPopulationWorkspace(TreeNode treeNode);
 	
 	/**
 	 * Validate cell tree nodes.

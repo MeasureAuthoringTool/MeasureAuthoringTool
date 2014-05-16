@@ -154,7 +154,8 @@ public class XmlTreePresenter {
 			panel.clear();
 			panel.add(xmlTreeDisplay.asWidget());
 			invokeSaveHandler();
-			invokeValidateHandler();
+			//invokeValidateHandler();
+			invokeValidateHandlerPopulationWorkspace();//added to handle the validate button
 		} else {
 			Mat.hideLoadingMessage();
 		}
@@ -546,12 +547,45 @@ public class XmlTreePresenter {
 		}
 		System.out.println("PopulationWorkSpaceConstants.subTreeLookUpName:"+PopulationWorkSpaceConstants.subTreeLookUpName);
 	}
+	/**
+	 * Invoke validate handler on population workspace.
+	 */
+	final void invokeValidateHandlerPopulationWorkspace() {
+	xmlTreeDisplay.getValidateBtnPopulationWorkspace().addClickHandler(new ClickHandler() {
+		@Override
+		public void onClick(final ClickEvent event) {
+			if (xmlTreeDisplay.getXmlTree() != null) {
+				xmlTreeDisplay.clearMessages();
+				xmlTreeDisplay.setValid(true);
+				boolean result = xmlTreeDisplay
+						.validateCellTreeNodesPopulationWorkspace(xmlTreeDisplay.getXmlTree()
+								.getRootTreeNode());
+				if (!result) {
+					xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
+							.getRootTreeNode());
+					xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
+							.getRootTreeNode());
+					xmlTreeDisplay.getWarningMessageDisplay().
+					setMessage(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_VALIDATION_ERROR());
+				} else {
+					xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
+							.getRootTreeNode());
+					xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
+							MatContext.get().getMessageDelegate().
+							getPOPULATION_WORK_SPACE_VALIDATION_SUCCESS());
+				}
+			}
+		}
+	});
+}
+
 	
 	/**
 	 * Invoke validate handler.
 	 */
 	final void invokeValidateHandler() {
 		//Commented Validate Button from Population Work Space as part of Mat-3162
+		//Uncommented start
 		/*xmlTreeDisplay.getValidateBtn().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {

@@ -324,6 +324,9 @@ MeasureService {
 		return this.getMeasureLibraryService().validateMeasureForExport(key, matValueSetList);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getHumanReadableForNode(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public String getHumanReadableForNode(String measureId, String populationSubXML){
 		return this.getMeasureLibraryService().getHumanReadableForNode(measureId, populationSubXML);
@@ -359,5 +362,13 @@ MeasureService {
 	@Override
 	public boolean isSubTreeReferredInLogic(String measureId, String subTreeUUID){
 		return this.getMeasureLibraryService().isSubTreeReferredInLogic(measureId, subTreeUUID);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getComponentMeasures(java.util.List)
+	 */
+	@Override
+	public ManageMeasureSearchModel getComponentMeasures(List<String> measureIds){
+		return getMeasureLibraryService().getComponentMeasures(measureIds);
 	}
 }

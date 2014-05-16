@@ -983,191 +983,13 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		
 	}
 	
-	
-//	/**
-//	 * Adds the measures column to table.
-//	 *
-//	 * @param isEditable the is editable
-//	 * @return the cell table
-//	 */
-//	private CellTable<ManageMeasureSearchModel.Result> addMeasuresColumnToTable(boolean isEditable){
-//		Label measureSearchHeader = new Label("Component Measures List");
-//		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
-//		measureSearchHeader.setStyleName("recentSearchHeader");
-//		com.google.gwt.dom.client.TableElement elem = componentMeasureCellTable.getElement().cast();
-//		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
-//		TableCaptionElement caption = elem.createCaption();
-//		caption.appendChild(measureSearchHeader.getElement());
-//		MatCheckBoxCell measuresListCheckBox = new MatCheckBoxCell(false, true, !isEditable);
-//		Column<ManageMeasureSearchModel.Result, Boolean> selectColumn = 
-//				new Column<ManageMeasureSearchModel.Result, Boolean>(measuresListCheckBox){
-//			@Override
-//			public Boolean getValue(ManageMeasureSearchModel.Result object) {
-//				boolean isSelected = false;
-//				if (componentMeasureSelectedList.size() > 0) {
-//					for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
-//						if (componentMeasureSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-//							isSelected = true;
-//							break;
-//						}
-//					}
-//				} else {
-//					isSelected = false;
-//					}
-//					return isSelected;
-//			}};
-//			
-//			selectColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
-//				
-//				@Override
-//				public void update(int index, Result object, Boolean value) {
-//					System.out.println("Componenet Measures selectionModel:");
-//					measuresListSelectionModel.setSelected(object, value);
-//					if (value) {
-//						componentMeasureSelectedList.add(object);
-//					} else {
-//						for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
-//							if (componentMeasureSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
-//								componentMeasureSelectedList.remove(i);
-//								break;
-//							}
-//						}
-//	                
-//					}
-//					componentMeasuresLabel.setText("Selected Items: " + componentMeasureSelectedList.size());
-//					
-//				}
-//			});
-//		
-//			componentMeasureCellTable.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
-//					+ "Select" + "</span>"));
-//			
-//			Column<ManageMeasureSearchModel.Result, SafeHtml> measureNameColumn = 
-//					new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()){
-//
-//						@Override
-//						public SafeHtml getValue(Result object) {
-//							return CellTableUtility.getColumnToolTip(object.getName());
-//						}};
-//						
-//						
-//		  componentMeasureCellTable.addColumn(measureNameColumn, SafeHtmlUtils.fromSafeConstant("<span title='Measure Name'>"
-//					+ "Measure Name" + "</span>"));
-//		  
-//		  
-//		  Column<ManageMeasureSearchModel.Result, SafeHtml> versionColumn = 
-//					new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()){
-//
-//						@Override
-//						public SafeHtml getValue(Result object) {
-//							return CellTableUtility.getColumnToolTip(object.getVersion());
-//						}};
-//						
-//						
-//		  componentMeasureCellTable.addColumn(versionColumn, SafeHtmlUtils.fromSafeConstant("<span title='Version'>"
-//					+ "Version" + "</span>"));
-//		  
-//		  Column<ManageMeasureSearchModel.Result, SafeHtml> finalizedDateColumn = 
-//					new Column<ManageMeasureSearchModel.Result, SafeHtml>(new SafeHtmlCell()){
-//
-//						@Override
-//						public SafeHtml getValue(Result object) {
-//							return CellTableUtility.getColumnToolTip(convertTimestampToString(object.getFinalizedDate()));
-//						}};
-//						
-//						
-//		  componentMeasureCellTable.addColumn(finalizedDateColumn, SafeHtmlUtils.fromSafeConstant("<span title='Finalized Date'>"
-//					+ "Finalized Date" + "</span>"));
-//			
-//		
-//		return componentMeasureCellTable;
-//		
-//	}
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildComponentMeasuresCellTable(mat.client.measure.ManageMeasureSearchModel, boolean)
-	 */
-//	@Override
-//	public void buildComponentMeasuresCellTable(ManageMeasureSearchModel result, boolean isEditable){
-//		horzComponentMeasurePanel.clear(); 
-//		componentMeasuresListSPanel.clear();
-//		componentMeasuresListVPanel.clear();
-//		componentMeasuresSelectedListVPanel.clear();
-//		HorizontalPanel searchButtonPanel = new HorizontalPanel();
-//		VerticalPanel vPanelHolder = new VerticalPanel();
-//		HorizontalPanel horizontalHolder= new HorizontalPanel();
-//		componentMeasuresListSPanel.setStyleName("cellTablePanel");
-//		horizontalHolder.setStyleName("floatRight");
-//		searchButton.getElement().setId("componentMeasureSearch_Button");
-//		searchString.getElement().setId("measureSearchInput_TextBox");
-//		searchString.setText("search...");
-//		componentMeasureCellTable = new CellTable<ManageMeasureSearchModel.Result>();
-//		componentMeasureCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
-//		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = 
-//				new ListDataProvider<ManageMeasureSearchModel.Result>();
-//		selectedMeasureList = new ArrayList<ManageMeasureSearchModel.Result>();
-//		measuresListSelectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
-//		componentMeasureCellTable.setSelectionModel(measuresListSelectionModel);
-//		selectedMeasureList.addAll(result.getData());
-//		componentMeasureCellTable.setRowData(selectedMeasureList);
-//		componentMeasureCellTable.setPageSize(5);
-//		componentMeasureCellTable.redraw();
-//		componentMeasureCellTable.setRowCount(selectedMeasureList.size(), true);
-//		sortProvider.refresh();
-//		sortProvider.getList().addAll(result.getData());
-//		updateLoadingState(componentMeasureCellTable);		
-//		componentMeasureCellTable = addMeasuresColumnToTable(isEditable);
-//		updateComponentMeasuresSelectedList(selectedMeasureList);
-//		sortProvider.addDataDisplay(componentMeasureCellTable);
-//		CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
-//		MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
-//		spager.setPageStart(0);
-//		spager.setDisplay(componentMeasureCellTable);
-//		spager.setPageSize(25);
-//		componentMeasureCellTable.setWidth("100%");
-//		componentMeasuresListSPanel.setSize("500px", "500px");
-//		searchButtonPanel.setWidth("500px");
-//		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("componentMeasureListSummary",
-//				"In the following Measure List table, Measure Name is given in first column,"
-//						+ " Version in second column, Finalized Date in third column,"
-//						+ "History in fourth column, Edit in fifth column, Share in sixth column"
-//						+ "Clone in seventh column and Export in eight column.");
-//		Label label = (Label)LabelBuilder
-//				.buildInvisibleLabel("selectedComponentMeasuresSummary","Selected Items: "+ componentMeasureSelectedList.size());
-//		componentMeasureCellTable.getElement().setAttribute("id", "ComponentMeasuresListCellTable");
-//		componentMeasureCellTable.getElement().setAttribute("aria-describedby", "componentMeasureListSummary");
-//		vPanelHolder.add(invisibleLabel);
-//		vPanelHolder.add(componentMeasureCellTable);
-//		vPanelHolder.add(new SpacerWidget());
-//		vPanelHolder.add(spager);
-//		componentMeasuresListSPanel.add(vPanelHolder);
-//		searchButtonPanel.add(LabelBuilder.buildLabel(componentMeasureCellTable, " Component Measures Counted - Optional"));
-//		horizontalHolder.add(searchString);
-//		horizontalHolder.add(searchButton);
-//		searchButtonPanel.add(horizontalHolder);
-//		componentMeasuresListVPanel.add(searchButtonPanel);
-//		componentMeasuresListVPanel.add(componentMeasuresListSPanel);
-//		horzComponentMeasurePanel.add(componentMeasuresListVPanel);
-//		VerticalPanel vPanel = new VerticalPanel();
-//		vPanel.setWidth("10px");
-//		horzComponentMeasurePanel.add(vPanel);
-//		SimplePanel sPanel = new SimplePanel();
-//		sPanel.setHeight("75px");
-//		componentMeasuresSelectedListVPanel.add(sPanel);
-//		componentMeasuresLabel.setText("Selected Items: " + componentMeasureSelectedList.size());
-//		componentMeasuresSelectedListVPanel.add(componentMeasuresLabel);
-//		horzComponentMeasurePanel.add(componentMeasuresSelectedListVPanel);
-//		
-//	}
-	
 	/**
- * Adds the measures column to table.
- *
- * @return the cell table
- */
-	private CellTable<ManageMeasureSearchModel.Result> addMeasuresColumnToTable(){
+	 * Adds the measures column to table.
+	 *
+	 * @param editable the editable
+	 * @return the cell table
+	 */
+	private CellTable<ManageMeasureSearchModel.Result> addMeasuresColumnToTable(boolean editable){
 		Label measureSearchHeader = new Label("Component Measures List");
 		measureSearchHeader.getElement().setId("measureSearchHeader_Label");
 		measureSearchHeader.setStyleName("recentSearchHeader");
@@ -1176,7 +998,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		TableCaptionElement caption = elem.createCaption();
 		caption.appendChild(measureSearchHeader.getElement());
 		measureSelectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
-         MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true);
+		componentMeasureCellTable.setSelectionModel(measureSelectionModel);
+		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, editable);
 		
 		Column<ManageMeasureSearchModel.Result, Boolean> selectColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(chbxCell) {
 			
@@ -1187,7 +1010,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 					for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
 						if (componentMeasureSelectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
 							isSelected = true;
-							measureSelectionModel.setSelected(object, isSelected);
+							//measureSelectionModel.setSelected(object, isSelected);
 							break;
 						}
 					}
@@ -1217,9 +1040,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				componentMeasuresLabel.setText("Selected Items: " + componentMeasureSelectedList.size());
 			}
 		});
-		
-		//table.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select Column'>"
-			//	+ "Select" + "</span>"));
+          
           componentMeasureCellTable.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
   				+ "Select" + "</span>"));
 		
@@ -1269,7 +1090,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildComponentMeasuresSelectedList(java.util.List)
 	 */
 	@Override
-	public void buildComponentMeasuresSelectedList(List<ManageMeasureSearchModel.Result> result){
+	public void buildComponentMeasuresSelectedList(List<ManageMeasureSearchModel.Result> result, boolean editable){
 		horzComponentMeasurePanel.clear(); 
 		componentMeasuresListSPanel.clear();
 		componentMeasuresSelectedListVPanel.clear();
@@ -1287,14 +1108,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		componentMeasureCellTable.setRowCount(selectedMeasureList.size(), true);
 		sortProvider.refresh();
 		sortProvider.getList().addAll(result);
-		updateLoadingState(componentMeasureCellTable);		
-		componentMeasureCellTable = addMeasuresColumnToTable();
+		updateLoadingState(componentMeasureCellTable);
+		if (componentMeasureSelectedList!=null && componentMeasureSelectedList.size() > 0) {
+			componentMeasureSelectedList = result;
+		}
+		componentMeasureCellTable = addMeasuresColumnToTable(editable);
 		updateComponentMeasuresSelectedList(selectedMeasureList);
 		sortProvider.addDataDisplay(componentMeasureCellTable);
 		componentMeasureCellTable.setWidth("100%");
-		componentMeasuresListSPanel.setSize("500px", "150px");
-		componentMeasuresListSPanel.add(componentMeasureCellTable);
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("componentMeasureListSummary",
+				Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("componentMeasureListSummary",
 				"In the following Measure List table, Measure Name is given in first column,"
 						+ " Version in second column, Finalized Date in third column,"
 						+ "History in fourth column, Edit in fifth column, Share in sixth column"
@@ -1303,6 +1125,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				.buildInvisibleLabel("selectedComponentMeasuresSummary","Selected Items: "+ componentMeasureSelectedList.size());
 		componentMeasureCellTable.getElement().setAttribute("id", "ComponentMeasuresListCellTable");
 		componentMeasureCellTable.getElement().setAttribute("aria-describedby", "componentMeasureListSummary");
+		componentMeasuresListSPanel.setSize("500px", "150px");
+		componentMeasuresListSPanel.add(invisibleLabel);
+		componentMeasuresListSPanel.setWidget(componentMeasureCellTable);
 		componentMeasuresListVPanel.add(componentMeasuresListSPanel);
 		horzComponentMeasurePanel.add(componentMeasuresListVPanel);
 		VerticalPanel vPanel = new VerticalPanel();
@@ -2358,16 +2183,4 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		return tsStr;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildComponentMeasuresCellTable(mat.client.measure.ManageMeasureSearchModel, boolean)
-	 */
-	@Override
-	public void buildComponentMeasuresCellTable(
-			ManageMeasureSearchModel result, boolean isEditable) {
-		// TODO Auto-generated method stub
-		
-	}
- 
-	
 }

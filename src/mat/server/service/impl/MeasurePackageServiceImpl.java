@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.dao.DataTypeDAO;
@@ -46,6 +47,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasurePackageServiceImpl.
  */
@@ -464,6 +466,13 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return measurePackageDAO.getMeasureShareInfoForUserWithFilter(searchText,  user, startIndex - 1, numResults, filter);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#getComponentMeasuresInfo(java.util.List)
+	 */
+	@Override
+	public List<Measure> getComponentMeasuresInfo(List<String> measureIds){
+		return measurePackageDAO.getComponentMeasureInfoForMeasures(measureIds);
+	}
 	/**
 	 * Sets the validator.
 	 * 
@@ -611,6 +620,9 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		return result;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#getHumanReadableForNode(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public String getHumanReadableForNode(final String measureId, final String populationSubXML){
 		String humanReadableHTML = "";

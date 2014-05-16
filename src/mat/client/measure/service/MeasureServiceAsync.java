@@ -435,9 +435,33 @@ public interface MeasureServiceAsync {
 	void checkAndDeleteSubTree(String measureId, String subTreeUUID,
 			AsyncCallback<Boolean> callback);
 
+	/**
+	 * Checks if is sub tree referred in logic.
+	 *
+	 * @param measureId the measure id
+	 * @param subTreeUUID the sub tree uuid
+	 * @param callback the callback
+	 */
 	void isSubTreeReferredInLogic(String measureId, String subTreeUUID,
 			AsyncCallback<Boolean> callback);
 
+	/**
+	 * Gets the human readable for node.
+	 *
+	 * @param measureId the measure id
+	 * @param populationSubXML the population sub xml
+	 * @param callback the callback
+	 * @return the human readable for node
+	 */
 	void getHumanReadableForNode(String measureId, String populationSubXML,
 			AsyncCallback<String> callback);
+	
+	/**
+	 * Gets the component measures.
+	 *
+	 * @param measureIds the measure ids
+	 * @param callback the callback
+	 * @return the component measures
+	 */
+	void getComponentMeasures(List<String> measureIds, AsyncCallback<ManageMeasureSearchModel> callback);
 }

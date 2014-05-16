@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.model.DataType;
@@ -12,6 +13,7 @@ import mat.model.QualityDataSet;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.model.clause.MeasureShareDTO;
+// TODO: Auto-generated Javadoc
 /**MeasurePackageService.java.**/
 public interface MeasurePackageService {
 	
@@ -344,5 +346,20 @@ public interface MeasurePackageService {
 	ValidateMeasureResult validateMeasureForExport(String key,
 			List<MatValueSet> matValueSetList) throws Exception;
 
+	/**
+	 * Gets the human readable for node.
+	 *
+	 * @param measureId the measure id
+	 * @param populationSubXML the population sub xml
+	 * @return the human readable for node
+	 */
 	String getHumanReadableForNode(String measureId, String populationSubXML);
+	
+	/**
+	 * Gets the component measures info.
+	 *
+	 * @param measureIds the measure ids
+	 * @return the component measures info
+	 */
+	List<Measure> getComponentMeasuresInfo(List<String> measureIds);
 }

@@ -1394,6 +1394,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				// delete any groupings for that measure and save.
 				getMeasurePackageService().deleteExistingPackages(pkg.getId());
 			}
+			//updateComponentMeasures(model);
+			
 		} else {
 			// creating a new measure.
 			
@@ -1422,6 +1424,48 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		result.setId(pkg.getId());
 		saveMeasureXml(createMeasureXmlModel(model, pkg, MEASURE_DETAILS, MEASURE));
 		return result;
+	}
+	
+	
+	/**
+	 * Update component measures.
+	 *
+	 * @param model the model
+	 */
+	private void updateComponentMeasures(ManageMeasureDetailModel model) {
+		
+		logger.debug(" MeasureLibraryServiceImpl: updateComponentMeasures Start :  ");
+		
+		List<Measure> measureList = getMeasureDAO().find();
+		for (Measure measure : measureList) {
+		// XPath to find All measures under componentMeasure nodes when measure is modified.
+		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measure.getId());
+		
+			XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+		
+		String XPATH_EXPRESSION_COMPONENT_MEASURES_MEASURE = "/measure//measureDetails//componentMeasures//measure[@id='"
+				+ model.getId() + "']";
+		NodeList nodesItemCount;
+		try {
+			nodesItemCount = (NodeList) xPath.evaluate(XPATH_EXPRESSION_COMPONENT_MEASURES_MEASURE,
+					processor.getOriginalDoc(),	XPathConstants.NODESET);
+			for (int i = 0; i < nodesItemCount.getLength(); i++) {
+				Node newNode = nodesItemCount.item(i);
+				String name = new String();
+				name = model.getName();
+				newNode.getAttributes().getNamedItem("name").setNodeValue(name);
+			}
+			if(nodesItemCount.getLength()>0){
+				xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+				getService().saveMeasureXml(xmlModel);
+			}
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+			
+		}
+		
+		}
+		logger.debug(" MeasureLibraryServiceImpl: updateComponentMeasures End :  ");
 	}
 	
 	/* (non-Javadoc)
@@ -2257,6 +2301,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		logger.debug(" MeasureLibraryServiceImpl: updateItemCount End :  ");
 	}
 	
+	
+	
+	
 	/**
 	 * This method updates MeasureXML - ElementRef's under Population and
 	 * Stratification Node
@@ -2434,6 +2481,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return date;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getHumanReadableForNode(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public String getHumanReadableForNode(final String measureId, final String populationSubXML){
 		String humanReadableHTML = "";
@@ -2444,5 +2494,37 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			e.printStackTrace();
 		}
 		return humanReadableHTML;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getComponentMeasures(java.util.List)
+	 */
+	@Override
+	public ManageMeasureSearchModel getComponentMeasures(List<String> measureIds) {
+		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
+		List<Measure> measureList = getService().getComponentMeasuresInfo(measureIds);
+		List<ManageMeasureSearchModel.Result> detailModelList = new ArrayList<ManageMeasureSearchModel.Result>();
+		searchModel.setData(detailModelList);
+		for (Measure measure : measureList) {
+			ManageMeasureSearchModel.Result detail = extractManageMeasureSearchModelDetail(measure);
+			detailModelList.add(detail);
+		}
+		return searchModel;
+	}
+	
+	/**
+	 * Extract manage measure search model detail.
+	 *
+	 * @param measure the measure
+	 * @return the manage measure search model. result
+	 */
+	private ManageMeasureSearchModel.Result extractManageMeasureSearchModelDetail(Measure measure){
+		ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
+		detail.setName(measure.getDescription());
+		detail.setId(measure.getId());
+		String formattedVersion = MeasureUtility.getVersionText(measure.getVersion(), measure.isDraft());
+		detail.setVersion(formattedVersion);
+		detail.setFinalizedDate(measure.getFinalizedDate());
+		return detail;
 	}
 }

@@ -1,24 +1,34 @@
 package mat.dao.clause;
 
 import java.util.List;
+
+import mat.client.measure.ManageMeasureSearchModel;
 import mat.dao.IDAO;
 import mat.model.User;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureShare;
 import mat.model.clause.MeasureShareDTO;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface MeasureDAO.
  */
 public interface MeasureDAO extends IDAO<Measure, String> {
 	
+	/**
+	 * Count measure for draft.
+	 *
+	 * @param searchText the search text
+	 * @param user the user
+	 * @return the int
+	 */
 	int countMeasureForDraft(String searchText, User user);
 	
 	/**
 	 * Count measure for draft.
-	 * 
-	 * @param user
-	 *            the user
+	 *
+	 * @param searchText the search text
+	 * @param user the user
 	 * @return the int
 	 */
 	/* public int countMeasureForDraft(User user); */
@@ -171,9 +181,11 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	public List<MeasureShareDTO> getMeasureShareInfoForMeasure(String measureId, int startIndex, int pageSize);
 	
 	/**
-	 * @param user
-	 * @param measureId
-	 * @return
+	 * Gets the measure share info for measure and user.
+	 *
+	 * @param user the user
+	 * @param measureId the measure id
+	 * @return the measure share info for measure and user
 	 */
 	List<MeasureShareDTO> getMeasureShareInfoForMeasureAndUser(String user, String measureId);
 	
@@ -281,4 +293,12 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 *            the is private
 	 */
 	public void updatePrivateColumnInMeasure(String measureId, boolean isPrivate);
+	
+	/**
+	 * Gets the component measure info for measures.
+	 *
+	 * @param measureIds the measure ids
+	 * @return the component measure info for measures
+	 */
+	public List<Measure> getComponentMeasureInfoForMeasures(List<String> measureIds);
 }

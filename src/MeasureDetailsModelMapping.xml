@@ -189,21 +189,21 @@
 			collection="arraylist">
 			<bind-xml name="measure" location="componentMeasures">
 				<class name="mat.client.measure.ManageMeasureSearchModel$Result">
-					<field name="name" type="java.lang.String">
+					<!-- <field name="name" type="java.lang.String">
 						<bind-xml name="name" node="attribute" />
-					</field>
+					</field> -->
 					
-					<field name="version" type="java.lang.String">
+					<!-- <field name="version" type="java.lang.String">
 						<bind-xml name="version" node="attribute" />
-					</field>
+					</field> -->
 					
 					<field name="id" type="java.lang.String">
 						<bind-xml name="id" node="attribute" />
 					</field>
 					
-					<field name="finalizedDate" type="java.sql.Timestamp">
+					<!-- <field name="finalizedDate" type="java.sql.Timestamp">
 						<bind-xml name="finalizedDate" node="attribute" />
-					</field>
+					</field> -->
 				</class>
 			</bind-xml>
 		</field>

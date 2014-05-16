@@ -13,6 +13,8 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.search.GenericDAO;
 import mat.dao.service.DAOService;
@@ -39,6 +41,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.context.ApplicationContext;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureDAO.
  */
@@ -182,6 +185,32 @@ mat.dao.clause.MeasureDAO {
 			mCriteria.createAlias("shares", "share", Criteria.LEFT_JOIN);
 		}
 		
+		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return mCriteria;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#getComponentMeasureInfoForMeasures(java.util.List)
+	 */
+	@Override
+	public List<Measure> getComponentMeasureInfoForMeasures(List<String> measureIds) {
+		Criteria mCriteria = buildComponentMeasureShareForUserCriteria(measureIds);
+	    List<Measure> measure = mCriteria.list();
+	    System.out.println("Measure List Size: "+ measure.size());
+		return measure;
+	}
+	
+	/**
+	 * Builds the component measure share for user criteria.
+	 *
+	 * @param listComponentMeasureIds the list component measure ids
+	 * @return the criteria
+	 */
+	private Criteria buildComponentMeasureShareForUserCriteria(List<String> listComponentMeasureIds) {
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(Measure.class);
+			//mCriteria.add(Restrictions.eq("id", "8a4d8cb2452d647301452d88111b000a"));
+		mCriteria.add(Restrictions.in("id", listComponentMeasureIds));
 		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return mCriteria;
 	}
@@ -759,6 +788,10 @@ mat.dao.clause.MeasureDAO {
 			return orderedDTOList;
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#getMeasureShareInfoForMeasureAndUser(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<MeasureShareDTO> getMeasureShareInfoForMeasureAndUser(String user, String measureId) {
 		Criteria shareCriteria = getSessionFactory().getCurrentSession()
@@ -1196,5 +1229,6 @@ mat.dao.clause.MeasureDAO {
 			closeSession(session);
 		}
 	}
+
 	
 }

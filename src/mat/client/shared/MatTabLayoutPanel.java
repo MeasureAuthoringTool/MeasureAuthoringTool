@@ -349,8 +349,8 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(populationWorkspaceTab);
 				validateClauseWorkspaceTab(clauseWorkspacePresenter.getSelectedTreePresenter(), selectedIndex);
 			}
-			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 5) {
-				int measurePackagerTab = 5;
+			else if (composerPresenter.getMeasureComposerTabLayout().getSelectedIndex() == 4) {
+				int measurePackagerTab = 4;
 				MeasurePackagePresenter measurePackagerPresenter = (MeasurePackagePresenter) 
 						composerPresenter.getMeasureComposerTabLayout().presenterMap.get(measurePackagerTab);
 				validateNewMeasurePackageTab(selectedIndex, measurePackagerPresenter);

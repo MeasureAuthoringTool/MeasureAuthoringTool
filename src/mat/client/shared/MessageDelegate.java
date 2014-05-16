@@ -199,12 +199,27 @@ public class MessageDelegate {
 	/** The clause work space validation success. */
 	private final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
 	
+	/** The clause work space validation error. */
+	private final String POPULATION_WORK_SPACE_VALIDATION_ERROR = " Population Measure logic is invalid."
+			+ "The Invalid node is highlited";	
+
+	/** The clause work space validation success. */
+	private final String POPULATION_WORK_SPACE_VALIDATION_SUCCESS = " Population Workspace validation successful.";
+	
 	/** The code list required. */
 	private final String CODE_LIST_REQUIRED = "Value Set is required.";
 	
 	/** The code required. */
 	private final String CODE_REQUIRED = "Code is required.";
 	
+	public String getPOPULATION_WORK_SPACE_VALIDATION_ERROR() {
+		return POPULATION_WORK_SPACE_VALIDATION_ERROR;
+	}
+
+	public String getPOPULATION_WORK_SPACE_VALIDATION_SUCCESS() {
+		return POPULATION_WORK_SPACE_VALIDATION_SUCCESS;
+	}
+
 	/** The code system required. */
 	private final String CODE_SYSTEM_REQUIRED = "Code System is required.";
 	

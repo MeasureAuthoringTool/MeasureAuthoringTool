@@ -999,7 +999,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		caption.appendChild(measureSearchHeader.getElement());
 		measureSelectionModel = new MultiSelectionModel<ManageMeasureSearchModel.Result>();
 		componentMeasureCellTable.setSelectionModel(measureSelectionModel);
-		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, editable);
+		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true, !editable);
 		
 		Column<ManageMeasureSearchModel.Result, Boolean> selectColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(chbxCell) {
 			

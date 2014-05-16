@@ -160,9 +160,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The save btn. */
 	private Button saveBtn = new PrimaryButton("Save", "primaryButton");
 	
-	/** The validate btn. */
+	/** The validate btn populationWorkspace. */
 	//Commented Validate Button from Population Work Space as part of Mat-3162
-	//	private Button validateBtn = new SecondaryButton("Validate");
+	private Button validateBtnPopulationWorkspace = new SecondaryButton("Validate");//Uncomented
 	
 	/** The save btn. */
 	private Button saveBtnClauseWorkSpace = new PrimaryButton("Save", "primaryButton");
@@ -322,9 +322,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		vp.add(successMessageDisplay);
 		savePanel.add(saveBtn);
 		//Commented Validate Button from Population Work Space as part of Mat-3162
-		//validateBtn.setTitle("Validate");
-		//savePanel.add(validateBtn);
-		//vp.add(warningMessageDisplay);
+		validateBtnPopulationWorkspace.setTitle("Validate");//uncommented
+		savePanel.add(validateBtnPopulationWorkspace);// uncommented
+		vp.add(warningMessageDisplay);//uncommented
 		vp.add(savePanel);
 		bottomSavePanel.add(vp);
 		SimplePanel errPanel = new SimplePanel();
@@ -1530,6 +1530,35 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}
 		}
 	}
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#validateCellTreeNodesPopulationWorkspace(com.google.gwt.user.cellview.client.TreeNode)
+	 */
+	@Override
+	public boolean validateCellTreeNodesPopulationWorkspace(TreeNode treeNode) {
+		
+		if (treeNode != null) {
+			openAllNodes(treeNode);
+			for (int i = 0; i < treeNode.getChildCount(); i++) {
+				TreeNode subTree = null;
+				CellTreeNode node =(CellTreeNode) treeNode.getChildValue(i);
+				if (!((node.getNodeType()
+						== CellTreeNode.LOGICAL_OP_NODE) || (node.getNodeType() == CellTreeNode.SUBTREE_REF_NODE) ||(node.getNodeType() == CellTreeNode.ROOT_NODE)|| (node.getNodeType() == CellTreeNode.MASTER_ROOT_NODE)|| (node.getNodeType() == CellTreeNode.CLAUSE_NODE) )) {
+					
+						editNode(false, node, subTree);
+						if (isValid) {
+							isValid = false;
+						}
+				}
+				subTree = treeNode.setChildOpen(i, ((CellTreeNode) treeNode.getChildValue(i)).isOpen(),
+						((CellTreeNode) treeNode.getChildValue(i)).isOpen());
+				if ((subTree != null) && (subTree.getChildCount() > 0)) {
+					validateCellTreeNodesPopulationWorkspace(subTree);
+				}
+			}
+		}
+		return isValid;
+	}
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#validateCellTreeNodes(com.google.gwt.user.cellview.client.TreeNode)
@@ -1776,6 +1805,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public CommentAreaTextBox getCommentArea() {
 		return commentArea;
+	}
+
+	//added by hari
+	/**
+	 * @return the ValidateBtnPopulationWorkspace
+	 */
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getValidateBtnPopulationWorkspace()
+	 */
+	@Override
+	public Button getValidateBtnPopulationWorkspace() {
+		
+		return validateBtnPopulationWorkspace;
 	}
 	
 	

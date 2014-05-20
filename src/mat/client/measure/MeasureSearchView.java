@@ -100,6 +100,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 * MultiSelectionModel on Cell Table.
 	 */
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
+	private List<ManageMeasureSearchModel.Result> selectedList = new ArrayList<ManageMeasureSearchModel.Result>();
 	/**
 	 * The Interface Observer.
 	 */
@@ -430,7 +431,19 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					}
 					@Override
 					public Boolean getValue(Result object) {
-						return selectionModel.isSelected(object);
+						boolean isSelected = false;
+						if (selectedList.size() > 0) {
+						for (int i = 0; i < selectedList.size(); i++) {
+							if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+								isSelected = true;
+								break;
+							}
+						}
+					} else {
+						isSelected = false;
+						}
+						return isSelected;
+										
 					}
 					@Override
 					public FieldUpdater<Result, Boolean> getFieldUpdater() {
@@ -438,6 +451,16 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 							@Override
 							public void update(int index, Result object,
 									Boolean isCBChecked) {
+								if(isCBChecked)
+									selectedList.add(object);
+								else{
+									for (int i = 0; i < selectedList.size(); i++) {
+										if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+											selectedList.remove(i);
+											break;
+										}
+									}
+								}
 								selectionModel.setSelected(object, isCBChecked);
 								observer.onExportSelectedClicked(object, isCBChecked);
 							}

@@ -6,6 +6,7 @@ import java.util.List;
 
 import mat.client.shared.search.SearchResults;
 import mat.model.LockedUserInfo;
+import mat.model.QualityDataSetDTO;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 import com.google.gwt.user.client.ui.Widget;
@@ -577,6 +578,11 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 			this.eMeasureId = eMeasureId;
 		}
 		
+		public int compare(ManageMeasureSearchModel.Result o1, ManageMeasureSearchModel.Result o2) {
+			int num = o1.getId().compareTo(o2.getId());
+			return num;
+		}
+		
 		
 	}
 	
@@ -844,5 +850,6 @@ public class ManageMeasureSearchModel implements IsSerializable, SearchResults<M
 		return selectedExportResults;
 	}
 
+	
 	
 }

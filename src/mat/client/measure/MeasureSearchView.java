@@ -100,7 +100,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 * MultiSelectionModel on Cell Table.
 	 */
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
-	private List<ManageMeasureSearchModel.Result> selectedList = new ArrayList<ManageMeasureSearchModel.Result>();
+	private List<ManageMeasureSearchModel.Result> selectedList; //= new ArrayList<ManageMeasureSearchModel.Result>();
 	/**
 	 * The Interface Observer.
 	 */
@@ -436,11 +436,13 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 						for (int i = 0; i < selectedList.size(); i++) {
 							if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
 								isSelected = true;
+								selectionModel.setSelected(object, isSelected);
 								break;
 							}
 						}
 					} else {
 						isSelected = false;
+						selectionModel.setSelected(object, isSelected);
 						}
 						return isSelected;
 										
@@ -509,10 +511,12 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	 */
 	public void clearBulkExportCheckBoxes(){
 		List<Result> displayedItems = new ArrayList<Result>();
-		displayedItems.addAll(selectedMeasureList);
+		displayedItems.addAll(selectedList);
+		selectedList.clear();
 		for (ManageMeasureSearchModel.Result msg : displayedItems) {
 			selectionModel.setSelected(msg, false);
 		}
+		table.redraw();
 		observer.onClearAllBulkExportClicked();
 	}
 	
@@ -589,6 +593,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			table = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
 					(Resources) GWT.create(CellTableResource.class));
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			selectedList = new ArrayList<ManageMeasureSearchModel.Result>();
 			selectedMeasureList = new ArrayList<Result>();
 			selectedMeasureList.addAll(results.getData());
 			table.setRowData(selectedMeasureList);

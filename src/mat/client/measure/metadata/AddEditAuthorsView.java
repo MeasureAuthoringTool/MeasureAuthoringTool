@@ -215,7 +215,8 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#buildCellTable(mat.client.measure.ManageMeasureSearchModel)
 	 */
 	@Override
-	public void buildCellTable(ManageMeasureSearchModel result,String searchText) {
+	public void buildCellTable(ManageMeasureSearchModel result,String searchText, 
+			List<ManageMeasureSearchModel.Result> measureSelectedList) {
 		// TODO Auto-generated method stub
 		
 	}

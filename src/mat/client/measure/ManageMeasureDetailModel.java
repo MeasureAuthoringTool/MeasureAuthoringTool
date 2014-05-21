@@ -1514,6 +1514,13 @@ public class ManageMeasureDetailModel implements IsSerializable {
 					return false;
 				}
 			}
+			else if (listA.get(i) instanceof ManageMeasureSearchModel.Result) {
+				ManageMeasureSearchModel.Result val1 = (ManageMeasureSearchModel.Result) listA.get(i);
+				ManageMeasureSearchModel.Result val2 = (ManageMeasureSearchModel.Result) listB.get(i);
+				if (val1.compare(val1, val2) != 0) {
+					return false;
+				}
+			}
 		}
 		return true;
 	}

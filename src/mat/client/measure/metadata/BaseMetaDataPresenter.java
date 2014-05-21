@@ -172,8 +172,10 @@ public class BaseMetaDataPresenter {
 		 *
 		 * @param result the result
 		 * @param searchText the search text
+		 * @param measureSelectedList the measure selected list
 		 */
-		public void buildCellTable(ManageMeasureSearchModel result, String searchText);
+		public void buildCellTable(ManageMeasureSearchModel result, String searchText, 
+				List<ManageMeasureSearchModel.Result> measureSelectedList);
 		
 		/**
 		 * Gets the save button.

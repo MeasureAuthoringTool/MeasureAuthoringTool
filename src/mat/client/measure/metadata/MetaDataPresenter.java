@@ -737,21 +737,6 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 */
 		HasValue<String> getSearchString();
 		
-		/**
-		 * Sets the component measure selected list.
-		 *
-		 * @param componentMeasureSelectedList the new component measure selected list
-		 */
-		public void setComponentMeasureSelectedList(
-				List<ManageMeasureSearchModel.Result> componentMeasureSelectedList);
-		
-		/**
-		 * Gets the component measure selected list.
-		 *
-		 * @return the component measure selected list
-		 */
-		public List<ManageMeasureSearchModel.Result> getComponentMeasureSelectedList();
-		
 		/* (non-Javadoc)
 		 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#getSuccessMessageDisplay()
 		 */
@@ -763,6 +748,13 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 * @return the addto component measures btn
 		 */
 		public Button getAddtoComponentMeasuresBtn();
+
+		/**
+		 * Gets the component measures list.
+		 *
+		 * @return the component measures list
+		 */
+		List<Result> getComponentMeasuresList();
 
 
 	}
@@ -904,12 +896,6 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			public void onClick(ClickEvent event) {
 				getMetaDataDisplay().getSaveErrorMsg().clear();
 				addEditComponentMeasuresDisplay.getSearchString().setValue("");
-				if (currentMeasureDetail.getComponentMeasuresSelectedList() != null) {
-					addEditComponentMeasuresDisplay.setComponentMeasureSelectedList(currentMeasureDetail.getComponentMeasuresSelectedList());
-					} else {
-						List<ManageMeasureSearchModel.Result> componentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
-						addEditComponentMeasuresDisplay.setComponentMeasureSelectedList(componentMeasuresList);
-					}
 				displayAddEditComponentMeasures();
 			}
 		});
@@ -1119,7 +1105,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onClick(ClickEvent event) {
 				addEditComponentMeasuresDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY());
-				currentMeasureDetail.setComponentMeasuresSelectedList(addEditComponentMeasuresDisplay.getComponentMeasureSelectedList());
+				currentMeasureDetail.setComponentMeasuresSelectedList(addEditComponentMeasuresDisplay.getComponentMeasuresList());
 				
 			}
 		});
@@ -1223,7 +1209,8 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 					public void onSuccess(ManageMeasureSearchModel result) {
 						showAdminSearchingBusy(false);
 						manageMeasureSearchModel = result;
-						addEditComponentMeasuresDisplay.buildCellTable(manageMeasureSearchModel,searchText);
+						addEditComponentMeasuresDisplay.buildCellTable(manageMeasureSearchModel,searchText,
+								currentMeasureDetail.getComponentMeasuresSelectedList());
 					}
 				});
 	}

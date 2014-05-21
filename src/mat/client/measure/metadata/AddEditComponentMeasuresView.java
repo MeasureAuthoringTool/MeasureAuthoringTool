@@ -106,7 +106,7 @@ public class AddEditComponentMeasuresView implements
 	private Observer observer;
 
 	/** The component measure selected list. */
-	private List<ManageMeasureSearchModel.Result> componentMeasureSelectedList;
+	private List<ManageMeasureSearchModel.Result> componentMeasuresList;
 
 	/** The index. */
 	private int index;
@@ -119,21 +119,8 @@ public class AddEditComponentMeasuresView implements
 	 * #getComponentMeasureSelectedList()
 	 */
 	@Override
-	public List<ManageMeasureSearchModel.Result> getComponentMeasureSelectedList() {
-		return componentMeasureSelectedList;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.MetaDataPresenter.AddEditComponentMeasuresDisplay
-	 * #setComponentMeasureSelectedList(java.util.List)
-	 */
-	@Override
-	public void setComponentMeasureSelectedList(
-			List<ManageMeasureSearchModel.Result> componentMeasureSelectedList) {
-		this.componentMeasureSelectedList = componentMeasureSelectedList;
+	public List<ManageMeasureSearchModel.Result> getComponentMeasuresList() {
+		return componentMeasuresList;
 	}
 
 	/** The selection model. */
@@ -232,10 +219,10 @@ public class AddEditComponentMeasuresView implements
 			@Override
 			public Boolean getValue(Result object) {
 				boolean isSelected = false;
-				if (componentMeasureSelectedList != null
-						&& componentMeasureSelectedList.size() > 0) {
-					for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
-						if (componentMeasureSelectedList.get(i).getId()
+				if (componentMeasuresList != null
+						&& componentMeasuresList.size() > 0) {
+					for (int i = 0; i < componentMeasuresList.size(); i++) {
+						if (componentMeasuresList.get(i).getId()
 								.equalsIgnoreCase(object.getId())) {
 							isSelected = true;
 							break;
@@ -255,13 +242,13 @@ public class AddEditComponentMeasuresView implements
 					public void update(int index, Result object, Boolean value) {
 						selectionModel.setSelected(object, value);
 						if (value) {
-							componentMeasureSelectedList.add(object);
+							componentMeasuresList.add(object);
 						} else {
-							for (int i = 0; i < componentMeasureSelectedList
+							for (int i = 0; i < componentMeasuresList
 									.size(); i++) {
-								if (componentMeasureSelectedList.get(i).getId()
+								if (componentMeasuresList.get(i).getId()
 										.equalsIgnoreCase(object.getId())) {
-									componentMeasureSelectedList.remove(i);
+									componentMeasuresList.remove(i);
 									break;
 								}
 							}
@@ -320,7 +307,7 @@ public class AddEditComponentMeasuresView implements
 	 */
 	@Override
 	public void buildCellTable(ManageMeasureSearchModel result,
-			final String searchText) {
+			final String searchText, List<ManageMeasureSearchModel.Result> measureSelectedList) {
 		cellTablePanel.clear();
 		cellTablePanel.setStyleName("cellTablePanel");
 		cellTablePanel.setWidth("900px");
@@ -329,6 +316,8 @@ public class AddEditComponentMeasuresView implements
 					(Resources) GWT.create(CellTableResource.class));
 			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			selectedMeasureList = new ArrayList<Result>();
+			componentMeasuresList = new ArrayList<ManageMeasureSearchModel.Result>();
+			componentMeasuresList.addAll(measureSelectedList);
 			selectedMeasureList.addAll(result.getData());
 			table.setPageSize(PAGE_SIZE);
 			table.redraw();
@@ -481,8 +470,8 @@ public class AddEditComponentMeasuresView implements
 	 */
 	public void clearAllCheckBoxes() {
 		List<Result> displayedItems = new ArrayList<Result>();
-		displayedItems.addAll(componentMeasureSelectedList);
-		componentMeasureSelectedList.clear();
+		displayedItems.addAll(componentMeasuresList);
+		componentMeasuresList.clear();
 		for (ManageMeasureSearchModel.Result msg : displayedItems) {
 			selectionModel.setSelected(msg, false);
 		}
@@ -497,15 +486,15 @@ public class AddEditComponentMeasuresView implements
 	 */
 	private void updateComponentMeasuresSelectedList(
 			List<ManageMeasureSearchModel.Result> componentMeasureList) {
-		if (componentMeasureSelectedList.size() != 0) {
-			for (int i = 0; i < componentMeasureSelectedList.size(); i++) {
+		if (componentMeasuresList.size() != 0) {
+			for (int i = 0; i < componentMeasuresList.size(); i++) {
 				for (int j = 0; j < componentMeasureList.size(); j++) {
-					if (componentMeasureSelectedList
+					if (componentMeasuresList
 							.get(i)
 							.getId()
 							.equalsIgnoreCase(
 									componentMeasureList.get(j).getId())) {
-						componentMeasureSelectedList.set(i,
+						componentMeasuresList.set(i,
 								componentMeasureList.get(j));
 						break;
 					}

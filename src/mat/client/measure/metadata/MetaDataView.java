@@ -1109,9 +1109,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		sortProvider.refresh();
 		sortProvider.getList().addAll(result);
 		updateLoadingState(componentMeasureCellTable);
-		if (componentMeasureSelectedList!=null && componentMeasureSelectedList.size() > 0) {
+		//if (componentMeasureSelectedList!=null && componentMeasureSelectedList.size() > 0) {
 			componentMeasureSelectedList = result;
-		}
+		//}
 		componentMeasureCellTable = addMeasuresColumnToTable(editable);
 		updateComponentMeasuresSelectedList(selectedMeasureList);
 		sortProvider.addDataDisplay(componentMeasureCellTable);

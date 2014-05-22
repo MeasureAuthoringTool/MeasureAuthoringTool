@@ -311,6 +311,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(false);
+				//MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>()
+
 				
 				MatContext.get().getMeasureService().validatePackageGrouping(model, new AsyncCallback<Boolean>(){
 					
@@ -323,14 +325,35 @@ public class MeasurePackagePresenter implements MatPresenter {
 					public void onSuccess(Boolean result) {
 						if(!result){
 							view.getPackageSuccessMessageDisplay().setMessage("Validation Successful");
+							view.getPackageMeasureButton().addClickHandler(new ClickHandler() {
+								
+								@Override
+								public void onClick(ClickEvent event) {
+									clearMessages();
+									((Button) view.getPackageMeasureButton()).setEnabled(false);
+									MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
+										
+										@Override
+										public void onFailure(Throwable caught) {
+											((Button) view.getPackageMeasureButton()).setEnabled(true);
+										}
+										
+										@Override
+										public void onSuccess(SaveMeasureResult result) {
+											((Button) view.getPackageMeasureButton()).setEnabled(true);
+										}
+									});
+								}
+							});
+
 							
 						}else{
 							view.getPackageErrorMessageDisplay().
-							setMessage("Validation Failed");
+							setMessage("Unable to create measure package.Please verify measure logic in population workspace.");
 							
 						}
 						((Button) view.getPackageMeasureButton()).setEnabled(true);
-						System.out.println(result);
+						
 					}
 
 					

@@ -1555,7 +1555,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	public boolean validateCellTreeNodesPopulationWorkspace(CellTreeNode cellTreeNode){
 		boolean isValid = true;
-		
 		int nodeType = cellTreeNode.getNodeType();
 		if (!((nodeType == CellTreeNode.LOGICAL_OP_NODE) || (nodeType == CellTreeNode.SUBTREE_REF_NODE) 
 				|| (nodeType == CellTreeNode.ROOT_NODE) || (nodeType == CellTreeNode.MASTER_ROOT_NODE) 

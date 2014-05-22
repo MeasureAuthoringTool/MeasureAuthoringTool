@@ -557,6 +557,37 @@ public class XmlTreePresenter {
 			if (xmlTreeDisplay.getXmlTree() != null) {
 				xmlTreeDisplay.clearMessages();
 				xmlTreeDisplay.setValid(true);
+				xmlTreeDisplay.addCommentNodeToSelectedNode();
+				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay
+						.getXmlTree().getRootTreeNode().getChildValue(0);
+				/*final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper
+						.createXmlFromTree(cellTreeNode));
+				service.validateMeasureXmlinpopulationWorkspace(measureXmlModel, new AsyncCallback<Boolean>() {
+					@Override
+					public void onFailure(final Throwable caught) {
+						System.out.println("failure");
+					}
+					@Override
+					public void onSuccess(Boolean result) {
+						if (result) {
+							xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
+									.getRootTreeNode());
+							xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
+									.getRootTreeNode());
+							xmlTreeDisplay.getWarningMessageDisplay().
+							setMessage(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_VALIDATION_ERROR());
+						} else {
+							xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
+									.getRootTreeNode());
+							xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
+									MatContext.get().getMessageDelegate().
+									getPOPULATION_WORK_SPACE_VALIDATION_SUCCESS());
+						}
+						
+					}
+					
+				});*/
+				
 				boolean result = xmlTreeDisplay
 						.validateCellTreeNodesPopulationWorkspace(xmlTreeDisplay.getXmlTree()
 								.getRootTreeNode());

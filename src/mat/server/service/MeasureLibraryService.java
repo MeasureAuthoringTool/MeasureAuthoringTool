@@ -435,4 +435,23 @@ public interface MeasureLibraryService {
 	 * @return the component measures
 	 */
 	ManageMeasureSearchModel getComponentMeasures(List<String> measureIds);
+
+	
+
+	/**
+	 * Validate package grouping.
+	 *
+	 * @param model the model
+	 * @return the string
+	 */
+	boolean validatePackageGrouping(ManageMeasureDetailModel model);
+
+	/**
+	 * Validate measure xmlinpopulation workspace.
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @return the object
+	 */
+	boolean validateMeasureXmlInpopulationWorkspace(
+			MeasureXmlModel measureXmlModel);
 }

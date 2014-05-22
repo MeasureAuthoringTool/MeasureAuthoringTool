@@ -17,7 +17,9 @@ import java.util.UUID;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.DTO.MeasureNoteDTO;
+import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -63,6 +65,7 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -2527,4 +2530,104 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		detail.setFinalizedDate(measure.getFinalizedDate());
 		return detail;
 	}
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#validatePackageGrouping(mat.client.measure.ManageMeasureDetailModel)
+	 */
+	@Override
+	public boolean validatePackageGrouping(ManageMeasureDetailModel model) {
+		boolean flag=false;
+		logger.debug(" MeasureLibraryServiceImpl: validatePackageGrouping Start :  ");
+		
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(model.getId());
+		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
+			System.out.println("MEASURE_XML: "+xmlModel.getXml());	
+			
+			flag = validateMeasureXmlInpopulationWorkspace(xmlModel);
+		}
+		
+		return flag;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#validateMeasureXmlInpopulationWorkspace(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
+	 */
+	@Override
+	public boolean validateMeasureXmlInpopulationWorkspace(MeasureXmlModel measureXmlModel) {
+		boolean flag=false;
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
+		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			 String XPATH_POPULATIONS = "/measure/populations";
+			 System.out.println("MEASURE_XML: "+xmlModel.getXml() );
+			try {
+				NodeList nodesSDE = (NodeList) xPath.evaluate(XPATH_POPULATIONS, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				
+					Node newNode = nodesSDE.item(0);
+					NodeList populationsChildList = newNode.getChildNodes();
+					for (int i = 0; i < populationsChildList.getLength(); i++) {
+						Node childNode =populationsChildList.item(i);
+						NodeList childsList = childNode.getChildNodes();
+						
+						if(childsList.getLength()>0){
+							for(int j=0;j<childsList.getLength();j++){
+								Node subChildNode =childsList.item(j);
+								flag=validateNode(subChildNode,flag);
+								if(flag){
+									break;
+								}
+					
+							}
+					
+						}
+						 flag=validateNode(childNode, flag);
+						 if(flag){
+							break;
+						}
+				}
+					
+			} catch (XPathExpressionException e) {
+				
+				e.printStackTrace();
+			}
+			
+	 } 
+	return flag;
+	}
+
+	/**
+	 * Validate node.
+	 *
+	 * @param newNode the new node
+	 * @param flag the flag
+	 * @return true, if successful
+	 */
+	private boolean validateNode(Node newNode, boolean flag) {
+		if (!((newNode.getNodeName()== "logicalOp") 
+				|| (newNode.getNodeName()== "clause") 
+							|| (newNode.getNodeName() == "subTreeRef")
+										|| (newNode.getNodeName() == "initialPopulations")
+												|| (newNode.getNodeName() == "measurePopulations")
+														|| (newNode.getNodeName() == "numerators")
+												
+				|| (newNode.getNodeName() == "measurePopulationExclusions")
+							|| (newNode.getNodeName() == "denominators")
+										|| (newNode.getNodeName() == "denominatorExclusions")
+												|| (newNode.getNodeName() == "numeratorExclusions")
+														|| (newNode.getNodeName() == "denominatorExceptions")
+																|| (newNode.getNodeName() == "comment"))) {
+			
+					flag =true;	 
+			}
+			if(newNode.getFirstChild()!=null){
+					Node node =newNode.getFirstChild(); 
+					flag = validateNode(node, flag);			
+			}
+		
+		return flag;
+		
+	}	
 }
+

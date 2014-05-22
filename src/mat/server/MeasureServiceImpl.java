@@ -18,6 +18,7 @@ import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.service.MeasureLibraryService;
+import mat.server.util.XmlProcessor;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -371,4 +372,25 @@ MeasureService {
 	public ManageMeasureSearchModel getComponentMeasures(List<String> measureIds){
 		return getMeasureLibraryService().getComponentMeasures(measureIds);
 	}
+
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#validatePackageGrouping(mat.client.measure.ManageMeasureDetailModel)
+	 */
+	@Override
+	public boolean validatePackageGrouping(
+			ManageMeasureDetailModel model) {
+		return this.getMeasureLibraryService().validatePackageGrouping(
+				model);
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#validateMeasureXmlinpopulationWorkspace(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
+	 */
+	@Override
+	public boolean validateMeasureXmlinpopulationWorkspace(
+			MeasureXmlModel measureXmlModel) {
+		return this.getMeasureLibraryService().validateMeasureXmlInpopulationWorkspace(measureXmlModel);
+	}
+	
 }

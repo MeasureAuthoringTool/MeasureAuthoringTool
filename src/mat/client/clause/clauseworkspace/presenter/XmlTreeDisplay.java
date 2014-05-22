@@ -5,10 +5,10 @@ import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
+
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -256,8 +256,8 @@ public interface XmlTreeDisplay {
 	 * @param subTree
 	 *            the sub tree
 	 */
-	void editNode(boolean isValideNodeValue, CellTreeNode node,
-			TreeNode subTree);
+//	void editNode(boolean isValideNodeValue, CellTreeNode node,
+//			TreeNode subTree);
 	
 	/**
 	 * Sets the valid.
@@ -376,4 +376,6 @@ public interface XmlTreeDisplay {
 	public abstract Button getButtonCollapseClauseWorkSpace();
 
 	public abstract Button getButtonExpandClauseWorkSpace();
+
+	void editNode(boolean isValideNodeValue, CellTreeNode node);
 }

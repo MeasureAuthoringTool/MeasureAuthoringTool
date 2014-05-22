@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -20,7 +21,9 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -1534,28 +1537,42 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#validateCellTreeNodesPopulationWorkspace(com.google.gwt.user.cellview.client.TreeNode)
 	 */
 	@Override
-	public boolean validateCellTreeNodesPopulationWorkspace(TreeNode treeNode) {
-		
+	public boolean validateCellTreeNodesPopulationWorkspace(TreeNode treeNode) {		
 		if (treeNode != null) {
-			openAllNodes(treeNode);
+
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				TreeNode subTree = null;
 				CellTreeNode node =(CellTreeNode) treeNode.getChildValue(i);
-				if (!((node.getNodeType()
-						== CellTreeNode.LOGICAL_OP_NODE) || (node.getNodeType() == CellTreeNode.SUBTREE_REF_NODE) ||(node.getNodeType() == CellTreeNode.ROOT_NODE)|| (node.getNodeType() == CellTreeNode.MASTER_ROOT_NODE)|| (node.getNodeType() == CellTreeNode.CLAUSE_NODE) )) {
-					
-						editNode(false, node, subTree);
-						if (isValid) {
-							isValid = false;
-						}
-				}
-				subTree = treeNode.setChildOpen(i, ((CellTreeNode) treeNode.getChildValue(i)).isOpen(),
-						((CellTreeNode) treeNode.getChildValue(i)).isOpen());
-				if ((subTree != null) && (subTree.getChildCount() > 0)) {
-					validateCellTreeNodesPopulationWorkspace(subTree);
+				if(!validateCellTreeNodesPopulationWorkspace(node)){
+					isValid = false;
+					break;
 				}
 			}
 		}
+		
+		return isValid;
+	}
+	
+	public boolean validateCellTreeNodesPopulationWorkspace(CellTreeNode cellTreeNode){
+		boolean isValid = true;
+		
+		int nodeType = cellTreeNode.getNodeType();
+		if (!((nodeType == CellTreeNode.LOGICAL_OP_NODE) || (nodeType == CellTreeNode.SUBTREE_REF_NODE) 
+				|| (nodeType == CellTreeNode.ROOT_NODE) || (nodeType == CellTreeNode.MASTER_ROOT_NODE) 
+				|| (nodeType == CellTreeNode.CLAUSE_NODE) )) {
+				editNode(false, cellTreeNode);
+				isValid = false;
+		}
+		
+		List<CellTreeNode> children = cellTreeNode.getChilds();
+		if(children != null && children.size() > 0){
+			for(CellTreeNode node:children){
+				if(!validateCellTreeNodesPopulationWorkspace(node)){
+					isValid = false;
+				}
+			}
+		}
+		
 		return isValid;
 	}
 	
@@ -1578,10 +1595,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					subTree = treeNode.setChildOpen(i, true, true);
 					if ((subTree != null) && (subTree.getChildCount() == 2)) {
 						if (!node.getValidNode()) {
-							editNode(true, node, subTree);
+							editNode(true, node);
 						}
 					} else {
-						editNode(false, node, subTree);
+						editNode(false, node);
 						if (isValid) {
 							isValid = false;
 						}
@@ -1632,7 +1649,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#editNode(boolean, mat.client.clause.clauseworkspace.model.CellTreeNode, com.google.gwt.user.cellview.client.TreeNode)
 	 */
 	@Override
-	public void editNode(boolean isValideNodeValue, CellTreeNode node, TreeNode subTree) {
+	public void editNode(boolean isValideNodeValue, CellTreeNode node) {
 		node.setValidNode(isValideNodeValue);
 		selectedNode = node;
 		closeParentOpenNodes(cellTree.getRootTreeNode());

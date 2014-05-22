@@ -14,6 +14,7 @@ import mat.client.shared.MatException;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.server.util.XmlProcessor;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
@@ -408,4 +409,21 @@ public interface MeasureService extends RemoteService {
 	 * @return the component measures
 	 */
 	ManageMeasureSearchModel getComponentMeasures(List<String> measureIds);
+
+	/**
+	 * Validate package grouping.
+	 *
+	 * @param model the model
+	 * @return true, if successful
+	 */
+	boolean validatePackageGrouping(ManageMeasureDetailModel model);
+
+	/**
+	 * Validate measure xmlinpopulation workspace.
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @return true, if successful
+	 */
+	boolean validateMeasureXmlinpopulationWorkspace(
+			MeasureXmlModel measureXmlModel);
 }

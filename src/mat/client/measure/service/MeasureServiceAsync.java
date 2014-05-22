@@ -13,6 +13,7 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
+import mat.server.util.XmlProcessor;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
@@ -464,4 +465,24 @@ public interface MeasureServiceAsync {
 	 * @return the component measures
 	 */
 	void getComponentMeasures(List<String> measureIds, AsyncCallback<ManageMeasureSearchModel> callback);
+
+	/**
+	 * Validate package grouping.
+	 *
+	 * @param model the model
+	 * @param asyncCallback the async callback
+	 */
+	void validatePackageGrouping(ManageMeasureDetailModel model,
+			AsyncCallback<Boolean> asyncCallback);
+
+	/**
+	 * Validate measure xmlinpopulation workspace.
+	 *
+	 * @param measureXmlModel the measure xml model
+	 * @param asyncCallback the async callback
+	 * @return 
+	 */
+	void validateMeasureXmlinpopulationWorkspace(
+			MeasureXmlModel measureXmlModel, AsyncCallback<Boolean> asyncCallback);
+			
 }

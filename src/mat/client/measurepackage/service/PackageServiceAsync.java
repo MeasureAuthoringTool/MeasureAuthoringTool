@@ -20,6 +20,12 @@ public interface PackageServiceAsync {
 	 */
 	public void getClausesAndPackagesForMeasure(String measureId, AsyncCallback<MeasurePackageOverview> callback);
 	
+	/**
+	 * Save.
+	 *
+	 * @param detail the detail
+	 * @param callback the callback
+	 */
 	void save(MeasurePackageDetail detail, AsyncCallback<MeasurePackageSaveResult> callback);
 	
 	/**

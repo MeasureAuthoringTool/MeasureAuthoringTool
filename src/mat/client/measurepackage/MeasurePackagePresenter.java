@@ -2,14 +2,17 @@ package mat.client.measurepackage;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDSAppliedListModel;
+import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
+import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.measurepackage.MeasurePackagerView.Observer;
 import mat.client.measurepackage.service.MeasurePackageSaveResult;
 import mat.client.shared.ErrorMessageDisplay;
@@ -21,6 +24,8 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
 import mat.model.QualityDataSetDTO;
+import mat.server.util.XmlProcessor;
+import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -306,7 +311,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 			public void onClick(ClickEvent event) {
 				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(false);
-				MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
+				
+				MatContext.get().getMeasureService().validatePackageGrouping(model, new AsyncCallback<Boolean>(){
 					
 					@Override
 					public void onFailure(Throwable caught) {
@@ -314,9 +320,20 @@ public class MeasurePackagePresenter implements MatPresenter {
 					}
 					
 					@Override
-					public void onSuccess(SaveMeasureResult result) {
+					public void onSuccess(Boolean result) {
+						if(!result){
+							view.getPackageSuccessMessageDisplay().setMessage("Validation Successful");
+							
+						}else{
+							view.getPackageErrorMessageDisplay().
+							setMessage("Validation Failed");
+							
+						}
 						((Button) view.getPackageMeasureButton()).setEnabled(true);
+						System.out.println(result);
 					}
+
+					
 				});
 			}
 		});

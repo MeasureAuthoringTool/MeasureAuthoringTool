@@ -1539,9 +1539,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public boolean validateCellTreeNodesPopulationWorkspace(TreeNode treeNode) {		
 		if (treeNode != null) {
-
+			closeNodes(treeNode);
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
-				TreeNode subTree = null;
+				//TreeNode subTree = null;
 				CellTreeNode node =(CellTreeNode) treeNode.getChildValue(i);
 				if(!validateCellTreeNodesPopulationWorkspace(node)){
 					isValid = false;

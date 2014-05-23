@@ -219,7 +219,9 @@ public class PopulationWorkSpaceConstants {
 	 * @return the populations children
 	 */
 	public static String[] getPopulationsChildren() {
-		return POPULATIONS;
+		String[] populationsCopy = new String[POPULATIONS.length];
+		System.arraycopy(POPULATIONS, 0, populationsCopy, 0, POPULATIONS.length);
+		return populationsCopy;
 	}
 	
 	/**

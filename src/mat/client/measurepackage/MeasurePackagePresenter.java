@@ -324,27 +324,19 @@ public class MeasurePackagePresenter implements MatPresenter {
 					public void onSuccess(Boolean result) {
 						if(!result){
 							view.getPackageSuccessMessageDisplay().setMessage("Validation Successful");
-							view.getPackageMeasureButton().addClickHandler(new ClickHandler() {
+							
+							MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
 								
 								@Override
-								public void onClick(ClickEvent event) {
-									clearMessages();
-									((Button) view.getPackageMeasureButton()).setEnabled(false);
-									MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
-										
-										@Override
-										public void onFailure(Throwable caught) {
-											((Button) view.getPackageMeasureButton()).setEnabled(true);
-										}
-										
-										@Override
-										public void onSuccess(SaveMeasureResult result) {
-											((Button) view.getPackageMeasureButton()).setEnabled(true);
-										}
-									});
+								public void onFailure(Throwable caught) {
+									((Button) view.getPackageMeasureButton()).setEnabled(true);
 								}
-							});
-
+								
+								@Override
+								public void onSuccess(SaveMeasureResult result) {
+									((Button) view.getPackageMeasureButton()).setEnabled(true);
+								}
+							});	
 							
 						}else{
 							view.getPackageErrorMessageDisplay().

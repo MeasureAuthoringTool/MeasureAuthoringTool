@@ -854,6 +854,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	
 	/** The manage measure search model. */
 	private ManageMeasureSearchModel manageMeasureSearchModel;
+	
+	/** The is component measures selected. */
+	private boolean isComponentMeasuresSelected = false;
 
 	
 	/**
@@ -1149,17 +1152,18 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				public void onSuccess(ManageMeasureSearchModel result) {
 					List<ManageMeasureSearchModel.Result> measureSelectedList = result.getData();
 					currentMeasureDetail.setComponentMeasuresSelectedList(measureSelectedList);
+					if(!isComponentMeasuresSelected){
+						dbComponentMeasuresSelectedList.clear();
+						dbComponentMeasuresSelectedList.addAll(currentMeasureDetail.getComponentMeasuresSelectedList());
+						isComponentMeasuresSelected = true;
+					}
 					metaDataDisplay.buildComponentMeasuresSelectedList(measureSelectedList, editable);
-					
 				}
 			});
-		}
-		
-		else{
+		} else {
 			metaDataDisplay.buildComponentMeasuresSelectedList(currentMeasureDetail.getComponentMeasuresSelectedList(),
 					editable);
 		}
-		
 
 	}
 	
@@ -1557,8 +1561,8 @@ private void setAuthorsListOnView() {
 				currentMeasureDetail.setComponentMeasuresSelectedList(componentMeasuresList);
 			}
 		getComponentMeasures();
-		dbComponentMeasuresSelectedList.clear();
-		dbComponentMeasuresSelectedList.addAll(currentMeasureDetail.getComponentMeasuresSelectedList());
+//		dbComponentMeasuresSelectedList.clear();
+//		dbComponentMeasuresSelectedList.addAll(currentMeasureDetail.getComponentMeasuresSelectedList());
 		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		if (currentMeasureDetail.getReferencesList() != null) {
 			metaDataDisplay.setReferenceValues(currentMeasureDetail.getReferencesList(), editable);

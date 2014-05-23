@@ -41,8 +41,7 @@ import com.google.gwt.user.client.ui.Widget;
  * The Class MeasurePackagePresenter.
  */
 public class MeasurePackagePresenter implements MatPresenter {
-	/** The empty panel. */
-	private SimplePanel emptyPanel = new SimplePanel();
+
 	/** The panel. */
 	private SimplePanel panel = new SimplePanel();
 	
@@ -458,7 +457,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		currentDetail.setPackageClauses(view.getPackageGroupingWidget().getGroupingPopulationList());
 		currentDetail.setToComparePackageClauses(dbPackageClauses);
 		currentDetail.setValueSetDate(null);
-		//this.currentDetail = currentDetail;
 	}
 	
 	
@@ -511,7 +509,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getPackageSuccessMessageDisplay().clear();
 		view.getSuppDataSuccessMessageDisplay().clear();
 		view.getPackageErrorMessageDisplay().clear();
-		//view.getMeasureErrorMessageDisplay().clear();
 		view.getMeasurePackageSuccessMsg().clear();
 		view.getErrorMessageDisplay().clear();
 		view.getMeasurePackageWarningMsg().clear();
@@ -521,7 +518,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	private void displayEmpty() {
 		panel.clear();
-		//panel.add(emptyPanel);
 		panel.add(view.asWidget());
 		view.getPackageGroupingWidget().getDisclosurePanelAssociations().setVisible(false);
 		view.getPackageGroupingWidget().getDisclosurePanelItemCountTable().setVisible(false);
@@ -604,9 +600,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.setObserver(new MeasurePackagerView.Observer() {
 			@Override
 			public void onEditClicked(MeasurePackageDetail detail) {
-				//updateDetailsFromView(currentDetail);
 				
-				if(!view.getPackageGroupingWidget().getGroupingPopulationList().equals(dbPackageClauses)){
+				if(!checkIfDirty(detail)){
 					
 					showErrorMessage(view.getSaveErrorMessageDisplay());
 					view.getSaveErrorMessageDisplay().getButtons().get(0).setFocus(true);
@@ -627,6 +622,25 @@ public class MeasurePackagePresenter implements MatPresenter {
 		});
 	}
 	
+	
+	/**
+	 * Check if dirty.
+	 *
+	 * @param detail the detail
+	 * @return true, if successful
+	 */
+	public boolean checkIfDirty(MeasurePackageDetail detail){
+		
+		if (currentDetail.getPackageClauses() == null) {
+			if (dbPackageClauses != null) {
+				return false;
+			}
+		} else if (!currentDetail.isEqual(currentDetail.getPackageClauses(),
+				dbPackageClauses)) {
+			return false;
+		} 
+		return true;
+	}
 	
 	/**
 	 * Show error message.
@@ -794,7 +808,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 				.toString(getMaxSequence(packageOverview) + 1));
 		List<MeasurePackageDetail> packageList = new ArrayList<MeasurePackageDetail>(packageOverview.getPackages());
 		view.buildCellTable(packageList);
-		//view.setMeasurePackages(packageOverview.getPackages());
 		setMeasurePackageDetailsOnView();
 	}
 	/**
@@ -807,9 +820,24 @@ public class MeasurePackagePresenter implements MatPresenter {
 			if (detail.getSequence().equals(measurePackageId)) {
 				currentDetail = detail;
 				setMeasurePackageDetailsOnView();
+				getItemCountListFromView(currentDetail.getPackageClauses());
 				break;
 			}
 		}
+	}
+	
+	/**
+	 * Gets the item count list from view.
+	 *
+	 * @param packageClauses the package clauses
+	 * @return the item count list from view
+	 */
+	public void getItemCountListFromView(List<MeasurePackageClauseDetail> packageClauses){
+		for(int i=0; i<dbPackageClauses.size(); i++){
+			dbPackageClauses.get(i).getDbItemCountList().addAll(packageClauses.get(i).getItemCountList());
+			dbPackageClauses.get(i).setDbAssociatedPopulationUUID(packageClauses.get(i).getAssociatedPopulationUUID());
+		}
+		
 	}
 	/**
 	 * setMeasurePackageDetailsOnView.

@@ -246,19 +246,31 @@ public class MeasurePackageDetail implements IsSerializable, Comparable<MeasureP
 				 MeasurePackageClauseDetail val2 = (MeasurePackageClauseDetail) listB.get(i);
 				if (val1.compareTo(val2) != 0) {
 					return false;
-				}
-			}
-			 
-			 if (listA.get(i) instanceof QualityDataSetDTO) {
+				} else if(!isEqual(val1.getItemCountList(), val2.getDbItemCountList())) { 
+					return false;
+				} else if((val1.getAssociatedPopulationUUID()!=null) && (val2.getDbAssociatedPopulationUUID()!=null)) { 
+					if(val1.getAssociatedPopulationUUID()
+							.compareTo(val2.getDbAssociatedPopulationUUID()) != 0){
+						return false;	
+					}
+				} else if((val1.getAssociatedPopulationUUID()!=null) && (val2.getDbAssociatedPopulationUUID()==null)) { 
+						return false;	
+				} else if((val1.getAssociatedPopulationUUID()==null) && (val2.getDbAssociatedPopulationUUID()!=null)) { 
+					   return false;	
+			   } 
+				
+			} else if (listA.get(i) instanceof QualityDataSetDTO) {
 				 QualityDataSetDTO val1 = (QualityDataSetDTO) listA.get(i);
 				 QualityDataSetDTO val2 = (QualityDataSetDTO) listB.get(i);
 				if (val1.compare(val1, val2) != 0) {
 					return false;
 				}
 			}
+			 
 		}
 		return true;
 	}
+
 	
 	/**
 	 * Gets the to compare supp data elements.

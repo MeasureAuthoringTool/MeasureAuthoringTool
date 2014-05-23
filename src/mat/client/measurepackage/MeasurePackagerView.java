@@ -596,7 +596,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		supPopulationList.clear();
 		supPopulationList.addAll(clauses);
 		Collections.sort(supPopulationList, new QualityDataSetDTO.Comparator());
-		
 		rightPagerPanel.clear();
 		rightPagerPanel.add(getSupCellList());
 		supDataSelModel.clear();
@@ -871,5 +870,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		public void setValue(com.google.gwt.cell.client.Cell.Context context,
 				Element parent, QualityDataSetDTO value) {
 		}
+		
 	}
+	
 }

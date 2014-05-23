@@ -319,96 +319,69 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		});
 	}
+	
 	/**
-	 * Add Item count to selected populations.
-	 * @param saveItemCount - {@link SecondaryButton}.
+	 * Adds the association to clauses.
 	 */
-	private void addClickHandlersToAddItemCountList(SecondaryButton saveItemCount) {
-		saveItemCount.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				errorMessages.clear();
-				successMessages.clear();
-				if (rightCellListSelectionModel.getSelectedObject() == null) {
-					return;
+	private void addAssociationToClauses(){
+		errorMessages.clear();
+		successMessages.clear();
+		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
+		MeasurePackageClauseDetail otherClauseCell = null;
+		String existingUuid = groupingClausesMap.get(selectedClauseCell.getName()).getAssociatedPopulationUUID();
+		ArrayList<MeasurePackageClauseDetail> interimArrayList = null;
+		String otherClauseType = null;
+		if (selectedClauseCell.getType().equalsIgnoreCase("denominator")) {
+			otherClauseType = "numerator";
+			interimArrayList = denoAssociatedPopulationList;
+		} else if (selectedClauseCell.getType().equalsIgnoreCase("numerator")) {
+			otherClauseType = "denominator";
+			interimArrayList = numAssociatedPopulationList;
+		}
+		if (interimArrayList != null) {
+			for (MeasurePackageClauseDetail detail : interimArrayList) {
+				if (detail.isAssociatedPopulation()) {
+					groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
+					setAssociatedPopulationUUID(detail.getId());
+				} else {
+					otherClauseCell = detail;
 				}
-				System.out.println("Selected ItemCountList: " + itemCountSelectionList.size());
-				groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName())
-				.setItemCountList(itemCountSelectionList);
-				successMessages.setMessage("Successfully modified Item count(s)."
-						+ " Please click save grouping to save the changes.");
 			}
-		});
-	}
-	/**
-	 * Add Association to selected Clause Cell.
-	 * @param secondaryButton - {@link SecondaryButton}.
-	 */
-	private void addClickHandlersToAddAssociation(SecondaryButton secondaryButton) {
-		secondaryButton.addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				errorMessages.clear();
-				successMessages.clear();
-				MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
-				MeasurePackageClauseDetail otherClauseCell = null;
-				String existingUuid = groupingClausesMap.get(selectedClauseCell.getName()).getAssociatedPopulationUUID();
-				ArrayList<MeasurePackageClauseDetail> interimArrayList = null;
-				String otherClauseType = null;
-				if (selectedClauseCell.getType().equalsIgnoreCase("denominator")) {
-					otherClauseType = "numerator";
-					interimArrayList = denoAssociatedPopulationList;
-				} else if (selectedClauseCell.getType().equalsIgnoreCase("numerator")) {
-					otherClauseType = "denominator";
-					interimArrayList = numAssociatedPopulationList;
-				}
-				if (interimArrayList != null) {
-					for (MeasurePackageClauseDetail detail : interimArrayList) {
-						if (detail.isAssociatedPopulation()) {
-							groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName()).
-							setAssociatedPopulationUUID(detail.getId());
-						} else {
-							otherClauseCell = detail;
-						}
-					}
-					if (otherClauseCell != null) {
-						for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
-							if (entry.getValue().getType().equalsIgnoreCase(otherClauseType)) {
-								MeasurePackageClauseDetail updateDetails = entry.getValue();
-								groupingClausesMap.get(updateDetails.getName()).
-								setAssociatedPopulationUUID(otherClauseCell.getId());
-								break;
-							}
-						}
-					}
-				} else if (selectedClauseCell.getType().equalsIgnoreCase("measureObservation")) {
-					for (MeasurePackageClauseDetail detail : associatedPopulationList) {
-						if ((existingUuid != null)
-								&& existingUuid.equals(detail.getId())) {
-							if (detail.isAssociatedPopulation()) {
-								groupingClausesMap.get(rightCellListSelectionModel.
-										getSelectedObject().getName()).
-										setAssociatedPopulationUUID(detail.getId());
-							} else {
-								groupingClausesMap.get(rightCellListSelectionModel.
-										getSelectedObject().getName()).
-										setAssociatedPopulationUUID(null);
-							}
-						} else {
-							if (detail.isAssociatedPopulation()) {
-								groupingClausesMap.get(rightCellListSelectionModel.
-										getSelectedObject().getName()).
-										setAssociatedPopulationUUID(detail.getId());
-								break;
-							}
-						}
+			if (otherClauseCell != null) {
+				for (Entry<String, MeasurePackageClauseDetail> entry : groupingClausesMap.entrySet()) {
+					if (entry.getValue().getType().equalsIgnoreCase(otherClauseType)) {
+						MeasurePackageClauseDetail updateDetails = entry.getValue();
+						groupingClausesMap.get(updateDetails.getName()).
+						setAssociatedPopulationUUID(otherClauseCell.getId());
+						break;
 					}
 				}
-				successMessages.setMessage("Successfully modified Association."
-						+ " Please click save grouping to save changes.");
 			}
-		});
+		} else if (selectedClauseCell.getType().equalsIgnoreCase("measureObservation")) {
+			for (MeasurePackageClauseDetail detail : associatedPopulationList) {
+				if ((existingUuid != null)
+						&& existingUuid.equals(detail.getId())) {
+					if (detail.isAssociatedPopulation()) {
+						groupingClausesMap.get(rightCellListSelectionModel.
+								getSelectedObject().getName()).
+								setAssociatedPopulationUUID(detail.getId());
+					} else {
+						groupingClausesMap.get(rightCellListSelectionModel.
+								getSelectedObject().getName()).
+								setAssociatedPopulationUUID(null);
+					}
+				} else {
+					if (detail.isAssociatedPopulation()) {
+						groupingClausesMap.get(rightCellListSelectionModel.
+								getSelectedObject().getName()).
+								setAssociatedPopulationUUID(detail.getId());
+						break;
+					}
+				}
+			}
+		}
 	}
+	
 	
 	/**
 	 * Adds the click handlers to clear association.
@@ -435,8 +408,6 @@ public class MeasurePackageClauseCellListWidget {
 					disclosurePanelItemCountTable.setOpen(false);
 					disclosurePanelAssociations.setVisible(true);
 					disclosurePanelAssociations.setOpen(true);
-					successMessages.setMessage("Successfully cleared Associations."
-							+ " Please click save grouping to save changes.");
 				}
 			}
 		});
@@ -480,6 +451,8 @@ public class MeasurePackageClauseCellListWidget {
 						}
 					}
 				}
+				groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName())
+				.setItemCountList(itemCountSelectionList);
 				ItemCountLabel.setText("Selected Items: " + itemCountSelectionList.size());
 			}
 		});
@@ -568,18 +541,11 @@ public class MeasurePackageClauseCellListWidget {
 				spager.setDisplay(itemCountCellTable);
 				spager.setPageSize(PAGESIZE);
 				panel.setStylePrimaryName("valueSetSearchPanel");
-				/** Flow Panel for OK-Cancel buttons in Item Count Table. **/
-				FlowPanel itemCountButtonPanel = new FlowPanel();
-				SecondaryButton saveItemCountList = new SecondaryButton("OK");
-				itemCountButtonPanel.addStyleName("rightAlignButton");
-				itemCountButtonPanel.add(saveItemCountList);
 				panel.add(itemCountCellTable);
 				panel.add(new SpacerWidget());
 				panel.add(spager);
 				panel.add(new SpacerWidget());
 				panel.add(ItemCountLabel);
-				panel.add(itemCountButtonPanel);
-				addClickHandlersToAddItemCountList(saveItemCountList);
 			} else {
 				panel.setStylePrimaryName("valueSetSearchPanel");
 				panel.add(new SpacerWidget());
@@ -666,11 +632,8 @@ public class MeasurePackageClauseCellListWidget {
 		vPanel.add(associatedPOPCellList);
 		HorizontalPanel associateWidgetButtonPanel = new HorizontalPanel();
 		associateWidgetButtonPanel.addStyleName("floatRightButtonPanel");
-		SecondaryButton saveAssociationInClause = new SecondaryButton("OK");
-		associateWidgetButtonPanel.add(saveAssociationInClause);
 		associateWidgetButtonPanel.add(clearButtonPanel);
 		vPanel.add(associateWidgetButtonPanel);
-		addClickHandlersToAddAssociation(saveAssociationInClause);
 		return vPanel;
 	}
 	
@@ -706,8 +669,8 @@ public class MeasurePackageClauseCellListWidget {
 					@Override
 					public void update(int index,
 							MeasurePackageClauseDetail object, Boolean value) {
-						successMessages.clear();
 						errorMessages.clear();
+						successMessages.clear();
 						MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.
 								getSelectedObject();
 						if (selectedClauseCell.getType().equalsIgnoreCase("denominator")) {
@@ -747,6 +710,8 @@ public class MeasurePackageClauseCellListWidget {
 							disclosurePanelAssociations.setOpen(false);
 							disclosurePanelAssociations.setOpen(true);
 						}
+					
+						addAssociationToClauses();
 					}
 				};
 			}
@@ -1311,6 +1276,7 @@ public class MeasurePackageClauseCellListWidget {
 			errorMessages.setMessages(messages);
 		} else {
 			errorMessages.clear();
+			successMessages.clear();
 		}
 		return messages.size() == 0;
 	}

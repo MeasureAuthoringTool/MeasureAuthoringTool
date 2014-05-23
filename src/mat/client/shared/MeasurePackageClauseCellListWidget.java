@@ -1107,10 +1107,12 @@ public class MeasurePackageClauseCellListWidget {
 			errorMessages.clear();
 			successMessages.clear();
 			itemCountSelectionList = new ArrayList<QualityDataSetDTO>();
-			groupingClausesMap.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject());
-			MeasurePackageClauseDetail measureDetail = groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName());
-			if ((measureDetail.getItemCountList() != null) && (measureDetail.getItemCountList().size() > 0)) {
-				itemCountSelectionList = measureDetail.getItemCountList();
+			if(rightCellListSelectionModel.getSelectedObject() != null){
+				groupingClausesMap.put(rightCellListSelectionModel.getSelectedObject().getName(), rightCellListSelectionModel.getSelectedObject());
+				MeasurePackageClauseDetail measureDetail = groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName());
+				if ((measureDetail.getItemCountList() != null) && (measureDetail.getItemCountList().size() > 0)) {
+					itemCountSelectionList = measureDetail.getItemCountList();
+				}
 			}
 			System.out.println("ItemCountList :" + itemCountSelectionList);
 			if (MatContext.get().getMeasureLockService().checkForEditPermission()) {

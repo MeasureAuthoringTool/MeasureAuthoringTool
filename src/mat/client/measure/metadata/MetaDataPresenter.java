@@ -1066,6 +1066,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 
 			@Override
 			public void onClick(ClickEvent event) {
+				isComponentMeasuresSelected = false;
 				saveMetaDataInformation(true);
 			}
 			

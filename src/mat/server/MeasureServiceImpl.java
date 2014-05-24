@@ -392,5 +392,11 @@ MeasureService {
 			MeasureXmlModel measureXmlModel) {
 		return this.getMeasureLibraryService().validateMeasureXmlInpopulationWorkspace(measureXmlModel);
 	}
+
+	@Override
+	public void updateComponentMeasuresFromXml(String measureId) {
+		// TODO Auto-generated method stub
+		 this.getMeasureLibraryService().updateComponentMeasuresOnDeletion(measureId);
+	}
 	
 }

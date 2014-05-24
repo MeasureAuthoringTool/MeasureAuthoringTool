@@ -1230,5 +1230,22 @@ mat.dao.clause.MeasureDAO {
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.dao.clause.MeasureDAO#getMeasure(java.lang.String)
+	 */
+	@Override
+	public boolean getMeasure(String measureId) {
+		Criteria mCriteria = getSessionFactory().getCurrentSession()
+				.createCriteria(Measure.class);
+		mCriteria.add(Restrictions.eq("id", measureId));
+		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		List<Measure> measure = mCriteria.list();
+		boolean isMeasureDeleted = false;
+		if(measure.size()>0){
+			isMeasureDeleted = true;
+		}
+		return isMeasureDeleted;
+	}
+
 	
 }

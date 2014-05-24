@@ -635,5 +635,13 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 		}
 		return humanReadableHTML;
 	}
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasurePackageService#getMeasure(java.lang.String)
+	 */
+	@Override
+	public boolean getMeasure(String measureId) {
+		return measurePackageDAO.getMeasure(measureId);
+	}
 	
 }

@@ -16,6 +16,7 @@ import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.util.XmlProcessor;
 
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -426,4 +427,6 @@ public interface MeasureService extends RemoteService {
 	 */
 	boolean validateMeasureXmlinpopulationWorkspace(
 			MeasureXmlModel measureXmlModel);
+	
+	void updateComponentMeasuresFromXml(String measureId);
 }

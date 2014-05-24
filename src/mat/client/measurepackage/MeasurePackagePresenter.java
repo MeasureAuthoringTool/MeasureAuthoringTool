@@ -312,6 +312,21 @@ public class MeasurePackagePresenter implements MatPresenter {
 				((Button) view.getPackageMeasureButton()).setEnabled(false);
 				//MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>()
 
+				MatContext.get().getMeasureService().updateComponentMeasuresFromXml(model.getId(), new AsyncCallback<Void>() {
+
+					@Override
+					public void onFailure(Throwable caught) {
+						
+						System.out.println(" Updation of Component Measures on Creation of Measure Packager: "+caught.getStackTrace());
+					}
+
+					@Override
+					public void onSuccess(Void result) {
+						view.getPackageSuccessMessageDisplay().setMessage("Component Measures Updated");
+						
+					}
+				});
+				
 				
 				MatContext.get().getMeasureService().validatePackageGrouping(model, new AsyncCallback<Boolean>(){
 					

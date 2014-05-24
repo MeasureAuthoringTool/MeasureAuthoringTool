@@ -1090,6 +1090,36 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 	
+	@Override
+     public void updateComponentMeasuresOnDeletion(String measureId){
+		MeasureXmlModel xmlModel = getMeasureXmlForMeasure(measureId);
+		if(xmlModel!=null){
+    	 XmlProcessor processor = new XmlProcessor(xmlModel.getXml());
+     	 String XPATH_EXPRESSION_COMPONENT_MEASURES = "/measure//measureDetails//componentMeasures//measure";
+    	 try {
+			NodeList nodeList = (NodeList) xPath.evaluate(XPATH_EXPRESSION_COMPONENT_MEASURES,
+						processor.getOriginalDoc(),	XPathConstants.NODESET);
+			for(int i = 0; i<nodeList.getLength() ; i++){
+				Node newNode = nodeList.item(i);
+				String id = newNode.getAttributes().getNamedItem("id").getNodeValue();
+				boolean isDeleted = getService().getMeasure(id);
+				if(!isDeleted){
+					nodeList.item(i).getParentNode().removeChild(newNode);
+				}
+				
+			}
+			
+			xmlModel.setXml(processor.transform(processor.getOriginalDoc()));
+			getService().saveMeasureXml(xmlModel);
+			
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+  
+	}
+	
 	/**
 	 * Gets the measure dao.
 	 * 
@@ -2629,5 +2659,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return flag;
 		
 	}	
+	
 }
 

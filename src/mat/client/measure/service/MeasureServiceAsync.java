@@ -484,5 +484,8 @@ public interface MeasureServiceAsync {
 	 */
 	void validateMeasureXmlinpopulationWorkspace(
 			MeasureXmlModel measureXmlModel, AsyncCallback<Boolean> asyncCallback);
+	
+	
+	void updateComponentMeasuresFromXml(String measureId, AsyncCallback<Void> asyncCallback);
 			
 }

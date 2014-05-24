@@ -301,4 +301,12 @@ public interface MeasureDAO extends IDAO<Measure, String> {
 	 * @return the component measure info for measures
 	 */
 	public List<Measure> getComponentMeasureInfoForMeasures(List<String> measureIds);
+	
+	/**
+	 * Gets the measure.
+	 *
+	 * @param measureId the measure id
+	 * @return the measure
+	 */
+	public boolean getMeasure(String measureId);
 }

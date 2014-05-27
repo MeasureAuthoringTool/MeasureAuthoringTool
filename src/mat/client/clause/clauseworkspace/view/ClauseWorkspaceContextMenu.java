@@ -459,6 +459,7 @@ public class ClauseWorkspaceContextMenu {
 		subMenuBar.addItem("Functions", functions); //functions menu 2nd level
 		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE
 				, functions); // functions sub menus 3rd level
+		createAddClauseMenuItem(subMenuBar);
 		addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 		popupMenuBar.addItem(addMenu);
 		popupMenuBar.addSeparator(separator);
@@ -511,6 +512,7 @@ public class ClauseWorkspaceContextMenu {
 		subMenuBar.addItem("Relationship", relSetOpMenuBar); //functions menu 2nd level
 		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 				, relSetOpMenuBar); // Timing sub menus 3rd level
+		createAddClauseMenuItem(subMenuBar);
 		addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 		popupMenuBar.addItem(addMenu);
 		popupMenuBar.addSeparator(separator);
@@ -537,6 +539,24 @@ public class ClauseWorkspaceContextMenu {
 			popupMenuBar.addItem(editMenu);
 		}
 	}
+	
+	/**
+	 * Creates the add clause menu item.
+	 *
+	 * @param menuBar - MenuBar.
+	 */
+	private void createAddClauseMenuItem(MenuBar menuBar) {
+		Command addClauseCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				SubTreeDialogBox.showSubTreeDialogBox(xmlTreeDisplay, true);
+			}
+		};
+		MenuItem item = new MenuItem("Clause", true, addClauseCmd);
+		menuBar.addItem(item);
+	}
+	
 	/**
 	 * Element Ref Node Pop Up Menu Items.
 	 * @param popupPanel - PopupPanel.
@@ -711,6 +731,7 @@ public class ClauseWorkspaceContextMenu {
 		MenuBar functionsMenuBar = new MenuBar(true);
 		menuBar.addItem("Functions", functionsMenuBar); //functions menu 2nd level
 		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar); // functions sub menus 3rd level
+		createAddClauseMenuItem(menuBar);
 		return menuBar;
 	}
 	

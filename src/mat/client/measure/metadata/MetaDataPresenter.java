@@ -1109,8 +1109,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onClick(ClickEvent event) {
 				addEditComponentMeasuresDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY());
-				currentMeasureDetail.setComponentMeasuresSelectedList(addEditComponentMeasuresDisplay.getComponentMeasuresList());
-				
+				metaDataDisplay.setComponentMeasureSelectedList(addEditComponentMeasuresDisplay.getComponentMeasuresList());
 			}
 		});
 	    
@@ -1134,7 +1133,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	 * @return the component measures
 	 */
 	public final void getComponentMeasures(){
-		
+		currentMeasureDetail.setComponentMeasuresSelectedList(metaDataDisplay.getComponentMeasureSelectedList());
 		List<String> listIds = new ArrayList<String>();
 		for(int i = 0;i<currentMeasureDetail.getComponentMeasuresSelectedList().size();i++){
 			listIds.add(currentMeasureDetail.getComponentMeasuresSelectedList().get(i).getId());
@@ -1153,11 +1152,11 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				public void onSuccess(ManageMeasureSearchModel result) {
 					List<ManageMeasureSearchModel.Result> measureSelectedList = result.getData();
 					currentMeasureDetail.setComponentMeasuresSelectedList(measureSelectedList);
-					if(!isComponentMeasuresSelected){
-						dbComponentMeasuresSelectedList.clear();
-						dbComponentMeasuresSelectedList.addAll(currentMeasureDetail.getComponentMeasuresSelectedList());
-						isComponentMeasuresSelected = true;
-					}
+//					if(!isComponentMeasuresSelected){
+//						dbComponentMeasuresSelectedList.clear();
+//						dbComponentMeasuresSelectedList.addAll(currentMeasureDetail.getComponentMeasuresSelectedList());
+//						isComponentMeasuresSelected = true;
+//					}
 					metaDataDisplay.buildComponentMeasuresSelectedList(measureSelectedList, editable);
 				}
 			});
@@ -1562,8 +1561,8 @@ private void setAuthorsListOnView() {
 				currentMeasureDetail.setComponentMeasuresSelectedList(componentMeasuresList);
 			}
 		getComponentMeasures();
-//		dbComponentMeasuresSelectedList.clear();
-//		dbComponentMeasuresSelectedList.addAll(currentMeasureDetail.getComponentMeasuresSelectedList());
+		dbComponentMeasuresSelectedList.clear();
+		dbComponentMeasuresSelectedList.addAll(currentMeasureDetail.getComponentMeasuresSelectedList());
 		editable = MatContext.get().getMeasureLockService().checkForEditPermission();
 		if (currentMeasureDetail.getReferencesList() != null) {
 			metaDataDisplay.setReferenceValues(currentMeasureDetail.getReferencesList(), editable);

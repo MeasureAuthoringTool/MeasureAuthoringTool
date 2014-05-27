@@ -1117,10 +1117,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		sortProvider.addDataDisplay(componentMeasureCellTable);
 		componentMeasureCellTable.setWidth("100%");
 				Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("componentMeasureListSummary",
-				"In the following Measure List table, Measure Name is given in first column,"
-						+ " Version in second column, Finalized Date in third column,"
-						+ "History in fourth column, Edit in fifth column, Share in sixth column"
-						+ "Clone in seventh column and Export in eight column.");
+						"In the following Measure List table,Select is given in first Column, Measure Name is given in Second column,"
+								+ " Version in Third column, Finalized Date in fouth column.");
 		Label label = (Label)LabelBuilder
 				.buildInvisibleLabel("selectedComponentMeasuresSummary","Selected Items: "+ componentMeasureSelectedList.size());
 		componentMeasureCellTable.getElement().setAttribute("id", "ComponentMeasuresListCellTable");

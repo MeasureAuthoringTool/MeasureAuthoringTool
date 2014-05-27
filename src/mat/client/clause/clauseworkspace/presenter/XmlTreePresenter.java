@@ -220,7 +220,11 @@ public class XmlTreePresenter {
 						.getXmlTree().getRootTreeNode().getChildValue(0));
 				boolean checkIfUsedInLogic = true;
 				
-				if(cellTreeNode.getChilds().size() > 0){
+				if(!MatContext.get().getMeasureLockService().checkForEditPermission()){
+					//If the measure is Read Only, the disable the Delete Clause button.
+					xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
+					checkIfUsedInLogic = false;
+				}else if(cellTreeNode.getChilds().size() > 0){
 					CellTreeNode childNode = cellTreeNode.getChilds().get(0);
 					String nodeName = childNode.getName();
 					if(nodeName.equals(selectedItemName)){
@@ -229,7 +233,7 @@ public class XmlTreePresenter {
 						checkIfUsedInLogic = false;
 					}
 				}
-				
+								
 				if(checkIfUsedInLogic){
 					service.isSubTreeReferredInLogic(measureId, selectedItemUUID, new AsyncCallback<Boolean>() {
 	

@@ -648,7 +648,7 @@ public class ClauseWorkspaceContextMenu {
 				showQDMAttributePopup(cellTreeNode);
 			}
 		};
-		MenuItem item = new MenuItem(template.menuTable("Edit Attributes", ""), addQDMAttributeCmd);
+		MenuItem item = new MenuItem(template.menuTable("Edit Attribute", ""), addQDMAttributeCmd);
 		menuBar.addItem(item);
 		checkForTimingElementDataType(cellTreeNode, item);
 	}

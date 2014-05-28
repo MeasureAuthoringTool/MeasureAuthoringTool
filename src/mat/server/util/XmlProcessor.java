@@ -1402,7 +1402,7 @@ public class XmlProcessor {
 					missingTimingElementList.add(MEASUREMENT_PERIOD_OID);
 				}
 				// Measurement Start Date
-				Node measurementStartDateNode = this.findNode(originalDoc,
+				/*Node measurementStartDateNode = this.findNode(originalDoc,
 						"/measure/elementLookUp/qdm[@oid='"
 								+ MEASUREMENT_START_DATE_OID + "']");
 				if (measurementStartDateNode == null) {
@@ -1414,7 +1414,7 @@ public class XmlProcessor {
 								+ MEASUREMENT_END_DATE_OID + "']");
 				if (measurementEndDateNode == null) {
 					missingTimingElementList.add(MEASUREMENT_END_DATE_OID);
-				}
+				}*/
 			} catch (XPathExpressionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

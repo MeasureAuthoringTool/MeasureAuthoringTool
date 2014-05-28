@@ -11,9 +11,9 @@
 
         <sql>
          INSERT INTO OPERATOR  VALUES 
-         ((select concat(max(cast(aw.ID as signed))+1,'') from OPERATOR aw), 'SATISFIES ALL', 'SATISFIES ALL', '6');
+         ((select concat(max(cast(aw.ID as signed))+1,'') from OPERATOR aw), 'SATISFIES ALL', 'SATISFIES ALL', '4');
          INSERT INTO OPERATOR  VALUES 
-         ((select concat(max(cast(aw.ID as signed))+1,'') from OPERATOR aw), 'SATISFIES ANY', 'SATISFIES ANY', '6');
+         ((select concat(max(cast(aw.ID as signed))+1,'') from OPERATOR aw), 'SATISFIES ANY', 'SATISFIES ANY', '4');
         </sql>
     </changeSet>
 </databaseChangeLog>

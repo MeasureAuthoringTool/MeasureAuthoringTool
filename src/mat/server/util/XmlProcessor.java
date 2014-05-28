@@ -1377,20 +1377,18 @@ public class XmlProcessor {
 	}
 	
 	/**
-	 * This method will check for the 3 timing elements to be present in
-	 * 'elementLookUp/qdm' tag based on their OID's. Those 3 elements are,
+	 * This method will check for the timing element to be present in
+	 * 'elementLookUp/qdm' tag based on its OID's. That element is,
 	 * 
 	 * 2.16.840.1.113883.3.67.1.101.1.53 : Measurement Period
-	 * 2.16.840.1.113883.3.67.1.101.1.54 : Measurement Start Date
-	 * 2.16.840.1.113883.3.67.1.101.1.55 : Measurement End Date
 	 * 
-	 * And will return a list of timing element OID's missing from
+	 * And will return a string of the timing element OID's missing from
 	 * 'elementLookUp/qdm'
 	 * 
-	 * @return List<String>
+	 * @return String
 	 */
-	public List<String> checkForTimingElements() {
-		List<String> missingTimingElementList = new ArrayList<String>();
+	public String checkForTimingElements() {
+		String missingMeasurementPeriod = new String();
 		
 		if (originalDoc != null) {
 			try {
@@ -1399,29 +1397,14 @@ public class XmlProcessor {
 						"/measure/elementLookUp/qdm[@oid='"
 								+ MEASUREMENT_PERIOD_OID + "']");
 				if (measurementPeriodNode == null) {
-					missingTimingElementList.add(MEASUREMENT_PERIOD_OID);
+					missingMeasurementPeriod = MEASUREMENT_PERIOD_OID;
 				}
-				// Measurement Start Date
-				/*Node measurementStartDateNode = this.findNode(originalDoc,
-						"/measure/elementLookUp/qdm[@oid='"
-								+ MEASUREMENT_START_DATE_OID + "']");
-				if (measurementStartDateNode == null) {
-					missingTimingElementList.add(MEASUREMENT_START_DATE_OID);
-				}
-				// Measurement End Date
-				Node measurementEndDateNode = this.findNode(originalDoc,
-						"/measure/elementLookUp/qdm[@oid='"
-								+ MEASUREMENT_END_DATE_OID + "']");
-				if (measurementEndDateNode == null) {
-					missingTimingElementList.add(MEASUREMENT_END_DATE_OID);
-				}*/
 			} catch (XPathExpressionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-		
-		return missingTimingElementList;
+		}		
+		return missingMeasurementPeriod;
 	}
 	
 	/**

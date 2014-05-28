@@ -316,14 +316,12 @@ public class MeasurePackagePresenter implements MatPresenter {
 
 					@Override
 					public void onFailure(Throwable caught) {
-						
-						System.out.println(" Updation of Component Measures on Creation of Measure Packager: "+caught.getStackTrace());
+						System.out.println(" Updation of Component Measures on Creation of Measure Packager: " + caught.getStackTrace());
 					}
 
 					@Override
 					public void onSuccess(Void result) {
-						view.getPackageSuccessMessageDisplay().setMessage("Component Measures Updated");
-						
+						//view.getPackageSuccessMessageDisplay().setMessage("Component Measures Updated");
 					}
 				});
 				

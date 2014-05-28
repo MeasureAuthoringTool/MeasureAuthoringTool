@@ -1032,27 +1032,31 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
 							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
-						addCommentPanel.setVisible(true);
-						commentArea.setText("");
-						List<CellTreeNode> childNode = (List<CellTreeNode>) value.
-								getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
-						if (childNode != null) {
-							for (CellTreeNode cellTreeNode : childNode) {
-								if (cellTreeNode.getNodeType() == cellTreeNode.COMMENT_NODE) {
-									commentArea.setText(cellTreeNode.getNodeText());
+						if(addCommentPanel != null) {
+							addCommentPanel.setVisible(true);
+							commentArea.setText("");
+							List<CellTreeNode> childNode = (List<CellTreeNode>) value.
+									getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+							if (childNode != null) {
+								for (CellTreeNode cellTreeNode : childNode) {
+									if (cellTreeNode.getNodeType() == cellTreeNode.COMMENT_NODE) {
+										commentArea.setText(cellTreeNode.getNodeText());
+									}
 								}
 							}
+							onTextAreaContentChanged(remainingCharsLabel);
+							setCommentsBoxReadOnly(false);
 						}
-						onTextAreaContentChanged(remainingCharsLabel);
-						setCommentsBoxReadOnly(false);
+						
 						/*setDirty(true);*/
 					} else {
 						if(addCommentPanel != null) {
 							addCommentPanel.setVisible(false);
+							commentArea.setText("");
+							onTextAreaContentChanged(remainingCharsLabel);
+							setCommentsBoxReadOnly(true);
 						}
-						commentArea.setText("");
-						onTextAreaContentChanged(remainingCharsLabel);
-						setCommentsBoxReadOnly(true);
+						
 					}
 				} else {
 					if(addCommentPanel != null) {
@@ -1060,22 +1064,22 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					}
 					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
 							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
-						addCommentPanel.setVisible(true);
-						commentArea.setText("");
-						List<CellTreeNode> childNode = (List<CellTreeNode>) value.
-								getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
-						if (childNode != null) {
-							for (CellTreeNode cellTreeNode : childNode) {
-								if (cellTreeNode.getNodeType() == cellTreeNode.COMMENT_NODE) {
-									commentArea.setText(cellTreeNode.getNodeText());
+							if(addCommentPanel != null) {
+								addCommentPanel.setVisible(true);
+								commentArea.setText("");
+								List<CellTreeNode> childNode = (List<CellTreeNode>) value.
+										getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+								if (childNode != null) {
+									for (CellTreeNode cellTreeNode : childNode) {
+										if (cellTreeNode.getNodeType() == cellTreeNode.COMMENT_NODE) {
+											commentArea.setText(cellTreeNode.getNodeText());
+										}
+									}
 								}
-							}
+								onTextAreaContentChanged(remainingCharsLabel);
+							setCommentsBoxReadOnly(true);
 						}
-						onTextAreaContentChanged(remainingCharsLabel);
 					}
-					
-					setCommentsBoxReadOnly(true);
-					
 				}
 			}  else {
 				successMessageDisplay.clear();

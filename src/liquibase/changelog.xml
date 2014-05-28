@@ -152,4 +152,5 @@
 		<include file="classpath:/liquibase/deploy_sprint-40_US3962_edit_Slightly_Alter_Timing_Names.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-41_US4053_Add_Two_Attributes_To_Medication_Order.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-41_US4057_Add_TargetOutcome_Attribute_To_CareGoal.xml"/>
+		<include file="classpath:/liquibase/deploy_sprint-41_US3957_Add_SATISFIES_ALL_SATISFIES_ANY_ Functions.xml"/>
 	</databaseChangeLog>

@@ -1058,7 +1058,7 @@ public class ClauseWorkspaceContextMenu {
 	 * Show human readable dialog box.
 	 *
 	 * @param result the result
-	 * @param populationName 
+	 * @param populationName the population name
 	 */
 	private native void showHumanReadableDialogBox(String result, String populationName) /*-{
 	var humanReadableWindow = window.open("","","width=1000,height=700");
@@ -1078,6 +1078,11 @@ public class ClauseWorkspaceContextMenu {
 		return viewHumanReadableMenu;
 	}
 	
+	/**
+	 * Creates the menu bar with only qdm.
+	 *
+	 * @return the menu bar
+	 */
 	protected MenuBar createMenuBarWithOnlyQDM() {
 		MenuBar menuBar = new MenuBar(true);
 		popupMenuBar.setAutoOpen(true);

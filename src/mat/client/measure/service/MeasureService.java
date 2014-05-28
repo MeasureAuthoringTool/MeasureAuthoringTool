@@ -428,5 +428,10 @@ public interface MeasureService extends RemoteService {
 	boolean validateMeasureXmlinpopulationWorkspace(
 			MeasureXmlModel measureXmlModel);
 	
+	/**
+	 * Update component measures from xml.
+	 *
+	 * @param measureId the measure id
+	 */
 	void updateComponentMeasuresFromXml(String measureId);
 }

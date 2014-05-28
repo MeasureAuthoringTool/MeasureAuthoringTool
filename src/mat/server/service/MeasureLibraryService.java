@@ -455,5 +455,10 @@ public interface MeasureLibraryService {
 	boolean validateMeasureXmlInpopulationWorkspace(
 			MeasureXmlModel measureXmlModel);
 	
+	/**
+	 * Update component measures on deletion.
+	 *
+	 * @param measureId the measure id
+	 */
 	void updateComponentMeasuresOnDeletion(String measureId);
 }

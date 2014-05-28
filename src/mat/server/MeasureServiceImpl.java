@@ -393,6 +393,9 @@ MeasureService {
 		return this.getMeasureLibraryService().validateMeasureXmlInpopulationWorkspace(measureXmlModel);
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#updateComponentMeasuresFromXml(java.lang.String)
+	 */
 	@Override
 	public void updateComponentMeasuresFromXml(String measureId) {
 		// TODO Auto-generated method stub

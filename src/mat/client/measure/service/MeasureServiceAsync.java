@@ -480,12 +480,17 @@ public interface MeasureServiceAsync {
 	 *
 	 * @param measureXmlModel the measure xml model
 	 * @param asyncCallback the async callback
-	 * @return 
 	 */
 	void validateMeasureXmlinpopulationWorkspace(
 			MeasureXmlModel measureXmlModel, AsyncCallback<Boolean> asyncCallback);
 	
 	
+	/**
+	 * Update component measures from xml.
+	 *
+	 * @param measureId the measure id
+	 * @param asyncCallback the async callback
+	 */
 	void updateComponentMeasuresFromXml(String measureId, AsyncCallback<Void> asyncCallback);
 			
 }

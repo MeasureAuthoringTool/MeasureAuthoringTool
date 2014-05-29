@@ -7,8 +7,10 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -20,11 +22,13 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,12 +56,6 @@ public class XmlProcessor {
 	 */
 	private static final String COHORT = "COHORT";
 	
-	/** The Constant MEASUREMENT_END_DATE_OID. */
-	private static final String MEASUREMENT_END_DATE_OID = "2.16.840.1.113883.3.67.1.101.1.55";
-	
-	/** The Constant MEASUREMENT_START_DATE_OID. */
-	private static final String MEASUREMENT_START_DATE_OID = "2.16.840.1.113883.3.67.1.101.1.54";
-	
 	/** The Constant MEASUREMENT_PERIOD_OID. */
 	private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
 	
@@ -79,11 +77,11 @@ public class XmlProcessor {
 	/** The Constant XPATH_MEASURE_STRATIFICATIONS. */
 	private static final String XPATH_MEASURE_STRATIFICATIONS = "/measure/strata";
 	
-	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS. */
-	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS = "/measure/supplementalDataElements";
+	/** The Constant XPATH_MEASURE_SD_ELEMENTS. */
+	private static final String XPATH_MEASURE_SD_ELEMENTS = "/measure/supplementalDataElements";
 	
-	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF. */
-	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
+	/** The Constant XPATH_SD_ELEMENTS_ELEMENTREF. */
+	private static final String XPATH_SD_ELEMENTS_ELEMENTREF = "/measure/supplementalDataElements/elementRef";
 	
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP = "/measure/elementLookUp";
@@ -91,25 +89,25 @@ public class XmlProcessor {
 	/** The Constant XPATH_MEASURE_SUBTREE_LOOKUP. */
 	private static final String XPATH_MEASURE_SUBTREE_LOOKUP = "/measure/subTreeLookUp";
 	
-	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT. */
-	private static final String XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT = "/measure/measureDetails/itemCount";
+	/** The Constant XPATH_DETAILS_ITEM_COUNT. */
+	private static final String XPATH_DETAILS_ITEM_COUNT = "/measure/measureDetails/itemCount";
 	
-	private static final String XPATH_MEASURE_MEASURE_DETAILS_COMPONENT_MEASURES = "/measure/measureDetails/componentMeasures";
+	private static final String XPATH_DTLS_COMPONENT_MEASURE = "/measure/measureDetails/componentMeasures";
 	
-	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_EMEASUREID. */
-	private static final String XPATH_MEASURE_MEASURE_DETAILS_EMEASUREID = "/measure/measureDetails/emeasureid";
+	/** The Constant XPATH_DETAILS_EMEASUREID. */
+	private static final String XPATH_DETAILS_EMEASUREID = "/measure/measureDetails/emeasureid";
 	
-	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE. */
-	private static final String XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE = "/measure/measureDetails/finalizedDate";
+	/** The Constant XPATH_DETAILS_FINALIZEDDATE. */
+	private static final String XPATH_DETAILS_FINALIZEDDATE = "/measure/measureDetails/finalizedDate";
 	
 	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_GUID. */
 	private static final String XPATH_MEASURE_MEASURE_DETAILS_GUID = "/measure/measureDetails/guid";
 	
 	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE. */
-	private static final String XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE = "/measure/measureDetails/types";
+	private static final String XPATH_DETAILS_MEASURETYPE = "/measure/measureDetails/types";
 	
 	/** The Constant XPATH_MEASURE_MEASURE_DETAILS_SCORING. */
-	private static final String XPATH_MEASURE_MEASURE_DETAILS_SCORING = "/measure/measureDetails/scoring";
+	private static final String XPATH_DETAILS_SCORING = "/measure/measureDetails/scoring";
 	
 	/** The Constant XPATH_MEASURE_ELEMENT_LOOKUP_QDM. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOKUP_QDM = "/measure/elementLookUp/qdm";
@@ -178,11 +176,11 @@ public class XmlProcessor {
 	/** The Constant XPATH_FIND_GROUP_CLAUSE. */
 	public static final String XPATH_FIND_GROUP_CLAUSE = "/measure/measureGrouping/group[packageClause[";
 	
-	/** The Constant XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD. */
-	public static final String XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD = "/measure//*/relationalOp[@type='SBOD']";
+	/** The Constant XPATH_OLD_ALL_RELATIONALOP_SBOD. */
+	public static final String XPATH_OLD_ALL_RELATIONALOP_SBOD = "/measure//*/relationalOp[@type='SBOD']";
 	
-	/** The Constant XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD. */
-	public static final String XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD = "/measure//*/relationalOp[@type='EBOD']";
+	/** The Constant XPATH_OLD_ALL_RELATIONALOP_EBOD. */
+	public static final String XPATH_OLD_ALL_RELATIONALOP_EBOD = "/measure//*/relationalOp[@type='EBOD']";
 	
 	/** The Constant XPATH_STRATA. */
 	private static final String XPATH_STRATA = "/measure/strata";
@@ -193,13 +191,37 @@ public class XmlProcessor {
 	/** The Constant STRATIFICATION_DISPLAYNAME. */
 	private static final String  STRATIFICATION_DISPLAYNAME = "Stratification 1";
 	
+	/** The Constant MEASURE_OBSERVATION. */
+	private static final String MEASURE_OBSERVATION = "MeasureObservations";
+	
+	/** The Constant AND. */
+	private static final String AND = "and";
+	
+	/** The Constant OR. */
+	private static final String OR_STRING = "or";
+	
+	/** The Constant INSTANCE. */
+	private static final String INSTANCE = "instance";
+	
+	/** The Constant UUID. */
+	private static final String UUID_STRING = "uuid";
+	
+	/** The Constant DISPLAY_NAME. */
+	private static final String DISPLAY_NAME = "displayName";
+	
+	/** The Constant TYPE. */
+	private static final String TYPE = "type";
+	
+	
+	private static final String PATIENT = " Patient ";
+	
 	/** The constants map. */
 	private static Map<String, String> constantsMap = new HashMap<String, String>();
 	/** The constants map. */
 	private static Map<String, String> topNodeOperatorMap = new HashMap<String, String>();
 	
 	/** The Constant logger. */
-	private static final Log logger = LogFactory.getLog(XmlProcessor.class);
+	private static final Log LOG = LogFactory.getLog(XmlProcessor.class);
 	
 	/** The original xml. */
 	private String originalXml;
@@ -217,9 +239,9 @@ public class XmlProcessor {
 		MEASURE_POPULATION_EXCLUSIONS };
 	static {
 		constantsMap.put("populations", "Populations");
-		constantsMap.put("measureObservations", "Measure Observations");
+		constantsMap.put(MEASURE_OBSERVATION, "Measure Observations");
 		constantsMap.put("strata", "Stratification");
-		constantsMap.put("measureObservations", "Measure Observations");
+		constantsMap.put(MEASURE_OBSERVATION, "Measure Observations");
 		constantsMap.put("initialPopulations", "Initial Populations");
 		constantsMap.put("numerators", "Numerators");
 		constantsMap.put("denominators", "Denominators");
@@ -239,15 +261,15 @@ public class XmlProcessor {
 		constantsMap.put("Measure Population Exclusions", "Measure Population Exclusions");
 		constantsMap.put("Numerator Exclusions", "Numerator Exclusions");
 		
-		topNodeOperatorMap.put("measureObservations", "and");
-		topNodeOperatorMap.put("initialPopulations", "and");
-		topNodeOperatorMap.put("numerators", "and");
-		topNodeOperatorMap.put("denominators", "and");
-		topNodeOperatorMap.put("measurePopulations", "and");
-		topNodeOperatorMap.put("denominatorExclusions", "or");
-		topNodeOperatorMap.put("numeratorExclusions", "or");
-		topNodeOperatorMap.put("denominatorExceptions", "or");
-		topNodeOperatorMap.put("measurePopulationExclusions", "or");
+		topNodeOperatorMap.put(MEASURE_OBSERVATION, AND);
+		topNodeOperatorMap.put("initialPopulations", AND);
+		topNodeOperatorMap.put("numerators", AND);
+		topNodeOperatorMap.put("denominators", AND);
+		topNodeOperatorMap.put("measurePopulations", AND);
+		topNodeOperatorMap.put("denominatorExclusions", OR_STRING);
+		topNodeOperatorMap.put("numeratorExclusions", OR_STRING);
+		topNodeOperatorMap.put("denominatorExceptions", OR_STRING);
+		topNodeOperatorMap.put("measurePopulationExclusions", OR_STRING);
 	}
 	/**
 	 * Instantiates a new xml processor.
@@ -255,7 +277,7 @@ public class XmlProcessor {
 	 *            the original xml
 	 */
 	public XmlProcessor(String originalXml) {
-		logger.info("In XmlProcessor() constructor");
+		LOG.info("In XmlProcessor() constructor");
 		this.originalXml = originalXml;
 		try {
 			docBuilder = DocumentBuilderFactory.newInstance()
@@ -263,9 +285,9 @@ public class XmlProcessor {
 			InputSource oldXmlstream = new InputSource(new StringReader(
 					originalXml));
 			originalDoc = docBuilder.parse(oldXmlstream);
-			logger.info("Document Object created successfully for the XML String");
+			LOG.info("Document Object created successfully for the XML String");
 		} catch (Exception e) {
-			logger.info("Exception thrown on XmlProcessor() costructor");
+			LOG.info("Exception thrown on XmlProcessor() costructor");
 			caughtExceptions(e);
 			e.printStackTrace();
 		}
@@ -289,9 +311,10 @@ public class XmlProcessor {
 	 */
 	public String appendNode(String newElement, String nodeName,
 			String parentNode) throws SAXException, IOException {
-		logger.info("In appendNode method with newElement ::: ");
+		LOG.info("In appendNode method with newElement ::: ");
+		String returnVar;
 		if ((originalDoc == null) || (newElement == null)) {
-			return "";
+			returnVar = "";
 		}
 		try {
 			Node parentTypeNode = findNode(originalDoc, parentNode);
@@ -307,17 +330,18 @@ public class XmlProcessor {
 							true));
 				}
 				
-				logger.info("Document Object created successfully for the XML String.");
+				LOG.info("Document Object created successfully for the XML String.");
 			} else {
-				logger.info("parentNode:" + parentNode
+				LOG.info("parentNode:" + parentNode
 						+ " not found. method appendNode exiting prematurely.");
 			}
 		} catch (XPathExpressionException e) {
-			logger.info("Exception thrown on appendNode method");
+			LOG.info("Exception thrown on appendNode method");
 			caughtExceptions(e);
 			e.printStackTrace();
 		}
-		return transform(originalDoc);
+		returnVar = transform(originalDoc);
+		return returnVar;
 	}
 	
 	/**
@@ -341,7 +365,7 @@ public class XmlProcessor {
 	 */
 	public String replaceNode(String newXml, String nodeName, String parentName) {
 		try {
-			logger.info("In replaceNode() method");
+			LOG.info("In replaceNode() method");
 			InputSource newXmlstream = new InputSource(new StringReader(newXml));
 			Document newDoc = docBuilder.parse(newXmlstream); // Parse the NewXml
 			// which should
@@ -394,19 +418,19 @@ public class XmlProcessor {
 								true)); // insert the new child node to the old
 						// child's Parent node,.
 					}
-					logger.info("Replaced old Child Node with new Child Node "
+					LOG.info("Replaced old Child Node with new Child Node "
 							+ nodeName);
 				} else { // if the Original Document doesnt have the Node, then
 					// insert the new Node under the first child
 					Node importNode = originalDoc.importNode(newNode, true);
 					originalDoc.getFirstChild().appendChild(importNode);
-					logger.info("Inserted new Child Node" + nodeName);
+					LOG.info("Inserted new Child Node" + nodeName);
 				}
 				return transform(originalDoc);
 			}
 			
 		} catch (Exception e) {
-			logger.info("Exception thrown on replaceNode() method");
+			LOG.info("Exception thrown on replaceNode() method");
 			caughtExceptions(e);
 			e.printStackTrace();
 		}
@@ -424,16 +448,16 @@ public class XmlProcessor {
 	 */
 	public String updateNodeText(String nodeName, String nodeValue) {
 		try {
-			logger.info("In updateNodeText() method");
+			LOG.info("In updateNodeText() method");
 			InputSource xmlStream = new InputSource(new StringReader(
 					originalXml));
 			Document doc = docBuilder.parse(xmlStream);
 			doc.getElementsByTagName(nodeName).item(0)
 			.setTextContent(nodeValue);
-			logger.info("update NoedText");
+			LOG.info("update NoedText");
 			return transform(doc);
 		} catch (Exception e) {
-			logger.info("Exception thrown on updateNodeText() method");
+			LOG.info("Exception thrown on updateNodeText() method");
 			caughtExceptions(e);
 			e.printStackTrace();
 		}
@@ -448,7 +472,7 @@ public class XmlProcessor {
 	 * @return the string
 	 */
 	public String transform(Node node) {
-		logger.info("In transform() method");
+		LOG.info("In transform() method");
 		ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
 		TransformerFactory transformerFactory = TransformerFactoryImpl
 				.newInstance();
@@ -458,11 +482,11 @@ public class XmlProcessor {
 		try {
 			transformerFactory.newTransformer().transform(source, result);
 		} catch (TransformerException e) {
-			logger.info("Document object to ByteArray transformation failed "
+			LOG.info("Document object to ByteArray transformation failed "
 					+ e.getStackTrace());
 			e.printStackTrace();
 		}
-		logger.info("Document object to ByteArray transformation complete");
+		LOG.info("Document object to ByteArray transformation complete");
 		return arrayOutputStream.toString();
 	}
 	
@@ -493,12 +517,13 @@ public class XmlProcessor {
 	 * @return the xml by tag name
 	 */
 	public String getXmlByTagName(String tagName) {
+		String returnVar = null;
 		Node node = originalDoc.getElementsByTagName(tagName).getLength() > 0 ? originalDoc
 				.getElementsByTagName(tagName).item(0) : null;
 				if (null != node) {
-					return transform(node);
+					returnVar = transform(node);
 				}
-				return null;
+				return returnVar;
 	}
 	
 	/**
@@ -522,20 +547,20 @@ public class XmlProcessor {
 	/**
 	 * Caught exceptions.
 	 * 
-	 * @param e
+	 * @param excp
 	 *            the e
 	 */
-	private void caughtExceptions(Exception e) {
-		if (e instanceof ParserConfigurationException) {
-			logger.info("Document Builder Object creation failed"
-					+ e.getStackTrace());
-		} else if (e instanceof SAXException) {
-			logger.info("Xml parsing failed:" + e.getStackTrace());
-		} else if (e instanceof IOException) {
-			logger.info("Conversion of String XML to InputSource failed"
-					+ e.getStackTrace());
+	private void caughtExceptions(Exception excp) {
+		if (excp instanceof ParserConfigurationException) {
+			LOG.info("Document Builder Object creation failed"
+					+ excp.getStackTrace());
+		} else if (excp instanceof SAXException) {
+			LOG.info("Xml parsing failed:" + excp.getStackTrace());
+		} else if (excp instanceof IOException) {
+			LOG.info("Conversion of String XML to InputSource failed"
+					+ excp.getStackTrace());
 		} else {
-			logger.info("Generic Exception: " + e.getStackTrace());
+			LOG.info("Generic Exception: " + excp.getStackTrace());
 		}
 	}
 	
@@ -545,8 +570,9 @@ public class XmlProcessor {
 	 * @return the string
 	 */
 	public String checkForScoringType() {
+		String returnVar;
 		if (originalDoc == null) {
-			return "";
+			returnVar = "";
 		}
 		// Get the scoring type from originalDoc
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -554,14 +580,15 @@ public class XmlProcessor {
 			String scoringType = (String) xPath.evaluate(
 					"/measure/measureDetails/scoring/@id",
 					originalDoc.getDocumentElement(), XPathConstants.STRING);
-			logger.info("scoringType:" + scoringType);
+			LOG.info("scoringType:" + scoringType);
 			
 			removeNodesBasedOnScoring(scoringType);
 			createNewNodesBasedOnScoring(scoringType);
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-		return transform(originalDoc);
+		returnVar = transform(originalDoc);
+		return returnVar;
 	}
 	
 	/**
@@ -591,10 +618,10 @@ public class XmlProcessor {
 						.getNodeValue().toString());
 				dataSetDTO.setDataType(newNode.getAttributes()
 						.getNamedItem("datatype").getNodeValue().toString());
-				if (newNode.getAttributes().getNamedItem("instance") != null) {
+				if (newNode.getAttributes().getNamedItem(INSTANCE) != null) {
 					dataSetDTO
 					.setOccurrenceText(newNode.getAttributes()
-							.getNamedItem("instance").getNodeValue()
+							.getNamedItem(INSTANCE).getNodeValue()
 							.toString());
 				} else {
 					dataSetDTO.setOccurrenceText("");
@@ -605,7 +632,7 @@ public class XmlProcessor {
 						.getNodeValue().toString());
 				dataSetDTO.setTaxonomy(newNode.getAttributes()
 						.getNamedItem("taxonomy").getNodeValue().toString());
-				dataSetDTO.setUuid(newNode.getAttributes().getNamedItem("uuid")
+				dataSetDTO.setUuid(newNode.getAttributes().getNamedItem(UUID_STRING)
 						.getNodeValue().toString());
 				dataSetDTO.setVersion(newNode.getAttributes()
 						.getNamedItem("version").getNodeValue().toString());
@@ -618,7 +645,7 @@ public class XmlProcessor {
 				masterList.add(dataSetDTO);
 			}
 			NodeList nodesSupplementalData = (NodeList) xPath.evaluate(
-					XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_ELEMENTREF,
+					XPATH_SD_ELEMENTS_ELEMENTREF,
 					originalDoc.getDocumentElement(), XPathConstants.NODESET);
 			// If SupplementDataElement contains elementRef, intersection of QDM
 			// and SupplementDataElement is evaluated.
@@ -654,28 +681,25 @@ public class XmlProcessor {
 				for (int i = 0; i < nodesFinal.getLength(); i++) {
 					Node newNode = nodesFinal.item(i);
 					String nodeID = newNode.getAttributes()
-							.getNamedItem("uuid").getNodeValue();
+							.getNamedItem(UUID_STRING).getNodeValue();
 					String dataType = newNode.getAttributes()
 							.getNamedItem("datatype").getNodeValue();
 					boolean isOccurrenceText = false;
-					if (newNode.getAttributes().getNamedItem("instance") != null) {
+					if (newNode.getAttributes().getNamedItem(INSTANCE) != null) {
 						isOccurrenceText = true;
 					}
-					// Check to Filter Occurrences
-					if (!isOccurrenceText) {
-						// Check to filter Attributes and Timing data types.
-						if (!dataType
-								.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
-								&& !dataType
-								.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
-							for (QualityDataSetDTO dataSetDTO : masterList) {
-								if (dataSetDTO.getUuid().equalsIgnoreCase(
-										nodeID)
-										&& StringUtils.isBlank(dataSetDTO
-												.getOccurrenceText())) {
-									qdmList.add(dataSetDTO);
-									break;
-								}
+					// Check to Filter Occurrences and to filter Attributes and Timing data types.
+					if (!isOccurrenceText && (!dataType
+						.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
+						&& !dataType
+						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE))) {
+						for (QualityDataSetDTO dataSetDTO : masterList) {
+							if (dataSetDTO.getUuid().equalsIgnoreCase(
+									nodeID)
+									&& StringUtils.isBlank(dataSetDTO
+											.getOccurrenceText())) {
+								qdmList.add(dataSetDTO);
+								break;
 							}
 						}
 					}
@@ -684,28 +708,25 @@ public class XmlProcessor {
 				for (int i = 0; i < nodesElementLookUpAll.getLength(); i++) {
 					Node newNode = nodesElementLookUpAll.item(i);
 					String nodeID = newNode.getAttributes()
-							.getNamedItem("uuid").getNodeValue();
+							.getNamedItem(UUID_STRING).getNodeValue();
 					String dataType = newNode.getAttributes()
 							.getNamedItem("datatype").getNodeValue();
 					boolean isOccurrenceText = false;
-					if (newNode.getAttributes().getNamedItem("instance") != null) {
+					if (newNode.getAttributes().getNamedItem(INSTANCE) != null) {
 						isOccurrenceText = true;
 					}
-					// Check to Filter Occurrences
-					if (!isOccurrenceText) {
-						// Check to filter Attributes and Timing data types.
-						if (!dataType
-								.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
-								&& !dataType
-								.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
-							for (QualityDataSetDTO dataSetDTO : masterList) {
-								if (dataSetDTO.getUuid().equalsIgnoreCase(
-										nodeID)
-										&& StringUtils.isBlank(dataSetDTO
-												.getOccurrenceText())) {
-									qdmList.add(dataSetDTO);
-									break;
-								}
+					// Check to Filter Occurrences and to filter Attributes and Timing data types.
+					if (!isOccurrenceText && (!dataType
+						.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
+						&& !dataType
+						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE))) {
+						for (QualityDataSetDTO dataSetDTO : masterList) {
+							if (dataSetDTO.getUuid().equalsIgnoreCase(
+									nodeID)
+									&& StringUtils.isBlank(dataSetDTO
+											.getOccurrenceText())) {
+								qdmList.add(dataSetDTO);
+								break;
 							}
 						}
 					}
@@ -733,19 +754,19 @@ public class XmlProcessor {
 			throws XPathExpressionException {
 		List<String> xPathList = new ArrayList<String>();
 		
-		if (RATIO.equals(scoringType.toUpperCase())) {
+		if (RATIO.equalsIgnoreCase(scoringType)) {
 			// Denominator Exceptions, Measure Populations
 			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
 			/*xPathList.add(XPATH_MEASURE_OBSERVATIONS);*/
-		} else if (PROPOR.equals(scoringType.toUpperCase())) {
+		} else if (PROPOR.equalsIgnoreCase(scoringType)) {
 			// Measure Population Exlusions, Measure Populations
 			//xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_POPULATIONS);
 			xPathList.add(XPATH_MEASURE_POPULATION_EXCLUSIONS);
 			xPathList.add(XPATH_MEASURE_OBSERVATIONS);
-		} else if (SCORING_TYPE_CONTVAR.equals(scoringType.toUpperCase())) {
+		} else if (SCORING_TYPE_CONTVAR.equalsIgnoreCase(scoringType)) {
 			// Numerators,Numerator Exclusions, Denominators, Denominator
 			// Exceptions, Denominator Exclusions
 			xPathList.add(XPATH_NUMERATORS);
@@ -753,7 +774,7 @@ public class XmlProcessor {
 			xPathList.add(XPATH_DENOMINATOR);
 			xPathList.add(XPATH_DENOMINATOR_EXCEPTIONS);
 			xPathList.add(XPATH_DENOMINATOR_EXCLUSIONS);
-		} else if (COHORT.equals(scoringType.toUpperCase())) {
+		} else if (COHORT.equalsIgnoreCase(scoringType)) {
 			xPathList.add(XPATH_NUMERATORS);
 			xPathList.add(XPATH_NUMERATOR_EXCLUSIONS);
 			xPathList.add(XPATH_DENOMINATOR);
@@ -775,52 +796,49 @@ public class XmlProcessor {
 	 * @param document the document
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	public void renameIPP_To_IP(Document document) throws XPathExpressionException {
-		
-		String displayName = "displayName";
+	public void renameIPPToIP(Document document) throws XPathExpressionException {
 		String clause = "clause";
-		String type = "type";
 		String initialPopulation = "initialPopulation";
 		String initialPatientPopulation = "initialPatientPopulation";
-		String XPATH_OLD_INITIAL_PATIENT_POPULATIONS = "/measure/populations/initialPatientPopulations";
-		String XPATH_OLD_MSR_DETAILS_PATIENT_POPULATIONS = "/measure/measureDetails/initialPatientPopDescription";
-		String XPATH_OLD_MEASURE_GROUPING_PACKAGE_CLAUSE = "/measure/measureGrouping/*/packageClause";
+		String xpathOldInitPatientPop = "/measure/populations/initialPatientPopulations";
+		String xpathOldMSRDetailsPatientPop = "/measure/measureDetails/initialPatientPopDescription";
+		String xpathOldGroupingPackageClause = "/measure/measureGrouping/*/packageClause";
 		
 		if (document == null) {
 			return;
 		}
 		
 		//replace the <initialPatientPopDescription> tag in <measureDetails> with <initialPopDescription>
-		Node initialPatientPopDescription = findNode(document, XPATH_OLD_MSR_DETAILS_PATIENT_POPULATIONS);
+		Node initialPatientPopDescription = findNode(document, xpathOldMSRDetailsPatientPop);
 		if (initialPatientPopDescription != null) {
 			document.renameNode(initialPatientPopDescription, "", "initialPopDescription");
 		}
 		//Find and Replace IPP to IP in measureGrouping/group/packageClause.
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-		NodeList nodesPackageClauses = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_GROUPING_PACKAGE_CLAUSE,
+		NodeList nodesPackageClauses = (NodeList) xPath.evaluate(xpathOldGroupingPackageClause,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		
 		for (int i = 0; i < nodesPackageClauses.getLength(); i++) {
 			Node childNode = nodesPackageClauses.item(i);
-			String packageClauseType = childNode.getAttributes().getNamedItem("type").getNodeValue();
+			String packageClauseType = childNode.getAttributes().getNamedItem(TYPE).getNodeValue();
 			String packageClauseName = childNode.getAttributes().getNamedItem("name").getNodeValue();
 			if (packageClauseType.equalsIgnoreCase(initialPatientPopulation)) {
-				childNode.getAttributes().getNamedItem(type).setNodeValue(initialPopulation);
-				if (packageClauseName.indexOf(" Patient ") > 0) {
-					packageClauseName = packageClauseName.replaceAll(" Patient ", " ");
+				childNode.getAttributes().getNamedItem(TYPE).setNodeValue(initialPopulation);
+				if (packageClauseName.indexOf(PATIENT) > 0) {
+					packageClauseName = packageClauseName.replaceAll(PATIENT, " ");
 				}
 				childNode.getAttributes().getNamedItem("name").setNodeValue(packageClauseName);
 			}
 		}
 		
 		//find initialPatientPopulations tag
-		Node initialPopulationsNode = findNode(document, XPATH_OLD_INITIAL_PATIENT_POPULATIONS);
+		Node initialPopulationsNode = findNode(document, xpathOldInitPatientPop);
 		if (initialPopulationsNode == null) {
 			return;
 		}
 		
 		//Also change the value of the 'displayName' attribute
-		initialPopulationsNode.getAttributes().getNamedItem(displayName).setNodeValue("Initial Populations");
+		initialPopulationsNode.getAttributes().getNamedItem(DISPLAY_NAME).setNodeValue("Initial Populations");
 		
 		//within 'initialPopulations' tag, for all 'clause' tags, rename the 'displayName' attribute
 		//from 'Initial Patient Population 1' to 'Initial Population 1'.
@@ -829,13 +847,13 @@ public class XmlProcessor {
 		for (int i = 0; i < childNodes.getLength(); i++) {
 			Node childNode = childNodes.item(i);
 			if (clause.equals(childNode.getNodeName())) {
-				childNode.getAttributes().getNamedItem(type).setNodeValue(initialPopulation);
+				childNode.getAttributes().getNamedItem(TYPE).setNodeValue(initialPopulation);
 				
-				String clauseDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
-				if (clauseDisplayName.indexOf(" Patient ") > 0) {
-					clauseDisplayName = clauseDisplayName.replaceAll(" Patient ", " ");
+				String clauseDisplayName = childNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+				if (clauseDisplayName.indexOf(PATIENT) > 0) {
+					clauseDisplayName = clauseDisplayName.replaceAll(PATIENT, " ");
 				}
-				childNode.getAttributes().getNamedItem(displayName).setNodeValue(clauseDisplayName);
+				childNode.getAttributes().getNamedItem(DISPLAY_NAME).setNodeValue(clauseDisplayName);
 			}
 		}
 		
@@ -850,9 +868,6 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException the x path expression exception
 	 */
 	public void renameTimingConventions(Document document) throws XPathExpressionException {
-		
-		String displayName = "displayName";
-		String type = "type";
 		String startsBeforeOrDuring = "Starts Before Or During";
 		String endsBeforeOrDuring = "Ends Before Or During";
 		String startBeforeEnd = "Starts Before End";
@@ -861,24 +876,24 @@ public class XmlProcessor {
 		String eBE = "EBE";
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		//replace relationalOp attribute values for displayName and type from SBOD to SBE
-		NodeList nodesRelationalOpsSBOD = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_ALL_RELATIONALOP_SBOD,
+		NodeList nodesRelationalOpsSBOD = (NodeList) xPath.evaluate(XPATH_OLD_ALL_RELATIONALOP_SBOD,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for (int i = 0; i < nodesRelationalOpsSBOD.getLength(); i++) {
 			Node childNode =  nodesRelationalOpsSBOD.item(i);
-			String relationalOpDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
+			String relationalOpDisplayName = childNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 			relationalOpDisplayName = relationalOpDisplayName.replace(startsBeforeOrDuring, startBeforeEnd);
-			childNode.getAttributes().getNamedItem(displayName).setNodeValue(relationalOpDisplayName);
-			childNode.getAttributes().getNamedItem(type).setNodeValue(sBE);
+			childNode.getAttributes().getNamedItem(DISPLAY_NAME).setNodeValue(relationalOpDisplayName);
+			childNode.getAttributes().getNamedItem(TYPE).setNodeValue(sBE);
 		}
 		//replace relationalOp attribute values for displayName and type from EBOD to EBE
-		NodeList nodesRelationalOpsEBOD = (NodeList) xPath.evaluate(XPATH_OLD_MEASURE_ALL_RELATIONALOP_EBOD,
+		NodeList nodesRelationalOpsEBOD = (NodeList) xPath.evaluate(XPATH_OLD_ALL_RELATIONALOP_EBOD,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		for (int i = 0; i < nodesRelationalOpsEBOD.getLength(); i++) {
 			Node childNode =  nodesRelationalOpsEBOD.item(i);
-			String relationalOpDisplayName = childNode.getAttributes().getNamedItem(displayName).getNodeValue();
+			String relationalOpDisplayName = childNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 			relationalOpDisplayName = relationalOpDisplayName.replace(endsBeforeOrDuring, endsBeforeEnd);
-			childNode.getAttributes().getNamedItem(displayName).setNodeValue(relationalOpDisplayName);
-			childNode.getAttributes().getNamedItem(type).setNodeValue(eBE);
+			childNode.getAttributes().getNamedItem(DISPLAY_NAME).setNodeValue(relationalOpDisplayName);
+			childNode.getAttributes().getNamedItem(TYPE).setNodeValue(eBE);
 		}
 	}
 	
@@ -894,51 +909,13 @@ public class XmlProcessor {
 	 */
 	public void createNewNodesBasedOnScoring(String scoringType)
 			throws XPathExpressionException {
-		List<String> scoreBasedNodes = new ArrayList<String>();
-		if (SCORING_TYPE_CONTVAR.equals(scoringType)) {
-			scoreBasedNodes.add(INITIAL_POPULATIONS);
-			scoreBasedNodes.add(MEASURE_POPULATIONS);
-			scoreBasedNodes.add(MEASURE_POPULATION_EXCLUSIONS);
-		} else if (PROPOR.equals(scoringType)) {
-			scoreBasedNodes.add(INITIAL_POPULATIONS);
-			scoreBasedNodes.add(NUMERATORS);
-			scoreBasedNodes.add(NUMERATOR_EXCLUSIONS);
-			scoreBasedNodes.add(DENOMINATORS);
-			scoreBasedNodes.add(DENOMINATOR_EXCLUSIONS);
-			scoreBasedNodes.add(DENOMINATOR_EXCEPTIONS);
-		} else if (RATIO.equals(scoringType)) {
-			scoreBasedNodes.add(INITIAL_POPULATIONS);
-			scoreBasedNodes.add(NUMERATORS);
-			scoreBasedNodes.add(NUMERATOR_EXCLUSIONS);
-			scoreBasedNodes.add(DENOMINATORS);
-			scoreBasedNodes.add(DENOMINATOR_EXCLUSIONS);
-		} else if (COHORT.equals(scoringType)) {
-			scoreBasedNodes.add(INITIAL_POPULATIONS);
-		}
+		List<String> scoreBasedNodes = retrieveScoreBasedNodes(scoringType);
 		Node populationsNode = findNode(originalDoc, XPATH_POPULATIONS);
 		if (populationsNode == null) {
 			populationsNode = addPopulationsNode();
 		}
-		boolean childAppended = false;
-		for (String nodeName : scoreBasedNodes) {
-			boolean isNodePresent = false;
-			NodeList childNodes = populationsNode.getChildNodes();
-			for (int i = 0; i < childNodes.getLength(); i++) {
-				Node childNode = childNodes.item(i);
-				String childNodeName = childNode.getNodeName();
-				if (childNodeName.equals(nodeName)) {
-					isNodePresent = true;
-					break;
-				}
-			}
-			if (!isNodePresent) {
-				String displayName = constantsMap.get(nodeName);
-				Element mainChildElem = createTemplateNode(nodeName,
-						displayName);
-				populationsNode.appendChild(mainChildElem);
-				childAppended = true;
-			}
-		}
+		boolean childAppended = calculateChildAppend(scoreBasedNodes,
+				populationsNode);
 		/**
 		 * Add Measure Observations node after Populations node if not present
 		 * and scoring type is Continuous Variable.
@@ -946,20 +923,18 @@ public class XmlProcessor {
 		Node measureObservationsNode = findNode(originalDoc,
 				XPATH_MEASURE_OBSERVATIONS);
 		if (SCORING_TYPE_CONTVAR.equals(scoringType)
-				|| RATIO.equals(scoringType)) {
-			if (measureObservationsNode == null) {
-				// Create a new measureObservations element.
-				String nodeName = "measureObservations";
-				String displayName = constantsMap.get(nodeName);
-				Element mainChildElem = createTemplateNode(nodeName,
-						displayName);
-				measureObservationsNode = mainChildElem;
-				// insert measureObservations element after populations element
-				Node measureNode = populationsNode.getParentNode();
-				Element measureElement = (Element) measureNode;
-				measureElement.insertBefore(mainChildElem,
-						populationsNode.getNextSibling());
-			}
+				|| RATIO.equals(scoringType) && (measureObservationsNode == null)) {
+			// Create a new measureObservations element.
+			String nodeName = MEASURE_OBSERVATION;
+			String displayName = constantsMap.get(nodeName);
+			Element mainChildElem = createTemplateNode(nodeName,
+					displayName);
+			measureObservationsNode = mainChildElem;
+			// insert measureObservations element after populations element
+			Node measureNode = populationsNode.getParentNode();
+			Element measureElement = (Element) measureNode;
+			measureElement.insertBefore(mainChildElem,
+					populationsNode.getNextSibling());
 		}
 		// Create stratifications node
 		Node measureStratificationsNode = findNode(originalDoc,
@@ -982,8 +957,71 @@ public class XmlProcessor {
 			}
 		}
 		// Create supplementalDataElements node
+		createSupplementalDataElementNode(measureStratificationsNode);
+		/*
+		 * All the adding and removing can put the children of 'populations' in
+		 * a random order. Arrange the population nodes in correct order.*/
+		// If no children have been appended, dont go through the process of
+		// re-arranging the
+		// populations node children.
+		if (!childAppended) {
+			return;
+		}
+		// remove all the child nodes of populations node first
+		NodeList childNodes = populationsNode.getChildNodes();
+		List<Node> childNodesList = new ArrayList<Node>();
+		for (int c = 0; c < childNodes.getLength(); c++) {
+			childNodesList.add(childNodes.item(c));
+		}
+		for (int i = 0; i < childNodesList.size(); i++) {
+			populationsNode
+			.removeChild(populationsNode.getChildNodes().item(0));
+		}
+		arrangeChildNodeList(populationsNode, childNodesList);
+	}
+	
+	/**
+	 * Take the child nodeList & re-arrange it according to this order
+	 *    "Initial Patient Populations", "Numerators", "Numerator Exclusions",
+	 *    "Denominators", "Denominator Exclusions",
+	 *    "Denominator Exceptions", "Measure Populations", "Measure Population Exclusions"
+	 * @param populationsNode
+	 * 			the population node
+	 * @param childNodesList
+	 * 			array list of nodes to be ordered
+	 */
+	private void arrangeChildNodeList(Node populationsNode,
+			List<Node> childNodesList) {
+		// Take the child nodeList & re-arrange it according to this order
+		// "Initial Patient Populations", "Numerators", "Numerator Exclusions",
+		// "Denominators", "Denominator Exclusions",
+		// "Denominator Exceptions", "Measure Populations", "Measure Population Exclusions"
+		for (String populationsChild : XmlProcessor.POPULATIONS) {
+			Node populationsChildNode = null;
+			for (int j = 0; j < childNodesList.size(); j++) {
+				Node child = childNodesList.get(j);
+				if (child.getNodeName().equals(populationsChild)) {
+					populationsChildNode = child;
+					break;
+				}
+			}
+			if (populationsChildNode != null) {
+				populationsNode.appendChild(populationsChildNode);
+			}
+		}
+	}
+	
+	/**
+	 * Creates the Supplemental Data Element Node
+	 * 
+	 * @param measureStratificationsNode
+	 * 				stratifications Node for the measure
+	 * @throws XPathExpressionException
+	 */
+	private void createSupplementalDataElementNode(
+			Node measureStratificationsNode) throws XPathExpressionException {
 		Node supplementaDataElementsElement = findNode(originalDoc,
-				XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS);
+				XPATH_MEASURE_SD_ELEMENTS);
 		if (supplementaDataElementsElement == null) {
 			supplementaDataElementsElement = originalDoc
 					.createElement("supplementalDataElements");
@@ -1006,27 +1044,27 @@ public class XmlProcessor {
 			.insertBefore(subTreeLookUpElement,
 					supplementaDataElementsElement.getNextSibling());
 		}
-		if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_COMPONENT_MEASURES) == null) {
+		if (findNode(originalDoc, XPATH_DTLS_COMPONENT_MEASURE) == null) {
 			Element componentMeasureElement = originalDoc
 					.createElement("componentMeasures");
-			if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE) == null) {
-				Node scoringElement = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_SCORING);
+			if (findNode(originalDoc, XPATH_DETAILS_MEASURETYPE) == null) {
+				Node scoringElement = findNode(originalDoc, XPATH_DETAILS_SCORING);
 				if (scoringElement != null) {
 					((Element) scoringElement.getParentNode())
 					.insertBefore(componentMeasureElement,
 							scoringElement.getNextSibling());
 				}
 			} else {
-				Node measureTypeElement = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_MEASURETYPE);
+				Node measureTypeElement = findNode(originalDoc, XPATH_DETAILS_MEASURETYPE);
 				((Element) measureTypeElement.getParentNode())
 				.insertBefore(componentMeasureElement,
 						measureTypeElement.getNextSibling());
 			}
 		}
-		if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_ITEM_COUNT) == null) {
+		if (findNode(originalDoc, XPATH_DETAILS_ITEM_COUNT) == null) {
 			Element itemCountElement = originalDoc
 					.createElement("itemCount");
-			Node componentMeasuresElement = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_COMPONENT_MEASURES);
+			Node componentMeasuresElement = findNode(originalDoc, XPATH_DTLS_COMPONENT_MEASURE);
 			((Element) componentMeasuresElement.getParentNode())
 			.insertBefore(itemCountElement,
 					componentMeasuresElement.getNextSibling());
@@ -1039,42 +1077,75 @@ public class XmlProcessor {
 			.insertBefore(measureGroupingElement,
 					supplementaDataElementsElement.getNextSibling());
 		}
-		/*
-		 * All the adding and removing can put the children of 'populations' in
-		 * a random order. Arrange the population nodes in correct order.*/
-		// If no children have been appended, dont go through the process of
-		// re-arranging the
-		// populations node children.
-		if (!childAppended) {
-			return;
-		}
-		// remove all the child nodes of populations node first
-		NodeList childNodes = populationsNode.getChildNodes();
-		List<Node> childNodesList = new ArrayList<Node>();
-		for (int c = 0; c < childNodes.getLength(); c++) {
-			childNodesList.add(childNodes.item(c));
-		}
-		for (int i = 0; i < childNodesList.size(); i++) {
-			populationsNode
-			.removeChild(populationsNode.getChildNodes().item(0));
-		}
-		// Take the child nodeList & re-arrange it according to this order
-		// "Initial Patient Populations", "Numerators", "Numerator Exclusions",
-		// "Denominators", "Denominator Exclusions",
-		// "Denominator Exceptions", "Measure Populations", "Measure Population Exclusions"
-		for (String populationsChild : XmlProcessor.POPULATIONS) {
-			Node populationsChildNode = null;
-			for (int j = 0; j < childNodesList.size(); j++) {
-				Node child = childNodesList.get(j);
-				if (child.getNodeName().equals(populationsChild)) {
-					populationsChildNode = child;
+	}
+
+	/**
+	 * Calculates whether we appended a child node or not
+	 * 
+	 * @param scoreBasedNodes
+	 * 				the score Base Node
+	 * @param populationsNode
+	 * 				the node for the measures population
+	 * @return Boolean 
+	 * 				true: if we appended a child
+	 * 				false: if we didn't append a child
+	 */
+	private boolean calculateChildAppend(List<String> scoreBasedNodes,
+			Node populationsNode) {
+		boolean childAppended = false;
+		for (String nodeName : scoreBasedNodes) {
+			boolean isNodePresent = false;
+			NodeList childNodes = populationsNode.getChildNodes();
+			for (int i = 0; i < childNodes.getLength(); i++) {
+				Node childNode = childNodes.item(i);
+				String childNodeName = childNode.getNodeName();
+				if (childNodeName.equals(nodeName)) {
+					isNodePresent = true;
 					break;
 				}
 			}
-			if (populationsChildNode != null) {
-				populationsNode.appendChild(populationsChildNode);
+			if (!isNodePresent) {
+				String displayName = constantsMap.get(nodeName);
+				Element mainChildElem = createTemplateNode(nodeName,
+						displayName);
+				populationsNode.appendChild(mainChildElem);
+				childAppended = true;
 			}
 		}
+		return childAppended;
+	}
+
+	/**
+	 * Retrieves the Score Based nodes
+	 * 
+	 * @param scoringType
+	 * 				the scoring type
+	 * @return List<String> 
+	 * 				the score based Nodes
+	 */
+	private List<String> retrieveScoreBasedNodes(String scoringType) {
+		List<String> scoreBasedNodes = new ArrayList<String>();
+		if (SCORING_TYPE_CONTVAR.equals(scoringType)) {
+			scoreBasedNodes.add(INITIAL_POPULATIONS);
+			scoreBasedNodes.add(MEASURE_POPULATIONS);
+			scoreBasedNodes.add(MEASURE_POPULATION_EXCLUSIONS);
+		} else if (PROPOR.equals(scoringType)) {
+			scoreBasedNodes.add(INITIAL_POPULATIONS);
+			scoreBasedNodes.add(NUMERATORS);
+			scoreBasedNodes.add(NUMERATOR_EXCLUSIONS);
+			scoreBasedNodes.add(DENOMINATORS);
+			scoreBasedNodes.add(DENOMINATOR_EXCLUSIONS);
+			scoreBasedNodes.add(DENOMINATOR_EXCEPTIONS);
+		} else if (RATIO.equals(scoringType)) {
+			scoreBasedNodes.add(INITIAL_POPULATIONS);
+			scoreBasedNodes.add(NUMERATORS);
+			scoreBasedNodes.add(NUMERATOR_EXCLUSIONS);
+			scoreBasedNodes.add(DENOMINATORS);
+			scoreBasedNodes.add(DENOMINATOR_EXCLUSIONS);
+		} else if (COHORT.equals(scoringType)) {
+			scoreBasedNodes.add(INITIAL_POPULATIONS);
+		}
+		return scoreBasedNodes;
 	}
 	
 	/**
@@ -1088,7 +1159,7 @@ public class XmlProcessor {
 	 */
 	private Node addPopulationsNode() throws XPathExpressionException {
 		Element populationsElem = originalDoc.createElement("populations");
-		populationsElem.setAttribute("displayName",
+		populationsElem.setAttribute(DISPLAY_NAME,
 				XmlProcessor.constantsMap.get("populations"));
 		Node measureDetailsNode = findNode(originalDoc,
 				"/measure/measureDetails");
@@ -1108,17 +1179,17 @@ public class XmlProcessor {
 	 */
 	public void createEmeasureIdNode(int emeasureId) throws XPathExpressionException, DOMException{
 		
-		if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_EMEASUREID) == null) {
+		if (findNode(originalDoc, XPATH_DETAILS_EMEASUREID) == null) {
 			Element emeasureIDElement = originalDoc
 					.createElement("emeasureid");
 			emeasureIDElement.appendChild(originalDoc.createTextNode(Integer.toString(emeasureId)));
-			if (findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE) == null) {
+			if (findNode(originalDoc, XPATH_DETAILS_FINALIZEDDATE) == null) {
 				Node guidElement = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_GUID);
 				((Element) guidElement.getParentNode())
 				.insertBefore(emeasureIDElement,
 						guidElement);
 			} else {
-				Node finalizedDateElement = findNode(originalDoc, XPATH_MEASURE_MEASURE_DETAILS_FINALIZEDDATE);
+				Node finalizedDateElement = findNode(originalDoc, XPATH_DETAILS_FINALIZEDDATE);
 				((Element) finalizedDateElement.getParentNode())
 				.insertBefore(emeasureIDElement,
 						finalizedDateElement);
@@ -1140,26 +1211,24 @@ public class XmlProcessor {
 	 */
 	private Element createTemplateNode(String nodeName, String clauseDisplayName) {
 		Element mainChildElem = originalDoc.createElement(nodeName);
-		mainChildElem.setAttribute("displayName", constantsMap.get(nodeName));
+		mainChildElem.setAttribute(DISPLAY_NAME, constantsMap.get(nodeName));
 		
 		Element clauseChildElem = originalDoc.createElement("clause");
 		String dispName = constantsMap.get(clauseDisplayName);
-		clauseChildElem.setAttribute("displayName", dispName + " 1");
-		clauseChildElem.setAttribute("type", toCamelCase(dispName));
-		clauseChildElem.setAttribute("uuid", UUIDUtilClient.uuid());
+		clauseChildElem.setAttribute(DISPLAY_NAME, dispName + " 1");
+		clauseChildElem.setAttribute(TYPE, toCamelCase(dispName));
+		clauseChildElem.setAttribute(UUID_STRING, UUIDUtilClient.uuid());
 		mainChildElem.appendChild(clauseChildElem);
 		//logical AND is not required by stratification clause at the
 		//time of creation of new Measure But Population and Measure Observations
 		// clauses will have Logical AND by Default.
-		if (!nodeName.equalsIgnoreCase("strata")) {
-			if (topNodeOperatorMap.containsKey(nodeName)) {
-				String nodeTopLogicalOperator = topNodeOperatorMap.get(nodeName);
-				if (nodeTopLogicalOperator != null) {
-					Element logicalOpElem = originalDoc.createElement("logicalOp");
-					logicalOpElem.setAttribute("displayName", nodeTopLogicalOperator.toUpperCase());
-					logicalOpElem.setAttribute("type", nodeTopLogicalOperator);
-					clauseChildElem.appendChild(logicalOpElem);
-				}
+		if (!nodeName.equalsIgnoreCase("strata")&& (topNodeOperatorMap.containsKey(nodeName))) {
+			String nodeTopLogicalOperator = topNodeOperatorMap.get(nodeName);
+			if (nodeTopLogicalOperator != null) {
+				Element logicalOpElem = originalDoc.createElement("logicalOp");
+				logicalOpElem.setAttribute(DISPLAY_NAME, nodeTopLogicalOperator.toUpperCase(Locale.US));
+				logicalOpElem.setAttribute(TYPE, nodeTopLogicalOperator);
+				clauseChildElem.appendChild(logicalOpElem);
 			}
 		}
 		mainChildElem.appendChild(clauseChildElem);
@@ -1262,30 +1331,30 @@ public class XmlProcessor {
 	/**
 	 * To camel case.
 	 * 
-	 * @param name
+	 * @param nameNew
 	 *            the name
 	 * @return the string
 	 */
 	private static String toCamelCase(String name) {
-		name = name.toLowerCase();
-		String[] parts = name.split(" ");
-		String camelCaseString = parts[0].substring(0, 1).toLowerCase()
-				+ parts[0].substring(1);
+		String nameNew = name.toLowerCase(Locale.US);
+		String[] parts = nameNew.split(" ");
+		StringBuffer camelCaseString = new StringBuffer(parts[0].substring(0, 1).toLowerCase()
+				+ parts[0].substring(1));
 		for (int i = 1; i < parts.length; i++) {
-			camelCaseString = camelCaseString + toProperCase(parts[i]);
+			camelCaseString.append(toProperCase(parts[i]));
 		}
-		return camelCaseString;
+		return camelCaseString.toString();
 	}
 	
 	/**
 	 * To proper case.
 	 * 
-	 * @param s
+	 * @param str
 	 *            the s
 	 * @return the string
 	 */
-	private static String toProperCase(String s) {
-		return s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+	private static String toProperCase(String str) {
+		return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
 	}
 	
 	/**
@@ -1298,7 +1367,7 @@ public class XmlProcessor {
 	 */
 	public static org.apache.commons.io.output.ByteArrayOutputStream convertQualityDataDTOToXML(
 			QualityDataModelWrapper qualityDataSetDTO) {
-		logger.info("In MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
+		LOG.info("In MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
 		Mapping mapping = new Mapping();
 		org.apache.commons.io.output.ByteArrayOutputStream stream = new org.apache.commons.io.output.ByteArrayOutputStream();
 		try {
@@ -1308,27 +1377,25 @@ public class XmlProcessor {
 					stream));
 			marshaller.setMapping(mapping);
 			marshaller.marshal(qualityDataSetDTO);
-			logger.debug("Marshalling of QualityDataSetDTO is successful.."
+			LOG.debug("Marshalling of QualityDataSetDTO is successful.."
 					+ stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load QualityDataModelMapping.xml in convertQualityDataDTOToXML method"
-						+ e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed in convertQualityDataDTOToXML method"
-						+ e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed in convertQualityDataDTOToXML method"
-						+ e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception in convertQualityDataDTOToXML method"
-						+ e);
-			} else {
-				logger.info("Other Exception in convertQualityDataDTOToXML method "
-						+ e);
-			}
+		}catch(IOException e) {
+				LOG.info("Failed to load QualityDataModelMapping.xml in convertQualityDataDTOToXML method"
+						+ e, e);
+			}catch(MappingException e) {
+				LOG.info("Mapping Failed in convertQualityDataDTOToXML method"
+						+ e, e);
+			}catch(MarshalException e) {
+				LOG.info("Unmarshalling Failed in convertQualityDataDTOToXML method"
+						+ e, e);
+			}catch(ValidationException e) {
+				LOG.info("Validation Exception in convertQualityDataDTOToXML method"
+						+ e, e);
+			}catch(Exception e) {
+				LOG.info("Other Exception in convertQualityDataDTOToXML method "
+						+ e, e);
 		}
-		logger.info("Exiting MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
+		LOG.info("Exiting MeasureLibraryServiceImpl.convertQualityDataDTOToXML()");
 		return stream;
 	}
 	
@@ -1342,7 +1409,7 @@ public class XmlProcessor {
 	 */
 	public static org.apache.commons.io.output.ByteArrayOutputStream convertQDMOToSuppleDataXML(
 			QualityDataModelWrapper qualityDataSetDTO) {
-		logger.info("In MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
+		LOG.info("In MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
 		Mapping mapping = new Mapping();
 		org.apache.commons.io.output.ByteArrayOutputStream stream = new org.apache.commons.io.output.ByteArrayOutputStream();
 		try {
@@ -1352,27 +1419,25 @@ public class XmlProcessor {
 					stream));
 			marshaller.setMapping(mapping);
 			marshaller.marshal(qualityDataSetDTO);
-			logger.debug("Marshalling of QualityDataSetDTO is successful in convertQDMOToSuppleDataXML()"
+			LOG.debug("Marshalling of QualityDataSetDTO is successful in convertQDMOToSuppleDataXML()"
 					+ stream.toString());
-		} catch (Exception e) {
-			if (e instanceof IOException) {
-				logger.info("Failed to load QualityDataModelMapping.xml in convertQDMOToSuppleDataXML()"
-						+ e);
-			} else if (e instanceof MappingException) {
-				logger.info("Mapping Failed in convertQDMOToSuppleDataXML()"
-						+ e);
-			} else if (e instanceof MarshalException) {
-				logger.info("Unmarshalling Failed in convertQDMOToSuppleDataXML()"
-						+ e);
-			} else if (e instanceof ValidationException) {
-				logger.info("Validation Exception in convertQDMOToSuppleDataXML()"
-						+ e);
-			} else {
-				logger.info("Other Exception in convertQDMOToSuppleDataXML()"
-						+ e);
-			}
+		}catch(IOException e) {
+				LOG.info("Failed to load QualityDataModelMapping.xml in convertQDMOToSuppleDataXML()"
+						+ e, e);
+		}catch(MappingException e){
+				LOG.info("Mapping Failed in convertQDMOToSuppleDataXML()"
+						+ e, e);
+		}catch(MarshalException e) {
+				LOG.info("Unmarshalling Failed in convertQDMOToSuppleDataXML()"
+						+ e, e);
+		}catch(ValidationException e) {
+				LOG.info("Validation Exception in convertQDMOToSuppleDataXML()"
+						+ e, e);
+		}catch(Exception e) {
+				LOG.info("Other Exception in convertQDMOToSuppleDataXML()"
+						+ e, e);
 		}
-		logger.info("Exiting MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
+		LOG.info("Exiting MeasureLibraryServiceImpl.convertQDMOToSuppleDataXML()");
 		return stream;
 	}
 	
@@ -1388,7 +1453,7 @@ public class XmlProcessor {
 	 * @return String
 	 */
 	public String checkForTimingElements() {
-		String missingMeasurementPeriod = new String();
+		String missingMeasurementPeriod = null;
 		
 		if (originalDoc != null) {
 			try {
@@ -1411,40 +1476,41 @@ public class XmlProcessor {
 	 * @return Xml String.
 	 */
 	public String checkForStratificationAndAdd() {
+		String returnVal;
 		if (originalDoc == null) {
-			return "";
+			returnVal = "";
 		}
 		try {
 			Node strataNode = findNode(originalDoc, XPATH_STRATA);
-			if (strataNode != null) {
-				if (strataNode.hasChildNodes() && !(strataNode.getChildNodes().item(0)
-						.getNodeName().equalsIgnoreCase(STRATIFICATION))) {
-					NodeList childs  = strataNode.getChildNodes();
-					Element stratificationEle = originalDoc
-							.createElement(STRATIFICATION);
-					stratificationEle.setAttribute("displayName", STRATIFICATION_DISPLAYNAME);
-					stratificationEle.setAttribute("uuid", UUIDUtilClient.uuid());
-					stratificationEle.setAttribute("type", STRATIFICATION);
-					List<Node> nCList = new ArrayList<Node>();
-					for (int i = 0; i < childs.getLength(); i++) {
-						nCList.add(childs.item(i));
-						strataNode.removeChild(childs.item(i));
-					}
-					for (Node cNode : nCList) {
-						stratificationEle.appendChild(cNode);
-					}
-					strataNode.appendChild(stratificationEle);
+			if (strataNode != null && (strataNode.hasChildNodes() && !(strataNode.getChildNodes().item(0)
+						.getNodeName().equalsIgnoreCase(STRATIFICATION)))) {
+				NodeList childs  = strataNode.getChildNodes();
+				Element stratificationEle = originalDoc
+						.createElement(STRATIFICATION);
+				stratificationEle.setAttribute(DISPLAY_NAME, STRATIFICATION_DISPLAYNAME);
+				stratificationEle.setAttribute(UUID_STRING, UUIDUtilClient.uuid());
+				stratificationEle.setAttribute(TYPE, STRATIFICATION);
+				List<Node> nCList = new ArrayList<Node>();
+				for (int i = 0; i < childs.getLength(); i++) {
+					nCList.add(childs.item(i));
+					strataNode.removeChild(childs.item(i));
 				}
+				for (Node cNode : nCList) {
+					stratificationEle.appendChild(cNode);
+				}
+				strataNode.appendChild(stratificationEle);
 			}
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-		return transform(originalDoc);
+		returnVal = transform(originalDoc);
+		return returnVal;
 	}
 	
 	public String checkForQdmIDAndUpdate() {
+		String returnVal;
 		if (originalDoc == null) {
-			return "";
+			returnVal = "";
 		}
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		try {
@@ -1470,6 +1536,7 @@ public class XmlProcessor {
 		}catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-		return transform(originalDoc);
+		returnVal = transform(originalDoc);
+		return returnVal;
 	}
 }

@@ -180,7 +180,7 @@ public class OnetimeMeasureXMLUpdateTask implements ApplicationContextAware{
 			XmlProcessor xmlProcessor = new XmlProcessor(
 					measureXmlModel.getXml());
 			try {
-				xmlProcessor.renameIPP_To_IP(xmlProcessor.getOriginalDoc());
+				xmlProcessor.renameIPPToIP(xmlProcessor.getOriginalDoc());
 				String measureXML = xmlProcessor.transform(xmlProcessor
 						.getOriginalDoc());
 				measureXmlModel.setXml(measureXML);

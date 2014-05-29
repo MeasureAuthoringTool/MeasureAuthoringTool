@@ -870,7 +870,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(Boolean result) {
 				if(!result){
-					view.getPackageSuccessMessageDisplay().setMessage("Validation Successful");
+					//view.getPackageSuccessMessageDisplay().setMessage("Validation Successful");
 					
 					MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
 						

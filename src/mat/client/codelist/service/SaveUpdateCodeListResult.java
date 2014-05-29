@@ -1,6 +1,7 @@
 package mat.client.codelist.service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.client.shared.GenericResult;
@@ -57,7 +58,7 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	private String xmlString;
 	
 	/** The applied qdm list. */
-	ArrayList<QualityDataSetDTO> appliedQDMList ;
+	List<QualityDataSetDTO> appliedQDMList ;
 	
 	/** The data set dto. */
 	QualityDataSetDTO dataSetDTO;
@@ -263,7 +264,7 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	 * 
 	 * @return the applied qdm list
 	 */
-	public ArrayList<QualityDataSetDTO> getAppliedQDMList() {
+	public List<QualityDataSetDTO> getAppliedQDMList() {
 		return appliedQDMList;
 	}
 
@@ -273,7 +274,7 @@ public class SaveUpdateCodeListResult extends GenericResult {
 	 * @param appliedQDMList
 	 *            the new applied qdm list
 	 */
-	public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList) {
+	public void setAppliedQDMList(List<QualityDataSetDTO> appliedQDMList) {
 		this.appliedQDMList = appliedQDMList;
 	}
 

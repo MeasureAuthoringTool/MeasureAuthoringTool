@@ -250,7 +250,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	/**
 	 * QualityDataSet List.
 	 */
-	private ArrayList<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
+	private List<QualityDataSetDTO> appliedQDMList = new ArrayList<QualityDataSetDTO>();
 	
 	/**
 	 * When retrieving value set from VSAC, "Loading Please Wait..." message is displayed.
@@ -457,7 +457,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 	 *            - {@link ArrayList} of {@link QualityDataSetDTO}
 	 */
 	private void filterTimingQDMsAndUnsetDTOModfiyAttributes(
-			ArrayList<QualityDataSetDTO> result) {
+			List<QualityDataSetDTO> result) {
 		List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
 		for (QualityDataSetDTO qdsDTO : result) {
 			if ("Timing Element".equals(qdsDTO

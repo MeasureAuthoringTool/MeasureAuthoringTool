@@ -57,7 +57,7 @@ public interface MeasureService extends RemoteService {
 	 * @param measureID
 	 *            the measure id
 	 */
-	void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list,
+	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID);
 	
 	/**
@@ -101,7 +101,7 @@ public interface MeasureService extends RemoteService {
 	 *            the check for supplement data
 	 * @return the applied qdm from measure xml
 	 */
-	ArrayList<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
+	List<QualityDataSetDTO> getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData);
 	
 	/**

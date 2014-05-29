@@ -429,10 +429,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 		if ((measureId != null) && !measureId.equals("")) {
 			service.getAppliedQDMFromMeasureXml(measureId,
 					checkForSupplementData,
-					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
+					new AsyncCallback<List<QualityDataSetDTO>>() {
 				
 				private void filterTimingQDMs(
-						ArrayList<QualityDataSetDTO> result) {
+						List<QualityDataSetDTO> result) {
 					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
@@ -451,7 +451,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				
 				@Override
 				public void onSuccess(
-						final ArrayList<QualityDataSetDTO> result) {
+						final List<QualityDataSetDTO> result) {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 					filterTimingQDMs(result);
 					appliedListModel.setAppliedQDMs(result);

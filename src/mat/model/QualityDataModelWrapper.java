@@ -1,6 +1,7 @@
 package mat.model;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.google.gwt.user.client.rpc.IsSerializable;
 
@@ -10,14 +11,14 @@ import com.google.gwt.user.client.rpc.IsSerializable;
 public class QualityDataModelWrapper implements IsSerializable{
 	
 	/** The quality data dto list. */
-	private ArrayList<QualityDataSetDTO> qualityDataDTOList;
+	private List<QualityDataSetDTO> qualityDataDTOList;
 
 	/**
 	 * Gets the quality data dto.
 	 * 
 	 * @return the quality data dto
 	 */
-	public ArrayList<QualityDataSetDTO> getQualityDataDTO() {
+	public List<QualityDataSetDTO> getQualityDataDTO() {
 		return qualityDataDTOList;
 	}
 
@@ -27,7 +28,7 @@ public class QualityDataModelWrapper implements IsSerializable{
 	 * @param qualityDataDTOList
 	 *            the new quality data dto
 	 */
-	public void setQualityDataDTO(ArrayList<QualityDataSetDTO> qualityDataDTOList) {
+	public void setQualityDataDTO(List<QualityDataSetDTO> qualityDataDTOList) {
 		this.qualityDataDTOList = qualityDataDTOList;
 	}
 

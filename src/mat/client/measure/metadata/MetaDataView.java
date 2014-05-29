@@ -2112,7 +2112,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setAppliedQDMList(java.util.ArrayList)
 	 */
 	@Override
-	public void setAppliedQDMList(ArrayList<QualityDataSetDTO> appliedQDMList) {
+	public void setAppliedQDMList(List<QualityDataSetDTO> appliedQDMList) {
 	}
 	
 	/* (non-Javadoc)

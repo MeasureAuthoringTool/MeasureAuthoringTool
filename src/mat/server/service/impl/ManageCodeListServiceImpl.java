@@ -1666,8 +1666,8 @@ public class ManageCodeListServiceImpl implements CodeListService {
 	 *            the final list
 	 * @return the array list
 	 */
-	private ArrayList<QualityDataSetDTO> sortQualityDataSetList(
-			final ArrayList<QualityDataSetDTO> finalList) {
+	private List<QualityDataSetDTO> sortQualityDataSetList(
+			final List<QualityDataSetDTO> finalList) {
 		
 		Collections.sort(finalList, new Comparator<QualityDataSetDTO>() {
 			@Override

@@ -61,7 +61,7 @@ public interface MeasureServiceAsync {
 	 * @param callback
 	 *            the callback
 	 */
-	void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list,
+	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID, AsyncCallback<Void> callback);
 	
 	/**
@@ -116,7 +116,7 @@ public interface MeasureServiceAsync {
 	 */
 	void getAppliedQDMFromMeasureXml(String measureId,
 			boolean checkForSupplementData,
-			AsyncCallback<ArrayList<QualityDataSetDTO>> callback);
+			AsyncCallback<List<QualityDataSetDTO>> asyncCallback);
 	
 	/**
 	 * Gets the max e measure id.

@@ -538,7 +538,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 *
 		 * @param result the new applied qdm list
 		 */
-		public void setAppliedQDMList(ArrayList<QualityDataSetDTO> result);	
+		public void setAppliedQDMList(List<QualityDataSetDTO> result);	
 		
 		/**
 		 * Gets the qdm selected list.
@@ -1248,10 +1248,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		if ((measureId != null) && !measureId.equals("")) {
 			service.getAppliedQDMFromMeasureXml(measureId,
 					checkForSupplementData,
-					new AsyncCallback<ArrayList<QualityDataSetDTO>>() {
+					new AsyncCallback<List<QualityDataSetDTO>>() {
 				
 				private void filterTimingQDMs(
-						ArrayList<QualityDataSetDTO> result) {
+						List<QualityDataSetDTO> result) {
 					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
@@ -1270,7 +1270,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				
 				@Override
 				public void onSuccess(
-						final ArrayList<QualityDataSetDTO> result) {
+						final List<QualityDataSetDTO> result) {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 					filterTimingQDMs(result);
 					appliedListModel.setAppliedQDMs(result);

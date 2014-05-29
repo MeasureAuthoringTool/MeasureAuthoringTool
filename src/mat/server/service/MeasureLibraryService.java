@@ -64,7 +64,7 @@ public interface MeasureLibraryService {
 	 * @param measureID
 	 *            the measure id
 	 */
-	void createAndSaveElementLookUp(ArrayList<QualityDataSetDTO> list,
+	void createAndSaveElementLookUp(List<QualityDataSetDTO> list,
 			String measureID);
 	
 	/**

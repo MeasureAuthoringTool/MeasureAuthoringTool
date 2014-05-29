@@ -3,6 +3,7 @@ package mat.client.clause;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import mat.client.shared.RadioButtonCell;
 import mat.client.codelist.events.OnChangeOptionsEvent;
@@ -38,7 +39,7 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 	private static String[] widths = new String[] {"50%","40%","10%"};
 	
 	/** The radio button map. */
-	private HashMap<CodeListSearchDTO, RadioButton> radioButtonMap = new HashMap<CodeListSearchDTO, RadioButton>();
+	private Map<CodeListSearchDTO, RadioButton> radioButtonMap = new HashMap<CodeListSearchDTO, RadioButton>();
 	
 	/** The data. */
 	private List<CodeListSearchDTO> data;
@@ -185,14 +186,14 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			};
 			nameColumn.setSortable(true);
 			sortHandler.setComparator(nameColumn,new Comparator<CodeListSearchDTO>() {
-				public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
-					if (o1 == o2) {
+				public int compare(CodeListSearchDTO codeListSearchDTO1, CodeListSearchDTO codeListSearchDTO2) {
+					if (codeListSearchDTO1 == codeListSearchDTO2) {
 						return 0;
 					}
 
 					// Compare the name columns.
-					if (o1 != null) {
-						return (o2 != null) ? o1.getName().compareTo(o2.getName()) : 1;
+					if (codeListSearchDTO1 != null) {
+						return (codeListSearchDTO2 != null) ? codeListSearchDTO1.getName().compareTo(codeListSearchDTO2.getName()) : 1;
 					}
 					return -1;
 				}
@@ -208,14 +209,14 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			};
 			category.setSortable(true);
 			sortHandler.setComparator(category,new Comparator<CodeListSearchDTO>() {
-				public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
-					if (o1 == o2) {
+				public int compare(CodeListSearchDTO codeListSearchDTO1, CodeListSearchDTO codeListSearchDTO2) {
+					if (codeListSearchDTO1 == codeListSearchDTO2) {
 						return 0;
 					}
 
 					// Compare the name columns.
-					if (o1 != null) {
-						return (o2 != null) ? o1.getCategoryDisplay().compareTo(o2.getCategoryDisplay()) : 1;
+					if (codeListSearchDTO1 != null) {
+						return (codeListSearchDTO2 != null) ? codeListSearchDTO1.getCategoryDisplay().compareTo(codeListSearchDTO2.getCategoryDisplay()) : 1;
 					}
 					return -1;
 				}
@@ -231,14 +232,14 @@ public class QDSCodeListSearchModel implements SearchResults<CodeListSearchDTO>,
 			
 			codeSystem.setSortable(true);
 			sortHandler.setComparator(codeSystem,new Comparator<CodeListSearchDTO>() {
-				public int compare(CodeListSearchDTO o1, CodeListSearchDTO o2) {
-					if (o1 == o2) {
+				public int compare(CodeListSearchDTO codeListSearchDTO1, CodeListSearchDTO codeListSearchDTO2) {
+					if (codeListSearchDTO1 == codeListSearchDTO2) {
 						return 0;
 					}
 
 					// Compare the name columns.
-					if (o1 != null) {
-						return (o2 != null) ? o1.getCodeSystem().compareTo(o2.getCodeSystem()) : 1;
+					if (codeListSearchDTO1 != null) {
+						return (codeListSearchDTO2 != null) ? codeListSearchDTO1.getCodeSystem().compareTo(codeListSearchDTO2.getCodeSystem()) : 1;
 					}
 					return -1;
 				}

@@ -338,6 +338,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 							public void onSuccess(final Void result) {
 								getMeasurePackageOverview(MatContext.get()
 										.getCurrentMeasureId());
+								view.getPackageSuccessMessageDisplay().setMessage(
+										MatContext.get().getMessageDelegate().getGroupingSavedMessage());
 								view.getSuppDataSuccessMessageDisplay()
 								.setMessage(MatContext.get()
 										.getMessageDelegate()
@@ -584,11 +586,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	public boolean checkIfDirty(MeasurePackageDetail detail){
 		
-		if (currentDetail.getPackageClauses() == null) {
-			if (dbPackageClauses != null) {
-				return false;
-			}
-		} else if (!currentDetail.isEqual(currentDetail.getPackageClauses(),
+		if (!currentDetail.isEqual(view.getPackageGroupingWidget().getGroupingPopulationList(),
 				dbPackageClauses)) {
 			return false;
 		} 

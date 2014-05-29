@@ -202,6 +202,10 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	/** The measure population exclusions. */
 	private String measurePopulationExclusions;
 	
+	/** The is editable. */
+	private boolean isEditable;
+	
+	
 	/**
 	 * Checks if is deleted.
 	 * 
@@ -1921,6 +1925,24 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public void setComponentMeasuresSelectedList(
 			List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList) {
 		this.componentMeasuresSelectedList = componentMeasuresSelectedList;
+	}
+	
+	/**
+	 * Checks if is editable.
+	 *
+	 * @return true, if is editable
+	 */
+	public boolean isEditable() {
+		return isEditable;
+	}
+
+	/**
+	 * Sets the editable.
+	 *
+	 * @param isEditable the new editable
+	 */
+	public void setEditable(boolean isEditable) {
+		this.isEditable = isEditable;
 	}
 	
 }

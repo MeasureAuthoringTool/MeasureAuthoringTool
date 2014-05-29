@@ -1581,7 +1581,7 @@ private void setAuthorsListOnView() {
 		} else {
 			metaDataDisplay.getDeleteMeasure().setEnabled(true);
 		}
-		
+		currentMeasureDetail.setEditable(editable);
 	}
 
 	/**

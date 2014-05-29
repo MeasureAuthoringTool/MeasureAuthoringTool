@@ -558,7 +558,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				
 				if(!currentDetail.isEqual(view.getPackageGroupingWidget().getGroupingPopulationList(),
 						dbPackageClauses)){
-					
+					view.getSaveErrorMessageDisplay().clear();
 					showErrorMessage(view.getSaveErrorMessageDisplay());
 					view.getSaveErrorMessageDisplay().getButtons().get(0).setFocus(true);
 					handleClickEventsOnUnsavedErrorMsg(detail,view.getSaveErrorMessageDisplay().getButtons()

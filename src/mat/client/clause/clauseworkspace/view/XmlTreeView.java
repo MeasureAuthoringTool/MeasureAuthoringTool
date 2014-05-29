@@ -249,6 +249,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The is dirty. */
 	private boolean isDirty = false;
+	
+	/** The set error type. */
+	private String setErrorType;
 	/**
 	 * Instantiates a new xml tree view.
 	 * 
@@ -1584,38 +1587,72 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#validateCellTreeNodes(com.google.gwt.user.cellview.client.TreeNode)
 	 */
 	@Override
-	public boolean validateCellTreeNodes(TreeNode treeNode) {
+	public String validateCellTreeNodes(TreeNode treeNode) {
+		
+		setErrorType = "Valid";
+		validateClauseWorkspaceCellTreeNodes(treeNode);
+		return setErrorType;
+	}
+	
+	private String validateClauseWorkspaceCellTreeNodes(TreeNode treeNode){
 		
 		if (treeNode != null) {
 			openAllNodes(treeNode);
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				TreeNode subTree = null;
+				
 				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
-				if ((node.getNodeType()
-						== CellTreeNode.TIMING_NODE) || (node.getNodeType() == CellTreeNode.RELATIONSHIP_NODE)) {
-					// this check is performed since IE was giving JavaScriptError after removing a node and
-					//closing all nodes.
+				if (node.getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
 					subTree = treeNode.setChildOpen(i, true, true);
-					if ((subTree != null) && (subTree.getChildCount() == 2)) {
+					if (node.getName().equalsIgnoreCase("Measurement Period : Timing Element")) {
 						if (!node.getValidNode()) {
 							editNode(true, node);
+							setErrorType = "Valid";
 						}
-					} else {
+						
+					} else{
 						editNode(false, node);
+						setErrorType = "inValidAtQDMNode";
 						if (isValid) {
 							isValid = false;
 						}
 					}
 					
 				}
+				
+				if ((node.getNodeType()== CellTreeNode.TIMING_NODE)
+					|| (node.getNodeType() == CellTreeNode.RELATIONSHIP_NODE)){
+					// this check is performed since IE was giving JavaScriptError after removing a node and
+					//closing all nodes.
+					subTree = treeNode.setChildOpen(i, true, true);
+					if ((subTree != null) && (subTree.getChildCount() == 2)) {
+						if (!node.getValidNode()) {
+							editNode(true, node);
+							setErrorType="Valid";
+						}
+					} else {
+						editNode(false, node);
+						setErrorType = "inValidAtOtherNode";
+						if (isValid) {
+							isValid = false;
+						}
+					}
+					
+					
+				}
+				
 				subTree = treeNode.setChildOpen(i, ((CellTreeNode) treeNode.getChildValue(i)).isOpen(),
 						((CellTreeNode) treeNode.getChildValue(i)).isOpen());
 				if ((subTree != null) && (subTree.getChildCount() > 0)) {
-					validateCellTreeNodes(subTree);
+					validateClauseWorkspaceCellTreeNodes(subTree);
 				}
+				
 			}
+			
 		}
-		return isValid;
+		
+		
+	return setErrorType;
 	}
 	
 	/* (non-Javadoc)

@@ -311,57 +311,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(false);
 				//MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>()
-
-				MatContext.get().getMeasureService().updateComponentMeasuresFromXml(model.getId(), new AsyncCallback<Void>() {
-
-					@Override
-					public void onFailure(Throwable caught) {
-						System.out.println(" Updation of Component Measures on Creation of Measure Packager: " + caught.getStackTrace());
-					}
-
-					@Override
-					public void onSuccess(Void result) {
-						//view.getPackageSuccessMessageDisplay().setMessage("Component Measures Updated");
-					}
-				});
 				
+				//Validate Package Grouping at the time of creating measure Package.
+				validatePackageGrouping();
 				
-				MatContext.get().getMeasureService().validatePackageGrouping(model, new AsyncCallback<Boolean>(){
-					
-					@Override
-					public void onFailure(Throwable caught) {
-						((Button) view.getPackageMeasureButton()).setEnabled(true);
-					}
-					
-					@Override
-					public void onSuccess(Boolean result) {
-						if(!result){
-							view.getPackageSuccessMessageDisplay().setMessage("Validation Successful");
-							
-							MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
-								
-								@Override
-								public void onFailure(Throwable caught) {
-									((Button) view.getPackageMeasureButton()).setEnabled(true);
-								}
-								
-								@Override
-								public void onSuccess(SaveMeasureResult result) {
-									((Button) view.getPackageMeasureButton()).setEnabled(true);
-								}
-							});	
-							
-						}else{
-							view.getPackageErrorMessageDisplay().
-							setMessage("Unable to create measure package. Please verify measure logic in population workspace.");
-							
-						}
-						((Button) view.getPackageMeasureButton()).setEnabled(true);
-						
-					}
-
-					
-				});
 			}
 		});
 		
@@ -927,6 +880,68 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	public PackageView getView() {
 		return view;
+	}
+	
+	/**
+	 * Validate package grouping.
+	 */
+	private void validatePackageGrouping(){
+		
+		MatContext.get().getMeasureService().validatePackageGrouping(model, new AsyncCallback<Boolean>(){
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				((Button) view.getPackageMeasureButton()).setEnabled(true);
+			}
+			
+			@Override
+			public void onSuccess(Boolean result) {
+				if(!result){
+					view.getPackageSuccessMessageDisplay().setMessage("Validation Successful");
+					
+					MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>() {
+						
+						@Override
+						public void onFailure(Throwable caught) {
+							((Button) view.getPackageMeasureButton()).setEnabled(true);
+						}
+						
+						@Override
+						public void onSuccess(SaveMeasureResult result) {
+							updateComponentMeasuresFromXml();
+							((Button) view.getPackageMeasureButton()).setEnabled(true);
+						}
+					});	
+					
+				} else {
+					view.getPackageErrorMessageDisplay().
+					setMessage("Unable to create measure package. Please verify measure logic in population workspace.");
+					
+				}
+				((Button) view.getPackageMeasureButton()).setEnabled(true);
+			}
+
+		});
+		
+	}
+	
+	/**
+	 * Update component measures from xml.
+	 */
+	private void updateComponentMeasuresFromXml(){
+		
+		MatContext.get().getMeasureService().updateComponentMeasuresFromXml(model.getId(), new AsyncCallback<Void>() {
+
+			@Override
+			public void onFailure(Throwable caught) {
+				System.out.println(" Updation of Component Measures on Creation of Measure Packager: " + caught.getStackTrace());
+			}
+
+			@Override
+			public void onSuccess(Void result) {
+				//view.getPackageSuccessMessageDisplay().setMessage("Component Measures Updated");
+			}
+		});
 	}
 }
 

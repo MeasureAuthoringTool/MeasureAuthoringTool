@@ -556,7 +556,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onEditClicked(MeasurePackageDetail detail) {
 				
-				if(!checkIfDirty(detail)){
+				if(!currentDetail.isEqual(view.getPackageGroupingWidget().getGroupingPopulationList(),
+						dbPackageClauses)){
 					
 					showErrorMessage(view.getSaveErrorMessageDisplay());
 					view.getSaveErrorMessageDisplay().getButtons().get(0).setFocus(true);
@@ -576,23 +577,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 	}
-	
-	
-	/**
-	 * Check if dirty.
-	 *
-	 * @param detail the detail
-	 * @return true, if successful
-	 */
-	public boolean checkIfDirty(MeasurePackageDetail detail){
 		
-		if (!currentDetail.isEqual(view.getPackageGroupingWidget().getGroupingPopulationList(),
-				dbPackageClauses)) {
-			return false;
-		} 
-		return true;
-	}
-	
 	/**
 	 * Show error message.
 	 *

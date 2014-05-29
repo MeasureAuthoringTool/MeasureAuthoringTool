@@ -63,9 +63,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 	/** The db supp data elements. */
 	private List<QualityDataSetDTO> dbSuppDataElements = new ArrayList<QualityDataSetDTO>();
 	
-	/** The is unsaved data. */
-	private boolean isUnsavedData = false;
-	
 	/**
 	 * Gets the db supp data elements.
 	 *
@@ -341,8 +338,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 							public void onSuccess(final Void result) {
 								getMeasurePackageOverview(MatContext.get()
 										.getCurrentMeasureId());
-								view.getPackageSuccessMessageDisplay().setMessage(
-										MatContext.get().getMessageDelegate().getGroupingSavedMessage());
 								view.getSuppDataSuccessMessageDisplay()
 								.setMessage(MatContext.get()
 										.getMessageDelegate()
@@ -623,11 +618,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 */
 	private void handleClickEventsOnUnsavedErrorMsg(final MeasurePackageDetail detail, List<SecondaryButton> btns, final ErrorMessageDisplay saveErrorMessage
 			, final String auditMessage) {
-		isUnsavedData = true;
 		ClickHandler clickHandler = new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				isUnsavedData = false;
 				SecondaryButton button = (SecondaryButton) event.getSource();
 				// If Yes - do not navigate, set focus to the Save button on the Page and clear cell tree
 				// // Else -do not navigate, set focus to the Save button on the Page
@@ -646,9 +639,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 		};
 		for (SecondaryButton secondaryButton : btns) {
 			secondaryButton.addClickHandler(clickHandler);
-		}
-		if (isUnsavedData) {
-			MatContext.get().setErrorTab(true);
 		}
 	}
 	

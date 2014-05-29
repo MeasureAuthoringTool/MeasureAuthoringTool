@@ -287,9 +287,38 @@ public class ClauseWorkspaceContextMenu {
 			case CellTreeNode.SUBTREE_ROOT_NODE:
 				subTreeRootNodePopUpMenuItems(popupPanel);
 				break;
+			case CellTreeNode.SUBTREE_REF_NODE:
+				subTreeNodePopupMenuItems(popupPanel);
+				break;
 			default:
 				break;
 		}
+	}
+	/**
+	 * Generates popup menu for right click on a node of type 'CLAUSE_NODE'
+	 */
+	private void subTreeNodePopupMenuItems(final PopupPanel popupPanel) {
+		subMenuBar = new MenuBar(true);
+		popupMenuBar.setAutoOpen(true);
+		subMenuBar.setAutoOpen(true);
+		addCommonMenus();
+		addMoveUpMenu(popupPanel);
+		popupMenuBar.addItem(moveUpMenu);
+		moveUpMenu.setEnabled(checkIfTopChildNode());
+		addMoveDownMenu(popupPanel);
+		popupMenuBar.addItem(moveDownMenu);
+		moveDownMenu.setEnabled(checkIfLastChildNode());
+		deleteMenu.setEnabled(true);
+		Command editClauseCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				//To edit the Clause element
+				SubTreeDialogBox.showSubTreeDialogBox(xmlTreeDisplay, false);
+			}
+		};
+		editMenu = new MenuItem("Edit", true, editClauseCmd);
+		popupMenuBar.addItem(editMenu);
 	}
 	/**
 	 * Sub Tree Root Node Pop up Menu Items.

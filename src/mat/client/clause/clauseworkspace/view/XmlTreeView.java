@@ -1604,7 +1604,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
 				if (node.getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
 					subTree = treeNode.setChildOpen(i, true, true);
-					if (node.getName().equalsIgnoreCase("Measurement Period : Timing Element")) {
+					if (!((node.getName().equalsIgnoreCase("Measurement End Date : Timing Element")
+						|| node.getName().equalsIgnoreCase("Measurement Start Date : Timing Element")))) {
 						if (!node.getValidNode()) {
 							editNode(true, node);
 							setErrorType = "Valid";

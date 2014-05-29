@@ -2658,7 +2658,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 					flag =true;	 
 			}
-			if(newNode.getFirstChild()!=null){
+			if(newNode.getFirstChild()!=null && (newNode.getNodeName() != "comment")){
 					Node node =newNode.getFirstChild(); 
 					flag = validateNode(node, flag);			
 			}

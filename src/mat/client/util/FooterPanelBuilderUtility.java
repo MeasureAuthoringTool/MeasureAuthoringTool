@@ -6,6 +6,7 @@ package mat.client.util;
 import mat.client.ImageResources;
 import mat.client.shared.MatContext;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.ui.HTML;
@@ -28,12 +29,15 @@ public class FooterPanelBuilderUtility {
 		String html = new String (logosHTML);
 		
 		Image logoCMS = new Image(ImageResources.INSTANCE.cms_gov_footer());
+		logoCMS.setAltText("CMS.gov");
 		logoCMS.getElement().setId("footer-address-img");
 		addClickHandlerToRestartTimeout(logoCMS);
 		Image logoHHS = new Image(ImageResources.INSTANCE.hhslogo());
+		logoHHS.setAltText("Department of Health and Human Services USA");
 		logoHHS.getElement().setId("footer-cms-logo");
 		addClickHandlerToRestartTimeout(logoHHS);
-		
+		System.out.println("CMS img:"+logoCMS.toString());
+		System.out.println("HHS:"+logoHHS.toString());
 		html = html.replaceAll("\\{img_cms_logo\\}", logoCMS.toString());
 		html = html.replaceAll("\\{img_hhs_logo\\}", logoHHS.toString());
 		

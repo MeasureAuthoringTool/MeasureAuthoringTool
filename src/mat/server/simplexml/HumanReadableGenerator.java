@@ -137,10 +137,13 @@ public class HumanReadableGenerator {
 				parseChild(childNodes.item(i), ulElement, item);				
 			}
 		}else if(COMMENT.equals(nodeName)){
-			Element liElement = parentListElement.appendElement(HTML_LI);
-			liElement.attr("style","list-style-type: none");
-			Element italicElement = liElement.appendElement("i");
-			italicElement.appendText("# - "+item.getTextContent());
+			String commentValue = item.getTextContent();
+			if(commentValue != null && commentValue.trim().length() > 0){
+				Element liElement = parentListElement.appendElement(HTML_LI);
+				liElement.attr("style","list-style-type: none");
+				Element italicElement = liElement.appendElement("i");
+				italicElement.appendText("# "+item.getTextContent());
+			}
 			return;
 		}else if(SUB_TREE.equals(nodeName)){
 			NodeList childNodes = item.getChildNodes();

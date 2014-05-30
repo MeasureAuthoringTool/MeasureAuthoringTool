@@ -64,6 +64,11 @@ public class HumanReadableGenerator {
 			//For each <subTreeRef> node replace it by actual <subTree> node from 'simpleXML' 
 			for(int i=0;i<subTreeRefNodeList.getLength();i++){
 				Node subTreeRefNode = subTreeRefNodeList.item(i);
+				Node firstChildNode = subTreeRefNode.getFirstChild();
+				Node commentNode = null;
+				if("comment".equals(firstChildNode.getNodeName())){
+					commentNode = firstChildNode.cloneNode(true);
+				}
 				String subTreeId = subTreeRefNode.getAttributes().getNamedItem("id").getNodeValue();
 				System.out.println("subTreeId:"+subTreeId);
 				
@@ -72,6 +77,9 @@ public class HumanReadableGenerator {
 				//replace the 'subTreeRefNode' with 'subTreeNode'
 				Node subTreeRefNodeParent = subTreeRefNode.getParentNode();								
 				Node subTreeNodeImportedClone = populationXMLProcessor.getOriginalDoc().importNode(subTreeNode, true);
+				if(commentNode != null){
+					subTreeNodeImportedClone.insertBefore(commentNode, subTreeNodeImportedClone.getFirstChild());
+				}
 				subTreeRefNodeParent.replaceChild(subTreeNodeImportedClone, subTreeRefNode);
 			}
 		}
@@ -129,6 +137,10 @@ public class HumanReadableGenerator {
 				parseChild(childNodes.item(i), ulElement, item);				
 			}
 		}else if(COMMENT.equals(nodeName)){
+			Element liElement = parentListElement.appendElement(HTML_LI);
+			liElement.attr("style","list-style-type: none");
+			Element italicElement = liElement.appendElement("i");
+			italicElement.appendText("# - "+item.getTextContent());
 			return;
 		}else if(SUB_TREE.equals(nodeName)){
 			NodeList childNodes = item.getChildNodes();

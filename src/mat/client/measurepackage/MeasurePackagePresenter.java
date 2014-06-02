@@ -338,8 +338,6 @@ public class MeasurePackagePresenter implements MatPresenter {
 							public void onSuccess(final Void result) {
 								getMeasurePackageOverview(MatContext.get()
 										.getCurrentMeasureId());
-								view.getPackageSuccessMessageDisplay().setMessage(
-										MatContext.get().getMessageDelegate().getGroupingSavedMessage());
 								view.getSuppDataSuccessMessageDisplay()
 								.setMessage(MatContext.get()
 										.getMessageDelegate()

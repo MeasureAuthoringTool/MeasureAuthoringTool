@@ -1453,7 +1453,7 @@ public class XmlProcessor {
 	 * @return String
 	 */
 	public String checkForTimingElements() {
-		String missingMeasurementPeriod = null;
+		String missingMeasurementPeriod = "";
 		
 		if (originalDoc != null) {
 			try {

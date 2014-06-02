@@ -312,9 +312,8 @@ public class XmlProcessor {
 	public String appendNode(String newElement, String nodeName,
 			String parentNode) throws SAXException, IOException {
 		LOG.info("In appendNode method with newElement ::: ");
-		String returnVar;
 		if ((originalDoc == null) || (newElement == null)) {
-			returnVar = "";
+			return "";
 		}
 		try {
 			Node parentTypeNode = findNode(originalDoc, parentNode);
@@ -340,8 +339,7 @@ public class XmlProcessor {
 			caughtExceptions(e);
 			e.printStackTrace();
 		}
-		returnVar = transform(originalDoc);
-		return returnVar;
+		return transform(originalDoc);
 	}
 	
 	/**
@@ -548,7 +546,7 @@ public class XmlProcessor {
 	 * Caught exceptions.
 	 * 
 	 * @param excp
-	 *            the e
+	 *            the exception that was caught
 	 */
 	private void caughtExceptions(Exception excp) {
 		if (excp instanceof ParserConfigurationException) {
@@ -570,9 +568,8 @@ public class XmlProcessor {
 	 * @return the string
 	 */
 	public String checkForScoringType() {
-		String returnVar;
 		if (originalDoc == null) {
-			returnVar = "";
+			return "";
 		}
 		// Get the scoring type from originalDoc
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -587,8 +584,7 @@ public class XmlProcessor {
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-		returnVar = transform(originalDoc);
-		return returnVar;
+		return transform(originalDoc);
 	}
 	
 	/**
@@ -1476,9 +1472,8 @@ public class XmlProcessor {
 	 * @return Xml String.
 	 */
 	public String checkForStratificationAndAdd() {
-		String returnVal;
 		if (originalDoc == null) {
-			returnVal = "";
+			return "";
 		}
 		try {
 			Node strataNode = findNode(originalDoc, XPATH_STRATA);
@@ -1502,15 +1497,13 @@ public class XmlProcessor {
 			}
 		} catch (XPathExpressionException e) {
 			e.printStackTrace();
-		}
-		returnVal = transform(originalDoc);
-		return returnVal;
+		} 
+		return transform(originalDoc);
 	}
 	
 	public String checkForQdmIDAndUpdate() {
-		String returnVal;
 		if (originalDoc == null) {
-			returnVal = "";
+			return "";
 		}
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		try {
@@ -1536,7 +1529,6 @@ public class XmlProcessor {
 		}catch (XPathExpressionException e) {
 			e.printStackTrace();
 		}
-		returnVal = transform(originalDoc);
-		return returnVal;
+		return transform(originalDoc);
 	}
 }

@@ -918,8 +918,8 @@ public class XmlProcessor {
 		 */
 		Node measureObservationsNode = findNode(originalDoc,
 				XPATH_MEASURE_OBSERVATIONS);
-		if (SCORING_TYPE_CONTVAR.equals(scoringType)
-				|| RATIO.equals(scoringType) && (measureObservationsNode == null)) {
+		if ((SCORING_TYPE_CONTVAR.equals(scoringType)
+				|| RATIO.equals(scoringType)) && (measureObservationsNode == null)) {
 			// Create a new measureObservations element.
 			String nodeName = MEASURE_OBSERVATION;
 			String displayName = constantsMap.get(nodeName);

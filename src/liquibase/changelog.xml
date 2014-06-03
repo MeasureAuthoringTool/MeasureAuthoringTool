@@ -156,4 +156,5 @@
 		<include file="classpath:/liquibase/deploy_Sprint-41_US4122_Remove_SystemCharacteristic_From_DataType.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-41_US4127_Remove_Status_Attribute.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-41_US4132_Remove_Date_Attribute.xml"/>
+		<include file="classpath:/liquibase/deploy_sprint-41_US4137_Remove_Time_Attribute.xml"/>
 	</databaseChangeLog>

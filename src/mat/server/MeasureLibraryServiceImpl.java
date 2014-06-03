@@ -2581,7 +2581,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
 			System.out.println("MEASURE_XML: "+xmlModel.getXml());	
 			
-			flag = validateMeasureXmlInpopulationWorkspace(xmlModel);
+			flag = validateMeasureXmlAtCreateMeasurePackager(xmlModel);
 		}
 		
 		return flag;
@@ -2591,37 +2591,54 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#validateMeasureXmlInpopulationWorkspace(mat.client.clause.clauseworkspace.model.MeasureXmlModel)
 	 */
 	@Override
-	public boolean validateMeasureXmlInpopulationWorkspace(MeasureXmlModel measureXmlModel) {
+	public boolean validateMeasureXmlAtCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
 		boolean flag=false;
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			 String XPATH_POPULATIONS = "/measure/populations";
-			 System.out.println("MEASURE_XML: "+xmlModel.getXml() );
+			 String XPATH_POPULATIONS_QDMELEMENT = "/measure//subTreeLookUp//elementRef";
+			 System.out.println("MEASURE_XML: "+xmlModel.getXml());
 			try {
 				NodeList nodesSDE = (NodeList) xPath.evaluate(XPATH_POPULATIONS, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODESET);
 				
+				NodeList nodesSDE_qdmElement = (NodeList) xPath.evaluate(XPATH_POPULATIONS_QDMELEMENT, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				
+				for (int m = 0; m <nodesSDE_qdmElement.getLength() && !flag; m++) {
+					
+					Node qdmchildNode =nodesSDE_qdmElement.item(m);
+					flag = validateQdmNode(qdmchildNode, flag);	
+					if(flag)
+						break;
+					
+				}
+				
 					Node newNode = nodesSDE.item(0);
 					NodeList populationsChildList = newNode.getChildNodes();
-					for (int i = 0; i < populationsChildList.getLength(); i++) {
-						Node childNode =populationsChildList.item(i);
-						NodeList childsList = childNode.getChildNodes();
+					
+					if(!flag){
 						
-						if(childsList.getLength()>0){
-							for(int j=0;j<childsList.getLength();j++){
-								Node subChildNode =childsList.item(j);
-								flag=validateNode(subChildNode,flag);
-								if(flag){
-									break;
+							for (int i = 0; i <populationsChildList.getLength() && !flag; i++) {
+							Node childNode =populationsChildList.item(i);
+							NodeList childsList = childNode.getChildNodes();
+							
+							if(childsList.getLength()>0){
+								for(int j=0; j <childsList.getLength() && !flag; j++){
+									Node subChildNode =childsList.item(j);
+									flag=validateNode(subChildNode,flag);
+									if(flag){
+										break;
+									}
+						
 								}
-					
+						
 							}
-					
-						}
-						 flag=validateNode(childNode, flag);
-						 if(flag){
-							break;
+							 flag=validateNode(childNode, flag);
+							 if(flag){
+								break;
+							}
 						}
 				}
 					
@@ -2634,6 +2651,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	return flag;
 	}
 
+	
+
 	/**
 	 * Validate node.
 	 *
@@ -2642,30 +2661,56 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @return true, if successful
 	 */
 	private boolean validateNode(Node newNode, boolean flag) {
-		if (!((newNode.getNodeName()== "logicalOp") 
-				|| (newNode.getNodeName()== "clause") 
-							|| (newNode.getNodeName() == "subTreeRef")
-										|| (newNode.getNodeName() == "initialPopulations")
-												|| (newNode.getNodeName() == "measurePopulations")
-														|| (newNode.getNodeName() == "numerators")
-												
-				|| (newNode.getNodeName() == "measurePopulationExclusions")
-							|| (newNode.getNodeName() == "denominators")
-										|| (newNode.getNodeName() == "denominatorExclusions")
-												|| (newNode.getNodeName() == "numeratorExclusions")
-														|| (newNode.getNodeName() == "denominatorExceptions")
-																|| (newNode.getNodeName() == "comment"))) {
+		String nodeName = newNode.getNodeName().trim();
+		if (!((nodeName == "logicalOp") 
+				|| (nodeName == "clause") 
+				|| (nodeName == "subTreeRef")
+				|| (nodeName == "initialPopulations")
+				|| (nodeName == "measurePopulations")
+				|| (nodeName == "numerators")	
+				|| (nodeName == "measurePopulationExclusions")
+				|| (nodeName == "denominators")
+				|| (nodeName == "denominatorExclusions")
+				|| (nodeName == "numeratorExclusions")
+				|| (nodeName == "denominatorExceptions")
+				|| (nodeName == "comment"))) {
 			
 					flag =true;	 
 			}
-			if(newNode.getFirstChild()!=null && (newNode.getNodeName() != "comment")){
+			if(newNode.getFirstChild()!=null && (newNode.getNodeName() != "comment") && !flag){
 					Node node =newNode.getFirstChild(); 
 					flag = validateNode(node, flag);			
 			}
 		
 		return flag;
 		
-	}	
+	}
 	
+	/**
+	 * Validate qdm node.
+	 *
+	 * @param qdmchildNode the qdmchild node
+	 * @param flag the flag
+	 * @return true, if successful
+	 */
+	private boolean validateQdmNode(Node qdmchildNode, boolean flag) {
+		
+		String dataTypeValue = qdmchildNode.getAttributes().item(0).getNodeValue().trim();
+		
+		if((dataTypeValue.endsWith("Diagnostic Study, Result"))
+				|| (dataTypeValue.endsWith("Functional Status, Result"))
+				|| (dataTypeValue.endsWith("Laboratory Test, Result"))
+				|| (dataTypeValue.endsWith("Procedure, Result")
+				|| (dataTypeValue.equalsIgnoreCase("Measurement End Date : Timing Element"))
+				|| (dataTypeValue.equalsIgnoreCase("Measurement Start Date : Timing Element")))){
+			
+				flag=true;
+				
+			}
+		return flag;
+		
+	}
+	
+		
 }
 

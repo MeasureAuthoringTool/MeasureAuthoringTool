@@ -390,7 +390,7 @@ MeasureService {
 	@Override
 	public boolean validateMeasureXmlinpopulationWorkspace(
 			MeasureXmlModel measureXmlModel) {
-		return this.getMeasureLibraryService().validateMeasureXmlInpopulationWorkspace(measureXmlModel);
+		return this.getMeasureLibraryService().validateMeasureXmlAtCreateMeasurePackager(measureXmlModel);
 	}
 
 	/* (non-Javadoc)

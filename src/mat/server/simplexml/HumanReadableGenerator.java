@@ -230,7 +230,7 @@ public class HumanReadableGenerator {
 			parseChild(childNodes.item(0),liElement,item);
 			Element newLiElement = liElement;
 			if(LOGICAL_OP.equals(childNodes.item(0).getNodeName()) || SET_OP.equals(childNodes.item(0).getNodeName())){
-				newLiElement = liElement.children().last();
+				newLiElement = liElement.children().last().appendElement(HTML_LI);
 			}
 			newLiElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
 			parseChild(childNodes.item(1),newLiElement,item);

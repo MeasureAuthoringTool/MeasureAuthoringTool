@@ -192,7 +192,7 @@ public class XmlProcessor {
 	private static final String  STRATIFICATION_DISPLAYNAME = "Stratification 1";
 	
 	/** The Constant MEASURE_OBSERVATION. */
-	private static final String MEASURE_OBSERVATION = "MeasureObservations";
+	private static final String MEASURE_OBSERVATION = "measureObservations";
 	
 	/** The Constant AND. */
 	private static final String AND = "and";

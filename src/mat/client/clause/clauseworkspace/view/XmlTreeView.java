@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -1596,6 +1597,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	private String validateClauseWorkspaceCellTreeNodes(TreeNode treeNode){
 		
+
 		if (treeNode != null) {
 			openAllNodes(treeNode);
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
@@ -1603,28 +1605,45 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				
 				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
 				if (node.getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
+					
 					subTree = treeNode.setChildOpen(i, true, true);
 					String nodeName = node.getName();
-					if (!((nodeName.equalsIgnoreCase("Measurement End Date : Timing Element")
-						|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")
-						|| nodeName.endsWith(": Diagnostic Study, Adverse Event")
-						|| nodeName.endsWith(": Diagnostic Study, Result")
-						|| nodeName.endsWith(": Functional Status, Result")
-						|| nodeName.endsWith(": Laboratory Test, Result")
-						|| nodeName.endsWith(": Procedure, Result")))) {
-						if (!node.getValidNode()) {
-							editNode(true, node);
-							setErrorType = "Valid";
-						}
+					String attributeName =node.getQdmAttribute();
+					String[] nodeArr = nodeName.split(":");
+					String nodeDataType = "";
+					if(nodeArr.length == 2){
+						nodeDataType = nodeArr[1].trim();
+					}
+					
+					List<String> dataTypeList = new ArrayList<String>();
+					dataTypeList.add("Diagnostic Study, Adverse Event");
+					dataTypeList.add("Diagnostic Study, Result");
+					dataTypeList.add("Functional Status, Result");
+					dataTypeList.add("Laboratory Test, Result");
+					dataTypeList.add("Procedure, Result");
+					dataTypeList.add("Physical Exam, Finding");
+					dataTypeList.add("Intervention, Result");
+					dataTypeList.add("Device, Applied");
+					dataTypeList.add("Physical Exam, Order");
+					dataTypeList.add("Physical Exam, Recommended");
+					dataTypeList.add("Physical Exam, Performed");
+					
+					
+					if((dataTypeList.contains(nodeDataType) && attributeName.startsWith("Anatomical Structure"))
+						|| nodeName.equalsIgnoreCase("Measurement End Date : Timing Element")
+						|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")){
 						
-					} else{
 						editNode(false, node);
 						setErrorType = "inValidAtQDMNode";
 						if (isValid) {
 							isValid = false;
+						
 						}
 					}
-					
+					else if(!node.getValidNode()){
+						editNode(true, node);
+						setErrorType ="Valid";
+					}
 				}
 				
 				if ((node.getNodeType()== CellTreeNode.TIMING_NODE)

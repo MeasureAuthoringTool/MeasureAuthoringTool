@@ -1614,22 +1614,24 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					if(nodeArr.length == 2){
 						nodeDataType = nodeArr[1].trim();
 					}
+					 
+					List<String> dataTypeRemovedList = new ArrayList<String>();
 					
-					List<String> dataTypeList = new ArrayList<String>();
-					dataTypeList.add("Diagnostic Study, Adverse Event");
-					dataTypeList.add("Diagnostic Study, Result");
-					dataTypeList.add("Functional Status, Result");
-					dataTypeList.add("Laboratory Test, Result");
-					dataTypeList.add("Procedure, Result");
-					dataTypeList.add("Physical Exam, Finding");
-					dataTypeList.add("Intervention, Result");
-					dataTypeList.add("Device, Applied");
-					dataTypeList.add("Physical Exam, Order");
-					dataTypeList.add("Physical Exam, Recommended");
-					dataTypeList.add("Physical Exam, Performed");
+					dataTypeRemovedList.add("Diagnostic Study, Result");
+					dataTypeRemovedList.add("Functional Status, Result");
+					dataTypeRemovedList.add("Laboratory Test, Result");
+					dataTypeRemovedList.add("Procedure, Result");
+					dataTypeRemovedList.add("Physical Exam, Finding");
+					dataTypeRemovedList.add("Intervention, Result");
 					
+					List<String> dataTypeAttributeRemovedList = new ArrayList<String>();
 					
-					if((dataTypeList.contains(nodeDataType) && attributeName.startsWith("Anatomical Structure"))
+					dataTypeAttributeRemovedList.add("Device, Applied");
+					dataTypeAttributeRemovedList.add("Physical Exam, Order");
+					dataTypeAttributeRemovedList.add("Physical Exam, Recommended");
+					dataTypeAttributeRemovedList.add("Physical Exam, Performed");
+					
+					if(dataTypeRemovedList.contains(nodeDataType) 
 						|| nodeName.equalsIgnoreCase("Measurement End Date : Timing Element")
 						|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")){
 						
@@ -1640,10 +1642,20 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						
 						}
 					}
-					else if(!node.getValidNode()){
-						editNode(true, node);
-						setErrorType ="Valid";
-					}
+					
+					else if(dataTypeAttributeRemovedList.contains(nodeDataType) && attributeName.startsWith("Anatomical Structure")){
+							
+							editNode(false, node);
+							setErrorType = "inValidAtQDMNode";
+							if (isValid) {
+								isValid = false;
+							
+							}
+						}
+						else if(!node.getValidNode()){
+							editNode(true, node);
+							setErrorType ="Valid";
+						}
 				}
 				
 				if ((node.getNodeType()== CellTreeNode.TIMING_NODE)

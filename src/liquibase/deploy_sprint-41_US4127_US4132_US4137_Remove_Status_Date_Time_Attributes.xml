@@ -13,6 +13,18 @@
 							DT.DESCRIPTION IN ('Diagnosis, Active', 'Diagnosis, Inactive',
 							'Diagnosis, Resolved ','Symptom, Active','Symptom, Assessed',
 							'Symptom, Inactive','Symptom, Resolved'));
+	       
+	       		DELETE FROM QDM_ATTRIBUTES 
+	     			WHERE NAME = 'date' AND DATA_TYPE_ID IN 
+						(Select DT.DATA_TYPE_ID FROM DATA_TYPE DT 
+							WHERE DT.DESCRIPTION IN 
+								('Medication, Administered ','Substance, Administered '));
+								
+				DELETE FROM QDM_ATTRIBUTES 
+	     			WHERE NAME = 'time' AND DATA_TYPE_ID IN 
+						(Select DT.DATA_TYPE_ID FROM DATA_TYPE DT 
+							WHERE DT.DESCRIPTION IN 
+								('Medication, Administered ', 'Substance, Administered '));				
 	        </sql>
 	    </changeSet>
     

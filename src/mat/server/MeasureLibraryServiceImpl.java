@@ -2597,28 +2597,42 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			 String XPATH_POPULATIONS = "/measure/populations";
-			 String XPATH_POPULATIONS_QDMELEMENT = "/measure//subTreeLookUp//elementRef";
+			 String XPATH_QDMELEMENT = "/measure//subTreeLookUp//elementRef/@id";
+			 String XPATH_TIMING_ELEMENT = "/measure//subTreeLookUp//relationalOp";
+			 
+			 
 			 System.out.println("MEASURE_XML: "+xmlModel.getXml());
 			try {
 				NodeList nodesSDE = (NodeList) xPath.evaluate(XPATH_POPULATIONS, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODESET);
 				
-				NodeList nodesSDE_qdmElement = (NodeList) xPath.evaluate(XPATH_POPULATIONS_QDMELEMENT, xmlProcessor.getOriginalDoc(),
+				NodeList nodesSDE_qdmElementId = (NodeList) xPath.evaluate(XPATH_QDMELEMENT, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				NodeList nodesSDE_timingElement = (NodeList) xPath.evaluate(XPATH_TIMING_ELEMENT, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODESET);
 				
-				for (int m = 0; m <nodesSDE_qdmElement.getLength() && !flag; m++) {
+				for (int n = 0; n <nodesSDE_timingElement.getLength() && !flag; n++) {
 					
-					Node qdmchildNode =nodesSDE_qdmElement.item(m);
-					flag = validateQdmNode(qdmchildNode, flag);	
+					Node timingElementchildNode =nodesSDE_timingElement.item(n);
+					flag = validateTimingNode(timingElementchildNode, flag);	
 					if(flag)
 						break;
 					
 				}
 				
+				for (int m = 0; m <nodesSDE_qdmElementId.getLength() && !flag; m++) {
+					String id = nodesSDE_qdmElementId.item(m).getNodeValue();
+					String XPATH_QDMLOOKUP = "/measure/elementLookUp/qdm[@uuid='"+id+"']";
+					Node qdmNode = (Node)xPath.evaluate(XPATH_QDMLOOKUP, xmlProcessor.getOriginalDoc(),XPathConstants.NODE);
+					flag = !validateQdmNode(qdmNode);
+						
+					if(flag){
+						break;
+					}
+				}
+				
 					Node newNode = nodesSDE.item(0);
 					NodeList populationsChildList = newNode.getChildNodes();
-					
-					if(!flag){
 						
 							for (int i = 0; i <populationsChildList.getLength() && !flag; i++) {
 							Node childNode =populationsChildList.item(i);
@@ -2640,7 +2654,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 								break;
 							}
 						}
-				}
+				
 					
 			} catch (XPathExpressionException e) {
 				
@@ -2650,9 +2664,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 } 
 	return flag;
 	}
-
 	
-
+	
 	/**
 	 * Validate node.
 	 *
@@ -2693,23 +2706,42 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param flag the flag
 	 * @return true, if successful
 	 */
-	private boolean validateQdmNode(Node qdmchildNode, boolean flag) {
+	private boolean validateQdmNode(Node qdmchildNode) {
+		boolean flag = true;
+		String dataTypeValue = qdmchildNode.getAttributes().getNamedItem("datatype").getNodeValue();
+		String qdmName = qdmchildNode.getAttributes().getNamedItem("name").getNodeValue();
 		
-		String dataTypeValue = qdmchildNode.getAttributes().item(0).getNodeValue().trim();
-		
-		if((dataTypeValue.endsWith("Diagnostic Study, Result"))
-				|| (dataTypeValue.endsWith("Functional Status, Result"))
-				|| (dataTypeValue.endsWith("Laboratory Test, Result"))
-				|| (dataTypeValue.endsWith("Procedure, Result")
-				|| (dataTypeValue.equalsIgnoreCase("Measurement End Date : Timing Element"))
-				|| (dataTypeValue.equalsIgnoreCase("Measurement Start Date : Timing Element")))){
+		if((dataTypeValue.equalsIgnoreCase("Diagnostic Study, Result"))
+				|| (dataTypeValue.equalsIgnoreCase("Functional Status, Result"))
+				|| (dataTypeValue.equalsIgnoreCase("Laboratory Test, Result"))
+				|| (dataTypeValue.equalsIgnoreCase("Procedure, Result")	)){
 			
-				flag=true;
+				flag=false;
 				
+			}else if(dataTypeValue.equalsIgnoreCase("Timing Element")){
+				if(qdmName.equalsIgnoreCase("Measurement Start Date") || qdmName.equalsIgnoreCase("Measurement End Date")){
+					flag = false;
+				}
 			}
 		return flag;
 		
 	}
+	
+	/**
+	 * Validate timing node.
+	 *
+	 * @param qdmchildNode the qdmchild node
+	 * @param flag the flag
+	 * @return true, if successful
+	 */
+	private boolean validateTimingNode(Node timingElementchildNode, boolean flag) {
+		int childCount = timingElementchildNode.getChildNodes().getLength();
+		if(childCount != 2){
+			flag = true;
+		}
+		return flag;
+	}
+
 	
 		
 }

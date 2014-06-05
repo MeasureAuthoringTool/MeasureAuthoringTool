@@ -1643,7 +1643,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 					}
 					
-					else if(dataTypeAttributeRemovedList.contains(nodeDataType) && attributeName.startsWith("Anatomical Structure")){
+					else if(dataTypeAttributeRemovedList.contains(nodeDataType) && (attributeName.startsWith("Anatomical Structure") || attributeName.equalsIgnoreCase("Anatomical Structure"))){
 							
 							editNode(false, node);
 							setErrorType = "inValidAtQDMNode";
@@ -1654,7 +1654,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 						else if(!node.getValidNode()){
 							editNode(true, node);
-							setErrorType ="Valid";
+							
 						}
 				}
 				
@@ -1666,7 +1666,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					if ((subTree != null) && (subTree.getChildCount() == 2)) {
 						if (!node.getValidNode()) {
 							editNode(true, node);
+							if(!setErrorType.equalsIgnoreCase("inValidAtQDMNode")){
 							setErrorType="Valid";
+							}
 						}
 					} else {
 						editNode(false, node);
@@ -1683,6 +1685,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						((CellTreeNode) treeNode.getChildValue(i)).isOpen());
 				if ((subTree != null) && (subTree.getChildCount() > 0)) {
 					validateClauseWorkspaceCellTreeNodes(subTree);
+					
 				}
 				
 			}

@@ -412,14 +412,14 @@ public class ClauseWorkspaceContextMenu {
 	 * @param popupPanel - PopupPanel
 	 */
 	private void relationalOpNodePopUpMenuItems(PopupPanel popupPanel) {
-		MenuBar subMenuBarRelLHS = createMenuBarWithTimingFuncAndQDM();
+		MenuBar subMenuBarRelLHS = createMenuBarWithTimingFuncAndQDM(false);
 		MenuBar relAssociationMenuBar = new MenuBar(true);
 		
 		//subMenuBarRelLHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
 		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
 				, relAssociationMenuBar); // Relationship sub menus 3rd level
 		addMenuLHS = new MenuItem("Add LHS", subMenuBarRelLHS); //LHS Sub Menu
-		MenuBar subMenuBarRelRHS = createMenuBarWithTimingFuncAndQDM();
+		MenuBar subMenuBarRelRHS = createMenuBarWithTimingFuncAndQDM(false);
 		MenuBar relAssociationMenuBarRHS = new MenuBar(true);
 		//subMenuBarRelRHS.addItem("Relationship", relAssociationMenuBar); //Relationship menu 2nd level
 		createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
@@ -485,7 +485,7 @@ public class ClauseWorkspaceContextMenu {
 			MenuBar subMenuBarLHS = createMenuBarWithOnlyQDM();
 			addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
 			
-			MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM();
+			MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM(true);
 			addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
 			
 			//Disable  RHS by default.
@@ -649,9 +649,9 @@ public class ClauseWorkspaceContextMenu {
 	 * @param popupPanel - PopupPanel.
 	 */
 	private void timingNodePopUpMenuItems(final PopupPanel popupPanel) {
-		MenuBar subMenuBarLHS = createMenuBarWithTimingFuncAndQDM();
+		MenuBar subMenuBarLHS = createMenuBarWithTimingFuncAndQDM(true);
 		addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
-		MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM();
+		MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM(true);
 		addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
 		//Disable  RHS by default.
 		if (xmlTreeDisplay.getSelectedNode().getChilds() == null) {
@@ -774,7 +774,7 @@ public class ClauseWorkspaceContextMenu {
 	 * 
 	 * @return the menu bar
 	 */
-	protected MenuBar createMenuBarWithTimingFuncAndQDM() {
+	protected MenuBar createMenuBarWithTimingFuncAndQDM(boolean addClauseMenuItem) {
 		MenuBar menuBar = new MenuBar(true);
 		popupMenuBar.setAutoOpen(true);
 		menuBar.setAutoOpen(true);
@@ -790,7 +790,9 @@ public class ClauseWorkspaceContextMenu {
 		MenuBar functionsMenuBar = new MenuBar(true);
 		menuBar.addItem("Functions", functionsMenuBar); //functions menu 2nd level
 		createAddMenus(MatContext.get().functions, CellTreeNode.FUNCTIONS_NODE, functionsMenuBar); // functions sub menus 3rd level
-		createAddClauseMenuItem(menuBar);
+		if(addClauseMenuItem){
+			createAddClauseMenuItem(menuBar);
+		}
 		return menuBar;
 	}
 	

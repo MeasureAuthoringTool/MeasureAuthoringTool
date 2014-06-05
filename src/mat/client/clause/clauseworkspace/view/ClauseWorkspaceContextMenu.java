@@ -486,6 +486,10 @@ public class ClauseWorkspaceContextMenu {
 			addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
 			
 			MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM(true);
+			MenuBar relSetOpMenuBar = new MenuBar(true);
+			subMenuBarRHS.addItem("Relationship", relSetOpMenuBar); //functions menu 2nd level
+			createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
+					, relSetOpMenuBar); 
 			addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
 			
 			//Disable  RHS by default.

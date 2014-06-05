@@ -1596,7 +1596,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	private String validateClauseWorkspaceCellTreeNodes(TreeNode treeNode){
-		
+		String attributeValue = "";
 
 		if (treeNode != null) {
 			openAllNodes(treeNode);
@@ -1608,7 +1608,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					
 					subTree = treeNode.setChildOpen(i, true, true);
 					String nodeName = node.getName();
-					String attributeName =node.getQdmAttribute();
+					
 					String[] nodeArr = nodeName.split(":");
 					String nodeDataType = "";
 					if(nodeArr.length == 2){
@@ -1643,19 +1643,26 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 					}
 					
-					else if(dataTypeAttributeRemovedList.contains(nodeDataType) && (attributeName.startsWith("Anatomical Structure") || attributeName.equalsIgnoreCase("Anatomical Structure"))){
+					else if(dataTypeAttributeRemovedList.contains(nodeDataType)){
+							List<CellTreeNode> attributeList = (List<CellTreeNode>)node.getExtraInformation("attributes");
+							if(attributeList!=null && attributeList.size()>0){
+								CellTreeNode attributeNode = attributeList.get(0);
+								attributeValue = attributeNode.getExtraInformation("name").toString();	
 							
+							if(attributeValue.equalsIgnoreCase("Anatomical Structure")){
 							editNode(false, node);
 							setErrorType = "inValidAtQDMNode";
-							if (isValid) {
-								isValid = false;
-							
+								if (isValid) {
+									isValid = false;
+								
+								}
 							}
 						}
-						else if(!node.getValidNode()){
-							editNode(true, node);
-							
-						}
+					}
+					else if(!node.getValidNode()){
+						editNode(true, node);
+						
+					}
 				}
 				
 				if ((node.getNodeType()== CellTreeNode.TIMING_NODE)

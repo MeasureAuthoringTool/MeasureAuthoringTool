@@ -2574,6 +2574,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public boolean validatePackageGrouping(ManageMeasureDetailModel model) {
 		boolean flag=false;
+		
 		logger.debug(" MeasureLibraryServiceImpl: validatePackageGrouping Start :  ");
 		
 		
@@ -2593,10 +2594,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public boolean validateMeasureXmlAtCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
 		boolean flag=false;
+		boolean isInValidAttribute = false;
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			 String XPATH_POPULATIONS = "/measure/populations";
+			 
 			 String XPATH_QDMELEMENT = "/measure//subTreeLookUp//elementRef/@id";
 			 String XPATH_TIMING_ELEMENT = "/measure//subTreeLookUp//relationalOp";
 			 
@@ -2622,9 +2625,19 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				
 				for (int m = 0; m <nodesSDE_qdmElementId.getLength() && !flag; m++) {
 					String id = nodesSDE_qdmElementId.item(m).getNodeValue();
+					String xpathForAttribute ="/measure//subTreeLookUp//elementRef[@id='"+id+"']/attribute";
+					Node attributeNode = (Node)xPath.evaluate(xpathForAttribute, xmlProcessor.getOriginalDoc(),XPathConstants.NODE);
+					if(attributeNode!=null){
+						String attributeName = attributeNode.getAttributes().getNamedItem("name").getNodeValue();
+						if(attributeName.equalsIgnoreCase("Anatomical Structure")){
+							isInValidAttribute = true;
+						}
+					}
+						
+					
 					String XPATH_QDMLOOKUP = "/measure/elementLookUp/qdm[@uuid='"+id+"']";
 					Node qdmNode = (Node)xPath.evaluate(XPATH_QDMLOOKUP, xmlProcessor.getOriginalDoc(),XPathConstants.NODE);
-					flag = !validateQdmNode(qdmNode);
+					flag = !validateQdmNode(qdmNode, isInValidAttribute);
 						
 					if(flag){
 						break;
@@ -2699,14 +2712,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 	}
 	
+	
 	/**
 	 * Validate qdm node.
 	 *
 	 * @param qdmchildNode the qdmchild node
-	 * @param flag the flag
+	 * @param isInValidAttribute the is in valid attribute
 	 * @return true, if successful
 	 */
-	private boolean validateQdmNode(Node qdmchildNode) {
+	private boolean validateQdmNode(Node qdmchildNode, boolean isInValidAttribute) {
 		boolean flag = true;
 		String dataTypeValue = qdmchildNode.getAttributes().getNamedItem("datatype").getNodeValue();
 		String qdmName = qdmchildNode.getAttributes().getNamedItem("name").getNodeValue();
@@ -2714,7 +2728,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if((dataTypeValue.equalsIgnoreCase("Diagnostic Study, Result"))
 				|| (dataTypeValue.equalsIgnoreCase("Functional Status, Result"))
 				|| (dataTypeValue.equalsIgnoreCase("Laboratory Test, Result"))
-				|| (dataTypeValue.equalsIgnoreCase("Procedure, Result")	)){
+				|| (dataTypeValue.equalsIgnoreCase("Procedure, Result")	)
+				|| (dataTypeValue.equalsIgnoreCase("Physical Exam, Finding")	)
+				|| (dataTypeValue.equalsIgnoreCase("Intervention, Result")	)){
 			
 				flag=false;
 				
@@ -2722,6 +2738,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				if(qdmName.equalsIgnoreCase("Measurement Start Date") || qdmName.equalsIgnoreCase("Measurement End Date")){
 					flag = false;
 				}
+			}
+			else if((dataTypeValue.equalsIgnoreCase("Device, Applied")
+					|| dataTypeValue.equalsIgnoreCase("Physical Exam, Order")
+					|| dataTypeValue.equalsIgnoreCase("Physical Exam, Recommended")
+					|| dataTypeValue.equalsIgnoreCase("Physical Exam, Performed")) && isInValidAttribute){
+				
+				flag = false;
+				
 			}
 		return flag;
 		

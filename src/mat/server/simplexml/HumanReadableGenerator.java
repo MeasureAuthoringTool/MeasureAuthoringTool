@@ -66,7 +66,7 @@ public class HumanReadableGenerator {
 				Node subTreeRefNode = subTreeRefNodeList.item(i);
 				Node firstChildNode = subTreeRefNode.getFirstChild();
 				Node commentNode = null;
-				if("comment".equals(firstChildNode.getNodeName())){
+				if(firstChildNode != null && "comment".equals(firstChildNode.getNodeName())){
 					commentNode = firstChildNode.cloneNode(true);
 				}
 				String subTreeId = subTreeRefNode.getAttributes().getNamedItem("id").getNodeValue();
@@ -240,20 +240,19 @@ public class HumanReadableGenerator {
 	/**
 	 * This method is used to get the correct text to add to human readable depending on the 
 	 * type of node. 
-	 * @param parentNode
+	 * @param node
 	 */
-	private static String getNodeText(Node parentNode) {
-		String parentNodeName = parentNode.getNodeName();
+	private static String getNodeText(Node node) {
+		String nodeName = node.getNodeName();
 		String name = "";
-		if(LOGICAL_OP.equals(parentNodeName)){
-		    name = parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
+		if(LOGICAL_OP.equals(nodeName)){
+		    name = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
 			name += ": ";
-		}else if(SET_OP.equals(parentNodeName)){
-			name = parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
+		}else if(SET_OP.equals(nodeName)){
+			name = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
 			name += " of ";
-		}else if(ELEMENT_REF.equals(parentNodeName)){
-			//TODO: Write code to take <attributes> into account.
-			name = parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+		}else if(ELEMENT_REF.equals(nodeName)){
+			name = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 			if(name.endsWith(" : Timing Element")){
 				name = name.substring(0,name.indexOf(" : Timing Element"));
 			}else {
@@ -262,9 +261,58 @@ public class HumanReadableGenerator {
 					name = nameArr[1].trim()+": "+nameArr[0].trim();
 				}
 			}
+			//TODO: Write code to take <attributes> into account.
+			if(node.hasChildNodes()){
+				System.out.println("Found child nodes in element ref.");
+				NodeList childNodes = node.getChildNodes();
+				for(int j=0;j<childNodes.getLength();j++){
+					Node childNode = childNodes.item(j);
+					if(childNode.getNodeName().equals("attribute")){
+						String attributeText = getAttributeText(childNode);						
+						name += attributeText;
+					}
+				}
+			}
+			
 			name = "\"" + name + "\" ";
 		}
 		return name;
+	}
+	
+	private static String getAttributeText(Node attributeNode){
+		String attributeText = "";
+		String attributeName = attributeNode.getAttributes().getNamedItem("name").getNodeValue();
+		String modeName = attributeNode.getAttributes().getNamedItem("mode").getNodeValue();
+		
+		if("Check if Present".equals(modeName)){
+			attributeText = " ("+attributeName+")";
+		}else if("Less Than Or Equal To".equals(modeName)){
+			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
+			String unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
+			
+			attributeText = " (" + attributeName + " <= " + comparisonValue + " " + unitValue + ")";
+		}else if("Greater Than Or Equal To".equals(modeName)){
+			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
+			String unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
+			
+			attributeText = " (" + attributeName + " >= " + comparisonValue + " " + unitValue + ")";
+		}else if("Equal To".equals(modeName)){
+			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
+			String unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
+			
+			attributeText = " (" + attributeName + " = " + comparisonValue + " " + unitValue + ")";
+		}else if("Greater Than".equals(modeName)){
+			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
+			String unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
+			
+			attributeText = " (" + attributeName + " > " + comparisonValue + " " + unitValue + ")";
+		}else if("Less Than".equals(modeName)){
+			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
+			String unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
+			
+			attributeText = " (" + attributeName + " < " + comparisonValue + " " + unitValue + ")";
+		}
+		return attributeText;
 	}
 
 	private static String getFunctionText(Node item) {

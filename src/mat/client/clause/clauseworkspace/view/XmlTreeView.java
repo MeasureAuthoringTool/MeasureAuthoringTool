@@ -3,7 +3,6 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -85,6 +84,7 @@ import com.google.gwt.view.client.TreeViewModel;
 
 
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class XmlTreeView.
  */
@@ -100,25 +100,23 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		/**
 		 * Outer div.
-		 * 
-		 * @param classes
-		 *            the classes
-		 * @param title
-		 *            the title
-		 * @param content
-		 *            the content
+		 *
+		 * @param classes the classes
+		 * @param id the id
+		 * @param title the title
+		 * @param content the content
 		 * @return the safe html
 		 */
 		@Template("<div class=\"{0}\" id=\"{1}\" title=\"{2}\" aria-role=\"tree\">{3}</div>")
 		SafeHtml outerDiv(String classes, String id , String title, String content);
+		
 		/**
 		 * Outer div for Tree Item.
-		 * @param classes
-		 *            the classes
-		 * @param title
-		 *            the title
-		 * @param content
-		 *            the content
+		 *
+		 * @param classes the classes
+		 * @param id the id
+		 * @param title the title
+		 * @param content the content
 		 * @return the safe html
 		 */
 		@Template("<div class=\"{0}\" id=\"{1}\" title=\"{2}\" aria-role=\"treeitem\">{3}</div>")
@@ -126,12 +124,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		/**
 		 * Div for Nodes with Comment.
-		 * @param classes
-		 *            the classes
-		 * @param title
-		 *            the title
-		 * @param content
-		 *            the content
+		 *
+		 * @param classes the classes
+		 * @param id the id
+		 * @param title the title
+		 * @param content the content
 		 * @return the safe html
 		 */
 		@Template("<div class=\"{0}\" id=\"{1}\" title=\"{2}\" aria-role=\"treeitem\">{3}"
@@ -209,6 +206,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The success message display. */
 	private SuccessMessageDisplay successMessageAddCommentDisplay = new SuccessMessageDisplay();
+	
+	/** The add comment panel. */
 	VerticalPanel addCommentPanel;
 	/**
 	 * clear Error Display.
@@ -253,6 +252,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The set error type. */
 	private String setErrorType;
+	
+	private boolean isClauseOpen;
 	/**
 	 * Instantiates a new xml tree view.
 	 * 
@@ -386,7 +387,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/**
 	 * Page View for Clause WorkSpace.
-	 * @param cellTree
+	 *
+	 * @param cellTree the cell tree
 	 */
 	public void createClauseWorkSpacePageView(CellTree cellTree) {
 		this.cellTree = cellTree;
@@ -499,6 +501,46 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		focusPanel.addKeyDownHandler(this);
 		focusPanel.addFocusHandler(this);
 	}
+	
+	/**
+	 * Creates the clause logic page view.
+	 *
+	 * @param cellTree the cell tree
+	 */
+	public void createClauseLogicPageView(CellTree cellTree) {
+		this.cellTree = cellTree;
+		mainPanel.clear();
+		mainPanel.setStyleName("div-wrapper"); //main div
+		SimplePanel leftPanel = new SimplePanel();
+		leftPanel.getElement().setId("leftPanel_SimplePanelCW");
+		leftPanel.setStyleName("div-first bottomPadding10px"); //left side div which will  have tree
+		VerticalPanel treePanel =  new VerticalPanel();
+		treePanel.getElement().setId("treePanel_VerticalPanelCW");
+		HorizontalPanel expandCollapse  = new HorizontalPanel();
+		expandCollapse.getElement().setId("expandCollapse_HorizontalPanelCW");
+		expandCollapse.setStyleName("leftAndTopPadding");
+		expandCollapse.setSize("100px", "20px");
+		buttonExpandClauseWorkSpace.setStylePrimaryName("expandAllButton");
+		buttonCollapseClauseWorkSpace.setStylePrimaryName("collapseAllButton");
+		buttonExpandClauseWorkSpace.setTitle("Expand All (Shift +)");
+		buttonCollapseClauseWorkSpace.setTitle("Collapse All (Shift -)");
+		expandCollapse.add(buttonExpandClauseWorkSpace);
+		expandCollapse.add(buttonCollapseClauseWorkSpace);
+		buttonExpandClauseWorkSpace.setFocus(true);
+		buttonCollapseClauseWorkSpace.setVisible(true);
+		if (cellTree != null) {
+			treePanel.add(expandCollapse);
+			treePanel.add(cellTree);
+			addCWExpandCollapseButtonHandler();
+			cellTreeHandlers();
+		} else {
+			treePanel.setHeight("100%");
+		}
+		leftPanel.add(treePanel);
+		mainPanel.add(leftPanel);
+		focusPanel.addKeyDownHandler(this);
+		focusPanel.addFocusHandler(this);
+	}
 	/**
 	 * Checks max limit of character count on comment Area and display's remaining character count.
 	 * @param remainingCharsLbel - Label.
@@ -537,17 +579,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/**
 	 * Adds the list box handler.
-	 * 
-	 * @param listBox
-	 *            the list box
-	 * @param suggestBox
-	 *            the suggest box
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
-	 * @param dialogBox
-	 *            the dialog box
-	 * @param isAdd
-	 *            the is add
+	 *
+	 * @param listBox the list box
+	 * @param suggestBox the suggest box
 	 */
 	private void addListBoxHandler(final ListBox listBox,
 			final SuggestBox suggestBox) {
@@ -562,6 +596,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		});
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#clearAndAddClauseNamesToListBox()
+	 */
 	@Override
 	public void clearAndAddClauseNamesToListBox() {
 		if(subTreeNameListBox != null){
@@ -592,6 +629,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#updateSuggestOracle()
+	 */
 	@Override
 	public void updateSuggestOracle(){
 		if(searchSuggestTextBox != null){
@@ -842,9 +882,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		 * property for holding maximum length.
 		 */
 		private int maxLength;
+		
 		/**
-		 * Constructor
-		 * @param maxLen
+		 * Constructor.
+		 *
+		 * @param maxLen the max len
 		 */
 		public CommentAreaTextBox(int maxLen) {
 			
@@ -945,7 +987,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		/**
 		 * Setter for maximum length.
-		 * @param maxLength
+		 *
+		 * @param maxLength the new max length
 		 */
 		public void setMaxLength(int maxLength) {
 			this.maxLength = maxLength;
@@ -1027,7 +1070,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				successMessageDisplay.clear();
 				event.preventDefault();
 				event.stopPropagation();
-				if (MatContext.get().getMeasureLockService().checkForEditPermission()) {
+				if (!isClauseOpen && MatContext.get().getMeasureLockService().checkForEditPermission()) {
 					onRightClick(value, (Event) event, parent);
 				}
 			} else if (event.getType().equals(BrowserEvents.CLICK)
@@ -1135,6 +1178,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		selectionModel.setSelected(selectedNode, true);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#refreshCellTreeAfterAddingComment(mat.client.clause.clauseworkspace.model.CellTreeNode)
+	 */
 	@Override
 	public void refreshCellTreeAfterAddingComment(CellTreeNode selectedNode) {
 		closeNodes(cellTree.getRootTreeNode());
@@ -1209,7 +1255,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public SuccessMessageDisplay getSuccessMessageDisplay() {
 		return successMessageDisplay;
 	}
+	
 	/**
+	 * Gets the success message add comment display.
+	 *
 	 * @return the successMessageAddCommentDisplay
 	 */
 	@Override
@@ -1561,6 +1610,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return isValid;
 	}
 	
+	/**
+	 * Validate cell tree nodes population workspace.
+	 *
+	 * @param cellTreeNode the cell tree node
+	 * @return true, if successful
+	 */
 	public boolean validateCellTreeNodesPopulationWorkspace(CellTreeNode cellTreeNode){
 		boolean isValid = true;
 		int nodeType = cellTreeNode.getNodeType();
@@ -1595,6 +1650,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return setErrorType;
 	}
 	
+	/**
+	 * Validate clause workspace cell tree nodes.
+	 *
+	 * @param treeNode the tree node
+	 * @return the string
+	 */
 	private String validateClauseWorkspaceCellTreeNodes(TreeNode treeNode){
 		String attributeValue = "";
 
@@ -1792,52 +1853,75 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	/**
+	 * Gets the button expand clause work space.
+	 *
 	 * @return the buttonExpandClauseWorkSpace
 	 */
 	@Override
 	public Button getButtonExpandClauseWorkSpace() {
 		return buttonExpandClauseWorkSpace;
 	}
+	
 	/**
+	 * Sets the button expand clause work space.
+	 *
 	 * @param buttonExpandClauseWorkSpace the buttonExpandClauseWorkSpace to set
 	 */
 	public void setButtonExpandClauseWorkSpace(Button buttonExpandClauseWorkSpace) {
 		this.buttonExpandClauseWorkSpace = buttonExpandClauseWorkSpace;
 	}
+	
 	/**
+	 * Gets the button collapse clause work space.
+	 *
 	 * @return the buttonCollapseClauseWorkSpace
 	 */
 	@Override
 	public Button getButtonCollapseClauseWorkSpace() {
 		return buttonCollapseClauseWorkSpace;
 	}
+	
 	/**
+	 * Sets the button collapse clause work space.
+	 *
 	 * @param buttonCollapseClauseWorkSpace the buttonCollapseClauseWorkSpace to set
 	 */
 	public void setButtonCollapseClauseWorkSpace(Button buttonCollapseClauseWorkSpace) {
 		this.buttonCollapseClauseWorkSpace = buttonCollapseClauseWorkSpace;
 	}
+	
 	/**
+	 * Gets the save btn clause work space.
+	 *
 	 * @return the saveBtnClauseWorkSpace
 	 */
 	@Override
 	public Button getSaveBtnClauseWorkSpace() {
 		return saveBtnClauseWorkSpace;
 	}
+	
 	/**
+	 * Sets the save btn clause work space.
+	 *
 	 * @param saveBtnClauseWorkSpace the saveBtnClauseWorkSpace to set
 	 */
 	public void setSaveBtnClauseWorkSpace(Button saveBtnClauseWorkSpace) {
 		this.saveBtnClauseWorkSpace = saveBtnClauseWorkSpace;
 	}
+	
 	/**
+	 * Gets the validate btn clause work space.
+	 *
 	 * @return the validateBtnClauseWorkSpace
 	 */
 	@Override
 	public Button getValidateBtnClauseWorkSpace() {
 		return validateBtnClauseWorkSpace;
 	}
+	
 	/**
+	 * Sets the validate btn clause work space.
+	 *
 	 * @param validateBtnClauseWorkSpace the validateBtnClauseWorkSpace to set
 	 */
 	public void setValidateBtnClauseWorkSpace(Button validateBtnClauseWorkSpace) {
@@ -1845,6 +1929,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	/**
+	 * Gets the clear clause work space.
+	 *
 	 * @return the clearClauseWorkSpace
 	 */
 	@Override
@@ -1853,6 +1939,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	/**
+	 * Sets the clear clause work space.
+	 *
 	 * @param clearClauseWorkSpace the clearClauseWorkSpace to set
 	 */
 	public void setClearClauseWorkSpace(Button clearClauseWorkSpace) {
@@ -1860,6 +1948,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	}
 	
 	/**
+	 * Sets the comments box read only.
+	 *
 	 * @param isReadOnly - boolean.
 	 */
 	private void setCommentsBoxReadOnly(boolean isReadOnly) {
@@ -1874,7 +1964,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public ErrorMessageDisplay getClearErrorDisplay() {
 		return clearErrorDisplay;
 	}
+	
 	/**
+	 * Gets the comment buttons.
+	 *
 	 * @return the commentButtons
 	 */
 	@Override
@@ -1890,11 +1983,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return openClauseButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getDeleteClauseButton()
+	 */
 	@Override
 	public Button getDeleteClauseButton() {
 		return deleteClauseButton;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getClauseNamesListBox()
+	 */
 	@Override
 	public ListBox getClauseNamesListBox() {
 		return subTreeNameListBox;
@@ -1902,6 +2001,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	
 	/**
+	 * Gets the comment area.
+	 *
 	 * @return the commentArea
 	 */
 	/* (non-Javadoc)
@@ -1914,6 +2015,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	//added by hari
 	/**
+	 * Gets the validate btn population workspace.
+	 *
 	 * @return the ValidateBtnPopulationWorkspace
 	 */
 	/* (non-Javadoc)
@@ -1923,6 +2026,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public Button getValidateBtnPopulationWorkspace() {
 		
 		return validateBtnPopulationWorkspace;
+	}
+
+	@Override
+	public void setClauseEnabled(boolean isClauseOpen) {
+		this.isClauseOpen = isClauseOpen;
 	}
 	
 	

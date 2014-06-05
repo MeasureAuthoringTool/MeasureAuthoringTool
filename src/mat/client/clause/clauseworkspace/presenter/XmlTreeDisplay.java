@@ -378,4 +378,6 @@ public interface XmlTreeDisplay {
 	public abstract Button getButtonExpandClauseWorkSpace();
 
 	void editNode(boolean isValideNodeValue, CellTreeNode node);
+	
+	public void setClauseEnabled(boolean isClauseOpen); 
 }

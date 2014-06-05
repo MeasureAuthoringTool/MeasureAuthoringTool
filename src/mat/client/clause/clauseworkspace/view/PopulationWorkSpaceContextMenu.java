@@ -1,12 +1,29 @@
 package mat.client.clause.clauseworkspace.view;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
+import mat.client.shared.SecondaryButton;
+
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.user.cellview.client.CellTree;
+import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.HasHorizontalAlignment;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.xml.client.Node;
 /**
  * The Class PopulationWorkSpaceContextMenu.
  *
@@ -21,6 +38,8 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	 * Stratification Node name.
 	 */
 	private static final String STRATIFICATION = "Stratification";
+	
+	private XmlTreeDisplay clauseTreeDisplay;
 	
 	/**
 	 * Instantiates a new population work space context menu.
@@ -79,6 +98,8 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						addRootNodeTypeItem();
 					}
 				};
+				
+				//TODO by Ravi
 				addMenu = new MenuItem(getAddMenuName(xmlTreeDisplay.getSelectedNode().getChilds().get(0))
 						, true, addNodeCmd);
 				popupMenuBar.addItem(addMenu);
@@ -200,7 +221,18 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				subMenuBar = new MenuBar(true);
 				popupMenuBar.setAutoOpen(true);
 				subMenuBar.setAutoOpen(true);
+				Command showClauseLogic = new Command() {
+					@Override
+					public void execute() {
+						popupPanel.hide();
+						ShowSubTreeLogicDialogBox.showSubTreeLogicDialogBox(xmlTreeDisplay, false);
+					}
+				};
+				addMenu = new MenuItem("Show Clause Logic", true, showClauseLogic);
+				popupMenuBar.addItem(addMenu);
+				popupMenuBar.addSeparator(separator);
 				addCommonMenus();
+				addMenu.setEnabled(true);
 				addMoveUpMenu(popupPanel);
 				popupMenuBar.addItem(moveUpMenu);
 				moveUpMenu.setEnabled(checkIfTopChildNode());
@@ -238,5 +270,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 		};
 		MenuItem item = new MenuItem("Clause", true, addClauseCmd);
 		menuBar.addItem(item);
-	}
+	}	
+	
 }

@@ -29,6 +29,7 @@ import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.NamedNodeMap;
@@ -201,6 +202,38 @@ public class XmlTreePresenter {
 		invokeValidateHandler();
 		invokeClearHandler();
 		addClauseHandler();
+	}
+	
+	
+	public final ScrollPanel loadClauseLogic(){
+		XmlTreeDisplay clauseTreeDisplay;
+		ScrollPanel simplePanel = new ScrollPanel();
+		simplePanel.getElement().setAttribute("id", "ClauseLogic");
+		CellTreeNode subTree = XmlConversionlHelper.createRootClauseNode();
+		XmlTreeView xmlTreeView = new XmlTreeView(subTree);
+		CellTree.Resources resource = GWT.create(TreeResources.class);
+		CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
+		// Creation
+		cellTree.setDefaultNodeSize(NODESIZE);  // this will get rid of the show
+		// more link on the bottom of the
+		// Tree
+		xmlTreeView.createClauseWorkSpacePageView(cellTree); // Page Layout
+		cellTree.setTabIndex(0);
+		// This will open the tree by default.
+		TreeNode treeNode = cellTree.getRootTreeNode();
+		for (int i = 0; i < treeNode.getChildCount(); i++) {
+			if (((CellTreeNode) treeNode.getChildValue(i)).getNodeType()
+					== CellTreeNode.SUBTREE_ROOT_NODE) {
+				treeNode.setChildOpen(i, true, true);
+			}
+		}
+		setRootNode(cellTree.getRootTreeNode().toString());
+		clauseTreeDisplay = xmlTreeView;
+		clauseTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
+				.checkForEditPermission());
+		simplePanel.clear();
+		simplePanel.add(clauseTreeDisplay.asWidget());
+		return simplePanel;
 	}
 	/**
 	 * 

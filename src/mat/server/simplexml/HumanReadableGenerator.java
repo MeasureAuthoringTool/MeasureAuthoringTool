@@ -315,7 +315,40 @@ public class HumanReadableGenerator {
 	}
 
 	private static String getUnitString(String unitValue) {
-		return unitValue;
+		String returnVar = "";
+		if(unitValue != null){
+			if(unitValue.equals("celsius")){
+				returnVar = "\u2103";
+			}
+			else if(unitValue.equals("years")|| unitValue.equals("year")){
+				returnVar = "year(s)";
+			}
+			else if (unitValue.equals("month") || unitValue.equals("months")){
+				returnVar = "month(s)";
+			}
+			else if (unitValue.equals("day") || unitValue.equals("days")){
+				returnVar = "day(s)";
+			}
+			else if(unitValue.equals("hour") || unitValue.equals("hours")){
+				returnVar = "hour(s)";
+			}
+			else if(unitValue.equals("week") || unitValue.equals("weeks")){
+				returnVar = "week(s)";
+			}
+			else if(unitValue.equals("minute") || unitValue.equals("minutes")){
+				returnVar = "minute(s)";
+			}
+			else if(unitValue.equals("quarter") || unitValue.equals("quarters")){
+				returnVar = "quarter(s)";
+			}
+			else if(unitValue.equals("second") || unitValue.equals("seconds")){
+				returnVar = "second(s)";
+			}
+			else{
+				returnVar = unitValue;
+			}
+		}
+		return returnVar;
 	}
 
 	private static String getFunctionText(Node item) {

@@ -1714,7 +1714,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							
 							if(attributeValue.equalsIgnoreCase("Anatomical Structure")){
 							editNode(false, node);
+							if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
 							setErrorType = "inValidAtQDMNode";
+							}
 								if (isValid) {
 									isValid = false;
 								

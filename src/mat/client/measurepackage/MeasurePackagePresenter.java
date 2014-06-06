@@ -886,7 +886,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 					
 				} else {
 					view.getPackageErrorMessageDisplay().
-					setMessage("Unable to create measure package. Please verify measure logic in population workspace.");
+					setMessage("Unable to create measure package. Please validate your measure logic in both Population Workspace and clause workspace tabs");
 					
 				}
 				((Button) view.getPackageMeasureButton()).setEnabled(true);

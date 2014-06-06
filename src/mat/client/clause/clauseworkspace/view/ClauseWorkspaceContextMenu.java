@@ -314,7 +314,7 @@ public class ClauseWorkspaceContextMenu {
 			public void execute() {
 				popupPanel.hide();
 				//To edit the Clause element
-				SubTreeDialogBox.showSubTreeDialogBox(xmlTreeDisplay, false);
+				SubTreeDialogBox.showSubTreeDialogBox(xmlTreeDisplay, false, true);
 			}
 		};
 		editMenu = new MenuItem("Edit", true, editClauseCmd);
@@ -613,7 +613,7 @@ public class ClauseWorkspaceContextMenu {
 			@Override
 			public void execute() {
 				popupPanel.hide();
-				SubTreeDialogBox.showSubTreeDialogBox(xmlTreeDisplay, true);
+				SubTreeDialogBox.showSubTreeDialogBox(xmlTreeDisplay, true,true);
 			}
 		};
 		MenuItem item = new MenuItem("Clause", true, addClauseCmd);

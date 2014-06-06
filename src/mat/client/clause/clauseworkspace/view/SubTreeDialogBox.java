@@ -2,9 +2,11 @@ package mat.client.clause.clauseworkspace.view;
 
 import java.util.Map.Entry;
 import java.util.Set;
+
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.OptionElement;
 import com.google.gwt.dom.client.SelectElement;
@@ -30,8 +32,9 @@ import com.google.gwt.xml.client.Node;
 
 public class SubTreeDialogBox {
 	
+	
 	/**
-	 * Show SubTree dialog box.
+	 * Show SubTree dialog box. (used for Population workspace).
 	 * 
 	 * @param xmlTreeDisplay
 	 *            the xml tree display
@@ -39,7 +42,19 @@ public class SubTreeDialogBox {
 	 *            the is add
 	 */
 	public static void showSubTreeDialogBox(final XmlTreeDisplay xmlTreeDisplay,
-			boolean isAdd) {
+			boolean isAdd){
+		showSubTreeDialogBox(xmlTreeDisplay, isAdd,false);
+	}
+	/**
+	 * Show SubTree dialog box. (used for Clause workspace)
+	 * 
+	 * @param xmlTreeDisplay
+	 *            the xml tree display
+	 * @param isAdd
+	 *            the is add
+	 */
+	public static void showSubTreeDialogBox(final XmlTreeDisplay xmlTreeDisplay,
+			boolean isAdd, boolean isClauseWorkspace) {
 		final DialogBox dialogBox = new DialogBox(false, true);
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
@@ -77,7 +92,14 @@ public class SubTreeDialogBox {
 		listBox.setVisibleItemCount(10);
 		String currentSelectedSubTreeuid = xmlTreeDisplay.getSelectedNode()
 				.getUUID();
-		addSubTreeNamesToListBox(listBox, currentSelectedSubTreeuid);
+		
+		if(isClauseWorkspace){
+			CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
+				.getXmlTree().getRootTreeNode().getChildValue(0));
+			currentSelectedSubTreeuid = cellTreeNode.getChilds().get(0).getUUID();
+		}
+		
+		addSubTreeNamesToListBox(listBox, currentSelectedSubTreeuid, isClauseWorkspace);
 		
 		// Add listbox to vertical panel and align it in center.
 		dialogContents.add(listBox);
@@ -198,17 +220,20 @@ public class SubTreeDialogBox {
 	 *            the current selected SubTree uuid
 	 */
 	private static void addSubTreeNamesToListBox(ListBox listBox,
-			String currentSelectedSubTreeUuid) {
+			String currentSelectedSubTreeUuid, boolean isClauseWorkSpace) {
 		Set<Entry<String, Node>> subTreeLookUpNodes = PopulationWorkSpaceConstants
 				.getSubTreeLookUpNode().entrySet();
 		for (Entry<String, Node> subTreeLookup : subTreeLookUpNodes) {
 			String key = subTreeLookup.getKey();
 			String uuid = key.substring(key.lastIndexOf("~") + 1);
+			if (uuid.equals(currentSelectedSubTreeUuid) && isClauseWorkSpace){
+				continue;
+			}
 			if (PopulationWorkSpaceConstants.getSubTreeLookUpName().get(uuid) != null) {
 				String item = PopulationWorkSpaceConstants.getSubTreeLookUpName().get(uuid);
 				listBox.addItem(item, uuid);
 			}
-			if (uuid.equals(currentSelectedSubTreeUuid)) {
+			if (uuid.equals(currentSelectedSubTreeUuid) && !isClauseWorkSpace) {
 				listBox.setItemSelected(listBox.getItemCount() - 1, true);
 			}
 		}

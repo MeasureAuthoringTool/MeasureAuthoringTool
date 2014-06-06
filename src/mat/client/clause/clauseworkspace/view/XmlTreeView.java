@@ -1697,7 +1697,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")){
 						
 						editNode(false, node);
+						if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
 						setErrorType = "inValidAtQDMNode";
+						}
 						if (isValid) {
 							isValid = false;
 						
@@ -1748,6 +1750,30 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					
 					
 				}
+				/*if(node.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+					String nodeName = node.getName();
+					if((node.getName().equalsIgnoreCase("SATISFIES ALL")) || (node.getName().equalsIgnoreCase("SATISFIES ANY"))){
+						subTree = treeNode.setChildOpen(i, true, true);
+						if ((subTree != null) && (subTree.getChildCount() == 2)) {
+							if (!node.getValidNode()) {
+								editNode(true, node);
+								if(!setErrorType.equalsIgnoreCase("inValidAtQDMNode")){
+								setErrorType="Valid";
+								}
+							}
+						} else {
+							editNode(false, node);
+							setErrorType = "inValidAtOtherNode";
+							if (isValid) {
+								isValid = false;
+							}
+						}
+						
+						
+					}
+					
+				}*/
+				
 				
 				subTree = treeNode.setChildOpen(i, ((CellTreeNode) treeNode.getChildValue(i)).isOpen(),
 						((CellTreeNode) treeNode.getChildValue(i)).isOpen());

@@ -287,68 +287,60 @@ public class HumanReadableGenerator {
 			attributeText = " ("+attributeName+")";
 		}else if("Less Than Or Equal To".equals(modeName)){
 			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
-			String unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
-			
-			attributeText = " (" + attributeName + " <= " + comparisonValue + " " + getUnitString(unitValue) + ")";
+			attributeText = " (" + attributeName + " <= " + comparisonValue + " " + getUnitString(attributeNode) + ")";
 		}else if("Greater Than Or Equal To".equals(modeName)){
 			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
-			String unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
-			
-			attributeText = " (" + attributeName + " >= " + comparisonValue + " " + getUnitString(unitValue) + ")";
+			attributeText = " (" + attributeName + " >= " + comparisonValue + " " + getUnitString(attributeNode) + ")";
 		}else if("Equal To".equals(modeName)){
 			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
-			String unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
-			
-			attributeText = " (" + attributeName + " = " + comparisonValue + " " + getUnitString(unitValue) + ")";
+			attributeText = " (" + attributeName + " = " + comparisonValue + " " + getUnitString(attributeNode) + ")";
 		}else if("Greater Than".equals(modeName)){
 			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
-			String unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
-			
-			attributeText = " (" + attributeName + " > " + comparisonValue + " " + getUnitString(unitValue) + ")";
+			attributeText = " (" + attributeName + " > " + comparisonValue + " " + getUnitString(attributeNode) + ")";
 		}else if("Less Than".equals(modeName)){
 			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
-			String unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
-			
-			attributeText = " (" + attributeName + " < " + comparisonValue + " " + getUnitString(unitValue) + ")";
+			attributeText = " (" + attributeName + " < " + comparisonValue + " " + getUnitString(attributeNode) + ")";
 		}
 		return attributeText;
 	}
-
-	private static String getUnitString(String unitValue) {
-		String returnVar = "";
-		if(unitValue != null){
-			if(unitValue.equals("celsius")){
-				returnVar = "\u2103";
-			}
-			else if(unitValue.equals("years")|| unitValue.equals("year")){
-				returnVar = "year(s)";
-			}
-			else if (unitValue.equals("month") || unitValue.equals("months")){
-				returnVar = "month(s)";
-			}
-			else if (unitValue.equals("day") || unitValue.equals("days")){
-				returnVar = "day(s)";
-			}
-			else if(unitValue.equals("hour") || unitValue.equals("hours")){
-				returnVar = "hour(s)";
-			}
-			else if(unitValue.equals("week") || unitValue.equals("weeks")){
-				returnVar = "week(s)";
-			}
-			else if(unitValue.equals("minute") || unitValue.equals("minutes")){
-				returnVar = "minute(s)";
-			}
-			else if(unitValue.equals("quarter") || unitValue.equals("quarters")){
-				returnVar = "quarter(s)";
-			}
-			else if(unitValue.equals("second") || unitValue.equals("seconds")){
-				returnVar = "second(s)";
-			}
-			else{
-				returnVar = unitValue;
-			}
+	
+	private static String getUnitString(Node attributeNode) {
+		String unitValue = "";
+		
+		Node unitNode = attributeNode.getAttributes().getNamedItem("unit");
+		if(unitNode != null){
+			unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
 		}
-		return returnVar;
+		
+		if(unitValue.equals("celsius")){
+			unitValue = "\u2103";
+		}
+		else if(unitValue.equals("years")|| unitValue.equals("year")){
+			unitValue = "year(s)";
+		}
+		else if (unitValue.equals("month") || unitValue.equals("months")){
+			unitValue = "month(s)";
+		}
+		else if (unitValue.equals("day") || unitValue.equals("days")){
+			unitValue = "day(s)";
+		}
+		else if(unitValue.equals("hour") || unitValue.equals("hours")){
+			unitValue = "hour(s)";
+		}
+		else if(unitValue.equals("week") || unitValue.equals("weeks")){
+			unitValue = "week(s)";
+		}
+		else if(unitValue.equals("minute") || unitValue.equals("minutes")){
+			unitValue = "minute(s)";
+		}
+		else if(unitValue.equals("quarter") || unitValue.equals("quarters")){
+			unitValue = "quarter(s)";
+		}
+		else if(unitValue.equals("second") || unitValue.equals("seconds")){
+			unitValue = "second(s)";
+		}
+		
+		return unitValue;
 	}
 
 	private static String getFunctionText(Node item) {

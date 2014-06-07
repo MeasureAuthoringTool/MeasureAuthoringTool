@@ -1,5 +1,8 @@
 package mat.server.simplexml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.server.util.XmlProcessor;
@@ -27,6 +30,18 @@ public class HumanReadableGenerator {
 		//replace the <subTree> tags in 'populationSubXML' with the appropriate subTree tags from 'simpleXML'.
 		try {
 			XmlProcessor populationXMLProcessor = expandSubTrees(populationSubXML, measureXML);
+			
+			if(populationXMLProcessor == null){
+				htmlDocument = createBaseHumanReadableDocument();
+				Element bodyElement = htmlDocument.body();
+				Element mainDivElement = bodyElement.appendElement("div");
+				Element mainListElement = mainDivElement.appendElement(HTML_UL);
+				Element populationListElement = mainListElement.appendElement(HTML_LI);
+				populationListElement.appendText("Human readable encountered problems. " +
+						"Most likely you have included a clause with clause which is causing an infinite loop.");
+				return htmlDocument.toString();
+			}
+			
 			String name = getPopulationClauseName(populationXMLProcessor);
 			
 			htmlDocument = createBaseHumanReadableDocument();
@@ -72,20 +87,100 @@ public class HumanReadableGenerator {
 				String subTreeId = subTreeRefNode.getAttributes().getNamedItem("id").getNodeValue();
 				System.out.println("subTreeId:"+subTreeId);
 				
-				Node subTreeNode = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@uuid='"+subTreeId+"']");
+				Node subTreeNode = resolveMainSubTreeNode(measureXMLProcessor, 
+						subTreeId);
 				
-				//replace the 'subTreeRefNode' with 'subTreeNode'
-				Node subTreeRefNodeParent = subTreeRefNode.getParentNode();								
-				Node subTreeNodeImportedClone = populationXMLProcessor.getOriginalDoc().importNode(subTreeNode, true);
-				if(commentNode != null){
-					subTreeNodeImportedClone.insertBefore(commentNode, subTreeNodeImportedClone.getFirstChild());
+				if(subTreeNode != null){
+					replaceSubTreeNode(populationXMLProcessor,
+							subTreeRefNode, commentNode, subTreeNode);
+				}else{
+					return null;
 				}
-				subTreeRefNodeParent.replaceChild(subTreeNodeImportedClone, subTreeRefNode);
 			}
 		}
 		
 		System.out.println("Inflated popualtion tree: "+populationXMLProcessor.transform(populationXMLProcessor.getOriginalDoc()));	
 		return populationXMLProcessor;
+	}
+
+	/**
+	 * @param measureXMLProcessor
+	 * @param subTreeId
+	 * @return
+	 * @throws XPathExpressionException
+	 */
+	private static Node resolveMainSubTreeNode(XmlProcessor measureXMLProcessor,
+			String subTreeId) throws XPathExpressionException {
+		Node subTreeNode = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@uuid='"+subTreeId+"']");
+		//Node subTreeNodeClone = subTreeNode.cloneNode(true);
+		//find all <subTreeRef> tags in 'subTreeNode' 
+		NodeList subTreeRefNodeList = measureXMLProcessor.findNodeList(measureXMLProcessor.getOriginalDoc(), 
+				"/measure/subTreeLookUp/subTree[@uuid='"+subTreeId+"']//subTreeRef");
+		
+		//resolve for each subTreeRef with subTree (clause within clause)
+		for(int i=0;i<subTreeRefNodeList.getLength();i++){
+			Node subTreeRefNode = subTreeRefNodeList.item(i);
+			//Node subTreeRefNodeClone = subTreeRefNode.cloneNode(true);
+			List<String> childSubTreeRefList = new ArrayList<String>();
+			childSubTreeRefList.add(subTreeId);
+			if(!resolveChildSubTreeNode(measureXMLProcessor,subTreeRefNode,childSubTreeRefList)){
+				return null;
+			}
+			
+//			replaceSubTreeNode(measureXMLProcessor, subTreeRefNode, null, subTreeNode );
+		}
+		
+		
+		return subTreeNode;
+	}
+
+	private static boolean resolveChildSubTreeNode(
+			XmlProcessor measureXMLProcessor, Node subTreeRefNode,
+			List<String> childSubTreeRefList) throws XPathExpressionException {
+		
+		String subTreeId = subTreeRefNode.getAttributes().getNamedItem("id").getNodeValue();
+		System.out.println("sub subTreeId:"+subTreeId);
+		if(!childSubTreeRefList.contains(subTreeId)){
+			childSubTreeRefList.add(subTreeId);
+			Node subTreeNode = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@uuid='"+subTreeId+"']");
+			//Node subTreeNodeClone = subTreeNode.cloneNode(true);
+			
+			//find all <subTreeRef> tags in 'subTreeNode' 
+			NodeList subTreeRefNodeList = measureXMLProcessor.findNodeList(measureXMLProcessor.getOriginalDoc(), 
+					"/measure/subTreeLookUp/subTree[@uuid='"+subTreeId+"']//subTreeRef");
+			for(int i=0;i<subTreeRefNodeList.getLength();i++){
+				Node childSubTreeRefNode = subTreeRefNodeList.item(i);
+				//Node childSubTreeRefNodeClone = childSubTreeRefNode.cloneNode(true);
+				if(!resolveChildSubTreeNode(measureXMLProcessor,childSubTreeRefNode,childSubTreeRefList)){
+					return false;
+				}
+				//replaceSubTreeNode(measureXMLProcessor, childSubTreeRefNode, null, subTreeNode);
+			}
+			replaceSubTreeNode(measureXMLProcessor, subTreeRefNode, null, subTreeNode );
+		}else{
+			System.out.println("Found a chain of Clauses. Abort Human readable generation.");
+			System.out.println(childSubTreeRefList);
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * @param xmlProcessor
+	 * @param subTreeRefNode
+	 * @param commentNode
+	 * @param subTreeNode
+	 */
+	private static void replaceSubTreeNode(
+			XmlProcessor xmlProcessor, Node subTreeRefNode,
+			Node commentNode, Node subTreeNode) {
+		//replace the 'subTreeRefNode' with 'subTreeNode'
+		Node subTreeRefNodeParent = subTreeRefNode.getParentNode();								
+		Node subTreeNodeImportedClone = xmlProcessor.getOriginalDoc().importNode(subTreeNode, true);
+		if(commentNode != null){
+			subTreeNodeImportedClone.insertBefore(commentNode, subTreeNodeImportedClone.getFirstChild());
+		}
+		subTreeRefNodeParent.replaceChild(subTreeNodeImportedClone, subTreeRefNode);
 	}
 	
 	private static String getPopulationClauseName(

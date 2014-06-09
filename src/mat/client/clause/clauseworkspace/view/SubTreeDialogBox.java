@@ -29,6 +29,7 @@ import com.google.gwt.user.client.ui.SuggestBox;
 import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Node;
+import com.google.gwt.xml.client.NodeList;
 
 public class SubTreeDialogBox {
 	
@@ -231,7 +232,17 @@ public class SubTreeDialogBox {
 			}
 			if (PopulationWorkSpaceConstants.getSubTreeLookUpName().get(uuid) != null) {
 				String item = PopulationWorkSpaceConstants.getSubTreeLookUpName().get(uuid);
-				listBox.addItem(item, uuid);
+				boolean noCycle = true;
+				if(isClauseWorkSpace){
+					System.out.println();
+					System.out.println();
+					System.out.println("checkForCycleConditions for:"+item);
+					System.out.println("currentSelectedSubTreeUuid for:"+currentSelectedSubTreeUuid);
+					noCycle = checkForCycleConditions(item,uuid,currentSelectedSubTreeUuid);
+				}
+				if(noCycle){
+					listBox.addItem(item, uuid);
+				}
 			}
 			if (uuid.equals(currentSelectedSubTreeUuid) && !isClauseWorkSpace) {
 				listBox.setItemSelected(listBox.getItemCount() - 1, true);
@@ -247,6 +258,46 @@ public class SubTreeDialogBox {
 			OptionElement optionElement = options.getItem(i);
 			optionElement.setTitle(title);
 		}
+	}
+	
+	private static boolean checkForCycleConditions(String subTreeName, String uuid, String currentSelectedSubTreeUuid) {
+		Node node = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(subTreeName+"~"+uuid);
+		
+		return checkForCycleConditions(node,currentSelectedSubTreeUuid);
+	}
+	
+	private static boolean checkForCycleConditions(Node node,
+			String currentSelectedSubTreeUuid) {
+		System.out.println("node.hasChildNodes():"+node.hasChildNodes());
+		if(node.hasChildNodes()){
+			NodeList childNodeList = node.getChildNodes();
+			System.out.println("childNodeList.getLength():"+childNodeList.getLength());
+			for(int i=0;i<childNodeList.getLength();i++){
+				Node childNode = childNodeList.item(i);
+				System.out.println("childNode: node type:"+childNode.getNodeName());
+				if("subTreeRef".equals(childNode.getNodeName())){
+					String displayName = childNode.getAttributes().getNamedItem("displayName").getNodeValue();
+					System.out.println("subtree name:"+displayName);
+					System.out.println("subtree uuid:"+childNode.getAttributes().getNamedItem("id").getNodeValue());
+					String uuid = childNode.getAttributes().getNamedItem("id").getNodeValue();
+					if(uuid.equals(currentSelectedSubTreeUuid)){
+						return false;
+					}else{
+						Node childSubTreeNode = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(displayName+"~"+uuid);
+						boolean isInnerSubTreeCycle = checkForCycleConditions(childSubTreeNode, currentSelectedSubTreeUuid);
+						if(!isInnerSubTreeCycle){
+							return false;
+						}
+					}
+				}else{
+					boolean isInnerSubTreeCycle = checkForCycleConditions(childNode, currentSelectedSubTreeUuid);
+					if(!isInnerSubTreeCycle){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
 	}
 	/**
 	 * Creates the suggest oracle.

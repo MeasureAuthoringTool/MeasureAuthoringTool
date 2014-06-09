@@ -228,7 +228,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 						ShowSubTreeLogicDialogBox.showSubTreeLogicDialogBox(xmlTreeDisplay, false);
 					}
 				};
-				addMenu = new MenuItem("Show Clause Logic", true, showClauseLogic);
+				addMenu = new MenuItem("View Clause Logic", true, showClauseLogic);
 				popupMenuBar.addItem(addMenu);
 				popupMenuBar.addSeparator(separator);
 				addCommonMenus();
@@ -265,6 +265,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 			@Override
 			public void execute() {
 				popupPanel.hide();
+				//To show the Clause Logic on Population Workspace
 				SubTreeDialogBox.showSubTreeDialogBox(xmlTreeDisplay, true);
 			}
 		};

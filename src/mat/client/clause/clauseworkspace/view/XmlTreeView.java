@@ -1147,7 +1147,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				case CellTreeNode.ROOT_NODE:
 					return "cellTreeRootNode";
 				case CellTreeNode.SUBTREE_REF_NODE:
-					return "clauseWorkSpaceInvalidNode";
+					return "populationWorkSpaceCommentNode";
 				default:
 					break;
 			}

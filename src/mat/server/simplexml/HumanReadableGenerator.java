@@ -29,7 +29,7 @@ public class HumanReadableGenerator {
 		org.jsoup.nodes.Document htmlDocument = null;
 		//replace the <subTree> tags in 'populationSubXML' with the appropriate subTree tags from 'simpleXML'.
 		try {
-			XmlProcessor populationOrSubtreeXMLProcessor = expandSubTrees(subXML, measureXML);
+			XmlProcessor populationOrSubtreeXMLProcessor = expandSubTreesAndImportQDMs(subXML, measureXML);
 			
 			if(populationOrSubtreeXMLProcessor == null){
 				htmlDocument = createBaseHumanReadableDocument();
@@ -41,6 +41,7 @@ public class HumanReadableGenerator {
 						"Most likely you have included a clause with clause which is causing an infinite loop.");
 				return htmlDocument.toString();
 			}
+			
 			boolean isPopulation = checkIfPopulation(populationOrSubtreeXMLProcessor);
 			String name = getPopulationOrSubtreeName(populationOrSubtreeXMLProcessor,isPopulation);
 			
@@ -76,7 +77,7 @@ public class HumanReadableGenerator {
 		return returnFlag;
 	}
 
-	private static XmlProcessor expandSubTrees(String subXML, String measureXML) throws XPathExpressionException {
+	private static XmlProcessor expandSubTreesAndImportQDMs(String subXML, String measureXML) throws XPathExpressionException {
 		
 		XmlProcessor populationOrSubtreeXMLProcessor = new XmlProcessor(subXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
@@ -108,6 +109,11 @@ public class HumanReadableGenerator {
 				}
 			}
 		}
+		
+		//import <elementLookUp> tag to populationOrSubtreeXMLProcessor
+		Node elementLookUpNode = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "//elementLookUp");
+		Node importedElementLookUpNode = populationOrSubtreeXMLProcessor.getOriginalDoc().importNode(elementLookUpNode, true);
+		populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild().appendChild(importedElementLookUpNode);
 		
 		System.out.println("Inflated popualtion tree: "+populationOrSubtreeXMLProcessor.transform(populationOrSubtreeXMLProcessor.getOriginalDoc()));	
 		return populationOrSubtreeXMLProcessor;
@@ -311,6 +317,8 @@ public class HumanReadableGenerator {
 				}
 			}
 			
+		}else if("elementLookUp".equals(nodeName)){
+			//ignore
 		}
 		else {
 			Element liElement = parentListElement.appendElement(HTML_LI);

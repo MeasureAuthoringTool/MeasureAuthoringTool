@@ -313,7 +313,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		
 		MeasureXML measureExport = measureXMLDAO.findForMeasure(measureId);
 		String measureXML = measureExport.getMeasureXMLAsString();
-		String html = HumanReadableGenerator.generateHTMLForPopulation(measureId,populationSubXML,measureXML);
+		String html = HumanReadableGenerator.generateHTMLForPopulationOrSubtree(measureId,populationSubXML,measureXML);
 		//String html = "<html><body>This is human readable HTML. If you can read this you are definitely human. If not, err, Best of luck.</body></html>";
 		
 		result.export = html;

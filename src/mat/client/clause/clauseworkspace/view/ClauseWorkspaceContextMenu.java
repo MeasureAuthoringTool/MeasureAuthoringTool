@@ -224,7 +224,7 @@ public class ClauseWorkspaceContextMenu {
 				System.out.println("View Human Readable clicked...");
 				popupPanel.hide();
 				CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
-				if(selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE){
+				if(selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE || selectedNode.getNodeType() == CellTreeNode.SUBTREE_NODE){
 					String xmlForPopulationNode = XmlConversionlHelper.createXmlFromTree(selectedNode);
 					final String populationName = selectedNode.getName();
 					String measureId = MatContext.get().getCurrentMeasureId();
@@ -264,6 +264,7 @@ public class ClauseWorkspaceContextMenu {
 		deleteMenu.setEnabled(false);
 		pasteMenu.setEnabled(false);
 		cutMenu.setEnabled(false);
+		viewHumanReadableMenu.setEnabled(false);
 		showHideExpandMenu();
 		switch (xmlTreeDisplay.getSelectedNode().getNodeType()) {
 			case CellTreeNode.TIMING_NODE:
@@ -404,6 +405,9 @@ public class ClauseWorkspaceContextMenu {
 		};
 		MenuItem editSubTreeMenu = new MenuItem("Edit", true, editSubTreeCmd);
 		popupMenuBar.addItem(editSubTreeMenu);
+		
+		popupMenuBar.addItem(viewHumanReadableMenu);
+		viewHumanReadableMenu.setEnabled(true);
 	}
 	
 	

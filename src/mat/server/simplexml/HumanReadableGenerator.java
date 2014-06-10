@@ -24,14 +24,14 @@ public class HumanReadableGenerator {
 	private static final String COMMENT = "comment";
 	private static final String LOGICAL_OP = "logicalOp";
 
-	public static String generateHTMLForPopulation(String measureId, String populationSubXML,
+	public static String generateHTMLForPopulationOrSubtree(String measureId, String subXML,
 			String measureXML) {
 		org.jsoup.nodes.Document htmlDocument = null;
 		//replace the <subTree> tags in 'populationSubXML' with the appropriate subTree tags from 'simpleXML'.
 		try {
-			XmlProcessor populationXMLProcessor = expandSubTrees(populationSubXML, measureXML);
+			XmlProcessor populationOrSubtreeXMLProcessor = expandSubTrees(subXML, measureXML);
 			
-			if(populationXMLProcessor == null){
+			if(populationOrSubtreeXMLProcessor == null){
 				htmlDocument = createBaseHumanReadableDocument();
 				Element bodyElement = htmlDocument.body();
 				Element mainDivElement = bodyElement.appendElement("div");
@@ -41,19 +41,19 @@ public class HumanReadableGenerator {
 						"Most likely you have included a clause with clause which is causing an infinite loop.");
 				return htmlDocument.toString();
 			}
-			
-			String name = getPopulationClauseName(populationXMLProcessor);
+			boolean isPopulation = checkIfPopulation(populationOrSubtreeXMLProcessor);
+			String name = getPopulationOrSubtreeName(populationOrSubtreeXMLProcessor,isPopulation);
 			
 			htmlDocument = createBaseHumanReadableDocument();
 			Element bodyElement = htmlDocument.body();
 			Element mainDivElement = bodyElement.appendElement("div");
 			Element mainListElement = mainDivElement.appendElement(HTML_UL);
-			Element populationListElement = mainListElement.appendElement(HTML_LI);
+			Element populationOrSubtreeListElement = mainListElement.appendElement(HTML_LI);
 			
-			Element boldPopulationNameElement = populationListElement.appendElement("b");
-			boldPopulationNameElement.appendText(name + " =");
+			Element boldNameElement = populationOrSubtreeListElement.appendElement("b");
+			boldNameElement.appendText(name + " =");
 			
-			parsePopulationAndBuildHTML(populationXMLProcessor, populationListElement);
+			parseAndBuildHTML(populationOrSubtreeXMLProcessor, populationOrSubtreeListElement, isPopulation);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -66,13 +66,23 @@ public class HumanReadableGenerator {
 		return returnHTML;
 	}
 
-	private static XmlProcessor expandSubTrees(String populationSubXML, String measureXML) throws XPathExpressionException {
+	private static boolean checkIfPopulation(XmlProcessor populationOrSubtreeXMLProcessor) {
+		boolean returnFlag = false;
+		Node  node = populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild();
+		String nodeName = node.getNodeName();
+		if("clause".equals(nodeName)){
+			returnFlag = true;
+		}
+		return returnFlag;
+	}
+
+	private static XmlProcessor expandSubTrees(String subXML, String measureXML) throws XPathExpressionException {
 		
-		XmlProcessor populationXMLProcessor = new XmlProcessor(populationSubXML);
+		XmlProcessor populationOrSubtreeXMLProcessor = new XmlProcessor(subXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
 		
 		//find all <subTreeRef> tags in 'populationSubXML'
-		NodeList subTreeRefNodeList = populationXMLProcessor.findNodeList(populationXMLProcessor.getOriginalDoc(), "//subTreeRef");
+		NodeList subTreeRefNodeList = populationOrSubtreeXMLProcessor.findNodeList(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//subTreeRef");
 		
 		if(subTreeRefNodeList.getLength() > 0){
 			
@@ -91,7 +101,7 @@ public class HumanReadableGenerator {
 						subTreeId);
 				
 				if(subTreeNode != null){
-					replaceSubTreeNode(populationXMLProcessor,
+					replaceSubTreeNode(populationOrSubtreeXMLProcessor,
 							subTreeRefNode, commentNode, subTreeNode);
 				}else{
 					return null;
@@ -99,8 +109,8 @@ public class HumanReadableGenerator {
 			}
 		}
 		
-		System.out.println("Inflated popualtion tree: "+populationXMLProcessor.transform(populationXMLProcessor.getOriginalDoc()));	
-		return populationXMLProcessor;
+		System.out.println("Inflated popualtion tree: "+populationOrSubtreeXMLProcessor.transform(populationOrSubtreeXMLProcessor.getOriginalDoc()));	
+		return populationOrSubtreeXMLProcessor;
 	}
 
 	/**
@@ -183,11 +193,15 @@ public class HumanReadableGenerator {
 		subTreeRefNodeParent.replaceChild(subTreeNodeImportedClone, subTreeRefNode);
 	}
 	
-	private static String getPopulationClauseName(
-			XmlProcessor populationXMLProcessor) {
+	private static String getPopulationOrSubtreeName(
+			XmlProcessor populationOrSubtreeXMLProcessor, boolean isPopulation) {
 		String name = "";
 		try {
-			name = populationXMLProcessor.findNode(populationXMLProcessor.getOriginalDoc(), "//clause/@displayName").getNodeValue();
+			if(isPopulation){
+				name = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//clause/@displayName").getNodeValue();
+			}else{
+				name = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//subTree/@displayName").getNodeValue();
+			}
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -198,22 +212,19 @@ public class HumanReadableGenerator {
 		return name;
 	}
 	
-	private static void parsePopulationAndBuildHTML(
-			XmlProcessor populationXMLProcessor, Element populationListElement) {
+	private static void parseAndBuildHTML(
+			XmlProcessor populationOrSubtreeXMLProcessor, Element populationOrSubtreeListElement, boolean isPopulation) {
 		
 		try {
-			Node clauseNode = populationXMLProcessor.findNode(populationXMLProcessor.getOriginalDoc(), "//clause");
-			NodeList childNodes = clauseNode.getChildNodes();
+			Node rootNode = populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild();
+			NodeList childNodes = rootNode.getChildNodes();
 			for(int i = 0;i < childNodes.getLength(); i++){
-				parseChild(childNodes.item(i),populationListElement,clauseNode);
+				parseChild(childNodes.item(i),populationOrSubtreeListElement,rootNode);
 			}			
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 	}
 	
 	private static void parseChild(Node item, Element parentListElement, Node parentNode) {

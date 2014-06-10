@@ -510,7 +510,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void createClauseLogicPageView(CellTree cellTree) {
 		this.cellTree = cellTree;
 		mainPanel.clear();
-		mainPanel.setStyleName("div-wrapper"); //main div
+		//mainPanel.setStyleName("div-wrapper"); //main div
 		SimplePanel leftPanel = new SimplePanel();
 		leftPanel.getElement().setId("leftPanel_SimplePanelCW");
 		leftPanel.setStyleName("div-first bottomPadding10px"); //left side div which will  have tree
@@ -1146,6 +1146,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			switch (cellTreeNode.getNodeType()) {
 				case CellTreeNode.ROOT_NODE:
 					return "cellTreeRootNode";
+				case CellTreeNode.SUBTREE_REF_NODE:
+					return "clauseWorkSpaceInvalidNode";
 				default:
 					break;
 			}

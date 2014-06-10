@@ -19,6 +19,7 @@ import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.PopupPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Node;
@@ -28,14 +29,15 @@ import com.google.gwt.xml.client.Node;
 /**
  * The Class ShowSubTreeLogicDialogBox.
  */
-public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper{
-	
+public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
+
 	/** The Constant dialogBox. */
-	final static DialogBoxWithCloseButton dialogBox = new DialogBoxWithCloseButton(StringUtils.EMPTY);
-	
+	final static DialogBoxWithCloseButton dialogBox = new DialogBoxWithCloseButton(
+			StringUtils.EMPTY);
+
 	/** The clause tree display. */
 	private static XmlTreeDisplay clauseTreeDisplay;
-	
+
 	/** The Constant NODESIZE. */
 	private static final int NODESIZE = 500;
 
@@ -87,20 +89,23 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper{
 
 	/**
 	 * Show sub tree logic dialog box.
-	 *
-	 * @param xmlTreeDisplay the xml tree display
-	 * @param isAdd the is add
+	 * 
+	 * @param xmlTreeDisplay
+	 *            the xml tree display
+	 * @param isAdd
+	 *            the is add
 	 */
 	public static void showSubTreeLogicDialogBox(
 			final XmlTreeDisplay xmlTreeDisplay, boolean isAdd) {
-		final VerticalPanel dialogContents = new VerticalPanel();
+		final ScrollPanel panel = new ScrollPanel();
+		final VerticalPanel  dialogContents= new VerticalPanel();
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.getElement().setAttribute("id", "ClauseLogicDialogBox");
-		DOM.setStyleAttribute(dialogBox.getElement(), "width", "1000px");
-		DOM.setStyleAttribute(dialogBox.getElement(), "height", "1000px");
+		DOM.setStyleAttribute(dialogBox.getElement(), "width", "800px");
+		//DOM.setStyleAttribute(dialogBox.getElement(), "height", "400px");
 		dialogContents.clear();
-		dialogBox.setWidget(dialogContents);
+		dialogBox.setWidget(panel);
 		dialogBox.addCloseHandler(new CloseHandler<PopupPanel>() {
 			@Override
 			public void onClose(CloseEvent<PopupPanel> event) {
@@ -108,18 +113,23 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper{
 				clauseTreeDisplay.setClauseEnabled(true);
 			}
 		});
-        dialogContents.add(loadClauseLogic(xmlTreeDisplay));
+		panel.setAlwaysShowScrollBars(true);
+		panel.setSize("700px", "400px");
+		dialogContents.add(loadClauseLogic(xmlTreeDisplay));
 		dialogContents.add(new SpacerWidget());
 		dialogContents.add(new SpacerWidget());
+		dialogContents.add(new SpacerWidget());
+		panel.add(dialogContents);
 		dialogBox.setPopupPosition(300, 200);
 		dialogBox.show();
-		
+
 	}
 
 	/**
 	 * Load clause logic.
-	 *
-	 * @param xmlTreeDisplay the xml tree display
+	 * 
+	 * @param xmlTreeDisplay
+	 *            the xml tree display
 	 * @return the simple panel
 	 */
 	private final static VerticalPanel loadClauseLogic(
@@ -132,7 +142,7 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper{
 		CellTreeNode subTree = XmlConversionlHelper.createRootClauseNode();
 		XmlTreeView xmlTreeView = new XmlTreeView(subTree);
 		CellTree.Resources resource = GWT.create(TreeResources.class);
-		CellTree cellTree = new CellTree(xmlTreeView, null, resource); //CellTree Creation
+		CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree Creation
 		cellTree.setDefaultNodeSize(NODESIZE); // this will get rid of the show
 		// more link on the bottom of the
 		// Tree
@@ -151,8 +161,8 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper{
 		final CellTreeNode cellTreeNode = (CellTreeNode) (clauseTreeDisplay
 				.getXmlTree().getRootTreeNode().getChildValue(0));
 		showClause(cellTreeNode, node.getName(), node.getUUID());
-		dialogBox.setText("Clause Logic: ("+ node.getName() +" )");
-		dialogBox.setTitle("Clause Logic: ("+ node.getName() +" )");
+		dialogBox.setText("Clause Logic: (" + node.getName() + " )");
+		dialogBox.setTitle("Clause Logic: (" + node.getName() + " )");
 		xmlTreeView.openAllNodes(cellTree.getRootTreeNode());
 		simplePanel.clear();
 		panel.add(clauseTreeDisplay.asWidget());
@@ -162,10 +172,13 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper{
 
 	/**
 	 * Change clause.
-	 *
-	 * @param cellTreeNode the cell tree node
-	 * @param selectedClauseName the selected clause name
-	 * @param selectedClauseUUID the selected clause uuid
+	 * 
+	 * @param cellTreeNode
+	 *            the cell tree node
+	 * @param selectedClauseName
+	 *            the selected clause name
+	 * @param selectedClauseUUID
+	 *            the selected clause uuid
 	 */
 	private static void showClause(CellTreeNode cellTreeNode,
 			String selectedClauseName, String selectedClauseUUID) {
@@ -175,56 +188,47 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper{
 			System.out.println("clearing out:" + childNode.getName());
 			cellTreeNode.removeChild(childNode);
 		}
-
 		Node node = PopulationWorkSpaceConstants.subTreeLookUpNode
 				.get(selectedClauseName + "~" + selectedClauseUUID);
-			CellTreeNode subTreeCellTreeNode = XmlConversionlHelper
+		CellTreeNode subTreeCellTreeNode = XmlConversionlHelper
 				.createCellTreeNode(node, selectedClauseName);
-		//	subTreeCellTreeNode = checkIfClauseAndAppend(subTreeCellTreeNode);
 		cellTreeNode.appendChild(subTreeCellTreeNode.getChilds().get(0));
-
+		TreeNode treeNode = checkIfClauseAndAppend(clauseTreeDisplay
+				.getXmlTree().getRootTreeNode());
+		subTreeCellTreeNode = (CellTreeNode) treeNode.getChildValue(0);
 	}
-	
+
 	/**
 	 * Check if clause and append.
-	 *
-	 * @param subTreeCellTreeNode the sub tree cell tree node
-	 * @return the node
+	 * 
+	 * @param treeNode
+	 *            the tree node
+	 * @return the cell tree node
 	 */
-	private static CellTreeNode checkIfClauseAndAppend(CellTreeNode subTreeCellTreeNode){
-		 
-		List<CellTreeNode> childNodes = (List<CellTreeNode>) subTreeCellTreeNode.getChilds();
-		
-		CellTreeNode childNode = null;
-		
-		if(childNodes!=null) {
-			
-			CellTreeNode treeCellTreeNode = null;
-	   
-		for(int i = 0; i<childNodes.size(); i ++){
-			
-			childNode = childNodes.get(i);
-			if(childNode.getNodeType() == CellTreeNode.SUBTREE_REF_NODE) {
-				//System.out.println("SubtreeRef Node" + childNode.getNodeType());
-				Node node = PopulationWorkSpaceConstants.subTreeLookUpNode
-						.get(childNode.getName() + "~" + childNode.getUUID());
-					CellTreeNode cellTreeNode = XmlConversionlHelper
-						.createCellTreeNode(node, childNode.getName());
-					childNode.appendChild(cellTreeNode.getChilds().get(0).getChilds().get(0));
-					//treeCellTreeNode = cellTreeNode;
+	private static TreeNode checkIfClauseAndAppend(TreeNode treeNode) {
+
+		if (treeNode != null) {
+			clauseTreeDisplay.openAllNodes(treeNode);
+			for (int i = 0; i < treeNode.getChildCount(); i++) {
+				TreeNode subTree = null;
+				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
+				if (node.getNodeType() == CellTreeNode.SUBTREE_REF_NODE) {
+					Node childNode = PopulationWorkSpaceConstants.subTreeLookUpNode
+							.get(node.getName() + "~" + node.getUUID());
+					CellTreeNode subTreeCellTreeNode = XmlConversionlHelper
+							.createCellTreeNode(childNode, node.getName());
+					node.appendChild(subTreeCellTreeNode.getChilds().get(0)
+							.getChilds().get(0));
+				}
+				subTree = treeNode.setChildOpen(i,
+						((CellTreeNode) treeNode.getChildValue(i)).isOpen(),
+						((CellTreeNode) treeNode.getChildValue(i)).isOpen());
+				if ((subTree != null) && (subTree.getChildCount() > 0)) {
+					checkIfClauseAndAppend(subTree);
+				}
 			}
-			
-			if(childNode.getChilds()!=null){
-//				treeCellTreeNode = childNode.getChilds().get(i);
-				treeCellTreeNode = childNodes.get(i);
-				}
-				if(treeCellTreeNode!=null){
-				checkIfClauseAndAppend(treeCellTreeNode);
-				}
 		}
-		
-	}
-		return subTreeCellTreeNode;
+		return treeNode;
 	}
 
 }

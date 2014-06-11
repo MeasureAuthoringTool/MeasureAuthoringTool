@@ -225,7 +225,7 @@ public class HumanReadableGenerator {
 			Node rootNode = populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild();
 			NodeList childNodes = rootNode.getChildNodes();
 			for(int i = 0;i < childNodes.getLength(); i++){
-				parseChild(childNodes.item(i),populationOrSubtreeListElement,rootNode);
+				parseChild(childNodes.item(i),populationOrSubtreeListElement,rootNode,populationOrSubtreeXMLProcessor);
 			}			
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block
@@ -233,20 +233,20 @@ public class HumanReadableGenerator {
 		} 
 	}
 	
-	private static void parseChild(Node item, Element parentListElement, Node parentNode) {
+	private static void parseChild(Node item, Element parentListElement, Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor) {
 		String nodeName = item.getNodeName();
 		
 		if(LOGICAL_OP.equals(nodeName)){
 			
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);				
-				liElement.appendText(getNodeText(parentNode));
+				liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 			}
 			
 			Element ulElement = parentListElement.appendElement(HTML_UL);
 			NodeList childNodes = item.getChildNodes();
 			for (int i=0; i< childNodes.getLength(); i++){
-				parseChild(childNodes.item(i), ulElement, item);				
+				parseChild(childNodes.item(i), ulElement, item, populationOrSubtreeXMLProcessor);				
 			}
 		}else if(COMMENT.equals(nodeName)){
 			String commentValue = item.getTextContent();
@@ -260,27 +260,27 @@ public class HumanReadableGenerator {
 		}else if(SUB_TREE.equals(nodeName)){
 			NodeList childNodes = item.getChildNodes();
 			for (int i=0; i< childNodes.getLength(); i++){
-				parseChild(childNodes.item(i), parentListElement,parentNode);				
+				parseChild(childNodes.item(i), parentListElement,parentNode, populationOrSubtreeXMLProcessor);				
 			}
 		}else if(SET_OP.equals(nodeName)){
 			//Element liElement = parentListElement.appendElement(HTML_LI);
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);
-				liElement.appendText(getNodeText(parentNode));
+				liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 			}
 			//Element ulElement = liElement.appendElement(HTML_UL);
 			Element ulElement = parentListElement.appendElement(HTML_UL);
 			NodeList childNodes = item.getChildNodes();
 			for (int i=0; i< childNodes.getLength(); i++){
-				parseChild(childNodes.item(i), ulElement,item);				
+				parseChild(childNodes.item(i), ulElement,item, populationOrSubtreeXMLProcessor);				
 			}
 		}else if(RELATIONAL_OP.equals(nodeName)){
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);
-				liElement.appendText(getNodeText(parentNode));
-				getRelationalOpText(item, liElement);
+				liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+				getRelationalOpText(item, liElement, populationOrSubtreeXMLProcessor);
 			}else{
-				getRelationalOpText(item, parentListElement);
+				getRelationalOpText(item, parentListElement, populationOrSubtreeXMLProcessor);
 				/**
 				 * A relationalOp can have 2 children. First evaluate the LHS child, then add the name of the relationalOp and finally
 				 * evaluate the RHS child.
@@ -296,24 +296,24 @@ public class HumanReadableGenerator {
 		}else if(ELEMENT_REF.equals(nodeName)){
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);
-				liElement.appendText(getNodeText(parentNode)+getNodeText(item));
+				liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor)+getNodeText(item, populationOrSubtreeXMLProcessor));
 			}else{
-				parentListElement.appendText(getNodeText(item));
+				parentListElement.appendText(getNodeText(item,populationOrSubtreeXMLProcessor));
 			}
 		}else if("functionalOp".equals(nodeName)){
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);
-				liElement.appendText(" "+getNodeText(parentNode));
+				liElement.appendText(" "+getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 				liElement.appendText(getFunctionText(item));
 				NodeList childNodes = item.getChildNodes();
 				for (int i=0; i< childNodes.getLength(); i++){
-					parseChild(childNodes.item(i), liElement,item);				
+					parseChild(childNodes.item(i), liElement,item, populationOrSubtreeXMLProcessor);				
 				}
 			}else{
 				parentListElement.appendText(getFunctionText(item));
 				NodeList childNodes = item.getChildNodes();
 				for (int i=0; i< childNodes.getLength(); i++){
-					parseChild(childNodes.item(i), parentListElement,item);				
+					parseChild(childNodes.item(i), parentListElement,item, populationOrSubtreeXMLProcessor);				
 				}
 			}
 			
@@ -324,7 +324,7 @@ public class HumanReadableGenerator {
 			Element liElement = parentListElement.appendElement(HTML_LI);
 			
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
-				liElement.appendText(" "+getNodeText(parentNode));
+				liElement.appendText(" "+getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 			}
 			liElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " ");
 		}
@@ -333,21 +333,22 @@ public class HumanReadableGenerator {
 	/**
 	 * @param item
 	 * @param liElement
+	 * @param populationOrSubtreeXMLProcessor 
 	 */
-	private static void getRelationalOpText(Node item, Element liElement) {
+	private static void getRelationalOpText(Node item, Element liElement, XmlProcessor populationOrSubtreeXMLProcessor) {
 		/**
 		 * A relationalOp can have 2 children. First evaluate the LHS child, then add the name of the relationalOp and finally
 		 * evaluate the RHS child.
 		 */
 		NodeList childNodes = item.getChildNodes();
 		if(childNodes.getLength() == 2){
-			parseChild(childNodes.item(0),liElement,item);
+			parseChild(childNodes.item(0),liElement,item, populationOrSubtreeXMLProcessor);
 			Element newLiElement = liElement;
 			if(LOGICAL_OP.equals(childNodes.item(0).getNodeName()) || SET_OP.equals(childNodes.item(0).getNodeName())){
 				newLiElement = liElement.children().last().appendElement(HTML_LI);
 			}
 			newLiElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
-			parseChild(childNodes.item(1),newLiElement,item);
+			parseChild(childNodes.item(1),newLiElement,item, populationOrSubtreeXMLProcessor);
 		}
 	}
 
@@ -355,8 +356,9 @@ public class HumanReadableGenerator {
 	 * This method is used to get the correct text to add to human readable depending on the 
 	 * type of node. 
 	 * @param node
+	 * @param populationOrSubtreeXMLProcessor 
 	 */
-	private static String getNodeText(Node node) {
+	private static String getNodeText(Node node, XmlProcessor populationOrSubtreeXMLProcessor) {
 		String nodeName = node.getNodeName();
 		String name = "";
 		if(LOGICAL_OP.equals(nodeName)){
@@ -381,7 +383,7 @@ public class HumanReadableGenerator {
 				for(int j=0;j<childNodes.getLength();j++){
 					Node childNode = childNodes.item(j);
 					if(childNode.getNodeName().equals("attribute")){
-						String attributeText = getAttributeText(childNode);						
+						String attributeText = getAttributeText(childNode, populationOrSubtreeXMLProcessor);						
 						name += attributeText;
 					}
 				}
@@ -392,7 +394,7 @@ public class HumanReadableGenerator {
 		return name;
 	}
 	
-	private static String getAttributeText(Node attributeNode){
+	private static String getAttributeText(Node attributeNode, XmlProcessor populationOrSubtreeXMLProcessor){
 		String attributeText = "";
 		String attributeName = attributeNode.getAttributes().getNamedItem("name").getNodeValue();
 		String modeName = attributeNode.getAttributes().getNamedItem("mode").getNodeValue();
@@ -414,6 +416,23 @@ public class HumanReadableGenerator {
 		}else if("Less Than".equals(modeName)){
 			String comparisonValue = attributeNode.getAttributes().getNamedItem("comparisonValue").getNodeValue();
 			attributeText = " (" + attributeName + " < " + comparisonValue + " " + getUnitString(attributeNode) + ")";
+		}else if("Value Set".equals(modeName)){
+			String qdmUUIDValue = attributeNode.getAttributes().getNamedItem("qdmUUID").getNodeValue();
+			//find the qdm tag using qdmUUIDValue 
+			try {
+				Node qdmNodeNameAttribute = populationOrSubtreeXMLProcessor.findNode(attributeNode.getOwnerDocument(), "//elementLookUp/qdm[@uuid='"+qdmUUIDValue+"']/@name");
+				if(qdmNodeNameAttribute != null){
+					attributeText = " (" + attributeName + ": " + qdmNodeNameAttribute.getNodeValue() + ")";
+				}else{
+					attributeText = "";
+				}
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				attributeText = "";
+			}
+			
+			
 		}
 		return attributeText;
 	}

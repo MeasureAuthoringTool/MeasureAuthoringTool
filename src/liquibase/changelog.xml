@@ -157,4 +157,5 @@
 		<include file="classpath:/liquibase/deploy_sprint-41_US4127_US4132_US4137_Remove_Status_Date_Time_Attributes.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-41_US4117_Rename_Reason_Attribute_To_Cause_For_Patient_Characteristic_Expired.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-42_delete_attributes_add_fulfills_relation.xml"/>
+		<include file="classpath:/liquibase/deploy_sprint-42_US4237_US4242_US4247_delete_attributes.xml"/>
 	</databaseChangeLog>

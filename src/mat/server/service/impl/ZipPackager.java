@@ -70,6 +70,8 @@ public class ZipPackager {
 			String codeListXLSPath = "";
 			String simpleXMLPath = "";
             String matVersion[] = {"_v3","_v4"};
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		    ZipOutputStream zip = new ZipOutputStream(baos);
 			if(exportDate.before(releaseDate)){
 				
 				parentPath = fnu.getParentPath(emeasureName + matVersion[0]);
@@ -78,22 +80,18 @@ public class ZipPackager {
 				emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + matVersion[0]);
 				codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + matVersion[0],packageDate);
 				simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + matVersion[0]);
+				addBytesToZip(emeasureXSLPath, emeasureXSLBarr, zip);
+				addBytesToZip(emeasureXMLPath, emeasureXMLStr.getBytes(), zip);
 			} else if(exportDate.after(releaseDate) || exportDate.equals(releaseDate)){
-				
 				parentPath = fnu.getParentPath(emeasureName + matVersion[1]);
-				emeasureXSLPath = parentPath+File.separator+"xslt"+File.separator+"eMeasure.xsl";
-				emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + matVersion[1]);
 				emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + matVersion[1]);
 				codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + matVersion[1],packageDate);
 				simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + matVersion[1]);
 			}
-		    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		    ZipOutputStream zip = new ZipOutputStream(baos);
+		   
 		    
 		    addBytesToZip(simpleXMLPath, simpleXmlStr.getBytes(), zip);
-			addBytesToZip(emeasureXSLPath, emeasureXSLBarr, zip);
-		    addBytesToZip(emeasureXMLPath, emeasureXMLStr.getBytes(), zip);
-		    addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
+			addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		    addBytesToZip(codeListXLSPath, wkbkbarr, zip);
 		    
 		    zip.close();

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import mat.client.CustomPager;
 import mat.client.clause.QDSAppliedListModel;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
@@ -117,6 +118,8 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private SuccessMessageDisplay measurePackageSuccessMsg = new SuccessMessageDisplay();
 	/** The measure package warning msg. */
 	private WarningMessageDisplay measurePackageWarningMsg = new WarningMessageDisplay();
+	/** The measure error messages. */
+	private ErrorMessageDisplay measureErrorMessages = new ErrorMessageDisplay();
 	/** The package success messages. */
 	private SuccessMessageDisplay packageSuccessMessages = new SuccessMessageDisplay();
 	/** The supp data success messages. */
@@ -150,6 +153,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	/** The save error message display. */
 	private ErrorMessageDisplay saveErrorMessageDisplay = new ErrorMessageDisplay();
+	
+	/** The include vsac data. */
+	private CustomCheckBox includeVSACData = new CustomCheckBox("Select 'Include VSAC value set data' to create "
+			+ "a measure package with VSAC data.", "Include VSAC value set data", true);
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getSaveErrorMessageDisplay()
@@ -200,7 +207,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		cellTablePanel.removeStyleName("valueSetSearchPanel");
 		content.getElement().setAttribute("id", "MeasurePackagerContentFlowPanel");
 		createNew.getElement().setAttribute("id", "CreateNewGroupingButton");
-		content.add(saveErrorMessageDisplay);
+		content.add(measureErrorMessages);
 		content.add(cellTablePanel);
 		content.add(new SpacerWidget());
 		content.add(createNew);
@@ -210,9 +217,13 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(new SpacerWidget());
 		content.add(topQDMElementContainer);
 		content.add(new SpacerWidget());
+		content.add(new SpacerWidget());	
+		content.add(includeVSACData);
+		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 		content.add(measurePackageSuccessMsg);
 		content.add(measurePackageWarningMsg);
+		content.add(saveErrorMessageDisplay);
 		packageMeasure.setTitle("Create Measure Package");
 		content.add(packageMeasure);
 		content.add(new SpacerWidget());
@@ -872,5 +883,24 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		}
 		
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getIncludeVSACData()
+	 */
+	@Override
+	public CustomCheckBox getIncludeVSACData() {
+		return includeVSACData;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getMeasureErrorMessageDisplay()
+	 */
+	@Override
+	public final ErrorMessageDisplayInterface getMeasureErrorMessageDisplay() {
+		return measureErrorMessages;
+	}
+	
+	
+	
 	
 }

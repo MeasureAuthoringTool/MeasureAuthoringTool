@@ -310,6 +310,7 @@ public class XmlTreePresenter {
 						if(cellTreeNode.getChilds().size() > 0){
 							if (xmlTreeDisplay.isDirty()) {
 								//isUnsavedData = true;
+								xmlTreeDisplay.getErrorMessageDisplay().clear();
 								showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
 								xmlTreeDisplay.getErrorMessageDisplay().getButtons().get(0).setFocus(true);
 								String auditMessage = getRootNode().toUpperCase() + "_TAB_YES_CLICKED";

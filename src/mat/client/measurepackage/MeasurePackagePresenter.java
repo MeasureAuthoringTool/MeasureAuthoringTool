@@ -10,6 +10,7 @@ import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
@@ -23,6 +24,9 @@ import mat.client.shared.ReadOnlyHelper;
 import mat.client.shared.SecondaryButton;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
+import mat.client.umls.service.VSACAPIServiceAsync;
+import mat.client.umls.service.VsacApiResult;
+import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.server.util.XmlProcessor;
 import mat.shared.ConstantMessages;
@@ -273,7 +277,23 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * @return the save error message display
 		 */
 		ErrorMessageDisplay getSaveErrorMessageDisplay();
+		/**
+		 * Gets the include vsac data.
+		 * 
+		 * @return the include vsac data
+		 */
+		CustomCheckBox getIncludeVSACData();
+		/**
+		 * Gets the measure error message display.
+		 *
+		 * @return the measure error message display
+		 */
+		ErrorMessageDisplayInterface getMeasureErrorMessageDisplay();
 	}
+	
+	/** The vsacapi service async. */
+	VSACAPIServiceAsync vsacapiServiceAsync = MatContext.get()
+			.getVsacapiServiceAsync();
 	
 	/**
 	 * Instantiates a new measure package presenter.
@@ -465,6 +485,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getMeasurePackageSuccessMsg().clear();
 		view.getErrorMessageDisplay().clear();
 		view.getMeasurePackageWarningMsg().clear();
+		view.getMeasureErrorMessageDisplay().clear();
+		
 	}
 	/**
 	 * Display Empty.
@@ -875,17 +897,40 @@ public class MeasurePackagePresenter implements MatPresenter {
 						@Override
 						public void onFailure(Throwable caught) {
 							((Button) view.getPackageMeasureButton()).setEnabled(true);
+							
 						}
 						
 						@Override
 						public void onSuccess(SaveMeasureResult result) {
 							updateComponentMeasuresFromXml();
+							//added by hari
+							if (result.isSuccess()) {
+								Mat.showLoadingMessage();
+								String measureId = MatContext.get()
+										.getCurrentMeasureId();
+								if (view.getIncludeVSACData().getValue().equals(Boolean.TRUE)) {
+									updateValueSetsBeforePackaging(measureId);
+								} else {
+									validateMeasureAndExport(measureId, null);
+								}
+							} else {
+								((Button) view.getPackageMeasureButton())
+								.setEnabled(true);
+								if (result.getFailureReason()
+										== SaveMeasureResult.INVALID_VALUE_SET_DATE) {
+									String message = MatContext.get()
+											.getMessageDelegate()
+											.getValueSetDateInvalidMessage();
+									view.getErrorMessageDisplay().setMessage(message);
+								}
+							}
+							
 							((Button) view.getPackageMeasureButton()).setEnabled(true);
 						}
 					});	
 					
 				} else {
-					view.getPackageErrorMessageDisplay().
+					view.getMeasurePackageWarningMsg().
 					setMessage("Unable to create measure package. Please validate your measure logic in both Population Workspace and clause workspace tabs");
 					
 				}
@@ -914,6 +959,99 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 	}
+	/**
+	 * Service call to VSAC to update Measure Xml before invoking simple xml and value set sheet generation.
+	 * @param measureId - String.
+	 */
+	private void updateValueSetsBeforePackaging(final String measureId) {
+		vsacapiServiceAsync.updateAllVSACValueSetsAtPackage(measureId,
+				new AsyncCallback<VsacApiResult>() {
+			
+			@Override
+			public void onFailure(final Throwable caught) {
+			}
+			
+			@Override
+			public void onSuccess(final VsacApiResult result) {
+				validateMeasureAndExport(measureId,
+						result);
+			}
+		});
+	}
+	
+	/**
+	 * Service Call to generate Simple Xml and value set sheet.
+	 * @param measureId - String.
+	 * @param updateVsacResult - VsacApiResult.
+	 */
+	private void validateMeasureAndExport(final String measureId,
+			final VsacApiResult updateVsacResult) {
+		List<MatValueSet> vsacResponse = null;
+		if (updateVsacResult != null) {
+			vsacResponse = updateVsacResult.getVsacResponse();
+		}
+		
+		MatContext.get().getMeasureService()
+		.validateMeasureForExport(measureId, vsacResponse,
+				new AsyncCallback<ValidateMeasureResult>() {
+			@Override
+			public void onFailure(final Throwable caught) {
+				// O&M 17
+				((Button) view.getPackageMeasureButton())
+				.setEnabled(true);
+				Mat.hideLoadingMessage();
+				view.getPackageErrorMessageDisplay().setMessage(
+						MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+			}
+			
+			@Override
+			public void onSuccess(final ValidateMeasureResult result) {
+				// O&M 17
+				((Button) view.getPackageMeasureButton()).setEnabled(true);
+				
+				Mat.hideLoadingMessage();
+				if (updateVsacResult != null) {
+					if (result.isValid() && updateVsacResult.isSuccess()) {
+						if(updateVsacResult.getRetrievalFailedOIDs().size() > 0){
+							view.getMeasurePackageSuccessMsg()
+							.setAmberMessage(MatContext.get().getMessageDelegate()
+									.getPackageSuccessAmberMessage());
+						}else{
+							view.getMeasurePackageSuccessMsg()
+							.setMessage(MatContext.get().getMessageDelegate()
+									.getPackageSuccessMessage());
+						}
+						
+					} else if (result.isValid() && !updateVsacResult.isSuccess()) {
+						if (updateVsacResult.getFailureReason()
+								== VsacApiResult.UMLS_NOT_LOGGEDIN) {
+							view.getMeasurePackageWarningMsg()
+							.setMessage(MatContext.get().getMessageDelegate()
+									.getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN());
+						}else if(VsacApiResult.VSAC_REQUEST_TIMEOUT == updateVsacResult.getFailureReason()){
+							view.getMeasureErrorMessageDisplay()
+							.setMessage(MatContext.get().getMessageDelegate()
+									.getMEASURE_PACKAGE_VSAC_TIMEOUT());
+						}
+					} else {
+						view.getMeasureErrorMessageDisplay()
+						.setMessages(result.getValidationMessages());
+					}
+				} else {
+					if (result.isValid()) {
+						view.getMeasurePackageSuccessMsg()
+						.setMessage(MatContext.get().getMessageDelegate()
+								.getPackageSuccessMessage());
+					} else {
+						view.getMeasureErrorMessageDisplay()
+						.setMessages(result.getValidationMessages());
+					}
+				}
+			}
+		});
+	}
 }
+
+
 
 

@@ -198,6 +198,10 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	/** The right pager panel. */
 	private ScrollPanel rightPagerPanel = new ScrollPanel();
 	
+	/** The package measure and export. */
+	private PrimaryButton packageMeasureAndExport = new PrimaryButton(
+			"Create Measure Package", "primaryButton");
+	
 	/**
 	 * Constructor.
 	 */
@@ -225,7 +229,11 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(measurePackageWarningMsg);
 		content.add(saveErrorMessageDisplay);
 		packageMeasure.setTitle("Create Measure Package");
+		packageMeasureAndExport.getElement().setId("Create Measure Package and Export");
+		packageMeasureAndExport.setTitle("Create Measure Package and Export");
+		packageMeasureAndExport.setStyleName("primaryButton floatRightButtonPanel");
 		content.add(packageMeasure);
+		content.add(packageMeasureAndExport);
 		content.add(new SpacerWidget());
 		content.add(new SpacerWidget());
 		content.setStyleName("contentPanel");
@@ -633,6 +641,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 			createNew.setEnabled(b);
 		}
 		packageMeasure.setEnabled(b);
+		packageMeasureAndExport.setEnabled(b);
 		addQDMElementsToMeasure.setEnabled(b);
 		packageGroupingWidget.getSaveGrouping().setEnabled(b);
 		addAllQDMLeft.setEnabled(b);
@@ -898,6 +907,15 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	@Override
 	public final ErrorMessageDisplayInterface getMeasureErrorMessageDisplay() {
 		return measureErrorMessages;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.measurepackage.MeasurePackagePresenter.PackageView#getPackageMeasureAndExportButton()
+	 */
+	@Override
+	public HasClickHandlers getPackageMeasureAndExportButton() {
+		// TODO Auto-generated method stub
+		return packageMeasureAndExport;
 	}
 	
 	

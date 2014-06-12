@@ -37,6 +37,7 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -66,6 +67,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 	
 	/** The db supp data elements. */
 	private List<QualityDataSetDTO> dbSuppDataElements = new ArrayList<QualityDataSetDTO>();
+	
+	/** The is measure package success. */
+	private boolean isMeasurePackageSuccess = false;
 	
 	/**
 	 * Gets the db supp data elements.
@@ -289,6 +293,13 @@ public class MeasurePackagePresenter implements MatPresenter {
 		 * @return the measure error message display
 		 */
 		ErrorMessageDisplayInterface getMeasureErrorMessageDisplay();
+		
+		/**
+		 * Gets the package measure and export button.
+		 *
+		 * @return the package measure and export button
+		 */
+		HasClickHandlers getPackageMeasureAndExportButton();
 	}
 	
 	/** The vsacapi service async. */
@@ -332,6 +343,19 @@ public class MeasurePackagePresenter implements MatPresenter {
 				//Validate Package Grouping at the time of creating measure Package.
 				validatePackageGrouping();
 				
+			}
+		});
+		
+       view.getPackageMeasureAndExportButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				clearMessages();
+				((Button) view.getPackageMeasureButton()).setEnabled(false);
+				validatePackageGrouping();
+				if(isMeasurePackageSuccess){
+					//saveExport();
+				}
 			}
 		});
 		

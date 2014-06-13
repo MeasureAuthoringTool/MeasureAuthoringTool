@@ -14,6 +14,8 @@ import org.w3c.dom.NodeList;
 
 public class HumanReadableGenerator {
 
+	private static final String ELEMENT_LOOK_UP = "elementLookUp";
+	private static final String FUNCTIONAL_OP = "functionalOp";
 	private static final String DISPLAY_NAME = "displayName";
 	private static final String ELEMENT_REF = "elementRef";
 	private static final String RELATIONAL_OP = "relationalOp";
@@ -29,6 +31,7 @@ public class HumanReadableGenerator {
 		org.jsoup.nodes.Document htmlDocument = null;
 		//replace the <subTree> tags in 'populationSubXML' with the appropriate subTree tags from 'simpleXML'.
 		try {
+			System.out.println("Original subXML:"+subXML);
 			XmlProcessor populationOrSubtreeXMLProcessor = expandSubTreesAndImportQDMs(subXML, measureXML);
 			
 			if(populationOrSubtreeXMLProcessor == null){
@@ -178,6 +181,7 @@ public class HumanReadableGenerator {
 			System.out.println(childSubTreeRefList);
 			return false;
 		}
+		childSubTreeRefList.remove(subTreeId);
 		return true;
 	}
 
@@ -273,7 +277,11 @@ public class HumanReadableGenerator {
 				}
 			}
 			//Element ulElement = liElement.appendElement(HTML_UL);
-			parentListElement.appendText(getNodeText(item, populationOrSubtreeXMLProcessor));
+			if(parentListElement.nodeName().equals(HTML_UL)){
+				parentListElement.appendElement(HTML_LI).appendText(getNodeText(item, populationOrSubtreeXMLProcessor));
+			}else{
+				parentListElement.appendText(getNodeText(item, populationOrSubtreeXMLProcessor));
+			}
 			Element ulElement = parentListElement.appendElement(HTML_UL);
 			NodeList childNodes = item.getChildNodes();
 			for (int i=0; i< childNodes.getLength(); i++){
@@ -313,7 +321,7 @@ public class HumanReadableGenerator {
 			}else{
 				parentListElement.appendText(getNodeText(item,populationOrSubtreeXMLProcessor));
 			}
-		}else if("functionalOp".equals(nodeName)){
+		}else if(FUNCTIONAL_OP.equals(nodeName)){
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				//liElement.appendText(" "+getNodeText(parentNode, populationOrSubtreeXMLProcessor));
@@ -335,7 +343,7 @@ public class HumanReadableGenerator {
 				}
 			}
 			
-		}else if("elementLookUp".equals(nodeName)){
+		}else if(ELEMENT_LOOK_UP.equals(nodeName)){
 			//ignore
 		}
 		else {
@@ -368,9 +376,12 @@ public class HumanReadableGenerator {
 //			if(LOGICAL_OP.equals(childNodes.item(0).getNodeName()) || SET_OP.equals(childNodes.item(0).getNodeName())){
 //				newLiElement = liElement.children().last().appendElement(HTML_LI);
 //			}
-			newLiElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
+			
 			if(!ELEMENT_REF.equals(childNodes.item(1).getNodeName())){
+				newLiElement.appendElement(HTML_LI).appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
 				newLiElement = liElement.appendElement(HTML_UL).appendElement(HTML_LI);
+			}else{
+				newLiElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
 			}
 			parseChild(childNodes.item(1),newLiElement,item, populationOrSubtreeXMLProcessor);
 		}
@@ -501,10 +512,13 @@ public class HumanReadableGenerator {
 	}
 
 	private static String getFunctionText(Node item) {
-		if(!"functionalOp".equals(item.getNodeName())){
+		if(!FUNCTIONAL_OP.equals(item.getNodeName())){
 			return "";
 		}
-		
+		String typeAttribute = item.getAttributes().getNamedItem("type").getNodeValue();
+		if("AGE AT".equals(typeAttribute)){
+			return item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " ";
+		}
 		return item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " of ";
 	}
 

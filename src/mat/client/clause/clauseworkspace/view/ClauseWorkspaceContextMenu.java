@@ -1100,7 +1100,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param populationName the population name
 	 */
 	private native void showHumanReadableDialogBox(String result, String populationName) /*-{
-	var humanReadableWindow = window.open("","","width=1000,height=700");
+	var humanReadableWindow = window.open("","","width=1000,height=700,scrollbars=yes,resizable=yes");
 	if(humanReadableWindow && humanReadableWindow.top){
 		//Populate the human readable in the new window.
 		humanReadableWindow.document.write(result);

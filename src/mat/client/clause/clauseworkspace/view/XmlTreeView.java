@@ -254,6 +254,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private String setErrorType;
 	
 	private boolean isClauseOpen;
+	
+	private boolean isEditable;
 	/**
 	 * Instantiates a new xml tree view.
 	 * 
@@ -326,7 +328,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		VerticalPanel vp = new VerticalPanel();
 		HorizontalPanel savePanel = new HorizontalPanel();
 		savePanel.getElement().setId("savePanel_VerticalPanel");
-		savePanel.add(new SpacerWidget());
+		//savePanel.add(new SpacerWidget());
 		vp.add(successMessageDisplay);
 		savePanel.add(saveBtn);
 		//Commented Validate Button from Population Work Space as part of Mat-3162
@@ -1291,6 +1293,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		saveBtn.setEnabled(enabled);
 		saveBtnClauseWorkSpace.setEnabled(enabled);
 		deleteClauseButton.setEnabled(enabled);
+		isEditable = enabled;
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getSelectedNode()
@@ -1458,7 +1461,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		if (!(id.toLowerCase()).contains("treenode".toLowerCase())) {
 			return;
 		}
-		if (selectedNode != null) {
+		if (selectedNode != null && isEditable) {
 			short nodeType = selectedNode.getNodeType();
 			if (event.isControlKeyDown()) {
 				if (keyCode == PopulationWorkSpaceConstants.COPY_C) { //COPY

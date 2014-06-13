@@ -274,6 +274,7 @@ public class HumanReadableGenerator {
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				if(LOGICAL_OP.equals(parentNode.getNodeName())){
 					liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+					parentListElement = liElement.appendElement(HTML_UL);
 				}
 			}
 			//Element ulElement = liElement.appendElement(HTML_UL);

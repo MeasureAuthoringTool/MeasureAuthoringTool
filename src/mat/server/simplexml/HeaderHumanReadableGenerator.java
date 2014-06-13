@@ -80,7 +80,7 @@ public class HeaderHumanReadableGenerator {
 		createRowAndColumns(table,"Measure Steward");
 		column.appendText(getInfo(processor,"steward"));
 		
-		getInfoNodes(table,processor,"developers/developer","Measure Developer");
+		getInfoNodes(table,processor,"developers/developer","Measure Developer",false);
 		
 		createRowAndColumns(table,"Endorsed By");
 		column.appendText(getInfo(processor,"endorsement"));
@@ -104,7 +104,62 @@ public class HeaderHumanReadableGenerator {
 		createRowAndColumns(table,"Measure Scoring");
 		column.appendText(getInfo(processor,"scoring"));
 		
-		getInfoNodes(table,processor,"types/type","Measure Type");
+		getInfoNodes(table,processor,"types/type","Measure Type",false);
+		
+		createRowAndColumns(table, "Stratification");
+		createDiv(getInfo(processor,"stratification"), column);
+		
+		createRowAndColumns(table, "Risk Adjustment");
+		createDiv(getInfo(processor,"riskAdjustment"), column);
+		
+		createRowAndColumns(table, "Rate Aggregation");
+		createDiv(getInfo(processor,"aggregation"), column);
+		
+		createRowAndColumns(table, "Rationale");
+		createDiv(getInfo(processor,"rationale"), column);
+		
+		createRowAndColumns(table, "Clinical Recommendation Statement");
+		createDiv(getInfo(processor,"recommendations"), column);
+		
+		createRowAndColumns(table, "Improvement Notation");
+		createDiv(getInfo(processor,"improvementNotations"), column);
+		
+		getInfoNodes(table,processor,"references/reference","Reference",true);
+		
+		getInfoNodes(table,processor,"definitions","Definition",true);
+		
+		createRowAndColumns(table, "Guidance");
+		createDiv(getInfo(processor,"guidance"), column);
+		
+		createRowAndColumns(table, "Transmission Format");
+		createDiv(getInfo(processor,"transmissionFormat"), column);
+		
+		createRowAndColumns(table, "Initial Patient Population");
+		createDiv(getInfo(processor,"initialPopDescription"), column);
+		
+		createRowAndColumns(table, "Denominator");
+		createDiv(getInfo(processor,"denominatorDescription"), column);
+		
+		createRowAndColumns(table, "Denominator Exclusions");
+		createDiv(getInfo(processor,"denominatorExclusionsDescription"), column);
+		
+		createRowAndColumns(table, "Numerator");
+		createDiv(getInfo(processor,"numeratorDescription"), column);
+		
+		createRowAndColumns(table, "Numerator Exclusions");
+		createDiv(getInfo(processor,"numeratorExclusionsDescription"), column);
+		
+		createRowAndColumns(table, "Denominator Exceptions");
+		createDiv(getInfo(processor,"denominatorExceptionsDescription"), column);
+		
+		createRowAndColumns(table, "Measure Population");
+		createDiv(getInfo(processor,"measurePopulationDescription"), column);
+		
+		createRowAndColumns(table, "Measure Observations");
+		createDiv(getInfo(processor,"measureObservationsDescription"), column);
+		
+		createRowAndColumns(table, "Supplemental Data Elements");
+		createDiv(getInfo(processor,"supplementalData"), column);
 	}
 
 	private static String getShortTitle(XmlProcessor processor) throws DOMException, XPathExpressionException{
@@ -125,16 +180,24 @@ public class HeaderHumanReadableGenerator {
 		return "";
 	}
 	
-	private static void getInfoNodes(Element table, XmlProcessor processor, String lookUp, String display) throws XPathExpressionException {
+	private static void getInfoNodes(Element table, XmlProcessor processor, String lookUp, String display,boolean addDiv) throws XPathExpressionException {
 		NodeList developers = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + lookUp);
 		
 		if(developers.getLength() > 0){
 			Node person;
 			for(int i = 0; i < developers.getLength(); i++){
 				person = developers.item(i);
-				createRowAndColumns(table, display);
-				if(person != null){
-					column.appendText(person.getTextContent());
+				if(!addDiv){
+					createRowAndColumns(table, display);
+					if(person != null){
+						column.appendText(person.getTextContent());
+					}
+				}
+				else{
+					if(person != null){
+						createRowAndColumns(table, display);
+						createDiv(person.getTextContent(), column);
+					}
 				}
 			}
 		}

@@ -57,6 +57,10 @@ public class HumanReadableGenerator {
 			Element boldNameElement = populationOrSubtreeListElement.appendElement("b");
 			boldNameElement.appendText(name + " =");
 			
+			if(!isPopulation){
+				populationOrSubtreeListElement.appendElement("br");
+			}
+			
 			parseAndBuildHTML(populationOrSubtreeXMLProcessor, populationOrSubtreeListElement, isPopulation);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block

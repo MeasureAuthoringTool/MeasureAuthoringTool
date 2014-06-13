@@ -352,7 +352,7 @@ public class ComparisonDialogBox {
 						else{
 							if("AGE AT".equals(functionOrTiming)){
 								displayName.append("AGE").append(" ").append(operatorType).append(" ")
-								.append(quantity).append(" ").append(unit).append(" AT");
+								.append(quantity).append(" ").append(unit).append(" at");
 							}else{
 								displayName.append(functionOrTiming).append(" ").append(operatorType).append(" ")
 								.append(quantity).append(" ").append(unit);

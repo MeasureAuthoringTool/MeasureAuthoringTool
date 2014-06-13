@@ -334,17 +334,25 @@ public class HumanReadableGenerator {
 					liElement.appendText(" "+getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 				}
 				liElement.appendText(getFunctionText(item));
-				Element ulElement = liElement.appendElement(HTML_UL);
 				NodeList childNodes = item.getChildNodes();
-				for (int i=0; i< childNodes.getLength(); i++){
-					parseChild(childNodes.item(i), ulElement.appendElement(HTML_LI),item, populationOrSubtreeXMLProcessor);				
+				if(childNodes.getLength() == 1 && ELEMENT_REF.equals(childNodes.item(0).getNodeName())){
+					parseChild(childNodes.item(0), liElement,item, populationOrSubtreeXMLProcessor);
+				}else{
+					Element ulElement = liElement.appendElement(HTML_UL);
+					for (int i=0; i< childNodes.getLength(); i++){
+						parseChild(childNodes.item(i), ulElement.appendElement(HTML_LI),item, populationOrSubtreeXMLProcessor);				
+					}
 				}
 			}else{
 				parentListElement.appendText(getFunctionText(item));
-				Element ulElement = parentListElement.appendElement(HTML_UL);
 				NodeList childNodes = item.getChildNodes();
-				for (int i=0; i< childNodes.getLength(); i++){
-					parseChild(childNodes.item(i), ulElement.appendElement(HTML_LI),item, populationOrSubtreeXMLProcessor);				
+				if(childNodes.getLength() == 1 && ELEMENT_REF.equals(childNodes.item(0).getNodeName())){
+					parseChild(childNodes.item(0), parentListElement,item, populationOrSubtreeXMLProcessor);
+				}else{
+					Element ulElement = parentListElement.appendElement(HTML_UL);
+					for (int i=0; i< childNodes.getLength(); i++){
+						parseChild(childNodes.item(i), ulElement.appendElement(HTML_LI),item, populationOrSubtreeXMLProcessor);				
+					}
 				}
 			}
 			

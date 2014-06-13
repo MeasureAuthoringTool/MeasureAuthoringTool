@@ -4,6 +4,7 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -11,6 +12,7 @@ import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatContext;
+
 import com.google.gwt.core.client.JavaScriptException;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -29,8 +31,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-// TODO: Auto-generated Javadoc
-//import com.google.gwt.user.client.DOM;
 
 
 // TODO: Auto-generated Javadoc
@@ -350,8 +350,13 @@ public class ComparisonDialogBox {
 							//extraAttributes.remove("quantity");
 						}
 						else{
-							displayName.append(functionOrTiming).append(" ").append(operatorType).append(" ")
-							.append(quantity).append(" ").append(unit);
+							if("AGE AT".equals(functionOrTiming)){
+								displayName.append("AGE").append(" ").append(operatorType).append(" ")
+								.append(quantity).append(" ").append(unit).append(" AT");
+							}else{
+								displayName.append(functionOrTiming).append(" ").append(operatorType).append(" ")
+								.append(quantity).append(" ").append(unit);
+							}
 						}
 			}
 			extraAttributes.put(PopulationWorkSpaceConstants.DISPLAY_NAME, displayName.toString());

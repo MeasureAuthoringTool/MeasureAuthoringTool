@@ -505,10 +505,10 @@ public class ClauseWorkspaceContextMenu {
 				if (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 1) {
 					addMenuLHS.setEnabled(false);
 				}
-				if ((xmlTreeDisplay.getSelectedNode().getChilds().size() == 0)
-						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 2)) {
-					addMenuRHS.setEnabled(false);
-				}
+//				if ((xmlTreeDisplay.getSelectedNode().getChilds().size() == 0)
+//						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 2)) {
+//					addMenuRHS.setEnabled(false);
+//				}
 			}
 			popupMenuBar.addItem(addMenuLHS);
 			popupMenuBar.addItem(addMenuRHS);

@@ -200,7 +200,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	
 	/** The package measure and export. */
 	private PrimaryButton packageMeasureAndExport = new PrimaryButton(
-			"Create Measure Package", "primaryButton");
+			"Create Package and Export", "primaryButton");
 	
 	/**
 	 * Constructor.

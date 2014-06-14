@@ -4,7 +4,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,13 +33,14 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ExportSimpleXML.
  */
 public class ExportSimpleXML {
 
 	/** The Constant STRATA. */
-	private static final String STRATA = "stratification";
+	private static final String STRATIFICATION = "stratification";
 	
 	/** The Constant _logger. */
 	private static final Log _logger = LogFactory.getLog(ExportSimpleXML.class);
@@ -205,6 +205,14 @@ public class ExportSimpleXML {
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
 		//using the above list we need to traverse the originalDoc and remove the unused Clauses
 		removeUnwantedClauses(usedClauseIds, originalDoc);
+		//to get SubTreeRefIds from Population WorkSpace
+		List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(originalDoc);
+		
+		//to get SubTreeIds From Clause WorksPace in a Whole
+		List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIds, originalDoc);
+	   
+		//this will remove unUsed SubTrees From SubTreeLookUp
+		removeUnwantedSubTrees(usedSubTreeIds, originalDoc);
 		
 		List<String> usedQDMIds = getUsedQDMIds(originalDoc);
 		//using the above list we need to traverse the originalDoc and remove the unused QDM's
@@ -217,6 +225,44 @@ public class ExportSimpleXML {
 		return transform(originalDoc);
 	}
 	
+	/**
+	 * Removes the unwanted sub trees.
+	 *
+	 * @param usedSubTreeIds the used sub tree ids
+	 * @param originalDoc the original doc
+	 */
+	private static void removeUnwantedSubTrees(List<String> usedSubTreeIds,
+			Document originalDoc) {
+		
+		String uuidXPathString = "";
+		for(String uuidString:usedSubTreeIds){
+			uuidXPathString += "@uuid != '"+uuidString + "' and";
+		}
+		uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
+		
+		String xPathForUnunsedSubTreeNodes = "/measure/subTreeLookUp/subTree["+uuidXPathString+"]";
+		
+		try {
+			NodeList unUnsedSubTreeNodes = (NodeList) xPath.evaluate(xPathForUnunsedSubTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+			if(unUnsedSubTreeNodes.getLength() > 0){
+				Node parentSubTreeNode = unUnsedSubTreeNodes.item(0).getParentNode();
+				for(int i=0;i<unUnsedSubTreeNodes.getLength();i++){
+					parentSubTreeNode.removeChild(unUnsedSubTreeNodes.item(i));
+				}
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	/**
+	 * Modify element look up for occurances.
+	 *
+	 * @param originalDoc the original doc
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private static void modifyElementLookUpForOccurances(Document originalDoc) throws XPathExpressionException {
 		NodeList allOccuranceQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm[@instance]", originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		List<String> qdmOID_Datatype_List = new ArrayList<String>();
@@ -325,7 +371,7 @@ public class ExportSimpleXML {
 				Node clauseNode = ((Attr)clauseIdNode).getOwnerElement();
 				Node clauseParentNode = clauseNode.getParentNode();
 				//Ignore if the clause is a Stratification clause.
-				if(!STRATA.equals(clauseParentNode.getNodeName())){
+				if(!STRATIFICATION.equals(clauseParentNode.getNodeName())){
 					clauseParentNode.removeChild(clauseNode);
 					
 					//Check if the parent of the clause is now empty. If yes, remove the parent from its parent.
@@ -365,12 +411,6 @@ public class ExportSimpleXML {
 				String uuid = packageClause.getAttributes().getNamedItem("uuid").getNodeValue();
 				String type = packageClause.getAttributes().getNamedItem("type").getNodeValue();
 				
-				
-				//Ignore "Measure Observation" in grouping
-				/*if("measureObservation".equals(packageClause.getAttributes().getNamedItem("type").getNodeValue())){
-					continue;
-				}*/
-				
 				Node clauseNode = findClauseByUUID(uuid, type, originalDoc);
 				//add childCount to clauseNode
 				if(packageClause.getChildNodes()!=null && packageClause.getChildNodes().getLength()>0){				
@@ -380,12 +420,15 @@ public class ExportSimpleXML {
 				}
 				//add associatedPopulationUUID to clauseNode
 				if(type.equalsIgnoreCase("denominator") || type.equalsIgnoreCase("numerator")|| type.equalsIgnoreCase("measureObservation")){
+					Node hasAssociatedPopulationUUID = packageClause.getAttributes().getNamedItem("associatedPopulationUUID");
+					if(hasAssociatedPopulationUUID != null){
+						String associatedPopulationUUID = hasAssociatedPopulationUUID.getNodeValue();
+						Node attr = originalDoc.createAttribute("associatedPopulationUUID");
+						attr.setNodeValue(associatedPopulationUUID);
+						clauseNode.getAttributes().setNamedItem(attr);
+						}
 					
-					String associatedPopulationUUID = packageClause.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
-					Node associatedPopulationUUIDNode = findClauseByUUID(associatedPopulationUUID, type, originalDoc);
-					clauseNode.appendChild(associatedPopulationUUIDNode.cloneNode(true));
-					
-					}
+				}
 				
 				
 				//deep clone the <clause> tag
@@ -411,7 +454,7 @@ public class ExportSimpleXML {
 		//reArrangeClauseNodes(originalDoc);
 		removeNode("/measure/populations",originalDoc);
 		removeNode("/measure/measureObservations",originalDoc);
-		removeNode("/measure/strata/stratification",originalDoc);
+		removeNode("/measure/strata",originalDoc);
 	}
 	
 	
@@ -479,7 +522,109 @@ public class ExportSimpleXML {
 		_logger.info("usedClauseIds:"+usedClauseIds);
 		return usedClauseIds;
 	}
+	
+	/**
+	 * Gets the used subtree ref ids.
+	 *
+	 * @param originalDoc the original doc
+	 * @return the used subtree ref ids
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static List<String> getUsedSubtreeRefIds(Document originalDoc)
+			throws XPathExpressionException {
+		// Populations
+		List<String> usedSubTreeRefIdsPop = new ArrayList<String>();
+		NodeList groupedSubTreeRefIdsNodeListPop = (NodeList) xPath.evaluate(
+				"/measure/populations//subTreeRef/@id",
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 
+		for (int i = 0; i < groupedSubTreeRefIdsNodeListPop.getLength(); i++) {
+			Node groupedSubTreeRefIdAttributeNodePop = groupedSubTreeRefIdsNodeListPop
+					.item(i);
+			usedSubTreeRefIdsPop.add(groupedSubTreeRefIdAttributeNodePop
+					.getNodeValue());
+		}
+
+		// Measure Observations
+		List<String> usedSubTreeRefIdsMO = new ArrayList<String>();
+		NodeList groupedSubTreeRefIdsNodeListMO = (NodeList) xPath.evaluate(
+				"/measure/measureObservations//subTreeRef/@id",
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+
+		for (int i = 0; i < groupedSubTreeRefIdsNodeListMO.getLength(); i++) {
+			Node groupedSubTreeRefIdAttributeNodeMO = groupedSubTreeRefIdsNodeListMO
+					.item(i);
+			usedSubTreeRefIdsMO.add(groupedSubTreeRefIdAttributeNodeMO
+					.getNodeValue());
+		}
+
+		// Startifications
+		List<String> usedSubTreeRefIdsStrat = new ArrayList<String>();
+
+		NodeList groupedSubTreeRefIdListStrat = (NodeList) xPath.evaluate(
+				"/measure/strata/stratification//subTreeRef/@id",
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+
+		for (int i = 0; i < groupedSubTreeRefIdListStrat.getLength(); i++) {
+			Node groupedSubTreeRefIdAttributeNodeStrat = groupedSubTreeRefIdListStrat
+					.item(i);
+			usedSubTreeRefIdsStrat.add(groupedSubTreeRefIdAttributeNodeStrat
+					.getNodeValue());
+		}
+
+		//if (usedSubTreeRefIdsPop != null || usedSubTreeRefIdsMO != null) {
+			usedSubTreeRefIdsPop.removeAll(usedSubTreeRefIdsMO);
+			usedSubTreeRefIdsMO.addAll(usedSubTreeRefIdsPop);
+			
+			//if (usedSubTreeRefIdsStrat != null) {
+				usedSubTreeRefIdsMO.removeAll(usedSubTreeRefIdsStrat);
+				usedSubTreeRefIdsStrat.addAll(usedSubTreeRefIdsMO);
+			//}
+		//}
+
+		return usedSubTreeRefIdsStrat;
+	}
+	
+
+	/**
+	 * Check un used sub tree ref.
+	 *
+	 * @param usedSubTreeRefIds the used sub tree ref ids
+	 * @param originalDoc the original doc
+	 * @return the list
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static List<String> checkUnUsedSubTreeRef(List<String> usedSubTreeRefIds, Document originalDoc) throws XPathExpressionException{
+		
+		List<String> allSubTreeRefIds = new ArrayList<String>();
+		NodeList subTreeRefIdsNodeList = (NodeList) xPath.evaluate("/measure//subTreeRef/@id",
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		for (int i = 0; i < subTreeRefIdsNodeList.getLength(); i++) {
+			Node SubTreeRefIdAttributeNode = subTreeRefIdsNodeList.item(i);
+			if(!allSubTreeRefIds.contains(SubTreeRefIdAttributeNode.getNodeValue())){
+				allSubTreeRefIds.add(SubTreeRefIdAttributeNode.getNodeValue());
+			}
+		}
+		allSubTreeRefIds.removeAll(usedSubTreeRefIds);
+		
+		for(int i = 0; i< usedSubTreeRefIds.size(); i++){
+			for(int j=0; j<allSubTreeRefIds.size(); j++){
+				Node usedSubTreeRefNode = (Node) xPath.evaluate("/measure/subTreeLookUp/subTree[@uuid='"+ 
+			                   usedSubTreeRefIds.get(i)+ "']//subTreeRef[@id='"+allSubTreeRefIds.get(j)+"']",
+						originalDoc.getDocumentElement(), XPathConstants.NODE);
+				if(usedSubTreeRefNode!=null){
+					if(!usedSubTreeRefIds.contains(allSubTreeRefIds.get(j))){
+					usedSubTreeRefIds.add(allSubTreeRefIds.get(j));
+					}
+				}
+			}
+			
+		}
+		
+		return usedSubTreeRefIds;
+	}
+	
 	/**
 	 * Gets the used qdm ids.
 	 * 
@@ -558,14 +703,12 @@ public class ExportSimpleXML {
 	/**
 	 * This method finds a <clause> tag in <measure>/<populations> with a
 	 * specified 'uuid' attribute.
-	 * 
-	 * @param uuid
-	 *            the uuid
-	 * @param originalDoc
-	 *            the original doc
+	 *
+	 * @param uuid the uuid
+	 * @param type the type
+	 * @param originalDoc the original doc
 	 * @return the node
-	 * @throws XPathExpressionException
-	 *             the x path expression exception
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private static Node findClauseByUUID(String uuid, String type, Document originalDoc) throws XPathExpressionException {
 		Node clauseNode = null;	

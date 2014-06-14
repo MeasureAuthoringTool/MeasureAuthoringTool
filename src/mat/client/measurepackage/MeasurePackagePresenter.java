@@ -2,13 +2,12 @@ package mat.client.measurepackage;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
 import mat.client.clause.QDSAppliedListModel;
-import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.service.MeasureServiceAsync;
@@ -28,8 +27,6 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
-import mat.server.util.XmlProcessor;
-import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
 
 import com.google.gwt.core.client.GWT;
@@ -39,7 +36,6 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.FocusWidget;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -945,6 +941,11 @@ public class MeasurePackagePresenter implements MatPresenter {
 				((Button) view.getPackageMeasureButton()).setEnabled(true);
 			}
 			
+			/**
+			 * On success.
+			 *
+			 * @param result the result
+			 */
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				updateComponentMeasuresFromXml();
@@ -1047,9 +1048,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 				if (updateVsacResult != null) {
 					if (result.isValid() && updateVsacResult.isSuccess()) {
 						if(updateVsacResult.getRetrievalFailedOIDs().size() > 0){
-							view.getMeasurePackageSuccessMsg()
-							.setAmberMessage(MatContext.get().getMessageDelegate()
-									.getPackageSuccessAmberMessage());
+							if (isMeasurePackageExportSuccess) {
+								saveExport();
+							} else {
+								view.getMeasurePackageSuccessMsg()
+								.setAmberMessage(MatContext.get().getMessageDelegate()
+										.getPackageSuccessAmberMessage());
+							}
+							
 						} else {
 							
 							if (isMeasurePackageExportSuccess) {
@@ -1064,9 +1070,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 					} else if (result.isValid() && !updateVsacResult.isSuccess()) {
 						if (updateVsacResult.getFailureReason()
 								== VsacApiResult.UMLS_NOT_LOGGEDIN) {
+							
+							if (isMeasurePackageExportSuccess) {
+								saveExport();
+							} else {
 							view.getMeasurePackageWarningMsg()
 							.setMessage(MatContext.get().getMessageDelegate()
 									.getMEASURE_PACKAGE_UMLS_NOT_LOGGED_IN());
+							}
 						}else if(VsacApiResult.VSAC_REQUEST_TIMEOUT == updateVsacResult.getFailureReason()){
 							view.getMeasureErrorMessageDisplay()
 							.setMessage(MatContext.get().getMessageDelegate()

@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 
@@ -39,7 +40,7 @@ import org.xml.sax.SAXException;
 public class ExportSimpleXML {
 
 	/** The Constant STRATA. */
-	private static final String STRATA = "strata";
+	private static final String STRATA = "stratification";
 	
 	/** The Constant _logger. */
 	private static final Log _logger = LogFactory.getLog(ExportSimpleXML.class);
@@ -360,22 +361,43 @@ public class ExportSimpleXML {
 			List<Node> clauseNodes = new ArrayList<Node>();
 			for(int i=0;i<packageClauses.getLength();i++){
 				Node packageClause = packageClauses.item(i);
+				
 				String uuid = packageClause.getAttributes().getNamedItem("uuid").getNodeValue();
+				String type = packageClause.getAttributes().getNamedItem("type").getNodeValue();
+				
 				
 				//Ignore "Measure Observation" in grouping
-				if("measureObservation".equals(packageClause.getAttributes().getNamedItem("type").getNodeValue())){
+				/*if("measureObservation".equals(packageClause.getAttributes().getNamedItem("type").getNodeValue())){
 					continue;
-				}
+				}*/
 				
-				Node clauseNode = findClauseByUUID(uuid,originalDoc);
+				Node clauseNode = findClauseByUUID(uuid, type, originalDoc);
+				//add childCount to clauseNode
+				if(packageClause.getChildNodes()!=null && packageClause.getChildNodes().getLength()>0){				
+					Node itemCount = packageClause.getChildNodes().item(0);
+					Node clonedItemCount = itemCount.cloneNode(true);
+					clauseNode.appendChild(clonedItemCount);
+				}
+				//add associatedPopulationUUID to clauseNode
+				if(type.equalsIgnoreCase("denominator") || type.equalsIgnoreCase("numerator")|| type.equalsIgnoreCase("measureObservation")){
+					
+					String associatedPopulationUUID = packageClause.getAttributes().getNamedItem("associatedPopulationUUID").getNodeValue();
+					Node associatedPopulationUUIDNode = findClauseByUUID(associatedPopulationUUID, type, originalDoc);
+					clauseNode.appendChild(associatedPopulationUUIDNode.cloneNode(true));
+					
+					}
+				
+				
 				//deep clone the <clause> tag
 				Node clonedClauseNode = clauseNode.cloneNode(true);
+				
 				//set a new 'uuid' attribute value for <clause>
 				clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(UUIDUtilClient.uuid());
 //				String clauseName = clonedClauseNode.getAttributes().getNamedItem("displayName").getNodeValue();  
 				//set a new 'displayName' for <clause> 
 //				clonedClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(clauseName+"_"+groupSequence);
 				clauseNodes.add(clonedClauseNode);
+				
 			}
 			//finally remove the all the <packageClause> tags from <group>
 			for(int i=packageClauses.getLength();i>0;i--){
@@ -388,9 +410,12 @@ public class ExportSimpleXML {
 		}
 		//reArrangeClauseNodes(originalDoc);
 		removeNode("/measure/populations",originalDoc);
-		//removeNode("/measure/measureObservations",originalDoc);
+		removeNode("/measure/measureObservations",originalDoc);
+		removeNode("/measure/strata/stratification",originalDoc);
 	}
 	
+	
+
 	/**
 	 * This method will go through all the <group> tags and within rearrange
 	 * <clause> tags to have the <clause type="denominator"> as the 2nd to last
@@ -542,9 +567,15 @@ public class ExportSimpleXML {
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	private static Node findClauseByUUID(String uuid, Document originalDoc) throws XPathExpressionException {
-		Node clauseNode = null;		
-		clauseNode = (Node)xPath.evaluate("/measure/populations//clause[@uuid='"+uuid+"']", originalDoc,XPathConstants.NODE);		
+	private static Node findClauseByUUID(String uuid, String type, Document originalDoc) throws XPathExpressionException {
+		Node clauseNode = null;	
+		if(type.equalsIgnoreCase("stratification")){
+				 String startificationXPath = "/measure/strata/stratification[@uuid='"+uuid+"']";
+				 clauseNode = (Node)xPath.evaluate(startificationXPath, originalDoc,XPathConstants.NODE);
+			
+		}else{
+			clauseNode = (Node)xPath.evaluate("/measure//clause[@uuid='"+uuid+"']", originalDoc,XPathConstants.NODE);
+		}
 		return clauseNode;
 	}
 	

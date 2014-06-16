@@ -1,15 +1,32 @@
 package mat.server.simplexml;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.xml.xpath.XPathExpressionException;
 
+import mat.model.clause.Measure;
+import mat.server.service.MeasureAuditService;
 import mat.server.util.XmlProcessor;
 
-import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+
+import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.user.cellview.client.Column;
+
+import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.util.CellTableUtility;
+import mat.dao.IDAO;
+import mat.dao.impl.clause.MeasureDAO;
+import mat.server.MeasureLibraryServiceImpl;
+import mat.server.SpringRemoteServiceServlet;
+import mat.server.service.MeasureLibraryService;
 
 public class HeaderHumanReadableGenerator {
 	
@@ -19,8 +36,10 @@ public class HeaderHumanReadableGenerator {
 	private static Element row;
 	private static Element column;
 	
-	public static String generateHeaderHTMLForMeasure(String measureId, String subXML,
-			String measureXML) throws XPathExpressionException {
+	private static MeasureDAO measureDAO = new MeasureDAO();
+	//private static SpringRemoteServiceServlet serve= new SpringRemoteServiceServlet();
+
+	public static String generateHeaderHTMLForMeasure(String measureXML) throws XPathExpressionException {
 		org.jsoup.nodes.Document htmlDocument = null;
 		System.out.println(measureXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
@@ -106,6 +125,14 @@ public class HeaderHumanReadableGenerator {
 		
 		getInfoNodes(table,processor,"types/type","Measure Type",false);
 		
+		//TODO ItemCount List
+		createInnerItemTable(processor, table);
+		
+		//TODO component Measures Counted
+		//createComponentMeasureList(processor, table);
+		getInfoNodes(table,processor,"componentMeasures/measure/@id","Component Measure",false);
+		
+		
 		createRowAndColumns(table, "Stratification");
 		createDiv(getInfo(processor,"stratification"), column);
 		
@@ -155,13 +182,20 @@ public class HeaderHumanReadableGenerator {
 		createRowAndColumns(table, "Measure Population");
 		createDiv(getInfo(processor,"measurePopulationDescription"), column);
 		
+		createRowAndColumns(table, "Measure Population Exclusions");
+		createDiv(getInfo(processor,"measurePopulationExclusionsDescription"), column);
+		
 		createRowAndColumns(table, "Measure Observations");
 		createDiv(getInfo(processor,"measureObservationsDescription"), column);
 		
 		createRowAndColumns(table, "Supplemental Data Elements");
 		createDiv(getInfo(processor,"supplementalData"), column);
+		
+		createRowAndColumns(table, "Quality Measure Set");
+		createDiv(getInfo(processor,"qualityMeasureSet"), column);
 	}
 
+	
 	private static String getShortTitle(XmlProcessor processor) throws DOMException, XPathExpressionException{
 		String title = processor.findNode(processor.getOriginalDoc(), DETAILS_PATH + "title").getTextContent();
 		if(title == null){
@@ -222,6 +256,45 @@ public class HeaderHumanReadableGenerator {
 			returnVar = "Health Quality Measure Document";
 		}
 		return returnVar;
+	}
+	
+	private static void createInnerItemTable(XmlProcessor processor, Element table) throws XPathExpressionException{
+		NodeList nameList = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "itemCount/elementRef/@name");
+		NodeList dataList = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "itemCount/elementRef/@dataType");
+		if(nameList.getLength() > 0){
+			Node name;
+			Node data;
+			for(int i = 0; i < nameList.getLength(); i++){
+				name = nameList.item(i);
+				data = dataList.item(i);
+				if(name != null && data != null){
+					createRowAndColumns(table, "Item Count");
+					createDiv(name.getTextContent() + " - " + data.getTextContent(), column);
+				}
+			}
+		}
+		else{
+			createRowAndColumns(table, "Item Count");
+		}
+	}
+	
+	private static void createComponentMeasureList(XmlProcessor processor,Element table) throws XPathExpressionException {
+		NodeList list = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "componentMeasures/measure/@id");
+		List<String> str = new ArrayList<String>();
+		for(int i = 0; i<list.getLength(); i++){
+			str.add(list.item(i).getTextContent());
+		}
+		System.out.println("STRING: " + str.toString());
+		//MeasureDAO measureDAO = (MeasureDAO)serve.getContext().getBean("measureDAO");
+		
+		System.out.println("MADE IT HERE!");
+		System.out.println(measureDAO);
+		//Measure measures = measureDAO.find("8ae454374643bc84014643bd97710004");
+		//System.out.println(measures.toString());
+		//measure.setId(measure.getaBBRName());
+	
+		createRowAndColumns(table,"Component Measure");
+		
 	}
 	
 	private static void setTDHeaderAttributes(Element td, String width){

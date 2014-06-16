@@ -555,6 +555,11 @@ public class ClauseWorkspaceContextMenu {
 		};
 		editMenu = new MenuItem("Edit", true, editFunctionsCmd);
 		popupMenuBar.addItem(editMenu);
+		if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") || 
+				xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY"))
+			editMenu.setEnabled(false);
+		else
+			editMenu.setEnabled(true);
 	}
 	/**
 	 * Set Op Node Pop up Menu Items.

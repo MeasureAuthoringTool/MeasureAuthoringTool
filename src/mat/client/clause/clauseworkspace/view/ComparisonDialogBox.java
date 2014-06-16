@@ -114,7 +114,8 @@ public class ComparisonDialogBox {
 		}
 		
 		for (int i = 0; i < keys.size(); i++) {
-			listAllTimeOrFunction.addItem(keys.get(i));
+			if(!(labelForListBox.equalsIgnoreCase("Functions") && cellTreeNode.getChilds() != null && cellTreeNode.getChilds().size() > 0  && (keys.get(i).equals("SATISFIES ALL") || keys.get(i).equals("SATISFIES ANY"))))
+				listAllTimeOrFunction.addItem(keys.get(i));
 			if (keys.get(i).equalsIgnoreCase(timingOrFuncMethod)) {
 				listAllTimeOrFunction.setSelectedIndex(i);
 			}

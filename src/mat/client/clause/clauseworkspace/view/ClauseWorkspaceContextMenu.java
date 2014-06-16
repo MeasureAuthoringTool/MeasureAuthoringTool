@@ -497,7 +497,7 @@ public class ClauseWorkspaceContextMenu {
 			addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
 			
 			//Disable  RHS by default.
-			if (xmlTreeDisplay.getSelectedNode().getChilds() == null) {
+			if (xmlTreeDisplay.getSelectedNode().getChilds() == null || xmlTreeDisplay.getSelectedNode().getChilds().size() == 0 ) {
 				addMenuRHS.setEnabled(false);
 			}
 			//Disable LHS when One element is added and disable RHS when two elements are added.

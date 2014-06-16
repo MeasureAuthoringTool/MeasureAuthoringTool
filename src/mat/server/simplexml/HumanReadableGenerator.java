@@ -565,4 +565,17 @@ public class HumanReadableGenerator {
 		head.append(styleTagString);
 	}
 
+	public static String generateHTMLForMeasure(String measureId,
+			String simpleXmlStr) {
+		String humanReadableHTML = "";
+		try {
+			humanReadableHTML = HeaderHumanReadableGenerator.generateHeaderHTMLForMeasure(measureId, "", simpleXmlStr);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return humanReadableHTML;
+	}
+
 }

@@ -569,7 +569,7 @@ public class HumanReadableGenerator {
 			String simpleXmlStr) {
 		String humanReadableHTML = "";
 		try {
-			humanReadableHTML = HeaderHumanReadableGenerator.generateHeaderHTMLForMeasure(measureId, "", simpleXmlStr);
+			humanReadableHTML = HeaderHumanReadableGenerator.generateHeaderHTMLForMeasure(simpleXmlStr);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

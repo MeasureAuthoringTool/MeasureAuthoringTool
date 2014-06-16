@@ -48,6 +48,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+// TODO: Auto-generated Javadoc
 /** SimpleEMeasureServiceImpl.java **/
 public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
@@ -95,7 +96,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	@Autowired
 	private MeasureDAO measureDAO;
 	
-	/**MeasureXMLDAO**/
+	/** MeasureXMLDAO*. */
 	@Autowired
 	private MeasureXMLDAO measureXMLDAO;
 
@@ -307,6 +308,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		return html;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.server.service.SimpleEMeasureService#getHumanReadableForNode(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public ExportResult getHumanReadableForNode(final String measureId, final String populationSubXML) throws Exception{
 		ExportResult result = new ExportResult();
@@ -431,20 +435,63 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		ExportResult result = new ExportResult();
 		result.measureName = getMeasureName(measureId).getaBBRName();
 		MeasureExport me = getMeasureExport(measureId);
+		if(exportDate.before(releaseDate)){
 		result.zipbarr = getZipBarr(measureId,exportDate,releaseDate, me);
+		
+		}else{
+			result.zipbarr = getZipBarr(measureId,me);
+
+		}
 		return result;
 	}
 
 	/**
 	 * Gets the zip barr.
-	 * 
-	 * @param measureId
-	 *            - String.
-	 * @param me
-	 *            - MeasureExport.
+	 *
+	 * @param measureId the measure id
+	 * @param me the me
+	 * @return the zip barr
+	 * @throws Exception the exception
+	 */
+	public final byte[] getZipBarr(final String measureId,final MeasureExport me)
+			throws Exception {
+				byte[] wkbkbarr = null;
+				if (me.getCodeList() == null) {
+					wkbkbarr = getHSSFWorkbookBytes(createErrorEMeasureXLS());
+				} else {
+					wkbkbarr = me.getCodeListBarr();
+				}
+				
+				String simpleXmlStr = me.getSimpleXML();
+				String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr);
+
+				ZipPackager zp = new ZipPackager();
+				return zp.getZipBarr(me.getMeasure().getaBBRName(), wkbkbarr, (new Date()).toString(), emeasureHTMLStr, simpleXmlStr);
+			}
+
+	/**
+	 * Gets the human readable for measure.
+	 *
+	 * @param measureId the measure id
+	 * @param simpleXmlStr the simple xml str
+	 * @return the human readable for measure
+	 */
+	private String getHumanReadableForMeasure(String measureId,
+			String simpleXmlStr) {
+		String html = HumanReadableGenerator.generateHTMLForMeasure(measureId,simpleXmlStr);
+		return html;
+
+	}
+
+	/**
+	 * Gets the zip barr.
+	 *
+	 * @param measureId            - String.
+	 * @param exportDate the export date
+	 * @param releaseDate the release date
+	 * @param me            - MeasureExport.
 	 * @return byte[].
-	 * @throws Exception
-	 *             - Exception. *
+	 * @throws Exception             - Exception. *
 	 */
 	public final byte[] getZipBarr(final String measureId,Date exportDate, final Date releaseDate, final MeasureExport me)
 			throws Exception {
@@ -586,8 +633,15 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 			result.measureName = getMeasureName(measureId).getaBBRName();
 			exportDate = getMeasureName(measureId).getExportedDate();
 			MeasureExport me = getMeasureExport(measureId);
-			createFilesInBulkZip(measureId,exportDate, releasDate, me, filesMap,
+			if(exportDate.before(releasDate)){
+				createFilesInBulkZip(measureId,exportDate, releasDate, me, filesMap,
 					format.format(fileNameCounter++));
+			}
+			else{
+				createFilesInBulkZip(measureId,me, filesMap,
+						format.format(fileNameCounter++));
+
+			}
 		}
 
 		ZipPackager zp = new ZipPackager();
@@ -608,17 +662,54 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 	/**
 	 * Creates the files in bulk zip.
-	 * 
-	 * @param measureId
-	 *            - String.
-	 * @param me
-	 *            - MeasureExport.
-	 * @param filesMap
-	 *            - Map.
-	 * @param seqNum
-	 *            - String.
-	 * @throws Exception
-	 *             - Exception.
+	 *
+	 * @param measureId the measure id
+	 * @param me the me
+	 * @param filesMap the files map
+	 * @param seqNum the seq num
+	 * @throws Exception the exception
+	 */
+	private void createFilesInBulkZip(final String measureId,
+			final MeasureExport me, final Map<String, byte[]> filesMap,
+			final String seqNum) throws Exception {
+		// TODO Auto-generated method stub
+		
+		byte[] wkbkbarr = null;
+		if (me.getCodeList() == null) {
+			wkbkbarr = getHSSFWorkbookBytes(createErrorEMeasureXLS());
+		} else {
+			wkbkbarr = me.getCodeListBarr();
+		}
+		StringUtility su = new StringUtility();
+		ExportResult emeasureXMLResult = getEMeasureXML(measureId, me);
+		String emeasureName = emeasureXMLResult.measureName;
+		String emeasureXMLStr = emeasureXMLResult.export;
+		String repee = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+		String repor = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+				+ su.nl
+				+ "<?xml-stylesheet type=\"text/xsl\" href=\"xslt/eMeasure.xsl\"?>";
+		emeasureXMLStr = repor + emeasureXMLStr.substring(repee.length());
+		String emeasureHTMLStr = emeasureXMLToEmeasureHTML(emeasureXMLStr);
+		String simpleXmlStr = me.getSimpleXML();
+		XMLUtility xmlUtility = new XMLUtility();
+		String emeasureXSLUrl = xmlUtility.getXMLResource(conversionFileHtml);
+		
+		ZipPackager zp = new ZipPackager();
+		zp.createBulkExportZip(emeasureName, wkbkbarr, emeasureXMLStr,
+				emeasureHTMLStr, emeasureXSLUrl, (new Date()).toString(), simpleXmlStr, filesMap,
+				seqNum);
+	}
+
+	/**
+	 * Creates the files in bulk zip.
+	 *
+	 * @param measureId            - String.
+	 * @param exportDate the export date
+	 * @param releaseDate the release date
+	 * @param me            - MeasureExport.
+	 * @param filesMap            - Map.
+	 * @param seqNum            - String.
+	 * @throws Exception             - Exception.
 	 * 
 	 *             *
 	 */

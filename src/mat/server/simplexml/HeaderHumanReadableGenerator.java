@@ -1,13 +1,10 @@
 package mat.server.simplexml;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.xml.xpath.XPathExpressionException;
 
-import mat.dao.impl.clause.MeasureDAO;
 import mat.server.util.XmlProcessor;
 
+import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
@@ -21,8 +18,6 @@ public class HeaderHumanReadableGenerator {
 	private static Element row;
 	private static Element column;
 	
-	private static MeasureDAO measureDAO = new MeasureDAO();
-	//private static SpringRemoteServiceServlet serve= new SpringRemoteServiceServlet();
 
 	public static org.jsoup.nodes.Document generateHeaderHTMLForMeasure(String measureXML) throws XPathExpressionException {
 		org.jsoup.nodes.Document htmlDocument = null;
@@ -114,8 +109,8 @@ public class HeaderHumanReadableGenerator {
 		createInnerItemTable(processor, table);
 		
 		//TODO component Measures Counted
-		//createComponentMeasureList(processor, table);
-		getInfoNodes(table,processor,"componentMeasures/measure/@id","Component Measure",false);
+		createComponentMeasureList(processor, table);
+		//getInfoNodes(table,processor,"componentMeasures/measure/@id","Component Measure",false);
 		
 		
 		createRowAndColumns(table, "Stratification");
@@ -146,7 +141,7 @@ public class HeaderHumanReadableGenerator {
 		createRowAndColumns(table, "Transmission Format");
 		createDiv(getInfo(processor,"transmissionFormat"), column);
 		
-		createRowAndColumns(table, "Initial Patient Population");
+		createRowAndColumns(table, "Initial Population");
 		createDiv(getInfo(processor,"initialPopDescription"), column);
 		
 		createRowAndColumns(table, "Denominator");
@@ -253,8 +248,8 @@ public class HeaderHumanReadableGenerator {
 				name = nameList.item(i);
 				data = dataList.item(i);
 				if(name != null && data != null){
-					createRowAndColumns(table, "Item Count");
-					createDiv(name.getTextContent() + " - " + data.getTextContent(), column);
+					createRowAndColumns(table, "Measure Item Count");
+					createDiv(data.getTextContent() + ":" + name.getTextContent(), column);
 				}
 			}
 		}
@@ -264,21 +259,48 @@ public class HeaderHumanReadableGenerator {
 	}
 	
 	private static void createComponentMeasureList(XmlProcessor processor,Element table) throws XPathExpressionException {
-		NodeList list = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "componentMeasures/measure/@id");
-		List<String> str = new ArrayList<String>();
-		for(int i = 0; i<list.getLength(); i++){
-			str.add(list.item(i).getTextContent());
-		}
-		System.out.println("STRING: " + str.toString());
-		//MeasureDAO measureDAO = (MeasureDAO)serve.getContext().getBean("measureDAO");
+		createRowAndColumns(table, "Component Measure");
+
 		
-		System.out.println("MADE IT HERE!");
-		System.out.println(measureDAO);
-		//Measure measures = measureDAO.find("8ae454374643bc84014643bd97710004");
-		//System.out.println(measures.toString());
-		//measure.setId(measure.getaBBRName());
-	
-		createRowAndColumns(table,"Component Measure");
+		NodeList list = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "componentMeasures/measure/@id");
+		if(list.getLength() > 0){
+			Node node;
+			
+			Element innerTable = column.appendElement("table");
+			innerTable.attr("class", "inner_table");
+			Element innerTableBody = innerTable.appendElement("tBody");
+			row = innerTableBody.appendElement(HTML_TR);
+			
+			column = row.appendElement("th");
+			setTDHeaderAttributes(column,"70%");
+			createSpan("Measure Name", column);
+			
+			column = row.appendElement("th");
+			setTDHeaderAttributes(column,"10%");
+			createSpan("Version Number", column);
+			
+			column = row.appendElement("th");
+			setTDHeaderAttributes(column,"20%");
+			createSpan("GUID", column);
+			
+			for(int i = 0; i<list.getLength(); i++){
+				node = list.item(i);
+				
+				row = innerTableBody.appendElement(HTML_TR);
+				
+				column = row.appendElement(HTML_TD);
+				setTDInfoAttributes(column,"70%","");
+				column.appendText("Initial Antibiotic Selection for Community-Acquired Pneumonia (CAP) in Immunocompetent Patients");
+				
+				column = row.appendElement(HTML_TD);
+				setTDInfoAttributes(column,"10%","");
+				
+				column = row.appendElement(HTML_TD);
+				setTDInfoAttributes(column,"20%","");
+				column.appendText(node.getTextContent());
+			}
+		}
+
 		
 	}
 	
@@ -292,29 +314,6 @@ public class HeaderHumanReadableGenerator {
 		if(span.length()>0){
 			td.attr("colspan", span);
 		}
-	}
-	
-	private static String nullValue(String value){
-		String returnVar = "";
-		if(value.equalsIgnoreCase("NI")){
-			returnVar = "No Information";
-		}
-		else if(value.equalsIgnoreCase("INV")){
-			returnVar = "Invalid";
-		}
-		else if(value.equalsIgnoreCase("MSK")){
-			returnVar = "Masked";
-		}
-		else if(value.equalsIgnoreCase("NA")){
-			returnVar = "Not applicable";
-		}
-		else if(value.equalsIgnoreCase("UNK")){
-			returnVar = "Unknown";
-		}
-		else if(value.equalsIgnoreCase("OTH")){
-			returnVar = "Other";
-		}
-		return returnVar;
 	}
 	
 	private static void createRowAndColumns(Element table, String title){
@@ -338,14 +337,18 @@ public class HeaderHumanReadableGenerator {
 		pre.appendText(message);
 	}
 	private static org.jsoup.nodes.Document createBaseHTMLDocument(String title) {
-		org.jsoup.nodes.Document htmlDocument = org.jsoup.nodes.Document.createShell("");
+		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
+				
+		DocumentType doc = new DocumentType("test","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd","");
+		htmlDocument.appendChild(doc);
+		Element html = htmlDocument.appendElement("html");
+	    html.appendElement("head");
+	    html.appendElement("body");
 		
 		Element head = htmlDocument.head();
-		Element meta = head.appendElement("meta");
-		meta.attr("http-equiv", "Content-Type");
-		meta.attr("content", "text/html; charset=ISO-8859-1");
 		htmlDocument.title(title);
 		appendStyleNode(head);
+		//head.before(doc);
 		return htmlDocument;
 	}
 

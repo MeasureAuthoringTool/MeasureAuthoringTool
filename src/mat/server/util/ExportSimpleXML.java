@@ -231,30 +231,36 @@ public class ExportSimpleXML {
 	 * @param usedSubTreeIds the used sub tree ids
 	 * @param originalDoc the original doc
 	 */
-	private static void removeUnwantedSubTrees(List<String> usedSubTreeIds,
-			Document originalDoc) {
-		
-		String uuidXPathString = "";
-		for(String uuidString:usedSubTreeIds){
-			uuidXPathString += "@uuid != '"+uuidString + "' and";
-		}
-		uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
-		
-		String xPathForUnunsedSubTreeNodes = "/measure/subTreeLookUp/subTree["+uuidXPathString+"]";
-		
-		try {
-			NodeList unUnsedSubTreeNodes = (NodeList) xPath.evaluate(xPathForUnunsedSubTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
-			if(unUnsedSubTreeNodes.getLength() > 0){
-				Node parentSubTreeNode = unUnsedSubTreeNodes.item(0).getParentNode();
-				for(int i=0;i<unUnsedSubTreeNodes.getLength();i++){
-					parentSubTreeNode.removeChild(unUnsedSubTreeNodes.item(i));
-				}
+	private static void removeUnwantedSubTrees(List<String> usedSubTreeIds, Document originalDoc) throws XPathExpressionException{
+		if(usedSubTreeIds !=null && usedSubTreeIds.size()>0){
+			
+			String uuidXPathString = "";
+			
+			for(String uuidString:usedSubTreeIds){
+				uuidXPathString += "@uuid != '"+uuidString + "' and";
 			}
-		} catch (XPathExpressionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
 		
+		
+		
+			String xPathForUnunsedSubTreeNodes = "/measure/subTreeLookUp/subTree["+uuidXPathString+"]";
+		
+			try {
+				NodeList unUnsedSubTreeNodes = (NodeList) xPath.evaluate(xPathForUnunsedSubTreeNodes, originalDoc.getDocumentElement(), XPathConstants.NODESET);
+				if(unUnsedSubTreeNodes.getLength() > 0){
+					Node parentSubTreeNode = unUnsedSubTreeNodes.item(0).getParentNode();
+					for(int i=0;i<unUnsedSubTreeNodes.getLength();i++){
+						parentSubTreeNode.removeChild(unUnsedSubTreeNodes.item(i));
+					}
+				}
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		System.out.println("usedSubTreeIds are empty so removed from the SimpeXml");
+		removeNode("/measure/subTreeLookUp",originalDoc);
 	}
 
 	/**
@@ -421,7 +427,7 @@ public class ExportSimpleXML {
 				//add associatedPopulationUUID to clauseNode
 				if(type.equalsIgnoreCase("denominator") || type.equalsIgnoreCase("numerator")|| type.equalsIgnoreCase("measureObservation")){
 					Node hasAssociatedPopulationUUID = packageClause.getAttributes().getNamedItem("associatedPopulationUUID");
-					if(hasAssociatedPopulationUUID != null){
+					if(hasAssociatedPopulationUUID != null && !hasAssociatedPopulationUUID.toString().isEmpty()){
 						String associatedPopulationUUID = hasAssociatedPopulationUUID.getNodeValue();
 						Node attr = originalDoc.createAttribute("associatedPopulationUUID");
 						attr.setNodeValue(associatedPopulationUUID);

@@ -569,7 +569,8 @@ public class HumanReadableGenerator {
 			String simpleXmlStr) {
 		String humanReadableHTML = "";
 		try {
-			humanReadableHTML = HeaderHumanReadableGenerator.generateHeaderHTMLForMeasure(simpleXmlStr);
+			org.jsoup.nodes.Document humanReadableHTMLDocument = HeaderHumanReadableGenerator.generateHeaderHTMLForMeasure(simpleXmlStr);
+			humanReadableHTML = humanReadableHTMLDocument.toString();
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

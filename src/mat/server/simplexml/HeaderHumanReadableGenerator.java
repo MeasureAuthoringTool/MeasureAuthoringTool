@@ -5,28 +5,13 @@ import java.util.List;
 
 import javax.xml.xpath.XPathExpressionException;
 
-import mat.model.clause.Measure;
-import mat.server.service.MeasureAuditService;
+import mat.dao.impl.clause.MeasureDAO;
 import mat.server.util.XmlProcessor;
 
 import org.jsoup.nodes.Element;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-
-import com.google.gwt.cell.client.SafeHtmlCell;
-import com.google.gwt.safehtml.shared.SafeHtml;
-import com.google.gwt.user.cellview.client.Column;
-
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.util.CellTableUtility;
-import mat.dao.IDAO;
-import mat.dao.impl.clause.MeasureDAO;
-import mat.server.MeasureLibraryServiceImpl;
-import mat.server.SpringRemoteServiceServlet;
-import mat.server.service.MeasureLibraryService;
 
 public class HeaderHumanReadableGenerator {
 	
@@ -39,7 +24,7 @@ public class HeaderHumanReadableGenerator {
 	private static MeasureDAO measureDAO = new MeasureDAO();
 	//private static SpringRemoteServiceServlet serve= new SpringRemoteServiceServlet();
 
-	public static String generateHeaderHTMLForMeasure(String measureXML) throws XPathExpressionException {
+	public static org.jsoup.nodes.Document generateHeaderHTMLForMeasure(String measureXML) throws XPathExpressionException {
 		org.jsoup.nodes.Document htmlDocument = null;
 		System.out.println(measureXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
@@ -55,7 +40,7 @@ public class HeaderHumanReadableGenerator {
 		createSubjectOf(measureXMLProcessor, tBody);
 		
 		System.out.println("HTML: " + htmlDocument.toString());
-		return htmlDocument.toString();
+		return htmlDocument;
 	}
 	private static void createDocumentGeneral(XmlProcessor processor,Element table) throws DOMException, XPathExpressionException{
 		createRowAndColumns(table,"eMeasure Title");

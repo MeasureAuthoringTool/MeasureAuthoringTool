@@ -20,6 +20,8 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import mat.client.shared.MatContext;
+import mat.dao.clause.MeasureDAO;
+import mat.model.clause.Measure;
 import mat.model.clause.MeasureXML;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
@@ -64,16 +66,17 @@ public class ExportSimpleXML {
 	 *            the measure xml object
 	 * @param message
 	 *            the message
+	 * @param measureDAO TODO
 	 * @return the string
 	 */
-	public static String export(MeasureXML measureXMLObject, List<String> message) {
+	public static String export(MeasureXML measureXMLObject, List<String> message, MeasureDAO measureDAO) {
 		String exportedXML = "";
 		//Validate the XML
 		Document measureXMLDocument;
 		try {
 			measureXMLDocument = getXMLDocument(measureXMLObject);
 			if(validateMeasure(measureXMLDocument, message)){
-				exportedXML = generateExportedXML(measureXMLDocument);
+				exportedXML = generateExportedXML(measureXMLDocument, measureDAO);
 			}
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
@@ -178,12 +181,13 @@ public class ExportSimpleXML {
 	 * 
 	 * @param measureXMLDocument
 	 *            the measure xml document
+	 * @param measureDAO TODO
 	 * @return the string
 	 */
-	private static String generateExportedXML(Document measureXMLDocument) {
+	private static String generateExportedXML(Document measureXMLDocument, MeasureDAO measureDAO) {
 		_logger.info("In ExportSimpleXML.generateExportedXML()");
 		try {
-			return traverseXML(measureXMLDocument);
+			return traverseXML(measureXMLDocument, measureDAO);
 		} catch (Exception e) {
 			_logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
 			e.printStackTrace();
@@ -197,12 +201,16 @@ public class ExportSimpleXML {
 	 * 
 	 * @param originalDoc
 	 *            the original doc
+	 * @param MeasureDAO TODO
 	 * @return the string
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	private static String traverseXML(Document originalDoc) throws XPathExpressionException {		
+	private static String traverseXML(Document originalDoc, MeasureDAO MeasureDAO) throws XPathExpressionException {
+		//set attributes
+		setAttributesForComponentMeasures(originalDoc, MeasureDAO);
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
+		
 		//using the above list we need to traverse the originalDoc and remove the unused Clauses
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		//to get SubTreeRefIds from Population WorkSpace
@@ -226,10 +234,43 @@ public class ExportSimpleXML {
 	}
 	
 	/**
+	 * Sets the attributes for component measures.
+	 *
+	 * @param originalDoc the original doc
+	 * @param MeasureDAO the measure dao
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static void setAttributesForComponentMeasures(Document originalDoc, MeasureDAO MeasureDAO) throws XPathExpressionException{
+		String measureId ="";
+		String componentMeasureName ="";
+		String componentMeasureSetId ="";
+		String xPathForComponentMeasureIds = "/measure//componentMeasures/measure";
+		NodeList componentMeasureIdList = (NodeList) xPath.evaluate(xPathForComponentMeasureIds, originalDoc, XPathConstants.NODESET);
+		if(componentMeasureIdList !=null && componentMeasureIdList.getLength() >0){
+			for(int i=0; i<componentMeasureIdList.getLength(); i++){
+				Node measureNode = componentMeasureIdList.item(i);
+				measureId = componentMeasureIdList.item(i).getAttributes().getNamedItem("id").getNodeValue();
+				Node attrcomponentMeasureName = originalDoc.createAttribute("name");		
+				Node attrcomponentMeasureSetId = originalDoc.createAttribute("measureSetId");
+				Measure measure = MeasureDAO.find(measureId);
+				componentMeasureName = measure.getaBBRName();
+				componentMeasureSetId = measure.getMeasureSet().getId();
+				
+				attrcomponentMeasureName.setNodeValue(componentMeasureName);
+				attrcomponentMeasureSetId.setNodeValue(componentMeasureSetId);
+				
+				measureNode.getAttributes().setNamedItem(attrcomponentMeasureName);
+				measureNode.getAttributes().setNamedItem(attrcomponentMeasureSetId);
+			}
+		}
+	}
+
+	/**
 	 * Removes the unwanted sub trees.
 	 *
 	 * @param usedSubTreeIds the used sub tree ids
 	 * @param originalDoc the original doc
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private static void removeUnwantedSubTrees(List<String> usedSubTreeIds, Document originalDoc) throws XPathExpressionException{
 		if(usedSubTreeIds !=null && usedSubTreeIds.size()>0){
@@ -656,6 +697,7 @@ public class ExportSimpleXML {
 		_logger.info("usedQDMIds:"+usedQDMIds);
 		return usedQDMIds;
 	}
+	
 	
 	/**
 	 * This method will look inside <strata>/<clause>/<logicalOp> and if it

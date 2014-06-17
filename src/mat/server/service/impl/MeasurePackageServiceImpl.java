@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
-import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.dao.DataTypeDAO;
@@ -233,7 +232,7 @@ public class MeasurePackageServiceImpl implements MeasurePackageService {
 			final List<MatValueSet> matValueSetList) throws Exception {
 		
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
-		String exportedXML = ExportSimpleXML.export(measureXML, message);
+		String exportedXML = ExportSimpleXML.export(measureXML, message, measureDAO);
 		if (exportedXML.length() == 0) {
 			return;
 		}

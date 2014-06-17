@@ -105,13 +105,9 @@ public class HeaderHumanReadableGenerator {
 		
 		getInfoNodes(table,processor,"types/type","Measure Type",false);
 		
-		//TODO ItemCount List
 		createInnerItemTable(processor, table);
 		
-		//TODO component Measures Counted
-		createComponentMeasureList(processor, table);
-		//getInfoNodes(table,processor,"componentMeasures/measure/@id","Component Measure",false);
-		
+		createComponentMeasureList(processor, table);		
 		
 		createRowAndColumns(table, "Stratification");
 		createDiv(getInfo(processor,"stratification"), column);
@@ -339,7 +335,7 @@ public class HeaderHumanReadableGenerator {
 	private static org.jsoup.nodes.Document createBaseHTMLDocument(String title) {
 		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
 				
-		DocumentType doc = new DocumentType("test","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd","");
+		DocumentType doc = new DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd","");
 		htmlDocument.appendChild(doc);
 		Element html = htmlDocument.appendElement("html");
 	    html.appendElement("head");

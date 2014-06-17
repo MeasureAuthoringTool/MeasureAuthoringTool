@@ -47,6 +47,12 @@ public class MATCssUtil {
 		"width: 80%;"+ " \n " +
 		"}"+ " \n " +
 
+		".inner_table {"+ " \n " +
+		//"line-height: 10pt;"+ " \n " +
+		"border: 1pt inset rgb(0,0,0);" +
+		"width: 100%;"+ " \n " +
+		"}"+ " \n " +
+		
 		"tr {"+ " \n " +
 		"background-color: rgb(224,224,224);"+ " \n " +
 		"}"+ " \n " +

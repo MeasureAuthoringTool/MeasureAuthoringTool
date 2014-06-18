@@ -89,6 +89,10 @@ public class HumanReadableGenerator {
 		XmlProcessor populationOrSubtreeXMLProcessor = new XmlProcessor(subXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
 		
+		return expandSubTreesAndImportQDMs(populationOrSubtreeXMLProcessor, measureXMLProcessor);
+	}
+	
+	private static XmlProcessor expandSubTreesAndImportQDMs(XmlProcessor populationOrSubtreeXMLProcessor, XmlProcessor measureXMLProcessor) throws XPathExpressionException {
 		//find all <subTreeRef> tags in 'populationSubXML'
 		NodeList subTreeRefNodeList = populationOrSubtreeXMLProcessor.findNodeList(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//subTreeRef");
 		
@@ -411,7 +415,7 @@ public class HumanReadableGenerator {
 			name += ": ";
 		}else if(SET_OP.equals(nodeName)){
 			name = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
-			name += " of ";
+			name += " of: ";
 		}else if(ELEMENT_REF.equals(nodeName)){
 			name = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 			if(name.endsWith(" : Timing Element")){
@@ -534,7 +538,7 @@ public class HumanReadableGenerator {
 		}else if(functionDisplayName.startsWith("AVG")){
 			functionDisplayName = functionDisplayName.replaceFirst("AVG", "Average");
 		}else if(functionDisplayName.startsWith("COUNT")){
-			functionDisplayName = functionDisplayName.replaceFirst("COUNT", "Count");
+			functionDisplayName = functionDisplayName.replaceFirst("COUNT", "Count of");
 		}else if(functionDisplayName.startsWith("DATEDIFF")){
 			functionDisplayName = functionDisplayName.replaceFirst("DATEDIFF", "Difference between dates");
 		}else if(functionDisplayName.startsWith("MAX")){
@@ -551,7 +555,7 @@ public class HumanReadableGenerator {
 			functionDisplayName = functionDisplayName.replaceFirst("FIFTH", "Fifth");
 		}		
 		
-		return functionDisplayName+":";
+		return functionDisplayName+": ";
 	}
 
 	/**
@@ -589,6 +593,7 @@ public class HumanReadableGenerator {
 		String humanReadableHTML = "";
 		try {
 			org.jsoup.nodes.Document humanReadableHTMLDocument = HeaderHumanReadableGenerator.generateHeaderHTMLForMeasure(simpleXmlStr);
+			XmlProcessor simpleXMLProcessor = resolveSubTreesInPopulations(simpleXmlStr);
 			humanReadableHTML = humanReadableHTMLDocument.toString();
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -596,6 +601,14 @@ public class HumanReadableGenerator {
 		}
 		
 		return humanReadableHTML;
+	}
+
+	private static XmlProcessor resolveSubTreesInPopulations(String simpleXmlStr) {
+		//XmlProcessor simpleXMLProcessor = new XmlProcessor(simpleXmlStr);
+		
+		
+		
+		return null;
 	}
 
 }

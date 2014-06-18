@@ -253,7 +253,7 @@ public class ExportSimpleXML {
 				Node attrcomponentMeasureName = originalDoc.createAttribute("name");		
 				Node attrcomponentMeasureSetId = originalDoc.createAttribute("measureSetId");
 				Measure measure = MeasureDAO.find(measureId);
-				componentMeasureName = measure.getaBBRName();
+				componentMeasureName = measure.getDescription();
 				componentMeasureSetId = measure.getMeasureSet().getId();
 				
 				attrcomponentMeasureName.setNodeValue(componentMeasureName);
@@ -298,10 +298,13 @@ public class ExportSimpleXML {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		
 			
+		} else {
+		    System.out.println("usedSubTreeIds are empty so removed from the SimpeXml");
+			removeNode("/measure/subTreeLookUp/subTree",originalDoc);
 		}
-		System.out.println("usedSubTreeIds are empty so removed from the SimpeXml");
-		removeNode("/measure/subTreeLookUp",originalDoc);
+		
 	}
 
 	/**
@@ -453,10 +456,13 @@ public class ExportSimpleXML {
 			NodeList packageClauses = groupNode.getChildNodes();
 			List<Node> clauseNodes = new ArrayList<Node>();
 			for(int i=0;i<packageClauses.getLength();i++){
+			
 				Node packageClause = packageClauses.item(i);
 				
 				String uuid = packageClause.getAttributes().getNamedItem("uuid").getNodeValue();
 				String type = packageClause.getAttributes().getNamedItem("type").getNodeValue();
+				
+					
 				
 				Node clauseNode = findClauseByUUID(uuid, type, originalDoc);
 				//add childCount to clauseNode
@@ -482,10 +488,15 @@ public class ExportSimpleXML {
 				Node clonedClauseNode = clauseNode.cloneNode(true);
 				
 				//set a new 'uuid' attribute value for <clause>
-				clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(UUIDUtilClient.uuid());
+				String cureUUID = UUIDUtilClient.uuid();
+				clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(cureUUID);
 //				String clauseName = clonedClauseNode.getAttributes().getNamedItem("displayName").getNodeValue();  
 				//set a new 'displayName' for <clause> 
 //				clonedClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(clauseName+"_"+groupSequence);
+				
+				//modify associcatedUUID
+				modifyAssociatedPOPID(uuid, cureUUID,groupSequence, originalDoc);
+				
 				clauseNodes.add(clonedClauseNode);
 				
 			}
@@ -505,6 +516,18 @@ public class ExportSimpleXML {
 	}
 	
 	
+
+	private static void modifyAssociatedPOPID(String previousUUID, String currentUUID,String groupSequence,  Document originalDoc) throws XPathExpressionException {
+		NodeList nodeList = (NodeList)xPath.evaluate("/measure/measureGrouping/group[@sequence='"+ 
+	                           groupSequence +"']/packageClause[@associatedPopulationUUID='"+ previousUUID +"']", 
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		for(int i = 0; i<nodeList.getLength(); i++){
+			Node childNode = nodeList.item(i);
+			childNode.getAttributes().getNamedItem("associatedPopulationUUID").setNodeValue(currentUUID);
+		}
+	
+	}
 
 	/**
 	 * This method will go through all the <group> tags and within rearrange

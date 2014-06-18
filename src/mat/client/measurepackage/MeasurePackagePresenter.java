@@ -467,16 +467,16 @@ public class MeasurePackagePresenter implements MatPresenter {
 					checkForSupplementData,
 					new AsyncCallback<List<QualityDataSetDTO>>() {
 				
-				private void filterTimingQDMs(
+				private void filterTimingAndAttributeQDMs(
 						List<QualityDataSetDTO> result) {
-					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
+					List<QualityDataSetDTO> timingAndAttributeQDMs = new ArrayList<QualityDataSetDTO>();
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
-								.getDataType())) {
-							timingQDMs.add(qdsDTO);
+								.getDataType()) || "attribute".equals(qdsDTO.getDataType())) {
+							timingAndAttributeQDMs.add(qdsDTO);
 						}
 					}
-					result.removeAll(timingQDMs);
+					result.removeAll(timingAndAttributeQDMs);
 				}
 				
 				@Override
@@ -489,7 +489,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				public void onSuccess(
 						final List<QualityDataSetDTO> result) {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-					filterTimingQDMs(result);
+					filterTimingAndAttributeQDMs(result);
 					appliedListModel.setAppliedQDMs(result);
 					view.setAppliedQdmList(appliedListModel);
 				}

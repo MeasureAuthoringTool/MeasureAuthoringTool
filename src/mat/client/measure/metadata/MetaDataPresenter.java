@@ -1145,7 +1145,6 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 
 				@Override
 				public void onFailure(Throwable caught) {
-					
 				}
 
 				@Override
@@ -1250,16 +1249,16 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 					checkForSupplementData,
 					new AsyncCallback<List<QualityDataSetDTO>>() {
 				
-				private void filterTimingQDMs(
+				private void filterTimingAndAttributeQDMs(
 						List<QualityDataSetDTO> result) {
-					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
+					List<QualityDataSetDTO> timingAndAttributeQDMs = new ArrayList<QualityDataSetDTO>();
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
-								.getDataType())) {
-							timingQDMs.add(qdsDTO);
+								.getDataType()) || "attribute".equals(qdsDTO.getDataType())) {
+							timingAndAttributeQDMs.add(qdsDTO);
 						}
 					}
-					result.removeAll(timingQDMs);
+					result.removeAll(timingAndAttributeQDMs);
 				}
 				
 				@Override
@@ -1272,8 +1271,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				public void onSuccess(
 						final List<QualityDataSetDTO> result) {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-					filterTimingQDMs(result);
+					filterTimingAndAttributeQDMs(result);
 					appliedListModel.setAppliedQDMs(result);
+					
 					metaDataDisplay.buildCellTable(appliedListModel, editable);
 					metaDataDisplay.setAppliedQDMList(result);
 					

@@ -605,7 +605,7 @@ public class ExportSimpleXML {
 					.getNodeValue());
 		}
 
-		// Startifications
+		// Stratifications
 		List<String> usedSubTreeRefIdsStrat = new ArrayList<String>();
 
 		NodeList groupedSubTreeRefIdListStrat = (NodeList) xPath.evaluate(
@@ -870,16 +870,22 @@ public class ExportSimpleXML {
 	 * @return the string
 	 */
 	private static String formatDate(String date){
-		
-		String[] splitDate = date.split("/");
-		String month = splitDate[0];
-		String dt = splitDate[1];
-		String year = splitDate[2];
-		
-		if(year.length() != 4 || year.toLowerCase().indexOf("x") > -1){
-			year = "0000";
-		}
-		return year + month + dt;
+		String dateString = "";
+		  try{
+		   String[] splitDate = date.split("/");
+		   String month = splitDate[0];
+		   String dt = splitDate[1];
+		   String year = splitDate[2];
+		   
+		   if(year.length() != 4 || year.toLowerCase().indexOf("x") > -1){
+		    year = "0000";
+		   }
+		   dateString = year + month + dt;
+		  }catch (Exception e) {
+		   _logger.info("Bad Start/Stop dates in Measure Details."+e.getMessage());
+		  }
+		  return dateString;
+
 		
 		
 //		return date.substring(6) + date.substring(0,2) + date.substring(3,5);
@@ -901,4 +907,5 @@ public class ExportSimpleXML {
 //			return date.substring(6) + date.substring(0,2) + date.substring(3,5);
 //		}
 	}
+	
 }

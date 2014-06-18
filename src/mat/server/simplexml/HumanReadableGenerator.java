@@ -7,6 +7,7 @@ import javax.xml.xpath.XPathExpressionException;
 
 import mat.server.util.XmlProcessor;
 
+import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Node;
@@ -32,7 +33,7 @@ public class HumanReadableGenerator {
 		//replace the <subTree> tags in 'populationSubXML' with the appropriate subTree tags from 'simpleXML'.
 		try {
 			System.out.println("Original subXML:"+subXML);
-			XmlProcessor populationOrSubtreeXMLProcessor = expandSubTreesAndImportQDMs(subXML, measureXML);
+			XmlProcessor populationOrSubtreeXMLProcessor = expandSubTreesAndImportQDMs(subXML, measureXML, true);
 			
 			if(populationOrSubtreeXMLProcessor == null){
 				htmlDocument = createBaseHumanReadableDocument();
@@ -84,15 +85,15 @@ public class HumanReadableGenerator {
 		return returnFlag;
 	}
 
-	private static XmlProcessor expandSubTreesAndImportQDMs(String subXML, String measureXML) throws XPathExpressionException {
+	private static XmlProcessor expandSubTreesAndImportQDMs(String subXML, String measureXML,boolean isImportElementLookup) throws XPathExpressionException {
 		
 		XmlProcessor populationOrSubtreeXMLProcessor = new XmlProcessor(subXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
 		
-		return expandSubTreesAndImportQDMs(populationOrSubtreeXMLProcessor, measureXMLProcessor);
+		return expandSubTreesAndImportQDMs(populationOrSubtreeXMLProcessor, measureXMLProcessor, isImportElementLookup);
 	}
 	
-	private static XmlProcessor expandSubTreesAndImportQDMs(XmlProcessor populationOrSubtreeXMLProcessor, XmlProcessor measureXMLProcessor) throws XPathExpressionException {
+	private static XmlProcessor expandSubTreesAndImportQDMs(XmlProcessor populationOrSubtreeXMLProcessor, XmlProcessor measureXMLProcessor, boolean isImportElementLookup) throws XPathExpressionException {
 		//find all <subTreeRef> tags in 'populationSubXML'
 		NodeList subTreeRefNodeList = populationOrSubtreeXMLProcessor.findNodeList(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//subTreeRef");
 		
@@ -120,11 +121,12 @@ public class HumanReadableGenerator {
 				}
 			}
 		}
-		
-		//import <elementLookUp> tag to populationOrSubtreeXMLProcessor
-		Node elementLookUpNode = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "//elementLookUp");
-		Node importedElementLookUpNode = populationOrSubtreeXMLProcessor.getOriginalDoc().importNode(elementLookUpNode, true);
-		populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild().appendChild(importedElementLookUpNode);
+		if(isImportElementLookup){
+			//import <elementLookUp> tag to populationOrSubtreeXMLProcessor
+			Node elementLookUpNode = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "//elementLookUp");
+			Node importedElementLookUpNode = populationOrSubtreeXMLProcessor.getOriginalDoc().importNode(elementLookUpNode, true);
+			populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild().appendChild(importedElementLookUpNode);
+		}
 		
 		System.out.println("Inflated popualtion tree: "+populationOrSubtreeXMLProcessor.transform(populationOrSubtreeXMLProcessor.getOriginalDoc()));	
 		return populationOrSubtreeXMLProcessor;
@@ -536,19 +538,21 @@ public class HumanReadableGenerator {
 		if("AGE AT".equals(typeAttribute)){
 			functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " ";
 		}else if(functionDisplayName.startsWith("AVG")){
-			functionDisplayName = functionDisplayName.replaceFirst("AVG", "Average");
+			functionDisplayName = functionDisplayName.replaceFirst("AVG", "Average of");
 		}else if(functionDisplayName.startsWith("COUNT")){
 			functionDisplayName = functionDisplayName.replaceFirst("COUNT", "Count of");
 		}else if(functionDisplayName.startsWith("DATEDIFF")){
-			functionDisplayName = functionDisplayName.replaceFirst("DATEDIFF", "Difference between dates");
+			functionDisplayName = functionDisplayName.replaceFirst("DATEDIFF", "Difference between dates of");
 		}else if(functionDisplayName.startsWith("MAX")){
-			functionDisplayName = functionDisplayName.replaceFirst("MAX", "Maximum");
+			functionDisplayName = functionDisplayName.replaceFirst("MAX", "Maximum of");
+		}else if(functionDisplayName.startsWith("MIN")){
+			functionDisplayName = functionDisplayName.replaceFirst("MIN", "Min of");
 		}else if(functionDisplayName.startsWith("MEDIAN")){
-			functionDisplayName = functionDisplayName.replaceFirst("MEDIAN", "MEDIAN");
+			functionDisplayName = functionDisplayName.replaceFirst("MEDIAN", "Median of");
 		}else if(functionDisplayName.startsWith("SUM")){
-			functionDisplayName = functionDisplayName.replaceFirst("SUM", "Sum");
+			functionDisplayName = functionDisplayName.replaceFirst("SUM", "Sum of");
 		}else if(functionDisplayName.startsWith("TIMEDIFF")){
-			functionDisplayName = functionDisplayName.replaceFirst("TIMEDIFF", "Time difference");
+			functionDisplayName = functionDisplayName.replaceFirst("TIMEDIFF", "Time difference of");
 		}else if(functionDisplayName.startsWith("FOURTH")){
 			functionDisplayName = functionDisplayName.replaceFirst("FOURTH", "Fourth");
 		}else if(functionDisplayName.startsWith("FIFTH")){
@@ -594,21 +598,68 @@ public class HumanReadableGenerator {
 		try {
 			org.jsoup.nodes.Document humanReadableHTMLDocument = HeaderHumanReadableGenerator.generateHeaderHTMLForMeasure(simpleXmlStr);
 			XmlProcessor simpleXMLProcessor = resolveSubTreesInPopulations(simpleXmlStr);
+			generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
 			humanReadableHTML = humanReadableHTMLDocument.toString();
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		return humanReadableHTML;
+	}
+
+	private static void generatePopulationCriteriaHumanReadable(
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
+		
+		
+	}
+
+	private static XmlProcessor resolveSubTreesInPopulations(String simpleXmlStr) {
+		XmlProcessor simpleXMLProcessor = new XmlProcessor(simpleXmlStr);		
+		
+		try {
+			NodeList clauseNodeList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/measureGrouping/group/clause");
+			Object[][] nodeArr = new Object[clauseNodeList.getLength()][2];
+			for(int i=0;i<clauseNodeList.getLength();i++){
+				Node clauseNode = clauseNodeList.item(i);
+				String clauseNodeXMLString = simpleXMLProcessor.transform(clauseNode);
+				
+				System.out.println("");
+				System.out.println("clauseNode XML String:"+clauseNodeXMLString);
+				System.out.println("");
+				
+				XmlProcessor clauseXMLProcessor = new XmlProcessor(clauseNodeXMLString);
+				clauseXMLProcessor = expandSubTreesAndImportQDMs(clauseXMLProcessor, simpleXMLProcessor, false);
+				System.out.println();
+				Node expandedClauseNode = clauseXMLProcessor.getOriginalDoc().getFirstChild();
+				
+				nodeArr[i][0] = clauseNode;
+				nodeArr[i][1] = expandedClauseNode;
+			}
+			
+			for(int j=0;j<nodeArr.length;j++){
+				Node clauseNode = (Node) nodeArr[j][0];
+				Node expandedClauseNode = (Node) nodeArr[j][1];
+				
+				Node importedClauseNode = simpleXMLProcessor.getOriginalDoc().importNode(expandedClauseNode, true);
+				Node parentNode = clauseNode.getParentNode();
+				parentNode.replaceChild(importedClauseNode, clauseNode);
+			}
+			removeNode("/measure/subTreeLookUp",simpleXMLProcessor);
+			System.out.println("Expanded simple xml:"+simpleXMLProcessor.transform(simpleXMLProcessor.getOriginalDoc()));			
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		return humanReadableHTML;
-	}
-
-	private static XmlProcessor resolveSubTreesInPopulations(String simpleXmlStr) {
-		//XmlProcessor simpleXMLProcessor = new XmlProcessor(simpleXmlStr);
-		
-		
-		
 		return null;
+	}
+	
+	private static void removeNode(String nodeXPath, XmlProcessor xmlProcessor) throws XPathExpressionException {
+		Node node = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), nodeXPath);
+		if(node != null){
+			Node parentNode = node.getParentNode();
+			parentNode.removeChild(node);
+		}
 	}
 
 }

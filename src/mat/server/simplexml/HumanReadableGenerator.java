@@ -149,11 +149,8 @@ public class HumanReadableGenerator {
 			if(!resolveChildSubTreeNode(measureXMLProcessor,subTreeRefNode,childSubTreeRefList)){
 				return null;
 			}
-			
 //			replaceSubTreeNode(measureXMLProcessor, subTreeRefNode, null, subTreeNode );
 		}
-		
-		
 		return subTreeNode;
 	}
 
@@ -528,11 +525,33 @@ public class HumanReadableGenerator {
 		if(!FUNCTIONAL_OP.equals(item.getNodeName())){
 			return "";
 		}
+		
 		String typeAttribute = item.getAttributes().getNamedItem("type").getNodeValue();
+		String functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
+		
 		if("AGE AT".equals(typeAttribute)){
-			return item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " ";
-		}
-		return item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " of ";
+			functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " ";
+		}else if(functionDisplayName.startsWith("AVG")){
+			functionDisplayName = functionDisplayName.replaceFirst("AVG", "Average");
+		}else if(functionDisplayName.startsWith("COUNT")){
+			functionDisplayName = functionDisplayName.replaceFirst("COUNT", "Count");
+		}else if(functionDisplayName.startsWith("DATEDIFF")){
+			functionDisplayName = functionDisplayName.replaceFirst("DATEDIFF", "Difference between dates");
+		}else if(functionDisplayName.startsWith("MAX")){
+			functionDisplayName = functionDisplayName.replaceFirst("MAX", "Maximum");
+		}else if(functionDisplayName.startsWith("MEDIAN")){
+			functionDisplayName = functionDisplayName.replaceFirst("MEDIAN", "MEDIAN");
+		}else if(functionDisplayName.startsWith("SUM")){
+			functionDisplayName = functionDisplayName.replaceFirst("SUM", "Sum");
+		}else if(functionDisplayName.startsWith("TIMEDIFF")){
+			functionDisplayName = functionDisplayName.replaceFirst("TIMEDIFF", "Time difference");
+		}else if(functionDisplayName.startsWith("FOURTH")){
+			functionDisplayName = functionDisplayName.replaceFirst("FOURTH", "Fourth");
+		}else if(functionDisplayName.startsWith("FIFTH")){
+			functionDisplayName = functionDisplayName.replaceFirst("FIFTH", "Fifth");
+		}		
+		
+		return functionDisplayName+":";
 	}
 
 	/**

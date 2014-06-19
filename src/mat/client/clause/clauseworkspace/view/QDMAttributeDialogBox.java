@@ -208,7 +208,22 @@ public class QDMAttributeDialogBox {
 			List<String> mode, final XmlTreeDisplay xmlTreeDisplay,
 			final CellTreeNode cellTreeNode) {
 		
+		boolean checkForRemovedDataType = false;
+		List<String> removedQdmDataType = new ArrayList<String>();
+		removedQdmDataType.add("Diagnostic Study, Result");
+		removedQdmDataType.add("Functional Status, Result");
+		removedQdmDataType.add("Laboratory Test, Result");
+		removedQdmDataType.add("Procedure, Result");
+		removedQdmDataType.add("Physical Exam, Finding");
+		removedQdmDataType.add("Intervention, Result");
+		
+		if(removedQdmDataType.contains(qdmDataType)){
+			checkForRemovedDataType = true;
+		}
+		
+		
 		final DialogBox qdmAttributeDialogBox = new DialogBox(false, true);
+	
 		qdmAttributeDialogBox.getElement().setId("qdmAttributeDialog");
 		qdmAttributeDialogBox.setGlassEnabled(true);
 		qdmAttributeDialogBox.setAnimationEnabled(true);
@@ -244,6 +259,12 @@ public class QDMAttributeDialogBox {
 		}
 		hPanel.clear();
 		dialogContents.add(hPanel);
+		if(checkForRemovedDataType == true){
+			attributeListBox.clear();
+			attributeListBox.setEnabled(false);
+			hPanel.clear();
+			getWidget(hPanel,"Attributes may only be added to valid datatypes");
+		}
 		
 		Label attributeLabel = (Label) LabelBuilder.buildLabel(attributeListBox, "Attribute");
 		dialogContents.add(attributeLabel);

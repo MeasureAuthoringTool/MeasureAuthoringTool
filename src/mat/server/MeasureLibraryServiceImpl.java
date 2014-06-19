@@ -2598,7 +2598,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
-	        String satisfyFunction = "@type= 'SATISFIES ALL' or 'SATISFIES ANY' ";
+	        String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
 			 String XPATH_POPULATIONS = "/measure/populations";
 			 
 			 String XPATH_QDMELEMENT = "/measure//subTreeLookUp//elementRef/@id";

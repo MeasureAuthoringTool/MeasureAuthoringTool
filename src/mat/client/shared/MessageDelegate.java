@@ -194,7 +194,7 @@ public class MessageDelegate {
 	
 	/** The clause work space validation error. */
 	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR = "Measure logic is incomplete."
-			+ " LHS and RHS are required for Timings and Relationships.";
+			+ " LHS and RHS are required for Timings, Relationships and Satisfies functions.";
 	
 	/** The clause work space validation success. */
 	private final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";

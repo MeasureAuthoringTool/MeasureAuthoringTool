@@ -295,8 +295,11 @@ public class ClauseWorkspaceContextMenu {
 				break;
 		}
 	}
+	
 	/**
-	 * Generates popup menu for right click on a node of type 'CLAUSE_NODE'
+	 * Generates popup menu for right click on a node of type 'CLAUSE_NODE'.
+	 *
+	 * @param popupPanel the popup panel
 	 */
 	private void subTreeNodePopupMenuItems(final PopupPanel popupPanel) {
 		subMenuBar = new MenuBar(true);
@@ -320,6 +323,7 @@ public class ClauseWorkspaceContextMenu {
 		};
 		editMenu = new MenuItem("Edit", true, editClauseCmd);
 		popupMenuBar.addItem(editMenu);
+		checkIsParentSatisfy();
 	}
 	/**
 	 * Sub Tree Root Node Pop up Menu Items.
@@ -471,6 +475,7 @@ public class ClauseWorkspaceContextMenu {
 		editMenu = new MenuItem("Edit", true, subMenuBarEdit);
 		popupMenuBar.addItem(editMenu);
 		cutMenu.setEnabled(true);
+		checkIsParentSatisfy();
 	}
 	/**
 	 * Function Node Pop Up Menu Items.
@@ -560,6 +565,7 @@ public class ClauseWorkspaceContextMenu {
 			editMenu.setEnabled(false);
 		else
 			editMenu.setEnabled(true);
+		checkIsParentSatisfy();
 	}
 	/**
 	 * Set Op Node Pop up Menu Items.
@@ -610,6 +616,7 @@ public class ClauseWorkspaceContextMenu {
 			editMenu = new MenuItem("Edit", true, subMenuBar);
 			popupMenuBar.addItem(editMenu);
 		}
+		checkIsParentSatisfy();
 	}
 	
 	/**
@@ -656,6 +663,22 @@ public class ClauseWorkspaceContextMenu {
 		addMoveDownMenu(popupPanel);
 		popupMenuBar.addItem(moveDownMenu);
 		moveDownMenu.setEnabled(checkIfLastChildNode());
+		checkIsParentSatisfy();
+	}
+	
+	
+	/**
+	 * Check is parent satisfy.
+	 */
+	private void checkIsParentSatisfy(){
+		if((xmlTreeDisplay.getSelectedNode().getParent().getLabel().equalsIgnoreCase("SATISFIES ALL") || 
+				xmlTreeDisplay.getSelectedNode().getParent().getLabel().equalsIgnoreCase("SATISFIES ANY"))){
+			deleteMenu.setEnabled(checkIfTopChildNode());
+			cutMenu.setEnabled(checkIfTopChildNode());
+			pasteMenu.setEnabled(checkIfTopChildNode());
+			moveUpMenu.setEnabled(checkIfTopChildNodeForSatisfy());
+			moveDownMenu.setEnabled(checkIfLastChildNodeForSatisfy());
+		} 
 	}
 	/**
 	 * Timing Node Pop Up Menu Items.
@@ -711,6 +734,7 @@ public class ClauseWorkspaceContextMenu {
 		editMenu = new MenuItem("Edit", true, editCmd);
 		popupMenuBar.addItem(editMenu);
 		cutMenu.setEnabled(true);
+		checkIsParentSatisfy();
 	}
 	
 	/**
@@ -784,7 +808,8 @@ public class ClauseWorkspaceContextMenu {
 	
 	/**
 	 * Creates the menu bar with timing func and qdm.
-	 * 
+	 *
+	 * @param addClauseMenuItem the add clause menu item
 	 * @return the menu bar
 	 */
 	protected MenuBar createMenuBarWithTimingFuncAndQDM(boolean addClauseMenuItem) {
@@ -1045,6 +1070,49 @@ public class ClauseWorkspaceContextMenu {
 		for (int i = 0; i <= parentNode.getChilds().size(); i++) {
 			if (selectedNode.equals(selectedNode.getParent().getChilds().get(i))) {
 				return i > 0;
+			}
+		}
+		return true;
+	}
+	
+	
+	
+	/**
+	 * Check if top child node for satisfy.
+	 *
+	 * @return true, if successful
+	 */
+	private final boolean checkIfTopChildNodeForSatisfy() {
+		CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
+		CellTreeNode parentNode = selectedNode.getParent();
+		if ((parentNode.getChilds() == null) || (parentNode.getChilds().size() <= 2)) {
+			return false;
+		}
+		for (int i = 0; i <= parentNode.getChilds().size(); i++) {
+			if (selectedNode.equals(selectedNode.getParent().getChilds().get(i))) {
+				return i > 1;
+			}
+		}
+		return true;
+	}
+	
+	
+	/**
+	 * Check if last child node for satisfy.
+	 *
+	 * @return true, if successful
+	 */
+	private final boolean checkIfLastChildNodeForSatisfy() {
+		CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
+		CellTreeNode parentNode = selectedNode.getParent();
+		if ((parentNode.getChilds() == null) || (parentNode.getChilds().size() <= 2)) {
+			return false;
+		}
+		for (int i = 0; i <= parentNode.getChilds().size(); i++) {
+			if(i == 0 && selectedNode.equals(selectedNode.getParent().getChilds().get(i)))
+				return false;
+			if (selectedNode.equals(selectedNode.getParent().getChilds().get(i))) {
+				return !(i == (parentNode.getChilds().size() - 1));
 			}
 		}
 		return true;

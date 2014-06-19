@@ -2598,12 +2598,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+	        String satisfyFunction = "@type= 'SATISFIES ALL' or 'SATISFIES ANY' ";
 			 String XPATH_POPULATIONS = "/measure/populations";
 			 
 			 String XPATH_QDMELEMENT = "/measure//subTreeLookUp//elementRef/@id";
 			 String XPATH_TIMING_ELEMENT = "/measure//subTreeLookUp//relationalOp";
 			 
-			 
+			 String XPATH_SATISFY_ELEMENT = "/measure//subTreeLookUp//functionalOp["+satisfyFunction+"]";
 			 System.out.println("MEASURE_XML: "+xmlModel.getXml());
 			try {
 				NodeList nodesSDE = (NodeList) xPath.evaluate(XPATH_POPULATIONS, xmlProcessor.getOriginalDoc(),
@@ -2613,11 +2614,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						XPathConstants.NODESET);
 				NodeList nodesSDE_timingElement = (NodeList) xPath.evaluate(XPATH_TIMING_ELEMENT, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODESET);
+				NodeList nodesSDE_satisfyElement = (NodeList) xPath.evaluate(XPATH_SATISFY_ELEMENT, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
 				
 				for (int n = 0; n <nodesSDE_timingElement.getLength() && !flag; n++) {
 					
 					Node timingElementchildNode =nodesSDE_timingElement.item(n);
 					flag = validateTimingNode(timingElementchildNode, flag);	
+					if(flag)
+						break;
+					
+				}
+				for (int j = 0; j <nodesSDE_satisfyElement.getLength() && !flag; j++) {
+					
+					Node satisfyElementchildNode =nodesSDE_satisfyElement.item(j);
+					flag = validateSatisfyNode(satisfyElementchildNode, flag);	
 					if(flag)
 						break;
 					
@@ -2754,13 +2765,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/**
 	 * Validate timing node.
 	 *
-	 * @param qdmchildNode the qdmchild node
+	 * @param timingElementchildNode the timing elementchild node
 	 * @param flag the flag
 	 * @return true, if successful
 	 */
 	private boolean validateTimingNode(Node timingElementchildNode, boolean flag) {
 		int childCount = timingElementchildNode.getChildNodes().getLength();
 		if(childCount != 2){
+			flag = true;
+		}
+		return flag;
+	}
+	
+	
+	/**
+	 * Validate satisfy node.
+	 *
+	 * @param satisfyElementchildNode the satisfy elementchild node
+	 * @param flag the flag
+	 * @return true, if successful
+	 */
+	private boolean validateSatisfyNode(Node satisfyElementchildNode, boolean flag) {
+		int childCount = satisfyElementchildNode.getChildNodes().getLength();
+		if(childCount < 2){
 			flag = true;
 		}
 		return flag;

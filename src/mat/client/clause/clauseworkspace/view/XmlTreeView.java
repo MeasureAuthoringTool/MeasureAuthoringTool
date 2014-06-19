@@ -1734,7 +1734,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				
 				if ((node.getNodeType()== CellTreeNode.TIMING_NODE)
-					|| (node.getNodeType() == CellTreeNode.RELATIONSHIP_NODE)){
+					|| (node.getNodeType() == CellTreeNode.RELATIONSHIP_NODE) ){
 					// this check is performed since IE was giving JavaScriptError after removing a node and
 					//closing all nodes.
 					subTree = treeNode.setChildOpen(i, true, true);
@@ -1755,11 +1755,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					
 					
 				}
-				/*if(node.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-					String nodeName = node.getName();
+				
+				if(node.getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 					if((node.getName().equalsIgnoreCase("SATISFIES ALL")) || (node.getName().equalsIgnoreCase("SATISFIES ANY"))){
 						subTree = treeNode.setChildOpen(i, true, true);
-						if ((subTree != null) && (subTree.getChildCount() == 2)) {
+						if ((subTree != null) && (subTree.getChildCount() >= 2)) {
 							if (!node.getValidNode()) {
 								editNode(true, node);
 								if(!setErrorType.equalsIgnoreCase("inValidAtQDMNode")){
@@ -1773,11 +1773,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								isValid = false;
 							}
 						}
-						
-						
 					}
-					
-				}*/
+				}
 				
 				
 				subTree = treeNode.setChildOpen(i, ((CellTreeNode) treeNode.getChildValue(i)).isOpen(),

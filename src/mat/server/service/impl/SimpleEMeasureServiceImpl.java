@@ -16,6 +16,10 @@ import java.util.zip.ZipException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
 
@@ -35,6 +39,7 @@ import mat.server.simplexml.HumanReadableGenerator;
 import mat.shared.ConstantMessages;
 import mat.shared.DateUtility;
 import mat.shared.StringUtility;
+import net.sf.saxon.TransformerFactoryImpl;
 
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
@@ -74,20 +79,26 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	private static final String XPATH_ALL_GROUPED_ELEMENTREF_ID =
 			"/measure/measureGrouping/group/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
 	/**X-path for Measure Observation Element Ref.**/
-	private static final String XPATH_ALL_MSR_OBS_ELEMENTREF_ID =
-			"/measure/measureObservations/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
+	//private static final String XPATH_ALL_MSR_OBS_ELEMENTREF_ID =
+	//		"/measure/measureObservations/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
 	/**X-path for Stratification Element Ref.**/
-	private static final String XPATH_ALL_STARTA_ELEMENTREF_ID =
-			"/measure/strata/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
+	//private static final String XPATH_ALL_STARTA_ELEMENTREF_ID =
+			//"/measure/strata/clause//elementRef[not(@id = preceding:: clause//elementRef/@id)]/@id";
 	/**X-path for Grouping Attributes.**/
 	private static final String XPATH_ALL_GROUPED_ATTRIBUTES_UUID =
 			"/measure/measureGrouping/group/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
 	/**X-path for Measure Observation Attributes.**/
-	private static final String XPATH_ALL_MSR_OBS_ATTRIBUTES_UUID =
-			"/measure/measureObservations/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
+	//private static final String XPATH_ALL_MSR_OBS_ATTRIBUTES_UUID =
+		//	"/measure/measureObservations/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
 	/**X-path for Stratification Attributes.**/
-	private static final String XPATH_ALL_STARTA_ATTRIBUTES_UUID =
-			"/measure/strata/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
+	//private static final String XPATH_ALL_STARTA_ATTRIBUTES_UUID =
+		//	"/measure/strata/clause//attribute[not(@qdmUUID = preceding:: clause//attribute/@qdmUUID)]/@qdmUUID";
+	
+	private static final String XPATH_ALL_SUBTREE_ELEMENTREF_ID = 
+			"/measure/subTreeLookUp/subTree//elementRef[not(@id = preceding:: subTree//elementRef/@id)]/@id";
+	
+	private static final String XPATH_ALL_SUBTREE_ATTRIBUTES_UUID = 
+			"/measure/subTreeLookUp/subTree//attribute[not(@qdmUUID = preceding:: subTree//attribute/@qdmUUID)]/@qdmUUID";
 	/**Logger.**/
 	private static final Log LOGGER = LogFactory
 			.getLog(SimpleEMeasureServiceImpl.class);
@@ -141,30 +152,40 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		List<String> supplRefID = new ArrayList<String>();
 		List<QualityDataSetDTO> masterRefID = new ArrayList<QualityDataSetDTO>();
 
+		transform(originalDoc);
 		NodeList allGroupedElementRefIDs = (NodeList) xPath.evaluate(
 				XPATH_ALL_GROUPED_ELEMENTREF_ID,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		NodeList allMsrObsElementRefIDs = (NodeList) xPath.evaluate(
-				XPATH_ALL_MSR_OBS_ELEMENTREF_ID,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		NodeList allStrataElementRefIDs = (NodeList) xPath.evaluate(
-				XPATH_ALL_STARTA_ELEMENTREF_ID,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+//		NodeList allMsrObsElementRefIDs = (NodeList) xPath.evaluate(
+//				XPATH_ALL_MSR_OBS_ELEMENTREF_ID,
+//				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+//		NodeList allStrataElementRefIDs = (NodeList) xPath.evaluate(
+//				XPATH_ALL_STARTA_ELEMENTREF_ID,
+//				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		NodeList allGroupedAttributesUUIDs = (NodeList) xPath.evaluate(
 				XPATH_ALL_GROUPED_ATTRIBUTES_UUID,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		NodeList allMsrObsAttributesUUIDs = (NodeList) xPath.evaluate(
-				XPATH_ALL_MSR_OBS_ATTRIBUTES_UUID,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
-		NodeList allStrataAttributesUUIDs = (NodeList) xPath.evaluate(
-				XPATH_ALL_STARTA_ATTRIBUTES_UUID,
-				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+//		NodeList allMsrObsAttributesUUIDs = (NodeList) xPath.evaluate(
+//				XPATH_ALL_MSR_OBS_ATTRIBUTES_UUID,
+//				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+//		NodeList allStrataAttributesUUIDs = (NodeList) xPath.evaluate(
+//				XPATH_ALL_STARTA_ATTRIBUTES_UUID,
+//				originalDoc.getDocumentElement(), XPathConstants.NODESET);
 		NodeList allQDMRefIDs = (NodeList) xPath.evaluate(
 				XPATH_ELEMENTLOOKUP_QDM, originalDoc.getDocumentElement(),
 				XPathConstants.NODESET);
 		NodeList allSupplementIDs = (NodeList) xPath.evaluate(
 				XPATH_SUPPLEMENTDATA_ELEMENTREF,
 				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		NodeList allSubTreeElementRefIDs = (NodeList) xPath.evaluate(
+				XPATH_ALL_SUBTREE_ELEMENTREF_ID,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		NodeList allSubTreeAttributeIDs = (NodeList) xPath.evaluate(
+				XPATH_ALL_SUBTREE_ATTRIBUTES_UUID,
+				originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		
 
 		for (int i = 0; i < allQDMRefIDs.getLength(); i++) {
 			Node newNode = allQDMRefIDs.item(i);
@@ -178,10 +199,13 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 
 		findAndAddDTO(allGroupedElementRefIDs, masterRefID, qdmRefID);
 		findAndAddDTO(allGroupedAttributesUUIDs, masterRefID, qdmRefID);
-		findAndAddDTO(allMsrObsElementRefIDs, masterRefID, qdmRefID);
-		findAndAddDTO(allMsrObsAttributesUUIDs, masterRefID, qdmRefID);
-		findAndAddDTO(allStrataElementRefIDs, masterRefID, qdmRefID);
-		findAndAddDTO(allStrataAttributesUUIDs, masterRefID, qdmRefID);
+//		findAndAddDTO(allMsrObsElementRefIDs, masterRefID, qdmRefID);
+//		findAndAddDTO(allMsrObsAttributesUUIDs, masterRefID, qdmRefID);
+//		findAndAddDTO(allStrataElementRefIDs, masterRefID, qdmRefID);
+//		findAndAddDTO(allStrataAttributesUUIDs, masterRefID, qdmRefID);
+		findAndAddDTO(allSubTreeElementRefIDs, masterRefID, qdmRefID);
+		findAndAddDTO(allSubTreeAttributeIDs, masterRefID, qdmRefID);
+		
 
 		Set<String> uniqueRefIds = new HashSet<String>(qdmRefID);
 		qdmRefID = new ArrayList<String>(uniqueRefIds);
@@ -191,6 +215,24 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		result.wkbkbarr = getHSSFWorkbookBytes(wkbk);
 		wkbk = null;
 		return result;
+	}
+	
+	private static String transform(Node node){	
+		//_logger.info("In transform() method");
+		ByteArrayOutputStream arrayOutputStream = new ByteArrayOutputStream();
+		TransformerFactory transformerFactory = TransformerFactoryImpl.newInstance();
+		DOMSource source = new DOMSource(node);
+		StreamResult result = new StreamResult(arrayOutputStream);
+		
+		try {
+			transformerFactory.newTransformer().transform(source, result);
+		} catch (TransformerException e) {
+			//_logger.info("Document object to ByteArray transformation failed "+e.getStackTrace());
+			e.printStackTrace();
+		}
+		//_logger.info("Document object to ByteArray transformation complete");
+		System.out.println(arrayOutputStream.toString());
+		return arrayOutputStream.toString();
 	}
 
 	/**

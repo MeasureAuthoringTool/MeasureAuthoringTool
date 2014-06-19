@@ -16,13 +16,13 @@ public class HeaderHumanReadableGenerator {
 	private static final String DETAILS_PATH = "/measure/measureDetails/";
 	private static final String HTML_TR = "tr";
 	private static final String HTML_TD = "td";
+	private static final String TWENTY_PERCENT = "20%";
 	private static Element row;
 	private static Element column;
 	
 
 	public static org.jsoup.nodes.Document generateHeaderHTMLForMeasure(String measureXML) throws XPathExpressionException {
 		org.jsoup.nodes.Document htmlDocument = null;
-		System.out.println(measureXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
 		
 		htmlDocument = createBaseHTMLDocument(getInfo(measureXMLProcessor,"title"));
@@ -35,9 +35,7 @@ public class HeaderHumanReadableGenerator {
 		createEmeasureBrief(measureXMLProcessor, tBody);
 		createSubjectOf(measureXMLProcessor, tBody);
 		
-		System.out.println("HTML: " + htmlDocument.toString());
 		return htmlDocument;
-		//return htmlDocument.toString();
 	}
 	private static void createDocumentGeneral(XmlProcessor processor,Element table) throws DOMException, XPathExpressionException{
 		createRowAndColumns(table,"eMeasure Title");
@@ -45,13 +43,13 @@ public class HeaderHumanReadableGenerator {
 		
 		row = table.appendElement(HTML_TR);
 		column = row.appendElement(HTML_TD);
-		setTDHeaderAttributes(column,"20%");
+		setTDHeaderAttributes(column,TWENTY_PERCENT);
 		createSpan("eMeasure Identifier\n"+ "(Measure Authoring Tool)",column);
 		column = row.appendElement(HTML_TD);
 		setTDInfoAttributes(column,"30%", "");
 		column.appendText(getInfo(processor, "emeasureid"));
 		column = row.appendElement(HTML_TD);
-		setTDHeaderAttributes(column,"20%");
+		setTDHeaderAttributes(column,TWENTY_PERCENT);
 		createSpan("eMeasure Version number",column);
 		column = row.appendElement(HTML_TD);
 		setTDInfoAttributes(column,"30%", "");
@@ -59,19 +57,21 @@ public class HeaderHumanReadableGenerator {
 		
 		row = table.appendElement(HTML_TR);
 		column = row.appendElement(HTML_TD);
-		setTDHeaderAttributes(column,"20%");
+		setTDHeaderAttributes(column,TWENTY_PERCENT);
 		createSpan("NQF Number",column);
 		column = row.appendElement(HTML_TD);
 		setTDInfoAttributes(column,"30%", "");
 		column.appendText(getInfo(processor, "nqfid/@extension"));
 		column = row.appendElement(HTML_TD);
-		setTDHeaderAttributes(column,"20%");
+		setTDHeaderAttributes(column,TWENTY_PERCENT);
 		createSpan("GUID",column);
 		column = row.appendElement(HTML_TD);
 		column.appendText(getInfo(processor,"guid"));
 		
-		createRowAndColumns(table,"Measurement Period");
-		column.appendText(getMeasurePeriod(processor));
+		/*createRowAndColumns(table,"Measurement Period");
+		column.appendText(getMeasurePeriod(processor));*/
+		
+		getMeasurePeriod(processor,table);
 		
 		if(processor.findNode(processor.getOriginalDoc(), DETAILS_PATH + "cmsid") != null){
 			createRowAndColumns(table,"CMS ID Number");
@@ -187,11 +187,75 @@ public class HeaderHumanReadableGenerator {
 		return title;
 	}
 	
-	private static String getMeasurePeriod(XmlProcessor processor){
-		// TODO figure out how the time documentation works
-		return "";
+	private static void getMeasurePeriod(XmlProcessor processor, Element table) throws XPathExpressionException{
+		String start = getInfo(processor,"period/startDate");
+		String end = getInfo(processor,"period/stopDate");
+		String newStart = " ";
+		String newEnd = " ";
+		if(start != " "){
+			newStart = formatDate(start);
+		}
+		if(end != " "){
+			newEnd = formatDate(end);
+		}
+		
+		createRowAndColumns(table, "MeasurementPeriod");
+		column.appendText(newStart + " through " + newEnd);
+		
 	}
-	
+	private static String formatDate(String date){
+		String year = date.substring(0, 4);
+		String month = date.substring(4, 6);
+		String day = date.substring(6, 8);
+		month = getMonth(month);
+		if("0000".equals(year)){
+			year = "20xx";
+		}
+		if("0".equals(day.charAt(0))){
+			day = day.substring(1,2);
+		}
+		return month + day + ", " + year;
+	}
+	private static String getMonth(String month){
+		String returnMonth = "";
+		if("01".equals(month)){
+			returnMonth = "January ";
+		}
+		else if("02".equals(month)){
+			returnMonth = "February ";
+		}
+		else if("03".equals(month)){
+			returnMonth = "March ";
+		}
+		else if("04".equals(month)){
+			returnMonth = "April ";
+		}
+		else if("05".equals(month)){
+			returnMonth = "May ";
+		}
+		else if("06".equals(month)){
+			returnMonth = "June ";
+		}
+		else if("07".equals(month)){
+			returnMonth = "July ";
+		}
+		else if("08".equals(month)){
+			returnMonth = "August ";
+		}
+		else if("09".equals(month)){
+			returnMonth = "September ";
+		}
+		else if("10".equals(month)){
+			returnMonth = "October ";
+		}
+		else if("11".equals(month)){
+			returnMonth = "November ";
+		}
+		else if("12".equals(month)){
+			returnMonth = "December ";
+		}
+		return returnMonth;
+	}
 	private static void getInfoNodes(Element table, XmlProcessor processor, String lookUp, String display,boolean addDiv) throws XPathExpressionException {
 		NodeList developers = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + lookUp);
 		
@@ -282,15 +346,13 @@ public class HeaderHumanReadableGenerator {
 			createSpan("Version Number",column);
 			
 			column = row.appendElement("th");
-			setTDHeaderAttributes(column,"20%");
+			setTDHeaderAttributes(column,TWENTY_PERCENT);
 			createSpan("GUID",column);
 			
 			for(int i = 0; i<list.getLength(); i++){
 				node = list.item(i);
 				
 				NamedNodeMap map = node.getAttributes();
-				
-				System.out.println(map.item(0).getTextContent());
 				
 				row = innerTableBody.appendElement(HTML_TR);
 				
@@ -303,10 +365,12 @@ public class HeaderHumanReadableGenerator {
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column,"10%","");
 				Element ver = column.appendElement("ver");
-				ver.appendText("1.2.201");
+				if(map.item(3) != null){
+					ver.appendText(map.item(3).getTextContent());
+				}
 				
 				column = row.appendElement(HTML_TD);
-				setTDInfoAttributes(column,"20%","");
+				setTDInfoAttributes(column,TWENTY_PERCENT,"");
 				if(map.item(0) != null){
 					column.appendText(map.item(0).getTextContent());
 				}
@@ -316,22 +380,22 @@ public class HeaderHumanReadableGenerator {
 		
 	}
 	
-	private static void setTDHeaderAttributes(Element td, String width){
-		td.attr("width", width);
-		td.attr("bgcolor", "#656565");
-		td.attr("style", "background-color:#656565");
+	private static void setTDHeaderAttributes(Element col, String width){
+		col.attr("width", width);
+		col.attr("bgcolor", "#656565");
+		col.attr("style", "background-color:#656565");
 	}
-	private static void setTDInfoAttributes(Element td, String width, String span){
-		td.attr("width", width);
+	private static void setTDInfoAttributes(Element col, String width, String span){
+		col.attr("width", width);
 		if(span.length()>0){
-			td.attr("colspan", span);
+			col.attr("colspan", span);
 		}
 	}
 	
 	private static void createRowAndColumns(Element table, String title){
 		row = table.appendElement(HTML_TR);
 		column = row.appendElement(HTML_TD);
-		setTDHeaderAttributes(column,"20%");
+		setTDHeaderAttributes(column,TWENTY_PERCENT);
 		createSpan(title,column);
 		column = row.appendElement(HTML_TD);
 		setTDInfoAttributes(column,"80%", "3");

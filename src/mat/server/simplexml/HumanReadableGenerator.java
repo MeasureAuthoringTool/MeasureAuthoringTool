@@ -257,7 +257,7 @@ public class HumanReadableGenerator {
 	
 	private static void parseChild(Node item, Element parentListElement, Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor) {
 		String nodeName = item.getNodeName();
-		
+		System.out.println("parseChild:"+nodeName);
 		if(LOGICAL_OP.equals(nodeName)){
 			
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) ){
@@ -370,7 +370,7 @@ public class HumanReadableGenerator {
 				}
 			}
 			
-		}else if(ELEMENT_LOOK_UP.equals(nodeName)){
+		}else if(ELEMENT_LOOK_UP.equals(nodeName) || "itemCount".equals(nodeName)){
 			//ignore
 		}
 		else {

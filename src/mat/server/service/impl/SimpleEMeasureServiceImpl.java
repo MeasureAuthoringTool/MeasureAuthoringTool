@@ -335,6 +335,16 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		result.export = html;
 		return result;
 	}
+	
+	@Override
+	public final ExportResult getNewEMeasureHTML(final String measureId) throws Exception {
+		MeasureExport measureExport = getMeasureExport(measureId);
+		String emeasureHTMLStr = getHumanReadableForMeasure(measureId, measureExport.getSimpleXML());
+		ExportResult exportResult = new ExportResult();
+		exportResult.export = emeasureHTMLStr;
+		exportResult.measureName = measureExport.getMeasure().getaBBRName();
+		return exportResult;
+	}
 
 	/**
 	 * Emeasure xml to emeasure html.

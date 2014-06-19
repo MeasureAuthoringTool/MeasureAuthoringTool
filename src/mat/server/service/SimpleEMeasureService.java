@@ -133,4 +133,6 @@ public interface SimpleEMeasureService {
 
 	ExportResult getHumanReadableForNode(String measureId, String populationSubXML) throws Exception;
 
+	ExportResult getNewEMeasureHTML(String measureId) throws Exception;
+
 }

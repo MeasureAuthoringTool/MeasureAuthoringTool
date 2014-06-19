@@ -140,23 +140,25 @@ public class ExportServlet extends HttpServlet {
 					resp.setHeader(CONTENT_TYPE, TEXT_XML);
 				}
 			} else if (EMEASURE.equals(format)) {
-				if ("open".equals(type)) {
-					export = getService().getEMeasureHTML(id);
-					resp.setHeader(CONTENT_TYPE, TEXT_HTML);
-				} else if (SAVE.equals(type)) {
-					export = getService().getEMeasureXML(id);
-					if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
-					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getEmeasureXMLName(export.measureName + matVersion[0]));
-					}
-					else if(measure.getExportedDate().equals(measureLibraryService
-							.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))
-							 || measure.getExportedDate().after(measureLibraryService
-									 .getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+				if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
+					if ("open".equals(type)) {
+						export = getService().getEMeasureHTML(id);
+						resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+					} else if (SAVE.equals(type)) {
+						export = getService().getEMeasureXML(id);
+//						if (measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){
 						resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-								+ fnu.getEmeasureXMLName(export.measureName + matVersion[1]));
+								+ fnu.getEmeasureXMLName(export.measureName + matVersion[0]));
+//						}
 					}
-				}
+				}else{
+					export = getService().getNewEMeasureHTML(id);
+					resp.setHeader(CONTENT_TYPE, TEXT_HTML);
+					if (SAVE.equals(type)) {
+						resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
+								+ fnu.getEmeasureHTMLName(export.measureName + matVersion[1]));
+					}
+				}				
 			} else if (CODELIST.equals(format)) {
 				export = getService().getEMeasureXLS(id);
 				if(measure.getExportedDate().before(measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate()))){

@@ -269,6 +269,9 @@ public class HumanReadableGenerator {
 			
 			Element ulElement = parentListElement.appendElement(HTML_UL);
 			NodeList childNodes = item.getChildNodes();
+			if(childNodes.getLength() == 0){
+				ulElement.appendElement(HTML_LI).appendText("None");
+			}
 			for (int i=0; i< childNodes.getLength(); i++){
 				parseChild(childNodes.item(i), ulElement, item, populationOrSubtreeXMLProcessor);				
 			}

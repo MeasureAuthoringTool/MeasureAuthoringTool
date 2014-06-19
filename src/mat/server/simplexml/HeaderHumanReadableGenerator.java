@@ -7,6 +7,7 @@ import mat.server.util.XmlProcessor;
 import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -36,6 +37,7 @@ public class HeaderHumanReadableGenerator {
 		
 		System.out.println("HTML: " + htmlDocument.toString());
 		return htmlDocument;
+		//return htmlDocument.toString();
 	}
 	private static void createDocumentGeneral(XmlProcessor processor,Element table) throws DOMException, XPathExpressionException{
 		createRowAndColumns(table,"eMeasure Title");
@@ -235,17 +237,22 @@ public class HeaderHumanReadableGenerator {
 	}
 	
 	private static void createInnerItemTable(XmlProcessor processor, Element table) throws XPathExpressionException{
-		NodeList nameList = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "itemCount/elementRef/@name");
-		NodeList dataList = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "itemCount/elementRef/@dataType");
-		if(nameList.getLength() > 0){
-			Node name;
-			Node data;
-			for(int i = 0; i < nameList.getLength(); i++){
-				name = nameList.item(i);
-				data = dataList.item(i);
-				if(name != null && data != null){
+		NodeList list = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "itemCount/elementRef");
+		
+		if(list.getLength() > 0){
+			Node node;
+			for(int i = 0; i < list.getLength(); i++){
+				node = list.item(i);
+				NamedNodeMap map = node.getAttributes();
+				
+				if(node != null){
 					createRowAndColumns(table, "Measure Item Count");
-					createDiv(data.getTextContent() + ":" + name.getTextContent(), column);
+					if(map.item(0) != null && map.item(2) != null){
+						createDiv(map.item(0).getTextContent() + ":" + map.item(2).getTextContent(), column);
+					}
+					else{
+						createDiv("",column);
+					}
 				}
 			}
 		}
@@ -256,9 +263,8 @@ public class HeaderHumanReadableGenerator {
 	
 	private static void createComponentMeasureList(XmlProcessor processor,Element table) throws XPathExpressionException {
 		createRowAndColumns(table, "Component Measure");
-
 		
-		NodeList list = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "componentMeasures/measure/@id");
+		NodeList list = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "componentMeasures/measure");
 		if(list.getLength() > 0){
 			Node node;
 			
@@ -269,31 +275,41 @@ public class HeaderHumanReadableGenerator {
 			
 			column = row.appendElement("th");
 			setTDHeaderAttributes(column,"70%");
-			createSpan("Measure Name", column);
+			createSpan("Measure Name",column);
 			
 			column = row.appendElement("th");
 			setTDHeaderAttributes(column,"10%");
-			createSpan("Version Number", column);
+			createSpan("Version Number",column);
 			
 			column = row.appendElement("th");
 			setTDHeaderAttributes(column,"20%");
-			createSpan("GUID", column);
+			createSpan("GUID",column);
 			
 			for(int i = 0; i<list.getLength(); i++){
 				node = list.item(i);
+				
+				NamedNodeMap map = node.getAttributes();
+				
+				System.out.println(map.item(0).getTextContent());
 				
 				row = innerTableBody.appendElement(HTML_TR);
 				
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column,"70%","");
-				column.appendText("Initial Antibiotic Selection for Community-Acquired Pneumonia (CAP) in Immunocompetent Patients");
+				if(map.item(2) != null){
+					column.appendText(map.item(2).getTextContent());
+				}
 				
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column,"10%","");
+				Element ver = column.appendElement("ver");
+				ver.appendText("1.2.201");
 				
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column,"20%","");
-				column.appendText(node.getTextContent());
+				if(map.item(0) != null){
+					column.appendText(map.item(0).getTextContent());
+				}
 			}
 		}
 
@@ -344,7 +360,6 @@ public class HeaderHumanReadableGenerator {
 		Element head = htmlDocument.head();
 		htmlDocument.title(title);
 		appendStyleNode(head);
-		//head.before(doc);
 		return htmlDocument;
 	}
 

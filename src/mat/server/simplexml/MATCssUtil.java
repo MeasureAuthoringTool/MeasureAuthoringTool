@@ -48,9 +48,24 @@ public class MATCssUtil {
 		"}"+ " \n " +
 
 		".inner_table {"+ " \n " +
-		//"line-height: 10pt;"+ " \n " +
-		"border: 1pt inset rgb(0,0,0);" +
 		"width: 100%;"+ " \n " +
+		"}"+ " \n " +
+		
+		".inner_table td {" + "\n" +
+		"border-color:#ffffff;" + "\n" +
+		"border-style:solid;" + "\n" +
+		"border-width:1px;" + "\n" +
+		"border-top: 0;" + "\n" +
+		"border-left: 0;" + "\n" +
+		"border-right: 0;" + "\n" +
+		"}" + "\n" +
+		
+		".inner_table tbody > tr:last-child > td  {" + "\n" +
+		"border-bottom-style:none;" + "\n" +
+		"}" + "\n" +
+		
+		"ver {"+ " \n " +
+		"padding: 0px 5px" +
 		"}"+ " \n " +
 		
 		"tr {"+ " \n " +

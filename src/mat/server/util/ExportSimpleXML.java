@@ -249,18 +249,21 @@ public class ExportSimpleXML {
 		if(componentMeasureIdList !=null && componentMeasureIdList.getLength() >0){
 			for(int i=0; i<componentMeasureIdList.getLength(); i++){
 				Node measureNode = componentMeasureIdList.item(i);
-				measureId = componentMeasureIdList.item(i).getAttributes().getNamedItem("id").getNodeValue();
+				measureId = measureNode.getAttributes().getNamedItem("id").getNodeValue();
 				Node attrcomponentMeasureName = originalDoc.createAttribute("name");		
 				Node attrcomponentMeasureSetId = originalDoc.createAttribute("measureSetId");
+				Node attrcomponentVersionNo= originalDoc.createAttribute("versionNo");
 				Measure measure = MeasureDAO.find(measureId);
 				componentMeasureName = measure.getDescription();
 				componentMeasureSetId = measure.getMeasureSet().getId();
 				
 				attrcomponentMeasureName.setNodeValue(componentMeasureName);
 				attrcomponentMeasureSetId.setNodeValue(componentMeasureSetId);
+				attrcomponentVersionNo.setNodeValue(measure.getMajorVersionStr()+"."+measure.getMinorVersionStr());
 				
 				measureNode.getAttributes().setNamedItem(attrcomponentMeasureName);
 				measureNode.getAttributes().setNamedItem(attrcomponentMeasureSetId);
+				measureNode.getAttributes().setNamedItem(attrcomponentVersionNo);
 			}
 		}
 	}

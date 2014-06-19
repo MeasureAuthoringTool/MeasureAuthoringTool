@@ -62,7 +62,7 @@ public class HumanReadableGenerator {
 				populationOrSubtreeListElement.appendElement("br");
 			}
 			
-			parseAndBuildHTML(populationOrSubtreeXMLProcessor, populationOrSubtreeListElement, isPopulation);
+			parseAndBuildHTML(populationOrSubtreeXMLProcessor, populationOrSubtreeListElement);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -230,13 +230,24 @@ public class HumanReadableGenerator {
 	}
 	
 	private static void parseAndBuildHTML(
-			XmlProcessor populationOrSubtreeXMLProcessor, Element populationOrSubtreeListElement, boolean isPopulation) {
+			XmlProcessor populationOrSubtreeXMLProcessor, Element populationOrSubtreeListElement) {
 		
 		try {
 			Node rootNode = populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild();
-			NodeList childNodes = rootNode.getChildNodes();
+			parseAndBuildHTML(populationOrSubtreeXMLProcessor, populationOrSubtreeListElement, rootNode);			
+		} catch (DOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+	}
+	
+	private static void parseAndBuildHTML(
+			XmlProcessor populationOrSubtreeXMLProcessor, Element populationOrSubtreeListElement, Node clauseNode) {
+		
+		try {
+			NodeList childNodes = clauseNode.getChildNodes();
 			for(int i = 0;i < childNodes.getLength(); i++){
-				parseChild(childNodes.item(i),populationOrSubtreeListElement,rootNode,populationOrSubtreeXMLProcessor);
+				parseChild(childNodes.item(i),populationOrSubtreeListElement,clauseNode,populationOrSubtreeXMLProcessor);
 			}			
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block
@@ -598,7 +609,7 @@ public class HumanReadableGenerator {
 		try {
 			org.jsoup.nodes.Document humanReadableHTMLDocument = HeaderHumanReadableGenerator.generateHeaderHTMLForMeasure(simpleXmlStr);
 			XmlProcessor simpleXMLProcessor = resolveSubTreesInPopulations(simpleXmlStr);
-			generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
+			generateHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
 			humanReadableHTML = humanReadableHTMLDocument.toString();
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -607,10 +618,96 @@ public class HumanReadableGenerator {
 		return humanReadableHTML;
 	}
 
+	private static void generateHumanReadable(
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
+		generateTableOfContents(humanReadableHTMLDocument, simpleXMLProcessor);
+		generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
+	}
+
+	private static void generateTableOfContents(
+			Document humanReadableHTMLDocument,XmlProcessor simpleXMLProcessor) {
+		Element bodyElement = humanReadableHTMLDocument.body();
+		
+		bodyElement.append("<h2><a name=\"toc\">Table of Contents</a></h2>");
+		Element tocULElement = bodyElement.appendElement(HTML_UL);
+		
+		Element populationCriteriaLI = tocULElement.appendElement(HTML_LI);
+		populationCriteriaLI.append("<a href=\"#d1e405\">Population criteria</a>");
+		
+		//TODO:code to decide if we need to add 'Measure observations'
+		
+		Element dataCriteriaLI = tocULElement.appendElement(HTML_LI);
+		dataCriteriaLI.append("<a href=\"#d1e647\">Data criteria (QDM Data Elements)</a>");
+		
+		//TODO:code to decide if we need to add 'Reporting Stratification'
+		
+		Element supplementalCriteriaLI = tocULElement.appendElement(HTML_LI);
+		supplementalCriteriaLI.append("<a href=\"#d1e767\">Supplemental Data Elements</a>");
+		
+		bodyElement.append("<hr align=\"left\" color=\"teal\" size=\"2\" width=\"80%\">");
+		
+	}
+
 	private static void generatePopulationCriteriaHumanReadable(
-			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
 		
+		Element bodyElement = humanReadableHTMLDocument.body();
+		bodyElement.append("<h3><a name=\"d1e405\" href=\"#toc\">Population criteria</a></h3>");
+			
+		Element mainDivElement = bodyElement.appendElement("div");
+		Element mainListElement = mainDivElement.appendElement(HTML_UL);
+			
+		NodeList groupNodeList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/measureGrouping/group");
 		
+		for(int i=0;i<groupNodeList.getLength();i++){
+			
+			if(groupNodeList.getLength() > 1){
+				mainListElement.append("<br><b>------ Population Criteria "+ (i+1) +" ------</b><br><br>");
+			}
+			
+			Node groupNode = groupNodeList.item(i);
+						
+			NodeList clauseNodeList = groupNode.getChildNodes();
+			for(int j=0;j<clauseNodeList.getLength();j++){
+				Node clauseNode = clauseNodeList.item(j);
+				if("clause".equals(clauseNode.getNodeName())){
+					Element populationListElement = mainListElement.appendElement(HTML_LI);
+					Element boldNameElement = populationListElement.appendElement("b");
+					String populationName = getPopulationName(clauseNode.getAttributes().getNamedItem("type").getNodeValue());
+					if (groupNodeList.getLength() > 1){
+						populationName += " " + (i+1);
+					}
+					boldNameElement.appendText(populationName+" =");
+					parseAndBuildHTML(simpleXMLProcessor, populationListElement,clauseNode);
+				}
+			}
+		}
+	}
+
+	private static String getPopulationName(String nodeValue) {
+		String populationName = "";
+		if("initialPopulation".equals(nodeValue)){
+			populationName = "Initial Population";
+		}else if("measurePopulation".equals(nodeValue)){
+			populationName = "Measure Population";
+		}else if("measurePopulationExclusions".equals(nodeValue)){
+			populationName = "Measure Population Exclusions";
+		}else if("measureObservation".equals(nodeValue)){
+			populationName = "Measure Observation";
+		}else if("stratification".equals(nodeValue)){
+			populationName = "Stratification";
+		}else if("denominator".equals(nodeValue)){
+			populationName = "Denominator";
+		}else if("denominatorExclusions".equals(nodeValue)){
+			populationName = "Denominator Exclusions";
+		}else if("denominatorExceptions".equals(nodeValue)){
+			populationName = "Denominator Exceptions";
+		}else if("numerator".equals(nodeValue)){
+			populationName = "Numerator";
+		}else if("numeratorExclusions".equals(nodeValue)){
+			populationName = "Numerator Exclusions";
+		}
+		return populationName;
 	}
 
 	private static XmlProcessor resolveSubTreesInPopulations(String simpleXmlStr) {
@@ -645,13 +742,12 @@ public class HumanReadableGenerator {
 				parentNode.replaceChild(importedClauseNode, clauseNode);
 			}
 			removeNode("/measure/subTreeLookUp",simpleXMLProcessor);
-			System.out.println("Expanded simple xml:"+simpleXMLProcessor.transform(simpleXMLProcessor.getOriginalDoc()));			
+			System.out.println("Expanded simple xml:"+simpleXMLProcessor.transform(simpleXMLProcessor.getOriginalDoc()));
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		return null;
+		return simpleXMLProcessor;
 	}
 	
 	private static void removeNode(String nodeXPath, XmlProcessor xmlProcessor) throws XPathExpressionException {

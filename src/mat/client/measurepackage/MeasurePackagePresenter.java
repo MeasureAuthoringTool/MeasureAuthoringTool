@@ -507,6 +507,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 		view.getErrorMessageDisplay().clear();
 		view.getMeasurePackageWarningMsg().clear();
 		view.getMeasureErrorMessageDisplay().clear();
+		view.getSaveErrorMessageDisplay().clear();
 		
 	}
 	/**

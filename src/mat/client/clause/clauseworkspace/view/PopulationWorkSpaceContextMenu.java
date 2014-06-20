@@ -40,9 +40,6 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	 */
 	private static final String STRATIFICATION = "Stratification";
 	
-	/** The clause tree display. */
-	private XmlTreeDisplay clauseTreeDisplay;
-	
 	/**
 	 * Instantiates a new population work space context menu.
 	 *

@@ -1,7 +1,5 @@
 package mat.client.clause.clauseworkspace.view;
 
-import java.util.List;
-
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;

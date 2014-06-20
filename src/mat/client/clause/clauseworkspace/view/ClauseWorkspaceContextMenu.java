@@ -510,10 +510,6 @@ public class ClauseWorkspaceContextMenu {
 				if (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 1) {
 					addMenuLHS.setEnabled(false);
 				}
-//				if ((xmlTreeDisplay.getSelectedNode().getChilds().size() == 0)
-//						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() >= 2)) {
-//					addMenuRHS.setEnabled(false);
-//				}
 			}
 			popupMenuBar.addItem(addMenuLHS);
 			popupMenuBar.addItem(addMenuRHS);
@@ -675,10 +671,29 @@ public class ClauseWorkspaceContextMenu {
 				xmlTreeDisplay.getSelectedNode().getParent().getLabel().equalsIgnoreCase("SATISFIES ANY"))){
 			deleteMenu.setEnabled(checkIfTopChildNode());
 			cutMenu.setEnabled(checkIfTopChildNode());
-			pasteMenu.setEnabled(checkIfTopChildNode());
+			if( xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.ELEMENT_REF_NODE)
+				pasteMenu.setEnabled(checkIfTopChildNode());
+//			if( xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+//				if(xmlTreeDisplay.getSelectedNode().getParent().getChilds() != null && xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1)
+//					pasteMenu.setEnabled(true);
+//				else
+//					pasteMenu.setEnabled(false);
+//			}
 			moveUpMenu.setEnabled(checkIfTopChildNodeForSatisfy());
 			moveDownMenu.setEnabled(checkIfLastChildNodeForSatisfy());
-		} 
+		}
+		if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") || 
+				xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")){
+			
+			
+			if(xmlTreeDisplay.getCopiedNode() != null
+					&& xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE &&
+					xmlTreeDisplay.getSelectedNode().getChilds() != null && xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)
+				pasteMenu.setEnabled(true);
+			else
+				pasteMenu.setEnabled(false);
+			
+		}
 	}
 	/**
 	 * Timing Node Pop Up Menu Items.

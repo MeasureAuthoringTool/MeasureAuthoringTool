@@ -7,6 +7,7 @@ import mat.model.clause.QDSAttributes;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
+// TODO: Auto-generated Javadoc
 /**
  * The client side stub for the RPC service.
  */	
@@ -37,5 +38,13 @@ public interface QDSAttributesService extends RemoteService {
 	 * @return the all attributes by data type
 	 */
 	public List<QDSAttributes> getAllAttributesByDataType(String dataTypeName);
+	
+	/**
+	 * Check if qdm data type is present.
+	 *
+	 * @param dataTypeName the data type name
+	 * @return true, if successful
+	 */
+	public boolean checkIfQDMDataTypeIsPresent(String dataTypeName);
 }
 

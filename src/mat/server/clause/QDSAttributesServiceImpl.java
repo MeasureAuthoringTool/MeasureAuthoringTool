@@ -5,12 +5,15 @@ import java.util.Comparator;
 import java.util.List;
 
 import mat.client.clause.QDSAttributesService;
+import mat.dao.DataTypeDAO;
 import mat.dao.clause.QDSAttributesDAO;
+import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
 import mat.server.SpringRemoteServiceServlet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class QDSAttributesServiceImpl.
  */
@@ -69,6 +72,20 @@ public class QDSAttributesServiceImpl extends SpringRemoteServiceServlet impleme
 	 */
 	public QDSAttributesDAO getDAO() {
 		return (QDSAttributesDAO)context.getBean("qDSAttributesDAO");
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.QDSAttributesService#checkIfQDMDataTypeIsPresent(java.lang.String)
+	 */
+	@Override
+	public boolean checkIfQDMDataTypeIsPresent(String dataTypeName){
+		boolean checkIfDataTypeIsPresent = false;
+		DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
+		DataType dataType = dataTypeDAO.findByDataTypeName(dataTypeName);
+		if(dataType!=null){
+			checkIfDataTypeIsPresent = true;
+		} 
+		return checkIfDataTypeIsPresent;
 	}
 
 }

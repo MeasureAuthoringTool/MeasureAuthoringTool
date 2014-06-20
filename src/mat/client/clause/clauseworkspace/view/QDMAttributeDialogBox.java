@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.xml.client.Node;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class QDMAttributeDialogBox.
  */
@@ -116,10 +117,13 @@ public class QDMAttributeDialogBox {
 	/** The Constant attributeList. */
 	private static final List<String> attributeList = new ArrayList<String>();
 	
+	/** The quantity text box. */
 	private static  TextBox quantityTextBox = new TextBox();
 	
+	/** The units list box. */
 	private static  ListBox unitsListBox = new ListBox();
 	
+	/** The qdm list box. */
 	private static  ListBox qdmListBox = new ListBox();
 	
 	
@@ -194,33 +198,16 @@ public class QDMAttributeDialogBox {
 	
 	/**
 	 * Builds the and display dialog box.
-	 * 
-	 * @param qdmDataType
-	 *            the qdm data type
-	 * @param mode
-	 *            the mode
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
-	 * @param cellTreeNode
-	 *            the cell tree node
+	 *
+	 * @param qdmDataType            the qdm data type
+	 * @param mode            the mode
+	 * @param xmlTreeDisplay            the xml tree display
+	 * @param cellTreeNode            the cell tree node
+	 * @param checkForRemovedDataType the check for removed data type
 	 */
 	private static void buildAndDisplayDialogBox(String qdmDataType,
 			List<String> mode, final XmlTreeDisplay xmlTreeDisplay,
-			final CellTreeNode cellTreeNode) {
-		
-		boolean checkForRemovedDataType = false;
-		List<String> removedQdmDataType = new ArrayList<String>();
-		removedQdmDataType.add("Diagnostic Study, Result");
-		removedQdmDataType.add("Functional Status, Result");
-		removedQdmDataType.add("Laboratory Test, Result");
-		removedQdmDataType.add("Procedure, Result");
-		removedQdmDataType.add("Physical Exam, Finding");
-		removedQdmDataType.add("Intervention, Result");
-		
-		if(removedQdmDataType.contains(qdmDataType)){
-			checkForRemovedDataType = true;
-		}
-		
+			final CellTreeNode cellTreeNode, boolean checkForRemovedDataType) {
 		
 		final DialogBox qdmAttributeDialogBox = new DialogBox(false, true);
 	
@@ -259,7 +246,7 @@ public class QDMAttributeDialogBox {
 		}
 		hPanel.clear();
 		dialogContents.add(hPanel);
-		if(checkForRemovedDataType == true){
+		if(checkForRemovedDataType){
 			attributeListBox.clear();
 			attributeListBox.setEnabled(false);
 			hPanel.clear();
@@ -539,9 +526,13 @@ public class QDMAttributeDialogBox {
 	
 	/**
 	 * Save to model.
-	 * 
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
+	 *
+	 * @param xmlTreeDisplay            the xml tree display
+	 * @param attributeListBox the attribute list box
+	 * @param modeListBox the mode list box
+	 * @param qdmListBox the qdm list box
+	 * @param quantityTextBox the quantity text box
+	 * @param unitsListBox the units list box
 	 */
 	@SuppressWarnings("unchecked")
 	protected static void saveToModel(XmlTreeDisplay xmlTreeDisplay,ListBox attributeListBox,ListBox modeListBox,ListBox qdmListBox,
@@ -583,6 +574,14 @@ public class QDMAttributeDialogBox {
 		
 	}
 	
+	/**
+	 * Sets the existing attribute in popup.
+	 *
+	 * @param attributeNode the attribute node
+	 * @param attributeListBox the attribute list box
+	 * @param modeListBox the mode list box
+	 * @param dialogContents1 the dialog contents1
+	 */
 	private static void setExistingAttributeInPopup(CellTreeNode  attributeNode,ListBox attributeListBox,ListBox modeListBox,
 			VerticalPanel dialogContents1){
 		if (attributeNode == null) {
@@ -815,31 +814,52 @@ public class QDMAttributeDialogBox {
 	private static void findAttributesForDataType(final String dataType,
 			final boolean isOccuranceQDM, final List<String> mode2,
 			final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
-		attributeService.getAllAttributesByDataType(dataType,
-				new AsyncCallback<List<QDSAttributes>>() {
+		attributeService.checkIfQDMDataTypeIsPresent(dataType, new AsyncCallback<Boolean>() {
+			
+			@Override
+			public void onSuccess(Boolean result) {
+				if(result){
+					
+					attributeService.getAllAttributesByDataType(dataType,
+							new AsyncCallback<List<QDSAttributes>>() {
+						
+						@Override
+						public void onFailure(Throwable caught) {
+							caught.printStackTrace();
+							System.out
+							.println("Error retrieving data type attributes. "
+									+ caught.getMessage());
+						}
+						
+						@Override
+						public void onSuccess(List<QDSAttributes> result) {
+							for (QDSAttributes qdsAttributes : result) {
+								if (isOccuranceQDM
+										&& NEGATION_RATIONALE.equals(qdsAttributes
+												.getName())) {
+									continue;
+								}
+								attributeList.add(qdsAttributes.getName());
+							}
+							buildAndDisplayDialogBox(dataType, mode2,
+									xmlTreeDisplay, cellTreeNode, false);
+						}
+					});
+				} else {
+					buildAndDisplayDialogBox(dataType, mode2,
+							xmlTreeDisplay, cellTreeNode, true);
+				}
+				
+			}
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				caught.printStackTrace();
-				System.out
-				.println("Error retrieving data type attributes. "
-						+ caught.getMessage());
-			}
-			
-			@Override
-			public void onSuccess(List<QDSAttributes> result) {
-				for (QDSAttributes qdsAttributes : result) {
-					if (isOccuranceQDM
-							&& NEGATION_RATIONALE.equals(qdsAttributes
-									.getName())) {
-						continue;
-					}
-					attributeList.add(qdsAttributes.getName());
-				}
-				buildAndDisplayDialogBox(dataType, mode2,
-						xmlTreeDisplay, cellTreeNode);
+				// TODO Auto-generated method stub
+				
 			}
 		});
+		
+		
 	}
 	
 	/*
@@ -897,6 +917,12 @@ public class QDMAttributeDialogBox {
 	}
 	
 	
+	/**
+	 * Checks if is valid attribute.
+	 *
+	 * @param attributeListBox the attribute list box
+	 * @return true, if is valid attribute
+	 */
 	private static boolean isValidAttribute(ListBox attributeListBox){
 		boolean isValid = true;
 		if(attributeListBox.getSelectedIndex() == 0){
@@ -906,6 +932,12 @@ public class QDMAttributeDialogBox {
 		return isValid;
 	}
 	
+	/**
+	 * Checks if is valid mode.
+	 *
+	 * @param modeListBox the mode list box
+	 * @return true, if is valid mode
+	 */
 	private static boolean isValidMode(ListBox modeListBox){
 		boolean isValid = true;
 		if(modeListBox.getSelectedIndex() == 0){
@@ -915,6 +947,12 @@ public class QDMAttributeDialogBox {
 		return isValid;
 	}
 	
+	/**
+	 * Checks if is valid quantity.
+	 *
+	 * @param quantityTextBox the quantity text box
+	 * @return true, if is valid quantity
+	 */
 	private static boolean isValidQuantity(TextBox quantityTextBox){
 		boolean isValid = true;
 		if(quantityTextBox.getValue().equals("") ){
@@ -951,6 +989,7 @@ public class QDMAttributeDialogBox {
 	 * Gets the widget.
 	 *
 	 * @param hPanel the h panel
+	 * @param errorMessage the error message
 	 * @return the widget
 	 */
 	private static Widget getWidget(HorizontalPanel hPanel,String errorMessage){

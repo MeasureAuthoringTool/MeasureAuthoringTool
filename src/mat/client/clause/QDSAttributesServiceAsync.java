@@ -6,6 +6,7 @@ import mat.model.clause.QDSAttributes;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Interface QDSAttributesServiceAsync.
  */
@@ -42,4 +43,13 @@ public interface QDSAttributesServiceAsync {
 	 */
 	void getAllAttributesByDataType(String dataTypeName,
 			AsyncCallback<List<QDSAttributes>> callback);
+	
+	/**
+	 * Check if qdm data type is present.
+	 *
+	 * @param dataTypeName the data type name
+	 * @param callback the callback
+	 */
+	void checkIfQDMDataTypeIsPresent(String dataTypeName, 
+			AsyncCallback<Boolean> callback);
 }

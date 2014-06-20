@@ -45,6 +45,7 @@ public class MATCssUtil {
 		"table {"+ " \n " +
 		"line-height: 10pt;"+ " \n " +
 		"width: 80%;"+ " \n " +
+		"font-size: 11px;"+ " \n " +
 		"}"+ " \n " +
 
 		".inner_table {"+ " \n " +

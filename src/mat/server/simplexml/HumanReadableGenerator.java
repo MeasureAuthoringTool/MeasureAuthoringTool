@@ -552,21 +552,21 @@ public class HumanReadableGenerator {
 		if("AGE AT".equals(typeAttribute)){
 			functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " ";
 		}else if(functionDisplayName.startsWith("AVG")){
-			functionDisplayName = functionDisplayName.replaceFirst("AVG", "Average of");
+			functionDisplayName = functionDisplayName.replaceFirst("AVG", "Average") + " of";
 		}else if(functionDisplayName.startsWith("COUNT")){
-			functionDisplayName = functionDisplayName.replaceFirst("COUNT", "Count of");
+			functionDisplayName = functionDisplayName.replaceFirst("COUNT", "Count") + " of";
 		}else if(functionDisplayName.startsWith("DATEDIFF")){
-			functionDisplayName = functionDisplayName.replaceFirst("DATEDIFF", "Difference between dates of");
+			functionDisplayName = functionDisplayName.replaceFirst("DATEDIFF", "Difference between dates") + " of";
 		}else if(functionDisplayName.startsWith("MAX")){
-			functionDisplayName = functionDisplayName.replaceFirst("MAX", "Maximum of");
+			functionDisplayName = functionDisplayName.replaceFirst("MAX", "Maximum") + " of";
 		}else if(functionDisplayName.startsWith("MIN")){
-			functionDisplayName = functionDisplayName.replaceFirst("MIN", "Min of");
+			functionDisplayName = functionDisplayName.replaceFirst("MIN", "Min") + " of";
 		}else if(functionDisplayName.startsWith("MEDIAN")){
-			functionDisplayName = functionDisplayName.replaceFirst("MEDIAN", "Median of");
+			functionDisplayName = functionDisplayName.replaceFirst("MEDIAN", "Median") + " of";
 		}else if(functionDisplayName.startsWith("SUM")){
-			functionDisplayName = functionDisplayName.replaceFirst("SUM", "Sum of");
+			functionDisplayName = functionDisplayName.replaceFirst("SUM", "Sum") + " of";
 		}else if(functionDisplayName.startsWith("TIMEDIFF")){
-			functionDisplayName = functionDisplayName.replaceFirst("TIMEDIFF", "Time difference of");
+			functionDisplayName = functionDisplayName.replaceFirst("TIMEDIFF", "Time difference") + " of";;
 		}else if(functionDisplayName.startsWith("FOURTH")){
 			functionDisplayName = functionDisplayName.replaceFirst("FOURTH", "Fourth");
 		}else if(functionDisplayName.startsWith("FIFTH")){
@@ -623,10 +623,13 @@ public class HumanReadableGenerator {
 
 	private static void generateHumanReadable(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
+		
 		generateTableOfContents(humanReadableHTMLDocument, simpleXMLProcessor);
 		generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
+		generateDataCriteria(humanReadableHTMLDocument, simpleXMLProcessor);
+		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
 	}
-
+	
 	private static void generateTableOfContents(
 			Document humanReadableHTMLDocument,XmlProcessor simpleXMLProcessor) {
 		Element bodyElement = humanReadableHTMLDocument.body();
@@ -648,6 +651,29 @@ public class HumanReadableGenerator {
 		supplementalCriteriaLI.append("<a href=\"#d1e767\">Supplemental Data Elements</a>");
 		
 		bodyElement.append("<hr align=\"left\" color=\"teal\" size=\"2\" width=\"80%\">");
+		
+	}
+
+	private static void generateDataCriteria(
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
+		
+		Element bodyElement = humanReadableHTMLDocument.body();
+		bodyElement.append("<h3><a name=\"d1e647\" href=\"#toc\">Data criteria (QDM Data Elements)</a></h3>");
+			
+		Element mainDivElement = bodyElement.appendElement("div");
+		Element mainListElement = mainDivElement.appendElement(HTML_UL);
+		
+	}
+	
+	private static void generateSupplementalData(
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
+		
+		Element bodyElement = humanReadableHTMLDocument.body();
+		bodyElement.append("<h3><a name=\"d1e767\" href=\"#toc\">Supplemental Data Elements</a></h3>");
+			
+		Element mainDivElement = bodyElement.appendElement("div");
+		Element mainListElement = mainDivElement.appendElement(HTML_UL);
+		
 		
 	}
 

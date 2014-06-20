@@ -24,6 +24,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Node;
+// TODO: Auto-generated Javadoc
 /**
  * The Class PopulationWorkSpaceContextMenu.
  *
@@ -39,6 +40,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	 */
 	private static final String STRATIFICATION = "Stratification";
 	
+	/** The clause tree display. */
 	private XmlTreeDisplay clauseTreeDisplay;
 	
 	/**

@@ -42,6 +42,8 @@ import com.google.gwt.xml.client.XMLParser;
  * The Class XmlTreePresenter.
  */
 public class XmlTreePresenter {
+	
+	/** The Constant COMMENT. */
 	private static final String COMMENT = "COMMENT";
 	/**
 	 * Cell Tree Node Size to remove show more.
@@ -116,9 +118,9 @@ public class XmlTreePresenter {
 	
 	/**
 	 * Load xml tree.
-	 * 
-	 * @param populationWorkSpacePanel
-	 *            the SimplePanel
+	 *
+	 * @param populationWorkSpacePanel the SimplePanel
+	 * @param panelName the panel name
 	 */
 	public final void loadXmlTree(SimplePanel populationWorkSpacePanel, String panelName) {
 		
@@ -205,6 +207,11 @@ public class XmlTreePresenter {
 	}
 	
 	
+	/**
+	 * Load clause logic.
+	 *
+	 * @return the scroll panel
+	 */
 	public final ScrollPanel loadClauseLogic(){
 		XmlTreeDisplay clauseTreeDisplay;
 		ScrollPanel simplePanel = new ScrollPanel();
@@ -235,8 +242,9 @@ public class XmlTreePresenter {
 		simplePanel.add(clauseTreeDisplay.asWidget());
 		return simplePanel;
 	}
+	
 	/**
-	 * 
+	 * Adds the clause handler.
 	 */
 	private void addClauseHandler() {
 		
@@ -353,6 +361,13 @@ public class XmlTreePresenter {
 		});
 	}
 	
+	/**
+	 * Change clause.
+	 *
+	 * @param cellTreeNode the cell tree node
+	 * @param selectedClauseName the selected clause name
+	 * @param selectedClauseUUID the selected clause uuid
+	 */
 	private void changeClause(CellTreeNode cellTreeNode, String selectedClauseName, String selectedClauseUUID){
 		
 		if(cellTreeNode.getChilds().size() > 0){

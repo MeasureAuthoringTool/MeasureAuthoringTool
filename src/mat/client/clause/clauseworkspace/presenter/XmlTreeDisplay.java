@@ -200,7 +200,6 @@ public interface XmlTreeDisplay {
 	/**
 	 * Gets the validate btn.
 	 *
-	 * @param treeNode the tree node
 	 * @return the validate btn
 	 */
 	//Commented Validate Button from Population Work Space as part of Mat-3162
@@ -248,13 +247,8 @@ public interface XmlTreeDisplay {
 	
 	/**
 	 * Edits the node.
-	 * 
-	 * @param isValideNodeValue
-	 *            the is valide node value
-	 * @param node
-	 *            the node
-	 * @param subTree
-	 *            the sub tree
+	 *
+	 * @param isValid the new valid
 	 */
 //	void editNode(boolean isValideNodeValue, CellTreeNode node,
 //			TreeNode subTree);
@@ -317,18 +311,23 @@ public interface XmlTreeDisplay {
 	public ErrorMessageDisplay getClearErrorDisplay();
 	
 	/**
+	 * Gets the comment buttons.
+	 *
 	 * @return Button.
 	 */
 	Button getCommentButtons();
 	
 	/**
+	 * Gets the comment area.
+	 *
 	 * @return TextArea.
 	 */
 	mat.client.clause.clauseworkspace.view.XmlTreeView.CommentAreaTextBox getCommentArea();
 	
 	/**
 	 * Success Message Panel for Add Comment.
-	 * @return
+	 *
+	 * @return the success message add comment display
 	 */
 	SuccessMessageDisplay getSuccessMessageAddCommentDisplay();
 	
@@ -338,27 +337,33 @@ public interface XmlTreeDisplay {
 	void addCommentNodeToSelectedNode();
 	
 	/**
-	 * 
+	 * Update suggest oracle.
 	 */
 	public abstract void updateSuggestOracle();
 	
 	/**
-	 * 
+	 * Clear and add clause names to list box.
 	 */
 	public abstract void clearAndAddClauseNamesToListBox();
 	
 	/**
-	 * @return
+	 * Gets the clause names list box.
+	 *
+	 * @return the clause names list box
 	 */
 	public abstract ListBox getClauseNamesListBox();
 	
 	/**
-	 * @return
+	 * Gets the show clause button.
+	 *
+	 * @return the show clause button
 	 */
 	public abstract Button getShowClauseButton();
 	
 	/**
-	 * @return
+	 * Gets the delete clause button.
+	 *
+	 * @return the delete clause button
 	 */
 	Button getDeleteClauseButton();
 	
@@ -373,11 +378,32 @@ public interface XmlTreeDisplay {
 	 */
 	void moveDown();
 
+	/**
+	 * Gets the button collapse clause work space.
+	 *
+	 * @return the button collapse clause work space
+	 */
 	public abstract Button getButtonCollapseClauseWorkSpace();
 
+	/**
+	 * Gets the button expand clause work space.
+	 *
+	 * @return the button expand clause work space
+	 */
 	public abstract Button getButtonExpandClauseWorkSpace();
 
+	/**
+	 * Edits the node.
+	 *
+	 * @param isValideNodeValue the is valide node value
+	 * @param node the node
+	 */
 	void editNode(boolean isValideNodeValue, CellTreeNode node);
 	
+	/**
+	 * Sets the clause enabled.
+	 *
+	 * @param isClauseOpen the new clause enabled
+	 */
 	public void setClauseEnabled(boolean isClauseOpen); 
 }

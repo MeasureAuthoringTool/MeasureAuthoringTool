@@ -253,8 +253,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The set error type. */
 	private String setErrorType;
 	
+	/** The is clause open. */
 	private boolean isClauseOpen;
 	
+	/** The is editable. */
 	private boolean isEditable;
 	/**
 	 * Instantiates a new xml tree view.
@@ -2056,6 +2058,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return validateBtnPopulationWorkspace;
 	}
 
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#setClauseEnabled(boolean)
+	 */
 	@Override
 	public void setClauseEnabled(boolean isClauseOpen) {
 		this.isClauseOpen = isClauseOpen;

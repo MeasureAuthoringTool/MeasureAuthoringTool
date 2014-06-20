@@ -120,8 +120,6 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	private WarningMessageDisplay measurePackageWarningMsg = new WarningMessageDisplay();
 	/** The measure error messages. */
 	private ErrorMessageDisplay measureErrorMessages = new ErrorMessageDisplay();
-	/** The package success messages. */
-	private SuccessMessageDisplay packageSuccessMessages = new SuccessMessageDisplay();
 	/** The supp data success messages. */
 	private SuccessMessageDisplay suppDataSuccessMessages = new SuccessMessageDisplay();
 	/** The package measure. */
@@ -211,7 +209,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		cellTablePanel.removeStyleName("valueSetSearchPanel");
 		content.getElement().setAttribute("id", "MeasurePackagerContentFlowPanel");
 		createNew.getElement().setAttribute("id", "CreateNewGroupingButton");
-		content.add(measureErrorMessages);
+		content.add(saveErrorMessageDisplay);
 		content.add(cellTablePanel);
 		content.add(new SpacerWidget());
 		content.add(createNew);
@@ -227,7 +225,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 		content.add(new SpacerWidget());
 		content.add(measurePackageSuccessMsg);
 		content.add(measurePackageWarningMsg);
-		content.add(saveErrorMessageDisplay);
+		content.add(measureErrorMessages);
 		packageMeasure.setTitle("Create Measure Package");
 		packageMeasureAndExport.getElement().setId("Create Measure Package and Export");
 		packageMeasureAndExport.setTitle("Create Measure Package and Export");

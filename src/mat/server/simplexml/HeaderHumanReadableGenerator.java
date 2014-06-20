@@ -4,7 +4,6 @@ import javax.xml.xpath.XPathExpressionException;
 
 import mat.server.util.XmlProcessor;
 
-import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
@@ -686,8 +685,8 @@ public class HeaderHumanReadableGenerator {
 		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
 		
 		//Must be added first for proper formating and styling
-		DocumentType doc = new DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd","");
-		htmlDocument.appendChild(doc);
+//		DocumentType doc = new DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd","");
+//		htmlDocument.appendChild(doc);
 		Element html = htmlDocument.appendElement("html");
 	    html.appendElement("head");
 	    html.appendElement("body");

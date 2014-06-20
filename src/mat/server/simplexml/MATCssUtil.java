@@ -64,7 +64,7 @@ public class MATCssUtil {
 		"border-bottom-style:none;" + "\n" +
 		"}" + "\n" +
 		
-		"ver {"+ " \n " +
+		".ver {"+ " \n " +
 		"padding: 0px 5px" +
 		"}"+ " \n " +
 		

@@ -578,10 +578,11 @@ public class HeaderHumanReadableGenerator {
 				
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column,"10%","");
-				Element ver = column.appendElement("ver");
+				Element div = column.appendElement("div");
+				div.attr("class", "ver");
 				//map.item(3) pulls the Version Number from the NamedNodeMap
 				if(map.item(3) != null){
-					ver.appendText(map.item(3).getTextContent());
+					div.appendText(map.item(3).getTextContent());
 				}
 				
 				column = row.appendElement(HTML_TD);

@@ -511,6 +511,12 @@ public class ClauseWorkspaceContextMenu {
 					addMenuLHS.setEnabled(false);
 				}
 			}
+			if(xmlTreeDisplay.getCopiedNode() != null
+					&& xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE &&
+					xmlTreeDisplay.getSelectedNode().getChilds() != null && xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)
+				pasteMenu.setEnabled(true);
+			else
+				pasteMenu.setEnabled(false);
 			popupMenuBar.addItem(addMenuLHS);
 			popupMenuBar.addItem(addMenuRHS);
 			
@@ -535,7 +541,8 @@ public class ClauseWorkspaceContextMenu {
 		copyMenu.setEnabled(true);
 		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
 		if ((xmlTreeDisplay.getCopiedNode() != null)
-				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
+				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) && ! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") && 
+				! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")) {
 			pasteMenu.setEnabled(true);
 		}
 		cutMenu.setEnabled(true);
@@ -671,8 +678,8 @@ public class ClauseWorkspaceContextMenu {
 				xmlTreeDisplay.getSelectedNode().getParent().getLabel().equalsIgnoreCase("SATISFIES ANY"))){
 			deleteMenu.setEnabled(checkIfTopChildNode());
 			cutMenu.setEnabled(checkIfTopChildNode());
-			if( xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.ELEMENT_REF_NODE)
-				pasteMenu.setEnabled(checkIfTopChildNode());
+//			if( xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.ELEMENT_REF_NODE)
+//				pasteMenu.setEnabled(checkIfTopChildNode());
 //			if( xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
 //				if(xmlTreeDisplay.getSelectedNode().getParent().getChilds() != null && xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1)
 //					pasteMenu.setEnabled(true);
@@ -682,18 +689,7 @@ public class ClauseWorkspaceContextMenu {
 			moveUpMenu.setEnabled(checkIfTopChildNodeForSatisfy());
 			moveDownMenu.setEnabled(checkIfLastChildNodeForSatisfy());
 		}
-		if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") || 
-				xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")){
-			
-			
-			if(xmlTreeDisplay.getCopiedNode() != null
-					&& xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE &&
-					xmlTreeDisplay.getSelectedNode().getChilds() != null && xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)
-				pasteMenu.setEnabled(true);
-			else
-				pasteMenu.setEnabled(false);
-			
-		}
+		
 	}
 	/**
 	 * Timing Node Pop Up Menu Items.

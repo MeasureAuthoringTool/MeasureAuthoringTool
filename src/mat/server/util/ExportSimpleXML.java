@@ -59,6 +59,9 @@ public class ExportSimpleXML {
 	/** The Constant MEASUREMENT_PERIOD_OID. */
 	private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
 	
+	/** The measure_ id. */
+	private static String measure_Id;
+	
 	/**
 	 * Export.
 	 * 
@@ -76,7 +79,8 @@ public class ExportSimpleXML {
 		try {
 			measureXMLDocument = getXMLDocument(measureXMLObject);
 			if(validateMeasure(measureXMLDocument, message)){
-				exportedXML = generateExportedXML(measureXMLDocument, measureDAO);
+				measure_Id = measureXMLObject.getMeasure_id();
+				exportedXML = generateExportedXML(measureXMLDocument, measureDAO, measure_Id);
 			}
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
@@ -182,12 +186,13 @@ public class ExportSimpleXML {
 	 * @param measureXMLDocument
 	 *            the measure xml document
 	 * @param measureDAO TODO
+	 * @param measure_Id TODO
 	 * @return the string
 	 */
-	private static String generateExportedXML(Document measureXMLDocument, MeasureDAO measureDAO) {
+	private static String generateExportedXML(Document measureXMLDocument, MeasureDAO measureDAO, String measure_Id) {
 		_logger.info("In ExportSimpleXML.generateExportedXML()");
 		try {
-			return traverseXML(measureXMLDocument, measureDAO);
+			return traverseXML(measureXMLDocument, measureDAO, measure_Id);
 		} catch (Exception e) {
 			_logger.info("Exception thrown on ExportSimpleXML.generateExportedXML()");
 			e.printStackTrace();
@@ -202,12 +207,14 @@ public class ExportSimpleXML {
 	 * @param originalDoc
 	 *            the original doc
 	 * @param MeasureDAO TODO
+	 * @param measure_Id TODO
 	 * @return the string
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	private static String traverseXML(Document originalDoc, MeasureDAO MeasureDAO) throws XPathExpressionException {
+	private static String traverseXML(Document originalDoc, MeasureDAO MeasureDAO, String measure_Id) throws XPathExpressionException {
 		//set attributes
+		updateVersionforMeasureDetails(originalDoc, MeasureDAO, measure_Id);
 		setAttributesForComponentMeasures(originalDoc, MeasureDAO);
 		List<String> usedClauseIds = getUsedClauseIds(originalDoc);
 		
@@ -234,13 +241,31 @@ public class ExportSimpleXML {
 	}
 	
 	/**
+	 * Update versionfor measure details.
+	 *
+	 * @param originalDoc the original doc
+	 * @param measureDAO the measure dao
+	 * @param measure_Id TODO
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static void updateVersionforMeasureDetails(Document originalDoc, MeasureDAO measureDAO, String measure_Id) throws XPathExpressionException {
+		String xPathForMeasureDetailsVerion = "/measure/measureDetails/version";
+		Node versionNode = (Node) xPath.evaluate(xPathForMeasureDetailsVerion, originalDoc, XPathConstants.NODE);
+		Measure measure = measureDAO.find(measure_Id);
+		
+		versionNode.setTextContent(measure.getMajorVersionStr() 
+				+ "."+measure.getMinorVersionStr() + "."+measure.getRevisionNumber());
+		
+	}
+
+	/**
 	 * Sets the attributes for component measures.
 	 *
 	 * @param originalDoc the original doc
-	 * @param MeasureDAO the measure dao
+	 * @param measureDAO the measure dao
 	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private static void setAttributesForComponentMeasures(Document originalDoc, MeasureDAO MeasureDAO) throws XPathExpressionException{
+	private static void setAttributesForComponentMeasures(Document originalDoc, MeasureDAO measureDAO) throws XPathExpressionException{
 		String measureId ="";
 		String componentMeasureName ="";
 		String componentMeasureSetId ="";
@@ -253,7 +278,7 @@ public class ExportSimpleXML {
 				Node attrcomponentMeasureName = originalDoc.createAttribute("name");		
 				Node attrcomponentMeasureSetId = originalDoc.createAttribute("measureSetId");
 				Node attrcomponentVersionNo= originalDoc.createAttribute("versionNo");
-				Measure measure = MeasureDAO.find(measureId);
+				Measure measure = measureDAO.find(measureId);
 				componentMeasureName = measure.getDescription();
 				componentMeasureSetId = measure.getMeasureSet().getId();
 				
@@ -520,6 +545,15 @@ public class ExportSimpleXML {
 	
 	
 
+	/**
+	 * Modify associated popid.
+	 *
+	 * @param previousUUID the previous uuid
+	 * @param currentUUID the current uuid
+	 * @param groupSequence the group sequence
+	 * @param originalDoc the original doc
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private static void modifyAssociatedPOPID(String previousUUID, String currentUUID,String groupSequence,  Document originalDoc) throws XPathExpressionException {
 		NodeList nodeList = (NodeList)xPath.evaluate("/measure/measureGrouping/group[@sequence='"+ 
 	                           groupSequence +"']/packageClause[@associatedPopulationUUID='"+ previousUUID +"']", 

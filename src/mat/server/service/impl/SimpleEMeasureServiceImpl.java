@@ -602,7 +602,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 		// 2 add version field
 		final String versionStart = "<version>";
 		final String versionEnd = "</version>";
-		String vStr = measure.getMajorVersionStr();
+		String vStr = measure.getMajorVersionStr() + "." + measure.getMinorVersionStr() + "." + measure.getRevisionNumber();
 		if (emeasureXMLStr.contains(versionStart)) {
 			int start = emeasureXMLStr.indexOf(versionStart)
 					+ versionStart.length();

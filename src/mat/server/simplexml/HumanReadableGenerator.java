@@ -10,6 +10,7 @@ import mat.server.util.XmlProcessor;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.DOMException;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -26,7 +27,8 @@ public class HumanReadableGenerator {
 	private static final String SUB_TREE = "subTree";
 	private static final String COMMENT = "comment";
 	private static final String LOGICAL_OP = "logicalOp";
-
+	
+	private static Boolean ShowOnlyVariableName = false;
 	public static String generateHTMLForPopulationOrSubtree(String measureId, String subXML,
 			String measureXML) {
 		org.jsoup.nodes.Document htmlDocument = null;
@@ -285,9 +287,24 @@ public class HumanReadableGenerator {
 			}
 			return;
 		}else if(SUB_TREE.equals(nodeName)){
-			NodeList childNodes = item.getChildNodes();
-			for (int i=0; i< childNodes.getLength(); i++){
-				parseChild(childNodes.item(i), parentListElement,parentNode, populationOrSubtreeXMLProcessor);				
+			NamedNodeMap map = item.getAttributes();
+			System.out.println(map.item(1).getNodeValue());
+			System.out.println(map.item(0).getNodeValue());
+			if("true".equalsIgnoreCase(map.item(1).getNodeValue()) && ShowOnlyVariableName == false){
+				System.out.println("HERE!!");
+				Element liElement = parentListElement.appendElement(HTML_LI);
+				if(LOGICAL_OP.equals(parentNode.getNodeName()) ){
+					
+					liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+				}
+				//Element liElement = parentListElement.appendElement(HTML_LI);
+				liElement.appendText("$" + map.item(0).getNodeValue());
+			}
+			else{
+				NodeList childNodes = item.getChildNodes();
+				for (int i=0; i< childNodes.getLength(); i++){
+					parseChild(childNodes.item(i), parentListElement,parentNode, populationOrSubtreeXMLProcessor);				
+				}
 			}
 		}else if(SET_OP.equals(nodeName)){
 			//Element liElement = parentListElement.appendElement(HTML_LI);
@@ -340,8 +357,10 @@ public class HumanReadableGenerator {
 				}else{
 					liElement.appendText(getNodeText(item, populationOrSubtreeXMLProcessor));
 				}
+				System.out.println("HAS A LOGICAL OP");
 			}else{
 				parentListElement.appendText(getNodeText(item,populationOrSubtreeXMLProcessor));
+				System.out.println("ELSE");
 			}
 		}else if(FUNCTIONAL_OP.equals(nodeName)){
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
@@ -612,6 +631,9 @@ public class HumanReadableGenerator {
 		try {
 			org.jsoup.nodes.Document humanReadableHTMLDocument = HeaderHumanReadableGenerator.generateHeaderHTMLForMeasure(simpleXmlStr);
 			XmlProcessor simpleXMLProcessor = resolveSubTreesInPopulations(simpleXmlStr);
+			//XmlProcessor simpleXMLProcessor = new XmlProcessor(simpleXmlStr);
+			System.out.println(simpleXmlStr);
+			
 			generateHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
 			humanReadableHTML = humanReadableHTMLDocument.toString();
 		} catch (XPathExpressionException e) {
@@ -626,6 +648,7 @@ public class HumanReadableGenerator {
 		
 		generateTableOfContents(humanReadableHTMLDocument, simpleXMLProcessor);
 		generatePopulationCriteriaHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
+		generateQDMVariables(humanReadableHTMLDocument, simpleXMLProcessor);
 		generateDataCriteria(humanReadableHTMLDocument, simpleXMLProcessor);
 		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
 	}
@@ -641,6 +664,9 @@ public class HumanReadableGenerator {
 		populationCriteriaLI.append("<a href=\"#d1e405\">Population criteria</a>");
 		
 		//TODO:code to decide if we need to add 'Measure observations'
+		
+		Element dataVariables = tocULElement.appendElement(HTML_LI);
+		dataVariables.append("<a href=\"#d1e539\">Data Criteria (QDM Variables)</a>");
 		
 		Element dataCriteriaLI = tocULElement.appendElement(HTML_LI);
 		dataCriteriaLI.append("<a href=\"#d1e647\">Data criteria (QDM Data Elements)</a>");
@@ -676,7 +702,36 @@ public class HumanReadableGenerator {
 		
 		
 	}
+	
+	private static void generateQDMVariables(
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
+		
+		Element bodyElement = humanReadableHTMLDocument.body();
+		bodyElement.append("<h3><a name=\"d1e539\" href=\"#toc\">Data Criteria (QDM Variables)</a></h3>");
+			
+		Element mainDivElement = bodyElement.appendElement("div");
+		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 
+		NodeList variables = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@qdmVariable='true']");
+		Node node;
+		for(int i=0; i<variables.getLength();i++){
+			node = variables.item(i);
+			System.out.println(node.getNodeName());
+			NamedNodeMap map = node.getAttributes();
+			String name = map.item(0).getNodeValue();
+			if (name.length() > 0){
+				name = "$" + name;
+			}
+			Element variableElement = mainListElement.appendElement(HTML_LI);
+			Element boldNameElement = variableElement.appendElement("b");
+			boldNameElement.appendText(name+" = ");
+			Element indentListElement = variableElement.appendElement(HTML_UL);
+			ShowOnlyVariableName= true;
+			parseChild(node,indentListElement, node.getParentNode(),simpleXMLProcessor);
+			ShowOnlyVariableName = false;
+		}
+	}
+	
 	private static void generatePopulationCriteriaHumanReadable(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
 		
@@ -770,7 +825,7 @@ public class HumanReadableGenerator {
 				Node parentNode = clauseNode.getParentNode();
 				parentNode.replaceChild(importedClauseNode, clauseNode);
 			}
-			removeNode("/measure/subTreeLookUp",simpleXMLProcessor);
+			//removeNode("/measure/subTreeLookUp",simpleXMLProcessor);
 			System.out.println("Expanded simple xml:"+simpleXMLProcessor.transform(simpleXMLProcessor.getOriginalDoc()));
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block

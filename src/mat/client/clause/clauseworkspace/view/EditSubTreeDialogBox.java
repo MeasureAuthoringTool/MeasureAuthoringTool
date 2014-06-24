@@ -26,6 +26,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
  */
 public class EditSubTreeDialogBox {
 	
+	/** The is clause present. */
+	static boolean isClausePresent = false;
+	
+	/** The result. */
+	static boolean result = false;
+	
+	/** The Validation message. */
+	public static Label ValidationMessage = new Label();
+	
 	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(false,true);
 	/**
@@ -35,6 +44,7 @@ public class EditSubTreeDialogBox {
 	 * @param cellTreeNode the cell tree node
 	 */
 	public static void showEditDialogBox(final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
+		
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.setText("Edit");
@@ -42,7 +52,7 @@ public class EditSubTreeDialogBox {
 		dialogBox.getElement().setAttribute("id", "EditSubTreeDialogBox");
 		String existingSubTreeName = cellTreeNode.getName();
 		// Create a table to layout the content
-		VerticalPanel dialogContents = new VerticalPanel();
+		final VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.setWidth("20em");
 		dialogContents.setSpacing(5);
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
@@ -54,28 +64,60 @@ public class EditSubTreeDialogBox {
 		subTreeName.setCursorPos(subTreeName.getText().length());
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents.add(lableNewSubTreeName);
+		//show validation message
+		ValidationMessage.setText("Clause Already Exist");
+		ValidationMessage.setStyleName("clauseWorkSpaceInvalidNode");
+		dialogContents.setCellHorizontalAlignment(ValidationMessage, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(subTreeName);
 		dialogContents.setCellHorizontalAlignment(subTreeName, HasHorizontalAlignment.ALIGN_LEFT);
+		
 		//Add a Enter press event to the text box
 		subTreeName.addKeyPressHandler(new KeyPressHandler() {
 		@Override
 		 public void onKeyPress(KeyPressEvent event) { 
-		    if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) { 
-		    	dialogBox.hide();
-		    	xmlTreeDisplay.editNode(subTreeName.getText(), subTreeName.getText());
-				xmlTreeDisplay.setDirty(true); 
+		    if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
 				
-		    }
+				int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
+				if(numberOfClause >0){
+					isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(), xmlTreeDisplay);
+				}
+				
+				if(!isClausePresent){
+					dialogBox.hide();
+					xmlTreeDisplay.editNode(subTreeName.getText(), subTreeName.getText());
+					xmlTreeDisplay.setDirty(true);
+				}else{
+					dialogContents.insert(ValidationMessage, 0);
+					dialogBox.show();
+				}
+				
+			}
 		}
-		});
+
+				});
 		// Add a Save button at the bottom of the dialog
 		Button save = new Button("OK", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				dialogBox.hide();
-				xmlTreeDisplay.editNode(subTreeName.getText(), subTreeName.getText());
-				xmlTreeDisplay.setDirty(true);
+				int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
+				if(!xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase(subTreeName.getText().trim())){
+					
+					if(numberOfClause >0){
+						isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(), xmlTreeDisplay);
+					}
+					
+					if(!isClausePresent){
+						dialogBox.hide();
+						xmlTreeDisplay.editNode(subTreeName.getText(), subTreeName.getText());
+						xmlTreeDisplay.setDirty(true);
+					}else{
+						dialogContents.insert(ValidationMessage, 0);
+						dialogBox.show();
+					}
+				}else{
+					dialogBox.hide();
+				}
 				
 			}
 		});
@@ -117,12 +159,13 @@ public class EditSubTreeDialogBox {
 	 * @param cellTreeNode the cell tree node
 	 */
 	public static void showAddDialogBox(final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
+		
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.setText("Add");
 		dialogBox.setTitle("Add");
 		// Create a table to layout the content
-		VerticalPanel dialogContents = new VerticalPanel();
+		final VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.setWidth("20em");
 		dialogContents.setSpacing(5);
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
@@ -133,6 +176,10 @@ public class EditSubTreeDialogBox {
 		subTreeName.setWidth("150px");
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents.add(lableNewSubTreeName);
+		//show validation message
+		ValidationMessage.setText("Clause Already Exist");
+		ValidationMessage.setStyleName("clauseWorkSpaceInvalidNode");
+		dialogContents.setCellHorizontalAlignment(ValidationMessage, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(subTreeName);
 		dialogContents.setCellHorizontalAlignment(subTreeName, HasHorizontalAlignment.ALIGN_LEFT);
@@ -141,27 +188,49 @@ public class EditSubTreeDialogBox {
 		@Override
 		 public void onKeyPress(KeyPressEvent event) { 
 		    if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) { 
-		    	dialogBox.hide();
-				xmlTreeDisplay.addNode(subTreeName.getText(), subTreeName.getText()
-						, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
-				xmlTreeDisplay.setDirty(true); 
+				dialogBox.hide();
+				int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
+				if(numberOfClause >0){
+					isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(), xmlTreeDisplay);
+				}
 				
-		    }
+				if(!isClausePresent){
+					xmlTreeDisplay.addNode(subTreeName.getText()
+							, subTreeName.getText()
+							, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
+					xmlTreeDisplay.setDirty(true);
+				}else{
+					dialogContents.insert(ValidationMessage, 0);
+					dialogBox.show();
+				}
+				
+			}
 		}
-		});
+	});
+		
 		//Add a OK button at the bottom of the dialog
 		Button save = new Button("OK", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
-				xmlTreeDisplay.addNode(subTreeName.getText()
-						, subTreeName.getText()
-						, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
-				xmlTreeDisplay.setDirty(true);
+				int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
+				if(numberOfClause >0){
+					isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(),xmlTreeDisplay);
+				}
+				if(!isClausePresent){
+					xmlTreeDisplay.addNode(subTreeName.getText()
+							, subTreeName.getText()
+							, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
+					xmlTreeDisplay.setDirty(true);
+				}else{
+					dialogContents.insert(ValidationMessage, 0);
+					dialogBox.show();
+				}
 				
 			}
 			
 		});
+		
 		save.getElement().setId("save_Button");
 		// Add a Close button at the bottom of the dialog
 		Button closeButton = new Button("Cancel", new ClickHandler() {
@@ -192,5 +261,25 @@ public class EditSubTreeDialogBox {
 		});
 		
 	}
+
+	/**
+	 * Check for clause name if present.
+	 *
+	 * @param result the result
+	 * @param numberOfClause the number of clause
+	 * @param text the text
+	 * @param xmlTreeDisplay the xml tree display
+	 * @return true, if successful
+	 */
+	protected static boolean checkForClauseNameIfPresent(boolean result,
+		int numberOfClause, String text, XmlTreeDisplay xmlTreeDisplay) {
+			for(int i=0; i< numberOfClause; i++){
+				if(xmlTreeDisplay.getClauseNamesListBox().getItemText(i).equalsIgnoreCase(text)){
+					result = true;
+					break;
+				}
+			}
+			return result;
+	}	
 	
 }

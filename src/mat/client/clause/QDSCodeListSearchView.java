@@ -852,6 +852,8 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 		listBox.addItem(defaultOption, "");
 		if (itemList != null) {
 			for (HasListBox listBoxContent : itemList) {
+				//MAT-4366
+				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") && ! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired"))
 				listBox.addItem(listBoxContent.getItem(), "" + listBoxContent.getValue());
 			}
 		}

@@ -65,8 +65,8 @@ public class EditSubTreeDialogBox {
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents.add(lableNewSubTreeName);
 		//show validation message
-		ValidationMessage.setText("ClauseName Already Exist");
-		ValidationMessage.setStyleName("clauseWorkSpaceInvalidNode");
+		ValidationMessage.setText("Clause Name Already Exists");
+		ValidationMessage.setStyleName("alertMessageDialogBox");
 		dialogContents.setCellHorizontalAlignment(ValidationMessage, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(subTreeName);
@@ -177,8 +177,8 @@ public class EditSubTreeDialogBox {
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents.add(lableNewSubTreeName);
 		//show validation message
-		ValidationMessage.setText("ClauseName Already Exist");
-		ValidationMessage.setStyleName("clauseWorkSpaceInvalidNode");
+		ValidationMessage.setText("Clause Name Already Exists");
+		ValidationMessage.setStyleName("alertMessageDialogBox");
 		dialogContents.setCellHorizontalAlignment(ValidationMessage, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(subTreeName);

@@ -2,6 +2,7 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
@@ -405,5 +406,12 @@ public interface XmlTreeDisplay {
 	 *
 	 * @param isClauseOpen the new clause enabled
 	 */
-	public void setClauseEnabled(boolean isClauseOpen); 
+	public void setClauseEnabled(boolean isClauseOpen);
+
+	/**
+	 * Gets the include qdm varibale.
+	 *
+	 * @return the include qdm varibale
+	 */
+	CustomCheckBox getIncludeQdmVaribale(); 
 }

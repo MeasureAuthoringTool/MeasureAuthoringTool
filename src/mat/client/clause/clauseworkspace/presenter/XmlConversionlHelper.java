@@ -10,6 +10,8 @@ import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.ss.format.CellTextFormatter;
+
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.Element;
 import com.google.gwt.xml.client.NamedNodeMap;
@@ -621,6 +623,11 @@ public class XmlConversionlHelper {
 				element = document.createElement(PopulationWorkSpaceConstants.SUBTREE_NAME);
 				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
 				element.setAttribute(PopulationWorkSpaceConstants.UUID, cellTreeNode.getUUID());
+				if(cellTreeNode.getExtraInformation("qdmVariable") != null){
+					element.setAttribute(PopulationWorkSpaceConstants.CLAUSE_QDM_VARIABLE, (String) cellTreeNode.getExtraInformation("qdmVariable"));
+				}else{
+					element.setAttribute(PopulationWorkSpaceConstants.CLAUSE_QDM_VARIABLE, "false");
+				}
 				break;
 			case CellTreeNode.SUBTREE_REF_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.SUBTREE_REF);

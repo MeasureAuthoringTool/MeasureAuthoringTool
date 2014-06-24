@@ -12,6 +12,7 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
@@ -258,6 +259,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The is editable. */
 	private boolean isEditable;
+	
+	/** The include qdm varibale. */
+	private CustomCheckBox includeQdmVaribale = new CustomCheckBox("Select 'QDM Variable' to create clause as " +
+			    "local variable.", "QDM Variable", true);
+
 	/**
 	 * Instantiates a new xml tree view.
 	 * 
@@ -477,6 +483,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			treePanel.setHeight("100%");
 		}
 		leftPanel.add(treePanel);
+		SimplePanel chbxPanel = new SimplePanel();
+		chbxPanel.getElement().setId("QDM_Attribute_CheckBox");
+		chbxPanel.setStyleName("div-first bottomPadding10px");
+		chbxPanel.add(includeQdmVaribale);
+		includeQdmVaribale.setVisible(false);
 		SimplePanel bottomSavePanel = new SimplePanel();
 		bottomSavePanel.getElement().setId("bottomSavePanel_SimplePanelCW");
 		bottomSavePanel.setStyleName("div-first buttonPadding");
@@ -501,6 +512,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		mainPanel.add(errPanel);
 		mainPanel.add(leftPanel);
 		mainPanel.add(rightVerticalPanel);
+		mainPanel.add(chbxPanel);
 		mainPanel.add(bottomSavePanel);
 		focusPanel.addKeyDownHandler(this);
 		focusPanel.addFocusHandler(this);
@@ -2064,6 +2076,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public void setClauseEnabled(boolean isClauseOpen) {
 		this.isClauseOpen = isClauseOpen;
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getIncludeQdmVaribale()
+	 */
+	@Override
+	public CustomCheckBox getIncludeQdmVaribale() {
+		return includeQdmVaribale;
 	}
 	
 	

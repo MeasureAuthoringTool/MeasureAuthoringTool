@@ -17,19 +17,22 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SecondaryButton;
 import mat.shared.ConstantMessages;
+import com.google.gwt.user.client.Element;
+
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
-import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.xml.client.Document;
 import com.google.gwt.xml.client.NamedNodeMap;
@@ -378,13 +381,21 @@ public class XmlTreePresenter {
 		
 		Node node = PopulationWorkSpaceConstants.subTreeLookUpNode.get(selectedClauseName + "~" + selectedClauseUUID);
 		CellTreeNode subTreeCellTreeNode = XmlConversionlHelper.createCellTreeNode(node, selectedClauseName);
-		
+		//for getting Qdm Variable attribute value for the Subtree Node
+		Node qdmAttrNode = node.getAttributes().getNamedItem("qdmVariable");
+		if(qdmAttrNode!=null && qdmAttrNode.getNodeValue().equals("true")){
+		xmlTreeDisplay.getIncludeQdmVaribale().setValue(true);
+		} else {
+			xmlTreeDisplay.getIncludeQdmVaribale().setValue(false);
+		}
 		cellTreeNode.appendChild(subTreeCellTreeNode.getChilds().get(0));
 		
 		xmlTreeDisplay.getXmlTree().getRootTreeNode().setChildOpen(0, false);
 		xmlTreeDisplay.getXmlTree().getRootTreeNode().setChildOpen(0, true);
 		//the statement below will cause a programattic equivalent of clicking the Expand tree button.
 		xmlTreeDisplay.getButtonExpandClauseWorkSpace().click();
+		xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
+
 	}
 	
 	/**
@@ -574,6 +585,19 @@ public class XmlTreePresenter {
 						MatContext.get().getMessageDelegate().getCOMMENT_ADDED_SUCCESSFULLY());
 			}
 		});
+		
+		xmlTreeDisplay.getIncludeQdmVaribale().addValueChangeHandler(new ValueChangeHandler<Boolean>() {
+			
+			@Override
+			public void onValueChange(ValueChangeEvent<Boolean> event) {
+						
+				final CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
+						.getXmlTree().getRootTreeNode().getChildValue(0));
+				CellTreeNode subTreeNode = cellTreeNode.getChilds().get(0);
+				subTreeNode.setExtraInformation("qdmVariable", event.getValue().toString());
+			
+			}
+		});
 	}
 	/**
 	 * Method to Reterive SubTree Node and corresponding Node Tree and add to SubTreeLookUpNode map.
@@ -754,6 +778,7 @@ public class XmlTreePresenter {
 					xmlTreeDisplay.setDirty(false);
 					panel.clear();
 					loadClauseWorkSpaceView(panel);
+					xmlTreeDisplay.getIncludeQdmVaribale().setVisible(false);
 				}
 			}
 		});

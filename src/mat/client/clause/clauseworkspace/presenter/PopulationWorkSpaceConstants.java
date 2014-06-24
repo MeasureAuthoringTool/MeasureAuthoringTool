@@ -60,6 +60,7 @@ public class PopulationWorkSpaceConstants {
 	/** The Constant MASTER_ROOT_NODE_POPULATION. */
 	public static final String MASTER_ROOT_NODE_POPULATION = "Populations";
 	
+	/** The Constant MASTER_ROOT_NODE_STRATA. */
 	public static final String MASTER_ROOT_NODE_STRATA = "strata";
 	
 	/** The Constant ROOT_NODES. */
@@ -163,6 +164,9 @@ public class PopulationWorkSpaceConstants {
 	
 	/** The Constant PACKAGE_CLAUSE_NODE. */
 	public static final String PACKAGE_CLAUSE_NODE = "packageClause";
+	
+	/** The Constant CLAUSE_QDM_VARIABLE. */
+	public static final String CLAUSE_QDM_VARIABLE = "qdmVariable";
 	
 	static {
 		constantsMap.put("populations", "Populations");

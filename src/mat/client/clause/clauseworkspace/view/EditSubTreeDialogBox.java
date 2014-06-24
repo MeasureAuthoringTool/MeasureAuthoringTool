@@ -198,6 +198,7 @@ public class EditSubTreeDialogBox {
 					xmlTreeDisplay.addNode(subTreeName.getText()
 							, subTreeName.getText()
 							, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
+					xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
 					xmlTreeDisplay.setDirty(true);
 				}else{
 					dialogContents.insert(ValidationMessage, 0);
@@ -221,6 +222,7 @@ public class EditSubTreeDialogBox {
 					xmlTreeDisplay.addNode(subTreeName.getText()
 							, subTreeName.getText()
 							, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
+					xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
 					xmlTreeDisplay.setDirty(true);
 				}else{
 					dialogContents.insert(ValidationMessage, 0);

@@ -420,6 +420,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 	}
+	
+	/**
+	 * Validate group.
+	 */
 	protected void validateGroup() {
 		MatContext.get().getMeasureService()
 		.validateForGroup(model,new AsyncCallback<ValidateMeasureResult>() {

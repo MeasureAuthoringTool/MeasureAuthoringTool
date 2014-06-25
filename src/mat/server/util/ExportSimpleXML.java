@@ -78,19 +78,19 @@ public class ExportSimpleXML {
 		Document measureXMLDocument;
 		try {
 			measureXMLDocument = getXMLDocument(measureXMLObject);
-			if(validateMeasure(measureXMLDocument, message)){
+			/*if(validateMeasure(measureXMLDocument, message)){*/
 				measure_Id = measureXMLObject.getMeasure_id();
 				exportedXML = generateExportedXML(measureXMLDocument, measureDAO, measure_Id);
-			}
+			//}
 		} catch (ParserConfigurationException e) {
 			e.printStackTrace();
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		} catch (XPathExpressionException e) {
+		} /*catch (XPathExpressionException e) {
 			e.printStackTrace();
-		}		
+		}*/		
 		return exportedXML;
 	}
 	

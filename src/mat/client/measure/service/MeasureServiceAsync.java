@@ -105,13 +105,10 @@ public interface MeasureServiceAsync {
 	
 	/**
 	 * Gets the applied qdm from measure xml.
-	 * 
-	 * @param measureId
-	 *            the measure id
-	 * @param checkForSupplementData
-	 *            the check for supplement data
-	 * @param callback
-	 *            the callback
+	 *
+	 * @param measureId            the measure id
+	 * @param checkForSupplementData            the check for supplement data
+	 * @param asyncCallback the async callback
 	 * @return the applied qdm from measure xml
 	 */
 	void getAppliedQDMFromMeasureXml(String measureId,
@@ -492,5 +489,14 @@ public interface MeasureServiceAsync {
 	 * @param asyncCallback the async callback
 	 */
 	void updateComponentMeasuresFromXml(String measureId, AsyncCallback<Void> asyncCallback);
+
+	/**
+	 * Validate for group.
+	 *
+	 * @param model the model
+	 * @param asyncCallback the async callback
+	 */
+	void validateForGroup(ManageMeasureDetailModel model,
+			AsyncCallback<ValidateMeasureResult> asyncCallback);
 			
 }

@@ -398,8 +398,17 @@ MeasureService {
 	 */
 	@Override
 	public void updateComponentMeasuresFromXml(String measureId) {
-		// TODO Auto-generated method stub
+	
 		 this.getMeasureLibraryService().updateComponentMeasuresOnDeletion(measureId);
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#validateForGroup(mat.client.measure.ManageMeasureDetailModel)
+	 */
+	@Override
+	public ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model) {
+		
+		return this.getMeasureLibraryService().validateForGroup(model);
 	}
 	
 }

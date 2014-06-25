@@ -434,4 +434,12 @@ public interface MeasureService extends RemoteService {
 	 * @param measureId the measure id
 	 */
 	void updateComponentMeasuresFromXml(String measureId);
+
+	/**
+	 * Validate for group.
+	 *
+	 * @param model the model
+	 * @return the validate measure result
+	 */
+	ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model);
 }

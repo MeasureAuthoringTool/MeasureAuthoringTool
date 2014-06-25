@@ -1,5 +1,6 @@
 package mat.client.clause.clauseworkspace.view;
 
+import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.LabelBuilder;
@@ -14,8 +15,10 @@ import com.google.gwt.event.dom.client.KeyPressEvent;
 import com.google.gwt.event.dom.client.KeyPressHandler;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
+import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -33,7 +36,14 @@ public class EditSubTreeDialogBox {
 	static boolean result = false;
 	
 	/** The Validation message. */
-	public static Label ValidationMessage = new Label();
+	public static HorizontalPanel validationMessagePanel = new HorizontalPanel();
+	
+	/** The message label. */
+	public static Label messageLabel = new Label();
+	
+	/** The warning icon. */
+	public static  Image warningIcon = new Image(ImageResources.INSTANCE.msg_error());
+	
 	
 	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(false,true);
@@ -64,10 +74,11 @@ public class EditSubTreeDialogBox {
 		subTreeName.setCursorPos(subTreeName.getText().length());
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents.add(lableNewSubTreeName);
-		//show validation message
-		ValidationMessage.setText("Clause Name Already Exists");
-		ValidationMessage.setStyleName("alertMessageDialogBox");
-		dialogContents.setCellHorizontalAlignment(ValidationMessage, HasHorizontalAlignment.ALIGN_LEFT);
+		validationMessagePanel.add(warningIcon);
+		messageLabel.setText("Clause Name Already Exists");
+		validationMessagePanel.setStyleName("warningMessage");
+		validationMessagePanel.add(messageLabel);
+		dialogContents.setCellHorizontalAlignment(validationMessagePanel, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(subTreeName);
 		dialogContents.setCellHorizontalAlignment(subTreeName, HasHorizontalAlignment.ALIGN_LEFT);
@@ -88,7 +99,7 @@ public class EditSubTreeDialogBox {
 					xmlTreeDisplay.editNode(subTreeName.getText(), subTreeName.getText());
 					xmlTreeDisplay.setDirty(true);
 				}else{
-					dialogContents.insert(ValidationMessage, 0);
+					dialogContents.insert(validationMessagePanel, 0);
 					dialogBox.show();
 				}
 				
@@ -112,7 +123,7 @@ public class EditSubTreeDialogBox {
 						xmlTreeDisplay.editNode(subTreeName.getText(), subTreeName.getText());
 						xmlTreeDisplay.setDirty(true);
 					}else{
-						dialogContents.insert(ValidationMessage, 0);
+						dialogContents.insert(validationMessagePanel, 0);
 						dialogBox.show();
 					}
 				}else{
@@ -159,7 +170,6 @@ public class EditSubTreeDialogBox {
 	 * @param cellTreeNode the cell tree node
 	 */
 	public static void showAddDialogBox(final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
-		
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.setText("Add");
@@ -176,10 +186,11 @@ public class EditSubTreeDialogBox {
 		subTreeName.setWidth("150px");
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents.add(lableNewSubTreeName);
-		//show validation message
-		ValidationMessage.setText("Clause Name Already Exists");
-		ValidationMessage.setStyleName("alertMessageDialogBox");
-		dialogContents.setCellHorizontalAlignment(ValidationMessage, HasHorizontalAlignment.ALIGN_LEFT);
+		validationMessagePanel.add(warningIcon);
+		messageLabel.setText("Clause Name Already Exists");
+		validationMessagePanel.setStyleName("warningMessage");
+		validationMessagePanel.add(messageLabel);
+		dialogContents.setCellHorizontalAlignment(validationMessagePanel, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		dialogContents.add(subTreeName);
 		dialogContents.setCellHorizontalAlignment(subTreeName, HasHorizontalAlignment.ALIGN_LEFT);
@@ -201,7 +212,7 @@ public class EditSubTreeDialogBox {
 					xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
 					xmlTreeDisplay.setDirty(true);
 				}else{
-					dialogContents.insert(ValidationMessage, 0);
+					dialogContents.insert(validationMessagePanel, 0);
 					dialogBox.show();
 				}
 				
@@ -225,7 +236,7 @@ public class EditSubTreeDialogBox {
 					xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
 					xmlTreeDisplay.setDirty(true);
 				}else{
-					dialogContents.insert(ValidationMessage, 0);
+					dialogContents.insert(validationMessagePanel, 0);
 					dialogBox.show();
 				}
 				

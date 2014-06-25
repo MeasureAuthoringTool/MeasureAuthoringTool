@@ -418,21 +418,42 @@ public class HumanReadableGenerator {
 		 * evaluate the RHS child.
 		 */
 		NodeList childNodes = item.getChildNodes();
+		
 		if(childNodes.getLength() == 2){
-			parseChild(childNodes.item(0),liElement,item, populationOrSubtreeXMLProcessor);
+			
 			Element newLiElement = liElement;
-//			if(LOGICAL_OP.equals(childNodes.item(0).getNodeName()) || SET_OP.equals(childNodes.item(0).getNodeName())){
-//				newLiElement = liElement.children().last().appendElement(HTML_LI);
-//			}
+			if(isParentNodeName(item,LOGICAL_OP) && !ELEMENT_REF.equals(childNodes.item(0).getNodeName())){
+				newLiElement = liElement.appendElement(HTML_UL).appendElement(HTML_LI);
+			}
+			parseChild(childNodes.item(0),newLiElement,item, populationOrSubtreeXMLProcessor);
 			
 			if(!ELEMENT_REF.equals(childNodes.item(1).getNodeName())){
 				newLiElement.appendElement(HTML_LI).appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
-				newLiElement = liElement.appendElement(HTML_UL).appendElement(HTML_LI);
+				newLiElement = newLiElement.appendElement(HTML_UL).appendElement(HTML_LI);
 			}else{
-				newLiElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
+				if(!ELEMENT_REF.equals(childNodes.item(0).getNodeName())){
+					newLiElement = newLiElement.appendElement(HTML_LI);
+					newLiElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
+				}else{
+					newLiElement.appendText(item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ");
+				}
 			}
 			parseChild(childNodes.item(1),newLiElement,item, populationOrSubtreeXMLProcessor);
 		}
+	}
+
+	private static boolean isParentNodeName(Node item, String parentNodeName) {
+		Node parentNode = item.getParentNode();
+		if(parentNode != null && SUB_TREE.equals(parentNode.getNodeName())){
+			parentNode = parentNode.getParentNode();
+		}
+		
+		if(parentNode != null){
+			if(parentNodeName.equals(parentNode.getNodeName())){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	/**

@@ -358,10 +358,8 @@ public class HumanReadableGenerator {
 				}else{
 					liElement.appendText(getNodeText(item, populationOrSubtreeXMLProcessor));
 				}
-				System.out.println("HAS A LOGICAL OP");
 			}else{
 				parentListElement.appendText(getNodeText(item,populationOrSubtreeXMLProcessor));
-				System.out.println("ELSE");
 			}
 		}else if(FUNCTIONAL_OP.equals(nodeName)){
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
@@ -450,7 +448,8 @@ public class HumanReadableGenerator {
 		    name = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
 			name += ": ";
 		}else if(SET_OP.equals(nodeName)){
-			name = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
+			name = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase();
+			name = StringUtils.capitalize(name);
 			name += " of: ";
 		}else if(ELEMENT_REF.equals(nodeName)){
 			name = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
@@ -570,7 +569,7 @@ public class HumanReadableGenerator {
 		String functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 		
 		if("AGE AT".equals(typeAttribute)){
-			functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue() + " ";
+			functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase() + " ";
 		}else if(functionDisplayName.startsWith("AVG")){
 			functionDisplayName = functionDisplayName.replaceFirst("AVG", "Average") + " of";
 		}else if(functionDisplayName.startsWith("COUNT")){
@@ -592,6 +591,8 @@ public class HumanReadableGenerator {
 		}else if(functionDisplayName.startsWith("FIFTH")){
 			functionDisplayName = functionDisplayName.replaceFirst("FIFTH", "Fifth");
 		}		
+		
+		functionDisplayName =StringUtils.capitalize(functionDisplayName.toLowerCase());
 		
 		return functionDisplayName+": ";
 	}

@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -30,6 +31,7 @@ import mat.client.measure.PeriodModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
+import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.dao.MeasureNotesDAO;
 import mat.dao.RecentMSRActivityLogDAO;
@@ -2581,7 +2583,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(model.getId());
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
 			System.out.println("MEASURE_XML: "+xmlModel.getXml());	
-			
+					
 			flag = validateMeasureXmlAtCreateMeasurePackager(xmlModel);
 		}
 		
@@ -2595,20 +2597,66 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	public boolean validateMeasureXmlAtCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
 		boolean flag=false;
 		boolean isInValidAttribute = false;
+		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
+		
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			
+			//start population workspace validation
+			String XPATH_POPULATIONS = "/measure/populations";
+			
+			NodeList nodesSDE;
+			try {
+				nodesSDE = (NodeList) xPath.evaluate(XPATH_POPULATIONS, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+			
+			
+			Node newNode = nodesSDE.item(0);
+			NodeList populationsChildList = newNode.getChildNodes();
+				
+					for (int i = 0; i <populationsChildList.getLength() && !flag; i++) {
+					Node childNode =populationsChildList.item(i);
+					NodeList childsList = childNode.getChildNodes();
+					
+					if(childsList.getLength()>0){
+						for(int j=0; j <childsList.getLength() && !flag; j++){
+							Node subChildNode =childsList.item(j);
+							flag=validateNode(subChildNode,flag);
+							if(flag){
+								break;
+							}
+				
+						}
+				
+					}
+					 flag=validateNode(childNode, flag);
+					 if(flag){
+						break;
+					}
+				}
+		
+			} catch (XPathExpressionException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			
+			//start clause validation
+			List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(xmlProcessor);
+			if(usedSubtreeRefIds.size()>0){
+				
+				for(String usedSubtreeRefId:usedSubtreeRefIds){
+			
 	        String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
-			 String XPATH_POPULATIONS = "/measure/populations";
 			 
-			 String XPATH_QDMELEMENT = "/measure//subTreeLookUp//elementRef/@id";
-			 String XPATH_TIMING_ELEMENT = "/measure//subTreeLookUp//relationalOp";
 			 
-			 String XPATH_SATISFY_ELEMENT = "/measure//subTreeLookUp//functionalOp["+satisfyFunction+"]";
+			 String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef/@id";
+			 String XPATH_TIMING_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//relationalOp";
+			 
+			 String XPATH_SATISFY_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+satisfyFunction+"]";
 			 System.out.println("MEASURE_XML: "+xmlModel.getXml());
 			try {
-				NodeList nodesSDE = (NodeList) xPath.evaluate(XPATH_POPULATIONS, xmlProcessor.getOriginalDoc(),
-						XPathConstants.NODESET);
+				
 				
 				NodeList nodesSDE_qdmElementId = (NodeList) xPath.evaluate(XPATH_QDMELEMENT, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODESET);
@@ -2655,41 +2703,91 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					}
 				}
 				
-					Node newNode = nodesSDE.item(0);
-					NodeList populationsChildList = newNode.getChildNodes();
-						
-							for (int i = 0; i <populationsChildList.getLength() && !flag; i++) {
-							Node childNode =populationsChildList.item(i);
-							NodeList childsList = childNode.getChildNodes();
-							
-							if(childsList.getLength()>0){
-								for(int j=0; j <childsList.getLength() && !flag; j++){
-									Node subChildNode =childsList.item(j);
-									flag=validateNode(subChildNode,flag);
-									if(flag){
-										break;
-									}
-						
-								}
-						
-							}
-							 flag=validateNode(childNode, flag);
-							 if(flag){
-								break;
-							}
-						}
-				
+					
 					
 			} catch (XPathExpressionException e) {
 				
 				e.printStackTrace();
 			}
+		}
+		}
 			
 	 } 
 	return flag;
 	}
 	
 	
+	/**
+	 * Gets the used subtree ref ids.
+	 *
+	 * @param xmlProcessor the xml processor
+	 * @return the used subtree ref ids
+	 */
+	private List<String> getUsedSubtreeRefIds(XmlProcessor xmlProcessor) {
+		
+		List<String> usedSubTreeRefIdsPop = new ArrayList<String>();
+		List<String> usedSubTreeRefIdsStrat = new ArrayList<String>();
+		List<String> usedSubTreeRefIdsMO = new ArrayList<String>();
+		
+		NodeList groupedSubTreeRefIdsNodeListPop;
+		NodeList groupedSubTreeRefIdsNodeListMO;
+		NodeList groupedSubTreeRefIdListStrat;
+				
+		try {
+			// Populations
+			groupedSubTreeRefIdsNodeListPop = (NodeList) xPath.evaluate(
+					"/measure/populations//subTreeRef/@id",
+					xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
+
+				for (int i = 0; i < groupedSubTreeRefIdsNodeListPop.getLength(); i++) {
+					Node groupedSubTreeRefIdAttributeNodePop = groupedSubTreeRefIdsNodeListPop
+							.item(i);
+					usedSubTreeRefIdsPop.add(groupedSubTreeRefIdAttributeNodePop
+							.getNodeValue());
+				}
+
+				// Measure Observations
+				
+				groupedSubTreeRefIdsNodeListMO = (NodeList) xPath.evaluate(
+						"/measure/measureObservations//subTreeRef/@id",
+						xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
+
+				for (int i = 0; i < groupedSubTreeRefIdsNodeListMO.getLength(); i++) {
+					Node groupedSubTreeRefIdAttributeNodeMO = groupedSubTreeRefIdsNodeListMO
+							.item(i);
+					usedSubTreeRefIdsMO.add(groupedSubTreeRefIdAttributeNodeMO
+							.getNodeValue());
+				}
+
+				// Stratifications
+				
+
+				groupedSubTreeRefIdListStrat = (NodeList) xPath.evaluate(
+						"/measure/strata/stratification//subTreeRef/@id",
+						xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
+
+				for (int i = 0; i < groupedSubTreeRefIdListStrat.getLength(); i++) {
+					Node groupedSubTreeRefIdAttributeNodeStrat = groupedSubTreeRefIdListStrat
+							.item(i);
+					usedSubTreeRefIdsStrat.add(groupedSubTreeRefIdAttributeNodeStrat
+							.getNodeValue());
+				}
+				
+				usedSubTreeRefIdsPop.removeAll(usedSubTreeRefIdsMO);
+				usedSubTreeRefIdsMO.addAll(usedSubTreeRefIdsPop);
+					
+				usedSubTreeRefIdsMO.removeAll(usedSubTreeRefIdsStrat);
+				usedSubTreeRefIdsStrat.addAll(usedSubTreeRefIdsMO);	
+				
+			} catch (XPathExpressionException e) {
+			
+				e.printStackTrace();
+			}
+		
+		return usedSubTreeRefIdsStrat;
+	}
+
+
 	/**
 	 * Validate node.
 	 *
@@ -2793,7 +2891,42 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return flag;
 	}
 
-	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#validateForGroup(mat.client.measure.ManageMeasureDetailModel)
+	 */
+	@Override
+	public ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model) {
 		
+		logger.debug(" MeasureLibraryServiceImpl: validateGroup Start :  ");
+		
+		List<String> message = new ArrayList<String>();
+		ValidateMeasureResult result = new ValidateMeasureResult();
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(model.getId());
+		
+		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			System.out.println("MEASURE_XML: "+xmlModel.getXml());	
+		
+			//validate for at least one grouping
+			String XPATH_GROUP = "/measure/measureGrouping/group";
+			NodeList groupSDE;
+			try {
+				groupSDE = (NodeList) xPath.evaluate(XPATH_GROUP, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				
+				if(groupSDE.getLength()==0){
+					message.add(MatContext.get().getMessageDelegate().getGroupingRequiredMessage());
+					//flag = true;
+				}
+			} catch (XPathExpressionException e2) {
+				
+				e2.printStackTrace();
+			}
+		}
+		
+		result.setValid(message.size() == 0);
+		result.setValidationMessages(message);
+		return result;
+	}		
 }
 

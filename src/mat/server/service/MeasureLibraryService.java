@@ -461,4 +461,12 @@ public interface MeasureLibraryService {
 	 * @param measureId the measure id
 	 */
 	void updateComponentMeasuresOnDeletion(String measureId);
+
+	/**
+	 * Validate for group.
+	 *
+	 * @param model the model
+	 * @return the validate measure result
+	 */
+	ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model);
 }

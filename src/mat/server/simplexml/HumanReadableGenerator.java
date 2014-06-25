@@ -13,6 +13,7 @@ import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.apache.commons.lang.StringUtils;
 
 public class HumanReadableGenerator {
 
@@ -288,19 +289,19 @@ public class HumanReadableGenerator {
 			return;
 		}else if(SUB_TREE.equals(nodeName)){
 			NamedNodeMap map = item.getAttributes();
-			System.out.println(map.item(1).getNodeValue());
-			System.out.println(map.item(0).getNodeValue());
 			if("true".equalsIgnoreCase(map.item(1).getNodeValue()) && ShowOnlyVariableName == false){
-				System.out.println("HERE!!");
-				Element liElement = parentListElement.appendElement(HTML_LI);
-				if(LOGICAL_OP.equals(parentNode.getNodeName()) ){
-					
-					liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+				if(parentListElement.nodeName().equals(HTML_UL)){
+					parentListElement = parentListElement.appendElement(HTML_LI);
 				}
-				//Element liElement = parentListElement.appendElement(HTML_LI);
-				liElement.appendText("$" + map.item(0).getNodeValue());
+				if(LOGICAL_OP.equals(parentNode.getNodeName()) ){
+					parentListElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+				}
+
+				String name = StringUtils.deleteWhitespace(map.item(0).getNodeValue());
+				parentListElement.appendText("$" + name + " ");
 			}
 			else{
+				ShowOnlyVariableName = false;
 				NodeList childNodes = item.getChildNodes();
 				for (int i=0; i< childNodes.getLength(); i++){
 					parseChild(childNodes.item(i), parentListElement,parentNode, populationOrSubtreeXMLProcessor);				
@@ -720,6 +721,7 @@ public class HumanReadableGenerator {
 			NamedNodeMap map = node.getAttributes();
 			String name = map.item(0).getNodeValue();
 			if (name.length() > 0){
+				name = StringUtils.deleteWhitespace(name);
 				name = "$" + name;
 			}
 			Element variableElement = mainListElement.appendElement(HTML_LI);

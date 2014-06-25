@@ -414,4 +414,8 @@ public interface XmlTreeDisplay {
 	 * @return the include qdm varibale
 	 */
 	CustomCheckBox getIncludeQdmVaribale(); 
+	
+	public void setQdmVariable(String isQdmVariable);
+	
+	public String isQdmVariable();
 }

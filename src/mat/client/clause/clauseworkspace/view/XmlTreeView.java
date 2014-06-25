@@ -260,6 +260,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The is editable. */
 	private boolean isEditable;
 	
+	/** The is qdm variable. */
+	private String isQdmVariable = "false";
+	
 	/** The include qdm varibale. */
 	private CustomCheckBox includeQdmVaribale = new CustomCheckBox("Select 'QDM Variable' to create clause as " +
 			    "local variable.", "QDM Variable", true);
@@ -2084,6 +2087,22 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	@Override
 	public CustomCheckBox getIncludeQdmVaribale() {
 		return includeQdmVaribale;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#setQdmVariable(boolean)
+	 */
+	@Override
+	public void setQdmVariable(String isQdmVariable) {
+		this.isQdmVariable = isQdmVariable;
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#isQdmVariable()
+	 */
+	@Override
+	public String isQdmVariable() {
+		return isQdmVariable;
 	}
 	
 	

@@ -54,6 +54,7 @@ public class XmlTreePresenter {
 	private static final int NODESIZE = 500;
 	
 	
+	
 	/** The is unsaved data. */
 //	private boolean isUnsavedData = false;
 	/**
@@ -388,6 +389,7 @@ public class XmlTreePresenter {
 		} else {
 			xmlTreeDisplay.getIncludeQdmVaribale().setValue(false);
 		}
+		xmlTreeDisplay.setQdmVariable(xmlTreeDisplay.getIncludeQdmVaribale().getValue().toString());
 		cellTreeNode.appendChild(subTreeCellTreeNode.getChilds().get(0));
 		
 		xmlTreeDisplay.getXmlTree().getRootTreeNode().setChildOpen(0, false);
@@ -485,6 +487,10 @@ public class XmlTreePresenter {
 								ConstantMessages.DB_LOG);
 						final String nodeUUID = cellTreeNode.getChilds().get(0).getUUID();
 						final String nodeName = cellTreeNode.getChilds().get(0).getName();
+						//for adding qdmVariable as an attribute
+						String isQdmVariable = xmlTreeDisplay.getIncludeQdmVaribale().getValue().toString();
+						CellTreeNode subTreeNode = cellTreeNode.getChilds().get(0);
+						subTreeNode.setExtraInformation("qdmVariable", isQdmVariable);		
 						String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode.getChilds().get(0));
 						
 						final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
@@ -594,8 +600,15 @@ public class XmlTreePresenter {
 				final CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
 						.getXmlTree().getRootTreeNode().getChildValue(0));
 				CellTreeNode subTreeNode = cellTreeNode.getChilds().get(0);
+				if(xmlTreeDisplay.isQdmVariable().equals(event.getValue().toString()) && !xmlTreeDisplay.isDirty()){
+					     xmlTreeDisplay.setDirty(false);
+			    
+			    } else {
+			    	xmlTreeDisplay.setDirty(true);
+			    }
 				subTreeNode.setExtraInformation("qdmVariable", event.getValue().toString());
-			
+			    
+				
 			}
 		});
 	}

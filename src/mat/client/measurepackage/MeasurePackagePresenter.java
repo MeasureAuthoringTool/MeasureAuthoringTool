@@ -337,11 +337,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(false);
 				isMeasurePackageExportSuccess = false;
-				//MatContext.get().getMeasureService().saveMeasureAtPackage(model, new AsyncCallback<SaveMeasureResult>()
-				
-				//Validate Package Grouping at the time of creating measure Package.
-				validatePackageGrouping();
-				
+				validateGroup();
+				//validatePackageGrouping();
 			}
 		});
 		
@@ -423,6 +420,39 @@ public class MeasurePackagePresenter implements MatPresenter {
 			}
 		});
 	}
+	protected void validateGroup() {
+		MatContext.get().getMeasureService()
+		.validateForGroup(model,new AsyncCallback<ValidateMeasureResult>() {
+			@Override
+			public void onFailure(final Throwable caught) {
+				// O&M 17
+				((Button) view.getPackageMeasureButton())
+				.setEnabled(true);
+				Mat.hideLoadingMessage();
+				view.getPackageErrorMessageDisplay().setMessage(
+						MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+			}
+			
+			@Override
+			public void onSuccess(final ValidateMeasureResult result) {
+					Mat.hideLoadingMessage();
+				
+					if(result.isValid()){
+						
+						validatePackageGrouping();
+						
+					}else {
+						view.getMeasureErrorMessageDisplay()
+						.setMessages(result.getValidationMessages());
+						((Button) view.getPackageMeasureButton()).setEnabled(true);
+				}
+			}
+			
+		});
+		
+		
+	}
+
 	/**
 	 * Valid grouping check.
 	 * @return boolean.
@@ -950,7 +980,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SaveMeasureResult result) {
 				updateComponentMeasuresFromXml();
-				//added by hari
+				
 				if (result.isSuccess()) {
 					Mat.showLoadingMessage();
 					String measureId = MatContext.get()

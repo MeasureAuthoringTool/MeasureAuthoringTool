@@ -29,7 +29,7 @@ public class HumanReadableGenerator {
 	private static final String COMMENT = "comment";
 	private static final String LOGICAL_OP = "logicalOp";
 	
-	private static Boolean ShowOnlyVariableName = false;
+	private static Boolean showOnlyVariableName = false;
 	public static String generateHTMLForPopulationOrSubtree(String measureId, String subXML,
 			String measureXML) {
 		org.jsoup.nodes.Document htmlDocument = null;
@@ -289,7 +289,7 @@ public class HumanReadableGenerator {
 			return;
 		}else if(SUB_TREE.equals(nodeName)){
 			NamedNodeMap map = item.getAttributes();
-			if("true".equalsIgnoreCase(map.item(1).getNodeValue()) && ShowOnlyVariableName == false){
+			if("true".equalsIgnoreCase(map.item(1).getNodeValue()) && showOnlyVariableName == false){
 				if(parentListElement.nodeName().equals(HTML_UL)){
 					parentListElement = parentListElement.appendElement(HTML_LI);
 				}
@@ -301,7 +301,7 @@ public class HumanReadableGenerator {
 				parentListElement.appendText("$" + name + " ");
 			}
 			else{
-				ShowOnlyVariableName = false;
+				showOnlyVariableName = false;
 				NodeList childNodes = item.getChildNodes();
 				for (int i=0; i< childNodes.getLength(); i++){
 					parseChild(childNodes.item(i), parentListElement,parentNode, populationOrSubtreeXMLProcessor);				
@@ -704,7 +704,7 @@ public class HumanReadableGenerator {
 	}
 
 	private static void generateDataCriteria(
-			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor){
 		
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement.append("<h3><a name=\"d1e647\" href=\"#toc\">Data criteria (QDM Data Elements)</a></h3>");
@@ -712,10 +712,11 @@ public class HumanReadableGenerator {
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 		
+		
 	}
 	
 	private static void generateSupplementalData(
-			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) {
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
 		
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement.append("<h3><a name=\"d1e767\" href=\"#toc\">Supplemental Data Elements</a></h3>");
@@ -723,7 +724,19 @@ public class HumanReadableGenerator {
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 		
-		
+		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/supplementalDataElements/elementRef");
+		for(int i = 0; i<elements.getLength(); i++){
+			Node node = elements.item(i);
+			NamedNodeMap map = node.getAttributes();
+			String id = map.item(0).getNodeValue();
+			System.out.println(id);
+			Node qdm = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@uuid='"+id+"']");
+			NamedNodeMap qdmMap = qdm.getAttributes();
+			Element listItem = mainListElement.appendElement(HTML_LI);
+			
+			listItem.appendText("\"" + qdmMap.item(0).getNodeValue()+": "+qdmMap.item(2).getNodeValue()+"\" using \""+qdmMap.item(2).getNodeValue() + " Grouping Vaule Set ("+qdmMap.item(3).getNodeValue()+")\"");
+			
+		}
 	}
 	
 	private static void generateQDMVariables(
@@ -750,9 +763,9 @@ public class HumanReadableGenerator {
 			Element boldNameElement = variableElement.appendElement("b");
 			boldNameElement.appendText(name+" = ");
 			Element indentListElement = variableElement.appendElement(HTML_UL);
-			ShowOnlyVariableName= true;
+			showOnlyVariableName= true;
 			parseChild(node,indentListElement, node.getParentNode(),simpleXMLProcessor);
-			ShowOnlyVariableName = false;
+			showOnlyVariableName = false;
 		}
 	}
 	

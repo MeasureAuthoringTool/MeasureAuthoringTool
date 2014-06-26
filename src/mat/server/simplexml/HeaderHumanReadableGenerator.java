@@ -504,20 +504,14 @@ public class HeaderHumanReadableGenerator {
 				
 				if(node != null){
 					createRowAndColumns(table, "Measure Item Count");
-					//map.item(0) represents the item type 
-					//map.item(2) represents the name
-					if(map.item(0) != null && map.item(2) != null){
-						createDiv(map.item(0).getTextContent() + ":" + map.item(2).getTextContent(), column);
+					if(map.getNamedItem("dataType") != null && map.getNamedItem("name") != null){
+						createDiv(map.getNamedItem("dataType").getNodeValue() + ":" + map.getNamedItem("name").getNodeValue(), column);
 					}
 					else{
 						createDiv("",column);
 					}
 				}
 			}
-		}
-		// if there are no item counts still display a blank row
-		else{
-			createRowAndColumns(table, "Item Count");
 		}
 	}
 	
@@ -532,10 +526,11 @@ public class HeaderHumanReadableGenerator {
 	 */
 	private static void createComponentMeasureList(XmlProcessor processor,Element table) throws XPathExpressionException {
 		//Create the row in the main table
-		createRowAndColumns(table, "Component Measure");
+		
 		//find the list of nodes
 		NodeList list = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "componentMeasures/measure");
 		if(list.getLength() > 0){
+			createRowAndColumns(table, "Component Measure");
 			Node node;
 			
 			//Create the inner table
@@ -570,25 +565,24 @@ public class HeaderHumanReadableGenerator {
 				
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column,"70%","");
-				//map.item(2) pulls the Measure Name from the NamedNodeMap
-				if(map.item(2) != null){
-					column.appendText(map.item(2).getTextContent());
+				if(map.getNamedItem("name") != null){
+					column.appendText(map.getNamedItem("name").getNodeValue());
 				}
 				
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column,"10%","");
 				Element div = column.appendElement("div");
 				div.attr("class", "ver");
-				//map.item(3) pulls the Version Number from the NamedNodeMap
-				if(map.item(3) != null){
-					div.appendText(map.item(3).getTextContent());
+
+				if(map.getNamedItem("versionNo") != null){
+					div.appendText(map.getNamedItem("versionNo").getNodeName());
 				}
 				
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column,TWENTY_PERCENT,"");
 				//map.item(0) pulls the GUID from the NamedNodeMap
-				if(map.item(0) != null){
-					column.appendText(map.item(0).getTextContent());
+				if(map.getNamedItem("id") != null){
+					column.appendText(map.getNamedItem("id").getNodeValue());
 				}
 			}
 		}

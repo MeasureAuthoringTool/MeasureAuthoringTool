@@ -2837,9 +2837,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if((dataTypeValue.equalsIgnoreCase("Diagnostic Study, Result"))
 				|| (dataTypeValue.equalsIgnoreCase("Functional Status, Result"))
 				|| (dataTypeValue.equalsIgnoreCase("Laboratory Test, Result"))
-				|| (dataTypeValue.equalsIgnoreCase("Procedure, Result")	)
-				|| (dataTypeValue.equalsIgnoreCase("Physical Exam, Finding")	)
-				|| (dataTypeValue.equalsIgnoreCase("Intervention, Result")	)){
+				|| (dataTypeValue.equalsIgnoreCase("Procedure, Result"))
+				|| (dataTypeValue.equalsIgnoreCase("Physical Exam, Finding"))
+				|| (dataTypeValue.equalsIgnoreCase("Intervention, Result"))
+				|| (dataTypeValue.equalsIgnoreCase("Patient characteristic Birthdate"))
+				|| (dataTypeValue.equalsIgnoreCase("Patient Characteristic Expired"))){
 			
 				flag=false;
 				

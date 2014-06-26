@@ -1,19 +1,21 @@
 package mat.server.simplexml;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.server.util.XmlProcessor;
 
+import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.apache.commons.lang.StringUtils;
 
 public class HumanReadableGenerator {
 
@@ -704,7 +706,7 @@ public class HumanReadableGenerator {
 	}
 
 	private static void generateDataCriteria(
-			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor){
+			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
 		
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement.append("<h3><a name=\"d1e647\" href=\"#toc\">Data criteria (QDM Data Elements)</a></h3>");
@@ -712,18 +714,51 @@ public class HumanReadableGenerator {
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 		
+		//get all qdm elemes in 'elementLookUp' which are not attributes or dont have 'Timing Element' data type and are not supplement data elems
+		NodeList qdmElements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
+				"/measure/elementLookUp/qdm[@datatype != 'Timing Element'][@suppDataElement != 'true']");
 		
+		Map<String, Node> qdmMap = new HashMap<String, Node>();
+		Map<String, Node> attributeMap = new HashMap<String, Node>();
+		
+		for(int i=0;i<qdmElements.getLength();i++){
+			Node qdmNode = qdmElements.item(i);
+			String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
+			String datatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+			
+			if("attribute".equals(datatype)){
+				attributeMap.put(oid+datatype, qdmNode);
+			}else{
+				if(!qdmMap.containsKey(oid+datatype)){
+					qdmMap.put(oid+datatype, qdmNode);
+				}
+			}
+		}
+		
+		for(Node qdm:qdmMap.values()){
+			NamedNodeMap qdmAttribs = qdm.getAttributes();
+			Element listItem = mainListElement.appendElement(HTML_LI);
+
+			listItem.appendText("\"" + qdmAttribs.getNamedItem("datatype").getNodeValue()+": "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
+		}
+		
+		for(Node qdm:attributeMap.values()){
+			NamedNodeMap qdmAttribs = qdm.getAttributes();
+			Element listItem = mainListElement.appendElement(HTML_LI);
+
+			listItem.appendText(" Attribute: "+"\"" +qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
+		}
 	}
 	
 	private static void generateSupplementalData(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
-		
+
 		Element bodyElement = humanReadableHTMLDocument.body();
 		bodyElement.append("<h3><a name=\"d1e767\" href=\"#toc\">Supplemental Data Elements</a></h3>");
-			
+
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
-		
+
 		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/supplementalDataElements/elementRef");
 		for(int i = 0; i<elements.getLength(); i++){
 			Node node = elements.item(i);
@@ -733,11 +768,12 @@ public class HumanReadableGenerator {
 			Node qdm = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@uuid='"+id+"']");
 			NamedNodeMap qdmMap = qdm.getAttributes();
 			Element listItem = mainListElement.appendElement(HTML_LI);
-			
-			listItem.appendText("\"" + qdmMap.item(0).getNodeValue()+": "+qdmMap.item(2).getNodeValue()+"\" using \""+qdmMap.item(2).getNodeValue() + " Grouping Vaule Set ("+qdmMap.item(3).getNodeValue()+")\"");
-			
+
+			listItem.appendText("\"" + qdmMap.getNamedItem("datatype").getNodeValue()+": "+qdmMap.getNamedItem("name").getNodeValue()+"\" using \""+qdmMap.getNamedItem("name").getNodeValue() +" "+ qdmMap.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmMap.getNamedItem("oid").getNodeValue()+")\"");
+
 		}
 	}
+	
 	
 	private static void generateQDMVariables(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {

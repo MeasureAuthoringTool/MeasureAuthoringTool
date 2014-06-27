@@ -383,6 +383,14 @@ public class ClauseWorkspaceContextMenu {
 			}
 			copyMenu.setEnabled(false);
 		}
+		//Allow paste option
+		if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_NODE)) {
+			// Only One child is allow in SubTree Root Node.
+			if (!xmlTreeDisplay.getSelectedNode().hasChildren() && xmlTreeDisplay.getCopiedNode() != null) {
+				pasteMenu.setEnabled(true);
+			}
+			
+		}
 		//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
 		if ((xmlTreeDisplay.getCopiedNode() != null)
 				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)

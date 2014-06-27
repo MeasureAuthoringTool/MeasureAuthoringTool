@@ -33,6 +33,7 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -57,6 +58,10 @@ public class PackagerServiceImpl implements PackagerService {
 	
 	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION. */
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION = "/measure/supplementalDataElements/elementRef[@id";
+	
+	private static final String XPATH_MEASURE_ELEMENT_LOOK_UP_EXPRESSION = "/measure/elementLookUp/qdm[@uuid='";
+	
+	
 	
 	/** The measure xmldao. */
 	@Autowired
@@ -362,9 +367,9 @@ public class PackagerServiceImpl implements PackagerService {
 	 * if the Group not Present appends the new Group from measureGrouping XML
 	 * to the parent measureGrouping node in Measure_XML Finally Save the
 	 * Measure_xml
-	 * 
-	 * @param detail
-	 *            the detail
+	 *
+	 * @param detail the detail
+	 * @return the measure package save result
 	 */
 	@Override
 	public MeasurePackageSaveResult save(MeasurePackageDetail detail) {
@@ -426,6 +431,12 @@ public class PackagerServiceImpl implements PackagerService {
 		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
 		if (supplementDataElementsAll.size() > 0) {
 			processor.replaceNode(stream.toString(), SUPPLEMENT_DATA_ELEMENTS, MEASURE);
+			try {
+				setSupplementalDataForQDMs(processor.getOriginalDoc(), detail.getSuppDataElements());
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		} else {
 			
 			try {
@@ -447,6 +458,24 @@ public class PackagerServiceImpl implements PackagerService {
 		}
 		measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
 		measureXMLDAO.save(measureXML);
+	}
+	
+	/**
+	 * Sets the supplemental data for qd ms.
+	 *
+	 * @param originalDoc the new supplemental data for qd ms
+	 * @param supplementalDataElemnts 
+	 * @throws XPathExpressionException 
+	 */
+	private void setSupplementalDataForQDMs(Document originalDoc, List<QualityDataSetDTO> supplementalDataElemnts) throws XPathExpressionException {
+		
+		for(int i = 0; i<supplementalDataElemnts.size(); i++){
+			javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+			Node nodeSupplementalDataNode = (Node) xPath.evaluate(XPATH_MEASURE_ELEMENT_LOOK_UP_EXPRESSION +supplementalDataElemnts.get(i).getUuid()+"']",
+					originalDoc.getDocumentElement(), XPathConstants.NODE);
+			nodeSupplementalDataNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("true");
+		}
+		
 	}
 	
 }

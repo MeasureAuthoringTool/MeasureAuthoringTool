@@ -11,11 +11,11 @@ import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
-import com.google.gwt.event.dom.client.KeyPressEvent;
-import com.google.gwt.event.dom.client.KeyPressHandler;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
-import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
@@ -63,76 +63,121 @@ public class EditSubTreeDialogBox {
 		String existingSubTreeName = cellTreeNode.getName();
 		// Create a table to layout the content
 		final VerticalPanel dialogContents = new VerticalPanel();
-		dialogContents.setWidth("20em");
-		dialogContents.setSpacing(5);
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
+		DOM.setStyleAttribute(dialogBox.getElement(), "width", "1000px");
+		DOM.setStyleAttribute(dialogBox.getElement(), "height", "1000px");
 		dialogBox.setWidget(dialogContents);
+		
+		final HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.getElement().setId("editClauseName_hPanel");
+		
+		final VerticalPanel dialogContents1 = new VerticalPanel();
+		dialogContents1.setWidth("20em");
+		dialogContents1.setSpacing(5);
+		
 		final TextBox subTreeName = new TextBox();
 		subTreeName.getElement().setId("quantity_TextBox");
 		subTreeName.setWidth("150px");
 		subTreeName.setText(existingSubTreeName);
 		subTreeName.setCursorPos(subTreeName.getText().length());
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
-		dialogContents.add(lableNewSubTreeName);
-		validationMessagePanel.add(warningIcon);
-		messageLabel.setText("Clause Name Already Exists");
-		validationMessagePanel.setStyleName("alertMessage");
-		validationMessagePanel.add(messageLabel);
-		dialogContents.setCellHorizontalAlignment(validationMessagePanel, HasHorizontalAlignment.ALIGN_LEFT);
-		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
-		dialogContents.add(subTreeName);
-		dialogContents.setCellHorizontalAlignment(subTreeName, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents1.add(lableNewSubTreeName);
+	
+		dialogContents1.setCellHorizontalAlignment(validationMessagePanel, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents1.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents1.add(subTreeName);
+		dialogContents1.setCellHorizontalAlignment(subTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		
-		//Add a Enter press event to the text box
-		subTreeName.addKeyPressHandler(new KeyPressHandler() {
-		@Override
-		 public void onKeyPress(KeyPressEvent event) { 
-		    if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
-				
+		final VerticalPanel dialogContents2 = new VerticalPanel();
+		Label clauseCreationRule = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Clause Creation Rules</b>");
+		Label clauseNameRule1 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Allowed Characters:Alphanumeric, White space, Underscore");
+		Label clauseNameRule2 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Must begin with a letter");
+		Label clauseNameRule3 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Clause Name cannot be greater than 100 characters");
+		
+		dialogContents2.add(clauseCreationRule);
+		dialogContents2.add(clauseNameRule1);
+		dialogContents2.add(clauseNameRule2);
+		dialogContents2.add(clauseNameRule3);
+		
+		dialogContents2.setCellHorizontalAlignment(clauseCreationRule, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents2.setCellHorizontalAlignment(clauseNameRule1, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents2.setCellHorizontalAlignment(clauseNameRule2, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents2.setCellHorizontalAlignment(clauseNameRule3, HasHorizontalAlignment.ALIGN_LEFT);
+		
+		hPanel.add(dialogContents1);
+		hPanel.add(dialogContents2);
+		dialogContents.add(hPanel);
+		
+		// Add a Save button at the bottom of the dialog
+		final Button save = new Button("OK", new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				dialogContents.remove(validationMessagePanel);
+				String clauseName = subTreeName.getText().trim();
+				boolean isValidClauseName = true;
 				int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
-				if(numberOfClause >0){
-					isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(), xmlTreeDisplay);
+				for(int i = 0; i< clauseName.length(); i++){
+					if(!Character.isLetter(clauseName.charAt(i)) && !Character.isDigit(clauseName.charAt(i)) && clauseName.charAt(i) != '_'
+							&& clauseName.charAt(i) != ' '){
+						isValidClauseName = false;
+						break;
+					}
 				}
-				
-				if(!isClausePresent){
-					dialogBox.hide();
-					xmlTreeDisplay.editNode(subTreeName.getText(), subTreeName.getText());
-					xmlTreeDisplay.setDirty(true);
-				}else{
+				if(!isValidClauseName){
+					//dialogContents.removeStyleName("alertMessageDialogBox");
+					validationMessagePanel.add(warningIcon);
+					messageLabel.setText("The Clause Name you entered does not match the following rules: \n Allowed characters:Alphanumeric,space,underscore");
+					validationMessagePanel.setStyleName("alertMessage");
+					validationMessagePanel.add(messageLabel);
 					dialogContents.insert(validationMessagePanel, 0);
 					dialogBox.show();
 				}
-				
-			}
-		}
-
-				});
-		// Add a Save button at the bottom of the dialog
-		Button save = new Button("OK", new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
-				if(!xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase(subTreeName.getText().trim())){
-					
-					if(numberOfClause >0){
-						isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(), xmlTreeDisplay);
-					}
-					
-					if(!isClausePresent){
-						dialogBox.hide();
-						xmlTreeDisplay.editNode(subTreeName.getText(), subTreeName.getText());
-						xmlTreeDisplay.setDirty(true);
+				else{
+					if(!xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase(subTreeName.getText().trim())){
+						
+						if(numberOfClause >0){
+							isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(), xmlTreeDisplay);
+						}
+						
+						if(!isClausePresent){
+							dialogBox.hide();
+							xmlTreeDisplay.editNode(subTreeName.getText(), subTreeName.getText());
+							xmlTreeDisplay.setDirty(true);
+						}else{
+							validationMessagePanel.add(warningIcon);
+							messageLabel.setText("Clause Name Already Exists");
+							validationMessagePanel.setStyleName("alertMessage");
+							validationMessagePanel.add(messageLabel);
+							dialogContents.insert(validationMessagePanel, 0);
+							dialogBox.show();
+						}
 					}else{
-						dialogContents.insert(validationMessagePanel, 0);
-						dialogBox.show();
+						dialogBox.hide();
 					}
-				}else{
-					dialogBox.hide();
 				}
 				
 			}
 		});
 		save.getElement().setId("save_Button");
+		
+		//Add a Enter press event to the text box
+		subTreeName.addKeyUpHandler(new KeyUpHandler() {
+			@Override
+			 public void onKeyUp(KeyUpEvent event) { 
+				String clauseName = subTreeName.getText().trim();
+				if(clauseName == null || "".equals(clauseName.trim()) || !Character.isLetter(clauseName.charAt(0))){
+					subTreeName.setText("");
+					save.setEnabled(false);
+				}
+				else{
+					save.setEnabled(true);
+				}
+			    if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+					save.click();
+				}
+			}
+		});
+		
 		// Add a Close button at the bottom of the dialog
 		Button closeButton = new Button("Cancel", new ClickHandler() {
 			@Override
@@ -176,75 +221,121 @@ public class EditSubTreeDialogBox {
 		dialogBox.setTitle("Add");
 		// Create a table to layout the content
 		final VerticalPanel dialogContents = new VerticalPanel();
-		dialogContents.setWidth("20em");
-		dialogContents.setSpacing(5);
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
+		DOM.setStyleAttribute(dialogBox.getElement(), "width", "1000px");
+		DOM.setStyleAttribute(dialogBox.getElement(), "height", "1000px");
 		dialogBox.setWidget(dialogContents);
+		
+		final HorizontalPanel hPanel = new HorizontalPanel();
+		hPanel.getElement().setId("addCluaseName_hPanel");
+		
+		final VerticalPanel dialogContents1 = new VerticalPanel();
+		dialogContents1.setWidth("20em");
+		dialogContents1.setSpacing(5);
+		
 		final TextBox subTreeName = new TextBox();
 		subTreeName.setEnabled(true);
 		subTreeName.getElement().setId("quantity_TextBox");
 		subTreeName.setWidth("150px");
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
-		dialogContents.add(lableNewSubTreeName);
-		validationMessagePanel.add(warningIcon);
-		messageLabel.setText("Clause Name Already Exists");
-		validationMessagePanel.setStyleName("alertMessage");
-		validationMessagePanel.add(messageLabel);
-		dialogContents.setCellHorizontalAlignment(validationMessagePanel, HasHorizontalAlignment.ALIGN_LEFT);
-		dialogContents.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
-		dialogContents.add(subTreeName);
-		dialogContents.setCellHorizontalAlignment(subTreeName, HasHorizontalAlignment.ALIGN_LEFT);
-		//Add a Enter press event to the text box
-		subTreeName.addKeyPressHandler(new KeyPressHandler() {
-		@Override
-		 public void onKeyPress(KeyPressEvent event) { 
-		    if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) { 
-				dialogBox.hide();
-				int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
-				if(numberOfClause >0){
-					isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(), xmlTreeDisplay);
-				}
-				
-				if(!isClausePresent){
-					xmlTreeDisplay.addNode(subTreeName.getText()
-							, subTreeName.getText()
-							, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
-					xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
-					xmlTreeDisplay.setDirty(true);
-				}else{
-					dialogContents.insert(validationMessagePanel, 0);
-					dialogBox.show();
-				}
-				
-			}
-		}
-	});
+		dialogContents1.add(lableNewSubTreeName);
+		
+		dialogContents1.setCellHorizontalAlignment(validationMessagePanel, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents1.setCellHorizontalAlignment(lableNewSubTreeName, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents1.add(subTreeName);
+		dialogContents1.setCellHorizontalAlignment(subTreeName, HasHorizontalAlignment.ALIGN_LEFT);
+		
+		final VerticalPanel dialogContents2 = new VerticalPanel();
+		Label clauseCreationRule = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Clause Creation Rules</b>");
+		Label clauseNameRule1 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Allowed Characters:Alphanumeric, White space, Underscore");
+		Label clauseNameRule2 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Must begin with a letter");
+		Label clauseNameRule3 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Clause Name cannot be greater than 100 characters");
+		
+		dialogContents2.add(clauseCreationRule);
+		dialogContents2.add(clauseNameRule1);
+		dialogContents2.add(clauseNameRule2);
+		dialogContents2.add(clauseNameRule3);
+		
+		dialogContents2.setCellHorizontalAlignment(clauseCreationRule, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents2.setCellHorizontalAlignment(clauseNameRule1, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents2.setCellHorizontalAlignment(clauseNameRule2, HasHorizontalAlignment.ALIGN_LEFT);
+		dialogContents2.setCellHorizontalAlignment(clauseNameRule3, HasHorizontalAlignment.ALIGN_LEFT);
+		
+		hPanel.add(dialogContents1);
+		hPanel.add(dialogContents2);
+		dialogContents.add(hPanel);
+		
 		
 		//Add a OK button at the bottom of the dialog
-		Button save = new Button("OK", new ClickHandler() {
+		final Button save = new Button("OK", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
 				dialogBox.hide();
+				validationMessagePanel.removeStyleName("alertMessage");
+				dialogContents.remove(validationMessagePanel);
+				String clauseName = subTreeName.getText().trim();
+				boolean isValidClauseName = true;
 				int numberOfClause = xmlTreeDisplay.getClauseNamesListBox().getItemCount();
-				if(numberOfClause >0){
-					isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(),xmlTreeDisplay);
+				for(int i = 0; i< clauseName.length(); i++){
+					if(!Character.isLetter(clauseName.charAt(i)) && !Character.isDigit(clauseName.charAt(i)) && clauseName.charAt(i) != '_'
+							&& clauseName.charAt(i) != ' '){
+						isValidClauseName = false;
+						break;
+					}
 				}
-				if(!isClausePresent){
-					xmlTreeDisplay.addNode(subTreeName.getText()
-							, subTreeName.getText()
-							, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
-					xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
-					xmlTreeDisplay.setDirty(true);
-				}else{
+				if(!isValidClauseName){
+					validationMessagePanel.add(warningIcon);
+					messageLabel.setText("The Clause Name you entered does not match the following rules: \n Allowed characters:Alphanumeric,space,underscore");
+					validationMessagePanel.setStyleName("alertMessage");
+					validationMessagePanel.add(messageLabel);
 					dialogContents.insert(validationMessagePanel, 0);
 					dialogBox.show();
 				}
-				
+				else{
+					if(numberOfClause >0){
+						isClausePresent = checkForClauseNameIfPresent(result, numberOfClause, subTreeName.getText().trim(),xmlTreeDisplay);
+					}
+					if(!isClausePresent){
+						xmlTreeDisplay.addNode(subTreeName.getText()
+								, subTreeName.getText()
+								, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
+						xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
+						xmlTreeDisplay.setDirty(true);
+					}else{
+						validationMessagePanel.add(warningIcon);
+						messageLabel.setText("Clause Name Already Exists");
+						validationMessagePanel.setStyleName("alertMessage");
+						validationMessagePanel.add(messageLabel);
+						dialogContents.insert(validationMessagePanel, 0);
+						dialogBox.show();
+					}
+				}
 			}
-			
 		});
 		
 		save.getElement().setId("save_Button");
+		save.setEnabled(false);	
+
+		//Add a Enter press event to the text box
+		subTreeName.addKeyUpHandler(new KeyUpHandler() {
+			
+			@Override
+			public void onKeyUp(KeyUpEvent event) {
+			String clauseName = subTreeName.getText().trim();
+				if(clauseName == null || "".equals(clauseName.trim()) || !Character.isLetter(clauseName.charAt(0))){
+					subTreeName.setText("");
+					save.setEnabled(false);
+				}
+				else{
+					save.setEnabled(true);
+				}
+			    if (clauseName != null && ! clauseName.equals("") && event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) { 
+			    	save.click();
+			    }
+			}
+		});
+		
+		
 		// Add a Close button at the bottom of the dialog
 		Button closeButton = new Button("Cancel", new ClickHandler() {
 			@Override

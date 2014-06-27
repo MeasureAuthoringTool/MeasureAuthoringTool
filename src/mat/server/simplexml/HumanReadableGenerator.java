@@ -620,9 +620,10 @@ public class HumanReadableGenerator {
 			functionDisplayName = functionDisplayName.replaceFirst("FIFTH", "Fifth");
 		}		
 		
-		String unit = item.getAttributes().getNamedItem("unit").getNodeValue();
-		functionDisplayName = functionDisplayName.replaceFirst(unit, getUnitString(item));
-		
+		if(item.getAttributes().getNamedItem("unit")!= null){
+			String unit = item.getAttributes().getNamedItem("unit").getNodeValue();
+			functionDisplayName = functionDisplayName.replaceFirst(unit, getUnitString(item));
+		}
 		functionDisplayName =StringUtils.capitalize(functionDisplayName.toLowerCase());
 		
 		return functionDisplayName+": ";

@@ -73,7 +73,18 @@ public class HeaderHumanReadableGenerator {
 		
 		return htmlDocument;
 	}
-	
+	public static void addMeasureSet(XmlProcessor processor, org.jsoup.nodes.Document html) throws XPathExpressionException{
+		Element body = html.body();
+		
+		body.append("<hr align=\"left\" color=\"teal\" size=\"2\" width=\"80%\">");
+		
+		Element table = body.appendElement("table");
+		table.attr("class", "header_table");
+		Element tBody = table.appendElement("tbody");
+		
+		createRowAndColumns(tBody, "Quality Measure Set");
+		createDiv(getInfo(processor,"qualityMeasureSet"), column);
+	}
 	/**
 	 * Creates the first part of the header table
 	 * 
@@ -263,9 +274,9 @@ public class HeaderHumanReadableGenerator {
 		createRowAndColumns(table, "Supplemental Data Elements");
 		createDiv(getInfo(processor,"supplementalData"), column);
 		
-		//Quality Measure Set
+		/*//Quality Measure Set
 		createRowAndColumns(table, "Quality Measure Set");
-		createDiv(getInfo(processor,"qualityMeasureSet"), column);
+		createDiv(getInfo(processor,"qualityMeasureSet"), column);*/
 	}
 
 	/**
@@ -505,7 +516,7 @@ public class HeaderHumanReadableGenerator {
 				if(node != null){
 					createRowAndColumns(table, "Measure Item Count");
 					if(map.getNamedItem("dataType") != null && map.getNamedItem("name") != null){
-						createDiv(map.getNamedItem("dataType").getNodeValue() + ":" + map.getNamedItem("name").getNodeValue(), column);
+						createDiv(map.getNamedItem("dataType").getNodeValue() + ": " + map.getNamedItem("name").getNodeValue(), column);
 					}
 					else{
 						createDiv("",column);

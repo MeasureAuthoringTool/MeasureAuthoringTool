@@ -291,7 +291,7 @@ public class HumanReadableGenerator {
 			return;
 		}else if(SUB_TREE.equals(nodeName)){
 			NamedNodeMap map = item.getAttributes();
-			if("true".equalsIgnoreCase(map.item(1).getNodeValue()) && showOnlyVariableName == false){
+			if("true".equalsIgnoreCase(map.getNamedItem("qdmVariable").getNodeValue()) && showOnlyVariableName == false){
 				if(parentListElement.nodeName().equals(HTML_UL)){
 					parentListElement = parentListElement.appendElement(HTML_LI);
 				}
@@ -299,7 +299,7 @@ public class HumanReadableGenerator {
 					parentListElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 				}
 
-				String name = StringUtils.deleteWhitespace(map.item(0).getNodeValue());
+				String name = StringUtils.deleteWhitespace(map.getNamedItem("displayName").getNodeValue());
 				parentListElement.appendText("$" + name + " ");
 			}
 			else{
@@ -592,7 +592,7 @@ public class HumanReadableGenerator {
 		String functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 		
 		if("AGE AT".equals(typeAttribute)){
-			functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase() + " ";
+			functionDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase();
 		}else if(functionDisplayName.startsWith("AVG")){
 			functionDisplayName = functionDisplayName.replaceFirst("AVG", "Average") + " of";
 		}else if(functionDisplayName.startsWith("COUNT")){
@@ -676,6 +676,7 @@ public class HumanReadableGenerator {
 		generateQDMVariables(humanReadableHTMLDocument, simpleXMLProcessor);
 		generateDataCriteria(humanReadableHTMLDocument, simpleXMLProcessor);
 		generateSupplementalData(humanReadableHTMLDocument, simpleXMLProcessor);
+		HeaderHumanReadableGenerator.addMeasureSet(simpleXMLProcessor, humanReadableHTMLDocument);
 	}
 	
 	private static void generateTableOfContents(
@@ -763,7 +764,7 @@ public class HumanReadableGenerator {
 		for(int i = 0; i<elements.getLength(); i++){
 			Node node = elements.item(i);
 			NamedNodeMap map = node.getAttributes();
-			String id = map.item(0).getNodeValue();
+			String id = map.getNamedItem("id").getNodeValue();
 			System.out.println(id);
 			Node qdm = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@uuid='"+id+"']");
 			NamedNodeMap qdmMap = qdm.getAttributes();
@@ -790,7 +791,7 @@ public class HumanReadableGenerator {
 			node = variables.item(i);
 			System.out.println(node.getNodeName());
 			NamedNodeMap map = node.getAttributes();
-			String name = map.item(0).getNodeValue();
+			String name = map.getNamedItem("displayName").getNodeValue();
 			if (name.length() > 0){
 				name = StringUtils.deleteWhitespace(name);
 				name = "$" + name;

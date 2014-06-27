@@ -1293,11 +1293,11 @@ public class XmlProcessor {
 	 * @throws XPathExpressionException
 	 *             the x path expression exception
 	 */
-	public NodeList getNodeCount(Document document, String xPathString)
+	public int getNodeCount(Document document, String xPathString)
 			throws XPathExpressionException {
 		javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 		XPathExpression expr = xPath.compile(xPathString);
-		return (NodeList) expr.evaluate(document, XPathConstants.NODESET);
+		return ((Double) expr.evaluate(document, XPathConstants.NUMBER)).intValue();
 	}
 	
 	//	public void addEmptyItemCountNode(){

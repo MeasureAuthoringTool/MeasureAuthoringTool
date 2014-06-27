@@ -730,6 +730,7 @@ public class HumanReadableGenerator {
 			String datatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 			String suppDataElement = qdmNode.getAttributes().getNamedItem("suppDataElement").getNodeValue();
 			String uuid = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
+			String name = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
 			
 			if("attribute".equals(datatype)){
 				attributeMap.put(oid+datatype, qdmNode);
@@ -737,12 +738,12 @@ public class HumanReadableGenerator {
 				int isUsedInLogic = simpleXMLProcessor.getNodeCount(simpleXMLProcessor.getOriginalDoc(), "count(//subTree//elementRef[@id='"+uuid+"'])");
 				if(isUsedInLogic > 0){
 					if(!qdmMap.containsKey(oid+datatype)){
-						qdmMap.put(datatype+oid, qdmNode);
+						qdmMap.put(datatype+":"+name+"~"+oid, qdmNode);
 					}
 				}
 			}else{
 				if(!qdmMap.containsKey(oid+datatype)){
-					qdmMap.put(datatype+oid, qdmNode);
+					qdmMap.put(datatype+":"+name+"~"+oid, qdmNode);
 				}
 			}
 		}
@@ -751,11 +752,7 @@ public class HumanReadableGenerator {
 		Collections.sort(qdmNameList,new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				if(o1.toLowerCase().charAt(0) >= o2.toLowerCase().charAt(0)){
-					return 1;
-				}else{
-					return -1;
-				}
+				return o1.substring(0,o1.indexOf('~')).compareToIgnoreCase(o2.substring(0,o2.indexOf('~')));
 			}
 		});
 	
@@ -793,18 +790,14 @@ public class HumanReadableGenerator {
 			System.out.println(id);
 			Node qdm = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@uuid='"+id+"']");
 			NamedNodeMap qdmMap = qdm.getAttributes();
-			qdmNodeMap.put(qdmMap.getNamedItem("datatype").getNodeValue(), qdm);
+			qdmNodeMap.put(qdmMap.getNamedItem("datatype").getNodeValue()+": "+qdmMap.getNamedItem("name").getNodeValue(), qdm);
 		}
 		
 		List<String> qdmNameList = new ArrayList(qdmNodeMap.keySet());
 		Collections.sort(qdmNameList,new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
-				if(o1.toLowerCase().charAt(0) >= o2.toLowerCase().charAt(0)){
-					return 1;
-				}else{
-					return -1;
-				}
+				return o1.compareToIgnoreCase(o2);
 			}
 		});
 		

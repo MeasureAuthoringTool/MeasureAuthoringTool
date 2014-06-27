@@ -290,6 +290,10 @@ public class HumanReadableGenerator {
 				Element italicElement = liElement.appendElement("i");
 				italicElement.appendText("# "+item.getTextContent());
 			}
+			if(item.getParentNode().getChildNodes().getLength() == 1 && "AND".equalsIgnoreCase(item.getParentNode().getAttributes().getNamedItem("displayName").getNodeValue())){
+				//Element ulElement = parentListElement.appendElement(HTML_UL);
+				parentListElement.appendElement(HTML_LI).appendText("None");
+			}
 			return;
 		}else if(SUB_TREE.equals(nodeName)){
 			NamedNodeMap map = item.getAttributes();
@@ -553,7 +557,6 @@ public class HumanReadableGenerator {
 		if(unitNode != null){
 			unitValue = attributeNode.getAttributes().getNamedItem("unit").getNodeValue();
 		}
-		
 		if(unitValue.equals("celsius")){
 			unitValue = "\u2103";
 		}
@@ -616,6 +619,9 @@ public class HumanReadableGenerator {
 		}else if(functionDisplayName.startsWith("FIFTH")){
 			functionDisplayName = functionDisplayName.replaceFirst("FIFTH", "Fifth");
 		}		
+		
+		String unit = item.getAttributes().getNamedItem("unit").getNodeValue();
+		functionDisplayName = functionDisplayName.replaceFirst(unit, getUnitString(item));
 		
 		functionDisplayName =StringUtils.capitalize(functionDisplayName.toLowerCase());
 		
@@ -720,55 +726,59 @@ public class HumanReadableGenerator {
 		//get all qdm elemes in 'elementLookUp' which are not attributes or dont have 'Timing Element' data type and are not supplement data elems
 		NodeList qdmElements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
 				"/measure/elementLookUp/qdm[@datatype != 'Timing Element']");
-		
-		Map<String, Node> qdmMap = new HashMap<String, Node>();
-		Map<String, Node> attributeMap = new HashMap<String, Node>();
-		
-		for(int i=0;i<qdmElements.getLength();i++){
-			Node qdmNode = qdmElements.item(i);
-			String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
-			String datatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
-			String suppDataElement = qdmNode.getAttributes().getNamedItem("suppDataElement").getNodeValue();
-			String uuid = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
-			String name = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
+		if(qdmElements.getLength()>0){
+			Map<String, Node> qdmMap = new HashMap<String, Node>();
+			Map<String, Node> attributeMap = new HashMap<String, Node>();
 			
-			if("attribute".equals(datatype)){
-				attributeMap.put(oid+datatype, qdmNode);
-			}else if("true".equals(suppDataElement)){
-				int isUsedInLogic = simpleXMLProcessor.getNodeCount(simpleXMLProcessor.getOriginalDoc(), "count(//subTree//elementRef[@id='"+uuid+"'])");
-				if(isUsedInLogic > 0){
+			for(int i=0;i<qdmElements.getLength();i++){
+				Node qdmNode = qdmElements.item(i);
+				String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
+				String datatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+				String suppDataElement = qdmNode.getAttributes().getNamedItem("suppDataElement").getNodeValue();
+				String uuid = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
+				String name = qdmNode.getAttributes().getNamedItem("name").getNodeValue();
+				
+				if("attribute".equals(datatype)){
+					attributeMap.put(oid+datatype, qdmNode);
+				}else if("true".equals(suppDataElement)){
+					int isUsedInLogic = simpleXMLProcessor.getNodeCount(simpleXMLProcessor.getOriginalDoc(), "count(//subTree//elementRef[@id='"+uuid+"'])");
+					if(isUsedInLogic > 0){
+						if(!qdmMap.containsKey(oid+datatype)){
+							qdmMap.put(datatype+":"+name+"~"+oid, qdmNode);
+						}
+					}
+				}else{
 					if(!qdmMap.containsKey(oid+datatype)){
 						qdmMap.put(datatype+":"+name+"~"+oid, qdmNode);
 					}
 				}
-			}else{
-				if(!qdmMap.containsKey(oid+datatype)){
-					qdmMap.put(datatype+":"+name+"~"+oid, qdmNode);
+			}
+			
+			List<String> qdmNameList = new ArrayList(qdmMap.keySet());
+			Collections.sort(qdmNameList,new Comparator<String>() {
+				@Override
+				public int compare(String o1, String o2) {
+					return o1.substring(0,o1.indexOf('~')).compareToIgnoreCase(o2.substring(0,o2.indexOf('~')));
 				}
-			}
-		}
+			});
 		
-		List<String> qdmNameList = new ArrayList(qdmMap.keySet());
-		Collections.sort(qdmNameList,new Comparator<String>() {
-			@Override
-			public int compare(String o1, String o2) {
-				return o1.substring(0,o1.indexOf('~')).compareToIgnoreCase(o2.substring(0,o2.indexOf('~')));
-			}
-		});
+			for(String s: qdmNameList){
+				Node qdm = qdmMap.get(s);
+				NamedNodeMap qdmAttribs = qdm.getAttributes();
+				Element listItem = mainListElement.appendElement(HTML_LI);
 	
-		for(String s: qdmNameList){
-			Node qdm = qdmMap.get(s);
-			NamedNodeMap qdmAttribs = qdm.getAttributes();
-			Element listItem = mainListElement.appendElement(HTML_LI);
-
-			listItem.appendText("\"" + qdmAttribs.getNamedItem("datatype").getNodeValue()+": "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
+				listItem.appendText("\"" + qdmAttribs.getNamedItem("datatype").getNodeValue()+": "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
+			}
+			
+			for(Node qdm:attributeMap.values()){
+				NamedNodeMap qdmAttribs = qdm.getAttributes();
+				Element listItem = mainListElement.appendElement(HTML_LI);
+	
+				listItem.appendText(" Attribute: "+"\"" +qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
+			}
 		}
-		
-		for(Node qdm:attributeMap.values()){
-			NamedNodeMap qdmAttribs = qdm.getAttributes();
-			Element listItem = mainListElement.appendElement(HTML_LI);
-
-			listItem.appendText(" Attribute: "+"\"" +qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
+		else{
+			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
 	}
 	
@@ -782,31 +792,36 @@ public class HumanReadableGenerator {
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 
 		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/supplementalDataElements/elementRef");
-		Map<String, Node> qdmNodeMap = new HashMap<String, Node>();
-		for(int i = 0; i<elements.getLength(); i++){
-			Node node = elements.item(i);
-			NamedNodeMap map = node.getAttributes();
-			String id = map.getNamedItem("id").getNodeValue();
-			System.out.println(id);
-			Node qdm = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@uuid='"+id+"']");
-			NamedNodeMap qdmMap = qdm.getAttributes();
-			qdmNodeMap.put(qdmMap.getNamedItem("datatype").getNodeValue()+": "+qdmMap.getNamedItem("name").getNodeValue(), qdm);
-		}
-		
-		List<String> qdmNameList = new ArrayList(qdmNodeMap.keySet());
-		Collections.sort(qdmNameList,new Comparator<String>() {
-			@Override
-			public int compare(String o1, String o2) {
-				return o1.compareToIgnoreCase(o2);
+		if(elements.getLength() > 0){
+			Map<String, Node> qdmNodeMap = new HashMap<String, Node>();
+			for(int i = 0; i<elements.getLength(); i++){
+				Node node = elements.item(i);
+				NamedNodeMap map = node.getAttributes();
+				String id = map.getNamedItem("id").getNodeValue();
+				System.out.println(id);
+				Node qdm = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@uuid='"+id+"']");
+				NamedNodeMap qdmMap = qdm.getAttributes();
+				qdmNodeMap.put(qdmMap.getNamedItem("datatype").getNodeValue()+": "+qdmMap.getNamedItem("name").getNodeValue(), qdm);
 			}
-		});
-		
-		for(String s: qdmNameList){
-			Node qdm = qdmNodeMap.get(s);
-			NamedNodeMap qdmMap = qdm.getAttributes();
-			Element listItem = mainListElement.appendElement(HTML_LI);
-
-			listItem.appendText("\"" + qdmMap.getNamedItem("datatype").getNodeValue()+": "+qdmMap.getNamedItem("name").getNodeValue()+"\" using \""+qdmMap.getNamedItem("name").getNodeValue() +" "+ qdmMap.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmMap.getNamedItem("oid").getNodeValue()+")\"");
+			
+			List<String> qdmNameList = new ArrayList(qdmNodeMap.keySet());
+			Collections.sort(qdmNameList,new Comparator<String>() {
+				@Override
+				public int compare(String o1, String o2) {
+					return o1.compareToIgnoreCase(o2);
+				}
+			});
+			
+			for(String s: qdmNameList){
+				Node qdm = qdmNodeMap.get(s);
+				NamedNodeMap qdmMap = qdm.getAttributes();
+				Element listItem = mainListElement.appendElement(HTML_LI);
+	
+				listItem.appendText("\"" + qdmMap.getNamedItem("datatype").getNodeValue()+": "+qdmMap.getNamedItem("name").getNodeValue()+"\" using \""+qdmMap.getNamedItem("name").getNodeValue() +" "+ qdmMap.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmMap.getNamedItem("oid").getNodeValue()+")\"");
+			}
+		}
+		else{
+			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
 	}
 	
@@ -821,23 +836,28 @@ public class HumanReadableGenerator {
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 
 		NodeList variables = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@qdmVariable='true']");
-		Node node;
-		for(int i=0; i<variables.getLength();i++){
-			node = variables.item(i);
-			System.out.println(node.getNodeName());
-			NamedNodeMap map = node.getAttributes();
-			String name = map.getNamedItem("displayName").getNodeValue();
-			if (name.length() > 0){
-				name = StringUtils.deleteWhitespace(name);
-				name = "$" + name;
+		if(variables.getLength()>0){
+			Node node;
+			for(int i=0; i<variables.getLength();i++){
+				node = variables.item(i);
+				System.out.println(node.getNodeName());
+				NamedNodeMap map = node.getAttributes();
+				String name = map.getNamedItem("displayName").getNodeValue();
+				if (name.length() > 0){
+					name = StringUtils.deleteWhitespace(name);
+					name = "$" + name;
+				}
+				Element variableElement = mainListElement.appendElement(HTML_LI);
+				Element boldNameElement = variableElement.appendElement("b");
+				boldNameElement.appendText(name+" = ");
+				Element indentListElement = variableElement.appendElement(HTML_UL);
+				showOnlyVariableName= true;
+				parseChild(node,indentListElement, node.getParentNode(),simpleXMLProcessor);
+				showOnlyVariableName = false;
 			}
-			Element variableElement = mainListElement.appendElement(HTML_LI);
-			Element boldNameElement = variableElement.appendElement("b");
-			boldNameElement.appendText(name+" = ");
-			Element indentListElement = variableElement.appendElement(HTML_UL);
-			showOnlyVariableName= true;
-			parseChild(node,indentListElement, node.getParentNode(),simpleXMLProcessor);
-			showOnlyVariableName = false;
+		}
+		else{
+			mainListElement.appendElement(HTML_LI).appendText("None");
 		}
 	}
 	
@@ -888,7 +908,7 @@ public class HumanReadableGenerator {
 		}else if("measureObservation".equals(nodeValue)){
 			populationName = "Measure Observation";
 		}else if("stratification".equals(nodeValue)){
-			populationName = "Stratification";
+			populationName = "Reporting Stratification";
 		}else if("denominator".equals(nodeValue)){
 			populationName = "Denominator";
 		}else if("denominatorExclusions".equals(nodeValue)){

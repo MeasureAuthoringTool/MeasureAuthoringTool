@@ -1,6 +1,8 @@
 package mat.server.simplexml;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -291,7 +293,7 @@ public class HumanReadableGenerator {
 			return;
 		}else if(SUB_TREE.equals(nodeName)){
 			NamedNodeMap map = item.getAttributes();
-			if("true".equalsIgnoreCase(map.getNamedItem("qdmVariable").getNodeValue()) && showOnlyVariableName == false){
+			if(map.getNamedItem("qdmVariable") != null && "true".equalsIgnoreCase(map.getNamedItem("qdmVariable").getNodeValue()) && showOnlyVariableName == false){
 				if(parentListElement.nodeName().equals(HTML_UL)){
 					parentListElement = parentListElement.appendElement(HTML_LI);
 				}
@@ -717,7 +719,7 @@ public class HumanReadableGenerator {
 		
 		//get all qdm elemes in 'elementLookUp' which are not attributes or dont have 'Timing Element' data type and are not supplement data elems
 		NodeList qdmElements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-				"/measure/elementLookUp/qdm[@datatype != 'Timing Element'][@suppDataElement != 'true']");
+				"/measure/elementLookUp/qdm[@datatype != 'Timing Element']");
 		
 		Map<String, Node> qdmMap = new HashMap<String, Node>();
 		Map<String, Node> attributeMap = new HashMap<String, Node>();
@@ -726,17 +728,39 @@ public class HumanReadableGenerator {
 			Node qdmNode = qdmElements.item(i);
 			String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
 			String datatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
+			String suppDataElement = qdmNode.getAttributes().getNamedItem("suppDataElement").getNodeValue();
+			String uuid = qdmNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			
 			if("attribute".equals(datatype)){
 				attributeMap.put(oid+datatype, qdmNode);
+			}else if("true".equals(suppDataElement)){
+				int isUsedInLogic = simpleXMLProcessor.getNodeCount(simpleXMLProcessor.getOriginalDoc(), "count(//subTree//elementRef[@id='"+uuid+"'])");
+				if(isUsedInLogic > 0){
+					if(!qdmMap.containsKey(oid+datatype)){
+						qdmMap.put(datatype+oid, qdmNode);
+					}
+				}
 			}else{
 				if(!qdmMap.containsKey(oid+datatype)){
-					qdmMap.put(oid+datatype, qdmNode);
+					qdmMap.put(datatype+oid, qdmNode);
 				}
 			}
 		}
 		
-		for(Node qdm:qdmMap.values()){
+		List<String> qdmNameList = new ArrayList(qdmMap.keySet());
+		Collections.sort(qdmNameList,new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				if(o1.toLowerCase().charAt(0) >= o2.toLowerCase().charAt(0)){
+					return 1;
+				}else{
+					return -1;
+				}
+			}
+		});
+	
+		for(String s: qdmNameList){
+			Node qdm = qdmMap.get(s);
 			NamedNodeMap qdmAttribs = qdm.getAttributes();
 			Element listItem = mainListElement.appendElement(HTML_LI);
 
@@ -761,6 +785,7 @@ public class HumanReadableGenerator {
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 
 		NodeList elements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "/measure/supplementalDataElements/elementRef");
+		Map<String, Node> qdmNodeMap = new HashMap<String, Node>();
 		for(int i = 0; i<elements.getLength(); i++){
 			Node node = elements.item(i);
 			NamedNodeMap map = node.getAttributes();
@@ -768,10 +793,27 @@ public class HumanReadableGenerator {
 			System.out.println(id);
 			Node qdm = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@uuid='"+id+"']");
 			NamedNodeMap qdmMap = qdm.getAttributes();
+			qdmNodeMap.put(qdmMap.getNamedItem("datatype").getNodeValue(), qdm);
+		}
+		
+		List<String> qdmNameList = new ArrayList(qdmNodeMap.keySet());
+		Collections.sort(qdmNameList,new Comparator<String>() {
+			@Override
+			public int compare(String o1, String o2) {
+				if(o1.toLowerCase().charAt(0) >= o2.toLowerCase().charAt(0)){
+					return 1;
+				}else{
+					return -1;
+				}
+			}
+		});
+		
+		for(String s: qdmNameList){
+			Node qdm = qdmNodeMap.get(s);
+			NamedNodeMap qdmMap = qdm.getAttributes();
 			Element listItem = mainListElement.appendElement(HTML_LI);
 
 			listItem.appendText("\"" + qdmMap.getNamedItem("datatype").getNodeValue()+": "+qdmMap.getNamedItem("name").getNodeValue()+"\" using \""+qdmMap.getNamedItem("name").getNodeValue() +" "+ qdmMap.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmMap.getNamedItem("oid").getNodeValue()+")\"");
-
 		}
 	}
 	

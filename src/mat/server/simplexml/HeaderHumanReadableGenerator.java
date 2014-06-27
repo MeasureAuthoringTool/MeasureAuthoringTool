@@ -82,7 +82,7 @@ public class HeaderHumanReadableGenerator {
 		table.attr("class", "header_table");
 		Element tBody = table.appendElement("tbody");
 		
-		createRowAndColumns(tBody, "Quality Measure Set");
+		createRowAndColumns(tBody, "Measure Set");
 		createDiv(getInfo(processor,"qualityMeasureSet"), column);
 	}
 	/**

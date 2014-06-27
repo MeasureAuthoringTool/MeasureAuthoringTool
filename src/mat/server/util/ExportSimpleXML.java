@@ -29,7 +29,9 @@ import net.sf.saxon.TransformerFactoryImpl;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
+import org.w3c.dom.DOMException;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
@@ -537,14 +539,101 @@ public class ExportSimpleXML {
 				groupNode.appendChild(cNode);
 			}
 		}
+		
+		addMissingEmptyClauses(groupNodes,originalDoc);
+		
 		//reArrangeClauseNodes(originalDoc);
 		removeNode("/measure/populations",originalDoc);
 		removeNode("/measure/measureObservations",originalDoc);
 		removeNode("/measure/strata",originalDoc);
 	}
 	
-	
+	private static void addMissingEmptyClauses(NodeList groupNodes,
+			Document originalDoc) throws DOMException, XPathExpressionException {
+		
+		List<String> clauseList = new ArrayList<String>();
+		List<String> existingClauses = new ArrayList<String>();
+		Node node = (Node)xPath.evaluate("/measure/measureDetails/scoring", 
+				originalDoc.getDocumentElement(), XPathConstants.NODE);
+		Node groupNode;
+		Node childNode;
+		clauseList = getRequiredClauses(node.getTextContent());
+		
+		for(int i = 0; i< groupNodes.getLength(); i++){
+			groupNode = groupNodes.item(i);
+			NodeList children = groupNode.getChildNodes();
+			System.out.println(children.getLength());
+			for(int j = 0; j<children.getLength(); j++){
+				childNode = children.item(j);
+				NamedNodeMap map = childNode.getAttributes();
+				existingClauses.add(map.getNamedItem("type").getNodeValue());
+			}
+			if(clauseList.removeAll(existingClauses)){
+				for(int x = 0; x<clauseList.size();x++){
+					generateClauseNode(groupNode,clauseList.get(x),originalDoc);
+				}
+			}
+		}
+	}
 
+	private static void generateClauseNode(Node groupNode, String type,Document origionalDoc) {
+		// TODO Auto-generated method stub
+		Node newClauseNode = groupNode.getFirstChild().cloneNode(true);
+		newClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(type);
+		newClauseNode.getAttributes().getNamedItem("type").setNodeValue(type);
+		newClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(UUID.randomUUID().toString());
+
+		NodeList logicalNode = newClauseNode.getChildNodes();
+
+		for(int i = 0; i<logicalNode.getLength();i++){
+			Node innerNode = logicalNode.item(i);
+			System.out.println(innerNode.getNodeName());
+			NodeList innerNodeChildren = innerNode.getChildNodes();
+			int length =  innerNodeChildren.getLength();
+			for(int j = length - 1; j>-1; j--){
+				Node child = innerNodeChildren.item(j);
+				System.out.println("J= " + j);
+				System.out.println("REMOVING THIS NODE " + child.getNodeName() + " " + j);
+				innerNode.removeChild(child);
+			}
+		}
+		groupNode.appendChild(newClauseNode);
+	}
+
+	private static List<String> getRequiredClauses(String type){
+		List<String> list = new ArrayList<String>();
+		if("Cohort".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+		}
+		else if("Continuous Variable".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+			list.add("measurePopulation");
+			list.add("measurePopulationExclusions");
+			list.add("measureObservation");
+			list.add("stratification");
+		}
+		else if("Proportion".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+			list.add("denominator");
+			list.add("denominatorExclusions");
+			list.add("numerator");
+			list.add("numeratorExclusions");
+			list.add("denominatorExceptions");
+			list.add("stratification");
+		}
+		else if("Ratio".equalsIgnoreCase(type)){
+			list.add("initialPopulation");
+			list.add("denominator");
+			list.add("denominatorExclusions");
+			list.add("numerator");
+			list.add("numeratorExclusions");
+			list.add("measureObservation");
+			list.add("stratification");
+		}
+		
+		return list;
+	}
+	
 	/**
 	 * Modify associated popid.
 	 *

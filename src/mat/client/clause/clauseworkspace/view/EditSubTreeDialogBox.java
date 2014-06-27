@@ -13,6 +13,8 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.event.dom.client.MouseOverEvent;
+import com.google.gwt.event.dom.client.MouseOverHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
@@ -57,8 +59,7 @@ public class EditSubTreeDialogBox {
 		
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
-		dialogBox.setText("Edit");
-		dialogBox.setTitle("Edit");
+		dialogBox.setText("Edit Clause Name");
 		dialogBox.getElement().setAttribute("id", "EditSubTreeDialogBox");
 		String existingSubTreeName = cellTreeNode.getName();
 		// Create a table to layout the content
@@ -77,9 +78,11 @@ public class EditSubTreeDialogBox {
 		
 		final TextBox subTreeName = new TextBox();
 		subTreeName.getElement().setId("quantity_TextBox");
-		subTreeName.setWidth("150px");
+		subTreeName.setWidth("300px");
+		subTreeName.setMaxLength(100);
 		subTreeName.setText(existingSubTreeName);
 		subTreeName.setCursorPos(subTreeName.getText().length());
+		subTreeName.setTitle(existingSubTreeName);
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents1.add(lableNewSubTreeName);
 	
@@ -89,10 +92,10 @@ public class EditSubTreeDialogBox {
 		dialogContents1.setCellHorizontalAlignment(subTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		
 		final VerticalPanel dialogContents2 = new VerticalPanel();
-		Label clauseCreationRule = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Clause Creation Rules</b>");
-		Label clauseNameRule1 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Allowed Characters:Alphanumeric, White space, Underscore");
-		Label clauseNameRule2 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Must begin with a letter");
-		Label clauseNameRule3 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Clause Name cannot be greater than 100 characters");
+		Label clauseCreationRule = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Clause Creation Rules:</b>");
+		Label clauseNameRule1 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Allowed Characters: Alphanumeric, White space, Underscore");
+		Label clauseNameRule2 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Must begin with a letter");
+		Label clauseNameRule3 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Clause name cannot be greater than 100 characters");
 		
 		dialogContents2.add(clauseCreationRule);
 		dialogContents2.add(clauseNameRule1);
@@ -126,7 +129,7 @@ public class EditSubTreeDialogBox {
 				if(!isValidClauseName){
 					//dialogContents.removeStyleName("alertMessageDialogBox");
 					validationMessagePanel.add(warningIcon);
-					messageLabel.setText("The Clause Name you entered does not match the following rules: \n Allowed characters:Alphanumeric,space,underscore");
+					messageLabel.setText("The Clause Name you entered does not match the following rules: \n  Allowed Characters: Alphanumeric, White space, Underscore");
 					validationMessagePanel.setStyleName("alertMessage");
 					validationMessagePanel.add(messageLabel);
 					dialogContents.insert(validationMessagePanel, 0);
@@ -172,12 +175,12 @@ public class EditSubTreeDialogBox {
 				else{
 					save.setEnabled(true);
 				}
+				subTreeName.setTitle(clauseName);
 			    if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
 					save.click();
 				}
 			}
 		});
-		
 		// Add a Close button at the bottom of the dialog
 		Button closeButton = new Button("Cancel", new ClickHandler() {
 			@Override
@@ -217,8 +220,8 @@ public class EditSubTreeDialogBox {
 	public static void showAddDialogBox(final XmlTreeDisplay xmlTreeDisplay, final CellTreeNode cellTreeNode) {
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
-		dialogBox.setText("Add");
-		dialogBox.setTitle("Add");
+		dialogBox.setText("Add Clause Name");
+		//dialogBox.setTitle("Add");
 		// Create a table to layout the content
 		final VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
@@ -236,7 +239,8 @@ public class EditSubTreeDialogBox {
 		final TextBox subTreeName = new TextBox();
 		subTreeName.setEnabled(true);
 		subTreeName.getElement().setId("quantity_TextBox");
-		subTreeName.setWidth("150px");
+		subTreeName.setWidth("300px");
+		subTreeName.setMaxLength(100);
 		Label lableNewSubTreeName = (Label) LabelBuilder.buildLabel(subTreeName, "New Clause Name");
 		dialogContents1.add(lableNewSubTreeName);
 		
@@ -246,10 +250,10 @@ public class EditSubTreeDialogBox {
 		dialogContents1.setCellHorizontalAlignment(subTreeName, HasHorizontalAlignment.ALIGN_LEFT);
 		
 		final VerticalPanel dialogContents2 = new VerticalPanel();
-		Label clauseCreationRule = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Clause Creation Rules</b>");
-		Label clauseNameRule1 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Allowed Characters:Alphanumeric, White space, Underscore");
-		Label clauseNameRule2 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Must begin with a letter");
-		Label clauseNameRule3 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-Clause Name cannot be greater than 100 characters");
+		Label clauseCreationRule = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>Clause Creation Rules:</b>");
+		Label clauseNameRule1 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Allowed Characters: Alphanumeric, White space, Underscore");
+		Label clauseNameRule2 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Must begin with a letter");
+		Label clauseNameRule3 = (Label) LabelBuilder.buildLabel(subTreeName, "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Clause name cannot be greater than 100 characters");
 		
 		dialogContents2.add(clauseCreationRule);
 		dialogContents2.add(clauseNameRule1);
@@ -285,7 +289,7 @@ public class EditSubTreeDialogBox {
 				}
 				if(!isValidClauseName){
 					validationMessagePanel.add(warningIcon);
-					messageLabel.setText("The Clause Name you entered does not match the following rules: \n Allowed characters:Alphanumeric,space,underscore");
+					messageLabel.setText("The Clause Name you entered does not match the following rules: \n Allowed Characters: Alphanumeric, White space, Underscore");
 					validationMessagePanel.setStyleName("alertMessage");
 					validationMessagePanel.add(messageLabel);
 					dialogContents.insert(validationMessagePanel, 0);
@@ -329,6 +333,7 @@ public class EditSubTreeDialogBox {
 				else{
 					save.setEnabled(true);
 				}
+				subTreeName.setTitle(clauseName);
 			    if (clauseName != null && ! clauseName.equals("") && event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) { 
 			    	save.click();
 			    }

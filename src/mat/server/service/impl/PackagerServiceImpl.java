@@ -59,6 +59,7 @@ public class PackagerServiceImpl implements PackagerService {
 	/** The Constant XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION. */
 	private static final String XPATH_MEASURE_SUPPLEMENTAL_DATA_ELEMENTS_EXPRESSION = "/measure/supplementalDataElements/elementRef[@id";
 	
+	/** The Constant XPATH_MEASURE_ELEMENT_LOOK_UP_EXPRESSION. */
 	private static final String XPATH_MEASURE_ELEMENT_LOOK_UP_EXPRESSION = "/measure/elementLookUp/qdm[@uuid='";
 	
 	
@@ -432,7 +433,7 @@ public class PackagerServiceImpl implements PackagerService {
 		if (supplementDataElementsAll.size() > 0) {
 			processor.replaceNode(stream.toString(), SUPPLEMENT_DATA_ELEMENTS, MEASURE);
 			try {
-				setSupplementalDataForQDMs(processor.getOriginalDoc(), detail.getSuppDataElements());
+				setSupplementalDataForQDMs(processor.getOriginalDoc(), detail.getSuppDataElements(), detail.getQdmElements());
 			} catch (XPathExpressionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -451,6 +452,7 @@ public class PackagerServiceImpl implements PackagerService {
 					Node parentNode = newNode.getParentNode();
 					parentNode.removeChild(newNode);
 				}
+				setSupplementalDataForQDMs(processor.getOriginalDoc(), detail.getSuppDataElements(), detail.getQdmElements());
 			} catch (XPathExpressionException e) {
 				
 				e.printStackTrace();
@@ -464,16 +466,28 @@ public class PackagerServiceImpl implements PackagerService {
 	 * Sets the supplemental data for qd ms.
 	 *
 	 * @param originalDoc the new supplemental data for qd ms
-	 * @param supplementalDataElemnts 
-	 * @throws XPathExpressionException 
+	 * @param supplementalDataElemnts the supplemental data elemnts
+	 * @param qdmElemnts the qdm elemnts
+	 * @throws XPathExpressionException the x path expression exception
 	 */
-	private void setSupplementalDataForQDMs(Document originalDoc, List<QualityDataSetDTO> supplementalDataElemnts) throws XPathExpressionException {
+	private void setSupplementalDataForQDMs(Document originalDoc, List<QualityDataSetDTO> supplementalDataElemnts, 
+			List<QualityDataSetDTO> qdmElemnts) throws XPathExpressionException {
 		
+		//to set QDM's that are used in Supplemental Data ELements tab.
 		for(int i = 0; i<supplementalDataElemnts.size(); i++){
 			javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
 			Node nodeSupplementalDataNode = (Node) xPath.evaluate(XPATH_MEASURE_ELEMENT_LOOK_UP_EXPRESSION +supplementalDataElemnts.get(i).getUuid()+"']",
 					originalDoc.getDocumentElement(), XPathConstants.NODE);
 			nodeSupplementalDataNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("true");
+		}
+		
+		//to set QDM's that are used in QDM Elements Tab
+		
+		for(int j = 0; j<qdmElemnts.size(); j++){
+			javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+			Node nodeSupplementalDataNode = (Node) xPath.evaluate(XPATH_MEASURE_ELEMENT_LOOK_UP_EXPRESSION +qdmElemnts.get(j).getUuid()+"']",
+					originalDoc.getDocumentElement(), XPathConstants.NODE);
+			nodeSupplementalDataNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("false");
 		}
 		
 	}

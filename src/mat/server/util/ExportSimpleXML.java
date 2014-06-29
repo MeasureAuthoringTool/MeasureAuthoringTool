@@ -332,7 +332,11 @@ public class ExportSimpleXML {
 			
 		} else {
 		    System.out.println("usedSubTreeIds are empty so removed from the SimpeXml");
-			removeNode("/measure/subTreeLookUp/subTree",originalDoc);
+		    NodeList allSubTreeNodeList = (NodeList) xPath.evaluate("/measure/subTreeLookUp/subTree",
+					originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		    for(int i = 0; i<allSubTreeNodeList.getLength(); i++ ) {
+		    	removeNode("/measure/subTreeLookUp/subTree",originalDoc);
+		    }
 		}
 		
 	}

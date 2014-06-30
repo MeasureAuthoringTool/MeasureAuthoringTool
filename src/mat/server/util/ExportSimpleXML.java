@@ -500,7 +500,7 @@ public class ExportSimpleXML {
 				String uuid = packageClause.getAttributes().getNamedItem("uuid").getNodeValue();
 				String type = packageClause.getAttributes().getNamedItem("type").getNodeValue();
 
-				Node clauseNode = findClauseByUUID(uuid, type, originalDoc);
+				Node clauseNode = findClauseByUUID(uuid, type, originalDoc).cloneNode(true);
 				
 				if("stratification".equals(clauseNode.getNodeName())){
 					NodeList stratificationClauses = clauseNode.getChildNodes();
@@ -539,18 +539,18 @@ public class ExportSimpleXML {
 					}
 
 					//deep clone the <clause> tag
-					Node clonedClauseNode = clauseNode.cloneNode(true);
+					//Node clonedClauseNode = clauseNode.cloneNode(true);
 
 					//set a new 'uuid' attribute value for <clause>
 					String cureUUID = UUIDUtilClient.uuid();
-					clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(cureUUID);
+					clauseNode.getAttributes().getNamedItem("uuid").setNodeValue(cureUUID);
 					//				String clauseName = clonedClauseNode.getAttributes().getNamedItem("displayName").getNodeValue();  
 					//set a new 'displayName' for <clause> 
 					//				clonedClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(clauseName+"_"+groupSequence);
 
 					//modify associcatedUUID
 					modifyAssociatedPOPID(uuid, cureUUID,groupSequence, originalDoc);
-					clauseNodes.add(clonedClauseNode);
+					clauseNodes.add(clauseNode);
 				}
 
 			}

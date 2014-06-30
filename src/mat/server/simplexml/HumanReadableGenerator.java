@@ -243,7 +243,7 @@ public class HumanReadableGenerator {
 		
 		try {
 			Node rootNode = populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild();
-			parseAndBuildHTML(populationOrSubtreeXMLProcessor, populationOrSubtreeListElement, rootNode);			
+			parseAndBuildHTML(populationOrSubtreeXMLProcessor, populationOrSubtreeListElement, rootNode,0);			
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -251,17 +251,22 @@ public class HumanReadableGenerator {
 	}
 	
 	private static void parseAndBuildHTML(
-			XmlProcessor populationOrSubtreeXMLProcessor, Element populationOrSubtreeListElement, Node clauseNode) {
+			XmlProcessor populationOrSubtreeXMLProcessor, Element populationOrSubtreeListElement, Node clauseNode, int currentGroupNumber) {
 		
 		try {
 			NodeList childNodes = clauseNode.getChildNodes();
+			System.out.println("NAME: " + clauseNode.getAttributes().getNamedItem("displayName").getNodeValue());
 			String scoring = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "/measure/measureDetails/scoring").getTextContent();
+			if(childNodes.getLength() == 0){
+				displayNone(populationOrSubtreeListElement.appendElement(HTML_UL),populationOrSubtreeXMLProcessor,clauseNode);
+			}
 			for(int i = 0;i < childNodes.getLength(); i++){
 				String parentName = childNodes.item(i).getParentNode().getAttributes().getNamedItem("type").getNodeValue();
+				System.out.println("I: " + i);
 				if("denominator".equalsIgnoreCase(parentName) || "measurePopulation".equalsIgnoreCase(parentName) ||
 						("numerator".equalsIgnoreCase(parentName) && "ratio".equalsIgnoreCase(scoring))){
 					
-					displayInitialPop(populationOrSubtreeListElement,i + 1,populationOrSubtreeXMLProcessor,clauseNode);
+					displayInitialPop(populationOrSubtreeListElement,populationOrSubtreeXMLProcessor,clauseNode,currentGroupNumber);
 				}
 				parseChild(childNodes.item(i),populationOrSubtreeListElement,childNodes.item(i).getParentNode(),populationOrSubtreeXMLProcessor);
 			}			
@@ -451,7 +456,7 @@ public class HumanReadableGenerator {
 		
 	}
 	
-	private static void displayInitialPop(Element populationOrSubtreeListElement, int loop, XmlProcessor populationOrSubtreeXMLProcessor, Node clause) {
+	private static void displayInitialPop(Element populationOrSubtreeListElement, XmlProcessor populationOrSubtreeXMLProcessor, Node clause, int loop) {
 		
 		Element listStart = populationOrSubtreeListElement.appendElement(HTML_UL);
 		Element list = listStart.appendElement(HTML_LI);
@@ -790,7 +795,7 @@ public class HumanReadableGenerator {
 		//get all qdm elemes in 'elementLookUp' which are not attributes or dont have 'Timing Element' data type and are not supplement data elems
 		NodeList qdmElements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
 				"/measure/elementLookUp/qdm[@datatype != 'Timing Element']");
-		if(qdmElements.getLength()>0){
+		
 			Map<String, Node> qdmMap = new HashMap<String, Node>();
 			Map<String, Node> attributeMap = new HashMap<String, Node>();
 			
@@ -825,7 +830,7 @@ public class HumanReadableGenerator {
 					return o1.substring(0,o1.indexOf('~')).compareToIgnoreCase(o2.substring(0,o2.indexOf('~')));
 				}
 			});
-		
+		if(qdmNameList.size()>0){
 			for(String s: qdmNameList){
 				Node qdm = qdmMap.get(s);
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
@@ -996,7 +1001,7 @@ public class HumanReadableGenerator {
 					childPopulationName += " " + (c+1);
 				}
 				childBoldNameElement.appendText(childPopulationName+" =");
-				parseAndBuildHTML(simpleXMLProcessor, childPopulationListElement,clauseNode);
+				parseAndBuildHTML(simpleXMLProcessor, childPopulationListElement,clauseNode,currentGroupNumber+1);
 			}
 		}else if(clauseNodes.size() == 1){
 			Element populationListElement = mainListElement.appendElement(HTML_LI);
@@ -1006,7 +1011,7 @@ public class HumanReadableGenerator {
 				populationName += " " + (currentGroupNumber+1);
 			}
 			boldNameElement.appendText(populationName+" =");
-			parseAndBuildHTML(simpleXMLProcessor, populationListElement,clauseNodes.get(0));
+			parseAndBuildHTML(simpleXMLProcessor, populationListElement,clauseNodes.get(0),currentGroupNumber+1);
 		}
 	}
 

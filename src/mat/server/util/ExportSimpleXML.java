@@ -562,6 +562,7 @@ public class ExportSimpleXML {
 			for(Node cNode:clauseNodes){
 				groupNode.appendChild(cNode);
 			}
+			
 		}
 
 		addMissingEmptyClauses(groupNodes,originalDoc);
@@ -598,16 +599,18 @@ public class ExportSimpleXML {
 	private static void addMissingEmptyClauses(NodeList groupNodes,
 			Document originalDoc) throws DOMException, XPathExpressionException {
 		
-		List<String> clauseList = new ArrayList<String>();
-		List<String> existingClauses = new ArrayList<String>();
+		
 		Node node = (Node)xPath.evaluate("/measure/measureDetails/scoring", 
 				originalDoc.getDocumentElement(), XPathConstants.NODE);
 		Node groupNode;
 		Node childNode;
-		clauseList = getRequiredClauses(node.getTextContent());
-		
+
 		for(int i = 0; i< groupNodes.getLength(); i++){
+			List<String> existingClauses = new ArrayList<String>();
+			List<String> clauseList = new ArrayList<String>();
+			clauseList = getRequiredClauses(node.getTextContent());
 			groupNode = groupNodes.item(i);
+			System.out.println("GROUP NODE: "+ groupNode.getNodeName());
 			NodeList children = groupNode.getChildNodes();
 			System.out.println(children.getLength());
 			for(int j = 0; j<children.getLength(); j++){

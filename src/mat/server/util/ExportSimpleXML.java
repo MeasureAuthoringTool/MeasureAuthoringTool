@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -484,8 +486,10 @@ public class ExportSimpleXML {
 				originalDoc.getDocumentElement(), XPathConstants.NODE);
 
 		NodeList groupNodes = measureGroupingNode.getChildNodes();
-		for(int j=0;j<groupNodes.getLength();j++){
-			Node groupNode = groupNodes.item(j);
+		List<Node> groupNodesList = reArrangeGroupsBySequence(groupNodes);
+		
+		for(int j=0;j<groupNodesList.size();j++){
+			Node groupNode = groupNodesList.get(j);
 			String groupSequence = groupNode.getAttributes().getNamedItem("sequence").getNodeValue();
 			NodeList packageClauses = groupNode.getChildNodes();
 			List<Node> clauseNodes = new ArrayList<Node>();
@@ -532,7 +536,6 @@ public class ExportSimpleXML {
 							attr.setNodeValue(associatedPopulationUUID);
 							clauseNode.getAttributes().setNamedItem(attr);
 						}
-
 					}
 
 					//deep clone the <clause> tag
@@ -547,7 +550,6 @@ public class ExportSimpleXML {
 
 					//modify associcatedUUID
 					modifyAssociatedPOPID(uuid, cureUUID,groupSequence, originalDoc);
-
 					clauseNodes.add(clonedClauseNode);
 				}
 
@@ -570,6 +572,29 @@ public class ExportSimpleXML {
 		removeNode("/measure/strata",originalDoc);
 	}
 	
+	private static List<Node> reArrangeGroupsBySequence(NodeList groupNodes) {
+		List<Node> nodeList = new ArrayList<Node>();
+		for(int i=0;i<groupNodes.getLength();i++){
+			nodeList.add(groupNodes.item(i));
+		}
+		Collections.sort(nodeList, new Comparator<Node>() {
+			@Override
+			public int compare(Node o1, Node o2) {
+				if("group".equals(o1.getNodeName()) && "group".equals(o2.getNodeName())){
+					return 0;
+				}
+				String o1Sequence = o1.getAttributes().getNamedItem("sequence").getNodeValue();
+				String o2Sequence = o2.getAttributes().getNamedItem("sequence").getNodeValue();
+				if(Integer.parseInt(o1Sequence) >= Integer.parseInt(o2Sequence)){
+					return 1;
+				}else{
+					return -1;
+				}
+			}
+		});
+		return nodeList;
+	}
+
 	private static void addMissingEmptyClauses(NodeList groupNodes,
 			Document originalDoc) throws DOMException, XPathExpressionException {
 		
@@ -626,15 +651,13 @@ public class ExportSimpleXML {
 		List<String> list = new ArrayList<String>();
 		if("Cohort".equalsIgnoreCase(type)){
 			list.add("initialPopulation");
-		}
-		else if("Continuous Variable".equalsIgnoreCase(type)){
+		}else if("Continuous Variable".equalsIgnoreCase(type)){
 			list.add("initialPopulation");
 			list.add("measurePopulation");
 			list.add("measurePopulationExclusions");
 			list.add("measureObservation");
 			list.add("stratum");
-		}
-		else if("Proportion".equalsIgnoreCase(type)){
+		}else if("Proportion".equalsIgnoreCase(type)){
 			list.add("initialPopulation");
 			list.add("denominator");
 			list.add("denominatorExclusions");
@@ -642,8 +665,7 @@ public class ExportSimpleXML {
 			list.add("numeratorExclusions");
 			list.add("denominatorExceptions");
 			list.add("stratum");
-		}
-		else if("Ratio".equalsIgnoreCase(type)){
+		}else if("Ratio".equalsIgnoreCase(type)){
 			list.add("initialPopulation");
 			list.add("denominator");
 			list.add("denominatorExclusions");
@@ -652,7 +674,6 @@ public class ExportSimpleXML {
 			list.add("measureObservation");
 			list.add("stratum");
 		}
-
 		return list;
 	}
 	

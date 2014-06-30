@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -21,6 +23,7 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
+import mat.model.clause.QDSAttributes;
 import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.lang.StringUtils;
@@ -61,6 +64,7 @@ import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.Event;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -266,6 +270,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The include qdm varibale. */
 	private CustomCheckBox includeQdmVaribale = new CustomCheckBox("Select 'QDM Variable' to create clause as " +
 			    "local variable.", "QDM Variable", true);
+	
+	/** The attribute service. */
+	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
+			.create(QDSAttributesService.class);
 
 	/**
 	 * Instantiates a new xml tree view.
@@ -1701,59 +1709,43 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					if(nodeArr.length == 2){
 						nodeDataType = nodeArr[1].trim();
 					}
-					 
-					List<String> dataTypeRemovedList = new ArrayList<String>();
-					
-					dataTypeRemovedList.add("Diagnostic Study, Result");
-					dataTypeRemovedList.add("Functional Status, Result");
-					dataTypeRemovedList.add("Laboratory Test, Result");
-					dataTypeRemovedList.add("Procedure, Result");
-					dataTypeRemovedList.add("Physical Exam, Finding");
-					dataTypeRemovedList.add("Intervention, Result");
-					
-					List<String> dataTypeAttributeRemovedList = new ArrayList<String>();
-					
-					dataTypeAttributeRemovedList.add("Device, Applied");
-					dataTypeAttributeRemovedList.add("Physical Exam, Order");
-					dataTypeAttributeRemovedList.add("Physical Exam, Recommended");
-					dataTypeAttributeRemovedList.add("Physical Exam, Performed");
-					
-					if(dataTypeRemovedList.contains(nodeDataType) 
-						|| nodeName.equalsIgnoreCase("Measurement End Date : Timing Element")
-						|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")){
-						
-						editNode(false, node);
-						if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
-						setErrorType = "inValidAtQDMNode";
-						}
-						if (isValid) {
-							isValid = false;
-						
-						}
+					if(nodeArr.length == 3){
+						nodeDataType = nodeArr[1].trim()+": "+nodeArr[2].trim();
 					}
 					
-					else if(dataTypeAttributeRemovedList.contains(nodeDataType) && attributeValue.equalsIgnoreCase("Anatomical Structure")){
+					if(nodeDataType.equalsIgnoreCase("timing element")){
+							if(nodeName.equalsIgnoreCase("Measurement End Date : Timing Element")
+							|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")){
 							
-							editNode(false, node);
-							if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
-							setErrorType = "inValidAtQDMNode";
-							}
+								editNode(false, node);
+								if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
+								setErrorType = "inValidAtQDMNode";
+								}
 								if (isValid) {
 									isValid = false;
 								
 								}
+							}
+							else{
+								if(!node.getValidNode()){
+									editNode(true, node);
+									
+								}
+							}
 							
+						}
+					
+					if(!nodeDataType.equalsIgnoreCase("timing element") && attributeValue.isEmpty()){
+								validateDatatype(nodeDataType, node);
+								
 					}
-					else if(!node.getValidNode()){
-						editNode(true, node);
-						
+					if(!nodeDataType.equalsIgnoreCase("timing element") && !attributeValue.isEmpty() && attributeValue.length()>0 ){
+						validateDatatypeAndAttribute(nodeDataType, node,attributeValue);	
 					}
 				}
 				
 				if ((node.getNodeType()== CellTreeNode.TIMING_NODE)
-					|| (node.getNodeType() == CellTreeNode.RELATIONSHIP_NODE) ){
-					// this check is performed since IE was giving JavaScriptError after removing a node and
-					//closing all nodes.
+					|| (node.getNodeType() == CellTreeNode.RELATIONSHIP_NODE) ){					
 					subTree = treeNode.setChildOpen(i, true, true);
 					if ((subTree != null) && (subTree.getChildCount() == 2)) {
 						if (!node.getValidNode()) {
@@ -1808,6 +1800,123 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 	return setErrorType;
 	}
+	
+	private void validateDatatypeAndAttribute(final String nodeDataType, final CellTreeNode node,
+			final String attributeValue) {
+		
+		attributeService.checkIfQDMDataTypeIsPresent(nodeDataType, new AsyncCallback<Boolean>(){
+
+				@Override
+				public void onFailure(Throwable caught) {
+					// TODO Auto-generated method stub
+					
+				}
+	
+				@Override
+				public void onSuccess(Boolean isDatatypePresent) {
+					if(isDatatypePresent){
+						attributeService.getAllAttributesByDataType(nodeDataType,
+								new AsyncCallback<List<QDSAttributes>>() {
+	
+									@Override
+									public void onFailure(Throwable caught) {
+										
+									}
+	
+									@Override
+									public void onSuccess(List<QDSAttributes> attlibuteList){
+										String attr = attributeValue;
+										if(attlibuteList.size()>0 && attlibuteList!=null){									
+											List<String> attrList = new ArrayList<String>();
+											for(int i = 0; i<attlibuteList.size();i++){
+											  attrList.add(attlibuteList.get(i).getName());
+											}
+											if(attrList.contains(attr)){
+												if(!node.getValidNode()){									
+													editNode(true, node);
+												}
+												
+											}else{
+												editNode(false, node);
+												if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
+												setErrorType = "inValidAtQDMNode";
+												}
+												if (isValid) {
+													isValid = false;									
+												}
+											}
+											
+										}else{
+											editNode(false, node);
+											if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
+											setErrorType = "inValidAtQDMNode";
+											}
+											if (isValid) {
+												isValid = false;									
+											}
+										}
+										
+									}
+							
+					});
+					
+				}else{
+					editNode(false, node);
+					if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
+					setErrorType = "inValidAtQDMNode";
+					}
+					if (isValid) {
+						isValid = false;									
+					}
+				}
+				
+			}			
+
+				
+			});
+			
+		}
+		
+	
+
+	
+
+	private void validateDatatype(final String nodeDataType,
+			final CellTreeNode node) {
+		
+			attributeService.checkIfQDMDataTypeIsPresent(nodeDataType, new AsyncCallback<Boolean>(){
+
+				@Override
+				public void onFailure(Throwable caught) {
+					
+				}
+	
+				@Override
+				public void onSuccess(Boolean result) {
+					if(result){						
+						if(!node.getValidNode()){									
+							editNode(true, node);
+						}
+						
+						
+					}else{
+						editNode(false, node);
+						if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
+						setErrorType = "inValidAtQDMNode";
+						}
+						if (isValid) {
+							isValid = false;									
+						}
+					}
+					
+				}			
+
+				
+			});
+		
+	}
+
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#addNode(java.lang.String, java.lang.String, java.lang.String, short)

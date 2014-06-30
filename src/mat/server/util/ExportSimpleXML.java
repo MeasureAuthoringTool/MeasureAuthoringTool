@@ -482,7 +482,7 @@ public class ExportSimpleXML {
 	private static void expandAndHandleGrouping(Document originalDoc) throws XPathExpressionException {
 		Node measureGroupingNode = (Node)xPath.evaluate("/measure/measureGrouping", 
 				originalDoc.getDocumentElement(), XPathConstants.NODE);
-		
+
 		NodeList groupNodes = measureGroupingNode.getChildNodes();
 		for(int j=0;j<groupNodes.getLength();j++){
 			Node groupNode = groupNodes.item(j);
@@ -490,49 +490,67 @@ public class ExportSimpleXML {
 			NodeList packageClauses = groupNode.getChildNodes();
 			List<Node> clauseNodes = new ArrayList<Node>();
 			for(int i=0;i<packageClauses.getLength();i++){
-			
+
 				Node packageClause = packageClauses.item(i);
-				
+
 				String uuid = packageClause.getAttributes().getNamedItem("uuid").getNodeValue();
 				String type = packageClause.getAttributes().getNamedItem("type").getNodeValue();
-				
-					
-				
+
 				Node clauseNode = findClauseByUUID(uuid, type, originalDoc);
-				//add childCount to clauseNode
-				if(packageClause.getChildNodes()!=null && packageClause.getChildNodes().getLength()>0){				
-					Node itemCount = packageClause.getChildNodes().item(0);
-					Node clonedItemCount = itemCount.cloneNode(true);
-					clauseNode.appendChild(clonedItemCount);
-				}
-				//add associatedPopulationUUID to clauseNode
-				if(type.equalsIgnoreCase("denominator") || type.equalsIgnoreCase("numerator")|| type.equalsIgnoreCase("measureObservation")){
-					Node hasAssociatedPopulationUUID = packageClause.getAttributes().getNamedItem("associatedPopulationUUID");
-					if(hasAssociatedPopulationUUID != null && !hasAssociatedPopulationUUID.toString().isEmpty()){
-						String associatedPopulationUUID = hasAssociatedPopulationUUID.getNodeValue();
-						Node attr = originalDoc.createAttribute("associatedPopulationUUID");
-						attr.setNodeValue(associatedPopulationUUID);
-						clauseNode.getAttributes().setNamedItem(attr);
-						}
+				
+				if("stratification".equals(clauseNode.getNodeName())){
+					NodeList stratificationClauses = clauseNode.getChildNodes();
 					
+					for(int h=0;h<stratificationClauses.getLength();h++){
+						Node stratificationClause = stratificationClauses.item(h);
+						//add childCount to clauseNode
+						if(packageClause.getChildNodes()!=null && packageClause.getChildNodes().getLength()>0){				
+							Node itemCount = packageClause.getChildNodes().item(0);
+							Node clonedItemCount = itemCount.cloneNode(true);
+							stratificationClause.appendChild(clonedItemCount);
+						}
+						Node clonedClauseNode = stratificationClause.cloneNode(true);
+						//set a new 'uuid' attribute value for <clause>
+						String cureUUID = UUIDUtilClient.uuid();
+						clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(cureUUID);
+						clauseNodes.add(clonedClauseNode);
+					}
+				}else{
+					//add childCount to clauseNode
+					if(packageClause.getChildNodes()!=null && packageClause.getChildNodes().getLength()>0){				
+						Node itemCount = packageClause.getChildNodes().item(0);
+						Node clonedItemCount = itemCount.cloneNode(true);
+						clauseNode.appendChild(clonedItemCount);
+					}
+
+					//add associatedPopulationUUID to clauseNode
+					if(type.equalsIgnoreCase("denominator") || type.equalsIgnoreCase("numerator")|| type.equalsIgnoreCase("measureObservation")){
+						Node hasAssociatedPopulationUUID = packageClause.getAttributes().getNamedItem("associatedPopulationUUID");
+						if(hasAssociatedPopulationUUID != null && !hasAssociatedPopulationUUID.toString().isEmpty()){
+							String associatedPopulationUUID = hasAssociatedPopulationUUID.getNodeValue();
+							Node attr = originalDoc.createAttribute("associatedPopulationUUID");
+							attr.setNodeValue(associatedPopulationUUID);
+							clauseNode.getAttributes().setNamedItem(attr);
+						}
+
+					}
+
+					//deep clone the <clause> tag
+					Node clonedClauseNode = clauseNode.cloneNode(true);
+
+					//set a new 'uuid' attribute value for <clause>
+					String cureUUID = UUIDUtilClient.uuid();
+					clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(cureUUID);
+					//				String clauseName = clonedClauseNode.getAttributes().getNamedItem("displayName").getNodeValue();  
+					//set a new 'displayName' for <clause> 
+					//				clonedClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(clauseName+"_"+groupSequence);
+
+					//modify associcatedUUID
+					modifyAssociatedPOPID(uuid, cureUUID,groupSequence, originalDoc);
+
+					clauseNodes.add(clonedClauseNode);
 				}
-				
-				
-				//deep clone the <clause> tag
-				Node clonedClauseNode = clauseNode.cloneNode(true);
-				
-				//set a new 'uuid' attribute value for <clause>
-				String cureUUID = UUIDUtilClient.uuid();
-				clonedClauseNode.getAttributes().getNamedItem("uuid").setNodeValue(cureUUID);
-//				String clauseName = clonedClauseNode.getAttributes().getNamedItem("displayName").getNodeValue();  
-				//set a new 'displayName' for <clause> 
-//				clonedClauseNode.getAttributes().getNamedItem("displayName").setNodeValue(clauseName+"_"+groupSequence);
-				
-				//modify associcatedUUID
-				modifyAssociatedPOPID(uuid, cureUUID,groupSequence, originalDoc);
-				
-				clauseNodes.add(clonedClauseNode);
-				
+
 			}
 			//finally remove the all the <packageClause> tags from <group>
 			for(int i=packageClauses.getLength();i>0;i--){
@@ -543,9 +561,9 @@ public class ExportSimpleXML {
 				groupNode.appendChild(cNode);
 			}
 		}
-		
+
 		addMissingEmptyClauses(groupNodes,originalDoc);
-		
+
 		//reArrangeClauseNodes(originalDoc);
 		removeNode("/measure/populations",originalDoc);
 		removeNode("/measure/measureObservations",originalDoc);
@@ -614,7 +632,7 @@ public class ExportSimpleXML {
 			list.add("measurePopulation");
 			list.add("measurePopulationExclusions");
 			list.add("measureObservation");
-			list.add("stratification");
+			list.add("stratum");
 		}
 		else if("Proportion".equalsIgnoreCase(type)){
 			list.add("initialPopulation");
@@ -623,7 +641,7 @@ public class ExportSimpleXML {
 			list.add("numerator");
 			list.add("numeratorExclusions");
 			list.add("denominatorExceptions");
-			list.add("stratification");
+			list.add("stratum");
 		}
 		else if("Ratio".equalsIgnoreCase(type)){
 			list.add("initialPopulation");
@@ -632,9 +650,9 @@ public class ExportSimpleXML {
 			list.add("numerator");
 			list.add("numeratorExclusions");
 			list.add("measureObservation");
-			list.add("stratification");
+			list.add("stratum");
 		}
-		
+
 		return list;
 	}
 	

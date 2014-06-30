@@ -32,6 +32,8 @@ public class HumanReadableGenerator {
 	private static final String SUB_TREE = "subTree";
 	private static final String COMMENT = "comment";
 	private static final String LOGICAL_OP = "logicalOp";
+	private static final String[] popNameArray = {"initialPopulation","denominator","denominatorExclusions","numerator","numeratorExclusions",
+		"denominatorExceptions","measurePopulation","measurePopulationExclusions","measureObservation","stratum"};
 	
 	private static Boolean showOnlyVariableName = false;
 	public static String generateHTMLForPopulationOrSubtree(String measureId, String subXML,
@@ -882,19 +884,68 @@ public class HumanReadableGenerator {
 			Node groupNode = groupNodeList.item(i);
 						
 			NodeList clauseNodeList = groupNode.getChildNodes();
-			for(int j=0;j<clauseNodeList.getLength();j++){
-				Node clauseNode = clauseNodeList.item(j);
-				if("clause".equals(clauseNode.getNodeName())){
-					Element populationListElement = mainListElement.appendElement(HTML_LI);
-					Element boldNameElement = populationListElement.appendElement("b");
-					String populationName = getPopulationName(clauseNode.getAttributes().getNamedItem("type").getNodeValue());
-					if (groupNodeList.getLength() > 1){
-						populationName += " " + (i+1);
-					}
-					boldNameElement.appendText(populationName+" =");
-					parseAndBuildHTML(simpleXMLProcessor, populationListElement,clauseNode);
+			generatePopulationNodes(clauseNodeList,mainListElement,groupNodeList.getLength(),i,simpleXMLProcessor);
+		}
+	}
+	
+	private static void generatePopulationNodes(NodeList clauseNodeList,
+			Element mainListElement, int totalGroupCount, int currentGroupNumber,
+			XmlProcessor simpleXMLProcessor) {
+		
+		for(int i=0;i<popNameArray.length;i++){
+			generatePopulationNodes(popNameArray[i], clauseNodeList,mainListElement,totalGroupCount,currentGroupNumber,simpleXMLProcessor);
+		}
+		
+	}
+
+	private static void generatePopulationNodes(String populationType,
+			NodeList clauseNodeList, Element mainListElement, int totalGroupCount, int currentGroupNumber,XmlProcessor simpleXMLProcessor) {
+		
+		//find all clause nodes with attribute type=populationType
+		List<Node> clauseNodes = new ArrayList<Node>();
+		for(int j=0;j<clauseNodeList.getLength();j++){
+			Node clauseNode = clauseNodeList.item(j);
+			if("clause".equals(clauseNode.getNodeName())){
+				String popType = clauseNode.getAttributes().getNamedItem("type").getNodeValue();
+				if(popType.equals(populationType)){
+					clauseNodes.add(clauseNode);
 				}
 			}
+		}
+		
+		if(clauseNodes.size() > 1){
+			Element populationListElement = mainListElement.appendElement(HTML_LI);
+			Element boldNameElement = populationListElement.appendElement("b");
+			String populationName = getPopulationName(populationType);
+			if (totalGroupCount > 1){
+				populationName += "s " + (currentGroupNumber+1);
+			}else{
+				populationName += "s";
+			}
+			boldNameElement.appendText(populationName+" =");
+			Element childPopulationULElement = populationListElement.appendElement(HTML_UL);
+			for(int c=0;c<clauseNodes.size();c++){
+				Node clauseNode = clauseNodes.get(c);
+				Element childPopulationListElement = childPopulationULElement.appendElement(HTML_LI);
+				Element childBoldNameElement = childPopulationListElement.appendElement("b");
+				String childPopulationName = getPopulationName(populationType);
+				if (totalGroupCount > 1){
+					childPopulationName += " " + (currentGroupNumber+1) + "." + (c+1);
+				}else{
+					childPopulationName += " " + (c+1);
+				}
+				childBoldNameElement.appendText(childPopulationName+" =");
+				parseAndBuildHTML(simpleXMLProcessor, childPopulationListElement,clauseNode);
+			}
+		}else if(clauseNodes.size() == 1){
+			Element populationListElement = mainListElement.appendElement(HTML_LI);
+			Element boldNameElement = populationListElement.appendElement("b");
+			String populationName = getPopulationName(populationType);
+			if (totalGroupCount > 1){
+				populationName += " " + (currentGroupNumber+1);
+			}
+			boldNameElement.appendText(populationName+" =");
+			parseAndBuildHTML(simpleXMLProcessor, populationListElement,clauseNodes.get(0));
 		}
 	}
 
@@ -905,21 +956,21 @@ public class HumanReadableGenerator {
 		}else if("measurePopulation".equals(nodeValue)){
 			populationName = "Measure Population";
 		}else if("measurePopulationExclusions".equals(nodeValue)){
-			populationName = "Measure Population Exclusions";
+			populationName = "Measure Population Exclusion";
 		}else if("measureObservation".equals(nodeValue)){
 			populationName = "Measure Observation";
-		}else if("stratification".equals(nodeValue)){
-			populationName = "Reporting Stratification";
+		}else if("stratum".equals(nodeValue)){
+			populationName = "Stratification";
 		}else if("denominator".equals(nodeValue)){
 			populationName = "Denominator";
 		}else if("denominatorExclusions".equals(nodeValue)){
-			populationName = "Denominator Exclusions";
+			populationName = "Denominator Exclusion";
 		}else if("denominatorExceptions".equals(nodeValue)){
-			populationName = "Denominator Exceptions";
+			populationName = "Denominator Exception";
 		}else if("numerator".equals(nodeValue)){
 			populationName = "Numerator";
 		}else if("numeratorExclusions".equals(nodeValue)){
-			populationName = "Numerator Exclusions";
+			populationName = "Numerator Exclusion";
 		}
 		return populationName;
 	}

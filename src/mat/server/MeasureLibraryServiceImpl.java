@@ -33,12 +33,14 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
+import mat.dao.DataTypeDAO;
 import mat.dao.MeasureNotesDAO;
 import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.model.Author;
+import mat.model.DataType;
 import mat.model.LockedUserInfo;
 import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
@@ -881,6 +883,16 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		attrs.addAll(attrs1);
 		// Collections.sort(attrs, attributeComparator);
 		return attrs;
+	}
+	
+	public boolean checkIfQDMDataTypeIsPresent(String dataTypeName){
+		boolean checkIfDataTypeIsPresent = false;
+		DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
+		DataType dataType = dataTypeDAO.findByDataTypeName(dataTypeName);
+		if(dataType!=null){
+			checkIfDataTypeIsPresent = true;
+		} 
+		return checkIfDataTypeIsPresent;
 	}
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#getAllMeasureNotesByMeasureID(java.lang.String)
@@ -2596,7 +2608,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public boolean validateMeasureXmlAtCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
 		boolean flag=false;
-		boolean isInValidAttribute = false;
 		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		
@@ -2686,17 +2697,18 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String id = nodesSDE_qdmElementId.item(m).getNodeValue();
 					String xpathForAttribute ="/measure//subTreeLookUp//elementRef[@id='"+id+"']/attribute";
 					Node attributeNode = (Node)xPath.evaluate(xpathForAttribute, xmlProcessor.getOriginalDoc(),XPathConstants.NODE);
+					String attributeName="";
 					if(attributeNode!=null){
-						String attributeName = attributeNode.getAttributes().getNamedItem("name").getNodeValue();
-						if(attributeName.equalsIgnoreCase("Anatomical Structure")){
+						attributeName = attributeNode.getAttributes().getNamedItem("name").getNodeValue();
+						/*if(attributeName.equalsIgnoreCase("Anatomical Structure")){
 							isInValidAttribute = true;
-						}
+						}*/
 					}
 						
 					
 					String XPATH_QDMLOOKUP = "/measure/elementLookUp/qdm[@uuid='"+id+"']";
 					Node qdmNode = (Node)xPath.evaluate(XPATH_QDMLOOKUP, xmlProcessor.getOriginalDoc(),XPathConstants.NODE);
-					flag = !validateQdmNode(qdmNode, isInValidAttribute);
+					flag = !validateQdmNode(qdmNode, attributeName);
 						
 					if(flag){
 						break;
@@ -2829,37 +2841,46 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param isInValidAttribute the is in valid attribute
 	 * @return true, if successful
 	 */
-	private boolean validateQdmNode(Node qdmchildNode, boolean isInValidAttribute) {
+	private boolean validateQdmNode(Node qdmchildNode, String attributeValue) {
 		boolean flag = true;
-		String dataTypeValue = qdmchildNode.getAttributes().getNamedItem("datatype").getNodeValue();
-		String qdmName = qdmchildNode.getAttributes().getNamedItem("name").getNodeValue();
-		
-		if((dataTypeValue.equalsIgnoreCase("Diagnostic Study, Result"))
-				|| (dataTypeValue.equalsIgnoreCase("Functional Status, Result"))
-				|| (dataTypeValue.equalsIgnoreCase("Laboratory Test, Result"))
-				|| (dataTypeValue.equalsIgnoreCase("Procedure, Result"))
-				|| (dataTypeValue.equalsIgnoreCase("Physical Exam, Finding"))
-				|| (dataTypeValue.equalsIgnoreCase("Intervention, Result"))
-				|| (dataTypeValue.equalsIgnoreCase("Patient characteristic Birthdate"))
-				|| (dataTypeValue.equalsIgnoreCase("Patient Characteristic Expired"))){
-			
-				flag=false;
-				
-			}else if(dataTypeValue.equalsIgnoreCase("Timing Element")){
-				if(qdmName.equalsIgnoreCase("Measurement Start Date") || qdmName.equalsIgnoreCase("Measurement End Date")){
-					flag = false;
-				}
-			}
-			else if((dataTypeValue.equalsIgnoreCase("Device, Applied")
-					|| dataTypeValue.equalsIgnoreCase("Physical Exam, Order")
-					|| dataTypeValue.equalsIgnoreCase("Physical Exam, Recommended")
-					|| dataTypeValue.equalsIgnoreCase("Physical Exam, Performed")) && isInValidAttribute){
-				
+		String dataTypeValue = qdmchildNode.getAttributes()
+				.getNamedItem("datatype").getNodeValue();
+		String qdmName = qdmchildNode.getAttributes().getNamedItem("name")
+				.getNodeValue();
+		if (dataTypeValue.equalsIgnoreCase("timing element")) {
+			if (qdmName.equalsIgnoreCase("Measurement End Date")
+					|| qdmName.equalsIgnoreCase("Measurement Start Date")) {
 				flag = false;
-				
 			}
+		}
+        //
+		if (!dataTypeValue.equalsIgnoreCase("timing element")
+				&& attributeValue.isEmpty()) {
+			if (!checkIfQDMDataTypeIsPresent(dataTypeValue)) {
+				flag = false;
+			}
+
+		}
+		if (!dataTypeValue.equalsIgnoreCase("timing element")
+				&& !attributeValue.isEmpty() && attributeValue.length() > 0) {
+			if (checkIfQDMDataTypeIsPresent(dataTypeValue)) {
+
+				List<QDSAttributes> attlibuteList = getAllDataTypeAttributes(dataTypeValue);
+				if (attlibuteList.size() > 0 && attlibuteList != null) {
+					List<String> attrList = new ArrayList<String>();
+					for (int i = 0; i < attlibuteList.size(); i++) {
+						attrList.add(attlibuteList.get(i).getName());
+					}
+					if (!attrList.contains(attributeValue)) {
+						flag = false;
+					}
+				}
+
+			} else {
+				flag = false;
+			}
+		}
 		return flag;
-		
 	}
 	
 	/**

@@ -262,7 +262,7 @@ public class HumanReadableGenerator {
 		try {
 			NodeList childNodes = clauseNode.getChildNodes();
 			System.out.println("NAME: " + clauseNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			String scoring = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//measure/measureDetails/scoring").getTextContent();
+			String scoring = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//measureDetails/scoring").getTextContent();
 			System.out.println("CHILD NODE LENGTH: " + childNodes.getLength());
 			if(childNodes.getLength() == 1){
 				displayNone(populationOrSubtreeListElement.appendElement(HTML_UL),populationOrSubtreeXMLProcessor,clauseNode);

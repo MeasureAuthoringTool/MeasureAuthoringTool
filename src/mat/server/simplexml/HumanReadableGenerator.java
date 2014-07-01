@@ -1029,7 +1029,8 @@ public class HumanReadableGenerator {
 				}else{
 					childPopulationName += " " + (c+1);
 				}
-				childBoldNameElement.appendText(childPopulationName+" =");
+				String itemCountText = getItemCountText(clauseNode);
+				childBoldNameElement.appendText(childPopulationName+" ="+(itemCountText.length() > 0 ? itemCountText : ""));
 				parseAndBuildHTML(simpleXMLProcessor, childPopulationListElement,clauseNode,currentGroupNumber+1);
 			}
 		}else if(clauseNodes.size() == 1){
@@ -1039,9 +1040,39 @@ public class HumanReadableGenerator {
 			if (totalGroupCount > 1){
 				populationName += " " + (currentGroupNumber+1);
 			}
-			boldNameElement.appendText(populationName+" =");
+			String itemCountText = getItemCountText(clauseNodes.get(0));
+			boldNameElement.appendText(populationName+" ="+(itemCountText.length() > 0 ? itemCountText : ""));
 			parseAndBuildHTML(simpleXMLProcessor, populationListElement,clauseNodes.get(0),currentGroupNumber+1);
 		}
+	}
+
+	private static String getItemCountText(Node node) {
+		String itemCountText = "";
+		
+		if("clause".equals(node.getNodeName())){
+			NodeList childNodes = node.getChildNodes();
+			for(int i=0;i<childNodes.getLength();i++){
+				Node child = childNodes.item(i);
+				if("itemCount".equals(child.getNodeName())){
+					NodeList elementRefList = child.getChildNodes();
+					for(int j=0;j<elementRefList.getLength();j++){
+						Node elementRef = elementRefList.item(j);
+						String nodeText = elementRef.getAttributes().getNamedItem("dataType").getNodeValue()+":"+elementRef.getAttributes().getNamedItem("name").getNodeValue();
+						if(j == (elementRefList.getLength()-1)){
+							itemCountText += nodeText;
+						}else{
+							itemCountText += nodeText + ", ";
+						}
+					}
+					if(itemCountText.length() > 0){
+						itemCountText = "    (Item Count: "+itemCountText+")";
+					}
+					break;
+				}
+			}
+		}
+		
+		return itemCountText;
 	}
 
 	private static String getPopulationName(String nodeValue) {

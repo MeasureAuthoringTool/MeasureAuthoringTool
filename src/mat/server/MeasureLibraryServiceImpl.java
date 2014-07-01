@@ -885,6 +885,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return attrs;
 	}
 	
+	/**
+	 * Check if qdm data type is present.
+	 *
+	 * @param dataTypeName the data type name
+	 * @return true, if successful
+	 */
 	public boolean checkIfQDMDataTypeIsPresent(String dataTypeName){
 		boolean checkIfDataTypeIsPresent = false;
 		DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
@@ -2838,7 +2844,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * Validate qdm node.
 	 *
 	 * @param qdmchildNode the qdmchild node
-	 * @param isInValidAttribute the is in valid attribute
+	 * @param attributeValue the attribute value
 	 * @return true, if successful
 	 */
 	private boolean validateQdmNode(Node qdmchildNode, String attributeValue) {

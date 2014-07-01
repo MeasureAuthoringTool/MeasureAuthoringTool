@@ -498,16 +498,20 @@ public class HumanReadableGenerator {
 			if(item.getAttributes().getNamedItem("unit") != null){
 				name = name.replaceFirst(item.getAttributes().getNamedItem("unit").getNodeValue(), getUnitString(item));
 			}
-			if(isParentNodeName(item,LOGICAL_OP) && !ELEMENT_REF.equals(childNodes.item(0).getNodeName())){
+			
+			boolean isChild1QDMOrVariable = checkIfElementRefOrQDMVariable(childNodes.item(0));
+			boolean isChild2QDMOrVariable = checkIfElementRefOrQDMVariable(childNodes.item(1));
+			
+			if(isParentNodeName(item,LOGICAL_OP) && !isChild1QDMOrVariable){
 				newLiElement = liElement.appendElement(HTML_UL).appendElement(HTML_LI);
 			}
 			parseChild(childNodes.item(0),newLiElement,item, populationOrSubtreeXMLProcessor);
 			
-			if(!ELEMENT_REF.equals(childNodes.item(1).getNodeName())){
+			if(!isChild2QDMOrVariable){
 				newLiElement.appendElement(HTML_LI).appendText(name);
 				newLiElement = newLiElement.appendElement(HTML_UL).appendElement(HTML_LI);
 			}else{
-				if(!ELEMENT_REF.equals(childNodes.item(0).getNodeName())){
+				if(!isChild1QDMOrVariable){
 					newLiElement = newLiElement.appendElement(HTML_LI);
 					newLiElement.appendText(name);
 				}else{
@@ -516,6 +520,31 @@ public class HumanReadableGenerator {
 			}
 			parseChild(childNodes.item(1),newLiElement,item, populationOrSubtreeXMLProcessor);
 		}
+	}
+	
+	/**
+	 * Checks if the Node is a "elementRef" node or a "subTree" node with 
+	 * a "qdmVariable" attribute whose value is "true".
+	 * If Yes, returns true, else returns false.
+	 * @param node
+	 * @return
+	 */
+	private static boolean checkIfElementRefOrQDMVariable(Node node){
+		boolean retValue = false;
+		String nodeName = node.getNodeName();
+		
+		if(ELEMENT_REF.equals(nodeName)){
+			retValue = true;
+		}else if(SUB_TREE.equals(nodeName)){
+			Node attributeNode = node.getAttributes().getNamedItem("qdmVariable");
+			if(attributeNode != null){
+				if("true".equals(attributeNode.getNodeValue())){
+					retValue = true;
+				}
+			}
+		}
+		
+		return retValue;
 	}
 
 	private static boolean isParentNodeName(Node item, String parentNodeName) {

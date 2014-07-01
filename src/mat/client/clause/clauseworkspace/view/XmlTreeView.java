@@ -1801,6 +1801,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	return setErrorType;
 	}
 	
+	/**
+	 * Validate datatype and attribute.
+	 *
+	 * @param nodeDataType the node data type
+	 * @param node the node
+	 * @param attributeValue the attribute value
+	 */
 	private void validateDatatypeAndAttribute(final String nodeDataType, final CellTreeNode node,
 			final String attributeValue) {
 		
@@ -1881,6 +1888,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	
 
+	/**
+	 * Validate datatype.
+	 *
+	 * @param nodeDataType the node data type
+	 * @param node the node
+	 */
 	private void validateDatatype(final String nodeDataType,
 			final CellTreeNode node) {
 		

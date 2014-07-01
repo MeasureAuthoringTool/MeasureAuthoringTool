@@ -328,7 +328,7 @@ public class HeaderHumanReadableGenerator {
 		if(" ".equals(newEnd)){
 			through = "";
 		}
-		createRowAndColumns(table, "MeasurementPeriod");
+		createRowAndColumns(table, "Measurement Period");
 		column.appendText(newStart + through + newEnd);
 		
 	}

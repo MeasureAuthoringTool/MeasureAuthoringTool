@@ -879,8 +879,12 @@ public class HumanReadableGenerator {
 			for(Node qdm:attributeMap.values()){
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
 				Element listItem = mainListElement.appendElement(HTML_LI);
-				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/subTreeLookUp//subTree/relationalOp/elementRef/attribute[@qdmUUID=\""+qdmAttribs.getNamedItem("uuid").getNodeValue()+"\"]");
-				String name = node.getAttributes().getNamedItem("name").getNodeValue();
+				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "//attribute[@qdmUUID=\""+qdmAttribs.getNamedItem("uuid").getNodeValue()+"\"]");
+				String name ="";
+				System.out.println("UUID: " + qdmAttribs.getNamedItem("uuid").getNodeValue());
+				if(node != null){
+					name = node.getAttributes().getNamedItem("name").getNodeValue();
+				}
 				listItem.appendText(" Attribute: "+"\"" +name+": "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
 			}
 		}

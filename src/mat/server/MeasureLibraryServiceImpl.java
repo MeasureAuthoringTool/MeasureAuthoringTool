@@ -2860,7 +2860,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		else if(dataTypeValue.equalsIgnoreCase("Patient characteristic Birthdate") || dataTypeValue.equalsIgnoreCase("Patient characteristic Expired")){
 			
-			if(!oidValue.equalsIgnoreCase("419099009") || !oidValue.equalsIgnoreCase("21112-8")){
+			if(oidValue.equalsIgnoreCase("419099009") || oidValue.equalsIgnoreCase("21112-8")){
+				//do nothing
+			}else{
 				flag = false;
 			}
 		}

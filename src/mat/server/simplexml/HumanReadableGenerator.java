@@ -262,7 +262,7 @@ public class HumanReadableGenerator {
 		try {
 			NodeList childNodes = clauseNode.getChildNodes();
 			System.out.println("NAME: " + clauseNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			String scoring = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//measureDetails/scoring").getTextContent();
+			String scoring = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//measure/measureDetails/scoring").getTextContent();
 			if(childNodes.getLength() == 0){
 				displayNone(populationOrSubtreeListElement.appendElement(HTML_UL),populationOrSubtreeXMLProcessor,clauseNode);
 			}
@@ -271,7 +271,6 @@ public class HumanReadableGenerator {
 				if(childNodes.item(i).getParentNode().getAttributes().getNamedItem("type") != null){
 					parentName = childNodes.item(i).getParentNode().getAttributes().getNamedItem("type").getNodeValue();
 				} 
-				System.out.println("I: " + i);
 				if("denominator".equalsIgnoreCase(parentName) || "measurePopulation".equalsIgnoreCase(parentName) ||
 						("numerator".equalsIgnoreCase(parentName) && "ratio".equalsIgnoreCase(scoring))){
 					
@@ -873,15 +872,16 @@ public class HumanReadableGenerator {
 				Node qdm = qdmMap.get(s);
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
 				Element listItem = mainListElement.appendElement(HTML_LI);
-	
+				
 				listItem.appendText("\"" + qdmAttribs.getNamedItem("datatype").getNodeValue()+": "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
 			}
 			
 			for(Node qdm:attributeMap.values()){
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
 				Element listItem = mainListElement.appendElement(HTML_LI);
-	
-				listItem.appendText(" Attribute: "+"\"" +qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
+				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/subTreeLookUp//subTree/relationalOp/elementRef/attribute[@qdmUUID=\""+qdmAttribs.getNamedItem("uuid").getNodeValue()+"\"]");
+				String name = node.getAttributes().getNamedItem("name").getNodeValue();
+				listItem.appendText(" Attribute: "+"\"" +name+": "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
 			}
 		}
 		else{
@@ -1020,12 +1020,12 @@ public class HumanReadableGenerator {
 		if(clauseNodes.size() > 1){
 			Element populationListElement = mainListElement.appendElement(HTML_LI);
 			Element boldNameElement = populationListElement.appendElement("b");
-			String populationName = getPopulationName(populationType);
+			String populationName = getPopulationName(populationType,true);
 			if (totalGroupCount > 1){
-				populationName += "s " + (currentGroupNumber+1);
-			}else{
+				populationName += /*"s "*/ + (currentGroupNumber+1);
+			}/*else{
 				populationName += "s";
-			}
+			}*/
 			boldNameElement.appendText(populationName+" =");
 			Element childPopulationULElement = populationListElement.appendElement(HTML_UL);
 			for(int c=0;c<clauseNodes.size();c++){
@@ -1084,6 +1084,14 @@ public class HumanReadableGenerator {
 		return itemCountText;
 	}
 
+	private static String getPopulationName(String populationType, boolean addPlural) {
+		String name = getPopulationName(populationType);
+		if(addPlural && (!name.endsWith("Exclusions") && !name.endsWith("Exceptions"))){
+			name += "s ";
+		}
+		return name;
+	}
+	
 	private static String getPopulationName(String nodeValue) {
 		String populationName = "";
 		if("initialPopulation".equals(nodeValue)){
@@ -1091,21 +1099,21 @@ public class HumanReadableGenerator {
 		}else if("measurePopulation".equals(nodeValue)){
 			populationName = "Measure Population";
 		}else if("measurePopulationExclusions".equals(nodeValue)){
-			populationName = "Measure Population Exclusion";
+			populationName = "Measure Population Exclusions";
 		}else if("measureObservation".equals(nodeValue)){
-			populationName = "Measure Observation";
+			populationName = "Measure Observations";
 		}else if("stratum".equals(nodeValue)){
 			populationName = "Stratification";
 		}else if("denominator".equals(nodeValue)){
 			populationName = "Denominator";
 		}else if("denominatorExclusions".equals(nodeValue)){
-			populationName = "Denominator Exclusion";
+			populationName = "Denominator Exclusions";
 		}else if("denominatorExceptions".equals(nodeValue)){
-			populationName = "Denominator Exception";
+			populationName = "Denominator Exceptions";
 		}else if("numerator".equals(nodeValue)){
 			populationName = "Numerator";
 		}else if("numeratorExclusions".equals(nodeValue)){
-			populationName = "Numerator Exclusion";
+			populationName = "Numerator Exclusions";
 		}
 		return populationName;
 	}

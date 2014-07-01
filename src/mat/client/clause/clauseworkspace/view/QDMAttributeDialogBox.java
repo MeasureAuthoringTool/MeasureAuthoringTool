@@ -259,13 +259,6 @@ public class QDMAttributeDialogBox {
 		}
 		hPanel.clear();
 		dialogContents.add(hPanel);
-		if(checkForRemovedDataType){
-			attributeListBox.clear();
-			attributeListBox.setEnabled(false);
-			hPanel.clear();
-			getWidget(hPanel,"Attributes may only be added to valid datatypes");
-		}
-		
 		Label attributeLabel = (Label) LabelBuilder.buildLabel(attributeListBox, "Attribute");
 		dialogContents.add(attributeLabel);
 		dialogContents.setCellHorizontalAlignment(attributeLabel, HasHorizontalAlignment.ALIGN_LEFT);
@@ -313,6 +306,18 @@ public class QDMAttributeDialogBox {
 			CellTreeNode attributeNode = attributeNodeList.get(0);
 			setExistingAttributeInPopup(attributeNode,attributeListBox,modeListBox,dialogContents1);
 			
+		}
+		if(checkForRemovedDataType){
+			attributeListBox.clear();
+			attributeListBox.setEnabled(false);
+			modeListBox.clear();
+			modeListBox.setEnabled(false);
+			unitsListBox.clear();
+			unitsListBox.setEnabled(false);	
+			quantityTextBox.setValue("");
+			quantityTextBox.setEnabled(false);
+			hPanel.clear();
+			getWidget(hPanel,"Attributes may only be added to valid datatypes");
 		}
 		
 		attributeListBox.addChangeHandler(new ChangeHandler() {

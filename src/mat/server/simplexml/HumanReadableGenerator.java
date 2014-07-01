@@ -1131,7 +1131,7 @@ public class HumanReadableGenerator {
 		}else if("measurePopulationExclusions".equals(nodeValue)){
 			populationName = "Measure Population Exclusions";
 		}else if("measureObservation".equals(nodeValue)){
-			populationName = "Measure Observations";
+			populationName = "Measure Observation";
 		}else if("stratum".equals(nodeValue)){
 			populationName = "Stratification";
 		}else if("denominator".equals(nodeValue)){

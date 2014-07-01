@@ -1151,7 +1151,8 @@ public class MeasurePackagePresenter implements MatPresenter {
 	private void saveExport() {
 		String url = GWT.getModuleBaseURL() + "export?id=" + model.getId()
 				+ "&format=zip";
-		Window.open(url + "&type=save", "_self", "");
+		Window.Location.replace(url + "&type=save"); 
+	
 	}
 	
 }

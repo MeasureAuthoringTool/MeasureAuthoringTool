@@ -1317,6 +1317,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void setEnabled(boolean enabled) {
 		saveBtn.setEnabled(enabled);
 		saveBtnClauseWorkSpace.setEnabled(enabled);
+		validateBtnPopulationWorkspace.setEnabled(enabled);
+		validateBtnClauseWorkSpace.setEnabled(enabled);
 		deleteClauseButton.setEnabled(enabled);
 		isEditable = enabled;
 	}

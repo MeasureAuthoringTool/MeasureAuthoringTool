@@ -69,6 +69,7 @@ public class HumanReadableGenerator {
 			
 			if(!isPopulation){
 				populationOrSubtreeListElement.appendElement("br");
+				populationOrSubtreeListElement = populationOrSubtreeListElement.appendElement(HTML_UL).appendElement(HTML_LI);
 			}
 			
 			parseAndBuildHTML(populationOrSubtreeXMLProcessor, populationOrSubtreeListElement);
@@ -136,6 +137,11 @@ public class HumanReadableGenerator {
 			Node importedElementLookUpNode = populationOrSubtreeXMLProcessor.getOriginalDoc().importNode(elementLookUpNode, true);
 			populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild().appendChild(importedElementLookUpNode);
 		}
+		
+		//import 'measureDetails'
+		Node measureDetailsNode = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "//measureDetails");
+		Node importedMeasureDetailsNode = populationOrSubtreeXMLProcessor.getOriginalDoc().importNode(measureDetailsNode, true);
+		populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild().appendChild(importedMeasureDetailsNode);
 		
 		System.out.println("Inflated popualtion tree: "+populationOrSubtreeXMLProcessor.transform(populationOrSubtreeXMLProcessor.getOriginalDoc()));	
 		return populationOrSubtreeXMLProcessor;
@@ -256,12 +262,15 @@ public class HumanReadableGenerator {
 		try {
 			NodeList childNodes = clauseNode.getChildNodes();
 			System.out.println("NAME: " + clauseNode.getAttributes().getNamedItem("displayName").getNodeValue());
-			String scoring = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "/measure/measureDetails/scoring").getTextContent();
+			String scoring = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//measureDetails/scoring").getTextContent();
 			if(childNodes.getLength() == 0){
 				displayNone(populationOrSubtreeListElement.appendElement(HTML_UL),populationOrSubtreeXMLProcessor,clauseNode);
 			}
 			for(int i = 0;i < childNodes.getLength(); i++){
-				String parentName = childNodes.item(i).getParentNode().getAttributes().getNamedItem("type").getNodeValue();
+				String parentName = "";
+				if(childNodes.item(i).getParentNode().getAttributes().getNamedItem("type") != null){
+					parentName = childNodes.item(i).getParentNode().getAttributes().getNamedItem("type").getNodeValue();
+				} 
 				System.out.println("I: " + i);
 				if("denominator".equalsIgnoreCase(parentName) || "measurePopulation".equalsIgnoreCase(parentName) ||
 						("numerator".equalsIgnoreCase(parentName) && "ratio".equalsIgnoreCase(scoring))){
@@ -418,7 +427,7 @@ public class HumanReadableGenerator {
 				}
 			}
 			
-		}else if(ELEMENT_LOOK_UP.equals(nodeName) || "itemCount".equals(nodeName)){
+		}else if(ELEMENT_LOOK_UP.equals(nodeName) || "itemCount".equals(nodeName) || "measureDetails".equals(nodeName)){
 			//ignore
 		}
 		else {

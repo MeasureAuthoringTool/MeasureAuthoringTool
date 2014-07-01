@@ -196,10 +196,10 @@ public class QDMAttributeDialogBox {
 			if(oidValue.equalsIgnoreCase("419099009") || oidValue.equalsIgnoreCase("21112-8")){
 				
 				buildAndDisplayDialogBox(qdmDataType, mode,
-						xmlTreeDisplay, cellTreeNode,true);
+						xmlTreeDisplay, cellTreeNode,false);
 			}else{
 				buildAndDisplayDialogBox(qdmDataType, mode,
-						xmlTreeDisplay, cellTreeNode, false);
+						xmlTreeDisplay, cellTreeNode, true);
 			}
 		}else{
 		findAttributesForDataType(qdmDataType, isOccuranceQDM, mode,

@@ -86,6 +86,7 @@ import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
+import com.google.gwt.xml.client.Node;
 
 
 
@@ -1688,13 +1689,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param treeNode the tree node
 	 * @return the string
 	 */
-	private String validateClauseWorkspaceCellTreeNodes(TreeNode treeNode){
-		String attributeValue = "";
+	private String validateClauseWorkspaceCellTreeNodes(TreeNode treeNode){		
 
 		if (treeNode != null) {
 			openAllNodes(treeNode);
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				TreeNode subTree = null;
+				String attributeValue = "";
 				
 				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
 				if (node.getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
@@ -1714,35 +1715,36 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					if(nodeArr.length == 3){
 						nodeDataType = nodeArr[1].trim()+": "+nodeArr[2].trim();
 					}
-					
 					if(nodeDataType.equalsIgnoreCase("timing element")){
-							if(nodeName.equalsIgnoreCase("Measurement End Date : Timing Element")
-							|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")){
+						if(nodeName.equalsIgnoreCase("Measurement End Date : Timing Element")
+						|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")){
 							
-								editNode(false, node);
-								if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
-								setErrorType = "inValidAtQDMNode";
-								}
-								if (isValid) {
-									isValid = false;
-								
-								}
-							}
-							else{
-								if(!node.getValidNode()){
-									editNode(true, node);
-									
-								}
-							}
-							
+							inValidAtQdmNode(node);
 						}
+						else{
+							if(!node.getValidNode()){
+								editNode(true, node);
+								
+							}
+						}
+						
+					}
 					
-					if(!nodeDataType.equalsIgnoreCase("timing element") && attributeValue.isEmpty()){
+					else if(nodeDataType.equalsIgnoreCase("Patient characteristic Birthdate") || nodeDataType.equalsIgnoreCase("Patient characteristic Expired")){
+						validateNodeForOldBirthDateAndExpiredElement(nodeDataType, node);
+					}
+					
+					else if(attributeValue.isEmpty()){
 								validateDatatype(nodeDataType, node);
 								
 					}
-					if(!nodeDataType.equalsIgnoreCase("timing element") && !attributeValue.isEmpty() && attributeValue.length()>0 ){
+					else if(!attributeValue.isEmpty() && attributeValue.length()>0 ){
 						validateDatatypeAndAttribute(nodeDataType, node,attributeValue);	
+					}else{
+						if(!node.getValidNode()){
+							editNode(true, node);
+							
+						}
 					}
 				}
 				
@@ -1757,11 +1759,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							}
 						}
 					} else {
-						editNode(false, node);
-						setErrorType = "inValidAtOtherNode";
-						if (isValid) {
-							isValid = false;
-						}
+						inValidAtQdmNode(node);
 					}
 					
 					
@@ -1778,11 +1776,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								}
 							}
 						} else {
-							editNode(false, node);
-							setErrorType = "inValidAtOtherNode";
-							if (isValid) {
-								isValid = false;
-							}
+							inValidAtQdmNode(node);
 						}
 					}
 				}
@@ -1803,6 +1797,32 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	return setErrorType;
 	}
 	
+	/**
+	 * Validate node for old birth date and expired element.
+	 *
+	 * @param nodeDataType the node data type
+	 * @param node the node
+	 */
+	private void validateNodeForOldBirthDateAndExpiredElement(
+			String nodeDataType, CellTreeNode node) {
+		String qdmName = PopulationWorkSpaceConstants.getElementLookUpName().get(
+				node.getUUID());
+		Node qdmNode = PopulationWorkSpaceConstants.getElementLookUpNode().get(
+				qdmName + "~" + node.getUUID());
+		Node oid = qdmNode.getAttributes().getNamedItem("oid");
+		 String  oidValue = oid.getNodeValue().trim();
+		if(oidValue.equalsIgnoreCase("419099009") || oidValue.equalsIgnoreCase("21112-8")){
+			
+			if(!node.getValidNode()){
+				editNode(true, node);
+				
+			}
+		}else{
+			inValidAtQdmNode(node);
+		}
+		
+	}
+
 	/**
 	 * Validate datatype and attribute.
 	 *
@@ -1846,23 +1866,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 												}
 												
 											}else{
-												editNode(false, node);
-												if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
-												setErrorType = "inValidAtQDMNode";
-												}
-												if (isValid) {
-													isValid = false;									
-												}
+												inValidAtQdmNode(node);
 											}
 											
 										}else{
-											editNode(false, node);
-											if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
-											setErrorType = "inValidAtQDMNode";
-											}
-											if (isValid) {
-												isValid = false;									
-											}
+											inValidAtQdmNode(node);
 										}
 										
 									}
@@ -1870,13 +1878,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					});
 					
 				}else{
-					editNode(false, node);
-					if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
-					setErrorType = "inValidAtQDMNode";
-					}
-					if (isValid) {
-						isValid = false;									
-					}
+					inValidAtQdmNode(node);
 				}
 				
 			}			
@@ -1915,13 +1917,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						
 						
 					}else{
-						editNode(false, node);
-						if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
-						setErrorType = "inValidAtQDMNode";
-						}
-						if (isValid) {
-							isValid = false;									
-						}
+						inValidAtQdmNode(node);						
 					}
 					
 				}			
@@ -1933,6 +1929,22 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 
 	
 	
+	/**
+	 * In valid at qdm node.
+	 *
+	 * @param node the node
+	 */
+	protected void inValidAtQdmNode(CellTreeNode node) {
+		editNode(false, node);
+		if(!setErrorType.equalsIgnoreCase("inValidAtOtherNode")){
+		setErrorType = "inValidAtQDMNode";
+		}
+		if (isValid) {
+			isValid = false;									
+		}
+		
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#addNode(java.lang.String, java.lang.String, java.lang.String, short)
 	 */

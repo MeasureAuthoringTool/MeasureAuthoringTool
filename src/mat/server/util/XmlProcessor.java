@@ -59,6 +59,12 @@ public class XmlProcessor {
 	/** The Constant MEASUREMENT_PERIOD_OID. */
 	private static final String MEASUREMENT_PERIOD_OID = "2.16.840.1.113883.3.67.1.101.1.53";
 	
+	/** The Constant PATIENT_CHARACTERISTIC_BIRTH_DATE_OID. */
+	private static final String PATIENT_CHARACTERISTIC_BIRTH_DATE_OID = "21112-8";
+
+	/** The Constant PATIENT_CHARACTERISTIC_EXPIRED_OID. */
+	private static final String PATIENT_CHARACTERISTIC_EXPIRED_OID = "419099009";
+	
 	/** The Constant XPATH_POPULATIONS. */
 	private static final String XPATH_POPULATIONS = "/measure/populations";
 	
@@ -92,6 +98,7 @@ public class XmlProcessor {
 	/** The Constant XPATH_DETAILS_ITEM_COUNT. */
 	private static final String XPATH_DETAILS_ITEM_COUNT = "/measure/measureDetails/itemCount";
 	
+	/** The Constant XPATH_DTLS_COMPONENT_MEASURE. */
 	private static final String XPATH_DTLS_COMPONENT_MEASURE = "/measure/measureDetails/componentMeasures";
 	
 	/** The Constant XPATH_DETAILS_EMEASUREID. */
@@ -213,6 +220,7 @@ public class XmlProcessor {
 	private static final String TYPE = "type";
 	
 	
+	/** The Constant PATIENT. */
 	private static final String PATIENT = " Patient ";
 	
 	/** The constants map. */
@@ -684,11 +692,15 @@ public class XmlProcessor {
 					if (newNode.getAttributes().getNamedItem(INSTANCE) != null) {
 						isOccurrenceText = true;
 					}
-					// Check to Filter Occurrences and to filter Attributes and Timing data types.
+					// Check to Filter Occurrences and to filter Attributes, Timing, BirtDate and Expired data types.
 					if (!isOccurrenceText && (!dataType
 						.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
 						&& !dataType
-						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE))) {
+						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE) 
+						&& !dataType
+						.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE)
+						&& !dataType
+						.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED))) {
 						for (QualityDataSetDTO dataSetDTO : masterList) {
 							if (dataSetDTO.getUuid().equalsIgnoreCase(
 									nodeID)
@@ -978,13 +990,12 @@ public class XmlProcessor {
 	
 	/**
 	 * Take the child nodeList & re-arrange it according to this order
-	 *    "Initial Patient Populations", "Numerators", "Numerator Exclusions",
-	 *    "Denominators", "Denominator Exclusions",
-	 *    "Denominator Exceptions", "Measure Populations", "Measure Population Exclusions"
-	 * @param populationsNode
-	 * 			the population node
-	 * @param childNodesList
-	 * 			array list of nodes to be ordered
+	 * "Initial Patient Populations", "Numerators", "Numerator Exclusions",
+	 * "Denominators", "Denominator Exclusions",
+	 * "Denominator Exceptions", "Measure Populations", "Measure Population Exclusions".
+	 *
+	 * @param populationsNode the population node
+	 * @param childNodesList array list of nodes to be ordered
 	 */
 	private void arrangeChildNodeList(Node populationsNode,
 			List<Node> childNodesList) {
@@ -1008,11 +1019,10 @@ public class XmlProcessor {
 	}
 	
 	/**
-	 * Creates the Supplemental Data Element Node
-	 * 
-	 * @param measureStratificationsNode
-	 * 				stratifications Node for the measure
-	 * @throws XPathExpressionException
+	 * Creates the Supplemental Data Element Node.
+	 *
+	 * @param measureStratificationsNode stratifications Node for the measure
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private void createSupplementalDataElementNode(
 			Node measureStratificationsNode) throws XPathExpressionException {
@@ -1076,15 +1086,13 @@ public class XmlProcessor {
 	}
 
 	/**
-	 * Calculates whether we appended a child node or not
-	 * 
-	 * @param scoreBasedNodes
-	 * 				the score Base Node
-	 * @param populationsNode
-	 * 				the node for the measures population
-	 * @return Boolean 
-	 * 				true: if we appended a child
-	 * 				false: if we didn't append a child
+	 * Calculates whether we appended a child node or not.
+	 *
+	 * @param scoreBasedNodes the score Base Node
+	 * @param populationsNode the node for the measures population
+	 * @return Boolean
+	 * true: if we appended a child
+	 * false: if we didn't append a child
 	 */
 	private boolean calculateChildAppend(List<String> scoreBasedNodes,
 			Node populationsNode) {
@@ -1112,12 +1120,11 @@ public class XmlProcessor {
 	}
 
 	/**
-	 * Retrieves the Score Based nodes
-	 * 
-	 * @param scoringType
-	 * 				the scoring type
-	 * @return List<String> 
-	 * 				the score based Nodes
+	 * Retrieves the Score Based nodes.
+	 *
+	 * @param scoringType the scoring type
+	 * @return List<String>
+	 * the score based Nodes
 	 */
 	private List<String> retrieveScoreBasedNodes(String scoringType) {
 		List<String> scoreBasedNodes = new ArrayList<String>();
@@ -1326,9 +1333,8 @@ public class XmlProcessor {
 	
 	/**
 	 * To camel case.
-	 * 
-	 * @param nameNew
-	 *            the name
+	 *
+	 * @param name the name
 	 * @return the string
 	 */
 	private static String toCamelCase(String name) {
@@ -1448,8 +1454,8 @@ public class XmlProcessor {
 	 * 
 	 * @return String
 	 */
-	public String checkForTimingElements() {
-		String missingMeasurementPeriod = "";
+	public List<String> checkForTimingElements() {
+		List<String> missingTimingElementList = new ArrayList<String>();
 		
 		if (originalDoc != null) {
 			try {
@@ -1458,17 +1464,35 @@ public class XmlProcessor {
 						"/measure/elementLookUp/qdm[@oid='"
 								+ MEASUREMENT_PERIOD_OID + "']");
 				if (measurementPeriodNode == null) {
-					missingMeasurementPeriod = MEASUREMENT_PERIOD_OID;
+					missingTimingElementList.add(MEASUREMENT_PERIOD_OID);
+				}
+				
+				//Patient Characteristic Birth Data
+				Node patientCharacteristicBirthDateNode = this.findNode(originalDoc,
+						"/measure/elementLookUp/qdm[@oid='"
+								+ PATIENT_CHARACTERISTIC_BIRTH_DATE_OID + "']");
+				if (patientCharacteristicBirthDateNode == null) {
+					missingTimingElementList.add(PATIENT_CHARACTERISTIC_BIRTH_DATE_OID);
+				}
+				
+				//Patient Characteristic Expired
+				Node patientCharacteristicExpiredNode = this.findNode(originalDoc,
+						"/measure/elementLookUp/qdm[@oid='"
+								+ PATIENT_CHARACTERISTIC_EXPIRED_OID + "']");
+				if (patientCharacteristicExpiredNode == null) {
+					missingTimingElementList.add(PATIENT_CHARACTERISTIC_EXPIRED_OID);
 				}
 			} catch (XPathExpressionException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}		
-		return missingMeasurementPeriod;
+		}
+		return missingTimingElementList;
 	}
 	
 	/**
+	 * Check for stratification and add.
+	 *
 	 * @return Xml String.
 	 */
 	public String checkForStratificationAndAdd() {
@@ -1501,6 +1525,11 @@ public class XmlProcessor {
 		return transform(originalDoc);
 	}
 	
+	/**
+	 * Check for qdm id and update.
+	 *
+	 * @return the string
+	 */
 	public String checkForQdmIDAndUpdate() {
 		if (originalDoc == null) {
 			return "";

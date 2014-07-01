@@ -83,10 +83,23 @@ mat.dao.clause.MeasureXMLDAO {
 			qds.setId(lo.getId());
 			qds.setUuid(UUID.randomUUID().toString());
 			qds.setSuppDataElement(false);
-
-			qds.setDataType((dataTypeDAO
+            //for Patient Characteristic Expired
+			if(lo.getName().equals(ConstantMessages.EXPIRED)) {
+				qds.setDataType(dataTypeDAO
+						.findByDataTypeName(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED)
+						.getDescription());
+				
+				//Patient Characteristic BirthDate
+			} else if(lo.getName().equals(ConstantMessages.BIRTHDATE)) {
+				qds.setDataType(dataTypeDAO
+						.findByDataTypeName(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE)
+						.getDescription());
+				//For Timing Element
+			} else {
+				qds.setDataType((dataTypeDAO
 					.findByDataTypeName(ConstantMessages.TIMING_ELEMENT)
 					.getDescription()));
+			}
 			qdsList.add(qds);
 		}
 		wrapper.setQualityDataDTO(qdsList);

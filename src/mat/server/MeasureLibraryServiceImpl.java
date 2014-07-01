@@ -336,7 +336,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public void checkForTimingElementsAndAppend(XmlProcessor xmlProcessor) {
 		
-		String missingMeasurementPeriod = xmlProcessor.checkForTimingElements();
+		List<String> missingMeasurementPeriod = xmlProcessor.checkForTimingElements();
 		
 		if (missingMeasurementPeriod.isEmpty()) {
 			logger.info("All timing elements present in the measure.");
@@ -344,10 +344,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		logger.info("Found the following timing elements missing:" + missingMeasurementPeriod);
 		
-		List<String> missingOIDList = new ArrayList<String>();
-		missingOIDList.add(missingMeasurementPeriod);
+//		List<String> missingOIDList = new ArrayList<String>();
+//		missingOIDList.add(missingMeasurementPeriod);
 	
-		QualityDataModelWrapper wrapper = getMeasureXMLDAO().createTimingElementQDMs(missingOIDList);
+		QualityDataModelWrapper wrapper = getMeasureXMLDAO().createTimingElementQDMs(missingMeasurementPeriod);
 		
 		// Object to XML for elementLookUp
 		ByteArrayOutputStream streamQDM = XmlProcessor.convertQualityDataDTOToXML(wrapper);

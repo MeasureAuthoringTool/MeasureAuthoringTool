@@ -27,6 +27,7 @@ import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
 import mat.shared.MeasurePackageClauseValidator;
 
 import com.google.gwt.core.client.GWT;
@@ -349,7 +350,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				clearMessages();
 				((Button) view.getPackageMeasureButton()).setEnabled(false);
 				isMeasurePackageExportSuccess = true;
-				validatePackageGrouping();
+				validateGroup();
 			}
 		});
 		
@@ -506,7 +507,10 @@ public class MeasurePackagePresenter implements MatPresenter {
 					List<QualityDataSetDTO> timingAndAttributeQDMs = new ArrayList<QualityDataSetDTO>();
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
-								.getDataType()) || "attribute".equals(qdsDTO.getDataType())) {
+								.getDataType()) || "attribute".equals(qdsDTO.getDataType())
+								|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qdsDTO
+										.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qdsDTO
+												.getDataType())) {
 							timingAndAttributeQDMs.add(qdsDTO);
 						}
 					}

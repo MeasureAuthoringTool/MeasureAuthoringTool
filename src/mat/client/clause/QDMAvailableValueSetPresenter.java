@@ -38,6 +38,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * QDMAvailableValueSetPresenter class.
  */
@@ -461,7 +462,9 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
 		for (QualityDataSetDTO qdsDTO : result) {
 			if ("Timing Element".equals(qdsDTO
-					.getDataType())) {
+					.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qdsDTO
+							.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qdsDTO
+									.getDataType()))  {
 				timingQDMs.add(qdsDTO);
 			} else {
 				qdsDTO.setHasModifiedAtVSAC(false);

@@ -13,6 +13,8 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.umls.service.VsacApiResult;
 import mat.model.QualityDataSetDTO;
+import mat.shared.ConstantMessages;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.user.client.Window;
@@ -21,6 +23,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * QDSAppliedListPresenter.java.
  */
@@ -287,7 +290,9 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
-								.getDataType())) {
+								.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qdsDTO
+										.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qdsDTO
+												.getDataType())) {
 							timingQDMs.add(qdsDTO);
 						}
 					}

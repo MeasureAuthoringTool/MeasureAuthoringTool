@@ -448,7 +448,7 @@ public class HumanReadableGenerator {
 	private static void displayNone(Element list,
 			XmlProcessor populationOrSubtreeXMLProcessor, Node parentNode) {
 		try {
-			String scoring = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "/measure/measureDetails/scoring").getTextContent();
+			String scoring = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//measureDetails/scoring").getTextContent();
 			String type = parentNode.getAttributes().getNamedItem("type").getNodeValue();
 			if(("proportion".equalsIgnoreCase(scoring)&& !"denominator".equalsIgnoreCase(type)) ||
 					("ratio".equalsIgnoreCase(scoring) && !"denominator".equalsIgnoreCase(type) && !"numerator".equalsIgnoreCase(type))|| 

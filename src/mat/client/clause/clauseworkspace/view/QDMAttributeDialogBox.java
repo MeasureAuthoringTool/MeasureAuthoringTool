@@ -190,8 +190,21 @@ public class QDMAttributeDialogBox {
 		unitNames.addAll(PopulationWorkSpaceConstants.units);
 		
 		List<String> mode = getModeList();
+		if(qdmDataType.equalsIgnoreCase("Patient characteristic Birthdate") || qdmDataType.equalsIgnoreCase("Patient characteristic Expired")){
+			Node oid = qdmNode.getAttributes().getNamedItem("oid");
+			 String  oidValue = oid.getNodeValue().trim();
+			if(oidValue.equalsIgnoreCase("419099009") || oidValue.equalsIgnoreCase("21112-8")){
+				
+				buildAndDisplayDialogBox(qdmDataType, mode,
+						xmlTreeDisplay, cellTreeNode,true);
+			}else{
+				buildAndDisplayDialogBox(qdmDataType, mode,
+						xmlTreeDisplay, cellTreeNode, false);
+			}
+		}else{
 		findAttributesForDataType(qdmDataType, isOccuranceQDM, mode,
 				xmlTreeDisplay, cellTreeNode);
+		}
 		// buildAndDisplayDialogBox(qdmDataType, mode,xmlTreeDisplay,
 		// cellTreeNode);
 	}

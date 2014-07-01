@@ -591,7 +591,8 @@ public class HumanReadableGenerator {
 			name = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue();
 			if(name.endsWith(" : Timing Element")){
 				name = name.substring(0,name.indexOf(" : Timing Element"));
-			}else {
+			}else if(!name.endsWith(" : Patient Characteristic Birthdate") &&
+					!name.endsWith(" : Patient Characteristic Expired")) {
 				String[] nameArr = name.split(":");
 				if(nameArr.length == 2){
 					name = nameArr[1].trim()+": "+nameArr[0].trim();

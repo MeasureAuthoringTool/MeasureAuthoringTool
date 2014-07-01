@@ -2706,9 +2706,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					String attributeName="";
 					if(attributeNode!=null){
 						attributeName = attributeNode.getAttributes().getNamedItem("name").getNodeValue();
-						/*if(attributeName.equalsIgnoreCase("Anatomical Structure")){
-							isInValidAttribute = true;
-						}*/
+						
 					}
 						
 					
@@ -2853,22 +2851,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				.getNamedItem("datatype").getNodeValue();
 		String qdmName = qdmchildNode.getAttributes().getNamedItem("name")
 				.getNodeValue();
+		String oidValue = qdmchildNode.getAttributes().getNamedItem("oid").getNodeValue();
 		if (dataTypeValue.equalsIgnoreCase("timing element")) {
 			if (qdmName.equalsIgnoreCase("Measurement End Date")
 					|| qdmName.equalsIgnoreCase("Measurement Start Date")) {
 				flag = false;
 			}
 		}
+		else if(dataTypeValue.equalsIgnoreCase("Patient characteristic Birthdate") || dataTypeValue.equalsIgnoreCase("Patient characteristic Expired")){
+			
+			if(oidValue.equalsIgnoreCase("419099009") || oidValue.equalsIgnoreCase("21112-8")){
+				//do noting
+			}else{
+				flag = false;
+			}
+		}
         //
-		if (!dataTypeValue.equalsIgnoreCase("timing element")
-				&& attributeValue.isEmpty()) {
+		else if (attributeValue.isEmpty()) {
 			if (!checkIfQDMDataTypeIsPresent(dataTypeValue)) {
 				flag = false;
 			}
 
 		}
-		if (!dataTypeValue.equalsIgnoreCase("timing element")
-				&& !attributeValue.isEmpty() && attributeValue.length() > 0) {
+		else if (!attributeValue.isEmpty() && attributeValue.length() > 0) {
 			if (checkIfQDMDataTypeIsPresent(dataTypeValue)) {
 
 				List<QDSAttributes> attlibuteList = getAllDataTypeAttributes(dataTypeValue);
@@ -2889,6 +2894,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return flag;
 	}
 	
+	
+
 	/**
 	 * Validate timing node.
 	 *

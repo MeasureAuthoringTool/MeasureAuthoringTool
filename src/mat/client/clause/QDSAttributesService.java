@@ -1,7 +1,9 @@
 package mat.client.clause;
 
 import java.util.List;
+import java.util.Map;
 
+import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
 
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -46,5 +48,13 @@ public interface QDSAttributesService extends RemoteService {
 	 * @return true, if successful
 	 */
 	public boolean checkIfQDMDataTypeIsPresent(String dataTypeName);
+
+	/**
+	 * Gets the datatype list.
+	 *
+	 * @param dataTypeList the data type list
+	 * @return the datatype list
+	 */
+	Map<String, List<String>>getDatatypeList(List<String> dataTypeList);
 }
 

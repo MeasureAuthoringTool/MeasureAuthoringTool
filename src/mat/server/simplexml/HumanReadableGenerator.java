@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.xml.xpath.XPathExpressionException;
 
 import mat.server.util.XmlProcessor;
+import mat.shared.ConstantMessages;
 
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
@@ -841,9 +842,11 @@ public class HumanReadableGenerator {
 		Element mainDivElement = bodyElement.appendElement("div");
 		Element mainListElement = mainDivElement.appendElement(HTML_UL);
 		
-		//get all qdm elemes in 'elementLookUp' which are not attributes or dont have 'Timing Element' data type and are not supplement data elems
-		NodeList qdmElements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
-				"/measure/elementLookUp/qdm[@datatype != 'Timing Element']");
+		//get all qdm elemes in 'elementLookUp' which are not attributes or dont have 'Timing Element', 'Patient Characteristic Expired' and
+				// 'Patient Characteristic Birthdate' Default QDM data type and are not supplement data elems
+				NodeList qdmElements = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), 
+						"/measure/elementLookUp/qdm[@datatype != 'Timing Element' and @oid!='"+ConstantMessages.BIRTHDATE_OID +"' " +
+								"and @oid!='"+ConstantMessages.EXPIRED_OID +"']");
 		
 			Map<String, Node> qdmMap = new HashMap<String, Node>();
 			Map<String, Node> attributeMap = new HashMap<String, Node>();

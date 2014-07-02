@@ -1,7 +1,9 @@
 package mat.client.clause;
 
 import java.util.List;
+import java.util.Map;
 
+import mat.model.DataType;
 import mat.model.clause.QDSAttributes;
 
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -52,4 +54,13 @@ public interface QDSAttributesServiceAsync {
 	 */
 	void checkIfQDMDataTypeIsPresent(String dataTypeName, 
 			AsyncCallback<Boolean> callback);
+
+	/**
+	 * Gets the datatype list.
+	 *
+	 * @param dataTypeList the data type list
+	 * @param asyncCallback the async callback
+	 * @return the datatype list
+	 */
+	void getDatatypeList(List<String> dataTypeList, AsyncCallback<Map<String, List<String>>> asyncCallback);
 }

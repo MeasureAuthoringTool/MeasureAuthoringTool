@@ -1323,6 +1323,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		validateBtnClauseWorkSpace.setEnabled(enabled);
 		deleteClauseButton.setEnabled(enabled);
 		isEditable = enabled;
+		includeQdmVaribale.setEnabled(enabled);
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getSelectedNode()

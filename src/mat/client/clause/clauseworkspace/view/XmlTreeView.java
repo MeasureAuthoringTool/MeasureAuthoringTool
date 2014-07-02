@@ -1538,9 +1538,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
 							&& (selectedNode.getNodeType() != CellTreeNode.SUBTREE_ROOT_NODE)
 							&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
-						copy();
-						removeNode();
-						isDirty = true;
+						if( selectedNode.getParent().getName().equals("SATISFIES ALL")
+								||  selectedNode.getParent().getName().equals("SATISFIES ANY") ){
+							if(selectedNode.getParent().getChilds().indexOf(selectedNode) != 0){
+								copy();
+								removeNode();
+								isDirty = true;
+							}
+						}
+						else{
+							copy();
+							removeNode();
+							isDirty = true;
+						}
 					}
 				}
 			} else if (keyCode == PopulationWorkSpaceConstants.DELETE_DELETE) { //DELETE
@@ -1552,8 +1562,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE))
 						|| ((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE)
 								&& (selectedNode.getParent().getChilds().size() > 1))) {
-					removeNode();
-					isDirty = true;
+					if( selectedNode.getParent().getName().equals("SATISFIES ALL")
+							||  selectedNode.getParent().getName().equals("SATISFIES ANY") ){
+						if(selectedNode.getParent().getChilds().indexOf(selectedNode) != 0){
+							removeNode();
+							isDirty = true;
+						}
+					}
+					else{
+						removeNode();
+						isDirty = true;
+					}
 				}
 			}
 		}

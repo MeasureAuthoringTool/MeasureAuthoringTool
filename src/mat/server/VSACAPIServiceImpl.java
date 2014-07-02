@@ -225,7 +225,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	}
 	/***
 	 * Method to update valueset's without versions from VSAC in Measure XML.
-	 * Skip Timing elements and User defined QDM. Supplemental Data Elements are considered here.
+	 * Skip Timing elements, Expired, Birthdate and User defined QDM. Supplemental Data Elements are considered here.
 	 *
 	 * @param measureId - Selected Measure Id.
 	 * @return VsacApiResult - Result.
@@ -243,9 +243,11 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 			List<String> notFoundOIDList = new ArrayList<String>();
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
 				LOGGER.info("OID ====" + qualityDataSetDTO.getOid());
-				// Filter out Timing Element and User defined QDM's.
+				// Filter out Timing Element, Expired, Birthdate and User defined QDM's.
 				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO.getDataType())
-						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
+						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())
+						|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qualityDataSetDTO.getDataType())
+						|| ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qualityDataSetDTO.getDataType())) {
 					LOGGER.info("QDM filtered as it is of either for following type "
 							+ "(User defined or Timing Element.");
 					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
@@ -359,7 +361,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	}
 	/***
 	 * Method to update valueset's without versions from VSAC in Measure XML.
-	 * Skip supplemental Data Elements and Timing elements and User defined QDM.
+	 * Skip supplemental Data Elements and Timing elements, Expired, Birthdate and User defined QDM.
 	 *
 	 * @param measureId
 	 *            - Selected Measure Id.
@@ -378,11 +380,13 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 			for (QualityDataSetDTO qualityDataSetDTO : appliedQDMList) {
 				QualityDataSetDTO toBeModifiedQDM = qualityDataSetDTO;
 				LOGGER.info(" VSACAPIServiceImpl updateVSACValueSets :: OID:: " + qualityDataSetDTO.getOid());
-				// Filter out Timing Element , User defined QDM's and
+				// Filter out Timing Element , Expired, Birthdate, User defined QDM's and
 				// supplemental data elements.
 				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO.getDataType())
 						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())
-						|| qualityDataSetDTO.isSuppDataElement()) {
+						|| qualityDataSetDTO.isSuppDataElement()
+						|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qualityDataSetDTO.getDataType())
+						|| ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qualityDataSetDTO.getDataType())) {
 					LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: QDM filtered as it is of either"
 							+ "for following type Supplemental data or User defined or Timing Element.");
 					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {

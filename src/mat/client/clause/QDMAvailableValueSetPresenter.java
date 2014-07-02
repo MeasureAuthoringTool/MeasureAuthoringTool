@@ -463,7 +463,7 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		for (QualityDataSetDTO qdsDTO : result) {
 			if ("Timing Element".equals(qdsDTO
 					.getDataType()) || ConstantMessages.EXPIRED_OID.equals(qdsDTO
-							.getDataType()) || ConstantMessages.BIRTH_DATE_OID.equals(qdsDTO
+							.getDataType()) || ConstantMessages.BIRTHDATE_OID.equals(qdsDTO
 									.getDataType()))  {
 				timingQDMs.add(qdsDTO);
 			} else {

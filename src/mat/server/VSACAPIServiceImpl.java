@@ -246,8 +246,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				// Filter out Timing Element, Expired, Birthdate and User defined QDM's.
 				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO.getDataType())
 						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())
-						|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qualityDataSetDTO.getDataType())
-						|| ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qualityDataSetDTO.getDataType())) {
+						|| ConstantMessages.BIRTHDATE_OID.equals(qualityDataSetDTO.getOid())
+						|| ConstantMessages.EXPIRED_OID.equals(qualityDataSetDTO.getOid())) {
 					LOGGER.info("QDM filtered as it is of either for following type "
 							+ "(User defined or Timing Element.");
 					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {
@@ -385,8 +385,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				if (ConstantMessages.TIMING_ELEMENT.equals(qualityDataSetDTO.getDataType())
 						|| ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())
 						|| qualityDataSetDTO.isSuppDataElement()
-						|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qualityDataSetDTO.getDataType())
-						|| ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qualityDataSetDTO.getDataType())) {
+						|| ConstantMessages.BIRTHDATE_OID.equals(qualityDataSetDTO.getOid())
+						|| ConstantMessages.EXPIRED_OID.equals(qualityDataSetDTO.getOid())) {
 					LOGGER.info("VSACAPIServiceImpl updateVSACValueSets :: QDM filtered as it is of either"
 							+ "for following type Supplemental data or User defined or Timing Element.");
 					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(qualityDataSetDTO.getOid())) {

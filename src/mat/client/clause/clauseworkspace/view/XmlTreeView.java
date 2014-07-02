@@ -24,6 +24,7 @@ import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
 import mat.model.clause.QDSAttributes;
+import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
 
 import org.apache.commons.lang.StringUtils;
@@ -1811,7 +1812,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				qdmName + "~" + node.getUUID());
 		Node oid = qdmNode.getAttributes().getNamedItem("oid");
 		 String  oidValue = oid.getNodeValue().trim();
-		if(oidValue.equalsIgnoreCase("419099009") || oidValue.equalsIgnoreCase("21112-8")){
+		if(oidValue.equalsIgnoreCase(ConstantMessages.EXPIRED_OID) || oidValue.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID)){
 			
 			if(!node.getValidNode()){
 				editNode(true, node);

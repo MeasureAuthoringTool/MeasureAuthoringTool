@@ -960,7 +960,11 @@ public class ClauseWorkspaceContextMenu {
 		String rootNodeName = xmlTreeDisplay.getCopiedNode().getName();
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = rootNodeName.substring(0, rootNodeName.lastIndexOf(" ")) + " " + seqNumber;
-		CellTreeNode pasteNode = xmlTreeDisplay.getCopiedNode().cloneNode();
+		// In Case of Stratification RootNode UUID is Duplicating itself. So we are
+		// Creating new UUID for Every new Copy n Paste of Root Node
+		CellTreeNode rootNode = xmlTreeDisplay.getCopiedNode();
+		rootNode.setUUID(UUIDUtilClient.uuid());
+		CellTreeNode pasteNode = rootNode.cloneNode();
 		pasteNode.setName(name);
 		pasteNode.setLabel(name);
 		xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);

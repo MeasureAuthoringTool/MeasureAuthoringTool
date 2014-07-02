@@ -477,7 +477,8 @@ public class HumanReadableGenerator {
 				Node display = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//measure//measureGrouping//group/clause[@uuid = \""+assocPop.getNodeValue()+"\"]");
 				String name = display.getAttributes().getNamedItem("displayName").getNodeValue();
 				String number = name.substring(name.length()-1);
-				name = name.replaceFirst(number, loop + "." + name.charAt(name.length()-1));
+				//name = name.replaceFirst(number, loop + "." + name.charAt(name.length()-1));
+				name = name.replaceFirst(number, "" + name.charAt(name.length()-1));
 				list.appendText("AND: "+name);
 			}
 			else{
@@ -1053,11 +1054,12 @@ public class HumanReadableGenerator {
 				Element childPopulationListElement = childPopulationULElement.appendElement(HTML_LI);
 				Element childBoldNameElement = childPopulationListElement.appendElement("b");
 				String childPopulationName = getPopulationName(populationType);
-				if (totalGroupCount > 1){
+				/*if (totalGroupCount > 1){
 					childPopulationName += " " + (currentGroupNumber+1) + "." + (c+1);
 				}else{
 					childPopulationName += " " + (c+1);
-				}
+				}*/
+				childPopulationName += " " + (c+1);
 				String itemCountText = getItemCountText(clauseNode);
 				String popassoc = getPopAssoc(clauseNode,simpleXMLProcessor);
 				childBoldNameElement.appendText(childPopulationName+(popassoc.length() > 0 ? popassoc : "")+(itemCountText.length() > 0 ? itemCountText : "")+" =");

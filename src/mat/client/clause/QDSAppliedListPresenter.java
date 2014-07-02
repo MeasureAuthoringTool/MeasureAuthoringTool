@@ -290,9 +290,9 @@ public class QDSAppliedListPresenter implements MatPresenter {
 					List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
-								.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qdsDTO
-										.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qdsDTO
-												.getDataType())) {
+								.getDataType()) || ConstantMessages.BIRTHDATE_OID.equals(qdsDTO
+										.getOid()) || ConstantMessages.EXPIRED_OID.equals(qdsDTO
+												.getOid())) {
 							timingQDMs.add(qdsDTO);
 						}
 					}

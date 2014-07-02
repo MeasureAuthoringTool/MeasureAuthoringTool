@@ -1254,7 +1254,10 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 					List<QualityDataSetDTO> timingAndAttributeQDMs = new ArrayList<QualityDataSetDTO>();
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
-								.getDataType()) || "attribute".equals(qdsDTO.getDataType())) {
+								.getDataType()) || "attribute".equals(qdsDTO.getDataType())
+								|| ConstantMessages.BIRTHDATE_OID.equals(qdsDTO
+										.getOid()) || ConstantMessages.EXPIRED_OID.equals(qdsDTO
+												.getOid())) {
 							timingAndAttributeQDMs.add(qdsDTO);
 						}
 					}

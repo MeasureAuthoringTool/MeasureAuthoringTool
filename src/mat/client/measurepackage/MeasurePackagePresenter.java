@@ -508,9 +508,9 @@ public class MeasurePackagePresenter implements MatPresenter {
 					for (QualityDataSetDTO qdsDTO : result) {
 						if ("Timing Element".equals(qdsDTO
 								.getDataType()) || "attribute".equals(qdsDTO.getDataType())
-								|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qdsDTO
-										.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qdsDTO
-												.getDataType())) {
+								|| ConstantMessages.BIRTHDATE_OID.equals(qdsDTO
+										.getOid()) || ConstantMessages.EXPIRED_OID.equals(qdsDTO
+												.getOid())) {
 							timingAndAttributeQDMs.add(qdsDTO);
 						}
 					}

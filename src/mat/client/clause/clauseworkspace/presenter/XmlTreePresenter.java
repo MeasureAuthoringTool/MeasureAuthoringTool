@@ -739,7 +739,7 @@ public class XmlTreePresenter {
 					String  result = xmlTreeDisplay
 							.validateCellTreeNodes(xmlTreeDisplay.getXmlTree()
 									.getRootTreeNode());
-					if (result!=null && result.equalsIgnoreCase("inValidAtOtherNode")) {
+					/*if (result!=null && result.equalsIgnoreCase("inValidAtOtherNode")) {
 						xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
 								.getRootTreeNode());
 						xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
@@ -763,7 +763,7 @@ public class XmlTreePresenter {
 								MatContext.get().getMessageDelegate().
 								getCLAUSE_WORK_SPACE_VALIDATION_SUCCESS());
 						
-					}
+					}*/
 					
 					
 				}

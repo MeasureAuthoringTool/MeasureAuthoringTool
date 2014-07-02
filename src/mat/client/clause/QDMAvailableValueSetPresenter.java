@@ -462,8 +462,8 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		List<QualityDataSetDTO> timingQDMs = new ArrayList<QualityDataSetDTO>();
 		for (QualityDataSetDTO qdsDTO : result) {
 			if ("Timing Element".equals(qdsDTO
-					.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qdsDTO
-							.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qdsDTO
+					.getDataType()) || ConstantMessages.EXPIRED_OID.equals(qdsDTO
+							.getDataType()) || ConstantMessages.BIRTH_DATE_OID.equals(qdsDTO
 									.getDataType()))  {
 				timingQDMs.add(qdsDTO);
 			} else {

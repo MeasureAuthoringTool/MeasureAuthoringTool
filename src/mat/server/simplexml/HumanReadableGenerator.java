@@ -37,6 +37,7 @@ public class HumanReadableGenerator {
 		"denominatorExceptions","measurePopulation","measurePopulationExclusions","measureObservation","stratum"};
 	
 	private static Boolean showOnlyVariableName = false;
+	private static String lhsID;
 	public static String generateHTMLForPopulationOrSubtree(String measureId, String subXML,
 			String measureXML) {
 		org.jsoup.nodes.Document htmlDocument = null;
@@ -279,7 +280,7 @@ public class HumanReadableGenerator {
 					
 					displayInitialPop(populationOrSubtreeListElement,populationOrSubtreeXMLProcessor,clauseNode,currentGroupNumber);
 				}
-				parseChild(childNodes.item(i),populationOrSubtreeListElement,childNodes.item(i).getParentNode(),populationOrSubtreeXMLProcessor);
+				parseChild(childNodes.item(i),populationOrSubtreeListElement,childNodes.item(i).getParentNode(),populationOrSubtreeXMLProcessor,false);
 			}			
 		} catch (DOMException e) {
 			// TODO Auto-generated catch block
@@ -290,7 +291,7 @@ public class HumanReadableGenerator {
 		} 
 	}
 
-	private static void parseChild(Node item, Element parentListElement, Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor) {
+	private static void parseChild(Node item, Element parentListElement, Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor, boolean satisfiesAnyAll) {
 		String nodeName = item.getNodeName();
 		System.out.println("parseChild:"+nodeName);
 		if(LOGICAL_OP.equals(nodeName)){
@@ -309,7 +310,7 @@ public class HumanReadableGenerator {
 				//ulElement.appendElement(HTML_LI).appendText("None");
 			}
 			for (int i=0; i< childNodes.getLength(); i++){
-				parseChild(childNodes.item(i), ulElement, item, populationOrSubtreeXMLProcessor);				
+				parseChild(childNodes.item(i), ulElement, item, populationOrSubtreeXMLProcessor,satisfiesAnyAll);				
 			}
 		}else if(COMMENT.equals(nodeName)){
 			String commentValue = item.getTextContent();
@@ -342,7 +343,7 @@ public class HumanReadableGenerator {
 				showOnlyVariableName = false;
 				NodeList childNodes = item.getChildNodes();
 				for (int i=0; i< childNodes.getLength(); i++){
-					parseChild(childNodes.item(i), parentListElement,parentNode, populationOrSubtreeXMLProcessor);				
+					parseChild(childNodes.item(i), parentListElement,parentNode, populationOrSubtreeXMLProcessor,satisfiesAnyAll);				
 				}
 			}
 		}else if(SET_OP.equals(nodeName)){
@@ -363,7 +364,7 @@ public class HumanReadableGenerator {
 			Element ulElement = parentListElement.appendElement(HTML_UL);
 			NodeList childNodes = item.getChildNodes();
 			for (int i=0; i< childNodes.getLength(); i++){
-				parseChild(childNodes.item(i), ulElement,item, populationOrSubtreeXMLProcessor);				
+				parseChild(childNodes.item(i), ulElement,item, populationOrSubtreeXMLProcessor,satisfiesAnyAll);				
 			}
 		}else if(RELATIONAL_OP.equals(nodeName)){
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
@@ -372,9 +373,9 @@ public class HumanReadableGenerator {
 				if(LOGICAL_OP.equals(parentNode.getNodeName())){
 					liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 				}
-				getRelationalOpText(item, liElement, populationOrSubtreeXMLProcessor);
+				getRelationalOpText(item, liElement, populationOrSubtreeXMLProcessor,satisfiesAnyAll);
 			}else{
-				getRelationalOpText(item, parentListElement, populationOrSubtreeXMLProcessor);
+				getRelationalOpText(item, parentListElement, populationOrSubtreeXMLProcessor,satisfiesAnyAll);
 				/**
 				 * A relationalOp can have 2 children. First evaluate the LHS child, then add the name of the relationalOp and finally
 				 * evaluate the RHS child.
@@ -388,47 +389,92 @@ public class HumanReadableGenerator {
 			}
 			
 		}else if(ELEMENT_REF.equals(nodeName)){
-			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
-				Element liElement = parentListElement.appendElement(HTML_LI);
-				//liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor)+getNodeText(item, populationOrSubtreeXMLProcessor));
-				if(LOGICAL_OP.equals(parentNode.getNodeName())){
-					liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor)+getNodeText(item, populationOrSubtreeXMLProcessor));
-				}else{
-					liElement.appendText(getNodeText(item, populationOrSubtreeXMLProcessor));
+			if(satisfiesAnyAll && lhsID != null && lhsID.equalsIgnoreCase(item.getAttributes().getNamedItem("id").getNodeValue())){
+				if(item.hasChildNodes()){
+					parentListElement.appendText(getAttributeText(item.getFirstChild(),populationOrSubtreeXMLProcessor)+ " ");
 				}
 			}else{
-				parentListElement.appendText(getNodeText(item,populationOrSubtreeXMLProcessor));
+				if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
+					Element liElement = parentListElement.appendElement(HTML_LI);
+					//liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor)+getNodeText(item, populationOrSubtreeXMLProcessor));
+					if(LOGICAL_OP.equals(parentNode.getNodeName())){
+						liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor)+getNodeText(item, populationOrSubtreeXMLProcessor));
+					}else{
+						liElement.appendText(getNodeText(item, populationOrSubtreeXMLProcessor));
+					}
+				}else{
+					parentListElement.appendText(getNodeText(item,populationOrSubtreeXMLProcessor));
+				}
 			}
 		}else if(FUNCTIONAL_OP.equals(nodeName)){
+			/*if(item.getAttributes().getNamedItem("type").getNodeValue().contains("SATISFIES")){
+				System.out.println("satisfies any/all!!!!!!!!!!!!!!!");
+				Node lhs = item.getFirstChild();
+				if("elementRef".equalsIgnoreCase(lhs.getNodeName())){
+					Element ulElement = parentListElement.appendElement(HTML_LI);
+					parseChild(lhs, ulElement,item, populationOrSubtreeXMLProcessor,false);
+					ulElement.appendText(" " + item.getAttributes().getNamedItem("displayName").getNodeValue().toLowerCase());
+					lhsID = lhs.getAttributes().getNamedItem("id").getNodeValue();
+					NodeList childNodes = item.getChildNodes();
+					if(childNodes.getLength() > 1){
+						ulElement = ulElement.appendElement(HTML_UL);
+						for(int i = 1; i<childNodes.getLength();i++){
+							parseChild(childNodes.item(i), ulElement.appendElement(HTML_LI),item, populationOrSubtreeXMLProcessor,true);
+						}
+					}
+				}
+			}
+			//temp remove later
+			else{*/
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) || SET_OP.equals(parentNode.getNodeName())){
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				//liElement.appendText(" "+getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 				if(LOGICAL_OP.equals(parentNode.getNodeName())){
 					liElement.appendText(" "+getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 				}
-				liElement.appendText(getFunctionText(item));
-				NodeList childNodes = item.getChildNodes();
-				if(childNodes.getLength() == 1 && ELEMENT_REF.equals(childNodes.item(0).getNodeName())){
-					parseChild(childNodes.item(0), liElement,item, populationOrSubtreeXMLProcessor);
-				}else{
-					Element ulElement = liElement.appendElement(HTML_UL);
-					for (int i=0; i< childNodes.getLength(); i++){
-						parseChild(childNodes.item(i), ulElement.appendElement(HTML_LI),item, populationOrSubtreeXMLProcessor);				
+				
+				if(item.getAttributes().getNamedItem("type").getNodeValue().contains("SATISFIES")){
+					System.out.println("satisfies any/all!!!!!!!!!!!!!!!");
+					Node lhs = item.getFirstChild();
+					if("elementRef".equalsIgnoreCase(lhs.getNodeName())){
+						//Element ulElement = parentListElement.appendElement(HTML_LI);
+						parseChild(lhs, liElement,item, populationOrSubtreeXMLProcessor,false);
+						liElement.appendText(" " + item.getAttributes().getNamedItem("displayName").getNodeValue().toLowerCase());
+						lhsID = lhs.getAttributes().getNamedItem("id").getNodeValue();
+						NodeList childNodes = item.getChildNodes();
+						if(childNodes.getLength() > 1){
+							liElement = liElement.appendElement(HTML_UL);
+							for(int i = 1; i<childNodes.getLength();i++){
+								parseChild(childNodes.item(i), liElement.appendElement(HTML_LI),item, populationOrSubtreeXMLProcessor,true);
+							}
+						}
+					}
+				}
+				else{
+					liElement.appendText(getFunctionText(item));
+					NodeList childNodes = item.getChildNodes();
+					if(childNodes.getLength() == 1 && ELEMENT_REF.equals(childNodes.item(0).getNodeName())){
+						parseChild(childNodes.item(0), liElement,item, populationOrSubtreeXMLProcessor,satisfiesAnyAll);
+					}else{
+						Element ulElement = liElement.appendElement(HTML_UL);
+						for (int i=0; i< childNodes.getLength(); i++){
+							parseChild(childNodes.item(i), ulElement.appendElement(HTML_LI),item, populationOrSubtreeXMLProcessor,satisfiesAnyAll);				
+						}
 					}
 				}
 			}else{
 				parentListElement.appendText(getFunctionText(item));
 				NodeList childNodes = item.getChildNodes();
 				if(childNodes.getLength() == 1 && ELEMENT_REF.equals(childNodes.item(0).getNodeName())){
-					parseChild(childNodes.item(0), parentListElement,item, populationOrSubtreeXMLProcessor);
+					parseChild(childNodes.item(0), parentListElement,item, populationOrSubtreeXMLProcessor,satisfiesAnyAll);
 				}else{
 					Element ulElement = parentListElement.appendElement(HTML_UL);
 					for (int i=0; i< childNodes.getLength(); i++){
-						parseChild(childNodes.item(i), ulElement.appendElement(HTML_LI),item, populationOrSubtreeXMLProcessor);				
+						parseChild(childNodes.item(i), ulElement.appendElement(HTML_LI),item, populationOrSubtreeXMLProcessor,satisfiesAnyAll);				
 					}
 				}
+			//}
 			}
-			
 		}else if(ELEMENT_LOOK_UP.equals(nodeName) || "itemCount".equals(nodeName) || "measureDetails".equals(nodeName)){
 			//ignore
 		}
@@ -495,7 +541,7 @@ public class HumanReadableGenerator {
 	 * @param liElement
 	 * @param populationOrSubtreeXMLProcessor 
 	 */
-	private static void getRelationalOpText(Node item, Element liElement, XmlProcessor populationOrSubtreeXMLProcessor) {
+	private static void getRelationalOpText(Node item, Element liElement, XmlProcessor populationOrSubtreeXMLProcessor,boolean satisfiesAnyAll) {
 		/**
 		 * A relationalOp can have 2 children. First evaluate the LHS child, then add the name of the relationalOp and finally
 		 * evaluate the RHS child.
@@ -517,7 +563,7 @@ public class HumanReadableGenerator {
 			if(isParentNodeName(item,LOGICAL_OP) && !isChild1QDMOrVariable){
 				newLiElement = liElement.appendElement(HTML_UL).appendElement(HTML_LI);
 			}
-			parseChild(childNodes.item(0),newLiElement,item, populationOrSubtreeXMLProcessor);
+			parseChild(childNodes.item(0),newLiElement,item, populationOrSubtreeXMLProcessor,satisfiesAnyAll);
 			
 			if(!isChild2QDMOrVariable){
 				newLiElement.appendElement(HTML_LI).appendText(name);
@@ -530,7 +576,7 @@ public class HumanReadableGenerator {
 					newLiElement.appendText(name);
 				}
 			}
-			parseChild(childNodes.item(1),newLiElement,item, populationOrSubtreeXMLProcessor);
+			parseChild(childNodes.item(1),newLiElement,item, populationOrSubtreeXMLProcessor,false);
 		}
 	}
 	
@@ -980,7 +1026,7 @@ public class HumanReadableGenerator {
 				boldNameElement.appendText(name+" = ");
 				Element indentListElement = variableElement.appendElement(HTML_UL);
 				showOnlyVariableName= true;
-				parseChild(node,indentListElement, node.getParentNode(),simpleXMLProcessor);
+				parseChild(node,indentListElement, node.getParentNode(),simpleXMLProcessor,false);
 				showOnlyVariableName = false;
 			}
 		}
@@ -1063,7 +1109,7 @@ public class HumanReadableGenerator {
 				String itemCountText = getItemCountText(clauseNode);
 				String popassoc = getPopAssoc(clauseNode,simpleXMLProcessor);
 				childBoldNameElement.appendText(childPopulationName+(popassoc.length() > 0 ? popassoc : "")+(itemCountText.length() > 0 ? itemCountText : "")+" =");
-				parseAndBuildHTML(simpleXMLProcessor, childPopulationListElement,clauseNode,currentGroupNumber+1);
+				parseAndBuildHTML(simpleXMLProcessor, childPopulationListElement,clauseNode,c+1);
 			}
 		}else if(clauseNodes.size() == 1){
 			Element populationListElement = mainListElement.appendElement(HTML_LI);
@@ -1074,7 +1120,7 @@ public class HumanReadableGenerator {
 			}
 			String itemCountText = getItemCountText(clauseNodes.get(0));
 			boldNameElement.appendText(populationName+(itemCountText.length() > 0 ? itemCountText : "")+" =");
-			parseAndBuildHTML(simpleXMLProcessor, populationListElement,clauseNodes.get(0),currentGroupNumber+1);
+			parseAndBuildHTML(simpleXMLProcessor, populationListElement,clauseNodes.get(0),1);
 		}
 	}
 	

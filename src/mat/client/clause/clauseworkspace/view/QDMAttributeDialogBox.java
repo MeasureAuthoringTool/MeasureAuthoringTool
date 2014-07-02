@@ -13,6 +13,7 @@ import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.LabelBuilder;
 import mat.model.clause.QDSAttributes;
+import mat.shared.ConstantMessages;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.JavaScriptException;
@@ -193,8 +194,10 @@ public class QDMAttributeDialogBox {
 		if(qdmDataType.equalsIgnoreCase("Patient characteristic Birthdate") || qdmDataType.equalsIgnoreCase("Patient characteristic Expired")){
 			Node oid = qdmNode.getAttributes().getNamedItem("oid");
 			 String  oidValue = oid.getNodeValue().trim();
-			if(oidValue.equalsIgnoreCase("419099009") || oidValue.equalsIgnoreCase("21112-8")){
+			if(oidValue.equalsIgnoreCase(ConstantMessages.EXPIRED_OID) || oidValue.equalsIgnoreCase(ConstantMessages.BIRTH_DATE_OID)){
 				
+				findAttributesForDataType(qdmDataType, isOccuranceQDM, mode,
+						xmlTreeDisplay, cellTreeNode);
 				buildAndDisplayDialogBox(qdmDataType, mode,
 						xmlTreeDisplay, cellTreeNode,false);
 			}else{

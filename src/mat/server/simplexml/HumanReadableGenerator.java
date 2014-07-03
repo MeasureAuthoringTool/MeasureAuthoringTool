@@ -686,17 +686,21 @@ public class HumanReadableGenerator {
 			}else if(!name.endsWith(" : Patient Characteristic Birthdate") &&
 					!name.endsWith(" : Patient Characteristic Expired")) {
 				String[] nameArr = name.split(":");
+	
 				if(nameArr.length == 2){
 					name = nameArr[1].trim()+": "+nameArr[0].trim();
-					// Move Occurrence of to the beginning of the name 
-					if(name.contains("Occurrence") && name.contains("of")){
-						int occurLoc = name.indexOf("Occurrence", 0);
-						int ofLoc = name.indexOf("of", occurLoc);
-						String occur = name.substring(occurLoc, ofLoc + 2);
-						name = name.replaceAll(occur, "");
-						occur += " ";
-						name = occur.concat(name);
-					}
+				}
+				if(nameArr.length == 3){
+					name = nameArr[1].trim()+": "+nameArr[2].trim()+": "+nameArr[0].trim();
+				}
+				// Move Occurrence of to the beginning of the name 
+				if(name.contains("Occurrence") && name.contains("of")){
+					int occurLoc = name.indexOf("Occurrence", 0);
+					int ofLoc = name.indexOf("of", occurLoc);
+					String occur = name.substring(occurLoc, ofLoc + 2);
+					name = name.replaceAll(occur, "");
+					occur += " ";
+					name = occur.concat(name);
 				}
 			}
 			//TODO: Write code to take <attributes> into account.

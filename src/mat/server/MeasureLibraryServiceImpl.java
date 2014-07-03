@@ -83,11 +83,14 @@ import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
+
+import com.ibm.icu.text.MeasureFormat;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -2620,20 +2623,41 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			
-			//start population workspace validation
-			String XPATH_POPULATIONS = "/measure/populations";
+			//validate only from MeasureGrouping
+			String XAPTH_MEASURE_GROUPING="/measure/measureGrouping/ group/packageClause" +
+					"[not(@uuid = preceding:: group/packageClause/@uuid)]/@uuid";
+			List<String> measureGroupingIDList = new ArrayList<String>();;
 			
-			NodeList nodesSDE;
 			try {
-				nodesSDE = (NodeList) xPath.evaluate(XPATH_POPULATIONS, xmlProcessor.getOriginalDoc(),
+				NodeList measureGroupingNodeList = (NodeList) xPath.evaluate(XAPTH_MEASURE_GROUPING, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				
+				for(int i=0 ; i<measureGroupingNodeList.getLength();i++){
+					measureGroupingIDList.add(measureGroupingNodeList.item(i).getNodeValue());
+				}
+			} catch (XPathExpressionException e2) {
+				// TODO Auto-generated catch block
+				e2.printStackTrace();
+			};
+			
+			String uuidXPathString = "";
+			for(String uuidString: measureGroupingIDList){
+				uuidXPathString += "@uuid = '"+uuidString + "' or";
+			}
+			
+			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" or"));
+			String XPATH_POPULATION = "/measure/populations//clause["+uuidXPathString+"]";
+			//get the Population Worspace Logic that are Used in Measure Grouping
+			NodeList populationNodeList;
+			try {
+				populationNodeList = (NodeList) xPath.evaluate(XPATH_POPULATION, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODESET);
 			
-			
-			Node newNode = nodesSDE.item(0);
-			NodeList populationsChildList = newNode.getChildNodes();
+//			Node newNode = populationNodeList.item(0);
+//			NodeList populationsChildList = newNode.getChildNodes();
 				
-					for (int i = 0; i <populationsChildList.getLength() && !flag; i++) {
-					Node childNode =populationsChildList.item(i);
+					for (int i = 0; i <populationNodeList.getLength() && !flag; i++) {
+					Node childNode =populationNodeList.item(i);
 					NodeList childsList = childNode.getChildNodes();
 					
 					if(childsList.getLength()>0){
@@ -2659,10 +2683,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			
 			//start clause validation
-			List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(xmlProcessor);
-			if(usedSubtreeRefIds.size()>0){
+			List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(xmlProcessor,measureGroupingIDList);
+			List<String> usedSubTreeIds = checkUnUsedSubTreeRef(xmlProcessor, usedSubtreeRefIds);
+			if(usedSubTreeIds.size()>0){
 				
-				for(String usedSubtreeRefId:usedSubtreeRefIds){
+				for(String usedSubtreeRefId:usedSubTreeIds){
 			
 	        String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
 			 
@@ -2737,9 +2762,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * Gets the used subtree ref ids.
 	 *
 	 * @param xmlProcessor the xml processor
+	 * @param measureGroupingIDList the measure grouping id list
 	 * @return the used subtree ref ids
 	 */
-	private List<String> getUsedSubtreeRefIds(XmlProcessor xmlProcessor) {
+	private List<String> getUsedSubtreeRefIds(XmlProcessor xmlProcessor, List<String> measureGroupingIDList) {
 		
 		List<String> usedSubTreeRefIdsPop = new ArrayList<String>();
 		List<String> usedSubTreeRefIdsStrat = new ArrayList<String>();
@@ -2748,43 +2774,55 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		NodeList groupedSubTreeRefIdsNodeListPop;
 		NodeList groupedSubTreeRefIdsNodeListMO;
 		NodeList groupedSubTreeRefIdListStrat;
+		String uuidXPathString = "";
+		for(String uuidString: measureGroupingIDList){
+			uuidXPathString += "@uuid = '"+uuidString + "' or";
+		}
+		
+		uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" or"));
+		String XPATH_POPULATION_SUBTREEREF = "/measure/populations//clause["+uuidXPathString+"]//subTreeRef[not(@id = preceding:: clause//subTreeRef/@id)]/@id";
 				
 		try {
-			// Populations
-			groupedSubTreeRefIdsNodeListPop = (NodeList) xPath.evaluate(
-					"/measure/populations//subTreeRef/@id",
+			// Populations, MeasureObervations and Startification
+			groupedSubTreeRefIdsNodeListPop = (NodeList) xPath.evaluate(XPATH_POPULATION_SUBTREEREF,
 					xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
 
 				for (int i = 0; i < groupedSubTreeRefIdsNodeListPop.getLength(); i++) {
 					Node groupedSubTreeRefIdAttributeNodePop = groupedSubTreeRefIdsNodeListPop
 							.item(i);
+					if(!usedSubTreeRefIdsPop.contains(groupedSubTreeRefIdAttributeNodePop
+							.getNodeValue())){
 					usedSubTreeRefIdsPop.add(groupedSubTreeRefIdAttributeNodePop
 							.getNodeValue());
+					}
 				}
 
 				// Measure Observations
 				
 				groupedSubTreeRefIdsNodeListMO = (NodeList) xPath.evaluate(
-						"/measure/measureObservations//subTreeRef/@id",
+						"/measure/measureObservations//clause["+uuidXPathString+"]//subTreeRef[not(@id = preceding:: clause//subTreeRef/@id)]/@id",
 						xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
 
 				for (int i = 0; i < groupedSubTreeRefIdsNodeListMO.getLength(); i++) {
 					Node groupedSubTreeRefIdAttributeNodeMO = groupedSubTreeRefIdsNodeListMO
 							.item(i);
+					if(!usedSubTreeRefIdsMO.contains(groupedSubTreeRefIdAttributeNodeMO.getNodeValue())){
 					usedSubTreeRefIdsMO.add(groupedSubTreeRefIdAttributeNodeMO
 							.getNodeValue());
+					}
 				}
 
 				// Stratifications
 				
 
 				groupedSubTreeRefIdListStrat = (NodeList) xPath.evaluate(
-						"/measure/strata/stratification//subTreeRef/@id",
+						"/measure/strata/stratification["+uuidXPathString+"]//subTreeRef[not(@id = preceding:: stratification//subTreeRef/@id)]/@id",
 						xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
 
 				for (int i = 0; i < groupedSubTreeRefIdListStrat.getLength(); i++) {
 					Node groupedSubTreeRefIdAttributeNodeStrat = groupedSubTreeRefIdListStrat
 							.item(i);
+					if(!usedSubTreeRefIdsStrat.contains(groupedSubTreeRefIdAttributeNodeStrat.getNodeValue()))
 					usedSubTreeRefIdsStrat.add(groupedSubTreeRefIdAttributeNodeStrat
 							.getNodeValue());
 				}
@@ -2803,6 +2841,54 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return usedSubTreeRefIdsStrat;
 	}
 
+	/**
+	 * Check un used sub tree ref.
+	 *
+	 * @param xmlProcessor the xml processor
+	 * @param usedSubTreeRefIds the used sub tree ref ids
+	 * @return the list
+	 */
+	private  List<String> checkUnUsedSubTreeRef(XmlProcessor xmlProcessor, List<String> usedSubTreeRefIds){
+
+		List<String> allSubTreeRefIds = new ArrayList<String>();
+		NodeList subTreeRefIdsNodeList;
+		try {
+			subTreeRefIdsNodeList = (NodeList) xPath.evaluate(
+					"/measure//subTreeRef/@id", xmlProcessor.getOriginalDoc(),
+					XPathConstants.NODESET);
+		
+
+		for (int i = 0; i < subTreeRefIdsNodeList.getLength(); i++) {
+			Node SubTreeRefIdAttributeNode = subTreeRefIdsNodeList.item(i);
+			if (!allSubTreeRefIds.contains(SubTreeRefIdAttributeNode
+					.getNodeValue())) {
+				allSubTreeRefIds.add(SubTreeRefIdAttributeNode.getNodeValue());
+			}
+		}
+		allSubTreeRefIds.removeAll(usedSubTreeRefIds);
+
+		for (int i = 0; i < usedSubTreeRefIds.size(); i++) {
+			for (int j = 0; j < allSubTreeRefIds.size(); j++) {
+				Node usedSubTreeRefNode = (Node) xPath.evaluate(
+						"/measure/subTreeLookUp/subTree[@uuid='"
+								+ usedSubTreeRefIds.get(i)
+								+ "']//subTreeRef[@id='"
+								+ allSubTreeRefIds.get(j) + "']",
+								xmlProcessor.getOriginalDoc(), XPathConstants.NODE);
+				if (usedSubTreeRefNode != null) {
+					if (!usedSubTreeRefIds.contains(allSubTreeRefIds.get(j))) {
+						usedSubTreeRefIds.add(allSubTreeRefIds.get(j));
+					}
+				}
+			}
+
+		}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return usedSubTreeRefIds;
+	}
 
 	/**
 	 * Validate node.

@@ -38,6 +38,7 @@ public class HumanReadableGenerator {
 	
 	private static Boolean showOnlyVariableName = false;
 	private static String lhsID;
+	private static Map<String, String> initialPopulationHash = new HashMap<String, String>();
 	public static String generateHTMLForPopulationOrSubtree(String measureId, String subXML,
 			String measureXML) {
 		org.jsoup.nodes.Document htmlDocument = null;
@@ -559,9 +560,9 @@ public class HumanReadableGenerator {
 			if(assocPop != null){
 				Node display = populationOrSubtreeXMLProcessor.findNode(populationOrSubtreeXMLProcessor.getOriginalDoc(), "//measure//measureGrouping//group/clause[@uuid = \""+assocPop.getNodeValue()+"\"]");
 				String name = display.getAttributes().getNamedItem("displayName").getNodeValue();
-				String number = name.substring(name.length()-1);
-				//name = name.replaceFirst(number, loop + "." + name.charAt(name.length()-1));
-				name = name.replaceFirst(number, "" + name.charAt(name.length()-1));
+				String number =initialPopulationHash.get(display.getAttributes().getNamedItem("uuid").getNodeValue());
+				String lastNum = name.substring(name.length()-1);
+				 name = name.replace(lastNum, number);
 				list.appendText("AND: "+name);
 			}
 			else{
@@ -1154,6 +1155,9 @@ public class HumanReadableGenerator {
 					childPopulationName += " " + (c+1);
 				}*/
 				childPopulationName += " " + (c+1);
+				if("initialPopulation".equalsIgnoreCase(clauseNode.getAttributes().getNamedItem("type").getNodeValue())){
+					initialPopulationHash.put(clauseNode.getAttributes().getNamedItem("uuid").getNodeValue(), String.valueOf(c+1));
+				}
 				String itemCountText = getItemCountText(clauseNode);
 				String popassoc = getPopAssoc(clauseNode,simpleXMLProcessor);
 				childBoldNameElement.appendText(childPopulationName+(popassoc.length() > 0 ? popassoc : "")+(itemCountText.length() > 0 ? itemCountText : "")+" =");

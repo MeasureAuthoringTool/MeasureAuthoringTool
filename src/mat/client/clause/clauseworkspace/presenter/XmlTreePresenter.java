@@ -120,8 +120,6 @@ public class XmlTreePresenter {
 	 */
 	private String originalXML = "";
 	
-	/** The is qdm variable value changed. */
-	private boolean isQDMVariableValueChanged = false;
 	
 	/**
 	 * Load xml tree.

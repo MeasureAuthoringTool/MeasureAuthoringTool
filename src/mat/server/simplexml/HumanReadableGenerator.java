@@ -296,10 +296,19 @@ public class HumanReadableGenerator {
 		System.out.println("parseChild:"+nodeName);
 		if(LOGICAL_OP.equals(nodeName)){
 			
+			String nodeDisplayName = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
+			String parentNodeDisplayName = parentNode.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toUpperCase();
+			//set the Flag is we have AND -> AND NOT or OR -> OR NOT
+			boolean isNestedNot = (nodeDisplayName.equals(parentNodeDisplayName + " NOT"));
+						
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) ){
-				Element liElement = parentListElement.appendElement(HTML_LI);				
+				Element liElement = parentListElement.appendElement(HTML_LI);
 				if(LOGICAL_OP.equals(parentNode.getNodeName())){
-					liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+					if(isNestedNot){
+						liElement.appendText(nodeDisplayName+":");
+					}else{
+						liElement.appendText(parentNodeDisplayName+":");
+					}
 				}
 			}
 			
@@ -333,7 +342,12 @@ public class HumanReadableGenerator {
 					parentListElement = parentListElement.appendElement(HTML_LI);
 				}
 				if(LOGICAL_OP.equals(parentNode.getNodeName()) ){
-					parentListElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+					String grandParent = parentNode.getParentNode().getAttributes().getNamedItem("displayName").getNodeValue();
+					if((grandParent + " NOT").equals(parentNode.getAttributes().getNamedItem("displayName").getNodeValue())){
+						//dont do anything
+					}else{
+						parentListElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+					}
 				}
 
 				String name = StringUtils.deleteWhitespace(map.getNamedItem("displayName").getNodeValue());
@@ -351,7 +365,12 @@ public class HumanReadableGenerator {
 			if(LOGICAL_OP.equals(parentNode.getNodeName()) ){
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				if(LOGICAL_OP.equals(parentNode.getNodeName())){
-					liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+					String grandParent = parentNode.getParentNode().getAttributes().getNamedItem("displayName").getNodeValue();
+					if((grandParent + " NOT").equals(parentNode.getAttributes().getNamedItem("displayName").getNodeValue())){
+						//dont do anything
+					}else{
+						liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+					}
 					parentListElement = liElement.appendElement(HTML_UL);
 				}
 			}
@@ -371,7 +390,13 @@ public class HumanReadableGenerator {
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				//liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 				if(LOGICAL_OP.equals(parentNode.getNodeName())){
-					liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+					String grandParent = parentNode.getParentNode().getAttributes().getNamedItem("displayName").getNodeValue();
+					if((grandParent + " NOT").equals(parentNode.getAttributes().getNamedItem("displayName").getNodeValue())){
+						//dont do anything
+					}
+					else{
+						liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+					}
 				}
 				getRelationalOpText(item, liElement, populationOrSubtreeXMLProcessor,satisfiesAnyAll);
 			}else{
@@ -398,7 +423,13 @@ public class HumanReadableGenerator {
 					Element liElement = parentListElement.appendElement(HTML_LI);
 					//liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor)+getNodeText(item, populationOrSubtreeXMLProcessor));
 					if(LOGICAL_OP.equals(parentNode.getNodeName())){
-						liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor)+getNodeText(item, populationOrSubtreeXMLProcessor));
+						String grandParent = parentNode.getParentNode().getAttributes().getNamedItem("displayName").getNodeValue();
+						if((grandParent + " NOT").equals(parentNode.getAttributes().getNamedItem("displayName").getNodeValue())){
+							liElement.appendText(" "+getNodeText(item, populationOrSubtreeXMLProcessor));
+						}
+						else{
+							liElement.appendText(getNodeText(parentNode, populationOrSubtreeXMLProcessor)+getNodeText(item, populationOrSubtreeXMLProcessor));
+						}
 					}else{
 						liElement.appendText(getNodeText(item, populationOrSubtreeXMLProcessor));
 					}
@@ -430,7 +461,13 @@ public class HumanReadableGenerator {
 				Element liElement = parentListElement.appendElement(HTML_LI);
 				//liElement.appendText(" "+getNodeText(parentNode, populationOrSubtreeXMLProcessor));
 				if(LOGICAL_OP.equals(parentNode.getNodeName())){
-					liElement.appendText(" "+getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+					String grandParent = parentNode.getParentNode().getAttributes().getNamedItem("displayName").getNodeValue();
+					if((grandParent + " NOT").equals(parentNode.getAttributes().getNamedItem("displayName").getNodeValue())){
+						//dont do anything
+					}
+					else{
+						liElement.appendText(" "+getNodeText(parentNode, populationOrSubtreeXMLProcessor));
+					}
 				}
 				
 				if(item.getAttributes().getNamedItem("type").getNodeValue().contains("SATISFIES")){

@@ -338,7 +338,7 @@ public class XmlTreePresenter {
 										if ("Yes".equals(button.getText())) {
 											xmlTreeDisplay.getErrorMessageDisplay().clear();
 											xmlTreeDisplay.setDirty(false);
-											
+											xmlTreeDisplay.setQdmVariableDirty(false);
 											changeClause(cellTreeNode, selectedClauseName, selectedClauseUUID);
 											
 										} else if ("No".equals(button.getText())) {
@@ -481,6 +481,7 @@ public class XmlTreePresenter {
 							.getXmlTree().getRootTreeNode().getChildValue(0));
 					if (cellTreeNode.hasChildren()) {
 						xmlTreeDisplay.setDirty(false);
+						xmlTreeDisplay.setQdmVariableDirty(false);
 						MatContext.get().recordTransactionEvent(
 								MatContext.get().getCurrentMeasureId(), null,
 								"CLAUSEWORKSPACE_TAB_SAVE_EVENT",
@@ -789,6 +790,7 @@ public class XmlTreePresenter {
 				} else {
 				//	isUnsavedData = false;
 					xmlTreeDisplay.setDirty(false);
+					xmlTreeDisplay.setQdmVariableDirty(false);
 					panel.clear();
 					loadClauseWorkSpaceView(panel);
 					xmlTreeDisplay.getIncludeQdmVaribale().setVisible(false);
@@ -830,6 +832,7 @@ public class XmlTreePresenter {
 				if ("Yes".equals(button.getText())) {
 					saveErrorMessage.clear();
 					xmlTreeDisplay.setDirty(false);
+					xmlTreeDisplay.setQdmVariableDirty(false);
 					panel.clear();
 					loadClauseWorkSpaceView(panel);
 				} else if ("No".equals(button.getText())) {

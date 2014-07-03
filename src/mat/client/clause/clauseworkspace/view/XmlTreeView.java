@@ -185,8 +185,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	private static final String COMMENT = "COMMENT";
 
+	/** The Constant AsyncCallback. */
 	private static final int AsyncCallback = 0;
 
+	/** The Constant DataType. */
 	private static final int DataType = 0;
 	/**
 	 * Comment Ok Button.
@@ -273,6 +275,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The is qdm variable. */
 	private String isQdmVariable = "false";
 	
+	/** The is qdm variable dirty. */
+	private boolean isQdmVariableDirty = false;
+
 	/** The include qdm varibale. */
 	private CustomCheckBox includeQdmVaribale = new CustomCheckBox("Select 'QDM Variable' to create clause as " +
 			    "local variable.", "QDM Variable", true);
@@ -1711,6 +1716,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return setErrorType;
 	}
 	
+	/**
+	 * Gets the data types for all qd ms.
+	 *
+	 * @param treeNode the tree node
+	 * @param dataTypeList the data type list
+	 * @return the data types for all qd ms
+	 */
 	private void getDataTypesForAllQDMs(TreeNode treeNode, List<String> dataTypeList){
 				
 		for (int i = 0; i < treeNode.getChildCount(); i++) {
@@ -1736,6 +1748,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 	}
 	
+	/**
+	 * Validate clause workspace cell tree nodes.
+	 *
+	 * @param treeNode the tree node
+	 * @param dataTypeList the data type list
+	 */
 	private void validateClauseWorkspaceCellTreeNodes(final TreeNode treeNode, List<String> dataTypeList){
 		
 		attributeService.getDatatypeList(dataTypeList,new AsyncCallback<Map<String, List<String>>>(){
@@ -1785,6 +1803,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * Validate clause workspace cell tree nodes.
 	 *
 	 * @param treeNode the tree node
+	 * @param dataTypeMap the data type map
 	 * @return the string
 	 */
 	private String validateClauseWorkspaceCellTreeNodes(TreeNode treeNode, Map<String, List<String>> dataTypeMap){		
@@ -2391,5 +2410,20 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return isQdmVariable;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#isQdmVariableDirty()
+	 */
+	@Override
+	public boolean isQdmVariableDirty() {
+		return isQdmVariableDirty;
+	}
+    
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#setQdmVariableDirty(boolean)
+	 */
+	@Override
+	public void setQdmVariableDirty(boolean isQdmVariableDirty) {
+		this.isQdmVariableDirty = isQdmVariableDirty;
+	}
 	
 }

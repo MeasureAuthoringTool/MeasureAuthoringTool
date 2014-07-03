@@ -437,7 +437,8 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			return;
 		}
 		xmlTreePresenter.getXmlTreeDisplay().clearMessages();
-		if (xmlTreePresenter.getXmlTreeDisplay().isDirty()) {
+		if (xmlTreePresenter.getXmlTreeDisplay().isDirty() 
+				|| xmlTreePresenter.getXmlTreeDisplay().isQdmVariableDirty()) {
 			isUnsavedData = true;
 			saveButton = xmlTreePresenter.getXmlTreeDisplay().getSaveButton();
 			showErrorMessage(xmlTreePresenter.getXmlTreeDisplay().getErrorMessageDisplay());

@@ -415,7 +415,31 @@ public interface XmlTreeDisplay {
 	 */
 	CustomCheckBox getIncludeQdmVaribale(); 
 	
+	/**
+	 * Sets the qdm variable.
+	 *
+	 * @param isQdmVariable the new qdm variable
+	 */
 	public void setQdmVariable(String isQdmVariable);
 	
+	/**
+	 * Checks if is qdm variable.
+	 *
+	 * @return the string
+	 */
 	public String isQdmVariable();
+
+	/**
+	 * Checks if is qdm variable dirty.
+	 *
+	 * @return true, if is qdm variable dirty
+	 */
+	boolean isQdmVariableDirty();
+
+	/**
+	 * Sets the qdm variable dirty.
+	 *
+	 * @param isQdmVariableDirty the new qdm variable dirty
+	 */
+	void setQdmVariableDirty(boolean isQdmVariableDirty);
 }

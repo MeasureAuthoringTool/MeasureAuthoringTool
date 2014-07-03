@@ -120,6 +120,9 @@ public class XmlTreePresenter {
 	 */
 	private String originalXML = "";
 	
+	/** The is qdm variable value changed. */
+	private boolean isQDMVariableValueChanged = false;
+	
 	/**
 	 * Load xml tree.
 	 *
@@ -320,7 +323,7 @@ public class XmlTreePresenter {
 								.getXmlTree().getRootTreeNode().getChildValue(0));
 						
 						if(cellTreeNode.getChilds().size() > 0){
-							if (xmlTreeDisplay.isDirty()) {
+							if (xmlTreeDisplay.isDirty() || xmlTreeDisplay.isQdmVariableDirty()) {
 								//isUnsavedData = true;
 								xmlTreeDisplay.getErrorMessageDisplay().clear();
 								showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
@@ -600,12 +603,11 @@ public class XmlTreePresenter {
 				final CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
 						.getXmlTree().getRootTreeNode().getChildValue(0));
 				CellTreeNode subTreeNode = cellTreeNode.getChilds().get(0);
-				if(xmlTreeDisplay.isQdmVariable().equals(event.getValue().toString()) && !xmlTreeDisplay.isDirty()){
-					     xmlTreeDisplay.setDirty(false);
-			    
-			    } else {
-			    	xmlTreeDisplay.setDirty(true);
-			    }
+				if(!xmlTreeDisplay.isQdmVariable().equals(event.getValue().toString())){			    
+					xmlTreeDisplay.setQdmVariableDirty(true);
+				} else {
+					xmlTreeDisplay.setQdmVariableDirty(false);
+				}
 				subTreeNode.setExtraInformation("qdmVariable", event.getValue().toString());
 			    
 				
@@ -779,7 +781,7 @@ public class XmlTreePresenter {
 			@Override
 			public void onClick(ClickEvent event) {
 				xmlTreeDisplay.clearMessages();
-				if (xmlTreeDisplay.isDirty()) {
+				if (xmlTreeDisplay.isDirty() || xmlTreeDisplay.isQdmVariableDirty()) {
 				//	isUnsavedData = true;
 					showErrorMessage(xmlTreeDisplay.getErrorMessageDisplay());
 					xmlTreeDisplay.getErrorMessageDisplay().getButtons().get(0).setFocus(true);

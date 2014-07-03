@@ -565,12 +565,19 @@ public class HumanReadableGenerator {
 			}
 			parseChild(childNodes.item(0),newLiElement,item, populationOrSubtreeXMLProcessor,satisfiesAnyAll);
 			
+			if(!newLiElement.children().isEmpty()){
+				Element firstElement = newLiElement.children().first();
+				if(HTML_UL.equals(firstElement.nodeName())){
+					newLiElement = firstElement.appendElement(HTML_LI);
+				}
+			}
+			
 			if(!isChild2QDMOrVariable){
-				newLiElement.appendElement(HTML_LI).appendText(name);
+				newLiElement.appendText(name);
 				newLiElement = newLiElement.appendElement(HTML_UL).appendElement(HTML_LI);
 			}else{
 				if(!isChild1QDMOrVariable){
-					newLiElement = newLiElement.appendElement(HTML_LI);
+					//newLiElement = newLiElement.appendElement(HTML_LI);
 					newLiElement.appendText(name);
 				}else{
 					newLiElement.appendText(name);

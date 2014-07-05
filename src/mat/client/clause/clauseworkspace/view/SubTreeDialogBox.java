@@ -276,10 +276,13 @@ public class SubTreeDialogBox {
 				Node childNode = childNodeList.item(i);
 				System.out.println("childNode: node type:"+childNode.getNodeName());
 				if("subTreeRef".equals(childNode.getNodeName())){
+					String uuid = childNode.getAttributes().getNamedItem("id").getNodeValue();
+					String nodeValue = PopulationWorkSpaceConstants.subTreeLookUpName.get(uuid);
+					childNode.getAttributes().getNamedItem("displayName").setNodeValue(nodeValue);
 					String displayName = childNode.getAttributes().getNamedItem("displayName").getNodeValue();
 					System.out.println("subtree name:"+displayName);
-					System.out.println("subtree uuid:"+childNode.getAttributes().getNamedItem("id").getNodeValue());
-					String uuid = childNode.getAttributes().getNamedItem("id").getNodeValue();
+					System.out.println("subtree uuid:"+uuid);
+//					String uuid = childNode.getAttributes().getNamedItem("id").getNodeValue();
 					if(uuid.equals(currentSelectedSubTreeUuid)){
 						return false;
 					}else{

@@ -627,11 +627,15 @@ public class XmlTreePresenter {
 		}
 		Document document = XMLParser.parse(xml);
 		NodeList nodeList = document.getElementsByTagName("subTree");
-		if ((null != nodeList) && (nodeList.getLength() > 0)) {
+		if ((nodeList != null) && (nodeList.getLength() > 0)) {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				NamedNodeMap namedNodeMap = nodeList.item(i).getAttributes();
 				String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
 				String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
+				String subTreeLookUpNode = PopulationWorkSpaceConstants.subTreeLookUpName.get(uuid)+"~"+uuid;
+				if(PopulationWorkSpaceConstants.subTreeLookUpNode.containsKey(subTreeLookUpNode)){
+					PopulationWorkSpaceConstants.subTreeLookUpNode.remove(subTreeLookUpNode);
+				}
 				PopulationWorkSpaceConstants.subTreeLookUpNode.put(name + "~" + uuid, nodeList.item(i));
 				PopulationWorkSpaceConstants.subTreeLookUpName.put(uuid, name);
 			}

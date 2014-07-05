@@ -400,6 +400,8 @@ public class XmlConversionlHelper {
 				} else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.SUBTREE_REF)) {
 					cellTreeNodeType = CellTreeNode.SUBTREE_REF_NODE;
 					uuid =  node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.ID).getNodeValue();
+					//in case if SubTree with uuid has been changed.
+					nodeValue = PopulationWorkSpaceConstants.subTreeLookUpName.get(uuid);
 				} else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.FUNC_NAME)) {
 					cellTreeNodeType = CellTreeNode.FUNCTIONS_NODE;
 					HashMap<String, String> map = new HashMap<String, String>();

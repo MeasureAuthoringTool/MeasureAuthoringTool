@@ -130,6 +130,7 @@ public class EditSubTreeDialogBox {
 					validationMessagePanel.setStyleName("alertMessage");
 					validationMessagePanel.add(messageLabel);
 					dialogContents.insert(validationMessagePanel, 0);
+					dialogBox.setPopupPosition(365, 215);
 					dialogBox.show();
 				}
 				else{
@@ -149,6 +150,7 @@ public class EditSubTreeDialogBox {
 							validationMessagePanel.setStyleName("alertMessage");
 							validationMessagePanel.add(messageLabel);
 							dialogContents.insert(validationMessagePanel, 0);
+							dialogBox.setPopupPosition(365, 215);
 							dialogBox.show();
 						}
 					}else{
@@ -195,7 +197,8 @@ public class EditSubTreeDialogBox {
 		buttonPanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
 		buttonPanel.getElement().setId("buttonPanel_HorizontalPanel");
 		dialogContents.add(buttonPanel);
-		dialogBox.center();
+		//dialogBox.center();
+		dialogBox.setPopupPosition(365, 215);
 		dialogBox.show();
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 
@@ -289,6 +292,7 @@ public class EditSubTreeDialogBox {
 					validationMessagePanel.setStyleName("alertMessage");
 					validationMessagePanel.add(messageLabel);
 					dialogContents.insert(validationMessagePanel, 0);
+					dialogBox.setPopupPosition(365, 215);
 					dialogBox.show();
 				}
 				else{
@@ -307,6 +311,7 @@ public class EditSubTreeDialogBox {
 						validationMessagePanel.setStyleName("alertMessage");
 						validationMessagePanel.add(messageLabel);
 						dialogContents.insert(validationMessagePanel, 0);
+						dialogBox.setPopupPosition(365, 215);
 						dialogBox.show();
 					}
 				}
@@ -354,7 +359,8 @@ public class EditSubTreeDialogBox {
 		buttonPanel.setCellHorizontalAlignment(closeButton, HasHorizontalAlignment.ALIGN_RIGHT);
 		buttonPanel.getElement().setId("buttonPanel_HorizontalPanel");
 		dialogContents.add(buttonPanel);
-		dialogBox.center();
+		//dialogBox.center();
+		dialogBox.setPopupPosition(365, 215);
 		dialogBox.show();
 		Scheduler.get().scheduleDeferred(new ScheduledCommand() {
 

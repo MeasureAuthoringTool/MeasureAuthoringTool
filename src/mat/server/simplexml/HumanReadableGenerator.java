@@ -524,10 +524,13 @@ public class HumanReadableGenerator {
 				String name = display.getAttributes().getNamedItem("displayName").getNodeValue();
 				String number =initialPopulationHash.get(display.getAttributes().getNamedItem("uuid").getNodeValue());
 				String lastNum = name.substring(name.length()-1);
-				 name = name.replace(lastNum, number);
+				if(!("-1".equals(number))){
+					name = name.replace(lastNum, number);
+				}else{
+					name = (name.substring(0, name.length()-1)).trim();
+				}
 				list.appendText("AND: "+name);
-			}
-			else{
+			}else{
 				list.appendText("AND: Initial Population");
 			}
 		}catch (XPathExpressionException e) {
@@ -1099,9 +1102,9 @@ public class HumanReadableGenerator {
 			Element populationListElement = mainListElement.appendElement(HTML_LI);
 			Element boldNameElement = populationListElement.appendElement("b");
 			String populationName = getPopulationName(populationType,true);
-			if (totalGroupCount > 1){
-				populationName += /*"s "*/ + (currentGroupNumber+1);
-			}/*else{
+			/*if (totalGroupCount > 1){
+				populationName += "s " + (currentGroupNumber+1);
+			}*//*else{
 				populationName += "s";
 			}*/
 			boldNameElement.appendText(populationName+" =");
@@ -1129,8 +1132,11 @@ public class HumanReadableGenerator {
 			Element populationListElement = mainListElement.appendElement(HTML_LI);
 			Element boldNameElement = populationListElement.appendElement("b");
 			String populationName = getPopulationName(populationType);
-			if (totalGroupCount > 1){
-				populationName += " " + (currentGroupNumber+1);
+//			if (totalGroupCount > 1){
+//				populationName += " " + (currentGroupNumber+1);
+//			}
+			if("initialPopulation".equalsIgnoreCase(clauseNodes.get(0).getAttributes().getNamedItem("type").getNodeValue())){
+				initialPopulationHash.put(clauseNodes.get(0).getAttributes().getNamedItem("uuid").getNodeValue(), "-1");
 			}
 			String itemCountText = getItemCountText(clauseNodes.get(0));
 			boldNameElement.appendText(populationName+(itemCountText.length() > 0 ? itemCountText : "")+" =");

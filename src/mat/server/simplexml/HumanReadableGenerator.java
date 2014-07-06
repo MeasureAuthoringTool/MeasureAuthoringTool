@@ -405,6 +405,7 @@ public class HumanReadableGenerator {
 		}else if(ELEMENT_REF.equals(nodeName)){
 			if(satisfiesAnyAll && lhsID != null && lhsID.equalsIgnoreCase(item.getAttributes().getNamedItem("id").getNodeValue())){
 				if(item.hasChildNodes()){
+					//TODO: Don't know how this will work with "negation rationale" attribute. Need to ask Nicole.
 					parentListElement.appendText(getAttributeText(item.getFirstChild(),populationOrSubtreeXMLProcessor)+ " ");
 				}
 			}else{
@@ -669,14 +670,21 @@ public class HumanReadableGenerator {
 					name = occur.concat(name);
 				}
 			}
-			//TODO: Write code to take <attributes> into account.
+
 			if(node.hasChildNodes()){
 				NodeList childNodes = node.getChildNodes();
 				for(int j=0;j<childNodes.getLength();j++){
 					Node childNode = childNodes.item(j);
 					if(childNode.getNodeName().equals("attribute")){
-						String attributeText = getAttributeText(childNode, populationOrSubtreeXMLProcessor);						
-						name += attributeText;
+						String attributeText = getAttributeText(childNode, populationOrSubtreeXMLProcessor);
+						if(childNode.getAttributes().getNamedItem("name").getNodeValue().equals("negation rationale")){
+							String[] nameArr = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().split(":");
+							if(nameArr.length >= 2){
+								name = nameArr[1].trim() + attributeText + "\""+nameArr[0].trim();
+							}
+						}else{
+							name += attributeText;
+						}
 					}
 				}
 			}
@@ -714,7 +722,11 @@ public class HumanReadableGenerator {
 			try {
 				Node qdmNodeNameAttribute = populationOrSubtreeXMLProcessor.findNode(attributeNode.getOwnerDocument(), "//elementLookUp/qdm[@uuid='"+qdmUUIDValue+"']/@name");
 				if(qdmNodeNameAttribute != null){
-					attributeText = " (" + attributeName + ": " + qdmNodeNameAttribute.getNodeValue() + ")";
+					if("negation rationale".equals(attributeName)){
+						attributeText = " not done: " + qdmNodeNameAttribute.getNodeValue() + "\" for ";
+					}else{
+						attributeText = " (" + attributeName + ": " + qdmNodeNameAttribute.getNodeValue() + ")";
+					}
 				}else{
 					attributeText = "";
 				}

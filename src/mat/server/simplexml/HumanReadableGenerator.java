@@ -677,12 +677,24 @@ public class HumanReadableGenerator {
 					Node childNode = childNodes.item(j);
 					if(childNode.getNodeName().equals("attribute")){
 						String attributeText = getAttributeText(childNode, populationOrSubtreeXMLProcessor);
+						//special handling for 'negation rationale' attribute
 						if(childNode.getAttributes().getNamedItem("name").getNodeValue().equals("negation rationale")){
 							String[] nameArr = node.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().split(":");
 							if(nameArr.length >= 2){
 								name = nameArr[1].trim() + attributeText + "\""+nameArr[0].trim();
+								// Move Occurrence of to the beginning of the name 
+								if(name.contains("Occurrence") && name.contains("of")){
+									int occurLoc = name.indexOf("Occurrence", 0);
+									int ofLoc = name.indexOf("of", occurLoc);
+									String occur = name.substring(occurLoc, ofLoc + 2);
+									name = name.replaceAll(occur, "");
+									occur += " ";
+									name = occur.concat(name);
+								}
 							}
-						}else{
+						}
+						
+						else{
 							name += attributeText;
 						}
 					}

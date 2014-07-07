@@ -978,9 +978,10 @@ public class HumanReadableGenerator {
 			}
 			
 			for(Node qdm:attributeMap.values()){
+				checkAndAddForNegationRationale(mainListElement, qdm, simpleXMLProcessor);
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
 				Element listItem = mainListElement.appendElement(HTML_LI);
-				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "//attribute[@qdmUUID=\""+qdmAttribs.getNamedItem("uuid").getNodeValue()+"\"]");
+				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "//attribute[@qdmUUID=\""+qdmAttribs.getNamedItem("uuid").getNodeValue()+"\"][@name != \"negation rationale\"]");
 				String name ="";
 				System.out.println("UUID: " + qdmAttribs.getNamedItem("uuid").getNodeValue());
 				if(node != null){
@@ -995,6 +996,35 @@ public class HumanReadableGenerator {
 		}
 	}
 	
+	private static void checkAndAddForNegationRationale(
+			Element mainListElement, Node qdm, XmlProcessor simpleXMLProcessor) throws XPathExpressionException, DOMException {
+		System.out.println("in checkAndAddForNegationRationale");
+		NamedNodeMap qdmAttribs = qdm.getAttributes();
+		NodeList nodeList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), "//attribute[@qdmUUID=\""+qdmAttribs.getNamedItem("uuid").getNodeValue()+"\"][@name = \"negation rationale\"]");
+		List<String> elementRefUUIDList = new ArrayList<String>();
+		
+		for(int i=0;i<nodeList.getLength();i++){
+			Node attributeNode = nodeList.item(i);
+			Node parentNode = attributeNode.getParentNode();
+			if(!elementRefUUIDList.contains(parentNode.getAttributes().getNamedItem("id").getNodeValue())){
+				elementRefUUIDList.add(parentNode.getAttributes().getNamedItem("id").getNodeValue());
+				String name = parentNode.getAttributes().getNamedItem("displayName").getNodeValue();
+				System.out.println("parent tag name:"+parentNode.getNodeName());
+				System.out.println("neg rationale name:"+name);
+				String[] nameArr = name.split(":");
+				if(nameArr.length == 2){
+					name = nameArr[1].trim();
+					Element listItem = mainListElement.appendElement(HTML_LI);
+					listItem.appendText("\"" +name.trim()+" not done: "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
+				}else if(nameArr.length == 3){
+					name = nameArr[1].trim()+": "+nameArr[2].trim();
+					Element listItem = mainListElement.appendElement(HTML_LI);
+					listItem.appendText("\"" +name.trim()+" not done: "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
+				}
+			}
+		}
+	}
+
 	private static void generateSupplementalData(
 			Document humanReadableHTMLDocument, XmlProcessor simpleXMLProcessor) throws XPathExpressionException {
 

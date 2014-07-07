@@ -270,17 +270,16 @@ public class HumanReadableGenerator {
 			if(childNodes.getLength() == 1){
 				displayNone(populationOrSubtreeListElement.appendElement(HTML_UL),populationOrSubtreeXMLProcessor,clauseNode);
 			}
-			for(int i = 0;i < childNodes.getLength(); i++){
-				String parentName = "";
-				System.out.println("CHILD NODE NAME: " + childNodes.item(i).getNodeName());
-				if(childNodes.item(i).getParentNode().getAttributes().getNamedItem("type") != null){
-					parentName = childNodes.item(i).getParentNode().getAttributes().getNamedItem("type").getNodeValue();
-				} 
+			String parentName = "";
+			if(clauseNode.getAttributes().getNamedItem("type") != null){
+				parentName = clauseNode.getAttributes().getNamedItem("type").getNodeValue();
 				if(("denominator".equalsIgnoreCase(parentName) || "measurePopulation".equalsIgnoreCase(parentName) ||
-						("numerator".equalsIgnoreCase(parentName) && "ratio".equalsIgnoreCase(scoring))) && !"measureDetails".equalsIgnoreCase(childNodes.item(i).getNodeName())){
+						("numerator".equalsIgnoreCase(parentName) && "ratio".equalsIgnoreCase(scoring))) && !"measureDetails".equalsIgnoreCase(clauseNode.getNodeName())){
 					
 					displayInitialPop(populationOrSubtreeListElement,populationOrSubtreeXMLProcessor,clauseNode,currentGroupNumber);
 				}
+			} 
+			for(int i = 0;i < childNodes.getLength(); i++){		
 				parseChild(childNodes.item(i),populationOrSubtreeListElement,childNodes.item(i).getParentNode(),populationOrSubtreeXMLProcessor,false);
 			}			
 		} catch (DOMException e) {

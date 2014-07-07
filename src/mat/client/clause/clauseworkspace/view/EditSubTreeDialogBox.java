@@ -146,7 +146,7 @@ public class EditSubTreeDialogBox {
 							xmlTreeDisplay.setDirty(true);
 						}else{
 							validationMessagePanel.add(warningIcon);
-							messageLabel.setText("Clause Name Already Exists");
+							messageLabel.setText("Clause name already exists");
 							validationMessagePanel.setStyleName("alertMessage");
 							validationMessagePanel.add(messageLabel);
 							dialogContents.insert(validationMessagePanel, 0);
@@ -307,7 +307,7 @@ public class EditSubTreeDialogBox {
 						xmlTreeDisplay.setDirty(true);
 					}else{
 						validationMessagePanel.add(warningIcon);
-						messageLabel.setText("Clause Name Already Exists");
+						messageLabel.setText("Clause name already exists");
 						validationMessagePanel.setStyleName("alertMessage");
 						validationMessagePanel.add(messageLabel);
 						dialogContents.insert(validationMessagePanel, 0);

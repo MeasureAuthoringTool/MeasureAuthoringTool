@@ -586,7 +586,7 @@ public class HeaderHumanReadableGenerator {
 				div.attr("class", "ver");
 
 				if(map.getNamedItem("versionNo") != null){
-					div.appendText(map.getNamedItem("versionNo").getNodeName());
+					div.appendText(map.getNamedItem("versionNo").getNodeValue());
 				}
 				
 				column = row.appendElement(HTML_TD);

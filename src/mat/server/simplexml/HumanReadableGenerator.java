@@ -446,6 +446,9 @@ public class HumanReadableGenerator {
 					createSatisfies(item,parentListElement,populationOrSubtreeXMLProcessor);
 				}
 				else{
+					if (parentListElement.nodeName().equals(HTML_UL)) {
+						parentListElement = parentListElement.appendElement(HTML_LI);
+					}
 					parentListElement.appendText(getFunctionText(item));
 					NodeList childNodes = item.getChildNodes();
 					if(childNodes.getLength() == 1 && ELEMENT_REF.equals(childNodes.item(0).getNodeName())){
@@ -553,6 +556,9 @@ public class HumanReadableGenerator {
 		if(childNodes.getLength() == 2){
 			
 			Element newLiElement = liElement;
+			if (newLiElement.nodeName().equals(HTML_UL)) {
+				newLiElement = newLiElement.appendElement(HTML_LI);
+			}
 			String name = item.getAttributes().getNamedItem(DISPLAY_NAME).getNodeValue().toLowerCase()+" ";
 			
 			if(item.getAttributes().getNamedItem("unit") != null){

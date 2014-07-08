@@ -443,6 +443,9 @@ public class HumanReadableGenerator {
 				}
 			}else{
 				if(item.getAttributes().getNamedItem("type").getNodeValue().contains("SATISFIES")){
+					if (parentListElement.nodeName().equals(HTML_UL)) {
+						parentListElement = parentListElement.appendElement(HTML_LI);
+					}
 					createSatisfies(item,parentListElement,populationOrSubtreeXMLProcessor);
 				}
 				else{

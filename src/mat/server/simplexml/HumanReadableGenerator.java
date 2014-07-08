@@ -991,15 +991,15 @@ public class HumanReadableGenerator {
 			for(Node qdm:attributeMap.values()){
 				checkAndAddForNegationRationale(mainListElement, qdm, simpleXMLProcessor);
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
-				Element listItem = mainListElement.appendElement(HTML_LI);
 				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "//attribute[@qdmUUID=\""+qdmAttribs.getNamedItem("uuid").getNodeValue()+"\"][@name != \"negation rationale\"]");
 				String name ="";
 				System.out.println("UUID: " + qdmAttribs.getNamedItem("uuid").getNodeValue());
 				if(node != null){
 					name = node.getAttributes().getNamedItem("name").getNodeValue();
 					name = StringUtils.capitalize(name);
+					Element listItem = mainListElement.appendElement(HTML_LI);
+					listItem.appendText(" Attribute: "+"\"" +name+": "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
 				}
-				listItem.appendText(" Attribute: "+"\"" +name+": "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
 			}
 		}
 		else{
@@ -1017,21 +1017,13 @@ public class HumanReadableGenerator {
 		for(int i=0;i<nodeList.getLength();i++){
 			Node attributeNode = nodeList.item(i);
 			Node parentNode = attributeNode.getParentNode();
-			if(!elementRefUUIDList.contains(parentNode.getAttributes().getNamedItem("id").getNodeValue())){
-				elementRefUUIDList.add(parentNode.getAttributes().getNamedItem("id").getNodeValue());
-				String name = parentNode.getAttributes().getNamedItem("displayName").getNodeValue();
-				System.out.println("parent tag name:"+parentNode.getNodeName());
-				System.out.println("neg rationale name:"+name);
-				String[] nameArr = name.split(":");
-				if(nameArr.length == 2){
-					name = nameArr[1].trim();
-					Element listItem = mainListElement.appendElement(HTML_LI);
-					listItem.appendText("\"" +name.trim()+" not done: "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
-				}else if(nameArr.length == 3){
-					name = nameArr[1].trim()+": "+nameArr[2].trim();
-					Element listItem = mainListElement.appendElement(HTML_LI);
-					listItem.appendText("\"" +name.trim()+" not done: "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
-				}
+			String parentUUID = parentNode.getAttributes().getNamedItem("id").getNodeValue();
+			Node parentQDMNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), "/measure/elementLookUp/qdm[@uuid='"+parentUUID+"']");
+			String parentDataType = parentQDMNode.getAttributes().getNamedItem("datatype").getNodeValue();
+			if(!elementRefUUIDList.contains(parentDataType)){
+				elementRefUUIDList.add(parentDataType);
+				Element listItem = mainListElement.appendElement(HTML_LI);
+				listItem.appendText("\"" +parentDataType.trim()+" not done: "+qdmAttribs.getNamedItem("name").getNodeValue()+"\" using \""+qdmAttribs.getNamedItem("name").getNodeValue() +" "+ qdmAttribs.getNamedItem("taxonomy").getNodeValue() +" Value Set ("+qdmAttribs.getNamedItem("oid").getNodeValue()+")\"");
 			}
 		}
 	}

@@ -1280,11 +1280,10 @@ public class HumanReadableGenerator {
 						+ qdmAttribs.getNamedItem("taxonomy").getNodeValue()
 						+ " Value Set ("
 						+ qdmAttribs.getNamedItem("oid").getNodeValue() + ")\"");
+				checkForNegationRationaleAttributes(simpleXMLProcessor,mainListElement,qdm);
 			}
 
 			for (Node qdm : attributeMap.values()) {
-				checkAndAddForNegationRationale(mainListElement, qdm,
-						simpleXMLProcessor);
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
 				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor
 						.getOriginalDoc(), "//attribute[@qdmUUID=\""
@@ -1317,38 +1316,38 @@ public class HumanReadableGenerator {
 		}
 	}
 
-	private static void checkAndAddForNegationRationale(
-			Element mainListElement, Node qdm, XmlProcessor simpleXMLProcessor)
-			throws XPathExpressionException, DOMException {
-		System.out.println("in checkAndAddForNegationRationale");
-		NamedNodeMap qdmAttribs = qdm.getAttributes();
-		NodeList nodeList = simpleXMLProcessor.findNodeList(
-				simpleXMLProcessor.getOriginalDoc(), "//attribute[@qdmUUID=\""
-						+ qdmAttribs.getNamedItem("uuid").getNodeValue()
-						+ "\"][@name = \"negation rationale\"]");
-		List<String> elementRefUUIDList = new ArrayList<String>();
-
-		for (int i = 0; i < nodeList.getLength(); i++) {
-			Node attributeNode = nodeList.item(i);
-			Node parentNode = attributeNode.getParentNode();
-			String parentUUID = parentNode.getAttributes().getNamedItem("id")
-					.getNodeValue();
-			Node parentQDMNode = simpleXMLProcessor.findNode(
-					simpleXMLProcessor.getOriginalDoc(),
-					"/measure/elementLookUp/qdm[@uuid='" + parentUUID + "']");
-			String parentDataType = parentQDMNode.getAttributes()
-					.getNamedItem("datatype").getNodeValue();
-			if (!elementRefUUIDList.contains(parentDataType)) {
-				elementRefUUIDList.add(parentDataType);
-				Element listItem = mainListElement.appendElement(HTML_LI);
-				listItem.appendText("\"" + parentDataType.trim()
-						+ " not done: "
-						+ qdmAttribs.getNamedItem("name").getNodeValue()
-						+ "\" using \""
-						+ qdmAttribs.getNamedItem("name").getNodeValue() + " "
-						+ qdmAttribs.getNamedItem("taxonomy").getNodeValue()
-						+ " Value Set ("
-						+ qdmAttribs.getNamedItem("oid").getNodeValue() + ")\"");
+	private static void checkForNegationRationaleAttributes(
+			XmlProcessor simpleXMLProcessor, Element mainListElement, Node qdm) throws XPathExpressionException {
+		
+		System.out.println("in checkForNegationRationaleAttributes");
+		String uuid = qdm.getAttributes().getNamedItem("uuid").getNodeValue();
+		
+		String xPathString = "//elementRef[@id='"+uuid+"']/attribute[@name='negation rationale']";
+		NodeList elementRefList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), xPathString);
+		
+		List<String> attribUUIDList = new ArrayList<String>();
+		
+		for(int i=0;i<elementRefList.getLength();i++){
+			Node attribNode = elementRefList.item(i);
+			String attribUUID = attribNode.getAttributes().getNamedItem("qdmUUID").getNodeValue();
+			if(!attribUUIDList.contains(attribUUID)){
+				attribUUIDList.add(attribUUID);
+				xPathString = "/measure/elementLookUp/qdm[@uuid='"+ attribUUID + "'][@datatype='attribute']";
+				Node qdmAttributeNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), xPathString);
+				
+				if(qdmAttributeNode != null){
+					String parentDataType = qdm.getAttributes().getNamedItem("datatype").getNodeValue();
+					NamedNodeMap qdmAttribs = qdmAttributeNode.getAttributes();
+					Element listItem = mainListElement.appendElement(HTML_LI);
+					listItem.appendText("\"" + parentDataType.trim()
+							+ " not done: "
+							+ qdmAttribs.getNamedItem("name").getNodeValue()
+							+ "\" using \""
+							+ qdmAttribs.getNamedItem("name").getNodeValue() + " "
+							+ qdmAttribs.getNamedItem("taxonomy").getNodeValue()
+							+ " Value Set ("
+							+ qdmAttribs.getNamedItem("oid").getNodeValue() + ")\"");
+				}
 			}
 		}
 	}

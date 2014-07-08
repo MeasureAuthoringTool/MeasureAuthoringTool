@@ -955,6 +955,15 @@ public class HumanReadableGenerator {
 						}
 					}
 				}else{
+					int supplementalCount = simpleXMLProcessor.getNodeCount(simpleXMLProcessor.getOriginalDoc(), "count(/measure/supplementalDataElements/elementRef[@id='"+uuid+"'])");
+					if(supplementalCount > 0){
+						int isUsedInLogic = simpleXMLProcessor.getNodeCount(simpleXMLProcessor.getOriginalDoc(), "count(//subTree//elementRef[@id='"+uuid+"'])");
+						if(isUsedInLogic > 0){
+							if(!qdmMap.containsKey(oid+datatype)){
+								qdmMap.put(datatype+":"+name+"~"+oid, qdmNode);
+							}
+						}
+					}
 					if(!qdmMap.containsKey(oid+datatype)){
 						qdmMap.put(datatype+":"+name+"~"+oid, qdmNode);
 					}

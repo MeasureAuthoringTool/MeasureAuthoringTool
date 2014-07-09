@@ -901,7 +901,7 @@ public class QDMAvailableValueSetWidget implements QDMAvailableValueSetPresenter
 			for (HasListBox listBoxContent : itemList) {
 				//MAT-4366
 				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") && ! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired"))
-					listBox.addItem(listBoxContent.getItem(), "" + listBoxContent.getValue());
+					listBox.addItem(listBoxContent.getItem(), listBoxContent.getItem());
 			}
 		}
 	}

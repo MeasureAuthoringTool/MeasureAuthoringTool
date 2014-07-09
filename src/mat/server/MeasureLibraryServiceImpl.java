@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.UUID;
 
 import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
@@ -90,8 +89,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import com.ibm.icu.text.MeasureFormat;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class MeasureLibraryServiceImpl.
@@ -158,7 +155,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private UserService userService;
 	
 	/** The x path. */
-	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+	 javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+	
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#appendAndSaveNode(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
@@ -1658,16 +1656,27 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public final void saveMeasureXml(final MeasureXmlModel measureXmlModel) {
-		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if ((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml())) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
-			String newXml = xmlProcessor.replaceNode(measureXmlModel.getXml(), measureXmlModel.getToReplaceNode(),
-					measureXmlModel.getParentNode());
-			xmlProcessor.checkForScoringType();
-			checkForTimingElementsAndAppend(xmlProcessor);
-			newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
-			measureXmlModel.setXml(newXml);
+			try{
+				String scoringTypeBeforeNewXml = (String) xPath.evaluate(
+						"/measure/measureDetails/scoring/@id",
+						xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
+				String newXml = xmlProcessor.replaceNode(measureXmlModel.getXml(), measureXmlModel.getToReplaceNode(),
+						measureXmlModel.getParentNode());
+				String scoringTypeAfterNewXml = (String) xPath.evaluate(
+						"/measure/measureDetails/scoring/@id",
+						xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.STRING);
+				xmlProcessor.checkForScoringType();
+				checkForTimingElementsAndAppend(xmlProcessor);
+				if(! scoringTypeBeforeNewXml.equalsIgnoreCase(scoringTypeAfterNewXml))
+					deleteExistingGroupings(xmlProcessor);
+				newXml = xmlProcessor.transform(xmlProcessor.getOriginalDoc());
+				measureXmlModel.setXml(newXml);
+			} catch (XPathExpressionException e) {
+				e.printStackTrace();
+			}
 		} else {
 			XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
 			processor.addParentNode(MEASURE);
@@ -1699,11 +1708,29 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			XmlProcessor processor1 = new XmlProcessor(measureXmlModel.getXml());
 			measureXmlModel.setXml(processor1.checkForStratificationAndAdd());
-			
 		}
 		getService().saveMeasureXml(measureXmlModel);
 	}
 	
+	
+	/**
+	 * Deletes the existing groupings when scoring type selection is changed and saved
+	 *
+	 * @param xmlProcessor the xml processor
+	 */
+	private void deleteExistingGroupings(XmlProcessor xmlProcessor) {
+		NodeList measureGroupingList;
+		try {
+			measureGroupingList = (NodeList) xPath.evaluate("/measure/measureGrouping/group",
+					xmlProcessor.getOriginalDoc().getDocumentElement(), XPathConstants.NODESET);
+			for(int i = 0; i<measureGroupingList.getLength(); i++ ) {
+		    	removeNode("/measure/measureGrouping/group",xmlProcessor.getOriginalDoc());
+		    }
+		} catch (XPathExpressionException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#search(java.lang.String, int, int, int)
 	 */
@@ -3049,6 +3076,21 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		result.setValid(message.size() == 0);
 		result.setValidationMessages(message);
 		return result;
-	}		
+	}	
+	
+	/**
+	 * Takes an XPath notation String for a particular tag and a Document object
+	 * and finds and removes the tag from the document.
+	 * @param nodeXPath the node x path
+	 * @param originalDoc the original doc
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private void removeNode(String nodeXPath, Document originalDoc) throws XPathExpressionException {
+		Node node = (Node)xPath.evaluate(nodeXPath, originalDoc.getDocumentElement(), XPathConstants.NODE);
+		if(node != null){
+			Node parentNode = node.getParentNode();
+			parentNode.removeChild(node);
+		}
+	}
 }
 

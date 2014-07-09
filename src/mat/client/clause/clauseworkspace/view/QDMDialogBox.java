@@ -31,6 +31,7 @@ import com.google.gwt.user.client.ui.SuggestOracle.Suggestion;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Node;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class QDMDialogBox.
  */
@@ -41,6 +42,9 @@ public class QDMDialogBox {
 	
 	/** The Constant ATTRIBUTES. */
 	private static final String ATTRIBUTES = "attributes";
+	
+	/** The is selected. */
+	private static boolean isSelected;
 
 	/**
 	 * Show qdm dialog box.
@@ -55,6 +59,7 @@ public class QDMDialogBox {
 		final DialogBox dialogBox = new DialogBox(false, true);
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
+		setSelected(false);
 		dialogBox.setText("Double Click to Select QDM Element.");
 		dialogBox.setTitle("Double Click to Select QDM Element.");
 
@@ -106,9 +111,12 @@ public class QDMDialogBox {
 		Button selectButton = new Button("Select", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				if(!isSelected()){
 				DomEvent.fireNativeEvent(
 						Document.get().createDblClickEvent(0, 0, 0, 0, 0,
 								false, false, false, false), listBox);
+				setSelected(true);
+				}
 			}
 		});
 		HorizontalPanel horizontalButtonPanel = new HorizontalPanel();
@@ -158,7 +166,7 @@ public class QDMDialogBox {
 		listBox.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				if (listBox.getSelectedIndex() == -1) {
+				if (listBox.getSelectedIndex() == -1 && isSelected()) {
 					return;
 				}
 				String value = listBox.getItemText(listBox.getSelectedIndex());
@@ -175,6 +183,7 @@ public class QDMDialogBox {
 					xmlTreeDisplay.editNode(value, value, uuid);
 				}
 				xmlTreeDisplay.setDirty(true);
+				setSelected(true);
 				dialogBox.hide();
 			}
 		});
@@ -281,5 +290,23 @@ public class QDMDialogBox {
 		multiWordSuggestOracle.addAll(PopulationWorkSpaceConstants.getElementLookUpName()
 				.values());
 		return multiWordSuggestOracle;
+	}
+	
+	/**
+	 * Checks if is selected.
+	 *
+	 * @return true, if is selected
+	 */
+	public static boolean isSelected() {
+		return isSelected;
+	}
+
+	/**
+	 * Sets the selected.
+	 *
+	 * @param isSelected the new selected
+	 */
+	public static void setSelected(boolean isSelected) {
+		QDMDialogBox.isSelected = isSelected;
 	}
 }

@@ -31,8 +31,15 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.NodeList;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SubTreeDialogBox.
+ */
 public class SubTreeDialogBox {
 	
+	
+	/** The is selected. */
+	private static boolean isSelected;
 	
 	/**
 	 * Show SubTree dialog box. (used for Population workspace).
@@ -46,19 +53,20 @@ public class SubTreeDialogBox {
 			boolean isAdd){
 		showSubTreeDialogBox(xmlTreeDisplay, isAdd,false);
 	}
+	
 	/**
 	 * Show SubTree dialog box. (used for Clause workspace)
-	 * 
-	 * @param xmlTreeDisplay
-	 *            the xml tree display
-	 * @param isAdd
-	 *            the is add
+	 *
+	 * @param xmlTreeDisplay the xml tree display
+	 * @param isAdd the is add
+	 * @param isClauseWorkspace the is clause workspace
 	 */
 	public static void showSubTreeDialogBox(final XmlTreeDisplay xmlTreeDisplay,
 			boolean isAdd, boolean isClauseWorkspace) {
 		final DialogBox dialogBox = new DialogBox(false, true);
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
+		setSelected(false);
 		dialogBox.setText("Double Click to Select SubTree Element.");
 		dialogBox.setTitle("Double Click to Select SubTree Element.");
 		dialogBox.getElement().setAttribute("id", "SubTreeDialogBox");
@@ -117,9 +125,12 @@ public class SubTreeDialogBox {
 		Button selectButton = new Button("Select", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				if(!isSelected()){
 				DomEvent.fireNativeEvent(
 						Document.get().createDblClickEvent(0, 0, 0, 0, 0,
 								false, false, false, false), listBox);
+				setSelected(true);
+				}
 			}
 		});
 		HorizontalPanel horizontalButtonPanel = new HorizontalPanel();
@@ -169,7 +180,7 @@ public class SubTreeDialogBox {
 		listBox.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				if (listBox.getSelectedIndex() == -1) {
+				if (listBox.getSelectedIndex() == -1 && isSelected()) {
 					return;
 				}
 				String value = listBox.getItemText(listBox.getSelectedIndex());
@@ -181,6 +192,7 @@ public class SubTreeDialogBox {
 					xmlTreeDisplay.editNode(value, value, uuid);
 				}
 				xmlTreeDisplay.setDirty(true);
+				setSelected(true);
 				dialogBox.hide();
 			}
 		});
@@ -214,11 +226,10 @@ public class SubTreeDialogBox {
 	
 	/**
 	 * Adds the SubTree names to list box.
-	 * 
-	 * @param listBox
-	 *            the list box
-	 * @param currentSelectedSubTreeUuid
-	 *            the current selected SubTree uuid
+	 *
+	 * @param listBox the list box
+	 * @param currentSelectedSubTreeUuid the current selected SubTree uuid
+	 * @param isClauseWorkSpace the is clause work space
 	 */
 	private static void addSubTreeNamesToListBox(ListBox listBox,
 			String currentSelectedSubTreeUuid, boolean isClauseWorkSpace) {
@@ -260,12 +271,27 @@ public class SubTreeDialogBox {
 		}
 	}
 	
+	/**
+	 * Check for cycle conditions.
+	 *
+	 * @param subTreeName the sub tree name
+	 * @param uuid the uuid
+	 * @param currentSelectedSubTreeUuid the current selected sub tree uuid
+	 * @return true, if successful
+	 */
 	private static boolean checkForCycleConditions(String subTreeName, String uuid, String currentSelectedSubTreeUuid) {
 		Node node = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(subTreeName+"~"+uuid);
 		
 		return checkForCycleConditions(node,currentSelectedSubTreeUuid);
 	}
 	
+	/**
+	 * Check for cycle conditions.
+	 *
+	 * @param node the node
+	 * @param currentSelectedSubTreeUuid the current selected sub tree uuid
+	 * @return true, if successful
+	 */
 	private static boolean checkForCycleConditions(Node node,
 			String currentSelectedSubTreeUuid) {
 		System.out.println("node.hasChildNodes():"+node.hasChildNodes());
@@ -312,6 +338,24 @@ public class SubTreeDialogBox {
 		multiWordSuggestOracle.addAll(PopulationWorkSpaceConstants.getSubTreeLookUpName()
 				.values());
 		return multiWordSuggestOracle;
+	}
+	
+	/**
+	 * Checks if is selected.
+	 *
+	 * @return true, if is selected
+	 */
+	public static boolean isSelected() {
+		return isSelected;
+	}
+	
+	/**
+	 * Sets the selected.
+	 *
+	 * @param isSelected the new selected
+	 */
+	public static void setSelected(boolean isSelected) {
+		SubTreeDialogBox.isSelected = isSelected;
 	}
 	
 }

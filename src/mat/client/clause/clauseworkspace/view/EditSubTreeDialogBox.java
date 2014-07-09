@@ -44,9 +44,12 @@ public class EditSubTreeDialogBox {
 	/** The warning icon. */
 	public static  Image warningIcon = new Image(ImageResources.INSTANCE.msg_error());
 	
-	
 	/** The dialog box. */
 	public static DialogBox dialogBox = new DialogBox(false,true);
+	
+	/** The is clause name added. */
+	private static boolean isClauseNameAdded;
+
 	/**
 	 * Show edit dialog box.
 	 *
@@ -221,6 +224,7 @@ public class EditSubTreeDialogBox {
 		dialogBox.setGlassEnabled(true);
 		dialogBox.setAnimationEnabled(true);
 		dialogBox.setText("Add Clause Name");
+		setClauseNameAdded(false);
 		// Create a table to layout the content
 		final VerticalPanel dialogContents = new VerticalPanel();
 		dialogContents.getElement().setId("dialogContents_VerticalPanel");
@@ -273,6 +277,8 @@ public class EditSubTreeDialogBox {
 		final Button save = new Button("OK", new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
+				
+				if (!isClauseNameAdded()) {
 				dialogBox.hide();
 				validationMessagePanel.removeStyleName("alertMessage");
 				dialogContents.remove(validationMessagePanel);
@@ -305,6 +311,7 @@ public class EditSubTreeDialogBox {
 								, UUIDUtilClient.uuid(), CellTreeNode.SUBTREE_NODE);
 						xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
 						xmlTreeDisplay.setDirty(true);
+						setClauseNameAdded(true);
 					}else{
 						validationMessagePanel.add(warningIcon);
 						messageLabel.setText("Clause name already exists");
@@ -316,6 +323,8 @@ public class EditSubTreeDialogBox {
 					}
 				}
 			}
+				dialogBox.hide();
+	}
 		});
 		
 		save.getElement().setId("save_Button");
@@ -393,4 +402,21 @@ public class EditSubTreeDialogBox {
 			return result;
 	}	
 	
+	/**
+	 * Checks if is clause name added.
+	 *
+	 * @return true, if is clause name added
+	 */
+	public static boolean isClauseNameAdded() {
+		return isClauseNameAdded;
+	}
+
+	/**
+	 * Sets the clause name added.
+	 *
+	 * @param isClauseNameAdded the new clause name added
+	 */
+	public static void setClauseNameAdded(boolean isClauseNameAdded) {
+		EditSubTreeDialogBox.isClauseNameAdded = isClauseNameAdded;
+	}
 }

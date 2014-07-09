@@ -1521,6 +1521,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								}
 								break;
 							case CellTreeNode.LOGICAL_OP_NODE: case CellTreeNode.FUNCTIONS_NODE:
+							case CellTreeNode.SET_OP_NODE:
 								if (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) {
 									canPaste = true;
 								}

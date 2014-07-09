@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
 import mat.client.CustomPager;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -21,7 +22,7 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.WarningMessageDisplay;
 import mat.client.util.CellTableUtility;
 import mat.model.QualityDataSetDTO;
-import mat.shared.ConstantMessages;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -632,12 +633,7 @@ public class MeasurePackagerView implements MeasurePackagePresenter.PackageView 
 	 */
 	@Override
 	public final void setViewIsEditable(final boolean b, final List<MeasurePackageDetail> packages) {
-		if (ConstantMessages.CONTINUOUS_VARIABLE_SCORING.equals(
-				MatContext.get().getCurrentMeasureScoringType()) && (packages.size() > 0)) {
-			createNew.setEnabled(false);
-		} else {
-			createNew.setEnabled(b);
-		}
+		createNew.setEnabled(b);
 		packageMeasure.setEnabled(b);
 		packageMeasureAndExport.setEnabled(b);
 		addQDMElementsToMeasure.setEnabled(b);

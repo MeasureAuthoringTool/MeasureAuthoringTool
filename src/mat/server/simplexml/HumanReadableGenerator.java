@@ -471,11 +471,14 @@ public class HumanReadableGenerator {
 				parentListElement.appendElement(HTML_LI).appendText(
 						getNodeText(item, populationOrSubtreeXMLProcessor));
 			} else {
-				if(parentListElement.hasText()){
-					parentListElement = parentListElement.appendElement(HTML_UL).appendElement(HTML_LI).appendText(getNodeText(item,
-							populationOrSubtreeXMLProcessor));
-				}
-				else{
+				if (parentListElement.html().contains("Stratification")) {
+					parentListElement = parentListElement
+							.appendElement(HTML_UL)
+							.appendElement(HTML_LI)
+							.appendText(
+									getNodeText(item,
+											populationOrSubtreeXMLProcessor));
+				} else {
 					parentListElement.appendText(getNodeText(item,
 							populationOrSubtreeXMLProcessor));
 				}
@@ -499,8 +502,10 @@ public class HumanReadableGenerator {
 				getRelationalOpText(item, liElement,
 						populationOrSubtreeXMLProcessor, satisfiesAnyAll);
 			} else {
-				if(parentListElement.hasText()){
-					parentListElement = parentListElement.appendElement(HTML_UL).appendElement(HTML_LI);
+				System.out.println("DATA: " + parentListElement.html());
+				if (parentListElement.html().contains("Stratification")) {
+					parentListElement = parentListElement
+							.appendElement(HTML_UL).appendElement(HTML_LI);
 				}
 				getRelationalOpText(item, parentListElement,
 						populationOrSubtreeXMLProcessor, satisfiesAnyAll);
@@ -567,7 +572,7 @@ public class HumanReadableGenerator {
 				}
 				if (item.getAttributes().getNamedItem("type").getNodeValue()
 						.contains("SATISFIES")) {
-					
+
 					createSatisfies(item, liElement,
 							populationOrSubtreeXMLProcessor);
 				} else {
@@ -580,7 +585,13 @@ public class HumanReadableGenerator {
 								populationOrSubtreeXMLProcessor,
 								satisfiesAnyAll);
 					} else {
+						if(childNodes.getLength()>1 || childNodes.item(0).getNodeName().equals(FUNCTIONAL_OP)){
+							liElement = liElement.appendElement(HTML_UL);
+						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
+							if(i>0){
+								liElement.appendElement(HTML_LI);
+							}
 							parseChild(childNodes.item(i), liElement, item,
 									populationOrSubtreeXMLProcessor,
 									satisfiesAnyAll);
@@ -591,19 +602,21 @@ public class HumanReadableGenerator {
 				if (item.getAttributes().getNamedItem("type").getNodeValue()
 						.contains("SATISFIES")) {
 					if (parentListElement.nodeName().equals(HTML_UL)) {
-						parentListElement = parentListElement.appendElement(HTML_LI);
-					}
-					else if(parentListElement.hasText()){
-						parentListElement = parentListElement.appendElement(HTML_UL).appendElement(HTML_LI);
+						parentListElement = parentListElement
+								.appendElement(HTML_LI);
+					} else if (parentListElement.html().contains("Stratification")) {
+						parentListElement = parentListElement.appendElement(
+								HTML_UL).appendElement(HTML_LI);
 					}
 					createSatisfies(item, parentListElement,
 							populationOrSubtreeXMLProcessor);
 				} else {
 					if (parentListElement.nodeName().equals(HTML_UL)) {
-						parentListElement = parentListElement.appendElement(HTML_LI);
-					}
-					else if(parentListElement.hasText()){
-						parentListElement = parentListElement.appendElement(HTML_UL).appendElement(HTML_LI);
+						parentListElement = parentListElement
+								.appendElement(HTML_LI);
+					} else if (parentListElement.html().contains("Stratification")) {
+						parentListElement = parentListElement.appendElement(
+								HTML_UL).appendElement(HTML_LI);
 					}
 					parentListElement.appendText(getFunctionText(item));
 					NodeList childNodes = item.getChildNodes();
@@ -614,11 +627,17 @@ public class HumanReadableGenerator {
 								populationOrSubtreeXMLProcessor,
 								satisfiesAnyAll);
 					} else {
-						Element ulElement = parentListElement
-								.appendElement(HTML_UL);
+						Element ulElement = parentListElement;
+						if(childNodes.getLength()>1 || childNodes.item(0).getNodeName().equals(FUNCTIONAL_OP)){
+							ulElement = parentListElement
+									.appendElement(HTML_UL);
+						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
+							if(i>0){
+								ulElement.appendElement(HTML_LI);
+							}
 							parseChild(childNodes.item(i),
-									ulElement.appendElement(HTML_LI), item,
+									ulElement, item,
 									populationOrSubtreeXMLProcessor,
 									satisfiesAnyAll);
 						}
@@ -747,7 +766,6 @@ public class HumanReadableGenerator {
 		NodeList childNodes = item.getChildNodes();
 
 		if (childNodes.getLength() == 2) {
-
 			Element newLiElement = liElement;
 			if (newLiElement.nodeName().equals(HTML_UL)) {
 				newLiElement = newLiElement.appendElement(HTML_LI);
@@ -1280,7 +1298,8 @@ public class HumanReadableGenerator {
 						+ qdmAttribs.getNamedItem("taxonomy").getNodeValue()
 						+ " Value Set ("
 						+ qdmAttribs.getNamedItem("oid").getNodeValue() + ")\"");
-				checkForNegationRationaleAttributes(simpleXMLProcessor,mainListElement,qdm);
+				checkForNegationRationaleAttributes(simpleXMLProcessor,
+						mainListElement, qdm);
 			}
 
 			for (Node qdm : attributeMap.values()) {
@@ -1317,36 +1336,46 @@ public class HumanReadableGenerator {
 	}
 
 	private static void checkForNegationRationaleAttributes(
-			XmlProcessor simpleXMLProcessor, Element mainListElement, Node qdm) throws XPathExpressionException {
-		
+			XmlProcessor simpleXMLProcessor, Element mainListElement, Node qdm)
+			throws XPathExpressionException {
+
 		System.out.println("in checkForNegationRationaleAttributes");
 		String uuid = qdm.getAttributes().getNamedItem("uuid").getNodeValue();
-		
-		String xPathString = "//elementRef[@id='"+uuid+"']/attribute[@name='negation rationale']";
-		NodeList elementRefList = simpleXMLProcessor.findNodeList(simpleXMLProcessor.getOriginalDoc(), xPathString);
-		
+
+		String xPathString = "//elementRef[@id='" + uuid
+				+ "']/attribute[@name='negation rationale']";
+		NodeList elementRefList = simpleXMLProcessor.findNodeList(
+				simpleXMLProcessor.getOriginalDoc(), xPathString);
+
 		List<String> attribUUIDList = new ArrayList<String>();
-		
-		for(int i=0;i<elementRefList.getLength();i++){
+
+		for (int i = 0; i < elementRefList.getLength(); i++) {
 			Node attribNode = elementRefList.item(i);
-			String attribUUID = attribNode.getAttributes().getNamedItem("qdmUUID").getNodeValue();
-			if(!attribUUIDList.contains(attribUUID)){
+			String attribUUID = attribNode.getAttributes()
+					.getNamedItem("qdmUUID").getNodeValue();
+			if (!attribUUIDList.contains(attribUUID)) {
 				attribUUIDList.add(attribUUID);
-				xPathString = "/measure/elementLookUp/qdm[@uuid='"+ attribUUID + "'][@datatype='attribute']";
-				Node qdmAttributeNode = simpleXMLProcessor.findNode(simpleXMLProcessor.getOriginalDoc(), xPathString);
-				
-				if(qdmAttributeNode != null){
-					String parentDataType = qdm.getAttributes().getNamedItem("datatype").getNodeValue();
+				xPathString = "/measure/elementLookUp/qdm[@uuid='" + attribUUID
+						+ "'][@datatype='attribute']";
+				Node qdmAttributeNode = simpleXMLProcessor.findNode(
+						simpleXMLProcessor.getOriginalDoc(), xPathString);
+
+				if (qdmAttributeNode != null) {
+					String parentDataType = qdm.getAttributes()
+							.getNamedItem("datatype").getNodeValue();
 					NamedNodeMap qdmAttribs = qdmAttributeNode.getAttributes();
 					Element listItem = mainListElement.appendElement(HTML_LI);
-					listItem.appendText("\"" + parentDataType.trim()
+					listItem.appendText("\""
+							+ parentDataType.trim()
 							+ " not done: "
 							+ qdmAttribs.getNamedItem("name").getNodeValue()
 							+ "\" using \""
-							+ qdmAttribs.getNamedItem("name").getNodeValue() + " "
-							+ qdmAttribs.getNamedItem("taxonomy").getNodeValue()
-							+ " Value Set ("
-							+ qdmAttribs.getNamedItem("oid").getNodeValue() + ")\"");
+							+ qdmAttribs.getNamedItem("name").getNodeValue()
+							+ " "
+							+ qdmAttribs.getNamedItem("taxonomy")
+									.getNodeValue() + " Value Set ("
+							+ qdmAttribs.getNamedItem("oid").getNodeValue()
+							+ ")\"");
 				}
 			}
 		}

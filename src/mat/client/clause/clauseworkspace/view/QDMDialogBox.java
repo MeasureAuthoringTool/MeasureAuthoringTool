@@ -166,9 +166,10 @@ public class QDMDialogBox {
 		listBox.addDoubleClickHandler(new DoubleClickHandler() {
 			@Override
 			public void onDoubleClick(DoubleClickEvent event) {
-				if (listBox.getSelectedIndex() == -1 && isSelected()) {
+				if (listBox.getSelectedIndex() == -1) {
 					return;
 				}
+				if(!isSelected){
 				String value = listBox.getItemText(listBox.getSelectedIndex());
 				String uuid = listBox.getValue(listBox.getSelectedIndex());
 				if (isAdd) {
@@ -184,6 +185,7 @@ public class QDMDialogBox {
 				}
 				xmlTreeDisplay.setDirty(true);
 				setSelected(true);
+				}
 				dialogBox.hide();
 			}
 		});

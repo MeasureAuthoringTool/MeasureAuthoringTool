@@ -589,7 +589,7 @@ public class HumanReadableGenerator {
 							liElement = liElement.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
-							if(i>0){
+							if(childNodes.getLength()>1){
 								liElement.appendElement(HTML_LI);
 							}
 							parseChild(childNodes.item(i), liElement, item,
@@ -628,12 +628,12 @@ public class HumanReadableGenerator {
 								satisfiesAnyAll);
 					} else {
 						Element ulElement = parentListElement;
-						if(childNodes.getLength()>1 || childNodes.item(0).getNodeName().equals(FUNCTIONAL_OP)){
+						if(childNodes.getLength()>1){
 							ulElement = parentListElement
 									.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
-							if(i>0){
+							if(childNodes.getLength()>1){
 								ulElement.appendElement(HTML_LI);
 							}
 							parseChild(childNodes.item(i),

@@ -15,7 +15,6 @@ import mat.shared.ConstantMessages;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -1277,7 +1276,7 @@ public class HumanReadableGenerator {
 			}
 		}
 
-		List<String> qdmNameList = new ArrayList(qdmMap.keySet());
+		List<String> qdmNameList = new ArrayList<String>(qdmMap.keySet());
 		Collections.sort(qdmNameList, new Comparator<String>() {
 			@Override
 			public int compare(String o1, String o2) {
@@ -1286,23 +1285,37 @@ public class HumanReadableGenerator {
 			}
 		});
 		if (qdmNameList.size() > 0) {
+			List<String> qdmItemList = new ArrayList<String>();
 			for (String s : qdmNameList) {
 				Node qdm = qdmMap.get(s);
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
-				Element listItem = mainListElement.appendElement(HTML_LI);
-
-				listItem.appendText("\""
-						+ qdmAttribs.getNamedItem("datatype").getNodeValue()
-						+ ": " + qdmAttribs.getNamedItem("name").getNodeValue()
-						+ "\" using \""
-						+ qdmAttribs.getNamedItem("name").getNodeValue() + " "
-						+ qdmAttribs.getNamedItem("taxonomy").getNodeValue()
-						+ " Value Set ("
-						+ qdmAttribs.getNamedItem("oid").getNodeValue() + ")\"");
+								
+				String qdmString = "\""
+					+ qdmAttribs.getNamedItem("datatype").getNodeValue()
+					+ ": " + qdmAttribs.getNamedItem("name").getNodeValue()
+					+ "\" using \""
+					+ qdmAttribs.getNamedItem("name").getNodeValue() + " "
+					+ qdmAttribs.getNamedItem("taxonomy").getNodeValue()
+					+ " Value Set ("
+					+ qdmAttribs.getNamedItem("oid").getNodeValue() + ")\"";
+				qdmItemList.add(qdmString);
+				
 				checkForNegationRationaleAttributes(simpleXMLProcessor,
-						mainListElement, qdm);
+						mainListElement, qdm, qdmItemList);
 			}
-
+			
+			Collections.sort(qdmItemList, new Comparator<String>() {
+				@Override
+				public int compare(String o1, String o2) {
+					return o1.substring(0, o1.indexOf(':')).compareToIgnoreCase(
+							o2.substring(0, o2.indexOf(':')));
+				}
+			});
+			
+			for(String qdmString: qdmItemList){
+				mainListElement.appendElement(HTML_LI).appendText(qdmString);
+			}
+			
 			for (Node qdm : attributeMap.values()) {
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
 				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor
@@ -1337,10 +1350,8 @@ public class HumanReadableGenerator {
 	}
 
 	private static void checkForNegationRationaleAttributes(
-			XmlProcessor simpleXMLProcessor, Element mainListElement, Node qdm)
+			XmlProcessor simpleXMLProcessor, Element mainListElement, Node qdm, List<String> itemList)
 			throws XPathExpressionException {
-
-		System.out.println("in checkForNegationRationaleAttributes");
 		String uuid = qdm.getAttributes().getNamedItem("uuid").getNodeValue();
 
 		String xPathString = "//elementRef[@id='" + uuid
@@ -1377,27 +1388,9 @@ public class HumanReadableGenerator {
 									.getNodeValue() + " Value Set ("
 							+ qdmAttribs.getNamedItem("oid").getNodeValue()
 							+ ")\"";
-
-					boolean txtPresent = false;
-					Elements childElems = mainListElement.children();
-					System.out.println("child elems size:" + childElems.size());
-					for (int f = 0; f < childElems.size(); f++) {
-						Element child = childElems.get(f);
-						System.out.println("child name:" + child.nodeName());
-						if (child.nodeName().equals(HTML_LI)) {
-							String text = child.text();
-							System.out.println("neg rationale child text:"
-									+ text);
-							if (text.trim().equals(negRationalText)) {
-								txtPresent = true;
-								break;
-							}
-						}
-					}
-					if (!txtPresent) {
-						Element listItem = mainListElement
-								.appendElement(HTML_LI);
-						listItem.appendText(negRationalText);
+					
+					if (!itemList.contains(negRationalText)) {
+						itemList.add(negRationalText);
 					}
 				}
 			}

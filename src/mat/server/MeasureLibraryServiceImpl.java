@@ -1714,7 +1714,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	
 	/**
-	 * Deletes the existing groupings when scoring type selection is changed and saved
+	 * Deletes the existing groupings when scoring type selection is changed and saved.
 	 *
 	 * @param xmlProcessor the xml processor
 	 */
@@ -2643,7 +2643,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	@Override
 	public boolean validateMeasureXmlAtCreateMeasurePackager(MeasureXmlModel measureXmlModel) {
-		boolean flag=false;
+ 		boolean flag=false;
 		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		
@@ -2716,13 +2716,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				
 				for(String usedSubtreeRefId:usedSubTreeIds){
 			
-	        String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
-			 
+	         String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
+			 String otherThanSatisfyfunction = "@type!='SATISFIES ALL' or @type!='SATISFIES ANY'";
 			 
 			 String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef/@id";
 			 String XPATH_TIMING_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//relationalOp";
 			 
 			 String XPATH_SATISFY_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+satisfyFunction+"]";
+			 
+			 String XPATH_FUNCTIONS ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+otherThanSatisfyfunction+"]";
+			 
+			 String XPATH_SETOPERATOR ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//setOp";
 			 System.out.println("MEASURE_XML: "+xmlModel.getXml());
 			try {
 				
@@ -2732,6 +2736,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				NodeList nodesSDE_timingElement = (NodeList) xPath.evaluate(XPATH_TIMING_ELEMENT, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODESET);
 				NodeList nodesSDE_satisfyElement = (NodeList) xPath.evaluate(XPATH_SATISFY_ELEMENT, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				NodeList nodesSDE_functions = (NodeList) xPath.evaluate(XPATH_FUNCTIONS, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				NodeList nodeSDE_setoperator =(NodeList) xPath.evaluate(XPATH_SETOPERATOR, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODESET);
 				
 				for (int n = 0; n <nodesSDE_timingElement.getLength() && !flag; n++) {
@@ -2771,7 +2779,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 					}
 				}
 				
+				for (int n = 0; n <nodesSDE_functions.getLength() && !flag; n++) {
 					
+					Node functionsChildNode =nodesSDE_functions.item(n);
+					flag = validateFunctionNode(functionsChildNode, flag);	
+					if(flag)
+						break;
+					
+				}
+				
+				for (int n = 0; n <nodeSDE_setoperator.getLength() && !flag; n++) {
+					
+					Node setOperatorChildNode =nodeSDE_setoperator.item(n);
+					flag = validateSetOperatorNode(setOperatorChildNode, flag);	
+					if(flag)
+						break;
+					
+				}	
 					
 			} catch (XPathExpressionException e) {
 				
@@ -3039,6 +3063,39 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return flag;
 	}
+	
+	/**
+	 * Validate function node.
+	 *
+	 * @param functionchildNode the functionchild node
+	 * @param flag the flag
+	 * @return true, if successful
+	 */
+	private boolean validateFunctionNode(Node functionchildNode, boolean flag){
+		int functionChildCount = functionchildNode.getChildNodes().getLength();
+		if(functionChildCount< 1){
+			flag = true;
+		}
+		return flag;
+		
+	}
+	
+	/**
+	 * Validate set operator node.
+	 *
+	 * @param SetOperatorchildNode the set operatorchild node
+	 * @param flag the flag
+	 * @return true, if successful
+	 */
+	private boolean validateSetOperatorNode(Node SetOperatorchildNode, boolean flag){
+		int setOperatorChildCount = SetOperatorchildNode.getChildNodes().getLength();
+		if(setOperatorChildCount< 1){
+			flag = true;
+		}
+		return flag;
+		
+	}
+	
 
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#validateForGroup(mat.client.measure.ManageMeasureDetailModel)

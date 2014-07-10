@@ -3149,5 +3149,31 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			parentNode.removeChild(node);
 		}
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getAppliedQDMForItemCount(java.lang.String, boolean)
+	 */
+	@Override
+	public final List<QualityDataSetDTO> getAppliedQDMForItemCount(final String measureId,
+			final boolean checkForSupplementData){
+			
+		List<QualityDataSetDTO> qdmList = getAppliedQDMFromMeasureXml(measureId, checkForSupplementData);
+		List<QualityDataSetDTO> filterQDMList = new ArrayList<QualityDataSetDTO>();
+		DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
+		for (QualityDataSetDTO qdsDTO : qdmList) {
+			DataType dataType = dataTypeDAO.findByDataTypeName(qdsDTO.getDataType());
+			if ("Timing Element".equals(qdsDTO
+					.getDataType()) || "attribute".equals(qdsDTO.getDataType())
+					|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qdsDTO
+							.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qdsDTO
+									.getDataType()) || dataType == null) {
+				filterQDMList.add(qdsDTO);
+			}
+		}
+		
+		qdmList.removeAll(filterQDMList);
+		return qdmList;
+		
+	} 
 }
 

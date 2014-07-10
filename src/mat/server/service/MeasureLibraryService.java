@@ -3,6 +3,7 @@ package mat.server.service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -469,4 +470,16 @@ public interface MeasureLibraryService {
 	 * @return the validate measure result
 	 */
 	ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model);
+	
+	//Map<String, Boolean>  getSubTreeRefValidationMap(String measureId, String uuid); 
+	
+	/**
+	 * Gets the applied qdm for item count.
+	 *
+	 * @param measureId the measure id
+	 * @param checkForSupplementData the check for supplement data
+	 * @return the applied qdm for item count
+	 */
+	List<QualityDataSetDTO> getAppliedQDMForItemCount(String measureId,
+			boolean checkForSupplementData);
 }

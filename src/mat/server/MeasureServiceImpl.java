@@ -411,4 +411,13 @@ MeasureService {
 		return this.getMeasureLibraryService().validateForGroup(model);
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getAppliedQDMForItemCount(java.lang.String, boolean)
+	 */
+	@Override
+	public List<QualityDataSetDTO> getAppliedQDMForItemCount(
+			String measureId, boolean checkForSupplementData) {
+		return this.getMeasureLibraryService().getAppliedQDMForItemCount(measureId, checkForSupplementData);
+	}
+	
 }

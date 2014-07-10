@@ -1245,38 +1245,25 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	public final void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if ((measureId != null) && !measureId.equals("")) {
-			service.getAppliedQDMFromMeasureXml(measureId,
+			service.getAppliedQDMForItemCount(measureId,
 					checkForSupplementData,
-					new AsyncCallback<List<QualityDataSetDTO>>() {
-				
-				private void filterTimingAndAttributeQDMs(
-						List<QualityDataSetDTO> result) {
-					List<QualityDataSetDTO> timingAndAttributeQDMs = new ArrayList<QualityDataSetDTO>();
-					for (QualityDataSetDTO qdsDTO : result) {
-						if ("Timing Element".equals(qdsDTO
-								.getDataType()) || "attribute".equals(qdsDTO.getDataType())
-								|| ConstantMessages.BIRTHDATE_OID.equals(qdsDTO
-										.getOid()) || ConstantMessages.EXPIRED_OID.equals(qdsDTO
-												.getOid())) {
-							timingAndAttributeQDMs.add(qdsDTO);
-						}
-					}
-					result.removeAll(timingAndAttributeQDMs);
-				}
-				
+					new AsyncCallback<List<QualityDataSetDTO>>()  {
 				@Override
 				public void onFailure(final Throwable caught) {
 					Window.alert(MatContext.get().getMessageDelegate()
 							.getGenericErrorMessage());
 				}
 				
+				/**
+				 * On success.
+				 *
+				 * @param result the result
+				 */
 				@Override
 				public void onSuccess(
 						final List<QualityDataSetDTO> result) {
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
-					filterTimingAndAttributeQDMs(result);
 					appliedListModel.setAppliedQDMs(result);
-					
 					metaDataDisplay.buildCellTable(appliedListModel, editable);
 					metaDataDisplay.setAppliedQDMList(result);
 					

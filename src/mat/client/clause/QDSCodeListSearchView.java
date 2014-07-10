@@ -19,6 +19,8 @@ import mat.model.MatValueSet;
 import mat.shared.ConstantMessages;
 import org.apache.commons.lang.StringUtils;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.OptionElement;
+import com.google.gwt.dom.client.SelectElement;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -854,7 +856,15 @@ public class QDSCodeListSearchView  implements QDSCodeListSearchPresenter.Search
 			for (HasListBox listBoxContent : itemList) {
 				//MAT-4366
 				if(! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Birthdate") && ! listBoxContent.getItem().equalsIgnoreCase("Patient Characteristic Expired"))
-				listBox.addItem(listBoxContent.getItem(),listBoxContent.getItem());
+				listBox.addItem(listBoxContent.getItem(),""+listBoxContent.getValue());
+			}
+			
+			SelectElement selectElement = SelectElement.as(listBox.getElement());
+			com.google.gwt.dom.client.NodeList<OptionElement> options = selectElement
+					.getOptions();
+			for (int i = 0; i < options.getLength(); i++) {
+				OptionElement optionElement = options.getItem(i);
+				optionElement.setTitle(optionElement.getText());
 			}
 		}
 	}

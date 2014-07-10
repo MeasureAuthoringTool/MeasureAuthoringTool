@@ -461,7 +461,7 @@ public class HumanReadableGenerator {
 			if (LOGICAL_OP.equals(parentNode.getNodeName())) {
 				parentListElement = parentListElement.appendElement(HTML_LI);
 				if (LOGICAL_OP.equals(parentNode.getNodeName())) {
-					parentListElement.appendText(getNodeText(parentNode,
+					parentListElement = parentListElement.appendText(getNodeText(parentNode,
 							populationOrSubtreeXMLProcessor));
 					// parentListElement = liElement.appendElement(HTML_UL);
 				}
@@ -842,6 +842,9 @@ public class HumanReadableGenerator {
 				}
 			}
 		} else if (LOGICAL_OP.equals(nodeName)) {
+			retValue = true;
+		}
+		else if(SET_OP.equals(nodeName)){
 			retValue = true;
 		}
 

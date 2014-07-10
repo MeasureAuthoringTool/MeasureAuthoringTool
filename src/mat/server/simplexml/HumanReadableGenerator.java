@@ -459,11 +459,11 @@ public class HumanReadableGenerator {
 		} else if (SET_OP.equals(nodeName)) {
 			// Element liElement = parentListElement.appendElement(HTML_LI);
 			if (LOGICAL_OP.equals(parentNode.getNodeName())) {
-				Element liElement = parentListElement.appendElement(HTML_LI);
+				parentListElement = parentListElement.appendElement(HTML_LI);
 				if (LOGICAL_OP.equals(parentNode.getNodeName())) {
-					liElement.appendText(getNodeText(parentNode,
+					parentListElement.appendText(getNodeText(parentNode,
 							populationOrSubtreeXMLProcessor));
-					parentListElement = liElement.appendElement(HTML_UL);
+					// parentListElement = liElement.appendElement(HTML_UL);
 				}
 			}
 			// Element ulElement = liElement.appendElement(HTML_UL);
@@ -585,12 +585,14 @@ public class HumanReadableGenerator {
 								populationOrSubtreeXMLProcessor,
 								satisfiesAnyAll);
 					} else {
-						if(childNodes.getLength()>1 || childNodes.item(0).getNodeName().equals(FUNCTIONAL_OP)){
+						if (childNodes.getLength() > 1
+								|| childNodes.item(0).getNodeName()
+										.equals(FUNCTIONAL_OP)) {
 							liElement = liElement.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
-							if(childNodes.getLength()>1){
-								liElement.appendElement(HTML_LI);
+							if (childNodes.getLength() > 1) {
+								liElement = liElement.appendElement(HTML_LI);
 							}
 							parseChild(childNodes.item(i), liElement, item,
 									populationOrSubtreeXMLProcessor,
@@ -604,7 +606,8 @@ public class HumanReadableGenerator {
 					if (parentListElement.nodeName().equals(HTML_UL)) {
 						parentListElement = parentListElement
 								.appendElement(HTML_LI);
-					} else if (parentListElement.html().contains("Stratification")) {
+					} else if (parentListElement.html().contains(
+							"Stratification")) {
 						parentListElement = parentListElement.appendElement(
 								HTML_UL).appendElement(HTML_LI);
 					}
@@ -614,7 +617,8 @@ public class HumanReadableGenerator {
 					if (parentListElement.nodeName().equals(HTML_UL)) {
 						parentListElement = parentListElement
 								.appendElement(HTML_LI);
-					} else if (parentListElement.html().contains("Stratification")) {
+					} else if (parentListElement.html().contains(
+							"Stratification")) {
 						parentListElement = parentListElement.appendElement(
 								HTML_UL).appendElement(HTML_LI);
 					}
@@ -628,16 +632,15 @@ public class HumanReadableGenerator {
 								satisfiesAnyAll);
 					} else {
 						Element ulElement = parentListElement;
-						if(childNodes.getLength()>1){
+						if (childNodes.getLength() > 1) {
 							ulElement = parentListElement
 									.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
-							if(childNodes.getLength()>1){
-								ulElement.appendElement(HTML_LI);
+							if (childNodes.getLength() > 1) {
+								ulElement = ulElement.appendElement(HTML_LI);
 							}
-							parseChild(childNodes.item(i),
-									ulElement, item,
+							parseChild(childNodes.item(i), ulElement, item,
 									populationOrSubtreeXMLProcessor,
 									satisfiesAnyAll);
 						}
@@ -1289,33 +1292,34 @@ public class HumanReadableGenerator {
 			for (String s : qdmNameList) {
 				Node qdm = qdmMap.get(s);
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
-								
+
 				String qdmString = "\""
-					+ qdmAttribs.getNamedItem("datatype").getNodeValue()
-					+ ": " + qdmAttribs.getNamedItem("name").getNodeValue()
-					+ "\" using \""
-					+ qdmAttribs.getNamedItem("name").getNodeValue() + " "
-					+ qdmAttribs.getNamedItem("taxonomy").getNodeValue()
-					+ " Value Set ("
-					+ qdmAttribs.getNamedItem("oid").getNodeValue() + ")\"";
+						+ qdmAttribs.getNamedItem("datatype").getNodeValue()
+						+ ": " + qdmAttribs.getNamedItem("name").getNodeValue()
+						+ "\" using \""
+						+ qdmAttribs.getNamedItem("name").getNodeValue() + " "
+						+ qdmAttribs.getNamedItem("taxonomy").getNodeValue()
+						+ " Value Set ("
+						+ qdmAttribs.getNamedItem("oid").getNodeValue() + ")\"";
 				qdmItemList.add(qdmString);
-				
+
 				checkForNegationRationaleAttributes(simpleXMLProcessor,
 						mainListElement, qdm, qdmItemList);
 			}
-			
+
 			Collections.sort(qdmItemList, new Comparator<String>() {
 				@Override
 				public int compare(String o1, String o2) {
-					return o1.substring(0, o1.indexOf(':')).compareToIgnoreCase(
-							o2.substring(0, o2.indexOf(':')));
+					return o1.substring(0, o1.indexOf(':'))
+							.compareToIgnoreCase(
+									o2.substring(0, o2.indexOf(':')));
 				}
 			});
-			
-			for(String qdmString: qdmItemList){
+
+			for (String qdmString : qdmItemList) {
 				mainListElement.appendElement(HTML_LI).appendText(qdmString);
 			}
-			
+
 			for (Node qdm : attributeMap.values()) {
 				NamedNodeMap qdmAttribs = qdm.getAttributes();
 				Node node = simpleXMLProcessor.findNode(simpleXMLProcessor
@@ -1350,8 +1354,8 @@ public class HumanReadableGenerator {
 	}
 
 	private static void checkForNegationRationaleAttributes(
-			XmlProcessor simpleXMLProcessor, Element mainListElement, Node qdm, List<String> itemList)
-			throws XPathExpressionException {
+			XmlProcessor simpleXMLProcessor, Element mainListElement, Node qdm,
+			List<String> itemList) throws XPathExpressionException {
 		String uuid = qdm.getAttributes().getNamedItem("uuid").getNodeValue();
 
 		String xPathString = "//elementRef[@id='" + uuid
@@ -1388,7 +1392,7 @@ public class HumanReadableGenerator {
 									.getNodeValue() + " Value Set ("
 							+ qdmAttribs.getNamedItem("oid").getNodeValue()
 							+ ")\"";
-					
+
 					if (!itemList.contains(negRationalText)) {
 						itemList.add(negRationalText);
 					}

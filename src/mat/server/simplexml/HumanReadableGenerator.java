@@ -15,6 +15,7 @@ import mat.shared.ConstantMessages;
 import org.apache.commons.lang.StringUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -1364,8 +1365,8 @@ public class HumanReadableGenerator {
 					String parentDataType = qdm.getAttributes()
 							.getNamedItem("datatype").getNodeValue();
 					NamedNodeMap qdmAttribs = qdmAttributeNode.getAttributes();
-					Element listItem = mainListElement.appendElement(HTML_LI);
-					listItem.appendText("\""
+
+					String negRationalText = "\""
 							+ parentDataType.trim()
 							+ " not done: "
 							+ qdmAttribs.getNamedItem("name").getNodeValue()
@@ -1375,7 +1376,29 @@ public class HumanReadableGenerator {
 							+ qdmAttribs.getNamedItem("taxonomy")
 									.getNodeValue() + " Value Set ("
 							+ qdmAttribs.getNamedItem("oid").getNodeValue()
-							+ ")\"");
+							+ ")\"";
+
+					boolean txtPresent = false;
+					Elements childElems = mainListElement.children();
+					System.out.println("child elems size:" + childElems.size());
+					for (int f = 0; f < childElems.size(); f++) {
+						Element child = childElems.get(f);
+						System.out.println("child name:" + child.nodeName());
+						if (child.nodeName().equals(HTML_LI)) {
+							String text = child.text();
+							System.out.println("neg rationale child text:"
+									+ text);
+							if (text.trim().equals(negRationalText)) {
+								txtPresent = true;
+								break;
+							}
+						}
+					}
+					if (!txtPresent) {
+						Element listItem = mainListElement
+								.appendElement(HTML_LI);
+						listItem.appendText(negRationalText);
+					}
 				}
 			}
 		}

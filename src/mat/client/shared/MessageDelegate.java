@@ -17,9 +17,7 @@ public class MessageDelegate {
 	/** The Constant CHANGES_SAVED. */
 	public static final String CHANGES_SAVED = "Changes are successfully saved.";
 	
-	/**
-	 * The Constant NO_MARKUP_ALLOWED
-	 */
+	/** The Constant NO_MARKUP_ALLOWED. */
 	public static final String NO_MARKUP_ALLOWED = "No markup text allowed in any text fields.";
 	
 	/** The Constant CODE_LIST_ADDED. */
@@ -195,6 +193,15 @@ public class MessageDelegate {
 	/** The clause work space validation error. */
 	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR = "Measure logic is incomplete."
 			+ " LHS and RHS are required for Timings, Relationships and Satisfies functions.";
+	/** The clause work space validation error. */
+	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION = "Measure Logic is incomplete"
+			+ " Union, Intersection and Functions must contain at least one child Node.";
+	
+	/** The clause work space validation error. */
+	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_BOTH_TIMING_AND_FUNCTION = "Measure logic is incomplete."
+			+ " Timings and functions Both Node are InValid."
+			+ " LHS and RHS are required for Timings, Relationships and Satisfies functions."
+			+ " Union, Intersection and Functions must contain at least one child Node.";
 	
 	/** The clause work space validation success. */
 	private final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
@@ -212,10 +219,20 @@ public class MessageDelegate {
 	/** The code required. */
 	private final String CODE_REQUIRED = "Code is required.";
 	
+	/**
+	 * Gets the population work space validation error.
+	 *
+	 * @return the population work space validation error
+	 */
 	public String getPOPULATION_WORK_SPACE_VALIDATION_ERROR() {
 		return POPULATION_WORK_SPACE_VALIDATION_ERROR;
 	}
 
+	/**
+	 * Gets the population work space validation success.
+	 *
+	 * @return the population work space validation success
+	 */
 	public String getPOPULATION_WORK_SPACE_VALIDATION_SUCCESS() {
 		return POPULATION_WORK_SPACE_VALIDATION_SUCCESS;
 	}
@@ -427,6 +444,7 @@ public class MessageDelegate {
 	/** The ratio too many. */
 	private final String RATIO_TOO_MANY = "For a Ratio measure, a grouping may not contain more than one of each of the following: Denominator Exclusion and Numerator Exclusion.";
 	
+	/** The ratio too many populations. */
 	private final String RATIO_TOO_MANY_POPULATIONS = "For a Ratio measure, a grouping may not contain more than two of the following: Populations.";
 	/*
 	 * RATIO
@@ -435,15 +453,19 @@ public class MessageDelegate {
 	private final String RATIO_WRONG_NUM = "For a Ratio measure, a grouping must contain exactly one of each of the following: "
 			+ "Denominator and Numerator.";
 	
+	/** The ratio too few populations. */
 	private final String RATIO_TOO_FEW_POPULATIONS = "For a Ratio measure, a grouping must contain at least one Population.";
 	
 	/**
+	 * Gets the ratio too few populations.
+	 *
 	 * @return the rATIO_TOO_FEW_POPULATIONS
 	 */
 	public String getRATIO_TOO_FEW_POPULATIONS() {
 		return RATIO_TOO_FEW_POPULATIONS;
 	}
 	
+	/** The cohort wrong num. */
 	private final String COHORT_WRONG_NUM = "For a Cohort measure, a grouping must contain exactly one Population.";
 	
 	/** The rationale required. */
@@ -542,12 +564,20 @@ public class MessageDelegate {
 	private final String VSAC_UPDATE_SUCCESSFULL = "Successfully updated applied QDM list with VSAC data.";
 	
 	
+	/** The comment added successfully. */
 	private final String COMMENT_ADDED_SUCCESSFULLY ="Comment Changes Added.";
 	
+	/** The comparison diloag box error display. */
 	private final String COMPARISON_DILOAG_BOX_ERROR_DISPLAY="Please enter Quantity field.";
 	
+	/** The component measures added successfully. */
 	private final String COMPONENT_MEASURES_ADDED_SUCCESSFULLY="Component Measures updated successfully. Changes must be saved on the previous page.";
 	
+	/**
+	 * Gets the component measures added successfully.
+	 *
+	 * @return the component measures added successfully
+	 */
 	public String getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY() {
 		return COMPONENT_MEASURES_ADDED_SUCCESSFULLY;
 	}
@@ -1950,6 +1980,8 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the comment added successfully.
+	 *
 	 * @return the cOMMENT_ADDED_SUCCESSFULLY
 	 */
 	public String getCOMMENT_ADDED_SUCCESSFULLY() {
@@ -1957,17 +1989,26 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the cohort wrong num.
+	 *
 	 * @return the cOHORT_WRONG_NUM
 	 */
 	public String getCOHORT_WRONG_NUM() {
 		return COHORT_WRONG_NUM;
 	}
 	
+	/**
+	 * Gets the comparison diloag box error display.
+	 *
+	 * @return the comparison diloag box error display
+	 */
 	public String getComparisonDiloagBoxErrorDisplay() {
 		return COMPARISON_DILOAG_BOX_ERROR_DISPLAY;
 	}
 	
 	/**
+	 * Gets the ratio too many populations.
+	 *
 	 * @return the rATIO_TOO_MANY_POPULATIONS
 	 */
 	public String getRATIO_TOO_MANY_POPULATIONS() {
@@ -1975,9 +2016,29 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the ratio num deno association required.
+	 *
 	 * @return the ratioNumDenoAssociationRequired
 	 */
 	public String getRatioNumDenoAssociationRequired() {
 		return RATIO_NUM_DENO_ASSOCIATION_REQUIRED;
+	}
+
+	/**
+	 * Gets the clause work space validation error at setoperator or function.
+	 *
+	 * @return the cLAUSE_WORK_SPACE_VALIDATION_ERROR_FOR_SETOPERATORS_FUNCTIONS
+	 */
+	public String getCLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION() {
+		return CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION;
+	}
+
+	/**
+	 * Gets the clause work space validation error at both timing and function.
+	 *
+	 * @return the cLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_BOTH_TIMING_AND_FUNCTION
+	 */
+	public String getCLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_BOTH_TIMING_AND_FUNCTION() {
+		return CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_BOTH_TIMING_AND_FUNCTION;
 	}
 }

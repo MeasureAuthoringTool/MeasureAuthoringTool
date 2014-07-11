@@ -194,7 +194,7 @@ public class MessageDelegate {
 	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR = "Measure logic is incomplete."
 			+ " LHS and RHS are required for Timings, Relationships and Satisfies functions.";
 	/** The clause work space validation error. */
-	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION = "Measure Logic is incomplete"
+	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION = "Measure Logic is incomplete."
 			+ " Union, Intersection and Functions must contain at least one child Node.";
 	
 	/** The clause work space validation error. */

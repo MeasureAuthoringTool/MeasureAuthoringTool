@@ -226,9 +226,8 @@ public interface XmlTreeDisplay {
 	 * 
 	 * @param treeNode
 	 *            the tree node
-	 * @return true, if successful
 	 */
-	String validateCellTreeNodes(TreeNode treeNode);
+	void validateCellTreeNodes(TreeNode treeNode);
 	
 	/**
 	 * Close nodes.

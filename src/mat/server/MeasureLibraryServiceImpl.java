@@ -3162,17 +3162,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		DataTypeDAO dataTypeDAO = (DataTypeDAO)context.getBean("dataTypeDAO");
 		for (QualityDataSetDTO qdsDTO : qdmList) {
 			DataType dataType = dataTypeDAO.findByDataTypeName(qdsDTO.getDataType());
-			//commented out for QA Test Results
-//			if ("Timing Element".equals(qdsDTO
-//					.getDataType()) || "attribute".equals(qdsDTO.getDataType())
-//					|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qdsDTO
-//							.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qdsDTO
-//									.getDataType()) || dataType == null) {
 			if ("Timing Element".equals(qdsDTO
 					.getDataType()) || "attribute".equals(qdsDTO.getDataType())
-					|| ConstantMessages.BIRTHDATE_OID.equals(qdsDTO
-							.getOid()) || ConstantMessages.EXPIRED_OID.equals(qdsDTO
-									.getOid())) {
+					|| ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qdsDTO
+							.getDataType()) || ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qdsDTO
+									.getDataType()) || dataType == null) {
 				filterQDMList.add(qdsDTO);
 			}
 		}

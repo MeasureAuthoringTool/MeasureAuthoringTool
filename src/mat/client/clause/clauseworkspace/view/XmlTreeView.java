@@ -1707,14 +1707,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#validateCellTreeNodes(com.google.gwt.user.cellview.client.TreeNode)
 	 */
 	@Override
-	public String validateCellTreeNodes(TreeNode treeNode) {
+	public void validateCellTreeNodes(TreeNode treeNode) {
 		
-		setErrorType = "Valid";
 		List<String> dataTypeList = new ArrayList<String>();
 		getDataTypesForAllQDMs(treeNode, dataTypeList);
 		System.out.println("DataType list:"+dataTypeList);
-		validateClauseWorkspaceCellTreeNodes(treeNode, dataTypeList);
-		return setErrorType;
+		validateClauseWorkspaceCellTreeNodes(treeNode, dataTypeList);		
 	}
 	
 	/**

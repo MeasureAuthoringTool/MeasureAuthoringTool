@@ -741,36 +741,8 @@ public class XmlTreePresenter {
 				if (xmlTreeDisplay.getXmlTree() != null) {
 					xmlTreeDisplay.clearMessages();
 					xmlTreeDisplay.setValid(true);
-					String  result = xmlTreeDisplay
-							.validateCellTreeNodes(xmlTreeDisplay.getXmlTree()
-									.getRootTreeNode());
-					/*if (result!=null && result.equalsIgnoreCase("inValidAtOtherNode")) {
-						xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
-								.getRootTreeNode());
-						xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
-								.getRootTreeNode());
-						xmlTreeDisplay.getWarningMessageDisplay().
-						setMessage(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_VALIDATION_ERROR());
-					} 
-					if(result!=null && result.equalsIgnoreCase("inValidAtQDMNode")){
-						//don't display any error message
-						xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
-								.getRootTreeNode());
-						xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
-								.getRootTreeNode());
-					}
-					 if(result!=null && result.equalsIgnoreCase("Valid")){
-						xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
-								.getRootTreeNode());
-						xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
-								.getRootTreeNode());
-						xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
-								MatContext.get().getMessageDelegate().
-								getCLAUSE_WORK_SPACE_VALIDATION_SUCCESS());
-						
-					}*/
-					
-					
+					xmlTreeDisplay.validateCellTreeNodes(xmlTreeDisplay.getXmlTree()
+									.getRootTreeNode());		
 				}
 			}
 		});

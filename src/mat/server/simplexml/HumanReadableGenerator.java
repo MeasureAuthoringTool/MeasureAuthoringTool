@@ -792,8 +792,25 @@ public class HumanReadableGenerator {
 				newLiElement = liElement.appendElement(HTML_UL).appendElement(
 						HTML_LI);
 			}
+			
+			if (RELATIONAL_OP.equals(childNodes.item(0).getNodeName())) {
+				NodeList children = childNodes.item(0).getChildNodes();
+				if (ELEMENT_REF.equals(children.item(0).getNodeName())
+						&& ELEMENT_REF.equals(children.item(1).getNodeName())) {
+					newLiElement.appendText(" (");
+				}
+			}
+			
 			parseChild(childNodes.item(0), newLiElement, item,
 					populationOrSubtreeXMLProcessor, satisfiesAnyAll);
+			
+			if (RELATIONAL_OP.equals(childNodes.item(0).getNodeName())) {
+				NodeList children = childNodes.item(0).getChildNodes();
+				if (ELEMENT_REF.equals(children.item(0).getNodeName())
+						&& ELEMENT_REF.equals(children.item(1).getNodeName())) {
+					newLiElement.appendText(") ");
+				}
+			}
 
 			if (!newLiElement.children().isEmpty()) {
 				Element firstElement = newLiElement.children().first();
@@ -807,12 +824,20 @@ public class HumanReadableGenerator {
 				newLiElement = newLiElement.appendElement(HTML_UL)
 						.appendElement(HTML_LI);
 			} else {
-				if (!isChild1QDMOrVariable) {
-					// newLiElement = newLiElement.appendElement(HTML_LI);
-					newLiElement.appendText(name);
-				} else {
-					newLiElement.appendText(name);
+				newLiElement.appendText(name);
+				
+				if (RELATIONAL_OP.equals(childNodes.item(1).getNodeName())) {
+					NodeList children = childNodes.item(1).getChildNodes();
+					if (ELEMENT_REF.equals(children.item(0).getNodeName())
+							&& ELEMENT_REF.equals(children.item(1).getNodeName())) {
+						newLiElement.appendText(" (");
+						parseChild(childNodes.item(1), newLiElement, item,
+								populationOrSubtreeXMLProcessor, false);
+						newLiElement.appendText(")");
+						return;
+					}
 				}
+				
 			}
 			parseChild(childNodes.item(1), newLiElement, item,
 					populationOrSubtreeXMLProcessor, false);
@@ -830,6 +855,8 @@ public class HumanReadableGenerator {
 	private static boolean checkIfElementRefOrQDMVariable(Node node) {
 		boolean retValue = false;
 		String nodeName = node.getNodeName();
+		System.out.println("checkIfElementRefOrQDMVariable nodeName:"
+				+ nodeName);
 
 		if (ELEMENT_REF.equals(nodeName)) {
 			retValue = true;
@@ -843,9 +870,14 @@ public class HumanReadableGenerator {
 			}
 		} else if (LOGICAL_OP.equals(nodeName)) {
 			retValue = true;
-		}
-		else if(SET_OP.equals(nodeName)){
+		} else if (SET_OP.equals(nodeName)) {
 			retValue = true;
+		} else if (RELATIONAL_OP.equals(nodeName)) {
+			NodeList children = node.getChildNodes();
+			if (ELEMENT_REF.equals(children.item(0).getNodeName())
+					&& ELEMENT_REF.equals(children.item(1).getNodeName())) {
+				retValue = true;
+			}
 		}
 
 		return retValue;

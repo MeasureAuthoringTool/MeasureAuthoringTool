@@ -723,11 +723,15 @@ public class XmlProcessor {
 					if (newNode.getAttributes().getNamedItem(INSTANCE) != null) {
 						isOccurrenceText = true;
 					}
-					// Check to Filter Occurrences and to filter Attributes and Timing data types.
+					// Check to Filter Occurrences and to filter Attributes, Timing, BirtDate and Expired data types.
 					if (!isOccurrenceText && (!dataType
 						.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
 						&& !dataType
-						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE))) {
+						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
+						&& !dataType
+						.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE)
+						&& !dataType
+						.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED))) {
 						for (QualityDataSetDTO dataSetDTO : masterList) {
 							if (dataSetDTO.getUuid().equalsIgnoreCase(
 									nodeID)

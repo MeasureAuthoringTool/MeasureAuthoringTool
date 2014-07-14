@@ -1,5 +1,9 @@
 package mat.client.shared;
 
+import org.vaadin.gwtgraphics.client.Line;
+
+import com.ibm.icu.lang.UCharacter.LineBreak;
+
 import mat.shared.ConstantMessages;
 
 // TODO: Auto-generated Javadoc
@@ -195,12 +199,6 @@ public class MessageDelegate {
 			+ " LHS and RHS are required for Timings, Relationships and Satisfies functions.";
 	/** The clause work space validation error. */
 	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION = "Measure Logic is incomplete."
-			+ " Union, Intersection and Functions must contain at least one child Node.";
-	
-	/** The clause work space validation error. */
-	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_BOTH_TIMING_AND_FUNCTION = "Measure logic is incomplete."
-			+ " Timings and functions Both Node are InValid."
-			+ " LHS and RHS are required for Timings, Relationships and Satisfies functions."
 			+ " Union, Intersection and Functions must contain at least one child Node.";
 	
 	/** The clause work space validation success. */
@@ -2032,13 +2030,5 @@ public class MessageDelegate {
 	public String getCLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION() {
 		return CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION;
 	}
-
-	/**
-	 * Gets the clause work space validation error at both timing and function.
-	 *
-	 * @return the cLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_BOTH_TIMING_AND_FUNCTION
-	 */
-	public String getCLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_BOTH_TIMING_AND_FUNCTION() {
-		return CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_BOTH_TIMING_AND_FUNCTION;
-	}
+	
 }

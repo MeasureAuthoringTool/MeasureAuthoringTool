@@ -688,6 +688,8 @@ public class XmlProcessor {
 							.getNamedItem(UUID_STRING).getNodeValue();
 					String dataType = newNode.getAttributes()
 							.getNamedItem("datatype").getNodeValue();
+					String oid = newNode.getAttributes()
+							.getNamedItem("oid").getNodeValue();
 					boolean isOccurrenceText = false;
 					if (newNode.getAttributes().getNamedItem(INSTANCE) != null) {
 						isOccurrenceText = true;
@@ -697,10 +699,10 @@ public class XmlProcessor {
 						.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
 						&& !dataType
 						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE) 
-						&& !dataType
-						.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE)
-						&& !dataType
-						.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED))) {
+						&& !oid
+						.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
+						&& !oid
+						.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
 						for (QualityDataSetDTO dataSetDTO : masterList) {
 							if (dataSetDTO.getUuid().equalsIgnoreCase(
 									nodeID)
@@ -719,6 +721,8 @@ public class XmlProcessor {
 							.getNamedItem(UUID_STRING).getNodeValue();
 					String dataType = newNode.getAttributes()
 							.getNamedItem("datatype").getNodeValue();
+					String oid = newNode.getAttributes()
+							.getNamedItem("oid").getNodeValue();
 					boolean isOccurrenceText = false;
 					if (newNode.getAttributes().getNamedItem(INSTANCE) != null) {
 						isOccurrenceText = true;
@@ -728,10 +732,10 @@ public class XmlProcessor {
 						.equalsIgnoreCase(ConstantMessages.TIMING_ELEMENT)
 						&& !dataType
 						.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-						&& !dataType
-						.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE)
-						&& !dataType
-						.equalsIgnoreCase(ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED))) {
+						&& !oid
+						.equalsIgnoreCase(ConstantMessages.EXPIRED_OID)
+						&& !oid
+						.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID))) {
 						for (QualityDataSetDTO dataSetDTO : masterList) {
 							if (dataSetDTO.getUuid().equalsIgnoreCase(
 									nodeID)

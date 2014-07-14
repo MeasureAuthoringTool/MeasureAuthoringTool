@@ -1312,6 +1312,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public ErrorMessageDisplay getErrorMessageDisplay() {
 		return errorMessageDisplay;
 	}
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#clearMessages()
 	 */
@@ -1784,14 +1785,14 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 									.getRootTreeNode());
 						}
 						
-						if(inValidNodeMap.containsKey("inValidAtTimingRelationShip")){
+						else if(inValidNodeMap.containsKey("inValidAtTimingRelationShip")){
 							closeNodes(getXmlTree().getRootTreeNode());
 							openAllNodes(getXmlTree()
 									.getRootTreeNode());
 							getWarningMessageDisplay().
 							setMessage(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_VALIDATION_ERROR());
 						}
-						if(inValidNodeMap.containsKey("inValidAtSetoperatorAndOrFunction")){
+						else if(inValidNodeMap.containsKey("inValidAtSetoperatorAndOrFunction")){
 							closeNodes(getXmlTree().getRootTreeNode());
 							openAllNodes(getXmlTree()
 									.getRootTreeNode());
@@ -1804,17 +1805,21 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							closeNodes(getXmlTree()
 									.getRootTreeNode());
 							openAllNodes(getXmlTree()
-									.getRootTreeNode());
-							getWarningMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_BOTH_TIMING_AND_FUNCTION());
+									.getRootTreeNode());							
+							List<String> warningMessages = new ArrayList<String>();
+							warningMessages.add("Measure logic is incomplete.");
+							warningMessages.add("LHS and RHS are required for Timings, Relationships and Satisfies functions.");
+							warningMessages.add("Union, Intersection and Functions must contain at least one child Node.");
+							getWarningMessageDisplay().setMessages(warningMessages);
 						}
-						if(inValidNodeMap.containsKey("inValidAtSetoperatorAndOrFunction") && !inValidNodeMap.containsKey("inValidAtTimingRelationShip")){
+						else if(inValidNodeMap.containsKey("inValidAtSetoperatorAndOrFunction") && !inValidNodeMap.containsKey("inValidAtTimingRelationShip")){
 							closeNodes(getXmlTree().getRootTreeNode());
 							openAllNodes(getXmlTree()
 									.getRootTreeNode());
 							getWarningMessageDisplay().
 							setMessage(MatContext.get().getMessageDelegate().getCLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION());
 						}
-						if(!inValidNodeMap.containsKey("inValidAtSetoperatorAndOrFunction") && inValidNodeMap.containsKey("inValidAtTimingRelationShip")){
+						else if(!inValidNodeMap.containsKey("inValidAtSetoperatorAndOrFunction") && inValidNodeMap.containsKey("inValidAtTimingRelationShip")){
 							closeNodes(getXmlTree().getRootTreeNode());
 							openAllNodes(getXmlTree()
 									.getRootTreeNode());

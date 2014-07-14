@@ -866,16 +866,33 @@ public class MeasurePackageClauseCellListWidget {
 					}
 					//If clause if removed, and if it is associated with any other clause,
 					//all it's associations are removed.
+					String denomClauseType = null;
+					String numClauseType = null;
 					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
+						if(detail.getType().equals("denominator")){
+							denomClauseType = detail.getName();
+						} else if(detail.getType().equals("numerator")){
+							numClauseType = detail.getName();
+						}
 						if ((detail.getAssociatedPopulationUUID() != null)
 								&& detail.getAssociatedPopulationUUID().equalsIgnoreCase(
 										rightCellListSelectionModel.getSelectedObject().getId())) {
 							detail.setAssociatedPopulationUUID(null);
 							groupingClausesMap.put(detail.getName(), detail);
+							if(detail.getType().equals("denominator")){
+								groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
+							} else if(detail.getType().equals("numerator")){
+								groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
+							}
 						} else if (detail.getId().equalsIgnoreCase(
 								rightCellListSelectionModel.getSelectedObject().getId())) {
 							detail.setAssociatedPopulationUUID(null);
 							groupingClausesMap.put(detail.getName(), detail);
+							if(detail.getType().equals("denominator")){
+								groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
+							} else if(detail.getType().equals("numerator")){
+								groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
+							}
 						}
 						if ((otherClauseType != null)
 								&& otherClauseType.equalsIgnoreCase(detail.getType())) {

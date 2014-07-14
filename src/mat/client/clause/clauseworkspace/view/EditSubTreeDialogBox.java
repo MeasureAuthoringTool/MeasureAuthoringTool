@@ -323,7 +323,6 @@ public class EditSubTreeDialogBox {
 					}
 				}
 			}
-				dialogBox.hide();
 	}
 		});
 		

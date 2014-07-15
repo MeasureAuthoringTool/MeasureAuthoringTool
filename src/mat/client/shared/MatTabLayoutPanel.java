@@ -391,7 +391,10 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			saveButton = metaDataPresenter.getMetaDataDisplay().getSaveBtn();
 			if (metaDataPresenter.isSubView()) {
 				metaDataPresenter.backToDetail();
-			}
+				metaDataPresenter.getMetaDataDisplay().setSaveButtonEnabled(
+						MatContext.get().getMeasureLockService().checkForEditPermission());	
+				metaDataPresenter.getComponentMeasures();
+				}
 			showErrorMessage(metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg());
 			metaDataPresenter.getMetaDataDisplay().getSaveErrorMsg().getButtons().get(0).setFocus(true);
 			handleClickEventsOnUnsavedErrorMsg(selectedIndex, metaDataPresenter.getMetaDataDisplay()

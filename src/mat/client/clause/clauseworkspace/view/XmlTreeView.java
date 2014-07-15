@@ -8,7 +8,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -26,9 +25,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -184,10 +181,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * Constant COMMENT.
 	 */
 	private static final String COMMENT = "COMMENT";
-
+	
 	/** The Constant AsyncCallback. */
 	private static final int AsyncCallback = 0;
-
+	
 	/** The Constant DataType. */
 	private static final int DataType = 0;
 	/**
@@ -277,15 +274,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The is qdm variable dirty. */
 	private boolean isQdmVariableDirty = false;
-
+	
 	/** The include qdm varibale. */
 	private CustomCheckBox includeQdmVaribale = new CustomCheckBox("Select 'QDM Variable' to create clause as " +
-			    "local variable.", "QDM Variable", true);
+			"local variable.", "QDM Variable", true);
 	
 	/** The attribute service. */
 	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
 			.create(QDSAttributesService.class);
-
+	
 	/**
 	 * Instantiates a new xml tree view.
 	 * 
@@ -1149,19 +1146,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					}
 					if ((value.getNodeType() == CellTreeNodeImpl.LOGICAL_OP_NODE)
 							|| (value.getNodeType() == CellTreeNodeImpl.SUBTREE_REF_NODE)) {
-							if(addCommentPanel != null) {
-								addCommentPanel.setVisible(true);
-								commentArea.setText("");
-								List<CellTreeNode> childNode = (List<CellTreeNode>) value.
-										getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
-								if (childNode != null) {
-									for (CellTreeNode cellTreeNode : childNode) {
-										if (cellTreeNode.getNodeType() == cellTreeNode.COMMENT_NODE) {
-											commentArea.setText(cellTreeNode.getNodeText());
-										}
+						if(addCommentPanel != null) {
+							addCommentPanel.setVisible(true);
+							commentArea.setText("");
+							List<CellTreeNode> childNode = (List<CellTreeNode>) value.
+									getExtraInformation(PopulationWorkSpaceConstants.COMMENTS);
+							if (childNode != null) {
+								for (CellTreeNode cellTreeNode : childNode) {
+									if (cellTreeNode.getNodeType() == cellTreeNode.COMMENT_NODE) {
+										commentArea.setText(cellTreeNode.getNodeText());
 									}
 								}
-								onTextAreaContentChanged(remainingCharsLabel);
+							}
+							onTextAreaContentChanged(remainingCharsLabel);
 							setCommentsBoxReadOnly(true);
 						}
 					}
@@ -1501,7 +1498,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		if (!(id.toLowerCase()).contains("treenode".toLowerCase())) {
 			return;
 		}
-		if (selectedNode != null && isEditable) {
+		if ((selectedNode != null) && isEditable) {
 			short nodeType = selectedNode.getNodeType();
 			if (event.isControlKeyDown()) {
 				if (keyCode == PopulationWorkSpaceConstants.COPY_C) { //COPY
@@ -1659,7 +1656,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#validateCellTreeNodesPopulationWorkspace(com.google.gwt.user.cellview.client.TreeNode)
 	 */
 	@Override
-	public boolean validateCellTreeNodesPopulationWorkspace(TreeNode treeNode) {		
+	public boolean validateCellTreeNodesPopulationWorkspace(TreeNode treeNode) {
 		if (treeNode != null) {
 			closeNodes(treeNode);
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
@@ -1684,15 +1681,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public boolean validateCellTreeNodesPopulationWorkspace(CellTreeNode cellTreeNode){
 		boolean isValid = true;
 		int nodeType = cellTreeNode.getNodeType();
-		if (!((nodeType == CellTreeNode.LOGICAL_OP_NODE) || (nodeType == CellTreeNode.SUBTREE_REF_NODE) 
-				|| (nodeType == CellTreeNode.ROOT_NODE) || (nodeType == CellTreeNode.MASTER_ROOT_NODE) 
+		if (!((nodeType == CellTreeNode.LOGICAL_OP_NODE) || (nodeType == CellTreeNode.SUBTREE_REF_NODE)
+				|| (nodeType == CellTreeNode.ROOT_NODE) || (nodeType == CellTreeNode.MASTER_ROOT_NODE)
 				|| (nodeType == CellTreeNode.CLAUSE_NODE) )) {
-				editNode(false, cellTreeNode);
-				isValid = false;
+			editNode(false, cellTreeNode);
+			isValid = false;
 		}
 		
 		List<CellTreeNode> children = cellTreeNode.getChilds();
-		if(children != null && children.size() > 0){
+		if((children != null) && (children.size() > 0)){
 			for(CellTreeNode node:children){
 				if(!validateCellTreeNodesPopulationWorkspace(node)){
 					isValid = false;
@@ -1713,7 +1710,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		List<String> dataTypeList = new ArrayList<String>();
 		getDataTypesForAllQDMs(treeNode, dataTypeList);
 		System.out.println("DataType list:"+dataTypeList);
-		validateClauseWorkspaceCellTreeNodes(treeNode, dataTypeList);		
+		validateClauseWorkspaceCellTreeNodes(treeNode, dataTypeList);
 	}
 	
 	/**
@@ -1724,7 +1721,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @return the data types for all qd ms
 	 */
 	private void getDataTypesForAllQDMs(TreeNode treeNode, List<String> dataTypeList){
-				
+		
 		for (int i = 0; i < treeNode.getChildCount(); i++) {
 			CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
 			if (node.getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
@@ -1757,7 +1754,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private void validateClauseWorkspaceCellTreeNodes(final TreeNode treeNode, List<String> dataTypeList){
 		
 		attributeService.getDatatypeList(dataTypeList,new AsyncCallback<Map<String, List<String>>>(){
-
+			
 			@Override
 			public void onFailure(Throwable caught) {
 				// TODO Auto-generated method stub
@@ -1765,10 +1762,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			}
 			@Override
 			public void onSuccess(Map<String, List<String>> datatypeMap) {
-				System.out.println("Data type map:"+datatypeMap);				
+				System.out.println("Data type map:"+datatypeMap);
 				Map<String, Boolean> inValidNodeMap = new HashMap<String, Boolean>();
 				validateClauseWorkspaceCellTreeNodes(treeNode, datatypeMap, inValidNodeMap);
-				if(inValidNodeMap.size()==0){					
+				if(inValidNodeMap.size()==0){
 					closeNodes(getXmlTree()
 							.getRootTreeNode());
 					openAllNodes(getXmlTree()
@@ -1805,7 +1802,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							closeNodes(getXmlTree()
 									.getRootTreeNode());
 							openAllNodes(getXmlTree()
-									.getRootTreeNode());							
+									.getRootTreeNode());
 							List<String> warningMessages = new ArrayList<String>();
 							warningMessages.add("Measure logic is incomplete.");
 							warningMessages.add("LHS and RHS are required for Timings, Relationships and Satisfies functions.");
@@ -1845,22 +1842,157 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param inValidNodeMap the in valid node map
 	 * @return the string
 	 */
-	private  Map<String, Boolean> validateClauseWorkspaceCellTreeNodes(TreeNode treeNode, Map<String, List<String>> dataTypeMap, Map<String, Boolean> inValidNodeMap){		
-			
+	private  Map<String, Boolean> validateClauseWorkspaceCellTreeNodes(TreeNode treeNode, Map<String, List<String>> dataTypeMap, Map<String, Boolean> inValidNodeMap){
+		
 		if (treeNode != null) {
 			openAllNodes(treeNode);
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				TreeNode subTree = null;
 				String attributeValue = "";
 				CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
-				if (node.getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
+				switch (node.getNodeType()){
+					case CellTreeNode.ELEMENT_REF_NODE :
+						subTree = treeNode.setChildOpen(i, true, false);
+						String nodeName = node.getName();
+						List<CellTreeNode> attributeList = (List<CellTreeNode>)node.getExtraInformation("attributes");
+						if((attributeList!=null) && (attributeList.size()>0)){
+							CellTreeNode attributeNode = attributeList.get(0);
+							attributeValue = attributeNode.getExtraInformation("name").toString();
+						}
+						
+						String[] nodeArr = nodeName.split(":");
+						String nodeDataType = "";
+						if(nodeArr.length == 2){
+							nodeDataType = nodeArr[1].trim();
+						}
+						if(nodeArr.length == 3){
+							nodeDataType = nodeArr[1].trim()+": "+nodeArr[2].trim();
+						}
+						if(nodeDataType.equalsIgnoreCase("timing element")){
+							if(nodeName.equalsIgnoreCase("Measurement End Date : Timing Element")
+									|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")){
+								
+								inValidAtQdmNode(node, inValidNodeMap);
+							} else{
+								if(!node.getValidNode()){
+									editNode(true, node);
+									
+								}
+							}
+							
+						} else if(nodeDataType.equalsIgnoreCase("Patient characteristic Birthdate")
+								|| nodeDataType.equalsIgnoreCase("Patient characteristic Expired")){
+							validateNodeForOldBirthDateAndExpiredElement(nodeDataType, node, inValidNodeMap);
+						} else if(attributeValue.isEmpty()){
+							if(!dataTypeMap.containsKey(nodeDataType)){
+								inValidAtQdmNode(node, inValidNodeMap);
+							}
+							
+						} else if(!attributeValue.isEmpty() && (attributeValue.length()>0) ){
+							if(!dataTypeMap.containsKey(nodeDataType)){
+								inValidAtQdmNode(node, inValidNodeMap);
+							}else{
+								List<String> attribList = dataTypeMap.get(nodeDataType);
+								if(!attribList.contains(attributeValue)){
+									inValidAtQdmNode(node, inValidNodeMap);
+								}
+							}
+						}else{
+							if(!node.getValidNode()){
+								editNode(true, node);
+							}
+						}
+						break;
+					case CellTreeNode.TIMING_NODE:
+						subTree = treeNode.setChildOpen(i, false, false);
+						if ((subTree != null) && (subTree.getChildCount() == 2)) {
+							if (!node.getValidNode()) {
+								editNode(true, node);
+							}
+						} else {
+							editNode(false, node);
+							inValidNodeMap.put("inValidAtTimingRelationShip", true);
+							if (isValid) {
+								isValid = false;
+							}
+						}
+						break;
+					case CellTreeNode.RELATIONSHIP_NODE:
+						subTree = treeNode.setChildOpen(i, false, false);
+						if ((subTree != null) && (subTree.getChildCount() == 2)) {
+							if (!node.getValidNode()) {
+								editNode(true, node);
+							}
+						} else {
+							editNode(false, node);
+							inValidNodeMap.put("inValidAtTimingRelationShip", true);
+							if (isValid) {
+								isValid = false;
+							}
+						}
+						break;
+					case CellTreeNode.SET_OP_NODE:
+						subTree = treeNode.setChildOpen(i, false, false);
+						if ((subTree != null) && (subTree.getChildCount() >= 1)) {
+							if (!node.getValidNode()) {
+								editNode(true, node);
+							}
+						} else {
+							editNode(false, node);
+							inValidNodeMap.put("inValidAtSetoperatorAndOrFunction", true);
+							if (isValid) {
+								isValid = false;
+							}
+						}
+						break;
+					case CellTreeNode.FUNCTIONS_NODE:
+						int checkChildCount = 1;
+						String invalidKeyForMap = "inValidAtSetoperatorAndOrFunction";
+						if ((node.getName().equalsIgnoreCase("SATISFIES ALL"))
+								|| (node.getName().equalsIgnoreCase("SATISFIES ANY"))) {
+							checkChildCount = 2;
+							invalidKeyForMap = "inValidAtTimingRelationShip";
+						}
+						subTree = treeNode.setChildOpen(i, false, false);
+						if ((subTree != null) && (subTree.getChildCount() >= checkChildCount)) {
+							if (!node.getValidNode()) {
+								editNode(true, node);
+							}
+						} else {
+							editNode(false, node);
+							inValidNodeMap.put(invalidKeyForMap, true);
+							if (isValid) {
+								isValid = false;
+							}
+						}
+						/*}else{
+							subTree = treeNode.setChildOpen(i, true, true);
+							if((subTree != null) && (subTree.getChildCount()>=1)){
+								if(!node.getValidNode()){
+									editNode(true, node);
+								}
+								
+							}else{
+								editNode(false, node);
+								inValidNodeMap.put("inValidAtSetoperatorAndOrFunction", true);
+								if(isValid){
+									isValid = false;
+								}
+								
+							}
+						}*/
+						break;
+					default:
+						break;
+				}
+				/*if (node.getNodeType() == CellTreeNode.ELEMENT_REF_NODE) {
 					
 					subTree = treeNode.setChildOpen(i, true, true);
 					String nodeName = node.getName();
 					List<CellTreeNode> attributeList = (List<CellTreeNode>)node.getExtraInformation("attributes");
-					if(attributeList!=null && attributeList.size()>0){
+					if((attributeList!=null) && (attributeList.size()>0)){
 						CellTreeNode attributeNode = attributeList.get(0);
-						attributeValue = attributeNode.getExtraInformation("name").toString();	
+						attributeValue = attributeNode.getExtraInformation("name").toString();
 					}
 					String[] nodeArr = nodeName.split(":");
 					String nodeDataType = "";
@@ -1872,11 +2004,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					}
 					if(nodeDataType.equalsIgnoreCase("timing element")){
 						if(nodeName.equalsIgnoreCase("Measurement End Date : Timing Element")
-						|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")){
+								|| nodeName.equalsIgnoreCase("Measurement Start Date : Timing Element")){
 							
 							inValidAtQdmNode(node, inValidNodeMap);
-						}
-						else{
+						} else{
 							if(!node.getValidNode()){
 								editNode(true, node);
 								
@@ -1893,9 +2024,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						if(!dataTypeMap.containsKey(nodeDataType)){
 							inValidAtQdmNode(node, inValidNodeMap);
 						}
-								
+						
 					}
-					else if(!attributeValue.isEmpty() && attributeValue.length()>0 ){
+					else if(!attributeValue.isEmpty() && (attributeValue.length()>0) ){
 						if(!dataTypeMap.containsKey(nodeDataType)){
 							inValidAtQdmNode(node, inValidNodeMap);
 						}else{
@@ -1912,17 +2043,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				
 				if ((node.getNodeType()== CellTreeNode.TIMING_NODE)
-					|| (node.getNodeType() == CellTreeNode.RELATIONSHIP_NODE) ){					
+						|| (node.getNodeType() == CellTreeNode.RELATIONSHIP_NODE) ){
 					subTree = treeNode.setChildOpen(i, true, true);
 					if ((subTree != null) && (subTree.getChildCount() == 2)) {
 						if (!node.getValidNode()) {
-							editNode(true, node);							
+							editNode(true, node);
 						}
 					} else {
 						editNode(false, node);
-						inValidNodeMap.put("inValidAtTimingRelationShip", true);											
+						inValidNodeMap.put("inValidAtTimingRelationShip", true);
 						if (isValid) {
-							isValid = false;									
+							isValid = false;
 						}
 					}
 					
@@ -1933,12 +2064,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					subTree = treeNode.setChildOpen(i, true, true);
 					if((subTree != null) && (subTree.getChildCount()>=1)){
 						if(!node.getValidNode()){
-							editNode(true, node);							
+							editNode(true, node);
 						}
 						
 					}else{
 						editNode(false, node);
-						inValidNodeMap.put("inValidAtSetoperatorAndOrFunction", true);					
+						inValidNodeMap.put("inValidAtSetoperatorAndOrFunction", true);
 						if(isValid){
 							isValid = false;
 						}
@@ -1952,13 +2083,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						subTree = treeNode.setChildOpen(i, true, true);
 						if ((subTree != null) && (subTree.getChildCount() >= 2)) {
 							if (!node.getValidNode()) {
-								editNode(true, node);								
+								editNode(true, node);
 							}
 						} else {
-							editNode(false, node);	
-							inValidNodeMap.put("inValidAtTimingRelationShip", true);							
+							editNode(false, node);
+							inValidNodeMap.put("inValidAtTimingRelationShip", true);
 							if (isValid) {
-								isValid = false;									
+								isValid = false;
 							}
 						}
 					}
@@ -1978,7 +2109,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							
 						}
 					}
-				}
+				}*/
 				
 				
 				subTree = treeNode.setChildOpen(i, ((CellTreeNode) treeNode.getChildValue(i)).isOpen(),
@@ -1993,7 +2124,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 		
 		
-	return inValidNodeMap;
+		return inValidNodeMap;
 	}
 	
 	/**
@@ -2010,7 +2141,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		Node qdmNode = PopulationWorkSpaceConstants.getElementLookUpNode().get(
 				qdmName + "~" + node.getUUID());
 		Node oid = qdmNode.getAttributes().getNamedItem("oid");
-		 String  oidValue = oid.getNodeValue().trim();
+		String  oidValue = oid.getNodeValue().trim();
 		if(oidValue.equalsIgnoreCase(ConstantMessages.EXPIRED_OID) || oidValue.equalsIgnoreCase(ConstantMessages.BIRTHDATE_OID)){
 			
 			if(!node.getValidNode()){
@@ -2022,7 +2153,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 		
 	}
-
+	
 	/**
 	 * In valid at qdm node.
 	 *
@@ -2033,11 +2164,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		editNode(false, node);
 		invalidNodeMap.put("inValidAtQDMNode", true);
 		if (isValid) {
-			isValid = false;									
+			isValid = false;
 		}
 		
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#addNode(java.lang.String, java.lang.String, java.lang.String, short)
 	 */
@@ -2075,7 +2206,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void editNode(boolean isValideNodeValue, CellTreeNode node) {
 		node.setValidNode(isValideNodeValue);
 		selectedNode = node;
-		closeParentOpenNodes(cellTree.getRootTreeNode());
+		//closeParentOpenNodes(cellTree.getRootTreeNode());
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#addCommentNodeToSelectedNode()
@@ -2286,7 +2417,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public CommentAreaTextBox getCommentArea() {
 		return commentArea;
 	}
-
+	
 	//added by hari
 	/**
 	 * Gets the validate btn population workspace.
@@ -2301,7 +2432,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		
 		return validateBtnPopulationWorkspace;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#setClauseEnabled(boolean)
 	 */
@@ -2317,7 +2448,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public CustomCheckBox getIncludeQdmVaribale() {
 		return includeQdmVaribale;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#setQdmVariable(boolean)
 	 */
@@ -2325,7 +2456,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void setQdmVariable(String isQdmVariable) {
 		this.isQdmVariable = isQdmVariable;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#isQdmVariable()
 	 */
@@ -2341,7 +2472,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public boolean isQdmVariableDirty() {
 		return isQdmVariableDirty;
 	}
-    
+	
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#setQdmVariableDirty(boolean)
 	 */

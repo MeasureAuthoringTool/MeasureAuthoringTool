@@ -1904,7 +1904,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 						break;
 					case CellTreeNode.TIMING_NODE:
-						subTree = treeNode.setChildOpen(i, false, false);
+						subTree = treeNode.setChildOpen(i, true, false);
 						if ((subTree != null) && (subTree.getChildCount() == 2)) {
 							if (!node.getValidNode()) {
 								editNode(true, node);
@@ -1918,7 +1918,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 						break;
 					case CellTreeNode.RELATIONSHIP_NODE:
-						subTree = treeNode.setChildOpen(i, false, false);
+						subTree = treeNode.setChildOpen(i, true, false);
 						if ((subTree != null) && (subTree.getChildCount() == 2)) {
 							if (!node.getValidNode()) {
 								editNode(true, node);
@@ -1932,7 +1932,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 						break;
 					case CellTreeNode.SET_OP_NODE:
-						subTree = treeNode.setChildOpen(i, false, false);
+						subTree = treeNode.setChildOpen(i, true, false);
 						if ((subTree != null) && (subTree.getChildCount() >= 1)) {
 							if (!node.getValidNode()) {
 								editNode(true, node);
@@ -1953,7 +1953,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							checkChildCount = 2;
 							invalidKeyForMap = "inValidAtTimingRelationShip";
 						}
-						subTree = treeNode.setChildOpen(i, false, false);
+						subTree = treeNode.setChildOpen(i, true, false);
 						if ((subTree != null) && (subTree.getChildCount() >= checkChildCount)) {
 							if (!node.getValidNode()) {
 								editNode(true, node);

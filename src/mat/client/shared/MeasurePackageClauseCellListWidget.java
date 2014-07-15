@@ -59,7 +59,12 @@ import com.google.gwt.view.client.SingleSelectionModel;
  * The Class MeasurePackageClauseCellListWidget.
  */
 public class MeasurePackageClauseCellListWidget {
-	
+	/**numerator constant string.**/
+	private static final String NUMERATOR = "numerator";
+	/**denominator constant string.**/
+	private static final String DENOMINATOR = "denominator";
+	/**measureObservation constant string.**/
+	private static final String MEASURE_OBSERVATION = "measureObservation";
 	/** The Constant ASOOCIATED_LIST_SIZE. */
 	private static final int ASOOCIATED_LIST_SIZE = 10;
 	/**
@@ -161,7 +166,7 @@ public class MeasurePackageClauseCellListWidget {
 	private List<QualityDataSetDTO> itemCountSelectionList;
 	
 	/** The Item count label. */
-	private Label ItemCountLabel = new Label();
+	private Label itemCountLabel = new Label();
 	
 	/** The clear button panel. */
 	private SimplePanel clearButtonPanel = new SimplePanel();
@@ -323,7 +328,7 @@ public class MeasurePackageClauseCellListWidget {
 	/**
 	 * Adds the association to clauses.
 	 */
-	private void addAssociationToClauses(){
+	private void addAssociationToClauses() {
 		errorMessages.clear();
 		successMessages.clear();
 		MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
@@ -331,11 +336,11 @@ public class MeasurePackageClauseCellListWidget {
 		String existingUuid = groupingClausesMap.get(selectedClauseCell.getName()).getAssociatedPopulationUUID();
 		ArrayList<MeasurePackageClauseDetail> interimArrayList = null;
 		String otherClauseType = null;
-		if (selectedClauseCell.getType().equalsIgnoreCase("denominator")) {
-			otherClauseType = "numerator";
+		if (selectedClauseCell.getType().equalsIgnoreCase(DENOMINATOR)) {
+			otherClauseType = NUMERATOR;
 			interimArrayList = denoAssociatedPopulationList;
-		} else if (selectedClauseCell.getType().equalsIgnoreCase("numerator")) {
-			otherClauseType = "denominator";
+		} else if (selectedClauseCell.getType().equalsIgnoreCase(NUMERATOR)) {
+			otherClauseType = DENOMINATOR;
 			interimArrayList = numAssociatedPopulationList;
 		}
 		if (interimArrayList != null) {
@@ -357,7 +362,7 @@ public class MeasurePackageClauseCellListWidget {
 					}
 				}
 			}
-		} else if (selectedClauseCell.getType().equalsIgnoreCase("measureObservation")) {
+		} else if (selectedClauseCell.getType().equalsIgnoreCase(MEASURE_OBSERVATION)) {
 			for (MeasurePackageClauseDetail detail : associatedPopulationList) {
 				if ((existingUuid != null)
 						&& existingUuid.equals(detail.getId())) {
@@ -396,7 +401,7 @@ public class MeasurePackageClauseCellListWidget {
 				errorMessages.clear();
 				successMessages.clear();
 				MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.getSelectedObject();
-				if (selectedClauseCell.getType().equals("measureObservation")) {
+				if (selectedClauseCell.getType().equals(MEASURE_OBSERVATION)) {
 					groupingClausesMap.get(rightCellListSelectionModel.
 							getSelectedObject().getName()).
 							setAssociatedPopulationUUID(null);
@@ -453,7 +458,7 @@ public class MeasurePackageClauseCellListWidget {
 				}
 				groupingClausesMap.get(rightCellListSelectionModel.getSelectedObject().getName())
 				.setItemCountList(itemCountSelectionList);
-				ItemCountLabel.setText("Selected Items: " + itemCountSelectionList.size());
+				itemCountLabel.setText("Selected Items: " + itemCountSelectionList.size());
 			}
 		});
 		itemCountCellTable.addColumn(selectColumn, SafeHtmlUtils.fromSafeConstant("<span title='Select'>" + "Select"
@@ -518,7 +523,7 @@ public class MeasurePackageClauseCellListWidget {
 				itemCountCellTable.setSelectionModel(itemCountSelection);
 				ListDataProvider<QualityDataSetDTO> sortProvider = new ListDataProvider<QualityDataSetDTO>();
 				itemCountCellTable.setPageSize(PAGESIZE);
-				ItemCountLabel.setText("Selected Items: " + itemCountSelectionList.size());
+				itemCountLabel.setText("Selected Items: " + itemCountSelectionList.size());
 				if ((itemCountSelectionList != null) && (itemCountSelectionList.size() > 0)) {
 					updateQDMSelectedList(getAppliedQdmList());
 					List<QualityDataSetDTO> selectedQDMList = new ArrayList<QualityDataSetDTO>();
@@ -545,7 +550,7 @@ public class MeasurePackageClauseCellListWidget {
 				panel.add(new SpacerWidget());
 				panel.add(spager);
 				panel.add(new SpacerWidget());
-				panel.add(ItemCountLabel);
+				panel.add(itemCountLabel);
 			} else {
 				panel.setStylePrimaryName("valueSetSearchPanel");
 				panel.add(new SpacerWidget());
@@ -566,11 +571,11 @@ public class MeasurePackageClauseCellListWidget {
 	 * @param qdmList the qdm list
 	 * @return the list
 	 */
-	private  List<QualityDataSetDTO> swapQdmElements(List<QualityDataSetDTO> qdmList){
+	private  List<QualityDataSetDTO> swapQdmElements(List<QualityDataSetDTO> qdmList) {
 		List<QualityDataSetDTO> qdmselectedList = new ArrayList<QualityDataSetDTO>();
 		qdmselectedList.addAll(itemCountSelectionList);
-		for(int i=0;i<qdmList.size();i++){
-			if(!itemCountSelectionList.contains(qdmList.get(i))){
+		for (int i = 0; i < qdmList.size(); i++) {
+			if (!itemCountSelectionList.contains(qdmList.get(i))) {
 				qdmselectedList.add(qdmList.get(i));
 			}
 			
@@ -673,7 +678,7 @@ public class MeasurePackageClauseCellListWidget {
 						successMessages.clear();
 						MeasurePackageClauseDetail selectedClauseCell = rightCellListSelectionModel.
 								getSelectedObject();
-						if (selectedClauseCell.getType().equalsIgnoreCase("denominator")) {
+						if (selectedClauseCell.getType().equalsIgnoreCase(DENOMINATOR)) {
 							for (MeasurePackageClauseDetail detail : denoAssociatedPopulationList) {
 								if (detail.getId().equals(object.getId())) {
 									detail.setAssociatedPopulation(value);
@@ -685,7 +690,7 @@ public class MeasurePackageClauseCellListWidget {
 							associatedPOPCellList.setRowData(denoAssociatedPopulationList);
 							disclosurePanelAssociations.setOpen(false);
 							disclosurePanelAssociations.setOpen(true);
-						} else if (selectedClauseCell.getType().equalsIgnoreCase("numerator")) {
+						} else if (selectedClauseCell.getType().equalsIgnoreCase(NUMERATOR)) {
 							for (MeasurePackageClauseDetail detail : numAssociatedPopulationList) {
 								if (detail.getId().equals(object.getId())) {
 									detail.setAssociatedPopulation(value);
@@ -710,7 +715,6 @@ public class MeasurePackageClauseCellListWidget {
 							disclosurePanelAssociations.setOpen(false);
 							disclosurePanelAssociations.setOpen(true);
 						}
-					
 						addAssociationToClauses();
 					}
 				};
@@ -858,20 +862,20 @@ public class MeasurePackageClauseCellListWidget {
 						&& (rightCellListSelectionModel.getSelectedObject() != null)) {
 					String otherClauseType = null;
 					if (rightCellListSelectionModel.getSelectedObject().
-							getType().equalsIgnoreCase("Denominator")) {
-						otherClauseType = "numerator";
+							getType().equalsIgnoreCase(DENOMINATOR)) {
+						otherClauseType = NUMERATOR;
 					} else if (rightCellListSelectionModel.getSelectedObject().
-							getType().equalsIgnoreCase("Numerator")) {
-						otherClauseType = "Denominator";
+							getType().equalsIgnoreCase(NUMERATOR)) {
+						otherClauseType = DENOMINATOR;
 					}
 					//If clause if removed, and if it is associated with any other clause,
 					//all it's associations are removed.
 					String denomClauseType = null;
 					String numClauseType = null;
 					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
-						if(detail.getType().equals("denominator")){
+						if(detail.getType().equals(DENOMINATOR)){
 							denomClauseType = detail.getName();
-						} else if(detail.getType().equals("numerator")){
+						} else if(detail.getType().equals(NUMERATOR)){
 							numClauseType = detail.getName();
 						}
 						if ((detail.getAssociatedPopulationUUID() != null)
@@ -879,18 +883,18 @@ public class MeasurePackageClauseCellListWidget {
 										rightCellListSelectionModel.getSelectedObject().getId())) {
 							detail.setAssociatedPopulationUUID(null);
 							groupingClausesMap.put(detail.getName(), detail);
-							if(detail.getType().equals("denominator")){
+							if(detail.getType().equals(DENOMINATOR)){
 								groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
-							} else if(detail.getType().equals("numerator")){
+							} else if(detail.getType().equals(NUMERATOR)){
 								groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
 							}
 						} else if (detail.getId().equalsIgnoreCase(
 								rightCellListSelectionModel.getSelectedObject().getId())) {
 							detail.setAssociatedPopulationUUID(null);
 							groupingClausesMap.put(detail.getName(), detail);
-							if(detail.getType().equals("denominator")){
+							if(detail.getType().equals(DENOMINATOR)){
 								groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
-							} else if(detail.getType().equals("numerator")){
+							} else if(detail.getType().equals(NUMERATOR)){
 								groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
 							}
 						}
@@ -982,7 +986,7 @@ public class MeasurePackageClauseCellListWidget {
 				} else {
 					detail.setAssociatedPopulation(false);
 				}
-				if (selectedClauseNode.getType().equalsIgnoreCase("denominator")) {
+				if (selectedClauseNode.getType().equalsIgnoreCase(DENOMINATOR)) {
 					if (!denoAssociatedPopulationList.contains(detail)) {
 						denoAssociatedPopulationList.add(detail);
 					}
@@ -1000,24 +1004,6 @@ public class MeasurePackageClauseCellListWidget {
 	}
 	
 	/**
-	 * Count details with type.
-	 *
-	 * @param detailList the detail list
-	 * @param type the type
-	 * @return the int
-	 */
-	private int countDetailsWithType(
-			final List<MeasurePackageClauseDetail> detailList, final String type) {
-		int count = 0;
-		for (MeasurePackageClauseDetail detail : detailList) {
-			if (type.equals(detail.getType())) {
-				count++;
-			}
-		}
-		return count;
-	}
-	
-	/**
 	 * Generate's Association List for Measure Observation in Ratio Measure's.
 	 * @param clauseList - List.
 	 */
@@ -1025,8 +1011,8 @@ public class MeasurePackageClauseCellListWidget {
 			List<MeasurePackageClauseDetail> clauseList) {
 		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
 		for (MeasurePackageClauseDetail detail : clauseList) {
-			if (("denominator".equalsIgnoreCase(detail.getType())
-					|| "numerator".equalsIgnoreCase(detail.getType()))
+			if ((DENOMINATOR.equalsIgnoreCase(detail.getType())
+					|| NUMERATOR.equalsIgnoreCase(detail.getType()))
 					&& !associatedPopulationList.contains(detail)) {
 				if (detail.getId().equalsIgnoreCase(rightCellListSelectionModel.
 						getSelectedObject().getAssociatedPopulationUUID())) {
@@ -1049,8 +1035,8 @@ public class MeasurePackageClauseCellListWidget {
 			List<MeasurePackageClauseDetail> clauseList) {
 		associatedPopulationList = new ArrayList<MeasurePackageClauseDetail>();
 		for (MeasurePackageClauseDetail detail : clauseList) {
-			if (("denominator".equalsIgnoreCase(detail.getType())
-					|| "numerator".equalsIgnoreCase(detail.getType()))
+			if ((DENOMINATOR.equalsIgnoreCase(detail.getType())
+					|| NUMERATOR.equalsIgnoreCase(detail.getType()))
 					&& !associatedPopulationList.contains(detail)) {
 				detail.setAssociatedPopulation(false);
 				associatedPopulationList.add(detail);
@@ -1137,8 +1123,8 @@ public class MeasurePackageClauseCellListWidget {
 				String scoring = MatContext.get().getCurrentMeasureScoringType();
 				//Show Association only for Ratio Measures.
 				if (ConstantMessages.RATIO_SCORING.equalsIgnoreCase(scoring)) {
-					if ((value.getType().equalsIgnoreCase("denominator"))
-							|| (value.getType().equalsIgnoreCase("numerator"))) {
+					if ((value.getType().equalsIgnoreCase(DENOMINATOR))
+							|| (value.getType().equalsIgnoreCase(NUMERATOR))) {
 						clearButtonPanel.clear();
 						buildItemCountWidget();
 						disclosurePanelItemCountTable.setVisible(true);
@@ -1147,7 +1133,7 @@ public class MeasurePackageClauseCellListWidget {
 						// otherwise available population is added to Denominator and Numerator Association List.
 						if (countTypeForAssociation(groupingPopulationList
 								, ConstantMessages.POPULATION_CONTEXT_ID) == 2) {
-							if ((value.getType().equalsIgnoreCase("denominator"))) {
+							if ((value.getType().equalsIgnoreCase(DENOMINATOR))) {
 								buildAddAssociationWidget(denoAssociatedPopulationList);
 							} else {
 								buildAddAssociationWidget(numAssociatedPopulationList);
@@ -1158,7 +1144,7 @@ public class MeasurePackageClauseCellListWidget {
 							disclosurePanelAssociations.setVisible(false);
 							disclosurePanelAssociations.setOpen(false);
 						}
-					} else if ((value.getType().equalsIgnoreCase("measureObservation"))) {
+					} else if ((value.getType().equalsIgnoreCase(MEASURE_OBSERVATION))) {
 						addPopulationForMeasureObservation(groupingPopulationList);
 						buildItemCountWidget();
 						getClearButtonPanel();

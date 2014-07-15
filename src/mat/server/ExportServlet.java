@@ -116,9 +116,13 @@ public class ExportServlet extends HttpServlet {
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
 		String[] matVersion ={"_v3","_v4"}; 
-		Measure measure = service.getById(id);
+		Measure measure = null;
 		ExportResult export = null;
-		Date exportDate = measure.getExportedDate();
+		Date exportDate = null;
+		if (id!= null) {
+			measure = service.getById(id);
+			exportDate = measure.getExportedDate();
+			}
 		Date releaseDate = measureLibraryService.getFormattedReleaseDate(measureLibraryService.getReleaseDate());
 		FileNameUtility fnu = new FileNameUtility();
 		try {

@@ -215,8 +215,13 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
 							.get(node.getName() + "~" + node.getUUID());
 					CellTreeNode subTreeCellTreeNode = XmlConversionlHelper
 							.createCellTreeNode(childNode, node.getName());
-					node.appendChild(subTreeCellTreeNode.getChilds().get(0)
-							.getChilds().get(0));
+					if(subTreeCellTreeNode.getChilds()!=null
+							 && subTreeCellTreeNode.getChilds().get(0)
+								.getChilds()!=null){
+							node.appendChild(subTreeCellTreeNode.getChilds().get(0)
+									.getChilds().get(0));
+					}
+					
 				}
 				subTree = treeNode.setChildOpen(i,
 						((CellTreeNode) treeNode.getChildValue(i)).isOpen(),

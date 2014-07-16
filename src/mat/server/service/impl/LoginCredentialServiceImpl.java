@@ -162,7 +162,7 @@ public class LoginCredentialServiceImpl implements LoginCredentialService {
 			,MatUserDetails validateUserMatUserDetails) {
 		logger.debug("Authentication Exception, need to log the failed attempts and increment the lockCounter");
 		validateUserLoginModel.setLoginFailedEvent(true);
-		validateUserLoginModel.setUserId(userId);
+		//validateUserLoginModel.setUserId(userId);
 		int currentPasswordlockCounter = validateUserMatUserDetails.getUserPassword()
 				.getPasswordlockCounter();
 		logger.info("CurrentPasswordLockCounter value:"

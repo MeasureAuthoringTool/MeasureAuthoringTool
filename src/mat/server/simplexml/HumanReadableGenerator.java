@@ -792,22 +792,26 @@ public class HumanReadableGenerator {
 				newLiElement = liElement.appendElement(HTML_UL).appendElement(
 						HTML_LI);
 			}
-			
+
 			if (RELATIONAL_OP.equals(childNodes.item(0).getNodeName())) {
 				NodeList children = childNodes.item(0).getChildNodes();
-				if (ELEMENT_REF.equals(children.item(0).getNodeName())
-						&& ELEMENT_REF.equals(children.item(1).getNodeName())) {
+				if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
+						.item(0))))
+						&& (ELEMENT_REF.equals(children.item(1).getNodeName()) || checkIfQDMVariable(children
+								.item(1)))) {
 					newLiElement.appendText(" (");
 				}
 			}
-			
+
 			parseChild(childNodes.item(0), newLiElement, item,
 					populationOrSubtreeXMLProcessor, satisfiesAnyAll);
-			
+
 			if (RELATIONAL_OP.equals(childNodes.item(0).getNodeName())) {
 				NodeList children = childNodes.item(0).getChildNodes();
-				if (ELEMENT_REF.equals(children.item(0).getNodeName())
-						&& ELEMENT_REF.equals(children.item(1).getNodeName())) {
+				if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
+						.item(0))))
+						&& (ELEMENT_REF.equals(children.item(1).getNodeName()) || checkIfQDMVariable(children
+								.item(1)))) {
 					newLiElement.appendText(") ");
 				}
 			}
@@ -825,11 +829,14 @@ public class HumanReadableGenerator {
 						.appendElement(HTML_LI);
 			} else {
 				newLiElement.appendText(name);
-				
+
 				if (RELATIONAL_OP.equals(childNodes.item(1).getNodeName())) {
 					NodeList children = childNodes.item(1).getChildNodes();
-					if (ELEMENT_REF.equals(children.item(0).getNodeName())
-							&& ELEMENT_REF.equals(children.item(1).getNodeName())) {
+					if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
+							.item(0))))
+							&& (ELEMENT_REF.equals(children.item(1)
+									.getNodeName()) || checkIfQDMVariable(children
+									.item(1)))) {
 						newLiElement.appendText(" (");
 						parseChild(childNodes.item(1), newLiElement, item,
 								populationOrSubtreeXMLProcessor, false);
@@ -837,7 +844,7 @@ public class HumanReadableGenerator {
 						return;
 					}
 				}
-				
+
 			}
 			parseChild(childNodes.item(1), newLiElement, item,
 					populationOrSubtreeXMLProcessor, false);
@@ -874,13 +881,32 @@ public class HumanReadableGenerator {
 			retValue = true;
 		} else if (RELATIONAL_OP.equals(nodeName)) {
 			NodeList children = node.getChildNodes();
-			if (ELEMENT_REF.equals(children.item(0).getNodeName())
-					&& ELEMENT_REF.equals(children.item(1).getNodeName())) {
+			if ((ELEMENT_REF.equals(children.item(0).getNodeName()) || (checkIfQDMVariable(children
+					.item(0))))
+					&& (ELEMENT_REF.equals(children.item(1).getNodeName()) || checkIfQDMVariable(children
+							.item(1)))) {
 				retValue = true;
 			}
 		}
 
 		return retValue;
+	}
+
+	private static boolean checkIfQDMVariable(Node node) {
+		System.out.println("NODE NAME:" + node.getNodeName());
+		System.out.println(node.getAttributes().getNamedItem("qdmVariable")
+				.getNodeValue());
+		if (SUB_TREE.equals(node.getNodeName())) {
+			if (node.getAttributes().getNamedItem("qdmVariable") != null) {
+				String qdmVariable = node.getAttributes()
+						.getNamedItem("qdmVariable").getNodeValue();
+				System.out.println("qdmVariable:" + qdmVariable);
+				if (qdmVariable.equalsIgnoreCase("true")) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	private static boolean isParentNodeName(Node item, String parentNodeName) {

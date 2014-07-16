@@ -862,9 +862,7 @@ public class HumanReadableGenerator {
 	private static boolean checkIfElementRefOrQDMVariable(Node node) {
 		boolean retValue = false;
 		String nodeName = node.getNodeName();
-		System.out.println("checkIfElementRefOrQDMVariable nodeName:"
-				+ nodeName);
-
+		
 		if (ELEMENT_REF.equals(nodeName)) {
 			retValue = true;
 		} else if (SUB_TREE.equals(nodeName)) {
@@ -893,9 +891,6 @@ public class HumanReadableGenerator {
 	}
 
 	private static boolean checkIfQDMVariable(Node node) {
-		System.out.println("NODE NAME:" + node.getNodeName());
-		System.out.println(node.getAttributes().getNamedItem("qdmVariable")
-				.getNodeValue());
 		if (SUB_TREE.equals(node.getNodeName())) {
 			if (node.getAttributes().getNamedItem("qdmVariable") != null) {
 				String qdmVariable = node.getAttributes()

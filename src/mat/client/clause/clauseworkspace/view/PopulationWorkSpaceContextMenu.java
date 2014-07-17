@@ -43,6 +43,8 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	 */
 	private static final String STRATIFICATION = "Stratification";
 	
+	private static final String MEASURE_OBSERVATIONS = "Measure Observations";
+	
 	/**
 	 * Instantiates a new population work space context menu.
 	 *
@@ -118,7 +120,9 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				if (xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION)) {
 					copyMenu.setEnabled(true);
 				}
-				if (xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
+				if ((xmlTreeDisplay.getSelectedNode().getName().contains(STRATIFICATION) 
+						|| xmlTreeDisplay.getSelectedNode().getName().contains(MEASURE_OBSERVATIONS)) 
+						&& xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1) {
 					deleteMenu.setEnabled(true);
 				}
 				break;

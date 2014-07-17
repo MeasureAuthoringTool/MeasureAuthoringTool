@@ -268,8 +268,8 @@ public class XmlProcessor {
 		constantsMap.put("Measure Populations", "Measure Population");
 		constantsMap.put("Measure Population Exclusions", "Measure Population Exclusions");
 		constantsMap.put("Numerator Exclusions", "Numerator Exclusions");
-		
-		topNodeOperatorMap.put(MEASURE_OBSERVATION, AND);
+		//commented for MAT-4426 in sprint 44
+		//topNodeOperatorMap.put(MEASURE_OBSERVATION, AND);
 		topNodeOperatorMap.put("initialPopulations", AND);
 		topNodeOperatorMap.put("numerators", AND);
 		topNodeOperatorMap.put("denominators", AND);

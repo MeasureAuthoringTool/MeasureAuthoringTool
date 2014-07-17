@@ -35,6 +35,9 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	 * Stratum Node name.
 	 */
 	private static final String STRATUM = "Stratum";
+	
+	/** The Constant MEASURE_OBSERVATION. */
+	private static final String MEASURE_OBSERVATION = "Measure Observation";
 	/**
 	 * Stratification Node name.
 	 */
@@ -134,6 +137,16 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 							equals(xmlTreeDisplay.getSelectedNode())) {
 						pasteMenu.setEnabled(true);
 					}
+				}
+				//show the fist level menu to add clause
+				if(xmlTreeDisplay.getSelectedNode().getName().contains(MEASURE_OBSERVATION) 
+						&& !xmlTreeDisplay.getSelectedNode().hasChildren()){ 
+					subMenuBar = new MenuBar(true);
+					popupMenuBar.setAutoOpen(true);
+					subMenuBar.setAutoOpen(true);
+					createAddClauseMenuItem(subMenuBar);
+					addMenu = new MenuItem("Add", subMenuBar);
+					popupMenuBar.addItem(addMenu);
 				}
 				addCommonMenus();
 				//Add "View Human Readable" right click option for all populations: Start

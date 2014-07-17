@@ -183,8 +183,8 @@ public class PopulationWorkSpaceConstants {
 		constantsMap.put("Measure Population Exclusions", "measurePopulationExclusions");
 		constantsMap.put("Numerator Exclusions", "numeratorExclusions");
 		constantsMap.put("Populations", "populations");
-		
-		topNodeOperatorMap.put("measureobservations", "and");
+		//commented for MAT-4426 in sprint 44
+		//topNodeOperatorMap.put("measureobservations", "and"); 
 		topNodeOperatorMap.put("initialpopulations", "and");
 		topNodeOperatorMap.put("numerators", "and");
 		topNodeOperatorMap.put("denominators", "and");

@@ -1545,7 +1545,9 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
 							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
 							&& (selectedNode.getNodeType() != CellTreeNode.SUBTREE_ROOT_NODE)
-							&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
+							&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
+							&& (selectedNode.getParent().getNodeType() != CellTreeNode.SUBTREE_NODE)
+							&& (selectedNode.getNodeType() == CellTreeNode.SET_OP_NODE)) {
 						if( selectedNode.getParent().getName().equals("SATISFIES ALL")
 								||  selectedNode.getParent().getName().equals("SATISFIES ANY") ){
 							if(selectedNode.getParent().getChilds().indexOf(selectedNode) != 0){

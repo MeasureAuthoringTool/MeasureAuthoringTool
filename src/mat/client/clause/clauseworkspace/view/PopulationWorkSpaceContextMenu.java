@@ -199,6 +199,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 			case CellTreeNode.TIMING_NODE:
 				addCommonMenus();
+				//commonMenuEnableState(false, false, true, false, true);
 				copyMenu.setEnabled(false);
 				cutMenu.setEnabled(false);
 				deleteMenu.setEnabled(true);
@@ -207,6 +208,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 			case CellTreeNode.ELEMENT_REF_NODE:
 				addCommonMenus();
+				//commonMenuEnableState(false, false, true, false, true);
 				copyMenu.setEnabled(false);
 				cutMenu.setEnabled(false);
 				deleteMenu.setEnabled(true);
@@ -215,6 +217,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 			case CellTreeNode.FUNCTIONS_NODE:
 				addCommonMenus();
+				//commonMenuEnableState(false, false, true, false, true);
 				copyMenu.setEnabled(false);
 				cutMenu.setEnabled(false);
 				deleteMenu.setEnabled(true);
@@ -223,6 +226,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				break;
 			case CellTreeNode.RELATIONSHIP_NODE:
 				addCommonMenus();
+				//commonMenuEnableState(false, false, true, false, true);
 				copyMenu.setEnabled(false);
 				cutMenu.setEnabled(false);
 				deleteMenu.setEnabled(true);
@@ -266,6 +270,22 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 			default:
 				break;
 		}
+	}
+	/**
+	 * Common Menu's ie : (Cut/Paste/Delete/Copy/Expand) Enable/Disabled state.
+	 * @param isCopyEnabled - boolean.
+	 * @param isCutEnabled - boolean
+	 * @param isDeleteEnabled - boolean
+	 * @param isPasteEnabled - boolean
+	 * @param isExpandEnabled - boolean
+	 */
+	private void commonMenuEnableState(boolean isCopyEnabled , boolean isCutEnabled, boolean isDeleteEnabled
+			, boolean isPasteEnabled , boolean isExpandEnabled) {
+		copyMenu.setEnabled(isCopyEnabled);
+		cutMenu.setEnabled(isCutEnabled);
+		deleteMenu.setEnabled(isDeleteEnabled);
+		pasteMenu.setEnabled(isPasteEnabled);
+		expandMenu.setEnabled(isExpandEnabled);
 	}
 	/**
 	 * Creates the add clause menu item.

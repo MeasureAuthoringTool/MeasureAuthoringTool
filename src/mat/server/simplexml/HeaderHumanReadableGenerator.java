@@ -10,59 +10,58 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-
 /**
- * The class HeaderHumanREadableGenerator
- * It creates and returns the header with all the measure
- * details in html document
- *
+ * The class HeaderHumanREadableGenerator It creates and returns the header with
+ * all the measure details in html document
+ * 
  */
 public class HeaderHumanReadableGenerator {
-	
+
 	/**
 	 * The beginning of measure details x-path
 	 */
 	private static final String DETAILS_PATH = "/measure/measureDetails/";
-	
+
 	/**
 	 * The constant HTML_TR
 	 */
 	private static final String HTML_TR = "tr";
-	
+
 	/**
 	 * The constant HTML_TD
 	 */
 	private static final String HTML_TD = "td";
-	
+
 	/**
 	 * The constant TWENTY_PERCENT
 	 */
 	private static final String TWENTY_PERCENT = "20%";
-	
+
 	/**
 	 * The element row used to create the header table
 	 */
 	private static Element row;
-	
+
 	/**
 	 * the element column used to create the header table
 	 */
 	private static Element column;
-	
+
 	/**
 	 * Creates the html document with the human readable header in it
 	 * 
 	 * @param measureXML
-	 * 			String containing the measures xml
-	 * @return
-	 * 			The created html document
+	 *            String containing the measures xml
+	 * @return The created html document
 	 * @throws XPathExpressionException
 	 */
-	public static org.jsoup.nodes.Document generateHeaderHTMLForMeasure(String measureXML) throws XPathExpressionException {
+	public static org.jsoup.nodes.Document generateHeaderHTMLForMeasure(
+			String measureXML) throws XPathExpressionException {
 		org.jsoup.nodes.Document htmlDocument = null;
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
-		
-		htmlDocument = createBaseHTMLDocument(getInfo(measureXMLProcessor,"title"));
+
+		htmlDocument = createBaseHTMLDocument(getInfo(measureXMLProcessor,
+				"title"));
 		Element bodyElement = htmlDocument.body();
 		Element table = bodyElement.appendElement("table");
 		table.attr("class", "header_table");
@@ -70,640 +69,657 @@ public class HeaderHumanReadableGenerator {
 		createDocumentGeneral(measureXMLProcessor, tBody);
 		createEmeasureBrief(measureXMLProcessor, tBody);
 		createSubjectOf(measureXMLProcessor, tBody);
-		
+
 		return htmlDocument;
 	}
-	public static void addMeasureSet(XmlProcessor processor, org.jsoup.nodes.Document html) throws XPathExpressionException{
+
+	public static void addMeasureSet(XmlProcessor processor,
+			org.jsoup.nodes.Document html) throws XPathExpressionException {
 		Element body = html.body();
-		
+
 		body.append("<hr align=\"left\" color=\"teal\" size=\"2\" width=\"80%\">");
-		
+
 		Element table = body.appendElement("table");
 		table.attr("class", "header_table");
 		Element tBody = table.appendElement("tbody");
-		
+
 		createRowAndColumns(tBody, "Measure Set");
-		createDiv(getInfo(processor,"qualityMeasureSet"), column);
+		createDiv(getInfo(processor, "qualityMeasureSet"), column);
 	}
+
 	/**
 	 * Creates the first part of the header table
 	 * 
 	 * @param processor
-	 * 			XmlProcessor that contains the measures xml
+	 *            XmlProcessor that contains the measures xml
 	 * @param table
-	 * 			The table element to put the info in
+	 *            The table element to put the info in
 	 * @throws DOMException
 	 * @throws XPathExpressionException
 	 */
-	private static void createDocumentGeneral(XmlProcessor processor,Element table) throws DOMException, XPathExpressionException{
-		//eMeasure Title
-		createRowAndColumns(table,"eMeasure Title");
+	private static void createDocumentGeneral(XmlProcessor processor,
+			Element table) throws DOMException, XPathExpressionException {
+		// eMeasure Title
+		createRowAndColumns(table, "eMeasure Title");
 		column.appendText(getShortTitle(processor));
-		
-		//eMeasure Identifier and Version number
+
+		// eMeasure Identifier and Version number
 		row = table.appendElement(HTML_TR);
 		column = row.appendElement(HTML_TD);
-		setTDHeaderAttributes(column,TWENTY_PERCENT);
-		createSpan("eMeasure Identifier\n"+ "(Measure Authoring Tool)",column);
+		setTDHeaderAttributes(column, TWENTY_PERCENT);
+		createSpan("eMeasure Identifier\n" + "(Measure Authoring Tool)", column);
 		column = row.appendElement(HTML_TD);
-		setTDInfoAttributes(column,"30%", "");
+		setTDInfoAttributes(column, "30%", "");
 		column.appendText(getInfo(processor, "emeasureid"));
 		column = row.appendElement(HTML_TD);
-		setTDHeaderAttributes(column,TWENTY_PERCENT);
-		createSpan("eMeasure Version number",column);
+		setTDHeaderAttributes(column, TWENTY_PERCENT);
+		createSpan("eMeasure Version number", column);
 		column = row.appendElement(HTML_TD);
-		setTDInfoAttributes(column,"30%", "");
+		setTDInfoAttributes(column, "30%", "");
 		column.appendText(getInfo(processor, "version"));
-		
-		//NQF number and GUID
+
+		// NQF number and GUID
 		row = table.appendElement(HTML_TR);
 		column = row.appendElement(HTML_TD);
-		setTDHeaderAttributes(column,TWENTY_PERCENT);
-		createSpan("NQF Number",column);
+		setTDHeaderAttributes(column, TWENTY_PERCENT);
+		createSpan("NQF Number", column);
 		column = row.appendElement(HTML_TD);
-		setTDInfoAttributes(column,"30%", "");
+		setTDInfoAttributes(column, "30%", "");
 		column.appendText(getInfo(processor, "nqfid/@extension"));
 		column = row.appendElement(HTML_TD);
-		setTDHeaderAttributes(column,TWENTY_PERCENT);
-		createSpan("GUID",column);
+		setTDHeaderAttributes(column, TWENTY_PERCENT);
+		createSpan("GUID", column);
 		column = row.appendElement(HTML_TD);
-		column.appendText(getInfo(processor,"guid"));
-		
-		//Calls getMeasurePeriod to produce the Measurement Period
-		getMeasurePeriod(processor,table);
-		
-		//CMS ID number
-		if(processor.findNode(processor.getOriginalDoc(), DETAILS_PATH + "cmsid") != null){
-			createRowAndColumns(table,"CMS ID Number");
-			column.appendText(getInfo(processor,"cmsid"));
+		column.appendText(getInfo(processor, "guid"));
+
+		// Calls getMeasurePeriod to produce the Measurement Period
+		getMeasurePeriod(processor, table);
+
+		// CMS ID number
+		if (processor.findNode(processor.getOriginalDoc(), DETAILS_PATH
+				+ "cmsid") != null) {
+			createRowAndColumns(table, "CMS ID Number");
+			column.appendText(getInfo(processor, "cmsid"));
 		}
-		
-		//Measure Steward
-		createRowAndColumns(table,"Measure Steward");
-		column.appendText(getInfo(processor,"steward"));
-		
-		//Measure Developers
-		getInfoNodes(table,processor,"developers/developer","Measure Developer",false);
-		
-		//Endorsed By
-		createRowAndColumns(table,"Endorsed By");
-		column.appendText(getInfo(processor,"endorsement"));
+
+		// Measure Steward
+		createRowAndColumns(table, "Measure Steward");
+		column.appendText(getInfo(processor, "steward"));
+
+		// Measure Developers
+		getInfoNodes(table, processor, "developers/developer",
+				"Measure Developer", false);
+
+		// Endorsed By
+		createRowAndColumns(table, "Endorsed By");
+		column.appendText(getInfo(processor, "endorsement"));
 	}
-	
+
 	/**
 	 * Creates the "Description section of the header table
 	 * 
 	 * @param processor
-	 * 			XmlProcessor that contains the measures xml
+	 *            XmlProcessor that contains the measures xml
 	 * @param table
-	 * 			The table element to put the info in
+	 *            The table element to put the info in
 	 * @throws XPathExpressionException
 	 */
-	private static void createEmeasureBrief(XmlProcessor processor,Element table) throws XPathExpressionException{
-		//Description
-		createRowAndColumns(table,"Description");
-		createDiv(getInfo(processor,"description"), column);
+	private static void createEmeasureBrief(XmlProcessor processor,
+			Element table) throws XPathExpressionException {
+		// Description
+		createRowAndColumns(table, "Description");
+		createDiv(getInfo(processor, "description"), column);
 	}
-	
+
 	/**
 	 * Creates the rest of the header table
 	 * 
 	 * @param processor
-	 * 			XmlProcessor that contains the measures xml
+	 *            XmlProcessor that contains the measures xml
 	 * @param table
-	 * 			The table element to put the info in
+	 *            The table element to put the info in
 	 * @throws XPathExpressionException
 	 */
-	private static void createSubjectOf(XmlProcessor processor,Element table) throws XPathExpressionException{
-		//Copyright
+	private static void createSubjectOf(XmlProcessor processor, Element table)
+			throws XPathExpressionException {
+		// Copyright
 		createRowAndColumns(table, "Copyright");
-		createDiv(getInfo(processor,"copyright"), column);
-		
-		//Disclaimer
-		createRowAndColumns(table,"Disclaimer");
-		createDiv(getInfo(processor,"disclaimer"), column);
-		
-		//Measure Scoring
-		createRowAndColumns(table,"Measure Scoring");
-		column.appendText(getInfo(processor,"scoring"));
-		
-		//Measure Type
-		getInfoNodes(table,processor,"types/type","Measure Type",false);
-		
-		//Measure Item Count
+		createDiv(getInfo(processor, "copyright"), column);
+
+		// Disclaimer
+		createRowAndColumns(table, "Disclaimer");
+		createDiv(getInfo(processor, "disclaimer"), column);
+
+		// Measure Scoring
+		createRowAndColumns(table, "Measure Scoring");
+		column.appendText(getInfo(processor, "scoring"));
+
+		// Measure Type
+		getInfoNodes(table, processor, "types/type", "Measure Type", false);
+
+		// Measure Item Count
 		createItemCount(processor, table);
-		
-		//Component Measures
-		createComponentMeasureList(processor, table);		
-		
-		//Stratification
+
+		// Component Measures
+		createComponentMeasureList(processor, table);
+
+		// Stratification
 		createRowAndColumns(table, "Stratification");
-		createDiv(getInfo(processor,"stratification"), column);
-		
-		//Risk Adjustment
+		createDiv(getInfo(processor, "stratification"), column);
+
+		// Risk Adjustment
 		createRowAndColumns(table, "Risk Adjustment");
-		createDiv(getInfo(processor,"riskAdjustment"), column);
-		
-		//Rate Aggregation
+		createDiv(getInfo(processor, "riskAdjustment"), column);
+
+		// Rate Aggregation
 		createRowAndColumns(table, "Rate Aggregation");
-		createDiv(getInfo(processor,"aggregation"), column);
-		
-		//Rationale
+		createDiv(getInfo(processor, "aggregation"), column);
+
+		// Rationale
 		createRowAndColumns(table, "Rationale");
-		createDiv(getInfo(processor,"rationale"), column);
-		
-		//Clinical Recommendation Statement
+		createDiv(getInfo(processor, "rationale"), column);
+
+		// Clinical Recommendation Statement
 		createRowAndColumns(table, "Clinical Recommendation Statement");
-		createDiv(getInfo(processor,"recommendations"), column);
-		
-		//Improvement Notation
+		createDiv(getInfo(processor, "recommendations"), column);
+
+		// Improvement Notation
 		createRowAndColumns(table, "Improvement Notation");
-		createDiv(getInfo(processor,"improvementNotations"), column);
-		
-		//References
-		getInfoNodes(table,processor,"references/reference","Reference",true);
-		
-		//Definitions
-		getInfoNodes(table,processor,"definitions","Definition",true);
-		
-		//Guidance
+		createDiv(getInfo(processor, "improvementNotations"), column);
+
+		// References
+		getInfoNodes(table, processor, "references/reference", "Reference",
+				true);
+
+		// Definitions
+		getInfoNodes(table, processor, "definitions", "Definition", true);
+
+		// Guidance
 		createRowAndColumns(table, "Guidance");
-		createDiv(getInfo(processor,"guidance"), column);
-		
-		//Transmission Format
+		createDiv(getInfo(processor, "guidance"), column);
+
+		// Transmission Format
 		createRowAndColumns(table, "Transmission Format");
-		createDiv(getInfo(processor,"transmissionFormat"), column);
-		
-		//INitial Population
+		createDiv(getInfo(processor, "transmissionFormat"), column);
+
+		// INitial Population
 		createRowAndColumns(table, "Initial Population");
-		createDiv(getInfo(processor,"initialPopDescription"), column);
-		
-		//Denominator
+		createDiv(getInfo(processor, "initialPopDescription"), column);
+
+		// Denominator
 		createRowAndColumns(table, "Denominator");
-		createDiv(getInfo(processor,"denominatorDescription"), column);
-		
-		//Denominator Exclusions
+		createDiv(getInfo(processor, "denominatorDescription"), column);
+
+		// Denominator Exclusions
 		createRowAndColumns(table, "Denominator Exclusions");
-		createDiv(getInfo(processor,"denominatorExclusionsDescription"), column);
-		
-		//Numerator
+		createDiv(getInfo(processor, "denominatorExclusionsDescription"),
+				column);
+
+		// Numerator
 		createRowAndColumns(table, "Numerator");
-		createDiv(getInfo(processor,"numeratorDescription"), column);
-		
-		//Numerator Exclusions
+		createDiv(getInfo(processor, "numeratorDescription"), column);
+
+		// Numerator Exclusions
 		createRowAndColumns(table, "Numerator Exclusions");
-		createDiv(getInfo(processor,"numeratorExclusionsDescription"), column);
-		
-		//Denominator Exceptions
+		createDiv(getInfo(processor, "numeratorExclusionsDescription"), column);
+
+		// Denominator Exceptions
 		createRowAndColumns(table, "Denominator Exceptions");
-		createDiv(getInfo(processor,"denominatorExceptionsDescription"), column);
-		
-		//Measure Population
+		createDiv(getInfo(processor, "denominatorExceptionsDescription"),
+				column);
+
+		// Measure Population
 		createRowAndColumns(table, "Measure Population");
-		createDiv(getInfo(processor,"measurePopulationDescription"), column);
-		
-		//Measure Population Exclusions
+		createDiv(getInfo(processor, "measurePopulationDescription"), column);
+
+		// Measure Population Exclusions
 		createRowAndColumns(table, "Measure Population Exclusions");
-		createDiv(getInfo(processor,"measurePopulationExclusionsDescription"), column);
-		
-		//Measure Observations
+		createDiv(getInfo(processor, "measurePopulationExclusionsDescription"),
+				column);
+
+		// Measure Observations
 		createRowAndColumns(table, "Measure Observations");
-		createDiv(getInfo(processor,"measureObservationsDescription"), column);
-		
-		//Supplemental Data Elements
+		createDiv(getInfo(processor, "measureObservationsDescription"), column);
+
+		// Supplemental Data Elements
 		createRowAndColumns(table, "Supplemental Data Elements");
-		createDiv(getInfo(processor,"supplementalData"), column);
-		
-		/*//Quality Measure Set
-		createRowAndColumns(table, "Quality Measure Set");
-		createDiv(getInfo(processor,"qualityMeasureSet"), column);*/
+		createDiv(getInfo(processor, "supplementalData"), column);
+
+		/*
+		 * //Quality Measure Set createRowAndColumns(table,
+		 * "Quality Measure Set");
+		 * createDiv(getInfo(processor,"qualityMeasureSet"), column);
+		 */
 	}
 
 	/**
 	 * Gets the short title of the measure
 	 * 
 	 * @param processor
-	 * 			XmlProcessor that contains the measures xml
-	 * @return
-	 * 			Sting containing the measure's short title
+	 *            XmlProcessor that contains the measures xml
+	 * @return Sting containing the measure's short title
 	 * @throws DOMException
 	 * @throws XPathExpressionException
 	 */
-	private static String getShortTitle(XmlProcessor processor) throws DOMException, XPathExpressionException{
-		String title = processor.findNode(processor.getOriginalDoc(), DETAILS_PATH + "title").getTextContent();
-		if(title == null){
+	private static String getShortTitle(XmlProcessor processor)
+			throws DOMException, XPathExpressionException {
+		String title = processor.findNode(processor.getOriginalDoc(),
+				DETAILS_PATH + "title").getTextContent();
+		if (title == null) {
 			title = "";
-		}
-		else{
-			if(title.contains("(###)")){
+		} else {
+			if (title.contains("(###)")) {
 				title = title.substring(0, title.indexOf("(###)"));
 			}
 		}
 		return title;
 	}
-	
+
 	/**
 	 * Gets the measures measurement period
 	 * 
 	 * @param processor
-	 * 			XmlProcessor that contains the measures xml
+	 *            XmlProcessor that contains the measures xml
 	 * @param table
-	 * 			The table element to put the info in
+	 *            The table element to put the info in
 	 * @throws XPathExpressionException
 	 */
-	private static void getMeasurePeriod(XmlProcessor processor, Element table) throws XPathExpressionException{
-		String start = getInfo(processor,"period/startDate");
-		String end = getInfo(processor,"period/stopDate");
+	private static void getMeasurePeriod(XmlProcessor processor, Element table)
+			throws XPathExpressionException {
+		String start = getInfo(processor, "period/startDate");
+		String end = getInfo(processor, "period/stopDate");
 		String newStart = " ";
 		String newEnd = " ";
 		String through = " through ";
-		//if start or end are not null format the date
-		if(!" ".equals(start)){
+		// if start or end are not null format the date
+		if (!" ".equals(start)) {
 			newStart = formatDate(start);
 		}
-		if(!" ".equals(end)){
+		if (!" ".equals(end)) {
 			newEnd = formatDate(end);
 		}
-		//if the ending date is null we don't want through to display
-		if(" ".equals(newEnd)){
+		// if the ending date is null we don't want through to display
+		if (" ".equals(newEnd)) {
 			through = "";
 		}
 		createRowAndColumns(table, "Measurement Period");
 		column.appendText(newStart + through + newEnd);
-		
+
 	}
-	
+
 	/**
 	 * Formats the date for measurement period
+	 * 
 	 * @param date
-	 * 		An eight digit string representing a date formated like YYYYMMDD
-	 * @return
-	 * 		A string 
+	 *            An eight digit string representing a date formated like
+	 *            YYYYMMDD
+	 * @return A string
 	 */
-	private static String formatDate(String date){
+	private static String formatDate(String date) {
 		String returnDate = " ";
-		//The string should be 8 characters long if not return " "
-		if(date.length() == 8){
-			//Separate the string into year, month, and dat
+		// The string should be 8 characters long if not return " "
+		if (date.length() == 8) {
+			// Separate the string into year, month, and dat
 			String year = date.substring(0, 4);
 			String month = date.substring(4, 6);
 			String day = date.substring(6, 8);
-			//Get the string version of the month
+			// Get the string version of the month
 			month = getMonth(month);
 			// if the year equals 0000 we display 20xx
-			if("0000".equals(year)){
+			if ("0000".equals(year)) {
 				year = "20xx";
 			}
-			//if the day starts with a zero only display the second digit
-			if(day.charAt(0) == '0'){
-				day = day.substring(1,2);
+			// if the day starts with a zero only display the second digit
+			if (day.charAt(0) == '0') {
+				day = day.substring(1, 2);
 			}
 			returnDate = month + day + ", " + year;
 		}
 		return returnDate;
 	}
-	
+
 	/**
 	 * Returns the string representation of a month
 	 * 
 	 * @param month
-	 * 			String containing the month numbers
-	 * @return
-	 * 			String representation of the given month
+	 *            String containing the month numbers
+	 * @return String representation of the given month
 	 */
-	private static String getMonth(String month){
+	private static String getMonth(String month) {
 		String returnMonth = "";
-		if("01".equals(month)){
+		if ("01".equals(month)) {
 			returnMonth = "January ";
-		}
-		else if("02".equals(month)){
+		} else if ("02".equals(month)) {
 			returnMonth = "February ";
-		}
-		else if("03".equals(month)){
+		} else if ("03".equals(month)) {
 			returnMonth = "March ";
-		}
-		else if("04".equals(month)){
+		} else if ("04".equals(month)) {
 			returnMonth = "April ";
-		}
-		else if("05".equals(month)){
+		} else if ("05".equals(month)) {
 			returnMonth = "May ";
-		}
-		else if("06".equals(month)){
+		} else if ("06".equals(month)) {
 			returnMonth = "June ";
-		}
-		else if("07".equals(month)){
+		} else if ("07".equals(month)) {
 			returnMonth = "July ";
-		}
-		else if("08".equals(month)){
+		} else if ("08".equals(month)) {
 			returnMonth = "August ";
-		}
-		else if("09".equals(month)){
+		} else if ("09".equals(month)) {
 			returnMonth = "September ";
-		}
-		else if("10".equals(month)){
+		} else if ("10".equals(month)) {
 			returnMonth = "October ";
-		}
-		else if("11".equals(month)){
+		} else if ("11".equals(month)) {
 			returnMonth = "November ";
-		}
-		else if("12".equals(month)){
+		} else if ("12".equals(month)) {
 			returnMonth = "December ";
 		}
 		return returnMonth;
 	}
-	
+
 	/**
 	 * Used to generate the table rows of elements that will potentially have
 	 * multiple rows.
 	 * 
 	 * @param table
-	 * 			The table element to put the info in
+	 *            The table element to put the info in
 	 * @param processor
-	 * 			XmlProcessor that contains the measures xml
+	 *            XmlProcessor that contains the measures xml
 	 * @param lookUp
-	 * 			The last part of the xPath to locate the nodes in the xml
+	 *            The last part of the xPath to locate the nodes in the xml
 	 * @param display
-	 * 			What gets displayed in the header column
+	 *            What gets displayed in the header column
 	 * @param addDiv
-	 * 			Boolean, tells whether to add a div formating element
+	 *            Boolean, tells whether to add a div formating element
 	 * @throws XPathExpressionException
 	 */
-	private static void getInfoNodes(Element table, XmlProcessor processor, String lookUp, String display,boolean addDiv) throws XPathExpressionException {
-		//Gets all nodes that are in the given path
-		NodeList developers = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + lookUp);
-		
-		if(developers.getLength() > 0){
+	private static void getInfoNodes(Element table, XmlProcessor processor,
+			String lookUp, String display, boolean addDiv)
+			throws XPathExpressionException {
+		// Gets all nodes that are in the given path
+		NodeList developers = processor.findNodeList(
+				processor.getOriginalDoc(), DETAILS_PATH + lookUp);
+
+		if (developers.getLength() > 0) {
 			Node person;
-			//loop through each node
-			for(int i = 0; i < developers.getLength(); i++){
+			// loop through each node
+			for (int i = 0; i < developers.getLength(); i++) {
 				person = developers.item(i);
-				//Not adding a div create the row and column and append text
-				if(!addDiv){
+				// Not adding a div create the row and column and append text
+				if (!addDiv) {
 					createRowAndColumns(table, display);
-					if(person != null){
+					if (person != null) {
 						column.appendText(person.getTextContent());
 					}
 				}
-				//Adding a div, create the rows and then create the div Element
-				else{
-					if(person != null){
+				// Adding a div, create the rows and then create the div Element
+				else {
+					if (person != null) {
 						createRowAndColumns(table, display);
 						createDiv(person.getTextContent(), column);
 					}
 				}
 			}
 		}
-		//Even if there are no nodes still display an empty row
-		else{
+		// Even if there are no nodes still display an empty row
+		else {
 			createRowAndColumns(table, display);
 		}
 	}
-	
+
 	/**
 	 * Retreves the text content from the node on the given xPath
 	 * 
 	 * @param processor
-	 * 			XmlProcessor that contains the measures xml
+	 *            XmlProcessor that contains the measures xml
 	 * @param lookUp
-	 * 			The last part of the xPath to locate the nodes in the xml
-	 * @return
-	 * 			The string content of the node on the given xPath
+	 *            The last part of the xPath to locate the nodes in the xml
+	 * @return The string content of the node on the given xPath
 	 * @throws XPathExpressionException
 	 */
-	private static String getInfo(XmlProcessor processor, String lookUp) throws XPathExpressionException {
+	private static String getInfo(XmlProcessor processor, String lookUp)
+			throws XPathExpressionException {
 		String returnVar = " ";
-		//Finds the node
-		Node node = processor.findNode(processor.getOriginalDoc(), DETAILS_PATH + lookUp);
-		//If the node exists return the text value
-		if(node != null){
+		// Finds the node
+		Node node = processor.findNode(processor.getOriginalDoc(), DETAILS_PATH
+				+ lookUp);
+		// If the node exists return the text value
+		if (node != null) {
 			returnVar = node.getTextContent();
 		}
-		// else the node does not exist 
-		//if were looking for "endorsement return None
-		else if(lookUp.equalsIgnoreCase("endorsement") || lookUp.equalsIgnoreCase("nqfid/@extension")){
+		// else the node does not exist
+		// if were looking for "endorsement return None
+		else if (lookUp.equalsIgnoreCase("endorsement")
+				|| lookUp.equalsIgnoreCase("nqfid/@extension")) {
 			returnVar = "None";
 		}
-		//if we were looking for guid return Pending
-		else if(lookUp.equalsIgnoreCase("guid")){
+		// if we were looking for guid return Pending
+		else if (lookUp.equalsIgnoreCase("guid")) {
 			returnVar = "Pending";
 		}
-		//if we were looking for title return Health Quality Measure Document
-		else if(lookUp.equalsIgnoreCase("title")){
+		// if we were looking for title return Health Quality Measure Document
+		else if (lookUp.equalsIgnoreCase("title")) {
 			returnVar = "Health Quality Measure Document";
 		}
 		return returnVar;
 	}
-	
+
 	/**
 	 * Creates the Item Count section of the header
 	 * 
 	 * @param processor
-	 * 			XmlProcessor that contains the measures xml
+	 *            XmlProcessor that contains the measures xml
 	 * @param table
-	 * 			The table element to put the info in
+	 *            The table element to put the info in
 	 * @throws XPathExpressionException
 	 */
-	private static void createItemCount(XmlProcessor processor, Element table) throws XPathExpressionException{
-		NodeList list = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "itemCount/elementRef");
-		
-		if(list.getLength() > 0){
+	private static void createItemCount(XmlProcessor processor, Element table)
+			throws XPathExpressionException {
+		NodeList list = processor.findNodeList(processor.getOriginalDoc(),
+				DETAILS_PATH + "itemCount/elementRef");
+
+		if (list.getLength() > 0) {
 			Node node;
-			for(int i = 0; i < list.getLength(); i++){
+			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
-				//Create a NamedNodeMap of the nodes attributes
+				// Create a NamedNodeMap of the nodes attributes
 				NamedNodeMap map = node.getAttributes();
-				
-				if(node != null){
+
+				if (node != null) {
 					createRowAndColumns(table, "Measure Item Count");
-					if(map.getNamedItem("dataType") != null && map.getNamedItem("name") != null){
-						createDiv(map.getNamedItem("dataType").getNodeValue() + ": " + map.getNamedItem("name").getNodeValue(), column);
-					}
-					else{
-						createDiv("",column);
+					if (map.getNamedItem("dataType") != null
+							&& map.getNamedItem("name") != null) {
+						createDiv(map.getNamedItem("dataType").getNodeValue()
+								+ ": "
+								+ map.getNamedItem("name").getNodeValue(),
+								column);
+					} else {
+						createDiv("", column);
 					}
 				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates a table in the header table to display the component measures
 	 * 
 	 * @param processor
-	 * 			XmlProcessor that contains the measures xml
+	 *            XmlProcessor that contains the measures xml
 	 * @param table
-	 * 			The table element to put the info in
+	 *            The table element to put the info in
 	 * @throws XPathExpressionException
 	 */
-	private static void createComponentMeasureList(XmlProcessor processor,Element table) throws XPathExpressionException {
-		//Create the row in the main table
-		
-		//find the list of nodes
-		NodeList list = processor.findNodeList(processor.getOriginalDoc(), DETAILS_PATH + "componentMeasures/measure");
-		if(list.getLength() > 0){
+	private static void createComponentMeasureList(XmlProcessor processor,
+			Element table) throws XPathExpressionException {
+		// Create the row in the main table
+
+		// find the list of nodes
+		NodeList list = processor.findNodeList(processor.getOriginalDoc(),
+				DETAILS_PATH + "componentMeasures/measure");
+		if (list.getLength() > 0) {
 			createRowAndColumns(table, "Component Measure");
 			Node node;
-			
-			//Create the inner table
+
+			// Create the inner table
 			Element innerTable = column.appendElement("table");
 			innerTable.attr("class", "inner_table");
 			Element innerTableBody = innerTable.appendElement("tBody");
 			row = innerTableBody.appendElement(HTML_TR);
-			
-			//create the headers for the inner table
-			//Measure Name
+
+			// create the headers for the inner table
+			// Measure Name
 			column = row.appendElement("th");
-			setTDHeaderAttributes(column,"70%");
-			createSpan("Measure Name",column);
-			
-			//Version Number
+			setTDHeaderAttributes(column, "60%");
+			createSpan("Measure Name", column);
+
+			// Version Number
 			column = row.appendElement("th");
-			setTDHeaderAttributes(column,"10%");
-			createSpan("Version Number",column);
-			
-			//GUID
+			setTDHeaderAttributes(column, "10%");
+			createSpan("Version Number", column);
+
+			// GUID
 			column = row.appendElement("th");
-			setTDHeaderAttributes(column,TWENTY_PERCENT);
-			createSpan("GUID",column);
-			
-			//for each node append a row with all information
-			for(int i = 0; i<list.getLength(); i++){
+			setTDHeaderAttributes(column, "30%");
+			createSpan("GUID", column);
+
+			// for each node append a row with all information
+			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
-				
+
 				NamedNodeMap map = node.getAttributes();
-				
+
 				row = innerTableBody.appendElement(HTML_TR);
-				
+
 				column = row.appendElement(HTML_TD);
-				setTDInfoAttributes(column,"70%","");
-				if(map.getNamedItem("name") != null){
+				setTDInfoAttributes(column, "60%", "");
+				if (map.getNamedItem("name") != null) {
 					column.appendText(map.getNamedItem("name").getNodeValue());
 				}
-				
+
 				column = row.appendElement(HTML_TD);
-				setTDInfoAttributes(column,"10%","");
+				setTDInfoAttributes(column, "10%", "");
 				Element div = column.appendElement("div");
 				div.attr("class", "ver");
 
-				if(map.getNamedItem("versionNo") != null){
+				if (map.getNamedItem("versionNo") != null) {
 					div.appendText(map.getNamedItem("versionNo").getNodeValue());
 				}
-				
+
 				column = row.appendElement(HTML_TD);
-				setTDInfoAttributes(column,TWENTY_PERCENT,"");
-				//map.item(0) pulls the GUID from the NamedNodeMap
-				if(map.getNamedItem("id") != null){
-					column.appendText(map.getNamedItem("id").getNodeValue());
+				setTDInfoAttributes(column, "30%", "");
+				// map.item(0) pulls the GUID from the NamedNodeMap
+				if (map.getNamedItem("measureSetId") != null) {
+					column.appendText(map.getNamedItem("measureSetId").getNodeValue());
 				}
 			}
 		}
 
-		
 	}
-	
+
 	/**
 	 * Sets the formating for the td headers
 	 * 
 	 * @param col
-	 * 			The column Element to format
+	 *            The column Element to format
 	 * @param width
-	 * 			The width we want the column to take up
+	 *            The width we want the column to take up
 	 */
-	private static void setTDHeaderAttributes(Element col, String width){
+	private static void setTDHeaderAttributes(Element col, String width) {
 		col.attr("width", width);
 		col.attr("bgcolor", "#656565");
 		col.attr("style", "background-color:#656565");
 	}
-	
+
 	/**
 	 * Sets the formating for the information columns
 	 * 
 	 * @param col
-	 * 			The column Element to format
+	 *            The column Element to format
 	 * @param width
-	 * 			The width we want the column to take up
+	 *            The width we want the column to take up
 	 * @param span
-	 * 			The number of columns to span if blank no span is added
+	 *            The number of columns to span if blank no span is added
 	 */
-	private static void setTDInfoAttributes(Element col, String width, String span){
+	private static void setTDInfoAttributes(Element col, String width,
+			String span) {
 		col.attr("width", width);
-		if(span.length()>0){
+		if (span.length() > 0) {
 			col.attr("colspan", span);
 		}
 	}
-	
+
 	/**
 	 * Creates the row and columns for the table
-	 *  
+	 * 
 	 * @param table
-	 * 			The table Element to add the row and columns to
+	 *            The table Element to add the row and columns to
 	 * @param title
-	 * 			The title to be put in the header column
+	 *            The title to be put in the header column
 	 */
-	private static void createRowAndColumns(Element table, String title){
+	private static void createRowAndColumns(Element table, String title) {
 		row = table.appendElement(HTML_TR);
 		column = row.appendElement(HTML_TD);
-		setTDHeaderAttributes(column,TWENTY_PERCENT);
-		createSpan(title,column);
+		setTDHeaderAttributes(column, TWENTY_PERCENT);
+		createSpan(title, column);
 		column = row.appendElement(HTML_TD);
-		setTDInfoAttributes(column,"80%", "3");
+		setTDInfoAttributes(column, "80%", "3");
 	}
-	
+
 	/**
 	 * Used to format and make a span element
 	 * 
 	 * @param message
-	 * 			The message to be displayed in the span
+	 *            The message to be displayed in the span
 	 * @param column
-	 * 			The column to append the span to
+	 *            The column to append the span to
 	 */
-	private static void createSpan(String message, Element column){
+	private static void createSpan(String message, Element column) {
 		Element span = column.appendElement("span");
 		span.attr("class", "td_label");
 		span.appendText(message);
 	}
-	
+
 	/**
 	 * Used to format and make a div element
 	 * 
 	 * @param message
-	 * 			The message to be displayed in the div element
+	 *            The message to be displayed in the div element
 	 * @param column
-	 * 			The column to append the div to
+	 *            The column to append the div to
 	 */
-	private static void createDiv(String message, Element column){
+	private static void createDiv(String message, Element column) {
 		Element div = column.appendElement("div");
 		div.attr("style", "width:660px;overflow-x:hidden;overflow-y:auto");
 		Element pre = div.appendElement("pre");
 		pre.appendText(message);
 	}
-	
+
 	/**
 	 * Creates the initial html jsoup document
 	 * 
 	 * @param title
-	 * 			The title of the document
-	 * @return
-	 * 			jsoup html document that has been initialized 
+	 *            The title of the document
+	 * @return jsoup html document that has been initialized
 	 */
 	private static org.jsoup.nodes.Document createBaseHTMLDocument(String title) {
 		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
-		
-		//Must be added first for proper formating and styling
-//		DocumentType doc = new DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd","");
-//		htmlDocument.appendChild(doc);
+
+		// Must be added first for proper formating and styling
+		// DocumentType doc = new
+		// DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd","");
+		// htmlDocument.appendChild(doc);
 		Element html = htmlDocument.appendElement("html");
-	    html.appendElement("head");
-	    html.appendElement("body");
-		
+		html.appendElement("head");
+		html.appendElement("body");
+
 		Element head = htmlDocument.head();
 		htmlDocument.title(title);
 		appendStyleNode(head);
 		return htmlDocument;
 	}
-	
+
 	/**
 	 * Puts the style section into the html document
+	 * 
 	 * @param head
 	 */
 	private static void appendStyleNode(Element head) {

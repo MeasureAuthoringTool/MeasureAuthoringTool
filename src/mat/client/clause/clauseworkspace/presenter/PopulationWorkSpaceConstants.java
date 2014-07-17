@@ -83,6 +83,9 @@ public class PopulationWorkSpaceConstants {
 	/** The element look up name. */
 	public static Map<String, String> elementLookUpName;
 	
+	/** The element look up name. */
+	public static Map<String, String> elementLookUpDataTypeName;
+	
 	/** The element look up node. */
 	public static Map<String, Node> elementLookUpNode;
 	
@@ -247,6 +250,13 @@ public class PopulationWorkSpaceConstants {
 	 */
 	public static Map<String, String> getElementLookUpName() {
 		return elementLookUpName;
+	}
+	
+	/**
+	 * @return the elementLookUpDataTypeName
+	 */
+	public static Map<String, String> getElementLookUpDataTypeName() {
+		return elementLookUpDataTypeName;
 	}
 	
 	/**

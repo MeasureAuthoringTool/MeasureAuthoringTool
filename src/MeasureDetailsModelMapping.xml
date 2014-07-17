@@ -142,7 +142,7 @@
       <bind-xml name="id" node="attribute" location="scoring"/>
     </field>
 	    
-    <field name="measureTypeList"
+    <field name="measureTypeSelectedList"
            type="mat.model.MeasureType"
            collection="arraylist">
       <bind-xml name="type" location="types">

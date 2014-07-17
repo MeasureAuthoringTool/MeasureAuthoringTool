@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.DTO.MeasureNoteDTO;
+import mat.DTO.MeasureTypeDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -15,6 +16,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
 import mat.model.MatValueSet;
+import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.service.MeasureLibraryService;
@@ -418,6 +420,14 @@ MeasureService {
 	public List<QualityDataSetDTO> getAppliedQDMForItemCount(
 			String measureId, boolean checkForSupplementData) {
 		return this.getMeasureLibraryService().getAppliedQDMForItemCount(measureId, checkForSupplementData);
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getAllMeasureTypes()
+	 */
+	@Override
+	public List<MeasureType> getAllMeasureTypes(){
+		return this.getMeasureLibraryService().getAllMeasureTypes();
 	}
 	
 }

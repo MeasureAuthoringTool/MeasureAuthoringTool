@@ -536,7 +536,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			return true;
 		} else {
 			pageData.setToCompareAuthor(pageData.getAuthorList());
-			pageData.setToCompareMeasure(pageData.getMeasureTypeList());
+			pageData.setToCompareMeasure(pageData.getMeasureTypeSelectedList());
 			pageData.setToCompareItemCount(pageData.getQdsSelectedList());
 			pageData.setToCompareComponentMeasures(pageData.getComponentMeasuresSelectedList());
 			dbData.setToCompareAuthor(metaDataPresenter.getDbAuthorList());

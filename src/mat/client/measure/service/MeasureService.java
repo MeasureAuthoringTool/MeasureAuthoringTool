@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.DTO.MeasureNoteDTO;
+import mat.DTO.MeasureTypeDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -12,6 +13,7 @@ import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
 import mat.model.MatValueSet;
+import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.util.XmlProcessor;
@@ -452,4 +454,11 @@ public interface MeasureService extends RemoteService {
 	 */
 	List<QualityDataSetDTO> getAppliedQDMForItemCount(String measureId,
 			boolean checkForSupplementData);
+
+	/**
+	 * Gets the all measure types.
+	 *
+	 * @return the all measure types
+	 */
+	List<MeasureType> getAllMeasureTypes();
 }

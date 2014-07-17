@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import mat.DTO.MeasureNoteDTO;
+import mat.DTO.MeasureTypeDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -16,6 +17,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
 import mat.model.MatValueSet;
+import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.util.XmlProcessor;
@@ -471,8 +473,6 @@ public interface MeasureLibraryService {
 	 */
 	ValidateMeasureResult validateForGroup(ManageMeasureDetailModel model);
 	
-	//Map<String, Boolean>  getSubTreeRefValidationMap(String measureId, String uuid); 
-	
 	/**
 	 * Gets the applied qdm for item count.
 	 *
@@ -482,4 +482,11 @@ public interface MeasureLibraryService {
 	 */
 	List<QualityDataSetDTO> getAppliedQDMForItemCount(String measureId,
 			boolean checkForSupplementData);
+
+	/**
+	 * Gets the all measure types.
+	 *
+	 * @return the all measure types
+	 */
+	List<MeasureType> getAllMeasureTypes();
 }

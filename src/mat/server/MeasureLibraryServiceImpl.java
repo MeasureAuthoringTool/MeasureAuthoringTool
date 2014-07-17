@@ -19,6 +19,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
 import mat.DTO.MeasureNoteDTO;
+import mat.DTO.MeasureTypeDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -34,6 +35,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureNotesDAO;
+import mat.dao.MeasureTypeDAO;
 import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
@@ -153,6 +155,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/** The user service. */
 	@Autowired
 	private UserService userService;
+	
+	/** The measure type dao. */
+	@Autowired
+	private MeasureTypeDAO measureTypeDAO;
 	
 	/** The x path. */
 	 javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -1933,7 +1939,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		
 		setOrgIdInAuthor(measureDetailModel.getAuthorList());
-		setMeasureTypeAbbreviation(measureDetailModel.getMeasureTypeList());
+		setMeasureTypeAbbreviation(measureDetailModel.getMeasureTypeSelectedList());
 		measureDetailModel.setScoringAbbr(setScoringAbbreviation(measureDetailModel.getMeasScoring()));
 		
 		if ((measureDetailModel.getEndorseByNQF() != null) && measureDetailModel.getEndorseByNQF()) {
@@ -3175,5 +3181,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return qdmList;
 		
 	} 
+	
+	/**
+	 * Gets the all measure types.
+	 *
+	 * @return the all measure types
+	 */
+	@Override
+	public final List<MeasureType> getAllMeasureTypes(){
+		List<MeasureTypeDTO> measureTypeDTOList = measureTypeDAO.getAllMeasureTypes();
+		List<MeasureType> measureTypeList = new ArrayList<MeasureType>();
+		for(MeasureTypeDTO measureTypeDTO : measureTypeDTOList){
+			MeasureType measureType = new MeasureType();
+			measureType.setDescription(measureTypeDTO.getName());
+			measureType.setAbbrDesc(MeasureDetailsUtil.getMeasureTypeAbbr(measureTypeDTO.getName()));
+			measureTypeList.add(measureType);
+		}
+		return measureTypeList;
+		
+	}
 }
 

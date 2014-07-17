@@ -3,6 +3,8 @@ package mat.client.measure.metadata;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import mat.DTO.MeasureTypeDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -532,13 +534,15 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 */
 		public void buildCellTable(QDSAppliedListModel appliedListModel,
 				boolean isEditable);
-
+		
 		/**
-		 * Sets the applied qdm list.
+		 * Builds the measure type cell table.
 		 *
-		 * @param result the new applied qdm list
+		 * @param measureTypeDTOList the measure type dto list
+		 * @param isEditable the is editable
 		 */
-		public void setAppliedQDMList(List<QualityDataSetDTO> result);	
+		public void buildMeasureTypeCellTable(List<MeasureType> measureTypeDTOList, 
+				boolean isEditable);
 		
 		/**
 		 * Gets the qdm selected list.
@@ -611,6 +615,20 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 * @param editable the editable
 		 */
 		void buildComponentMeasuresSelectedList(List<ManageMeasureSearchModel.Result> result, boolean editable);
+
+		/**
+		 * Gets the measure type selected list.
+		 *
+		 * @return the measure type selected list
+		 */
+		List<MeasureType> getMeasureTypeSelectedList();
+
+		/**
+		 * Sets the measure type selected list.
+		 *
+		 * @param measureTypeSelectedList the new measure type selected list
+		 */
+		void setMeasureTypeSelectedList(List<MeasureType> measureTypeSelectedList);
 		
 	}
 	
@@ -886,13 +904,13 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			}
 		});
 		
-		metaDataDisplay.getEditMeasureTypeButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				getMetaDataDisplay().getSaveErrorMsg().clear();
-				displayAddEditMeasureType();
-			}
-		});
+//		metaDataDisplay.getEditMeasureTypeButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				getMetaDataDisplay().getSaveErrorMsg().clear();
+//				displayAddEditMeasureType();
+//			}
+//		});
 		
 		metaDataDisplay.getAddEditComponentMeasures().addClickHandler(new ClickHandler() {
 			@Override
@@ -968,48 +986,48 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			     removeSelectedAuthor();
 			}
 		});
-		addEditMeasureTypeDisplay.getCancelButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				addEditMeasureTypeDisplay.getMeasureTypeInputBox().setValue("");
-				addEditMeasureTypeDisplay.hideTextBox();
-			}
-		});
-		addEditMeasureTypeDisplay.getReturnButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				backToDetail();
-			}
-		});
+//		addEditMeasureTypeDisplay.getCancelButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(final ClickEvent event) {
+//				addEditMeasureTypeDisplay.getMeasureTypeInputBox().setValue("");
+//				addEditMeasureTypeDisplay.hideTextBox();
+//			}
+//		});
+//		addEditMeasureTypeDisplay.getReturnButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(final ClickEvent event) {
+//				backToDetail();
+//			}
+//		});
 
-		addEditMeasureTypeDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(final ClickEvent event) {
-				if (addEditMeasureTypeDisplay.getMeasureType().equals(
-						MatContext.PLEASE_SELECT)) {
-					//do nothing
-				} else if (!(addEditMeasureTypeDisplay.getMeasureType().startsWith("Other"))) {
-					if (!addEditMeasureTypeDisplay.getMeasureType().equals("")) {
-						addToMeasureTypeList(addEditMeasureTypeDisplay.getMeasureType());
-						addEditMeasureTypeDisplay.getMeasureTypeInputBox().setValue("");
-					}
-				} else {
-					if (!addEditMeasureTypeDisplay.getOtherMeasureType().getValue().equals("")) {
-						addToMeasureTypeList(addEditMeasureTypeDisplay.getOtherMeasureType().getValue());
-						addEditMeasureTypeDisplay.getOtherMeasureType().setValue("");
-					}
-				}
-					
-			}
-		});
-		addEditMeasureTypeDisplay.getRemoveButton().addClickHandler(new ClickHandler() {
-			
-			@Override
-			public void onClick(ClickEvent event) {
-				removeSelectedMeasureType();
-				
-			}
-		});
+//		addEditMeasureTypeDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(final ClickEvent event) {
+//				if (addEditMeasureTypeDisplay.getMeasureType().equals(
+//						MatContext.PLEASE_SELECT)) {
+//					//do nothing
+//				} else if (!(addEditMeasureTypeDisplay.getMeasureType().startsWith("Other"))) {
+//					if (!addEditMeasureTypeDisplay.getMeasureType().equals("")) {
+//						addToMeasureTypeList(addEditMeasureTypeDisplay.getMeasureType());
+//						addEditMeasureTypeDisplay.getMeasureTypeInputBox().setValue("");
+//					}
+//				} else {
+//					if (!addEditMeasureTypeDisplay.getOtherMeasureType().getValue().equals("")) {
+//						addToMeasureTypeList(addEditMeasureTypeDisplay.getOtherMeasureType().getValue());
+//						addEditMeasureTypeDisplay.getOtherMeasureType().setValue("");
+//					}
+//				}
+//					
+//			}
+//		});
+//		addEditMeasureTypeDisplay.getRemoveButton().addClickHandler(new ClickHandler() {
+//			
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				removeSelectedMeasureType();
+//				
+//			}
+//		});
 		addEditAuthorsDisplay.getAuthorInputBox().addValueChangeHandler(new ValueChangeHandler<String>() {
 			
 			@Override
@@ -1024,19 +1042,19 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				
 			}
 		});
-		addEditMeasureTypeDisplay.getMeasureTypeInputBox().addValueChangeHandler(new ValueChangeHandler<String>() {
-			
-			@Override
-			public void onValueChange(ValueChangeEvent<String> event) {
-			    String measureType = addEditMeasureTypeDisplay.getMeasureType();
-				if (measureType.startsWith("Other")) {
-					addEditMeasureTypeDisplay.showTextBox();
-					} else {
-					addEditMeasureTypeDisplay.hideTextBox();
-				}
-				
-			}
-		});
+//		addEditMeasureTypeDisplay.getMeasureTypeInputBox().addValueChangeHandler(new ValueChangeHandler<String>() {
+//			
+//			@Override
+//			public void onValueChange(ValueChangeEvent<String> event) {
+//			    String measureType = addEditMeasureTypeDisplay.getMeasureType();
+//				if (measureType.startsWith("Other")) {
+//					addEditMeasureTypeDisplay.showTextBox();
+//					} else {
+//					addEditMeasureTypeDisplay.hideTextBox();
+//				}
+//				
+//			}
+//		});
 		
 		//US 413. Added value change listener to show or clear out Steward Other text box based on the selection.
 		metaDataDisplay.getMeasureStewardListBox().addValueChangeHandler(new ValueChangeHandler<String>() {
@@ -1242,7 +1260,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	 * @param checkForSupplementData the check for supplement data
 	 * @return the applied qdm list
 	 */
-	public final void getAppliedQDMList(boolean checkForSupplementData) {
+	private final void getAppliedQDMList(boolean checkForSupplementData) {
 		String measureId = MatContext.get().getCurrentMeasureId();
 		if ((measureId != null) && !measureId.equals("")) {
 			service.getAppliedQDMForItemCount(measureId,
@@ -1265,14 +1283,33 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 					QDSAppliedListModel appliedListModel = new QDSAppliedListModel();
 					appliedListModel.setAppliedQDMs(result);
 					metaDataDisplay.buildCellTable(appliedListModel, editable);
-					metaDataDisplay.setAppliedQDMList(result);
-					
 				}
 			});
 			
 		}
 		
 	}
+	
+     /**
+      * Gets the all measure types.
+      *
+      * @return the all measure types
+      */
+     private void getAllMeasureTypes() {
+    	 service.getAllMeasureTypes(new AsyncCallback<List<MeasureType>>() {
+ 			
+ 			@Override
+ 			public void onSuccess(List<MeasureType> result) {
+ 				metaDataDisplay.buildMeasureTypeCellTable(result, editable);
+ 			}
+ 			
+ 			@Override
+ 			public void onFailure(Throwable caught) {
+ 				// TODO Auto-generated method stub
+ 			}
+ 		});
+	}
+
 	
 	/**
 	 * Fire successfull deletion event.
@@ -1349,7 +1386,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	/**
  * Sets the authors list on view.
  */
-private void setAuthorsListOnView() {
+	private void setAuthorsListOnView() {
 		Collections.sort(currentMeasureDetail.getAuthorList(), new Author.Comparator());
 		if (currentMeasureDetail.getAuthorList() != null) {
 			currentAuthorsList = new ManageAuthorsModel(currentMeasureDetail.getAuthorList());
@@ -1363,26 +1400,26 @@ private void setAuthorsListOnView() {
 	/**
 	 * Sets the measure type on view.
 	 */
-	private void setMeasureTypeOnView() {
-		Collections.sort(currentMeasureDetail.getMeasureTypeList(), new MeasureType.Comparator());
-		if (currentMeasureDetail.getMeasureTypeList() != null) {
-			currentMeasureTypeList = new ManageMeasureTypeModel(currentMeasureDetail.getMeasureTypeList());
-			currentMeasureTypeList.setPageSize(SearchView.PAGE_SIZE_ALL);
-			addEditMeasureTypeDisplay.buildDataTable(currentMeasureTypeList);
-		}	    
-	}
+//	private void setMeasureTypeOnView() {
+//		Collections.sort(currentMeasureDetail.getMeasureTypeSelectedList(), new MeasureType.Comparator());
+//		if (currentMeasureDetail.getMeasureTypeSelectedList() != null) {
+//			currentMeasureTypeList = new ManageMeasureTypeModel(currentMeasureDetail.getMeasureTypeSelectedList());
+//			currentMeasureTypeList.setPageSize(SearchView.PAGE_SIZE_ALL);
+//			addEditMeasureTypeDisplay.buildDataTable(currentMeasureTypeList);
+//		}	    
+//	}
 	
 	/**
 	 * Removes the selected measure type.
 	 */
-	protected void removeSelectedMeasureType() {
-		List<MeasureType> selectedMt = currentMeasureTypeList.getSelectedMeasureType();
-		for (MeasureType mt: selectedMt) {
-			currentMeasureDetail.getMeasureTypeList().remove(mt);
-		}
-		metaDataDisplay.setMeasureTypeList(currentMeasureDetail.getMeasureTypeList());
-		setMeasureTypeOnView();
-	}
+//	protected void removeSelectedMeasureType() {
+//		List<MeasureType> selectedMt = currentMeasureTypeList.getSelectedMeasureType();
+//		for (MeasureType mt: selectedMt) {
+//			currentMeasureDetail.getMeasureTypeSelectedList().remove(mt);
+//		}
+//		metaDataDisplay.setMeasureTypeList(currentMeasureDetail.getMeasureTypeSelectedList());
+//		setMeasureTypeOnView();
+//	}
 
 	/**
 	 * Removes the selected author.
@@ -1521,16 +1558,17 @@ private void setAuthorsListOnView() {
 		dbAuthorList.clear();
 		dbAuthorList.addAll(currentMeasureDetail.getAuthorList());
 		authorList = currentMeasureDetail.getAuthorList();
-		if (currentMeasureDetail.getMeasureTypeList() != null) {
-			metaDataDisplay.setMeasureTypeList(currentMeasureDetail.getMeasureTypeList());
+		if (currentMeasureDetail.getMeasureTypeSelectedList() != null) {
+			metaDataDisplay.setMeasureTypeSelectedList(currentMeasureDetail.getMeasureTypeSelectedList());
 		} else {
 			List<MeasureType> measureTypeList = new ArrayList<MeasureType>();
-			metaDataDisplay.setMeasureTypeList(measureTypeList);
-			currentMeasureDetail.setMeasureTypeList(measureTypeList);
+			metaDataDisplay.setMeasureTypeSelectedList(measureTypeList);
+			currentMeasureDetail.setMeasureTypeSelectedList(measureTypeList);
 		}
 		dbMeasureTypeList.clear();
-		dbMeasureTypeList.addAll(currentMeasureDetail.getMeasureTypeList());
-		measureTypeList = currentMeasureDetail.getMeasureTypeList();
+		dbMeasureTypeList.addAll(currentMeasureDetail.getMeasureTypeSelectedList());
+		getAllMeasureTypes();
+		measureTypeList = currentMeasureDetail.getMeasureTypeSelectedList();
 		
 		if (currentMeasureDetail.getQdsSelectedList() != null) {
 		metaDataDisplay.setQdmSelectedList(currentMeasureDetail.getQdsSelectedList());
@@ -1699,7 +1737,7 @@ private void setAuthorsListOnView() {
 		currentMeasureDetail.setRiskAdjustment(metaDataDisplay.getRiskAdjustment().getValue());
 		currentMeasureDetail.setVersionNumber(metaDataDisplay.getVersionNumber().getText());
 		currentMeasureDetail.setAuthorList(authorList);
-		currentMeasureDetail.setMeasureTypeList(measureTypeList);
+		currentMeasureDetail.setMeasureTypeSelectedList(measureTypeList);
 		currentMeasureDetail.setQdsSelectedList(metaDataDisplay.getQdmSelectedList());
 		currentMeasureDetail.setComponentMeasuresSelectedList(metaDataDisplay.getComponentMeasureSelectedList());
 		currentMeasureDetail.setToCompareAuthor(dbAuthorList);
@@ -1745,18 +1783,18 @@ private void setAuthorsListOnView() {
 	/**
 	 * Display add edit measure type.
 	 */
-	private void displayAddEditMeasureType() {
-		isSubView = true;
-		
-		addEditMeasureTypeDisplay.setReturnToLink("Return to Previous");
-		currentMeasureTypeList = new ManageMeasureTypeModel(currentMeasureDetail.getMeasureTypeList());
-		currentMeasureTypeList.setPageSize(SearchView.PAGE_SIZE_ALL);
-		addEditMeasureTypeDisplay.buildDataTable(currentMeasureTypeList);
-		panel.clear();
-		panel.add(addEditMeasureTypeDisplay.asWidget());
-		previousContinueButtons.setVisible(false);	
-		Mat.focusSkipLists("MeasureComposer");
-	}
+//	private void displayAddEditMeasureType() {
+//		isSubView = true;
+//		
+//		addEditMeasureTypeDisplay.setReturnToLink("Return to Previous");
+//		currentMeasureTypeList = new ManageMeasureTypeModel(currentMeasureDetail.getMeasureTypeSelectedList());
+//		currentMeasureTypeList.setPageSize(SearchView.PAGE_SIZE_ALL);
+//		addEditMeasureTypeDisplay.buildDataTable(currentMeasureTypeList);
+//		panel.clear();
+//		panel.add(addEditMeasureTypeDisplay.asWidget());
+//		previousContinueButtons.setVisible(false);	
+//		Mat.focusSkipLists("MeasureComposer");
+//	}
 	
 	/**
 	 * Display add edit component measures.
@@ -1797,18 +1835,16 @@ private void setAuthorsListOnView() {
 	
 	/**
 	 * Adds the to measure type list.
-	 * 
-	 * @param selectedMeasureType
-	 *            the selected measure type
+	 *
 	 */
-	private void addToMeasureTypeList(String selectedMeasureType) {
-		MeasureType mt = new MeasureType();
-		mt.setDescription(selectedMeasureType);
-		measureTypeList.add(mt);
-		currentMeasureDetail.setMeasureTypeList(measureTypeList);
-		metaDataDisplay.setMeasureTypeList(currentMeasureDetail.getMeasureTypeList());
-		setMeasureTypeOnView();
-	}
+//	private void addToMeasureTypeList(String selectedMeasureType) {
+//		MeasureType mt = new MeasureType();
+//		mt.setDescription(selectedMeasureType);
+//		measureTypeList.add(mt);
+//		currentMeasureDetail.setMeasureTypeSelectedList(measureTypeList);
+//		metaDataDisplay.setMeasureTypeList(currentMeasureDetail.getMeasureTypeSelectedList());
+//		setMeasureTypeOnView();
+//	}
 
 
 	/* (non-Javadoc)
@@ -1829,6 +1865,8 @@ private void setAuthorsListOnView() {
 			}
 		}
 		getAppliedQDMList(true);
+		MatContext.get().getAllMeasureTypes();
+		getAllMeasureTypes();
 		//getComponentMeasures();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MetaDataView.containerPanel");
 		Mat.focusSkipLists("MeasureComposer");

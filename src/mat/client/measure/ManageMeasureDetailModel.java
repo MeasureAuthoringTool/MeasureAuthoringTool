@@ -100,7 +100,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	private List<Author> authorList;
 	
 	/** The measure type list. */
-	private List<MeasureType> measureTypeList;
+	private List<MeasureType> measureTypeSelectedList;
 	
 	/** The qds selected list. */
 	private List<QualityDataSetDTO> qdsSelectedList;
@@ -287,18 +287,18 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 * 
 	 * @return the measure type list
 	 */
-	public List<MeasureType> getMeasureTypeList() {
-		return measureTypeList;
+	public List<MeasureType> getMeasureTypeSelectedList() {
+		return measureTypeSelectedList;
 	}
 	
 	/**
 	 * Sets the measure type list.
 	 * 
 	 * @param measureTypeList
-	 *            the new measure type list
+	 *            the new measure type list 
 	 */
-	public void setMeasureTypeList(List<MeasureType> measureTypeList) {
-		this.measureTypeList = measureTypeList;
+	public void setMeasureTypeSelectedList(List<MeasureType> measureTypeSelectedList) {
+		this.measureTypeSelectedList = measureTypeSelectedList;
 	}
 	
 	/**
@@ -1788,7 +1788,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ ", improvNotations=" + improvNotations + ", stratification="
 				+ stratification + ", referencesList=" + referencesList
 				+ ", authorList=" + authorList + ", measureTypeList="
-				+ measureTypeList + ", qdsSelectedList=" + qdsSelectedList 
+				+ measureTypeSelectedList + ", qdsSelectedList=" + qdsSelectedList 
 				+",componentMeasuresSelectedList=" +componentMeasuresSelectedList
 				+ ", toCompareAuthor=" + toCompareAuthor
 				+ ", toCompareMeasure=" + toCompareMeasure 

@@ -1865,9 +1865,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			}
 		}
 		getAppliedQDMList(true);
-		MatContext.get().getAllMeasureTypes();
 		getAllMeasureTypes();
-		//getComponentMeasures();
 		MeasureComposerPresenter.setSubSkipEmbeddedLink("MetaDataView.containerPanel");
 		Mat.focusSkipLists("MeasureComposer");
 		clearMessages();

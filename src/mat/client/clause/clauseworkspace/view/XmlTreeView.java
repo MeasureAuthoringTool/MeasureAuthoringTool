@@ -1531,6 +1531,11 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 									canPaste = true;
 								}
 								break;
+							case CellTreeNode.CLAUSE_NODE:
+								if(selectedNode.getParent().getName().contains("Stratification")){
+									canPaste = true;
+								}
+								
 							default:
 								break;
 						}
@@ -1562,6 +1567,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							isDirty = true;
 						}
 					}
+					if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)										
+							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
+							&& (selectedNode.getParent().getNodeType() == CellTreeNode.CLAUSE_NODE)
+							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE) 					
+							&& (selectedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)){
+							copy();
+							removeNode();
+							isDirty = true;
+						
+					}
 				}
 			} else if (keyCode == PopulationWorkSpaceConstants.DELETE_DELETE) { //DELETE
 				popupPanel.hide();
@@ -1584,16 +1599,37 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							isDirty = true;
 						}
 					}
-				}
-			if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
-					&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
-					&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
-					&& (selectedNode.getNodeType() != CellTreeNode.LOGICAL_OP_NODE)
-					&& (selectedNode.getParent().getNodeType() == CellTreeNode.CLAUSE_NODE)
-					&& (selectedNode.getNodeType() == CellTreeNode.SUBTREE_REF_NODE)){
-					removeNode();
-					isDirty = true;
 				
+				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
+						&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
+						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
+						&& (selectedNode.getNodeType() != CellTreeNode.LOGICAL_OP_NODE)
+						&& (selectedNode.getParent().getNodeType() == CellTreeNode.CLAUSE_NODE)
+						&& (selectedNode.getNodeType() == CellTreeNode.SUBTREE_REF_NODE)){
+						removeNode();
+						isDirty = true;
+					
+				}
+				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
+						&& (selectedNode.getParent().getName().equalsIgnoreCase("Stratification"))						
+						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
+						&& (selectedNode.getParent().getNodeType() == CellTreeNode.MASTER_ROOT_NODE)
+						&& (selectedNode.getNodeType() == CellTreeNode.ROOT_NODE) 
+						&& (selectedNode.getParent().getChilds().size() > 1)
+						&& (selectedNode.getNodeType() != CellTreeNode.LOGICAL_OP_NODE)){
+						removeNode();
+						isDirty = true;
+					
+				}
+				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)										
+						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
+						&& (selectedNode.getParent().getNodeType() == CellTreeNode.CLAUSE_NODE)
+						&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE) 					
+						&& (selectedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)){
+						removeNode();
+						isDirty = true;
+					
+				}
 			}
 		}
 	if ((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.PLUS_FF)

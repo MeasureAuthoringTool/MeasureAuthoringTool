@@ -1570,6 +1570,17 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)										
 							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
 							&& (selectedNode.getParent().getNodeType() == CellTreeNode.CLAUSE_NODE)
+							&& (selectedNode.getParent().getName().contains("Stratum"))
+							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE) 					
+							&& (selectedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)){
+							copy();
+							removeNode();
+							isDirty = true;
+						
+					}
+					if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)										
+							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
+							&& (selectedNode.getParent().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)						
 							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE) 					
 							&& (selectedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)){
 							copy();

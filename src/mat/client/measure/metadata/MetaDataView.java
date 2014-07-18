@@ -1011,12 +1011,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 *
 	 * @param measuresSelectedList the measures selected list
 	 */
-	public void updateMeasureTypeSelectedList(List<MeasureType> measuresSelectedList) {
+	public void updateMeasureTypeSelectedList(List<MeasureType> measureTypeList) {
 		if (measureTypeSelectedList.size() != 0) {
 			for (int i = 0; i < measureTypeSelectedList.size(); i++) {
-			for (int j = 0; j < measuresSelectedList.size(); j++) {
-					if (measureTypeSelectedList.get(i).getAbbrDesc().equalsIgnoreCase(measuresSelectedList.get(j).getAbbrDesc())) {
-						measureTypeSelectedList.set(i, measuresSelectedList.get(j));
+			for (int j = 0; j < measureTypeList.size(); j++) {
+					if (measureTypeSelectedList.get(i).getDescription().equalsIgnoreCase(measureTypeList.get(j).getDescription())) {
+						measureTypeSelectedList.set(i, measureTypeList.get(j));
 						break;
 					}
 				}
@@ -1151,7 +1151,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		sortProvider.refresh();
 		sortProvider.getList().addAll(result);
 		updateLoadingState(componentMeasureCellTable);
-		componentMeasureSelectedList.addAll(result);
+		componentMeasureSelectedList = result;
 		componentMeasureCellTable = addMeasuresColumnToTable(editable);
 		updateComponentMeasuresSelectedList(selectedMeasureList);
 		sortProvider.addDataDisplay(componentMeasureCellTable);
@@ -1214,8 +1214,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 				boolean isSelected = false;
 				if (measureTypeSelectedList.size() > 0) {
 					for (int i = 0; i < measureTypeSelectedList.size(); i++) {
-						if (measureTypeSelectedList.get(i).getAbbrDesc()
-								.equalsIgnoreCase(object.getAbbrDesc())) {
+						if (measureTypeSelectedList.get(i).getDescription()
+								.equalsIgnoreCase(object.getDescription())) {
 							isSelected = true;
 							break;
 						}
@@ -1236,8 +1236,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 					measureTypeSelectedList.add(object);
 				} else {
 					for (int i = 0; i < measureTypeSelectedList.size(); i++) {
-						if (measureTypeSelectedList.get(i).getAbbrDesc()
-								.equalsIgnoreCase(object.getAbbrDesc())) {
+						if (measureTypeSelectedList.get(i).getDescription()
+								.equalsIgnoreCase(object.getDescription())) {
 							measureTypeSelectedList.remove(i);
 							break;
 						}

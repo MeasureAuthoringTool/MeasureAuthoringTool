@@ -1009,7 +1009,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/**
 	 * Update measure type selected list.
 	 *
-	 * @param measuresSelectedList the measures selected list
+	 * @param measureTypeList the measure type list
 	 */
 	public void updateMeasureTypeSelectedList(List<MeasureType> measureTypeList) {
 		if (measureTypeSelectedList.size() != 0) {
@@ -1290,10 +1290,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			sortProvider.addDataDisplay(measureTypeCellTable);
 			measureTypeCellTable.setWidth("100%");
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureTypeListSummary",
-					"In the following Measure List table,Select is given in first Column, Measure Name is given in Second column,"
-							+ " Version in Third column, Finalized Date in fouth column.");
-			Label label = (Label)LabelBuilder
-			.buildInvisibleLabel("selectedMeasureTypeSummary","Selected Items: "+ measureTypeSelectedList.size());
+					"In the following Measure Type List table,Select is given in first Column and Measure Type is given in Second column");
 			measureTypeCellTable.getElement().setAttribute("id", "MeasureTypeListCellTable");
 			measureTypeCellTable.getElement().setAttribute("aria-describedby", "measureTypeListSummary");
 			measureTypeSPanel.setSize("500px", "150px");

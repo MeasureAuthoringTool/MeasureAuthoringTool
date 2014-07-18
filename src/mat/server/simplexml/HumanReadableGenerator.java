@@ -1415,7 +1415,7 @@ public class HumanReadableGenerator {
 		String uuid = qdm.getAttributes().getNamedItem("uuid").getNodeValue();
 
 		String xPathString = "//elementRef[@id='" + uuid
-				+ "']/attribute[@name='negation rationale']";
+				+ "']/attribute[@name='negation rationale'][@qdmUUID]";
 		NodeList elementRefList = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(), xPathString);
 

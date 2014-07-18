@@ -883,18 +883,18 @@ public class MeasurePackageClauseCellListWidget {
 										rightCellListSelectionModel.getSelectedObject().getId())) {
 							detail.setAssociatedPopulationUUID(null);
 							groupingClausesMap.put(detail.getName(), detail);
-							if(detail.getType().equals(DENOMINATOR)){
+							if(detail.getType().equals(DENOMINATOR) && numClauseType!=null){
 								groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
-							} else if(detail.getType().equals(NUMERATOR)){
+							} else if(detail.getType().equals(NUMERATOR) && denomClauseType!=null){
 								groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
 							}
 						} else if (detail.getId().equalsIgnoreCase(
 								rightCellListSelectionModel.getSelectedObject().getId())) {
 							detail.setAssociatedPopulationUUID(null);
 							groupingClausesMap.put(detail.getName(), detail);
-							if(detail.getType().equals(DENOMINATOR)){
+							if(detail.getType().equals(DENOMINATOR) && numClauseType!=null){
 								groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
-							} else if(detail.getType().equals(NUMERATOR)){
+							} else if(detail.getType().equals(NUMERATOR) && denomClauseType!=null){
 								groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
 							}
 						}

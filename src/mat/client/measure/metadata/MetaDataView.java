@@ -140,7 +140,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected VerticalPanel componentMeasuresListVPanel = new VerticalPanel();
 	
 	/** The measure type v panel. */
-	protected VerticalPanel measureTypeVPanel = new VerticalPanel();
+	//protected VerticalPanel measureTypeVPanel = new VerticalPanel();
 	
 	/** The qdm item count list s panel. */
 	protected ScrollPanel qdmItemCountListSPanel = new ScrollPanel();
@@ -245,7 +245,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	protected Label componentMeasuresLabel = new Label();
 	
 	/** The measure type label. */
-	protected Label measureTypeLabel = new Label();
+	//protected Label measureTypeLabel = new Label();
 	
 	/** The counter. */
 	private int counter = 0;
@@ -324,7 +324,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private HorizontalPanel horzComponentMeasurePanel = new HorizontalPanel();
 	
 	/** The horz measure type panel. */
-	private HorizontalPanel horzMeasureTypePanel = new HorizontalPanel();
+	//private HorizontalPanel horzMeasureTypePanel = new HorizontalPanel();
 	
 	/** The qdm selected list v panel. */
 	VerticalPanel qdmSelectedListVPanel=new VerticalPanel();
@@ -333,7 +333,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	VerticalPanel componentMeasuresSelectedListVPanel = new VerticalPanel();
 	
 	/** The measure type selected list v panel. */
-	VerticalPanel measureTypeSelectedListVPanel = new VerticalPanel();
+	//VerticalPanel measureTypeSelectedListVPanel = new VerticalPanel();
 	
 	/** The qdm selected list s panel. */
 	ScrollPanel qdmSelectedListSPanel=new ScrollPanel();
@@ -565,8 +565,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(measScoringInput);
 		fPanel.add(new SpacerWidget());
 		
-		fPanel.add(LabelBuilder.buildLabel(measureTypeCellTable, "Measure Type"));
-		fPanel.add(horzMeasureTypePanel);
+		fPanel.add(LabelBuilder.buildLabel(measureTypeCellTable, "Measure Type - Optional"));
+		fPanel.add(measureTypeSPanel);
 		//fPanel.add(addEditMeasureType);
 		fPanel.add(new SpacerWidget());
 		
@@ -1244,8 +1244,8 @@ public class MetaDataView implements MetaDataDetailDisplay{
 					}
 
 				}
-				measureTypeLabel.setText("Selected Items: "
-						+ measureTypeSelectedList.size());
+				//measureTypeLabel.setText("Selected Items: "
+					//	+ measureTypeSelectedList.size());
 			}
 		});
 		measureTypeCellTable.addColumn(selectColumn,
@@ -1273,9 +1273,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	 */
 	@Override
 	public void buildMeasureTypeCellTable(List<MeasureType> measureTypeDTOList, boolean editable){
-		horzMeasureTypePanel.clear(); 
+		//horzMeasureTypePanel.clear(); 
 		measureTypeSPanel.clear();
-		measureTypeSelectedListVPanel.clear();
+		//measureTypeSelectedListVPanel.clear();
 		measureTypeSPanel.setStyleName("cellTablePanel");
 		if(measureTypeDTOList.size()>0){
 			measureTypeCellTable = new CellTable<MeasureType>();
@@ -1296,24 +1296,24 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			measureTypeSPanel.setSize("500px", "150px");
 			measureTypeSPanel.add(invisibleLabel);
 			measureTypeSPanel.setWidget(measureTypeCellTable);
-			measureTypeVPanel.add(measureTypeSPanel);
-			horzMeasureTypePanel.add(measureTypeVPanel);
-			VerticalPanel vPanel = new VerticalPanel();
-			vPanel.setWidth("10px");
-			horzMeasureTypePanel.add(vPanel);
-			SimplePanel sPanel = new SimplePanel();
-			sPanel.setHeight("75px");
-			measureTypeSelectedListVPanel.add(sPanel);
-			measureTypeLabel.setText("Selected Items: " + measureTypeSelectedList.size());
-			measureTypeSelectedListVPanel.add(measureTypeLabel);
-			horzMeasureTypePanel.add(measureTypeSelectedListVPanel);
-			} else {
-				HTML desc = new HTML("<p> No Measures Types Selected.</p>");
-				measureTypeSPanel.setSize("200px", "75px");
-				measureTypeSPanel.setWidget(desc); 
-				measureTypeVPanel.add(measureTypeSPanel);
-				horzMeasureTypePanel.add(measureTypeVPanel);
-			}
+			//measureTypeVPanel.add(measureTypeSPanel);
+			//horzMeasureTypePanel.add(measureTypeVPanel);
+			//VerticalPanel vPanel = new VerticalPanel();
+			//vPanel.setWidth("10px");
+			//horzMeasureTypePanel.add(vPanel);
+		//	SimplePanel sPanel = new SimplePanel();
+			//sPanel.setHeight("75px");
+			//measureTypeSelectedListVPanel.add(sPanel);
+//			/measureTypeLabel.setText("Selected Items: " + measureTypeSelectedList.size());
+			//measureTypeSelectedListVPanel.add(measureTypeLabel);
+			//horzMeasureTypePanel.add(measureTypeSelectedListVPanel);
+			} //else {
+//				HTML desc = new HTML("<p> No Measures Types Selected.</p>");
+//				measureTypeSPanel.setSize("200px", "75px");
+//				measureTypeSPanel.setWidget(desc); 
+//				measureTypeVPanel.add(measureTypeSPanel);
+//				horzMeasureTypePanel.add(measureTypeVPanel);
+//			}
 			
 	}
 	

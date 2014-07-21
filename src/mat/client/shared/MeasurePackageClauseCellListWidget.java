@@ -868,35 +868,34 @@ public class MeasurePackageClauseCellListWidget {
 							getType().equalsIgnoreCase(NUMERATOR)) {
 						otherClauseType = DENOMINATOR;
 					}
-					//If clause if removed, and if it is associated with any other clause,
+					//If clause is removed, and if it is associated with any other clause,
 					//all it's associations are removed.
 					String denomClauseType = null;
 					String numClauseType = null;
+					boolean isAssociated = false;
 					for (MeasurePackageClauseDetail detail : groupingPopulationList) {
 						if(detail.getType().equals(DENOMINATOR)){
 							denomClauseType = detail.getName();
 						} else if(detail.getType().equals(NUMERATOR)){
 							numClauseType = detail.getName();
 						}
-						if ((detail.getAssociatedPopulationUUID() != null)
+						if ((detail.getAssociatedPopulationUUID() != null)  
 								&& detail.getAssociatedPopulationUUID().equalsIgnoreCase(
 										rightCellListSelectionModel.getSelectedObject().getId())) {
 							detail.setAssociatedPopulationUUID(null);
 							groupingClausesMap.put(detail.getName(), detail);
-							if(detail.getType().equals(DENOMINATOR) && numClauseType!=null){
-								groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
-							} else if(detail.getType().equals(NUMERATOR) && denomClauseType!=null){
-								groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
-							}
+							isAssociated = true;
 						} else if (detail.getId().equalsIgnoreCase(
 								rightCellListSelectionModel.getSelectedObject().getId())) {
 							detail.setAssociatedPopulationUUID(null);
 							groupingClausesMap.put(detail.getName(), detail);
-							if(detail.getType().equals(DENOMINATOR) && numClauseType!=null){
-								groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
-							} else if(detail.getType().equals(NUMERATOR) && denomClauseType!=null){
-								groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
-							}
+							isAssociated = true;
+						}
+						if(denomClauseType != null  && isAssociated){
+							groupingClausesMap.get(denomClauseType).setAssociatedPopulationUUID(null);
+						} 
+						if(numClauseType!=null && isAssociated){
+							groupingClausesMap.get(numClauseType).setAssociatedPopulationUUID(null);
 						}
 						if ((otherClauseType != null)
 								&& otherClauseType.equalsIgnoreCase(detail.getType())) {

@@ -206,7 +206,7 @@ public class ZipPackager {
 	 * @return the zip barr
 	 */
 	public byte[] getZipBarr(String emeasureName, byte[] wkbkbarr,
-						 String packageDate,String emeasureHTMLStr, String simpleXmlStr) {
+						 String packageDate,String emeasureHTMLStr, String simpleXmlStr, String emeasureXMLStr) {
 		byte[] ret = null;
 		
 		FileNameUtility fnu = new FileNameUtility();
@@ -217,16 +217,19 @@ public class ZipPackager {
 			String emeasureHumanReadablePath = "";
 			String codeListXLSPath = "";
 			String simpleXMLPath = "";
+			String emeasureXMLPath = "";
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		    ZipOutputStream zip = new ZipOutputStream(baos);
 			parentPath = fnu.getParentPath(emeasureName +"_v4");
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + "_v4");
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + "_v4",packageDate);
 			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName +"_v4");
-		
+			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_v4");
+			
 		    addBytesToZip(simpleXMLPath, simpleXmlStr.getBytes(), zip);
 			addBytesToZip(emeasureHumanReadablePath, emeasureHTMLStr.getBytes(), zip);
 		    addBytesToZip(codeListXLSPath, wkbkbarr, zip);
+		    addBytesToZip(emeasureXMLPath,emeasureXMLStr.getBytes(),zip);
 		    
 		    zip.close();
 		    ret = baos.toByteArray();
@@ -269,13 +272,16 @@ public class ZipPackager {
 			String emeasureHumanReadablePath = "";
 			String codeListXLSPath = "";
 			String simpleXMLPath = "";
+			String emeasureXMLPath = "";
 			parentPath = fnu.getParentPath(seqNum +"_"+ emeasureName + "_v4");
 			emeasureHumanReadablePath = parentPath+File.separator+fnu.getEmeasureHumanReadableName(emeasureName + "_v4");
 			codeListXLSPath = parentPath+File.separator+fnu.getEmeasureXLSName(emeasureName + "_v4",packageDate);
 			simpleXMLPath = parentPath+File.separator+fnu.getSimpleXMLName(emeasureName + "_v4");
+			emeasureXMLPath = parentPath+File.separator+fnu.getEmeasureXMLName(emeasureName + "_v4");
 			filesMap.put(simpleXMLPath, simpleXmlStr.getBytes());
 			filesMap.put(emeasureHumanReadablePath, emeasureHTMLStr.getBytes());
 			filesMap.put(codeListXLSPath, wkbkbarr);
+			filesMap.put(emeasureXMLPath, emeasureXMLPath.getBytes());
 		}catch(Exception e){
 			System.out.println(e.toString());
 			System.out.println(e.fillInStackTrace());

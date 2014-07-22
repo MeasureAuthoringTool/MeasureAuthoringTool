@@ -142,6 +142,8 @@ public class MessageDelegate {
 	 */
 	public static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in case of more than one Population, "
 			+ " Numerator and Denominator must contain one association.";
+
+
 	
 	
 	/**
@@ -195,11 +197,13 @@ public class MessageDelegate {
 	private final String CATEGORY_REQUIRED = "Category is required.";
 	
 	/** The clause work space validation error. */
-	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR = "Measure logic is incomplete."
-			+ " LHS and RHS are required for Timings, Relationships and Satisfies functions.";
-	/** The clause work space validation error. */
-	private final String CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION = "Measure Logic is incomplete."
-			+ " Union, Intersection and Functions must contain at least one child Node.";
+	private final String MEASURE_LOGIC_IS_INCOMPLETE = " Measure logic is incomplete.";
+	
+	/** The lhs rhs required. */
+	private final String LHS_RHS_REQUIRED = " LHS and RHS are required for Timings, Relationships and Satisfies functions.";
+	
+	/** The atleast one child required. */
+	private final String ATLEAST_ONE_CHILD_REQUIRED = " Union, Intersection and Functions must contain at least one child Node.";
 	
 	/** The clause work space validation success. */
 	private final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
@@ -670,14 +674,6 @@ public class MessageDelegate {
 		return CHANGES_SAVED;
 	}
 	
-	/**
-	 * Gets the clause work space validation error.
-	 * 
-	 * @return String the cLAUSE_WORK_SPACE_VALIDATION_ERROR
-	 */
-	public String getCLAUSE_WORK_SPACE_VALIDATION_ERROR() {
-		return CLAUSE_WORK_SPACE_VALIDATION_ERROR;
-	}
 	
 	/**
 	 * Gets the clause work space validation success.
@@ -2021,14 +2017,32 @@ public class MessageDelegate {
 	public String getRatioNumDenoAssociationRequired() {
 		return RATIO_NUM_DENO_ASSOCIATION_REQUIRED;
 	}
+	
+	/**
+	 * Gets the measure logic is incomplete.
+	 *
+	 * @return the mEASURE_LOGIC_IS_INCOMPLETE
+	 */
+	public String getMEASURE_LOGIC_IS_INCOMPLETE() {
+		return MEASURE_LOGIC_IS_INCOMPLETE;
+	}
 
 	/**
-	 * Gets the clause work space validation error at setoperator or function.
+	 * Gets the lhs rhs required.
 	 *
-	 * @return the cLAUSE_WORK_SPACE_VALIDATION_ERROR_FOR_SETOPERATORS_FUNCTIONS
+	 * @return the lHS_RHS_REQUIRED
 	 */
-	public String getCLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION() {
-		return CLAUSE_WORK_SPACE_VALIDATION_ERROR_AT_SETOPERATOR_OR_FUNCTION;
+	public String getLHS_RHS_REQUIRED() {
+		return LHS_RHS_REQUIRED;
+	}
+
+	/**
+	 * Gets the atleaste one child required.
+	 *
+	 * @return the aTLEASTE_ONE_CHILD_REQUIRED
+	 */
+	public String getATLEAST_ONE_CHILD_REQUIRED() {
+		return ATLEAST_ONE_CHILD_REQUIRED;
 	}
 	
 }

@@ -28,7 +28,7 @@ public class MessageDelegate {
 	public static final String CODE_LIST_ADDED = "Code has been successfully added to the value set.";
 	
 	/** The Constant CODE_LIST_ADDED_GROUP. */
-	public static final String CODE_LIST_ADDED_GROUP = "Value Set has been successfully added to the grouped value set.";
+	public static final String CODE_LIST_ADDED_GROUP = "Value set has been successfully added to the grouped value set.";
 	
 	/** The Constant COMPLETE. */
 	public static final int COMPLETE = 1;
@@ -43,10 +43,10 @@ public class MessageDelegate {
 	public static final String FIRST_NAME_REQUIRED = "First Name is required.";
 	
 	/** The Constant GROUPED_VALUE_SET_COMPLETE_SAVED. */
-	public static final String GROUPED_VALUE_SET_COMPLETE_SAVED = "Grouped Value Set successfully saved as complete.";
+	public static final String GROUPED_VALUE_SET_COMPLETE_SAVED = "Grouped value set successfully saved as complete.";
 	
 	/** The Constant GROUPED_VALUE_SET_DRAFT_SAVED. */
-	public static final String GROUPED_VALUE_SET_DRAFT_SAVED = "Grouped Value Set successfully saved as a draft.";
+	public static final String GROUPED_VALUE_SET_DRAFT_SAVED = "Grouped value set successfully saved as a draft.";
 	
 	/** The Constant GROUPING_SAVED. */
 	public static final String GROUPING_SAVED = "Grouping has been saved.";
@@ -67,10 +67,10 @@ public class MessageDelegate {
 	public static final String LOGIN_USER_REQUIRED = "User Name is required.";
 	
 	/** The Constant NO_CODE_LISTS. */
-	public static final String NO_CODE_LISTS = "No Value Sets returned. Please search again.";
+	public static final String NO_CODE_LISTS = "No value sets returned. Please search again.";
 	
 	/** The Constant NO_MEASURES. */
-	public static final String NO_MEASURES = "No Measures returned. Please search again.";
+	public static final String NO_MEASURES = "No measures returned. Please search again.";
 	
 	/** The Constant OID_REQUIRED. */
 	public static final String OID_REQUIRED = "OID is required.";
@@ -79,7 +79,7 @@ public class MessageDelegate {
 	public static final String OID_TOO_LONG = "OID cannot exceed 50 characters.";
 	
 	/** The Constant ONE_AND. */
-	public static final String ONE_AND = "A Clause should start with only one AND.";
+	public static final String ONE_AND = "A clause should start with only one AND.";
 	
 	/** The Constant ORG_REQUIRED. */
 	public static final String ORG_REQUIRED = "Organization is required.";
@@ -129,10 +129,10 @@ public class MessageDelegate {
 	public static final String TEMP_EMAIL_SENT = "Temporary Password E-mail has been sent.";
 	
 	/** The Constant VALUE_SET_COMPLETE_SAVED. */
-	public static final String VALUE_SET_COMPLETE_SAVED = "Value Set successfully saved as complete.";
+	public static final String VALUE_SET_COMPLETE_SAVED = "Value set successfully saved as complete.";
 	
 	/** The Constant VALUE_SET_DRAFT_SAVED. */
-	public static final String VALUE_SET_DRAFT_SAVED = "Value Set successfully saved as a draft.";
+	public static final String VALUE_SET_DRAFT_SAVED = "Value set successfully saved as a draft.";
 	
 	/** The Constant VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED. */
 	public static final String VSAC_VERSION_OR_EFFECTIVE_DATE_REQUIRED = "Value set version or effective date has been selected."
@@ -140,7 +140,7 @@ public class MessageDelegate {
 	/**
 	 * Ratio Measure - Association Required for Numerator/Denominator in case of more than 1 IP.
 	 */
-	public static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in case of more than one Population, "
+	public static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in the case of more than one Population, "
 			+ " Numerator and Denominator must contain one association.";
 
 
@@ -203,7 +203,7 @@ public class MessageDelegate {
 	private final String LHS_RHS_REQUIRED = " LHS and RHS are required for Timings, Relationships and Satisfies functions.";
 	
 	/** The atleast one child required. */
-	private final String ATLEAST_ONE_CHILD_REQUIRED = " Union, Intersection and Functions must contain at least one child Node.";
+	private final String ATLEAST_ONE_CHILD_REQUIRED = " Union, Intersection, and Functions must contain at least one child node.";
 	
 	/** The clause work space validation success. */
 	private final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
@@ -213,10 +213,10 @@ public class MessageDelegate {
 			+ " Logic must only contain Clauses and Logical operators.";	
 
 	/** The clause work space validation success. */
-	private final String POPULATION_WORK_SPACE_VALIDATION_SUCCESS = " Measure Logic validation successful.";
+	private final String POPULATION_WORK_SPACE_VALIDATION_SUCCESS = " Measure logic validation successful.";
 	
 	/** The code list required. */
-	private final String CODE_LIST_REQUIRED = "Value Set is required.";
+	private final String CODE_LIST_REQUIRED = "Value set is required.";
 	
 	/** The code required. */
 	private final String CODE_REQUIRED = "Code is required.";

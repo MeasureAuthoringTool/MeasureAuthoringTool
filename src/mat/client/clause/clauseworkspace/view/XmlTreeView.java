@@ -3,11 +3,11 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -25,7 +25,9 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
+
 import org.apache.commons.lang.StringUtils;
+
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -85,6 +87,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 import com.google.gwt.xml.client.Node;
+import com.ibm.icu.util.Measure;
 
 
 
@@ -150,6 +153,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The is valid. */
 	private boolean isValid = true;
+	/**
+	 * Stratum Node name.
+	 */
+	private static final String STRATUM = "Stratum";
+	
+	/** The Constant MEASURE_OBSERVATION. */
+	private static final String MEASURE_OBSERVATION = "Measure Observation";
+	private static final String STRATIFICATION = "Stratification";
+	/**
 	
 	/**
 	 * Comment Area Remaining Character Label - Population Work Space.
@@ -1622,7 +1634,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					
 				}
 				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
-						&& (selectedNode.getParent().getName().equalsIgnoreCase("Stratification"))						
+						&& (selectedNode.getParent().getName().equalsIgnoreCase(STRATIFICATION))						
 						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
 						&& (selectedNode.getParent().getNodeType() == CellTreeNode.MASTER_ROOT_NODE)
 						&& (selectedNode.getNodeType() == CellTreeNode.ROOT_NODE) 
@@ -1634,7 +1646,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)										
 						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
-						&& (selectedNode.getParent().getNodeType() == CellTreeNode.CLAUSE_NODE)
+						&& (selectedNode.getParent().getName().contains(MEASURE_OBSERVATION) || selectedNode.getParent().getName().contains(STRATUM))
 						&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE) 					
 						&& (selectedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)){
 						removeNode();

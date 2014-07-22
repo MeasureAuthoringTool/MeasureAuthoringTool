@@ -182,7 +182,8 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 					pasteMenu.setEnabled(true);
 				}
 				if ((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
-						|| (xmlTreeDisplay.getSelectedNode().getParent().getName().contains(STRATUM))) {
+						|| (xmlTreeDisplay.getSelectedNode().getParent().getName().contains(STRATUM))
+						|| (xmlTreeDisplay.getSelectedNode().getParent().getName().contains(MEASURE_OBSERVATION))) {
 					deleteMenu.setEnabled(true);
 				}
 				if (((xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)

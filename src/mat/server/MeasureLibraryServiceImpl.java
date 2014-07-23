@@ -2658,7 +2658,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			//validate only from MeasureGrouping
 			String XAPTH_MEASURE_GROUPING="/measure/measureGrouping/ group/packageClause" +
-					"[not(@uuid = preceding:: group/packageClause/@uuid)]/@uuid";
+					"[not(@uuid = preceding:: group/packageClause/@uuid)]";
+			
 			List<String> measureGroupingIDList = new ArrayList<String>();;
 			
 			try {
@@ -2666,7 +2667,15 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						XPathConstants.NODESET);
 				
 				for(int i=0 ; i<measureGroupingNodeList.getLength();i++){
-					measureGroupingIDList.add(measureGroupingNodeList.item(i).getNodeValue());
+					Node childNode = measureGroupingNodeList.item(i);
+					String uuid = childNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					String type = childNode.getAttributes().getNamedItem("type").getNodeValue();		
+					if(type.equals("stratification")){
+						List<String> stratificationClausesIDlist = getStratificationClasuesIDList(uuid, xmlProcessor);
+						measureGroupingIDList.addAll(stratificationClausesIDlist);						
+					} else {
+					measureGroupingIDList.add(uuid);
+					}
 				}
 			} catch (XPathExpressionException e2) {
 				// TODO Auto-generated catch block
@@ -2679,15 +2688,12 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			
 			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" or"));
-			String XPATH_POPULATION = "/measure/populations//clause["+uuidXPathString+"]";
+			String XPATH_POPULATION = "/measure//clause["+uuidXPathString+"]";
 			//get the Population Worspace Logic that are Used in Measure Grouping
 			NodeList populationNodeList;
 			try {
 				populationNodeList = (NodeList) xPath.evaluate(XPATH_POPULATION, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODESET);
-			
-//			Node newNode = populationNodeList.item(0);
-//			NodeList populationsChildList = newNode.getChildNodes();
 				
 					for (int i = 0; i <populationNodeList.getLength() && !flag; i++) {
 					Node childNode =populationNodeList.item(i);
@@ -2815,6 +2821,24 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	
+	private List<String> getStratificationClasuesIDList(String uuid, XmlProcessor xmlProcessor) {
+		
+		String XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES = "/measure/strata/stratification" +
+				"[@uuid='"+uuid+"']/clause/@uuid";
+		List<String> clauseList = new ArrayList<String>();
+		try {
+			NodeList stratificationClausesNodeList = (NodeList)xPath.evaluate(XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES, 
+					xmlProcessor.getOriginalDoc(),XPathConstants.NODESET);
+			for(int i=0;i<stratificationClausesNodeList.getLength();i++){
+				clauseList.add(stratificationClausesNodeList.item(i).getNodeValue());
+			}
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	return clauseList;
+	}
+
 	/**
 	 * Gets the used subtree ref ids.
 	 *

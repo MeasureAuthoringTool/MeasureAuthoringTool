@@ -3,7 +3,6 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
-
 import mat.client.ImageResources;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
@@ -11,7 +10,6 @@ import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
-
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates;
 import com.google.gwt.safehtml.client.SafeHtmlTemplates.Template;
@@ -88,7 +86,10 @@ public class ClauseWorkspaceContextMenu {
 	
 	/** The copy menu. */
 	MenuItem copyMenu;
-	
+	/** The copy menu. */
+	/*
+	 * POC Global Copy Paste.
+	 * MenuItem copyToClipBoardMenu;*/
 	/**
 	 * Move Up Menu.
 	 */
@@ -101,7 +102,11 @@ public class ClauseWorkspaceContextMenu {
 	
 	/** The paste menu. */
 	MenuItem pasteMenu;
-	
+	/** The paste menu. */
+	/*
+	 * POC Global Copy Paste.
+	MenuItem pasteFromClipboardMenu;
+	*/
 	/** The delete menu. */
 	MenuItem deleteMenu;
 	
@@ -158,6 +163,17 @@ public class ClauseWorkspaceContextMenu {
 		};
 		copyMenu = new MenuItem(template.menuTable("Copy", "Ctrl+C"), copyCmd);
 		
+		/*
+		 * POC Global Copy Paste.
+		 * Command copyToClipboardCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+				xmlTreeDisplay.copyToClipboard();
+			}
+		};
+		copyToClipBoardMenu = new MenuItem(template.menuTable("Copy To Clipboard", ""), copyToClipboardCmd);*/
+		
 		Command deleteCmd = new Command() {
 			@Override
 			public void execute() {
@@ -209,6 +225,24 @@ public class ClauseWorkspaceContextMenu {
 		};
 		pasteMenu = new MenuItem(template.menuTable("Paste", "Ctrl+V"), pasteCmd);
 		
+		/*
+		 * POC Global Copy Paste.
+		 * Command pasteFromClipboardCmd = new Command() {
+			@Override
+			public void execute() {
+				xmlTreeDisplay.setDirty(true);
+				if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.ROOT_NODE) {
+					pasteRootNodeTypeItem();
+				} else if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.MASTER_ROOT_NODE) {
+					pasteMasterRootNodeTypeItem();
+				} else {
+					xmlTreeDisplay.pasteFromClipboard();
+				}
+				popupPanel.hide();
+			}
+		};
+		pasteFromClipboardMenu = new MenuItem(template.menuTable("Paste From Clipboard", ""), pasteFromClipboardCmd);*/
+		
 		Command expandCmd = new Command() {
 			@Override
 			public void execute() {
@@ -224,12 +258,12 @@ public class ClauseWorkspaceContextMenu {
 				System.out.println("View Human Readable clicked...");
 				popupPanel.hide();
 				CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
-				if(selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE || selectedNode.getNodeType() == CellTreeNode.SUBTREE_NODE){
+				if((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE) || (selectedNode.getNodeType() == CellTreeNode.SUBTREE_NODE)){
 					String xmlForPopulationNode = XmlConversionlHelper.createXmlFromTree(selectedNode);
 					final String populationName = selectedNode.getName();
 					String measureId = MatContext.get().getCurrentMeasureId();
-//					String url = GWT.getModuleBaseURL() + "export?id=" +measureId+ "&xml=" + xmlForPopulationNode+ "&format=subtreeHTML";
-//					Window.open(url + "&type=open", "_blank", "");
+					//					String url = GWT.getModuleBaseURL() + "export?id=" +measureId+ "&xml=" + xmlForPopulationNode+ "&format=subtreeHTML";
+					//					Window.open(url + "&type=open", "_blank", "");
 					
 					MatContext.get().getMeasureService().getHumanReadableForNode(measureId, xmlForPopulationNode, new AsyncCallback<String>() {
 						
@@ -237,14 +271,14 @@ public class ClauseWorkspaceContextMenu {
 						public void onSuccess(String result) {
 							showHumanReadableDialogBox(result,populationName);
 						}
-									
-
+						
+						
 						@Override
 						public void onFailure(Throwable caught) {
-														
+							
 						}
 					});
-				}				
+				}
 			}
 		};
 		viewHumanReadableMenu = new MenuItem(template.menuTable("View Human Readable", ""), viewHumanReadableCmd);
@@ -261,8 +295,16 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.focus();
 		popupPanel.clear();
 		copyMenu.setEnabled(false);
+		/*
+		 * POC Global Copy Paste.
+		 * copyToClipBoardMenu.setEnabled(false);
+		 * */
 		deleteMenu.setEnabled(false);
 		pasteMenu.setEnabled(false);
+		/*
+		 * POC Global Copy Paste.
+		 * pasteFromClipboardMenu.setEnabled(false);
+		 * */
 		cutMenu.setEnabled(false);
 		viewHumanReadableMenu.setEnabled(false);
 		showHideExpandMenu();
@@ -352,6 +394,10 @@ public class ClauseWorkspaceContextMenu {
 	 * @param popupPanel -PopupPanel.
 	 */
 	private void subTreeNodePopUpMenuItems(final PopupPanel popupPanel) {
+		/*
+		 * POC Global Copy Paste.
+		 * CellTreeNode copiedNode = MatContext.get().getCopiedNode();
+		 */
 		subMenuBar = new MenuBar(true);
 		popupMenuBar.setAutoOpen(true);
 		subMenuBar.setAutoOpen(true);
@@ -380,23 +426,45 @@ public class ClauseWorkspaceContextMenu {
 			if (xmlTreeDisplay.getSelectedNode().hasChildren()) {
 				addMenu.setEnabled(false);
 				pasteMenu.setEnabled(false);
+				/*
+				 * POC Global Copy Paste.
+				 * pasteFromClipboardMenu.setEnabled(false);
+				 */
 			}
 			copyMenu.setEnabled(false);
+			/*
+			 * POC Global Copy Paste.
+			 * copyToClipBoardMenu.setEnabled(false);
+			 */
 		}
 		//Allow paste option
 		if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_NODE)) {
 			// Only One child is allow in SubTree Root Node.
+			/*
+			 * POC Global Copy Paste.
+			 * if (!xmlTreeDisplay.getSelectedNode().hasChildren() && (copiedNode != null)) {
+				pasteMenu.setEnabled(true);
+				pasteFromClipboardMenu.setEnabled(true);
+			}
+			*/
 			if (!xmlTreeDisplay.getSelectedNode().hasChildren() && xmlTreeDisplay.getCopiedNode() != null) {
 				pasteMenu.setEnabled(true);
 			}
-			
 		}
 		//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
-		if ((xmlTreeDisplay.getCopiedNode() != null)
-				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)
+		/* POC GLobal Copy Paste
+		 * if ((copiedNode != null)
+				&& (copiedNode.getNodeType() != CellTreeNode.SUBTREE_NODE)
 				&& (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)) {
 			pasteMenu.setEnabled(true);
-		}
+			pasteFromClipboardMenu.setEnabled(true);
+		}*/
+		//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
+				if ((xmlTreeDisplay.getCopiedNode() != null)
+						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)
+						&& (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)) {
+					pasteMenu.setEnabled(true);
+				}
 		if (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE) {
 			deleteMenu.setEnabled(true);
 			if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE) {
@@ -461,13 +529,17 @@ public class ClauseWorkspaceContextMenu {
 		addCommonMenus();
 		//MAT-3887 Disabling copy and paste options to avoid adding the relationship to relationship
 		copyMenu.setEnabled(false);
-//		if ((xmlTreeDisplay.getCopiedNode() != null)
-//				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
-//				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
-//						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
-//			pasteMenu.setEnabled(true);
-//		}
+		//		if ((xmlTreeDisplay.getCopiedNode() != null)
+		//				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
+		//				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
+		//						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
+		//			pasteMenu.setEnabled(true);
+		//		}
 		pasteMenu.setEnabled(false);
+		/*
+		 * POC Global Copy Paste.
+		 * copyToClipBoardMenu.setEnabled(false);
+		pasteFromClipboardMenu.setEnabled(false);*/
 		//End MAT-3887
 		if (xmlTreeDisplay.getSelectedNode().getParent().getNodeType() != CellTreeNode.CLAUSE_NODE) {
 			deleteMenu.setEnabled(true);
@@ -496,8 +568,9 @@ public class ClauseWorkspaceContextMenu {
 		//Commented for User story MAT-3167.
 		/*createAddMenus(MatContext.get().logicalOps, CellTreeNode.LOGICAL_OP_NODE
 				, subMenuBar);*/ // creating logical Operators Menu 2nd level
-		
-		if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") || 
+		/*POC Global Copy Paste.
+		 * CellTreeNode copiedNode = MatContext.get().getCopiedNode();*/
+		if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") ||
 				xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")){
 			MenuBar subMenuBarLHS = createMenuBarWithOnlyQDM();
 			addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
@@ -506,11 +579,11 @@ public class ClauseWorkspaceContextMenu {
 			MenuBar relSetOpMenuBar = new MenuBar(true);
 			subMenuBarRHS.addItem("Relationship", relSetOpMenuBar); //functions menu 2nd level
 			createAddMenus(MatContext.get().relationships, CellTreeNode.RELATIONSHIP_NODE
-					, relSetOpMenuBar); 
+					, relSetOpMenuBar);
 			addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
 			
 			//Disable  RHS by default.
-			if (xmlTreeDisplay.getSelectedNode().getChilds() == null || xmlTreeDisplay.getSelectedNode().getChilds().size() == 0 ) {
+			if ((xmlTreeDisplay.getSelectedNode().getChilds() == null) || (xmlTreeDisplay.getSelectedNode().getChilds().size() == 0) ) {
 				addMenuRHS.setEnabled(false);
 			}
 			//Disable LHS when One element is added and disable RHS when two elements are added.
@@ -525,12 +598,23 @@ public class ClauseWorkspaceContextMenu {
 				pasteMenu.setEnabled(true);
 			else
 				pasteMenu.setEnabled(false);
+			/*
+			 * POC Global Copy Paste.
+			 * if((copiedNode != null)
+					&& (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) &&
+					(xmlTreeDisplay.getSelectedNode().getChilds() != null) && (xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)) {
+				pasteMenu.setEnabled(true);
+				pasteFromClipboardMenu.setEnabled(true);
+			} else {
+				pasteMenu.setEnabled(false);
+				pasteFromClipboardMenu.setEnabled(false);
+			}*/
 			popupMenuBar.addItem(addMenuLHS);
 			popupMenuBar.addItem(addMenuRHS);
 			
 		} else {//Menu Items for functions other than SATISFIES ALL and SATISFIES ANY
 			createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
-					, subMenuBar);	
+					, subMenuBar);
 			createAddQDM_MenuItem(subMenuBar);
 			MenuBar timing = new MenuBar(true);
 			subMenuBar.addItem("Timing", timing); //Timing menu 2nd level
@@ -548,11 +632,22 @@ public class ClauseWorkspaceContextMenu {
 		addCommonMenus();
 		copyMenu.setEnabled(true);
 		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
-		if ((xmlTreeDisplay.getCopiedNode() != null)
-				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) && ! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") && 
+				if ((xmlTreeDisplay.getCopiedNode() != null)
+						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) && ! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") && 
+						! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")) {
+					pasteMenu.setEnabled(true);
+				}
+		/*
+		 * POC Global Copy Paste.
+		 * copyToClipBoardMenu.setEnabled(true);
+		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
+		if ((copiedNode != null)
+				&& (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE) &&
+				! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") &&
 				! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")) {
 			pasteMenu.setEnabled(true);
-		}
+			pasteFromClipboardMenu.setEnabled(true);
+		}*/
 		cutMenu.setEnabled(true);
 		deleteMenu.setEnabled(true);
 		addMoveUpMenu(popupPanel);
@@ -571,11 +666,12 @@ public class ClauseWorkspaceContextMenu {
 		};
 		editMenu = new MenuItem("Edit", true, editFunctionsCmd);
 		popupMenuBar.addItem(editMenu);
-		if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") || 
-				xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY"))
+		if(xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") ||
+				xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")) {
 			editMenu.setEnabled(false);
-		else
+		} else {
 			editMenu.setEnabled(true);
+		}
 		checkIsParentSatisfy();
 	}
 	/**
@@ -586,6 +682,9 @@ public class ClauseWorkspaceContextMenu {
 		subMenuBar = new MenuBar(true);
 		popupMenuBar.setAutoOpen(true);
 		subMenuBar.setAutoOpen(true);
+		/*
+		 * POC Global Copy Paste.
+		 * CellTreeNode copiedNode = MatContext.get().getCopiedNode();*/
 		createAddMenus(MatContext.get().setOps, CellTreeNode.SET_OP_NODE
 				, subMenuBar);
 		createAddQDM_MenuItem(subMenuBar);
@@ -607,11 +706,19 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.addSeparator(separator);
 		addCommonMenus();
 		copyMenu.setEnabled(true);
-		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
 		if ((xmlTreeDisplay.getCopiedNode() != null)
 				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)) {
 			pasteMenu.setEnabled(true);
 		}
+		/*
+		 * POC Global Copy Paste.
+		 * copyToClipBoardMenu.setEnabled(true);
+		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
+		if ((copiedNode != null)
+				&& (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)) {
+			pasteMenu.setEnabled(true);
+			pasteFromClipboardMenu.setEnabled(true);
+		}*/
 		deleteMenu.setEnabled(true);
 		addMoveUpMenu(popupPanel);
 		popupMenuBar.addItem(moveUpMenu);
@@ -666,6 +773,10 @@ public class ClauseWorkspaceContextMenu {
 		addCommonMenus();
 		copyMenu.setEnabled(true);
 		pasteMenu.setEnabled(false);
+		/*
+		 * POC Global Copy Paste.
+		 * copyToClipBoardMenu.setEnabled(true);
+		pasteFromClipboardMenu.setEnabled(false);*/
 		cutMenu.setEnabled(true);
 		deleteMenu.setEnabled(true);
 		addMoveUpMenu(popupPanel);
@@ -682,18 +793,18 @@ public class ClauseWorkspaceContextMenu {
 	 * Check is parent satisfy.
 	 */
 	private void checkIsParentSatisfy(){
-		if((xmlTreeDisplay.getSelectedNode().getParent().getLabel().equalsIgnoreCase("SATISFIES ALL") || 
+		if((xmlTreeDisplay.getSelectedNode().getParent().getLabel().equalsIgnoreCase("SATISFIES ALL") ||
 				xmlTreeDisplay.getSelectedNode().getParent().getLabel().equalsIgnoreCase("SATISFIES ANY"))){
 			deleteMenu.setEnabled(checkIfTopChildNode());
 			cutMenu.setEnabled(checkIfTopChildNode());
-//			if( xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.ELEMENT_REF_NODE)
-//				pasteMenu.setEnabled(checkIfTopChildNode());
-//			if( xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-//				if(xmlTreeDisplay.getSelectedNode().getParent().getChilds() != null && xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1)
-//					pasteMenu.setEnabled(true);
-//				else
-//					pasteMenu.setEnabled(false);
-//			}
+			//			if( xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.ELEMENT_REF_NODE)
+			//				pasteMenu.setEnabled(checkIfTopChildNode());
+			//			if( xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
+			//				if(xmlTreeDisplay.getSelectedNode().getParent().getChilds() != null && xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1)
+			//					pasteMenu.setEnabled(true);
+			//				else
+			//					pasteMenu.setEnabled(false);
+			//			}
 			moveUpMenu.setEnabled(checkIfTopChildNodeForSatisfy());
 			moveDownMenu.setEnabled(checkIfLastChildNodeForSatisfy());
 		}
@@ -708,6 +819,9 @@ public class ClauseWorkspaceContextMenu {
 		addMenuLHS = new MenuItem("Add LHS", subMenuBarLHS); //LHS Sub Menu
 		MenuBar subMenuBarRHS = createMenuBarWithTimingFuncAndQDM(true);
 		addMenuRHS = new MenuItem("Add RHS", subMenuBarRHS); //RHS Sub Menu
+		/*
+		 * POC Global Copy Paste.
+		 * CellTreeNode copiedNode = MatContext.get().getCopiedNode();*/
 		//Disable  RHS by default.
 		if (xmlTreeDisplay.getSelectedNode().getChilds() == null) {
 			addMenuRHS.setEnabled(false);
@@ -727,6 +841,16 @@ public class ClauseWorkspaceContextMenu {
 		popupMenuBar.addSeparator(separator);
 		addCommonMenus();
 		copyMenu.setEnabled(true);
+		/*
+		 * POC Global Copy Paste.
+		 * copyToClipBoardMenu.setEnabled(true);
+		if ((copiedNode != null)
+				&& (copiedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
+				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
+						|| (xmlTreeDisplay.getSelectedNode().getChilds().size() < 2))) {
+			pasteMenu.setEnabled(true);
+			pasteFromClipboardMenu.setEnabled(true);
+		}*/
 		if ((xmlTreeDisplay.getCopiedNode() != null)
 				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE)
 				&& ((xmlTreeDisplay.getSelectedNode().getChilds() == null)
@@ -941,9 +1065,17 @@ public class ClauseWorkspaceContextMenu {
 	 */
 	protected void pasteRootNodeTypeItem() {
 		String clauseNodeName = xmlTreeDisplay.getCopiedNode().getName();
+		/*
+		 * POC Global Copy Paste.
+		 *String clauseNodeName = MatContext.get().getCopiedNode().getName();
+		 **/
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = clauseNodeName.substring(0, clauseNodeName.lastIndexOf(" ")) + " " + seqNumber;
 		CellTreeNode pasteNode = xmlTreeDisplay.getCopiedNode().cloneNode();
+		/*
+		 * POC Global Copy Paste.
+		 *
+		 *CellTreeNode pasteNode =  MatContext.get().getCopiedNode().cloneNode();*/
 		pasteNode.setName(name);
 		pasteNode.setLabel(name);
 		xmlTreeDisplay.getSelectedNode().appendChild(pasteNode);
@@ -951,6 +1083,9 @@ public class ClauseWorkspaceContextMenu {
 		CellTreeNode clonedNode = pasteNode.cloneNode();//created new instance for pasted node
 		clonedNode.setParent(pasteNode.getParent());//set parent of the cloned node
 		xmlTreeDisplay.setCopiedNode(clonedNode); //make the new cloned node as the copied node
+		/*
+		 * POC Global Copy Paste.
+		 *MatContext.get().setCopiedNode(clonedNode);*/
 	}
 	
 	/**
@@ -958,11 +1093,18 @@ public class ClauseWorkspaceContextMenu {
 	 */
 	protected void pasteMasterRootNodeTypeItem() {
 		String rootNodeName = xmlTreeDisplay.getCopiedNode().getName();
+		/*
+		 * POC Global Copy Paste.
+		 * String rootNodeName = MatContext.get().getCopiedNode().getName();*/
 		int seqNumber = getNextHighestSequence(xmlTreeDisplay.getSelectedNode());
 		String name = rootNodeName.substring(0, rootNodeName.lastIndexOf(" ")) + " " + seqNumber;
 		// In Case of Stratification RootNode UUID is Duplicating itself. So we are
 		// Creating new UUID for Every new Copy n Paste of Root Node
 		CellTreeNode rootNode = xmlTreeDisplay.getCopiedNode();
+		/*
+		 * POC Global Copy Paste.
+		 *CellTreeNode rootNode = MatContext.get().getCopiedNode();
+		 **/
 		rootNode.setUUID(UUIDUtilClient.uuid());
 		CellTreeNode pasteNode = rootNode.cloneNode();
 		pasteNode.setName(name);
@@ -972,6 +1114,9 @@ public class ClauseWorkspaceContextMenu {
 		CellTreeNode clonedNode = pasteNode.cloneNode();//created new instance for pasted node
 		clonedNode.setParent(pasteNode.getParent());//set parent of the cloned node
 		xmlTreeDisplay.setCopiedNode(clonedNode);  //make the new cloned node as the copied node
+		/*
+		 * POC Global Copy Paste.
+		 *MatContext.get().setCopiedNode(clonedNode);*/
 	}
 	
 	/**
@@ -1017,6 +1162,10 @@ public class ClauseWorkspaceContextMenu {
 	protected void addCommonMenus() {
 		popupMenuBar.addItem(copyMenu);
 		popupMenuBar.addItem(pasteMenu);
+		/*
+		 * POC Global Copy Paste changes.
+		 * popupMenuBar.addItem(copyToClipBoardMenu);
+		popupMenuBar.addItem(pasteFromClipboardMenu);*/
 		popupMenuBar.addItem(cutMenu);
 		popupMenuBar.addItem(deleteMenu);
 		popupMenuBar.addItem(expandMenu);
@@ -1132,8 +1281,9 @@ public class ClauseWorkspaceContextMenu {
 			return false;
 		}
 		for (int i = 0; i <= parentNode.getChilds().size(); i++) {
-			if(i == 0 && selectedNode.equals(selectedNode.getParent().getChilds().get(i)))
+			if((i == 0) && selectedNode.equals(selectedNode.getParent().getChilds().get(i))) {
 				return false;
+			}
 			if (selectedNode.equals(selectedNode.getParent().getChilds().get(i))) {
 				return !(i == (parentNode.getChilds().size() - 1));
 			}

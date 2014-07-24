@@ -7,7 +7,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import mat.client.clause.QDSAttributesService;
 import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
@@ -25,9 +24,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
 import mat.shared.ConstantMessages;
 import mat.shared.UUIDUtilClient;
-
 import org.apache.commons.lang.StringUtils;
-
 import com.google.gwt.cell.client.AbstractCell;
 import com.google.gwt.cell.client.Cell.Context;
 import com.google.gwt.cell.client.ValueUpdater;
@@ -87,8 +84,6 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 import com.google.gwt.view.client.SingleSelectionModel;
 import com.google.gwt.view.client.TreeViewModel;
 import com.google.gwt.xml.client.Node;
-import com.ibm.icu.util.Measure;
-
 
 
 // TODO: Auto-generated Javadoc
@@ -193,12 +188,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * Constant COMMENT.
 	 */
 	private static final String COMMENT = "COMMENT";
-	
-	/** The Constant AsyncCallback. */
-	private static final int AsyncCallback = 0;
-	
-	/** The Constant DataType. */
-	private static final int DataType = 0;
 	/**
 	 * Comment Ok Button.
 	 */
@@ -271,10 +260,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The is dirty. */
 	private boolean isDirty = false;
-	
-	/** The set error type. */
-	private String setErrorType;
-	
 	/** The is clause open. */
 	private boolean isClauseOpen;
 	
@@ -1432,6 +1417,33 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 		
 	}
+	
+	/*
+	 * 
+	 * POC Global Copy Paste.
+	 * 
+	 * @Override
+	public void copyToClipboard() {
+		String generatedXml = XmlConversionlHelper.createXmlFromTree(selectedNode);
+		MatContext.get().setCopiedStringOnClipboard(generatedXml);
+		MatContext.get().setCopiedNodeNameOnClipBoard(selectedNode.getName());
+		copiedNode = selectedNode.cloneNode();
+		copiedNode.setParent(selectedNode.getParent());//Setting Parent node
+		MatContext.get().setCopiedNode(copiedNode);
+	}
+	
+	@Override
+	public void pasteFromClipboard() {
+		if (selectedNode != null) {
+			CellTreeNode pasteNode = MatContext.get().getCopiedNode().cloneNode();//It was calling copiedNode object before
+			selectedNode.appendChild(pasteNode);
+			closeSelectedOpenNodes(cellTree.getRootTreeNode());
+			selectionModel.setSelected(selectedNode, true);
+			CellTreeNode clonedNode = pasteNode.cloneNode();//created new instance for pasted node, prevent from overriding
+			clonedNode.setParent(pasteNode.getParent());//set parent of the cloned node
+			MatContext.get().setCopiedNode(clonedNode);//Assigning pasted value to the copiedNode
+		}
+	}*/
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getCopiedNode()
 	 */
@@ -1579,25 +1591,25 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							isDirty = true;
 						}
 					}
-					if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)										
-							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
+					if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
+							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
 							&& (selectedNode.getParent().getNodeType() == CellTreeNode.CLAUSE_NODE)
 							&& (selectedNode.getParent().getName().contains("Stratum"))
-							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE) 					
+							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
 							&& (selectedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)){
-							copy();
-							removeNode();
-							isDirty = true;
+						copy();
+						removeNode();
+						isDirty = true;
 						
 					}
-					if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)										
-							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
-							&& (selectedNode.getParent().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)						
-							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE) 					
+					if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
+							&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
+							&& (selectedNode.getParent().getNodeType() == CellTreeNode.LOGICAL_OP_NODE)
+							&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
 							&& (selectedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)){
-							copy();
-							removeNode();
-							isDirty = true;
+						copy();
+						removeNode();
+						isDirty = true;
 						
 					}
 				}
@@ -1610,18 +1622,18 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE))
 						|| ((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE)
 								&& (selectedNode.getParent().getChilds().size() > 1))) {
-						if( selectedNode.getParent().getName().equals("SATISFIES ALL")
+					if( selectedNode.getParent().getName().equals("SATISFIES ALL")
 							||  selectedNode.getParent().getName().equals("SATISFIES ANY") ){
-							if(selectedNode.getParent().getChilds().indexOf(selectedNode) != 0){
-								removeNode();
-								isDirty = true;
-							}
-						}
-						else{
+						if(selectedNode.getParent().getChilds().indexOf(selectedNode) != 0){
 							removeNode();
 							isDirty = true;
 						}
 					}
+					else{
+						removeNode();
+						isDirty = true;
+					}
+				}
 				
 				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
 						&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
@@ -1629,33 +1641,35 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						&& (selectedNode.getNodeType() != CellTreeNode.LOGICAL_OP_NODE)
 						&& (selectedNode.getParent().getNodeType() == CellTreeNode.CLAUSE_NODE)
 						&& (selectedNode.getNodeType() == CellTreeNode.SUBTREE_REF_NODE)){
-						removeNode();
-						isDirty = true;
+					removeNode();
+					isDirty = true;
 					
 				}
 				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
-						&& (selectedNode.getParent().getName().equalsIgnoreCase(STRATIFICATION))						
-						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
+						&& (selectedNode.getParent().getName().equalsIgnoreCase(STRATIFICATION))
+						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
 						&& (selectedNode.getParent().getNodeType() == CellTreeNode.MASTER_ROOT_NODE)
-						&& (selectedNode.getNodeType() == CellTreeNode.ROOT_NODE) 
+						&& (selectedNode.getNodeType() == CellTreeNode.ROOT_NODE)
 						&& (selectedNode.getParent().getChilds().size() > 1)
 						&& (selectedNode.getNodeType() != CellTreeNode.LOGICAL_OP_NODE)){
-						removeNode();
-						isDirty = true;
+					removeNode();
+					isDirty = true;
 					
 				}
-				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)										
-						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)						
-						&& (selectedNode.getParent().getName().contains(MEASURE_OBSERVATION) || selectedNode.getParent().getName().contains(STRATUM))
-						&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE) 					
-						&& (selectedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)){
-						removeNode();
-						isDirty = true;
+				if((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
+						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE)
+						&& (selectedNode.getParent().getNodeType() == CellTreeNode.CLAUSE_NODE)
+						&& (selectedNode.getParent().getName().contains(MEASURE_OBSERVATION)
+								|| selectedNode.getParent().getName().contains(STRATUM))
+								&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
+								&& (selectedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)){
+					removeNode();
+					isDirty = true;
 					
 				}
 			}
 		}
-	if ((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.PLUS_FF)
+		if ((event.isShiftKeyDown() && ((keyCode == PopulationWorkSpaceConstants.PLUS_FF)
 				|| (keyCode == PopulationWorkSpaceConstants.PLUS_IE)))) {
 			//EXPAND/COLLAPSE (+(Shift +) Expand| - Collapse)
 			popupPanel.hide();
@@ -1777,44 +1791,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 */
 	@Override
 	public void validateCellTreeNodes(TreeNode treeNode) {
-		
-		//List<String> dataTypeList = new ArrayList<String>();
-		//getDataTypesForAllQDMs(treeNode, dataTypeList);
-		//System.out.println("DataType list:"+dataTypeList);
 		validateClauseWorkspaceCellTreeNodes(treeNode);
 	}
-	
-	/**
-	 * Gets the data types for all qd ms.
-	 *
-	 * @param treeNode the tree node
-	 * @param dataTypeList the data type list
-	 * @return the data types for all qd ms
-	 */
-	/*private void getDataTypesForAllQDMs(TreeNode treeNode, List<String> dataTypeList){
-		
-		for (int i = 0; i < treeNode.getChildCount(); i++) {
-			CellTreeNode node = (CellTreeNode) treeNode.getChildValue(i);
-			if (node.getNodeType() == CellTreeNode.ELEMENT_REF_NODE){
-				String nodeName = node.getName();
-				String[] nodeArr = nodeName.split(":");
-				String nodeDataType = "";
-				if(nodeArr.length == 2){
-					nodeDataType = nodeArr[1].trim();
-				}
-				if(nodeArr.length == 3){
-					nodeDataType = nodeArr[1].trim()+": "+nodeArr[2].trim();
-				}
-				dataTypeList.add(nodeDataType);
-			}else{
-				TreeNode subTree = treeNode.setChildOpen(i, ((CellTreeNode) treeNode.getChildValue(i)).isOpen(),
-						((CellTreeNode) treeNode.getChildValue(i)).isOpen());
-				if ((subTree != null) && (subTree.getChildCount() > 0)) {
-					getDataTypesForAllQDMs(subTree, dataTypeList);
-				}
-			}
-		}
-	}*/
 	
 	/**
 	 * Validate clause workspace cell tree nodes.
@@ -1847,16 +1825,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}else{
 					for(String element: inValidNodeList){
 						if(element.equalsIgnoreCase("inValidAtTimingRelationShip")){
-							warningMessages.add(MatContext.get().getMessageDelegate().getLHS_RHS_REQUIRED());	
+							warningMessages.add(MatContext.get().getMessageDelegate().getLHS_RHS_REQUIRED());
 						}
 						if(element.equalsIgnoreCase("inValidAtSetoperatorAndOrFunction")){
-							warningMessages.add(MatContext.get().getMessageDelegate().getATLEAST_ONE_CHILD_REQUIRED());	
+							warningMessages.add(MatContext.get().getMessageDelegate().getATLEAST_ONE_CHILD_REQUIRED());
 						}
 					}
 					
 					if(warningMessages.size()>0){
 						if(!warningMessages.get(0).equalsIgnoreCase(MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCOMPLETE())){
-						warningMessages.add(0, MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCOMPLETE());
+							warningMessages.add(0, MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCOMPLETE());
 						}
 						getWarningMessageDisplay().setMessages(warningMessages);
 					}

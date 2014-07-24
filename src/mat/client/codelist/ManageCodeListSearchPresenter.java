@@ -52,6 +52,7 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ManageCodeListSearchPresenter.
  */
@@ -286,24 +287,29 @@ public class ManageCodeListSearchPresenter {
 		
 		/**
 		 * Gets the save button.
-		 * 
+		 *
+		 * @param results the results
+		 * @param pageCount the page count
+		 * @param totalResults the total results
+		 * @param currentPage the current page
+		 * @param pageSize the page size
 		 * @return the save button
 		 */
-		public HasClickHandlers getSaveButton();
+		//public HasClickHandlers getSaveButton();
 		
 		/**
 		 * Gets the clear button.
 		 * 
 		 * @return the clear button
 		 */
-		public HasClickHandlers getClearButton();
+		//public HasClickHandlers getClearButton();
 		
 		/**
 		 * Gets the user comment.
 		 * 
 		 * @return the user comment
 		 */
-		public HasValue<String> getUserComment();
+		//public HasValue<String> getUserComment();
 		
 		/**
 		 * Builds the data table.
@@ -367,8 +373,10 @@ public class ManageCodeListSearchPresenter {
 		
 		/**
 		 * Reset.
+		 *
+		 * @param s the new error message
 		 */
-		public void reset();
+		//public void reset();
 		
 		/**
 		 * Sets the error message.
@@ -419,7 +427,7 @@ public class ManageCodeListSearchPresenter {
 		 * @param readOnly
 		 *            the new user comments read only
 		 */
-		public void setUserCommentsReadOnly(boolean readOnly);
+		//public void setUserCommentsReadOnly(boolean readOnly);
 		
 	}
 	
@@ -857,43 +865,43 @@ public class ManageCodeListSearchPresenter {
 	 *            the history display
 	 */
 	private void historyDisplayHandlers(final HistoryDisplay historyDisplay) {
-			historyDisplay.getSaveButton().addClickHandler(new ClickHandler(){
-			@Override
-			public void onClick(ClickEvent event) {
-				
-				if(historyDisplay.getUserComment().getValue().length() > 2000){
-					String s = historyDisplay.getUserComment().getValue();
-					historyDisplay.getUserComment().setValue(
-							s.substring(0, 2000));
-				}
-				
-				String codeListId = historyDisplay.getCodeListId();
-				String eventType = ConstantMessages.USER_COMMENT;
-				String additionalInfo = historyDisplay.getUserComment().getValue();
-					MatContext.get().getAuditService().recordCodeListEvent(codeListId, eventType, additionalInfo, new AsyncCallback<Boolean>(){
-					@Override
-					public void onSuccess(Boolean result) {
-						//add user message
-						historyDisplay.reset();
-						history();
-					}
-
-					@Override
-					public void onFailure(Throwable caught) {
-						historyDisplay.setErrorMessage(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
-					}
-				});
-			}
-		});
-
-		historyDisplay.getClearButton().addClickHandler(new ClickHandler(){
-		
-			@Override
-			public void onClick(ClickEvent event) {
-				historyDisplay.clearErrorMessage();
-				historyDisplay.getUserComment().setValue("");
-			}
-		});
+//			historyDisplay.getSaveButton().addClickHandler(new ClickHandler(){
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				
+//				if(historyDisplay.getUserComment().getValue().length() > 2000){
+//					String s = historyDisplay.getUserComment().getValue();
+//					historyDisplay.getUserComment().setValue(
+//							s.substring(0, 2000));
+//				}
+//				
+//				String codeListId = historyDisplay.getCodeListId();
+//				String eventType = ConstantMessages.USER_COMMENT;
+//				String additionalInfo = historyDisplay.getUserComment().getValue();
+//					MatContext.get().getAuditService().recordCodeListEvent(codeListId, eventType, additionalInfo, new AsyncCallback<Boolean>(){
+//					@Override
+//					public void onSuccess(Boolean result) {
+//						//add user message
+//						historyDisplay.reset();
+//						history();
+//					}
+//
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						historyDisplay.setErrorMessage(MatContext.get().getMessageDelegate().getUnableToProcessMessage());
+//					}
+//				});
+//			}
+//		});
+//
+//		historyDisplay.getClearButton().addClickHandler(new ClickHandler(){
+//		
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				historyDisplay.clearErrorMessage();
+//				historyDisplay.getUserComment().setValue("");
+//			}
+//		});
 
 		historyDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(new PageSizeSelectionEventHandler() {
 			
@@ -1374,9 +1382,9 @@ public class ManageCodeListSearchPresenter {
 								public void onHistoryClicked(CodeListSearchDTO codeList) {
 									historyDisplay.setCodeListId(codeList.getId());
 									historyDisplay.setCodeListName(codeList.getName());
-									historyDisplay.reset();
+									//historyDisplay.reset();
 									historyDisplay.setReturnToLinkText("<< Return to Value Set Ownership");
-									historyDisplay.setUserCommentsReadOnly(!codeList.isDraft());
+									//historyDisplay.setUserCommentsReadOnly(!codeList.isDraft());
 									history();
 									adminSearchDisplay.clearTransferCheckBoxes();
 								}
@@ -1423,9 +1431,9 @@ public class ManageCodeListSearchPresenter {
 						public void onHistoryClicked(CodeListSearchDTO result) {
 							historyDisplay.setCodeListId(result.getId());
 							historyDisplay.setCodeListName(result.getName());
-							historyDisplay.reset();
+							//historyDisplay.reset();
 							historyDisplay.setReturnToLinkText("<< Return to Value Set Library");
-							historyDisplay.setUserCommentsReadOnly(!result.isDraft());
+							//historyDisplay.setUserCommentsReadOnly(!result.isDraft());
 							history();
 						}
 						@Override

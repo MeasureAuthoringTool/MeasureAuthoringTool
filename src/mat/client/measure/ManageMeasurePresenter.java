@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.DTO.AuditLogDTO;
 import mat.DTO.SearchHistoryDTO;
 import mat.client.Mat;
@@ -46,6 +47,7 @@ import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -73,8 +75,6 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.AsyncDataProvider;
-import com.google.gwt.view.client.HasData;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -411,7 +411,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the clear button
 		 */
-		public HasClickHandlers getClearButton();
+		//public HasClickHandlers getClearButton();
 		
 		/**
 		 * Gets the current page.
@@ -467,14 +467,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the save button
 		 */
-		public HasClickHandlers getSaveButton();
+	//	public HasClickHandlers getSaveButton();
 		
 		/**
 		 * Gets the user comment.
 		 * 
 		 * @return the user comment
 		 */
-		public HasValue<String> getUserComment();
+		//public HasValue<String> getUserComment();
 		
 		/**
 		 * Sets the current page.
@@ -530,7 +530,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @param readOnly
 		 *            the new user comments read only
 		 */
-		public void setUserCommentsReadOnly(boolean readOnly);
+		//public void setUserCommentsReadOnly(boolean readOnly);
+		
+		public void buildCellTable(List<AuditLogDTO> results);
 	}
 	
 	/**
@@ -2042,101 +2044,101 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the history display
 	 */
 	private void historyDisplayHandlers(final HistoryDisplay historyDisplay) {
-		historyDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				
-				if (historyDisplay.getUserComment().getValue().length() > 2000) {
-					String s = historyDisplay.getUserComment().getValue();
-					historyDisplay.getUserComment().setValue(
-							s.substring(0, 2000));
-				}
-				historyDisplay.clearErrorMessage();
-				String measureId = historyDisplay.getMeasureId();
-				String eventType = ConstantMessages.USER_COMMENT;
-				String additionalInfo = historyDisplay.getUserComment()
-						.getValue();
-				MatContext
-				.get()
-				.getAuditService()
-				.recordMeasureEvent(measureId, eventType,
-						additionalInfo, false,
-						new AsyncCallback<Boolean>() {
-					@Override
-					public void onFailure(Throwable caught) {
-						historyDisplay
-						.setErrorMessage(MatContext
-								.get()
-								.getMessageDelegate()
-								.getUnableToProcessMessage());
-						// set error message
-					}
-					
-					@Override
-					public void onSuccess(Boolean result) {
-						
-						if (result) {
-							// add user message
-							historyDisplay.getUserComment()
-							.setValue("");
-							displayHistory(historyDisplay
-									.getMeasureId(),
-									historyDisplay
-									.getMeasureName());
-						}
-					}
-				});
-			}
-		});
+//		historyDisplay.getSaveButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				
+//				if (historyDisplay.getUserComment().getValue().length() > 2000) {
+//					String s = historyDisplay.getUserComment().getValue();
+//					historyDisplay.getUserComment().setValue(
+//							s.substring(0, 2000));
+//				}
+//				historyDisplay.clearErrorMessage();
+//				String measureId = historyDisplay.getMeasureId();
+//				String eventType = ConstantMessages.USER_COMMENT;
+//				String additionalInfo = historyDisplay.getUserComment()
+//						.getValue();
+//				MatContext
+//				.get()
+//				.getAuditService()
+//				.recordMeasureEvent(measureId, eventType,
+//						additionalInfo, false,
+//						new AsyncCallback<Boolean>() {
+//					@Override
+//					public void onFailure(Throwable caught) {
+//						historyDisplay
+//						.setErrorMessage(MatContext
+//								.get()
+//								.getMessageDelegate()
+//								.getUnableToProcessMessage());
+//						// set error message
+//					}
+//					
+//					@Override
+//					public void onSuccess(Boolean result) {
+//						
+//						if (result) {
+//							// add user message
+//							historyDisplay.getUserComment()
+//							.setValue("");
+//							displayHistory(historyDisplay
+//									.getMeasureId(),
+//									historyDisplay
+//									.getMeasureName());
+//						}
+//					}
+//				});
+//			}
+//		});
+//		
+//		historyDisplay.getClearButton().addClickHandler(new ClickHandler() {
+//			@Override
+//			public void onClick(ClickEvent event) {
+//				historyDisplay.clearErrorMessage();
+//				historyDisplay.getUserComment().setValue("");
+//				
+//			}
+//		});
 		
-		historyDisplay.getClearButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				historyDisplay.clearErrorMessage();
-				historyDisplay.getUserComment().setValue("");
-				
-			}
-		});
+//		historyDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
+//				new PageSizeSelectionEventHandler() {
+//					
+//					@Override
+//					public void onPageSizeSelection(PageSizeSelectionEvent event) {
+//						historyDisplay.setPageSize(event.getPageSize());
+//						displayHistory(historyDisplay.getMeasureId(),
+//								historyDisplay.getMeasureName());
+//					}
+//				});
 		
-		historyDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
-				new PageSizeSelectionEventHandler() {
-					
-					@Override
-					public void onPageSizeSelection(PageSizeSelectionEvent event) {
-						historyDisplay.setPageSize(event.getPageSize());
-						displayHistory(historyDisplay.getMeasureId(),
-								historyDisplay.getMeasureName());
-					}
-				});
-		
-		historyDisplay.getPageSelectionTool().addPageSelectionHandler(
-				new PageSelectionEventHandler() {
-					
-					@Override
-					public void onPageSelection(PageSelectionEvent event) {
-						int pageNumber = event.getPageNumber();
-						if (pageNumber == -1) { // if next button clicked
-							if (historyDisplay.getCurrentPage() == historyModel
-									.getTotalpages()) {
-								pageNumber = historyDisplay.getCurrentPage();
-							} else {
-								pageNumber = historyDisplay.getCurrentPage() + 1;
-							}
-						} else if (pageNumber == 0) { // if first button clicked
-							pageNumber = 1;
-						} else if (pageNumber == -9) { // if first button
-							// clicked
-							if (historyDisplay.getCurrentPage() == 1) {
-								pageNumber = historyDisplay.getCurrentPage();
-							} else {
-								pageNumber = historyDisplay.getCurrentPage() - 1;
-							}
-						}
-						historyDisplay.setCurrentPage(pageNumber);
-						displayHistory(historyDisplay.getMeasureId(),
-								historyDisplay.getMeasureName());
-					}
-				});
+//		historyDisplay.getPageSelectionTool().addPageSelectionHandler(
+//				new PageSelectionEventHandler() {
+//					
+//					@Override
+//					public void onPageSelection(PageSelectionEvent event) {
+//						int pageNumber = event.getPageNumber();
+//						if (pageNumber == -1) { // if next button clicked
+//							if (historyDisplay.getCurrentPage() == historyModel
+//									.getTotalpages()) {
+//								pageNumber = historyDisplay.getCurrentPage();
+//							} else {
+//								pageNumber = historyDisplay.getCurrentPage() + 1;
+//							}
+//						} else if (pageNumber == 0) { // if first button clicked
+//							pageNumber = 1;
+//						} else if (pageNumber == -9) { // if first button
+//							// clicked
+//							if (historyDisplay.getCurrentPage() == 1) {
+//								pageNumber = historyDisplay.getCurrentPage();
+//							} else {
+//								pageNumber = historyDisplay.getCurrentPage() - 1;
+//							}
+//						}
+//						historyDisplay.setCurrentPage(pageNumber);
+//						displayHistory(historyDisplay.getMeasureId(),
+//								historyDisplay.getMeasureName());
+//					}
+//				});
 		
 		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
 			@Override
@@ -2353,13 +2355,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 										Result result) {
 									historyDisplay
 									.setReturnToLinkText("<< Return to MeasureLibrary Owner Ship");
-									if (!result.isEditable()) {
-										historyDisplay
-										.setUserCommentsReadOnly(true);
-									} else {
-										historyDisplay
-										.setUserCommentsReadOnly(false);
-									}
+//									if (!result.isEditable()) {
+//										historyDisplay
+//										.setUserCommentsReadOnly(true);
+//									} else {
+//										historyDisplay
+//										.setUserCommentsReadOnly(false);
+//									}
 									
 									displayHistory(
 											result.getId(),
@@ -2535,11 +2537,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 									searchDisplay.getErrorMeasureDeletion().clear();
 									historyDisplay
 									.setReturnToLinkText("<< Return to Measure Library");
-									if (!result.isEditable()) {
-										historyDisplay.setUserCommentsReadOnly(true);
-									} else {
-										historyDisplay.setUserCommentsReadOnly(false);
-									}
+//									if (!result.isEditable()) {
+//										historyDisplay.setUserCommentsReadOnly(true);
+//									} else {
+//										historyDisplay.setUserCommentsReadOnly(false);
+//									}
 									
 									displayHistory(result.getId(), result.getName());
 								}
@@ -2996,14 +2998,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SearchHistoryDTO data) {
 				historyModel = new HistoryModel(data.getLogs());
-				historyModel.setPageSize(historyDisplay
-						.getPageSize());
-				historyModel.setTotalPages(data.getPageCount());
-				historyDisplay.buildDataTable(historyModel,
-						data.getPageCount(),
-						data.getTotalResults(),
-						historyDisplay.getCurrentPage(),
-						historyDisplay.getPageSize());
+				//historyModel.setPageSize(historyDisplay
+//					/	.getPageSize());
+				//historyModel.setTotalPages(data.getPageCount());
+//				historyDisplay.buildDataTable(historyModel,
+//						data.getPageCount(),
+//						data.getTotalResults(),
+//						historyDisplay.getCurrentPage(),
+//						historyDisplay.getPageSize());
+				historyDisplay.buildCellTable(data.getLogs());
 			}
 		});
 	}

@@ -1,11 +1,16 @@
 package mat.client.history;
 
+import java.util.Date;
+import java.util.List;
+
 import mat.DTO.AuditLogDTO;
+import mat.client.CustomPager;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.SaveCancelButtonBar;
+import mat.client.shared.MatSafeHTMLCell;
+import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -13,19 +18,27 @@ import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
 import mat.client.shared.search.SearchView;
+import mat.client.util.CellTableUtility;
 
-import com.google.gwt.event.dom.client.HasClickHandlers;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.dom.client.TableCaptionElement;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Anchor;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class HistoryBaseView.
  */
@@ -39,28 +52,28 @@ public abstract class HistoryBaseView {
 	Label logEntryLabel = new Label();
 	
 	/** The add comment. */
-	Label addComment = new Label();
+	//Label addComment = new Label();
 	
 	/** The save button. */
-	private Button saveButton;
+	//private Button saveButton;
 	
 	/** The clear button. */
-	private Button clearButton;
+	//private Button clearButton;
 	
 	/** The go back link. */
 	protected Anchor goBackLink = new Anchor("");
 	
 	/** The horizontal panel. */
-	protected HorizontalPanel horizontalPanel = new HorizontalPanel();
+//	protected HorizontalPanel horizontalPanel = new HorizontalPanel();
 	
 	/** The input text. */
-	protected TextArea	inputText = new TextArea();
+	//protected TextArea	inputText = new TextArea();
 	
 	/** The add comment panel. */
-	protected VerticalPanel addCommentPanel = new VerticalPanel();
+	//protected VerticalPanel addCommentPanel = new VerticalPanel();
 	
 	/** The comment buttons. */
-	private SaveCancelButtonBar commentButtons = new SaveCancelButtonBar();
+	//private SaveCancelButtonBar commentButtons = new SaveCancelButtonBar();
 	
 	/** The name text. */
 	protected Label nameText = new Label("");
@@ -83,56 +96,71 @@ public abstract class HistoryBaseView {
 	/** The err msg. */
 	private ErrorMessageDisplay errMsg = new ErrorMessageDisplay();
 	
+	/** The cell table panel. */
+	private VerticalPanel cellTablePanel = new VerticalPanel();
+	
+	/** The cell table. */
+	private CellTable<AuditLogDTO> cellTable;
+	
+	/** The Constant PAGE_SIZE. */
+	private static final int PAGE_SIZE = 25;
+	
+	/** The spager. */
+	private MatSimplePager spager;
+	
+	
 	
 	/**
 	 * Instantiates a new history base view.
 	 */
 	public HistoryBaseView(){
-		mainPanel.add(errMsg);
+		//mainPanel.add(errMsg);
+		cellTablePanel.setWidth("700px");
 		mainPanel.setStylePrimaryName("searchResultsContainer");
 		mainPanel.addStyleName("leftAligned");
 		nameText.addStyleName("labelStyling");
 		logEntryPanel.add(nameText);
 		logEntryPanel.add(new SpacerWidget());
-		logEntryPanel.add(view.asWidget());
+		logEntryPanel.add(cellTablePanel);
+		logEntryPanel.add(new SpacerWidget());
 		logEntryPanel.add(new SpacerWidget());
 		logEntryPanel.add(goBackLink);
-		horizontalPanel.add(logEntryPanel);
+		//horizontalPanel.add(logEntryPanel);
 		
-		SimplePanel hspacer = new SimplePanel();
-		hspacer.setWidth("10px");
-		horizontalPanel.add(hspacer);
+		//SimplePanel hspacer = new SimplePanel();
+		//hspacer.setWidth("10px");
+		//horizontalPanel.add(hspacer);
 		
-		inputText.setText("");
-		inputText.setHeight("100px");
-		inputText.setWidth("300px");
+		//inputText.setText("");
+		//inputText.setHeight("100px");
+		//inputText.setWidth("300px");
 	
-		saveButton = commentButtons.getSaveButton();
-		clearButton = commentButtons.getCancelButton();
+		//saveButton = commentButtons.getSaveButton();
+		//clearButton = commentButtons.getCancelButton();
 		
-		saveButton.setText("Save");
-		saveButton.setTitle("Save");
-		clearButton.setText("Clear");
-		clearButton.setTitle("Clear");
+		//saveButton.setText("Save");
+		//saveButton.setTitle("Save");
+		//clearButton.setText("Clear");
+		//clearButton.setTitle("Clear");
 		
-		addCommentPanel.add(new SpacerWidget());
+		//addCommentPanel.add(new SpacerWidget());
 		
-		addCommentPanel.add(LabelBuilder.buildLabel( addComment, "Add Comment"));
-		inputText.getElement().setAttribute("id", "Add Comment");
-		addCommentPanel.add(inputText);
+		//addCommentPanel.add(LabelBuilder.buildLabel( addComment, "Add Comment"));
+		//inputText.getElement().setAttribute("id", "Add Comment");
+		//addCommentPanel.add(inputText);
 		
-		addCommentPanel.add(commentButtons);
+		//addCommentPanel.add(commentButtons);
 	
-		addCommentPanel.addStyleName("contentWithHeadingPanel");
-		VerticalPanel downShiftPanel = new VerticalPanel();
-		SimplePanel addCommentSpacer = new SimplePanel();
-		addCommentSpacer.setHeight("46px");
-		downShiftPanel.add(addCommentSpacer);
-		downShiftPanel.add(addCommentPanel);
-		horizontalPanel.add(downShiftPanel);
+		//addCommentPanel.addStyleName("contentWithHeadingPanel");
+		//VerticalPanel downShiftPanel = new VerticalPanel();
+		//SimplePanel addCommentSpacer = new SimplePanel();
+		//addCommentSpacer.setHeight("46px");
+		//downShiftPanel.add(addCommentSpacer);
+		//downShiftPanel.add(addCommentPanel);
+		//horizontalPanel.add(downShiftPanel);
 		mainPanel.setStyleName("contentPanel");
-		mainPanel.add(horizontalPanel);
-		
+		//mainPanel.add(horizontalPanel);
+		mainPanel.add(logEntryPanel);
 		
 	}
 	
@@ -166,30 +194,30 @@ public abstract class HistoryBaseView {
 	 * 
 	 * @return the save button
 	 */
-	public HasClickHandlers getSaveButton() {
+	/*public HasClickHandlers getSaveButton() {
 		return saveButton;
 	}
 
 	
-	/**
+	*//**
 	 * Gets the clear button.
 	 * 
 	 * @return the clear button
-	 */
+	 *//*
 	public HasClickHandlers getClearButton() {
 		return clearButton;
 	}
 
 	
-	/**
+	*//**
 	 * Gets the user comment.
 	 * 
 	 * @return the user comment
-	 */
+	 *//*
 	public HasValue<String> getUserComment() {
 		return inputText;
 	}
-	
+*/	
 
 	/**
 	 * Gets the success message display.
@@ -284,7 +312,101 @@ public abstract class HistoryBaseView {
 	 *            the page size
 	 */
 	public void buildDataTable(SearchResults<AuditLogDTO> results,int pageCount,long totalResults,int currentPage,int pageSize) {
-		view.buildHistoryDataTable(results,pageCount,totalResults,currentPage,pageSize);
+		//view.buildHistoryDataTable(results,pageCount,totalResults,currentPage,pageSize);
+	}
+	
+	/**
+	 * Adds the column to table.
+	 *
+	 * @param cellTable the cell table
+	 * @return the cell table
+	 */
+	private CellTable<AuditLogDTO> addColumnToTable(CellTable<AuditLogDTO> cellTable) {
+		Label searchHeader = new Label("Log Entry");
+		searchHeader.getElement().setId("historyCellTableCaption_Label");
+		searchHeader.setStyleName("recentSearchHeader");
+		searchHeader.getElement().setAttribute("tabIndex", "0");
+		com.google.gwt.dom.client.TableElement elem = cellTable.getElement().cast();
+		TableCaptionElement caption = elem.createCaption();
+		caption.appendChild(searchHeader.getElement());
+		
+		Column<AuditLogDTO, SafeHtml> userAction = new Column<AuditLogDTO, SafeHtml>(
+				new MatSafeHTMLCell()) {
+			@Override
+			public SafeHtml getValue(AuditLogDTO object) {
+				return CellTableUtility.getColumnToolTip(object.getActivityType());
+			}
+		};
+		cellTable.addColumn(userAction, SafeHtmlUtils
+				.fromSafeConstant("<span title='User Action'>" + "User Action"
+						+ "</span>"));
+		
+		Column<AuditLogDTO, SafeHtml> lastModifiedBy = new Column<AuditLogDTO, SafeHtml>(
+				new MatSafeHTMLCell()) {
+			@Override
+			public SafeHtml getValue(AuditLogDTO object) {
+				return CellTableUtility.getColumnToolTip(object.getUserId());
+			}
+		};
+		cellTable.addColumn(lastModifiedBy, SafeHtmlUtils
+				.fromSafeConstant("<span title='Last Modified By'>" + "Last Modified By"
+						+ "</span>"));
+		
+		Column<AuditLogDTO, SafeHtml> lastModifiedDate = new Column<AuditLogDTO, SafeHtml>(
+				new MatSafeHTMLCell()) {
+			@Override
+			public SafeHtml getValue(AuditLogDTO object) {
+				return CellTableUtility.getColumnToolTip(convertDateToString(object.getEventTs()));
+			}
+		};
+		cellTable.addColumn(lastModifiedDate, SafeHtmlUtils
+				.fromSafeConstant("<span title='Last Modified Date'>" + "Last Modified Date"
+						+ "</span>"));
+		
+		
+		return cellTable;
+	}
+	
+	/**
+	 * Builds the cell table.
+	 *
+	 * @param results the results
+	 */
+	public void buildCellTable(List<AuditLogDTO> results){
+		cellTablePanel.clear();
+		cellTablePanel.setStyleName("cellTablePanel");
+		if((results!=null) && (results.size() > 0)){
+			cellTable = new CellTable<AuditLogDTO>();
+			ListDataProvider<AuditLogDTO> listDataProvider = new ListDataProvider<AuditLogDTO>();
+			cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			cellTable.setRowData(results);
+			cellTable.setRowCount(results.size(), true);
+			cellTable.setPageSize(PAGE_SIZE);
+			cellTable.redraw();
+			listDataProvider.refresh();
+			listDataProvider.getList().addAll(results);
+			cellTable = addColumnToTable(cellTable);
+			listDataProvider.addDataDisplay(cellTable);
+			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
+			spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+			spager.setPageStart(0);
+			spager.setDisplay(cellTable);
+			spager.setPageSize(PAGE_SIZE);
+			cellTable.setWidth("100%");
+			cellTable.setColumnWidth(0, 30.0, Unit.PCT);
+			cellTable.setColumnWidth(1, 30.0, Unit.PCT);
+			cellTable.setColumnWidth(2, 40.0, Unit.PCT);
+			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("historySearchSummary",
+					"In the following Log Entry table, User Action is given in first column,"
+							+ " Last Modified By in second column and Last Modified Date in third column");
+			cellTable.getElement().setAttribute("id", "HistorySearchCellTable");
+			cellTable.getElement().setAttribute("aria-describedby", "historySearchSummary");
+			cellTablePanel.add(invisibleLabel);
+			cellTablePanel.add(cellTable);
+			cellTablePanel.add(new SpacerWidget());
+			cellTablePanel.add(spager);
+			
+		}
 	}
 	
 
@@ -319,25 +441,43 @@ public abstract class HistoryBaseView {
 	}
 	
 	/**
+	 * Convert date to string.
+	 *
+	 * @param ts the ts
+	 * @return the string
+	 */
+	private String convertDateToString(Date ts){
+		String tsStr;
+		if(ts == null){
+			tsStr = "";
+		} else {
+			DateTimeFormat formatter = DateTimeFormat.getFormat("MM'/'dd'/'yyyy h:mm:ss a");
+			tsStr = formatter.format(ts);
+			tsStr = tsStr + " CST";
+		}
+		
+		return tsStr;
+	}
+	/**
 	 * Reset.
 	 */
-	public void reset(){
-		clearErrorMessage();
-		inputText.setText("");
-		view.setCurrentPage(SearchView.DEFAULT_PAGE);
-	}
-	
-	/**
-	 * Sets the user comments read only.
-	 * 
-	 * @param b
-	 *            the new user comments read only
-	 */
-	public void setUserCommentsReadOnly(boolean b){
-		inputText.setReadOnly(b);
-		saveButton.setEnabled(!b);
-		clearButton.setEnabled(!b);
-	}
+//	public void reset(){
+//		clearErrorMessage();
+//		inputText.setText("");
+//		view.setCurrentPage(SearchView.DEFAULT_PAGE);
+//	}
+//	
+//	/**
+//	 * Sets the user comments read only.
+//	 * 
+//	 * @param b
+//	 *            the new user comments read only
+//	 */
+//	public void setUserCommentsReadOnly(boolean b){
+//		inputText.setReadOnly(b);
+//		saveButton.setEnabled(!b);
+//		clearButton.setEnabled(!b);
+//	}
 
 }
 

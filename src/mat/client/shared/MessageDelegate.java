@@ -1,9 +1,5 @@
 package mat.client.shared;
 
-import org.vaadin.gwtgraphics.client.Line;
-
-import com.ibm.icu.lang.UCharacter.LineBreak;
-
 import mat.shared.ConstantMessages;
 
 // TODO: Auto-generated Javadoc
@@ -210,7 +206,10 @@ public class MessageDelegate {
 	
 	/** The clause work space validation error. */
 	private final String POPULATION_WORK_SPACE_VALIDATION_ERROR = "Measure logic is incorrect."
-			+ " Logic must only contain Clauses and Logical operators.";	
+			+ " Logic must only contain Clauses and Logical operators.";
+	private final String POPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR = "Measure logic is incorrect."
+			+ " Logic must only contain Clauses.";	
+
 
 	/** The clause work space validation success. */
 	private final String POPULATION_WORK_SPACE_VALIDATION_SUCCESS = " Measure logic validation successful.";
@@ -2043,6 +2042,13 @@ public class MessageDelegate {
 	 */
 	public String getATLEAST_ONE_CHILD_REQUIRED() {
 		return ATLEAST_ONE_CHILD_REQUIRED;
+	}
+
+	/**
+	 * @return the pOPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR
+	 */
+	public String getPOPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR() {
+		return POPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR;
 	}
 	
 }

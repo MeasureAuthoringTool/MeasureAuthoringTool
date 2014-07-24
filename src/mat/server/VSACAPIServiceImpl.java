@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VsacApiResult;
+import mat.dao.DataTypeDAO;
+import mat.model.DataType;
 import mat.model.MatValueSet;
 import mat.model.QualityDataSetDTO;
 import mat.model.VSACValueSetWrapper;
@@ -24,11 +26,14 @@ import org.exolab.castor.mapping.Mapping;
 import org.exolab.castor.mapping.MappingException;
 import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Unmarshaller;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.telligen.vsac.dao.ValueSetsResponseDAO;
 import org.telligen.vsac.object.ValueSetsResponse;
 import org.telligen.vsac.service.VSACTicketService;
 import org.xml.sax.InputSource;
 
+// TODO: Auto-generated Javadoc
 /** VSACAPIServiceImpl class. **/
 @SuppressWarnings("static-access")
 public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VSACAPIService {
@@ -46,6 +51,8 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	private static final int VSAC_REQUEST_FAILURE_CODE = 4;
 	/** The Constant TIME_OUT_FAILURE_CODE. */
 	private static final int VSAC_TIME_OUT_FAILURE_CODE = 3;
+	/** The context. */
+	private ApplicationContext context;
 	
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
@@ -371,6 +378,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	public final VsacApiResult updateVSACValueSets(final String measureId) {
 		VsacApiResult result = new VsacApiResult();
 		LOGGER.info("Start VSACAPIServiceImpl updateVSACValueSets method :");
+		context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 		if (isAlreadySignedIn()) {
 			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
 					getAppliedQDMFromMeasureXml(measureId, false);
@@ -449,6 +457,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 						toBeModifiedQDM.setNotFoundInVSAC(true);
 					}
 				}
+				//to validate removed DataTypes in Applied QDM ELements
+				DataType qdmDataType = getDataTypeDAO().findByDataTypeName(toBeModifiedQDM.getDataType());
+				if(qdmDataType == null || ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qualityDataSetDTO.getDataType())
+						|| ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qualityDataSetDTO.getDataType())){
+					toBeModifiedQDM.setNotFoundInVSAC(true);
+				}
 				modifiedQDMList.add(toBeModifiedQDM);
 			}
 			updateAllInMeasureXml(updateInMeasureXml, measureId);
@@ -475,5 +489,14 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 		UMLSSessionTicket.put(getThreadLocalRequest().getSession().getId(), eightHourTicketForUser);
 		LOGGER.info("End VSACAPIServiceImpl validateVsacUser: " + " Ticket issued for 8 hours: " + eightHourTicketForUser);
 		return eightHourTicketForUser != null;
+	}
+	
+	/**
+	 * Gets the data type dao.
+	 *
+	 * @return the data type dao
+	 */
+	private DataTypeDAO getDataTypeDAO(){
+		return (DataTypeDAO)context.getBean("dataTypeDAO");
 	}
 }

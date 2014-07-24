@@ -17,8 +17,6 @@ import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
 import mat.client.shared.SecondaryButton;
 import mat.shared.ConstantMessages;
-import com.google.gwt.user.client.Element;
-
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -651,54 +649,31 @@ public class XmlTreePresenter {
 		public void onClick(final ClickEvent event) {
 			if (xmlTreeDisplay.getXmlTree() != null) {
 				xmlTreeDisplay.clearMessages();
-				xmlTreeDisplay.setValid(true);
-				xmlTreeDisplay.addCommentNodeToSelectedNode();
-				CellTreeNode cellTreeNode = (CellTreeNode) xmlTreeDisplay
-						.getXmlTree().getRootTreeNode().getChildValue(0);
-				/*final MeasureXmlModel measureXmlModel = createMeasureExportModel(XmlConversionlHelper
-						.createXmlFromTree(cellTreeNode));
-				service.validateMeasureXmlinpopulationWorkspace(measureXmlModel, new AsyncCallback<Boolean>() {
-					@Override
-					public void onFailure(final Throwable caught) {
-						System.out.println("failure");
-					}
-					@Override
-					public void onSuccess(Boolean result) {
-						if (result) {
-							xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
-									.getRootTreeNode());
-							xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
-									.getRootTreeNode());
-							xmlTreeDisplay.getWarningMessageDisplay().
-							setMessage(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_VALIDATION_ERROR());
-						} else {
-							xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
-									.getRootTreeNode());
-							xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
-									MatContext.get().getMessageDelegate().
-									getPOPULATION_WORK_SPACE_VALIDATION_SUCCESS());
-						}
-						
-					}
-					
-				});*/
-				
-				boolean result = xmlTreeDisplay
+				List<String> result = xmlTreeDisplay
 						.validateCellTreeNodesPopulationWorkspace(xmlTreeDisplay.getXmlTree()
 								.getRootTreeNode());
-				if (!result) {
-					xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
-							.getRootTreeNode());
-					xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
-							.getRootTreeNode());
-					xmlTreeDisplay.getWarningMessageDisplay().
-					setMessage(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_VALIDATION_ERROR());
-				} else {
-					xmlTreeDisplay.closeNodes(xmlTreeDisplay.getXmlTree()
-							.getRootTreeNode());
+				xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
+						.getRootTreeNode());
+				
+				if (result.size()==0) {
 					xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
 							MatContext.get().getMessageDelegate().
 							getPOPULATION_WORK_SPACE_VALIDATION_SUCCESS());
+					
+				} else {
+					List<String> messageList = new ArrayList<String>();
+					for(String inValidNode: result){
+						if(inValidNode.equalsIgnoreCase("inValidAtMeasureObservationLogicalNode")){
+							messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR());
+						}
+						if(inValidNode.equalsIgnoreCase("inValidAtOtherNode")){
+							messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_VALIDATION_ERROR());
+						}
+						
+					}
+					if(messageList.size()>=1){
+						xmlTreeDisplay.getWarningMessageDisplay().setMessages(messageList);
+					}
 				}
 			}
 		}

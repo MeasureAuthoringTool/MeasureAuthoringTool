@@ -2688,34 +2688,58 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			
 			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" or"));
-			String XPATH_POPULATION = "/measure//clause["+uuidXPathString+"]";
+			
+			//String XPATH_POPULATION = "/measure//clause["+uuidXPathString+"]";
+			
+			String XPATH_POPULATION_LOGICALOP = "/measure//clause["+uuidXPathString+"]//logicalOp";
+			
+			String XPATH_POPULATION_QDMELEMENT = "/measure//clause["+uuidXPathString+"]//elementRef";
+			
+			 String XPATH_POPULATION_TIMING_ELEMENT = "/measure//clause["+uuidXPathString+"]//relationalOp";
+			 
+			 String XPATH_POPULATION_FUNCTIONS ="/measure//clause["+uuidXPathString+"]//functionalOp";
+			 
+			
+			
 			//get the Population Worspace Logic that are Used in Measure Grouping
-			NodeList populationNodeList;
+			
 			try {
-				populationNodeList = (NodeList) xPath.evaluate(XPATH_POPULATION, xmlProcessor.getOriginalDoc(),
+				//list of LogicalOpNode inSide the PopulationWorkspace That are used in Grouping
+				NodeList populationLogicalOp = (NodeList) xPath.evaluate(XPATH_POPULATION_LOGICALOP, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				//list of Qdemelement inSide the PopulationWorkspace That are used in Grouping
+				NodeList populationQdemElement = (NodeList) xPath.evaluate(XPATH_POPULATION_QDMELEMENT, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				//list of TimingElement inSide the PopulationWorkspace That are used in Grouping
+				NodeList populationTimingElement = (NodeList) xPath.evaluate(XPATH_POPULATION_TIMING_ELEMENT, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODESET);
+				//list of functionNode inSide the PopulationWorkspace That are used in Grouping
+				NodeList populationFunctions = (NodeList) xPath.evaluate(XPATH_POPULATION_FUNCTIONS, xmlProcessor.getOriginalDoc(),
 						XPathConstants.NODESET);
 				
-					for (int i = 0; i <populationNodeList.getLength() && !flag; i++) {
-					Node childNode =populationNodeList.item(i);
-					NodeList childsList = childNode.getChildNodes();
-					
-					if(childsList.getLength()>0){
-						for(int j=0; j <childsList.getLength() && !flag; j++){
-							Node subChildNode =childsList.item(j);
-							flag=validateNode(subChildNode,flag);
-							if(flag){
-								break;
-							}
-				
+				if(populationLogicalOp.getLength()>0){
+					for (int i = 0; i <populationLogicalOp.getLength() && !flag; i++) {
+						Node childNode =populationLogicalOp.item(i);
+						String type = childNode.getParentNode().getAttributes().getNamedItem("type").getNodeValue();
+						if(type.equals("measureObservation")){
+							flag = true;
+							break;
 						}
-				
-					}
-					 flag=validateNode(childNode, flag);
-					 if(flag){
-						break;
 					}
 				}
-		
+					
+				if(populationQdemElement.getLength()>0 && !flag){
+					flag = true;
+				}
+				
+				if(populationTimingElement.getLength()>0 && !flag){
+					flag = true;
+				}
+				if(populationFunctions.getLength()>0 && !flag){
+					flag = true;
+				}
+				
+					
 			} catch (XPathExpressionException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -2821,6 +2845,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	
+	/**
+	 * Gets the stratification clasues id list.
+	 *
+	 * @param uuid the uuid
+	 * @param xmlProcessor the xml processor
+	 * @return the stratification clasues id list
+	 */
 	private List<String> getStratificationClasuesIDList(String uuid, XmlProcessor xmlProcessor) {
 		
 		String XPATH_MEASURE_GROUPING_STRATIFICATION_CLAUSES = "/measure/strata/stratification" +
@@ -2974,12 +3005,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/**
 	 * Validate node.
 	 *
-	 * @param newNode the new node
-	 * @param flag the flag
+	 * @param qdmchildNode the qdmchild node
+	 * @param attributeValue the attribute value
 	 * @return true, if successful
 	 */
-	private boolean validateNode(Node newNode, boolean flag) {
+	/*private boolean validateNode(Node newNode, boolean flag) {
 		String nodeName = newNode.getNodeName().trim();
+		
 		if (!((nodeName == "logicalOp") 
 				|| (nodeName == "clause") 
 				|| (nodeName == "subTreeRef")
@@ -2995,6 +3027,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 					flag =true;	 
 			}
+		if((nodeName == "logicalOp") && newNode.getParentNode().getNodeName().contains("")){
+			
+		}
 			if(newNode.getFirstChild()!=null && (newNode.getNodeName() != "comment") && !flag){
 					Node node =newNode.getFirstChild(); 
 					flag = validateNode(node, flag);			
@@ -3003,7 +3038,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return flag;
 		
 	}
-	
+	*/
 	
 	/**
 	 * Validate qdm node.
@@ -3071,7 +3106,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @return true, if successful
 	 */
 	private boolean validateTimingNode(Node timingElementchildNode, boolean flag) {
-		int childCount = timingElementchildNode.getChildNodes().getLength();
+		int childCount = timingElementchildNode.getChildNodes().getLength();		
 		if(childCount != 2){
 			flag = true;
 		}

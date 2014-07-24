@@ -1,11 +1,14 @@
 package mat.client.clause.clauseworkspace.presenter;
 
+import java.util.List;
+
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
+
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Button;
@@ -216,9 +219,9 @@ public interface XmlTreeDisplay {
 	 * 
 	 * @param treeNode
 	 *            the tree node
-	 * @return true, if successful
+	 * @return list
 	 */
-	boolean validateCellTreeNodesPopulationWorkspace(TreeNode treeNode);
+	List<String> validateCellTreeNodesPopulationWorkspace(TreeNode treeNode);
 	
 	/**
 	 * Validate cell tree nodes.

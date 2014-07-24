@@ -155,6 +155,8 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The Constant MEASURE_OBSERVATION. */
 	private static final String MEASURE_OBSERVATION = "Measure Observation";
+	
+	/** The Constant STRATIFICATION. */
 	private static final String STRATIFICATION = "Stratification";
 	/**
 	
@@ -1741,49 +1743,62 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#validateCellTreeNodesPopulationWorkspace(com.google.gwt.user.cellview.client.TreeNode)
 	 */
 	@Override
-	public boolean validateCellTreeNodesPopulationWorkspace(TreeNode treeNode) {
+	public List<String> validateCellTreeNodesPopulationWorkspace(TreeNode treeNode) {
+		List<String> inValidNodeAtPopulationWorkspace = new ArrayList<String>();
 		if (treeNode != null) {
 			closeNodes(treeNode);
 			for (int i = 0; i < treeNode.getChildCount(); i++) {
 				//TreeNode subTree = null;
 				CellTreeNode node =(CellTreeNode) treeNode.getChildValue(i);
-				if(!validateCellTreeNodesPopulationWorkspace(node)){
-					isValid = false;
-					break;
-				}
+				validateCellTreeNodesPopulationWorkspace(node, inValidNodeAtPopulationWorkspace);
 			}
 		}
-		
-		return isValid;
+		return inValidNodeAtPopulationWorkspace;
 	}
 	
 	/**
 	 * Validate cell tree nodes population workspace.
 	 *
 	 * @param cellTreeNode the cell tree node
-	 * @return true, if successful
+	 * @param inValidNodeAtPopulationWorkspace TODO
 	 */
-	public boolean validateCellTreeNodesPopulationWorkspace(CellTreeNode cellTreeNode){
-		boolean isValid = true;
+	public void validateCellTreeNodesPopulationWorkspace(CellTreeNode cellTreeNode, List<String> inValidNodeAtPopulationWorkspace){
 		int nodeType = cellTreeNode.getNodeType();
-		if (!((nodeType == CellTreeNode.LOGICAL_OP_NODE) || (nodeType == CellTreeNode.SUBTREE_REF_NODE)
-				|| (nodeType == CellTreeNode.ROOT_NODE) || (nodeType == CellTreeNode.MASTER_ROOT_NODE)
-				|| (nodeType == CellTreeNode.CLAUSE_NODE) )) {
+		switch(nodeType){
+		
+		case CellTreeNode.LOGICAL_OP_NODE:
+			if(cellTreeNode.getParent().getName().contains(MEASURE_OBSERVATION)){
+				editNode(false, cellTreeNode);
+				if(!inValidNodeAtPopulationWorkspace.contains("inValidAtMeasureObservationLogicalNode")){
+				inValidNodeAtPopulationWorkspace.add("inValidAtMeasureObservationLogicalNode");
+				}
+			}
+			break;
+		
+		case CellTreeNode.CLAUSE_NODE:
+		case CellTreeNode.MASTER_ROOT_NODE:
+		case CellTreeNode.ROOT_NODE:
+		case CellTreeNode.SUBTREE_REF_NODE:
+			break;
+		default:
 			editNode(false, cellTreeNode);
-			isValid = false;
+			if(!inValidNodeAtPopulationWorkspace.contains("inValidAtOtherNode")){
+				inValidNodeAtPopulationWorkspace.add("inValidAtOtherNode");
+			}
+			break;
+		
 		}
 		
 		List<CellTreeNode> children = cellTreeNode.getChilds();
 		if((children != null) && (children.size() > 0)){
 			for(CellTreeNode node:children){
-				if(!validateCellTreeNodesPopulationWorkspace(node)){
-					isValid = false;
+				validateCellTreeNodesPopulationWorkspace(node, inValidNodeAtPopulationWorkspace);
+					
 				}
 			}
-		}
-		
-		return isValid;
 	}
+		
+	
 	
 	
 	/* (non-Javadoc)
@@ -1851,7 +1866,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 *
 	 * @param treeNode the tree node
 	 * @param dataTypeMap the data type map
-	 * @param inValidNodeMap the in valid node map
+	 * @param inValidNodeList the in valid node list
 	 * @return the string
 	 */
 	@SuppressWarnings("unchecked")
@@ -1984,12 +1999,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 		return inValidNodeList;
 	}
+	
 	/**
 	 * Validate node for old birth date and expired element.
 	 *
 	 * @param nodeDataType the node data type
 	 * @param node the node
-	 * @param inValidNodeMap the in valid node map
+	 * @param inValidNodeList the in valid node list
 	 */
 	private void validateNodeForOldBirthDateAndExpiredElement(
 			String nodeDataType, CellTreeNode node, List<String> inValidNodeList) {
@@ -2008,11 +2024,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			inValidAtQdmNode(node, inValidNodeList);
 		}
 	}
+	
 	/**
 	 * In valid at qdm node.
 	 *
 	 * @param node the node
-	 * @param invalidNodeMap the invalid node map
+	 * @param inValidNodeList the in valid node list
 	 */
 	protected void inValidAtQdmNode(CellTreeNode node, List<String> inValidNodeList) {
 		editNode(false, node);

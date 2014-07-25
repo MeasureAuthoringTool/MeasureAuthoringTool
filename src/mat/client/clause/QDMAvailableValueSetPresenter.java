@@ -3,6 +3,7 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.codelist.HasListBox;
@@ -23,6 +24,7 @@ import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -511,30 +513,38 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		//Pseudo QDM Flow
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
+		String userDefinedInput = searchDisplay.getUserDefinedInput().getText().trim();
+		boolean isValidUserDefinedInput = validateUserDefinedInput(userDefinedInput);		
 		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
 				&& !searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput()).
 				equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
-			CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
-			modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
-			String dataType = searchDisplay.getDataTypeValue(searchDisplay.getAllDataTypeInput());
-			String dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput());
-			if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
-					|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
-				if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())) {
-					updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, dataType, false, true);
-				} else {
-					if (ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataTypeText)) {
-						searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
-								MatContext.get().
-								getMessageDelegate().getMODIFY_QDM_NON_ATTRIBUTE_VALIDATION());
+			if(isValidUserDefinedInput){
+				CodeListSearchDTO modifyWithDTO = new CodeListSearchDTO();
+				modifyWithDTO.setName(searchDisplay.getUserDefinedInput().getText());
+				String dataType = searchDisplay.getDataTypeValue(searchDisplay.getAllDataTypeInput());
+				String dataTypeText = searchDisplay.getDataTypeText(searchDisplay.getAllDataTypeInput());
+				if (modifyValueSetDTO.getDataType().equalsIgnoreCase(ConstantMessages.ATTRIBUTE)
+						|| dataTypeText.equalsIgnoreCase(ConstantMessages.ATTRIBUTE)) {
+					if (dataTypeText.equalsIgnoreCase(modifyValueSetDTO.getDataType())) {
+						updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, dataType, false, true);
 					} else {
-						searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
-								MatContext.get().
-								getMessageDelegate().getMODIFY_QDM_ATTRIBUTE_VALIDATION());
+						if (ConstantMessages.ATTRIBUTE.equalsIgnoreCase(dataTypeText)) {
+							searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
+									MatContext.get().
+									getMessageDelegate().getMODIFY_QDM_NON_ATTRIBUTE_VALIDATION());
+						} else {
+							searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
+									MatContext.get().
+									getMessageDelegate().getMODIFY_QDM_ATTRIBUTE_VALIDATION());
+						}
 					}
+				} else {
+					updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, dataType, false, true);
 				}
-			} else {
-				updateAppliedQDMList(null, modifyWithDTO, modifyValueSetDTO, dataType, false, true);
+			}else{
+				searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
+						MatContext.get().getMessageDelegate()
+						.getINVALID_CHARACTER_VALIDATION_ERROR());
 			}
 		} else {
 			searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
@@ -542,6 +552,32 @@ public class QDMAvailableValueSetPresenter  implements MatPresenter {
 		}
 	}
 	
+	/**
+	 * Validate user defined input.
+	 *
+	 * @param userDefinedInput the user defined input
+	 * @return true, if successful
+	 */
+	public static boolean validateUserDefinedInput(String userDefinedInput) {
+		boolean flag = true;
+		for(int i = 0; i< userDefinedInput.length(); i++){
+			if(userDefinedInput.charAt(i) == '+'
+				|| userDefinedInput.charAt(i) == '*'
+				|| userDefinedInput.charAt(i) == '?'
+				|| userDefinedInput.charAt(i) == ':'
+				|| userDefinedInput.charAt(i) == '-'
+				|| userDefinedInput.charAt(i) == '|'
+				|| userDefinedInput.charAt(i) == '!'
+				|| userDefinedInput.charAt(i) == '"'
+				|| userDefinedInput.charAt(i) == ';'
+				|| userDefinedInput.charAt(i) == '%'){
+				flag = false;
+				break;
+			}
+		}
+		return flag;
+	}
+
 	/**
 	 * Server call to modify QDM with VSAC value set.
 	 */

@@ -3,6 +3,7 @@ package mat.client.clause;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
@@ -22,6 +23,7 @@ import mat.client.umls.service.VsacApiResult;
 import mat.model.MatValueSet;
 import mat.model.MatValueSetTransferObject;
 import mat.model.QualityDataSetDTO;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -39,6 +41,7 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**QDSCodeListSearchPresenter.java.**/
 public class QDSCodeListSearchPresenter implements MatPresenter {
 	
@@ -402,68 +405,79 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	private void addQDSWithOutValueSet() {
 		searchDisplay.getSuccessMessageUserDefinedPanel().clear();
 		searchDisplay.getErrorMessageUserDefinedPanel().clear();
+		String userDefinedInput = searchDisplay.getUserDefinedInput().getText().trim();
+		boolean isValidUserDefinedInput = QDMAvailableValueSetPresenter.validateUserDefinedInput(userDefinedInput);
 		if ((searchDisplay.getUserDefinedInput().getText().trim().length() > 0)
 				&& !searchDisplay.getDataTypeText(
 						searchDisplay.getAllDataTypeInput()).equalsIgnoreCase(MatContext.PLEASE_SELECT)) {
+			if(isValidUserDefinedInput){
+				String dataType = searchDisplay.getDataTypeValue(searchDisplay.getAllDataTypeInput());
+				MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, false,
+						MatContext.get().getCurrentMeasureId());
+				MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(
+						matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
+							@Override
+							public void onFailure(final Throwable caught) {
+								if (appliedQDMList.size() > 0) {
+									appliedQDMList
+									.removeAll(appliedQDMList);
+								}
+								Window.alert(MatContext.get()
+										.getMessageDelegate()
+										.getGenericErrorMessage());
+							}
+							
+							@SuppressWarnings("static-access")
+							@Override
+							public void onSuccess(
+									final SaveUpdateCodeListResult result) {
+								if (result.getXmlString() != null) {
+									saveMeasureXML(result.getXmlString());
+									String message = MatContext
+											.get()
+											.getMessageDelegate()
+											.getQDMSuccessMessage(
+													searchDisplay
+													.getUserDefinedInput()
+													.getText(),
+													searchDisplay
+													.getDataTypeText(searchDisplay
+															.getAllDataTypeInput()));
+									searchDisplay
+									.getSuccessMessageUserDefinedPanel()
+									.setMessage(message);
+									searchDisplay.getUserDefinedInput()
+									.setText("");
+									searchDisplay.getAllDataTypeInput()
+									.setSelectedIndex(0);
+								} else if (result.getFailureReason() == result.ALREADY_EXISTS) {
+									searchDisplay
+									.getErrorMessageUserDefinedPanel()
+									.setMessage(
+											MatContext
+											.get()
+											.getMessageDelegate()
+											.getDuplicateAppliedQDMMsg());
+								}
+							}
+						});
+			}else{
+				searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
+						MatContext.get().getMessageDelegate()
+						.getINVALID_CHARACTER_VALIDATION_ERROR());
+			}
 			
-			String dataType = searchDisplay.getDataTypeValue(searchDisplay.getAllDataTypeInput());
-			MatValueSetTransferObject matValueSetTransferObject = createValueSetTransferObject(dataType, false,
-					MatContext.get().getCurrentMeasureId());
-			MatContext.get().getCodeListService().saveUserDefinedQDStoMeasure(
-					matValueSetTransferObject, new AsyncCallback<SaveUpdateCodeListResult>() {
-						@Override
-						public void onFailure(final Throwable caught) {
-							if (appliedQDMList.size() > 0) {
-								appliedQDMList
-								.removeAll(appliedQDMList);
-							}
-							Window.alert(MatContext.get()
-									.getMessageDelegate()
-									.getGenericErrorMessage());
-						}
-						
-						@SuppressWarnings("static-access")
-						@Override
-						public void onSuccess(
-								final SaveUpdateCodeListResult result) {
-							if (result.getXmlString() != null) {
-								saveMeasureXML(result.getXmlString());
-								String message = MatContext
-										.get()
-										.getMessageDelegate()
-										.getQDMSuccessMessage(
-												searchDisplay
-												.getUserDefinedInput()
-												.getText(),
-												searchDisplay
-												.getDataTypeText(searchDisplay
-														.getAllDataTypeInput()));
-								searchDisplay
-								.getSuccessMessageUserDefinedPanel()
-								.setMessage(message);
-								searchDisplay.getUserDefinedInput()
-								.setText("");
-								searchDisplay.getAllDataTypeInput()
-								.setSelectedIndex(0);
-							} else if (result.getFailureReason() == result.ALREADY_EXISTS) {
-								searchDisplay
-								.getErrorMessageUserDefinedPanel()
-								.setMessage(
-										MatContext
-										.get()
-										.getMessageDelegate()
-										.getDuplicateAppliedQDMMsg());
-							}
-						}
-					});
 		} else {
 			if (appliedQDMList.size() > 0) {
 				appliedQDMList.removeAll(appliedQDMList);
 			}
+			
 			searchDisplay.getErrorMessageUserDefinedPanel().setMessage(
 					MatContext.get().getMessageDelegate()
 					.getVALIDATION_MSG_ELEMENT_WITHOUT_VSAC());
 		}
+		
+		
 	}
 	
 	/**
@@ -624,10 +638,12 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	}
 	
 	/**
-	 * @param dataType
-	 * @param isSpecificOccurrence
-	 * @param measureID
-	 * @return
+	 * Creates the value set transfer object.
+	 *
+	 * @param dataType the data type
+	 * @param isSpecificOccurrence the is specific occurrence
+	 * @param measureID the measure id
+	 * @return the mat value set transfer object
 	 */
 	private MatValueSetTransferObject createValueSetTransferObject(final String dataType, final boolean isSpecificOccurrence,
 			String measureID) {
@@ -671,8 +687,8 @@ public class QDSCodeListSearchPresenter implements MatPresenter {
 	/**
 	 * Gets the list of applied qdm.
 	 *
-	 * @param isUserDefined
-	 *            - {@link Boolean}.
+	 * @param isUserDefined            - {@link Boolean}.
+	 * @return the list of applied qd ms
 	 */
 	private void getListOfAppliedQDMs(final boolean isUserDefined) {
 		String measureId = MatContext.get().getCurrentMeasureId();

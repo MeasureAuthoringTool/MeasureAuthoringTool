@@ -207,8 +207,15 @@ public class MessageDelegate {
 	/** The clause work space validation error. */
 	private final String POPULATION_WORK_SPACE_VALIDATION_ERROR = "Measure logic is incorrect."
 			+ " Logic must only contain Clauses and Logical operators.";
+	
+	/** The population work space measure observation validation error. */
 	private final String POPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR = "Measure logic is incorrect."
 			+ " Logic must only contain Clauses.";	
+	
+	/** The invalid character validation error. */
+	private final String INVALID_CHARACTER_VALIDATION_ERROR =" Name contains Invalid Characters."
+			+" Invalid characters are + * ? : - | !  ; %\"."
+			+" Please remove Invalid Characters and try again.";
 
 
 	/** The clause work space validation success. */
@@ -2045,10 +2052,22 @@ public class MessageDelegate {
 	}
 
 	/**
+	 * Gets the population work space measure observation validation error.
+	 *
 	 * @return the pOPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR
 	 */
 	public String getPOPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR() {
 		return POPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR;
+	}
+
+	
+	/**
+	 * Gets the invalid character validation error.
+	 *
+	 * @return the invalid character validation error
+	 */
+	public String getINVALID_CHARACTER_VALIDATION_ERROR() {
+		return INVALID_CHARACTER_VALIDATION_ERROR;
 	}
 	
 }

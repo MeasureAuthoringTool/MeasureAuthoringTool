@@ -10,6 +10,7 @@ import mat.client.shared.SecondaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.TextAreaWithMaxLength;
+import mat.client.util.RichTextToolbar;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
@@ -25,6 +26,7 @@ import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.RichTextArea;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextArea;
@@ -47,7 +49,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	private FlowPanel flowPanel = new FlowPanel ();
 	
 	/** The measure note composer. */
-	private TextAreaWithMaxLength measureNoteComposer = new TextAreaWithMaxLength();
+	//private TextAreaWithMaxLength measureNoteComposer = new TextAreaWithMaxLength();
 	
 	/** The measure note title. */
 	private TextBox measureNoteTitle = new TextBox();
@@ -79,6 +81,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	/** The observer. */
 	private Observer observer;
 	
+	private RichTextArea textArea = new RichTextArea();
+	
+	private RichTextToolbar toolBar = new RichTextToolbar(textArea,false);
 	/**
 	 * The Interface Observer.
 	 */
@@ -132,8 +137,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.MeasureNotesPresenter.NotesDisplay#getMeasureNoteComposer()
 	 */
-	public TextAreaWithMaxLength getMeasureNoteComposer() {
-		return measureNoteComposer;
+	public RichTextArea getMeasureNoteComposer() {
+		//return measureNoteComposer;
+		return textArea;
 	}
 
 	/* (non-Javadoc)
@@ -223,14 +229,25 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  composerPanel.add(new SpacerWidget());
 		  composerPanel.add(titlePanel);
 		  composerPanel.add(new SpacerWidget());
-		  measureNoteComposer.setHeight("70px");
+		 /* measureNoteComposer.setHeight("70px");
 		  measureNoteComposer.setWidth("80%");
 		  measureNoteComposer.setMaxLength(3000);
-		  measureNoteComposer.addFocusHandler(getFocusHandler());
+		  measureNoteComposer.addFocusHandler(getFocusHandler());*/
+		
 		  
 		  composerPanel.add(descLabel);
 		  composerPanel.add(new SpacerWidget());
-		  composerPanel.add(measureNoteComposer);
+		  //composerPanel.add(measureNoteComposer);
+		  
+		  VerticalPanel vp = new VerticalPanel();
+		  vp.setWidth("70%");
+		  vp.setStylePrimaryName("recentSearchHeader");
+		  textArea.setHeight("100px");
+		  textArea.setWidth("100%");
+		  vp.add(toolBar);
+		  vp.add(textArea);
+		  composerPanel.add(vp);
+		  
 		  composerPanel.add(new SpacerWidget());
 		  HorizontalPanel bottomButtonPanel = new HorizontalPanel();
 		  composerPanel.add(new SpacerWidget());		  
@@ -243,7 +260,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  composerPanel.add(new SpacerWidget());
 		  
 		  measureNoteTitle.setReadOnly(!editable);
-		  measureNoteComposer.setReadOnly(!editable);
+		  //measureNoteComposer.setReadOnly(!editable);
 		  saveButton.setEnabled(editable);
 		  cancelButton.setEnabled(editable);
 		  
@@ -437,12 +454,15 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		title.getElement().setAttribute("id", "NoteTitle_"+result.getId());
 		title.setWidth("400px");
 		title.setMaxLength(50);
-		TextAreaWithMaxLength measureNoteDesc = new TextAreaWithMaxLength();
-		measureNoteDesc.setTitle("Measure Notes Description");
+		//TextAreaWithMaxLength measureNoteDesc = new TextAreaWithMaxLength();
+		/*measureNoteDesc.setTitle("Measure Notes Description");
 		measureNoteDesc.getElement().setAttribute("id", "NoteDesc_"+result.getId());
 		measureNoteDesc.setWidth("800px");
 		measureNoteDesc.setHeight("70px");
-		measureNoteDesc.setMaxLength(3000);
+		measureNoteDesc.setMaxLength(3000);*/
+		
+		RichTextArea editTextArea = new RichTextArea();
+		RichTextToolbar editToolbar = new RichTextToolbar(editTextArea,false);
 		
 		HTML titleLabel = new HTML("Title:");
 		titleLabel.setStyleName("bold");
@@ -453,12 +473,25 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vPanel.add(titleLabel);
 		vPanel.add(new SpacerWidget());
 		title.setText(result.getNoteTitle());
-		measureNoteDesc.setText(result.getNoteDesc());
+		editTextArea.setHTML(result.getNoteDesc());
+		
+		//measureNoteDesc.setText(result.getNoteDesc());
 		vPanel.add(title);
 		vPanel.add(new SpacerWidget());
 		vPanel.add(descLabel);
 		vPanel.add(new SpacerWidget());
-		vPanel.add(measureNoteDesc);
+		//vPanel.add(measureNoteDesc);
+		
+		VerticalPanel vp = new VerticalPanel();
+		vp.setWidth("70%");
+		vp.setStylePrimaryName("recentSearchHeader");
+		vp.getElement().setAttribute("id", "NoteDesc_"+result.getId());
+		editTextArea.setWidth("100%");
+		editTextArea.setHeight("100px");
+		vp.add(editToolbar);
+		vp.add(editTextArea);
+		vPanel.add(vp);
+		
 		vPanel.add(new SpacerWidget());
 		vPanel.add(new SpacerWidget());
 		HorizontalPanel bottomButtonPanel = new HorizontalPanel();
@@ -481,7 +514,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vPanel.add(new SpacerWidget());
 		
 		title.setReadOnly(!editable);
-		measureNoteDesc.setReadOnly(!editable);
+		//measureNoteDesc.setReadOnly(!editable);
 		saveButton.setEnabled(editable);
 		cancelButton.setEnabled(editable);
 		
@@ -649,14 +682,21 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 						String noteDesc = "";
 						VerticalPanel vpanel = (VerticalPanel) ((Widget)event.getSource()).getParent().getParent();
 						for(int i=0; i<vpanel.getWidgetCount(); i++) {
+							System.out.println("IN THE LOOP!");
 							Widget widget = vpanel.getWidget(i);
+							System.out.println(widget.getElement().getAttribute("id"));
 							if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteTitle_"+measureNoteId)) {
 								noteTitle = ((TextBox)widget).getText();
 							}
 							if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteDesc_"+measureNoteId)) {
-								noteDesc = ((TextArea)widget).getText();
+								System.out.println("MADE IT IN THE IF!!!");
+								VerticalPanel vp = (VerticalPanel)widget;
+								Widget wid = vp.getWidget(1);
+								noteDesc = ((RichTextArea)wid).getHTML();
 							}
 						}
+						System.out.println("TITLE: " + noteTitle);
+						System.out.println("Desc: " + noteDesc);
 						if(noteTitle!=null && !noteTitle.trim().isEmpty() && noteDesc!=null && !noteDesc.trim().isEmpty()) {
 							measureNoteDTO.setNoteTitle(noteTitle);
 							measureNoteDTO.setNoteDesc(noteDesc);

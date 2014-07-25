@@ -1,7 +1,5 @@
 package mat.model;
 
-
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
@@ -70,6 +68,11 @@ public class QualityDataSetDTO implements IsSerializable {
 	
 	/** The version. */
 	private String version;
+	
+	/** The data type has removed. */
+	private boolean dataTypeHasRemoved;
+
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
@@ -375,7 +378,24 @@ public class QualityDataSetDTO implements IsSerializable {
 	public void setVersion(String version) {
 		this.version = version;
 	}
+	
+	/**
+	 * Checks if is data type has removed.
+	 *
+	 * @return true, if is data type has removed
+	 */
+	public boolean isDataTypeHasRemoved() {
+		return dataTypeHasRemoved;
+	}
 
+	/**
+	 * Sets the data type has removed.
+	 *
+	 * @param dataTypeHasRemoved the new data type has removed
+	 */
+	public void setDataTypeHasRemoved(boolean dataTypeHasRemoved) {
+		this.dataTypeHasRemoved = dataTypeHasRemoved;
+	}
 
 
 	/* (non-Javadoc)

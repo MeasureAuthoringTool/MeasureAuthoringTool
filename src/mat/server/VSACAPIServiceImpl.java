@@ -401,6 +401,12 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 						toBeModifiedQDM.setNotFoundInVSAC(true);
 						toBeModifiedQDM.setHasModifiedAtVSAC(true);
 						modifiedQDMList.add(toBeModifiedQDM);
+						DataType qdmDataType = getDataTypeDAO().findByDataTypeName(toBeModifiedQDM.getDataType());
+						if(qdmDataType == null || ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qualityDataSetDTO.getDataType())
+								|| ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qualityDataSetDTO.getDataType())){
+							toBeModifiedQDM.setDataTypeHasRemoved(true);
+						}
+						
 					}
 					continue;
 				} else if ("1.0".equalsIgnoreCase(qualityDataSetDTO.getVersion())
@@ -461,7 +467,7 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 				DataType qdmDataType = getDataTypeDAO().findByDataTypeName(toBeModifiedQDM.getDataType());
 				if(qdmDataType == null || ConstantMessages.PATIENT_CHARACTERISTIC_BIRTHDATE.equals(qualityDataSetDTO.getDataType())
 						|| ConstantMessages.PATIENT_CHARACTERISTIC_EXPIRED.equals(qualityDataSetDTO.getDataType())){
-					toBeModifiedQDM.setNotFoundInVSAC(true);
+					toBeModifiedQDM.setDataTypeHasRemoved(true);
 				}
 				modifiedQDMList.add(toBeModifiedQDM);
 			}

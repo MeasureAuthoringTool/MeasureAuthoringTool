@@ -40,7 +40,7 @@ import com.google.gwt.view.client.SelectionChangeEvent;
 /**
  * The Class AdminCodeListSearchResultsAdapter.
  */
-public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeListSearchDTO>{
+public class AdminCodeListSearchResultsAdapter /*implements SearchResults<CodeListSearchDTO>*/{
 
 	/**
 	 * The Interface Observer.
@@ -189,56 +189,56 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#isColumnSortable(int)
 	 */
-	@Override
+	/*@Override
 	public boolean isColumnSortable(int columnIndex) {
 		return model.isColumnSortable(columnIndex);
-	}
+	}*/
 
 
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#getNumberOfColumns()
 	 */
-	@Override
+	/*@Override
 	public int getNumberOfColumns() {
 		return model.getNumberOfColumns();
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#getNumberOfRows()
 	 */
-	@Override
+	/*@Override
 	public int getNumberOfRows() {
 		return model.getNumberOfRows();
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#getColumnHeader(int)
 	 */
-	@Override
+	/*@Override
 	public String getColumnHeader(int columnIndex) {
 		return model.getColumnHeader(columnIndex);
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#getColumnWidth(int)
 	 */
-	@Override
+	/*@Override
 	public String getColumnWidth(int columnIndex) {
 		return model.getColumnWidth(columnIndex);
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#isColumnFiresSelection(int)
 	 */
-	@Override
+	/*@Override
 	public boolean isColumnFiresSelection(int columnIndex) {
 		return model.isColumnFiresSelection(columnIndex);
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#getValue(int, int)
 	 */
-	@Override
+	/*@Override
 	public Widget getValue(int row, int column) {
 		Widget value;
 		
@@ -272,7 +272,7 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 			value = new Label("Unknown Column Index");
 		}
 		return value;
-	}
+	}*/
 	
 	/**
 	 * Gets the image.
@@ -576,43 +576,43 @@ public class AdminCodeListSearchResultsAdapter implements SearchResults<CodeList
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#getStartIndex()
 	 */
-	@Override
+	/*@Override
 	public int getStartIndex() {
 		return model.getStartIndex();
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#getResultsTotal()
 	 */
-	@Override
+	/*@Override
 	public int getResultsTotal() {
 		return model.getResultsTotal();
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#getKey(int)
 	 */
-	@Override
+	/*@Override
 	public String getKey(int row) {
 		return model.get(row).getId();
-	}
+	}*/
 
 
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#get(int)
 	 */
-	@Override
+	/*@Override
 	public CodeListSearchDTO get(int row) {
 		return model.get(row);
-	}
+	}*/
 
 	/* (non-Javadoc)
 	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
 	 */
-	@Override
+	/*@Override
 	public boolean isColumnSelectAll(int columnIndex) {
 		return model.isColumnSelectAll(columnIndex);
-	}
+	}*/
 
 	/**
 	 * Checks if is history clicked.

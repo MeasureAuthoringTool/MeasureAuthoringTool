@@ -49,7 +49,7 @@ public class HumanReadableGenerator {
 		// replace the <subTree> tags in 'populationSubXML' with the appropriate
 		// subTree tags from 'simpleXML'.
 		try {
-			System.out.println("Original subXML:" + subXML);
+			//System.out.println("Original subXML:" + subXML);
 			XmlProcessor populationOrSubtreeXMLProcessor = expandSubTreesAndImportQDMs(
 					subXML, measureXML, true);
 
@@ -93,7 +93,7 @@ public class HumanReadableGenerator {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(htmlDocument);
+		//System.out.println(htmlDocument);
 		String returnHTML = "";
 		if (htmlDocument != null) {
 			returnHTML = htmlDocument.toString();
@@ -147,7 +147,7 @@ public class HumanReadableGenerator {
 				}
 				String subTreeId = subTreeRefNode.getAttributes()
 						.getNamedItem("id").getNodeValue();
-				System.out.println("subTreeId:" + subTreeId);
+//				System.out.println("subTreeId:" + subTreeId);
 
 				Node subTreeNode = resolveMainSubTreeNode(measureXMLProcessor,
 						subTreeId);
@@ -178,10 +178,10 @@ public class HumanReadableGenerator {
 		populationOrSubtreeXMLProcessor.getOriginalDoc().getFirstChild()
 				.appendChild(importedMeasureDetailsNode);
 
-		System.out.println("Inflated popualtion tree: "
+		/*System.out.println("Inflated popualtion tree: "
 				+ populationOrSubtreeXMLProcessor
 						.transform(populationOrSubtreeXMLProcessor
-								.getOriginalDoc()));
+								.getOriginalDoc()));*/
 		return populationOrSubtreeXMLProcessor;
 	}
 
@@ -226,7 +226,7 @@ public class HumanReadableGenerator {
 
 		String subTreeId = subTreeRefNode.getAttributes().getNamedItem("id")
 				.getNodeValue();
-		System.out.println("sub subTreeId:" + subTreeId);
+		//System.out.println("sub subTreeId:" + subTreeId);
 		if (!childSubTreeRefList.contains(subTreeId)) {
 			childSubTreeRefList.add(subTreeId);
 			Node subTreeNode = measureXMLProcessor
@@ -256,7 +256,7 @@ public class HumanReadableGenerator {
 		} else {
 			System.out
 					.println("Found a chain of Clauses. Abort Human readable generation.");
-			System.out.println(childSubTreeRefList);
+			//System.out.println(childSubTreeRefList);
 			return false;
 		}
 		childSubTreeRefList.remove(subTreeId);
@@ -328,13 +328,9 @@ public class HumanReadableGenerator {
 
 		try {
 			NodeList childNodes = clauseNode.getChildNodes();
-			System.out.println("NAME: "
-					+ clauseNode.getAttributes().getNamedItem("displayName")
-							.getNodeValue());
 			String scoring = populationOrSubtreeXMLProcessor.findNode(
 					populationOrSubtreeXMLProcessor.getOriginalDoc(),
 					"//measureDetails/scoring").getTextContent();
-			System.out.println("CHILD NODE LENGTH: " + childNodes.getLength());
 			if (childNodes.getLength() == 1) {
 				displayNone(
 						populationOrSubtreeListElement.appendElement(HTML_UL),
@@ -374,7 +370,6 @@ public class HumanReadableGenerator {
 			Node parentNode, XmlProcessor populationOrSubtreeXMLProcessor,
 			boolean satisfiesAnyAll) {
 		String nodeName = item.getNodeName();
-		System.out.println("parseChild:" + nodeName);
 		if (LOGICAL_OP.equals(nodeName)) {
 
 			String nodeDisplayName = item.getAttributes()
@@ -451,7 +446,11 @@ public class HumanReadableGenerator {
 				showOnlyVariableName = false;
 				NodeList childNodes = item.getChildNodes();
 				for (int i = 0; i < childNodes.getLength(); i++) {
-					parseChild(childNodes.item(i), parentListElement,
+					Element temp = parentListElement;
+					if(temp.html().contains("Measure Observation")){
+						temp = parentListElement.appendElement(HTML_UL).appendElement(HTML_LI);
+					}
+					parseChild(childNodes.item(i), temp,
 							parentNode, populationOrSubtreeXMLProcessor,
 							satisfiesAnyAll);
 				}
@@ -502,7 +501,6 @@ public class HumanReadableGenerator {
 				getRelationalOpText(item, liElement,
 						populationOrSubtreeXMLProcessor, satisfiesAnyAll);
 			} else {
-				System.out.println("DATA: " + parentListElement.html());
 				if (parentListElement.html().contains("Stratification")) {
 					parentListElement = parentListElement
 							.appendElement(HTML_UL).appendElement(HTML_LI);
@@ -630,14 +628,18 @@ public class HumanReadableGenerator {
 						parseChild(childNodes.item(0), parentListElement, item,
 								populationOrSubtreeXMLProcessor,
 								satisfiesAnyAll);
+						System.out.println(" if Adding a new line");
 					} else {
 						Element ulElement = parentListElement;
-						if (childNodes.getLength() > 1) {
+						System.out.println("else Adding a new line");
+						if (childNodes.getLength() > 1 || childNodes.item(0).getNodeName()
+								.equals(FUNCTIONAL_OP)) {
 							ulElement = parentListElement
 									.appendElement(HTML_UL);
 						}
 						for (int i = 0; i < childNodes.getLength(); i++) {
-							if (childNodes.getLength() > 1) {
+							if (childNodes.getLength() > 1 || childNodes.item(0).getNodeName()
+									.equals(FUNCTIONAL_OP)) {
 								ulElement = ulElement.appendElement(HTML_LI);
 							}
 							parseChild(childNodes.item(i), ulElement, item,
@@ -895,7 +897,6 @@ public class HumanReadableGenerator {
 			if (node.getAttributes().getNamedItem("qdmVariable") != null) {
 				String qdmVariable = node.getAttributes()
 						.getNamedItem("qdmVariable").getNodeValue();
-				System.out.println("qdmVariable:" + qdmVariable);
 				if (qdmVariable.equalsIgnoreCase("true")) {
 					return true;
 				}
@@ -1208,7 +1209,7 @@ public class HumanReadableGenerator {
 					.generateHeaderHTMLForMeasure(simpleXmlStr);
 			XmlProcessor simpleXMLProcessor = resolveSubTreesInPopulations(simpleXmlStr);
 			// XmlProcessor simpleXMLProcessor = new XmlProcessor(simpleXmlStr);
-			System.out.println(simpleXmlStr);
+			//System.out.println(simpleXmlStr);
 
 			generateHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
 			humanReadableHTML = humanReadableHTMLDocument.toString();
@@ -1383,8 +1384,6 @@ public class HumanReadableGenerator {
 						+ qdmAttribs.getNamedItem("uuid").getNodeValue()
 						+ "\"][@name != \"negation rationale\"]");
 				String name = "";
-				System.out.println("UUID: "
-						+ qdmAttribs.getNamedItem("uuid").getNodeValue());
 				if (node != null) {
 					name = node.getAttributes().getNamedItem("name")
 							.getNodeValue();
@@ -1477,7 +1476,6 @@ public class HumanReadableGenerator {
 				Node node = elements.item(i);
 				NamedNodeMap map = node.getAttributes();
 				String id = map.getNamedItem("id").getNodeValue();
-				System.out.println(id);
 				Node qdm = simpleXMLProcessor.findNode(
 						simpleXMLProcessor.getOriginalDoc(),
 						"/measure/elementLookUp/qdm[@uuid='" + id + "']");
@@ -1532,7 +1530,6 @@ public class HumanReadableGenerator {
 			Node node;
 			for (int i = 0; i < variables.getLength(); i++) {
 				node = variables.item(i);
-				System.out.println(node.getNodeName());
 				NamedNodeMap map = node.getAttributes();
 				String name = map.getNamedItem("displayName").getNodeValue();
 				if (name.length() > 0) {
@@ -1789,16 +1786,15 @@ public class HumanReadableGenerator {
 				String clauseNodeXMLString = simpleXMLProcessor
 						.transform(clauseNode);
 
-				System.out.println("");
+				/*System.out.println("");
 				System.out.println("clauseNode XML String:"
 						+ clauseNodeXMLString);
-				System.out.println("");
+				System.out.println("");*/
 
 				XmlProcessor clauseXMLProcessor = new XmlProcessor(
 						clauseNodeXMLString);
 				clauseXMLProcessor = expandSubTreesAndImportQDMs(
 						clauseXMLProcessor, simpleXMLProcessor, false);
-				System.out.println();
 				Node expandedClauseNode = clauseXMLProcessor.getOriginalDoc()
 						.getFirstChild();
 
@@ -1816,9 +1812,9 @@ public class HumanReadableGenerator {
 				parentNode.replaceChild(importedClauseNode, clauseNode);
 			}
 			// removeNode("/measure/subTreeLookUp",simpleXMLProcessor);
-			System.out.println("Expanded simple xml:"
+			/*System.out.println("Expanded simple xml:"
 					+ simpleXMLProcessor.transform(simpleXMLProcessor
-							.getOriginalDoc()));
+							.getOriginalDoc()));*/
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

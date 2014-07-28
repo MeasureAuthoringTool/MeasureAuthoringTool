@@ -116,7 +116,7 @@ public class ClientConstants {
 	public final static String TEXT_CONTACT_US ="Contact Us";
 	
 	/** The contactus url.*/
-	public static String CONTACTUS_URL="https://nqfdev.telligen.org/web/guest/contact-us";
+	public static String CONTACTUS_URL = "https://www.emeasuretool.cms.gov/web/guest/contact-us";
 	
 	
 	

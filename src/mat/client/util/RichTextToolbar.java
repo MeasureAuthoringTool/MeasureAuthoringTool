@@ -2,6 +2,8 @@ package mat.client.util;
 
 import java.util.HashMap;
 
+import mat.client.ImageResources;
+
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -25,7 +27,7 @@ import com.google.gwt.user.client.ui.RichTextArea.Formatter;
 public class RichTextToolbar extends Composite {
 	/** Local CONSTANTS **/
 	//ImageMap and CSS related
-	private static final String HTTP_STATIC_ICONS_GIF = "http://blog.elitecoderz.net/wp-includes/js/tinymce/themes/advanced/img/icons.gif";
+	private static final String HTTP_STATIC_ICONS_GIF = "";//ImageResources.rich_Text_Toolbar();
 	private static final String CSS_ROOT_NAME = "RichTextToolbar";
 	
 	//Color and Fontlists - First Value (key) is the Name to display, Second Value (value) is the HTML-Definition
@@ -465,7 +467,7 @@ public class RichTextToolbar extends Composite {
 		}
 		topPanel.add(removeformatting = createPushButton(HTTP_STATIC_ICONS_GIF,20,460,20,20,GUI_HOVERTEXT_REMOVEFORMAT));
 		topPanel.add(new HTML("&nbsp;"));
-		topPanel.add(texthtml = createToggleButton(HTTP_STATIC_ICONS_GIF,0,260,20,20,GUI_HOVERTEXT_SWITCHVIEW));
+		topPanel.add(texthtml = createToggleButton(HTTP_STATIC_ICONS_GIF,0,258,20,20,GUI_HOVERTEXT_SWITCHVIEW));
 
 		//Init the BOTTOM Panel
 		bottomPanel.add(fontlist = createFontList());
@@ -479,7 +481,8 @@ public class RichTextToolbar extends Composite {
 
 	/** Method to create a Toggle button for the toolbar **/
 	private ToggleButton createToggleButton(String url, Integer top, Integer left, Integer width, Integer height, String tip) {
-		Image extract = new Image(url, left, top, width, height);
+		Image extract = new Image(ImageResources.INSTANCE.rich_Text_Toolbar());
+		extract.setVisibleRect(left, top, width, height);
 		ToggleButton tb = new ToggleButton(extract);
 		tb.setHeight(height+"px");
 		tb.setWidth(width+"px");
@@ -492,8 +495,11 @@ public class RichTextToolbar extends Composite {
 
 	/** Method to create a Push button for the toolbar **/
 	private PushButton createPushButton(String url, Integer top, Integer left, Integer width, Integer height, String tip) {
-		Image extract = new Image(url, left, top, width, height);
+		//Image extract = new Image(new Image(ImageResources.INSTANCE.rich_Text_Toolbar()), left, top, width, height);
+		Image extract = new Image(ImageResources.INSTANCE.rich_Text_Toolbar());
+		extract.setVisibleRect(left, top, width, height);
 		PushButton tb = new PushButton(extract);
+		tb.setPixelSize(width, height);
 		tb.setHeight(height+"px");
 		tb.setWidth(width+"px");
 		tb.addClickHandler(evHandler);

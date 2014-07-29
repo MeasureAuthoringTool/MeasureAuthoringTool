@@ -342,4 +342,6 @@ public interface ImageResources extends ClientBundle {
 	@Source("images/search_zoom.png")
 	ImageResource searchZoom();
 	
+	@Source("images/richTextToolbar.png")
+	ImageResource rich_Text_Toolbar();
 }

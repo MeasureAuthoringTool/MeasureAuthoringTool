@@ -684,12 +684,10 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 						for(int i=0; i<vpanel.getWidgetCount(); i++) {
 							System.out.println("IN THE LOOP!");
 							Widget widget = vpanel.getWidget(i);
-							System.out.println(widget.getElement().getAttribute("id"));
 							if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteTitle_"+measureNoteId)) {
 								noteTitle = ((TextBox)widget).getText();
 							}
 							if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteDesc_"+measureNoteId)) {
-								System.out.println("MADE IT IN THE IF!!!");
 								VerticalPanel vp = (VerticalPanel)widget;
 								Widget wid = vp.getWidget(1);
 								noteDesc = ((RichTextArea)wid).getHTML();
@@ -734,7 +732,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 						((TextBox)widget).setText(measureNoteDTO.getNoteTitle());
 					}
 					if(widget.getElement().getAttribute("id").equalsIgnoreCase("NoteDesc_"+measureNoteId)) {
-						((TextArea)widget).setText(measureNoteDTO.getNoteDesc());
+						VerticalPanel vp = (VerticalPanel)widget;
+						Widget wid = vp.getWidget(1);
+						((RichTextArea)wid).setHTML(measureNoteDTO.getNoteDesc());
 					}
 				}
 			}

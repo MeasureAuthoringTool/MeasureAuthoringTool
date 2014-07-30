@@ -51,8 +51,6 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	private static final int VSAC_REQUEST_FAILURE_CODE = 4;
 	/** The Constant TIME_OUT_FAILURE_CODE. */
 	private static final int VSAC_TIME_OUT_FAILURE_CODE = 3;
-	/** The context. */
-	private ApplicationContext context;
 	
 	/**
 	 * Private method to Convert VSAC xml pay load into Java object through
@@ -378,7 +376,6 @@ public class VSACAPIServiceImpl extends SpringRemoteServiceServlet implements VS
 	public final VsacApiResult updateVSACValueSets(final String measureId) {
 		VsacApiResult result = new VsacApiResult();
 		LOGGER.info("Start VSACAPIServiceImpl updateVSACValueSets method :");
-		context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
 		if (isAlreadySignedIn()) {
 			ArrayList<QualityDataSetDTO> appliedQDMList = getMeasureLibraryService().
 					getAppliedQDMFromMeasureXml(measureId, false);

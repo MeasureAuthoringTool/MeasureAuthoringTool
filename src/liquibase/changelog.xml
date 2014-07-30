@@ -161,4 +161,5 @@
 		<include file="classpath:/liquibase/deploy_sprint-43_US4301_Rename_4_Timing_Relationships.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-43_US4371_Adding_Birthdate_and_Expired.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-44_US4558.xml"/>
+		<include file="classpath:/liquibase/deploy_sprint-44_US4573.xml"/>
 	</databaseChangeLog>

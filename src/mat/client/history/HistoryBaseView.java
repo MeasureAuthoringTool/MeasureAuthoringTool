@@ -51,29 +51,8 @@ public abstract class HistoryBaseView {
 	/** The log entry label. */
 	Label logEntryLabel = new Label();
 	
-	/** The add comment. */
-	//Label addComment = new Label();
-	
-	/** The save button. */
-	//private Button saveButton;
-	
-	/** The clear button. */
-	//private Button clearButton;
-	
 	/** The go back link. */
 	protected Anchor goBackLink = new Anchor("");
-	
-	/** The horizontal panel. */
-//	protected HorizontalPanel horizontalPanel = new HorizontalPanel();
-	
-	/** The input text. */
-	//protected TextArea	inputText = new TextArea();
-	
-	/** The add comment panel. */
-	//protected VerticalPanel addCommentPanel = new VerticalPanel();
-	
-	/** The comment buttons. */
-	//private SaveCancelButtonBar commentButtons = new SaveCancelButtonBar();
 	
 	/** The name text. */
 	protected Label nameText = new Label("");
@@ -114,8 +93,7 @@ public abstract class HistoryBaseView {
 	 * Instantiates a new history base view.
 	 */
 	public HistoryBaseView(){
-		//mainPanel.add(errMsg);
-		cellTablePanel.setWidth("700px");
+		cellTablePanel.setWidth("900px");
 		mainPanel.setStylePrimaryName("searchResultsContainer");
 		mainPanel.addStyleName("leftAligned");
 		nameText.addStyleName("labelStyling");
@@ -125,41 +103,7 @@ public abstract class HistoryBaseView {
 		logEntryPanel.add(new SpacerWidget());
 		logEntryPanel.add(new SpacerWidget());
 		logEntryPanel.add(goBackLink);
-		//horizontalPanel.add(logEntryPanel);
-		
-		//SimplePanel hspacer = new SimplePanel();
-		//hspacer.setWidth("10px");
-		//horizontalPanel.add(hspacer);
-		
-		//inputText.setText("");
-		//inputText.setHeight("100px");
-		//inputText.setWidth("300px");
-	
-		//saveButton = commentButtons.getSaveButton();
-		//clearButton = commentButtons.getCancelButton();
-		
-		//saveButton.setText("Save");
-		//saveButton.setTitle("Save");
-		//clearButton.setText("Clear");
-		//clearButton.setTitle("Clear");
-		
-		//addCommentPanel.add(new SpacerWidget());
-		
-		//addCommentPanel.add(LabelBuilder.buildLabel( addComment, "Add Comment"));
-		//inputText.getElement().setAttribute("id", "Add Comment");
-		//addCommentPanel.add(inputText);
-		
-		//addCommentPanel.add(commentButtons);
-	
-		//addCommentPanel.addStyleName("contentWithHeadingPanel");
-		//VerticalPanel downShiftPanel = new VerticalPanel();
-		//SimplePanel addCommentSpacer = new SimplePanel();
-		//addCommentSpacer.setHeight("46px");
-		//downShiftPanel.add(addCommentSpacer);
-		//downShiftPanel.add(addCommentPanel);
-		//horizontalPanel.add(downShiftPanel);
 		mainPanel.setStyleName("contentPanel");
-		//mainPanel.add(horizontalPanel);
 		mainPanel.add(logEntryPanel);
 		
 	}
@@ -187,37 +131,6 @@ public abstract class HistoryBaseView {
 		containerPanel.setCodeListInfo(parentLabel);
 		containerPanel.setCodeListInfo(parentName);
 	}
-	
-	
-	/**
-	 * Gets the save button.
-	 * 
-	 * @return the save button
-	 */
-	/*public HasClickHandlers getSaveButton() {
-		return saveButton;
-	}
-
-	
-	*//**
-	 * Gets the clear button.
-	 * 
-	 * @return the clear button
-	 *//*
-	public HasClickHandlers getClearButton() {
-		return clearButton;
-	}
-
-	
-	*//**
-	 * Gets the user comment.
-	 * 
-	 * @return the user comment
-	 *//*
-	public HasValue<String> getUserComment() {
-		return inputText;
-	}
-*/	
 
 	/**
 	 * Gets the success message display.
@@ -363,6 +276,20 @@ public abstract class HistoryBaseView {
 				.fromSafeConstant("<span title='Last Modified Date'>" + "Last Modified Date"
 						+ "</span>"));
 		
+		Column<AuditLogDTO, SafeHtml> additionalInfo = new Column<AuditLogDTO, SafeHtml>(
+				new MatSafeHTMLCell()) {
+			@Override
+			public SafeHtml getValue(AuditLogDTO object) {
+				if(object.getAdditionlInfo()!=null){
+				return CellTableUtility.getColumnToolTip(object.getAdditionlInfo());
+				}
+				return null;
+			}
+		};
+		cellTable.addColumn(additionalInfo, SafeHtmlUtils
+				.fromSafeConstant("<span title='Additional Info'>" + "Additional Info"
+						+ "</span>"));
+		
 		
 		return cellTable;
 	}
@@ -393,9 +320,10 @@ public abstract class HistoryBaseView {
 			spager.setDisplay(cellTable);
 			spager.setPageSize(PAGE_SIZE);
 			cellTable.setWidth("100%");
-			cellTable.setColumnWidth(0, 30.0, Unit.PCT);
-			cellTable.setColumnWidth(1, 30.0, Unit.PCT);
-			cellTable.setColumnWidth(2, 40.0, Unit.PCT);
+			cellTable.setColumnWidth(0, 25.0, Unit.PCT);
+			cellTable.setColumnWidth(1, 25.0, Unit.PCT);
+			cellTable.setColumnWidth(2, 25.0, Unit.PCT);
+			cellTable.setColumnWidth(2, 25.0, Unit.PCT);
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("historySearchSummary",
 					"In the following Log Entry table, User Action is given in first column,"
 							+ " Last Modified By in second column and Last Modified Date in third column");
@@ -458,27 +386,7 @@ public abstract class HistoryBaseView {
 		
 		return tsStr;
 	}
-	/**
-	 * Reset.
-	 */
-//	public void reset(){
-//		clearErrorMessage();
-//		inputText.setText("");
-//		view.setCurrentPage(SearchView.DEFAULT_PAGE);
-//	}
-//	
-//	/**
-//	 * Sets the user comments read only.
-//	 * 
-//	 * @param b
-//	 *            the new user comments read only
-//	 */
-//	public void setUserCommentsReadOnly(boolean b){
-//		inputText.setReadOnly(b);
-//		saveButton.setEnabled(!b);
-//		clearButton.setEnabled(!b);
-//	}
-
+	
 }
 
 	

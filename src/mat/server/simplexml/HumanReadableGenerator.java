@@ -632,8 +632,9 @@ public class HumanReadableGenerator {
 					} else {
 						Element ulElement = parentListElement;
 						System.out.println("else Adding a new line");
-						if (childNodes.getLength() > 1 || childNodes.item(0).getNodeName()
-								.equals(FUNCTIONAL_OP)) {
+						System.out.println(childNodes.toString());
+						if ( !(childNodes.getLength() == 0) && (childNodes.getLength() > 1 || childNodes.item(0).getNodeName()
+								.equals(FUNCTIONAL_OP))) {
 							ulElement = parentListElement
 									.appendElement(HTML_UL);
 						}

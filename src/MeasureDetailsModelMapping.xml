@@ -87,7 +87,7 @@
      <bind-xml name="steward" node="element"/>
     </field>
     
-     <field name="authorList"
+     <field name="authorSelectedList"
            type="mat.model.Author"
            collection="arraylist">
       <bind-xml name="developer" location="developers">

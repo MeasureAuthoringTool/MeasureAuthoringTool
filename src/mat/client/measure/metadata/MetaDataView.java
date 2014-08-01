@@ -1339,7 +1339,12 @@ public class MetaDataView implements MetaDataDetailDisplay{
 			authorSPanel.setSize("500px", "150px");
 			authorSPanel.add(invisibleLabel);
 			authorSPanel.setWidget(authorCellTable);
+		}else {
+			HTML desc = new HTML("<p> No Measure Developer Selected.</p>");
+			authorSPanel.setSize("200px", "75px");
+			authorSPanel.setWidget(desc); 
 		}
+		
 		
 	}
 	

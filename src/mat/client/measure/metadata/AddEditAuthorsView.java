@@ -102,6 +102,7 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 		authorHPanel.add(simpPanel);
 		authorHPanel.add(buildAddMeasureDevPanel());
 		mainPanel.add(authorHPanel);
+		
 	}
 	
 	/**
@@ -357,10 +358,16 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 			authorVPanel.add(invisibleLabel);
 			authorVPanel.add(authorCellTable);
 			authorVPanel.add(new SpacerWidget());
-			authorVPanel.add(successMessages);
+			SimplePanel addSuccessMsgPanel = new SimplePanel();
+			addSuccessMsgPanel.addStyleName("marginTop");
+			addSuccessMsgPanel.setWidth("800px");
+			addSuccessMsgPanel.add(successMessages);		
+			authorVPanel.add(addSuccessMsgPanel);
+			//authorVPanel.add(addSuccessMsgPanel);
 			authorVPanel.add(addToMeasureDeveloperList);
 			authorVPanel.add(new SpacerWidget());
 			authorVPanel.add(returnButton);
+			
 		}
 
 			

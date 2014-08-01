@@ -1234,14 +1234,14 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			public void onClick(ClickEvent event) {
 				currentMeasureDetail.setAuthorSelectedList(addEditAuthorsDisplay.getAuthorSelectedList());
 				metaDataDisplay.setAuthorsSelectedList(currentMeasureDetail.getAuthorSelectedList());
-				
+				addEditAuthorsDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMeasureDeveloperAddedSuccessfully());
 			}
 		});
 	    addEditAuthorsDisplay.getAddButton().addClickHandler(new ClickHandler() {
 			
 			@Override
 			public void onClick(ClickEvent event) {
-				String name = addEditAuthorsDisplay.getMeasureDevInput().getValue();
+				String name = addEditAuthorsDisplay.getMeasureDevInput().getValue().trim();
 				if(name!=null && !name.isEmpty()){
 				addToTheList(name);
 				}

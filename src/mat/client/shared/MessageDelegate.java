@@ -13,6 +13,7 @@ public class MessageDelegate {
 	
 	/** The Constant ALERT_LOADING_MESSAGE. */
 	public static final String ALERT_LOADING_MESSAGE = "Please wait until loading is complete.";
+	public static final String MEASURE_DEVELOPER_ADDED_SUCCESSFULLY= "Measure Developer updated successfully. Changes must be saved on the previous page.";
 	
 	/** The Constant CHANGES_SAVED. */
 	public static final String CHANGES_SAVED = "Changes are successfully saved.";
@@ -2068,6 +2069,13 @@ public class MessageDelegate {
 	 */
 	public String getINVALID_CHARACTER_VALIDATION_ERROR() {
 		return INVALID_CHARACTER_VALIDATION_ERROR;
+	}
+
+	/**
+	 * @return the measureDeveloperAddedSuccessfully
+	 */
+	public static String getMeasureDeveloperAddedSuccessfully() {
+		return MEASURE_DEVELOPER_ADDED_SUCCESSFULLY;
 	}
 	
 }

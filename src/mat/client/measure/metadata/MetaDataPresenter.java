@@ -1,14 +1,11 @@
 package mat.client.measure.metadata;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import mat.DTO.MeasureTypeDTO;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
-import mat.client.clause.ModifyQDMDialogBox;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.ListBoxCodeProvider;
@@ -19,10 +16,8 @@ import mat.client.event.MeasureSelectedEvent;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
-import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.measure.service.SaveMeasureResult;
-import mat.client.shared.CustomButton;
 import mat.client.shared.DateBoxWithCalendar;
 import mat.client.shared.HasVisible;
 import mat.client.shared.ListBoxMVP;
@@ -38,6 +33,8 @@ import mat.model.Author;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.ConstantMessages;
+import mat.shared.UUIDUtilClient;
+
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
@@ -260,7 +257,14 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 * @param author
 		 *            the new authors list
 		 */
-		public void setAuthorsList(List<Author> author);
+		public void setAuthorsSelectedList(List<Author> author);
+		
+		/**
+		 * Gets the authors selected list.
+		 *
+		 * @return the authors selected list
+		 */
+		public List<Author> getAuthorsSelectedList();
 		
 		/**
 		 * Sets the measure type list.
@@ -629,6 +633,15 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 * @param measureTypeSelectedList the new measure type selected list
 		 */
 		void setMeasureTypeSelectedList(List<MeasureType> measureTypeSelectedList);
+
+		/**
+		 * Builds the author cell table.
+		 *
+		 * @param authorList the author list
+		 * @param editable the editable
+		 */
+		public void buildAuthorCellTable(List<Author> authorList,
+				boolean editable);		
 		
 	}
 	
@@ -657,6 +670,81 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		 * @return the other author
 		 */
 		public HasValue<String> getOtherAuthor();
+
+		/**
+		 * Builds the author cell table.
+		 *
+		 * @param authorList the author list
+		 * @param editable the editable
+		 */
+		public void buildAuthorCellTable(List<Author> authorList,
+				boolean editable);
+		
+		/**
+		 * Gets the adds the to measure developer list btn.
+		 *
+		 * @return the adds the to measure developer list btn
+		 */
+		public Button getAddToMeasureDeveloperListBtn();
+
+		/**
+		 * Gets the adds the button.
+		 *
+		 * @return the adds the button
+		 */
+		public Button getAddButton();
+
+		/**
+		 * Gets the measure dev input.
+		 *
+		 * @return the measure dev input
+		 */
+		TextBox getMeasureDevInput();
+
+		/**
+		 * Sets the measure dev input.
+		 *
+		 * @param measureDevInput the new measure dev input
+		 */
+		void setMeasureDevInput(TextBox measureDevInput);
+
+		/**
+		 * Gets the author selected list.
+		 *
+		 * @return the author selected list
+		 */
+		List<Author> getAuthorSelectedList();
+		
+		/**
+		 * Gets the list of all author.
+		 *
+		 * @return the list of all author
+		 */
+		List<Author> getListOfAllAuthor();
+
+		/**
+		 * Sets the author selected list.
+		 *
+		 * @param authorSelectedList the new author selected list
+		 */
+		void setAuthorSelectedList(List<Author> authorSelectedList);
+
+		/**
+		 * Builds the author cell table.
+		 *
+		 * @param authorSelectedList the author selected list
+		 * @param editable the editable
+		 * @param authorSelectedList2 the author selected list2
+		 */
+		public void buildAuthorCellTable(List<Author> authorSelectedList,
+				boolean editable, List<Author> authorSelectedList2);
+
+		/**
+		 * Gets the adds the edit cancel button.
+		 *
+		 * @return the adds the edit cancel button
+		 */
+		Button getAddEditCancelButton();
 	}
 	
 	/**
@@ -936,17 +1024,27 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				});
 			}
 		});
-		addEditAuthorsDisplay.getCancelButton().addClickHandler(new ClickHandler() {
+		addEditAuthorsDisplay.getAddEditCancelButton().addClickHandler(new ClickHandler() {
+			
 			@Override
-			public void onClick(final ClickEvent event) {
-				addEditAuthorsDisplay.getAuthorInputBox().setValue("");
-				addEditAuthorsDisplay.hideTextBox();
+			public void onClick(ClickEvent event) {
+				addEditAuthorsDisplay.getMeasureDevInput().setText("");	
+				
 			}
 		});
+		/*addEditAuthorsDisplay.getCancelButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(final ClickEvent event) {
+				addEditAuthorsDisplay.getMeasureDevInput().setValue("");
+				//addEditAuthorsDisplay.hideTextBox();
+			}
+		});*/
 		addEditAuthorsDisplay.getReturnButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
 				isSubView = false;
+				metaDataDisplay.setSaveButtonEnabled(editable);
+				getMeasureDeveloperAuthors();
 				backToDetail();
 			}
 		});
@@ -969,12 +1067,12 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 					//do nothing
 				} else if (!addEditAuthorsDisplay.getAuthor().startsWith("Other")) {
 					if (!addEditAuthorsDisplay.getAuthor().equals("")) {
-						addToAuthorsList(addEditAuthorsDisplay.getAuthor());
+						//addToAuthorsList(addEditAuthorsDisplay.getAuthor());
 				    	addEditAuthorsDisplay.getAuthorInputBox().setValue("");
 					}
 				} else {
 					  if (!addEditAuthorsDisplay.getOtherAuthor().getValue().equals("")) {
-						  addToAuthorsList(addEditAuthorsDisplay.getOtherAuthor().getValue());
+						  //addToAuthorsList(addEditAuthorsDisplay.getOtherAuthor().getValue());
 						  addEditAuthorsDisplay.getOtherAuthor().setValue("");
 					  }
 				}
@@ -983,7 +1081,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		addEditAuthorsDisplay.getRemoveButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(final ClickEvent event) {
-			     removeSelectedAuthor();
+			   //  removeSelectedAuthor();
 			}
 		});
 //		addEditMeasureTypeDisplay.getCancelButton().addClickHandler(new ClickHandler() {
@@ -1130,7 +1228,25 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 				metaDataDisplay.setComponentMeasureSelectedList(addEditComponentMeasuresDisplay.getComponentMeasuresList());
 			}
 		});
-	    
+	    addEditAuthorsDisplay.getAddToMeasureDeveloperListBtn().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				currentMeasureDetail.setAuthorSelectedList(addEditAuthorsDisplay.getAuthorSelectedList());
+				metaDataDisplay.setAuthorsSelectedList(currentMeasureDetail.getAuthorSelectedList());
+				
+			}
+		});
+	    addEditAuthorsDisplay.getAddButton().addClickHandler(new ClickHandler() {
+			
+			@Override
+			public void onClick(ClickEvent event) {
+				String name = addEditAuthorsDisplay.getMeasureDevInput().getValue();
+				if(name!=null && !name.isEmpty()){
+				addToTheList(name);
+				}
+			}
+		});
 	    addEditComponentMeasuresDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			
 			@Override
@@ -1143,8 +1259,54 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		emptyWidget.add(new Label("No Measure Selected"));
 	}
 	
+	/**
+	 * Adds the to the list.
+	 *
+	 * @param name the name
+	 */
+	protected void addToTheList(String name) {
+		final Author newListObject = new Author();
+		newListObject.setAuthorName(name);
+		newListObject.setOrgId(UUIDUtilClient.uuid());
+		addEditAuthorsDisplay.getListOfAllAuthor().add(newListObject);
+		addEditAuthorsDisplay.buildAuthorCellTable(addEditAuthorsDisplay.getListOfAllAuthor(), editable, 
+				currentMeasureDetail.getAuthorSelectedList());
+		
+	}
+
 	//TODO by Ravi
 	
+	/**
+	 * Gets the all add edit authors.
+	 *
+	 * @return the all add edit authors
+	 */
+	protected void getAllAddEditAuthors() {
+		service.getAllAddEditAuthors(new AsyncCallback<List<Author>>() {
+		 			
+		 			@Override
+		 			public void onSuccess(List<Author> authorList) {
+                       List<String> orgIDList = new ArrayList<String>();
+		 				for(int j=0;j<authorList.size();j++){
+		 					orgIDList.add(authorList.get(j).getOrgId());
+		 				}
+		 				
+		 				for(int i=0;i<currentMeasureDetail.getAuthorSelectedList().size();i++){
+		 					if(!orgIDList.contains(currentMeasureDetail.getAuthorSelectedList().get(i).getOrgId())){
+		 						authorList.add(currentMeasureDetail.getAuthorSelectedList().get(i));
+		 					}
+		 				}	
+		 				addEditAuthorsDisplay.buildAuthorCellTable(authorList, editable, currentMeasureDetail.getAuthorSelectedList());
+		 			}
+		 			
+		 			@Override
+		 			public void onFailure(Throwable caught) {
+		 				// TODO Auto-generated method stub
+		 			}
+		 		});
+		
+	}
+
 	/**
 	 * Gets the component measures.
 	 *
@@ -1385,17 +1547,20 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	
 	/**
  * Sets the authors list on view.
+ *
+ * @return the widget
  */
-	private void setAuthorsListOnView() {
-		Collections.sort(currentMeasureDetail.getAuthorList(), new Author.Comparator());
-		if (currentMeasureDetail.getAuthorList() != null) {
-			currentAuthorsList = new ManageAuthorsModel(currentMeasureDetail.getAuthorList());
-			currentAuthorsList.setPageSize(SearchView.PAGE_SIZE_ALL);
-			addEditAuthorsDisplay.buildDataTable(currentAuthorsList);
-			
-		}
-		
-	}
+//	private void setAuthorsListOnView() {
+//		Collections.sort(currentMeasureDetail.getAuthorSelectedList(), new Author.Comparator());
+//		if (currentMeasureDetail.getAuthorSelectedList() != null) {
+//			currentAuthorsList = new ManageAuthorsModel(currentMeasureDetail.getAuthorSelectedList());
+//			currentAuthorsList.setPageSize(SearchView.PAGE_SIZE_ALL);
+//			//addEditAuthorsDisplay.buildDataTable(currentAuthorsList);
+//			metaDataDisplay.buildAuthorCellTable(currentAuthorsList.getSelectedAuthor(), editable);
+//			
+//		}
+//		
+//	}
 	
 	/**
 	 * Sets the measure type on view.
@@ -1424,15 +1589,15 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	/**
 	 * Removes the selected author.
 	 */
-	protected void removeSelectedAuthor() {
-		List<Author> selectedAuthor = currentAuthorsList.getSelectedAuthor();
-		for (Author a: selectedAuthor){
-			currentMeasureDetail.getAuthorList().remove(a);
-		}
-		metaDataDisplay.setAuthorsList(currentMeasureDetail.getAuthorList());
-		setAuthorsListOnView();
-		
-	}
+//	protected void removeSelectedAuthor() {
+//		List<Author> selectedAuthor = currentAuthorsList.getSelectedAuthor();
+//		for (Author a: selectedAuthor){
+//			currentMeasureDetail.getAuthorSelectedList().remove(a);
+//		}
+//		metaDataDisplay.setAuthorsSelectedList(currentMeasureDetail.getAuthorSelectedList());
+//		setAuthorsListOnView();
+//		
+//	}
 
 	/* (non-Javadoc)
 	 * @see mat.client.MatPresenter#getWidget()
@@ -1548,16 +1713,19 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		metaDataDisplay.getRationale().setValue(currentMeasureDetail.getRationale());
 		metaDataDisplay.getStratification().setValue(currentMeasureDetail.getStratification());
 		metaDataDisplay.getRiskAdjustment().setValue(currentMeasureDetail.getRiskAdjustment());
-		if (currentMeasureDetail.getAuthorList() != null) {
-			metaDataDisplay.setAuthorsList(currentMeasureDetail.getAuthorList());
+		//authorSelectedList
+		if (currentMeasureDetail.getAuthorSelectedList() != null) {
+			metaDataDisplay.setAuthorsSelectedList(currentMeasureDetail.getAuthorSelectedList());
 		} else {
 			List<Author> authorList = new ArrayList<Author>();
-			metaDataDisplay.setAuthorsList(authorList);
-			currentMeasureDetail.setAuthorList(authorList);
+			metaDataDisplay.setAuthorsSelectedList(authorList);
+			currentMeasureDetail.setAuthorSelectedList(authorList);
 		}
 		dbAuthorList.clear();
-		dbAuthorList.addAll(currentMeasureDetail.getAuthorList());
-		authorList = currentMeasureDetail.getAuthorList();
+		dbAuthorList.addAll(currentMeasureDetail.getAuthorSelectedList());
+		getMeasureDeveloperAuthors();
+		authorList = currentMeasureDetail.getAuthorSelectedList();
+		//measureTypeSelectList
 		if (currentMeasureDetail.getMeasureTypeSelectedList() != null) {
 			metaDataDisplay.setMeasureTypeSelectedList(currentMeasureDetail.getMeasureTypeSelectedList());
 		} else {
@@ -1610,6 +1778,23 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			metaDataDisplay.getDeleteMeasure().setEnabled(true);
 		}
 		currentMeasureDetail.setEditable(editable);
+	}
+
+	/**
+	 * Gets the measure developer authors.
+	 *
+	 * @return the measure developer authors
+	 */
+	private void getMeasureDeveloperAuthors() {
+		if (currentMeasureDetail.getAuthorSelectedList() != null) {
+			
+			metaDataDisplay.buildAuthorCellTable(currentMeasureDetail.getAuthorSelectedList(), editable);
+		} else {
+			List<Author> authorList = new ArrayList<Author>();
+			metaDataDisplay.buildAuthorCellTable(authorList, editable);
+			currentMeasureDetail.setAuthorSelectedList(authorList);
+		}
+	
 	}
 
 	/**
@@ -1736,7 +1921,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 		currentMeasureDetail.setStratification(metaDataDisplay.getStratification().getValue());
 		currentMeasureDetail.setRiskAdjustment(metaDataDisplay.getRiskAdjustment().getValue());
 		currentMeasureDetail.setVersionNumber(metaDataDisplay.getVersionNumber().getText());
-		currentMeasureDetail.setAuthorList(authorList);
+		currentMeasureDetail.setAuthorSelectedList(metaDataDisplay.getAuthorsSelectedList());
 		currentMeasureDetail.setMeasureTypeSelectedList(measureTypeList);
 		currentMeasureDetail.setQdsSelectedList(metaDataDisplay.getQdmSelectedList());
 		currentMeasureDetail.setComponentMeasuresSelectedList(metaDataDisplay.getComponentMeasureSelectedList());
@@ -1771,9 +1956,9 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	private void displayAddEditAuthors() {
 		isSubView = true;
 		addEditAuthorsDisplay.setReturnToLink("Return to Previous");
-		currentAuthorsList = new ManageAuthorsModel(currentMeasureDetail.getAuthorList());
+		currentAuthorsList = new ManageAuthorsModel(currentMeasureDetail.getAuthorSelectedList());
 		currentAuthorsList.setPageSize(SearchView.PAGE_SIZE_ALL);
-		addEditAuthorsDisplay.buildDataTable(currentAuthorsList);
+		getAllAddEditAuthors();
 		panel.clear();		
 		panel.add(addEditAuthorsDisplay.asWidget());
 		previousContinueButtons.setVisible(false);
@@ -1819,19 +2004,17 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 
 	/**
 	 * Adds the to authors list.
-	 * 
-	 * @param selectedAuthor
-	 *            the selected author
 	 */
-	private void addToAuthorsList(String selectedAuthor) {
-		Author author = new Author();
-		author.setAuthorName(selectedAuthor);
-		authorList.add(author);
-		currentMeasureDetail.setAuthorList(authorList);
-		metaDataDisplay.setAuthorsList(currentMeasureDetail.getAuthorList());
-		setAuthorsListOnView();
-		
-	}
+//	private void addToAuthorsList(String selectedAuthor) {
+//		Author author = new Author();
+//		author.setAuthorName(selectedAuthor);
+//		authorList.add(author);
+//		currentMeasureDetail.setAuthorSelectedList(authorList);
+//		metaDataDisplay.setAuthorsSelectedList(currentMeasureDetail.getAuthorSelectedList());
+//		setAuthorsListOnView();
+//		
+//	}
+	
 	
 	/**
 	 * Adds the to measure type list.

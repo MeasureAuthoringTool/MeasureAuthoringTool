@@ -12,6 +12,7 @@ import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.shared.MatException;
+import mat.model.Author;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
@@ -461,4 +462,6 @@ public interface MeasureService extends RemoteService {
 	 * @return the all measure types
 	 */
 	List<MeasureType> getAllMeasureTypes();
+
+	List<Author> getAllAddEditAuthors();
 }

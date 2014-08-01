@@ -11,6 +11,7 @@ import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureShareModel;
 import mat.client.measure.MeasureNotesModel;
 import mat.client.measure.TransferMeasureOwnerShipModel;
+import mat.model.Author;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
@@ -519,5 +520,13 @@ public interface MeasureServiceAsync {
 	 * @return the all measure types
 	 */
 	void getAllMeasureTypes(AsyncCallback<List<MeasureType>> asyncCallback);
+
+	/**
+	 * Gets the all add edit authors.
+	 *
+	 * @param asyncCallback the async callback
+	 * @return the all add edit authors
+	 */
+	void getAllAddEditAuthors(AsyncCallback<List<Author>> asyncCallback);
 			
 }

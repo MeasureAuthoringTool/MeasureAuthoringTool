@@ -535,7 +535,7 @@ public class MatTabLayoutPanel extends MATTabPanel implements BeforeSelectionHan
 			//dont show dirty check message when measure is deleted.
 			return true;
 		} else {
-			pageData.setToCompareAuthor(pageData.getAuthorList());
+			pageData.setToCompareAuthor(pageData.getAuthorSelectedList());
 			pageData.setToCompareMeasure(pageData.getMeasureTypeSelectedList());
 			pageData.setToCompareItemCount(pageData.getQdsSelectedList());
 			pageData.setToCompareComponentMeasures(pageData.getComponentMeasuresSelectedList());

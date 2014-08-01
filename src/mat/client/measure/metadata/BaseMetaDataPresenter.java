@@ -12,6 +12,7 @@ import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.MatContext;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.SearchResults;
+import mat.model.Author;
 
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.Window;
@@ -141,6 +142,13 @@ public class BaseMetaDataPresenter {
 		 * @return the save error msg
 		 */
 		public ErrorMessageDisplay  getSaveErrorMsg();
+
+		/**
+		 * Builds the author cell table.
+		 *
+		 * @param currentAuthorsList the current authors list
+		 */
+		void buildAuthorCellTable(List<Author> currentAuthorsList);
 
 	}
 	

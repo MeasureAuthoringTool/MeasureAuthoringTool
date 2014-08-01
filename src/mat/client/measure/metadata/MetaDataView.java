@@ -4,7 +4,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
-import mat.DTO.MeasureTypeDTO;
 import mat.client.ImageResources;
 import mat.client.clause.QDSAppliedListModel;
 import mat.client.codelist.HasListBox;
@@ -150,6 +149,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The measure type s panel. */
 	protected ScrollPanel measureTypeSPanel = new ScrollPanel();
+	
+	/** The author s panel. */
+	protected ScrollPanel authorSPanel = new ScrollPanel();
 	
 	/** The measure steward other input. */
 	protected TextBox measureStewardOtherInput = new TextBox();
@@ -359,6 +361,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
     /** The measure type cell table. */
     private CellTable<MeasureType> measureTypeCellTable;
     
+    /** The author cell table. */
+    private CellTable<Author> authorCellTable;
+    
     /** The selected measure list. */
     private List<ManageMeasureSearchModel.Result> selectedMeasureList;
         
@@ -371,6 +376,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
     /** The measure type selectio model. */
     private MultiSelectionModel<MeasureType> measureTypeSelectioModel;
     
+    /** The author selection model. */
+    private MultiSelectionModel<Author> authorSelectionModel;
+    
    // private MatButtonCell searchButton = new MatButtonCell("click to Search Measures","customSearchButton");
     
     /** The search button. */
@@ -381,6 +389,9 @@ public class MetaDataView implements MetaDataDetailDisplay{
     
     /** The measure type selected list. */
     private List<MeasureType> measureTypeSelectedList;
+    
+    /** The authors selected list. */
+    private List<Author> authorsSelectedList;
 
 
 	/**
@@ -534,8 +545,10 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		fPanel.add(verStewardPanel);
 		fPanel.add(new SpacerWidget());
 		
-		fPanel.add(LabelBuilder.buildLabel(authorListBox, "Measure Developer"));
-		fPanel.add(emptyAuthorsPanel);
+		fPanel.add(LabelBuilder.buildLabel(authorCellTable, "Measure Developer"));
+		//fPanel.add(emptyAuthorsPanel);
+		//fPanel.add(addEditAuthors);
+		fPanel.add(authorSPanel);
 		fPanel.add(addEditAuthors);
 		fPanel.add(new SpacerWidget());
 		
@@ -1301,6 +1314,112 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#buildAuthorCellTable(java.util.List, boolean)
+	 */
+	@Override
+	public void buildAuthorCellTable(List<Author> currentAuthorsList, boolean editable) {		
+		authorSPanel.clear();
+		authorSPanel.setStyleName("cellTablePanel");
+		if(currentAuthorsList.size()>0){
+			authorCellTable = new CellTable<Author>();
+			authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
+			ListDataProvider<Author> sortProvider = new ListDataProvider<Author>();
+			authorCellTable.setRowData(currentAuthorsList);
+			authorCellTable.setRowCount(currentAuthorsList.size(), true);
+			sortProvider.refresh();
+			sortProvider.getList().addAll(currentAuthorsList);
+			addAuthorColumnToTable(editable);
+			sortProvider.addDataDisplay(authorCellTable);
+			authorCellTable.setWidth("100%");
+			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
+					"In the following Measure Type List table,Select is given in first Column and Author is given in Second column");
+			authorSPanel.getElement().setAttribute("id", "AuthorListCellTable");
+			authorSPanel.getElement().setAttribute("aria-describedby", "authorListSummary");
+			authorSPanel.setSize("500px", "150px");
+			authorSPanel.add(invisibleLabel);
+			authorSPanel.setWidget(authorCellTable);
+		}
+		
+	}
+	
+	/**
+	 * Adds the author column to table.
+	 *
+	 * @param editable the editable
+	 */
+	private void addAuthorColumnToTable(boolean editable) {
+		Label measureSearchHeader = new Label("Measure Developer List");
+		measureSearchHeader.getElement().setId("measureDeveloperHeader_Label");
+		measureSearchHeader.setStyleName("recentSearchHeader");
+		com.google.gwt.dom.client.TableElement elem = authorCellTable.getElement().cast();
+		measureSearchHeader.getElement().setAttribute("tabIndex", "0");
+		TableCaptionElement caption = elem.createCaption();
+		caption.appendChild(measureSearchHeader.getElement());
+		authorSelectionModel = new MultiSelectionModel<Author>();
+		authorCellTable.setSelectionModel(authorSelectionModel);
+		MatCheckBoxCell chbxCell = new MatCheckBoxCell(false, true);
+		Column<Author, Boolean> selectColumn = new Column<Author, Boolean>(
+				chbxCell) {
+
+			@Override
+			public Boolean getValue(Author object) {
+				boolean isSelected = false;
+				if (authorsSelectedList != null && authorsSelectedList.size() > 0) {
+					for (int i = 0; i < authorsSelectedList.size(); i++) {
+						if (authorsSelectedList.get(i).getOrgId()
+								.equalsIgnoreCase(object.getOrgId())) {
+						isSelected = true;
+							break;
+						}
+					}
+				} else {
+				isSelected = false;
+				}
+				return isSelected;
+				
+			}
+		};
+
+		selectColumn.setFieldUpdater(new FieldUpdater<Author, Boolean>() {
+
+			@Override
+			public void update(int index, Author object, Boolean value) {
+				authorSelectionModel.setSelected(object, value);
+				if (value) {
+					authorsSelectedList.add(object);
+				} else {
+					for (int i = 0; i < authorsSelectedList.size(); i++) {
+						if (authorsSelectedList.get(i).getOrgId()
+								.equalsIgnoreCase(object.getOrgId())) {
+							authorsSelectedList.remove(i);
+							break;
+						}
+					}
+
+				}
+				
+			}
+		});
+		authorCellTable.addColumn(selectColumn,
+				SafeHtmlUtils.fromSafeConstant("<span title='Select'>"
+						+ "Select" + "</span>"));
+
+		Column<Author, SafeHtml> measureNameColumn = new Column<Author, SafeHtml>(
+				new SafeHtmlCell()) {
+
+			@Override
+			public SafeHtml getValue(Author object) {
+				return CellTableUtility.getColumnToolTip(object.getAuthorName());
+			}
+		};
+
+		authorCellTable.addColumn(measureNameColumn,
+				SafeHtmlUtils.fromSafeConstant("<span title='Measure Developers Name'>"
+						+ "Measure Developer" + "</span>"));
+
+		
+	}
 
 	/**
  	 * Update loading state.
@@ -1840,15 +1959,15 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setAuthorsList(java.util.List)
 	 */
-	@Override
-	public void setAuthorsList(List<Author> authorList) {
-		emptyAuthorsPanel.clear();
-		authorListBox.clear();
-		for (Author author: authorList) {
-			authorListBox.addItem(author.getAuthorName());
-		}
-		emptyAuthorsPanel.add(authorListBox);
-	}
+//	@Override
+//	public void setAuthorsList(List<Author> authorList) {
+//		emptyAuthorsPanel.clear();
+//		authorListBox.clear();
+//		for (Author author: authorList) {
+//			authorListBox.addItem(author.getAuthorName());
+//		}
+//		emptyAuthorsPanel.add(authorListBox);
+//	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setMeasureTypeList(java.util.List)
@@ -2338,6 +2457,38 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 
 
+	/**
+	 * Gets the authors selected list.
+	 *
+	 * @return the authorsSelectedList
+	 */
+	@Override
+	public List<Author> getAuthorsSelectedList() {
+		return authorsSelectedList;
+	}
+
+
+	/**
+	 * Sets the authors selected list.
+	 *
+	 * @param authorsSelectedList the authorsSelectedList to set
+	 */
+	@Override
+	public void setAuthorsSelectedList(List<Author> authorsSelectedList) {
+		this.authorsSelectedList = authorsSelectedList;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseMetaDataDisplay#buildAuthorCellTable(java.util.List)
+	 */
+	@Override
+	public void buildAuthorCellTable(List<Author> currentAuthorsList) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setMeasureTypeList(java.util.List)
 	 */
@@ -2346,5 +2497,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 		// TODO Auto-generated method stub
 		
 	}
+		
 
 }

@@ -1,10 +1,8 @@
 package mat.server;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import mat.DTO.MeasureNoteDTO;
-import mat.DTO.MeasureTypeDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -15,12 +13,12 @@ import mat.client.measure.service.MeasureService;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
+import mat.model.Author;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
 import mat.server.service.MeasureLibraryService;
-import mat.server.util.XmlProcessor;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -428,6 +426,15 @@ MeasureService {
 	@Override
 	public List<MeasureType> getAllMeasureTypes(){
 		return this.getMeasureLibraryService().getAllMeasureTypes();
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.service.MeasureService#getAllAddEditAuthors()
+	 */
+	@Override
+	public List<Author> getAllAddEditAuthors() {
+		
+		return this.getMeasureLibraryService().getAllAuthors();
 	}
 	
 }

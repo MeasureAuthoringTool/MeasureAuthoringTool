@@ -97,7 +97,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	private List<String> referencesList;
 	
 	/** The author list. */
-	private List<Author> authorList;
+	private List<Author> authorSelectedList;
 	
 	/** The measure type list. */
 	private List<MeasureType> measureTypeSelectedList;
@@ -268,18 +268,17 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 * 
 	 * @return the author list
 	 */
-	public List<Author> getAuthorList() {
-		return authorList;
+	public List<Author> getAuthorSelectedList() {
+		return authorSelectedList;
 	}
 	
 	/**
 	 * Sets the author list.
-	 * 
-	 * @param authorList
-	 *            the new author list
+	 *
+	 * @param authorSelectedList the new author selected list
 	 */
-	public void setAuthorList(List<Author> authorList) {
-		this.authorList = authorList;
+	public void setAuthorSelectedList(List<Author> authorSelectedList) {
+		this.authorSelectedList = authorSelectedList;
 	}
 	
 	/**
@@ -293,9 +292,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	
 	/**
 	 * Sets the measure type list.
-	 * 
-	 * @param measureTypeList
-	 *            the new measure type list 
+	 *
+	 * @param measureTypeSelectedList the new measure type selected list
 	 */
 	public void setMeasureTypeSelectedList(List<MeasureType> measureTypeSelectedList) {
 		this.measureTypeSelectedList = measureTypeSelectedList;
@@ -1787,7 +1785,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ transmissionFormat + ", rationale=" + rationale
 				+ ", improvNotations=" + improvNotations + ", stratification="
 				+ stratification + ", referencesList=" + referencesList
-				+ ", authorList=" + authorList + ", measureTypeList="
+				+ ", authorSelectedList=" + authorSelectedList + ", measureTypeList="
 				+ measureTypeSelectedList + ", qdsSelectedList=" + qdsSelectedList 
 				+",componentMeasuresSelectedList=" +componentMeasuresSelectedList
 				+ ", toCompareAuthor=" + toCompareAuthor

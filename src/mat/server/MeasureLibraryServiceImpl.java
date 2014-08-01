@@ -18,6 +18,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import mat.DTO.AuthorDTO;
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -33,6 +34,7 @@ import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatContext;
 import mat.client.shared.MatException;
+import mat.dao.AuthorDAO;
 import mat.dao.DataTypeDAO;
 import mat.dao.MeasureNotesDAO;
 import mat.dao.MeasureTypeDAO;
@@ -159,6 +161,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/** The measure type dao. */
 	@Autowired
 	private MeasureTypeDAO measureTypeDAO;
+	
+	/** The author dao. */
+	@Autowired
+	private AuthorDAO authorDAO;
 	
 	/** The x path. */
 	 javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -1938,7 +1944,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			measureDetailModel.setQltyMeasureSetUuid(UUID.randomUUID().toString());
 		}
 		
-		setOrgIdInAuthor(measureDetailModel.getAuthorList());
+		setOrgIdInAuthor(measureDetailModel.getAuthorSelectedList());
 		setMeasureTypeAbbreviation(measureDetailModel.getMeasureTypeSelectedList());
 		measureDetailModel.setScoringAbbr(setScoringAbbreviation(measureDetailModel.getMeasScoring()));
 		
@@ -3258,6 +3264,23 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return measureTypeList;
 		
+	}
+
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#getAllAuthors()
+	 */
+	@Override
+	public List<Author> getAllAuthors() {
+		List<AuthorDTO> authorDTOList = authorDAO.getAllAuthors();
+		List<Author> authorList = new ArrayList<Author>();
+		for(AuthorDTO authorDTO : authorDTOList){
+			Author author = new Author();
+			author.setAuthorName(authorDTO.getAuthorName());
+			String oid = getService().retrieveStewardOID(author.getAuthorName().trim());
+			author.setOrgId(oid);
+			authorList.add(author);
+		}
+		return authorList;
 	}
 }
 

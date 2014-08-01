@@ -16,6 +16,7 @@ import mat.client.measure.TransferMeasureOwnerShipModel;
 import mat.client.measure.service.SaveMeasureResult;
 import mat.client.measure.service.ValidateMeasureResult;
 import mat.client.shared.MatException;
+import mat.model.Author;
 import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
@@ -489,4 +490,11 @@ public interface MeasureLibraryService {
 	 * @return the all measure types
 	 */
 	List<MeasureType> getAllMeasureTypes();
+
+	/**
+	 * Gets the all authors.
+	 *
+	 * @return the all authors
+	 */
+	List<Author> getAllAuthors();
 }

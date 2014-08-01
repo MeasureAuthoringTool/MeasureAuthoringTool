@@ -5,6 +5,7 @@ import java.util.List;
 
 import mat.client.codelist.HasListBox;
 import mat.client.measure.ManageMeasureSearchModel;
+import mat.client.resource.CellTableResource;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
@@ -20,12 +21,14 @@ import mat.model.Author;
 
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.TableCaptionElement;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.CellTable.Resources;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -49,7 +52,7 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 	
 	/** The author h panel. */
 	private HorizontalPanel authorHPanel = new HorizontalPanel();
-	
+	private HorizontalPanel messageHPanel = new HorizontalPanel();
 	
 	/** The view. */
 	private SearchView<Author> view;
@@ -57,6 +60,8 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 	
 	/** The author v panel. */
 	private VerticalPanel authorVPanel = new VerticalPanel();
+	private VerticalPanel messageVPanel = new VerticalPanel();
+	VerticalPanel addSuccessMsgPanel =  new VerticalPanel();
 	
 	
 	/** The author cell table. */
@@ -94,15 +99,18 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 	/**
 	 * Instantiates a new adds the edit authors view.
 	 */
-	public AddEditAuthorsView() {
+	public AddEditAuthorsView() {		
+		addSuccessMsgPanel.addStyleName("marginTop");
+		addSuccessMsgPanel.setWidth("800px");
 		simpPanel.setWidth("100px");
 		authorVPanel.setWidth("600px");
 		mainPanel.setStyleName("contentPanel");
 		authorHPanel.add(authorVPanel);
 		authorHPanel.add(simpPanel);
 		authorHPanel.add(buildAddMeasureDevPanel());
+		messageHPanel.add(messageVPanel);		
 		mainPanel.add(authorHPanel);
-		
+		mainPanel.add(messageHPanel);
 	}
 	
 	/**
@@ -339,7 +347,10 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 		listOfAllAuthor = authorList;
 		successMessages.clear();
 		authorVPanel.clear();
-		authorCellTable = new CellTable<Author>();
+		addSuccessMsgPanel.clear();
+		messageVPanel.clear();
+		authorCellTable = new CellTable<Author>(PAGE_SIZE,
+				(Resources) GWT.create(CellTableResource.class));
 		authorCellTable.setStyleName("cellTablePanel");
 		authorSelectedList = new ArrayList<Author>();
 		authorSelectedList.addAll(authorsSelectedList);
@@ -348,6 +359,7 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 			authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			authorCellTable.setRowData(authorList);
 			authorCellTable.setRowCount(authorList.size(), true);
+			authorCellTable.redraw();
 			addAuthorColumnToTable(editable);
 			authorCellTable.setWidth("100%");
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
@@ -357,16 +369,11 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 			authorCellTable.setPageSize(PAGE_SIZE);
 			authorVPanel.add(invisibleLabel);
 			authorVPanel.add(authorCellTable);
-			authorVPanel.add(new SpacerWidget());
-			/*SimplePanel addSuccessMsgPanel = new SimplePanel();
-			addSuccessMsgPanel.addStyleName("marginTop");
-			addSuccessMsgPanel.setWidth("800px");
-			addSuccessMsgPanel.add(successMessages);*/		
-			authorVPanel.add(successMessages);
-			//authorVPanel.add(addSuccessMsgPanel);
-			authorVPanel.add(addToMeasureDeveloperList);
-			authorVPanel.add(new SpacerWidget());
-			authorVPanel.add(returnButton);
+			addSuccessMsgPanel.add(successMessages);		
+			messageVPanel.add(addSuccessMsgPanel);
+			messageVPanel.add(addToMeasureDeveloperList);
+			messageVPanel.add(new SpacerWidget());
+			messageVPanel.add(returnButton);
 			
 		}
 

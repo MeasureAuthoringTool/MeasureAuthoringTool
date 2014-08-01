@@ -473,7 +473,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					+ "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
 					+ "alt=\"Warning : DataType is not Valid.\""
 					+ " title=\"DataType is not Valid.\"/>"
-					+ "<span tabIndex = \"0\" title='" + title + "'>"
+					+ "<span tabIndex = \"0\" title='" + title + "' class='clauseWorkSpaceInvalidNode'>"
 					+ columnText
 					+ "</span></body>"
 					+ "</html>";

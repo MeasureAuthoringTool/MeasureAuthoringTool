@@ -461,8 +461,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			boolean dataTypeHasRemoved) {
 		if (hasImage && !dataTypeHasRemoved) {
 			String htmlConstant = "<html>"
-					+ "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"QDM is Valid.\""
-					+ "title = \"QDM is Valid.\"/>"
+					+ "<head> </head> <Body><img src =\"images/bullet_tick.png\" alt=\"DataType is Valid.\""
+					+ "title = \"DataType is Valid.\"/>"
 					+ "<span tabIndex = \"0\" title='" + title + "'>"
 					+ columnText
 					+ "</span></body>"
@@ -471,8 +471,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 		} else if (hasImage && dataTypeHasRemoved) {
 			String htmlConstant = "<html>"
 					+ "<head> </head> <Body><img src =\"images/userDefinedWarning.png\""
-					+ "alt=\"Warning : QDM is not Valid.\""
-					+ " title=\"QDM is not Valid.\"/>"
+					+ "alt=\"Warning : DataType is not Valid.\""
+					+ " title=\"DataType is not Valid.\"/>"
 					+ "<span tabIndex = \"0\" title='" + title + "'>"
 					+ columnText
 					+ "</span></body>"

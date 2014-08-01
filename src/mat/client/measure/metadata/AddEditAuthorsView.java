@@ -358,11 +358,11 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 			authorVPanel.add(invisibleLabel);
 			authorVPanel.add(authorCellTable);
 			authorVPanel.add(new SpacerWidget());
-			SimplePanel addSuccessMsgPanel = new SimplePanel();
+			/*SimplePanel addSuccessMsgPanel = new SimplePanel();
 			addSuccessMsgPanel.addStyleName("marginTop");
 			addSuccessMsgPanel.setWidth("800px");
-			addSuccessMsgPanel.add(successMessages);		
-			authorVPanel.add(addSuccessMsgPanel);
+			addSuccessMsgPanel.add(successMessages);*/		
+			authorVPanel.add(successMessages);
 			//authorVPanel.add(addSuccessMsgPanel);
 			authorVPanel.add(addToMeasureDeveloperList);
 			authorVPanel.add(new SpacerWidget());

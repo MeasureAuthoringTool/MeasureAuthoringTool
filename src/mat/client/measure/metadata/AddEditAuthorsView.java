@@ -3,6 +3,7 @@ package mat.client.measure.metadata;
 import java.util.ArrayList;
 import java.util.List;
 
+import mat.client.CustomPager;
 import mat.client.codelist.HasListBox;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.resource.CellTableResource;
@@ -11,6 +12,7 @@ import mat.client.shared.LabelBuilder;
 import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
+import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplayInterface;
@@ -27,9 +29,10 @@ import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
-import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.CellTable.Resources;
+import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
@@ -39,6 +42,7 @@ import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.MultiSelectionModel;
 
 // TODO: Auto-generated Javadoc
@@ -52,6 +56,8 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 	
 	/** The author h panel. */
 	private HorizontalPanel authorHPanel = new HorizontalPanel();
+	
+	/** The message h panel. */
 	private HorizontalPanel messageHPanel = new HorizontalPanel();
 	
 	/** The view. */
@@ -60,8 +66,15 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 	
 	/** The author v panel. */
 	private VerticalPanel authorVPanel = new VerticalPanel();
+	
+	/** The message v panel. */
 	private VerticalPanel messageVPanel = new VerticalPanel();
+	
+	/** The add success msg panel. */
 	VerticalPanel addSuccessMsgPanel =  new VerticalPanel();
+	
+	/** The cell table css style. */
+	private List<String> cellTableCssStyle;
 	
 	
 	/** The author cell table. */
@@ -94,6 +107,17 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 	/** The simp panel. */
 	private SimplePanel simpPanel = new SimplePanel();
 	
+	/** The index. */
+	private int index;
+	
+	/** The even. */
+	private Boolean even;
+	
+	/** The cell table even row. */
+	private String cellTableEvenRow = "cellTableEvenRow";
+	/** The cell table odd row. */
+	private String cellTableOddRow = "cellTableOddRow";
+
 	
 	
 	/**
@@ -122,6 +146,7 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 		VerticalPanel addMeasureDevPanel = new VerticalPanel();		
 		addMeasureDevPanel.getElement().setId("searchPanel_VerticalPanel");
 		addMeasureDevPanel.setStyleName("cellTablePanel");
+		//addMeasureDevPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		Label addMeasureDevHeader = new Label("Add Measure Developer");
 		addMeasureDevHeader.getElement().setId("measureDevHeader_Label");
 		addMeasureDevHeader.setStyleName("recentSearchHeader");
@@ -137,6 +162,7 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 		measureDevInput.setMaxLength(200);
 		measureDevInput.setStyleName("measureDevAddList");
 		HorizontalPanel bottomButtonPanel = new HorizontalPanel();
+	//	bottomButtonPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
 		bottomButtonPanel.setStyleName("measureDevAddList");
 		addMeasureDevPanel.add(new SpacerWidget());		  
 		bottomButtonPanel.add(addButton);
@@ -144,7 +170,6 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 		addEditcancelButton.setTitle("Cancel");
 		bottomButtonPanel.setWidth("200px");
 		addMeasureDevPanel.add(name);
-		addMeasureDevPanel.add(new SpacerWidget());
 		measureDevInput.setText("");
 		addMeasureDevPanel.add(measureDevInput);
 		addMeasureDevPanel.add(new SpacerWidget());
@@ -351,9 +376,11 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 		messageVPanel.clear();
 		authorCellTable = new CellTable<Author>(PAGE_SIZE,
 				(Resources) GWT.create(CellTableResource.class));
-		authorCellTable.setStyleName("cellTablePanel");
+		//authorCellTable.setStyleName("cellTablePanel");
+		authorVPanel.setStyleName("cellTablePanel");
 		authorSelectedList = new ArrayList<Author>();
 		authorSelectedList.addAll(authorsSelectedList);
+		authorCellTable.setPageSize(PAGE_SIZE);
 		if(authorList.size()>0){
 			
 			authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
@@ -362,13 +389,28 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 			authorCellTable.redraw();
 			addAuthorColumnToTable(editable);
 			authorCellTable.setWidth("100%");
+			ListDataProvider<Author> provider = new ListDataProvider<Author>();
+			provider.refresh();
+			provider.getList().addAll(authorList);
+			provider.addDataDisplay(authorCellTable);
+			CustomPager.Resources pagerResources = GWT
+					.create(CustomPager.Resources.class);
+			MatSimplePager spager = new MatSimplePager(
+					CustomPager.TextLocation.CENTER, pagerResources, false, 0,
+					true);
+			spager.setPageStart(0);
+			buildAuthorCellTableCssStyle();
+			spager.setDisplay(authorCellTable);
+			spager.setPageSize(PAGE_SIZE);
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
 					"In the following Measure Developer List table,Select is given in first Column and Author is given in Second column");
 			authorCellTable.getElement().setAttribute("id", "MeasureDeveloperListCellTable");
 			authorCellTable.getElement().setAttribute("aria-describedby", "measureDeveloperListSummary");
-			authorCellTable.setPageSize(PAGE_SIZE);
+			//authorCellTable.setPageSize(PAGE_SIZE);
 			authorVPanel.add(invisibleLabel);
 			authorVPanel.add(authorCellTable);
+			authorVPanel.add(new SpacerWidget());
+			authorVPanel.add(spager);
 			addSuccessMsgPanel.add(successMessages);		
 			messageVPanel.add(addSuccessMsgPanel);
 			messageVPanel.add(addToMeasureDeveloperList);
@@ -455,6 +497,68 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 						+ "Measure Developer" + "</span>"));
 
 		
+	}
+	
+	/**
+	 * Builds the author cell table css style.
+	 */
+	private void buildAuthorCellTableCssStyle() {
+		cellTableCssStyle = new ArrayList<String>();
+		for (int i = 0; i < listOfAllAuthor.size(); i++) {
+			cellTableCssStyle.add(i, null);
+		}
+		authorCellTable.setRowStyles(new RowStyles<Author>() {
+			@Override
+			public String getStyleNames(
+					Author rowObject, int rowIndex) {
+				if (rowIndex > PAGE_SIZE - 1) {
+					rowIndex = rowIndex - index;
+				}
+				if (rowIndex != 0) {
+					if (cellTableCssStyle.get(rowIndex) == null) {
+						if (even) {
+							if (rowObject.getOrgId().equalsIgnoreCase(
+									listOfAllAuthor.get(rowIndex - 1)
+											.getOrgId())) {
+								even = true;
+								cellTableCssStyle
+										.add(rowIndex, cellTableOddRow);
+								return cellTableOddRow;
+							} else {
+								even = false;
+								cellTableCssStyle.add(rowIndex,
+										cellTableEvenRow);
+								return cellTableEvenRow;
+							}
+						} else {
+							if (rowObject.getOrgId().equalsIgnoreCase(
+									listOfAllAuthor.get(rowIndex - 1)
+											.getOrgId())) {
+								even = false;
+								cellTableCssStyle.add(rowIndex,
+										cellTableEvenRow);
+								return cellTableEvenRow;
+							} else {
+								even = true;
+								cellTableCssStyle
+										.add(rowIndex, cellTableOddRow);
+								return cellTableOddRow;
+							}
+						}
+					} else {
+						return cellTableCssStyle.get(rowIndex);
+					}
+				} else {
+					if (cellTableCssStyle.get(rowIndex) == null) {
+						even = true;
+						cellTableCssStyle.add(rowIndex, cellTableOddRow);
+						return cellTableOddRow;
+					} else {
+						return cellTableCssStyle.get(rowIndex);
+					}
+				}
+			}
+		});
 	}
 
 	/**
@@ -552,6 +656,8 @@ public class AddEditAuthorsView extends AddEditMetadataBaseView implements MetaD
 	}
 
 	/**
+	 * Gets the adds the edit cancel button.
+	 *
 	 * @return the addEditcancelButton
 	 */
 	@Override

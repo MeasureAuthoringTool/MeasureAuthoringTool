@@ -8,9 +8,9 @@
 	        <sql>
 	        	Create table MEASURE_AUDIT_LOG_BACKUP as (select * from MEASURE_AUDIT_LOG);
                 DELETE FROM MEASURE_AUDIT_LOG where Measure_ID Not In(select id from MEASURE);
-                ALTER TABLE MEASURE_AUDIT_LOG  ADD CONSTRAINT MEASURE_ID_FK1
+                <!-- ALTER TABLE MEASURE_AUDIT_LOG  ADD CONSTRAINT MEASURE_ID_FK1
                     FOREIGN KEY (MEASURE_ID) REFERENCES MEASURE (ID) ON DELETE CASCADE
-                    ON UPDATE NO ACTION , ADD INDEX MEASURE_ID_FK_idx1 (MEASURE_ID ASC) ;
+                    ON UPDATE NO ACTION , ADD INDEX MEASURE_ID_FK_idx1 (MEASURE_ID ASC) ; -->
         </sql>
 	    </changeSet>
 	</databaseChangeLog>

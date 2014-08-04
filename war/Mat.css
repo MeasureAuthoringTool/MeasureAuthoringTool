@@ -2061,3 +2061,22 @@ padding: 2px;
 .qdmElementAddButtonPanel{
 	margin-top: 30px;
 }
+
+.measureDev{
+	background-color: white;
+    border-color: #E8EEF7 #E8EEF7 #E8EFF7;
+    border-left: 3px solid #E8EEF7;
+    border-right: 3px solid #E8EEF7;
+    border-style: solid;
+    border-width: 3px;
+    margin-left: 4px;
+    margin-top: 6px;
+    padding: 0px 0px 8px 0px;
+}
+.measureDevAddList{
+    border-width: 3px;
+    margin-left: 4px;
+    margin-top: 8px;
+    width: 99%;
+	margin-left:5px important!;
+}

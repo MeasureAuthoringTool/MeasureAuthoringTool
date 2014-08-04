@@ -214,9 +214,9 @@ public class MessageDelegate {
 			+ " Logic must only contain Clauses.";	
 	
 	/** The invalid character validation error. */
-	private final String INVALID_CHARACTER_VALIDATION_ERROR =" Name contains Invalid Characters."
+	private final String INVALID_CHARACTER_VALIDATION_ERROR =" Name contains invalid characters."
 			+" Invalid characters are + * ? : - | !  ; %\"."
-			+" Please remove Invalid Characters and try again.";
+			+" Please remove invalid characters and try again.";
 
 
 	/** The clause work space validation success. */

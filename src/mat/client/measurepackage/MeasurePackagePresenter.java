@@ -940,7 +940,7 @@ public class MeasurePackagePresenter implements MatPresenter {
 				} else {
 					Mat.hideLoadingMessage();
 					view.getMeasurePackageWarningMsg().
-					setMessage("Unable to create measure package. Please validate your measure logic in both Population Workspace and clause workspace tabs");
+					setMessage("Unable to create measure package. Please validate your measure logic in both Population Workspace and Clause Workspace.");
 					
 				}
 				((Button) view.getPackageMeasureButton()).setEnabled(true);

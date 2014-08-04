@@ -63,6 +63,7 @@ public class MeasureAuditLogDAO extends GenericDAO<MeasureAuditLog, String> impl
 		
 		Criteria logCriteria = getSessionFactory().getCurrentSession().createCriteria(MeasureAuditLog.class);
 		logCriteria.add(Restrictions.eq("measure.id", measureId));
+		logCriteria.add(Restrictions.ne("activityType", "User Comment"));
 		
 		for(String filter : filterList){
 			logCriteria.add(Restrictions.ne("activityType", filter));

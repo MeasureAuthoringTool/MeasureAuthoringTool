@@ -174,6 +174,8 @@
 	<!-- compile gwt (client side code)-->
 	<target name="compile.gwt" depends="compile.java,copy.web,ivy.resolve">
 		<java classpathref="build.classpath" classname="com.google.gwt.dev.Compiler" fork="true" maxmemory="1024m">
+			 <arg value="-sourceLevel"/><arg value="6"/>
+			 <arg value="-logLevel"/><arg value="DEBUG"/>
 			<arg value="-war" />
 			<arg value="${web.output.dir}" />
 			<arg value="mat.Mat" />
@@ -189,6 +191,7 @@
             destdir="${web.output.dir}/WEB-INF/classes"                     
             fork="true"
             debug="true"
+			source="6"
         />
 
 	</target>

@@ -5,8 +5,7 @@
     <inherits name='com.google.gwt.user.theme.standard.Standard' />
     <inherits name="com.google.gwt.xml.XML" />
     <!-- Compiling gwt code only for ie7,ie8& firefox 3 & above. -->
-    <set-property name="user.agent" value="ie6,ie8,ie9,gecko1_8" />
-    ;
+    <set-property name="user.agent" value="ie8,ie9,safari,gecko1_8" />
     <!-- For development, a default of `DEBUG` is recommended 
 	<inherits name="com.allen_sauer.gwt.log.gwt-log-DEBUG" /> 
 	-->

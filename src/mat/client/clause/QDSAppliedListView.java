@@ -174,14 +174,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 						value = object.getCodeListName();
 						title = title.append("Name : ").append(value);
 					}
-					if (ConstantMessages.USER_DEFINED_QDM_OID.equalsIgnoreCase(object.getOid())) {
-						return getNameColumnToolTip(value, title, object.getHasModifiedAtVSAC(),
-								object.isNotFoundInVSAC());
-					} else {
-						return getNameColumnToolTip(value, title, object.getHasModifiedAtVSAC(),
-								object.isNotFoundInVSAC());
-					}
-					// return getColumnToolTip(value, title);
+					return CellTableUtility.getColumnToolTip(value, title.toString());
 				}
 			};
 			table.addColumn(nameColumn, SafeHtmlUtils.fromSafeConstant(
@@ -193,7 +186,6 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 					title = title.append("Datatype : ").append(object.getDataType());
 					return getDataTypeColumnToolTip(object.getDataType(), title, object.getHasModifiedAtVSAC(), 
                              object.isDataTypeHasRemoved());
-					//return CellTableUtility.getColumnToolTip(object.getDataType(), title.toString());
 				}
 			};
 			table.addColumn(dataTypeColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Datatype\">" + "Datatype"
@@ -210,7 +202,8 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 						title = title.append("OID : ").append(object.getOid());
 						oid = object.getOid();
 					}
-					return CellTableUtility.getColumnToolTip(oid, title.toString());
+					return getOIDColumnToolTip(oid, title, object.getHasModifiedAtVSAC(),
+							object.isNotFoundInVSAC());
 				}
 			};
 			table.addColumn(oidColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"OID\">" + "OID" + "</span>"));
@@ -261,7 +254,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 			table.setColumnWidth(0, 2.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 20.0, Unit.PCT);
-			table.setColumnWidth(3, 25.0, Unit.PCT);
+			table.setColumnWidth(3, 27.0, Unit.PCT);
 			table.setColumnWidth(4, 10.0, Unit.PCT);
 			table.setColumnWidth(5, 15.0, Unit.PCT);
 		}
@@ -419,7 +412,7 @@ public class QDSAppliedListView  implements QDSAppliedListPresenter.SearchDispla
 	 * @param isUserDefined Boolean.
 	 * @return the name column tool tip
 	 */
-	private SafeHtml getNameColumnToolTip(String columnText, StringBuilder title, boolean hasImage,
+	private SafeHtml getOIDColumnToolTip(String columnText, StringBuilder title, boolean hasImage,
 			boolean isUserDefined) {
 		if (hasImage && !isUserDefined) {
 			String htmlConstant = "<html>"

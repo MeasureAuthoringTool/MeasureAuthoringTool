@@ -32,9 +32,7 @@ public enum MeasureGroupingOrder {
 	/** The measure observation. */
 	measureObservation("9"),
 	
-	stratum("10"),
-	
-	stratification("11");
+	stratification("10");
 	
 	
 	/** The status code. */

@@ -15,7 +15,6 @@ import mat.client.audit.service.AuditServiceAsync;
 import mat.client.clause.QDMAvailableValueSetWidget;
 import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSCodeListSearchView;
-import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.ListBoxCodeProvider;
 import mat.client.codelist.ManageCodeListSearchView;
@@ -191,6 +190,7 @@ public class MatContext implements IsSerializable {
 	/** The set ops. */
 	public List<String> setOps = new ArrayList<String>();
 	
+	List<String> allowedPopulationsInPackage = new ArrayList<String>();
 	/** The operator map key short. */
 	public Map<String, String> operatorMapKeyShort = new HashMap<String, String>();
 	
@@ -1454,6 +1454,11 @@ public class MatContext implements IsSerializable {
 	public void setUMLSLoggedIn(boolean isUMLSLoggedIn) {
 		this.isUMLSLoggedIn = isUMLSLoggedIn;
 	}
+	
+	public List<String> getAllowedPopulationsInPackage(){
+		
+		return allowedPopulationsInPackage;
+	}
 	/**
 	 * @return the copiedNode
 	 */
@@ -1462,6 +1467,24 @@ public class MatContext implements IsSerializable {
 	 * public CellTreeNode getCopiedNode() {
 		return copiedNode;
 	}*/
+	
+	
+	/**
+	 * @param allClauseList the allClauseList to set
+	 */
+	public void setAllowedPopulationsInPackage(List<String> allClauseList) {
+		allClauseList.add("initialPopulation");
+		allClauseList.add("stratification");
+		allClauseList.add("measurePopulation");
+		allClauseList.add("measurePopulationExclusions");
+		allClauseList.add("measureObservation");
+		allClauseList.add("denominator");
+		allClauseList.add("denominatorExclusions");
+		allClauseList.add("denominatorExceptions");
+		allClauseList.add("numerator");
+		allClauseList.add("numeratorExclusions");
+		allowedPopulationsInPackage = allClauseList;
+	}
 	
 	
 	/**

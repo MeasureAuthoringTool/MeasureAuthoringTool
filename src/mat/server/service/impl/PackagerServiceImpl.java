@@ -33,7 +33,6 @@ import org.exolab.castor.xml.MarshalException;
 import org.exolab.castor.xml.Marshaller;
 import org.exolab.castor.xml.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.w3c.dom.Document;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -110,19 +109,19 @@ public class PackagerServiceImpl implements PackagerService {
 					Node displayNameNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.DISPLAY_NAME);
 					Node typeNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.TYPE);
 					Node associatedClauseUUIDNode = namedNodeMap.getNamedItem("associatedPopulationUUID");
-					List<String> clauseList = getAllClauses();
+					
 					String associatedClauseUUID = null;
 					if(associatedClauseUUIDNode != null){
 						associatedClauseUUID = associatedClauseUUIDNode.getNodeValue();
 					}
-                    	 
+					
 					if(typeNode == null)
 					{
 						clauses.add(createMeasurePackageClauseDetail(
 								uuidNode.getNodeValue(), displayNameNode.getNodeValue(), XmlProcessor.STRATIFICATION,
 								associatedClauseUUID,qdmSelectedList));
-					
-					} else if(clauseList.contains(typeNode.getNodeValue())){
+						
+					} else if( MatContext.get().getAllowedPopulationsInPackage().contains(typeNode.getNodeValue())){
 						clauses.add(createMeasurePackageClauseDetail(
 								uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue(),
 								associatedClauseUUID,qdmSelectedList));
@@ -436,7 +435,7 @@ public class PackagerServiceImpl implements PackagerService {
 			//try {
 			//	setSupplementalDataForQDMs(processor.getOriginalDoc(), detail.getSuppDataElements(), detail.getQdmElements());
 			//} catch (XPathExpressionException e) {
-				// TODO Auto-generated catch block
+			// TODO Auto-generated catch block
 			//	e.printStackTrace();
 			//}
 		} else {
@@ -463,20 +462,7 @@ public class PackagerServiceImpl implements PackagerService {
 		measureXMLDAO.save(measureXML);
 	}
 	
-	private List<String> getAllClauses(){
-		List<String> allClauseList = new ArrayList<String>();
-		allClauseList.add("initialPopulation");
-		allClauseList.add("stratification");
-		allClauseList.add("measurePopulation");
-		allClauseList.add("measurePopulationExclusions");
-		allClauseList.add("measureObservation");
-		allClauseList.add("denominator");
-		allClauseList.add("denominatorExclusions");
-		allClauseList.add("denominatorExceptions");
-		allClauseList.add("numerator");
-		allClauseList.add("numeratorExclusions");
-		return allClauseList;
-	}
+	
 	
 	/**
 	 * Sets the supplemental data for qd ms.
@@ -485,27 +471,27 @@ public class PackagerServiceImpl implements PackagerService {
 	 * @param supplementalDataElemnts the supplemental data elemnts
 	 * @param qdmElemnts the qdm elemnts
 	 * @throws XPathExpressionException the x path expression exception
-	 *///commented Out 
-//	private void setSupplementalDataForQDMs(Document originalDoc, List<QualityDataSetDTO> supplementalDataElemnts, 
-//			List<QualityDataSetDTO> qdmElemnts) throws XPathExpressionException {
-//		
-//		//to set QDM's that are used in Supplemental Data ELements tab.
-//		for(int i = 0; i<supplementalDataElemnts.size(); i++){
-//			javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-//			Node nodeSupplementalDataNode = (Node) xPath.evaluate(XPATH_MEASURE_ELEMENT_LOOK_UP_EXPRESSION +supplementalDataElemnts.get(i).getUuid()+"']",
-//					originalDoc.getDocumentElement(), XPathConstants.NODE);
-//			nodeSupplementalDataNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("true");
-//		}
-//		
-//		//to set QDM's that are used in QDM Elements Tab
-//		
-//		for(int j = 0; j<qdmElemnts.size(); j++){
-//			javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
-//			Node nodeSupplementalDataNode = (Node) xPath.evaluate(XPATH_MEASURE_ELEMENT_LOOK_UP_EXPRESSION +qdmElemnts.get(j).getUuid()+"']",
-//					originalDoc.getDocumentElement(), XPathConstants.NODE);
-//			nodeSupplementalDataNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("false");
-//		}
-//		
-//	}
+	 *///commented Out
+	//	private void setSupplementalDataForQDMs(Document originalDoc, List<QualityDataSetDTO> supplementalDataElemnts,
+	//			List<QualityDataSetDTO> qdmElemnts) throws XPathExpressionException {
+	//
+	//		//to set QDM's that are used in Supplemental Data ELements tab.
+	//		for(int i = 0; i<supplementalDataElemnts.size(); i++){
+	//			javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+	//			Node nodeSupplementalDataNode = (Node) xPath.evaluate(XPATH_MEASURE_ELEMENT_LOOK_UP_EXPRESSION +supplementalDataElemnts.get(i).getUuid()+"']",
+	//					originalDoc.getDocumentElement(), XPathConstants.NODE);
+	//			nodeSupplementalDataNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("true");
+	//		}
+	//
+	//		//to set QDM's that are used in QDM Elements Tab
+	//
+	//		for(int j = 0; j<qdmElemnts.size(); j++){
+	//			javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
+	//			Node nodeSupplementalDataNode = (Node) xPath.evaluate(XPATH_MEASURE_ELEMENT_LOOK_UP_EXPRESSION +qdmElemnts.get(j).getUuid()+"']",
+	//					originalDoc.getDocumentElement(), XPathConstants.NODE);
+	//			nodeSupplementalDataNode.getAttributes().getNamedItem("suppDataElement").setNodeValue("false");
+	//		}
+	//
+	//	}
 	
 }

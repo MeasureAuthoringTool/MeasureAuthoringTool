@@ -64,6 +64,7 @@ public class PackagerServiceImpl implements PackagerService {
 	
 	
 	
+	
 	/** The measure xmldao. */
 	@Autowired
 	private MeasureXMLDAO measureXMLDAO;
@@ -109,19 +110,19 @@ public class PackagerServiceImpl implements PackagerService {
 					Node displayNameNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.DISPLAY_NAME);
 					Node typeNode = namedNodeMap.getNamedItem(PopulationWorkSpaceConstants.TYPE);
 					Node associatedClauseUUIDNode = namedNodeMap.getNamedItem("associatedPopulationUUID");
+					List<String> clauseList = getAllClauses();
 					String associatedClauseUUID = null;
 					if(associatedClauseUUIDNode != null){
 						associatedClauseUUID = associatedClauseUUIDNode.getNodeValue();
 					}
-					
+                    	 
 					if(typeNode == null)
 					{
 						clauses.add(createMeasurePackageClauseDetail(
 								uuidNode.getNodeValue(), displayNameNode.getNodeValue(), XmlProcessor.STRATIFICATION,
 								associatedClauseUUID,qdmSelectedList));
-					}
-					else
-					{
+					
+					} else if(clauseList.contains(typeNode.getNodeValue())){
 						clauses.add(createMeasurePackageClauseDetail(
 								uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue(),
 								associatedClauseUUID,qdmSelectedList));
@@ -460,6 +461,21 @@ public class PackagerServiceImpl implements PackagerService {
 		}
 		measureXML.setMeasureXMLAsByteArray(processor.transform(processor.getOriginalDoc()));
 		measureXMLDAO.save(measureXML);
+	}
+	
+	private List<String> getAllClauses(){
+		List<String> allClauseList = new ArrayList<String>();
+		allClauseList.add("initialPopulation");
+		allClauseList.add("stratification");
+		allClauseList.add("measurePopulation");
+		allClauseList.add("measurePopulationExclusions");
+		allClauseList.add("measureObservation");
+		allClauseList.add("denominator");
+		allClauseList.add("denominatorExclusions");
+		allClauseList.add("denominatorExceptions");
+		allClauseList.add("numerator");
+		allClauseList.add("numeratorExclusions");
+		return allClauseList;
 	}
 	
 	/**

@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.xpath.XPathExpressionException;
 
 import mat.model.MeasureNotes;
 import mat.model.User;
@@ -22,14 +23,18 @@ import mat.server.service.MeasurePackageService;
 import mat.server.service.SimpleEMeasureService;
 import mat.server.service.SimpleEMeasureService.ExportResult;
 import mat.server.service.UserService;
+import mat.server.simplexml.MATCssUtil;
+import mat.server.util.XmlProcessor;
 import mat.shared.FileNameUtility;
 import mat.shared.InCorrectUserRoleException;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jsoup.nodes.Element;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.w3c.dom.Node;
 
 /**
  * The Class ExportServlet.
@@ -239,12 +244,15 @@ public class ExportServlet extends HttpServlet {
 					resp.getOutputStream().close();
 				}
 			} else if (EXPORT_MEASURE_NOTES_FOR_MEASURE.equals(format)) {
-				String csvFileString = generateCSVToExportMeasureNotes(id);
+				System.out.println("testing the print out!");
+				//String csvFileString = generateCSVToExportMeasureNotes(id);
+				export = getService().getSimpleXML(id);
+				String csvFileString = generateHTMLToExportMeasureNotes(id,export);
 				Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String measureNoteDate = formatter.format(new Date());
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
 						+ fnu.getCSVFileName("MeasureNotes", measureNoteDate) + ";");
-				resp.setContentType("text/csv");
+				resp.setContentType("html");
 				resp.getOutputStream().write(csvFileString.getBytes());
 				resp.getOutputStream().close();
 			}
@@ -256,7 +264,71 @@ public class ExportServlet extends HttpServlet {
 			resp.getOutputStream().println(export.export);
 		}
 	}
-	
+
+	private String generateHTMLToExportMeasureNotes(final String measureId, ExportResult export) throws XPathExpressionException{
+		List<MeasureNotes> allMeasureNotes = getMeasureNoteService().getAllMeasureNotesByMeasureID(measureId);
+		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
+		Element html = htmlDocument.appendElement("html");
+		html.appendElement("head");
+		html.appendElement("body");
+		Element head = htmlDocument.head();
+		htmlDocument.title("Measure Notes");
+		
+		String styleTagString = MATCssUtil.getCSS();
+		head.append(styleTagString);
+		Element header = htmlDocument.body().appendElement("h1");
+		XmlProcessor measureXMLProcessor = new XmlProcessor(export.export);
+		Node name = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "//measureDetails/title");
+		Node eMeasureId = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "//measureDetails/emeasureid");
+		if(eMeasureId != null){
+			header.appendText(name.getTextContent() + " (CMS " + eMeasureId.getTextContent() + ") " + "Measure Notes");
+		}else{
+			header.appendText(name.getTextContent() + " Measure Notes");
+		}
+		Element table = htmlDocument.body().appendElement("table");
+		System.out.println("NOTES LENGTH: " + allMeasureNotes.size());
+		Element row = table.appendElement("tr");
+		CreateHeader(row);
+		for(MeasureNotes measureNotes:allMeasureNotes){
+			row = table.appendElement("tr");
+			createBody(row, measureNotes.getNoteTitle(),false);
+			createBody(row,measureNotes.getNoteDesc(), true);
+			createBody(row,convertDateToString(measureNotes.getLastModifiedDate()),false);
+			createBody(row,measureNotes.getCreateUser().getEmailAddress(),false);
+			if (measureNotes.getModifyUser() != null) {
+				createBody(row,measureNotes.getModifyUser().getEmailAddress(),false);
+			}else{
+				createBody(row,"",false);
+			}
+		}
+		
+		return htmlDocument.toString();
+	}
+	private void createBody(Element row, String message,Boolean html){
+		Element col = row.appendElement("td");
+		if(!html){
+			col.appendText(message);
+		}else{
+			col.append(message);
+		}
+	}
+	private void CreateHeader(Element row){
+		createHeaderRows(row,"Title");
+		createHeaderRows(row,"Description");
+		createHeaderRows(row,"LastModified Date");
+		createHeaderRows(row,"Created By");
+		createHeaderRows(row,"Modified By");
+	}
+	private void createHeaderRows(Element row, String header){
+		Element col = row.appendElement("td");
+		col.attr("bgcolor", "#656565");
+		col.attr("style", "background-color:#656565");
+		Element span = col.appendElement("span");
+		span.attr("class", "td_label");
+		span.attr("align", "center");
+		span.appendText(header);
+		
+	}
 	/**
 	 * Generate csv to export measure notes.
 	 * 

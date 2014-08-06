@@ -1456,7 +1456,16 @@ public class MatContext implements IsSerializable {
 	}
 	
 	public List<String> getAllowedPopulationsInPackage(){
-		
+		allowedPopulationsInPackage.add("initialPopulation");
+		allowedPopulationsInPackage.add("stratification");
+		allowedPopulationsInPackage.add("measurePopulation");
+		allowedPopulationsInPackage.add("measurePopulationExclusions");
+		allowedPopulationsInPackage.add("measureObservation");
+		allowedPopulationsInPackage.add("denominator");
+		allowedPopulationsInPackage.add("denominatorExclusions");
+		allowedPopulationsInPackage.add("denominatorExceptions");
+		allowedPopulationsInPackage.add("numerator");
+		allowedPopulationsInPackage.add("numeratorExclusions");
 		return allowedPopulationsInPackage;
 	}
 	/**
@@ -1469,22 +1478,6 @@ public class MatContext implements IsSerializable {
 	}*/
 	
 	
-	/**
-	 * @param allClauseList the allClauseList to set
-	 */
-	public void setAllowedPopulationsInPackage(List<String> allClauseList) {
-		allClauseList.add("initialPopulation");
-		allClauseList.add("stratification");
-		allClauseList.add("measurePopulation");
-		allClauseList.add("measurePopulationExclusions");
-		allClauseList.add("measureObservation");
-		allClauseList.add("denominator");
-		allClauseList.add("denominatorExclusions");
-		allClauseList.add("denominatorExceptions");
-		allClauseList.add("numerator");
-		allClauseList.add("numeratorExclusions");
-		allowedPopulationsInPackage = allClauseList;
-	}
 	
 	
 	/**

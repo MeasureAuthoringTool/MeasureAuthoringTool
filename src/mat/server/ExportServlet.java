@@ -226,7 +226,7 @@ public class ExportServlet extends HttpServlet {
 					Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					String activeUserCSVDate = formatter.format(new Date());
 					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getCSVFileName("activeUsers", activeUserCSVDate) + ";");
+							+ fnu.getHTMLFileName("activeUsers", activeUserCSVDate) + ";");
 					resp.setContentType("text/csv");
 					resp.getOutputStream().write(csvFileString.getBytes());
 					resp.getOutputStream().close();
@@ -238,7 +238,7 @@ public class ExportServlet extends HttpServlet {
 					Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					String activeUserCSVDate = formatter.format(new Date());
 					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getCSVFileName("activeOrganizationOids", activeUserCSVDate) + ";");
+							+ fnu.getHTMLFileName("activeOrganizationOids", activeUserCSVDate) + ";");
 					resp.setContentType("text/csv");
 					resp.getOutputStream().write(csvFileString.getBytes());
 					resp.getOutputStream().close();
@@ -251,7 +251,7 @@ public class ExportServlet extends HttpServlet {
 				Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String measureNoteDate = formatter.format(new Date());
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-						+ fnu.getCSVFileName("MeasureNotes", measureNoteDate) + ";");
+						+ fnu.getHTMLFileName("MeasureNotes", measureNoteDate) + ";");
 				resp.setContentType("html");
 				resp.getOutputStream().write(csvFileString.getBytes());
 				resp.getOutputStream().close();

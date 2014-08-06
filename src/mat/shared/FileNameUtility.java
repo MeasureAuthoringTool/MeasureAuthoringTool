@@ -125,7 +125,7 @@ public class FileNameUtility {
 	 *            the current time
 	 * @return the cSV file name
 	 */
-	public String getCSVFileName(String name , String currentTime){
+	public String getHTMLFileName(String name , String currentTime){
 		return (name.concat(currentTime)).replaceAll("\\W","").concat(".html");
 	}
 }

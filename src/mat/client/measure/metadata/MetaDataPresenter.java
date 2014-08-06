@@ -1233,6 +1233,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 			@Override
 			public void onClick(ClickEvent event) {
 				currentMeasureDetail.setAuthorSelectedList(addEditAuthorsDisplay.getAuthorSelectedList());
+				
 				metaDataDisplay.setAuthorsSelectedList(currentMeasureDetail.getAuthorSelectedList());
 				addEditAuthorsDisplay.getSuccessMessageDisplay().setMessage(MatContext.get().getMessageDelegate().getMeasureDeveloperAddedSuccessfully());
 			}
@@ -1785,7 +1786,7 @@ public class MetaDataPresenter extends BaseMetaDataPresenter implements MatPrese
 	 *
 	 * @return the measure developer authors
 	 */
-	private void getMeasureDeveloperAuthors() {
+	public void getMeasureDeveloperAuthors() {
 		if (currentMeasureDetail.getAuthorSelectedList() != null) {
 			
 			metaDataDisplay.buildAuthorCellTable(currentMeasureDetail.getAuthorSelectedList(), editable);

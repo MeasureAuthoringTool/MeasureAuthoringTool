@@ -1846,8 +1846,8 @@ padding: 2px;
     color:#021D4D;
 }
 
-.gwt-DisclosurePanel .content {
-    /* background-color: lightgray; */
+ .gwt-DisclosurePanel .content {
+     /* background-color: lightgray; */
     background-image: url("images/bg_box-blue.png");
     background-repeat: repeat-x;
     border-color: #E8EEF7 #E8EEF7 #E8EFF7;
@@ -1864,6 +1864,10 @@ padding: 2px;
     font-size: small;
     font-weight: bold;
     text-decoration: none;
+}
+
+.gwt-Image {
+	border:none;
 }
 .marginLeft{
 	margin-left:35px;

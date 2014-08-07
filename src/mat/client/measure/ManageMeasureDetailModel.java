@@ -1,12 +1,10 @@
 package mat.client.measure;
 
 import java.util.List;
-
 import mat.model.Author;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.shared.model.util.MeasureDetailsUtil;
-
 import com.google.gwt.user.client.rpc.IsSerializable;
 
 // TODO: Auto-generated Javadoc
@@ -61,7 +59,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	private Boolean endorseByNQF;
 	
 	/** The measure status. */
-	private String measureStatus;
+	/*private String measureStatus;*/
 	
 	/** The nqf id. */
 	private String nqfId;
@@ -107,19 +105,19 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	
 	/** The component measures selected list. */
 	private List<ManageMeasureSearchModel.Result> componentMeasuresSelectedList;
-
+	
 	/** The to compare author. */
 	private List<Author> toCompareAuthor;
 	
 	/** The to compare measure. */
 	private List<MeasureType> toCompareMeasure;
 	
-	 /** The to compare item count. */
- 	private List<QualityDataSetDTO> toCompareItemCount;
- 	
- 	/** The to compare component measures. */
-	 private List<ManageMeasureSearchModel.Result> toCompareComponentMeasures;
-
+	/** The to compare item count. */
+	private List<QualityDataSetDTO> toCompareItemCount;
+	
+	/** The to compare component measures. */
+	private List<ManageMeasureSearchModel.Result> toCompareComponentMeasures;
+	
 	/** The draft. */
 	private boolean draft = true;
 	
@@ -307,7 +305,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public String getInitialPop() {
 		return initialPop;
 	}
-
+	
 	/**
 	 * Sets the initial pop.
 	 *
@@ -316,7 +314,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public void setInitialPop(String initialPop) {
 		this.initialPop = initialPop;
 	}
-
+	
 	/**
 	 * Gets the version number.
 	 * 
@@ -721,19 +719,19 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	 * 
 	 * @return the measure status
 	 */
-	public String getMeasureStatus() {
+	/*public String getMeasureStatus() {
 		return measureStatus;
 	}
 	
-	/**
+	 *//**
 	 * Sets the measure status.
 	 * 
 	 * @param measureStatus
 	 *            the new measure status
-	 */
+	 *//*
 	public void setMeasureStatus(String measureStatus) {
 		this.measureStatus = doTrim(measureStatus);
-	}
+	}*/
 	
 	/**
 	 * Gets the nqf id.
@@ -1139,8 +1137,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 						.hashCode());
 		result = (prime * result)
 				+ ((measureSetId == null) ? 0 : measureSetId.hashCode());
-		result = (prime * result)
-				+ ((measureStatus == null) ? 0 : measureStatus.hashCode());
+		/*result = (prime * result)
+				+ ((measureStatus == null) ? 0 : measureStatus.hashCode());*/
 		result = (prime * result)
 				+ ((toCompareMeasure == null) ? 0 : toCompareMeasure.hashCode());
 		result = (prime * result)
@@ -1362,13 +1360,13 @@ public class ManageMeasureDetailModel implements IsSerializable {
 		} else if (!trimToNull(measureSetId).equals(trimToNull(other.measureSetId))) {
 			return false;
 		}
-		if (trimToNull(measureStatus) == null) {
+		/*if (trimToNull(measureStatus) == null) {
 			if (trimToNull(other.measureStatus) != null) {
 				return false;
 			}
 		} else if (!trimToNull(measureStatus).equals(trimToNull(other.measureStatus))) {
 			return false;
-		}
+		}*/
 		if (toCompareMeasure == null) {
 			if (other.toCompareMeasure != null) {
 				return false;
@@ -1581,7 +1579,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public void setToCompareMeasure(List<MeasureType> toCompareMeasure) {
 		this.toCompareMeasure = toCompareMeasure;
 	}
-
+	
 	/**
 	 * Gets the qds selected list.
 	 *
@@ -1590,7 +1588,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public List<QualityDataSetDTO> getQdsSelectedList() {
 		return qdsSelectedList;
 	}
-
+	
 	/**
 	 * Sets the qds selected list.
 	 *
@@ -1599,7 +1597,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public void setQdsSelectedList(List<QualityDataSetDTO> qdsSelectedList) {
 		this.qdsSelectedList = qdsSelectedList;
 	}
-
+	
 	/**
 	 * Gets the to compare item count.
 	 *
@@ -1608,7 +1606,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public List<QualityDataSetDTO> getToCompareItemCount() {
 		return toCompareItemCount;
 	}
-
+	
 	/**
 	 * Sets the to compare item count.
 	 *
@@ -1626,7 +1624,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public List<ManageMeasureSearchModel.Result> getToCompareComponentMeasures() {
 		return toCompareComponentMeasures;
 	}
-
+	
 	/**
 	 * Sets the to compare component measures.
 	 *
@@ -1636,7 +1634,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 			List<ManageMeasureSearchModel.Result> toCompareComponentMeasures) {
 		this.toCompareComponentMeasures = toCompareComponentMeasures;
 	}
-
+	
 	
 	/**
 	 * Gets the qlty measure set uuid.
@@ -1656,7 +1654,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public void setQltyMeasureSetUuid(String qltyMeasureSetUuid) {
 		this.qltyMeasureSetUuid = qltyMeasureSetUuid;
 	}
-
+	
 	/**
 	 * Gets the steward.
 	 * 
@@ -1777,7 +1775,8 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ ", measToPeriod=" + measToPeriod + ", measScoring="
 				+ measScoring + ", measSteward=" + measSteward
 				+ ", measStewardOther=" + measStewardOther + ", endorseByNQF="
-				+ endorseByNQF + ", measureStatus=" + measureStatus
+				+ endorseByNQF
+				/*+ endorseByNQF + ", measureStatus=" + measureStatus*/
 				+ ", nqfId=" + nqfId + ", description=" + description
 				+ ", copyright=" + copyright + ", clinicalRecomms="
 				+ clinicalRecomms + ", definitions=" + definitions
@@ -1786,12 +1785,12 @@ public class ManageMeasureDetailModel implements IsSerializable {
 				+ ", improvNotations=" + improvNotations + ", stratification="
 				+ stratification + ", referencesList=" + referencesList
 				+ ", authorSelectedList=" + authorSelectedList + ", measureTypeList="
-				+ measureTypeSelectedList + ", qdsSelectedList=" + qdsSelectedList 
+				+ measureTypeSelectedList + ", qdsSelectedList=" + qdsSelectedList
 				+",componentMeasuresSelectedList=" +componentMeasuresSelectedList
 				+ ", toCompareAuthor=" + toCompareAuthor
-				+ ", toCompareMeasure=" + toCompareMeasure 
-				+ ", toCompareItemCount=" + toCompareItemCount 
-				+ ", toCompareComponentMeasures =" + toCompareComponentMeasures 
+				+ ", toCompareMeasure=" + toCompareMeasure
+				+ ", toCompareItemCount=" + toCompareItemCount
+				+ ", toCompareComponentMeasures =" + toCompareComponentMeasures
 				+", draft=" + draft
 				+ ", measureSetId=" + measureSetId + ", valueSetDate="
 				+ valueSetDate + ", supplementalData=" + supplementalData
@@ -1886,7 +1885,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public void setRevisionNumber(String revisionNumber) {
 		this.revisionNumber = revisionNumber;
 	}
-
+	
 	/**
 	 * Gets the measure population exclusions.
 	 *
@@ -1895,7 +1894,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public String getMeasurePopulationExclusions() {
 		return measurePopulationExclusions;
 	}
-
+	
 	/**
 	 * Sets the measure population exclusions.
 	 *
@@ -1914,7 +1913,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public List<ManageMeasureSearchModel.Result> getComponentMeasuresSelectedList() {
 		return componentMeasuresSelectedList;
 	}
-
+	
 	/**
 	 * Sets the component measures selected list.
 	 *
@@ -1933,7 +1932,7 @@ public class ManageMeasureDetailModel implements IsSerializable {
 	public boolean isEditable() {
 		return isEditable;
 	}
-
+	
 	/**
 	 * Sets the editable.
 	 *

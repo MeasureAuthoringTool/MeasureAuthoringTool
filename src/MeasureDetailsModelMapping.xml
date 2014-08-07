@@ -41,10 +41,10 @@
       <bind-xml name="version" node="element"/>
     </field>
        
-    <field name="measureStatus"
+   <!--  <field name="measureStatus"
            type="java.lang.String">
       <bind-xml name="status" node="element"/>
-    </field> 
+    </field> -->
     
     <field name="NqfModel"
            type="mat.client.measure.NqfModel">

@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import mat.DTO.OperatorDTO;
 import mat.client.Enableable;
 import mat.client.admin.service.AdminService;
@@ -41,6 +42,7 @@ import mat.client.umls.service.VSACAPIService;
 import mat.client.umls.service.VSACAPIServiceAsync;
 import mat.client.util.ClientConstants;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.shared.HandlerManager;
 import com.google.gwt.http.client.UrlBuilder;
@@ -190,7 +192,6 @@ public class MatContext implements IsSerializable {
 	/** The set ops. */
 	public List<String> setOps = new ArrayList<String>();
 	
-	List<String> allowedPopulationsInPackage = new ArrayList<String>();
 	/** The operator map key short. */
 	public Map<String, String> operatorMapKeyShort = new HashMap<String, String>();
 	
@@ -1455,7 +1456,15 @@ public class MatContext implements IsSerializable {
 		this.isUMLSLoggedIn = isUMLSLoggedIn;
 	}
 	
+	/**
+	 * Gets the allowed populations in package.
+	 *
+	 * @return the allowed populations in package
+	 */
 	public List<String> getAllowedPopulationsInPackage(){
+		
+		List<String> allowedPopulationsInPackage = new ArrayList<String>();
+		
 		allowedPopulationsInPackage.add("initialPopulation");
 		allowedPopulationsInPackage.add("stratification");
 		allowedPopulationsInPackage.add("measurePopulation");

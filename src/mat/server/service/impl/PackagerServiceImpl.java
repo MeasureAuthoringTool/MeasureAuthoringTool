@@ -7,9 +7,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
+
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.measurepackage.MeasurePackageClauseDetail;
 import mat.client.measurepackage.MeasurePackageDetail;
@@ -24,6 +26,7 @@ import mat.server.service.PackagerService;
 import mat.server.util.ResourceLoader;
 import mat.server.util.XmlProcessor;
 import mat.shared.MeasurePackageClauseValidator;
+
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -90,6 +93,8 @@ public class PackagerServiceImpl implements PackagerService {
 		
 		List<MeasurePackageClauseDetail> clauses = new ArrayList<MeasurePackageClauseDetail>();
 		List<MeasurePackageDetail> pkgs = new ArrayList<MeasurePackageDetail>();
+		//get all the list of allowed populations at package
+		List<String> allowedPopulationsInPackage = MatContext.get().getAllowedPopulationsInPackage();
 		// Load Measure Xml
 		MeasureXML measureXML = measureXMLDAO.findForMeasure(measureId);
 		XmlProcessor  processor = new XmlProcessor(measureXML.getMeasureXMLAsString());
@@ -121,7 +126,7 @@ public class PackagerServiceImpl implements PackagerService {
 								uuidNode.getNodeValue(), displayNameNode.getNodeValue(), XmlProcessor.STRATIFICATION,
 								associatedClauseUUID,qdmSelectedList));
 						
-					} else if( MatContext.get().getAllowedPopulationsInPackage().contains(typeNode.getNodeValue())){
+					} else if(allowedPopulationsInPackage.contains(typeNode.getNodeValue())){//filter unAllowed populations in package
 						clauses.add(createMeasurePackageClauseDetail(
 								uuidNode.getNodeValue(), displayNameNode.getNodeValue(), typeNode.getNodeValue(),
 								associatedClauseUUID,qdmSelectedList));

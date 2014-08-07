@@ -1,5 +1,6 @@
 package mat.client.measurepackage;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Enum MeasureGroupingOrder.
  */
@@ -32,6 +33,7 @@ public enum MeasureGroupingOrder {
 	/** The measure observation. */
 	measureObservation("9"),
 	
+	/** The stratification. */
 	stratification("10");
 	
 	

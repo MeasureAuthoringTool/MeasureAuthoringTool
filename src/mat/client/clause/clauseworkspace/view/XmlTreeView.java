@@ -1533,11 +1533,25 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						popupPanel.hide();
 						copy();
 					}
+					if((nodeType == CellTreeNode.ROOT_NODE) && selectedNode.getName().contains(STRATIFICATION)){
+						popupPanel.hide();
+						copy();
+					}
+					
 				} else if (keyCode == PopulationWorkSpaceConstants.PASTE_V) { //PASTE
 					boolean canPaste = false;
 					popupPanel.hide();
 					if (copiedNode != null) {
 						switch (selectedNode.getNodeType()) {
+							case CellTreeNode.MASTER_ROOT_NODE:
+								if (selectedNode.getName().equalsIgnoreCase(STRATIFICATION)) {
+									if ((copiedNode.getParent().getNodeType() == CellTreeNode.MASTER_ROOT_NODE)
+											&& (copiedNode.getNodeType() == CellTreeNode.ROOT_NODE)) {
+										clauseWorkspaceContextMenu.pasteMasterRootNodeTypeItem();
+										isDirty = true;
+									}
+								}
+								break;
 							case CellTreeNode.ROOT_NODE:
 								if (selectedNode.equals(copiedNode.getParent())) {
 									clauseWorkspaceContextMenu.pasteRootNodeTypeItem();
@@ -1558,10 +1572,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 								}
 								break;
 							case CellTreeNode.CLAUSE_NODE:
-								if(selectedNode.getParent().getName().contains("Stratification")){
-									canPaste = true;
+								if (selectedNode.getParent().getName().contains(STRATIFICATION)) {
+									if ((copiedNode.getNodeType() == CellTreeNode.SUBTREE_REF_NODE)
+											|| (copiedNode.getNodeType() == CellTreeNode.LOGICAL_OP_NODE)) {
+										canPaste = true;
+									} else if ((copiedNode.getNodeType() == CellTreeNode.CLAUSE_NODE)
+											&& !selectedNode.getName().contains(STRATUM)) {
+										clauseWorkspaceContextMenu.pasteRootNodeTypeItem();
+										isDirty = true;
+									}
 								}
-								
 							default:
 								break;
 						}
@@ -1765,39 +1785,39 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public void validateCellTreeNodesPopulationWorkspace(CellTreeNode cellTreeNode, List<String> inValidNodeAtPopulationWorkspace){
 		int nodeType = cellTreeNode.getNodeType();
 		switch(nodeType){
-		
-		case CellTreeNode.LOGICAL_OP_NODE:
-			if(cellTreeNode.getParent().getName().contains(MEASURE_OBSERVATION)){
-				editNode(false, cellTreeNode);
-				if(!inValidNodeAtPopulationWorkspace.contains("inValidAtMeasureObservationLogicalNode")){
-				inValidNodeAtPopulationWorkspace.add("inValidAtMeasureObservationLogicalNode");
+			
+			case CellTreeNode.LOGICAL_OP_NODE:
+				if(cellTreeNode.getParent().getName().contains(MEASURE_OBSERVATION)){
+					editNode(false, cellTreeNode);
+					if(!inValidNodeAtPopulationWorkspace.contains("inValidAtMeasureObservationLogicalNode")){
+						inValidNodeAtPopulationWorkspace.add("inValidAtMeasureObservationLogicalNode");
+					}
 				}
-			}
-			break;
-		
-		case CellTreeNode.CLAUSE_NODE:
-		case CellTreeNode.MASTER_ROOT_NODE:
-		case CellTreeNode.ROOT_NODE:
-		case CellTreeNode.SUBTREE_REF_NODE:
-			break;
-		default:
-			editNode(false, cellTreeNode);
-			if(!inValidNodeAtPopulationWorkspace.contains("inValidAtOtherNode")){
-				inValidNodeAtPopulationWorkspace.add("inValidAtOtherNode");
-			}
-			break;
-		
+				break;
+				
+			case CellTreeNode.CLAUSE_NODE:
+			case CellTreeNode.MASTER_ROOT_NODE:
+			case CellTreeNode.ROOT_NODE:
+			case CellTreeNode.SUBTREE_REF_NODE:
+				break;
+			default:
+				editNode(false, cellTreeNode);
+				if(!inValidNodeAtPopulationWorkspace.contains("inValidAtOtherNode")){
+					inValidNodeAtPopulationWorkspace.add("inValidAtOtherNode");
+				}
+				break;
+				
 		}
 		
 		List<CellTreeNode> children = cellTreeNode.getChilds();
 		if((children != null) && (children.size() > 0)){
 			for(CellTreeNode node:children){
 				validateCellTreeNodesPopulationWorkspace(node, inValidNodeAtPopulationWorkspace);
-					
-				}
+				
 			}
+		}
 	}
-		
+	
 	
 	
 	

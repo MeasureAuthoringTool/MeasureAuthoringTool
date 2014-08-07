@@ -125,6 +125,9 @@ public class ExportServlet extends HttpServlet {
 		Measure measure = null;
 		ExportResult export = null;
 		Date exportDate = null;
+		
+		System.out.println("FOMAT: " + format);
+		
 		if (id!= null) {
 			measure = service.getById(id);
 			exportDate = measure.getExportedDate();
@@ -321,7 +324,7 @@ public class ExportServlet extends HttpServlet {
 	private void CreateHeader(Element row){
 		createHeaderRows(row,"Title","20%");
 		createHeaderRows(row,"Description","33%");
-		createHeaderRows(row,"LastModified Date","17%");
+		createHeaderRows(row,"Last Modified Date","17%");
 		createHeaderRows(row,"Created By","15%");
 		createHeaderRows(row,"Modified By","15%");
 	}

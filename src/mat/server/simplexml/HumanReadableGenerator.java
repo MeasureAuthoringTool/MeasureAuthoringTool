@@ -430,7 +430,7 @@ public class HumanReadableGenerator {
 			if (map.getNamedItem("qdmVariable") != null
 					&& "true".equalsIgnoreCase(map.getNamedItem("qdmVariable")
 							.getNodeValue()) && showOnlyVariableName == false) {
-				if (parentListElement.nodeName().equals(HTML_UL)) {
+				if (parentListElement.nodeName().equals(HTML_UL) ) {
 					parentListElement = parentListElement
 							.appendElement(HTML_LI);
 				}
@@ -438,7 +438,10 @@ public class HumanReadableGenerator {
 					parentListElement.appendText(getNodeText(parentNode,
 							populationOrSubtreeXMLProcessor));
 				}
-
+				if (parentListElement.html().contains("Stratification")) {
+					parentListElement = parentListElement
+							.appendElement(HTML_UL).appendElement(HTML_LI);
+				}
 				String name = StringUtils.deleteWhitespace(map.getNamedItem(
 						"displayName").getNodeValue());
 				parentListElement.appendText("$" + name + " ");
@@ -553,6 +556,11 @@ public class HumanReadableGenerator {
 								populationOrSubtreeXMLProcessor));
 					}
 				} else {
+					if(parentListElement.html().contains(
+							"Stratification")) {
+						parentListElement = parentListElement.appendElement(
+								HTML_UL).appendElement(HTML_LI);
+					}
 					parentListElement.appendText(getNodeText(item,
 							populationOrSubtreeXMLProcessor));
 				}

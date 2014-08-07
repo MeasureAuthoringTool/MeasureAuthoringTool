@@ -120,6 +120,7 @@ public class ExportServlet extends HttpServlet {
 	    String id = req.getParameter(ID_PARAM);
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
+		String name = req.getParameter("name");
 		String[] matVersion ={"_v3","_v4"}; 
 		Measure measure = null;
 		ExportResult export = null;
@@ -247,7 +248,7 @@ public class ExportServlet extends HttpServlet {
 				System.out.println("testing the print out!");
 				//String csvFileString = generateCSVToExportMeasureNotes(id);
 				export = getService().getSimpleXML(id);
-				String csvFileString = generateHTMLToExportMeasureNotes(id,export);
+				String csvFileString = generateHTMLToExportMeasureNotes(id,export,name);
 				Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String measureNoteDate = formatter.format(new Date());
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
@@ -265,7 +266,7 @@ public class ExportServlet extends HttpServlet {
 		}
 	}
 
-	private String generateHTMLToExportMeasureNotes(final String measureId, ExportResult export) throws XPathExpressionException{
+	private String generateHTMLToExportMeasureNotes(final String measureId, ExportResult export,String name) throws XPathExpressionException{
 		List<MeasureNotes> allMeasureNotes = getMeasureNoteService().getAllMeasureNotesByMeasureID(measureId);
 		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
 		Element html = htmlDocument.appendElement("html");
@@ -277,35 +278,40 @@ public class ExportServlet extends HttpServlet {
 		String styleTagString = MATCssUtil.getCSS();
 		head.append(styleTagString);
 		Element header = htmlDocument.body().appendElement("h1");
-		XmlProcessor measureXMLProcessor = new XmlProcessor(export.export);
-		Node name = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "//measureDetails/title");
-		Node eMeasureId = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "//measureDetails/emeasureid");
+		Node eMeasureId = null;
+		if(export != null){
+			XmlProcessor measureXMLProcessor = new XmlProcessor(export.export);
+			eMeasureId = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "//measureDetails/emeasureid");
+		}
 		if(eMeasureId != null){
-			header.appendText(name.getTextContent() + " (CMS " + eMeasureId.getTextContent() + ") " + "Measure Notes");
+			header.appendText(name+ " (CMS " + eMeasureId.getTextContent() + ") " + "Measure Notes");
 		}else{
-			header.appendText(name.getTextContent() + " Measure Notes");
+			header.appendText(name + " Measure Notes");
 		}
 		Element table = htmlDocument.body().appendElement("table");
+		table.attr("class", "header_table");
+		table.attr("width", "100%");
 		System.out.println("NOTES LENGTH: " + allMeasureNotes.size());
 		Element row = table.appendElement("tr");
 		CreateHeader(row);
 		for(MeasureNotes measureNotes:allMeasureNotes){
 			row = table.appendElement("tr");
-			createBody(row, measureNotes.getNoteTitle(),false);
-			createBody(row,measureNotes.getNoteDesc(), true);
-			createBody(row,convertDateToString(measureNotes.getLastModifiedDate()),false);
-			createBody(row,measureNotes.getCreateUser().getEmailAddress(),false);
+			createBody(row, measureNotes.getNoteTitle(),false,"20%");
+			createBody(row,measureNotes.getNoteDesc(), true,"33%");
+			createBody(row,convertDateToString(measureNotes.getLastModifiedDate()),false,"17%");
+			createBody(row,measureNotes.getCreateUser().getEmailAddress(),false,"15%");
 			if (measureNotes.getModifyUser() != null) {
-				createBody(row,measureNotes.getModifyUser().getEmailAddress(),false);
+				createBody(row,measureNotes.getModifyUser().getEmailAddress(),false,"15%");
 			}else{
-				createBody(row,"",false);
+				createBody(row,"",false,"15%");
 			}
 		}
 		
 		return htmlDocument.toString();
 	}
-	private void createBody(Element row, String message,Boolean html){
+	private void createBody(Element row, String message,Boolean html,String width){
 		Element col = row.appendElement("td");
+		col.attr("width", width);
 		if(!html){
 			col.appendText(message);
 		}else{
@@ -313,19 +319,19 @@ public class ExportServlet extends HttpServlet {
 		}
 	}
 	private void CreateHeader(Element row){
-		createHeaderRows(row,"Title");
-		createHeaderRows(row,"Description");
-		createHeaderRows(row,"LastModified Date");
-		createHeaderRows(row,"Created By");
-		createHeaderRows(row,"Modified By");
+		createHeaderRows(row,"Title","20%");
+		createHeaderRows(row,"Description","33%");
+		createHeaderRows(row,"LastModified Date","17%");
+		createHeaderRows(row,"Created By","15%");
+		createHeaderRows(row,"Modified By","15%");
 	}
-	private void createHeaderRows(Element row, String header){
+	private void createHeaderRows(Element row, String header,String width){
 		Element col = row.appendElement("td");
 		col.attr("bgcolor", "#656565");
 		col.attr("style", "background-color:#656565");
 		Element span = col.appendElement("span");
 		span.attr("class", "td_label");
-		span.attr("align", "center");
+		span.attr("width", width);
 		span.appendText(header);
 		
 	}

@@ -281,7 +281,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	public final ExportResult getSimpleXML(final String measureId) throws Exception {
 		mat.model.clause.Measure measure = measureDAO.find(measureId);
 		MeasureExport measureExport = getMeasureExport(measureId);
-
+		if(measureExport == null){
+			return null;
+		}
 		ExportResult result = new ExportResult();
 		result.measureName = measure.getaBBRName();
 		result.export = measureExport.getSimpleXML();
@@ -588,6 +590,9 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	private MeasureExport getMeasureExport(final String measureId) {
 		MeasureExport measureExport = measureExportDAO
 				.findForMeasure(measureId);
+		if(measureExport == null){
+			return null;
+		}
 		String emeasureXMLStr = measureExport.getSimpleXML();
 		mat.model.clause.Measure measure = measureDAO.find(measureId);
 		Timestamp fdts = measure.getFinalizedDate();

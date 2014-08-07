@@ -672,6 +672,9 @@ public class XmlTreePresenter {
 						
 					}
 					if(messageList.size()>=1){
+						if(!messageList.get(0).equalsIgnoreCase(MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCORRECT())){
+							messageList.add(0, MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCORRECT());
+						}
 						xmlTreeDisplay.getWarningMessageDisplay().setMessages(messageList);
 					}
 				}

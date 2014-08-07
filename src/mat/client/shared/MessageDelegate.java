@@ -206,17 +206,16 @@ public class MessageDelegate {
 	private final String CLAUSE_WORK_SPACE_VALIDATION_SUCCESS = "Measure logic validation successful.";
 	
 	/** The clause work space validation error. */
-	private final String POPULATION_WORK_SPACE_VALIDATION_ERROR = "Measure logic is incorrect."
-			+ " Logic must only contain Clauses and Logical operators.";
-	
+	private final String POPULATION_WORK_SPACE_VALIDATION_ERROR = "Logic must only contain Clauses and Logical operators.";
+			
+	private final String MEASURE_LOGIC_IS_INCORRECT = " Measure logic is incorrect.";
 	/** The population work space measure observation validation error. */
-	private final String POPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR = "Measure logic is incorrect."
-			+ " Logic must only contain Clauses.";	
+	private final String POPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR = " Logic must only contain Clauses.";
 	
 	/** The invalid character validation error. */
-	private final String INVALID_CHARACTER_VALIDATION_ERROR =" Name contains invalid characters."
-			+" Invalid characters are + * ? : - | !  ; %\"."
-			+" Please remove invalid characters and try again.";
+	private final String INVALID_CHARACTER_VALIDATION_ERROR =" Value set name cannot contain any of the following characters : + * ? : - | ! ; %";
+
+			
 
 
 	/** The clause work space validation success. */
@@ -2076,6 +2075,13 @@ public class MessageDelegate {
 	 */
 	public static String getMeasureDeveloperAddedSuccessfully() {
 		return MEASURE_DEVELOPER_ADDED_SUCCESSFULLY;
+	}
+
+	/**
+	 * @return the mEASURE_LOGIC_IS_INCORRECT
+	 */
+	public String getMEASURE_LOGIC_IS_INCORRECT() {
+		return MEASURE_LOGIC_IS_INCORRECT;
 	}
 	
 }

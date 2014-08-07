@@ -1841,6 +1841,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					for(String element: inValidNodeList){
 						if(element.equalsIgnoreCase("inValidAtTimingRelationShip")){
 							warningMessages.add(MatContext.get().getMessageDelegate().getLHS_RHS_REQUIRED());
+							
 						}
 						if(element.equalsIgnoreCase("inValidAtSetoperatorAndOrFunction")){
 							warningMessages.add(MatContext.get().getMessageDelegate().getATLEAST_ONE_CHILD_REQUIRED());

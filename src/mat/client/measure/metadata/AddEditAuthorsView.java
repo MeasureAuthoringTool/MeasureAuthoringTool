@@ -117,8 +117,10 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 	/** The cell table odd row. */
 	private String cellTableOddRow = "cellTableOddRow";
 	
+	/** The return button. */
 	protected Button returnButton = new PrimaryButton("Return to Previous");
 	
+	/** The success messages. */
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 
 	
@@ -485,35 +487,18 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 		return addEditcancelButton;
 	}
 
-	@Override
-	public String getAuthor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HasValue<String> getAuthorInputBox() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public HasValue<String> getOtherAuthor() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void buildAuthorCellTable(List<Author> authorList, boolean editable) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.AddEditAuthorsDisplay#getSuccessMessageDisplay()
+	 */
 	@Override
 	public SuccessMessageDisplay getSuccessMessageDisplay() {
 		return successMessages;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.AddEditAuthorsDisplay#getReturnButton()
+	 */
 	@Override
 	public HasClickHandlers getReturnButton() {
 		// TODO Auto-generated method stub

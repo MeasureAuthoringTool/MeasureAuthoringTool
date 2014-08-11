@@ -644,14 +644,39 @@ public class MetaDataPresenter  implements MatPresenter {
 		public void buildAuthorCellTable(List<Author> authorList,
 				boolean editable);
 		
+		/**
+		 * Gets the save error msg.
+		 *
+		 * @return the save error msg
+		 */
 		ErrorMessageDisplay getSaveErrorMsg();
 		
+		/**
+		 * Gets the error message display.
+		 *
+		 * @return the error message display
+		 */
 		ErrorMessageDisplayInterface getErrorMessageDisplay();
 		
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
 		Widget asWidget();
 		
+		/**
+		 * Gets the success message display.
+		 *
+		 * @return the success message display
+		 */
 		SuccessMessageDisplayInterface getSuccessMessageDisplay();
 	
+		/**
+		 * Sets the measure steward options.
+		 *
+		 * @param itemList the new measure steward options
+		 */
 		void setMeasureStewardOptions(List<? extends HasListBox> itemList);
 	}
 	
@@ -660,35 +685,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	 */
 	public static interface AddEditAuthorsDisplay {
 		
-		/**
-		 * Gets the author.
-		 * 
-		 * @return the author
-		 */
-		public String getAuthor();
-		
-		/**
-		 * Gets the author input box.
-		 * 
-		 * @return the author input box
-		 */
-		public HasValue<String> getAuthorInputBox();
-		
-		/**
-		 * Gets the other author.
-		 * 
-		 * @return the other author
-		 */
-		public HasValue<String> getOtherAuthor();
-		
-		/**
-		 * Builds the author cell table.
-		 *
-		 * @param authorList the author list
-		 * @param editable the editable
-		 */
-		public void buildAuthorCellTable(List<Author> authorList,
-				boolean editable);
 		
 		/**
 		 * Gets the adds the to measure developer list btn.
@@ -756,8 +752,25 @@ public class MetaDataPresenter  implements MatPresenter {
 		 */
 		Button getAddEditCancelButton();
 		
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
 		Widget asWidget();
+		
+		/**
+		 * Gets the success message display.
+		 *
+		 * @return the success message display
+		 */
 		SuccessMessageDisplay getSuccessMessageDisplay();
+		
+		/**
+		 * Gets the return button.
+		 *
+		 * @return the return button
+		 */
 		HasClickHandlers getReturnButton();
 	
 	}
@@ -813,6 +826,11 @@ public class MetaDataPresenter  implements MatPresenter {
 		/* (non-Javadoc)
 		 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#getSuccessMessageDisplay()
 		 */
+		/**
+		 * Gets the success message display.
+		 *
+		 * @return the success message display
+		 */
 		public SuccessMessageDisplayInterface getSuccessMessageDisplay();
 		
 		/**
@@ -829,10 +847,28 @@ public class MetaDataPresenter  implements MatPresenter {
 		 */
 		List<Result> getComponentMeasuresList();
 		
+		/**
+		 * Builds the cell table.
+		 *
+		 * @param result the result
+		 * @param searchText the search text
+		 * @param measureSelectedList the measure selected list
+		 */
 		void buildCellTable(ManageMeasureSearchModel result,
 				final String searchText, List<ManageMeasureSearchModel.Result> measureSelectedList);
+		
+		/**
+		 * Gets the return button.
+		 *
+		 * @return the return button
+		 */
 		HasClickHandlers getReturnButton();
 		
+		/**
+		 * As widget.
+		 *
+		 * @return the widget
+		 */
 		Widget asWidget();
 		
 	}
@@ -939,7 +975,6 @@ public class MetaDataPresenter  implements MatPresenter {
 	 *
 	 * @param mDisplay the m display
 	 * @param aDisplay the a display
-	 * @param mtDisplay the mt display
 	 * @param cmDisplay the cm display
 	 * @param pcButtons the pc buttons
 	 * @param lp the lp
@@ -1164,6 +1199,12 @@ public class MetaDataPresenter  implements MatPresenter {
 		emptyWidget.add(new Label("No Measure Selected"));
 	}
 	
+	/**
+	 * Gets the measure steward list.
+	 *
+	 * @param listBoxCodeProvider the list box code provider
+	 * @return the measure steward list
+	 */
 	private void getMeasureStewardList(ListBoxCodeProvider listBoxCodeProvider) {
 		listBoxCodeProvider.getStewardList(new AsyncCallback<List<? extends HasListBox>>() {
 

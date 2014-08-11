@@ -2423,16 +2423,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.BaseMetaDataPresenter.BaseMetaDataDisplay#buildAuthorCellTable(java.util.List)
-	 */
-	@Override
-	public void buildAuthorCellTable(List<Author> currentAuthorsList) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
+
 	/* (non-Javadoc)
 	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setMeasureTypeList(java.util.List)
 	 */
@@ -2440,17 +2431,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void setMeasureTypeList(List<MeasureType> measureType) {
 		// TODO Auto-generated method stub
 		
-	}
-	
-	
-	@Override
-	public void setObjectStatusOptions(List<? extends HasListBox> texts) {
-		// TODO Auto-generated method stub
-		
-	}
-	
-	
-	
-	
+	}	
 	
 }

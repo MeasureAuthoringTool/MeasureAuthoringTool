@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.client.CustomPager;
 import mat.client.measure.ManageMeasurePresenter.ShareDisplay;
 import mat.client.measure.metadata.CustomCheckBox;
@@ -13,11 +14,9 @@ import mat.client.shared.MatSimplePager;
 import mat.client.shared.MeasureNameLabel;
 import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.search.HasPageSelectionHandler;
-import mat.client.shared.search.HasPageSizeSelectionHandler;
-import mat.client.shared.search.SearchView;
 import mat.model.clause.MeasureShareDTO;
 import mat.model.clause.ShareLevel;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
@@ -63,7 +62,7 @@ public class ManageMeasureShareView implements ShareDisplay {
 	private CustomCheckBox privateCheck = new CustomCheckBox("Select 'Private Measure' to make "
 			+ "a Measure Private.", "Private Measure", true);
 	/** The search view. */
-	private SearchView<MeasureShareDTO> searchView = new SearchView<MeasureShareDTO>("Users");
+//	private SearchView<MeasureShareDTO> searchView = new SearchView<MeasureShareDTO>("Users");
 	/** The selection model. */
 	/*
 	 * private SingleSelectionModel<MeasureShareDTO> selectionModel;
@@ -254,26 +253,26 @@ public class ManageMeasureShareView implements ShareDisplay {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSelectionTool()
 	 */
-	@Override
-	public HasPageSelectionHandler getPageSelectionTool() {
-		return searchView;
-	}
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSize()
-	 */
-	@Override
-	public int getPageSize() {
-		return searchView.getPageSize();
-	}
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSizeSelectionTool()
-	 */
-	@Override
-	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
-		return searchView;
-	}
+//	@Override
+//	public HasPageSelectionHandler getPageSelectionTool() {
+//		return searchView;
+//	}
+//	/*
+//	 * (non-Javadoc)
+//	 * 
+//	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSize()
+//	 */
+//	@Override
+//	public int getPageSize() {
+//		return searchView.getPageSize();
+//	}
+//	/* (non-Javadoc)
+//	 * @see mat.client.measure.ManageMeasurePresenter.ShareDisplay#getPageSizeSelectionTool()
+//	 */
+//	@Override
+//	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
+//		return searchView;
+//	}
 	/** Gets the selection model with handler.
 	 * 
 	 * @return the selection model with handler */

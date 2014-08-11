@@ -17,7 +17,6 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.HasPageSelectionHandler;
 import mat.client.shared.search.HasPageSizeSelectionHandler;
 import mat.client.shared.search.SearchResults;
-import mat.client.shared.search.SearchView;
 import mat.client.util.CellTableUtility;
 
 import com.google.gwt.core.client.GWT;
@@ -68,9 +67,6 @@ public abstract class HistoryBaseView {
 	
 	/** The error messages. */
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
-	
-	/** The view. */
-	protected SearchView<AuditLogDTO> view = getSearchView();
 	
 	/** The err msg. */
 	private ErrorMessageDisplay errMsg = new ErrorMessageDisplay();
@@ -156,79 +152,7 @@ public abstract class HistoryBaseView {
 	 * 
 	 * @return the page selection tool
 	 */
-	public HasPageSelectionHandler getPageSelectionTool() {
-		return view;
-	}
-
-	/**
-	 * Gets the page size selection tool.
-	 * 
-	 * @return the page size selection tool
-	 */
-	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
-		return view;
-	}
-
-	/**
-	 * Gets the page size.
-	 * 
-	 * @return the page size
-	 */
-	public int getPageSize() {
-		return view.getPageSize();
-	}
-
-	/**
-	 * Sets the page size.
-	 * 
-	 * @param pageSize
-	 *            the new page size
-	 */
-	public void setPageSize(int pageSize){
-		view.setPageSize(pageSize);
-	}
-	
-	
-	/**
-	 * Gets the current page.
-	 * 
-	 * @return the current page
-	 */
-	public int getCurrentPage(){
-		return view.getCurrentPage();
-	}
-
-	
-	/**
-	 * Sets the current page.
-	 * 
-	 * @param pageNumber
-	 *            the new current page
-	 */
-	public void setCurrentPage(int pageNumber){
-		view.setCurrentPage(pageNumber);
-	}
-	
-	
-	/**
-	 * Builds the data table.
-	 * 
-	 * @param results
-	 *            the results
-	 * @param pageCount
-	 *            the page count
-	 * @param totalResults
-	 *            the total results
-	 * @param currentPage
-	 *            the current page
-	 * @param pageSize
-	 *            the page size
-	 */
-	public void buildDataTable(SearchResults<AuditLogDTO> results,int pageCount,long totalResults,int currentPage,int pageSize) {
-		//view.buildHistoryDataTable(results,pageCount,totalResults,currentPage,pageSize);
-	}
-	
-	/**
+		/**
 	 * Adds the column to table.
 	 *
 	 * @param cellTable the cell table
@@ -335,19 +259,6 @@ public abstract class HistoryBaseView {
 			cellTablePanel.add(spager);
 			
 		}
-	}
-	
-
-	/**
-	 * Gets the search view.
-	 * 
-	 * @return the search view
-	 */
-	public SearchView<AuditLogDTO> getSearchView() {
-		if(view == null) {
-			view = new SearchView<AuditLogDTO>();
-		}
-		return view;
 	}
 	
 	/**

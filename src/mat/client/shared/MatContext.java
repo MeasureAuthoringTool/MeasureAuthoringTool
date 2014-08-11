@@ -18,7 +18,6 @@ import mat.client.clause.QDSAppliedListView;
 import mat.client.clause.QDSCodeListSearchView;
 import mat.client.codelist.AdminManageCodeListSearchModel;
 import mat.client.codelist.ListBoxCodeProvider;
-import mat.client.codelist.ManageCodeListSearchView;
 import mat.client.codelist.service.CodeListService;
 import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.event.ForgottenPasswordEvent;
@@ -159,7 +158,7 @@ public class MatContext implements IsSerializable {
 	private ManageMeasureSearchModel manageMeasureSearchModel;
 	
 	/** The manage code list search view. */
-	private ManageCodeListSearchView manageCodeListSearchView;
+	//private ManageCodeListSearchView manageCodeListSearchView;
 	
 	/** The manage code list search model. */
 	private AdminManageCodeListSearchModel manageCodeListSearchModel;
@@ -1296,19 +1295,19 @@ public class MatContext implements IsSerializable {
 	 * @param manageCodeListSearchView
 	 *            the manageCodeListSearchView to set
 	 */
-	public void setManageCodeListSearchView(ManageCodeListSearchView manageCodeListSearchView) {
-		this.manageCodeListSearchView = manageCodeListSearchView;
-	}
-	
-	
-	/**
-	 * Gets the manage code list search view.
-	 * 
-	 * @return the manageCodeListSearchView
-	 */
-	public ManageCodeListSearchView getManageCodeListSearchView() {
-		return manageCodeListSearchView;
-	}
+//	public void setManageCodeListSearchView(ManageCodeListSearchView manageCodeListSearchView) {
+//		this.manageCodeListSearchView = manageCodeListSearchView;
+//	}
+//	
+//	
+//	/**
+//	 * Gets the manage code list search view.
+//	 * 
+//	 * @return the manageCodeListSearchView
+//	 */
+//	public ManageCodeListSearchView getManageCodeListSearchView() {
+//		return manageCodeListSearchView;
+//	}
 	
 	
 	/**

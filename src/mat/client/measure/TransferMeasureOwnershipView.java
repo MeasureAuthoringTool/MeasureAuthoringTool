@@ -5,8 +5,6 @@ import java.util.List;
 
 import mat.client.CustomPager;
 import mat.client.measure.TransferMeasureOwnerShipModel.Result;
-import mat.client.measure.metadata.Grid508;
-import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
@@ -17,13 +15,7 @@ import mat.client.shared.SaveCancelButtonBar;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.HasPageSelectionHandler;
-import mat.client.shared.search.HasPageSizeSelectionHandler;
-import mat.client.shared.search.SearchResults;
-import mat.client.shared.search.SearchView;
 import mat.client.util.CellTableUtility;
-import mat.model.QualityDataSetDTO;
-
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -41,14 +33,11 @@ import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.RadioButton;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 import com.google.gwt.view.client.SingleSelectionModel;
-
-import elemental.html.RadioNodeList;
 
 
 // TODO: Auto-generated Javadoc
@@ -72,8 +61,8 @@ public class TransferMeasureOwnershipView  implements ManageMeasurePresenter.Tra
 	protected ErrorMessageDisplay errorMessages = new ErrorMessageDisplay();
 	
 	/** The view. */
-	private SearchView<mat.client.measure.TransferMeasureOwnerShipModel.Result> view = new 
-			SearchView<TransferMeasureOwnerShipModel.Result>("Users");
+	/*private SearchView<mat.client.measure.TransferMeasureOwnerShipModel.Result> view = new 
+			SearchView<TransferMeasureOwnerShipModel.Result>("Users");*/
 	
 	/** The value set name panel. */
 	HorizontalPanel valueSetNamePanel = new HorizontalPanel();

@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import mat.client.CustomPager;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.ErrorMessageDisplay;
@@ -11,7 +12,7 @@ import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
-import mat.client.shared.search.SearchView;
+
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.cellview.client.CellTable;
@@ -23,6 +24,7 @@ import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.ListDataProvider;
 
@@ -54,8 +56,10 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 	private MatSimplePager spager;
 	/** The transfer button. */
 	private Button transferButton = new PrimaryButton("Transfer", "primaryGreyButton");
+	
+	private VerticalPanel measureVpanel = new VerticalPanel();
 	/** The view. */
-	private SearchView<ManageMeasureSearchModel.Result> view = new SearchView<ManageMeasureSearchModel.Result>(true);
+	//private SearchView<ManageMeasureSearchModel.Result> view = new SearchView<ManageMeasureSearchModel.Result>(true);
 	/**
 	 * Instantiates a new admin manage measure search view.
 	 */
@@ -66,7 +70,8 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buildSearchWidget());
 		mainPanel.add(new SpacerWidget());
-		mainPanel.add(view.asWidget());
+		//mainPanel.add(view.asWidget());
+		mainPanel.add(measureVpanel);
 		mainPanel.setStyleName("contentPanel");
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(buildBottomButtonWidget((PrimaryButton) transferButton,
@@ -138,7 +143,8 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		spager.setDisplay(cellTable);
 		spager.setPageSize(PAGE_SIZE);
 		/* spager.setToolTipAndTabIndex(spager); */
-		view.getvPanelForQDMTable().clear();
+		//view.getvPanelForQDMTable().clear();
+		measureVpanel.clear();
 		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
 				"measureOwnerShipSummary",
 				"In the following Transfer Ownership table, Measure Name is given in the first column, "
@@ -147,11 +153,16 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 						+ "Transfer in the sixth column with Check boxes positioned to the right of the table");
 		cellTable.getElement().setAttribute("id", "measureOwnerShipCellTable");
 		cellTable.getElement().setAttribute("aria-describedby", "measureOwnerShipSummary");
-		view.getvPanelForQDMTable().setStyleName("cellTablePanel");
-		view.getvPanelForQDMTable().add(invisibleLabel);
-		view.getvPanelForQDMTable().add(cellTable);
-		view.getvPanelForQDMTable().add(new SpacerWidget());
-		view.getvPanelForQDMTable().add(spager);
+//		view.getvPanelForQDMTable().setStyleName("cellTablePanel");
+//		view.getvPanelForQDMTable().add(invisibleLabel);
+//		view.getvPanelForQDMTable().add(cellTable);
+//		view.getvPanelForQDMTable().add(new SpacerWidget());
+//		view.getvPanelForQDMTable().add(spager);
+		measureVpanel.setStyleName("cellTablePanel");
+		measureVpanel.add(invisibleLabel);
+		measureVpanel.add(cellTable);
+		measureVpanel.add(new SpacerWidget());
+		measureVpanel.add(spager);
 	}
 	/**
 	 * Builds the search widget.

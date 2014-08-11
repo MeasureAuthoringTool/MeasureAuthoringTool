@@ -13,9 +13,6 @@ import mat.client.shared.MostRecentMeasureWidget;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.search.HasPageSelectionHandler;
-import mat.client.shared.search.HasPageSizeSelectionHandler;
-import mat.client.shared.search.SearchView;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.event.logical.shared.HasSelectionHandlers;
 import com.google.gwt.resources.client.ImageResource;
@@ -106,7 +103,7 @@ ManageMeasurePresenter.SearchDisplay {
 	private SuccessMessageDisplay successMeasureDeletion = new SuccessMessageDisplay();
 	
 	/** The view. */
-	private SearchView<ManageMeasureSearchModel.Result> view  = new SearchView<ManageMeasureSearchModel.Result>();
+	//private SearchView<ManageMeasureSearchModel.Result> view  = new SearchView<ManageMeasureSearchModel.Result>();
 	
 	/** The search view. */
 	MeasureSearchView searchView;
@@ -189,7 +186,7 @@ ManageMeasurePresenter.SearchDisplay {
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#buildDataTable(mat.client.shared.search.SearchResults)
 	 */
 	@Override
-	public void buildDataTable(ManageMeasureSearchModel
+	public void buildCellTable(ManageMeasureSearchModel
 			manageMeasureSearchModel, int filter, String searchText) {
 		measureSearchView.buildCellTable(manageMeasureSearchModel,filter,searchText);
 	}
@@ -380,11 +377,11 @@ ManageMeasurePresenter.SearchDisplay {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getMeasureDataTable()
 	 */
-	@Override
-	public Grid508 getMeasureDataTable() {
-		return view.getDataTable();
-	}
-	
+//	@Override
+//	public Grid508 getMeasureDataTable() {
+//		return view.getDataTable();
+//	}
+//	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSelectionTool()
 	 */
@@ -418,31 +415,31 @@ ManageMeasurePresenter.SearchDisplay {
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSize()
 	 */
-	@Override
-	public HasPageSelectionHandler getPageSelectionTool() {
-		return view;
-	}
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSizeSelectionTool()
-	 */
-	@Override
-	public int getPageSize() {
-		return view.getPageSize();
-	}
-	
-	/*@Override
-	public MeasureSearchFilterPanel getMeasureSearchFilterPanel() {
-		return msfp;
-	}*/
-	
-	/* (non-Javadoc)
-	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchButton()
-	 */
-	@Override
-	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
-		return view;
-	}
+//	@Override
+//	public HasPageSelectionHandler getPageSelectionTool() {
+//		return view;
+//	}
+//	
+//	/* (non-Javadoc)
+//	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getPageSizeSelectionTool()
+//	 */
+//	@Override
+//	public int getPageSize() {
+//		return view.getPageSize();
+//	}
+//	
+//	/*@Override
+//	public MeasureSearchFilterPanel getMeasureSearchFilterPanel() {
+//		return msfp;
+//	}*/
+//	
+//	/* (non-Javadoc)
+//	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchButton()
+//	 */
+//	@Override
+//	public HasPageSizeSelectionHandler getPageSizeSelectionTool() {
+//		return view;
+//	}
 	
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.SearchDisplay#getSearchString()

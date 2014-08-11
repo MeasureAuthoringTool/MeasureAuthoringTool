@@ -9,13 +9,11 @@ import mat.client.measure.MeasureNotesPresenter;
 import mat.client.measure.MeasureNotesView;
 import mat.client.measure.metadata.AddEditAuthorsView;
 import mat.client.measure.metadata.AddEditComponentMeasuresView;
-import mat.client.measure.metadata.AddEditMeasureTypeView;
 import mat.client.measure.metadata.MetaDataPresenter;
 import mat.client.measure.metadata.MetaDataView;
 import mat.client.measure.metadata.events.ContinueToMeasurePackageEvent;
 import mat.client.measurepackage.MeasurePackagePresenter;
 import mat.client.measurepackage.MeasurePackagePresenter_Old;
-import mat.client.measurepackage.MeasurePackageView;
 import mat.client.measurepackage.MeasurePackagerView;
 import mat.client.shared.ContentWithHeadingWidget;
 import mat.client.shared.FocusableWidget;
@@ -24,6 +22,7 @@ import mat.client.shared.MatTabLayoutPanel;
 import mat.client.shared.PreviousContinueButtonBar;
 import mat.client.shared.SkipListBuilder;
 import mat.shared.ConstantMessages;
+
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyDownEvent;
 import com.google.gwt.event.dom.client.KeyDownHandler;
@@ -326,9 +325,9 @@ public class MeasureComposerPresenter implements MatPresenter, Enableable {
 	private MatPresenter buildMeasureMetaDataPresenter() {
 		MetaDataView mdV = new MetaDataView();
 		AddEditAuthorsView aeaV = new AddEditAuthorsView();
-		AddEditMeasureTypeView aemtV = new AddEditMeasureTypeView();
+		//AddEditMeasureTypeView aemtV = new AddEditMeasureTypeView();
 		AddEditComponentMeasuresView aecmV = new AddEditComponentMeasuresView();
-		MetaDataPresenter mdP = new MetaDataPresenter(mdV, aeaV, aemtV,aecmV, buttonBar, MatContext.get().getListBoxCodeProvider());
+		MetaDataPresenter mdP = new MetaDataPresenter(mdV, aeaV,aecmV, buttonBar, MatContext.get().getListBoxCodeProvider());
 		return mdP;
 	}
 	

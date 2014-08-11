@@ -384,41 +384,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	public static interface HistoryDisplay extends BaseDisplay {
 		
-		/**
-		 * Builds the data table.
-		 * 
-		 * @param results
-		 *            the results
-		 * @param pageCount
-		 *            the page count
-		 * @param totalResults
-		 *            the total results
-		 * @param currentPage
-		 *            the current page
-		 * @param pageSize
-		 *            the page size
-		 */
-		public void buildDataTable(SearchResults<AuditLogDTO> results,
-				int pageCount, long totalResults, int currentPage, int pageSize);
-		
-		/**
+	   /**
 		 * Clear error message.
 		 */
 		public void clearErrorMessage();
-		
-		/**
-		 * Gets the clear button.
-		 * 
-		 * @return the clear button
-		 */
-		//public HasClickHandlers getClearButton();
-		
-		/**
-		 * Gets the current page.
-		 * 
-		 * @return the current page
-		 */
-		public int getCurrentPage();
 		
 		/**
 		 * Gets the measure id.
@@ -433,28 +402,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @return the measure name
 		 */
 		public String getMeasureName();
-		
-		/**
-		 * Gets the page selection tool.
-		 * 
-		 * @return the page selection tool
-		 */
-		public HasPageSelectionHandler getPageSelectionTool();
-		
-		/**
-		 * Gets the page size.
-		 * 
-		 * @return the page size
-		 */
-		public int getPageSize();
-		
-		/**
-		 * Gets the page size selection tool.
-		 * 
-		 * @return the page size selection tool
-		 */
-		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
-		
+	
 		/**
 		 * Gets the return to link.
 		 * 
@@ -462,34 +410,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public HasClickHandlers getReturnToLink();
 		
-		/**
-		 * Gets the save button.
-		 * 
-		 * @return the save button
-		 */
-	//	public HasClickHandlers getSaveButton();
 		
-		/**
-		 * Gets the user comment.
-		 * 
-		 * @return the user comment
-		 */
-		//public HasValue<String> getUserComment();
-		
-		/**
-		 * Sets the current page.
-		 * 
-		 * @param pageNumber
-		 *            the new current page
-		 */
-		public void setCurrentPage(int pageNumber);
-		
-		/**
-		 * Sets the error message.
-		 * 
-		 * @param s
-		 *            the new error message
-		 */
 		public void setErrorMessage(String s);
 		
 		/**
@@ -514,7 +435,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @param pageNumber
 		 *            the new page size
 		 */
-		public void setPageSize(int pageNumber);
+//		public void setPageSize(int pageNumber);
 		
 		/**
 		 * Sets the return to link text.
@@ -523,14 +444,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 *            the new return to link text
 		 */
 		public void setReturnToLinkText(String s);
-		
-		/**
-		 * Sets the user comments read only.
-		 * 
-		 * @param readOnly
-		 *            the new user comments read only
-		 */
-		//public void setUserCommentsReadOnly(boolean readOnly);
 		
 		public void buildCellTable(List<AuditLogDTO> results);
 	}
@@ -547,7 +460,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @param filter the filter
 		 * @param searchText the search text
 		 */
-		public void buildDataTable(
+		public void buildCellTable(
 				ManageMeasureSearchModel manageMeasureSearchModel, int filter, String searchText);
 		
 		
@@ -624,7 +537,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the measure data table
 		 */
-		public Grid508 getMeasureDataTable();
+		//public Grid508 getMeasureDataTable();
 		
 		/**
 		 * Gets the measure search filter widget.
@@ -650,7 +563,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the page selection tool
 		 */
-		public HasPageSelectionHandler getPageSelectionTool();
+		//public HasPageSelectionHandler getPageSelectionTool();
 		
 		/*public MeasureSearchFilterPanel getMeasureSearchFilterPanel();*/
 		
@@ -659,14 +572,14 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the page size
 		 */
-		public int getPageSize();
+		//public int getPageSize();
 		
 		/**
 		 * Gets the page size selection tool.
 		 * 
 		 * @return the page size selection tool
 		 */
-		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
+		//public HasPageSizeSelectionHandler getPageSizeSelectionTool();
 		
 		/**
 		 * Gets the search button.
@@ -741,21 +654,21 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * 
 		 * @return the page selection tool
 		 */
-		public HasPageSelectionHandler getPageSelectionTool();
+		//public HasPageSelectionHandler getPageSelectionTool();
 		
 		/**
 		 * Gets the page size.
 		 * 
 		 * @return the page size
 		 */
-		public int getPageSize();
+		//public int getPageSize();
 		
 		/**
 		 * Gets the page size selection tool.
 		 * 
 		 * @return the page size selection tool
 		 */
-		public HasPageSizeSelectionHandler getPageSizeSelectionTool();
+		//public HasPageSizeSelectionHandler getPageSizeSelectionTool();
 		
 		/**
 		 * Gets the share button.
@@ -1569,9 +1482,10 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 */
 	private void displayHistory(String measureId, String measureName) {
 		
-		int pageNumber = historyDisplay.getCurrentPage();
-		int pageSize = historyDisplay.getPageSize();
-		int startIndex = pageSize * (pageNumber - 1);
+		//int pageNumber = historyDisplay.getCurrentPage();
+		//int pageSize = historyDisplay.getPageSize();
+		int startIndex = 1;
+		int pageSize = Integer.MAX_VALUE;
 		String heading = "My Measures > History";
 		if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
 				.getLoggedInUserRole())) {
@@ -1615,7 +1529,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			searchDisplay.getMeasureSearchFilterWidget().getSearchFilterDisclosurePanel().setOpen(false);
 			filter = searchDisplay.getSelectedFilter();
 			search(searchDisplay.getSearchString().getValue(), 1,
-					searchDisplay.getPageSize(), filter);
+					Integer.MAX_VALUE, filter);
 			searchRecentMeasures();
 			panel.getButtonPanel().clear();
 			panel.setButtonPanel(searchDisplay.getCreateMeasureButton(), searchDisplay.getZoomButton());
@@ -2616,7 +2530,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 							SearchResultUpdate sru = new SearchResultUpdate();
 							sru.update(result, (TextBox) searchDisplay
 									.getSearchString(), lastSearchText);
-							searchDisplay.buildDataTable(manageMeasureSearchModel,filter,searchText);
+							searchDisplay.buildCellTable(manageMeasureSearchModel,filter,searchText);
 							showSearchingBusy(false);
 							
 						}
@@ -2790,56 +2704,56 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
-		searchDisplay.getPageSelectionTool().addPageSelectionHandler(
-				new PageSelectionEventHandler() {
-					
-					@SuppressWarnings("static-access")
-					@Override
-					public void onPageSelection(PageSelectionEvent event) {
-						measureDeletion = false;
-						isMeasureDeleted = false;
-						searchDisplay.getErrorMeasureDeletion().clear();
-						searchDisplay.getSuccessMeasureDeletion().clear();
-						/*int filter = searchDisplay
-								.getMeasureSearchFilterPanel()
-								.getSelectedIndex();*/
-						int filter = searchDisplay
-								.getSelectedFilter();
-						if (ClientConstants.ADMINISTRATOR
-								.equalsIgnoreCase(MatContext.get()
-										.getLoggedInUserRole())) {
-							filter = searchDisplay
-									.getMeasureSearchFilterWidget().ALL_MEASURES;
-							/*filter = searchDisplay
-									.getMeasureSearchFilterPanel().ALL_MEASURES;*/
-						}
-						startIndex = (searchDisplay.getPageSize()
-								* (event.getPageNumber() - 1)) + 1;
-						search(searchDisplay.getSearchString().getValue(),
-								startIndex, searchDisplay.getPageSize(), filter);
-					}
-				});
-		searchDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
-				new PageSizeSelectionEventHandler() {
-					@SuppressWarnings("static-access")
-					@Override
-					public void onPageSizeSelection(PageSizeSelectionEvent event) {
-						measureDeletion = false;
-						isMeasureDeleted = false;
-						searchDisplay.getErrorMeasureDeletion().clear();
-						searchDisplay.getSuccessMeasureDeletion().clear();
-						int filter = searchDisplay.getSelectedFilter();
-						
-						if (ClientConstants.ADMINISTRATOR
-								.equalsIgnoreCase(MatContext.get()
-										.getLoggedInUserRole())) {
-							filter = searchDisplay
-									.getMeasureSearchFilterWidget().ALL_MEASURES;
-						}
-						search(searchDisplay.getSearchString().getValue(),
-								startIndex, searchDisplay.getPageSize(), filter);
-					}
-				});
+//		searchDisplay.getPageSelectionTool().addPageSelectionHandler(
+//				new PageSelectionEventHandler() {
+//					
+//					@SuppressWarnings("static-access")
+//					@Override
+//					public void onPageSelection(PageSelectionEvent event) {
+//						measureDeletion = false;
+//						isMeasureDeleted = false;
+//						searchDisplay.getErrorMeasureDeletion().clear();
+//						searchDisplay.getSuccessMeasureDeletion().clear();
+//						/*int filter = searchDisplay
+//								.getMeasureSearchFilterPanel()
+//								.getSelectedIndex();*/
+//						int filter = searchDisplay
+//								.getSelectedFilter();
+//						if (ClientConstants.ADMINISTRATOR
+//								.equalsIgnoreCase(MatContext.get()
+//										.getLoggedInUserRole())) {
+//							filter = searchDisplay
+//									.getMeasureSearchFilterWidget().ALL_MEASURES;
+//							/*filter = searchDisplay
+//									.getMeasureSearchFilterPanel().ALL_MEASURES;*/
+//						}
+//						startIndex = (searchDisplay.getPageSize()
+//								* (event.getPageNumber() - 1)) + 1;
+//						search(searchDisplay.getSearchString().getValue(),
+//								startIndex, searchDisplay.getPageSize(), filter);
+//					}
+//				});
+//		searchDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
+//				new PageSizeSelectionEventHandler() {
+//					@SuppressWarnings("static-access")
+//					@Override
+//					public void onPageSizeSelection(PageSizeSelectionEvent event) {
+//						measureDeletion = false;
+//						isMeasureDeleted = false;
+//						searchDisplay.getErrorMeasureDeletion().clear();
+//						searchDisplay.getSuccessMeasureDeletion().clear();
+//						int filter = searchDisplay.getSelectedFilter();
+//						
+//						if (ClientConstants.ADMINISTRATOR
+//								.equalsIgnoreCase(MatContext.get()
+//										.getLoggedInUserRole())) {
+//							filter = searchDisplay
+//									.getMeasureSearchFilterWidget().ALL_MEASURES;
+//						}
+//						search(searchDisplay.getSearchString().getValue(),
+//								startIndex, searchDisplay.getPageSize(), filter);
+//					}
+//				});
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -2850,7 +2764,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				searchDisplay.getErrorMessageDisplay().clear();
 				int filter = searchDisplay.getSelectedFilter();
 				search(searchDisplay.getSearchString().getValue(), startIndex,
-						searchDisplay.getPageSize(), filter);
+						Integer.MAX_VALUE, filter);
 			}
 		});
 		searchDisplay.getZoomButton().addClickHandler(new ClickHandler() {
@@ -3137,25 +3051,25 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the share display
 	 */
 	private void shareDisplayHandlers(final ShareDisplay shareDisplay) {
-		shareDisplay.getPageSelectionTool().addPageSelectionHandler(
-				new PageSelectionEventHandler() {
-					
-					@Override
-					public void onPageSelection(PageSelectionEvent event) {
-						shareStartIndex = (shareDisplay.getPageSize()
-								* (event.getPageNumber() - 1)) + 1;
-						getShareDetails(currentShareDetails.getMeasureId(),
-								shareStartIndex);
-					}
-				});
-		shareDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
-				new PageSizeSelectionEventHandler() {
-					@Override
-					public void onPageSizeSelection(PageSizeSelectionEvent event) {
-						getShareDetails(currentShareDetails.getMeasureId(),
-								shareStartIndex);
-					}
-				});
+//		shareDisplay.getPageSelectionTool().addPageSelectionHandler(
+//				new PageSelectionEventHandler() {
+//					
+//					@Override
+//					public void onPageSelection(PageSelectionEvent event) {
+//						shareStartIndex = (shareDisplay.getPageSize()
+//								* (event.getPageNumber() - 1)) + 1;
+//						getShareDetails(currentShareDetails.getMeasureId(),
+//								shareStartIndex);
+//					}
+//				});
+//		shareDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
+//				new PageSizeSelectionEventHandler() {
+//					@Override
+//					public void onPageSizeSelection(PageSizeSelectionEvent event) {
+//						getShareDetails(currentShareDetails.getMeasureId(),
+//								shareStartIndex);
+//					}
+//				});
 		shareDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

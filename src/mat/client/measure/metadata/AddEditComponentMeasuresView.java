@@ -24,6 +24,7 @@ import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
+import mat.model.Author;
 import mat.shared.ClickableSafeHtmlCell;
 
 import com.google.gwt.cell.client.FieldUpdater;
@@ -111,18 +112,6 @@ public class AddEditComponentMeasuresView implements
 	/** The index. */
 	private int index;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.MetaDataPresenter.AddEditComponentMeasuresDisplay
-	 * #getComponentMeasureSelectedList()
-	 */
-	@Override
-	public List<ManageMeasureSearchModel.Result> getComponentMeasuresList() {
-		return componentMeasuresList;
-	}
-
 	/** The selection model. */
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
 
@@ -133,7 +122,7 @@ public class AddEditComponentMeasuresView implements
 	protected Button addtoComponentMeasures = new PrimaryButton(
 			"Add to Component Measures List");
 
-	/** The success messages. */
+	/** The success messages. */ 
 	private SuccessMessageDisplay successMessages = new SuccessMessageDisplay();
 
 	/**
@@ -157,20 +146,6 @@ public class AddEditComponentMeasuresView implements
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(new SpacerWidget());
 		mainPanel.add(getAddtoComponentMeasuresBtn());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#
-	 * buildDataTable(mat.client.shared.search.SearchResults)
-	 */
-	@Override
-	public void buildDataTable(
-			SearchResults<ManageMeasureSearchModel> searchResults) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -504,76 +479,7 @@ public class AddEditComponentMeasuresView implements
 
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#
-	 * getSaveButton()
-	 */
-	@Override
-	public HasClickHandlers getSaveButton() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#
-	 * getCancelButton()
-	 */
-	@Override
-	public HasClickHandlers getCancelButton() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#
-	 * getRemoveButton()
-	 */
-	@Override
-	public HasClickHandlers getRemoveButton() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	// @Override
-	// public HasClickHandlers getReturnButton() {
-	// return returnButton;
-	// }
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#
-	 * setOptions(java.util.List)
-	 */
-	@Override
-	public void setOptions(List<? extends HasListBox> texts) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#
-	 * getErrorMessageDisplay()
-	 */
-	@Override
-	public ErrorMessageDisplayInterface getErrorMessageDisplay() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -585,71 +491,6 @@ public class AddEditComponentMeasuresView implements
 	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
 		// TODO Auto-generated method stub
 		return successMessages;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#
-	 * showTextBox()
-	 */
-	@Override
-	public void showTextBox() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#
-	 * hideTextBox()
-	 */
-	@Override
-	public void hideTextBox() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.MetaDataPresenter.AddEditComponentMeasuresDisplay
-	 * #getMeasureType()
-	 */
-	@Override
-	public String getMeasureType() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.MetaDataPresenter.AddEditComponentMeasuresDisplay
-	 * #getMeasureTypeInputBox()
-	 */
-	@Override
-	public HasValue<String> getMeasureTypeInputBox() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.MetaDataPresenter.AddEditComponentMeasuresDisplay
-	 * #getOtherMeasureType()
-	 */
-	@Override
-	public HasValue<String> getOtherMeasureType() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	/*
@@ -688,20 +529,6 @@ public class AddEditComponentMeasuresView implements
 	public HasClickHandlers getReturnButton() {
 		// TODO Auto-generated method stub
 		return returnButton;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * mat.client.measure.metadata.BaseMetaDataPresenter.BaseAddEditDisplay#
-	 * setReturnToLink(java.lang.String)
-	 */
-	@Override
-	public void setReturnToLink(String s) {
-		returnButton.setText(s);
-		returnButton.setTitle(s);
-		mainPanel.add(returnButton);
 	}
 
 	/**
@@ -764,11 +591,6 @@ public class AddEditComponentMeasuresView implements
 		return returnButton;
 	}
 
-	// @Override
-	// public HasClickHandlers getReturnButtonHandlers(){
-	// return returnButton;
-	// }
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -814,6 +636,14 @@ public class AddEditComponentMeasuresView implements
 	@Override
 	public HasValue<String> getSearchString() {
 		return searchWidget.getSearchInput();
+	}
+	
+	/* (non-Javadoc)
+	 * @see mat.client.measure.metadata.MetaDataPresenter.AddEditComponentMeasuresDisplay#getComponentMeasuresList()
+	 */
+	@Override
+	public List<ManageMeasureSearchModel.Result> getComponentMeasuresList() {
+		return componentMeasuresList;
 	}
 
 }

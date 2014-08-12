@@ -385,7 +385,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	private static DialogBox dialogBox = new DialogBox(true,true);
 	
 	/** The measure type selected list. */
-	private List<MeasureType> measureTypeSelectedList;
+	private List<MeasureType> measureTypeSelectedList = new ArrayList<MeasureType>();
 	
 	/** The authors selected list. */
 	private List<Author> authorsSelectedList;

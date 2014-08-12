@@ -5,12 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.CustomPager;
-import mat.client.codelist.HasListBox;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchView.Observer;
 import mat.client.resource.CellTableResource;
-import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatContext;
@@ -22,9 +20,7 @@ import mat.client.shared.SearchWidget;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
-import mat.model.Author;
 import mat.shared.ClickableSafeHtmlCell;
 
 import com.google.gwt.cell.client.FieldUpdater;
@@ -96,10 +92,13 @@ public class AddEditComponentMeasuresView implements
 
 	/** The even. */
 	private Boolean even;
+	
 	/** The cell table css style. */
 	private List<String> cellTableCssStyle;
+	
 	/** The cell table even row. */
 	private String cellTableEvenRow = "cellTableEvenRow";
+	
 	/** The cell table odd row. */
 	private String cellTableOddRow = "cellTableOddRow";
 
@@ -489,7 +488,6 @@ public class AddEditComponentMeasuresView implements
 	 */
 	@Override
 	public SuccessMessageDisplayInterface getSuccessMessageDisplay() {
-		// TODO Auto-generated method stub
 		return successMessages;
 	}
 
@@ -514,7 +512,6 @@ public class AddEditComponentMeasuresView implements
 	 */
 	@Override
 	public Widget asWidget() {
-		// TODO Auto-generated method stub
 		return mainPanel;
 	}
 
@@ -527,7 +524,6 @@ public class AddEditComponentMeasuresView implements
 	 */
 	@Override
 	public HasClickHandlers getReturnButton() {
-		// TODO Auto-generated method stub
 		return returnButton;
 	}
 
@@ -576,7 +572,6 @@ public class AddEditComponentMeasuresView implements
 	 */
 	@Override
 	public int getSelectedFilter() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

@@ -4,22 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mat.client.CustomPager;
-import mat.client.codelist.HasListBox;
-import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.resource.CellTableResource;
-import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
-import mat.client.shared.ListBoxMVP;
 import mat.client.shared.MatCheckBoxCell;
-import mat.client.shared.MatContext;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SpacerWidget;
 import mat.client.shared.SuccessMessageDisplay;
-import mat.client.shared.SuccessMessageDisplayInterface;
-import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
 import mat.model.Author;
+
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.core.client.GWT;
@@ -31,10 +25,8 @@ import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.CellTable.Resources;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
-import com.google.gwt.user.cellview.client.RowStyles;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.HasValue;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.SimplePanel;
@@ -49,19 +41,12 @@ import com.google.gwt.view.client.MultiSelectionModel;
  * The Class AddEditAuthorsView.
  */
 public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDisplay{
-
-	/** The author input. */
-	private ListBoxMVP authorInput;
 	
 	/** The author h panel. */
 	private HorizontalPanel authorHPanel = new HorizontalPanel();
 	
 	/** The message h panel. */
 	private HorizontalPanel messageHPanel = new HorizontalPanel();
-	
-	/** The view. */
-	//private SearchView<Author> view;
-	
 	
 	/** The author v panel. */
 	private VerticalPanel authorVPanel = new VerticalPanel();
@@ -71,10 +56,6 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 	
 	/** The add success msg panel. */
 	VerticalPanel addSuccessMsgPanel =  new VerticalPanel();
-	
-	/** The cell table css style. */
-	private List<String> cellTableCssStyle;
-	
 	
 	/** The author cell table. */
 	private CellTable<Author> authorCellTable;
@@ -105,17 +86,6 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 	
 	/** The simp panel. */
 	private SimplePanel simpPanel = new SimplePanel();
-	
-	/** The index. */
-	private int index;
-	
-	/** The even. */
-	private Boolean even;
-	
-	/** The cell table even row. */
-	private String cellTableEvenRow = "cellTableEvenRow";
-	/** The cell table odd row. */
-	private String cellTableOddRow = "cellTableOddRow";
 	
 	/** The return button. */
 	protected Button returnButton = new PrimaryButton("Return to Previous");
@@ -207,13 +177,11 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 		messageVPanel.clear();
 		authorCellTable = new CellTable<Author>(PAGE_SIZE,
 				(Resources) GWT.create(CellTableResource.class));
-		//authorCellTable.setStyleName("cellTablePanel");
 		authorVPanel.setStyleName("cellTablePanel");
 		authorSelectedList = new ArrayList<Author>();
 		authorSelectedList.addAll(authorsSelectedList);
 		authorCellTable.setPageSize(PAGE_SIZE);
 		if(authorList.size()>0){
-			
 			authorCellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 			authorCellTable.setRowData(authorList);
 			authorCellTable.setRowCount(authorList.size(), true);
@@ -230,14 +198,12 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 					CustomPager.TextLocation.CENTER, pagerResources, false, 0,
 					true);
 			spager.setPageStart(0);
-			buildAuthorCellTableCssStyle();
 			spager.setDisplay(authorCellTable);
 			spager.setPageSize(PAGE_SIZE);
 			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("authorListSummary",
 					"In the following Measure Developer List table,Select is given in first Column and Author is given in Second column");
 			authorCellTable.getElement().setAttribute("id", "MeasureDeveloperListCellTable");
 			authorCellTable.getElement().setAttribute("aria-describedby", "measureDeveloperListSummary");
-			//authorCellTable.setPageSize(PAGE_SIZE);
 			authorVPanel.add(invisibleLabel);
 			authorVPanel.add(authorCellTable);
 			authorVPanel.add(new SpacerWidget());
@@ -249,7 +215,6 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 			messageVPanel.add(returnButton);
 			
 		}
-
 			
 	}
 
@@ -330,68 +295,7 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 		
 	}
 	
-	/**
-	 * Builds the author cell table css style.
-	 */
-	private void buildAuthorCellTableCssStyle() {
-		cellTableCssStyle = new ArrayList<String>();
-		for (int i = 0; i < listOfAllAuthor.size(); i++) {
-			cellTableCssStyle.add(i, null);
-		}
-		authorCellTable.setRowStyles(new RowStyles<Author>() {
-			@Override
-			public String getStyleNames(
-					Author rowObject, int rowIndex) {
-				if (rowIndex > PAGE_SIZE - 1) {
-					rowIndex = rowIndex - index;
-				}
-				if (rowIndex != 0) {
-					if (cellTableCssStyle.get(rowIndex) == null) {
-						if (even) {
-							if (rowObject.getOrgId().equalsIgnoreCase(
-									listOfAllAuthor.get(rowIndex - 1)
-											.getOrgId())) {
-								even = true;
-								cellTableCssStyle
-										.add(rowIndex, cellTableOddRow);
-								return cellTableOddRow;
-							} else {
-								even = false;
-								cellTableCssStyle.add(rowIndex,
-										cellTableEvenRow);
-								return cellTableEvenRow;
-							}
-						} else {
-							if (rowObject.getOrgId().equalsIgnoreCase(
-									listOfAllAuthor.get(rowIndex - 1)
-											.getOrgId())) {
-								even = false;
-								cellTableCssStyle.add(rowIndex,
-										cellTableEvenRow);
-								return cellTableEvenRow;
-							} else {
-								even = true;
-								cellTableCssStyle
-										.add(rowIndex, cellTableOddRow);
-								return cellTableOddRow;
-							}
-						}
-					} else {
-						return cellTableCssStyle.get(rowIndex);
-					}
-				} else {
-					if (cellTableCssStyle.get(rowIndex) == null) {
-						even = true;
-						cellTableCssStyle.add(rowIndex, cellTableOddRow);
-						return cellTableOddRow;
-					} else {
-						return cellTableCssStyle.get(rowIndex);
-					}
-				}
-			}
-		});
-	}
-
+	
 	/**
 	 * Gets the author selected list.
 	 *
@@ -473,7 +377,6 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 	 */
 	@Override
 	public List<Author> getListOfAllAuthor() {
-		// TODO Auto-generated method stub
 		return listOfAllAuthor;
 	}
 
@@ -501,7 +404,6 @@ public class AddEditAuthorsView implements MetaDataPresenter.AddEditAuthorsDispl
 	 */
 	@Override
 	public HasClickHandlers getReturnButton() {
-		// TODO Auto-generated method stub
 		return returnButton;
 	}
 	

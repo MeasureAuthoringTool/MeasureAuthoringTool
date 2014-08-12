@@ -230,7 +230,7 @@ public class ExportServlet extends HttpServlet {
 					Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					String activeUserCSVDate = formatter.format(new Date());
 					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getHTMLFileName("activeUsers", activeUserCSVDate) + ";");
+							+ fnu.getCSVFileName("activeUsers", activeUserCSVDate) + ";");
 					resp.setContentType("text/csv");
 					resp.getOutputStream().write(csvFileString.getBytes());
 					resp.getOutputStream().close();
@@ -242,7 +242,7 @@ public class ExportServlet extends HttpServlet {
 					Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 					String activeUserCSVDate = formatter.format(new Date());
 					resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
-							+ fnu.getHTMLFileName("activeOrganizationOids", activeUserCSVDate) + ";");
+							+ fnu.getCSVFileName("activeOrganizationOids", activeUserCSVDate) + ";");
 					resp.setContentType("text/csv");
 					resp.getOutputStream().write(csvFileString.getBytes());
 					resp.getOutputStream().close();

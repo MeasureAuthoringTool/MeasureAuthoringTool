@@ -1,6 +1,7 @@
 package mat.shared;
 
 
+// TODO: Auto-generated Javadoc
 /**
  * Delegate common File name creation behavior shared by ExportServlet.java and ZipPackager.java  
  * @author aschmidt
@@ -127,5 +128,16 @@ public class FileNameUtility {
 	 */
 	public String getHTMLFileName(String name , String currentTime){
 		return (name.concat(currentTime)).replaceAll("\\W","").concat(".html");
+	}
+	
+	/**
+	 * Gets the cSV file name.
+	 *
+	 * @param name the name
+	 * @param currentTime the current time
+	 * @return the cSV file name
+	 */
+	public String getCSVFileName(String name , String currentTime){
+		return (name.concat(currentTime)).replaceAll("\\W","").concat(".csv");
 	}
 }

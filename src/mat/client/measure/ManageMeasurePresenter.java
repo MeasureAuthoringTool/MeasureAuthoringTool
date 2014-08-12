@@ -37,12 +37,6 @@ import mat.client.shared.SkipListBuilder;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.SuccessMessageDisplayInterface;
 import mat.client.shared.SynchronizationDelegate;
-import mat.client.shared.search.HasPageSelectionHandler;
-import mat.client.shared.search.HasPageSizeSelectionHandler;
-import mat.client.shared.search.PageSelectionEvent;
-import mat.client.shared.search.PageSelectionEventHandler;
-import mat.client.shared.search.PageSizeSelectionEvent;
-import mat.client.shared.search.PageSizeSelectionEventHandler;
 import mat.client.shared.search.SearchResultUpdate;
 import mat.client.shared.search.SearchResults;
 import mat.client.util.ClientConstants;
@@ -96,11 +90,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		/**
 		 * Builds the data table.
-		 * 
-		 * @param results
-		 *            the results
+		 *
+		 * @param results            the results
+		 * @param filter TODO
+		 * @param searchText TODO
 		 */
-		public void buildDataTable(AdminMeasureSearchResultAdaptor results);
+		public void buildDataTable(AdminMeasureSearchResultAdaptor results, int filter, String searchText);
 		
 		/**
 		 * Clear transfer check boxes.
@@ -411,6 +406,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public HasClickHandlers getReturnToLink();
 		
 		
+		/**
+		 * Sets the error message.
+		 *
+		 * @param s the new error message
+		 */
 		public void setErrorMessage(String s);
 		
 		/**
@@ -431,9 +431,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		
 		/**
 		 * Sets the page size.
-		 * 
-		 * @param pageNumber
-		 *            the new page size
+		 *
+		 * @param s the new return to link text
 		 */
 //		public void setPageSize(int pageNumber);
 		
@@ -445,6 +444,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 */
 		public void setReturnToLinkText(String s);
 		
+		/**
+		 * Builds the cell table.
+		 *
+		 * @param results the results
+		 */
 		public void buildCellTable(List<AuditLogDTO> results);
 	}
 	
@@ -2223,7 +2227,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 				// This to fetch all Measures if user role is Admin. This will go away
 				// when Pagination will be implemented in Measure Library.
 				if (currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
-					pageSize = Integer.MAX_VALUE;
+					//pageSize = Integer.MAX_VALUE;
+					pageSize = 25;
 					showAdminSearchingBusy(true);
 					MatContext
 					.get()
@@ -2319,7 +2324,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 									.getSearchString(),
 									lastSearchText);
 							adminSearchDisplay
-							.buildDataTable(searchAdminResults);
+							.buildDataTable(searchAdminResults, filter,searchText);
 							panel.setContent(adminSearchDisplay
 									.asWidget());
 							showAdminSearchingBusy(false);

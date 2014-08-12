@@ -593,7 +593,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		        AsyncCallback<ManageMeasureSearchModel> callback = new AsyncCallback<ManageMeasureSearchModel>() {
 		          @Override
 		          public void onFailure(Throwable caught) {
-		            Window.alert(caught.getMessage());
+		            //Window.alert(caught.getMessage());
 		          }
 		          @Override
 		          public void onSuccess(ManageMeasureSearchModel result) {

@@ -5,6 +5,7 @@ import java.util.List;
 
 import mat.client.CustomPager;
 import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.resource.CellTableResource;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.ErrorMessageDisplayInterface;
 import mat.client.shared.LabelBuilder;
@@ -16,7 +17,11 @@ import mat.client.shared.SpacerWidget;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.CellTable.Resources;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
+import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
+import com.google.gwt.user.cellview.client.RowStyles;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FormPanel;
@@ -26,7 +31,8 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.view.client.ListDataProvider;
+import com.google.gwt.view.client.AsyncDataProvider;
+import com.google.gwt.view.client.HasData;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -57,7 +63,27 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 	/** The transfer button. */
 	private Button transferButton = new PrimaryButton("Transfer", "primaryGreyButton");
 	
+	/** The measure vpanel. */
 	private VerticalPanel measureVpanel = new VerticalPanel();
+	
+	/** The cell table. */
+	CellTable<ManageMeasureSearchModel.Result> cellTable;
+	
+	/** The cell table even row. */
+	private String cellTableEvenRow = "cellTableEvenRow";
+	/** The cell table odd row. */
+	private String cellTableOddRow = "cellTableOddRow";
+	/** The index. */
+	private int index;
+	
+	/** The cell table css style. */
+	private List<String> cellTableCssStyle;
+	
+	/** The even. */
+	private Boolean even;
+	
+	/** The search text. */
+	private String searchText;
 	/** The view. */
 	//private SearchView<ManageMeasureSearchModel.Result> view = new SearchView<ManageMeasureSearchModel.Result>(true);
 	/**
@@ -112,58 +138,162 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#buildDataTable( mat.client.measure.AdminMeasureSearchResultAdaptor)
 	 */
 	@Override
-	public void buildDataTable(AdminMeasureSearchResultAdaptor results) {
-		buildMeasureDataTable(results);
+	public void buildDataTable(AdminMeasureSearchResultAdaptor results,int filter,  String searchText) {
+		buildMeasureDataTable(results, filter, searchText);
 	}
+	
 	/**
 	 * Builds the measure data table.
-	 * @param results
-	 *            the results
+	 *
+	 * @param results            the results
+	 * @param filter the filter
+	 * @param searchText the search text
 	 */
-	private void buildMeasureDataTable(AdminMeasureSearchResultAdaptor results) {
+	private void buildMeasureDataTable(AdminMeasureSearchResultAdaptor results, final int filter, final String searchText) {
 		if (results == null) {
 			return;
 		}
 		errorMessagesForTransferOS.clear();
-		CellTable<ManageMeasureSearchModel.Result> cellTable = new CellTable<ManageMeasureSearchModel.Result>();
-		ListDataProvider<ManageMeasureSearchModel.Result> sortProvider = new ListDataProvider<ManageMeasureSearchModel.Result>();
+		cellTable = new CellTable<ManageMeasureSearchModel.Result>(PAGE_SIZE,
+				(Resources) GWT.create(CellTableResource.class));
+		cellTable.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.ENABLED);
 		selectedMeasureList = new ArrayList<Result>();
 		selectedMeasureList.addAll(results.getData().getData());
-		// Display 50 rows on a page
+		cellTable.setRowData(selectedMeasureList);
+		cellTable.setRowCount(results.getData().getResultsTotal(), true);
 		cellTable.setPageSize(PAGE_SIZE);
 		cellTable.redraw();
-		cellTable.setRowCount(selectedMeasureList.size(), true);
-		sortProvider.refresh();
-		sortProvider.getList().addAll(results.getData().getData());
-		ListHandler<ManageMeasureSearchModel.Result> sortHandler = new ListHandler<
-				ManageMeasureSearchModel.Result>(sortProvider.getList());
-		cellTable.addColumnSortHandler(sortHandler);
-		cellTable = results.addColumnToTable(cellTable, sortHandler);
-		sortProvider.addDataDisplay(cellTable);
+		AsyncDataProvider<ManageMeasureSearchModel.Result> provider = new AsyncDataProvider<ManageMeasureSearchModel.Result>() {
+			@Override
+			protected void onRangeChanged(
+					HasData<ManageMeasureSearchModel.Result> display) {
+				final int start = display.getVisibleRange().getStart();
+				index = start;
+				AsyncCallback<ManageMeasureSearchModel> callback = new AsyncCallback<ManageMeasureSearchModel>() {
+					@Override
+					public void onFailure(Throwable caught) {
+					//	Window.alert(caught.getMessage());
+					}
+
+					@Override
+					public void onSuccess(ManageMeasureSearchModel result) {
+						List<ManageMeasureSearchModel.Result> manageMeasureSearchList = new ArrayList<ManageMeasureSearchModel.Result>();
+						manageMeasureSearchList.addAll(result.getData());
+						selectedMeasureList = manageMeasureSearchList;
+						//buildCellTableCssStyle();
+						updateRowData(start, manageMeasureSearchList);
+					}
+				};
+
+				MatContext.get().getMeasureService()
+						.search(searchText, start + 1, start + PAGE_SIZE, filter, callback);
+			}
+		};
+
+		provider.addDataDisplay(cellTable);
+		CustomPager.Resources pagerResources = GWT
+				.create(CustomPager.Resources.class);
+		MatSimplePager spager = new MatSimplePager(
+				CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
+		spager.setPageStart(0);
+		buildCellTableCssStyle();
 		spager.setDisplay(cellTable);
 		spager.setPageSize(PAGE_SIZE);
-		/* spager.setToolTipAndTabIndex(spager); */
-		//view.getvPanelForQDMTable().clear();
+		cellTable.setWidth("100%");
+		ListHandler<ManageMeasureSearchModel.Result> sortHandler = new ListHandler<ManageMeasureSearchModel.Result>(
+				results.getData().getData());
+		cellTable.addColumnSortHandler(sortHandler);
+		cellTable = results.addColumnToTable(cellTable, sortHandler);
+		spager.setDisplay(cellTable);
+		spager.setPageSize(PAGE_SIZE);
 		measureVpanel.clear();
-		Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel(
-				"measureOwnerShipSummary",
-				"In the following Transfer Ownership table, Measure Name is given in the first column, "
-						+ "Owner in the second column, Owner Email Address in the third Column,"
-						+ "eMeasure ID in the fourth column, History in the fifth column and "
-						+ "Transfer in the sixth column with Check boxes positioned to the right of the table");
+		Label invisibleLabel = (Label) LabelBuilder
+				.buildInvisibleLabel(
+						"measureOwnerShipSummary",
+						"In the following Transfer Ownership table, Measure Name is given in the first column, "
+								+ "Owner in the second column, Owner Email Address in the third Column,"
+								+ "eMeasure ID in the fourth column, History in the fifth column and "
+								+ "Transfer in the sixth column with Check boxes positioned to the right of the table");
 		cellTable.getElement().setAttribute("id", "measureOwnerShipCellTable");
-		cellTable.getElement().setAttribute("aria-describedby", "measureOwnerShipSummary");
-//		view.getvPanelForQDMTable().setStyleName("cellTablePanel");
-//		view.getvPanelForQDMTable().add(invisibleLabel);
-//		view.getvPanelForQDMTable().add(cellTable);
-//		view.getvPanelForQDMTable().add(new SpacerWidget());
-//		view.getvPanelForQDMTable().add(spager);
+		cellTable.getElement().setAttribute("aria-describedby",
+				"measureOwnerShipSummary");
 		measureVpanel.setStyleName("cellTablePanel");
 		measureVpanel.add(invisibleLabel);
 		measureVpanel.add(cellTable);
 		measureVpanel.add(new SpacerWidget());
 		measureVpanel.add(spager);
 	}
+	
+	
+	/**
+	 * Builds the cell table css style.
+	 */
+	private void buildCellTableCssStyle() {
+		cellTableCssStyle = new ArrayList<String>();
+		for (int i = 0; i < selectedMeasureList.size(); i++) {
+			cellTableCssStyle.add(i, null);
+		}
+		cellTable
+				.setRowStyles(new RowStyles<ManageMeasureSearchModel.Result>() {
+					@Override
+					public String getStyleNames(
+							ManageMeasureSearchModel.Result rowObject,
+							int rowIndex) {
+						if (rowIndex > PAGE_SIZE - 1) {
+							rowIndex = rowIndex - index;
+						}
+						if (rowIndex != 0) {
+							if (cellTableCssStyle.get(rowIndex) == null) {
+								if (even) {
+									if (rowObject.getMeasureSetId()
+											.equalsIgnoreCase(
+													selectedMeasureList.get(
+															rowIndex - 1)
+															.getMeasureSetId())) {
+										even = true;
+										cellTableCssStyle.add(rowIndex,
+												cellTableOddRow);
+										return cellTableOddRow;
+									} else {
+										even = false;
+										cellTableCssStyle.add(rowIndex,
+												cellTableEvenRow);
+										return cellTableEvenRow;
+									}
+								} else {
+									if (rowObject.getMeasureSetId()
+											.equalsIgnoreCase(
+													selectedMeasureList.get(
+															rowIndex - 1)
+															.getMeasureSetId())) {
+										even = false;
+										cellTableCssStyle.add(rowIndex,
+												cellTableEvenRow);
+										return cellTableEvenRow;
+									} else {
+										even = true;
+										cellTableCssStyle.add(rowIndex,
+												cellTableOddRow);
+										return cellTableOddRow;
+									}
+								}
+							} else {
+								return cellTableCssStyle.get(rowIndex);
+							}
+						} else {
+							if (cellTableCssStyle.get(rowIndex) == null) {
+								even = true;
+								cellTableCssStyle
+										.add(rowIndex, cellTableOddRow);
+								return cellTableOddRow;
+							} else {
+								return cellTableCssStyle.get(rowIndex);
+							}
+						}
+					}
+				});
+	}
+
 	/**
 	 * Builds the search widget.
 	 * @return the widget
@@ -188,7 +318,7 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		}
 		AdminMeasureSearchResultAdaptor adapter = new AdminMeasureSearchResultAdaptor();
 		adapter.getData().setData(selectedMeasureList);
-		buildDataTable(adapter);
+		buildDataTable(adapter, 1, searchText);
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#getClearButton()

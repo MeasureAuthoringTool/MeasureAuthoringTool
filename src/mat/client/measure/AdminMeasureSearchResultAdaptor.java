@@ -2,12 +2,13 @@ package mat.client.measure;
 
 import java.sql.Timestamp;
 import java.util.Comparator;
+
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.MatButtonCell;
 import mat.client.shared.MatCheckBoxCell;
 import mat.client.shared.MatSafeHTMLCell;
-import mat.client.shared.search.SearchResults;
 import mat.client.util.CellTableUtility;
+
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.dom.client.Style.Unit;
@@ -19,8 +20,8 @@ import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class AdminMeasureSearchResultAdaptor.
  */
@@ -78,7 +79,7 @@ public class AdminMeasureSearchResultAdaptor /*implements SearchResults<ManageMe
 					ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
 				@Override
 				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
-					return CellTableUtility.getColumnToolTip(object.getName());
+					return CellTableUtility.getColumnToolTip(object.getName(), object.getName());
 				}
 			};
 			measureName.setSortable(true);

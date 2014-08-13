@@ -67,6 +67,15 @@ public class MeasurePackageClauseCellListWidget {
 	private static final String MEASURE_OBSERVATION = "measureObservation";
 	/** The Constant ASOOCIATED_LIST_SIZE. */
 	private static final int ASOOCIATED_LIST_SIZE = 10;
+	
+	/** The Constant STRATIFICATION. */
+	private static final String STRATIFICATION = "stratification";
+	
+	/** The Constant ADD_CLAUSE_RIGHT. */
+	private static final String ADD_CLAUSE_RIGHT = "addClauseRight";
+	
+	/** The Constant ADD_ALL_CLAUSE_RIGHT. */
+	private static final String ADD_ALL_CLAUSE_RIGHT = "addAllClauseRight";
 	/**
 	 * The HTML templates used to render the ClauseCell.
 	 */
@@ -839,7 +848,7 @@ public class MeasurePackageClauseCellListWidget {
 					ArrayList<MeasurePackageClauseDetail> validateGroupingList = new ArrayList<MeasurePackageClauseDetail>();
 					validateGroupingList.addAll(groupingPopulationList);
 					validateGroupingList.add(leftCellListSelectionModel.getSelectedObject());
-					if (isValid(validateGroupingList)) {
+					if (isValid(validateGroupingList, ADD_CLAUSE_RIGHT)) {
 						groupingPopulationList.add(leftCellListSelectionModel.getSelectedObject());
 						groupingClausesMap.put(leftCellListSelectionModel.getSelectedObject().getName(),
 								leftCellListSelectionModel.getSelectedObject());
@@ -925,7 +934,7 @@ public class MeasurePackageClauseCellListWidget {
 					ArrayList<MeasurePackageClauseDetail> validateGroupingList =
 							new ArrayList<MeasurePackageClauseDetail>();
 					validateGroupingList.addAll(clausesPopulationList);
-					if (isValid(validateGroupingList)) {
+					if (isValid(validateGroupingList, "addAllClauseRight")) {
 						groupingPopulationList.addAll(clausesPopulationList);
 						for (MeasurePackageClauseDetail detail : groupingPopulationList) {
 							groupingClausesMap.put(detail.getName(), detail);
@@ -965,10 +974,36 @@ public class MeasurePackageClauseCellListWidget {
 			}
 		});
 	}
+
+	/**
+	 * Check for number of starification.
+	 *
+	 * @param validateGroupingList the validate grouping list
+	 * @param messages the messages
+	 */
+	protected void CheckForNumberOfStratification(
+			ArrayList<MeasurePackageClauseDetail> validateGroupingList,
+			List<String> messages) {
+		int count = 0;
+		for (MeasurePackageClauseDetail clause : validateGroupingList) {			
+			if (clause.getType().equalsIgnoreCase(STRATIFICATION)) {
+				count++;
+			}
+		}
+		if (count > 1) {
+			messages.add(MatContext.get().getMessageDelegate()
+					.getSTRATIFICATION_VALIDATION_FOR_GROUPING());
+
+		}
+	}
+
 	/**
 	 * Method to count number of Clause types.
-	 * @param clauseList -List.
-	 * @param type - String.
+	 * 
+	 * @param clauseList
+	 *            -List.
+	 * @param type
+	 *            - String.
 	 * @return int.
 	 */
 	private int countTypeForAssociation(
@@ -1271,11 +1306,19 @@ public class MeasurePackageClauseCellListWidget {
 	 * Checks if is valid.
 	 *
 	 * @param validatGroupingList the validate grouping list
+	 * @param buttonType TODO
 	 * @return true, if is valid
 	 */
-	private boolean isValid(List<MeasurePackageClauseDetail> validatGroupingList) {
+	private boolean isValid(ArrayList<MeasurePackageClauseDetail> validatGroupingList,
+			String buttonType) {
 		MeasurePackageClauseValidator validator = new MeasurePackageClauseValidator();
 		List<String> messages = validator.isValidClauseMove(validatGroupingList);
+		if ((buttonType.equalsIgnoreCase(ADD_CLAUSE_RIGHT) && leftCellListSelectionModel
+				.getSelectedObject().getType()
+				.equalsIgnoreCase(STRATIFICATION))
+				|| buttonType.equalsIgnoreCase(ADD_ALL_CLAUSE_RIGHT)) {
+			CheckForNumberOfStratification(validatGroupingList, messages);
+		}
 		if (messages.size() > 0) {
 			errorMessages.setMessages(messages);
 		} else {

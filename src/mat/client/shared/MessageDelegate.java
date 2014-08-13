@@ -476,6 +476,9 @@ public class MessageDelegate {
 	/** The cohort wrong num. */
 	private final String COHORT_WRONG_NUM = "For a Cohort measure, a grouping must contain exactly one Population.";
 	
+	private final String STRATIFICATION_VALIDATION_FOR_GROUPING = "More Than One stratification not Allowed";
+	
+	
 	/** The rationale required. */
 	private final String RATIONALE_REQUIRED = "Rationale is required.";
 	
@@ -2083,5 +2086,10 @@ public class MessageDelegate {
 	public String getMEASURE_LOGIC_IS_INCORRECT() {
 		return MEASURE_LOGIC_IS_INCORRECT;
 	}
+	
+	public String getSTRATIFICATION_VALIDATION_FOR_GROUPING() {
+		return STRATIFICATION_VALIDATION_FOR_GROUPING;
+	}
+
 	
 }

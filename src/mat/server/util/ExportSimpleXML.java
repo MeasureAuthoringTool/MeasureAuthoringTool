@@ -998,10 +998,10 @@ public class ExportSimpleXML {
 		
 		Node measurementPeriodNode = (Node)xPath.evaluate("/measure/elementLookUp/qdm[@oid='"+ MEASUREMENT_PERIOD_OID + "']",originalDoc, 
 				XPathConstants.NODE);
-		Node measurementPeriodStartDateNode = (Node)xPath.evaluate("/measure/elementLookUp/qdm[@oid='"+ MEASUREMENT_START_DATE_OID + "']",originalDoc, 
-				XPathConstants.NODE);
-		Node measurementPeriodEndDateNode = (Node)xPath.evaluate("/measure/elementLookUp/qdm[@oid='"+ MEASUREMENT_END_DATE_OID + "']",originalDoc, 
-				XPathConstants.NODE);
+		//Node measurementPeriodStartDateNode = (Node)xPath.evaluate("/measure/elementLookUp/qdm[@oid='"+ MEASUREMENT_START_DATE_OID + "']",originalDoc, 
+		//		XPathConstants.NODE);
+		//Node measurementPeriodEndDateNode = (Node)xPath.evaluate("/measure/elementLookUp/qdm[@oid='"+ MEASUREMENT_END_DATE_OID + "']",originalDoc, 
+		//		XPathConstants.NODE);
 		
 		if(periodNode != null){
 		

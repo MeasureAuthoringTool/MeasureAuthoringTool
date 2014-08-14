@@ -1896,11 +1896,13 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			periodModel.setUuid(UUID.randomUUID().toString());
 			if (StringUtils.isNotBlank(measureDetailModel.getMeasFromPeriod())) {
 				periodModel.setStartDate(measureDetailModel.getMeasFromPeriod());
-				periodModel.setStartDateUuid(UUID.randomUUID().toString());
+				//commented UUID as part of MAT-4613
+				//periodModel.setStartDateUuid(UUID.randomUUID().toString());
 			}
 			if (StringUtils.isNotBlank(measureDetailModel.getMeasToPeriod())) {
 				periodModel.setStopDate(measureDetailModel.getMeasToPeriod());
-				periodModel.setStopDateUuid(UUID.randomUUID().toString());
+				//commented UUID as part of MAT-4613
+				//periodModel.setStopDateUuid(UUID.randomUUID().toString());
 			}
 			measureDetailModel.setPeriodModel(periodModel);
 		}

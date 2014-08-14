@@ -332,20 +332,20 @@
 	      <bind-xml name="startDate" node="element"/>
 	    </field>
 	    
-	    <field name="startDateUuid"
+	    <!-- <field name="startDateUuid"
 	           type="java.lang.String">
 	      <bind-xml name="uuid" node="attribute" location="startDate"/>
-	    </field>
+	    </field> -->
 	    
 	     <field name="stopDate"
 	           type="java.lang.String">
 	      <bind-xml name="stopDate" node="element"/>
 	    </field>
 	    
-	     <field name="stopDateUuid"
+	     <!-- <field name="stopDateUuid"
 	           type="java.lang.String">
 	      <bind-xml name="uuid" node="attribute" location="stopDate"/>
-	    </field>
+	    </field> -->
   	</class>
   	
   	<class name="mat.client.measure.NqfModel">

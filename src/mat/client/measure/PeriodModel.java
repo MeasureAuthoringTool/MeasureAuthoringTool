@@ -17,10 +17,10 @@ public class PeriodModel implements IsSerializable{
 	private String stopDate;
 	
 	/** The start date uuid. */
-	private String startDateUuid;
+	//private String startDateUuid;
 	
 	/** The stop date uuid. */
-	private String stopDateUuid;
+	//private String stopDateUuid;
 
 	/**
 	 * Gets the uuid.
@@ -84,38 +84,38 @@ public class PeriodModel implements IsSerializable{
 	 * 
 	 * @return the startDateUuid
 	 */
-	public String getStartDateUuid() {
-		return startDateUuid;
-	}
-
-	/**
-	 * Sets the start date uuid.
-	 * 
-	 * @param startDateUuid
-	 *            the startDateUuid to set
-	 */
-	public void setStartDateUuid(String startDateUuid) {
-		this.startDateUuid = startDateUuid;
-	}
-
-	/**
-	 * Gets the stop date uuid.
-	 * 
-	 * @return the stopDateUuid
-	 */
-	public String getStopDateUuid() {
-		return stopDateUuid;
-	}
-
-	/**
-	 * Sets the stop date uuid.
-	 * 
-	 * @param stopDateUuid
-	 *            the stopDateUuid to set
-	 */
-	public void setStopDateUuid(String stopDateUuid) {
-		this.stopDateUuid = stopDateUuid;
-	}
+//	public String getStartDateUuid() {
+//		return startDateUuid;
+//	}
+//
+//	/**
+//	 * Sets the start date uuid.
+//	 * 
+//	 * @param startDateUuid
+//	 *            the startDateUuid to set
+//	 */
+//	public void setStartDateUuid(String startDateUuid) {
+//		this.startDateUuid = startDateUuid;
+//	}
+//
+//	/**
+//	 * Gets the stop date uuid.
+//	 * 
+//	 * @return the stopDateUuid
+//	 */
+//	public String getStopDateUuid() {
+//		return stopDateUuid;
+//	}
+//
+//	/**
+//	 * Sets the stop date uuid.
+//	 * 
+//	 * @param stopDateUuid
+//	 *            the stopDateUuid to set
+//	 */
+//	public void setStopDateUuid(String stopDateUuid) {
+//		this.stopDateUuid = stopDateUuid;
+//	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
@@ -123,8 +123,7 @@ public class PeriodModel implements IsSerializable{
 	@Override
 	public String toString() {
 		return "PeriodModel [uuid=" + uuid + ", startDate=" + startDate
-				+ ", stopDate=" + stopDate + ", startDateUuid=" + startDateUuid
-				+ ", stopDateUuid=" + stopDateUuid + "]";
+				+ ", stopDate=" + stopDate + "]";
 	}
 	
 }

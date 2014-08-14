@@ -13,7 +13,7 @@
 	<property name="description" column="DESCRIPTION" />
 	<property name="version" column="VERSION" />
 	<property name="revisionNumber" column="REVISION_NUMBER" />
-	<property name="measureStatus" column="MEASURE_STATUS" />
+	<!-- <property name="measureStatus" column="MEASURE_STATUS" /> -->
 	<property name="measureScoring" column="SCORING" />	
 	<property name="eMeasureId" column="EMEASURE_ID" />
 	<!-- <property name="deleted" column="DELETED" /> -->

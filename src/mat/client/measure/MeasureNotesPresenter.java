@@ -18,10 +18,10 @@ import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.RichTextArea;
-import com.google.gwt.user.client.ui.TextArea;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.Widget;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class MeasureNotesPresenter.
  */
@@ -163,7 +163,7 @@ public class MeasureNotesPresenter implements MatPresenter{
 	 */
 	private void generateCSVToExportMeasureNotes(){
 		MatContext.get().recordTransactionEvent(MatContext.get().getCurrentMeasureId(), null, "MEASURE_NOTES_EXPORT", "Measure Notes Exported", ConstantMessages.DB_LOG);
-		String url = GWT.getModuleBaseURL() + "export?id=" + MatContext.get().getCurrentMeasureId() +"&name="+MatContext.get().getCurrentMeasureName()+ "&format=exportMeasureNotesForMeasure";
+		String url = GWT.getModuleBaseURL() + "export?id=" + MatContext.get().getCurrentMeasureId() + "&format=exportMeasureNotesForMeasure";
 		Window.open(url + "&type=save","_blank", "");
 	}
 	

@@ -36,6 +36,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.w3c.dom.Node;
 
+// TODO: Auto-generated Javadoc
 /**
  * The Class ExportServlet.
  */
@@ -56,7 +57,7 @@ public class ExportServlet extends HttpServlet {
 	/** The Constant ZIP. */
 	private static final String ZIP = "zip";
 	
-	/** Human readable for Subtree Node **/
+	/** Human readable for Subtree Node *. */
 	private static final String SUBTREE_HTML = "subtreeHTML";
 	
 	/** The Constant CODELIST. */
@@ -120,7 +121,6 @@ public class ExportServlet extends HttpServlet {
 	    String id = req.getParameter(ID_PARAM);
 		String format = req.getParameter(FORMAT_PARAM);
 		String type = req.getParameter(TYPE_PARAM);
-		String name = req.getParameter("name");
 		String[] matVersion ={"_v3","_v4"}; 
 		Measure measure = null;
 		ExportResult export = null;
@@ -251,7 +251,7 @@ public class ExportServlet extends HttpServlet {
 				System.out.println("testing the print out!");
 				//String csvFileString = generateCSVToExportMeasureNotes(id);
 				export = getService().getSimpleXML(id);
-				String csvFileString = generateHTMLToExportMeasureNotes(id,export,name);
+				String csvFileString = generateHTMLToExportMeasureNotes(id,export,measure.getDescription());
 				Format formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				String measureNoteDate = formatter.format(new Date());
 				resp.setHeader(CONTENT_DISPOSITION, ATTACHMENT_FILENAME
@@ -269,6 +269,15 @@ public class ExportServlet extends HttpServlet {
 		}
 	}
 
+	/**
+	 * Generate html to export measure notes.
+	 *
+	 * @param measureId the measure id
+	 * @param export the export
+	 * @param name the name
+	 * @return the string
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private String generateHTMLToExportMeasureNotes(final String measureId, ExportResult export,String name) throws XPathExpressionException{
 		List<MeasureNotes> allMeasureNotes = getMeasureNoteService().getAllMeasureNotesByMeasureID(measureId);
 		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
@@ -312,6 +321,15 @@ public class ExportServlet extends HttpServlet {
 		
 		return htmlDocument.toString();
 	}
+	
+	/**
+	 * Creates the body.
+	 *
+	 * @param row the row
+	 * @param message the message
+	 * @param html the html
+	 * @param width the width
+	 */
 	private void createBody(Element row, String message,Boolean html,String width){
 		Element col = row.appendElement("td");
 		col.attr("width", width);
@@ -321,6 +339,12 @@ public class ExportServlet extends HttpServlet {
 			col.append(message);
 		}
 	}
+	
+	/**
+	 * Creates the header.
+	 *
+	 * @param row the row
+	 */
 	private void CreateHeader(Element row){
 		createHeaderRows(row,"Title","20%");
 		createHeaderRows(row,"Description","33%");
@@ -328,6 +352,14 @@ public class ExportServlet extends HttpServlet {
 		createHeaderRows(row,"Created By","15%");
 		createHeaderRows(row,"Modified By","15%");
 	}
+	
+	/**
+	 * Creates the header rows.
+	 *
+	 * @param row the row
+	 * @param header the header
+	 * @param width the width
+	 */
 	private void createHeaderRows(Element row, String header,String width){
 		Element col = row.appendElement("td");
 		col.attr("bgcolor", "#656565");
@@ -492,10 +524,20 @@ public class ExportServlet extends HttpServlet {
 		return (MeasureNotesService) context.getBean("measureNotesService");
 	}
 	
+	/**
+	 * Gets the measure package service.
+	 *
+	 * @return the measure package service
+	 */
 	private MeasurePackageService getMeasurePackageService() {
 		return (MeasurePackageService) context.getBean("measurePackageService");
 	}
 	
+	/**
+	 * Gets the measure library service.
+	 *
+	 * @return the measure library service
+	 */
 	private MeasureLibraryService getMeasureLibraryService(){
 		return (MeasureLibraryService) context.getBean("measureLibraryService");
 	}

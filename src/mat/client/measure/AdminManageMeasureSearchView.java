@@ -62,6 +62,8 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 	private VerticalPanel measureVpanel = new VerticalPanel();
 	/** The index. */
 	private int index;
+	
+	private String searchString;
 	/**
 	 * Instantiates a new admin manage measure search view.
 	 */
@@ -139,6 +141,7 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		if (results == null) {
 			return;
 		}
+		searchString = searchText;
 		errorMessagesForTransferOS.clear();
 		CellTable<ManageMeasureSearchModel.Result> cellTable = new CellTable<ManageMeasureSearchModel.Result>();
 		selectedMeasureList = new ArrayList<Result>();
@@ -220,7 +223,7 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 		}
 		AdminMeasureSearchResultAdaptor adapter = new AdminMeasureSearchResultAdaptor();
 		adapter.getData().setData(selectedMeasureList);
-		buildDataTable(adapter, 1, "");
+		buildDataTable(adapter, 1, searchString);
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.measure.ManageMeasurePresenter.AdminSearchDisplay#getClearButton()

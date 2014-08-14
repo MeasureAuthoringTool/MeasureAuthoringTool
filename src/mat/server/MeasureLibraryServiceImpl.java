@@ -13,11 +13,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.DTO.AuthorDTO;
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
@@ -71,7 +69,6 @@ import mat.shared.ConstantMessages;
 import mat.shared.DateStringValidator;
 import mat.shared.DateUtility;
 import mat.shared.model.util.MeasureDetailsUtil;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.lang.StringUtils;
@@ -982,7 +979,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			detail.setHQMFR2((measure.getExportedDate() != null) && (measure.getExportedDate()
 					.after(getFormattedReleaseDate(releaseDate))
 					|| measure.getExportedDate().equals(getFormattedReleaseDate(releaseDate))));
-			detail.setStatus(measure.getMeasureStatus());
+			/*detail.setStatus(measure.getMeasureStatus());*/
 			String formattedVersion = MeasureUtility.getVersionText(measure.getVersion(),
 					measure.isDraft());
 			detail.setVersion(formattedVersion);
@@ -1712,7 +1709,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		String userRole = LoggedInUserUtil.getLoggedInUserRole();
 		boolean isSuperUser = SecurityRole.SUPER_USER_ROLE.equals(userRole);
 		ManageMeasureSearchModel searchModel = new ManageMeasureSearchModel();
-
+		
 		if (SecurityRole.ADMIN_ROLE.equals(userRole)) {
 			List<MeasureShareDTO> measureList = getService()
 					.searchForAdminWithFilter(searchText, 1, Integer.MAX_VALUE,
@@ -1729,7 +1726,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			searchModel.setStartIndex(startIndex);
 			searchModel.setData(detailModelList);
-
+			
 			for (MeasureShareDTO dto : measureList) {
 				ManageMeasureSearchModel.Result detail = new ManageMeasureSearchModel.Result();
 				detail.setName(dto.getMeasureName());
@@ -1752,7 +1749,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			List<MeasureShareDTO> measureList = getService().searchWithFilter(
 					searchText, 1, Integer.MAX_VALUE, filter);
 			List<MeasureShareDTO> measureTotalList = measureList;
-
+			
 			searchModel.setResultsTotal(measureTotalList.size());
 			if (pageSize < measureTotalList.size()) {
 				measureList = measureTotalList
@@ -1771,10 +1768,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 			updateMeasureFamily(detailModelList);
 		}
-
+		
 		return searchModel;
 	}
-
+	
 	/**
 	 * Update measure family.
 	 *
@@ -2700,7 +2697,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						XPathConstants.NODESET);
 				
 				if(populationLogicalOp.getLength()>0){
-					for (int i = 0; i <populationLogicalOp.getLength() && !flag; i++) {
+					for (int i = 0; (i <populationLogicalOp.getLength()) && !flag; i++) {
 						Node childNode =populationLogicalOp.item(i);
 						String type = childNode.getParentNode().getAttributes().getNamedItem("type").getNodeValue();
 						if(type.equals("measureObservation")){

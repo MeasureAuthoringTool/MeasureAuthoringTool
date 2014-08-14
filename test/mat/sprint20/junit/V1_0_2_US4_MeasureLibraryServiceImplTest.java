@@ -1,13 +1,11 @@
 package mat.sprint20.junit;
 
 import java.util.UUID;
-
 import mat.dao.SpringInitializationTest;
 import mat.model.clause.Measure;
 import mat.model.clause.MeasureSet;
 import mat.server.MeasureLibraryServiceImpl;
 import mat.server.service.MeasurePackageService;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,8 +13,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.Rollback;
 
 public class V1_0_2_US4_MeasureLibraryServiceImplTest extends SpringInitializationTest{
-
-
+	
+	
 	private MeasureLibraryServiceImpl measureLibService = new MeasureLibraryServiceImpl();
 	
 	@Autowired
@@ -26,12 +24,13 @@ public class V1_0_2_US4_MeasureLibraryServiceImplTest extends SpringInitializati
 	protected ApplicationContext applicationContext;
 	
 	private Measure m = new Measure();
+	@Override
 	@Before
 	public void setUp(){
 		m.setDescription("Test for Supplimental Data Elements");
 		m.setaBBRName("SDE");
 		m.setDraft(true);
-		m.setMeasureStatus("In Progress");
+		/*m.setMeasureStatus("In Progress");*/
 		
 	}
 	

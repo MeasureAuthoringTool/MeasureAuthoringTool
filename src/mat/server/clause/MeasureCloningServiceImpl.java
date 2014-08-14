@@ -5,7 +5,6 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
@@ -15,7 +14,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.service.MeasureCloningService;
@@ -36,7 +34,6 @@ import mat.server.service.MeasureNotesService;
 import mat.server.util.MeasureUtility;
 import mat.server.util.XmlProcessor;
 import mat.shared.model.util.MeasureDetailsUtil;
-
 import org.apache.commons.io.output.ByteArrayOutputStream;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -148,7 +145,7 @@ implements MeasureCloningService {
 			clonedDoc = originalDoc;
 			clonedMeasure.setaBBRName(currentDetails.getShortName());
 			clonedMeasure.setDescription(currentDetails.getName());
-			clonedMeasure.setMeasureStatus("In Progress");
+			/*clonedMeasure.setMeasureStatus("In Progress");*/
 			clonedMeasure.setDraft(TRUE);
 			if (currentDetails.getMeasScoring() != null) {
 				clonedMeasure
@@ -346,7 +343,7 @@ implements MeasureCloningService {
 		versionNode.setTextContent(MeasureUtility.getVersionText(String.valueOf(clonedMeasure.getVersionNumber()),
 				clonedMeasure.getRevisionNumber(), clonedMeasure.isDraft()));
 		Node statusNode = clonedDoc.createElement(MEASURE_STATUS);
-		statusNode.setTextContent(clonedMeasure.getMeasureStatus());
+		/*statusNode.setTextContent(clonedMeasure.getMeasureStatus());*/
 		Node measureScoringNode = clonedDoc.createElement(MEASURE_SCORING);
 		String measureScoring = clonedMeasure.getMeasureScoring();
 		ElementImpl element = (ElementImpl) measureScoringNode;
@@ -372,8 +369,8 @@ implements MeasureCloningService {
 		.setTextContent(clonedMeasure.getDescription());
 		clonedDoc.getElementsByTagName(SHORT_TITLE).item(0)
 		.setTextContent(clonedMeasure.getaBBRName());
-		clonedDoc.getElementsByTagName(MEASURE_STATUS).item(0)
-		.setTextContent(clonedMeasure.getMeasureStatus());
+		/*clonedDoc.getElementsByTagName(MEASURE_STATUS).item(0)
+		.setTextContent(clonedMeasure.getMeasureStatus());*/
 		
 	}
 	

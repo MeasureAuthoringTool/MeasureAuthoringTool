@@ -2,12 +2,11 @@ package mat.sprint1Testcase;
 
 import java.util.Date;
 import java.util.UUID;
-
 import mat.client.codelist.ManageCodeListDetailModel;
 import mat.model.clause.Measure;
 
 public class TestCaseUtil {
-
+	
 	
 	public ManageCodeListDetailModel createManageCodeListDetailModel(String name, String cat, String codeSys, String objStat, String codeSysVer, String oid){
 		ManageCodeListDetailModel model = new ManageCodeListDetailModel();
@@ -39,12 +38,12 @@ public class TestCaseUtil {
 		measure.setaBBRName(meaName);
 		measure.setDescription(meaDesc);
 		measure.setVersion("22.33");
-		measure.setMeasureStatus("pending");
+		/*measure.setMeasureStatus("pending");*/
 		measure.setMeasureScoring("Ratio");
 		measure.setDraft(true);
 		return measure;
 	}
-
+	
 	public String getMockOid(){
 		String uuid = UUID.randomUUID().toString();
 		uuid = uuid.replaceAll("-", ".");

@@ -29,7 +29,7 @@ public class Measure {
 	private String revisionNumber;
 	
 	/** The measure status. */
-	private String measureStatus;
+	/*private String measureStatus;*/
 	
 	/** The measure scoring. */
 	private String measureScoring;
@@ -109,8 +109,9 @@ public class Measure {
 	 * @return the measure set
 	 */
 	public MeasureSet getMeasureSet() {
-		if(measureSet == null)
-			this.measureSet= new MeasureSet();
+		if(measureSet == null) {
+			measureSet= new MeasureSet();
+		}
 		return measureSet;
 	}
 	
@@ -212,7 +213,7 @@ public class Measure {
 			if (decimalIndex < 0) {
 				minVersion = 0;
 			} else {
-			 	minVersion = Integer.valueOf(version.substring(decimalIndex+1)).intValue();
+				minVersion = Integer.valueOf(version.substring(decimalIndex+1)).intValue();
 			}
 		}
 		return minVersion;
@@ -311,19 +312,19 @@ public class Measure {
 	 * 
 	 * @return the measure status
 	 */
-	public String getMeasureStatus() {
+	/*public String getMeasureStatus() {
 		return measureStatus;
 	}
 	
-	/**
+	 *//**
 	 * Sets the measure status.
 	 * 
 	 * @param measureStatus
 	 *            the new measure status
-	 */
+	 *//*
 	public void setMeasureStatus(String measureStatus) {
 		this.measureStatus = measureStatus;
-	}
+	}*/
 	
 	/**
 	 * Gets the owner.

@@ -13,8 +13,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import mat.client.measure.ManageMeasureDetailModel;
-import mat.client.measure.ManageMeasureSearchModel;
-import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.measure.MeasureSearchFilterPanel;
 import mat.dao.search.GenericDAO;
 import mat.dao.service.DAOService;
@@ -195,8 +193,8 @@ mat.dao.clause.MeasureDAO {
 	@Override
 	public List<Measure> getComponentMeasureInfoForMeasures(List<String> measureIds) {
 		Criteria mCriteria = buildComponentMeasureShareForUserCriteria(measureIds);
-	    List<Measure> measure = mCriteria.list();
-	    System.out.println("Measure List Size: "+ measure.size());
+		List<Measure> measure = mCriteria.list();
+		System.out.println("Measure List Size: "+ measure.size());
 		return measure;
 	}
 	
@@ -209,7 +207,7 @@ mat.dao.clause.MeasureDAO {
 	private Criteria buildComponentMeasureShareForUserCriteria(List<String> listComponentMeasureIds) {
 		Criteria mCriteria = getSessionFactory().getCurrentSession()
 				.createCriteria(Measure.class);
-			//mCriteria.add(Restrictions.eq("id", "8a4d8cb2452d647301452d88111b000a"));
+		//mCriteria.add(Restrictions.eq("id", "8a4d8cb2452d647301452d88111b000a"));
 		mCriteria.add(Restrictions.in("id", listComponentMeasureIds));
 		mCriteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return mCriteria;
@@ -244,9 +242,9 @@ mat.dao.clause.MeasureDAO {
 		if (m.getDescription() != null) {
 			cloned.setDescription(currentDetails.getName());
 		}
-		if (m.getMeasureStatus() != null) {
+		/*if (m.getMeasureStatus() != null) {
 			cloned.setMeasureStatus(m.getMeasureStatus());
-		}
+		}*/
 		if (m.getOwner() != null) {
 			cloned.setOwner(m.getOwner());
 		}
@@ -357,7 +355,7 @@ mat.dao.clause.MeasureDAO {
 		dto.setMeasureName(measure.getDescription());
 		dto.setScoringType(measure.getMeasureScoring());
 		dto.setShortName(measure.getaBBRName());
-		dto.setStatus(measure.getMeasureStatus());
+		/*dto.setStatus(measure.getMeasureStatus());*/
 		dto.setPackaged(measure.getExportedDate() != null);
 		dto.setOwnerUserId(measure.getOwner().getId());
 		
@@ -1049,7 +1047,7 @@ mat.dao.clause.MeasureDAO {
 		//String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = '"
 		//		+ measureId + "'";
 		String sql = "select lockedOutDate from mat.model.clause.Measure m  where id = :measureId";
-			
+		
 		Query query = session.createQuery(sql);
 		query.setString("measureId", measureId);
 		List<Timestamp> result = query.list();
@@ -1099,10 +1097,10 @@ mat.dao.clause.MeasureDAO {
 		int eMeasureId = getMaxEMeasureId() + 1;
 		MeasureSet ms = measure.getMeasureSet();
 		Session session = getSessionFactory().getCurrentSession();
-//		SQLQuery query = session
-//				.createSQLQuery("update MEASURE m set m.EMEASURE_ID = "
-//						+ eMeasureId + " where m.MEASURE_SET_ID = '"
-//						+ ms.getId() + "';");
+		//		SQLQuery query = session
+		//				.createSQLQuery("update MEASURE m set m.EMEASURE_ID = "
+		//						+ eMeasureId + " where m.MEASURE_SET_ID = '"
+		//						+ ms.getId() + "';");
 		String sql = "update MEASURE m set m.EMEASURE_ID = :eMeasureId where m.MEASURE_SET_ID = :MEASURE_SET_ID";
 		SQLQuery query = session.createSQLQuery(sql);
 		query.setInteger("eMeasureId", eMeasureId);
@@ -1229,7 +1227,7 @@ mat.dao.clause.MeasureDAO {
 			closeSession(session);
 		}
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see mat.dao.clause.MeasureDAO#getMeasure(java.lang.String)
 	 */
@@ -1246,6 +1244,6 @@ mat.dao.clause.MeasureDAO {
 		}
 		return isMeasureDeleted;
 	}
-
+	
 	
 }

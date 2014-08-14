@@ -95,7 +95,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @param filter TODO
 		 * @param searchText TODO
 		 */
-		public void buildDataTable(AdminMeasureSearchResultAdaptor results, int filter, String searchText);
+		public void buildDataTable(ManageMeasureSearchModel results, int filter, String searchText);
 		
 		/**
 		 * Clear transfer check boxes.
@@ -2262,13 +2262,13 @@ public class ManageMeasurePresenter implements MatPresenter {
 							result.setSelectedTransferIds(new ArrayList<String>());
 							result.setSelectedTransferResults(new ArrayList<Result>());
 							manageMeasureSearchModel = result;
-							AdminMeasureSearchResultAdaptor searchAdminResults = new AdminMeasureSearchResultAdaptor();
-							searchAdminResults.setData(result);
+							AdminManageMeasureSearchView adminManageMeasureSearchView = new AdminManageMeasureSearchView();
+							adminManageMeasureSearchView.setData(result);
 							MatContext.get()
 							.setManageMeasureSearchModel(
 									manageMeasureSearchModel);
-							searchAdminResults
-							.setObserver(new AdminMeasureSearchResultAdaptor.Observer() {
+							adminManageMeasureSearchView
+							.setObserver(new AdminManageMeasureSearchView.Observer() {
 								@Override
 								public void onHistoryClicked(
 										Result result) {
@@ -2299,6 +2299,16 @@ public class ManageMeasurePresenter implements MatPresenter {
 									updateTransferIDs(result,
 											manageMeasureSearchModel);
 								}
+
+								@Override
+								public void onClearAllTranferChkBoxClicked() {
+									manageMeasureSearchModel.getSelectedTransferResults().removeAll(
+											manageMeasureSearchModel.getSelectedTransferResults());
+									manageMeasureSearchModel.getSelectedTransferIds().removeAll(
+											manageMeasureSearchModel.getSelectedTransferIds());
+								}
+
+					
 								
 							});
 							if ((result.getResultsTotal() == 0)
@@ -2324,7 +2334,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 									.getSearchString(),
 									lastSearchText);
 							adminSearchDisplay
-							.buildDataTable(searchAdminResults, filter,searchText);
+							.buildDataTable(manageMeasureSearchModel, filter,searchText);
 							panel.setContent(adminSearchDisplay
 									.asWidget());
 							showAdminSearchingBusy(false);

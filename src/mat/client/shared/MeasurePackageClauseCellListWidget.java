@@ -990,7 +990,7 @@ public class MeasurePackageClauseCellListWidget {
 				count++;
 			}
 		}
-		if (count > 1) {
+		if (count > 1 && messages.size() == 0) {
 			messages.add(MatContext.get().getMessageDelegate()
 					.getSTRATIFICATION_VALIDATION_FOR_GROUPING());
 

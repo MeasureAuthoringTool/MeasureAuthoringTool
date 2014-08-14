@@ -476,7 +476,7 @@ public class MessageDelegate {
 	/** The cohort wrong num. */
 	private final String COHORT_WRONG_NUM = "For a Cohort measure, a grouping must contain exactly one Population.";
 	
-	private final String STRATIFICATION_VALIDATION_FOR_GROUPING = "More Than One stratification not Allowed";
+	private final String STRATIFICATION_VALIDATION_FOR_GROUPING = " Measure Grouping cannot contain more than one Stratification.";
 	
 	
 	/** The rationale required. */

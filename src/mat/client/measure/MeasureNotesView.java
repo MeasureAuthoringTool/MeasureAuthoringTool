@@ -4,6 +4,7 @@ import mat.DTO.MeasureNoteDTO;
 import mat.client.ImageResources;
 import mat.client.shared.CustomButton;
 import mat.client.shared.ErrorMessageDisplay;
+import mat.client.shared.LabelBuilder;
 import mat.client.shared.MatContext;
 import mat.client.shared.PrimaryButton;
 import mat.client.shared.SecondaryButton;
@@ -18,6 +19,8 @@ import com.google.gwt.event.dom.client.FocusEvent;
 import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.resources.client.ImageResource;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.Anchor;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DisclosurePanel;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -198,9 +201,39 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		
 		fPanel.add(new SpacerWidget());
 		fPanel.add(new SpacerWidget());
+		
+		HorizontalPanel noteTitlePanel = new HorizontalPanel();
+		
+		//String title = "Measure Notes List";
+		//HTML noteTitle = new HTML(title);
+		//noteTitle.setTitle(title);
+		//noteTitle.setWidth("100%");
+		//noteTitle.setStyleName("bold");
+		//noteTitle.getElement().setAttribute("tabIndex","0");
+		
+		//noteTitlePanel.add(noteTitle);
+		
+		fPanel.add(noteTitlePanel);
+		//fPanel.getElement().setAttribute("tabIndex","0");
+		
 		fPanel.add(buildDataTable(notesResult));
 		fPanel.add(new SpacerWidget());
+		/*Label invisibleLabel = new Label("In the following Recent Activity table, Measure Name is given in first column,"
+				
+								+ " Version in second column and Export in third column.");
+		invisibleLabel.getElement().setAttribute("id","measureNotesSummary");
+		invisibleLabel.setStyleName("invisible");
+		containerPanel.add(invisibleLabel);
+		fPanel.getElement().setAttribute("id", "NoteTableTitle");
+		fPanel.getElement().setAttribute("aria-label", "Measure Notes Table");
+		fPanel.getElement().setAttribute("aria-describedby", "measureNotesSummary");
+		fPanel.getElement().setAttribute("aria-role", "panel");
+		fPanel.getElement().setAttribute("aria-live", "assertive");
+		fPanel.getElement().setAttribute("aria-atomic", "true");
+		fPanel.getElement().setAttribute("aria-relevant", "all");
+		fPanel.getElement().setAttribute("role", "alert");*/
 		containerPanel.add(fPanel);
+		containerPanel.getElement().setId("MeasureNoteContainerPanel");
 	}
 	
 	/**
@@ -217,13 +250,15 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  composerPanel.add(composerLabel);
 		  composerPanel.add(new SpacerWidget());
 		  HorizontalPanel titlePanel = new HorizontalPanel();
-		  Label titleLabel= new Label("Title:");
+		  Label titleLabel= (Label) LabelBuilder.buildLabel(new Label(), "Title");
 		  titleLabel.setStyleName("bold");
 		  Label descLabel= new Label("Description:");
 		  descLabel.setStyleName("bold");
 		  measureNoteTitle.setWidth("400px");
 		  measureNoteTitle.setMaxLength(50);
-		  measureNoteTitle.addFocusHandler(getFocusHandler());		  
+		  measureNoteTitle.addFocusHandler(getFocusHandler());	
+		  measureNoteTitle.getElement().setId("MeasureNoteTitle");
+		  measureNoteTitle.setTitle("Title");
 		  titlePanel.add(measureNoteTitle);
 		  composerPanel.add(titleLabel);
 		  composerPanel.add(new SpacerWidget());
@@ -244,6 +279,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  vp.setStylePrimaryName("recentSearchHeader");
 		  textArea.setHeight("100px");
 		  textArea.setWidth("100%");
+		  textArea.setTitle("Description");
 		  vp.add(toolBar);
 		  vp.add(textArea);
 		  composerPanel.add(vp);
@@ -263,7 +299,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		  //measureNoteComposer.setReadOnly(!editable);
 		  saveButton.setEnabled(editable);
 		  cancelButton.setEnabled(editable);
-		  
+		 
 		  return composerPanel;
 	}
 	
@@ -325,6 +361,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		tableHeaderPanel.setWidth("875px");
 		tableHeaderPanel.setStylePrimaryName("header_background");
 		Widget tableHeaderWidget = createTableHeaderWidget();
+		
 		tableHeaderPanel.add(tableHeaderWidget);
 		tableHeaderPanel.setCellHorizontalAlignment(tableHeaderWidget, HasHorizontalAlignment.ALIGN_RIGHT);
 		
@@ -344,14 +381,17 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	 * 
 	 * @return the widget
 	 */
-	private Widget createTableHeaderWidget() {			
+	private Widget createTableHeaderWidget() {		
+		
 			HorizontalPanel headerPanel = new HorizontalPanel();
-			headerPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
-			headerPanel.setWidth("800px");
+			HorizontalPanel subHeaderPanel = new HorizontalPanel();
+			subHeaderPanel.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_CENTER);
+			subHeaderPanel.setWidth("800px");
 			HorizontalPanel noteTitlePanel = new HorizontalPanel();
 		
 			String title = "Title";
 			HTML noteTitle = new HTML(title);
+			noteTitle.getElement().setAttribute("id", "Title");
 			noteTitle.setTitle(title);
 			noteTitle.setWidth("100%");
 			noteTitle.setStyleName("bold");
@@ -359,9 +399,9 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			noteTitlePanel.add(noteTitle);
 			
 			noteTitlePanel.setCellWidth(noteTitle, "100%");
-			headerPanel.add(noteTitlePanel);
-			headerPanel.setCellWidth(noteTitlePanel, "25%");
-			headerPanel.setCellHorizontalAlignment(noteTitlePanel, HasHorizontalAlignment.ALIGN_LEFT);
+			subHeaderPanel.add(noteTitlePanel);
+			subHeaderPanel.setCellWidth(noteTitlePanel, "25%");
+			subHeaderPanel.setCellHorizontalAlignment(noteTitlePanel, HasHorizontalAlignment.ALIGN_LEFT);
 			
 			HorizontalPanel emailAddrPanel = new HorizontalPanel();
 			emailAddrPanel.getElement().setAttribute("tabIndex", "0");
@@ -373,8 +413,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			emailAddrPanel.add(lastModifiedBy);
 			
 			emailAddrPanel.setCellWidth(lastModifiedBy, "100%");
-			headerPanel.add(emailAddrPanel);
-			headerPanel.setCellWidth(emailAddrPanel, "30%");
+			subHeaderPanel.add(emailAddrPanel);
+			subHeaderPanel.setCellWidth(emailAddrPanel, "30%");
 			
 			HorizontalPanel lastModifiedDatePanel = new HorizontalPanel();
 			lastModifiedDatePanel.getElement().setAttribute("tabIndex", "0");
@@ -388,8 +428,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			lastModifiedDatePanel.add(lastModifiedDate);
 			
 			lastModifiedDatePanel.setCellWidth(lastModifiedDate, "100%");
-			headerPanel.add(lastModifiedDatePanel);
-			headerPanel.setCellWidth(lastModifiedDatePanel, "25%");
+			subHeaderPanel.add(lastModifiedDatePanel);
+			subHeaderPanel.setCellWidth(lastModifiedDatePanel, "25%");
 
 			HorizontalPanel deleteButtonPanel = new HorizontalPanel();
 			deleteButtonPanel.getElement().setAttribute("tabIndex", "0");
@@ -397,8 +437,8 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			HTML delete = new HTML("Delete");
 			delete.setStyleName("bold");
 			deleteButtonPanel.add(delete);
-			headerPanel.add(deleteButtonPanel);
-			headerPanel.setCellWidth(deleteButtonPanel, "10%");
+			subHeaderPanel.add(deleteButtonPanel);
+			subHeaderPanel.setCellWidth(deleteButtonPanel, "10%");
 			
 			HorizontalPanel editButtonPanel = new HorizontalPanel();
 			editButtonPanel.getElement().setAttribute("tabIndex", "0");
@@ -406,8 +446,24 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 			HTML edit = new HTML("Edit");
 			edit.setStyleName("bold");
 			editButtonPanel.add(edit);
-			headerPanel.add(editButtonPanel);
-			headerPanel.setCellWidth(editButtonPanel, "10%");
+			subHeaderPanel.add(editButtonPanel);
+			subHeaderPanel.setCellWidth(editButtonPanel, "10%");
+			/*Label invisibleLabel = new Label("In the following Recent Activity table, Measure Name is given in first column,"
+								+ " Version in second column and Export in third column.");
+		invisibleLabel.getElement().setAttribute("id","measureNotesSummary");
+		invisibleLabel.setStyleName("invisible");
+	
+		
+			headerPanel.add(invisibleLabel);
+			subHeaderPanel.getElement().setAttribute("id", "NoteTableTitle");
+			subHeaderPanel.getElement().setAttribute("aria-label", "Measure Notes Table");
+			subHeaderPanel.getElement().setAttribute("aria-describedby", "measureNotesSummary");
+			subHeaderPanel.getElement().setAttribute("aria-role", "panel");
+			subHeaderPanel.getElement().setAttribute("aria-live", "assertive");
+			subHeaderPanel.getElement().setAttribute("aria-atomic", "true");
+			subHeaderPanel.getElement().setAttribute("aria-relevant", "all");
+			subHeaderPanel.getElement().setAttribute("role", "alert");*/
+			headerPanel.add(subHeaderPanel);
 			return headerPanel;
 	}
 	
@@ -450,6 +506,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 	 */
 	private Widget createDisclosureContentWidget(MeasureNoteDTO result) {
 		TextBox title = new TextBox();
+		title.setTitle("Title");
 		title.setTitle("Measure Notes Title");
 		title.getElement().setAttribute("id", "NoteTitle_"+result.getId());
 		title.setWidth("400px");
@@ -474,7 +531,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		vPanel.add(new SpacerWidget());
 		title.setText(result.getNoteTitle());
 		editTextArea.setHTML(result.getNoteDesc());
-		
+		editTextArea.setTitle("Decription");
 		//measureNoteDesc.setText(result.getNoteDesc());
 		vPanel.add(title);
 		vPanel.add(new SpacerWidget());

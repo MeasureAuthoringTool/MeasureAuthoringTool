@@ -1485,10 +1485,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the measure name
 	 */
 	private void displayHistory(String measureId, String measureName) {
-		
-		//int pageNumber = historyDisplay.getCurrentPage();
-		//int pageSize = historyDisplay.getPageSize();
-		int startIndex = 1;
+		int startIndex = 0;
 		int pageSize = Integer.MAX_VALUE;
 		String heading = "My Measures > History";
 		if (ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
@@ -1962,101 +1959,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the history display
 	 */
 	private void historyDisplayHandlers(final HistoryDisplay historyDisplay) {
-//		historyDisplay.getSaveButton().addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				
-//				if (historyDisplay.getUserComment().getValue().length() > 2000) {
-//					String s = historyDisplay.getUserComment().getValue();
-//					historyDisplay.getUserComment().setValue(
-//							s.substring(0, 2000));
-//				}
-//				historyDisplay.clearErrorMessage();
-//				String measureId = historyDisplay.getMeasureId();
-//				String eventType = ConstantMessages.USER_COMMENT;
-//				String additionalInfo = historyDisplay.getUserComment()
-//						.getValue();
-//				MatContext
-//				.get()
-//				.getAuditService()
-//				.recordMeasureEvent(measureId, eventType,
-//						additionalInfo, false,
-//						new AsyncCallback<Boolean>() {
-//					@Override
-//					public void onFailure(Throwable caught) {
-//						historyDisplay
-//						.setErrorMessage(MatContext
-//								.get()
-//								.getMessageDelegate()
-//								.getUnableToProcessMessage());
-//						// set error message
-//					}
-//					
-//					@Override
-//					public void onSuccess(Boolean result) {
-//						
-//						if (result) {
-//							// add user message
-//							historyDisplay.getUserComment()
-//							.setValue("");
-//							displayHistory(historyDisplay
-//									.getMeasureId(),
-//									historyDisplay
-//									.getMeasureName());
-//						}
-//					}
-//				});
-//			}
-//		});
-//		
-//		historyDisplay.getClearButton().addClickHandler(new ClickHandler() {
-//			@Override
-//			public void onClick(ClickEvent event) {
-//				historyDisplay.clearErrorMessage();
-//				historyDisplay.getUserComment().setValue("");
-//				
-//			}
-//		});
-		
-//		historyDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
-//				new PageSizeSelectionEventHandler() {
-//					
-//					@Override
-//					public void onPageSizeSelection(PageSizeSelectionEvent event) {
-//						historyDisplay.setPageSize(event.getPageSize());
-//						displayHistory(historyDisplay.getMeasureId(),
-//								historyDisplay.getMeasureName());
-//					}
-//				});
-		
-//		historyDisplay.getPageSelectionTool().addPageSelectionHandler(
-//				new PageSelectionEventHandler() {
-//					
-//					@Override
-//					public void onPageSelection(PageSelectionEvent event) {
-//						int pageNumber = event.getPageNumber();
-//						if (pageNumber == -1) { // if next button clicked
-//							if (historyDisplay.getCurrentPage() == historyModel
-//									.getTotalpages()) {
-//								pageNumber = historyDisplay.getCurrentPage();
-//							} else {
-//								pageNumber = historyDisplay.getCurrentPage() + 1;
-//							}
-//						} else if (pageNumber == 0) { // if first button clicked
-//							pageNumber = 1;
-//						} else if (pageNumber == -9) { // if first button
-//							// clicked
-//							if (historyDisplay.getCurrentPage() == 1) {
-//								pageNumber = historyDisplay.getCurrentPage();
-//							} else {
-//								pageNumber = historyDisplay.getCurrentPage() - 1;
-//							}
-//						}
-//						historyDisplay.setCurrentPage(pageNumber);
-//						displayHistory(historyDisplay.getMeasureId(),
-//								historyDisplay.getMeasureName());
-//					}
-//				});
 		
 		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
 			@Override
@@ -2711,56 +2613,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			}
 		});
 		
-//		searchDisplay.getPageSelectionTool().addPageSelectionHandler(
-//				new PageSelectionEventHandler() {
-//					
-//					@SuppressWarnings("static-access")
-//					@Override
-//					public void onPageSelection(PageSelectionEvent event) {
-//						measureDeletion = false;
-//						isMeasureDeleted = false;
-//						searchDisplay.getErrorMeasureDeletion().clear();
-//						searchDisplay.getSuccessMeasureDeletion().clear();
-//						/*int filter = searchDisplay
-//								.getMeasureSearchFilterPanel()
-//								.getSelectedIndex();*/
-//						int filter = searchDisplay
-//								.getSelectedFilter();
-//						if (ClientConstants.ADMINISTRATOR
-//								.equalsIgnoreCase(MatContext.get()
-//										.getLoggedInUserRole())) {
-//							filter = searchDisplay
-//									.getMeasureSearchFilterWidget().ALL_MEASURES;
-//							/*filter = searchDisplay
-//									.getMeasureSearchFilterPanel().ALL_MEASURES;*/
-//						}
-//						startIndex = (searchDisplay.getPageSize()
-//								* (event.getPageNumber() - 1)) + 1;
-//						search(searchDisplay.getSearchString().getValue(),
-//								startIndex, searchDisplay.getPageSize(), filter);
-//					}
-//				});
-//		searchDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
-//				new PageSizeSelectionEventHandler() {
-//					@SuppressWarnings("static-access")
-//					@Override
-//					public void onPageSizeSelection(PageSizeSelectionEvent event) {
-//						measureDeletion = false;
-//						isMeasureDeleted = false;
-//						searchDisplay.getErrorMeasureDeletion().clear();
-//						searchDisplay.getSuccessMeasureDeletion().clear();
-//						int filter = searchDisplay.getSelectedFilter();
-//						
-//						if (ClientConstants.ADMINISTRATOR
-//								.equalsIgnoreCase(MatContext.get()
-//										.getLoggedInUserRole())) {
-//							filter = searchDisplay
-//									.getMeasureSearchFilterWidget().ALL_MEASURES;
-//						}
-//						search(searchDisplay.getSearchString().getValue(),
-//								startIndex, searchDisplay.getPageSize(), filter);
-//					}
-//				});
 		searchDisplay.getSearchButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
@@ -2919,14 +2771,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 			@Override
 			public void onSuccess(SearchHistoryDTO data) {
 				historyModel = new HistoryModel(data.getLogs());
-				//historyModel.setPageSize(historyDisplay
-//					/	.getPageSize());
-				//historyModel.setTotalPages(data.getPageCount());
-//				historyDisplay.buildDataTable(historyModel,
-//						data.getPageCount(),
-//						data.getTotalResults(),
-//						historyDisplay.getCurrentPage(),
-//						historyDisplay.getPageSize());
 				historyDisplay.buildCellTable(data.getLogs());
 			}
 		});
@@ -3058,25 +2902,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 *            the share display
 	 */
 	private void shareDisplayHandlers(final ShareDisplay shareDisplay) {
-//		shareDisplay.getPageSelectionTool().addPageSelectionHandler(
-//				new PageSelectionEventHandler() {
-//					
-//					@Override
-//					public void onPageSelection(PageSelectionEvent event) {
-//						shareStartIndex = (shareDisplay.getPageSize()
-//								* (event.getPageNumber() - 1)) + 1;
-//						getShareDetails(currentShareDetails.getMeasureId(),
-//								shareStartIndex);
-//					}
-//				});
-//		shareDisplay.getPageSizeSelectionTool().addPageSizeSelectionHandler(
-//				new PageSizeSelectionEventHandler() {
-//					@Override
-//					public void onPageSizeSelection(PageSizeSelectionEvent event) {
-//						getShareDetails(currentShareDetails.getMeasureId(),
-//								shareStartIndex);
-//					}
-//				});
+		
 		shareDisplay.getCancelButton().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {

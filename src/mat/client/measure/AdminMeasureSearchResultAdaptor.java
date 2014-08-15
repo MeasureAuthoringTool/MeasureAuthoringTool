@@ -1,7 +1,9 @@
 package mat.client.measure;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 import mat.client.measure.ManageMeasureSearchModel.Result;
 import mat.client.shared.MatButtonCell;
@@ -45,17 +47,15 @@ public class AdminMeasureSearchResultAdaptor /*implements SearchResults<ManageMe
 	}
 	/** CellTable Column Size. */
 	private static final int COL_SIZE = 6;
-	/** The headers. */
-	private static String[] headers = new String[] { "Measure Name", "Version", "Finalized Date",
-		"Status", "History", "TransferMeasureClear" };
-	/** The widths. */
-	private static String[] widths = new String[] { "35%", "16%", "16%", "8%", "5%","5%","10%" };
 	/** The data. */
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
 	/** The is history clicked. */
 	private boolean isHistoryClicked;
 	/** The observer. */
 	private Observer observer;
+	/** The selected list. */
+	List<ManageMeasureSearchModel.Result> selectedList = new ArrayList<ManageMeasureSearchModel.Result>();
+	
 	/**
 	 * Adds the column to table.
 	 * @param table
@@ -172,12 +172,34 @@ public class AdminMeasureSearchResultAdaptor /*implements SearchResults<ManageMe
 			Column<Result, Boolean> transferColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(transferCB) {
 				@Override
 				public Boolean getValue(ManageMeasureSearchModel.Result object) {
+					if (selectedList.size() > 0) {
+						for (int i = 0; i < selectedList.size(); i++) {
+							if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+								object.setTransferable(true);
+								break;
+							}
+						}
+					} else {
+						object.setTransferable(false);
+						}
 					return object.isTransferable();
 				}
 			};
 			transferColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
 				@Override
 				public void update(int index, ManageMeasureSearchModel.Result object, Boolean value) {
+					if(value){
+						if(!selectedList.contains(object)){
+						selectedList.add(object);
+						}
+					} else {
+						for (int i = 0; i < selectedList.size(); i++) {
+							if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+								selectedList.remove(i);
+								break;
+							}
+						}
+					}
 					object.setTransferable(value);
 					observer.onTransferSelectedClicked(object);
 				}
@@ -254,5 +276,14 @@ public class AdminMeasureSearchResultAdaptor /*implements SearchResults<ManageMe
 	 */
 	public void setObserver(Observer observer) {
 		this.observer = observer;
+	}
+	
+	/**
+	 * Gets the selected list.
+	 *
+	 * @return the selected list
+	 */
+	public List<ManageMeasureSearchModel.Result> getSelectedList() {
+		return selectedList;
 	}
 }

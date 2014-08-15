@@ -29,7 +29,6 @@ import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.view.client.AsyncDataProvider;
 import com.google.gwt.view.client.HasData;
-import com.google.gwt.view.client.MultiSelectionModel;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -219,11 +218,12 @@ public class AdminManageMeasureSearchView implements ManageMeasurePresenter.Admi
 	 */
 	@Override
 	public void clearTransferCheckBoxes() {
-		for (ManageMeasureSearchModel.Result result : selectedMeasureList) {
+		AdminMeasureSearchResultAdaptor adapter = new AdminMeasureSearchResultAdaptor();
+		for (ManageMeasureSearchModel.Result result : adapter.getSelectedList()) {
 			result.setTransferable(false);
 		}
-		ManageMeasureSearchModel adapter = new ManageMeasureSearchModel();
-		adapter.setData(selectedMeasureList);
+		adapter.getSelectedList().clear();
+		adapter.getData().setData(selectedMeasureList);
 		cellTable.redraw();
 	}
 	/* (non-Javadoc)

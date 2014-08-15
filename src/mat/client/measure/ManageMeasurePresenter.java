@@ -95,7 +95,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		 * @param filter TODO
 		 * @param searchText TODO
 		 */
-		public void buildDataTable(ManageMeasureSearchModel results, int filter, String searchText);
+		public void buildDataTable(AdminMeasureSearchResultAdaptor results, int filter, String searchText);
 		
 		/**
 		 * Clear transfer check boxes.
@@ -2262,13 +2262,15 @@ public class ManageMeasurePresenter implements MatPresenter {
 							result.setSelectedTransferIds(new ArrayList<String>());
 							result.setSelectedTransferResults(new ArrayList<Result>());
 							manageMeasureSearchModel = result;
-							AdminManageMeasureSearchView adminManageMeasureSearchView = new AdminManageMeasureSearchView();
-							adminManageMeasureSearchView.setData(result);
+							//AdminManageMeasureSearchView adminManageMeasureSearchView = new AdminManageMeasureSearchView();
+							AdminMeasureSearchResultAdaptor adminMeasureSearchResultAdaptor = new AdminMeasureSearchResultAdaptor();
+							adminMeasureSearchResultAdaptor.setData(result);
 							MatContext.get()
 							.setManageMeasureSearchModel(
 									manageMeasureSearchModel);
-							adminManageMeasureSearchView
-							.setObserver(new AdminManageMeasureSearchView.Observer() {
+							
+							adminMeasureSearchResultAdaptor
+							.setObserver(new AdminMeasureSearchResultAdaptor.Observer() {
 								@Override
 								public void onHistoryClicked(
 										Result result) {
@@ -2299,16 +2301,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 									updateTransferIDs(result,
 											manageMeasureSearchModel);
 								}
-
-								@Override
-								public void onClearAllTranferChkBoxClicked() {
-									manageMeasureSearchModel.getSelectedTransferResults().removeAll(
-											manageMeasureSearchModel.getSelectedTransferResults());
-									manageMeasureSearchModel.getSelectedTransferIds().removeAll(
-											manageMeasureSearchModel.getSelectedTransferIds());
-								}
-
-					
 								
 							});
 							if ((result.getResultsTotal() == 0)
@@ -2334,7 +2326,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 									.getSearchString(),
 									lastSearchText);
 							adminSearchDisplay
-							.buildDataTable(manageMeasureSearchModel, filter,searchText);
+							.buildDataTable(adminMeasureSearchResultAdaptor, filter,searchText);
 							panel.setContent(adminSearchDisplay
 									.asWidget());
 							showAdminSearchingBusy(false);

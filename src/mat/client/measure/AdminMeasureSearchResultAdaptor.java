@@ -215,27 +215,7 @@ public class AdminMeasureSearchResultAdaptor /*implements SearchResults<ManageMe
 				+ " " + hoursStr + ":" + mins + " " + ap;
 		return tsStr;
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#get(int)
-	 */
-	/*@Override
-	public ManageMeasureSearchModel.Result get(int row) {
-		return data.get(row);
-	}*/
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getColumnHeader(int)
-	 */
-	/*@Override
-	public String getColumnHeader(int columnIndex) {
-		return headers[columnIndex];
-	}*/
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getColumnWidth(int)
-	 */
-	/*@Override
-	public String getColumnWidth(int columnIndex) {
-		return widths[columnIndex];
-	}*/
+	
 	/**
 	 * Gets the data.
 	 * @return the data
@@ -243,92 +223,7 @@ public class AdminMeasureSearchResultAdaptor /*implements SearchResults<ManageMe
 	public ManageMeasureSearchModel getData() {
 		return data;
 	}
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getKey(int)
-	 */
-	/*@Override
-	public String getKey(int row) {
-		return data.get(row).getId();
-	}*/
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getNumberOfColumns()
-	 */
-	/*@Override
-	public int getNumberOfColumns() {
-		return headers.length;
-	}*/
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getNumberOfRows()
-	 */
-	/*@Override
-	public int getNumberOfRows() {
-		return data.getNumberOfRows();
-	}*/
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getResultsTotal()
-	 */
-	/*@Override
-	public int getResultsTotal() {
-		return data.getResultsTotal();
-	}*/
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getStartIndex()
-	 */
-	/*@Override
-	public int getStartIndex() {
-		return data.getStartIndex();
-	}*/
-	//TODO - need to remove this method going forward as we replace the Grid Table with Cel T
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#getValue(int, int)
-	 */
-	/*@Override
-	public Widget getValue(int row, int column) {
-		return null;
-	}*/
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#isColumnFiresSelection(int)
-	 */
-	/*@Override
-	public boolean isColumnFiresSelection(int columnIndex) {
-		return columnIndex == 0;
-	}*/
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#isColumnSelectAll(int)
-	 */
-	/*@Override
-	public boolean isColumnSelectAll(int columnIndex) {
-		return false;
-	}*/
-	/* (non-Javadoc)
-	 * @see mat.client.shared.search.SearchResults#isColumnSortable(int)
-	 */
-	/*@Override
-	public boolean isColumnSortable(int columnIndex) {
-		return false;
-	}*/
-	/*
-	public MultiSelectionModel<CodeListSearchDTO> addSelectionHandlerOnTable(){
-		final MultiSelectionModel<CodeListSearchDTO> selectionModel = new  MultiSelectionModel<CodeListSearchDTO>();
-		selectionModel.addSelectionChangeHandler(new SelectionChangeEvent.Handler() {
-			@Override
-			public void onSelectionChange(SelectionChangeEvent event) {
-				Set<CodeListSearchDTO> codeListSet = selectionModel.getSelectedSet();
-				if(codeListSet !=null){
-					//lastSelectedCodeList = codeListObject;
-					MatContext.get().clearDVIMessages();
-					MatContext.get().clearModifyPopUpMessages();
-					List<CodeListSearchDTO> selectedCodeList = new ArrayList<CodeListSearchDTO>(codeListSet);
-					setLastSelectedCodeList(selectedCodeList);
-					setSelectedCodeList(selectedCodeList);
-					MatContext.get().getEventBus().fireEvent( new OnChangeOptionsEvent());
-
-				}
-			}
-		});
-		return selectionModel;
-	}
-	 */
+		 
 	/**
 	 * Checks if is history clicked.
 	 * @return true, if is history clicked

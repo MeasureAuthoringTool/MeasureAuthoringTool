@@ -139,8 +139,8 @@ public class MessageDelegate {
 	 */
 	public static final String RATIO_NUM_DENO_ASSOCIATION_REQUIRED = "For Ratio measures, in the case of more than one Population, "
 			+ " Numerator and Denominator must contain one association.";
-
-
+	
+	
 	
 	
 	/**
@@ -207,17 +207,17 @@ public class MessageDelegate {
 	
 	/** The clause work space validation error. */
 	private final String POPULATION_WORK_SPACE_VALIDATION_ERROR = "Logic must only contain Clauses and Logical operators.";
-			
+	
 	private final String MEASURE_LOGIC_IS_INCORRECT = " Measure logic is incorrect.";
 	/** The population work space measure observation validation error. */
 	private final String POPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR = " Logic must only contain Clauses.";
 	
 	/** The invalid character validation error. */
 	private final String INVALID_CHARACTER_VALIDATION_ERROR =" Value set name cannot contain any of the following characters : + * ? : - | ! ; %";
-
-			
-
-
+	
+	private final String ORGANIZATION_SUCCESS_MESSAGE = "Organization successfully added.";
+	private final String USER_SUCCESS_MESSAGE = "User information saved successfully.";
+	
 	/** The clause work space validation success. */
 	private final String POPULATION_WORK_SPACE_VALIDATION_SUCCESS = " Measure logic validation successful.";
 	
@@ -235,7 +235,7 @@ public class MessageDelegate {
 	public String getPOPULATION_WORK_SPACE_VALIDATION_ERROR() {
 		return POPULATION_WORK_SPACE_VALIDATION_ERROR;
 	}
-
+	
 	/**
 	 * Gets the population work space validation success.
 	 *
@@ -244,7 +244,7 @@ public class MessageDelegate {
 	public String getPOPULATION_WORK_SPACE_VALIDATION_SUCCESS() {
 		return POPULATION_WORK_SPACE_VALIDATION_SUCCESS;
 	}
-
+	
 	/** The code system required. */
 	private final String CODE_SYSTEM_REQUIRED = "Code System is required.";
 	
@@ -592,7 +592,7 @@ public class MessageDelegate {
 	public String getCOMPONENT_MEASURES_ADDED_SUCCESSFULLY() {
 		return COMPONENT_MEASURES_ADDED_SUCCESSFULLY;
 	}
-
+	
 	/**
 	 * Gets the abv name required message.
 	 * 
@@ -2035,7 +2035,7 @@ public class MessageDelegate {
 	public String getMEASURE_LOGIC_IS_INCOMPLETE() {
 		return MEASURE_LOGIC_IS_INCOMPLETE;
 	}
-
+	
 	/**
 	 * Gets the lhs rhs required.
 	 *
@@ -2044,7 +2044,7 @@ public class MessageDelegate {
 	public String getLHS_RHS_REQUIRED() {
 		return LHS_RHS_REQUIRED;
 	}
-
+	
 	/**
 	 * Gets the atleaste one child required.
 	 *
@@ -2053,7 +2053,7 @@ public class MessageDelegate {
 	public String getATLEAST_ONE_CHILD_REQUIRED() {
 		return ATLEAST_ONE_CHILD_REQUIRED;
 	}
-
+	
 	/**
 	 * Gets the population work space measure observation validation error.
 	 *
@@ -2062,7 +2062,7 @@ public class MessageDelegate {
 	public String getPOPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR() {
 		return POPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR;
 	}
-
+	
 	
 	/**
 	 * Gets the invalid character validation error.
@@ -2072,14 +2072,14 @@ public class MessageDelegate {
 	public String getINVALID_CHARACTER_VALIDATION_ERROR() {
 		return INVALID_CHARACTER_VALIDATION_ERROR;
 	}
-
+	
 	/**
 	 * @return the measureDeveloperAddedSuccessfully
 	 */
 	public static String getMeasureDeveloperAddedSuccessfully() {
 		return MEASURE_DEVELOPER_ADDED_SUCCESSFULLY;
 	}
-
+	
 	/**
 	 * @return the mEASURE_LOGIC_IS_INCORRECT
 	 */
@@ -2090,6 +2090,20 @@ public class MessageDelegate {
 	public String getSTRATIFICATION_VALIDATION_FOR_GROUPING() {
 		return STRATIFICATION_VALIDATION_FOR_GROUPING;
 	}
-
+	
+	/**
+	 * @return the oRGANIZATION_SUCCESS_MESSAGE
+	 */
+	public String getORGANIZATION_SUCCESS_MESSAGE() {
+		return ORGANIZATION_SUCCESS_MESSAGE;
+	}
+	
+	/**
+	 * @return the uSER_SUCCESS_MESSAGE
+	 */
+	public String getUSER_SUCCESS_MESSAGE() {
+		return USER_SUCCESS_MESSAGE;
+	}
+	
 	
 }

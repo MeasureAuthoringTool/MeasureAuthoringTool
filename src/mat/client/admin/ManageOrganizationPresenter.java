@@ -308,6 +308,8 @@ public class ManageOrganizationPresenter implements MatPresenter {
 	private void update() {
 		resetMessages();
 		updateOrganizationDetailsFromView();
+		detailDisplay.getErrorMessageDisplay().clear();
+		detailDisplay.getSuccessMessageDisplay().clear();
 		if (isValid(updatedDetails)) {
 			MatContext.get().getAdminService().saveUpdateOrganization(currentDetails, updatedDetails,
 					new AsyncCallback<SaveUpdateOrganizationResult>() {
@@ -318,7 +320,9 @@ public class ManageOrganizationPresenter implements MatPresenter {
 				@Override
 				public void onSuccess(SaveUpdateOrganizationResult result) {
 					if (result.isSuccess()) {
-						displaySearch();
+						//displaySearch();
+						detailDisplay.getSuccessMessageDisplay().setMessage(MatContext.get()
+								.getMessageDelegate().getORGANIZATION_SUCCESS_MESSAGE());
 					} else {
 						List<String> messages = new ArrayList<String>();
 						switch (result.getFailureReason()) {

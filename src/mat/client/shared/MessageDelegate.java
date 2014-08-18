@@ -55,7 +55,7 @@ public class MessageDelegate {
 	public static final String LAST_NAME_REQUIRED = "Last Name is required.";
 	
 	/** The Constant LOGIN_ID_REQUIRED. */
-	public static final String LOGIN_ID_REQUIRED = "User ID is required.";
+	public static final String LOGIN_ID_REQUIRED = "Email Address is required.";
 	
 	/** The Constant EMAIL_ID_INCORRECT_FORMAT. */
 	public static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";

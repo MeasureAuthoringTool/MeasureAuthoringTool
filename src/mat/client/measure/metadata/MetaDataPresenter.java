@@ -268,14 +268,6 @@ public class MetaDataPresenter  implements MatPresenter {
 		public List<Author> getAuthorsSelectedList();
 		
 		/**
-		 * Sets the measure type list.
-		 * 
-		 * @param measureType
-		 *            the new measure type list
-		 */
-		public void setMeasureTypeList(List<MeasureType> measureType);
-		
-		/**
 		 * Gets the description.
 		 * 
 		 * @return the description

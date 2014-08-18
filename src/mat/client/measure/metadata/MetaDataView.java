@@ -100,7 +100,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The meas scoring input. */
 	protected Label measScoringInput = new Label();
-	//protected TextBox measureIdInput = new TextBox();
+	
 	/** The finalized date. */
 	protected Label finalizedDate = new Label();
 	
@@ -134,9 +134,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The component measures list v panel. */
 	protected VerticalPanel componentMeasuresListVPanel = new VerticalPanel();
-	
-	/** The measure type v panel. */
-	//protected VerticalPanel measureTypeVPanel = new VerticalPanel();
 	
 	/** The qdm item count list s panel. */
 	protected ScrollPanel qdmItemCountListSPanel = new ScrollPanel();
@@ -197,10 +194,7 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The measure observations input. */
 	protected TextAreaWithMaxLength  measureObservationsInput = new TextAreaWithMaxLength ();
-	
-	/** The object status input. */
-	/*protected ListBoxMVP objectStatusInput = new ListBoxMVP();*/
-	
+
 	/** The measure type input. */
 	protected ListBoxMVP measureTypeInput = new ListBoxMVP();
 	
@@ -242,9 +236,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	
 	/** The component measures label. */
 	protected Label componentMeasuresLabel = new Label();
-	
-	/** The measure type label. */
-	//protected Label measureTypeLabel = new Label();
 	
 	/** The counter. */
 	private int counter = 0;
@@ -322,17 +313,11 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	/** The horz component measure panel. */
 	private HorizontalPanel horzComponentMeasurePanel = new HorizontalPanel();
 	
-	/** The horz measure type panel. */
-	//private HorizontalPanel horzMeasureTypePanel = new HorizontalPanel();
-	
 	/** The qdm selected list v panel. */
 	VerticalPanel qdmSelectedListVPanel=new VerticalPanel();
 	
 	/** The component measures selected list v panel. */
 	VerticalPanel componentMeasuresSelectedListVPanel = new VerticalPanel();
-	
-	/** The measure type selected list v panel. */
-	//VerticalPanel measureTypeSelectedListVPanel = new VerticalPanel();
 	
 	/** The qdm selected list s panel. */
 	ScrollPanel qdmSelectedListSPanel=new ScrollPanel();
@@ -2421,16 +2406,6 @@ public class MetaDataView implements MetaDataDetailDisplay{
 	public void setAuthorsSelectedList(List<Author> authorsSelectedList) {
 		this.authorsSelectedList = authorsSelectedList;
 	}
-	
-	
 
-	/* (non-Javadoc)
-	 * @see mat.client.measure.metadata.MetaDataPresenter.MetaDataDetailDisplay#setMeasureTypeList(java.util.List)
-	 */
-	@Override
-	public void setMeasureTypeList(List<MeasureType> measureType) {
-		// TODO Auto-generated method stub
-		
-	}	
 	
 }

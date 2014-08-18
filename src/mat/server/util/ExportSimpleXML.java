@@ -1017,7 +1017,10 @@ public class ExportSimpleXML {
 					//Date in MM/DD/YYYY
 					String value = node.getTextContent();
 					node.setTextContent(formatDate(value));
+					Node uuidAttributeNode = node.getAttributes().getNamedItem("uuid");
+					if(uuidAttributeNode!=null){
 					node.getAttributes().removeNamedItem("uuid");
+					}
 					//Commented this code to remove UUID attribute as a part of MAT-4613
 //					if(measurementPeriodStartDateNode != null){
 //						node.getAttributes().getNamedItem("uuid").setNodeValue(measurementPeriodStartDateNode.getAttributes().
@@ -1027,7 +1030,10 @@ public class ExportSimpleXML {
 					//Date in MM/DD/YYYY
 					String value = node.getTextContent();
 					node.setTextContent(formatDate(value));
+					Node uuidAttributeNode = node.getAttributes().getNamedItem("uuid");
+					if(uuidAttributeNode!=null){
 					node.getAttributes().removeNamedItem("uuid");
+					}
 					//Commented this code to remove UUID attribute as a part of MAT-4613
 //					if(measurementPeriodEndDateNode != null){
 //						node.getAttributes().getNamedItem("uuid").setNodeValue(measurementPeriodEndDateNode.getAttributes().

@@ -92,10 +92,12 @@ implements ManageOrganizationPresenter.DetailDisplay {
 		fPanel.add(clearPanel);
 		rightPanel.add(LabelBuilder.buildRequiredLabel(organization, organizationLabel));
 		rightPanel.add(organization);
+		organization.setTitle("Organization");
 		rightPanel.add(new SpacerWidget());
 		
 		rightPanel.add(LabelBuilder.buildRequiredLabel(oid, oidLabel));
 		rightPanel.add(oid);
+		oid.setTitle("Organization OID");
 		rightPanel.add(new SpacerWidget());
 		rightPanel.add(new SpacerWidget());
 		

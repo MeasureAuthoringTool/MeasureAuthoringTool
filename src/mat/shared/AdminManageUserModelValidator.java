@@ -5,7 +5,6 @@ package mat.shared;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.client.admin.ManageUsersDetailModel;
 import mat.client.shared.MatContext;
 
@@ -34,7 +33,7 @@ public class AdminManageUserModelValidator {
 			message.add(MatContext.get().getMessageDelegate().getLastNameRequiredMessage());
 		}
 		if("".equals(model.getEmailAddress().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
+			message.add(MatContext.get().getMessageDelegate().getEmailIdRequired());
 		}
 		if("".equals(model.getPhoneNumber().trim())) {
 			
@@ -45,12 +44,13 @@ public class AdminManageUserModelValidator {
 		int i, numCount;
 		numCount=0;
 		for(i=0;i<phoneNum.length(); i++){
-			if(Character.isDigit(phoneNum.charAt(i)))
+			if(Character.isDigit(phoneNum.charAt(i))) {
 				numCount++;
+			}
 		}
 		if(numCount != 10) {
 			message.add(MatContext.get().getMessageDelegate().getPhoneTenDigitMessage());
-		}	
+		}
 		
 		if("".equals(model.getOrganizationId().trim())) {
 			message.add(MatContext.get().getMessageDelegate().getOrgRequiredMessage());
@@ -72,5 +72,5 @@ public class AdminManageUserModelValidator {
 		}*/
 		return message;
 	}
-
+	
 }

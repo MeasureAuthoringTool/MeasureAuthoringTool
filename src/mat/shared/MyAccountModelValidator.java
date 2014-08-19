@@ -2,7 +2,6 @@ package mat.shared;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import mat.client.myAccount.MyAccountModel;
 import mat.client.shared.MatContext;
 
@@ -10,7 +9,7 @@ import mat.client.shared.MatContext;
  * The Class MyAccountModelValidator.
  */
 public class MyAccountModelValidator {
-
+	
 	//TODO to prevent overflows we should be checking sizes
 	// What should the overflow bounds be?
 	
@@ -21,9 +20,10 @@ public class MyAccountModelValidator {
 	 *            the model
 	 * @return the list
 	 */
+	@SuppressWarnings("static-access")
 	public List<String> validate(MyAccountModel model){
 		List<String> message = new ArrayList<String>();
-				
+		
 		if(!checkForMarkUp(model)){
 			message.add(MatContext.get().getMessageDelegate().getNoMarkupAllowedMessage());
 		}
@@ -47,7 +47,7 @@ public class MyAccountModelValidator {
 			message.add(MatContext.get().getMessageDelegate().getRootOIDRequiredMessage());
 		}*/
 		if("".equals(model.getEmailAddress().trim())) {
-			message.add(MatContext.get().getMessageDelegate().getLoginIDRequiredMessage());
+			message.add(MatContext.get().getMessageDelegate().getEmailIdRequired());
 		}
 		String emailRegExp  = "^\\S+@\\S+\\.\\S+$";
 		if (!(model.getEmailAddress().trim().matches(emailRegExp))){
@@ -61,8 +61,9 @@ public class MyAccountModelValidator {
 		int i, numCount;
 		numCount=0;
 		for(i=0;i<phoneNum.length(); i++){
-			if(Character.isDigit(phoneNum.charAt(i)))
+			if(Character.isDigit(phoneNum.charAt(i))) {
 				numCount++;
+			}
 		}
 		if(numCount != 10) {
 			message.add(MatContext.get().getMessageDelegate().getPhoneTenDigitMessage());
@@ -70,7 +71,7 @@ public class MyAccountModelValidator {
 		
 		return message;
 	}
-
+	
 	private boolean checkForMarkUp(MyAccountModel model) {
 		String markupRegExp = "<[^>]+>";
 		
@@ -90,7 +91,7 @@ public class MyAccountModelValidator {
 			return false;
 		}
 		noMarkupText = model.getTitle().trim().replaceAll(markupRegExp, "");
-		System.out.println(noMarkupText);		
+		System.out.println(noMarkupText);
 		if(model.getTitle().trim().length() > noMarkupText.length()){
 			return false;
 		}

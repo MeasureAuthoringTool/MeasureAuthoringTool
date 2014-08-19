@@ -55,11 +55,12 @@ public class MessageDelegate {
 	public static final String LAST_NAME_REQUIRED = "Last Name is required.";
 	
 	/** The Constant LOGIN_ID_REQUIRED. */
-	public static final String LOGIN_ID_REQUIRED = "Email Address is required.";
+	public static final String LOGIN_ID_REQUIRED = "User ID is required.";
 	
 	/** The Constant EMAIL_ID_INCORRECT_FORMAT. */
 	public static final String EMAIL_ID_INCORRECT_FORMAT = "Email Address has an incorrect format.";
-	
+	/** The Constant EMAIL_ID_REQUIRED. */
+	public static final String EMAIL_ID_REQUIRED = "Email Address is required.";
 	/** The Constant LOGIN_USER_REQUIRED. */
 	public static final String LOGIN_USER_REQUIRED = "User Name is required.";
 	
@@ -2103,6 +2104,13 @@ public class MessageDelegate {
 	 */
 	public String getUSER_SUCCESS_MESSAGE() {
 		return USER_SUCCESS_MESSAGE;
+	}
+	
+	/**
+	 * @return the emailIdRequired
+	 */
+	public String getEmailIdRequired() {
+		return EMAIL_ID_REQUIRED;
 	}
 	
 	

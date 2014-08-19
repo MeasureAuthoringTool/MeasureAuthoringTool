@@ -2375,4 +2375,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		this.isQdmVariableDirty = isQdmVariableDirty;
 	}
 	
+	/* (non-Javadoc)
+	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#getSearchSuggestTextBox()
+	 */
+	@Override
+	public SuggestBox getSearchSuggestTextBox() {
+		return searchSuggestTextBox;
+	}
+	
+	
 }

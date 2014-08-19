@@ -548,6 +548,7 @@ public class XmlTreePresenter {
 					@Override
 					public void onSuccess(Boolean result) {
 						if (result) {
+							xmlTreeDisplay.getSearchSuggestTextBox().setText("Search");
 							xmlTreeDisplay
 							.getSuccessMessageDisplay()
 							.setMessage(

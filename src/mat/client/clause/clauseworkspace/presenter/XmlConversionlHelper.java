@@ -381,9 +381,7 @@ public class XmlConversionlHelper {
 				else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.RELATIONAL_OP)) {
 					String type = node.getAttributes().getNamedItem(PopulationWorkSpaceConstants.TYPE).getNodeValue();
 					String longName = MatContext.get().operatorMapKeyShort.get(type);
-					if (MatContext.get().relationships.contains(longName)) {
-						cellTreeNodeType = CellTreeNode.RELATIONSHIP_NODE;
-					} else {
+					if (MatContext.get().timings.contains(longName)) {
 						cellTreeNodeType = CellTreeNode.TIMING_NODE;
 						NamedNodeMap nodeMap = node.getAttributes();
 						HashMap<String, String> map = new HashMap<String, String>();
@@ -393,6 +391,8 @@ public class XmlConversionlHelper {
 							map.put(key, value);
 						}
 						child.setExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES, map);
+					} else {
+						cellTreeNodeType = CellTreeNode.RELATIONSHIP_NODE;
 					}
 				} else if (nodeName.equalsIgnoreCase(PopulationWorkSpaceConstants.ELEMENT_REF)) {
 					cellTreeNodeType = CellTreeNode.ELEMENT_REF_NODE;

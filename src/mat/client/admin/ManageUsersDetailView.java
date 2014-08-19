@@ -167,9 +167,11 @@ implements ManageUsersPresenter.DetailDisplay {
 		leftPanel.add(new SpacerWidget());
 		
 		leftPanel.add(LabelBuilder.buildLabel(title, titleLabel));
+		title.setTitle("Title");
 		leftPanel.add(title);
 		leftPanel.add(new SpacerWidget());
 		
+		emailAddress.setTitle("Email Address");
 		leftPanel.add(LabelBuilder.buildRequiredLabel(emailAddress, emailAddressLabel));
 		leftPanel.add(emailAddress);
 		leftPanel.add(new SpacerWidget());
@@ -196,10 +198,10 @@ implements ManageUsersPresenter.DetailDisplay {
 		roleRadioPanel.add(radioPanel2);
 		roleRadioPanel.add(radioPanel3);
 		rightPanel.add(roleRadioPanel);
-		rightPanel.add(new SpacerWidget());		
+		rightPanel.add(new SpacerWidget());
 		
 		rightPanel.add(LabelBuilder.buildRequiredLabel(organizationListBox, organizationLabel));
-		rightPanel.add(organizationListBox);		
+		rightPanel.add(organizationListBox);
 		rightPanel.add(new SpacerWidget());
 		organizationListBox.addValueChangeHandler(new ValueChangeHandler<String>() {
 			@Override

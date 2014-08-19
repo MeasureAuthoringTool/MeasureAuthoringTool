@@ -19,7 +19,7 @@ public class UserNameWidget extends Composite {
 	
 	/** The middle initial. */
 	private TextBox middleInitial = new TextBox();
-
+	
 	/** The first name label. */
 	private Widget firstNameLabel = LabelBuilder.buildRequiredLabel(firstName, "First Name");
 	
@@ -36,7 +36,9 @@ public class UserNameWidget extends Composite {
 		firstName.getElement().setId("firstName_TextBox");
 		lastName.getElement().setId("lastName_TextBox");
 		middleInitial.getElement().setId("middleInitial_TextBox");
-		
+		firstName.setTitle("First Name");
+		lastName.setTitle("Last Name");
+		middleInitial.setTitle("Middle Initial");
 		Grid nameGrid = new Grid(2,3);
 		nameGrid.setWidget(0, 0, firstNameLabel);
 		nameGrid.setWidget(0, 1, middleInitialLabel);
@@ -65,7 +67,7 @@ public class UserNameWidget extends Composite {
 	public HasValue<String> getFirstName() {
 		return firstName;
 	}
-
+	
 	/**
 	 * Gets the last name.
 	 * 
@@ -74,7 +76,7 @@ public class UserNameWidget extends Composite {
 	public HasValue<String> getLastName() {
 		return lastName;
 	}
-
+	
 	/**
 	 * Gets the middle initial.
 	 * 
@@ -83,5 +85,5 @@ public class UserNameWidget extends Composite {
 	public HasValue<String> getMiddleInitial() {
 		return middleInitial;
 	}
-
+	
 }

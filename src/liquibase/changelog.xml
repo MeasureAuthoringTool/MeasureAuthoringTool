@@ -162,4 +162,5 @@
 		<include file="classpath:/liquibase/deploy_sprint-43_US4371_Adding_Birthdate_and_Expired.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-44_US4558.xml"/>
 		<include file="classpath:/liquibase/deploy_sprint-44_US4573.xml"/>
+		<include file="classpath:/liquibase/deploy_sprint-46_US4697_US4752_US4757.xml"/>
 	</databaseChangeLog>

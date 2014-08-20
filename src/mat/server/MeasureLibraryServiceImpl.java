@@ -166,6 +166,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Autowired
 	private AuthorDAO authorDAO;
 	
+	/** The operator dao. */
 	@Autowired
 	private OperatorDAO operatorDAO;
 	
@@ -3069,6 +3070,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	}
 	
 	
+	/**
+	 * Gets the relationship type list.
+	 *
+	 * @return the relationship type list
+	 */
 	private List<String> getRelationshipTypeList() {
 		List<OperatorDTO> timingRelationshipsList = operatorDAO.getRelAssociationsOperators();
 		List<String> typeList = new ArrayList<String>();

@@ -197,6 +197,7 @@ public class MatContext implements IsSerializable {
 	/** The operator map key long. */
 	public Map<String, String> operatorMapKeyLong = new HashMap<String, String>();
 	
+	/** The removed relationship types. */
 	public Map<String, String> removedRelationshipTypes = new HashMap<String, String>();
 	
 	/*
@@ -1293,9 +1294,8 @@ public class MatContext implements IsSerializable {
 	
 	/**
 	 * Sets the manage code list search view.
-	 * 
-	 * @param manageCodeListSearchView
-	 *            the manageCodeListSearchView to set
+	 *
+	 * @param manageCodeListSearchModel the new manage code list searc model
 	 */
 //	public void setManageCodeListSearchView(ManageCodeListSearchView manageCodeListSearchView) {
 //		this.manageCodeListSearchView = manageCodeListSearchView;

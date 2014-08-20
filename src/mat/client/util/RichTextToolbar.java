@@ -1,9 +1,7 @@
 package mat.client.util;
 
 import java.util.HashMap;
-
 import mat.client.ImageResources;
-
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.event.dom.client.ChangeEvent;
@@ -20,9 +18,9 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.RichTextArea;
+import com.google.gwt.user.client.ui.RichTextArea.Formatter;
 import com.google.gwt.user.client.ui.ToggleButton;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.RichTextArea.Formatter;
 
 public class RichTextToolbar extends Composite {
 	/** Local CONSTANTS **/
@@ -42,12 +40,12 @@ public class RichTextToolbar extends Composite {
 	}
 	public final static HashMap<String,String> GUI_FONTLIST = new HashMap<String,String>();
 	static {
-	    GUI_FONTLIST.put("Times New Roman", "Times New Roman");
-	    GUI_FONTLIST.put("Arial", "Arial");
-	    GUI_FONTLIST.put("Courier New", "Courier New");
-	    GUI_FONTLIST.put("Georgia", "Georgia");
-	    GUI_FONTLIST.put("Trebuchet", "Trebuchet");
-	    GUI_FONTLIST.put("Verdana", "Verdana");
+		GUI_FONTLIST.put("Times New Roman", "Times New Roman");
+		GUI_FONTLIST.put("Arial", "Arial");
+		GUI_FONTLIST.put("Courier New", "Courier New");
+		GUI_FONTLIST.put("Georgia", "Georgia");
+		GUI_FONTLIST.put("Trebuchet", "Trebuchet");
+		GUI_FONTLIST.put("Verdana", "Verdana");
 	}
 	
 	//HTML Related (styles made by SPAN and DIV)
@@ -78,7 +76,7 @@ public class RichTextToolbar extends Composite {
 	//GUI Related stuff
 	private static final String GUI_DIALOG_INSERTURL = "Enter a link URL:";
 	private static final String GUI_DIALOG_IMAGEURL = "Enter an image URL:";
-
+	
 	private static final String GUI_LISTNAME_COLORS = "Colors";
 	private static final String GUI_LISTNAME_FONTS = "Fonts";
 	
@@ -107,14 +105,14 @@ public class RichTextToolbar extends Composite {
 	private VerticalPanel outer;
 	private HorizontalPanel topPanel;
 	private HorizontalPanel bottomPanel;
-
+	
 	//The RichTextArea this Toolbar referes to and the Interfaces to access the RichTextArea
 	private RichTextArea styleText;
 	private Formatter styleTextFormatter;
-
+	
 	//We use an internal class of the ClickHandler and the KeyUpHandler to be private to others with these events
 	private EventHandler evHandler;
-
+	
 	//The Buttons of the Menubar
 	private ToggleButton bold;
 	private ToggleButton italic;
@@ -135,12 +133,12 @@ public class RichTextToolbar extends Composite {
 	private PushButton insertimage;
 	private PushButton removeformatting;
 	private ToggleButton texthtml;
-	private PushButton show;
-	private PushButton hide;
+	//private PushButton show;
+	//private PushButton hide;
 	
 	private ListBox fontlist;
 	private ListBox colorlist;
-
+	
 	private Boolean toolbarVisible;
 	
 	private Boolean showLinkButtons = false;
@@ -151,8 +149,8 @@ public class RichTextToolbar extends Composite {
 		initialize(richtext);
 	}
 	
-	/** 
-	 * Constructor of the Toolbar. Includes boolean to say if we 
+	/**
+	 * Constructor of the Toolbar. Includes boolean to say if we
 	 * wish to start with the toolbar visible
 	 * 
 	 * @param richtext
@@ -170,47 +168,48 @@ public class RichTextToolbar extends Composite {
 	private void initialize(RichTextArea richtext){
 		//Initialize the main-panel
 		outer = new VerticalPanel();
-
+		
 		//Initialize the two inner panels
 		topPanel = new HorizontalPanel();
 		bottomPanel = new HorizontalPanel();
 		topPanel.setStyleName(CSS_ROOT_NAME);
 		bottomPanel.setStyleName(CSS_ROOT_NAME);
-
+		
 		//Save the reference to the RichText area we refer to and get the interfaces to the stylings
-
+		
 		styleText = richtext;
 		styleTextFormatter = styleText.getFormatter();
-
+		
 		//Set some graphical options, so this toolbar looks how we like it.
 		topPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_LEFT);
 		bottomPanel.setHorizontalAlignment(HorizontalPanel.ALIGN_LEFT);
-
+		
 		//Add the two inner panels to the main panel
 		outer.add(topPanel);
 		outer.add(bottomPanel);
-
+		
 		//Some graphical stuff to the main panel and the initialisation of the new widget
 		outer.setWidth("100%");
 		outer.setStyleName(CSS_ROOT_NAME);
 		initWidget(outer);
-
+		
 		//
 		evHandler = new EventHandler();
-
+		
 		//Add KeyUp and Click-Handler to the RichText, so that we can actualize the toolbar if neccessary
 		styleText.addKeyUpHandler(evHandler);
 		styleText.addClickHandler(evHandler);
-
+		
 		//Now lets fill the new toolbar with life
 		buildTools();
-		outer.add(show = createShowHide("Show Toolbar","90px"));
+		//outer.add(show = createShowHide("Show Toolbar","90px"));
 		
-		show.setVisible(!toolbarVisible);
-
+		//show.setVisible(!toolbarVisible);
+		
 	}
 	/** Click Handler of the Toolbar **/
 	private class EventHandler implements ClickHandler,KeyUpHandler, ChangeHandler {
+		@Override
 		public void onClick(ClickEvent event) {
 			if (event.getSource().equals(bold)) {
 				if (isHTMLMode()) {
@@ -334,7 +333,7 @@ public class RichTextToolbar extends Composite {
 				}
 			} else if (event.getSource().equals(styleText)) {
 				//Change invoked by the richtextArea
-			}else if(event.getSource().equals(show)){
+			}/*else if(event.getSource().equals(show)){
 				toolbarVisible = true;
 				topPanel.setVisible(toolbarVisible);
 				bottomPanel.setVisible(toolbarVisible);
@@ -345,14 +344,16 @@ public class RichTextToolbar extends Composite {
 				topPanel.setVisible(toolbarVisible);
 				bottomPanel.setVisible(toolbarVisible);
 				show.setVisible(!toolbarVisible);
-			}
+			}*/
 			updateStatus();
 		}
-
+		
+		@Override
 		public void onKeyUp(KeyUpEvent event) {
 			updateStatus();
 		}
-
+		
+		@Override
 		public void onChange(ChangeEvent event) {
 			if (event.getSource().equals(fontlist)) {
 				if (isHTMLMode()) {
@@ -369,7 +370,7 @@ public class RichTextToolbar extends Composite {
 			}
 		}
 	}
-
+	
 	/** Native JavaScript that returns the selected text and position of the start **/
 	public static native JsArrayString getSelection(Element elem) /*-{
 		var txt = "";
@@ -395,7 +396,7 @@ public class RichTextToolbar extends Composite {
         }
   		return [""+txt,""+pos];
 	}-*/;
-
+	
 	/** Method called to toggle the style in HTML-Mode **/
 	private void changeHtmlStyle(String startTag, String stopTag) {
 		JsArrayString tx = getSelection(styleText.getElement());
@@ -404,12 +405,12 @@ public class RichTextToolbar extends Composite {
 		String selectedText = tx.get(0);
 		styleText.setText(txbuffer.substring(0, startpos)+startTag+selectedText+stopTag+txbuffer.substring(startpos+selectedText.length()));
 	}
-
+	
 	/** Private method with a more understandable name to get if HTML mode is on or not **/
 	private Boolean isHTMLMode() {
 		return  texthtml.isDown();
 	}
-
+	
 	/** Private method to set the toggle buttons and disable/enable buttons which do not work in html-mode **/
 	private void updateStatus() {
 		if (styleTextFormatter != null) {
@@ -435,7 +436,7 @@ public class RichTextToolbar extends Composite {
 			}
 		}
 	}
-
+	
 	/** Initialize the options on the toolbar **/
 	private void buildTools() {
 		//Init the TOP Panel forst
@@ -468,17 +469,17 @@ public class RichTextToolbar extends Composite {
 		topPanel.add(removeformatting = createPushButton(HTTP_STATIC_ICONS_GIF,20,460,20,20,GUI_HOVERTEXT_REMOVEFORMAT));
 		topPanel.add(new HTML("&nbsp;"));
 		topPanel.add(texthtml = createToggleButton(HTTP_STATIC_ICONS_GIF,0,258,20,20,GUI_HOVERTEXT_SWITCHVIEW));
-
+		
 		//Init the BOTTOM Panel
 		bottomPanel.add(fontlist = createFontList());
 		bottomPanel.add(new HTML("&nbsp;"));
 		bottomPanel.add(colorlist = createColorList());
 		bottomPanel.add(new HTML("&nbsp;"));
-		bottomPanel.add(hide = createShowHide("Hide Toolbar",null));
+		//bottomPanel.add(hide = createShowHide("Hide Toolbar",null));
 	}
-
 	
-
+	
+	
 	/** Method to create a Toggle button for the toolbar **/
 	private ToggleButton createToggleButton(String url, Integer top, Integer left, Integer width, Integer height, String tip) {
 		Image extract = new Image(ImageResources.INSTANCE.rich_Text_Toolbar());
@@ -492,7 +493,7 @@ public class RichTextToolbar extends Composite {
 		}
 		return tb;
 	}
-
+	
 	/** Method to create a Push button for the toolbar **/
 	private PushButton createPushButton(String url, Integer top, Integer left, Integer width, Integer height, String tip) {
 		//Image extract = new Image(new Image(ImageResources.INSTANCE.rich_Text_Toolbar()), left, top, width, height);
@@ -511,30 +512,30 @@ public class RichTextToolbar extends Composite {
 	
 	/** Method to create the fontlist for the toolbar **/
 	private ListBox createFontList() {
-	    ListBox mylistBox = new ListBox();
-	    mylistBox.addChangeHandler(evHandler);
-	    mylistBox.setVisibleItemCount(1);
-	
-	    mylistBox.addItem(GUI_LISTNAME_FONTS);
-	    for (String name: GUI_FONTLIST.keySet()) {
-	    	mylistBox.addItem(name, GUI_FONTLIST.get(name));
-	    }
-	    
-	    return mylistBox;
+		ListBox mylistBox = new ListBox();
+		mylistBox.addChangeHandler(evHandler);
+		mylistBox.setVisibleItemCount(1);
+		
+		mylistBox.addItem(GUI_LISTNAME_FONTS);
+		for (String name: GUI_FONTLIST.keySet()) {
+			mylistBox.addItem(name, GUI_FONTLIST.get(name));
+		}
+		
+		return mylistBox;
 	}
 	
 	/** Method to create the colorlist for the toolbar **/
 	private ListBox createColorList() {
-	    ListBox mylistBox = new ListBox();
-	    mylistBox.addChangeHandler(evHandler);
-	    mylistBox.setVisibleItemCount(1);
-	
-	    mylistBox.addItem(GUI_LISTNAME_COLORS);
-	    for (String name: GUI_COLORLIST.keySet()) {
-	    	mylistBox.addItem(name, GUI_COLORLIST.get(name));
-	    }
-	    
-	    return mylistBox;
+		ListBox mylistBox = new ListBox();
+		mylistBox.addChangeHandler(evHandler);
+		mylistBox.setVisibleItemCount(1);
+		
+		mylistBox.addItem(GUI_LISTNAME_COLORS);
+		for (String name: GUI_COLORLIST.keySet()) {
+			mylistBox.addItem(name, GUI_COLORLIST.get(name));
+		}
+		
+		return mylistBox;
 	}
 	private PushButton createShowHide(String name, String width) {
 		PushButton temp = new PushButton(name);

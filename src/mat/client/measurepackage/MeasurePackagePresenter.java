@@ -460,11 +460,14 @@ public class MeasurePackagePresenter implements MatPresenter {
 	 * @return boolean.
 	 */
 	private boolean isValid() {
+		
 		List<MeasurePackageClauseDetail> detailList = view
 				.getPackageGroupingWidget().getGroupingPopulationList();
 		List<String> messages = new ArrayList<String>();
 		MeasurePackageClauseValidator clauseValidator = new MeasurePackageClauseValidator();
+		MeasurePackageClauseCellListWidget measurePackageClauseCellListWidget = new MeasurePackageClauseCellListWidget();		
 		messages = clauseValidator.isValidMeasurePackage(detailList);
+		measurePackageClauseCellListWidget.CheckForNumberOfStratification((ArrayList<MeasurePackageClauseDetail>) detailList, messages);
 		if (messages.size() > 0) {
 			view.getPackageErrorMessageDisplay().setMessages(messages);
 		} else {

@@ -3127,6 +3127,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			//validate for at least one grouping
 			String XPATH_GROUP = "/measure/measureGrouping/group";
+			
 			NodeList groupSDE;
 			try {
 				groupSDE = (NodeList) xPath.evaluate(XPATH_GROUP, xmlProcessor.getOriginalDoc(),
@@ -3134,7 +3135,17 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				
 				if(groupSDE.getLength()==0){
 					message.add(MatContext.get().getMessageDelegate().getGroupingRequiredMessage());
-					//flag = true;
+					
+				}else{
+					for(int i=1; i<=groupSDE.getLength(); i++){
+						NodeList numberOfStratificationPerGroup = (NodeList) xPath.evaluate("/measure/measureGrouping/group[@sequence='"+i+"']/packageClause[@type='stratification']", xmlProcessor.getOriginalDoc(),
+								XPathConstants.NODESET);
+						if(numberOfStratificationPerGroup.getLength()>1){
+							message.add(MatContext.get().getMessageDelegate().getSTRATIFICATION_VALIDATION_FOR_GROUPING());
+							break;
+						}						
+					}
+					
 				}
 			} catch (XPathExpressionException e2) {
 				

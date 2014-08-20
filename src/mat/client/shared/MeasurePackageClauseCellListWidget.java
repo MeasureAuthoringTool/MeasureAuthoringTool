@@ -981,7 +981,7 @@ public class MeasurePackageClauseCellListWidget {
 	 * @param validateGroupingList the validate grouping list
 	 * @param messages the messages
 	 */
-	protected void CheckForNumberOfStratification(
+	public void CheckForNumberOfStratification(
 			ArrayList<MeasurePackageClauseDetail> validateGroupingList,
 			List<String> messages) {
 		int count = 0;

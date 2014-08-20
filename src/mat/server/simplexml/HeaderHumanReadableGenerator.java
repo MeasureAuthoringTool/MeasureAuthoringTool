@@ -1,9 +1,8 @@
 package mat.server.simplexml;
 
 import javax.xml.xpath.XPathExpressionException;
-
 import mat.server.util.XmlProcessor;
-
+import org.jsoup.nodes.DocumentType;
 import org.jsoup.nodes.Element;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.NamedNodeMap;
@@ -16,37 +15,37 @@ import org.w3c.dom.NodeList;
  * 
  */
 public class HeaderHumanReadableGenerator {
-
+	
 	/**
 	 * The beginning of measure details x-path
 	 */
 	private static final String DETAILS_PATH = "/measure/measureDetails/";
-
+	
 	/**
 	 * The constant HTML_TR
 	 */
 	private static final String HTML_TR = "tr";
-
+	
 	/**
 	 * The constant HTML_TD
 	 */
 	private static final String HTML_TD = "td";
-
+	
 	/**
 	 * The constant TWENTY_PERCENT
 	 */
 	private static final String TWENTY_PERCENT = "20%";
-
+	
 	/**
 	 * The element row used to create the header table
 	 */
 	private static Element row;
-
+	
 	/**
 	 * the element column used to create the header table
 	 */
 	private static Element column;
-
+	
 	/**
 	 * Creates the html document with the human readable header in it
 	 * 
@@ -59,7 +58,7 @@ public class HeaderHumanReadableGenerator {
 			String measureXML) throws XPathExpressionException {
 		org.jsoup.nodes.Document htmlDocument = null;
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
-
+		
 		htmlDocument = createBaseHTMLDocument(getInfo(measureXMLProcessor,
 				"title"));
 		Element bodyElement = htmlDocument.body();
@@ -69,24 +68,24 @@ public class HeaderHumanReadableGenerator {
 		createDocumentGeneral(measureXMLProcessor, tBody);
 		createEmeasureBrief(measureXMLProcessor, tBody);
 		createSubjectOf(measureXMLProcessor, tBody);
-
+		
 		return htmlDocument;
 	}
-
+	
 	public static void addMeasureSet(XmlProcessor processor,
 			org.jsoup.nodes.Document html) throws XPathExpressionException {
 		Element body = html.body();
-
+		
 		body.append("<hr align=\"left\" color=\"teal\" size=\"2\" width=\"80%\">");
-
+		
 		Element table = body.appendElement("table");
 		table.attr("class", "header_table");
 		Element tBody = table.appendElement("tbody");
-
+		
 		createRowAndColumns(tBody, "Measure Set");
 		createDiv(getInfo(processor, "qualityMeasureSet"), column);
 	}
-
+	
 	/**
 	 * Creates the first part of the header table
 	 * 
@@ -102,7 +101,7 @@ public class HeaderHumanReadableGenerator {
 		// eMeasure Title
 		createRowAndColumns(table, "eMeasure Title");
 		column.appendText(getShortTitle(processor));
-
+		
 		// eMeasure Identifier and Version number
 		row = table.appendElement(HTML_TR);
 		column = row.appendElement(HTML_TD);
@@ -117,7 +116,7 @@ public class HeaderHumanReadableGenerator {
 		column = row.appendElement(HTML_TD);
 		setTDInfoAttributes(column, "30%", "");
 		column.appendText(getInfo(processor, "version"));
-
+		
 		// NQF number and GUID
 		row = table.appendElement(HTML_TR);
 		column = row.appendElement(HTML_TD);
@@ -131,30 +130,30 @@ public class HeaderHumanReadableGenerator {
 		createSpan("GUID", column);
 		column = row.appendElement(HTML_TD);
 		column.appendText(getInfo(processor, "guid"));
-
+		
 		// Calls getMeasurePeriod to produce the Measurement Period
 		getMeasurePeriod(processor, table);
-
+		
 		// CMS ID number
 		if (processor.findNode(processor.getOriginalDoc(), DETAILS_PATH
 				+ "cmsid") != null) {
 			createRowAndColumns(table, "CMS ID Number");
 			column.appendText(getInfo(processor, "cmsid"));
 		}
-
+		
 		// Measure Steward
 		createRowAndColumns(table, "Measure Steward");
 		column.appendText(getInfo(processor, "steward"));
-
+		
 		// Measure Developers
 		getInfoNodes(table, processor, "developers/developer",
 				"Measure Developer", false);
-
+		
 		// Endorsed By
 		createRowAndColumns(table, "Endorsed By");
 		column.appendText(getInfo(processor, "endorsement"));
 	}
-
+	
 	/**
 	 * Creates the "Description section of the header table
 	 * 
@@ -170,7 +169,7 @@ public class HeaderHumanReadableGenerator {
 		createRowAndColumns(table, "Description");
 		createDiv(getInfo(processor, "description"), column);
 	}
-
+	
 	/**
 	 * Creates the rest of the header table
 	 * 
@@ -185,113 +184,113 @@ public class HeaderHumanReadableGenerator {
 		// Copyright
 		createRowAndColumns(table, "Copyright");
 		createDiv(getInfo(processor, "copyright"), column);
-
+		
 		// Disclaimer
 		createRowAndColumns(table, "Disclaimer");
 		createDiv(getInfo(processor, "disclaimer"), column);
-
+		
 		// Measure Scoring
 		createRowAndColumns(table, "Measure Scoring");
 		column.appendText(getInfo(processor, "scoring"));
-
+		
 		// Measure Type
 		getInfoNodes(table, processor, "types/type", "Measure Type", false);
-
+		
 		// Measure Item Count
 		createItemCount(processor, table);
-
+		
 		// Component Measures
 		createComponentMeasureList(processor, table);
-
+		
 		// Stratification
 		createRowAndColumns(table, "Stratification");
 		createDiv(getInfo(processor, "stratification"), column);
-
+		
 		// Risk Adjustment
 		createRowAndColumns(table, "Risk Adjustment");
 		createDiv(getInfo(processor, "riskAdjustment"), column);
-
+		
 		// Rate Aggregation
 		createRowAndColumns(table, "Rate Aggregation");
 		createDiv(getInfo(processor, "aggregation"), column);
-
+		
 		// Rationale
 		createRowAndColumns(table, "Rationale");
 		createDiv(getInfo(processor, "rationale"), column);
-
+		
 		// Clinical Recommendation Statement
 		createRowAndColumns(table, "Clinical Recommendation Statement");
 		createDiv(getInfo(processor, "recommendations"), column);
-
+		
 		// Improvement Notation
 		createRowAndColumns(table, "Improvement Notation");
 		createDiv(getInfo(processor, "improvementNotations"), column);
-
+		
 		// References
 		getInfoNodes(table, processor, "references/reference", "Reference",
 				true);
-
+		
 		// Definitions
 		getInfoNodes(table, processor, "definitions", "Definition", true);
-
+		
 		// Guidance
 		createRowAndColumns(table, "Guidance");
 		createDiv(getInfo(processor, "guidance"), column);
-
+		
 		// Transmission Format
 		createRowAndColumns(table, "Transmission Format");
 		createDiv(getInfo(processor, "transmissionFormat"), column);
-
+		
 		// INitial Population
 		createRowAndColumns(table, "Initial Population");
 		createDiv(getInfo(processor, "initialPopDescription"), column);
-
+		
 		// Denominator
 		createRowAndColumns(table, "Denominator");
 		createDiv(getInfo(processor, "denominatorDescription"), column);
-
+		
 		// Denominator Exclusions
 		createRowAndColumns(table, "Denominator Exclusions");
 		createDiv(getInfo(processor, "denominatorExclusionsDescription"),
 				column);
-
+		
 		// Numerator
 		createRowAndColumns(table, "Numerator");
 		createDiv(getInfo(processor, "numeratorDescription"), column);
-
+		
 		// Numerator Exclusions
 		createRowAndColumns(table, "Numerator Exclusions");
 		createDiv(getInfo(processor, "numeratorExclusionsDescription"), column);
-
+		
 		// Denominator Exceptions
 		createRowAndColumns(table, "Denominator Exceptions");
 		createDiv(getInfo(processor, "denominatorExceptionsDescription"),
 				column);
-
+		
 		// Measure Population
 		createRowAndColumns(table, "Measure Population");
 		createDiv(getInfo(processor, "measurePopulationDescription"), column);
-
+		
 		// Measure Population Exclusions
 		createRowAndColumns(table, "Measure Population Exclusions");
 		createDiv(getInfo(processor, "measurePopulationExclusionsDescription"),
 				column);
-
+		
 		// Measure Observations
 		createRowAndColumns(table, "Measure Observations");
 		createDiv(getInfo(processor, "measureObservationsDescription"), column);
-
+		
 		// Supplemental Data Elements
 		createRowAndColumns(table, "Supplemental Data Elements");
 		createDiv(getInfo(processor, "supplementalData"), column);
-
+		
 		/*
 		 * //Quality Measure Set createRowAndColumns(table,
 		 * "Quality Measure Set");
 		 * createDiv(getInfo(processor,"qualityMeasureSet"), column);
 		 */
 	}
-
+	
 	/**
 	 * Gets the short title of the measure
 	 * 
@@ -314,7 +313,7 @@ public class HeaderHumanReadableGenerator {
 		}
 		return title;
 	}
-
+	
 	/**
 	 * Gets the measures measurement period
 	 * 
@@ -344,9 +343,9 @@ public class HeaderHumanReadableGenerator {
 		}
 		createRowAndColumns(table, "Measurement Period");
 		column.appendText(newStart + through + newEnd);
-
+		
 	}
-
+	
 	/**
 	 * Formats the date for measurement period
 	 * 
@@ -377,7 +376,7 @@ public class HeaderHumanReadableGenerator {
 		}
 		return returnDate;
 	}
-
+	
 	/**
 	 * Returns the string representation of a month
 	 * 
@@ -414,7 +413,7 @@ public class HeaderHumanReadableGenerator {
 		}
 		return returnMonth;
 	}
-
+	
 	/**
 	 * Used to generate the table rows of elements that will potentially have
 	 * multiple rows.
@@ -433,11 +432,11 @@ public class HeaderHumanReadableGenerator {
 	 */
 	private static void getInfoNodes(Element table, XmlProcessor processor,
 			String lookUp, String display, boolean addDiv)
-			throws XPathExpressionException {
+					throws XPathExpressionException {
 		// Gets all nodes that are in the given path
 		NodeList developers = processor.findNodeList(
 				processor.getOriginalDoc(), DETAILS_PATH + lookUp);
-
+		
 		if (developers.getLength() > 0) {
 			Node person;
 			// loop through each node
@@ -464,7 +463,7 @@ public class HeaderHumanReadableGenerator {
 			createRowAndColumns(table, display);
 		}
 	}
-
+	
 	/**
 	 * Retreves the text content from the node on the given xPath
 	 * 
@@ -501,7 +500,7 @@ public class HeaderHumanReadableGenerator {
 		}
 		return returnVar;
 	}
-
+	
 	/**
 	 * Creates the Item Count section of the header
 	 * 
@@ -515,18 +514,18 @@ public class HeaderHumanReadableGenerator {
 			throws XPathExpressionException {
 		NodeList list = processor.findNodeList(processor.getOriginalDoc(),
 				DETAILS_PATH + "itemCount/elementRef");
-
+		
 		if (list.getLength() > 0) {
 			Node node;
 			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
 				// Create a NamedNodeMap of the nodes attributes
 				NamedNodeMap map = node.getAttributes();
-
+				
 				if (node != null) {
 					createRowAndColumns(table, "Measure Item Count");
-					if (map.getNamedItem("dataType") != null
-							&& map.getNamedItem("name") != null) {
+					if ((map.getNamedItem("dataType") != null)
+							&& (map.getNamedItem("name") != null)) {
 						createDiv(map.getNamedItem("dataType").getNodeValue()
 								+ ": "
 								+ map.getNamedItem("name").getNodeValue(),
@@ -538,7 +537,7 @@ public class HeaderHumanReadableGenerator {
 			}
 		}
 	}
-
+	
 	/**
 	 * Creates a table in the header table to display the component measures
 	 * 
@@ -551,59 +550,59 @@ public class HeaderHumanReadableGenerator {
 	private static void createComponentMeasureList(XmlProcessor processor,
 			Element table) throws XPathExpressionException {
 		// Create the row in the main table
-
+		
 		// find the list of nodes
 		NodeList list = processor.findNodeList(processor.getOriginalDoc(),
 				DETAILS_PATH + "componentMeasures/measure");
 		if (list.getLength() > 0) {
 			createRowAndColumns(table, "Component Measure");
 			Node node;
-
+			
 			// Create the inner table
 			Element innerTable = column.appendElement("table");
 			innerTable.attr("class", "inner_table");
 			Element innerTableBody = innerTable.appendElement("tBody");
 			row = innerTableBody.appendElement(HTML_TR);
-
+			
 			// create the headers for the inner table
 			// Measure Name
 			column = row.appendElement("th");
 			setTDHeaderAttributes(column, "60%");
 			createSpan("Measure Name", column);
-
+			
 			// Version Number
 			column = row.appendElement("th");
 			setTDHeaderAttributes(column, "10%");
 			createSpan("Version Number", column);
-
+			
 			// GUID
 			column = row.appendElement("th");
 			setTDHeaderAttributes(column, "30%");
 			createSpan("GUID", column);
-
+			
 			// for each node append a row with all information
 			for (int i = 0; i < list.getLength(); i++) {
 				node = list.item(i);
-
+				
 				NamedNodeMap map = node.getAttributes();
-
+				
 				row = innerTableBody.appendElement(HTML_TR);
-
+				
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column, "60%", "");
 				if (map.getNamedItem("name") != null) {
 					column.appendText(map.getNamedItem("name").getNodeValue());
 				}
-
+				
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column, "10%", "");
 				Element div = column.appendElement("div");
 				div.attr("class", "ver");
-
+				
 				if (map.getNamedItem("versionNo") != null) {
 					div.appendText(map.getNamedItem("versionNo").getNodeValue());
 				}
-
+				
 				column = row.appendElement(HTML_TD);
 				setTDInfoAttributes(column, "30%", "");
 				// map.item(0) pulls the GUID from the NamedNodeMap
@@ -612,9 +611,9 @@ public class HeaderHumanReadableGenerator {
 				}
 			}
 		}
-
+		
 	}
-
+	
 	/**
 	 * Sets the formating for the td headers
 	 * 
@@ -628,7 +627,7 @@ public class HeaderHumanReadableGenerator {
 		col.attr("bgcolor", "#656565");
 		col.attr("style", "background-color:#656565");
 	}
-
+	
 	/**
 	 * Sets the formating for the information columns
 	 * 
@@ -646,7 +645,7 @@ public class HeaderHumanReadableGenerator {
 			col.attr("colspan", span);
 		}
 	}
-
+	
 	/**
 	 * Creates the row and columns for the table
 	 * 
@@ -663,7 +662,7 @@ public class HeaderHumanReadableGenerator {
 		column = row.appendElement(HTML_TD);
 		setTDInfoAttributes(column, "80%", "3");
 	}
-
+	
 	/**
 	 * Used to format and make a span element
 	 * 
@@ -677,7 +676,7 @@ public class HeaderHumanReadableGenerator {
 		span.attr("class", "td_label");
 		span.appendText(message);
 	}
-
+	
 	/**
 	 * Used to format and make a div element
 	 * 
@@ -692,7 +691,7 @@ public class HeaderHumanReadableGenerator {
 		Element pre = div.appendElement("pre");
 		pre.appendText(message);
 	}
-
+	
 	/**
 	 * Creates the initial html jsoup document
 	 * 
@@ -702,21 +701,21 @@ public class HeaderHumanReadableGenerator {
 	 */
 	private static org.jsoup.nodes.Document createBaseHTMLDocument(String title) {
 		org.jsoup.nodes.Document htmlDocument = new org.jsoup.nodes.Document("");
-
+		
 		// Must be added first for proper formating and styling
-		// DocumentType doc = new
-		// DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd","");
-		// htmlDocument.appendChild(doc);
+		DocumentType doc = new
+				DocumentType("html","-//W3C//DTD HTML 4.01//EN","http://www.w3.org/TR/html4/strict.dtd","");
+		htmlDocument.appendChild(doc);
 		Element html = htmlDocument.appendElement("html");
 		html.appendElement("head");
 		html.appendElement("body");
-
+		
 		Element head = htmlDocument.head();
 		htmlDocument.title(title);
 		appendStyleNode(head);
 		return htmlDocument;
 	}
-
+	
 	/**
 	 * Puts the style section into the html document
 	 * 

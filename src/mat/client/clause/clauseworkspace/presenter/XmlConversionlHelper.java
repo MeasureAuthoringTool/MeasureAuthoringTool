@@ -575,8 +575,13 @@ public class XmlConversionlHelper {
 			case CellTreeNode.RELATIONSHIP_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.RELATIONAL_OP);
 				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
+				if(MatContext.get().relationships.contains(cellTreeNode.getName())){
 				element.setAttribute(PopulationWorkSpaceConstants.TYPE,
 						MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
+				} else {
+					element.setAttribute(PopulationWorkSpaceConstants.TYPE,
+							MatContext.get().removedRelationshipTypes.get(cellTreeNode.getName()));
+				}
 				break;
 			case CellTreeNode.ELEMENT_REF_NODE:
 				element = document.createElement(PopulationWorkSpaceConstants.ELEMENT_REF);

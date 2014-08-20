@@ -257,14 +257,6 @@ public interface XmlTreeDisplay {
 	//			TreeNode subTree);
 	
 	/**
-	 * Sets the valid.
-	 * 
-	 * @param isValid
-	 *            the new valid
-	 */
-	void setValid(boolean isValid);
-	
-	/**
 	 * Gets the cell tree.
 	 *
 	 * @return the cell tree

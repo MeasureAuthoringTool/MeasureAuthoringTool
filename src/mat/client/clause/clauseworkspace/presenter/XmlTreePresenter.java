@@ -719,7 +719,6 @@ public class XmlTreePresenter {
 			public void onClick(final ClickEvent event) {
 				if (xmlTreeDisplay.getXmlTree() != null) {
 					xmlTreeDisplay.clearMessages();
-					xmlTreeDisplay.setValid(true);
 					xmlTreeDisplay.validateCellTreeNodes(xmlTreeDisplay.getXmlTree()
 									.getRootTreeNode());		
 				}

@@ -146,8 +146,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	/** The main panel. */
 	private FlowPanel  mainPanel = new FlowPanel();
 	
-	/** The is valid. */
-	private boolean isValid = true;
 	/**
 	 * Stratum Node name.
 	 */
@@ -1798,6 +1796,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			case CellTreeNode.CLAUSE_NODE:
 			case CellTreeNode.MASTER_ROOT_NODE:
 			case CellTreeNode.ROOT_NODE:
+				break;
 			case CellTreeNode.SUBTREE_REF_NODE:
 				break;
 			default:
@@ -1955,17 +1954,20 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					case CellTreeNode.TIMING_NODE:
 					case CellTreeNode.RELATIONSHIP_NODE:
 						if ((subTree != null) && (subTree.getChildCount() == 2)) {
-							if (!node.getValidNode()) {
+							if (!node.getValidNode() && (MatContext.get().relationships.contains(node.getName()) 
+									|| MatContext.get().timings.contains(node.getName()))) {
 								editNode(true, node);
+							} else if (!MatContext.get().relationships.contains(node.getName()) 
+									&& !MatContext.get().timings.contains(node.getName())){
+								editNode(false, node);
+								if(!inValidNodeList.contains("inValidAtRelationshipNode")){
+									inValidNodeList.add("inValidAtRelationshipNode");
+								}
 							}
 						} else {
 							editNode(false, node);
 							if(!inValidNodeList.contains("inValidAtTimingRelationShip")){
 								inValidNodeList.add("inValidAtTimingRelationShip");
-							}
-							
-							if (isValid) {
-								isValid = false;
 							}
 						}
 						break;
@@ -1978,10 +1980,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							editNode(false, node);
 							if(!inValidNodeList.contains("inValidAtSetoperatorAndOrFunction")){
 								inValidNodeList.add("inValidAtSetoperatorAndOrFunction");
-							}
-							
-							if (isValid) {
-								isValid = false;
 							}
 						}
 						break;
@@ -2001,10 +1999,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							editNode(false, node);
 							if(!inValidNodeList.contains(invalidKeyForMap)){
 								inValidNodeList.add(invalidKeyForMap);
-							}
-							
-							if (isValid) {
-								isValid = false;
 							}
 						}
 						break;
@@ -2057,10 +2051,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		if(!inValidNodeList.contains("inValidAtQDMNode")){
 			inValidNodeList.add("inValidAtQDMNode");
 		}
-		if (isValid) {
-			isValid = false;
-		}
-		
 	}
 	
 	/* (non-Javadoc)
@@ -2133,24 +2123,6 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public WarningMessageDisplay getWarningMessageDisplay() {
 		return warningMessageDisplay;
 	}
-	/**
-	 * Checks if is valid.
-	 * 
-	 * @return the isValid
-	 */
-	public boolean isValid() {
-		return isValid;
-	}
-	/**
-	 * Sets the valid.
-	 * @param isValid
-	 *            the isValid to set
-	 */
-	@Override
-	public void setValid(boolean isValid) {
-		this.isValid = isValid;
-	}
-	
 	/**
 	 * Gets the button expand clause work space.
 	 *
@@ -2383,5 +2355,5 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		return searchSuggestTextBox;
 	}
 	
-	
+
 }

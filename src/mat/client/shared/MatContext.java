@@ -197,6 +197,8 @@ public class MatContext implements IsSerializable {
 	/** The operator map key long. */
 	public Map<String, String> operatorMapKeyLong = new HashMap<String, String>();
 	
+	public Map<String, String> removedRelationshipTypes = new HashMap<String, String>();
+	
 	/*
 	 * POC Global Copy Paste.
 	 * public CellTreeNode copiedNode;*/
@@ -1397,6 +1399,17 @@ public class MatContext implements IsSerializable {
 					}
 					
 				}
+				//for adding Removed Relationship Types
+				addRemovedRelationShipTypes();
+			}
+
+			private void addRemovedRelationShipTypes() {
+				
+				removedRelationshipTypes.put("Is Authorized By", "AUTH");
+				removedRelationshipTypes.put("Causes", "CAUS");
+				removedRelationshipTypes.put("Is Derived From", "DRIV");
+				removedRelationshipTypes.put("Has Goal Of", "GOAL");
+				removedRelationshipTypes.put("Has Outcome Of", "OUTC");
 			}
 		});
 	}

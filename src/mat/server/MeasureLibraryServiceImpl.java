@@ -19,6 +19,7 @@ import javax.xml.xpath.XPathFactory;
 import mat.DTO.AuthorDTO;
 import mat.DTO.MeasureNoteDTO;
 import mat.DTO.MeasureTypeDTO;
+import mat.DTO.OperatorDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -39,6 +40,7 @@ import mat.dao.MeasureTypeDAO;
 import mat.dao.RecentMSRActivityLogDAO;
 import mat.dao.clause.MeasureDAO;
 import mat.dao.clause.MeasureXMLDAO;
+import mat.dao.clause.OperatorDAO;
 import mat.dao.clause.QDSAttributesDAO;
 import mat.model.Author;
 import mat.model.DataType;
@@ -46,6 +48,7 @@ import mat.model.LockedUserInfo;
 import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
 import mat.model.MeasureType;
+import mat.model.Operator;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
@@ -162,6 +165,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	/** The author dao. */
 	@Autowired
 	private AuthorDAO authorDAO;
+	
+	@Autowired
+	private OperatorDAO operatorDAO;
 	
 	/** The x path. */
 	javax.xml.xpath.XPath xPath = XPathFactory.newInstance().newXPath();
@@ -2762,7 +2768,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						for (int n = 0; (n <nodesSDE_timingElement.getLength()) && !flag; n++) {
 							
 							Node timingElementchildNode =nodesSDE_timingElement.item(n);
-							flag = validateTimingNode(timingElementchildNode, flag);
+							flag = validateTimingRelationshipNode(timingElementchildNode, flag);
 							if(flag) {
 								break;
 							}
@@ -3046,21 +3052,32 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	
 	/**
-	 * Validate timing node.
+	 * Validate Timing and Relationship node.
 	 *
 	 * @param timingElementchildNode the timing elementchild node
 	 * @param flag the flag
 	 * @return true, if successful
 	 */
-	private boolean validateTimingNode(Node timingElementchildNode, boolean flag) {
+	private boolean validateTimingRelationshipNode(Node timingElementchildNode, boolean flag) {
 		int childCount = timingElementchildNode.getChildNodes().getLength();
-		if(childCount != 2){
+		List<String> relationshipTypeList = getRelationshipTypeList();
+		String type = timingElementchildNode.getAttributes().getNamedItem("type").getNodeValue();
+		if(childCount != 2 || !relationshipTypeList.contains(type)){
 			flag = true;
-		}
+		} 
 		return flag;
 	}
 	
 	
+	private List<String> getRelationshipTypeList() {
+		List<OperatorDTO> timingRelationshipsList = operatorDAO.getRelAssociationsOperators();
+		List<String> typeList = new ArrayList<String>();
+		for(int i = 0; i<timingRelationshipsList.size(); i ++){
+			typeList.add(timingRelationshipsList.get(i).getId());
+		}
+		return typeList;
+	}
+
 	/**
 	 * Validate satisfy node.
 	 *

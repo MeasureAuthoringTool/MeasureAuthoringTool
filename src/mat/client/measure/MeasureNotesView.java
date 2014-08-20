@@ -284,6 +284,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		textArea.setHeight("100px");
 		textArea.setWidth("100%");
 		textArea.setTitle("Description");
+		vp.setTitle("Description Text area");
 		vp.add(toolBar);
 		vp.add(textArea);
 		composerPanel.add(vp);
@@ -540,6 +541,7 @@ public class MeasureNotesView implements MeasureNotesPresenter.NotesDisplay{
 		title.setText(result.getNoteTitle());
 		editTextArea.setHTML(result.getNoteDesc());
 		editTextArea.setTitle("Decription");
+		vPanel.setTitle("Description Area");
 		//measureNoteDesc.setText(result.getNoteDesc());
 		vPanel.add(title);
 		vPanel.add(new SpacerWidget());

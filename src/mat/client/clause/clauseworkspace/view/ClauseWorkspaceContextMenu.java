@@ -1,5 +1,6 @@
 package mat.client.clause.clauseworkspace.view;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -106,7 +107,7 @@ public class ClauseWorkspaceContextMenu {
 	/*
 	 * POC Global Copy Paste.
 	MenuItem pasteFromClipboardMenu;
-	*/
+	 */
 	/** The delete menu. */
 	MenuItem deleteMenu;
 	
@@ -419,6 +420,31 @@ public class ClauseWorkspaceContextMenu {
 		addMenu = new MenuItem("Add", subMenuBar); // 1st level menu
 		popupMenuBar.addItem(addMenu);
 		popupMenuBar.addSeparator(separator);
+		Command addSpecificOccSubTreeCmd = new Command() {
+			@Override
+			public void execute() {
+				popupPanel.hide();
+			}
+		};
+		
+		String qdmVariableValue = null;
+		MenuItem specificOccMenuItem = new MenuItem("Specific Occurrence", true, addSpecificOccSubTreeCmd);
+		
+		if(xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes") !=null){
+			HashMap<String,String> map = (HashMap<String, String>) xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes");
+			qdmVariableValue = map.get("qdmVariable");
+		}
+		if((qdmVariableValue != null) && qdmVariableValue.equalsIgnoreCase("true")){
+			specificOccMenuItem.setEnabled(true);
+			popupMenuBar.addItem(specificOccMenuItem);
+			
+		} else {
+			specificOccMenuItem.setEnabled(false);
+			popupMenuBar.addItem(specificOccMenuItem);
+		}
+		
+		System.out.println("qdmVariableValue" + qdmVariableValue);
+		popupMenuBar.addSeparator(separator);
 		addCommonMenus();
 		copyMenu.setEnabled(true);
 		if ((xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.SUBTREE_NODE)) {
@@ -446,8 +472,8 @@ public class ClauseWorkspaceContextMenu {
 				pasteMenu.setEnabled(true);
 				pasteFromClipboardMenu.setEnabled(true);
 			}
-			*/
-			if (!xmlTreeDisplay.getSelectedNode().hasChildren() && xmlTreeDisplay.getCopiedNode() != null) {
+			 */
+			if (!xmlTreeDisplay.getSelectedNode().hasChildren() && (xmlTreeDisplay.getCopiedNode() != null)) {
 				pasteMenu.setEnabled(true);
 			}
 		}
@@ -460,11 +486,11 @@ public class ClauseWorkspaceContextMenu {
 			pasteFromClipboardMenu.setEnabled(true);
 		}*/
 		//can paste LOGOP,RELOP, QDM, TIMING & FUNCS
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)
-						&& (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)) {
-					pasteMenu.setEnabled(true);
-				}
+		if ((xmlTreeDisplay.getCopiedNode() != null)
+				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)
+				&& (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE)) {
+			pasteMenu.setEnabled(true);
+		}
 		if (xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.SUBTREE_NODE) {
 			deleteMenu.setEnabled(true);
 			if (xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.LOGICAL_OP_NODE) {
@@ -592,12 +618,13 @@ public class ClauseWorkspaceContextMenu {
 					addMenuLHS.setEnabled(false);
 				}
 			}
-			if(xmlTreeDisplay.getCopiedNode() != null
-					&& xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE &&
-					xmlTreeDisplay.getSelectedNode().getChilds() != null && xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)
+			if((xmlTreeDisplay.getCopiedNode() != null)
+					&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) &&
+					(xmlTreeDisplay.getSelectedNode().getChilds() != null) && (xmlTreeDisplay.getSelectedNode().getChilds().size() >=1)) {
 				pasteMenu.setEnabled(true);
-			else
+			} else {
 				pasteMenu.setEnabled(false);
+			}
 			/*
 			 * POC Global Copy Paste.
 			 * if((copiedNode != null)
@@ -632,11 +659,11 @@ public class ClauseWorkspaceContextMenu {
 		addCommonMenus();
 		copyMenu.setEnabled(true);
 		//can paste LOGOP, RELOP, QDM, TIMING & FUNCS
-				if ((xmlTreeDisplay.getCopiedNode() != null)
-						&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) && ! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") && 
-						! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")) {
-					pasteMenu.setEnabled(true);
-				}
+		if ((xmlTreeDisplay.getCopiedNode() != null)
+				&& (xmlTreeDisplay.getCopiedNode().getNodeType() != CellTreeNode.CLAUSE_NODE) && ! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ALL") &&
+				! xmlTreeDisplay.getSelectedNode().getName().equalsIgnoreCase("SATISFIES ANY")) {
+			pasteMenu.setEnabled(true);
+		}
 		/*
 		 * POC Global Copy Paste.
 		 * copyToClipBoardMenu.setEnabled(true);

@@ -12,6 +12,7 @@ import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.model.CellTreeNodeImpl;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
+import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
@@ -1798,6 +1799,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			case CellTreeNode.ROOT_NODE:
 				break;
 			case CellTreeNode.SUBTREE_REF_NODE:
+				//editNode(validateSubTreeRefNode(cellTreeNode), cellTreeNode);
 				break;
 			default:
 				editNode(false, cellTreeNode);
@@ -1817,9 +1819,27 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		}
 	}
 	
-	
-	
-	
+//	private boolean validateSubTreeRefNode(CellTreeNode cellTreeNode){
+//		Node node = PopulationWorkSpaceConstants.subTreeLookUpNode
+//				.get(cellTreeNode.getName() + "~" + cellTreeNode.getUUID());
+//		CellTreeNode subTreeCellTreeNode = XmlConversionlHelper
+//				.createCellTreeNode(node, cellTreeNode.getName());
+//		validateSubtreeNodeAtPopulation();
+//	    checkIfClauseAndAppend(subTreeCellTreeNode);
+//		return true;
+//	}
+//	
+//	private boolean validateSubtreeNodeAtPopulation(){
+//		
+//		
+//		return true;
+//	}
+//	
+//	private void checkIfClauseAndAppend(CellTreeNode subTreeCellTreeNode) {
+//	
+//		
+//	}
+
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay#validateCellTreeNodes(com.google.gwt.user.cellview.client.TreeNode)
 	 */
@@ -1954,11 +1974,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					case CellTreeNode.TIMING_NODE:
 					case CellTreeNode.RELATIONSHIP_NODE:
 						if ((subTree != null) && (subTree.getChildCount() == 2)) {
+//							if (!node.getValidNode() && (MatContext.get().relationships.contains(node.getName()) 
+//									|| MatContext.get().timings.contains(node.getName()))) {
 							if (!node.getValidNode() && (MatContext.get().relationships.contains(node.getName()) 
-									|| MatContext.get().timings.contains(node.getName()))) {
+									|| node.getNodeType()==CellTreeNode.TIMING_NODE)) {
 								editNode(true, node);
 							} else if (!MatContext.get().relationships.contains(node.getName()) 
-									&& !MatContext.get().timings.contains(node.getName())){
+									&& node.getNodeType()!=CellTreeNode.TIMING_NODE){
 								editNode(false, node);
 								if(!inValidNodeList.contains("inValidAtRelationshipNode")){
 									inValidNodeList.add("inValidAtRelationshipNode");

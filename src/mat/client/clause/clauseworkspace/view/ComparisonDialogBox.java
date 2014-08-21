@@ -112,9 +112,11 @@ public class ComparisonDialogBox {
 		if (timingOrFuncMethod.contains("Select")) { //added is null check for Functions which are not in recent list but exists in prod like COUNTDISTINCT
 			listAllTimeOrFunction.addItem(timingOrFuncMethod);
 		}
-		
+		//modified for MAT-4692
 		for (int i = 0; i < keys.size(); i++) {
-			if(!(labelForListBox.equalsIgnoreCase("Functions") && cellTreeNode.getChilds() != null && cellTreeNode.getChilds().size() > 0  && (keys.get(i).equals("SATISFIES ALL") || keys.get(i).equals("SATISFIES ANY"))))
+			if(!(labelForListBox.equalsIgnoreCase("Functions")
+					&& ((keys.get(i).equals("SATISFIES ALL") 
+							|| keys.get(i).equals("SATISFIES ANY")))))
 				listAllTimeOrFunction.addItem(keys.get(i));
 			if (keys.get(i).equalsIgnoreCase(timingOrFuncMethod)) {
 				listAllTimeOrFunction.setSelectedIndex(i);

@@ -303,9 +303,8 @@ public class ExportServlet extends HttpServlet {
 		Element table = htmlDocument.body().appendElement("table");
 		table.attr("class", "header_table");
 		table.attr("width", "100%");
-		System.out.println("NOTES LENGTH: " + allMeasureNotes.size());
 		Element row = table.appendElement("tr");
-		CreateHeader(row);
+		createHeader(row);
 		for(MeasureNotes measureNotes:allMeasureNotes){
 			row = table.appendElement("tr");
 			createBody(row, measureNotes.getNoteTitle(),false,"20%");
@@ -345,7 +344,7 @@ public class ExportServlet extends HttpServlet {
 	 *
 	 * @param row the row
 	 */
-	private void CreateHeader(Element row){
+	private void createHeader(Element row){
 		createHeaderRows(row,"Title","20%");
 		createHeaderRows(row,"Description","33%");
 		createHeaderRows(row,"Last Modified Date","17%");

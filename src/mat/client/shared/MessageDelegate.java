@@ -13,6 +13,8 @@ public class MessageDelegate {
 	
 	/** The Constant ALERT_LOADING_MESSAGE. */
 	public static final String ALERT_LOADING_MESSAGE = "Please wait until loading is complete.";
+	
+	/** The Constant MEASURE_DEVELOPER_ADDED_SUCCESSFULLY. */
 	public static final String MEASURE_DEVELOPER_ADDED_SUCCESSFULLY= "Measure Developer updated successfully. Changes must be saved on the previous page.";
 	
 	/** The Constant CHANGES_SAVED. */
@@ -209,6 +211,7 @@ public class MessageDelegate {
 	/** The clause work space validation error. */
 	private final String POPULATION_WORK_SPACE_VALIDATION_ERROR = "Logic must only contain Clauses and Logical operators.";
 	
+	/** The measure logic is incorrect. */
 	private final String MEASURE_LOGIC_IS_INCORRECT = " Measure logic is incorrect.";
 	/** The population work space measure observation validation error. */
 	private final String POPULATION_WORK_SPACE_MEASURE_OBSERVATION_VALIDATION_ERROR = " Logic must only contain Clauses.";
@@ -216,7 +219,10 @@ public class MessageDelegate {
 	/** The invalid character validation error. */
 	private final String INVALID_CHARACTER_VALIDATION_ERROR =" Value set name cannot contain any of the following characters : + * ? : - | ! ; %";
 	
+	/** The organization success message. */
 	private final String ORGANIZATION_SUCCESS_MESSAGE = "Organization successfully added.";
+	
+	/** The user success message. */
 	private final String USER_SUCCESS_MESSAGE = "User information saved successfully.";
 	
 	/** The clause work space validation success. */
@@ -477,6 +483,7 @@ public class MessageDelegate {
 	/** The cohort wrong num. */
 	private final String COHORT_WRONG_NUM = "For a Cohort measure, a grouping must contain exactly one Population.";
 	
+	/** The stratification validation for grouping. */
 	private final String STRATIFICATION_VALIDATION_FOR_GROUPING = " Measure Grouping cannot contain more than one Stratification.";
 	
 	
@@ -585,6 +592,10 @@ public class MessageDelegate {
 	/** The component measures added successfully. */
 	private final String COMPONENT_MEASURES_ADDED_SUCCESSFULLY="Component Measures updated successfully. Changes must be saved on the previous page.";
 	
+	/** The removed functions error message. */
+	private final String POPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE = "Incorrect Logic. DateTimeDiff cannot be added in PopulationWorkspace.";
+
+
 	/**
 	 * Gets the component measures added successfully.
 	 *
@@ -2075,6 +2086,8 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the measure developer added successfully.
+	 *
 	 * @return the measureDeveloperAddedSuccessfully
 	 */
 	public static String getMeasureDeveloperAddedSuccessfully() {
@@ -2082,17 +2095,26 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the measure logic is incorrect.
+	 *
 	 * @return the mEASURE_LOGIC_IS_INCORRECT
 	 */
 	public String getMEASURE_LOGIC_IS_INCORRECT() {
 		return MEASURE_LOGIC_IS_INCORRECT;
 	}
 	
+	/**
+	 * Gets the stratification validation for grouping.
+	 *
+	 * @return the stratification validation for grouping
+	 */
 	public String getSTRATIFICATION_VALIDATION_FOR_GROUPING() {
 		return STRATIFICATION_VALIDATION_FOR_GROUPING;
 	}
 	
 	/**
+	 * Gets the organization success message.
+	 *
 	 * @return the oRGANIZATION_SUCCESS_MESSAGE
 	 */
 	public String getORGANIZATION_SUCCESS_MESSAGE() {
@@ -2100,6 +2122,8 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the user success message.
+	 *
 	 * @return the uSER_SUCCESS_MESSAGE
 	 */
 	public String getUSER_SUCCESS_MESSAGE() {
@@ -2107,10 +2131,16 @@ public class MessageDelegate {
 	}
 	
 	/**
+	 * Gets the email id required.
+	 *
 	 * @return the emailIdRequired
 	 */
 	public String getEmailIdRequired() {
 		return EMAIL_ID_REQUIRED;
+	}
+	
+	public String getPOPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE() {
+		return POPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE;
 	}
 	
 	

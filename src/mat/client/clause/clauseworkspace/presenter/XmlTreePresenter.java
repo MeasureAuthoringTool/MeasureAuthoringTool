@@ -50,10 +50,6 @@ public class XmlTreePresenter {
 	 */
 	private static final int NODESIZE = 500;
 	
-	
-	
-	/** The is unsaved data. */
-	//	private boolean isUnsavedData = false;
 	/**
 	 * Pop up Panel for Right Context Menu.
 	 */
@@ -670,6 +666,9 @@ public class XmlTreePresenter {
 							}
 							if(inValidNode.equalsIgnoreCase("inValidAtOtherNode")){
 								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORK_SPACE_VALIDATION_ERROR());
+							}
+							if(inValidNode.equalsIgnoreCase("inValidAtPopulationAndStratificationNode")){
+								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE());
 							}
 							
 						}

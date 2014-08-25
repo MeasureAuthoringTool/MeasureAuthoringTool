@@ -227,7 +227,13 @@ public class XmlTreePresenter {
 				CellTreeNode cellTreeNode = (CellTreeNode) (xmlTreeDisplay
 						.getXmlTree().getRootTreeNode().getChildValue(0));
 				boolean checkIfUsedInLogic = true;
-				
+				// Disable Show Clause Button for Occurrence CLauses.
+				xmlTreeDisplay.getShowClauseButton().setEnabled(true);
+				Node node = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(selectedItemName + "~" + selectedItemUUID);
+				NamedNodeMap namedNodeMap = node.getAttributes();
+				if (namedNodeMap.getNamedItem("instance") != null) {
+					xmlTreeDisplay.getShowClauseButton().setEnabled(false);
+				}
 				if(!MatContext.get().getMeasureLockService().checkForEditPermission()){
 					//If the measure is Read Only, the disable the Delete Clause button.
 					xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
@@ -328,7 +334,11 @@ public class XmlTreePresenter {
 		});
 	}
 	
-	public XmlTreePresenter(){
+	/**
+	 * XMLTreePresenter constructor.
+	 * 
+	 * **/
+	public XmlTreePresenter() {
 		
 		MatContext.get().getEventBus().addHandler(ClauseSpecificOccurenceEvent.TYPE, new ClauseSpecificOccurenceEvent.Handler() {
 			@Override
@@ -355,8 +365,6 @@ public class XmlTreePresenter {
 								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
 								xmlTreeDisplay.updateSuggestOracle();
 							}
-							System.out.println("Updated originalXML is:"
-									+ getOriginalXML());
 						}
 					});
 				}

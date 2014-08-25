@@ -48,7 +48,6 @@ import mat.model.LockedUserInfo;
 import mat.model.MatValueSet;
 import mat.model.MeasureNotes;
 import mat.model.MeasureType;
-import mat.model.Operator;
 import mat.model.QualityDataModelWrapper;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
@@ -232,7 +231,8 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			try {
 				NodeList subTreeRefNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTreeRef[@id='"+subTreeUUID+"']");
-				if(subTreeRefNodeList.getLength() > 0){
+				NodeList subTreeOccNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTree[@instanceOf='"+subTreeUUID+"']");
+				if((subTreeRefNodeList.getLength() > 0) || (subTreeOccNodeList.getLength() >0)){
 					return true;
 				}
 			} catch (XPathExpressionException e) {
@@ -312,7 +312,71 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		logger.info("End saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");
 	}
-	
+	@Override
+	public MeasureXmlModel saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID){
+		logger.info("Inside saveSubTreeOccurrence Method for measure Id " + measureXmlModel.getMeasureId() + " .");
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
+		int ASCII_START = 65;
+		int ASCII_END = 90;
+		int occurrenceCount = ASCII_START;
+		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			try {
+				String xPathForSubTree = "/measure/subTreeLookUp/subTree[@instanceOf='" + nodeUUID + "']";
+				NodeList subTreeNodeForUUID = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForSubTree);
+				if (subTreeNodeForUUID.getLength() == 0) {
+					XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
+					Node subTreeNode = processor.findNode(processor.getOriginalDoc(), "/subTree");
+					Attr instanceAttrNode = processor.getOriginalDoc().createAttribute("instance");
+					instanceAttrNode.setNodeValue("" + (char) occurrenceCount);
+					subTreeNode.getAttributes().setNamedItem(instanceAttrNode);
+					Attr instanceAttrNodeOfAttrNode = processor.getOriginalDoc().createAttribute("instanceOf");
+					instanceAttrNodeOfAttrNode.setNodeValue(nodeUUID);
+					subTreeNode.getAttributes().setNamedItem(instanceAttrNodeOfAttrNode);
+					measureXmlModel.setXml(processor.transform(subTreeNode));
+					xmlProcessor.appendNode(measureXmlModel.getXml(),
+							measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
+				} else {
+					for (int i = 0; i < subTreeNodeForUUID.getLength(); i++) {
+						Node node = subTreeNodeForUUID.item(i);
+						String instanceValue = node.getAttributes().getNamedItem("instance").getNodeValue();
+						Character text = instanceValue.charAt(0);
+						int newOcc = (text);
+						if (newOcc >= occurrenceCount) {
+							occurrenceCount = ++newOcc;
+						}
+					}
+					System.out.println("Next Instance ----" + (char) occurrenceCount);
+					if (occurrenceCount < ASCII_END) {
+						XmlProcessor processor = new XmlProcessor(measureXmlModel.getXml());
+						Node subTreeNode = processor.findNode(processor.getOriginalDoc(), "/subTree");
+						Attr instanceAttrNode = processor.getOriginalDoc().createAttribute("instance");
+						instanceAttrNode.setNodeValue("" + (char) occurrenceCount);
+						subTreeNode.getAttributes().setNamedItem(instanceAttrNode);
+						Attr instanceAttrNodeOfAttrNode = processor.getOriginalDoc().createAttribute("instanceOf");
+						instanceAttrNodeOfAttrNode.setNodeValue(nodeUUID);
+						subTreeNode.getAttributes().setNamedItem(instanceAttrNodeOfAttrNode);
+						measureXmlModel.setXml(processor.transform(subTreeNode));
+						xmlProcessor.appendNode(measureXmlModel.getXml(),
+								measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
+					}
+				}
+				xmlProcessor.setOriginalXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
+				measureXmlModel.setXml(xmlProcessor.getOriginalXml());
+				getService().saveMeasureXml(measureXmlModel);
+			} catch (XPathExpressionException exception) {
+				// TODO Auto-generated catch block
+				exception.printStackTrace();
+			} catch (SAXException exception) {
+				// TODO Auto-generated catch block
+				exception.printStackTrace();
+			} catch (IOException exception) {
+				// TODO Auto-generated catch block
+				exception.printStackTrace();
+			}
+		}
+		return measureXmlModel;
+	}
 	/**
 	 * Method to call XMLProcessor appendNode method to append new xml nodes
 	 * into existing xml.
@@ -3063,9 +3127,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		int childCount = timingElementchildNode.getChildNodes().getLength();
 		List<String> relationshipTypeList = getRelationshipTypeList();
 		String type = timingElementchildNode.getAttributes().getNamedItem("type").getNodeValue();
-		if(childCount != 2 || !relationshipTypeList.contains(type)){
+		if((childCount != 2) || !relationshipTypeList.contains(type)){
 			flag = true;
-		} 
+		}
 		return flag;
 	}
 	
@@ -3083,7 +3147,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		return typeList;
 	}
-
+	
 	/**
 	 * Validate satisfy node.
 	 *
@@ -3166,7 +3230,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						if(numberOfStratificationPerGroup.getLength()>1){
 							message.add(MatContext.get().getMessageDelegate().getSTRATIFICATION_VALIDATION_FOR_GROUPING());
 							break;
-						}						
+						}
 					}
 					
 				}

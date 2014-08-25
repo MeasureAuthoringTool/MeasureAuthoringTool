@@ -135,6 +135,10 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 				if ("subTree".equals(subTree.item(i).getNodeName())) {
 					NamedNodeMap namedNodeMap = subTree.item(i).getAttributes();
 					String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
+					if (namedNodeMap.getNamedItem("instance") != null) {
+						String occurrText = "Occurrence " + namedNodeMap.getNamedItem("instance").getNodeValue().toString() + " of";
+						name = occurrText + " " + name;
+					}
 					// SubTree name Might have trailing spaces.
 					name = name.trim();
 					//name = name.replaceAll("^\\s+|\\s+$", "");

@@ -1,10 +1,7 @@
 package mat.client.measure.service;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import mat.DTO.MeasureNoteDTO;
-import mat.DTO.MeasureTypeDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.measure.ManageMeasureDetailModel;
 import mat.client.measure.ManageMeasureSearchModel;
@@ -16,8 +13,6 @@ import mat.model.MatValueSet;
 import mat.model.MeasureType;
 import mat.model.QualityDataSetDTO;
 import mat.model.RecentMSRActivityLog;
-import mat.server.util.XmlProcessor;
-
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 // TODO: Auto-generated Javadoc
@@ -425,7 +420,7 @@ public interface MeasureServiceAsync {
 	 * @param callback the callback
 	 */
 	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID, AsyncCallback<Void> callback);
-
+	
 	/**
 	 * Check and delete sub tree.
 	 *
@@ -435,7 +430,7 @@ public interface MeasureServiceAsync {
 	 */
 	void checkAndDeleteSubTree(String measureId, String subTreeUUID,
 			AsyncCallback<Boolean> callback);
-
+	
 	/**
 	 * Checks if is sub tree referred in logic.
 	 *
@@ -445,7 +440,7 @@ public interface MeasureServiceAsync {
 	 */
 	void isSubTreeReferredInLogic(String measureId, String subTreeUUID,
 			AsyncCallback<Boolean> callback);
-
+	
 	/**
 	 * Gets the human readable for node.
 	 *
@@ -465,7 +460,7 @@ public interface MeasureServiceAsync {
 	 * @return the component measures
 	 */
 	void getComponentMeasures(List<String> measureIds, AsyncCallback<ManageMeasureSearchModel> callback);
-
+	
 	/**
 	 * Validate package grouping.
 	 *
@@ -474,7 +469,7 @@ public interface MeasureServiceAsync {
 	 */
 	void validatePackageGrouping(ManageMeasureDetailModel model,
 			AsyncCallback<Boolean> asyncCallback);
-
+	
 	/**
 	 * Validate measure xmlinpopulation workspace.
 	 *
@@ -492,7 +487,7 @@ public interface MeasureServiceAsync {
 	 * @param asyncCallback the async callback
 	 */
 	void updateComponentMeasuresFromXml(String measureId, AsyncCallback<Void> asyncCallback);
-
+	
 	/**
 	 * Validate for group.
 	 *
@@ -520,7 +515,7 @@ public interface MeasureServiceAsync {
 	 * @return the all measure types
 	 */
 	void getAllMeasureTypes(AsyncCallback<List<MeasureType>> asyncCallback);
-
+	
 	/**
 	 * Gets the all add edit authors.
 	 *
@@ -528,5 +523,8 @@ public interface MeasureServiceAsync {
 	 * @return the all add edit authors
 	 */
 	void getAllAddEditAuthors(AsyncCallback<List<Author>> asyncCallback);
-			
+	
+	void saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID,
+			AsyncCallback<MeasureXmlModel> callback);
+	
 }

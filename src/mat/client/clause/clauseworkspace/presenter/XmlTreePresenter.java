@@ -12,6 +12,7 @@ import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
 import mat.client.clause.clauseworkspace.view.PopulationWorkSpaceContextMenu;
 import mat.client.clause.clauseworkspace.view.XmlTreeView;
+import mat.client.event.ClauseSpecificOccurenceEvent;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.MatContext;
@@ -27,6 +28,7 @@ import com.google.gwt.event.logical.shared.ValueChangeHandler;
 import com.google.gwt.resources.client.ImageResource;
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -50,6 +52,10 @@ public class XmlTreePresenter {
 	 */
 	private static final int NODESIZE = 500;
 	
+	boolean isSpecificOcc = false;
+	
+	/** The is unsaved data. */
+	//	private boolean isUnsavedData = false;
 	/**
 	 * Pop up Panel for Right Context Menu.
 	 */
@@ -202,45 +208,8 @@ public class XmlTreePresenter {
 		invokeValidateHandler();
 		invokeClearHandler();
 		addClauseHandler();
+		
 	}
-	
-	
-	/**
-	 * Load clause logic.
-	 *
-	 * @return the scroll panel
-	 */
-	//	public final ScrollPanel loadClauseLogic(){
-	//		XmlTreeDisplay clauseTreeDisplay;
-	//		ScrollPanel simplePanel = new ScrollPanel();
-	//		simplePanel.getElement().setAttribute("id", "ClauseLogic");
-	//		CellTreeNode subTree = XmlConversionlHelper.createRootClauseNode();
-	//		XmlTreeView xmlTreeView = new XmlTreeView(subTree);
-	//		CellTree.Resources resource = GWT.create(TreeResources.class);
-	//		CellTree cellTree = new CellTree(xmlTreeView, null, resource); // CellTree
-	//		// Creation
-	//		cellTree.setDefaultNodeSize(NODESIZE);  // this will get rid of the show
-	//		// more link on the bottom of the
-	//		// Tree
-	//		xmlTreeView.createClauseWorkSpacePageView(cellTree); // Page Layout
-	//		cellTree.setTabIndex(0);
-	//		// This will open the tree by default.
-	//		TreeNode treeNode = cellTree.getRootTreeNode();
-	//		for (int i = 0; i < treeNode.getChildCount(); i++) {
-	//			if (((CellTreeNode) treeNode.getChildValue(i)).getNodeType()
-	//					== CellTreeNode.SUBTREE_ROOT_NODE) {
-	//				treeNode.setChildOpen(i, true, true);
-	//			}
-	//		}
-	//		setRootNode(cellTree.getRootTreeNode().toString());
-	//		clauseTreeDisplay = xmlTreeView;
-	//		clauseTreeDisplay.setEnabled(MatContext.get().getMeasureLockService()
-	//				.checkForEditPermission());
-	//		simplePanel.clear();
-	//		simplePanel.add(clauseTreeDisplay.asWidget());
-	//		return simplePanel;
-	//	}
-	
 	/**
 	 * Adds the clause handler.
 	 */
@@ -359,6 +328,41 @@ public class XmlTreePresenter {
 		});
 	}
 	
+	public XmlTreePresenter(){
+		
+		MatContext.get().getEventBus().addHandler(ClauseSpecificOccurenceEvent.TYPE, new ClauseSpecificOccurenceEvent.Handler() {
+			@Override
+			public void onSave(ClauseSpecificOccurenceEvent event) {
+				CellTreeNode  cellTreeNode = XmlConversionlHelper.createOccurenceClauseNode(event.getSelectedNode());
+				String xml = XmlConversionlHelper.createXmlFromTree(cellTreeNode);
+				final String nodeUUID = event.getSelectedNode().getUUID();
+				final String nodeName = event.getSelectedNode().getName();
+				final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
+				isSpecificOcc = event.isOccurrenceCreated();
+				event.setOccurrenceCreated(false);
+				if (isSpecificOcc) {
+					service.saveSubTreeOccurrence(measureXmlModel,
+							nodeName, nodeUUID, new AsyncCallback<MeasureXmlModel>() {
+						@Override
+						public void onFailure(Throwable caught) {
+							Window.alert(MatContext.get().getMessageDelegate().getGenericErrorMessage());
+						}
+						@Override
+						public void onSuccess(MeasureXmlModel result) {
+							setOriginalXML(result.getXml());
+							updateSubTreeElementsMap(getOriginalXML());
+							if (xmlTreeDisplay != null) {
+								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
+								xmlTreeDisplay.updateSuggestOracle();
+							}
+							System.out.println("Updated originalXML is:"
+									+ getOriginalXML());
+						}
+					});
+				}
+			}
+		});
+	}
 	/**
 	 * Change clause.
 	 *
@@ -627,6 +631,10 @@ public class XmlTreePresenter {
 			for (int i = 0; i < nodeList.getLength(); i++) {
 				NamedNodeMap namedNodeMap = nodeList.item(i).getAttributes();
 				String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
+				if(namedNodeMap.getNamedItem("instance")!=null){
+					String occurrText = "Occurrence Of " + namedNodeMap.getNamedItem("instance").getNodeValue().toString();
+					name = occurrText + " " + name;
+				}
 				String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 				String subTreeLookUpNode = PopulationWorkSpaceConstants.subTreeLookUpName.get(uuid)+"~"+uuid;
 				if(PopulationWorkSpaceConstants.subTreeLookUpNode.containsKey(subTreeLookUpNode)){

@@ -9,6 +9,7 @@ import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.presenter.PopulationWorkSpaceConstants;
 import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
+import mat.client.event.ClauseSpecificOccurenceEvent;
 import mat.client.shared.MatContext;
 import mat.shared.UUIDUtilClient;
 import com.google.gwt.core.client.GWT;
@@ -424,26 +425,24 @@ public class ClauseWorkspaceContextMenu {
 			@Override
 			public void execute() {
 				popupPanel.hide();
+				MatContext.get().getEventBus().fireEvent(
+						new ClauseSpecificOccurenceEvent(xmlTreeDisplay.getSelectedNode(), true));
 			}
 		};
-		
 		String qdmVariableValue = null;
 		MenuItem specificOccMenuItem = new MenuItem("Specific Occurrence", true, addSpecificOccSubTreeCmd);
-		
-		if(xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes") !=null){
-			HashMap<String,String> map = (HashMap<String, String>) xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes");
+		if (xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes") != null) {
+			HashMap<String , String> map = (HashMap<String, String>)
+					xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes");
 			qdmVariableValue = map.get("qdmVariable");
 		}
-		if((qdmVariableValue != null) && qdmVariableValue.equalsIgnoreCase("true")){
+		if ((qdmVariableValue != null) && qdmVariableValue.equalsIgnoreCase("true")) {
 			specificOccMenuItem.setEnabled(true);
 			popupMenuBar.addItem(specificOccMenuItem);
-			
 		} else {
 			specificOccMenuItem.setEnabled(false);
 			popupMenuBar.addItem(specificOccMenuItem);
 		}
-		
-		System.out.println("qdmVariableValue" + qdmVariableValue);
 		popupMenuBar.addSeparator(separator);
 		addCommonMenus();
 		copyMenu.setEnabled(true);
@@ -824,14 +823,6 @@ public class ClauseWorkspaceContextMenu {
 				xmlTreeDisplay.getSelectedNode().getParent().getLabel().equalsIgnoreCase("SATISFIES ANY"))){
 			deleteMenu.setEnabled(checkIfTopChildNode());
 			cutMenu.setEnabled(checkIfTopChildNode());
-			//			if( xmlTreeDisplay.getSelectedNode().getNodeType() != CellTreeNode.ELEMENT_REF_NODE)
-			//				pasteMenu.setEnabled(checkIfTopChildNode());
-			//			if( xmlTreeDisplay.getSelectedNode().getNodeType() == CellTreeNode.FUNCTIONS_NODE){
-			//				if(xmlTreeDisplay.getSelectedNode().getParent().getChilds() != null && xmlTreeDisplay.getSelectedNode().getParent().getChilds().size() > 1)
-			//					pasteMenu.setEnabled(true);
-			//				else
-			//					pasteMenu.setEnabled(false);
-			//			}
 			moveUpMenu.setEnabled(checkIfTopChildNodeForSatisfy());
 			moveDownMenu.setEnabled(checkIfLastChildNodeForSatisfy());
 		}

@@ -118,6 +118,27 @@ public class XmlConversionlHelper {
 		mainNode.setChilds(childs);
 		return mainNode;
 	}
+	
+	public static CellTreeNode createOccurenceClauseNode(CellTreeNode clauseNode) {
+		//CellTreeNode parent = new CellTreeNodeImpl();
+		CellTreeNode occurrenceNode = new CellTreeNodeImpl();
+		List<CellTreeNode> childs = new ArrayList<CellTreeNode>();
+		List<CellTreeNode> parentchilds = new ArrayList<CellTreeNode>();
+		occurrenceNode.setName(clauseNode.getName());
+		occurrenceNode.setLabel(clauseNode.getLabel());
+		occurrenceNode.setUUID(UUIDUtilClient.uuid());
+		occurrenceNode.setNodeType(clauseNode.getNodeType());
+		occurrenceNode.setChilds(parentchilds);
+		occurrenceNode.setOpen(true);
+		HashMap<String, String> map = new HashMap<String, String>();
+		map.put("qdmVariable", "true");
+		occurrenceNode.setExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES, map);
+		//childs.add(parent);
+		//occurrenceNode.setChilds(childs);
+		
+		return occurrenceNode;
+	}
+	
 	/**
 	 * Creates the root node.
 	 * @param tagName
@@ -576,8 +597,8 @@ public class XmlConversionlHelper {
 				element = document.createElement(PopulationWorkSpaceConstants.RELATIONAL_OP);
 				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
 				if(MatContext.get().relationships.contains(cellTreeNode.getName())){
-				element.setAttribute(PopulationWorkSpaceConstants.TYPE,
-						MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
+					element.setAttribute(PopulationWorkSpaceConstants.TYPE,
+							MatContext.get().operatorMapKeyLong.get(cellTreeNode.getName()));
 				} else {
 					element.setAttribute(PopulationWorkSpaceConstants.TYPE,
 							MatContext.get().removedRelationshipTypes.get(cellTreeNode.getName()));
@@ -638,9 +659,12 @@ public class XmlConversionlHelper {
 				element = document.createElement(PopulationWorkSpaceConstants.SUBTREE_NAME);
 				element.setAttribute(PopulationWorkSpaceConstants.DISPLAY_NAME, cellTreeNode.getName());
 				element.setAttribute(PopulationWorkSpaceConstants.UUID, cellTreeNode.getUUID());
-				if(cellTreeNode.getExtraInformation("qdmVariable") != null){
-					element.setAttribute(PopulationWorkSpaceConstants.CLAUSE_QDM_VARIABLE, (String) cellTreeNode.getExtraInformation("qdmVariable"));
-				}else{
+				if (cellTreeNode.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES) != null) {
+					HashMap <String, String> qdmVariableMap = (HashMap<String, String>)
+							cellTreeNode.getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
+					element.setAttribute(PopulationWorkSpaceConstants.CLAUSE_QDM_VARIABLE,
+							qdmVariableMap.get("qdmVariable"));
+				} else {
 					element.setAttribute(PopulationWorkSpaceConstants.CLAUSE_QDM_VARIABLE, "false");
 				}
 				break;

@@ -220,6 +220,10 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 				if ("subTree".equals(subTree.item(i).getNodeName())) {
 					NamedNodeMap namedNodeMap = subTree.item(i).getAttributes();
 					String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
+					if(namedNodeMap.getNamedItem("instance")!=null){
+						String occurrText = "Occurrence Of " + namedNodeMap.getNamedItem("instance").getNodeValue().toString();
+						name = occurrText + " " + name;
+					}
 					// SubTree name might has trailing spaces.
 					name = name.trim();
 					//					name = name.replaceAll("^\\s+|\\s+$", "");

@@ -2804,6 +2804,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			//start clause validation
 			List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(xmlProcessor,measureGroupingIDList);
 			List<String> usedSubTreeIds = checkUnUsedSubTreeRef(xmlProcessor, usedSubtreeRefIds);
+			//to get all Operators for validaiton during Package timing for Removed Operators
+			List<String> operatorTypeList = getAllOperatorsTypeList();
+			
 			if(usedSubTreeIds.size()>0){
 				
 				for(String usedSubtreeRefId:usedSubTreeIds){
@@ -2837,7 +2840,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						for (int n = 0; (n <nodesSDE_timingElement.getLength()) && !flag; n++) {
 							
 							Node timingElementchildNode =nodesSDE_timingElement.item(n);
-							flag = validateTimingRelationshipNode(timingElementchildNode, flag);
+							flag = validateTimingRelationshipNode(timingElementchildNode, operatorTypeList, flag);
 							if(flag) {
 								break;
 							}
@@ -2876,7 +2879,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						for (int n = 0; (n <nodesSDE_functions.getLength()) && !flag; n++) {
 							
 							Node functionsChildNode =nodesSDE_functions.item(n);
-							flag = validateFunctionNode(functionsChildNode, flag);
+							flag = validateFunctionNode(functionsChildNode, operatorTypeList, flag);
 							if(flag) {
 								break;
 							}
@@ -3127,31 +3130,14 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param flag the flag
 	 * @return true, if successful
 	 */
-	private boolean validateTimingRelationshipNode(Node timingElementchildNode, boolean flag) {
+	private boolean validateTimingRelationshipNode(Node timingElementchildNode, List<String> operatorTypeList, boolean flag) {
 		int childCount = timingElementchildNode.getChildNodes().getLength();
-		List<String> operatorTypeList = getAllOperatorsTypeList();
 		String type = timingElementchildNode.getAttributes().getNamedItem("type").getNodeValue();
 		if((childCount != 2) || !operatorTypeList.contains(type)){
 			flag = true;
 		}
 		return flag;
 	}
-	
-	
-	/**
-	 * Gets the all operators type list.
-	 *
-	 * @return the all operators type list
-	 */
-	private List<String> getAllOperatorsTypeList() {
-		List<OperatorDTO> allOperatorsList = operatorDAO.getAllOperators();
-		List<String> allOperatorsTypeList = new ArrayList<String>();
-		for(int i = 0; i<allOperatorsList.size(); i ++){
-			allOperatorsTypeList.add(allOperatorsList.get(i).getId());
-		}
-		return allOperatorsTypeList;
-	}
-	
 	
 	
 	/**
@@ -3176,9 +3162,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param flag the flag
 	 * @return true, if successful
 	 */
-	private boolean validateFunctionNode(Node functionchildNode, boolean flag){
+	private boolean validateFunctionNode(Node functionchildNode,  List<String> operatorTypeList, boolean flag){
 		int functionChildCount = functionchildNode.getChildNodes().getLength();
-		if(functionChildCount< 1){
+		String type = functionchildNode.getAttributes().getNamedItem("type").getNodeValue();
+		if(functionChildCount< 1 || !operatorTypeList.contains(type)){
 			flag = true;
 		}
 		return flag;
@@ -3326,6 +3313,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			authorList.add(author);
 		}
 		return authorList;
+	}
+	
+	/**
+	 * Gets the all operators type list.
+	 *
+	 * @return the all operators type list
+	 */
+	private List<String> getAllOperatorsTypeList() {
+		List<OperatorDTO> allOperatorsList = operatorDAO.getAllOperators();
+		List<String> allOperatorsTypeList = new ArrayList<String>();
+		for(int i = 0; i<allOperatorsList.size(); i ++){
+			allOperatorsTypeList.add(allOperatorsList.get(i).getId());
+		}
+		return allOperatorsTypeList;
 	}
 }
 

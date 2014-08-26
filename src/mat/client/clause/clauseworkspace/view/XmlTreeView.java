@@ -1858,8 +1858,20 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private boolean validateSubTreeRefNode(CellTreeNode cellTreeNode){
 		Node node = PopulationWorkSpaceConstants.subTreeLookUpNode
 				.get(cellTreeNode.getName() + "~" + cellTreeNode.getUUID());
-		CellTreeNode subTreeCellTreeNode = XmlConversionlHelper
+		CellTreeNode subTreeCellTreeNode = null;
+		NamedNodeMap namedNodeMap = node.getAttributes();
+		//for validating Occurrence of QDM Variable Clause
+		if (namedNodeMap.getNamedItem("instance") != null) { 
+			String instanceOfUUID = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
+			String instanceOfDisplayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
+			Node occurenceNode = PopulationWorkSpaceConstants.subTreeLookUpNode
+					.get(instanceOfDisplayName + "~" + instanceOfUUID);
+			subTreeCellTreeNode = XmlConversionlHelper
+					.createCellTreeNode(occurenceNode, instanceOfDisplayName);	
+		} else {
+		subTreeCellTreeNode = XmlConversionlHelper
 				.createCellTreeNode(node, cellTreeNode.getName());
+		}
 		setValid(false);
 		boolean valid = validateSubtreeNodeAtPopulation(subTreeCellTreeNode);
 		return valid;
@@ -1911,9 +1923,19 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 		Node childNode = PopulationWorkSpaceConstants.subTreeLookUpNode
 				.get(subTreeCellTreeNode.getName() + "~" + subTreeCellTreeNode.getUUID());
-		CellTreeNode subTreeRefCellTreeNode = XmlConversionlHelper
+		CellTreeNode subTreeRefCellTreeNode = null;
+		NamedNodeMap namedNodeMap = childNode.getAttributes();
+		if (namedNodeMap.getNamedItem("instance") != null) { 
+			String instanceOfUUID = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
+			String instanceOfDisplayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
+			Node occurenceNode = PopulationWorkSpaceConstants.subTreeLookUpNode
+					.get(instanceOfDisplayName + "~" + instanceOfUUID);
+			subTreeCellTreeNode = XmlConversionlHelper
+					.createCellTreeNode(occurenceNode, instanceOfDisplayName);	
+		} else {
+		subTreeRefCellTreeNode = XmlConversionlHelper
 				.createCellTreeNode(childNode, subTreeCellTreeNode.getName());
-		
+		}
 		List<CellTreeNode> children = subTreeRefCellTreeNode.getChilds();
 		if((children != null) && (children.size() > 0) 
 				&& !isValid()){

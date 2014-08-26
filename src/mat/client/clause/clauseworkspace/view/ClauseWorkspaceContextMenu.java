@@ -431,17 +431,22 @@ public class ClauseWorkspaceContextMenu {
 		};
 		String qdmVariableValue = null;
 		MenuItem specificOccMenuItem = new MenuItem("Specific Occurrence", true, addSpecificOccSubTreeCmd);
-		if (xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes") != null) {
-			HashMap<String , String> map = (HashMap<String, String>)
-					xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes");
-			qdmVariableValue = map.get("qdmVariable");
-		}
-		if ((qdmVariableValue != null) && qdmVariableValue.equalsIgnoreCase("true")) {
-			specificOccMenuItem.setEnabled(true);
-			popupMenuBar.addItem(specificOccMenuItem);
+		popupMenuBar.addItem(specificOccMenuItem);
+		if(!xmlTreeDisplay.isQdmVariableDirty()) {
+			if (xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes") != null) {
+				HashMap<String , String> map = (HashMap<String, String>)
+						xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes");
+				qdmVariableValue = map.get("qdmVariable");
+			}
+			if ((qdmVariableValue != null) && qdmVariableValue.equalsIgnoreCase("true")) {
+				specificOccMenuItem.setEnabled(true);
+				popupMenuBar.addItem(specificOccMenuItem);
+			} else {
+				specificOccMenuItem.setEnabled(false);
+				
+			}
 		} else {
 			specificOccMenuItem.setEnabled(false);
-			popupMenuBar.addItem(specificOccMenuItem);
 		}
 		popupMenuBar.addSeparator(separator);
 		addCommonMenus();

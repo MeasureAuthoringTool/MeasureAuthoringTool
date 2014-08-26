@@ -627,9 +627,20 @@ public class XmlTreePresenter {
 				} else {
 					xmlTreeDisplay.setQdmVariableDirty(false);
 				}
-				subTreeNode.setExtraInformation("qdmVariable", event.getValue().toString());
 				
-				
+				// Update qdmVariable map in extraAttribute map of subtreeNode.
+				if (subTreeNode.getExtraInformation("extraAttributes") != null) {
+					@SuppressWarnings("unchecked")
+					HashMap<String , String> extraInfoMap = (HashMap<String, String>)
+							subTreeNode.getExtraInformation("extraAttributes");
+					if (extraInfoMap.containsKey("qdmVariable")) {
+						extraInfoMap.put("qdmVariable", event.getValue().toString());
+					} else {
+						HashMap<String, String> map = new HashMap<String, String>();
+						map.put("qdmVariable", event.getValue().toString());
+						subTreeNode.setExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES, map);
+					}
+				}
 			}
 		});
 	}

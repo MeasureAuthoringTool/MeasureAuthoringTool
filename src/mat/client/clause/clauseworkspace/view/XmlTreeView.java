@@ -2117,7 +2117,12 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						int checkChildCount = 1;
 						String invalidKeyForMap = "inValidAtSetoperatorAndOrFunction";
 						Map<String, String> map = (Map<String, String>)node.getExtraInformation("extraAttributes");
-						String funcType = map.get("type");
+						String funcType;
+						if(map!=null){
+							funcType = map.get("type");
+						} else {
+							funcType = node.getName();
+						}
 						if ((node.getName().equalsIgnoreCase(satisfiesAll))
 								|| (node.getName().equalsIgnoreCase(satisfiesAny))) {
 							checkChildCount = 2;

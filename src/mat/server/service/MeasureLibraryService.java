@@ -496,4 +496,6 @@ public interface MeasureLibraryService {
 	List<Author> getAllAuthors();
 	
 	MeasureXmlModel saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID);
+	
+	boolean isQDMVariableEnabled(String measureId, String subTreeUUID);
 }

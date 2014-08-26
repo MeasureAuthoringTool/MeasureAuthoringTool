@@ -527,4 +527,6 @@ public interface MeasureServiceAsync {
 	void saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID,
 			AsyncCallback<MeasureXmlModel> callback);
 	
+	void isQDMVariableEnabled(String measureId, String subTreeUUID, AsyncCallback<Boolean> callback);
+	
 }

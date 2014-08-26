@@ -229,6 +229,7 @@ public class XmlTreePresenter {
 				boolean checkIfUsedInLogic = true;
 				// Disable Show Clause Button for Occurrence CLauses.
 				xmlTreeDisplay.getShowClauseButton().setEnabled(true);
+				
 				Node node = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(selectedItemName + "~" + selectedItemUUID);
 				NamedNodeMap namedNodeMap = node.getAttributes();
 				if (namedNodeMap.getNamedItem("instance") != null) {
@@ -262,6 +263,8 @@ public class XmlTreePresenter {
 							xmlTreeDisplay.getDeleteClauseButton().setEnabled(!result);
 						}
 					});
+					
+					
 				}
 			}
 			
@@ -364,6 +367,7 @@ public class XmlTreePresenter {
 							if (xmlTreeDisplay != null) {
 								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
 								xmlTreeDisplay.updateSuggestOracle();
+								enableDisableQDMVariableCheckBox(nodeUUID);
 							}
 						}
 					});
@@ -403,6 +407,7 @@ public class XmlTreePresenter {
 		//the statement below will cause a programattic equivalent of clicking the Expand tree button.
 		xmlTreeDisplay.getButtonExpandClauseWorkSpace().click();
 		xmlTreeDisplay.getIncludeQdmVaribale().setVisible(true);
+		enableDisableQDMVariableCheckBox(selectedClauseUUID);
 		
 	}
 	
@@ -576,6 +581,7 @@ public class XmlTreePresenter {
 					public void onFailure(Throwable caught) {
 					}
 				});
+				enableDisableQDMVariableCheckBox(clauseUUID);
 			}
 		});
 		xmlTreeDisplay.getCommentButtons().addClickHandler(new ClickHandler() {
@@ -877,5 +883,27 @@ public class XmlTreePresenter {
 	 */
 	public final void setXmlTreeDisplay(final XmlTreeDisplay xmlTreeDisplay) {
 		this.xmlTreeDisplay = xmlTreeDisplay;
+	}
+	
+	/**
+	 * @param clauseUUID
+	 */
+	private void enableDisableQDMVariableCheckBox(final String clauseUUID) {
+		xmlTreeDisplay.getIncludeQdmVaribale().setEnabled(true);
+		service.isQDMVariableEnabled(MatContext.get().getCurrentMeasureId(), clauseUUID, new AsyncCallback<Boolean>(){
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onSuccess(Boolean result) {
+				xmlTreeDisplay.getIncludeQdmVaribale().setEnabled(!result);
+				
+			}
+			
+		});
 	}
 }

@@ -442,4 +442,9 @@ MeasureService {
 		
 	}
 	
+	@Override
+	public boolean isQDMVariableEnabled(String measureId, String subTreeUUID) {
+		return this.getMeasureLibraryService().isQDMVariableEnabled(measureId, subTreeUUID);
+	}
+	
 }

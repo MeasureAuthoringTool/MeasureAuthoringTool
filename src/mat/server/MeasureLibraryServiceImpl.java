@@ -243,6 +243,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return false;
 	}
+	@Override
+	public boolean isQDMVariableEnabled(String measureId, String subTreeUUID){
+		logger.info("Inside isQDMVariableEnabled Method for measure Id " + measureId);
+		
+		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
+			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
+			try {
+				NodeList subTreeOccNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTree[@instanceOf='"+subTreeUUID+"']");
+				if((subTreeOccNodeList.getLength() >0)){
+					return true;
+				}
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		return false;
+	}
 	
 	/* (non-Javadoc)
 	 * @see mat.server.service.MeasureLibraryService#saveSubTreeInMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
@@ -3165,7 +3185,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	private boolean validateFunctionNode(Node functionchildNode,  List<String> operatorTypeList, boolean flag){
 		int functionChildCount = functionchildNode.getChildNodes().getLength();
 		String type = functionchildNode.getAttributes().getNamedItem("type").getNodeValue();
-		if(functionChildCount< 1 || !operatorTypeList.contains(type)){
+		if((functionChildCount< 1) || !operatorTypeList.contains(type)){
 			flag = true;
 		}
 		return flag;

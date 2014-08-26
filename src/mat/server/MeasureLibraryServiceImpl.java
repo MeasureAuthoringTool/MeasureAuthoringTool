@@ -225,14 +225,28 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	@Override
 	public boolean isSubTreeReferredInLogic(String measureId, String subTreeUUID){
 		logger.info("Inside isSubTreeReferredInLogic Method for measure Id " + measureId);
-		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			try {
-				NodeList subTreeRefNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTreeRef[@id='"+subTreeUUID+"']");
-				NodeList subTreeOccNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTree[@instanceOf='"+subTreeUUID+"']");
-				if((subTreeRefNodeList.getLength() > 0) || (subTreeOccNodeList.getLength() >0)){
+				NodeList subTreeRefNodeList = xmlProcessor.findNodeList(
+						xmlProcessor.getOriginalDoc(), "//subTreeRef[@id='" + subTreeUUID + "']");
+				NodeList subTreeOccNodeList = xmlProcessor.findNodeList(
+						xmlProcessor.getOriginalDoc(), "//subTree[@instanceOf='" + subTreeUUID + "']");
+				boolean isOccurrenceUsed = false;
+				for (int i = 0; i < subTreeOccNodeList.getLength(); i++) {
+					Node node = subTreeOccNodeList.item(i);
+					if (node.hasAttributes()) {
+						String occNodeUUID = node.getAttributes().getNamedItem("uuid").getNodeValue();
+						NodeList subTreeOccRefNodeList = xmlProcessor.findNodeList(
+								xmlProcessor.getOriginalDoc(), "//subTreeRef[@id='" + occNodeUUID + "']");
+						if (subTreeOccRefNodeList.getLength() > 0) {
+							isOccurrenceUsed = true;
+							break;
+						}
+					}
+				}
+				if ((subTreeRefNodeList.getLength() > 0) || isOccurrenceUsed) {
 					return true;
 				}
 			} catch (XPathExpressionException e) {

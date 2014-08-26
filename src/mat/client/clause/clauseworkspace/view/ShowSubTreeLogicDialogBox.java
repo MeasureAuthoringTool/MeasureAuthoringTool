@@ -20,6 +20,7 @@ import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.xml.client.NamedNodeMap;
 import com.google.gwt.xml.client.Node;
 
 // TODO: Auto-generated Javadoc
@@ -188,8 +189,20 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
 		}
 		Node node = PopulationWorkSpaceConstants.subTreeLookUpNode
 				.get(selectedClauseName + "~" + selectedClauseUUID);
-		CellTreeNode subTreeCellTreeNode = XmlConversionlHelper
-				.createCellTreeNode(node, selectedClauseName);
+		CellTreeNode subTreeCellTreeNode = null;
+		NamedNodeMap namedNodeMap = node.getAttributes();
+		if (namedNodeMap.getNamedItem("instance") != null) { 
+			String instanceOfUUID = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
+			String instanceOfDisplayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
+			Node occurenceNode = PopulationWorkSpaceConstants.subTreeLookUpNode
+					.get(instanceOfDisplayName + "~" + instanceOfUUID);
+			subTreeCellTreeNode = XmlConversionlHelper
+					.createCellTreeNode(occurenceNode, instanceOfDisplayName);	
+		} else {
+			subTreeCellTreeNode = XmlConversionlHelper
+					.createCellTreeNode(node, selectedClauseName);
+		}
+		
 		cellTreeNode.appendChild(subTreeCellTreeNode.getChilds().get(0));
 		TreeNode treeNode = checkIfClauseAndAppend(clauseTreeDisplay
 				.getXmlTree().getRootTreeNode());
@@ -213,8 +226,19 @@ public class ShowSubTreeLogicDialogBox extends XmlConversionlHelper {
 				if (node.getNodeType() == CellTreeNode.SUBTREE_REF_NODE) {
 					Node childNode = PopulationWorkSpaceConstants.subTreeLookUpNode
 							.get(node.getName() + "~" + node.getUUID());
-					CellTreeNode subTreeCellTreeNode = XmlConversionlHelper
+					CellTreeNode subTreeCellTreeNode = null;
+					NamedNodeMap namedNodeMap = childNode.getAttributes();
+					if (namedNodeMap.getNamedItem("instance") != null) { 
+						String instanceOfUUID = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
+						String instanceOfDisplayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
+						Node occurenceNode = PopulationWorkSpaceConstants.subTreeLookUpNode
+								.get(instanceOfDisplayName + "~" + instanceOfUUID);
+						subTreeCellTreeNode = XmlConversionlHelper
+								.createCellTreeNode(occurenceNode, instanceOfDisplayName);	
+					} else {
+						subTreeCellTreeNode = XmlConversionlHelper
 							.createCellTreeNode(childNode, node.getName());
+					}
 					if(subTreeCellTreeNode.getChilds()!=null
 							 && subTreeCellTreeNode.getChilds().get(0)
 								.getChilds()!=null){

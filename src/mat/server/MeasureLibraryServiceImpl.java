@@ -312,6 +312,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		}
 		logger.info("End saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#saveSubTreeOccurrence(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public MeasureXmlModel saveSubTreeOccurrence(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID){
 		logger.info("Inside saveSubTreeOccurrence Method for measure Id " + measureXmlModel.getMeasureId() + " .");
@@ -3125,9 +3129,9 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private boolean validateTimingRelationshipNode(Node timingElementchildNode, boolean flag) {
 		int childCount = timingElementchildNode.getChildNodes().getLength();
-		List<String> relationshipTypeList = getRelationshipTypeList();
+		List<String> operatorTypeList = getAllOperatorsTypeList();
 		String type = timingElementchildNode.getAttributes().getNamedItem("type").getNodeValue();
-		if((childCount != 2) || !relationshipTypeList.contains(type)){
+		if((childCount != 2) || !operatorTypeList.contains(type)){
 			flag = true;
 		}
 		return flag;
@@ -3135,18 +3139,20 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	
 	
 	/**
-	 * Gets the relationship type list.
+	 * Gets the all operators type list.
 	 *
-	 * @return the relationship type list
+	 * @return the all operators type list
 	 */
-	private List<String> getRelationshipTypeList() {
-		List<OperatorDTO> timingRelationshipsList = operatorDAO.getRelAssociationsOperators();
-		List<String> typeList = new ArrayList<String>();
-		for(int i = 0; i<timingRelationshipsList.size(); i ++){
-			typeList.add(timingRelationshipsList.get(i).getId());
+	private List<String> getAllOperatorsTypeList() {
+		List<OperatorDTO> allOperatorsList = operatorDAO.getAllOperators();
+		List<String> allOperatorsTypeList = new ArrayList<String>();
+		for(int i = 0; i<allOperatorsList.size(); i ++){
+			allOperatorsTypeList.add(allOperatorsList.get(i).getId());
 		}
-		return typeList;
+		return allOperatorsTypeList;
 	}
+	
+	
 	
 	/**
 	 * Validate satisfy node.

@@ -7,6 +7,7 @@
 	    <changeSet author="mat_dev_user" id="1" context="prod">
 	        <sql>
 	        	<!-- START Measure Notes Migration Scripts -->
+	        	SET session sql_mode = '';
 	            Create table MEASURE_NOTES_BACKUP as (select * from MEASURE_NOTES);
 	        	Create TABLE TEMP_TABLE as (SELECT ID,MEASURE_ID , ACTIVITY_TYPE, ADDL_INFO ,TIMESTAMP, USER_ID   FROM
                 MEASURE_AUDIT_LOG WHERE ACTIVITY_TYPE ='User Comment');

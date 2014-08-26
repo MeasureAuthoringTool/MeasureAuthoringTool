@@ -1,5 +1,6 @@
 package mat.client.measure.service;
 
+import java.util.HashMap;
 import java.util.List;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -421,15 +422,7 @@ public interface MeasureServiceAsync {
 	 */
 	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID, AsyncCallback<Void> callback);
 	
-	/**
-	 * Check and delete sub tree.
-	 *
-	 * @param measureId the measure id
-	 * @param subTreeUUID the sub tree uuid
-	 * @param callback the callback
-	 */
-	void checkAndDeleteSubTree(String measureId, String subTreeUUID,
-			AsyncCallback<Boolean> callback);
+	void checkAndDeleteSubTree(String measureId, String subTreeUUID, AsyncCallback<HashMap<String, String>> callback);
 	
 	/**
 	 * Checks if is sub tree referred in logic.

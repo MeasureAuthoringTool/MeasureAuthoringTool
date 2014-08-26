@@ -2,6 +2,7 @@ package mat.server.service;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -394,7 +395,7 @@ public interface MeasureLibraryService {
 	 * @param subTreeUUID the sub tree uuid
 	 * @return true, if successful
 	 */
-	boolean checkAndDeleteSubTree(String measureId, String subTreeUUID);
+	HashMap<String, String> checkAndDeleteSubTree(String measureId, String subTreeUUID);
 	
 	/**
 	 * Gets the formatted release date.

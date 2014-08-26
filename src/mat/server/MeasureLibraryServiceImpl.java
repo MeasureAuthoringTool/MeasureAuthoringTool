@@ -11,7 +11,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
@@ -191,22 +194,44 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#checkAndDeleteSubTree(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean checkAndDeleteSubTree(String measureId, String subTreeUUID){
+	public HashMap<String,String> checkAndDeleteSubTree(String measureId, String subTreeUUID){
 		logger.info("Inside checkAndDeleteSubTree Method for measure Id " + measureId);
-		
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureId);
+		HashMap<String,String> removeUUIDMap= new HashMap<String,String> ();
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
 			XmlProcessor xmlProcessor = new XmlProcessor(xmlModel.getXml());
 			try {
 				NodeList subTreeRefNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTreeRef[@id='"+subTreeUUID+"']");
 				if(subTreeRefNodeList.getLength() > 0){
-					return false;
+					xmlModel.setXml(null);
+					return removeUUIDMap;
 				}
 				
 				Node subTreeNode = xmlProcessor.findNode(xmlProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@uuid='"+subTreeUUID+"']");
-				if(subTreeNode != null){
+				NodeList subTreeOccNode = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@instanceOf='"+subTreeUUID+"']");
+				if (subTreeNode != null) {
 					Node parentNode = subTreeNode.getParentNode();
+					String name = subTreeNode.getAttributes().getNamedItem("displayName").getNodeValue();
+					String uuid = subTreeNode.getAttributes().getNamedItem("uuid").getNodeValue();
+					String mapValue = name + "~" + uuid;
+					removeUUIDMap.put(uuid,mapValue);
 					parentNode.removeChild(subTreeNode);
+				}
+				if (subTreeOccNode.getLength() > 0) {
+					Set<Node> targetOccurenceElements = new HashSet<Node>();
+					for (int i = 0; i < subTreeOccNode.getLength(); i++) {
+						Node node = subTreeOccNode.item(i);
+						targetOccurenceElements.add(node);
+					}
+					
+					for (Node occNode : targetOccurenceElements) {
+						String name = "Occurrence " + occNode.getAttributes().getNamedItem("instance").getNodeValue() + " of ";
+						name = name + occNode.getAttributes().getNamedItem("displayName").getNodeValue();
+						String uuid = occNode.getAttributes().getNamedItem("uuid").getNodeValue();
+						String mapValue = name + "~" + uuid;
+						removeUUIDMap.put(uuid,mapValue);
+						occNode.getParentNode().removeChild(occNode);
+					}
 				}
 				xmlModel.setXml(xmlProcessor.transform(xmlProcessor.getOriginalDoc()));
 				getService().saveMeasureXml(xmlModel);
@@ -216,7 +241,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 		}
 		
-		return true;
+		return removeUUIDMap;
 	}
 	
 	/* (non-Javadoc)

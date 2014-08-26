@@ -1,5 +1,6 @@
 package mat.client.measure.service;
 
+import java.util.HashMap;
 import java.util.List;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -380,7 +381,7 @@ public interface MeasureService extends RemoteService {
 	 * @param subTreeUUID the sub tree uuid
 	 * @return true, if successful
 	 */
-	boolean checkAndDeleteSubTree(String measureId, String subTreeUUID);
+	HashMap<String, String> checkAndDeleteSubTree(String measureId, String subTreeUUID);
 	
 	/**
 	 * Checks if is sub tree referred in logic.

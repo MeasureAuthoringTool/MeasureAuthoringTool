@@ -1,5 +1,6 @@
 package mat.server;
 
+import java.util.HashMap;
 import java.util.List;
 import mat.DTO.MeasureNoteDTO;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
@@ -352,7 +353,7 @@ MeasureService {
 	 * @see mat.client.measure.service.MeasureService#checkAndDeleteSubTree(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public boolean checkAndDeleteSubTree(String measureId, String subTreeUUID){
+	public HashMap<String, String> checkAndDeleteSubTree(String measureId, String subTreeUUID){
 		return this.getMeasureLibraryService().checkAndDeleteSubTree(measureId, subTreeUUID);
 	}
 	

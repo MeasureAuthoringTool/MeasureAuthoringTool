@@ -3,6 +3,7 @@ package mat.client.clause.clauseworkspace.presenter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import mat.client.Mat;
 import mat.client.MeasureComposerPresenter;
@@ -558,18 +559,23 @@ public class XmlTreePresenter {
 					}
 				}
 				
-				service.checkAndDeleteSubTree(measureId, clauseUUID, new AsyncCallback<Boolean>() {
+				service.checkAndDeleteSubTree(measureId, clauseUUID, new AsyncCallback<HashMap<String,String>>() {
 					@Override
-					public void onSuccess(Boolean result) {
-						if (result) {
+					public void onSuccess(HashMap<String,String> result) {
+						if (!result.entrySet().isEmpty()) {
 							xmlTreeDisplay.getSearchSuggestTextBox().setText("Search");
 							xmlTreeDisplay
 							.getSuccessMessageDisplay()
 							.setMessage(
-									"Clause successfully deleted.");
+									"Clause(s) successfully deleted.");
 							xmlTreeDisplay.getClauseNamesListBox().removeItem(selectedClauseindex);
-							PopulationWorkSpaceConstants.subTreeLookUpNode.remove(clauseName + "~" + clauseUUID);
-							PopulationWorkSpaceConstants.subTreeLookUpName.remove(clauseUUID);
+							for (Entry<String, String> entry : result.entrySet()) {
+								String key = entry.getKey();
+								Object value = entry.getValue();
+								PopulationWorkSpaceConstants.subTreeLookUpNode.remove(value);
+								PopulationWorkSpaceConstants.subTreeLookUpName.remove(key);
+							}
+							xmlTreeDisplay.clearAndAddClauseNamesToListBox();
 							xmlTreeDisplay.updateSuggestOracle();
 						} else {
 							xmlTreeDisplay.getErrorMessageDisplay().setMessage(

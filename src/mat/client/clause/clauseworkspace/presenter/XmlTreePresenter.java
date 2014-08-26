@@ -646,8 +646,8 @@ public class XmlTreePresenter {
 				NamedNodeMap namedNodeMap = nodeList.item(i).getAttributes();
 				String name = namedNodeMap.getNamedItem("displayName").getNodeValue();
 				if(namedNodeMap.getNamedItem("instance")!=null){
-					String occurrText = "Occurrence Of " + namedNodeMap.getNamedItem("instance").getNodeValue().toString();
-					name = occurrText + " " + name;
+					String occurrText = "Occurrence " + namedNodeMap.getNamedItem("instance").getNodeValue().toString();
+					name = occurrText + " of " + name;
 				}
 				String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 				String subTreeLookUpNode = PopulationWorkSpaceConstants.subTreeLookUpName.get(uuid)+"~"+uuid;

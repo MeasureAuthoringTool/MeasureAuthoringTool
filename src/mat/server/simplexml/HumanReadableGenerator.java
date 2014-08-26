@@ -1271,7 +1271,7 @@ public class HumanReadableGenerator {
 				.append("<a href=\"#d1e767\">Supplemental Data Elements</a>");
 
 		bodyElement
-				.append("<hr align=\"left\" color=\"teal\" size=\"2\" width=\"80%\">");
+				.append("<div style=\"float:left; background:teal; height:3px; width:80%\"></div><pre><br/></pre>");
 
 	}
 

@@ -76,7 +76,7 @@ public class HeaderHumanReadableGenerator {
 			org.jsoup.nodes.Document html) throws XPathExpressionException {
 		Element body = html.body();
 		
-		body.append("<hr align=\"left\" color=\"teal\" size=\"2\" width=\"80%\">");
+		body.append("<div style=\"float:left; background:teal; height:3px; width:80%\"></div><pre><br/></pre>");
 		
 		Element table = body.appendElement("table");
 		table.attr("class", "header_table");
@@ -623,9 +623,9 @@ public class HeaderHumanReadableGenerator {
 	 *            The width we want the column to take up
 	 */
 	private static void setTDHeaderAttributes(Element col, String width) {
-		col.attr("width", width);
-		col.attr("bgcolor", "#656565");
-		col.attr("style", "background-color:#656565");
+		//col.attr("width", width);
+		//col.attr("bgcolor", "#656565");
+		col.attr("style", "background-color:#656565; width:"+width);
 	}
 	
 	/**
@@ -640,7 +640,7 @@ public class HeaderHumanReadableGenerator {
 	 */
 	private static void setTDInfoAttributes(Element col, String width,
 			String span) {
-		col.attr("width", width);
+		col.attr("style", "width:"+width);
 		if (span.length() > 0) {
 			col.attr("colspan", span);
 		}

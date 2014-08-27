@@ -283,6 +283,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		return false;
 	}
+	
+	/* (non-Javadoc)
+	 * @see mat.server.service.MeasureLibraryService#isQDMVariableEnabled(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public boolean isQDMVariableEnabled(String measureId, String subTreeUUID){
 		logger.info("Inside isQDMVariableEnabled Method for measure Id " + measureId);
@@ -2864,26 +2868,22 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			//start clause validation
 			Map<String , List<String>> usedSubtreeRefIdsMap = getUsedSubtreeRefIds(xmlProcessor,measureGroupingIDList);
 			//List<String> usedSubTreeIds = checkUnUsedSubTreeRef(xmlProcessor, usedSubtreeRefIds);
-			List<String> usedSubTreeIds = getFilteredSubTreeIds(usedSubtreeRefIdsMap);
+			List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIdsMap);
 			//to get all Operators for validaiton during Package timing for Removed Operators
 			List<String> operatorTypeList = getAllOperatorsTypeList();
 			
 			if(usedSubTreeIds.size()>0){
 				
 				for(String usedSubtreeRefId:usedSubTreeIds){
-					
+
 					String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
 					String otherThanSatisfyfunction = "@type!='SATISFIES ALL' or @type!='SATISFIES ANY'";
 					String dateTimeDiffFunction = "@type='DATETIMEDIFF'";
 					String XPATH_QDMELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//elementRef/@id";
 					String XPATH_TIMING_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//relationalOp";
-					
 					String XPATH_SATISFY_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+satisfyFunction+"]";
-					
 					String XPATH_FUNCTIONS ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+otherThanSatisfyfunction+"]";
-					
 					String XPATH_SETOPERATOR ="/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//setOp";
-					
 					//for DateTimeDiff Validation
 					String XPATH_DATE_TIME_DIFF_ELEMENT = "/measure//subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']//functionalOp["+dateTimeDiffFunction+"]";
 					/*System.out.println("MEASURE_XML: "+xmlModel.getXml());*/
@@ -2987,20 +2987,59 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		return flag;
 	}
 	
-	private List<String> getFilteredSubTreeIds(
+	
+	/**
+	 * Check if qdm var instance is present.
+	 *
+	 * @param usedSubtreeRefId the used subtree ref id
+	 * @param xmlProcessor the xml processor
+	 * @return the string
+	 */
+	private String checkIfQDMVarInstanceIsPresent(String usedSubtreeRefId, 
+			XmlProcessor xmlProcessor){
+		
+		String XPATH_INSTANCE_QDM_VAR = "/measure/subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']/@instance";
+		String XPATH_INSTANCE_OF_QDM_VAR = "/measure/subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']/@instanceOf";
+		try {
+			Node nodesSDE_SubTree = (Node) xPath.evaluate(XPATH_INSTANCE_QDM_VAR, xmlProcessor.getOriginalDoc(),
+					XPathConstants.NODE);
+			if(nodesSDE_SubTree!=null){
+				Node nodesSDE_SubTreeInstance = (Node) xPath.evaluate(XPATH_INSTANCE_OF_QDM_VAR, xmlProcessor.getOriginalDoc(),
+						XPathConstants.NODE);
+				usedSubtreeRefId = nodesSDE_SubTreeInstance.getNodeValue();
+			}
+	
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		return usedSubtreeRefId;
+	}
+	/**
+	 * Gets the filtered sub tree ids.
+	 *
+	 * @param usedSubTreeIdsMap the used sub tree ids map
+	 * @return the filtered sub tree ids
+	 */
+	private List<String> checkUnUsedSubTreeRef(
 			Map<String, List<String>> usedSubTreeIdsMap) {
 
-		usedSubTreeIdsMap.get("subTreeIDAtPop").removeAll(
-				usedSubTreeIdsMap.get("subTreeIDAtMO"));
-		usedSubTreeIdsMap.get("subTreeIDAtMO").addAll(
-				usedSubTreeIdsMap.get("subTreeIDAtPop"));
+		List<String> subTreeIdsAtPop = new ArrayList<String>();
+		List<String> subTreeIdsAtMO = new ArrayList<String>();
+		List<String> subTreeIdsAtStrat = new ArrayList<String>();
+		subTreeIdsAtPop.addAll(usedSubTreeIdsMap.get("subTreeIDAtPop"));
+		subTreeIdsAtMO.addAll(usedSubTreeIdsMap.get("subTreeIDAtMO"));
+		subTreeIdsAtStrat.addAll(usedSubTreeIdsMap.get("subTreeIDAtStrat"));
+		
+		subTreeIdsAtPop.removeAll(subTreeIdsAtMO);
+		subTreeIdsAtMO.addAll(subTreeIdsAtPop);
 
-		usedSubTreeIdsMap.get("subTreeIDAtMO").removeAll(
-				usedSubTreeIdsMap.get("subTreeIDAtStrat"));
-		usedSubTreeIdsMap.get("subTreeIDAtStrat").addAll(
-				usedSubTreeIdsMap.get("subTreeIDAtMO"));
+		subTreeIdsAtMO.removeAll(subTreeIdsAtStrat);
+		subTreeIdsAtStrat.addAll(subTreeIdsAtMO);
 
-		return usedSubTreeIdsMap.get("subTreeIDAtStrat");
+		return subTreeIdsAtStrat;
 	}
 	
 	
@@ -3061,10 +3100,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			for (int i = 0; i < groupedSubTreeRefIdsNodeListPop.getLength(); i++) {
 				Node groupedSubTreeRefIdAttributeNodePop = groupedSubTreeRefIdsNodeListPop
 						.item(i);
-				if(!usedSubTreeRefIdsPop.contains(groupedSubTreeRefIdAttributeNodePop
-						.getNodeValue())){
-					usedSubTreeRefIdsPop.add(groupedSubTreeRefIdAttributeNodePop
-							.getNodeValue());
+				String uuid = groupedSubTreeRefIdAttributeNodePop
+						.getNodeValue();
+				uuid = checkIfQDMVarInstanceIsPresent(uuid, xmlProcessor);
+				if(!usedSubTreeRefIdsPop.contains(uuid)){
+					usedSubTreeRefIdsPop.add(uuid);
 				}
 			}
 			
@@ -3080,9 +3120,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			for (int i = 0; i < groupedSubTreeRefIdsNodeListMO.getLength(); i++) {
 				Node groupedSubTreeRefIdAttributeNodeMO = groupedSubTreeRefIdsNodeListMO
 						.item(i);
-				if(!usedSubTreeRefIdsMO.contains(groupedSubTreeRefIdAttributeNodeMO.getNodeValue())){
-					usedSubTreeRefIdsMO.add(groupedSubTreeRefIdAttributeNodeMO
-							.getNodeValue());
+				String uuid = groupedSubTreeRefIdAttributeNodeMO.getNodeValue();
+				uuid = checkIfQDMVarInstanceIsPresent(uuid, xmlProcessor);
+				if(!usedSubTreeRefIdsMO.contains(uuid)){
+					usedSubTreeRefIdsMO.add(uuid);
 				}
 			}
 			
@@ -3099,9 +3140,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			for (int i = 0; i < groupedSubTreeRefIdListStrat.getLength(); i++) {
 				Node groupedSubTreeRefIdAttributeNodeStrat = groupedSubTreeRefIdListStrat
 						.item(i);
-				if(!usedSubTreeRefIdsStrat.contains(groupedSubTreeRefIdAttributeNodeStrat.getNodeValue())) {
-					usedSubTreeRefIdsStrat.add(groupedSubTreeRefIdAttributeNodeStrat
-							.getNodeValue());
+				String uuid = groupedSubTreeRefIdAttributeNodeStrat.getNodeValue();
+				uuid = checkIfQDMVarInstanceIsPresent(uuid, xmlProcessor);
+				if(!usedSubTreeRefIdsStrat.contains(uuid)) {
+					usedSubTreeRefIdsStrat.add(uuid);
 				}
 			}
 			
@@ -3236,6 +3278,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * Validate Timing and Relationship node.
 	 *
 	 * @param timingElementchildNode the timing elementchild node
+	 * @param operatorTypeList the operator type list
 	 * @param flag the flag
 	 * @return true, if successful
 	 */
@@ -3268,6 +3311,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * Validate function node.
 	 *
 	 * @param functionchildNode the functionchild node
+	 * @param operatorTypeList the operator type list
 	 * @param flag the flag
 	 * @return true, if successful
 	 */

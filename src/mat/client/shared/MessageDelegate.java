@@ -593,7 +593,7 @@ public class MessageDelegate {
 	private final String COMPONENT_MEASURES_ADDED_SUCCESSFULLY="Component Measures updated successfully. Changes must be saved on the previous page.";
 	
 	/** The removed functions error message. */
-	private final String POPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE = "Incorrect Logic. DateTimeDiff cannot be added in PopulationWorkspace.";
+	private final String POPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE = "Highlighted clause contains DATETIMEDIFF Function.";
 
 
 	/**

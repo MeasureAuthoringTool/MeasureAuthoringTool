@@ -28,6 +28,7 @@ import mat.model.clause.MeasureXML;
 import mat.shared.UUIDUtilClient;
 import net.sf.saxon.TransformerFactoryImpl;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.w3c.dom.Attr;
@@ -241,6 +242,7 @@ public class ExportSimpleXML {
 		//modify the <startDate> and <stopDate> tags to have date in YYYYMMDD format
 		modifyHeaderStart_Stop_Dates(originalDoc);
 		modifyElementLookUpForOccurances(originalDoc);
+		modifySubTreeLookUpForOccurances(originalDoc);
 		return transform(originalDoc);
 	}
 	
@@ -358,13 +360,13 @@ public class ExportSimpleXML {
 			String oid = qdmNode.getAttributes().getNamedItem("oid").getNodeValue();
 			String datatype = qdmNode.getAttributes().getNamedItem("datatype").getNodeValue();
 			String instance = qdmNode.getAttributes().getNamedItem("instance").getNodeValue();
-			System.out.println("Instance:"+instance);
+			
 			if(qdmOID_Datatype_List.contains(datatype + oid)){
 				continue;
 			}else{
 				qdmOID_Datatype_List.add(datatype + oid);
 			}
-			System.out.println("/measure/elementLookUp/qdm[@datatype="+datatype+"][@oid="+oid+"][not(@instance)]");
+			
 			NodeList nonOccuranceQDMs = (NodeList) xPath.evaluate("/measure/elementLookUp/qdm[@datatype='"+datatype+"'][@oid='"+oid+"'][not(@instance)]", 
 					originalDoc.getDocumentElement(), XPathConstants.NODESET);
 			if(nonOccuranceQDMs.getLength() > 0){
@@ -381,6 +383,33 @@ public class ExportSimpleXML {
 				newNode.getAttributes().getNamedItem("id").setNodeValue(uuid);
 				parentNode.appendChild(newNode);
 			}
+		}
+	}
+	
+	/**
+	 * This method will look for <subTree> tags within <subTreeLookUp> tag. For each <subTree> with 
+	 * an "instanceOf" attribute, we need to fetch the corrosponding <subTree> and copy its children. 
+	 * @param originalDoc
+	 * @throws XPathExpressionException 
+	 */
+	private static void modifySubTreeLookUpForOccurances(Document originalDoc) throws XPathExpressionException{
+		NodeList qdmVariableSubTreeList = (NodeList)xPath.evaluate("/measure/subTreeLookUp/subTree[@instanceOf]", originalDoc.getDocumentElement(), XPathConstants.NODESET);
+		
+		for(int i=0;i<qdmVariableSubTreeList.getLength();i++){
+			Node qdmVariableNode = qdmVariableSubTreeList.item(i);
+			
+			String occuranceLetter = qdmVariableNode.getAttributes().getNamedItem("instance").getNodeValue();
+			String displayName = qdmVariableNode.getAttributes().getNamedItem("displayName").getNodeValue();
+			displayName = "Occurrence "+occuranceLetter + " of $" + StringUtils.deleteWhitespace(displayName);
+			
+			qdmVariableNode.getAttributes().getNamedItem("displayName").setNodeValue(displayName);
+			
+			String referencedUUID = qdmVariableNode.getAttributes().getNamedItem("instanceOf").getNodeValue();
+			Node referencedSubTreeNode = (Node)xPath.evaluate("/measure/subTreeLookUp/subTree[not(@instanceOf)][@uuid='"+referencedUUID+"']", originalDoc.getDocumentElement(),XPathConstants.NODE);
+			Node mainChild = referencedSubTreeNode.getChildNodes().item(0);
+			Node mainChildClone = mainChild.cloneNode(true);
+			
+			qdmVariableNode.appendChild(mainChildClone);
 		}
 	}
 

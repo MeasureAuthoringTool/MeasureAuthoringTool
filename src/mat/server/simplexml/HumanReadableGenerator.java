@@ -442,9 +442,13 @@ public class HumanReadableGenerator {
 					parentListElement = parentListElement
 							.appendElement(HTML_UL).appendElement(HTML_LI);
 				}
-				String name = StringUtils.deleteWhitespace(map.getNamedItem(
-						"displayName").getNodeValue());
-				parentListElement.appendText("$" + name + " ");
+				String displayName = map.getNamedItem("displayName").getNodeValue();
+				
+				if(map.getNamedItem("instanceOf") == null){
+					displayName = "$"+StringUtils.deleteWhitespace(displayName);
+				}
+				
+				parentListElement.appendText(displayName+ " ");
 			} else {
 				showOnlyVariableName = false;
 				NodeList childNodes = item.getChildNodes();
@@ -1534,7 +1538,7 @@ public class HumanReadableGenerator {
 
 		NodeList variables = simpleXMLProcessor.findNodeList(
 				simpleXMLProcessor.getOriginalDoc(),
-				"/measure/subTreeLookUp/subTree[@qdmVariable='true']");
+				"/measure/subTreeLookUp/subTree[@qdmVariable='true'][not(@instanceOf)]");
 		if (variables.getLength() > 0) {
 			Node node;
 			for (int i = 0; i < variables.getLength(); i++) {

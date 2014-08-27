@@ -3,7 +3,6 @@ package mat.client.clause.clauseworkspace.view;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -291,7 +290,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	
 	/** The is measure observations. */
 	private boolean isMeasureObservations = false;
-
+	
 	/**
 	 * Instantiates a new xml tree view.
 	 * 
@@ -1649,6 +1648,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				popupPanel.hide();
 				if (((selectedNode.getNodeType() != CellTreeNode.MASTER_ROOT_NODE)
 						&& (selectedNode.getNodeType() != CellTreeNode.ROOT_NODE)
+						&& (selectedNode.getNodeType() != CellTreeNode.SUBTREE_NODE)
 						&& (selectedNode.getNodeType() != CellTreeNode.SUBTREE_ROOT_NODE)
 						&& (selectedNode.getParent().getNodeType() != CellTreeNode.CLAUSE_NODE)
 						&& (selectedNode.getNodeType() != CellTreeNode.CLAUSE_NODE))
@@ -1824,7 +1824,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							.contains("inValidAtPopulationAndStratificationNode")
 							&& validateSubTreeRefNode(cellTreeNode)) {
 						inValidNodeAtPopulationWorkspace
-								.add("inValidAtPopulationAndStratificationNode");
+						.add("inValidAtPopulationAndStratificationNode");
 					}
 				}
 				break;
@@ -1837,7 +1837,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				}
 				break;
 				
-		
+				
 		}
 		
 		List<CellTreeNode> children = cellTreeNode.getChilds();
@@ -1861,16 +1861,16 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 		CellTreeNode subTreeCellTreeNode = null;
 		NamedNodeMap namedNodeMap = node.getAttributes();
 		//for validating Occurrence of QDM Variable Clause
-		if (namedNodeMap.getNamedItem("instance") != null) { 
+		if (namedNodeMap.getNamedItem("instance") != null) {
 			String instanceOfUUID = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
 			String instanceOfDisplayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
 			Node occurenceNode = PopulationWorkSpaceConstants.subTreeLookUpNode
 					.get(instanceOfDisplayName + "~" + instanceOfUUID);
 			subTreeCellTreeNode = XmlConversionlHelper
-					.createCellTreeNode(occurenceNode, instanceOfDisplayName);	
+					.createCellTreeNode(occurenceNode, instanceOfDisplayName);
 		} else {
-		subTreeCellTreeNode = XmlConversionlHelper
-				.createCellTreeNode(node, cellTreeNode.getName());
+			subTreeCellTreeNode = XmlConversionlHelper
+					.createCellTreeNode(node, cellTreeNode.getName());
 		}
 		setValid(false);
 		boolean valid = validateSubtreeNodeAtPopulation(subTreeCellTreeNode);
@@ -1885,31 +1885,31 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	private boolean validateSubtreeNodeAtPopulation(CellTreeNode subTreeCellTreeNode){
 		int nodeType = subTreeCellTreeNode.getNodeType();
 		switch(nodeType){
-
-		case CellTreeNode.SET_OP_NODE:
-		case CellTreeNode.TIMING_NODE:
-		case CellTreeNode.RELATIONSHIP_NODE:
-		case CellTreeNode.ELEMENT_REF_NODE:
-			break;
-		
-		case CellTreeNode.SUBTREE_REF_NODE:
-			checkIfClauseAndAppend(subTreeCellTreeNode);
-			break;
-		case CellTreeNode.FUNCTIONS_NODE:
-			if(subTreeCellTreeNode.getName().contains("DATETIMEDIFF")){
-				setValid(true);
-			}
-			break;
+			
+			case CellTreeNode.SET_OP_NODE:
+			case CellTreeNode.TIMING_NODE:
+			case CellTreeNode.RELATIONSHIP_NODE:
+			case CellTreeNode.ELEMENT_REF_NODE:
+				break;
+				
+			case CellTreeNode.SUBTREE_REF_NODE:
+				checkIfClauseAndAppend(subTreeCellTreeNode);
+				break;
+			case CellTreeNode.FUNCTIONS_NODE:
+				if(subTreeCellTreeNode.getName().contains("DATETIMEDIFF")){
+					setValid(true);
+				}
+				break;
 		}
 		
 		List<CellTreeNode> children = subTreeCellTreeNode.getChilds();
-		if((children != null) && (children.size() > 0) 
+		if((children != null) && (children.size() > 0)
 				&& !isValid()){
 			for(CellTreeNode node:children){
 				validateSubtreeNodeAtPopulation(node);
 				
 			}
-		} 
+		}
 		
 		return isValid;
 	}
@@ -1920,30 +1920,30 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	 * @param subTreeCellTreeNode the sub tree cell tree node
 	 */
 	private void checkIfClauseAndAppend(CellTreeNode subTreeCellTreeNode) {
-	
+		
 		Node childNode = PopulationWorkSpaceConstants.subTreeLookUpNode
 				.get(subTreeCellTreeNode.getName() + "~" + subTreeCellTreeNode.getUUID());
 		CellTreeNode subTreeRefCellTreeNode = null;
 		NamedNodeMap namedNodeMap = childNode.getAttributes();
-		if (namedNodeMap.getNamedItem("instance") != null) { 
+		if (namedNodeMap.getNamedItem("instance") != null) {
 			String instanceOfUUID = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
 			String instanceOfDisplayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
 			Node occurenceNode = PopulationWorkSpaceConstants.subTreeLookUpNode
 					.get(instanceOfDisplayName + "~" + instanceOfUUID);
 			subTreeCellTreeNode = XmlConversionlHelper
-					.createCellTreeNode(occurenceNode, instanceOfDisplayName);	
+					.createCellTreeNode(occurenceNode, instanceOfDisplayName);
 		} else {
-		subTreeRefCellTreeNode = XmlConversionlHelper
-				.createCellTreeNode(childNode, subTreeCellTreeNode.getName());
+			subTreeRefCellTreeNode = XmlConversionlHelper
+					.createCellTreeNode(childNode, subTreeCellTreeNode.getName());
 		}
 		List<CellTreeNode> children = subTreeRefCellTreeNode.getChilds();
-		if((children != null) && (children.size() > 0) 
+		if((children != null) && (children.size() > 0)
 				&& !isValid()){
 			for(CellTreeNode node:children){
 				validateSubtreeNodeAtPopulation(node);
 				
 			}
-		} 
+		}
 		
 	}
 	
@@ -2082,18 +2082,18 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 					case CellTreeNode.TIMING_NODE:
 					case CellTreeNode.RELATIONSHIP_NODE:
 						if ((subTree != null) && (subTree.getChildCount() == 2)) {
-//							if (!node.getValidNode() && (MatContext.get().relationships.contains(node.getName()) 
-//							|| MatContext.get().timings.contains(node.getName()))) {
-					if (!node.getValidNode() && (MatContext.get().relationships.contains(node.getName()) 
-							|| node.getNodeType()==CellTreeNode.TIMING_NODE)) {
-						editNode(true, node);
-					} else if (!MatContext.get().relationships.contains(node.getName()) 
-							&& node.getNodeType()!=CellTreeNode.TIMING_NODE){
-						editNode(false, node);
-						if(!inValidNodeList.contains("inValidAtRelationshipNode")){
-							inValidNodeList.add("inValidAtRelationshipNode");
-						}
-					}
+							//							if (!node.getValidNode() && (MatContext.get().relationships.contains(node.getName())
+							//							|| MatContext.get().timings.contains(node.getName()))) {
+							if (!node.getValidNode() && (MatContext.get().relationships.contains(node.getName())
+									|| (node.getNodeType()==CellTreeNode.TIMING_NODE))) {
+								editNode(true, node);
+							} else if (!MatContext.get().relationships.contains(node.getName())
+									&& (node.getNodeType()!=CellTreeNode.TIMING_NODE)){
+								editNode(false, node);
+								if(!inValidNodeList.contains("inValidAtRelationshipNode")){
+									inValidNodeList.add("inValidAtRelationshipNode");
+								}
+							}
 						} else {
 							editNode(false, node);
 							if(!inValidNodeList.contains("inValidAtTimingRelationShip")){
@@ -2135,10 +2135,10 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 							}
 						}
 						if ((subTree != null) && (subTree.getChildCount() >= checkChildCount)) {
-							if (!node.getValidNode() && 
+							if (!node.getValidNode() &&
 									!inValidNodeList.contains("invalidAtFunction")) {
 								editNode(true, node);
-							} 
+							}
 						} else {
 							editNode(false, node);
 							if(!inValidNodeList.contains(invalidKeyForMap)){
@@ -2507,7 +2507,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public boolean isValid() {
 		return isValid;
 	}
-
+	
 	/**
 	 * Sets the valid.
 	 *
@@ -2525,7 +2525,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public boolean isMeasureObservations() {
 		return isMeasureObservations;
 	}
-
+	
 	/**
 	 * Sets the measure observations.
 	 *

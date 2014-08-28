@@ -112,6 +112,33 @@ public class HumanReadableGenerator {
 		}
 		return returnFlag;
 	}
+	
+	/**
+	 * This method will look for <subTree> tags within <subTreeLookUp> tag. For each <subTree> with 
+	 * an "instanceOf" attribute, we need to fetch the corrosponding <subTree> and copy its children. 
+	 * @param originalDoc
+	 * @throws XPathExpressionException 
+	 */
+	private static void modifySubTreeLookUpForOccurances(XmlProcessor measureXMLProcessor) throws XPathExpressionException{
+		NodeList qdmVariableSubTreeList = measureXMLProcessor.findNodeList(measureXMLProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[@instanceOf]");
+		
+		for(int i=0;i<qdmVariableSubTreeList.getLength();i++){
+			Node qdmVariableNode = qdmVariableSubTreeList.item(i);
+			
+			String occuranceLetter = qdmVariableNode.getAttributes().getNamedItem("instance").getNodeValue();
+			String displayName = qdmVariableNode.getAttributes().getNamedItem("displayName").getNodeValue();
+			displayName = "Occurrence "+occuranceLetter + " of $" + StringUtils.deleteWhitespace(displayName);
+			
+			qdmVariableNode.getAttributes().getNamedItem("displayName").setNodeValue(displayName);
+			
+			String referencedUUID = qdmVariableNode.getAttributes().getNamedItem("instanceOf").getNodeValue();
+			Node referencedSubTreeNode = measureXMLProcessor.findNode(measureXMLProcessor.getOriginalDoc(), "/measure/subTreeLookUp/subTree[not(@instanceOf)][@uuid='"+referencedUUID+"']");
+			Node mainChild = referencedSubTreeNode.getChildNodes().item(0);
+			Node mainChildClone = mainChild.cloneNode(true);
+			
+			qdmVariableNode.appendChild(mainChildClone);
+		}
+	}
 
 	private static XmlProcessor expandSubTreesAndImportQDMs(String subXML,
 			String measureXML, boolean isImportElementLookup)
@@ -119,6 +146,7 @@ public class HumanReadableGenerator {
 
 		XmlProcessor populationOrSubtreeXMLProcessor = new XmlProcessor(subXML);
 		XmlProcessor measureXMLProcessor = new XmlProcessor(measureXML);
+		modifySubTreeLookUpForOccurances(measureXMLProcessor);
 
 		return expandSubTreesAndImportQDMs(populationOrSubtreeXMLProcessor,
 				measureXMLProcessor, isImportElementLookup);
@@ -1221,9 +1249,20 @@ public class HumanReadableGenerator {
 			org.jsoup.nodes.Document humanReadableHTMLDocument = HeaderHumanReadableGenerator
 					.generateHeaderHTMLForMeasure(simpleXmlStr);
 			XmlProcessor simpleXMLProcessor = resolveSubTreesInPopulations(simpleXmlStr);
-			// XmlProcessor simpleXMLProcessor = new XmlProcessor(simpleXmlStr);
-			//System.out.println(simpleXmlStr);
-
+			
+			if (simpleXMLProcessor == null) {
+				org.jsoup.nodes.Document htmlDocument = createBaseHumanReadableDocument();
+				Element bodyElement = htmlDocument.body();
+				Element mainDivElement = bodyElement.appendElement("div");
+				Element mainListElement = mainDivElement.appendElement(HTML_UL);
+				Element populationListElement = mainListElement
+						.appendElement(HTML_LI);
+				populationListElement
+						.appendText("Human readable encountered problems. "
+								+ "Most likely you have included a clause within clause which is causing an infinite loop.");
+				return htmlDocument.toString();
+			}
+			
 			generateHumanReadable(humanReadableHTMLDocument, simpleXMLProcessor);
 			humanReadableHTML = humanReadableHTMLDocument.toString();
 		} catch (XPathExpressionException e) {
@@ -1808,6 +1847,9 @@ public class HumanReadableGenerator {
 						clauseNodeXMLString);
 				clauseXMLProcessor = expandSubTreesAndImportQDMs(
 						clauseXMLProcessor, simpleXMLProcessor, false);
+				if(clauseXMLProcessor == null){
+					return null;
+				}
 				Node expandedClauseNode = clauseXMLProcessor.getOriginalDoc()
 						.getFirstChild();
 

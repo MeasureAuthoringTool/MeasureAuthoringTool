@@ -61,6 +61,7 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 	private static final String conversionFile1 = "xsl/New_HQMF.xsl";
 	/** Constant for mat_narrGen.xsl. **/
 	private static final String conversionFile2 = "xsl/mat_narrGen.xsl";
+	private static final String conversionFileForHQMF_Header = "xsl/new_measureDetails.xsl";
 	/** Constant for eMeasure.xsl. **/
 	private static final String conversionFileHtml = "xsl/eMeasure.xsl";
 	/** Filtered User Defined QDM's as these are dummy QDM's created by user and
@@ -518,15 +519,19 @@ public class SimpleEMeasureServiceImpl implements SimpleEMeasureService {
 				
 				String simpleXmlStr = me.getSimpleXML();
 				String emeasureHTMLStr = getHumanReadableForMeasure(measureId, simpleXmlStr);
-				String emeasureXML = getEMeasureXML();
+				String emeasureXML = getEMeasureXML(me);
 				ZipPackager zp = new ZipPackager();
 				return zp.getZipBarr(me.getMeasure().getaBBRName(), wkbkbarr, (new Date()).toString(), emeasureHTMLStr, simpleXmlStr,emeasureXML);
 		}
 	
 	
-	private String getEMeasureXML(){
-		String xml = ""; // Add call to class that creates HQMF when ready
-		return xml;
+	private String getEMeasureXML(MeasureExport me){
+		XMLUtility xmlUtility = new XMLUtility();
+		
+		String eMeasureXML = xmlUtility.applyXSL(me.getSimpleXML(),
+				xmlUtility.getXMLResource(conversionFileForHQMF_Header));
+
+		return eMeasureXML;
 	}
 	/**
 	 * Gets the human readable for measure.

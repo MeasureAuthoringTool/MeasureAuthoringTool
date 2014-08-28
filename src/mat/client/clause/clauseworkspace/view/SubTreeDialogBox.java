@@ -260,6 +260,8 @@ public class SubTreeDialogBox {
 						} else {
 							noCycle = checkForCycleConditions(item, uuid, currentSelectedSubTreeUuid);
 						}
+					} else {
+						noCycle = checkForCycleConditions(item, uuid, currentSelectedSubTreeUuid);
 					}
 				}
 				if (noCycle) {
@@ -305,8 +307,8 @@ public class SubTreeDialogBox {
 	 */
 	private static boolean checkForCycleConditions(Node node,
 			String currentSelectedSubTreeUuid) {
-		System.out.println("node.hasChildNodes():"+node.hasChildNodes());
-		if(node.hasChildNodes()){
+		System.out.println("node.hasChildNodes():"  + node.hasChildNodes());
+		if (node.hasChildNodes()) {
 			NodeList childNodeList = node.getChildNodes();
 			System.out.println("childNodeList.getLength():"+childNodeList.getLength());
 			for(int i=0;i<childNodeList.getLength();i++){
@@ -320,7 +322,23 @@ public class SubTreeDialogBox {
 					System.out.println("subtree name:"+displayName);
 					System.out.println("subtree uuid:"+uuid);
 					//					String uuid = childNode.getAttributes().getNamedItem("id").getNodeValue();
-					if(uuid.equals(currentSelectedSubTreeUuid)){
+					Node subTreeNode = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(displayName + "~" + uuid);
+					NamedNodeMap namedNodeMap = subTreeNode.getAttributes();
+					if (namedNodeMap.getNamedItem("instance") != null) { // filter Occurrences of Selected Clause.
+						String instanceOfUUID = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
+						if (currentSelectedSubTreeUuid.equalsIgnoreCase(instanceOfUUID)) {
+							return false;
+						} else {
+							String parentDisplayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
+							parentDisplayName = parentDisplayName.replace("Occurrence "
+									+ namedNodeMap.getNamedItem("instance").getNodeValue() + " of " , "");
+							Node subTreeParentNode = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(parentDisplayName + "~" + instanceOfUUID);
+							boolean isInnerSubTreeCycle = checkForCycleConditions(subTreeParentNode, currentSelectedSubTreeUuid);
+							if(!isInnerSubTreeCycle){
+								return false;
+							}
+						}
+					} else if(uuid.equals(currentSelectedSubTreeUuid)){
 						return false;
 					}else{
 						Node childSubTreeNode = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(displayName+"~"+uuid);
@@ -331,6 +349,24 @@ public class SubTreeDialogBox {
 					}
 				}else{
 					boolean isInnerSubTreeCycle = checkForCycleConditions(childNode, currentSelectedSubTreeUuid);
+					if(!isInnerSubTreeCycle){
+						return false;
+					}
+				}
+			}
+		} else {
+			
+			NamedNodeMap namedNodeMap = node.getAttributes();
+			if (namedNodeMap.getNamedItem("instance") != null) { // filter Occurrences of Selected Clause.
+				String instanceOfUUID = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
+				if (currentSelectedSubTreeUuid.equalsIgnoreCase(instanceOfUUID)) {
+					return false;
+				} else {
+					String parentDisplayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
+					parentDisplayName = parentDisplayName.replace("Occurrence "
+							+ namedNodeMap.getNamedItem("instance").getNodeValue() + " of " , "");
+					Node subTreeParentNode = PopulationWorkSpaceConstants.getSubTreeLookUpNode().get(parentDisplayName + "~" + instanceOfUUID);
+					boolean isInnerSubTreeCycle = checkForCycleConditions(subTreeParentNode, currentSelectedSubTreeUuid);
 					if(!isInnerSubTreeCycle){
 						return false;
 					}

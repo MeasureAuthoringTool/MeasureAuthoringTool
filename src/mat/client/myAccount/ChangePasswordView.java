@@ -14,9 +14,11 @@ import mat.client.shared.SuccessMessageDisplayInterface;
 import com.google.gwt.event.dom.client.HasClickHandlers;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HasValue;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.Panel;
 import com.google.gwt.user.client.ui.SimplePanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 /**
@@ -49,42 +51,44 @@ public class ChangePasswordView implements ChangePasswordPresenter.Display {
 	 * Instantiates a new change password view.
 	 */
 	public ChangePasswordView() {
-		FlowPanel hPanel = new FlowPanel();
-		
+		HorizontalPanel horzPanel = new HorizontalPanel();
+		VerticalPanel passwordPanel = new VerticalPanel();
 		mainPanel = new FlowPanel();
 		mainPanel.addStyleName("leftAligned");
 		
 		Label required = new Label("All fields are required");
-		mainPanel.add(required);
-		mainPanel.add(new SpacerWidget());
-		
+		errorMessages.setStyleName("valueSetMarginLeft_7px");
+		successMessages.setStyleName("valueSetMarginLeft_7px");
 		mainPanel.add(errorMessages);
 		mainPanel.add(successMessages);
 		
-		mainPanel.add(passwordWidget);
-		mainPanel.add(new SpacerWidget());
+		passwordPanel.add(required);
+		passwordPanel.add(new SpacerWidget());
+		passwordPanel.add(passwordWidget);
+		passwordPanel.add(new SpacerWidget());
 		
-		mainPanel.add(passwordEditInfoWidget);
-		mainPanel.add(new SpacerWidget());
+		passwordPanel.add(passwordEditInfoWidget);
+		passwordPanel.add(new SpacerWidget());
 		
 		buttons.getCancelButton().setText("Undo");
 		buttons.getCancelButton().setTitle("Undo");
 		buttons.getSaveButton().setTitle("Save");
-		mainPanel.add(buttons);
-		mainPanel.addStyleName("floatLeft");
-		hPanel.add(mainPanel);
+		passwordPanel.add(buttons);
+		passwordPanel.addStyleName("floatLeft");
+		horzPanel.add(passwordPanel);
 		
 		PasswordRules rules = new PasswordRules();
 		rules.addStyleName("floatLeft");
 		rules.addStyleName("leftAligned");
 		rules.addStyleName("myAccountPasswordRules");
-		hPanel.add(rules);
 		
+		horzPanel.add(rules);
+		mainPanel.add(horzPanel);
 		SimplePanel clearPanel = new SimplePanel();
 		clearPanel.addStyleName("clearBoth");
-		hPanel.add(clearPanel);
-		hPanel.addStyleName("contentPanel");
-		headingPanel = new ContentWithHeadingWidget(hPanel, "Change Password","ChangePassword");
+		mainPanel.add(clearPanel);
+		mainPanel.addStyleName("contentPanel");
+		headingPanel = new ContentWithHeadingWidget(mainPanel, "Change Password","ChangePassword");
 		
 	}
 

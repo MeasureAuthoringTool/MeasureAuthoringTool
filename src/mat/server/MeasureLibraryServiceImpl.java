@@ -312,7 +312,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @see mat.server.service.MeasureLibraryService#saveSubTreeInMeasureXml(mat.client.clause.clauseworkspace.model.MeasureXmlModel, java.lang.String)
 	 */
 	@Override
-	public void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID) {
+	public MeasureXmlModel saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID) {
 		logger.info("Inside saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");
 		MeasureXmlModel xmlModel = getService().getMeasureXmlForMeasure(measureXmlModel.getMeasureId());
 		if (((xmlModel != null) && StringUtils.isNotBlank(xmlModel.getXml()))) {
@@ -340,7 +340,6 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 				// and updated node will be added.
 				String xPathForSubTree = "/measure/subTreeLookUp/subTree[@uuid='"+nodeUUID+"']";
 				NodeList subTreeNodeForUUID = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForSubTree);
-				
 				if(subTreeNodeForUUID.getLength() == 0){
 					xmlProcessor.appendNode(measureXmlModel.getXml(), measureXmlModel.getToReplaceNode(), measureXmlModel.getParentNode());
 				}else{
@@ -352,10 +351,26 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						
 						//In case the name of the subTree has changed we need to make sure to find all the subTreeRef tags and change the name in them as well.
 						NodeList subTreeRefNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTreeRef[@id='"+nodeUUID+"']");
+						NodeList subTreeOccRefNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), "//subTreeRef[@instanceOf='"+nodeUUID+"']");
+						String xPathForSubTreeOcc = "/measure/subTreeLookUp/subTree[@instanceOf='"+nodeUUID+"']";
+						NodeList subTreeOccNodeList = xmlProcessor.findNodeList(xmlProcessor.getOriginalDoc(), xPathForSubTreeOcc);
 						if(subTreeRefNodeList.getLength() > 0){
 							for(int k=0;k<subTreeRefNodeList.getLength();k++){
 								Node subTreeRefNode = subTreeRefNodeList.item(k);
 								subTreeRefNode.getAttributes().getNamedItem("displayName").setNodeValue(nodeName);
+							}
+						}
+						if(subTreeOccRefNodeList.getLength() > 0){
+							for(int k=0;k<subTreeOccRefNodeList.getLength();k++){
+								Node subTreeRefOccNode = subTreeOccRefNodeList.item(k);
+								subTreeRefOccNode.getAttributes().getNamedItem("displayName").setNodeValue(nodeName);
+							}
+						}
+						
+						if(subTreeOccNodeList.getLength() > 0){
+							for(int k=0;k<subTreeOccNodeList.getLength();k++){
+								Node subTreeOccNode = subTreeOccNodeList.item(k);
+								subTreeOccNode.getAttributes().getNamedItem("displayName").setNodeValue(nodeName);
 							}
 						}
 					}
@@ -375,6 +390,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			}
 		}
 		logger.info("End saveSubTreeInMeasureXml Method for measure Id " + measureXmlModel.getMeasureId() + " .");
+		return measureXmlModel;
 	}
 	
 	/* (non-Javadoc)
@@ -2875,7 +2891,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			if(usedSubTreeIds.size()>0){
 				
 				for(String usedSubtreeRefId:usedSubTreeIds){
-
+					
 					String satisfyFunction = "@type='SATISFIES ALL' or @type='SATISFIES ANY'";
 					String otherThanSatisfyfunction = "@type!='SATISFIES ALL' or @type!='SATISFIES ANY'";
 					String dateTimeDiffFunction = "@type='DATETIMEDIFF'";
@@ -2964,7 +2980,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						
 						for (int n = 0; (n < nodeSDE_dateTimeDiffElement.getLength())
 								&& !flag; n++) {
-
+							
 							if(usedSubtreeRefIdsMap.get("subTreeIDAtPop").contains(usedSubtreeRefId) ||
 									usedSubtreeRefIdsMap.get("subTreeIDAtStrat").contains(usedSubtreeRefId)){
 								flag = true;
@@ -2973,7 +2989,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 							if (flag) {
 								break;
 							}
-
+							
 						}
 						
 					} catch (XPathExpressionException e) {
@@ -2995,7 +3011,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 * @param xmlProcessor the xml processor
 	 * @return the string
 	 */
-	private String checkIfQDMVarInstanceIsPresent(String usedSubtreeRefId, 
+	private String checkIfQDMVarInstanceIsPresent(String usedSubtreeRefId,
 			XmlProcessor xmlProcessor){
 		
 		String XPATH_INSTANCE_QDM_VAR = "/measure/subTreeLookUp/subTree[@uuid='"+usedSubtreeRefId+"']/@instance";
@@ -3008,7 +3024,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 						XPathConstants.NODE);
 				usedSubtreeRefId = nodesSDE_SubTreeInstance.getNodeValue();
 			}
-	
+			
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -3025,7 +3041,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 	 */
 	private List<String> checkUnUsedSubTreeRef(
 			Map<String, List<String>> usedSubTreeIdsMap) {
-
+		
 		List<String> subTreeIdsAtPop = new ArrayList<String>();
 		List<String> subTreeIdsAtMO = new ArrayList<String>();
 		List<String> subTreeIdsAtStrat = new ArrayList<String>();
@@ -3035,10 +3051,10 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 		
 		subTreeIdsAtPop.removeAll(subTreeIdsAtMO);
 		subTreeIdsAtMO.addAll(subTreeIdsAtPop);
-
+		
 		subTreeIdsAtMO.removeAll(subTreeIdsAtStrat);
 		subTreeIdsAtStrat.addAll(subTreeIdsAtMO);
-
+		
 		return subTreeIdsAtStrat;
 	}
 	
@@ -3113,7 +3129,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			
 			// Measure Observations
 			String measureObservationSubTreeRefID = "/measure/measureObservations//clause["+
-			                      uuidXPathString+"]//subTreeRef[not(@id = preceding:: measureObservations//clause//subTreeRef/@id)]/@id"; 
+					uuidXPathString+"]//subTreeRef[not(@id = preceding:: measureObservations//clause//subTreeRef/@id)]/@id";
 			groupedSubTreeRefIdsNodeListMO = (NodeList) xPath.evaluate(measureObservationSubTreeRefID,
 					xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
 			
@@ -3133,7 +3149,7 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			// Stratifications
 			
 			String startSubTreeRefID = "/measure/strata//clause["+
-			               uuidXPathString+"]//subTreeRef[not(@id = preceding:: strata//clause//subTreeRef/@id)]/@id";
+					uuidXPathString+"]//subTreeRef[not(@id = preceding:: strata//clause//subTreeRef/@id)]/@id";
 			groupedSubTreeRefIdListStrat = (NodeList) xPath.evaluate(startSubTreeRefID,
 					xmlProcessor.getOriginalDoc(), XPathConstants.NODESET);
 			
@@ -3150,11 +3166,11 @@ public class MeasureLibraryServiceImpl implements MeasureLibraryService {
 			//get used Subtreeids at Stratification
 			List<String> usedSubtreeIdsAtStrat = checkUnUsedSubTreeRef(xmlProcessor, usedSubTreeRefIdsStrat);
 			
-//			usedSubTreeRefIdsPop.removeAll(usedSubTreeRefIdsMO);
-//			usedSubTreeRefIdsMO.addAll(usedSubTreeRefIdsPop);
-//			
-//			usedSubTreeRefIdsMO.removeAll(usedSubTreeRefIdsStrat);
-//			usedSubTreeRefIdsStrat.addAll(usedSubTreeRefIdsMO);
+			//			usedSubTreeRefIdsPop.removeAll(usedSubTreeRefIdsMO);
+			//			usedSubTreeRefIdsMO.addAll(usedSubTreeRefIdsPop);
+			//
+			//			usedSubTreeRefIdsMO.removeAll(usedSubTreeRefIdsStrat);
+			//			usedSubTreeRefIdsStrat.addAll(usedSubTreeRefIdsMO);
 			
 			usedSubTreeIdsMap.put("subTreeIDAtPop", usedSubtreeIdsAtPop);
 			usedSubTreeIdsMap.put("subTreeIDAtMO", usedSubtreeIdsAtMO);

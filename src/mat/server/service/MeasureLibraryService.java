@@ -385,8 +385,9 @@ public interface MeasureLibraryService {
 	 * @param measureXmlModel the measure xml model
 	 * @param nodeName the node name
 	 * @param nodeUUID the node uuid
+	 * @return
 	 */
-	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID);
+	MeasureXmlModel saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel, String nodeName, String nodeUUID);
 	
 	/**
 	 * Check and delete sub tree.

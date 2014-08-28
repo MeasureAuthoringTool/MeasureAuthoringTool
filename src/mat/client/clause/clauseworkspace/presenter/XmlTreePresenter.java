@@ -510,18 +510,18 @@ public class XmlTreePresenter {
 						
 						final MeasureXmlModel measureXmlModel = createMeasureXmlModel(xml);
 						service.saveSubTreeInMeasureXml(measureXmlModel, nodeName, nodeUUID,
-								new AsyncCallback<Void>() {
+								new AsyncCallback<MeasureXmlModel>() {
 							@Override
 							public void onFailure(final Throwable caught) {
 							}
 							@Override
-							public void onSuccess(final Void result) {
+							public void onSuccess(MeasureXmlModel result) {
 								xmlTreeDisplay.getWarningMessageDisplay().clear();
 								xmlTreeDisplay
 								.getSuccessMessageDisplay()
 								.setMessage(
 										"Changes are successfully saved.");
-								setOriginalXML(measureXmlModel.getXml());
+								setOriginalXML(result.getXml());
 								updateSubTreeElementsMap(getOriginalXML());
 								xmlTreeDisplay.clearAndAddClauseNamesToListBox();
 								xmlTreeDisplay.updateSuggestOracle();
@@ -632,7 +632,7 @@ public class XmlTreePresenter {
 				if (subTreeNode.getExtraInformation("extraAttributes") != null) {
 					@SuppressWarnings("unchecked")
 					HashMap<String , String> extraInfoMap = (HashMap<String, String>)
-							subTreeNode.getExtraInformation("extraAttributes");
+					subTreeNode.getExtraInformation("extraAttributes");
 					if (extraInfoMap.containsKey("qdmVariable")) {
 						extraInfoMap.put("qdmVariable", event.getValue().toString());
 					} else {

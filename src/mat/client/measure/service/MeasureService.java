@@ -370,8 +370,9 @@ public interface MeasureService extends RemoteService {
 	 * @param measureXmlModel the measure xml model
 	 * @param nodeName the node name
 	 * @param nodeUUID the node uuid
+	 * @return
 	 */
-	void saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel,
+	MeasureXmlModel saveSubTreeInMeasureXml(MeasureXmlModel measureXmlModel,
 			String nodeName, String nodeUUID);
 	
 	/**

@@ -227,9 +227,11 @@ public class ExportSimpleXML {
 		removeUnwantedClauses(usedClauseIds, originalDoc);
 		//to get SubTreeRefIds from Population WorkSpace
 		List<String> usedSubtreeRefIds = getUsedSubtreeRefIds(originalDoc);
+		System.out.println("usedSubtreeRefIds:"+usedSubtreeRefIds);
 		
 		//to get SubTreeIds From Clause WorksPace in a Whole
 		List<String> usedSubTreeIds = checkUnUsedSubTreeRef(usedSubtreeRefIds, originalDoc);
+		System.out.println("usedSubTreeIds:"+usedSubTreeIds);
 	   
 		//this will remove unUsed SubTrees From SubTreeLookUp
 		removeUnwantedSubTrees(usedSubTreeIds, originalDoc);
@@ -397,14 +399,16 @@ public class ExportSimpleXML {
 		
 		for(int i=0;i<qdmVariableSubTreeList.getLength();i++){
 			Node qdmVariableNode = qdmVariableSubTreeList.item(i);
-			
+			String uuid = qdmVariableNode.getAttributes().getNamedItem("uuid").getNodeValue();
 			String occuranceLetter = qdmVariableNode.getAttributes().getNamedItem("instance").getNodeValue();
 			String displayName = qdmVariableNode.getAttributes().getNamedItem("displayName").getNodeValue();
 			displayName = "Occurrence "+occuranceLetter + " of $" + StringUtils.deleteWhitespace(displayName);
+			System.out.println("UUID:"+uuid);
 			
 			qdmVariableNode.getAttributes().getNamedItem("displayName").setNodeValue(displayName);
 			
 			String referencedUUID = qdmVariableNode.getAttributes().getNamedItem("instanceOf").getNodeValue();
+			System.out.println("instanceof UUID:"+referencedUUID);
 			Node referencedSubTreeNode = (Node)xPath.evaluate("/measure/subTreeLookUp/subTree[not(@instanceOf)][@uuid='"+referencedUUID+"']", originalDoc.getDocumentElement(),XPathConstants.NODE);
 			Node mainChild = referencedSubTreeNode.getChildNodes().item(0);
 			Node mainChildClone = mainChild.cloneNode(true);
@@ -910,6 +914,25 @@ public class ExportSimpleXML {
 			
 		}
 		
+		
+		//for each used subTree id, find out if this an occurance of a QDM Variable.
+		//If Yes, then find out the real subTree being referenced and make sure it is 
+		//a part of the used SubTree List
+		List<String> usedQDMOccuranceRefs = new ArrayList<String>();
+		for(String uuid: usedSubTreeRefIds){
+			Node subTreeNode = (Node) xPath.evaluate("/measure/subTreeLookUp/subTree[@uuid='"+uuid+"'][@instanceOf]",
+					originalDoc.getDocumentElement(), XPathConstants.NODE);
+			
+			if(subTreeNode != null){
+				NamedNodeMap namedNodeMap = subTreeNode.getAttributes();
+				String attributeValue = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
+				if(!usedSubTreeRefIds.contains(attributeValue)){
+					usedQDMOccuranceRefs.add(attributeValue);
+				}
+			}
+		}
+		usedSubTreeRefIds.addAll(usedQDMOccuranceRefs);
+		
 		return usedSubTreeRefIds;
 	}
 	
@@ -985,6 +1008,8 @@ public class ExportSimpleXML {
 		//Create Document object
 		DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
 		InputSource oldXmlstream = new InputSource(new StringReader(measureXMLObject.getMeasureXMLAsString()));
+		System.out.println("Measyre XML:");
+		System.out.println(measureXMLObject.getMeasureXMLAsString());
 		Document originalDoc = docBuilder.parse(oldXmlstream);
 		return originalDoc;
 	}

@@ -174,6 +174,11 @@
             </responsibleParty>
          </verifier>
       </xsl:if>
+      
+      <!--  Component Of -->
+      <xsl:call-template name="componentOfTemplate"/>
+      
+      <!-- Measure Period -->
  	  <xsl:call-template name="measure_specific_data_elements"/> 
  	  
  	  <subjectOf>
@@ -594,42 +599,8 @@
       		
    </xsl:template> 
   
-	   <xsl:template name="measure_specific_data_elements">      
+   <xsl:template name="measure_specific_data_elements">      
      
-      <xsl:variable name="duration_ucum_unit">
-         <xsl:choose>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='a']">a</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='m']">mo</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='mo']">mo</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='d']">d</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='min']">min</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='h']">h</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='qtr']">[qtr]</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='[qtr]']">[qtr]</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='w']">wk</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='wk']">wk</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='h']">h</xsl:when>
-            <xsl:when test="/measure/headers/period/duration[lower-case(@unit)='s']">s</xsl:when>
-         </xsl:choose>
-      </xsl:variable>
-      
-      <xsl:variable name="duration_unit">
-         <xsl:choose>
-            <xsl:when test="lower-case($duration_ucum_unit)='a'">year(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='m'">month(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='mo'">month(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='d'">day(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='min'">minute(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='h'">hour(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='qtr'">quarter(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='[qtr]'">quarter(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='w'">week(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='wk'">week(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='h'">hour(s)</xsl:when>
-            <xsl:when test="lower-case($duration_ucum_unit)='s'">second(s)</xsl:when>
-         </xsl:choose>
-      </xsl:variable>
-      
       <xsl:if test="period">
       	<controlVariable>
       		<measurePeriod>
@@ -644,8 +615,39 @@
       		</measurePeriod>
       	</controlVariable>
       </xsl:if>
-      
-      
+   </xsl:template>
+   
+   <xsl:template name="componentOfTemplate">
+   		<xsl:if test="componentMeasures">
+   			<xsl:for-each select="componentMeasures/measure">
+   				<relatedDocument typeCode="XCRPT">
+   					<componentQualityMeasureDocument>
+   						<id>
+   							<xsl:attribute name="root">
+   								 <xsl:call-template name="trim">
+				                     <xsl:with-param name="textString" select="@id"/>
+				                 </xsl:call-template>
+   							</xsl:attribute>
+   						</id>
+   						<setId>
+   							<xsl:attribute name="root">
+   								 <xsl:call-template name="trim">
+				                     <xsl:with-param name="textString" select="@measureSetId"/>
+				                 </xsl:call-template>
+   							</xsl:attribute>
+   						</setId>
+   						<versionNumber>
+   							<xsl:attribute name="value">
+   								 <xsl:call-template name="trim">
+				                     <xsl:with-param name="textString" select="@versionNo"/>
+				                 </xsl:call-template>
+   							</xsl:attribute>
+   						</versionNumber>
+   					</componentQualityMeasureDocument>
+   				</relatedDocument>
+   			</xsl:for-each>
+   		</xsl:if>
+   	
    </xsl:template>
 	
    <xsl:template name="subjOfOrigText">

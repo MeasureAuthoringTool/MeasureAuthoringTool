@@ -55,6 +55,8 @@ public class XmlTreePresenter {
 	
 	boolean isSpecificOcc = false;
 	
+	String currentSelectedClause = null;
+	
 	/** The is unsaved data. */
 	//	private boolean isUnsavedData = false;
 	/**
@@ -282,7 +284,7 @@ public class XmlTreePresenter {
 					if(selectedIndex != -1){
 						final String selectedClauseName = clauseNamesListBox.getItemText(selectedIndex);
 						final String selectedClauseUUID = clauseNamesListBox.getValue(selectedIndex);
-						
+						currentSelectedClause = selectedClauseUUID;
 						//Disable the Delete Clause button so that user cannot delete the currently editing clauses.
 						xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
 						
@@ -587,7 +589,7 @@ public class XmlTreePresenter {
 					public void onFailure(Throwable caught) {
 					}
 				});
-				enableDisableQDMVariableCheckBox(clauseUUID);
+				enableDisableQDMVariableCheckBox(currentSelectedClause);
 			}
 		});
 		xmlTreeDisplay.getCommentButtons().addClickHandler(new ClickHandler() {

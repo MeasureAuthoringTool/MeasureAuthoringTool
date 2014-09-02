@@ -430,12 +430,13 @@ public class ClauseWorkspaceContextMenu {
 			}
 		};
 		String qdmVariableValue = null;
-		MenuItem specificOccMenuItem = new MenuItem("Specific Occurrence", true, addSpecificOccSubTreeCmd);
+		MenuItem specificOccMenuItem = new MenuItem("Create Specific Occurrence", true, addSpecificOccSubTreeCmd);
 		popupMenuBar.addItem(specificOccMenuItem);
 		if(!xmlTreeDisplay.isQdmVariableDirty()) {
-			if (xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes") != null) {
+			if (xmlTreeDisplay.getSelectedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES) != null) {
+				@SuppressWarnings("unchecked")
 				HashMap<String , String> map = (HashMap<String, String>)
-						xmlTreeDisplay.getSelectedNode().getExtraInformation("extraAttributes");
+				xmlTreeDisplay.getSelectedNode().getExtraInformation(PopulationWorkSpaceConstants.EXTRA_ATTRIBUTES);
 				qdmVariableValue = map.get("qdmVariable");
 			}
 			if ((qdmVariableValue != null) && qdmVariableValue.equalsIgnoreCase("true")) {

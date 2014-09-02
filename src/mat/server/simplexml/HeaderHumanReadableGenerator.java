@@ -63,6 +63,7 @@ public class HeaderHumanReadableGenerator {
 		htmlDocument = createBaseHTMLDocument(getInfo(measureXMLProcessor,
 				"title"));
 		Element bodyElement = htmlDocument.body();
+		/*bodyElement.appendElement("h1").attr("id", "header").text("Measure Human Readable");*/
 		Element table = bodyElement.appendElement("table");
 		table.attr("class", "header_table");
 		Element tBody = table.appendElement("tbody");
@@ -717,6 +718,8 @@ public class HeaderHumanReadableGenerator {
 		Element head = htmlDocument.head();
 		htmlDocument.title(title);
 		appendStyleNode(head);
+		Element bodyElement = htmlDocument.body();
+		bodyElement.appendElement("h1").attr("id", "header").text(title);
 		return htmlDocument;
 	}
 	

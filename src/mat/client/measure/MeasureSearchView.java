@@ -2,6 +2,7 @@ package mat.client.measure;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -17,13 +18,13 @@ import mat.client.shared.MatSafeHTMLCell;
 import mat.client.shared.MatSimplePager;
 import mat.client.shared.SpacerWidget;
 import mat.client.util.CellTableUtility;
+import mat.client.util.ClientConstants;
 import mat.shared.ClickableSafeHtmlCell;
 
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.CompositeCell;
 import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.HasCell;
-import com.google.gwt.cell.client.SafeHtmlCell;
 import com.google.gwt.cell.client.ValueUpdater;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
@@ -41,10 +42,10 @@ import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.CellTable.Resources;
 import com.google.gwt.user.cellview.client.Column;
+import com.google.gwt.user.cellview.client.ColumnSortEvent.ListHandler;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.cellview.client.Header;
 import com.google.gwt.user.cellview.client.RowStyles;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.HTML;
@@ -68,6 +69,8 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	private FlowPanel mainPanel = new FlowPanel();
 	/** The Constant PAGE_SIZE. */
 	private static final int PAGE_SIZE = 25;
+	/** The Constant COL_SIZE. */
+	private static final int COL_SIZE = 6;
 	/** The selected measure list. */
 	private List<ManageMeasureSearchModel.Result> selectedMeasureList;
 	/** The handler manager. */
@@ -76,6 +79,8 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	private ManageMeasureSearchModel data = new ManageMeasureSearchModel();
 	/** The observer. */
 	private Observer observer;
+	/** The admin observer. */
+	private AdminObserver adminObserver;
 	/** The table. */
 	private CellTable<ManageMeasureSearchModel.Result> table;
 	/** The even. */
@@ -88,16 +93,33 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	private String cellTableOddRow = "cellTableOddRow";
 	/** The index. */
 	private int index;
-	/**
-	 * Measure Library Table Title.
-	 */
+	
+	/** The measure list label. */
 	private String measureListLabel;
 	/**
 	 * MultiSelectionModel on Cell Table.
 	 */
 	private MultiSelectionModel<ManageMeasureSearchModel.Result> selectionModel;
 	/** The selected list. */
-	private List<ManageMeasureSearchModel.Result> selectedList;
+	List<ManageMeasureSearchModel.Result> selectedList;
+	/**
+	 * An asynchronous update interface for receiving notifications
+	 * about Admin information as the Admin is constructed.
+	 */
+	public static interface AdminObserver {
+		/**
+		 * On history clicked.
+		 * @param result
+		 *            the result
+		 */
+		void onHistoryClicked(ManageMeasureSearchModel.Result result);
+		/**
+		 * On transfer selected clicked.
+		 * @param result
+		 *            the result
+		 */
+		void onTransferSelectedClicked(ManageMeasureSearchModel.Result result);
+	}
 	/**
 	 * The Interface Observer.
 	 */
@@ -169,6 +191,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 		mainPanel.add(cellTablePanel);
 		mainPanel.setStyleName("serachView_mainPanel");
 	}
+	
 	/**
 	 * Adds the column to table.
 	 *
@@ -585,6 +608,9 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			table.setRowCount(results.getResultsTotal(), true);
 			table.setPageSize(PAGE_SIZE);
 			table.redraw();
+			//cellTable = new CellTable<ManageMeasureSearchModel.Result>();
+			ListHandler<ManageMeasureSearchModel.Result> sortHandler = new ListHandler<
+					ManageMeasureSearchModel.Result>(results.getData());
 		    AsyncDataProvider<ManageMeasureSearchModel.Result> provider = new AsyncDataProvider<ManageMeasureSearchModel.Result>() {
 		      @Override
 		      protected void onRangeChanged(HasData<ManageMeasureSearchModel.Result> display) {
@@ -612,8 +638,8 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 				.search(searchText,start + 1, start + PAGE_SIZE, filter,callback);
 		      }
 		    };
-		 
-			table = addColumnToTable();
+		   
+			
 			provider.addDataDisplay(table);
 			CustomPager.Resources pagerResources = GWT.create(CustomPager.Resources.class);
 			MatSimplePager spager = new MatSimplePager(CustomPager.TextLocation.CENTER, pagerResources, false, 0, true);
@@ -622,6 +648,19 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			spager.setDisplay(table);
 			spager.setPageSize(PAGE_SIZE);
 			table.setWidth("100%");
+			 if(ClientConstants.ADMINISTRATOR.equalsIgnoreCase(MatContext.get()
+						.getLoggedInUserRole())){
+			    	table = addColumnToAdminTable(sortHandler);
+			    }else{
+			    	table = addColumnToTable();
+			    }
+			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
+					"In the following Measure List table, Measure Name is given in first column,"
+							+ " Version in second column, Finalized Date in third column,"
+							+ "History in fourth column, Edit in fifth column, Share in sixth column"
+							+ "Clone in seventh column and Export in eight column.");
+			table.getElement().setAttribute("id", "MeasureSearchCellTable");
+			table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
 			table.setColumnWidth(0, 25.0, Unit.PCT);
 			table.setColumnWidth(1, 20.0, Unit.PCT);
 			table.setColumnWidth(2, 23.0, Unit.PCT);
@@ -630,13 +669,7 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 			table.setColumnWidth(5, 2.0, Unit.PCT);
 			table.setColumnWidth(6, 2.0, Unit.PCT);
 			table.setColumnWidth(7, 22.0, Unit.PCT);
-			Label invisibleLabel = (Label) LabelBuilder.buildInvisibleLabel("measureSearchSummary",
-					"In the following Measure List table, Measure Name is given in first column,"
-							+ " Version in second column, Finalized Date in third column,"
-							+ "History in fourth column, Edit in fifth column, Share in sixth column"
-							+ "Clone in seventh column and Export in eight column.");
-			table.getElement().setAttribute("id", "MeasureSearchCellTable");
-			table.getElement().setAttribute("aria-describedby", "measureSearchSummary");
+			    
 			cellTablePanel.add(invisibleLabel);
 			cellTablePanel.add(table);
 			cellTablePanel.add(new SpacerWidget());
@@ -657,6 +690,164 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 	}
 	
 	
+	/**
+	 * Adds the column to admin table.
+	 *
+	 * @param sortHandler the sort handler
+	 * @return the cell table
+	 */
+	private CellTable<ManageMeasureSearchModel.Result> addColumnToAdminTable(
+			ListHandler<ManageMeasureSearchModel.Result> sortHandler) {
+		if (table.getColumnCount() != COL_SIZE) {
+			Label searchHeader = new Label("Select Measures to Transfer Ownership.");
+			searchHeader.getElement().setId("measureTransferOwnerShipCellTableCaption_Label");
+			searchHeader.setStyleName("recentSearchHeader");
+			searchHeader.getElement().setAttribute("tabIndex", "0");
+			com.google.gwt.dom.client.TableElement elem = table.getElement().cast();
+			TableCaptionElement caption = elem.createCaption();
+			caption.appendChild(searchHeader.getElement());
+			Column<ManageMeasureSearchModel.Result, SafeHtml> measureName = new Column<
+					ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
+				@Override
+				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+					return CellTableUtility.getColumnToolTip(object.getName(), object.getName());
+				}
+			};
+			measureName.setSortable(true);
+			sortHandler.setComparator(measureName, new Comparator<ManageMeasureSearchModel.Result>() {
+				@Override
+				public int compare(ManageMeasureSearchModel.Result o1, ManageMeasureSearchModel.Result o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getName().compareTo(o2.getName()) : 1;
+					}
+					return -1;
+				}
+			});
+			table.addColumn(measureName, SafeHtmlUtils.fromSafeConstant("<span title=\"Measure Name\">"
+					+ "Measure Name" + "</span>"));
+			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerName = new Column<
+					ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
+				@Override
+				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+					return CellTableUtility.getColumnToolTip(object.getOwnerfirstName()
+							+ "  " + object.getOwnerLastName(),object.getOwnerfirstName()
+							+ "  " + object.getOwnerLastName());
+				}
+			};
+			ownerName.setSortable(true);
+			sortHandler.setComparator(ownerName, new Comparator<ManageMeasureSearchModel.Result>() {
+				@Override
+				public int compare(ManageMeasureSearchModel.Result o1, ManageMeasureSearchModel.Result o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getOwnerfirstName().compareTo(o2.getOwnerfirstName()) : 1;
+					}
+					return -1;
+				}
+			});
+			table.addColumn(ownerName, SafeHtmlUtils.fromSafeConstant("<span title=\"Owner\">" + "Owner" + "</span>"));
+			Column<ManageMeasureSearchModel.Result, SafeHtml> ownerEmailAddress = new Column<
+					ManageMeasureSearchModel.Result, SafeHtml>(new MatSafeHTMLCell()) {
+				@Override
+				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+					return CellTableUtility.getColumnToolTip(object.getOwnerEmailAddress(),object.getOwnerEmailAddress());
+				}
+			};
+			ownerEmailAddress.setSortable(true);
+			sortHandler.setComparator(ownerEmailAddress, new Comparator<ManageMeasureSearchModel.Result>() {
+				@Override
+				public int compare(ManageMeasureSearchModel.Result o1, ManageMeasureSearchModel.Result o2) {
+					if (o1 == o2) {
+						return 0;
+					}
+					// Compare the name columns.
+					if (o1 != null) {
+						return (o2 != null) ? o1.getOwnerEmailAddress().compareTo(o2.getOwnerEmailAddress()) : 1;
+					}
+					return -1;
+				}
+			});
+			table.addColumn(ownerEmailAddress, SafeHtmlUtils.fromSafeConstant("<span title=\"Owner E-mail Address\">"
+					+ "Owner E-mail Address" + "</span>"));
+			Column<ManageMeasureSearchModel.Result, SafeHtml> eMeasureID = new Column<ManageMeasureSearchModel.Result,
+					SafeHtml>(new MatSafeHTMLCell()) {
+				@Override
+				public SafeHtml getValue(ManageMeasureSearchModel.Result object) {
+					return CellTableUtility.getColumnToolTip("" + object.geteMeasureId(), "" + object.geteMeasureId());
+				}
+			};
+			table.addColumn(eMeasureID, SafeHtmlUtils.fromSafeConstant("<span title=\"eMeasure Id\">"
+					+ "eMeasure Id" + "</span>"));
+			Cell<String> historyButton = new MatButtonCell("Click to view history", "customClockButton");
+			Column<Result, String> historyColumn = new Column<ManageMeasureSearchModel.Result, String>(historyButton) {
+				@Override
+				public String getValue(ManageMeasureSearchModel.Result object) {
+					return "History";
+				}
+			};
+			historyColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, String>() {
+				@Override
+				public void update(int index, ManageMeasureSearchModel.Result object, String value) {
+					adminObserver.onHistoryClicked(object);
+				}
+			});
+			table.addColumn(historyColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"History\">" + "History" + "</span>"));
+			Cell<Boolean> transferCB = new MatCheckBoxCell();
+			Column<Result, Boolean> transferColumn = new Column<ManageMeasureSearchModel.Result, Boolean>(transferCB) {
+				@Override
+				public Boolean getValue(ManageMeasureSearchModel.Result object) {
+					if (selectedList.size() > 0) {
+						for (int i = 0; i < selectedList.size(); i++) {
+							if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+								object.setTransferable(true);
+								break;
+							}
+						}
+					} else {
+						object.setTransferable(false);
+						}
+					return object.isTransferable();
+				}
+			};
+			transferColumn.setFieldUpdater(new FieldUpdater<ManageMeasureSearchModel.Result, Boolean>() {
+				@Override
+				public void update(int index, ManageMeasureSearchModel.Result object, Boolean value) {
+					if(value){
+						if(!selectedList.contains(object)){
+						selectedList.add(object);
+						}
+					} else {
+						for (int i = 0; i < selectedList.size(); i++) {
+							if (selectedList.get(i).getId().equalsIgnoreCase(object.getId())) {
+								selectedList.remove(i);
+								break;
+							}
+						}
+					}
+					object.setTransferable(value);
+					adminObserver.onTransferSelectedClicked(object);
+				}
+			});
+			table.addColumn(transferColumn, SafeHtmlUtils.fromSafeConstant("<span title=\"Check for Ownership Transfer\">"
+					+ "Transfer </span>"));
+			table.setColumnWidth(0, 30.0, Unit.PCT);
+			table.setColumnWidth(1, 20.0, Unit.PCT);
+			table.setColumnWidth(2, 20.0, Unit.PCT);
+			table.setColumnWidth(3, 15.0, Unit.PCT);
+			table.setColumnWidth(4, 5.0, Unit.PCT);
+			table.setColumnWidth(5, 5.0, Unit.PCT);
+			table.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
+		}
+		return table;
+	
+	}
 	/**
 	 * Builds the cell table css style.
 	 */
@@ -817,5 +1008,35 @@ public class MeasureSearchView  implements HasSelectionHandlers<ManageMeasureSea
 					+ hoursStr + ":" + mins + " "+ap;
 		}
 		return tsStr;
+	}
+	
+	/**
+	 * Sets the admin observer.
+	 *
+	 * @param adminObserver the new admin observer
+	 */
+	public void setAdminObserver(AdminObserver adminObserver) {
+		this.adminObserver = adminObserver;
+	}
+	
+	/**
+	 * Gets the selected list.
+	 *
+	 * @return the selected list
+	 */
+	public List<ManageMeasureSearchModel.Result> getSelectedList() {
+		return selectedList;
+	}
+	
+	/**
+	 * Clear transfer check boxes.
+	 */
+	public void clearTransferCheckBoxes() {	
+		for (ManageMeasureSearchModel.Result result : getSelectedList()) {
+			result.setTransferable(false);
+		}
+		getSelectedList().clear();
+		getData().setData(selectedMeasureList);
+		table.redraw();
 	}
 }

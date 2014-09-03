@@ -28,7 +28,7 @@ import mat.client.login.service.LoginService;
 import mat.client.login.service.LoginServiceAsync;
 import mat.client.login.service.SessionManagementService;
 import mat.client.login.service.SessionManagementServiceAsync;
-import mat.client.measure.AdminManageMeasureSearchView;
+//import mat.client.measure.AdminManageMeasureSearchView;
 import mat.client.measure.ManageMeasureSearchModel;
 import mat.client.measure.ManageMeasureSearchView;
 import mat.client.measure.service.MeasureService;
@@ -152,7 +152,7 @@ public class MatContext implements IsSerializable {
 	private ManageMeasureSearchView manageMeasureSearchView;
 	
 	/** The admin manage measure search view. */
-	private AdminManageMeasureSearchView adminManageMeasureSearchView;
+	//private AdminManageMeasureSearchView adminManageMeasureSearchView;
 	
 	/** The manage measure search model. */
 	private ManageMeasureSearchModel manageMeasureSearchModel;
@@ -228,12 +228,13 @@ public class MatContext implements IsSerializable {
 	
 	/**
 	 * Gets the admin manage measure search view.
-	 * 
+	 *
+	 * @param view the new QDS view
 	 * @return the admin manage measure search view
 	 */
-	public AdminManageMeasureSearchView getAdminManageMeasureSearchView() {
+	/*public AdminManageMeasureSearchView getAdminManageMeasureSearchView() {
 		return adminManageMeasureSearchView;
-	}
+	}*/
 	
 	/**
 	 * Sets the admin manage measure search view.
@@ -241,9 +242,9 @@ public class MatContext implements IsSerializable {
 	 * @param view
 	 *            the new admin manage measure search view
 	 */
-	public void setAdminManageMeasureSearchView(AdminManageMeasureSearchView view){
+	/*public void setAdminManageMeasureSearchView(AdminManageMeasureSearchView view){
 		adminManageMeasureSearchView=view;
-	}
+	}*/
 	
 	/**
 	 * Sets the qDS view.

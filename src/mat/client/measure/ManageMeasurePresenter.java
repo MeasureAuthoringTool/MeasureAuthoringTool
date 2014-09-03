@@ -15,6 +15,7 @@ import mat.client.event.MeasureEditEvent;
 import mat.client.event.MeasureSelectedEvent;
 import mat.client.history.HistoryModel;
 import mat.client.measure.ManageMeasureSearchModel.Result;
+import mat.client.measure.MeasureSearchView.AdminObserver;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.measure.metadata.Grid508;
 import mat.client.measure.service.MeasureCloningService;
@@ -76,76 +77,7 @@ import com.google.gwt.user.client.ui.Widget;
  */
 @SuppressWarnings("deprecation")
 public class ManageMeasurePresenter implements MatPresenter {
-	/**
-	 * The Interface AdminSearchDisplay.
-	 */
-	public static interface AdminSearchDisplay {
-		
 		/**
-		 * As widget.
-		 * 
-		 * @return the widget
-		 */
-		public Widget asWidget();
-		
-		/**
-		 * Builds the data table.
-		 *
-		 * @param results            the results
-		 * @param filter TODO
-		 * @param searchText TODO
-		 */
-		public void buildDataTable(AdminMeasureSearchResultAdaptor results, int filter, String searchText);
-		
-		/**
-		 * Clear transfer check boxes.
-		 */
-		public void clearTransferCheckBoxes();
-		
-		/**
-		 * Gets the clear button.
-		 * 
-		 * @return the clear button
-		 */
-		public HasClickHandlers getClearButton();
-		
-		/**
-		 * Gets the error message display.
-		 * 
-		 * @return the error message display
-		 */
-		public ErrorMessageDisplayInterface getErrorMessageDisplay();
-		
-		/**
-		 * Gets the error messages for transfer os.
-		 * 
-		 * @return the error messages for transfer os
-		 */
-		public ErrorMessageDisplayInterface getErrorMessagesForTransferOS();
-		
-		/**
-		 * Gets the search button.
-		 * 
-		 * @return the search button
-		 */
-		public HasClickHandlers getSearchButton();
-		
-		/**
-		 * Gets the search string.
-		 * 
-		 * @return the search string
-		 */
-		public HasValue<String> getSearchString();
-		
-		/**
-		 * Gets the transfer button.
-		 * 
-		 * @return the transfer button
-		 */
-		public HasClickHandlers getTransferButton();;
-	}
-	
-	/**
 	 * The Interface BaseDisplay.
 	 */
 	public static interface BaseDisplay {
@@ -456,6 +388,75 @@ public class ManageMeasurePresenter implements MatPresenter {
 	 * The Interface SearchDisplay.
 	 */
 	public static interface SearchDisplay extends BaseDisplay {
+		/**
+		 * As widget.
+		 * 
+		 * @return the widget
+		 */
+		public Widget asWidget();
+		
+		/**
+		 * Builds the data table.
+		 *
+		 * @param manageMeasureSearchModel the manage measure search model
+		 * @param filter TODO
+		 * @param searchText TODO
+		 */
+		public void buildDataTable(ManageMeasureSearchModel manageMeasureSearchModel, int filter, String searchText);
+		
+		/**
+		 * Clear transfer check boxes.
+		 */
+		public void clearTransferCheckBoxes();
+		
+		/**
+		 * Gets the clear button.
+		 * 
+		 * @return the clear button
+		 */
+		public HasClickHandlers getClearButton();
+		
+		/**
+		 * Gets the error message display.
+		 * 
+		 * @return the error message display
+		 */
+		public ErrorMessageDisplayInterface getErrorMessageDisplay();
+		
+		/**
+		 * Gets the error messages for transfer os.
+		 * 
+		 * @return the error messages for transfer os
+		 */
+		public ErrorMessageDisplayInterface getErrorMessagesForTransferOS();
+		
+		/**
+		 * Gets the search button.
+		 * 
+		 * @return the search button
+		 */
+		//public HasClickHandlers getSearchButton();
+		
+		/**
+		 * Gets the search string.
+		 * 
+		 * @return the search string
+		 */
+		//public HasValue<String> getSearchString();
+		
+		/**
+		 * Gets the transfer button.
+		 * 
+		 * @return the transfer button
+		 */
+		public HasClickHandlers getTransferButton();
+
+		/**
+		 * Sets the admin observer.
+		 *
+		 * @param adminObserver the new admin observer
+		 */
+		void setAdminObserver(AdminObserver adminObserver);
 		
 		/**
 		 * Builds the data table.
@@ -593,11 +594,25 @@ public class ManageMeasurePresenter implements MatPresenter {
 		public HasClickHandlers getSearchButton();
 		
 		/**
+		 * Gets the admin search button.
+		 *
+		 * @return the admin search button
+		 */
+		public HasClickHandlers getAdminSearchButton();
+		
+		/**
 		 * Gets the search string.
 		 * 
 		 * @return the search string
 		 */
 		public HasValue<String> getSearchString();
+		
+		/**
+		 * Gets the admin search string.
+		 *
+		 * @return the admin search string
+		 */
+		public HasValue<String> getAdminSearchString();
 		
 		/**
 		 * Gets the selected filter.
@@ -630,8 +645,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 		/** Gets the zoom button.
 		 * 
 		 * @return the zoom button */
-		CustomButton getZoomButton();
-		
+		CustomButton getZoomButton();		
 	}
 	
 	/**
@@ -852,8 +866,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		CustomButton getZoomButton();
 	}
 	
-	/** The admin search display. */
-	private AdminSearchDisplay adminSearchDisplay;
 	
 	/** The bulk export measure ids. */
 	private List<String> bulkExportMeasureIds;
@@ -982,35 +994,23 @@ public class ManageMeasurePresenter implements MatPresenter {
 	
 	/**
 	 * Instantiates a new manage measure presenter.
-	 * 
-	 * @param sDisplayArg
-	 *            the s display arg
-	 * @param adminSearchDisplayArg
-	 *            the admin search display arg
-	 * @param dDisplayArg
-	 *            the d display arg
-	 * @param shareDisplayArg
-	 *            the share display arg
-	 * @param exportDisplayArg
-	 *            the export display arg
-	 * @param hDisplay
-	 *            the h display
-	 * @param vDisplay
-	 *            the v display
-	 * @param dDisplay
-	 *            the d display
-	 * @param transferDisplay
-	 *            the transfer display
+	 *
+	 * @param sDisplayArg            the s display arg
+	 * @param dDisplayArg            the d display arg
+	 * @param shareDisplayArg            the share display arg
+	 * @param exportDisplayArg            the export display arg
+	 * @param hDisplay            the h display
+	 * @param vDisplay            the v display
+	 * @param dDisplay            the d display
+	 * @param transferDisplay            the transfer display
 	 */
 	public ManageMeasurePresenter(SearchDisplay sDisplayArg,
-			AdminSearchDisplay adminSearchDisplayArg,
 			DetailDisplay dDisplayArg, ShareDisplay shareDisplayArg,
 			ExportDisplay exportDisplayArg, HistoryDisplay hDisplay,
 			VersionDisplay vDisplay, DraftDisplay dDisplay,
 			final TransferDisplay transferDisplay) {
 		
 		searchDisplay = sDisplayArg;
-		adminSearchDisplay = adminSearchDisplayArg;
 		detailDisplay = dDisplayArg;
 		historyDisplay = hDisplay;
 		shareDisplay = shareDisplayArg;
@@ -1024,9 +1024,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 			searchDisplay.getCreateMeasureWidget().setVisible(isCreateMeasureWidgetVisible);
 			searchDisplayHandlers(searchDisplay);
 		}
-		if (adminSearchDisplay != null) {
-			adminSearchDisplayHandlers(adminSearchDisplay);
-		}
+		
 		if (draftDisplay != null) {
 			draftDisplayHandlers(draftDisplay);
 		}
@@ -1105,56 +1103,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 				PrimaryButton button = (PrimaryButton) versionDisplay
 						.getSaveButton();
 				button.setFocus(true);
-			}
-		});
-		
-	}
-	
-	
-	/**
-	 * Admin search display handlers.
-	 * 
-	 * @param adminSearchDisplay
-	 *            the admin search display
-	 */
-	private void adminSearchDisplayHandlers(
-			final AdminSearchDisplay adminSearchDisplay) {
-		
-		adminSearchDisplay.getSearchButton().addClickHandler(
-				new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						int startIndex = 1;
-						adminSearchDisplay.getErrorMessageDisplay().clear();
-						int filter = 1;
-						search(adminSearchDisplay.getSearchString().getValue(),
-								startIndex, Integer.MAX_VALUE, filter);
-					}
-				});
-		
-		adminSearchDisplay.getTransferButton().addClickHandler(
-				new ClickHandler() {
-					@Override
-					public void onClick(ClickEvent event) {
-						 adminSearchDisplay.clearTransferCheckBoxes();
-						transferDisplay.getSearchString().setValue("");
-						displayTransferView("",startIndex,
-								Integer.MAX_VALUE);
-					}
-				});
-		
-		adminSearchDisplay.getClearButton().addClickHandler(new ClickHandler() {
-			@Override
-			public void onClick(ClickEvent event) {
-				manageMeasureSearchModel.getSelectedTransferResults()
-				.removeAll(
-						manageMeasureSearchModel
-						.getSelectedTransferResults());
-				manageMeasureSearchModel.getSelectedTransferIds().removeAll(
-						manageMeasureSearchModel.getSelectedTransferIds());
-				int filter = 1;
-				search(adminSearchDisplay.getSearchString().getValue(), 1,
-						Integer.MAX_VALUE, filter);
 			}
 		});
 		
@@ -1518,9 +1466,9 @@ public class ManageMeasurePresenter implements MatPresenter {
 				.getLoggedInUserRole())) {
 			heading = "";
 			filter = 1;// ALL Measures
-			search(adminSearchDisplay.getSearchString().getValue(), 1,
+			search(searchDisplay.getAdminSearchString().getValue(), 1,
 					Integer.MAX_VALUE, filter);
-			fp.add(adminSearchDisplay.asWidget());
+			fp.add(searchDisplay.asWidget());
 		} else {
 			// MAT-1929 : Retain filters at measure library screen
 			searchDisplay.getCreateMeasureWidget().setVisible(false);
@@ -1572,11 +1520,11 @@ public class ManageMeasurePresenter implements MatPresenter {
 		final ArrayList<ManageMeasureSearchModel.Result> transferMeasureResults = (ArrayList<Result>) manageMeasureSearchModel
 				.getSelectedTransferResults();
 		pageSize = Integer.MAX_VALUE;
-		adminSearchDisplay.getErrorMessageDisplay().clear();
-		adminSearchDisplay.getErrorMessagesForTransferOS().clear();
+		searchDisplay.getErrorMessageDisplay().clear();
+		searchDisplay.getErrorMessagesForTransferOS().clear();
 		transferDisplay.getErrorMessageDisplay().clear();
 		if (transferMeasureResults.size() != 0) {
-			showAdminSearchingBusy(true);
+			showSearchingBusy(true);
 			MatContext
 			.get()
 			.getMeasureService()
@@ -1588,7 +1536,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 					Window.alert(MatContext.get()
 							.getMessageDelegate()
 							.getGenericErrorMessage());
-					showAdminSearchingBusy(false);
+					showSearchingBusy(false);
 				}
 				
 				@Override
@@ -1602,12 +1550,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 							"Measure Library Ownership >  Measure Ownership Transfer",
 							"MeasureLibrary");
 					panel.setContent(transferDisplay.asWidget());
-					showAdminSearchingBusy(false);
+					showSearchingBusy(false);
 					model = result;
 				}
 			});
 		} else {
-			adminSearchDisplay.getErrorMessagesForTransferOS().setMessage(
+			searchDisplay.getErrorMessagesForTransferOS().setMessage(
 					MatContext.get().getMessageDelegate()
 					.getTransferCheckBoxErrorMeasure());
 		}
@@ -1963,8 +1911,6 @@ public class ManageMeasurePresenter implements MatPresenter {
 		historyDisplay.getReturnToLink().addClickHandler(new ClickHandler() {
 			@Override
 			public void onClick(ClickEvent event) {
-				// detailDisplay.getName().setValue("");
-				// detailDisplay.getShortName().setValue("");
 				displaySearch();
 				
 			}
@@ -2131,7 +2077,7 @@ public class ManageMeasurePresenter implements MatPresenter {
 				if (currentUserRole.equalsIgnoreCase(ClientConstants.ADMINISTRATOR)) {
 					//pageSize = Integer.MAX_VALUE;
 					pageSize = 25;
-					showAdminSearchingBusy(true);
+					showSearchingBusy(true);
 					MatContext
 					.get()
 					.getMeasureService()
@@ -2164,18 +2110,29 @@ public class ManageMeasurePresenter implements MatPresenter {
 							result.setSelectedTransferIds(new ArrayList<String>());
 							result.setSelectedTransferResults(new ArrayList<Result>());
 							manageMeasureSearchModel = result;
-							//AdminManageMeasureSearchView adminManageMeasureSearchView = new AdminManageMeasureSearchView();
-							AdminMeasureSearchResultAdaptor adminMeasureSearchResultAdaptor = new AdminMeasureSearchResultAdaptor();
-							adminMeasureSearchResultAdaptor.setData(result);
+							MeasureSearchView measureSearchView = new MeasureSearchView();
+							measureSearchView.setData(result);
+							
 							MatContext.get()
 							.setManageMeasureSearchModel(
 									manageMeasureSearchModel);
-							
-							adminMeasureSearchResultAdaptor
-							.setObserver(new AdminMeasureSearchResultAdaptor.Observer() {
+							searchDisplay.setAdminObserver(new MeasureSearchView.AdminObserver() {
+								
 								@Override
-								public void onHistoryClicked(
-										Result result) {
+								public void onTransferSelectedClicked(Result result) {
+									searchDisplay
+								.getErrorMessageDisplay()
+									.clear();
+									searchDisplay
+								.getErrorMessagesForTransferOS()
+									.clear();
+									updateTransferIDs(result,
+											manageMeasureSearchModel);
+									
+								}
+								
+								@Override
+								public void onHistoryClicked(Result result) {
 									historyDisplay
 									.setReturnToLinkText("<< Return to MeasureLibrary Owner Ship");
 //									if (!result.isEditable()) {
@@ -2189,25 +2146,12 @@ public class ManageMeasurePresenter implements MatPresenter {
 									displayHistory(
 											result.getId(),
 											result.getName());
+									
 								}
-								
-								@Override
-								public void onTransferSelectedClicked(
-										Result result) {
-									adminSearchDisplay
-									.getErrorMessageDisplay()
-									.clear();
-									adminSearchDisplay
-									.getErrorMessagesForTransferOS()
-									.clear();
-									updateTransferIDs(result,
-											manageMeasureSearchModel);
-								}
-								
 							});
 							if ((result.getResultsTotal() == 0)
 									&& !lastSearchText.isEmpty()) {
-								adminSearchDisplay
+								searchDisplay
 								.getErrorMessageDisplay()
 								.setMessage(
 										MatContext
@@ -2215,23 +2159,23 @@ public class ManageMeasurePresenter implements MatPresenter {
 										.getMessageDelegate()
 										.getNoMeasuresMessage());
 							} else {
-								adminSearchDisplay
+								searchDisplay
 								.getErrorMessageDisplay()
 								.clear();
-								adminSearchDisplay
+								searchDisplay
 								.getErrorMessagesForTransferOS()
 								.clear();
 							}
 							SearchResultUpdate sru = new SearchResultUpdate();
 							sru.update(result,
-									(TextBox) adminSearchDisplay
-									.getSearchString(),
+									(TextBox) searchDisplay
+									.getAdminSearchString(),
 									lastSearchText);
-							adminSearchDisplay
-							.buildDataTable(adminMeasureSearchResultAdaptor, filter,searchText);
-							panel.setContent(adminSearchDisplay
+							searchDisplay
+							.buildDataTable(manageMeasureSearchModel, filter,searchText);
+					panel.setContent(searchDisplay
 									.asWidget());
-							showAdminSearchingBusy(false);
+					showAdminSearchingBusy(false);
 							
 						}
 					});
@@ -2720,6 +2664,44 @@ public class ManageMeasurePresenter implements MatPresenter {
 				}
 			}
 		});
+		//added by hari
+		searchDisplay.getAdminSearchButton().addClickHandler(
+				new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						int startIndex = 1;
+						searchDisplay.getErrorMessageDisplay().clear();
+						int filter = 1;
+						search(searchDisplay.getAdminSearchString().getValue(),
+								startIndex, Integer.MAX_VALUE, filter);
+					}
+				});
+		
+		searchDisplay.getTransferButton().addClickHandler(
+				new ClickHandler() {
+					@Override
+					public void onClick(ClickEvent event) {
+						searchDisplay.clearTransferCheckBoxes();
+						transferDisplay.getSearchString().setValue("");
+						displayTransferView("",startIndex,
+								Integer.MAX_VALUE);
+					}
+				});
+		
+		searchDisplay.getClearButton().addClickHandler(new ClickHandler() {
+			@Override
+			public void onClick(ClickEvent event) {
+				manageMeasureSearchModel.getSelectedTransferResults()
+				.removeAll(
+						manageMeasureSearchModel
+						.getSelectedTransferResults());
+				manageMeasureSearchModel.getSelectedTransferIds().removeAll(
+						manageMeasureSearchModel.getSelectedTransferIds());
+				int filter = 1;
+				search(searchDisplay.getAdminSearchString().getValue(), 1,
+						Integer.MAX_VALUE, filter);
+			}
+		});
 		
 	}
 	
@@ -2988,8 +2970,8 @@ public class ManageMeasurePresenter implements MatPresenter {
 		} else {
 			Mat.hideLoadingMessage();
 		}
-		((Button) adminSearchDisplay.getSearchButton()).setEnabled(!busy);
-		((TextBox) (adminSearchDisplay.getSearchString())).setEnabled(!busy);
+		((Button) searchDisplay.getAdminSearchButton()).setEnabled(!busy);
+		((TextBox) (searchDisplay.getAdminSearchString())).setEnabled(!busy);
 		((Button) transferDisplay.getSearchButton()).setEnabled(!busy);
 		((TextBox) (transferDisplay.getSearchString())).setEnabled(!busy);
 		

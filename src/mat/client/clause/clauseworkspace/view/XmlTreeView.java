@@ -1923,17 +1923,18 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			case CellTreeNode.TIMING_NODE:
 			case CellTreeNode.RELATIONSHIP_NODE:
 			case CellTreeNode.ELEMENT_REF_NODE:
-				validateClauseWorkspaceCellTreeNodes(subTreeCellTreeNode, PopulationWorkSpaceConstants.datatypeMap,inValideNodesList);
-				setValidHumanReadable(inValideNodesList.size()!=0);
-				setValid(!(inValideNodesList.size()!=0));
+				validateClauseWorkspaceCellTreeNodes(subTreeCellTreeNode,
+						PopulationWorkSpaceConstants.datatypeMap,inValideNodesList);
+				setValidHumanReadable(inValideNodesList.size()==0);
+				setValid(!(inValideNodesList.size()==0));
 				break;
 			case CellTreeNode.SUBTREE_REF_NODE:
 				checkIfClauseAndAppend(subTreeCellTreeNode);
 				break;
 			case CellTreeNode.FUNCTIONS_NODE:
 				validateClauseWorkspaceCellTreeNodes(subTreeCellTreeNode, PopulationWorkSpaceConstants.datatypeMap, inValideNodesList);
-				setValidHumanReadable(inValideNodesList.size()!=0);
-				setValid(!(inValideNodesList.size()!=0));
+				setValidHumanReadable(inValideNodesList.size()==0);
+				setValid(!(inValideNodesList.size()==0));
 				if(!isMeasureObservations && subTreeCellTreeNode.getName().contains("DATETIMEDIFF")){
 					setValid(true);
 					isDateTimeDiffNotInMO = true;

@@ -240,7 +240,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 		}else{
 			ManageMeasureSearchView measureSearchView = new ManageMeasureSearchView();
 			/*AdminManageMeasureSearchView adminManageMeasureSearchView = new AdminManageMeasureSearchView();*/
-			//ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
+			ManageMeasureDetailView measureDetailView = new ManageMeasureDetailView();
 			ManageMeasureVersionView versionView = new ManageMeasureVersionView();
 			ManageMeasureDraftView measureDraftView = new ManageMeasureDraftView();
 			/*TransferMeasureOwnershipView transferOS = new TransferMeasureOwnershipView();*/
@@ -253,7 +253,7 @@ public class Mat extends MainLayout implements EntryPoint, Enableable{
 				measureExportView = new ManageMeasureExportView(false);
 			}
 			
-			measurePresenter = new ManageMeasurePresenter(measureSearchView, null, measureShareView, measureExportView, historyView, versionView, measureDraftView, null);
+			measurePresenter = new ManageMeasurePresenter(measureSearchView, measureDetailView, measureShareView, measureExportView, historyView, versionView, measureDraftView, null);
 		}
 		return measurePresenter;
 		

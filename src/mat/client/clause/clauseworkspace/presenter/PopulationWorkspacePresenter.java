@@ -246,7 +246,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				Window.alert("I failed");
+				//Window.alert("I failed");
 				
 			}
 			@Override

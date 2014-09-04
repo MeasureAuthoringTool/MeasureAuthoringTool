@@ -1,9 +1,11 @@
 package mat.client.clause.clauseworkspace.view;
 
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
+import mat.client.clause.clauseworkspace.presenter.XmlConversionlHelper;
 import mat.client.clause.clauseworkspace.presenter.XmlTreeDisplay;
 import mat.client.shared.MatContext;
 import com.google.gwt.user.client.Command;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.MenuBar;
 import com.google.gwt.user.client.ui.MenuItem;
 import com.google.gwt.user.client.ui.PopupPanel;
@@ -27,7 +29,7 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	private static final String STRATIFICATION = "Stratification";
 	
 	private static final String MEASURE_OBSERVATIONS = "Measure Observations";
-	
+	MenuItem viewHumanReadableMenu;
 	/**
 	 * Instantiates a new population work space context menu.
 	 *
@@ -37,6 +39,36 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 	
 	public PopulationWorkSpaceContextMenu(XmlTreeDisplay treeDisplay, PopupPanel popPanel) {
 		super(treeDisplay, popPanel);
+		Command viewHumanReadableCmd = new Command() {
+			@Override
+			public void execute() {
+				System.out.println("View Human Readable clicked...");
+				popupPanel.hide();
+				CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
+				if((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE) || (selectedNode.getNodeType() == CellTreeNode.SUBTREE_NODE)){
+					String xmlForPopulationNode = XmlConversionlHelper.createXmlFromTree(selectedNode);
+					final String populationName = selectedNode.getName();
+					String measureId = MatContext.get().getCurrentMeasureId();
+					//					String url = GWT.getModuleBaseURL() + "export?id=" +measureId+ "&xml=" + xmlForPopulationNode+ "&format=subtreeHTML";
+					//					Window.open(url + "&type=open", "_blank", "");
+					xmlTreeDisplay.validatePopulationCellTreeNodes(xmlTreeDisplay.getSelectedNode());
+					if (xmlTreeDisplay.isValidHumanReadable()) {
+						MatContext.get().getMeasureService().getHumanReadableForNode(measureId, xmlForPopulationNode, new AsyncCallback<String>() {
+							@Override
+							public void onSuccess(String result) {
+								showHumanReadableDialogBox(result, populationName);
+							}
+							@Override
+							public void onFailure(Throwable caught) {
+							}
+						});
+					} else {
+						xmlTreeDisplay.getErrorMessageDisplay().setMessage("Measure Logic is incomplete.");
+					}
+				}
+			}
+		};
+		viewHumanReadableMenu = new MenuItem(template.menuTable("View Human Readable", ""), viewHumanReadableCmd);
 	}
 	/* (non-Javadoc)
 	 * @see mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu#displayMenuItems(com.google.gwt.user.client.ui.PopupPanel)

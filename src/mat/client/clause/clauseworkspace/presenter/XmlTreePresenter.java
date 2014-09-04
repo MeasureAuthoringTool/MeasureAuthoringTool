@@ -245,7 +245,7 @@ public class XmlTreePresenter {
 				}else if(cellTreeNode.getChilds().size() > 0){
 					CellTreeNode childNode = cellTreeNode.getChilds().get(0);
 					String nodeName = childNode.getName();
-					if(nodeName.equals(selectedItemName)){
+					if (nodeName.equals(selectedItemName)) {
 						System.out.println("The clause is already being displayed on the LHS tree. Disable Delete Clause button now.");
 						xmlTreeDisplay.getDeleteClauseButton().setEnabled(false);
 						checkIfUsedInLogic = false;
@@ -691,9 +691,6 @@ public class XmlTreePresenter {
 					List<String> result = xmlTreeDisplay
 							.validateCellTreeNodesPopulationWorkspace(xmlTreeDisplay.getXmlTree()
 									.getRootTreeNode());
-					xmlTreeDisplay.openAllNodes(xmlTreeDisplay.getXmlTree()
-							.getRootTreeNode());
-					
 					if (result.size()==0) {
 						xmlTreeDisplay.getSuccessMessageDisplay().setMessage(
 								MatContext.get().getMessageDelegate().
@@ -761,7 +758,7 @@ public class XmlTreePresenter {
 				if (xmlTreeDisplay.getXmlTree() != null) {
 					xmlTreeDisplay.clearMessages();
 					xmlTreeDisplay.validateCellTreeNodes(xmlTreeDisplay.getXmlTree()
-							.getRootTreeNode());
+							.getRootTreeNode() , true);
 				}
 			}
 		});

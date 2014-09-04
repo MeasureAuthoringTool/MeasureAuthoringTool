@@ -2,14 +2,18 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeMap;
 import mat.client.Mat;
 import mat.client.MatPresenter;
 import mat.client.MeasureComposerPresenter;
+import mat.client.clause.QDSAttributesService;
+import mat.client.clause.QDSAttributesServiceAsync;
 import mat.client.clause.clauseworkspace.model.MeasureXmlModel;
 import mat.client.codelist.service.CodeListServiceAsync;
 import mat.client.measure.service.MeasureServiceAsync;
 import mat.client.shared.MatContext;
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.FlowPanel;
@@ -34,7 +38,8 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 	
 	/** The service. */
 	private MeasureServiceAsync service = MatContext.get().getMeasureService();
-	
+	private static QDSAttributesServiceAsync attributeService = (QDSAttributesServiceAsync) GWT
+			.create(QDSAttributesService.class);
 	/**
 	 * Instantiates a new clause work space presenter.
 	 */
@@ -148,6 +153,23 @@ public class ClauseWorkSpacePresenter extends XmlTreePresenter implements MatPre
 				}
 			}
 		}
+		
+		List<String> dataTypeList = new ArrayList<String>();
+		dataTypeList.addAll(PopulationWorkSpaceConstants.getElementLookUpDataTypeName().values());
+		attributeService.getDatatypeList(dataTypeList, new AsyncCallback<Map<String, List<String>>>() {
+			
+			@Override
+			public void onFailure(Throwable caught) {
+				// TODO Auto-generated method stub
+				
+			}
+			@Override
+			public void onSuccess(Map<String, List<String>> datatypeMap) {
+				System.out.println("Data type map:" + datatypeMap);
+				PopulationWorkSpaceConstants.setDatatypeMap(datatypeMap);
+				
+			}
+		});
 	}
 	
 	/* (non-Javadoc)

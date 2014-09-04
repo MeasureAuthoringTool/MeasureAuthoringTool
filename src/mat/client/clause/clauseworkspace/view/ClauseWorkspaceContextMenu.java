@@ -266,20 +266,19 @@ public class ClauseWorkspaceContextMenu {
 					String measureId = MatContext.get().getCurrentMeasureId();
 					//					String url = GWT.getModuleBaseURL() + "export?id=" +measureId+ "&xml=" + xmlForPopulationNode+ "&format=subtreeHTML";
 					//					Window.open(url + "&type=open", "_blank", "");
-					
-					MatContext.get().getMeasureService().getHumanReadableForNode(measureId, xmlForPopulationNode, new AsyncCallback<String>() {
-						
-						@Override
-						public void onSuccess(String result) {
-							showHumanReadableDialogBox(result,populationName);
-						}
-						
-						
-						@Override
-						public void onFailure(Throwable caught) {
-							
-						}
-					});
+					xmlTreeDisplay.validateCellTreeNodes(xmlTreeDisplay.getXmlTree()
+							.getRootTreeNode(), false);
+					if (xmlTreeDisplay.isValidHumanReadable()) {
+						MatContext.get().getMeasureService().getHumanReadableForNode(measureId, xmlForPopulationNode, new AsyncCallback<String>() {
+							@Override
+							public void onSuccess(String result) {
+								showHumanReadableDialogBox(result, populationName);
+							}
+							@Override
+							public void onFailure(Throwable caught) {
+							}
+						});
+					}
 				}
 			}
 		};
@@ -1369,7 +1368,7 @@ public class ClauseWorkspaceContextMenu {
 	 * @param result the result
 	 * @param populationName the population name
 	 */
-	private native void showHumanReadableDialogBox(String result, String populationName) /*-{
+	public native void showHumanReadableDialogBox(String result, String populationName) /*-{
 	var humanReadableWindow = window.open("","","width=1000,height=700,scrollbars=yes,resizable=yes");
 	if(humanReadableWindow && humanReadableWindow.top){
 		//Populate the human readable in the new window.

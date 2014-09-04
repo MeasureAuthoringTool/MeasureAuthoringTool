@@ -2,6 +2,7 @@ package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import com.google.gwt.xml.client.Node;
 
@@ -171,6 +172,8 @@ public class PopulationWorkSpaceConstants {
 	/** The Constant CLAUSE_QDM_VARIABLE. */
 	public static final String CLAUSE_QDM_VARIABLE = "qdmVariable";
 	
+	public static Map<String, List<String>> datatypeMap;
+	
 	static {
 		constantsMap.put("populations", "Populations");
 		constantsMap.put("measureObservations", "Measure Observations");
@@ -187,7 +190,7 @@ public class PopulationWorkSpaceConstants {
 		constantsMap.put("Numerator Exclusions", "numeratorExclusions");
 		constantsMap.put("Populations", "populations");
 		//commented for MAT-4426 in sprint 44
-		//topNodeOperatorMap.put("measureobservations", "and"); 
+		//topNodeOperatorMap.put("measureobservations", "and");
 		topNodeOperatorMap.put("initialpopulations", "and");
 		topNodeOperatorMap.put("numerators", "and");
 		topNodeOperatorMap.put("denominators", "and");
@@ -311,6 +314,17 @@ public class PopulationWorkSpaceConstants {
 	 */
 	public static ArrayList<String> getUnits() {
 		return units;
+	}
+	
+	/**
+	 * @return the datatypeMap
+	 */
+	public static Map<String, List<String>> getDatatypeMap() {
+		return datatypeMap;
+	}
+	
+	public static  void setDatatypeMap(Map<String, List<String>> datatypeMap) {
+		PopulationWorkSpaceConstants.datatypeMap = datatypeMap;
 	}
 	
 	/*public static Map<String, Node> getElementLookUps() {

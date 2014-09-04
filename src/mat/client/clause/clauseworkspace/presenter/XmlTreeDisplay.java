@@ -1,14 +1,12 @@
 package mat.client.clause.clauseworkspace.presenter;
 
 import java.util.List;
-
 import mat.client.clause.clauseworkspace.model.CellTreeNode;
 import mat.client.clause.clauseworkspace.view.ClauseWorkspaceContextMenu;
 import mat.client.measure.metadata.CustomCheckBox;
 import mat.client.shared.ErrorMessageDisplay;
 import mat.client.shared.SuccessMessageDisplay;
 import mat.client.shared.WarningMessageDisplay;
-
 import com.google.gwt.user.cellview.client.CellTree;
 import com.google.gwt.user.cellview.client.TreeNode;
 import com.google.gwt.user.client.ui.Button;
@@ -230,7 +228,7 @@ public interface XmlTreeDisplay {
 	 * @param treeNode
 	 *            the tree node
 	 */
-	void validateCellTreeNodes(TreeNode treeNode);
+	//void validateCellTreeNodes(TreeNode treeNode);
 	
 	/**
 	 * Close nodes.
@@ -441,7 +439,7 @@ public interface XmlTreeDisplay {
 	void copyToClipboard();
 	
 	void pasteFromClipboard();
-	*/
+	 */
 	
 	/**
 	 * Gets the search suggest text box.
@@ -449,4 +447,10 @@ public interface XmlTreeDisplay {
 	 * @return the search suggest text box
 	 */
 	SuggestBox getSearchSuggestTextBox();
+	
+	void validateCellTreeNodes(TreeNode treeNode, boolean isValidateButtonClicked);
+	
+	boolean isValidHumanReadable();
+	
+	List<String> validatePopulationCellTreeNodes(CellTreeNode cellNode);
 }

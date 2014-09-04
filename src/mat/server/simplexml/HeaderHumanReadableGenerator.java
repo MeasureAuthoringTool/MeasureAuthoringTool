@@ -719,7 +719,7 @@ public class HeaderHumanReadableGenerator {
 		htmlDocument.title(title);
 		appendStyleNode(head);
 		Element bodyElement = htmlDocument.body();
-		bodyElement.appendElement("h1").attr("id", "header").text(title);
+		bodyElement.appendElement("h1").attr("style", "font-size:0px").text(title);
 		return htmlDocument;
 	}
 	

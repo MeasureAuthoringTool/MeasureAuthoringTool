@@ -184,7 +184,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 	private void setQdmElementsAndSubTreeLookUpMap(String xml) {
 		PopulationWorkSpaceConstants.elementLookUpName = new TreeMap<String, String>();
 		PopulationWorkSpaceConstants.elementLookUpNode = new TreeMap<String, Node>();
-		
+		PopulationWorkSpaceConstants.elementLookUpDataTypeName = new TreeMap<String, String>();
 		PopulationWorkSpaceConstants.subTreeLookUpName = new TreeMap<String, String>();
 		PopulationWorkSpaceConstants.subTreeLookUpNode = new TreeMap<String, Node>();
 		
@@ -202,16 +202,16 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 						//So QDM attribute dialog box is throwing error in FF.To fix that spaces are removed from start and end.
 						name = name.trim();
 						//name = name.replaceAll("^\\s+|\\s+$", "");
-						
+						String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 						if (namedNodeMap.getNamedItem("instance") != null) {
 							name = namedNodeMap.getNamedItem("instance").getNodeValue() + " of " + name;
 						}
 						
 						if (namedNodeMap.getNamedItem("datatype") != null) {
+							String dataType = namedNodeMap.getNamedItem("datatype").getNodeValue().trim();
 							name = name + " : " + namedNodeMap.getNamedItem("datatype").getNodeValue();
+							PopulationWorkSpaceConstants.elementLookUpDataTypeName.put(uuid, dataType);
 						}
-						
-						String uuid = namedNodeMap.getNamedItem("uuid").getNodeValue();
 						PopulationWorkSpaceConstants.elementLookUpNode.put(name + "~" + uuid, qdms.item(i));
 						PopulationWorkSpaceConstants.elementLookUpName.put(uuid, name);
 					}
@@ -246,7 +246,7 @@ public class PopulationWorkspacePresenter implements MatPresenter {
 			
 			@Override
 			public void onFailure(Throwable caught) {
-				// TODO Auto-generated method stub
+				Window.alert("I failed");
 				
 			}
 			@Override

@@ -236,6 +236,9 @@ public class ExportSimpleXML {
 		//this will remove unUsed SubTrees From SubTreeLookUp
 		removeUnwantedSubTrees(usedSubTreeIds, originalDoc);
 		
+		//to add UUID attribute for QDM Attribute
+		addUUIDtoQDMAttribute(usedSubTreeIds, originalDoc);
+		
 		List<String> usedQDMIds = getUsedQDMIds(originalDoc);
 		//using the above list we need to traverse the originalDoc and remove the unused QDM's
 		removeUnWantedQDMs(usedQDMIds, originalDoc);
@@ -248,6 +251,34 @@ public class ExportSimpleXML {
 		return transform(originalDoc);
 	}
 	
+	/**
+	 * Adds the uuid to qdm attribute.
+	 *
+	 * @param usedSubTreeIds the used sub tree ids
+	 * @param originalDoc the original doc
+	 * @throws XPathExpressionException the x path expression exception
+	 */
+	private static void addUUIDtoQDMAttribute(List<String> usedSubTreeIds,
+			Document originalDoc) throws XPathExpressionException {
+		String uuidXPathString = "";
+		for(String uuidString: usedSubTreeIds){
+			uuidXPathString += "@uuid = '"+uuidString + "' or";
+		}
+		
+		uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" or"));
+		String XPATH_QDM_UUID_ATTRIBUTE = "/measure/subTreeLookUp/subTree["+uuidXPathString+"]//elementRef/attribute";
+		NodeList qdmAttrNodeList = (NodeList) xPath.evaluate(XPATH_QDM_UUID_ATTRIBUTE, originalDoc, XPathConstants.NODESET);
+		for(int i = 0; i < qdmAttrNodeList.getLength(); i++){
+			Node qdmAttrNode = qdmAttrNodeList.item(i);
+			
+			Attr uuidAttr = originalDoc.createAttribute("attrUUID");
+			uuidAttr.setValue(UUID.randomUUID().toString());
+			
+			qdmAttrNode.getAttributes().setNamedItem(uuidAttr);
+		}
+		
+	}
+
 	/**
 	 * Update versionfor measure details.
 	 *
@@ -283,6 +314,8 @@ public class ExportSimpleXML {
 			for(int i=0; i<componentMeasureIdList.getLength(); i++){
 				Node measureNode = componentMeasureIdList.item(i);
 				measureId = measureNode.getAttributes().getNamedItem("id").getNodeValue();
+				//to change ID format to UUID
+				measureNode.getAttributes().getNamedItem("id").setNodeValue(UuidUtility.idToUuid(measureId));
 				Node attrcomponentMeasureName = originalDoc.createAttribute("name");		
 				Node attrcomponentMeasureSetId = originalDoc.createAttribute("measureSetId");
 				Node attrcomponentVersionNo= originalDoc.createAttribute("versionNo");
@@ -391,8 +424,9 @@ public class ExportSimpleXML {
 	/**
 	 * This method will look for <subTree> tags within <subTreeLookUp> tag. For each <subTree> with 
 	 * an "instanceOf" attribute, we need to fetch the corrosponding <subTree> and copy its children. 
-	 * @param originalDoc
-	 * @throws XPathExpressionException 
+	 *
+	 * @param originalDoc the original doc
+	 * @throws XPathExpressionException the x path expression exception
 	 */
 	private static void modifySubTreeLookUpForOccurances(Document originalDoc) throws XPathExpressionException{
 		NodeList qdmVariableSubTreeList = (NodeList)xPath.evaluate("/measure/subTreeLookUp/subTree[@instanceOf]", originalDoc.getDocumentElement(), XPathConstants.NODESET);
@@ -606,6 +640,12 @@ public class ExportSimpleXML {
 		removeNode("/measure/strata",originalDoc);
 	}
 	
+	/**
+	 * Re arrange groups by sequence.
+	 *
+	 * @param groupNodes the group nodes
+	 * @return the list
+	 */
 	private static List<Node> reArrangeGroupsBySequence(NodeList groupNodes) {
 		List<Node> nodeList = new ArrayList<Node>();
 		for(int i=0;i<groupNodes.getLength();i++){
@@ -629,6 +669,14 @@ public class ExportSimpleXML {
 		return nodeList;
 	}
 
+	/**
+	 * Adds the missing empty clauses.
+	 *
+	 * @param groupNodes the group nodes
+	 * @param originalDoc the original doc
+	 * @throws DOMException the DOM exception
+	 * @throws XPathExpressionException the x path expression exception
+	 */
 	private static void addMissingEmptyClauses(NodeList groupNodes,
 			Document originalDoc) throws DOMException, XPathExpressionException {
 		
@@ -659,6 +707,13 @@ public class ExportSimpleXML {
 		}
 	}
 
+	/**
+	 * Generate clause node.
+	 *
+	 * @param groupNode the group node
+	 * @param type the type
+	 * @param origionalDoc the origional doc
+	 */
 	private static void generateClauseNode(Node groupNode, String type,Document origionalDoc) {
 		// TODO Auto-generated method stub
 		Node newClauseNode = groupNode.getFirstChild().cloneNode(true);
@@ -683,6 +738,12 @@ public class ExportSimpleXML {
 		groupNode.appendChild(newClauseNode);
 	}
 
+	/**
+	 * Gets the required clauses.
+	 *
+	 * @param type the type
+	 * @return the required clauses
+	 */
 	private static List<String> getRequiredClauses(String type){
 		List<String> list = new ArrayList<String>();
 		if("Cohort".equalsIgnoreCase(type)){

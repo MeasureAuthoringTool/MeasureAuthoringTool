@@ -265,6 +265,10 @@ public class ExportSimpleXML {
 			uuidXPathString += "@uuid = '"+uuidString + "' or";
 		}
 		
+		if(uuidXPathString.length() == 0){
+			return;
+		}
+		
 		uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" or"));
 		String XPATH_QDM_UUID_ATTRIBUTE = "/measure/subTreeLookUp/subTree["+uuidXPathString+"]//elementRef/attribute";
 		NodeList qdmAttrNodeList = (NodeList) xPath.evaluate(XPATH_QDM_UUID_ATTRIBUTE, originalDoc, XPathConstants.NODESET);
@@ -349,9 +353,7 @@ public class ExportSimpleXML {
 			for(String uuidString:usedSubTreeIds){
 				uuidXPathString += "@uuid != '"+uuidString + "' and";
 			}
-			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));
-		
-		
+			uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" and"));		
 		
 			String xPathForUnunsedSubTreeNodes = "/measure/subTreeLookUp/subTree["+uuidXPathString+"]";
 		
@@ -367,8 +369,7 @@ public class ExportSimpleXML {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
-			
+					
 		} else {
 		    System.out.println("usedSubTreeIds are empty so removed from the SimpeXml");
 		    NodeList allSubTreeNodeList = (NodeList) xPath.evaluate("/measure/subTreeLookUp/subTree",
@@ -916,7 +917,7 @@ public class ExportSimpleXML {
 		usedSubTreeRefIdsMO.removeAll(usedSubTreeRefIdsStrat);
 		usedSubTreeRefIdsStrat.addAll(usedSubTreeRefIdsMO);
 		
-		//for each used subTree id, find out if this an occurance of a QDM Variable.
+		//for each used subTree id, find out if this an occurrance of a QDM Variable.
 		//If Yes, then find out the real subTree being referenced and make sure it is 
 		//a part of the used SubTree List
 		List<String> usedQDMOccuranceRefs = new ArrayList<String>();
@@ -961,6 +962,15 @@ public class ExportSimpleXML {
 		}
 		allSubTreeRefIds.removeAll(usedSubTreeRefIds);
 		
+		List<String> referencedSubTrees = getReferencedSubTrees(usedSubTreeRefIds, allSubTreeRefIds, originalDoc);
+		usedSubTreeRefIds.addAll(referencedSubTrees);		
+		
+		return usedSubTreeRefIds;
+	}
+	
+	private static List<String> getReferencedSubTrees(List<String> usedSubTreeRefIds, List<String> allSubTreeRefIds, Document originalDoc) throws XPathExpressionException{
+		List<String> referencedIds = new ArrayList<String>();
+		
 		for(int i = 0; i< usedSubTreeRefIds.size(); i++){
 			for(int j=0; j<allSubTreeRefIds.size(); j++){
 				Node usedSubTreeRefNode = (Node) xPath.evaluate("/measure/subTreeLookUp/subTree[@uuid='"+ 
@@ -968,33 +978,38 @@ public class ExportSimpleXML {
 						originalDoc.getDocumentElement(), XPathConstants.NODE);
 				if(usedSubTreeRefNode != null){
 					if(!usedSubTreeRefIds.contains(allSubTreeRefIds.get(j))){
-					usedSubTreeRefIds.add(allSubTreeRefIds.get(j));
+						referencedIds.add(allSubTreeRefIds.get(j));
 					}
 				}
 			}
-			
 		}
-		
-		
-		//for each used subTree id, find out if this an occurance of a QDM Variable.
-		//If Yes, then find out the real subTree being referenced and make sure it is 
-		//a part of the used SubTree List
-		List<String> usedQDMOccuranceRefs = new ArrayList<String>();
-		for(String uuid: usedSubTreeRefIds){
-			Node subTreeNode = (Node) xPath.evaluate("/measure/subTreeLookUp/subTree[@uuid='"+uuid+"'][@instanceOf]",
-					originalDoc.getDocumentElement(), XPathConstants.NODE);
+		System.out.println("referencedIds:"+referencedIds);
+		if(referencedIds.size() > 0){
 			
-			if(subTreeNode != null){
-				NamedNodeMap namedNodeMap = subTreeNode.getAttributes();
-				String attributeValue = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
-				if(!usedSubTreeRefIds.contains(attributeValue)){
-					usedQDMOccuranceRefs.add(attributeValue);
+			//for each used subTree id, find out if this an occurance of a QDM Variable.
+			//If Yes, then find out the real subTree being referenced and make sure it is 
+			//a part of the used SubTree List
+			List<String> usedQDMOccuranceRefs = new ArrayList<String>();
+			for(String uuid: referencedIds){
+				Node subTreeNode = (Node) xPath.evaluate("/measure/subTreeLookUp/subTree[@uuid='"+uuid+"'][@instanceOf]",
+						originalDoc.getDocumentElement(), XPathConstants.NODE);
+				
+				if(subTreeNode != null){
+					NamedNodeMap namedNodeMap = subTreeNode.getAttributes();
+					String attributeValue = namedNodeMap.getNamedItem("instanceOf").getNodeValue();
+					if(!usedSubTreeRefIds.contains(attributeValue)){
+						usedQDMOccuranceRefs.add(attributeValue);
+					}
 				}
 			}
-		}
-		usedSubTreeRefIds.addAll(usedQDMOccuranceRefs);
+			referencedIds.addAll(usedQDMOccuranceRefs);
+						
+			allSubTreeRefIds.removeAll(referencedIds);
+			referencedIds.addAll(getReferencedSubTrees(referencedIds, allSubTreeRefIds, originalDoc));
+			
+		}			
 		
-		return usedSubTreeRefIds;
+		return referencedIds;
 	}
 	
 	/**

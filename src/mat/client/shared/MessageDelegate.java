@@ -471,6 +471,9 @@ public class MessageDelegate {
 	/** The ratio too few populations. */
 	private final String RATIO_TOO_FEW_POPULATIONS = "For a Ratio measure, a grouping must contain at least one Population.";
 	
+	private final String INVALID_LOGIC_POPULATION_WORK_SPACE = "Measure Logic is incomplete.Please validate your measure logic in both Population Workspace and Clause Workspace.";
+	
+	private final String INVALIDLOGIC_CLAUSE_WORK_SPACE = "Clause logic is incomplete.Please validate your Clause logic.";
 	/**
 	 * Gets the ratio too few populations.
 	 *
@@ -594,8 +597,8 @@ public class MessageDelegate {
 	
 	/** The removed functions error message. */
 	private final String POPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE = "Highlighted clause contains DATETIMEDIFF Function.";
-
-
+	
+	
 	/**
 	 * Gets the component measures added successfully.
 	 *
@@ -2141,6 +2144,20 @@ public class MessageDelegate {
 	
 	public String getPOPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE() {
 		return POPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE;
+	}
+	
+	/**
+	 * @return the iNVALID_LOGIC_POPULATION_WORK_SPACE
+	 */
+	public String getINVALID_LOGIC_POPULATION_WORK_SPACE() {
+		return INVALID_LOGIC_POPULATION_WORK_SPACE;
+	}
+
+	/**
+	 * @return the iNVALIDLOGIC_CLAUSE_WORK_SPACE
+	 */
+	public String getINVALIDLOGIC_CLAUSE_WORK_SPACE() {
+		return INVALIDLOGIC_CLAUSE_WORK_SPACE;
 	}
 	
 	

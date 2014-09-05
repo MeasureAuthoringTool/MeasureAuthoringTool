@@ -1971,16 +1971,15 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 			String instanceOfDisplayName = namedNodeMap.getNamedItem("displayName").getNodeValue();
 			Node occurenceNode = PopulationWorkSpaceConstants.subTreeLookUpNode
 					.get(instanceOfDisplayName + "~" + instanceOfUUID);
-			subTreeCellTreeNode = XmlConversionlHelper
+			subTreeRefCellTreeNode = XmlConversionlHelper
 					.createCellTreeNode(occurenceNode, instanceOfDisplayName);
 		} else {
 			subTreeRefCellTreeNode = XmlConversionlHelper
 					.createCellTreeNode(childNode, subTreeCellTreeNode.getName());
 		}
-		List<CellTreeNode> children = subTreeRefCellTreeNode.getChilds();
-		if((children != null) && (children.size() > 0)
+		if((subTreeRefCellTreeNode.getChilds() != null) && (subTreeRefCellTreeNode.getChilds().size() > 0)
 				&& !isValid()){
-			for(CellTreeNode node:children){
+			for(CellTreeNode node:subTreeRefCellTreeNode.getChilds()){
 				validateSubtreeNodeAtPopulation(node);
 				
 			}

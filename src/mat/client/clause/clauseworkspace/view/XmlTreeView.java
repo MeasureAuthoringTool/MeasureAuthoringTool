@@ -1795,7 +1795,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 	public List<String> validatePopulationCellTreeNodes(CellTreeNode cellNode) {
 		List<String> inValidNodeAtPopulationWorkspace = new ArrayList<String>();
 		setValidHumanReadable(true);
-		if (cellNode != null) {
+		if ((cellNode != null) && (cellNode.getChilds()!=null)) {
 			
 			for (int i = 0; i < cellNode.getChilds().size(); i++) {
 				//TreeNode subTree = null;
@@ -2046,7 +2046,7 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 				setValidHumanReadable(true);
 			} else {
 				setValidHumanReadable(false);
-				errorMessageDisplay.setMessage("Measure Logic is incomplete.");
+				errorMessageDisplay.setMessage(MatContext.get().getMessageDelegate().getINVALIDLOGIC_CLAUSE_WORK_SPACE());
 			}
 		}
 		
@@ -2189,6 +2189,13 @@ public class XmlTreeView extends Composite implements  XmlTreeDisplay, TreeViewM
 						}
 					}
 					break;
+					/*case CellTreeNode.SUBTREE_REF_NODE:
+					boolean checkForValidation = validateSubTreeRefNode(node);
+					if(checkForValidation){
+						inValidNodeList.add("Wrong Wrong wrong");
+						editNode(false, node);
+					}
+					break;*/
 				default:
 					break;
 			}

@@ -45,7 +45,8 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 				System.out.println("View Human Readable clicked...");
 				popupPanel.hide();
 				CellTreeNode selectedNode = xmlTreeDisplay.getSelectedNode();
-				if((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE) || (selectedNode.getNodeType() == CellTreeNode.SUBTREE_NODE)){
+				if ((selectedNode.getNodeType() == CellTreeNode.CLAUSE_NODE)
+						|| (selectedNode.getNodeType() == CellTreeNode.SUBTREE_NODE)) {
 					String xmlForPopulationNode = XmlConversionlHelper.createXmlFromTree(selectedNode);
 					final String populationName = selectedNode.getName();
 					String measureId = MatContext.get().getCurrentMeasureId();
@@ -63,7 +64,8 @@ public class PopulationWorkSpaceContextMenu extends ClauseWorkspaceContextMenu {
 							}
 						});
 					} else {
-						xmlTreeDisplay.getErrorMessageDisplay().setMessage("Measure Logic is incomplete.");
+						xmlTreeDisplay.getErrorMessageDisplay().setMessage(MatContext.get()
+								.getMessageDelegate().getINVALID_LOGIC_POPULATION_WORK_SPACE());
 					}
 				}
 			}

@@ -708,7 +708,9 @@ public class XmlTreePresenter {
 							if(inValidNode.equalsIgnoreCase("inValidAtPopulationAndStratificationNode")){
 								messageList.add(MatContext.get().getMessageDelegate().getPOPULATION_WORKSPACE_DATETIMEDIFF_ERROR_MESSAGE());
 							}
-							
+							if(inValidNode.equalsIgnoreCase("invalidClauseLogic")){
+								messageList.add("Invalid Clause Logic. Please validate clause logic on Clause Workspace.");
+							}
 						}
 						if(messageList.size()>=1){
 							if(!messageList.get(0).equalsIgnoreCase(MatContext.get().getMessageDelegate().getMEASURE_LOGIC_IS_INCORRECT())){

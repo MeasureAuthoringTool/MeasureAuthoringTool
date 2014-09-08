@@ -260,14 +260,16 @@ public class ExportSimpleXML {
 	 */
 	private static void addUUIDtoQDMAttribute(List<String> usedSubTreeIds,
 			Document originalDoc) throws XPathExpressionException {
+		
+		if(usedSubTreeIds.size() == 0){
+			return;
+		}
+		
 		String uuidXPathString = "";
 		for(String uuidString: usedSubTreeIds){
 			uuidXPathString += "@uuid = '"+uuidString + "' or";
 		}
-		
-		if(uuidXPathString.length() == 0){
-			return;
-		}
+			
 		
 		uuidXPathString = uuidXPathString.substring(0,uuidXPathString.lastIndexOf(" or"));
 		String XPATH_QDM_UUID_ATTRIBUTE = "/measure/subTreeLookUp/subTree["+uuidXPathString+"]//elementRef/attribute";
